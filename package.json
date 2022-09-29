@@ -1,0 +1,53 @@
+{
+	"name": "eunos-blades",
+	"version": "0.1.0",
+	"description": "An implementation of Kult: Divinity Lost (4th Edition), based on the original Kult 4E Foundry system by Tom LaPorta.",
+	"scripts": {
+		"build all": "gulp",
+		"emit types": "gulp types",
+		"codehawk": "codehawk ts"
+	},
+	"browserslist": [
+		"last 3 versions"
+	],
+	"author": "Eunomiac",
+	"license": "",
+	"private": true,
+	"devDependencies": {
+		"@league-of-foundry-developers/foundry-vtt-types": "^9.255.0",
+		"@tsconfig/node16": "^1.0.2",
+		"@types/jquery": "^3.5.14",
+		"@types/node": "^17.0.21",
+		"@typescript-eslint/eslint-plugin": "^5.15.0",
+		"@typescript-eslint/parser": "^5.15.0",
+		"autoprefixer": "^10.4.7",
+		"codehawk-cli": "^9.0.0",
+		"cssnano": "^5.1.12",
+		"del": "^6.1.0",
+		"eslint": "^8.16",
+		"eslint-plugin-import": "^2.26",
+		"fancy-log": "^2.0.0",
+		"gulp": "^4.0.2",
+		"gulp-debug": "^4.0.0",
+		"gulp-header": "^2.0.9",
+		"gulp-plumber": "^1.2.1",
+		"gulp-postcss": "^9.0.1",
+		"gulp-rename": "^2.0.0",
+		"gulp-replace": "^1.1.3",
+		"gulp-sass": "^5.1.0",
+		"gulp-terser": "^2.1.0",
+		"gulp-typescript": "^6.0.0-alpha.1",
+		"handlebars": "^4.7",
+		"lazypipe": "^1.0.2",
+		"merge2": "^1.4.1",
+		"node-sass": "^7.0.1",
+		"postcss": "^8.4.12",
+		"postcss-font-magician": "^3.0.0",
+		"sass": "^1.52",
+		"ts-node": "^10.8.0",
+		"typescript": "^4.6.2"
+	},
+	"repository": {
+		"url": ""
+	}
+}

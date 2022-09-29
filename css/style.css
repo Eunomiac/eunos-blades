@@ -1,0 +1,1647 @@
+@use "sass:math";
+/*
+*  Elements that can be changed will hint this by dimming and fading a little on hover
+*/
+/*
+ * Toothradio. Some (eg trauma) are not changeable, hence the option.
+ */
+/*
+ * Custom Radio
+ */
+/*
+ * Custom Radio Squared
+ */
+/*
+ * Checkboxes underscored.
+ */
+/*
+ * Create Clock
+ */
+/*
+ * Turf Block
+ */
+/*
+ * Toothradio single elements
+ */
+/*
+ * Custom Radio Round
+ */
+@font-face {
+  font-family: "Historical FellType";
+  src: url("../assets/fonts/HistoricalFellType/HistoricalFellType.otf") format("opentype");
+  font-style: normal; }
+
+@font-face {
+  font-family: "Historical FellType";
+  src: url("../assets/fonts/HistoricalFellType/HistoricalFellType i.otf") format("opentype");
+  font-style: italic; }
+
+@font-face {
+  font-family: "Historical FellType SC";
+  src: url("../assets/fonts/HistoricalFellTypeSC/HistoricalFellTypeSC.otf") format("opentype"); }
+
+@font-face {
+  font-family: "IM FELL Double Pica";
+  src: url("../assets/fonts/IMFELLDoublePica/IMFELLDoublePica.otf") format("opentype");
+  font-style: normal; }
+
+@font-face {
+  font-family: "IM FELL Double Pica";
+  src: url("../assets/fonts/IMFELLDoublePica/IMFELLDoublePica i.otf") format("opentype");
+  font-style: italic; }
+
+@font-face {
+  font-family: "IM FELL Double Pica SC";
+  src: url("../assets/fonts/IMFELLDoublePicaSC/IMFELLDoublePicaSC.ttf") format("truetype"); }
+
+@font-face {
+  font-family: "Kirsty";
+  src: url("../assets/fonts/Kirsty/Kirsty.otf") format("opentype");
+  font-style: normal;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "Kirsty";
+  src: url("../assets/fonts/Kirsty/Kirsty B.otf") format("opentype");
+  font-style: normal;
+  font-weight: bold; }
+
+@font-face {
+  font-family: "Kirsty";
+  src: url("../assets/fonts/Kirsty/Kirsty i.otf") format("opentype");
+  font-style: italic;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "Kirsty";
+  src: url("../assets/fonts/Kirsty/Kirsty Bi.otf") format("opentype");
+  font-style: italic;
+  font-weight: bold; }
+
+@font-face {
+  font-family: "Lekton";
+  src: url("../assets/fonts/Lekton/Lekton.otf") format("opentype");
+  font-style: normal;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "Lekton";
+  src: url("../assets/fonts/Lekton/Lekton B.otf") format("opentype");
+  font-weight: bold; }
+
+@font-face {
+  font-family: "Lekton";
+  src: url("../assets/fonts/Lekton/Lekton i.otf") format("opentype");
+  font-style: italic;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "Minion Pro";
+  src: url("../assets/fonts/MinionPro/MinionPro.otf") format("opentype");
+  font-style: normal;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "Minion Pro";
+  src: url("../assets/fonts/MinionPro/MinionPro M.otf") format("opentype");
+  font-style: normal;
+  font-weight: 500; }
+
+@font-face {
+  font-family: "Minion Pro";
+  src: url("../assets/fonts/MinionPro/MinionPro S.otf") format("opentype");
+  font-style: normal;
+  font-weight: 600; }
+
+@font-face {
+  font-family: "Minion Pro";
+  src: url("../assets/fonts/MinionPro/MinionPro B.otf") format("opentype");
+  font-style: normal;
+  font-weight: bold; }
+
+@font-face {
+  font-family: "Minion Pro";
+  src: url("../assets/fonts/MinionPro/MinionPro i.otf") format("opentype");
+  font-style: italic;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "Minion Pro";
+  src: url("../assets/fonts/MinionPro/MinionPro Mi.otf") format("opentype");
+  font-style: italic;
+  font-weight: 500; }
+
+@font-face {
+  font-family: "Minion Pro";
+  src: url("../assets/fonts/MinionPro/MinionPro Si.otf") format("opentype");
+  font-style: italic;
+  font-weight: 600; }
+
+@font-face {
+  font-family: "Minion Pro";
+  src: url("../assets/fonts/MinionPro/MinionPro Bi.otf") format("opentype");
+  font-style: italic;
+  font-weight: bold; }
+
+@font-face {
+  font-family: "Minion Pro Caption";
+  src: url("../assets/fonts/MinionProCapt/MinionProCapt.otf") format("opentype");
+  font-style: normal;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "Minion Pro Caption";
+  src: url("../assets/fonts/MinionProCapt/MinionProCapt M.otf") format("opentype");
+  font-style: normal;
+  font-weight: 500; }
+
+@font-face {
+  font-family: "Minion Pro Caption";
+  src: url("../assets/fonts/MinionProCapt/MinionProCapt S.otf") format("opentype");
+  font-style: normal;
+  font-weight: 600; }
+
+@font-face {
+  font-family: "Minion Pro Caption";
+  src: url("../assets/fonts/MinionProCapt/MinionProCapt B.otf") format("opentype");
+  font-style: normal;
+  font-weight: bold; }
+
+@font-face {
+  font-family: "Minion Pro Caption";
+  src: url("../assets/fonts/MinionProCapt/MinionProCapt i.otf") format("opentype");
+  font-style: italic;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "Minion Pro Caption";
+  src: url("../assets/fonts/MinionProCapt/MinionProCapt Mi.otf") format("opentype");
+  font-style: italic;
+  font-weight: 500; }
+
+@font-face {
+  font-family: "Minion Pro Caption";
+  src: url("../assets/fonts/MinionProCapt/MinionProCapt Si.otf") format("opentype");
+  font-style: italic;
+  font-weight: 600; }
+
+@font-face {
+  font-family: "Minion Pro Caption";
+  src: url("../assets/fonts/MinionProCapt/MinionProCapt Bi.otf") format("opentype");
+  font-style: italic;
+  font-weight: bold; }
+
+@font-face {
+  font-family: "Minion Pro Cond";
+  src: url("../assets/fonts/MinionProCond/MinionProCond.otf") format("opentype");
+  font-style: normal;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "Minion Pro Cond";
+  src: url("../assets/fonts/MinionProCond/MinionProCond M.otf") format("opentype");
+  font-style: normal;
+  font-weight: 500; }
+
+@font-face {
+  font-family: "Minion Pro Cond";
+  src: url("../assets/fonts/MinionProCond/MinionProCond S.otf") format("opentype");
+  font-style: normal;
+  font-weight: 600; }
+
+@font-face {
+  font-family: "Minion Pro Cond";
+  src: url("../assets/fonts/MinionProCond/MinionProCond B.otf") format("opentype");
+  font-style: normal;
+  font-weight: bold; }
+
+@font-face {
+  font-family: "Minion Pro Cond";
+  src: url("../assets/fonts/MinionProCond/MinionProCond i.otf") format("opentype");
+  font-style: italic;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "Minion Pro Cond";
+  src: url("../assets/fonts/MinionProCond/MinionProCond Mi.otf") format("opentype");
+  font-style: italic;
+  font-weight: 500; }
+
+@font-face {
+  font-family: "Minion Pro Cond";
+  src: url("../assets/fonts/MinionProCond/MinionProCond Si.otf") format("opentype");
+  font-style: italic;
+  font-weight: 600; }
+
+@font-face {
+  font-family: "Minion Pro Cond";
+  src: url("../assets/fonts/MinionProCond/MinionProCond Bi.otf") format("opentype");
+  font-style: italic;
+  font-weight: bold; }
+
+@font-face {
+  font-family: "Minion Pro Caption Cond";
+  src: url("../assets/fonts/MinionProCondCapt/MinionProCondCapt.otf") format("opentype");
+  font-style: normal;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "Minion Pro Caption Cond";
+  src: url("../assets/fonts/MinionProCondCapt/MinionProCondCapt M.otf") format("opentype");
+  font-style: normal;
+  font-weight: 500; }
+
+@font-face {
+  font-family: "Minion Pro Caption Cond";
+  src: url("../assets/fonts/MinionProCondCapt/MinionProCondCapt S.otf") format("opentype");
+  font-style: normal;
+  font-weight: 600; }
+
+@font-face {
+  font-family: "Minion Pro Caption Cond";
+  src: url("../assets/fonts/MinionProCondCapt/MinionProCondCapt B.otf") format("opentype");
+  font-style: normal;
+  font-weight: bold; }
+
+@font-face {
+  font-family: "Minion Pro Caption Cond";
+  src: url("../assets/fonts/MinionProCondCapt/MinionProCondCapt i.otf") format("opentype");
+  font-style: italic;
+  font-weight: normal; }
+
+@font-face {
+  font-family: "Minion Pro Caption Cond";
+  src: url("../assets/fonts/MinionProCondCapt/MinionProCondCapt Mi.otf") format("opentype");
+  font-style: italic;
+  font-weight: 500; }
+
+@font-face {
+  font-family: "Minion Pro Caption Cond";
+  src: url("../assets/fonts/MinionProCondCapt/MinionProCondCapt Si.otf") format("opentype");
+  font-style: italic;
+  font-weight: 600; }
+
+@font-face {
+  font-family: "Minion Pro Caption Cond";
+  src: url("../assets/fonts/MinionProCondCapt/MinionProCondCapt Bi.otf") format("opentype");
+  font-style: italic;
+  font-weight: bold; }
+
+@font-face {
+  font-family: "PWSignaturetwo";
+  src: url("../assets/fonts/PWSignaturetwo/PWSignaturetwo.ttf") format("truetype"); }
+
+@font-face {
+  font-family: "Ravenscroft";
+  src: url("../assets/fonts/Ravenscroft/Ravenscroft.ttf") format("truetype"); }
+
+@font-face {
+  font-family: "UglyQua";
+  src: url("../assets/fonts/UglyQua/UglyQua.ttf") format("truetype");
+  font-style: normal; }
+
+@font-face {
+  font-family: "UglyQua";
+  src: url("../assets/fonts/UglyQua/UglyQua i.ttf") format("truetype");
+  font-style: italic; }
+
+.eunos-blades {
+  font-family: "Minion Pro", serif; }
+  .eunos-blades textarea {
+    margin-top: 10px;
+    margin-bottom: 20px; }
+  .eunos-blades .debug-toggle {
+    opacity: 0.1; }
+    .eunos-blades .debug-toggle.on {
+      opacity: 0.75; }
+  .eunos-blades .rollable-text {
+    -webkit-transition: color 0.2s;
+    -o-transition: color 0.2s;
+    transition: color 0.2s; }
+  .eunos-blades .rollable-text:hover {
+    cursor: pointer;
+    color: red; }
+  .eunos-blades section {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between; }
+    .eunos-blades section > *:not(.label-stripe) {
+      margin-right: 10px; }
+      .eunos-blades section > *:not(.label-stripe):last-child {
+        margin-right: 0px; }
+    .eunos-blades section .grow-one {
+      -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+      flex-grow: 1; }
+    .eunos-blades section .grow-two {
+      -webkit-box-flex: 2;
+      -ms-flex-positive: 2;
+      flex-grow: 2; }
+    .eunos-blades section.experience {
+      margin-bottom: 0px;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center; }
+  .eunos-blades .flex-horizontal {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between; }
+  .eunos-blades .flex-vertical {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column; }
+  .eunos-blades .tab[data-tab] {
+    display: none; }
+    .eunos-blades .tab[data-tab].active {
+      display: block; }
+  .eunos-blades .black-label {
+    background-color: #191813;
+    color: #EEEFFF;
+    font-size: 21px;
+    text-align: center;
+    padding: 0px 5px;
+    height: 30px !important;
+    text-transform: capitalize;
+    font-family: Kirsty, serif; }
+  .eunos-blades .gray-label {
+    background-color: #999;
+    color: #191813;
+    font-size: 21px;
+    text-align: center;
+    padding: 0px 5px;
+    height: 30px !important;
+    text-transform: capitalize;
+    font-family: Kirsty, serif; }
+  .eunos-blades .label-stripe {
+    text-transform: uppercase;
+    background-color: #191813;
+    color: #EEEFFF;
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    font-weight: bold; }
+  .eunos-blades .label-stripe-gray {
+    text-transform: uppercase;
+    background-color: #999;
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    font-weight: bold; }
+  .eunos-blades .editor,
+  .eunos-blades .editor-content {
+    min-height: 150px; }
+  .eunos-blades .description {
+    font-style: italic; }
+  .eunos-blades i.nullifier {
+    -webkit-transition: -webkit-filter 0.2s;
+    transition: -webkit-filter 0.2s;
+    -o-transition: filter 0.2s;
+    transition: filter 0.2s;
+    transition: filter 0.2s, -webkit-filter 0.2s;
+    cursor: pointer; }
+    .eunos-blades i.nullifier:hover {
+      -webkit-filter: brightness(0.8);
+      filter: brightness(0.8);
+      opacity: 0.9;
+      color: red; }
+  .eunos-blades .loadout select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border: none;
+    cursor: pointer;
+    background: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>") no-repeat right;
+    padding: 0 20px 0 0;
+    margin: 0.1em -6px 0 0;
+    background-color: #191813;
+    font-family: Georgia, "Bitstream Charter", "Times New Roman", serif;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+    text-align: right; }
+    .eunos-blades .loadout select option {
+      color: white; }
+  .eunos-blades .loadout select:hover {
+    color: red; }
+  .eunos-blades .abilities .item-name, .eunos-blades .loadout .item-name, .eunos-blades .faction-items .item-name {
+    width: 100px;
+    margin-left: 10px; }
+  .eunos-blades .abilities .item-body, .eunos-blades .loadout .item-body, .eunos-blades .faction-items .item-body {
+    width: auto; }
+  .eunos-blades .abilities .item-description, .eunos-blades .loadout .item-description, .eunos-blades .faction-items .item-description {
+    width: 260px; }
+  .eunos-blades td {
+    padding: 5px; }
+  .eunos-blades {
+    min-width: 420px;
+    min-height: 320px; }
+  .eunos-blades .clock-zero-label {
+    color: #191813; }
+  .eunos-blades .clocks.clocks-4 {
+    position: relative; }
+    .eunos-blades .clocks.clocks-4 .blades-clock {
+      position: relative;
+      padding: 0;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      list-style: none;
+      overflow: hidden;
+      background-size: cover; }
+      .eunos-blades .clocks.clocks-4 .blades-clock label {
+        overflow: hidden;
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        -webkit-transform-origin: 0% 100%;
+        -ms-transform-origin: 0% 100%;
+        transform-origin: 0% 100%;
+        -webkit-transition: -webkit-filter 0.1s;
+        transition: -webkit-filter 0.1s;
+        -o-transition: filter 0.1s;
+        transition: filter 0.1s;
+        transition: filter 0.1s, -webkit-filter 0.1s;
+        cursor: pointer; }
+        .eunos-blades .clocks.clocks-4 .blades-clock label:hover {
+          -webkit-filter: brightness(0.8);
+          filter: brightness(0.8);
+          opacity: 0.9; }
+      .eunos-blades .clocks.clocks-4 .blades-clock input {
+        position: absolute;
+        display: none; }
+      .eunos-blades .clocks.clocks-4 .blades-clock input[value="0"] {
+        display: none; }
+      .eunos-blades .clocks.clocks-4 .blades-clock *:nth-child(3) {
+        -webkit-transform: rotate(0deg) skewY(180deg);
+        -ms-transform: rotate(0deg) skewY(180deg);
+        transform: rotate(0deg) skewY(180deg); }
+      .eunos-blades .clocks.clocks-4 .blades-clock *:nth-child(5) {
+        -webkit-transform: rotate(90deg) skewY(180deg);
+        -ms-transform: rotate(90deg) skewY(180deg);
+        transform: rotate(90deg) skewY(180deg); }
+      .eunos-blades .clocks.clocks-4 .blades-clock *:nth-child(7) {
+        -webkit-transform: rotate(180deg) skewY(180deg);
+        -ms-transform: rotate(180deg) skewY(180deg);
+        transform: rotate(180deg) skewY(180deg); }
+      .eunos-blades .clocks.clocks-4 .blades-clock *:nth-child(9) {
+        -webkit-transform: rotate(270deg) skewY(180deg);
+        -ms-transform: rotate(270deg) skewY(180deg);
+        transform: rotate(270deg) skewY(180deg); }
+  .eunos-blades .clocks.clocks-6 {
+    position: relative; }
+    .eunos-blades .clocks.clocks-6 .blades-clock {
+      position: relative;
+      padding: 0;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      list-style: none;
+      overflow: hidden;
+      background-size: cover; }
+      .eunos-blades .clocks.clocks-6 .blades-clock label {
+        overflow: hidden;
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        -webkit-transform-origin: 0% 100%;
+        -ms-transform-origin: 0% 100%;
+        transform-origin: 0% 100%;
+        -webkit-transition: -webkit-filter 0.1s;
+        transition: -webkit-filter 0.1s;
+        -o-transition: filter 0.1s;
+        transition: filter 0.1s;
+        transition: filter 0.1s, -webkit-filter 0.1s;
+        cursor: pointer; }
+        .eunos-blades .clocks.clocks-6 .blades-clock label:hover {
+          -webkit-filter: brightness(0.8);
+          filter: brightness(0.8);
+          opacity: 0.9; }
+      .eunos-blades .clocks.clocks-6 .blades-clock input {
+        position: absolute;
+        display: none; }
+      .eunos-blades .clocks.clocks-6 .blades-clock input[value="0"] {
+        display: none; }
+      .eunos-blades .clocks.clocks-6 .blades-clock *:nth-child(3) {
+        -webkit-transform: rotate(0deg) skewY(150deg);
+        -ms-transform: rotate(0deg) skewY(150deg);
+        transform: rotate(0deg) skewY(150deg); }
+      .eunos-blades .clocks.clocks-6 .blades-clock *:nth-child(5) {
+        -webkit-transform: rotate(60deg) skewY(150deg);
+        -ms-transform: rotate(60deg) skewY(150deg);
+        transform: rotate(60deg) skewY(150deg); }
+      .eunos-blades .clocks.clocks-6 .blades-clock *:nth-child(7) {
+        -webkit-transform: rotate(120deg) skewY(150deg);
+        -ms-transform: rotate(120deg) skewY(150deg);
+        transform: rotate(120deg) skewY(150deg); }
+      .eunos-blades .clocks.clocks-6 .blades-clock *:nth-child(9) {
+        -webkit-transform: rotate(180deg) skewY(150deg);
+        -ms-transform: rotate(180deg) skewY(150deg);
+        transform: rotate(180deg) skewY(150deg); }
+      .eunos-blades .clocks.clocks-6 .blades-clock *:nth-child(11) {
+        -webkit-transform: rotate(240deg) skewY(150deg);
+        -ms-transform: rotate(240deg) skewY(150deg);
+        transform: rotate(240deg) skewY(150deg); }
+      .eunos-blades .clocks.clocks-6 .blades-clock *:nth-child(13) {
+        -webkit-transform: rotate(300deg) skewY(150deg);
+        -ms-transform: rotate(300deg) skewY(150deg);
+        transform: rotate(300deg) skewY(150deg); }
+  .eunos-blades .clocks.clocks-8 {
+    position: relative; }
+    .eunos-blades .clocks.clocks-8 .blades-clock {
+      position: relative;
+      padding: 0;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      list-style: none;
+      overflow: hidden;
+      background-size: cover; }
+      .eunos-blades .clocks.clocks-8 .blades-clock label {
+        overflow: hidden;
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        -webkit-transform-origin: 0% 100%;
+        -ms-transform-origin: 0% 100%;
+        transform-origin: 0% 100%;
+        -webkit-transition: -webkit-filter 0.1s;
+        transition: -webkit-filter 0.1s;
+        -o-transition: filter 0.1s;
+        transition: filter 0.1s;
+        transition: filter 0.1s, -webkit-filter 0.1s;
+        cursor: pointer; }
+        .eunos-blades .clocks.clocks-8 .blades-clock label:hover {
+          -webkit-filter: brightness(0.8);
+          filter: brightness(0.8);
+          opacity: 0.9; }
+      .eunos-blades .clocks.clocks-8 .blades-clock input {
+        position: absolute;
+        display: none; }
+      .eunos-blades .clocks.clocks-8 .blades-clock input[value="0"] {
+        display: none; }
+      .eunos-blades .clocks.clocks-8 .blades-clock *:nth-child(3) {
+        -webkit-transform: rotate(0deg) skewY(135deg);
+        -ms-transform: rotate(0deg) skewY(135deg);
+        transform: rotate(0deg) skewY(135deg); }
+      .eunos-blades .clocks.clocks-8 .blades-clock *:nth-child(5) {
+        -webkit-transform: rotate(45deg) skewY(135deg);
+        -ms-transform: rotate(45deg) skewY(135deg);
+        transform: rotate(45deg) skewY(135deg); }
+      .eunos-blades .clocks.clocks-8 .blades-clock *:nth-child(7) {
+        -webkit-transform: rotate(90deg) skewY(135deg);
+        -ms-transform: rotate(90deg) skewY(135deg);
+        transform: rotate(90deg) skewY(135deg); }
+      .eunos-blades .clocks.clocks-8 .blades-clock *:nth-child(9) {
+        -webkit-transform: rotate(135deg) skewY(135deg);
+        -ms-transform: rotate(135deg) skewY(135deg);
+        transform: rotate(135deg) skewY(135deg); }
+      .eunos-blades .clocks.clocks-8 .blades-clock *:nth-child(11) {
+        -webkit-transform: rotate(180deg) skewY(135deg);
+        -ms-transform: rotate(180deg) skewY(135deg);
+        transform: rotate(180deg) skewY(135deg); }
+      .eunos-blades .clocks.clocks-8 .blades-clock *:nth-child(13) {
+        -webkit-transform: rotate(225deg) skewY(135deg);
+        -ms-transform: rotate(225deg) skewY(135deg);
+        transform: rotate(225deg) skewY(135deg); }
+      .eunos-blades .clocks.clocks-8 .blades-clock *:nth-child(15) {
+        -webkit-transform: rotate(270deg) skewY(135deg);
+        -ms-transform: rotate(270deg) skewY(135deg);
+        transform: rotate(270deg) skewY(135deg); }
+      .eunos-blades .clocks.clocks-8 .blades-clock *:nth-child(17) {
+        -webkit-transform: rotate(315deg) skewY(135deg);
+        -ms-transform: rotate(315deg) skewY(135deg);
+        transform: rotate(315deg) skewY(135deg); }
+  .eunos-blades .blades-clock-name-type > * {
+    margin-bottom: 10px; }
+  .eunos-blades .blades-clock-name-type .blades-clock {
+    margin: 10px auto; }
+  .eunos-blades.crew.sheet .coins {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    /* Hide the browser's default checkbox */
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap; }
+    .eunos-blades.crew.sheet .coins label {
+      height: 15px;
+      width: 15px;
+      background-color: #DAA520;
+      vertical-align: middle;
+      border: 1px solid #191813;
+      -webkit-transition: -webkit-filter 0.1s;
+      transition: -webkit-filter 0.1s;
+      -o-transition: filter 0.1s;
+      transition: filter 0.1s;
+      transition: filter 0.1s, -webkit-filter 0.1s;
+      cursor: pointer; }
+      .eunos-blades.crew.sheet .coins label[for$="-0"] {
+        margin-right: 0px; }
+      .eunos-blades.crew.sheet .coins label:hover {
+        -webkit-filter: brightness(0.8);
+        filter: brightness(0.8);
+        opacity: 0.9; }
+    .eunos-blades.crew.sheet .coins input {
+      display: none; }
+      .eunos-blades.crew.sheet .coins input:checked ~ label {
+        background-color: #EEEFFF; }
+      .eunos-blades.crew.sheet .coins input:checked + label {
+        background-color: #DAA520; }
+    .eunos-blades.crew.sheet .coins input ~ label {
+      margin-right: 3px;
+      margin-bottom: 3px;
+      -webkit-transition: -webkit-filter 0.2s;
+      transition: -webkit-filter 0.2s;
+      -o-transition: filter 0.2s;
+      transition: filter 0.2s;
+      transition: filter 0.2s, -webkit-filter 0.2s;
+      cursor: pointer; }
+      .eunos-blades.crew.sheet .coins input ~ label[for$="0"] {
+        border-width: 2px; }
+      .eunos-blades.crew.sheet .coins input ~ label:hover {
+        -webkit-filter: brightness(0.8);
+        filter: brightness(0.8);
+        opacity: 0.9; }
+    .eunos-blades.crew.sheet .coins.coins-hands {
+      width: 36px; }
+    .eunos-blades.crew.sheet .coins.coins-stashed {
+      width: 190px; }
+  .eunos-blades.crew.sheet .item {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between; }
+    .eunos-blades.crew.sheet .item .item-body {
+      margin-bottom: 10px; }
+      .eunos-blades.crew.sheet .item .item-body * {
+        margin-right: 10px; }
+      .eunos-blades.crew.sheet .item .item-body .item-description {
+        font-style: italic;
+        text-align: justify; }
+    .eunos-blades.crew.sheet .item div {
+      -webkit-box-flex: 2;
+      -ms-flex-positive: 2;
+      flex-grow: 2; }
+    .eunos-blades.crew.sheet .item .item-control {
+      -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+      flex-grow: 1; }
+    .eunos-blades.crew.sheet .item .item-body,
+    .eunos-blades.crew.sheet .item .item-class-label {
+      width: 100px; }
+  .eunos-blades.crew.sheet .item-class-label {
+    margin-bottom: 10px; }
+  .eunos-blades.crew.sheet .name,
+  .eunos-blades.crew.sheet .lair {
+    margin-bottom: 10px; }
+  .eunos-blades.crew.sheet form.actor-sheet {
+    padding: 20px; }
+  .eunos-blades.crew.sheet nav {
+    padding-bottom: 10px; }
+  .eunos-blades.crew.sheet .crew-coins {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    /* Hide the browser's default checkbox */
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    max-width: 72px; }
+    .eunos-blades.crew.sheet .crew-coins label {
+      height: 15px;
+      width: 15px;
+      background-color: #DAA520;
+      vertical-align: middle;
+      border: 1px solid #191813;
+      -webkit-transition: -webkit-filter 0.1s;
+      transition: -webkit-filter 0.1s;
+      -o-transition: filter 0.1s;
+      transition: filter 0.1s;
+      transition: filter 0.1s, -webkit-filter 0.1s;
+      cursor: pointer; }
+      .eunos-blades.crew.sheet .crew-coins label[for$="-0"] {
+        margin-right: 0px; }
+      .eunos-blades.crew.sheet .crew-coins label:hover {
+        -webkit-filter: brightness(0.8);
+        filter: brightness(0.8);
+        opacity: 0.9; }
+    .eunos-blades.crew.sheet .crew-coins input {
+      display: none; }
+      .eunos-blades.crew.sheet .crew-coins input:checked ~ label {
+        background-color: #EEEFFF; }
+      .eunos-blades.crew.sheet .crew-coins input:checked + label {
+        background-color: #DAA520; }
+    .eunos-blades.crew.sheet .crew-coins label {
+      margin-right: 3px;
+      margin-bottom: 3px; }
+  .eunos-blades.crew.sheet .crew-reputation {
+    border-top: 3px solid #191813;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    /* Hide the browser's default checkbox */ }
+    .eunos-blades.crew.sheet .crew-reputation label {
+      height: 50px;
+      width: 17px;
+      background-image: url("../assets/teeth/stresstooth-red.png");
+      background-repeat: no-repeat;
+      background-size: contain;
+      margin-right: 5px;
+      -webkit-transition: -webkit-filter 0.1s;
+      transition: -webkit-filter 0.1s;
+      -o-transition: filter 0.1s;
+      transition: filter 0.1s;
+      transition: filter 0.1s, -webkit-filter 0.1s;
+      cursor: pointer; }
+      .eunos-blades.crew.sheet .crew-reputation label:last-of-type {
+        margin-right: 0px; }
+      .eunos-blades.crew.sheet .crew-reputation label[for$="-0"] {
+        width: auto;
+        height: auto;
+        background-image: none !important;
+        color: #EEEFFF; }
+        .eunos-blades.crew.sheet .crew-reputation label[for$="-0"] i {
+          margin-top: 4px; }
+      .eunos-blades.crew.sheet .crew-reputation label:hover {
+        -webkit-filter: brightness(0.8);
+        filter: brightness(0.8);
+        opacity: 0.9; }
+    .eunos-blades.crew.sheet .crew-reputation input {
+      display: none; }
+      .eunos-blades.crew.sheet .crew-reputation input:checked ~ label {
+        background-image: url("../assets/teeth/stresstooth-halfgrey.png"); }
+      .eunos-blades.crew.sheet .crew-reputation input:checked + label {
+        background-image: url("../assets/teeth/stresstooth-red.png"); }
+    .eunos-blades.crew.sheet .crew-reputation input[disabled="disabled"] + label {
+      background-image: url(../assets/teeth/stresstooth-black.png); }
+  .eunos-blades.crew.sheet .turf-container {
+    overflow-x: scroll;
+    overflow-y: clip; }
+  .eunos-blades.crew.sheet .turf-list {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    width: 855px; }
+    .eunos-blades.crew.sheet .turf-list .turf-row {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: horizontal;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+      flex-direction: row;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap; }
+      .eunos-blades.crew.sheet .turf-list .turf-row *:first-child {
+        margin-left: 0px; }
+      .eunos-blades.crew.sheet .turf-list .turf-row *:last-child {
+        margin-right: 0px; }
+    .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block {
+      -webkit-transition: -webkit-filter 0.1s;
+      transition: -webkit-filter 0.1s;
+      -o-transition: filter 0.1s;
+      transition: filter 0.1s;
+      transition: filter 0.1s, -webkit-filter 0.1s;
+      cursor: pointer;
+      width: 130px;
+      height: 100px;
+      background-color: #bbb;
+      position: relative;
+      margin: 20px;
+      -webkit-box-flex: initial;
+      -ms-flex-positive: initial;
+      flex-grow: initial; }
+      .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block:hover {
+        -webkit-filter: brightness(0.8);
+        filter: brightness(0.8);
+        opacity: 0.9; }
+      .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block.turf-selected .connector {
+        background-color: #999;
+        z-index: 1; }
+      .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block .connector {
+        position: absolute;
+        display: block;
+        background-color: #bbb; }
+        .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block .connector.right, .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block .connector.left {
+          width: 40px;
+          height: 20px;
+          top: 40px; }
+        .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block .connector.left {
+          left: -40px; }
+        .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block .connector.right {
+          left: 130px; }
+        .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block .connector.top, .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block .connector.bottom {
+          height: 40px;
+          width: 20px;
+          left: 55px; }
+        .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block .connector.top {
+          top: -40px; }
+        .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block .connector.bottom {
+          top: 100px; }
+      .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block.turf-selected {
+        background-color: #999; }
+      .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block .turf-description {
+        border: none;
+        background: none;
+        resize: none;
+        width: 130px;
+        text-align: center;
+        min-height: auto;
+        font-size: 12px; }
+      .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block .turf-name {
+        border: none;
+        border-radius: 0px;
+        text-align: center;
+        font-weight: bold; }
+      .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block input[type="checkbox"] {
+        -webkit-transform: scale(1);
+        -ms-transform: scale(1);
+        transform: scale(1); }
+      .eunos-blades.crew.sheet .turf-list.section-non-editable .turf-block .turf-control.turf-select {
+        position: absolute;
+        top: -7px;
+        left: -7px; }
+    .eunos-blades.crew.sheet .turf-list.section-editable .turf-block {
+      -webkit-transition: -webkit-filter 0.1s;
+      transition: -webkit-filter 0.1s;
+      -o-transition: filter 0.1s;
+      transition: filter 0.1s;
+      transition: filter 0.1s, -webkit-filter 0.1s;
+      cursor: pointer;
+      width: 130px;
+      height: 125px;
+      background-color: #bbb;
+      position: relative;
+      margin: 20px;
+      -webkit-box-flex: initial;
+      -ms-flex-positive: initial;
+      flex-grow: initial; }
+      .eunos-blades.crew.sheet .turf-list.section-editable .turf-block:hover {
+        -webkit-filter: brightness(0.8);
+        filter: brightness(0.8);
+        opacity: 0.9; }
+      .eunos-blades.crew.sheet .turf-list.section-editable .turf-block.turf-selected .connector {
+        background-color: #999;
+        z-index: 1; }
+      .eunos-blades.crew.sheet .turf-list.section-editable .turf-block .connector {
+        position: absolute;
+        display: block;
+        background-color: #bbb; }
+        .eunos-blades.crew.sheet .turf-list.section-editable .turf-block .connector.right, .eunos-blades.crew.sheet .turf-list.section-editable .turf-block .connector.left {
+          width: 40px;
+          height: 25px;
+          top: 50px; }
+        .eunos-blades.crew.sheet .turf-list.section-editable .turf-block .connector.left {
+          left: -40px; }
+        .eunos-blades.crew.sheet .turf-list.section-editable .turf-block .connector.right {
+          left: 130px; }
+        .eunos-blades.crew.sheet .turf-list.section-editable .turf-block .connector.top, .eunos-blades.crew.sheet .turf-list.section-editable .turf-block .connector.bottom {
+          height: 40px;
+          width: 25px;
+          left: 52.5px; }
+        .eunos-blades.crew.sheet .turf-list.section-editable .turf-block .connector.top {
+          top: -40px; }
+        .eunos-blades.crew.sheet .turf-list.section-editable .turf-block .connector.bottom {
+          top: 125px; }
+      .eunos-blades.crew.sheet .turf-list.section-editable .turf-block.turf-selected {
+        background-color: #999; }
+      .eunos-blades.crew.sheet .turf-list.section-editable .turf-block .turf-description {
+        border: none;
+        background: none;
+        resize: none;
+        width: 130px;
+        text-align: center;
+        min-height: auto;
+        font-size: 12px; }
+      .eunos-blades.crew.sheet .turf-list.section-editable .turf-block .turf-name {
+        border: none;
+        border-radius: 0px;
+        text-align: center;
+        font-weight: bold; }
+      .eunos-blades.crew.sheet .turf-list.section-editable .turf-block input[type="checkbox"] {
+        -webkit-transform: scale(1);
+        -ms-transform: scale(1);
+        transform: scale(1); }
+      .eunos-blades.crew.sheet .turf-list.section-editable .turf-block .turf-control.turf-select {
+        position: absolute;
+        top: -7px;
+        left: -7px; }
+  .eunos-blades.crew.sheet .crew-hold {
+    border-top: 3px solid #191813;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    /* Hide the browser's default checkbox */
+    width: 221px; }
+    .eunos-blades.crew.sheet .crew-hold label {
+      -webkit-transition: -webkit-filter 0.1s;
+      transition: -webkit-filter 0.1s;
+      -o-transition: filter 0.1s;
+      transition: filter 0.1s;
+      transition: filter 0.1s, -webkit-filter 0.1s;
+      cursor: pointer; }
+      .eunos-blades.crew.sheet .crew-hold label:hover {
+        -webkit-filter: brightness(0.8);
+        filter: brightness(0.8);
+        opacity: 0.9; }
+      .eunos-blades.crew.sheet .crew-hold label {
+        height: 50px;
+        width: 17px;
+        background-image: url("../assets/teeth/stresstooth-halfgrey.png");
+        background-repeat: no-repeat;
+        background-size: contain;
+        margin-right: 5px; }
+        .eunos-blades.crew.sheet .crew-hold label:last-of-type {
+          margin-right: 0px; }
+    .eunos-blades.crew.sheet .crew-hold input {
+      display: none; }
+      .eunos-blades.crew.sheet .crew-hold input:checked + label {
+        background-image: url("../assets/teeth/stresstooth-red.png"); }
+  .eunos-blades.crew.sheet .crew-tier {
+    background-color: #999;
+    height: 33px;
+    width: 145px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    border-top: 3px solid #191813;
+    display: flex;
+    /* Hide the browser's default checkbox */ }
+    .eunos-blades.crew.sheet .crew-tier label {
+      -webkit-transition: -webkit-filter 0.1s;
+      transition: -webkit-filter 0.1s;
+      -o-transition: filter 0.1s;
+      transition: filter 0.1s;
+      transition: filter 0.1s, -webkit-filter 0.1s;
+      cursor: pointer; }
+      .eunos-blades.crew.sheet .crew-tier label:hover {
+        -webkit-filter: brightness(0.8);
+        filter: brightness(0.8);
+        opacity: 0.9; }
+      .eunos-blades.crew.sheet .crew-tier label:not([for$="-0"]) {
+        height: 18px;
+        width: 18px;
+        background-color: #191813;
+        vertical-align: middle;
+        border: 2px solid #191813;
+        border-radius: 9px; }
+    .eunos-blades.crew.sheet .crew-tier input {
+      display: none; }
+      .eunos-blades.crew.sheet .crew-tier input:checked ~ label:not([for$="-0"]) {
+        border-color: gray;
+        background-color: #EEEFFF; }
+      .eunos-blades.crew.sheet .crew-tier input:checked + label:not([for$="-0"]) {
+        background-color: #191813;
+        border-color: #191813; }
+    .eunos-blades.crew.sheet .crew-tier > * {
+      margin-right: 5px; }
+  .eunos-blades.crew.sheet .heat-wanted .small-teeth {
+    height: 20px; }
+    .eunos-blades.crew.sheet .heat-wanted .small-teeth label {
+      height: 100%;
+      width: 100%;
+      cursor: default; }
+  .eunos-blades.crew.sheet .experience-clues-container {
+    width: 340px;
+    font-size: 12px; }
+    .eunos-blades.crew.sheet .experience-clues-container .experience-clues-description {
+      font-weight: bold; }
+    .eunos-blades.crew.sheet .experience-clues-container .experience-clues {
+      font-style: italic; }
+  .eunos-blades.crew.sheet .edgeflaw input {
+    display: none; }
+    .eunos-blades.crew.sheet .edgeflaw input:checked + label {
+      color: red; }
+  .eunos-blades.crew.sheet .gang-expert-type-selector .gang-type-boxes {
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap; }
+  .eunos-blades.crew.sheet .cohorts {
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap; }
+    .eunos-blades.crew.sheet .cohorts .cohort-block-wrapper {
+      width: 400px; }
+    .eunos-blades.crew.sheet .cohorts .label-stripe {
+      margin-bottom: 0px; }
+    .eunos-blades.crew.sheet .cohorts .cohort-body > div {
+      margin-bottom: 10px; }
+    .eunos-blades.crew.sheet .cohorts .cohort-block-harm {
+      -ms-flex-pack: distribute;
+      justify-content: space-around; }
+      .eunos-blades.crew.sheet .cohorts .cohort-block-harm input[type="radio"] {
+        display: none; }
+        .eunos-blades.crew.sheet .cohorts .cohort-block-harm input[type="radio"]:checked + label {
+          color: #EEEFFF;
+          font-weight: bold;
+          background-color: #191813; }
+      .eunos-blades.crew.sheet .cohorts .cohort-block-harm label {
+        border: 2px solid #191813;
+        border-top: none;
+        padding: 5px; }
+  .eunos-blades.crew.sheet .class-name {
+    width: 512px;
+    height: 120px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: distribute;
+    justify-content: space-around;
+    font-size: 48px;
+    text-transform: uppercase;
+    border: 3px solid #191813; }
+    .eunos-blades.crew.sheet .class-name .big-name {
+      font-weight: bold;
+      font-family: Kirsty, serif; }
+    .eunos-blades.crew.sheet .class-name .big-description {
+      font-size: 20px;
+      font-family: "IM FELL Double Pica", serif;
+      color: #191813; }
+  .eunos-blades.crew.sheet .big-teeth-section {
+    border-top: 3px solid #191813;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    margin-bottom: 0px;
+    /* Trauma */ }
+    .eunos-blades.crew.sheet .big-teeth-section > * {
+      margin-right: 10px; }
+      .eunos-blades.crew.sheet .big-teeth-section > *:last-child {
+        margin-right: 0px; }
+    .eunos-blades.crew.sheet .big-teeth-section:last-child {
+      margin-right: 0px; }
+    .eunos-blades.crew.sheet .big-teeth-section .big-teeth {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      /* Hide the browser's default checkbox */ }
+      .eunos-blades.crew.sheet .big-teeth-section .big-teeth label {
+        height: 50px;
+        width: 17px;
+        background-image: url("../assets/teeth/stresstooth-red.png");
+        background-repeat: no-repeat;
+        background-size: contain;
+        margin-right: 5px;
+        -webkit-transition: -webkit-filter 0.1s;
+        transition: -webkit-filter 0.1s;
+        -o-transition: filter 0.1s;
+        transition: filter 0.1s;
+        transition: filter 0.1s, -webkit-filter 0.1s;
+        cursor: pointer; }
+        .eunos-blades.crew.sheet .big-teeth-section .big-teeth label:last-of-type {
+          margin-right: 0px; }
+        .eunos-blades.crew.sheet .big-teeth-section .big-teeth label[for$="-0"] {
+          width: auto;
+          height: auto;
+          background-image: none !important;
+          color: #EEEFFF; }
+          .eunos-blades.crew.sheet .big-teeth-section .big-teeth label[for$="-0"] i {
+            margin-top: 4px; }
+        .eunos-blades.crew.sheet .big-teeth-section .big-teeth label:hover {
+          -webkit-filter: brightness(0.8);
+          filter: brightness(0.8);
+          opacity: 0.9; }
+      .eunos-blades.crew.sheet .big-teeth-section .big-teeth input {
+        display: none; }
+        .eunos-blades.crew.sheet .big-teeth-section .big-teeth input:checked ~ label {
+          background-image: url("../assets/teeth/stresstooth-halfgrey.png"); }
+        .eunos-blades.crew.sheet .big-teeth-section .big-teeth input:checked + label {
+          background-image: url("../assets/teeth/stresstooth-red.png"); }
+    .eunos-blades.crew.sheet .big-teeth-section .small-teeth-container .small-teeth-wrap {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      /* Hide the browser's default checkbox */
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column; }
+      .eunos-blades.crew.sheet .big-teeth-section .small-teeth-container .small-teeth-wrap label {
+        height: 50px;
+        width: 17px;
+        background-image: url("../assets/teeth/shorttooth-red.png");
+        background-repeat: no-repeat;
+        background-size: contain;
+        margin-right: 5px;
+        cursor: not-allowed; }
+        .eunos-blades.crew.sheet .big-teeth-section .small-teeth-container .small-teeth-wrap label:last-of-type {
+          margin-right: 0px; }
+        .eunos-blades.crew.sheet .big-teeth-section .small-teeth-container .small-teeth-wrap label[for$="-0"] {
+          width: auto;
+          height: auto;
+          background-image: none !important;
+          color: #EEEFFF; }
+          .eunos-blades.crew.sheet .big-teeth-section .small-teeth-container .small-teeth-wrap label[for$="-0"] i {
+            margin-top: 4px; }
+      .eunos-blades.crew.sheet .big-teeth-section .small-teeth-container .small-teeth-wrap input {
+        display: none; }
+        .eunos-blades.crew.sheet .big-teeth-section .small-teeth-container .small-teeth-wrap input:checked ~ label {
+          background-image: url("../assets/teeth/shorttooth-grey.png"); }
+        .eunos-blades.crew.sheet .big-teeth-section .small-teeth-container .small-teeth-wrap input:checked + label {
+          background-image: url("../assets/teeth/shorttooth-red.png"); }
+      .eunos-blades.crew.sheet .big-teeth-section .small-teeth-container .small-teeth-wrap .small-teeth {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row; }
+    .eunos-blades.crew.sheet .big-teeth-section .trauma-list {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      -webkit-box-align: start;
+      -ms-flex-align: start;
+      align-items: flex-start; }
+      .eunos-blades.crew.sheet .big-teeth-section .trauma-list label {
+        cursor: pointer;
+        font-size: 19px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        margin-right: 10px;
+        -webkit-transition: -webkit-filter 0.1s;
+        transition: -webkit-filter 0.1s;
+        -o-transition: filter 0.1s;
+        transition: filter 0.1s;
+        transition: filter 0.1s, -webkit-filter 0.1s;
+        cursor: pointer;
+        /* Hide the browser's default checkbox */ }
+        .eunos-blades.crew.sheet .big-teeth-section .trauma-list label:hover {
+          -webkit-filter: brightness(0.8);
+          filter: brightness(0.8);
+          opacity: 0.9; }
+        .eunos-blades.crew.sheet .big-teeth-section .trauma-list label input {
+          display: none; }
+          .eunos-blades.crew.sheet .big-teeth-section .trauma-list label input:checked ~ .checkmark {
+            color: red; }
+        .eunos-blades.crew.sheet .big-teeth-section .trauma-list label .checkmark {
+          text-decoration: none;
+          font-weight: bold; }
+  .eunos-blades.crew.sheet header {
+    margin-bottom: 10px; }
+  .eunos-blades.actor.pc {
+    @use "sass:math";
+    /*
+*  Elements that can be changed will hint this by dimming and fading a little on hover
+*/
+    /*
+ * Toothradio. Some (eg trauma) are not changeable, hence the option.
+ */
+    /*
+ * Custom Radio
+ */
+    /*
+ * Custom Radio Squared
+ */
+    /*
+ * Checkboxes underscored.
+ */
+    /*
+ * Create Clock
+ */
+    /*
+ * Turf Block
+ */
+    /*
+ * Toothradio single elements
+ */
+    /*
+ * Custom Radio Round
+ */
+    /*
+ * General Styles
+ * Cleaned out things that don't appear to apply to the character sheet, and exist in other, separated SCSS files.
+ * Some things *might* be missing, but at a glance, everything looks to be in order.
+ */ }
+    .eunos-blades.actor.pc * .name-alias img.portrait {
+      max-width: 200px;
+      max-height: 200px;
+      width: auto;
+      height: auto; }
+    .eunos-blades.actor.pc * .tab[data-tab] {
+      display: none; }
+      .eunos-blades.actor.pc * .tab[data-tab].active {
+        display: block; }
+    .eunos-blades.actor.pc * form.actor-sheet {
+      padding: 20px; }
+    .eunos-blades.actor.pc * .big-teeth-section {
+      border-top: 3px solid #191813;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: horizontal;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+      flex-direction: row;
+      margin-bottom: 0px;
+      margin-top: 10px;
+      /* Trauma */ }
+      .eunos-blades.actor.pc * .big-teeth-section > * {
+        margin-right: 10px; }
+        .eunos-blades.actor.pc * .big-teeth-section > *:last-child {
+          margin-right: 0px; }
+      .eunos-blades.actor.pc * .big-teeth-section:last-child {
+        margin-right: 0px; }
+      .eunos-blades.actor.pc * .big-teeth-section .big-teeth {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        /* Hide the browser's default checkbox */ }
+        .eunos-blades.actor.pc * .big-teeth-section .big-teeth label {
+          height: 50px;
+          width: 17px;
+          background-image: url("../assets/teeth/stresstooth-red.png");
+          background-repeat: no-repeat;
+          background-size: contain;
+          margin-right: 5px;
+          -webkit-transition: -webkit-filter 0.1s;
+          transition: -webkit-filter 0.1s;
+          -o-transition: filter 0.1s;
+          transition: filter 0.1s;
+          transition: filter 0.1s, -webkit-filter 0.1s;
+          cursor: pointer; }
+          .eunos-blades.actor.pc * .big-teeth-section .big-teeth label:last-of-type {
+            margin-right: 0px; }
+          .eunos-blades.actor.pc * .big-teeth-section .big-teeth label[for$="-0"] {
+            width: auto;
+            height: auto;
+            background-image: none !important;
+            color: #EEEFFF; }
+            .eunos-blades.actor.pc * .big-teeth-section .big-teeth label[for$="-0"] i {
+              margin-top: 4px; }
+          .eunos-blades.actor.pc * .big-teeth-section .big-teeth label:hover {
+            -webkit-filter: brightness(0.8);
+            filter: brightness(0.8);
+            opacity: 0.9; }
+        .eunos-blades.actor.pc * .big-teeth-section .big-teeth input {
+          display: none; }
+          .eunos-blades.actor.pc * .big-teeth-section .big-teeth input:checked ~ label {
+            background-image: url("../assets/teeth/stresstooth-halfgrey.png"); }
+          .eunos-blades.actor.pc * .big-teeth-section .big-teeth input:checked + label {
+            background-image: url("../assets/teeth/stresstooth-red.png"); }
+      .eunos-blades.actor.pc * .big-teeth-section .small-teeth-container .small-teeth-wrap {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        /* Hide the browser's default checkbox */
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column; }
+        .eunos-blades.actor.pc * .big-teeth-section .small-teeth-container .small-teeth-wrap label {
+          height: 50px;
+          width: 17px;
+          background-image: url("../assets/teeth/shorttooth-red.png");
+          background-repeat: no-repeat;
+          background-size: contain;
+          margin-right: 5px;
+          cursor: not-allowed; }
+          .eunos-blades.actor.pc * .big-teeth-section .small-teeth-container .small-teeth-wrap label:last-of-type {
+            margin-right: 0px; }
+          .eunos-blades.actor.pc * .big-teeth-section .small-teeth-container .small-teeth-wrap label[for$="-0"] {
+            width: auto;
+            height: auto;
+            background-image: none !important;
+            color: #EEEFFF; }
+            .eunos-blades.actor.pc * .big-teeth-section .small-teeth-container .small-teeth-wrap label[for$="-0"] i {
+              margin-top: 4px; }
+        .eunos-blades.actor.pc * .big-teeth-section .small-teeth-container .small-teeth-wrap input {
+          display: none; }
+          .eunos-blades.actor.pc * .big-teeth-section .small-teeth-container .small-teeth-wrap input:checked ~ label {
+            background-image: url("../assets/teeth/shorttooth-grey.png"); }
+          .eunos-blades.actor.pc * .big-teeth-section .small-teeth-container .small-teeth-wrap input:checked + label {
+            background-image: url("../assets/teeth/shorttooth-red.png"); }
+        .eunos-blades.actor.pc * .big-teeth-section .small-teeth-container .small-teeth-wrap .small-teeth {
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-orient: horizontal;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: row;
+          flex-direction: row; }
+      .eunos-blades.actor.pc * .big-teeth-section .trauma-list {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start; }
+        .eunos-blades.actor.pc * .big-teeth-section .trauma-list label {
+          cursor: pointer;
+          font-size: 19px;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          margin-right: 10px;
+          -webkit-transition: -webkit-filter 0.1s;
+          transition: -webkit-filter 0.1s;
+          -o-transition: filter 0.1s;
+          transition: filter 0.1s;
+          transition: filter 0.1s, -webkit-filter 0.1s;
+          cursor: pointer;
+          /* Hide the browser's default checkbox */ }
+          .eunos-blades.actor.pc * .big-teeth-section .trauma-list label:hover {
+            -webkit-filter: brightness(0.8);
+            filter: brightness(0.8);
+            opacity: 0.9; }
+          .eunos-blades.actor.pc * .big-teeth-section .trauma-list label input {
+            display: none; }
+            .eunos-blades.actor.pc * .big-teeth-section .trauma-list label input:checked ~ .checkmark {
+              color: red; }
+          .eunos-blades.actor.pc * .big-teeth-section .trauma-list label .checkmark {
+            text-decoration: none;
+            font-weight: bold; }
+    .eunos-blades.actor.pc * .character-stress label[for$="-0"] {
+      margin-right: 0px; }
+    .eunos-blades.actor.pc * .abilities .item-name, .eunos-blades.actor.pc * .loadout .item-name {
+      width: 100px; }
+    .eunos-blades.actor.pc * .abilities .item-body, .eunos-blades.actor.pc * .loadout .item-body {
+      width: auto; }
+    .eunos-blades.actor.pc * .abilities .item-description, .eunos-blades.actor.pc * .loadout .item-description {
+      width: 260px; }
+    .eunos-blades.actor.pc * .abilities .label-stripe p:first-child {
+      margin-right: 10px; }
+    .eunos-blades.actor.pc * .loadout .item-add-popup {
+      margin-left: 10px; }
+    .eunos-blades.actor.pc * .teeth-experience {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      /* Hide the browser's default checkbox */
+      position: absolute;
+      top: 0px;
+      right: 10px; }
+      .eunos-blades.actor.pc * .teeth-experience label {
+        height: 30px;
+        width: 10px;
+        background-image: url("../assets/teeth/stresstooth-red.png");
+        background-repeat: no-repeat;
+        background-size: contain;
+        margin-right: 5px;
+        -webkit-transition: -webkit-filter 0.1s;
+        transition: -webkit-filter 0.1s;
+        -o-transition: filter 0.1s;
+        transition: filter 0.1s;
+        transition: filter 0.1s, -webkit-filter 0.1s;
+        cursor: pointer; }
+        .eunos-blades.actor.pc * .teeth-experience label:last-of-type {
+          margin-right: 0px; }
+        .eunos-blades.actor.pc * .teeth-experience label[for$="-0"] {
+          width: auto;
+          height: auto;
+          background-image: none !important;
+          color: #EEEFFF; }
+          .eunos-blades.actor.pc * .teeth-experience label[for$="-0"] i {
+            margin-top: 4px; }
+        .eunos-blades.actor.pc * .teeth-experience label:hover {
+          -webkit-filter: brightness(0.8);
+          filter: brightness(0.8);
+          opacity: 0.9; }
+      .eunos-blades.actor.pc * .teeth-experience input {
+        display: none; }
+        .eunos-blades.actor.pc * .teeth-experience input:checked ~ label {
+          background-image: url("../assets/teeth/stresstooth-halfgrey.png"); }
+        .eunos-blades.actor.pc * .teeth-experience input:checked + label {
+          background-image: url("../assets/teeth/stresstooth-red.png"); }
+    .eunos-blades.actor.pc * .harm-armor {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex; }
+      .eunos-blades.actor.pc * .harm-armor .character-harm {
+        width: 100%; }
+        .eunos-blades.actor.pc * .harm-armor .character-harm table {
+          width: 100%; }
+          .eunos-blades.actor.pc * .harm-armor .character-harm table th {
+            background-color: #191813;
+            color: #EEEFFF; }
+          .eunos-blades.actor.pc * .harm-armor .character-harm table input[type="text"] {
+            width: 100%; }
+      .eunos-blades.actor.pc * .harm-armor .character-health-clock {
+        margin: 0 auto;
+        position: relative; }
+        .eunos-blades.actor.pc * .harm-armor .character-health-clock .blades-clock {
+          position: relative;
+          padding: 0;
+          width: 88px;
+          height: 88px;
+          border-radius: 50%;
+          list-style: none;
+          overflow: hidden;
+          background-size: cover; }
+          .eunos-blades.actor.pc * .harm-armor .character-health-clock .blades-clock label {
+            overflow: hidden;
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            -webkit-transform-origin: 0% 100%;
+            -ms-transform-origin: 0% 100%;
+            transform-origin: 0% 100%;
+            -webkit-transition: -webkit-filter 0.1s;
+            transition: -webkit-filter 0.1s;
+            -o-transition: filter 0.1s;
+            transition: filter 0.1s;
+            transition: filter 0.1s, -webkit-filter 0.1s;
+            cursor: pointer; }
+            .eunos-blades.actor.pc * .harm-armor .character-health-clock .blades-clock label:hover {
+              -webkit-filter: brightness(0.8);
+              filter: brightness(0.8);
+              opacity: 0.9; }
+          .eunos-blades.actor.pc * .harm-armor .character-health-clock .blades-clock input {
+            position: absolute;
+            display: none; }
+          .eunos-blades.actor.pc * .harm-armor .character-health-clock .blades-clock input[value="0"] {
+            display: none; }
+          .eunos-blades.actor.pc * .harm-armor .character-health-clock .blades-clock *:nth-child(3) {
+            -webkit-transform: rotate(0deg) skewY(180deg);
+            -ms-transform: rotate(0deg) skewY(180deg);
+            transform: rotate(0deg) skewY(180deg); }
+          .eunos-blades.actor.pc * .harm-armor .character-health-clock .blades-clock *:nth-child(5) {
+            -webkit-transform: rotate(90deg) skewY(180deg);
+            -ms-transform: rotate(90deg) skewY(180deg);
+            transform: rotate(90deg) skewY(180deg); }
+          .eunos-blades.actor.pc * .harm-armor .character-health-clock .blades-clock *:nth-child(7) {
+            -webkit-transform: rotate(180deg) skewY(180deg);
+            -ms-transform: rotate(180deg) skewY(180deg);
+            transform: rotate(180deg) skewY(180deg); }
+          .eunos-blades.actor.pc * .harm-armor .character-health-clock .blades-clock *:nth-child(9) {
+            -webkit-transform: rotate(270deg) skewY(180deg);
+            -ms-transform: rotate(270deg) skewY(180deg);
+            transform: rotate(270deg) skewY(180deg); }
+      .eunos-blades.actor.pc * .harm-armor .character-armor-uses div {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between; }
+    .eunos-blades.actor.pc * .attributes {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      width: 200px; }
+      .eunos-blades.actor.pc * .attributes .stripe {
+        background-color: #191813;
+        color: #EEEFFF;
+        font-size: 17px;
+        padding-left: 5px; }
+      .eunos-blades.actor.pc * .attributes .attribute-label,
+      .eunos-blades.actor.pc * .attributes .attribute-skill-label {
+        font-weight: bold;
+        text-transform: uppercase; }
+      .eunos-blades.actor.pc * .attributes .attribute-skill-label {
+        letter-spacing: 1px; }
+      .eunos-blades.actor.pc * .attributes .attributes-exp {
+        position: relative;
+        margin-bottom: 10px; }
+        .eunos-blades.actor.pc * .attributes .attributes-exp .stripe-tooth-body {
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          /* Hide the browser's default checkbox */
+          position: absolute;
+          top: 0px;
+          right: 0px; }
+          .eunos-blades.actor.pc * .attributes .attributes-exp .stripe-tooth-body label {
+            height: 30px;
+            width: 10px;
+            background-image: url("../assets/teeth/xptooth-red.png");
+            background-repeat: no-repeat;
+            background-size: contain;
+            margin-right: 5px;
+            -webkit-transition: -webkit-filter 0.1s;
+            transition: -webkit-filter 0.1s;
+            -o-transition: filter 0.1s;
+            transition: filter 0.1s;
+            transition: filter 0.1s, -webkit-filter 0.1s;
+            cursor: pointer; }
+            .eunos-blades.actor.pc * .attributes .attributes-exp .stripe-tooth-body label:last-of-type {
+              margin-right: 0px; }
+            .eunos-blades.actor.pc * .attributes .attributes-exp .stripe-tooth-body label[for$="-0"] {
+              width: auto;
+              height: auto;
+              background-image: none !important;
+              color: #EEEFFF; }
+              .eunos-blades.actor.pc * .attributes .attributes-exp .stripe-tooth-body label[for$="-0"] i {
+                margin-top: 4px; }
+            .eunos-blades.actor.pc * .attributes .attributes-exp .stripe-tooth-body label:hover {
+              -webkit-filter: brightness(0.8);
+              filter: brightness(0.8);
+              opacity: 0.9; }
+          .eunos-blades.actor.pc * .attributes .attributes-exp .stripe-tooth-body input {
+            display: none; }
+            .eunos-blades.actor.pc * .attributes .attributes-exp .stripe-tooth-body input:checked ~ label {
+              background-image: url("../assets/teeth/xptooth-white.png"); }
+            .eunos-blades.actor.pc * .attributes .attributes-exp .stripe-tooth-body input:checked + label {
+              background-image: url("../assets/teeth/xptooth-red.png"); }
+      .eunos-blades.actor.pc * .attributes .attributes-container {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        margin: 3px 0px;
+        display: flex;
+        /* Hide the browser's default checkbox */ }
+        .eunos-blades.actor.pc * .attributes .attributes-container label {
+          height: 15px;
+          width: 15px;
+          background-color: #191813;
+          vertical-align: middle;
+          border: 2px solid #191813;
+          border-radius: 24px;
+          -webkit-transition: -webkit-filter 0.1s;
+          transition: -webkit-filter 0.1s;
+          -o-transition: filter 0.1s;
+          transition: filter 0.1s;
+          transition: filter 0.1s, -webkit-filter 0.1s;
+          cursor: pointer; }
+          .eunos-blades.actor.pc * .attributes .attributes-container label[for$="-0"] {
+            height: 5px;
+            width: 5px;
+            border-radius: 24px;
+            background-image: none !important;
+            background-color: red !important;
+            margin-right: 0px; }
+          .eunos-blades.actor.pc * .attributes .attributes-container label:hover {
+            -webkit-filter: brightness(0.7);
+            filter: brightness(0.7);
+            opacity: 0.7; }
+        .eunos-blades.actor.pc * .attributes .attributes-container input {
+          display: none; }
+          .eunos-blades.actor.pc * .attributes .attributes-container input:checked ~ label {
+            background-color: #EEEFFF; }
+          .eunos-blades.actor.pc * .attributes .attributes-container input:checked + label {
+            -webkit-transition: -webkit-filter 0.1s;
+            transition: -webkit-filter 0.1s;
+            -o-transition: filter 0.1s;
+            transition: filter 0.1s;
+            transition: filter 0.1s, -webkit-filter 0.1s;
+            cursor: pointer;
+            background-color: #191813; }
+            .eunos-blades.actor.p

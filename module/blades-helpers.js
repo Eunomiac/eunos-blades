@@ -1,0 +1,118 @@
+export class BladesHelpers {
+    /**
+   * Identifies duplicate items by type and returns a array of item ids to remove
+   *
+   * @param {Object} item_data
+   * @param {Document} actor
+   * @returns {Array}
+   *
+   */
+    static removeDuplicatedItemType(item_data, actor) {
+        const dupe_list = [], distinct_types = ["crew_reputation", "class", "vice", "background", "heritage"], allowed_types = ["item"], should_be_distinct = distinct_types.includes(item_data.type);
+        // If the Item has the exact same name - remove it from list.
+        // Remove Duplicate items from the array.
+        actor.items.forEach(i => {
+            const has_double = (item_data.type === i.data.type);
+            if (((i.name === item_data.name) || (should_be_distinct && has_double)) && !(allowed_types.includes(item_data.type)) && (item_data._id !== i.id)) {
+                dupe_list.push(i.id);
+            }
+        });
+        return dupe_list;
+    }
+    /**
+   * Get a nested dynamic attribute.
+   * @param {Object} obj
+   * @param {string} property
+   */
+    static getNestedProperty(obj, property) {
+        return property.split(".").reduce((r, e) => {
+            return r[e];
+        }, obj);
+    }
+    /**
+   * Add item functionality
+   */
+    static _addOwnedItem(event, actor) {
+        event.preventDefault();
+        const a = event.currentTarget;
+        const item_type = a.dataset.itemType;
+        const data = {
+            name: randomID(),
+            type: item_type
+        };
+        return actor.createEmbeddedDocuments("Item", [data]);
+    }
+    /**
+   * Get the list of all available ingame items by Type.
+   *
+   * @param {string} item_type
+   * @param {Object} game
+   */
+    static async getAllItemsByType(item_type, game) {
+        let list_of_items = [], game_items = [], compendium_items = [];
+        game_items = game.items.filter(e => e.type === item_type).map(e => { return e.data; });
+        const pack = game.packs.find(e => e.metadata.name === item_type), compendium_content = await pack.getDocuments();
+        compendium_items = compendium_content.map(e => { return e.data; });
+        list_of_items = game_items.concat(compendium_items);
+        list_of_items.sort(function (a, b) {
+            const nameA = a.name.toUpperCase(), nameB = b.name.toUpperCase();
+            return nameA.localeCompare(nameB);
+        });
+        return list_of_items;
+    }
+    /* -------------------------------------------- */
+    /**
+   * Returns the label for attribute.
+   *
+   * @param {string} attribute_name
+   * @returns {string}
+   */
+    static getAttributeLabel(attribute_name) {
+        const attribute_labels = {};
+        const attributes = game.system.model.Actor.character.attributes;
+        for (const att_name in attributes) {
+            attribute_labels[att_name] = attributes[att_name].label;
+            for (const skill_name in attributes[att_name].skills) {
+                attribute_labels[skill_name] = attributes[att_name].skills[skill_name].label;
+            }
+        }
+        return attribute_labels[attribute_name];
+    }
+    /**
+   * Returns true if the attribute is an action
+   *
+   * @param {string} attribute_name
+   * @returns {Boolean}
+   */
+    static isAttributeAction(attribute_name) {
+        const attributes = game.system.model.Actor.character.attributes;
+        return !(attribute_name in attributes);
+    }
+    /* -------------------------------------------- */
+    /**
+   * Creates options for faction clocks.
+   *
+   * @param {int[]} sizes
+   *  array of possible clock sizes
+   * @param {int} default_size
+   *  default clock size
+   * @param {int} current_size
+   *  current clock size
+   * @returns {string}
+   *  html-formatted option string
+   */
+    static createListOfClockSizes(sizes, default_size, current_size) {
+        let text = "";
+        sizes.forEach(size => {
+            text += `<option value="${size}"`;
+            if (!(current_size) && (size === default_size)) {
+                text += " selected";
+            }
+            else if (size === current_size) {
+                text += " selected";
+            }
+            text += `>${size}</option>`;
+        });
+        return text;
+    }
+}

@@ -1,0 +1,23 @@
+<section class="dice-tray">
+  {{#each dicerows as |dice|}}
+  <div class="dice-tray__buttons flexrow">
+    {{#each dice as |label key|}}
+      <button class="dice-tray__button" data-formula="{{key}}" title="{{key}}"><span class="dice-tray__flag dice-tray__flag--{{key}} hide"></span>{{> (dtSvgDie key) }}</button>
+    {{/each}}
+  </div>
+  {{/each}}
+  <div class="dice-tray__math flexrow">
+    <button class="dice-tray__math dice-tray__math--sub" data-formula="-1">-</button>
+    <input class="dice-tray__input" name="dice.tray.modifier" type="text" value="0"/>
+    <button class="dice-tray__math dice-tray__math--add" data-formula="+1">+</button>
+    <div id="dice-tray-math" hidden></div>
+    <button class="dice-tray__roll">{{localize "DICE_TRAY.Roll"}}</button>
+  </div>
+  {{!-- Preload images. --}}
+  <div style="display:none;">
+    {{#each dice as |label key|}}
+      <img src="modules/dice-calculator/icons/{{key}}white.png" alt="{{key}} dice image"/>
+    {{/each}}
+    <img src="modules/dice-calculator/icons/d6pipswhite.png" alt="d6pips dice image"/>
+  </div>
+</section>

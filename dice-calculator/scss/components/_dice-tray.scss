@@ -1,0 +1,180 @@
+.dice-tray {
+  flex: 0;
+
+  > * {
+    margin: 2px;
+  }
+
+  .dice-tray__stacked {
+    height: 34px;
+    margin-right: 2px;
+  }
+
+  .flexrow {
+    flex-wrap: nowrap;
+  }
+
+  button {
+    background: transparent;
+    border: 1px solid $c-black;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: $c-white;
+    font-weight: bold;
+    font-size: 18px;
+    box-shadow: 0 0 6px inset #8d9ea7;
+    transition: all ease-in-out 0.25s;
+    position: relative;
+
+    &:hover {
+      color: $c-blaze;
+      border-color: $c-blaze;
+      box-shadow: 0 0 6px inset #ff6400;
+
+      svg * {
+        fill: $c-blaze;
+      }
+    }
+
+    &.dice-tray__roll {
+      &:hover {
+        background: $c-blaze;
+        // box-shadow: 0 0 6px inset $c-blue;
+        // border-color: $c-blue;
+        box-shadow: none;
+        color: $c-white;
+      }
+    }
+
+    &.dice-tray__math--sub {
+      &:hover {
+        background: $c-blaze;
+        box-shadow: 0 0 6px inset $c-blaze;
+        color: $c-white;
+      }
+    }
+
+    &.dice-tray__math--add {
+      &:hover {
+        background: $c-green;
+        box-shadow: 0 0 6px inset $c-green;
+        border-color: $c-green;
+        color: $c-white;
+      }
+    }
+
+    &.dice-tray__ad {
+      font-size: 10px;
+      height: 17px;
+      flex: 17px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    &.dice-tray__advantage {
+      &:hover {
+        color: $c-green;
+        border-color: $c-green;
+        box-shadow: 0 0 6px inset $c-green;
+      }
+
+      &.active {
+        background: $c-green;
+        box-shadow: 0 0 6px inset $c-green;
+        border-color: $c-green;
+        color: $c-white;
+
+        &:hover {
+          box-shadow: 0 0 6px inset $c-white;
+          border-color: $c-white;
+        }
+      }
+    }
+
+    &.dice-tray__disadvantage {
+      &:hover {
+        color: $c-blaze;
+        border-color: $c-blaze;
+        box-shadow: 0 0 6px inset $c-blaze;
+      }
+
+      &.active {
+        background: $c-blaze;
+        box-shadow: 0 0 6px inset $c-blaze;
+        color: $c-white;
+
+        &:hover {
+          box-shadow: 0 0 6px inset $c-white;
+          border-color: $c-white;
+        }
+      }
+    }
+
+    &.dice-tray__dicechain {
+      font-size: 10px;
+      height: 17px;
+      flex: 17px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      transition: all ease-in-out 0.25s;
+
+      * {
+        fill: #fff;
+      }
+    }
+
+    .dice-tray__flag {
+      position: absolute;
+      bottom: calc(100% - 2px);
+      left: 0;
+      right: 0;
+      font-size: 14px;
+      height: 18px;
+      line-height: 1;
+      background-color: $c-blaze;
+      color: $c-white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px 4px 0 0;
+      max-height: 18px;
+      transition: all ease-in-out 0.15s;
+
+      &:hover,
+      &:focus {
+        background-color: $c-blaze;
+        color: $c-white;
+      }
+
+      &.hide {
+        max-height: 0;
+      }
+    }
+  }
+
+  input[type="text"] {
+    display: block;
+    color: $c-white;
+    font-weight: bold;
+    font-size: 18px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    background-color: rgba(250, 250, 250, 0.15);
+    border: 1px solid $c-black;
+    box-shadow: 0 0 6px inset #fff;
+
+    &:hover,
+    &:focus {
+      border: 1px solid $c-blaze;
+      box-shadow: 0 0 6px inset #ff6400;
+    }
+  }
+}
