@@ -1644,4 +1644,198 @@
             transition: filter 0.1s, -webkit-filter 0.1s;
             cursor: pointer;
             background-color: #191813; }
-            .eunos-blades.actor.p
+            .eunos-blades.actor.pc * .attributes .attributes-container input:checked + label:hover {
+              -webkit-filter: brightness(0.7);
+              filter: brightness(0.7);
+              opacity: 0.7; }
+        .eunos-blades.actor.pc * .attributes .attributes-container * {
+          margin-right: 5px; }
+    .eunos-blades.actor.pc * .item {
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between; }
+      .eunos-blades.actor.pc * .item .item-body {
+        margin-bottom: 10px; }
+        .eunos-blades.actor.pc * .item .item-body * {
+          margin-right: 10px; }
+        .eunos-blades.actor.pc * .item .item-body .item-description {
+          font-style: italic;
+          text-align: justify; }
+      .eunos-blades.actor.pc * .item div {
+        -webkit-box-flex: 2;
+        -ms-flex-positive: 2;
+        flex-grow: 2; }
+      .eunos-blades.actor.pc * .item .item-control {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1; }
+      .eunos-blades.actor.pc * .item .item-body,
+      .eunos-blades.actor.pc * .item .item-class-label {
+        width: 100px; }
+    .eunos-blades.actor.pc * .item-class-label {
+      margin-bottom: 10px; }
+    .eunos-blades.actor.pc * .name,
+    .eunos-blades.actor.pc * .lair,
+    .eunos-blades.actor.pc * .alias {
+      margin-bottom: 10px; }
+    .eunos-blades.actor.pc * .coins {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      /* Hide the browser's default checkbox */
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap; }
+      .eunos-blades.actor.pc * .coins label {
+        height: 15px;
+        width: 15px;
+        background-color: #DAA520;
+        vertical-align: middle;
+        border: 1px solid #191813;
+        -webkit-transition: -webkit-filter 0.1s;
+        transition: -webkit-filter 0.1s;
+        -o-transition: filter 0.1s;
+        transition: filter 0.1s;
+        transition: filter 0.1s, -webkit-filter 0.1s;
+        cursor: pointer; }
+        .eunos-blades.actor.pc * .coins label[for$="-0"] {
+          margin-right: 0px; }
+        .eunos-blades.actor.pc * .coins label:hover {
+          -webkit-filter: brightness(0.8);
+          filter: brightness(0.8);
+          opacity: 0.9; }
+      .eunos-blades.actor.pc * .coins input {
+        display: none; }
+        .eunos-blades.actor.pc * .coins input:checked ~ label {
+          background-color: #EEEFFF; }
+        .eunos-blades.actor.pc * .coins input:checked + label {
+          background-color: #DAA520; }
+      .eunos-blades.actor.pc * .coins input ~ label {
+        margin-right: 3px;
+        margin-bottom: 3px;
+        -webkit-transition: -webkit-filter 0.2s;
+        transition: -webkit-filter 0.2s;
+        -o-transition: filter 0.2s;
+        transition: filter 0.2s;
+        transition: filter 0.2s, -webkit-filter 0.2s;
+        cursor: pointer; }
+        .eunos-blades.actor.pc * .coins input ~ label[for$="0"] {
+          border-width: 2px; }
+        .eunos-blades.actor.pc * .coins input ~ label:hover {
+          -webkit-filter: brightness(0.8);
+          filter: brightness(0.8);
+          opacity: 0.9; }
+      .eunos-blades.actor.pc * .coins.coins-hands {
+        width: 36px; }
+      .eunos-blades.actor.pc * .coins.coins-stashed {
+        width: 190px; }
+  .eunos-blades.item.sheet .item {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between; }
+    .eunos-blades.item.sheet .item .item-body {
+      margin-bottom: 10px; }
+      .eunos-blades.item.sheet .item .item-body * {
+        margin-right: 10px; }
+      .eunos-blades.item.sheet .item .item-body .item-description {
+        font-style: italic;
+        text-align: justify; }
+    .eunos-blades.item.sheet .item div {
+      -webkit-box-flex: 2;
+      -ms-flex-positive: 2;
+      flex-grow: 2; }
+    .eunos-blades.item.sheet .item .item-control {
+      -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+      flex-grow: 1; }
+    .eunos-blades.item.sheet .item .item-body,
+    .eunos-blades.item.sheet .item .item-class-label {
+      width: 100px; }
+  .eunos-blades.item.sheet .item-class-label {
+    margin-bottom: 10px; }
+
+.chat-label {
+  background-color: #191813;
+  font-family: Kirsty, serif;
+  color: #EEEFFF;
+  font-size: 21px;
+  text-align: center;
+  padding: 0px 5px;
+  height: 30px !important;
+  text-transform: capitalize; }
+
+.chat-label-small {
+  background-color: #999;
+  color: #191813;
+  font-size: small;
+  text-align: center;
+  padding: 3px 5px;
+  height: 20px !important; }
+
+.label-stripe-chat {
+  text-transform: uppercase;
+  background-color: #191813;
+  color: #EEEFFF;
+  margin-bottom: 10px;
+  position: relative;
+  padding-top: 3px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  font-weight: bold;
+  margin: 0; }
+
+.label-stripe-chat-small {
+  text-transform: capitalize;
+  background-color: #999;
+  color: #191813;
+  margin-bottom: 10px;
+  position: relative;
+  padding-top: 3px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  font-weight: bold; }
+
+.blades-die-tooltip .die {
+  font-weight: bold;
+  text-transform: capitalize;
+  font-size: large; }
+  .blades-die-tooltip .die.critical-success {
+    color: #12a012; }
+  .blades-die-tooltip .die.success {
+    color: #008000; }
+  .blades-die-tooltip .die.partial-success {
+    color: #04578f; }
+  .blades-die-tooltip .die.failure {
+    color: red; }
+
+.items-to-add {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-pack: distribute;
+  justify-content: space-around; }
+  .items-to-add input[type="radio"],
+  .items-to-add input[type="checkbox"] {
+    display: none; }
+    .items-to-add input[type="radio"]:checked + label,
+    .items-to-add input[type="checkbox"]:checked + label {
+      font-weight: bold; }
+  .items-to-add .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: #191813;
+    color: #EEEFFF;
+    text-align: center;
+    padding: 5px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 9999; }
+  .items-to-add .tooltip:hover .tooltiptext {
+    visibility: visible; }
