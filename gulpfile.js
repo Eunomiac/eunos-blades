@@ -245,28 +245,36 @@ const BUILDFILES = {
 		"./module/": ["ts/**/*.*s"]
 	},
 	js: {
-		[`${DISTROOT}/module/`]: ["module/**/*.js"]
+		"./module/": ["DISABLE"]
 	},
 	css: {
-		[`${DISTROOT}/css/`]: ["scss/**/*.scss"],
 		"./css/": ["scss/**/*.scss"]
 	},
 	hbs: {
-		[`${DISTROOT}/templates/`]: ["templates/**/*.hbs", "templates/**/*.html"]
+		"./templates/": ["DISABLE"]
 	},
 	quickAssets: {
-		[`${DISTROOT}/`]: ["system.json", "template.json", /* "LICENSE.txt" */, "package.json"],
-		// ["./module/"]: ["rawmodule/*.mjs", "rawmodule/*.js"],
-		// ["./module/"]: ["rawmodule/*.mjs", "rawmodule/*.js", "ts/**/*.js"],
-		[`${DISTROOT}/css/`]: ["scss/**/*.css"]
-		// "./css/": ["scss/**/*.css"]
+		"./assets/": ["DISABLE"]
 	},
 	slowAssets: {
-		[`${DISTROOT}/assets/`]: ["assets/**/*.*"],
-		[`${DISTROOT}/packs/`]: ["packs/**/*.*"],
-		[`${DISTROOT}/lang/`]: ["lang/**/*.*"]
+		"./assets/": ["DISABLE"]
 	}
 };
+if (ISDEPLOYING) {
+	BUILDFILES.js ??= {};
+	BUILDFILES.js[`${DISTROOT}/module/`] = ["module/**/*.js"];
+	BUILDFILES.css ??= {};
+	BUILDFILES.css[`${DISTROOT}/css/`] = ["scss/**/*.scss"];
+	BUILDFILES.hbs ??= {};
+	BUILDFILES.hbs[`${DISTROOT}/templates/`] = ["templates/**/*.hbs", "templates/**/*.html"];
+	BUILDFILES.quickAssets ??= {};
+	BUILDFILES.quickAssets[`${DISTROOT}/`] = ["system.json", "template.json", /* "LICENSE.txt" */, "package.json"];
+	BUILDFILES.quickAssets[`${DISTROOT}/css/`] = ["scss/**/*.css"];
+	BUILDFILES.slowAssets ??= {};
+	BUILDFILES.slowAssets[`${DISTROOT}/assets/`] = ["assets/**/*.*"];
+	BUILDFILES.slowAssets[`${DISTROOT}/packs/`] = ["packs/**/*.*"];
+	BUILDFILES.slowAssets[`${DISTROOT}/lang/`] = ["lang/**/*.*"];
+}
 const REGEXPPATTERNS = {
 	/* ALWAYS USE FLAGS:
 			g --- global & enables capturing groups

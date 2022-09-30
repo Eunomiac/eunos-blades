@@ -1,55 +1,3 @@
-/**
-
- * A simple and flexible system for world-building using an arbitrary collection of character and item attributes
-
- * Author: Atropos
-
- * Software License: GNU GPLv3
-
- */
-/*
-
-
-    Hooks.call("fxmaster.updateParticleEffects", [
-        {
-            type: "raintop",
-            options: {
-                scale: 1, speed: 1, lifetime: 1, density: 0.3,
-                tint: {apply: false, value: "#ffffff"}
-            }
-        },
-        {
-            type: "crows",
-            options: {
-                scale: 2, speed: 1, lifetime: 3, density: 0.001,
-                tint: {apply: false, value: "#ffffff"}
-            }}
-    ]);
-
-    FXMASTER.filters.setFilters([
-        {
-            type:"lightning",
-            options: {
-                frequency: 1500, spark_duration: 370, brightness: 2
-            }
-        },
-        {
-            type:"fog",
-            options: {
-                dimensions: 1, speed: 5, density: 0.15,
-                color: {apply: false, value: "#000000"}
-            }
-        },
-        {
-            type: "bloom",
-            options: {
-                blur: 2, bloomScale: 0.5, threshold: 0.5
-            }
-        }
-    ]);
-
-
-*/
 // Import Modules
 import { registerSystemSettings } from "./settings.js";
 import { preloadHandlebarsTemplates } from "./blades-templates.js";
@@ -72,6 +20,9 @@ Object.assign(globalThis, {
 /* -------------------------------------------- */
 Hooks.once("init", async () => {
     console.log("Initializing Blades In the Dark System");
+    $("html").addClass("-emu-layout");
+    $("html").addClass("-emu-subtle-layout");
+    $("body.vtt.game.system-eunos-blades").addClass("-emu");
     // @ts-expect-error MIGRATION PAINS
     game.blades = {
         dice: bladesRoll
@@ -95,6 +46,10 @@ Hooks.once("init", async () => {
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("blades", BladesItemSheet, { makeDefault: true });
     await preloadHandlebarsTemplates();
+    // override ernie's minimal ui settings applied to HTML element
+    // setTimeout(() => {
+    // 	$("html").attr("style", null);
+    // }, 2000);
     // Array.from(Actors.registeredSheets).forEach(element => console.log(element.Actor.name));
     // Is the value Turf side.
     Handlebars.registerHelper("is_turf_side", function isTurfSide(value, options) {
@@ -280,28 +235,6 @@ Hooks.once("init", async () => {
         return html;
     });
 });
-/**
-
- * Once the entire VTT framework is initialized, check to see if we should perform a data migration
-
- */
-Hooks.once("ready", () => {
-    // // Determine whether a system migration is required
-    // // @ts-expect-error MIGRATION PAINS
-    // const currentVersion = game.settings.get("eunos-blades", "systemMigrationVersion");
-    // const NEEDS_MIGRATION_VERSION = 2.15;
-    // const needMigration = (currentVersion < NEEDS_MIGRATION_VERSION) || (currentVersion === null);
-    // // Perform the migration
-    // // @ts-expect-error MIGRATION PAINS
-    // if ( needMigration && game.user.isGM ) {
-    // 	migrations.migrateWorld();
-    // }
-});
-/*
-
- * Hooks
-
- */
 // getSceneControlButtons
 Hooks.on("renderSceneControls", async (app, html) => {
     const dice_roller = $('<li class="scene-control" title="Dice Roll"><i class="fas fa-dice"></i></li>');
@@ -314,5 +247,73 @@ Hooks.on("renderSceneControls", async (app, html) => {
     }
     else {
         html.append(dice_roller);
+    }
+});
+Hooks.on("diceSoNiceReady", (dice3d) => {
+    for (const [sysId, sysData] of Object.entries({
+        "kirsty-b-s-g": { name: "Bronze-Silver-Gold", folder: "kirsty-b-s-g-shadow" },
+        "kirsty-metallic": { name: "Metallic", folder: "kirsty-metallic-shadow", bumpMaps: "texture-kirsty-shadow", emissionMaps: "texture-kirsty" },
+        "kirsty-metallic-emboss-emit": { name: "Metallic Emit", folder: "kirsty-metallic-shadow", bumpMaps: "texture-kirsty-shadow", emissionMaps: "texture-kirsty-embossed" },
+        "kirsty-metallic-emboss-bump": { name: "Metallic Bump", folder: "kirsty-metallic-shadow", bumpMaps: "texture-kirsty-embossed-shadow", emissionMaps: "texture-kirsty" },
+        "kirsty-metallic-emboss-emit-bump": { name: "Metallic Emit & Bump", folder: "kirsty-metallic-shadow", bumpMaps: "texture-kirsty-embossed-shadow", emissionMaps: "texture-kirsty-embossed" },
+        "kirsty-white": { name: "White", folder: "kirsty-white-shadow", bumpMaps: "texture-kirsty-shadow", emissionMaps: "texture-kirsty" },
+        "kirsty-white-emboss-emit": { name: "White Emit", folder: "kirsty-white-shadow", bumpMaps: "texture-kirsty-shadow", emissionMaps: "texture-kirsty-embossed" },
+        "kirsty-white-emboss-bump": { name: "White Bump", folder: "kirsty-white-shadow", bumpMaps: "texture-kirsty-embossed-shadow", emissionMaps: "texture-kirsty" },
+        "kirsty-white-emboss-emit-bump": { name: "White Emit & Bump", folder: "kirsty-white-shadow", bumpMaps: "texture-kirsty-embossed-shadow", emissionMaps: "texture-kirsty-embossed" },
+        "sokol-g-w-g": { name: "Grey-White-Gold", folder: "sokol-g-w-g" }
+    })) {
+        dice3d.addSystem({ id: sysId, name: `Euno's Blades - ${sysData.name}` }, false);
+        dice3d.addDicePreset({
+            type: "d6",
+            labels: [1, 2, 3, 4, 5, 6]
+                .map((num) => (num ? `systems/eunos-blades/assets/dice/${sysData.folder}/${num}.webp` : "")),
+            system: sysId,
+            bumpMaps: [1, 2, 3, 4, 5, 6]
+                .map((num) => (num ? `systems/eunos-blades/assets/dice/${sysData.bumpMaps}/${num}.webp` : "")),
+            emissiveMaps: [false, false, false, false, false, 6]
+                .map((num) => (num ? `systems/eunos-blades/assets/dice/${sysData.emissionMaps}/${num}.webp` : "")),
+            emissive: "#ffae00"
+        });
+    }
+});
+const ISAPPLYINGWEATHER = false;
+Hooks.once("sequencerEffectManagerReady", () => {
+    // @ts-expect-error MIGRATION PAINS
+    if (game.scenes.current.name === "City of Knives" && ISAPPLYINGWEATHER) {
+        Hooks.call("fxmaster.updateParticleEffects", [
+            {
+                type: "raintop",
+                options: {
+                    scale: 1, speed: 1, lifetime: 1, density: 0.3,
+                    tint: { apply: false, value: "#ffffff" }
+                }
+            }, {
+                type: "crows",
+                options: {
+                    scale: 5, speed: 1, lifetime: 2, density: 0.001,
+                    tint: { apply: false, value: "#ffffff" }
+                }
+            }
+        ]);
+        // @ts-expect-error MIGRATION PAINS
+        FXMASTER.filters.setFilters([
+            {
+                type: "fog",
+                options: {
+                    dimensions: 1, speed: 5, density: 0.15,
+                    color: { apply: false, value: "#ffffff" }
+                }
+            }, {
+                type: "lightning",
+                options: {
+                    frequency: 5500, spark_duration: 700, brightness: 2
+                }
+            }, {
+                type: "bloom",
+                options: {
+                    blur: 2, bloomScale: 0.5, threshold: 0.5
+                }
+            }
+        ]);
     }
 });

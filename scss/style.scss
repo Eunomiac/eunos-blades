@@ -22,8 +22,11 @@ $hover-brightness: 0.8;
 @import 'import/mixin';
 @import 'fonts';
 
+// Override emu variables
+@import './emu-overrides';
+
 //namespacing to avoid conflicts with other modules
-.eunos-blades{
+.eunos-blades {
   font-family: "Minion Pro", serif;
 
   @import 'import/general-styles';
