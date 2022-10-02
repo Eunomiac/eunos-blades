@@ -1,7 +1,7 @@
 // Import Modules
 import { registerSystemSettings } from "./settings.js";
 import { preloadHandlebarsTemplates } from "./blades-templates.js";
-import { bladesRoll, simpleRollPopup } from "./blades-roll.js";
+// import {bladesRoll, simpleRollPopup} from "./blades-roll.js";
 import { BladesHelpers } from "./blades-helpers.js";
 import { BladesActor } from "./blades-actor.js";
 import { BladesItem } from "./blades-item.js";
@@ -9,9 +9,10 @@ import { BladesItemSheet } from "./blades-item-sheet.js";
 import { BladesActorSheet } from "./blades-actor-sheet.js";
 import { BladesActiveEffect } from "./blades-active-effect.js";
 import { BladesCrewSheet } from "./blades-crew-sheet.js";
-import { BladesClockSheet } from "./blades-clock-sheet.js";
 import { BladesNPCSheet } from "./blades-npc-sheet.js";
 import { BladesFactionSheet } from "./blades-faction-sheet.js";
+import { bladesRoll, simpleRollPopup } from "./euno-blades-roll.js";
+import EunoTrackerSheet from "./euno-tracker-sheet.js";
 Object.assign(globalThis, {
     BladesHelpers: BladesHelpers
 });
@@ -41,16 +42,13 @@ Hooks.once("init", async () => {
     Actors.registerSheet("blades", BladesActorSheet, { types: ["character"], makeDefault: true });
     Actors.registerSheet("blades", BladesCrewSheet, { types: ["crew"], makeDefault: true });
     Actors.registerSheet("blades", BladesFactionSheet, { types: ["factions"], makeDefault: true });
-    Actors.registerSheet("blades", BladesClockSheet, { types: ["\uD83D\uDD5B clock"], makeDefault: true });
     Actors.registerSheet("blades", BladesNPCSheet, { types: ["npc"], makeDefault: true });
+    // Actors.registerSheet("blades", BladesClockSheet, {types: ["\uD83D\uDD5B clock"], makeDefault: true});
     Items.unregisterSheet("core", ItemSheet);
-    Items.registerSheet("blades", BladesItemSheet, { makeDefault: true });
+    Items.registerSheet("blades", BladesItemSheet, { types: ["faction", "item", "class", "ability", "heritage", "background", "vice", "crew_upgrade", "cohort", "crew_type", "crew_reputation", "crew_upgrade", "crew_ability"], makeDefault: true });
+    Items.registerSheet("blades", EunoTrackerSheet, { types: ["gm_tracker"], makeDefault: true });
     await preloadHandlebarsTemplates();
-    // override ernie's minimal ui settings applied to HTML element
-    // setTimeout(() => {
-    // 	$("html").attr("style", null);
-    // }, 2000);
-    // Array.from(Actors.registeredSheets).forEach(element => console.log(element.Actor.name));
+    await loadTemplates([EunoTrackerSheet.template]);
     // Is the value Turf side.
     Handlebars.registerHelper("is_turf_side", function isTurfSide(value, options) {
         if (["left", "right", "top", "bottom"].includes(value)) {
@@ -188,7 +186,6 @@ Hooks.once("init", async () => {
         selected = selected instanceof Array ? selected.map(String) : [String(selected)];
         // Create an option
         const option = (key, object) => {
-            // @ts-expect-error MIGRATION PAINS
             if (localize) {
                 object.label = game.i18n.localize(object.label);
             }
@@ -241,7 +238,6 @@ Hooks.on("renderSceneControls", async (app, html) => {
     dice_roller.click(async () => {
         await simpleRollPopup();
     });
-    // @ts-expect-error MIGRATION PAINS
     if (!foundry.utils.isNewerVersion("9", game.version ?? game.data.version)) {
         html.children().first().append(dice_roller);
     }
@@ -250,31 +246,15 @@ Hooks.on("renderSceneControls", async (app, html) => {
     }
 });
 Hooks.on("diceSoNiceReady", (dice3d) => {
-    for (const [sysId, sysData] of Object.entries({
-        "kirsty-b-s-g": { name: "Bronze-Silver-Gold", folder: "kirsty-b-s-g-shadow" },
-        "kirsty-metallic": { name: "Metallic", folder: "kirsty-metallic-shadow", bumpMaps: "texture-kirsty-shadow", emissionMaps: "texture-kirsty" },
-        "kirsty-metallic-emboss-emit": { name: "Metallic Emit", folder: "kirsty-metallic-shadow", bumpMaps: "texture-kirsty-shadow", emissionMaps: "texture-kirsty-embossed" },
-        "kirsty-metallic-emboss-bump": { name: "Metallic Bump", folder: "kirsty-metallic-shadow", bumpMaps: "texture-kirsty-embossed-shadow", emissionMaps: "texture-kirsty" },
-        "kirsty-metallic-emboss-emit-bump": { name: "Metallic Emit & Bump", folder: "kirsty-metallic-shadow", bumpMaps: "texture-kirsty-embossed-shadow", emissionMaps: "texture-kirsty-embossed" },
-        "kirsty-white": { name: "White", folder: "kirsty-white-shadow", bumpMaps: "texture-kirsty-shadow", emissionMaps: "texture-kirsty" },
-        "kirsty-white-emboss-emit": { name: "White Emit", folder: "kirsty-white-shadow", bumpMaps: "texture-kirsty-shadow", emissionMaps: "texture-kirsty-embossed" },
-        "kirsty-white-emboss-bump": { name: "White Bump", folder: "kirsty-white-shadow", bumpMaps: "texture-kirsty-embossed-shadow", emissionMaps: "texture-kirsty" },
-        "kirsty-white-emboss-emit-bump": { name: "White Emit & Bump", folder: "kirsty-white-shadow", bumpMaps: "texture-kirsty-embossed-shadow", emissionMaps: "texture-kirsty-embossed" },
-        "sokol-g-w-g": { name: "Grey-White-Gold", folder: "sokol-g-w-g" }
-    })) {
-        dice3d.addSystem({ id: sysId, name: `Euno's Blades - ${sysData.name}` }, false);
-        dice3d.addDicePreset({
-            type: "d6",
-            labels: [1, 2, 3, 4, 5, 6]
-                .map((num) => (num ? `systems/eunos-blades/assets/dice/${sysData.folder}/${num}.webp` : "")),
-            system: sysId,
-            bumpMaps: [1, 2, 3, 4, 5, 6]
-                .map((num) => (num ? `systems/eunos-blades/assets/dice/${sysData.bumpMaps}/${num}.webp` : "")),
-            emissiveMaps: [false, false, false, false, false, 6]
-                .map((num) => (num ? `systems/eunos-blades/assets/dice/${sysData.emissionMaps}/${num}.webp` : "")),
-            emissive: "#ffae00"
-        });
-    }
+    dice3d.addSystem({ id: "eunos-blades", name: "Euno's Blades" }, "preferred");
+    dice3d.addDicePreset({
+        type: "d6",
+        labels: [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/faces/${num}.webp`),
+        system: "eunos-blades",
+        bumpMaps: [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/bump-maps/${num}.webp`),
+        emissiveMaps: [false, false, false, false, false, "systems/eunos-blades/assets/dice/emission-maps/6.webp"],
+        emissive: "#d89300"
+    });
 });
 const ISAPPLYINGWEATHER = false;
 Hooks.once("sequencerEffectManagerReady", () => {

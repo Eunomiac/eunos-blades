@@ -42,6 +42,188 @@
 	--emu-background-opacity-window: 1;
 	--emu-background-opacity-window-content: 1;
 	--emu-subtle-opacity: 0.3;
+    
+    --color-shadow-primary: white;
+    --blades-white: rgb(200, 200, 200);
+    --blades-white-bright: rgb(255, 255, 255);
+    --blades-black: #101010;
+    --blades-black-dark: #000;
+    --blades-grey: #777;
+    --blades-coin-gold: rgb(171,146,84);
+    --blades-coin-gold-bright: rgb(253,212,112);
+    
+    font-family: "Minion Pro Caption Cond";
+    
+    .eunos-blades {
+        &.sheet {
+            &.actor {
+                &.pc {
+                    .stripe, .stripe label {
+                        background-color: var(--blades-white) !important;
+                        color: var(--blades-black) !important;
+                    }
+                    .stripe-tooth-body label {
+                        color: var(--blades-black) !important;
+                    }
+                    label.black-label {
+                        background-color: var(--blades-white);
+                        color: var(--blades-black) !important;
+                    }
+                    th.black-white, th.black-white label {
+                        background-color: var(--blades-white) !important;
+                        text-shadow: none;
+                        color: var(--blades-black) !important;
+                        font-family: "Historical FellType SC";
+                        font-family: "Kirsty";
+                        font-weight: normal;
+                        font-size: 20px;
+                        line-height: 24px;
+                        padding: 3px;
+                    }
+                    
+                    .name-alias {
+                        .name-box, .alias-box {
+                            font-family: "Historical FellType";
 
-	// color: #ffae00
+                            label {display: none}
+                            input {
+                                border-radius: 0;
+                                border: none;
+                                background: var(--blades-black-dark);
+                                height: 50px;
+                                color: var(--blades-white);
+                                font-size: 32px;
+
+                                &:focus {
+                                    box-shadow: none;
+                                    outline: 2px outset rgba(178,178,178,0.5);
+                                }
+                            }
+                            &.name-box {
+                                width: 130%;
+                            }
+                            &.alias-box {
+                                position: relative;
+                                width: 80%;
+                                left: 30%;
+                                font-family: "Kirsty";
+                                input {color: var(--blades-white-bright);}
+                            }
+                        }
+                        .character-traits {
+                            > .item-block {
+                                display: grid;
+                                grid-template-columns: 70px 1fr;
+                                width: 100%;
+                                justify-content: space-between;
+                                
+                                .item-class-label {
+                                    flex-grow: 0;
+                                    flex-shrink: 2;
+                                    flex-basis: 25%;
+                                    text-align: right;
+                                    padding-right: 5px;
+                                    color: var(--blades-white);
+                                }
+                                .item {
+                                    flex-grow: 1;
+                                    color: var(--blades-white-bright);
+                                    font-size: 16px;
+                                    line-height: 19px;
+                                    white-space: nowrap;
+                                    
+                                    .item-body {
+                                        img {
+                                            position: relative;
+                                            top: -2px;
+                                            margin-right: 2px;
+                                        }
+                                    }
+                                }
+                                .item-control {
+                                    flex-basis: 10px;
+                                    text-align: right;
+                                    padding-right: 4px;
+                                    color: var(--blades-white);
+                                    // opacity: 0.85;
+                                }
+                            }
+                        }
+                    }
+                    .coin-box {
+                        .stripe, .stripe label {
+                            background: var(--blades-black-dark) !important;
+                            color: var(--blades-white) !important;
+                            margin-bottom: 10px;
+                        }
+                        .coins {
+                            input ~ label {
+                                background-color: var(--blades-coin-gold);
+                                border: 1px var(--blades-coin-gold-bright) outset;
+                                border-radius: 15px;
+                                &[for$="0"] {
+                                    border-width: 2px;
+                                    border-radius: 0;
+                                    filter: brightness(1.5);
+                                }
+                            }
+                            input:checked ~ label {
+                                background-color: rgba(128,128,128,0.2);
+                                border-style: inset;
+                                border-color: var(--blades-grey);
+                                filter: none;
+                            }
+                        }
+                        .coin-hands-box {
+                            margin-right: 10px;
+                            min-width: 45px;
+                        }
+                    }
+                    .experience {}
+                    .big-teeth-section {
+                        border-color: var(--blades-white);
+                        .character-stress {
+                            
+                        }
+                        .small-teeth-container {
+                            
+                        }
+                        .trauma-list {
+                            label {
+                                .checkmark {
+                                    font-size: 16px;
+                                }
+                            }
+                        }
+                    }
+                    
+                    
+                    .attributes {
+                        .attribute {
+                            > div:last-of-type { margin-bottom: 10px; }
+                            .attributes-exp { }
+                            .attributes-container {
+                                label {
+                                    background-color: var(--blades-white);
+                                    border: 1px var(--blades-white) outset;
+                                    border-radius: 15px;
+                                    &[for$="0"] {
+                                        background-color: var(--blades-black) !important;
+                                    }
+                                }
+                                input:checked ~ label {
+                                    background-color: rgba(128,128,128,0.2);
+                                    border: 1px solid var(--blades-white);
+                                }
+                                .attribute-skill-label {
+                                    line-height: 14px;
+                                }   
+                            }
+                        }
+                        
+                    }
+                }
+            }
+        }
+    }
 }

@@ -2,17 +2,17 @@
 
   <section id="character-{{actor._id}}-name-alias" class="flex-horizontal name-alias">
 
-    <div class="grow-two">
+    <div class="grow-two actor-image">
     <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" class="portrait" />
     </div>
 
-    <div class="grow-two">
-      <div id="character-{{actor._id}}-name-box">
+    <div class="grow-two actor-mid-top-col">
+      <div id="character-{{actor._id}}-name-box" class="name-box">
         <label for="character-{{actor._id}}-name">{{localize "BITD.Name"}}</label>
         <input type="text" id="character-{{actor._id}}-name" class="name" name="name" value="{{actor.name}}">
       </div>
 
-      <div id="character-{{actor._id}}-traits" class="flex-column">
+      <div id="character-{{actor._id}}-traits" class="flex-column character-traits">
 
         <div class="item-block flex-horizontal">
           <div class="item-class-label"><a class="item-add-popup" data-distinct="true" data-item-type="heritage">{{localize "BITD.Heritage"}}</a></div>
@@ -77,8 +77,8 @@
       </div>
     </div>
 
-    <div class="grow-two">
-      <div id="character-{{actor._id}}-alias-box">
+    <div class="grow-two actor-right-top-col">
+      <div id="character-{{actor._id}}-alias-box" class="alias-box">
         <label for="character-{{actor._id}}-alias">{{localize "BITD.Alias"}}</label>
         <input type="text" id="character-{{actor._id}}-alias" class="alias" name="data.alias" value="{{data.alias}}">
       </div>
@@ -167,7 +167,7 @@
       <table>
         <thead>
           <th class="black-white" colspan="4">{{localize "BITD.Harm"}}</th>
-          <th class="black-white"><label>{{localize "BITD.Healing"}}</label></th>
+          <th class="black-white">{{localize "BITD.Healing"}}</th>
           <th class="black-white">{{localize "BITD.Armor"}}</th>
         </thead>
         <tbody>
