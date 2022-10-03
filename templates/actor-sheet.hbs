@@ -92,7 +92,7 @@
   <section class="flex experience">
   </section>
   {{!-- Stress and Trauma --}}
-  <div id="character-{{actor._id}}-stress-trauma" class="section big-teeth-section">
+  <section id="character-{{actor._id}}-stress-trauma" class="section big-teeth-section">
     <div id="character-{{actor._id}}-stress" class="big-teeth character-stress">
       {{#multiboxes data.stress.value}}
 
@@ -116,7 +116,10 @@
           <input type="radio" id="character-{{actor._id}}-trauma-counter-0" name="data.trauma.value" value="0">
 
           {{#times_from_1 data.trauma.max}}
-            <input type="radio" id="character-{{../actor._id}}-trauma-counter-{{this}}" name="data.trauma.value" value="{{this}}" disabled>
+						{{log this}}
+						{{log ../data.trauma.list}}
+						{{log (count ../data.trauma.list)}}
+            <input type="radio" id="character-{{../actor._id}}-trauma-counter-{{this}}" name="data.trauma.value" value="{{this}}" disabled {{#if (eq (count ../data.trauma.list) this)}}checked="checked"{{/if}}>
             <label for="character-{{../actor._id}}-trauma-counter-{{this}}"></label>
           {{/times_from_1}}
         </div>
@@ -159,7 +162,7 @@
       </label>
     </div>
 
-  </div>
+  </section>
 
   {{!-- Harm, Healing and Armor --}}
   <section id="character-{{actor._id}}-harm-armor" class="flex harm-armor">
@@ -226,9 +229,9 @@
 
 
   {{!-- Attributes --}}
-  <section class="flex-horizontal">
+  <section class="flex-horizontal abilities">
 
-    <div class="tab-content flex-vertical grow-two">
+    <div class="tab-content flex-vertical grow-two nav-panel">
 
       {{!-- Nav menu --}}
       <nav class="tabs flex-horizontal">
@@ -262,14 +265,13 @@
           {{#if (eq item.type "ability")}}
             <div class="item flex-horizontal" data-item-id="{{item._id}}">
               <div class="item-body flex-horizontal">
-                <b><div class="item-name">{{item.name}}</div></b>
+                <div class="item-name">{{removeClassPrefix item.name}}</div>
                 <div class="item-description">{{{item.data.description}}}</div>
               </div>
               <a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
             </div>
           {{/if}}
           {{/each}}
-          <div class="item-class-label"><a class="item-add-popup" data-item-type="ability">{{localize "BITD.AddAbility"}}</a></div>
         </div>
       </div>
 
@@ -277,7 +279,7 @@
       <div id="character-{{actor._id}}-loadout" class="tab flex-vertical loadout" data-tab="loadout">
         <div class="label-stripe flex-horizontal">
            <p>{{localize "BITD.Loadout"}} <a class="item-add-popup" data-item-type="item"><i class="fas fa-plus-square"></i></a></p>
-           <p>{{data.loadout}}/{{localize data.load_level}} </p>
+           <p><span class="load-amount">{{data.loadout}}</span><span class="load-level">{{localize data.load_level}}</span></p>
            <div class="dropdown">
              <select name="data.selected_load_level">
                {{selectOptions load_levels selected=data.selected_load_level localize=true}}
@@ -290,26 +292,26 @@
             <div class="item flex-horizontal" data-item-id="{{item._id}}">
               <div class="item-body flex-horizontal">
                 <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
-                <div class="item-name">{{item.name}}</div>
+                <div class="item-name">{{removeClassPrefix item.name}}</div>
                 <div class="item-description">{{{item.data.description}}}</div>
               </div>
               <a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
             </div>
           {{/if}}
           {{/each}}
-          <div class="item-class-label"><a class="item-add-popup" data-item-type="item">{{localize "BITD.AddItem"}}</a></div>
         </div>
       </div>
 
-      <div class="tab flex-vertical" data-tab="character-notes">
+      {{!-- Notes Tab --}}
+      <div class="tab flex-vertical notes" data-tab="character-notes">
         <div class="label-stripe">
           <p>{{localize "BITD.Notes"}}</p>
         </div>
-        <textarea rows="13" name="data.description">{{{data.description}}}</textarea>
+        <textarea rows="18" name="data.description">{{{data.description}}}</textarea>
       </div>
 
       {{!-- Active Effects --}}
-      <div id="character-{{actor._id}}-effects" class="tab effects flex-vertical" data-tab="effects">
+      <div id="character-{{actor._id}}-effects" class="tab flex-vertical effects" data-tab="effects">
         <div class="label-stripe">
           <p>{{localize "BITD.Effects"}}</p>
         </div>
@@ -317,7 +319,7 @@
       </div>
 
       {{!-- Full Item List --}}
-      <div class="tab grow-two flex-vertical" data-tab="all-character-items">
+      <div class="tab grow-two flex-vertical all-items" data-tab="all-character-items">
         <div class="label-stripe">
           <p><label>{{localize "BITD.AllItems"}}</label></p>
         </div>
@@ -325,7 +327,7 @@
         <div class="item flex-horizontal" data-item-id="{{item._id}}">
           <div class="item-body item-sheet-open flex-horizontal">
             <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
-            <div class="item-name">{{item.name}}</div>
+            <div class="item-name">{{removeClassPrefix item.name}}</div>
           </div>
           <a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
         </div>

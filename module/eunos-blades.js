@@ -11,10 +11,18 @@ import { BladesActiveEffect } from "./blades-active-effect.js";
 import { BladesCrewSheet } from "./blades-crew-sheet.js";
 import { BladesNPCSheet } from "./blades-npc-sheet.js";
 import { BladesFactionSheet } from "./blades-faction-sheet.js";
+import DATA from "./data-importer.js";
 import { bladesRoll, simpleRollPopup } from "./euno-blades-roll.js";
 import EunoTrackerSheet from "./euno-tracker-sheet.js";
 Object.assign(globalThis, {
-    BladesHelpers: BladesHelpers
+    BladesHelpers: BladesHelpers,
+    ClearNPCs: () => {
+        const npcNames = DATA.npcs.map(({ name }) => name);
+        const npcs = Array.from(game.actors ?? [])
+            .filter((actor) => npcNames.includes(actor.name ?? ""));
+        return Promise.all(npcs.map((npc) => npc.delete()));
+    },
+    GenerateNPCs: () => Promise.all(DATA.npcs.map(({ name, type, ...data }) => Actor.create({ name, type, data })))
 });
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -97,9 +105,7 @@ Hooks.once("init", async () => {
         return html.replace(rgx, "$& checked=\"checked\"");
     });
     // NotEquals handlebar.
-    Handlebars.registerHelper("noteq", (a, b, options) => {
-        return (a !== b) ? options.fn(this) : "";
-    });
+    Handlebars.registerHelper("noteq", (a, b, options) => (a !== b ? options.fn(this) : ""));
     // ReputationTurf handlebar.
     Handlebars.registerHelper("repturf", (turfs_amount, options) => {
         let html = options.fn(this), turfs_amount_int = parseInt(turfs_amount);
@@ -173,11 +179,8 @@ Hooks.once("init", async () => {
         return outStr;
     });
     /**
-
    * @inheritDoc
-
    * Takes label from Selected option instead of just plain value.
-
    */
     Handlebars.registerHelper("selectOptionsWithLabel", (choices, options) => {
         const localize = options.hash.localize ?? false;
@@ -201,9 +204,7 @@ Hooks.once("init", async () => {
         return new Handlebars.SafeString(html);
     });
     /**
-
    * Create appropriate Blades clock
-
    */
     Handlebars.registerHelper("blades-clock", (parameter_name, type, current_value, uniq_id) => {
         let html = "";
@@ -221,16 +222,23 @@ Hooks.once("init", async () => {
         for (let i = 1; i <= parseInt(type); i++) {
             const checked = (parseInt(current_value) === i) ? 'checked="checked"' : "";
             html += `
-
         <input type="radio" value="${i}" id="clock-${i}-${uniq_id}" name="${parameter_name}" ${checked}>
-
         <label for="clock-${i}-${uniq_id}"></label>
-
       `;
         }
         html += "</div>";
         return html;
     });
+    /**
+     * Remove class indicators from item names
+     */
+    Handlebars.registerHelper("removeClassPrefix", (classStr) => classStr.replace(/^\(.*?\)\s*/, ""));
+    /**
+     * Count number of non-null, non-undefined elements in an array or values of an object.
+     */
+    Handlebars.registerHelper("count", (arr) => Object.values(arr)
+        .filter((val) => val !== null && val !== undefined)
+        .length);
 });
 // getSceneControlButtons
 Hooks.on("renderSceneControls", async (app, html) => {
@@ -252,7 +260,7 @@ Hooks.on("diceSoNiceReady", (dice3d) => {
         labels: [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/faces/${num}.webp`),
         system: "eunos-blades",
         bumpMaps: [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/bump-maps/${num}.webp`),
-        emissiveMaps: [false, false, false, false, false, "systems/eunos-blades/assets/dice/emission-maps/6.webp"],
+        emissiveMaps: [, , , , , "systems/eunos-blades/assets/dice/emission-maps/6.webp"],
         emissive: "#d89300"
     });
 });

@@ -2,10 +2,10 @@
 {{#each effects as |section sid|}}
   <thead>
     <tr class="label-stripe-gray flex-horizontal" data-effect-type="{{section.type}}">
-        <th width="40%" class="item-name effect-name flex-horizontal">{{localize section.label}}</th>
-        <th width="20%" class="effect-source">Source</th>
-        <th width="20%" class="effect-source">Duration</th>
-        <th width="20%" class="item-control effect-control right">
+        <th class="item-name effect-name flex-horizontal">{{localize section.label}}</th>
+        <th class="effect-source">Source</th>
+        <th class="effect-source">Duration</th>
+        <th class="item-control effect-control right">
             <a class="effect-control" data-action="create" title="{{localize 'BITD.EffectCreate'}}">
                 <i class="fas fa-plus"></i> {{localize "BITD.Add"}}
             </a>
@@ -14,14 +14,15 @@
   </thead>
   <tbody class="item-list">
     {{#each section.effects as |effect|}}
+				{{#if effect.data.label}}
         <tr class="item effect flex-horizontal" data-effect-id="{{effect.id}}">
-            <td width="40%" class="effect-name flex">
+            <td class="effect-name flex">
                 <img class="item-image" src="{{effect.data.icon}}" width="24" height="24"/>
-                <h4>{{effect.data.label}}</h4>
+                <h4>{{removeClassPrefix effect.data.label}}</h4>
             </td>
-            <td width="20%" class="effect-source center">{{effect.sourceName}}</td>
-            <td width="20%" class="effect-duration center">{{effect.duration.label}}</td>
-            <td width="20%"><div class="item-controls effect-controls flex">
+            <td class="effect-source center">{{removeClassPrefix effect.sourceName}}</td>
+            <td class="effect-duration center">{{effect.duration.label}}</td>
+            <td><div class="item-controls effect-controls flex">
                 <a class="effect-control" data-action="toggle" title="{{localize 'BITD.EffectToggle'}}">
                     <i class="fas {{#if effect.data.disabled}}fa-check{{else}}fa-times{{/if}}"></i>
                 </a>
@@ -33,6 +34,7 @@
                 </a>
             </div></td>
         </tr>
+				{{/if}}
     {{/each}}
     </tbody>
 {{/each}}

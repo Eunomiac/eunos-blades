@@ -43,21 +43,40 @@
 	--emu-background-opacity-window-content: 1;
 	--emu-subtle-opacity: 0.3;
     
-    --color-shadow-primary: white;
+    --color-shadow-primary: var(--blades-white-bright);
+    --color-text-dark-primary: var(--blades-white);
+    --color-bg-option: var(--blades-black);
+    
     --blades-white: rgb(200, 200, 200);
     --blades-white-bright: rgb(255, 255, 255);
     --blades-black: #101010;
     --blades-black-dark: #000;
     --blades-grey: #777;
+    --blades-grey-dark: #444;
     --blades-coin-gold: rgb(171,146,84);
     --blades-coin-gold-bright: rgb(253,212,112);
     
     font-family: "Minion Pro Caption Cond";
     
+
+    
     .eunos-blades {
         &.sheet {
+            textarea {
+                color: var(--blades-white);
+                font-family: "Minion Pro Caption";
+                margin: 0;
+                font-size: 12px;
+                line-height: 16px;
+            }
+            .label-stripe {
+                background-color: var(--blades-grey);
+            }
             &.actor {
                 &.pc {
+                    .clock-zero-label {
+                        color: var(--blades-white);
+                    }
                     .stripe, .stripe label {
                         background-color: var(--blades-white) !important;
                         color: var(--blades-black) !important;
@@ -81,7 +100,10 @@
                         padding: 3px;
                     }
                     
-                    .name-alias {
+                    section.name-alias {                        
+                        .portrait {
+                            max-height: 170px;
+                        }
                         .name-box, .alias-box {
                             font-family: "Historical FellType";
 
@@ -100,12 +122,12 @@
                                 }
                             }
                             &.name-box {
-                                width: 130%;
+                                width: 120%;
                             }
                             &.alias-box {
                                 position: relative;
                                 width: 80%;
-                                left: 30%;
+                                left: 20%;
                                 font-family: "Kirsty";
                                 input {color: var(--blades-white-bright);}
                             }
@@ -116,6 +138,7 @@
                                 grid-template-columns: 70px 1fr;
                                 width: 100%;
                                 justify-content: space-between;
+                                max-height: 28px;
                                 
                                 .item-class-label {
                                     flex-grow: 0;
@@ -124,6 +147,7 @@
                                     text-align: right;
                                     padding-right: 5px;
                                     color: var(--blades-white);
+                                    margin-bottom: 3px;
                                 }
                                 .item {
                                     flex-grow: 1;
@@ -149,39 +173,53 @@
                                 }
                             }
                         }
-                    }
-                    .coin-box {
-                        .stripe, .stripe label {
-                            background: var(--blades-black-dark) !important;
-                            color: var(--blades-white) !important;
-                            margin-bottom: 10px;
-                        }
-                        .coins {
-                            input ~ label {
-                                background-color: var(--blades-coin-gold);
-                                border: 1px var(--blades-coin-gold-bright) outset;
-                                border-radius: 15px;
-                                &[for$="0"] {
-                                    border-width: 2px;
-                                    border-radius: 0;
-                                    filter: brightness(1.5);
+                        .coin-box {
+                            .stripe, .stripe label {
+                                background: var(--blades-black-dark) !important;
+                                color: var(--blades-white) !important;
+                                margin-bottom: 10px;
+                            }
+                            .coins {
+                                input ~ label {
+                                    background-color: var(--blades-coin-gold);
+                                    border: 1px var(--blades-coin-gold-bright) outset;
+                                    border-radius: 15px;
+                                    &[for$="0"] {
+                                        border-width: 2px;
+                                        border-radius: 0;
+                                        filter: brightness(1.5);
+                                    }
+                                }
+                                input:checked ~ label {
+                                    background-color: rgba(128,128,128,0.2);
+                                    border-style: inset;
+                                    border-color: var(--blades-grey);
+                                    filter: none;
+                                }
+                                input:checked + label {
+                                    background-color: var(--blades-coin-gold);
+                                    border-color: var(--blades-coin-gold-bright);
+                                    border-style: outset;
                                 }
                             }
-                            input:checked ~ label {
-                                background-color: rgba(128,128,128,0.2);
-                                border-style: inset;
-                                border-color: var(--blades-grey);
-                                filter: none;
+                            .coin-hands-box {
+                                margin-right: 10px;
+                                min-width: 45px;
+
+                                .coins-hands {
+                                    justify-content: center;
+                                    width: 100%;
+                                }
                             }
                         }
-                        .coin-hands-box {
-                            margin-right: 10px;
-                            min-width: 45px;
-                        }
                     }
-                    .experience {}
-                    .big-teeth-section {
+
+                    section.experience {}
+                    
+                    section.big-teeth-section {
                         border-color: var(--blades-white);
+                        max-height: 60px;
+                        margin-top: 0px;
                         .character-stress {
                             
                         }
@@ -197,30 +235,157 @@
                         }
                     }
                     
-                    
-                    .attributes {
-                        .attribute {
-                            > div:last-of-type { margin-bottom: 10px; }
-                            .attributes-exp { }
-                            .attributes-container {
-                                label {
-                                    background-color: var(--blades-white);
-                                    border: 1px var(--blades-white) outset;
-                                    border-radius: 15px;
-                                    &[for$="0"] {
-                                        background-color: var(--blades-black) !important;
+                    section.harm-armor {
+                        .character-harm {
+                            table {
+                                tr {
+                                    background-color: rgba(255, 255, 255, 0.05);
+                                    &:nth-child(2) {
+                                        background-color: rgba(255, 255, 255, 0.1);
                                     }
                                 }
-                                input:checked ~ label {
-                                    background-color: rgba(128,128,128,0.2);
-                                    border: 1px solid var(--blades-white);
+                                input[type="text"] {
+                                    font-family: "IM FELL Double Pica SC";
                                 }
-                                .attribute-skill-label {
-                                    line-height: 14px;
-                                }   
+                            } 
+                            
+                        }
+                    }
+                    
+                    section.abilities {
+                        .item {
+                            .item-body {
+                                * {
+                                    margin-right: unset;
+                                    hyphens: auto;
+                                }
+                                
+                                .item-name {
+                                    font-weight: bold;
+                                    color: var(--blades-white-bright);
+                                }
+                                
+                                .item-description {
+                                    margin: 0 10px;
+                                }
+                            }
+                            .item-control {
+                                max-width: 30px;
                             }
                         }
-                        
+                        .nav-panel {
+                            nav {
+                                background-color: var(--blades-white);
+                                padding: 0 10px;
+                                .item {
+                                    color: var(--blades-black);
+                                    padding: 0 10px;
+                                    &.active {
+                                        background-color: var(--blades-white-bright);
+                                    }
+                                    &:hover {
+                                        color: var(--blades-black-dark);
+                                        background-color: var(--blades-white-bright);
+                                    }
+                                    
+                                }
+                            }
+                        }
+                        .abilities { }
+                        .loadout {
+                            .load-amount {
+                                font-size: 26px;
+                                line-height: 28px;
+                                position: absolute;
+                                background-color: var(--blades-white);
+                                display: inline-block;
+                                width: 28px;
+                                text-align: center;
+                                border-radius: 16px;
+                                height: 28px;
+                                top: 2px;
+                                transform: translateX(-30px);
+                                color: var(--blades-black);
+                            }
+                            .load-slash {
+                                color: var(--blades-grey-dark);
+                                font-weight: normal;
+                                font-size: 26px;
+                                line-height: 5px;
+                                margin: 0 3px;
+                                position: relative;
+                                top: 3px;
+                                display: none;
+                            }
+                            .load-level {
+                                margin-left: 2px;
+                            }
+                            select {
+                                margin: 3px -6px auto auto;
+                            }
+                        }
+                        .notes {
+                            flex: initial;
+                            font-size: inherit;
+                            line-height: inherit;
+                            margin: 0;
+                            .label-stripe {
+                                margin-bottom: 0;
+                            }
+                        }
+                        .effects {
+                            .effects-list {
+                                th.item-name {
+                                    width: 150px;
+                                }
+                                td.effect-name {
+                                    width: 80px;
+                                    h4 {
+                                        display: inline;
+                                        position: relative;
+                                        top: -6px;
+                                    }
+                                }
+                                td.effect-source {
+                                    width: 125px;
+                                    text-align: right !important;
+                                }
+                                
+                            }
+                        }
+                    
+                        .attributes {
+                            .attribute {
+                                > div:last-of-type { margin-bottom: 10px; }
+                                .attributes-exp { }
+                                .attributes-container {
+                                    label {
+                                        background-color: var(--blades-white);
+                                        border: 1px var(--blades-white-bright) outset;
+                                        border-radius: 15px;
+                                        &[for$="0"] {
+                                            background-color: var(--blades-black) !important;
+                                            margin-right: 5px;
+                                        }
+                                    }
+                                    input:checked ~ label {
+                                        background-color: rgba(128,128,128,0.2);
+                                        border-style: inset;
+                                        border-color: var(--blades-grey);
+                                        filter: none;
+                                    }
+                                    input:checked + label {
+                                        background-color: var(--blades-white);
+                                        border-color: var(--blades-white-bright);
+                                        border-style: outset;
+                                    }
+                                    .attribute-skill-label {
+                                        color: var(--blades-white-bright);
+                                        line-height: 14px;
+                                    }   
+                                }
+                            }                        
+                        }
                     }
                 }
             }

@@ -1648,320 +1648,737 @@ const DATA = {
 		{
 			name: "Arturo Montastic",
 			type: "npc",
-			description_short: "Addicted Gambler",
-			associated_class: "New Money",
+			concept: "Addicted Gambler",
+			subtype: "New Money",
 			description: "He is impossibly lucky. He wins enough at games of chance to pay for his addictions, and to treat the consequences (transfusions, transplants, cutting-edge treatments.) His relationships are intense but brief. He often loses everything, but then wins it all back and more. He has owned epic treasures many times.",
 			notes: "Risk-averse collectors cannot bear his cavalier attitude on winning and losing priceless art. He does not truly appreciate his treasures, and should not be trusted with them. Losers can take their losses hard."
 		},
 		{
 			name: "Baron Kelyr Strathmill",
 			type: "npc",
-			description_short: "Hardened Industrialist",
-			associated_class: "Old Money",
+			concept: "Hardened Industrialist",
+			subtype: "Old Money",
 			description: "His family has controlled the docks for many generations. They quietly destroy competition, and get lucrative city contracts to re-develop blighted areas if the money slows down. Graceful, educated, and pleasant, he is ruthless as barbed steel under a cultured veneer. He is proud of his estate's gardens.",
 			notes: "Competition doesn't like being crippled. He often hires outsiders for the dirtiest work, and his victims often hire outsiders to get revenge."
 		},
 		{
 			name: "Baroness Thena Hellyers",
 			type: "npc",
-			description_short: "Hazy Art Patron",
-			associated_class: "Old Money",
+			concept: "Hazy Art Patron",
+			subtype: "Old Money",
 			description: "Thena is one of the least emotionally scarred survivors in her weird family. She is a leading light in the art world. She is patron to many artists and her criticism and evaluation drives a significant element of Duskwall's art scene. Whispers have noted she has an unusual connection to the Ghost Field.",
 			notes: "Sometimes she hires outsiders to sort out one of her artists' problems. She has a private gallery that she updates with her current trending tastes—those in the art market need to know what's in it."
 		},
 		{
 			name: "Calvin Dannos",
 			type: "npc",
-			description_short: "Eerie Assassin",
-			associated_class: "Underworld",
+			concept: "Eerie Assassin",
+			subtype: "Underworld",
 			description: "The Inkvein was a cabal of seven anonymous assassins, named for their maps of the canals. If one of them was identified as a member, the other six were sworn to kill the outed assassin. Dannos was outed a decade ago, and he killed the other members and their undying founder. Now he IS Inkvein.",
 			notes: "Easily bored, he prefers interesting challenges to high paying or easy kills. Of course, many bereaved or power hungry individuals want him dead."
 		},
 		{
 			name: "Commissioner Naria Haig",
 			type: "npc",
-			description_short: "Political Matchmaker",
-			associated_class: "City Law",
+			concept: "Political Matchmaker",
+			subtype: "City Law",
 			description: "She exudes a plump grandmotherly innocence, but she is one of the sharpest politicians in Duskwall. She supervises over the merging of unexpected allies and the schism of monolithic interests. She cares about one thing—the good of Duskwall as a whole. She is Chair of the Ethics Oversight Committee.",
 			notes: "Always playing a bigger game, she uses outsiders to manage errands whose purpose they cannot see. Those she outmaneuvers tend to want to get back at her with violence."
 		},
 		{
 			name: "Doc Sarnin",
 			type: "npc",
-			description_short: "Lecherous Leech",
-			associated_class: "Underworld",
+			concept: "Lecherous Leech",
+			subtype: "Underworld",
 			description: "Doc can keep life in you if you're alive (or recently dead) when you get to him. His extreme methods are often horrifying. Still, his concoctions can crush ghosts, re-attach limbs, and more. The Crows, a tough crew, protect him. They give him victims for his \"needs,\" which are emotional, physical, and scientific.",
 			notes: "Sometimes the Crows hire outsiders to go after rare components or victims for Doc. He has many, many enemies who want to either steal him and force him to serve them, or punish him."
 		},
 		{
 			name: "Doctor Ixit Crichelle",
 			type: "npc",
-			description_short: "Elegant Spook",
-			associated_class: "Old Money",
+			concept: "Elegant Spook",
+			subtype: "Old Money",
 			description: "Crechelle calls himself an Oneiric Master. He interprets dreams for a fee. He enters them, alters them, and moves through veils to understand truths and secrets the dreamer may not grasp. If he touches a target, or one of their possessions, he may enter their dreams. He appears feeble, but his mind is deadly.",
 			notes: "Aristocratic patrons invite him to parties. He needs a person's possession to see into their dreams; he pays for objects to visit some people's dreams. Victims will pay to free themselves ."
 		},
 		{
 			name: "Dr. Hansel Kryvanntic",
 			type: "npc",
-			description_short: "Brilliant Scientist",
-			associated_class: "Foreign",
+			concept: "Brilliant Scientist",
+			subtype: "Foreign",
 			description: "He is Severosi, bow-legged and wild-haired. His work on electroplasmic poisoning and mutation in animals and humans is ground-breaking. Fleeing persecution because of his ethically questionable methods back in Severos, he found a more open-minded scientific community in Duskwall.",
 			notes: "His research has applications in art, medicine, and war. Those with sufficient resources to further his studies want to control him. He has hurt a lot of people, over time, so he has many enemies."
 		},
 		{
 			name: "Dr. Yerial Crabbskidditch",
 			type: "npc",
-			description_short: "Sleazy Lawyer",
-			associated_class: "New Money",
+			concept: "Sleazy Lawyer",
+			subtype: "New Money",
 			description: "He firmly believes those who are wealthy should not be pestered with the law. No matter what you do, if you have means you can arrange for an alternate story that favors you. Deaths, frauds, robberies, and other crimes can be reduced to a few fines. He throws money at problems until they disappear.",
 			notes: "He routinely hires outsiders to destroy evidence, intimidate witnesses, compel confessions, and so forth. He has countless enemies, both those seeking justice and former clients who ran out of money."
 		},
 		{
 			name: "Duvrel the Snake",
 			type: "npc",
-			description_short: "Cunning Smuggler",
-			associated_class: "Foreign",
+			concept: "Cunning Smuggler",
+			subtype: "Foreign",
 			description: "She is Tycherosian, with the eyes and horns of a goat. Snake tattoos coil around her arms. Exotic drugs from the Dagger Isles flow through her distribution network in Duskwall. She hires outsiders to remove stubborn people while she has an alibi, or to retrieve drugs misplaced at incriminating locations.",
 			notes: "Inspectors have orders from the Spirit Wardens to take her alive, to study her uncanny ability to flex with the Ghost Field for supernatural stealth."
 		},
 		{
 			name: "Dylayzia Finchester",
 			type: "npc",
-			description_short: "Fashionable Whisper",
-			associated_class: "New Money",
+			concept: "Fashionable Whisper",
+			subtype: "New Money",
 			description: "Her exotic looks, tattoos, and bright green eyes draw attention. She popularized thigh-high buckled leather boots and spirit bane chokers. Her opinions echo in drawing rooms across the city. People enjoy her feud with the Church of the Ecstasy of the Flesh.",
 			notes: "Wealthy figures in the fashion world pay top win for sneak peeks at her clothing designs. Her opinions inflame many enemies­-especially the Church. She hires outsiders to get rare components for her rituals."
 		},
 		{
 			name: "Emeline Coleburn",
 			type: "npc",
-			description_short: "Weary Regulator",
-			associated_class: "City Law",
+			concept: "Weary Regulator",
+			subtype: "City Law",
 			description: "She inspects buildings and reports to the Duskwall Council whether they are sound, and whether they serve the purpose listed on the owner's taxation form. She is front-line in the tug-of-war between criminals, politicians, and nobles. She no longer cares about the greater good. Now it's about kickbacks.",
 			notes: "She takes the path of least resistance in her evaluations, so people pay to make their preference easier and other roads harder. She hires outsiders for off-the-books communication with pushy customers."
 		},
 		{
 			name: "Eric the White",
 			type: "npc",
-			description_short: "Vigilante Rebel",
-			associated_class: "Foreign",
+			concept: "Vigilante Rebel",
+			subtype: "Foreign",
 			description: "The War of Skovlan Unity is over, but this slender maniac with a brushy beard can't let it go. He plans to destroy the government and turn Duskwall into a Skovlan colony to punish them for the destructive war. He wants to discredit and disrupt the government at every turn.",
 			notes: "He targets gavernment officials as high up as he can reach, hoping to cause enough trouble to make the government vulnerable to change. He has gathered zealots, and he uses outsiders for disposable work."
 		},
 		{
 			name: "Gi Aniru Ga of Sultha",
 			type: "npc",
-			description_short: "Sacrificing Cultist",
-			associated_class: "Supernatural",
+			concept: "Sacrificing Cultist",
+			subtype: "Supernatural",
 			description: "She worships the Gaping Maw, the Runnel of Life, the Cosmic Thirst. She builds a cult, teaching them to hunt and conduct rituals. Then she moves on. Witnesses uneasily describe her supernatural abilities, including shapeshifting, flight, killing people by attacking their shadows, and so on.",
 			notes: "Bereaved relatives, rival cultists, and law enforcers all want her stopped. She hires outsiders to threaten, misdirect, or kill law enforcement. Determined inspectors crush cults she trained, need help to catch her."
 		},
 		{
 			name: "Holtz Clermont",
 			type: "npc",
-			description_short: "Reformed Clerk",
-			associated_class: "City Law",
+			concept: "Reformed Clerk",
+			subtype: "City Law",
 			description: "He used to be a forger. After he served stint in prison, some respectable family friends got him a position as City Clerk for the whole district. He manages correspondence for permit requests and official notices. When corrupt people inside and outside the system need to adjust evidence, they come to him.",
 			notes: "Jilted clients can be threatening, leading him to take steps to adjust their attitude by hiring outside help. He's smarter than he looks, and knows how to back people off. He also might know too much."
 		},
 		{
 			name: "Inspector Lorette Salkha",
 			type: "npc",
-			description_short: "Crusading Inspector",
-			associated_class: "City Law",
+			concept: "Crusading Inspector",
+			subtype: "City Law",
 			description: "She needs allies in her hopeless quest to clean up the city. Corruption is everywhere, crime runs rampant, and the bluecoats serve the powerful (on both sides of the law.) Some tragedy in her past propels her into a suicidal effort to restore \"rule of law.” Her peers muse it is a shame she will die young.",
 			notes: "She could be helpful if she focuses on the right bad guys—your enemies. She can't be bought, so maybe someone needs her killed (or otherwise neutralized.)"
 		},
 		{
 			name: "Jemma Dropkick",
 			type: "npc",
-			description_short: "Feminist Vigilante",
-			associated_class: "Underworld",
+			concept: "Feminist Vigilante",
+			subtype: "Underworld",
 			description: "She is a legend in the Seven Shallows neighborhood. She attacks men who abuse women. She survives because she has friends—a few bluecoats, a gang of thugs, and a grateful public. She carefully plans attacks to hurt abusers. Lf her victims abuse again, they are mutilated, packed like luggage, and shipped out of town.",
 			notes: "Many powerful men would pay for revenge on Jemma. Sometimes she hires outsiders to help out."
 		},
 		{
 			name: "Kheldaria Whinnich",
 			type: "npc",
-			description_short: "Implacable Developer",
-			associated_class: "New Money",
+			concept: "Implacable Developer",
+			subtype: "New Money",
 			description: "She has a vision for developing the Crow's Foot district. It will be divided between businesses, estates, and parks. To realize her vision, she has been selectively buying real estate all around the city, bartering for land in Crow's Foot, and using whatever persuasion is needed to convince owners to sell to her.",
 			notes: "She has an estate where she stores induce­ments of all sorts, a variety of treasure designed to persuade owners to sell in exchange for what they want most. They say you could find almost anything there."
 		},
 		{
 			name: "Lady Ashlyn Tyrconnel",
 			type: "npc",
-			description_short: "Decadent Duelist",
+			concept: "Decadent Duelist",
 			description: "For centuries, aristocrats of Duskwall have learned the Tyrconnel Method of swordplay and self defense. The Tyrconnel family produces countless public servants and warriors—but also a share of scoundrels. Ashlyn's trademark suite of moves is to duel, win, bed someone, and drink to unconsciousness.",
 			notes: "You're hired to join the spy game in the Tyrconnel family. Or, someone is targeting her. Either way. Watch your back. Outsiders in the games of nobles are uniformly expendable."
 		},
 		{
 			name: "Lady Candra Dunvil",
 			type: "npc",
-			description_short: "Corrupt Fixer",
-			associated_class: "Old Money",
+			concept: "Corrupt Fixer",
+			subtype: "Old Money",
 			description: "Her family built Ironhook Prison. Her wealth is built on generations of shady deals with incarcerated aristocrats and business owners. She sees the world as a rigged game and has contempt for anyone who finds corruption shocking or fixable. She is vain, practical, and ruthless.",
 			notes: "She hires outsiders to carry out promises she made to inmates. Her family has casually wrecked reputations and lives over centuries, and that leaves a trail of vengeance seekers."
 		},
 		{
 			name: "Lady Polonia Brogan",
 			type: "npc",
-			description_short: "Desirable Dowry",
-			associated_class: "Old Money",
+			concept: "Desirable Dowry",
+			subtype: "Old Money",
 			description: "She's ugly, smelly, stupid, and rude--and also the key to the Brogan fortune. Her lucky spouse will have access to massive wealth and infrastructure among professional builders and shipwrights of Duskwall. Only her aunt, CECILIA DURWITHE, looks out for her best interests with sharp disapproval.",
 			notes: "Brogan hires outsiders to punish those who slight her, or to investigate potential partners. She collects fake wills rogues have planted during assassination attempts, trying to leave her fortune to usurpers ."
 		},
 		{
 			name: "Lord Branon Kinclaith",
 			type: "npc",
-			description_short: "Romantic Horseman",
-			associated_class: "Old Money",
+			concept: "Romantic Horseman",
+			subtype: "Old Money",
 			description: "Branon looks like a hero from a legendary story. He manages the family's stables, the finest horses in Duskwall (where horses are a rare luxury.) His tumultuous trysts with both men and women are common knowledge. Business suffers from his impulsive romantic gestures, but benefits from his charm.",
 			notes: "Branon sometimes refuses to sell horses, or breed them, if he dislikes the buyer. Some buyers want access to horseflesh anyway. If his horses are attacked, he hires outsiders to get revenge."
 		},
 		{
 			name: "Lord Bulward Skinnester",
 			type: "npc",
-			description_short: "Greedy Banker",
-			associated_class: "New Money",
+			concept: "Greedy Banker",
+			subtype: "New Money",
 			description: "This portly curmudgeon does a brisk trade in real estate titles, both lending and foreclosing. He is acutely aware of the value of properties and how neighbors affect value. He takes particular glee in foreclosing on aristocracy and setting up the newly rich in ancient estates.",
 			notes: "Sometimes he hires outsiders to solve problems that his hired bluecoats and bribed councilmen cannot manage. He collects sculpture by Duskwall artists. He has ruined the lives of many formerly influential people."
 		},
 		{
 			name: "Lord Orlan Booker",
 			type: "npc",
-			description_short: "Insulated Mastermind",
-			associated_class: "Old Money",
+			concept: "Insulated Mastermind",
+			subtype: "Old Money",
 			description: "Ennui is a danger to the wealthy. Booker fills his days by gathering intelligence and planning heists, then selling the plans to ambitious gangs that lack his patience, experience, resources, and insight. Twice a month he goes to the opera, and meets those who have arranged to purchase a score.",
 			notes: "Sometimes things go wrong, and it is natural to blame the planner and want revenge. Sometimes a target wants to punish those who acted against them, even if the act was planning."
 		},
 		{
 			name: "Master Slen Dallicore",
 			type: "npc",
-			description_short: "Protective Guilder",
-			associated_class: "New Money",
+			concept: "Protective Guilder",
+			subtype: "New Money",
 			description: "Master Dallicore is the Guildmaster for the Docker's Guild. They move all cargo on and off ships, boats, and gondolas. Their role is protected by law, as are the fees they charge. The guild uses low-level violence to discourage non-guild laborers and smugglers. However, some challenges require proper scoundrels.",
 			notes: "Dallicore is not above hiring outsiders to punish powerful patrons of smugglers or illegal dock workers. His position of power also gives him access to rare antiquities, both purchased and acquired."
 		},
 		{
 			name: "Minister Fourteen",
 			type: "npc",
-			description_short: "Grungy Fixer",
-			associated_class: "Underworld",
+			concept: "Grungy Fixer",
+			subtype: "Underworld",
 			description: "The blind Skovlander holds court on the docks, moving from one basement to another. He favors baggy shirts, stained vests, shiny jewelry, and fraying lace. He often acts through his massive bodyguard Severen and his weedy messenger Torok.",
 			notes: "He is connected in the Skovlander refugee community, and in Skovlan. For a price (either wealth or an errand) he will share information about Skovlanders. He often hires outsiders to handle sensitive tasks."
 		},
 		{
 			name: "Moonslider the Third",
 			type: "npc",
-			description_short: "Eccentric Artist",
-			associated_class: "New Money",
+			concept: "Eccentric Artist",
+			subtype: "New Money",
 			description: "She feels moon phases. Her family put her in an asylum for a decade. Later, she won her freedom and inherited the family bootmaking fortune. She makes art. She tries to communicate her moon feelings. She uses oil paint, glass blowing, sculpture, song, and dance in multimedia recitals and art pieces.",
 			notes: "Her family bought nice things before they all died and she inherited them; she ignores most of it. She needs expensive equipment and supplies for her bizarre art shows."
 		},
 		{
 			name: "Officer Milos Penderyn",
 			type: "npc",
-			description_short: "Corrupt Bailiff",
-			associated_class: "City Law",
+			concept: "Corrupt Bailiff",
+			subtype: "City Law",
 			description: "Milos has access to trial evidence, and to prisoners awaiting trial. He can't get people out, but he can silence them. He has a network of corrupt peers, judges, bluecoats, and others so he can trade favors to accomplish the impossible. Huge and greasy, he is built like a bull and he enjoys the scent of fear.",
 			notes: "Controlling Milos could mean protecting or killing someone in bluecoat custody. An endless stream of people want revenge on him, and a more select group would like to control or use him."
 		},
 		{
 			name: "Officer Veleris Walund",
 			type: "npc",
-			description_short: "Heroic Bluecoat",
+			concept: "Heroic Bluecoat",
 			description: "There are actually songs about him. He is very popular. Veleris is a skilled orator (though he retreats into modesty) and a canny judge of character and situations. (He insists he just tries to do the right thing.) His opinion is influential in his district. He is trusted to guard valuables. His moustaches are his pride and joy.",
 			notes: "He has no family, and he seems to be an idealist. Some try to persuade him, others try to threaten him. Threats don't seem to work. He has been known to quietly hire outsiders to get justice."
 		},
 		{
 			name: "Pebbler",
 			type: "npc",
-			description_short: "Demon Spy",
-			associated_class: "Supernatural",
+			concept: "Demon Spy",
+			subtype: "Supernatural",
 			description: "This earth demon looks like a fat man built around a boulder gut, leaking sand from joints. It is able to see and hear through sand, earth, and stone within a range of miles. It works with non-cultists voluntarily, selling information in exchange for raids into the rare areas protected from its prying.",
 			notes: "Dozens of powerful people want Pebbler banished or robbed. However, the demon is a peerless information exchange, valuable even if it is difficult to control."
 		},
 		{
 			name: "Saithernon",
 			type: "npc",
-			description_short: "Exotic Fence",
-			associated_class: "Underworld",
+			concept: "Exotic Fence",
+			subtype: "Underworld",
 			description: "He drapes his python, DELGRAAZ, around his neck. He wears a turban with a jewel on it. He is willing to buy almost anything, no matter how strange. He also knows what you need, sometimes before you know you need it. His bazaar unfurls below the Kennington market in an abandoned gondola dock.",
 			notes: "He pays people to get things for him, then sells them at tremendously inflated prices to those desperate to have them. This can cause hurt feelings among the desperate."
 		},
 		{
 			name: "Serlevica the Brander",
 			type: "npc",
-			description_short: "Spy Whisper",
-			associated_class: "Underworld",
+			concept: "Spy Whisper",
+			subtype: "Underworld",
 			description: "Gaunt and frizzed, this foul-smelling Whisper has a secret ritual that allows her to control and see through rats she brands. She sells her services as a spy or site guardian. She has survived by retreating into slums and sewers when threatened, and striking from the shadows until it is safe to emerge again.",
 			notes: "She is closely tied to the information marketplace, buying and selling secrets. She often hires outsiders to deal with her enemies through theft or violence, and she is in turn a frequent target."
 		},
 		{
 			name: "Sir Mournseller",
 			type: "npc",
-			description_short: "Anarchist Ghost",
-			associated_class: "Supernatural",
+			concept: "Anarchist Ghost",
+			subtype: "Supernatural",
 			description: "This ghost possesses old men from the Draymach Asylum, breaking them out to find and hire scoundrels for obscure tasks with no independent purpose. Examples include killing an insignificant chandler or stealing a specific stone from a wall in a noble's estate. Payment is the location of hidden treasure.",
 			notes: "A decade ago, an astute inspector began picking out the connection between errands, seeing a very long and very dangerous game to unseat the city's rulers emerging."
 		},
 		{
 			name: "Sir Olen Llanwold",
 			type: "npc",
-			description_short: "Piratical Industrialist",
-			associated_class: "New Money",
+			concept: "Piratical Industrialist",
+			subtype: "New Money",
 			description: "He is thin and nervous, easy to underestimate. He specializes in stripping foes of their assets and taking over their operations. His father was a butler, and he grew up hating aristocrats. He understands power structures and corrupts retainers. His top agent, Ellsfielder, is a beautiful and ruthless woman.",
 			notes: "Many ruined aristocrats (and their allies) hate Danwold passionately. He does not hesitate to use his assets, legal and otherwise, to defend himself and cripple his foes. He hires outsiders through proxies."
 		},
 		{
 			name: "Sir Tocker Farros",
 			type: "npc",
-			description_short: "Pragmatic Councilman",
-			associated_class: "City Law",
+			concept: "Pragmatic Councilman",
+			subtype: "City Law",
 			description: "Sometimes the law works, and sometimes it doesn't. Regardless, the Council must rule and there must be order. Sir Farros ensures the districts he serves do not get too far out of hand before lawless elements are curbed. One way or another. He looks like an affable grandfather, but he has a dark past.",
 			notes: "Sir Farros uses inspectors or scoundrels, politicians or housemaids—anyone who will get the job done. He has an endless list of enemies who feel he wronged them, and want revenge. His agents are disposable."
 		},
 		{
 			name: "SLOPSPATTER",
 			type: "npc",
-			description_short: "Canal Hull",
-			associated_class: "Supernatural",
+			concept: "Canal Hull",
+			subtype: "Supernatural",
 			description: "This hull learned to consume spirits and bolster its strength with theirs. It cannibalizes machinery and rummages in wrecked boats for parts. It has gondola prow shoulder guards and helm, and strange banded armor made of water-logged wood over intricate mechanical parts. It fears destruction.",
 			notes: "It assassinates targets, with its body or by possessing machines near them. It hunts whispers, leeches, and scholars, stealing their knowledge and killing them. Their allies want revenge."
 		},
 		{
 			name: "Syla DuTorrivestria",
 			type: "npc",
-			description_short: "Famous Connoisseur",
-			associated_class: "Foreign",
+			concept: "Famous Connoisseur",
+			subtype: "Foreign",
 			description: "This mysterious Iruvian hides behind a veil. For years, she has been the final word on Duskwall delicacies. She specializes in evaluating high-end cuisine (including spore wines and cooking with leviathan blood.) She stays in the public eye with racy politics and a string of scandalous romances.",
 			notes: "She must keep any real competitors for her fame weakened and embarrassed, and she has countless enemies. Everyone \"knows\" she is an Iruvian spy."
 		},
 		{
 			name: "The Honorable Telia Cray",
 			type: "npc",
-			description_short: "Stern Prosecutor",
-			associated_class: "City Law",
+			concept: "Stern Prosecutor",
+			subtype: "City Law",
 			description: "She's old, she's sour, and she has a reputation for jailing Duskwall's criminals. As thin and hard as an iron poker, she relentlessly pursues her cases, bending the law with a passionate hatred of scoundrels. She runs a special unit of Inspectors dedicated to investigating her cases, run by INSPECTOR ULEK.",
 			notes: "If she is taking a case personally ( as she often does) she may hire outsiders to acquire or create evidence. She also conduds a brutal war of counter-intelligence against rogues looking to free their associates."
 		},
 		{
 			name: "The Wooden Judge",
 			type: "npc",
-			description_short: "Haunted Puppet",
-			associated_class: "Underworld",
+			concept: "Haunted Puppet",
+			subtype: "Underworld",
 			description: "This knee-high ventriloquist dummy looks like a caricature of a grim Judge. It is supernaturally animated. The puppet appears unexpectedly, interrupting a scoundrel's routine by offering jobs in a squeaky voice. He pays by revealing the location of hidden caches of ancient coin.",
 			notes: "Many angry victims want to know who pulls the strings of the Wooden Judge. The puppet often hires fresh talent for dubious work."
 		},
 		{
 			name: "Theodore Lysander",
 			type: "npc",
-			description_short: "Bard Pimp",
-			associated_class: "Underworld",
+			concept: "Bard Pimp",
+			subtype: "Underworld",
 			description: "Elegant and charismatic, this well-dressed man runs the Tenpenny Court Network. He manages prostitutes and their customers, his personal connections and charm monetized. He is also a skilled composer and performer, often seen at the Worldsedge Theater in Crow's Foot.",
 			notes: "He is a skilled networker. He takes the safety of his friends seriously, and is protedive of his employees, to the point of using blackmail to force powerful patrons to back off."
+		},
+		{
+			name: "Chief Prichard",
+			type: "npc",
+			description: "The head Overseer of the Ministry of Provisions in Duskwall. Manages the workers and food allotments for the city districts.",
+			associated_districts: [
+				"Barrowcleft"
+			],
+			behaviors: [
+				"calculating",
+				"confident",
+				"calm"
+			]
+		},
+		{
+			name: "Lord Strangford",
+			type: "npc",
+			description: "Operates one of the largest leviathan hunter fleets, serves on the City Council and is a high-ranking member of the secret order within the Church of Ecstasy.",
+			associated_districts: [
+				"Brightstone"
+			],
+			behaviors: [
+				"secretive",
+				"calculating",
+				"arrogant"
+			]
+		},
+		{
+			name: "Hutton",
+			type: "npc",
+			description: "A Skovlander refugee and former soldier, now the leader of an anarchist revolutionary movement, bent on forcing the government to acknowledge Skovlander rights in the Empire.",
+			associated_districts: [
+				"Charhollow"
+			],
+			behaviors: [
+				"brave",
+				"compassionate",
+				"wise"
+			]
+		},
+		{
+			name: "Lady Drake",
+			type: "npc",
+			description: "A magistrate who is \"reasonable\" when it comes to street crime, so long as the offender's purse is sufficient.",
+			associated_districts: [
+				"Charterhall"
+			],
+			behaviors: [
+				"flexible",
+				"shrewd",
+				"subtle"
+			]
+		},
+		{
+			name: "Master Slane",
+			type: "npc",
+			description: "A notorious factory foreman known for excessive and cruel punishments for the smallest infractions. Many attempts have been made on his life, but all have failed. Some say he's a devil.",
+			associated_districts: [
+				"Coalridge"
+			],
+			behaviors: [
+				"cold",
+				"cruel",
+				"sadistic"
+			]
+		},
+		{
+			name: "Sergeant Lochlan",
+			type: "npc",
+			description: "The senior Bluecoat squad leader in the district, reporting to Captain Dunvil. Lochlan is flexible and reasonable, taking bribes and payoffs when she can; enforcing the law and making examples when necessary.",
+			associated_districts: [
+				"Crow's Foot"
+			],
+			behaviors: [
+				"shrewd",
+				"tough",
+				"commanding"
+			]
+		},
+		{
+			name: "Chief Helker",
+			type: "npc",
+			description: "One of the most influential senior Dockers. Helker has a lot of sway at the docks, and if you cross him, you might find your cargo tossed into the drink—and possibly you along with it.",
+			associated_districts: [
+				"The Docks"
+			],
+			behaviors: [
+				"cautious",
+				"greedy",
+				"vengeful"
+			]
+		},
+		{
+			name: "Master Krocket",
+			type: "npc",
+			description: "An unsavory, greasy-haired, scarecrow of a man who runs the snarling pack of vicious dogs used by Ironhook to track down escapees and sniff out contraband and tunnels. His dog-handlers can be found around the labor camp and all about Dunslough, using their status with the prison for favors and bribes.",
+			associated_districts: [
+				"Dunslough"
+			],
+			behaviors: [
+				"cruel",
+				"greedy",
+				"ruthless"
+			]
+		},
+		{
+			name: "Jira",
+			type: "npc",
+			description: "A dealer of fine weapons from the Dagger Isles. Greatly respected by many street toughs in The Dusk—a \"jira blade\" is a status symbol that many aspire to.",
+			associated_districts: [
+				"Nightmarket"
+			],
+			behaviors: [
+				"bold",
+				"tough",
+				"confident"
+			]
+		},
+		{
+			name: "Levyra",
+			type: "npc",
+			description: "A medium who invites clients to bring ghosts in bottles to posses her so they can share a few final words before the ghost is \"freed\" (Levyra hands it off to the waiting Spirit Wardens nearby).",
+			associated_districts: [
+				"Silkshore"
+			],
+			behaviors: [
+				"weird",
+				"daring",
+				"dishonest",
+				""
+			]
+		},
+		{
+			name: "Mother Narya",
+			type: "npc",
+			description: "Runs the Arms of the Weeping Lady charity house.",
+			associated_districts: [
+				"Six Towers"
+			],
+			behaviors: [
+				"kind",
+				"patient",
+				"gracious"
+			]
+		},
+		{
+			name: "Maestro Helleren",
+			type: "npc",
+			description: "Senior composer and conductor of the Spiregarden Theater, premiere performance venue for the elite of the city.",
+			associated_districts: [
+				"Whitecrown"
+			],
+			behaviors: [
+				"sincere",
+				"dramatic",
+				"vain"
+			]
+		},
+		{
+			name: "Hester Vale",
+			type: "npc",
+			description: "Matriarch of the oldest farm family. The living embodiment of \"tough but fair.\"",
+			associated_districts: [
+				"Barrowcleft"
+			],
+			behaviors: [
+				"proud",
+				"fierce",
+				"suspicious"
+			]
+		},
+		{
+			name: "Commander Bowmore",
+			type: "npc",
+			description: "Chief Officer of the Watch in Brightstone. Bowmore's family financed Bowmore Bridge centuries ago and now holds many positions of power.",
+			associated_districts: [
+				"Brightstone"
+			],
+			behaviors: [
+				"proud",
+				"principled",
+				"connected"
+			]
+		},
+		{
+			name: "Briggs",
+			type: "npc",
+			description: "The owner of a merchant stall at Charhollow market, cover for a network of gossips, spies, and code-smiths among the working class people of the district, selling their services to those who need them.",
+			associated_districts: [
+				"Charhollow"
+			],
+			behaviors: [
+				"secretive",
+				"sneaky",
+				"cautious"
+			]
+		},
+		{
+			name: "Lord Penderyn",
+			type: "npc",
+			description: "Chief Scholar of the Archive of Echoes, authorized by the Emperor to keep a collection of ancient ghosts trapped in spirit bottles, to be consulted in cases where knowledge from the distant past would benefit the operation of the Imperial government. Lord Penderyn also consults the spirits on his own volition, forming the rebellious Path of Echoes society for other elites and nobles who seek communion with the spectral realm.",
+			associated_districts: [
+				"Charterhall"
+			],
+			behaviors: [
+				"reckless",
+				"strange",
+				"obsessive"
+			]
+		},
+		{
+			name: "Belle Brogan",
+			type: "npc",
+			description: "A Skovlander factory worker who's been gaining popularity as a potential union organizer. It's only a matter of time before a factory boss tries make an example of her.",
+			associated_districts: [
+				"Coalridge"
+			],
+			behaviors: [
+				"charming",
+				"confident",
+				"bold"
+			]
+		},
+		{
+			name: "Lewit, Jol, Myra, Reyf",
+			type: "npc",
+			description: "Bluecoat constables; run an extortion racket.",
+			associated_districts: [
+				"Crow's Foot"
+			],
+			behaviors: [
+				"arrogant",
+				"vain",
+				"volatile"
+			]
+		},
+		{
+			name: "Tris",
+			type: "npc",
+			description: "A legendary tattooist who only inks those that have looked upon a leviathan and lived to tell the tale. Getting a tattoo from Tris is a rite of passage for everyone who hunts the demons of the void sea.",
+			associated_districts: [
+				"The Docks"
+			],
+			behaviors: [
+				"artistic",
+				"popular",
+				"insightful"
+			]
+		},
+		{
+			name: "Vandra",
+			type: "npc",
+			description: "A deathlands scavenger that survived six runs and was pardoned. She knows the landscape beyond the barrier very well—but few can make sense of her haunted mumblings.",
+			associated_districts: [
+				"Dunslough"
+			],
+			behaviors: [
+				"haunted",
+				"wise",
+				"daring"
+			]
+		},
+		{
+			name: "Leclure",
+			type: "npc",
+			description: "A purveyor of personal luxuries (soaps, hair oils, perfume, fine silks) who dabbles in fortune telling. Some say her that drowned lover is a ghost that whispers secrets in her ear.",
+			associated_districts: [
+				"Nightmarket"
+			],
+			behaviors: [
+				"shrewd",
+				"tough",
+				"commanding"
+			]
+		},
+		{
+			name: "Helene",
+			type: "npc",
+			description: "The elegant and mysterious proprietor of the Silver Stag Casino. People say she would have been a queen of Severos had she lived in the old days before the Empire.",
+			associated_districts: [
+				"Silkshore"
+			],
+			behaviors: [
+				"cultured",
+				"charming",
+				"secretive"
+			]
+		},
+		{
+			name: "Chef Roselle",
+			type: "npc",
+			description: "One of the best cooks in the city, still operating the legendary Golden Plum restaurant—worth the trip into the haunted streets of Six Towers.",
+			associated_districts: [
+				"Six Towers"
+			],
+			behaviors: [
+				"creative",
+				"insightful",
+				"friendly"
+			]
+		},
+		{
+			name: "Lady Freyla",
+			type: "npc",
+			description: "Regarded by some as the finest sommelier in the Empire. She serves only the most deserving at the Emperor's Cask.",
+			associated_districts: [
+				"Whitecrown"
+			],
+			behaviors: [
+				"erudite",
+				"cultured",
+				"charming"
+			]
+		},
+		{
+			name: "Mara Keel",
+			type: "npc",
+			description: "A former smuggler who's gone into hiding among the farm laborers of Barrowcleft.",
+			associated_districts: [
+				"Barrowcleft"
+			],
+			behaviors: [
+				"quiet",
+				"secretive",
+				"patient"
+			]
+		},
+		{
+			name: "Rolan Wott",
+			type: "npc",
+			description: "An influential magistrate who handles property, endowments, and financial cases. Famous for his extravagant parties.",
+			associated_districts: [
+				"Brightstone"
+			],
+			behaviors: [
+				"stylish",
+				"elitist",
+				"shrewd"
+			]
+		},
+		{
+			name: "Corben",
+			type: "npc",
+			description: "An ex-military Skovlander on the lam for crimes against the empire.",
+			associated_districts: [
+				"Charhollow"
+			],
+			behaviors: [
+				"tough",
+				"reckless",
+				"candid"
+			]
+		},
+		{
+			name: "Hopper",
+			type: "npc",
+			description: "A drug addict, whisper, and all-around weirdo who perches on rooftops in the district. Hopper claims to see \"ghost rails\" and \"spirit trains\" originating deep beneath Coalridge, stretching beyond the horizon.",
+			associated_districts: [
+				"Coalridge"
+			],
+			behaviors: [
+				"weird",
+				"visionary",
+				"enthusiastic"
+			]
+		},
+		{
+			name: "Mardin Gull",
+			type: "npc",
+			description: "Owner and operator of the Leaky Bucket public house. Mardin was the leader of the Crows many years ago, before Roric and Lyssa, and now enjoys a comfortable retirement out of the scoundrel life.",
+			associated_districts: [
+				"Crow's Foot"
+			],
+			behaviors: [
+				"charming",
+				"experienced",
+				"respected"
+			]
+		},
+		{
+			name: "Mordis",
+			type: "npc",
+			description: "A strange merchant which hides its true appearance beneath many layers of robes and hoods. Also fences occult and arcane stolen goods, no questions asked.",
+			associated_districts: [
+				"Nightmarket"
+			],
+			behaviors: [
+				"secretive",
+				"insightful",
+				"arcane"
+			]
+		},
+		{
+			name: "Madame Tesslyn",
+			type: "npc",
+			description: "Operates the Red Lamp brothel, the oldest and most respected institution of its sort in the city.",
+			associated_districts: [
+				"Silkshore"
+			],
+			behaviors: [
+				"confident",
+				"insightful",
+				"enthusiastic"
+			]
+		},
+		{
+			name: "Flint",
+			type: "npc",
+			description: "A spirit trafficker who trades out of a condemned manor house.",
+			associated_districts: [
+				"Six Towers"
+			],
+			behaviors: [
+				"weird",
+				"calculating",
+				"suspicious"
+			]
 		}
 	],
 	motivations: [
