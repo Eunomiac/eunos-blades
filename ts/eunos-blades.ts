@@ -301,25 +301,15 @@ Hooks.once("init", async () => {
 
 // getSceneControlButtons
 Hooks.on("renderSceneControls", async (app: unknown, html: JQuery<HTMLElement>) => {
-
 	const dice_roller = $('<li class="scene-control" title="Dice Roll"><i class="fas fa-dice"></i></li>');
-
 	dice_roller.click( async () => {
-
 		await simpleRollPopup();
-
 	});
-
 	if ( !foundry.utils.isNewerVersion("9", game.version ?? game.data.version) ) {
-
 		html.children().first().append( dice_roller );
-
 	} else {
-
 		html.append( dice_roller );
-
 	}
-
 });
 
 Hooks.on("diceSoNiceReady", (dice3d: Record<any,any>) => {

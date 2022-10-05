@@ -1,0 +1,256 @@
+.crew-name-lair .portrait { max-height: 100px; }
+.window-content {
+    .actor-sheet {
+        .black-label, .gray-label { 
+            min-width: 60px;
+            flex-shrink: 0;
+            line-height: 30px;
+        }
+        .gray-label { 
+            background-color: var(--blades-grey);
+            color: var(--blades-black) !important;
+        }       
+        section.crew-name-lair {
+            .portrait {
+                max-height: 100px;
+            }
+            .crew-name-alias {                
+		        font-family: "Historical FellType";
+                width: 30%;
+		        input[type="text"] {
+			        border-radius: 0;
+			        border: none;
+			        background: var(--blades-black-dark);
+			        height: 50px;
+			        color: var(--blades-white);
+			        font-size: 32px;
+
+			        &:focus {
+			        	box-shadow: none;
+			        	outline: 2px outset rgba(178, 178, 178, 0.5);
+			        }
+		        }
+                .crew-reputation {
+                    display: grid;
+                    grid-template-columns: 100px 1fr;
+                    width: 100%;
+                    justify-content: space-between;
+                    max-height: 28px;
+                    text-align: left;
+                    margin-top: 14px;
+                    border: none;
+
+                    .item-class-label {
+                        flex-grow: 0;
+                        flex-shrink: 2;
+                        flex-basis: 25%;
+                        text-align: right;
+                        padding-right: 5px;
+                        color: var(--blades-white);
+                        margin-bottom: 3px;
+                    }
+
+                    .item {
+                        flex-grow: 1;
+                        color: var(--blades-white-bright);
+                        font-size: 16px;
+                        line-height: 19px;
+                        white-space: nowrap;
+
+                        .item-body {
+                            img {
+                                position: relative;
+                                top: -2px;
+                                margin-right: 2px;
+                            }
+                        }
+                    }
+
+                    .item-control {
+                        flex-basis: 10px;
+                        text-align: right;
+                        padding-right: 4px;
+                        color: var(--blades-white);
+                        // opacity: 0.85;
+                    }
+                }
+            }
+            .crew-lair-hold-tier-box {
+                .crew-lair {
+                    margin-bottom: 5px;
+                    input[type="text"] {
+                        border-radius: 0;
+                        border: none;
+                        background: var(--blades-black-dark);
+                        height: 30px;
+                        color: var(--blades-white);
+                        font-size: 18px;
+                        margin-left: 5px;
+
+                        &:focus {
+                            box-shadow: none;
+                            outline: 2px outset rgba(178, 178, 178, 0.5);
+                        }
+                    }
+                }
+                .crew-hold-tier {
+                    justify-content: space-between;
+                    .crew-hold {
+                        border-color: var(--blades-grey);
+                        width: unset;
+                    }
+                    .crew-tier {
+                        min-width: 160px;
+                        background-color: transparent;
+                        border-color: var(--blades-grey);
+                        label {
+                            background-color: var(--blades-white);
+                            border: 1px var(--blades-white-bright) outset;
+                            border-radius: 15px;
+
+                            &[for$="0"] {
+                                background-color: var(--blades-grey) !important;
+                                border: none !important;
+                                border-radius: 0;
+                                // margin-right: 5px;
+                            }
+                        }
+
+                        input:checked~label {
+                            background-color: rgba(128, 128, 128, 0.2);
+                            border-style: inset;
+                            border-color: var(--blades-grey);
+                            filter: none;
+                        }
+
+                        input:checked+label {
+                            background-color: var(--blades-white);
+                            border-color: var(--blades-white-bright);
+                            border-style: outset;
+                        }
+                    }
+                }
+            }
+        }
+        section.crew-reputation-heat {
+            border-top: 3px solid var(--blades-grey);
+            .crew-reputation, .crew-heat-wanted {
+                border: none;
+            }
+        }
+        section.crew-class-xp {
+            position: relative;
+            top: -20px;
+            margin-bottom: -24px;
+            .crew-class-box {
+                .crew-class {
+                    border-color: var(--blades-grey);
+                    .big-name {
+                        color: var(--blades-white-bright);
+                        font-size: 64px;
+                        transform-origin: left;
+                        transform: scaleX(0.8);
+                        padding-left: 10px;
+                        max-width: 65%;
+                    }
+                    .big-description {
+                        color: var(--blades-white);
+                        font-family: Ravenscroft;
+                        font-size: 48px;
+                        line-height: 38px;
+                        text-align: right;
+                        padding-right: 5px;
+                        min-width: 160px;
+                    }
+                }
+                nav.tabs {
+                    background-color: var(--blades-white);
+                    padding: 0 10px;
+
+                    .item {
+                        color: var(--blades-black);
+                        padding: 0 10px;
+
+                        &.active {
+                            background-color: var(--blades-white-bright);
+                        }
+
+                        &:hover {
+                            color: var(--blades-black-dark);
+                            background-color: var(--blades-white-bright);
+                        }
+                    }
+                }
+            }
+            .crew-xp-box {
+                position: relative;
+                left: -5px;
+                // width: calc(100% + 15px);
+                .big-teeth-section {
+                    border-color: var(--blades-grey);
+                }
+                .experience-clues-container {
+                    // width: 110%;
+                    .experience-clues-description {
+                        color: var(--blades-white-bright);
+                    }
+                    .experience-clues {
+                        font-style: normal;
+                        font-family: "Minion Pro Caption Cond";
+                        white-space: nowrap;
+                    }
+                }
+            }
+        }
+        section.nav-panel {
+            .tab.active[data-tab="turfs"] {
+                .item {
+                    position: relative;
+                    left: -15px;
+                    top: -10px;
+                    .turf-row {
+                        .turf-block {
+                            border-radius: 5px;
+                            background-color: var(--blades-grey-dark);
+                            .connector {
+                                background-color: var(--blades-grey-dark);
+                            }
+                            .turf-control {
+                                color: var(--blades-black);
+                                text-shadow: 0 0 2px var(--blades-grey),
+                                    0 0 2px var(--blades-grey),
+                                    0 0 2px var(--blades-grey),
+                                    0 0 2px var(--blades-grey);
+                            }
+                            .turf-name {
+                                font-family: Kirsty;
+                                text-transform: uppercase;
+                                color: var(--blades-white);
+                                margin-top: 10px;
+                            }
+                            
+                            &.turf-selected {
+                                background-color: var(--blades-white);
+                                color: var(--blades-black);
+                                .connector {
+                                    background-color: var(--blades-white);
+                                }
+                                .turf-control {
+                                    color: var(--blades-white-bright);
+                                    text-shadow: 0 0 12px var(--blades-white-bright),
+                                        0 0 12px var(--blades-white-bright),
+                                        0 0 12px var(--blades-white-bright),
+                                        0 0 2px var(--blades-black-dark);
+                                }
+                                .turf-name {
+                                    color: var(--blades-black-dark);
+                                }
+                            
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,16 +1,13 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
 
-  <section class="flex-horizontal">
-
-    <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
-
+	{{!-- Name, Lair, Hold, Tier --}}
+  <section class="flex-horizontal name-alias crew-name-lair">
+    <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" class="portrait" />
     <div id="crew-{{actor._id}}-name-alias" class="crew-name-alias grow-two flex-column">
-      <div id="crew-{{actor._id}}-name-box" class="crew-name">
-        <label for="crew-{{actor._id}}-name">{{localize "BITD.Name"}}</label>
+      <div id="crew-{{actor._id}}-name-box" class="crew-name name-box">
         <input type="text" id="crew-{{actor._id}}-name" name="name" value="{{actor.name}}">
       </div>
-
-      <div class="flex-vertical">
+      <div class="flex-horizontal crew-reputation">
         <div class="item-class-label">
           <a class="item-add-popup" data-distinct="true" data-item-type="crew_reputation">{{localize "BITD.CrewReputation"}}</a>
         </div>
@@ -27,36 +24,31 @@
         {{/each}}
       </div>
     </div>
-
-    <div class="grow-two flex-vertical">
-      <div id="crew-{{actor._id}}-lair-box" class="lair">
-        <label for="crew-{{actor._id}}-lair">{{localize "BITD.Lair"}}</label>
+    <div class="grow-two flex-vertical crew-lair-hold-tier-box">
+      <div id="crew-{{actor._id}}-lair-box" class="crew-lair flex-horizontal">
+				<div class="gray-label">{{localize "BITD.Lair"}}</div>
         <input type="text" id="crew-{{actor._id}}-lair" name="data.lair" value="{{data.lair}}">
       </div>
-
-
-      <div class="flex-horizontal">
-
+      <div class="flex-horizontal crew-hold-tier">
         <div id="crew-{{actor._id}}-hold-box" class="flex-horizontal crew-hold">
-          <div class="black-label">{{localize "BITD.Hold"}}</div>
+          <div class="gray-label">{{localize "BITD.Hold"}}</div>
           {{#multiboxes data.hold}}
           <div class="flex-horizontal">
-            <div class="gray-label">{{localize "BITD.Weak"}}</div>
+            <div class="black-label">{{localize "BITD.Weak"}}</div>
             <input id="crew-{{actor._id}}-hold-weak" type="radio" name="data.hold" value="weak">
             <label for="crew-{{actor._id}}-hold-weak"></label>
           </div>
           <div class="flex-horizontal">
-            <div class="gray-label">{{localize "BITD.Strong"}}</div>
+            <div class="black-label">{{localize "BITD.Strong"}}</div>
             <input id="crew-{{actor._id}}-hold-strong" type="radio" name="data.hold" value="strong">
             <label for="crew-{{actor._id}}-hold-strong"></label>
           </div>
           {{/multiboxes}}
         </div>
-
         <div class="crew-tier">
           {{#multiboxes data.tier}}
           <input id="crew-{{actor._id}}-tier-0" type="radio" name="data.tier" value="0">
-          <label for="crew-{{actor._id}}-tier-0" class="black-label">{{localize "BITD.Tier"}}</label>
+          <label for="crew-{{actor._id}}-tier-0" class="gray-label">{{localize "BITD.Tier"}}</label>
           <input id="crew-{{actor._id}}-tier-1" type="radio" name="data.tier" value="1">
           <label for="crew-{{actor._id}}-tier-1"></label>
           <input id="crew-{{actor._id}}-tier-2" type="radio" name="data.tier" value="2">
@@ -72,13 +64,13 @@
     </div>
   </section>
 
-
-  <section class="flex-horizontal">
+	{{!-- Reputation, Heat, Wanted --}}
+  <section class="flex-horizontal crew-reputation-heat">
     <div id="crew-{{actor._id}}-reputation" class="crew-reputation">
       {{#multiboxes data.reputation}}
       {{#repturf data.turfs_amount}}
       <input type="radio" id="crew-{{../actor._id}}-reputation-0" name="data.reputation" value="0" dtype="Radio">
-      <label class="black-label" for="crew-{{../actor._id}}-reputation-0">{{localize "BITD.Rep"}}</label>
+      <label class="gray-label" for="crew-{{../actor._id}}-reputation-0">{{localize "BITD.Rep"}}</label>
       <input type="radio" id="crew-{{../actor._id}}-reputation-1" name="data.reputation" value="1" dtype="Radio">
       <label for="crew-{{../actor._id}}-reputation-1"></label>
       <input type="radio" id="crew-{{../actor._id}}-reputation-2" name="data.reputation" value="2" dtype="Radio">
@@ -154,7 +146,7 @@
       <div id="crew-{{actor._id}}-heat" class="big-teeth">
         {{#multiboxes data.heat}}
         <input type="radio" id="crew-{{actor._id}}-heat-0" name="data.heat" value="0" dtype="Radio">
-        <label class="black-label" for="crew-{{actor._id}}-heat-0">{{localize "BITD.Heat"}}</label>
+        <label class="gray-label" for="crew-{{actor._id}}-heat-0">{{localize "BITD.Heat"}}</label>
         <input type="radio" id="crew-{{actor._id}}-heat-1" name="data.heat" value="1" dtype="Radio">
         <label for="crew-{{actor._id}}-heat-1"></label>
         <input type="radio" id="crew-{{actor._id}}-heat-2" name="data.heat" value="2" dtype="Radio">
@@ -179,7 +171,7 @@
       <div id="crew-{{actor._id}}-wanted-container" class="small-teeth-container crew-wanted-container">
         {{#multiboxes data.wanted}}
         <div id="crew-{{actor._id}}-wanted" class="small-teeth-wrap">
-          <label class="black-label" for="crew-{{actor._id}}-wanted-counter-0">{{localize "BITD.Wanted"}}</label>
+          <label class="gray-label" for="crew-{{actor._id}}-wanted-counter-0">{{localize "BITD.Wanted"}}</label>
           <div class="small-teeth">
             <input type="radio" id="crew-{{actor._id}}-wanted-counter-0" name="data.wanted" value="0">
             <input type="radio" id="crew-{{actor._id}}-wanted-counter-1" name="data.wanted" value="1">
@@ -198,10 +190,8 @@
     </div>
   </section>
 
-  <section class="flex-horizontal">
-
-    <div class="flex-vertical">
-
+  <section class="flex-horizontal crew-class-xp">
+    <div class="flex-vertical crew-class-box">
       <div id="crew-{{actor._id}}-class" class="class-name crew-class">
         {{#each actor.items as |item id|}}
         {{#if (eq item.type "crew_type")}}
@@ -211,7 +201,7 @@
         {{/each}}
       </div>
       <nav class="tabs flex-horizontal">
-        <a class="item" data-tab="turfs">{{localize "BITD.Turfs"}}</a>
+        <a class="item" data-tab="turfs">Claims</a>
         <a class="item" data-tab="upgrades">{{localize "BITD.Upgrades"}}</a>
         <a class="item" data-tab="abilities">{{localize "BITD.Abilities"}}</a>
         <a class="item" data-tab="cohorts">{{localize "BITD.Cohorts"}}</a>
@@ -220,12 +210,11 @@
       </nav>
     </div>
 
-
     {{!-- Crew XP --}}
-    <div class="flex-fertical">
+    <div class="flex-vertical crew-xp-box">
       <div class="big-teeth-section">
         <div id="crew-{{actor._id}}-xp" class="big-teeth">
-          <label class="black-label" for="crew-{{actor._id}}-experience-0">{{localize "BITD.CrewXP"}}</label>
+          <label class="gray-label" for="crew-{{actor._id}}-experience-0">{{localize "BITD.CrewXP"}}</label>
           {{#multiboxes data.experience}}
           <input type="radio" id="crew-{{actor._id}}-experience-0" name="data.experience" value="0" dtype="Radio">
           {{#crew_experience actor}}{{/crew_experience}}
@@ -233,7 +222,7 @@
         </div>
       </div>
       <div class="experience-clues-container">
-        <div class="experience-clues-description">{{localize "BITD.CrewExpClue1"}}</div>
+				<div class="experience-clues-description">Gain Experience When You...</div>
         <div class="experience-clues">
           {{#each actor.items as |item id|}}
           {{#if (eq item.type "crew_type")}}
@@ -243,16 +232,15 @@
         </div>
       </div>
     </div>
-
   </section>
 
   {{!-- Tabs --}}
-  <section class="tab-content">
+  <section class="tab-content nav-panel">
 
     {{!-- Turfs --}}
     <div class="tab" data-tab="turfs">
       <div class="label-stripe">
-        <p><label>{{localize "BITD.Turfs"}}</label></p>
+        <p><label>Claims</label></p>
       </div>
       {{#each actor.items as |item id|}}
       {{#if (eq item.type "crew_type")}}

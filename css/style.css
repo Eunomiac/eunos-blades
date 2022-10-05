@@ -358,8 +358,8 @@
   --blades-black-dark: #000;
   --blades-grey: #777;
   --blades-grey-dark: #444;
-  --blades-coin-gold: rgb(171,146,84);
-  --blades-coin-gold-bright: rgb(253,212,112);
+  --blades-coin-gold: rgb(171, 146, 84);
+  --blades-coin-gold-bright: rgb(253, 212, 112);
   font-family: "Minion Pro Caption Cond"; }
   * .eunos-blades.sheet textarea {
     color: var(--blades-white);
@@ -371,7 +371,8 @@
     background-color: var(--blades-grey); }
   * .eunos-blades.sheet.actor.pc .clock-zero-label {
     color: var(--blades-white); }
-  * .eunos-blades.sheet.actor.pc .stripe, * .eunos-blades.sheet.actor.pc .stripe label {
+  * .eunos-blades.sheet.actor.pc .stripe,
+  * .eunos-blades.sheet.actor.pc .stripe label {
     background-color: var(--blades-white) !important;
     color: var(--blades-black) !important; }
   * .eunos-blades.sheet.actor.pc .stripe-tooth-body label {
@@ -379,11 +380,11 @@
   * .eunos-blades.sheet.actor.pc label.black-label {
     background-color: var(--blades-white);
     color: var(--blades-black) !important; }
-  * .eunos-blades.sheet.actor.pc th.black-white, * .eunos-blades.sheet.actor.pc th.black-white label {
+  * .eunos-blades.sheet.actor.pc th.black-white,
+  * .eunos-blades.sheet.actor.pc th.black-white label {
     background-color: var(--blades-white) !important;
     text-shadow: none;
     color: var(--blades-black) !important;
-    font-family: "Historical FellType SC";
     font-family: "Kirsty";
     font-weight: normal;
     font-size: 20px;
@@ -391,29 +392,36 @@
     padding: 3px; }
   * .eunos-blades.sheet.actor.pc section.name-alias .portrait {
     max-height: 170px; }
-  * .eunos-blades.sheet.actor.pc section.name-alias .name-box, * .eunos-blades.sheet.actor.pc section.name-alias .alias-box {
+  * .eunos-blades.sheet.actor.pc section.name-alias .name-box,
+  * .eunos-blades.sheet.actor.pc section.name-alias .alias-box {
     font-family: "Historical FellType"; }
-    * .eunos-blades.sheet.actor.pc section.name-alias .name-box label, * .eunos-blades.sheet.actor.pc section.name-alias .alias-box label {
+    * .eunos-blades.sheet.actor.pc section.name-alias .name-box label,
+    * .eunos-blades.sheet.actor.pc section.name-alias .alias-box label {
       display: none; }
-    * .eunos-blades.sheet.actor.pc section.name-alias .name-box input, * .eunos-blades.sheet.actor.pc section.name-alias .alias-box input {
+    * .eunos-blades.sheet.actor.pc section.name-alias .name-box input,
+    * .eunos-blades.sheet.actor.pc section.name-alias .alias-box input {
       border-radius: 0;
       border: none;
       background: var(--blades-black-dark);
       height: 50px;
       color: var(--blades-white);
       font-size: 32px; }
-      * .eunos-blades.sheet.actor.pc section.name-alias .name-box input:focus, * .eunos-blades.sheet.actor.pc section.name-alias .alias-box input:focus {
+      * .eunos-blades.sheet.actor.pc section.name-alias .name-box input:focus,
+      * .eunos-blades.sheet.actor.pc section.name-alias .alias-box input:focus {
         -webkit-box-shadow: none;
         box-shadow: none;
         outline: 2px outset rgba(178, 178, 178, 0.5); }
-    * .eunos-blades.sheet.actor.pc section.name-alias .name-box.name-box, * .eunos-blades.sheet.actor.pc section.name-alias .alias-box.name-box {
+    * .eunos-blades.sheet.actor.pc section.name-alias .name-box.name-box,
+    * .eunos-blades.sheet.actor.pc section.name-alias .alias-box.name-box {
       width: 120%; }
-    * .eunos-blades.sheet.actor.pc section.name-alias .name-box.alias-box, * .eunos-blades.sheet.actor.pc section.name-alias .alias-box.alias-box {
+    * .eunos-blades.sheet.actor.pc section.name-alias .name-box.alias-box,
+    * .eunos-blades.sheet.actor.pc section.name-alias .alias-box.alias-box {
       position: relative;
       width: 80%;
       left: 20%;
       font-family: "Kirsty"; }
-      * .eunos-blades.sheet.actor.pc section.name-alias .name-box.alias-box input, * .eunos-blades.sheet.actor.pc section.name-alias .alias-box.alias-box input {
+      * .eunos-blades.sheet.actor.pc section.name-alias .name-box.alias-box input,
+      * .eunos-blades.sheet.actor.pc section.name-alias .alias-box.alias-box input {
         color: var(--blades-white-bright); }
   * .eunos-blades.sheet.actor.pc section.name-alias .character-traits > .item-block {
     display: grid;
@@ -453,7 +461,8 @@
       text-align: right;
       padding-right: 4px;
       color: var(--blades-white); }
-  * .eunos-blades.sheet.actor.pc section.name-alias .coin-box .stripe, * .eunos-blades.sheet.actor.pc section.name-alias .coin-box .stripe label {
+  * .eunos-blades.sheet.actor.pc section.name-alias .coin-box .stripe,
+  * .eunos-blades.sheet.actor.pc section.name-alias .coin-box .stripe label {
     background: var(--blades-black-dark) !important;
     color: var(--blades-white) !important;
     margin-bottom: 10px; }
@@ -589,6 +598,194 @@
   * .eunos-blades.sheet.actor.pc section.abilities .attributes .attribute .attributes-container .attribute-skill-label {
     color: var(--blades-white-bright);
     line-height: 14px; }
+  * .eunos-blades.sheet.actor.crew .crew-name-lair .portrait {
+    max-height: 100px; }
+  * .eunos-blades.sheet.actor.crew .window-content .actor-sheet .black-label, * .eunos-blades.sheet.actor.crew .window-content .actor-sheet .gray-label {
+    min-width: 60px;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    line-height: 30px; }
+  * .eunos-blades.sheet.actor.crew .window-content .actor-sheet .gray-label {
+    background-color: var(--blades-grey);
+    color: var(--blades-black) !important; }
+  * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .portrait {
+    max-height: 100px; }
+  * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-name-alias {
+    font-family: "Historical FellType";
+    width: 30%; }
+    * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-name-alias input[type="text"] {
+      border-radius: 0;
+      border: none;
+      background: var(--blades-black-dark);
+      height: 50px;
+      color: var(--blades-white);
+      font-size: 32px; }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-name-alias input[type="text"]:focus {
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        outline: 2px outset rgba(178, 178, 178, 0.5); }
+    * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-name-alias .crew-reputation {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      width: 100%;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      max-height: 28px;
+      text-align: left;
+      margin-top: 14px;
+      border: none; }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-name-alias .crew-reputation .item-class-label {
+        -webkit-box-flex: 0;
+        -ms-flex-positive: 0;
+        flex-grow: 0;
+        -ms-flex-negative: 2;
+        flex-shrink: 2;
+        -ms-flex-preferred-size: 25%;
+        flex-basis: 25%;
+        text-align: right;
+        padding-right: 5px;
+        color: var(--blades-white);
+        margin-bottom: 3px; }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-name-alias .crew-reputation .item {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        color: var(--blades-white-bright);
+        font-size: 16px;
+        line-height: 19px;
+        white-space: nowrap; }
+        * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-name-alias .crew-reputation .item .item-body img {
+          position: relative;
+          top: -2px;
+          margin-right: 2px; }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-name-alias .crew-reputation .item-control {
+        -ms-flex-preferred-size: 10px;
+        flex-basis: 10px;
+        text-align: right;
+        padding-right: 4px;
+        color: var(--blades-white); }
+  * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-lair-hold-tier-box .crew-lair {
+    margin-bottom: 5px; }
+    * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-lair-hold-tier-box .crew-lair input[type="text"] {
+      border-radius: 0;
+      border: none;
+      background: var(--blades-black-dark);
+      height: 30px;
+      color: var(--blades-white);
+      font-size: 18px;
+      margin-left: 5px; }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-lair-hold-tier-box .crew-lair input[type="text"]:focus {
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        outline: 2px outset rgba(178, 178, 178, 0.5); }
+  * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-lair-hold-tier-box .crew-hold-tier {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between; }
+    * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-lair-hold-tier-box .crew-hold-tier .crew-hold {
+      border-color: var(--blades-grey);
+      width: unset; }
+    * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-lair-hold-tier-box .crew-hold-tier .crew-tier {
+      min-width: 160px;
+      background-color: transparent;
+      border-color: var(--blades-grey); }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-lair-hold-tier-box .crew-hold-tier .crew-tier label {
+        background-color: var(--blades-white);
+        border: 1px var(--blades-white-bright) outset;
+        border-radius: 15px; }
+        * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-lair-hold-tier-box .crew-hold-tier .crew-tier label[for$="0"] {
+          background-color: var(--blades-grey) !important;
+          border: none !important;
+          border-radius: 0; }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-lair-hold-tier-box .crew-hold-tier .crew-tier input:checked ~ label {
+        background-color: rgba(128, 128, 128, 0.2);
+        border-style: inset;
+        border-color: var(--blades-grey);
+        -webkit-filter: none;
+        filter: none; }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-name-lair .crew-lair-hold-tier-box .crew-hold-tier .crew-tier input:checked + label {
+        background-color: var(--blades-white);
+        border-color: var(--blades-white-bright);
+        border-style: outset; }
+  * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-reputation-heat {
+    border-top: 3px solid var(--blades-grey); }
+    * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-reputation-heat .crew-reputation, * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-reputation-heat .crew-heat-wanted {
+      border: none; }
+  * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-class-xp {
+    position: relative;
+    top: -20px;
+    margin-bottom: -24px; }
+    * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-class-xp .crew-class-box .crew-class {
+      border-color: var(--blades-grey); }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-class-xp .crew-class-box .crew-class .big-name {
+        color: var(--blades-white-bright);
+        font-size: 64px;
+        -webkit-transform-origin: left;
+        -ms-transform-origin: left;
+        transform-origin: left;
+        -webkit-transform: scaleX(0.8);
+        -ms-transform: scaleX(0.8);
+        transform: scaleX(0.8);
+        padding-left: 10px;
+        max-width: 65%; }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-class-xp .crew-class-box .crew-class .big-description {
+        color: var(--blades-white);
+        font-family: Ravenscroft;
+        font-size: 48px;
+        line-height: 38px;
+        text-align: right;
+        padding-right: 5px;
+        min-width: 160px; }
+    * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-class-xp .crew-class-box nav.tabs {
+      background-color: var(--blades-white);
+      padding: 0 10px; }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-class-xp .crew-class-box nav.tabs .item {
+        color: var(--blades-black);
+        padding: 0 10px; }
+        * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-class-xp .crew-class-box nav.tabs .item.active {
+          background-color: var(--blades-white-bright); }
+        * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-class-xp .crew-class-box nav.tabs .item:hover {
+          color: var(--blades-black-dark);
+          background-color: var(--blades-white-bright); }
+    * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-class-xp .crew-xp-box {
+      position: relative;
+      left: -5px; }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-class-xp .crew-xp-box .big-teeth-section {
+        border-color: var(--blades-grey); }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-class-xp .crew-xp-box .experience-clues-container .experience-clues-description {
+        color: var(--blades-white-bright); }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.crew-class-xp .crew-xp-box .experience-clues-container .experience-clues {
+        font-style: normal;
+        font-family: "Minion Pro Caption Cond";
+        white-space: nowrap; }
+  * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.nav-panel .tab.active[data-tab="turfs"] .item {
+    position: relative;
+    left: -15px;
+    top: -10px; }
+    * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.nav-panel .tab.active[data-tab="turfs"] .item .turf-row .turf-block {
+      border-radius: 5px;
+      background-color: var(--blades-grey-dark); }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.nav-panel .tab.active[data-tab="turfs"] .item .turf-row .turf-block .connector {
+        background-color: var(--blades-grey-dark); }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.nav-panel .tab.active[data-tab="turfs"] .item .turf-row .turf-block .turf-control {
+        color: var(--blades-black);
+        text-shadow: 0 0 2px var(--blades-grey), 0 0 2px var(--blades-grey), 0 0 2px var(--blades-grey), 0 0 2px var(--blades-grey); }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.nav-panel .tab.active[data-tab="turfs"] .item .turf-row .turf-block .turf-name {
+        font-family: Kirsty;
+        text-transform: uppercase;
+        color: var(--blades-white);
+        margin-top: 10px; }
+      * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.nav-panel .tab.active[data-tab="turfs"] .item .turf-row .turf-block.turf-selected {
+        background-color: var(--blades-white);
+        color: var(--blades-black); }
+        * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.nav-panel .tab.active[data-tab="turfs"] .item .turf-row .turf-block.turf-selected .connector {
+          background-color: var(--blades-white); }
+        * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.nav-panel .tab.active[data-tab="turfs"] .item .turf-row .turf-block.turf-selected .turf-control {
+          color: var(--blades-white-bright);
+          text-shadow: 0 0 12px var(--blades-white-bright), 0 0 12px var(--blades-white-bright), 0 0 12px var(--blades-white-bright), 0 0 2px var(--blades-black-dark); }
+        * .eunos-blades.sheet.actor.crew .window-content .actor-sheet section.nav-panel .tab.active[data-tab="turfs"] .item .turf-row .turf-block.turf-selected .turf-name {
+          color: var(--blades-black-dark); }
 
 .eunos-blades {
   font-family: "Minion Pro", serif; }

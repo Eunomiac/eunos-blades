@@ -1,21 +1,20 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
 
+	{{!-- Top --}}
   <section id="character-{{actor._id}}-name-alias" class="flex-horizontal name-alias">
-
     <div class="grow-two actor-image">
-    <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" class="portrait" />
+    	<img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" class="portrait" />
     </div>
-
     <div class="grow-two actor-mid-top-col">
       <div id="character-{{actor._id}}-name-box" class="name-box">
         <label for="character-{{actor._id}}-name">{{localize "BITD.Name"}}</label>
         <input type="text" id="character-{{actor._id}}-name" class="name" name="name" value="{{actor.name}}">
       </div>
-
       <div id="character-{{actor._id}}-traits" class="flex-column character-traits">
-
         <div class="item-block flex-horizontal">
-          <div class="item-class-label"><a class="item-add-popup" data-distinct="true" data-item-type="heritage">{{localize "BITD.Heritage"}}</a></div>
+          <div class="item-class-label">
+						<a class="item-add-popup" data-distinct="true" data-item-type="heritage">{{localize "BITD.Heritage"}}</a>
+					</div>
           {{#each actor.items as |item id|}}
               {{#if (eq item.type "heritage")}}
               <div class="item flex-horizontal" data-item-id="{{item._id}}">
@@ -28,7 +27,6 @@
               {{/if}}
           {{/each}}
         </div>
-
         <div class="item-block flex-horizontal">
           <div class="item-class-label"><a class="item-add-popup" data-distinct="true" data-item-type="background">{{localize "BITD.Background"}}</a></div>
           {{#each actor.items as |item id|}}
@@ -43,7 +41,6 @@
             {{/if}}
           {{/each}}
         </div>
-
         <div class="item-block flex-horizontal">
           <div class="item-class-label"><a class="item-add-popup" data-distinct="true" data-item-type="vice">{{localize "BITD.Vice"}}</a></div>
           {{#each actor.items as |item id|}}
@@ -58,7 +55,6 @@
               {{/if}}
           {{/each}}
         </div>
-
         <div class="item-block flex-horizontal">
           <div class="item-class-label"><a class="item-add-popup" data-distinct="true" data-item-type="class">{{localize "BITD.Class"}}</a></div>
             {{#each actor.items as |item id|}}
@@ -72,25 +68,22 @@
                 </div>
                 {{/if}}
             {{/each}}
-          </div>
-
+				</div>
       </div>
     </div>
-
     <div class="grow-two actor-right-top-col">
       <div id="character-{{actor._id}}-alias-box" class="alias-box">
         <label for="character-{{actor._id}}-alias">{{localize "BITD.Alias"}}</label>
         <input type="text" id="character-{{actor._id}}-alias" class="alias" name="data.alias" value="{{data.alias}}">
       </div>
-
       {{> "systems/eunos-blades/templates/parts/coins.hbs" actor=actor}}
     </div>
-
   </section>
 
   {{!-- Experience --}}
   <section class="flex experience">
   </section>
+
   {{!-- Stress and Trauma --}}
   <section id="character-{{actor._id}}-stress-trauma" class="section big-teeth-section">
     <div id="character-{{actor._id}}-stress" class="big-teeth character-stress">
@@ -126,7 +119,6 @@
       </div>
       {{/traumacounter}}
     </div>
-
     <div id="character-{{actor._id}}-trauma-list" class="trauma-list">
       <label>
         <input type="checkbox" name="data.trauma.list.cold" value="cold" {{checked data.trauma.list.cold}}>
@@ -161,7 +153,6 @@
         <span class="checkmark">{{localize "BITD.TraumaVicious"}}</span>
       </label>
     </div>
-
   </section>
 
   {{!-- Harm, Healing and Armor --}}
@@ -225,14 +216,9 @@
     </div>
   </section>
 
-
-
-
   {{!-- Attributes --}}
   <section class="flex-horizontal abilities">
-
     <div class="tab-content flex-vertical grow-two nav-panel">
-
       {{!-- Nav menu --}}
       <nav class="tabs flex-horizontal">
         <a class="item" data-tab="abilities">{{localize "BITD.Abilities"}}</a>
@@ -244,6 +230,7 @@
         <a class="item" data-tab="all-character-items">{{localize "BITD.AllItems"}}</a>
       </nav>
 
+			{{!-- Abilities Tab --}}
       <div id="character-{{actor._id}}-abilities" class="tab flex-vertical abilities" data-tab="abilities">
         <div class="label-stripe">
           <p><label for="character-{{actor._id}}-experience-0">{{localize "BITD.Abilities"}}</label></p>
@@ -310,7 +297,7 @@
         <textarea rows="18" name="data.description">{{{data.description}}}</textarea>
       </div>
 
-      {{!-- Active Effects --}}
+      {{!-- Active Effects Tab --}}
       <div id="character-{{actor._id}}-effects" class="tab flex-vertical effects" data-tab="effects">
         <div class="label-stripe">
           <p>{{localize "BITD.Effects"}}</p>
@@ -318,7 +305,7 @@
         {{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
       </div>
 
-      {{!-- Full Item List --}}
+      {{!-- Full Item List Tab --}}
       <div class="tab grow-two flex-vertical all-items" data-tab="all-character-items">
         <div class="label-stripe">
           <p><label>{{localize "BITD.AllItems"}}</label></p>
@@ -333,7 +320,6 @@
         </div>
         {{/each}}
       </div>
-
     </div>
     {{!-- Attributes --}}
     {{> "systems/eunos-blades/templates/parts/attributes.hbs" actor=actor}}
