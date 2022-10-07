@@ -1,5 +1,5 @@
 import "./euno-blades-roll";
-import {BladesHelpers} from "../blades-helpers.js";
+import BladesHelpers from "../euno-helpers.js";
 
 declare global {
 	declare interface Game {

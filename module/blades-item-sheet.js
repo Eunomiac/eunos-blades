@@ -1,4 +1,4 @@
-import { BladesActiveEffect } from "./blades-active-effect.js";
+import BladesActiveEffect from "./euno-active-effect.js";
 export class BladesItemSheet extends ItemSheet {
     /** @override */
     static get defaultOptions() {

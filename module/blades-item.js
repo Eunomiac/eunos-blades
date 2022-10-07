@@ -1,4 +1,4 @@
-import { BladesHelpers } from "./blades-helpers.js";
+import BladesHelpers from "./euno-helpers.js";
 /**
  * Extend the basic Item
  * @extends {Item}

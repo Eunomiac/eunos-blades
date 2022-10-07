@@ -20,8 +20,6 @@
       <label class="label-stripe">{{localize "BITD.AdditionalInfo"}}</label>
       <textarea id="item-additional_info" type="text" name="data.additional_info" value="">{{data.additional_info}}</textarea>
       {{#if isGM}}
-<!--         <div class="label-stripe">{{localize "BITD.Logic"}}</div> -->
-<!--         <textarea name="data.logic">{{{data.logic}}}</textarea> -->
         <div class="label-stripe">{{localize "BITD.Effects"}}</div>
         <div id="effects">{{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}</div>
       {{/if}}

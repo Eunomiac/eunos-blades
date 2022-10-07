@@ -10,31 +10,27 @@ export class BladesActiveEffect extends ActiveEffect {
     isSuppressed = false;
     /* --------------------------------------------- */
     /** @inheritdoc */
-    apply(actor, change) {
-        if (this.isSuppressed) {
-            return null;
-        }
-        // this allows for math and actor data references in the change values. Probably not necessary for
-        // blades, but it was simple, and you never know what users will do. Probably ruin everything.
-        change.value = Roll.replaceFormulaData(change.value, actor.data);
-        try {
-            change.value = Roll.safeEval(change.value).toString();
-        }
-        catch (e) {
-            // this is a valid case, e.g., if the effect change simply is a string
-        }
-        let parsed;
-        try {
-            parsed = JSON.parse(change.value);
-        }
-        catch (e) {
-            // throw new Error("Error blades-active-effect.js ln 31", e);
-        }
-        if (parsed instanceof Array) {
-            change.value = parsed;
-        }
-        return super.apply(actor, change);
-    }
+    // apply(actor, change) {
+    // 	if ( this.isSuppressed ) {return null}
+    // 	// this allows for math and actor data references in the change values. Probably not necessary for
+    // 	// blades, but it was simple, and you never know what users will do. Probably ruin everything.
+    // 	change.value = Roll.replaceFormulaData(change.value, actor.data);
+    // 	try {
+    // 		change.value = Roll.safeEval(change.value).toString();
+    // 	} catch (e) {
+    // 		// this is a valid case, e.g., if the effect change simply is a string
+    // 	}
+    // 	let parsed;
+    // 	try{
+    // 		parsed = JSON.parse(change.value);
+    // 	} catch(e){
+    // 		// throw new Error("Error blades-active-effect.js ln 31", e);
+    // 	}
+    // 	if(parsed instanceof Array){
+    // 		change.value = parsed;
+    // 	}
+    // 	return super.apply(actor, change);
+    // }
     /* --------------------------------------------- */
     /**
    * Determine whether this Active Effect is suppressed or not.

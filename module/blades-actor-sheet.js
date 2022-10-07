@@ -1,5 +1,5 @@
 import { BladesSheet } from "./blades-sheet.js";
-import { BladesActiveEffect } from "./blades-active-effect.js";
+import BladesActiveEffect from "./euno-active-effect.js";
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {BladesSheet}
