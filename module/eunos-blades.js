@@ -13,8 +13,8 @@ import { BladesFactionSheet } from "./blades-faction-sheet.js";
 import DATA from "./data-importer.js";
 import { bladesRoll, simpleRollPopup } from "./euno-blades-roll.js";
 import BladesActiveEffect from "./euno-active-effect.js";
-BladesActiveEffect.RegisterHooks();
 import EunoTrackerSheet from "./euno-tracker-sheet.js";
+import EunoClockKeeperSheet from "./euno-clock-keeper-sheet.js";
 Object.assign(globalThis, {
     BladesHelpers: BladesHelpers,
     ClearNPCs: () => {
@@ -37,13 +37,9 @@ Hooks.once("init", async () => {
     $("html").attr("class", "-emu-layout");
     $("body.vtt.game.system-eunos-blades").addClass("-emu");
     // @ts-expect-error MIGRATION PAINS
-    game.blades = {
-        dice: bladesRoll
-    };
+    game.blades = { dice: bladesRoll };
     // @ts-expect-error MIGRATION PAINS
-    game.system.bobclocks = {
-        sizes: [4, 6, 8]
-    };
+    game.system.bobclocks = { sizes: [4, 6, 8] };
     CONFIG.Item.documentClass = BladesItem;
     CONFIG.Actor.documentClass = BladesActor;
     CONFIG.ActiveEffect.documentClass = BladesActiveEffect;
@@ -58,8 +54,14 @@ Hooks.once("init", async () => {
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("blades", BladesItemSheet, { types: ["faction", "item", "class", "ability", "heritage", "background", "vice", "crew_upgrade", "cohort", "crew_type", "crew_reputation", "crew_upgrade", "crew_ability"], makeDefault: true });
     Items.registerSheet("blades", EunoTrackerSheet, { types: ["gm_tracker"], makeDefault: true });
+    Items.registerSheet("blades", EunoClockKeeperSheet, { types: ["clock_keeper"], makeDefault: true });
     await preloadHandlebarsTemplates();
-    await loadTemplates([EunoTrackerSheet.template]);
+    // Initialize subclasses
+    await Promise.all([
+        BladesActiveEffect.Initialize(),
+        EunoTrackerSheet.Initialize(),
+        BladesItem.Initialize()
+    ]);
     registerHandlebarHelpers();
 });
 // getSceneControlButtons

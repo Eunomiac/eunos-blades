@@ -50,9 +50,7 @@
 			"healing": {
 				"clock_size": 4,
 				"clock_size_default": 4,
-				"value": [
-					0
-				]
+				"value": 0
 			},
 			"healing-clock": [
 				0
@@ -175,7 +173,7 @@
 				0
 			],
 			"lair": "",
-			"tier": "",
+			"tier": 0,
 			"deity": "",
 			"hold": [
 				"strong"
@@ -247,7 +245,8 @@
 			"crew_reputation",
 			"crew_upgrade",
 			"crew_ability",
-			"gm_tracker"
+			"gm_tracker",
+			"clock_keeper"
 		],
 		"templates": {
 			"default": {
@@ -610,6 +609,9 @@
 			}
 		},
 		"gm_tracker": {
+		},
+		"clock_keeper": {
+			"clock_keys": {}
 		}
 	}
 }

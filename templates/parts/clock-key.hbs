@@ -1,0 +1,23 @@
+{{#if data.isVisible}}
+	<div id="{{data.id}}" class="euno-clock-key" data-index="{{keyNum}}" data-size="{{data.numClocks}}">
+		{{#if data.isNameVisible}}
+		<label class="key-label">{{data.display}}</label>
+		{{/if}}
+		<div class="clock-label-container">
+			{{#each data.clocks as |clockData clockNum|}}
+			{{#if clockData.isNameVisible}}
+				<label class="key-clock-label {{#if clockData.isActive}}key-clock-active{{/if}}" data-clock-num="{{clockNum}}">{{clockData.display}}</label>
+			{{/if}}
+			{{/each}}
+		</div>
+		<div class="clock-key-container">
+			<img class="clock-key-bg" src="systems/eunos-blades/assets/clocks/key-{{data.numClocks}}-bg.webp" />
+			{{#each data.clocks as |clockData clockNum|}}
+			{{#if clockData.isVisible}}
+				{{> "systems/eunos-blades/templates/parts/clock.hbs" clockNum=clockNum data=clockData}}
+			{{/if}}
+			{{/each}}
+			<img class="clock-key-fg" src="systems/eunos-blades/assets/clocks/key-{{data.numClocks}}-fg.webp" />
+		</div>
+	</div>
+{{/if}}

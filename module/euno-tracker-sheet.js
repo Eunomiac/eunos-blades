@@ -13,7 +13,10 @@ export default class EunoTrackerSheet extends ItemSheet {
             viewPermissions: 0
         });
     }
-    static get template() { return "systems/eunos-blades/templates/tracker-sheet.hbs"; }
+    static async Initialize() {
+        await loadTemplates(["systems/eunos-blades/templates/tracker-sheet.hbs"]);
+        return;
+    }
     /* -------------------------------------------- */
     /** @override */
     async getData() {

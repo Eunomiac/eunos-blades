@@ -335,6 +335,7 @@ export function registerHandlebarHelpers() {
 	// {{/times_from_1}}
 
 	Handlebars.registerHelper("times_from_1", (n, block) => {
+		n = parseInt(n);
 		let accum = "";
 		for (let i = 1; i <= n; ++i) {
 			accum += block.fn(i);
@@ -351,6 +352,7 @@ export function registerHandlebarHelpers() {
 	// {{/times_from_0}}
 
 	Handlebars.registerHelper("times_from_0", (n, block) => {
+		n = parseInt(n);
 		let accum = "";
 		for (let i = 0; i <= n; ++i) {
 			accum += block.fn(i);

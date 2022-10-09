@@ -15,7 +15,7 @@ const CUSTOMFUNCS = {
     }
 };
 export default class BladesActiveEffect extends ActiveEffect {
-    static RegisterHooks() {
+    static Initialize() {
         /**
          * A hook event that fires when a custom active effect is applied.
          * @param {Actor} actor                   The actor the active effect is being applied to

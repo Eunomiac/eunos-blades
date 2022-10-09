@@ -1,0 +1,43 @@
+{{log "Clock Row" this}}
+<tr class="clock-row">
+	<td>
+		<input type="checkbox" class="clock-checkbox" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.isVisible" {{#if clockData}}{{checked clockData.isVisible}}{{/if}}>
+	</td>
+	<td>
+		<input type="checkbox" class="clock-checkbox" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.isNameVisible" {{#if clockData}}{{checked clockData.isNameVisible}}{{/if}}>
+		<input type="text" class="clock-input clock-input-display" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.display" value="{{#if clockData}}{{clockData.display}}{{/if}}">
+	</td>
+	{{#if clockData}}
+	<td>
+		<select data-type="number" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.size">
+			{{#select clockData.size}}
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="8">8</option>
+			<option value="10">10</option>
+			<option value="12">12</option>
+			{{/select}}
+		</select>
+		<select data-type="string" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.color" data-color="{{clockData.color}}">
+			{{#select clockData.color}}
+			<option value="yellow">■</option>
+			<option value="red">■</option>
+			<option value="blue">■</option>
+			<option value="white">■</option>
+			{{/select}}
+		</select>
+	</td>
+	<td>
+		<select data-type="number" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.value">
+			{{#select clockData.value}}
+			{{#times_from_0 clockData.size}}
+				<option value="{{this}}">{{this}}</option>
+			{{/times_from_0}}
+			{{/select}}
+		</select>
+	</td>
+	{{/if}}
+</tr>

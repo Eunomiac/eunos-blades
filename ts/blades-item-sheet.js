@@ -22,6 +22,9 @@ export class BladesItemSheet extends ItemSheet {
 
 	/** @override */
 	get template() {
+		if (this.item.data.type === "clock_keeper") {
+			return "systems/eunos-blades/templates/clock-keeper-sheet.hbs";
+		}
 		const path = "systems/eunos-blades/templates/items";
 		const simple_item_types = ["background", "heritage", "vice", "crew_reputation"];
 		let template_name = `${this.item.data.type}`;
@@ -64,7 +67,6 @@ export class BladesItemSheet extends ItemSheet {
 
 		// Prepare Active Effects
 		data.effects = BladesActiveEffect.prepareActiveEffectCategories(this.item.effects);
-
 		return data;
 	}
 }

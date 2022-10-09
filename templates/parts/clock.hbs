@@ -1,0 +1,11 @@
+<div class="euno-clock {{#if data.isActive}}euno-clock-active{{/if}}" data-index="{{clockNum}}" data-size="{{data.size}}" data-value="{{data.value}}">
+	<img class="clock-bg" src="systems/eunos-blades/assets/clocks/clock-bg.webp" />
+	{{log "Data.Value = " data.value}}
+	{{log "Eq Data.Value to 0 = " (eq data.value 0)}}
+	{{log "Eq Data.Value to '0' = " (eq data.value "0")}}
+	<img class="clock-glow" src="systems/eunos-blades/assets/clocks/clock-glow-{{data.color}}.webp" style="
+		{{#if (eq data.value "0")}}opacity: 0; {{else}}clip-path: url(#clockClip-{{data.size}}-{{data.value}}); {{/if}}
+		{{#if (eq data.value data.size)}}filter: brightness(0.5); {{else}}filter: saturate(3) brightness(3); {{/if}}
+	" />
+	<img class="clock-frame" src="systems/eunos-blades/assets/clocks/clock-{{data.size}}-frame.webp" />
+</div>

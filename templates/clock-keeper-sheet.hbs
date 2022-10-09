@@ -1,0 +1,70 @@
+<form class="{{cssClass}}" autocomplete="off">
+	<section class="header">
+		<h1>Clock Keeper</h1>
+	</section>
+	<section class="main">
+		<div class="scene-selection">
+			<label>Scene:</label>
+			<select name="data.targetScene">
+				{{#select data.targetScene}}
+				{{#each data.scenes}}
+				<option value="{{id}}">{{name}}</option>
+				{{/each}}
+				{{/select}}
+			</select>
+		</div>
+		<div class="keys-container">
+			<table>
+				<thead>
+					<th class="black-white">
+						<label class="check-label">Show</label>
+						<label class="check-label">Focus</label>
+					</th>
+					<th class="black-white">
+						<label class="check-label">Show<br/>Name</label>
+						Display Name
+					</th>
+					<th class="black-white">Clocks</th>
+					<th class="black-white"><a class="key-add"><i class="fas fa-plus-square"></i></a></th>
+				</thead>
+				<tbody>
+					{{#each data.clock_keys as |keyData keyID|}}
+					<tr>
+							<th class="black-white">
+								<input type="checkbox" class="key-checkbox" name="data.clock_keys.{{keyID}}.isVisible" {{checked keyData.isVisible}}>
+								{{#if keyData.isVisible}}
+								<input type="checkbox" class="key-checkbox" name="data.clock_keys.{{keyID}}.isActive" {{checked keyData.isActive}}>
+								{{/if}}
+							</th>
+							<th class="black-white">
+								{{#if keyData.isVisible}}
+								<input type="checkbox" class="key-checkbox" name="data.clock_keys.{{keyID}}.isNameVisible" {{checked keyData.isNameVisible}}>
+								{{/if}}
+								<input type="text" class="key-input key-input-display" name="data.clock_keys.{{keyID}}.display" value="{{keyData.display}}">
+							</th>
+							<th class="black-white">
+								<select class="key-clock-counter" data-type="number" data-id="{{keyID}}" name="data.clock_keys.{{keyID}}.numClocks">
+									{{#select keyData.numClocks}}
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									{{/select}}
+								</select>
+							</th>
+							<th class="black-white">
+								<p><a class="key-delete" title="Delete Key" data-id="{{keyID}}"><i class="fas fa-trash"></i></a></p>
+							</th>
+						</tr>
+						{{#times_from_1 keyData.numClocks}}
+						{{> "systems/eunos-blades/templates/parts/clock-sheet-row.hbs" keyID=keyID keyData=keyData clockData=(lookup keyData.clocks this) clockNum=this}}
+						{{/times_from_1}}
+					</tr>
+					{{/each}}
+				</tbody>
+			</table>
+		</div>
+	</section>
+</form>
