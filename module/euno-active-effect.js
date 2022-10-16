@@ -5,12 +5,15 @@ import BladesHelpers from "./euno-helpers.js";
  */
 const CUSTOMFUNCS = {
     addItem: async (actor, { name, type }) => {
+        console.log("addItem", { actor, name, type });
+        // Check if actor already has an item of that name.
+        if (actor.items.find((item) => item.name === name && item.type === type)) {
+            return;
+        }
         const itemsOfType = await BladesHelpers.getAllItemsByType(type, game);
-        console.log("All the Items:", itemsOfType);
         const newItem = itemsOfType.find((iData) => iData.name === name);
-        console.log("Found Item:", newItem);
         if (newItem) {
-            // actor.createEmbeddedDocuments("Item", [newItem]);
+            actor.createEmbeddedDocuments("Item", [newItem]);
         }
     }
 };
@@ -24,6 +27,7 @@ export default class BladesActiveEffect extends ActiveEffect {
          * @param {*} delta                       The parsed value of the change object
          * @param {object} changes                An object which accumulates changes to be applied
          */
+        CONFIG.ActiveEffect.documentClass = BladesActiveEffect;
         Hooks.on("applyActiveEffect", (actor, { effect, key, priority }, currentValue, { func, params }) => {
             if (typeof func === "string" && func in CUSTOMFUNCS) {
                 CUSTOMFUNCS[func](actor, params);

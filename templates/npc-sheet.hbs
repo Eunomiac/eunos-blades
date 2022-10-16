@@ -1,17 +1,62 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
-    <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
-	<input type="text" id="character-{{actor._id}}-name" name="name" value="{{actor.name}} ">
-	<label for="character-{{actor._id}}-name">Name</label>
-	<input type="text" id="character-{{actor._id}}-short-description" name="data.description_short" value="{{data.description_short}} ">
-	<label for="character-{{actor._id}}-short-description">Short description</label>
-	<input type="text" id="character-{{actor._id}}-associated-class" name="data.associated_class" value="{{data.associated_class}} ">
-	<label for="character-{{actor._id}}-associated-class">Associated Class</label>
-	<input type="text" id="character-{{actor._id}}-description" name="data.description" value="{{data.description}} ">
-	<label for="character-{{actor._id}}-description">Description</label>
-	<input type="text" id="character-{{actor._id}}-associated-crew-type" name="data.associated_crew_type" value="{{data.associated_crew_type}} ">
-	<label for="character-{{actor._id}}-associated-crew-type">Associated Crew Type</label>
-	<input type="text" id="character-{{actor._id}}-notes" name="data.notes" value="{{data.notes}} ">
-	<label for="character-{{actor._id}}-notes">Notes</label>
-	<input type="text" id="character-{{actor._id}}-associated-faction" name="data.associated_faction" value="{{data.associated_faction}}" >
-	<label for="character-{{actor._id}}-associated-faction">Associated Faction</label>
+	<img class="npc-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+	<input class="npc-name" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
+	<input class="npc-alias" type="text" name="data.alias" value="{{data.alias}}" placeholder="Alias">
+	<input class="npc-concept" type="text" name="data.concept" value="{{data.concept}}" placeholder="Concept">
+	<div class="npc-arena labelled-input">
+		<label>Arena:</label>
+		<input type="text" name="data.arena" value="{{data.arena}}">
+	</div>
+	<div class="npc-heritage labelled-input">
+		<label>Heritage:</label>
+		<input type="text" name="data.heritage" value="{{data.heritage}}">
+	</div>
+	<div class="npc-district labelled-input">
+		<label>District:</label>
+		<input type="text" name="data.district" value="{{data.district}}">
+	</div>
+	<div class="npc-faction labelled-input">
+		<label>Faction:</label>
+		<input type="text" name="data.faction" value="{{data.faction}}">
+	</div>
+	<div class="npc-allies labelled-input">
+		<label>Allies:</label>
+		<input type="text" name="data.allies" value="{{data.allies}}">
+	</div>
+	<div class="npc-enemies labelled-input">
+		<label>Enemies:</label>
+		<input type="text" name="data.enemies" value="{{data.enemies}}">
+	</div>
+	<div class="npc-traits input-group">
+		<input type="text" name="data.traits.0" value="{{data.traits.[0]}}" placeholder="Trait">
+		<input type="text" name="data.traits.1" value="{{data.traits.[1]}}" placeholder="Trait">
+		<input type="text" name="data.traits.2" value="{{data.traits.[2]}}" placeholder="Trait">
+	</div>
+	<input class="npc-short-description" type="text" name="data.description_short" value="{{data.description_short}}" placeholder="Short Description">
+	<div class="npc-tabs">
+		<div class="folding-block npc-description">
+  		<input type="radio" name="{{actor.id}}_nav_tab" id="{{actor.id}}_nav-npc-description" checked/>
+  		<label for="{{actor.id}}_nav-npc-description"><span>Description</span></label>
+			<div class="folding-block-content">
+				{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+			</div>
+		</div>
+
+		<div class="folding-block npc-notes">
+  		<input type="radio" name="{{actor.id}}_nav_tab" id="{{actor.id}}_nav-npc-notes" />
+  		<label for="{{actor.id}}_nav-npc-notes"><span>Notes</span></label>
+			<div class="folding-block-content">
+				{{editor content=data.notes target="data.notes" button=true owner=owner editable=editable}}
+			</div>
+		</div>
+		{{#if data.isGM}}
+		<div class="folding-block npc-notes_gm">
+  		<input type="radio" name="{{actor.id}}_nav_tab" id="{{actor.id}}_nav-npc-notes_gm" />
+  		<label for="{{actor.id}}_nav-npc-notes_gm"><span>GM Notes</span></label>
+			<div class="folding-block-content">
+				{{editor content=data.notes_gm target="data.notes_gm" button=true owner=owner editable=editable}}
+			</div>
+		</div>
+		{{/if}}
+	</div>
 </form>

@@ -14,8 +14,8 @@ export default class EunoTrackerSheet extends ItemSheet {
         });
     }
     static async Initialize() {
-        await loadTemplates(["systems/eunos-blades/templates/tracker-sheet.hbs"]);
-        return;
+        Items.registerSheet("blades", EunoTrackerSheet, { types: ["gm_tracker"], makeDefault: true });
+        return loadTemplates(["systems/eunos-blades/templates/tracker-sheet.hbs"]);
     }
     /* -------------------------------------------- */
     /** @override */

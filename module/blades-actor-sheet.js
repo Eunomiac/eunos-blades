@@ -24,6 +24,9 @@ export class BladesActorSheet extends BladesSheet {
         const actorData = data.data;
         data.actor = actorData;
         data.data = actorData.data;
+        data.sheet_tab = data.sheet_tab || "npc-description";
+        // Migrate to new data
+        data.faction = data.faction || data.associated_faction || "";
         // Prepare active effects
         data.effects = BladesActiveEffect.prepareActiveEffectCategories(this.actor.effects);
         // Calculate Load

@@ -19,7 +19,6 @@ $hover-brightness: 0.8;
 @import 'import/mixin';
 @import 'fonts';
 
-
 //namespacing to avoid conflicts with other modules
 .eunos-blades {
   // font-family: "Minion Pro", serif;
@@ -46,9 +45,6 @@ $hover-brightness: 0.8;
 //top-level styles
 @import 'import/chat';
 @import 'import/dialogs';
-//@import 'import/tooltip';
 
-// Clock overlay styles
-
-// Override emu variables
+// Override emu styles
 @import './emu-overrides';

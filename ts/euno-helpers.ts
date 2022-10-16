@@ -165,7 +165,7 @@ export default class BladesHelpers {
    */
 	static getAttributeLabel(attribute_name: string) {
 		const attribute_labels: Record<string, string> = {};
-		const attributes = game.system.model.Actor.character.attributes as Record<string,{label: string, skills: Record<string, {label: string}>}>;
+		const attributes = game.system.model.Actor.character.attributes;
 
 		for (const att_name in attributes) {
 			attribute_labels[att_name] = attributes[att_name].label;
@@ -185,7 +185,7 @@ export default class BladesHelpers {
    * @returns {Boolean}
    */
 	static isAttributeAction(attribute_name: string) {
-		const attributes = game.system.model.Actor.character.attributes as Record<string,unknown>;
+		const attributes = game.system.model.Actor.character.attributes;
 
 		return !(attribute_name in attributes);
 	}

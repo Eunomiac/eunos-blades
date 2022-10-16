@@ -9,9 +9,9 @@ export class BladesNPCSheet extends BladesSheet {
 	/** @override */
 	static get defaultOptions() {
 	  return foundry.utils.mergeObject(super.defaultOptions, {
-			classes: ["eunos-blades", "sheet", "actor"],
+			classes: ["eunos-blades", "sheet", "actor", "npc"],
 			template: "systems/eunos-blades/templates/npc-sheet.hbs",
-			width: 900,
+			width: 500,
 			height: "auto",
 			tabs: [{navSelector: ".tabs", contentSelector: ".tab-content"}]
 		});

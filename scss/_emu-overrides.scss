@@ -1,320 +1,22 @@
 :root {
 	* {
-			--color-primary: 64, 64, 64;
-			--color-background: 46, 46, 46;
-			--color-background-lightest: 21, 21, 21;
-			--color-background-light: 74, 74, 74;
-			--color-background-darkest: 21, 21, 21;
-			--color-background-button: 68, 68, 68;
-			--color-background-chat-message: 51, 51, 51;
-			--color-background-chat-message-whisper: 28, 43, 44;
-			--color-background-chat-message-blind: 42, 65, 63;
-			--color-border: 74, 74, 74;
-			--color-border-lighter: 125, 125, 125;
-			--color-folder-header: 74, 74, 74;
-			--color-folder-directory: 21, 21, 21;
-			--color-folder-subdirectory: 125, 125, 125;
-			--color-text: 186, 186, 186;
-			--color-text-lightest: 224, 224, 224;
-			--color-text-darker: 203, 203, 203;
-			--emu-border-radius-default: 0px;
-			--emu-border-radius-controls: 0px;
-			--emu-border-radius-forms: 0px;
-			--emu-border-radius-images: 0px;
-			--emu-font-size-md: 0.875rem;
-			--emu-font-size-lg: 1rem;
-			--emu-font-size-xl: 1.25rem;
-			--emu-font-size-xxl: 1.5rem;
-			--emu-font-size-sm: 0.75rem;
-			--emu-font-size-xs: 0.625rem;
-			--emu-font-size-chat-roll: 1.125rem;
-			--emu-image-background: none;
-			--emu-image-background-lightest: none;
-			--emu-image-background-light: none;
-			--emu-image-background-darkest: none;
-			--emu-image-background-controls: none;
-			--emu-background-opacity-button-primary: 1;
-			--emu-background-opacity-hotbar: 0.8;
-			--emu-background-opacity-hud: 0.8;
-			--emu-background-opacity-players: 0.8;
-			--emu-background-opacity-scene-control: 0.8;
-			--emu-background-opacity-scene-navigation: 0.8;
-			--emu-background-opacity-sidebar: 0.8;
-			--emu-background-opacity-window: 1;
-			--emu-background-opacity-window-content: 1;
-			--emu-subtle-opacity: 0.3;
-
-			--color-shadow-primary: var(--blades-white-bright);
-			--color-text-dark-primary: var(--blades-white);
-			--color-bg-option: var(--blades-black);
-
-			--blades-white: rgb(200, 200, 200);
-			--blades-white-bright: rgb(255, 255, 255);
-			--blades-black: #101010;
-			--blades-black-dark: #000;
-			--blades-grey-bright: #AAA;
-			--blades-grey: #777;
-			--blades-grey-dark: #444;
-			--blades-coin-gold: rgb(171, 146, 84);
-			--blades-coin-gold-bright: rgb(253, 212, 112);
+		@import './emu-overrides/vars';
+		@import './emu-overrides/globals';
 	}
-	body, body.vtt.game, body.vtt.game.system-eunos-blades, body.vtt.game.system-eunos-blades.-emu {
-        
-        h1 {
-            border: none;
-            font-family: Kirsty;
-            text-transform: uppercase;
-            color: var(--blades-white-bright);
-        }
+
+	body,
+	body.vtt.game,
+	body.vtt.game.system-eunos-blades,
+	body.vtt.game.system-eunos-blades.-emu {
 
 		#euno-clock-keeper-overlay {
-            --top-shift: 0px;
-            --left-shift: -50px;
-            --flex-basis: 170px;
-            > h1 { display: none }
-			position: absolute;
-            display: block;
-			top: var(--top-shift);
-			left: var(--left-shift);
-			pointer-events: none;
-			z-index: 50;
-			height: calc(100% - var(--top-shift));
-			width: calc(100% - var(--left-shift));
-            // background: rgba(0, 0, 255, 0.2);
-            display: flex;
-            flex-direction: row;
-            justify-content: start;
-            justify-items: start;
-            align-content: start;
-            align-items: start;
-
-            > * {
-                // flex-grow: 0;
-                // flex-shrink: 2;
-                flex-basis: var(--flex-basis);
-            }
-
-            img { border: none }
-
-            .euno-clock-key {
-                --key-scale: 0.35;
-                --key-rotation: 90deg;
-                --key-horiz-shift: 0px;
-                --key-vert-shift: 0px;
-
-                --key-title-vert-shift: 1150px;
-                --key-title-horiz-shift: 340px;
-
-                // opacity: 0;
-                // &[data-index="6"] {opacity: 1; position: absolute; left: 200px;}
-                // filter: brightness(1.25);
-
-
-                position: relative;
-                display: block;
-                width: 1222px;
-                height: 411px;
-                // background: rgba(255,0,0,0.2);
-                top: 0;
-                left: 0;
-                transform-origin: top left;
-                transform: scale(var(--key-scale));
-
-                .key-label {
-                    position: absolute;
-                    color: var(--blades-white-bright);
-                    font-family: UglyQua;
-                    font-style: italic;
-                    font-size: 24px;
-                    line-height: 28px;
-                    text-align: left;
-                    z-index: 100;
-                    top: var(--key-title-vert-shift);
-                    left: var(--key-title-horiz-shift);
-                    width: 200px;
-                    transform-origin: center;
-                    transform: scale(calc(1 / var(--key-scale)));
-                    margin: 0 auto;
-                    display: block;
-                    overflow: visible;
-                    text-shadow: 0 0 5px var(--blades-black-dark),
-                        0 0 5px var(--blades-black-dark),
-                        0 0 5px var(--blades-black-dark);
-                }
-
-                .clock-label-container {
-                    position: absolute;
-                    .key-clock-label {
-                        position: absolute;
-                        // background: magenta;
-                        font-family: Kirsty;
-                        font-size: 12px;
-                        // white-space: nowrap;
-                        color: var(--blades-white);
-                        width: 100px;
-                        top: var(--clock-label-vert-shift);
-                        left: var(--clock-label-horiz-shift);
-                        transform-origin: top center;
-                        transform: scale(calc(1 / var(--key-scale)));
-                        z-index: 2;
-                        display: block;
-                        overflow: visible;
-                        text-align: var(--clock-label-text-align);
-                        text-shadow: 0 0 5px var(--blades-black-dark),
-                            0 0 5px var(--blades-black-dark),
-                            0 0 5px var(--blades-black-dark);
-                    }
-                }
-
-                .clock-key-container {
-                    // background: rgba(0, 255, 0, 0.2);
-                    position: absolute;
-                    height: 411px;
-                    width: 1222px;
-                    top: 411px;
-                    left: 0%;
-                    transform-origin: bottom;
-                    transform: translate(-50%, -50%) translate(var(--key-horiz-shift), var(--key-vert-shift)) rotate(var(--key-rotation)) ;
-                    filter:  drop-shadow(40px -40px 30px black);
-
-                    .clock-key-bg, .clock-key-fg {
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        display: block;
-                    }
-                    .euno-clock {
-                        --clock-scale: 0.25;
-                        --clock-top-shift: 0px;
-                        --clock-left-shift: 0px;
-                        position: absolute;
-                        width: 400px;
-                        height: 400px;
-                        left: var(--clock-top-shift);
-                        top: var(--clock-left-shift);
-                        transform: scale(var(--clock-scale)) rotate(-90deg);
-                        .clock-bg, .clock-glow, .clock-frame {
-                            position: absolute;
-                        }
-                    }
-
-                }
-
-                &[data-size="1"] {
-                    // display: none;
-                    --key-vert-shift: -300px;
-                    --key-title-vert-shift: 850px;
-                    margin-left: -25px;
-                    margin-right: -25px;
-                    .euno-clock[data-index="1"] {
-                        --clock-top-shift: 284px;
-                        --clock-left-shift: 4px;
-                        --clock-scale: 0.53;
-                    }
-                }
-
-                &[data-size="2"] {
-                    // display: none;
-                    --key-vert-shift: -300px;
-                    --key-title-vert-shift: 850px;
-                    margin-left: -25px;
-                    margin-right: -25px;
-                    .euno-clock[data-index="1"] {
-                        --clock-top-shift: 284px;
-                        --clock-left-shift: 4px;
-                    }
-                    .euno-clock[data-index="2"] {
-                        --clock-top-shift: 527px;
-                        --clock-left-shift: 6px;
-                    }
-                }
-
-                &[data-size="3"] {
-                    // display: none;
-                    .euno-clock[data-index="1"] {
-                        --clock-top-shift: -85px;
-                        --clock-left-shift: 6px;
-                    }
-                    .euno-clock[data-index="2"] {
-                        --clock-top-shift: 6px;
-                        --clock-left-shift: 70px;
-                    }
-                    .euno-clock[data-index="3"] {
-                        --clock-top-shift: 6px;
-                        --clock-left-shift: -58px;
-                    }
-                }
-
-                &[data-size="4"], &[data-size="5"], &[data-size="6"] {
-                    // display: none;
-                    // --key-scale: 1;
-                    .euno-clock[data-index="1"] {
-                        --clock-top-shift: -85px;
-                        --clock-left-shift: 6px;
-                    }
-                    .key-clock-label[data-clock-num="1"] {
-                        // background: magenta;
-                        --clock-label-horiz-shift: 150px;
-                        --clock-label-vert-shift: 25px;
-                        --clock-label-text-align: center;
-                        transform-origin: bottom center;
-                        // width: 50px;
-                    }
-                    .euno-clock[data-index="2"] {
-                        --clock-top-shift: 6px;
-                        --clock-left-shift: 97px;
-                    }
-                    .key-clock-label[data-clock-num="2"] {
-                        // background: magenta;
-                        --clock-label-horiz-shift: 0px;
-                        --clock-label-vert-shift: 120px;
-                        --clock-label-text-align: center;
-                        transform-origin: bottom center;
-                    }
-                    .euno-clock[data-index="3"] {
-                        --clock-top-shift: 6px;
-                        --clock-left-shift: -85px;
-                    }
-                    .key-clock-label[data-clock-num="3"] {
-                        --clock-label-horiz-shift: 340px;
-                        --clock-label-vert-shift: 260px;
-                        --clock-label-text-align: left;
-                    }
-                    .euno-clock[data-index="4"] {
-                        --clock-top-shift: 98px;
-                        --clock-left-shift: 6px;
-                    }
-                    .key-clock-label[data-clock-num="4"] {
-                        --clock-label-horiz-shift: -30px;
-                        --clock-label-vert-shift: 330px;
-                        --clock-label-text-align: right;
-                    }
-                    .euno-clock[data-index="5"] {
-                        --clock-top-shift: 283px;
-                        --clock-left-shift: 6px;
-                    }
-                    .key-clock-label[data-clock-num="5"] {
-                        --clock-label-horiz-shift: 340px;
-                        --clock-label-vert-shift: 520px;
-                        --clock-label-text-align: left;
-                    }
-                    .euno-clock[data-index="6"] {
-                        --clock-top-shift: 527px;
-                        --clock-left-shift: 6px;
-                    }
-                    .key-clock-label[data-clock-num="6"] {
-                        --clock-label-horiz-shift: -30px;
-                        --clock-label-vert-shift: 770px;
-                        --clock-label-text-align: right;
-                    }
-                }
-
-            }
+			@import './emu-overrides/euno-clocks-overlay';
 		}
 
-		font-family: "Minion Pro Caption Cond";
-
-		#controls, #navigation, #hotbar, #players {
+		#controls,
+		#navigation,
+		#hotbar,
+		#players {
 			opacity: 0.3;
 			transition: 0.25s;
 			&:hover { opacity: 1 }
@@ -322,159 +24,30 @@
 
 		.app.window-app {
 			font-family: "Minion Pro Caption Cond";
+
 			&.sheet {
 				@import './emu-overrides/sheets';
 			}
+
 			&.eunos-blades {
-                &.actor {
-                    &.pc { @import './emu-overrides/actor-sheet' }
-                    &.crew { @import './emu-overrides/crew-sheet' }
-                }
-                &.item {                    
-                    &.clock-keeper {
-                        select, input[type="text"] {
-                            border: none;
-                            padding: none;
-                            background: rgba(0, 0, 0, 0.25);
-                            box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
-                            border-radius: 0;
-                            height: 25px;
-                            margin: 0;
-                            padding: 0;
-                            vertical-align: top;
-                            &[data-type="string"] {
-                                --select-color: 0,0,0;
-                                color: transparent;
-                                text-align: center;
-                                width: 25px;
-                                margin-left: 10px;
-                                border-radius: 12.5px;
-                                background: rgba(var(--select-color),0.25);
-                                box-shadow: inset 0px 0px 15px rgba(var(--select-color), 1);
-                                outline: 2px solid rgba(var(--select-color), 1);
-                                &[data-color="yellow"] {
-                                    --select-color: 255,255,0;
-                                }
-                                &[data-color="blue"] {
-                                    --select-color: 0,255,255;
-                                }
-                                &[data-color="white"] {
-                                    --select-color: 255,255,255;
-                                }
-                                &[data-color="red"] {
-                                    --select-color: 255,0,0;
-                                }
-                            }
-                            &[data-type="number"] {
-                                width: 45px;
-                                // margin-top: 1px;
-                                text-align: right;
-                                padding-top: 2px;
-                            }
-                        }                        
-                        input[type="text"] {
-                            // border: none;
-                            // border-radius: 0;
-                            width: calc(100% - 35px);
-                            margin-top: 1px;
-                            text-indent: 5px;
-                            // color: var(--blades-black);
-                            // font-family: "Historical FellType";
-                            // font-family: "Historical FellType SC";
-                            // font-family: "IM FELL Double Pica";
-                            // font-family: "IM FELL Double Pica SC";
-                            font-family: "Minion Pro";
-                            // font-family: "Minion Pro Cond";
-                            // font-family: "Minion Pro Caption";
-                            // font-family: "Minion Pro Caption Cond";
-                            // font-family: UglyQua;
-                            // font-style: italic;
-                            // padding-top: 2px;
-                        }
-                        section.header {
-                            h1 { margin: 0}
-                        }
-                        .scene-selection {
-                            label {
-                                font-family: Kirsty;
-                            }
-                            position: absolute;
-                            top: 12px;
-                            right: 0;
-                            select {
-                                font-family: Kirsty;
-                                color: var(--blades-white-bright);
-                                background: var(--blades-black-dark);
-                                border: none;
-                                width: 200px;
-                            }
-                        }
-                        table {
-                            margin: 0;
-                            .check-label {
-                                font-size: 10px;
-                                margin: 0;
-                                padding: 0;
-                                background: none !important;
-                                text-transform: uppercase;
-                                // position: relative;
-                                transform: rotate(-45deg) scale(0.9);
-                                display: inline-block;
-                                text-align: center;
-                                line-height: 9px;
-                                height: 100%;
-                                min-height: 100%;
-                                vertical-align: middle;
-                                margin-top: -5px;
-                                // min-width: 32px;
-                                // width: 32px;
-                                // max-width: 32px;
-                                // min-height: 10px;
-                                // height: 10px;
-                                // max-height: 10px;
-                                
-                            }
-                            thead {
-                                th.black-white {
-                                    background: var(--blades-white-bright) !important;
-                                }
-                            }
-                            // border: 1px dotted red;
-                            // th, td { border: 1px dotted orange;}
-                            th, td {
-                                text-align: left;
-                                color: var(--blades-white);
-                                p { margin: 0}
-                                &:nth-child(1) { width: 64px; white-space: nowrap; }
-                                &:nth-child(2) { width: 60% }
-                                &:nth-child(3), &:nth-child(4) {
-                                    text-align: center;
-                                }
-                            }
-                            th {
-                                input {
-                                    color: var(--blades-black);
-                                }
-                                select {
-                                    color: var(--blades-black);
-                                    text-align: center;
-                                }
-                            }
-                            td {
-                                select[data-type="number"] {
-                                    vertical-align: top;
-                                    &[data-type="number"] {
-                                    font-family: Kirsty;
-                                    font-size: 18px;
-                                        color: var(--blades-white-bright);
-                                    
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                
+				&.actor {
+					&.pc {
+						@import './emu-overrides/pc-sheet'
+					}
+					&.npc {
+						@import './emu-overrides/npc-sheet';
+					}
+
+					&.crew {
+						@import './emu-overrides/crew-sheet'
+					}
+				}
+
+				&.item {
+					&.clock-keeper {
+						@import './emu-overrides/clock-keeper-sheet'
+					}
+				}
 			}
 		}
 	}

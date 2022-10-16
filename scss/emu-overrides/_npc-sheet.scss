@@ -1,0 +1,138 @@
+
+    input[type="text"] {
+        padding: 0;
+        border: none;
+        font-size: larger;
+        margin-top: -2px;
+        background: black;
+        padding: 5px;
+        // box-shadow: inset 0px 0px 10px rgba(255, 255, 255, 0.5);
+        color: var(--blades-white-bright);
+        border-radius: 0;
+    }
+
+.labelled-input {
+    display: flex;
+    flex-direction: column;
+
+    label {
+        color: var(--blades-grey);
+        font-size: 10px;
+        line-height: 10px;
+        // border-top: 1px dotted var(--blades-white);
+        text-align: left;
+        padding-bottom: 2px;
+    }
+}
+
+.window-content {
+    .actor-sheet {
+
+            label {
+            text-shadow:
+                0 0 4px var(--blades-black-dark),
+                0 0 4px var(--blades-black-dark),
+                0 0 4px var(--blades-black-dark),
+                0 0 4px var(--blades-black-dark);
+            }
+        input[type="text"] {
+
+                box-shadow: none;
+                background: rgba(0,0,0,0.25);
+
+            text-shadow:
+                0 0 4px var(--blades-black-dark),
+                0 0 4px var(--blades-black-dark),
+                0 0 4px var(--blades-black-dark),
+                0 0 4px var(--blades-black-dark);
+        }
+        .labelled-input {
+            margin-top: 4px;
+            input[type="text"] {
+                font-size: 14px;
+                height: 18px;
+        font-family: Kirsty;
+        text-transform: uppercase;
+            }
+        }
+				height: auto;
+				margin-bottom: 100px;
+        display: grid;
+				--folding-block-height: 150px;
+				// height: 450px;
+        grid-template-areas:
+            ". name name name name name name name"
+            ". . concept concept concept concept concept concept"
+            ". . traits traits traits traits arena arena"
+            ". . heritage heritage district district faction faction"
+            "short-desc short-desc short-desc short-desc short-desc short-desc short-desc short-desc"
+            "tabs tabs tabs tabs tabs tabs tabs tabs";
+        grid-template-columns: 65px 15px 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-rows: 36px 14px 20px 32px 32px var(--folding-block-height);
+        grid-column-gap: 2px;
+        grid-row-gap: 4px;
+
+        > * {
+            position: relative;
+            z-index: 2;
+            flex-grow: 0;
+        }
+
+        .npc-img {
+            position: absolute;
+            height: 154px;
+            top: -10px;
+            left: -10px;
+            z-index: 1;
+            border: none;
+        }
+        .npc-name {
+            grid-area: name;
+		    font-family: "Historical FellType";
+            font-size: 32px;
+            height: 32px;
+            box-shadow: none;
+            background: none;
+            text-indent: 3px;
+            text-shadow:
+                0 0 4px var(--blades-black-dark),
+                0 0 4px var(--blades-black-dark),
+                0 0 4px var(--blades-black-dark),
+                0 0 4px var(--blades-black-dark);
+        }
+        .npc-alias { display: none; }
+        .npc-concept {
+            grid-area: concept;
+            height: 100%;
+            font-variant: small-caps;
+            color: var(--blades-white);
+            box-shadow: none;
+            top: -5px;
+        }
+        .npc-traits {
+            grid-area: traits;
+            display: flex;
+            font-family: Kirsty;
+            font-size: 10px;
+            input {
+            text-transform: uppercase;
+                text-align: center;
+                color: cyan;
+            }
+        }
+        .npc-arena { grid-area: arena; top: -10px }
+        .npc-heritage { grid-area: heritage; }
+        .npc-district { grid-area: district; }
+        .npc-faction { grid-area: faction; }
+        .npc-short-description {
+            grid-area: short-desc;
+            font-style: italic;
+            text-align: center;
+            width: calc(100% + 20px);
+            left: -10px;
+        }
+        .npc-tabs { grid-area: tabs; height: 100%; }
+
+        .npc-allies, .npc-enemies {display: none }
+    }
+}

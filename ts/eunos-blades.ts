@@ -48,14 +48,11 @@ Hooks.once("init", async () => {
 	$("html").attr("class", "-emu-layout");
 	$("body.vtt.game.system-eunos-blades").addClass("-emu");
 
-	// @ts-expect-error MIGRATION PAINS
 	game.blades = {dice: bladesRoll};
-	// @ts-expect-error MIGRATION PAINS
 	game.system.bobclocks = {sizes: [ 4, 6, 8 ]};
 
 	CONFIG.Item.documentClass = BladesItem;
 	CONFIG.Actor.documentClass = BladesActor;
-	CONFIG.ActiveEffect.documentClass = BladesActiveEffect;
 
 	// Register System Settings
 	registerSystemSettings();
@@ -69,16 +66,13 @@ Hooks.once("init", async () => {
 
 	Items.unregisterSheet("core", ItemSheet);
 	Items.registerSheet("blades", BladesItemSheet, {types: ["faction", "item", "class", "ability", "heritage", "background", "vice", "crew_upgrade", "cohort", "crew_type", "crew_reputation", "crew_upgrade", "crew_ability"], makeDefault: true});
-	Items.registerSheet("blades", EunoTrackerSheet, {types: ["gm_tracker"], makeDefault: true});
-	Items.registerSheet("blades", EunoClockKeeperSheet, {types: ["clock_keeper"], makeDefault: true});
-
-	await preloadHandlebarsTemplates();
 
 	// Initialize subclasses
 	await Promise.all([
 		BladesActiveEffect.Initialize(),
 		EunoTrackerSheet.Initialize(),
-		BladesItem.Initialize()
+		EunoClockKeeperSheet.Initialize(),
+		preloadHandlebarsTemplates()
 	]);
 
 	registerHandlebarHelpers();

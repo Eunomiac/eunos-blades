@@ -4,7 +4,6 @@
 			"character",
 			"npc",
 			"crew",
-			"\uD83D\uDD5B clock",
 			"factions"
 		],
 		"character": {
@@ -208,26 +207,25 @@
 				0
 			]
 		},
-		"\uD83D\uDD5B clock": {
-			"name": "",
-			"type": 4,
-			"value": "0"
-		},
 		"factions": {
 			"name": ""
 		},
 		"npc": {
 			"name": "",
+			"alias": "",
 			"concept": "",
-			"subtype": "",
-			"description_short": "",
+			"arena": "",
+			"heritage": "",
+			"district": "",
+			"faction": "",
+			"allies": "",
+			"enemies": "",
+			"traits": [],
 			"description": "",
-			"associated_class": "",
-			"associated_faction": "",
-			"associated_districts": [],
-			"associated_crew_type": "",
-			"behaviors": [],
-			"notes": ""
+			"description_short": "",
+			"notes": "",
+			"notes_gm": "",
+			"sheet_tab": ""
 		}
 	},
 	"Item": {

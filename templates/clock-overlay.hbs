@@ -1,6 +1,4 @@
 {{> "systems/eunos-blades/templates/parts/clock-clip-paths.hbs" }}
-{{log "CLOCK OVERLAY DATA"}}
-{{log this}}
 {{#each clock_keys}}
 {{#if (eq ../currentScene scene)}}
 {{> "systems/eunos-blades/templates/parts/clock-key.hbs" keyNum=@index data=this}}

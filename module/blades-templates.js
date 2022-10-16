@@ -6,6 +6,9 @@
 export const preloadHandlebarsTemplates = async function () {
     // Define template paths to load
     const templatePaths = [
+        // General Partials
+        "systems/eunos-blades/templates/parts/toggle-icon.hbs",
+        "systems/eunos-blades/templates/parts/button-icon.hbs",
         // Actor Sheet Partials
         "systems/eunos-blades/templates/parts/coins.hbs",
         "systems/eunos-blades/templates/parts/attributes.hbs",

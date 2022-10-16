@@ -1,10 +1,32 @@
 {{log "Clock Row" this}}
 <tr class="clock-row">
 	<td>
-		<input type="checkbox" class="clock-checkbox" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.isVisible" {{#if clockData}}{{checked clockData.isVisible}}{{/if}}>
+		{{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+			cssClass="clock-toggle"
+			isToggled=clockData.isVisible
+			activeClass="fas fa-eye"
+			activeTooltip="<b>Clock is Visible.</b><br>Click to hide."
+			inactiveClass="fas fa-eye-slash"
+			inactiveTooltip="<b>Clock is Hidden.</b><br>Click to display."
+			targetKey=(concat "data.clock_keys." keyID ".clocks." clockNum ".isVisible") }}
+		{{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+			cssClass="clock-toggle"
+			isToggled=clockData.isActive
+			activeClass="fas fa-bell"
+			activeTooltip="<b>Clock is Focused.</b><br>Click to mute."
+			inactiveClass="fas fa-bell-slash"
+			inactiveTooltip="<b>Clock is Muted.</b><br>Click to focus."
+			targetKey=(concat "data.clock_keys." keyID ".clocks." clockNum ".isActive") }}
 	</td>
 	<td>
-		<input type="checkbox" class="clock-checkbox" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.isNameVisible" {{#if clockData}}{{checked clockData.isNameVisible}}{{/if}}>
+		{{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+			cssClass="clock-toggle"
+			isToggled=clockData.isNameVisible
+			activeClass="fas fa-comment"
+			activeTooltip="<b>Name is Visible.</b><br>Click to hide."
+			inactiveClass="fas fa-comment-slash"
+			inactiveTooltip="<b>Name is Hidden.</b><br>Click to display."
+			targetKey=(concat "data.clock_keys." keyID ".clocks." clockNum ".isNameVisible") }}
 		<input type="text" class="clock-input clock-input-display" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.display" value="{{#if clockData}}{{clockData.display}}{{/if}}">
 	</td>
 	{{#if clockData}}
@@ -23,10 +45,10 @@
 		</select>
 		<select data-type="string" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.color" data-color="{{clockData.color}}">
 			{{#select clockData.color}}
-			<option value="yellow">■</option>
-			<option value="red">■</option>
-			<option value="blue">■</option>
-			<option value="white">■</option>
+			<option data-color="yellow" value="yellow">🟨</option>
+			<option data-color="red" value="red">🟥</option>
+			<option data-color="blue" value="blue">🟦</option>
+			<option data-color="white" value="white">⬜</option>
 			{{/select}}
 		</select>
 	</td>

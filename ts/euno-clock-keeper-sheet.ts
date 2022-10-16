@@ -15,6 +15,31 @@ export default class EunoClockKeeperSheet extends BladesItemSheet {
 		});
 	}
 
+	static async Initialize() {
+		game.eunoblades ??= {};
+		Items.registerSheet("blades", EunoClockKeeperSheet, {types: ["clock_keeper"], makeDefault: true});
+		Hooks.once("ready", async () => {
+			game.eunoblades.ClockKeeper = game.items.find((item) => item.type === "clock_keeper");
+			if (!game.eunoblades.ClockKeeper) {
+				game.eunoblades.ClockKeeper = await Item.create({
+					name: "Clock Keeper",
+					type: "clock_keeper",
+					img: "systems/eunos-blades/assets/icons/clock-keeper.svg"
+				});
+			}
+			game.eunoblades.ClockKeeper?.renderOverlay();
+		});
+		Hooks.on("canvasReady", async () => { game.eunoblades.ClockKeeper?.renderOverlay() });
+		return loadTemplates([
+			"systems/eunos-blades/templates/clock-overlay.hbs",
+			"systems/eunos-blades/templates/clock-keeper-sheet.hbs",
+			"systems/eunos-blades/templates/parts/clock-key.hbs",
+			"systems/eunos-blades/templates/parts/clock.hbs",
+			"systems/eunos-blades/templates/parts/clock-clip-paths.hbs",
+			"systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
+		]);
+	}
+
 	/** @override */
 	override async _updateObject(event: unknown, formData: ItemDataConstructorData) {
 		const updateData = await this.object.update(formData);
@@ -55,9 +80,9 @@ export default class EunoClockKeeperSheet extends BladesItemSheet {
 		super.activateListeners(html);
 
 		// @ts-expect-error Fuck.
-		html.find(".key-add").on("click", this.addKey.bind(this));
+		html.find("[data-action=\"add-key\"").on("click", this.addKey.bind(this));
 		// @ts-expect-error Fuck.
-		html.find(".key-delete").on("click", this.deleteKey.bind(this));
+		html.find("[data-action=\"delete-key\"").on("click", this.deleteKey.bind(this));
 		// @ts-expect-error Fuck.
 		html.find(".key-clock-counter").on("change", this.setKeySize.bind(this));
 	}

@@ -8,6 +8,7 @@
     "verified": "10",
     "maximum": "10"
   },
+	"socket": true,
 	"authors": [
 		{
 			"name": "megastruktur"
@@ -25,41 +26,16 @@
   "styles": [
     "css/style.css"
   ],
-  "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "lang/en.json"
-    },
-    {
-      "lang": "ru",
-      "name": "Russian",
-      "path": "lang/ru.json"
-    },
-    {
-      "lang": "es",
-      "name": "Spanish",
-      "path": "lang/es.json"
-    },
-    {
-      "lang": "pl",
-      "name": "Polish",
-      "path": "lang/pl.json"
-    },
-    {
-      "lang": "de",
-      "name": "Deutsch",
-      "path": "lang/de.json"
-    },
-    {
-      "lang": "pt",
-      "name": "Portuguese",
-      "path": "lang/pt.json"
-    }
-  ],
-  "url": "",
-  "manifest": "",
-  "download": "",
+	"relationships": {
+		"requires": [{
+			"id": "socketlib",
+			"type": "module",
+			"manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-socketlib/master/module.json",
+			"compatibility": {
+				"verified": "1.0.12"
+			}
+		}]
+	},
   "packs": [
     {
       "name": "class",
@@ -166,5 +142,40 @@
       "path": "./packs/entanglements-macro.db",
       "type": "Macro"
     }
-  ]
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "ru",
+      "name": "Russian",
+      "path": "lang/ru.json"
+    },
+    {
+      "lang": "es",
+      "name": "Spanish",
+      "path": "lang/es.json"
+    },
+    {
+      "lang": "pl",
+      "name": "Polish",
+      "path": "lang/pl.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    },
+    {
+      "lang": "pt",
+      "name": "Portuguese",
+      "path": "lang/pt.json"
+    }
+  ],
+  "url": "",
+  "manifest": "",
+  "download": ""
 }

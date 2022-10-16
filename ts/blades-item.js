@@ -6,29 +6,6 @@ import BladesHelpers from "./euno-helpers.js";
  */
 export class BladesItem extends Item {
 
-	static async Initialize() {
-		Hooks.once("ready", async () => {
-			game.eunoblades ??= {};
-			game.eunoblades.ClockKeeper = game.items.find((item) => item.type === "clock_keeper");
-			if (!game.eunoblades.ClockKeeper) {
-				game.eunoblades.ClockKeeper = (await Item.create([{
-					name: "Clock Keeper",
-					type: "clock_keeper",
-					img: "systems/eunos-blades/assets/icons/clock-keeper.svg"
-				}]))[0];
-			}
-			game.eunoblades.ClockKeeper.renderOverlay();
-		});
-		return loadTemplates([
-			"systems/eunos-blades/templates/clock-overlay.hbs",
-			"systems/eunos-blades/templates/clock-keeper-sheet.hbs",
-			"systems/eunos-blades/templates/parts/clock-key.hbs",
-			"systems/eunos-blades/templates/parts/clock.hbs",
-			"systems/eunos-blades/templates/parts/clock-clip-paths.hbs",
-			"systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
-		]);
-	}
-
 	/** @override */
 	async _preCreate( data, options, user ) {
 		await super._preCreate( data, options, user );

@@ -1,12 +1,12 @@
 {{#if data.isVisible}}
-	<div id="{{data.id}}" class="euno-clock-key" data-index="{{keyNum}}" data-size="{{data.numClocks}}">
+	<div id="{{data.id}}" class="euno-clock-key {{#if data.isActive}}active-key{{/if}}" data-index="{{keyNum}}" data-size="{{data.numClocks}}">
 		{{#if data.isNameVisible}}
 		<label class="key-label">{{data.display}}</label>
 		{{/if}}
 		<div class="clock-label-container">
 			{{#each data.clocks as |clockData clockNum|}}
 			{{#if clockData.isNameVisible}}
-				<label class="key-clock-label {{#if clockData.isActive}}key-clock-active{{/if}}" data-clock-num="{{clockNum}}">{{clockData.display}}</label>
+				<label class="key-clock-label {{#if clockData.isActive}}clock-active{{/if}} {{#unless clockData.isVisible}}label-centered{{/unless}}" data-clock-num="{{clockNum}}">{{clockData.display}}</label>
 			{{/if}}
 			{{/each}}
 		</div>

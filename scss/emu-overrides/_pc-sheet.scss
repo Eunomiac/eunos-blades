@@ -1,0 +1,302 @@
+section.name-alias {
+	.portrait {
+		max-height: 170px;
+	}
+
+	.name-box,
+	.alias-box {
+		font-family: "Historical FellType";
+
+		label {
+			display: none
+		}
+
+		input {
+			border-radius: 0;
+			border: none;
+			background: var(--blades-black-dark);
+			height: 50px;
+			color: var(--blades-white);
+			font-size: 32px;
+
+			&:focus {
+				box-shadow: none;
+				outline: 2px outset rgba(178, 178, 178, 0.5);
+			}
+		}
+
+		&.name-box {
+			width: 120%;
+		}
+
+		&.alias-box {
+			position: relative;
+			width: 80%;
+			left: 20%;
+			font-family: "Kirsty";
+
+			input {
+				color: var(--blades-white-bright);
+			}
+		}
+	}
+
+	.character-traits {
+		>.item-block {
+			display: grid;
+			grid-template-columns: 70px 1fr;
+			width: 100%;
+			justify-content: space-between;
+			max-height: 28px;
+
+			.item-class-label {
+				flex-grow: 0;
+				flex-shrink: 2;
+				flex-basis: 25%;
+				text-align: right;
+				padding-right: 5px;
+				color: var(--blades-white);
+				margin-bottom: 3px;
+			}
+
+			.item {
+				flex-grow: 1;
+				color: var(--blades-white-bright);
+				font-size: 16px;
+				line-height: 19px;
+				white-space: nowrap;
+
+				.item-body {
+					img {
+						position: relative;
+						top: -2px;
+						margin-right: 2px;
+					}
+				}
+			}
+
+			.item-control {
+				flex-basis: 10px;
+				text-align: right;
+				padding-right: 4px;
+				color: var(--blades-white);
+				// opacity: 0.85;
+			}
+		}
+	}
+
+	.coin-box {
+
+		.stripe,
+		.stripe label {
+			background: var(--blades-black-dark) !important;
+			color: var(--blades-white) !important;
+			margin-bottom: 10px;
+		}
+
+		.coins {
+			input~label {
+				background-color: var(--blades-coin-gold);
+				border: 1px var(--blades-coin-gold-bright) outset;
+				border-radius: 15px;
+
+				&[for$="0"] {
+					border-width: 2px;
+					border-radius: 0;
+					filter: brightness(1.5);
+				}
+			}
+
+			input:checked~label {
+				background-color: rgba(128, 128, 128, 0.2);
+				border-style: inset;
+				border-color: var(--blades-grey);
+				filter: none;
+			}
+
+			input:checked+label {
+				background-color: var(--blades-coin-gold);
+				border-color: var(--blades-coin-gold-bright);
+				border-style: outset;
+			}
+		}
+
+		.coin-hands-box {
+			margin-right: 10px;
+			min-width: 45px;
+
+			.coins-hands {
+				justify-content: center;
+				width: 100%;
+			}
+		}
+	}
+}
+
+section.experience {}
+
+section.big-teeth-section {
+	border-color: var(--blades-white);
+	max-height: 60px;
+	margin-top: 0px;
+
+	.character-stress {}
+
+	.small-teeth-container {}
+
+	.trauma-list {
+		label {
+			.checkmark {
+				font-size: 16px;
+			}
+		}
+	}
+}
+
+section.harm-armor {
+	.character-harm {
+		table {
+			tr {
+				background-color: rgba(255, 255, 255, 0.05);
+
+				&:nth-child(2) {
+					background-color: rgba(255, 255, 255, 0.1);
+				}
+			}
+
+			input[type="text"] {
+				font-family: "UglyQua";
+                font-style: italic;
+                font-size: 16px;
+                text-indent: 5px;
+                padding: 5px 0 0;
+			}
+		}
+
+	}
+}
+
+section.abilities {
+	.item {
+		.item-body {
+			* {
+				margin-right: unset;
+				hyphens: auto;
+			}
+
+			.item-name {
+				font-weight: bold;
+				color: var(--blades-white-bright);
+			}
+
+			.item-description {
+				margin: 0 10px;
+			}
+		}
+
+		.item-control {
+			max-width: 30px;
+		}
+	}
+
+	.nav-panel {
+		nav {
+			background-color: var(--blades-white);
+			padding: 0 10px;
+
+			.item {
+				color: var(--blades-black);
+				padding: 0 10px;
+
+				&.active {
+					background-color: var(--blades-white-bright);
+				}
+
+				&:hover {
+					color: var(--blades-black-dark);
+					background-color: var(--blades-white-bright);
+				}
+
+			}
+		}
+	}
+
+	.abilities {}
+
+	.loadout {
+		.load-amount {
+			font-size: 26px;
+			line-height: 28px;
+			position: absolute;
+			background-color: var(--blades-white);
+			display: inline-block;
+			width: 28px;
+			text-align: center;
+			border-radius: 16px;
+			height: 28px;
+			top: 2px;
+			transform: translateX(-30px);
+			color: var(--blades-black);
+		}
+
+		.load-slash {
+			color: var(--blades-grey-dark);
+			font-weight: normal;
+			font-size: 26px;
+			line-height: 5px;
+			margin: 0 3px;
+			position: relative;
+			top: 3px;
+			display: none;
+		}
+
+		.load-level {
+			margin-left: 2px;
+		}
+
+		select {
+			margin: 3px -6px auto auto;
+		}
+	}
+
+	.attributes {
+		.attribute {
+			>div:last-of-type {
+				margin-bottom: 10px;
+			}
+
+			.attributes-exp {}
+
+			.attributes-container {
+				label {
+					background-color: var(--blades-white);
+					border: 1px var(--blades-white-bright) outset;
+					border-radius: 15px;
+
+					&[for$="0"] {
+						background-color: var(--blades-black) !important;
+						margin-right: 5px;
+					}
+				}
+
+				input:checked~label {
+					background-color: rgba(128, 128, 128, 0.2);
+					border-style: inset;
+					border-color: var(--blades-grey);
+					filter: none;
+				}
+
+				input:checked+label {
+					background-color: var(--blades-white);
+					border-color: var(--blades-white-bright);
+					border-style: outset;
+				}
+
+				.attribute-skill-label {
+					color: var(--blades-white-bright);
+					line-height: 14px;
+				}
+			}
+		}
+	}
+}
