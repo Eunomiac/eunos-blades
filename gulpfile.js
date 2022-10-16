@@ -1,5 +1,4 @@
-
-/* eslint-disable sort-keys */
+/* eslint-disable @typescript-eslint/no-var-requires,  */
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 const {src, dest, watch, series, parallel, registry} = require("gulp");
 const plumber = require("lazypipe");
@@ -26,36 +25,6 @@ const packageJSON = require("./package");
 
 const {analyzeProject} = require("codehawk-cli");
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
-
-// /* REALLY GOTTA ADD ALL THE AWESOME POSTCSS PLUGINS!!!! */
-
-// /* eslint-disable sort-keys */
-// // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-// const gulp = require("gulp");
-// const postcss = require("gulp-postcss");
-// const sass = require("gulp-sass")(require("node-sass"));
-
-// const autofont = require("postcss-font-magician");
-
-// const autoprefixer = require("autoprefixer");
-// const cssnano = require("cssnano");
-// // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
-
-// function css() {
-//   var processors = [
-// 		autofont({
-
-// 		}),
-// 		autoprefixer,
-// 		cssnano
-//   ];
-//   return gulp.src('./scss/**/*.scss')
-// 		.pipe(sass().on("error", sass.logError))
-//     .pipe(postcss(processors))
-//     .pipe(gulp.dest('./css/'));
-// }
-
-// exports.default = css;
 
 // #region ▮▮▮▮▮▮▮[UTILITY] Data References & Utility Functions for File Parsing ▮▮▮▮▮▮▮ ~
 const ANSICOLORS = {
@@ -110,6 +79,7 @@ const ANSICOLORS = {
 };
 const STREAMSTYLES = {
 	gulp: ["grey", "█", "(gulp)"],
+	initWhiteSpace: ["bred", "█", "(staging)"],
 	tsInit: ["blue", "░", " TS "],
 	jsFull: ["bmagenta", "█", " JS "],
 	jsMin: ["magenta", "░", " js "],
@@ -130,7 +100,8 @@ const toBg = (color) => `bg${color}`.replace(/^(bg)+/, "");
 const logParts = {
 	tag: (tag = "gulp", color = "white", padChar = "█") => ansi(`▌${centerString(tag, 10, padChar)}▐`, {fg: color}),
 	error: (tag, message) => [ansi(`[ERROR: ${tag}]`, {fg: "white", bg: "red", style: "bold"}), ansi(message, {fg: "red"})].join(" "),
-	finish: function alertFinish(title = "gulp", source, destination) {
+	finish: function alertFinish(title, source, destination) {
+		title ??= "gulp";
 		const [color, padChar, tag] = STREAMSTYLES[title];
 		return [
 			this.tag(tag, color, padChar),
@@ -197,7 +168,7 @@ const padHeaderLines = (match) => {
 	});
 	return returnLines.join("\n");
 };
-const roundNum = (num, sigDigits = 0) => (sigDigits === 0 ? Math.round(num) : Math.round(num * 10 ** sigDigits) / 10 ** sigDigits);
+const roundNum = (num, sigDigits = 0) => (sigDigits === 0 ? Math.round(num) : Math.round(num * (10 ** sigDigits)) / (10 ** sigDigits));
 const subGroup = (array, groupSize) => {
 	const subArrays = [];
 	while (array.length > groupSize) {
@@ -212,6 +183,7 @@ const subGroup = (array, groupSize) => {
 };
 // #endregion ▮▮▮▮[UTILITY]▮▮▮▮
 
+const ISBUILDINGDIST = false;
 const ISDEPLOYING = false;
 const ISANALYZING = false;
 const ISGENERATINGTYPEFILES = false;
@@ -227,12 +199,13 @@ const DISTROOT = `${DISTDATAROOT}/${PACKAGETYPE}s/${PACKAGEFOLDER}`;
 const dateStringFull = ISDEPLOYING ? `█ ${new Date().toString().match(/\b[A-Z][a-z]+ \d+ \d+/u).shift()} █` : "██";
 const dateStringMin = ISDEPLOYING ? ` (${new Date().getFullYear()})` : "";
 const BANNERTEMPLATE = {
-	full: `/*~ ****▌███████████████████████████████████████████████████████████████████████████▐****  *\\
-|*      ▌█░░░░░░░░░ ${PACKAGENAME} for Foundry VTT ░░░░░░░░░░░█▐      *|
-|*      ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐      *|
-|*      ▌█ <%= package.license %> License █ v<%= package.version %> ${dateStringFull}▐      *|
-|*      ▌████░░░░ <%= package.repository.url %> ░░░░█████▐      *|
-\\*  ****▌███████████████████████████████████████████████████████████████████████████▐****  */\r\n\r\n`,
+	full: `/*~ ****▌███████████████████████████████████████████████████████████████████████████▐**** *\\
+|*~     ▌█░░░░░░░░░ ${PACKAGENAME} for Foundry VTT ░░░░░░░░░░░█▐     *|
+|*~     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*~     ▌█ <%= package.license %> License █ v<%= package.version %> ${dateStringFull}▐     *|
+|*~     ▌████░░░░ <%= package.repository.url %> ░░░░█████▐     *|
+\\*~ ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+/*~ @@DOUBLE-BLANK@@ ~*/\r\n`,
 	min: [
 		`/*~ ▌██░░ <%= package.name %> v<%= package.version %>${dateStringMin}`,
 		"<%= package.license %> License",
@@ -240,8 +213,10 @@ const BANNERTEMPLATE = {
 	].join(" ║ ")
 };
 const BUILDFILES = {
+	// whitespace: {
+	// 	"./staging/ts/": ["ts/**/*.*s"]
+	// },
 	ts: {
-		// "./module/": ["ts/**/*.ts"]
 		"./module/": ["ts/**/*.*s"]
 	},
 	js: {
@@ -260,7 +235,7 @@ const BUILDFILES = {
 		"./assets/": ["DISABLE"]
 	}
 };
-if (ISDEPLOYING) {
+if (ISBUILDINGDIST) {
 	BUILDFILES.js ??= {};
 	BUILDFILES.js[`${DISTROOT}/module/`] = ["module/**/*.js"];
 	BUILDFILES.css ??= {};
@@ -268,7 +243,7 @@ if (ISDEPLOYING) {
 	BUILDFILES.hbs ??= {};
 	BUILDFILES.hbs[`${DISTROOT}/templates/`] = ["templates/**/*.hbs", "templates/**/*.html"];
 	BUILDFILES.quickAssets ??= {};
-	BUILDFILES.quickAssets[`${DISTROOT}/`] = ["system.json", "template.json", /* "LICENSE.txt" */, "package.json"];
+	BUILDFILES.quickAssets[`${DISTROOT}/`] = ["system.json", "template.json", /* "LICENSE.txt", */ "package.json"];
 	BUILDFILES.quickAssets[`${DISTROOT}/css/`] = ["scss/**/*.css"];
 	BUILDFILES.slowAssets ??= {};
 	BUILDFILES.slowAssets[`${DISTROOT}/assets/`] = ["assets/**/*.*"];
@@ -290,25 +265,27 @@ const REGEXPPATTERNS = {
 			(\r\n)?\s*? --- capture any line break, then consume blank space at start of line
 										  reverse, for end-of-lines: \s*?(\r\n)?
 	*/
+	init: new Map([
+		[/^\s+$/mg, "/*~ @@DOUBLE-BLANK@@ ~*/"] // Replace double-blank lines with token for later retrieval
+	]),
 	ts: new Map([
 		[/from "gsap\/all"/gu, "from \"/scripts/greensock/esm/all.js\""]
 	]),
 	js: new Map([
 		[/(\r\n)?\s*?(\/\*DEVCODE\*\/.*?\/\*!DEVCODE\*\/)\s*?(\r\n)?/gsm, ""], // Strip developer code
 		[/\/\*~\s*\*{4}▌.*?▐\*{4}\s*\*\//s, padHeaderLines], // Pad header lines to same length
-		[/(\r?\n?)[ \t]*\/\*{1,2}(?!~)(?:.|\r?\n|\r)*?\*\/[ \t]*(\r?\n?)/g, "$1$2"], // Strip multi-line comments unless they beginning with '/*~' or '/**~'
+		[/\/\/\s*#region/gi, "//~ #region"], // Prefix #region lines with tildes so they aren't stripped
+		[/\/\*\*(?!~)(?:.|\r?\n|\r)*?\*\/[ \t]*(\r?\n?)/g, ""], // Strip multi-line comments unless they beginning with '/*~' or '/**~'
+		[/\/\*(?!\*|~)(?:.|\r?\n|\r)*?\*\/[ \t]*(\r?\n?)/g, ""], // Strip multi-line comments unless they beginning with '/*~' or '/**~'
 		[/(\r?\n?)[ \t]*\/\/(?!~) .*?$/gm, "$1"], // Strip single-line comments unless they begin with '//~'
-		[/[ \t]*\/\/[ \t]*eslint.*$/gm, ""], // Strip eslint enable/disable single-line comments
-		[/[ \t]*\/\/[ \t]*@ts.*$/gm, ""], // Strip TypeScript expect-error comments
-		[/[ \t]*\/\*[ \t]*eslint[^*]*\*\/[ \t]*/g, ""], // Strip eslint enable/disable mult-line comments
-		[/[ \t]*\/\/ no default.*$/gm, ""], // Strip '// no default'
-		[/[ \t]*\/\/ falls through.*$/gm, ""], // Strip '// falls through'
-		[/[ \t]*~$/gm, ""], // Strip '~' from end-of-lines (used for automatic region folding)
+		[/(\/\/|\/\*\*?|\|\*|\\\*)~/gm, "$1"], // Strip tildes from comment line prefixes
+		[/#(region.*?)[ \t]*~$/gim, "#$1"], // Strip '~' from end-of-lines (used for automatic region folding)
 		[/#reg.*? /gs, ""], // Convert region headers to standard headers
-		[/(\r?\n?)[ \t]*\/\/ #endreg.*[ \t]*\r?\n?/g, "\r\n"], // Remove region footers
-		[/(\r?\n[ \t]*(?=\r?\n)){2,}/g, "\r\n"], // Strip excess blank lines
-		[/[ \t]*\r?\n$/, ""], // Strip whitespace from end of files
-		[/^[ \t]*\r?\n/, ""] // Strip whitespace from start of files
+		[/((\r?\n)[ \t]*(?:\r?\n))+/g, "\r\n"], // Strip excess blank lines
+		[/([ \t]*\r?\n\/\*~? @@DOUBLE\-BLANK@@ ~\*\/)+/g, "\r\n/*~ @@DOUBLE-BLANK@@ ~*/"], // Collapse multiple double-blank lines
+		[/\/\*~? @@DOUBLE\-BLANK@@ ~\*\//g, ""], // Restore double-blank lines
+		[/([ \t]*\r?\n)*$/, ""], // Strip whitespace from end of files
+		[/^([ \t]*\r?\n)*/, ""] // Strip whitespace from start of files
 	])
 };
 const PIPES = {
@@ -353,8 +330,6 @@ const PIPES = {
 		return thisDest;
 	}
 };
-
-
 
 
 const PLUMBING = {
@@ -403,9 +378,9 @@ const PLUMBING = {
 		}
 		return done();
 	},
-	init: function initDist(done) {
+	initDest: function initDist(done) {
 		try {
-			cleaner.sync(["./dist/", "./scripts/", "./css/"]);
+			cleaner.sync(["./dist/", "./module/", "./staging", "./css/"]);
 		} catch (err) {
 			return done();
 		}
@@ -416,9 +391,16 @@ const PLUMBING = {
 			Object.values(globs ?? {}).forEach((glob) => watch(glob, BUILDFUNCS[type]));
 		}
 	},
+	// initWhiteSpace: (source, destination) => function pipeWhiteSpace() {
+	// 	return src(source, {allowEmpty: true})
+	// 		.pipe(PIPES.openPipe("initWhiteSpace")())
+	// 		.pipe(PIPES.replacer("init")())
+	// 		.pipe(PIPES.closePipe("initWhiteSpace", source, destination));
+	// },
 	tsInit: (source, destination) => function pipeTypeScript() {
 		const tsStream = src(source, {allowEmpty: true})
 			.pipe(PIPES.openPipe("tsInit")())
+			.pipe(PIPES.replacer("init")())
 			.pipe(PIPES.tsProject());
 		if (ISGENERATINGTYPEFILES) {
 			return merger([
@@ -430,8 +412,9 @@ const PLUMBING = {
 			]);
 		}
 		return tsStream
-		.pipe(PIPES.replacer("ts")())
-		.pipe(PIPES.closePipe("tsInit", source, destination));
+			.pipe(PIPES.replacer("ts")())
+			.pipe(PIPES.replacer("js")())
+			.pipe(PIPES.closePipe("tsInit", source, destination));
 	},
 	jsFull: (source, destination) => function pipeFullJS() {
 		return src(source, {allowEmpty: true})
@@ -492,9 +475,22 @@ const BANNERS = {
 const BUILDFUNCS = {};
 // #endregion ▒▒▒▒[INITIALIZATION]▒▒▒▒
 
+// #region ████████ WHITESPACE: Preserving Intended Whitespace ████████ ~
+// BUILDFUNCS.whitespace = parallel(...((buildFiles) => {
+// 	const funcs = [];
+// 	for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
+// 		sourceGlobs.forEach((sourceGlob) => {
+// 			funcs.push(PLUMBING.initWhiteSpace(sourceGlob, destGlob));
+// 		});
+// 	}
+// 	return funcs;
+// })(BUILDFILES.whitespace));
+// #endregion ▄▄▄▄▄ WHITESPACE ▄▄▄▄▄
+
 // #region ████████ JS: Compiling Javascript ████████ ~
-BUILDFUNCS.ts = parallel(
-	...((buildFiles) => {
+BUILDFUNCS.ts /* series(
+	PLUMBING.initWhiteSpace, */
+	= parallel(...((buildFiles) => {
 		const funcs = [];
 		for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
 			sourceGlobs.forEach((sourceGlob) => {
@@ -502,56 +498,47 @@ BUILDFUNCS.ts = parallel(
 			});
 		}
 		return funcs;
-	})(BUILDFILES.ts)
-);
+	})(BUILDFILES.ts));
+// );
 BUILDFUNCS.js = series(
-	parallel(
-		...((buildFiles) => {
-			const funcs = [];
-			for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
-				sourceGlobs.forEach((sourceGlob) => {
-					funcs.push(PLUMBING.jsMin(sourceGlob, destGlob));
-					funcs.push(PLUMBING.jsFull(sourceGlob, destGlob));
-				});
-			}
-			return funcs;
-		})(BUILDFILES.js)
-	),
+	// PLUMBING.initWhiteSpace,
+	parallel(...((buildFiles) => {
+		const funcs = [];
+		for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
+			sourceGlobs.forEach((sourceGlob) => {
+				funcs.push(PLUMBING.jsMin(sourceGlob, destGlob));
+				funcs.push(PLUMBING.jsFull(sourceGlob, destGlob));
+			});
+		}
+		return funcs;
+	})(BUILDFILES.js)),
 	PLUMBING.analyzeJS
 );
 // #endregion ▄▄▄▄▄ JS ▄▄▄▄▄
 
 // #region ████████ CSS: Compiling CSS ████████ ~
-BUILDFUNCS.css = parallel(
-	...((sourceDestGlobs) => {
-		const funcs = [];
-		for (const [destGlob, sourceGlobs] of Object.entries(sourceDestGlobs)) {
-			const formatType = /dist/.test(destGlob) ? "cssMin" : "cssFull";
-			funcs.push(PLUMBING[formatType](sourceGlobs[0], destGlob));
-
-			// sourceGlobs.forEach((sourceGlob) => {
-			//   funcs.push(PLUMBING[/dist/.test(destGlob) ? "cssMin" : "cssFull"](sourceGlob, destGlob));
-			// });
-		}
-		logger(`There are ${funcs.length} CSS Build Funcs.`);
-		return funcs;
-	})(BUILDFILES.css)
-);
+BUILDFUNCS.css = parallel(...((sourceDestGlobs) => {
+	const funcs = [];
+	for (const [destGlob, sourceGlobs] of Object.entries(sourceDestGlobs)) {
+		const formatType = /dist/.test(destGlob) ? "cssMin" : "cssFull";
+		funcs.push(PLUMBING[formatType](sourceGlobs[0], destGlob));
+	}
+	logger(`There are ${funcs.length} CSS Build Funcs.`);
+	return funcs;
+})(BUILDFILES.css));
 // #endregion ▄▄▄▄▄ CSS ▄▄▄▄▄
 
 // #region ████████ HBS: Compiling HBS ████████ ~
 
-BUILDFUNCS.hbs = parallel(
-	...((sourceDestGlobs) => {
-		const funcs = [];
-		for (const [destGlob, sourceGlobs] of Object.entries(sourceDestGlobs)) {
-			sourceGlobs.forEach((sourceGlob) => {
-				funcs.push(PLUMBING.hbs(sourceGlob, destGlob));
-			});
-		}
-		return funcs;
-	})(BUILDFILES.hbs)
-);
+BUILDFUNCS.hbs = parallel(...((sourceDestGlobs) => {
+	const funcs = [];
+	for (const [destGlob, sourceGlobs] of Object.entries(sourceDestGlobs)) {
+		sourceGlobs.forEach((sourceGlob) => {
+			funcs.push(PLUMBING.hbs(sourceGlob, destGlob));
+		});
+	}
+	return funcs;
+})(BUILDFILES.hbs));
 // #endregion ▄▄▄▄▄ HBS ▄▄▄▄▄
 
 // #region ████████ ASSETS: Copying Assets to Dist ████████ ~
@@ -570,5 +557,5 @@ BUILDFUNCS.slowAssets = parallel(...assetPipe(BUILDFILES.slowAssets));
 // #region ▒░▒░▒░▒[EXPORTS]▒░▒░▒░▒ ~
 const {ts, js, quickAssets, ...parallelBuildFuncs} = BUILDFUNCS;
 
-exports.default = series(PLUMBING.init, parallel(series(ts, js, quickAssets), ...Object.values(parallelBuildFuncs)), PLUMBING.watch);
+exports.default = series(PLUMBING.initDest, parallel(series(ts, js, quickAssets), ...Object.values(parallelBuildFuncs)), PLUMBING.watch);
 // #endregion ▒▒▒▒[EXPORTS]▒▒▒▒

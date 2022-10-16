@@ -1,7 +1,6 @@
-// Import Modules
+// ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮
 import { registerSystemSettings } from "./settings.js";
 import { preloadHandlebarsTemplates } from "./blades-templates.js";
-// import {bladesRoll, simpleRollPopup} from "./blades-roll.js";
 import BladesHelpers, { registerHandlebarHelpers } from "./euno-helpers.js";
 import { BladesActor } from "./blades-actor.js";
 import { BladesItem } from "./blades-item.js";
@@ -10,56 +9,60 @@ import { BladesActorSheet } from "./blades-actor-sheet.js";
 import { BladesCrewSheet } from "./blades-crew-sheet.js";
 import { BladesNPCSheet } from "./blades-npc-sheet.js";
 import { BladesFactionSheet } from "./blades-faction-sheet.js";
+
 import DATA from "./data-importer.js";
 import { bladesRoll, simpleRollPopup } from "./euno-blades-roll.js";
 import BladesActiveEffect from "./euno-active-effect.js";
 import EunoTrackerSheet from "./euno-tracker-sheet.js";
 import EunoClockKeeperSheet from "./euno-clock-keeper-sheet.js";
+
+// Globals: Exposing Functionality to Global Scope
 Object.assign(globalThis, {
-    BladesHelpers: BladesHelpers,
-    ClearNPCs: () => {
-        const npcNames = DATA.npcs.map(({ name }) => name);
-        const npcs = Array.from(game.actors ?? [])
-            .filter((actor) => npcNames.includes(actor.name ?? ""));
-        return Promise.all(npcs.map((npc) => npc.delete()));
-    },
-    GenerateNPCs: () => Promise.all(DATA.npcs.map(({ name, type, ...data }) => Actor.create({ name, type, data })))
+    BladesHelpers: BladesHelpers
 });
-$(() => {
+
+// ====== Style Override Injection ======
+/** Override style module immediately and on system initialization
+ * to ensure consistent styling, with minimal flash of unstylized content */
+function injectOverrideClass() {
     $("html").attr("class", "-emu-layout");
     $("body.vtt.game.system-eunos-blades").addClass("-emu");
-});
-/* -------------------------------------------- */
-/*  Foundry VTT Initialization                  */
-/* -------------------------------------------- */
+}
+$(injectOverrideClass);
+Hooks.once("init", injectOverrideClass);
+
+// ████████ SYSTEM INITIALIZATION: Initializing Blades In The Dark System on 'Init' Hook ████████
 Hooks.once("init", async () => {
     console.log("Initializing Blades In the Dark System");
-    $("html").attr("class", "-emu-layout");
-    $("body.vtt.game.system-eunos-blades").addClass("-emu");
+    
     game.blades = { dice: bladesRoll };
     game.system.bobclocks = { sizes: [4, 6, 8] };
+    
     CONFIG.Item.documentClass = BladesItem;
     CONFIG.Actor.documentClass = BladesActor;
-    // Register System Settings
+    
     registerSystemSettings();
-    // Register sheet application classes
+    
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("blades", BladesActorSheet, { types: ["character"], makeDefault: true });
     Actors.registerSheet("blades", BladesCrewSheet, { types: ["crew"], makeDefault: true });
     Actors.registerSheet("blades", BladesFactionSheet, { types: ["factions"], makeDefault: true });
     Actors.registerSheet("blades", BladesNPCSheet, { types: ["npc"], makeDefault: true });
+    
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("blades", BladesItemSheet, { types: ["faction", "item", "class", "ability", "heritage", "background", "vice", "crew_upgrade", "cohort", "crew_type", "crew_reputation", "crew_upgrade", "crew_ability"], makeDefault: true });
-    // Initialize subclasses
+    
     await Promise.all([
         BladesActiveEffect.Initialize(),
         EunoTrackerSheet.Initialize(),
         EunoClockKeeperSheet.Initialize(),
         preloadHandlebarsTemplates()
     ]);
+    
     registerHandlebarHelpers();
 });
-// getSceneControlButtons
+
+// ░░░░░░░[Roll Controller]░░░░ Add Dice Roller to Scene Control Sidebar ░░░░░░░
 Hooks.once("renderSceneControls", async (app, html) => {
     const dice_roller = $('<li class="scene-control" title="Dice Roll"><i class="fas fa-dice"></i></li>');
     dice_roller.click(async () => {
@@ -72,6 +75,8 @@ Hooks.once("renderSceneControls", async (app, html) => {
         html.append(dice_roller);
     }
 });
+
+// ░░░░░░░[Dice So Nice]░░░░ Dice So Nice Integration ░░░░░░░
 Hooks.once("diceSoNiceReady", (dice3d) => {
     dice3d.addSystem({ id: "eunos-blades", name: "Euno's Blades" }, "preferred");
     dice3d.addDicePreset({
@@ -82,10 +87,4 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
         emissiveMaps: [, , , , , "systems/eunos-blades/assets/dice/emission-maps/6.webp"],
         emissive: "#d89300"
     });
-});
-Hooks.once("renderHeadsUpDisplay", () => {
-    setTimeout(() => {
-        $("html").attr("class", "-emu-layout");
-        $("body.vtt.game.system-eunos-blades").addClass("-emu");
-    }, 500);
 });

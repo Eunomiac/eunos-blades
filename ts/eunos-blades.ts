@@ -1,4 +1,4 @@
-// Import Modules
+// #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import {registerSystemSettings} from "./settings.js";
 import {preloadHandlebarsTemplates} from "./blades-templates.js";
 // import {bladesRoll, simpleRollPopup} from "./blades-roll.js";
@@ -16,40 +16,41 @@ import {bladesRoll, simpleRollPopup} from "./euno-blades-roll.js";
 import BladesActiveEffect from "./euno-active-effect.js";
 import EunoTrackerSheet from "./euno-tracker-sheet.js";
 import EunoClockKeeperSheet from "./euno-clock-keeper-sheet.js";
+// #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 
+// #region Globals: Exposing Functionality to Global Scope ~
 Object.assign(
 	globalThis,
 	{
-		BladesHelpers: BladesHelpers,
+		BladesHelpers: BladesHelpers /*DEVCODE*/,
 		ClearNPCs: () => {
 			const npcNames = DATA.npcs.map(({name}) => name);
 			const npcs = Array.from(game.actors ?? [])
 				.filter((actor) => npcNames.includes(actor.name ?? ""));
 			return Promise.all(npcs.map((npc) => npc.delete()));
 		},
-		GenerateNPCs: () => Promise.all(DATA.npcs.map(({name, type, ...data}) => Actor.create({name, type, data})))
+		GenerateNPCs: () => Promise.all(DATA.npcs.map(({name, type, ...data}) => Actor.create({name, type, data})))/*!DEVCODE*/
 	}
 );
+// #endregion Globals
 
-$(() => {
+// #region ====== Style Override Injection ====== ~
+/**~ Override style module immediately and on system initialization
+ * to ensure consistent styling, with minimal flash of unstylized content */
+function injectOverrideClass() {
 	$("html").attr("class", "-emu-layout");
 	$("body.vtt.game.system-eunos-blades").addClass("-emu");
-});
+}
+$(injectOverrideClass);
+Hooks.once("init", injectOverrideClass);
+// #endregion ___ Style Override Injection ___
 
-/* -------------------------------------------- */
-
-/*  Foundry VTT Initialization                  */
-
-/* -------------------------------------------- */
-
+// #region ████████ SYSTEM INITIALIZATION: Initializing Blades In The Dark System on 'Init' Hook ████████
 Hooks.once("init", async () => {
 	console.log("Initializing Blades In the Dark System");
 
-	$("html").attr("class", "-emu-layout");
-	$("body.vtt.game.system-eunos-blades").addClass("-emu");
-
 	game.blades = {dice: bladesRoll};
-	game.system.bobclocks = {sizes: [ 4, 6, 8 ]};
+	game.system.bobclocks = {sizes: [4, 6, 8]};
 
 	CONFIG.Item.documentClass = BladesItem;
 	CONFIG.Actor.documentClass = BladesActor;
@@ -77,35 +78,32 @@ Hooks.once("init", async () => {
 
 	registerHandlebarHelpers();
 });
+// #endregion ▄▄▄▄▄ SYSTEM INITIALIZATION ▄▄▄▄▄
 
-// getSceneControlButtons
+// #region ░░░░░░░[Roll Controller]░░░░ Add Dice Roller to Scene Control Sidebar ░░░░░░░ ~
 Hooks.once("renderSceneControls", async (app: unknown, html: JQuery<HTMLElement>) => {
 	const dice_roller = $('<li class="scene-control" title="Dice Roll"><i class="fas fa-dice"></i></li>');
-	dice_roller.click( async () => {
+	dice_roller.click(async () => {
 		await simpleRollPopup();
 	});
-	if ( !foundry.utils.isNewerVersion("9", game.version ?? game.data.version) ) {
-		html.children().first().append( dice_roller );
+	if (!foundry.utils.isNewerVersion("9", game.version ?? game.data.version)) {
+		html.children().first().append(dice_roller);
 	} else {
-		html.append( dice_roller );
+		html.append(dice_roller);
 	}
 });
+// #endregion ░░░░[Dice Roll Controller]░░░░
 
-Hooks.once("diceSoNiceReady", (dice3d: Record<any,any>) => {
+// #region ░░░░░░░[Dice So Nice]░░░░ Dice So Nice Integration ░░░░░░░ ~
+Hooks.once("diceSoNiceReady", (dice3d: Record<any, any>) => {
 	dice3d.addSystem({id: "eunos-blades", name: "Euno's Blades"}, "preferred");
 	dice3d.addDicePreset({
 		type: "d6",
 		labels: [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/faces/${num}.webp`),
 		system: "eunos-blades",
 		bumpMaps: [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/bump-maps/${num}.webp`),
-		emissiveMaps: [,,,,, "systems/eunos-blades/assets/dice/emission-maps/6.webp"], // eslint-disable-line no-sparse-arrays
+		emissiveMaps: [, , , , , "systems/eunos-blades/assets/dice/emission-maps/6.webp"], // eslint-disable-line no-sparse-arrays
 		emissive: "#d89300"
 	});
 });
-
-Hooks.once("renderHeadsUpDisplay", () => {
-	setTimeout(() => {
-		$("html").attr("class", "-emu-layout");
-		$("body.vtt.game.system-eunos-blades").addClass("-emu");
-	}, 500);
-});
+// #endregion ░░░░[Dice So Nice]░░░░

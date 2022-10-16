@@ -2064,7 +2064,7 @@
 :root body.vtt.game #euno-clock-keeper-overlay,
 :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay,
 :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay {
-  --top-shift: 0px;
+  --top-shift: 100px;
   --left-shift: -50px;
   --flex-basis: 170px;
   position: absolute;
@@ -2091,6 +2091,12 @@
   -webkit-box-align: start;
   -ms-flex-align: start;
   align-items: flex-start; }
+  :root body #euno-clock-keeper-overlay .clock-clip-paths clipPath,
+  :root body.vtt.game #euno-clock-keeper-overlay .clock-clip-paths clipPath,
+  :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .clock-clip-paths clipPath,
+  :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .clock-clip-paths clipPath {
+    height: 100%;
+    width: 100%; }
   :root body #euno-clock-keeper-overlay > *,
   :root body.vtt.game #euno-clock-keeper-overlay > *,
   :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay > *,
@@ -2106,19 +2112,18 @@
   :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key,
   :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key,
   :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key {
-    --key-scale: 0.35;
-    --key-rotation: 90deg;
+    --key-scale: 0.36;
     --key-horiz-shift: 0px;
     --key-vert-shift: 50px;
     --key-title-vert-shift: 1150px;
     --key-title-horiz-shift: 140px;
     --key-title-align: left;
     --clock-label-width: 100px;
-    --clock-label-center: 160px;
+    --clock-label-center: 0px;
     position: relative;
     display: block;
-    width: 1222px;
-    height: 411px;
+    width: 400px;
+    height: 1200px;
     top: 0;
     left: 0;
     -webkit-transform-origin: top left;
@@ -2198,18 +2203,18 @@
     :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key .clock-key-container,
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key .clock-key-container {
       position: absolute;
-      height: 411px;
-      width: 1222px;
-      top: 411px;
-      left: 0%;
+      height: 1200px;
+      width: 400px;
+      top: 400px;
+      left: 0;
       -webkit-transform-origin: bottom;
       -ms-transform-origin: bottom;
       transform-origin: bottom;
-      -webkit-transform: translate(-50%, -50%) translate(var(--key-horiz-shift), var(--key-vert-shift)) rotate(var(--key-rotation));
-      -ms-transform: translate(-50%, -50%) translate(var(--key-horiz-shift), var(--key-vert-shift)) rotate(var(--key-rotation));
-      transform: translate(-50%, -50%) translate(var(--key-horiz-shift), var(--key-vert-shift)) rotate(var(--key-rotation));
-      -webkit-filter: drop-shadow(40px -40px 30px black);
-      filter: drop-shadow(40px -40px 30px black); }
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      -webkit-filter: drop-shadow(40px 40px 30px black);
+      filter: drop-shadow(40px 40px 30px black); }
       :root body #euno-clock-keeper-overlay .euno-clock-key .clock-key-container .clock-key-bg,
       :root body #euno-clock-keeper-overlay .euno-clock-key .clock-key-container .clock-key-fg,
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key .clock-key-container .clock-key-bg,
@@ -2226,20 +2231,17 @@
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key .clock-key-container .euno-clock,
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key .clock-key-container .euno-clock,
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key .clock-key-container .euno-clock {
-        --clock-scale: 0.25;
-        --clock-top-shift: 0px;
-        --clock-left-shift: 0px;
-        --clock-center: 6px;
-        --clock-top: var(--clock-top-shift);
-        --clock-left: calc(var(--clock-center) + var(--clock-left-shift));
+        --clock-size: 400px;
+        --clock-horiz-center: 200px;
+        --clock-vert-center: 200px;
+        --clock-left: calc(var(--clock-horiz-center) - 0.5 * var(--clock-size));
+        --clock-top: calc(var(--clock-vert-center) - 0.5 * var(--clock-size));
         position: absolute;
-        width: 400px;
-        height: 400px;
-        left: var(--clock-top);
-        top: var(--clock-left);
-        -webkit-transform: scale(var(--clock-scale)) rotate(-90deg);
-        -ms-transform: scale(var(--clock-scale)) rotate(-90deg);
-        transform: scale(var(--clock-scale)) rotate(-90deg); }
+        width: var(--clock-size);
+        height: var(--clock-size);
+        left: var(--clock-left);
+        top: var(--clock-top);
+        pointer-events: all; }
         :root body #euno-clock-keeper-overlay .euno-clock-key .clock-key-container .euno-clock .clock-bg,
         :root body #euno-clock-keeper-overlay .euno-clock-key .clock-key-container .euno-clock .clock-glow,
         :root body #euno-clock-keeper-overlay .euno-clock-key .clock-key-container .euno-clock .clock-frame,
@@ -2272,12 +2274,13 @@
         width: 130px;
         line-height: 18px;
         font-variant: small-caps; }
-      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .euno-clock[data-index="1"],
-      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .euno-clock[data-index="1"],
-      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .euno-clock[data-index="1"],
-      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .euno-clock[data-index="1"] {
-        --clock-top-shift: 284px;
-        --clock-scale: 0.53; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .euno-clock,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .euno-clock,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .euno-clock,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .euno-clock {
+        --clock-size: 208px;
+        --clock-horiz-center: 200px;
+        --clock-vert-center: 201px; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .key-clock-label[data-clock-num="1"],
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .key-clock-label[data-clock-num="1"],
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .key-clock-label[data-clock-num="1"],
@@ -2287,18 +2290,28 @@
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"],
     :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"],
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] {
-      --key-scale: 0.55;
       --key-title-align: center;
       --key-vert-shift: -375px;
       --key-title-vert-shift: 220px;
       --clock-label-center: 155px;
       margin-left: -45px;
       margin-right: 35px; }
-      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="1"],
-      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="1"],
-      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="1"],
-      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="1"] {
-        --clock-top-shift: 284px; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock {
+        --clock-size: 155px;
+        --clock-horiz-center: 200px; }
+        :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="1"],
+        :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="1"],
+        :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="1"],
+        :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="1"] {
+          --clock-vert-center: 202px ; }
+        :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="2"],
+        :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="2"],
+        :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="2"],
+        :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="2"] {
+          --clock-vert-center: 504px ; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="1"],
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="1"],
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="1"],
@@ -2308,11 +2321,6 @@
         -webkit-transform-origin: center 200%;
         -ms-transform-origin: center 200%;
         transform-origin: center 200%; }
-      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="2"],
-      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="2"],
-      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="2"],
-      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="2"] {
-        --clock-top-shift: 527px; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="2"],
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="2"],
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="2"],
@@ -2338,11 +2346,29 @@
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] {
       --key-title-align: center;
       --key-title-vert-shift: 600px; }
-      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="1"],
-      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="1"],
-      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="1"],
-      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="1"] {
-        --clock-top-shift: -85px; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock {
+        --clock-size: 136px; }
+        :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="1"],
+        :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="1"],
+        :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="1"],
+        :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="1"] {
+          --clock-horiz-center: 199px;
+          --clock-vert-center: 138px; }
+        :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="2"],
+        :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="2"],
+        :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="2"],
+        :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="2"] {
+          --clock-horiz-center: 123px;
+          --clock-vert-center: 249px; }
+        :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="3"],
+        :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="3"],
+        :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="3"],
+        :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="3"] {
+          --clock-horiz-center: 278.5px;
+          --clock-vert-center: 249px; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="1"],
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="1"],
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="1"],
@@ -2352,12 +2378,6 @@
         -webkit-transform-origin: bottom center;
         -ms-transform-origin: bottom center;
         transform-origin: bottom center; }
-      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="2"],
-      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="2"],
-      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="2"],
-      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="2"] {
-        --clock-top-shift: 6px;
-        --clock-left-shift: 64px; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="2"],
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="2"],
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="2"],
@@ -2378,12 +2398,6 @@
           -webkit-transform-origin: bottom center;
           -ms-transform-origin: bottom center;
           transform-origin: bottom center; }
-      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="3"],
-      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="3"],
-      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="3"],
-      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock[data-index="3"] {
-        --clock-top-shift: 6px;
-        --clock-left-shift: -64px; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="3"],
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="3"],
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="3"],
@@ -2413,17 +2427,89 @@
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] {
       --key-title-align: center;
       --key-title-vert-shift: 800px; }
-    :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="1"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="1"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="1"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="1"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="1"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="1"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="1"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="1"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="1"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="1"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="1"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="1"] {
-      --clock-top-shift: -85px; }
+    :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock,
+    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock,
+    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock,
+    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock,
+    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock,
+    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock,
+    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock,
+    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock,
+    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock,
+    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock {
+      --clock-size: 110px; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="1"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="1"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="1"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="1"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="1"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="1"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="1"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="1"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="1"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="1"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="1"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="1"] {
+        --clock-horiz-center: 200.5px;
+        --clock-vert-center: 113.5px; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="2"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="2"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="2"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="2"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="2"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="2"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="2"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="2"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="2"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="2"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="2"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="2"] {
+        --clock-horiz-center: 111.5px;
+        --clock-vert-center: 202px; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="3"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="3"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="3"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="3"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="3"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="3"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="3"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="3"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="3"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="3"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="3"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="3"] {
+        --clock-horiz-center: 288px;
+        --clock-vert-center: 201.5px; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="4"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="4"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="4"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="4"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="4"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="4"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="4"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="4"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="4"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="4"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="4"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="4"] {
+        --clock-horiz-center: 199.5px;
+        --clock-vert-center: 291px; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="5"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="5"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="5"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="5"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="5"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="5"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="5"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="5"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="5"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="5"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="5"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="5"] {
+        --clock-horiz-center: 200.5px;
+        --clock-vert-center: 474.5px; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="6"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="6"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="6"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="6"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="6"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="6"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="6"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="6"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="6"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="6"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="6"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="6"] {
+        --clock-horiz-center: 199.5px;
+        --clock-vert-center: 713px; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="1"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="1"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="1"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="1"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="1"],
@@ -2439,18 +2525,6 @@
       -webkit-transform-origin: bottom center;
       -ms-transform-origin: bottom center;
       transform-origin: bottom center; }
-    :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="2"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="2"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="2"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="2"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="2"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="2"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="2"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="2"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="2"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="2"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="2"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="2"] {
-      --clock-top-shift: 6px;
-      --clock-left-shift: 91px; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="2"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="2"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="2"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="2"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="2"],
@@ -2483,18 +2557,6 @@
         -webkit-transform-origin: bottom center;
         -ms-transform-origin: bottom center;
         transform-origin: bottom center; }
-    :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="3"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="3"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="3"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="3"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="3"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="3"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="3"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="3"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="3"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="3"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="3"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="3"] {
-      --clock-top-shift: 6px;
-      --clock-left-shift: -91px; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="3"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="3"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="3"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="3"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="3"],
@@ -2524,17 +2586,6 @@
         -webkit-transform-origin: bottom center;
         -ms-transform-origin: bottom center;
         transform-origin: bottom center; }
-    :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="4"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="4"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="4"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="4"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="4"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="4"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="4"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="4"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="4"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="4"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="4"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="4"] {
-      --clock-top-shift: 98px; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="4"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="4"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="4"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="4"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="4"],
@@ -2563,17 +2614,6 @@
         --clock-label-text-align: center;
         top: unset;
         bottom: -350px; }
-    :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="5"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="5"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="5"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="5"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="5"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="5"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="5"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="5"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="5"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="5"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="5"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="5"] {
-      --clock-top-shift: 283px; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="5"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="5"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="5"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="5"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="5"],
@@ -2601,17 +2641,6 @@
         --clock-label-text-align: center;
         top: unset;
         bottom: -528px; }
-    :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="6"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="6"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="6"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="6"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="6"],
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="6"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="6"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="6"],
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="6"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock[data-index="6"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock[data-index="6"],
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock[data-index="6"] {
-      --clock-top-shift: 527px; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="6"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="6"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="6"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="6"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="6"],
@@ -3389,7 +3418,8 @@
     :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs {
       grid-area: tabs;
       height: 100%; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-enemies,
+    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies,
+    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-enemies,
     :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies,
     :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-enemies,
     :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies,

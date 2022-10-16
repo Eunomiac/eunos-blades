@@ -1,6 +1,6 @@
 import "./euno-blades-roll";
 import BladesHelpers from "../euno-helpers.js";
-import type ClockKeeper from "../euno-clocks.js";
+import ClockKeeper from "../euno-clocks.js";
 import { BladesItem } from "../blades-item";
 import { BladesActor } from "../blades-actor";
 import { bladesRoll } from "../blades-roll";
@@ -16,7 +16,7 @@ declare global {
 		items: Collection<StoredDocument<BladesItem>>,
 		actors: Collection<StoredDocument<BladesActor>>,
 		eunoblades: {
-			ClockKeeper?: ClockKeeper
+			ClockKeeper?: BladesItem
 		},
 		system: {
 			model: {
@@ -34,7 +34,6 @@ declare global {
 			}
 		}
 	}
-
 	declare const game: Game
 
 	declare const BladesHelpers: typeof BladesHelpers;

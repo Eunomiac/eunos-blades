@@ -1,3 +1,4 @@
+import {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import {bladesRoll} from "./blades-roll.js";
 import BladesHelpers from "./euno-helpers.js";
 
@@ -8,15 +9,14 @@ import BladesHelpers from "./euno-helpers.js";
 export class BladesActor extends Actor {
 
 	/** @override */
-	static async create(data, options={}) {
+	static override async create(data: ActorDataConstructorData, options={}) {
 
 		data.token = data.token || {};
 
-		// For Crew and Character set the Token to sync with charsheet.
+		//~ For Crew and Character set the Token to sync with charsheet.
 		switch (data.type) {
 			case "character":
 			case "crew":
-			case "\uD83D\uDD5B clock":
 				data.token.actorLink = true;
 				break;
 			// no default
@@ -26,8 +26,8 @@ export class BladesActor extends Actor {
 	}
 
 	/** @override */
-	getRollData() {
-		const data = super.getRollData();
+	override getRollData() {
+		const data = super.getRollData() as object & {dice_amount: Record<string,number>};
 
 		data.dice_amount = this.getAttributeDiceToThrow();
 
@@ -41,11 +41,11 @@ export class BladesActor extends Actor {
 	getAttributeDiceToThrow() {
 
 		// Calculate Dice to throw.
-		const dice_amount = {};
-		for (var attribute_name in this.data.data.attributes) {
+		const dice_amount: Record<string,number> = {};
+		for (const attribute_name in this.system.attributes) {
 			dice_amount[attribute_name] = 0;
-			for (const skill_name in this.data.data.attributes[attribute_name].skills) {
-				dice_amount[skill_name] = parseInt(this.data.data.attributes[attribute_name].skills[skill_name].value[0]);
+			for (const skill_name in this.system.attributes[attribute_name].skills) {
+				dice_amount[skill_name] = parseInt(this.system.attributes[attribute_name].skills[skill_name].value[0]);
 
 				// We add a +1d for every skill higher than 0.
 				if (dice_amount[skill_name] > 0) {
@@ -60,12 +60,12 @@ export class BladesActor extends Actor {
 
 	/* -------------------------------------------- */
 
-	rollAttributePopup(attribute_name) {
+	rollAttributePopup(attribute_name: string) {
 
 		// const roll = new Roll("1d20 + @abilities.wis.mod", actor.getRollData());
 		const attribute_label = BladesHelpers.getAttributeLabel(attribute_name);
 
-		var content = `
+		let content = `
         <h2>${game.i18n.localize("BITD.Roll")} ${game.i18n.localize(attribute_label)}</h2>
         <form>
           <div class="form-group">
@@ -112,11 +112,14 @@ export class BladesActor extends Actor {
 				yes: {
 					icon: "<i class='fas fa-check'></i>",
 					label: game.i18n.localize("BITD.Roll"),
-					callback: async (html) => {
-						const modifier = parseInt(html.find('[name="mod"]')[0].value);
-						const position = html.find('[name="pos"]')[0].value;
-						const effect = html.find('[name="fx"]')[0].value;
-						const note = html.find('[name="note"]')[0].value;
+					callback: async (html: HTMLElement|JQuery<HTMLElement>) => {
+						if (html instanceof HTMLElement) {
+							html = $(html);
+						}
+						const modifier = parseInt(`${html.find('[name="mod"]').attr("value") ?? 0}`);
+						const position = `${html.find('[name="pos"]').attr("value") ?? 0}`;
+						const effect = `${html.find('[name="fx"]').attr("value") ?? 0}`;
+						const note = `${html.find('[name="note"]').attr("value") ?? 0}`;
 						await this.rollAttribute(attribute_name, modifier, position, effect, note);
 					}
 				},
@@ -132,7 +135,7 @@ export class BladesActor extends Actor {
 
 	/* -------------------------------------------- */
 
-	async rollAttribute(attribute_name, additional_dice_amount, position, effect, note) {
+	async rollAttribute(attribute_name?: string, additional_dice_amount?: number, position?: string, effect?: string, note?: string) {
 		attribute_name ??= "";
 		additional_dice_amount ??= 0;
 
@@ -156,12 +159,12 @@ export class BladesActor extends Actor {
    */
 	createListOfActions() {
 
-		let text, attribute, skill;
-		const {attributes} = this.data.data;
+		let text = "", attribute, skill;
+		const {attributes} = this.system;
 
 		for ( attribute in attributes ) {
 
-			var {skills} = attributes[attribute];
+			const {skills} = attributes[attribute];
 
 			text += `<optgroup label="${attribute} Actions">`;
 			text += `<option value="${attribute}">${attribute} (Resist)</option>`;
@@ -190,16 +193,15 @@ export class BladesActor extends Actor {
    * @param {int} s
    *  Selected die
    */
-	createListOfDiceMods(rs, re, s) {
+	createListOfDiceMods(rs: number, re: number, s: number|string) {
 
-		var text = "",
-						i = 0;
+		let text = "";
 
 		if ( s === "" ) {
 			s = 0;
 		}
 
-		for ( i = rs; i <= re; i++ ) {
+		for ( let i = rs; i <= re; i++ ) {
 			let plus = "";
 			if ( i >= 0 ) { plus = "+" }
 			text += `<option value="${i}"`;
@@ -216,4 +218,10 @@ export class BladesActor extends Actor {
 
 	/* -------------------------------------------- */
 
+}
+
+
+export declare interface BladesActor {
+	system: Record<any,any>;
+	parent: TokenDocument | null;
 }

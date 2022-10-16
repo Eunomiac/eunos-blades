@@ -1,8 +1,12 @@
 & {
 
-	--top-shift: 0px;
+	.clock-clip-paths clipPath {
+		height: 100%;
+		width: 100%;
+	}
+
+	--top-shift: 100px;
 	--left-shift: -50px;
-	// --left-shift: 1100px;
 	--flex-basis: 170px;
 
 	position: absolute;
@@ -29,8 +33,7 @@
 	}
 
 	.euno-clock-key {
-		--key-scale: 0.35;
-		--key-rotation: 90deg;
+		--key-scale: 0.36;
 		--key-horiz-shift: 0px;
 		--key-vert-shift: 50px;
 
@@ -39,19 +42,19 @@
 		--key-title-align: left;
 
 		--clock-label-width: 100px;
-		--clock-label-center: 160px;
+		--clock-label-center: 0px;
 
 		position: relative;
 		display: block;
-		width: 1222px;
-		height: 411px;
+		width: 400px;
+		height: 1200px;
 		top: 0;
 		left: 0;
 		transform-origin: top left;
 		transform: scale(var(--key-scale));
-        
-        &.active-key {            
-            .clock-key-container {                
+
+        &.active-key {
+            .clock-key-container {
 			     // filter: brightness(1.25);
             }
         }
@@ -59,7 +62,7 @@
             opacity: 0.75;
             .key-clock-label { opacity: 0 }
             // filter: saturate(0.26) brightness(0.75);
-            
+
         }
 
 		.key-label {
@@ -116,13 +119,13 @@
 
 		.clock-key-container {
 			position: absolute;
-			height: 411px;
-			width: 1222px;
-			top: 411px;
-			left: 0%;
+			height: 1200px;
+			width: 400px;
+			top: 400px;
+			left: 0;
 			transform-origin: bottom;
-			transform: translate(-50%, -50%) translate(var(--key-horiz-shift), var(--key-vert-shift)) rotate(var(--key-rotation));
-			filter: drop-shadow(40px -40px 30px black);
+			transform: translate(-50%, -50%);
+			filter: drop-shadow(40px 40px 30px black);
 
 			.clock-key-bg,
 			.clock-key-fg {
@@ -133,18 +136,21 @@
 			}
 
 			.euno-clock {
-				--clock-scale: 0.25;
-				--clock-top-shift: 0px;
-				--clock-left-shift: 0px;
-				--clock-center: 6px;
-				--clock-top: var(--clock-top-shift);
-				--clock-left: calc(var(--clock-center) + var(--clock-left-shift));
+				--clock-size: 400px;
+				--clock-horiz-center: 200px;
+				--clock-vert-center: 200px;
+
+				--clock-left: calc(var(--clock-horiz-center) - 0.5 * var(--clock-size));
+				--clock-top: calc(var(--clock-vert-center) - 0.5 * var(--clock-size));
+
 				position: absolute;
-				width: 400px;
-				height: 400px;
-				left: var(--clock-top);
-				top: var(--clock-left);
-				transform: scale(var(--clock-scale)) rotate(-90deg);
+				width: var(--clock-size);
+				height: var(--clock-size);
+				left: var(--clock-left);
+				top: var(--clock-top);
+				pointer-events: all;
+
+
 
 				.clock-bg,
 				.clock-glow,
@@ -171,9 +177,10 @@
 				font-variant: small-caps;
 			}
 
-			.euno-clock[data-index="1"] {
-				--clock-top-shift: 284px;
-				--clock-scale: 0.53;
+			.euno-clock {
+				--clock-size: 208px;
+				--clock-horiz-center: 200px;
+				--clock-vert-center: 201px;
 			}
 
 			.key-clock-label[data-clock-num="1"] {
@@ -182,7 +189,6 @@
 		}
 
 		&[data-size="2"] {
-			--key-scale: 0.55;
 			--key-title-align: center;
 			--key-vert-shift: -375px;
 			--key-title-vert-shift: 220px;
@@ -190,18 +196,18 @@
 			margin-left: -45px;
 			margin-right: 35px;
 
-			.euno-clock[data-index="1"] {
-				--clock-top-shift: 284px;
+			.euno-clock {
+				--clock-size: 155px;
+				--clock-horiz-center: 200px;
+
+				&[data-index="1"] { --clock-vert-center: 202px }
+				&[data-index="2"] { --clock-vert-center: 504px }
 			}
 
 			.key-clock-label[data-clock-num="1"] {
 				--clock-label-vert-shift: 60px;
 				--clock-label-text-align: center;
 				transform-origin: center 200%;
-			}
-
-			.euno-clock[data-index="2"] {
-				--clock-top-shift: 527px;
 			}
 
 			.key-clock-label[data-clock-num="2"] {
@@ -222,19 +228,26 @@
 			--key-title-align: center;
 			--key-title-vert-shift: 600px;
 
-			.euno-clock[data-index="1"] {
-				--clock-top-shift: -85px;
+			.euno-clock {
+				--clock-size: 136px;
+				&[data-index="1"] {
+					--clock-horiz-center: 199px;
+					--clock-vert-center: 138px;
+				}
+				&[data-index="2"] {
+					--clock-horiz-center: 123px;
+					--clock-vert-center: 249px;
+				}
+				&[data-index="3"] {
+					--clock-horiz-center: 278.5px;
+					--clock-vert-center: 249px;
+				}
 			}
 
 			.key-clock-label[data-clock-num="1"] {
 				--clock-label-vert-shift: 95px;
 				--clock-label-text-align: center;
 				transform-origin: bottom center;
-			}
-
-			.euno-clock[data-index="2"] {
-				--clock-top-shift: 6px;
-				--clock-left-shift: 64px;
 			}
 
 			.key-clock-label[data-clock-num="2"] {
@@ -249,11 +262,6 @@
 					--clock-label-text-align: center;
 					transform-origin: bottom center;
 				}
-			}
-
-			.euno-clock[data-index="3"] {
-				--clock-top-shift: 6px;
-				--clock-left-shift: -64px;
 			}
 
 			.key-clock-label[data-clock-num="3"] {
@@ -283,8 +291,33 @@
 		&[data-size="4"],
 		&[data-size="5"],
 		&[data-size="6"] {
-			.euno-clock[data-index="1"] {
-				--clock-top-shift: -85px;
+			.euno-clock {
+				--clock-size: 110px;
+
+				&[data-index="1"] {
+					--clock-horiz-center: 200.5px;
+					--clock-vert-center: 113.5px;
+				}
+				&[data-index="2"] {
+					--clock-horiz-center: 111.5px;
+					--clock-vert-center: 202px;
+				}
+				&[data-index="3"] {
+					--clock-horiz-center: 288px;
+					--clock-vert-center: 201.5px;
+				}
+				&[data-index="4"] {
+					--clock-horiz-center: 199.5px;
+					--clock-vert-center: 291px;
+				}
+				&[data-index="5"] {
+					--clock-horiz-center: 200.5px;
+					--clock-vert-center: 474.5px;
+				}
+				&[data-index="6"] {
+					--clock-horiz-center: 199.5px;
+					--clock-vert-center: 713px;
+				}
 			}
 
 			.key-clock-label[data-clock-num="1"] {
@@ -292,12 +325,6 @@
 				--clock-label-text-align: center;
 				transform-origin: bottom center;
 			}
-
-			.euno-clock[data-index="2"] {
-				--clock-top-shift: 6px;
-				--clock-left-shift: 91px;
-			}
-
 			.key-clock-label[data-clock-num="2"] {
 				--clock-label-horiz-shift: -200px;
 				--clock-label-vert-shift: 235px;
@@ -311,12 +338,6 @@
 					transform-origin: bottom center;
 				}
 			}
-
-			.euno-clock[data-index="3"] {
-				--clock-top-shift: 6px;
-				--clock-left-shift: -91px;
-			}
-
 			.key-clock-label[data-clock-num="3"] {
 				--clock-label-horiz-shift: 190px;
 				--clock-label-vert-shift: 300px;
@@ -329,11 +350,6 @@
 					transform-origin: bottom center;
 				}
 			}
-
-			.euno-clock[data-index="4"] {
-				--clock-top-shift: 98px;
-			}
-
 			.key-clock-label[data-clock-num="4"] {
 				--clock-label-horiz-shift: -160px;
 				--clock-label-vert-shift: 390px;
@@ -347,11 +363,6 @@
 					bottom: -350px;
 				}
 			}
-
-			.euno-clock[data-index="5"] {
-				--clock-top-shift: 283px;
-			}
-
 			.key-clock-label[data-clock-num="5"] {
 				--clock-label-horiz-shift: 160px;
 				--clock-label-vert-shift: 580px;
@@ -364,11 +375,6 @@
 					bottom: -528px;
 				}
 			}
-
-			.euno-clock[data-index="6"] {
-				--clock-top-shift: 527px;
-			}
-
 			.key-clock-label[data-clock-num="6"] {
 				--clock-label-horiz-shift: 0px;
 				--clock-label-vert-shift: 830px;

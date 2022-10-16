@@ -1,6 +1,6 @@
 
 import {BladesItemSheet} from "./blades-item-sheet.js";
-import type {BladesItem} from "./blades-item.js";
+import {BladesItem} from "./blades-item.js";
 import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 export default class EunoClockKeeperSheet extends BladesItemSheet {
@@ -19,15 +19,16 @@ export default class EunoClockKeeperSheet extends BladesItemSheet {
 		game.eunoblades ??= {};
 		Items.registerSheet("blades", EunoClockKeeperSheet, {types: ["clock_keeper"], makeDefault: true});
 		Hooks.once("ready", async () => {
-			game.eunoblades.ClockKeeper = game.items.find((item) => item.type === "clock_keeper");
-			if (!game.eunoblades.ClockKeeper) {
-				game.eunoblades.ClockKeeper = await Item.create({
+			let clockKeeper: BladesItem|undefined = game.items.find((item) => item.type === "clock_keeper");
+			if (!(clockKeeper instanceof BladesItem)) {
+				clockKeeper = (await BladesItem.create({
 					name: "Clock Keeper",
 					type: "clock_keeper",
 					img: "systems/eunos-blades/assets/icons/clock-keeper.svg"
-				});
+				})) as BladesItem;
 			}
-			game.eunoblades.ClockKeeper?.renderOverlay();
+			game.eunoblades.ClockKeeper = clockKeeper;
+			game.eunoblades.ClockKeeper.renderOverlay();
 		});
 		Hooks.on("canvasReady", async () => { game.eunoblades.ClockKeeper?.renderOverlay() });
 		return loadTemplates([
@@ -39,6 +40,7 @@ export default class EunoClockKeeperSheet extends BladesItemSheet {
 			"systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
 		]);
 	}
+
 
 	/** @override */
 	override async _updateObject(event: unknown, formData: ItemDataConstructorData) {
@@ -67,13 +69,17 @@ export default class EunoClockKeeperSheet extends BladesItemSheet {
 	deleteKey(event: MouseEvent) {
 		event.preventDefault();
 		const keyID = (event.currentTarget as HTMLElement).dataset.id;
-		(this.item as BladesItem).deleteClockKey(keyID);
+		if (keyID) {
+			(this.item as BladesItem).deleteClockKey(keyID);
+		}
 	}
 
 	setKeySize(event: InputEvent) {
 		event.preventDefault();
 		const keyID = (event.target as HTMLInputElement).dataset.id;
-		(this.item as BladesItem).setKeySize(keyID, parseInt((event.target as HTMLInputElement).value));
+		if (keyID) {
+			(this.item as BladesItem).setKeySize(keyID, parseInt((event.target as HTMLInputElement).value));
+		}
 	}
 
 	override async activateListeners(html: JQuery<HTMLElement>) {
