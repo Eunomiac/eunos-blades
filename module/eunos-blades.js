@@ -16,10 +16,18 @@ import BladesActiveEffect from "./euno-active-effect.js";
 import EunoTrackerSheet from "./euno-tracker-sheet.js";
 import EunoClockKeeperSheet from "./euno-clock-keeper-sheet.js";
 
+let socket; // SocketLib interface
+
 // Globals: Exposing Functionality to Global Scope
 Object.assign(globalThis, {
-    BladesHelpers: BladesHelpers
-});
+    BladesHelpers: BladesHelpers ,
+    ClearNPCs: () => {
+        const npcNames = DATA.npcs.map(({ name }) => name);
+        const npcs = Array.from(game.actors ?? [])
+            .filter((actor) => npcNames.includes(actor.name ?? ""));
+        return Promise.all(npcs.map((npc) => npc.delete()));
+    },
+    GenerateNPCs: () => Promise.all(DATA.npcs.map(({ name, type, ...data }) => Actor.create({ name, type, data }))) });
 
 // ====== Style Override Injection ======
 /** Override style module immediately and on system initialization
@@ -60,6 +68,12 @@ Hooks.once("init", async () => {
     ]);
     
     registerHandlebarHelpers();
+});
+
+// ░░░░░░░[SocketLib]░░░░ SocketLib Initialization ░░░░░░░
+Hooks.once("socketlib.ready", () => {
+    socket = socketlib.registerSystem("eunos-blades");
+    Object.assign(globalThis, { socket });     socket.register("renderOverlay", () => game.eunoblades.ClockKeeper?.renderOverlay());
 });
 
 // ░░░░░░░[Roll Controller]░░░░ Add Dice Roller to Scene Control Sidebar ░░░░░░░

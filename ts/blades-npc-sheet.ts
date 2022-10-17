@@ -1,42 +1,58 @@
 
 import {BladesSheet} from "./blades-sheet.js";
+import {BladesActor} from "./blades-actor.js";
 
 /**
  * @extends {BladesSheet}
  */
+// @ts-ignore-error Fuck
 export class BladesNPCSheet extends BladesSheet {
 
 	/** @override */
-	static get defaultOptions() {
+	static override get defaultOptions() {
 	  return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["eunos-blades", "sheet", "actor", "npc"],
 			template: "systems/eunos-blades/templates/npc-sheet.hbs",
 			width: 500,
 			height: "auto",
-			tabs: [{navSelector: ".tabs", contentSelector: ".tab-content"}]
+			tabs: [{navSelector: ".tabs", contentSelector: ".tab-content", initial: "description"}]
 		});
 	}
 
 	/* -------------------------------------------- */
 
 	/** @override */
-	getData() {
+	override getData() {
 		const data = super.getData();
-		data.editable = this.options.editable;
-		const actorData = data.data;
-		data.actor = actorData;
-		data.data = actorData.data;
+		const actorData = "data" in data ? data.data : null;
+		Object.assign(
+			data,
+			{
+				editable: this.options.editable,
+				isGM: game.user.isGM,
+				actor: actorData,
+				data: actorData!.data,
+				randomizers: (this.actor as BladesActor).system.randomizers
+			}
+		);
 		return data;
 	}
 
 	/* -------------------------------------------- */
 
 	/** @override */
-	activateListeners(html) {
+	override activateListeners(html: JQuery<HTMLElement>) {
 		super.activateListeners(html);
 
 		// Everything below here is only needed if the sheet is editable
 		if (!this.options.editable) {return}
+
+		//~ Enable Randomize Button for NPCs
+		// if ((this.actor as BladesActor).system.type === "npc") {
+		html.find("[data-action=\"randomize\"").on("click", (event) => {
+			(this.actor as BladesActor).updateRandomizers();
+		});
+		// }
 
 		// Update Inventory Item
 		// html.find('.item-body').click(ev => {

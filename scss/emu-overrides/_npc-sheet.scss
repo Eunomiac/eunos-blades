@@ -5,7 +5,7 @@ input[type="text"] {
 	margin-top: -2px;
 	background: black;
 	padding: 5px;
-	color: var(--blades-white-bright);
+	color: var(--blades-white);
 	border-radius: 0;
 }
 
@@ -22,7 +22,29 @@ input[type="text"] {
 	}
 }
 
+.window-resizable-handle {
+	display: none
+}
+
+& {
+	width: 500px !important;
+	height: auto !important;
+	border-radius: 25px;
+	overflow: hidden;
+	position: absolute;
+}
+
+.window-header {
+	line-height: 16px;
+	height: 24px;
+	.window-title {
+		font-variant: small-caps;
+		text-indent: 10px;
+	}
+}
+
 .window-content {
+	overflow: hidden;
 	.actor-sheet {
 
 		label {
@@ -35,7 +57,7 @@ input[type="text"] {
 
 		input[type="text"] {
 			box-shadow: none;
-			background: rgba(0, 0, 0, 0.25);
+			background: rgba(0, 0, 0, 0);
 			text-shadow:
 				0 0 4px var(--blades-black-dark),
 				0 0 4px var(--blades-black-dark),
@@ -45,6 +67,7 @@ input[type="text"] {
 
 		.labelled-input {
 			margin-top: 4px;
+
 			input[type="text"] {
 				font-size: 14px;
 				height: 18px;
@@ -54,17 +77,20 @@ input[type="text"] {
 		}
 
 		height: auto;
-		margin-bottom: 100px;
+		// margin-bottom: 100px;
 		display: grid;
-		--folding-block-height: 150px;
-		grid-template-areas: ". name name name name name name name"
+		--folding-block-height: auto; // 225px;
+		--editor-margin: 5px;
+		--editor-padding: 5px;
+
+		grid-template-areas: ". . name name name name name name"
 		". . concept concept concept concept concept concept"
-		". . traits traits traits traits arena arena"
-		". . heritage heritage district district faction faction"
-		"short-desc short-desc short-desc short-desc short-desc short-desc short-desc short-desc"
+		". . short-desc short-desc short-desc short-desc short-desc short-desc"
+		". . traits traits traits traits traits traits"
+		"heritage heritage district district faction faction arena arena"
 		"tabs tabs tabs tabs tabs tabs tabs tabs";
-		grid-template-columns: 65px 15px 1fr 1fr 1fr 1fr 1fr 1fr;
-		grid-template-rows: 36px 14px 20px 32px 32px var(--folding-block-height);
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		grid-template-rows: 36px 14px 18px 18px 36px var(--folding-block-height);
 		grid-column-gap: 2px;
 		grid-row-gap: 4px;
 
@@ -76,21 +102,40 @@ input[type="text"] {
 
 		.npc-img {
 			position: absolute;
-			height: 154px;
-			top: -10px;
+			height: 175px;
+			// max-width: 100px;
+			top: -5px;
 			left: -10px;
 			z-index: 1;
 			border: none;
+			mask-image: linear-gradient(to right, black 75%, transparent);
+		}
+
+		.npc-img-bg {
+			position: absolute;
+			z-index: 0;
+			width: 500px;
+			height: auto;
+			top: -20%;
+			right: -10%;
+			border: none;
+			filter: blur(5px) sepia(2) brightness(0.65);
+			mask-image: linear-gradient(to bottom, black 20%, rgba(0, 0, 0, 0.35) 30%);
 		}
 
 		.npc-name {
 			grid-area: name;
+			overflow: visible;
 			font-family: "Historical FellType";
+			color: var(--blades-white-bright);
 			font-size: 32px;
 			height: 32px;
+			line-height: 28px;
+			padding-bottom: 10px;
 			box-shadow: none;
 			background: none;
-			text-indent: 3px;
+			// text-indent: 3px;
+			text-align: center;
 			text-shadow:
 				0 0 4px var(--blades-black-dark),
 				0 0 4px var(--blades-black-dark),
@@ -109,49 +154,115 @@ input[type="text"] {
 			color: var(--blades-white);
 			box-shadow: none;
 			top: -5px;
+			text-align: center;
 		}
 
 		.npc-traits {
 			grid-area: traits;
 			display: flex;
 			font-family: Kirsty;
-			font-size: 10px;
-
+			top: 0px;
 			input {
 				text-transform: uppercase;
 				text-align: center;
-				color: cyan;
+				color: gold;
 			}
 		}
 
-		.npc-arena {
-			grid-area: arena;
-			top: -10px
+		.npc-heritage, .npc-faction, .npc-district, .npc-arena {
+			text-align: center;
+			background: linear-gradient(to top, var(--blades-black) 25%, transparent) !important;
+			height: calc(100% + 4px);
+
+			label {
+				text-align: center;
+			}
+
+			&.npc-arena {
+				grid-area: arena;
+				width: calc(100% + 10px);
+			}
+
+			&.npc-heritage {
+				grid-area: heritage;
+				width: calc(100% + 10px);
+				left: -10px;
+			}
+
+			&.npc-district {
+				grid-area: district;
+			}
+
+			&.npc-faction {
+				grid-area: faction;
+			}
 		}
 
-		.npc-heritage {
-			grid-area: heritage;
-		}
 
-		.npc-district {
-			grid-area: district;
-		}
-
-		.npc-faction {
-			grid-area: faction;
-		}
 
 		.npc-short-description {
 			grid-area: short-desc;
 			font-style: italic;
 			text-align: center;
-			width: calc(100% + 20px);
-			left: -10px;
+			color: var(--blades-white-bright);
+			top: -5px;
+			padding: 0;
 		}
 
 		.npc-tabs {
 			grid-area: tabs;
-			height: 100%;
+			// top: -4px;
+			// height: 100%;
+
+			.nav-panel {
+				nav {
+					width: calc(100% + 2 * 10px);
+					height: 28px;
+					// line-height: 28px;
+					justify-content: stretch;
+					position: relative;
+					left: -10px;
+					z-index: 3;
+					background-color: var(--blades-white);
+					padding: 0 10px;
+
+					.item {
+						color: var(--blades-grey-dark);
+						flex-grow: 1;
+						font-family: Kirsty;
+						text-transform: uppercase;
+						font-size: 14px;
+						line-height: 30px;
+						padding: 0 10px;
+
+						&.active {
+							background-color: var(--blades-white-bright);
+							color: var(--blades-black-dark);
+							font-size: 18px;
+						}
+
+						&:hover {
+							color: var(--blades-black-dark);
+							background-color: var(--blades-white-bright);
+						}
+					}
+				}
+
+				.tab {
+					.editor .editor-content {
+						// height: calc(var(--folding-block-height) - 2 * var(--editor-margin) - 2 * var(--editor-padding));
+						margin: var(--editor-margin);
+						padding: var(--editor-padding);
+						background: rgba(0, 0, 0, 0.5);
+						line-height: 16px;
+						box-shadow: 0 0 5px black;
+
+						>*:first-child {
+							margin-top: 0
+						}
+					}
+				}
+			}
 		}
 
 		.npc-allies,

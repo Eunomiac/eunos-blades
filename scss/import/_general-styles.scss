@@ -114,10 +114,6 @@ section {
   min-height: 150px;
 }
 
-.description {
-  font-style: italic;
-}
-
 i {
   &.nullifier {
     @include changeable($transition-period, $hover-brightness, $hover-opacity, $red);

@@ -427,9 +427,6 @@
 .eunos-blades .editor-content {
   min-height: 150px; }
 
-.eunos-blades .description {
-  font-style: italic; }
-
 .eunos-blades i.nullifier {
   -webkit-transition: -webkit-filter 0.2s;
   transition: -webkit-filter 0.2s;
@@ -2064,8 +2061,8 @@
 :root body.vtt.game #euno-clock-keeper-overlay,
 :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay,
 :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay {
-  --top-shift: 100px;
-  --left-shift: -50px;
+  --top-shift: 150px;
+  --left-shift: 50px;
   --flex-basis: 170px;
   position: absolute;
   display: block;
@@ -2114,34 +2111,124 @@
   :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key {
     --key-scale: 0.36;
     --key-horiz-shift: 0px;
-    --key-vert-shift: 50px;
-    --key-title-vert-shift: 1150px;
-    --key-title-horiz-shift: 140px;
+    --key-vert-shift: 0px;
+    --key-title-vert-shift: 750px;
+    --key-title-horiz-shift: -50px;
     --key-title-align: left;
     --clock-label-width: 100px;
-    --clock-label-center: 0px;
+    --clock-label-center: -50px;
     position: relative;
     display: block;
     width: 400px;
     height: 1200px;
-    top: 0;
-    left: 0;
-    -webkit-transform-origin: top left;
-    -ms-transform-origin: top left;
-    transform-origin: top left;
+    top: var(--key-vert-shift);
+    left: var(--key-horiz-shift);
+    -webkit-transform-origin: -100% 0%;
+    -ms-transform-origin: -100% 0%;
+    transform-origin: -100% 0%;
     -webkit-transform: scale(var(--key-scale));
     -ms-transform: scale(var(--key-scale));
-    transform: scale(var(--key-scale)); }
-    :root body #euno-clock-keeper-overlay .euno-clock-key:not(.active-key),
-    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key:not(.active-key),
-    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key:not(.active-key),
-    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key:not(.active-key) {
-      opacity: 0.75; }
-      :root body #euno-clock-keeper-overlay .euno-clock-key:not(.active-key) .key-clock-label,
-      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key:not(.active-key) .key-clock-label,
-      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key:not(.active-key) .key-clock-label,
-      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key:not(.active-key) .key-clock-label {
-        opacity: 0; }
+    transform: scale(var(--key-scale));
+    margin-left: 0 !important;
+    margin-right: 0 !important; }
+    :root body #euno-clock-keeper-overlay .euno-clock-key,
+    :root body #euno-clock-keeper-overlay .euno-clock-key *,
+    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key,
+    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key *,
+    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key,
+    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key *,
+    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key,
+    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key * {
+      -webkit-transition: 1s;
+      -o-transition: 1s;
+      transition: 1s; }
+    :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded,
+    :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded,
+    :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded,
+    :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded {
+      --key-scale: 0.18;
+      --key-title-vert-shift: 500px !important;
+      --key-title-horiz-shift: 0px !important;
+      margin-left: 0 !important;
+      margin-right: -100px !important;
+      margin-top: -50px !important; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="1"], :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="2"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="1"],
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="2"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="1"],
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="2"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="1"],
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="2"] {
+        margin-top: -35px !important; }
+        :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="1"] .key-label, :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="2"] .key-label,
+        :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="1"] .key-label,
+        :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="2"] .key-label,
+        :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="1"] .key-label,
+        :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="2"] .key-label,
+        :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="1"] .key-label,
+        :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="2"] .key-label {
+          margin-top: 150px; }
+        :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="1"][data-size="1"] .key-label, :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="2"][data-size="1"] .key-label,
+        :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="1"][data-size="1"] .key-label,
+        :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="2"][data-size="1"] .key-label,
+        :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="1"][data-size="1"] .key-label,
+        :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="2"][data-size="1"] .key-label,
+        :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="1"][data-size="1"] .key-label,
+        :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded[data-size="2"][data-size="1"] .key-label {
+          margin-top: -75px; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded .key-label,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded .key-label,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded .key-label,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded .key-label {
+        margin-left: -100px;
+        margin-top: 350px;
+        font-weight: normal !important;
+        font-family: "Kirsty" !important;
+        font-size: 12px !important;
+        line-height: 12px !important;
+        text-transform: uppercase !important;
+        width: 100px !important;
+        font-style: normal !important;
+        text-align: center !important;
+        font-variant: none !important;
+        -webkit-transform: scale(calc(1 / var(--key-scale))) rotate(-70deg) !important;
+        -ms-transform: scale(calc(1 / var(--key-scale))) rotate(-70deg) !important;
+        transform: scale(calc(1 / var(--key-scale))) rotate(-70deg) !important; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded .key-clock-label,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded .key-clock-label,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded .key-clock-label,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded .key-clock-label {
+        opacity: 0 !important; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-key-bg,
+      :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-key-fg,
+      :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-bg,
+      :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-frame,
+      :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-glow,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-key-bg,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-key-fg,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-bg,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-frame,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-glow,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-key-bg,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-key-fg,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-bg,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-frame,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-glow,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-key-bg,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-key-fg,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-bg,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-frame,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded .clock-glow {
+        opacity: 0.5 !important; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded .euno-clock[data-index="1"] .clock-glow,
+      :root body #euno-clock-keeper-overlay .euno-clock-key.key-faded .euno-clock[data-index="1"] .clock-frame,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded .euno-clock[data-index="1"] .clock-glow,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key.key-faded .euno-clock[data-index="1"] .clock-frame,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded .euno-clock[data-index="1"] .clock-glow,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key.key-faded .euno-clock[data-index="1"] .clock-frame,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded .euno-clock[data-index="1"] .clock-glow,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key.key-faded .euno-clock[data-index="1"] .clock-frame {
+        opacity: 1 !important; }
     :root body #euno-clock-keeper-overlay .euno-clock-key .key-label,
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key .key-label,
     :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key .key-label,
@@ -2254,16 +2341,17 @@
         :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key .clock-key-container .euno-clock .clock-bg,
         :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key .clock-key-container .euno-clock .clock-glow,
         :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key .clock-key-container .euno-clock .clock-frame {
-          position: absolute; }
+          position: absolute;
+          top: 0;
+          left: 0; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="1"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="1"],
     :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="1"],
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] {
-      --key-vert-shift: -300px;
-      --key-title-vert-shift: 400px;
-      --key-title-align: center;
-      margin-left: -25px;
-      margin-right: -25px; }
+      --key-vert-shift: -35px;
+      --key-title-horiz-shift: -70px;
+      --key-title-vert-shift: 130px;
+      --key-title-align: center; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .key-label,
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .key-label,
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="1"] .key-label,
@@ -2291,11 +2379,9 @@
     :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"],
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] {
       --key-title-align: center;
-      --key-vert-shift: -375px;
-      --key-title-vert-shift: 220px;
-      --clock-label-center: 155px;
-      margin-left: -45px;
-      margin-right: 35px; }
+      --key-vert-shift: -35px;
+      --key-title-vert-shift: 140px;
+      --key-title-horiz-shift: -80px; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock,
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock,
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock,
@@ -2306,46 +2392,42 @@
         :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="1"],
         :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="1"],
         :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="1"] {
-          --clock-vert-center: 202px ; }
+          --clock-vert-center: 202px
+				; }
         :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="2"],
         :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="2"],
         :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="2"],
         :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .euno-clock[data-index="2"] {
-          --clock-vert-center: 504px ; }
+          --clock-vert-center: 504px
+				; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="1"],
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="1"],
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="1"],
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="1"] {
-        --clock-label-vert-shift: 60px;
+        --clock-label-horiz-shift: 0px;
+        --clock-label-vert-shift: -60px;
         --clock-label-text-align: center;
-        -webkit-transform-origin: center 200%;
-        -ms-transform-origin: center 200%;
-        transform-origin: center 200%; }
+        -webkit-transform-origin: center 180%;
+        -ms-transform-origin: center 180%;
+        transform-origin: center 180%; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="2"],
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="2"],
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="2"],
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="2"] {
-        --clock-label-vert-shift: 430px;
+        --clock-label-horiz-shift: 0px;
+        --clock-label-vert-shift: 390px;
         --clock-label-text-align: center;
-        -webkit-transform-origin: center 200%;
-        -ms-transform-origin: center 200%;
-        transform-origin: center 200%; }
-        :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="2"].label-centered,
-        :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="2"].label-centered,
-        :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="2"].label-centered,
-        :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="2"] .key-clock-label[data-clock-num="2"].label-centered {
-          --clock-label-horiz-shift: 0px;
-          --clock-label-vert-shift: 405px;
-          --clock-label-text-align: center;
-          -webkit-transform-origin: bottom center;
-          -ms-transform-origin: bottom center;
-          transform-origin: bottom center; }
+        -webkit-transform-origin: center 0%;
+        -ms-transform-origin: center 0%;
+        transform-origin: center 0%; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"],
     :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"],
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] {
       --key-title-align: center;
-      --key-title-vert-shift: 600px; }
+      --key-vert-shift: -10px;
+      --key-title-vert-shift: 350px;
+      --key-title-horiz-shift: -80px; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock,
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock,
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .euno-clock,
@@ -2373,60 +2455,76 @@
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="1"],
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="1"],
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="1"] {
-        --clock-label-vert-shift: 95px;
+        --clock-label-vert-shift: -125px;
         --clock-label-text-align: center;
-        -webkit-transform-origin: bottom center;
-        -ms-transform-origin: bottom center;
-        transform-origin: bottom center; }
+        -webkit-transform-origin: center 150%;
+        -ms-transform-origin: center 150%;
+        transform-origin: center 150%; }
+        :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="1"].label-centered,
+        :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="1"].label-centered,
+        :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="1"].label-centered,
+        :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="1"].label-centered {
+          --clock-label-horiz-shift: 0px;
+          --clock-label-vert-shift: -100px;
+          -webkit-transform-origin: center 130%;
+          -ms-transform-origin: center 130%;
+          transform-origin: center 130%; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="2"],
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="2"],
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="2"],
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="2"] {
-        --clock-label-horiz-shift: -200px;
-        --clock-label-vert-shift: 235px;
+        --clock-label-horiz-shift: -170px;
+        --clock-label-vert-shift: 115px;
         --clock-label-text-align: right;
-        -webkit-transform-origin: center 180%;
-        -ms-transform-origin: center 180%;
-        transform-origin: center 180%; }
+        -webkit-transform-origin: center 0%;
+        -ms-transform-origin: center 0%;
+        transform-origin: center 0%; }
         :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="2"].label-centered,
         :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="2"].label-centered,
         :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="2"].label-centered,
         :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="2"].label-centered {
-          --clock-label-horiz-shift: -120px;
-          --clock-label-vert-shift: 268px;
+          width: 65px !important;
+          --clock-label-horiz-shift: -80px;
+          --clock-label-vert-shift: 45px;
           --clock-label-text-align: center;
-          -webkit-transform-origin: bottom center;
-          -ms-transform-origin: bottom center;
-          transform-origin: bottom center; }
+          -webkit-transform-origin: center 70%;
+          -ms-transform-origin: center 70%;
+          transform-origin: center 70%; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="3"],
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="3"],
       :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="3"],
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="3"] {
-        --clock-label-horiz-shift: 190px;
-        --clock-label-vert-shift: 300px;
-        --clock-label-text-align: left; }
+        --clock-label-horiz-shift: 170px;
+        --clock-label-vert-shift: 115px;
+        --clock-label-text-align: left;
+        -webkit-transform-origin: center 0%;
+        -ms-transform-origin: center 0%;
+        transform-origin: center 0%; }
         :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="3"].label-centered,
         :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="3"].label-centered,
         :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="3"].label-centered,
         :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="3"] .key-clock-label[data-clock-num="3"].label-centered {
-          --clock-label-horiz-shift: 120px;
-          --clock-label-vert-shift: 268px;
+          width: 65px !important;
+          --clock-label-horiz-shift: 105px;
+          --clock-label-vert-shift: 45px;
           --clock-label-text-align: center;
-          -webkit-transform-origin: bottom center;
-          -ms-transform-origin: bottom center;
-          transform-origin: bottom center; }
+          -webkit-transform-origin: center 70%;
+          -ms-transform-origin: center 70%;
+          transform-origin: center 70%; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"],
     :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"],
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] {
       --key-title-align: center;
-      --key-title-vert-shift: 700px; }
+      --key-title-vert-shift: 475px;
+      --key-title-horiz-shift: -80px; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"],
     :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"],
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] {
       --key-title-align: center;
-      --key-title-vert-shift: 800px; }
+      --key-title-vert-shift: 650px;
+      --key-title-horiz-shift: -80px; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .euno-clock,
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .euno-clock,
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .euno-clock,
@@ -2520,11 +2618,26 @@
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="1"],
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="1"],
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="1"] {
-      --clock-label-vert-shift: 95px;
+      --clock-label-vert-shift: -145px;
       --clock-label-text-align: center;
-      -webkit-transform-origin: bottom center;
-      -ms-transform-origin: bottom center;
-      transform-origin: bottom center; }
+      -webkit-transform-origin: center 150%;
+      -ms-transform-origin: center 150%;
+      transform-origin: center 150%; }
+      :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="1"].label-centered, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="1"].label-centered, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="1"].label-centered,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="1"].label-centered,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="1"].label-centered,
+      :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="1"].label-centered,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="1"].label-centered,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="1"].label-centered,
+      :root body.vtt.game.system-eunos-blades #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="1"].label-centered,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="1"].label-centered,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="1"].label-centered,
+      :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="1"].label-centered {
+        --clock-label-horiz-shift: 0px;
+        --clock-label-vert-shift: -100px;
+        -webkit-transform-origin: center 130%;
+        -ms-transform-origin: center 130%;
+        transform-origin: center 130%; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="2"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="2"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="2"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="2"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="2"],
@@ -2536,7 +2649,7 @@
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="2"],
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="2"] {
       --clock-label-horiz-shift: -200px;
-      --clock-label-vert-shift: 235px;
+      --clock-label-vert-shift: -15px;
       --clock-label-text-align: right;
       -webkit-transform-origin: center 180%;
       -ms-transform-origin: center 180%;
@@ -2551,12 +2664,13 @@
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="2"].label-centered,
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="2"].label-centered,
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="2"].label-centered {
-        --clock-label-horiz-shift: -120px;
-        --clock-label-vert-shift: 268px;
+        width: 65px !important;
+        --clock-label-horiz-shift: -80px;
+        --clock-label-vert-shift: -8px;
         --clock-label-text-align: center;
-        -webkit-transform-origin: bottom center;
-        -ms-transform-origin: bottom center;
-        transform-origin: bottom center; }
+        -webkit-transform-origin: center 70%;
+        -ms-transform-origin: center 70%;
+        transform-origin: center 70%; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="3"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="3"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="3"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="3"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="3"],
@@ -2568,7 +2682,7 @@
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="3"],
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="3"] {
       --clock-label-horiz-shift: 190px;
-      --clock-label-vert-shift: 300px;
+      --clock-label-vert-shift: 40px;
       --clock-label-text-align: left; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="3"].label-centered, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="3"].label-centered, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="3"].label-centered,
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="3"].label-centered,
@@ -2580,12 +2694,13 @@
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="3"].label-centered,
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="3"].label-centered,
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="3"].label-centered {
-        --clock-label-horiz-shift: 120px;
-        --clock-label-vert-shift: 268px;
+        width: 65px !important;
+        --clock-label-horiz-shift: 105px;
+        --clock-label-vert-shift: -8px;
         --clock-label-text-align: center;
-        -webkit-transform-origin: bottom center;
-        -ms-transform-origin: bottom center;
-        transform-origin: bottom center; }
+        -webkit-transform-origin: center 70%;
+        -ms-transform-origin: center 70%;
+        transform-origin: center 70%; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="4"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="4"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="4"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="4"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="4"],
@@ -2597,7 +2712,7 @@
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="4"],
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="4"] {
       --clock-label-horiz-shift: -160px;
-      --clock-label-vert-shift: 390px;
+      --clock-label-vert-shift: 120px;
       --clock-label-text-align: right; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="4"].label-centered, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="4"].label-centered, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="4"].label-centered,
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="4"].label-centered,
@@ -2609,11 +2724,13 @@
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="4"].label-centered,
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="4"].label-centered,
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="4"].label-centered {
-        --clock-label-horiz-shift: 0px;
-        --clock-label-vert-shift: 330px;
+        --clock-label-horiz-shift: -0px;
         --clock-label-text-align: center;
         top: unset;
-        bottom: -350px; }
+        bottom: -75px;
+        -webkit-transform-origin: center -60%;
+        -ms-transform-origin: center -60%;
+        transform-origin: center -60%; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="5"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="5"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="5"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="5"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="5"],
@@ -2625,7 +2742,7 @@
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="5"],
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="5"] {
       --clock-label-horiz-shift: 160px;
-      --clock-label-vert-shift: 580px;
+      --clock-label-vert-shift: 310px;
       --clock-label-text-align: left; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="5"].label-centered, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="5"].label-centered, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="5"].label-centered,
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="5"].label-centered,
@@ -2640,7 +2757,10 @@
         --clock-label-horiz-shift: 0px;
         --clock-label-text-align: center;
         top: unset;
-        bottom: -528px; }
+        bottom: -280px;
+        -webkit-transform-origin: center 35%;
+        -ms-transform-origin: center 35%;
+        transform-origin: center 35%; }
     :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="6"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="6"], :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="6"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="6"],
     :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="6"],
@@ -2652,7 +2772,7 @@
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="6"],
     :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="6"] {
       --clock-label-horiz-shift: 0px;
-      --clock-label-vert-shift: 830px;
+      --clock-label-vert-shift: 560px;
       --clock-label-text-align: center; }
       :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="6"].label-centered, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="5"] .key-clock-label[data-clock-num="6"].label-centered, :root body #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="6"].label-centered,
       :root body.vtt.game #euno-clock-keeper-overlay .euno-clock-key[data-size="4"] .key-clock-label[data-clock-num="6"].label-centered,
@@ -2666,7 +2786,10 @@
       :root body.vtt.game.system-eunos-blades.-emu #euno-clock-keeper-overlay .euno-clock-key[data-size="6"] .key-clock-label[data-clock-num="6"].label-centered {
         --clock-label-horiz-shift: 0px;
         top: unset;
-        bottom: -775px; }
+        bottom: -520px;
+        -webkit-transform-origin: center 35%;
+        -ms-transform-origin: center 35%;
+        transform-origin: center 35%; }
 
 :root body #controls,
 :root body #navigation,
@@ -2886,21 +3009,29 @@
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form section select,
   :root body.vtt.game.system-eunos-blades.-emu .app.window-app.sheet .window-content form section select {
     color: var(--blades-white); }
-  :root body .app.window-app.sheet .window-content form section .notes,
-  :root body.vtt.game .app.window-app.sheet .window-content form section .notes,
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form section .notes,
-  :root body.vtt.game.system-eunos-blades.-emu .app.window-app.sheet .window-content form section .notes {
-    -webkit-box-flex: initial;
-    -ms-flex: initial;
-    flex: initial;
-    font-size: inherit;
-    line-height: inherit;
-    margin: 0; }
-    :root body .app.window-app.sheet .window-content form section .notes .label-stripe,
-    :root body.vtt.game .app.window-app.sheet .window-content form section .notes .label-stripe,
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form section .notes .label-stripe,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.sheet .window-content form section .notes .label-stripe {
-      margin-bottom: 0; }
+  :root body .app.window-app.sheet .window-content form section .nav-panel nav,
+  :root body.vtt.game .app.window-app.sheet .window-content form section .nav-panel nav,
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form section .nav-panel nav,
+  :root body.vtt.game.system-eunos-blades.-emu .app.window-app.sheet .window-content form section .nav-panel nav {
+    background-color: var(--blades-white);
+    padding: 0 10px; }
+    :root body .app.window-app.sheet .window-content form section .nav-panel nav .item,
+    :root body.vtt.game .app.window-app.sheet .window-content form section .nav-panel nav .item,
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form section .nav-panel nav .item,
+    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.sheet .window-content form section .nav-panel nav .item {
+      color: var(--blades-black);
+      padding: 0 10px; }
+      :root body .app.window-app.sheet .window-content form section .nav-panel nav .item.active,
+      :root body.vtt.game .app.window-app.sheet .window-content form section .nav-panel nav .item.active,
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form section .nav-panel nav .item.active,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.sheet .window-content form section .nav-panel nav .item.active {
+        background-color: var(--blades-white-bright); }
+      :root body .app.window-app.sheet .window-content form section .nav-panel nav .item:hover,
+      :root body.vtt.game .app.window-app.sheet .window-content form section .nav-panel nav .item:hover,
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form section .nav-panel nav .item:hover,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.sheet .window-content form section .nav-panel nav .item:hover {
+        color: var(--blades-black-dark);
+        background-color: var(--blades-white-bright); }
   :root body .app.window-app.eunos-blades.actor.pc section.name-alias .portrait,
   :root body.vtt.game .app.window-app.eunos-blades.actor.pc section.name-alias .portrait,
   :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .portrait,
@@ -3142,30 +3273,8 @@
   :root body.vtt.game .app.window-app.eunos-blades.actor.pc section.abilities .item .item-control,
   :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.abilities .item .item-control,
   :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.pc section.abilities .item .item-control {
-    max-width: 30px; }
-  :root body .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav,
-  :root body.vtt.game .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav,
-  :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav,
-  :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav {
-    background-color: var(--blades-white);
-    padding: 0 10px; }
-    :root body .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav .item,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav .item,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav .item,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav .item {
-      color: var(--blades-black);
-      padding: 0 10px; }
-      :root body .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav .item.active,
-      :root body.vtt.game .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav .item.active,
-      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav .item.active,
-      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav .item.active {
-        background-color: var(--blades-white-bright); }
-      :root body .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav .item:hover,
-      :root body.vtt.game .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav .item:hover,
-      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav .item:hover,
-      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.pc section.abilities .nav-panel nav .item:hover {
-        color: var(--blades-black-dark);
-        background-color: var(--blades-white-bright); }
+    max-width: 30px;
+    color: #3f0061; }
   :root body .app.window-app.eunos-blades.actor.pc section.abilities .loadout .load-amount,
   :root body.vtt.game .app.window-app.eunos-blades.actor.pc section.abilities .loadout .load-amount,
   :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.abilities .loadout .load-amount,
@@ -3256,7 +3365,7 @@
     margin-top: -2px;
     background: black;
     padding: 5px;
-    color: var(--blades-white-bright);
+    color: var(--blades-white);
     border-radius: 0; }
   :root body .app.window-app.eunos-blades.actor.npc .labelled-input,
   :root body.vtt.game .app.window-app.eunos-blades.actor.npc .labelled-input,
@@ -3278,155 +3387,338 @@
       line-height: 10px;
       text-align: left;
       padding-bottom: 2px; }
-  :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet,
-  :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet,
-  :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet,
-  :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet {
-    height: auto;
-    margin-bottom: 100px;
-    display: grid;
-    --folding-block-height: 150px;
-    grid-template-areas: ". name name name name name name name" ". . concept concept concept concept concept concept" ". . traits traits traits traits arena arena" ". . heritage heritage district district faction faction" "short-desc short-desc short-desc short-desc short-desc short-desc short-desc short-desc" "tabs tabs tabs tabs tabs tabs tabs tabs";
-    grid-template-columns: 65px 15px 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 36px 14px 20px 32px 32px var(--folding-block-height);
-    grid-column-gap: 2px;
-    grid-row-gap: 4px; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet label,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet label,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet label,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet label {
-      text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet input[type="text"],
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet input[type="text"],
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet input[type="text"],
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet input[type="text"] {
-      -webkit-box-shadow: none;
-      box-shadow: none;
-      background: rgba(0, 0, 0, 0.25);
-      text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input {
-      margin-top: 4px; }
-      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input input[type="text"],
-      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input input[type="text"],
-      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input input[type="text"],
-      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input input[type="text"] {
-        font-size: 14px;
-        height: 18px;
-        font-family: Kirsty;
-        text-transform: uppercase; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet > *,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet > *,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet > *,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet > * {
-      position: relative;
-      z-index: 2;
-      -webkit-box-flex: 0;
-      -ms-flex-positive: 0;
-      flex-grow: 0; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img {
-      position: absolute;
-      height: 154px;
-      top: -10px;
-      left: -10px;
-      z-index: 1;
-      border: none; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-name,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-name,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-name,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-name {
-      grid-area: name;
-      font-family: "Historical FellType";
-      font-size: 32px;
-      height: 32px;
-      -webkit-box-shadow: none;
-      box-shadow: none;
-      background: none;
-      text-indent: 3px;
-      text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-alias,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-alias,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-alias,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-alias {
-      display: none; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-concept,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-concept,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-concept,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-concept {
-      grid-area: concept;
-      height: 100%;
+  :root body .app.window-app.eunos-blades.actor.npc .window-resizable-handle,
+  :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-resizable-handle,
+  :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-resizable-handle,
+  :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-resizable-handle {
+    display: none; }
+  :root body .app.window-app.eunos-blades.actor.npc,
+  :root body.vtt.game .app.window-app.eunos-blades.actor.npc,
+  :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc,
+  :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc {
+    width: 500px !important;
+    height: auto !important;
+    border-radius: 25px;
+    overflow: hidden;
+    position: absolute; }
+  :root body .app.window-app.eunos-blades.actor.npc .window-header,
+  :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-header,
+  :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-header,
+  :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-header {
+    line-height: 16px;
+    height: 24px; }
+    :root body .app.window-app.eunos-blades.actor.npc .window-header .window-title,
+    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-header .window-title,
+    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-header .window-title,
+    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-header .window-title {
       font-variant: small-caps;
-      color: var(--blades-white);
-      -webkit-box-shadow: none;
-      box-shadow: none;
-      top: -5px; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits {
-      grid-area: traits;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      font-family: Kirsty;
-      font-size: 10px; }
-      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits input,
-      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits input,
-      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits input,
-      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits input {
-        text-transform: uppercase;
+      text-indent: 10px; }
+  :root body .app.window-app.eunos-blades.actor.npc .window-content,
+  :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content,
+  :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content,
+  :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content {
+    overflow: hidden; }
+    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet,
+    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet,
+    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet,
+    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet {
+      height: auto;
+      display: grid;
+      --folding-block-height: auto;
+      --editor-margin: 5px;
+      --editor-padding: 5px;
+      grid-template-areas: ". . name name name name name name" ". . concept concept concept concept concept concept" ". . short-desc short-desc short-desc short-desc short-desc short-desc" ". . traits traits traits traits traits traits" "heritage heritage district district faction faction arena arena" "tabs tabs tabs tabs tabs tabs tabs tabs";
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+      grid-template-rows: 36px 14px 18px 18px 36px var(--folding-block-height);
+      grid-column-gap: 2px;
+      grid-row-gap: 4px; }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet label,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet label,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet label,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet label {
+        text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet input[type="text"],
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet input[type="text"],
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet input[type="text"],
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet input[type="text"] {
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        background: rgba(0, 0, 0, 0);
+        text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input {
+        margin-top: 4px; }
+        :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input input[type="text"],
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input input[type="text"],
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input input[type="text"],
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input input[type="text"] {
+          font-size: 14px;
+          height: 18px;
+          font-family: Kirsty;
+          text-transform: uppercase; }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet > *,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet > *,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet > *,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet > * {
+        position: relative;
+        z-index: 2;
+        -webkit-box-flex: 0;
+        -ms-flex-positive: 0;
+        flex-grow: 0; }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img {
+        position: absolute;
+        height: 175px;
+        top: -5px;
+        left: -10px;
+        z-index: 1;
+        border: none;
+        -webkit-mask-image: -webkit-gradient(linear, left top, right top, color-stop(75%, black), to(transparent));
+        -webkit-mask-image: linear-gradient(to right, black 75%, transparent);
+        mask-image: -webkit-gradient(linear, left top, right top, color-stop(75%, black), to(transparent));
+        mask-image: linear-gradient(to right, black 75%, transparent); }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img-bg,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img-bg,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img-bg,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img-bg {
+        position: absolute;
+        z-index: 0;
+        width: 500px;
+        height: auto;
+        top: -20%;
+        right: -10%;
+        border: none;
+        -webkit-filter: blur(5px) sepia(2) brightness(0.65);
+        filter: blur(5px) sepia(2) brightness(0.65);
+        -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, color-stop(20%, black), color-stop(30%, rgba(0, 0, 0, 0.35)));
+        -webkit-mask-image: linear-gradient(to bottom, black 20%, rgba(0, 0, 0, 0.35) 30%);
+        mask-image: -webkit-gradient(linear, left top, left bottom, color-stop(20%, black), color-stop(30%, rgba(0, 0, 0, 0.35)));
+        mask-image: linear-gradient(to bottom, black 20%, rgba(0, 0, 0, 0.35) 30%); }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-name,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-name,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-name,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-name {
+        grid-area: name;
+        overflow: visible;
+        font-family: "Historical FellType";
+        color: var(--blades-white-bright);
+        font-size: 32px;
+        height: 32px;
+        line-height: 28px;
+        padding-bottom: 10px;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        background: none;
         text-align: center;
-        color: cyan; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena {
-      grid-area: arena;
-      top: -10px; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage {
-      grid-area: heritage; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district {
-      grid-area: district; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction {
-      grid-area: faction; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-short-description,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-short-description,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-short-description,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-short-description {
-      grid-area: short-desc;
-      font-style: italic;
-      text-align: center;
-      width: calc(100% + 20px);
-      left: -10px; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs {
-      grid-area: tabs;
-      height: 100%; }
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies,
-    :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-enemies,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies,
-    :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-enemies,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-enemies,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies,
-    :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-enemies {
-      display: none; }
+        text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-alias,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-alias,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-alias,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-alias {
+        display: none; }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-concept,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-concept,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-concept,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-concept {
+        grid-area: concept;
+        height: 100%;
+        font-variant: small-caps;
+        color: var(--blades-white);
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        top: -5px;
+        text-align: center; }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits {
+        grid-area: traits;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        font-family: Kirsty;
+        top: 0px; }
+        :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits input,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits input,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits input,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits input {
+          text-transform: uppercase;
+          text-align: center;
+          color: gold; }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena {
+        text-align: center;
+        background: -webkit-gradient(linear, left bottom, left top, color-stop(25%, var(--blades-black)), to(transparent)) !important;
+        background: -o-linear-gradient(bottom, var(--blades-black) 25%, transparent) !important;
+        background: linear-gradient(to top, var(--blades-black) 25%, transparent) !important;
+        height: calc(100% + 4px); }
+        :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage label, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction label, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district label, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena label,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage label,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction label,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district label,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena label,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage label,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction label,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district label,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena label,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage label,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction label,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district label,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena label {
+          text-align: center; }
+        :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-arena, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-arena, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-arena, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-arena,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-arena,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-arena,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-arena,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-arena,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-arena,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-arena,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-arena,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-arena,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-arena,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-arena,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-arena,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-arena {
+          grid-area: arena;
+          width: calc(100% + 10px); }
+        :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-heritage, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-heritage, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-heritage, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-heritage,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-heritage,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-heritage,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-heritage,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-heritage,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-heritage,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-heritage,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-heritage,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-heritage,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-heritage,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-heritage,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-heritage,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-heritage {
+          grid-area: heritage;
+          width: calc(100% + 10px);
+          left: -10px; }
+        :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-district, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-district, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-district, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-district,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-district,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-district,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-district,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-district,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-district,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-district,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-district,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-district,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-district,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-district,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-district,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-district {
+          grid-area: district; }
+        :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-faction, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-faction, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-faction, :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-faction,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-faction,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-faction,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-faction,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-faction,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-faction,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-faction,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-faction,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-faction,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-faction,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-faction,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-faction,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-faction {
+          grid-area: faction; }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-short-description,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-short-description,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-short-description,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-short-description {
+        grid-area: short-desc;
+        font-style: italic;
+        text-align: center;
+        color: var(--blades-white-bright);
+        top: -5px;
+        padding: 0; }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs {
+        grid-area: tabs; }
+        :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav {
+          width: calc(100% + 2 * 10px);
+          height: 28px;
+          -webkit-box-pack: stretch;
+          -ms-flex-pack: stretch;
+          justify-content: stretch;
+          position: relative;
+          left: -10px;
+          z-index: 3;
+          background-color: var(--blades-white);
+          padding: 0 10px; }
+          :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item,
+          :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item,
+          :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item,
+          :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item {
+            color: var(--blades-grey-dark);
+            -webkit-box-flex: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+            font-family: Kirsty;
+            text-transform: uppercase;
+            font-size: 14px;
+            line-height: 30px;
+            padding: 0 10px; }
+            :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item.active,
+            :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item.active,
+            :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item.active,
+            :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item.active {
+              background-color: var(--blades-white-bright);
+              color: var(--blades-black-dark);
+              font-size: 18px; }
+            :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item:hover,
+            :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item:hover,
+            :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item:hover,
+            :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item:hover {
+              color: var(--blades-black-dark);
+              background-color: var(--blades-white-bright); }
+        :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel .tab .editor .editor-content,
+        :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel .tab .editor .editor-content,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel .tab .editor .editor-content,
+        :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel .tab .editor .editor-content {
+          margin: var(--editor-margin);
+          padding: var(--editor-padding);
+          background: rgba(0, 0, 0, 0.5);
+          line-height: 16px;
+          -webkit-box-shadow: 0 0 5px black;
+          box-shadow: 0 0 5px black; }
+          :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel .tab .editor .editor-content > *:first-child,
+          :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel .tab .editor .editor-content > *:first-child,
+          :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel .tab .editor .editor-content > *:first-child,
+          :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel .tab .editor .editor-content > *:first-child {
+            margin-top: 0; }
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies,
+      :root body .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-enemies,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies,
+      :root body.vtt.game .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-enemies,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-enemies,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies,
+      :root body.vtt.game.system-eunos-blades.-emu .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-enemies {
+        display: none; }
   :root body .app.window-app.eunos-blades.actor.crew .crew-name-lair .portrait,
   :root body.vtt.game .app.window-app.eunos-blades.actor.crew .crew-name-lair .portrait,
   :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .crew-name-lair .portrait,

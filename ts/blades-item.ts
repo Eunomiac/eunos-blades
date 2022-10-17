@@ -76,6 +76,8 @@ export class BladesItem extends Item {
 	}
 
 	async activateOverlayListeners() {
+
+
 		$("#euno-clock-keeper-overlay").find(".euno-clock").on("wheel", async (event) => {
 			console.log("Wheel Event!", {event});
 			if (!game?.user?.isGM) { return }
@@ -86,8 +88,6 @@ export class BladesItem extends Item {
 
 			const clock$ = $(event.currentTarget);
 			const key$ = clock$.closest(".euno-clock-key");
-
-			console.log("... Elements", {clock$, key$});
 			if (!(key$[0] instanceof HTMLElement)) { return }
 			if (!(event.originalEvent instanceof WheelEvent)) { return }
 
@@ -105,9 +105,23 @@ export class BladesItem extends Item {
 			await this.update({
 				[`system.clock_keys.${keyID}.clocks.${clockNum}.value`]: `${newClockVal}`
 			});
-			this.renderOverlay();
+			socketlib.system.executeForEveryone("renderOverlay");
+		});
+
+		$("#euno-clock-keeper-overlay").find(".euno-clock").on("click", async (event) => {
+			if (!event.currentTarget) { return }
+			if (!game.eunoblades.ClockKeeper) { return }
+
+			event.preventDefault();
+
+			const key$ = $(event.currentTarget).closest(".euno-clock-key");
+			if (!(key$[0] instanceof HTMLElement)) { return }
+
+			key$.toggleClass("key-faded");
 		});
 	}
+
+
 	async addClockKey() {
 		const keyID = randomID();
 		return this.update({[`system.clock_keys.${keyID}`]: {

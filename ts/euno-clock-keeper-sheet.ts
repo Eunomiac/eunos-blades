@@ -45,7 +45,8 @@ export default class EunoClockKeeperSheet extends BladesItemSheet {
 	/** @override */
 	override async _updateObject(event: unknown, formData: ItemDataConstructorData) {
 		const updateData = await this.object.update(formData);
-		(this.item as BladesItem).renderOverlay();
+		socketlib.system.executeForEveryone("renderOverlay");
+		// (this.item as BladesItem).renderOverlay();
 		return updateData;
 	}
 

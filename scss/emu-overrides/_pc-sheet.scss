@@ -196,28 +196,7 @@ section.abilities {
 
 		.item-control {
 			max-width: 30px;
-		}
-	}
-
-	.nav-panel {
-		nav {
-			background-color: var(--blades-white);
-			padding: 0 10px;
-
-			.item {
-				color: var(--blades-black);
-				padding: 0 10px;
-
-				&.active {
-					background-color: var(--blades-white-bright);
-				}
-
-				&:hover {
-					color: var(--blades-black-dark);
-					background-color: var(--blades-white-bright);
-				}
-
-			}
+			color: rgb(63, 0, 97);
 		}
 	}
 

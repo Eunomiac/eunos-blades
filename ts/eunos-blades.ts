@@ -16,6 +16,8 @@ import {bladesRoll, simpleRollPopup} from "./euno-blades-roll.js";
 import BladesActiveEffect from "./euno-active-effect.js";
 import EunoTrackerSheet from "./euno-tracker-sheet.js";
 import EunoClockKeeperSheet from "./euno-clock-keeper-sheet.js";
+
+let socket: Socket; //~ SocketLib interface
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 
 // #region Globals: Exposing Functionality to Global Scope ~
@@ -79,6 +81,17 @@ Hooks.once("init", async () => {
 	registerHandlebarHelpers();
 });
 // #endregion ▄▄▄▄▄ SYSTEM INITIALIZATION ▄▄▄▄▄
+
+// #region ░░░░░░░[SocketLib]░░░░ SocketLib Initialization ░░░░░░░ ~
+Hooks.once("socketlib.ready", () => {
+	socket = socketlib.registerSystem("eunos-blades");
+	/*DEVCODE*/Object.assign(
+		globalThis,
+		{socket}
+	);/*!DEVCODE*/
+	socket.register("renderOverlay", () => game.eunoblades.ClockKeeper?.renderOverlay());
+});
+// #endregion ░░░░[SocketLib]░░░░
 
 // #region ░░░░░░░[Roll Controller]░░░░ Add Dice Roller to Scene Control Sidebar ░░░░░░░ ~
 Hooks.once("renderSceneControls", async (app: unknown, html: JQuery<HTMLElement>) => {

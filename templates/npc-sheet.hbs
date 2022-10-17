@@ -1,5 +1,6 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
 	<img class="npc-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+	<img class="npc-img-bg" src="{{actor.img}}" />
 	<input class="npc-name" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
 	<input class="npc-alias" type="text" name="data.alias" value="{{data.alias}}" placeholder="Alias">
 	<input class="npc-concept" type="text" name="data.concept" value="{{data.concept}}" placeholder="Concept">
@@ -32,31 +33,61 @@
 		<input type="text" name="data.traits.1" value="{{data.traits.[1]}}" placeholder="Trait">
 		<input type="text" name="data.traits.2" value="{{data.traits.[2]}}" placeholder="Trait">
 	</div>
-	<input class="npc-short-description" type="text" name="data.description_short" value="{{data.description_short}}" placeholder="Short Description">
-	<div class="npc-tabs">
-		<div class="folding-block npc-description">
-  		<input type="radio" name="{{actor.id}}_nav_tab" id="{{actor.id}}_nav-npc-description" checked/>
-  		<label for="{{actor.id}}_nav-npc-description"><span>Description</span></label>
-			<div class="folding-block-content">
+	<input class="npc-short-description" type="text" name="data.description_short" value="{{data.description_short}}"
+		placeholder="Short Description">
+	<section class="flex-horizontal npc-tabs">
+		<div class="tab-content flex-vertical grow-two nav-panel">
+			<nav class="tabs flex-horizontal">
+				<a class="item" data-tab="description">Description</a>
+				<a class="item" data-tab="friends-and-foes">Friends & Foes</a>
+				{{#if isGM}}
+				<a class="item" data-tab="randomizer">Randomizer</a>
+				{{/if}}
+			</nav>
+			<div id="npc-{{actor._id}}-description" class="tab flex-vertical description" data-tab="description">
 				{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
 			</div>
-		</div>
 
-		<div class="folding-block npc-notes">
-  		<input type="radio" name="{{actor.id}}_nav_tab" id="{{actor.id}}_nav-npc-notes" />
-  		<label for="{{actor.id}}_nav-npc-notes"><span>Notes</span></label>
-			<div class="folding-block-content">
-				{{editor content=data.notes target="data.notes" button=true owner=owner editable=editable}}
+			<div id="npc-{{actor._id}}-friends-and-foes" class="tab flex-vertical friends-and-foes" data-tab="friends-and-foes">
+				<div class="flex-horizontal">
+					<div class="npc-connections-list allies-list">
+						<div class="label-stripe flex-horizontal"><p>Allies</p></div>
+					</div>
+					<div class="npc-connections-list enemies-list">
+						<div class="label-stripe flex-horizontal"><p>Enemies</p></div>
+					</div>
+					<div class="npc-connections-list others-list">
+						<div class="label-stripe flex-horizontal"><p>Others</p></div>
+					</div>
+				</div>
+			</div>
+
+			<div id="npc-{{actor._id}}-randomizer" class="tab flex-vertical randomizer" data-tab="randomizer">
+				{{> "systems/eunos-blades/templates/parts/button-icon.hbs"
+					blockClass="tooltip-left"
+					buttonClass="fas fas-galaxy"
+					tooltip="<b>Randomize!</b>"
+					action="randomize"
+				}}
+				<div class="randomizer">
+					{{#each randomizers as |data key|}}
+					{{log "RANDOMIZER" key data}}
+					<div class="npc-randomizer-field field-size-{{data.size}}">
+						{{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+							isToggled=data.isLocked
+							activeClass="fas fa-lock"
+							activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
+							inactiveClass="far fa-lock-open-alt"
+							inactiveTooltip="<b>Randomizing Field</b><br>Click to Freeze"
+							targetKey=(concat "data.randomizers." key ".isLocked") }}
+						{{#if data.label}}
+						<label class="randomizer-label">{{data.label}}</label>
+						{{/if}}
+						<input class="randomizer-input" type="text" value="{{data.value}}" name="data.randomizers.{{key}}.value" />
+					</div>
+					{{/each}}
+				</div>
 			</div>
 		</div>
-		{{#if data.isGM}}
-		<div class="folding-block npc-notes_gm">
-  		<input type="radio" name="{{actor.id}}_nav_tab" id="{{actor.id}}_nav-npc-notes_gm" />
-  		<label for="{{actor.id}}_nav-npc-notes_gm"><span>GM Notes</span></label>
-			<div class="folding-block-content">
-				{{editor content=data.notes_gm target="data.notes_gm" button=true owner=owner editable=editable}}
-			</div>
-		</div>
-		{{/if}}
-	</div>
+	</section>
 </form>

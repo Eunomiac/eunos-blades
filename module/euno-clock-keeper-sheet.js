@@ -40,7 +40,7 @@ export default class EunoClockKeeperSheet extends BladesItemSheet {
     
         async _updateObject(event, formData) {
         const updateData = await this.object.update(formData);
-        this.item.renderOverlay();
+        socketlib.system.executeForEveryone("renderOverlay");
         return updateData;
     }
     

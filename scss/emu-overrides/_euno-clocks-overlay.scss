@@ -5,8 +5,8 @@
 		width: 100%;
 	}
 
-	--top-shift: 100px;
-	--left-shift: -50px;
+	--top-shift: 150px;
+	--left-shift: 50px;
 	--flex-basis: 170px;
 
 	position: absolute;
@@ -35,35 +35,87 @@
 	.euno-clock-key {
 		--key-scale: 0.36;
 		--key-horiz-shift: 0px;
-		--key-vert-shift: 50px;
+		--key-vert-shift: 0px;
 
-		--key-title-vert-shift: 1150px;
-		--key-title-horiz-shift: 140px;
+		--key-title-vert-shift: 750px;
+		--key-title-horiz-shift: -50px;
 		--key-title-align: left;
 
 		--clock-label-width: 100px;
-		--clock-label-center: 0px;
+		--clock-label-center: -50px;
 
 		position: relative;
 		display: block;
 		width: 400px;
 		height: 1200px;
-		top: 0;
-		left: 0;
-		transform-origin: top left;
+		top: var(--key-vert-shift);
+		left: var(--key-horiz-shift);
+		transform-origin: -100% 0%;
 		transform: scale(var(--key-scale));
+		margin-left: 0 !important;
+		margin-right: 0 !important;
 
-        &.active-key {
-            .clock-key-container {
-			     // filter: brightness(1.25);
-            }
-        }
-        &:not(.active-key) {
-            opacity: 0.75;
-            .key-clock-label { opacity: 0 }
-            // filter: saturate(0.26) brightness(0.75);
+		&,
+		& * {
+			transition: 1s;
+		}
 
-        }
+		&.key-faded {
+			--key-scale: 0.18;
+			--key-title-vert-shift: 500px !important;
+			--key-title-horiz-shift: 0px !important;
+			margin-left: 0 !important;
+			margin-right: -100px !important;
+			margin-top: -50px !important;
+
+			&[data-size="1"],
+			&[data-size="2"] {
+				margin-top: -35px !important;
+
+				.key-label {
+					margin-top: 150px;
+				}
+
+				&[data-size="1"] .key-label {
+					margin-top: -75px
+				}
+			}
+
+			.key-label {
+				margin-left: -100px;
+				margin-top: 350px;
+				font-weight: normal !important; // bold !important;
+				font-family: "Kirsty" !important; // "Minion Pro Caption" !important;
+				font-size: 12px !important; // 14px !important;
+				line-height: 12px !important; // 14px !important;
+				text-transform: uppercase !important;
+				width: 100px !important;
+				font-style: normal !important;
+				text-align: center !important;
+				font-variant: none !important;
+				transform: scale(calc(1 / var(--key-scale))) rotate(-70deg) !important;
+			}
+
+			.key-clock-label {
+				opacity: 0 !important;
+			}
+
+			.clock-key-bg,
+			.clock-key-fg,
+			.clock-bg,
+			.clock-frame,
+			.clock-glow {
+				opacity: 0.5 !important;
+			}
+
+			.euno-clock[data-index="1"] .clock-glow,
+			.euno-clock[data-index="1"] .clock-frame {
+				opacity: 1 !important;
+			}
+
+
+		}
+
 
 		.key-label {
 			position: absolute;
@@ -137,6 +189,7 @@
 
 			.euno-clock {
 				--clock-size: 400px;
+				// --clock-counter-scale: var(--clock-size) / calc(var(400px));
 				--clock-horiz-center: 200px;
 				--clock-vert-center: 200px;
 
@@ -156,17 +209,27 @@
 				.clock-glow,
 				.clock-frame {
 					position: absolute;
+					top: 0;
+					left: 0;
+				}
+
+				.clock-glow {
+					// height: var(--clock-size);
+					// width: var(--clock-size);
+					// transform: scale(var(--clock-counter-scale));
+					// transform-origin: top-left;
 				}
 			}
 
 		}
 
 		&[data-size="1"] {
-			--key-vert-shift: -300px;
-			--key-title-vert-shift: 400px;
+			--key-vert-shift: -35px;
+			--key-title-horiz-shift: -70px;
+			--key-title-vert-shift: 130px;
 			--key-title-align: center;
-			margin-left: -25px;
-			margin-right: -25px;
+			// margin-left: -25px;
+			// margin-right: -25px;
 
 			.key-label {
 				font-family: Kirsty;
@@ -190,54 +253,62 @@
 
 		&[data-size="2"] {
 			--key-title-align: center;
-			--key-vert-shift: -375px;
-			--key-title-vert-shift: 220px;
-			--clock-label-center: 155px;
-			margin-left: -45px;
-			margin-right: 35px;
+			--key-vert-shift: -35px;
+			--key-title-vert-shift: 140px;
+			--key-title-horiz-shift: -80px;
+			// --clock-label-center: 155px;
+			// margin-left: -45px;
+			// margin-right: 35px;
 
 			.euno-clock {
 				--clock-size: 155px;
 				--clock-horiz-center: 200px;
 
-				&[data-index="1"] { --clock-vert-center: 202px }
-				&[data-index="2"] { --clock-vert-center: 504px }
+				&[data-index="1"] {
+					--clock-vert-center: 202px
+				}
+
+				&[data-index="2"] {
+					--clock-vert-center: 504px
+				}
 			}
 
 			.key-clock-label[data-clock-num="1"] {
-				--clock-label-vert-shift: 60px;
+				--clock-label-horiz-shift: 0px;
+				--clock-label-vert-shift: -60px;
 				--clock-label-text-align: center;
-				transform-origin: center 200%;
+				transform-origin: center 180%;
 			}
 
 			.key-clock-label[data-clock-num="2"] {
-				--clock-label-vert-shift: 430px;
+				--clock-label-horiz-shift: 0px;
+				--clock-label-vert-shift: 390px;
 				--clock-label-text-align: center;
-				transform-origin: center 200%;
+				transform-origin: center 0%;
 
-				&.label-centered {
-					--clock-label-horiz-shift: 0px;
-					--clock-label-vert-shift: 405px;
-					--clock-label-text-align: center;
-					transform-origin: bottom center;
-				}
+
 			}
 		}
 
 		&[data-size="3"] {
 			--key-title-align: center;
-			--key-title-vert-shift: 600px;
+			--key-vert-shift: -10px;
+			--key-title-vert-shift: 350px;
+			--key-title-horiz-shift: -80px;
 
 			.euno-clock {
 				--clock-size: 136px;
+
 				&[data-index="1"] {
 					--clock-horiz-center: 199px;
 					--clock-vert-center: 138px;
 				}
+
 				&[data-index="2"] {
 					--clock-horiz-center: 123px;
 					--clock-vert-center: 249px;
 				}
+
 				&[data-index="3"] {
 					--clock-horiz-center: 278.5px;
 					--clock-vert-center: 249px;
@@ -245,47 +316,58 @@
 			}
 
 			.key-clock-label[data-clock-num="1"] {
-				--clock-label-vert-shift: 95px;
+				--clock-label-vert-shift: -125px;
 				--clock-label-text-align: center;
-				transform-origin: bottom center;
+				transform-origin: center 150%;
+
+				&.label-centered {
+					--clock-label-horiz-shift: 0px;
+					--clock-label-vert-shift: -100px;
+					transform-origin: center 130%;
+				}
 			}
 
 			.key-clock-label[data-clock-num="2"] {
-				--clock-label-horiz-shift: -200px;
-				--clock-label-vert-shift: 235px;
+				--clock-label-horiz-shift: -170px;
+				--clock-label-vert-shift: 115px;
 				--clock-label-text-align: right;
-				transform-origin: center 180%;
+				transform-origin: center 0%;
 
 				&.label-centered {
-					--clock-label-horiz-shift: -120px;
-					--clock-label-vert-shift: 268px;
+					width: 65px !important;
+					--clock-label-horiz-shift: -80px;
+					--clock-label-vert-shift: 45px;
 					--clock-label-text-align: center;
-					transform-origin: bottom center;
+					transform-origin: center 70%;
 				}
 			}
 
 			.key-clock-label[data-clock-num="3"] {
-				--clock-label-horiz-shift: 190px;
-				--clock-label-vert-shift: 300px;
+				--clock-label-horiz-shift: 170px;
+				--clock-label-vert-shift: 115px;
 				--clock-label-text-align: left;
+				transform-origin: center 0%;
 
 				&.label-centered {
-					--clock-label-horiz-shift: 120px;
-					--clock-label-vert-shift: 268px;
+					width: 65px !important;
+					--clock-label-horiz-shift: 105px;
+					--clock-label-vert-shift: 45px;
 					--clock-label-text-align: center;
-					transform-origin: bottom center;
+					transform-origin: center 70%;
 				}
 			}
 		}
 
 		&[data-size="4"] {
 			--key-title-align: center;
-			--key-title-vert-shift: 700px;
+			--key-title-vert-shift: 475px;
+			--key-title-horiz-shift: -80px;
 		}
 
 		&[data-size="5"] {
 			--key-title-align: center;
-			--key-title-vert-shift: 800px;
+			--key-title-vert-shift: 650px;
+			--key-title-horiz-shift: -80px;
 		}
 
 		&[data-size="4"],
@@ -298,22 +380,27 @@
 					--clock-horiz-center: 200.5px;
 					--clock-vert-center: 113.5px;
 				}
+
 				&[data-index="2"] {
 					--clock-horiz-center: 111.5px;
 					--clock-vert-center: 202px;
 				}
+
 				&[data-index="3"] {
 					--clock-horiz-center: 288px;
 					--clock-vert-center: 201.5px;
 				}
+
 				&[data-index="4"] {
 					--clock-horiz-center: 199.5px;
 					--clock-vert-center: 291px;
 				}
+
 				&[data-index="5"] {
 					--clock-horiz-center: 200.5px;
 					--clock-vert-center: 474.5px;
 				}
+
 				&[data-index="6"] {
 					--clock-horiz-center: 199.5px;
 					--clock-vert-center: 713px;
@@ -321,69 +408,86 @@
 			}
 
 			.key-clock-label[data-clock-num="1"] {
-				--clock-label-vert-shift: 95px;
+				--clock-label-vert-shift: -145px;
 				--clock-label-text-align: center;
-				transform-origin: bottom center;
+				transform-origin: center 150%;
+
+				&.label-centered {
+					--clock-label-horiz-shift: 0px;
+					--clock-label-vert-shift: -100px;
+					transform-origin: center 130%;
+				}
 			}
+
 			.key-clock-label[data-clock-num="2"] {
 				--clock-label-horiz-shift: -200px;
-				--clock-label-vert-shift: 235px;
+				--clock-label-vert-shift: -15px;
 				--clock-label-text-align: right;
 				transform-origin: center 180%;
 
 				&.label-centered {
-					--clock-label-horiz-shift: -120px;
-					--clock-label-vert-shift: 268px;
+					width: 65px !important;
+					--clock-label-horiz-shift: -80px;
+					--clock-label-vert-shift: -8px;
 					--clock-label-text-align: center;
-					transform-origin: bottom center;
+					transform-origin: center 70%;
 				}
 			}
+
 			.key-clock-label[data-clock-num="3"] {
 				--clock-label-horiz-shift: 190px;
-				--clock-label-vert-shift: 300px;
+				--clock-label-vert-shift: 40px;
 				--clock-label-text-align: left;
 
 				&.label-centered {
-					--clock-label-horiz-shift: 120px;
-					--clock-label-vert-shift: 268px;
+					width: 65px !important;
+					--clock-label-horiz-shift: 105px;
+					--clock-label-vert-shift: -8px;
 					--clock-label-text-align: center;
-					transform-origin: bottom center;
+					transform-origin: center 70%;
 				}
 			}
+
 			.key-clock-label[data-clock-num="4"] {
 				--clock-label-horiz-shift: -160px;
-				--clock-label-vert-shift: 390px;
+				--clock-label-vert-shift: 120px;
 				--clock-label-text-align: right;
 
 				&.label-centered {
-					--clock-label-horiz-shift: 0px;
-					--clock-label-vert-shift: 330px;
+					--clock-label-horiz-shift: -0px;
+					// --clock-label-vert-shift: 120px;
 					--clock-label-text-align: center;
 					top: unset;
-					bottom: -350px;
+					bottom: -75px;
+					transform-origin: center -60%;
 				}
 			}
+
 			.key-clock-label[data-clock-num="5"] {
 				--clock-label-horiz-shift: 160px;
-				--clock-label-vert-shift: 580px;
+				--clock-label-vert-shift: 310px;
 				--clock-label-text-align: left;
 
 				&.label-centered {
 					--clock-label-horiz-shift: 0px;
+					// --clock-label-vert-shift: 310px;
 					--clock-label-text-align: center;
 					top: unset;
-					bottom: -528px;
+					bottom: -280px;
+					transform-origin: center 35%;
 				}
 			}
+
 			.key-clock-label[data-clock-num="6"] {
 				--clock-label-horiz-shift: 0px;
-				--clock-label-vert-shift: 830px;
+				--clock-label-vert-shift: 560px;
 				--clock-label-text-align: center;
 
 				&.label-centered {
 					--clock-label-horiz-shift: 0px;
 					top: unset;
-					bottom: -775px;
+					bottom: -520px;
+					transform-origin: center 35%;
 				}
 			}
 		}

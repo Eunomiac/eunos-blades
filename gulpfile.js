@@ -196,6 +196,7 @@ const DISTDATAROOT = "C:/Users/Ryan/Documents/Projects/!!!!CODING/FoundryVTT/Fou
 const DISTROOT = `${DISTDATAROOT}/${PACKAGETYPE}s/${PACKAGEFOLDER}`;
 
 // #region ████████ CONFIGURATION: Banner Headers, Source/Destination Globs, Build Behavior ████████
+// #region ░░░░░░░[BANNERS]░░░░░░░ ~
 const dateStringFull = ISDEPLOYING ? `█ ${new Date().toString().match(/\b[A-Z][a-z]+ \d+ \d+/u).shift()} █` : "██";
 const dateStringMin = ISDEPLOYING ? ` (${new Date().getFullYear()})` : "";
 const BANNERTEMPLATE = {
@@ -212,10 +213,9 @@ const BANNERTEMPLATE = {
 		"<%= package.url %> ░░██▐ */"
 	].join(" ║ ")
 };
+// #endregion ░░░░[BANNERS]░░░░
+// #region ░░░░░░░[BUILD FILES]░░░░░░░░ ~
 const BUILDFILES = {
-	// whitespace: {
-	// 	"./staging/ts/": ["ts/**/*.*s"]
-	// },
 	ts: {
 		"./module/": ["ts/**/*.*s"]
 	},
@@ -250,6 +250,8 @@ if (ISBUILDINGDIST) {
 	BUILDFILES.slowAssets[`${DISTROOT}/packs/`] = ["packs/**/*.*"];
 	BUILDFILES.slowAssets[`${DISTROOT}/lang/`] = ["lang/**/*.*"];
 }
+// #endregion ░░░░[BUILD FILES]░░░░
+// #region ░░░░░░░[REGEXP PATTERNS]░░░░░░░ ~
 const REGEXPPATTERNS = {
 	/* ALWAYS USE FLAGS:
 			g --- global & enables capturing groups
@@ -272,7 +274,7 @@ const REGEXPPATTERNS = {
 		[/from "gsap\/all"/gu, "from \"/scripts/greensock/esm/all.js\""]
 	]),
 	js: new Map([
-		[/(\r\n)?\s*?(\/\*DEVCODE\*\/.*?\/\*!DEVCODE\*\/)\s*?(\r\n)?/gsm, ""], // Strip developer code
+		(ISDEPLOYING || ISBUILDINGDIST) ? [/(\r\n)?\s*?(\/\*DEVCODE\*\/.*?\/\*!DEVCODE\*\/)\s*?(\r\n)?/gsm, ""] : [/`/, "`"], // Strip developer code
 		[/\/\*~\s*\*{4}▌.*?▐\*{4}\s*\*\//s, padHeaderLines], // Pad header lines to same length
 		[/\/\/\s*#region/gi, "//~ #region"], // Prefix #region lines with tildes so they aren't stripped
 		[/\/\*\*(?!~)(?:.|\r?\n|\r)*?\*\/[ \t]*(\r?\n?)/g, ""], // Strip multi-line comments unless they beginning with '/*~' or '/**~'
@@ -288,6 +290,9 @@ const REGEXPPATTERNS = {
 		[/^([ \t]*\r?\n)*/, ""] // Strip whitespace from start of files
 	])
 };
+// #endregion ░░░░[REGEXP PATTERNS]░░░░
+// #region ░░░░░░░[PIPES & PLUMBING]░░░░ Assembly of Pipes for Passing Streams ░░░░░░░ ~
+// #region ====== PIPES: Basic Functionality ====== ~
 const PIPES = {
 	openPipe: (title = "gulp") => {
 		const [titleColor, padChar, tagName] = STREAMSTYLES[title] ?? ["red", "?", "???"];
@@ -330,7 +335,7 @@ const PIPES = {
 		return thisDest;
 	}
 };
-
+// #endregion ___ PIPES ___
 
 const PLUMBING = {
 	analyzeJS: async function analyzeJS(done) {
@@ -391,12 +396,6 @@ const PLUMBING = {
 			Object.values(globs ?? {}).forEach((glob) => watch(glob, BUILDFUNCS[type]));
 		}
 	},
-	// initWhiteSpace: (source, destination) => function pipeWhiteSpace() {
-	// 	return src(source, {allowEmpty: true})
-	// 		.pipe(PIPES.openPipe("initWhiteSpace")())
-	// 		.pipe(PIPES.replacer("init")())
-	// 		.pipe(PIPES.closePipe("initWhiteSpace", source, destination));
-	// },
 	tsInit: (source, destination) => function pipeTypeScript() {
 		const tsStream = src(source, {allowEmpty: true})
 			.pipe(PIPES.openPipe("tsInit")())
@@ -463,6 +462,7 @@ const PLUMBING = {
 		return src(source, {allowEmpty: true}).pipe(PIPES.openPipe("toDest")()).pipe(PIPES.closePipe("toDest", source, destination));
 	}
 };
+// #endregion ░░░░[PIPES & PLUMBING]░░░░
 // #endregion ▄▄▄▄▄ CONFIGURATION ▄▄▄▄▄
 
 // #region ▒░▒░▒░▒[INITIALIZATION]▒░▒░▒░▒ ~
@@ -474,18 +474,6 @@ const BANNERS = {
 
 const BUILDFUNCS = {};
 // #endregion ▒▒▒▒[INITIALIZATION]▒▒▒▒
-
-// #region ████████ WHITESPACE: Preserving Intended Whitespace ████████ ~
-// BUILDFUNCS.whitespace = parallel(...((buildFiles) => {
-// 	const funcs = [];
-// 	for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
-// 		sourceGlobs.forEach((sourceGlob) => {
-// 			funcs.push(PLUMBING.initWhiteSpace(sourceGlob, destGlob));
-// 		});
-// 	}
-// 	return funcs;
-// })(BUILDFILES.whitespace));
-// #endregion ▄▄▄▄▄ WHITESPACE ▄▄▄▄▄
 
 // #region ████████ JS: Compiling Javascript ████████ ~
 BUILDFUNCS.ts /* series(

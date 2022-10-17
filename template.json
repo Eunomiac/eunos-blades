@@ -225,7 +225,21 @@
 			"description_short": "",
 			"notes": "",
 			"notes_gm": "",
-			"sheet_tab": ""
+			"randomizers": {
+				"name": {"isLocked": false, "value": ""},
+				"heritage": {"isLocked": false, "value": ""},
+				"gender": {"isLocked": false, "value": ""},
+				"appearance": {"isLocked": false, "value": ""},
+				"goal": {"isLocked": false, "value": ""},
+				"method": {"isLocked": false, "value": ""},
+				"profession": {"isLocked": false, "value": ""},
+				"trait_1": {"isLocked": false, "value": ""},
+				"trait_2": {"isLocked": false, "value": ""},
+				"trait_3": {"isLocked": false, "value": ""},
+				"interests": {"isLocked": false, "value": ""},
+				"quirk": {"isLocked": false, "value": ""},
+				"style": {"isLocked": false, "value": ""}
+			}
 		}
 	},
 	"Item": {
