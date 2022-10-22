@@ -1,5 +1,5 @@
-<a class="button-icon {{blockClass}}" data-id="{{targetId}}" data-action="{{action}}">
-	<i class="{{buttonClass}}"></i>
+<a class="button-icon {{~#if blockClass}} {{blockClass}}{{/if}}" {{~#if targetId}} data-id="{{targetId}}" {{/if~}} data-action="{{action}}">
+	<i {{~#if buttonClass}} class="{{buttonClass}}"{{/if}}></i>
 	{{#if tooltip}}
 	<span class="tooltip button-icon-tooltip">{{{tooltip}}}</span>
 	{{/if}}

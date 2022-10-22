@@ -223,19 +223,70 @@ export default class BladesHelpers {
 
 	}
 
+	static checkFuzzyEquality(a: unknown, b: unknown): boolean {
+		const [strA, strB] = [game.i18n.localize(String(a)), game.i18n.localize(String(b))]
+			.map((str) => str
+				.toLowerCase()
+				.replace(/\s/g, ""));
+		return strA === strB;
+	}
+
 }
 
 export function registerHandlebarHelpers() {
+	// Does the name of this turf block represent a standard 'Turf' claim?
+	Handlebars.registerHelper("isTurfBlock", function isTurfBlock(name: string) {
+		return BladesHelpers.checkFuzzyEquality(name, "Turf");
+	});
+
+	// Which other connection does this connector overlap with?
+	Handlebars.registerHelper("getConnectorPartner", function getConnectorPartner(index: number|string, direction: "right"|"left"|"top"|"bottom") {
+		index = parseInt(`${index}`);
+		const partners: Record<number, Record<string,number>> = {
+			1: {right: 2, bottom: 6},
+			2: {left: 1, right: 3, bottom: 7},
+			3: {left: 2, right: 4, bottom: 8},
+			4: {left: 3, right: 5, bottom: 9},
+			5: {left: 4, bottom: 10},
+			6: {top: 1, right: 7, bottom: 11},
+			7: {top: 2, left: 6, right: 8, bottom: 12},
+			8: {top: 3, left: 7, right: 9, bottom: 13},
+			9: {top: 4, left: 8, right: 10, bottom: 14},
+			10: {top: 5, left: 9, bottom: 15},
+			11: {top: 6, right: 12},
+			12: {top: 7, left: 11, right: 13},
+			13: {top: 8, left: 12, right: 14},
+			14: {top: 9, left: 13, right: 15},
+			15: {top: 10, left: 14}
+		};
+		const partnerDir = {left: "right", right: "left", top: "bottom", bottom: "top"}[direction];
+		const partnerNum = partners[index as keyof typeof partners][direction] ?? 0;
+		if (partnerNum) { return `${partnerNum}-${partnerDir}` }
+		return null;
+	});
 
 	// Is the value Turf side.
-	Handlebars.registerHelper("is_turf_side", function isTurfSide(value, options) {
-		if (["left", "right", "top", "bottom"].includes(value)) {
-			// @ts-expect-error MIGRATION PAINS
-			return options.fn(this);
-		} else {
-			// @ts-expect-error MIGRATION PAINS
-			return options.inverse(this);
-		}
+	Handlebars.registerHelper("isTurfOnEdge", function isTurfOnEdge(index: number|string, direction: string) {
+		index = parseInt(`${index}`);
+		const edges: Record<number, string[]> = {
+			1: ["top", "left"],
+			2: ["top"],
+			3: ["top"],
+			4: ["top"],
+			5: ["top", "right"],
+			6: ["left"],
+			7: [],
+			8: [],
+			9: [],
+			10: ["right"],
+			11: ["left", "bottom"],
+			12: ["bottom"],
+			13: ["bottom"],
+			14: ["bottom"],
+			15: ["right", "bottom"]
+		};
+		if (!(index in edges)) { return true }
+		return edges[index as keyof typeof edges].includes(direction);
 	});
 
 	// Multiboxes.

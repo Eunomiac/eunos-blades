@@ -89,12 +89,11 @@
     <div id="character-{{actor._id}}-stress" class="big-teeth character-stress">
       {{#multiboxes data.stress.value}}
 
-      <input type="radio" id="character-{{actor._id}}-stress-0" name="data.stress.value" value="0" dtype="Radio">
+      <input type="radio" id="character-{{actor._id}}-stress-0" name="data.stress.value" value="0" data-dtype="Number">
       <label class="black-label" for="character-{{actor._id}}-stress-0">{{localize data.stress.name}}</label>
 
       {{#times_from_1 data.stress.max}}
-        <input type="radio" id="character-{{../actor._id}}-stress-{{this}}" name="data.stress.value" value="{{this}}"
-               dtype="Radio">
+        <input data-dtype="Number" type="radio" id="character-{{../actor._id}}-stress-{{this}}" name="data.stress.value" value="{{this}}" >
         <label for="character-{{../actor._id}}-stress-{{this}}"></label>
       {{/times_from_1}}
 
@@ -106,10 +105,10 @@
       <div id="character-{{actor._id}}-trauma" class="small-teeth-wrap">
         <label class="black-label" for="character-{{actor._id}}-trauma-counter-0">{{localize data.trauma.name}}</label>
         <div id="character-{{actor._id}}-trauma-teeth" class="small-teeth">
-          <input type="radio" id="character-{{actor._id}}-trauma-counter-0" name="data.trauma.value" value="0">
+          <input type="radio" id="character-{{actor._id}}-trauma-counter-0" name="data.trauma.value" value="0" data-dtype="Number">
 
           {{#times_from_1 data.trauma.max}}
-            <input type="radio" id="character-{{../actor._id}}-trauma-counter-{{this}}" name="data.trauma.value" value="{{this}}" disabled {{#if (eq (count ../data.trauma.list) this)}}checked="checked"{{/if}}>
+            <input type="radio" id="character-{{../actor._id}}-trauma-counter-{{this}}" name="data.trauma.value" value="{{this}}" disabled {{#if (eq (count ../data.trauma.list) this)}}checked="checked"{{/if}} data-dtype="Number">
             <label for="character-{{../actor._id}}-trauma-counter-{{this}}"></label>
           {{/times_from_1}}
         </div>
@@ -119,7 +118,7 @@
     <div id="character-{{actor._id}}-trauma-list" class="trauma-list">
 			{{#each data.trauma.options}}
       <label>
-        <input type="checkbox" name="data.trauma.list.{{this}}" value="{{this}}" {{checked (lookup ../data.trauma.list this)}}>
+        <input data-dtype="Boolean" type="checkbox" name="data.trauma.list.{{this}}" value="{{this}}" {{checked (lookup ../data.trauma.list this)}}>
         <span class="checkmark">{{this}}</span>
       </label>
 			{{/each}}
@@ -150,15 +149,15 @@
             <td rowspan="3" id="character-{{actor._id}}-armor-uses" class="character-armor-uses">
               <div>
                 <label for="character-{{actor._id}}-armor-uses-armor">{{localize "BITD.Armor"}}</label>
-                <input id="character-{{actor._id}}-armor-uses-armor" type="checkbox" name="data.armor-uses.armor" {{checked data.armor-uses.armor}}>
+                <input data-dtype="Boolean" id="character-{{actor._id}}-armor-uses-armor" type="checkbox" name="data.armor-uses.armor" {{checked data.armor-uses.armor}}>
               </div>
               <div>
                 <label for="character-{{actor._id}}-armor-uses-heavy">{{localize "BITD.Heavy"}}</label>
-                <input id="character-{{actor._id}}-armor-uses-heavy" type="checkbox" name="data.armor-uses.heavy" {{checked data.armor-uses.heavy}}>
+                <input data-dtype="Boolean" id="character-{{actor._id}}-armor-uses-heavy" type="checkbox" name="data.armor-uses.heavy" {{checked data.armor-uses.heavy}}>
               </div>
               <div>
                 <label for="character-{{actor._id}}-armor-uses-special">{{localize "BITD.Special"}}</label>
-                <input id="character-{{actor._id}}-armor-uses-special" type="checkbox" name="data.armor-uses.special" {{checked data.armor-uses.special}}>
+                <input data-dtype="Boolean" id="character-{{actor._id}}-armor-uses-special" type="checkbox" name="data.armor-uses.special" {{checked data.armor-uses.special}}>
               </div>
             </td>
           </tr>
@@ -209,9 +208,9 @@
           <div id="character-{{actor._id}}-experience" class="teeth-experience">
             <label for="character-{{actor._id}}-experience-0"><i class="fab fa-creative-commons-zero nullifier"></i></label>
             {{#multiboxes data.experience}}
-            <input type="radio" id="character-{{actor._id}}-experience-0" name="data.experience" value="0" dtype="Radio">
+            <input type="radio" id="character-{{actor._id}}-experience-0" name="data.experience" value="0" data-dtype="Number">
             {{#times_from_1 data.experience_max}}
-            <input type="radio" id="character-{{actor._id}}-experience-{{this}}" name="data.experience" value="{{this}}" dtype="Radio">
+            <input type="radio" id="character-{{actor._id}}-experience-{{this}}" name="data.experience" value="{{this}}" data-dtype="Number">
             <label for="character-{{actor._id}}-experience-{{this}}"></label>
             {{/times_from_1}}
             {{/multiboxes}}

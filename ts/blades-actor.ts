@@ -340,6 +340,14 @@ type RandomizerData = {
 	label: string|null
 };
 
+declare namespace BASystem {
+	export interface character {
+
+	}
+
+
+}
+
 export declare interface BladesActor {
 	system: Record<any,any> & {
 		randomizers: {

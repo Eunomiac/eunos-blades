@@ -13,10 +13,10 @@
         <label
                 for="{{../actor._id}}-{{attribute_name}}-exp-0"><i
                 class="fab fa-creative-commons-zero nullifier"></i></label>
-        <input type="radio" id="{{../actor._id}}-{{attribute_name}}-exp-0"
+        <input  data-dtype="Number" type="radio" id="{{../actor._id}}-{{attribute_name}}-exp-0"
                name="data.attributes.{{attribute_name}}.exp" value="0" checked="checked">
         {{#times_from_1 attribute.exp_max}}
-          <input type="radio" id="{{../../actor._id}}-{{attribute_name}}-exp-{{this}}"
+          <input  data-dtype="Number" type="radio" id="{{../../actor._id}}-{{attribute_name}}-exp-{{this}}"
                  name="data.attributes.{{attribute_name}}.exp" value="{{this}}">
           <label for="{{../../actor._id}}-{{attribute_name}}-exp-{{this}}"></label>
         {{/times_from_1}}
@@ -34,7 +34,7 @@
         {{#multiboxes skill.value}}
 
         {{#times_from_0 4}}
-        <input type="radio" id="attributes-{{../../../actor._id}}-{{skill_name}}-{{this}}"
+        <input  data-dtype="Number" type="radio" id="attributes-{{../../../actor._id}}-{{skill_name}}-{{this}}"
                name="data.attributes.{{attribute_name}}.skills.{{skill_name}}.value" value="{{this}}">
         <label for="attributes-{{../../../actor._id}}-{{skill_name}}-{{this}}"></label>
         {{/times_from_0}}

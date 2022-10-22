@@ -13,6 +13,11 @@ export class BladesItemSheet extends ItemSheet {
     }
     
         
+    constructor(item, options = {}) {
+        options.classes = [...options.classes ?? [], "eunos-blades", "sheet", "item", item.type];
+        super(item, options);
+    }
+    
         get template() {
         if (this.item.data.type === "clock_keeper") {
             return "systems/eunos-blades/templates/clock-keeper-sheet.hbs";
@@ -43,6 +48,29 @@ export class BladesItemSheet extends ItemSheet {
             }
             BladesActiveEffect.onManageActiveEffect(ev, this.item);
         });
+        
+        html.find("[data-action=\"toggle-turf-connection\"").on("click", this.toggleTurfConnection.bind(this));
+        
+    }
+    
+    toggleTurfConnection(event) {
+        const button$ = $(event.currentTarget);
+        const connector$ = button$.parent();
+        const turfNum = parseInt(connector$.data("index") ?? 0);
+        const turfDir = connector$.data("dir");
+        if (!turfNum || !turfDir) {
+            return;
+        }
+        const toggleState = connector$.hasClass("no-connect");
+        const updateData = {
+            [`system.turfs.${turfNum}.connects.${turfDir}`]: toggleState
+        };
+        const partner = connector$.data("partner");
+        if (typeof partner === "string" && /-/.test(partner)) {
+            const [partnerNum, partnerDir] = partner.split("-");
+            updateData[`system.turfs.${partnerNum}.connects.${partnerDir}`] = toggleState;
+        }
+        this.item.update(updateData);
     }
     
         

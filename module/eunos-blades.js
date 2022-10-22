@@ -21,6 +21,19 @@ let socket; // SocketLib interface
 // Globals: Exposing Functionality to Global Scope
 Object.assign(globalThis, {
     BladesHelpers: BladesHelpers ,
+    BladesActor,
+    BladesActorSheet,
+    BladesCrewSheet,
+    BladesFactionSheet,
+    BladesNPCSheet,
+    EunoClockKeeperSheet,
+    EunoTrackerSheet,
+    BladesActiveEffect,
+    DATA,
+    bladesRoll,
+    simpleRollPopup,
+    BladesItem,
+    BladesItemSheet,
     ClearNPCs: () => {
         const npcNames = DATA.npcs.map(({ name }) => name);
         const npcs = Array.from(game.actors ?? [])
@@ -73,7 +86,7 @@ Hooks.once("init", async () => {
 // ░░░░░░░[SocketLib]░░░░ SocketLib Initialization ░░░░░░░
 Hooks.once("socketlib.ready", () => {
     socket = socketlib.registerSystem("eunos-blades");
-    Object.assign(globalThis, { socket });     socket.register("renderOverlay", () => game.eunoblades.ClockKeeper?.renderOverlay());
+    Object.assign(globalThis, { socket, socketlib });     socket.register("renderOverlay", () => game.eunoblades.ClockKeeper?.renderOverlay());
 });
 
 // ░░░░░░░[Roll Controller]░░░░ Add Dice Roller to Scene Control Sidebar ░░░░░░░

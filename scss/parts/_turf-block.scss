@@ -1,0 +1,183 @@
+& {
+	display: flex;
+	flex-direction: column;
+	width: var(--turf-block-width, 855px);
+	height: var(--turf-block-height, auto);
+
+	.turf-row {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+
+		*:first-child {
+			margin-left: 0px;
+		}
+
+		*:last-child {
+			margin-right: 0px;
+		}
+	}
+
+	&.section-non-editable {
+		.turf-block {
+			@include turf_block(130px, 100px);
+		}
+	}
+
+	&.section-editable {
+		.turf-block {
+			@include turf_block(100px, 125px);
+		}
+	}
+
+	.turf-row {
+		&:not(:nth-child(-n+3)) {
+			display: none
+		}
+
+		.turf-block {
+			cursor: default;
+
+			&:not(:nth-child(-n+5)) {
+				display: none
+			}
+
+			border-radius: 5px;
+			background-color: rgba(255, 255, 255, 0.2);
+
+			.connector {
+				background-color: rgba(255, 255, 255, 0.1);
+
+				&.no-connect {
+					background-color: transparent !important
+				}
+			}
+
+			.turf-control {
+				color: var(--blades-black);
+				text-shadow: 0 0 2px var(--blades-grey),
+					0 0 2px var(--blades-grey),
+					0 0 2px var(--blades-grey),
+					0 0 2px var(--blades-grey);
+			}
+
+			textarea {
+				resize: none;
+				background: transparent;
+				padding: 0;
+				cursor: default;
+				margin-top: 10px;
+				overflow: hidden;
+			}
+
+			.turf-name {
+				font-family: Kirsty;
+				text-transform: uppercase;
+				color: var(--blades-white);
+				height: 18px;
+				min-height: unset;
+				line-height: 18px;
+			}
+
+			.turf-description {
+				padding: 0 5px;
+			}
+
+			.turf-editable {
+				border-radius: 5px;
+				background: rgba(0, 0, 0, 0.1);
+				box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.5);
+				padding: 2px;
+				hyphens: auto;
+				cursor: text;
+			}
+
+			&.turf-lair {
+				label { display: none !important }
+				.turf-description { display: none }
+			}
+
+			&.turf-selected {
+				background-color: rgba(255, 255, 255, 0.75);
+				color: var(--blades-black);
+
+				.connector {
+					background-color: rgba(255, 255, 255, 0.5);
+				}
+
+				.turf-control {
+					color: var(--blades-white-bright);
+					text-shadow: 0 0 12px var(--blades-white-bright),
+						0 0 12px var(--blades-white-bright),
+						0 0 12px var(--blades-white-bright),
+						0 0 2px var(--blades-black-dark);
+				}
+
+				.turf-name,
+				.turf-description {
+					color: var(--blades-black-dark);
+				}
+			}
+
+			&.turf-lair,
+			&.turf-turf {
+				--name-size: 35px;
+
+				.turf-name {
+					font-size: var(--name-size);
+					margin-top: 0;
+					height: var(--name-size);
+					line-height: var(--name-size);
+				}
+
+				&.turf-turf {
+					--name-size: 32px;
+
+					.turf-name {
+						position: relative;
+						top: calc(50% - 0.5 * var(--name-size));
+					}
+
+					.turf-description {
+						display: none;
+						height: calc(100% - 15px - 12px - 5px);
+						padding: 5px;
+					}
+				}
+
+				label {
+					// text-align: center;
+					margin-left: 2.5px;
+					font-family: 'Kirsty';
+					white-space: nowrap;
+					font-size: 12px;
+					font-weight: normal;
+					display: block;
+					text-transform: uppercase;
+					margin-top: 6px;
+					margin-bottom: 2px;
+					line-height: 12px;
+					color: var(--blades-grey-dark);
+				}
+
+				.turf-description {
+					margin-top: 0;
+					border-radius: 5px;
+					background: rgba(0, 0, 0, 0.1);
+					box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.5);
+					padding: 2px;
+					hyphens: auto;
+					margin: 0 2.5px 2.5px;
+					width: calc(100% - 5px);
+					height: calc(100% - 35px - 12px - 10px);
+					cursor: text;
+
+					&::placeholder {
+						font-style: italic;
+						color: var(--blades-grey-dark);
+					}
+				}
+			}
+		}
+	}
+}

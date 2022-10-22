@@ -12,7 +12,7 @@
     </section>
     <div class="flex-vertical">
       <label class="label-stripe">{{localize "BITD.AbilityPrice"}}</label>
-      <input id="ability-price" type="text" name="data.price" value="{{data.price}}" placeholder="{{localize 'BITD.AbilityPrice'}}">
+      <input data-dtype="Number" id="ability-price" type="text" name="data.price" value="{{data.price}}" placeholder="{{localize 'BITD.AbilityPrice'}}">
       <label class="label-stripe">{{localize "BITD.AbilityClass"}}</label>
       <input id="ability-class" type="text" name="data.class" value="{{data.class}}" placeholder="{{localize 'BITD.AbilityClass'}}">
       {{#if isGM}}

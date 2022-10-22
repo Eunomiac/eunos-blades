@@ -10,13 +10,13 @@
     <section class="sheet-body flex-vertical">
       {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
       <label class="label-stripe">{{localize "BITD.Loadout"}}</label>
-      <input id="item-load" type="text" name="data.load" value="{{data.load}}">
+      <input data-dtype="Number"  id="item-load" type="text" name="data.load" value="{{data.load}}">
       <label class="label-stripe">{{localize "BITD.Class"}}</label>
       <input id="item-class" type="text" name="data.class" value="{{data.class}}">
       <label class="label-stripe">{{localize "BITD.Uses"}}</label>
-      <input id="item-uses" type="text" name="data.uses" value="{{data.uses}}">
+      <input  data-dtype="Number" id="item-uses" type="text" name="data.uses" value="{{data.uses}}">
       <label class="label-stripe">{{localize "BITD.NumberAvailable"}}</label>
-      <input id="item-num_available" type="text" name="data.num_available" value="{{data.num_available}}">
+      <input  data-dtype="Number" id="item-num_available" type="text" name="data.num_available" value="{{data.num_available}}">
       <label class="label-stripe">{{localize "BITD.AdditionalInfo"}}</label>
       <textarea id="item-additional_info" type="text" name="data.additional_info" value="">{{data.additional_info}}</textarea>
       {{#if isGM}}

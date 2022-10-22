@@ -97,6 +97,7 @@ export class BladesItem extends Item {
             
             const clock$ = $(event.currentTarget);
             const key$ = clock$.closest(".euno-clock-key");
+            
             if (!(key$[0] instanceof HTMLElement)) {
                 return;
             }
@@ -215,3 +216,21 @@ export class BladesItem extends Item {
         this.activateOverlayListeners();
     }
 }
+
+export var BladesItemType;
+(function (BladesItemType) {
+    BladesItemType[BladesItemType["faction"] = 0] = "faction";
+    BladesItemType[BladesItemType["item"] = 1] = "item";
+    BladesItemType[BladesItemType["class"] = 2] = "class";
+    BladesItemType[BladesItemType["ability"] = 3] = "ability";
+    BladesItemType[BladesItemType["heritage"] = 4] = "heritage";
+    BladesItemType[BladesItemType["background"] = 5] = "background";
+    BladesItemType[BladesItemType["vice"] = 6] = "vice";
+    BladesItemType[BladesItemType["cohort"] = 7] = "cohort";
+    BladesItemType[BladesItemType["crew_type"] = 8] = "crew_type";
+    BladesItemType[BladesItemType["crew_reputation"] = 9] = "crew_reputation";
+    BladesItemType[BladesItemType["crew_upgrade"] = 10] = "crew_upgrade";
+    BladesItemType[BladesItemType["crew_ability"] = 11] = "crew_ability";
+    BladesItemType[BladesItemType["gm_tracker"] = 12] = "gm_tracker";
+    BladesItemType[BladesItemType["clock_keeper"] = 13] = "clock_keeper";
+})(BladesItemType || (BladesItemType = {}));

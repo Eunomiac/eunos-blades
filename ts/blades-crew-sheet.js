@@ -36,8 +36,8 @@ export class BladesCrewSheet extends BladesSheet {
 			if (item.type === "crew_type") {
 				// Object.entries(item.data.turfs).forEach(turf => {turfs_amount += (turf.value === true) ? 1 : 0});
 				Object.entries(item.data.turfs).forEach(([key, turf]) => {
-					if (turf.name === "BITD.Turf") {
-						turfs_amount += (turf.value === true) ? 1 : 0;
+					if (game.i18n.localize(turf.name).toLowerCase().replace(/\s/g, "") === game.i18n.localize("BITD.Turf").toLowerCase().replace(/\s/g, "")) {
+						turfs_amount += turf.value ? 1 : 0;
 					}
 				});
 			}

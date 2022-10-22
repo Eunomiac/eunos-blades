@@ -25,6 +25,19 @@ Object.assign(
 	globalThis,
 	{
 		BladesHelpers: BladesHelpers /*DEVCODE*/,
+		BladesActor,
+		BladesActorSheet,
+		BladesCrewSheet,
+		BladesFactionSheet,
+		BladesNPCSheet,
+		EunoClockKeeperSheet,
+		EunoTrackerSheet,
+		BladesActiveEffect,
+		DATA,
+		bladesRoll,
+		simpleRollPopup,
+		BladesItem,
+		BladesItemSheet,
 		ClearNPCs: () => {
 			const npcNames = DATA.npcs.map(({name}) => name);
 			const npcs = Array.from(game.actors ?? [])
@@ -87,7 +100,7 @@ Hooks.once("socketlib.ready", () => {
 	socket = socketlib.registerSystem("eunos-blades");
 	/*DEVCODE*/Object.assign(
 		globalThis,
-		{socket}
+		{socket, socketlib}
 	);/*!DEVCODE*/
 	socket.register("renderOverlay", () => game.eunoblades.ClockKeeper?.renderOverlay());
 });

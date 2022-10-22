@@ -2,6 +2,7 @@
  * Extend the basic ItemSheet
  * @extends {ItemSheet}
  */
+import {BladesItem} from "./blades-item.js";
 import {onManageActiveEffect, prepareActiveEffectCategories} from "./effects.js";
 import BladesActiveEffect from "./euno-active-effect.js";
 
@@ -19,6 +20,11 @@ export class BladesItemSheet extends ItemSheet {
 	}
 
 	/* -------------------------------------------- */
+
+	constructor(item, options = {}) {
+		options.classes = [...options.classes ?? [], "eunos-blades", "sheet", "item", item.type];
+		super(item, options);
+	}
 
 	/** @override */
 	get template() {
@@ -52,6 +58,28 @@ export class BladesItemSheet extends ItemSheet {
 			}
 			BladesActiveEffect.onManageActiveEffect(ev, this.item);
 		});
+
+		html.find("[data-action=\"toggle-turf-connection\"").on("click", this.toggleTurfConnection.bind(this));
+
+		// <input data-dtype="Boolean" type="checkbox" name="data.turfs.{{id}}.connects.{{dir}}" {{checked connects}}>{{/if}}
+	}
+
+	toggleTurfConnection(event) {
+		const button$ = $(event.currentTarget);
+		const connector$ = button$.parent();
+		const turfNum = parseInt(connector$.data("index") ?? 0);
+		const turfDir = connector$.data("dir");
+		if (!turfNum || !turfDir) { return }
+		const toggleState = connector$.hasClass("no-connect");
+		const updateData = {
+			[`system.turfs.${turfNum}.connects.${turfDir}`]: toggleState
+		};
+		const partner = connector$.data("partner");
+		if (typeof partner === "string" && /-/.test(partner)) {
+			const [partnerNum, partnerDir] = partner.split("-");
+			updateData[`system.turfs.${partnerNum}.connects.${partnerDir}`] = toggleState;
+		}
+		this.item.update(updateData);
 	}
 
 	/* -------------------------------------------- */

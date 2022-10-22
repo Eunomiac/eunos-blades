@@ -77,7 +77,7 @@
         <div class="label-stripe">{{localize "BITD.Edges"}}</div>
         {{#each data.edges_list as |edge key|}}
           <div class="edgeflaw flex-horizontal">
-            <input id="cohort-{{item._id}}-edge-{{key}}" type="checkbox" name="data.edges_list.{{key}}.selected"
+            <input data-dtype="Boolean" id="cohort-{{item._id}}-edge-{{key}}" type="checkbox" name="data.edges_list.{{key}}.selected"
                    {{checked edge.selected}}>
             <label for="cohort-{{item._id}}-edge-{{key}}">{{localize edge.label}}</label>
           </div>
@@ -88,7 +88,7 @@
         <div class="label-stripe">{{localize "BITD.Flaws"}}</div>
         {{#each data.flaws_list as |flaw key|}}
           <div class="edgeflaw flex-horizontal">
-            <input id="cohort-{{item._id}}-flaw-{{key}}" type="checkbox" name="data.flaws_list.{{key}}.selected"
+            <input data-dtype="Boolean" id="cohort-{{item._id}}-flaw-{{key}}" type="checkbox" name="data.flaws_list.{{key}}.selected"
                    {{checked flaw.selected}}>
             <label for="cohort-{{item._id}}-flaw-{{key}}">{{localize flaw.label}}</label>
           </div>
@@ -113,12 +113,12 @@
   </section>
 
   <section class="flex-horizontal" style="justify-content: unset;">
-    <input id="cohort-armor" type="checkbox" name="data.armor" value="{{data.armor}}" {{checked data.armor}}>
+    <input data-dtype="Boolean" id="cohort-armor" type="checkbox" name="data.armor" value="{{data.armor}}" {{checked data.armor}}>
     <label for="cohort-armor">{{localize "BITD.Armor"}}</label>
   </section>
 
   <section class="sheet-body flex-vertical">
     <div class="label-stripe">{{localize "BITD.Description"}}</div>
-    <textarea name="data.description">{{data.description}}</textarea>
+    <textarea data-dtype="String" name="data.description">{{data.description}}</textarea>
   </section>
 </form>

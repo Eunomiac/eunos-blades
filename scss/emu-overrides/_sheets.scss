@@ -125,17 +125,9 @@ table.items-list {
 								}
 							}
 						}
-
-        //     .notes {
-        //         flex: initial;
-        //         font-size: inherit;
-        //         line-height: inherit;
-        //         margin: 0;
-
-        //         .label-stripe {
-        //             margin-bottom: 0;
-        //         }
-	      //  }
+						.turf-list {
+							@import "../parts/turf-block";
+						}
         }
     }
 }

@@ -83,37 +83,6 @@ nav{
   overflow-y: clip;
 }
 
-.turf-list {
-
-  display: flex;
-  flex-direction: column;
-  width: 855px;
-
-  .turf-row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-
-    *:first-child {
-      margin-left: 0px;
-    }
-    *:last-child {
-      margin-right: 0px;
-    }
-  }
-
-  &.section-non-editable {
-    .turf-block {
-      @include turf_block(130px, 100px);
-    }
-  }
-
-  &.section-editable {
-    .turf-block {
-      @include turf_block(130px, 125px);
-    }
-  }
-}
 
 .crew-hold {
   border-top: 3px solid $almost_black;

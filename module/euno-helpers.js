@@ -158,17 +158,71 @@ export default class BladesHelpers {
         return text;
         
     }
+    
+    static checkFuzzyEquality(a, b) {
+        const [strA, strB] = [game.i18n.localize(String(a)), game.i18n.localize(String(b))]
+            .map((str) => str
+            .toLowerCase()
+            .replace(/\s/g, ""));
+        return strA === strB;
+    }
 }
 
 export function registerHandlebarHelpers() {
+    Handlebars.registerHelper("isTurfBlock", function isTurfBlock(name) {
+        return BladesHelpers.checkFuzzyEquality(name, "Turf");
+    });
     
-    Handlebars.registerHelper("is_turf_side", function isTurfSide(value, options) {
-        if (["left", "right", "top", "bottom"].includes(value)) {
-            return options.fn(this);
+    Handlebars.registerHelper("getConnectorPartner", function getConnectorPartner(index, direction) {
+        index = parseInt(`${index}`);
+        const partners = {
+            1: { right: 2, bottom: 6 },
+            2: { left: 1, right: 3, bottom: 7 },
+            3: { left: 2, right: 4, bottom: 8 },
+            4: { left: 3, right: 5, bottom: 9 },
+            5: { left: 4, bottom: 10 },
+            6: { top: 1, right: 7, bottom: 11 },
+            7: { top: 2, left: 6, right: 8, bottom: 12 },
+            8: { top: 3, left: 7, right: 9, bottom: 13 },
+            9: { top: 4, left: 8, right: 10, bottom: 14 },
+            10: { top: 5, left: 9, bottom: 15 },
+            11: { top: 6, right: 12 },
+            12: { top: 7, left: 11, right: 13 },
+            13: { top: 8, left: 12, right: 14 },
+            14: { top: 9, left: 13, right: 15 },
+            15: { top: 10, left: 14 }
+        };
+        const partnerDir = { left: "right", right: "left", top: "bottom", bottom: "top" }[direction];
+        const partnerNum = partners[index][direction] ?? 0;
+        if (partnerNum) {
+            return `${partnerNum}-${partnerDir}`;
         }
-        else {
-            return options.inverse(this);
+        return null;
+    });
+    
+    Handlebars.registerHelper("isTurfOnEdge", function isTurfOnEdge(index, direction) {
+        index = parseInt(`${index}`);
+        const edges = {
+            1: ["top", "left"],
+            2: ["top"],
+            3: ["top"],
+            4: ["top"],
+            5: ["top", "right"],
+            6: ["left"],
+            7: [],
+            8: [],
+            9: [],
+            10: ["right"],
+            11: ["left", "bottom"],
+            12: ["bottom"],
+            13: ["bottom"],
+            14: ["bottom"],
+            15: ["right", "bottom"]
+        };
+        if (!(index in edges)) {
+            return true;
         }
+        return edges[index].includes(direction);
     });
     
     Handlebars.registerHelper("multiboxes", function multiboxes(selected, options) {

@@ -1,51 +1,36 @@
+{{log "ENTERING TURF-LIST" this}}
 <div id="crew-{{actor._id}}-turf-list" class="turf-list {{#if can_edit}}section-editable{{else}}section-non-editable{{/if}}">
 
   <div class="turf-row">
+
     {{#each turfs_data as |turf id|}}
-    <div class="turf-block {{#if turf.value}}turf-selected{{/if}}">
-
-        {{#each turf.connects as |connect key|}}
-
-          {{#is_turf_side key}}
-            {{#if connect}}
-            <div class="connector {{key}}"></div>
-            {{/if}}
-          {{else}}
-            <div class="connector {{connect}}"></div>
-          {{/is_turf_side}}
-
-        {{/each}}
-
-        {{#if ../can_edit}}
-
-          {{#noteq id "8"}}
-          <input class="name-box" type="checkbox" name="data.turfs.{{id}}.value" {{checked turf.value}}>
-          {{/noteq}}
-
-          <div>
-            {{#multiboxes turf.connects}}
-            <input type="checkbox" name="data.turfs.{{id}}.connects.left" {{checked turf.connects.left}}>
-            <input type="checkbox" name="data.turfs.{{id}}.connects.top" {{checked turf.connects.top}}>
-            <input type="checkbox" name="data.turfs.{{id}}.connects.right" {{checked turf.connects.right}}>
-            <input type="checkbox" name="data.turfs.{{id}}.connects.bottom" {{checked turf.connects.bottom}}>
-            {{/multiboxes}}
-          </div>
-
-          <input class="turf-name" type="text" name="data.turfs.{{id}}.name" value="{{#if ../editable}}{{turf.name}}{{else}}{{localize turf.name}}{{/if}}">
-          {{#noteq turf.name "BITD.Turf"}}
-          {{#noteq turf.name "BITD.Lair"}}
-          <textarea class="turf-description" name="data.turfs.{{id}}.description">{{localize turf.description}}</textarea>
-          {{/noteq}}
-          {{/noteq}}
-        {{else}}
-          <p class="turf-name">{{localize turf.name}}</p>
-          {{#if turf.description}}
-          <p class="turf-description">{{{localize turf.description}}}</p>
-          {{/if}}
-          {{#noteq id "8"}}
-          <a class="turf-control turf-select" title="Select" data-turf-id="{{id}}" data-turf-status="{{turf.value}}"><i class="fas fa-circle"></i></a>
-          {{/noteq}}
-        {{/if}}
+		{{log turf id}}
+    <div class="turf-block {{~#if turf.value}} turf-selected{{/if}} {{~#if (eq id "8")}}{{#if ../can_edit}} turf-turf{{/if}} turf-lair{{/if}} {{~#if (isTurfBlock turf.name)}} turf-turf{{/if}}">
+			{{#each turf.connects as |connects dir|}}
+				{{#unless (isTurfOnEdge id dir)}}
+					<div class="connector {{dir}} {{~#unless connects}} no-connect{{/unless}}" data-index="{{id}}" data-dir="{{dir}}" data-partner="{{getConnectorPartner id dir}}">
+						{{#if ../../can_edit}}
+							{{> "systems/eunos-blades/templates/parts/button-icon.hbs" action="toggle-turf-connection"}}
+						{{/if}}
+					</div>
+				{{/unless}}
+			{{/each}}
+			<textarea class="turf-name {{~#if ../can_edit}}{{#unless (eq id "8")}} turf-editable{{/unless}}{{/if}}" name="data.turfs.{{id}}.name" {{#unless ../can_edit}}readonly{{/unless}} {{#if (eq id "8")}}readonly{{/if}}>{{localize turf.name}}</textarea>
+			{{#if (eq id "8")}}
+			<label>Hunting Grounds:</label>
+			<textarea class="turf-description" name="data.hunting_grounds" spellcheck="false">{{../actor.system.hunting_grounds}}</textarea>
+			{{else}}
+			{{#if (isTurfBlock turf.name)}}
+			<textarea class="turf-description" placeholder="(District & Details)" name="data.turfs.{{id}}.description" spellcheck="false">{{localize turf.description}}</textarea>
+			{{else}}
+			<textarea class="turf-description {{~#if ../can_edit}} turf-editable{{/if}}" name="data.turfs.{{id}}.description" {{#unless ../can_edit}}readonly{{/unless}}>{{localize turf.description}}</textarea>
+			{{/if}}
+			{{/if}}
+			{{#unless ../can_edit}}
+			{{#noteq id "8"}}
+			<a class="turf-control turf-select" title="Select" data-turf-id="{{id}}" data-turf-status="{{turf.value}}"><i class="fas fa-circle"></i></a>
+			{{/noteq}}
+			{{/unless}}
     </div>
     {{#if (eq id "5")}}
     </div><div class="turf-row">
@@ -53,6 +38,9 @@
     {{#if (eq id "10")}}
     </div><div class="turf-row">
     {{/if}}
+    {{#unless id}}
+    </div><div class="turf-row" style="display: none;">
+    {{/unless}}
     {{/each}}
   </div>
 </div>

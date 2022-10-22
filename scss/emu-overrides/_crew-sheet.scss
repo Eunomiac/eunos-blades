@@ -1,20 +1,20 @@
 .crew-name-lair .portrait { max-height: 100px; }
 .window-content {
     .actor-sheet {
-        .black-label, .gray-label { 
+        .black-label, .gray-label {
             min-width: 60px;
             flex-shrink: 0;
             line-height: 30px;
         }
-        .gray-label { 
+        .gray-label {
             background-color: var(--blades-grey);
             color: var(--blades-black) !important;
-        }       
+        }
         section.crew-name-lair {
             .portrait {
                 max-height: 100px;
             }
-            .crew-name-alias {                
+            .crew-name-alias {
 		        font-family: "Historical FellType";
                 width: 30%;
 		        input[type="text"] {
@@ -208,47 +208,8 @@
                     position: relative;
                     left: -15px;
                     top: -10px;
-                    .turf-row {
-                        .turf-block {
-                            border-radius: 5px;
-                            background-color: var(--blades-grey-dark);
-                            .connector {
-                                background-color: var(--blades-grey-dark);
-                            }
-                            .turf-control {
-                                color: var(--blades-black);
-                                text-shadow: 0 0 2px var(--blades-grey),
-                                    0 0 2px var(--blades-grey),
-                                    0 0 2px var(--blades-grey),
-                                    0 0 2px var(--blades-grey);
-                            }
-                            .turf-name {
-                                font-family: Kirsty;
-                                text-transform: uppercase;
-                                color: var(--blades-white);
-                                margin-top: 10px;
-                            }
-                            
-                            &.turf-selected {
-                                background-color: var(--blades-white);
-                                color: var(--blades-black);
-                                .connector {
-                                    background-color: var(--blades-white);
-                                }
-                                .turf-control {
-                                    color: var(--blades-white-bright);
-                                    text-shadow: 0 0 12px var(--blades-white-bright),
-                                        0 0 12px var(--blades-white-bright),
-                                        0 0 12px var(--blades-white-bright),
-                                        0 0 2px var(--blades-black-dark);
-                                }
-                                .turf-name {
-                                    color: var(--blades-black-dark);
-                                }
-                            
-                            }
-                        }
-                    }
+
+										@import '../parts/turf-block';
                 }
             }
         }

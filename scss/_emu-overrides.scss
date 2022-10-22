@@ -10,19 +10,7 @@
 	body.vtt.game.system-eunos-blades.-emu {
 
 		#euno-clock-keeper-overlay {
-
-
-
 			@import './emu-overrides/euno-clocks-overlay';
-
-			& {}
-
-
-
-
-
-
-
 		}
 
 		#controls,
@@ -44,20 +32,23 @@
 			&.eunos-blades {
 				&.actor {
 					&.pc {
-						@import './emu-overrides/pc-sheet'
+						@import './emu-overrides/pc-sheet';
 					}
 					&.npc {
 						@import './emu-overrides/npc-sheet';
 					}
 
 					&.crew {
-						@import './emu-overrides/crew-sheet'
+						@import './emu-overrides/crew-sheet';
 					}
 				}
 
 				&.item {
 					&.clock-keeper {
-						@import './emu-overrides/clock-keeper-sheet'
+						@import './emu-overrides/clock-keeper-sheet';
+					}
+					&.crew_type {
+						@import './emu-overrides/crew-type-sheet';
 					}
 				}
 			}

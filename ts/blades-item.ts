@@ -5,6 +5,7 @@ import {DocumentModificationOptions} from "@league-of-foundry-developers/foundry
 import {BaseUser} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents.mjs/baseUser.js";
 import {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 import {BladesActor} from "./blades-actor.js";
+import {AccessExpression, GetAccessorDeclaration} from "typescript";
 
 /**
  * Extend the basic Item
@@ -88,6 +89,7 @@ export class BladesItem extends Item {
 
 			const clock$ = $(event.currentTarget);
 			const key$ = clock$.closest(".euno-clock-key");
+
 			if (!(key$[0] instanceof HTMLElement)) { return }
 			if (!(event.originalEvent instanceof WheelEvent)) { return }
 
@@ -193,7 +195,6 @@ export class BladesItem extends Item {
 	}
 }
 
-
 type clockData = {
 	size: 2|3|4|5|6|8|10|12,
 	value: 0|1|2|3|4|5|6|7|8|9|10|11|12,
@@ -214,7 +215,30 @@ type keyData = {
 	scene: string
 };
 
+export enum BladesItemType {
+	"faction",
+	"item",
+	"class",
+	"ability",
+	"heritage",
+	"background",
+	"vice",
+	"cohort",
+	"crew_type",
+	"crew_reputation",
+	"crew_upgrade",
+	"crew_ability",
+	"gm_tracker",
+	"clock_keeper"
+}
+
+namespace BISystem {
+
+}
+
+
 export declare interface BladesItem {
+	parent: BladesActor | null,
 	system: {
 		type: string,
 		description: string,
@@ -301,11 +325,10 @@ export declare interface BladesItem {
 		clock_keys?: Record<string, keyData|null>,
 		scenes?: Array<{id: string, name: string}>,
 		targetScene?: string
-	},
-	parent: BladesActor | null
+	}
 }
 
-export declare interface BladesFaction<T extends "faction"> extends BladesItem {
+export interface BladesFaction<T extends "faction"> extends BladesItem {
 	type: T,
 	system: BladesItem["system"] & {
 		goal_1: string,
@@ -320,6 +343,10 @@ export declare interface BladesFaction<T extends "faction"> extends BladesItem {
 }
 
 export type BladesItemSpec<Type extends string> = BladesItem
-	& {system: {
-		type: Type
-	}}
+	& {
+		type: Type,
+		system: {
+			type: Type,
+
+		}
+	}

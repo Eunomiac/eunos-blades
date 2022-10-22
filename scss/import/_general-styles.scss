@@ -24,13 +24,13 @@ section {
   flex-direction: column;
   justify-content: space-between;
 
-  > *:not(.label-stripe) {
-    margin-right: 10px;
+  // > *:not(.label-stripe) {
+  //   margin-right: 10px;
 
-    &:last-child {
-      margin-right: 0px;
-    }
-  }
+  //   &:last-child {
+  //     margin-right: 0px;
+  //   }
+  // }
 
   .grow-one {
     flex-grow: 1;
@@ -86,32 +86,19 @@ section {
 }
 
 
-.label-stripe {
+.label-stripe, .label-stripe-gray {
   text-transform: uppercase;
-  background-color: $almost_black;
-  color: $almost_white;
-  margin-bottom: 10px;
+  background-color: var(--blades-black); // , #111);
+  color: var(--blades-white); // , #EEE);
   position: relative;
-  padding-left: 10px;
-  padding-right: 10px;
+	margin: 5px 0px;
+	padding: 0px 10px;
   display: flex;
   font-weight: bold;
-}
 
-.label-stripe-gray {
-  text-transform: uppercase;
-  background-color: $gray;
-  margin-bottom: 10px;
-  position: relative;
-  padding-left: 10px;
-  padding-right: 10px;
-  display: flex;
-  font-weight: bold;
-}
-
-.editor,
-.editor-content {
-  min-height: 150px;
+	&.label-stripe-gray {
+		background-color: var(--blades-grey-bright);
+	}
 }
 
 i {
