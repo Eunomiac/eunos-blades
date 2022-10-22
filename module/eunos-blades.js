@@ -1,6 +1,8 @@
 // ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮
-import { registerSystemSettings } from "./settings.js";
+import registerSettings, { initTinyMCEStyles, initCanvasStyles, initFonts } from "./core/settings.js";
+
 import { preloadHandlebarsTemplates } from "./blades-templates.js";
+
 import BladesHelpers, { registerHandlebarHelpers } from "./euno-helpers.js";
 import { BladesActor } from "./blades-actor.js";
 import { BladesItem } from "./blades-item.js";
@@ -56,13 +58,13 @@ Hooks.once("init", injectOverrideClass);
 Hooks.once("init", async () => {
     console.log("Initializing Blades In the Dark System");
     
-    game.blades = { dice: bladesRoll };
-    game.system.bobclocks = { sizes: [4, 6, 8] };
+    registerSettings();
+    initFonts();
+    
+
     
     CONFIG.Item.documentClass = BladesItem;
     CONFIG.Actor.documentClass = BladesActor;
-    
-    registerSystemSettings();
     
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("blades", BladesActorSheet, { types: ["character"], makeDefault: true });
@@ -81,6 +83,11 @@ Hooks.once("init", async () => {
     ]);
     
     registerHandlebarHelpers();
+});
+
+Hooks.once("ready", async () => {
+    initCanvasStyles();
+    initTinyMCEStyles();
 });
 
 // ░░░░░░░[SocketLib]░░░░ SocketLib Initialization ░░░░░░░

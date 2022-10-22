@@ -6,15 +6,21 @@ import { BladesActor } from "../blades-actor";
 import { bladesRoll } from "../blades-roll";
 
 declare global {
+
 	declare interface Game {
-		i18n: {
-			localize: (str: string) => string
-		},
-		blades: {
-			dice: typeof bladesRoll
-		}
+		// i18n: {
+		// 	localize: (str: string) => string
+		// },
+		// blades: {
+		// 	dice: typeof bladesRoll
+		// }
 		items: Collection<StoredDocument<BladesItem>>,
 		actors: Collection<StoredDocument<BladesActor>>,
+		user: {
+			name: string,
+			id: string,
+			isGM: boolean
+		}
 		eunoblades: {
 			ClockKeeper?: BladesItem
 		},
@@ -29,19 +35,37 @@ declare global {
 					}
 				}
 			}
-			bobclocks: {
-				sizes: number[]
-			}
+			// bobclocks: {
+			// 	sizes: number[]
+			// }
 		}
 	}
-	declare const game: Game & {
-		user: {
-			name: string
-		}
+	// declare const game: Game & {
+	// 	user: {
+	// 		name: string
+	// 	}
+	// }
+	declare interface CONFIG {
+
 	}
+
+	declare const bLog: {
+		display: (...content: [string, ...any[]]) => void,
+		log: (...content: [string, ...any[]]) => void,
+		error: (...content: [string, ...any[]]) => void,
+		hbsLog: (...content: [string, ...any[]]) => void
+	};
+
+	interface LenientGlobalVariableTypes {
+    game: never;
+  }
 
 	declare const BladesHelpers: typeof BladesHelpers;
 
+	// declare function $clamp(element: HTMLElement, options: Record<string,any>): {
+	// 	original: string,
+	// 	clamped: string
+	// }
 
 	// #region ████████ SocketLib: SocketLib Types ████████ ~
 	type SocketFunction = (...params: unknown[]) => unknown

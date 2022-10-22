@@ -229,7 +229,8 @@ const BUILDFILES = {
 		"./templates/": ["DISABLE"]
 	},
 	quickAssets: {
-		"./assets/": ["DISABLE"]
+		"./assets/": ["DISABLE"],
+		"./css/": ["scss/**/*.css"]
 	},
 	slowAssets: {
 		"./assets/": ["DISABLE"]

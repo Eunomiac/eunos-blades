@@ -21,7 +21,8 @@
 		}
 	],
   "esmodules": [
-    "module/eunos-blades.js"
+    "module/eunos-blades.js",
+		"greensock/esm/all.js"
   ],
   "styles": [
     "css/style.css"

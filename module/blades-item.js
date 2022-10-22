@@ -45,8 +45,7 @@ export class BladesItem extends Item {
             if (this.system.goal_2_clock_max === 0) {
                 this.system.goal_2_clock_max = 4;
             }
-            this.system.size_list_1 = BladesHelpers.createListOfClockSizes(game.system.bobclocks.sizes, this.system.goal_1_clock_max ?? 4, parseInt(`${this.system.goal_1_clock_max ?? 4}`));
-            this.system.size_list_2 = BladesHelpers.createListOfClockSizes(game.system.bobclocks.sizes, this.system.goal_2_clock_max ?? 4, parseInt(`${this.system.goal_2_clock_max ?? 4}`));
+
         }
     }
     

@@ -19,6 +19,12 @@
 			}
 		},
 		"character": {
+			"alias": "",
+			"heritage": "",
+			"gender": "",
+			"district": "",
+			"arena": "",
+			"description": "",
 			"look": "",
 			"background": "",
 			"vice": "",
@@ -173,57 +179,39 @@
 			}
 		},
 		"crew": {
-			"name": "",
-			"reputation": [
-				0
-			],
-			"lair": "",
-			"hunting_grounds": "",
+			"subtitle": "",
+			"lair": {
+				"description": "",
+				"district": ""
+			},
+			"hunting_grounds": {
+				"description": "",
+				"district": "",
+				"preferred_operation": "",
+				"preferred_operation_options": []
+			},
+			"rep": {"value": 0, "min": 0, "max": 12},
+			"turf": {"value": 0, "min": 0, "max": 6},
+			"hold": "strong",
 			"tier": 0,
-			"deity": "",
-			"hold": [
-				"strong"
-			],
-			"experience": [
-				0
-			],
-			"hold_types": [
-				"weak",
-				"strong"
-			],
-			"coins": {
-				"max": 4,
-				"value": [
-					0
-				]
-			},
-			"vault": {
-				"value": [
-					0
-				],
-				"max": 0
-			},
-			"turfs": [
-				8
-			],
-			"features": [],
-			"heat": [
-				0
-			],
-			"wanted": [
-				0
-			]
-		},
-		"factions": {
-			"name": ""
+			"heat": {"value": 0, "min": 0, "max": 9},
+			"wanted_level" {"value": 0, "min": 0, "max": 4},
+			"coins": {"value": 2, "min": 0, "max": 4},
+			"experience": {"value": 0, "min": 0, "max": 10},
+			"experience_clues": [],
+			"ability_options": [],
+			"upgrade_options": [],
+			"upgrades_preselected": [],
+			"contact_options": []
 		},
 		"npc": {
-			"name": "",
 			"alias": "",
+			"gender": "",
+			"nature": "human",
 			"concept": "",
 			"arena": "",
 			"heritage": "",
-			"district": "",
+			"districts": "",
 			"faction": "",
 			"allies": "",
 			"enemies": "",
@@ -247,7 +235,8 @@
 				"quirk": {"isLocked": false, "value": ""},
 				"style": {"isLocked": false, "value": ""}
 			}
-		}
+		},
+		"factions": {}
 	},
 	"Item": {
 		"types": [
@@ -533,8 +522,7 @@
 			]
 		},
 		"crew_type": {
-			"description": "",
-			"experience_clues": "",
+			"subtitle": "",
 			"turfs": {
 				"1": {
 					"name": "",
@@ -631,7 +619,12 @@
 					"description": "",
 					"connects": []
 				}
-			}
+			},
+			"experience_clues": [],
+			"ability_options": [],
+			"upgrade_options": [],
+			"upgrades_preselected": [],
+			"contact_options": []
 		},
 		"gm_tracker": {
 		},

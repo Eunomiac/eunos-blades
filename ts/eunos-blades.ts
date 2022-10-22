@@ -1,7 +1,12 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import {registerSystemSettings} from "./settings.js";
+// import K4Config from "./scripts/config.js";
+// import C, {getContrastingColor} from "./scripts/constants.js";
+// import U from "./scripts/utilities.js";
+import registerSettings, {initTinyMCEStyles, initCanvasStyles, initFonts} from "./core/settings.js";
+// import registerDebugger from "./scripts/logger.js";
+// import {registerSystemSettings as registerSettings} from "./settings.js";
 import {preloadHandlebarsTemplates} from "./blades-templates.js";
-// import {bladesRoll, simpleRollPopup} from "./blades-roll.js";
+
 import BladesHelpers, {registerHandlebarHelpers} from "./euno-helpers.js";
 import {BladesActor} from "./blades-actor.js";
 import {BladesItem} from "./blades-item.js";
@@ -18,6 +23,7 @@ import EunoTrackerSheet from "./euno-tracker-sheet.js";
 import EunoClockKeeperSheet from "./euno-clock-keeper-sheet.js";
 
 let socket: Socket; //~ SocketLib interface
+// /*DEVCODE*/registerDebugger();/*!DEVCODE*/
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 
 // #region Globals: Exposing Functionality to Global Scope ~
@@ -64,14 +70,15 @@ Hooks.once("init", injectOverrideClass);
 Hooks.once("init", async () => {
 	console.log("Initializing Blades In the Dark System");
 
-	game.blades = {dice: bladesRoll};
-	game.system.bobclocks = {sizes: [4, 6, 8]};
+	// Register System Settings
+	registerSettings();
+	initFonts();
+
+	// game.blades = {dice: bladesRoll};
+	// game.system.bobclocks = {sizes: [4, 6, 8]};
 
 	CONFIG.Item.documentClass = BladesItem;
 	CONFIG.Actor.documentClass = BladesActor;
-
-	// Register System Settings
-	registerSystemSettings();
 
 	// Register sheet application classes
 	Actors.unregisterSheet("core", ActorSheet);
@@ -92,6 +99,11 @@ Hooks.once("init", async () => {
 	]);
 
 	registerHandlebarHelpers();
+});
+
+Hooks.once("ready", async () => {
+	initCanvasStyles();
+	initTinyMCEStyles();
 });
 // #endregion ▄▄▄▄▄ SYSTEM INITIALIZATION ▄▄▄▄▄
 

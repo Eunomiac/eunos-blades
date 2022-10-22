@@ -4,9 +4,15 @@
 		@import './emu-overrides/globals';
 	}
 
-	body,
-	body.vtt.game,
-	body.vtt.game.system-eunos-blades,
+	// TinyMCE
+	* .editor.tinymce { // Editor active for editing
+		@import './tinymce/tinymce-skin';
+	}
+
+	* .editor .editor-content { // Editor closed for editing
+		@import './tinymce/tinymce-content';
+	}
+
 	body.vtt.game.system-eunos-blades.-emu {
 
 		#euno-clock-keeper-overlay {

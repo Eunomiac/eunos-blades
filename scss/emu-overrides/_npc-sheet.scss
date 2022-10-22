@@ -80,8 +80,6 @@ input[type="text"] {
 		// margin-bottom: 100px;
 		display: grid;
 		--folding-block-height: auto; // 225px;
-		--editor-margin: 5px;
-		--editor-padding: 5px;
 
 		grid-template-areas: ". . name name name name name name"
 		". . concept concept concept concept concept concept"
@@ -244,21 +242,6 @@ input[type="text"] {
 						&:hover {
 							color: var(--blades-black-dark);
 							background-color: var(--blades-white-bright);
-						}
-					}
-				}
-
-				.tab {
-					.editor .editor-content {
-						// height: calc(var(--folding-block-height) - 2 * var(--editor-margin) - 2 * var(--editor-padding));
-						margin: var(--editor-margin);
-						padding: var(--editor-padding);
-						background: rgba(0, 0, 0, 0.5);
-						line-height: 16px;
-						box-shadow: 0 0 5px black;
-
-						>*:first-child {
-							margin-top: 0
 						}
 					}
 				}

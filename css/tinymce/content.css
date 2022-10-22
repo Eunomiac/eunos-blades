@@ -1,0 +1,204 @@
+#tinymce {
+  --color-primary: 64, 64, 64;
+  --color-background: 46, 46, 46;
+  --color-background-lightest: 21, 21, 21;
+  --color-background-light: 74, 74, 74;
+  --color-background-darkest: 21, 21, 21;
+  --color-background-button: 68, 68, 68;
+  --color-background-chat-message: 51, 51, 51;
+  --color-background-chat-message-whisper: 28, 43, 44;
+  --color-background-chat-message-blind: 42, 65, 63;
+  --color-border: 74, 74, 74;
+  --color-border-lighter: 125, 125, 125;
+  --color-folder-header: 74, 74, 74;
+  --color-folder-directory: 21, 21, 21;
+  --color-folder-subdirectory: 125, 125, 125;
+  --color-text: 186, 186, 186;
+  --color-text-lightest: 224, 224, 224;
+  --color-text-darker: 203, 203, 203;
+  --emu-border-radius-default: 0px;
+  --emu-border-radius-controls: 0px;
+  --emu-border-radius-forms: 0px;
+  --emu-border-radius-images: 0px;
+  --emu-font-size-md: 0.875rem;
+  --emu-font-size-lg: 1rem;
+  --emu-font-size-xl: 1.25rem;
+  --emu-font-size-xxl: 1.5rem;
+  --emu-font-size-sm: 0.75rem;
+  --emu-font-size-xs: 0.625rem;
+  --emu-font-size-chat-roll: 1.125rem;
+  --emu-image-background: none;
+  --emu-image-background-lightest: none;
+  --emu-image-background-light: none;
+  --emu-image-background-darkest: none;
+  --emu-image-background-controls: none;
+  --emu-background-opacity-button-primary: 1;
+  --emu-background-opacity-hotbar: 0.8;
+  --emu-background-opacity-hud: 0.8;
+  --emu-background-opacity-players: 0.8;
+  --emu-background-opacity-scene-control: 0.8;
+  --emu-background-opacity-scene-navigation: 0.8;
+  --emu-background-opacity-sidebar: 0.8;
+  --emu-background-opacity-window: 1;
+  --emu-background-opacity-window-content: 1;
+  --emu-subtle-opacity: 0.3;
+  --emu-space-button-lg: 1.5rem;
+  --color-shadow-primary: var(--blades-white-bright);
+  --color-text-dark-primary: var(--blades-white);
+  --color-bg-option: var(--blades-black);
+  --blades-white: rgb(200, 200, 200);
+  --blades-white-bright: rgb(255, 255, 255);
+  --blades-black: rgb(16, 16, 16);
+  --blades-black-dark: rgb(0, 0, 0);
+  --blades-grey-bright: rgb(170, 170, 170);
+  --blades-grey: rgb(119, 119, 119);
+  --blades-grey-dark: rgb(68, 68, 68);
+  --blades-coin-gold: rgb(171, 146, 84);
+  --blades-coin-gold-bright: rgb(253, 212, 112); }
+
+#tinymce {
+  font-family: "Minion Pro Caption Cond"; }
+  #tinymce i {
+    font-family: "Font Awesome 6 Pro"; }
+  #tinymce i.fab {
+    font-family: "Font Awesome 6 Brands"; }
+  #tinymce h1, #tinymce h2, #tinymce h3, #tinymce h4 {
+    border: none;
+    font-family: Kirsty;
+    color: var(--blades-white-bright); }
+    #tinymce h1h1, #tinymce h2h1, #tinymce h3h1, #tinymce h4h1 {
+      text-transform: uppercase; }
+
+#tinymce .button-icon, #tinymce .toggle-icon {
+  position: relative;
+  height: 1.5rem;
+  width: 1.5rem;
+  line-height: 1.5rem;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  text-shadow: none; }
+  #tinymce .button-icon i, #tinymce .toggle-icon i {
+    height: 1.5rem;
+    width: 1.5rem;
+    line-height: 1.75rem;
+    text-align: center;
+    opacity: 0.75;
+    margin-top: -0.125rem;
+    pointer-events: none; }
+    #tinymce .button-icon i.toggle-off, #tinymce .toggle-icon i.toggle-off {
+      opacity: 0.25; }
+  #tinymce .button-icon .tooltip, #tinymce .toggle-icon .tooltip {
+    display: none;
+    pointer-events: none;
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    background: var(--blades-black);
+    color: var(--blades-white);
+    font-size: 10px;
+    line-height: 12px;
+    padding: 5px;
+    border-radius: 10px;
+    border: 1px solid var(--blades-white-bright);
+    text-align: center;
+    white-space: nowrap; }
+    #tinymce .button-icon .tooltip b, #tinymce .toggle-icon .tooltip b {
+      color: var(--blades-white-bright);
+      font-size: 12px;
+      font-family: Kirsty;
+      text-transform: uppercase; }
+  #tinymce .button-icon .hidden-toggle, #tinymce .toggle-icon .hidden-toggle {
+    margin: 0;
+    border: none;
+    opacity: 0;
+    position: absolute;
+    -webkit-transition: 0.25;
+    -o-transition: 0.25;
+    transition: 0.25; }
+    #tinymce .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, #tinymce .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off {
+      display: none; }
+    #tinymce .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, #tinymce .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
+      display: none; }
+  #tinymce .button-icon.tooltip-left .tooltip, #tinymce .toggle-icon.tooltip-left .tooltip {
+    left: unset;
+    right: 15px; }
+  #tinymce .button-icon:hover i, #tinymce .toggle-icon:hover i {
+    opacity: 1; }
+  #tinymce .button-icon:hover .tooltip, #tinymce .toggle-icon:hover .tooltip {
+    display: block; }
+
+#tinymce .folding-block {
+  --folding-block-height: 150px;
+  border-top: solid 1px var(--blades-white);
+  line-height: 25px;
+  background: -webkit-gradient(linear, left top, left bottom, from(var(--blades-white)), to(var(--blades-white-bright)));
+  background: -o-linear-gradient(var(--blades-white), var(--blades-white-bright));
+  background: linear-gradient(var(--blades-white), var(--blades-white-bright));
+  color: var(--blades-black);
+  font-family: Kirsty; }
+  #tinymce .folding-block > input[type="radio"] {
+    display: none; }
+    #tinymce .folding-block > input[type="radio"]:checked ~ .folding-block-content {
+      height: var(--folding-block-height);
+      -webkit-transition: 0.1s linear;
+      -o-transition: 0.1s linear;
+      transition: 0.1s linear; }
+  #tinymce .folding-block > label {
+    width: 100%;
+    cursor: pointer; }
+    #tinymce .folding-block > label span {
+      font-family: Kirsty;
+      font-size: 18px;
+      text-shadow: none; }
+  #tinymce .folding-block .folding-block-content {
+    height: 0;
+    background: var(--blades-black);
+    color: var(--blades-white);
+    width: 100%;
+    display: block;
+    overflow: hidden;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-transition: 0.1s linear;
+    -o-transition: 0.1s linear;
+    transition: 0.1s linear; }
+
+#tinymce {
+  font-family: "Minion Pro";
+  color: var(--blades-white);
+  line-height: 1.4;
+  margin: 1rem;
+  min-height: 150px;
+  height: auto;
+  max-height: 600px; }
+  #tinymce blockquote {
+    border-left: 2px solid var(--blades-grey-bright);
+    margin-left: 1.5rem;
+    padding-left: 1rem; }
+  #tinymce table {
+    border-collapse: collapse; }
+    #tinymce table th, #tinymce table td {
+      border: 1px solid var(--blades-grey);
+      padding: 0.4rem; }
+  #tinymce figure {
+    display: table;
+    margin: 1rem auto; }
+    #tinymce figure figcaption {
+      font-family: "Minion Pro Caption";
+      color: var(--blades-grey-bright);
+      display: block;
+      margin-top: 0.25rem;
+      text-align: center; }
+  #tinymce hr {
+    border-color: var(--blades-grey-bright);
+    border-style: solid;
+    border-width: 1px 0 0 0; }
+  #tinymce code {
+    padding: 0.1rem 0.2rem; }

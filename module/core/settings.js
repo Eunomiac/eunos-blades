@@ -1,0 +1,126 @@
+import U from "./utilities.js";
+import C from "./constants.js";
+
+const registerSettings = function () {
+    
+        game.settings.register("eunos-blades", "systemMigrationVersion", {
+        "name": "System Migration Version",
+        "scope": "world",
+        "config": false,
+        "type": Number,
+        "default": 0
+    });
+};
+
+export function initTinyMCEStyles() {
+    CONFIG.TinyMCE = {
+        ...CONFIG.TinyMCE,
+        ...{
+            get content_css() {
+                return `systems/eunos-blades/css/tinymce/content.css?${new Date().getTime()}`;
+            },
+            font_css: "systems/eunos-blades/css/fonts.css",
+            max_height: 500,
+            min_height: 150,
+            autoresize_overflow_padding: 0,
+            autoresize_bottom_margin: 0,
+            menubar: false,
+            statusbar: true,
+            elementPath: true,
+            branding: false,
+            resize: false,
+            plugins: "lists image table save autoresize searchreplace quickbars template",
+            save_enablewhendirty: false,
+            table_default_styles: {},
+            style_formats: [
+                {
+                    title: "Headings",
+                    items: [
+                        { title: "Heading 1", block: "h1", wrapper: false },
+                        { title: "Heading 2", block: "h2", wrapper: false },
+                        { title: "Heading 3", block: "h3", wrapper: false },
+                        { title: "Heading 4", block: "h4", wrapper: false }
+                    ]
+                },
+                {
+                    title: "Blocks",
+                    items: [
+                        { title: "Paragraph", block: "p", wrapper: true },
+                        { title: "Block Quote", block: "blockquote", wrapper: true },
+                        { title: "Secret (Visible to GM)", block: "p", classes: "text-secret", attributes: { "data-isSecret": "true" }, wrapper: true }
+                    ]
+                },
+                {
+                    title: "Inline",
+                    items: [
+                        { title: "Bold", inline: "b", wrapper: false },
+                        { title: "Italics", inline: "i", wrapper: false },
+                        { title: "Underline", inline: "u", wrapper: false }
+                    ]
+                }
+            ],
+            style_formats_merge: false,
+            toolbar: "styles | searchreplace | formatting alignment elements | bullist numlist | removeformat | code | save",
+            toolbar_groups: {
+                formatting: {
+                    icon: "color-picker",
+                    tooltip: "Formatting",
+                    items: "bold italic underline"
+                },
+                alignment: {
+                    icon: "align-left",
+                    tooltip: "Alignment",
+                    items: "alignleft aligncenter alignright alignjustify | outdent indent"
+                },
+                elements: {
+                    icon: "duplicate",
+                    tooltip: "Insert Element",
+                    items: "tableinsertdialog image hr | template"
+                }
+            },
+            toolbar_mode: "floating",
+            quickbars_link_toolbar: false,
+            quickbars_selection_toolbar: "styles | bold italic underline",
+            quickbars_insert_toolbar: "hr image table",
+            quickbars_table_toolbar: "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol"
+        }
+    };
+}
+
+export function initCanvasStyles() {
+    CONFIG.canvasTextStyle = new PIXI.TextStyle({
+        align: "center",
+        dropShadow: true,
+        dropShadowAngle: U.degToRad(45),
+        dropShadowBlur: 8,
+        dropShadowColor: C.Colors.BLACK,
+        dropShadowDistance: 4,
+        fill: [
+            C.Colors.bWHITE,
+            C.Colors.bGREY
+        ],
+        fillGradientType: 1,
+        fillGradientStops: [
+            0,
+            0.3
+        ],
+        fontFamily: "Kirsty",
+        fontSize: 32,
+        letterSpacing: 2,
+        lineHeight: 32,
+        lineJoin: "round",
+        padding: 4,
+        stroke: C.Colors.dBLACK,
+        strokeThickness: 3,
+        trim: true,
+        whiteSpace: "normal",
+        wordWrap: true,
+        wordWrapWidth: 0.1
+    });
+}
+
+export function initFonts() {
+
+}
+
+export default registerSettings;
