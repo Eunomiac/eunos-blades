@@ -1,0 +1,182 @@
+& {
+
+	// select,
+	// input[type="text"],
+	// option {
+	// 	border: none;
+	// 	padding: none;
+	// 	background: rgba(0, 0, 0, 0.25);
+	// 	box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.5);
+	// 	border-radius: 0;
+	// 	height: 25px;
+	// 	margin: 0;
+	// 	padding: 0;
+	// 	vertical-align: top;
+
+	// 	&[data-type="string"], &[data-type="string"] option {
+	// 		--select-color: 0, 0, 0;
+	// 		color: transparent;
+	// 		text-align: center;
+	// 		width: 25px;
+	// 		margin-left: 10px;
+	// 		border-radius: 12.5px;
+	// 		background: rgba(var(--select-color), 0.25);
+	// 		box-shadow: inset 0px 0px 15px rgba(var(--select-color), 1);
+	// 		outline: 2px solid rgba(var(--select-color), 1);
+
+  //           option {
+  //               color: black !important;
+  //               background: rgba(var(--select-color), 1) !important;
+  //               width: 20px !important;
+  //               max-width: 20px !important;
+  //               text-align: center;
+  //           }
+
+	// 		&[data-color="yellow"] {
+	// 			--select-color: 255, 255, 0;
+
+	// 		}
+
+	// 		&[data-color="blue"] {
+	// 			--select-color: 0, 255, 255;
+	// 		}
+
+	// 		&[data-color="white"] {
+	// 			--select-color: 255, 255, 255;
+	// 		}
+
+	// 		&[data-color="red"] {
+	// 			--select-color: 255, 0, 0;
+	// 		}
+	// 	}
+
+	// 	&[data-type="number"], &[data-type="number"] option {
+	// 		width: 45px;
+	// 		// margin-top: 1px;
+	// 		text-align: right;
+	// 		padding-top: 2px;
+	// 		font-family: Kirsty;
+	// 	}
+	// }
+
+	// input[type="text"] {
+	// 	// border: none;
+	// 	// border-radius: 0;
+	// 	width: calc(100% - 35px);
+	// 	margin-top: 1px;
+	// 	text-indent: 5px;
+	// 	// color: var(--blades-black);
+	// 	// font-family: "Historical FellType";
+	// 	// font-family: "Historical FellType SC";
+	// 	// font-family: "IM FELL Double Pica";
+	// 	// font-family: "IM FELL Double Pica SC";
+	// 	font-family: "Minion Pro";
+	// 	// font-family: "Minion Pro Cond";
+	// 	// font-family: "Minion Pro Caption";
+	// 	// font-family: "Minion Pro Caption Cond";
+	// 	// font-family: UglyQua;
+	// 	// font-style: italic;
+	// 	// padding-top: 2px;
+	// }
+
+	.scene-selection {
+		label {
+			font-family: Kirsty;
+		}
+
+		position: absolute;
+		top: 12px;
+		right: 0;
+
+		select {
+			font-family: Kirsty;
+			color: var(--blades-white-bright);
+			background: var(--blades-black-dark);
+			border: none;
+			width: 200px;
+		}
+	}
+
+	table {
+		margin: 0;
+
+		.check-label {
+			font-size: 10px;
+			margin: 0;
+			padding: 0;
+			background: none !important;
+			text-transform: uppercase;
+			// position: relative;
+			transform: rotate(-45deg) scale(0.9);
+			display: inline-block;
+			text-align: center;
+			line-height: 9px;
+			height: 100%;
+			min-height: 100%;
+			vertical-align: middle;
+			margin-top: -5px;
+			// min-width: 32px;
+			// width: 32px;
+			// max-width: 32px;
+			// min-height: 10px;
+			// height: 10px;
+			// max-height: 10px;
+
+		}
+
+		thead {
+			th.black-white {
+				background: var(--blades-white-bright) !important;
+			}
+		}
+
+		// border: 1px dotted red;
+		// th, td { border: 1px dotted orange;}
+		th,
+		td {
+			text-align: left;
+			color: var(--blades-white);
+
+			p {
+				margin: 0
+			}
+
+			&:nth-child(1) {
+				width: 64px;
+				white-space: nowrap;
+			}
+
+			&:nth-child(2) {
+				width: 60%
+			}
+
+			&:nth-child(3),
+			&:nth-child(4) {
+				text-align: center;
+			}
+		}
+
+		th {
+			input {
+				color: var(--blades-black);
+			}
+
+			select {
+				color: var(--blades-black);
+				text-align: center;
+			}
+		}
+
+		td {
+			select[data-type="number"] {
+				vertical-align: top;
+
+				&[data-type="number"] {
+					font-family: Kirsty;
+					font-size: 18px;
+					color: var(--blades-white-bright);
+				}
+			}
+		}
+	}
+}

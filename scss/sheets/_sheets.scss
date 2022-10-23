@@ -1,0 +1,51 @@
+textarea {
+	// color: var(--blades-white);
+	// font-family: "Minion Pro Caption";
+	margin: 0;
+	// font-size: 12px;
+	// line-height: 16px;
+}
+
+
+.window-content {
+	background: var(--blades-black);
+	padding: var(--content-padding);
+    form {
+				@import "../core/text-styles";
+        section {
+            select {
+                color: var(--blades-white);
+            }
+
+						.nav-panel {
+							nav {
+								background-color: var(--blades-white);
+								padding: 0 10px;
+
+								.item {
+									color: var(--blades-black);
+									padding: 0 10px;
+
+									&.active {
+										background-color: var(--blades-white-bright);
+									}
+
+									&:hover {
+										color: var(--blades-black-dark);
+										background-color: var(--blades-white-bright);
+									}
+
+								}
+							}
+						}
+						.turf-list {
+							@import '../components/turf-block';
+						}
+        }
+				.editor-tab {
+					position: relative;
+					width: calc(100% + 2 * var(--content-padding));
+					left: calc(-1 * var(--content-padding));
+				}
+    }
+}

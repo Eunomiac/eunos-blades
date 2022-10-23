@@ -1,0 +1,209 @@
+& {
+
+
+  --color-text-light-highlight: #f0f0e0;
+  --color-text-light-heading: #c9c7b8;
+  --color-text-light-primary: #b5b3a4;
+  --color-text-dark-primary: #191813;
+  --color-text-dark-secondary: #4b4a44;
+  --color-text-dark-header: #23221d;
+  --color-text-dark-inactive: #7a7971;
+  --color-text-hyperlink: rgb(253, 212, 112);
+  --color-text-light-0: #fff;
+  --color-text-light-1: #eee;
+  --color-text-light-2: #ddd;
+  --color-text-light-3: #ccc;
+  --color-text-light-4: #bbb;
+  --color-text-light-5: #aaa;
+  --color-text-light-6: #999;
+  --color-text-light-7: #888;
+  --color-text-dark-1: #111;
+  --color-text-dark-2: #222;
+  --color-text-dark-3: #444;
+  --color-text-dark-4: #555;
+  --color-text-dark-5: #666;
+  --color-text-dark-6: #777;
+  --color-border-light-1: #ddd;
+  --color-border-light-2: #999;
+  --color-border-dark-1: #111;
+  --color-border-dark-2: #222;
+  --color-border-dark-3: #333;
+  --color-border-dark-4: #444;
+  --color-border-dark-5: #666;
+  --color-shadow-primary: #ccc;
+  --color-shadow-highlight: var(--blades-coin-gold-bright);
+  --color-shadow-dark: #000;
+  --color-underline-inactive: #7a7971;
+  --color-underline-active: #44191A;
+  --color-underline-header: var(--blades-grey);
+  --color-border-light-highlight: #f0f0e0;
+  --color-border-light-primary: #b5b3a4;
+  --color-border-light-secondary: #c9c7b8;
+  --color-border-light-tertiary: #7a7971;
+  --color-border-dark: #000;
+  --color-border-dark-primary: #191813;
+  --color-border-dark-secondary: #23221d;
+  --color-border-dark-tertiary: #4b4a44;
+  --color-border-highlight: var(--blades-coin-gold);
+  --color-border-highlight-alt: var(--blades-coin-gold-bright);
+  --color-bg-btn-minor-inactive: #c9c7b8;
+  --color-bg-btn-minor-active: #b5b3a4;
+  --color-bg-option: #dad8cc;
+  --color-ownership-none: #5500ff;
+  --color-ownership-observer: #7a7971;
+  --color-ownership-owner: #b5b3a4;
+  --z-index-canvas: 0;
+  --z-index-app: 30;
+  --z-index-ui: 60;
+  --z-index-window: 100;
+  --z-index-tooltip: 9999;
+  --sidebar-width: 300px;
+  --sidebar-header-height: 32px;
+  --sidebar-item-height: 48px;
+  --hotbar-height: 52px;
+  --hotbar-width: 578px;
+  --macro-size: 50px;
+  --players-width: 200px;
+  --form-field-height: 26px;
+  --font-primary: "Minion Pro", serif;
+  --font-mono: monospace;
+  --font-awesome: "Font Awesome 6 Pro";
+	--font-size-10: 0.5rem;
+  --font-size-11: 0.6875rem;
+  --font-size-12: 0.75rem;
+  --font-size-13: 0.8125rem;
+  --font-size-14: 0.875rem;
+  --font-size-16: 1rem;
+  --font-size-18: 1.125rem;
+  --font-size-20: 1.25rem;
+  --font-size-24: 1.5rem;
+  --font-size-28: 1.75rem;
+  --font-size-30: 1.875rem;
+  --font-size-32: 2rem;
+  --font-size-48: 3rem;
+	--line-height-10: 0.5rem;
+  --line-height-11: 0.6875rem;
+  --line-height-12: 0.75rem;
+  --line-height-13: 0.8125rem;
+  --line-height-14: 0.875rem;
+  --line-height-16: 1rem;
+  --line-height-18: 1.125rem;
+  --line-height-20: 1.25rem;
+  --line-height-24: 1.5rem;
+  --line-height-28: 1.75rem;
+  --line-height-30: 1.875rem;
+  --line-height-32: 2rem;
+  --line-height-48: 3rem;
+  --color-level-info: #5c87b9;
+  --color-level-warning: #b18404;
+  --color-level-error: #750003;
+
+	--blades-white-bright-nums: 255, 255, 255;
+	--blades-white-nums: 200, 200, 200;
+	--blades-grey-bright-nums: 170, 170, 170;
+	--blades-grey-nums: 119, 119, 119;
+	--blades-grey-dark-nums: 68, 68, 68;
+	--blades-black-nums: 32, 32, 32;
+	--blades-black-dark-nums: 0, 0, 0;
+
+	--blades-coin-gold-bright-nums: 253, 212, 112;
+	--blades-coin-gold-nums: 171, 146, 84;
+
+	--color-primary: var(--blades-white-nums);
+	--color-background: var(--blades-black-nums);
+	--color-background-lightest: var(--blades-grey-nums);
+	--color-background-light: var(--blades-grey-dark-nums);
+	--color-background-darkest: var(--blades-black-dark-nums);
+	--color-background-button: var(--blades-grey-dark-nums);
+	--color-background-chat-message: var(--blades-black-nums);
+	--color-background-chat-message-whisper: var(--blades-grey-nums);
+	--color-background-chat-message-blind: var(--blades-grey-dark-nums);
+	--color-border: var(--blades-grey-dark-nums);
+	--color-border-lighter: var(--blades-grey-nums);
+	--color-folder-header: var(--blades-grey-nums);
+	--color-folder-directory: var(--blades-grey-dark-nums);
+	--color-folder-subdirectory: var(--blades-black-nums);
+	--color-text: var(--blades-white-nums);
+	--color-text-lightest: var(--blades-white-bright-nums);
+	--color-text-darker: var(--blades-grey-bright-nums);
+	--color-shadow-primary: var(--blades-white-bright-nums);
+	--color-text-dark-primary: var(--blades-white-nums);
+	--color-bg-option: var(--blades-black-nums);
+
+	--blades-white: rgba(var(--blades-white-nums), 1);
+	--blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
+	--blades-black: rgba(var(--blades-black-nums), 1);
+	--blades-black-dark: rgba(var(--blades-black-dark-nums), 1);
+	--blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
+	--blades-grey: rgba(var(--blades-grey-nums), 1);
+	--blades-grey-dark: rgba(var(--blades-grey-dark-nums), 1);
+	--blades-coin-gold: rgba(var(--blades-coin-gold-nums), 1);
+	--blades-coin-gold-bright: rgba(var(--blades-coin-gold-bright-nums), 1);
+
+		// --color-primary: 64, 64, 64;
+	// --color-background: 46, 46, 46;
+	// --color-background-lightest: 21, 21, 21;
+	// --color-background-light: 74, 74, 74;
+	// --color-background-darkest: 21, 21, 21;
+	// --color-background-button: 68, 68, 68;
+	// --color-background-chat-message: 51, 51, 51;
+	// --color-background-chat-message-whisper: 28, 43, 44;
+	// --color-background-chat-message-blind: 42, 65, 63;
+	// --color-border: 74, 74, 74;
+	// --color-border-lighter: 125, 125, 125;
+	// --color-folder-header: 74, 74, 74;
+	// --color-folder-directory: 21, 21, 21;
+	// --color-folder-subdirectory: 125, 125, 125;
+	// --color-text: 186, 186, 186;
+	// --color-text-lightest: 224, 224, 224;
+	// --color-text-darker: 203, 203, 203;
+
+	// Design
+	--emu-border-radius-default: 0;
+	--emu-border-radius-controls: 0;
+	--emu-border-radius-forms: 0;
+	--emu-border-radius-images: 0;
+
+	// Font Size
+	--emu-font-size-xs: var(--font-size-10);
+	--emu-font-size-sm: var(--font-size-12);
+	--emu-font-size-md: var(--font-size-14);
+	--emu-font-size-lg: var(--font-size-16);
+	--emu-font-size-xl: var(--font-size-20);
+	--emu-font-size-xxl: var(--font-size-28);
+	--emu-font-size-chat-roll: var(--font-size-18);
+
+
+	// Background Color Opacity
+	--emu-background-opacity-button-primary: 1;
+	--emu-background-opacity-hotbar: 0.8;
+	--emu-background-opacity-hud: 0.8;
+	--emu-background-opacity-players: 0.8;
+	--emu-background-opacity-scene-control: 0.8;
+	--emu-background-opacity-scene-navigation: 0.8;
+	--emu-background-opacity-sidebar: 0.8;
+	--emu-background-opacity-window: 1;
+	--emu-background-opacity-window-content: 1;
+
+	--emu-subtle-opacity: 0.3;
+
+	// Background Images
+	--emu-image-background: none;
+	--emu-image-background-lightest: none;
+	--emu-image-background-light: none;
+	--emu-image-background-darkest: none;
+	--emu-image-background-controls: none;
+
+	// --emu-space-base: 0.125rem;
+	// --emu-space-sm: 0.25rem;
+	// --emu-space-md: 0.5rem;
+	// --emu-space-lg: 0.75rem;
+	// --emu-space-xl: 1rem;
+	--emu-space-button-lg: 1.5rem; // 2rem;
+	// --emu-space-button: 1.5rem;
+	// --emu-space-button-sm: 1.25rem;
+	// --emu-space-button-xs: 1.125rem;
+	// --emu-space-sidebar: 17.875rem;
+
+	--content-padding: 8px;
+}

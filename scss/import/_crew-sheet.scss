@@ -99,7 +99,7 @@ nav{
   align-items: center;
   border-top: 3px solid $almost_black;
 
-  @include custom_radio_round(18px, gray, $almost_white, $almost_black);
+  @include custom_radio_round(18px, gray, var(--blades-white), $almost_black);
 
   > * {
     margin-right: 5px;
@@ -180,7 +180,7 @@ nav{
       display: none;
 
       &:checked + label {
-        color: $almost_white;
+        color: var(--blades-white);
         font-weight: bold;
         background-color: $almost_black;
       }

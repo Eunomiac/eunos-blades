@@ -19,14 +19,14 @@ export function initTinyMCEStyles() {
 	CONFIG.TinyMCE = {
 		...CONFIG.TinyMCE,
 		...{
-			get content_css() {
-				return `systems/eunos-blades/css/tinymce/content.css?${new Date().getTime()}`;
-			},
+			skin: "skin",
+			skin_url: "systems/eunos-blades/css/tinymce/skin",
+			content_css: `systems/eunos-blades/css/tinymce/content.css?${new Date().getTime()}`,
 			font_css: "systems/eunos-blades/css/fonts.css",
 			max_height: 500,
-			min_height: 150,
+			min_height: 50,
 			autoresize_overflow_padding: 0,
-			autoresize_bottom_margin: 0,
+			autoresize_bottom_margin: 25,
 			menubar: false,
 			statusbar: true,
 			elementPath: true,
@@ -34,7 +34,7 @@ export function initTinyMCEStyles() {
 			resize: false,
 			plugins: "lists image table save autoresize searchreplace quickbars template",
 			save_enablewhendirty: false,
-			table_default_styles: {},
+			// table_default_styles: {},
 			style_formats: [
 				{
 					title: "Headings",
@@ -63,7 +63,7 @@ export function initTinyMCEStyles() {
 				}
 			],
 			style_formats_merge: false,
-			toolbar: "styles | searchreplace | formatting alignment elements | bullist numlist | removeformat | code | save",
+			toolbar: "styles | searchreplace | formatting alignment lists elements | removeformat | code | save",
 			toolbar_groups: {
 				formatting: {
 					icon: "color-picker",
@@ -74,6 +74,11 @@ export function initTinyMCEStyles() {
 					icon: "align-left",
 					tooltip: "Alignment",
 					items: "alignleft aligncenter alignright alignjustify | outdent indent"
+				},
+				lists: {
+					icon: "unordered-list",
+					tooltip: "Lists",
+					items: "bullist numlist"
 				},
 				elements: {
 					icon: "duplicate",

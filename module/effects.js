@@ -1,3 +1,10 @@
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌████░░░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░░░████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+
 export function onManageActiveEffect(event, owner) {
     event.preventDefault();
     const a = event.currentTarget;
@@ -25,9 +32,7 @@ export function onManageActiveEffect(event, owner) {
             return;
     }
 }
-
 export function prepareActiveEffectCategories(effects) {
-    
     const categories = {
         temporary: {
             type: "temporary",
@@ -45,7 +50,6 @@ export function prepareActiveEffectCategories(effects) {
             effects: []
         }
     };
-    
     for (const e of effects) {
         e._getSourceName();
         if (e.data.disabled) {

@@ -1,50 +1,91 @@
+@import './core/normalize.scss';
+
 // Colors
 $lightgray: #bbb;
 $darkgray: #666;
 $gray: #999;
 $red: red;
 $almost_black: #191813;
-$almost_white: #EEEFFF;
+// var(--blades-white): #EEEFFF;
 $gold: #DAA520;
-$green: #008000;
+// var(--blades-white-bright): #008000;
 $light_green: #12a012;
-$blue: #04578f;
-
-// Transition period for sheet parts that hint what they can do
-$transition-period: 0.2s;
-$hover-opacity: 0.9;
-$hover-brightness: 0.8;
+// var(--blades-grey-bright): #04578f;
 
 // Utility imports
-@import 'import/mixin';
+@import './core/mixins';
 @import './fonts.scss';
 
-//namespacing to avoid conflicts with other modules
-.eunos-blades {
-  // font-family: "Minion Pro", serif;
+:root {
 
-  @import 'import/general-styles';
-  @import 'import/clocks';
+	* {
+		@import './core/vars';
+		@import './core/globals';
+	}
 
-  &.crew.sheet{
-    @import 'import/crew-sheet';
-  }
+ body.vtt.game.system-eunos-blades {
 
-  &.actor.pc{
-    @import 'import/character-sheet';
-  }
+		#euno-clock-keeper-overlay {
+			@import "./core/reset";
+			@import './components/clocks-overlay';
+		}
 
-  &.actor.clock{
-  }
+		#controls,
+		#navigation,
+		#hotbar,
+		#players {
+			@import "./core/reset";
+			opacity: 0.3;
+			transition: 0.25s;
 
-  &.item.sheet{
-    @import 'import/item-sheet';
-  }
+			&:hover { opacity: 1 }
+		}
+
+		#chat {
+			@import "./core/reset";
+			@import './chat/chat';
+		}
+
+		.app.window-app {
+			@import "./core/reset";
+			@import './core/text-styles';
+
+			.editor:not(.tinymce) .editor-content {
+				@import './tinymce/tinymce-content';
+			}
+
+			&.sheet,
+			&.eunos-blades,
+			&.sheet.eunos-blades {
+
+				@import 'import/general-styles';
+				@import './sheets/sheets';
+
+				&.actor {
+					&.pc {
+						@import 'import/character-sheet';
+						@import './sheets/pc-sheet';
+					}
+
+					&.npc { @import './sheets/npc-sheet' }
+
+					&.crew {
+						@import 'import/crew-sheet';
+						@import './sheets/crew-sheet';
+					}
+				}
+
+				&.item {
+					@import 'import/item-sheet';
+
+					&.clock-keeper { @import './sheets/clock-keeper-sheet' }
+					&.crew_type { @import './sheets/crew-type-sheet' }
+				}
+
+				&.dialog { @import './dialog/dialogs' }
+			}
+		}
+	}
 }
 
-//top-level styles
-@import 'import/chat';
-@import 'import/dialogs';
-
-// Override emu styles
-@import './emu-overrides';
+@import "./emu-styles.scss";

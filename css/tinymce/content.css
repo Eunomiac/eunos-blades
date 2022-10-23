@@ -1,37 +1,149 @@
 #tinymce {
-  --color-primary: 64, 64, 64;
-  --color-background: 46, 46, 46;
-  --color-background-lightest: 21, 21, 21;
-  --color-background-light: 74, 74, 74;
-  --color-background-darkest: 21, 21, 21;
-  --color-background-button: 68, 68, 68;
-  --color-background-chat-message: 51, 51, 51;
-  --color-background-chat-message-whisper: 28, 43, 44;
-  --color-background-chat-message-blind: 42, 65, 63;
-  --color-border: 74, 74, 74;
-  --color-border-lighter: 125, 125, 125;
-  --color-folder-header: 74, 74, 74;
-  --color-folder-directory: 21, 21, 21;
-  --color-folder-subdirectory: 125, 125, 125;
-  --color-text: 186, 186, 186;
-  --color-text-lightest: 224, 224, 224;
-  --color-text-darker: 203, 203, 203;
-  --emu-border-radius-default: 0px;
-  --emu-border-radius-controls: 0px;
-  --emu-border-radius-forms: 0px;
-  --emu-border-radius-images: 0px;
-  --emu-font-size-md: 0.875rem;
-  --emu-font-size-lg: 1rem;
-  --emu-font-size-xl: 1.25rem;
-  --emu-font-size-xxl: 1.5rem;
-  --emu-font-size-sm: 0.75rem;
-  --emu-font-size-xs: 0.625rem;
-  --emu-font-size-chat-roll: 1.125rem;
-  --emu-image-background: none;
-  --emu-image-background-lightest: none;
-  --emu-image-background-light: none;
-  --emu-image-background-darkest: none;
-  --emu-image-background-controls: none;
+  --color-text-light-highlight: #f0f0e0;
+  --color-text-light-heading: #c9c7b8;
+  --color-text-light-primary: #b5b3a4;
+  --color-text-dark-primary: #191813;
+  --color-text-dark-secondary: #4b4a44;
+  --color-text-dark-header: #23221d;
+  --color-text-dark-inactive: #7a7971;
+  --color-text-hyperlink: rgb(253, 212, 112);
+  --color-text-light-0: #fff;
+  --color-text-light-1: #eee;
+  --color-text-light-2: #ddd;
+  --color-text-light-3: #ccc;
+  --color-text-light-4: #bbb;
+  --color-text-light-5: #aaa;
+  --color-text-light-6: #999;
+  --color-text-light-7: #888;
+  --color-text-dark-1: #111;
+  --color-text-dark-2: #222;
+  --color-text-dark-3: #444;
+  --color-text-dark-4: #555;
+  --color-text-dark-5: #666;
+  --color-text-dark-6: #777;
+  --color-border-light-1: #ddd;
+  --color-border-light-2: #999;
+  --color-border-dark-1: #111;
+  --color-border-dark-2: #222;
+  --color-border-dark-3: #333;
+  --color-border-dark-4: #444;
+  --color-border-dark-5: #666;
+  --color-shadow-primary: #ccc;
+  --color-shadow-highlight: var(--blades-coin-gold-bright);
+  --color-shadow-dark: #000;
+  --color-underline-inactive: #7a7971;
+  --color-underline-active: #44191A;
+  --color-underline-header: var(--blades-grey);
+  --color-border-light-highlight: #f0f0e0;
+  --color-border-light-primary: #b5b3a4;
+  --color-border-light-secondary: #c9c7b8;
+  --color-border-light-tertiary: #7a7971;
+  --color-border-dark: #000;
+  --color-border-dark-primary: #191813;
+  --color-border-dark-secondary: #23221d;
+  --color-border-dark-tertiary: #4b4a44;
+  --color-border-highlight: var(--blades-coin-gold);
+  --color-border-highlight-alt: var(--blades-coin-gold-bright);
+  --color-bg-btn-minor-inactive: #c9c7b8;
+  --color-bg-btn-minor-active: #b5b3a4;
+  --color-bg-option: #dad8cc;
+  --color-ownership-none: #5500ff;
+  --color-ownership-observer: #7a7971;
+  --color-ownership-owner: #b5b3a4;
+  --z-index-canvas: 0;
+  --z-index-app: 30;
+  --z-index-ui: 60;
+  --z-index-window: 100;
+  --z-index-tooltip: 9999;
+  --sidebar-width: 300px;
+  --sidebar-header-height: 32px;
+  --sidebar-item-height: 48px;
+  --hotbar-height: 52px;
+  --hotbar-width: 578px;
+  --macro-size: 50px;
+  --players-width: 200px;
+  --form-field-height: 26px;
+  --font-primary: "Minion Pro", serif;
+  --font-mono: monospace;
+  --font-awesome: "Font Awesome 6 Pro";
+  --font-size-10: 0.5rem;
+  --font-size-11: 0.6875rem;
+  --font-size-12: 0.75rem;
+  --font-size-13: 0.8125rem;
+  --font-size-14: 0.875rem;
+  --font-size-16: 1rem;
+  --font-size-18: 1.125rem;
+  --font-size-20: 1.25rem;
+  --font-size-24: 1.5rem;
+  --font-size-28: 1.75rem;
+  --font-size-30: 1.875rem;
+  --font-size-32: 2rem;
+  --font-size-48: 3rem;
+  --line-height-10: 0.5rem;
+  --line-height-11: 0.6875rem;
+  --line-height-12: 0.75rem;
+  --line-height-13: 0.8125rem;
+  --line-height-14: 0.875rem;
+  --line-height-16: 1rem;
+  --line-height-18: 1.125rem;
+  --line-height-20: 1.25rem;
+  --line-height-24: 1.5rem;
+  --line-height-28: 1.75rem;
+  --line-height-30: 1.875rem;
+  --line-height-32: 2rem;
+  --line-height-48: 3rem;
+  --color-level-info: #5c87b9;
+  --color-level-warning: #b18404;
+  --color-level-error: #750003;
+  --blades-white-bright-nums: 255, 255, 255;
+  --blades-white-nums: 200, 200, 200;
+  --blades-grey-bright-nums: 170, 170, 170;
+  --blades-grey-nums: 119, 119, 119;
+  --blades-grey-dark-nums: 68, 68, 68;
+  --blades-black-nums: 32, 32, 32;
+  --blades-black-dark-nums: 0, 0, 0;
+  --blades-coin-gold-bright-nums: 253, 212, 112;
+  --blades-coin-gold-nums: 171, 146, 84;
+  --color-primary: var(--blades-white-nums);
+  --color-background: var(--blades-black-nums);
+  --color-background-lightest: var(--blades-grey-nums);
+  --color-background-light: var(--blades-grey-dark-nums);
+  --color-background-darkest: var(--blades-black-dark-nums);
+  --color-background-button: var(--blades-grey-dark-nums);
+  --color-background-chat-message: var(--blades-black-nums);
+  --color-background-chat-message-whisper: var(--blades-grey-nums);
+  --color-background-chat-message-blind: var(--blades-grey-dark-nums);
+  --color-border: var(--blades-grey-dark-nums);
+  --color-border-lighter: var(--blades-grey-nums);
+  --color-folder-header: var(--blades-grey-nums);
+  --color-folder-directory: var(--blades-grey-dark-nums);
+  --color-folder-subdirectory: var(--blades-black-nums);
+  --color-text: var(--blades-white-nums);
+  --color-text-lightest: var(--blades-white-bright-nums);
+  --color-text-darker: var(--blades-grey-bright-nums);
+  --color-shadow-primary: var(--blades-white-bright-nums);
+  --color-text-dark-primary: var(--blades-white-nums);
+  --color-bg-option: var(--blades-black-nums);
+  --blades-white: rgba(var(--blades-white-nums), 1);
+  --blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
+  --blades-black: rgba(var(--blades-black-nums), 1);
+  --blades-black-dark: rgba(var(--blades-black-dark-nums), 1);
+  --blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
+  --blades-grey: rgba(var(--blades-grey-nums), 1);
+  --blades-grey-dark: rgba(var(--blades-grey-dark-nums), 1);
+  --blades-coin-gold: rgba(var(--blades-coin-gold-nums), 1);
+  --blades-coin-gold-bright: rgba(var(--blades-coin-gold-bright-nums), 1);
+  --emu-border-radius-default: 0;
+  --emu-border-radius-controls: 0;
+  --emu-border-radius-forms: 0;
+  --emu-border-radius-images: 0;
+  --emu-font-size-xs: var(--font-size-10);
+  --emu-font-size-sm: var(--font-size-12);
+  --emu-font-size-md: var(--font-size-14);
+  --emu-font-size-lg: var(--font-size-16);
+  --emu-font-size-xl: var(--font-size-20);
+  --emu-font-size-xxl: var(--font-size-28);
+  --emu-font-size-chat-roll: var(--font-size-18);
   --emu-background-opacity-button-primary: 1;
   --emu-background-opacity-hotbar: 0.8;
   --emu-background-opacity-hud: 0.8;
@@ -42,32 +154,13 @@
   --emu-background-opacity-window: 1;
   --emu-background-opacity-window-content: 1;
   --emu-subtle-opacity: 0.3;
+  --emu-image-background: none;
+  --emu-image-background-lightest: none;
+  --emu-image-background-light: none;
+  --emu-image-background-darkest: none;
+  --emu-image-background-controls: none;
   --emu-space-button-lg: 1.5rem;
-  --color-shadow-primary: var(--blades-white-bright);
-  --color-text-dark-primary: var(--blades-white);
-  --color-bg-option: var(--blades-black);
-  --blades-white: rgb(200, 200, 200);
-  --blades-white-bright: rgb(255, 255, 255);
-  --blades-black: rgb(16, 16, 16);
-  --blades-black-dark: rgb(0, 0, 0);
-  --blades-grey-bright: rgb(170, 170, 170);
-  --blades-grey: rgb(119, 119, 119);
-  --blades-grey-dark: rgb(68, 68, 68);
-  --blades-coin-gold: rgb(171, 146, 84);
-  --blades-coin-gold-bright: rgb(253, 212, 112); }
-
-#tinymce {
-  font-family: "Minion Pro Caption Cond"; }
-  #tinymce i {
-    font-family: "Font Awesome 6 Pro"; }
-  #tinymce i.fab {
-    font-family: "Font Awesome 6 Brands"; }
-  #tinymce h1, #tinymce h2, #tinymce h3, #tinymce h4 {
-    border: none;
-    font-family: Kirsty;
-    color: var(--blades-white-bright); }
-    #tinymce h1h1, #tinymce h2h1, #tinymce h3h1, #tinymce h4h1 {
-      text-transform: uppercase; }
+  --content-padding: 8px; }
 
 #tinymce .button-icon, #tinymce .toggle-icon {
   position: relative;
@@ -134,47 +227,181 @@
   #tinymce .button-icon:hover .tooltip, #tinymce .toggle-icon:hover .tooltip {
     display: block; }
 
-#tinymce .folding-block {
-  --folding-block-height: 150px;
-  border-top: solid 1px var(--blades-white);
-  line-height: 25px;
-  background: -webkit-gradient(linear, left top, left bottom, from(var(--blades-white)), to(var(--blades-white-bright)));
-  background: -o-linear-gradient(var(--blades-white), var(--blades-white-bright));
-  background: linear-gradient(var(--blades-white), var(--blades-white-bright));
-  color: var(--blades-black);
-  font-family: Kirsty; }
-  #tinymce .folding-block > input[type="radio"] {
-    display: none; }
-    #tinymce .folding-block > input[type="radio"]:checked ~ .folding-block-content {
-      height: var(--folding-block-height);
-      -webkit-transition: 0.1s linear;
-      -o-transition: 0.1s linear;
-      transition: 0.1s linear; }
-  #tinymce .folding-block > label {
-    width: 100%;
-    cursor: pointer; }
-    #tinymce .folding-block > label span {
-      font-family: Kirsty;
-      font-size: 18px;
-      text-shadow: none; }
-  #tinymce .folding-block .folding-block-content {
-    height: 0;
-    background: var(--blades-black);
-    color: var(--blades-white);
-    width: 100%;
-    display: block;
-    overflow: hidden;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-transition: 0.1s linear;
-    -o-transition: 0.1s linear;
-    transition: 0.1s linear; }
+#tinymce {
+  --primary-font-size: var(--font-size-14);
+  --primary-line-height: var(--line-height-18);
+  --primary-color: var(--blades-white);
+  --primary-font-weight: normal;
+  --primary-font-body: "Minion Pro";
+  --primary-font-heading: "Kirsty";
+  --primary-font-decorative: "UglyQua";
+  --primary-font-mono: "monospace";
+  --primary-background: var(--blades-dark);
+  --primary-background-heading: var(--blades-grey-dark);
+  --primary-color-heading: var(--blades-white-bright);
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: var(--base-font-size, var(--primary-font-size));
+  font-family: var(--base-font-family, var(--primary-font-body));
+  line-height: var(--base-line-height, var(--primary-line-height));
+  color: var(--base-color, var(--primary-color));
+  text-shadow: var(--base-text-shadow, none);
+  font-style: var(--base-font-style, normal);
+  font-variant: var(--base-font-variant, normal);
+  text-transform: var(--base-text-transform, none);
+  font-weight: var(--base-font-weight, var(--primary-font-weight)); }
+  #tinymce * {
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+    text-shadow: inherit;
+    font-style: inherit;
+    font-variant: inherit;
+    text-transform: inherit;
+    font-weight: inherit; }
+  #tinymce b, #tinymce strong {
+    font-weight: bold; }
+  #tinymce i:not([class]), #tinymce em {
+    font-style: italic; }
+  #tinymce h1, #tinymce h2, #tinymce h3, #tinymce h4 {
+    font-family: var(--primary-font-heading);
+    color: var(--primary-color-heading);
+    font-weight: bold;
+    text-shadow: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
+    border: none;
+    padding: 0px;
+    margin: 0px; }
+  #tinymce h1 {
+    background: var(--primary-background-heading);
+    font-size: var(--font-size-20);
+    line-height: var(--font-size-20);
+    padding: 0.5rem 0px;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase; }
+  #tinymce h2 {
+    background: var(--primary-background-heading);
+    font-size: var(--font-size-18);
+    line-height: var(--font-size-18);
+    padding: 0.5rem 0px;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase; }
+  #tinymce h3 {
+    font-size: var(--font-size-18);
+    line-height: var(--font-size-18);
+    border-bottom: 2px solid var(--primary-background-heading);
+    margin-bottom: 0.5rem; }
+  #tinymce h4 {
+    font-size: var(--font-size-16);
+    line-height: var(--font-size-16);
+    border-bottom: 1px solid var(--primary-background-heading);
+    margin-bottom: 0.5rem; }
+  #tinymce i[class] {
+    font-family: "Font Awesome 6 Pro"; }
+  #tinymce i.fab {
+    font-family: "Font Awesome 6 Brands"; }
+  #tinymce select,
+  #tinymce input,
+  #tinymce option,
+  #tinymce textarea {
+    border: none;
+    background: rgba(0, 0, 0, 0.25);
+    -webkit-box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.5); }
+    #tinymce select[type="number"], #tinymce select[data-type="number"], #tinymce select[data-type="number"] option,
+    #tinymce input[type="number"],
+    #tinymce input[data-type="number"],
+    #tinymce input[data-type="number"] option,
+    #tinymce option[type="number"],
+    #tinymce option[data-type="number"],
+    #tinymce option[data-type="number"] option,
+    #tinymce textarea[type="number"],
+    #tinymce textarea[data-type="number"],
+    #tinymce textarea[data-type="number"] option {
+      text-align: right;
+      font-family: "Kirsty"; }
+    #tinymce select option,
+    #tinymce input option,
+    #tinymce option option,
+    #tinymce textarea option {
+      color: var(--blades-white);
+      background: var(--blades-black); }
+  #tinymce p {
+    margin: 0.5em 0;
+    min-height: 1rem; }
+
+#tinymce .label-stripe {
+  background-color: var(--blades-grey); }
+
+#tinymce .label-stripe-gray {
+  margin: 0; }
+  #tinymce .label-stripe-gray th, #tinymce .label-stripe-gray th > *:not(:hover) {
+    color: var(--blades-white-bright);
+    text-shadow: 1px 1px 0px var(--blades-black-dark); }
+
+#tinymce .clock-zero-label {
+  color: var(--blades-white); }
+
+#tinymce .stripe,
+#tinymce .stripe label {
+  background-color: var(--blades-white) !important;
+  color: var(--blades-black) !important; }
+
+#tinymce .stripe-tooth-body label {
+  color: var(--blades-black) !important; }
+
+#tinymce label.black-label {
+  background-color: var(--blades-white);
+  color: var(--blades-black) !important; }
+
+#tinymce th.black-white,
+#tinymce th.black-white label {
+  background-color: var(--blades-white) !important;
+  text-shadow: none;
+  color: var(--blades-black) !important;
+  font-family: "Kirsty";
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 24px;
+  padding: 3px; }
+
+#tinymce table.items-list.effects-list thead th, #tinymce table.items-list.effects-list tbody th {
+  margin: 0 !important; }
+
+#tinymce table.items-list.effects-list thead th:nth-of-type(1), #tinymce table.items-list.effects-list thead td:nth-of-type(1), #tinymce table.items-list.effects-list tbody th:nth-of-type(1), #tinymce table.items-list.effects-list tbody td:nth-of-type(1) {
+  width: 40%; }
+
+#tinymce table.items-list.effects-list thead th:nth-of-type(2), #tinymce table.items-list.effects-list thead td:nth-of-type(2), #tinymce table.items-list.effects-list tbody th:nth-of-type(2), #tinymce table.items-list.effects-list tbody td:nth-of-type(2) {
+  width: 30%;
+  text-align: center; }
+
+#tinymce table.items-list.effects-list thead th:nth-of-type(3), #tinymce table.items-list.effects-list thead td:nth-of-type(3), #tinymce table.items-list.effects-list tbody th:nth-of-type(3), #tinymce table.items-list.effects-list tbody td:nth-of-type(3) {
+  width: 15%;
+  text-align: center; }
+
+#tinymce table.items-list.effects-list thead th:nth-of-type(4), #tinymce table.items-list.effects-list thead td:nth-of-type(4), #tinymce table.items-list.effects-list tbody th:nth-of-type(4), #tinymce table.items-list.effects-list tbody td:nth-of-type(4) {
+  width: 15%;
+  text-align: right; }
+
+#tinymce table.items-list.effects-list thead td, #tinymce table.items-list.effects-list tbody td {
+  line-height: 24px;
+  margin: 0;
+  vertical-align: middle; }
+
+#tinymce table.items-list.effects-list thead img, #tinymce table.items-list.effects-list tbody img {
+  height: 24px;
+  width: 24px;
+  vertical-align: middle; }
+
+#tinymce table.items-list.effects-list thead h4, #tinymce table.items-list.effects-list tbody h4 {
+  display: inline-block;
+  line-height: 24px;
+  margin: 0;
+  vertical-align: middle; }
 
 #tinymce {
-  font-family: "Minion Pro";
-  color: var(--blades-white);
-  line-height: 1.4;
-  margin: 1rem;
+  padding: var(--content-padding);
   min-height: 150px;
   height: auto;
   max-height: 600px; }

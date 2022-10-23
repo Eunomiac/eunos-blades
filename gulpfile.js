@@ -183,6 +183,7 @@ const subGroup = (array, groupSize) => {
 };
 // #endregion ▮▮▮▮[UTILITY]▮▮▮▮
 
+const ISMINIFYINGJS = false;
 const ISBUILDINGDIST = false;
 const ISDEPLOYING = false;
 const ISANALYZING = false;
@@ -217,10 +218,16 @@ const BANNERTEMPLATE = {
 // #region ░░░░░░░[BUILD FILES]░░░░░░░░ ~
 const BUILDFILES = {
 	ts: {
-		"./module/": ["ts/**/*.*s"]
+		"./module_staging_1/": ["ts/**/*.*s"]
 	},
 	js: {
-		"./module/": ["DISABLE"]
+		"./module/": ["module_staging_1/**/*.js"]
+	},
+	js_1: {
+		"./module_staging_2/": ["module_staging_1/**/*.js"]
+	},
+	js_2: {
+		"./module/": ["module_staging_2/**/*.js"]
 	},
 	css: {
 		"./css/": ["scss/**/*.scss"]
@@ -236,6 +243,7 @@ const BUILDFILES = {
 		"./assets/": ["DISABLE"]
 	}
 };
+
 if (ISBUILDINGDIST) {
 	BUILDFILES.js ??= {};
 	BUILDFILES.js[`${DISTROOT}/module/`] = ["module/**/*.js"];
@@ -319,17 +327,17 @@ const PIPES = {
 		return pipeline;
 	},
 	tsProject: typescript.createProject("tsconfig.json", {declaration: ISGENERATINGTYPEFILES, emitDeclarationOnly: ISGENERATINGTYPEFILES}),
-	// terser: () => plumber().pipe(terser, {
-	// 	parse: {},
-	// 	compress: {},
-	// 	mangle: {
-	// 		properties: {}
-	// 	},
-	// 	format: {},
-	// 	sourceMap: {},
-	// 	ecma: 2020,
-	// 	module: true
-	// }),
+	terser: () => plumber().pipe(terser, {
+		parse: {},
+		compress: {},
+		mangle: {
+			properties: {}
+		},
+		format: {},
+		sourceMap: {},
+		ecma: 2020,
+		module: true
+	}),
 	closePipe: (title, source, destination) => {
 		const thisDest = dest(destination);
 		thisDest.on("finish", () => logger(logParts.finish(title, source, destination)));
@@ -384,9 +392,9 @@ const PLUMBING = {
 		}
 		return done();
 	},
-	initDest: function initDist(done) {
+	initDest: function initDist(done, destGlobs = ["./dist/", "./module/", "./module_staging_1", "./module_staging_2", "./css/"]) {
 		try {
-			cleaner.sync(["./dist/", "./module/", "./staging", "./css/"]);
+			cleaner.sync(destGlobs);
 		} catch (err) {
 			return done();
 		}
@@ -428,8 +436,8 @@ const PLUMBING = {
 			.pipe(PIPES.openPipe("jsMin")())
 			.pipe(header(BANNERS.js.min, {"package": packageJSON}))
 			.pipe(PIPES.replacer("js")())
-			.pipe(renamer({suffix: ".min"}))
-			// .pipe(PIPES.terser()())
+			// .pipe(renamer({suffix: ".min"}))
+			.pipe(PIPES.terser()())
 			.pipe(PIPES.closePipe("jsMin", source, destination));
 	},
 	cssFull: (source, destination) => function pipeFullCSS() {
@@ -452,6 +460,7 @@ const PLUMBING = {
 				minifier()
 			]))
 			.pipe(header(BANNERS.css.min, {"package": packageJSON}))
+			.pipe(renamer({suffix: ".min"}))
 			.pipe(PIPES.closePipe("cssMin", source, destination));
 	},
 	hbs: (source, destination) => function pipeHBS() {
@@ -489,32 +498,55 @@ BUILDFUNCS.ts /* series(
 		return funcs;
 	})(BUILDFILES.ts));
 // );
-BUILDFUNCS.js = series(
-	// PLUMBING.initWhiteSpace,
+
+const jsBuildFuncs = [
 	parallel(...((buildFiles) => {
 		const funcs = [];
 		for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
 			sourceGlobs.forEach((sourceGlob) => {
-				funcs.push(PLUMBING.jsMin(sourceGlob, destGlob));
 				funcs.push(PLUMBING.jsFull(sourceGlob, destGlob));
 			});
 		}
 		return funcs;
-	})(BUILDFILES.js)),
+	})(ISMINIFYINGJS ? BUILDFILES.js_1 : BUILDFILES.js))
+];
+
+if (ISMINIFYINGJS) {
+	jsBuildFuncs.push(parallel(...((buildFiles) => {
+		const funcs = [];
+		for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
+			sourceGlobs.forEach((sourceGlob) => {
+				funcs.push(PLUMBING.jsMin(sourceGlob, destGlob));
+			});
+		}
+		return funcs;
+	})(BUILDFILES.js_2)));
+}
+
+BUILDFUNCS.js = series(
+	...jsBuildFuncs,
 	PLUMBING.analyzeJS
 );
 // #endregion ▄▄▄▄▄ JS ▄▄▄▄▄
 
 // #region ████████ CSS: Compiling CSS ████████ ~
-BUILDFUNCS.css = parallel(...((sourceDestGlobs) => {
-	const funcs = [];
-	for (const [destGlob, sourceGlobs] of Object.entries(sourceDestGlobs)) {
-		const formatType = /dist/.test(destGlob) ? "cssMin" : "cssFull";
-		funcs.push(PLUMBING[formatType](sourceGlobs[0], destGlob));
-	}
-	logger(`There are ${funcs.length} CSS Build Funcs.`);
-	return funcs;
-})(BUILDFILES.css));
+BUILDFUNCS.css = parallel(...((sourceDestGlobs) => Object.entries(sourceDestGlobs)
+	.map(([destGlob, sourceGlobs]) => [...sourceGlobs
+		.map((sourceGlob) => [
+			PLUMBING.cssFull(sourceGlob, destGlob),
+			PLUMBING.cssMin(sourceGlob, destGlob)
+		])
+	]).flat())(BUILDFILES.css).flat());
+
+// BUILDFUNCS.css = parallel(...((sourceDestGlobs) => {
+// 	const funcs = [];
+// 	for (const [destGlob, sourceGlobs] of Object.entries(sourceDestGlobs)) {
+// 		const formatType = /dist/.test(destGlob) ? "cssMin" : "cssFull";
+// 		funcs.push(PLUMBING[formatType](sourceGlobs[0], destGlob));
+// 	}
+// 	logger(`There are ${funcs.length} CSS Build Funcs.`);
+// 	return funcs;
+// })(BUILDFILES.css));
 // #endregion ▄▄▄▄▄ CSS ▄▄▄▄▄
 
 // #region ████████ HBS: Compiling HBS ████████ ~

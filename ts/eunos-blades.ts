@@ -58,12 +58,14 @@ Object.assign(
 // #region ====== Style Override Injection ====== ~
 /**~ Override style module immediately and on system initialization
  * to ensure consistent styling, with minimal flash of unstylized content */
-function injectOverrideClass() {
-	$("html").attr("class", "-emu-layout");
-	$("body.vtt.game.system-eunos-blades").addClass("-emu");
-}
-$(injectOverrideClass);
-Hooks.once("init", injectOverrideClass);
+// function injectOverrideClass() {
+// 	$("html").attr("class", "-emu-layout");
+// 	$("body.vtt.game.system-eunos-blades").addClass("-emu");
+// }
+// $(injectOverrideClass);
+// Hooks.once("init", injectOverrideClass);
+
+
 // #endregion ___ Style Override Injection ___
 
 // #region ████████ SYSTEM INITIALIZATION: Initializing Blades In The Dark System on 'Init' Hook ████████

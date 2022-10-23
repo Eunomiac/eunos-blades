@@ -40,7 +40,7 @@
         width: auto;
         height: auto;
         background-image: none !important;
-        color: $almost_white;
+        color: var(--blades-white);
 
         i {
           margin-top: 4px;
@@ -79,7 +79,7 @@
 @mixin custom_radio($width, $height) {
 
   display: flex;
-  $default_color: $almost_white;
+  $default_color: var(--blades-white);
   $accent_color: $almost_black;
   $circle_border_color: $almost_black;
 
@@ -131,7 +131,7 @@
 @mixin custom_radio_square($side) {
 
   display: flex;
-  $default_color: $almost_white;
+  $default_color: var(--blades-white);
   $accent_color: $gold;
   $circle_border_color: $almost_black;
 

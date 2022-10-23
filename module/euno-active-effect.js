@@ -1,12 +1,17 @@
-import BladesHelpers from "./euno-helpers.js";
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌████░░░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░░░████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import BladesHelpers from "./euno-helpers.js";
 const CUSTOMFUNCS = {
     addItem: async (actor, { name, type }) => {
         console.log("addItem", { actor, name, type });
         if (actor.items.find((item) => item.name === name && item.type === type)) {
             return;
         }
-        
         const itemsOfType = await BladesHelpers.getAllItemsByType(type, game);
         const newItem = itemsOfType.find((iData) => iData.name === name);
         if (newItem) {
@@ -14,10 +19,8 @@ const CUSTOMFUNCS = {
         }
     }
 };
-
 export default class BladesActiveEffect extends ActiveEffect {
     static Initialize() {
-                
         CONFIG.ActiveEffect.documentClass = BladesActiveEffect;
         Hooks.on("applyActiveEffect", (actor, { effect, key, priority }, currentValue, { func, params }) => {
             if (typeof func === "string" && func in CUSTOMFUNCS) {
@@ -25,11 +28,9 @@ export default class BladesActiveEffect extends ActiveEffect {
             }
         });
     }
-    
         _isSuppressed = false;
     get isSuppressed() { return this._isSuppressed; }
     set isSuppressed(v) { this._isSuppressed = v; }
-    
         
         static onManageActiveEffect(event, owner) {
         event.preventDefault();
@@ -61,9 +62,7 @@ export default class BladesActiveEffect extends ActiveEffect {
         }
         return null;
     }
-    
         static prepareActiveEffectCategories(effects) {
-        
         const categories = {
             temporary: {
                 type: "temporary",
@@ -85,9 +84,7 @@ export default class BladesActiveEffect extends ActiveEffect {
                 label: "Suppressed Effects",
                 effects: []
             }
-            
         };
-        
         for (const e of effects) {
             e._getSourceName();
             if (e.isSuppressed) {
@@ -106,7 +103,6 @@ export default class BladesActiveEffect extends ActiveEffect {
         return categories;
     }
 }
-
 //
 //
 //

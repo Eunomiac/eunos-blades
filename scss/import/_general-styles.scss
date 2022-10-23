@@ -12,7 +12,7 @@ textarea {
 }
 
 .rollable-text {
-  transition: color $transition-period;
+  transition: color 0.2s;
 }
 .rollable-text:hover {
   cursor: pointer;
@@ -65,7 +65,7 @@ section {
 }
 .black-label {
   background-color: $almost_black;
-  color: $almost_white;
+  color: var(--blades-white);
   font-size: 21px;
   text-align: center;
   padding: 0px 5px;
@@ -103,7 +103,7 @@ section {
 
 i {
   &.nullifier {
-    @include changeable($transition-period, $hover-brightness, $hover-opacity, $red);
+    @include changeable(0.2s, 0.8, 0.9, $red);
   }
 }
 

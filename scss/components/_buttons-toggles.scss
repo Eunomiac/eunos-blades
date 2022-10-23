@@ -1,0 +1,68 @@
+.button-icon, .toggle-icon {
+	position: relative;
+	height: 1.5rem;
+	width: 1.5rem;
+	line-height: 1.5rem;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+			text-shadow: none;
+
+	i {
+		height: 1.5rem;
+		width: 1.5rem;
+		line-height: 1.75rem;
+		text-align: center;
+		opacity: 0.75;
+		margin-top: -0.125rem;
+		pointer-events: none;
+
+		&.toggle-off {
+			opacity: 0.25;
+		}
+	}
+
+	.tooltip {
+		display: none;
+		pointer-events: none;
+		position: absolute;
+		bottom: 15px;
+		left: 15px;
+		background: var(--blades-black);
+		color: var(--blades-white);
+		font-size: 10px;
+		line-height: 12px;
+		padding: 5px;
+		border-radius: 10px;
+		border: 1px solid var(--blades-white-bright);
+		text-align: center;
+		white-space: nowrap;
+
+		b {
+				color: var(--blades-white-bright);
+				font-size: 12px;
+				font-family: Kirsty;
+				text-transform: uppercase;
+		}
+	}
+	.hidden-toggle {
+		margin: 0;
+		border: none;
+		opacity: 0;
+		position: absolute;
+		transition: 0.25;
+
+		&[type="checkbox"]:checked + .toggle-on + .toggle-off { display: none }
+		&[type="checkbox"]:not(:checked) + .toggle-on { display: none }
+	}
+
+	&.tooltip-left .tooltip {
+		left: unset;
+		right: 15px;
+	}
+
+	&:hover {
+		i { opacity: 1 }
+		.tooltip { display: block }
+	}
+}

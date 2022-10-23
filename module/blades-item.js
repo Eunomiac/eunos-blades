@@ -1,29 +1,24 @@
-import BladesHelpers from "./euno-helpers.js";
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌████░░░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░░░████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import BladesHelpers from "./euno-helpers.js";
 export class BladesItem extends Item {
-    
         async _preCreate(data, options, user) {
         await super._preCreate(data, options, user);
-        
         if (user.id !== game.user?.id) {
             return;
         }
         if (this.parent?.documentName !== "Actor") {
             return;
         }
-        
         await this.parent.deleteEmbeddedDocuments("Item", BladesHelpers.removeDuplicatedItemType(data, this.parent));
     }
-    
-
-    
-
-    
-
-    
         prepareData() {
         super.prepareData();
-        
         if (this.data.type === "faction") {
             this._prepareFaction();
         }
@@ -34,7 +29,6 @@ export class BladesItem extends Item {
             this._prepareCohort();
         }
     }
-    
     _prepareFaction() {
         if (this.type === "faction") {
             this.system.goal_1_clock_value ??= 0;
@@ -45,10 +39,8 @@ export class BladesItem extends Item {
             if (this.system.goal_2_clock_max === 0) {
                 this.system.goal_2_clock_max = 4;
             }
-
         }
     }
-    
     _prepareClockKeeper() {
         this.system.scenes = game.scenes?.map((scene) => ({ id: scene.id, name: scene.name ?? "" }));
         this.system.targetScene ??= game.scenes?.current?.id;
@@ -62,11 +54,8 @@ export class BladesItem extends Item {
                 .filter(([clockNum, clockData]) => Boolean(clockData)));
             return [keyID, keyData];
         }));
-        
     }
-    
     get tier() { return parseInt(this.parent?.system?.tiar || 0); }
-    
     _prepareCohort() {
         if (this.parent?.documentName !== "Actor") {
             return;
@@ -77,9 +66,7 @@ export class BladesItem extends Item {
         this.system.scale = { Gang: this.tier, Expert: 0 }[this.system.cohort];
         this.system.quality = { Gang: this.tier, Expert: this.tier + 1 }[this.system.cohort];
     }
-    
     async activateOverlayListeners() {
-        
         $("#euno-clock-keeper-overlay").find(".euno-clock").on("wheel", async (event) => {
             console.log("Wheel Event!", { event });
             if (!game?.user?.isGM) {
@@ -91,37 +78,30 @@ export class BladesItem extends Item {
             if (!game.eunoblades.ClockKeeper) {
                 return;
             }
-            
             event.preventDefault();
-            
             const clock$ = $(event.currentTarget);
             const key$ = clock$.closest(".euno-clock-key");
-            
             if (!(key$[0] instanceof HTMLElement)) {
                 return;
             }
             if (!(event.originalEvent instanceof WheelEvent)) {
                 return;
             }
-            
             const keyID = key$[0].id;
             const clockNum = clock$.data("index");
             const curClockVal = parseInt(clock$.data("value"));
             const delta = event.originalEvent.deltaY < 0 ? 1 : -1;
             const size = parseInt(clock$.data("size"));
             const newClockVal = curClockVal + delta;
-            
             console.log("... Details", { keyID, clockNum, curClockVal, size, delta, newClockVal });
             if (curClockVal === newClockVal) {
                 return;
             }
-            
             await this.update({
                 [`system.clock_keys.${keyID}.clocks.${clockNum}.value`]: `${newClockVal}`
             });
             socketlib.system.executeForEveryone("renderOverlay");
         });
-        
         $("#euno-clock-keeper-overlay").find(".euno-clock").on("click", async (event) => {
             if (!event.currentTarget) {
                 return;
@@ -129,18 +109,14 @@ export class BladesItem extends Item {
             if (!game.eunoblades.ClockKeeper) {
                 return;
             }
-            
             event.preventDefault();
-            
             const key$ = $(event.currentTarget).closest(".euno-clock-key");
             if (!(key$[0] instanceof HTMLElement)) {
                 return;
             }
-            
             key$.toggleClass("key-faded");
         });
     }
-    
     async addClockKey() {
         const keyID = randomID();
         return this.update({ [`system.clock_keys.${keyID}`]: {
@@ -164,13 +140,11 @@ export class BladesItem extends Item {
                 }
             } });
     }
-    
     async deleteClockKey(keyID) {
         const clockKeys = this.system.clock_keys ?? {};
         clockKeys[keyID] = null;
         return this.update({ "system.clock_keys": clockKeys });
     }
-    
     async setKeySize(keyID, keySize = 1) {
         keySize = parseInt(`${keySize}`);
         const clockKey = this.system.clock_keys[keyID];
@@ -196,7 +170,6 @@ export class BladesItem extends Item {
         });
         return this.update({ [`system.clock_keys.${keyID}`]: clockKey });
     }
-    
     _overlayElement;
     get overlayElement() {
         this._overlayElement ??= $("#euno-clock-keeper-overlay")[0];
@@ -206,7 +179,6 @@ export class BladesItem extends Item {
         }
         return this._overlayElement;
     }
-    
     async renderOverlay() {
         if (!game.scenes?.current) {
             return;
@@ -215,7 +187,6 @@ export class BladesItem extends Item {
         this.activateOverlayListeners();
     }
 }
-
 export var BladesItemType;
 (function (BladesItemType) {
     BladesItemType[BladesItemType["faction"] = 0] = "faction";

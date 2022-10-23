@@ -1,7 +1,12 @@
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌████░░░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░░░████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+
 export async function bladesRoll(dice_amount, attribute_name = "", position = "risky", effect = "standard", note = "") {
-    
     let zeromode = false;
-    
     if (dice_amount < 0) {
         dice_amount = 0;
     }
@@ -9,22 +14,15 @@ export async function bladesRoll(dice_amount, attribute_name = "", position = "r
         zeromode = true;
         dice_amount = 2;
     }
-    
     const r = new Roll(`${dice_amount}d6`, {});
-    
     r.evaluate({ async: true });
     await showChatRollMessage(r, zeromode, attribute_name, position, effect, note);
 }
-
 async function showChatRollMessage(r, zeromode, attribute_name = "", position = "", effect = "", note = "") {
-    
     const speaker = ChatMessage.getSpeaker();
-    
     const rolls = r.terms[0].results;
     const attribute_label = BladesHelpers.getAttributeLabel(attribute_name);
-    
     const roll_status = getBladesRollStatus(rolls, zeromode);
-    
     let result;
     if (BladesHelpers.isAttributeAction(attribute_name)) {
         let position_localize = "";
@@ -39,7 +37,6 @@ async function showChatRollMessage(r, zeromode, attribute_name = "", position = 
             default:
                 position_localize = "BITD.PositionRisky";
         }
-        
         let effect_localize = "";
         switch (effect) {
             case "limited":
@@ -52,48 +49,37 @@ async function showChatRollMessage(r, zeromode, attribute_name = "", position = 
             default:
                 effect_localize = "BITD.EffectStandard";
         }
-        
         result = await renderTemplate("systems/eunos-blades/templates/chat/action-roll.hbs", { rolls: rolls, roll_status: roll_status, attribute_label: attribute_label, position: position, position_localize: position_localize, effect: effect, effect_localize: effect_localize, note: note });
     }
     else {
         const stress = getBladesRollStress(rolls, zeromode);
-        
         result = await renderTemplate("systems/eunos-blades/templates/chat/resistance-roll.hbs", { rolls: rolls, roll_status: roll_status, attribute_label: attribute_label, stress: stress, note: note });
     }
-    
     const messageData = {
         speaker: speaker,
         content: result,
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
         roll: r
     };
-    
     CONFIG.ChatMessage.documentClass.create(messageData, {});
 }
-
 export function getBladesRollStatus(rolls, zeromode = false) {
-    
     const sorted_rolls = rolls.map(i => i.result).sort();
-    
     let roll_status = "failure";
-    
     if (sorted_rolls[0] === 6 && zeromode) {
         roll_status = "critical-success";
     }
     else {
         let use_die, prev_use_die = false;
-        
         if (zeromode) {
             [use_die] = sorted_rolls;
         }
         else {
             use_die = sorted_rolls[sorted_rolls.length - 1];
-            
             if (sorted_rolls.length - 2 >= 0) {
                 prev_use_die = sorted_rolls[sorted_rolls.length - 2];
             }
         }
-        
         if (use_die <= 3) {
             roll_status = "failure";
         }
@@ -108,52 +94,37 @@ export function getBladesRollStatus(rolls, zeromode = false) {
         else {
             roll_status = "partial-success";
         }
-        
     }
-    
     return roll_status;
-    
 }
 export function getBladesRollStress(rolls, zeromode = false) {
-    
     let stress = 6;
-    
     const sorted_rolls = rolls.map(i => i.result).sort();
-    
     const roll_status = "failure";
-    
     if (sorted_rolls[0] === 6 && zeromode) {
         stress = -1;
     }
     else {
         let use_die, prev_use_die = false;
-        
         if (zeromode) {
             [use_die] = sorted_rolls;
         }
         else {
             use_die = sorted_rolls[sorted_rolls.length - 1];
-            
             if (sorted_rolls.length - 2 >= 0) {
                 prev_use_die = sorted_rolls[sorted_rolls.length - 2];
             }
         }
-        
         if (use_die === 6 && prev_use_die && prev_use_die === 6) {
             stress = -1;
         }
         else {
             stress = 6 - use_die;
         }
-        
     }
-    
     return stress;
-    
 }
-
 export async function simpleRollPopup() {
-    
     new Dialog({
         "title": "Simple Roll",
         "content": `

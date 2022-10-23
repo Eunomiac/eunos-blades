@@ -1,6 +1,12 @@
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌████░░░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░░░████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+
 import U from "./utilities.js";
 import C from "./constants.js";
-
 const getStackTrace = (regExpFilters = []) => {
     regExpFilters.push(/at (getStackTrace|k4Logger|dbLog|Object\.(log|display|hbsLog|error))/, /^Error/);
     const stackTrace = (new Error()).stack;
@@ -27,11 +33,9 @@ const k4Logger = (type = "base", ...content) => {
         ...STYLES.base,
         ...STYLES[type] ?? {}
     }).map(([prop, val]) => `${prop}: ${val};`).join(" ");
-    
     const logFunc = stackTrace
         ? console.groupCollapsed
         : (data.length <= 1 ? console.log : console.group);
-    
     if (data.length === 0) {
         if (typeof message === "string") {
             logFunc(`%c${message}`, styleLine);
@@ -58,7 +62,6 @@ const k4Logger = (type = "base", ...content) => {
     }
     console.groupEnd();
 };
-
 const STYLES = {
     base: {
         "background": C.Colors.dBLACK,
@@ -93,16 +96,13 @@ const STYLES = {
         "font-family": "Pragmata Pro"
     }
 };
-
 const kLog = {
     display: (...content) => k4Logger("display", ...content),
     log: (...content) => k4Logger("base", ...content),
     error: (...content) => k4Logger("error", ...content),
     hbsLog: (...content) => k4Logger("handlebars", ...content)
 };
-
 const registerDebugger = () => {
     Object.assign(globalThis, { kLog });
 };
-
 export default registerDebugger;

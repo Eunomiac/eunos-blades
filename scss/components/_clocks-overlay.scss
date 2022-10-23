@@ -9,8 +9,9 @@
 	--left-shift: 50px;
 	--flex-basis: 170px;
 
-	position: absolute;
-	display: block;
+	position: absolute !important;
+
+	// display: block;
 	top: var(--top-shift);
 	left: var(--left-shift);
 	pointer-events: none;

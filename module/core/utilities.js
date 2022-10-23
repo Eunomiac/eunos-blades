@@ -1,16 +1,19 @@
-// ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌████░░░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░░░████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+
 import C from "./constants.js";
 import { gsap } from "/scripts/greensock/esm/all.js";
 
-// ▮▮▮▮▮▮▮ [HELPERS] Internal Functions, Data & References Used by Utility Functions ▮▮▮▮▮▮▮
 const _noCapWords = "a|above|after|an|and|at|below|but|by|down|for|for|from|in|nor|of|off|on|onto|or|out|so|the|to|under|up|with|yet"
     .split("|")
     .map((word) => new RegExp(`\\b${word}\\b`, "gui"));
-
 const _capWords = [
     "I", /[^a-z]{3,}|[\.0-9]/gu
 ].map((word) => (/RegExp/.test(Object.prototype.toString.call(word)) ? word : new RegExp(`\\b${word}\\b`, "gui")));
-
 const _loremIpsumText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies
 nibh sed massa euismod lacinia. Aliquam nec est ac nunc ultricies scelerisque porta vulputate odio.
 Integer gravida mattis odio, semper volutpat tellus. Ut elit leo, auctor eget fermentum hendrerit,
@@ -25,7 +28,6 @@ sollicitudin interdum. Sed id lacus porttitor nisi vestibulum tincidunt. Nulla f
 feugiat finibus magna in pretium. Proin consectetur lectus nisi, non commodo lectus tempor et. Cras
 viverra, mi in consequat aliquet, justo mauris fringilla tellus, at accumsan magna metus in eros. Sed
 vehicula, diam ut sagittis semper, purus massa mattis dolor, in posuere.`;
-
 const _randomWords = `
 aboveboard|account|achiever|acoustics|act|action|activity|actor|addition|adjustment|advertisement|advice|afterglow|afterimage|afterlife|aftermath|afternoon|afterthought|agreement
 air|aircraft|airfield|airlift|airline|airmen|airplane|airport|airtime|alarm|allover|allspice|alongside|also|amount|amusement|anger|angle|animal|another|ants|anyhow|anymore
@@ -130,11 +132,7 @@ const _romanNumerals = {
 };
 const UUIDLOG = [];
 
-// ████████ GETTERS: Basic Data Lookup & Retrieval ████████
 const GMID = () => game?.user?.find((user) => user.isGM)?.id ?? false;
-
-// ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████
-
 const isNumber = (ref) => typeof ref === "number" && !isNaN(ref);
 const isArray = (ref) => Array.isArray(ref);
 const isSimpleObj = (ref) => ref === Object(ref) && !isArray(ref);
@@ -164,7 +162,6 @@ const areEqual = (...refs) => {
         }
     } while (refs.length);
     return true;
-    
     function checkEquality(ref1, ref2) {
         if (typeof ref1 !== typeof ref2) {
             return false;
@@ -206,7 +203,6 @@ const areEqual = (...refs) => {
             }
         }
     }
-    
 };
 const pFloat = (ref, sigDigits, isStrict = false) => {
     if (typeof ref === "string") {
@@ -240,13 +236,9 @@ const getKey = (key, obj) => {
     }
     return null;
 };
-
 const FILTERS = {
     IsInstance: ((classRef) => ((item) => typeof classRef === "function" && item instanceof classRef))
 };
-
-// ████████ STRINGS: String Parsing, Manipulation, Conversion, Regular Expressions ████████
-// ░░░░░░░[Case Conversion]░░░░ Upper, Lower, Sentence & Title Case ░░░░░░░
 const uCase = (str) => `${str ?? ""}`.toUpperCase();
 const lCase = (str) => `${str ?? ""}`.toLowerCase();
 const sCase = (str) => {
@@ -260,7 +252,6 @@ const sCase = (str) => {
 const tCase = (str) => `${str ?? ""}`.split(/\s/)
     .map((word, i) => (i && testRegExp(word, _noCapWords) ? lCase(word) : sCase(word)))
     .join(" ").trim();
-// ░░░░░░░[RegExp]░░░░ Regular Expressions ░░░░░░░
 const testRegExp = (str, patterns = [], flags = "gui", isTestingAll = false) => patterns
     .map((pattern) => (pattern instanceof RegExp
     ? pattern
@@ -282,7 +273,6 @@ const regExtract = (ref, pattern, flags) => {
     return isGrouping ? Array.from(matches) : matches.pop();
 };
 
-// ░░░░░░░[Formatting]░░░░ Hyphenation, Pluralization, "a"/"an" Fixing ░░░░░░░
 const unhyphenate = (str) => `${str}`.replace(/\u00AD|\u200B/gu, "");
 const parseArticles = (str) => `${str}`.replace(/\b(a|A)\s([aeiouAEIOU])/gu, "$1n $2");
 const pluralize = (singular, num, plural) => {
@@ -309,7 +299,6 @@ const pad = (text, minLength, delim = " ", decimalPos) => {
     return str;
 };
 const toKey = (text) => (text ?? "").toLowerCase().replace(/ /g, "-").replace(/default/, "DEFAULT");
-// ========== Numbers: Formatting Numbers Into Strings ===========
 const signNum = (num, delim = "", zeroSign = "+") => `${pFloat(num) < 0 ? "-" : (pFloat(num) > 0 ? "+" : zeroSign)}${delim}${Math.abs(pFloat(num))}`;
 const padNum = (num, numDecDigits, includePlus = false, decimalPos) => {
     const prefix = (includePlus && num >= 0) ? "+" : "";
@@ -328,7 +317,6 @@ const padNum = (num, numDecDigits, includePlus = false, decimalPos) => {
     return `${prefix}${leftDigits}.${"0".repeat(numDecDigits)}`;
 };
 const stringifyNum = (num) => {
-
     if (pFloat(num) === 0) {
         return "0";
     }
@@ -463,7 +451,6 @@ const romanizeNum = (num, isUsingGroupedChars = true) => {
         : romanNum;
 };
 
-// ░░░░░░░[Content]░░░░ Lorem Ipsum, Random Content Generation, Randum UUID ░░░░░░░
 const loremIpsum = (numWords = 200) => {
     const lrWordList = _loremIpsumText.split(/\n?\s+/g);
     const words = [...lrWordList[randNum(0, lrWordList.length - 1)]];
@@ -483,7 +470,6 @@ const getUID = (id) => {
     Object.assign(globalThis, { UUIDLOG });
     return uuid;
 };
-// ░░░░░░░[Localization]░░░░ Simplified Localization Functionality ░░░░░░░
 const loc = (locRef, formatDict = {}) => {
     if (/[a-z]/.test(locRef)) {
         locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}\.)*`), `${C.SYSTEM_ID}.`);
@@ -504,9 +490,7 @@ function getTemplatePath(subFolder, fileName) {
     return fileName.map((fName) => getTemplatePath(subFolder, fName));
 }
 
-// ████████ SEARCHING: Searching Various Data Types w/ Fuzzy Matching ████████
 const isIn = (needle, haystack = [], fuzziness = 0) => {
-    
     const SearchTests = [
         (ndl, item) => new RegExp(`^${ndl}$`, "gu").test(`${item}`),
         (ndl, item) => new RegExp(`^${ndl}$`, "gui").test(`${item}`)
@@ -527,7 +511,6 @@ const isIn = (needle, haystack = [], fuzziness = 0) => {
             }
         }
     }
-    
     const searchNeedle = `${needle}`;
     const searchStack = (() => {
         if (isArray(haystack)) {
@@ -546,7 +529,6 @@ const isIn = (needle, haystack = [], fuzziness = 0) => {
     if (!isArray(searchStack)) {
         return false;
     }
-    
     let matchIndex = -1;
     while (!isPosInt(matchIndex)) {
         const testFunc = SearchTests.shift();
@@ -562,7 +544,6 @@ const isIn = (needle, haystack = [], fuzziness = 0) => {
 };
 const isInExact = (needle, haystack) => isIn(needle, haystack, 0);
 
-// ████████ NUMBERS: Number Casting, Mathematics, Conversion ████████
 const randNum = (min, max, snap = 0) => gsap.utils.random(min, max, snap);
 const randInt = (min, max) => randNum(min, max, 1);
 const coinFlip = () => randNum(0, 1, 1) === 1;
@@ -572,7 +553,6 @@ const cycleAngle = (angle, range = [0, 360]) => cycleNum(angle, range);
 const roundNum = (num, sigDigits = 0) => (sigDigits === 0 ? pInt(num) : pFloat(num, sigDigits));
 const sum = (...nums) => Object.values(nums.flat()).reduce((num, tot) => tot + num, 0);
 const average = (...nums) => sum(...nums) / nums.flat().length;
-// ░░░░░░░[Positioning]░░░░ Relationships On 2D Cartesian Plane ░░░░░░░
 const getDistance = ({ x: x1, y: y1 }, { x: x2, y: y2 }) => (((x1 - x2) ** 2) + ((y1 - y2) ** 2)) ** 0.5;
 const getAngle = ({ x: x1, y: y1 }, { x: x2, y: y2 }, { x: xO, y: yO } = { x: 0, y: 0 }, range = [0, 360]) => {
     x1 -= xO;
@@ -582,9 +562,6 @@ const getAngle = ({ x: x1, y: y1 }, { x: x2, y: y2 }, { x: xO, y: yO } = { x: 0,
     return cycleAngle(radToDeg(Math.atan2(y2 - y1, x2 - x1)), range);
 };
 const getAngleDelta = (angleStart, angleEnd, range = [0, 360]) => cycleAngle(angleEnd - angleStart, range);
-
-
-// ████████ ARRAYS: Array Manipulation ████████
 const randElem = (array) => gsap.utils.random(array);
 const randIndex = (array) => randInt(0, array.length - 1);
 const makeIntRange = (min, max) => {
@@ -595,7 +572,6 @@ const makeIntRange = (min, max) => {
     return intRange;
 };
 const makeCycler = (array, index = 0) => {
-
     const wrapper = gsap.utils.wrap(array);
     index--;
     return (function* cycler() {
@@ -605,7 +581,6 @@ const makeCycler = (array, index = 0) => {
         }
     }());
 };
-
 function getLast(array) {
     return array.length === 0 ? undefined : array[array.length - 1];
 }
@@ -641,9 +616,6 @@ const subGroup = (array, groupSize) => {
     }
     subArrays.push(array);
 };
-
-// ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████
-
 const checkVal = ({ k, v }, checkTest) => {
     if (typeof checkTest === "function") {
         if (isDefined(v)) {
@@ -683,7 +655,6 @@ const remove = (obj, checkTest) => {
     return false;
 };
 const replace = (obj, checkTest, repVal) => {
-
     let repKey;
     if (isList(obj)) {
         [repKey] = Object.entries(obj).find((v) => checkVal({ v }, checkTest)) || [false];
@@ -726,7 +697,6 @@ const objClean = (data, remVals = [undefined, null, "", {}, []]) => {
     }
     return data;
 };
-
 export function toDict(items, key) {
     const dict = {};
     const mappedItems = items
@@ -748,7 +718,6 @@ export function toDict(items, key) {
         dict[newKey] = iData;
     });
     return dict;
-    
     function indexString(str) {
         if (/_\d+$/.test(str)) {
             const [curIndex, ...subStr] = str.split(/_/).reverse();
@@ -760,13 +729,11 @@ export function toDict(items, key) {
         return `${str}_1`;
     }
 }
-
 const partition = (obj, predicate = () => true) => [
     objFilter(obj, predicate),
     objFilter(obj, (v, k) => !predicate(v, k))
 ];
 function objMap(obj, keyFunc, valFunc) {
-
     if (!valFunc) {
         valFunc = keyFunc;
         keyFunc = false;
@@ -780,7 +747,6 @@ function objMap(obj, keyFunc, valFunc) {
     return Object.fromEntries(Object.entries(obj).map(([key, val]) => [keyFunc(key, val), valFunc(val, key)]));
 }
 const objFindKey = (obj, keyFunc, valFunc) => {
-
     if (!valFunc) {
         valFunc = keyFunc;
         keyFunc = false;
@@ -800,7 +766,6 @@ const objFindKey = (obj, keyFunc, valFunc) => {
     return false;
 };
 const objFilter = (obj, keyFunc, valFunc) => {
-
     if (!valFunc) {
         valFunc = keyFunc;
         keyFunc = false;
@@ -891,7 +856,6 @@ const objExpand = (obj) => {
         }
         return obj;
     }
-    
     return arrayify(expObj);
 };
 const objFlatten = (obj) => {
@@ -909,7 +873,6 @@ const objFlatten = (obj) => {
     return flatObj;
 };
 
-// ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████
 const getDynamicFunc = (funcName, func, context) => {
     if (typeof func === "function") {
         const dFunc = { [funcName](...args) { return func(...args); } }[funcName];
@@ -918,9 +881,6 @@ const getDynamicFunc = (funcName, func, context) => {
     return false;
 };
 
-// ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
-
-// ░░░░░░░[GreenSock]░░░░ Wrappers for GreenSock Functions ░░░░░░░
 const set = (targets, vars) => gsap.set(targets, vars);
 function get(target, property, unit) {
     if (unit) {
@@ -932,10 +892,8 @@ function get(target, property, unit) {
     }
     return gsap.getProperty(target, property);
 }
-
 const getGSAngleDelta = (startAngle, endAngle) => signNum(roundNum(getAngleDelta(startAngle, endAngle), 2)).replace(/^(.)/, "$1=");
 
-// ░░░░░░░[SVG]░░░░ SVG Generation & Manipulation ░░░░░░░
 const getRawCirclePath = (r, { x: xO, y: yO } = { x: 0, y: 0 }) => {
     [r, xO, yO] = [r, xO, yO].map((val) => roundNum(val, 2));
     const [b1, b2] = [0.4475 * r, (1 - 0.4475) * r];
@@ -961,7 +919,6 @@ const drawCirclePath = (radius, origin) => {
     return path.join(" ");
 };
 
-// ░░░░░░░[Colors]░░░░ Color Manipulation ░░░░░░░
 const getColorVals = (red, green, blue, alpha) => {
     if (isRGBColor(red)) {
         [red, green, blue, alpha] = red
@@ -1024,41 +981,32 @@ const getContrastingColor = (...colorVals) => {
 };
 const getRandomColor = () => getRGBString(gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1));
 
-// ░░░░░░░[DOM]░░░░ DOM Manipulation ░░░░░░░
 const getSiblings = (elem) => {
     const siblings = [];
     if (!elem.parentNode) {
         return siblings;
     }
-    
     Array.from(elem.parentNode.children).forEach((sibling) => {
         if (sibling !== elem) {
             siblings.push(sibling);
         }
     });
-    
     return siblings;
 };
 
-// ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████
 const sleep = (duration) => new Promise((resolve) => { setTimeout(resolve, duration >= 100 ? duration : duration * 1000); });
 
-// ████████ EXPORTS ████████
 export default {
     GMID, getUID,
-    
     isNumber, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
     isHTMLCode, isRGBColor, isHexColor,
     isUndefined, isDefined, isEmpty, hasItems, isInstance,
     areEqual,
     pFloat, pInt, radToDeg, degToRad,
     getKey,
-    
     FILTERS,
-    
     testRegExp,
     regExtract,
-    
 
     uCase, lCase, sCase, tCase,
     unhyphenate, pluralize, oxfordize, ellipsize, pad,
@@ -1066,39 +1014,28 @@ export default {
     parseArticles,
     signNum, padNum, stringifyNum, verbalizeNum, ordinalizeNum, romanizeNum,
     loremIpsum, randString, randWord,
-    
     loc, getSetting, getTemplatePath,
-    
     isIn, isInExact,
-    
     randNum, randInt,
     coinFlip,
     cycleNum, cycleAngle, roundNum, clampNum,
     sum, average,
     getDistance,
     getAngle, getAngleDelta,
-    
     randElem, randIndex,
     makeIntRange,
     makeCycler,
     unique, group,
     getLast, removeFirst, pullElement, pullIndex,
     subGroup,
-    
     remove, replace, partition,
     objClean, objMap, objFindKey, objFilter, objForEach, objCompact,
     objClone, objMerge, objExpand, objFlatten,
-    
     getDynamicFunc,
-    
 
     gsap, get, set, getGSAngleDelta,
-    
     getRawCirclePath, drawCirclePath,
-    
     getColorVals, getRGBString, getHEXString, getContrastingColor, getRandomColor,
-    
     getSiblings,
-    
     sleep
 };

@@ -3,19 +3,14 @@ $lightgray: #CCC;
 $gray: #999;
 $red: red;
 $almost_black: #191813;
-$almost_white: #EEEFFF;
+// var(--blades-white): #EEEFFF;
 $gold: #DAA520;
-$green: #008000;
+// var(--blades-white-bright): #008000;
 $light_green: #12a012;
-$blue: #04578f;
-
-// Transition period for sheet parts that hint what they can do
-$transition-period: 0.2s;
-$hover-opacity: 0.9;
-$hover-brightness: 0.8;
+// var(--blades-grey-bright): #04578f;
 
 // Imports
-@import 'mixin';
+@import "../core/mixins";
 
 /*
  * General Styles
@@ -155,7 +150,7 @@ $hover-brightness: 0.8;
 
         th {
           background-color: $almost_black;
-          color: $almost_white;
+          color: var(--blades-white);
         }
 
         input[type="text"] {
@@ -189,7 +184,7 @@ $hover-brightness: 0.8;
 
     .stripe {
       background-color: $almost_black;
-      color: $almost_white;
+      color: var(--blades-white);
       font-size: 17px;
       padding-left: 5px;
     }

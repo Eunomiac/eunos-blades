@@ -1,51 +1,45 @@
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌████░░░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░░░████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+
 import { bladesRoll } from "./blades-roll.js";
 import BladesHelpers from "./euno-helpers.js";
 import { RANDOMIZERS } from "./euno-randomizers.js";
-
 export class BladesActor extends Actor {
-    
         static async create(data, options = {}) {
         data.token = data.token || {};
-        
-        // For Crew and Character set the Token to sync with charsheet.
+
         switch (data.type) {
             case "character":
             case "crew":
                 data.token.actorLink = true;
                 break;
         }
-        
         return super.create(data, options);
     }
-    
         getRollData() {
         const data = super.getRollData();
         data.dice_amount = this.getAttributeDiceToThrow();
         return data;
     }
-    
         getAttributeDiceToThrow() {
-        
         const dice_amount = {};
         for (const attribute_name in this.system.attributes) {
             dice_amount[attribute_name] = 0;
             for (const skill_name in this.system.attributes[attribute_name].skills) {
                 dice_amount[skill_name] = parseInt(this.system.attributes[attribute_name].skills[skill_name].value[0]);
-                
                 if (dice_amount[skill_name] > 0) {
                     dice_amount[attribute_name]++;
                 }
             }
-            
         }
-        
         return dice_amount;
     }
-    
     rollAttributePopup(attribute_name) {
-        
         const attribute_label = BladesHelpers.getAttributeLabel(attribute_name);
-        
         let content = `
         <h2>${game.i18n.localize("BITD.Roll")} ${game.i18n.localize(attribute_label)}</h2>
         <form>
@@ -86,7 +80,6 @@ export class BladesActor extends Actor {
         </div><br/>
         </form>
       `;
-        
         new Dialog({
             "title": `${game.i18n.localize("BITD.Roll")} ${game.i18n.localize(attribute_label)}`,
             "content": content,
@@ -112,13 +105,10 @@ export class BladesActor extends Actor {
             },
             "default": "yes"
         }).render(true);
-        
     }
-    
     async rollAttribute(attribute_name, additional_dice_amount, position, effect, note) {
         attribute_name ??= "";
         additional_dice_amount ??= 0;
-        
         let dice_amount = 0;
         if (attribute_name !== "") {
             const roll_data = this.getRollData();
@@ -128,10 +118,8 @@ export class BladesActor extends Actor {
             dice_amount = 1;
         }
         dice_amount += additional_dice_amount;
-        
         await bladesRoll(dice_amount, attribute_name, position, effect, note);
     }
-    
     updateRandomizers() {
         const rStatus = {
             name: { size: 4, label: null },
@@ -261,39 +249,25 @@ export class BladesActor extends Actor {
         }
         return this.update(updateData);
     }
-    
         createListOfActions() {
-        
         let text = "", attribute, skill;
         const { attributes } = this.system;
-        
         for (attribute in attributes) {
-            
             const { skills } = attributes[attribute];
-            
             text += `<optgroup label="${attribute} Actions">`;
             text += `<option value="${attribute}">${attribute} (Resist)</option>`;
-            
             for (skill in skills) {
                 text += `<option value="${skill}">${skill}</option>`;
             }
-            
             text += "</optgroup>";
-            
         }
-        
         return text;
-        
     }
-    
         createListOfDiceMods(rs, re, s) {
-        
         let text = "";
-        
         if (s === "") {
             s = 0;
         }
-        
         for (let i = rs; i <= re; i++) {
             let plus = "";
             if (i >= 0) {
@@ -303,11 +277,8 @@ export class BladesActor extends Actor {
             if (i === s) {
                 text += " selected";
             }
-            
             text += `>${plus}${i}d</option>`;
         }
-        
         return text;
-        
     }
 }

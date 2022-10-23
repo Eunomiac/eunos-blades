@@ -1,7 +1,9 @@
 // @import "../fonts";
 
 #tinymce {
-	@import "../emu-overrides/vars";
-	@import "../emu-overrides/globals";
+	@import "../core/vars";
+	@import "../core/globals";
+	@import "../core/reset";
+	@import "../core/text-styles";
 	@import "./tinymce-content";
 }

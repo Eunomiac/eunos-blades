@@ -1,7 +1,12 @@
-import { BladesSheet } from "./blades-sheet.js";
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌████░░░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░░░████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import { BladesSheet } from "./blades-sheet.js";
 export class BladesNPCSheet extends BladesSheet {
-    
         static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "actor", "npc"],
@@ -10,7 +15,6 @@ export class BladesNPCSheet extends BladesSheet {
             tabs: [{ navSelector: ".tabs", contentSelector: ".tab-content", initial: "description" }]
         });
     }
-    
         
         getData() {
         const data = super.getData();
@@ -24,23 +28,15 @@ export class BladesNPCSheet extends BladesSheet {
         });
         return data;
     }
-    
         
         activateListeners(html) {
         super.activateListeners(html);
-        
         if (!this.options.editable) {
             return;
         }
-        
-        // Enable Randomize Button for NPCs
+
         html.find("[data-action=\"randomize\"").on("click", (event) => {
             this.actor.updateRandomizers();
         });
-        
-
-        
-
-        
     }
 }

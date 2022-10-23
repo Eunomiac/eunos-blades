@@ -1,7 +1,12 @@
-import { BladesSheet } from "./blades-sheet.js";
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌████░░░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░░░████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import { BladesSheet } from "./blades-sheet.js";
 export class BladesClockSheet extends BladesSheet {
-    
         static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "actor", "clock"],
@@ -10,7 +15,6 @@ export class BladesClockSheet extends BladesSheet {
             height: 970
         });
     }
-    
         
         getData() {
         var data = super.getData();
@@ -20,7 +24,6 @@ export class BladesClockSheet extends BladesSheet {
         data.data = actorData.data;
         return data;
     }
-    
         
         async _updateObject(event, formData) {
         const image_path = `systems/eunos-blades/assets/progressclocks-svg/Progress Clock ${formData["data.type"]}-${formData["data.value"]}.svg`;
@@ -37,13 +40,11 @@ export class BladesClockSheet extends BladesSheet {
             tint: "",
             displayName: 50
         };
-        
         const tokens = this.actor.getActiveTokens();
         tokens.forEach((token) => {
             data.push(foundry.utils.mergeObject({ _id: token.id }, update));
         });
         await TokenDocument.updateDocuments(data, { parent: game.scenes.current });
-        
         return this.object.update(formData);
     }
 }

@@ -1,6 +1,6 @@
 & {
     min-width: 575px;
-    
+
     .sheet-header {
         display: flex;
         // flex-direction: column;
@@ -43,11 +43,11 @@
             }
         }
     }
-    
+
     .sheet-header + section {
         position: relative;
     }
-    
+
 	.crew-type-description {
         position: absolute;
 		font-family: "Ravenscroft";
@@ -72,7 +72,7 @@
 		// text-indent: 3px;
 		text-align: right;
 		text-shadow:
-			0 0 4px var(--blades-black-dark),
+			0 0 4px var(--blades-black-dark), /* stylelint-disable-line declaration-no-important */
 			0 0 4px var(--blades-black-dark),
 			0 0 4px var(--blades-black-dark),
 			0 0 4px var(--blades-black-dark);
@@ -88,7 +88,7 @@
             justify-content: space-between;
         width: 100%;
         .turf-editable {
-            padding: 5px !important; 
+            padding: 5px !important;
         }
         .turf-row {
             // background: rgba(255,0,0,0.25);
@@ -116,7 +116,7 @@
                 &:hover {
                     background-color: var(--blades-grey-dark);
                 }
-                
+
                 &.turf-turf {
                     .turf-name {
                         position: absolute;
@@ -195,5 +195,5 @@
         }
     }
 
- 
+
 }

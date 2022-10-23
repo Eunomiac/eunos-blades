@@ -1,0 +1,122 @@
+&	{
+	--primary-font-size: var(--font-size-14);
+	--primary-line-height: var(--line-height-18);
+	--primary-color: var(--blades-white);
+	--primary-font-weight: normal;
+
+	--primary-font-body: "Minion Pro";
+	--primary-font-heading: "Kirsty";
+	--primary-font-decorative: "UglyQua";
+	--primary-font-mono: "monospace";
+
+	--primary-background: var(--blades-dark);
+	--primary-background-heading: var(--blades-grey-dark);
+	--primary-color-heading: var(--blades-white-bright);
+
+	margin: 0;
+	padding: 0;
+	border: none;
+	background: transparent;
+
+	font-size: var(--base-font-size, var(--primary-font-size));
+	font-family: var(--base-font-family, var(--primary-font-body));
+	line-height: var(--base-line-height, var(--primary-line-height));
+	color: var(--base-color, var(--primary-color));
+	text-shadow: var(--base-text-shadow, none);
+	font-style: var(--base-font-style, normal);
+	font-variant: var(--base-font-variant, normal);
+	text-transform: var(--base-text-transform, none);
+	font-weight: var(--base-font-weight, var(--primary-font-weight));
+
+	* {
+		font-size: inherit;
+		line-height: inherit;
+		color: inherit;
+		text-shadow: inherit;
+		font-style: inherit;
+		font-variant: inherit;
+		text-transform: inherit;
+		font-weight: inherit;
+	}
+
+	b, strong { font-weight: bold }
+	i:not([class]), em { font-style: italic }
+
+	h1, h2, h3, h4 {
+		font-family: var(--primary-font-heading);
+		color: var(--primary-color-heading);
+		font-weight: bold;
+		text-shadow: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
+		border: none;
+		padding: 0px;
+		margin: 0px;
+	}
+
+	h1 {
+		background: var(--primary-background-heading);
+		font-size: var(--font-size-20);
+		line-height: var(--font-size-20);
+		padding: 0.5rem 0px;
+		margin-bottom: 0.5rem;
+		text-transform: uppercase;
+	}
+
+	h2 {
+		background: var(--primary-background-heading);
+		font-size: var(--font-size-18);
+		line-height: var(--font-size-18);
+		padding: 0.5rem 0px;
+		margin-bottom: 0.5rem;
+		text-transform: uppercase;
+	}
+
+	h3 {
+		font-size: var(--font-size-18);
+		line-height: var(--font-size-18);
+		border-bottom: 2px solid var(--primary-background-heading);
+		margin-bottom: 0.5rem;
+	}
+
+	h4 {
+		font-size: var(--font-size-16);
+		line-height: var(--font-size-16);
+		border-bottom: 1px solid var(--primary-background-heading);
+		margin-bottom: 0.5rem;
+	}
+
+	i[class] { font-family: "Font Awesome 6 Pro" }
+	i.fab { font-family: "Font Awesome 6 Brands"}
+
+	select,
+	input,
+	option,
+	textarea {
+		border: none;
+		background: rgba(0, 0, 0, 0.25);
+		box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.5);
+		// border-radius: 0;
+		// height: 25px;
+		// margin: 0;
+		// padding: 0;
+		// vertical-align: top;
+
+		&[type="text"], &[data-type="string"], &[data-type="string"] option {
+
+		}
+
+		&[type="number"], &[data-type="number"], &[data-type="number"] option {
+			text-align: right;
+			font-family: "Kirsty";
+		}
+
+		option {
+			color: var(--blades-white);
+			background: var(--blades-black);
+		}
+	}
+
+	p {
+		margin: 0.5em 0;
+		min-height: 1rem;
+	}
+}

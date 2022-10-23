@@ -13,7 +13,7 @@ $coin_margin: 3px;
       border-width: 2px;
     }
 
-    @include changeable($transition-period, $hover-brightness, $hover-opacity);
+    @include changeable(0.2s, 0.8, 0.9);
   }
 
   &.coins-hands {

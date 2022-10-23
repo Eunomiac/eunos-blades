@@ -1,5 +1,11 @@
-import U from "./utilities.js";
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌████░░░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░░░████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import U from "./utilities.js";
 const handlebarHelpers = {
     "test": function (param1, operator, param2) {
         switch (operator) {
@@ -72,7 +78,6 @@ const handlebarHelpers = {
         bLog.hbsLog(...args, dbLevel);
     }
 };
-
 export function registerHandlebarHelpers() {
     Object.entries(handlebarHelpers).forEach(([name, func]) => Handlebars.registerHelper(name, func));
 }
