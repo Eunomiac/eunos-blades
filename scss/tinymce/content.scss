@@ -3,7 +3,9 @@
 #tinymce {
 	@import "../core/vars";
 	@import "../core/globals";
+	@import "../core/functions";
 	@import "../core/reset";
 	@import "../core/text-styles";
+	--secret-text-display: initial;
 	@import "./tinymce-content";
 }

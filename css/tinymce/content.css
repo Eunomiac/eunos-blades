@@ -1,431 +1,453 @@
 #tinymce {
-  --color-text-light-highlight: #f0f0e0;
-  --color-text-light-heading: #c9c7b8;
-  --color-text-light-primary: #b5b3a4;
-  --color-text-dark-primary: #191813;
-  --color-text-dark-secondary: #4b4a44;
-  --color-text-dark-header: #23221d;
-  --color-text-dark-inactive: #7a7971;
-  --color-text-hyperlink: rgb(253, 212, 112);
-  --color-text-light-0: #fff;
-  --color-text-light-1: #eee;
-  --color-text-light-2: #ddd;
-  --color-text-light-3: #ccc;
-  --color-text-light-4: #bbb;
-  --color-text-light-5: #aaa;
-  --color-text-light-6: #999;
-  --color-text-light-7: #888;
-  --color-text-dark-1: #111;
-  --color-text-dark-2: #222;
-  --color-text-dark-3: #444;
-  --color-text-dark-4: #555;
-  --color-text-dark-5: #666;
-  --color-text-dark-6: #777;
-  --color-border-light-1: #ddd;
-  --color-border-light-2: #999;
-  --color-border-dark-1: #111;
-  --color-border-dark-2: #222;
-  --color-border-dark-3: #333;
-  --color-border-dark-4: #444;
-  --color-border-dark-5: #666;
-  --color-shadow-primary: #ccc;
-  --color-shadow-highlight: var(--blades-coin-gold-bright);
-  --color-shadow-dark: #000;
-  --color-underline-inactive: #7a7971;
-  --color-underline-active: #44191A;
-  --color-underline-header: var(--blades-grey);
-  --color-border-light-highlight: #f0f0e0;
-  --color-border-light-primary: #b5b3a4;
-  --color-border-light-secondary: #c9c7b8;
-  --color-border-light-tertiary: #7a7971;
-  --color-border-dark: #000;
-  --color-border-dark-primary: #191813;
-  --color-border-dark-secondary: #23221d;
-  --color-border-dark-tertiary: #4b4a44;
-  --color-border-highlight: var(--blades-coin-gold);
-  --color-border-highlight-alt: var(--blades-coin-gold-bright);
-  --color-bg-btn-minor-inactive: #c9c7b8;
-  --color-bg-btn-minor-active: #b5b3a4;
-  --color-bg-option: #dad8cc;
-  --color-ownership-none: #5500ff;
-  --color-ownership-observer: #7a7971;
-  --color-ownership-owner: #b5b3a4;
-  --z-index-canvas: 0;
-  --z-index-app: 30;
-  --z-index-ui: 60;
-  --z-index-window: 100;
-  --z-index-tooltip: 9999;
-  --sidebar-width: 300px;
-  --sidebar-header-height: 32px;
-  --sidebar-item-height: 48px;
-  --hotbar-height: 52px;
-  --hotbar-width: 578px;
-  --macro-size: 50px;
-  --players-width: 200px;
-  --form-field-height: 26px;
-  --font-primary: "Minion Pro", serif;
-  --font-mono: monospace;
-  --font-awesome: "Font Awesome 6 Pro";
-  --font-size-10: 0.5rem;
-  --font-size-11: 0.6875rem;
-  --font-size-12: 0.75rem;
-  --font-size-13: 0.8125rem;
-  --font-size-14: 0.875rem;
-  --font-size-16: 1rem;
-  --font-size-18: 1.125rem;
-  --font-size-20: 1.25rem;
-  --font-size-24: 1.5rem;
-  --font-size-28: 1.75rem;
-  --font-size-30: 1.875rem;
-  --font-size-32: 2rem;
-  --font-size-48: 3rem;
-  --line-height-10: 0.5rem;
-  --line-height-11: 0.6875rem;
-  --line-height-12: 0.75rem;
-  --line-height-13: 0.8125rem;
-  --line-height-14: 0.875rem;
-  --line-height-16: 1rem;
-  --line-height-18: 1.125rem;
-  --line-height-20: 1.25rem;
-  --line-height-24: 1.5rem;
-  --line-height-28: 1.75rem;
-  --line-height-30: 1.875rem;
-  --line-height-32: 2rem;
-  --line-height-48: 3rem;
-  --color-level-info: #5c87b9;
-  --color-level-warning: #b18404;
-  --color-level-error: #750003;
-  --blades-white-bright-nums: 255, 255, 255;
-  --blades-white-nums: 200, 200, 200;
-  --blades-grey-bright-nums: 170, 170, 170;
-  --blades-grey-nums: 119, 119, 119;
-  --blades-grey-dark-nums: 68, 68, 68;
-  --blades-black-nums: 32, 32, 32;
-  --blades-black-dark-nums: 0, 0, 0;
-  --blades-coin-gold-bright-nums: 253, 212, 112;
-  --blades-coin-gold-nums: 171, 146, 84;
-  --color-primary: var(--blades-white-nums);
-  --color-background: var(--blades-black-nums);
-  --color-background-lightest: var(--blades-grey-nums);
-  --color-background-light: var(--blades-grey-dark-nums);
-  --color-background-darkest: var(--blades-black-dark-nums);
-  --color-background-button: var(--blades-grey-dark-nums);
-  --color-background-chat-message: var(--blades-black-nums);
-  --color-background-chat-message-whisper: var(--blades-grey-nums);
-  --color-background-chat-message-blind: var(--blades-grey-dark-nums);
-  --color-border: var(--blades-grey-dark-nums);
-  --color-border-lighter: var(--blades-grey-nums);
-  --color-folder-header: var(--blades-grey-nums);
-  --color-folder-directory: var(--blades-grey-dark-nums);
-  --color-folder-subdirectory: var(--blades-black-nums);
-  --color-text: var(--blades-white-nums);
-  --color-text-lightest: var(--blades-white-bright-nums);
-  --color-text-darker: var(--blades-grey-bright-nums);
-  --color-shadow-primary: var(--blades-white-bright-nums);
-  --color-text-dark-primary: var(--blades-white-nums);
-  --color-bg-option: var(--blades-black-nums);
-  --blades-white: rgba(var(--blades-white-nums), 1);
-  --blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
-  --blades-black: rgba(var(--blades-black-nums), 1);
-  --blades-black-dark: rgba(var(--blades-black-dark-nums), 1);
-  --blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
-  --blades-grey: rgba(var(--blades-grey-nums), 1);
-  --blades-grey-dark: rgba(var(--blades-grey-dark-nums), 1);
-  --blades-coin-gold: rgba(var(--blades-coin-gold-nums), 1);
-  --blades-coin-gold-bright: rgba(var(--blades-coin-gold-bright-nums), 1);
-  --emu-border-radius-default: 0;
-  --emu-border-radius-controls: 0;
-  --emu-border-radius-forms: 0;
-  --emu-border-radius-images: 0;
-  --emu-font-size-xs: var(--font-size-10);
-  --emu-font-size-sm: var(--font-size-12);
-  --emu-font-size-md: var(--font-size-14);
-  --emu-font-size-lg: var(--font-size-16);
-  --emu-font-size-xl: var(--font-size-20);
-  --emu-font-size-xxl: var(--font-size-28);
-  --emu-font-size-chat-roll: var(--font-size-18);
-  --emu-background-opacity-button-primary: 1;
-  --emu-background-opacity-hotbar: 0.8;
-  --emu-background-opacity-hud: 0.8;
-  --emu-background-opacity-players: 0.8;
-  --emu-background-opacity-scene-control: 0.8;
-  --emu-background-opacity-scene-navigation: 0.8;
-  --emu-background-opacity-sidebar: 0.8;
-  --emu-background-opacity-window: 1;
-  --emu-background-opacity-window-content: 1;
-  --emu-subtle-opacity: 0.3;
-  --emu-image-background: none;
-  --emu-image-background-lightest: none;
-  --emu-image-background-light: none;
-  --emu-image-background-darkest: none;
-  --emu-image-background-controls: none;
-  --emu-space-button-lg: 1.5rem;
-  --content-padding: 8px; }
-
-#tinymce .button-icon, #tinymce .toggle-icon {
-  position: relative;
-  height: 1.5rem;
-  width: 1.5rem;
-  line-height: 1.5rem;
-  display: -webkit-inline-box;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  text-shadow: none; }
-  #tinymce .button-icon i, #tinymce .toggle-icon i {
+  @use "sass:math";
+  --secret-text-display: initial; }
+  #tinymce {
+    --color-text-light-highlight: #f0f0e0;
+    --color-text-light-heading: #c9c7b8;
+    --color-text-light-primary: #b5b3a4;
+    --color-text-dark-primary: #191813;
+    --color-text-dark-secondary: #4b4a44;
+    --color-text-dark-header: #23221d;
+    --color-text-dark-inactive: #7a7971;
+    --color-text-light-0: #fff;
+    --color-text-light-1: #eee;
+    --color-text-light-2: #ddd;
+    --color-text-light-3: #ccc;
+    --color-text-light-4: #bbb;
+    --color-text-light-5: #aaa;
+    --color-text-light-6: #999;
+    --color-text-light-7: #888;
+    --color-text-dark-1: #111;
+    --color-text-dark-2: #222;
+    --color-text-dark-3: #444;
+    --color-text-dark-4: #555;
+    --color-text-dark-5: #666;
+    --color-text-dark-6: #777;
+    --color-border-light-1: #ddd;
+    --color-border-light-2: #999;
+    --color-border-dark-1: #111;
+    --color-border-dark-2: #222;
+    --color-border-dark-3: #333;
+    --color-border-dark-4: #444;
+    --color-border-dark-5: #666;
+    --color-shadow-dark: #000;
+    --color-underline-inactive: #7a7971;
+    --color-underline-active: #44191A;
+    --color-border-light-highlight: #f0f0e0;
+    --color-border-light-primary: #b5b3a4;
+    --color-border-light-secondary: #c9c7b8;
+    --color-border-light-tertiary: #7a7971;
+    --color-border-dark: #000;
+    --color-border-dark-primary: #191813;
+    --color-border-dark-secondary: #23221d;
+    --color-border-dark-tertiary: #4b4a44;
+    --color-bg-btn-minor-inactive: #c9c7b8;
+    --color-bg-btn-minor-active: #b5b3a4;
+    --color-bg-option: #dad8cc;
+    --color-ownership-none: #5500ff;
+    --color-ownership-observer: #7a7971;
+    --color-ownership-owner: #b5b3a4;
+    --color-level-info: #5c87b9;
+    --color-level-warning: #b18404;
+    --color-level-error: #750003;
+    --z-index-canvas: 0;
+    --z-index-app: 30;
+    --z-index-ui: 60;
+    --z-index-window: 100;
+    --z-index-tooltip: 9999;
+    --sidebar-width: 300px;
+    --sidebar-header-height: 32px;
+    --sidebar-item-height: 48px;
+    --hotbar-height: 52px;
+    --hotbar-width: 578px;
+    --macro-size: 50px;
+    --players-width: 200px;
+    --form-field-height: 26px;
+    --font-mono: monospace;
+    --font-awesome: "Font Awesome 6 Pro";
+    --font-size-11: 0.6875rem;
+    --font-size-12: 0.75rem;
+    --font-size-13: 0.8125rem;
+    --font-size-14: 0.875rem;
+    --font-size-16: 1rem;
+    --font-size-18: 1.125rem;
+    --font-size-20: 1.25rem;
+    --font-size-24: 1.5rem;
+    --font-size-28: 1.75rem;
+    --font-size-32: 2rem;
+    --font-size-48: 3rem;
+    --line-height-12: 0.75rem;
+    --line-height-16: 1rem;
+    --line-height-20: 1.25rem;
+    --line-height-30: 1.875rem;
+    --color-text-hyperlink: var(--blades-gold-bright);
+    --color-shadow-primary: var(--blades-white);
+    --color-shadow-highlight: var(--blades-gold-bright);
+    --color-underline-header: var(--blades-grey);
+    --color-border-highlight: var(--blades-gold-bright);
+    --color-border-highlight-alt: var(--blades-gold);
+    --font-primary: "Minion Pro", serif;
+    --font-mono: "Pragmata", monospace;
+    --size-10px: toRem(10px);
+    /* Expansion (not defined by Foundry) */
+    --size-11px: var(--font-size-11);
+    --size-12px: var(--font-size-12);
+    --size-13px: var(--font-size-13);
+    --size-14px: var(--font-size-14);
+    --size-16px: var(--font-size-16);
+    --size-18px: var(--font-size-18);
+    --size-20px: var(--font-size-20);
+    --size-24px: var(--font-size-24);
+    --size-28px: var(--font-size-28);
+    --size-30px: toRem(30px);
+    /* Expansion (not defined by Foundry) */
+    --size-32px: var(--font-size-32);
+    --size-48px: var(--font-size-48);
+    --blades-white-bright-nums: 255, 255, 255;
+    --blades-white-nums: 200, 200, 200;
+    --blades-grey-bright-nums: 170, 170, 170;
+    --blades-grey-nums: 119, 119, 119;
+    --blades-grey-dark-nums: 68, 68, 68;
+    --blades-black-nums: 32, 32, 32;
+    --blades-black-dark-nums: 0, 0, 0;
+    --blades-gold-bright-nums: 253, 212, 112;
+    --blades-gold-nums: 171, 146, 84;
+    --blades-red-nums: 132, 12, 36;
+    --blades-red-bright-nums: 220, 20, 60;
+    --blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
+    --blades-white: rgba(var(--blades-white-nums), 1);
+    --blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
+    --blades-grey: rgba(var(--blades-grey-nums), 1);
+    --blades-grey-dark: rgba(var(--blades-grey-dark-nums), 1);
+    --blades-black: rgba(var(--blades-black-nums), 1);
+    --blades-black-dark: rgba(var(--blades-black-dark-nums), 1);
+    --blades-white-fade: rgba(var(--blades-white-nums), 0.5);
+    --blades-white-fade-strong: rgba(var(--blades-white-nums), 0.25);
+    --blades-white-bright-fade: rgba(var(--blades-white-bright-nums), 0.5);
+    --blades-white-bright-fade-strong: rgba(var(--blades-white-bright-nums), 0.25);
+    --blades-black-fade: rgba(var(--blades-black-nums), 0.5);
+    --blades-black-fade-strong: rgba(var(--blades-black-nums), 0.25);
+    --blades-black-dark-fade: rgba(var(--blades-black-dark-nums), 0.5);
+    --blades-black-dark-fade-strong: rgba(var(--blades-black-dark-nums), 0.25);
+    --blades-gold: rgba(var(--blades-gold-nums), 1);
+    --blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
+    --blades-red: rgba(var(--blades-red-nums), 1);
+    --blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
+    --blades-color-negative: var(--blades-red-bright);
+    --blades-color-positive: var(--blades-gold-bright);
+    --color-primary: var(--blades-white-nums);
+    --color-background: var(--blades-black-nums);
+    --color-background-lightest: var(--blades-grey-nums);
+    --color-background-light: var(--blades-grey-dark-nums);
+    --color-background-darkest: var(--blades-black-dark-nums);
+    --color-background-button: var(--blades-grey-dark-nums);
+    --color-background-chat-message: var(--blades-black-nums);
+    --color-background-chat-message-whisper: var(--blades-grey-nums);
+    --color-background-chat-message-blind: var(--blades-grey-dark-nums);
+    --color-border: var(--blades-grey-dark-nums);
+    --color-border-lighter: var(--blades-grey-nums);
+    --color-folder-header: var(--blades-grey-nums);
+    --color-folder-directory: var(--blades-grey-dark-nums);
+    --color-folder-subdirectory: var(--blades-black-nums);
+    --color-text: var(--blades-white-nums);
+    --color-text-lightest: var(--blades-white-bright-nums);
+    --color-text-darker: var(--blades-grey-bright-nums);
+    --color-shadow-primary: var(--blades-white-bright-nums);
+    --color-text-dark-primary: var(--blades-white-nums);
+    --color-bg-option: var(--blades-black-nums);
+    --color-default: var(--blades-white);
+    --background-default: var(--blades-dark);
+    --font-default: var(--font-primary);
+    --font-default-small: "Minion Pro Caption";
+    --font-default-narrow: "Minion Pro Cond";
+    --font-default-small-narrow: "Minion Pro Caption Cond";
+    --font-awesome-alt: "Font Awesome 6 Brands";
+    --font-alt: "Historical FellType";
+    --font-alt-smallcaps: "Historical FellType SC";
+    --font-emphasis: "Kirsty";
+    --font-emphasis-alt: "Ravenscroft";
+    --font-decorative: "UglyQua";
+    --font-decorative-alt: "IM FELL Double Pica";
+    --font-decorative-alt-smallcaps: "IM FELL Double Pica SC";
+    --font-monospace: var(--font-mono);
+    --font-size-default: var(--size-14px);
+    --font-weight-default: normal;
+    --font-style-default: normal;
+    --font-variant-default: normal;
+    --line-height-default: 1.2;
+    --line-height-compact: 1;
+    --text-shadow-default: none;
+    --text-shadow-dark: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
+    --box-shadow-default: none;
+    --box-shadow-inset-dark:
+	--text-transform-default: none;
+    --color-heading: var(--blades-white-bright);
+    --background-heading: var(--blades-grey-dark);
+    --font-heading: var(--font-emphasis);
+    --font-heading-alt: var(--font-emphasis-alt);
+    --font-weight-heading: bold;
+    --text-shadow-heading: var(--text-shadow-dark);
+    --text-transform-heading: uppercase;
+    --line-height-heading: var(--line-height-compact);
+    --background-input: var(--blades-black-dark-fade-strong);
+    --border-input: none;
+    --box-shadow-input: inset 0 0 0.3rem var(--blades-black-dark-fade);
+    --content-padding: 8px;
+    --blades-spacer-pf: 0.0625rem;
+    --blades-spacer-xs: 0.125rem;
+    --blades-spacer-base: 0.125rem;
+    --blades-spacer-sm: 0.25rem;
+    --blades-spacer-md: 0.5rem;
+    --blades-spacer-lg: 0.75rem;
+    --blades-spacer-xl: 1rem;
+    --blades-spacer-button-lg: 2rem;
+    --blades-spacer-button: 1.5rem;
+    --blades-spacer-button-sm: 1.25rem;
+    --blades-spacer-button-xs: 1.125rem;
+    --blades-spacer-sidebar: 17.875rem; }
+  #tinymce .button-icon, #tinymce .toggle-icon {
+    position: relative;
     height: 1.5rem;
     width: 1.5rem;
-    line-height: 1.75rem;
-    text-align: center;
-    opacity: 0.75;
-    margin-top: -0.125rem;
-    pointer-events: none; }
-    #tinymce .button-icon i.toggle-off, #tinymce .toggle-icon i.toggle-off {
-      opacity: 0.25; }
-  #tinymce .button-icon .tooltip, #tinymce .toggle-icon .tooltip {
-    display: none;
-    pointer-events: none;
-    position: absolute;
-    bottom: 15px;
-    left: 15px;
-    background: var(--blades-black);
-    color: var(--blades-white);
-    font-size: 10px;
-    line-height: 12px;
-    padding: 5px;
-    border-radius: 10px;
-    border: 1px solid var(--blades-white-bright);
-    text-align: center;
-    white-space: nowrap; }
-    #tinymce .button-icon .tooltip b, #tinymce .toggle-icon .tooltip b {
-      color: var(--blades-white-bright);
-      font-size: 12px;
-      font-family: Kirsty;
-      text-transform: uppercase; }
-  #tinymce .button-icon .hidden-toggle, #tinymce .toggle-icon .hidden-toggle {
-    margin: 0;
-    border: none;
-    opacity: 0;
-    position: absolute;
-    -webkit-transition: 0.25;
-    -o-transition: 0.25;
-    transition: 0.25; }
-    #tinymce .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, #tinymce .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off {
-      display: none; }
-    #tinymce .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, #tinymce .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
-      display: none; }
-  #tinymce .button-icon.tooltip-left .tooltip, #tinymce .toggle-icon.tooltip-left .tooltip {
-    left: unset;
-    right: 15px; }
-  #tinymce .button-icon:hover i, #tinymce .toggle-icon:hover i {
-    opacity: 1; }
-  #tinymce .button-icon:hover .tooltip, #tinymce .toggle-icon:hover .tooltip {
-    display: block; }
-
-#tinymce {
-  --primary-font-size: var(--font-size-14);
-  --primary-line-height: var(--line-height-18);
-  --primary-color: var(--blades-white);
-  --primary-font-weight: normal;
-  --primary-font-body: "Minion Pro";
-  --primary-font-heading: "Kirsty";
-  --primary-font-decorative: "UglyQua";
-  --primary-font-mono: "monospace";
-  --primary-background: var(--blades-dark);
-  --primary-background-heading: var(--blades-grey-dark);
-  --primary-color-heading: var(--blades-white-bright);
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: transparent;
-  font-size: var(--base-font-size, var(--primary-font-size));
-  font-family: var(--base-font-family, var(--primary-font-body));
-  line-height: var(--base-line-height, var(--primary-line-height));
-  color: var(--base-color, var(--primary-color));
-  text-shadow: var(--base-text-shadow, none);
-  font-style: var(--base-font-style, normal);
-  font-variant: var(--base-font-variant, normal);
-  text-transform: var(--base-text-transform, none);
-  font-weight: var(--base-font-weight, var(--primary-font-weight)); }
-  #tinymce * {
-    font-size: inherit;
-    line-height: inherit;
-    color: inherit;
-    text-shadow: inherit;
-    font-style: inherit;
-    font-variant: inherit;
-    text-transform: inherit;
-    font-weight: inherit; }
-  #tinymce b, #tinymce strong {
-    font-weight: bold; }
-  #tinymce i:not([class]), #tinymce em {
-    font-style: italic; }
-  #tinymce h1, #tinymce h2, #tinymce h3, #tinymce h4 {
-    font-family: var(--primary-font-heading);
-    color: var(--primary-color-heading);
-    font-weight: bold;
-    text-shadow: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
-    border: none;
-    padding: 0px;
-    margin: 0px; }
-  #tinymce h1 {
-    background: var(--primary-background-heading);
-    font-size: var(--font-size-20);
-    line-height: var(--font-size-20);
-    padding: 0.5rem 0px;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase; }
-  #tinymce h2 {
-    background: var(--primary-background-heading);
-    font-size: var(--font-size-18);
-    line-height: var(--font-size-18);
-    padding: 0.5rem 0px;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase; }
-  #tinymce h3 {
-    font-size: var(--font-size-18);
-    line-height: var(--font-size-18);
-    border-bottom: 2px solid var(--primary-background-heading);
-    margin-bottom: 0.5rem; }
-  #tinymce h4 {
-    font-size: var(--font-size-16);
-    line-height: var(--font-size-16);
-    border-bottom: 1px solid var(--primary-background-heading);
-    margin-bottom: 0.5rem; }
-  #tinymce i[class] {
-    font-family: "Font Awesome 6 Pro"; }
-  #tinymce i.fab {
-    font-family: "Font Awesome 6 Brands"; }
-  #tinymce select,
-  #tinymce input,
-  #tinymce option,
-  #tinymce textarea {
-    border: none;
-    background: rgba(0, 0, 0, 0.25);
-    -webkit-box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.5);
-    box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.5); }
-    #tinymce select[type="number"], #tinymce select[data-type="number"], #tinymce select[data-type="number"] option,
-    #tinymce input[type="number"],
-    #tinymce input[data-type="number"],
-    #tinymce input[data-type="number"] option,
-    #tinymce option[type="number"],
-    #tinymce option[data-type="number"],
-    #tinymce option[data-type="number"] option,
-    #tinymce textarea[type="number"],
-    #tinymce textarea[data-type="number"],
-    #tinymce textarea[data-type="number"] option {
-      text-align: right;
-      font-family: "Kirsty"; }
-    #tinymce select option,
-    #tinymce input option,
-    #tinymce option option,
-    #tinymce textarea option {
+    line-height: 1.5rem;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    text-shadow: none; }
+    #tinymce .button-icon i, #tinymce .toggle-icon i {
+      height: 1.5rem;
+      width: 1.5rem;
+      line-height: 1.75rem;
+      text-align: center;
+      opacity: 0.75;
+      margin-top: -0.125rem;
+      pointer-events: none; }
+      #tinymce .button-icon i.toggle-off, #tinymce .toggle-icon i.toggle-off {
+        opacity: 0.25; }
+    #tinymce .button-icon .tooltip, #tinymce .toggle-icon .tooltip {
+      display: none;
+      pointer-events: none;
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      background: var(--blades-black);
       color: var(--blades-white);
-      background: var(--blades-black); }
-  #tinymce p {
-    margin: 0.5em 0;
-    min-height: 1rem; }
-
-#tinymce .label-stripe {
-  background-color: var(--blades-grey); }
-
-#tinymce .label-stripe-gray {
-  margin: 0; }
-  #tinymce .label-stripe-gray th, #tinymce .label-stripe-gray th > *:not(:hover) {
-    color: var(--blades-white-bright);
-    text-shadow: 1px 1px 0px var(--blades-black-dark); }
-
-#tinymce .clock-zero-label {
-  color: var(--blades-white); }
-
-#tinymce .stripe,
-#tinymce .stripe label {
-  background-color: var(--blades-white) !important;
-  color: var(--blades-black) !important; }
-
-#tinymce .stripe-tooth-body label {
-  color: var(--blades-black) !important; }
-
-#tinymce label.black-label {
-  background-color: var(--blades-white);
-  color: var(--blades-black) !important; }
-
-#tinymce th.black-white,
-#tinymce th.black-white label {
-  background-color: var(--blades-white) !important;
-  text-shadow: none;
-  color: var(--blades-black) !important;
-  font-family: "Kirsty";
-  font-weight: normal;
-  font-size: 20px;
-  line-height: 24px;
-  padding: 3px; }
-
-#tinymce table.items-list.effects-list thead th, #tinymce table.items-list.effects-list tbody th {
-  margin: 0 !important; }
-
-#tinymce table.items-list.effects-list thead th:nth-of-type(1), #tinymce table.items-list.effects-list thead td:nth-of-type(1), #tinymce table.items-list.effects-list tbody th:nth-of-type(1), #tinymce table.items-list.effects-list tbody td:nth-of-type(1) {
-  width: 40%; }
-
-#tinymce table.items-list.effects-list thead th:nth-of-type(2), #tinymce table.items-list.effects-list thead td:nth-of-type(2), #tinymce table.items-list.effects-list tbody th:nth-of-type(2), #tinymce table.items-list.effects-list tbody td:nth-of-type(2) {
-  width: 30%;
-  text-align: center; }
-
-#tinymce table.items-list.effects-list thead th:nth-of-type(3), #tinymce table.items-list.effects-list thead td:nth-of-type(3), #tinymce table.items-list.effects-list tbody th:nth-of-type(3), #tinymce table.items-list.effects-list tbody td:nth-of-type(3) {
-  width: 15%;
-  text-align: center; }
-
-#tinymce table.items-list.effects-list thead th:nth-of-type(4), #tinymce table.items-list.effects-list thead td:nth-of-type(4), #tinymce table.items-list.effects-list tbody th:nth-of-type(4), #tinymce table.items-list.effects-list tbody td:nth-of-type(4) {
-  width: 15%;
-  text-align: right; }
-
-#tinymce table.items-list.effects-list thead td, #tinymce table.items-list.effects-list tbody td {
-  line-height: 24px;
-  margin: 0;
-  vertical-align: middle; }
-
-#tinymce table.items-list.effects-list thead img, #tinymce table.items-list.effects-list tbody img {
-  height: 24px;
-  width: 24px;
-  vertical-align: middle; }
-
-#tinymce table.items-list.effects-list thead h4, #tinymce table.items-list.effects-list tbody h4 {
-  display: inline-block;
-  line-height: 24px;
-  margin: 0;
-  vertical-align: middle; }
-
-#tinymce {
-  padding: var(--content-padding);
-  min-height: 150px;
-  height: auto;
-  max-height: 600px; }
-  #tinymce blockquote {
-    border-left: 2px solid var(--blades-grey-bright);
-    margin-left: 1.5rem;
-    padding-left: 1rem; }
-  #tinymce table {
-    border-collapse: collapse; }
-    #tinymce table th, #tinymce table td {
-      border: 1px solid var(--blades-grey);
-      padding: 0.4rem; }
-  #tinymce figure {
-    display: table;
-    margin: 1rem auto; }
-    #tinymce figure figcaption {
-      font-family: "Minion Pro Caption";
-      color: var(--blades-grey-bright);
-      display: block;
-      margin-top: 0.25rem;
-      text-align: center; }
-  #tinymce hr {
-    border-color: var(--blades-grey-bright);
-    border-style: solid;
-    border-width: 1px 0 0 0; }
-  #tinymce code {
-    padding: 0.1rem 0.2rem; }
+      font-size: 10px;
+      line-height: 12px;
+      padding: 5px;
+      border-radius: 10px;
+      border: 1px solid var(--blades-white-bright);
+      text-align: center;
+      white-space: nowrap; }
+      #tinymce .button-icon .tooltip b, #tinymce .toggle-icon .tooltip b {
+        color: var(--blades-white-bright);
+        font-size: 12px;
+        font-family: var(--font-emphasis);
+        text-transform: uppercase; }
+    #tinymce .button-icon .hidden-toggle, #tinymce .toggle-icon .hidden-toggle {
+      margin: 0;
+      border: none;
+      opacity: 0;
+      position: absolute;
+      -webkit-transition: 0.25;
+      -o-transition: 0.25;
+      transition: 0.25; }
+      #tinymce .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, #tinymce .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off {
+        display: none; }
+      #tinymce .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, #tinymce .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
+        display: none; }
+    #tinymce .button-icon.tooltip-left .tooltip, #tinymce .toggle-icon.tooltip-left .tooltip {
+      left: unset;
+      right: 15px; }
+    #tinymce .button-icon:hover i, #tinymce .toggle-icon:hover i {
+      opacity: 1; }
+    #tinymce .button-icon:hover .tooltip, #tinymce .toggle-icon:hover .tooltip {
+      display: block; }
+  #tinymce {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--color-default);
+    font-family: var(--font-default);
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-default);
+    font-style: var(--font-style-default);
+    font-variant: var(--font-variant-default);
+    line-height: var(--line-height-default);
+    text-shadow: var(--text-shadow-default);
+    text-transform: var(--text-transform-default); }
+    #tinymce * {
+      color: inherit;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      font-style: inherit;
+      font-variant: inherit;
+      line-height: inherit;
+      text-shadow: inherit;
+      text-transform: inherit; }
+    #tinymce b, #tinymce strong {
+      font-weight: bold;
+      color: var(--blades-white-bright); }
+    #tinymce i:not([class]), #tinymce em {
+      font-style: italic; }
+    #tinymce i[class] {
+      font-family: var(--font-awesome); }
+    #tinymce i.fab {
+      font-family: var(--font-awesome-alt); }
+    #tinymce h1, #tinymce h2, #tinymce h3, #tinymce h4 {
+      color: var(--color-heading);
+      font-family: var(--font-heading);
+      font-weight: var(--font-weight-heading);
+      line-height: var(--line-height-heading);
+      text-shadow: var(--text-shadow-heading);
+      border: none;
+      padding: 0;
+      margin: 0 0 0.5rem 0; }
+    #tinymce h1 {
+      background: var(--background-heading);
+      font-size: var(--size-20px);
+      padding: 0.5rem;
+      text-transform: uppercase; }
+    #tinymce h2 {
+      background: var(--background-heading);
+      font-size: var(--size-18px);
+      padding: 0.5rem;
+      text-transform: uppercase; }
+    #tinymce h3 {
+      font-size: var(--size-18px);
+      border-bottom: 2px solid var(--background-heading); }
+    #tinymce h4 {
+      font-size: var(--size-16px);
+      border-bottom: 1px solid var(--background-heading); }
+    #tinymce select,
+    #tinymce input,
+    #tinymce option,
+    #tinymce textarea {
+      background: var(--background-input);
+      border: var(--border-input);
+      -webkit-box-shadow: var(--box-shadow-input);
+      box-shadow: var(--box-shadow-input); }
+      #tinymce select[type="number"], #tinymce select[data-type="number"], #tinymce select[data-type="number"] option,
+      #tinymce input[type="number"],
+      #tinymce input[data-type="number"],
+      #tinymce input[data-type="number"] option,
+      #tinymce option[type="number"],
+      #tinymce option[data-type="number"],
+      #tinymce option[data-type="number"] option,
+      #tinymce textarea[type="number"],
+      #tinymce textarea[data-type="number"],
+      #tinymce textarea[data-type="number"] option {
+        text-align: right;
+        font-family: var(--font-emphasis); }
+      #tinymce select option,
+      #tinymce input option,
+      #tinymce option option,
+      #tinymce textarea option {
+        color: var(--blades-white);
+        background: var(--blades-black); }
+    #tinymce p {
+      margin: 0.5rem 0;
+      min-height: 1rem; }
+  #tinymce .text-secret:not(.user-is-gm) {
+    display: var(--secret-text-display); }
+  #tinymce .label-stripe {
+    background-color: var(--blades-grey); }
+  #tinymce .label-stripe-gray {
+    margin: 0; }
+    #tinymce .label-stripe-gray th, #tinymce .label-stripe-gray th > *:not(:hover) {
+      color: var(--blades-white-bright);
+      text-shadow: 1px 1px 0px var(--blades-black-dark); }
+  #tinymce .clock-zero-label {
+    color: var(--blades-white); }
+  #tinymce .stripe,
+  #tinymce .stripe label {
+    background-color: var(--blades-white) !important;
+    color: var(--blades-black) !important; }
+  #tinymce .stripe-tooth-body label {
+    color: var(--blades-black) !important; }
+  #tinymce label.black-label {
+    background-color: var(--blades-white);
+    color: var(--blades-black) !important; }
+  #tinymce th.black-white,
+  #tinymce th.black-white label {
+    background-color: var(--blades-white) !important;
+    text-shadow: none;
+    color: var(--blades-black) !important;
+    font-family: var(--font-emphasis);
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 24px;
+    padding: 3px; }
+  #tinymce table.items-list.effects-list thead th, #tinymce table.items-list.effects-list tbody th {
+    margin: 0 !important; }
+  #tinymce table.items-list.effects-list thead th:nth-of-type(1), #tinymce table.items-list.effects-list thead td:nth-of-type(1), #tinymce table.items-list.effects-list tbody th:nth-of-type(1), #tinymce table.items-list.effects-list tbody td:nth-of-type(1) {
+    width: 40%; }
+  #tinymce table.items-list.effects-list thead th:nth-of-type(2), #tinymce table.items-list.effects-list thead td:nth-of-type(2), #tinymce table.items-list.effects-list tbody th:nth-of-type(2), #tinymce table.items-list.effects-list tbody td:nth-of-type(2) {
+    width: 30%;
+    text-align: center; }
+  #tinymce table.items-list.effects-list thead th:nth-of-type(3), #tinymce table.items-list.effects-list thead td:nth-of-type(3), #tinymce table.items-list.effects-list tbody th:nth-of-type(3), #tinymce table.items-list.effects-list tbody td:nth-of-type(3) {
+    width: 15%;
+    text-align: center; }
+  #tinymce table.items-list.effects-list thead th:nth-of-type(4), #tinymce table.items-list.effects-list thead td:nth-of-type(4), #tinymce table.items-list.effects-list tbody th:nth-of-type(4), #tinymce table.items-list.effects-list tbody td:nth-of-type(4) {
+    width: 15%;
+    text-align: right; }
+  #tinymce table.items-list.effects-list thead td, #tinymce table.items-list.effects-list tbody td {
+    line-height: 24px;
+    margin: 0;
+    vertical-align: middle; }
+  #tinymce table.items-list.effects-list thead img, #tinymce table.items-list.effects-list tbody img {
+    height: 24px;
+    width: 24px;
+    vertical-align: middle; }
+  #tinymce table.items-list.effects-list thead h4, #tinymce table.items-list.effects-list tbody h4 {
+    display: inline-block;
+    line-height: 24px;
+    margin: 0;
+    vertical-align: middle; }
+  #tinymce {
+    padding: var(--content-padding) !important;
+    min-height: 150px;
+    height: auto;
+    max-height: 600px; }
+    #tinymce blockquote {
+      border-left: 2px solid var(--blades-grey-bright);
+      margin-left: 1.5rem;
+      padding-left: 1rem; }
+    #tinymce table {
+      border-collapse: collapse; }
+      #tinymce table th, #tinymce table td {
+        border: 1px solid var(--blades-grey);
+        padding: 0.4rem; }
+    #tinymce figure {
+      display: table;
+      margin: 1rem auto; }
+      #tinymce figure figcaption {
+        font-family: var(--font-default-small);
+        color: var(--blades-grey-bright);
+        display: block;
+        margin-top: 0.25rem;
+        text-align: center; }
+    #tinymce hr {
+      border-color: var(--blades-grey-bright);
+      border-style: solid;
+      border-width: 1px 0 0 0; }
+    #tinymce code {
+      padding: 0.1rem 0.2rem; }
+    #tinymce .text-secret {
+      display: var(--secret-text-display);
+      background-color: var(--blades-black-dark);
+      color: var(--blades-grey);
+      font-weight: bold;
+      font-style: italic;
+      border-radius: 3px;
+      outline: 1px dotted var(--blades-white);
+      padding: 0 0.3125rem;
+      margin: 0 0.3125rem; }

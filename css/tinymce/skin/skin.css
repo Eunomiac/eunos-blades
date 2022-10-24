@@ -11,7 +11,7 @@
   box-sizing: content-box;
   color: #101010;
   cursor: auto;
-  font-family: Mistral Pro;
+  font-family: var(--font-primary);
   font-size: 14px;
   font-style: normal;
   font-weight: normal;
@@ -79,7 +79,7 @@
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
-  font-family: Mistral Pro;
+  font-family: var(--font-primary);
   overflow: hidden;
   position: relative;
   visibility: inherit !important; }
@@ -97,7 +97,7 @@
   box-shadow: none; }
 
 .tox-tinymce-aux {
-  font-family: Mistral Pro;
+  font-family: var(--font-primary);
   z-index: 1300; }
 
 .tox-tinymce *:focus,
@@ -282,7 +282,7 @@ button::-moz-focus-inner {
   color: #101010;
   cursor: pointer;
   display: inline-block;
-  font-family: Mistral Pro;
+  font-family: var(--font-primary);
   font-size: 12.25px;
   font-style: normal;
   font-weight: bold;
@@ -400,7 +400,7 @@ button::-moz-focus-inner {
   box-sizing: border-box;
   cursor: pointer;
   display: inline-block;
-  font-family: Mistral Pro;
+  font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.3;
@@ -1450,7 +1450,7 @@ button::-moz-focus-inner {
   margin-left: auto; }
 
 .tox .tox-dialog__title {
-  font-family: Mistral Pro;
+  font-family: var(--font-primary);
   font-size: 17.5px;
   font-style: normal;
   font-weight: 500;
@@ -2167,7 +2167,7 @@ body.tox-dialog__disable-scroll {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   color: #c8c8c8;
-  font-family: Mistral Pro;
+  font-family: var(--font-primary);
   font-size: 14px;
   line-height: 24px;
   margin: 0;
@@ -2283,7 +2283,7 @@ body.tox-dialog__disable-scroll {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   color: #c8c8c8;
-  font-family: Mistral Pro;
+  font-family: var(--font-primary);
   font-size: 14px;
   line-height: 24px;
   margin: 0;
@@ -3689,6 +3689,9 @@ body.tox-dialog__disable-scroll {
 .tox .tox-image-tools__sidebar {
   height: 60px; }
 
+.tox-dialog.tox-dialog--width-lg .tox-dialog__body .tox-dialog__body-content .tox-textarea {
+  font-family: var(--font-mono); }
+
 .editor.tinymce {
   --editor-top-shift: -26px;
   --toolbar-scale-factor: 1;
@@ -3700,12 +3703,6 @@ body.tox-dialog__disable-scroll {
   margin-bottom: var(--editor-top-shift);
   overflow: visible; }
   .editor.tinymce .tox.tox-tinymce {
-    border: none;
-    border-radius: 0px;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -3713,7 +3710,6 @@ body.tox-dialog__disable-scroll {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-    font-family: Minion Pro;
     overflow: hidden;
     position: relative;
     visibility: inherit !important; }
@@ -3753,7 +3749,7 @@ body.tox-dialog__disable-scroll {
                 width: 120px;
                 text-align: left; }
               .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__overflow .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__primary .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label {
-                font-family: Kirsty; }
+                font-family: var(--font-emphasis); }
       .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord:hover .tox-toolbar, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord:hover .tox-toolbar__overflow, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord:hover .tox-toolbar__primary {
         -webkit-transform: translateY(-26px);
         -ms-transform: translateY(-26px);
@@ -3765,6 +3761,6 @@ body.tox-dialog__disable-scroll {
     .editor.tinymce .tox.tox-tinymce .tox-statusbar {
       height: var(--statusbar-height); }
       .editor.tinymce .tox.tox-tinymce .tox-statusbar .tox-statusbar__text-container .tox-statusbar__path {
-        font-family: Kirsty;
+        font-family: var(--font-emphasis);
         font-weight: bold;
         text-transform: uppercase; }

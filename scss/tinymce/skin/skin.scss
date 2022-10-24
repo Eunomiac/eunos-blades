@@ -11,7 +11,7 @@
 		box-sizing: content-box;
 		color: #101010;
 		cursor: auto;
-		font-family: Mistral Pro;
+		font-family: var(--font-primary);
 		font-size: 14px;
 		font-style: normal;
 		font-weight: normal;
@@ -75,7 +75,7 @@
 		box-sizing: border-box;
 		display: flex;
 		flex-direction: column;
-		font-family: Mistral Pro;
+		font-family: var(--font-primary);
 		overflow: hidden;
 		position: relative;
 		visibility: inherit !important;
@@ -94,7 +94,7 @@
 	}
 
 	.tox-tinymce-aux {
-		font-family: Mistral Pro;
+		font-family: var(--font-primary);
 		z-index: 1300;
 	}
 
@@ -295,7 +295,7 @@
 		color: #101010;
 		cursor: pointer;
 		display: inline-block;
-		font-family: Mistral Pro;
+		font-family: var(--font-primary);
 		font-size: 12.25px;
 		font-style: normal;
 		font-weight: bold;
@@ -415,7 +415,7 @@
 		box-sizing: border-box;
 		cursor: pointer;
 		display: inline-block;
-		font-family: Mistral Pro;
+		font-family: var(--font-primary);
 		font-size: 14px;
 		font-weight: 500;
 		line-height: 1.3;
@@ -1427,7 +1427,7 @@
 	}
 
 	.tox .tox-dialog__title {
-		font-family: Mistral Pro;
+		font-family: var(--font-primary);
 		font-size: 17.5px;
 		font-style: normal;
 		font-weight: 500;
@@ -2115,7 +2115,7 @@
 		box-shadow: none;
 		box-sizing: border-box;
 		color: #c8c8c8;
-		font-family: Mistral Pro;
+		font-family: var(--font-primary);
 		font-size: 14px;
 		line-height: 24px;
 		margin: 0;
@@ -2232,7 +2232,7 @@
 		box-shadow: none;
 		box-sizing: border-box;
 		color: #c8c8c8;
-		font-family: Mistral Pro;
+		font-family: var(--font-primary);
 		font-size: 14px;
 		line-height: 24px;
 		margin: 0;
@@ -3631,6 +3631,4 @@
 		height: 60px;
 	}
 
-	.editor.tinymce {
-		@import "./skin-overrides";
-	}
+	@import "./skin-overrides";

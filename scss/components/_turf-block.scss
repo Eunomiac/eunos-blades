@@ -71,7 +71,7 @@
 			}
 
 			.turf-name {
-				font-family: Kirsty;
+				font-family: var(--font-emphasis);
 				text-transform: uppercase;
 				color: var(--blades-white);
 				height: 18px;
@@ -148,7 +148,7 @@
 				label {
 					// text-align: center;
 					margin-left: 2.5px;
-					font-family: 'Kirsty';
+					font-family: var(--font-emphasis);
 					white-space: nowrap;
 					font-size: 12px;
 					font-weight: normal;

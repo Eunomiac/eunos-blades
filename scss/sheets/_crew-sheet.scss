@@ -15,7 +15,7 @@
                 max-height: 100px;
             }
             .crew-name-alias {
-		        font-family: "Historical FellType";
+		        font-family: var(--font-alt);
                 width: 30%;
 		        input[type="text"] {
 			        border-radius: 0;
@@ -155,7 +155,7 @@
                     }
                     .big-description {
                         color: var(--blades-white);
-                        font-family: Ravenscroft;
+                        font-family: var(--font-emphasis-alt);
                         font-size: 48px;
                         line-height: 38px;
                         text-align: right;
@@ -196,7 +196,7 @@
                     }
                     .experience-clues {
                         font-style: normal;
-                        font-family: "Minion Pro Caption Cond";
+                        font-family: var(--font-default-small-narrow);
                         white-space: nowrap;
                     }
                 }

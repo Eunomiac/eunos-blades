@@ -9,7 +9,7 @@
 
 		.chat-label {
 			background-color: var(--blades-grey-bright);
-			font-family: Kirsty, serif;
+			font-family: var(--font-emphasis);
 			color: var(--blades-white);
 			font-size: 21px;
 			text-align: center;
@@ -18,8 +18,8 @@
 			text-transform: capitalize;
 		}
 		.chat-label-small {
-			background-color: $gray;
-			color: $almost_black;
+			background-color: var(--blades-grey);
+			color: var(--blades-black);
 			font-size: small;
 			text-align: center;
 			padding: 3px 5px;
@@ -28,7 +28,7 @@
 
 		.label-stripe-chat {
 			text-transform: uppercase;
-			background-color: $almost_black;
+			background-color: var(--blades-black);
 			color: var(--blades-white);
 			margin-bottom: 10px;
 			position: relative;
@@ -40,8 +40,8 @@
 
 		.label-stripe-chat-small {
 			text-transform: capitalize;
-			background-color: $gray;
-			color: $almost_black;
+			background-color: var(--blades-grey);
+			color: var(--blades-black);
 			margin-bottom: 10px;
 			position: relative;
 			padding-top: 3px;
@@ -57,7 +57,7 @@
 				font-size: large;
 
 				&.critical-success {
-					color: $light_green;
+					color: var(--blades-color-positive);
 				}
 
 				&.success {
@@ -69,7 +69,7 @@
 				}
 
 				&.failure {
-					color: $red;
+					color: var(--blades-color-negative);
 				}
 			}
 		}

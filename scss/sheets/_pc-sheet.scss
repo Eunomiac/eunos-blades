@@ -5,7 +5,7 @@ section.name-alias {
 
 	.name-box,
 	.alias-box {
-		font-family: "Historical FellType";
+		font-family: var(--font-alt);
 
 		label {
 			display: none
@@ -33,7 +33,7 @@ section.name-alias {
 			position: relative;
 			width: 80%;
 			left: 20%;
-			font-family: "Kirsty";
+			font-family: var(--font-emphasis);
 
 			input {
 				color: var(--blades-white-bright);
@@ -96,8 +96,8 @@ section.name-alias {
 
 		.coins {
 			input~label {
-				background-color: var(--blades-coin-gold);
-				border: 1px var(--blades-coin-gold-bright) outset;
+				background-color: var(--blades-gold);
+				border: 1px var(--blades-gold-bright) outset;
 				border-radius: 15px;
 
 				&[for$="0"] {
@@ -115,8 +115,8 @@ section.name-alias {
 			}
 
 			input:checked+label {
-				background-color: var(--blades-coin-gold);
-				border-color: var(--blades-coin-gold-bright);
+				background-color: var(--blades-gold);
+				border-color: var(--blades-gold-bright);
 				border-style: outset;
 			}
 		}
@@ -165,7 +165,7 @@ section.harm-armor {
 			}
 
 			input[type="text"] {
-				font-family: "UglyQua";
+				font-family: var(--font-decorative);
                 font-style: italic;
                 font-size: 16px;
                 text-indent: 5px;

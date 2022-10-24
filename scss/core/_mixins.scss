@@ -80,8 +80,8 @@
 
   display: flex;
   $default_color: var(--blades-white);
-  $accent_color: $almost_black;
-  $circle_border_color: $almost_black;
+  $accent_color: var(--blades-black);
+  $circle_border_color: var(--blades-black);
 
   label {
 
@@ -99,7 +99,7 @@
         width: 5px;
         border-radius: 24px;
         background-image: none !important;
-        background-color: $red !important;
+        background-color: var(--blades-red-bright) !important;
         margin-right: 0px;
       }
 
@@ -132,8 +132,8 @@
 
   display: flex;
   $default_color: var(--blades-white);
-  $accent_color: $gold;
-  $circle_border_color: $almost_black;
+  $accent_color: var(--blades-gold-bright);
+  $circle_border_color: var(--blades-black);
 
   label {
 
@@ -191,7 +191,7 @@
       display: none;
 
       &:checked ~ .checkmark {
-        color: $red;
+        color: var(--blades-red-bright);
       }
     }
 
@@ -218,11 +218,11 @@
 
     position: relative;
     @if $default_color {
-      border: #{$border_width}px solid $almost_black;
+      border: #{$border_width}px solid var(--blades-black);
     }
     padding: 0;
-    width: #{$size}px;
-    height: #{$size}px;
+    width: $size * 1px;
+    height: $size * 1px;
     border-radius: 50%;
     list-style: none;
     overflow: hidden;
@@ -288,14 +288,14 @@
 
   width: $turf_width;
   height: $turf_height;
-  background-color: $lightgray;
+  background-color: var(--blades-grey-bright);
   position: relative;
   margin: $turf_margin;
   flex-grow: initial;
 
   &.turf-selected {
     .connector {
-      background-color: $gray;
+      background-color: var(--blades-grey);
       z-index: 1;
     }
   }
@@ -304,7 +304,7 @@
 
     position: absolute;
     display: block;
-    background-color: $lightgray;
+    background-color: var(--blades-grey-bright);
 
     &.right,
     &.left {
@@ -335,7 +335,7 @@
 
 
   &.turf-selected {
-    background-color: $gray;
+    background-color: var(--blades-grey);
   }
 
   .turf-description {

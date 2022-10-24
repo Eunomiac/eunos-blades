@@ -1,18 +1,16 @@
 @import './core/normalize.scss';
 
 // Colors
-$lightgray: #bbb;
-$darkgray: #666;
-$gray: #999;
-$red: red;
-$almost_black: #191813;
+// $red: rgb(255, 0, 0);
+$almost_black: rgb(25, 24, 19);
 // var(--blades-white): #EEEFFF;
-$gold: #DAA520;
+$gold: rgb(218, 165, 32);
 // var(--blades-white-bright): #008000;
-$light_green: #12a012;
+$light_green: rgb(18, 160, 18);
 // var(--blades-grey-bright): #04578f;
 
 // Utility imports
+@import './core/functions';
 @import './core/mixins';
 @import './fonts.scss';
 
@@ -26,6 +24,7 @@ $light_green: #12a012;
  body.vtt.game.system-eunos-blades {
 
 		#euno-clock-keeper-overlay {
+			margin-top: toRem(4px);
 			@import "./core/reset";
 			@import './components/clocks-overlay';
 		}
@@ -35,8 +34,13 @@ $light_green: #12a012;
 		#hotbar,
 		#players {
 			@import "./core/reset";
-			opacity: 0.3;
+			opacity: 0.5;
 			transition: 0.25s;
+
+			.control-tools .scene-control:hover {
+				height: calc(var(--blades-spacer-button-lg) - 2px);
+				width: calc(var(--blades-spacer-button-lg) - 2px);
+			}
 
 			&:hover { opacity: 1 }
 		}
@@ -51,6 +55,7 @@ $light_green: #12a012;
 			@import './core/text-styles';
 
 			.editor:not(.tinymce) .editor-content {
+				--secret-text-display: none;
 				@import './tinymce/tinymce-content';
 			}
 

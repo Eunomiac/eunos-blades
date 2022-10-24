@@ -1,18 +1,8 @@
 & {
-	// &, & * {
-	// 	font-family: inherit;
-	// 	color: inherit;
-	// 	font-size: inherit;
-	// 	line-height: inherit;
-	// }
 
-	// font-family: "Minion Pro Caption";
-	// font-size: 12px;
-	// line-height: 16px;
-	// color: var(--blades-white);
-
-
-
+	.text-secret:not(.user-is-gm) {
+		display: var(--secret-text-display);
+	}
 
 	.label-stripe {
 		background-color: var(--blades-grey);
@@ -49,7 +39,7 @@
 		background-color: var(--blades-white) !important;
 		text-shadow: none;
 		color: var(--blades-black) !important;
-		font-family: "Kirsty";
+		font-family: var(--font-emphasis);
 		font-weight: normal;
 		font-size: 20px;
 		line-height: 24px;

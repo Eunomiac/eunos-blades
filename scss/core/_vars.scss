@@ -1,103 +1,138 @@
+$isCompactLayout: true;
+
 & {
+// #region ████████ Original: Original Foundry Variables ████████ ~
+	// #region ====== Colors ====== ~
+	--color-text-light-highlight: #f0f0e0;
+	--color-text-light-heading: #c9c7b8;
+	--color-text-light-primary: #b5b3a4;
+	--color-text-dark-primary: #191813;
+	--color-text-dark-secondary: #4b4a44;
+	--color-text-dark-header: #23221d;
+	--color-text-dark-inactive: #7a7971;
+	// --color-text-hyperlink: #ff6400;
+	--color-text-light-0: #fff;
+	--color-text-light-1: #eee;
+	--color-text-light-2: #ddd;
+	--color-text-light-3: #ccc;
+	--color-text-light-4: #bbb;
+	--color-text-light-5: #aaa;
+	--color-text-light-6: #999;
+	--color-text-light-7: #888;
+	--color-text-dark-1: #111;
+	--color-text-dark-2: #222;
+	--color-text-dark-3: #444;
+	--color-text-dark-4: #555;
+	--color-text-dark-5: #666;
+	--color-text-dark-6: #777;
+	--color-border-light-1: #ddd;
+	--color-border-light-2: #999;
+	--color-border-dark-1: #111;
+	--color-border-dark-2: #222;
+	--color-border-dark-3: #333;
+	--color-border-dark-4: #444;
+	--color-border-dark-5: #666;
+	// --color-shadow-primary: #ff0000;
+	// --color-shadow-highlight: #ff6400;
+	--color-shadow-dark: #000;
+	--color-underline-inactive: #7a7971;
+	--color-underline-active: #44191A;
+	// --color-underline-header: #782e22;
+	--color-border-light-highlight: #f0f0e0;
+	--color-border-light-primary: #b5b3a4;
+	--color-border-light-secondary: #c9c7b8;
+	--color-border-light-tertiary: #7a7971;
+	--color-border-dark: #000;
+	--color-border-dark-primary: #191813;
+	--color-border-dark-secondary: #23221d;
+	--color-border-dark-tertiary: #4b4a44;
+	// --color-border-highlight: #ff6400;
+	// --color-border-highlight-alt: #ff0000;
+	--color-bg-btn-minor-inactive: #c9c7b8;
+	--color-bg-btn-minor-active: #b5b3a4;
+	--color-bg-option: #dad8cc;
+	--color-ownership-none: #5500ff;
+	--color-ownership-observer: #7a7971;
+	--color-ownership-owner: #b5b3a4;
 
-
-  --color-text-light-highlight: #f0f0e0;
-  --color-text-light-heading: #c9c7b8;
-  --color-text-light-primary: #b5b3a4;
-  --color-text-dark-primary: #191813;
-  --color-text-dark-secondary: #4b4a44;
-  --color-text-dark-header: #23221d;
-  --color-text-dark-inactive: #7a7971;
-  --color-text-hyperlink: rgb(253, 212, 112);
-  --color-text-light-0: #fff;
-  --color-text-light-1: #eee;
-  --color-text-light-2: #ddd;
-  --color-text-light-3: #ccc;
-  --color-text-light-4: #bbb;
-  --color-text-light-5: #aaa;
-  --color-text-light-6: #999;
-  --color-text-light-7: #888;
-  --color-text-dark-1: #111;
-  --color-text-dark-2: #222;
-  --color-text-dark-3: #444;
-  --color-text-dark-4: #555;
-  --color-text-dark-5: #666;
-  --color-text-dark-6: #777;
-  --color-border-light-1: #ddd;
-  --color-border-light-2: #999;
-  --color-border-dark-1: #111;
-  --color-border-dark-2: #222;
-  --color-border-dark-3: #333;
-  --color-border-dark-4: #444;
-  --color-border-dark-5: #666;
-  --color-shadow-primary: #ccc;
-  --color-shadow-highlight: var(--blades-coin-gold-bright);
-  --color-shadow-dark: #000;
-  --color-underline-inactive: #7a7971;
-  --color-underline-active: #44191A;
-  --color-underline-header: var(--blades-grey);
-  --color-border-light-highlight: #f0f0e0;
-  --color-border-light-primary: #b5b3a4;
-  --color-border-light-secondary: #c9c7b8;
-  --color-border-light-tertiary: #7a7971;
-  --color-border-dark: #000;
-  --color-border-dark-primary: #191813;
-  --color-border-dark-secondary: #23221d;
-  --color-border-dark-tertiary: #4b4a44;
-  --color-border-highlight: var(--blades-coin-gold);
-  --color-border-highlight-alt: var(--blades-coin-gold-bright);
-  --color-bg-btn-minor-inactive: #c9c7b8;
-  --color-bg-btn-minor-active: #b5b3a4;
-  --color-bg-option: #dad8cc;
-  --color-ownership-none: #5500ff;
-  --color-ownership-observer: #7a7971;
-  --color-ownership-owner: #b5b3a4;
-  --z-index-canvas: 0;
-  --z-index-app: 30;
-  --z-index-ui: 60;
-  --z-index-window: 100;
-  --z-index-tooltip: 9999;
-  --sidebar-width: 300px;
-  --sidebar-header-height: 32px;
-  --sidebar-item-height: 48px;
-  --hotbar-height: 52px;
-  --hotbar-width: 578px;
-  --macro-size: 50px;
-  --players-width: 200px;
-  --form-field-height: 26px;
-  --font-primary: "Minion Pro", serif;
-  --font-mono: monospace;
-  --font-awesome: "Font Awesome 6 Pro";
-	--font-size-10: 0.5rem;
-  --font-size-11: 0.6875rem;
-  --font-size-12: 0.75rem;
-  --font-size-13: 0.8125rem;
-  --font-size-14: 0.875rem;
-  --font-size-16: 1rem;
-  --font-size-18: 1.125rem;
-  --font-size-20: 1.25rem;
-  --font-size-24: 1.5rem;
-  --font-size-28: 1.75rem;
-  --font-size-30: 1.875rem;
-  --font-size-32: 2rem;
-  --font-size-48: 3rem;
-	--line-height-10: 0.5rem;
-  --line-height-11: 0.6875rem;
-  --line-height-12: 0.75rem;
-  --line-height-13: 0.8125rem;
-  --line-height-14: 0.875rem;
-  --line-height-16: 1rem;
-  --line-height-18: 1.125rem;
-  --line-height-20: 1.25rem;
-  --line-height-24: 1.5rem;
-  --line-height-28: 1.75rem;
-  --line-height-30: 1.875rem;
-  --line-height-32: 2rem;
-  --line-height-48: 3rem;
   --color-level-info: #5c87b9;
   --color-level-warning: #b18404;
   --color-level-error: #750003;
+	// #endregion ___ Colors ___
+	// #region ====== Z-Indices ====== ~
+	--z-index-canvas: 0;
+	--z-index-app: 30;
+	--z-index-ui: 60;
+	--z-index-window: 100;
+	--z-index-tooltip: 9999;
+	// #endregion ___ Z-Indices ___
+	// #region ====== Layout ====== ~
+	--sidebar-width: 300px;
+	--sidebar-header-height: 32px;
+	--sidebar-item-height: 48px;
+	--hotbar-height: 52px;
+	--hotbar-width: 578px;
+	--macro-size: 50px;
+	--players-width: 200px;
+	--form-field-height: 26px;
+	// #endregion ___ Layout ___
+	// #region ====== Text ====== ~
+	// --font-primary: "Signika", sans-serif;
+  --font-mono: monospace;
+  --font-awesome: "Font Awesome 6 Pro";
 
+	--font-size-11: 0.6875rem;
+	--font-size-12: 0.75rem;
+	--font-size-13: 0.8125rem;
+	--font-size-14: 0.875rem;
+	--font-size-16: 1rem;
+	--font-size-18: 1.125rem;
+	--font-size-20: 1.25rem;
+	--font-size-24: 1.5rem;
+	--font-size-28: 1.75rem;
+	--font-size-32: 2rem;
+	--font-size-48: 3rem;
+
+	--line-height-12: 0.75rem;
+  --line-height-16: 1rem;
+  --line-height-20: 1.25rem;
+  --line-height-30: 1.875rem;
+	// #endregion ___ Text ___
+// #endregion ▄▄▄▄▄ Original ▄▄▄▄▄
+
+// #region ████████ Overrides: Foundry Variable Overrides ████████ ~
+	// Comment out any changed vars in 'Original' section, to keep track.
+	// #region ====== Colors ====== ~
+	--color-text-hyperlink: var(--blades-gold-bright); // #ff6400;
+	--color-shadow-primary: var(--blades-white); // #ff0000;
+	--color-shadow-highlight: var(--blades-gold-bright); // #ff6400;
+	--color-underline-header: var(--blades-grey); // #782e22;
+	--color-border-highlight: var(--blades-gold-bright); // #ff6400;
+	--color-border-highlight-alt: var(--blades-gold); // #ff0000;
+	// #endregion ___ Colors ___
+  // #region ====== Text ====== ~
+	--font-primary: "Minion Pro", serif; // "Signika", sans-serif;
+	--font-mono: "Pragmata", monospace; // monospace;
+	// #endregion ___ Text ___
+// #endregion ▄▄▄▄▄ Overrides ▄▄▄▄▄
+
+// #region ████████ Pixels to Rem: Pixel Sizes Converted to Rems ████████ ~
+	--size-10px: toRem(10px); /* Expansion (not defined by Foundry) */
+	--size-11px: var(--font-size-11);
+	--size-12px: var(--font-size-12);
+	--size-13px: var(--font-size-13);
+	--size-14px: var(--font-size-14);
+	--size-16px: var(--font-size-16);
+	--size-18px: var(--font-size-18);
+	--size-20px: var(--font-size-20);
+	--size-24px: var(--font-size-24);
+	--size-28px: var(--font-size-28);
+	--size-30px: toRem(30px); /* Expansion (not defined by Foundry) */
+	--size-32px: var(--font-size-32);
+	--size-48px: var(--font-size-48);
+// #endregion ▄▄▄▄▄ Pixels to Rem ▄▄▄▄▄
+
+// #region ████████ Colors: System Color Settings ████████ ~
 	--blades-white-bright-nums: 255, 255, 255;
 	--blades-white-nums: 200, 200, 200;
 	--blades-grey-bright-nums: 170, 170, 170;
@@ -105,9 +140,37 @@
 	--blades-grey-dark-nums: 68, 68, 68;
 	--blades-black-nums: 32, 32, 32;
 	--blades-black-dark-nums: 0, 0, 0;
+	--blades-gold-bright-nums: 253, 212, 112;
+	--blades-gold-nums: 171, 146, 84;
+	--blades-red-nums: 132, 12, 36;
+	--blades-red-bright-nums: 220, 20, 60;
 
-	--blades-coin-gold-bright-nums: 253, 212, 112;
-	--blades-coin-gold-nums: 171, 146, 84;
+	--blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
+	--blades-white: rgba(var(--blades-white-nums), 1);
+	--blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
+	--blades-grey: rgba(var(--blades-grey-nums), 1);
+	--blades-grey-dark: rgba(var(--blades-grey-dark-nums), 1);
+	--blades-black: rgba(var(--blades-black-nums), 1);
+	--blades-black-dark: rgba(var(--blades-black-dark-nums), 1);
+
+	--blades-white-fade: rgba(var(--blades-white-nums), 0.5);
+	--blades-white-fade-strong: rgba(var(--blades-white-nums), 0.25);
+	--blades-white-bright-fade: rgba(var(--blades-white-bright-nums), 0.5);
+	--blades-white-bright-fade-strong: rgba(var(--blades-white-bright-nums), 0.25);
+
+	--blades-black-fade: rgba(var(--blades-black-nums), 0.5);
+	--blades-black-fade-strong: rgba(var(--blades-black-nums), 0.25);
+	--blades-black-dark-fade: rgba(var(--blades-black-dark-nums), 0.5);
+	--blades-black-dark-fade-strong: rgba(var(--blades-black-dark-nums), 0.25);
+
+	--blades-gold: rgba(var(--blades-gold-nums), 1);
+	--blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
+
+	--blades-red: rgba(var(--blades-red-nums), 1);
+	--blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
+
+	--blades-color-negative: var(--blades-red-bright);
+	--blades-color-positive: var(--blades-gold-bright);
 
 	--color-primary: var(--blades-white-nums);
 	--color-background: var(--blades-black-nums);
@@ -129,81 +192,90 @@
 	--color-shadow-primary: var(--blades-white-bright-nums);
 	--color-text-dark-primary: var(--blades-white-nums);
 	--color-bg-option: var(--blades-black-nums);
+// #endregion ▄▄▄▄▄ Colors ▄▄▄▄▄
 
-	--blades-white: rgba(var(--blades-white-nums), 1);
-	--blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
-	--blades-black: rgba(var(--blades-black-nums), 1);
-	--blades-black-dark: rgba(var(--blades-black-dark-nums), 1);
-	--blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
-	--blades-grey: rgba(var(--blades-grey-nums), 1);
-	--blades-grey-dark: rgba(var(--blades-grey-dark-nums), 1);
-	--blades-coin-gold: rgba(var(--blades-coin-gold-nums), 1);
-	--blades-coin-gold-bright: rgba(var(--blades-coin-gold-bright-nums), 1);
+// #region 🟩🟩🟩 PRIMARY STYLES: Primary Style Settings for Most Elements 🟩🟩🟩
+	// #region ████████ COLORS & FONTS ████████ ~
+	--color-default: var(--blades-white);
+	--background-default: var(--blades-dark);
 
-		// --color-primary: 64, 64, 64;
-	// --color-background: 46, 46, 46;
-	// --color-background-lightest: 21, 21, 21;
-	// --color-background-light: 74, 74, 74;
-	// --color-background-darkest: 21, 21, 21;
-	// --color-background-button: 68, 68, 68;
-	// --color-background-chat-message: 51, 51, 51;
-	// --color-background-chat-message-whisper: 28, 43, 44;
-	// --color-background-chat-message-blind: 42, 65, 63;
-	// --color-border: 74, 74, 74;
-	// --color-border-lighter: 125, 125, 125;
-	// --color-folder-header: 74, 74, 74;
-	// --color-folder-directory: 21, 21, 21;
-	// --color-folder-subdirectory: 125, 125, 125;
-	// --color-text: 186, 186, 186;
-	// --color-text-lightest: 224, 224, 224;
-	// --color-text-darker: 203, 203, 203;
+	--font-default: var(--font-primary);
+	--font-default-small: "Minion Pro Caption";
+	--font-default-narrow: "Minion Pro Cond";
+	--font-default-small-narrow: "Minion Pro Caption Cond";
 
-	// Design
-	--emu-border-radius-default: 0;
-	--emu-border-radius-controls: 0;
-	--emu-border-radius-forms: 0;
-	--emu-border-radius-images: 0;
+	--font-awesome-alt: "Font Awesome 6 Brands";
 
-	// Font Size
-	--emu-font-size-xs: var(--font-size-10);
-	--emu-font-size-sm: var(--font-size-12);
-	--emu-font-size-md: var(--font-size-14);
-	--emu-font-size-lg: var(--font-size-16);
-	--emu-font-size-xl: var(--font-size-20);
-	--emu-font-size-xxl: var(--font-size-28);
-	--emu-font-size-chat-roll: var(--font-size-18);
+	--font-alt: "Historical FellType";
+	--font-alt-smallcaps: "Historical FellType SC";
 
+	--font-emphasis: "Kirsty";
+	--font-emphasis-alt: "Ravenscroft";
 
-	// Background Color Opacity
-	--emu-background-opacity-button-primary: 1;
-	--emu-background-opacity-hotbar: 0.8;
-	--emu-background-opacity-hud: 0.8;
-	--emu-background-opacity-players: 0.8;
-	--emu-background-opacity-scene-control: 0.8;
-	--emu-background-opacity-scene-navigation: 0.8;
-	--emu-background-opacity-sidebar: 0.8;
-	--emu-background-opacity-window: 1;
-	--emu-background-opacity-window-content: 1;
+	--font-decorative: "UglyQua";
 
-	--emu-subtle-opacity: 0.3;
+	--font-decorative-alt: "IM FELL Double Pica";
+	--font-decorative-alt-smallcaps: "IM FELL Double Pica SC";
 
-	// Background Images
-	--emu-image-background: none;
-	--emu-image-background-lightest: none;
-	--emu-image-background-light: none;
-	--emu-image-background-darkest: none;
-	--emu-image-background-controls: none;
+	--font-monospace: var(--font-mono);
 
-	// --emu-space-base: 0.125rem;
-	// --emu-space-sm: 0.25rem;
-	// --emu-space-md: 0.5rem;
-	// --emu-space-lg: 0.75rem;
-	// --emu-space-xl: 1rem;
-	--emu-space-button-lg: 1.5rem; // 2rem;
-	// --emu-space-button: 1.5rem;
-	// --emu-space-button-sm: 1.25rem;
-	// --emu-space-button-xs: 1.125rem;
-	// --emu-space-sidebar: 17.875rem;
+	--font-size-default: var(--size-14px);
+	--font-weight-default: normal;
+	--font-style-default: normal;
+	--font-variant-default: normal;
 
+	--line-height-default: 1.2;
+	--line-height-compact: 1;
+
+	--text-shadow-default: none;
+	--text-shadow-dark: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
+	--box-shadow-default: none;
+	--box-shadow-inset-dark:
+	--text-transform-default: none;
+
+	--color-heading: var(--blades-white-bright);
+	--background-heading: var(--blades-grey-dark);
+	--font-heading: var(--font-emphasis);
+	--font-heading-alt: var(--font-emphasis-alt);
+	--font-weight-heading: bold;
+	--text-shadow-heading: var(--text-shadow-dark);
+	--text-transform-heading: uppercase;
+	--line-height-heading: var(--line-height-compact);
+
+	--background-input: var(--blades-black-dark-fade-strong);
+	--border-input: none;
+	--box-shadow-input: inset 0 0 0.3rem var(--blades-black-dark-fade);
+	// #endregion ▄▄▄▄▄ COLORS & FONTS ▄▄▄▄▄
+
+	// #region ████████ LAYOUT ████████ ~
 	--content-padding: 8px;
+
+	--blades-spacer-pf: 0.0625rem;
+	--blades-spacer-xs: 0.125rem;
+
+	@if $isCompactLayout {
+		--blades-spacer-base: 0.125rem;
+		--blades-spacer-sm: 0.25rem;
+		--blades-spacer-md: 0.5rem;
+		--blades-spacer-lg: 0.75rem;
+		--blades-spacer-xl: 1rem;
+		--blades-spacer-button-lg: 2rem;
+		--blades-spacer-button: 1.5rem;
+		--blades-spacer-button-sm: 1.25rem;
+		--blades-spacer-button-xs: 1.125rem;
+		--blades-spacer-sidebar: 17.875rem;
+	} @else {
+		--blades-spacer-base: 0.25rem;
+		--blades-spacer-sm: 0.5rem;
+		--blades-spacer-md: 1rem;
+		--blades-spacer-lg: 1.5rem;
+		--blades-spacer-xl: 2rem;
+		--blades-spacer-button-lg: 2.5rem;
+		--blades-spacer-button: 2rem;
+		--blades-spacer-button-sm: 1.5rem;
+		--blades-spacer-button-xs: 1.25rem;
+		--blades-spacer-sidebar: 20rem;
+	}
+	// #endregion ▄▄▄▄▄ LAYOUT ▄▄▄▄▄
+// #endregion 🟩🟩🟩 PRIMARY STYLES 🟩🟩🟩
 }

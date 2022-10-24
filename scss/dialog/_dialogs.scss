@@ -21,7 +21,7 @@
     .tooltiptext {
       visibility: hidden;
       width: 200px;
-      background-color: $almost_black;
+      background-color: var(--blades-black);
       color: var(--blades-white);
       text-align: center;
       padding: 5px;

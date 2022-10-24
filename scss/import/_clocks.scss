@@ -4,7 +4,7 @@
 }
 
 .clock-zero-label {
-  color: $almost_black;
+  color: var(--blades-black);
 }
 
 .clocks {
@@ -27,4 +27,3 @@
     margin: 10px auto;
   }
 }
-

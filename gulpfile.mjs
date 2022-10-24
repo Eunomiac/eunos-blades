@@ -1,29 +1,35 @@
 /* eslint-disable @typescript-eslint/no-var-requires,  */
+const exports = {};
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-const {src, dest, watch, series, parallel, registry} = require("gulp");
-const plumber = require("lazypipe");
-const plunger = require("gulp-plumber");
-const merger = require("merge2");
-const logger = require("fancy-log");
-const debug = require("gulp-debug");
+import pkg from "gulp";
+const {src, dest, watch, series, parallel, registry} = pkg;
+import plumber from "lazypipe";
+import plunger from "gulp-plumber";
+import merger from "merge2";
+import logger from "fancy-log";
+import debug from "gulp-debug";
 
-const cleaner = require("del");
-const renamer = require("gulp-rename");
-const header = require("gulp-header");
-const replacer = require("gulp-replace");
+// import cleaner from "del";
+import {deleteAsync} from "del";
+import renamer from "gulp-rename";
+import header from "gulp-header";
+import replacer from "gulp-replace";
 
-const typescript = require("gulp-typescript");
-const terser = require("gulp-terser");
+import typescript from "gulp-typescript";
+import terser from "gulp-terser";
 
-const sasser = require("gulp-sass")(require("node-sass"));
-const bundler = require("gulp-postcss");
-// const filler = require("cq-prolyfill/postcss-plugin");
-const prefixer = require("autoprefixer");
-const minifier = require("cssnano");
+import gulpSass from "gulp-sass";
+import nodeSass from "node-sass";
+const sasser = gulpSass(nodeSass);
+// import sasser from "gulp-sass"; // )(require("node-sass"));
+import bundler from "gulp-postcss";
+// import filler from "cq-prolyfill/postcss-plugin";
+import prefixer from "autoprefixer";
+import minifier from "cssnano";
 
-const packageJSON = require("./package");
+import packageJSON from "./package.json" assert {type: "json"};
 
-const {analyzeProject} = require("codehawk-cli");
+import {analyzeProject} from "codehawk-cli";
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 
 // #region ▮▮▮▮▮▮▮[UTILITY] Data References & Utility Functions for File Parsing ▮▮▮▮▮▮▮ ~
@@ -392,9 +398,9 @@ const PLUMBING = {
 		}
 		return done();
 	},
-	initDest: function initDist(done, destGlobs = ["./dist/", "./module/", "./module_staging_1", "./module_staging_2", "./css/"]) {
+	initDest: async function initDist(done, destGlobs = ["./dist/", "./module/", "./module_staging_1", "./module_staging_2", "./css/"]) {
 		try {
-			cleaner.sync(destGlobs);
+			await deleteAsync(destGlobs);
 		} catch (err) {
 			return done();
 		}
@@ -578,5 +584,5 @@ BUILDFUNCS.slowAssets = parallel(...assetPipe(BUILDFILES.slowAssets));
 // #region ▒░▒░▒░▒[EXPORTS]▒░▒░▒░▒ ~
 const {ts, js, quickAssets, ...parallelBuildFuncs} = BUILDFUNCS;
 
-exports.default = series(PLUMBING.initDest, parallel(series(ts, js, quickAssets), ...Object.values(parallelBuildFuncs)), PLUMBING.watch);
+export default series(PLUMBING.initDest, parallel(series(ts, js, quickAssets), ...Object.values(parallelBuildFuncs)), PLUMBING.watch);
 // #endregion ▒▒▒▒[EXPORTS]▒▒▒▒

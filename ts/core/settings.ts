@@ -26,13 +26,13 @@ export function initTinyMCEStyles() {
 			max_height: 500,
 			min_height: 50,
 			autoresize_overflow_padding: 0,
-			autoresize_bottom_margin: 25,
+			autoresize_bottom_margin: 0, // 25,
 			menubar: false,
-			statusbar: true,
+			statusbar: false, // true,
 			elementPath: true,
 			branding: false,
 			resize: false,
-			plugins: "lists image table save autoresize searchreplace quickbars template",
+			plugins: "lists image table code save autoresize searchreplace quickbars template",
 			save_enablewhendirty: false,
 			// table_default_styles: {},
 			style_formats: [
@@ -48,9 +48,9 @@ export function initTinyMCEStyles() {
 				{
 					title: "Blocks",
 					items: [
-						{title: "Paragraph", block: "p", wrapper: true},
-						{title: "Block Quote", block: "blockquote", wrapper: true},
-						{title: "Secret (Visible to GM)", block: "p", classes: "text-secret", attributes: {"data-isSecret": "true"}, wrapper: true}
+						{title: "Paragraph", block: "p", wrapper: false},
+						{title: "Block Quote", block: "blockquote", wrapper: true}
+						// {title: "Secret", block: "span", classes: "text-secret", attributes: {"data-is-secret": "true"}, wrapper: false}
 					]
 				},
 				{
@@ -58,7 +58,8 @@ export function initTinyMCEStyles() {
 					items: [
 						{title: "Bold", inline: "b", wrapper: false},
 						{title: "Italics", inline: "i", wrapper: false},
-						{title: "Underline", inline: "u", wrapper: false}
+						{title: "Underline", inline: "u", wrapper: false},
+						{title: "Secret", inline: "span", classes: "text-secret", attributes: {"data-is-secret": "true"}, wrapper: false}
 					]
 				}
 			],

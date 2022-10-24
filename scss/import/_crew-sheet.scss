@@ -68,7 +68,7 @@ nav{
 
 // Reputation
 .crew-reputation {
-  border-top: 3px solid $almost_black;
+  border-top: 3px solid var(--blades-black);
   @include toothradio(17px, 50px, "../assets/teeth/stresstooth-halfgrey.png", "../assets/teeth/stresstooth-red.png");
 
   input[disabled="disabled"] + label {
@@ -85,21 +85,21 @@ nav{
 
 
 .crew-hold {
-  border-top: 3px solid $almost_black;
+  border-top: 3px solid var(--blades-black);
   @include toothradio_single(17px, 50px, "../assets/teeth/stresstooth-halfgrey.png", "../assets/teeth/stresstooth-red.png");
   width: 221px;
 }
 
 .crew-tier {
 
-  background-color: $gray;
+  background-color: var(--blades-grey);
   height: 33px;
   width: 145px;
   display: flex;
   align-items: center;
-  border-top: 3px solid $almost_black;
+  border-top: 3px solid var(--blades-black);
 
-  @include custom_radio_round(18px, gray, var(--blades-white), $almost_black);
+  @include custom_radio_round(18px, gray, var(--blades-white), var(--blades-black));
 
   > * {
     margin-right: 5px;
@@ -141,7 +141,7 @@ nav{
     &:checked {
 
       & + label {
-        color: $red;
+        color: var(--blades-red-bright);
       }
 
     }
@@ -182,12 +182,12 @@ nav{
       &:checked + label {
         color: var(--blades-white);
         font-weight: bold;
-        background-color: $almost_black;
+        background-color: var(--blades-black);
       }
     }
 
     label {
-      border: 2px solid $almost_black;
+      border: 2px solid var(--blades-black);
       border-top: none;
       padding: 5px;
     }
@@ -202,23 +202,23 @@ nav{
   justify-content: space-around;
   font-size: 48px;
   text-transform: uppercase;
-  border: 3px solid $almost_black;
+  border: 3px solid var(--blades-black);
 
   .big-name {
     font-weight: bold;
-    font-family: Kirsty, serif;
+    font-family: var(--font-emphasis);
   }
 
   .big-description {
     font-size: 20px;
-    font-family: "IM FELL Double Pica", serif;
-    color: $almost_black;
+    font-family: var(--font-decorative-alt);
+    color: var(--blades-black);
   }
 }
 
 .big-teeth-section {
 
-  border-top: 3px solid $almost_black;
+  border-top: 3px solid var(--blades-black);
   display: flex;
   flex-direction: row;
   margin-bottom: 0px;

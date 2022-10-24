@@ -1,0 +1,9 @@
+@use "sass:math";
+$remPerPixel: 0.0625rem;
+
+@function toRem($pixelSize) {
+	@if not unitless($pixelSize) {
+		$pixelSize: $pixelSize / 1px;
+	}
+	@return $pixelSize * $remPerPixel;
+}

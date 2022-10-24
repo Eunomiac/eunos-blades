@@ -86,7 +86,7 @@
 				margin-left: -100px;
 				margin-top: 350px;
 				font-weight: normal !important; // bold !important;
-				font-family: "Kirsty" !important; // "Minion Pro Caption" !important;
+				font-family: var(--font-emphasis) !important; // "Minion Pro Caption" !important;
 				font-size: 12px !important; // 14px !important;
 				line-height: 12px !important; // 14px !important;
 				text-transform: uppercase !important;
@@ -121,7 +121,7 @@
 		.key-label {
 			position: absolute;
 			color: var(--blades-white-bright);
-			font-family: UglyQua;
+			font-family: var(--font-decorative);
 			font-style: italic;
 			font-size: 24px;
 			line-height: 28px;
@@ -152,7 +152,7 @@
 				// background: rgba(0,255,0,0.25);
 
 				position: absolute;
-				font-family: Kirsty;
+				font-family: var(--font-emphasis);
 				font-size: 12px;
 				color: var(--blades-white-bright);
 				width: var(--clock-label-width);
@@ -233,7 +233,7 @@
 			// margin-right: -25px;
 
 			.key-label {
-				font-family: Kirsty;
+				font-family: var(--font-emphasis);
 				font-style: normal;
 				font-size: 16px;
 				width: 130px;

@@ -16,7 +16,7 @@ textarea {
 }
 .rollable-text:hover {
   cursor: pointer;
-  color: $red;
+  color: var(--blades-red-bright);
 }
 
 section {
@@ -64,25 +64,25 @@ section {
   }
 }
 .black-label {
-  background-color: $almost_black;
+  background-color: var(--blades-black);
   color: var(--blades-white);
   font-size: 21px;
   text-align: center;
   padding: 0px 5px;
   height: 30px !important;
   text-transform: capitalize;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis);
 }
 
 .gray-label {
-  background-color: $gray;
-  color: $almost_black;
+  background-color: var(--blades-grey);
+  color: var(--blades-black);
   font-size: 21px;
   text-align: center;
   padding: 0px 5px;
   height: 30px !important;
   text-transform: capitalize;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis);
 }
 
 
@@ -103,7 +103,7 @@ section {
 
 i {
   &.nullifier {
-    @include changeable(0.2s, 0.8, 0.9, $red);
+    @include changeable(0.2s, 0.8, 0.9, #FF0000);
   }
 }
 
@@ -118,7 +118,7 @@ i {
     background: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>") no-repeat right;
     padding: 0 20px 0 0;
     margin: 0.1em -6px 0 0;
-    background-color: $almost_black;
+    background-color: var(--blades-black);
     font-family: Georgia, "Bitstream Charter", "Times New Roman", serif;
     font-size: 14px;
     font-weight: bold;

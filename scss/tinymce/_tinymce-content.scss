@@ -1,12 +1,6 @@
 & {
 
-	// font-family: "Minion Pro";
-	// color: var(--blades-white);
-  // line-height: 1.4;
-  // margin: 1rem;
-	// @import "../core/text-styles";
-
-	padding: var(--content-padding);
+	padding: var(--content-padding) !important;
 	min-height: 150px;
 	height: auto;
 	max-height: 600px;
@@ -31,7 +25,7 @@
 		margin: 1rem auto;
 
 		figcaption {
-			font-family: "Minion Pro Caption";
+			font-family: var(--font-default-small);
 			color: var(--blades-grey-bright);
 			display: block;
 			margin-top: 0.25rem;
@@ -46,8 +40,18 @@
 	}
 
 	code {
-		// background-color: var(--blades-black);
-		// border-radius: 3px;
 		padding: 0.1rem 0.2rem;
+	}
+
+	.text-secret {
+		display: var(--secret-text-display);
+		background-color: var(--blades-black-dark);
+		color: var(--blades-grey);
+		font-weight: bold;
+		font-style: italic;
+		border-radius: 3px;
+		outline: 1px dotted var(--blades-white);
+		padding: 0 #{toRem(5px)};
+		margin: 0 #{toRem(5px)};
 	}
 }

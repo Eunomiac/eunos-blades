@@ -71,7 +71,7 @@ input[type="text"] {
 			input[type="text"] {
 				font-size: 14px;
 				height: 18px;
-				font-family: Kirsty;
+				font-family: var(--font-emphasis);
 				text-transform: uppercase;
 			}
 		}
@@ -124,7 +124,7 @@ input[type="text"] {
 		.npc-name {
 			grid-area: name;
 			overflow: visible;
-			font-family: "Historical FellType";
+			font-family: var(--font-alt);
 			color: var(--blades-white-bright);
 			font-size: 32px;
 			height: 32px;
@@ -158,7 +158,7 @@ input[type="text"] {
 		.npc-traits {
 			grid-area: traits;
 			display: flex;
-			font-family: Kirsty;
+			font-family: var(--font-emphasis);
 			top: 0px;
 			input {
 				text-transform: uppercase;
@@ -227,7 +227,7 @@ input[type="text"] {
 					.item {
 						color: var(--blades-grey-dark);
 						flex-grow: 1;
-						font-family: Kirsty;
+						font-family: var(--font-emphasis);
 						text-transform: uppercase;
 						font-size: 14px;
 						line-height: 30px;

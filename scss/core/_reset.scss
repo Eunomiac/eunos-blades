@@ -1,104 +1,103 @@
 &	{
-	--primary-font-size: var(--font-size-14);
-	--primary-line-height: var(--line-height-18);
-	--primary-color: var(--blades-white);
-	--primary-font-weight: normal;
-
-	--primary-font-body: "Minion Pro";
-	--primary-font-heading: "Kirsty";
-	--primary-font-decorative: "UglyQua";
-	--primary-font-mono: "monospace";
-
-	--primary-background: var(--blades-dark);
-	--primary-background-heading: var(--blades-grey-dark);
-	--primary-color-heading: var(--blades-white-bright);
 
 	margin: 0;
 	padding: 0;
 	border: none;
 	background: transparent;
 
-	font-size: var(--base-font-size, var(--primary-font-size));
-	font-family: var(--base-font-family, var(--primary-font-body));
-	line-height: var(--base-line-height, var(--primary-line-height));
-	color: var(--base-color, var(--primary-color));
-	text-shadow: var(--base-text-shadow, none);
-	font-style: var(--base-font-style, normal);
-	font-variant: var(--base-font-variant, normal);
-	text-transform: var(--base-text-transform, none);
-	font-weight: var(--base-font-weight, var(--primary-font-weight));
+	color: var(--color-default);
+
+	font: {
+		family: var(--font-default);
+		size: var(--font-size-default);
+		weight: var(--font-weight-default);
+		style: var(--font-style-default);
+		variant: var(--font-variant-default);
+	}
+	line-height: var(--line-height-default);
+	text: {
+		shadow: var(--text-shadow-default);
+		transform: var(--text-transform-default);
+	}
 
 	* {
-		font-size: inherit;
-		line-height: inherit;
 		color: inherit;
-		text-shadow: inherit;
-		font-style: inherit;
-		font-variant: inherit;
-		text-transform: inherit;
-		font-weight: inherit;
+		font: {
+			family: inherit;
+			size: inherit;
+			weight: inherit;
+			style: inherit;
+			variant: inherit;
+		}
+		line-height: inherit;
+		text: {
+			shadow: inherit;
+			transform: inherit;
+		}
 	}
 
-	b, strong { font-weight: bold }
+	b, strong { font-weight: bold; color: var(--blades-white-bright) }
 	i:not([class]), em { font-style: italic }
+	i[class] { font-family: var(--font-awesome) }
+	i.fab { font-family: var(--font-awesome-alt)}
 
 	h1, h2, h3, h4 {
-		font-family: var(--primary-font-heading);
-		color: var(--primary-color-heading);
-		font-weight: bold;
-		text-shadow: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
+		color: var(--color-heading);
+		font: {
+			family: var(--font-heading);
+			weight: var(--font-weight-heading);
+		}
+		line-height: var(--line-height-heading);
+		text: {
+			shadow: var(--text-shadow-heading);
+		}
 		border: none;
-		padding: 0px;
-		margin: 0px;
+		padding: 0;
+		margin: 0 0 0.5rem 0;
 	}
-
 	h1 {
-		background: var(--primary-background-heading);
-		font-size: var(--font-size-20);
-		line-height: var(--font-size-20);
-		padding: 0.5rem 0px;
-		margin-bottom: 0.5rem;
-		text-transform: uppercase;
+		background: var(--background-heading);
+		font: {
+			size: var(--size-20px);
+		}
+		padding: 0.5rem;
+		text: {
+			transform: uppercase;
+		}
 	}
 
 	h2 {
-		background: var(--primary-background-heading);
-		font-size: var(--font-size-18);
-		line-height: var(--font-size-18);
-		padding: 0.5rem 0px;
-		margin-bottom: 0.5rem;
-		text-transform: uppercase;
+		background: var(--background-heading);
+		font: {
+			size: var(--size-18px);
+		}
+		padding: 0.5rem;
+		text: {
+			transform: uppercase;
+		}
 	}
 
 	h3 {
-		font-size: var(--font-size-18);
-		line-height: var(--font-size-18);
-		border-bottom: 2px solid var(--primary-background-heading);
-		margin-bottom: 0.5rem;
+		font: {
+			size: var(--size-18px);
+		}
+		border-bottom: 2px solid var(--background-heading);
 	}
 
 	h4 {
-		font-size: var(--font-size-16);
-		line-height: var(--font-size-16);
-		border-bottom: 1px solid var(--primary-background-heading);
-		margin-bottom: 0.5rem;
+		font: {
+			size: var(--size-16px);
+		}
+		border-bottom: 1px solid var(--background-heading);
 	}
-
-	i[class] { font-family: "Font Awesome 6 Pro" }
-	i.fab { font-family: "Font Awesome 6 Brands"}
 
 	select,
 	input,
 	option,
 	textarea {
-		border: none;
-		background: rgba(0, 0, 0, 0.25);
-		box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.5);
-		// border-radius: 0;
-		// height: 25px;
-		// margin: 0;
-		// padding: 0;
-		// vertical-align: top;
+		background: var(--background-input);
+		border: var(--border-input);
+		box-shadow: var(--box-shadow-input);
 
 		&[type="text"], &[data-type="string"], &[data-type="string"] option {
 
@@ -106,7 +105,7 @@
 
 		&[type="number"], &[data-type="number"], &[data-type="number"] option {
 			text-align: right;
-			font-family: "Kirsty";
+			font-family: var(--font-emphasis);
 		}
 
 		option {
@@ -116,7 +115,7 @@
 	}
 
 	p {
-		margin: 0.5em 0;
+		margin: 0.5rem 0;
 		min-height: 1rem;
 	}
 }
