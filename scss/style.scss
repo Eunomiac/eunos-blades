@@ -45,39 +45,79 @@ $light_green: rgb(18, 160, 18);
 
  body.vtt.game.system-eunos-blades {
 
+     #interface {
+         // font-family: "Fjalla One";
+     }
+
 		#euno-clock-keeper-overlay {
 			margin-top: toRem(4px);
 			@import "./core/reset";
 			@import './components/clocks-overlay';
 		}
 
+        #interface,
 		#controls,
 		#navigation,
 		#hotbar,
 		#players {
 			@import "./core/reset";
-			opacity: 0.5;
-			transition: 0.25s;
+            &, * {
+                --font-primary: "Fjalla One";
+                --font-heading: "Fjalla One";
+                --font-weight-heading: normal;
+                --text-shadow-heading: none;
+                --line-height-heading: 1.2;
+            }
+            h1, h2, h3, h4 {
+                margin: 0;
+                border: 0;
+            }
 
 			.control-tools .scene-control:hover {
 				height: calc(var(--blades-spacer-button-lg) - 2px);
 				width: calc(var(--blades-spacer-button-lg) - 2px);
 			}
 
-			&:hover { opacity: 1 }
+            #chat {
+			     @import "./core/reset";
+
+                &, * {
+                    --font-primary: "Minion Pro";
+                    --font-heading: "Kirsty";
+                    --font-weight-heading: normal;
+                    --text-shadow-heading: none;
+                    --line-height-heading: 1.2;
+                }
+			     @import './chat/chat';
+		  }
+
 		}
 
-		#chat {
-			@import "./core/reset";
-			@import './chat/chat';
-		}
+    #controls,
+    #navigation,
+    #hotbar,
+    #players {
+            opacity: 0.5;
+			transition: 0.25s;
+			&:hover { opacity: 1 }
+     }
+
+
 
 		.app.window-app {
 			@import "./core/reset";
 			@import './core/text-styles';
 
-			.editor:not(.tinymce) .editor-content {
-				@import './tinymce/tinymce-content';
+			.editor:not(.tinymce) {
+				.editor-edit {
+					display: block;
+					opacity: 0.25;
+
+					&:hover { opacity: 1 }
+				}
+				.editor-content {
+					@import './tinymce/tinymce-content';
+				}
 			}
 
 			&.sheet,

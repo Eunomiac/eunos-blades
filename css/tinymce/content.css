@@ -112,9 +112,12 @@ html, :root {
     --blades-black-nums: 32, 32, 32;
     --blades-black-dark-nums: 0, 0, 0;
     --blades-gold-bright-nums: 253, 212, 112;
-    --blades-gold-nums: 171, 146, 84;
+    --blades-gold-nums: 218, 165, 32;
     --blades-red-nums: 132, 12, 36;
     --blades-red-bright-nums: 220, 20, 60;
+    color: #fdd470;
+    color: goldenrod;
+    color: #ab9254;
     --blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
     --blades-white: rgba(var(--blades-white-nums), 1);
     --blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
@@ -389,31 +392,65 @@ html, :root {
       font-size: 20px;
       line-height: 24px;
       padding: 3px; }
-    html table th, html table td, :root table th, :root table td {
+    html table th,
+    html table td, :root table th,
+    :root table td {
       border: 1px solid var(--blades-grey);
       padding: 0.4rem; }
-    html table.items-list.effects-list thead th, html table.items-list.effects-list tbody th, :root table.items-list.effects-list thead th, :root table.items-list.effects-list tbody th {
+    html table.items-list.effects-list thead th,
+    html table.items-list.effects-list tbody th, :root table.items-list.effects-list thead th,
+    :root table.items-list.effects-list tbody th {
       margin: 0 !important; }
-    html table.items-list.effects-list thead th:nth-of-type(1), html table.items-list.effects-list thead td:nth-of-type(1), html table.items-list.effects-list tbody th:nth-of-type(1), html table.items-list.effects-list tbody td:nth-of-type(1), :root table.items-list.effects-list thead th:nth-of-type(1), :root table.items-list.effects-list thead td:nth-of-type(1), :root table.items-list.effects-list tbody th:nth-of-type(1), :root table.items-list.effects-list tbody td:nth-of-type(1) {
+    html table.items-list.effects-list thead th:nth-of-type(1),
+    html table.items-list.effects-list thead td:nth-of-type(1),
+    html table.items-list.effects-list tbody th:nth-of-type(1),
+    html table.items-list.effects-list tbody td:nth-of-type(1), :root table.items-list.effects-list thead th:nth-of-type(1),
+    :root table.items-list.effects-list thead td:nth-of-type(1),
+    :root table.items-list.effects-list tbody th:nth-of-type(1),
+    :root table.items-list.effects-list tbody td:nth-of-type(1) {
       width: 40%; }
-    html table.items-list.effects-list thead th:nth-of-type(2), html table.items-list.effects-list thead td:nth-of-type(2), html table.items-list.effects-list tbody th:nth-of-type(2), html table.items-list.effects-list tbody td:nth-of-type(2), :root table.items-list.effects-list thead th:nth-of-type(2), :root table.items-list.effects-list thead td:nth-of-type(2), :root table.items-list.effects-list tbody th:nth-of-type(2), :root table.items-list.effects-list tbody td:nth-of-type(2) {
+    html table.items-list.effects-list thead th:nth-of-type(2),
+    html table.items-list.effects-list thead td:nth-of-type(2),
+    html table.items-list.effects-list tbody th:nth-of-type(2),
+    html table.items-list.effects-list tbody td:nth-of-type(2), :root table.items-list.effects-list thead th:nth-of-type(2),
+    :root table.items-list.effects-list thead td:nth-of-type(2),
+    :root table.items-list.effects-list tbody th:nth-of-type(2),
+    :root table.items-list.effects-list tbody td:nth-of-type(2) {
       width: 30%;
       text-align: center; }
-    html table.items-list.effects-list thead th:nth-of-type(3), html table.items-list.effects-list thead td:nth-of-type(3), html table.items-list.effects-list tbody th:nth-of-type(3), html table.items-list.effects-list tbody td:nth-of-type(3), :root table.items-list.effects-list thead th:nth-of-type(3), :root table.items-list.effects-list thead td:nth-of-type(3), :root table.items-list.effects-list tbody th:nth-of-type(3), :root table.items-list.effects-list tbody td:nth-of-type(3) {
+    html table.items-list.effects-list thead th:nth-of-type(3),
+    html table.items-list.effects-list thead td:nth-of-type(3),
+    html table.items-list.effects-list tbody th:nth-of-type(3),
+    html table.items-list.effects-list tbody td:nth-of-type(3), :root table.items-list.effects-list thead th:nth-of-type(3),
+    :root table.items-list.effects-list thead td:nth-of-type(3),
+    :root table.items-list.effects-list tbody th:nth-of-type(3),
+    :root table.items-list.effects-list tbody td:nth-of-type(3) {
       width: 15%;
       text-align: center; }
-    html table.items-list.effects-list thead th:nth-of-type(4), html table.items-list.effects-list thead td:nth-of-type(4), html table.items-list.effects-list tbody th:nth-of-type(4), html table.items-list.effects-list tbody td:nth-of-type(4), :root table.items-list.effects-list thead th:nth-of-type(4), :root table.items-list.effects-list thead td:nth-of-type(4), :root table.items-list.effects-list tbody th:nth-of-type(4), :root table.items-list.effects-list tbody td:nth-of-type(4) {
+    html table.items-list.effects-list thead th:nth-of-type(4),
+    html table.items-list.effects-list thead td:nth-of-type(4),
+    html table.items-list.effects-list tbody th:nth-of-type(4),
+    html table.items-list.effects-list tbody td:nth-of-type(4), :root table.items-list.effects-list thead th:nth-of-type(4),
+    :root table.items-list.effects-list thead td:nth-of-type(4),
+    :root table.items-list.effects-list tbody th:nth-of-type(4),
+    :root table.items-list.effects-list tbody td:nth-of-type(4) {
       width: 15%;
       text-align: right; }
-    html table.items-list.effects-list thead td, html table.items-list.effects-list tbody td, :root table.items-list.effects-list thead td, :root table.items-list.effects-list tbody td {
+    html table.items-list.effects-list thead td,
+    html table.items-list.effects-list tbody td, :root table.items-list.effects-list thead td,
+    :root table.items-list.effects-list tbody td {
       line-height: 24px;
       margin: 0;
       vertical-align: middle; }
-    html table.items-list.effects-list thead img, html table.items-list.effects-list tbody img, :root table.items-list.effects-list thead img, :root table.items-list.effects-list tbody img {
+    html table.items-list.effects-list thead img,
+    html table.items-list.effects-list tbody img, :root table.items-list.effects-list thead img,
+    :root table.items-list.effects-list tbody img {
       height: 24px;
       width: 24px;
       vertical-align: middle; }
-    html table.items-list.effects-list thead h4, html table.items-list.effects-list tbody h4, :root table.items-list.effects-list thead h4, :root table.items-list.effects-list tbody h4 {
+    html table.items-list.effects-list thead h4,
+    html table.items-list.effects-list tbody h4, :root table.items-list.effects-list thead h4,
+    :root table.items-list.effects-list tbody h4 {
       display: inline-block;
       line-height: 24px;
       margin: 0;
@@ -449,7 +486,10 @@ html, :root {
   html .stripe label, :root .stripe,
   :root .stripe label {
     background-color: var(--blades-white) !important;
-    color: var(--blades-black) !important; }
+    color: var(--blades-black) !important;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    line-height: 1.5rem; }
   html .stripe-tooth-body label, :root .stripe-tooth-body label {
     color: var(--blades-black) !important; }
   html label.black-label, :root label.black-label {
@@ -459,7 +499,9 @@ html, :root {
     background-color: var(--blades-grey); }
   html .label-stripe-gray, :root .label-stripe-gray {
     margin: 0; }
-    html .label-stripe-gray th, html .label-stripe-gray th > *:not(:hover), :root .label-stripe-gray th, :root .label-stripe-gray th > *:not(:hover) {
+    html .label-stripe-gray th,
+    html .label-stripe-gray th > *:not(:hover), :root .label-stripe-gray th,
+    :root .label-stripe-gray th > *:not(:hover) {
       color: var(--blades-white-bright);
       text-shadow: 1px 1px 0px var(--blades-black-dark); }
 

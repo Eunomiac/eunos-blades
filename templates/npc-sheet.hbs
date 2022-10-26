@@ -62,6 +62,7 @@
 				</div>
 			</div>
 
+				{{#if isGM}}
 			<div id="npc-{{actor._id}}-randomizer" class="tab flex-vertical randomizer" data-tab="randomizer">
 				{{> "systems/eunos-blades/templates/parts/button-icon.hbs"
 					blockClass="tooltip-left"
@@ -88,6 +89,7 @@
 					{{/each}}
 				</div>
 			</div>
+			{{/if}}
 		</div>
 	</section>
 </form>

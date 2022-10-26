@@ -1191,6 +1191,9 @@ body {
         body #navigation #scene-list .scene:last-of-type {
           -webkit-margin-end: 0;
           margin-inline-end: 0; }
+        body #navigation #scene-list .scene.gm {
+          background: #272000;
+          border: 1px solid var(--blades-gold); }
         body #navigation #scene-list .scene:not(.gm) {
           background-color: rgba(var(--color-background), 0.8);
           background-image: none; }
@@ -2470,7 +2473,7 @@ body {
     grid-template-columns: min-content min-content 1fr min-content min-content;
     grid-template-rows: -webkit-min-content -webkit-min-content -webkit-min-content;
     grid-template-rows: min-content min-content min-content;
-    grid-template-areas: "resource resource resource resource resource" "death hurt input heal life" "deathfail deathfail . deathsave deathsave";
+    grid-template-areas: "resource resource resource resource resource" "death hurt input heal life" "deathfail deathfail . deathsave deathsave";
     gap: var(--blades-spacer-base); }
   body .alwayshp-btn {
     -webkit-box-flex: 0;
@@ -8033,7 +8036,7 @@ body .sidebar-popout #playlists #currently-playing .sound {
   -webkit-box-flex: 1;
   -ms-flex: 1 1 100%;
   flex: 1 1 100%;
-  grid-template-areas: "name controls" "playback playback";
+  grid-template-areas: "name controls" "playback playback";
   grid-template-columns: 1fr -webkit-min-content;
   grid-template-columns: 1fr min-content;
   grid-template-rows: -webkit-min-content -webkit-min-content;

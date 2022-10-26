@@ -11,12 +11,14 @@
 			"look": "",
 			"heritage": "",
 			"background": "",
-			"background-details": "",
 			"vice": "",
 			"vice-purveyor": "",
 			"playbook": "",
 			"acquaintances": [],
 			"acquaintances_label": "BITD.Acquaintances",
+			"description": "",
+			"notes": "",
+			"gm_notes": "",
 			"stress": {
 				"value": [
 					0

@@ -1,43 +1,112 @@
+.window-header {
+    background: var(--blades-black-dark);
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    justify-items: center;
+    > * {
+        flex-basis: auto;
+        
+        // flex-grow: 1;
+        flex-shrink: 0.5;
+    }
+    .window-title {
+        border: none;
+        margin: 0;
+        line-height: 1.2;
+        flex-shrink: 0.5;
+    }
+    a {
+        margin: 0 toRem(5px);
+        i {
+            color: var(--blades-white-bright);
+        }
+    }
+    .close {
+        font-size: 0;
+        margin: 0;
+        transform: scale(1.5);
+        i {
+            font-size: initial;
+            font-weight: bold;
+            color: var(--blades-white-bright);
+            font-size: toRem(20px);
+            line-height: 1;
+            margin-top: toRem(-1px);
+            
+            font-family: Kirsty;
+            transform-origin: center center;
+            transform: scaleY(0.75);
+            &::before {
+                content: "X";
+                padding-top: toRem(4px);
+            }
+        }
+    }
+    
+}
 
 .window-content {
-	background: var(--blades-black);
-	padding: var(--content-padding);
-    form {
-				@import "../core/text-styles";
-        section {
-            select {
-                color: var(--blades-white);
+  background: var(--blades-black);
+  padding: var(--content-padding);
+  form.editable {
+    @import "../core/text-styles";
+      padding: 0 !important;
+    section {
+
+      .nav-panel {
+        nav {
+          background-color: var(--blades-grey-bright);
+            border: 2px solid var(--blades-white);
+          padding: 0 toRem(10px);
+            height: toRem(24px);
+            overflow: visible;
+
+          .item {
+            color: var(--blades-black);
+            padding: 0 toRem(10px);
+            font-family: Kirsty;
+            line-height: toRem(20px);
+            transition: 0.25s;
+            transform-origin: center center;
+            white-space: nowrap;
+
+            &.active {
+              background: linear-gradient(
+                to right,
+                transparent,
+                var(--blades-white-bright) 25%,
+                var(--blades-white-bright) 75%, 
+                transparent
+              );
+              transform: scale(1.2);
+              position: relative;
+              z-index: 2;
             }
 
-						.nav-panel {
-							nav {
-								background-color: var(--blades-white);
-								padding: 0 10px;
-
-								.item {
-									color: var(--blades-black);
-									padding: 0 10px;
-
-									&.active {
-										background-color: var(--blades-white-bright);
-									}
-
-									&:hover {
-										color: var(--blades-black-dark);
-										background-color: var(--blades-white-bright);
-									}
-
-								}
-							}
-						}
-						.turf-list {
-							@import '../components/turf-block';
-						}
+            &:hover:not(.active) {
+              color: var(--blades-black-dark);
+              transform: scale(1.2);
+              background: linear-gradient(
+                to right,
+                transparent,
+                var(--blades-white) 10%,
+                var(--blades-white-bright) 50%,
+                var(--blades-white) 90%, 
+                transparent
+              );
+            }
+          }
         }
-				.editor-tab {
-					position: relative;
-					width: calc(100% + 2 * var(--content-padding));
-					left: calc(-1 * var(--content-padding));
-				}
+      }
+      .turf-list {
+        @import "../components/turf-block";
+      }
     }
+    .editor-tab {
+      position: relative;
+      width: calc(100% + 2 * var(--content-padding));
+      left: calc(-1 * var(--content-padding));
+    }
+  }
 }

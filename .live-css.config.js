@@ -60,6 +60,8 @@ module.exports = {                          // Learn more about "module.exports"
         "logs",
         "temp",
         "tmp",
+				"**/*.min.css",
+				"**/tinymce/skin/**",
 
         "!node_modules/package/do-not-ignore.css"
     ],

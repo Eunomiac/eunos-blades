@@ -3689,7 +3689,7 @@ body.tox-dialog__disable-scroll {
 .tox .tox-image-tools__sidebar {
   height: 60px; }
 
-.tox-dialog.tox-dialog--width-lg .tox-dialog__body .tox-dialog__body-content .tox-textarea {
+.tox-dialog.tox-dialog--width-lg .tox-dialog__body .tox-dialog__body-content code {
   font-family: var(--font-mono); }
 
 .editor.tinymce {

@@ -1144,6 +1144,10 @@ body {
 						&:last-of-type {
 							margin-inline-end: 0;
 						}
+                        &.gm {
+                              background: #272000;
+                              border: 1px solid var(--blades-gold);
+                        }
 						&:not(.gm) {
 							background-color: rgba(var(--color-background), 0.8);
 							background-image: none;

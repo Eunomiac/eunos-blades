@@ -26,11 +26,10 @@ html,:root {
 }
 
 #tinymce {
-	--secret-text-display: initial;
-	// padding: var(--content-padding) !important;
-	// min-height: 150px;
-	height: auto;
-	max-height: 600px;
+	@import "./tinymce-content";
 
-	// @import "./tinymce-content";
+	--secret-text-display: initial;
+	padding: var(--content-padding) !important;
+	width: calc(100% + 2 * var(--content-padding));
+	margin-left: calc(-1 * var(--content-padding));
 }

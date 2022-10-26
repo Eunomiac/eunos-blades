@@ -183,7 +183,9 @@ const subGroup = (array, groupSize) => {
 };
 // #endregion ▮▮▮▮[UTILITY]▮▮▮▮
 
+const ISRAPIDGULPING = true;
 const ISMINIFYINGJS = false;
+const ISMINIFYINGCSS = false;
 const ISBUILDINGDIST = false;
 const ISDEPLOYING = false;
 const ISANALYZING = false;
@@ -437,14 +439,26 @@ const PLUMBING = {
 			.pipe(PIPES.closePipe("jsMin", source, destination));
 	},
 	cssFull: (source, destination) => function pipeFullCSS() {
-		return src(source, {allowEmpty: true})
-			.pipe(PIPES.openPipe("cssFull")())
-			.pipe(sasser({outputStyle: "nested"}))
-			.pipe(bundler([
-				// filler(),
-				prefixer({cascade: false})
-			]))
-			.pipe(PIPES.closePipe("cssFull", source, destination));
+		if (ISRAPIDGULPING) {
+			return src(source, {allowEmpty: true})
+				.pipe(PIPES.openPipe("cssFull")())
+				.pipe(sasser(/* {outputStyle: "nested"} */))
+				// .pipe(bundler([
+				// 	// filler(),
+				// 	prefixer({cascade: false})
+				// ]))
+				.pipe(renamer({suffix: ".min"}))
+				.pipe(PIPES.closePipe("cssFull", source, destination));
+		} else {
+			return src(source, {allowEmpty: true})
+				.pipe(PIPES.openPipe("cssFull")())
+				.pipe(sasser({outputStyle: "nested"}))
+				.pipe(bundler([
+					// filler(),
+					prefixer({cascade: false})
+				]))
+				.pipe(PIPES.closePipe("cssFull", source, destination));
+		}
 	},
 	cssMin: (source, destination) => function pipeMinCSS() {
 		return src(source, {allowEmpty: true})
@@ -528,10 +542,16 @@ BUILDFUNCS.js = series(
 // #region ████████ CSS: Compiling CSS ████████ ~
 BUILDFUNCS.css = parallel(...((sourceDestGlobs) => Object.entries(sourceDestGlobs)
 	.map(([destGlob, sourceGlobs]) => [...sourceGlobs
-		.map((sourceGlob) => [
-			PLUMBING.cssFull(sourceGlob, destGlob),
-			PLUMBING.cssMin(sourceGlob, destGlob)
-		])
+		.map((sourceGlob) => {
+			if (ISRAPIDGULPING) {
+				return [PLUMBING.cssFull(sourceGlob, destGlob)];
+			} else {
+				return [
+					PLUMBING.cssFull(sourceGlob, destGlob),
+					PLUMBING.cssMin(sourceGlob, destGlob)
+				];
+			}
+		} )
 	]).flat())(BUILDFILES.css).flat());
 
 // BUILDFUNCS.css = parallel(...((sourceDestGlobs) => {

@@ -141,9 +141,13 @@ $isCompactLayout: true;
 	--blades-black-nums: 32, 32, 32;
 	--blades-black-dark-nums: 0, 0, 0;
 	--blades-gold-bright-nums: 253, 212, 112;
-	--blades-gold-nums: 171, 146, 84;
+	--blades-gold-nums: 218, 165, 32; // 171, 146, 84;
 	--blades-red-nums: 132, 12, 36;
 	--blades-red-bright-nums: 220, 20, 60;
+
+	color: rgb(253, 212, 112);
+	color: rgb(218, 165, 32);
+	color: rgb(171, 146, 84);
 
 	--blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
 	--blades-white: rgba(var(--blades-white-nums), 1);

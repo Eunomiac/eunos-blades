@@ -195,9 +195,10 @@
         <a class="item" data-tab="loadout">{{localize "BITD.Loadout"}}</a>
         <a class="item" data-tab="character-notes">{{localize "BITD.Notes"}}</a>
         {{#if isGM}}
+					<a class="item" data-tab="gm-notes">GM Notes</a>
           <a class="item" data-tab="effects">{{localize "BITD.Effects"}}</a>
+       		<a class="item" data-tab="all-character-items">{{localize "BITD.AllItems"}}</a>
         {{/if}}
-        <a class="item" data-tab="all-character-items">{{localize "BITD.AllItems"}}</a>
       </nav>
 
 			{{!-- Abilities Tab --}}
@@ -232,7 +233,7 @@
         </div>
       </div>
 
-      {{!-- Owned Items Tab --}}
+      {{!-- Loadout Tab --}}
       <div id="character-{{actor._id}}-loadout" class="tab flex-vertical loadout" data-tab="loadout">
         <div class="label-stripe flex-horizontal">
            <p>{{localize "BITD.Loadout"}} <a class="item-add-popup" data-item-type="item"><i class="fas fa-plus-square"></i></a></p>
@@ -259,12 +260,25 @@
         </div>
       </div>
 
-      {{!-- Notes Tab --}}
-      <div class="tab flex-vertical notes" data-tab="character-notes">
+      {{!-- Description & Notes Tab --}}
+      <div class="tab flex-vertical character-notes" data-tab="character-notes">
+        <div class="label-stripe">
+          <p>Description</p>
+        </div>
+				{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
         <div class="label-stripe">
           <p>{{localize "BITD.Notes"}}</p>
         </div>
-        <textarea rows="18" name="data.description">{{{data.description}}}</textarea>
+				{{editor content=data.notes target="data.notes" button=true owner=owner editable=editable}}
+      </div>
+
+			{{#if isGM}}
+      {{!-- GM Notes Tab --}}
+      <div class="tab flex-vertical gm-notes" data-tab="gm-notes">
+        <div class="label-stripe">
+          <p>GM Notes</p>
+        </div>
+				{{editor content=data.gm_notes target="data.gm_notes" button=true owner=owner editable=editable}}
       </div>
 
       {{!-- Active Effects Tab --}}
@@ -290,6 +304,7 @@
         </div>
         {{/each}}
       </div>
+			{{/if}}
     </div>
     {{!-- Attributes --}}
     {{> "systems/eunos-blades/templates/parts/attributes.hbs" actor=actor}}

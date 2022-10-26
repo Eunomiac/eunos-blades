@@ -24,7 +24,7 @@ export function initTinyMCEStyles() {
 			content_css: `systems/eunos-blades/css/tinymce/content.css?${new Date().getTime()}`,
 			font_css: "systems/eunos-blades/css/fonts.css",
 			max_height: 500,
-			min_height: 50,
+			min_height: 100,
 			autoresize_overflow_padding: 0,
 			autoresize_bottom_margin: 0, // 25,
 			menubar: false,
