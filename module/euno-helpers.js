@@ -28,20 +28,22 @@ export default class BladesHelpers {
         return actor.createEmbeddedDocuments("Item", [data]);
     }
         static async getAllItemsByType(item_type, game) {
-        let list_of_items = [], game_items = [], compendium_items = [];
-        game_items = game.items.filter(e => e.type === item_type).map(e => { return e.data; });
-        const pack = game.packs.find(e => e.metadata.name === item_type);
-        if (!pack) {
+        if (!game.items) {
             return [];
         }
-        const compendium_content = await pack.getDocuments();
-        compendium_items = compendium_content.map(e => { return e.data; });
-        list_of_items = game_items.concat(compendium_items);
-        list_of_items.sort(function (a, b) {
-            const nameA = a.name.toUpperCase(), nameB = b.name.toUpperCase();
+        const items = game.items.filter((item) => item.data.type === item_type);
+        const pack = game.packs.find((pack) => pack.metadata.name === item_type);
+        if (!pack) {
+            return items;
+        }
+        const pack_items = await pack.getDocuments();
+        items.push(...pack_items);
+        items.sort(function (a, b) {
+            const nameA = a.data.name.toUpperCase();
+            const nameB = b.data.name.toUpperCase();
             return nameA.localeCompare(nameB);
         });
-        return list_of_items;
+        return items;
     }
     static async getIconMap(item_type) {
         item_type = [item_type].flat();

@@ -5529,24 +5529,6 @@ body .-emu-layout .window-app.sheet[id*="template-config"] form {
 	padding: var(--blades-spacer-sm);
 	position: relative;
 }
-:root {
-	scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
-	scrollbar-width: thin;
-}
-::-webkit-scrollbar {
-	width: var(--blades-spacer-sm);
-}
-::-webkit-scrollbar-track {
-	box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
-	border: none;
-	border-radius: 0;
-}
-::-webkit-scrollbar-thumb {
-	background-color: rgba(var(--color-background-light), 1);
-	border: none;
-	border-radius: 0;
-	outline: none;
-}
 *::before,
 *::after {
 	box-sizing: border-box;

@@ -1,52 +1,32 @@
 & {
 
-	.text-secret:not(.user-is-gm) {
-		display: var(--secret-text-display);
+	blockquote {
+		border-left: 2px solid var(--blades-grey-bright);
+		margin-left: 1.5rem;
+		padding-left: 1rem;
 	}
 
-	.label-stripe {
-		background-color: var(--blades-grey);
-	}
-	.label-stripe-gray {
-			margin: 0;
-			th, th > *:not(:hover) {
-					color: var(--blades-white-bright);
-					text-shadow: 1px 1px 0px var(--blades-black-dark);
-			}
-	}
+	table {
+		border-collapse: collapse;
 
-	.clock-zero-label {
-		color: var(--blades-white);
-	}
+		th.black-white,
+		th.black-white label {
+			background-color: var(--blades-white) !important;
+			text-shadow: none;
+			color: var(--blades-black) !important;
+			font-family: var(--font-emphasis);
+			font-weight: normal;
+			font-size: 20px;
+			line-height: 24px;
+			padding: 3px;
+		}
 
-	.stripe,
-	.stripe label {
-		background-color: var(--blades-white) !important;
-		color: var(--blades-black) !important;
-	}
+		th, td {
+			border: 1px solid var(--blades-grey);
+			padding: 0.4rem;
+		}
 
-	.stripe-tooth-body label {
-		color: var(--blades-black) !important;
-	}
-
-	label.black-label {
-		background-color: var(--blades-white);
-		color: var(--blades-black) !important;
-	}
-
-	th.black-white,
-	th.black-white label {
-		background-color: var(--blades-white) !important;
-		text-shadow: none;
-		color: var(--blades-black) !important;
-		font-family: var(--font-emphasis);
-		font-weight: normal;
-		font-size: 20px;
-		line-height: 24px;
-		padding: 3px;
-	}
-
-	table.items-list {
+		&.items-list {
 			&.effects-list {
 					thead, tbody {
 							th {
@@ -87,5 +67,77 @@
 					}
 			}
 	}
+
+	}
+
+	figure {
+		display: table;
+		margin: 1rem auto;
+
+		figcaption {
+			font-family: var(--font-default-small);
+			color: var(--blades-grey-bright);
+			display: block;
+			margin-top: 0.25rem;
+			text-align: center;
+		}
+	}
+
+	hr {
+		border-color: var(--blades-grey-bright);
+		border-style: solid;
+		border-width: 1px 0 0 0;
+	}
+
+	code {
+		padding: 0.1rem 0.2rem;
+	}
+
+	.text-secret {
+		display: var(--secret-text-display, "none");
+		background-color: var(--blades-black-dark);
+		color: var(--blades-grey);
+		font-weight: bold;
+		font-style: italic;
+		border-radius: 3px;
+		outline: 1px dotted var(--blades-white);
+		padding: 0 #{toRem(5px)};
+		margin: 0 #{toRem(5px)};
+	}
+
+	.clock-zero-label {
+		color: var(--blades-white);
+	}
+
+	// #region ████████ STRIPE LABELS: "Stripe"-type Labels & Stripe "Teeth" ████████ ~
+	.stripe,
+	.stripe label {
+		background-color: var(--blades-white) !important;
+		color: var(--blades-black) !important;
+	}
+
+	.stripe-tooth-body label {
+		color: var(--blades-black) !important;
+	}
+
+	label.black-label {
+		background-color: var(--blades-white);
+		color: var(--blades-black) !important;
+	}
+
+	.label-stripe {
+		background-color: var(--blades-grey);
+	}
+	.label-stripe-gray {
+			margin: 0;
+			th, th > *:not(:hover) {
+					color: var(--blades-white-bright);
+					text-shadow: 1px 1px 0px var(--blades-black-dark);
+			}
+	}
+// #endregion ▄▄▄▄▄ STRIPE LABELS ▄▄▄▄▄
+
+
+
 
 }

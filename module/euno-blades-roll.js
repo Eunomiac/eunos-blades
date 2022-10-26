@@ -5,6 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import BladesHelpers from "./euno-helpers.js";
 export async function bladesRoll(dice_amount, attribute_name = "", position = "risky", effect = "standard", note = "") {
     let zeromode = false;
     if (dice_amount < 0) {

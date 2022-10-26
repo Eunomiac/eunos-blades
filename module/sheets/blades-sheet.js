@@ -5,8 +5,8 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import BladesHelpers from "./euno-helpers.js";
-import { BladesItem } from "./blades-item.js";
+import BladesHelpers from "../euno-helpers.js";
+import { BladesItem } from "../blades-item.js";
 export class BladesSheet extends ActorSheet {
         
         activateListeners(html) {

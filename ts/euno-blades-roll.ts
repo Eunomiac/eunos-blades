@@ -1,3 +1,4 @@
+import BladesHelpers from "./euno-helpers.js";
 /**
  * Roll Dice.
  * @param {int} dice_amount

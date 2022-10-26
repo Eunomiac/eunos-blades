@@ -5,8 +5,8 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import { BladesItemSheet } from "./sheets/blades-item-sheet.js";
-import { BladesItem } from "./blades-item.js";
+import { BladesItemSheet } from "./blades-item-sheet.js";
+import { BladesItem } from "../blades-item.js";
 export default class EunoClockKeeperSheet extends BladesItemSheet {
         static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {

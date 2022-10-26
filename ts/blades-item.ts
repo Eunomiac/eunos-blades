@@ -1,11 +1,10 @@
-import EunoClockKeeperSheet from "./euno-clock-keeper-sheet.js";
+// import EunoClockKeeperSheet from "./euno-clock-keeper-sheet.js";
 import BladesHelpers from "./euno-helpers.js";
-import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs.js";
-import {BaseUser} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents.mjs/baseUser.js";
+import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs.js";
+import type {BaseUser} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents.mjs/baseUser.js";
 import {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 import {BladesActor} from "./blades-actor.js";
-import {AccessExpression, GetAccessorDeclaration} from "typescript";
 
 /**
  * Extend the basic Item
@@ -232,11 +231,6 @@ export enum BladesItemType {
 	"clock_keeper"
 }
 
-namespace BISystem {
-
-}
-
-
 export declare interface BladesItem {
 	parent: BladesActor | null,
 	system: {
@@ -326,6 +320,7 @@ export declare interface BladesItem {
 		scenes?: Array<{id: string, name: string}>,
 		targetScene?: string
 	}
+
 }
 
 export interface BladesFaction<T extends "faction"> extends BladesItem {
@@ -346,7 +341,6 @@ export type BladesItemSpec<Type extends string> = BladesItem
 	& {
 		type: Type,
 		system: {
-			type: Type,
-
+			type: Type
 		}
 	}

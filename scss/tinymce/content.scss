@@ -1,11 +1,36 @@
 // @import "../fonts";
 
-#tinymce {
+html,:root {
 	@import "../core/vars";
 	@import "../core/globals";
 	@import "../core/functions";
 	@import "../core/reset";
 	@import "../core/text-styles";
+
+	scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
+	scrollbar-width: thin;
+}
+::-webkit-scrollbar {
+	width: var(--blades-spacer-sm);
+}
+::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
+	border: none;
+	border-radius: 0;
+}
+::-webkit-scrollbar-thumb {
+	background-color: rgba(var(--color-background-light), 1);
+	border: none;
+	border-radius: 0;
+	outline: none;
+}
+
+#tinymce {
 	--secret-text-display: initial;
-	@import "./tinymce-content";
+	// padding: var(--content-padding) !important;
+	// min-height: 150px;
+	height: auto;
+	max-height: 600px;
+
+	// @import "./tinymce-content";
 }

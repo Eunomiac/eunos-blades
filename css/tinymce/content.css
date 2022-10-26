@@ -1,7 +1,8 @@
-#tinymce {
+html, :root {
   @use "sass:math";
-  --secret-text-display: initial; }
-  #tinymce {
+  scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
+  scrollbar-width: thin; }
+  html, :root {
     --color-text-light-highlight: #f0f0e0;
     --color-text-light-heading: #c9c7b8;
     --color-text-light-primary: #b5b3a4;
@@ -205,7 +206,7 @@
     --blades-spacer-button-sm: 1.25rem;
     --blades-spacer-button-xs: 1.125rem;
     --blades-spacer-sidebar: 17.875rem; }
-  #tinymce .button-icon, #tinymce .toggle-icon {
+  html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
     position: relative;
     height: 1.5rem;
     width: 1.5rem;
@@ -220,7 +221,7 @@
     -ms-flex-align: center;
     align-items: center;
     text-shadow: none; }
-    #tinymce .button-icon i, #tinymce .toggle-icon i {
+    html .button-icon i, html .toggle-icon i, :root .button-icon i, :root .toggle-icon i {
       height: 1.5rem;
       width: 1.5rem;
       line-height: 1.75rem;
@@ -228,9 +229,9 @@
       opacity: 0.75;
       margin-top: -0.125rem;
       pointer-events: none; }
-      #tinymce .button-icon i.toggle-off, #tinymce .toggle-icon i.toggle-off {
+      html .button-icon i.toggle-off, html .toggle-icon i.toggle-off, :root .button-icon i.toggle-off, :root .toggle-icon i.toggle-off {
         opacity: 0.25; }
-    #tinymce .button-icon .tooltip, #tinymce .toggle-icon .tooltip {
+    html .button-icon .tooltip, html .toggle-icon .tooltip, :root .button-icon .tooltip, :root .toggle-icon .tooltip {
       display: none;
       pointer-events: none;
       position: absolute;
@@ -245,12 +246,12 @@
       border: 1px solid var(--blades-white-bright);
       text-align: center;
       white-space: nowrap; }
-      #tinymce .button-icon .tooltip b, #tinymce .toggle-icon .tooltip b {
+      html .button-icon .tooltip b, html .toggle-icon .tooltip b, :root .button-icon .tooltip b, :root .toggle-icon .tooltip b {
         color: var(--blades-white-bright);
         font-size: 12px;
         font-family: var(--font-emphasis);
         text-transform: uppercase; }
-    #tinymce .button-icon .hidden-toggle, #tinymce .toggle-icon .hidden-toggle {
+    html .button-icon .hidden-toggle, html .toggle-icon .hidden-toggle, :root .button-icon .hidden-toggle, :root .toggle-icon .hidden-toggle {
       margin: 0;
       border: none;
       opacity: 0;
@@ -258,18 +259,18 @@
       -webkit-transition: 0.25;
       -o-transition: 0.25;
       transition: 0.25; }
-      #tinymce .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, #tinymce .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off {
+      html .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, html .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off {
         display: none; }
-      #tinymce .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, #tinymce .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
+      html .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, html .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
         display: none; }
-    #tinymce .button-icon.tooltip-left .tooltip, #tinymce .toggle-icon.tooltip-left .tooltip {
+    html .button-icon.tooltip-left .tooltip, html .toggle-icon.tooltip-left .tooltip, :root .button-icon.tooltip-left .tooltip, :root .toggle-icon.tooltip-left .tooltip {
       left: unset;
       right: 15px; }
-    #tinymce .button-icon:hover i, #tinymce .toggle-icon:hover i {
+    html .button-icon:hover i, html .toggle-icon:hover i, :root .button-icon:hover i, :root .toggle-icon:hover i {
       opacity: 1; }
-    #tinymce .button-icon:hover .tooltip, #tinymce .toggle-icon:hover .tooltip {
+    html .button-icon:hover .tooltip, html .toggle-icon:hover .tooltip, :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip {
       display: block; }
-  #tinymce {
+  html, :root {
     margin: 0;
     padding: 0;
     border: none;
@@ -283,7 +284,7 @@
     line-height: var(--line-height-default);
     text-shadow: var(--text-shadow-default);
     text-transform: var(--text-transform-default); }
-    #tinymce * {
+    html *, :root * {
       color: inherit;
       font-family: inherit;
       font-size: inherit;
@@ -293,16 +294,16 @@
       line-height: inherit;
       text-shadow: inherit;
       text-transform: inherit; }
-    #tinymce b, #tinymce strong {
+    html b, html strong, :root b, :root strong {
       font-weight: bold;
       color: var(--blades-white-bright); }
-    #tinymce i:not([class]), #tinymce em {
+    html i:not([class]), html em, :root i:not([class]), :root em {
       font-style: italic; }
-    #tinymce i[class] {
+    html i[class], :root i[class] {
       font-family: var(--font-awesome); }
-    #tinymce i.fab {
+    html i.fab, :root i.fab {
       font-family: var(--font-awesome-alt); }
-    #tinymce h1, #tinymce h2, #tinymce h3, #tinymce h4 {
+    html h1, html h2, html h3, html h4, :root h1, :root h2, :root h3, :root h4 {
       color: var(--color-heading);
       font-family: var(--font-heading);
       font-weight: var(--font-weight-heading);
@@ -311,143 +312,173 @@
       border: none;
       padding: 0;
       margin: 0 0 0.5rem 0; }
-    #tinymce h1 {
+    html h1, :root h1 {
       background: var(--background-heading);
       font-size: var(--size-20px);
       padding: 0.5rem;
       text-transform: uppercase; }
-    #tinymce h2 {
+    html h2, :root h2 {
       background: var(--background-heading);
       font-size: var(--size-18px);
       padding: 0.5rem;
       text-transform: uppercase; }
-    #tinymce h3 {
+    html h3, :root h3 {
       font-size: var(--size-18px);
       border-bottom: 2px solid var(--background-heading); }
-    #tinymce h4 {
+    html h4, :root h4 {
       font-size: var(--size-16px);
       border-bottom: 1px solid var(--background-heading); }
-    #tinymce select,
-    #tinymce input,
-    #tinymce option,
-    #tinymce textarea {
+    html select,
+    html input,
+    html option,
+    html textarea, :root select,
+    :root input,
+    :root option,
+    :root textarea {
       background: var(--background-input);
       border: var(--border-input);
       -webkit-box-shadow: var(--box-shadow-input);
       box-shadow: var(--box-shadow-input); }
-      #tinymce select[type="number"], #tinymce select[data-type="number"], #tinymce select[data-type="number"] option,
-      #tinymce input[type="number"],
-      #tinymce input[data-type="number"],
-      #tinymce input[data-type="number"] option,
-      #tinymce option[type="number"],
-      #tinymce option[data-type="number"],
-      #tinymce option[data-type="number"] option,
-      #tinymce textarea[type="number"],
-      #tinymce textarea[data-type="number"],
-      #tinymce textarea[data-type="number"] option {
+      html select[type="number"], html select[data-type="number"], html select[data-type="number"] option,
+      html input[type="number"],
+      html input[data-type="number"],
+      html input[data-type="number"] option,
+      html option[type="number"],
+      html option[data-type="number"],
+      html option[data-type="number"] option,
+      html textarea[type="number"],
+      html textarea[data-type="number"],
+      html textarea[data-type="number"] option, :root select[type="number"], :root select[data-type="number"], :root select[data-type="number"] option,
+      :root input[type="number"],
+      :root input[data-type="number"],
+      :root input[data-type="number"] option,
+      :root option[type="number"],
+      :root option[data-type="number"],
+      :root option[data-type="number"] option,
+      :root textarea[type="number"],
+      :root textarea[data-type="number"],
+      :root textarea[data-type="number"] option {
         text-align: right;
         font-family: var(--font-emphasis); }
-      #tinymce select option,
-      #tinymce input option,
-      #tinymce option option,
-      #tinymce textarea option {
+      html select option,
+      html input option,
+      html option option,
+      html textarea option, :root select option,
+      :root input option,
+      :root option option,
+      :root textarea option {
         color: var(--blades-white);
         background: var(--blades-black); }
-    #tinymce p {
+    html p, :root p {
       margin: 0.5rem 0;
       min-height: 1rem; }
-  #tinymce .text-secret:not(.user-is-gm) {
-    display: var(--secret-text-display); }
-  #tinymce .label-stripe {
-    background-color: var(--blades-grey); }
-  #tinymce .label-stripe-gray {
-    margin: 0; }
-    #tinymce .label-stripe-gray th, #tinymce .label-stripe-gray th > *:not(:hover) {
-      color: var(--blades-white-bright);
-      text-shadow: 1px 1px 0px var(--blades-black-dark); }
-  #tinymce .clock-zero-label {
+  html blockquote, :root blockquote {
+    border-left: 2px solid var(--blades-grey-bright);
+    margin-left: 1.5rem;
+    padding-left: 1rem; }
+  html table, :root table {
+    border-collapse: collapse; }
+    html table th.black-white,
+    html table th.black-white label, :root table th.black-white,
+    :root table th.black-white label {
+      background-color: var(--blades-white) !important;
+      text-shadow: none;
+      color: var(--blades-black) !important;
+      font-family: var(--font-emphasis);
+      font-weight: normal;
+      font-size: 20px;
+      line-height: 24px;
+      padding: 3px; }
+    html table th, html table td, :root table th, :root table td {
+      border: 1px solid var(--blades-grey);
+      padding: 0.4rem; }
+    html table.items-list.effects-list thead th, html table.items-list.effects-list tbody th, :root table.items-list.effects-list thead th, :root table.items-list.effects-list tbody th {
+      margin: 0 !important; }
+    html table.items-list.effects-list thead th:nth-of-type(1), html table.items-list.effects-list thead td:nth-of-type(1), html table.items-list.effects-list tbody th:nth-of-type(1), html table.items-list.effects-list tbody td:nth-of-type(1), :root table.items-list.effects-list thead th:nth-of-type(1), :root table.items-list.effects-list thead td:nth-of-type(1), :root table.items-list.effects-list tbody th:nth-of-type(1), :root table.items-list.effects-list tbody td:nth-of-type(1) {
+      width: 40%; }
+    html table.items-list.effects-list thead th:nth-of-type(2), html table.items-list.effects-list thead td:nth-of-type(2), html table.items-list.effects-list tbody th:nth-of-type(2), html table.items-list.effects-list tbody td:nth-of-type(2), :root table.items-list.effects-list thead th:nth-of-type(2), :root table.items-list.effects-list thead td:nth-of-type(2), :root table.items-list.effects-list tbody th:nth-of-type(2), :root table.items-list.effects-list tbody td:nth-of-type(2) {
+      width: 30%;
+      text-align: center; }
+    html table.items-list.effects-list thead th:nth-of-type(3), html table.items-list.effects-list thead td:nth-of-type(3), html table.items-list.effects-list tbody th:nth-of-type(3), html table.items-list.effects-list tbody td:nth-of-type(3), :root table.items-list.effects-list thead th:nth-of-type(3), :root table.items-list.effects-list thead td:nth-of-type(3), :root table.items-list.effects-list tbody th:nth-of-type(3), :root table.items-list.effects-list tbody td:nth-of-type(3) {
+      width: 15%;
+      text-align: center; }
+    html table.items-list.effects-list thead th:nth-of-type(4), html table.items-list.effects-list thead td:nth-of-type(4), html table.items-list.effects-list tbody th:nth-of-type(4), html table.items-list.effects-list tbody td:nth-of-type(4), :root table.items-list.effects-list thead th:nth-of-type(4), :root table.items-list.effects-list thead td:nth-of-type(4), :root table.items-list.effects-list tbody th:nth-of-type(4), :root table.items-list.effects-list tbody td:nth-of-type(4) {
+      width: 15%;
+      text-align: right; }
+    html table.items-list.effects-list thead td, html table.items-list.effects-list tbody td, :root table.items-list.effects-list thead td, :root table.items-list.effects-list tbody td {
+      line-height: 24px;
+      margin: 0;
+      vertical-align: middle; }
+    html table.items-list.effects-list thead img, html table.items-list.effects-list tbody img, :root table.items-list.effects-list thead img, :root table.items-list.effects-list tbody img {
+      height: 24px;
+      width: 24px;
+      vertical-align: middle; }
+    html table.items-list.effects-list thead h4, html table.items-list.effects-list tbody h4, :root table.items-list.effects-list thead h4, :root table.items-list.effects-list tbody h4 {
+      display: inline-block;
+      line-height: 24px;
+      margin: 0;
+      vertical-align: middle; }
+  html figure, :root figure {
+    display: table;
+    margin: 1rem auto; }
+    html figure figcaption, :root figure figcaption {
+      font-family: var(--font-default-small);
+      color: var(--blades-grey-bright);
+      display: block;
+      margin-top: 0.25rem;
+      text-align: center; }
+  html hr, :root hr {
+    border-color: var(--blades-grey-bright);
+    border-style: solid;
+    border-width: 1px 0 0 0; }
+  html code, :root code {
+    padding: 0.1rem 0.2rem; }
+  html .text-secret, :root .text-secret {
+    display: var(--secret-text-display, "none");
+    background-color: var(--blades-black-dark);
+    color: var(--blades-grey);
+    font-weight: bold;
+    font-style: italic;
+    border-radius: 3px;
+    outline: 1px dotted var(--blades-white);
+    padding: 0 0.3125rem;
+    margin: 0 0.3125rem; }
+  html .clock-zero-label, :root .clock-zero-label {
     color: var(--blades-white); }
-  #tinymce .stripe,
-  #tinymce .stripe label {
+  html .stripe,
+  html .stripe label, :root .stripe,
+  :root .stripe label {
     background-color: var(--blades-white) !important;
     color: var(--blades-black) !important; }
-  #tinymce .stripe-tooth-body label {
+  html .stripe-tooth-body label, :root .stripe-tooth-body label {
     color: var(--blades-black) !important; }
-  #tinymce label.black-label {
+  html label.black-label, :root label.black-label {
     background-color: var(--blades-white);
     color: var(--blades-black) !important; }
-  #tinymce th.black-white,
-  #tinymce th.black-white label {
-    background-color: var(--blades-white) !important;
-    text-shadow: none;
-    color: var(--blades-black) !important;
-    font-family: var(--font-emphasis);
-    font-weight: normal;
-    font-size: 20px;
-    line-height: 24px;
-    padding: 3px; }
-  #tinymce table.items-list.effects-list thead th, #tinymce table.items-list.effects-list tbody th {
-    margin: 0 !important; }
-  #tinymce table.items-list.effects-list thead th:nth-of-type(1), #tinymce table.items-list.effects-list thead td:nth-of-type(1), #tinymce table.items-list.effects-list tbody th:nth-of-type(1), #tinymce table.items-list.effects-list tbody td:nth-of-type(1) {
-    width: 40%; }
-  #tinymce table.items-list.effects-list thead th:nth-of-type(2), #tinymce table.items-list.effects-list thead td:nth-of-type(2), #tinymce table.items-list.effects-list tbody th:nth-of-type(2), #tinymce table.items-list.effects-list tbody td:nth-of-type(2) {
-    width: 30%;
-    text-align: center; }
-  #tinymce table.items-list.effects-list thead th:nth-of-type(3), #tinymce table.items-list.effects-list thead td:nth-of-type(3), #tinymce table.items-list.effects-list tbody th:nth-of-type(3), #tinymce table.items-list.effects-list tbody td:nth-of-type(3) {
-    width: 15%;
-    text-align: center; }
-  #tinymce table.items-list.effects-list thead th:nth-of-type(4), #tinymce table.items-list.effects-list thead td:nth-of-type(4), #tinymce table.items-list.effects-list tbody th:nth-of-type(4), #tinymce table.items-list.effects-list tbody td:nth-of-type(4) {
-    width: 15%;
-    text-align: right; }
-  #tinymce table.items-list.effects-list thead td, #tinymce table.items-list.effects-list tbody td {
-    line-height: 24px;
-    margin: 0;
-    vertical-align: middle; }
-  #tinymce table.items-list.effects-list thead img, #tinymce table.items-list.effects-list tbody img {
-    height: 24px;
-    width: 24px;
-    vertical-align: middle; }
-  #tinymce table.items-list.effects-list thead h4, #tinymce table.items-list.effects-list tbody h4 {
-    display: inline-block;
-    line-height: 24px;
-    margin: 0;
-    vertical-align: middle; }
-  #tinymce {
-    padding: var(--content-padding) !important;
-    min-height: 150px;
-    height: auto;
-    max-height: 600px; }
-    #tinymce blockquote {
-      border-left: 2px solid var(--blades-grey-bright);
-      margin-left: 1.5rem;
-      padding-left: 1rem; }
-    #tinymce table {
-      border-collapse: collapse; }
-      #tinymce table th, #tinymce table td {
-        border: 1px solid var(--blades-grey);
-        padding: 0.4rem; }
-    #tinymce figure {
-      display: table;
-      margin: 1rem auto; }
-      #tinymce figure figcaption {
-        font-family: var(--font-default-small);
-        color: var(--blades-grey-bright);
-        display: block;
-        margin-top: 0.25rem;
-        text-align: center; }
-    #tinymce hr {
-      border-color: var(--blades-grey-bright);
-      border-style: solid;
-      border-width: 1px 0 0 0; }
-    #tinymce code {
-      padding: 0.1rem 0.2rem; }
-    #tinymce .text-secret {
-      display: var(--secret-text-display);
-      background-color: var(--blades-black-dark);
-      color: var(--blades-grey);
-      font-weight: bold;
-      font-style: italic;
-      border-radius: 3px;
-      outline: 1px dotted var(--blades-white);
-      padding: 0 0.3125rem;
-      margin: 0 0.3125rem; }
+  html .label-stripe, :root .label-stripe {
+    background-color: var(--blades-grey); }
+  html .label-stripe-gray, :root .label-stripe-gray {
+    margin: 0; }
+    html .label-stripe-gray th, html .label-stripe-gray th > *:not(:hover), :root .label-stripe-gray th, :root .label-stripe-gray th > *:not(:hover) {
+      color: var(--blades-white-bright);
+      text-shadow: 1px 1px 0px var(--blades-black-dark); }
+
+::-webkit-scrollbar {
+  width: var(--blades-spacer-sm); }
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
+  box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
+  border: none;
+  border-radius: 0; }
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--color-background-light), 1);
+  border: none;
+  border-radius: 0;
+  outline: none; }
+
+#tinymce {
+  --secret-text-display: initial;
+  height: auto;
+  max-height: 600px; }

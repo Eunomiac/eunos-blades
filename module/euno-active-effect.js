@@ -15,7 +15,7 @@ const CUSTOMFUNCS = {
         const itemsOfType = await BladesHelpers.getAllItemsByType(type, game);
         const newItem = itemsOfType.find((iData) => iData.name === name);
         if (newItem) {
-            actor.createEmbeddedDocuments("Item", [newItem]);
+            actor.createEmbeddedDocuments("Item", [newItem.data]);
         }
     }
 };

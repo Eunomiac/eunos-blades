@@ -54,31 +54,30 @@ export default class BladesHelpers {
 	}
 
 	/**
-   * Get the list of all available ingame items by Type.
+   * Get all available ingame items by Type, including those in packs.
    *
    * @param {string} item_type
    * @param {Object} game
    */
-	static async getAllItemsByType(item_type: string, game: Game) {
+	static async getAllItemsByType(item_type: string, game: Game): Promise<BladesItem[]> {
 
-		let list_of_items = [],
-						game_items: Array<BladesItem["data"]> = [],
-						compendium_items: Array<BladesItem["data"]> = [];
+		if (!game.items) { return [] }
 
-		game_items = game.items!.filter(e => e.type === item_type).map(e => {return e.data});
+		const items: BladesItem[] = game.items.filter((item) => item.data.type === item_type);
+		const pack = game.packs.find((pack) => pack.metadata.name === item_type);
 
-		const pack = game.packs.find(e => e.metadata.name === item_type);
-		if (!pack) { return [] }
-		const compendium_content = await pack.getDocuments();
-		compendium_items = compendium_content.map(e => {return e.data as ItemData});
+		if (!pack) { return items }
 
-		list_of_items = game_items.concat(compendium_items);
-		list_of_items.sort(function(a, b) {
-			const nameA = a.name.toUpperCase(),
-									nameB = b.name.toUpperCase();
+		const pack_items = await pack.getDocuments() as BladesItem[];
+		items.push(...pack_items);
+
+		items.sort(function(a, b) {
+			const nameA = a.data.name.toUpperCase();
+			const nameB = b.data.name.toUpperCase();
 			return nameA.localeCompare(nameB);
 		});
-		return list_of_items;
+
+		return items;
 	}
 
 	static async getIconMap(item_type: string | string[]) {
@@ -87,8 +86,7 @@ export default class BladesHelpers {
 			.map(async (iType) => {
 				const pack = game.packs.find(e => e.metadata.name === iType);
 				if (!pack) { throw new Error(`No compendium pack with type '${iType}' found.`) }
-				const compendium_content = await pack.getDocuments();
-				// @ts-expect-error Temp
+				const compendium_content = await pack.getDocuments() as BladesItem[];
 				return compendium_content.map((item) => [item.name, item.img]);
 			}));
 		return Object.fromEntries(iconEntries.flat(1));

@@ -1,6 +1,7 @@
 import {BladesActor} from "./blades-actor";
 import {BladesItem} from "./blades-item";
 import BladesHelpers from "./euno-helpers.js";
+import {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 
 /**
  * Extend the base ActiveEffect class to implement system-specific logic.
@@ -14,9 +15,9 @@ const CUSTOMFUNCS = {
 		if (actor.items.find((item) => item.name === name && item.type === type)) { return }
 
 		const itemsOfType = await BladesHelpers.getAllItemsByType(type, game);
-		const newItem = itemsOfType.find((iData) => iData.name === name) as undefined | (Record<string,unknown> & BladesItem["data"]);
+		const newItem = itemsOfType.find((iData) => iData.name === name);
 		if (newItem) {
-			actor.createEmbeddedDocuments("Item", [newItem]);
+			actor.createEmbeddedDocuments("Item", [newItem.data as ItemData & Record<string,unknown>]);
 		}
 	}
 };

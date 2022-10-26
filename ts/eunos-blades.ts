@@ -10,17 +10,17 @@ import {preloadHandlebarsTemplates} from "./blades-templates.js";
 import BladesHelpers, {registerHandlebarHelpers} from "./euno-helpers.js";
 import {BladesActor} from "./blades-actor.js";
 import {BladesItem} from "./blades-item.js";
-import {BladesItemSheet} from "./blades-item-sheet.js";
-import {BladesActorSheet} from "./blades-actor-sheet.js";
-import {BladesCrewSheet} from "./blades-crew-sheet.js";
-import {BladesNPCSheet} from "./blades-npc-sheet.js";
-import {BladesFactionSheet} from "./blades-faction-sheet.js";
+import {BladesItemSheet} from "./sheets/blades-item-sheet.js";
+import {BladesActorSheet} from "./sheets/blades-actor-sheet.js";
+import {BladesCrewSheet} from "./sheets/blades-crew-sheet.js";
+import {BladesNPCSheet} from "./sheets/blades-npc-sheet.js";
+import {BladesFactionSheet} from "./sheets/blades-faction-sheet.js";
 
-import DATA from "./data-importer.js";
+import DATA from "./data/data-importer.js";
 import {bladesRoll, simpleRollPopup} from "./euno-blades-roll.js";
 import BladesActiveEffect from "./euno-active-effect.js";
-import EunoTrackerSheet from "./euno-tracker-sheet.js";
-import EunoClockKeeperSheet from "./euno-clock-keeper-sheet.js";
+import EunoTrackerSheet from "./sheets/euno-tracker-sheet.js";
+import EunoClockKeeperSheet from "./sheets/euno-clock-keeper-sheet.js";
 
 let socket: Socket; //~ SocketLib interface
 // /*DEVCODE*/registerDebugger();/*!DEVCODE*/

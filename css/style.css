@@ -622,6 +622,25 @@ template {
   src: url("../assets/fonts/UglyQua/UglyQua i.ttf") format("truetype");
   font-style: italic; }
 
+:root {
+  scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
+  scrollbar-width: thin; }
+
+::-webkit-scrollbar {
+  width: var(--blades-spacer-sm); }
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
+  box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
+  border: none;
+  border-radius: 0; }
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--color-background-light), 1);
+  border: none;
+  border-radius: 0;
+  outline: none; }
+
 :root * {
   --color-text-light-highlight: #f0f0e0;
   --color-text-light-heading: #c9c7b8;
@@ -1823,17 +1842,81 @@ template {
     margin: 0.5rem 0;
     min-height: 1rem; }
 
-:root body.vtt.game.system-eunos-blades .app.window-app .text-secret:not(.user-is-gm) {
-  display: var(--secret-text-display); }
+:root body.vtt.game.system-eunos-blades .app.window-app blockquote {
+  border-left: 2px solid var(--blades-grey-bright);
+  margin-left: 1.5rem;
+  padding-left: 1rem; }
 
-:root body.vtt.game.system-eunos-blades .app.window-app .label-stripe {
-  background-color: var(--blades-grey); }
+:root body.vtt.game.system-eunos-blades .app.window-app table {
+  border-collapse: collapse; }
+  :root body.vtt.game.system-eunos-blades .app.window-app table th.black-white,
+  :root body.vtt.game.system-eunos-blades .app.window-app table th.black-white label {
+    background-color: var(--blades-white) !important;
+    text-shadow: none;
+    color: var(--blades-black) !important;
+    font-family: var(--font-emphasis);
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 24px;
+    padding: 3px; }
+  :root body.vtt.game.system-eunos-blades .app.window-app table th, :root body.vtt.game.system-eunos-blades .app.window-app table td {
+    border: 1px solid var(--blades-grey);
+    padding: 0.4rem; }
+  :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead th, :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody th {
+    margin: 0 !important; }
+  :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead td:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody td:nth-of-type(1) {
+    width: 40%; }
+  :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead td:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody td:nth-of-type(2) {
+    width: 30%;
+    text-align: center; }
+  :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead td:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody td:nth-of-type(3) {
+    width: 15%;
+    text-align: center; }
+  :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead td:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody td:nth-of-type(4) {
+    width: 15%;
+    text-align: right; }
+  :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead td, :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody td {
+    line-height: 24px;
+    margin: 0;
+    vertical-align: middle; }
+  :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead img, :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody img {
+    height: 24px;
+    width: 24px;
+    vertical-align: middle; }
+  :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead h4, :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody h4 {
+    display: inline-block;
+    line-height: 24px;
+    margin: 0;
+    vertical-align: middle; }
 
-:root body.vtt.game.system-eunos-blades .app.window-app .label-stripe-gray {
-  margin: 0; }
-  :root body.vtt.game.system-eunos-blades .app.window-app .label-stripe-gray th, :root body.vtt.game.system-eunos-blades .app.window-app .label-stripe-gray th > *:not(:hover) {
-    color: var(--blades-white-bright);
-    text-shadow: 1px 1px 0px var(--blades-black-dark); }
+:root body.vtt.game.system-eunos-blades .app.window-app figure {
+  display: table;
+  margin: 1rem auto; }
+  :root body.vtt.game.system-eunos-blades .app.window-app figure figcaption {
+    font-family: var(--font-default-small);
+    color: var(--blades-grey-bright);
+    display: block;
+    margin-top: 0.25rem;
+    text-align: center; }
+
+:root body.vtt.game.system-eunos-blades .app.window-app hr {
+  border-color: var(--blades-grey-bright);
+  border-style: solid;
+  border-width: 1px 0 0 0; }
+
+:root body.vtt.game.system-eunos-blades .app.window-app code {
+  padding: 0.1rem 0.2rem; }
+
+:root body.vtt.game.system-eunos-blades .app.window-app .text-secret {
+  display: var(--secret-text-display, "none");
+  background-color: var(--blades-black-dark);
+  color: var(--blades-grey);
+  font-weight: bold;
+  font-style: italic;
+  border-radius: 3px;
+  outline: 1px dotted var(--blades-white);
+  padding: 0 0.3125rem;
+  margin: 0 0.3125rem; }
 
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-zero-label {
   color: var(--blades-white); }
@@ -1850,92 +1933,19 @@ template {
   background-color: var(--blades-white);
   color: var(--blades-black) !important; }
 
-:root body.vtt.game.system-eunos-blades .app.window-app th.black-white,
-:root body.vtt.game.system-eunos-blades .app.window-app th.black-white label {
-  background-color: var(--blades-white) !important;
-  text-shadow: none;
-  color: var(--blades-black) !important;
-  font-family: var(--font-emphasis);
-  font-weight: normal;
-  font-size: 20px;
-  line-height: 24px;
-  padding: 3px; }
+:root body.vtt.game.system-eunos-blades .app.window-app .label-stripe {
+  background-color: var(--blades-grey); }
 
-:root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead th, :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody th {
-  margin: 0 !important; }
-
-:root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead td:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody td:nth-of-type(1) {
-  width: 40%; }
-
-:root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead td:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody td:nth-of-type(2) {
-  width: 30%;
-  text-align: center; }
-
-:root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead td:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody td:nth-of-type(3) {
-  width: 15%;
-  text-align: center; }
-
-:root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead td:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody td:nth-of-type(4) {
-  width: 15%;
-  text-align: right; }
-
-:root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead td, :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody td {
-  line-height: 24px;
-  margin: 0;
-  vertical-align: middle; }
-
-:root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead img, :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody img {
-  height: 24px;
-  width: 24px;
-  vertical-align: middle; }
-
-:root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list thead h4, :root body.vtt.game.system-eunos-blades .app.window-app table.items-list.effects-list tbody h4 {
-  display: inline-block;
-  line-height: 24px;
-  margin: 0;
-  vertical-align: middle; }
+:root body.vtt.game.system-eunos-blades .app.window-app .label-stripe-gray {
+  margin: 0; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .label-stripe-gray th, :root body.vtt.game.system-eunos-blades .app.window-app .label-stripe-gray th > *:not(:hover) {
+    color: var(--blades-white-bright);
+    text-shadow: 1px 1px 0px var(--blades-black-dark); }
 
 :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content {
-  --secret-text-display: none; }
-  :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content {
-    padding: var(--content-padding) !important;
-    min-height: 150px;
-    height: auto;
-    max-height: 600px; }
-    :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content blockquote {
-      border-left: 2px solid var(--blades-grey-bright);
-      margin-left: 1.5rem;
-      padding-left: 1rem; }
-    :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content table {
-      border-collapse: collapse; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content table th, :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content table td {
-        border: 1px solid var(--blades-grey);
-        padding: 0.4rem; }
-    :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content figure {
-      display: table;
-      margin: 1rem auto; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content figure figcaption {
-        font-family: var(--font-default-small);
-        color: var(--blades-grey-bright);
-        display: block;
-        margin-top: 0.25rem;
-        text-align: center; }
-    :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content hr {
-      border-color: var(--blades-grey-bright);
-      border-style: solid;
-      border-width: 1px 0 0 0; }
-    :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content code {
-      padding: 0.1rem 0.2rem; }
-    :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content .text-secret {
-      display: var(--secret-text-display);
-      background-color: var(--blades-black-dark);
-      color: var(--blades-grey);
-      font-weight: bold;
-      font-style: italic;
-      border-radius: 3px;
-      outline: 1px dotted var(--blades-white);
-      padding: 0 0.3125rem;
-      margin: 0 0.3125rem; }
+  padding: var(--content-padding) !important;
+  height: auto;
+  max-height: 600px; }
 
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet textarea, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades textarea, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades textarea {
   margin-top: 10px;
@@ -2093,15 +2103,78 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content {
   background: var(--blades-black);
   padding: var(--content-padding); }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .text-secret:not(.user-is-gm), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form .text-secret:not(.user-is-gm), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form .text-secret:not(.user-is-gm) {
-    display: var(--secret-text-display); }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .label-stripe, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form .label-stripe, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form .label-stripe {
-    background-color: var(--blades-grey); }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .label-stripe-gray, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form .label-stripe-gray, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form .label-stripe-gray {
-    margin: 0; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .label-stripe-gray th, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .label-stripe-gray th > *:not(:hover), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form .label-stripe-gray th, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form .label-stripe-gray th > *:not(:hover), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form .label-stripe-gray th, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form .label-stripe-gray th > *:not(:hover) {
-      color: var(--blades-white-bright);
-      text-shadow: 1px 1px 0px var(--blades-black-dark); }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form blockquote, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form blockquote, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form blockquote {
+    border-left: 2px solid var(--blades-grey-bright);
+    margin-left: 1.5rem;
+    padding-left: 1rem; }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table {
+    border-collapse: collapse; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table th.black-white,
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table th.black-white label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table th.black-white,
+    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table th.black-white label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table th.black-white,
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table th.black-white label {
+      background-color: var(--blades-white) !important;
+      text-shadow: none;
+      color: var(--blades-black) !important;
+      font-family: var(--font-emphasis);
+      font-weight: normal;
+      font-size: 20px;
+      line-height: 24px;
+      padding: 3px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table th, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table td, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table th, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table td, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table th, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table td {
+      border: 1px solid var(--blades-grey);
+      padding: 0.4rem; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead th, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody th, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead th, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody th, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead th, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody th {
+      margin: 0 !important; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead td:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody td:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(1) {
+      width: 40%; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead td:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody td:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(2) {
+      width: 30%;
+      text-align: center; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead td:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody td:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(3) {
+      width: 15%;
+      text-align: center; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead td:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody td:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(4) {
+      width: 15%;
+      text-align: right; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead td, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody td, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead td, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody td, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead td, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody td {
+      line-height: 24px;
+      margin: 0;
+      vertical-align: middle; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody img, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead img, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody img {
+      height: 24px;
+      width: 24px;
+      vertical-align: middle; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead h4, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody h4, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead h4, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody h4, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead h4, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody h4 {
+      display: inline-block;
+      line-height: 24px;
+      margin: 0;
+      vertical-align: middle; }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form figure, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form figure, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form figure {
+    display: table;
+    margin: 1rem auto; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form figure figcaption, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form figure figcaption, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form figure figcaption {
+      font-family: var(--font-default-small);
+      color: var(--blades-grey-bright);
+      display: block;
+      margin-top: 0.25rem;
+      text-align: center; }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form hr, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form hr, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form hr {
+    border-color: var(--blades-grey-bright);
+    border-style: solid;
+    border-width: 1px 0 0 0; }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form code, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form code, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form code {
+    padding: 0.1rem 0.2rem; }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .text-secret, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form .text-secret, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form .text-secret {
+    display: var(--secret-text-display, "none");
+    background-color: var(--blades-black-dark);
+    color: var(--blades-grey);
+    font-weight: bold;
+    font-style: italic;
+    border-radius: 3px;
+    outline: 1px dotted var(--blades-white);
+    padding: 0 0.3125rem;
+    margin: 0 0.3125rem; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .clock-zero-label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form .clock-zero-label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form .clock-zero-label {
     color: var(--blades-white); }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .stripe,
@@ -2115,44 +2188,13 @@ template {
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form label.black-label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form label.black-label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form label.black-label {
     background-color: var(--blades-white);
     color: var(--blades-black) !important; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form th.black-white,
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form th.black-white label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form th.black-white,
-  :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form th.black-white label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form th.black-white,
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form th.black-white label {
-    background-color: var(--blades-white) !important;
-    text-shadow: none;
-    color: var(--blades-black) !important;
-    font-family: var(--font-emphasis);
-    font-weight: normal;
-    font-size: 20px;
-    line-height: 24px;
-    padding: 3px; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead th, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody th, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead th, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody th, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead th, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody th {
-    margin: 0 !important; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead td:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody td:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(1) {
-    width: 40%; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead td:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody td:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(2) {
-    width: 30%;
-    text-align: center; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead td:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody td:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(3) {
-    width: 15%;
-    text-align: center; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead td:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody td:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead td:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody th:nth-of-type(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody td:nth-of-type(4) {
-    width: 15%;
-    text-align: right; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead td, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody td, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead td, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody td, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead td, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody td {
-    line-height: 24px;
-    margin: 0;
-    vertical-align: middle; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody img, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead img, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody img {
-    height: 24px;
-    width: 24px;
-    vertical-align: middle; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list thead h4, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table.items-list.effects-list tbody h4, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list thead h4, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form table.items-list.effects-list tbody h4, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list thead h4, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form table.items-list.effects-list tbody h4 {
-    display: inline-block;
-    line-height: 24px;
-    margin: 0;
-    vertical-align: middle; }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .label-stripe, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form .label-stripe, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form .label-stripe {
+    background-color: var(--blades-grey); }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .label-stripe-gray, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form .label-stripe-gray, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form .label-stripe-gray {
+    margin: 0; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .label-stripe-gray th, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .label-stripe-gray th > *:not(:hover), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form .label-stripe-gray th, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form .label-stripe-gray th > *:not(:hover), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form .label-stripe-gray th, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form .label-stripe-gray th > *:not(:hover) {
+      color: var(--blades-white-bright);
+      text-shadow: 1px 1px 0px var(--blades-black-dark); }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form section select, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form section select, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form section select {
     color: var(--blades-white); }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form section .nav-panel nav, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form section .nav-panel nav, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form section .nav-panel nav {
@@ -10036,25 +10078,6 @@ body .-emu-layout .window-app.sheet[id*="template-config"] form {
   height: 100%;
   padding: var(--blades-spacer-sm);
   position: relative; }
-
-:root {
-  scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
-  scrollbar-width: thin; }
-
-::-webkit-scrollbar {
-  width: var(--blades-spacer-sm); }
-
-::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
-  box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
-  border: none;
-  border-radius: 0; }
-
-::-webkit-scrollbar-thumb {
-  background-color: rgba(var(--color-background-light), 1);
-  border: none;
-  border-radius: 0;
-  outline: none; }
 
 *::before,
 *::after {

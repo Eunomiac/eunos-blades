@@ -8,12 +8,6 @@ import { bladesRoll } from "../blades-roll";
 declare global {
 
 	declare interface Game {
-		// i18n: {
-		// 	localize: (str: string) => string
-		// },
-		// blades: {
-		// 	dice: typeof bladesRoll
-		// }
 		items: Collection<StoredDocument<BladesItem>>,
 		actors: Collection<StoredDocument<BladesActor>>,
 		user: {
@@ -35,18 +29,7 @@ declare global {
 					}
 				}
 			}
-			// bobclocks: {
-			// 	sizes: number[]
-			// }
 		}
-	}
-	// declare const game: Game & {
-	// 	user: {
-	// 		name: string
-	// 	}
-	// }
-	declare interface CONFIG {
-
 	}
 
 	declare const bLog: {
@@ -60,7 +43,9 @@ declare global {
     game: never;
   }
 
-	declare const BladesHelpers: typeof BladesHelpers;
+	// declare const BladesHelpers: typeof BladesHelpers;
+
+	type ClickEvent = JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
 
 	// declare function $clamp(element: HTMLElement, options: Record<string,any>): {
 	// 	original: string,

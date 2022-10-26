@@ -14,7 +14,29 @@ $light_green: rgb(18, 160, 18);
 @import './core/mixins';
 @import './fonts.scss';
 
+
 :root {
+	scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
+	scrollbar-width: thin;
+}
+::-webkit-scrollbar {
+	width: var(--blades-spacer-sm);
+}
+::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
+	border: none;
+	border-radius: 0;
+}
+::-webkit-scrollbar-thumb {
+	background-color: rgba(var(--color-background-light), 1);
+	border: none;
+	border-radius: 0;
+	outline: none;
+}
+
+:root {
+
+
 
 	* {
 		@import './core/vars';
@@ -55,7 +77,6 @@ $light_green: rgb(18, 160, 18);
 			@import './core/text-styles';
 
 			.editor:not(.tinymce) .editor-content {
-				--secret-text-display: none;
 				@import './tinymce/tinymce-content';
 			}
 
