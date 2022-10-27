@@ -5,9 +5,9 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import { BladesSheet } from "./blades-sheet.js";
-export class BladesCrewSheet extends BladesSheet {
-        static get defaultOptions() {
+import BladesSheet from "./blades-sheet.js";
+class BladesCrewSheet extends BladesSheet {
+    static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "actor", "crew"],
             template: "systems/eunos-blades/templates/crew-sheet.hbs",
@@ -16,17 +16,12 @@ export class BladesCrewSheet extends BladesSheet {
             tabs: [{ navSelector: ".tabs", contentSelector: ".tab-content", initial: "turfs" }]
         });
     }
-        
-        getData() {
-        const data = super.getData();
-        data.editable = this.options.editable;
-        const actorData = data.data;
-        data.actor = actorData;
-        data.data = actorData.data;
+    async getData() {
+        const data = await super.getData();
 
         let turfs_amount = 0;
-        data.items.forEach(item => {
-            if (item.type === "crew_type") {
+        data.items.forEach((item) => {
+            if (item.type === "crew_type" && item.data) {
                 Object.entries(item.data.turfs).forEach(([key, turf]) => {
                     if (game.i18n.localize(turf.name).toLowerCase().replace(/\s/g, "") === game.i18n.localize("BITD.Turf").toLowerCase().replace(/\s/g, "")) {
                         turfs_amount += turf.value ? 1 : 0;
@@ -34,33 +29,41 @@ export class BladesCrewSheet extends BladesSheet {
                 });
             }
         });
-        data.data.turfs_amount = turfs_amount;
+        Object.assign(data.data, {
+            turfs_amount
+        });
         return data;
     }
-        
-        activateListeners(html) {
+    activateListeners(html) {
         super.activateListeners(html);
         if (!this.options.editable) {
             return;
         }
-        html.find(".item-sheet-open").click(ev => {
-            const element = $(ev.currentTarget).parents(".item");
+        html.find(".item-sheet-open").on("click", (event) => {
+            const element = $(event.currentTarget).parents(".item");
             const item = this.actor.items.get(element.data("itemId"));
-            item.sheet.render(true);
+            item?.sheet?.render(true);
         });
-        html.find(".item-delete").click(async (ev) => {
-            const element = $(ev.currentTarget).parents(".item");
+        html.find(".item-delete").on("click", async (event) => {
+            const element = $(event.currentTarget).parents(".item");
             await this.actor.deleteEmbeddedDocuments("Item", [element.data("itemId")]);
             element.slideUp(200, () => this.render(false));
         });
-        html.find(".add-item").click(ev => {
-            BladesHelpers._addOwnedItem(ev, this.actor);
+        html.find(".add-item").on("click", (event) => {
+            event.preventDefault();
+            const a = event.currentTarget;
+            const item_type = a.dataset.itemType;
+            const data = {
+                name: randomID(),
+                type: item_type
+            };
+            return this.actor.createEmbeddedDocuments("Item", [data]);
         });
-        html.find(".turf-select").click(async (ev) => {
-            const element = $(ev.currentTarget).parents(".item");
+        html.find(".turf-select").on("click", async (event) => {
+            const element = $(event.currentTarget).parents(".item");
             const item_id = element.data("itemId");
-            const turf_id = $(ev.currentTarget).data("turfId");
-            const turf_current_status = $(ev.currentTarget).data("turfStatus");
+            const turf_id = $(event.currentTarget).data("turfId");
+            const turf_current_status = $(event.currentTarget).data("turfStatus");
             const turf_checkbox_name = "data.turfs." + turf_id + ".value";
             await this.actor.updateEmbeddedDocuments("Item", [{
                     _id: item_id,
@@ -80,10 +83,11 @@ export class BladesCrewSheet extends BladesSheet {
         });
     }
                 
-        async _updateObject(event, formData) {
+    async _updateObject(event, formData) {
         await super._updateObject(event, formData);
-        if (event.target && event.target.name === "data.tier") {
+        if (event.target && $(event.target).attr("name") === "data.tier") {
             this.render(true);
         }
     }
 }
+export default BladesCrewSheet;

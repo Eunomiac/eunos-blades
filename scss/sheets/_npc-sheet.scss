@@ -1,26 +1,4 @@
-input[type="text"] {
-	padding: 0;
-	border: none;
-	font-size: larger;
-	margin-top: -2px;
-	background: black;
-	padding: 5px;
-	color: var(--blades-white);
-	border-radius: 0;
-}
 
-.labelled-input {
-	display: flex;
-	flex-direction: column;
-
-	label {
-		color: var(--blades-grey);
-		font-size: 10px;
-		line-height: 10px;
-		text-align: left;
-		padding-bottom: 2px;
-	}
-}
 
 .window-resizable-handle {
 	display: none
@@ -47,34 +25,6 @@ input[type="text"] {
 	overflow: hidden;
 	.actor-sheet {
 
-		label {
-			text-shadow:
-				0 0 4px var(--blades-black-dark),
-				0 0 4px var(--blades-black-dark),
-				0 0 4px var(--blades-black-dark),
-				0 0 4px var(--blades-black-dark);
-		}
-
-		input[type="text"] {
-			box-shadow: none;
-			background: rgba(0, 0, 0, 0);
-			text-shadow:
-				0 0 4px var(--blades-black-dark),
-				0 0 4px var(--blades-black-dark),
-				0 0 4px var(--blades-black-dark),
-				0 0 4px var(--blades-black-dark);
-		}
-
-		.labelled-input {
-			margin-top: 4px;
-
-			input[type="text"] {
-				font-size: 14px;
-				height: 18px;
-				font-family: var(--font-emphasis);
-				text-transform: uppercase;
-			}
-		}
 
 		height: auto;
 		// margin-bottom: 100px;
@@ -93,35 +43,12 @@ input[type="text"] {
 		grid-row-gap: 4px;
 
 		>* {
-			position: relative;
+			// position: relative;
 			z-index: 2;
 			flex-grow: 0;
 		}
 
-		.npc-img {
-			position: absolute;
-			height: 175px;
-			// max-width: 100px;
-			top: -5px;
-			left: -10px;
-			z-index: 1;
-			border: none;
-			mask-image: linear-gradient(to right, black 75%, transparent);
-		}
-
-		.npc-img-bg {
-			position: absolute;
-			z-index: 0;
-			width: 500px;
-			height: auto;
-			top: -20%;
-			right: -10%;
-			border: none;
-			filter: blur(5px) sepia(2) brightness(0.65);
-			mask-image: linear-gradient(to bottom, black 20%, rgba(0, 0, 0, 0.35) 30%);
-		}
-
-		.npc-name {
+		.char-name {
 			grid-area: name;
 			overflow: visible;
 			font-family: var(--font-alt);
@@ -141,21 +68,22 @@ input[type="text"] {
 				0 0 4px var(--blades-black-dark);
 		}
 
-		.npc-alias {
+		.char-alias {
 			display: none;
 		}
 
-		.npc-concept {
+		.char-concept {
 			grid-area: concept;
 			height: 100%;
 			font-variant: small-caps;
 			color: var(--blades-white);
+			font-size: toRem(24px);
 			box-shadow: none;
 			top: -5px;
 			text-align: center;
 		}
 
-		.npc-traits {
+		.char-traits {
 			grid-area: traits;
 			display: flex;
 			font-family: var(--font-emphasis);
@@ -167,7 +95,7 @@ input[type="text"] {
 			}
 		}
 
-		.npc-heritage, .npc-faction, .npc-district, .npc-arena {
+		.char-heritage, .char-faction, .char-district, .char-arena {
 			text-align: center;
 			background: linear-gradient(to top, var(--blades-black) 25%, transparent) !important;
 			height: calc(100% + 4px);
@@ -176,29 +104,29 @@ input[type="text"] {
 				text-align: center;
 			}
 
-			&.npc-arena {
+			&.char-arena {
 				grid-area: arena;
 				width: calc(100% + 10px);
 			}
 
-			&.npc-heritage {
+			&.char-heritage {
 				grid-area: heritage;
 				width: calc(100% + 10px);
 				left: -10px;
 			}
 
-			&.npc-district {
+			&.char-district {
 				grid-area: district;
 			}
 
-			&.npc-faction {
+			&.char-faction {
 				grid-area: faction;
 			}
 		}
 
 
 
-		.npc-short-description {
+		.char-short-description {
 			grid-area: short-desc;
 			font-style: italic;
 			text-align: center;
@@ -207,7 +135,7 @@ input[type="text"] {
 			padding: 0;
 		}
 
-		.npc-tabs {
+		.char-tabs {
 			grid-area: tabs;
 			// top: -4px;
 			// height: 100%;
@@ -248,8 +176,8 @@ input[type="text"] {
 			}
 		}
 
-		.npc-allies,
-		.npc-enemies {
+		.char-allies,
+		.char-enemies {
 			display: none
 		}
 	}

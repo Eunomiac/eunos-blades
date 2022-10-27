@@ -1,14 +1,9 @@
 
-import {BladesSheet} from "./blades-sheet.js";
-import {BladesActor} from "../blades-actor.js";
+import BladesSheet from "./blades-sheet.js";
+import type BladesActor from "../blades-actor.js";
 
-/**
- * @extends {BladesSheet}
- */
-// @ts-ignore-error Fuck
-export class BladesNPCSheet extends BladesSheet {
+class BladesNPCSheet extends BladesSheet {
 
-	/** @override */
 	static override get defaultOptions() {
 	  return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["eunos-blades", "sheet", "actor", "npc"],
@@ -19,28 +14,17 @@ export class BladesNPCSheet extends BladesSheet {
 		});
 	}
 
-	/* -------------------------------------------- */
-
-	/** @override */
-	override getData() {
-		const data = super.getData();
-		const actorData = "data" in data ? data.data : null;
+	override async getData() {
+		const data = await super.getData();
 		Object.assign(
 			data,
 			{
-				editable: this.options.editable,
-				isGM: game.user.isGM,
-				actor: actorData,
-				data: actorData!.data,
 				randomizers: (this.actor as BladesActor).system.randomizers
 			}
 		);
 		return data;
 	}
 
-	/* -------------------------------------------- */
-
-	/** @override */
 	override activateListeners(html: JQuery<HTMLElement>) {
 		super.activateListeners(html);
 
@@ -70,3 +54,5 @@ export class BladesNPCSheet extends BladesSheet {
 
 	}
 }
+
+export default BladesNPCSheet;

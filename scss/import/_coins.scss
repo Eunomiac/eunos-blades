@@ -1,9 +1,9 @@
 $coin_size: 15px;
-$coin_margin: 3px;
+$coin_margin: 2px;
 
 .coins {
   @include custom_radio_square($coin_size);
-  flex-wrap: wrap;
+  // flex-wrap: wrap;
 
   input ~ label {
     margin-right: $coin_margin;
@@ -17,11 +17,11 @@ $coin_margin: 3px;
   }
 
   &.coins-hands {
-    width: 36px;
+    // width: 36px;
   }
 
   &.coins-stashed {
-    width: 190px;
+    // width: 190px;
   }
 
 }

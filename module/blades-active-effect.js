@@ -5,21 +5,21 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import BladesHelpers from "./euno-helpers.js";
+import H from "./core/helpers.js";
 const CUSTOMFUNCS = {
     addItem: async (actor, { name, type }) => {
-        console.log("addItem", { actor, name, type });
+        bLog.log("addItem", { actor, name, type });
         if (actor.items.find((item) => item.name === name && item.type === type)) {
             return;
         }
-        const itemsOfType = await BladesHelpers.getAllItemsByType(type, game);
+        const itemsOfType = await H.getAllItemsByType(type, game);
         const newItem = itemsOfType.find((iData) => iData.name === name);
         if (newItem) {
             actor.createEmbeddedDocuments("Item", [newItem.data]);
         }
     }
 };
-export default class BladesActiveEffect extends ActiveEffect {
+class BladesActiveEffect extends ActiveEffect {
     static Initialize() {
         CONFIG.ActiveEffect.documentClass = BladesActiveEffect;
         Hooks.on("applyActiveEffect", (actor, { effect, key, priority }, currentValue, { func, params }) => {
@@ -28,10 +28,6 @@ export default class BladesActiveEffect extends ActiveEffect {
             }
         });
     }
-        _isSuppressed = false;
-    get isSuppressed() { return this._isSuppressed; }
-    set isSuppressed(v) { this._isSuppressed = v; }
-        
         static onManageActiveEffect(event, owner) {
         event.preventDefault();
         const a = event.currentTarget;
@@ -55,54 +51,12 @@ export default class BladesActiveEffect extends ActiveEffect {
             case "edit":
                 return effect.sheet?.render(true);
             case "delete":
-                console.log("delete effect");
+                bLog.log("delete effect");
                 return effect.delete();
             case "toggle":
                 return effect.update({ disabled: !effect.data.disabled });
         }
         return null;
     }
-        static prepareActiveEffectCategories(effects) {
-        const categories = {
-            temporary: {
-                type: "temporary",
-                label: "Temporary Effects",
-                effects: []
-            },
-            passive: {
-                type: "passive",
-                label: "Passive Effects",
-                effects: []
-            },
-            inactive: {
-                type: "inactive",
-                label: "Inactive Effects",
-                effects: []
-            },
-            suppressed: {
-                type: "suppressed",
-                label: "Suppressed Effects",
-                effects: []
-            }
-        };
-        for (const e of effects) {
-            e._getSourceName();
-            if (e.isSuppressed) {
-                categories.suppressed.effects.push(e);
-            }
-            else if (e.data.disabled) {
-                categories.inactive.effects.push(e);
-            }
-            else if (e.isTemporary) {
-                categories.temporary.effects.push(e);
-            }
-            else {
-                categories.passive.effects.push(e);
-            }
-        }
-        return categories;
-    }
 }
-//
-//
-//
+export default BladesActiveEffect;

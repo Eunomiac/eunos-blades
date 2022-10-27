@@ -1,33 +1,25 @@
-/**
- * Extend the basic ItemSheet
- * @extends {ItemSheet}
- */
-import {BladesItem} from "../blades-item.js";
-import {onManageActiveEffect, prepareActiveEffectCategories} from "../effects.js";
-import BladesActiveEffect from "../euno-active-effect.js";
+import type BladesItem from "../blades-item.js";
+import BladesActiveEffect from "../blades-active-effect.js";
 
-export class BladesItemSheet extends ItemSheet {
+class BladesItemSheet extends ItemSheet {
 
-	/** @override */
-	static get defaultOptions() {
-
+	static override get defaultOptions() {
 	  return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["eunos-blades", "sheet", "item"],
 			width: 560,
 			height: "auto",
 			tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}]
-		});
+		}) as ItemSheet.Options;
 	}
 
 	/* -------------------------------------------- */
 
-	constructor(item, options = {}) {
+	constructor(item: BladesItem, options: Partial<ItemSheet.Options> = {}) {
 		options.classes = [...options.classes ?? [], "eunos-blades", "sheet", "item", item.type];
 		super(item, options);
 	}
 
-	/** @override */
-	get template() {
+	override get template() {
 		if (this.item.data.type === "clock_keeper") {
 			return "systems/eunos-blades/templates/clock-keeper-sheet.hbs";
 		}
@@ -44,19 +36,19 @@ export class BladesItemSheet extends ItemSheet {
 
 	/* -------------------------------------------- */
 
-	/** @override */
-	activateListeners(html) {
+	override activateListeners(html: JQuery<HTMLElement>) {
 		super.activateListeners(html);
+		const self = this;
 
 		// Everything below here is only needed if the sheet is editable
 		if (!this.options.editable) {return}
 
-		html.find(".effect-control").click(ev => {
-			if ( this.item.isOwned ) {
-				ui.notifications.warn(game.i18n.localize("BITD.EffectWarning"));
+		html.find(".effect-control").on("click", (ev) => {
+			if ( self.item.isOwned ) {
+				ui.notifications!.warn(game.i18n.localize("BITD.EffectWarning"));
 				return;
 			}
-			BladesActiveEffect.onManageActiveEffect(ev, this.item);
+			BladesActiveEffect.onManageActiveEffect(ev, self.item);
 		});
 
 		html.find("[data-action=\"toggle-turf-connection\"").on("click", this.toggleTurfConnection.bind(this));
@@ -64,7 +56,7 @@ export class BladesItemSheet extends ItemSheet {
 		// <input data-dtype="Boolean" type="checkbox" name="data.turfs.{{id}}.connects.{{dir}}" {{checked connects}}>{{/if}}
 	}
 
-	toggleTurfConnection(event) {
+	toggleTurfConnection(event: ClickEvent) {
 		const button$ = $(event.currentTarget);
 		const connector$ = button$.parent();
 		const turfNum = parseInt(connector$.data("index") ?? 0);
@@ -82,19 +74,23 @@ export class BladesItemSheet extends ItemSheet {
 		this.item.update(updateData);
 	}
 
-	/* -------------------------------------------- */
-
-	/** @override */
-	getData() {
-		const data = super.getData();
-		data.isGM = game.user.isGM;
-		data.editable = this.options.editable;
+	override async getData() {
+		const data = await super.getData();
 		const itemData = data.data;
-		data.actor = itemData;
-		data.data = itemData.data;
+		Object.assign(
+			data,
+			{
+				editable: this.options.editable,
+				isGM: game.user.isGM,
+				// isOwner: ???,
+				actor: itemData,
+				data: itemData.data,
+				effects: this.item.effects
+			}
+		);
 
-		// Prepare Active Effects
-		data.effects = BladesActiveEffect.prepareActiveEffectCategories(this.item.effects);
 		return data;
 	}
 }
+
+export default BladesItemSheet;

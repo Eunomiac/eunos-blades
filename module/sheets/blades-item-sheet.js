@@ -5,9 +5,9 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import BladesActiveEffect from "../euno-active-effect.js";
-export class BladesItemSheet extends ItemSheet {
-        static get defaultOptions() {
+import BladesActiveEffect from "../blades-active-effect.js";
+class BladesItemSheet extends ItemSheet {
+    static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "item"],
             width: 560,
@@ -20,7 +20,7 @@ export class BladesItemSheet extends ItemSheet {
         options.classes = [...options.classes ?? [], "eunos-blades", "sheet", "item", item.type];
         super(item, options);
     }
-        get template() {
+    get template() {
         if (this.item.data.type === "clock_keeper") {
             return "systems/eunos-blades/templates/clock-keeper-sheet.hbs";
         }
@@ -33,17 +33,18 @@ export class BladesItemSheet extends ItemSheet {
         return `${path}/${template_name}.hbs`;
     }
         
-        activateListeners(html) {
+    activateListeners(html) {
         super.activateListeners(html);
+        const self = this;
         if (!this.options.editable) {
             return;
         }
-        html.find(".effect-control").click(ev => {
-            if (this.item.isOwned) {
+        html.find(".effect-control").on("click", (ev) => {
+            if (self.item.isOwned) {
                 ui.notifications.warn(game.i18n.localize("BITD.EffectWarning"));
                 return;
             }
-            BladesActiveEffect.onManageActiveEffect(ev, this.item);
+            BladesActiveEffect.onManageActiveEffect(ev, self.item);
         });
         html.find("[data-action=\"toggle-turf-connection\"").on("click", this.toggleTurfConnection.bind(this));
     }
@@ -66,15 +67,17 @@ export class BladesItemSheet extends ItemSheet {
         }
         this.item.update(updateData);
     }
-        
-        getData() {
-        const data = super.getData();
-        data.isGM = game.user.isGM;
-        data.editable = this.options.editable;
+    async getData() {
+        const data = await super.getData();
         const itemData = data.data;
-        data.actor = itemData;
-        data.data = itemData.data;
-        data.effects = BladesActiveEffect.prepareActiveEffectCategories(this.item.effects);
+        Object.assign(data, {
+            editable: this.options.editable,
+            isGM: game.user.isGM,
+            actor: itemData,
+            data: itemData.data,
+            effects: this.item.effects
+        });
         return data;
     }
 }
+export default BladesItemSheet;

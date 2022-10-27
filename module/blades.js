@@ -5,25 +5,25 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import { IMPORTDATA } from "./core/constants.js";
 import registerSettings, { initTinyMCEStyles, initCanvasStyles, initFonts } from "./core/settings.js";
-import { preloadHandlebarsTemplates } from "./blades-templates.js";
-import BladesHelpers, { registerHandlebarHelpers } from "./euno-helpers.js";
-import { BladesActor } from "./blades-actor.js";
-import { BladesItem } from "./blades-item.js";
-import { BladesItemSheet } from "./sheets/blades-item-sheet.js";
-import { BladesActorSheet } from "./sheets/blades-actor-sheet.js";
-import { BladesCrewSheet } from "./sheets/blades-crew-sheet.js";
-import { BladesNPCSheet } from "./sheets/blades-npc-sheet.js";
-import { BladesFactionSheet } from "./sheets/blades-faction-sheet.js";
-import DATA from "./data/data-importer.js";
-import { bladesRoll, simpleRollPopup } from "./euno-blades-roll.js";
-import BladesActiveEffect from "./euno-active-effect.js";
-import EunoTrackerSheet from "./sheets/euno-tracker-sheet.js";
-import EunoClockKeeperSheet from "./sheets/euno-clock-keeper-sheet.js";
+import H, { registerHandlebarHelpers, preloadHandlebarsTemplates } from "./core/helpers.js";
+import registerDebugger from "./core/logger.js";
+import BladesActor from "./blades-actor.js";
+import BladesItem from "./blades-item.js";
+import BladesItemSheet from "./sheets/blades-item-sheet.js";
+import BladesActorSheet from "./sheets/blades-actor-sheet.js";
+import BladesCrewSheet from "./sheets/blades-crew-sheet.js";
+import BladesNPCSheet from "./sheets/blades-npc-sheet.js";
+import BladesFactionSheet from "./sheets/blades-faction-sheet.js";
+import { bladesRoll, simpleRollPopup } from "./blades-roll.js";
+import BladesActiveEffect from "./blades-active-effect.js";
+import EunoTrackerSheet from "./sheets/blades-tracker-sheet.js";
+import EunoClockKeeperSheet from "./sheets/blades-clock-keeper-sheet.js";
 let socket;
+registerDebugger();
 
 Object.assign(globalThis, {
-    BladesHelpers: BladesHelpers ,
     BladesActor,
     BladesActorSheet,
     BladesCrewSheet,
@@ -32,21 +32,23 @@ Object.assign(globalThis, {
     EunoClockKeeperSheet,
     EunoTrackerSheet,
     BladesActiveEffect,
-    DATA,
+    IMPORTDATA,
     bladesRoll,
     simpleRollPopup,
+    H,
     BladesItem,
     BladesItemSheet,
     ClearNPCs: () => {
-        const npcNames = DATA.npcs.map(({ name }) => name);
+        const npcNames = IMPORTDATA.npcs.map(({ name }) => name);
         const npcs = Array.from(game.actors ?? [])
             .filter((actor) => npcNames.includes(actor.name ?? ""));
         return Promise.all(npcs.map((npc) => npc.delete()));
     },
-    GenerateNPCs: () => Promise.all(DATA.npcs.map(({ name, type, ...data }) => Actor.create({ name, type, data }))) });
+    GenerateNPCs: () => Promise.all(IMPORTDATA.npcs.map(({ name, type, ...data }) => Actor.create({ name, type, data })))
+});
 Hooks.once("init", async () => {
-    console.log("Initializing Blades In the Dark System");
     registerSettings();
+    bLog.display("Initializing Blades In the Dark System");
     initFonts();
     CONFIG.Item.documentClass = BladesItem;
     CONFIG.Actor.documentClass = BladesActor;

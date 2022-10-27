@@ -1,6 +1,6 @@
 
-import {BladesItemSheet} from "./blades-item-sheet.js";
-import {BladesItem} from "../blades-item.js";
+import BladesItemSheet from "./blades-item-sheet.js";
+import BladesItem from "../blades-item.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 export default class EunoClockKeeperSheet extends BladesItemSheet {
@@ -42,7 +42,6 @@ export default class EunoClockKeeperSheet extends BladesItemSheet {
 	}
 
 
-	/** @override */
 	override async _updateObject(event: unknown, formData: ItemDataConstructorData) {
 		const updateData = await this.object.update(formData);
 		socketlib.system.executeForEveryone("renderOverlay");
@@ -50,11 +49,8 @@ export default class EunoClockKeeperSheet extends BladesItemSheet {
 		return updateData;
 	}
 
-	/** @override */
-	override getData() {
-		const data = super.getData();
-		// console.log("Clock Keeper GetData", data);
-		// return data;
+	override async getData() {
+		const data = await super.getData();
 		// @ts-expect-error Fuck.
 		data.data.clock_keys = Object.fromEntries(Object.entries(data.data.clock_keys)
 			// @ts-expect-error Fuck.

@@ -1,41 +1,41 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
-	<img class="npc-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
-	<img class="npc-img-bg" src="{{actor.img}}" />
-	<input class="npc-name" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
-	<input class="npc-alias" type="text" name="data.alias" value="{{data.alias}}" placeholder="Alias">
-	<input class="npc-concept" type="text" name="data.concept" value="{{data.concept}}" placeholder="Concept">
-	<div class="npc-arena labelled-input">
+	<img class="char-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+	<img class="char-img-bg" src="{{actor.img}}" />
+	<input class="char-name shadow-input" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
+	<input class="char-alias shadow-input" type="text" name="data.alias" value="{{data.alias}}" placeholder="Alias">
+	<input class="char-concept shadow-input" type="text" name="data.concept" value="{{data.concept}}" placeholder="Concept">
+	<div class="char-arena labelled-input">
 		<label>Arena:</label>
 		<input type="text" name="data.arena" value="{{data.arena}}">
 	</div>
-	<div class="npc-heritage labelled-input">
+	<div class="char-heritage labelled-input">
 		<label>Heritage:</label>
 		<input type="text" name="data.heritage" value="{{data.heritage}}">
 	</div>
-	<div class="npc-district labelled-input">
+	<div class="char-district labelled-input">
 		<label>District:</label>
 		<input type="text" name="data.district" value="{{data.district}}">
 	</div>
-	<div class="npc-faction labelled-input">
+	<div class="char-faction labelled-input">
 		<label>Faction:</label>
 		<input type="text" name="data.faction" value="{{data.faction}}">
 	</div>
-	<div class="npc-allies labelled-input">
+	<div class="char-allies labelled-input">
 		<label>Allies:</label>
 		<input type="text" name="data.allies" value="{{data.allies}}">
 	</div>
-	<div class="npc-enemies labelled-input">
+	<div class="char-enemies labelled-input">
 		<label>Enemies:</label>
 		<input type="text" name="data.enemies" value="{{data.enemies}}">
 	</div>
-	<div class="npc-traits input-group">
-		<input type="text" name="data.traits.0" value="{{data.traits.[0]}}" placeholder="Trait">
-		<input type="text" name="data.traits.1" value="{{data.traits.[1]}}" placeholder="Trait">
-		<input type="text" name="data.traits.2" value="{{data.traits.[2]}}" placeholder="Trait">
+	<div class="char-traits input-group">
+		<input class="shadow-input" type="text" name="data.traits.0" value="{{data.traits.[0]}}" placeholder="Trait">
+		<input class="shadow-input" type="text" name="data.traits.1" value="{{data.traits.[1]}}" placeholder="Trait">
+		<input class="shadow-input" type="text" name="data.traits.2" value="{{data.traits.[2]}}" placeholder="Trait">
 	</div>
-	<input class="npc-short-description" type="text" name="data.description_short" value="{{data.description_short}}"
+	<input class="char-short-description shadow-input" type="text" name="data.description_short" value="{{data.description_short}}"
 		placeholder="Short Description">
-	<section class="flex-horizontal npc-tabs">
+	<section class="flex-horizontal char-tabs">
 		<div class="tab-content flex-vertical grow-two nav-panel">
 			<nav class="tabs flex-horizontal">
 				<a class="item" data-tab="description">Description</a>
@@ -44,26 +44,26 @@
 				<a class="item" data-tab="randomizer">Randomizer</a>
 				{{/if}}
 			</nav>
-			<div id="npc-{{actor._id}}-description" class="tab flex-vertical description editor-tab" data-tab="description">
+			<div id="char-{{actor._id}}-description" class="tab flex-vertical description editor-tab" data-tab="description">
 				{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
 			</div>
 
-			<div id="npc-{{actor._id}}-friends-and-foes" class="tab flex-vertical friends-and-foes" data-tab="friends-and-foes">
+			<div id="char-{{actor._id}}-friends-and-foes" class="tab flex-vertical friends-and-foes" data-tab="friends-and-foes">
 				<div class="flex-horizontal">
-					<div class="npc-connections-list allies-list">
+					<div class="char-connections-list allies-list">
 						<div class="label-stripe flex-horizontal"><p>Allies</p></div>
 					</div>
-					<div class="npc-connections-list enemies-list">
+					<div class="char-connections-list enemies-list">
 						<div class="label-stripe flex-horizontal"><p>Enemies</p></div>
 					</div>
-					<div class="npc-connections-list others-list">
+					<div class="char-connections-list others-list">
 						<div class="label-stripe flex-horizontal"><p>Others</p></div>
 					</div>
 				</div>
 			</div>
 
 				{{#if isGM}}
-			<div id="npc-{{actor._id}}-randomizer" class="tab flex-vertical randomizer" data-tab="randomizer">
+			<div id="char-{{actor._id}}-randomizer" class="tab flex-vertical randomizer" data-tab="randomizer">
 				{{> "systems/eunos-blades/templates/parts/button-icon.hbs"
 					blockClass="tooltip-left"
 					buttonClass="fas fas-galaxy"
@@ -72,8 +72,7 @@
 				}}
 				<div class="randomizer">
 					{{#each randomizers as |data key|}}
-					{{log "RANDOMIZER" key data}}
-					<div class="npc-randomizer-field field-size-{{data.size}}">
+					<div class="char-randomizer-field field-size-{{data.size}}">
 						{{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
 							isToggled=data.isLocked
 							activeClass="fas fa-lock"

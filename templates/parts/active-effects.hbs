@@ -1,19 +1,6 @@
 <table class="items-list effects-list">
-{{#each effects as |section sid|}}
-  <thead>
-    <tr class="label-stripe-gray flex-horizontal" data-effect-type="{{section.type}}">
-        <th class="item-name effect-name flex-horizontal">{{localize section.label}}</th>
-        <th class="effect-source">Source</th>
-        <th class="effect-source">Duration</th>
-        <th class="item-control effect-control right">
-            <a class="effect-control" data-action="create" title="{{localize 'BITD.EffectCreate'}}">
-                <i class="fas fa-plus"></i> {{localize "BITD.Add"}}
-            </a>
-        </th>
-    </tr>
-  </thead>
   <tbody class="item-list">
-    {{#each section.effects as |effect|}}
+    {{#each effects as |effect|}}
 				{{#if effect.data.label}}
         <tr class="item effect flex-horizontal" data-effect-id="{{effect.id}}">
             <td class="effect-name flex">
@@ -37,5 +24,4 @@
 				{{/if}}
     {{/each}}
     </tbody>
-{{/each}}
 </table>

@@ -1,84 +1,66 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
-
-	{{!-- Top --}}
-  <section id="character-{{actor._id}}-name-alias" class="flex-horizontal name-alias">
-    <div class="grow-two actor-image">
-    	<img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" class="portrait" />
-    </div>
-    <div class="grow-two actor-mid-top-col">
-      <div id="character-{{actor._id}}-name-box" class="name-box">
-        <label for="character-{{actor._id}}-name">{{localize "BITD.Name"}}</label>
-        <input type="text" id="character-{{actor._id}}-name" class="name" name="name" value="{{actor.name}}">
-      </div>
-      <div id="character-{{actor._id}}-traits" class="flex-column character-traits">
-        <div class="item-block flex-horizontal">
-          <div class="item-class-label">
-						<a class="item-add-popup" data-distinct="true" data-item-type="heritage">{{localize "BITD.Heritage"}}</a>
-					</div>
-          {{#each actor.items as |item id|}}
-              {{#if (eq item.type "heritage")}}
-              <div class="item flex-horizontal" data-item-id="{{item._id}}">
-                <div class="item-body flex-horizontal">
-                  <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
-                  <div class="item-name">{{item.name}}</div>
-                </div>
-                <a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
-              </div>
-              {{/if}}
-          {{/each}}
-        </div>
-        <div class="item-block flex-horizontal">
-          <div class="item-class-label"><a class="item-add-popup" data-distinct="true" data-item-type="background">{{localize "BITD.Background"}}</a></div>
-          {{#each actor.items as |item id|}}
-            {{#if (eq item.type "background")}}
-            <div class="item flex-horizontal" data-item-id="{{item._id}}">
-              <div class="item-body flex-horizontal">
-                <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
-                <div class="item-name">{{item.name}}</div>
-              </div>
-              <a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
-            </div>
-            {{/if}}
-          {{/each}}
-        </div>
-        <div class="item-block flex-horizontal">
-          <div class="item-class-label"><a class="item-add-popup" data-distinct="true" data-item-type="vice">{{localize "BITD.Vice"}}</a></div>
-          {{#each actor.items as |item id|}}
-              {{#if (eq item.type "vice")}}
-              <div class="item flex-horizontal" data-item-id="{{item._id}}">
-                <div class="item-body flex-horizontal">
-                  <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
-                  <div class="item-name">{{item.name}}</div>
-                </div>
-                <a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
-              </div>
-              {{/if}}
-          {{/each}}
-        </div>
-        <div class="item-block flex-horizontal">
-          <div class="item-class-label"><a class="item-add-popup" data-distinct="true" data-item-type="class">{{localize "BITD.Class"}}</a></div>
-            {{#each actor.items as |item id|}}
-                {{#if (eq item.type "class")}}
-                <div class="item flex-horizontal" data-item-id="{{item._id}}">
-                  <div class="item-body flex-horizontal">
-                    <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
-                    <div class="item-name">{{item.name}}</div>
-                  </div>
-                  <a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
-                </div>
-                {{/if}}
-            {{/each}}
+	<img class="char-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+	<img class="char-img-bg" src="{{actor.img}}" />
+	<section class="char-top">
+		<input class="char-name shadow-input" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
+		<input class="char-alias shadow-input" type="text" name="data.alias" value="{{data.alias}}" placeholder="Alias">
+		<div class="char-class labelled-input labelled-item">
+			{{#if items.class}}
+			<div class="labelled-item-container flex-horizontal item" data-item-id="{{items.class._id}}">
+				<div class="item-body flex-horizontal">
+					<img src="{{items.class.img}}" title="{{items.class.name}}" />
+					<div class="item-name">{{items.class.name}}</div>
 				</div>
-      </div>
-    </div>
-    <div class="grow-two actor-right-top-col">
-      <div id="character-{{actor._id}}-alias-box" class="alias-box">
-        <label for="character-{{actor._id}}-alias">{{localize "BITD.Alias"}}</label>
-        <input type="text" id="character-{{actor._id}}-alias" class="alias" name="data.alias" value="{{data.alias}}">
-      </div>
-      {{> "systems/eunos-blades/templates/parts/coins.hbs" actor=actor}}
-    </div>
-  </section>
+				<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
+			</div>
+			{{else}}
+			<label><a class="item-add-popup" data-distinct="true" data-item-type="class">{{localize "BITD.Class"}}</a></label>
+			{{/if}}
+		</div>
+		<div class="char-class-tagline">{{items.classTagLine}}</div>
+		<div class="char-heritage labelled-input labelled-item">
+			<label><a class="item-add-popup" data-distinct="true" data-item-type="heritage">{{localize "BITD.Heritage"}}</a></label>
+			{{#if items.heritage}}
+			<div class="labelled-item-container flex-horizontal item" data-item-id="{{items.heritage._id}}">
+				<div class="item-body flex-horizontal">
+					<img src="{{items.heritage.img}}" title="{{items.heritage.name}}" />
+					<div class="item-name">{{items.heritage.name}}</div>
+				</div>
+				<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
+			</div>
+			{{/if}}
+		</div>
+
+		<div class="char-background labelled-input labelled-item">
+			<label><a class="item-add-popup" data-distinct="true" data-item-type="background">{{localize "BITD.Background"}}</a></label>
+			{{#if items.background}}
+			<div class="labelled-item-container flex-horizontal item" data-item-id="{{items.background._id}}">
+				<div class="item-body flex-horizontal">
+					<img src="{{items.background.img}}" title="{{items.background.name}}" />
+					<div class="item-name">{{items.background.name}}</div>
+				</div>
+				<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
+			</div>
+			{{/if}}
+		</div>
+
+		<div class="char-vice labelled-input labelled-item">
+			<label><a class="item-add-popup" data-distinct="true" data-item-type="vice">{{localize "BITD.Vice"}}</a></label>
+			{{#if items.vice}}
+			<div class="labelled-item-container flex-horizontal item" data-item-id="{{items.vice._id}}">
+				<div class="item-body flex-horizontal">
+					<img src="{{items.vice.img}}" title="{{items.vice.name}}" />
+					<div class="item-name">{{items.vice.name}}</div>
+				</div>
+				<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
+			</div>
+			{{/if}}
+		</div>
+
+		{{> "systems/eunos-blades/templates/parts/coins.hbs" actor=actor}}
+		{{> "systems/eunos-blades/templates/parts/coins-stash.hbs" actor=actor}}
+
+	</section>
 
   {{!-- Experience --}}
   <section class="flex experience">

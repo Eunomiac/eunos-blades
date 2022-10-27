@@ -5,9 +5,9 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import BladesHelpers from "./euno-helpers.js";
-export class BladesItem extends Item {
-        async _preCreate(data, options, user) {
+import H from "./core/helpers.js";
+class BladesItem extends Item {
+    async _preCreate(data, options, user) {
         await super._preCreate(data, options, user);
         if (user.id !== game.user?.id) {
             return;
@@ -15,9 +15,9 @@ export class BladesItem extends Item {
         if (this.parent?.documentName !== "Actor") {
             return;
         }
-        await this.parent.deleteEmbeddedDocuments("Item", BladesHelpers.removeDuplicatedItemType(data, this.parent));
+        await this.parent.deleteEmbeddedDocuments("Item", H.removeDuplicatedItemType(data, this.parent));
     }
-        prepareData() {
+    prepareData() {
         super.prepareData();
         if (this.data.type === "faction") {
             this._prepareFaction();
@@ -68,7 +68,6 @@ export class BladesItem extends Item {
     }
     async activateOverlayListeners() {
         $("#euno-clock-keeper-overlay").find(".euno-clock").on("wheel", async (event) => {
-            console.log("Wheel Event!", { event });
             if (!game?.user?.isGM) {
                 return;
             }
@@ -93,7 +92,6 @@ export class BladesItem extends Item {
             const delta = event.originalEvent.deltaY < 0 ? 1 : -1;
             const size = parseInt(clock$.data("size"));
             const newClockVal = curClockVal + delta;
-            console.log("... Details", { keyID, clockNum, curClockVal, size, delta, newClockVal });
             if (curClockVal === newClockVal) {
                 return;
             }
@@ -204,3 +202,4 @@ export var BladesItemType;
     BladesItemType[BladesItemType["gm_tracker"] = 12] = "gm_tracker";
     BladesItemType[BladesItemType["clock_keeper"] = 13] = "clock_keeper";
 })(BladesItemType || (BladesItemType = {}));
+export default BladesItem;

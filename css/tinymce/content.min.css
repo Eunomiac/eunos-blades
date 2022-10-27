@@ -495,6 +495,27 @@ html, :root {
     :root .label-stripe-gray th > *:not(:hover) {
       color: var(--blades-white-bright);
       text-shadow: 1px 1px 0px var(--blades-black-dark); }
+  html .labelled-input, :root .labelled-input {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.25rem; }
+    html .labelled-input label, :root .labelled-input label {
+      color: var(--blades-grey);
+      font-size: 0.625rem;
+      line-height: 0.625rem;
+      text-align: left;
+      padding-bottom: 0.125rem; }
+    html .labelled-input input[type="text"], :root .labelled-input input[type="text"] {
+      font-size: 0.875rem;
+      height: 1.125rem;
+      font-family: var(--font-emphasis);
+      text-transform: uppercase; }
+    html .labelled-input.labelled-item .labelled-item-container .item-body img, :root .labelled-input.labelled-item .labelled-item-container .item-body img {
+      height: 1.5rem; }
+  html .shadow-input, html .labelled-input label, html .labelled-input input[type="text"], :root .shadow-input, :root .labelled-input label, :root .labelled-input input[type="text"] {
+    box-shadow: none;
+    background: transparent;
+    text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
 
 ::-webkit-scrollbar {
   width: var(--blades-spacer-sm); }

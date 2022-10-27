@@ -5,11 +5,20 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import BladesHelpers from "../euno-helpers.js";
-import { BladesItem } from "../blades-item.js";
-export class BladesSheet extends ActorSheet {
-        
-        activateListeners(html) {
+import H from "../core/helpers.js";
+class BladesSheet extends ActorSheet {
+    async getData() {
+        const data = await super.getData();
+        const actorData = data.data;
+        Object.assign(data, {
+            editable: this.options.editable,
+            isGM: game.user.isGM,
+            actor: actorData,
+            data: actorData.data
+        });
+        return data;
+    }
+    activateListeners(html) {
         super.activateListeners(html);
         if (game.user.isGM) {
             html.attr("style", "--secret-text-display: initial");
@@ -29,13 +38,12 @@ export class BladesSheet extends ActorSheet {
         }
         html.find(".roll-die-attribute").on("click", this._onRollAttributeDieClick.bind(this));
     }
-        
     async _onItemAddClick(event) {
         event.preventDefault();
         const item_type = $(event.currentTarget).data("itemType");
         const distinct = $(event.currentTarget).data("distinct");
         const input_type = typeof distinct === "undefined" ? "checkbox" : "radio";
-        const items = await BladesHelpers.getAllItemsByType(item_type, game);
+        const items = await H.getAllItemsByType(item_type, game);
         let html = "<div class=\"items-to-add\">";
         items.forEach(e => {
             let addition_price_load = "";
@@ -72,9 +80,8 @@ export class BladesSheet extends ActorSheet {
         }, options);
         dialog.render(true);
     }
-        
     async addItemsToSheet(item_type, el) {
-        const items = await BladesHelpers.getAllItemsByType(item_type, game);
+        const items = await H.getAllItemsByType(item_type, game);
         const items_to_add = [];
         el.find("input:checked").each(function addItems() {
             const item = items.find(e => e.data._id === $(this).val());
@@ -88,7 +95,6 @@ export class BladesSheet extends ActorSheet {
         const attribute_name = $(event.currentTarget).data("rollAttribute");
         this.actor.rollAttributePopup(attribute_name);
     }
-        
     async _onUpdateBoxClick(event) {
         event.preventDefault();
         const item_id = $(event.currentTarget).data("item");
@@ -105,9 +111,10 @@ export class BladesSheet extends ActorSheet {
             update = { _id: item_id, data: { hold: { value: update_value } } };
         }
         else {
-            console.log("update attempted for type undefined in blades-sheet.js onUpdateBoxClick function");
+            bLog.error("update attempted for type undefined in blades-sheet.js onUpdateBoxClick function");
             return;
         }
         await this.actor.updateEmbeddedDocuments("Item", [update]);
     }
 }
+export default BladesSheet;

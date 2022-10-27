@@ -1,13 +1,8 @@
+import BladesSheet from "./blades-sheet.js";
 
-import {BladesSheet} from "./blades-sheet.js";
+class BladesCrewSheet extends BladesSheet {
 
-/**
- * @extends {BladesSheet}
- */
-export class BladesCrewSheet extends BladesSheet {
-
-	/** @override */
-	static get defaultOptions() {
+	static override get defaultOptions() {
 	  return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["eunos-blades", "sheet", "actor", "crew"],
 			template: "systems/eunos-blades/templates/crew-sheet.hbs",
@@ -17,25 +12,17 @@ export class BladesCrewSheet extends BladesSheet {
 		});
 	}
 
-	/* -------------------------------------------- */
-
-	/** @override */
-	getData() {
-		const data = super.getData();
-		data.editable = this.options.editable;
-		const actorData = data.data;
-		data.actor = actorData;
-		data.data = actorData.data;
+	override async getData() {
+		const data = await super.getData();
 
 		// Calculate Turfs amount.
 		// We already have Lair, so set to -1.
 		let turfs_amount = 0;
 
-		data.items.forEach(item => {
-
-			if (item.type === "crew_type") {
-				// Object.entries(item.data.turfs).forEach(turf => {turfs_amount += (turf.value === true) ? 1 : 0});
-				Object.entries(item.data.turfs).forEach(([key, turf]) => {
+		data.items.forEach((item) => {
+			if (item.type === "crew_type" && item.data) {
+			// @ts-expect-error Need to figure out what's returned by data.items.
+				Object.entries(item.data.turfs).forEach(([key, turf]: [any, any]) => {
 					if (game.i18n.localize(turf.name).toLowerCase().replace(/\s/g, "") === game.i18n.localize("BITD.Turf").toLowerCase().replace(/\s/g, "")) {
 						turfs_amount += turf.value ? 1 : 0;
 					}
@@ -43,47 +30,57 @@ export class BladesCrewSheet extends BladesSheet {
 			}
 
 		});
-		data.data.turfs_amount = turfs_amount;
+
+		Object.assign(
+			data.data,
+			{
+				turfs_amount
+			}
+		);
 
 		return data;
 	}
 
-	/* -------------------------------------------- */
-
-	/** @override */
-	activateListeners(html) {
+	override activateListeners(html: JQuery<HTMLElement>) {
 		super.activateListeners(html);
 
 		// Everything below here is only needed if the sheet is editable
 		if (!this.options.editable) 		{return}
 
 		// Update Inventory Item
-		html.find(".item-sheet-open").click(ev => {
-			const element = $(ev.currentTarget).parents(".item");
+		html.find(".item-sheet-open").on("click", (event) => {
+			const element = $(event.currentTarget).parents(".item");
 			const item = this.actor.items.get(element.data("itemId"));
-			item.sheet.render(true);
+			item?.sheet?.render(true);
 		});
 
 		// Delete Inventory Item
-		html.find(".item-delete").click( async ev => {
-			const element = $(ev.currentTarget).parents(".item");
+		html.find(".item-delete").on("click", async (event) => {
+			const element = $(event.currentTarget).parents(".item");
 			await this.actor.deleteEmbeddedDocuments("Item", [element.data("itemId")]);
 			element.slideUp(200, () => this.render(false));
 		});
 
 		// Add a new Cohort
-		html.find(".add-item").click(ev => {
-			// @ts-expect-error MIGRATION PAINS
-			BladesHelpers._addOwnedItem(ev, this.actor);
+		html.find(".add-item").on("click", (event) => {
+			event.preventDefault();
+			const a = event.currentTarget;
+			const item_type = a.dataset.itemType;
+
+			const data = {
+				name: randomID(),
+				type: item_type
+			};
+			return this.actor.createEmbeddedDocuments("Item", [data]);
 		});
 
 		// Toggle Turf
-		html.find(".turf-select").click( async ev => {
-			const element = $(ev.currentTarget).parents(".item");
+		html.find(".turf-select").on("click", async (event) => {
+			const element = $(event.currentTarget).parents(".item");
 
 			const item_id = element.data("itemId");
-			const turf_id = $(ev.currentTarget).data("turfId");
-			const turf_current_status = $(ev.currentTarget).data("turfStatus");
+			const turf_id = $(event.currentTarget).data("turfId");
+			const turf_current_status = $(event.currentTarget).data("turfStatus");
 			const turf_checkbox_name = "data.turfs." + turf_id + ".value";
 
 			await this.actor.updateEmbeddedDocuments("Item", [{
@@ -110,16 +107,17 @@ export class BladesCrewSheet extends BladesSheet {
 	/*  Form Submission                             */
 	/* -------------------------------------------- */
 
-	/** @override */
-	async _updateObject(event, formData) {
+	override async _updateObject(event: Event, formData: object) {
 
 		// Update the Item
 		await super._updateObject(event, formData);
 
-		if (event.target && event.target.name === "data.tier") {
+		if (event.target && $(event.target).attr("name") === "data.tier") {
 			this.render(true);
 		}
 	}
 	/* -------------------------------------------- */
 
 }
+
+export default BladesCrewSheet;

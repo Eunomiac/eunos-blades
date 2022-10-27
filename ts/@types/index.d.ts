@@ -1,6 +1,4 @@
-import "./euno-blades-roll";
-import BladesHelpers from "../euno-helpers.js";
-import ClockKeeper from "../euno-clocks.js";
+import ClockKeeper from "../euno-clocks";
 import { BladesItem } from "../blades-item";
 import { BladesActor } from "../blades-actor";
 import { bladesRoll } from "../blades-roll";
@@ -43,7 +41,6 @@ declare global {
     game: never;
   }
 
-	// declare const BladesHelpers: typeof BladesHelpers;
 
 	type ClickEvent = JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
 

@@ -5,8 +5,8 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import { BladesItemSheet } from "./sheets/blades-item-sheet.js";
-import { BladesItem } from "./blades-item.js";
+import BladesItemSheet from "./blades-item-sheet.js";
+import BladesItem from "../blades-item.js";
 export default class EunoClockKeeperSheet extends BladesItemSheet {
         static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -41,13 +41,13 @@ export default class EunoClockKeeperSheet extends BladesItemSheet {
             "systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
         ]);
     }
-        async _updateObject(event, formData) {
+    async _updateObject(event, formData) {
         const updateData = await this.object.update(formData);
         socketlib.system.executeForEveryone("renderOverlay");
         return updateData;
     }
-        getData() {
-        const data = super.getData();
+    async getData() {
+        const data = await super.getData();
         data.data.clock_keys = Object.fromEntries(Object.entries(data.data.clock_keys)
             .filter(([keyID, keyData]) => Boolean(keyData && keyData.scene === data.data.targetScene)));
         return data;

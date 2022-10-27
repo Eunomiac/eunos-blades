@@ -157,7 +157,47 @@
 
 	// #endregion ▄▄▄▄▄ STRIPE LABELS ▄▄▄▄▄
 
+	.labelled-input {
+		display: flex;
+		flex-direction: column;
+		margin-top: toRem(4px);
 
+		label {
+			color: var(--blades-grey);
+			font-size: toRem(10px);
+			line-height: toRem(10px);
+			text-align: left;
+			padding-bottom: toRem(2px);
+		}
 
+		input[type="text"] {
+			font-size: toRem(14px);
+			height: toRem(18px);
+			font-family: var(--font-emphasis);
+			text-transform: uppercase;
+		}
 
+		&.labelled-item {
+			.labelled-item-container {
+				.item-body {
+					img {
+						height: toRem(24px);
+					}
+					.item-name {
+
+					}
+				}
+			}
+		}
+	}
+
+	.shadow-input, .labelled-input label, .labelled-input input[type="text"] {
+		box-shadow: none;
+		background: transparent;
+		text-shadow:
+			0 0 4px var(--blades-black-dark),
+			0 0 4px var(--blades-black-dark),
+			0 0 4px var(--blades-black-dark),
+			0 0 4px var(--blades-black-dark);
+	}
 }

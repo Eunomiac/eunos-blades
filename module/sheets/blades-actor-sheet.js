@@ -5,10 +5,12 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import { BladesSheet } from "./blades-sheet.js";
-import BladesActiveEffect from "../euno-active-effect.js";
-export class BladesActorSheet extends BladesSheet {
-        static get defaultOptions() {
+import C from "../core/constants.js";
+import U from "../core/utilities.js";
+import BladesSheet from "./blades-sheet.js";
+import BladesActiveEffect from "../blades-active-effect.js";
+class BladesActorSheet extends BladesSheet {
+    static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "actor", "pc"],
             template: "systems/eunos-blades/templates/actor-sheet.hbs",
@@ -18,78 +20,45 @@ export class BladesActorSheet extends BladesSheet {
         });
     }
         
-        getData() {
-        var data = super.getData();
-        data.editable = this.options.editable;
-        data.isGM = game.user.isGM;
-        const actorData = data.data;
-        data.actor = actorData;
-        data.data = actorData.data;
-        data.faction = data.faction || data.associated_faction || "";
-        data.effects = BladesActiveEffect.prepareActiveEffectCategories(this.actor.effects);
+    async getData() {
+        const data = await super.getData();
         let loadout = 0;
-        data.items.forEach(i => { loadout += (i.type === "item") ? parseInt(i.data.load) : 0; });
-        data.data.loadout = loadout;
-        const load_level = ["BITD.Light",
-            "BITD.Light",
-            "BITD.Light",
-            "BITD.Light",
-            "BITD.Normal",
-            "BITD.Normal",
-            "BITD.Heavy",
-            "BITD.Encumbered",
-            "BITD.Encumbered",
-            "BITD.Encumbered",
-            "BITD.OverMax"];
-        const mule_level = ["BITD.Light",
-            "BITD.Light",
-            "BITD.Light",
-            "BITD.Light",
-            "BITD.Light",
-            "BITD.Light",
-            "BITD.Normal",
-            "BITD.Normal",
-            "BITD.Heavy",
-            "BITD.Encumbered",
-            "BITD.OverMax"];
-        let mule_present = 0;
-        if (loadout < 0) {
-            loadout = 0;
-        }
-        if (loadout > 10) {
-            loadout = 10;
-        }
-
-        data.items.forEach(i => {
-            if (i.type === "ability" && i.name === "(C) Mule") {
-                mule_present = 1;
-            }
+        data.items.forEach(i => { loadout += (i.type === "item") ? parseInt(i.system.load) : 0; });
+        loadout = U.gsap.utils.clamp(0, 10, loadout);
+        const classItem = data.items.find((item) => item.type === "class");
+        Object.assign(data, {
+            effects: this.actor.effects,
+            items: {
+                "class": classItem,
+                "heritage": data.items.find((item) => item.type === "heritage"),
+                "background": data.items.find((item) => item.type === "background"),
+                "vice": data.items.find((item) => item.type === "vice"),
+                "classTagLine": classItem && classItem.name in C.ClassTagLines
+                    ? C.ClassTagLines[classItem.name]
+                    : ""
+            },
+            loadout,
+            load_level: C.Encumbrance.loadLevel.default,
+            load_levels: C.Encumbrance.loadLevel.options
         });
-        if (mule_present) {
-            data.data.load_level = mule_level[loadout];
-        }
-        else {
-            data.data.load_level = load_level[loadout];
-        }
-        data.load_levels = { "BITD.Light": "BITD.Light", "BITD.Normal": "BITD.Normal", "BITD.Heavy": "BITD.Heavy" };
         return data;
     }
-        
-        activateListeners(html) {
+    activateListeners(html) {
         super.activateListeners(html);
         if (!this.options.editable) {
             return;
         }
-        html.find(".item-body").click(ev => {
+        html.find(".item-body").on("click", (ev) => {
             const element = $(ev.currentTarget).parents(".item");
             const item = this.actor.items.get(element.data("itemId"));
-            item.sheet.render(true);
+            item?.sheet?.render(true);
         });
-        html.find(".item-delete").click(async (ev) => {
+        html.find(".item-delete").on("click", async (ev) => {
             const element = $(ev.currentTarget).parents(".item");
             await this.actor.deleteEmbeddedDocuments("Item", [element.data("itemId")]);
             element.slideUp(200, () => this.render(false));
         });
-        html.find(".effect-control").click(ev => BladesActiveEffect.onManageActiveEffect(ev, this.actor));
+        html.find(".effect-control").on("click", (ev) => BladesActiveEffect.onManageActiveEffect(ev, this.actor));
     }
 }
+export default BladesActorSheet;

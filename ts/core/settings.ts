@@ -2,7 +2,20 @@ import U from "./utilities.js";
 import C from "./constants.js";
 
 const registerSettings = function() {
-
+	game.settings.register("eunos-blades", "debug", {
+		"name": "Debug Level",
+		"hint": "The verbosity of the debug messages to console.",
+		"scope": "client",      // This specifies a world-level setting
+		"config": true,        // This specifies that the setting appears in the configuration view
+		"type": Number,
+		// @ts-expect-error For some reason, they don't let me assign to range.
+		"range": {             // If range is specified, the resulting setting will be a range slider
+			min: 0,
+			max: 5,
+			step: 1
+		},
+		"default": 3         // The default value for the setting
+	});
 	/**
    * Track the system version upon which point a migration was last applied
    */

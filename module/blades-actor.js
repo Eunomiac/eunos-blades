@@ -5,11 +5,11 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import H from "./core/helpers.js";
+import C from "./core/constants.js";
 import { bladesRoll } from "./blades-roll.js";
-import BladesHelpers from "./euno-helpers.js";
-import { RANDOMIZERS } from "./euno-randomizers.js";
-export class BladesActor extends Actor {
-        static async create(data, options = {}) {
+class BladesActor extends Actor {
+    static async create(data, options = {}) {
         data.token = data.token || {};
 
         switch (data.type) {
@@ -20,7 +20,7 @@ export class BladesActor extends Actor {
         }
         return super.create(data, options);
     }
-        getRollData() {
+    getRollData() {
         const data = super.getRollData();
         data.dice_amount = this.getAttributeDiceToThrow();
         return data;
@@ -39,7 +39,7 @@ export class BladesActor extends Actor {
         return dice_amount;
     }
     rollAttributePopup(attribute_name) {
-        const attribute_label = BladesHelpers.getAttributeLabel(attribute_name);
+        const attribute_label = H.getAttributeLabel(attribute_name);
         let content = `
         <h2>${game.i18n.localize("BITD.Roll")} ${game.i18n.localize(attribute_label)}</h2>
         <form>
@@ -49,7 +49,7 @@ export class BladesActor extends Actor {
               ${this.createListOfDiceMods(-3, +3, 0)}
             </select>
           </div>`;
-        if (BladesHelpers.isAttributeAction(attribute_name)) {
+        if (H.isAttributeAction(attribute_name)) {
             content += `
             <div class="form-group">
               <label>${game.i18n.localize("BITD.Position")}:</label>
@@ -157,31 +157,31 @@ export class BladesActor extends Actor {
             name: (gender) => {
                 return [
                     Math.random() <= titleChance
-                        ? sampleArray(RANDOMIZERS.name_title)
+                        ? sampleArray(C.Randomizers.name_title)
                         : "",
                     sampleArray([
-                        ...((gender ?? "").charAt(0).toLowerCase() !== "m" ? RANDOMIZERS.name_first.female : []),
-                        ...((gender ?? "").charAt(0).toLowerCase() !== "f" ? RANDOMIZERS.name_first.male : [])
+                        ...((gender ?? "").charAt(0).toLowerCase() !== "m" ? C.Randomizers.name_first.female : []),
+                        ...((gender ?? "").charAt(0).toLowerCase() !== "f" ? C.Randomizers.name_first.male : [])
                     ]),
-                    `"${sampleArray(RANDOMIZERS.name_alias)}"`,
-                    sampleArray(RANDOMIZERS.name_surname),
+                    `"${sampleArray(C.Randomizers.name_alias)}"`,
+                    sampleArray(C.Randomizers.name_surname),
                     Math.random() <= suffixChance
-                        ? sampleArray(RANDOMIZERS.name_suffix)
+                        ? sampleArray(C.Randomizers.name_suffix)
                         : ""
                 ].filter((val) => Boolean(val)).join(" ");
             },
-            gender: () => sampleArray(RANDOMIZERS.gender)[0],
-            heritage: () => sampleArray(RANDOMIZERS.heritage)[0],
-            appearance: () => sampleArray(RANDOMIZERS.appearance)[0],
-            goal: () => sampleArray(RANDOMIZERS.goal, [this.system.randomizers.goal.value])[0],
-            method: () => sampleArray(RANDOMIZERS.method, [this.system.randomizers.goal.value])[0],
-            profession: () => sampleArray(RANDOMIZERS.profession, [this.system.randomizers.goal.value])[0],
-            trait: () => sampleArray(RANDOMIZERS.trait, [this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1),
-            interests: () => sampleArray(RANDOMIZERS.interests)[0],
-            quirk: () => sampleArray(RANDOMIZERS.quirk)[0],
+            gender: () => sampleArray(C.Randomizers.gender)[0],
+            heritage: () => sampleArray(C.Randomizers.heritage)[0],
+            appearance: () => sampleArray(C.Randomizers.appearance)[0],
+            goal: () => sampleArray(C.Randomizers.goal, [this.system.randomizers.goal.value])[0],
+            method: () => sampleArray(C.Randomizers.method, [this.system.randomizers.goal.value])[0],
+            profession: () => sampleArray(C.Randomizers.profession, [this.system.randomizers.goal.value])[0],
+            trait: () => sampleArray(C.Randomizers.trait, [this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1),
+            interests: () => sampleArray(C.Randomizers.interests)[0],
+            quirk: () => sampleArray(C.Randomizers.quirk)[0],
             style: (gender) => sampleArray([
-                ...((gender ?? "").charAt(0).toLowerCase() !== "m" ? RANDOMIZERS.style.female : []),
-                ...((gender ?? "").charAt(0).toLowerCase() !== "f" ? RANDOMIZERS.style.male : [])
+                ...((gender ?? "").charAt(0).toLowerCase() !== "m" ? C.Randomizers.style.female : []),
+                ...((gender ?? "").charAt(0).toLowerCase() !== "f" ? C.Randomizers.style.male : [])
             ], [this.system.randomizers.style.value])[0]
         };
         const gender = this.system.randomizers.gender.isLocked ? this.system.randomizers.gender.value : randomGen.gender();
@@ -218,13 +218,13 @@ export class BladesActor extends Actor {
         if (isUpdatingTraits) {
             const trait1 = this.system.randomizers.trait_1.isLocked
                 ? this.system.randomizers.trait_1.value
-                : sampleArray(RANDOMIZERS.trait, [this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
+                : sampleArray(C.Randomizers.trait, [this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
             const trait2 = this.system.randomizers.trait_2.isLocked
                 ? this.system.randomizers.trait_2.value
-                : sampleArray(RANDOMIZERS.trait, [trait1, this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
+                : sampleArray(C.Randomizers.trait, [trait1, this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
             const trait3 = this.system.randomizers.trait_3.isLocked
                 ? this.system.randomizers.trait_3.value
-                : sampleArray(RANDOMIZERS.trait, [trait1, trait2, this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
+                : sampleArray(C.Randomizers.trait, [trait1, trait2, this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
             if (!this.system.randomizers.trait_1.isLocked) {
                 updateData["system.randomizers.trait_1"] = {
                     isLocked: false,
@@ -249,20 +249,12 @@ export class BladesActor extends Actor {
         }
         return this.update(updateData);
     }
-        createListOfActions() {
-        let text = "", attribute, skill;
-        const { attributes } = this.system;
-        for (attribute in attributes) {
-            const { skills } = attributes[attribute];
-            text += `<optgroup label="${attribute} Actions">`;
-            text += `<option value="${attribute}">${attribute} (Resist)</option>`;
-            for (skill in skills) {
-                text += `<option value="${skill}">${skill}</option>`;
-            }
-            text += "</optgroup>";
-        }
-        return text;
-    }
+    
+    
+    
+    
+    
+    
         createListOfDiceMods(rs, re, s) {
         let text = "";
         if (s === "") {
@@ -282,3 +274,4 @@ export class BladesActor extends Actor {
         return text;
     }
 }
+export default BladesActor;

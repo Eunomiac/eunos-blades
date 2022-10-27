@@ -2161,6 +2161,29 @@ template {
     color: var(--blades-white-bright);
     text-shadow: 1px 1px 0px var(--blades-black-dark); }
 
+:root body.vtt.game.system-eunos-blades .app.window-app .labelled-input {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.25rem; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input label {
+    color: var(--blades-grey);
+    font-size: 0.625rem;
+    line-height: 0.625rem;
+    text-align: left;
+    padding-bottom: 0.125rem; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input input[type="text"] {
+    font-size: 0.875rem;
+    height: 1.125rem;
+    font-family: var(--font-emphasis);
+    text-transform: uppercase; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-item .labelled-item-container .item-body img {
+    height: 1.5rem; }
+
+:root body.vtt.game.system-eunos-blades .app.window-app .shadow-input, :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input input[type="text"] {
+  box-shadow: none;
+  background: transparent;
+  text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
+
 :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-edit {
   display: block;
   opacity: 0.25; }
@@ -2481,6 +2504,45 @@ template {
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .label-stripe-gray th > *:not(:hover) {
         color: var(--blades-white-bright);
         text-shadow: 1px 1px 0px var(--blades-black-dark); }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input {
+      display: flex;
+      flex-direction: column;
+      margin-top: 0.25rem; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input label {
+        color: var(--blades-grey);
+        font-size: 0.625rem;
+        line-height: 0.625rem;
+        text-align: left;
+        padding-bottom: 0.125rem; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input input[type="text"] {
+        font-size: 0.875rem;
+        height: 1.125rem;
+        font-family: var(--font-emphasis);
+        text-transform: uppercase; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-item .labelled-item-container .item-body img, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-item .labelled-item-container .item-body img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-item .labelled-item-container .item-body img {
+        height: 1.5rem; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .shadow-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .shadow-input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .shadow-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input input[type="text"] {
+      box-shadow: none;
+      background: transparent;
+      text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .char-img, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .char-img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .char-img {
+      position: absolute;
+      height: 175px;
+      top: -5px;
+      left: -10px;
+      z-index: 1;
+      border: none;
+      mask-image: linear-gradient(to right, black 75%, transparent); }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .char-img-bg, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .char-img-bg, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .char-img-bg {
+      position: absolute;
+      z-index: 0;
+      width: 500px;
+      height: auto;
+      top: -20%;
+      right: -10%;
+      border: none;
+      filter: blur(5px) sepia(2) brightness(0.65);
+      mask-image: linear-gradient(to bottom, black 20%, rgba(0, 0, 0, 0.35) 30%); }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable section .nav-panel nav, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable section .nav-panel nav, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable section .nav-panel nav {
       background-color: var(--blades-grey-bright);
       border: 2px solid var(--blades-white);
@@ -3093,8 +3155,7 @@ template {
     margin-bottom: 10px; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc * .coins, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc * .coins, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc * .coins {
     display: flex;
-    /* Hide the browser's default checkbox */
-    flex-wrap: wrap; }
+    /* Hide the browser's default checkbox */ }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc * .coins label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc * .coins label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc * .coins label {
       height: 15px;
       width: 15px;
@@ -3115,8 +3176,8 @@ template {
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc * .coins input:checked + label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc * .coins input:checked + label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc * .coins input:checked + label {
         background-color: var(--blades-gold-bright); }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc * .coins input ~ label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc * .coins input ~ label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc * .coins input ~ label {
-      margin-right: 3px;
-      margin-bottom: 3px;
+      margin-right: 2px;
+      margin-bottom: 2px;
       transition: filter 0.2s;
       cursor: pointer; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc * .coins input ~ label[for$="0"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc * .coins input ~ label[for$="0"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc * .coins input ~ label[for$="0"] {
@@ -3124,115 +3185,166 @@ template {
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc * .coins input ~ label:hover, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc * .coins input ~ label:hover, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc * .coins input ~ label:hover {
         filter: brightness(0.8);
         opacity: 0.9; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc * .coins.coins-hands, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc * .coins.coins-hands, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc * .coins.coins-hands {
-      width: 36px; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc * .coins.coins-stashed, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc * .coins.coins-stashed, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc * .coins.coins-stashed {
-      width: 190px; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .portrait, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .portrait, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .portrait {
-    max-height: 170px; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .name-box,
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .alias-box, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .name-box,
-  :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .alias-box, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .name-box,
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .alias-box {
-    font-family: var(--font-alt); }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .name-box label,
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .alias-box label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .name-box label,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .alias-box label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .name-box label,
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .alias-box label {
-      display: none; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .name-box input,
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .alias-box input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .name-box input,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .alias-box input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .name-box input,
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .alias-box input {
-      border-radius: 0;
-      border: none;
-      background: var(--blades-black-dark);
-      height: 50px;
-      color: var(--blades-white);
-      font-size: 32px; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .name-box input:focus,
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .alias-box input:focus, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .name-box input:focus,
-      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .alias-box input:focus, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .name-box input:focus,
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .alias-box input:focus {
-        box-shadow: none;
-        outline: 2px outset rgba(178, 178, 178, 0.5); }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .name-box.name-box,
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .alias-box.name-box, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .name-box.name-box,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .alias-box.name-box, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .name-box.name-box,
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .alias-box.name-box {
-      width: 120%; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .name-box.alias-box,
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .alias-box.alias-box, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .name-box.alias-box,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .alias-box.alias-box, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .name-box.alias-box,
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .alias-box.alias-box {
-      position: relative;
-      width: 80%;
-      left: 20%;
-      font-family: var(--font-emphasis); }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .name-box.alias-box input,
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .alias-box.alias-box input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .name-box.alias-box input,
-      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .alias-box.alias-box input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .name-box.alias-box input,
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .alias-box.alias-box input {
-        color: var(--blades-white-bright); }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .character-traits > .item-block, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .character-traits > .item-block, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .character-traits > .item-block {
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top {
     display: grid;
-    grid-template-columns: 70px 1fr;
-    width: 100%;
-    justify-content: space-between;
-    max-height: 28px; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .character-traits > .item-block .item-class-label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .character-traits > .item-block .item-class-label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .character-traits > .item-block .item-class-label {
-      flex-grow: 0;
-      flex-shrink: 2;
-      flex-basis: 25%;
-      text-align: right;
-      padding-right: 5px;
+    grid-template-areas: ". . name name name name name name" ". . alias alias alias alias alias alias" ". . class class class class class class" ". . classTag classTag classTag classTag classTag classTag" "heritage heritage background background vice vice coins coins" "stash stash stash stash stash stash stash stash";
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 28px 32px 18px 18px 36px 18px;
+    grid-column-gap: 2px;
+    grid-row-gap: 4px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top > *, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top > *, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top > * {
+      z-index: 2; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-name, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-name {
+      grid-area: name;
+      overflow: visible;
+      font-family: var(--font-alt);
       color: var(--blades-white);
-      margin-bottom: 3px; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .character-traits > .item-block .item, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .character-traits > .item-block .item, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .character-traits > .item-block .item {
-      flex-grow: 1;
+      font-size: 1.75rem;
+      height: 1.75rem;
+      line-height: 1.75rem;
+      text-align: center; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-alias, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-alias, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-alias {
+      grid-area: alias;
+      height: 100%;
+      font-variant: small-caps;
+      font-family: var(--font-emphasis);
       color: var(--blades-white-bright);
-      font-size: 16px;
-      line-height: 19px;
-      white-space: nowrap; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .character-traits > .item-block .item .item-body img, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .character-traits > .item-block .item .item-body img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .character-traits > .item-block .item .item-body img {
+      font-size: 2rem;
+      top: -5px;
+      text-align: center; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-class, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-class, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-class {
+      grid-area: class;
+      height: 100%;
+      text-align: center;
+      color: var(--blades-white);
+      font-size: 1.5rem;
+      top: -5px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-class-tagline, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-class-tagline, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-class-tagline {
+      grid-area: classTag;
+      font-family: var(--font-emphasis-alt);
+      font-size: 1.5rem;
+      text-align: center;
+      top: -5px;
+      padding: 0; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-background, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-vice, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-coins, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-background, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-vice, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-coins, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-background, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-vice, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-coins {
+      text-align: center;
+      background: linear-gradient(to top, var(--blades-black) 25%, transparent) !important;
+      height: calc(100% + 4px); }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-heritage label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-background label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-vice label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-coins label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-heritage label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-background label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-vice label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-coins label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-heritage label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-background label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-vice label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-coins label {
+        text-align: center; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-heritage {
+      grid-area: heritage; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-background, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-background, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-background {
+      grid-area: background; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-vice, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-vice, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-vice {
+      grid-area: vice; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-coins, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-coins, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-coins {
+      grid-area: coins; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-stash, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-stash, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-stash {
+      grid-area: stash; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .name-box,
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .alias-box, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .name-box,
+    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .alias-box, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .name-box,
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .alias-box {
+      font-family: var(--font-alt); }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .name-box label,
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .alias-box label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .name-box label,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .alias-box label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .name-box label,
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .alias-box label {
+        display: none; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .name-box input,
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .alias-box input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .name-box input,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .alias-box input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .name-box input,
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .alias-box input {
+        border-radius: 0;
+        border: none;
+        background: var(--blades-black-dark);
+        height: 50px;
+        color: var(--blades-white);
+        font-size: 32px; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .name-box input:focus,
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .alias-box input:focus, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .name-box input:focus,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .alias-box input:focus, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .name-box input:focus,
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .alias-box input:focus {
+          box-shadow: none;
+          outline: 2px outset rgba(178, 178, 178, 0.5); }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .name-box.name-box,
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .alias-box.name-box, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .name-box.name-box,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .alias-box.name-box, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .name-box.name-box,
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .alias-box.name-box {
+        width: 120%; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .name-box.alias-box,
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .alias-box.alias-box, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .name-box.alias-box,
+      :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .alias-box.alias-box, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .name-box.alias-box,
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .alias-box.alias-box {
         position: relative;
-        top: -2px;
-        margin-right: 2px; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .character-traits > .item-block .item-control, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .character-traits > .item-block .item-control, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .character-traits > .item-block .item-control {
-      flex-basis: 10px;
-      text-align: right;
-      padding-right: 4px;
-      color: var(--blades-white); }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .coin-box .stripe,
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .coin-box .stripe label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .coin-box .stripe,
-  :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .coin-box .stripe label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .coin-box .stripe,
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .coin-box .stripe label {
-    background: var(--blades-black-dark) !important;
-    color: var(--blades-white) !important;
-    margin-bottom: 10px; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .coin-box .coins input ~ label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .coin-box .coins input ~ label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .coin-box .coins input ~ label {
-    background-color: var(--blades-gold);
-    border: 1px var(--blades-gold-bright) outset;
-    border-radius: 15px; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .coin-box .coins input ~ label[for$="0"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .coin-box .coins input ~ label[for$="0"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .coin-box .coins input ~ label[for$="0"] {
-      border-width: 2px;
-      border-radius: 0;
-      filter: brightness(1.5); }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .coin-box .coins input:checked ~ label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .coin-box .coins input:checked ~ label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .coin-box .coins input:checked ~ label {
-    background-color: rgba(128, 128, 128, 0.2);
-    border-style: inset;
-    border-color: var(--blades-grey);
-    filter: none; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .coin-box .coins input:checked + label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .coin-box .coins input:checked + label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .coin-box .coins input:checked + label {
-    background-color: var(--blades-gold);
-    border-color: var(--blades-gold-bright);
-    border-style: outset; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .coin-box .coin-hands-box, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .coin-box .coin-hands-box, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .coin-box .coin-hands-box {
-    margin-right: 10px;
-    min-width: 45px; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.name-alias .coin-box .coin-hands-box .coins-hands, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.name-alias .coin-box .coin-hands-box .coins-hands, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.name-alias .coin-box .coin-hands-box .coins-hands {
-      justify-content: center;
-      width: 100%; }
+        width: 80%;
+        left: 20%;
+        font-family: var(--font-emphasis); }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .name-box.alias-box input,
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .alias-box.alias-box input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .name-box.alias-box input,
+        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .alias-box.alias-box input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .name-box.alias-box input,
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .alias-box.alias-box input {
+          color: var(--blades-white-bright); }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .character-traits > .item-block, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .character-traits > .item-block, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .character-traits > .item-block {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      width: 100%;
+      justify-content: space-between;
+      max-height: 28px; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .character-traits > .item-block .item-class-label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .character-traits > .item-block .item-class-label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .character-traits > .item-block .item-class-label {
+        flex-grow: 0;
+        flex-shrink: 2;
+        flex-basis: 25%;
+        text-align: right;
+        padding-right: 5px;
+        color: var(--blades-white);
+        margin-bottom: 3px; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .character-traits > .item-block .item, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .character-traits > .item-block .item, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .character-traits > .item-block .item {
+        flex-grow: 1;
+        color: var(--blades-white-bright);
+        font-size: 16px;
+        line-height: 19px;
+        white-space: nowrap; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .character-traits > .item-block .item .item-body img, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .character-traits > .item-block .item .item-body img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .character-traits > .item-block .item .item-body img {
+          position: relative;
+          top: -2px;
+          margin-right: 2px; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .character-traits > .item-block .item-control, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .character-traits > .item-block .item-control, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .character-traits > .item-block .item-control {
+        flex-basis: 10px;
+        text-align: right;
+        padding-right: 4px;
+        color: var(--blades-white); }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .coin-box .stripe,
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .coin-box .stripe label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .coin-box .stripe,
+    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .coin-box .stripe label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .coin-box .stripe,
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .coin-box .stripe label {
+      background: var(--blades-black-dark) !important;
+      color: var(--blades-white) !important;
+      margin-bottom: 10px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .coin-box .coins input ~ label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .coin-box .coins input ~ label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .coin-box .coins input ~ label {
+      background-color: var(--blades-gold);
+      border: 1px var(--blades-gold-bright) outset;
+      border-radius: 15px; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .coin-box .coins input ~ label[for$="0"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .coin-box .coins input ~ label[for$="0"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .coin-box .coins input ~ label[for$="0"] {
+        border-width: 2px;
+        border-radius: 0;
+        filter: brightness(1.5); }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .coin-box .coins input:checked ~ label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .coin-box .coins input:checked ~ label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .coin-box .coins input:checked ~ label {
+      background-color: rgba(128, 128, 128, 0.2);
+      border-style: inset;
+      border-color: var(--blades-grey);
+      filter: none; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .coin-box .coins input:checked + label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .coin-box .coins input:checked + label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .coin-box .coins input:checked + label {
+      background-color: var(--blades-gold);
+      border-color: var(--blades-gold-bright);
+      border-style: outset; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .coin-box .coin-hands-box, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .coin-box .coin-hands-box, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .coin-box .coin-hands-box {
+      margin-right: 10px;
+      min-width: 45px; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .coin-box .coin-hands-box .coins-hands, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .coin-box .coin-hands-box .coins-hands, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .coin-box .coin-hands-box .coins-hands {
+        justify-content: center;
+        width: 100%; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.big-teeth-section, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.big-teeth-section, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.big-teeth-section {
     border-color: var(--blades-white);
     max-height: 60px;
@@ -3308,26 +3420,6 @@ template {
     color: var(--blades-white-bright);
     line-height: 14px; }
 
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc input[type="text"] {
-  padding: 0;
-  border: none;
-  font-size: larger;
-  margin-top: -2px;
-  background: black;
-  padding: 5px;
-  color: var(--blades-white);
-  border-radius: 0; }
-
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .labelled-input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .labelled-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .labelled-input {
-  display: flex;
-  flex-direction: column; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .labelled-input label {
-    color: var(--blades-grey);
-    font-size: 10px;
-    line-height: 10px;
-    text-align: left;
-    padding-bottom: 2px; }
-
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-resizable-handle, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-resizable-handle, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-resizable-handle {
   display: none; }
 
@@ -3356,42 +3448,10 @@ template {
     grid-template-rows: 36px 14px 18px 18px 36px var(--folding-block-height);
     grid-column-gap: 2px;
     grid-row-gap: 4px; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet label {
-      text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet input[type="text"] {
-      box-shadow: none;
-      background: rgba(0, 0, 0, 0);
-      text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .labelled-input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input {
-      margin-top: 4px; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .labelled-input input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .labelled-input input[type="text"] {
-        font-size: 14px;
-        height: 18px;
-        font-family: var(--font-emphasis);
-        text-transform: uppercase; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet > *, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet > *, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet > * {
-      position: relative;
       z-index: 2;
       flex-grow: 0; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-img, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-img {
-      position: absolute;
-      height: 175px;
-      top: -5px;
-      left: -10px;
-      z-index: 1;
-      border: none;
-      mask-image: linear-gradient(to right, black 75%, transparent); }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-img-bg, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-img-bg, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-img-bg {
-      position: absolute;
-      z-index: 0;
-      width: 500px;
-      height: auto;
-      top: -20%;
-      right: -10%;
-      border: none;
-      filter: blur(5px) sepia(2) brightness(0.65);
-      mask-image: linear-gradient(to bottom, black 20%, rgba(0, 0, 0, 0.35) 30%); }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-name, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-name {
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-name, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-name {
       grid-area: name;
       overflow: visible;
       font-family: var(--font-alt);
@@ -3404,52 +3464,53 @@ template {
       background: none;
       text-align: center;
       text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-alias, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-alias, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-alias {
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-alias, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-alias, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-alias {
       display: none; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-concept, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-concept, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-concept {
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-concept, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-concept, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-concept {
       grid-area: concept;
       height: 100%;
       font-variant: small-caps;
       color: var(--blades-white);
+      font-size: 1.5rem;
       box-shadow: none;
       top: -5px;
       text-align: center; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-traits, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits {
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-traits, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-traits, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-traits {
       grid-area: traits;
       display: flex;
       font-family: var(--font-emphasis);
       top: 0px; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-traits input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-traits input {
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-traits input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-traits input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-traits input {
         text-transform: uppercase;
         text-align: center;
         color: gold; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-arena, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena {
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-district, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-arena {
       text-align: center;
       background: linear-gradient(to top, var(--blades-black) 25%, transparent) !important;
       height: calc(100% + 4px); }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-heritage label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-faction label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-district label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-arena label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-district label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena label {
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-heritage label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-faction label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-district label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-arena label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-heritage label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-faction label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-district label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-arena label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-heritage label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-faction label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-district label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-arena label {
         text-align: center; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-heritage.npc-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-faction.npc-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-district.npc-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-arena.npc-arena, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-arena, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-arena, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-arena, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-arena {
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-heritage.char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-faction.char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-district.char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-arena.char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-heritage.char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-faction.char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-district.char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-arena.char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-heritage.char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-faction.char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-district.char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-arena.char-arena {
         grid-area: arena;
         width: calc(100% + 10px); }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-heritage.npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-faction.npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-district.npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-arena.npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-heritage {
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-heritage.char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-faction.char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-district.char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-arena.char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-heritage.char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-faction.char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-district.char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-arena.char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-heritage.char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-faction.char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-district.char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-arena.char-heritage {
         grid-area: heritage;
         width: calc(100% + 10px);
         left: -10px; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-heritage.npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-faction.npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-district.npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-arena.npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-district {
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-heritage.char-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-faction.char-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-district.char-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-arena.char-district, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-heritage.char-district, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-faction.char-district, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-district.char-district, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-arena.char-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-heritage.char-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-faction.char-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-district.char-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-arena.char-district {
         grid-area: district; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-heritage.npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-faction.npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-district.npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-arena.npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-heritage.npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-faction.npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-district.npc-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-arena.npc-faction {
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-heritage.char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-faction.char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-district.char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-arena.char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-heritage.char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-faction.char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-district.char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-arena.char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-heritage.char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-faction.char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-district.char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-arena.char-faction {
         grid-area: faction; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-short-description, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-short-description, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-short-description {
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-short-description, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-short-description, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-short-description {
       grid-area: short-desc;
       font-style: italic;
       text-align: center;
       color: var(--blades-white-bright);
       top: -5px;
       padding: 0; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-tabs, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs {
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-tabs, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-tabs, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-tabs {
       grid-area: tabs; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav {
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-tabs .nav-panel nav, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-tabs .nav-panel nav, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-tabs .nav-panel nav {
         width: calc(100% + 2 * 10px);
         height: 28px;
         justify-content: stretch;
@@ -3458,7 +3519,7 @@ template {
         z-index: 3;
         background-color: var(--blades-white);
         padding: 0 10px; }
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item {
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-tabs .nav-panel nav .item, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-tabs .nav-panel nav .item, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-tabs .nav-panel nav .item {
           color: var(--blades-grey-dark);
           flex-grow: 1;
           font-family: var(--font-emphasis);
@@ -3466,23 +3527,22 @@ template {
           font-size: 14px;
           line-height: 30px;
           padding: 0 10px; }
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item.active, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item.active, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item.active {
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-tabs .nav-panel nav .item.active, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-tabs .nav-panel nav .item.active, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-tabs .nav-panel nav .item.active {
             background-color: var(--blades-white-bright);
             color: var(--blades-black-dark);
             font-size: 18px; }
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item:hover, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item:hover, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-tabs .nav-panel nav .item:hover {
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-tabs .nav-panel nav .item:hover, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-tabs .nav-panel nav .item:hover, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-tabs .nav-panel nav .item:hover {
             color: var(--blades-black-dark);
             background-color: var(--blades-white-bright); }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-allies,
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .npc-enemies, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies,
-    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .npc-enemies, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-allies,
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .npc-enemies {
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-allies,
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content .actor-sheet .char-enemies, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-allies,
+    :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc .window-content .actor-sheet .char-enemies, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-allies,
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc .window-content .actor-sheet .char-enemies {
       display: none; }
 
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .coins, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .coins, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.crew .coins {
   display: flex;
-  /* Hide the browser's default checkbox */
-  flex-wrap: wrap; }
+  /* Hide the browser's default checkbox */ }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .coins label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .coins label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.crew .coins label {
     height: 15px;
     width: 15px;
@@ -3503,8 +3563,8 @@ template {
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .coins input:checked + label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .coins input:checked + label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.crew .coins input:checked + label {
       background-color: var(--blades-gold-bright); }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .coins input ~ label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .coins input ~ label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.crew .coins input ~ label {
-    margin-right: 3px;
-    margin-bottom: 3px;
+    margin-right: 2px;
+    margin-bottom: 2px;
     transition: filter 0.2s;
     cursor: pointer; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .coins input ~ label[for$="0"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .coins input ~ label[for$="0"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.crew .coins input ~ label[for$="0"] {
@@ -3512,10 +3572,6 @@ template {
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .coins input ~ label:hover, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .coins input ~ label:hover, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.crew .coins input ~ label:hover {
       filter: brightness(0.8);
       opacity: 0.9; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .coins.coins-hands, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .coins.coins-hands, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.crew .coins.coins-hands {
-    width: 36px; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .coins.coins-stashed, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .coins.coins-stashed, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.crew .coins.coins-stashed {
-    width: 190px; }
 
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .item, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .item, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.crew .item {
   justify-content: space-between; }
@@ -3555,7 +3611,7 @@ template {
   display: flex;
   /* Hide the browser's default checkbox */
   flex-wrap: wrap;
-  max-width: 72px; }
+  max-width: 68px; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .crew-coins label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .crew-coins label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.crew .crew-coins label {
     height: 15px;
     width: 15px;
@@ -3576,8 +3632,8 @@ template {
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .crew-coins input:checked + label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .crew-coins input:checked + label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.crew .crew-coins input:checked + label {
       background-color: var(--blades-gold-bright); }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .crew-coins label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .crew-coins label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.crew .crew-coins label {
-    margin-right: 3px;
-    margin-bottom: 3px; }
+    margin-right: 2px;
+    margin-bottom: 2px; }
 
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .crew-reputation, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.crew .crew-reputation, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.crew .crew-reputation {
   border-top: 3px solid var(--blades-black);

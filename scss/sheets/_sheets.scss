@@ -6,7 +6,7 @@
     justify-items: center;
     > * {
         flex-basis: auto;
-        
+
         // flex-grow: 1;
         flex-shrink: 0.5;
     }
@@ -33,7 +33,7 @@
             font-size: toRem(20px);
             line-height: 1;
             margin-top: toRem(-1px);
-            
+
             font-family: Kirsty;
             transform-origin: center center;
             transform: scaleY(0.75);
@@ -43,7 +43,7 @@
             }
         }
     }
-    
+
 }
 
 .window-content {
@@ -51,9 +51,30 @@
   padding: var(--content-padding);
   form.editable {
     @import "../core/text-styles";
-      padding: 0 !important;
-    section {
+    padding: 0 !important;
 
+		.char-img {
+			position: absolute;
+			height: 175px;
+			top: -5px;
+			left: -10px;
+			z-index: 1;
+			border: none;
+			mask-image: linear-gradient(to right, black 75%, transparent);
+		}
+
+		.char-img-bg {
+			position: absolute;
+			z-index: 0;
+			width: 500px;
+			height: auto;
+			top: -20%;
+			right: -10%;
+			border: none;
+			filter: blur(5px) sepia(2) brightness(0.65);
+			mask-image: linear-gradient(to bottom, black 20%, rgba(0, 0, 0, 0.35) 30%);
+		}
+    section {
       .nav-panel {
         nav {
           background-color: var(--blades-grey-bright);
@@ -76,7 +97,7 @@
                 to right,
                 transparent,
                 var(--blades-white-bright) 25%,
-                var(--blades-white-bright) 75%, 
+                var(--blades-white-bright) 75%,
                 transparent
               );
               transform: scale(1.2);
@@ -92,7 +113,7 @@
                 transparent,
                 var(--blades-white) 10%,
                 var(--blades-white-bright) 50%,
-                var(--blades-white) 90%, 
+                var(--blades-white) 90%,
                 transparent
               );
             }

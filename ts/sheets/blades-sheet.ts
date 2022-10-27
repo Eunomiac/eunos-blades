@@ -1,19 +1,27 @@
-import BladesHelpers from "../euno-helpers.js";
-import {BladesItem} from "../blades-item.js";
+import H from "../core/helpers.js";
+import type BladesItem from "../blades-item.js";
 import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import {BladesActor} from "../blades-actor.js";
+import type BladesActor from "../blades-actor.js";
 
-/**
- * Extend the basic ActorSheet with some very simple modifications
- * @extends {ActorSheet}
- */
+class BladesSheet extends ActorSheet {
 
-export class BladesSheet extends ActorSheet {
+	override async getData() {
+		const data = await super.getData();
+		const actorData = data.data;
+		Object.assign(
+			data,
+			{
+				editable: this.options.editable,
+				isGM: game.user.isGM,
+				// isOwner: ???,
+				actor: actorData,
+				data: actorData.data
+			}
+		);
+		return data;
+	}
 
-	/* -------------------------------------------- */
-
-	/** @override */
 	override activateListeners(html: JQuery<HTMLElement>) {
 		super.activateListeners(html);
 
@@ -40,15 +48,13 @@ export class BladesSheet extends ActorSheet {
 		html.find(".roll-die-attribute").on("click", this._onRollAttributeDieClick.bind(this));
 	}
 
-	/* -------------------------------------------- */
-
 	async _onItemAddClick(event: ClickEvent) {
 		event.preventDefault();
 
 		const item_type = $(event.currentTarget).data("itemType");
 		const distinct = $(event.currentTarget).data("distinct");
 		const input_type = typeof distinct === "undefined" ? "checkbox" : "radio";
-		const items = await BladesHelpers.getAllItemsByType(item_type, game);
+		const items = await H.getAllItemsByType(item_type, game);
 
 		let html = "<div class=\"items-to-add\">";
 
@@ -94,11 +100,9 @@ export class BladesSheet extends ActorSheet {
 		dialog.render(true);
 	}
 
-	/* -------------------------------------------- */
-
 	async addItemsToSheet(item_type: string, el: JQuery<HTMLElement>) {
 
-		const items = await BladesHelpers.getAllItemsByType(item_type, game);
+		const items = await H.getAllItemsByType(item_type, game);
 		const items_to_add: ItemDataConstructorData[] = [];
 
 		el.find("input:checked").each(function addItems() {
@@ -109,11 +113,9 @@ export class BladesSheet extends ActorSheet {
 		// @ts-expect-error What the fuck type is the first parameter to BladesItem.create?!
 		await BladesItem.create(items_to_add, {parent: this.document});
 	}
-	/* -------------------------------------------- */
 
 	/**
    * Roll an Attribute die.
-   * @param {*} event
    */
 	async _onRollAttributeDieClick(event: ClickEvent) {
 
@@ -121,8 +123,6 @@ export class BladesSheet extends ActorSheet {
 		(this.actor as BladesActor).rollAttributePopup(attribute_name);
 
 	}
-
-	/* -------------------------------------------- */
 
 	async _onUpdateBoxClick(event: ClickEvent) {
 		event.preventDefault();
@@ -138,15 +138,12 @@ export class BladesSheet extends ActorSheet {
 		} else if (update_type === "hold") {
 			update = {_id: item_id, data:{hold:{value: update_value}}};
 		} else {
-			console.log("update attempted for type undefined in blades-sheet.js onUpdateBoxClick function");
+			bLog.error("update attempted for type undefined in blades-sheet.js onUpdateBoxClick function");
 			return;
 		}
 
 		await this.actor.updateEmbeddedDocuments("Item", [update]);
-
-
 	}
-
-	/* -------------------------------------------- */
-
 }
+
+export default BladesSheet;

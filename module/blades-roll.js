@@ -5,6 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import H from "./core/helpers.js";
 export async function bladesRoll(dice_amount, attribute_name = "", position = "risky", effect = "standard", note = "") {
     let zeromode = false;
     if (dice_amount < 0) {
@@ -20,11 +21,11 @@ export async function bladesRoll(dice_amount, attribute_name = "", position = "r
 }
 async function showChatRollMessage(r, zeromode, attribute_name = "", position = "", effect = "", note = "") {
     const speaker = ChatMessage.getSpeaker();
-    const rolls = (r.terms)[0].results;
-    const attribute_label = BladesHelpers.getAttributeLabel(attribute_name);
+    const rolls = r.terms[0].results;
+    const attribute_label = H.getAttributeLabel(attribute_name);
     const roll_status = getBladesRollStatus(rolls, zeromode);
     let result;
-    if (BladesHelpers.isAttributeAction(attribute_name)) {
+    if (H.isAttributeAction(attribute_name)) {
         let position_localize = "";
         switch (position) {
             case "controlled":
@@ -98,7 +99,7 @@ export function getBladesRollStatus(rolls, zeromode = false) {
     return roll_status;
 }
 export function getBladesRollStress(rolls, zeromode = false) {
-    var stress = 6;
+    let stress = 6;
     const sorted_rolls = rolls.map(i => i.result).sort();
     const roll_status = "failure";
     if (sorted_rolls[0] === 6 && zeromode) {
@@ -134,7 +135,7 @@ export async function simpleRollPopup() {
         <div class="form-group">
           <label>${game.i18n.localize("BITD.RollNumberOfDice")}:</label>
           <select id="qty" name="qty">
-            ${Array(11).fill().map((item, i) => `<option value="${i}">${i}d</option>`).join("")}
+            ${[...new Array(11)].map((item, i) => `<option value="${i}">${i}d</option>`).join("")}
           </select>
         </div>
         <div className="form-group">

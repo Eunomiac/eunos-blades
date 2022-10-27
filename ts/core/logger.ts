@@ -12,7 +12,7 @@ const getStackTrace = (regExpFilters: RegExp[] = []) => {
 	}
 	return null;
 };
-const k4Logger = (type: KeyOf<typeof STYLES> = "base", ...content: [string, ...any[]]) => {
+const bLogger = (type: KeyOf<typeof STYLES> = "base", ...content: [string, ...any[]]) => {
 	const [message, ...data] = content;
 	const dbLevel: 0|1|2|3|4|5 = [0,1,2,3,4,5].includes(U.getLast(data))
 		? data.pop()
@@ -89,15 +89,15 @@ const STYLES = {
 	}
 };
 
-const kLog = {
-	display: (...content: [string, ...any[]]) => k4Logger("display", ...content),
-	log: (...content: [string, ...any[]]) => k4Logger("base", ...content),
-	error: (...content: [string, ...any[]]) => k4Logger("error", ...content),
-	hbsLog: (...content: [string, ...any[]]) => k4Logger("handlebars", ...content)
+const bLog = {
+	display: (...content: [string, ...any[]]) => bLogger("display", ...content),
+	log: (...content: [string, ...any[]]) => bLogger("base", ...content),
+	error: (...content: [string, ...any[]]) => bLogger("error", ...content),
+	hbsLog: (...content: [string, ...any[]]) => bLogger("handlebars", ...content)
 };
 
 const registerDebugger = () => {
-	Object.assign(globalThis, {kLog});
+	Object.assign(globalThis, {bLog});
 };
 
 export default registerDebugger;

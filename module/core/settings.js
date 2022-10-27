@@ -8,6 +8,19 @@
 import U from "./utilities.js";
 import C from "./constants.js";
 const registerSettings = function () {
+    game.settings.register("eunos-blades", "debug", {
+        "name": "Debug Level",
+        "hint": "The verbosity of the debug messages to console.",
+        "scope": "client",
+        "config": true,
+        "type": Number,
+        "range": {
+            min: 0,
+            max: 5,
+            step: 1
+        },
+        "default": 3
+    });
         game.settings.register("eunos-blades", "systemMigrationVersion", {
         "name": "System Migration Version",
         "scope": "world",

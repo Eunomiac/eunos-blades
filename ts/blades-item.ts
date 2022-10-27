@@ -1,38 +1,22 @@
-// import EunoClockKeeperSheet from "./euno-clock-keeper-sheet.js";
-import BladesHelpers from "./euno-helpers.js";
+// import EunoClockKeeperSheet from "./clock-keeper-sheet.js";
+import H from "./core/helpers.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs.js";
 import type {BaseUser} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents.mjs/baseUser.js";
-import {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
-import {BladesActor} from "./blades-actor.js";
+import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
+import type BladesActor from "./blades-actor.js";
 
-/**
- * Extend the basic Item
- * @extends {Item}
- */
-export class BladesItem extends Item {
+class BladesItem extends Item {
 
-	/** @override */
 	override async _preCreate( data: ItemData & ItemDataConstructorData, options: DocumentModificationOptions, user: BaseUser ) {
 		await super._preCreate( data, options, user );
 
 		if (user.id !== game.user?.id) { return }
 		if (this.parent?.documentName !== "Actor") { return }
 
-		await this.parent.deleteEmbeddedDocuments("Item", BladesHelpers.removeDuplicatedItemType(data, this.parent));
+		await this.parent.deleteEmbeddedDocuments("Item", H.removeDuplicatedItemType(data, this.parent));
 	}
 
-	// /** @override */
-	// async _on( data: ItemData, options: DocumentModificationOptions, user: BaseUser ) {
-	// 	await super._preCreate( data, options, user );
-
-	// 	if (user.id !== game.user?.id) { return }
-	// 	if (this.parent?.documentName !== "Actor") { return }
-
-	// 	await this.parent.deleteEmbeddedDocuments("Item", BladesHelpers.removeDuplicatedItemType(data as ItemData, this.parent));
-	// }
-
-	/** @override */
 	override prepareData() {
 		super.prepareData();
 
@@ -47,8 +31,6 @@ export class BladesItem extends Item {
 			if (this.system.goal_1_clock_max === 0) {this.system.goal_1_clock_max = 4}
 			this.system.goal_2_clock_value ??= 0;
 			if (this.system.goal_2_clock_max === 0) {this.system.goal_2_clock_max = 4}
-			// this.system.size_list_1 = BladesHelpers.createListOfClockSizes( game.system.bobclocks.sizes, this.system.goal_1_clock_max ?? 4, parseInt(`${this.system.goal_1_clock_max ?? 4}`) );
-			// this.system.size_list_2 = BladesHelpers.createListOfClockSizes( game.system.bobclocks.sizes, this.system.goal_2_clock_max ?? 4, parseInt(`${this.system.goal_2_clock_max ?? 4}`) );
 		}
 	}
 
@@ -79,7 +61,6 @@ export class BladesItem extends Item {
 
 
 		$("#euno-clock-keeper-overlay").find(".euno-clock").on("wheel", async (event) => {
-			console.log("Wheel Event!", {event});
 			if (!game?.user?.isGM) { return }
 			if (!event.currentTarget) { return }
 			if (!game.eunoblades.ClockKeeper) { return }
@@ -100,7 +81,6 @@ export class BladesItem extends Item {
 			// const newClockVal = Math.max(Math.min(parseInt(clock$.data("size"), (curClockVal + delta))),0);
 			const newClockVal = curClockVal + delta;
 
-			console.log("... Details", {keyID, clockNum, curClockVal, size, delta, newClockVal});
 			if (curClockVal === newClockVal) { return }
 
 			await this.update({
@@ -231,7 +211,7 @@ export enum BladesItemType {
 	"clock_keeper"
 }
 
-export declare interface BladesItem {
+declare interface BladesItem {
 	parent: BladesActor | null,
 	system: {
 		type: string,
@@ -344,3 +324,5 @@ export type BladesItemSpec<Type extends string> = BladesItem
 			type: Type
 		}
 	}
+
+export default BladesItem;

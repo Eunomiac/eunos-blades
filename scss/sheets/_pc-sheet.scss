@@ -1,7 +1,92 @@
-section.name-alias {
-	.portrait {
-		max-height: 170px;
+
+
+section.char-top {
+	display: grid;
+
+	grid-template-areas: ". . name name name name name name"
+	". . alias alias alias alias alias alias"
+	". . class class class class class class"
+	". . classTag classTag classTag classTag classTag classTag"
+	"heritage heritage background background vice vice coins coins"
+	"stash stash stash stash stash stash stash stash";
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	grid-template-rows: 28px 32px 18px 18px 36px 18px;
+	grid-column-gap: 2px;
+	grid-row-gap: 4px;
+
+	> * { z-index: 2 }
+
+	.char-name {
+		grid-area: name;
+		overflow: visible;
+		font-family: var(--font-alt);
+		color: var(--blades-white);
+		font-size: toRem(28px);
+		height: toRem(28px);
+		line-height: toRem(28px);
+		// padding-bottom: toRem(10px);
+		text-align: center;
 	}
+
+	.char-alias {
+		grid-area: alias;
+		height: 100%;
+		font-variant: small-caps;
+		font-family: var(--font-emphasis);
+		color: var(--blades-white-bright);
+		font-size: toRem(32px);
+		top: -5px;
+		text-align: center;
+	}
+
+	.char-class {
+		grid-area: class;
+		height: 100%;
+		text-align: center;
+		color: var(--blades-white);
+		font-size: toRem(24px);
+		top: -5px;
+	}
+
+	.char-class-tagline {
+		grid-area: classTag;
+		font-family: var(--font-emphasis-alt);
+		font-size: toRem(24px);
+		text-align: center;
+		top: -5px;
+		padding: 0;
+	}
+
+	.char-heritage, .char-background, .char-vice, .char-coins {
+		text-align: center;
+		background: linear-gradient(to top, var(--blades-black) 25%, transparent) !important;
+		height: calc(100% + 4px);
+
+		label {
+			text-align: center;
+		}
+	}
+
+	.char-heritage {
+		grid-area: heritage;
+	}
+
+	.char-background {
+		grid-area: background;
+	}
+
+	.char-vice {
+		grid-area: vice;
+	}
+
+	.char-coins {
+		grid-area: coins;
+	}
+
+	.char-stash {
+		grid-area: stash;
+	}
+
 
 	.name-box,
 	.alias-box {
