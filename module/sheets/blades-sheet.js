@@ -6,6 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import H from "../core/helpers.js";
+import U from "../core/utilities.js";
 class BladesSheet extends ActorSheet {
     async getData() {
         const data = await super.getData();
@@ -16,6 +17,16 @@ class BladesSheet extends ActorSheet {
             actor: actorData,
             data: actorData.data
         });
+        eLog.log("actorData", actorData);
+        eLog.log("game.actors.get", game.actors.get(actorData.data.crew));
+        if (actorData.data.crew) {
+            const crew = game.actors.get(actorData.data.crew);
+            if (crew && crew.type === "crew") {
+                Object.assign(data.data, {
+                    crew
+                });
+            }
+        }
         return data;
     }
     activateListeners(html) {
@@ -29,6 +40,19 @@ class BladesSheet extends ActorSheet {
         if (!this.options.editable) {
             return;
         }
+        html.find(".dotline").each((i, elem) => {
+            const target = $(elem).data("target");
+            const curValue = U.pInt($(elem).data("value"));
+            $(elem).find(".dot").each((j, dot) => {
+                $(dot).on("click", (event) => {
+                    event.preventDefault();
+                    const thisValue = U.pInt($(dot).data("value"));
+                    if (thisValue !== curValue) {
+                        this.actor.update({ [target]: thisValue });
+                    }
+                });
+            });
+        });
         html.find(".item-add-popup").on("click", (event) => {
             this._onItemAddClick(event);
         });
@@ -111,7 +135,7 @@ class BladesSheet extends ActorSheet {
             update = { _id: item_id, data: { hold: { value: update_value } } };
         }
         else {
-            bLog.error("update attempted for type undefined in blades-sheet.js onUpdateBoxClick function");
+            eLog.error("update attempted for type undefined in blades-sheet.js onUpdateBoxClick function");
             return;
         }
         await this.actor.updateEmbeddedDocuments("Item", [update]);

@@ -36,6 +36,9 @@ class BladesActorSheet extends BladesSheet {
 				effects: this.actor.effects,
 				items: {
 					"class": classItem,
+					"classBgImg": classItem && classItem.name in C.ClassTagLines
+						? C.ClassBgImages[classItem.name as keyof typeof C.ClassBgImages]
+						: classItem?.img ?? "",
 					"heritage": data.items.find((item) => item.type === "heritage"),
 					"background": data.items.find((item) => item.type === "background"),
 					"vice": data.items.find((item) => item.type === "vice"),

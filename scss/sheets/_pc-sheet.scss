@@ -1,218 +1,85 @@
-
-
 section.char-top {
-	display: grid;
-
-	grid-template-areas: ". . name name name name name name"
-	". . alias alias alias alias alias alias"
-	". . class class class class class class"
-	". . classTag classTag classTag classTag classTag classTag"
-	"heritage heritage background background vice vice coins coins"
-	"stash stash stash stash stash stash stash stash";
-	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-	grid-template-rows: 28px 32px 18px 18px 36px 18px;
-	grid-column-gap: 2px;
-	grid-row-gap: 4px;
-
-	> * { z-index: 2 }
+	grid-template-areas:
+		". . title title title title title title class class class"
+		". . . subtitle subtitle subtitle subtitle subtitle class class class"
+		". heritage heritage background background vice vice crew crew coins coins"
+		"stash stash stash stash stash stash stash stash stash stash stash";
 
 	.char-name {
-		grid-area: name;
-		overflow: visible;
-		font-family: var(--font-alt);
-		color: var(--blades-white);
-		font-size: toRem(28px);
-		height: toRem(28px);
-		line-height: toRem(28px);
-		// padding-bottom: toRem(10px);
-		text-align: center;
+		--top-title-font-size: #{toRem(58px)};
 	}
 
-	.char-alias {
-		grid-area: alias;
-		height: 100%;
-		font-variant: small-caps;
-		font-family: var(--font-emphasis);
-		color: var(--blades-white-bright);
-		font-size: toRem(32px);
-		top: -5px;
-		text-align: center;
+	.char-full-name {
+		--top-subtitle-font-size: #{toRem(32px)};
 	}
 
 	.char-class {
+		--labelled-input-img-scale: 2;
+		--labelled-item-name-size: #{toRem(42px)};
 		grid-area: class;
-		height: 100%;
-		text-align: center;
-		color: var(--blades-white);
-		font-size: toRem(24px);
-		top: -5px;
-	}
+		position: absolute;
+		right: toRem(5px);
 
-	.char-class-tagline {
-		grid-area: classTag;
-		font-family: var(--font-emphasis-alt);
-		font-size: toRem(24px);
-		text-align: center;
-		top: -5px;
-		padding: 0;
-	}
-
-	.char-heritage, .char-background, .char-vice, .char-coins {
-		text-align: center;
-		background: linear-gradient(to top, var(--blades-black) 25%, transparent) !important;
-		height: calc(100% + 4px);
-
-		label {
-			text-align: center;
+		img {
+			height: toRem(200px);
+			top: toRem(-50px);
+			right: 0;
+			left: unset;
+			transform: scaleX(-1);
+			filter: blur(2px);
 		}
+
+		.labelled-item-container .item-name {
+			transform: none;
+			top: 0%;
+			left: unset;
+			right: 0%;
+			line-height: var(--line-height-compact);
+		}
+
+		.char-class-tagline {
+			font-family: var(--font-emphasis-alt);
+			font-size: toRem(36px);
+			text-align: right;
+			line-height: var(--line-height-compact);
+			white-space: nowrap;
+		}
+
 	}
 
-	.char-heritage {
-		grid-area: heritage;
-	}
-
-	.char-background {
-		grid-area: background;
-	}
-
-	.char-vice {
-		grid-area: vice;
-	}
+	.char-heritage { grid-area: heritage }
+	.char-background { grid-area: background }
+	.char-vice { grid-area: vice }
+	.char-crew { grid-area: crew }
 
 	.char-coins {
 		grid-area: coins;
+		.dotline {
+			--dotline-dot-size: #{toRem(18px)};
+			justify-content: center;
+			margin-top: toRem(3px);
+			.dot:nth-of-type(4n+1):not(.zero-dot) + .dot {
+				margin-left: toRem(5px);
+			}
+		}
 	}
 
 	.char-stash {
 		grid-area: stash;
-	}
-
-
-	.name-box,
-	.alias-box {
-		font-family: var(--font-alt);
-
+		justify-content: center;
+		padding: 5px 0;
 		label {
-			display: none
-		}
-
-		input {
-			border-radius: 0;
-			border: none;
-			background: var(--blades-black-dark);
-			height: 50px;
-			color: var(--blades-white);
-			font-size: 32px;
-
-			&:focus {
-				box-shadow: none;
-				outline: 2px outset rgba(178, 178, 178, 0.5);
-			}
-		}
-
-		&.name-box {
-			width: 120%;
-		}
-
-		&.alias-box {
-			position: relative;
-			width: 80%;
-			left: 20%;
 			font-family: var(--font-emphasis);
-
-			input {
-				color: var(--blades-white-bright);
-			}
+			font-size: toRem(14px);
+			text-transform: uppercase;
 		}
-	}
-
-	.character-traits {
-		>.item-block {
-			display: grid;
-			grid-template-columns: 70px 1fr;
-			width: 100%;
-			justify-content: space-between;
-			max-height: 28px;
-
-			.item-class-label {
-				flex-grow: 0;
-				flex-shrink: 2;
-				flex-basis: 25%;
-				text-align: right;
-				padding-right: 5px;
-				color: var(--blades-white);
-				margin-bottom: 3px;
-			}
-
-			.item {
-				flex-grow: 1;
-				color: var(--blades-white-bright);
-				font-size: 16px;
-				line-height: 19px;
-				white-space: nowrap;
-
-				.item-body {
-					img {
-						position: relative;
-						top: -2px;
-						margin-right: 2px;
-					}
-				}
-			}
-
-			.item-control {
-				flex-basis: 10px;
-				text-align: right;
-				padding-right: 4px;
-				color: var(--blades-white);
-				// opacity: 0.85;
-			}
-		}
-	}
-
-	.coin-box {
-
-		.stripe,
-		.stripe label {
-			background: var(--blades-black-dark) !important;
-			color: var(--blades-white) !important;
-			margin-bottom: 10px;
-		}
-
-		.coins {
-			input~label {
-				background-color: var(--blades-gold);
-				border: 1px var(--blades-gold-bright) outset;
-				border-radius: 15px;
-
-				&[for$="0"] {
-					border-width: 2px;
-					border-radius: 0;
-					filter: brightness(1.5);
-				}
-			}
-
-			input:checked~label {
-				background-color: rgba(128, 128, 128, 0.2);
-				border-style: inset;
-				border-color: var(--blades-grey);
-				filter: none;
-			}
-
-			input:checked+label {
-				background-color: var(--blades-gold);
-				border-color: var(--blades-gold-bright);
-				border-style: outset;
-			}
-		}
-
-		.coin-hands-box {
-			margin-right: 10px;
-			min-width: 45px;
-
-			.coins-hands {
-				justify-content: center;
-				width: 100%;
+		--dotline-dot-spacing: 3px;
+		.dotline {
+			.dot:nth-of-type(10n + 1):not(.zero-dot) {
+				margin-right: 10px;
+				transform: scaleX(1.3) scaleY(1.2);
+				margin-left: 3px;
+				filter: saturate(0.75) brightness(1.5);
 			}
 		}
 	}
@@ -251,10 +118,10 @@ section.harm-armor {
 
 			input[type="text"] {
 				font-family: var(--font-decorative);
-                font-style: italic;
-                font-size: 16px;
-                text-indent: 5px;
-                padding: 5px 0 0;
+				font-style: italic;
+				font-size: 16px;
+				text-indent: 5px;
+				padding: 5px 0 0;
 			}
 		}
 

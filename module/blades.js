@@ -48,7 +48,7 @@ Object.assign(globalThis, {
 });
 Hooks.once("init", async () => {
     registerSettings();
-    bLog.display("Initializing Blades In the Dark System");
+    eLog.display("Initializing Blades In the Dark System");
     initFonts();
     CONFIG.Item.documentClass = BladesItem;
     CONFIG.Actor.documentClass = BladesActor;

@@ -14,6 +14,7 @@ export async function preloadHandlebarsTemplates() {
 		// General Partials
 		"systems/eunos-blades/templates/parts/toggle-icon.hbs",
 		"systems/eunos-blades/templates/parts/button-icon.hbs",
+		"systems/eunos-blades/templates/parts/dotline.hbs",
 
 		// Actor Sheet Partials
 		"systems/eunos-blades/templates/parts/coins.hbs",
@@ -22,7 +23,12 @@ export async function preloadHandlebarsTemplates() {
 		"systems/eunos-blades/templates/parts/turf-list.hbs",
 		"systems/eunos-blades/templates/parts/cohort-block.hbs",
 		"systems/eunos-blades/templates/parts/factions.hbs",
-		"systems/eunos-blades/templates/parts/active-effects.hbs"
+		"systems/eunos-blades/templates/parts/active-effects.hbs",
+
+		// Overlays
+		"systems/eunos-blades/templates/overlays/clock-overlay.hbs",
+		"systems/eunos-blades/templates/overlays/clock-key.hbs",
+		"systems/eunos-blades/templates/overlays/clock.hbs"
 	];
 
 	// Load the template parts
@@ -31,9 +37,23 @@ export async function preloadHandlebarsTemplates() {
 
 const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 	"test": function(param1: unknown, operator: string, param2: unknown) {
+		const stringMap = {
+			"true": true,
+			"false": false,
+			"null": null,
+			"undefined": undefined
+		};
+		if (typeof param1 === "string" && param1 in stringMap) {
+			param1 = stringMap[param1 as keyof typeof stringMap];
+		}
+		if (typeof param2 === "string" && param2 in stringMap) {
+			param2 = stringMap[param2 as keyof typeof stringMap];
+		}
 		switch (operator) {
 			case "==": { return param1 == param2 } // eslint-disable-line eqeqeq
 			case "===": { return param1 === param2 }
+			case "!=": { return param1 != param2 } // eslint-disable-line eqeqeq
+			case "!==": { return param1 !== param2 }
 			case ">": { return typeof param1 === "number" && typeof param2 === "number" && param1 > param2 }
 			case "<": { return typeof param1 === "number" && typeof param2 === "number" && param1 < param2 }
 			case ">=": { return typeof param1 === "number" && typeof param2 === "number" && param1 >= param2 }
@@ -54,6 +74,15 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 			default: { return false }
 		}
 	},
+	"calc": function(param1: unknown, operator: string, param2: unknown) {
+		switch (operator) {
+			case "+": { return U.pInt(param1) + U.pInt(param2) }
+			case "-": { return U.pInt(param1) - U.pInt(param2) }
+
+			case "%": { return U.pInt(param1) % U.pInt(param2) }
+			default: return false;
+		}
+	},
 	"case": function(mode: "upper" | "lower" | "sentence" | "title", str: string) {
 		// return U[`${mode.charAt(0)}Case`](str);
 		switch (mode) {
@@ -70,6 +99,20 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 		}
 		return param ? 1 : 0;
 	},
+	// For loop: {{#for [from = 0, to, stepSize = 1]}}<html content, this = index>{{/for}}
+	"forloop": (...args) => {
+		const options = args.pop();
+		let [from, to, stepSize] = args;
+		from = U.pInt(from);
+		to = U.pInt(to);
+		stepSize = U.pInt(stepSize) || 1;
+		if (from > to) { return "" }
+		let html = "";
+		for (let i = parseInt(from || 0); i <= parseInt(to || 0); i++) {
+			html += options.fn(i);
+		}
+		return html;
+	},
 	"signNum": function(num: number) {
 		return U.signNum(num);
 	},
@@ -83,7 +126,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 		if ([0,1,2,3,4,5].includes(args[0])) {
 			dbLevel = args.shift();
 		}
-		bLog.hbsLog(...args, dbLevel);
+		eLog.hbsLog(...args, dbLevel);
 	},
 	// Does the name of this turf block represent a standard 'Turf' claim?
 	"isTurfBlock": (name: string): boolean => checkFuzzyEquality(name, "Turf"),
@@ -153,15 +196,10 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 	// Trauma Counter
 	"traumacounter": function(selected, options) {
 		const html = options.fn(this);
-		let count = 0;
-		for (const trauma in selected) {
-			if (selected[trauma] === true) {
-				count++;
-			}
-		}
-		if (count > 4) {count = 4}
-		const rgx = new RegExp(' value=\"' + count + '\"');
-		return html.replace(rgx, "$& checked=\"checked\"");
+		eLog.log("TraumaCounter", selected);
+		eLog.log("TraumaCounter Filtered", Object.values(selected).filter((val) => val === true));
+		const count = U.clampNum(Object.values(selected).filter((val) => val === true).length, [0, 4]);
+		return html.replace(new RegExp(' value=\"' + count + '\"'), "$& checked=\"checked\"");
 	},
 	// NotEquals handlebar.
 	"noteq": (a, b, options) => (a !== b ? options.fn(this) : ""),

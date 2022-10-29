@@ -1,0 +1,45 @@
+<svg class="svg-defs" viewBox="0 0 400 400">
+	<defs>
+		{{#each svgData.clocks.segments as |path size|}}
+		<path id="{{size}}-segment" class="clock-segment" d="{{path}}"/>
+		{{/each}}
+
+		{{#each svgData.keys.list as |keyData size|}}
+		<path id="{{size}}-key" d="{{keyData.path}}" />
+		<clipPath id="{{size}}-key-clip">
+			<use href="#{{size}}-key" />
+		</clipPath>
+		{{/each}}
+
+		{{#each clockSizes as |clockSize|}}
+			{{#forloop 1 clockSize}}
+				<clipPath id="{{this}}-of-{{clockSize}}" class="segmented" data-size="{{clockSize}}">
+					{{#forloop 1 this}}
+						<use href="#{{clockSize}}-segment" />
+					{{/forloop}}
+				</clipPath>
+			{{/forloop}}
+		{{/each}}
+
+		<filter id="metallicFilter">
+			<feTurbulence
+				type="turbulence"
+				baseFrequency="0.03"
+				numOctaves="3"
+				stitchTiles="stitch"
+				result="turbulence" />
+			<feDisplacementMap
+				in2="turbulence"
+				in="SourceGraphic"
+				scale="660"
+				xChannelSelector="B"
+				yChannelSelector="B" />
+ 		</filter>
+	</defs>
+</svg>
+
+{{#each clock_keys}}
+	{{#if (eq ../currentScene scene)}}
+		{{> "systems/eunos-blades/templates/overlays/clock-key.hbs" keyNum=@index data=this}}
+	{{/if}}
+{{/each}}

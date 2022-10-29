@@ -1,0 +1,28 @@
+{{#if data.isVisible}}
+	<div id="{{data.id}}" class="clock-key {{~#if data.isActive}} active-key{{/if}}" data-size="{{data.numClocks}}">
+		{{#if data.isNameVisible}}
+		<label class="key-label">{{data.display}}</label>
+		{{/if}}
+		<div class="clock-label-container">
+			{{#each data.clocks as |clockData clockNum|}}
+			{{#if clockData.isNameVisible}}
+				<label class="clock-label {{~#if clockData.isActive}} clock-active{{/if}}" data-clock-num="{{clockNum}}">
+					<span class="short-label">{{clockData.display}}</span>
+					<span class="hover-label">{{clockData.fullDisplay}}</span>
+				</label>
+			{{/if}}
+			{{/each}}
+		</div>
+		<div class="clock-image-container">
+			<svg class="key-image">
+				<use href="#{{data.numClocks}}-key" class="key-bg" />
+				<rect class="metallic-overlay" x="0" y="0" clip-path="url(#{{data.numClocks}}-key-clip" />
+			</svg>
+			{{#each data.clocks as |clockData clockNum|}}
+			{{#if clockData.isVisible}}
+				{{> "systems/eunos-blades/templates/overlays/clock.hbs" clockNum=clockNum data=clockData}}
+			{{/if}}
+			{{/each}}
+		</div>
+	</div>
+{{/if}}

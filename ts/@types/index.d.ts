@@ -1,4 +1,3 @@
-import ClockKeeper from "../euno-clocks";
 import { BladesItem } from "../blades-item";
 import { BladesActor } from "../blades-actor";
 import { bladesRoll } from "../blades-roll";
@@ -30,7 +29,7 @@ declare global {
 		}
 	}
 
-	declare const bLog: {
+	declare const eLog: {
 		display: (...content: [string, ...any[]]) => void,
 		log: (...content: [string, ...any[]]) => void,
 		error: (...content: [string, ...any[]]) => void,

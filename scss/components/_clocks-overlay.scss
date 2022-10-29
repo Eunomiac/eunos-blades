@@ -1,496 +1,222 @@
+$key-sizes: (
+	1: (height: 455px, width: 202px),
+	2: (height: 624.438px, width: 202px),
+	3: (height: 915px, width: 280px),
+	4: (height: 1140px, width: 376px),
+	5: (height: 1140px, width: 376px),
+	6: (height: 1150px, width: 376px)
+);
+$clock-positions: (
+	1: (
+		1: (x: 101px, y: 99px)
+	),
+	2: (
+		1: (x: 101px, y: 99px),
+		2: (x: 101px, y: 279px)
+	),
+	3: (
+		1: (x: 140px, y: 99px),
+		2: (x: 74px, y: 211px),
+		3: (x: 206px, y: 211px)
+	),
+	4: (
+		1: (x: 188px, y: 99px),
+		2: (x: 101px, y: 185px),
+		3: (x: 275px, y: 185px),
+		4: (x: 188px, y: 273px)
+	),
+	5: (
+		1: (x: 188px, y: 99px),
+		2: (x: 101px, y: 185px),
+		3: (x: 275px, y: 185px),
+		4: (x: 188px, y: 273px),
+		5: (x: 188px, y: 452px)
+	),
+	6: (
+		1: (x: 188px, y: 99px),
+		2: (x: 101px, y: 185px),
+		3: (x: 275px, y: 185px),
+		4: (x: 188px, y: 273px),
+		5: (x: 188px, y: 452px),
+		6: (x: 188px, y: 683px)
+	)
+);
+
 & {
+	display: none !important;
 
-	.clock-clip-paths clipPath {
-		height: 100%;
-		width: 100%;
-	}
+	--top-shift: 50px;
+	--left-shift: 75px;
+	--key-scale: 0.33;
+	--alternating-top-shift: 120px;
+	--clock-frame-size: 108px;
+	--clock-glow-size: calc(var(--clock-frame-size) * 3);
+	--clock-glow-correction: -37px;
 
-	--top-shift: 150px;
-	--left-shift: 50px;
-	--flex-basis: 170px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: flex-start;
+
+	transform-origin: 0 0;
+	transform: scale(var(--key-scale));
 
 	position: absolute !important;
-
-	// display: block;
+	width: calc((100% / var(--key-scale)) - var(--left-shift));
+	height: calc((100% / var(--key-scale)) - var(--top-shift));
 	top: var(--top-shift);
 	left: var(--left-shift);
 	pointer-events: none;
 	z-index: 50;
-	height: calc(100% - var(--top-shift));
-	width: calc(100% - var(--left-shift));
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	justify-items: flex-start;
-	align-content: flex-start;
-	align-items: flex-start;
 
-	>* {
-		flex-basis: var(--flex-basis);
+	svg, svg defs {
+		* { transform-origin: 50% 50% }
+
+		.segmented {
+			--rotation-step-size: calc(360deg / var(--rotation-steps));
+			--segment-scale: 1;
+		}
+		clipPath.segmented { --segment-scale: 2 }
+
+		@each $clockSize in (1, 2, 3, 4, 5, 6, 8, 10, 12) {
+			.segmented[data-size="#{$clockSize}"] { --rotation-steps: #{$clockSize} }
+		}
+
+		.segmented > use {
+			transform: scale(var(--segment-scale)) rotate(var(--segment-rotation));
+
+			@for $i from 1 through 12 {
+				&:nth-child(#{$i}) { --segment-rotation: calc(#{$i - 1} * var(--rotation-step-size)) }
+			}
+		}
 	}
 
-	img {
-		border: none
-	}
+	svg, .clock, img { position: absolute }
 
-	.euno-clock-key {
-		--key-scale: 0.36;
-		--key-horiz-shift: 0px;
-		--key-vert-shift: 0px;
-
-		--key-title-vert-shift: 750px;
-		--key-title-horiz-shift: -50px;
-		--key-title-align: left;
-
-		--clock-label-width: 100px;
-		--clock-label-center: -50px;
-
+	.clock-key {
 		position: relative;
-		display: block;
-		width: 400px;
-		height: 1200px;
-		top: var(--key-vert-shift);
-		left: var(--key-horiz-shift);
-		transform-origin: -100% 0%;
-		transform: scale(var(--key-scale));
-		margin-left: 0 !important;
-		margin-right: 0 !important;
+		margin: 0 20px;
+		height: var(--key-height);
+		width: var(--key-width);
 
-		&,
-		& * {
-			transition: 1s;
-		}
+		& > * { position: absolute }
 
-		&.key-faded {
-			--key-scale: 0.18;
-			--key-title-vert-shift: 500px !important;
-			--key-title-horiz-shift: 0px !important;
-			margin-left: 0 !important;
-			margin-right: -100px !important;
-			margin-top: -50px !important;
-
-			&[data-size="1"],
-			&[data-size="2"] {
-				margin-top: -35px !important;
-
-				.key-label {
-					margin-top: 150px;
-				}
-
-				&[data-size="1"] .key-label {
-					margin-top: -75px
-				}
-			}
-
-			.key-label {
-				margin-left: -100px;
-				margin-top: 350px;
-				font-weight: normal !important; // bold !important;
-				font-family: var(--font-emphasis) !important; // "Minion Pro Caption" !important;
-				font-size: 12px !important; // 14px !important;
-				line-height: 12px !important; // 14px !important;
-				text-transform: uppercase !important;
-				width: 100px !important;
-				font-style: normal !important;
-				text-align: center !important;
-				font-variant: none !important;
-				transform: scale(calc(1 / var(--key-scale))) rotate(-70deg) !important;
-			}
-
-			.key-clock-label {
-				opacity: 0 !important;
-			}
-
-			.clock-key-bg,
-			.clock-key-fg,
-			.clock-bg,
-			.clock-frame,
-			.clock-glow {
-				opacity: 0.5 !important;
-			}
-
-			.euno-clock[data-index="1"] .clock-glow,
-			.euno-clock[data-index="1"] .clock-frame {
-				opacity: 1 !important;
-			}
-
-
-		}
-
-
-		.key-label {
-			position: absolute;
-			color: var(--blades-white-bright);
-			font-family: var(--font-decorative);
-			font-style: italic;
-			font-size: 24px;
-			line-height: 28px;
-			text-align: var(--key-title-align);
-			z-index: 100;
-			top: var(--key-title-vert-shift);
-			left: var(--key-title-horiz-shift);
-			width: 150px;
-			transform-origin: center;
-			transform: scale(calc(1 / var(--key-scale)));
-			margin: 0 auto;
-			display: block;
-			overflow: visible;
-			text-shadow: 0 0 5px var(--blades-black-dark),
-				0 0 5px var(--blades-black-dark),
-				0 0 5px var(--blades-black-dark);
-		}
+		.key-label { display: none }
 
 		.clock-label-container {
-			position: absolute;
+			display: none;
+		}
 
-			.key-clock-label {
-				// opacity: 0 !important;
-				--clock-label-vert-shift: 0px;
-				--clock-label-horiz-shift: 0px;
-				--clock-label-horiz: calc(var(--clock-label-horiz-shift) + var(--clock-label-center));
-				--clock-label-vert: var(--clock-label-vert-shift);
-				// background: rgba(0,255,0,0.25);
+		.clock-image-container {
+			height: var(--key-height);
+			width: var(--key-width);
 
-				position: absolute;
-				font-family: var(--font-emphasis);
-				font-size: 12px;
-				color: var(--blades-white-bright);
-				width: var(--clock-label-width);
-				top: var(--clock-label-vert);
-				left: var(--clock-label-horiz);
-				transform-origin: top center;
-				transform: scale(calc(1 / var(--key-scale)));
-				z-index: 2;
-				display: block;
+			.key-image {
+				height: var(--key-height);
+				width: var(--key-width);
+				z-index: 1;
 				overflow: visible;
-				text-align: var(--clock-label-text-align);
-				text-shadow: 0 0 5px var(--blades-black-dark),
-					0 0 5px var(--blades-black-dark),
-					0 0 5px var(--blades-black-dark);
+				filter:
+					drop-shadow(0px 0px 10px var(--blades-white-bright))
+					drop-shadow(30px 30px 10px var(--blades-black-dark))
+					brightness(0.5);
+
+
+				.key-bg {
+					fill: var(--blades-black);
+				}
+
+				.metallic-overlay {
+					height: var(--key-height);
+					width: var(--key-width);
+					filter: url(#metallicFilter) blur(1px);
+					fill: var(--blades-grey-dark);
+				}
 			}
-		}
+			.clock {
+				height: var(--clock-glow-size);
+				width: var(--clock-glow-size);
+				transform: translate(-50%, -50%);
+				z-index: 2;
 
-		.clock-key-container {
-			position: absolute;
-			height: 1200px;
-			width: 400px;
-			top: 400px;
-			left: 0;
-			transform-origin: bottom;
-			transform: translate(-50%, -50%);
-			filter: drop-shadow(40px 40px 30px black);
-
-			.clock-key-bg,
-			.clock-key-fg {
-				position: absolute;
-				top: 0;
-				left: 0;
-				display: block;
-			}
-
-			.euno-clock {
-				--clock-size: 400px;
-				// --clock-counter-scale: var(--clock-size) / calc(var(400px));
-				--clock-horiz-center: 200px;
-				--clock-vert-center: 200px;
-
-				--clock-left: calc(var(--clock-horiz-center) - 0.5 * var(--clock-size));
-				--clock-top: calc(var(--clock-vert-center) - 0.5 * var(--clock-size));
-
-				position: absolute;
-				width: var(--clock-size);
-				height: var(--clock-size);
-				left: var(--clock-left);
-				top: var(--clock-top);
-				pointer-events: all;
-
-
-
-				.clock-bg,
-				.clock-glow,
 				.clock-frame {
+					height: var(--clock-frame-size);
+					width: var(--clock-frame-size);
+					transform: translate(-50%, -50%) translate(calc(var(--clock-glow-size) / 2), calc(var(--clock-glow-size) / 2));
+					fill: transparent;
+					stroke: var(--blades-black);
+					stroke-width: 10px;
+					z-index: 2;
+					pointer-events: auto;
+
+					g {
+						transform: scale(0.99);
+						transform-origin: 50% 50%;
+					}
+				}
+
+				.clock-interior {
 					position: absolute;
-					top: 0;
-					left: 0;
+					height: 400px;
+					width: 400px;
+					transform: translate(-50%, -50%) translate(calc(50% + var(--clock-glow-correction)), calc(50% + var(--clock-glow-correction)));
+					svg {
+						height: var(--clock-frame-size);
+						width: var(--clock-frame-size);
+						transform: translate(-50%, -50%);
+						top: 50%;
+						left: 50%;
+
+						circle {
+							height: var(--clock-frame-size);
+							width: var(--clock-frame-size);
+							// transform: translate(-50%, -50%);
+							// top: 50%;
+							// left: 50%;
+						}
+					}
+					.clock-interior-img {
+						height: var(--clock-frame-size);
+						width: var(--clock-frame-size);
+						transform: translate(-50%, -50%);
+						top: 50%;
+						left: 50%;
+					}
 				}
 
-				.clock-glow {
-					// height: var(--clock-size);
-					// width: var(--clock-size);
-					// transform: scale(var(--clock-counter-scale));
-					// transform-origin: top-left;
-				}
-			}
-
-		}
-
-		&[data-size="1"] {
-			--key-vert-shift: -35px;
-			--key-title-horiz-shift: -70px;
-			--key-title-vert-shift: 130px;
-			--key-title-align: center;
-			// margin-left: -25px;
-			// margin-right: -25px;
-
-			.key-label {
-				font-family: var(--font-emphasis);
-				font-style: normal;
-				font-size: 16px;
-				width: 130px;
-				line-height: 18px;
-				font-variant: small-caps;
-			}
-
-			.euno-clock {
-				--clock-size: 208px;
-				--clock-horiz-center: 200px;
-				--clock-vert-center: 201px;
-			}
-
-			.key-clock-label[data-clock-num="1"] {
-				display: none;
-			}
-		}
-
-		&[data-size="2"] {
-			--key-title-align: center;
-			--key-vert-shift: -35px;
-			--key-title-vert-shift: 140px;
-			--key-title-horiz-shift: -80px;
-			// --clock-label-center: 155px;
-			// margin-left: -45px;
-			// margin-right: 35px;
-
-			.euno-clock {
-				--clock-size: 155px;
-				--clock-horiz-center: 200px;
-
-				&[data-index="1"] {
-					--clock-vert-center: 202px
-				}
-
-				&[data-index="2"] {
-					--clock-vert-center: 504px
-				}
-			}
-
-			.key-clock-label[data-clock-num="1"] {
-				--clock-label-horiz-shift: 0px;
-				--clock-label-vert-shift: -60px;
-				--clock-label-text-align: center;
-				transform-origin: center 180%;
-			}
-
-			.key-clock-label[data-clock-num="2"] {
-				--clock-label-horiz-shift: 0px;
-				--clock-label-vert-shift: 390px;
-				--clock-label-text-align: center;
-				transform-origin: center 0%;
-
-
-			}
-		}
-
-		&[data-size="3"] {
-			--key-title-align: center;
-			--key-vert-shift: -10px;
-			--key-title-vert-shift: 350px;
-			--key-title-horiz-shift: -80px;
-
-			.euno-clock {
-				--clock-size: 136px;
-
-				&[data-index="1"] {
-					--clock-horiz-center: 199px;
-					--clock-vert-center: 138px;
-				}
-
-				&[data-index="2"] {
-					--clock-horiz-center: 123px;
-					--clock-vert-center: 249px;
-				}
-
-				&[data-index="3"] {
-					--clock-horiz-center: 278.5px;
-					--clock-vert-center: 249px;
-				}
-			}
-
-			.key-clock-label[data-clock-num="1"] {
-				--clock-label-vert-shift: -125px;
-				--clock-label-text-align: center;
-				transform-origin: center 150%;
-
-				&.label-centered {
-					--clock-label-horiz-shift: 0px;
-					--clock-label-vert-shift: -100px;
-					transform-origin: center 130%;
-				}
-			}
-
-			.key-clock-label[data-clock-num="2"] {
-				--clock-label-horiz-shift: -170px;
-				--clock-label-vert-shift: 115px;
-				--clock-label-text-align: right;
-				transform-origin: center 0%;
-
-				&.label-centered {
-					width: 65px !important;
-					--clock-label-horiz-shift: -80px;
-					--clock-label-vert-shift: 45px;
-					--clock-label-text-align: center;
-					transform-origin: center 70%;
-				}
-			}
-
-			.key-clock-label[data-clock-num="3"] {
-				--clock-label-horiz-shift: 170px;
-				--clock-label-vert-shift: 115px;
-				--clock-label-text-align: left;
-				transform-origin: center 0%;
-
-				&.label-centered {
-					width: 65px !important;
-					--clock-label-horiz-shift: 105px;
-					--clock-label-vert-shift: 45px;
-					--clock-label-text-align: center;
-					transform-origin: center 70%;
+				&.clock-active {
+					.clock-glow {
+						position: absolute;
+						z-index: 0;
+						top: var(--clock-glow-correction);
+						left: var(--clock-glow-correction);
+						height: 400px;
+						width: 400px;
+						background: url("../assets/animations/clock-flare.webp") 50%/contain no-repeat border-box border-box;
+						background-position-y: 5px;
+					}
 				}
 			}
 		}
 
-		&[data-size="4"] {
-			--key-title-align: center;
-			--key-title-vert-shift: 475px;
-			--key-title-horiz-shift: -80px;
-		}
-
-		&[data-size="5"] {
-			--key-title-align: center;
-			--key-title-vert-shift: 650px;
-			--key-title-horiz-shift: -80px;
-		}
-
-		&[data-size="4"],
-		&[data-size="5"],
-		&[data-size="6"] {
-			.euno-clock {
-				--clock-size: 110px;
-
-				&[data-index="1"] {
-					--clock-horiz-center: 200.5px;
-					--clock-vert-center: 113.5px;
-				}
-
-				&[data-index="2"] {
-					--clock-horiz-center: 111.5px;
-					--clock-vert-center: 202px;
-				}
-
-				&[data-index="3"] {
-					--clock-horiz-center: 288px;
-					--clock-vert-center: 201.5px;
-				}
-
-				&[data-index="4"] {
-					--clock-horiz-center: 199.5px;
-					--clock-vert-center: 291px;
-				}
-
-				&[data-index="5"] {
-					--clock-horiz-center: 200.5px;
-					--clock-vert-center: 474.5px;
-				}
-
-				&[data-index="6"] {
-					--clock-horiz-center: 199.5px;
-					--clock-vert-center: 713px;
-				}
-			}
-
-			.key-clock-label[data-clock-num="1"] {
-				--clock-label-vert-shift: -145px;
-				--clock-label-text-align: center;
-				transform-origin: center 150%;
-
-				&.label-centered {
-					--clock-label-horiz-shift: 0px;
-					--clock-label-vert-shift: -100px;
-					transform-origin: center 130%;
-				}
-			}
-
-			.key-clock-label[data-clock-num="2"] {
-				--clock-label-horiz-shift: -200px;
-				--clock-label-vert-shift: -15px;
-				--clock-label-text-align: right;
-				transform-origin: center 180%;
-
-				&.label-centered {
-					width: 65px !important;
-					--clock-label-horiz-shift: -80px;
-					--clock-label-vert-shift: -8px;
-					--clock-label-text-align: center;
-					transform-origin: center 70%;
-				}
-			}
-
-			.key-clock-label[data-clock-num="3"] {
-				--clock-label-horiz-shift: 190px;
-				--clock-label-vert-shift: 40px;
-				--clock-label-text-align: left;
-
-				&.label-centered {
-					width: 65px !important;
-					--clock-label-horiz-shift: 105px;
-					--clock-label-vert-shift: -8px;
-					--clock-label-text-align: center;
-					transform-origin: center 70%;
-				}
-			}
-
-			.key-clock-label[data-clock-num="4"] {
-				--clock-label-horiz-shift: -160px;
-				--clock-label-vert-shift: 120px;
-				--clock-label-text-align: right;
-
-				&.label-centered {
-					--clock-label-horiz-shift: -0px;
-					// --clock-label-vert-shift: 120px;
-					--clock-label-text-align: center;
-					top: unset;
-					bottom: -75px;
-					transform-origin: center -60%;
-				}
-			}
-
-			.key-clock-label[data-clock-num="5"] {
-				--clock-label-horiz-shift: 160px;
-				--clock-label-vert-shift: 310px;
-				--clock-label-text-align: left;
-
-				&.label-centered {
-					--clock-label-horiz-shift: 0px;
-					// --clock-label-vert-shift: 310px;
-					--clock-label-text-align: center;
-					top: unset;
-					bottom: -280px;
-					transform-origin: center 35%;
-				}
-			}
-
-			.key-clock-label[data-clock-num="6"] {
-				--clock-label-horiz-shift: 0px;
-				--clock-label-vert-shift: 560px;
-				--clock-label-text-align: center;
-
-				&.label-centered {
-					--clock-label-horiz-shift: 0px;
-					top: unset;
-					bottom: -520px;
-					transform-origin: center 35%;
+		@each $key, $clocks in $clock-positions {
+			&[data-size="#{$key}"] {
+				--key-height: #{map-get(map-get($key-sizes, $key), "height")};
+				--key-width: #{map-get(map-get($key-sizes, $key), "width")};
+				@each $clock, $pos in $clocks {
+					.clock:nth-of-type(#{$clock}) {
+						left: map-get($pos, "x");
+						top: map-get($pos, "y");
+					}
 				}
 			}
 		}
+
+		@each $clockSize in (1, 2, 3, 4, 5, 6, 8, 10, 12) {
+			.segmented[data-size="#{$clockSize}"] { --rotation-steps: #{$clockSize} }
+		}
+
+		&:nth-child(2n+1) { top: var(--alternating-top-shift) }
 	}
 }

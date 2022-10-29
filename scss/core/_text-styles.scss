@@ -159,16 +159,79 @@
 
 	.labelled-input {
 		display: flex;
-		flex-direction: column;
-		margin-top: toRem(4px);
+		flex-wrap: nowrap;
+		position: relative;
 
 		label {
-			color: var(--blades-grey);
-			font-size: toRem(10px);
-			line-height: toRem(10px);
-			text-align: left;
-			padding-bottom: toRem(2px);
+			color: var(--blades-white-bright);
+			font-size: toRem(12px);
+			line-height: toRem(12px);
+			position: relative;
+			z-index: 1;
 		}
+
+		&.labelled-vertical {
+			--labelled-input-img-scale: 1.5;
+			--labelled-item-name-size: #{toRem(16px)};
+			flex-direction: column;
+
+			label {
+				text-align: center;
+			}
+			.labelled-item-container,
+			.labelled-input-container {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				min-height: toRem(40px);
+
+				> *:not(.dotline) img {
+					position: absolute;
+					transform: translate(-50%, -50%) scale(var(--labelled-input-img-scale));
+					opacity: 0.5;
+					filter: blur(0.5px);
+					top: 70%;
+					left: 50%;
+					height: 100%;
+					z-index: -1;
+				}
+
+				.item-name {
+					text-align: center;
+					white-space: nowrap;
+					font-family: var(--font-emphasis);
+					position: absolute;
+					z-index: 2;
+					transform: translate(-50%, -50%);
+					top: 65%;
+					font-size: var(--labelled-item-name-size);
+					left: 50%;
+					color: var(--blades-white-bright);
+					text-transform: uppercase;
+
+					&.long-name {
+						white-space: initial;
+					}
+				}
+			}
+		}
+
+		&.labelled-horizontal {
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+
+			.labelled-item-container,
+			.labelled-input-container {
+				display: inherit;
+
+				.dotline {
+					padding-left: var(--dotline-dot-size);
+				}
+			}
+		}
+
 
 		input[type="text"] {
 			font-size: toRem(14px);
@@ -178,15 +241,12 @@
 		}
 
 		&.labelled-item {
+			// min-height: #{toRem(10px) + toRem(2px) + toRem(24px)};
+			// img {
+			// 	height: toRem(24px);
+			// }
 			.labelled-item-container {
-				.item-body {
-					img {
-						height: toRem(24px);
-					}
-					.item-name {
-
-					}
-				}
+				> div { margin: 0 }
 			}
 		}
 	}

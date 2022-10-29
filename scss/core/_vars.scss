@@ -100,9 +100,9 @@ $isCompactLayout: true;
 	// #endregion ___ Text ___
 // #endregion ▄▄▄▄▄ Original ▄▄▄▄▄
 
-// #region ████████ Overrides: Foundry Variable Overrides ████████ ~
+// #region ████████ Overrides: Foundry Variable Overrides ████████
 	// Comment out any changed vars in 'Original' section, to keep track.
-	// #region ====== Colors ====== ~
+	// #region ====== Colors ======
 	--color-text-hyperlink: var(--blades-gold-bright); // #ff6400;
 	--color-shadow-primary: var(--blades-white); // #ff0000;
 	--color-shadow-highlight: var(--blades-gold-bright); // #ff6400;
@@ -110,7 +110,7 @@ $isCompactLayout: true;
 	--color-border-highlight: var(--blades-gold-bright); // #ff6400;
 	--color-border-highlight-alt: var(--blades-gold); // #ff0000;
 	// #endregion ___ Colors ___
-  // #region ====== Text ====== ~
+  // #region ====== Text ======
 	--font-primary: "Minion Pro", serif; // "Signika", sans-serif;
 	--font-mono: "Pragmata", monospace; // monospace;
 	// #endregion ___ Text ___
@@ -132,7 +132,7 @@ $isCompactLayout: true;
 	--size-48px: var(--font-size-48);
 // #endregion ▄▄▄▄▄ Pixels to Rem ▄▄▄▄▄
 
-// #region ████████ Colors: System Color Settings ████████ ~
+// #region ████████ Colors: System Color Settings ████████
 	--blades-white-bright-nums: 255, 255, 255;
 	--blades-white-nums: 200, 200, 200;
 	--blades-grey-bright-nums: 170, 170, 170;
@@ -142,12 +142,9 @@ $isCompactLayout: true;
 	--blades-black-dark-nums: 0, 0, 0;
 	--blades-gold-bright-nums: 253, 212, 112;
 	--blades-gold-nums: 218, 165, 32; // 171, 146, 84;
+	--blades-gold-dark-nums: 126, 91, 4;
 	--blades-red-nums: 132, 12, 36;
 	--blades-red-bright-nums: 220, 20, 60;
-
-	color: rgb(253, 212, 112);
-	color: rgb(218, 165, 32);
-	color: rgb(171, 146, 84);
 
 	--blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
 	--blades-white: rgba(var(--blades-white-nums), 1);
@@ -167,8 +164,9 @@ $isCompactLayout: true;
 	--blades-black-dark-fade: rgba(var(--blades-black-dark-nums), 0.5);
 	--blades-black-dark-fade-strong: rgba(var(--blades-black-dark-nums), 0.25);
 
-	--blades-gold: rgba(var(--blades-gold-nums), 1);
 	--blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
+	--blades-gold: rgba(var(--blades-gold-nums), 1);
+	--blades-gold-dark: rgba(var(--blades-gold-dark-nums), 1);
 
 	--blades-red: rgba(var(--blades-red-nums), 1);
 	--blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
@@ -199,7 +197,7 @@ $isCompactLayout: true;
 // #endregion ▄▄▄▄▄ Colors ▄▄▄▄▄
 
 // #region 🟩🟩🟩 PRIMARY STYLES: Primary Style Settings for Most Elements 🟩🟩🟩
-	// #region ████████ COLORS & FONTS ████████ ~
+	// #region ████████ COLORS & FONTS ████████
 	--color-default: var(--blades-white);
 	--background-default: var(--blades-dark);
 
@@ -220,6 +218,8 @@ $isCompactLayout: true;
 
 	--font-decorative-alt: "IM FELL Double Pica";
 	--font-decorative-alt-smallcaps: "IM FELL Double Pica SC";
+
+	--font-handwritten: "PWSignaturetwo";
 
 	--font-monospace: var(--font-mono);
 

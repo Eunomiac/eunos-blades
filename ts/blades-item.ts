@@ -1,5 +1,7 @@
 // import EunoClockKeeperSheet from "./clock-keeper-sheet.js";
 import H from "./core/helpers.js";
+import C, {SVGDATA} from "./core/constants.js";
+import U from "./core/utilities.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs.js";
 import type {BaseUser} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents.mjs/baseUser.js";
@@ -45,7 +47,6 @@ class BladesItem extends Item {
 					.filter(([clockNum, clockData]) => Boolean(clockData)));
 				return [keyID, keyData];
 			}));
-
 	}
 
 	get tier() { return parseInt(this.parent?.system?.tiar || 0) }
@@ -58,28 +59,26 @@ class BladesItem extends Item {
 	}
 
 	async activateOverlayListeners() {
-
-
-		$("#euno-clock-keeper-overlay").find(".euno-clock").on("wheel", async (event) => {
+		$("#clocks-overlay").find(".clock-frame").on("wheel", async (event) => {
 			if (!game?.user?.isGM) { return }
 			if (!event.currentTarget) { return }
 			if (!game.eunoblades.ClockKeeper) { return }
+			if (!(event.originalEvent instanceof WheelEvent)) { return }
 
 			event.preventDefault();
 
-			const clock$ = $(event.currentTarget);
-			const key$ = clock$.closest(".euno-clock-key");
+			const clock$ = $(event.currentTarget).closest(".clock");
+			const [key] = clock$.closest(".clock-key");
 
-			if (!(key$[0] instanceof HTMLElement)) { return }
-			if (!(event.originalEvent instanceof WheelEvent)) { return }
+			if (!(key instanceof HTMLElement)) { return }
 
-			const keyID = key$[0].id;
+			const keyID = key.id;
 			const clockNum = clock$.data("index");
-			const curClockVal = parseInt(clock$.data("value"));
+			const curClockVal = U.pInt(clock$.data("value"));
 			const delta = event.originalEvent.deltaY < 0 ? 1 : -1;
-			const size = parseInt(clock$.data("size"));
-			// const newClockVal = Math.max(Math.min(parseInt(clock$.data("size"), (curClockVal + delta))),0);
-			const newClockVal = curClockVal + delta;
+			const size = U.pInt(clock$.data("size"));
+
+			const newClockVal = U.gsap.utils.clamp(0, size, curClockVal + delta);
 
 			if (curClockVal === newClockVal) { return }
 
@@ -89,19 +88,17 @@ class BladesItem extends Item {
 			socketlib.system.executeForEveryone("renderOverlay");
 		});
 
-		$("#euno-clock-keeper-overlay").find(".euno-clock").on("click", async (event) => {
+		$("#clocks-overlay").find(".clock").on("click", async (event) => {
 			if (!event.currentTarget) { return }
 			if (!game.eunoblades.ClockKeeper) { return }
 
 			event.preventDefault();
+			const [key] = $(event.currentTarget).closest(".clock-key");
+			if (!(key instanceof HTMLElement)) { return }
 
-			const key$ = $(event.currentTarget).closest(".euno-clock-key");
-			if (!(key$[0] instanceof HTMLElement)) { return }
-
-			key$.toggleClass("key-faded");
+			$(key).toggleClass("key-faded");
 		});
 	}
-
 
 	async addClockKey() {
 		const keyID = randomID();
@@ -159,17 +156,22 @@ class BladesItem extends Item {
 
 	_overlayElement?: HTMLElement;
 	get overlayElement() {
-		this._overlayElement ??= $("#euno-clock-keeper-overlay")[0];
+		this._overlayElement ??= $("#clocks-overlay")[0];
 		if (!this._overlayElement) {
-			$("body.vtt.game.system-eunos-blades").append("<section id=\"euno-clock-keeper-overlay\"></section>");
-			this._overlayElement = $("#euno-clock-keeper-overlay")[0];
+			$("body.vtt.game.system-eunos-blades").append("<section id=\"clocks-overlay\"></section>");
+			[this._overlayElement] = $("#clocks-overlay");
 		}
 		return this._overlayElement;
 	}
 
 	async renderOverlay() {
 		if (!game.scenes?.current) { return }
-		this.overlayElement.innerHTML = (await getTemplate("systems/eunos-blades/templates/clock-overlay.hbs"))({...this.system, currentScene: game.scenes?.current.id});
+		this.overlayElement.innerHTML = (await getTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs"))({
+			...this.system,
+			currentScene: game.scenes?.current.id,
+			clockSizes: C.ClockSizes,
+			svgData: SVGDATA
+		});
 		this.activateOverlayListeners();
 	}
 }

@@ -1,8 +1,17 @@
 import U from "./utilities.js";
 import C from "./constants.js";
 
+const LOGGERCONFIG: Record<string,any> = {
+	fullName: "eLogger",
+	aliases: ["dbLog"],
+	stackTraceExclusions: {
+		handlebars: [/scripts\/handlebars/] // from internal Handlebars module
+	}
+};
+console.log(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${LOGGERCONFIG.aliases.map(String).join("|")}|Object\\.(log|display|hbsLog|error))`));
+
 const getStackTrace = (regExpFilters: RegExp[] = []) => {
-	regExpFilters.push(/at (getStackTrace|k4Logger|dbLog|Object\.(log|display|hbsLog|error))/, /^Error/);
+	regExpFilters.push(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${LOGGERCONFIG.aliases.map(String).join("|")}|Object\\.(log|display|hbsLog|error))`), /^Error/);
 	const stackTrace = (new Error()).stack;
 	if (stackTrace) {
 		return stackTrace
@@ -12,7 +21,7 @@ const getStackTrace = (regExpFilters: RegExp[] = []) => {
 	}
 	return null;
 };
-const bLogger = (type: KeyOf<typeof STYLES> = "base", ...content: [string, ...any[]]) => {
+const eLogger = (type: KeyOf<typeof STYLES> = "base", ...content: [string, ...any[]]) => {
 	const [message, ...data] = content;
 	const dbLevel: 0|1|2|3|4|5 = [0,1,2,3,4,5].includes(U.getLast(data))
 		? data.pop()
@@ -20,7 +29,7 @@ const bLogger = (type: KeyOf<typeof STYLES> = "base", ...content: [string, ...an
 	if (U.getSetting("debug") as 0|1|2|3|4|5 < dbLevel) { return }
 	const stackTrace = type === "display"
 		? null
-		: getStackTrace(type === "handlebars" ? [/scripts\/handlebars/] : []);
+		: getStackTrace(LOGGERCONFIG.stackTraceExclusions[type] ?? []);
 	const styleLine = Object.entries({
 		...STYLES.base,
 		...STYLES[type] ?? {}
@@ -64,7 +73,7 @@ const STYLES = {
 	},
 	display: {
 		"color": C.Colors.gGOLD,
-		"font-family": "AlverataInformalW01-Regular",
+		"font-family": "Kirsty",
 		"font-size": "16px",
 		"margin-left": "-100px",
 		"padding": "0 100px"
@@ -89,15 +98,16 @@ const STYLES = {
 	}
 };
 
-const bLog = {
-	display: (...content: [string, ...any[]]) => bLogger("display", ...content),
-	log: (...content: [string, ...any[]]) => bLogger("base", ...content),
-	error: (...content: [string, ...any[]]) => bLogger("error", ...content),
-	hbsLog: (...content: [string, ...any[]]) => bLogger("handlebars", ...content)
+const eLog = {
+	display: (...content: [string, ...any[]]) => eLogger("display", ...content),
+	log: (...content: [string, ...any[]]) => eLogger("base", ...content),
+	error: (...content: [string, ...any[]]) => eLogger("error", ...content),
+	hbsLog: (...content: [string, ...any[]]) => eLogger("handlebars", ...content)
 };
 
 const registerDebugger = () => {
-	Object.assign(globalThis, {bLog});
+	Object.assign(globalThis, {eLog});
+	Handlebars.registerHelper("eLog", eLog.hbsLog);
 };
 
 export default registerDebugger;

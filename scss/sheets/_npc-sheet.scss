@@ -1,86 +1,36 @@
 
 
-.window-resizable-handle {
-	display: none
-}
-
 & {
 	width: 500px !important;
 	height: auto !important;
 	border-radius: 25px;
+	border-top-right-radius: 0;
 	overflow: hidden;
 	position: absolute;
 }
 
 .window-header {
-	line-height: 16px;
-	height: 24px;
-	.window-title {
-		font-variant: small-caps;
-		text-indent: 10px;
-	}
+	padding-left: toRem(20px);
 }
 
 .window-content {
-	overflow: hidden;
-	.actor-sheet {
-
-
+	form.editable {
 		height: auto;
-		// margin-bottom: 100px;
-		display: grid;
-		--folding-block-height: auto; // 225px;
+	}
+}
 
-		grid-template-areas: ". . name name name name name name"
-		". . concept concept concept concept concept concept"
-		". . short-desc short-desc short-desc short-desc short-desc short-desc"
-		". . traits traits traits traits traits traits"
-		"heritage heritage district district faction faction arena arena"
-		"tabs tabs tabs tabs tabs tabs tabs tabs";
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-		grid-template-rows: 36px 14px 18px 18px 36px var(--folding-block-height);
-		grid-column-gap: 2px;
-		grid-row-gap: 4px;
+section.char-top {
 
-		>* {
-			// position: relative;
-			z-index: 2;
-			flex-grow: 0;
-		}
+		grid-template-areas:
+			". . title title title title title title"
+			". . subtitle subtitle subtitle subtitle subtitle subtitle"
+			". . short-desc short-desc short-desc short-desc short-desc short-desc"
+			". . traits traits traits traits traits traits"
+			"heritage heritage district district faction faction arena arena"
+			"tabs tabs tabs tabs tabs tabs tabs tabs";
 
 		.char-name {
-			grid-area: name;
-			overflow: visible;
-			font-family: var(--font-alt);
-			color: var(--blades-white-bright);
-			font-size: 32px;
-			height: 32px;
-			line-height: 28px;
-			padding-bottom: 10px;
-			box-shadow: none;
-			background: none;
-			// text-indent: 3px;
-			text-align: center;
-			text-shadow:
-				0 0 4px var(--blades-black-dark),
-				0 0 4px var(--blades-black-dark),
-				0 0 4px var(--blades-black-dark),
-				0 0 4px var(--blades-black-dark);
-		}
-
-		.char-alias {
-			display: none;
-		}
-
-		.char-concept {
-			grid-area: concept;
-			height: 100%;
-			font-variant: small-caps;
-			color: var(--blades-white);
-			font-size: toRem(24px);
-			box-shadow: none;
-			top: -5px;
-			text-align: center;
+			--top-title-font-size: #{toRem(38px)};
 		}
 
 		.char-traits {
@@ -181,4 +131,7 @@
 			display: none
 		}
 	}
+
+.window-resizable-handle {
+	display: none
 }

@@ -1,0 +1,25 @@
+<div class="clock {{#if data.isActive}}clock-active{{/if}}" data-index="{{clockNum}}" data-size="{{data.size}}" data-value="{{data.value}}">
+	<
+	{{#with data.value as |value|}}
+	{{#with ../data.size as |size|}}
+	{{#with ../../data.color as |color|}}
+	<div class="clock-interior" style="{{#unless (test value "==" size)}}clip-path: url(#{{value}}-of-{{size}});{{/unless}}">
+		<svg viewBox="0 0 400 400">
+			<circle cx="200" cy="200" r="200" fill="black" />
+		</svg>
+		<img class="clock-interior-img" src="systems/eunos-blades/assets/clocks/clock-glow-{{color}}.webp" style="{{#if (test value "==" 0)}}opacity: 0;{{/if}}" />
+	</div>
+	<svg class="clock-frame" viewBox="0 0 400 400">
+		<g class="segmented" data-size="{{size}}">
+			{{#forloop 1 size}}
+				<use href="#{{size}}-segment" />
+			{{/forloop}}
+		</g>
+	</svg>
+	{{#unless (test value "==" 0)}}
+	<div class="clock-glow" style="{{#unless (test value "==" size)}}clip-path: url(#{{value}}-of-{{size}});{{/unless}}"></div>
+	{{/unless}}
+	{{/with}}
+	{{/with}}
+	{{/with}}
+</div>

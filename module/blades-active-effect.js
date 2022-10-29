@@ -8,7 +8,7 @@
 import H from "./core/helpers.js";
 const CUSTOMFUNCS = {
     addItem: async (actor, { name, type }) => {
-        bLog.log("addItem", { actor, name, type });
+        eLog.log("addItem", { actor, name, type });
         if (actor.items.find((item) => item.name === name && item.type === type)) {
             return;
         }
@@ -51,7 +51,7 @@ class BladesActiveEffect extends ActiveEffect {
             case "edit":
                 return effect.sheet?.render(true);
             case "delete":
-                bLog.log("delete effect");
+                eLog.log("delete effect");
                 return effect.delete();
             case "toggle":
                 return effect.update({ disabled: !effect.data.disabled });

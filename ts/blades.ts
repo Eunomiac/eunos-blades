@@ -66,7 +66,7 @@ registerDebugger();
 // #region ████████ SYSTEM INITIALIZATION: Initializing Blades In The Dark System on 'Init' Hook ████████
 Hooks.once("init", async () => {
 	registerSettings();
-	bLog.display("Initializing Blades In the Dark System");
+	eLog.display("Initializing Blades In the Dark System");
 
 	// Register System Settings
 	initFonts();

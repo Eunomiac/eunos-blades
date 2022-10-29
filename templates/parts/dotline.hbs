@@ -1,0 +1,42 @@
+
+<div class="dotline {{~#if blockClass}} {{blockClass}}{{/if}}" data-target="{{target}}" data-value="{{data.value}}">
+
+	{{!-- Zero Dot --}}
+	{{#if zeroDot}}
+	<span class="dot zero-dot" data-value="0" data-dtype="Number">
+		<img class="img-hover" src="systems/eunos-blades/assets/icons/dotlines/{{zeroDot}}" />
+	</span>
+	{{/if}}
+
+	{{!-- Filled Dots --}}
+	{{#forloop 1 data.value}}
+	<span class="dot full-dot {{~#if (test this "==" data.value)}} value-dot{{/if}}" data-value="{{this}}" data-dtype="Number">
+		{{log "altIconStep" ../altIconStep}}
+		{{log "this" this}}
+
+		<img class="img-main" src="systems/eunos-blades/assets/icons/dotlines/{{../iconFull}}" />
+		<img class="img-hover" src="systems/eunos-blades/assets/icons/dotlines/{{../iconFullHover}}" />
+		{{!-- {{#if ../altIconStep}}
+		{{#if (test(calc(this "%" ../altIconStep) "==" 0))}}
+		<img class="img-main" src="systems/eunos-blades/assets/icons/dotlines/{{../altIconFull}}" />
+		<img class="img-hover" src="systems/eunos-blades/assets/icons/dotlines/{{../altIconFullHover}}" />
+		{{else}}
+		<img class="img-main" src="systems/eunos-blades/assets/icons/dotlines/{{../iconFull}}" />
+		<img class="img-hover" src="systems/eunos-blades/assets/icons/dotlines/{{../iconFullHover}}" />
+		{{/if}}
+		{{else}}
+		<img class="img-main" src="systems/eunos-blades/assets/icons/dotlines/{{../iconFull}}" />
+		<img class="img-hover" src="systems/eunos-blades/assets/icons/dotlines/{{../iconFullHover}}" />
+		{{/if}} --}}
+	</span>
+	{{/forloop}}
+
+	{{!-- Empty Dots --}}
+	{{#forloop (calc data.value "+" 1) data.max}}
+	<span class="dot empty-dot" data-value="{{this}}" data-dtype="Number">
+		<img class="img-main" src="systems/eunos-blades/assets/icons/dotlines/{{../iconEmpty}}" />
+		<img class="img-hover" src="systems/eunos-blades/assets/icons/dotlines/{{../iconEmptyHover}}" />
+	</span>
+	{{/forloop}}
+
+</div>

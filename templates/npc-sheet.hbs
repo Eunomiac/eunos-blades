@@ -1,40 +1,45 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
 	<img class="char-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
 	<img class="char-img-bg" src="{{actor.img}}" />
-	<input class="char-name shadow-input" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
-	<input class="char-alias shadow-input" type="text" name="data.alias" value="{{data.alias}}" placeholder="Alias">
-	<input class="char-concept shadow-input" type="text" name="data.concept" value="{{data.concept}}" placeholder="Concept">
-	<div class="char-arena labelled-input">
-		<label>Arena:</label>
-		<input type="text" name="data.arena" value="{{data.arena}}">
-	</div>
-	<div class="char-heritage labelled-input">
-		<label>Heritage:</label>
-		<input type="text" name="data.heritage" value="{{data.heritage}}">
-	</div>
-	<div class="char-district labelled-input">
-		<label>District:</label>
-		<input type="text" name="data.district" value="{{data.district}}">
-	</div>
-	<div class="char-faction labelled-input">
-		<label>Faction:</label>
-		<input type="text" name="data.faction" value="{{data.faction}}">
-	</div>
-	<div class="char-allies labelled-input">
-		<label>Allies:</label>
-		<input type="text" name="data.allies" value="{{data.allies}}">
-	</div>
-	<div class="char-enemies labelled-input">
-		<label>Enemies:</label>
-		<input type="text" name="data.enemies" value="{{data.enemies}}">
-	</div>
-	<div class="char-traits input-group">
-		<input class="shadow-input" type="text" name="data.traits.0" value="{{data.traits.[0]}}" placeholder="Trait">
-		<input class="shadow-input" type="text" name="data.traits.1" value="{{data.traits.[1]}}" placeholder="Trait">
-		<input class="shadow-input" type="text" name="data.traits.2" value="{{data.traits.[2]}}" placeholder="Trait">
-	</div>
-	<input class="char-short-description shadow-input" type="text" name="data.description_short" value="{{data.description_short}}"
-		placeholder="Short Description">
+	<section class="char-top">
+		<input class="char-name top-title shadow-input" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
+		<input class="char-concept top-subtitle shadow-input" type="text" name="data.concept" value="{{data.concept}}" placeholder="Concept">
+
+		<div class="char-arena labelled-input">
+			<label>Arena:</label>
+			<input type="text" name="data.arena" value="{{data.arena}}">
+		</div>
+		<div class="char-heritage labelled-input">
+			<label>Heritage:</label>
+			<input type="text" name="data.heritage" value="{{data.heritage}}">
+		</div>
+		<div class="char-district labelled-input">
+			<label>District:</label>
+			<input type="text" name="data.district" value="{{data.district}}">
+		</div>
+		<div class="char-faction labelled-input">
+			<label>Faction:</label>
+			<input type="text" name="data.faction" value="{{data.faction}}">
+		</div>
+		<div class="char-allies labelled-input">
+			<label>Allies:</label>
+			<input type="text" name="data.allies" value="{{data.allies}}">
+		</div>
+		<div class="char-enemies labelled-input">
+			<label>Enemies:</label>
+			<input type="text" name="data.enemies" value="{{data.enemies}}">
+		</div>
+		<div class="char-traits input-group">
+			<input class="shadow-input" type="text" name="data.traits.0" value="{{data.traits.[0]}}" placeholder="Trait">
+			<input class="shadow-input" type="text" name="data.traits.1" value="{{data.traits.[1]}}" placeholder="Trait">
+			<input class="shadow-input" type="text" name="data.traits.2" value="{{data.traits.[2]}}" placeholder="Trait">
+		</div>
+		<input class="char-short-description shadow-input" type="text" name="data.description_short" value="{{data.description_short}}"
+			placeholder="Short Description">
+	</section>
+
+
+
 	<section class="flex-horizontal char-tabs">
 		<div class="tab-content flex-vertical grow-two nav-panel">
 			<nav class="tabs flex-horizontal">

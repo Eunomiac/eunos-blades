@@ -6,32 +6,19 @@
 			"crew",
 			"factions"
 		],
-		"templates": {
-			"default": {
-			},
-			"individual": {
-				"alias": "",
-				"heritage": "",
-				"gender": "",
-				"district": "",
-				"arena": "",
-				"description": ""
-			}
-		},
 		"character": {
 			"alias": "",
-			"heritage": "",
-			"gender": "",
-			"district": "",
-			"arena": "",
-			"description": "",
 			"look": "",
+			"heritage": "",
 			"background": "",
 			"vice": "",
 			"vice-purveyor": "",
 			"playbook": "",
 			"acquaintances": [],
 			"acquaintances_label": "BITD.Acquaintances",
+			"description": "",
+			"notes": "",
+			"gm_notes": "",
 			"stress": {
 				"value": [
 					0
@@ -66,6 +53,9 @@
 				"clock_size_default": 4,
 				"value": 0
 			},
+			"healing-clock": [
+				0
+			],
 			"experience": [
 				0
 			],
@@ -179,39 +169,56 @@
 			}
 		},
 		"crew": {
-			"subtitle": "",
-			"lair": {
-				"description": "",
-				"district": ""
-			},
-			"hunting_grounds": {
-				"description": "",
-				"district": "",
-				"preferred_operation": "",
-				"preferred_operation_options": []
-			},
-			"rep": {"value": 0, "min": 0, "max": 12},
-			"turf": {"value": 0, "min": 0, "max": 6},
-			"hold": "strong",
+			"name": "",
+			"reputation": [
+				0
+			],
+			"lair": "",
 			"tier": 0,
-			"heat": {"value": 0, "min": 0, "max": 9},
-			"wanted_level" {"value": 0, "min": 0, "max": 4},
-			"coins": {"value": 2, "min": 0, "max": 4},
-			"experience": {"value": 0, "min": 0, "max": 10},
-			"experience_clues": [],
-			"ability_options": [],
-			"upgrade_options": [],
-			"upgrades_preselected": [],
-			"contact_options": []
+			"deity": "",
+			"hold": [
+				"strong"
+			],
+			"experience": [
+				0
+			],
+			"hold_types": [
+				"weak",
+				"strong"
+			],
+			"coins": {
+				"max": 4,
+				"value": [
+					0
+				]
+			},
+			"vault": {
+				"value": [
+					0
+				],
+				"max": 0
+			},
+			"turfs": [
+				8
+			],
+			"features": [],
+			"heat": [
+				0
+			],
+			"wanted": [
+				0
+			]
+		},
+		"factions": {
+			"name": ""
 		},
 		"npc": {
+			"name": "",
 			"alias": "",
-			"gender": "",
-			"nature": "human",
 			"concept": "",
 			"arena": "",
 			"heritage": "",
-			"districts": "",
+			"district": "",
 			"faction": "",
 			"allies": "",
 			"enemies": "",
@@ -235,8 +242,7 @@
 				"quirk": {"isLocked": false, "value": ""},
 				"style": {"isLocked": false, "value": ""}
 			}
-		},
-		"factions": {}
+		}
 	},
 	"Item": {
 		"types": [
@@ -247,6 +253,7 @@
 			"heritage",
 			"background",
 			"vice",
+			"crew_upgrade",
 			"cohort",
 			"crew_type",
 			"crew_reputation",
@@ -522,18 +529,14 @@
 			]
 		},
 		"crew_type": {
-			"subtitle": "",
+			"description": "",
+			"experience_clues": "",
 			"turfs": {
 				"1": {
 					"name": "",
 					"value": "",
 					"description": "",
-					"connects": {
-						"left": false,
-						"top": false,
-						"right": false,
-						"bottom": false
-					}
+					"connects": []
 				},
 				"2": {
 					"name": "",
@@ -619,12 +622,7 @@
 					"description": "",
 					"connects": []
 				}
-			},
-			"experience_clues": [],
-			"ability_options": [],
-			"upgrade_options": [],
-			"upgrades_preselected": [],
-			"contact_options": []
+			}
 		},
 		"gm_tracker": {
 		},

@@ -466,7 +466,7 @@ const getUID = (id) => {
     const indexNum = Math.max(0, ...UUIDLOG.filter(([genericID]) => genericID.startsWith(id)).map(([, , num]) => num)) + 1;
     const uuid = indexNum === 1 ? id : `${id}_${indexNum}`;
     UUIDLOG.push([id, uuid, indexNum]);
-    bLog.log(`UUIDify(${id}) --> [${uuid}, ${indexNum}]`);
+    eLog.log(`UUIDify(${id}) --> [${uuid}, ${indexNum}]`);
     Object.assign(globalThis, { UUIDLOG });
     return uuid;
 };

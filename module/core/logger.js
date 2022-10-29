@@ -7,8 +7,16 @@
 
 import U from "./utilities.js";
 import C from "./constants.js";
+const LOGGERCONFIG = {
+    fullName: "eLogger",
+    aliases: ["dbLog"],
+    stackTraceExclusions: {
+        handlebars: [/scripts\/handlebars/]
+    }
+};
+console.log(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${LOGGERCONFIG.aliases.map(String).join("|")}|Object\\.(log|display|hbsLog|error))`));
 const getStackTrace = (regExpFilters = []) => {
-    regExpFilters.push(/at (getStackTrace|k4Logger|dbLog|Object\.(log|display|hbsLog|error))/, /^Error/);
+    regExpFilters.push(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${LOGGERCONFIG.aliases.map(String).join("|")}|Object\\.(log|display|hbsLog|error))`), /^Error/);
     const stackTrace = (new Error()).stack;
     if (stackTrace) {
         return stackTrace
@@ -18,7 +26,7 @@ const getStackTrace = (regExpFilters = []) => {
     }
     return null;
 };
-const bLogger = (type = "base", ...content) => {
+const eLogger = (type = "base", ...content) => {
     const [message, ...data] = content;
     const dbLevel = [0, 1, 2, 3, 4, 5].includes(U.getLast(data))
         ? data.pop()
@@ -28,7 +36,7 @@ const bLogger = (type = "base", ...content) => {
     }
     const stackTrace = type === "display"
         ? null
-        : getStackTrace(type === "handlebars" ? [/scripts\/handlebars/] : []);
+        : getStackTrace(LOGGERCONFIG.stackTraceExclusions[type] ?? []);
     const styleLine = Object.entries({
         ...STYLES.base,
         ...STYLES[type] ?? {}
@@ -72,7 +80,7 @@ const STYLES = {
     },
     display: {
         "color": C.Colors.gGOLD,
-        "font-family": "AlverataInformalW01-Regular",
+        "font-family": "Kirsty",
         "font-size": "16px",
         "margin-left": "-100px",
         "padding": "0 100px"
@@ -96,13 +104,14 @@ const STYLES = {
         "font-family": "Pragmata Pro"
     }
 };
-const bLog = {
-    display: (...content) => bLogger("display", ...content),
-    log: (...content) => bLogger("base", ...content),
-    error: (...content) => bLogger("error", ...content),
-    hbsLog: (...content) => bLogger("handlebars", ...content)
+const eLog = {
+    display: (...content) => eLogger("display", ...content),
+    log: (...content) => eLogger("base", ...content),
+    error: (...content) => eLogger("error", ...content),
+    hbsLog: (...content) => eLogger("handlebars", ...content)
 };
 const registerDebugger = () => {
-    Object.assign(globalThis, { bLog });
+    Object.assign(globalThis, { eLog });
+    Handlebars.registerHelper("eLog", eLog.hbsLog);
 };
 export default registerDebugger;

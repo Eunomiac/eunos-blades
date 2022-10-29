@@ -640,7 +640,7 @@ body {
 						font-size: var(--size-14px);
 						height: auto;
 						left: 0;
-						line-height: auto;
+						line-height: var(--line-height-default);
 						margin-block-end: var(--blades-spacer-base);
 						min-width: 3.5rem;
 						padding: var(--blades-spacer-base) var(--blades-spacer-sm);
@@ -1317,7 +1317,7 @@ body {
 				.window-header {
 					border: none;
 					border-block-end: rgba(var(--color-border), 1) 1px solid;
-					border-radius: calc(0 - 4px) calc(0 - 4px) 0 0;
+					border-radius: 0;
 					color: rgba(var(--color-text-lightest), 1);
 					align-items: center;
 					display: flex;
@@ -2197,7 +2197,7 @@ body {
 									display: flex;
 									gap: var(--blades-spacer-base);
 									height: auto;
-									line-height: auto;
+									line-height: var(--line-height-default);
 								}
 							}
 						}
@@ -2732,7 +2732,7 @@ body {
 				.dice-more-theme {
 					background: none;
 					border: none;
-					border-radius: none;
+					border-radius: 0;
 					box-shadow: none;
 					font-size: var(--size-16px);
 					margin: 0;
@@ -8242,7 +8242,7 @@ body .sidebar-popout .dir__wrp-header .w-100>* {
 }
 body #sidebar [data-tab="chat"] .tabbedchatlog,
 body .sidebar-popout [data-tab="chat"] .tabbedchatlog {
-	border-radius: none;
+	border-radius: 0;
 	box-shadow: none;
 }
 body #sidebar [data-tab="chat"] .tabbedchatlog a,

@@ -6,6 +6,8 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import H from "./core/helpers.js";
+import C, { SVGDATA } from "./core/constants.js";
+import U from "./core/utilities.js";
 class BladesItem extends Item {
     async _preCreate(data, options, user) {
         await super._preCreate(data, options, user);
@@ -67,7 +69,7 @@ class BladesItem extends Item {
         this.system.quality = { Gang: this.tier, Expert: this.tier + 1 }[this.system.cohort];
     }
     async activateOverlayListeners() {
-        $("#euno-clock-keeper-overlay").find(".euno-clock").on("wheel", async (event) => {
+        $("#clocks-overlay").find(".clock-frame").on("wheel", async (event) => {
             if (!game?.user?.isGM) {
                 return;
             }
@@ -77,21 +79,21 @@ class BladesItem extends Item {
             if (!game.eunoblades.ClockKeeper) {
                 return;
             }
-            event.preventDefault();
-            const clock$ = $(event.currentTarget);
-            const key$ = clock$.closest(".euno-clock-key");
-            if (!(key$[0] instanceof HTMLElement)) {
-                return;
-            }
             if (!(event.originalEvent instanceof WheelEvent)) {
                 return;
             }
-            const keyID = key$[0].id;
+            event.preventDefault();
+            const clock$ = $(event.currentTarget).closest(".clock");
+            const [key] = clock$.closest(".clock-key");
+            if (!(key instanceof HTMLElement)) {
+                return;
+            }
+            const keyID = key.id;
             const clockNum = clock$.data("index");
-            const curClockVal = parseInt(clock$.data("value"));
+            const curClockVal = U.pInt(clock$.data("value"));
             const delta = event.originalEvent.deltaY < 0 ? 1 : -1;
-            const size = parseInt(clock$.data("size"));
-            const newClockVal = curClockVal + delta;
+            const size = U.pInt(clock$.data("size"));
+            const newClockVal = U.gsap.utils.clamp(0, size, curClockVal + delta);
             if (curClockVal === newClockVal) {
                 return;
             }
@@ -100,7 +102,7 @@ class BladesItem extends Item {
             });
             socketlib.system.executeForEveryone("renderOverlay");
         });
-        $("#euno-clock-keeper-overlay").find(".euno-clock").on("click", async (event) => {
+        $("#clocks-overlay").find(".clock").on("click", async (event) => {
             if (!event.currentTarget) {
                 return;
             }
@@ -108,11 +110,11 @@ class BladesItem extends Item {
                 return;
             }
             event.preventDefault();
-            const key$ = $(event.currentTarget).closest(".euno-clock-key");
-            if (!(key$[0] instanceof HTMLElement)) {
+            const [key] = $(event.currentTarget).closest(".clock-key");
+            if (!(key instanceof HTMLElement)) {
                 return;
             }
-            key$.toggleClass("key-faded");
+            $(key).toggleClass("key-faded");
         });
     }
     async addClockKey() {
@@ -170,10 +172,10 @@ class BladesItem extends Item {
     }
     _overlayElement;
     get overlayElement() {
-        this._overlayElement ??= $("#euno-clock-keeper-overlay")[0];
+        this._overlayElement ??= $("#clocks-overlay")[0];
         if (!this._overlayElement) {
-            $("body.vtt.game.system-eunos-blades").append("<section id=\"euno-clock-keeper-overlay\"></section>");
-            this._overlayElement = $("#euno-clock-keeper-overlay")[0];
+            $("body.vtt.game.system-eunos-blades").append("<section id=\"clocks-overlay\"></section>");
+            [this._overlayElement] = $("#clocks-overlay");
         }
         return this._overlayElement;
     }
@@ -181,7 +183,12 @@ class BladesItem extends Item {
         if (!game.scenes?.current) {
             return;
         }
-        this.overlayElement.innerHTML = (await getTemplate("systems/eunos-blades/templates/clock-overlay.hbs"))({ ...this.system, currentScene: game.scenes?.current.id });
+        this.overlayElement.innerHTML = (await getTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs"))({
+            ...this.system,
+            currentScene: game.scenes?.current.id,
+            clockSizes: C.ClockSizes,
+            svgData: SVGDATA
+        });
         this.activateOverlayListeners();
     }
 }

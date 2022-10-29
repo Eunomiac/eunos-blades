@@ -1,4 +1,5 @@
 import H from "../core/helpers.js";
+import U from "../core/utilities.js";
 import type BladesItem from "../blades-item.js";
 import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
@@ -8,7 +9,7 @@ class BladesSheet extends ActorSheet {
 
 	override async getData() {
 		const data = await super.getData();
-		const actorData = data.data;
+		const actorData = data.data as object & {data: {crew: string}};
 		Object.assign(
 			data,
 			{
@@ -19,6 +20,19 @@ class BladesSheet extends ActorSheet {
 				data: actorData.data
 			}
 		);
+		eLog.log("actorData", actorData);
+		eLog.log("game.actors.get", game.actors.get(actorData.data.crew));
+		if (actorData.data.crew) {
+			const crew = game.actors.get(actorData.data.crew) as BladesActor|undefined;
+			if (crew && crew.type === "crew") {
+				Object.assign(
+					data.data,
+					{
+						crew
+					}
+				);
+			}
+		}
 		return data;
 	}
 
@@ -34,6 +48,21 @@ class BladesSheet extends ActorSheet {
 
 		// Everything below here is only needed if the sheet is editable
 		if (!this.options.editable) {return}
+
+		// Add dotline functionality
+		html.find(".dotline").each((i, elem) => {
+			const target = $(elem).data("target");
+			const curValue = U.pInt($(elem).data("value"));
+			$(elem).find(".dot").each((j, dot) => {
+				$(dot).on("click", (event: ClickEvent) => {
+					event.preventDefault();
+					const thisValue = U.pInt($(dot).data("value"));
+					if (thisValue !== curValue) {
+						this.actor.update({[target]: thisValue});
+					}
+				});
+			});
+		});
 
 		html.find(".item-add-popup").on("click", (event) => {
 			this._onItemAddClick(event);
@@ -138,7 +167,7 @@ class BladesSheet extends ActorSheet {
 		} else if (update_type === "hold") {
 			update = {_id: item_id, data:{hold:{value: update_value}}};
 		} else {
-			bLog.error("update attempted for type undefined in blades-sheet.js onUpdateBoxClick function");
+			eLog.error("update attempted for type undefined in blades-sheet.js onUpdateBoxClick function");
 			return;
 		}
 

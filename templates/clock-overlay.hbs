@@ -1,6 +1,0 @@
-{{> "systems/eunos-blades/templates/parts/clock-clip-paths.hbs" }}
-{{#each clock_keys}}
-{{#if (eq ../currentScene scene)}}
-{{> "systems/eunos-blades/templates/parts/clock-key.hbs" keyNum=@index data=this}}
-{{/if}}
-{{/each}}

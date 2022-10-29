@@ -2,294 +2,357 @@
 	<img class="char-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
 	<img class="char-img-bg" src="{{actor.img}}" />
 	<section class="char-top">
-		<input class="char-name shadow-input" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
-		<input class="char-alias shadow-input" type="text" name="data.alias" value="{{data.alias}}" placeholder="Alias">
-		<div class="char-class labelled-input labelled-item">
+		<input class="char-name top-title shadow-input" type="text" name="name" value="{{actor.name}}">
+		<input class="char-full-name top-subtitle shadow-input" type="text" name="data.full_name" value="{{data.full_name}}" placeholder="Full Name">
+
+		<div class="char-class labelled-input labelled-vertical labelled-item">
 			{{#if items.class}}
 			<div class="labelled-item-container flex-horizontal item" data-item-id="{{items.class._id}}">
-				<div class="item-body flex-horizontal">
-					<img src="{{items.class.img}}" title="{{items.class.name}}" />
-					<div class="item-name">{{items.class.name}}</div>
+				<div class="flex-horizontal">
+					<img src="{{items.classBgImg}}" title="{{items.class.name}}" />
+					<div class="item-name shadow-input">{{items.class.name}}</div>
 				</div>
-				<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
 			</div>
 			{{else}}
-			<label><a class="item-add-popup" data-distinct="true" data-item-type="class">{{localize "BITD.Class"}}</a></label>
+			<label><a class="item-add-popup" data-distinct="true" data-item-type="class">Select a Playbook</a></label>
 			{{/if}}
+			<div class="char-class-tagline shadow-input">{{items.classTagLine}}</div>
 		</div>
-		<div class="char-class-tagline">{{items.classTagLine}}</div>
-		<div class="char-heritage labelled-input labelled-item">
-			<label><a class="item-add-popup" data-distinct="true" data-item-type="heritage">{{localize "BITD.Heritage"}}</a></label>
+		<div class="char-heritage labelled-input labelled-vertical labelled-item">
+			<label><a class="item-add-popup" data-distinct="true" data-item-type="heritage">{{localize
+					"BITD.Heritage"}}</a></label>
 			{{#if items.heritage}}
 			<div class="labelled-item-container flex-horizontal item" data-item-id="{{items.heritage._id}}">
 				<div class="item-body flex-horizontal">
-					<img src="{{items.heritage.img}}" title="{{items.heritage.name}}" />
-					<div class="item-name">{{items.heritage.name}}</div>
+					<div class="item-name shadow-input">{{items.heritage.name}}</div>
 				</div>
-				<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
 			</div>
 			{{/if}}
 		</div>
 
-		<div class="char-background labelled-input labelled-item">
-			<label><a class="item-add-popup" data-distinct="true" data-item-type="background">{{localize "BITD.Background"}}</a></label>
+		<div class="char-background labelled-input labelled-vertical labelled-item">
+			<label><a class="item-add-popup" data-distinct="true" data-item-type="background">{{localize
+					"BITD.Background"}}</a></label>
 			{{#if items.background}}
 			<div class="labelled-item-container flex-horizontal item" data-item-id="{{items.background._id}}">
 				<div class="item-body flex-horizontal">
 					<img src="{{items.background.img}}" title="{{items.background.name}}" />
-					<div class="item-name">{{items.background.name}}</div>
+					<div class="item-name shadow-input">{{items.background.name}}</div>
 				</div>
-				<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
 			</div>
 			{{/if}}
 		</div>
 
-		<div class="char-vice labelled-input labelled-item">
+		<div class="char-vice labelled-input labelled-vertical labelled-item">
 			<label><a class="item-add-popup" data-distinct="true" data-item-type="vice">{{localize "BITD.Vice"}}</a></label>
 			{{#if items.vice}}
 			<div class="labelled-item-container flex-horizontal item" data-item-id="{{items.vice._id}}">
 				<div class="item-body flex-horizontal">
 					<img src="{{items.vice.img}}" title="{{items.vice.name}}" />
-					<div class="item-name">{{items.vice.name}}</div>
+					<div class="item-name shadow-input">{{items.vice.name}}</div>
 				</div>
-				<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
 			</div>
 			{{/if}}
 		</div>
 
-		{{> "systems/eunos-blades/templates/parts/coins.hbs" actor=actor}}
-		{{> "systems/eunos-blades/templates/parts/coins-stash.hbs" actor=actor}}
+		<div class="char-crew labelled-input labelled-vertical">
+			<label>Crew</label>
+			{{#if data.crew}}
+			<div class="labelled-item-container flex-horizontal item">
+				<div class="item-body flex-horizontal">
+					<img src="{{data.crew.img}}" title="{{data.crew.name}}" />
+					<div class="item-name long-name shadow-input">{{data.crew.name}}</div>
+				</div>
+			</div>
+			{{/if}}
+		</div>
 
+		<div class="char-coins labelled-input labelled-vertical">
+ 			<label>Coins</label>
+			<div class="labelled-item-container">
+				{{> "systems/eunos-blades/templates/parts/dotline.hbs"
+					data=data.coins
+					target="data.coins.value"
+					iconEmpty="coin-empty.svg"
+					iconEmptyHover="coin-empty-hover.svg"
+					iconFull="coin-full.svg"
+					iconFullHover="coin-full-hover.svg"
+					zeroDot="dot-zero.svg"
+					blockClass="centered"
+				}}
+			</div>
+		</div>
+
+		<div class="char-stash labelled-input labelled-horizontal">
+ 			<label>Stash:</label>
+			<div class="labelled-item-container">
+				{{> "systems/eunos-blades/templates/parts/dotline.hbs"
+					data=data.stash
+					target="data.stash.value"
+					iconEmpty="coin-empty.svg"
+					iconEmptyHover="coin-empty-hover.svg"
+					iconFull="coin-full.svg"
+					iconFullHover="coin-full-hover.svg"
+					altIconFull="coin-ten.svg"
+					altIconFullHover="coin-ten-hover.svg"
+					altIconStep=10
+					zeroDot="dot-zero.svg"
+				}}
+			</div>
+		</div>
 	</section>
 
-  {{!-- Experience --}}
-  <section class="flex experience">
-  </section>
+	{{!-- Experience --}}
+	<section class="flex experience">
+	</section>
 
-  {{!-- Stress and Trauma --}}
-  <section id="character-{{actor._id}}-stress-trauma" class="section big-teeth-section">
-    <div id="character-{{actor._id}}-stress" class="big-teeth character-stress">
-      {{#multiboxes data.stress.value}}
+	{{!-- Stress and Trauma --}}
+	<section class="section big-teeth-section">
+		<div class="big-teeth character-stress">
+			{{#multiboxes data.stress.value}}
 
-      <input type="radio" id="character-{{actor._id}}-stress-0" name="data.stress.value" value="0" data-dtype="Number">
-      <label class="black-label" for="character-{{actor._id}}-stress-0">{{localize data.stress.name}}</label>
+			<input type="radio" id="character-{{actor._id}}-stress-0" name="data.stress.value" value="0" data-dtype="Number">
+			<label class="black-label" for="character-{{actor._id}}-stress-0">{{localize data.stress.name}}</label>
 
-      {{#times_from_1 data.stress.max}}
-        <input data-dtype="Number" type="radio" id="character-{{../actor._id}}-stress-{{this}}" name="data.stress.value" value="{{this}}" >
-        <label for="character-{{../actor._id}}-stress-{{this}}"></label>
-      {{/times_from_1}}
+			{{#times_from_1 data.stress.max}}
+			<input data-dtype="Number" type="radio" id="character-{{../actor._id}}-stress-{{this}}" name="data.stress.value"
+				value="{{this}}">
+			<label for="character-{{../actor._id}}-stress-{{this}}"></label>
+			{{/times_from_1}}
 
-      {{/multiboxes}}
+			{{/multiboxes}}
 
-    </div>
-    <div id="character-{{actor._id}}-trauma-container" class="small-teeth-container">
-      {{#traumacounter data.trauma.list}}
-      <div id="character-{{actor._id}}-trauma" class="small-teeth-wrap">
-        <label class="black-label" for="character-{{actor._id}}-trauma-counter-0">{{localize data.trauma.name}}</label>
-        <div id="character-{{actor._id}}-trauma-teeth" class="small-teeth">
-          <input type="radio" id="character-{{actor._id}}-trauma-counter-0" name="data.trauma.value" value="0" data-dtype="Number">
+		</div>
+		<div class="small-teeth-container">
+			{{#traumacounter data.trauma.list}}
+			<div id="character-{{actor._id}}-trauma" class="small-teeth-wrap">
+				<label class="black-label" for="character-{{actor._id}}-trauma-counter-0">{{localize data.trauma.name}}</label>
+				<div id="character-{{actor._id}}-trauma-teeth" class="small-teeth">
+					<input type="radio" id="character-{{actor._id}}-trauma-counter-0" name="data.trauma.value" value="0"
+						data-dtype="Number">
 
-          {{#times_from_1 data.trauma.max}}
-            <input type="radio" id="character-{{../actor._id}}-trauma-counter-{{this}}" name="data.trauma.value" value="{{this}}" disabled {{#if (eq (count ../data.trauma.list) this)}}checked="checked"{{/if}} data-dtype="Number">
-            <label for="character-{{../actor._id}}-trauma-counter-{{this}}"></label>
-          {{/times_from_1}}
-        </div>
-      </div>
-      {{/traumacounter}}
-    </div>
-    <div id="character-{{actor._id}}-trauma-list" class="trauma-list">
-			{{#each data.trauma.options}}
-      <label>
-        <input data-dtype="Boolean" type="checkbox" name="data.trauma.list.{{this}}" value="{{this}}" {{checked (lookup ../data.trauma.list this)}}>
-        <span class="checkmark">{{this}}</span>
-      </label>
+					{{#times_from_1 data.trauma.max}}
+					<input type="radio" id="character-{{../actor._id}}-trauma-counter-{{this}}" name="data.trauma.value"
+						value="{{this}}" disabled {{#if (eq (count ../data.trauma.list) this)}}checked="checked" {{/if}}
+						data-dtype="Number">
+					<label for="character-{{../actor._id}}-trauma-counter-{{this}}"></label>
+					{{/times_from_1}}
+				</div>
+			</div>
+			{{/traumacounter}}
+		</div>
+		<div class="trauma-list shadow-input">
+			{{#each data.trauma.list as |isSelected displayName|}}
+			{{#if (test isSelected "!=" null)}}
+			<label>
+				<input data-dtype="Boolean" type="checkbox" name="data.trauma.list.{{displayName}}" value="{{isSelected}}" {{checked (lookup
+					../data.trauma.list displayName)}}>
+				<span class="checkmark">{{displayName}}</span>
+			</label>
+			{{/if}}
 			{{/each}}
-    </div>
-  </section>
+		</div>
+	</section>
 
-  {{!-- Harm, Healing and Armor --}}
-  <section id="character-{{actor._id}}-harm-armor" class="flex harm-armor">
-    <div id="character-{{actor._id}}-character-harm" class="character-harm">
-      <table>
-        <thead>
-          <th class="black-white" colspan="4">{{localize "BITD.Harm"}}</th>
-          <th class="black-white">{{localize "BITD.Healing"}}</th>
-          <th class="black-white">{{localize "BITD.Armor"}}</th>
-        </thead>
-        <tbody>
-          <tr>
-            <td>3</td>
-            <td colspan="2">
-              <input type="text" id="character-{{actor._id}}-harm-3-1" name="data.harm.heavy.one" value="{{data.harm.heavy.one}}">
-            </td>
-            <td>{{localize "BITD.NeedHelp"}}</td>
-            <td rowspan="3">
-              <div id="character-{{actor._id}}-health-clock" class="character-health-clock">
-                {{{blades-clock "data.healing.value" data.healing.clock-size data.healing.value actor._id}}}
-              </div>
-            </td>
-            <td rowspan="3" id="character-{{actor._id}}-armor-uses" class="character-armor-uses">
-              <div>
-                <label for="character-{{actor._id}}-armor-uses-armor">{{localize "BITD.Armor"}}</label>
-                <input data-dtype="Boolean" id="character-{{actor._id}}-armor-uses-armor" type="checkbox" name="data.armor-uses.armor" {{checked data.armor-uses.armor}}>
-              </div>
-              <div>
-                <label for="character-{{actor._id}}-armor-uses-heavy">{{localize "BITD.Heavy"}}</label>
-                <input data-dtype="Boolean" id="character-{{actor._id}}-armor-uses-heavy" type="checkbox" name="data.armor-uses.heavy" {{checked data.armor-uses.heavy}}>
-              </div>
-              <div>
-                <label for="character-{{actor._id}}-armor-uses-special">{{localize "BITD.Special"}}</label>
-                <input data-dtype="Boolean" id="character-{{actor._id}}-armor-uses-special" type="checkbox" name="data.armor-uses.special" {{checked data.armor-uses.special}}>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>
-              <input type="text" id="character-{{actor._id}}-harm-2-1" name="data.harm.medium.one" value="{{data.harm.medium.one}}">
-            </td>
-            <td>
-              <input type="text" id="character-{{actor._id}}-harm-2-2" name="data.harm.medium.two" value="{{data.harm.medium.two}}">
-            </td>
-            <td>-1D</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>
-              <input type="text" id="character-{{actor._id}}-harm-1-1" name="data.harm.light.one" value="{{data.harm.light.one}}">
-            </td>
-            <td>
-              <input type="text" id="character-{{actor._id}}-harm-1-2" name="data.harm.light.two" value="{{data.harm.light.two}}">
-            </td>
-            <td>{{localize "BITD.LessEffect"}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+	{{!-- Harm, Healing and Armor --}}
+	<section id="character-{{actor._id}}-harm-armor" class="flex harm-armor">
+		<div id="character-{{actor._id}}-character-harm" class="character-harm">
+			<table>
+				<thead>
+					<th class="black-white" colspan="4">{{localize "BITD.Harm"}}</th>
+					<th class="black-white">{{localize "BITD.Healing"}}</th>
+					<th class="black-white">{{localize "BITD.Armor"}}</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>3</td>
+						<td colspan="2">
+							<input type="text" id="character-{{actor._id}}-harm-3-1" name="data.harm.heavy.one"
+								value="{{data.harm.heavy.one}}">
+						</td>
+						<td>{{localize "BITD.NeedHelp"}}</td>
+						<td rowspan="3">
+							<div id="character-{{actor._id}}-health-clock" class="character-health-clock">
+								{{{blades-clock "data.healing.value" data.healing.clock-size data.healing.value actor._id}}}
+							</div>
+						</td>
+						<td rowspan="3" id="character-{{actor._id}}-armor-uses" class="character-armor-uses">
+							<div>
+								<label for="character-{{actor._id}}-armor-uses-armor">{{localize "BITD.Armor"}}</label>
+								<input data-dtype="Boolean" id="character-{{actor._id}}-armor-uses-armor" type="checkbox"
+									name="data.armor-uses.armor" {{checked data.armor-uses.armor}}>
+							</div>
+							<div>
+								<label for="character-{{actor._id}}-armor-uses-heavy">{{localize "BITD.Heavy"}}</label>
+								<input data-dtype="Boolean" id="character-{{actor._id}}-armor-uses-heavy" type="checkbox"
+									name="data.armor-uses.heavy" {{checked data.armor-uses.heavy}}>
+							</div>
+							<div>
+								<label for="character-{{actor._id}}-armor-uses-special">{{localize "BITD.Special"}}</label>
+								<input data-dtype="Boolean" id="character-{{actor._id}}-armor-uses-special" type="checkbox"
+									name="data.armor-uses.special" {{checked data.armor-uses.special}}>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>
+							<input type="text" id="character-{{actor._id}}-harm-2-1" name="data.harm.medium.one"
+								value="{{data.harm.medium.one}}">
+						</td>
+						<td>
+							<input type="text" id="character-{{actor._id}}-harm-2-2" name="data.harm.medium.two"
+								value="{{data.harm.medium.two}}">
+						</td>
+						<td>-1D</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>
+							<input type="text" id="character-{{actor._id}}-harm-1-1" name="data.harm.light.one"
+								value="{{data.harm.light.one}}">
+						</td>
+						<td>
+							<input type="text" id="character-{{actor._id}}-harm-1-2" name="data.harm.light.two"
+								value="{{data.harm.light.two}}">
+						</td>
+						<td>{{localize "BITD.LessEffect"}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
 
-  {{!-- Attributes --}}
-  <section class="flex-horizontal abilities">
-    <div class="tab-content flex-vertical grow-two nav-panel">
-      {{!-- Nav menu --}}
-      <nav class="tabs flex-horizontal">
-        <a class="item" data-tab="abilities">{{localize "BITD.Abilities"}}</a>
-        <a class="item" data-tab="loadout">{{localize "BITD.Loadout"}}</a>
-        <a class="item" data-tab="character-notes">{{localize "BITD.Notes"}}</a>
-        {{#if isGM}}
-					<a class="item" data-tab="gm-notes">GM Notes</a>
-          <a class="item" data-tab="effects">{{localize "BITD.Effects"}}</a>
-       		<a class="item" data-tab="all-character-items">{{localize "BITD.AllItems"}}</a>
-        {{/if}}
-      </nav>
+	{{!-- Attributes --}}
+	<section class="flex-horizontal abilities">
+		<div class="tab-content flex-vertical grow-two nav-panel">
+			{{!-- Nav menu --}}
+			<nav class="tabs flex-horizontal">
+				<a class="item" data-tab="abilities">{{localize "BITD.Abilities"}}</a>
+				<a class="item" data-tab="loadout">{{localize "BITD.Loadout"}}</a>
+				<a class="item" data-tab="character-notes">{{localize "BITD.Notes"}}</a>
+				{{#if isGM}}
+				<a class="item" data-tab="gm-notes">GM Notes</a>
+				<a class="item" data-tab="effects">{{localize "BITD.Effects"}}</a>
+				<a class="item" data-tab="all-character-items">{{localize "BITD.AllItems"}}</a>
+				{{/if}}
+			</nav>
 
 			{{!-- Abilities Tab --}}
-      <div id="character-{{actor._id}}-abilities" class="tab flex-vertical abilities" data-tab="abilities">
-        <div class="label-stripe">
-          <p><label for="character-{{actor._id}}-experience-0">{{localize "BITD.Abilities"}}</label></p>
-          <p><a class="item-add-popup" data-item-type="ability"><i class="fas fa-plus-square"></i></a></p>
-          <div id="character-{{actor._id}}-experience" class="teeth-experience">
-            <label for="character-{{actor._id}}-experience-0"><i class="fab fa-creative-commons-zero nullifier"></i></label>
-            {{#multiboxes data.experience}}
-            <input type="radio" id="character-{{actor._id}}-experience-0" name="data.experience" value="0" data-dtype="Number">
-            {{#times_from_1 data.experience_max}}
-            <input type="radio" id="character-{{actor._id}}-experience-{{this}}" name="data.experience" value="{{this}}" data-dtype="Number">
-            <label for="character-{{actor._id}}-experience-{{this}}"></label>
-            {{/times_from_1}}
-            {{/multiboxes}}
-          </div>
-        </div>
+			<div id="character-{{actor._id}}-abilities" class="tab flex-vertical abilities" data-tab="abilities">
+				<div class="label-stripe">
+					<p><label for="character-{{actor._id}}-experience-0">{{localize "BITD.Abilities"}}</label></p>
+					<p><a class="item-add-popup" data-item-type="ability"><i class="fas fa-plus-square"></i></a></p>
+					<div id="character-{{actor._id}}-experience" class="teeth-experience">
+						<label for="character-{{actor._id}}-experience-0"><i
+								class="fab fa-creative-commons-zero nullifier"></i></label>
+						{{#multiboxes data.experience}}
+						<input type="radio" id="character-{{actor._id}}-experience-0" name="data.experience" value="0"
+							data-dtype="Number">
+						{{#times_from_1 data.experience_max}}
+						<input type="radio" id="character-{{actor._id}}-experience-{{this}}" name="data.experience" value="{{this}}"
+							data-dtype="Number">
+						<label for="character-{{actor._id}}-experience-{{this}}"></label>
+						{{/times_from_1}}
+						{{/multiboxes}}
+					</div>
+				</div>
 
-        <div id="character-{{actor._id}}-abilities-list">
-          {{#each actor.items as |item id|}}
-          {{#if (eq item.type "ability")}}
-            <div class="item flex-horizontal" data-item-id="{{item._id}}">
-              <div class="item-body flex-horizontal">
-                <div class="item-name">{{removeClassPrefix item.name}}</div>
-                <div class="item-description">{{{item.data.description}}}</div>
-              </div>
-              <a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
-            </div>
-          {{/if}}
-          {{/each}}
-        </div>
-      </div>
+				<div id="character-{{actor._id}}-abilities-list">
+					{{#each actor.items as |item id|}}
+					{{#if (eq item.type "ability")}}
+					<div class="item flex-horizontal" data-item-id="{{item._id}}">
+						<div class="item-body flex-horizontal">
+							<div class="item-name">{{removeClassPrefix item.name}}</div>
+							<div class="item-description">{{{item.data.description}}}</div>
+						</div>
+						<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i
+								class="fas fa-trash"></i></a>
+					</div>
+					{{/if}}
+					{{/each}}
+				</div>
+			</div>
 
-      {{!-- Loadout Tab --}}
-      <div id="character-{{actor._id}}-loadout" class="tab flex-vertical loadout" data-tab="loadout">
-        <div class="label-stripe flex-horizontal">
-           <p>{{localize "BITD.Loadout"}} <a class="item-add-popup" data-item-type="item"><i class="fas fa-plus-square"></i></a></p>
-           <p><span class="load-amount">{{data.loadout}}</span><span class="load-level">{{localize data.load_level}}</span></p>
-           <div class="dropdown">
-             <select name="data.selected_load_level">
-               {{selectOptions load_levels selected=data.selected_load_level localize=true}}
-             </select>
-           </div>
-        </div>
-        <div>
-          {{#each actor.items as |item id|}}
-          {{#if (eq item.type "item")}}
-            <div class="item flex-horizontal" data-item-id="{{item._id}}">
-              <div class="item-body flex-horizontal">
-                <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
-                <div class="item-name">{{removeClassPrefix item.name}}</div>
-                <div class="item-description">{{{item.data.description}}}</div>
-              </div>
-              <a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
-            </div>
-          {{/if}}
-          {{/each}}
-        </div>
-      </div>
+			{{!-- Loadout Tab --}}
+			<div id="character-{{actor._id}}-loadout" class="tab flex-vertical loadout" data-tab="loadout">
+				<div class="label-stripe flex-horizontal">
+					<p>{{localize "BITD.Loadout"}} <a class="item-add-popup" data-item-type="item"><i
+								class="fas fa-plus-square"></i></a></p>
+					<p><span class="load-amount">{{data.loadout}}</span><span class="load-level">{{localize
+							data.load_level}}</span></p>
+					<div class="dropdown">
+						<select name="data.selected_load_level">
+							{{selectOptions load_levels selected=data.selected_load_level localize=true}}
+						</select>
+					</div>
+				</div>
+				<div>
+					{{#each actor.items as |item id|}}
+					{{#if (eq item.type "item")}}
+					<div class="item flex-horizontal" data-item-id="{{item._id}}">
+						<div class="item-body flex-horizontal">
+							<img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+							<div class="item-name">{{removeClassPrefix item.name}}</div>
+							<div class="item-description">{{{item.data.description}}}</div>
+						</div>
+						<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i
+								class="fas fa-trash"></i></a>
+					</div>
+					{{/if}}
+					{{/each}}
+				</div>
+			</div>
 
-      {{!-- Description & Notes Tab --}}
-      <div class="tab flex-vertical character-notes" data-tab="character-notes">
-        <div class="label-stripe">
-          <p>Description</p>
-        </div>
+			{{!-- Description & Notes Tab --}}
+			<div class="tab flex-vertical character-notes" data-tab="character-notes">
+				<div class="label-stripe">
+					<p>Description</p>
+				</div>
 				{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
-        <div class="label-stripe">
-          <p>{{localize "BITD.Notes"}}</p>
-        </div>
+				<div class="label-stripe">
+					<p>{{localize "BITD.Notes"}}</p>
+				</div>
 				{{editor content=data.notes target="data.notes" button=true owner=owner editable=editable}}
-      </div>
+			</div>
 
 			{{#if isGM}}
-      {{!-- GM Notes Tab --}}
-      <div class="tab flex-vertical gm-notes" data-tab="gm-notes">
-        <div class="label-stripe">
-          <p>GM Notes</p>
-        </div>
+			{{!-- GM Notes Tab --}}
+			<div class="tab flex-vertical gm-notes" data-tab="gm-notes">
+				<div class="label-stripe">
+					<p>GM Notes</p>
+				</div>
 				{{editor content=data.gm_notes target="data.gm_notes" button=true owner=owner editable=editable}}
-      </div>
+			</div>
 
-      {{!-- Active Effects Tab --}}
-      <div id="character-{{actor._id}}-effects" class="tab flex-vertical effects" data-tab="effects">
-        <div class="label-stripe">
-          <p>{{localize "BITD.Effects"}}</p>
-        </div>
-        {{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
-      </div>
+			{{!-- Active Effects Tab --}}
+			<div id="character-{{actor._id}}-effects" class="tab flex-vertical effects" data-tab="effects">
+				<div class="label-stripe">
+					<p>{{localize "BITD.Effects"}}</p>
+				</div>
+				{{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
+			</div>
 
-      {{!-- Full Item List Tab --}}
-      <div class="tab grow-two flex-vertical all-items" data-tab="all-character-items">
-        <div class="label-stripe">
-          <p><label>{{localize "BITD.AllItems"}}</label></p>
-        </div>
-        {{#each actor.items as |item id|}}
-        <div class="item flex-horizontal" data-item-id="{{item._id}}">
-          <div class="item-body item-sheet-open flex-horizontal">
-            <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
-            <div class="item-name">{{removeClassPrefix item.name}}</div>
-          </div>
-          <a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
-        </div>
-        {{/each}}
-      </div>
+			{{!-- Full Item List Tab --}}
+			<div class="tab grow-two flex-vertical all-items" data-tab="all-character-items">
+				<div class="label-stripe">
+					<p><label>{{localize "BITD.AllItems"}}</label></p>
+				</div>
+				{{#each actor.items as |item id|}}
+				<div class="item flex-horizontal" data-item-id="{{item._id}}">
+					<div class="item-body item-sheet-open flex-horizontal">
+						<img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
+						<div class="item-name">{{removeClassPrefix item.name}}</div>
+					</div>
+					<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i
+							class="fas fa-trash"></i></a>
+				</div>
+				{{/each}}
+			</div>
 			{{/if}}
-    </div>
-    {{!-- Attributes --}}
-    {{> "systems/eunos-blades/templates/parts/attributes.hbs" actor=actor}}
-  </section>
+		</div>
+		{{!-- Attributes --}}
+		{{> "systems/eunos-blades/templates/parts/attributes.hbs" actor=actor}}
+	</section>
 
 </form>

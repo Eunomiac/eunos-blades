@@ -45,17 +45,13 @@ $light_green: rgb(18, 160, 18);
 
  body.vtt.game.system-eunos-blades {
 
-     #interface {
-         // font-family: "Fjalla One";
-     }
-
-		#euno-clock-keeper-overlay {
+		#clocks-overlay {
 			margin-top: toRem(4px);
 			@import "./core/reset";
 			@import './components/clocks-overlay';
 		}
 
-        #interface,
+    #interface,
 		#controls,
 		#navigation,
 		#hotbar,

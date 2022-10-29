@@ -113,11 +113,9 @@ html, :root {
     --blades-black-dark-nums: 0, 0, 0;
     --blades-gold-bright-nums: 253, 212, 112;
     --blades-gold-nums: 218, 165, 32;
+    --blades-gold-dark-nums: 126, 91, 4;
     --blades-red-nums: 132, 12, 36;
     --blades-red-bright-nums: 220, 20, 60;
-    color: #fdd470;
-    color: goldenrod;
-    color: #ab9254;
     --blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
     --blades-white: rgba(var(--blades-white-nums), 1);
     --blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
@@ -133,8 +131,9 @@ html, :root {
     --blades-black-fade-strong: rgba(var(--blades-black-nums), 0.25);
     --blades-black-dark-fade: rgba(var(--blades-black-dark-nums), 0.5);
     --blades-black-dark-fade-strong: rgba(var(--blades-black-dark-nums), 0.25);
-    --blades-gold: rgba(var(--blades-gold-nums), 1);
     --blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
+    --blades-gold: rgba(var(--blades-gold-nums), 1);
+    --blades-gold-dark: rgba(var(--blades-gold-dark-nums), 1);
     --blades-red: rgba(var(--blades-red-nums), 1);
     --blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
     --blades-color-negative: var(--blades-red-bright);
@@ -173,6 +172,7 @@ html, :root {
     --font-decorative: "UglyQua";
     --font-decorative-alt: "IM FELL Double Pica";
     --font-decorative-alt-smallcaps: "IM FELL Double Pica SC";
+    --font-handwritten: "PWSignaturetwo";
     --font-monospace: var(--font-mono);
     --font-size-default: var(--size-14px);
     --font-weight-default: normal;
@@ -253,7 +253,7 @@ html, :root {
       border: none;
       opacity: 0;
       position: absolute;
-      transition: 0.25; }
+      transition: 0.25s; }
       html .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, html .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off {
         display: none; }
       html .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, html .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
@@ -265,6 +265,37 @@ html, :root {
       opacity: 1; }
     html .button-icon:hover .tooltip, html .toggle-icon:hover .tooltip, :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip {
       display: block; }
+  html .dotline, :root .dotline {
+    --dotline-dot-size: 14px;
+    --dotline-dot-spacing: 0px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start; }
+    html .dotline.centered, :root .dotline.centered {
+      justify-content: center; }
+    html .dotline .dot, :root .dotline .dot {
+      height: var(--dotline-dot-size);
+      width: var(--dotline-dot-size);
+      flex-grow: 0;
+      flex-shrink: 0;
+      margin: 0 var(--dotline-dot-spacing) 0 0;
+      pointer-events: auto; }
+      html .dotline .dot.zero-dot, :root .dotline .dot.zero-dot {
+        margin-left: calc(-1 * var(--dotline-dot-size)); }
+      html .dotline .dot .img-main, html .dotline .dot .img-hover, :root .dotline .dot .img-main, :root .dotline .dot .img-hover {
+        height: 100%;
+        width: 100%;
+        filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
+      html .dotline .dot:hover .img-main, :root .dotline .dot:hover .img-main {
+        display: none; }
+      html .dotline .dot:hover .img-hover, :root .dotline .dot:hover .img-hover {
+        display: block; }
+      html .dotline .dot:not(:hover) .img-main, :root .dotline .dot:not(:hover) .img-main {
+        display: block; }
+      html .dotline .dot:not(:hover) .img-hover, :root .dotline .dot:not(:hover) .img-hover {
+        display: none; }
   html, :root {
     margin: 0;
     padding: 0;
@@ -366,6 +397,132 @@ html, :root {
     html p, :root p {
       margin: 0.5rem 0;
       min-height: 1rem; }
+    html .window-header, :root .window-header {
+      background: var(--blades-black-dark);
+      justify-content: space-between;
+      align-items: center;
+      align-content: center;
+      justify-items: center; }
+      html .window-header > *, :root .window-header > * {
+        flex-basis: auto;
+        flex-shrink: 0.5; }
+      html .window-header .window-title, :root .window-header .window-title {
+        border: none;
+        margin: 0;
+        line-height: 1.2;
+        flex-shrink: 0.5; }
+      html .window-header a, :root .window-header a {
+        margin: 0 0.3125rem; }
+        html .window-header a i, :root .window-header a i {
+          color: var(--blades-white-bright); }
+      html .window-header .close, :root .window-header .close {
+        font-size: 0;
+        margin: 0;
+        transform: scale(1.5); }
+        html .window-header .close i, :root .window-header .close i {
+          font-size: initial;
+          font-weight: bold;
+          color: var(--blades-white-bright);
+          font-size: 1.25rem;
+          line-height: 1;
+          margin-top: -0.0625rem;
+          font-family: Kirsty;
+          transform-origin: center center;
+          transform: scaleY(0.75); }
+          html .window-header .close i::before, :root .window-header .close i::before {
+            content: "X";
+            padding-top: 0.25rem; }
+    html .window-content .compendium h1, html .window-content .compendium h2, html .window-content .compendium h3, html .window-content .compendium h4, html .window-content .directory h1, html .window-content .directory h2, html .window-content .directory h3, html .window-content .directory h4, :root .window-content .compendium h1, :root .window-content .compendium h2, :root .window-content .compendium h3, :root .window-content .compendium h4, :root .window-content .directory h1, :root .window-content .directory h2, :root .window-content .directory h3, :root .window-content .directory h4 {
+      margin: 0;
+      border: 0;
+      padding: 0; }
+    html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
+      position: relative;
+      height: 1.5rem;
+      width: 1.5rem;
+      line-height: 1.5rem;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-shadow: none; }
+      html .button-icon i, html .toggle-icon i, :root .button-icon i, :root .toggle-icon i {
+        height: 1.5rem;
+        width: 1.5rem;
+        line-height: 1.75rem;
+        text-align: center;
+        opacity: 0.75;
+        margin-top: -0.125rem;
+        pointer-events: none; }
+        html .button-icon i.toggle-off, html .toggle-icon i.toggle-off, :root .button-icon i.toggle-off, :root .toggle-icon i.toggle-off {
+          opacity: 0.25; }
+      html .button-icon .tooltip, html .toggle-icon .tooltip, :root .button-icon .tooltip, :root .toggle-icon .tooltip {
+        display: none;
+        pointer-events: none;
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        background: var(--blades-black);
+        color: var(--blades-white);
+        font-size: 10px;
+        line-height: 12px;
+        padding: 5px;
+        border-radius: 10px;
+        border: 1px solid var(--blades-white-bright);
+        text-align: center;
+        white-space: nowrap; }
+        html .button-icon .tooltip b, html .toggle-icon .tooltip b, :root .button-icon .tooltip b, :root .toggle-icon .tooltip b {
+          color: var(--blades-white-bright);
+          font-size: 12px;
+          font-family: var(--font-emphasis);
+          text-transform: uppercase; }
+      html .button-icon .hidden-toggle, html .toggle-icon .hidden-toggle, :root .button-icon .hidden-toggle, :root .toggle-icon .hidden-toggle {
+        margin: 0;
+        border: none;
+        opacity: 0;
+        position: absolute;
+        transition: 0.25s; }
+        html .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, html .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off {
+          display: none; }
+        html .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, html .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
+          display: none; }
+      html .button-icon.tooltip-left .tooltip, html .toggle-icon.tooltip-left .tooltip, :root .button-icon.tooltip-left .tooltip, :root .toggle-icon.tooltip-left .tooltip {
+        left: unset;
+        right: 15px; }
+      html .button-icon:hover i, html .toggle-icon:hover i, :root .button-icon:hover i, :root .toggle-icon:hover i {
+        opacity: 1; }
+      html .button-icon:hover .tooltip, html .toggle-icon:hover .tooltip, :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip {
+        display: block; }
+    html .dotline, :root .dotline {
+      --dotline-dot-size: 14px;
+      --dotline-dot-spacing: 0px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: flex-start; }
+      html .dotline.centered, :root .dotline.centered {
+        justify-content: center; }
+      html .dotline .dot, :root .dotline .dot {
+        height: var(--dotline-dot-size);
+        width: var(--dotline-dot-size);
+        flex-grow: 0;
+        flex-shrink: 0;
+        margin: 0 var(--dotline-dot-spacing) 0 0;
+        pointer-events: auto; }
+        html .dotline .dot.zero-dot, :root .dotline .dot.zero-dot {
+          margin-left: calc(-1 * var(--dotline-dot-size)); }
+        html .dotline .dot .img-main, html .dotline .dot .img-hover, :root .dotline .dot .img-main, :root .dotline .dot .img-hover {
+          height: 100%;
+          width: 100%;
+          filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
+        html .dotline .dot:hover .img-main, :root .dotline .dot:hover .img-main {
+          display: none; }
+        html .dotline .dot:hover .img-hover, :root .dotline .dot:hover .img-hover {
+          display: block; }
+        html .dotline .dot:not(:hover) .img-main, :root .dotline .dot:not(:hover) .img-main {
+          display: block; }
+        html .dotline .dot:not(:hover) .img-hover, :root .dotline .dot:not(:hover) .img-hover {
+          display: none; }
   html blockquote, :root blockquote {
     border-left: 2px solid var(--blades-grey-bright);
     margin-left: 1.5rem;
@@ -497,21 +654,76 @@ html, :root {
       text-shadow: 1px 1px 0px var(--blades-black-dark); }
   html .labelled-input, :root .labelled-input {
     display: flex;
-    flex-direction: column;
-    margin-top: 0.25rem; }
+    flex-wrap: nowrap;
+    position: relative; }
     html .labelled-input label, :root .labelled-input label {
-      color: var(--blades-grey);
-      font-size: 0.625rem;
-      line-height: 0.625rem;
-      text-align: left;
-      padding-bottom: 0.125rem; }
+      color: var(--blades-white-bright);
+      font-size: 0.75rem;
+      line-height: 0.75rem;
+      position: relative;
+      z-index: 1; }
+    html .labelled-input.labelled-vertical, :root .labelled-input.labelled-vertical {
+      --labelled-input-img-scale: 1.5;
+      --labelled-item-name-size: 1rem;
+      flex-direction: column; }
+      html .labelled-input.labelled-vertical label, :root .labelled-input.labelled-vertical label {
+        text-align: center; }
+      html .labelled-input.labelled-vertical .labelled-item-container,
+      html .labelled-input.labelled-vertical .labelled-input-container, :root .labelled-input.labelled-vertical .labelled-item-container,
+      :root .labelled-input.labelled-vertical .labelled-input-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 2.5rem; }
+        html .labelled-input.labelled-vertical .labelled-item-container > *:not(.dotline) img,
+        html .labelled-input.labelled-vertical .labelled-input-container > *:not(.dotline) img, :root .labelled-input.labelled-vertical .labelled-item-container > *:not(.dotline) img,
+        :root .labelled-input.labelled-vertical .labelled-input-container > *:not(.dotline) img {
+          position: absolute;
+          transform: translate(-50%, -50%) scale(var(--labelled-input-img-scale));
+          opacity: 0.5;
+          filter: blur(0.5px);
+          top: 70%;
+          left: 50%;
+          height: 100%;
+          z-index: -1; }
+        html .labelled-input.labelled-vertical .labelled-item-container .item-name,
+        html .labelled-input.labelled-vertical .labelled-input-container .item-name, :root .labelled-input.labelled-vertical .labelled-item-container .item-name,
+        :root .labelled-input.labelled-vertical .labelled-input-container .item-name {
+          text-align: center;
+          white-space: nowrap;
+          font-family: var(--font-emphasis);
+          position: absolute;
+          z-index: 2;
+          transform: translate(-50%, -50%);
+          top: 65%;
+          font-size: var(--labelled-item-name-size);
+          left: 50%;
+          color: var(--blades-white-bright);
+          text-transform: uppercase; }
+          html .labelled-input.labelled-vertical .labelled-item-container .item-name.long-name,
+          html .labelled-input.labelled-vertical .labelled-input-container .item-name.long-name, :root .labelled-input.labelled-vertical .labelled-item-container .item-name.long-name,
+          :root .labelled-input.labelled-vertical .labelled-input-container .item-name.long-name {
+            white-space: initial; }
+    html .labelled-input.labelled-horizontal, :root .labelled-input.labelled-horizontal {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center; }
+      html .labelled-input.labelled-horizontal .labelled-item-container,
+      html .labelled-input.labelled-horizontal .labelled-input-container, :root .labelled-input.labelled-horizontal .labelled-item-container,
+      :root .labelled-input.labelled-horizontal .labelled-input-container {
+        display: inherit; }
+        html .labelled-input.labelled-horizontal .labelled-item-container .dotline,
+        html .labelled-input.labelled-horizontal .labelled-input-container .dotline, :root .labelled-input.labelled-horizontal .labelled-item-container .dotline,
+        :root .labelled-input.labelled-horizontal .labelled-input-container .dotline {
+          padding-left: var(--dotline-dot-size); }
     html .labelled-input input[type="text"], :root .labelled-input input[type="text"] {
       font-size: 0.875rem;
       height: 1.125rem;
       font-family: var(--font-emphasis);
       text-transform: uppercase; }
-    html .labelled-input.labelled-item .labelled-item-container .item-body img, :root .labelled-input.labelled-item .labelled-item-container .item-body img {
-      height: 1.5rem; }
+    html .labelled-input.labelled-item .labelled-item-container > div, :root .labelled-input.labelled-item .labelled-item-container > div {
+      margin: 0; }
   html .shadow-input, html .labelled-input label, html .labelled-input input[type="text"], :root .shadow-input, :root .labelled-input label, :root .labelled-input input[type="text"] {
     box-shadow: none;
     background: transparent;
@@ -538,6 +750,6 @@ html, :root {
   margin-left: calc(-1 * var(--content-padding)); }
   #tinymce {
     min-height: 100px;
-    background-color: var(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
     height: auto;
     max-height: 600px; }
