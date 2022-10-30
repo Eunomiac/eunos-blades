@@ -111,11 +111,12 @@ html, :root {
     --blades-grey-dark-nums: 68, 68, 68;
     --blades-black-nums: 32, 32, 32;
     --blades-black-dark-nums: 0, 0, 0;
-    --blades-gold-bright-nums: 253, 212, 112;
-    --blades-gold-nums: 218, 165, 32;
-    --blades-gold-dark-nums: 126, 91, 4;
-    --blades-red-nums: 132, 12, 36;
+    --blades-gold-bright-nums: 255, 231, 92;
+    --blades-gold-nums: 255, 215, 0;
+    --blades-gold-dark-nums: 184, 156, 0;
     --blades-red-bright-nums: 220, 20, 60;
+    --blades-red-nums: 204, 0, 0;
+    --blades-red-dark-nums: 122, 0, 0;
     --blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
     --blades-white: rgba(var(--blades-white-nums), 1);
     --blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
@@ -134,8 +135,9 @@ html, :root {
     --blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
     --blades-gold: rgba(var(--blades-gold-nums), 1);
     --blades-gold-dark: rgba(var(--blades-gold-dark-nums), 1);
-    --blades-red: rgba(var(--blades-red-nums), 1);
     --blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
+    --blades-red: rgba(var(--blades-red-nums), 1);
+    --blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
     --blades-color-negative: var(--blades-red-bright);
     --blades-color-positive: var(--blades-gold-bright);
     --color-primary: var(--blades-white-nums);
@@ -265,37 +267,58 @@ html, :root {
       opacity: 1; }
     html .button-icon:hover .tooltip, html .toggle-icon:hover .tooltip, :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip {
       display: block; }
+  html .dotline-label, :root .dotline-label {
+    position: relative;
+    z-index: 4;
+    pointer-events: none; }
   html .dotline, :root .dotline {
-    --dotline-dot-size: 14px;
+    --dotline-zero-dot-size: toRem(14px);
+    --dotline-dot-size: toRem(14px);
     --dotline-dot-spacing: 0px;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    justify-content: flex-start;
     align-items: center;
-    justify-content: flex-start; }
+    position: relative; }
     html .dotline.centered, :root .dotline.centered {
       justify-content: center; }
+      html .dotline.centered .dot.zero-dot, :root .dotline.centered .dot.zero-dot {
+        left: calc(-1 * var(--dotline-zero-dot-size)); }
+        html .dotline.centered .dot.zero-dot + .dot, :root .dotline.centered .dot.zero-dot + .dot {
+          left: 0px; }
     html .dotline .dot, :root .dotline .dot {
-      height: var(--dotline-dot-size);
-      width: var(--dotline-dot-size);
+      height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
+      width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
       flex-grow: 0;
       flex-shrink: 0;
       margin: 0 var(--dotline-dot-spacing) 0 0;
-      pointer-events: auto; }
+      pointer-events: auto;
+      position: relative; }
       html .dotline .dot.zero-dot, :root .dotline .dot.zero-dot {
-        margin-left: calc(-1 * var(--dotline-dot-size)); }
+        position: absolute;
+        left: calc(-1 * var(--dotline-zero-dot-size));
+        height: var(--dotline-zero-dot-size);
+        width: var(--dotline-zero-dot-size); }
       html .dotline .dot .img-main, html .dotline .dot .img-hover, :root .dotline .dot .img-main, :root .dotline .dot .img-hover {
+        display: block;
         height: 100%;
         width: 100%;
         filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
-      html .dotline .dot:hover .img-main, :root .dotline .dot:hover .img-main {
+      html .dotline .dot .img-hover, :root .dotline .dot .img-hover {
         display: none; }
+      html .dotline .dot:hover .img-main, :root .dotline .dot:hover .img-main {
+        opacity: 0.5; }
       html .dotline .dot:hover .img-hover, :root .dotline .dot:hover .img-hover {
         display: block; }
-      html .dotline .dot:not(:hover) .img-main, :root .dotline .dot:not(:hover) .img-main {
-        display: block; }
-      html .dotline .dot:not(:hover) .img-hover, :root .dotline .dot:not(:hover) .img-hover {
+      html .dotline .dot:hover .img-hover + .img-main, :root .dotline .dot:hover .img-hover + .img-main {
         display: none; }
+    html .dotline.teeth, :root .dotline.teeth {
+      align-items: flex-start; }
+      html .dotline.teeth .img-main, html .dotline.teeth .img-hover, :root .dotline.teeth .img-main, :root .dotline.teeth .img-hover {
+        filter: none; }
+      html .dotline.teeth .dot:not(.zero-dot), :root .dotline.teeth .dot:not(.zero-dot) {
+        flex-shrink: 1; }
   html, :root {
     margin: 0;
     padding: 0;
@@ -400,9 +423,7 @@ html, :root {
     html .window-header, :root .window-header {
       background: var(--blades-black-dark);
       justify-content: space-between;
-      align-items: center;
-      align-content: center;
-      justify-items: center; }
+      align-items: center; }
       html .window-header > *, :root .window-header > * {
         flex-basis: auto;
         flex-shrink: 0.5; }
@@ -492,37 +513,58 @@ html, :root {
         opacity: 1; }
       html .button-icon:hover .tooltip, html .toggle-icon:hover .tooltip, :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip {
         display: block; }
+    html .dotline-label, :root .dotline-label {
+      position: relative;
+      z-index: 4;
+      pointer-events: none; }
     html .dotline, :root .dotline {
-      --dotline-dot-size: 14px;
+      --dotline-zero-dot-size: 0.875rem;
+      --dotline-dot-size: 0.875rem;
       --dotline-dot-spacing: 0px;
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
+      justify-content: flex-start;
       align-items: center;
-      justify-content: flex-start; }
+      position: relative; }
       html .dotline.centered, :root .dotline.centered {
         justify-content: center; }
+        html .dotline.centered .dot.zero-dot, :root .dotline.centered .dot.zero-dot {
+          left: calc(-1 * var(--dotline-zero-dot-size)); }
+          html .dotline.centered .dot.zero-dot + .dot, :root .dotline.centered .dot.zero-dot + .dot {
+            left: 0px; }
       html .dotline .dot, :root .dotline .dot {
-        height: var(--dotline-dot-size);
-        width: var(--dotline-dot-size);
+        height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
+        width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
         flex-grow: 0;
         flex-shrink: 0;
         margin: 0 var(--dotline-dot-spacing) 0 0;
-        pointer-events: auto; }
+        pointer-events: auto;
+        position: relative; }
         html .dotline .dot.zero-dot, :root .dotline .dot.zero-dot {
-          margin-left: calc(-1 * var(--dotline-dot-size)); }
+          position: absolute;
+          left: calc(-1 * var(--dotline-zero-dot-size));
+          height: var(--dotline-zero-dot-size);
+          width: var(--dotline-zero-dot-size); }
         html .dotline .dot .img-main, html .dotline .dot .img-hover, :root .dotline .dot .img-main, :root .dotline .dot .img-hover {
+          display: block;
           height: 100%;
           width: 100%;
           filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
-        html .dotline .dot:hover .img-main, :root .dotline .dot:hover .img-main {
+        html .dotline .dot .img-hover, :root .dotline .dot .img-hover {
           display: none; }
+        html .dotline .dot:hover .img-main, :root .dotline .dot:hover .img-main {
+          opacity: 0.5; }
         html .dotline .dot:hover .img-hover, :root .dotline .dot:hover .img-hover {
           display: block; }
-        html .dotline .dot:not(:hover) .img-main, :root .dotline .dot:not(:hover) .img-main {
-          display: block; }
-        html .dotline .dot:not(:hover) .img-hover, :root .dotline .dot:not(:hover) .img-hover {
+        html .dotline .dot:hover .img-hover + .img-main, :root .dotline .dot:hover .img-hover + .img-main {
           display: none; }
+      html .dotline.teeth, :root .dotline.teeth {
+        align-items: flex-start; }
+        html .dotline.teeth .img-main, html .dotline.teeth .img-hover, :root .dotline.teeth .img-main, :root .dotline.teeth .img-hover {
+          filter: none; }
+        html .dotline.teeth .dot:not(.zero-dot), :root .dotline.teeth .dot:not(.zero-dot) {
+          flex-shrink: 1; }
   html blockquote, :root blockquote {
     border-left: 2px solid var(--blades-grey-bright);
     margin-left: 1.5rem;
@@ -652,44 +694,71 @@ html, :root {
     :root .label-stripe-gray th > *:not(:hover) {
       color: var(--blades-white-bright);
       text-shadow: 1px 1px 0px var(--blades-black-dark); }
-  html .labelled-input, :root .labelled-input {
+  html .labelled-item, :root .labelled-item {
     display: flex;
     flex-wrap: nowrap;
-    position: relative; }
-    html .labelled-input label, :root .labelled-input label {
+    position: relative;
+    justify-content: center;
+    align-items: center; }
+    html .labelled-item label, :root .labelled-item label {
       color: var(--blades-white-bright);
       font-size: 0.75rem;
       line-height: 0.75rem;
       position: relative;
-      z-index: 1; }
-    html .labelled-input.labelled-vertical, :root .labelled-input.labelled-vertical {
-      --labelled-input-img-scale: 1.5;
+      z-index: 1;
+      flex-grow: 0.5; }
+      html .labelled-item label.labelled-item-prompt, :root .labelled-item label.labelled-item-prompt {
+        font-size: 1rem;
+        line-height: 1.1;
+        white-space: wrap;
+        font-family: var(--font-decorative-alt-smallcaps);
+        font-family: var(--font-emphasis);
+        color: var(--blades-gold);
+        transition: 0.25s;
+        text-transform: uppercase;
+        text-align: center; }
+        html .labelled-item label.labelled-item-prompt::first-line, :root .labelled-item label.labelled-item-prompt::first-line {
+          font-size: 0.875rem;
+          text-transform: lowercase;
+          font-variant: small-caps;
+          text-shadow: none;
+          text-align: center;
+          color: var(--blades-white); }
+        html .labelled-item label.labelled-item-prompt:hover, :root .labelled-item label.labelled-item-prompt:hover {
+          transform: scale(1.4);
+          color: var(--blades-gold-bright); }
+          html .labelled-item label.labelled-item-prompt:hover::first-line, :root .labelled-item label.labelled-item-prompt:hover::first-line {
+            color: var(--blades-gold-bright); }
+    html .labelled-item input[type="text"], :root .labelled-item input[type="text"] {
+      font-size: 0.875rem;
+      height: 1.125rem;
+      font-family: var(--font-emphasis);
+      text-transform: uppercase; }
+    html .labelled-item .labelled-item-container, :root .labelled-item .labelled-item-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1; }
+    html .labelled-item.labelled-vertical, :root .labelled-item.labelled-vertical {
+      --labelled-item-img-scale: 1.5;
       --labelled-item-name-size: 1rem;
       flex-direction: column; }
-      html .labelled-input.labelled-vertical label, :root .labelled-input.labelled-vertical label {
+      html .labelled-item.labelled-vertical > label, :root .labelled-item.labelled-vertical > label {
         text-align: center; }
-      html .labelled-input.labelled-vertical .labelled-item-container,
-      html .labelled-input.labelled-vertical .labelled-input-container, :root .labelled-input.labelled-vertical .labelled-item-container,
-      :root .labelled-input.labelled-vertical .labelled-input-container {
+      html .labelled-item.labelled-vertical .labelled-item-container, :root .labelled-item.labelled-vertical .labelled-item-container {
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
         min-height: 2.5rem; }
-        html .labelled-input.labelled-vertical .labelled-item-container > *:not(.dotline) img,
-        html .labelled-input.labelled-vertical .labelled-input-container > *:not(.dotline) img, :root .labelled-input.labelled-vertical .labelled-item-container > *:not(.dotline) img,
-        :root .labelled-input.labelled-vertical .labelled-input-container > *:not(.dotline) img {
+        html .labelled-item.labelled-vertical .labelled-item-container > img, :root .labelled-item.labelled-vertical .labelled-item-container > img {
           position: absolute;
-          transform: translate(-50%, -50%) scale(var(--labelled-input-img-scale));
+          transform: translate(-50%, -50%) scaleX(var(--labelled-item-img-scaleX, var(--labelled-item-img-scale))) scaleY(var(--labelled-item-img-scaleY, var(--labelled-item-img-scale)));
           opacity: 0.5;
           filter: blur(0.5px);
           top: 70%;
           left: 50%;
           height: 100%;
           z-index: -1; }
-        html .labelled-input.labelled-vertical .labelled-item-container .item-name,
-        html .labelled-input.labelled-vertical .labelled-input-container .item-name, :root .labelled-input.labelled-vertical .labelled-item-container .item-name,
-        :root .labelled-input.labelled-vertical .labelled-input-container .item-name {
+        html .labelled-item.labelled-vertical .labelled-item-container .item-name, html .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name, :root .labelled-item.labelled-vertical .labelled-item-container .item-name, :root .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name {
           text-align: center;
           white-space: nowrap;
           font-family: var(--font-emphasis);
@@ -701,33 +770,31 @@ html, :root {
           left: 50%;
           color: var(--blades-white-bright);
           text-transform: uppercase; }
-          html .labelled-input.labelled-vertical .labelled-item-container .item-name.long-name,
-          html .labelled-input.labelled-vertical .labelled-input-container .item-name.long-name, :root .labelled-input.labelled-vertical .labelled-item-container .item-name.long-name,
-          :root .labelled-input.labelled-vertical .labelled-input-container .item-name.long-name {
+          html .labelled-item.labelled-vertical .labelled-item-container .item-name.long-name, html .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name.long-name, :root .labelled-item.labelled-vertical .labelled-item-container .item-name.long-name, :root .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name.long-name {
             white-space: initial; }
-    html .labelled-input.labelled-horizontal, :root .labelled-input.labelled-horizontal {
+    html .labelled-item.labelled-horizontal, :root .labelled-item.labelled-horizontal {
       flex-direction: row;
-      justify-content: space-between;
+      justify-content: stretch;
       align-items: center; }
-      html .labelled-input.labelled-horizontal .labelled-item-container,
-      html .labelled-input.labelled-horizontal .labelled-input-container, :root .labelled-input.labelled-horizontal .labelled-item-container,
-      :root .labelled-input.labelled-horizontal .labelled-input-container {
-        display: inherit; }
-        html .labelled-input.labelled-horizontal .labelled-item-container .dotline,
-        html .labelled-input.labelled-horizontal .labelled-input-container .dotline, :root .labelled-input.labelled-horizontal .labelled-item-container .dotline,
-        :root .labelled-input.labelled-horizontal .labelled-input-container .dotline {
-          padding-left: var(--dotline-dot-size); }
-    html .labelled-input input[type="text"], :root .labelled-input input[type="text"] {
-      font-size: 0.875rem;
-      height: 1.125rem;
-      font-family: var(--font-emphasis);
-      text-transform: uppercase; }
-    html .labelled-input.labelled-item .labelled-item-container > div, :root .labelled-input.labelled-item .labelled-item-container > div {
-      margin: 0; }
-  html .shadow-input, html .labelled-input label, html .labelled-input input[type="text"], :root .shadow-input, :root .labelled-input label, :root .labelled-input input[type="text"] {
+      html .labelled-item.labelled-horizontal label, :root .labelled-item.labelled-horizontal label {
+        text-align: right; }
+  html .shadowed, html .labelled-item label, html .labelled-item input[type="text"], :root .shadowed, :root .labelled-item label, :root .labelled-item input[type="text"] {
     box-shadow: none;
     background: transparent;
     text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
+  html .text-checkbox, :root .text-checkbox {
+    position: relative;
+    display: inline-block; }
+    html .text-checkbox input[type="checkbox"], :root .text-checkbox input[type="checkbox"] {
+      opacity: 0;
+      height: 100%;
+      width: 100%;
+      margin-right: -100%;
+      display: inline-block; }
+    html .text-checkbox span, :root .text-checkbox span {
+      display: inline-block; }
+    html .text-checkbox input[type="checkbox"]:checked + span, :root .text-checkbox input[type="checkbox"]:checked + span {
+      color: var(--active-text-color, var(--blades-gold-bright)); }
 
 ::-webkit-scrollbar {
   width: var(--blades-spacer-sm); }

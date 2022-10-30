@@ -1150,7 +1150,54 @@ const C = {
         Hull: "systems/eunos-blades/assets/icons/class/hull-transparent.svg",
         Vampire: "systems/eunos-blades/assets/icons/class/vampire-transparent.svg"
     },
-    ClockSizes: [1, 2, 3, 4, 5, 6, 8, 10, 12]
+    ClockSizes: [1, 2, 3, 4, 5, 6, 8, 10, 12],
+    ActorDefaults: {
+        "acquaintances.name": "BITD.Acquaintances",
+        "stress.name": "BITD.Stress",
+        "stress.max": 9,
+        "trauma.name": "BITD.Trauma",
+        "trauma.max": 4,
+        "trauma.list": {
+            Cold: false,
+            Haunted: false,
+            Obsessed: false,
+            Paranoid: false,
+            Reckless: false,
+            Soft: false,
+            Unstable: false,
+            Vicious: false
+        },
+        "healing.max": 4,
+        "experience.max": 8,
+        "experience.clues": [
+            "BITD.ClassExpClue3",
+            "BITD.ClassExpClue2"
+        ],
+        "experience.playbook.max": 8,
+        "experience.insight.max": 6,
+        "experience.prowess.max": 6,
+        "experience.resolve.max": 6,
+        "coins.max": 4,
+        "stash.max": 40,
+        "loadout.levels": {
+            light: 3,
+            normal: 5,
+            heavy: 6,
+            encumbered: 9
+        },
+        "attributes.hunt.max": 3,
+        "attributes.study.max": 3,
+        "attributes.survey.max": 3,
+        "attributes.tinker.max": 3,
+        "attributes.finesse.max": 3,
+        "attributes.prowl.max": 3,
+        "attributes.skirmish.max": 3,
+        "attributes.wreck.max": 3,
+        "attributes.attune.max": 3,
+        "attributes.command.max": 3,
+        "attributes.consort.max": 3,
+        "attributes.sway.max": 3
+    }
 };
 export const IMPORTDATA = {
     obstacles: [

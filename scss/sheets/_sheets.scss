@@ -35,6 +35,7 @@
 	opacity: 0.5;
 	transform: scaleX(-1);
 	mask-image: linear-gradient(to bottom, black, transparent);
+	pointer-events: none;
 }
 
 .window-content section { position: relative; z-index: 2 }
@@ -45,14 +46,13 @@
 	left: calc(-1 * var(--content-padding));
 	grid-auto-columns: 1fr;
 	grid-auto-rows: auto;
+	place-items: center stretch;
 	pointer-events: none;
 
-	input, a { pointer-events: auto }
+	input, a, .item-name, .sub-actor-name { pointer-events: auto }
 
 	> * {
 		z-index: 2;
-		// background: rgba(0, 255, 255, 0.25);
-		// outline: 1px dashed darksalmon;
 	}
 
 	.top-title {
@@ -70,7 +70,7 @@
 		height: var(--top-title-height);
 		margin-top: calc(-1 * var(--content-padding));
 		position: relative;
-		top: calc(-1 * (var(--top-title-font-size) / 4));
+		top: calc(-1 * (var(--top-title-font-size) / 6));
 	}
 
 	.top-subtitle {

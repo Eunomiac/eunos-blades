@@ -1,40 +1,42 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
+
 	<img class="char-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
 	<img class="char-img-bg" src="{{actor.img}}" />
-	<section class="char-top">
-		<input class="char-name top-title shadow-input" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
-		<input class="char-concept top-subtitle shadow-input" type="text" name="data.concept" value="{{data.concept}}" placeholder="Concept">
 
-		<div class="char-arena labelled-input">
+	<section class="char-top">
+		<input class="char-name top-title shadowed" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
+		<input class="char-concept top-subtitle shadowed" type="text" name="data.concept" value="{{data.concept}}" placeholder="Concept">
+
+		<div class="char-arena labelled-item">
 			<label>Arena:</label>
 			<input type="text" name="data.arena" value="{{data.arena}}">
 		</div>
-		<div class="char-heritage labelled-input">
+		<div class="char-heritage labelled-item">
 			<label>Heritage:</label>
 			<input type="text" name="data.heritage" value="{{data.heritage}}">
 		</div>
-		<div class="char-district labelled-input">
+		<div class="char-district labelled-item">
 			<label>District:</label>
 			<input type="text" name="data.district" value="{{data.district}}">
 		</div>
-		<div class="char-faction labelled-input">
+		<div class="char-faction labelled-item">
 			<label>Faction:</label>
 			<input type="text" name="data.faction" value="{{data.faction}}">
 		</div>
-		<div class="char-allies labelled-input">
+		<div class="char-allies labelled-item">
 			<label>Allies:</label>
 			<input type="text" name="data.allies" value="{{data.allies}}">
 		</div>
-		<div class="char-enemies labelled-input">
+		<div class="char-enemies labelled-item">
 			<label>Enemies:</label>
 			<input type="text" name="data.enemies" value="{{data.enemies}}">
 		</div>
 		<div class="char-traits input-group">
-			<input class="shadow-input" type="text" name="data.traits.0" value="{{data.traits.[0]}}" placeholder="Trait">
-			<input class="shadow-input" type="text" name="data.traits.1" value="{{data.traits.[1]}}" placeholder="Trait">
-			<input class="shadow-input" type="text" name="data.traits.2" value="{{data.traits.[2]}}" placeholder="Trait">
+			<input class="shadowed" type="text" name="data.traits.0" value="{{data.traits.[0]}}" placeholder="Trait">
+			<input class="shadowed" type="text" name="data.traits.1" value="{{data.traits.[1]}}" placeholder="Trait">
+			<input class="shadowed" type="text" name="data.traits.2" value="{{data.traits.[2]}}" placeholder="Trait">
 		</div>
-		<input class="char-short-description shadow-input" type="text" name="data.description_short" value="{{data.description_short}}"
+		<input class="char-short-description shadowed" type="text" name="data.description_short" value="{{data.description_short}}"
 			placeholder="Short Description">
 	</section>
 

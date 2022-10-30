@@ -73,7 +73,7 @@ const STYLES = {
 	},
 	display: {
 		"color": C.Colors.gGOLD,
-		"font-family": "Kirsty",
+		"font-family": "Kirsty Rg",
 		"font-size": "16px",
 		"margin-left": "-100px",
 		"padding": "0 100px"

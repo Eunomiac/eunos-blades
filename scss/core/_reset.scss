@@ -123,12 +123,8 @@
     background: var(--blades-black-dark);
     justify-content: space-between;
     align-items: center;
-    align-content: center;
-    justify-items: center;
     > * {
         flex-basis: auto;
-
-        // flex-grow: 1;
         flex-shrink: 0.5;
     }
     .window-title {
@@ -172,7 +168,6 @@
 				margin: 0;
 				border: 0;
 				padding: 0;
-
 			}
 		}
 	}

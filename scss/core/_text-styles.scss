@@ -27,7 +27,7 @@
 			padding: 0.4rem;
 		}
 
-		&.items-list {
+ 		&.items-list {
 			&.effects-list {
 
 				thead,
@@ -157,10 +157,12 @@
 
 	// #endregion ▄▄▄▄▄ STRIPE LABELS ▄▄▄▄▄
 
-	.labelled-input {
+	.labelled-item {
 		display: flex;
 		flex-wrap: nowrap;
 		position: relative;
+		justify-content: center;
+		align-items: center;
 
 		label {
 			color: var(--blades-white-bright);
@@ -168,27 +170,73 @@
 			line-height: toRem(12px);
 			position: relative;
 			z-index: 1;
+			flex-grow: 0.5;
+
+			&.labelled-item-prompt {
+				font-size: toRem(16px);
+				line-height: 1.1;
+				white-space: wrap;
+				font-family: var(--font-decorative-alt-smallcaps);
+				font-family: var(--font-emphasis);
+				color: var(--blades-gold);
+				transition: 0.25s;
+				text-transform: uppercase;
+				text-align: center;
+
+				&::first-line {
+					font-size: toRem(14px);
+					text-transform: lowercase;
+					font-variant: small-caps;
+					text-shadow: none;
+					text-align: center;
+					color: var(--blades-white);
+				}
+
+				&:hover {
+					transform: scale(1.4);
+					color: var(--blades-gold-bright);
+
+					&::first-line {
+						color: var(--blades-gold-bright);
+					}
+				}
+			}
+		}
+
+		input[type="text"] {
+			font-size: toRem(14px);
+			height: toRem(18px);
+			font-family: var(--font-emphasis);
+			text-transform: uppercase;
+		}
+
+		.labelled-item-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-grow: 1;
 		}
 
 		&.labelled-vertical {
-			--labelled-input-img-scale: 1.5;
+			--labelled-item-img-scale: 1.5;
 			--labelled-item-name-size: #{toRem(16px)};
 			flex-direction: column;
 
-			label {
+			> label {
 				text-align: center;
 			}
-			.labelled-item-container,
-			.labelled-input-container {
+
+			.labelled-item-container {
 				display: flex;
 				flex-direction: column;
-				justify-content: center;
-				align-items: center;
 				min-height: toRem(40px);
 
-				> *:not(.dotline) img {
+				> img {
 					position: absolute;
-					transform: translate(-50%, -50%) scale(var(--labelled-input-img-scale));
+					transform:
+						translate(-50%, -50%)
+						scaleX(var(--labelled-item-img-scaleX, var(--labelled-item-img-scale)))
+						scaleY(var(--labelled-item-img-scaleY, var(--labelled-item-img-scale)));
 					opacity: 0.5;
 					filter: blur(0.5px);
 					top: 70%;
@@ -197,7 +245,7 @@
 					z-index: -1;
 				}
 
-				.item-name {
+				.item-name, .sub-actor-name {
 					text-align: center;
 					white-space: nowrap;
 					font-family: var(--font-emphasis);
@@ -219,39 +267,26 @@
 
 		&.labelled-horizontal {
 			flex-direction: row;
-			justify-content: space-between;
+			justify-content: stretch;
 			align-items: center;
 
-			.labelled-item-container,
-			.labelled-input-container {
-				display: inherit;
+			label {
+				text-align: right;
+			}
+
+			.labelled-item-container {
+				// display: inherit;
 
 				.dotline {
-					padding-left: var(--dotline-dot-size);
+					// padding-left: var(--dotline-dot-size);
 				}
 			}
 		}
 
 
-		input[type="text"] {
-			font-size: toRem(14px);
-			height: toRem(18px);
-			font-family: var(--font-emphasis);
-			text-transform: uppercase;
-		}
-
-		&.labelled-item {
-			// min-height: #{toRem(10px) + toRem(2px) + toRem(24px)};
-			// img {
-			// 	height: toRem(24px);
-			// }
-			.labelled-item-container {
-				> div { margin: 0 }
-			}
-		}
 	}
 
-	.shadow-input, .labelled-input label, .labelled-input input[type="text"] {
+	.shadowed, .labelled-item label, .labelled-item input[type="text"] {
 		box-shadow: none;
 		background: transparent;
 		text-shadow:
@@ -259,5 +294,25 @@
 			0 0 4px var(--blades-black-dark),
 			0 0 4px var(--blades-black-dark),
 			0 0 4px var(--blades-black-dark);
+	}
+
+	.text-checkbox {
+		position: relative;
+		display: inline-block;
+
+		input[type="checkbox"] {
+			opacity: 0;
+			height: 100%;
+			width: 100%;
+			margin-right: -100%;
+			display: inline-block;
+		}
+		span {
+			display: inline-block;
+		}
+
+		input[type="checkbox"]:checked + span {
+			color: var(--active-text-color, var(--blades-gold-bright));
+		}
 	}
 }

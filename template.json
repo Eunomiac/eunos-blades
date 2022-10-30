@@ -16,17 +16,10 @@
 			},
 			"notes": "",
 			"gm_notes": "",
-			"stress": {
-				"value": 0,
-				"max": 9,
-				"max_default": 9,
-				"name": "BITD.Stress",
-				"name_default": "BITD.Stress"
-			},
+			"stress": { "value": 0, "max": 9, "name": "BITD.Stress" },
 			"trauma": {
 				"value": 0,
 				"max": 4,
-				"max_default": 4,
 				"list": {
 					"Cold": false,
 					"Haunted": false,
@@ -37,53 +30,23 @@
 					"Unstable": false,
 					"Vicious": false
 				},
-				"name": "BITD.Trauma",
-				"name_default": "BITD.Trauma"
+				"name": "BITD.Trauma"
 			},
-			"healing": {
-				"value": 0,
-				"max": 4,
-				"max_default": 4
-			},
+			"healing": { "value": 0, "max": 4 },
 			"experience": {
 				"value": 0,
 				"max": 8,
-				"max_default": 8,
 				"clues": [
 					"BITD.ClassExpClue3",
 					"BITD.ClassExpClue2"
 				],
-				"playbook": {
-					"value": 0,
-					"max": 8,
-					"max_default": 8
-				},
-				"insight": {
-					"value": 0,
-					"max": 6,
-					"max_default": 6
-				},
-				"prowess": {
-					"value": 0,
-					"max": 6,
-					"max_default": 6
-				},
-				"resolve": {
-					"value": 0,
-					"max": 6,
-					"max_default": 6
-				}
+				"playbook": { "value": 0, "max": 8 },
+				"insight": { "value": 0, "max": 6 },
+				"prowess": { "value": 0, "max": 6 },
+				"resolve": { "value": 0, "max": 6 }
 			},
-			"coins": {
-				"value": 0,
-				"max": 4,
-				"max_default": 4
-			},
-			"stash": {
-				"value": 0,
-				"max": 40,
-				"max_default": 40
-			},
+			"coins": {"value": 0, "max": 4},
+			"stash": { "value": 0, "max": 40 },
 			"loadout": {
 				"selected": "",
 				"levels": {
@@ -104,9 +67,6 @@
 				},
 				"heavy": {
 					"1": ""
-				},
-				"deadly": {
-					"1": ""
 				}
 			},
 			"armor": {
@@ -119,65 +79,23 @@
 				}
 			},
 			"attributes": {
-				"hunt": {
-					"value": 0,
-					"max": 3,
-					"max_default": 3
+				"insight": {
+					"hunt": { "value": 0, "max": 3 },
+					"study": { "value": 0, "max": 3 },
+					"survey": { "value": 0, "max": 3 },
+					"tinker": { "value": 0, "max": 3 }
 				},
-				"study": {
-					"value": 0,
-					"max": 3,
-					"max_default": 3
+				"prowess": {
+					"finesse": { "value": 0, "max": 3 },
+					"prowl": { "value": 0, "max": 3 },
+					"skirmish": { "value": 0, "max": 3 },
+					"wreck": { "value": 0, "max": 3 }
 				},
-				"survey": {
-					"value": 0,
-					"max": 3,
-					"max_default": 3
-				},
-				"tinker": {
-					"value": 0,
-					"max": 3,
-					"max_default": 3
-				},
-				"finesse": {
-					"value": 0,
-					"max": 3,
-					"max_default": 3
-				},
-				"prowl": {
-					"value": 0,
-					"max": 3,
-					"max_default": 3
-				},
-				"skirmish": {
-					"value": 0,
-					"max": 3,
-					"max_default": 3
-				},
-				"wreck": {
-					"value": 0,
-					"max": 3,
-					"max_default": 3
-				},
-				"attune": {
-					"value": 0,
-					"max": 3,
-					"max_default": 3
-				},
-				"command": {
-					"value": 0,
-					"max": 3,
-					"max_default": 3
-				},
-				"consort": {
-					"value": 0,
-					"max": 3,
-					"max_default": 3
-				},
-				"sway": {
-					"value": 0,
-					"max": 3,
-					"max_default": 3
+				"resolve": {
+					"attune": { "value": 0, "max": 3 },
+					"command": { "value": 0, "max": 3 },
+					"consort": { "value": 0, "max": 3 },
+					"sway": { "value": 0, "max": 3 }
 				}
 			}
 		},

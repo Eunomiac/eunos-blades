@@ -10,6 +10,13 @@ class BladesSheet extends ActorSheet {
 	override async getData() {
 		const data = await super.getData();
 		const actorData = data.data as object & {data: {crew: string}};
+
+		// Link Embedded Actors
+		this._linkEmbeddedActors(actorData);
+
+		// Filter trauma conditions
+		this._filterTraumaConditions(actorData);
+
 		Object.assign(
 			data,
 			{
@@ -20,20 +27,24 @@ class BladesSheet extends ActorSheet {
 				data: actorData.data
 			}
 		);
-		eLog.log("actorData", actorData);
-		eLog.log("game.actors.get", game.actors.get(actorData.data.crew));
-		if (actorData.data.crew) {
-			const crew = game.actors.get(actorData.data.crew) as BladesActor|undefined;
-			if (crew && crew.type === "crew") {
-				Object.assign(
-					data.data,
-					{
-						crew
-					}
-				);
-			}
-		}
+
 		return data;
+	}
+
+	_linkEmbeddedActors(actorData: object & {data: {crew?: string|BladesActor}}) {
+		if (!actorData.data.crew) { return }
+		const crew = game.actors.get(actorData.data.crew as string) as BladesActor|undefined;
+		if (crew && crew.type === "crew") {
+			actorData.data.crew = crew;
+		}
+	}
+
+	_filterTraumaConditions(actorData: object & {data: {crew?: string|BladesActor, trauma?: {list: Record<string, boolean|null>}}}) {
+		if (!actorData.data.trauma?.list) { return }
+		actorData.data.trauma.list = U.objFilter(
+			actorData.data.trauma.list,
+			(val: unknown): val is true|false => val === true || val === false
+		);
 	}
 
 	override activateListeners(html: JQuery<HTMLElement>) {
@@ -74,7 +85,26 @@ class BladesSheet extends ActorSheet {
 			html.on("change", "textarea", this._onChangeInput.bind(this));  // Use delegated listener on the form
 		}
 
+		html.find("[data-item-id]").children(".item-name").on("click", this._onItemOpenClick.bind(this));
+		html.find("[data-sub-actor-id]").children(".sub-actor-name").on("click", this._onSubActorOpenClick.bind(this));
+
 		html.find(".roll-die-attribute").on("click", this._onRollAttributeDieClick.bind(this));
+	}
+
+	async _onItemOpenClick(event: ClickEvent) {
+		event.preventDefault();
+		const itemID = $(event.currentTarget).closest("[data-item-id]").data("itemId");
+		if (itemID) {
+			(this.actor as BladesActor).items.get(itemID)?.sheet?.render(true);
+		}
+	}
+
+	async _onSubActorOpenClick(event: ClickEvent) {
+		event.preventDefault();
+		const actorID = $(event.currentTarget).closest("[data-sub-actor-id]").data("subActorId");
+		if (actorID) {
+			game.actors.get(actorID)?.sheet?.render(true);
+		}
 	}
 
 	async _onItemAddClick(event: ClickEvent) {

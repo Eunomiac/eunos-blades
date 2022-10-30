@@ -1,73 +1,88 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
+
 	<img class="char-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
 	<img class="char-img-bg" src="{{actor.img}}" />
-	<section class="char-top">
-		<input class="char-name top-title shadow-input" type="text" name="name" value="{{actor.name}}">
-		<input class="char-full-name top-subtitle shadow-input" type="text" name="data.full_name" value="{{data.full_name}}" placeholder="Full Name">
 
-		<div class="char-class labelled-input labelled-vertical labelled-item">
-			{{#if items.class}}
-			<div class="labelled-item-container flex-horizontal item" data-item-id="{{items.class._id}}">
-				<div class="flex-horizontal">
-					<img src="{{items.classBgImg}}" title="{{items.class.name}}" />
-					<div class="item-name shadow-input">{{items.class.name}}</div>
-				</div>
+	<section class="char-top">
+		<input class="char-name top-title shadowed" type="text" name="name" value="{{actor.name}}">
+		<input class="char-full-name top-subtitle shadowed" type="text" name="data.full_name" value="{{data.full_name}}" placeholder="Full Name">
+
+		<div class="char-class labelled-item labelled-vertical">
+		{{#if items.class}}
+			<div class="labelled-item-container" data-item-id="{{items.class._id}}">
+				<img src="{{items.classBgImg}}" />
+			</div>
+		{{else}}
+			<label class="labelled-item-prompt shadowed">
+				<a class="item-add-popup" data-distinct="true" data-item-type="class">Select Your<br />Playbook</a>
+			</label>
+		{{/if}}
+		</div>
+
+		<div class="char-heritage labelled-item labelled-vertical">
+			{{#if items.heritage}}
+			<label>
+				<a class="item-add-popup" data-distinct="true" data-item-type="heritage">{{localize "BITD.Heritage"}}</a>
+			</label>
+			<div class="labelled-item-container" data-item-id="{{items.heritage._id}}">
+				<div class="item-name shadowed">{{items.heritage.name}}</div>
 			</div>
 			{{else}}
-			<label><a class="item-add-popup" data-distinct="true" data-item-type="class">Select a Playbook</a></label>
-			{{/if}}
-			<div class="char-class-tagline shadow-input">{{items.classTagLine}}</div>
-		</div>
-		<div class="char-heritage labelled-input labelled-vertical labelled-item">
-			<label><a class="item-add-popup" data-distinct="true" data-item-type="heritage">{{localize
-					"BITD.Heritage"}}</a></label>
-			{{#if items.heritage}}
-			<div class="labelled-item-container flex-horizontal item" data-item-id="{{items.heritage._id}}">
-				<div class="item-body flex-horizontal">
-					<div class="item-name shadow-input">{{items.heritage.name}}</div>
-				</div>
-			</div>
+			<label class="labelled-item-prompt shadowed">
+				<a class="item-add-popup" data-distinct="true" data-item-type="heritage">Select Your<br />Heritage</a>
+			</label>
 			{{/if}}
 		</div>
 
-		<div class="char-background labelled-input labelled-vertical labelled-item">
-			<label><a class="item-add-popup" data-distinct="true" data-item-type="background">{{localize
-					"BITD.Background"}}</a></label>
+		<div class="char-background labelled-item labelled-vertical">
 			{{#if items.background}}
-			<div class="labelled-item-container flex-horizontal item" data-item-id="{{items.background._id}}">
-				<div class="item-body flex-horizontal">
-					<img src="{{items.background.img}}" title="{{items.background.name}}" />
-					<div class="item-name shadow-input">{{items.background.name}}</div>
-				</div>
+			<label>
+				<a class="item-add-popup" data-distinct="true" data-item-type="background">{{localize "BITD.Background"}}</a>
+			</label>
+			<div class="labelled-item-container" data-item-id="{{items.background._id}}">
+				<img src="{{items.background.img}}" title="{{items.background.name}}" />
+				<div class="item-name shadowed">{{items.background.name}}</div>
 			</div>
+			{{else}}
+			<label class="labelled-item-prompt shadowed">
+				<a class="item-add-popup" data-distinct="true" data-item-type="background">Select Your<br />Background</a>
+			</label>
 			{{/if}}
 		</div>
 
-		<div class="char-vice labelled-input labelled-vertical labelled-item">
-			<label><a class="item-add-popup" data-distinct="true" data-item-type="vice">{{localize "BITD.Vice"}}</a></label>
+		<div class="char-vice labelled-item labelled-vertical">
 			{{#if items.vice}}
-			<div class="labelled-item-container flex-horizontal item" data-item-id="{{items.vice._id}}">
-				<div class="item-body flex-horizontal">
-					<img src="{{items.vice.img}}" title="{{items.vice.name}}" />
-					<div class="item-name shadow-input">{{items.vice.name}}</div>
-				</div>
+			<label>
+				<a class="item-add-popup" data-distinct="true" data-item-type="vice">{{localize "BITD.Vice"}}</a>
+			</label>
+			<div class="labelled-item-container" data-item-id="{{items.vice._id}}">
+				<img src="{{items.vice.img}}" title="{{items.vice.name}}" />
+				<div class="item-name shadowed">{{items.vice.name}}</div>
 			</div>
+			{{else}}
+			<label class="labelled-item-prompt shadowed">
+				<a class="item-add-popup" data-distinct="true" data-item-type="vice">Select Your<br />Vice</a>
+			</label>
 			{{/if}}
 		</div>
 
-		<div class="char-crew labelled-input labelled-vertical">
-			<label>Crew</label>
+		<div class="char-crew labelled-item labelled-vertical">
 			{{#if data.crew}}
-			<div class="labelled-item-container flex-horizontal item">
-				<div class="item-body flex-horizontal">
-					<img src="{{data.crew.img}}" title="{{data.crew.name}}" />
-					<div class="item-name long-name shadow-input">{{data.crew.name}}</div>
-				</div>
+			<label>
+				<a class="item-add-popup" data-distinct="true" data-item-type="crew">Crew</a>
+			</label>
+			<div class="labelled-item-container" data-sub-actor-id="{{data.crew.id}}">
+				<img src="{{data.crew.img}}" title="{{data.crew.name}}" />
+				<div class="sub-actor-name long-name shadowed">{{data.crew.name}}</div>
 			</div>
+			{{else}}
+			<label class="labelled-item-prompt shadowed">
+				<a class="item-add-popup" data-distinct="true" data-item-type="crew">Select Your<br />Crew</a>
+			</label>
 			{{/if}}
 		</div>
 
-		<div class="char-coins labelled-input labelled-vertical">
+		<div class="char-coins labelled-item labelled-vertical">
  			<label>Coins</label>
 			<div class="labelled-item-container">
 				{{> "systems/eunos-blades/templates/parts/dotline.hbs"
@@ -83,7 +98,7 @@
 			</div>
 		</div>
 
-		<div class="char-stash labelled-input labelled-horizontal">
+		<div class="char-stash labelled-item labelled-horizontal">
  			<label>Stash:</label>
 			<div class="labelled-item-container">
 				{{> "systems/eunos-blades/templates/parts/dotline.hbs"
@@ -102,55 +117,42 @@
 		</div>
 	</section>
 
-	{{!-- Experience --}}
-	<section class="flex experience">
-	</section>
-
 	{{!-- Stress and Trauma --}}
-	<section class="section big-teeth-section">
-		<div class="big-teeth character-stress">
-			{{#multiboxes data.stress.value}}
-
-			<input type="radio" id="character-{{actor._id}}-stress-0" name="data.stress.value" value="0" data-dtype="Number">
-			<label class="black-label" for="character-{{actor._id}}-stress-0">{{localize data.stress.name}}</label>
-
-			{{#times_from_1 data.stress.max}}
-			<input data-dtype="Number" type="radio" id="character-{{../actor._id}}-stress-{{this}}" name="data.stress.value"
-				value="{{this}}">
-			<label for="character-{{../actor._id}}-stress-{{this}}"></label>
-			{{/times_from_1}}
-
-			{{/multiboxes}}
-
+	<section class="stress-trauma flex-horizontal">
+		<div class="stress-teeth flex-horizontal">
+			<label class="dotline-label">Stress</label>
+			{{> "systems/eunos-blades/templates/parts/dotline.hbs"
+				data=data.stress
+				target="data.stress.value"
+				iconEmpty="teeth/long-strong-empty.svg"
+				iconFull="teeth/long-strong-full.svg"
+				blockClass="teeth long-teeth"
+			}}
 		</div>
-		<div class="small-teeth-container">
-			{{#traumacounter data.trauma.list}}
-			<div id="character-{{actor._id}}-trauma" class="small-teeth-wrap">
-				<label class="black-label" for="character-{{actor._id}}-trauma-counter-0">{{localize data.trauma.name}}</label>
-				<div id="character-{{actor._id}}-trauma-teeth" class="small-teeth">
-					<input type="radio" id="character-{{actor._id}}-trauma-counter-0" name="data.trauma.value" value="0"
-						data-dtype="Number">
-
-					{{#times_from_1 data.trauma.max}}
-					<input type="radio" id="character-{{../actor._id}}-trauma-counter-{{this}}" name="data.trauma.value"
-						value="{{this}}" disabled {{#if (eq (count ../data.trauma.list) this)}}checked="checked" {{/if}}
-						data-dtype="Number">
-					<label for="character-{{../actor._id}}-trauma-counter-{{this}}"></label>
-					{{/times_from_1}}
-				</div>
-			</div>
-			{{/traumacounter}}
+		<div class="trauma-teeth flex-vertical">
+			<label class="dotline-label">Trauma</label>
+			{{> "systems/eunos-blades/templates/parts/dotline.hbs"
+				data=data.trauma
+				target="data.trauma.value"
+				iconEmpty="teeth/short-strong-empty.svg"
+				iconFull="teeth/short-strong-full.svg"
+				blockClass="teeth short-teeth"
+			}}
 		</div>
-		<div class="trauma-list shadow-input">
-			{{#each data.trauma.list as |isSelected displayName|}}
-			{{#if (test isSelected "!=" null)}}
-			<label>
-				<input data-dtype="Boolean" type="checkbox" name="data.trauma.list.{{displayName}}" value="{{isSelected}}" {{checked (lookup
-					../data.trauma.list displayName)}}>
-				<span class="checkmark">{{displayName}}</span>
-			</label>
-			{{/if}}
+		<div class="trauma-conditions flex-vertical">
+			<div class="flex-horizontal">
+			{{#each data.trauma.list as |status displayName|}}
+				{{#unless (test status "==" "null")}}
+				<label class="text-checkbox">
+					<input type="checkbox" data-dtype="Boolean" name="data.trauma.list.{{displayName}}" value="{{status}}" {{checked status}}/>
+					<span class="shadowed">{{displayName}}</span>
+				</label>
+				{{#if (test @index "==" 3)}}
+				</div><div class="flex-horizontal">
+				{{/if}}
+				{{/unless}}
 			{{/each}}
+			</div>
 		</div>
 	</section>
 
@@ -246,11 +248,11 @@
 					<div id="character-{{actor._id}}-experience" class="teeth-experience">
 						<label for="character-{{actor._id}}-experience-0"><i
 								class="fab fa-creative-commons-zero nullifier"></i></label>
-						{{#multiboxes data.experience}}
-						<input type="radio" id="character-{{actor._id}}-experience-0" name="data.experience" value="0"
+						{{#multiboxes data.experience.playbook.value}}
+						<input type="radio" id="character-{{actor._id}}-experience-0" name="data.experience.playbook.value" value="0"
 							data-dtype="Number">
-						{{#times_from_1 data.experience_max}}
-						<input type="radio" id="character-{{actor._id}}-experience-{{this}}" name="data.experience" value="{{this}}"
+						{{#times_from_1 data.experience.playbook.max}}
+						<input type="radio" id="character-{{actor._id}}-experience-{{this}}" name="data.experience.playbook.value" value="{{this}}"
 							data-dtype="Number">
 						<label for="character-{{actor._id}}-experience-{{this}}"></label>
 						{{/times_from_1}}
@@ -351,8 +353,43 @@
 			</div>
 			{{/if}}
 		</div>
+
 		{{!-- Attributes --}}
-		{{> "systems/eunos-blades/templates/parts/attributes.hbs" actor=actor}}
+		<div class="attributes">
+
+			{{#each data.attributes as |attribute_data attribute_name|}}
+			<div class="labelled-item labelled-horizontal labelled-attribute">
+				<label>{{case "title" attribute_name}}</label>
+				<div class="labelled-item-container">
+						{{> "systems/eunos-blades/templates/parts/dotline.hbs"
+							data=(lookup ../data.experience attribute_name)
+							target=(concat "data.experience." attribute_name ".value")
+							iconEmpty="teeth/long-strong-empty.svg"
+							iconFull="teeth/long-strong-full.svg"
+							blockClass="teeth long-teeth"
+						}}
+				</div>
+			</div>
+			{{#each attribute_data as |action_data action_name|}}
+			<div class="labelled-item labelled-horizontal labelled-action">
+				<label>{{case "upper" action_name}}</label>
+				<div class="labelled-item-container">
+						{{> "systems/eunos-blades/templates/parts/dotline.hbs"
+							data=action_data
+							target=(concat "data.attributes." attribute_name "." action_name ".value")
+							iconEmpty="dot-empty.svg"
+							iconEmptyHover="dot-empty-hover.svg"
+							iconFull="dot-full.svg"
+							iconFullHover="dot-full-hover.svg"
+							zeroDot="dot-zero.svg"
+							blockClass="action"
+						}}
+				</div>
+			</div>
+			{{/each}}
+			{{/each}}
+
+		</div>
 	</section>
 
 </form>

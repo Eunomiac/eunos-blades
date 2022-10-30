@@ -17,8 +17,6 @@ export async function preloadHandlebarsTemplates() {
 		"systems/eunos-blades/templates/parts/dotline.hbs",
 
 		// Actor Sheet Partials
-		"systems/eunos-blades/templates/parts/coins.hbs",
-		"systems/eunos-blades/templates/parts/coins-stash.hbs",
 		"systems/eunos-blades/templates/parts/attributes.hbs",
 		"systems/eunos-blades/templates/parts/turf-list.hbs",
 		"systems/eunos-blades/templates/parts/cohort-block.hbs",
@@ -43,6 +41,9 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 			"null": null,
 			"undefined": undefined
 		};
+		if (["!", "not"].includes(String(param1))) {
+			[operator, param1] = [String(param1), operator];
+		}
 		if (typeof param1 === "string" && param1 in stringMap) {
 			param1 = stringMap[param1 as keyof typeof stringMap];
 		}
@@ -50,6 +51,9 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 			param2 = stringMap[param2 as keyof typeof stringMap];
 		}
 		switch (operator) {
+			case "!": case "not": { return !param1 }
+			case "&&": { return param1 && param2 }
+			case "||": { return param1 || param2 }
 			case "==": { return param1 == param2 } // eslint-disable-line eqeqeq
 			case "===": { return param1 === param2 }
 			case "!=": { return param1 != param2 } // eslint-disable-line eqeqeq
@@ -120,7 +124,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 		args.pop();
 		return !Object.values(args).flat().join("");
 	},
-	"dbLog": function(...args) {
+	"eLog": function(...args) {
 		args.pop();
 		let dbLevel = 5;
 		if ([0,1,2,3,4,5].includes(args[0])) {
@@ -337,6 +341,14 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 	 */
 	"removeClassPrefix": (classStr: string) => classStr.replace(/^\(.*?\)\s*/, "")
 };
+
+handlebarHelpers.eLog1 = function(...args) { handlebarHelpers.eLog(...[1, ...args]) };
+handlebarHelpers.eLog2 = function(...args) { handlebarHelpers.eLog(...[2, ...args]) };
+handlebarHelpers.eLog3 = function(...args) { handlebarHelpers.eLog(...[3, ...args]) };
+handlebarHelpers.eLog4 = function(...args) { handlebarHelpers.eLog(...[4, ...args]) };
+handlebarHelpers.eLog5 = function(...args) { handlebarHelpers.eLog(...[5, ...args]) };
+
+Object.assign(handlebarHelpers);
 
 export function registerHandlebarHelpers() {
 	Object.entries(handlebarHelpers).forEach(([name, func]) => Handlebars.registerHelper(name, func));

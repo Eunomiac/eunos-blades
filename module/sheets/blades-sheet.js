@@ -11,23 +11,30 @@ class BladesSheet extends ActorSheet {
     async getData() {
         const data = await super.getData();
         const actorData = data.data;
+        this._linkEmbeddedActors(actorData);
+        this._filterTraumaConditions(actorData);
         Object.assign(data, {
             editable: this.options.editable,
             isGM: game.user.isGM,
             actor: actorData,
             data: actorData.data
         });
-        eLog.log("actorData", actorData);
-        eLog.log("game.actors.get", game.actors.get(actorData.data.crew));
-        if (actorData.data.crew) {
-            const crew = game.actors.get(actorData.data.crew);
-            if (crew && crew.type === "crew") {
-                Object.assign(data.data, {
-                    crew
-                });
-            }
-        }
         return data;
+    }
+    _linkEmbeddedActors(actorData) {
+        if (!actorData.data.crew) {
+            return;
+        }
+        const crew = game.actors.get(actorData.data.crew);
+        if (crew && crew.type === "crew") {
+            actorData.data.crew = crew;
+        }
+    }
+    _filterTraumaConditions(actorData) {
+        if (!actorData.data.trauma?.list) {
+            return;
+        }
+        actorData.data.trauma.list = U.objFilter(actorData.data.trauma.list, (val) => val === true || val === false);
     }
     activateListeners(html) {
         super.activateListeners(html);
@@ -60,7 +67,23 @@ class BladesSheet extends ActorSheet {
         if (this.options.submitOnChange) {
             html.on("change", "textarea", this._onChangeInput.bind(this));
         }
+        html.find("[data-item-id]").children(".item-name").on("click", this._onItemOpenClick.bind(this));
+        html.find("[data-sub-actor-id]").children(".sub-actor-name").on("click", this._onSubActorOpenClick.bind(this));
         html.find(".roll-die-attribute").on("click", this._onRollAttributeDieClick.bind(this));
+    }
+    async _onItemOpenClick(event) {
+        event.preventDefault();
+        const itemID = $(event.currentTarget).closest("[data-item-id]").data("itemId");
+        if (itemID) {
+            this.actor.items.get(itemID)?.sheet?.render(true);
+        }
+    }
+    async _onSubActorOpenClick(event) {
+        event.preventDefault();
+        const actorID = $(event.currentTarget).closest("[data-sub-actor-id]").data("subActorId");
+        if (actorID) {
+            game.actors.get(actorID)?.sheet?.render(true);
+        }
     }
     async _onItemAddClick(event) {
         event.preventDefault();

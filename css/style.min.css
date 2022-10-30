@@ -749,11 +749,12 @@ template {
   --blades-grey-dark-nums: 68, 68, 68;
   --blades-black-nums: 32, 32, 32;
   --blades-black-dark-nums: 0, 0, 0;
-  --blades-gold-bright-nums: 253, 212, 112;
-  --blades-gold-nums: 218, 165, 32;
-  --blades-gold-dark-nums: 126, 91, 4;
-  --blades-red-nums: 132, 12, 36;
+  --blades-gold-bright-nums: 255, 231, 92;
+  --blades-gold-nums: 255, 215, 0;
+  --blades-gold-dark-nums: 184, 156, 0;
   --blades-red-bright-nums: 220, 20, 60;
+  --blades-red-nums: 204, 0, 0;
+  --blades-red-dark-nums: 122, 0, 0;
   --blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
   --blades-white: rgba(var(--blades-white-nums), 1);
   --blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
@@ -772,8 +773,9 @@ template {
   --blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
   --blades-gold: rgba(var(--blades-gold-nums), 1);
   --blades-gold-dark: rgba(var(--blades-gold-dark-nums), 1);
-  --blades-red: rgba(var(--blades-red-nums), 1);
   --blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
+  --blades-red: rgba(var(--blades-red-nums), 1);
+  --blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
   --blades-color-negative: var(--blades-red-bright);
   --blades-color-positive: var(--blades-gold-bright);
   --color-primary: var(--blades-white-nums);
@@ -905,37 +907,59 @@ template {
   :root * .button-icon:hover .tooltip, :root * .toggle-icon:hover .tooltip {
     display: block; }
 
+:root * .dotline-label {
+  position: relative;
+  z-index: 4;
+  pointer-events: none; }
+
 :root * .dotline {
-  --dotline-dot-size: 14px;
+  --dotline-zero-dot-size: 0.875rem;
+  --dotline-dot-size: 0.875rem;
   --dotline-dot-spacing: 0px;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: flex-start; }
+  position: relative; }
   :root * .dotline.centered {
     justify-content: center; }
+    :root * .dotline.centered .dot.zero-dot {
+      left: calc(-1 * var(--dotline-zero-dot-size)); }
+      :root * .dotline.centered .dot.zero-dot + .dot {
+        left: 0px; }
   :root * .dotline .dot {
-    height: var(--dotline-dot-size);
-    width: var(--dotline-dot-size);
+    height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
+    width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
     flex-grow: 0;
     flex-shrink: 0;
     margin: 0 var(--dotline-dot-spacing) 0 0;
-    pointer-events: auto; }
+    pointer-events: auto;
+    position: relative; }
     :root * .dotline .dot.zero-dot {
-      margin-left: calc(-1 * var(--dotline-dot-size)); }
+      position: absolute;
+      left: calc(-1 * var(--dotline-zero-dot-size));
+      height: var(--dotline-zero-dot-size);
+      width: var(--dotline-zero-dot-size); }
     :root * .dotline .dot .img-main, :root * .dotline .dot .img-hover {
+      display: block;
       height: 100%;
       width: 100%;
       filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
-    :root * .dotline .dot:hover .img-main {
+    :root * .dotline .dot .img-hover {
       display: none; }
+    :root * .dotline .dot:hover .img-main {
+      opacity: 0.5; }
     :root * .dotline .dot:hover .img-hover {
       display: block; }
-    :root * .dotline .dot:not(:hover) .img-main {
-      display: block; }
-    :root * .dotline .dot:not(:hover) .img-hover {
+    :root * .dotline .dot:hover .img-hover + .img-main {
       display: none; }
+  :root * .dotline.teeth {
+    align-items: flex-start; }
+    :root * .dotline.teeth .img-main, :root * .dotline.teeth .img-hover {
+      filter: none; }
+    :root * .dotline.teeth .dot:not(.zero-dot) {
+      flex-shrink: 1; }
 
 :root body.vtt.game.system-eunos-blades #clocks-overlay {
   margin-top: 0.25rem; }
@@ -1028,9 +1052,7 @@ template {
     :root body.vtt.game.system-eunos-blades #clocks-overlay .window-header {
       background: var(--blades-black-dark);
       justify-content: space-between;
-      align-items: center;
-      align-content: center;
-      justify-items: center; }
+      align-items: center; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .window-header > * {
         flex-basis: auto;
         flex-shrink: 0.5; }
@@ -1120,37 +1142,58 @@ template {
         opacity: 1; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .button-icon:hover .tooltip, :root body.vtt.game.system-eunos-blades #clocks-overlay .toggle-icon:hover .tooltip {
         display: block; }
+    :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline-label {
+      position: relative;
+      z-index: 4;
+      pointer-events: none; }
     :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline {
-      --dotline-dot-size: 14px;
+      --dotline-zero-dot-size: 0.875rem;
+      --dotline-dot-size: 0.875rem;
       --dotline-dot-spacing: 0px;
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
+      justify-content: flex-start;
       align-items: center;
-      justify-content: flex-start; }
+      position: relative; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline.centered {
         justify-content: center; }
+        :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline.centered .dot.zero-dot {
+          left: calc(-1 * var(--dotline-zero-dot-size)); }
+          :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline.centered .dot.zero-dot + .dot {
+            left: 0px; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .dot {
-        height: var(--dotline-dot-size);
-        width: var(--dotline-dot-size);
+        height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
+        width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
         flex-grow: 0;
         flex-shrink: 0;
         margin: 0 var(--dotline-dot-spacing) 0 0;
-        pointer-events: auto; }
+        pointer-events: auto;
+        position: relative; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .dot.zero-dot {
-          margin-left: calc(-1 * var(--dotline-dot-size)); }
+          position: absolute;
+          left: calc(-1 * var(--dotline-zero-dot-size));
+          height: var(--dotline-zero-dot-size);
+          width: var(--dotline-zero-dot-size); }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .dot .img-main, :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .dot .img-hover {
+          display: block;
           height: 100%;
           width: 100%;
           filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
-        :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .dot:hover .img-main {
+        :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .dot .img-hover {
           display: none; }
+        :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .dot:hover .img-main {
+          opacity: 0.5; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .dot:hover .img-hover {
           display: block; }
-        :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .dot:not(:hover) .img-main {
-          display: block; }
-        :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .dot:not(:hover) .img-hover {
+        :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .dot:hover .img-hover + .img-main {
           display: none; }
+      :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline.teeth {
+        align-items: flex-start; }
+        :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline.teeth .img-main, :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline.teeth .img-hover {
+          filter: none; }
+        :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline.teeth .dot:not(.zero-dot) {
+          flex-shrink: 1; }
   :root body.vtt.game.system-eunos-blades #clocks-overlay {
     display: none !important;
     --top-shift: 50px;
@@ -1643,9 +1686,7 @@ template {
   :root body.vtt.game.system-eunos-blades #players .window-header {
     background: var(--blades-black-dark);
     justify-content: space-between;
-    align-items: center;
-    align-content: center;
-    justify-items: center; }
+    align-items: center; }
     :root body.vtt.game.system-eunos-blades #interface .window-header > *,
     :root body.vtt.game.system-eunos-blades #controls .window-header > *,
     :root body.vtt.game.system-eunos-blades #navigation .window-header > *,
@@ -1883,41 +1924,67 @@ template {
     :root body.vtt.game.system-eunos-blades #players .button-icon:hover .tooltip,
     :root body.vtt.game.system-eunos-blades #players .toggle-icon:hover .tooltip {
       display: block; }
+  :root body.vtt.game.system-eunos-blades #interface .dotline-label,
+  :root body.vtt.game.system-eunos-blades #controls .dotline-label,
+  :root body.vtt.game.system-eunos-blades #navigation .dotline-label,
+  :root body.vtt.game.system-eunos-blades #hotbar .dotline-label,
+  :root body.vtt.game.system-eunos-blades #players .dotline-label {
+    position: relative;
+    z-index: 4;
+    pointer-events: none; }
   :root body.vtt.game.system-eunos-blades #interface .dotline,
   :root body.vtt.game.system-eunos-blades #controls .dotline,
   :root body.vtt.game.system-eunos-blades #navigation .dotline,
   :root body.vtt.game.system-eunos-blades #hotbar .dotline,
   :root body.vtt.game.system-eunos-blades #players .dotline {
-    --dotline-dot-size: 14px;
+    --dotline-zero-dot-size: 0.875rem;
+    --dotline-dot-size: 0.875rem;
     --dotline-dot-spacing: 0px;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    justify-content: flex-start;
     align-items: center;
-    justify-content: flex-start; }
+    position: relative; }
     :root body.vtt.game.system-eunos-blades #interface .dotline.centered,
     :root body.vtt.game.system-eunos-blades #controls .dotline.centered,
     :root body.vtt.game.system-eunos-blades #navigation .dotline.centered,
     :root body.vtt.game.system-eunos-blades #hotbar .dotline.centered,
     :root body.vtt.game.system-eunos-blades #players .dotline.centered {
       justify-content: center; }
+      :root body.vtt.game.system-eunos-blades #interface .dotline.centered .dot.zero-dot,
+      :root body.vtt.game.system-eunos-blades #controls .dotline.centered .dot.zero-dot,
+      :root body.vtt.game.system-eunos-blades #navigation .dotline.centered .dot.zero-dot,
+      :root body.vtt.game.system-eunos-blades #hotbar .dotline.centered .dot.zero-dot,
+      :root body.vtt.game.system-eunos-blades #players .dotline.centered .dot.zero-dot {
+        left: calc(-1 * var(--dotline-zero-dot-size)); }
+        :root body.vtt.game.system-eunos-blades #interface .dotline.centered .dot.zero-dot + .dot,
+        :root body.vtt.game.system-eunos-blades #controls .dotline.centered .dot.zero-dot + .dot,
+        :root body.vtt.game.system-eunos-blades #navigation .dotline.centered .dot.zero-dot + .dot,
+        :root body.vtt.game.system-eunos-blades #hotbar .dotline.centered .dot.zero-dot + .dot,
+        :root body.vtt.game.system-eunos-blades #players .dotline.centered .dot.zero-dot + .dot {
+          left: 0px; }
     :root body.vtt.game.system-eunos-blades #interface .dotline .dot,
     :root body.vtt.game.system-eunos-blades #controls .dotline .dot,
     :root body.vtt.game.system-eunos-blades #navigation .dotline .dot,
     :root body.vtt.game.system-eunos-blades #hotbar .dotline .dot,
     :root body.vtt.game.system-eunos-blades #players .dotline .dot {
-      height: var(--dotline-dot-size);
-      width: var(--dotline-dot-size);
+      height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
+      width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
       flex-grow: 0;
       flex-shrink: 0;
       margin: 0 var(--dotline-dot-spacing) 0 0;
-      pointer-events: auto; }
+      pointer-events: auto;
+      position: relative; }
       :root body.vtt.game.system-eunos-blades #interface .dotline .dot.zero-dot,
       :root body.vtt.game.system-eunos-blades #controls .dotline .dot.zero-dot,
       :root body.vtt.game.system-eunos-blades #navigation .dotline .dot.zero-dot,
       :root body.vtt.game.system-eunos-blades #hotbar .dotline .dot.zero-dot,
       :root body.vtt.game.system-eunos-blades #players .dotline .dot.zero-dot {
-        margin-left: calc(-1 * var(--dotline-dot-size)); }
+        position: absolute;
+        left: calc(-1 * var(--dotline-zero-dot-size));
+        height: var(--dotline-zero-dot-size);
+        width: var(--dotline-zero-dot-size); }
       :root body.vtt.game.system-eunos-blades #interface .dotline .dot .img-main, :root body.vtt.game.system-eunos-blades #interface .dotline .dot .img-hover,
       :root body.vtt.game.system-eunos-blades #controls .dotline .dot .img-main,
       :root body.vtt.game.system-eunos-blades #controls .dotline .dot .img-hover,
@@ -1927,33 +1994,56 @@ template {
       :root body.vtt.game.system-eunos-blades #hotbar .dotline .dot .img-hover,
       :root body.vtt.game.system-eunos-blades #players .dotline .dot .img-main,
       :root body.vtt.game.system-eunos-blades #players .dotline .dot .img-hover {
+        display: block;
         height: 100%;
         width: 100%;
         filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
+      :root body.vtt.game.system-eunos-blades #interface .dotline .dot .img-hover,
+      :root body.vtt.game.system-eunos-blades #controls .dotline .dot .img-hover,
+      :root body.vtt.game.system-eunos-blades #navigation .dotline .dot .img-hover,
+      :root body.vtt.game.system-eunos-blades #hotbar .dotline .dot .img-hover,
+      :root body.vtt.game.system-eunos-blades #players .dotline .dot .img-hover {
+        display: none; }
       :root body.vtt.game.system-eunos-blades #interface .dotline .dot:hover .img-main,
       :root body.vtt.game.system-eunos-blades #controls .dotline .dot:hover .img-main,
       :root body.vtt.game.system-eunos-blades #navigation .dotline .dot:hover .img-main,
       :root body.vtt.game.system-eunos-blades #hotbar .dotline .dot:hover .img-main,
       :root body.vtt.game.system-eunos-blades #players .dotline .dot:hover .img-main {
-        display: none; }
+        opacity: 0.5; }
       :root body.vtt.game.system-eunos-blades #interface .dotline .dot:hover .img-hover,
       :root body.vtt.game.system-eunos-blades #controls .dotline .dot:hover .img-hover,
       :root body.vtt.game.system-eunos-blades #navigation .dotline .dot:hover .img-hover,
       :root body.vtt.game.system-eunos-blades #hotbar .dotline .dot:hover .img-hover,
       :root body.vtt.game.system-eunos-blades #players .dotline .dot:hover .img-hover {
         display: block; }
-      :root body.vtt.game.system-eunos-blades #interface .dotline .dot:not(:hover) .img-main,
-      :root body.vtt.game.system-eunos-blades #controls .dotline .dot:not(:hover) .img-main,
-      :root body.vtt.game.system-eunos-blades #navigation .dotline .dot:not(:hover) .img-main,
-      :root body.vtt.game.system-eunos-blades #hotbar .dotline .dot:not(:hover) .img-main,
-      :root body.vtt.game.system-eunos-blades #players .dotline .dot:not(:hover) .img-main {
-        display: block; }
-      :root body.vtt.game.system-eunos-blades #interface .dotline .dot:not(:hover) .img-hover,
-      :root body.vtt.game.system-eunos-blades #controls .dotline .dot:not(:hover) .img-hover,
-      :root body.vtt.game.system-eunos-blades #navigation .dotline .dot:not(:hover) .img-hover,
-      :root body.vtt.game.system-eunos-blades #hotbar .dotline .dot:not(:hover) .img-hover,
-      :root body.vtt.game.system-eunos-blades #players .dotline .dot:not(:hover) .img-hover {
+      :root body.vtt.game.system-eunos-blades #interface .dotline .dot:hover .img-hover + .img-main,
+      :root body.vtt.game.system-eunos-blades #controls .dotline .dot:hover .img-hover + .img-main,
+      :root body.vtt.game.system-eunos-blades #navigation .dotline .dot:hover .img-hover + .img-main,
+      :root body.vtt.game.system-eunos-blades #hotbar .dotline .dot:hover .img-hover + .img-main,
+      :root body.vtt.game.system-eunos-blades #players .dotline .dot:hover .img-hover + .img-main {
         display: none; }
+    :root body.vtt.game.system-eunos-blades #interface .dotline.teeth,
+    :root body.vtt.game.system-eunos-blades #controls .dotline.teeth,
+    :root body.vtt.game.system-eunos-blades #navigation .dotline.teeth,
+    :root body.vtt.game.system-eunos-blades #hotbar .dotline.teeth,
+    :root body.vtt.game.system-eunos-blades #players .dotline.teeth {
+      align-items: flex-start; }
+      :root body.vtt.game.system-eunos-blades #interface .dotline.teeth .img-main, :root body.vtt.game.system-eunos-blades #interface .dotline.teeth .img-hover,
+      :root body.vtt.game.system-eunos-blades #controls .dotline.teeth .img-main,
+      :root body.vtt.game.system-eunos-blades #controls .dotline.teeth .img-hover,
+      :root body.vtt.game.system-eunos-blades #navigation .dotline.teeth .img-main,
+      :root body.vtt.game.system-eunos-blades #navigation .dotline.teeth .img-hover,
+      :root body.vtt.game.system-eunos-blades #hotbar .dotline.teeth .img-main,
+      :root body.vtt.game.system-eunos-blades #hotbar .dotline.teeth .img-hover,
+      :root body.vtt.game.system-eunos-blades #players .dotline.teeth .img-main,
+      :root body.vtt.game.system-eunos-blades #players .dotline.teeth .img-hover {
+        filter: none; }
+      :root body.vtt.game.system-eunos-blades #interface .dotline.teeth .dot:not(.zero-dot),
+      :root body.vtt.game.system-eunos-blades #controls .dotline.teeth .dot:not(.zero-dot),
+      :root body.vtt.game.system-eunos-blades #navigation .dotline.teeth .dot:not(.zero-dot),
+      :root body.vtt.game.system-eunos-blades #hotbar .dotline.teeth .dot:not(.zero-dot),
+      :root body.vtt.game.system-eunos-blades #players .dotline.teeth .dot:not(.zero-dot) {
+        flex-shrink: 1; }
 
 :root body.vtt.game.system-eunos-blades #interface, :root body.vtt.game.system-eunos-blades #interface *,
 :root body.vtt.game.system-eunos-blades #controls,
@@ -2239,9 +2329,7 @@ template {
   :root body.vtt.game.system-eunos-blades #players #chat .window-header {
     background: var(--blades-black-dark);
     justify-content: space-between;
-    align-items: center;
-    align-content: center;
-    justify-items: center; }
+    align-items: center; }
     :root body.vtt.game.system-eunos-blades #interface #chat .window-header > *,
     :root body.vtt.game.system-eunos-blades #controls #chat .window-header > *,
     :root body.vtt.game.system-eunos-blades #navigation #chat .window-header > *,
@@ -2479,41 +2567,67 @@ template {
     :root body.vtt.game.system-eunos-blades #players #chat .button-icon:hover .tooltip,
     :root body.vtt.game.system-eunos-blades #players #chat .toggle-icon:hover .tooltip {
       display: block; }
+  :root body.vtt.game.system-eunos-blades #interface #chat .dotline-label,
+  :root body.vtt.game.system-eunos-blades #controls #chat .dotline-label,
+  :root body.vtt.game.system-eunos-blades #navigation #chat .dotline-label,
+  :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline-label,
+  :root body.vtt.game.system-eunos-blades #players #chat .dotline-label {
+    position: relative;
+    z-index: 4;
+    pointer-events: none; }
   :root body.vtt.game.system-eunos-blades #interface #chat .dotline,
   :root body.vtt.game.system-eunos-blades #controls #chat .dotline,
   :root body.vtt.game.system-eunos-blades #navigation #chat .dotline,
   :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline,
   :root body.vtt.game.system-eunos-blades #players #chat .dotline {
-    --dotline-dot-size: 14px;
+    --dotline-zero-dot-size: 0.875rem;
+    --dotline-dot-size: 0.875rem;
     --dotline-dot-spacing: 0px;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    justify-content: flex-start;
     align-items: center;
-    justify-content: flex-start; }
+    position: relative; }
     :root body.vtt.game.system-eunos-blades #interface #chat .dotline.centered,
     :root body.vtt.game.system-eunos-blades #controls #chat .dotline.centered,
     :root body.vtt.game.system-eunos-blades #navigation #chat .dotline.centered,
     :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline.centered,
     :root body.vtt.game.system-eunos-blades #players #chat .dotline.centered {
       justify-content: center; }
+      :root body.vtt.game.system-eunos-blades #interface #chat .dotline.centered .dot.zero-dot,
+      :root body.vtt.game.system-eunos-blades #controls #chat .dotline.centered .dot.zero-dot,
+      :root body.vtt.game.system-eunos-blades #navigation #chat .dotline.centered .dot.zero-dot,
+      :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline.centered .dot.zero-dot,
+      :root body.vtt.game.system-eunos-blades #players #chat .dotline.centered .dot.zero-dot {
+        left: calc(-1 * var(--dotline-zero-dot-size)); }
+        :root body.vtt.game.system-eunos-blades #interface #chat .dotline.centered .dot.zero-dot + .dot,
+        :root body.vtt.game.system-eunos-blades #controls #chat .dotline.centered .dot.zero-dot + .dot,
+        :root body.vtt.game.system-eunos-blades #navigation #chat .dotline.centered .dot.zero-dot + .dot,
+        :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline.centered .dot.zero-dot + .dot,
+        :root body.vtt.game.system-eunos-blades #players #chat .dotline.centered .dot.zero-dot + .dot {
+          left: 0px; }
     :root body.vtt.game.system-eunos-blades #interface #chat .dotline .dot,
     :root body.vtt.game.system-eunos-blades #controls #chat .dotline .dot,
     :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .dot,
     :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .dot,
     :root body.vtt.game.system-eunos-blades #players #chat .dotline .dot {
-      height: var(--dotline-dot-size);
-      width: var(--dotline-dot-size);
+      height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
+      width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
       flex-grow: 0;
       flex-shrink: 0;
       margin: 0 var(--dotline-dot-spacing) 0 0;
-      pointer-events: auto; }
+      pointer-events: auto;
+      position: relative; }
       :root body.vtt.game.system-eunos-blades #interface #chat .dotline .dot.zero-dot,
       :root body.vtt.game.system-eunos-blades #controls #chat .dotline .dot.zero-dot,
       :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .dot.zero-dot,
       :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .dot.zero-dot,
       :root body.vtt.game.system-eunos-blades #players #chat .dotline .dot.zero-dot {
-        margin-left: calc(-1 * var(--dotline-dot-size)); }
+        position: absolute;
+        left: calc(-1 * var(--dotline-zero-dot-size));
+        height: var(--dotline-zero-dot-size);
+        width: var(--dotline-zero-dot-size); }
       :root body.vtt.game.system-eunos-blades #interface #chat .dotline .dot .img-main, :root body.vtt.game.system-eunos-blades #interface #chat .dotline .dot .img-hover,
       :root body.vtt.game.system-eunos-blades #controls #chat .dotline .dot .img-main,
       :root body.vtt.game.system-eunos-blades #controls #chat .dotline .dot .img-hover,
@@ -2523,33 +2637,56 @@ template {
       :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .dot .img-hover,
       :root body.vtt.game.system-eunos-blades #players #chat .dotline .dot .img-main,
       :root body.vtt.game.system-eunos-blades #players #chat .dotline .dot .img-hover {
+        display: block;
         height: 100%;
         width: 100%;
         filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
+      :root body.vtt.game.system-eunos-blades #interface #chat .dotline .dot .img-hover,
+      :root body.vtt.game.system-eunos-blades #controls #chat .dotline .dot .img-hover,
+      :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .dot .img-hover,
+      :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .dot .img-hover,
+      :root body.vtt.game.system-eunos-blades #players #chat .dotline .dot .img-hover {
+        display: none; }
       :root body.vtt.game.system-eunos-blades #interface #chat .dotline .dot:hover .img-main,
       :root body.vtt.game.system-eunos-blades #controls #chat .dotline .dot:hover .img-main,
       :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .dot:hover .img-main,
       :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .dot:hover .img-main,
       :root body.vtt.game.system-eunos-blades #players #chat .dotline .dot:hover .img-main {
-        display: none; }
+        opacity: 0.5; }
       :root body.vtt.game.system-eunos-blades #interface #chat .dotline .dot:hover .img-hover,
       :root body.vtt.game.system-eunos-blades #controls #chat .dotline .dot:hover .img-hover,
       :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .dot:hover .img-hover,
       :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .dot:hover .img-hover,
       :root body.vtt.game.system-eunos-blades #players #chat .dotline .dot:hover .img-hover {
         display: block; }
-      :root body.vtt.game.system-eunos-blades #interface #chat .dotline .dot:not(:hover) .img-main,
-      :root body.vtt.game.system-eunos-blades #controls #chat .dotline .dot:not(:hover) .img-main,
-      :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .dot:not(:hover) .img-main,
-      :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .dot:not(:hover) .img-main,
-      :root body.vtt.game.system-eunos-blades #players #chat .dotline .dot:not(:hover) .img-main {
-        display: block; }
-      :root body.vtt.game.system-eunos-blades #interface #chat .dotline .dot:not(:hover) .img-hover,
-      :root body.vtt.game.system-eunos-blades #controls #chat .dotline .dot:not(:hover) .img-hover,
-      :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .dot:not(:hover) .img-hover,
-      :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .dot:not(:hover) .img-hover,
-      :root body.vtt.game.system-eunos-blades #players #chat .dotline .dot:not(:hover) .img-hover {
+      :root body.vtt.game.system-eunos-blades #interface #chat .dotline .dot:hover .img-hover + .img-main,
+      :root body.vtt.game.system-eunos-blades #controls #chat .dotline .dot:hover .img-hover + .img-main,
+      :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .dot:hover .img-hover + .img-main,
+      :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .dot:hover .img-hover + .img-main,
+      :root body.vtt.game.system-eunos-blades #players #chat .dotline .dot:hover .img-hover + .img-main {
         display: none; }
+    :root body.vtt.game.system-eunos-blades #interface #chat .dotline.teeth,
+    :root body.vtt.game.system-eunos-blades #controls #chat .dotline.teeth,
+    :root body.vtt.game.system-eunos-blades #navigation #chat .dotline.teeth,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline.teeth,
+    :root body.vtt.game.system-eunos-blades #players #chat .dotline.teeth {
+      align-items: flex-start; }
+      :root body.vtt.game.system-eunos-blades #interface #chat .dotline.teeth .img-main, :root body.vtt.game.system-eunos-blades #interface #chat .dotline.teeth .img-hover,
+      :root body.vtt.game.system-eunos-blades #controls #chat .dotline.teeth .img-main,
+      :root body.vtt.game.system-eunos-blades #controls #chat .dotline.teeth .img-hover,
+      :root body.vtt.game.system-eunos-blades #navigation #chat .dotline.teeth .img-main,
+      :root body.vtt.game.system-eunos-blades #navigation #chat .dotline.teeth .img-hover,
+      :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline.teeth .img-main,
+      :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline.teeth .img-hover,
+      :root body.vtt.game.system-eunos-blades #players #chat .dotline.teeth .img-main,
+      :root body.vtt.game.system-eunos-blades #players #chat .dotline.teeth .img-hover {
+        filter: none; }
+      :root body.vtt.game.system-eunos-blades #interface #chat .dotline.teeth .dot:not(.zero-dot),
+      :root body.vtt.game.system-eunos-blades #controls #chat .dotline.teeth .dot:not(.zero-dot),
+      :root body.vtt.game.system-eunos-blades #navigation #chat .dotline.teeth .dot:not(.zero-dot),
+      :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline.teeth .dot:not(.zero-dot),
+      :root body.vtt.game.system-eunos-blades #players #chat .dotline.teeth .dot:not(.zero-dot) {
+        flex-shrink: 1; }
 
 :root body.vtt.game.system-eunos-blades #interface #chat, :root body.vtt.game.system-eunos-blades #interface #chat *,
 :root body.vtt.game.system-eunos-blades #controls #chat,
@@ -2757,9 +2894,7 @@ template {
   :root body.vtt.game.system-eunos-blades .app.window-app .window-header {
     background: var(--blades-black-dark);
     justify-content: space-between;
-    align-items: center;
-    align-content: center;
-    justify-items: center; }
+    align-items: center; }
     :root body.vtt.game.system-eunos-blades .app.window-app .window-header > * {
       flex-basis: auto;
       flex-shrink: 0.5; }
@@ -2849,37 +2984,58 @@ template {
       opacity: 1; }
     :root body.vtt.game.system-eunos-blades .app.window-app .button-icon:hover .tooltip, :root body.vtt.game.system-eunos-blades .app.window-app .toggle-icon:hover .tooltip {
       display: block; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .dotline-label {
+    position: relative;
+    z-index: 4;
+    pointer-events: none; }
   :root body.vtt.game.system-eunos-blades .app.window-app .dotline {
-    --dotline-dot-size: 14px;
+    --dotline-zero-dot-size: 0.875rem;
+    --dotline-dot-size: 0.875rem;
     --dotline-dot-spacing: 0px;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    justify-content: flex-start;
     align-items: center;
-    justify-content: flex-start; }
+    position: relative; }
     :root body.vtt.game.system-eunos-blades .app.window-app .dotline.centered {
       justify-content: center; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .dotline.centered .dot.zero-dot {
+        left: calc(-1 * var(--dotline-zero-dot-size)); }
+        :root body.vtt.game.system-eunos-blades .app.window-app .dotline.centered .dot.zero-dot + .dot {
+          left: 0px; }
     :root body.vtt.game.system-eunos-blades .app.window-app .dotline .dot {
-      height: var(--dotline-dot-size);
-      width: var(--dotline-dot-size);
+      height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
+      width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
       flex-grow: 0;
       flex-shrink: 0;
       margin: 0 var(--dotline-dot-spacing) 0 0;
-      pointer-events: auto; }
+      pointer-events: auto;
+      position: relative; }
       :root body.vtt.game.system-eunos-blades .app.window-app .dotline .dot.zero-dot {
-        margin-left: calc(-1 * var(--dotline-dot-size)); }
+        position: absolute;
+        left: calc(-1 * var(--dotline-zero-dot-size));
+        height: var(--dotline-zero-dot-size);
+        width: var(--dotline-zero-dot-size); }
       :root body.vtt.game.system-eunos-blades .app.window-app .dotline .dot .img-main, :root body.vtt.game.system-eunos-blades .app.window-app .dotline .dot .img-hover {
+        display: block;
         height: 100%;
         width: 100%;
         filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
-      :root body.vtt.game.system-eunos-blades .app.window-app .dotline .dot:hover .img-main {
+      :root body.vtt.game.system-eunos-blades .app.window-app .dotline .dot .img-hover {
         display: none; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .dotline .dot:hover .img-main {
+        opacity: 0.5; }
       :root body.vtt.game.system-eunos-blades .app.window-app .dotline .dot:hover .img-hover {
         display: block; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .dotline .dot:not(:hover) .img-main {
-        display: block; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .dotline .dot:not(:hover) .img-hover {
+      :root body.vtt.game.system-eunos-blades .app.window-app .dotline .dot:hover .img-hover + .img-main {
         display: none; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .dotline.teeth {
+      align-items: flex-start; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .dotline.teeth .img-main, :root body.vtt.game.system-eunos-blades .app.window-app .dotline.teeth .img-hover {
+        filter: none; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .dotline.teeth .dot:not(.zero-dot) {
+        flex-shrink: 1; }
 
 :root body.vtt.game.system-eunos-blades .app.window-app blockquote {
   border-left: 2px solid var(--blades-grey-bright);
@@ -3002,41 +3158,71 @@ template {
     color: var(--blades-white-bright);
     text-shadow: 1px 1px 0px var(--blades-black-dark); }
 
-:root body.vtt.game.system-eunos-blades .app.window-app .labelled-input {
+:root body.vtt.game.system-eunos-blades .app.window-app .labelled-item {
   display: flex;
   flex-wrap: nowrap;
-  position: relative; }
-  :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input label {
+  position: relative;
+  justify-content: center;
+  align-items: center; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item label {
     color: var(--blades-white-bright);
     font-size: 0.75rem;
     line-height: 0.75rem;
     position: relative;
-    z-index: 1; }
-  :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-vertical {
-    --labelled-input-img-scale: 1.5;
+    z-index: 1;
+    flex-grow: 0.5; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item label.labelled-item-prompt {
+      font-size: 1rem;
+      line-height: 1.1;
+      white-space: wrap;
+      font-family: var(--font-decorative-alt-smallcaps);
+      font-family: var(--font-emphasis);
+      color: var(--blades-gold);
+      transition: 0.25s;
+      text-transform: uppercase;
+      text-align: center; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item label.labelled-item-prompt::first-line {
+        font-size: 0.875rem;
+        text-transform: lowercase;
+        font-variant: small-caps;
+        text-shadow: none;
+        text-align: center;
+        color: var(--blades-white); }
+      :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item label.labelled-item-prompt:hover {
+        transform: scale(1.4);
+        color: var(--blades-gold-bright); }
+        :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item label.labelled-item-prompt:hover::first-line {
+          color: var(--blades-gold-bright); }
+  :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item input[type="text"] {
+    font-size: 0.875rem;
+    height: 1.125rem;
+    font-family: var(--font-emphasis);
+    text-transform: uppercase; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item .labelled-item-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item.labelled-vertical {
+    --labelled-item-img-scale: 1.5;
     --labelled-item-name-size: 1rem;
     flex-direction: column; }
-    :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-vertical label {
+    :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item.labelled-vertical > label {
       text-align: center; }
-    :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-vertical .labelled-item-container,
-    :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-vertical .labelled-input-container {
+    :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item.labelled-vertical .labelled-item-container {
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
       min-height: 2.5rem; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-vertical .labelled-item-container > *:not(.dotline) img,
-      :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-vertical .labelled-input-container > *:not(.dotline) img {
+      :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item.labelled-vertical .labelled-item-container > img {
         position: absolute;
-        transform: translate(-50%, -50%) scale(var(--labelled-input-img-scale));
+        transform: translate(-50%, -50%) scaleX(var(--labelled-item-img-scaleX, var(--labelled-item-img-scale))) scaleY(var(--labelled-item-img-scaleY, var(--labelled-item-img-scale)));
         opacity: 0.5;
         filter: blur(0.5px);
         top: 70%;
         left: 50%;
         height: 100%;
         z-index: -1; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-vertical .labelled-item-container .item-name,
-      :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-vertical .labelled-input-container .item-name {
+      :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item.labelled-vertical .labelled-item-container .item-name, :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name {
         text-align: center;
         white-space: nowrap;
         font-family: var(--font-emphasis);
@@ -3048,31 +3234,33 @@ template {
         left: 50%;
         color: var(--blades-white-bright);
         text-transform: uppercase; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-vertical .labelled-item-container .item-name.long-name,
-        :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-vertical .labelled-input-container .item-name.long-name {
+        :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item.labelled-vertical .labelled-item-container .item-name.long-name, :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name.long-name {
           white-space: initial; }
-  :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-horizontal {
+  :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item.labelled-horizontal {
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: stretch;
     align-items: center; }
-    :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-horizontal .labelled-item-container,
-    :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-horizontal .labelled-input-container {
-      display: inherit; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-horizontal .labelled-item-container .dotline,
-      :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-horizontal .labelled-input-container .dotline {
-        padding-left: var(--dotline-dot-size); }
-  :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input input[type="text"] {
-    font-size: 0.875rem;
-    height: 1.125rem;
-    font-family: var(--font-emphasis);
-    text-transform: uppercase; }
-  :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input.labelled-item .labelled-item-container > div {
-    margin: 0; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item.labelled-horizontal label {
+      text-align: right; }
 
-:root body.vtt.game.system-eunos-blades .app.window-app .shadow-input, :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app .labelled-input input[type="text"] {
+:root body.vtt.game.system-eunos-blades .app.window-app .shadowed, :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item label, :root body.vtt.game.system-eunos-blades .app.window-app .labelled-item input[type="text"] {
   box-shadow: none;
   background: transparent;
   text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
+
+:root body.vtt.game.system-eunos-blades .app.window-app .text-checkbox {
+  position: relative;
+  display: inline-block; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .text-checkbox input[type="checkbox"] {
+    opacity: 0;
+    height: 100%;
+    width: 100%;
+    margin-right: -100%;
+    display: inline-block; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .text-checkbox span {
+    display: inline-block; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .text-checkbox input[type="checkbox"]:checked + span {
+    color: var(--active-text-color, var(--blades-gold-bright)); }
 
 :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-edit {
   display: block;
@@ -3364,47 +3552,71 @@ template {
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .label-stripe-gray th > *:not(:hover) {
         color: var(--blades-white-bright);
         text-shadow: 1px 1px 0px var(--blades-black-dark); }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input {
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item {
       display: flex;
       flex-wrap: nowrap;
-      position: relative; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input label {
+      position: relative;
+      justify-content: center;
+      align-items: center; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item label {
         color: var(--blades-white-bright);
         font-size: 0.75rem;
         line-height: 0.75rem;
         position: relative;
-        z-index: 1; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-vertical, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-vertical, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-vertical {
-        --labelled-input-img-scale: 1.5;
+        z-index: 1;
+        flex-grow: 0.5; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item label.labelled-item-prompt, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item label.labelled-item-prompt, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item label.labelled-item-prompt {
+          font-size: 1rem;
+          line-height: 1.1;
+          white-space: wrap;
+          font-family: var(--font-decorative-alt-smallcaps);
+          font-family: var(--font-emphasis);
+          color: var(--blades-gold);
+          transition: 0.25s;
+          text-transform: uppercase;
+          text-align: center; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item label.labelled-item-prompt::first-line, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item label.labelled-item-prompt::first-line, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item label.labelled-item-prompt::first-line {
+            font-size: 0.875rem;
+            text-transform: lowercase;
+            font-variant: small-caps;
+            text-shadow: none;
+            text-align: center;
+            color: var(--blades-white); }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item label.labelled-item-prompt:hover, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item label.labelled-item-prompt:hover, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item label.labelled-item-prompt:hover {
+            transform: scale(1.4);
+            color: var(--blades-gold-bright); }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item label.labelled-item-prompt:hover::first-line, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item label.labelled-item-prompt:hover::first-line, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item label.labelled-item-prompt:hover::first-line {
+              color: var(--blades-gold-bright); }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item input[type="text"] {
+        font-size: 0.875rem;
+        height: 1.125rem;
+        font-family: var(--font-emphasis);
+        text-transform: uppercase; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item .labelled-item-container, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item .labelled-item-container, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item .labelled-item-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item.labelled-vertical, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item.labelled-vertical, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item.labelled-vertical {
+        --labelled-item-img-scale: 1.5;
         --labelled-item-name-size: 1rem;
         flex-direction: column; }
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-vertical label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-vertical label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-vertical label {
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item.labelled-vertical > label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item.labelled-vertical > label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item.labelled-vertical > label {
           text-align: center; }
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-vertical .labelled-item-container,
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-vertical .labelled-input-container, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-item-container,
-        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-input-container, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-item-container,
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-input-container {
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container {
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: center;
           min-height: 2.5rem; }
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-vertical .labelled-item-container > *:not(.dotline) img,
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-vertical .labelled-input-container > *:not(.dotline) img, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-item-container > *:not(.dotline) img,
-          :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-input-container > *:not(.dotline) img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-item-container > *:not(.dotline) img,
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-input-container > *:not(.dotline) img {
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container > img, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container > img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container > img {
             position: absolute;
-            transform: translate(-50%, -50%) scale(var(--labelled-input-img-scale));
+            transform: translate(-50%, -50%) scaleX(var(--labelled-item-img-scaleX, var(--labelled-item-img-scale))) scaleY(var(--labelled-item-img-scaleY, var(--labelled-item-img-scale)));
             opacity: 0.5;
             filter: blur(0.5px);
             top: 70%;
             left: 50%;
             height: 100%;
             z-index: -1; }
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-vertical .labelled-item-container .item-name,
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-vertical .labelled-input-container .item-name, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-item-container .item-name,
-          :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-input-container .item-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-item-container .item-name,
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-input-container .item-name {
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container .item-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container .item-name, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container .item-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name {
             text-align: center;
             white-space: nowrap;
             font-family: var(--font-emphasis);
@@ -3416,36 +3628,31 @@ template {
             left: 50%;
             color: var(--blades-white-bright);
             text-transform: uppercase; }
-            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-vertical .labelled-item-container .item-name.long-name,
-            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-vertical .labelled-input-container .item-name.long-name, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-item-container .item-name.long-name,
-            :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-input-container .item-name.long-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-item-container .item-name.long-name,
-            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-vertical .labelled-input-container .item-name.long-name {
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container .item-name.long-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name.long-name, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container .item-name.long-name, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name.long-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container .item-name.long-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name.long-name {
               white-space: initial; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-horizontal, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-horizontal, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-horizontal {
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item.labelled-horizontal, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item.labelled-horizontal, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item.labelled-horizontal {
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: stretch;
         align-items: center; }
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-horizontal .labelled-item-container,
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-horizontal .labelled-input-container, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-horizontal .labelled-item-container,
-        :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-horizontal .labelled-input-container, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-horizontal .labelled-item-container,
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-horizontal .labelled-input-container {
-          display: inherit; }
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-horizontal .labelled-item-container .dotline,
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-horizontal .labelled-input-container .dotline, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-horizontal .labelled-item-container .dotline,
-          :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-horizontal .labelled-input-container .dotline, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-horizontal .labelled-item-container .dotline,
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-horizontal .labelled-input-container .dotline {
-            padding-left: var(--dotline-dot-size); }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input input[type="text"] {
-        font-size: 0.875rem;
-        height: 1.125rem;
-        font-family: var(--font-emphasis);
-        text-transform: uppercase; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input.labelled-item .labelled-item-container > div, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input.labelled-item .labelled-item-container > div, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input.labelled-item .labelled-item-container > div {
-        margin: 0; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .shadow-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-input input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .shadow-input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-input input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .shadow-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-input input[type="text"] {
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item.labelled-horizontal label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item.labelled-horizontal label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item.labelled-horizontal label {
+          text-align: right; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .shadowed, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .labelled-item input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .shadowed, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .labelled-item input[type="text"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .shadowed, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .labelled-item input[type="text"] {
       box-shadow: none;
       background: transparent;
       text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .text-checkbox, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .text-checkbox, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .text-checkbox {
+      position: relative;
+      display: inline-block; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .text-checkbox input[type="checkbox"], :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .text-checkbox input[type="checkbox"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .text-checkbox input[type="checkbox"] {
+        opacity: 0;
+        height: 100%;
+        width: 100%;
+        margin-right: -100%;
+        display: inline-block; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .text-checkbox span, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .text-checkbox span, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .text-checkbox span {
+        display: inline-block; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .text-checkbox input[type="checkbox"]:checked + span, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .text-checkbox input[type="checkbox"]:checked + span, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .text-checkbox input[type="checkbox"]:checked + span {
+        color: var(--active-text-color, var(--blades-gold-bright)); }
 
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .char-img, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content form.editable .char-img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content form.editable .char-img {
   position: absolute;
@@ -3463,7 +3670,8 @@ template {
   filter: saturate(0%) blur(3px);
   opacity: 0.5;
   transform: scaleX(-1);
-  mask-image: linear-gradient(to bottom, black, transparent); }
+  mask-image: linear-gradient(to bottom, black, transparent);
+  pointer-events: none; }
 
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content section, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content section, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content section {
   position: relative;
@@ -3475,8 +3683,9 @@ template {
   left: calc(-1 * var(--content-padding));
   grid-auto-columns: 1fr;
   grid-auto-rows: auto;
+  place-items: center stretch;
   pointer-events: none; }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content section.char-top input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content section.char-top a, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content section.char-top input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content section.char-top a, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content section.char-top input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content section.char-top a {
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content section.char-top input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content section.char-top a, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content section.char-top .item-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content section.char-top .sub-actor-name, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content section.char-top input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content section.char-top a, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content section.char-top .item-name, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content section.char-top .sub-actor-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content section.char-top input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content section.char-top a, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content section.char-top .item-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content section.char-top .sub-actor-name {
     pointer-events: auto; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content section.char-top > *, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content section.char-top > *, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content section.char-top > * {
     z-index: 2; }
@@ -3493,7 +3702,7 @@ template {
     height: var(--top-title-height);
     margin-top: calc(-1 * var(--content-padding));
     position: relative;
-    top: calc(-1 * (var(--top-title-font-size) / 4)); }
+    top: calc(-1 * (var(--top-title-font-size) / 6)); }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content section.char-top .top-subtitle, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades .window-content section.char-top .top-subtitle, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades .window-content section.char-top .top-subtitle {
     --top-subtitle-font-size: 1.5rem;
     --top-subtitle-height-mult: 1.8;
@@ -4156,11 +4365,11 @@ template {
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-full-name, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-full-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-full-name {
       --top-subtitle-font-size: 2rem; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-class, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-class, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-class {
-      --labelled-input-img-scale: 2;
+      --labelled-item-img-scaleX: -2;
+      --labelled-item-img-scaleY: 2;
       --labelled-item-name-size: 2.625rem;
       grid-area: class;
-      position: absolute;
-      right: 0.3125rem; }
+      position: absolute; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-class img, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-class img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-class img {
         height: 12.5rem;
         top: -3.125rem;
@@ -4168,18 +4377,6 @@ template {
         left: unset;
         transform: scaleX(-1);
         filter: blur(2px); }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-class .labelled-item-container .item-name, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-class .labelled-item-container .item-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-class .labelled-item-container .item-name {
-        transform: none;
-        top: 0%;
-        left: unset;
-        right: 0%;
-        line-height: var(--line-height-compact); }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-class .char-class-tagline, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-class .char-class-tagline, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-class .char-class-tagline {
-        font-family: var(--font-emphasis-alt);
-        font-size: 2.25rem;
-        text-align: right;
-        line-height: var(--line-height-compact);
-        white-space: nowrap; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-heritage {
       grid-area: heritage; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-background, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-background, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-background {
@@ -4191,14 +4388,11 @@ template {
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-coins, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-coins, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-coins {
       grid-area: coins; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-coins .dotline, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-coins .dotline, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-coins .dotline {
-        --dotline-dot-size: 1.125rem;
-        justify-content: center;
-        margin-top: 0.1875rem; }
+        --dotline-dot-size: 1.125rem; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-coins .dotline .dot:nth-of-type(4n+1):not(.zero-dot) + .dot, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-coins .dotline .dot:nth-of-type(4n+1):not(.zero-dot) + .dot, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-coins .dotline .dot:nth-of-type(4n+1):not(.zero-dot) + .dot {
           margin-left: 0.3125rem; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-stash, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-stash, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-stash {
       grid-area: stash;
-      justify-content: center;
       padding: 5px 0;
       --dotline-dot-spacing: 3px; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-stash label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-stash label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-stash label {
@@ -4206,16 +4400,47 @@ template {
         font-size: 0.875rem;
         text-transform: uppercase; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.char-top .char-stash .dotline .dot:nth-of-type(10n + 1):not(.zero-dot), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.char-top .char-stash .dotline .dot:nth-of-type(10n + 1):not(.zero-dot), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.char-top .char-stash .dotline .dot:nth-of-type(10n + 1):not(.zero-dot) {
-        margin-right: 10px;
-        transform: scaleX(1.3) scaleY(1.2);
-        margin-left: 3px;
-        filter: saturate(0.75) brightness(1.5); }
-  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.big-teeth-section, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.big-teeth-section, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.big-teeth-section {
-    border-color: var(--blades-white);
-    max-height: 60px;
-    margin-top: 0px; }
-    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.big-teeth-section .trauma-list label .checkmark, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.big-teeth-section .trauma-list label .checkmark, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.big-teeth-section .trauma-list label .checkmark {
-      font-size: 16px; }
+        margin-right: 10px; }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.stress-trauma, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.stress-trauma, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.stress-trauma {
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    border-top: 2px solid var(--blades-white); }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.stress-trauma .dotline-label, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.stress-trauma .dotline-label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.stress-trauma .dotline-label {
+      font-size: 1.25rem;
+      line-height: 1;
+      padding: 0.3125rem;
+      background: var(--blades-white);
+      color: var(--blades-black);
+      font-family: var(--font-emphasis);
+      text-transform: uppercase;
+      position: relative;
+      z-index: 4;
+      margin-right: 0.3125rem; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.stress-trauma .stress-teeth, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.stress-trauma .stress-teeth, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.stress-trauma .stress-teeth {
+      flex-grow: 1;
+      justify-content: flex-start;
+      align-items: flex-start; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.stress-trauma .stress-teeth .dotline, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.stress-trauma .stress-teeth .dotline, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.stress-trauma .stress-teeth .dotline {
+        --dotline-dot-sizeY: 3rem;
+        --dotline-dot-sizeX: auto;
+        --dotline-dot-spacing: 0.25rem; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.stress-trauma .trauma-teeth, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.stress-trauma .trauma-teeth, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.stress-trauma .trauma-teeth {
+      justify-content: flex-start;
+      align-items: flex-end; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.stress-trauma .trauma-teeth .dotline, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.stress-trauma .trauma-teeth .dotline, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.stress-trauma .trauma-teeth .dotline {
+        flex-grow: 1;
+        justify-content: center;
+        margin-top: -0.625rem;
+        --dotline-dot-sizeY: 2rem;
+        --dotline-dot-sizeX: auto;
+        --dotline-dot-spacing: 0.25rem; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.stress-trauma .trauma-conditions, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.stress-trauma .trauma-conditions, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.stress-trauma .trauma-conditions {
+      --active-text-color: var(--blades-red);
+      font-family: var(--font-emphasis);
+      color: var(--blades-white-bright);
+      text-transform: uppercase; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.harm-armor .character-harm table tr, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.harm-armor .character-harm table tr, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.harm-armor .character-harm table tr {
     background-color: rgba(255, 255, 255, 0.05); }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.harm-armor .character-harm table tr:nth-child(2), :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.pc section.harm-armor .character-harm table tr:nth-child(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.pc section.harm-armor .character-harm table tr:nth-child(2) {
@@ -4311,7 +4536,7 @@ template {
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc section.char-top .char-traits input, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc section.char-top .char-traits input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc section.char-top .char-traits input {
       text-transform: uppercase;
       text-align: center;
-      color: gold; }
+      color: var(--blades-gold); }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc section.char-top .char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc section.char-top .char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc section.char-top .char-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc section.char-top .char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc section.char-top .char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc section.char-top .char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc section.char-top .char-district, :root body.vtt.game.system-eunos-blades .app.window-app.eunos-blades.actor.npc section.char-top .char-arena, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc section.char-top .char-heritage, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc section.char-top .char-faction, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc section.char-top .char-district, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.eunos-blades.actor.npc section.char-top .char-arena {
     text-align: center;
     background: linear-gradient(to top, var(--blades-black) 25%, transparent) !important;
