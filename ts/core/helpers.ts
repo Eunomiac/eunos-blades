@@ -2,6 +2,7 @@ import U from "./utilities.js";
 import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 import type BladesActor from "../blades-actor.js";
 import type BladesItem from "../blades-item.js";
+import {HbsSvgData, SVGDATA} from "./constants.js";
 
 /**
  * Define a set of template paths to pre-load
@@ -124,6 +125,19 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 		args.pop();
 		return !Object.values(args).flat().join("");
 	},
+	"compileSvg": function(...args): string {
+		const [svgDotKey, svgPaths]: [string, string] = args as [string, string];
+		const svgData = getProperty(SVGDATA, svgDotKey) as HbsSvgData|undefined;
+		if (!svgData) { return "" }
+		const {viewBox, paths} = svgData;
+		return [
+			`<svg viewBox="${viewBox}">`,
+			...svgPaths
+				.split("|")
+				.map((path) => `<path class="${path}" d="${paths[path] ?? ""}" />`),
+			"</svg>"
+		].join("\n");
+	},
 	"eLog": function(...args) {
 		args.pop();
 		let dbLevel = 5;
@@ -196,14 +210,6 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 		});
 
 		return html;
-	},
-	// Trauma Counter
-	"traumacounter": function(selected, options) {
-		const html = options.fn(this);
-		eLog.log("TraumaCounter", selected);
-		eLog.log("TraumaCounter Filtered", Object.values(selected).filter((val) => val === true));
-		const count = U.clampNum(Object.values(selected).filter((val) => val === true).length, [0, 4]);
-		return html.replace(new RegExp(' value=\"' + count + '\"'), "$& checked=\"checked\"");
 	},
 	// NotEquals handlebar.
 	"noteq": (a, b, options) => (a !== b ? options.fn(this) : ""),

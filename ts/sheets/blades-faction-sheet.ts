@@ -9,7 +9,7 @@ class BladesFactionSheet extends BladesSheet {
 			template: "systems/eunos-blades/templates/faction-sheet.hbs",
 			width: 900,
 			height: "auto",
-			tabs: [{navSelector: ".tabs", contentSelector: ".tab-content"}]
+			tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content"}]
 		}) as ActorSheet.Options;
 	}
 

@@ -39,12 +39,15 @@ class BladesSheet extends ActorSheet {
 		}
 	}
 
-	_filterTraumaConditions(actorData: object & {data: {crew?: string|BladesActor, trauma?: {list: Record<string, boolean|null>}}}) {
+	_filterTraumaConditions(actorData: object & {data: {crew?: string|BladesActor, trauma?: {value: number, list: Record<string, boolean|null>}}}) {
 		if (!actorData.data.trauma?.list) { return }
 		actorData.data.trauma.list = U.objFilter(
 			actorData.data.trauma.list,
 			(val: unknown): val is true|false => val === true || val === false
 		);
+		actorData.data.trauma.value = Object.values(actorData.data.trauma.list)
+			.filter((val) => val === true)
+			.length;
 	}
 
 	override activateListeners(html: JQuery<HTMLElement>) {
@@ -62,12 +65,23 @@ class BladesSheet extends ActorSheet {
 
 		// Add dotline functionality
 		html.find(".dotline").each((i, elem) => {
+
+			if ($(elem).hasClass("locked")) { return }
+
 			const target = $(elem).data("target");
+
 			const curValue = U.pInt($(elem).data("value"));
 			$(elem).find(".dot").each((j, dot) => {
 				$(dot).on("click", (event: ClickEvent) => {
 					event.preventDefault();
 					const thisValue = U.pInt($(dot).data("value"));
+					if (thisValue !== curValue) {
+						this.actor.update({[target]: thisValue});
+					}
+				});
+				$(dot).on("contextmenu", (event: ContextMenuEvent) => {
+					event.preventDefault();
+					const thisValue = U.pInt($(dot).data("value")) - 1;
 					if (thisValue !== curValue) {
 						this.actor.update({[target]: thisValue});
 					}
@@ -105,6 +119,12 @@ class BladesSheet extends ActorSheet {
 		if (actorID) {
 			game.actors.get(actorID)?.sheet?.render(true);
 		}
+	}
+
+	async _onSubActorAddClick(event: ClickEvent) {
+		event.preventDefault();
+
+		// const
 	}
 
 	async _onItemAddClick(event: ClickEvent) {

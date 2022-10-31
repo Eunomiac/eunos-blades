@@ -10,13 +10,17 @@
 			"full_name": "",
 			"crew": "",
 			"acquaintances": {
-				"name": "BITD.Acquaintances",
+				"name": "Acquaintances",
 				"list": {},
 				"vice_purveyor": ""
 			},
 			"notes": "",
 			"gm_notes": "",
-			"stress": { "value": 0, "max": 9, "name": "BITD.Stress" },
+			"vice": {
+				"name": "Vice",
+				"override": ""
+			},
+			"stress": { "value": 0, "max": 9, "name": "Stress" },
 			"trauma": {
 				"value": 0,
 				"max": 4,
@@ -28,9 +32,22 @@
 					"Reckless": false,
 					"Soft": false,
 					"Unstable": false,
-					"Vicious": false
+					"Vicious": false,
+					"Chaotic": null,
+					"Destructive": null,
+					"Furious": null,
+					"Obsessive": null,
+					"Territorial": null,
+					"Savage": null,
+					"Ruthless": null,
+					"Secretive": null,
+					"Clanking": null,
+					"Leaking": null,
+					"Fixated": null,
+					"Smoking": null,
+					"Sparking": null
 				},
-				"name": "BITD.Trauma"
+				"name": "Trauma"
 			},
 			"healing": { "value": 0, "max": 4 },
 			"experience": {
@@ -58,23 +75,23 @@
 			},
 			"harm": {
 				"light": {
-					"1": "",
-					"2": ""
+					"one": "",
+					"two": ""
 				},
 				"medium": {
-					"1": "",
-					"2": ""
+					"one": "",
+					"two": ""
 				},
 				"heavy": {
-					"1": ""
+					"one": ""
 				}
 			},
 			"armor": {
 				"numBasicBoxes": 0,
 				"numSpecialBoxes": 0,
 				"checked": {
-					"1": false,
-					"2": false,
+					"light": false,
+					"heavy": false,
 					"special": false
 				}
 			},

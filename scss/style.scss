@@ -1,32 +1,25 @@
 @import './core/normalize.scss';
 
-// Colors
-// $red: rgb(255, 0, 0);
-$almost_black: rgb(25, 24, 19);
-// var(--blades-white): #EEEFFF;
-$gold: rgb(218, 165, 32);
-// var(--blades-white-bright): #008000;
-$light_green: rgb(18, 160, 18);
-// var(--blades-grey-bright): #04578f;
-
 // Utility imports
 @import './core/functions';
 @import './core/mixins';
 @import './fonts.scss';
 
-
 :root {
 	scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
 	scrollbar-width: thin;
 }
+
 ::-webkit-scrollbar {
 	width: var(--blades-spacer-sm);
 }
+
 ::-webkit-scrollbar-track {
 	box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
 	border: none;
 	border-radius: 0;
 }
+
 ::-webkit-scrollbar-thumb {
 	background-color: rgba(var(--color-background-light), 1);
 	border: none;
@@ -35,15 +28,12 @@ $light_green: rgb(18, 160, 18);
 }
 
 :root {
-
-
-
 	* {
 		@import './core/vars';
-		@import './core/globals';
+		@import './core/components';
 	}
 
- body.vtt.game.system-eunos-blades {
+	body.vtt.game.system-eunos-blades {
 
 		#clocks-overlay {
 			margin-top: toRem(4px);
@@ -51,85 +41,101 @@ $light_green: rgb(18, 160, 18);
 			@import './components/clocks-overlay';
 		}
 
-    #interface,
+		#interface,
 		#controls,
 		#navigation,
 		#hotbar,
 		#players {
 			@import "./core/reset";
-            &, * {
-                --font-primary: "Fjalla One";
-                --font-heading: "Fjalla One";
-                --font-weight-heading: normal;
-                --text-shadow-heading: none;
-                --line-height-heading: 1.2;
-            }
-            h1, h2, h3, h4 {
-                margin: 0;
-                border: 0;
-            }
+
+			&,
+			* {
+				--font-primary: "Fjalla One";
+				--font-heading: "Fjalla One";
+				--font-weight-heading: normal;
+				--text-shadow-heading: none;
+				--line-height-heading: 1.2;
+			}
+
+			h1,
+			h2,
+			h3,
+			h4 {
+				margin: 0;
+				border: 0;
+			}
 
 			.control-tools .scene-control:hover {
 				height: calc(var(--blades-spacer-button-lg) - 2px);
 				width: calc(var(--blades-spacer-button-lg) - 2px);
 			}
 
-            #chat {
-			     @import "./core/reset";
+			#chat {
+				@import "./core/reset";
 
-                &, * {
-                    --font-primary: "Minion Pro";
-                    --font-heading: "Kirsty";
-                    --font-weight-heading: normal;
-                    --text-shadow-heading: none;
-                    --line-height-heading: 1.2;
-                }
-			     @import './chat/chat';
-		  }
+				&,
+				* {
+					--font-primary: "Minion Pro";
+					--font-heading: "Kirsty";
+					--font-weight-heading: normal;
+					--text-shadow-heading: none;
+					--line-height-heading: 1.2;
+				}
+
+				@import './chat/chat';
+			}
 
 		}
 
-    #controls,
-    #navigation,
-    #hotbar,
-    #players {
-            opacity: 0.5;
+		#controls,
+		#navigation,
+		#hotbar,
+		#players {
+			opacity: 0.5;
 			transition: 0.25s;
-			&:hover { opacity: 1 }
-     }
+
+			&:hover {
+				opacity: 1
+			}
+		}
 
 
 
 		.app.window-app {
 			@import "./core/reset";
-			@import './core/text-styles';
+			@import './core/globals';
 
 			.editor:not(.tinymce) {
+
 				.editor-edit {
 					display: block;
 					opacity: 0.25;
 
-					&:hover { opacity: 1 }
+					&:hover {
+						opacity: 1
+					}
 				}
 				.editor-content {
 					@import './tinymce/tinymce-content';
 				}
+
 			}
 
-			&.sheet,
+			&.sheet/* ,
 			&.eunos-blades,
-			&.sheet.eunos-blades {
+			&.sheet.eunos-blades */ {
 
-				@import 'import/general-styles';
 				@import './sheets/sheets';
 
 				&.actor {
 					&.pc {
-						@import 'import/character-sheet';
+						// @import 'import/character-sheet';
 						@import './sheets/pc-sheet';
 					}
 
-					&.npc { @import './sheets/npc-sheet' }
+					&.npc {
+						@import './sheets/npc-sheet'
+					}
 
 					&.crew {
 						@import 'import/crew-sheet';
@@ -138,13 +144,19 @@ $light_green: rgb(18, 160, 18);
 				}
 
 				&.item {
-					@import 'import/item-sheet';
 
-					&.clock-keeper { @import './sheets/clock-keeper-sheet' }
-					&.crew_type { @import './sheets/crew-type-sheet' }
+					&.clock-keeper {
+						@import './sheets/clock-keeper-sheet'
+					}
+
+					&.crew_type {
+						@import './sheets/crew-type-sheet'
+					}
 				}
 
-				&.dialog { @import './dialog/dialogs' }
+				&.dialog {
+					@import './dialog/dialogs'
+				}
 			}
 		}
 	}

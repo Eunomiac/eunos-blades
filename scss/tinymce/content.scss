@@ -2,10 +2,10 @@
 
 html,:root {
 	@import "../core/vars";
-	@import "../core/globals";
+	@import "../core/components";
 	@import "../core/functions";
 	@import "../core/reset";
-	@import "../core/text-styles";
+	@import "../core/globals";
 
 	scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
 	scrollbar-width: thin;

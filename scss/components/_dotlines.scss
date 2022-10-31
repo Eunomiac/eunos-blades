@@ -18,11 +18,12 @@
 
 	&.centered {
 		justify-content: center;
-		.dot.zero-dot {
-			left: calc(-1 * var(--dotline-zero-dot-size));
-			+ .dot {
-				left: 0px;
-			}
+	}
+
+	&.locked {
+		.dot {
+			pointer-events: none;
+			cursor: pointer;
 		}
 	}
 
@@ -33,18 +34,14 @@
 		flex-shrink: 0;
 		margin: 0 var(--dotline-dot-spacing) 0 0;
 		pointer-events: auto;
+		cursor: grab;
 		position: relative;
 
-		&.zero-dot {
-			position: absolute;
-			left: calc(-1 * var(--dotline-zero-dot-size));
-			height: var(--dotline-zero-dot-size);
-			width: var(--dotline-zero-dot-size);
-
-			+ .dot {
-				// left: calc(var(--dotline-zero-dot-size) + var(--dotline-dot-spacing, 0px));
-			}
+		&:last-of-type {
+			margin: 0;
 		}
+
+
 
 		.img-main, .img-hover {
 			display: block;
@@ -59,16 +56,48 @@
 			.img-main { opacity: 0.5 }
 			.img-hover { display: block }
 			.img-hover + .img-main { display: none }
+			&.svg-dot { opacity: 0.5 }
 		}
 	}
 
 	&.teeth {
+		--frame-color: var(--blades-white);
+		--frame-color-empty: var(--frame-color);
+		--frame-color-full: var(--frame-color);
+
+		--fill-color-empty: transparent;
+		--fill-color-full: var(--frame-color);
+
+		--half-color-empty: var(--frame-color);
+		--half-color-full: var(--frame-color);
+
 		align-items: flex-start;
-		.img-main, .img-hover {
-			filter: none;
-		}
-		.dot:not(.zero-dot) {
-			flex-shrink: 1;
+
+		.dot.svg-dot {
+
+			&.full-dot {
+				--current-frame-color: var(--frame-color-full);
+				--current-fill-color: var(--fill-color-full);
+				--current-half-color: var(--half-color-full);
+			}
+			&.empty-dot {
+				--current-frame-color: var(--frame-color-empty);
+				--current-fill-color: var(--fill-color-empty);
+				--current-half-color: var(--half-color-empty);
+			}
+
+			width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
+			height: auto;
+
+			svg {
+				width: 100%;
+				height: auto;
+				max-height: var(--dotline-dot-sizeY, unset);
+
+				.full { fill: var(--current-fill-color) }
+				.frame { fill: var(--current-frame-color) }
+				.half { fill: var(--current-half-color) }
+			}
 		}
 	}
 }

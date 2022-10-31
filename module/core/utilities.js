@@ -470,26 +470,10 @@ const getUID = (id) => {
     Object.assign(globalThis, { UUIDLOG });
     return uuid;
 };
-const loc = (locRef, formatDict = {}) => {
-    if (/[a-z]/.test(locRef)) {
-        locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}\.)*`), `${C.SYSTEM_ID}.`);
-    }
-    if (typeof game.i18n.localize(locRef) === "string") {
-        for (const [key, val] of Object.entries(formatDict)) {
-            formatDict[key] = loc(val);
-        }
-        return game.i18n.format(locRef, formatDict) || game.i18n.localize(locRef) || locRef;
-    }
-    return locRef;
+const fuzzyMatch = (val1, val2) => {
+    const [str1, str2] = [val1, val2].map((val) => lCase(String(val).replace(/[^a-zA-Z0-9\.+-]/g, "").trim()));
+    return str1.length > 0 && str1 == str2;
 };
-const getSetting = (setting) => game.settings.get(C.SYSTEM_ID, setting);
-function getTemplatePath(subFolder, fileName) {
-    if (typeof fileName === "string") {
-        return `${C.TEMPLATE_ROOT}/${subFolder}/${fileName.replace(/\..*$/, "")}.hbs`;
-    }
-    return fileName.map((fName) => getTemplatePath(subFolder, fName));
-}
-
 const isIn = (needle, haystack = [], fuzziness = 0) => {
     const SearchTests = [
         (ndl, item) => new RegExp(`^${ndl}$`, "gu").test(`${item}`),
@@ -995,7 +979,36 @@ const getSiblings = (elem) => {
 };
 
 const sleep = (duration) => new Promise((resolve) => { setTimeout(resolve, duration >= 100 ? duration : duration * 1000); });
-
+const loc = (locRef, formatDict = {}) => {
+    if (/[a-z]/.test(locRef)) {
+        locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}\.)*`), `${C.SYSTEM_ID}.`);
+    }
+    if (typeof game.i18n.localize(locRef) === "string") {
+        for (const [key, val] of Object.entries(formatDict)) {
+            formatDict[key] = loc(val);
+        }
+        return game.i18n.format(locRef, formatDict) || game.i18n.localize(locRef) || locRef;
+    }
+    return locRef;
+};
+const getSetting = (setting) => game.settings.get(C.SYSTEM_ID, setting);
+function getTemplatePath(subFolder, fileName) {
+    if (typeof fileName === "string") {
+        return `${C.TEMPLATE_ROOT}/${subFolder}/${fileName.replace(/\..*$/, "")}.hbs`;
+    }
+    return fileName.map((fName) => getTemplatePath(subFolder, fName));
+}
+function getItemsOfType(itemType, user) {
+    const items = game.items.filter((item) => fuzzyMatch(item.type, itemType));
+    return items;
+}
+function getActorsOfType(actorType, user) {
+    const actors = game.actors.filter((actor) => fuzzyMatch(actor.type, actorType));
+    return actors;
+}
+function checkUserPermissions(document, user) {
+    return true;
+}
 export default {
     GMID, getUID,
     isNumber, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
@@ -1015,7 +1028,8 @@ export default {
     signNum, padNum, stringifyNum, verbalizeNum, ordinalizeNum, romanizeNum,
     loremIpsum, randString, randWord,
     loc, getSetting, getTemplatePath,
-    isIn, isInExact,
+    getItemsOfType, getActorsOfType, checkUserPermissions,
+    fuzzyMatch, isIn, isInExact,
     randNum, randInt,
     coinFlip,
     cycleNum, cycleAngle, roundNum, clampNum,

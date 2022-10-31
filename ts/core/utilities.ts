@@ -509,41 +509,13 @@ const getUID = (id: string): string => {
 	return uuid;
 };
 // #endregion ░░░░[Content]░░░░
-// #region ░░░░░░░[Localization]░░░░ Simplified Localization Functionality ░░░░░░░ ~
-const loc = (locRef: string, formatDict: Record<string,string> = {}) => {
-	if (/[a-z]/.test(locRef)) { // reference contains lower-case characters: add system ID namespacing to dot notation
-		locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}\.)*`), `${C.SYSTEM_ID}.`);
-	}
-	if (typeof game.i18n.localize(locRef) === "string") {
-		for (const [key, val] of Object.entries(formatDict)) {
-			formatDict[key] = loc(val);
-		}
-		return game.i18n.format(locRef, formatDict) || game.i18n.localize(locRef) || locRef;
-	}
-	return locRef;
-};
-const getSetting = (setting: string) => game.settings.get(C.SYSTEM_ID, setting);
-function getTemplatePath(subFolder: string, fileName: string): string
-function getTemplatePath(subFolder: string, fileName: string[]): string[]
-function getTemplatePath(subFolder: string, fileName: string|string[]) {
-	if (typeof fileName === "string") {
-		return `${C.TEMPLATE_ROOT}/${subFolder}/${fileName.replace(/\..*$/, "")}.hbs`;
-	}
-	return fileName.map((fName) => getTemplatePath(subFolder, fName));
-}
-// #endregion ░░░░[Localization]░░░░
-// const dbLog = (...content: any[]) => {
-// 	if (U.getSetting("debug")) {
-// 		console.log(...content);
-// 	}
-// };
-// const toggleDebug = (isDebugging?: boolean) => {
-// 	isDebugging ??= !U.getSetting("debug") as boolean;
-// 	game.settings.set(C.SYSTEM_ID, "debug", isDebugging);
-// };
 // #endregion ▄▄▄▄▄ STRINGS ▄▄▄▄▄
 
 // #region ████████ SEARCHING: Searching Various Data Types w/ Fuzzy Matching ████████ ~
+const fuzzyMatch = (val1: unknown, val2: unknown): boolean => {
+	const [str1, str2] = [val1, val2].map((val) => lCase(String(val).replace(/[^a-zA-Z0-9\.+-]/g, "").trim()));
+	return str1.length > 0 && str1 == str2; // eslint-disable-line eqeqeq
+};
 const isIn = (needle: unknown, haystack: unknown[] = [], fuzziness = 0) => {
 	// Looks for needle in haystack using fuzzy matching, then returns value as it appears in haystack.
 
@@ -1080,7 +1052,48 @@ const getSiblings = (elem: Node) => {
 const sleep = (duration: number): Promise<void> => new Promise((resolve) => { setTimeout(resolve, duration >= 100 ? duration : duration * 1000) });
 // #endregion ▄▄▄▄▄ ASYNC ▄▄▄▄▄
 
-// #region ████████ EXPORTS ████████
+// #region ████████ FOUNDRY: Requires Configuration of System ID in constants.ts ████████ ~
+
+const loc = (locRef: string, formatDict: Record<string,string> = {}) => {
+	if (/[a-z]/.test(locRef)) { // reference contains lower-case characters: add system ID namespacing to dot notation
+		locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}\.)*`), `${C.SYSTEM_ID}.`);
+	}
+	if (typeof game.i18n.localize(locRef) === "string") {
+		for (const [key, val] of Object.entries(formatDict)) {
+			formatDict[key] = loc(val);
+		}
+		return game.i18n.format(locRef, formatDict) || game.i18n.localize(locRef) || locRef;
+	}
+	return locRef;
+};
+
+const getSetting = (setting: string) => game.settings.get(C.SYSTEM_ID, setting);
+
+function getTemplatePath(subFolder: string, fileName: string): string
+function getTemplatePath(subFolder: string, fileName: string[]): string[]
+function getTemplatePath(subFolder: string, fileName: string|string[]) {
+	if (typeof fileName === "string") {
+		return `${C.TEMPLATE_ROOT}/${subFolder}/${fileName.replace(/\..*$/, "")}.hbs`;
+	}
+	return fileName.map((fName) => getTemplatePath(subFolder, fName));
+}
+
+function getItemsOfType(itemType: string, user?: User): EunoSystem.Item[] {
+	const items = game.items.filter((item) => fuzzyMatch(item.type, itemType));
+	return items;
+}
+
+function getActorsOfType(actorType: string, user?: User): EunoSystem.Actor[] {
+	const actors = game.actors.filter((actor) => fuzzyMatch(actor.type, actorType));
+	// if (user?.permissions)
+	return actors;
+}
+
+function checkUserPermissions(document: EunoSystem.Sheet, user: User) {
+	return true;
+}
+// #endregion ▄▄▄▄▄ FOUNDRY ▄▄▄▄▄
+
 export default {
 	// ████████ GETTERS: Basic Data Lookup & Retrieval ████████
 	GMID, getUID,
@@ -1112,9 +1125,10 @@ export default {
 
 	// ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
 	loc, getSetting, getTemplatePath, // dbLog, toggleDebug,
+	getItemsOfType, getActorsOfType, checkUserPermissions,
 
 	// ████████ SEARCHING: Searching Various Data Types w/ Fuzzy Matching ████████
-	isIn, isInExact,
+	fuzzyMatch, isIn, isInExact,
 
 	// ████████ NUMBERS: Number Casting, Mathematics, Conversion ████████
 	randNum, randInt,

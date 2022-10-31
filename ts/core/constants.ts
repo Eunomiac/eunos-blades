@@ -1,3 +1,19 @@
+import type BladesActor from "../blades-actor.js";
+import type BladesItem from "../blades-item.js";
+import type BladesSheet from "../sheets/blades-sheet";
+import type BladesItemSheet from "../sheets/blades-item-sheet";
+
+declare global {
+	namespace EunoSystem {
+		export type Actor = BladesActor;
+		export type Item = BladesItem;
+		export type ActorSheet = BladesSheet;
+		export type ItemSheet = BladesItemSheet;
+
+		export type Sheet = BladesSheet|BladesItemSheet;
+	}
+}
+
 const C = {
 	SYSTEM_ID: "eunos-blades",
 	SYSTEM_NAME: "Euno's Blades",
@@ -1135,16 +1151,16 @@ const C = {
 		Vampire: "The Immortal Undead"
 	},
 	ClassBgImages: {
-		Cutter: "systems/eunos-blades/assets/icons/class/cutter-transparent.svg",
-		Hound: "systems/eunos-blades/assets/icons/class/hound-transparent.svg",
-		Leech: "systems/eunos-blades/assets/icons/class/leech-transparent.svg",
-		Lurk: "systems/eunos-blades/assets/icons/class/lurk-transparent.svg",
-		Slide: "systems/eunos-blades/assets/icons/class/slide-transparent.svg",
-		Spider: "systems/eunos-blades/assets/icons/class/spider-transparent.svg",
-		Whisper: "systems/eunos-blades/assets/icons/class/whisper-transparent.svg",
-		Ghost: "systems/eunos-blades/assets/icons/class/ghost-transparent.svg",
-		Hull: "systems/eunos-blades/assets/icons/class/hull-transparent.svg",
-		Vampire: "systems/eunos-blades/assets/icons/class/vampire-transparent.svg"
+		Cutter: "systems/eunos-blades/assets/icons/cutter-trans.svg",
+		Hound: "systems/eunos-blades/assets/icons/hound-trans.svg",
+		Leech: "systems/eunos-blades/assets/icons/leech-trans.svg",
+		Lurk: "systems/eunos-blades/assets/icons/lurk-trans.svg",
+		Slide: "systems/eunos-blades/assets/icons/slide-trans.svg",
+		Spider: "systems/eunos-blades/assets/icons/spider-trans.svg",
+		Whisper: "systems/eunos-blades/assets/icons/whisper-trans.svg",
+		Ghost: "systems/eunos-blades/assets/icons/ghost-trans.svg",
+		Hull: "systems/eunos-blades/assets/icons/hull-trans.svg",
+		Vampire: "systems/eunos-blades/assets/icons/vampire-trans.svg"
 	},
 	ClockSizes: [1, 2, 3, 4, 5, 6, 8, 10, 12],
 	ActorDefaults: {
@@ -3515,6 +3531,12 @@ export const IMPORTDATA = {
 		}
 	]
 };
+
+export type HbsSvgData = {
+	viewBox: string,
+	paths: Record<string, string>
+};
+
 export const SVGDATA = {
 	overlayScale: 0.25,
 	keys: {
@@ -3605,6 +3627,30 @@ export const SVGDATA = {
 		glows: {
 
 
+		}
+	},
+	teeth: { // will need to provide SIZE (tall/med/short) and boolean if meaning to use half-empty instead of fully empty
+		"tall": {
+			viewBox: "0 0 512 1540",
+			paths: {
+				frame: "M0,0v1540l512-244.2V0H0z M472,1270.2l-432,206V41h432V1270.2z",
+				half: "M0,0v748l512-244.2V0H0z",
+				full: "M0,0v1540l512-244.2V0H0z"
+			}
+		},
+		"med": {
+			viewBox: "0 0 512 1540",
+			paths: {
+				frame: "M0,0v1388l512-395.6V0H0z M458,965.7L54,1278V53h404V965.7z",
+				full: "M0,0v1540l512-244.2V0H0z"
+			}
+		},
+		"short": {
+			viewBox: "0 0 512 1540",
+			paths: {
+				frame: "M0,0v991l511.4-247L512,0H0z M470.5,715.2L41,922.6V40h430L470.5,715.2z",
+				full: "M0,0v991l511.4-247L512,0H0z"
+			}
 		}
 	}
 };

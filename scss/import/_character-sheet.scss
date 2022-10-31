@@ -89,7 +89,7 @@
   }
 
   //Abilitiers and loadout
-  .abilities, .loadout {
+  .navigation-tabs, .loadout {
     .item-name {
       width: 100px;
     }
@@ -102,7 +102,7 @@
   }
 
   // Abilities
-  .abilities {
+  .navigation-tabs {
     .label-stripe {
       p:first-child {
         margin-right: 10px;
@@ -250,7 +250,7 @@
     margin-bottom: 10px;
   }
 
-  @import "coins";
+  // @import "coins";
 
 
 

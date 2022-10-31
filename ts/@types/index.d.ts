@@ -42,6 +42,7 @@ declare global {
 
 
 	type ClickEvent = JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
+	type ContextMenuEvent = JQuery.ContextMenuEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
 
 	// declare function $clamp(element: HTMLElement, options: Record<string,any>): {
 	// 	original: string,

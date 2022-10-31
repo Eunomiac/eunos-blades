@@ -6,6 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./utilities.js";
+import { SVGDATA } from "./constants.js";
 export async function preloadHandlebarsTemplates() {
     const templatePaths = [
         "systems/eunos-blades/templates/parts/toggle-icon.hbs",
@@ -145,6 +146,21 @@ const handlebarHelpers = {
         args.pop();
         return !Object.values(args).flat().join("");
     },
+    "compileSvg": function (...args) {
+        const [svgDotKey, svgPaths] = args;
+        const svgData = getProperty(SVGDATA, svgDotKey);
+        if (!svgData) {
+            return "";
+        }
+        const { viewBox, paths } = svgData;
+        return [
+            `<svg viewBox="${viewBox}">`,
+            ...svgPaths
+                .split("|")
+                .map((path) => `<path class="${path}" d="${paths[path] ?? ""}" />`),
+            "</svg>"
+        ].join("\n");
+    },
     "eLog": function (...args) {
         args.pop();
         let dbLevel = 5;
@@ -215,13 +231,6 @@ const handlebarHelpers = {
             }
         });
         return html;
-    },
-    "traumacounter": function (selected, options) {
-        const html = options.fn(this);
-        eLog.log("TraumaCounter", selected);
-        eLog.log("TraumaCounter Filtered", Object.values(selected).filter((val) => val === true));
-        const count = U.clampNum(Object.values(selected).filter((val) => val === true).length, [0, 4]);
-        return html.replace(new RegExp(' value=\"' + count + '\"'), "$& checked=\"checked\"");
     },
     "noteq": (a, b, options) => (a !== b ? options.fn(this) : ""),
     "repturf": (turfs_amount, options) => {

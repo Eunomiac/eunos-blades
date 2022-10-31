@@ -8,7 +8,7 @@ class BladesCrewSheet extends BladesSheet {
 			template: "systems/eunos-blades/templates/crew-sheet.hbs",
 			width: 940,
 			height: 1020,
-			tabs: [{navSelector: ".tabs", contentSelector: ".tab-content", initial: "turfs"}]
+			tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "turfs"}]
 		});
 	}
 

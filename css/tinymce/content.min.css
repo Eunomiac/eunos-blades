@@ -283,10 +283,9 @@ html, :root {
     position: relative; }
     html .dotline.centered, :root .dotline.centered {
       justify-content: center; }
-      html .dotline.centered .dot.zero-dot, :root .dotline.centered .dot.zero-dot {
-        left: calc(-1 * var(--dotline-zero-dot-size)); }
-        html .dotline.centered .dot.zero-dot + .dot, :root .dotline.centered .dot.zero-dot + .dot {
-          left: 0px; }
+    html .dotline.locked .dot, :root .dotline.locked .dot {
+      pointer-events: none;
+      cursor: pointer; }
     html .dotline .dot, :root .dotline .dot {
       height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
       width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
@@ -294,12 +293,10 @@ html, :root {
       flex-shrink: 0;
       margin: 0 var(--dotline-dot-spacing) 0 0;
       pointer-events: auto;
+      cursor: grab;
       position: relative; }
-      html .dotline .dot.zero-dot, :root .dotline .dot.zero-dot {
-        position: absolute;
-        left: calc(-1 * var(--dotline-zero-dot-size));
-        height: var(--dotline-zero-dot-size);
-        width: var(--dotline-zero-dot-size); }
+      html .dotline .dot:last-of-type, :root .dotline .dot:last-of-type {
+        margin: 0; }
       html .dotline .dot .img-main, html .dotline .dot .img-hover, :root .dotline .dot .img-main, :root .dotline .dot .img-hover {
         display: block;
         height: 100%;
@@ -313,12 +310,38 @@ html, :root {
         display: block; }
       html .dotline .dot:hover .img-hover + .img-main, :root .dotline .dot:hover .img-hover + .img-main {
         display: none; }
+      html .dotline .dot:hover.svg-dot, :root .dotline .dot:hover.svg-dot {
+        opacity: 0.5; }
     html .dotline.teeth, :root .dotline.teeth {
+      --frame-color: var(--blades-white);
+      --frame-color-empty: var(--frame-color);
+      --frame-color-full: var(--frame-color);
+      --fill-color-empty: transparent;
+      --fill-color-full: var(--frame-color);
+      --half-color-empty: var(--frame-color);
+      --half-color-full: var(--frame-color);
       align-items: flex-start; }
-      html .dotline.teeth .img-main, html .dotline.teeth .img-hover, :root .dotline.teeth .img-main, :root .dotline.teeth .img-hover {
-        filter: none; }
-      html .dotline.teeth .dot:not(.zero-dot), :root .dotline.teeth .dot:not(.zero-dot) {
-        flex-shrink: 1; }
+      html .dotline.teeth .dot.svg-dot, :root .dotline.teeth .dot.svg-dot {
+        width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
+        height: auto; }
+        html .dotline.teeth .dot.svg-dot.full-dot, :root .dotline.teeth .dot.svg-dot.full-dot {
+          --current-frame-color: var(--frame-color-full);
+          --current-fill-color: var(--fill-color-full);
+          --current-half-color: var(--half-color-full); }
+        html .dotline.teeth .dot.svg-dot.empty-dot, :root .dotline.teeth .dot.svg-dot.empty-dot {
+          --current-frame-color: var(--frame-color-empty);
+          --current-fill-color: var(--fill-color-empty);
+          --current-half-color: var(--half-color-empty); }
+        html .dotline.teeth .dot.svg-dot svg, :root .dotline.teeth .dot.svg-dot svg {
+          width: 100%;
+          height: auto;
+          max-height: var(--dotline-dot-sizeY, unset); }
+          html .dotline.teeth .dot.svg-dot svg .full, :root .dotline.teeth .dot.svg-dot svg .full {
+            fill: var(--current-fill-color); }
+          html .dotline.teeth .dot.svg-dot svg .frame, :root .dotline.teeth .dot.svg-dot svg .frame {
+            fill: var(--current-frame-color); }
+          html .dotline.teeth .dot.svg-dot svg .half, :root .dotline.teeth .dot.svg-dot svg .half {
+            fill: var(--current-half-color); }
   html, :root {
     margin: 0;
     padding: 0;
@@ -529,10 +552,9 @@ html, :root {
       position: relative; }
       html .dotline.centered, :root .dotline.centered {
         justify-content: center; }
-        html .dotline.centered .dot.zero-dot, :root .dotline.centered .dot.zero-dot {
-          left: calc(-1 * var(--dotline-zero-dot-size)); }
-          html .dotline.centered .dot.zero-dot + .dot, :root .dotline.centered .dot.zero-dot + .dot {
-            left: 0px; }
+      html .dotline.locked .dot, :root .dotline.locked .dot {
+        pointer-events: none;
+        cursor: pointer; }
       html .dotline .dot, :root .dotline .dot {
         height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
         width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
@@ -540,12 +562,10 @@ html, :root {
         flex-shrink: 0;
         margin: 0 var(--dotline-dot-spacing) 0 0;
         pointer-events: auto;
+        cursor: grab;
         position: relative; }
-        html .dotline .dot.zero-dot, :root .dotline .dot.zero-dot {
-          position: absolute;
-          left: calc(-1 * var(--dotline-zero-dot-size));
-          height: var(--dotline-zero-dot-size);
-          width: var(--dotline-zero-dot-size); }
+        html .dotline .dot:last-of-type, :root .dotline .dot:last-of-type {
+          margin: 0; }
         html .dotline .dot .img-main, html .dotline .dot .img-hover, :root .dotline .dot .img-main, :root .dotline .dot .img-hover {
           display: block;
           height: 100%;
@@ -559,34 +579,69 @@ html, :root {
           display: block; }
         html .dotline .dot:hover .img-hover + .img-main, :root .dotline .dot:hover .img-hover + .img-main {
           display: none; }
+        html .dotline .dot:hover.svg-dot, :root .dotline .dot:hover.svg-dot {
+          opacity: 0.5; }
       html .dotline.teeth, :root .dotline.teeth {
+        --frame-color: var(--blades-white);
+        --frame-color-empty: var(--frame-color);
+        --frame-color-full: var(--frame-color);
+        --fill-color-empty: transparent;
+        --fill-color-full: var(--frame-color);
+        --half-color-empty: var(--frame-color);
+        --half-color-full: var(--frame-color);
         align-items: flex-start; }
-        html .dotline.teeth .img-main, html .dotline.teeth .img-hover, :root .dotline.teeth .img-main, :root .dotline.teeth .img-hover {
-          filter: none; }
-        html .dotline.teeth .dot:not(.zero-dot), :root .dotline.teeth .dot:not(.zero-dot) {
-          flex-shrink: 1; }
+        html .dotline.teeth .dot.svg-dot, :root .dotline.teeth .dot.svg-dot {
+          width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
+          height: auto; }
+          html .dotline.teeth .dot.svg-dot.full-dot, :root .dotline.teeth .dot.svg-dot.full-dot {
+            --current-frame-color: var(--frame-color-full);
+            --current-fill-color: var(--fill-color-full);
+            --current-half-color: var(--half-color-full); }
+          html .dotline.teeth .dot.svg-dot.empty-dot, :root .dotline.teeth .dot.svg-dot.empty-dot {
+            --current-frame-color: var(--frame-color-empty);
+            --current-fill-color: var(--fill-color-empty);
+            --current-half-color: var(--half-color-empty); }
+          html .dotline.teeth .dot.svg-dot svg, :root .dotline.teeth .dot.svg-dot svg {
+            width: 100%;
+            height: auto;
+            max-height: var(--dotline-dot-sizeY, unset); }
+            html .dotline.teeth .dot.svg-dot svg .full, :root .dotline.teeth .dot.svg-dot svg .full {
+              fill: var(--current-fill-color); }
+            html .dotline.teeth .dot.svg-dot svg .frame, :root .dotline.teeth .dot.svg-dot svg .frame {
+              fill: var(--current-frame-color); }
+            html .dotline.teeth .dot.svg-dot svg .half, :root .dotline.teeth .dot.svg-dot svg .half {
+              fill: var(--current-half-color); }
   html blockquote, :root blockquote {
     border-left: 2px solid var(--blades-grey-bright);
     margin-left: 1.5rem;
     padding-left: 1rem; }
+  html table, html tr, html th, html td, :root table, :root tr, :root th, :root td {
+    margin: 0;
+    border: 0;
+    background: none;
+    padding: 0; }
   html table, :root table {
-    border-collapse: collapse; }
-    html table th.black-white,
-    html table th.black-white label, :root table th.black-white,
-    :root table th.black-white label {
-      background-color: var(--blades-white) !important;
-      text-shadow: none;
-      color: var(--blades-black) !important;
-      font-family: var(--font-emphasis);
-      font-weight: normal;
-      font-size: 20px;
-      line-height: 24px;
-      padding: 3px; }
+    border-collapse: collapse;
+    margin: 0;
+    border: none; }
+    html table thead, :root table thead {
+      background: none; }
+      html table thead th.black-white,
+      html table thead th.black-white label, :root table thead th.black-white,
+      :root table thead th.black-white label {
+        background-color: var(--blades-white);
+        text-shadow: none;
+        color: var(--blades-black);
+        font-family: var(--font-emphasis);
+        font-weight: normal;
+        font-size: 20px;
+        font-variant: small-caps;
+        padding: 2px;
+        border: none; }
     html table th,
     html table td, :root table th,
     :root table td {
-      border: 1px solid var(--blades-grey);
-      padding: 0.4rem; }
+      border: none; }
     html table.items-list.effects-list thead th,
     html table.items-list.effects-list tbody th, :root table.items-list.effects-list thead th,
     :root table.items-list.effects-list tbody th {
@@ -795,6 +850,31 @@ html, :root {
       display: inline-block; }
     html .text-checkbox input[type="checkbox"]:checked + span, :root .text-checkbox input[type="checkbox"]:checked + span {
       color: var(--active-text-color, var(--blades-gold-bright)); }
+  html .tooltip, :root .tooltip {
+    display: none;
+    position: absolute;
+    padding: 10px;
+    color: var(--blades-white);
+    background-color: var(--blades-black);
+    border: 1px solid #777;
+    border-radius: 3px;
+    z-index: 9999999;
+    max-width: 300px; }
+  html .full-width, :root .full-width {
+    position: relative;
+    width: calc(100% + (2 * var(--content-padding)));
+    left: calc(-1 * var(--content-padding)); }
+  html .flex-horizontal, :root .flex-horizontal {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: baseline; }
+  html .flex-vertical, :root .flex-vertical {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; }
 
 ::-webkit-scrollbar {
   width: var(--blades-spacer-sm); }

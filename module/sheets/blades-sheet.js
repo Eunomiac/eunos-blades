@@ -35,6 +35,9 @@ class BladesSheet extends ActorSheet {
             return;
         }
         actorData.data.trauma.list = U.objFilter(actorData.data.trauma.list, (val) => val === true || val === false);
+        actorData.data.trauma.value = Object.values(actorData.data.trauma.list)
+            .filter((val) => val === true)
+            .length;
     }
     activateListeners(html) {
         super.activateListeners(html);
@@ -48,12 +51,22 @@ class BladesSheet extends ActorSheet {
             return;
         }
         html.find(".dotline").each((i, elem) => {
+            if ($(elem).hasClass("locked")) {
+                return;
+            }
             const target = $(elem).data("target");
             const curValue = U.pInt($(elem).data("value"));
             $(elem).find(".dot").each((j, dot) => {
                 $(dot).on("click", (event) => {
                     event.preventDefault();
                     const thisValue = U.pInt($(dot).data("value"));
+                    if (thisValue !== curValue) {
+                        this.actor.update({ [target]: thisValue });
+                    }
+                });
+                $(dot).on("contextmenu", (event) => {
+                    event.preventDefault();
+                    const thisValue = U.pInt($(dot).data("value")) - 1;
                     if (thisValue !== curValue) {
                         this.actor.update({ [target]: thisValue });
                     }
@@ -84,6 +97,9 @@ class BladesSheet extends ActorSheet {
         if (actorID) {
             game.actors.get(actorID)?.sheet?.render(true);
         }
+    }
+    async _onSubActorAddClick(event) {
+        event.preventDefault();
     }
     async _onItemAddClick(event) {
         event.preventDefault();

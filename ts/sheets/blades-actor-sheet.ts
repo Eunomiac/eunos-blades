@@ -3,6 +3,7 @@ import C from "../core/constants.js";
 import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesActiveEffect from "../blades-active-effect.js";
+import type BladesItem from "../blades-item";
 
 class BladesActorSheet extends BladesSheet {
 
@@ -10,9 +11,9 @@ class BladesActorSheet extends BladesSheet {
 	  return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["eunos-blades", "sheet", "actor", "pc"],
 			template: "systems/eunos-blades/templates/actor-sheet.hbs",
-			width: 700,
-			height: 970,
-			tabs: [{navSelector: ".tabs", contentSelector: ".tab-content", initial: "abilities"}]
+			width: 775,
+			height: 775,
+			tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "abilities"}]
 		});
 	}
 
@@ -30,6 +31,8 @@ class BladesActorSheet extends BladesSheet {
 		// Isolate heritage/background/vice/class information
 		const classItem = data.items.find((item) => item.type === "class");
 
+		const viceOverride = (this.actor.data.data as object & {vice: {override: string}}).vice.override;
+
 		Object.assign(
 			data,
 			{
@@ -41,7 +44,7 @@ class BladesActorSheet extends BladesSheet {
 						: classItem?.img ?? "",
 					"heritage": data.items.find((item) => item.type === "heritage"),
 					"background": data.items.find((item) => item.type === "background"),
-					"vice": data.items.find((item) => item.type === "vice"),
+					"vice": (viceOverride && JSON.parse(viceOverride)) || data.items.find((item) => item.type === "vice"),
 					"classTagLine": classItem && classItem.name in C.ClassTagLines
 						? C.ClassTagLines[classItem.name as keyof typeof C.ClassTagLines]
 						: ""

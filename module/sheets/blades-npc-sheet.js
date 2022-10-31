@@ -12,7 +12,7 @@ class BladesNPCSheet extends BladesSheet {
             classes: ["eunos-blades", "sheet", "actor", "npc"],
             template: "systems/eunos-blades/templates/npc-sheet.hbs",
             width: 500,
-            tabs: [{ navSelector: ".tabs", contentSelector: ".tab-content", initial: "description" }]
+            tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "description" }]
         });
     }
     async getData() {

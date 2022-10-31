@@ -12,8 +12,9 @@
 	overflow: hidden;
 
 	form.editable {
-		@import "../core/text-styles";
+		@import "../core/globals";
 		padding: 0 !important;
+		justify-content: flex-start;
 	}
 }
 
@@ -29,8 +30,9 @@
 
 .window-content form.editable .char-img-bg {
 	position: absolute;
-	width: 100%;
+	width: calc(100% + 2 * var(--content-padding)) !important;
 	top: -20%;
+	left: 0;
 	filter: saturate(0%) blur(3px);
 	opacity: 0.5;
 	transform: scaleX(-1);
@@ -88,15 +90,16 @@
 	}
 }
 
-.window-content .nav-panel {
+.window-content .nav-group {
 	nav {
 		background-color: var(--blades-grey-bright);
 		border: 2px solid var(--blades-white);
 		padding: 0 toRem(10px);
+		width: 100%;
 		height: toRem(24px);
 		overflow: visible;
 
-		.item {
+		.tab-selector {
 			color: var(--blades-black);
 			padding: 0 toRem(10px);
 			font-family: Kirsty;
@@ -119,7 +122,7 @@
 			&:hover:not(.active) {
 				color: var(--blades-black-dark);
 				transform: scale(1.2);
-				background: linear-gradient(to right,
+				background: linear-gradient(to right, 
 						transparent,
 						var(--blades-white) 10%,
 						var(--blades-white-bright) 50%,
@@ -128,6 +131,12 @@
 			}
 		}
 	}
+  .tab[data-tab]{
+    display: none;
+    &.active{
+      display: block;
+    }
+  }
 }
 
 .window-content .turf-list { @import "../components/turf-block" }

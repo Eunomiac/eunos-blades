@@ -14,9 +14,9 @@ class BladesActorSheet extends BladesSheet {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "actor", "pc"],
             template: "systems/eunos-blades/templates/actor-sheet.hbs",
-            width: 700,
-            height: 970,
-            tabs: [{ navSelector: ".tabs", contentSelector: ".tab-content", initial: "abilities" }]
+            width: 775,
+            height: 775,
+            tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "abilities" }]
         });
     }
         
@@ -26,6 +26,7 @@ class BladesActorSheet extends BladesSheet {
         data.items.forEach(i => { loadout += (i.type === "item") ? parseInt(i.system.load) : 0; });
         loadout = U.gsap.utils.clamp(0, 10, loadout);
         const classItem = data.items.find((item) => item.type === "class");
+        const viceOverride = this.actor.data.data.vice.override;
         Object.assign(data, {
             effects: this.actor.effects,
             items: {
@@ -35,7 +36,7 @@ class BladesActorSheet extends BladesSheet {
                     : classItem?.img ?? "",
                 "heritage": data.items.find((item) => item.type === "heritage"),
                 "background": data.items.find((item) => item.type === "background"),
-                "vice": data.items.find((item) => item.type === "vice"),
+                "vice": (viceOverride && JSON.parse(viceOverride)) || data.items.find((item) => item.type === "vice"),
                 "classTagLine": classItem && classItem.name in C.ClassTagLines
                     ? C.ClassTagLines[classItem.name]
                     : ""

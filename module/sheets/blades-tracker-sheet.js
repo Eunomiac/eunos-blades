@@ -12,7 +12,7 @@ export default class EunoTrackerSheet extends ItemSheet {
             template: "systems/eunos-blades/templates/tracker-sheet.hbs",
             width: 900,
             height: "auto",
-            tabs: [{ navSelector: ".tabs", contentSelector: ".tab-content" }],
+            tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content" }],
             viewPermissions: 0
         });
     }
