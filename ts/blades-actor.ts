@@ -1,5 +1,6 @@
 import H from "./core/helpers.js";
-import C from "./core/constants.js";
+import U from "./core/utilities.js";
+import {Randomizers} from "./core/constants.js";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import {bladesRoll} from "./blades-roll.js";
 
@@ -32,30 +33,30 @@ class BladesActor extends Actor {
 	getAttributeDiceToThrow() {
 
 		// Calculate Dice to throw.
-		const dice_amount: Record<string,number> = {};
-		for (const attribute_name in this.system.attributes) {
+		const dice_amount: Partial<Record<Attributes|Actions.Any,number>> = {};
+
+		for (const [attribute_name, attribute_data] of Object.entries(this.system.attributes) as Array<[Attributes,Record<Actions.Any, ValueMax>]>) {
 			dice_amount[attribute_name] = 0;
-			for (const skill_name in this.system.attributes[attribute_name].skills) {
-				dice_amount[skill_name] = parseInt(this.system.attributes[attribute_name].skills[skill_name].value[0]);
+			for (const [action_name, action_data] of Object.entries(attribute_data) as Array<[Actions.Any, ValueMax]>) {
+				dice_amount[action_name] = U.pInt(action_data.value);
 
 				// We add a +1d for every skill higher than 0.
-				if (dice_amount[skill_name] > 0) {
-					dice_amount[attribute_name]++;
+				if (dice_amount[action_name]! > 0) {
+					dice_amount[attribute_name]!++;
 				}
 			}
-
 		}
 
 		return dice_amount;
 	}
 
-	rollAttributePopup(attribute_name: string) {
+	rollAttributePopup(attribute_name: Attributes) {
 
 		// const roll = new Roll("1d20 + @abilities.wis.mod", actor.getRollData());
-		const attribute_label = H.getAttributeLabel(attribute_name);
+		const attribute_label: Capitalize<Attributes> = U.tCase(attribute_name);
 
 		let content = `
-        <h2>${game.i18n.localize("BITD.Roll")} ${game.i18n.localize(attribute_label)}</h2>
+        <h2>${game.i18n.localize("BITD.Roll")} ${attribute_label}</h2>
         <form>
           <div class="form-group">
             <label>${game.i18n.localize("BITD.Modifier")}:</label>
@@ -83,7 +84,7 @@ class BladesActor extends Actor {
             </div>`;
 		} else {
 			content += `
-            <input  id="pos" name="pos" type="hidden" value="">
+            <input id="pos" name="pos" type="hidden" value="">
             <input id="fx" name="fx" type="hidden" value="">`;
 		}
 		content += `
@@ -95,7 +96,7 @@ class BladesActor extends Actor {
       `;
 
 		new Dialog({
-			"title": `${game.i18n.localize("BITD.Roll")} ${game.i18n.localize(attribute_label)}`,
+			"title": `${game.i18n.localize("BITD.Roll")} ${attribute_label}`,
 			"content": content,
 			"buttons": {
 				yes: {
@@ -122,12 +123,12 @@ class BladesActor extends Actor {
 
 	}
 
-	async rollAttribute(attribute_name?: string, additional_dice_amount?: number, position?: string, effect?: string, note?: string) {
-		attribute_name ??= "";
+	async rollAttribute(attribute_name?: Attributes, additional_dice_amount?: number, position?: string, effect?: string, note?: string) {
+		// attribute_name ??= "";
 		additional_dice_amount ??= 0;
 
 		let dice_amount = 0;
-		if (attribute_name !== "") {
+		if (attribute_name) {
 			const roll_data = this.getRollData();
 			dice_amount += roll_data.dice_amount[attribute_name];
 		} else {
@@ -171,31 +172,31 @@ class BladesActor extends Actor {
 			name: (gender?: string) => {
 				return [
 					Math.random() <= titleChance
-						? sampleArray(C.Randomizers.name_title)
+						? sampleArray(Randomizers.name_title)
 						: "",
 					sampleArray([
-						...((gender ?? "").charAt(0).toLowerCase() !== "m" ? C.Randomizers.name_first.female : []),
-						...((gender ?? "").charAt(0).toLowerCase() !== "f" ? C.Randomizers.name_first.male : [])
+						...((gender ?? "").charAt(0).toLowerCase() !== "m" ? Randomizers.name_first.female : []),
+						...((gender ?? "").charAt(0).toLowerCase() !== "f" ? Randomizers.name_first.male : [])
 					]),
-					`"${sampleArray(C.Randomizers.name_alias)}"`,
-					sampleArray(C.Randomizers.name_surname),
+					`"${sampleArray(Randomizers.name_alias)}"`,
+					sampleArray(Randomizers.name_surname),
 					Math.random() <= suffixChance
-						? sampleArray(C.Randomizers.name_suffix)
+						? sampleArray(Randomizers.name_suffix)
 						: ""
 				].filter((val) => Boolean(val)).join(" ");
 			},
-			gender: () => sampleArray(C.Randomizers.gender)[0],
-			heritage: () => sampleArray(C.Randomizers.heritage)[0],
-			appearance: () => sampleArray(C.Randomizers.appearance)[0],
-			goal: () => sampleArray(C.Randomizers.goal, [this.system.randomizers.goal.value])[0],
-			method: () => sampleArray(C.Randomizers.method, [this.system.randomizers.goal.value])[0],
-			profession: () => sampleArray(C.Randomizers.profession, [this.system.randomizers.goal.value])[0],
-			trait: () => sampleArray(C.Randomizers.trait, [this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1),
-			interests: () => sampleArray(C.Randomizers.interests)[0],
-			quirk: () => sampleArray(C.Randomizers.quirk)[0],
+			gender: () => sampleArray(Randomizers.gender)[0],
+			heritage: () => sampleArray(Randomizers.heritage)[0],
+			appearance: () => sampleArray(Randomizers.appearance)[0],
+			goal: () => sampleArray(Randomizers.goal, [this.system.randomizers.goal.value])[0],
+			method: () => sampleArray(Randomizers.method, [this.system.randomizers.goal.value])[0],
+			profession: () => sampleArray(Randomizers.profession, [this.system.randomizers.goal.value])[0],
+			trait: () => sampleArray(Randomizers.trait, [this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1),
+			interests: () => sampleArray(Randomizers.interests)[0],
+			quirk: () => sampleArray(Randomizers.quirk)[0],
 			style: (gender?: string) => sampleArray([
-				...((gender ?? "").charAt(0).toLowerCase() !== "m" ? C.Randomizers.style.female : []),
-				...((gender ?? "").charAt(0).toLowerCase() !== "f" ? C.Randomizers.style.male : [])
+				...((gender ?? "").charAt(0).toLowerCase() !== "m" ? Randomizers.style.female : []),
+				...((gender ?? "").charAt(0).toLowerCase() !== "f" ? Randomizers.style.male : [])
 			], [this.system.randomizers.style.value])[0]
 		};
 		const gender = this.system.randomizers.gender.isLocked ? this.system.randomizers.gender.value : randomGen.gender() as string;
@@ -232,13 +233,13 @@ class BladesActor extends Actor {
 		if (isUpdatingTraits) {
 			const trait1 = this.system.randomizers.trait_1.isLocked
 				? this.system.randomizers.trait_1.value
-				: sampleArray(C.Randomizers.trait, [this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
+				: sampleArray(Randomizers.trait, [this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
 			const trait2 = this.system.randomizers.trait_2.isLocked
 				? this.system.randomizers.trait_2.value
-				: sampleArray(C.Randomizers.trait, [trait1, this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
+				: sampleArray(Randomizers.trait, [trait1, this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
 			const trait3 = this.system.randomizers.trait_3.isLocked
 				? this.system.randomizers.trait_3.value
-				: sampleArray(C.Randomizers.trait, [trait1, trait2, this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
+				: sampleArray(Randomizers.trait, [trait1, trait2, this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
 			if (!this.system.randomizers.trait_1.isLocked) {
 				updateData["system.randomizers.trait_1"] = {
 					isLocked: false,
@@ -326,6 +327,33 @@ class BladesActor extends Actor {
 	}
 }
 
+enum Attributes {
+	insight = "insight",
+	prowess = "prowess",
+	resolve = "resolve"
+}
+namespace Actions {
+	export enum Insight {
+		hunt = "hunt",
+		study = "study",
+		survey = "survey",
+		tinker = "tinker"
+	}
+	export enum Prowess {
+		finesse = "finesse",
+		prowl = "prowl",
+		skirmish = "skirmish",
+		wreck = "wreck"
+	}
+	export enum Resolve {
+		attune = "attune",
+		command = "command",
+		consort = "consort",
+		sway = "sway"
+	}
+	export type Any = Insight|Prowess|Resolve;
+}
+
 type RandomizerData = {
 	isLocked: boolean,
 	value: string,
@@ -333,24 +361,98 @@ type RandomizerData = {
 	label: string|null
 };
 
+type ContactData = {
+	type: string,
+	id: string,
+	attitude: 1|-1
+}
+
+type ValueMax = {
+	max: number,
+	value: number
+}
+
+type NamedValueMax = ValueMax & {name: string};
+
 declare interface BladesActor {
-	system: Record<any,any> & {
-		randomizers: {
-			name: RandomizerData,
-			gender: RandomizerData,
-			heritage: RandomizerData,
-			appearance: RandomizerData,
-			goal: RandomizerData,
-			method: RandomizerData,
-			profession: RandomizerData,
-			trait_1: RandomizerData,
-			trait_2: RandomizerData,
-			trait_3: RandomizerData,
-			interests: RandomizerData,
-			quirk: RandomizerData,
-			style: RandomizerData
+	system: Actor["data"]["data"] & {
+			full_name: string,
+			crew: string|BladesActor,
+			acquaintances: {
+				name: string,
+				list: ContactData[],
+				vice_purveyor: string|BladesActor
+			},
+			notes: string,
+			gm_notes: string,
+			vice: {
+				name: string,
+				override: string|{name: string, img: string}
+			},
+			stress: NamedValueMax,
+			trauma: NamedValueMax & {list: Record<string, boolean|null>},
+			healing: ValueMax,
+			experience: {
+				playbook: ValueMax,
+				[Attributes.insight]: ValueMax,
+				[Attributes.prowess]: ValueMax,
+				[Attributes.resolve]: ValueMax,
+				clues: string[]
+			},
+			coins: ValueMax,
+			stash: ValueMax,
+			loadout: {
+				selected: string,
+				levels: {
+					light: number,
+					normal: number,
+					heavy: number,
+					encumbered: number
+				}
+			},
+			harm: {
+				light: {
+					one: string,
+					two: string
+				},
+				medium: {
+					one: string,
+					two: string
+				},
+				heavy: {
+					one: string
+				}
+			},
+			armor: {
+				active: {
+					light: boolean,
+					heavy: boolean,
+					special: boolean
+				},
+				checked: {
+					light: boolean,
+					heavy: boolean,
+					special: boolean
+				}
+			},
+			attributes: Record<Attributes, Record<Actions.Any,ValueMax>>,
+			tier: number,
+			randomizers: {
+				name: RandomizerData,
+				gender: RandomizerData,
+				heritage: RandomizerData,
+				appearance: RandomizerData,
+				goal: RandomizerData,
+				method: RandomizerData,
+				profession: RandomizerData,
+				trait_1: RandomizerData,
+				trait_2: RandomizerData,
+				trait_3: RandomizerData,
+				interests: RandomizerData,
+				quirk: RandomizerData,
+				style: RandomizerData
+			}
 		}
-	};
 	parent: TokenDocument | null;
 }
 

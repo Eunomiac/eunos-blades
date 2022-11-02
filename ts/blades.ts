@@ -1,7 +1,8 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import {IMPORTDATA} from "./core/constants.js";
+import C, {IMPORTDATA} from "./core/constants.js";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initFonts} from "./core/settings.js";
 import H, {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers.js";
+import U from "./core/utilities.js";
 import registerDebugger from "./core/logger.js";
 
 import BladesActor from "./blades-actor.js";
@@ -37,6 +38,8 @@ registerDebugger();
 		bladesRoll,
 		simpleRollPopup,
 		H,
+		U,
+		C,
 		BladesItem,
 		BladesItemSheet,
 		ClearNPCs: () => {

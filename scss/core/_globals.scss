@@ -6,22 +6,28 @@
 		padding-left: 1rem;
 	}
 
-	table, tr, th, td {
+	table,
+	table tr,
+	table tr th,
+	table tr td,
+	table thead,
+	table thead tr,
+	table thead tr th,
+	table thead tr td,
+	table tbody,
+	table tbody tr,
+	table tbody td {
 		margin: 0;
-		border: 0;
-		background: none;
 		padding: 0;
+		background: none;
+		border: none;
 	}
+
 	table {
 		border-collapse: collapse;
-		margin: 0;
-		border: none;
 
 		thead {
-			background: none;
-
-			th.black-white,
-			th.black-white label {
+			th {
 				background-color: var(--blades-white);
 				text-shadow: none;
 				color: var(--blades-black);
@@ -30,69 +36,6 @@
 				font-size: 20px;
 				font-variant: small-caps;
 				padding: 2px;
-				border: none;
-			}
-		}
-
-		th,
-		td {
-			// border: 1px solid var(--blades-grey);
-			border: none;
-			// padding: 0.4rem;
-		}
-
- 		&.items-list {
-			&.effects-list {
-
-				thead,
-				tbody {
-					th {
-						margin: 0 !important;
-					}
-
-					th:nth-of-type(1),
-					td:nth-of-type(1) {
-						width: 40%;
-					}
-
-					th:nth-of-type(2),
-					td:nth-of-type(2) {
-						width: 30%;
-						text-align: center;
-					}
-
-					th:nth-of-type(3),
-					td:nth-of-type(3) {
-						width: 15%;
-						text-align: center;
-					}
-
-					th:nth-of-type(4),
-					td:nth-of-type(4) {
-						width: 15%;
-						text-align: right;
-					}
-
-					td {
-						// height: 24px;
-						line-height: 24px;
-						margin: 0;
-						vertical-align: middle;
-					}
-
-					img {
-						height: 24px;
-						width: 24px;
-						vertical-align: middle;
-					}
-
-					h4 {
-						display: inline-block;
-						line-height: 24px;
-						margin: 0;
-						vertical-align: middle;
-					}
-				}
 			}
 		}
 	}
@@ -131,45 +74,6 @@
 		padding: 0 #{toRem(5px)};
 		margin: 0 #{toRem(5px)};
 	}
-
-	.clock-zero-label {
-		color: var(--blades-white);
-	}
-
-	// #region ████████ STRIPE LABELS: "Stripe"-type Labels & Stripe "Teeth" ████████ ~
-	.stripe,
-	.stripe label {
-		background-color: var(--blades-white) !important;
-		color: var(--blades-black) !important;
-		height: toRem(24px);
-		line-height: toRem(24px);
-		line-height: toRem(24px);
-	}
-
-	.stripe-tooth-body label {
-		color: var(--blades-black) !important;
-	}
-
-	label.black-label {
-		background-color: var(--blades-white);
-		color: var(--blades-black) !important;
-	}
-
-	.label-stripe {
-		background-color: var(--blades-grey);
-	}
-
-	.label-stripe-gray {
-		margin: 0;
-
-		th,
-		th>*:not(:hover) {
-			color: var(--blades-white-bright);
-			text-shadow: 1px 1px 0px var(--blades-black-dark);
-		}
-	}
-
-	// #endregion ▄▄▄▄▄ STRIPE LABELS ▄▄▄▄▄
 
 	.labelled-item {
 		display: flex;
@@ -288,8 +192,6 @@
 				text-align: right;
 			}
 		}
-
-
 	}
 
 	.shadowed, .labelled-item label, .labelled-item input[type="text"] {

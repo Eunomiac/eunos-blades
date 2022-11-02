@@ -120,19 +120,18 @@ class BladesActiveEffect extends ActiveEffect {
 	static onManageActiveEffect(event: ClickEvent, owner: Actor|Item) {
 		event.preventDefault();
 		const a = event.currentTarget as HTMLElement;
+		if (a.dataset.action === "create") {
+			return owner.createEmbeddedDocuments("ActiveEffect", [{
+				label: "New Effect",
+				icon: "systems/eunos-blades/assets/icons/Icon.3_13.png",
+				origin: owner.uuid
+			}]);
+		}
 		const selector = a.closest("tr");
 		if (selector === null) { return null }
 		const effect = selector.dataset.effectId ? owner.effects.get(selector.dataset.effectId) : null;
 		if (!effect) { return null }
 		switch ( a.dataset.action ) {
-			case "create":
-				return owner.createEmbeddedDocuments("ActiveEffect", [{
-					"label": "New Effect",
-					"icon": "systems/eunos-blades/assets/icons/Icon.3_13.png",
-					"origin": owner.uuid,
-					"duration.rounds": selector.dataset.effectType === "temporary" ? 1 : undefined,
-					"disabled": selector.dataset.effectType === "inactive"
-				}]);
 			case "edit":
 				return effect.sheet?.render(true);
 			case "delete":

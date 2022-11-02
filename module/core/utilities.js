@@ -239,8 +239,8 @@ const getKey = (key, obj) => {
 const FILTERS = {
     IsInstance: ((classRef) => ((item) => typeof classRef === "function" && item instanceof classRef))
 };
-const uCase = (str) => `${str ?? ""}`.toUpperCase();
-const lCase = (str) => `${str ?? ""}`.toLowerCase();
+const uCase = (str) => String(str).toUpperCase();
+const lCase = (str) => String(str).toLowerCase();
 const sCase = (str) => {
     let [first, ...rest] = `${str ?? ""}`.split(/\s+/);
     first = testRegExp(first, _capWords) ? first : `${uCase(first.charAt(0))}${lCase(first.slice(1))}`;
@@ -249,7 +249,7 @@ const sCase = (str) => {
     }
     return [first, ...rest].join(" ").trim();
 };
-const tCase = (str) => `${str ?? ""}`.split(/\s/)
+const tCase = (str) => String(str).split(/\s/)
     .map((word, i) => (i && testRegExp(word, _noCapWords) ? lCase(word) : sCase(word)))
     .join(" ").trim();
 const testRegExp = (str, patterns = [], flags = "gui", isTestingAll = false) => patterns

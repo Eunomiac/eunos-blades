@@ -1,9 +1,9 @@
-<div class="clock {{#if data.isActive}}clock-active{{/if}}" data-index="{{clockNum}}" data-size="{{data.size}}" data-value="{{data.value}}">
-	<
+<div class="clock {{~#if data.isActive}} clock-active{{/if}}" {{~#if target}} data-target="{{target}}"{{/if}} {{~#if clockNum}} data-index="{{clockNum}}"{{/if}} data-size="{{data.size}}" data-value="{{data.value}}">
+	{{#with data as |data|}}
 	{{#with data.value as |value|}}
-	{{#with ../data.size as |size|}}
-	{{#with ../../data.color as |color|}}
-	<div class="clock-interior" style="{{#unless (test value "==" size)}}clip-path: url(#{{value}}-of-{{size}});{{/unless}}">
+	{{#with data.size as |size|}}
+	{{#with data.color as |color|}}
+	<div class="clock-interior" style="clip-path: url(#{{value}}-of-{{size}});">
 		<svg viewBox="0 0 400 400">
 			<circle cx="200" cy="200" r="200" fill="black" />
 		</svg>
@@ -19,6 +19,7 @@
 	{{#unless (test value "==" 0)}}
 	<div class="clock-glow" style="{{#unless (test value "==" size)}}clip-path: url(#{{value}}-of-{{size}});{{/unless}}"></div>
 	{{/unless}}
+	{{/with}}
 	{{/with}}
 	{{/with}}
 	{{/with}}

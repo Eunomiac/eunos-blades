@@ -5,17 +5,37 @@ import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type BladesActor from "../blades-actor.js";
 
+declare global {
+	class BladesSheet<
+		Options extends BladesSheet.Options = BladesSheet.Options,
+		Data extends object = BladesSheet.Data<Options>
+	> extends ActorSheet<BladesSheet.Options, BladesSheet.Data> {
+		get actor(): BladesActor;
+		override getData(options?: Partial<Options>): BladesSheet.Data | Promise<BladesSheet.Data>;
+	}
+
+	namespace BladesSheet {
+    interface Options extends ActorSheet.Options { }
+
+		interface Data<Options extends BladesSheet.Options = BladesSheet.Options> extends ActorSheet.Data<BladesSheet.Options> {
+			system: BladesActor["system"]
+		}
+	}
+}
+
 class BladesSheet extends ActorSheet {
 
 	override async getData() {
-		const data = await super.getData();
-		const actorData = data.data as object & {data: {crew: string}};
+		const data = await super.getData() as BladesSheet.Data;
+		eLog.log("[BladesSheet] super.getData()", {...data});
+		const actorData = data.actor as BladesActor;
+		const actorSystem = actorData.system;
 
 		// Link Embedded Actors
-		this._linkEmbeddedActors(actorData);
+		this._linkEmbeddedActors(actorSystem);
 
 		// Filter trauma conditions
-		this._filterTraumaConditions(actorData);
+		this._filterTraumaConditions(actorSystem);
 
 		Object.assign(
 			data,
@@ -24,28 +44,29 @@ class BladesSheet extends ActorSheet {
 				isGM: game.user.isGM,
 				// isOwner: ???,
 				actor: actorData,
-				data: actorData.data
+				data: actorSystem
 			}
 		);
 
+		eLog.log("[BladesSheet] return getData()", {...data});
 		return data;
 	}
 
-	_linkEmbeddedActors(actorData: object & {data: {crew?: string|BladesActor}}) {
-		if (!actorData.data.crew) { return }
-		const crew = game.actors.get(actorData.data.crew as string) as BladesActor|undefined;
+	_linkEmbeddedActors(actorSystem: BladesActor["system"]) {
+		if (typeof actorSystem.crew !== "string") { return }
+		const crew = game.actors.get(actorSystem.crew) as BladesActor|undefined;
 		if (crew && crew.type === "crew") {
-			actorData.data.crew = crew;
+			actorSystem.crew = crew;
 		}
 	}
 
-	_filterTraumaConditions(actorData: object & {data: {crew?: string|BladesActor, trauma?: {value: number, list: Record<string, boolean|null>}}}) {
-		if (!actorData.data.trauma?.list) { return }
-		actorData.data.trauma.list = U.objFilter(
-			actorData.data.trauma.list,
+	_filterTraumaConditions(actorSystem: BladesActor["system"]) {
+		if (!actorSystem.trauma?.list) { return }
+		actorSystem.trauma.list = U.objFilter(
+			actorSystem.trauma.list,
 			(val: unknown): val is true|false => val === true || val === false
 		);
-		actorData.data.trauma.value = Object.values(actorData.data.trauma.list)
+		actorSystem.trauma.value = Object.values(actorSystem.trauma.list)
 			.filter((val) => val === true)
 			.length;
 	}
@@ -89,6 +110,10 @@ class BladesSheet extends ActorSheet {
 			});
 		});
 
+		// Add clock functionality
+		html.find(".clock-container").on("click", this._onClockLeftClick.bind(this));
+		html.find(".clock-container").on("contextmenu", this._onClockRightClick.bind(this));
+
 		html.find(".item-add-popup").on("click", (event) => {
 			this._onItemAddClick(event);
 		});
@@ -103,6 +128,25 @@ class BladesSheet extends ActorSheet {
 		html.find("[data-sub-actor-id]").children(".sub-actor-name").on("click", this._onSubActorOpenClick.bind(this));
 
 		html.find(".roll-die-attribute").on("click", this._onRollAttributeDieClick.bind(this));
+	}
+
+	async _onClockLeftClick(event: ClickEvent) {
+		event.preventDefault();
+		const clock$ = $(event.currentTarget).children(".clock[data-target]");
+		if (!clock$[0]) { return }
+		const target = clock$.data("target");
+		const curValue = U.pInt(clock$.data("value"));
+		const maxValue = U.pInt(clock$.data("size"));
+		(this.actor as BladesActor).update({[target]: U.gsap.utils.wrap(0, maxValue + 1, curValue + 1)});
+	}
+
+	async _onClockRightClick(event: ContextMenuEvent) {
+		event.preventDefault();
+		const clock$ = $(event.currentTarget).children(".clock[data-target]");
+		if (!clock$[0]) { return }
+		const target = clock$.data("target");
+		const curValue = U.pInt(clock$.data("value"));
+		(this.actor as BladesActor).update({[target]: Math.max(0, curValue - 1)});
 	}
 
 	async _onItemOpenClick(event: ClickEvent) {

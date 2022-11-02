@@ -57,7 +57,7 @@ class BladesItem extends Item {
             return [keyID, keyData];
         }));
     }
-    get tier() { return parseInt(this.parent?.system?.tiar || 0); }
+    get tier() { return U.pInt(this.parent?.system?.tier); }
     _prepareCohort() {
         if (this.parent?.documentName !== "Actor") {
             return;

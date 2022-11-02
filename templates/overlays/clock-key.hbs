@@ -18,10 +18,12 @@
 				<use href="#{{data.numClocks}}-key" class="key-bg" />
 				<rect class="metallic-overlay" x="0" y="0" clip-path="url(#{{data.numClocks}}-key-clip" />
 			</svg>
+			{{log "Key This" this}}
+			{{log "Data.Clocks" data.clocks}}
 			{{#each data.clocks as |clockData clockNum|}}
-			{{#if clockData.isVisible}}
-				{{> "systems/eunos-blades/templates/overlays/clock.hbs" clockNum=clockNum data=clockData}}
-			{{/if}}
+			{{!-- {{#if clockData.isVisible}} --}}
+				{{> "systems/eunos-blades/templates/components/clock.hbs" clockNum=clockNum data=clockData}}
+			{{!-- {{/if}} --}}
 			{{/each}}
 		</div>
 	</div>

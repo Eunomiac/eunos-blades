@@ -12,6 +12,7 @@ export async function preloadHandlebarsTemplates() {
         "systems/eunos-blades/templates/parts/toggle-icon.hbs",
         "systems/eunos-blades/templates/parts/button-icon.hbs",
         "systems/eunos-blades/templates/parts/dotline.hbs",
+        "systems/eunos-blades/templates/components/armor.hbs",
         "systems/eunos-blades/templates/parts/attributes.hbs",
         "systems/eunos-blades/templates/parts/turf-list.hbs",
         "systems/eunos-blades/templates/parts/cohort-block.hbs",
@@ -19,7 +20,7 @@ export async function preloadHandlebarsTemplates() {
         "systems/eunos-blades/templates/parts/active-effects.hbs",
         "systems/eunos-blades/templates/overlays/clock-overlay.hbs",
         "systems/eunos-blades/templates/overlays/clock-key.hbs",
-        "systems/eunos-blades/templates/overlays/clock.hbs"
+        "systems/eunos-blades/templates/components/clock.hbs"
     ];
     return loadTemplates(templatePaths);
 }
@@ -95,19 +96,20 @@ const handlebarHelpers = {
             }
         }
     },
-    "calc": function (param1, operator, param2) {
-        switch (operator) {
-            case "+": {
-                return U.pInt(param1) + U.pInt(param2);
-            }
-            case "-": {
-                return U.pInt(param1) - U.pInt(param2);
-            }
-            case "%": {
-                return U.pInt(param1) % U.pInt(param2);
-            }
-            default: return false;
-        }
+    "calc": function (...params) {
+        const calcs = {
+            "+": (p1, p2) => U.pInt(p1) + U.pInt(p2),
+            "-": (p1, p2) => U.pInt(p1) - U.pInt(p2),
+            "*": (p1, p2) => U.pInt(p1) * U.pInt(p2),
+            "/": (p1, p2) => U.pInt(p1) / U.pInt(p2),
+            "%": (p1, p2) => U.pInt(p1) % U.pInt(p2),
+            "ceil": (p1) => Math.ceil(U.pFloat(p1)),
+            "floor": (p1) => Math.floor(U.pFloat(p1))
+        };
+        const [param1, operator, param2] = typeof params[0] === "string" && params[0] in calcs
+            ? [params[1], params[0]]
+            : params;
+        return calcs[operator](param1, param2);
     },
     "case": function (mode, str) {
         switch (mode) {

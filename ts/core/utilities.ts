@@ -268,19 +268,19 @@ const FILTERS = {
 
 // #region ████████ STRINGS: String Parsing, Manipulation, Conversion, Regular Expressions ████████
 // #region ░░░░░░░[Case Conversion]░░░░ Upper, Lower, Sentence & Title Case ░░░░░░░ ~
-const uCase = (str: unknown) => `${str ?? ""}`.toUpperCase();
-const lCase = (str: unknown) => `${str ?? ""}`.toLowerCase();
-const sCase = (str: unknown) => {
+const uCase = <T extends unknown>(str: T): Uppercase<string & T> => String(str).toUpperCase() as Uppercase<string & T>;
+const lCase = <T extends unknown>(str: T): Lowercase<string & T> => String(str).toLowerCase() as Lowercase<string & T>;
+const sCase = <T extends unknown>(str: T): Capitalize<string & T> => {
 	let [first, ...rest] = `${str ?? ""}`.split(/\s+/);
 	first = testRegExp(first, _capWords) ? first : `${uCase(first.charAt(0))}${lCase(first.slice(1))}`;
 	if (hasItems(rest)) {
 		rest = rest.map((word) => (testRegExp(word, _capWords) ? word : lCase(word)));
 	}
-	return [first, ...rest].join(" ").trim();
+	return [first, ...rest].join(" ").trim() as Capitalize<string & T>;
 };
-const tCase = (str: unknown) => `${str ?? ""}`.split(/\s/)
+const tCase = <T extends unknown>(str: T): Titlecase<string & T> => String(str).split(/\s/)
 	.map((word, i) => (i && testRegExp(word, _noCapWords) ? lCase(word) : sCase(word)))
-	.join(" ").trim();
+	.join(" ").trim() as Titlecase<string & T>;
 // #endregion ░░░░[Case Conversion]░░░░
 // #region ░░░░░░░[RegExp]░░░░ Regular Expressions ░░░░░░░ ~
 const testRegExp = (str: unknown, patterns: Array<RegExp | string> = [], flags = "gui", isTestingAll = false) => patterns

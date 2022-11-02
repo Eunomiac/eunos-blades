@@ -43,8 +43,6 @@ $clock-positions: (
 );
 
 & {
-	display: none !important;
-
 	--top-shift: 50px;
 	--left-shift: 75px;
 	--key-scale: 0.33;
@@ -134,70 +132,72 @@ $clock-positions: (
 					fill: var(--blades-grey-dark);
 				}
 			}
-			.clock {
-				height: var(--clock-glow-size);
-				width: var(--clock-glow-size);
-				transform: translate(-50%, -50%);
-				z-index: 2;
+			@import "./clocks";
+			// .clock {
 
-				.clock-frame {
-					height: var(--clock-frame-size);
-					width: var(--clock-frame-size);
-					transform: translate(-50%, -50%) translate(calc(var(--clock-glow-size) / 2), calc(var(--clock-glow-size) / 2));
-					fill: transparent;
-					stroke: var(--blades-black);
-					stroke-width: 10px;
-					z-index: 2;
-					pointer-events: auto;
+			// 	height: var(--clock-glow-size);
+			// 	width: var(--clock-glow-size);
+			// 	transform: translate(-50%, -50%);
+			// 	z-index: 2;
 
-					g {
-						transform: scale(0.99);
-						transform-origin: 50% 50%;
-					}
-				}
+			// 	.clock-frame {
+			// 		height: var(--clock-frame-size);
+			// 		width: var(--clock-frame-size);
+			// 		transform: translate(-50%, -50%) translate(calc(var(--clock-glow-size) / 2), calc(var(--clock-glow-size) / 2));
+			// 		fill: transparent;
+			// 		stroke: var(--blades-black);
+			// 		stroke-width: 10px;
+			// 		z-index: 2;
+			// 		pointer-events: auto;
 
-				.clock-interior {
-					position: absolute;
-					height: 400px;
-					width: 400px;
-					transform: translate(-50%, -50%) translate(calc(50% + var(--clock-glow-correction)), calc(50% + var(--clock-glow-correction)));
-					svg {
-						height: var(--clock-frame-size);
-						width: var(--clock-frame-size);
-						transform: translate(-50%, -50%);
-						top: 50%;
-						left: 50%;
+			// 		g {
+			// 			transform: scale(0.99);
+			// 			transform-origin: 50% 50%;
+			// 		}
+			// 	}
 
-						circle {
-							height: var(--clock-frame-size);
-							width: var(--clock-frame-size);
-							// transform: translate(-50%, -50%);
-							// top: 50%;
-							// left: 50%;
-						}
-					}
-					.clock-interior-img {
-						height: var(--clock-frame-size);
-						width: var(--clock-frame-size);
-						transform: translate(-50%, -50%);
-						top: 50%;
-						left: 50%;
-					}
-				}
+			// 	.clock-interior {
+			// 		position: absolute;
+			// 		height: 400px;
+			// 		width: 400px;
+			// 		transform: translate(-50%, -50%) translate(calc(50% + var(--clock-glow-correction)), calc(50% + var(--clock-glow-correction)));
+			// 		svg {
+			// 			height: var(--clock-frame-size);
+			// 			width: var(--clock-frame-size);
+			// 			transform: translate(-50%, -50%);
+			// 			top: 50%;
+			// 			left: 50%;
 
-				&.clock-active {
-					.clock-glow {
-						position: absolute;
-						z-index: 0;
-						top: var(--clock-glow-correction);
-						left: var(--clock-glow-correction);
-						height: 400px;
-						width: 400px;
-						background: url("../assets/animations/clock-flare.webp") 50%/contain no-repeat border-box border-box;
-						background-position-y: 5px;
-					}
-				}
-			}
+			// 			circle {
+			// 				height: var(--clock-frame-size);
+			// 				width: var(--clock-frame-size);
+			// 				// transform: translate(-50%, -50%);
+			// 				// top: 50%;
+			// 				// left: 50%;
+			// 			}
+			// 		}
+			// 		.clock-interior-img {
+			// 			height: var(--clock-frame-size);
+			// 			width: var(--clock-frame-size);
+			// 			transform: translate(-50%, -50%);
+			// 			top: 50%;
+			// 			left: 50%;
+			// 		}
+			// 	}
+
+			// 	&.clock-active {
+			// 		.clock-glow {
+			// 			position: absolute;
+			// 			z-index: 0;
+			// 			top: var(--clock-glow-correction);
+			// 			left: var(--clock-glow-correction);
+			// 			height: 400px;
+			// 			width: 400px;
+			// 			background: url("../assets/animations/clock-flare.webp") 50%/contain no-repeat border-box border-box;
+			// 			background-position-y: 5px;
+			// 		}
+			// 	}
+			// }
 		}
 
 		@each $key, $clocks in $clock-positions {
@@ -211,10 +211,6 @@ $clock-positions: (
 					}
 				}
 			}
-		}
-
-		@each $clockSize in (1, 2, 3, 4, 5, 6, 8, 10, 12) {
-			.segmented[data-size="#{$clockSize}"] { --rotation-steps: #{$clockSize} }
 		}
 
 		&:nth-child(2n+1) { top: var(--alternating-top-shift) }

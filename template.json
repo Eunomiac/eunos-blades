@@ -24,43 +24,20 @@
 			"trauma": {
 				"value": 0,
 				"max": 4,
-				"list": {
-					"Cold": false,
-					"Haunted": false,
-					"Obsessed": false,
-					"Paranoid": false,
-					"Reckless": false,
-					"Soft": false,
-					"Unstable": false,
-					"Vicious": false,
-					"Chaotic": null,
-					"Destructive": null,
-					"Furious": null,
-					"Obsessive": null,
-					"Territorial": null,
-					"Savage": null,
-					"Ruthless": null,
-					"Secretive": null,
-					"Clanking": null,
-					"Leaking": null,
-					"Fixated": null,
-					"Smoking": null,
-					"Sparking": null
-				},
+				"list": {},
 				"name": "Trauma"
 			},
 			"healing": { "value": 0, "max": 4 },
 			"experience": {
-				"value": 0,
-				"max": 8,
-				"clues": [
-					"BITD.ClassExpClue3",
-					"BITD.ClassExpClue2"
-				],
 				"playbook": { "value": 0, "max": 8 },
 				"insight": { "value": 0, "max": 6 },
 				"prowess": { "value": 0, "max": 6 },
-				"resolve": { "value": 0, "max": 6 }
+				"resolve": { "value": 0, "max": 6 },
+				"clues": [
+					"",
+					"You expressed your beliefs, drives, heritage, or background.",
+					"You struggled with issues from your vice or traumas during the session."
+				]
 			},
 			"coins": {"value": 0, "max": 4},
 			"stash": { "value": 0, "max": 40 },
@@ -87,8 +64,11 @@
 				}
 			},
 			"armor": {
-				"numBasicBoxes": 0,
-				"numSpecialBoxes": 0,
+				"active": {
+					"light": false,
+					"heavy": false,
+					"special": false
+				},
 				"checked": {
 					"light": false,
 					"heavy": false,

@@ -615,91 +615,42 @@ html, :root {
     border-left: 2px solid var(--blades-grey-bright);
     margin-left: 1.5rem;
     padding-left: 1rem; }
-  html table, html tr, html th, html td, :root table, :root tr, :root th, :root td {
+  html table,
+  html table tr,
+  html table tr th,
+  html table tr td,
+  html table thead,
+  html table thead tr,
+  html table thead tr th,
+  html table thead tr td,
+  html table tbody,
+  html table tbody tr,
+  html table tbody td, :root table,
+  :root table tr,
+  :root table tr th,
+  :root table tr td,
+  :root table thead,
+  :root table thead tr,
+  :root table thead tr th,
+  :root table thead tr td,
+  :root table tbody,
+  :root table tbody tr,
+  :root table tbody td {
     margin: 0;
-    border: 0;
+    padding: 0;
     background: none;
-    padding: 0; }
-  html table, :root table {
-    border-collapse: collapse;
-    margin: 0;
     border: none; }
-    html table thead, :root table thead {
-      background: none; }
-      html table thead th.black-white,
-      html table thead th.black-white label, :root table thead th.black-white,
-      :root table thead th.black-white label {
-        background-color: var(--blades-white);
-        text-shadow: none;
-        color: var(--blades-black);
-        font-family: var(--font-emphasis);
-        font-weight: normal;
-        font-size: 20px;
-        font-variant: small-caps;
-        padding: 2px;
-        border: none; }
-    html table th,
-    html table td, :root table th,
-    :root table td {
-      border: none; }
-    html table.items-list.effects-list thead th,
-    html table.items-list.effects-list tbody th, :root table.items-list.effects-list thead th,
-    :root table.items-list.effects-list tbody th {
-      margin: 0 !important; }
-    html table.items-list.effects-list thead th:nth-of-type(1),
-    html table.items-list.effects-list thead td:nth-of-type(1),
-    html table.items-list.effects-list tbody th:nth-of-type(1),
-    html table.items-list.effects-list tbody td:nth-of-type(1), :root table.items-list.effects-list thead th:nth-of-type(1),
-    :root table.items-list.effects-list thead td:nth-of-type(1),
-    :root table.items-list.effects-list tbody th:nth-of-type(1),
-    :root table.items-list.effects-list tbody td:nth-of-type(1) {
-      width: 40%; }
-    html table.items-list.effects-list thead th:nth-of-type(2),
-    html table.items-list.effects-list thead td:nth-of-type(2),
-    html table.items-list.effects-list tbody th:nth-of-type(2),
-    html table.items-list.effects-list tbody td:nth-of-type(2), :root table.items-list.effects-list thead th:nth-of-type(2),
-    :root table.items-list.effects-list thead td:nth-of-type(2),
-    :root table.items-list.effects-list tbody th:nth-of-type(2),
-    :root table.items-list.effects-list tbody td:nth-of-type(2) {
-      width: 30%;
-      text-align: center; }
-    html table.items-list.effects-list thead th:nth-of-type(3),
-    html table.items-list.effects-list thead td:nth-of-type(3),
-    html table.items-list.effects-list tbody th:nth-of-type(3),
-    html table.items-list.effects-list tbody td:nth-of-type(3), :root table.items-list.effects-list thead th:nth-of-type(3),
-    :root table.items-list.effects-list thead td:nth-of-type(3),
-    :root table.items-list.effects-list tbody th:nth-of-type(3),
-    :root table.items-list.effects-list tbody td:nth-of-type(3) {
-      width: 15%;
-      text-align: center; }
-    html table.items-list.effects-list thead th:nth-of-type(4),
-    html table.items-list.effects-list thead td:nth-of-type(4),
-    html table.items-list.effects-list tbody th:nth-of-type(4),
-    html table.items-list.effects-list tbody td:nth-of-type(4), :root table.items-list.effects-list thead th:nth-of-type(4),
-    :root table.items-list.effects-list thead td:nth-of-type(4),
-    :root table.items-list.effects-list tbody th:nth-of-type(4),
-    :root table.items-list.effects-list tbody td:nth-of-type(4) {
-      width: 15%;
-      text-align: right; }
-    html table.items-list.effects-list thead td,
-    html table.items-list.effects-list tbody td, :root table.items-list.effects-list thead td,
-    :root table.items-list.effects-list tbody td {
-      line-height: 24px;
-      margin: 0;
-      vertical-align: middle; }
-    html table.items-list.effects-list thead img,
-    html table.items-list.effects-list tbody img, :root table.items-list.effects-list thead img,
-    :root table.items-list.effects-list tbody img {
-      height: 24px;
-      width: 24px;
-      vertical-align: middle; }
-    html table.items-list.effects-list thead h4,
-    html table.items-list.effects-list tbody h4, :root table.items-list.effects-list thead h4,
-    :root table.items-list.effects-list tbody h4 {
-      display: inline-block;
-      line-height: 24px;
-      margin: 0;
-      vertical-align: middle; }
+  html table, :root table {
+    border-collapse: collapse; }
+    html table thead th, :root table thead th {
+      background-color: var(--blades-white);
+      text-shadow: none;
+      color: var(--blades-black);
+      font-family: var(--font-emphasis);
+      font-weight: normal;
+      font-size: 20px;
+      font-variant: small-caps;
+      padding: 2px; }
   html figure, :root figure {
     display: table;
     margin: 1rem auto; }
@@ -725,30 +676,6 @@ html, :root {
     outline: 1px dotted var(--blades-white);
     padding: 0 0.3125rem;
     margin: 0 0.3125rem; }
-  html .clock-zero-label, :root .clock-zero-label {
-    color: var(--blades-white); }
-  html .stripe,
-  html .stripe label, :root .stripe,
-  :root .stripe label {
-    background-color: var(--blades-white) !important;
-    color: var(--blades-black) !important;
-    height: 1.5rem;
-    line-height: 1.5rem;
-    line-height: 1.5rem; }
-  html .stripe-tooth-body label, :root .stripe-tooth-body label {
-    color: var(--blades-black) !important; }
-  html label.black-label, :root label.black-label {
-    background-color: var(--blades-white);
-    color: var(--blades-black) !important; }
-  html .label-stripe, :root .label-stripe {
-    background-color: var(--blades-grey); }
-  html .label-stripe-gray, :root .label-stripe-gray {
-    margin: 0; }
-    html .label-stripe-gray th,
-    html .label-stripe-gray th > *:not(:hover), :root .label-stripe-gray th,
-    :root .label-stripe-gray th > *:not(:hover) {
-      color: var(--blades-white-bright);
-      text-shadow: 1px 1px 0px var(--blades-black-dark); }
   html .labelled-item, :root .labelled-item {
     display: flex;
     flex-wrap: nowrap;

@@ -10,32 +10,35 @@ import U from "../core/utilities.js";
 class BladesSheet extends ActorSheet {
     async getData() {
         const data = await super.getData();
-        const actorData = data.data;
-        this._linkEmbeddedActors(actorData);
-        this._filterTraumaConditions(actorData);
+        eLog.log("[BladesSheet] super.getData()", { ...data });
+        const actorData = data.actor;
+        const actorSystem = actorData.system;
+        this._linkEmbeddedActors(actorSystem);
+        this._filterTraumaConditions(actorSystem);
         Object.assign(data, {
             editable: this.options.editable,
             isGM: game.user.isGM,
             actor: actorData,
-            data: actorData.data
+            data: actorSystem
         });
+        eLog.log("[BladesSheet] return getData()", { ...data });
         return data;
     }
-    _linkEmbeddedActors(actorData) {
-        if (!actorData.data.crew) {
+    _linkEmbeddedActors(actorSystem) {
+        if (typeof actorSystem.crew !== "string") {
             return;
         }
-        const crew = game.actors.get(actorData.data.crew);
+        const crew = game.actors.get(actorSystem.crew);
         if (crew && crew.type === "crew") {
-            actorData.data.crew = crew;
+            actorSystem.crew = crew;
         }
     }
-    _filterTraumaConditions(actorData) {
-        if (!actorData.data.trauma?.list) {
+    _filterTraumaConditions(actorSystem) {
+        if (!actorSystem.trauma?.list) {
             return;
         }
-        actorData.data.trauma.list = U.objFilter(actorData.data.trauma.list, (val) => val === true || val === false);
-        actorData.data.trauma.value = Object.values(actorData.data.trauma.list)
+        actorSystem.trauma.list = U.objFilter(actorSystem.trauma.list, (val) => val === true || val === false);
+        actorSystem.trauma.value = Object.values(actorSystem.trauma.list)
             .filter((val) => val === true)
             .length;
     }
@@ -73,6 +76,8 @@ class BladesSheet extends ActorSheet {
                 });
             });
         });
+        html.find(".clock-container").on("click", this._onClockLeftClick.bind(this));
+        html.find(".clock-container").on("contextmenu", this._onClockRightClick.bind(this));
         html.find(".item-add-popup").on("click", (event) => {
             this._onItemAddClick(event);
         });
@@ -83,6 +88,27 @@ class BladesSheet extends ActorSheet {
         html.find("[data-item-id]").children(".item-name").on("click", this._onItemOpenClick.bind(this));
         html.find("[data-sub-actor-id]").children(".sub-actor-name").on("click", this._onSubActorOpenClick.bind(this));
         html.find(".roll-die-attribute").on("click", this._onRollAttributeDieClick.bind(this));
+    }
+    async _onClockLeftClick(event) {
+        event.preventDefault();
+        const clock$ = $(event.currentTarget).children(".clock[data-target]");
+        if (!clock$[0]) {
+            return;
+        }
+        const target = clock$.data("target");
+        const curValue = U.pInt(clock$.data("value"));
+        const maxValue = U.pInt(clock$.data("size"));
+        this.actor.update({ [target]: U.gsap.utils.wrap(0, maxValue + 1, curValue + 1) });
+    }
+    async _onClockRightClick(event) {
+        event.preventDefault();
+        const clock$ = $(event.currentTarget).children(".clock[data-target]");
+        if (!clock$[0]) {
+            return;
+        }
+        const target = clock$.data("target");
+        const curValue = U.pInt(clock$.data("value"));
+        this.actor.update({ [target]: Math.max(0, curValue - 1) });
     }
     async _onItemOpenClick(event) {
         event.preventDefault();

@@ -1,4 +1,14 @@
 <table class="items-list effects-list">
+	<thead>
+		<tr>
+			<th>
+				<span class="table-title">Active Effects</span>
+				<a class="effect-control" data-action="create" title="Create Effect">
+						<i class="fas fa-plus-square"></i>
+				</a>
+			</th>
+		</tr>
+	</thead>
   <tbody class="item-list">
     {{#each effects as |effect|}}
 				{{#if effect.data.label}}

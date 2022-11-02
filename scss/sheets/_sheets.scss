@@ -122,7 +122,7 @@
 			&:hover:not(.active) {
 				color: var(--blades-black-dark);
 				transform: scale(1.2);
-				background: linear-gradient(to right, 
+				background: linear-gradient(to right,
 						transparent,
 						var(--blades-white) 10%,
 						var(--blades-white-bright) 50%,
@@ -137,6 +137,34 @@
       display: block;
     }
   }
+}
+
+.window-content .clock-container {
+	position: relative;
+	pointer-events: none;
+
+	@import "../components/clocks";
+
+	.clock {
+		top: 50%;
+		left: 50%;
+
+		* { position: absolute }
+
+		.clock-interior {
+			circle { fill: var(--blades-black-fade-strong) }
+
+			.clock-interior-img {
+				pointer-events: auto;
+			}
+		}
+
+		.clock-frame {
+			stroke-width: 15px;
+			stroke: var(--blades-black);
+			overflow: visible;
+		}
+	}
 }
 
 .window-content .turf-list { @import "../components/turf-block" }
