@@ -5,35 +5,44 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-export default class EunoTrackerSheet extends ItemSheet {
-        static get defaultOptions() {
+import BladesItemSheet from "./blades-item-sheet.js";
+import BladesItem from "../blades-item.js";
+export default class BladesTrackerSheet extends BladesItemSheet {
+    static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
-            classes: ["eunos-blades", "sheet", "item", "tracker"],
-            template: "systems/eunos-blades/templates/tracker-sheet.hbs",
-            width: 900,
-            height: "auto",
-            tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content" }],
-            viewPermissions: 0
+            classes: ["eunos-blades", "sheet", "item", "gm-tracker"],
+            template: "systems/eunos-blades/templates/items/gm_tracker-sheet.hbs",
+            width: 700,
+            height: 970
         });
     }
     static async Initialize() {
-        Items.registerSheet("blades", EunoTrackerSheet, { types: ["gm_tracker"], makeDefault: true });
-        return loadTemplates(["systems/eunos-blades/templates/tracker-sheet.hbs"]);
+        game.eunoblades ??= {};
+        Items.registerSheet("blades", BladesTrackerSheet, { types: ["gm_tracker"], makeDefault: true });
+        Hooks.once("ready", async () => {
+            let tracker = game.items.find((item) => item.type === "gm_tracker");
+            if (!(tracker instanceof BladesItem)) {
+                tracker = (await BladesItem.create({
+                    name: "GM Tracker",
+                    type: "gm_tracker",
+                    img: "systems/eunos-blades/assets/icons/gm-tracker.svg"
+                }));
+            }
+            game.eunoblades.Tracker = tracker;
+        });
+        return loadTemplates([
+            "systems/eunos-blades/templates/items/gm_tracker-sheet.hbs"
+        ]);
     }
-        
-        async getData() {
+    async _updateObject(event, formData) {
+        const updateData = await this.object.update(formData);
+        return updateData;
+    }
+    async getData() {
         const data = await super.getData();
-        data.editable = this.options.editable;
-        const actorData = data.data;
-        data.actor = actorData;
-        data.data = actorData.data;
         return data;
     }
-        
-        activateListeners(html) {
+    async activateListeners(html) {
         super.activateListeners(html);
-        if (!this.options.editable) {
-            return;
-        }
     }
 }

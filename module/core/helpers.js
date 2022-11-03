@@ -13,7 +13,6 @@ export async function preloadHandlebarsTemplates() {
         "systems/eunos-blades/templates/parts/button-icon.hbs",
         "systems/eunos-blades/templates/parts/dotline.hbs",
         "systems/eunos-blades/templates/components/armor.hbs",
-        "systems/eunos-blades/templates/parts/attributes.hbs",
         "systems/eunos-blades/templates/parts/turf-list.hbs",
         "systems/eunos-blades/templates/parts/cohort-block.hbs",
         "systems/eunos-blades/templates/parts/factions.hbs",
@@ -76,6 +75,9 @@ const handlebarHelpers = {
             case "<=": {
                 return typeof param1 === "number" && typeof param2 === "number" && param1 <= param2;
             }
+            case "??": {
+                return param1 ?? param2;
+            }
             case "includes": {
                 return Array.isArray(param1) && param1.includes(param2);
             }
@@ -103,6 +105,8 @@ const handlebarHelpers = {
             "*": (p1, p2) => U.pInt(p1) * U.pInt(p2),
             "/": (p1, p2) => U.pInt(p1) / U.pInt(p2),
             "%": (p1, p2) => U.pInt(p1) % U.pInt(p2),
+            "max": (p1, p2) => Math.max(U.pInt(p1), U.pInt(p2)),
+            "min": (p1, p2) => Math.min(U.pInt(p1), U.pInt(p2)),
             "ceil": (p1) => Math.ceil(U.pFloat(p1)),
             "floor": (p1) => Math.floor(U.pFloat(p1))
         };
@@ -332,7 +336,7 @@ const handlebarHelpers = {
         html += "</div>";
         return html;
     },
-        "removeClassPrefix": (classStr) => classStr.replace(/^\(.*?\)\s*/, "")
+        "removeClassPrefix": (playbookStr) => playbookStr.replace(/^\(.*?\)\s*/, "")
 };
 handlebarHelpers.eLog1 = function (...args) { handlebarHelpers.eLog(...[1, ...args]); };
 handlebarHelpers.eLog2 = function (...args) { handlebarHelpers.eLog(...[2, ...args]); };
@@ -345,7 +349,7 @@ export function registerHandlebarHelpers() {
 }
 const removeDuplicatedItemType = (item_data, actor) => {
     const dupe_list = [];
-    const distinct_types = ["crew_reputation", "class", "vice", "background", "heritage"];
+    const distinct_types = ["crew_reputation", "playbook", "vice", "background", "heritage"];
     const allowed_types = ["item"];
     const should_be_distinct = distinct_types.includes(item_data.type);
     actor.items.forEach((item) => {
@@ -387,7 +391,8 @@ const getAttributeLabel = (attribute_name) => {
     }
     return attribute_labels[attribute_name];
 };
-const isAttributeAction = (attribute_name) => !(attribute_name in game.system.model.Actor.character.attributes);
+const isAttributeAction = (attribute_name) => typeof attribute_name === "string"
+    && !(attribute_name in game.system.model.Actor.character.attributes);
 const checkFuzzyEquality = (a, b) => {
     const [strA, strB] = [game.i18n.localize(String(a)), game.i18n.localize(String(b))]
         .map((str) => str.toLowerCase().replace(/\s/g, ""));

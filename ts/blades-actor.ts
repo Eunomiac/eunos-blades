@@ -1,8 +1,12 @@
 import H from "./core/helpers.js";
 import U from "./core/utilities.js";
-import {Randomizers} from "./core/constants.js";
+import C, {Randomizers} from "./core/constants.js";
+
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import {bladesRoll} from "./blades-roll.js";
+import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs.js";
+import BladesItem from "./blades-item.js";
+import type BladesActiveEffect from "./blades-active-effect";
 
 class BladesActor extends Actor {
 
@@ -21,34 +25,86 @@ class BladesActor extends Actor {
 		return super.create(data, options);
 	}
 
-	override getRollData() {
-		const data = super.getRollData() as object & {dice_amount: Record<string,number>};
-		data.dice_amount = this.getAttributeDiceToThrow();
-		return data;
+	// override getRollData() {
+	// 	const data = super.getRollData() as object & {dice_amount: Record<string,number>};
+	// 	data.dice_amount = this.getAttributeDiceToThrow();
+	// 	return data;
+	// }
+
+	override async _onCreateEmbeddedDocuments(embName: string, docs: Array<BladesItem|BladesActiveEffect>, ...args: [
+		Array<Record<string, unknown>>,
+		DocumentModificationOptions,
+		string
+	]) {
+		await super._onCreateEmbeddedDocuments(embName, docs, ...args);
+
+		eLog.log("onCreateEmbeddedDocuments", {embName, docs, args});
+
+		docs.forEach(async (doc) => {
+			// eLog.log(`... docs.forEach -> ${doc.name} = ${(doc as BladesItem).type} (${doc instanceof BladesItem})`, doc);
+			if (doc instanceof BladesItem) {
+				switch (doc.type) {
+					case "playbook": {
+						if (doc.name && doc.name in C.Playbooks) {
+							await this.update({
+								"system.trauma.active": null,
+								"system.trauma.checked": null
+							});
+							const playbookKey: KeyOf<typeof C.Playbooks> = "trauma" in C.Playbooks[doc.name as KeyOf<typeof C.Playbooks>]
+								? doc.name as KeyOf<typeof C.Playbooks>
+								: "DEFAULTS" as KeyOf<typeof C.Playbooks>;
+							const playbookData = C.Playbooks[playbookKey] as ValueOf<typeof C.Playbooks> & {trauma: {list: string[]}};
+							this.update({
+								"system.trauma.active": Object.fromEntries(playbookData.trauma.list.map((tCond: string) => [tCond, true])),
+								"system.trauma.checked": Object.fromEntries(playbookData.trauma.list.map((tCond: string) => [tCond, false]))
+							});
+							break;
+						}
+					}
+					// no default
+				}
+			}
+		});
 	}
 
+	get playbook() {
+		return this.items.find((item) => item.type === "playbook")?.name;
+	}
+
+	get attributes(): Record<Attributes,number> {
+		return {
+			insight: Object.values(this.system.attributes.insight).filter(({value}) => value > 0).length,
+			prowess: Object.values(this.system.attributes.prowess).filter(({value}) => value > 0).length,
+			resolve: Object.values(this.system.attributes.resolve).filter(({value}) => value > 0).length
+		};
+	}
+
+	get actions(): Record<Actions.Any,number> {
+		return U.objMap({
+			...this.system.attributes.insight,
+			...this.system.attributes.prowess,
+			...this.system.attributes.resolve
+		}, ({value, max}: ValueMax) => U.gsap.utils.clamp(value, 0, max)) as Record<Actions.Any, number>;
+	}
+
+	get trauma(): number {
+		return Object.keys(this.system.trauma?.checked ?? {})
+			.filter((traumaName: string) => {
+				return this.system.trauma.active[traumaName] && this.system.trauma.checked[traumaName];
+			})
+			.length;
+	}
+
+	get traumaConditions(): Record<string,boolean> {
+		return U.objFilter(
+			this.system.trauma?.checked ?? {},
+			(v: unknown, traumaName: string) => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName])
+		) as Record<string, boolean>;
+	}
 	/**
    * Calculate Attribute Dice to throw.
    */
-	getAttributeDiceToThrow() {
 
-		// Calculate Dice to throw.
-		const dice_amount: Partial<Record<Attributes|Actions.Any,number>> = {};
-
-		for (const [attribute_name, attribute_data] of Object.entries(this.system.attributes) as Array<[Attributes,Record<Actions.Any, ValueMax>]>) {
-			dice_amount[attribute_name] = 0;
-			for (const [action_name, action_data] of Object.entries(attribute_data) as Array<[Actions.Any, ValueMax]>) {
-				dice_amount[action_name] = U.pInt(action_data.value);
-
-				// We add a +1d for every skill higher than 0.
-				if (dice_amount[action_name]! > 0) {
-					dice_amount[attribute_name]!++;
-				}
-			}
-		}
-
-		return dice_amount;
-	}
 
 	rollAttributePopup(attribute_name: Attributes) {
 
@@ -107,8 +163,8 @@ class BladesActor extends Actor {
 							html = $(html);
 						}
 						const modifier = parseInt(`${html.find('[name="mod"]').attr("value") ?? 0}`);
-						const position = `${html.find('[name="pos"]').attr("value") ?? 0}`;
-						const effect = `${html.find('[name="fx"]').attr("value") ?? 0}`;
+						const position: Positions = `${html.find('[name="pos"]').attr("value") ?? Positions.risky}` as Positions;
+						const effect: EffectLevels = `${html.find('[name="fx"]').attr("value") ?? EffectLevels.standard}` as EffectLevels;
 						const note = `${html.find('[name="note"]').attr("value") ?? 0}`;
 						await this.rollAttribute(attribute_name, modifier, position, effect, note);
 					}
@@ -123,20 +179,20 @@ class BladesActor extends Actor {
 
 	}
 
-	async rollAttribute(attribute_name?: Attributes, additional_dice_amount?: number, position?: string, effect?: string, note?: string) {
-		// attribute_name ??= "";
-		additional_dice_amount ??= 0;
-
-		let dice_amount = 0;
-		if (attribute_name) {
-			const roll_data = this.getRollData();
-			dice_amount += roll_data.dice_amount[attribute_name];
-		} else {
-			dice_amount = 1;
-		}
-		dice_amount += additional_dice_amount;
-
-		await bladesRoll(dice_amount, attribute_name, position, effect, note);
+	async rollAttribute(
+		attribute_name: Attributes,
+		additional_dice_amount = 0,
+		position: Positions = Positions.risky,
+		effect: EffectLevels = EffectLevels.standard,
+		note?: string
+	) {
+		bladesRoll(
+			this.attributes[attribute_name] + additional_dice_amount,
+			attribute_name,
+			position,
+			effect,
+			note
+		);
 	}
 
 	updateRandomizers() {
@@ -327,12 +383,12 @@ class BladesActor extends Actor {
 	}
 }
 
-enum Attributes {
+export enum Attributes {
 	insight = "insight",
 	prowess = "prowess",
 	resolve = "resolve"
 }
-namespace Actions {
+export namespace Actions {
 	export enum Insight {
 		hunt = "hunt",
 		study = "study",
@@ -353,6 +409,18 @@ namespace Actions {
 	}
 	export type Any = Insight|Prowess|Resolve;
 }
+export enum Positions {
+	controlled = "controlled",
+	risky = "risky",
+	desperate = "desperate"
+}
+export enum EffectLevels {
+	extreme = "extreme",
+	great = "great",
+	standard = "standard",
+	limited = "limited",
+	zero = "zero"
+}
 
 type RandomizerData = {
 	isLocked: boolean,
@@ -363,16 +431,9 @@ type RandomizerData = {
 
 type ContactData = {
 	type: string,
-	id: string,
+	actor: string|BladesActor,
 	attitude: 1|-1
 }
-
-type ValueMax = {
-	max: number,
-	value: number
-}
-
-type NamedValueMax = ValueMax & {name: string};
 
 declare interface BladesActor {
 	system: Actor["data"]["data"] & {
@@ -390,7 +451,12 @@ declare interface BladesActor {
 				override: string|{name: string, img: string}
 			},
 			stress: NamedValueMax,
-			trauma: NamedValueMax & {list: Record<string, boolean|null>},
+			trauma: {
+				name: string,
+				max: number,
+				active: Record<string,boolean|null>,
+				checked: Record<string,boolean|null>
+			},
 			healing: ValueMax,
 			experience: {
 				playbook: ValueMax,

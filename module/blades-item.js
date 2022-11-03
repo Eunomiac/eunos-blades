@@ -58,6 +58,22 @@ class BladesItem extends Item {
         }));
     }
     get tier() { return U.pInt(this.parent?.system?.tier); }
+    isKept(actor) {
+        if (this.type !== "ability") {
+            return null;
+        }
+        const playbook = actor.playbook;
+        if (!playbook) {
+            return null;
+        }
+        if (this.system.playbooks?.includes(actor.playbook)) {
+            return true;
+        }
+        if (["Ghost", "Hull", "Vampire"].includes(actor.playbook) && this.system.keepAsGhost) {
+            return true;
+        }
+        return false;
+    }
     _prepareCohort() {
         if (this.parent?.documentName !== "Actor") {
             return;

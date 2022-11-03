@@ -75,6 +75,29 @@
 		margin: 0 #{toRem(5px)};
 	}
 
+	.number-circle {
+		--nc-size: var(--number-circle-size, #{toRem(20px)});
+		--nc-border-width: calc(var(--nc-size) * (1/10));
+		--nc-font-size: calc(var(--nc-size) * (7/10));
+		--nc-border-radius: calc(var(--nc-size) * (5/10));
+		--nc-line-height: calc(var(--nc-size) * (8/10));
+		--nc-drop-shadow: calc(var(--nc-size) * (0.5/10));
+
+		height: var(--nc-size);
+		width: var(--nc-size);
+		font-weight: bold;
+		font-family: "Minion Pro Caption Cond";
+		font-size: var(--nc-font-size);
+		text-align: center;
+		border-radius: var(--nc-border-radius);
+		background: var(--number-circle-bg, var(--blades-grey-dark));
+		color: var(--number-circle-color, var(--blades-white));
+		line-height: var(--nc-line-height);
+		// padding-left: var(--nc-drop-shadow);
+		border: var(--nc-border-width) outset var(--number-circle-color, var(--blades-white));
+		// filter: drop-shadow(var(--nc-drop-shadow) var(--nc-drop-shadow) var(--nc-drop-shadow) var(--blades-black-dark));
+	}
+
 	.labelled-item {
 		display: flex;
 		flex-wrap: nowrap;
@@ -128,11 +151,26 @@
 			text-transform: uppercase;
 		}
 
+		.item-name, .sub-actor-name {
+			pointer-events: none;
+
+			&.item-title, .item-title {
+				pointer-events: auto;
+			}
+		}
+
 		.labelled-item-container {
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			flex-grow: 1;
+			position: relative;
+
+
+			h1,h2,h3,h4,p,blockquote,table {
+				margin: 0;
+				padding: 0;
+			}
 		}
 
 		&.labelled-vertical {
@@ -144,10 +182,29 @@
 				text-align: center;
 			}
 
+			.item-name, .sub-actor-name {
+				text-align: center;
+				white-space: nowrap;
+				font-family: var(--font-emphasis);
+				position: absolute;
+				z-index: 2;
+				transform: translate(-50%, -50%);
+				top: 65%;
+				font-size: var(--labelled-item-name-size);
+				left: 50%;
+				color: var(--blades-white-bright);
+				text-transform: uppercase;
+
+				&.long-name {
+					white-space: initial;
+				}
+			}
+
 			.labelled-item-container {
 				display: flex;
 				flex-direction: column;
 				min-height: toRem(40px);
+				width: 100%;
 
 				> img {
 					position: absolute;
@@ -162,24 +219,6 @@
 					height: 100%;
 					z-index: -1;
 				}
-
-				.item-name, .sub-actor-name {
-					text-align: center;
-					white-space: nowrap;
-					font-family: var(--font-emphasis);
-					position: absolute;
-					z-index: 2;
-					transform: translate(-50%, -50%);
-					top: 65%;
-					font-size: var(--labelled-item-name-size);
-					left: 50%;
-					color: var(--blades-white-bright);
-					text-transform: uppercase;
-
-					&.long-name {
-						white-space: initial;
-					}
-				}
 			}
 		}
 
@@ -190,6 +229,10 @@
 
 			label {
 				text-align: right;
+
+				.item-img {
+					position: absolute;
+				}
 			}
 		}
 	}

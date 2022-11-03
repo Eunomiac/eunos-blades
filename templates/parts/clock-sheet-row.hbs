@@ -31,7 +31,7 @@
 	</td>
 	{{#if clockData}}
 	<td>
-		<select data-type="number" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.size">
+		<select data-dtype="number" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.size">
 			{{#select clockData.size}}
 			<option value="2">2</option>
 			<option value="3">3</option>
@@ -43,7 +43,7 @@
 			<option value="12">12</option>
 			{{/select}}
 		</select>
-		<select data-type="string" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.color" data-color="{{clockData.color}}">
+		<select data-dtype="string" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.color" data-color="{{clockData.color}}">
 			{{#select clockData.color}}
 			<option data-color="yellow" value="yellow">🟨</option>
 			<option data-color="red" value="red">🟥</option>
@@ -53,7 +53,7 @@
 		</select>
 	</td>
 	<td>
-		<select data-type="number" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.value">
+		<select data-dtype="number" name="data.clock_keys.{{keyID}}.clocks.{{clockNum}}.value">
 			{{#select clockData.value}}
 			{{#times_from_0 clockData.size}}
 				<option value="{{this}}">{{this}}</option>

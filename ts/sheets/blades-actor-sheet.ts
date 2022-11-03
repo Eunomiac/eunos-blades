@@ -18,6 +18,43 @@ class BladesActorSheet extends BladesSheet {
 		});
 	}
 
+	static Initialize() {
+		Actors.registerSheet("blades", BladesActorSheet, {types: ["character"], makeDefault: true});
+		Hooks.on("dropActorSheetData", (
+			actor: BladesActor,
+			sheet: BladesActorSheet,
+			{type, uuid}: {type: string, uuid: string}
+		) => {
+			if (type === "Actor") {
+				const droppedActorId = uuid.replace(/^Actor\./, "");
+				const droppedActor = game.actors.get(droppedActorId) as BladesActor|undefined;
+				if (!droppedActor) { return }
+				switch (droppedActor.type) {
+					case "crew": {
+						actor.update({"system.crew": droppedActorId});
+						break;
+					}
+					// no default
+				}
+				return;
+			}
+			if (type === "Item") {
+				const droppedItemId = uuid.replace(/^Item\./, "");
+				const droppedItem = game.items.get(droppedItemId) as BladesItem|undefined;
+				if (!droppedItem) { return }
+				switch (droppedItem.type) {
+					case "playbook": {
+						// actor.changePlaybook(droppedItem.name);
+						break;
+					}
+					// no default
+				}
+				return;
+			}
+		});
+	}
+
+
 	/* -------------------------------------------- */
 
 	override async getData() {
@@ -27,33 +64,67 @@ class BladesActorSheet extends BladesSheet {
 		//~ Calculate Loadout
 		const curLoad = U.gsap.utils.clamp(0, 10, data.items
 			.reduce((tot, i) => tot + (i.type === "item"
-			// @ts-expect-error Need to figure out what's returned by data.items.
 				? U.pInt(i.system.load)
 				: 0
 			), 0));
 
-		//~ Isolate heritage/background/vice/class information
-		const classItem = data.items.find((item) => item.type === "class");
+		//~ Calculate Attribute Totals
+		const attrData = {
+			insight: {value: this.actor.attributes.insight, size: 4},
+			prowess: {value: this.actor.attributes.prowess, size: 4},
+			resolve: {value: this.actor.attributes.resolve, size: 4}
+		};
+
+		//~ Isolate playbook information
+		const playbookItem = data.items.find((item) => item.type === "playbook");
+		const playbook = playbookItem?.name;
 
 		//~ Override Vice item for classes with locked vices
 		const viceOverride = this.actor.system.vice.override as string;
+
+		// ~ Create selection lists for dialogue boxes
+		const availableItems = game.items
+			.filter((item) => this.actor.items
+				.filter((i) => i.name === item.name).length < (item.system.num_available ?? 1));
+
+		const dialogOptions: Record<string,any> = {};
+		dialogOptions.loadItems = {
+			playbook: availableItems.filter((item) => item.type === "item" && item.system.playbooks.includes(playbook)).map((item) => item.name),
+			general: availableItems.filter((item) => item.type === "item" && item.system.playbooks.includes("ANY")).map((item) => item.name)
+		};
+		dialogOptions.abilityItems = {
+			playbook: availableItems.filter((item) => item.type === "ability" && item.system.playbooks.includes(playbook)).map((item) => item.name),
+			veteran: availableItems.filter((item) => item.type === "ability"
+				&& !item.system.playbooks.includes(playbook)
+				&& !item.system.playbooks.includes("Ghost")
+				&& !item.system.playbooks.includes("Hull")
+				&& !item.system.playbooks.includes("Vampire")).map((item) => item.name)
+		};
+		eLog.display("Dialog Options", dialogOptions);
 
 		Object.assign(
 			data,
 			{
 				effects: this.actor.effects,
 				items: {
-					"class": classItem,
-					"classBgImg": classItem && classItem.name in C.ClassTagLines
-						? C.ClassBgImages[classItem.name as KeyOf<typeof C.ClassBgImages>]
-						: classItem?.img ?? "",
-					"heritage": data.items.find((item) => item.type === "heritage"),
-					"background": data.items.find((item) => item.type === "background"),
-					"vice": (viceOverride && JSON.parse(viceOverride)) || data.items.find((item) => item.type === "vice"),
-					"classTagLine": classItem && classItem.name in C.ClassTagLines
-						? C.ClassTagLines[classItem.name as KeyOf<typeof C.ClassTagLines>]
-						: ""
+					heritage: data.items.find((item) => item.type === "heritage"),
+					background: data.items.find((item) => item.type === "background"),
+					vice: (viceOverride && JSON.parse(viceOverride)) || data.items.find((item) => item.type === "vice"),
+					abilities: data.items.filter((item) => item.type === "ability"),
+					loadout: data.items.filter((item) => item.type === "item")
 				},
+				playbook: playbookItem
+					? {
+							id: playbookItem.id,
+							name: playbookItem.name ?? "",
+							bgImg: (playbookItem.name ?? "DEFAULTS") in C.Playbooks
+								? C.Playbooks[playbookItem.name as KeyOf<typeof C.Playbooks>].bgImg
+								: "",
+							tagline: (playbookItem.name ?? "DEFAULTS") in C.Playbooks
+								? C.Playbooks[playbookItem.name as KeyOf<typeof C.Playbooks>].tagline
+								: ""
+						}
+					: null,
 				healing_clock: {
 					color: "white",
 					size: this.actor.system.healing.max,
@@ -64,10 +135,16 @@ class BladesActorSheet extends BladesSheet {
 					.map(([armor]) => [armor, this.actor.system.armor.checked[armor as keyof BladesActor["system"]["armor"]["checked"]]])),
 				loadData: {
 					curLoad,
-					curLoadLevel: C.Loadout.levels[Object.values(this.actor.system.loadout.levels)
-						.find((load) => load >= curLoad) ?? 4],
+					selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected)) as "heavy"|"normal"|"light"|"encumbered"],
 					selections: C.Loadout.selections,
 					selLoadLevel: this.actor.system.loadout.selected
+				},
+				attributes: attrData,
+				traumaData: {
+					name: this.actor.system.trauma.name,
+					value: this.actor.trauma,
+					max: this.actor.system.trauma.max,
+					displayed: this.actor.traumaConditions
 				}
 			}
 		);
@@ -138,13 +215,14 @@ class BladesActorSheet extends BladesSheet {
 			},
 			mouseenter: function() {
 				const targetArmor = self._getHoverArmor();
+				eLog.log("Mouse Enter", targetArmor, this, $(this), $(this).next());
 				if (!targetArmor) { return }
-				$(this).children(`.svg-armor.armor-${targetArmor}`).addClass("hover-over");
+				$(this).siblings(`.svg-armor.armor-${targetArmor}`).addClass("hover-over");
 			},
 			mouseleave: function() {
 				const targetArmor = self._getHoverArmor();
 				if (!targetArmor) { return }
-				$(this).children(`.svg-armor.armor-${targetArmor}`).removeClass("hover-over");
+				$(this).siblings(`.svg-armor.armor-${targetArmor}`).removeClass("hover-over");
 			}
 		});
 
@@ -159,21 +237,21 @@ class BladesActorSheet extends BladesSheet {
 			},
 			mouseenter: function() {
 				if (!self.activeArmor.includes("special") || self.activeArmor.length === 1) { return }
-				$(this).children(".svg-armor.armor-special").addClass("hover-over");
+				$(this).siblings(".svg-armor.armor-special").addClass("hover-over");
 			},
 			mouseleave: function() {
 				if (!self.activeArmor.includes("special") || self.activeArmor.length === 1) { return }
-				$(this).children(".svg-armor.armor-special").removeClass("hover-over");
+				$(this).siblings(".svg-armor.armor-special").removeClass("hover-over");
 			}
 		});
 
 		//~ Update Inventory Item
-		html.find(".item-body").on({
-			click: function() {
-				const element = $(this).parents(".item");
-				const item = self.actor.items.get(element.data("itemId"));
-				item?.sheet?.render(true);
-			}});
+		// html.find(".item-body").on({
+		// 	click: function() {
+		// 		const element = $(this).parents(".item");
+		// 		const item = self.actor.items.get(element.data("itemId"));
+		// 		item?.sheet?.render(true);
+		// 	}});
 
 		//~ Delete Inventory Item
 		html.find(".item-delete").on({

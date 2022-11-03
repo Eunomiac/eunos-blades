@@ -3,8 +3,7 @@
 		"types": [
 			"character",
 			"npc",
-			"crew",
-			"factions"
+			"crew"
 		],
 		"character": {
 			"full_name": "",
@@ -22,10 +21,10 @@
 			},
 			"stress": { "value": 0, "max": 9, "name": "Stress" },
 			"trauma": {
-				"value": 0,
+				"name": "Trauma",
 				"max": 4,
-				"list": {},
-				"name": "Trauma"
+				"active": {},
+				"checked": {}
 			},
 			"healing": { "value": 0, "max": 4 },
 			"experience": {
@@ -94,6 +93,11 @@
 					"consort": { "value": 0, "max": 3 },
 					"sway": { "value": 0, "max": 3 }
 				}
+			},
+			"resistance_bonuses": {
+				"insight": 0,
+				"prowess": 0,
+				"resolve": 0
 			}
 		},
 		"crew": {
@@ -137,9 +141,6 @@
 				0
 			]
 		},
-		"factions": {
-			"name": ""
-		},
 		"npc": {
 			"name": "",
 			"alias": "",
@@ -174,38 +175,30 @@
 	},
 	"Item": {
 		"types": [
-			"faction",
-			"item",
-			"class",
 			"ability",
-			"heritage",
 			"background",
-			"vice",
-			"crew_upgrade",
+			"clock_keeper",
 			"cohort",
-			"crew_type",
-			"crew_reputation",
-			"crew_upgrade",
 			"crew_ability",
+			"crew_reputation",
+			"crew_type",
+			"crew_upgrade",
+			"faction",
 			"gm_tracker",
-			"clock_keeper"
+			"heritage",
+			"item",
+			"playbook",
+			"vice",
+			"class"
 		],
 		"templates": {
-			"default": {
-				"description": ""
-			},
 			"ability": {
 				"description": "",
-				"class": "",
-				"price": 1,
-				"purchased": false,
-				"class_default": false
+				"playbooks": []
 			}
 		},
 		"faction": {
-			"templates": [
-				"default"
-			],
+			"description": "",
 			"type": "",
 			"tier": 0,
 			"goal_1": "",
@@ -243,84 +236,40 @@
 			}
 		},
 		"item": {
-			"templates": [
-				"default"
-			],
-			"class": "",
+			"description": "",
+			"playbooks": [],
 			"load": 0,
-			"uses": 1,
-			"additional_info": "",
-			"equipped": false,
+			"uses": {"value": 0, "max": 1},
 			"num_available": 1
 		},
-		"class": {
-			"templates": [
-				"default"
-			],
-			"experience_clues": [],
-			"base_skills": {
-				"hunt": [
-					0
-				],
-				"study": [
-					0
-				],
-				"survey": [
-					0
-				],
-				"tinker": [
-					0
-				],
-				"finesse": [
-					0
-				],
-				"prowl": [
-					0
-				],
-				"skirmish": [
-					0
-				],
-				"wreck": [
-					0
-				],
-				"attune": [
-					0
-				],
-				"command": [
-					0
-				],
-				"consort": [
-					0
-				],
-				"sway": [
-					0
-				]
-			}
+		"playbook": {
+			"bgImg": "",
+			"tagline": "",
+			"description": "",
+			"starting_stats": {},
+			"trauma_conditions": [],
+			"starting_abilities": []
 		},
 		"ability": {
-			"templates": [
-				"ability"
-			]
+			"description": "",
+			"playbooks": [],
+			"keepAsGhost": false
 		},
 		"heritage": {
-			"templates": [
-				"default"
-			]
+			"description": ""
 		},
 		"background": {
-			"templates": [
-				"default"
-			]
+			"description": ""
 		},
 		"vice": {
-			"templates": [
-				"default"
-			]
+			"description": "",
+			"purveyors": {
+				"options": [],
+				"selected": ""
+			}
 		},
 		"cohort": {
-			"templates": [
-				"default"
-			],
+			"description": "",
 			"cohort": [
 				"Gang"
 			],
@@ -441,20 +390,15 @@
 			"armor": false
 		},
 		"crew_reputation": {
-			"templates": [
-				"default"
-			]
+			"description": ""
 		},
 		"crew_upgrade": {
-			"templates": [
-				"ability"
-			],
-			"crew_type": ""
+			"description": "",
+			"crew_types": []
 		},
 		"crew_ability": {
-			"templates": [
-				"ability"
-			]
+			"description": "",
+			"crew_types": []
 		},
 		"crew_type": {
 			"description": "",

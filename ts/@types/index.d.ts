@@ -13,7 +13,8 @@ declare global {
 			isGM: boolean
 		}
 		eunoblades: {
-			ClockKeeper?: BladesItem
+			ClockKeeper?: BladesItem,
+			Tracker?: BladesItem
 		},
 		system: {
 			model: {
@@ -115,4 +116,10 @@ declare global {
 	declare const socketlib: SocketLib;
 	// #endregion ▄▄▄▄▄ SocketLib ▄▄▄▄▄
 
+	type ValueMax = {
+		max: number,
+		value: number
+	}
+
+	type NamedValueMax = ValueMax & {name: string};
 }

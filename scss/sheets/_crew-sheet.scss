@@ -40,7 +40,7 @@
                     margin-top: 14px;
                     border: none;
 
-                    .item-class-label {
+                    .item-playbook-label {
                         flex-grow: 0;
                         flex-shrink: 2;
                         flex-basis: 25%;
@@ -138,12 +138,12 @@
                 border: none;
             }
         }
-        section.crew-class-xp {
+        section.crew-playbook-xp {
             position: relative;
             top: -20px;
             margin-bottom: -24px;
-            .crew-class-box {
-                .crew-class {
+            .crew-playbook-box {
+                .crew-playbook {
                     border-color: var(--blades-grey);
                     .big-name {
                         color: var(--blades-white-bright);

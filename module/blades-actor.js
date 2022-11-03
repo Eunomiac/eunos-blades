@@ -7,8 +7,9 @@
 
 import H from "./core/helpers.js";
 import U from "./core/utilities.js";
-import { Randomizers } from "./core/constants.js";
+import C, { Randomizers } from "./core/constants.js";
 import { bladesRoll } from "./blades-roll.js";
+import BladesItem from "./blades-item.js";
 class BladesActor extends Actor {
     static async create(data, options = {}) {
         data.token = data.token || {};
@@ -21,23 +22,60 @@ class BladesActor extends Actor {
         }
         return super.create(data, options);
     }
-    getRollData() {
-        const data = super.getRollData();
-        data.dice_amount = this.getAttributeDiceToThrow();
-        return data;
-    }
-        getAttributeDiceToThrow() {
-        const dice_amount = {};
-        for (const [attribute_name, attribute_data] of Object.entries(this.system.attributes)) {
-            dice_amount[attribute_name] = 0;
-            for (const [action_name, action_data] of Object.entries(attribute_data)) {
-                dice_amount[action_name] = U.pInt(action_data.value);
-                if (dice_amount[action_name] > 0) {
-                    dice_amount[attribute_name]++;
+    
+    async _onCreateEmbeddedDocuments(embName, docs, ...args) {
+        await super._onCreateEmbeddedDocuments(embName, docs, ...args);
+        eLog.log("onCreateEmbeddedDocuments", { embName, docs, args });
+        docs.forEach(async (doc) => {
+            if (doc instanceof BladesItem) {
+                switch (doc.type) {
+                    case "playbook": {
+                        if (doc.name && doc.name in C.Playbooks) {
+                            await this.update({
+                                "system.trauma.active": null,
+                                "system.trauma.checked": null
+                            });
+                            const playbookKey = "trauma" in C.Playbooks[doc.name]
+                                ? doc.name
+                                : "DEFAULTS";
+                            const playbookData = C.Playbooks[playbookKey];
+                            this.update({
+                                "system.trauma.active": Object.fromEntries(playbookData.trauma.list.map((tCond) => [tCond, true])),
+                                "system.trauma.checked": Object.fromEntries(playbookData.trauma.list.map((tCond) => [tCond, false]))
+                            });
+                            break;
+                        }
+                    }
                 }
             }
-        }
-        return dice_amount;
+        });
+    }
+    get playbook() {
+        return this.items.find((item) => item.type === "playbook")?.name;
+    }
+    get attributes() {
+        return {
+            insight: Object.values(this.system.attributes.insight).filter(({ value }) => value > 0).length,
+            prowess: Object.values(this.system.attributes.prowess).filter(({ value }) => value > 0).length,
+            resolve: Object.values(this.system.attributes.resolve).filter(({ value }) => value > 0).length
+        };
+    }
+    get actions() {
+        return U.objMap({
+            ...this.system.attributes.insight,
+            ...this.system.attributes.prowess,
+            ...this.system.attributes.resolve
+        }, ({ value, max }) => U.gsap.utils.clamp(value, 0, max));
+    }
+    get trauma() {
+        return Object.keys(this.system.trauma?.checked ?? {})
+            .filter((traumaName) => {
+            return this.system.trauma.active[traumaName] && this.system.trauma.checked[traumaName];
+        })
+            .length;
+    }
+    get traumaConditions() {
+        return U.objFilter(this.system.trauma?.checked ?? {}, (v, traumaName) => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName]));
     }
     rollAttributePopup(attribute_name) {
         const attribute_label = U.tCase(attribute_name);
@@ -93,8 +131,8 @@ class BladesActor extends Actor {
                             html = $(html);
                         }
                         const modifier = parseInt(`${html.find('[name="mod"]').attr("value") ?? 0}`);
-                        const position = `${html.find('[name="pos"]').attr("value") ?? 0}`;
-                        const effect = `${html.find('[name="fx"]').attr("value") ?? 0}`;
+                        const position = `${html.find('[name="pos"]').attr("value") ?? Positions.risky}`;
+                        const effect = `${html.find('[name="fx"]').attr("value") ?? EffectLevels.standard}`;
                         const note = `${html.find('[name="note"]').attr("value") ?? 0}`;
                         await this.rollAttribute(attribute_name, modifier, position, effect, note);
                     }
@@ -107,18 +145,8 @@ class BladesActor extends Actor {
             "default": "yes"
         }).render(true);
     }
-    async rollAttribute(attribute_name, additional_dice_amount, position, effect, note) {
-        additional_dice_amount ??= 0;
-        let dice_amount = 0;
-        if (attribute_name) {
-            const roll_data = this.getRollData();
-            dice_amount += roll_data.dice_amount[attribute_name];
-        }
-        else {
-            dice_amount = 1;
-        }
-        dice_amount += additional_dice_amount;
-        await bladesRoll(dice_amount, attribute_name, position, effect, note);
+    async rollAttribute(attribute_name, additional_dice_amount = 0, position = Positions.risky, effect = EffectLevels.standard, note) {
+        bladesRoll(this.attributes[attribute_name] + additional_dice_amount, attribute_name, position, effect, note);
     }
     updateRandomizers() {
         const rStatus = {
@@ -274,13 +302,13 @@ class BladesActor extends Actor {
         return text;
     }
 }
-var Attributes;
+export var Attributes;
 (function (Attributes) {
     Attributes["insight"] = "insight";
     Attributes["prowess"] = "prowess";
     Attributes["resolve"] = "resolve";
 })(Attributes || (Attributes = {}));
-var Actions;
+export var Actions;
 (function (Actions) {
     let Insight;
     (function (Insight) {
@@ -304,4 +332,18 @@ var Actions;
         Resolve["sway"] = "sway";
     })(Resolve = Actions.Resolve || (Actions.Resolve = {}));
 })(Actions || (Actions = {}));
+export var Positions;
+(function (Positions) {
+    Positions["controlled"] = "controlled";
+    Positions["risky"] = "risky";
+    Positions["desperate"] = "desperate";
+})(Positions || (Positions = {}));
+export var EffectLevels;
+(function (EffectLevels) {
+    EffectLevels["extreme"] = "extreme";
+    EffectLevels["great"] = "great";
+    EffectLevels["standard"] = "standard";
+    EffectLevels["limited"] = "limited";
+    EffectLevels["zero"] = "zero";
+})(EffectLevels || (EffectLevels = {}));
 export default BladesActor;

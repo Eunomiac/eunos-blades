@@ -4,12 +4,15 @@ import type BladesItem from "../blades-item.js";
 import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type BladesActor from "../blades-actor.js";
+import EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs.js";
+import {ToObjectFalseType} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
 
 declare global {
 	class BladesSheet<
 		Options extends BladesSheet.Options = BladesSheet.Options,
 		Data extends object = BladesSheet.Data<Options>
 	> extends ActorSheet<BladesSheet.Options, BladesSheet.Data> {
+
 		get actor(): BladesActor;
 		override getData(options?: Partial<Options>): BladesSheet.Data | Promise<BladesSheet.Data>;
 	}
@@ -17,7 +20,9 @@ declare global {
 	namespace BladesSheet {
     interface Options extends ActorSheet.Options { }
 
-		interface Data<Options extends BladesSheet.Options = BladesSheet.Options> extends ActorSheet.Data<BladesSheet.Options> {
+		interface Data<Opts extends Options = Options> extends ActorSheet.Data<Opts> {
+			items: EmbeddedCollection<typeof BladesItem, BladesActor["data"]>
+				& ToObjectFalseType<EmbeddedCollection<typeof BladesItem, BladesActor["data"]>>,
 			system: BladesActor["system"]
 		}
 	}
@@ -33,9 +38,6 @@ class BladesSheet extends ActorSheet {
 
 		// Link Embedded Actors
 		this._linkEmbeddedActors(actorSystem);
-
-		// Filter trauma conditions
-		this._filterTraumaConditions(actorSystem);
 
 		Object.assign(
 			data,
@@ -53,22 +55,22 @@ class BladesSheet extends ActorSheet {
 	}
 
 	_linkEmbeddedActors(actorSystem: BladesActor["system"]) {
-		if (typeof actorSystem.crew !== "string") { return }
-		const crew = game.actors.get(actorSystem.crew) as BladesActor|undefined;
-		if (crew && crew.type === "crew") {
-			actorSystem.crew = crew;
-		}
-	}
+		function embedActor(target: string, type?: string) {
+			const targetVal = getProperty(actorSystem, target);
+			if (typeof targetVal !== "string") { return }
 
-	_filterTraumaConditions(actorSystem: BladesActor["system"]) {
-		if (!actorSystem.trauma?.list) { return }
-		actorSystem.trauma.list = U.objFilter(
-			actorSystem.trauma.list,
-			(val: unknown): val is true|false => val === true || val === false
-		);
-		actorSystem.trauma.value = Object.values(actorSystem.trauma.list)
-			.filter((val) => val === true)
-			.length;
+			const actor = game.actors.get(targetVal) as BladesActor|undefined;
+			if (!actor) { return }
+			if (type && actor.type !== type) { return }
+
+			setProperty(actorSystem, target, actor);
+		}
+
+		[
+			["crew", "crew"],
+			["acquaintances.vice_purveyor"],
+			...[0,1,2,3,4,5,6,7,8,9,10].map((num) => [`acquaintances.list.${num}.actor`])
+		].forEach((args: string[]) => embedActor(...args as [string, string?]));
 	}
 
 	override activateListeners(html: JQuery<HTMLElement>) {
@@ -89,7 +91,17 @@ class BladesSheet extends ActorSheet {
 
 			if ($(elem).hasClass("locked")) { return }
 
-			const target = $(elem).data("target");
+			let targetDoc: BladesActor|BladesItem = this.actor as BladesActor;
+			let targetField = $(elem).data("target");
+
+			if (targetField.startsWith("item")) {
+				targetField = targetField.replace(/^item\./, "");
+				const itemId = $(elem).closest("[data-item-id]").data("itemId");
+				if (!itemId) { return }
+				const item = this.actor.items.get(itemId);
+				if (!item) { return }
+				targetDoc = item as BladesItem;
+			}
 
 			const curValue = U.pInt($(elem).data("value"));
 			$(elem).find(".dot").each((j, dot) => {
@@ -97,14 +109,14 @@ class BladesSheet extends ActorSheet {
 					event.preventDefault();
 					const thisValue = U.pInt($(dot).data("value"));
 					if (thisValue !== curValue) {
-						this.actor.update({[target]: thisValue});
+						targetDoc.update({[targetField]: thisValue});
 					}
 				});
 				$(dot).on("contextmenu", (event: ContextMenuEvent) => {
 					event.preventDefault();
 					const thisValue = U.pInt($(dot).data("value")) - 1;
 					if (thisValue !== curValue) {
-						this.actor.update({[target]: thisValue});
+						targetDoc.update({[targetField]: thisValue});
 					}
 				});
 			});
@@ -124,15 +136,15 @@ class BladesSheet extends ActorSheet {
 			html.on("change", "textarea", this._onChangeInput.bind(this));  // Use delegated listener on the form
 		}
 
-		html.find("[data-item-id]").children(".item-name").on("click", this._onItemOpenClick.bind(this));
-		html.find("[data-sub-actor-id]").children(".sub-actor-name").on("click", this._onSubActorOpenClick.bind(this));
+		html.find("[data-item-id]").find(".item-title").on("click", this._onItemOpenClick.bind(this));
+		html.find("[data-sub-actor-id]").find(".sub-actor-name").on("click", this._onSubActorOpenClick.bind(this));
 
 		html.find(".roll-die-attribute").on("click", this._onRollAttributeDieClick.bind(this));
 	}
 
 	async _onClockLeftClick(event: ClickEvent) {
 		event.preventDefault();
-		const clock$ = $(event.currentTarget).children(".clock[data-target]");
+		const clock$ = $(event.currentTarget).find(".clock[data-target]");
 		if (!clock$[0]) { return }
 		const target = clock$.data("target");
 		const curValue = U.pInt(clock$.data("value"));
@@ -142,7 +154,7 @@ class BladesSheet extends ActorSheet {
 
 	async _onClockRightClick(event: ContextMenuEvent) {
 		event.preventDefault();
-		const clock$ = $(event.currentTarget).children(".clock[data-target]");
+		const clock$ = $(event.currentTarget).find(".clock[data-target]");
 		if (!clock$[0]) { return }
 		const target = clock$.data("target");
 		const curValue = U.pInt(clock$.data("value"));

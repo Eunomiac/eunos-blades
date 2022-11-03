@@ -78,10 +78,10 @@
 		}
 
 		td {
-			select[data-type="number"] {
+			select[data-dtype="number"] {
 				vertical-align: top;
 
-				&[data-type="number"] {
+				&[data-dtype="number"] {
 					font-family: var(--font-emphasis);
 					font-size: 18px;
 					color: var(--blades-white-bright);

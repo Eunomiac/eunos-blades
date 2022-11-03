@@ -3,6 +3,7 @@ import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src
 import type BladesActor from "../blades-actor.js";
 import type BladesItem from "../blades-item.js";
 import {HbsSvgData, SVGDATA} from "./constants.js";
+import {Attributes} from "../blades-actor.js";
 
 /**
  * Define a set of template paths to pre-load
@@ -19,7 +20,6 @@ export async function preloadHandlebarsTemplates() {
 		"systems/eunos-blades/templates/components/armor.hbs",
 
 		// Actor Sheet Partials
-		"systems/eunos-blades/templates/parts/attributes.hbs",
 		"systems/eunos-blades/templates/parts/turf-list.hbs",
 		"systems/eunos-blades/templates/parts/cohort-block.hbs",
 		"systems/eunos-blades/templates/parts/factions.hbs",
@@ -64,6 +64,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 			case "<": { return typeof param1 === "number" && typeof param2 === "number" && param1 < param2 }
 			case ">=": { return typeof param1 === "number" && typeof param2 === "number" && param1 >= param2 }
 			case "<=": { return typeof param1 === "number" && typeof param2 === "number" && param1 <= param2 }
+			case "??": { return param1 ?? param2 }
 			case "includes": { return Array.isArray(param1) && param1.includes(param2) }
 			case "in": {
 				if (Array.isArray(param2)) {
@@ -87,6 +88,8 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 			"*": (p1, p2) => U.pInt(p1) * U.pInt(p2),
 			"/": (p1, p2) => U.pInt(p1) / U.pInt(p2),
 			"%": (p1, p2) => U.pInt(p1) % U.pInt(p2),
+			"max": (p1, p2) => Math.max(U.pInt(p1), U.pInt(p2)),
+			"min": (p1, p2) => Math.min(U.pInt(p1), U.pInt(p2)),
 			"ceil": (p1) => Math.ceil(U.pFloat(p1)),
 			"floor": (p1) => Math.floor(U.pFloat(p1))
 		};
@@ -352,7 +355,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 	/**
 	 * Remove class indicators from item names
 	 */
-	"removeClassPrefix": (classStr: string) => classStr.replace(/^\(.*?\)\s*/, "")
+	"removeClassPrefix": (playbookStr: string) => playbookStr.replace(/^\(.*?\)\s*/, "")
 };
 
 handlebarHelpers.eLog1 = function(...args) { handlebarHelpers.eLog(...[1, ...args]) };
@@ -373,7 +376,7 @@ export function registerHandlebarHelpers() {
  */
 const removeDuplicatedItemType = (item_data: ItemData, actor: BladesActor): string[] => {
 	const dupe_list: string[] = [];
-	const distinct_types = ["crew_reputation", "class", "vice", "background", "heritage"];
+	const distinct_types = ["crew_reputation", "playbook", "vice", "background", "heritage"];
 	const allowed_types = ["item"];
 	const should_be_distinct = distinct_types.includes(item_data.type);
 
@@ -438,7 +441,8 @@ const getAttributeLabel = (attribute_name: string): string => {
 /**
  * Returns true if the attribute is an action
  */
-const isAttributeAction = (attribute_name: string): boolean => !(attribute_name in game.system.model.Actor.character.attributes);
+const isAttributeAction = (attribute_name: unknown): attribute_name is Attributes => typeof attribute_name === "string"
+	&& !(attribute_name in game.system.model.Actor.character.attributes);
 
 
 /**

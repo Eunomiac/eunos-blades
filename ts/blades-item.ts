@@ -1,4 +1,4 @@
-// import EunoClockKeeperSheet from "./clock-keeper-sheet.js";
+// import BladesClockKeeperSheet from "./clock-keeper-sheet.js";
 import H from "./core/helpers.js";
 import C, {SVGDATA} from "./core/constants.js";
 import U from "./core/utilities.js";
@@ -50,6 +50,19 @@ class BladesItem extends Item {
 	}
 
 	get tier() { return U.pInt(this.parent?.system?.tier) }
+
+	isKept(actor: BladesActor): boolean|null {
+		if (this.type !== "ability") { return null }
+		const playbook = actor.playbook;
+		if (!playbook) { return null }
+		if (this.system.playbooks?.includes(actor.playbook)) {
+			return true;
+		}
+		if (["Ghost", "Hull", "Vampire"].includes(actor.playbook) && this.system.keepAsGhost) {
+			return true;
+		}
+		return false;
+	}
 
 	_prepareCohort() {
 		if (this.parent?.documentName !== "Actor") { return }
@@ -230,6 +243,7 @@ declare interface BladesItem {
 		goal_2?: string,
 		goal_2_clock_value?: number,
 		goal_2_clock_max?: number,
+		playbooks?: string[],
 		size_list_2?: string,
 		turf?: string,
 		assets?: string,
@@ -256,6 +270,7 @@ declare interface BladesItem {
 		},
 		load?: number,
 		uses?: number,
+		keepAsGhost?: boolean,
 		additional_info?: string,
 		equipped?: false,
 		num_available?: number

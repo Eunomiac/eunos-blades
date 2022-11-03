@@ -7,18 +7,17 @@
     </header>
 
     {{!-- Sheet Body --}}
-    <section class="sheet-body flex">
+    <section class="sheet-body flex-vertical">
       {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
-    </section>
-
-    <div class="flex-vertical">
-      <label class="label-stripe">{{localize "BITD.AbilityPrice"}}</label>
-      <input data-dtype="Number" id="ability-price" type="text" name="data.price" value="{{data.price}}" placeholder="{{localize 'BITD.AbilityPrice'}}">
-      <label class="label-stripe">{{localize "BITD.AbilityClass"}}</label>
-      <input data-dtype="String" id="ability-class" type="text" name="data.class" value="{{data.class}}" placeholder="{{localize 'BITD.AbilityClass'}}">
+      <label class="label-stripe">{{localize "BITD.Loadout"}}</label>
+      <input data-dtype="Number" type="text" name="data.load" value="{{data.load}}">
+      <label class="label-stripe">{{localize "BITD.Uses"}}</label>
+      <input  data-dtype="Number" id="item-uses" type="text" name="data.uses.max" value="{{data.uses.max}}">
+      <label class="label-stripe">{{localize "BITD.NumberAvailable"}}</label>
+      <input  data-dtype="Number" id="item-num_available" type="text" name="data.num_available" value="{{data.num_available}}">
       {{#if isGM}}
         <div class="label-stripe">{{localize "BITD.Effects"}}</div>
         <div id="effects">{{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}</div>
       {{/if}}
-    </div>
+    </section>
 </form>

@@ -14,7 +14,6 @@ class BladesSheet extends ActorSheet {
         const actorData = data.actor;
         const actorSystem = actorData.system;
         this._linkEmbeddedActors(actorSystem);
-        this._filterTraumaConditions(actorSystem);
         Object.assign(data, {
             editable: this.options.editable,
             isGM: game.user.isGM,
@@ -25,22 +24,25 @@ class BladesSheet extends ActorSheet {
         return data;
     }
     _linkEmbeddedActors(actorSystem) {
-        if (typeof actorSystem.crew !== "string") {
-            return;
+        function embedActor(target, type) {
+            const targetVal = getProperty(actorSystem, target);
+            if (typeof targetVal !== "string") {
+                return;
+            }
+            const actor = game.actors.get(targetVal);
+            if (!actor) {
+                return;
+            }
+            if (type && actor.type !== type) {
+                return;
+            }
+            setProperty(actorSystem, target, actor);
         }
-        const crew = game.actors.get(actorSystem.crew);
-        if (crew && crew.type === "crew") {
-            actorSystem.crew = crew;
-        }
-    }
-    _filterTraumaConditions(actorSystem) {
-        if (!actorSystem.trauma?.list) {
-            return;
-        }
-        actorSystem.trauma.list = U.objFilter(actorSystem.trauma.list, (val) => val === true || val === false);
-        actorSystem.trauma.value = Object.values(actorSystem.trauma.list)
-            .filter((val) => val === true)
-            .length;
+        [
+            ["crew", "crew"],
+            ["acquaintances.vice_purveyor"],
+            ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => [`acquaintances.list.${num}.actor`])
+        ].forEach((args) => embedActor(...args));
     }
     activateListeners(html) {
         super.activateListeners(html);
@@ -57,21 +59,34 @@ class BladesSheet extends ActorSheet {
             if ($(elem).hasClass("locked")) {
                 return;
             }
-            const target = $(elem).data("target");
+            let targetDoc = this.actor;
+            let targetField = $(elem).data("target");
+            if (targetField.startsWith("item")) {
+                targetField = targetField.replace(/^item\./, "");
+                const itemId = $(elem).closest("[data-item-id]").data("itemId");
+                if (!itemId) {
+                    return;
+                }
+                const item = this.actor.items.get(itemId);
+                if (!item) {
+                    return;
+                }
+                targetDoc = item;
+            }
             const curValue = U.pInt($(elem).data("value"));
             $(elem).find(".dot").each((j, dot) => {
                 $(dot).on("click", (event) => {
                     event.preventDefault();
                     const thisValue = U.pInt($(dot).data("value"));
                     if (thisValue !== curValue) {
-                        this.actor.update({ [target]: thisValue });
+                        targetDoc.update({ [targetField]: thisValue });
                     }
                 });
                 $(dot).on("contextmenu", (event) => {
                     event.preventDefault();
                     const thisValue = U.pInt($(dot).data("value")) - 1;
                     if (thisValue !== curValue) {
-                        this.actor.update({ [target]: thisValue });
+                        targetDoc.update({ [targetField]: thisValue });
                     }
                 });
             });
@@ -85,13 +100,13 @@ class BladesSheet extends ActorSheet {
         if (this.options.submitOnChange) {
             html.on("change", "textarea", this._onChangeInput.bind(this));
         }
-        html.find("[data-item-id]").children(".item-name").on("click", this._onItemOpenClick.bind(this));
-        html.find("[data-sub-actor-id]").children(".sub-actor-name").on("click", this._onSubActorOpenClick.bind(this));
+        html.find("[data-item-id]").find(".item-title").on("click", this._onItemOpenClick.bind(this));
+        html.find("[data-sub-actor-id]").find(".sub-actor-name").on("click", this._onSubActorOpenClick.bind(this));
         html.find(".roll-die-attribute").on("click", this._onRollAttributeDieClick.bind(this));
     }
     async _onClockLeftClick(event) {
         event.preventDefault();
-        const clock$ = $(event.currentTarget).children(".clock[data-target]");
+        const clock$ = $(event.currentTarget).find(".clock[data-target]");
         if (!clock$[0]) {
             return;
         }
@@ -102,7 +117,7 @@ class BladesSheet extends ActorSheet {
     }
     async _onClockRightClick(event) {
         event.preventDefault();
-        const clock$ = $(event.currentTarget).children(".clock[data-target]");
+        const clock$ = $(event.currentTarget).find(".clock[data-target]");
         if (!clock$[0]) {
             return;
         }

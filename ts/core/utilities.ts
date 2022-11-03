@@ -183,7 +183,7 @@ const isFunc = (ref: unknown): ref is typeof Function => typeof ref === "functio
 const isInt = (ref: unknown): ref is int => isNumber(ref) && Math.round(ref) === ref;
 const isFloat = (ref: unknown): ref is float => isNumber(ref) && /\./.test(`${ref}`);
 const isPosInt = (ref: unknown): ref is posInt => isInt(ref) && ref >= 0;
-const isIndex = (ref: unknown): ref is Index<unknown> => isList(ref) || isArray(ref);
+const isIndex = <T>(ref: T): ref is T & Index<ValueOf<T>> => isList(ref) || isArray(ref);
 const isIterable = (ref: unknown): ref is Iterable<unknown> => typeof ref === "object" && ref !== null && Symbol.iterator in ref;
 const isHTMLCode = (ref: unknown): ref is HTMLCode => typeof ref === "string" && /^<.*>$/u.test(ref);
 const isHexColor = (ref: unknown): ref is HEXColor => typeof ref === "string" && /^#(([0-9a-fA-F]{2}){3,4}|[0-9a-fA-F]{3,4})$/.test(ref);
@@ -898,11 +898,11 @@ const objExpand = <T>(obj: List<T>): List<T> => {
 
 	return arrayify(expObj) as List<T>;
 };
-const objFlatten = (obj: Index<unknown>) => {
-	const flatObj: List<unknown> = {};
+const objFlatten = <ST extends unknown>(obj: Index<ST>): Record<string, ST> => {
+	const flatObj: Record<string, ST> = {};
 	for (const [key, val] of Object.entries(obj)) {
 		if ((isArray(val) || isList(val)) && hasItems(val)) {
-			for (const [subKey, subVal] of Object.entries(objFlatten(val))) {
+			for (const [subKey, subVal] of Object.entries(objFlatten(val)) as Array<[string,ST]>) {
 				flatObj[`${key}.${subKey}`] = subVal;
 			}
 		} else {
@@ -911,6 +911,23 @@ const objFlatten = (obj: Index<unknown>) => {
 	}
 	return flatObj;
 };
+
+function objNullify<T extends List<any>>(obj: T & Record<KeyOf<T>,null>): Record<KeyOf<T>,null>
+function objNullify<T extends any[]>(obj: T & null[]): null[]
+function objNullify<T>(obj: T): Record<KeyOf<T>,null> | null[] | T {
+	if (!isIndex(obj)) { return obj }
+	if (Array.isArray(obj)) {
+		for (let i = 0; i < obj.length; i++) {
+			obj[i] = null as ValueOf<T>;
+		}
+		return obj as null[];
+	}
+	const test = obj as Record<KeyOf<T>,null>;
+	for (const objKey of Object.keys(obj) as Array<KeyOf<T>>) {
+		(<Record<KeyOf<T>,null>>obj)[objKey] = null;
+	}
+	return obj;
+}
 // #endregion ▄▄▄▄▄ OBJECTS ▄▄▄▄▄
 
 // #region ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████ ~
@@ -1078,18 +1095,18 @@ function getTemplatePath(subFolder: string, fileName: string|string[]) {
 	return fileName.map((fName) => getTemplatePath(subFolder, fName));
 }
 
-function getItemsOfType(itemType: string, user?: User): EunoSystem.Item[] {
+function getItemsOfType(itemType: string, user?: User): SystemDocs.Item[] {
 	const items = game.items.filter((item) => fuzzyMatch(item.type, itemType));
 	return items;
 }
 
-function getActorsOfType(actorType: string, user?: User): EunoSystem.Actor[] {
+function getActorsOfType(actorType: string, user?: User): SystemDocs.Actor[] {
 	const actors = game.actors.filter((actor) => fuzzyMatch(actor.type, actorType));
 	// if (user?.permissions)
 	return actors;
 }
 
-function checkUserPermissions(document: EunoSystem.Sheet, user: User) {
+function checkUserPermissions(document: SystemDocs.Sheet, user: User) {
 	return true;
 }
 // #endregion ▄▄▄▄▄ FOUNDRY ▄▄▄▄▄
@@ -1150,7 +1167,7 @@ export default {
 	// ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████
 	remove, replace, partition,
 	objClean, objMap, objFindKey, objFilter, objForEach, objCompact,
-	objClone, objMerge, objExpand, objFlatten,
+	objClone, objMerge, objExpand, objFlatten, objNullify,
 
 	// ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████
 	getDynamicFunc,

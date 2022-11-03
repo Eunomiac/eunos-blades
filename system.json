@@ -39,13 +39,6 @@
 	},
   "packs": [
     {
-      "name": "class",
-      "label": "Classes",
-      "system": "eunos-blades",
-      "path": "./packs/classes.db",
-      "type": "Item"
-    },
-    {
       "name": "heritage",
       "label": "Heritages",
       "system": "eunos-blades",

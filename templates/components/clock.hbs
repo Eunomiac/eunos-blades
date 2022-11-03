@@ -2,12 +2,13 @@
 	{{#with data as |data|}}
 	{{#with data.value as |value|}}
 	{{#with data.size as |size|}}
-	{{#with data.color as |color|}}
-	<div class="clock-interior" style="clip-path: url(#{{value}}-of-{{size}});">
+	<div class="clock-interior" style="clip-path: url(#{{value}}-of-{{size}}); {{~#if (test value "==" 0)}} opacity: 0;{{/if}}">
 		<svg viewBox="0 0 400 400">
-			<circle cx="200" cy="200" r="200" fill="black" />
+			<circle cx="200" cy="200" r="200" />
 		</svg>
-		<img class="clock-interior-img" src="systems/eunos-blades/assets/clocks/clock-glow-{{color}}.webp" style="{{#if (test value "==" 0)}}opacity: 0;{{/if}}" />
+		{{#if data.color}}
+		<img class="clock-interior-img" src="systems/eunos-blades/assets/clocks/clock-glow-{{data.color}}.webp" style="{{#if (test value "==" 0)}}opacity: 0;{{/if}}" />
+		{{/if}}
 	</div>
 	<svg class="clock-frame" viewBox="0 0 400 400">
 		<g class="segmented" data-size="{{size}}">
@@ -19,7 +20,6 @@
 	{{#unless (test value "==" 0)}}
 	<div class="clock-glow" style="{{#unless (test value "==" size)}}clip-path: url(#{{value}}-of-{{size}});{{/unless}}"></div>
 	{{/unless}}
-	{{/with}}
 	{{/with}}
 	{{/with}}
 	{{/with}}

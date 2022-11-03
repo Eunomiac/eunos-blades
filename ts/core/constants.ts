@@ -4,7 +4,7 @@ import type BladesSheet from "../sheets/blades-sheet";
 import type BladesItemSheet from "../sheets/blades-item-sheet";
 
 declare global {
-	namespace EunoSystem {
+	namespace SystemDocs {
 		export type Actor = BladesActor;
 		export type Item = BladesItem;
 		export type ActorSheet = BladesSheet;
@@ -44,11 +44,13 @@ const C = {
 		gBLUE: "rgba(128, 185, 255, 1)"
 	},
 	Loadout: {
-		selections: ["BITD.Light", "BITD.Normal", "BITD.Heavy"],
+		selections: ["BITD.Light", "BITD.Normal", "BITD.Heavy", "BITD.Encumbered"],
 		levels: ["BITD.Light", "BITD.Normal", "BITD.Heavy", "BITD.Encumbered", "BITD.OverMax"]
 	},
-	Classes: {
+	Playbooks: {
 		DEFAULTS: {
+			bgImg: "",
+			tagline: "",
 			vice: {name: "Vice"},
 			stress: {name: "Stress", max: 9},
 			trauma: {
@@ -64,12 +66,7 @@ const C = {
 				playbook: {max: 8},
 				insight: {max: 6},
 				prowess: {max: 6},
-				resolve: {max: 6},
-				clues: [
-					"",
-					"You expressed your beliefs, drives, heritage, or background.",
-					"You struggled with issues from your vice or traumas during the session."
-				]
+				resolve: {max: 6}
 			},
 			coins: {max: 4},
 			stash: {max: 40},
@@ -102,7 +99,9 @@ const C = {
 			},
 			experience: {
 				clues: [
-					"You addressed a challenge with violence or coercion."
+					"You addressed a challenge with violence or coercion.",
+					"You expressed your beliefs, drives, heritage, or background.",
+					"You struggled with issues from your vice or traumas during the session."
 				]
 			},
 			gather_info: [
@@ -113,21 +112,6 @@ const C = {
 				"How can I get them to [X]?",
 				"Are they telling the truth?",
 				"What's really going on here?"
-			],
-			onChangeTo: [
-				(actor: BladesActor, prevClass?: string) => {
-					const updateData: Record<string,any> = {};
-					switch (String(prevClass).toLowerCase()) {
-						case "cutter": {
-							// Object.assign(updateData);
-							return;
-						}
-						default: {
-							return;
-						}
-					}
-
-				}
 			]
 		},
 		Hound: {
@@ -138,7 +122,9 @@ const C = {
 			},
 			experience: {
 				clues: [
-					"You addressed a challenge with tracking or violence."
+					"You addressed a challenge with tracking or violence.",
+					"You expressed your beliefs, drives, heritage, or background.",
+					"You struggled with issues from your vice or traumas during the session."
 				]
 			},
 			actions: [
@@ -166,7 +152,9 @@ const C = {
 			},
 			experience: {
 				clues: [
-					"You addressed a challenge with technical skill or mayhem."
+					"You addressed a challenge with technical skill or mayhem.",
+					"You expressed your beliefs, drives, heritage, or background.",
+					"You struggled with issues from your vice or traumas during the session."
 				]
 			},
 			actions: [
@@ -194,7 +182,9 @@ const C = {
 			},
 			experience: {
 				clues: [
-					"You addressed a challenge with stealth or evasion"
+					"You addressed a challenge with stealth or evasion",
+					"You expressed your beliefs, drives, heritage, or background.",
+					"You struggled with issues from your vice or traumas during the session."
 				]
 			},
 			actions: [
@@ -252,7 +242,9 @@ const C = {
 			},
 			experience: {
 				clues: [
-					"You addressed a challenge with calculation or conspiracy"
+					"You addressed a challenge with calculation or conspiracy",
+					"You expressed your beliefs, drives, heritage, or background.",
+					"You struggled with issues from your vice or traumas during the session."
 				]
 			},
 			actions: [
@@ -280,7 +272,9 @@ const C = {
 			},
 			experience: {
 				clues: [
-					"You addressed a challenge with knowledge or arcane power"
+					"You addressed a challenge with knowledge or arcane power",
+					"You expressed your beliefs, drives, heritage, or background.",
+					"You struggled with issues from your vice or traumas during the session."
 				]
 			},
 			actions: [
@@ -352,7 +346,7 @@ const C = {
 			trauma: {
 				name: "Trauma",
 			  max: 4,
-			  list: ["Cold", "Haunted", "Obsessed", "Paranoid", "Reckless", "Soft", "Unstable", "Vicious"]
+			  list: ["Clanking", "Leaking", "Fixated", "Smoking", "Sparking", "Unstable"]
 			},
 			healing: {
 				clock_size: 4
@@ -366,10 +360,9 @@ const C = {
 				prowess_max: 6,
 				resolve_max: 6,
 				clues: [
-					"Every time you roll a desperate action, mark xp in that action's attribute.",
-					"You addressed a challenge with violence or coercion.",
-					"You expressed your beliefs, drives, heritage, or background.",
-					"You struggled with issues from your vice or traumas during the session."
+					"You fulfilled your functions despite difficulty or danger.",
+					"You suppressed or ignored your former human beliefs, drives, heritage, or background.",
+					"You struggled with issues from your wear during the session."
 				]
 			},
 			actions: [
@@ -396,13 +389,13 @@ const C = {
 			trauma: {
 				name: "Trauma",
 			  max: 4,
-			  list: ["Cold", "Haunted", "Obsessed", "Paranoid", "Reckless", "Soft", "Unstable", "Vicious"]
+			  list: ["Cold", "Haunted", "Obsessed", "Paranoid", "Ruthless", "Secretive", "Unstable", "Vicious"]
 			},
 			healing: {
-				clock_size: 4
+				clock_size: 3
 			},
 			acquaintances: {
-				name: ""
+				name: "Dark Servants"
 			},
 			experience: {
 				playbook_max: 8,
@@ -433,7 +426,7 @@ const C = {
 				"What's really going on here?"
 			]
 		}
-	},
+	},/*
 	ClassTagLines: {
 		Cutter: "A Dangerous & Intimidating Fighter",
 		Hound: "A Deadly Sharpshooter & Tracker",
@@ -457,9 +450,10 @@ const C = {
 		Ghost: "systems/eunos-blades/assets/icons/ghost-trans.svg",
 		Hull: "systems/eunos-blades/assets/icons/hull-trans.svg",
 		Vampire: "systems/eunos-blades/assets/icons/vampire-trans.svg"
-	},
+	}, */
 	ClockSizes: [1, 2, 3, 4, 5, 6, 8, 10, 12],
-	ActorDefaults: {
+	SimpleItemTypes: ["background", "heritage", "vice", "crew_reputation"]
+	/* ActorDefaults: {
 		"acquaintances.name": "BITD.Acquaintances",
 		"stress.name": "BITD.Stress",
 		"stress.max": 9,
@@ -505,7 +499,7 @@ const C = {
 		"attributes.command.max": 3,
 		"attributes.consort.max": 3,
 		"attributes.sway.max": 3
-	}
+	} */
 };
 
 export const Randomizers = {

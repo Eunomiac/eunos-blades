@@ -19,8 +19,8 @@ import BladesNPCSheet from "./sheets/blades-npc-sheet.js";
 import BladesFactionSheet from "./sheets/blades-faction-sheet.js";
 import { bladesRoll, simpleRollPopup } from "./blades-roll.js";
 import BladesActiveEffect from "./blades-active-effect.js";
-import EunoTrackerSheet from "./sheets/blades-tracker-sheet.js";
-import EunoClockKeeperSheet from "./sheets/blades-clock-keeper-sheet.js";
+import BladesTrackerSheet from "./sheets/blades-tracker-sheet.js";
+import BladesClockKeeperSheet from "./sheets/blades-clock-keeper-sheet.js";
 let socket;
 registerDebugger();
 
@@ -30,8 +30,8 @@ Object.assign(globalThis, {
     BladesCrewSheet,
     BladesFactionSheet,
     BladesNPCSheet,
-    EunoClockKeeperSheet,
-    EunoTrackerSheet,
+    BladesClockKeeperSheet,
+    BladesTrackerSheet,
     BladesActiveEffect,
     IMPORTDATA,
     bladesRoll,
@@ -56,16 +56,16 @@ Hooks.once("init", async () => {
     CONFIG.Item.documentClass = BladesItem;
     CONFIG.Actor.documentClass = BladesActor;
     Actors.unregisterSheet("core", ActorSheet);
-    Actors.registerSheet("blades", BladesActorSheet, { types: ["character"], makeDefault: true });
     Actors.registerSheet("blades", BladesCrewSheet, { types: ["crew"], makeDefault: true });
     Actors.registerSheet("blades", BladesFactionSheet, { types: ["factions"], makeDefault: true });
     Actors.registerSheet("blades", BladesNPCSheet, { types: ["npc"], makeDefault: true });
     Items.unregisterSheet("core", ItemSheet);
-    Items.registerSheet("blades", BladesItemSheet, { types: ["faction", "item", "class", "ability", "heritage", "background", "vice", "crew_upgrade", "cohort", "crew_type", "crew_reputation", "crew_upgrade", "crew_ability"], makeDefault: true });
+    Items.registerSheet("blades", BladesItemSheet, { types: ["faction", "item", "playbook", "ability", "heritage", "background", "vice", "crew_upgrade", "cohort", "crew_type", "crew_reputation", "crew_upgrade", "crew_ability"], makeDefault: true });
     await Promise.all([
+        BladesActorSheet.Initialize(),
         BladesActiveEffect.Initialize(),
-        EunoTrackerSheet.Initialize(),
-        EunoClockKeeperSheet.Initialize(),
+        BladesTrackerSheet.Initialize(),
+        BladesClockKeeperSheet.Initialize(),
         preloadHandlebarsTemplates()
     ]);
     registerHandlebarHelpers();

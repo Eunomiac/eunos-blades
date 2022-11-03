@@ -27,12 +27,12 @@ $coin_margin: 3px;
     flex-grow: 1;
   }
   .item-body,
-  .item-class-label {
+  .item-playbook-label {
     width: 100px;
   }
 }
 
-.item-class-label {
+.item-playbook-label {
   margin-bottom: 10px;
 }
 
@@ -194,7 +194,7 @@ nav{
   }
 }
 
-.class-name {
+.playbook-name {
   width: 512px;
   height: 120px;
   display: flex;

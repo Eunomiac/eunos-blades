@@ -32,11 +32,13 @@ const C = {
         gBLUE: "rgba(128, 185, 255, 1)"
     },
     Loadout: {
-        selections: ["BITD.Light", "BITD.Normal", "BITD.Heavy"],
+        selections: ["BITD.Light", "BITD.Normal", "BITD.Heavy", "BITD.Encumbered"],
         levels: ["BITD.Light", "BITD.Normal", "BITD.Heavy", "BITD.Encumbered", "BITD.OverMax"]
     },
-    Classes: {
+    Playbooks: {
         DEFAULTS: {
+            bgImg: "",
+            tagline: "",
             vice: { name: "Vice" },
             stress: { name: "Stress", max: 9 },
             trauma: {
@@ -52,12 +54,7 @@ const C = {
                 playbook: { max: 8 },
                 insight: { max: 6 },
                 prowess: { max: 6 },
-                resolve: { max: 6 },
-                clues: [
-                    "",
-                    "You expressed your beliefs, drives, heritage, or background.",
-                    "You struggled with issues from your vice or traumas during the session."
-                ]
+                resolve: { max: 6 }
             },
             coins: { max: 4 },
             stash: { max: 40 },
@@ -90,7 +87,9 @@ const C = {
             },
             experience: {
                 clues: [
-                    "You addressed a challenge with violence or coercion."
+                    "You addressed a challenge with violence or coercion.",
+                    "You expressed your beliefs, drives, heritage, or background.",
+                    "You struggled with issues from your vice or traumas during the session."
                 ]
             },
             gather_info: [
@@ -101,19 +100,6 @@ const C = {
                 "How can I get them to [X]?",
                 "Are they telling the truth?",
                 "What's really going on here?"
-            ],
-            onChangeTo: [
-                (actor, prevClass) => {
-                    const updateData = {};
-                    switch (String(prevClass).toLowerCase()) {
-                        case "cutter": {
-                            return;
-                        }
-                        default: {
-                            return;
-                        }
-                    }
-                }
             ]
         },
         Hound: {
@@ -124,7 +110,9 @@ const C = {
             },
             experience: {
                 clues: [
-                    "You addressed a challenge with tracking or violence."
+                    "You addressed a challenge with tracking or violence.",
+                    "You expressed your beliefs, drives, heritage, or background.",
+                    "You struggled with issues from your vice or traumas during the session."
                 ]
             },
             actions: [
@@ -152,7 +140,9 @@ const C = {
             },
             experience: {
                 clues: [
-                    "You addressed a challenge with technical skill or mayhem."
+                    "You addressed a challenge with technical skill or mayhem.",
+                    "You expressed your beliefs, drives, heritage, or background.",
+                    "You struggled with issues from your vice or traumas during the session."
                 ]
             },
             actions: [
@@ -180,7 +170,9 @@ const C = {
             },
             experience: {
                 clues: [
-                    "You addressed a challenge with stealth or evasion"
+                    "You addressed a challenge with stealth or evasion",
+                    "You expressed your beliefs, drives, heritage, or background.",
+                    "You struggled with issues from your vice or traumas during the session."
                 ]
             },
             actions: [
@@ -238,7 +230,9 @@ const C = {
             },
             experience: {
                 clues: [
-                    "You addressed a challenge with calculation or conspiracy"
+                    "You addressed a challenge with calculation or conspiracy",
+                    "You expressed your beliefs, drives, heritage, or background.",
+                    "You struggled with issues from your vice or traumas during the session."
                 ]
             },
             actions: [
@@ -266,7 +260,9 @@ const C = {
             },
             experience: {
                 clues: [
-                    "You addressed a challenge with knowledge or arcane power"
+                    "You addressed a challenge with knowledge or arcane power",
+                    "You expressed your beliefs, drives, heritage, or background.",
+                    "You struggled with issues from your vice or traumas during the session."
                 ]
             },
             actions: [
@@ -338,7 +334,7 @@ const C = {
             trauma: {
                 name: "Trauma",
                 max: 4,
-                list: ["Cold", "Haunted", "Obsessed", "Paranoid", "Reckless", "Soft", "Unstable", "Vicious"]
+                list: ["Clanking", "Leaking", "Fixated", "Smoking", "Sparking", "Unstable"]
             },
             healing: {
                 clock_size: 4
@@ -352,10 +348,9 @@ const C = {
                 prowess_max: 6,
                 resolve_max: 6,
                 clues: [
-                    "Every time you roll a desperate action, mark xp in that action's attribute.",
-                    "You addressed a challenge with violence or coercion.",
-                    "You expressed your beliefs, drives, heritage, or background.",
-                    "You struggled with issues from your vice or traumas during the session."
+                    "You fulfilled your functions despite difficulty or danger.",
+                    "You suppressed or ignored your former human beliefs, drives, heritage, or background.",
+                    "You struggled with issues from your wear during the session."
                 ]
             },
             actions: [
@@ -382,13 +377,13 @@ const C = {
             trauma: {
                 name: "Trauma",
                 max: 4,
-                list: ["Cold", "Haunted", "Obsessed", "Paranoid", "Reckless", "Soft", "Unstable", "Vicious"]
+                list: ["Cold", "Haunted", "Obsessed", "Paranoid", "Ruthless", "Secretive", "Unstable", "Vicious"]
             },
             healing: {
-                clock_size: 4
+                clock_size: 3
             },
             acquaintances: {
-                name: ""
+                name: "Dark Servants"
             },
             experience: {
                 playbook_max: 8,
@@ -420,79 +415,9 @@ const C = {
             ]
         }
     },
-    ClassTagLines: {
-        Cutter: "A Dangerous & Intimidating Fighter",
-        Hound: "A Deadly Sharpshooter & Tracker",
-        Leech: "A Saboteur & Technician",
-        Lurk: "A Stealthy Infiltrator & Burglar",
-        Slide: "A Subtle Manipulator & Spy",
-        Spider: "A Devious Mastermind",
-        Whisper: "An Arcane Adept & Channeler",
-        Ghost: "A Disembodied Spirit",
-        Hull: "Animated Spark-Craft",
-        Vampire: "The Immortal Undead"
-    },
-    ClassBgImages: {
-        Cutter: "systems/eunos-blades/assets/icons/cutter-trans.svg",
-        Hound: "systems/eunos-blades/assets/icons/hound-trans.svg",
-        Leech: "systems/eunos-blades/assets/icons/leech-trans.svg",
-        Lurk: "systems/eunos-blades/assets/icons/lurk-trans.svg",
-        Slide: "systems/eunos-blades/assets/icons/slide-trans.svg",
-        Spider: "systems/eunos-blades/assets/icons/spider-trans.svg",
-        Whisper: "systems/eunos-blades/assets/icons/whisper-trans.svg",
-        Ghost: "systems/eunos-blades/assets/icons/ghost-trans.svg",
-        Hull: "systems/eunos-blades/assets/icons/hull-trans.svg",
-        Vampire: "systems/eunos-blades/assets/icons/vampire-trans.svg"
-    },
     ClockSizes: [1, 2, 3, 4, 5, 6, 8, 10, 12],
-    ActorDefaults: {
-        "acquaintances.name": "BITD.Acquaintances",
-        "stress.name": "BITD.Stress",
-        "stress.max": 9,
-        "trauma.name": "BITD.Trauma",
-        "trauma.max": 4,
-        "trauma.list": {
-            Cold: false,
-            Haunted: false,
-            Obsessed: false,
-            Paranoid: false,
-            Reckless: false,
-            Soft: false,
-            Unstable: false,
-            Vicious: false
-        },
-        "healing.max": 4,
-        "experience.max": 8,
-        "experience.clues": [
-            "BITD.ClassExpClue3",
-            "BITD.ClassExpClue2"
-        ],
-        "experience.playbook.max": 8,
-        "experience.insight.max": 6,
-        "experience.prowess.max": 6,
-        "experience.resolve.max": 6,
-        "coins.max": 4,
-        "stash.max": 40,
-        "loadout.levels": {
-            light: 3,
-            normal: 5,
-            heavy: 6,
-            encumbered: 9
-        },
-        "attributes.hunt.max": 3,
-        "attributes.study.max": 3,
-        "attributes.survey.max": 3,
-        "attributes.tinker.max": 3,
-        "attributes.finesse.max": 3,
-        "attributes.prowl.max": 3,
-        "attributes.skirmish.max": 3,
-        "attributes.wreck.max": 3,
-        "attributes.attune.max": 3,
-        "attributes.command.max": 3,
-        "attributes.consort.max": 3,
-        "attributes.sway.max": 3
-    }
-};
+    SimpleItemTypes: ["background", "heritage", "vice", "crew_reputation"]
+    };
 export const Randomizers = {
     heritage: [
         "Akorosi",

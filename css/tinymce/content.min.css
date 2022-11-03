@@ -410,25 +410,25 @@ html, :root {
       background: var(--background-input);
       border: var(--border-input);
       box-shadow: var(--box-shadow-input); }
-      html select[type="number"], html select[data-type="number"], html select[data-type="number"] option,
+      html select[type="number"], html select[data-dtype="number"], html select[data-dtype="number"] option,
       html input[type="number"],
-      html input[data-type="number"],
-      html input[data-type="number"] option,
+      html input[data-dtype="number"],
+      html input[data-dtype="number"] option,
       html option[type="number"],
-      html option[data-type="number"],
-      html option[data-type="number"] option,
+      html option[data-dtype="number"],
+      html option[data-dtype="number"] option,
       html textarea[type="number"],
-      html textarea[data-type="number"],
-      html textarea[data-type="number"] option, :root select[type="number"], :root select[data-type="number"], :root select[data-type="number"] option,
+      html textarea[data-dtype="number"],
+      html textarea[data-dtype="number"] option, :root select[type="number"], :root select[data-dtype="number"], :root select[data-dtype="number"] option,
       :root input[type="number"],
-      :root input[data-type="number"],
-      :root input[data-type="number"] option,
+      :root input[data-dtype="number"],
+      :root input[data-dtype="number"] option,
       :root option[type="number"],
-      :root option[data-type="number"],
-      :root option[data-type="number"] option,
+      :root option[data-dtype="number"],
+      :root option[data-dtype="number"] option,
       :root textarea[type="number"],
-      :root textarea[data-type="number"],
-      :root textarea[data-type="number"] option {
+      :root textarea[data-dtype="number"],
+      :root textarea[data-dtype="number"] option {
         text-align: right;
         font-family: var(--font-emphasis); }
       html select option,
@@ -676,6 +676,24 @@ html, :root {
     outline: 1px dotted var(--blades-white);
     padding: 0 0.3125rem;
     margin: 0 0.3125rem; }
+  html .number-circle, :root .number-circle {
+    --nc-size: var(--number-circle-size, 1.25rem);
+    --nc-border-width: calc(var(--nc-size) * (1/10));
+    --nc-font-size: calc(var(--nc-size) * (7/10));
+    --nc-border-radius: calc(var(--nc-size) * (5/10));
+    --nc-line-height: calc(var(--nc-size) * (8/10));
+    --nc-drop-shadow: calc(var(--nc-size) * (0.5/10));
+    height: var(--nc-size);
+    width: var(--nc-size);
+    font-weight: bold;
+    font-family: "Minion Pro Caption Cond";
+    font-size: var(--nc-font-size);
+    text-align: center;
+    border-radius: var(--nc-border-radius);
+    background: var(--number-circle-bg, var(--blades-grey-dark));
+    color: var(--number-circle-color, var(--blades-white));
+    line-height: var(--nc-line-height);
+    border: var(--nc-border-width) outset var(--number-circle-color, var(--blades-white)); }
   html .labelled-item, :root .labelled-item {
     display: flex;
     flex-wrap: nowrap;
@@ -716,21 +734,44 @@ html, :root {
       height: 1.125rem;
       font-family: var(--font-emphasis);
       text-transform: uppercase; }
+    html .labelled-item .item-name, html .labelled-item .sub-actor-name, :root .labelled-item .item-name, :root .labelled-item .sub-actor-name {
+      pointer-events: none; }
+      html .labelled-item .item-name.item-title, html .labelled-item .item-name .item-title, html .labelled-item .sub-actor-name.item-title, html .labelled-item .sub-actor-name .item-title, :root .labelled-item .item-name.item-title, :root .labelled-item .item-name .item-title, :root .labelled-item .sub-actor-name.item-title, :root .labelled-item .sub-actor-name .item-title {
+        pointer-events: auto; }
     html .labelled-item .labelled-item-container, :root .labelled-item .labelled-item-container {
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-grow: 1; }
+      flex-grow: 1;
+      position: relative; }
+      html .labelled-item .labelled-item-container h1, html .labelled-item .labelled-item-container h2, html .labelled-item .labelled-item-container h3, html .labelled-item .labelled-item-container h4, html .labelled-item .labelled-item-container p, html .labelled-item .labelled-item-container blockquote, html .labelled-item .labelled-item-container table, :root .labelled-item .labelled-item-container h1, :root .labelled-item .labelled-item-container h2, :root .labelled-item .labelled-item-container h3, :root .labelled-item .labelled-item-container h4, :root .labelled-item .labelled-item-container p, :root .labelled-item .labelled-item-container blockquote, :root .labelled-item .labelled-item-container table {
+        margin: 0;
+        padding: 0; }
     html .labelled-item.labelled-vertical, :root .labelled-item.labelled-vertical {
       --labelled-item-img-scale: 1.5;
       --labelled-item-name-size: 1rem;
       flex-direction: column; }
       html .labelled-item.labelled-vertical > label, :root .labelled-item.labelled-vertical > label {
         text-align: center; }
+      html .labelled-item.labelled-vertical .item-name, html .labelled-item.labelled-vertical .sub-actor-name, :root .labelled-item.labelled-vertical .item-name, :root .labelled-item.labelled-vertical .sub-actor-name {
+        text-align: center;
+        white-space: nowrap;
+        font-family: var(--font-emphasis);
+        position: absolute;
+        z-index: 2;
+        transform: translate(-50%, -50%);
+        top: 65%;
+        font-size: var(--labelled-item-name-size);
+        left: 50%;
+        color: var(--blades-white-bright);
+        text-transform: uppercase; }
+        html .labelled-item.labelled-vertical .item-name.long-name, html .labelled-item.labelled-vertical .sub-actor-name.long-name, :root .labelled-item.labelled-vertical .item-name.long-name, :root .labelled-item.labelled-vertical .sub-actor-name.long-name {
+          white-space: initial; }
       html .labelled-item.labelled-vertical .labelled-item-container, :root .labelled-item.labelled-vertical .labelled-item-container {
         display: flex;
         flex-direction: column;
-        min-height: 2.5rem; }
+        min-height: 2.5rem;
+        width: 100%; }
         html .labelled-item.labelled-vertical .labelled-item-container > img, :root .labelled-item.labelled-vertical .labelled-item-container > img {
           position: absolute;
           transform: translate(-50%, -50%) scaleX(var(--labelled-item-img-scaleX, var(--labelled-item-img-scale))) scaleY(var(--labelled-item-img-scaleY, var(--labelled-item-img-scale)));
@@ -740,26 +781,14 @@ html, :root {
           left: 50%;
           height: 100%;
           z-index: -1; }
-        html .labelled-item.labelled-vertical .labelled-item-container .item-name, html .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name, :root .labelled-item.labelled-vertical .labelled-item-container .item-name, :root .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name {
-          text-align: center;
-          white-space: nowrap;
-          font-family: var(--font-emphasis);
-          position: absolute;
-          z-index: 2;
-          transform: translate(-50%, -50%);
-          top: 65%;
-          font-size: var(--labelled-item-name-size);
-          left: 50%;
-          color: var(--blades-white-bright);
-          text-transform: uppercase; }
-          html .labelled-item.labelled-vertical .labelled-item-container .item-name.long-name, html .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name.long-name, :root .labelled-item.labelled-vertical .labelled-item-container .item-name.long-name, :root .labelled-item.labelled-vertical .labelled-item-container .sub-actor-name.long-name {
-            white-space: initial; }
     html .labelled-item.labelled-horizontal, :root .labelled-item.labelled-horizontal {
       flex-direction: row;
       justify-content: stretch;
       align-items: center; }
       html .labelled-item.labelled-horizontal label, :root .labelled-item.labelled-horizontal label {
         text-align: right; }
+        html .labelled-item.labelled-horizontal label .item-img, :root .labelled-item.labelled-horizontal label .item-img {
+          position: absolute; }
   html .shadowed, html .labelled-item label, html .labelled-item input[type="text"], :root .shadowed, :root .labelled-item label, :root .labelled-item input[type="text"] {
     box-shadow: none;
     background: transparent;

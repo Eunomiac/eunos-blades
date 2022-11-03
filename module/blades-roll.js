@@ -6,7 +6,9 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import H from "./core/helpers.js";
-export async function bladesRoll(dice_amount, attribute_name = "", position = "risky", effect = "standard", note = "") {
+import U from "./core/utilities.js";
+import { Positions, EffectLevels } from "./blades-actor.js";
+export async function bladesRoll(dice_amount, attribute_name = "", position = Positions.risky, effect = EffectLevels.standard, note = "") {
     let zeromode = false;
     if (dice_amount < 0) {
         dice_amount = 0;
@@ -19,42 +21,47 @@ export async function bladesRoll(dice_amount, attribute_name = "", position = "r
     r.evaluate({ async: true });
     await showChatRollMessage(r, zeromode, attribute_name, position, effect, note);
 }
-async function showChatRollMessage(r, zeromode, attribute_name = "", position = "", effect = "", note = "") {
+async function showChatRollMessage(r, zeromode, attribute_name, position = Positions.risky, effect = EffectLevels.standard, note = "") {
     const speaker = ChatMessage.getSpeaker();
     const rolls = r.terms[0].results;
-    const attribute_label = H.getAttributeLabel(attribute_name);
     const roll_status = getBladesRollStatus(rolls, zeromode);
     let result;
     if (H.isAttributeAction(attribute_name)) {
         let position_localize = "";
         switch (position) {
-            case "controlled":
+            case Positions.controlled:
                 position_localize = "BITD.PositionControlled";
                 break;
-            case "desperate":
+            case Positions.desperate:
                 position_localize = "BITD.PositionDesperate";
                 break;
-            case "risky":
+            case Positions.risky:
             default:
                 position_localize = "BITD.PositionRisky";
         }
         let effect_localize = "";
         switch (effect) {
-            case "limited":
+            case EffectLevels.limited:
                 effect_localize = "BITD.EffectLimited";
                 break;
-            case "great":
+            case EffectLevels.great:
                 effect_localize = "BITD.EffectGreat";
                 break;
-            case "standard":
+            case EffectLevels.zero:
+                effect_localize = "Zero Effect";
+                break;
+            case EffectLevels.extreme:
+                effect_localize = "Extreme Effect";
+                break;
+            case EffectLevels.standard:
             default:
                 effect_localize = "BITD.EffectStandard";
         }
-        result = await renderTemplate("systems/eunos-blades/templates/chat/action-roll.hbs", { rolls: rolls, roll_status: roll_status, attribute_label: attribute_label, position: position, position_localize: position_localize, effect: effect, effect_localize: effect_localize, note: note });
+        result = await renderTemplate("systems/eunos-blades/templates/chat/action-roll.hbs", { rolls: rolls, roll_status: roll_status, attribute_label: U.tCase(attribute_name), position: position, position_localize: position_localize, effect: effect, effect_localize: effect_localize, note: note });
     }
     else {
         const stress = getBladesRollStress(rolls, zeromode);
-        result = await renderTemplate("systems/eunos-blades/templates/chat/resistance-roll.hbs", { rolls: rolls, roll_status: roll_status, attribute_label: attribute_label, stress: stress, note: note });
+        result = await renderTemplate("systems/eunos-blades/templates/chat/resistance-roll.hbs", { rolls: rolls, roll_status: roll_status, attribute_label: U.tCase(attribute_name), stress: stress, note: note });
     }
     const messageData = {
         speaker: speaker,

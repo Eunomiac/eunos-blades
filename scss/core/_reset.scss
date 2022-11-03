@@ -99,11 +99,11 @@
 		border: var(--border-input);
 		box-shadow: var(--box-shadow-input);
 
-		&[type="text"], &[data-type="string"], &[data-type="string"] option {
+		&[type="text"], &[data-dtype="string"], &[data-dtype="string"] option {
 
 		}
 
-		&[type="number"], &[data-type="number"], &[data-type="number"] option {
+		&[type="number"], &[data-dtype="number"], &[data-dtype="number"] option {
 			text-align: right;
 			font-family: var(--font-emphasis);
 		}

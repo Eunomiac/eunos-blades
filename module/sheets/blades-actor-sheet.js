@@ -19,6 +19,38 @@ class BladesActorSheet extends BladesSheet {
             tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "abilities" }]
         });
     }
+    static Initialize() {
+        Actors.registerSheet("blades", BladesActorSheet, { types: ["character"], makeDefault: true });
+        Hooks.on("dropActorSheetData", (actor, sheet, { type, uuid }) => {
+            if (type === "Actor") {
+                const droppedActorId = uuid.replace(/^Actor\./, "");
+                const droppedActor = game.actors.get(droppedActorId);
+                if (!droppedActor) {
+                    return;
+                }
+                switch (droppedActor.type) {
+                    case "crew": {
+                        actor.update({ "system.crew": droppedActorId });
+                        break;
+                    }
+                }
+                return;
+            }
+            if (type === "Item") {
+                const droppedItemId = uuid.replace(/^Item\./, "");
+                const droppedItem = game.items.get(droppedItemId);
+                if (!droppedItem) {
+                    return;
+                }
+                switch (droppedItem.type) {
+                    case "playbook": {
+                        break;
+                    }
+                }
+                return;
+            }
+        });
+    }
         
     async getData() {
         const data = await super.getData();
@@ -29,23 +61,54 @@ class BladesActorSheet extends BladesSheet {
             ? U.pInt(i.system.load)
             : 0), 0));
 
-        const classItem = data.items.find((item) => item.type === "class");
+        const attrData = {
+            insight: { value: this.actor.attributes.insight, size: 4 },
+            prowess: { value: this.actor.attributes.prowess, size: 4 },
+            resolve: { value: this.actor.attributes.resolve, size: 4 }
+        };
+
+        const playbookItem = data.items.find((item) => item.type === "playbook");
+        const playbook = playbookItem?.name;
 
         const viceOverride = this.actor.system.vice.override;
+        const availableItems = game.items
+            .filter((item) => this.actor.items
+            .filter((i) => i.name === item.name).length < (item.system.num_available ?? 1));
+        const dialogOptions = {};
+        dialogOptions.loadItems = {
+            playbook: availableItems.filter((item) => item.type === "item" && item.system.playbooks.includes(playbook)).map((item) => item.name),
+            general: availableItems.filter((item) => item.type === "item" && item.system.playbooks.includes("ANY")).map((item) => item.name)
+        };
+        dialogOptions.abilityItems = {
+            playbook: availableItems.filter((item) => item.type === "ability" && item.system.playbooks.includes(playbook)).map((item) => item.name),
+            veteran: availableItems.filter((item) => item.type === "ability"
+                && !item.system.playbooks.includes(playbook)
+                && !item.system.playbooks.includes("Ghost")
+                && !item.system.playbooks.includes("Hull")
+                && !item.system.playbooks.includes("Vampire")).map((item) => item.name)
+        };
+        eLog.display("Dialog Options", dialogOptions);
         Object.assign(data, {
             effects: this.actor.effects,
             items: {
-                "class": classItem,
-                "classBgImg": classItem && classItem.name in C.ClassTagLines
-                    ? C.ClassBgImages[classItem.name]
-                    : classItem?.img ?? "",
-                "heritage": data.items.find((item) => item.type === "heritage"),
-                "background": data.items.find((item) => item.type === "background"),
-                "vice": (viceOverride && JSON.parse(viceOverride)) || data.items.find((item) => item.type === "vice"),
-                "classTagLine": classItem && classItem.name in C.ClassTagLines
-                    ? C.ClassTagLines[classItem.name]
-                    : ""
+                heritage: data.items.find((item) => item.type === "heritage"),
+                background: data.items.find((item) => item.type === "background"),
+                vice: (viceOverride && JSON.parse(viceOverride)) || data.items.find((item) => item.type === "vice"),
+                abilities: data.items.filter((item) => item.type === "ability"),
+                loadout: data.items.filter((item) => item.type === "item")
             },
+            playbook: playbookItem
+                ? {
+                    id: playbookItem.id,
+                    name: playbookItem.name ?? "",
+                    bgImg: (playbookItem.name ?? "DEFAULTS") in C.Playbooks
+                        ? C.Playbooks[playbookItem.name].bgImg
+                        : "",
+                    tagline: (playbookItem.name ?? "DEFAULTS") in C.Playbooks
+                        ? C.Playbooks[playbookItem.name].tagline
+                        : ""
+                }
+                : null,
             healing_clock: {
                 color: "white",
                 size: this.actor.system.healing.max,
@@ -56,10 +119,16 @@ class BladesActorSheet extends BladesSheet {
                 .map(([armor]) => [armor, this.actor.system.armor.checked[armor]])),
             loadData: {
                 curLoad,
-                curLoadLevel: C.Loadout.levels[Object.values(this.actor.system.loadout.levels)
-                    .find((load) => load >= curLoad) ?? 4],
+                selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected))],
                 selections: C.Loadout.selections,
                 selLoadLevel: this.actor.system.loadout.selected
+            },
+            attributes: attrData,
+            traumaData: {
+                name: this.actor.system.trauma.name,
+                value: this.actor.trauma,
+                max: this.actor.system.trauma.max,
+                displayed: this.actor.traumaConditions
             }
         });
         eLog.log("[BladesActorSheet] return getData()", { ...data });
@@ -137,17 +206,18 @@ class BladesActorSheet extends BladesSheet {
             },
             mouseenter: function () {
                 const targetArmor = self._getHoverArmor();
+                eLog.log("Mouse Enter", targetArmor, this, $(this), $(this).next());
                 if (!targetArmor) {
                     return;
                 }
-                $(this).children(`.svg-armor.armor-${targetArmor}`).addClass("hover-over");
+                $(this).siblings(`.svg-armor.armor-${targetArmor}`).addClass("hover-over");
             },
             mouseleave: function () {
                 const targetArmor = self._getHoverArmor();
                 if (!targetArmor) {
                     return;
                 }
-                $(this).children(`.svg-armor.armor-${targetArmor}`).removeClass("hover-over");
+                $(this).siblings(`.svg-armor.armor-${targetArmor}`).removeClass("hover-over");
             }
         });
         html.find(".special-armor-control").on({
@@ -167,24 +237,16 @@ class BladesActorSheet extends BladesSheet {
                 if (!self.activeArmor.includes("special") || self.activeArmor.length === 1) {
                     return;
                 }
-                $(this).children(".svg-armor.armor-special").addClass("hover-over");
+                $(this).siblings(".svg-armor.armor-special").addClass("hover-over");
             },
             mouseleave: function () {
                 if (!self.activeArmor.includes("special") || self.activeArmor.length === 1) {
                     return;
                 }
-                $(this).children(".svg-armor.armor-special").removeClass("hover-over");
+                $(this).siblings(".svg-armor.armor-special").removeClass("hover-over");
             }
         });
-
-        html.find(".item-body").on({
-            click: function () {
-                const element = $(this).parents(".item");
-                const item = self.actor.items.get(element.data("itemId"));
-                item?.sheet?.render(true);
-            }
-        });
-
+        
         html.find(".item-delete").on({
             click: async function () {
                 const element = $(this).parents(".item");

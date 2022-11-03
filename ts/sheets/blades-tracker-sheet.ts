@@ -1,59 +1,53 @@
-/**
- * @extends {ItemSheet}
- */
-export default class EunoTrackerSheet extends ItemSheet {
 
-	/** @override */
+import BladesItemSheet from "./blades-item-sheet.js";
+import BladesItem from "../blades-item.js";
+import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+
+export default class BladesTrackerSheet extends BladesItemSheet {
+
 	static override get defaultOptions() {
 	  return foundry.utils.mergeObject(super.defaultOptions, {
-			classes: ["eunos-blades", "sheet", "item", "tracker"],
-			template: "systems/eunos-blades/templates/tracker-sheet.hbs",
-			width: 900,
-			height: "auto",
-			tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content"}],
-			viewPermissions: 0
+			classes: ["eunos-blades", "sheet", "item", "gm-tracker"],
+			template: "systems/eunos-blades/templates/items/gm_tracker-sheet.hbs",
+			width: 700,
+			height: 970
 		});
 	}
 
 	static async Initialize() {
-		Items.registerSheet("blades", EunoTrackerSheet, {types: ["gm_tracker"], makeDefault: true});
-		return loadTemplates(["systems/eunos-blades/templates/tracker-sheet.hbs"]);
+		game.eunoblades ??= {};
+		Items.registerSheet("blades", BladesTrackerSheet, {types: ["gm_tracker"], makeDefault: true});
+		Hooks.once("ready", async () => {
+			let tracker: BladesItem|undefined = game.items.find((item) => item.type === "gm_tracker");
+			if (!(tracker instanceof BladesItem)) {
+				tracker = (await BladesItem.create({
+					name: "GM Tracker",
+					type: "gm_tracker",
+					img: "systems/eunos-blades/assets/icons/gm-tracker.svg"
+				})) as BladesItem;
+			}
+			game.eunoblades.Tracker = tracker;
+		});
+		return loadTemplates([
+			"systems/eunos-blades/templates/items/gm_tracker-sheet.hbs"
+		]);
 	}
 
-	/* -------------------------------------------- */
 
-	/** @override */
+	override async _updateObject(event: unknown, formData: ItemDataConstructorData) {
+		const updateData = await this.object.update(formData);
+
+		return updateData;
+	}
+
 	override async getData() {
-		const data: Record<string, any> = await super.getData();
-		data.editable = this.options.editable;
-		const actorData = data.data;
-		data.actor = actorData;
-		data.data = actorData.data;
-		return data as ItemSheet.Data<DocumentSheetOptions>;
+		const data = await super.getData();
+
+		return data;
 	}
 
-	/* -------------------------------------------- */
-
-	/** @override */
-	override activateListeners(html: JQuery<HTMLElement>) {
+	override async activateListeners(html: JQuery<HTMLElement>) {
 		super.activateListeners(html);
-
-		// Everything below here is only needed if the sheet is editable
-		if (!this.options.editable) {return}
-
-		// Update Inventory Item
-		// html.find('.item-body').click(ev => {
-		//   const element = $(ev.currentTarget).parents(".item");
-		//   const item = this.actor.items.get(element.data("itemId"));
-		//   item.sheet.render(true);
-		// });
-
-		// // Delete Inventory Item
-		// html.find('.item-delete').click(ev => {
-		//   const element = $(ev.currentTarget).parents(".item");
-		//   this.actor.deleteEmbeddedDocuments("Item", [element.data("itemId")]);
-		//   element.slideUp(200, () => this.render(false));
-		// });
 
 	}
 }

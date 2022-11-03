@@ -8,7 +8,7 @@
         <input type="text" id="crew-{{actor._id}}-name" name="name" value="{{actor.name}}">
       </div>
       <div class="flex-horizontal crew-reputation">
-        <div class="item-class-label">
+        <div class="item-playbook-label">
           <a class="item-add-popup" data-distinct="true" data-item-type="crew_reputation">{{localize "BITD.CrewReputation"}}</a>
         </div>
         {{#each actor.items as |item id|}}
@@ -16,7 +16,7 @@
           <div class="item flex-horizontal" data-item-id="{{item._id}}">
             <div class="item-body item-sheet-open flex-horizontal">
               <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
-              <div class="item-name">{{item.name}}</div>
+              <div class="item-name item-title">{{item.name}}</div>
             </div>
             <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
           </div>
@@ -190,9 +190,9 @@
     </div>
   </section>
 
-  <section class="flex-horizontal crew-class-xp">
-    <div class="flex-vertical crew-class-box">
-      <div id="crew-{{actor._id}}-class" class="class-name crew-class">
+  <section class="flex-horizontal crew-playbook-xp">
+    <div class="flex-vertical crew-playbook-box">
+      <div id="crew-{{actor._id}}-playbook" class="playbook-name crew-playbook">
         {{#each actor.items as |item id|}}
         {{#if (eq item.type "crew_type")}}
         <div class="big-name">{{item.name}}</div>
@@ -262,7 +262,7 @@
       {{#if (eq item.type "crew_upgrade")}}
         <div class="item flex-horizontal" data-item-id="{{item._id}}">
           <div class="item-body item-sheet-open flex-horizontal">
-            <b><div class="item-name">{{item.name}}</div></b>
+            <b><div class="item-name item-title">{{item.name}}</div></b>
             <div class="item-description">{{{item.data.description}}}</div>
           </div>
           <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
@@ -281,7 +281,7 @@
       {{#if (eq item.type "crew_ability")}}
         <div class="item flex-horizontal" data-item-id="{{item._id}}">
           <div class="item-body item-sheet-open flex-horizontal">
-            <b><div class="item-name">{{item.name}}</div></b>
+            <b><div class="item-name item-title">{{item.name}}</div></b>
             <div class="item-description">{{{item.data.description}}}</div>
           </div>
           <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
@@ -324,7 +324,7 @@
       <div class="item flex-horizontal" data-item-id="{{item._id}}">
         <div class="item-body item-sheet-open flex-horizontal">
           <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
-          <div class="item-name">{{item.name}}</div>
+          <div class="item-name item-title">{{item.name}}</div>
         </div>
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
       </div>

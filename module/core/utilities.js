@@ -856,6 +856,22 @@ const objFlatten = (obj) => {
     }
     return flatObj;
 };
+function objNullify(obj) {
+    if (!isIndex(obj)) {
+        return obj;
+    }
+    if (Array.isArray(obj)) {
+        for (let i = 0; i < obj.length; i++) {
+            obj[i] = null;
+        }
+        return obj;
+    }
+    const test = obj;
+    for (const objKey of Object.keys(obj)) {
+        obj[objKey] = null;
+    }
+    return obj;
+}
 
 const getDynamicFunc = (funcName, func, context) => {
     if (typeof func === "function") {
@@ -1044,7 +1060,7 @@ export default {
     subGroup,
     remove, replace, partition,
     objClean, objMap, objFindKey, objFilter, objForEach, objCompact,
-    objClone, objMerge, objExpand, objFlatten,
+    objClone, objMerge, objExpand, objFlatten, objNullify,
     getDynamicFunc,
 
     gsap, get, set, getGSAngleDelta,

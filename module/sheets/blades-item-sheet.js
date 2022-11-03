@@ -5,6 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import C from "../core/constants.js";
 import BladesActiveEffect from "../blades-active-effect.js";
 class BladesItemSheet extends ItemSheet {
     static get defaultOptions() {
@@ -21,16 +22,16 @@ class BladesItemSheet extends ItemSheet {
         super(item, options);
     }
     get template() {
-        if (this.item.data.type === "clock_keeper") {
-            return "systems/eunos-blades/templates/clock-keeper-sheet.hbs";
+        const pathComps = [
+            "systems/eunos-blades/templates/items"
+        ];
+        if (C.SimpleItemTypes.includes(this.item.data.type)) {
+            pathComps.push("simple-sheet.hbs");
         }
-        const path = "systems/eunos-blades/templates/items";
-        const simple_item_types = ["background", "heritage", "vice", "crew_reputation"];
-        let template_name = `${this.item.data.type}`;
-        if (simple_item_types.indexOf(this.item.data.type) >= 0) {
-            template_name = "simple";
+        else {
+            pathComps.push(`${this.item.data.type}-sheet.hbs`);
         }
-        return `${path}/${template_name}.hbs`;
+        return pathComps.join("/");
     }
         
     activateListeners(html) {
