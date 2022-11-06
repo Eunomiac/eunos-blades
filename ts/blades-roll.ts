@@ -1,7 +1,6 @@
-import H from "./core/helpers.js";
 import U from "./core/utilities.js";
-import {Positions, EffectLevels, Actions} from "./blades-actor.js";
-import type {Attributes} from "./blades-actor.js";
+import {Attributes, Positions, EffectLevels, Actions} from "./core/constants.js";
+// import type {Attributes} from "./blades-actor.js";
 /**
  * Roll Dice.
  * @param {int} dice_amount
@@ -12,7 +11,7 @@ import type {Attributes} from "./blades-actor.js";
 
 export async function bladesRoll(
 	dice_amount: number,
-	attribute_name: Attributes|"" = "",
+	attribute_name: Actions|Attributes|"" = "",
 	position: Positions|"" = Positions.risky,
 	effect: EffectLevels|"" = EffectLevels.standard,
 	note = ""
@@ -43,7 +42,7 @@ export async function bladesRoll(
 async function showChatRollMessage(
 	r: Roll,
 	zeromode: boolean,
-	attribute_name?: Attributes|Actions.Any|"",
+	attribute_name?: Attributes|Actions|"",
 	position: Positions|"" = Positions.risky,
 	effect: EffectLevels|"" = EffectLevels.standard,
 	note = ""
@@ -56,7 +55,7 @@ async function showChatRollMessage(
 	const roll_status = getBladesRollStatus(rolls, zeromode);
 
 	let result;
-	if (H.isAttributeAction(attribute_name)) {
+	if (attribute_name && attribute_name in Actions) {
 		let position_localize = "";
 		switch (position) {
 			case Positions.controlled:

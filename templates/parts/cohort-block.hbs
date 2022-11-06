@@ -1,46 +1,61 @@
-<div class="item cohort-block-wrapper" data-item-id="{{item._id}}">
+	<div class="labelled-item labelled-horizontal item" data-item-id="{{_id}}">
+		<label class="item-name">
+			<span class="item-title">{{case "title" name}}</span>
+			<img class="item-img" src="{{img}}" />
+		</label>
+		<div class="labelled-item-container">
+			<div class="item-description shadowed">{{{system.rules}}}</div>
+		</div>
+		<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
+			<i class="fas fa-trash"></i>
+		</a>
+	</div>
+
+<div class="item cohort-block-wrapper" data-item-id="{{_id}}">
+
+
 
   <div class="cohort-block">
     <div class="label-stripe">
-      <div class="item-sheet-open">{{#if (eq item.data.cohort "Gang")}}Gang of {{#each item.data.gang_type as |gang_type key|}}{{gang_type}} {{/each}}{{/if}}{{#if (eq item.data.cohort "Expert")}}{{item.data.cohort}} {{item.data.expert_type}}{{/if}} (click to edit)</div>
-      <div>Q:{{item.data.quality}} S:{{item.data.scale}}</div>
+      <div class="item-sheet-open">{{#if (eq data.cohort "Gang")}}Gang of {{#each data.gang_type as |gang_type key|}}{{gang_type}} {{/each}}{{/if}}{{#if (eq data.cohort "Expert")}}{{data.cohort}} {{data.expert_type}}{{/if}} (click to edit)</div>
+      <div>Q:{{data.quality}} S:{{data.scale}}</div>
       <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
     </div>
     <div class="cohort-body">
 
       <div class="cohort-block-harm flex-horizontal">
-        {{#each item.data.harm_list as |harm harm_key|}}
-          {{#multiboxes ../item.data.harm}}
-          <input id="harm-{{harm_key}}-{{../item._id}}" type="radio" name="harm.{{../item._id}}" data-item="{{../item._id}}" value="{{harm_key}}">
-          <label for="harm-{{harm_key}}-{{../item._id}}">{{localize harm.label}}</label>
+        {{#each data.harm_list as |harm harm_key|}}
+          {{#multiboxes ../data.harm}}
+          <input id="harm-{{harm_key}}-{{../_id}}" type="radio" name="harm.{{../_id}}" data-item="{{../_id}}" value="{{harm_key}}">
+          <label for="harm-{{harm_key}}-{{../_id}}">{{localize harm.label}}</label>
           {{/multiboxes}}
         {{/each}}
       </div>
 
-      {{#if (eq item.data.cohort "Gang")}}
-        {{#each item.data.gang_type as |gang_type key|}}
+      {{#if (eq data.cohort "Gang")}}
+        {{#each data.gang_type as |gang_type key|}}
         <div>
-            {{#with (lookup ../item.data.gang_type_list gang_type)}}{{localize description}} {{/with}}
+            {{#with (lookup ../data.gang_type_list gang_type)}}{{localize description}} {{/with}}
         </div>
         {{/each}}
       {{/if}}
-      
+
       <div class="flex-vertical">
         <div class="flex-vertical">
-          {{#each item.data.edges_list as |edge key|}}
+          {{#each data.edges_list as |edge key|}}
             {{#if edge.selected }}
               <div class="description">{{localize edge.description}} <b>({{localize edge.label}})</b></div>
             {{/if}}
           {{/each}}
-          {{#each item.data.flaws_list as |flaw key|}}
+          {{#each data.flaws_list as |flaw key|}}
             {{#if flaw.selected }}
               <div class="description">{{localize flaw.description}} <b>({{localize flaw.label}})</b></div>
             {{/if}}
           {{/each}}
         </div>
       </div>
-      
-      <div class="description">{{localize item.data.description}}</div>
+
+      <div class="description">{{localize data.description}}</div>
     </div>
 
   </div>

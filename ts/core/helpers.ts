@@ -1,10 +1,14 @@
+// #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import U from "./utilities.js";
+
 import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 import type BladesActor from "../blades-actor.js";
 import type BladesItem from "../blades-item.js";
 import {HbsSvgData, SVGDATA} from "./constants.js";
-import {Attributes} from "../blades-actor.js";
+import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
+// #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 
+// #region ░░░░░░░[Templates]░░░░ Preload Partials, Components & Overlay Templates ░░░░░░░ ~
 /**
  * Define a set of template paths to pre-load
  * Pre-loaded templates are compiled and cached for fast access when rendering
@@ -34,7 +38,9 @@ export async function preloadHandlebarsTemplates() {
 	// Load the template parts
 	return loadTemplates(templatePaths);
 }
+// #endregion ░░░░[Preload Templates]░░░░
 
+// #region ████████ Handlebars: Handlebar Helpers Definitions ████████ ~
 const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 	"test": function(param1: unknown, operator: string, param2: unknown) {
 		const stringMap = {
@@ -157,7 +163,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 		eLog.hbsLog(...args, dbLevel);
 	},
 	// Does the name of this turf block represent a standard 'Turf' claim?
-	"isTurfBlock": (name: string): boolean => checkFuzzyEquality(name, "Turf"),
+	"isTurfBlock": (name: string): boolean => U.fuzzyMatch(name, "Turf"),
 	// Which other connection does this connector overlap with?
 	"getConnectorPartner": (index: number|string, direction: "right"|"left"|"top"|"bottom"): string|null => {
 		index = parseInt(`${index}`);
@@ -369,12 +375,13 @@ Object.assign(handlebarHelpers);
 export function registerHandlebarHelpers() {
 	Object.entries(handlebarHelpers).forEach(([name, func]) => Handlebars.registerHelper(name, func));
 }
+// #endregion ▄▄▄▄▄ Handlebars ▄▄▄▄▄
 
 
 /**~
  * Identifies duplicate items by type and returns a array of item ids to remove.
  */
-const removeDuplicatedItemType = (item_data: ItemData, actor: BladesActor): string[] => {
+const removeDuplicatedItemType = (item_data: ItemDataConstructorData, actor: BladesActor): string[] => {
 	const dupe_list: string[] = [];
 	const distinct_types = ["crew_reputation", "playbook", "vice", "background", "heritage"];
 	const allowed_types = ["item"];
@@ -396,68 +403,7 @@ const removeDuplicatedItemType = (item_data: ItemData, actor: BladesActor): stri
 	return dupe_list;
 };
 
-/**
- * Get all available ingame items by Type, including those in packs.
- */
-const getAllItemsByType = async (item_type: string, game: Game): Promise<BladesItem[]> => {
-
-	if (!game.items) { return [] }
-
-	const items: BladesItem[] = game.items.filter((item) => item.data.type === item_type);
-	const pack = game.packs.find((pack) => pack.metadata.name === item_type);
-
-	if (!pack) { return items }
-
-	const pack_items = await pack.getDocuments() as BladesItem[];
-	items.push(...pack_items);
-
-	items.sort(function(a, b) {
-		const nameA = a.data.name.toUpperCase();
-		const nameB = b.data.name.toUpperCase();
-		return nameA.localeCompare(nameB);
-	});
-
-	return items;
-};
-
-/**
- * Returns the label for attribute.
- */
-const getAttributeLabel = (attribute_name: string): string => {
-	const attribute_labels: Record<string, string> = {};
-	const attributes = game.system.model.Actor.character.attributes;
-
-	for (const att_name in attributes) {
-		attribute_labels[att_name] = attributes[att_name].label;
-		for (const skill_name in attributes[att_name].skills) {
-			attribute_labels[skill_name] = attributes[att_name].skills[skill_name].label;
-		}
-
-	}
-
-	return attribute_labels[attribute_name];
-};
-
-/**
- * Returns true if the attribute is an action
- */
-const isAttributeAction = (attribute_name: unknown): attribute_name is Attributes => typeof attribute_name === "string"
-	&& !(attribute_name in game.system.model.Actor.character.attributes);
-
-
-/**
- * Compares two strings for a match based on lower-case characters only.
- */
-const checkFuzzyEquality = (a: unknown, b: unknown): boolean => {
-	const [strA, strB] = [game.i18n.localize(String(a)), game.i18n.localize(String(b))]
-		.map((str) => str.toLowerCase().replace(/\s/g, ""));
-	return strA === strB;
-};
 
 export default {
-	removeDuplicatedItemType,
-	getAllItemsByType,
-	getAttributeLabel,
-	isAttributeAction,
-	checkFuzzyEquality
+	removeDuplicatedItemType
 };

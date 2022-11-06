@@ -16,6 +16,23 @@ const registerSettings = function() {
 		},
 		"default": 3         // The default value for the setting
 	});
+	game.settings.register("eunos-blades", "blacklist", {
+		"name": "Debug Blacklist",
+		"hint": "Comma-delimited list of categories of debug messages to silence.",
+		"scope": "client",      // This specifies a world-level setting
+		"config": true,        // This specifies that the setting appears in the configuration view
+		"type": String,
+		"default": ""         // The default value for the setting
+	});
+
+	game.settings.register("eunos-blades", "whitelist", {
+		"name": "Debug Whitelist",
+		"hint": "Comma-delimited list of categories of debug messages to promote.",
+		"scope": "client",      // This specifies a world-level setting
+		"config": true,        // This specifies that the setting appears in the configuration view
+		"type": String,
+		"default": ""         // The default value for the setting
+	});
 	/**
    * Track the system version upon which point a migration was last applied
    */
@@ -37,7 +54,7 @@ export function initTinyMCEStyles() {
 			content_css: `systems/eunos-blades/css/tinymce/content.css?${new Date().getTime()}`,
 			font_css: "systems/eunos-blades/css/fonts.css",
 			max_height: 500,
-			min_height: 100,
+			min_height: 40,
 			autoresize_overflow_padding: 0,
 			autoresize_bottom_margin: 0, // 25,
 			menubar: false,
@@ -142,6 +159,15 @@ export function initCanvasStyles() {
 }
 
 export function initFonts() {
+	// CONFIG.fontDefinitions["Roboto"] = {
+	// 	editor: true,
+	// 	fonts: [
+	// 		{urls: ["assets/fonts/Roboto.woff2"]},
+	// 		{urls: ["assets/fonts/RobotoBold.woff2"], weight: 700},
+	// 		{urls: ["assets/fonts/RobotoItalic.woff2"], style: "italic"}
+	// 	]
+	// };
+
 	// CONFIG.fontFamilies = [
 	// 	"Historical FellType",
 	// 	"Historical FellType SC",

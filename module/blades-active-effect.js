@@ -5,23 +5,23 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import H from "./core/helpers.js";
+import BladesItem from "./blades-item.js";
 const FUNCQUEUE = {};
 const CUSTOMFUNCS = {
     addItem: async (actor, { name, type }) => {
-        eLog.log("addItem", { actor, name, type });
+        eLog.checkLog("activeEffects", "addItem", { actor, name, type });
         if (actor.items.find((item) => item.name === name && item.type === type)) {
             eLog.error("... Item Already Added: Skipping");
             return;
         }
-        const itemsOfType = await H.getAllItemsByType(type, game);
+        const itemsOfType = await BladesItem.getAllItemsByType(type);
         const newItem = itemsOfType.find((iData) => iData.name === name);
         if (newItem) {
             await actor.createEmbeddedDocuments("Item", [newItem.data]);
         }
     },
     remItem: async (actor, { name, type }) => {
-        eLog.log("remItem", { actor, name, type });
+        eLog.checkLog("activeEffects", "remItem", { actor, name, type });
         const reversePattern = name.startsWith("!");
         const namePat = new RegExp(name.replace(/^!/, ""));
         const itemsToRemove = actor.items
@@ -54,7 +54,7 @@ class BladesActiveEffect extends ActiveEffect {
                 return;
             }
             FUNCQUEUE[actor.id].queue.push({ func, params });
-            eLog.log("... Function Running: Queuing");
+            eLog.checkLog("activeEffects", "... Function Running: Queuing");
             return;
         }
         eLog.display("... Creating New FUNCQUEUE, RUNNING:");
@@ -67,9 +67,9 @@ class BladesActiveEffect extends ActiveEffect {
         if (!actor.id) {
             return;
         }
-        eLog.log("... Running Func ...");
+        eLog.checkLog("activeEffects", "... Running Func ...");
         await funcPromise;
-        eLog.log("... Function Complete!");
+        eLog.checkLog("activeEffects", "... Function Complete!");
         if (FUNCQUEUE[actor.id].queue.length) {
             const { func, params } = FUNCQUEUE[actor.id].queue.shift();
             eLog.display(`Progressing Queue: ${func}(${params.name, params.type}) -- ${FUNCQUEUE[actor.id].queue.length} remaining funcs.`);
@@ -102,7 +102,7 @@ class BladesActiveEffect extends ActiveEffect {
             case "edit":
                 return effect.sheet?.render(true);
             case "delete":
-                eLog.log("delete effect");
+                eLog.checkLog("activeEffects", "delete effect");
                 return effect.delete();
             case "toggle":
                 return effect.update({ disabled: !effect.data.disabled });

@@ -45,7 +45,7 @@
 		margin: 1rem auto;
 
 		figcaption {
-			font-family: var(--font-default-small);
+			font-family: var(--font-primary-small);
 			color: var(--blades-grey-bright);
 			display: block;
 			margin-top: 0.25rem;
@@ -292,6 +292,11 @@
 		flex-wrap: nowrap;
 		justify-content: space-around;
 		align-items: baseline;
+
+		&.flex-wrap {
+			flex-wrap: wrap;
+			align-content: flex-start;
+		}
 	}
 
 	.flex-vertical {
@@ -299,5 +304,6 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		min-width: min-content;
 	}
 }

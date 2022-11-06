@@ -41,71 +41,87 @@
 	i[class] { font-family: var(--font-awesome) }
 	i.fab { font-family: var(--font-awesome-alt)}
 
-	h1, h2, h3, h4 {
+	h1, h2 {
+		margin: var(--margin-heading-strong);
+		padding: var(--padding-heading-strong);
+
+		color: var(--color-heading-strong);
+		background: var(--background-heading-strong);
+		font: {
+			family: var(--font-heading-strong);
+			weight: var(--font-weight-heading-strong);
+			style: var(--font-style-heading-strong);
+			variant: var(--font-variant-heading-strong);
+		}
+		line-height: var(--line-height-heading-strong);
+		text: {
+			shadow: var(--text-shadow-heading-strong);
+			transform: var(--text-transform-heading-strong);
+		}
+		border-color: var(--border-color-heading-strong);
+		border-style: var(--border-style-heading-strong);
+		border-width: var(--border-width-heading-strong);
+		box-shadow: var(--box-shadow-heading-strong);
+	}
+
+	h3, h4 {
+		margin: var(--margin-heading);
+		padding: var(--padding-heading);
+
 		color: var(--color-heading);
+		background: var(--background-heading);
 		font: {
 			family: var(--font-heading);
 			weight: var(--font-weight-heading);
+			style: var(--font-style-heading);
+			variant: var(--font-variant-heading);
 		}
 		line-height: var(--line-height-heading);
 		text: {
 			shadow: var(--text-shadow-heading);
+			transform: var(--text-transform-heading);
 		}
-		border: none;
-		padding: 0;
-		margin: 0 0 0.5rem 0;
-	}
-	h1 {
-		background: var(--background-heading);
-		font: {
-			size: var(--size-20px);
-		}
-		padding: 0.5rem;
-		text: {
-			transform: uppercase;
-		}
+		border-color: var(--border-color-heading);
+		border-style: var(--border-style-heading);
+		border-width: var(--border-width-heading);
+		box-shadow: var(--box-shadow-heading);
 	}
 
-	h2 {
-		background: var(--background-heading);
-		font: {
-			size: var(--size-18px);
-		}
-		padding: 0.5rem;
-		text: {
-			transform: uppercase;
-		}
-	}
-
-	h3 {
-		font: {
-			size: var(--size-18px);
-		}
-		border-bottom: 2px solid var(--background-heading);
-	}
-
-	h4 {
-		font: {
-			size: var(--size-16px);
-		}
-		border-bottom: 1px solid var(--background-heading);
-	}
+	h1 { font-size: toRem(20px) }
+	h2,
+	h3 { font-size: toRem(18px) }
+	h4 { font-size: toRem(16px) }
 
 	select,
 	input,
 	option,
 	textarea {
+		margin: var(--margin-input);
+		padding: var(--padding-input);
+
+		color: var(--color-input);
 		background: var(--background-input);
-		border: var(--border-input);
+		font: {
+			family: var(--font-input);
+			size: var(--font-size-input);
+			weight: var(--font-weight-input);
+			style: var(--font-style-input);
+			variant: var(--font-variant-input);
+		}
+		line-height: var(--line-height-input);
+		text: {
+			shadow: var(--text-shadow-input);
+			transform: var(--text-transform-input);
+		}
+		border-color: var(--border-color-input);
+		border-style: var(--border-style-input);
+		border-width: var(--border-width-input);
 		box-shadow: var(--box-shadow-input);
 
-		&[type="text"], &[data-dtype="string"], &[data-dtype="string"] option {
-
-		}
-
-		&[type="number"], &[data-dtype="number"], &[data-dtype="number"] option {
+		&[type="number"],
+		&[data-dtype="number"],
+		&[data-dtype="number"] option {
 			text-align: right;
-			font-family: var(--font-emphasis);
 		}
 
 		option {
@@ -114,7 +130,7 @@
 		}
 	}
 
-	p {
+	p + p {
 		margin: 0.5rem 0;
 		min-height: 1rem;
 	}

@@ -1,23 +1,48 @@
 <form class="{{cssClass}}" autocomplete="off">
-    <header class="sheet-header">
-        <img src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
-        <div class="header-fields">
-            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}"/></h1>
-        </div>
-    </header>
+	<section class="item-top flex-horizontal">
+		<img src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+		<input class="item-name top-title shadowed" type="text" name="name" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}" />
+	</section>
+	<section class="item-main flex-vertical">
+		{{#if isEmbeddedItem}}
+		<label class="tab-label">
+			<span class="tab-title">Description</span>
+		</label>
+		{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+		{{/if}}
 
-    {{!-- Sheet Body --}}
-    <section class="sheet-body flex-vertical">
-      {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
-      <label class="label-stripe">{{localize "BITD.Loadout"}}</label>
-      <input data-dtype="Number" type="text" name="data.load" value="{{data.load}}">
-      <label class="label-stripe">{{localize "BITD.Uses"}}</label>
-      <input  data-dtype="Number" id="item-uses" type="text" name="data.uses.max" value="{{data.uses.max}}">
-      <label class="label-stripe">{{localize "BITD.NumberAvailable"}}</label>
-      <input  data-dtype="Number" id="item-num_available" type="text" name="data.num_available" value="{{data.num_available}}">
-      {{#if isGM}}
-        <div class="label-stripe">{{localize "BITD.Effects"}}</div>
-        <div id="effects">{{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}</div>
-      {{/if}}
-    </section>
+		<label class="tab-label">
+			<span class="tab-title">Rules</span>
+		</label>
+		{{editor content=data.rules target="data.rules" button=true owner=owner editable=editable}}
+
+		{{#if (test isGM "||" data.rules_notes)}}
+		<label class="tab-label">
+			<span class="tab-title">Additional Rules Notes</span>
+		</label>
+		{{editor content=data.rules_notes target="data.rules_notes" button=true owner=owner editable=editable}}
+		{{/if}}
+
+		<div class="flex-horizontal">
+			<div class="labelled-item labelled-horizontal">
+				<label>Load: </label>
+				<input data-dtype="Number" type="number" name="data.load" value="{{data.load}}">
+			</div>
+			<div class="labelled-item labelled-horizontal">
+				<label>Uses: </label>
+				<input data-dtype="Number" type="number" name="data.uses.max" value="{{data.uses.max}}">
+			</div>
+			<div class="labelled-item labelled-horizontal">
+				<label>Max per Score: </label>
+				<input data-dtype="Number" type="number" name="data.num_available" value="{{data.num_available}}">
+			</div>
+		</div>
+
+		{{#if isGM}}
+			<label class="tab-label">
+				<span class="tab-title">Active Effects</span>
+			</label>
+			{{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
+		{{/if}}
+	</section>
 </form>

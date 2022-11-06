@@ -1,16 +1,43 @@
 // import BladesClockKeeperSheet from "./clock-keeper-sheet.js";
 import H from "./core/helpers.js";
-import C, {SVGDATA} from "./core/constants.js";
+import C, {SVGDATA, BladesItemType} from "./core/constants.js";
 import U from "./core/utilities.js";
-import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import type {ItemDataBaseProperties, ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs.js";
 import type {BaseUser} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents.mjs/baseUser.js";
 import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
-import type BladesActor from "./blades-actor.js";
+import BladesActor from "./blades-actor.js";
+import {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
 
 class BladesItem extends Item {
 
-	override async _preCreate( data: ItemData & ItemDataConstructorData, options: DocumentModificationOptions, user: BaseUser ) {
+	/**
+	* Get all available ingame items by Type, including those in packs.
+	*/
+	static async getAllItemsByType(item_type: string, isIncludingPacks = false): Promise<BladesItem[]> {
+	 if (!game.items) { return [] }
+
+	 const items: BladesItem[] = game.items.filter((item: BladesItem) => item.type === item_type);
+
+	 if (isIncludingPacks || items.length === 0) {
+		 const pack = game.packs.find((pack) => pack.metadata.name === item_type);
+		 if (pack) {
+			 const pack_items = await pack.getDocuments() as BladesItem[];
+			 items.push(...pack_items);
+		 }
+	 }
+
+	 items.sort(function(a, b) {
+		 const nameA = a.data.name.toUpperCase();
+		 const nameB = b.data.name.toUpperCase();
+		 return nameA.localeCompare(nameB);
+	 });
+
+	 return items;
+	}
+
+
+	override async _preCreate( data: ItemDataConstructorData, options: DocumentModificationOptions, user: BaseUser ) {
 		await super._preCreate( data, options, user );
 
 		if (user.id !== game.user?.id) { return }
@@ -50,18 +77,68 @@ class BladesItem extends Item {
 	}
 
 	get tier() { return U.pInt(this.parent?.system?.tier) }
+	get isCustomizedItem() { return this.isEmbedded && this.system.isCustomized }
 
 	isKept(actor: BladesActor): boolean|null {
 		if (this.type !== "ability") { return null }
-		const playbook = actor.playbook;
+		const playbook = actor.playbookName;
 		if (!playbook) { return null }
-		if (this.system.playbooks?.includes(actor.playbook)) {
+		if (this.system.playbooks?.includes(actor.playbookName)) {
 			return true;
 		}
-		if (["Ghost", "Hull", "Vampire"].includes(actor.playbook) && this.system.keepAsGhost) {
+		if (["Ghost", "Hull", "Vampire"].includes(actor.playbookName) && this.system.keepAsGhost) {
 			return true;
 		}
 		return false;
+	}
+
+	isValidForDoc(doc: BladesActor|BladesItem): boolean {
+		let isValid = true;
+
+		if (doc instanceof BladesActor) {
+			//~ Check Playbook Compatibility
+			if (this.type === "item") {
+				isValid = Boolean(this.system.playbooks!.includes("ANY")
+				|| (doc.playbookName && this.system.playbooks!.includes(doc.playbookName)));
+			}
+			if (this.type === "ability") {
+				isValid = Boolean((doc.playbookName && this.system.playbooks!.includes(doc.playbookName))
+				|| (!this.system.playbooks!.includes("Ghost")
+				&& !this.system.playbooks!.includes("Hull")
+				&& !this.system.playbooks!.includes("Vampire")));
+			}
+			if (!isValid) { return false }
+
+			//~ Check Load Amounts
+			if ("load" in this.system) {
+				isValid = this.system.load! <= doc.remainingLoad;
+			}
+			if (!isValid) { return false }
+
+			//~ Check Quantities
+			isValid = doc.items.filter((i) => i.name === this.name).length < (this.system.num_available ?? 1);
+			if (!isValid) { return false }
+
+			//~ Check any prerequisites
+			for (let [dotKey, val] of Object.entries(flattenObject(this.system.prereqs ?? {}))) {
+				if (dotKey.startsWith("item")) {
+					dotKey = dotKey.replace(/^item\.?/, "");
+					if (doc.items.filter((item) => getProperty(item, dotKey) === val).length === 0) {
+						isValid = false;
+						break;
+					}
+				} else {
+					if (getProperty(doc, dotKey) !== val) {
+						isValid = false;
+						break;
+					}
+				}
+			}
+		} else {
+			isValid = false;
+		}
+
+		return isValid;
 	}
 
 	_prepareCohort() {
@@ -167,6 +244,13 @@ class BladesItem extends Item {
 		return this.update({[`system.clock_keys.${keyID}`]: clockKey});
 	}
 
+	override async _onUpdate(changed: DeepPartial<PropertiesToSource<ItemDataBaseProperties>>, options: DocumentModificationOptions, userId: string) {
+		await super._onUpdate(changed, options, userId);
+		if (this.isEmbedded && "isCustomized" in this.system && this.system.isCustomized === false) {
+			this.update({"system.isCustomized": true});
+		}
+	}
+
 	_overlayElement?: HTMLElement;
 	get overlayElement() {
 		this._overlayElement ??= $("#clocks-overlay")[0];
@@ -189,48 +273,15 @@ class BladesItem extends Item {
 	}
 }
 
-type clockData = {
-	size: 2|3|4|5|6|8|10|12,
-	value: 0|1|2|3|4|5|6|7|8|9|10|11|12,
-	color: "yellow"|"blue"|"red"|"white",
-	display: string,
-	isActive: boolean,
-	isNameVisible: boolean,
-	isVisible: boolean
-}
-type keyData = {
-	clocks: Record<number, clockData|null>,
-	numClocks: number,
-	id: string,
-	display: string,
-	isActive: boolean,
-	isNameVisible: boolean,
-	isVisible: boolean,
-	scene: string
-};
-
-export enum BladesItemType {
-	"faction",
-	"item",
-	"class",
-	"ability",
-	"heritage",
-	"background",
-	"vice",
-	"cohort",
-	"crew_type",
-	"crew_reputation",
-	"crew_upgrade",
-	"crew_ability",
-	"gm_tracker",
-	"clock_keeper"
-}
-
 declare interface BladesItem {
+	get type(): string & BladesItemType,
 	parent: BladesActor | null,
 	system: {
 		type: string,
 		description: string,
+		isCustomized: boolean,
+		rules: string,
+		rules_notes: string,
 		class?: string,
 		price?: number,
 		purchased?: boolean,
@@ -252,6 +303,7 @@ declare interface BladesItem {
 		allies?: string,
 		enemies?: string,
 		situation?: string,
+		suggested_ability?: string,
 		goal_clock?: number,
 		notes?: string,
 		hold?: {
@@ -271,10 +323,12 @@ declare interface BladesItem {
 		load?: number,
 		uses?: number,
 		keepAsGhost?: boolean,
+		prereqs?: Record<string,any>,
 		additional_info?: string,
 		equipped?: false,
 		num_available?: number
-		experience_clues?: [],
+		experience_clues?: string[],
+		trauma_conditions?: string[],
 		base_skills?: Record<string, number[]>,
 		cohort?: string,
 		scale?: number,
@@ -307,39 +361,17 @@ declare interface BladesItem {
 		}>,
 		armor?: boolean,
 		crew_type?: string,
-		turfs?: Record<number, {
+		turfs?: Record<string, {
 				name: string,
 				value: string,
 				description: string,
 				connects: string[]
 		}>,
-		clock_keys?: Record<string, keyData|null>,
+		clock_keys?: Record<string, clockKeyData|null>,
 		scenes?: Array<{id: string, name: string}>,
 		targetScene?: string
 	}
 
 }
-
-export interface BladesFaction<T extends "faction"> extends BladesItem {
-	type: T,
-	system: BladesItem["system"] & {
-		goal_1: string,
-		goal_1_clock_value: number,
-		goal_1_clock_max: number,
-		size_list_1: string,
-		goal_2: string,
-		goal_2_clock_value: number,
-		goal_2_clock_max: number,
-		size_list_2: string,
-	}
-}
-
-export type BladesItemSpec<Type extends string> = BladesItem
-	& {
-		type: Type,
-		system: {
-			type: Type
-		}
-	}
 
 export default BladesItem;

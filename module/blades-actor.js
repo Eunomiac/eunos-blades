@@ -5,12 +5,25 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import H from "./core/helpers.js";
 import U from "./core/utilities.js";
-import C, { Randomizers } from "./core/constants.js";
+import { Randomizers, Attributes, Actions, Positions, EffectLevels } from "./core/constants.js";
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem from "./blades-item.js";
 class BladesActor extends Actor {
+        static async getAllActorsByType(aType, isIncludingPacks = false) {
+        if (!game.actors) {
+            return [];
+        }
+        const actors = game.actors.filter((actor) => actor.type === aType);
+        if (isIncludingPacks || actors.length === 0) {
+            const pack = game.packs.find((pack) => pack.metadata.name === aType);
+            if (pack) {
+                const pack_actors = await pack.getDocuments();
+                actors.push(...pack_actors);
+            }
+        }
+        return actors;
+    }
     static async create(data, options = {}) {
         data.token = data.token || {};
 
@@ -25,39 +38,37 @@ class BladesActor extends Actor {
     
     async _onCreateEmbeddedDocuments(embName, docs, ...args) {
         await super._onCreateEmbeddedDocuments(embName, docs, ...args);
-        eLog.log("onCreateEmbeddedDocuments", { embName, docs, args });
+        eLog.checkLog("actorTrigger", "onCreateEmbeddedDocuments", { embName, docs, args });
         docs.forEach(async (doc) => {
             if (doc instanceof BladesItem) {
+                doc.update({ "system.isActive": true });
                 switch (doc.type) {
                     case "playbook": {
-                        if (doc.name && doc.name in C.Playbooks) {
-                            await this.update({
-                                "system.trauma.active": null,
-                                "system.trauma.checked": null
-                            });
-                            const playbookKey = "trauma" in C.Playbooks[doc.name]
-                                ? doc.name
-                                : "DEFAULTS";
-                            const playbookData = C.Playbooks[playbookKey];
-                            this.update({
-                                "system.trauma.active": Object.fromEntries(playbookData.trauma.list.map((tCond) => [tCond, true])),
-                                "system.trauma.checked": Object.fromEntries(playbookData.trauma.list.map((tCond) => [tCond, false]))
-                            });
-                            break;
-                        }
+                        await this.update({
+                            "system.trauma.active": null,
+                            "system.trauma.checked": null
+                        });
+                        this.update({
+                            "system.trauma.active": Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond) => [tCond, true])),
+                            "system.trauma.checked": Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond) => [tCond, false]))
+                        });
+                        break;
                     }
                 }
             }
         });
     }
+    get playbookName() {
+        return this.playbook?.name ?? null;
+    }
     get playbook() {
-        return this.items.find((item) => item.type === "playbook")?.name;
+        return this.items.find((item) => item.type === "playbook") ?? null;
     }
     get attributes() {
         return {
-            insight: Object.values(this.system.attributes.insight).filter(({ value }) => value > 0).length,
-            prowess: Object.values(this.system.attributes.prowess).filter(({ value }) => value > 0).length,
-            resolve: Object.values(this.system.attributes.resolve).filter(({ value }) => value > 0).length
+            insight: Object.values(this.system.attributes.insight).filter(({ value }) => value > 0).length + this.system.resistance_bonuses.insight,
+            prowess: Object.values(this.system.attributes.prowess).filter(({ value }) => value > 0).length + this.system.resistance_bonuses.prowess,
+            resolve: Object.values(this.system.attributes.resolve).filter(({ value }) => value > 0).length + this.system.resistance_bonuses.resolve
         };
     }
     get actions() {
@@ -65,7 +76,13 @@ class BladesActor extends Actor {
             ...this.system.attributes.insight,
             ...this.system.attributes.prowess,
             ...this.system.attributes.resolve
-        }, ({ value, max }) => U.gsap.utils.clamp(value, 0, max));
+        }, ({ value, max }) => U.gsap.utils.clamp(0, max, value));
+    }
+    get rollable() {
+        return {
+            ...this.attributes,
+            ...this.actions
+        };
     }
     get trauma() {
         return Object.keys(this.system.trauma?.checked ?? {})
@@ -77,7 +94,44 @@ class BladesActor extends Actor {
     get traumaConditions() {
         return U.objFilter(this.system.trauma?.checked ?? {}, (v, traumaName) => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName]));
     }
+    get customItems() {
+        return this.items.filter((i) => i.system.isCustomized === true);
+    }
+    async removeItem(itemId) {
+        const item = this.items.get(itemId);
+        return this.deleteEmbeddedDocuments("Item", [itemId]);
+    }
+    startScore() {
+        this.update({
+        });
+    }
+    startDowntime() {
+        this.update({
+        });
+    }
+    endScore() {
+        this.update({
+        });
+    }
+    endDowntime() {
+        this.update({
+        });
+    }
+    get currentLoad() {
+        return U.gsap.utils.clamp(0, 10, this.items
+            .reduce((tot, i) => tot + (i.type === "item"
+            ? U.pInt(i.system.load)
+            : 0), 0));
+    }
+    get remainingLoad() {
+        if (!this.system.loadout.selected) {
+            return 0;
+        }
+        const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected).toLowerCase()];
+        return Math.max(0, maxLoad - this.currentLoad);
+    }
     rollAttributePopup(attribute_name) {
+        const test = Actions;
         const attribute_label = U.tCase(attribute_name);
         let content = `
         <h2>${game.i18n.localize("BITD.Roll")} ${attribute_label}</h2>
@@ -88,7 +142,7 @@ class BladesActor extends Actor {
               ${this.createListOfDiceMods(-3, +3, 0)}
             </select>
           </div>`;
-        if (H.isAttributeAction(attribute_name)) {
+        if ([...Object.keys(Attributes), ...Object.keys(Actions)].includes(attribute_name)) {
             content += `
             <div class="form-group">
               <label>${game.i18n.localize("BITD.Position")}:</label>
@@ -146,7 +200,7 @@ class BladesActor extends Actor {
         }).render(true);
     }
     async rollAttribute(attribute_name, additional_dice_amount = 0, position = Positions.risky, effect = EffectLevels.standard, note) {
-        bladesRoll(this.attributes[attribute_name] + additional_dice_amount, attribute_name, position, effect, note);
+        bladesRoll(this.rollable[attribute_name] + additional_dice_amount, attribute_name, position, effect, note);
     }
     updateRandomizers() {
         const rStatus = {
@@ -302,48 +356,4 @@ class BladesActor extends Actor {
         return text;
     }
 }
-export var Attributes;
-(function (Attributes) {
-    Attributes["insight"] = "insight";
-    Attributes["prowess"] = "prowess";
-    Attributes["resolve"] = "resolve";
-})(Attributes || (Attributes = {}));
-export var Actions;
-(function (Actions) {
-    let Insight;
-    (function (Insight) {
-        Insight["hunt"] = "hunt";
-        Insight["study"] = "study";
-        Insight["survey"] = "survey";
-        Insight["tinker"] = "tinker";
-    })(Insight = Actions.Insight || (Actions.Insight = {}));
-    let Prowess;
-    (function (Prowess) {
-        Prowess["finesse"] = "finesse";
-        Prowess["prowl"] = "prowl";
-        Prowess["skirmish"] = "skirmish";
-        Prowess["wreck"] = "wreck";
-    })(Prowess = Actions.Prowess || (Actions.Prowess = {}));
-    let Resolve;
-    (function (Resolve) {
-        Resolve["attune"] = "attune";
-        Resolve["command"] = "command";
-        Resolve["consort"] = "consort";
-        Resolve["sway"] = "sway";
-    })(Resolve = Actions.Resolve || (Actions.Resolve = {}));
-})(Actions || (Actions = {}));
-export var Positions;
-(function (Positions) {
-    Positions["controlled"] = "controlled";
-    Positions["risky"] = "risky";
-    Positions["desperate"] = "desperate";
-})(Positions || (Positions = {}));
-export var EffectLevels;
-(function (EffectLevels) {
-    EffectLevels["extreme"] = "extreme";
-    EffectLevels["great"] = "great";
-    EffectLevels["standard"] = "standard";
-    EffectLevels["limited"] = "limited";
-    EffectLevels["zero"] = "zero";
-})(EffectLevels || (EffectLevels = {}));
 export default BladesActor;

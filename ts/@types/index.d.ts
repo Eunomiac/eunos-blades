@@ -1,8 +1,94 @@
 import { BladesItem } from "../blades-item";
 import { BladesActor } from "../blades-actor";
 import { bladesRoll } from "../blades-roll";
+import { BladesDialog } from "../blades-dialog";
 
 declare global {
+
+	declare enum BladesActorType {
+		pc = "character",
+		npc = "npc",
+		crew = "crew"
+	}
+
+	declare enum BladesItemType {
+		ability = "ability",
+		background = "background",
+		clock_keeper = "clock_keeper",
+		cohort = "cohort",
+		crew_ability = "crew_ability",
+		crew_reputation = "crew_reputation",
+		crew_type = "crew_type",
+		crew_upgrade = "crew_upgrade",
+		faction = "faction",
+		feature = "feature",
+		gm_tracker = "gm_tracker",
+		heritage = "heritage",
+		item = "item",
+		playbook = "playbook",
+		stricture = "stricture",
+		vice = "vice"
+	}
+
+	declare enum Attributes {
+		insight = "insight",
+		prowess = "prowess",
+		resolve = "resolve"
+	}
+	declare enum InsightActions {
+		hunt = "hunt",
+		study = "study",
+		survey = "survey",
+		tinker = "tinker"
+	}
+	declare enum ProwessActions {
+		finesse = "finesse",
+		prowl = "prowl",
+		skirmish = "skirmish",
+		wreck = "wreck"
+	}
+	declare enum ResolveActions {
+		attune = "attune",
+		command = "command",
+		consort = "consort",
+		sway = "sway"
+	}
+	declare enum Actions {
+		hunt = "hunt",
+		study = "study",
+		survey = "survey",
+		tinker = "tinker",
+		finesse = "finesse",
+		prowl = "prowl",
+		skirmish = "skirmish",
+		wreck = "wreck",
+		attune = "attune",
+		command = "command",
+		consort = "consort",
+		sway = "sway"
+	}
+
+	declare enum Positions {
+		controlled = "controlled",
+		risky = "risky",
+		desperate = "desperate"
+	}
+	declare enum EffectLevels {
+		extreme = "extreme",
+		great = "great",
+		standard = "standard",
+		limited = "limited",
+		zero = "zero"
+	}
+
+	namespace SystemDocs {
+		export type Actor = BladesActor;
+		export type Item = BladesItem;
+		export type ActorSheet = BladesSheet;
+		export type ItemSheet = BladesItemSheet;
+
+		export type Sheet = BladesSheet|BladesItemSheet;
+	}
 
 	declare interface Game {
 		items: Collection<StoredDocument<BladesItem>>,
@@ -30,12 +116,80 @@ declare global {
 		}
 	}
 
-	declare const eLog: {
-		display: (...content: [string, ...any[]]) => void,
-		log: (...content: [string, ...any[]]) => void,
-		error: (...content: [string, ...any[]]) => void,
-		hbsLog: (...content: [string, ...any[]]) => void
+	namespace BladesActor {
+		export type ID = string;
+		export type SubActorCategory = string;
+
+		export type RandomizerData = {
+			isLocked: boolean,
+			value: string,
+			size: 1|2|4,
+			label: string|null
+		}
+
+		interface SubActorData {
+			[id: ID]: {
+				category: SubActorCategory,
+				data: Partial<Omit<BladesActor["system"],"subactors">>
+			}
+		}
+	}
+
+	namespace BladesItem {
+
+	}
+
+	type clockData = {
+		size: 2|3|4|5|6|8|10|12,
+		value: 0|1|2|3|4|5|6|7|8|9|10|11|12,
+		color: "yellow"|"blue"|"red"|"white",
+		display: string,
+		isActive: boolean,
+		isNameVisible: boolean,
+		isVisible: boolean
+	}
+	type clockKeyData = {
+		clocks: Record<number, clockData|null>,
+		numClocks: number,
+		id: string,
+		display: string,
+		isActive: boolean,
+		isNameVisible: boolean,
+		isVisible: boolean,
+		scene: string
 	};
+
+	namespace BladesDialog {
+    interface Options extends DialogOptions {
+		}
+		interface Data extends Dialog.Data {
+			doc: BladesActor|BladesItem;
+			category: KeyOf<typeof BladesDialog.Categories>;
+			callback: (docID: string) => Promise<void>;
+			tabs?: Record<string, {featured: Array<BladesActor|BladesItem>, other: Array<BladesActor|BladesItem>}>
+		}
+	}
+
+	type eLogParams = [string, ...any[]];
+	// const eLog = {
+	// 	display: (...content: eLogParams) => eLogger("display", ...content),
+	// 	log0: (...content: eLogParams) => eLogger("log", ...content, 0),
+	// 	log1: (...content: eLogParams) => eLogger("log", ...content, 1),
+	// 	log2: (...content: eLogParams) => eLogger("log", ...content, 2),
+	// 	log: (...content: eLogParams) => eLogger("log", ...content, 3),
+	// 	log4: (...content: eLogParams) => eLogger("log", ...content, 4),
+	// 	log5: (...content: eLogParams) => eLogger("log", ...content, 5),
+	// 	checkLog0: (...content: eLogParams) => eLogger("checkLog", ...content, 0),
+	// 	checkLog1: (...content: eLogParams) => eLogger("checkLog", ...content, 1),
+	// 	checkLog2: (...content: eLogParams) => eLogger("checkLog", ...content, 2),
+	// 	checkLog: (...content: eLogParams) => eLogger("checkLog", ...content, 3),
+	// 	checkLog4: (...content: eLogParams) => eLogger("checkLog", ...content, 4),
+	// 	checkLog5: (...content: eLogParams) => eLogger("checkLog", ...content, 5),
+	// 	error: (...content: eLogParams) => eLogger("error", ...content),
+	// 	hbsLog: (...content: eLogParams) => eLogger("handlebars", ...content)
+	// };
+
+	declare const eLog: Record<string, (...content: eLogParams) => void>
 
 	interface LenientGlobalVariableTypes {
     game: never;

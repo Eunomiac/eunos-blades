@@ -1,4 +1,6 @@
+import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
+import BladesActor from "../blades-actor.js";
 
 class BladesCrewSheet extends BladesSheet {
 
@@ -8,36 +10,46 @@ class BladesCrewSheet extends BladesSheet {
 			template: "systems/eunos-blades/templates/crew-sheet.hbs",
 			width: 940,
 			height: 1020,
-			tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "turfs"}]
+			tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "claims"}]
 		});
 	}
 
 	override async getData() {
 		const data = await super.getData();
+		eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", {...data});
+		const actorData = data.actor as BladesActor;
+		const actorSystem = actorData.system;
 
-		// Calculate Turfs amount.
-		// We already have Lair, so set to -1.
-		let turfs_amount = 0;
+		//~ Isolate playbook information
+		const playbookItem = data.items.find((item) => item.type === "crew_type");
+		if (playbookItem) {
+			// Calculate Turfs amount.
+			// We already have Lair, so set to -1.
+			let turfs_amount = 0;
+			Object.entries(playbookItem.system.turfs!).forEach(([key, turf]) => {
+				if (game.i18n.localize(turf.name).toLowerCase().replace(/\s/g, "") === game.i18n.localize("BITD.Turf").toLowerCase().replace(/\s/g, "")) {
+					turfs_amount += U.pInt(turf.value);
+				}
+			});
 
-		data.items.forEach((item) => {
-			if (item.type === "crew_type" && item.data) {
-			// @ts-expect-error Need to figure out what's returned by data.items.
-				Object.entries(item.data.turfs).forEach(([key, turf]: [any, any]) => {
-					if (game.i18n.localize(turf.name).toLowerCase().replace(/\s/g, "") === game.i18n.localize("BITD.Turf").toLowerCase().replace(/\s/g, "")) {
-						turfs_amount += turf.value ? 1 : 0;
-					}
-				});
-			}
-
-		});
+			actorSystem.turfs.value = Math.min(turfs_amount, actorSystem.turfs.max);
+			actorSystem.rep.max -= actorSystem.turfs.value;
+			actorSystem.rep.value = Math.min(actorSystem.rep.value, actorSystem.rep.max);
+		}
 
 		Object.assign(
-			data.data,
+			data,
 			{
-				turfs_amount
+				items: {
+					playbook: playbookItem,
+					reputation: data.items.find((item) => item.type === "crew_reputation"),
+					upgrades: data.items.filter((item) => item.type === "crew_upgrade"),
+					abilities: data.items.filter((item) => item.type === "crew_ability"),
+					cohorts: data.items.filter((item) => item.type === "cohort")
+				}
 			}
 		);
-
+		eLog.checkLog("actor", "[BladesCrewSheet] return getData()", {...data});
 		return data;
 	}
 

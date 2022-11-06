@@ -78,8 +78,8 @@ $isCompactLayout: true;
 	// #endregion ___ Layout ___
 	// #region ====== Text ====== ~
 	// --font-primary: "Signika", sans-serif;
-  --font-mono: monospace;
-  --font-awesome: "Font Awesome 6 Pro";
+  // --font-mono: monospace;
+  // --font-awesome: "Font Awesome 6 Pro";
 
 	--font-size-11: 0.6875rem;
 	--font-size-12: 0.75rem;
@@ -110,29 +110,26 @@ $isCompactLayout: true;
 	--color-border-highlight: var(--blades-gold-bright); // #ff6400;
 	--color-border-highlight-alt: var(--blades-gold); // #ff0000;
 	// #endregion ___ Colors ___
-  // #region ====== Text ======
-	--font-primary: "Minion Pro", serif; // "Signika", sans-serif;
-	--font-mono: "Pragmata", monospace; // monospace;
-	// #endregion ___ Text ___
 // #endregion ▄▄▄▄▄ Overrides ▄▄▄▄▄
 
 // #region ████████ Pixels to Rem: Pixel Sizes Converted to Rems ████████ ~
-	--size-10px: toRem(10px); /* Expansion (not defined by Foundry) */
-	--size-11px: var(--font-size-11);
-	--size-12px: var(--font-size-12);
-	--size-13px: var(--font-size-13);
-	--size-14px: var(--font-size-14);
-	--size-16px: var(--font-size-16);
-	--size-18px: var(--font-size-18);
-	--size-20px: var(--font-size-20);
-	--size-24px: var(--font-size-24);
-	--size-28px: var(--font-size-28);
-	--size-30px: toRem(30px); /* Expansion (not defined by Foundry) */
-	--size-32px: var(--font-size-32);
-	--size-48px: var(--font-size-48);
+	--size-10px: #{toRem(10px)};      // 0.6125rem /* Expansion (not defined by Foundry) */
+	--size-11px: var(--font-size-11); // 0.6875rem
+	--size-12px: var(--font-size-12); // 0.75rem
+	--size-13px: var(--font-size-13); // 0.8125rem
+	--size-14px: var(--font-size-14); // 0.875rem
+	--size-16px: var(--font-size-16); // 1rem
+	--size-18px: var(--font-size-18); // 1.125rem
+	--size-20px: var(--font-size-20); // 1.25rem
+	--size-24px: var(--font-size-24); // 1.5rem
+	--size-28px: var(--font-size-28); // 1.75rem
+	--size-30px: #{toRem(30px)};      // 1.875rem /* Expansion (not defined by Foundry) */
+	--size-32px: var(--font-size-32); // 2rem
+	--size-48px: var(--font-size-48); // 3rem
 // #endregion ▄▄▄▄▄ Pixels to Rem ▄▄▄▄▄
 
-// #region ████████ Colors: System Color Settings ████████
+// #region ████████ Colors: System Color Settings ████████ ~
+	// #region ░░░░░░░ Blades Colors & Fades ░░░░░░░ ~
 	--blades-white-bright-nums: 255, 255, 255;
 	--blades-white-nums: 200, 200, 200;
 	--blades-grey-bright-nums: 170, 170, 170;
@@ -157,6 +154,14 @@ $isCompactLayout: true;
 	--blades-black: rgba(var(--blades-black-nums), 1);
 	--blades-black-dark: rgba(var(--blades-black-dark-nums), 1);
 
+	--blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
+	--blades-gold: rgba(var(--blades-gold-nums), 1);
+	--blades-gold-dark: rgba(var(--blades-gold-dark-nums), 1);
+
+	--blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
+	--blades-red: rgba(var(--blades-red-nums), 1);
+	--blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
+
 	--blades-white-fade: rgba(var(--blades-white-nums), 0.5);
 	--blades-white-fade-strong: rgba(var(--blades-white-nums), 0.25);
 	--blades-white-bright-fade: rgba(var(--blades-white-bright-nums), 0.5);
@@ -166,18 +171,8 @@ $isCompactLayout: true;
 	--blades-black-fade-strong: rgba(var(--blades-black-nums), 0.25);
 	--blades-black-dark-fade: rgba(var(--blades-black-dark-nums), 0.5);
 	--blades-black-dark-fade-strong: rgba(var(--blades-black-dark-nums), 0.25);
-
-	--blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
-	--blades-gold: rgba(var(--blades-gold-nums), 1);
-	--blades-gold-dark: rgba(var(--blades-gold-dark-nums), 1);
-
-	--blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
-	--blades-red: rgba(var(--blades-red-nums), 1);
-	--blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
-
-	--blades-color-negative: var(--blades-red-bright);
-	--blades-color-positive: var(--blades-gold-bright);
-
+	// #endregion ░░░░[Blades Colors & Fades]░░░░
+	// #region ░░░░░░░ Numerically-Defined Colors (for Emu Stylesheet) ░░░░░░░ ~
 	--color-primary: var(--blades-white-nums);
 	--color-background: var(--blades-black-nums);
 	--color-background-lightest: var(--blades-grey-nums);
@@ -198,61 +193,140 @@ $isCompactLayout: true;
 	--color-shadow-primary: var(--blades-white-bright-nums);
 	--color-text-dark-primary: var(--blades-white-nums);
 	--color-bg-option: var(--blades-black-nums);
+	// #endregion ░░░░[Numerically-Defined Colors (for Emu Stylesheet)]░░░░
 // #endregion ▄▄▄▄▄ Colors ▄▄▄▄▄
 
-// #region 🟩🟩🟩 PRIMARY STYLES: Primary Style Settings for Most Elements 🟩🟩🟩
+// #region 🟩🟩🟩 STYLES 🟩🟩🟩
 	// #region ████████ COLORS & FONTS ████████
-	--color-default: var(--blades-white);
-	--background-default: var(--blades-dark);
 
-	--font-default: var(--font-primary);
-	--font-default-small: "Minion Pro Caption";
-	--font-default-narrow: "Minion Pro Cond";
-	--font-default-small-narrow: "Minion Pro Caption Cond";
+	--blades-color-negative: var(--blades-red-bright);
+	--blades-color-positive: var(--blades-gold-bright);
 
-	--font-awesome-alt: "Font Awesome 6 Brands";
+	// #region ░░░░░░░[Style Components]░░░░: Defining Components; Do Not USE Outside of Vars.scss ░░░░░░░
+	--font-primary: "Minion Pro", serif; // "Signika", sans-serif;
+	--font-primary-smallcaps: var(--font-primary);
+	--font-primary-small: "Minion Pro Caption";
+	--font-primary-narrow: "Minion Pro Cond";
+	--font-primary-small-narrow: "Minion Pro Caption Cond";
 
-	--font-alt: "Historical FellType";
-	--font-alt-smallcaps: "Historical FellType SC";
+	--font-primary-alt: "Historical FellType";
+	--font-primary-alt-smallcaps: "Historical FellType SC";
 
 	--font-emphasis: "Kirsty";
+	--font-emphasis-smallcaps: var(--font-emphasis);
 	--font-emphasis-alt: "Ravenscroft";
+	--font-emphasis-alt-smallcaps: var(--font-emphasis-alt);
+
+	--font-mono: "Pragmata", monospace; // monospace;
+	--font-mono-smallcaps: var(--font-mono);
 
 	--font-decorative: "UglyQua";
-
 	--font-decorative-alt: "IM FELL Double Pica";
 	--font-decorative-alt-smallcaps: "IM FELL Double Pica SC";
 
 	--font-handwritten: "PWSignaturetwo";
 
-	--font-monospace: var(--font-mono);
+	--font-awesome: "Font Awesome 6 Pro";
+	--font-awesome-alt: "Font Awesome 6 Brands";
+
+	--line-height-expanded: 1.4;
+	--line-height-primary: 1.2;
+	--line-height-compact: 1;
+
+	--text-shadow-dark: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
+	--box-shadow-dark: inset 0 0 0.3rem var(--blades-black-dark-fade);
+	--box-shadow-dark-strong: inset 0 0 0.5rem var(--blades-black-dark);
+	// #endregion ░░░░[Style Components]░░░░
+
+
+	// #region ░░░░░░░ Default/Baseline Style ░░░░░░░
+	--color-default: var(--blades-white);
+	--background-default: var(--blades-dark);
+
+	--font-default: var(--font-primary);
 
 	--font-size-default: var(--size-14px);
 	--font-weight-default: normal;
 	--font-style-default: normal;
 	--font-variant-default: normal;
 
-	--line-height-default: 1.2;
-	--line-height-compact: 1;
+	--line-height-default: var(--line-height-primary);
 
 	--text-shadow-default: none;
-	--text-shadow-dark: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
 	--box-shadow-default: none;
-	--box-shadow-inset-dark:
 	--text-transform-default: none;
+	// #endregion ░░░░[Default/Baseline Style]░░░░
 
+	// #region ░░░░░░░ Heading Style ░░░░░░░
 	--color-heading: var(--blades-white-bright);
-	--background-heading: var(--blades-grey-dark);
-	--font-heading: var(--font-emphasis);
-	--font-heading-alt: var(--font-emphasis-alt);
-	--font-weight-heading: bold;
-	--text-shadow-heading: var(--text-shadow-dark);
-	--text-transform-heading: uppercase;
-	--line-height-heading: var(--line-height-compact);
+	--color-heading-strong: var(--color-heading);
+	--background-heading: none;
+	--background-heading-strong: var(--blades-grey-dark);
 
+	--margin-heading: 0;
+	--margin-heading-strong: 0 0 0.5rem 0;
+	--padding-heading: 0;
+	--padding-heading-strong: 0.5rem;
+
+	--font-heading: var(--font-emphasis);
+	--font-heading-strong: var(--font-heading);
+
+	--font-weight-heading: bold;
+	--font-weight-heading-strong: var(--font-weight-heading);
+	--font-style-heading: var(--font-style-default);
+	--font-style-heading-strong: var(--font-style-heading);
+	--font-variant-heading: var(--font-variant-default);
+	--font-variant-heading-strong: var(--font-variant-heading);
+
+	--line-height-heading: var(--line-height-compact);
+	--line-height-heading-strong: var(--line-height-heading);
+
+	--text-shadow-heading: var(--text-shadow-dark);
+	--text-shadow-heading-strong: var(--text-shadow-heading);
+	--box-shadow-heading: none;
+	--box-shadow-heading-strong: var(--box-shadow-input);
+	--text-transform-heading: uppercase;
+	--text-transform-heading-strong: var(--text-transform-heading);
+
+	--border-color-heading: var(--background-heading-strong);
+	--border-color-heading-strong: var(--border-color-heading);
+	--border-width-heading: #{toRem(2px)};
+	--border-width-heading-strong: var(--border-width-heading);
+	--border-style-heading: none none solid none;
+	--border-style-heading-strong: none;
+	// #endregion ░░░░[Heading Style]░░░░
+
+	// #region ░░░░░░░ Inputs Style ░░░░░░░
+	--color-input: var(--blades-white-bright);
 	--background-input: var(--blades-black-dark-fade-strong);
-	--border-input: none;
-	--box-shadow-input: inset 0 0 0.3rem var(--blades-black-dark-fade);
+
+	--margin-input: 0;
+	--padding-input: 0;
+
+	--font-input: var(--font-emphasis);
+	--font-number-input: var(--font-input);
+
+	--font-size-input: var(--font-size-primary);
+	--font-weight-input: var(--font-weight-primary);
+	--font-style-input: var(--font-style-primary);
+	--font-variant-input: var(--font-variant-primary);
+
+	--line-height-input: var(--line-height-compact);
+
+	--text-shadow-input: var(--text-shadow-dark);
+	--box-shadow-input: var(--box-shadow-dark);
+	--box-shadow-input-strong: var(--box-shadow-dark-strong);
+	--text-transform-input: var(--text-transform-default);
+
+	--border-color-heading: transparent;
+	--border-width-heading: 0;
+	--border-style-heading: none;
+	// #endregion ░░░░[Inputs Style]░░░░
+
+	// #region ░░░░░░░ Other Styles ░░░░░░░ ~
+	--font-monospace: var(--font-mono);
+	// #endregion ░░░░[Other Styles]░░░░
+
 	// #endregion ▄▄▄▄▄ COLORS & FONTS ▄▄▄▄▄
 
 	// #region ████████ LAYOUT ████████ ~

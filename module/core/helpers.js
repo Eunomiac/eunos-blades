@@ -7,6 +7,7 @@
 
 import U from "./utilities.js";
 import { SVGDATA } from "./constants.js";
+
 export async function preloadHandlebarsTemplates() {
     const templatePaths = [
         "systems/eunos-blades/templates/parts/toggle-icon.hbs",
@@ -23,6 +24,7 @@ export async function preloadHandlebarsTemplates() {
     ];
     return loadTemplates(templatePaths);
 }
+
 const handlebarHelpers = {
     "test": function (param1, operator, param2) {
         const stringMap = {
@@ -175,7 +177,7 @@ const handlebarHelpers = {
         }
         eLog.hbsLog(...args, dbLevel);
     },
-    "isTurfBlock": (name) => checkFuzzyEquality(name, "Turf"),
+    "isTurfBlock": (name) => U.fuzzyMatch(name, "Turf"),
     "getConnectorPartner": (index, direction) => {
         index = parseInt(`${index}`);
         const partners = {
@@ -362,46 +364,6 @@ const removeDuplicatedItemType = (item_data, actor) => {
     });
     return dupe_list;
 };
-const getAllItemsByType = async (item_type, game) => {
-    if (!game.items) {
-        return [];
-    }
-    const items = game.items.filter((item) => item.data.type === item_type);
-    const pack = game.packs.find((pack) => pack.metadata.name === item_type);
-    if (!pack) {
-        return items;
-    }
-    const pack_items = await pack.getDocuments();
-    items.push(...pack_items);
-    items.sort(function (a, b) {
-        const nameA = a.data.name.toUpperCase();
-        const nameB = b.data.name.toUpperCase();
-        return nameA.localeCompare(nameB);
-    });
-    return items;
-};
-const getAttributeLabel = (attribute_name) => {
-    const attribute_labels = {};
-    const attributes = game.system.model.Actor.character.attributes;
-    for (const att_name in attributes) {
-        attribute_labels[att_name] = attributes[att_name].label;
-        for (const skill_name in attributes[att_name].skills) {
-            attribute_labels[skill_name] = attributes[att_name].skills[skill_name].label;
-        }
-    }
-    return attribute_labels[attribute_name];
-};
-const isAttributeAction = (attribute_name) => typeof attribute_name === "string"
-    && !(attribute_name in game.system.model.Actor.character.attributes);
-const checkFuzzyEquality = (a, b) => {
-    const [strA, strB] = [game.i18n.localize(String(a)), game.i18n.localize(String(b))]
-        .map((str) => str.toLowerCase().replace(/\s/g, ""));
-    return strA === strB;
-};
 export default {
-    removeDuplicatedItemType,
-    getAllItemsByType,
-    getAttributeLabel,
-    isAttributeAction,
-    checkFuzzyEquality
+    removeDuplicatedItemType
 };

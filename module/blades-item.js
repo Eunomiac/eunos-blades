@@ -8,7 +8,27 @@
 import H from "./core/helpers.js";
 import C, { SVGDATA } from "./core/constants.js";
 import U from "./core/utilities.js";
+import BladesActor from "./blades-actor.js";
 class BladesItem extends Item {
+        static async getAllItemsByType(item_type, isIncludingPacks = false) {
+        if (!game.items) {
+            return [];
+        }
+        const items = game.items.filter((item) => item.type === item_type);
+        if (isIncludingPacks || items.length === 0) {
+            const pack = game.packs.find((pack) => pack.metadata.name === item_type);
+            if (pack) {
+                const pack_items = await pack.getDocuments();
+                items.push(...pack_items);
+            }
+        }
+        items.sort(function (a, b) {
+            const nameA = a.data.name.toUpperCase();
+            const nameB = b.data.name.toUpperCase();
+            return nameA.localeCompare(nameB);
+        });
+        return items;
+    }
     async _preCreate(data, options, user) {
         await super._preCreate(data, options, user);
         if (user.id !== game.user?.id) {
@@ -58,21 +78,72 @@ class BladesItem extends Item {
         }));
     }
     get tier() { return U.pInt(this.parent?.system?.tier); }
+    get isCustomizedItem() { return this.isEmbedded && this.system.isCustomized; }
     isKept(actor) {
         if (this.type !== "ability") {
             return null;
         }
-        const playbook = actor.playbook;
+        const playbook = actor.playbookName;
         if (!playbook) {
             return null;
         }
-        if (this.system.playbooks?.includes(actor.playbook)) {
+        if (this.system.playbooks?.includes(actor.playbookName)) {
             return true;
         }
-        if (["Ghost", "Hull", "Vampire"].includes(actor.playbook) && this.system.keepAsGhost) {
+        if (["Ghost", "Hull", "Vampire"].includes(actor.playbookName) && this.system.keepAsGhost) {
             return true;
         }
         return false;
+    }
+    isValidForDoc(doc) {
+        let isValid = true;
+        if (doc instanceof BladesActor) {
+            if (this.type === "item") {
+                isValid = Boolean(this.system.playbooks.includes("ANY")
+                    || (doc.playbookName && this.system.playbooks.includes(doc.playbookName)));
+            }
+            if (this.type === "ability") {
+                isValid = Boolean((doc.playbookName && this.system.playbooks.includes(doc.playbookName))
+                    || (!this.system.playbooks.includes("Ghost")
+                        && !this.system.playbooks.includes("Hull")
+                        && !this.system.playbooks.includes("Vampire")));
+            }
+            if (!isValid) {
+                return false;
+            }
+
+            if ("load" in this.system) {
+                isValid = this.system.load <= doc.remainingLoad;
+            }
+            if (!isValid) {
+                return false;
+            }
+
+            isValid = doc.items.filter((i) => i.name === this.name).length < (this.system.num_available ?? 1);
+            if (!isValid) {
+                return false;
+            }
+
+            for (let [dotKey, val] of Object.entries(flattenObject(this.system.prereqs ?? {}))) {
+                if (dotKey.startsWith("item")) {
+                    dotKey = dotKey.replace(/^item\.?/, "");
+                    if (doc.items.filter((item) => getProperty(item, dotKey) === val).length === 0) {
+                        isValid = false;
+                        break;
+                    }
+                }
+                else {
+                    if (getProperty(doc, dotKey) !== val) {
+                        isValid = false;
+                        break;
+                    }
+                }
+            }
+        }
+        else {
+            isValid = false;
+        }
+        return isValid;
     }
     _prepareCohort() {
         if (this.parent?.documentName !== "Actor") {
@@ -186,6 +257,12 @@ class BladesItem extends Item {
         });
         return this.update({ [`system.clock_keys.${keyID}`]: clockKey });
     }
+    async _onUpdate(changed, options, userId) {
+        await super._onUpdate(changed, options, userId);
+        if (this.isEmbedded && "isCustomized" in this.system && this.system.isCustomized === false) {
+            this.update({ "system.isCustomized": true });
+        }
+    }
     _overlayElement;
     get overlayElement() {
         this._overlayElement ??= $("#clocks-overlay")[0];
@@ -208,21 +285,4 @@ class BladesItem extends Item {
         this.activateOverlayListeners();
     }
 }
-export var BladesItemType;
-(function (BladesItemType) {
-    BladesItemType[BladesItemType["faction"] = 0] = "faction";
-    BladesItemType[BladesItemType["item"] = 1] = "item";
-    BladesItemType[BladesItemType["class"] = 2] = "class";
-    BladesItemType[BladesItemType["ability"] = 3] = "ability";
-    BladesItemType[BladesItemType["heritage"] = 4] = "heritage";
-    BladesItemType[BladesItemType["background"] = 5] = "background";
-    BladesItemType[BladesItemType["vice"] = 6] = "vice";
-    BladesItemType[BladesItemType["cohort"] = 7] = "cohort";
-    BladesItemType[BladesItemType["crew_type"] = 8] = "crew_type";
-    BladesItemType[BladesItemType["crew_reputation"] = 9] = "crew_reputation";
-    BladesItemType[BladesItemType["crew_upgrade"] = 10] = "crew_upgrade";
-    BladesItemType[BladesItemType["crew_ability"] = 11] = "crew_ability";
-    BladesItemType[BladesItemType["gm_tracker"] = 12] = "gm_tracker";
-    BladesItemType[BladesItemType["clock_keeper"] = 13] = "clock_keeper";
-})(BladesItemType || (BladesItemType = {}));
 export default BladesItem;

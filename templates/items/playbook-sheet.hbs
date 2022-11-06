@@ -1,26 +1,27 @@
 
 <form class="{{cssClass}}" autocomplete="off">
-  <header class="sheet-header">
-      <img src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
-      <div class="header-fields">
-          <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}"/></h1>
-      </div>
-  </header>
+	<section class="item-top flex-horizontal">
+		<img src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+		<input class="item-name top-title shadowed" type="text" name="name" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}" />
+	</section>
+	<section class="item-main flex-vertical">
+		<label class="tab-label">
+			<span class="tab-title">Rules</span>
+		</label>
+		{{editor content=data.rules target="data.rules" button=true owner=owner editable=editable}}
 
-  <section class="flex-vertical">
-    <label class="label-stripe">{{localize "BITD.Description"}}</label>
-    {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
-    <label class="label-stripe">{{localize "BITD.ExpClues"}}</label>
-    <div><i>- {{localize "BITD.ClassExpClue1"}}</i></div>
-    <div>{{localize "BITD.ClassExpClueDescription"}}</div>
-    <div><i>- {{localize "BITD.ClassExpClue2"}}</i></div>
-    <div><i>- {{localize "BITD.ClassExpClue3"}}</i></div>
-    {{editor content=data.experience_clues target="data.experience_clues" button=true owner=owner editable=editable}}
+		{{#if (test isGM "||" data.rules_notes)}}
+		<label class="tab-label">
+			<span class="tab-title">Additional Rules Notes</span>
+		</label>
+		{{editor content=data.rules_notes target="data.rules_notes" button=true owner=owner editable=editable}}
+		{{/if}}
 
-    {{#if isGM}}
-      <div class="label-stripe">{{localize "BITD.Effects"}}</div>
-      <div id="effects">{{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}</div>
-    {{/if}}
+		{{#if isGM}}
+			<label class="tab-label">
+				<span class="tab-title">Active Effects</span>
+			</label>
+			{{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
+		{{/if}}
   </section>
-
 </form>

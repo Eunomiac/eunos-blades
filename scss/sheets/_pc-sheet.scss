@@ -1,6 +1,7 @@
 & {
 	min-width: 775px;
 	min-height: 800px;
+
 	.labelled-item.playbook-experience {
 		position: absolute;
 		// top: calc(-1 * var(--content-padding));
@@ -36,7 +37,7 @@
 		}
 	}
 
-	section.char-top {
+	section.sheet-top {
 		grid-template-areas:
 			". . title title title title title title playbook playbook playbook"
 			". . . subtitle subtitle subtitle subtitle subtitle subtitle subtitle subtitle"

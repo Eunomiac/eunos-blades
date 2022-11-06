@@ -50,65 +50,36 @@ class BladesActorSheet extends BladesSheet {
                 return;
             }
         });
+        return loadTemplates([
+            "systems/eunos-blades/templates/items/clock_keeper-sheet.hbs",
+            "systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
+        ]);
     }
         
     async getData() {
         const data = await super.getData();
-        eLog.log("[BladesActorSheet] super.getData()", { ...data });
-
-        const curLoad = U.gsap.utils.clamp(0, 10, data.items
-            .reduce((tot, i) => tot + (i.type === "item"
-            ? U.pInt(i.system.load)
-            : 0), 0));
+        eLog.checkLog("actor", "[BladesActorSheet] super.getData()", { ...data });
 
         const attrData = {
-            insight: { value: this.actor.attributes.insight, size: 4 },
-            prowess: { value: this.actor.attributes.prowess, size: 4 },
-            resolve: { value: this.actor.attributes.resolve, size: 4 }
+            insight: { value: this.actor.attributes.insight, size: 4 + this.actor.system.resistance_bonuses.insight },
+            prowess: { value: this.actor.attributes.prowess, size: 4 + this.actor.system.resistance_bonuses.prowess },
+            resolve: { value: this.actor.attributes.resolve, size: 4 + this.actor.system.resistance_bonuses.resolve }
         };
 
         const playbookItem = data.items.find((item) => item.type === "playbook");
         const playbook = playbookItem?.name;
 
         const viceOverride = this.actor.system.vice.override;
-        const availableItems = game.items
-            .filter((item) => this.actor.items
-            .filter((i) => i.name === item.name).length < (item.system.num_available ?? 1));
-        const dialogOptions = {};
-        dialogOptions.loadItems = {
-            playbook: availableItems.filter((item) => item.type === "item" && item.system.playbooks.includes(playbook)).map((item) => item.name),
-            general: availableItems.filter((item) => item.type === "item" && item.system.playbooks.includes("ANY")).map((item) => item.name)
-        };
-        dialogOptions.abilityItems = {
-            playbook: availableItems.filter((item) => item.type === "ability" && item.system.playbooks.includes(playbook)).map((item) => item.name),
-            veteran: availableItems.filter((item) => item.type === "ability"
-                && !item.system.playbooks.includes(playbook)
-                && !item.system.playbooks.includes("Ghost")
-                && !item.system.playbooks.includes("Hull")
-                && !item.system.playbooks.includes("Vampire")).map((item) => item.name)
-        };
-        eLog.display("Dialog Options", dialogOptions);
         Object.assign(data, {
             effects: this.actor.effects,
             items: {
-                heritage: data.items.find((item) => item.type === "heritage"),
-                background: data.items.find((item) => item.type === "background"),
-                vice: (viceOverride && JSON.parse(viceOverride)) || data.items.find((item) => item.type === "vice"),
                 abilities: data.items.filter((item) => item.type === "ability"),
+                background: data.items.find((item) => item.type === "background"),
+                heritage: data.items.find((item) => item.type === "heritage"),
+                playbook: data.items.find((item) => item.type === "playbook"),
+                vice: (viceOverride && JSON.parse(viceOverride)) || data.items.find((item) => item.type === "vice"),
                 loadout: data.items.filter((item) => item.type === "item")
             },
-            playbook: playbookItem
-                ? {
-                    id: playbookItem.id,
-                    name: playbookItem.name ?? "",
-                    bgImg: (playbookItem.name ?? "DEFAULTS") in C.Playbooks
-                        ? C.Playbooks[playbookItem.name].bgImg
-                        : "",
-                    tagline: (playbookItem.name ?? "DEFAULTS") in C.Playbooks
-                        ? C.Playbooks[playbookItem.name].tagline
-                        : ""
-                }
-                : null,
             healing_clock: {
                 color: "white",
                 size: this.actor.system.healing.max,
@@ -118,7 +89,7 @@ class BladesActorSheet extends BladesSheet {
                 .filter(([, isActive]) => isActive)
                 .map(([armor]) => [armor, this.actor.system.armor.checked[armor]])),
             loadData: {
-                curLoad,
+                curLoad: this.actor.currentLoad,
                 selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected))],
                 selections: C.Loadout.selections,
                 selLoadLevel: this.actor.system.loadout.selected
@@ -131,7 +102,7 @@ class BladesActorSheet extends BladesSheet {
                 displayed: this.actor.traumaConditions
             }
         });
-        eLog.log("[BladesActorSheet] return getData()", { ...data });
+        eLog.checkLog("actor", "[BladesActorSheet] return getData()", { ...data });
         return data;
     }
     get activeArmor() {
@@ -206,7 +177,7 @@ class BladesActorSheet extends BladesSheet {
             },
             mouseenter: function () {
                 const targetArmor = self._getHoverArmor();
-                eLog.log("Mouse Enter", targetArmor, this, $(this), $(this).next());
+                eLog.log4("Mouse Enter", targetArmor, this, $(this), $(this).next());
                 if (!targetArmor) {
                     return;
                 }
@@ -246,11 +217,11 @@ class BladesActorSheet extends BladesSheet {
                 $(this).siblings(".svg-armor.armor-special").removeClass("hover-over");
             }
         });
-        
+
         html.find(".item-delete").on({
             click: async function () {
                 const element = $(this).parents(".item");
-                await self.actor.deleteEmbeddedDocuments("Item", [element.data("itemId")]);
+                await self.actor.removeItem(element.data("itemId"));
                 element.slideUp(200, () => self.render(false));
             }
         });

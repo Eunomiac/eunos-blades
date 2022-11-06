@@ -1,0 +1,57 @@
+<div class="{{cssClass}} dialog-content">
+	<section class="tab-content nav-group flex-vertical">
+
+		{{#if (test (count tabs) ">" 1)}}
+		{{!-- Nav menu --}}
+		<nav class="nav-tabs flex-horizontal">
+			{{#each tabs as |itemList tabName|}}
+			<a class="tab-selector" data-tab="{{@index}}">{{tabName}}</a>
+			{{/each}}
+		</nav>
+		{{/if}}
+
+		{{!-- Item Detail Display --}}
+		<div class="item-details"></div>
+
+		{{!-- Tabs --}}
+		{{#each tabs as |tabData tabName|}}
+		<div class="tab flex-horizontal flex-wrap {{~#unless (test (count ../tabs) ">" 1)}} active{{/unless}}" data-tab="{{@index}}">
+				<div class="featured-items">
+					{{#each tabData.featured as |item|}}
+						<div class="labelled-item labelled-vertical">
+							<div class="labelled-item-container" data-item-id="{{item._id}}">
+								<img src="{{item.img}}" />
+								<div class="item-name item-title long-name shadowed">{{item.name}}</div>
+								{{#if item.system.load}}
+								<div class="number-circle">{{item.system.load}}</div>
+								{{/if}}
+							</div>
+						</div>
+					{{/each}}
+				</div>
+
+			{{#each tabData.other as |item|}}
+			<div class="labelled-item labelled-vertical">
+				<div class="labelled-item-container" data-item-id="{{item._id}}">
+					<img src="{{item.img}}" />
+					<div class="item-name item-title long-name shadowed">{{item.name}}</div>
+					{{#if item.system.load}}
+					<div class="number-circle">{{item.system.load}}</div>
+					{{/if}}
+				</div>
+			</div>
+			{{/each}}
+
+		</div>
+		{{/each}}
+	</section>
+</div>
+
+<div class="dialog-buttons">
+	{{#each buttons as |bData bName|}}
+	<button class="dialog-button {{bName}} {{~#if (test ../default "==" bName)}} default{{/if}}" data-button="{{bName}}">
+		{{{bData.icon}}}
+		{{{bData.label}}}
+	</button>
+	{{/each}}
+</div>

@@ -1,39 +1,125 @@
-// Add Items modal styling.
-.items-to-add {
+& {
+	min-width: 500px;
+	max-width: 500px;
+	min-height: 300px;
+	max-height: 700px;
 
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: space-around;
+	--item-info-height: 100px;
+	--buttons-height: 25px;
 
-  input[type="radio"],
-  input[type="checkbox"] {
-    display: none;
+	.window-content {
+		padding: 0;
+		.dialog-content {
+			height: calc(100% - var(--item-info-height) - var(--buttons-height));
+			padding-block-start: 0;
 
-    &:checked + label {
-      font-weight: bold;
-    }
-  }
+			.item-details {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: stretch;
+				color: var(--blades-white);
+				height: var(--item-info-height);
+				width: 100%;
+				margin: toRem(5px) 0;
+				padding: var(--content-padding);
+				background: var(--background-input);
+				hyphens: auto;
+				max-width: 100%;
+				white-space: wrap;
+				text-align: justify;
+				box-shadow: var(--box-shadow-input-strong);
+				text-shadow: var(--text-shadow-dark);
+			}
 
- //Tooltip.
-  .tooltip {
+			.nav-group {
+				height: 100%;
+				width: 100%;
+				overflow: hidden;
 
-    .tooltiptext {
-      visibility: hidden;
-      width: 200px;
-      background-color: var(--blades-black);
-      color: var(--blades-white);
-      text-align: center;
-      padding: 5px;
-      border-radius: 6px;
+				.tab[data-tab] {
+					height: 100%;
+					width: 100%;
+					overflow-y: scroll;
+					overflow-x: hidden;
+					&.active {display: flex}
 
-      // Position
-      position: absolute;
-      z-index: 9999;
-    }
 
-    &:hover .tooltiptext {
-      visibility: visible;
-    }
-  }
+					&.hovering {
+						.labelled-item {
+							.labelled-item-container:not(.hover-over) {
+
+								.item-name.item-title {
+									color: var(--blades-grey);
+								}
+								> img {
+									filter: blur(3px);
+									opacity: 0.5;
+								}
+							}
+						}
+					}
+				}
+
+			}
+
+			.featured-items {
+				width: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				transform-origin: center;
+				transform: scale(1.5) translateY(10px);
+			}
+			.labelled-vertical {
+				height: 50px;
+				width: 25%;
+				min-width: min-content;
+				flex-grow: 0;
+				margin: 15px 0 35px 0;
+
+				.labelled-item-container {
+					transform-origin: center center;
+
+					&, & * {
+						transition: 0.25s;
+						transform-origin: center;
+					}
+
+					.item-name.item-title {
+						font-size: toRem(14px);
+						width: 100%;
+					}
+
+					.number-circle {
+						position: absolute;
+						bottom: -20px;
+						right: 10px;
+					}
+
+					img {
+						transform-origin: center;
+					}
+
+					&.hover-over {
+						scale: 1.2;
+						.item-name.item-title {
+							// scale: calc(1 / 1.8);
+						}
+						> img {
+							filter: blur(0px);
+							opacity: 1;
+						}
+					}
+				}
+			}
+		}
+
+		.dialog-buttons {
+			margin: 0;
+			padding: 0;
+			height: var(--buttons-height);
+
+		}
+	}
 }

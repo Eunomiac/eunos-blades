@@ -5,6 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 class BladesCrewSheet extends BladesSheet {
     static get defaultOptions() {
@@ -13,25 +14,37 @@ class BladesCrewSheet extends BladesSheet {
             template: "systems/eunos-blades/templates/crew-sheet.hbs",
             width: 940,
             height: 1020,
-            tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "turfs" }]
+            tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "claims" }]
         });
     }
     async getData() {
         const data = await super.getData();
+        eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", { ...data });
+        const actorData = data.actor;
+        const actorSystem = actorData.system;
 
-        let turfs_amount = 0;
-        data.items.forEach((item) => {
-            if (item.type === "crew_type" && item.data) {
-                Object.entries(item.data.turfs).forEach(([key, turf]) => {
-                    if (game.i18n.localize(turf.name).toLowerCase().replace(/\s/g, "") === game.i18n.localize("BITD.Turf").toLowerCase().replace(/\s/g, "")) {
-                        turfs_amount += turf.value ? 1 : 0;
-                    }
-                });
+        const playbookItem = data.items.find((item) => item.type === "crew_type");
+        if (playbookItem) {
+            let turfs_amount = 0;
+            Object.entries(playbookItem.system.turfs).forEach(([key, turf]) => {
+                if (game.i18n.localize(turf.name).toLowerCase().replace(/\s/g, "") === game.i18n.localize("BITD.Turf").toLowerCase().replace(/\s/g, "")) {
+                    turfs_amount += U.pInt(turf.value);
+                }
+            });
+            actorSystem.turfs.value = Math.min(turfs_amount, actorSystem.turfs.max);
+            actorSystem.rep.max -= actorSystem.turfs.value;
+            actorSystem.rep.value = Math.min(actorSystem.rep.value, actorSystem.rep.max);
+        }
+        Object.assign(data, {
+            items: {
+                playbook: playbookItem,
+                reputation: data.items.find((item) => item.type === "crew_reputation"),
+                upgrades: data.items.filter((item) => item.type === "crew_upgrade"),
+                abilities: data.items.filter((item) => item.type === "crew_ability"),
+                cohorts: data.items.filter((item) => item.type === "cohort")
             }
         });
-        Object.assign(data.data, {
-            turfs_amount
-        });
+        eLog.checkLog("actor", "[BladesCrewSheet] return getData()", { ...data });
         return data;
     }
     activateListeners(html) {

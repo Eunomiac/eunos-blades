@@ -5,44 +5,66 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import H from "../core/helpers.js";
 import U from "../core/utilities.js";
+import BladesItem from "../blades-item.js";
+import BladesDialog from "../blades-dialog.js";
 class BladesSheet extends ActorSheet {
+    async _onSubActorAddClick(event) {
+        event.preventDefault();
+    }
+    async _onItemAddClick(event) {
+        event.preventDefault();
+        const item_type = $(event.currentTarget).data("itemType");
+        const initialParams = [
+            this.actor,
+            U.tCase(`Add ${item_type}`),
+            item_type
+        ];
+        if (item_type === "item") {
+            await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.create(game.items.get(itemId), { parent: this.actor }); }, {
+                [`${this.actor.playbookName} Items`]: (item) => Boolean(item.system.playbooks?.includes(this.actor.playbookName ?? "")),
+                "General Items": (item) => Boolean(item.system.playbooks?.includes("ANY"))
+            }, {
+                "General Items": (item) => ["Armor", "Armor, Heavy"].includes(item.name ?? "")
+            });
+        }
+        else if (item_type === "ability") {
+            if (!this.actor.playbookName) {
+                return;
+            }
+            await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.create(game.items.get(itemId), { parent: this.actor }); }, {
+                [this.actor.playbookName]: (item) => Boolean(item.system.playbooks?.includes(this.actor.playbookName ?? "")),
+                Veteran: (item) => ![this.actor.playbookName, "Ghost", "Vampire", "Hull"].some((pbName) => item.system.playbooks?.includes(pbName))
+            }, {
+                [this.actor.playbookName]: (item) => this.actor.playbook.system.suggested_ability === item.name
+            }, true);
+        }
+        else if (["heritage", "background", "vice", "playbook"].includes(item_type)) {
+            await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.create(game.items.get(itemId), { parent: this.actor }); });
+        }
+    }
     async getData() {
         const data = await super.getData();
-        eLog.log("[BladesSheet] super.getData()", { ...data });
+        eLog.checkLog4("actor", "[BladesSheet] super.getData()", { ...data });
         const actorData = data.actor;
         const actorSystem = actorData.system;
-        this._linkEmbeddedActors(actorSystem);
+        const subActors = {};
+        Object.entries(actorSystem.subactors ?? {}).forEach(([id, { category, data: subActorData }]) => {
+            const actor = game.actors.get(id);
+            if (!actor) {
+                return;
+            }
+            subActors[category] ??= [];
+            subActors[category].push({ actor, data: subActorData });
+        });
         Object.assign(data, {
             editable: this.options.editable,
             isGM: game.user.isGM,
             actor: actorData,
             data: actorSystem
         });
-        eLog.log("[BladesSheet] return getData()", { ...data });
+        eLog.checkLog4("actor", "[BladesSheet] return getData()", { ...data });
         return data;
-    }
-    _linkEmbeddedActors(actorSystem) {
-        function embedActor(target, type) {
-            const targetVal = getProperty(actorSystem, target);
-            if (typeof targetVal !== "string") {
-                return;
-            }
-            const actor = game.actors.get(targetVal);
-            if (!actor) {
-                return;
-            }
-            if (type && actor.type !== type) {
-                return;
-            }
-            setProperty(actorSystem, target, actor);
-        }
-        [
-            ["crew", "crew"],
-            ["acquaintances.vice_purveyor"],
-            ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => [`acquaintances.list.${num}.actor`])
-        ].forEach((args) => embedActor(...args));
     }
     activateListeners(html) {
         super.activateListeners(html);
@@ -102,7 +124,7 @@ class BladesSheet extends ActorSheet {
         }
         html.find("[data-item-id]").find(".item-title").on("click", this._onItemOpenClick.bind(this));
         html.find("[data-sub-actor-id]").find(".sub-actor-name").on("click", this._onSubActorOpenClick.bind(this));
-        html.find(".roll-die-attribute").on("click", this._onRollAttributeDieClick.bind(this));
+        html.find("[data-roll-attribute]").on("click", this._onRollAttributeDieClick.bind(this));
     }
     async _onClockLeftClick(event) {
         event.preventDefault();
@@ -139,53 +161,8 @@ class BladesSheet extends ActorSheet {
             game.actors.get(actorID)?.sheet?.render(true);
         }
     }
-    async _onSubActorAddClick(event) {
-        event.preventDefault();
-    }
-    async _onItemAddClick(event) {
-        event.preventDefault();
-        const item_type = $(event.currentTarget).data("itemType");
-        const distinct = $(event.currentTarget).data("distinct");
-        const input_type = typeof distinct === "undefined" ? "checkbox" : "radio";
-        const items = await H.getAllItemsByType(item_type, game);
-        let html = "<div class=\"items-to-add\">";
-        items.forEach(e => {
-            let addition_price_load = "";
-            if (typeof e.system.load !== "undefined") {
-                addition_price_load += `(${e.system.load})`;
-            }
-            else if (typeof e.system.price !== "undefined") {
-                addition_price_load += `(${e.system.price})`;
-            }
-            html += `<input id="select-item-${e.data._id}" type="${input_type}" name="select_items" value="${e.data._id}">`;
-            html += `<label class="flex-horizontal" for="select-item-${e.id}">`;
-            html += `${game.i18n.localize(e.data.name)} ${addition_price_load} <i class="tooltip fas fa-question-circle"><span class="tooltiptext">${game.i18n.localize(e.system.description)}</span></i>`;
-            html += "</label>";
-        });
-        html += "</div>";
-        const options = {
-        };
-        const dialog = new Dialog({
-            "title": `${game.i18n.localize("Add")} ${item_type}`,
-            "content": html,
-            "buttons": {
-                one: {
-                    icon: '<i class="fas fa-check"></i>',
-                    label: game.i18n.localize("Add"),
-                    callback: async (html) => await this.addItemsToSheet(item_type, $(html).find(".items-to-add"))
-                },
-                two: {
-                    icon: '<i class="fas fa-times"></i>',
-                    label: game.i18n.localize("Cancel"),
-                    callback: () => false
-                }
-            },
-            "default": "two"
-        }, options);
-        dialog.render(true);
-    }
     async addItemsToSheet(item_type, el) {
-        const items = await H.getAllItemsByType(item_type, game);
+        const items = await BladesItem.getAllItemsByType(item_type);
         const items_to_add = [];
         el.find("input:checked").each(function addItems() {
             const item = items.find(e => e.data._id === $(this).val());

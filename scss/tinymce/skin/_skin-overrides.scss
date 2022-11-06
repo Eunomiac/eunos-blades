@@ -28,10 +28,6 @@
 	overflow: visible;
 
 	.tox.tox-tinymce {
-		// border: none; // 1px solid #808080;
-		// border-radius: 0px;
-		// box-shadow: none;
-		// box-sizing: border-box;
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
@@ -39,6 +35,7 @@
 		visibility: inherit !important;
 
 		.tox-editor-container {
+
 			.tox-editor-header {
 				width: calc(100% / var(--toolbar-scale-factor));
 				transform-origin: top left;

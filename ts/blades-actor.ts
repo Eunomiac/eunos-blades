@@ -1,14 +1,36 @@
 import H from "./core/helpers.js";
 import U from "./core/utilities.js";
-import C, {Randomizers} from "./core/constants.js";
+import C, {BladesActorType, BladesItemType, Randomizers, Attributes, Actions, Positions, EffectLevels} from "./core/constants.js";
 
-import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
+import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import {bladesRoll} from "./blades-roll.js";
 import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs.js";
 import BladesItem from "./blades-item.js";
 import type BladesActiveEffect from "./blades-active-effect";
+import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs.js";
+
 
 class BladesActor extends Actor {
+
+	/**
+	* Get all available ingame actors by Type, including those in packs.
+	*/
+	static async getAllActorsByType(aType: string, isIncludingPacks = false): Promise<BladesActor[]> {
+		if (!game.actors) { return [] }
+
+		const actors: BladesActor[] = game.actors.filter((actor: BladesActor) => actor.type === aType);
+
+		if (isIncludingPacks || actors.length === 0) {
+			const pack = game.packs.find((pack) => pack.metadata.name === aType);
+			if (pack) {
+
+				const pack_actors = await pack.getDocuments() as BladesActor[];
+				actors.push(...pack_actors);
+			}
+		}
+
+		return actors;
+	}
 
 	static override async create(data: ActorDataConstructorData, options={}) {
 		data.token = data.token || {};
@@ -38,28 +60,23 @@ class BladesActor extends Actor {
 	]) {
 		await super._onCreateEmbeddedDocuments(embName, docs, ...args);
 
-		eLog.log("onCreateEmbeddedDocuments", {embName, docs, args});
+		eLog.checkLog("actorTrigger", "onCreateEmbeddedDocuments", {embName, docs, args});
 
 		docs.forEach(async (doc) => {
 			// eLog.log(`... docs.forEach -> ${doc.name} = ${(doc as BladesItem).type} (${doc instanceof BladesItem})`, doc);
 			if (doc instanceof BladesItem) {
+				doc.update({"system.isActive": true});
 				switch (doc.type) {
 					case "playbook": {
-						if (doc.name && doc.name in C.Playbooks) {
-							await this.update({
-								"system.trauma.active": null,
-								"system.trauma.checked": null
-							});
-							const playbookKey: KeyOf<typeof C.Playbooks> = "trauma" in C.Playbooks[doc.name as KeyOf<typeof C.Playbooks>]
-								? doc.name as KeyOf<typeof C.Playbooks>
-								: "DEFAULTS" as KeyOf<typeof C.Playbooks>;
-							const playbookData = C.Playbooks[playbookKey] as ValueOf<typeof C.Playbooks> & {trauma: {list: string[]}};
-							this.update({
-								"system.trauma.active": Object.fromEntries(playbookData.trauma.list.map((tCond: string) => [tCond, true])),
-								"system.trauma.checked": Object.fromEntries(playbookData.trauma.list.map((tCond: string) => [tCond, false]))
-							});
-							break;
-						}
+						await this.update({
+							"system.trauma.active": null,
+							"system.trauma.checked": null
+						});
+						this.update({
+							"system.trauma.active": Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond: string) => [tCond, true])),
+							"system.trauma.checked": Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond: string) => [tCond, false]))
+						});
+						break;
 					}
 					// no default
 				}
@@ -67,24 +84,34 @@ class BladesActor extends Actor {
 		});
 	}
 
+	get playbookName() {
+		return this.playbook?.name ?? null;
+	}
 	get playbook() {
-		return this.items.find((item) => item.type === "playbook")?.name;
+		return this.items.find((item) => item.type === "playbook") ?? null;
 	}
 
 	get attributes(): Record<Attributes,number> {
 		return {
-			insight: Object.values(this.system.attributes.insight).filter(({value}) => value > 0).length,
-			prowess: Object.values(this.system.attributes.prowess).filter(({value}) => value > 0).length,
-			resolve: Object.values(this.system.attributes.resolve).filter(({value}) => value > 0).length
+			insight: Object.values(this.system.attributes.insight).filter(({value}) => value > 0).length + this.system.resistance_bonuses.insight,
+			prowess: Object.values(this.system.attributes.prowess).filter(({value}) => value > 0).length + this.system.resistance_bonuses.prowess,
+			resolve: Object.values(this.system.attributes.resolve).filter(({value}) => value > 0).length + this.system.resistance_bonuses.resolve
 		};
 	}
 
-	get actions(): Record<Actions.Any,number> {
+	get actions(): Record<Actions,number> {
 		return U.objMap({
 			...this.system.attributes.insight,
 			...this.system.attributes.prowess,
 			...this.system.attributes.resolve
-		}, ({value, max}: ValueMax) => U.gsap.utils.clamp(value, 0, max)) as Record<Actions.Any, number>;
+		}, ({value, max}: ValueMax) => U.gsap.utils.clamp(0, max, value)) as Record<Actions, number>;
+	}
+
+	get rollable(): Record<Attributes|Actions, number> {
+		return {
+			...this.attributes,
+			...this.actions
+		};
 	}
 
 	get trauma(): number {
@@ -101,15 +128,61 @@ class BladesActor extends Actor {
 			(v: unknown, traumaName: string) => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName])
 		) as Record<string, boolean>;
 	}
-	/**
-   * Calculate Attribute Dice to throw.
-   */
 
+	get customItems(): BladesItem[] {
+		return this.items.filter((i) => i.system.isCustomized === true);
+	}
 
-	rollAttributePopup(attribute_name: Attributes) {
+	async removeItem(itemId: string) {
+		const item = this.items.get(itemId);
+		// if (item?.system.isCustomized) {
+		// 	return item.update({"system.isActive": false});
+		// } else {
+		return this.deleteEmbeddedDocuments("Item", [itemId]);
+		// }
+	}
 
+	startScore() {
+		this.update({
+
+		});
+	}
+
+	startDowntime() {
+		this.update({
+
+		});
+	}
+
+	endScore() {
+		this.update({
+
+		});
+	}
+
+	endDowntime() {
+		this.update({
+
+		});
+	}
+
+	get currentLoad(): number {
+		return U.gsap.utils.clamp(0, 10, this.items
+			.reduce((tot, i) => tot + (i.type === "item"
+				? U.pInt(i.system.load)
+				: 0
+			), 0));
+	}
+	get remainingLoad(): number {
+		if (!this.system.loadout.selected) { return 0 }
+		const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected).toLowerCase() as keyof BladesActor["system"]["loadout"]["levels"]];
+		return Math.max(0, maxLoad - this.currentLoad);
+	}
+
+	rollAttributePopup(attribute_name: Attributes|Actions) {
+		const test = Actions;
 		// const roll = new Roll("1d20 + @abilities.wis.mod", actor.getRollData());
-		const attribute_label: Capitalize<Attributes> = U.tCase(attribute_name);
+		const attribute_label: Capitalize<Attributes|Actions> = U.tCase(attribute_name);
 
 		let content = `
         <h2>${game.i18n.localize("BITD.Roll")} ${attribute_label}</h2>
@@ -120,7 +193,7 @@ class BladesActor extends Actor {
               ${this.createListOfDiceMods(-3,+3,0)}
             </select>
           </div>`;
-		if (H.isAttributeAction(attribute_name)) {
+		if ([...Object.keys(Attributes), ...Object.keys(Actions)].includes(attribute_name)) {
 			content += `
             <div class="form-group">
               <label>${game.i18n.localize("BITD.Position")}:</label>
@@ -180,14 +253,14 @@ class BladesActor extends Actor {
 	}
 
 	async rollAttribute(
-		attribute_name: Attributes,
+		attribute_name: Attributes|Actions,
 		additional_dice_amount = 0,
 		position: Positions = Positions.risky,
 		effect: EffectLevels = EffectLevels.standard,
 		note?: string
 	) {
 		bladesRoll(
-			this.attributes[attribute_name] + additional_dice_amount,
+			this.rollable[attribute_name] + additional_dice_amount,
 			attribute_name,
 			position,
 			effect,
@@ -196,7 +269,7 @@ class BladesActor extends Actor {
 	}
 
 	updateRandomizers() {
-		const rStatus: Record<string, Omit<RandomizerData, "value"|"isLocked">> = {
+		const rStatus: Record<string, Omit<BladesActor.RandomizerData, "value"|"isLocked">> = {
 			name: {size: 4, label: null},
 			heritage: {size: 1, label: "Heritage"},
 			gender: {size: 1, label: "Gender"},
@@ -257,7 +330,7 @@ class BladesActor extends Actor {
 		};
 		const gender = this.system.randomizers.gender.isLocked ? this.system.randomizers.gender.value : randomGen.gender() as string;
 		const updateKeys = (Object.keys(this.system.randomizers) as Array<keyof BladesActor["system"]["randomizers"]>).filter((key) => !this.system.randomizers[key].isLocked);
-		const updateData: Record<string,RandomizerData> = {};
+		const updateData: Record<string,BladesActor.RandomizerData> = {};
 		let isUpdatingTraits = false;
 		updateKeys.forEach((key) => {
 			switch (key) {
@@ -383,67 +456,12 @@ class BladesActor extends Actor {
 	}
 }
 
-export enum Attributes {
-	insight = "insight",
-	prowess = "prowess",
-	resolve = "resolve"
-}
-export namespace Actions {
-	export enum Insight {
-		hunt = "hunt",
-		study = "study",
-		survey = "survey",
-		tinker = "tinker"
-	}
-	export enum Prowess {
-		finesse = "finesse",
-		prowl = "prowl",
-		skirmish = "skirmish",
-		wreck = "wreck"
-	}
-	export enum Resolve {
-		attune = "attune",
-		command = "command",
-		consort = "consort",
-		sway = "sway"
-	}
-	export type Any = Insight|Prowess|Resolve;
-}
-export enum Positions {
-	controlled = "controlled",
-	risky = "risky",
-	desperate = "desperate"
-}
-export enum EffectLevels {
-	extreme = "extreme",
-	great = "great",
-	standard = "standard",
-	limited = "limited",
-	zero = "zero"
-}
-
-type RandomizerData = {
-	isLocked: boolean,
-	value: string,
-	size: 1|2|4,
-	label: string|null
-};
-
-type ContactData = {
-	type: string,
-	actor: string|BladesActor,
-	attitude: 1|-1
-}
-
 declare interface BladesActor {
+	get type(): BladesActorType,
+	get items(): EmbeddedCollection<typeof BladesItem, ActorData>;
 	system: Actor["data"]["data"] & {
 			full_name: string,
-			crew: string|BladesActor,
-			acquaintances: {
-				name: string,
-				list: ContactData[],
-				vice_purveyor: string|BladesActor
-			},
+			subactors: BladesActor.SubActorData,
 			notes: string,
 			gm_notes: string,
 			vice: {
@@ -458,6 +476,7 @@ declare interface BladesActor {
 				checked: Record<string,boolean|null>
 			},
 			healing: ValueMax,
+			resistance_bonuses: Record<Attributes, number>,
 			experience: {
 				playbook: ValueMax,
 				[Attributes.insight]: ValueMax,
@@ -468,7 +487,7 @@ declare interface BladesActor {
 			coins: ValueMax,
 			stash: ValueMax,
 			loadout: {
-				selected: string,
+				selected: ""|keyof BladesActor["system"]["loadout"]["levels"],
 				levels: {
 					light: number,
 					normal: number,
@@ -479,14 +498,21 @@ declare interface BladesActor {
 			harm: {
 				light: {
 					one: string,
-					two: string
+					two: string,
+					effect: string
 				},
 				medium: {
 					one: string,
-					two: string
+					two: string,
+					effect: string
 				},
 				heavy: {
-					one: string
+					one: string,
+					effect: string
+				},
+				fatal: {
+					one: string,
+					effect: string
 				}
 			},
 			armor: {
@@ -501,22 +527,34 @@ declare interface BladesActor {
 					special: boolean
 				}
 			},
-			attributes: Record<Attributes, Record<Actions.Any,ValueMax>>,
-			tier: number,
+			attributes: Record<Attributes, Record<Actions,ValueMax>>,
+			concept?: string,
+			description_short?: string,
 			randomizers: {
-				name: RandomizerData,
-				gender: RandomizerData,
-				heritage: RandomizerData,
-				appearance: RandomizerData,
-				goal: RandomizerData,
-				method: RandomizerData,
-				profession: RandomizerData,
-				trait_1: RandomizerData,
-				trait_2: RandomizerData,
-				trait_3: RandomizerData,
-				interests: RandomizerData,
-				quirk: RandomizerData,
-				style: RandomizerData
+				name: BladesActor.RandomizerData,
+				gender: BladesActor.RandomizerData,
+				heritage: BladesActor.RandomizerData,
+				appearance: BladesActor.RandomizerData,
+				goal: BladesActor.RandomizerData,
+				method: BladesActor.RandomizerData,
+				profession: BladesActor.RandomizerData,
+				trait_1: BladesActor.RandomizerData,
+				trait_2: BladesActor.RandomizerData,
+				trait_3: BladesActor.RandomizerData,
+				interests: BladesActor.RandomizerData,
+				quirk: BladesActor.RandomizerData,
+				style: BladesActor.RandomizerData
+			},
+			rep: ValueMax,
+			tier: ValueMax,
+			deity: string,
+			hold: "strong"|"weak",
+			turfs: ValueMax,
+			heat: ValueMax,
+			wanted: ValueMax,
+			hunting_grounds: {
+				desc: string,
+				preferred_op: string
 			}
 		}
 	parent: TokenDocument | null;

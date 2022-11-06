@@ -1,7 +1,6 @@
-import H from "./core/helpers.js";
 import type BladesActor from "./blades-actor.js";
 import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
-import type BladesItem from "./blades-item.js";
+import BladesItem from "./blades-item.js";
 
 const FUNCQUEUE: Record<string, {
 	curFunc: BladesCustomResult,
@@ -10,7 +9,7 @@ const FUNCQUEUE: Record<string, {
 
 const CUSTOMFUNCS = {
 	addItem: async (actor: BladesActor, {name, type}: {name: string, type: string}) => {
-		eLog.log("addItem", {actor, name, type});
+		eLog.checkLog("activeEffects", "addItem", {actor, name, type});
 
 		// Check if actor already has an item of that name.
 		if (actor.items.find((item) => item.name === name && item.type === type)) {
@@ -18,20 +17,20 @@ const CUSTOMFUNCS = {
 			return;
 		}
 
-		const itemsOfType = await H.getAllItemsByType(type, game);
+		const itemsOfType = await BladesItem.getAllItemsByType(type);
 		const newItem = itemsOfType.find((iData) => iData.name === name);
 		if (newItem) {
 			await actor.createEmbeddedDocuments("Item", [newItem.data as ItemData & Record<string,unknown>]);
 		}
 	},
 	remItem: async (actor: BladesActor, {name, type}: {name: string, type: string}) => {
-		eLog.log("remItem", {actor, name, type});
+		eLog.checkLog("activeEffects", "remItem", {actor, name, type});
 		// Convert name into regular expression pattern (for multiple removals)
 		// If name begins with '!', it means to invert the RegExp pattern.
 		const reversePattern = name.startsWith("!");
 		const namePat = new RegExp(name.replace(/^!/, ""));
 		// Assemble list of matching owned items
-		const itemsToRemove = actor.items
+		const itemsToRemove: string[] = actor.items
 			.filter((item): item is BladesItem & {id: string} => (reversePattern
 				? !namePat.test(item.name ?? "")
 				: namePat.test(item.name ?? "")) && item.type === type)
@@ -87,7 +86,7 @@ class BladesActiveEffect extends ActiveEffect {
 				return;
 			}
 			FUNCQUEUE[actor.id].queue.push({func, params});
-			eLog.log("... Function Running: Queuing");
+			eLog.checkLog("activeEffects", "... Function Running: Queuing");
 			return;
 		}
 		// If not, create FUNCQUEUE entry and run first function.
@@ -100,9 +99,9 @@ class BladesActiveEffect extends ActiveEffect {
 
 	static async RunCustomFunc(actor: BladesActor, funcPromise: Promise<void>): Promise<void> {
 		if (!actor.id) { return }
-		eLog.log("... Running Func ...");
+		eLog.checkLog("activeEffects", "... Running Func ...");
 		await funcPromise;
-		eLog.log("... Function Complete!");
+		eLog.checkLog("activeEffects", "... Function Complete!");
 		if (FUNCQUEUE[actor.id].queue.length) {
 			const {func, params} = FUNCQUEUE[actor.id].queue.shift() as BladesCustomEffectData;
 			eLog.display(`Progressing Queue: ${func}(${params.name, params.type}) -- ${FUNCQUEUE[actor.id].queue.length} remaining funcs.`);
@@ -135,7 +134,7 @@ class BladesActiveEffect extends ActiveEffect {
 			case "edit":
 				return effect.sheet?.render(true);
 			case "delete":
-				eLog.log("delete effect");
+				eLog.checkLog("activeEffects", "delete effect");
 				return effect.delete();
 			case "toggle":
 				return effect.update({disabled: !effect.data.disabled});

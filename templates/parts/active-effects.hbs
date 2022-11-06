@@ -1,37 +1,27 @@
 <table class="items-list effects-list">
-	<thead>
-		<tr>
-			<th>
-				<span class="table-title">Active Effects</span>
-				<a class="effect-control" data-action="create" title="Create Effect">
-						<i class="fas fa-plus-square"></i>
-				</a>
-			</th>
+	{{#each effects as |effect|}}
+		{{#if effect.data.label}}
+		<tr class="item effect" data-effect-id="{{effect.id}}">
+			<td style="width: 30px;">
+				<img class="item-image" src="{{effect.data.icon}}" width="24" height="24"/>
+			</td>
+			<td class="effect-name flex">
+				<label class="item-name">{{effect.data.label}}</label>
+			</td>
+			<td style="width: 45px;">
+				<div class="item-controls effect-controls flex">
+					<a class="effect-control" data-action="toggle" title="{{localize 'BITD.EffectToggle'}}">
+							<i class="fas {{#if effect.data.disabled}}fa-check{{else}}fa-times{{/if}}"></i>
+					</a>
+					<a class="effect-control" data-action="edit" title="{{localize 'BITD.EffectEdit'}}">
+							<i class="fas fa-edit"></i>
+					</a>
+					<a class="effect-control" data-action="delete" title="{{localize 'BITD.EffectDelete'}}">
+							<i class="fas fa-trash"></i>
+					</a>
+				</div>
+			</td>
 		</tr>
-	</thead>
-  <tbody class="item-list">
-    {{#each effects as |effect|}}
-				{{#if effect.data.label}}
-        <tr class="item effect flex-horizontal" data-effect-id="{{effect.id}}">
-            <td class="effect-name flex">
-                <img class="item-image" src="{{effect.data.icon}}" width="24" height="24"/>
-                <h4>{{removeClassPrefix effect.data.label}}</h4>
-            </td>
-            <td class="effect-source center">{{removeClassPrefix effect.sourceName}}</td>
-            <td class="effect-duration center">{{effect.duration.label}}</td>
-            <td><div class="item-controls effect-controls flex">
-                <a class="effect-control" data-action="toggle" title="{{localize 'BITD.EffectToggle'}}">
-                    <i class="fas {{#if effect.data.disabled}}fa-check{{else}}fa-times{{/if}}"></i>
-                </a>
-                <a class="effect-control" data-action="edit" title="{{localize 'BITD.EffectEdit'}}">
-                    <i class="fas fa-edit"></i>
-                </a>
-                <a class="effect-control" data-action="delete" title="{{localize 'BITD.EffectDelete'}}">
-                    <i class="fas fa-trash"></i>
-                </a>
-            </div></td>
-        </tr>
-				{{/if}}
-    {{/each}}
-    </tbody>
+		{{/if}}
+	{{/each}}
 </table>

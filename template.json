@@ -7,12 +7,7 @@
 		],
 		"character": {
 			"full_name": "",
-			"crew": "",
-			"acquaintances": {
-				"name": "Acquaintances",
-				"list": {},
-				"vice_purveyor": ""
-			},
+			"subactors": {},
 			"notes": "",
 			"gm_notes": "",
 			"vice": {
@@ -32,12 +27,9 @@
 				"insight": { "value": 0, "max": 6 },
 				"prowess": { "value": 0, "max": 6 },
 				"resolve": { "value": 0, "max": 6 },
-				"clues": [
-					"",
-					"You expressed your beliefs, drives, heritage, or background.",
-					"You struggled with issues from your vice or traumas during the session."
-				]
+				"clues": []
 			},
+			"size": "medium",
 			"coins": {"value": 0, "max": 4},
 			"stash": { "value": 0, "max": 40 },
 			"loadout": {
@@ -52,14 +44,21 @@
 			"harm": {
 				"light": {
 					"one": "",
-					"two": ""
+					"two": "",
+					"effect": "Less Effect"
 				},
 				"medium": {
 					"one": "",
-					"two": ""
+					"two": "",
+					"effect": "-1d"
 				},
 				"heavy": {
-					"one": ""
+					"one": "",
+					"effect": "Need Help"
+				},
+				"lethal": {
+					"one": "",
+					"effect": "Death"
 				}
 			},
 			"armor": {
@@ -101,45 +100,25 @@
 			}
 		},
 		"crew": {
-			"name": "",
-			"reputation": [
-				0
-			],
-			"lair": "",
-			"tier": 0,
+			"subactors": {},
+			"notes": "",
+			"gm_notes": "",
+			"experience": {
+				"playbook": { "value": 0, "max": 8 },
+				"clues": []
+			},
+			"rep": { "value": 0, "max": 12 },
+			"tier": { "value": 0, "max": 4},
 			"deity": "",
-			"hold": [
-				"strong"
-			],
-			"experience": [
-				0
-			],
-			"hold_types": [
-				"weak",
-				"strong"
-			],
-			"coins": {
-				"max": 4,
-				"value": [
-					0
-				]
-			},
-			"vault": {
-				"value": [
-					0
-				],
-				"max": 0
-			},
-			"turfs": [
-				8
-			],
-			"features": [],
-			"heat": [
-				0
-			],
-			"wanted": [
-				0
-			]
+			"hold": "strong",
+			"coins": { "value": 2, "max": 4 },
+			"turfs": { "value": 0, "max": 6 },
+			"heat": { "value": 0, "max": 9 },
+			"wanted": { "value": 0, "max": 4},
+			"hunting_grounds": {
+				"desc": "",
+				"preferred_op": ""
+			}
 		},
 		"npc": {
 			"name": "",
@@ -184,89 +163,70 @@
 			"crew_type",
 			"crew_upgrade",
 			"faction",
+			"feature",
 			"gm_tracker",
 			"heritage",
 			"item",
 			"playbook",
-			"vice",
-			"class"
+			"stricture",
+			"vice"
 		],
 		"templates": {
-			"ability": {
-				"description": "",
-				"playbooks": []
-			}
-		},
-		"faction": {
-			"description": "",
-			"type": "",
-			"tier": 0,
-			"goal_1": "",
-			"goal_1_clock_value": 0,
-			"goal_1_clock_max": 0,
-			"goal_2": "",
-			"goal_2_clock_value": 0,
-			"goal_2_clock_max": 0,
-			"turf": "",
-			"assets": "",
-			"quirks": "",
-			"notables": "",
-			"allies": "",
-			"enemies": "",
-			"situation": "",
-			"goal_clock": 0,
-			"notes": "",
-			"hold": {
-				"value": [
-					1
-				],
-				"max": 2,
-				"max_default": 2,
-				"name_default": "BITD.Hold",
-				"name": "BITD.Hold"
+			"default": {
+				"world_name": "",
+				"rules": "",
+				"rules_notes": "",
+				"isActive": false
 			},
-			"status": {
-				"value": [
-					4
-				],
-				"max": 7,
-				"max_default": 7,
-				"name_default": "BITD.Status",
-				"name": "BITD.Status"
+			"customizable": {
+				"description": "",
+				"isCustomized": false
 			}
-		},
-		"item": {
-			"description": "",
-			"playbooks": [],
-			"load": 0,
-			"uses": {"value": 0, "max": 1},
-			"num_available": 1
-		},
-		"playbook": {
-			"bgImg": "",
-			"tagline": "",
-			"description": "",
-			"starting_stats": {},
-			"trauma_conditions": [],
-			"starting_abilities": []
 		},
 		"ability": {
-			"description": "",
+			"templates": ["default", "customizable"],
 			"playbooks": [],
 			"keepAsGhost": false
 		},
-		"heritage": {
-			"description": ""
+		"background": { "templates": ["default", "customizable"] },
+		"crew_reputation":  { "templates": ["default", "customizable"] },
+		"feature": {
+			"templates": ["default"],
+			"frame_sizes": ["small", "medium", "heavy"]
 		},
-		"background": {
-			"description": ""
+		"heritage": { "templates": ["default", "customizable"] },
+		"item": {
+			"templates": ["default", "customizable"],
+			"playbooks": [],
+			"load": 0,
+			"uses": {"value": 0, "max": 1},
+			"num_available": 1,
+			"prereqs": {}
 		},
+		"playbook": {
+			"templates": ["default"],
+			"bgImg": "",
+			"tagline": "",
+			"acquaintances_name": "",
+			"starting_stats": {},
+			"experience_clues": [],
+			"trauma_conditions": [],
+			"gather_info_questions": [],
+			"suggested_ability": "",
+			"auto_abilities": []
+		},
+		"stricture": { "templates": ["default"] },
 		"vice": {
-			"description": "",
+			"templates": ["default", "customizable"],
 			"purveyors": {
-				"options": [],
+				"list": {},
 				"selected": ""
 			}
+		},
+
+
+		"clock_keeper": {
+			"clock_keys": {}
 		},
 		"cohort": {
 			"description": "",
@@ -389,13 +349,6 @@
 			},
 			"armor": false
 		},
-		"crew_reputation": {
-			"description": ""
-		},
-		"crew_upgrade": {
-			"description": "",
-			"crew_types": []
-		},
 		"crew_ability": {
 			"description": "",
 			"crew_types": []
@@ -496,10 +449,49 @@
 				}
 			}
 		},
-		"gm_tracker": {
+		"crew_upgrade": {
+			"description": "",
+			"crew_types": []
 		},
-		"clock_keeper": {
-			"clock_keys": {}
+		"faction": {
+			"description": "",
+			"type": "",
+			"tier": 0,
+			"goal_1": "",
+			"goal_1_clock_value": 0,
+			"goal_1_clock_max": 0,
+			"goal_2": "",
+			"goal_2_clock_value": 0,
+			"goal_2_clock_max": 0,
+			"turf": "",
+			"assets": "",
+			"quirks": "",
+			"notables": "",
+			"allies": "",
+			"enemies": "",
+			"situation": "",
+			"goal_clock": 0,
+			"notes": "",
+			"hold": {
+				"value": [
+					1
+				],
+				"max": 2,
+				"max_default": 2,
+				"name_default": "BITD.Hold",
+				"name": "BITD.Hold"
+			},
+			"status": {
+				"value": [
+					4
+				],
+				"max": 7,
+				"max_default": 7,
+				"name_default": "BITD.Status",
+				"name": "BITD.Status"
+			}
+		},
+		"gm_tracker": {
 		}
 	}
 }

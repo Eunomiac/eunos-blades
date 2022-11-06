@@ -21,6 +21,22 @@ const registerSettings = function () {
         },
         "default": 3
     });
+    game.settings.register("eunos-blades", "blacklist", {
+        "name": "Debug Blacklist",
+        "hint": "Comma-delimited list of categories of debug messages to silence.",
+        "scope": "client",
+        "config": true,
+        "type": String,
+        "default": ""
+    });
+    game.settings.register("eunos-blades", "whitelist", {
+        "name": "Debug Whitelist",
+        "hint": "Comma-delimited list of categories of debug messages to promote.",
+        "scope": "client",
+        "config": true,
+        "type": String,
+        "default": ""
+    });
         game.settings.register("eunos-blades", "systemMigrationVersion", {
         "name": "System Migration Version",
         "scope": "world",
@@ -38,7 +54,7 @@ export function initTinyMCEStyles() {
             content_css: `systems/eunos-blades/css/tinymce/content.css?${new Date().getTime()}`,
             font_css: "systems/eunos-blades/css/fonts.css",
             max_height: 500,
-            min_height: 100,
+            min_height: 40,
             autoresize_overflow_padding: 0,
             autoresize_bottom_margin: 0,
             menubar: false,
@@ -139,5 +155,6 @@ export function initCanvasStyles() {
     });
 }
 export function initFonts() {
+    
 }
 export default registerSettings;

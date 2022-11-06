@@ -30,6 +30,7 @@
 		"del": "^7.0.0",
 		"eslint": "^8.26",
 		"eslint-plugin-import": "^2.26",
+		"eslint-plugin-jsdoc": "^39.6.2",
 		"fancy-log": "^2.0.0",
 		"gulp": "^4.0.2",
 		"gulp-debug": "^4.0.0",

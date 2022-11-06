@@ -1,13 +1,16 @@
 <form class="{{cssClass}}" autocomplete="off">
+	<section class="item-top flex-horizontal">
+		<img src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+		<input class="item-name top-title shadowed" type="text" name="name" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}" />
+	</section>
 
-  <header class="sheet-header">
-      <img src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
-      <div class="header-fields">
-          <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}"/></h1>
-      </div>
-  </header>
-
-  <section class="flex-vertical">
+  <section class="item-main flex-vertical">
+		{{#if isEmbeddedItem}}
+		<label class="tab-label">
+			<span class="tab-title">Description</span>
+		</label>
+		{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+		{{/if}}
 
     <div class="label-stripe">{{localize "BITD.Information"}}</div>
 

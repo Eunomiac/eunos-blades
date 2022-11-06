@@ -5,9 +5,8 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import H from "./core/helpers.js";
 import U from "./core/utilities.js";
-import { Positions, EffectLevels } from "./blades-actor.js";
+import { Positions, EffectLevels, Actions } from "./core/constants.js";
 export async function bladesRoll(dice_amount, attribute_name = "", position = Positions.risky, effect = EffectLevels.standard, note = "") {
     let zeromode = false;
     if (dice_amount < 0) {
@@ -26,7 +25,7 @@ async function showChatRollMessage(r, zeromode, attribute_name, position = Posit
     const rolls = r.terms[0].results;
     const roll_status = getBladesRollStatus(rolls, zeromode);
     let result;
-    if (H.isAttributeAction(attribute_name)) {
+    if (attribute_name && attribute_name in Actions) {
         let position_localize = "";
         switch (position) {
             case Positions.controlled:

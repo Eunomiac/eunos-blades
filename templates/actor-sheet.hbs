@@ -1,7 +1,9 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
 
 	<img class="char-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
-	<img class="char-img-bg full-width" src="{{actor.img}}" />
+	<div class="char-img-bg full-width">
+		<img src="{{actor.img}}" />
+	</div>
 
 	{{#if items.playbook}}
 	<div class="labelled-item labelled-horizontal playbook-experience">
@@ -19,19 +21,22 @@
 	{{/if}}
 
 	{{!-- Header --}}
-	<section class="char-top">
+	<section class="sheet-top">
 		<input class="char-name top-title shadowed" type="text" name="name" value="{{actor.name}}">
 		<input class="char-full-name top-subtitle shadowed" type="text" name="data.full_name" value="{{data.full_name}}" placeholder="Full Name">
 
 		<div class="char-playbook labelled-item labelled-vertical">
-		{{#if playbook}}
-			<div class="labelled-item-container" data-item-id="{{playbook.id}}">
-				<img src="{{playbook.bgImg}}" />
-				<div class="item-name item-title shadowed">{{playbook.name}}</div>
+		{{#if items.playbook}}
+			<div class="labelled-item-container" data-item-id="{{items.playbook.id}}">
+				<img src="{{items.playbook.system.bgImg}}" />
+				<div class="item-name item-title shadowed">{{items.playbook.name}}</div>
 			</div>
 		{{else}}
 			<label class="labelled-item-prompt shadowed">
-				<a class="item-add-popup" data-distinct="true" data-item-type="playbook">Select Your<br />Playbook</a>
+				<a class="item-add-popup" data-distinct="true" data-item-type="playbook">
+					<span class="sur-title">Select Your</span>
+					<span class="main-title">Playbook</span>
+				</a>
 			</label>
 		{{/if}}
 		</div>
@@ -46,7 +51,10 @@
 			</div>
 			{{else}}
 			<label class="labelled-item-prompt shadowed">
-				<a class="item-add-popup" data-distinct="true" data-item-type="heritage">Select Your<br />Heritage</a>
+				<a class="item-add-popup" data-distinct="true" data-item-type="heritage">
+					<span class="sur-title">Select Your</span>
+					<span class="main-title">Heritage</span>
+				</a>
 			</label>
 			{{/if}}
 		</div>
@@ -62,7 +70,10 @@
 			</div>
 			{{else}}
 			<label class="labelled-item-prompt shadowed">
-				<a class="item-add-popup" data-distinct="true" data-item-type="background">Select Your<br />Background</a>
+				<a class="item-add-popup" data-distinct="true" data-item-type="background">
+					<span class="sur-title">Select Your</span>
+					<span class="main-title">Background</span>
+				</a>
 			</label>
 			{{/if}}
 		</div>
@@ -78,7 +89,10 @@
 			</div>
 			{{else}}
 			<label class="labelled-item-prompt shadowed">
-				<a class="item-add-popup" data-distinct="true" data-item-type="vice">Select Your<br />Vice</a>
+				<a class="item-add-popup" data-distinct="true" data-item-type="vice">
+					<span class="sur-title">Select Your</span>
+					<span class="main-title">Vice</span>
+				</a>
 			</label>
 			{{/if}}
 		</div>
@@ -94,7 +108,10 @@
 			</div>
 			{{else}}
 			<label class="labelled-item-prompt shadowed">
-				<a class="item-add-popup" data-distinct="true" data-item-type="crew">Select Your<br />Crew</a>
+				<a class="item-add-popup" data-distinct="true" data-item-type="crew">
+					<span class="sur-title">Select Your</span>
+					<span class="main-title">Crew</span>
+				</a>
 			</label>
 			{{/if}}
 		</div>
@@ -261,7 +278,7 @@
 								<img class="item-img" src="{{img}}" />
 							</label>
 							<div class="labelled-item-container">
-								<div class="item-description shadowed">{{{system.description}}}</div>
+								<div class="item-description shadowed">{{{system.rules}}}</div>
 							</div>
 							<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
 								<i class="fas fa-trash"></i>
@@ -273,11 +290,9 @@
 				{{!-- Loadout Tab --}}
 				<div class="tab loadout flex-vertical" data-tab="loadout">
 					<label class="tab-label">
-						{{#unless (test loadData.curLoad ">=" loadData.selLoadCount)}}
 						<a class="item-add-popup" data-item-type="item">
 							<i class="fas fa-plus-square"></i>
 						</a>
-						{{/unless}}
 						<span class="tab-title">{{localize "BITD.Loadout"}}</span>
 						<select class="load-selector" data-dtype="string" name="data.loadout.selected">
 							{{#select loadData.selLoadLevel}}
@@ -296,22 +311,22 @@
 
 					{{#each items.loadout}}
 						<div class="labelled-item labelled-horizontal item" data-item-id="{{_id}}">
-							{{#if (test system.uses.max ">" 0)}}
-							{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-								data=system.uses
-								target="item.system.uses.value"
-								iconEmpty="dot-empty.svg"
-								iconEmptyHover="dot-empty-hover.svg"
-								iconFull="dot-full.svg"
-								iconFullHover="dot-full-hover.svg"
-							}}
-							{{/if}}
 							<label class="item-name">
 								<span class="item-title">{{case "title" name}}</span>
 								<img class="item-img" src="{{img}}" />
+								{{#if (test system.uses.max ">" 0)}}
+								{{> "systems/eunos-blades/templates/parts/dotline.hbs"
+									data=system.uses
+									target="item.system.uses.value"
+									iconEmpty="dot-empty.svg"
+									iconEmptyHover="dot-empty-hover.svg"
+									iconFull="dot-full.svg"
+									iconFullHover="dot-full-hover.svg"
+								}}
+								{{/if}}
 							</label>
 							<div class="labelled-item-container">
-								<div class="item-description shadowed">{{{system.description}}}</div>
+								<div class="item-description shadowed">{{{system.rules}}}</div>
 							</div>
 							<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
 								<i class="fas fa-trash"></i>
@@ -385,7 +400,7 @@
 							}}
 						</td>
 					</div>
-					<label>{{case "title" attribute_name}}</label>
+					<label data-roll-attribute="{{attribute_name}}">{{case "title" attribute_name}}</label>
 					<div class="labelled-item-container">
 						{{> "systems/eunos-blades/templates/parts/dotline.hbs"
 							data=(lookup ../data.experience attribute_name)
@@ -410,7 +425,7 @@
 								blockClass="action"
 							}}
 					</div>
-					<label>{{case "upper" action_name}}</label>
+					<label data-roll-attribute="{{action_name}}">{{case "upper" action_name}}</label>
 				</div>
 				{{/each}}
 				{{/each}}

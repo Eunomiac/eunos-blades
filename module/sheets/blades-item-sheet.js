@@ -25,7 +25,7 @@ class BladesItemSheet extends ItemSheet {
         const pathComps = [
             "systems/eunos-blades/templates/items"
         ];
-        if (C.SimpleItemTypes.includes(this.item.data.type)) {
+        if (C.SimpleItemTypes.includes(this.item.type)) {
             pathComps.push("simple-sheet.hbs");
         }
         else {
@@ -74,6 +74,7 @@ class BladesItemSheet extends ItemSheet {
         Object.assign(data, {
             editable: this.options.editable,
             isGM: game.user.isGM,
+            isEmbeddedItem: true,
             actor: itemData,
             data: itemData.data,
             effects: this.item.effects

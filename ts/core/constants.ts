@@ -3,15 +3,80 @@ import type BladesItem from "../blades-item.js";
 import type BladesSheet from "../sheets/blades-sheet";
 import type BladesItemSheet from "../sheets/blades-item-sheet";
 
-declare global {
-	namespace SystemDocs {
-		export type Actor = BladesActor;
-		export type Item = BladesItem;
-		export type ActorSheet = BladesSheet;
-		export type ItemSheet = BladesItemSheet;
+export enum BladesActorType {
+	pc = "character",
+	npc = "npc",
+	crew = "crew"
+}
 
-		export type Sheet = BladesSheet|BladesItemSheet;
-	}
+export enum BladesItemType {
+	ability = "ability",
+	background = "background",
+	clock_keeper = "clock_keeper",
+	cohort = "cohort",
+	crew_ability = "crew_ability",
+	crew_reputation = "crew_reputation",
+	crew_type = "crew_type",
+	crew_upgrade = "crew_upgrade",
+	faction = "faction",
+	feature = "feature",
+	gm_tracker = "gm_tracker",
+	heritage = "heritage",
+	item = "item",
+	playbook = "playbook",
+	stricture = "stricture",
+	vice = "vice"
+}
+
+export enum Attributes {
+	insight = "insight",
+	prowess = "prowess",
+	resolve = "resolve"
+}
+export enum InsightActions {
+	hunt = "hunt",
+	study = "study",
+	survey = "survey",
+	tinker = "tinker"
+}
+export enum ProwessActions {
+	finesse = "finesse",
+	prowl = "prowl",
+	skirmish = "skirmish",
+	wreck = "wreck"
+}
+export enum ResolveActions {
+	attune = "attune",
+	command = "command",
+	consort = "consort",
+	sway = "sway"
+}
+export enum Actions {
+	hunt = "hunt",
+	study = "study",
+	survey = "survey",
+	tinker = "tinker",
+	finesse = "finesse",
+	prowl = "prowl",
+	skirmish = "skirmish",
+	wreck = "wreck",
+	attune = "attune",
+	command = "command",
+	consort = "consort",
+	sway = "sway"
+}
+
+export enum Positions {
+	controlled = "controlled",
+	risky = "risky",
+	desperate = "desperate"
+}
+export enum EffectLevels {
+	extreme = "extreme",
+	great = "great",
+	standard = "standard",
+	limited = "limited",
+	zero = "zero"
 }
 
 const C = {
@@ -48,63 +113,21 @@ const C = {
 		levels: ["BITD.Light", "BITD.Normal", "BITD.Heavy", "BITD.Encumbered", "BITD.OverMax"]
 	},
 	Playbooks: {
-		DEFAULTS: {
-			bgImg: "",
-			tagline: "",
-			vice: {name: "Vice"},
-			stress: {name: "Stress", max: 9},
-			trauma: {
-				name: "Trauma",
-			  max: 4,
-			  list: ["Cold", "Haunted", "Obsessed", "Paranoid", "Reckless", "Soft", "Unstable", "Vicious"]
-			},
-			healing: {max: 4},
-			acquaintances: {
-				name: "Acquaintances"
-			},
-			experience: {
-				playbook: {max: 8},
-				insight: {max: 6},
-				prowess: {max: 6},
-				resolve: {max: 6}
-			},
-			coins: {max: 4},
-			stash: {max: 40},
-			attributes: {
-				insight: {
-					hunt: {max: 3},
-					study: {max: 3},
-					survey: {max: 3},
-					tinker: {max: 3}
-				},
-				prowess: {
-					finesse: {max: 3},
-					prowl: {max: 3},
-					skirmish: {max: 3},
-					wreck: {max: 3}
-				},
-				resolve: {
-					attune: {max: 3},
-					command: {max: 3},
-					consort: {max: 3},
-					sway: {max: 3}
-				}
-			}
-		},
 		Cutter: {
-			tagline: "A Dangerous & Intimidating Fighter",
-			bgImg: "systems/eunos-blades/assets/icons/cutter-trans.svg",
-			acquaintances: {
-				name: "Dangerous Friends"
+			"system.bgImg": "systems/eunos-blades/assets/icons/cutter-trans.svg",
+			"system.tagline": "A Dangerous & Intimidating Fighter",
+			"system.acquaintances_name": "Dangerous Friends & Rivals",
+			"system.starting_stats.chargen": {
+				"system.attributes.prowess.skirmish.value": 2,
+				"system.attributes.resolve.command.value": 1
 			},
-			experience: {
-				clues: [
-					"You addressed a challenge with violence or coercion.",
-					"You expressed your beliefs, drives, heritage, or background.",
-					"You struggled with issues from your vice or traumas during the session."
-				]
-			},
-			gather_info: [
+			"system.experience_clues": [
+				"You addressed a challenge with violence or coercion.",
+				"You expressed your beliefs, drives, heritage, or background.",
+				"You struggled with issues from your vice or traumas during the session."
+			],
+			"system.trauma_conditions": ["Cold", "Haunted", "Obsessed", "Paranoid", "Reckless", "Soft", "Unstable", "Vicious"],
+			"system.gather_info_questions": [
 				"How can I hurt them?",
 				"Who's most afraid of me?",
 				"Who's most dangerous here?",
@@ -112,29 +135,24 @@ const C = {
 				"How can I get them to [X]?",
 				"Are they telling the truth?",
 				"What's really going on here?"
-			]
+			],
+			"system.suggested_ability": "Battleborn"
 		},
 		Hound: {
-			tagline: "A Deadly Sharpshooter & Tracker",
-		  bgImg: "systems/eunos-blades/assets/icons/hound-trans.svg",
-			acquaintances: {
-				name: "Deadly Friends"
+			"system.bgImg": "systems/eunos-blades/assets/icons/hound-trans.svg",
+			"system.tagline": "A Deadly Sharpshooter & Tracker",
+			"system.acquaintances_name": "Deadly Friends & Rivals",
+			"system.starting_stats.chargen": {
+				"system.attributes.insight.hunt.value": 2,
+				"system.attributes.insight.survey.value": 1
 			},
-			experience: {
-				clues: [
-					"You addressed a challenge with tracking or violence.",
-					"You expressed your beliefs, drives, heritage, or background.",
-					"You struggled with issues from your vice or traumas during the session."
-				]
-			},
-			actions: [
-				{
-					"mode": "CHARGEN_INITIAL",
-					"insight.hunt": 2,
-					"insight.survey": 1
-			  }
+			"system.experience_clues": [
+				"You addressed a challenge with tracking or violence.",
+				"You expressed your beliefs, drives, heritage, or background.",
+				"You struggled with issues from your vice or traumas during the session."
 			],
-			gather_info: [
+			"system.trauma_conditions": ["Cold", "Haunted", "Obsessed", "Paranoid", "Reckless", "Soft", "Unstable", "Vicious"],
+			"system.gather_info_questions": [
 				"What do they intend to do?",
 				"How can I get them to [X]?",
 				"What are they really feeling?",
@@ -142,29 +160,24 @@ const C = {
 				"Where did [X] go?",
 				"How can I find [X]?",
 				"What's really going on here?"
-			]
+			],
+			"system.suggested_ability": "Sharpshooter"
 		},
 		Leech: {
-			tagline: "A Saboteur & Technician",
-		  bgImg: "systems/eunos-blades/assets/icons/leech-trans.svg",
-			acquaintances: {
-				name: "Clever Friends"
+			"system.bgImg": "systems/eunos-blades/assets/icons/leech-trans.svg",
+			"system.tagline": "A Saboteur & Technician",
+			"system.acquaintances_name": "Clever Friends & Rivals",
+			"system.starting_stats.chargen": {
+				"system.attributes.insight.tinker.value": 2,
+				"system.attributes.prowess.wreck.value": 1
 			},
-			experience: {
-				clues: [
-					"You addressed a challenge with technical skill or mayhem.",
-					"You expressed your beliefs, drives, heritage, or background.",
-					"You struggled with issues from your vice or traumas during the session."
-				]
-			},
-			actions: [
-				{
-					"mode": "CHARGEN_INITIAL",
-					"insight.tinker": 2,
-					"prowess.wreck": 1
-			  }
+			"system.experience_clues": [
+				"You addressed a challenge with technical skill or mayhem.",
+				"You expressed your beliefs, drives, heritage, or background.",
+				"You struggled with issues from your vice or traumas during the session."
 			],
-			gather_info: [
+			"system.trauma_conditions": ["Cold", "Haunted", "Obsessed", "Paranoid", "Reckless", "Soft", "Unstable", "Vicious"],
+			"system.gather_info_questions": [
 				"What do they intend to do?",
 				"How can I get them to [X]?",
 				"Are they telling the truth?",
@@ -172,29 +185,24 @@ const C = {
 				"What might happen if I [X]?",
 				"How can I find [X]?",
 				"What's really going on here?"
-			]
+			],
+			"system.suggested_ability": "Alchemist"
 		},
 		Lurk: {
-			tagline: "A Stealthy Infiltrator & Burglar",
-		  bgImg: "systems/eunos-blades/assets/icons/lurk-trans.svg",
-			acquaintances: {
-				name: "Shady Friends"
+			"system.bgImg": "systems/eunos-blades/assets/icons/lurk-trans.svg",
+			"system.tagline": "A Stealthy Infiltrator & Burglar",
+			"system.acquaintances_name": "Shady Friends & Rivals",
+			"system.starting_stats.chargen": {
+				"system.attributes.prowess.prowl.value": 2,
+				"system.attributes.prowess.finesse.value": 1
 			},
-			experience: {
-				clues: [
-					"You addressed a challenge with stealth or evasion",
-					"You expressed your beliefs, drives, heritage, or background.",
-					"You struggled with issues from your vice or traumas during the session."
-				]
-			},
-			actions: [
-				{
-					"mode": "CHARGEN_INITIAL",
-					"prowess.prowl": 2,
-					"prowess.finesse": 1
-			  }
+			"system.experience_clues": [
+				"You addressed a challenge with stealth or evasion.",
+				"You expressed your beliefs, drives, heritage, or background.",
+				"You struggled with issues from your vice or traumas during the session."
 			],
-			gather_info: [
+			"system.trauma_conditions": ["Cold", "Haunted", "Obsessed", "Paranoid", "Reckless", "Soft", "Unstable", "Vicious"],
+			"system.gather_info_questions": [
 				"What do they intend to do?",
 				"How can I get them to [X]?",
 				"What should I look out for?",
@@ -202,29 +210,24 @@ const C = {
 				"Where can I hide here?",
 				"How can I find [X]?",
 				"What's really going on here?"
-			]
+			],
+			"system.suggested_ability": "Infiltrator"
 		},
 		Slide: {
-			tagline: "A Subtle Manipulator & Spy",
-		  bgImg: "systems/eunos-blades/assets/icons/slide-trans.svg",
-			acquaintances: {
-				name: "Sly Friends"
+			"system.bgImg": "systems/eunos-blades/assets/icons/slide-trans.svg",
+			"system.tagline": "A Subtle Manipulator & Spy",
+			"system.acquaintances_name": "Sly Friends & Rivals",
+			"system.starting_stats.chargen": {
+				"system.attributes.resolve.sway.value": 2,
+				"system.attributes.resolve.consort.value": 1
 			},
-			experience: {
-				clues: [
-					"You addressed a challenge with deception or influence",
-					"You expressed your beliefs, drives, heritage, or background.",
-					"You struggled with issues from your vice or traumas during the session."
-				]
-			},
-			actions: [
-				{
-					"mode": "CHARGEN_INITIAL",
-					"resolve.sway": 2,
-					"resolve.consort": 1
-			  }
+			"system.experience_clues": [
+				"You addressed a challenge with deception or influence.",
+				"You expressed your beliefs, drives, heritage, or background.",
+				"You struggled with issues from your vice or traumas during the session."
 			],
-			gather_info: [
+			"system.trauma_conditions": ["Cold", "Haunted", "Obsessed", "Paranoid", "Reckless", "Soft", "Unstable", "Vicious"],
+			"system.gather_info_questions": [
 				"What do they intend to do?",
 				"How can I get them to [X]?",
 				"Are they telling the truth?",
@@ -232,29 +235,24 @@ const C = {
 				"What do they really care about?",
 				"How can I blend in here?",
 				"What's really going on here?"
-			]
+			],
+			"system.suggested_ability": "Rook's Gambit"
 		},
 		Spider: {
-			tagline: "A Devious Mastermind",
-		  bgImg: "systems/eunos-blades/assets/icons/spider-trans.svg",
-			acquaintances: {
-				name: "Shrewd Friends"
+			"system.bgImg": "systems/eunos-blades/assets/icons/spider-trans.svg",
+			"system.tagline": "A Devious Mastermind",
+			"system.acquaintances_name": "Shrewd Friends & Rivals",
+			"system.starting_stats.chargen": {
+				"system.attributes.resolve.consort.value": 2,
+				"system.attributes.insight.study.value": 1
 			},
-			experience: {
-				clues: [
-					"You addressed a challenge with calculation or conspiracy",
-					"You expressed your beliefs, drives, heritage, or background.",
-					"You struggled with issues from your vice or traumas during the session."
-				]
-			},
-			actions: [
-				{
-					"mode": "CHARGEN_INITIAL",
-					"resolve.consort": 2,
-					"insight.study": 1
-			  }
+			"system.experience_clues": [
+				"You addressed a challenge with calculation or conspiracy.",
+				"You expressed your beliefs, drives, heritage, or background.",
+				"You struggled with issues from your vice or traumas during the session."
 			],
-			gather_info: [
+			"system.trauma_conditions": ["Cold", "Haunted", "Obsessed", "Paranoid", "Reckless", "Soft", "Unstable", "Vicious"],
+			"system.gather_info_questions": [
 				"What do they want most?",
 				"What should I look out for?",
 				"Where's the leverage here?",
@@ -262,29 +260,24 @@ const C = {
 				"What do they intend to do?",
 				"How can I get them to [X]?",
 				"What's really going on here?"
-			]
+			],
+			"system.suggested_ability": "Foresight"
 		},
 		Whisper: {
-			tagline: "An Arcane Adept & Channeler",
-		  bgImg: "systems/eunos-blades/assets/icons/whisper-trans.svg",
-			acquaintances: {
-				name: "Strange Friends"
+			"system.bgImg": "systems/eunos-blades/assets/icons/whisper-trans.svg",
+			"system.tagline": "An Arcane Adept & Channeler",
+			"system.acquaintances_name": "Strange Friends & Rivals",
+			"system.starting_stats.chargen": {
+				"system.attributes.resolve.attune.value": 2,
+				"system.attributes.insight.study.value": 1
 			},
-			experience: {
-				clues: [
-					"You addressed a challenge with knowledge or arcane power",
-					"You expressed your beliefs, drives, heritage, or background.",
-					"You struggled with issues from your vice or traumas during the session."
-				]
-			},
-			actions: [
-				{
-					"mode": "CHARGEN_INITIAL",
-					"resolve.attune": 2,
-					"insight.study": 1
-			  }
+			"system.experience_clues": [
+				"You addressed a challenge with knowledge or arcane power.",
+				"You expressed your beliefs, drives, heritage, or background.",
+				"You struggled with issues from your vice or traumas during the session."
 			],
-			gather_info: [
+			"system.trauma_conditions": ["Cold", "Haunted", "Obsessed", "Paranoid", "Reckless", "Soft", "Unstable", "Vicious"],
+			"system.gather_info_questions": [
 				"What is arcane or weird here?",
 				"What echoes in the ghost field?",
 				"What is hidden or lost here?",
@@ -292,44 +285,25 @@ const C = {
 				"What drives them to do this?",
 				"How can I reveal [X]?",
 				"What's really going on here?"
-			]
+			],
+			"system.suggested_ability": "Compel"
 		},
 		Ghost: {
-			tagline: "A Disembodied Spirit",
-		  bgImg: "systems/eunos-blades/assets/icons/ghost-trans.svg",
-			vice: {
-				name: "Need",
-				override: {
-					name: "Life Essence",
-					img: ""
-				}
+			"system.bgImg": "systems/eunos-blades/assets/icons/ghost-trans.svg",
+			"system.tagline": "A Vengeful Disembodied Spirit",
+			"system.acquaintances_name": "Enemies & Rivals",
+			"system.starting_stats.add": {
+				"system.attributes.insight.hunt.value": 1,
+				"system.attributes.prowess.prowl.value": 1,
+				"system.attributes.resolve.attune.value": 1
 			},
-			stress: {name: "Drain", max: 9},
-			trauma: {
-				name: "Gloom",
-			  max: 4,
-			  list: ["Chaotic", "Destructive", "Furious", "Obsessive", "Territorial", "Savage"]
-			},
-			acquaintances: {
-				name: "Enemies & Rivals"
-			},
-			experience: {
-				clues: [
-					"You exacted vengeance upon those whom you deem deserving.",
-					"You expressed your outrage or anger, or settled scores from your heritage, or background.",
-					"You struggled with issues from your need or glooms during the session."
-				]
-			},
-			attribute_max: 4,
-			actions: [
-				{
-					"mode": "ADD",
-					"insight.hunt": 1,
-					"prowess.prowl": 1,
-					"resolve.attune": 1
-			  }
+			"system.experience_clues": [
+				"You exacted vengeance upon those whom you deem deserving.",
+				"You expressed your outrage or anger, or settled scores from your heritage, or background.",
+				"You struggled with issues from your need or glooms during the session."
 			],
-			gather_info: [
+			"system.trauma_conditions": ["Chaotic", "Destructive", "Furious", "Obsessive", "Territorial", "Savage"],
+			"system.gather_info_questions": [
 				"What do they intend to do?",
 				"How can I get them to [X]?",
 				"What are they really feeling?",
@@ -337,169 +311,99 @@ const C = {
 				"Where's the weakness here?",
 				"How can I find [X]?",
 				"What's really going on here?"
-			]
+			],
+			"system.auto_abilities": ["Ghost Form"]
 		},
 		Hull: {
-			tagline: "An Animated Spark-Craft Frame",
-		  bgImg: "systems/eunos-blades/assets/icons/hull-trans.svg",
-			stress: {name: "Stress", max: 9},
-			trauma: {
-				name: "Trauma",
-			  max: 4,
-			  list: ["Clanking", "Leaking", "Fixated", "Smoking", "Sparking", "Unstable"]
+			"system.bgImg": "systems/eunos-blades/assets/icons/hull-trans.svg",
+			"system.tagline": "An Animated Spark-Craft Frame",
+			"system.acquaintances_name": "Master",
+			"system.starting_stats.add": {
+				"system.attributes.prowess.skirmish.value": 1,
+				"system.attributes.resolve.attune.value": 1
 			},
-			healing: {
-				clock_size: 4
-			},
-			acquaintances: {
-				name: ""
-			},
-			experience: {
-				playbook_max: 8,
-				insight_max: 6,
-				prowess_max: 6,
-				resolve_max: 6,
-				clues: [
-					"You fulfilled your functions despite difficulty or danger.",
-					"You suppressed or ignored your former human beliefs, drives, heritage, or background.",
-					"You struggled with issues from your wear during the session."
-				]
-			},
-			actions: [
-				{
-					"mode": "CHARGEN_INITIAL",
-					"prowess.skirmish": 2,
-					"resolve.command": 1
-			  }
+			"system.experience_clues": [
+				"You fulfilled your functions despite difficulty or danger.",
+				"You suppressed or ignored your former human beliefs, drives, heritage, or background.",
+				"You struggled with issues from your wear during the session."
 			],
-			gather_info: [
-				"How can I hurt them?",
-				"Who's most afraid of me?",
-				"Who's most dangerous here?",
+			"system.trauma_conditions": ["Clanking", "Leaking", "Fixated", "Smoking", "Sparking", "Unstable"],
+			"system.gather_info_questions": [
 				"What do they intend to do?",
 				"How can I get them to [X]?",
-				"Are they telling the truth?",
+				"What are they really doing?",
+				"What should I lookout for?",
+				"Where's the weakness here?",
+				"How can I find [X]?",
 				"What's really going on here?"
-			]
+			],
+			"system.auto_abilities": ["Automaton"]
 		},
 		Vampire: {
-			tagline: "The Immortal Undead",
-		  bgImg: "systems/eunos-blades/assets/icons/vampire-trans.svg",
-			stress: {name: "Stress", max: 9},
-			trauma: {
-				name: "Trauma",
-			  max: 4,
-			  list: ["Cold", "Haunted", "Obsessed", "Paranoid", "Ruthless", "Secretive", "Unstable", "Vicious"]
+			"system.bgImg": "systems/eunos-blades/assets/icons/vampire-trans.svg",
+			"system.tagline": "An Animated Undead Body",
+			"system.acquaintances_name": "Dark Servants",
+			"system.starting_stats.add": {
+				"system.attributes.insight.hunt.value": 1,
+				"system.attributes.prowess.prowl.value": 1,
+				"system.attributes.prowess.skirmish.value": 1,
+				"system.attributes.resolve.attune.value": 1,
+				"system.attributes.resolve.command.value": 1,
+				"system.attributes.resolve.sway.value": 1
 			},
-			healing: {
-				clock_size: 3
-			},
-			acquaintances: {
-				name: "Dark Servants"
-			},
-			experience: {
-				playbook_max: 8,
-				insight_max: 6,
-				prowess_max: 6,
-				resolve_max: 6,
-				clues: [
-					"Every time you roll a desperate action, mark xp in that action's attribute.",
-					"You addressed a challenge with violence or coercion.",
-					"You expressed your beliefs, drives, heritage, or background.",
-					"You struggled with issues from your vice or traumas during the session."
-				]
-			},
-			actions: [
-				{
-					"mode": "CHARGEN_INITIAL",
-					"prowess.skirmish": 2,
-					"resolve.command": 1
-			  }
+			"system.experience_clues": [
+				"You displayed your dominance or slayed without mercy.",
+				"You expressed your beliefs, drives, heritage, or background.",
+				"You struggled with issues from your vice, traumas, or strictures during the session."
 			],
-			gather_info: [
-				"How can I hurt them?",
-				"Who's most afraid of me?",
-				"Who's most dangerous here?",
+			"system.trauma_conditions": ["Cold", "Haunted", "Obsessed", "Paranoid", "Ruthless", "Secretive", "Unstable", "Vicious"],
+			"system.gather_info_questions": [
 				"What do they intend to do?",
 				"How can I get them to [X]?",
-				"Are they telling the truth?",
+				"What are they really feeling?",
+				"What should I lookout for?",
+				"Where's the weakness here?",
+				"How can I find [X]?",
 				"What's really going on here?"
-			]
+			],
+			"system.auto_abilities": ["Undead"]
 		}
-	},/*
-	ClassTagLines: {
-		Cutter: "A Dangerous & Intimidating Fighter",
-		Hound: "A Deadly Sharpshooter & Tracker",
-		Leech: "A Saboteur & Technician",
-		Lurk: "A Stealthy Infiltrator & Burglar",
-		Slide: "A Subtle Manipulator & Spy",
-		Spider: "A Devious Mastermind",
-		Whisper: "An Arcane Adept & Channeler",
-		Ghost: "A Disembodied Spirit",
-		Hull: "Animated Spark-Craft",
-		Vampire: "The Immortal Undead"
 	},
-	ClassBgImages: {
-		Cutter: "systems/eunos-blades/assets/icons/cutter-trans.svg",
-		Hound: "systems/eunos-blades/assets/icons/hound-trans.svg",
-		Leech: "systems/eunos-blades/assets/icons/leech-trans.svg",
-		Lurk: "systems/eunos-blades/assets/icons/lurk-trans.svg",
-		Slide: "systems/eunos-blades/assets/icons/slide-trans.svg",
-		Spider: "systems/eunos-blades/assets/icons/spider-trans.svg",
-		Whisper: "systems/eunos-blades/assets/icons/whisper-trans.svg",
-		Ghost: "systems/eunos-blades/assets/icons/ghost-trans.svg",
-		Hull: "systems/eunos-blades/assets/icons/hull-trans.svg",
-		Vampire: "systems/eunos-blades/assets/icons/vampire-trans.svg"
-	}, */
 	ClockSizes: [1, 2, 3, 4, 5, 6, 8, 10, 12],
-	SimpleItemTypes: ["background", "heritage", "vice", "crew_reputation"]
-	/* ActorDefaults: {
-		"acquaintances.name": "BITD.Acquaintances",
-		"stress.name": "BITD.Stress",
-		"stress.max": 9,
-		"trauma.name": "BITD.Trauma",
-		"trauma.max": 4,
-		"trauma.list": {
-			Cold: false,
-			Haunted: false,
-			Obsessed: false,
-			Paranoid: false,
-			Reckless: false,
-			Soft: false,
-			Unstable: false,
-			Vicious: false
-		},
-		"healing.max": 4,
-		"experience.max": 8,
-		"experience.clues": [
-			"BITD.ClassExpClue3",
-			"BITD.ClassExpClue2"
-		],
-		"experience.playbook.max": 8,
-		"experience.insight.max": 6,
-		"experience.prowess.max": 6,
-		"experience.resolve.max": 6,
-		"coins.max": 4,
-		"stash.max": 40,
-		"loadout.levels": {
-			light: 3,
-			normal: 5,
-			heavy: 6,
-			encumbered: 9
-		},
-		"attributes.hunt.max": 3,
-		"attributes.study.max": 3,
-		"attributes.survey.max": 3,
-		"attributes.tinker.max": 3,
-		"attributes.finesse.max": 3,
-		"attributes.prowl.max": 3,
-		"attributes.skirmish.max": 3,
-		"attributes.wreck.max": 3,
-		"attributes.attune.max": 3,
-		"attributes.command.max": 3,
-		"attributes.consort.max": 3,
-		"attributes.sway.max": 3
-	} */
+	ActorTypes: [
+		BladesActorType.pc,
+		BladesActorType.npc,
+		BladesActorType.crew
+	],
+	ItemTypes: [
+		BladesItemType.ability,
+		BladesItemType.background,
+		BladesItemType.clock_keeper,
+		BladesItemType.cohort,
+		BladesItemType.crew_ability,
+		BladesItemType.crew_reputation,
+		BladesItemType.crew_type,
+		BladesItemType.crew_upgrade,
+		BladesItemType.faction,
+		BladesItemType.feature,
+		BladesItemType.gm_tracker,
+		BladesItemType.heritage,
+		BladesItemType.item,
+		BladesItemType.playbook,
+		BladesItemType.stricture,
+		BladesItemType.vice
+	],
+	SimpleItemTypes: [
+		BladesItemType.background,
+		BladesItemType.crew_reputation,
+		BladesItemType.heritage,
+		BladesItemType.stricture
+	],
+	Attributes: [
+		Attributes.insight,
+		Attributes.resolve,
+		Attributes.prowess
+	]
 };
 
 export const Randomizers = {

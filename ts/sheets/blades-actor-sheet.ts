@@ -52,6 +52,10 @@ class BladesActorSheet extends BladesSheet {
 				return;
 			}
 		});
+		return loadTemplates([
+			"systems/eunos-blades/templates/items/clock_keeper-sheet.hbs",
+			"systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
+		]);
 	}
 
 
@@ -59,20 +63,13 @@ class BladesActorSheet extends BladesSheet {
 
 	override async getData() {
 		const data = await super.getData();
-		eLog.log("[BladesActorSheet] super.getData()", {...data});
-
-		//~ Calculate Loadout
-		const curLoad = U.gsap.utils.clamp(0, 10, data.items
-			.reduce((tot, i) => tot + (i.type === "item"
-				? U.pInt(i.system.load)
-				: 0
-			), 0));
+		eLog.checkLog("actor", "[BladesActorSheet] super.getData()", {...data});
 
 		//~ Calculate Attribute Totals
 		const attrData = {
-			insight: {value: this.actor.attributes.insight, size: 4},
-			prowess: {value: this.actor.attributes.prowess, size: 4},
-			resolve: {value: this.actor.attributes.resolve, size: 4}
+			insight: {value: this.actor.attributes.insight, size: 4 + this.actor.system.resistance_bonuses.insight},
+			prowess: {value: this.actor.attributes.prowess, size: 4 + this.actor.system.resistance_bonuses.prowess},
+			resolve: {value: this.actor.attributes.resolve, size: 4 + this.actor.system.resistance_bonuses.resolve}
 		};
 
 		//~ Isolate playbook information
@@ -82,49 +79,18 @@ class BladesActorSheet extends BladesSheet {
 		//~ Override Vice item for classes with locked vices
 		const viceOverride = this.actor.system.vice.override as string;
 
-		// ~ Create selection lists for dialogue boxes
-		const availableItems = game.items
-			.filter((item) => this.actor.items
-				.filter((i) => i.name === item.name).length < (item.system.num_available ?? 1));
-
-		const dialogOptions: Record<string,any> = {};
-		dialogOptions.loadItems = {
-			playbook: availableItems.filter((item) => item.type === "item" && item.system.playbooks.includes(playbook)).map((item) => item.name),
-			general: availableItems.filter((item) => item.type === "item" && item.system.playbooks.includes("ANY")).map((item) => item.name)
-		};
-		dialogOptions.abilityItems = {
-			playbook: availableItems.filter((item) => item.type === "ability" && item.system.playbooks.includes(playbook)).map((item) => item.name),
-			veteran: availableItems.filter((item) => item.type === "ability"
-				&& !item.system.playbooks.includes(playbook)
-				&& !item.system.playbooks.includes("Ghost")
-				&& !item.system.playbooks.includes("Hull")
-				&& !item.system.playbooks.includes("Vampire")).map((item) => item.name)
-		};
-		eLog.display("Dialog Options", dialogOptions);
-
 		Object.assign(
 			data,
 			{
 				effects: this.actor.effects,
 				items: {
-					heritage: data.items.find((item) => item.type === "heritage"),
-					background: data.items.find((item) => item.type === "background"),
-					vice: (viceOverride && JSON.parse(viceOverride)) || data.items.find((item) => item.type === "vice"),
 					abilities: data.items.filter((item) => item.type === "ability"),
+					background: data.items.find((item) => item.type === "background"),
+					heritage: data.items.find((item) => item.type === "heritage"),
+					playbook: data.items.find((item) => item.type === "playbook"),
+					vice: (viceOverride && JSON.parse(viceOverride)) || data.items.find((item) => item.type === "vice"),
 					loadout: data.items.filter((item) => item.type === "item")
 				},
-				playbook: playbookItem
-					? {
-							id: playbookItem.id,
-							name: playbookItem.name ?? "",
-							bgImg: (playbookItem.name ?? "DEFAULTS") in C.Playbooks
-								? C.Playbooks[playbookItem.name as KeyOf<typeof C.Playbooks>].bgImg
-								: "",
-							tagline: (playbookItem.name ?? "DEFAULTS") in C.Playbooks
-								? C.Playbooks[playbookItem.name as KeyOf<typeof C.Playbooks>].tagline
-								: ""
-						}
-					: null,
 				healing_clock: {
 					color: "white",
 					size: this.actor.system.healing.max,
@@ -134,7 +100,7 @@ class BladesActorSheet extends BladesSheet {
 					.filter(([, isActive]) => isActive)
 					.map(([armor]) => [armor, this.actor.system.armor.checked[armor as keyof BladesActor["system"]["armor"]["checked"]]])),
 				loadData: {
-					curLoad,
+					curLoad: this.actor.currentLoad,
 					selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected)) as "heavy"|"normal"|"light"|"encumbered"],
 					selections: C.Loadout.selections,
 					selLoadLevel: this.actor.system.loadout.selected
@@ -148,7 +114,7 @@ class BladesActorSheet extends BladesSheet {
 				}
 			}
 		);
-		eLog.log("[BladesActorSheet] return getData()", {...data});
+		eLog.checkLog("actor", "[BladesActorSheet] return getData()", {...data});
 		return data;
 	}
 
@@ -215,7 +181,7 @@ class BladesActorSheet extends BladesSheet {
 			},
 			mouseenter: function() {
 				const targetArmor = self._getHoverArmor();
-				eLog.log("Mouse Enter", targetArmor, this, $(this), $(this).next());
+				eLog.log4("Mouse Enter", targetArmor, this, $(this), $(this).next());
 				if (!targetArmor) { return }
 				$(this).siblings(`.svg-armor.armor-${targetArmor}`).addClass("hover-over");
 			},
@@ -245,19 +211,11 @@ class BladesActorSheet extends BladesSheet {
 			}
 		});
 
-		//~ Update Inventory Item
-		// html.find(".item-body").on({
-		// 	click: function() {
-		// 		const element = $(this).parents(".item");
-		// 		const item = self.actor.items.get(element.data("itemId"));
-		// 		item?.sheet?.render(true);
-		// 	}});
-
 		//~ Delete Inventory Item
 		html.find(".item-delete").on({
 			click: async function() {
 				const element = $(this).parents(".item");
-				await self.actor.deleteEmbeddedDocuments("Item", [element.data("itemId")]);
+				await self.actor.removeItem(element.data("itemId"));
 				element.slideUp(200, () => self.render(false));
 			}
 		});

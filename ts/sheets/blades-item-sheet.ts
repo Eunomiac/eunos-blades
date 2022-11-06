@@ -24,7 +24,7 @@ class BladesItemSheet extends ItemSheet {
 		const pathComps = [
 			"systems/eunos-blades/templates/items"
 		];
-		if (C.SimpleItemTypes.includes(this.item.data.type)) {
+		if (C.SimpleItemTypes.includes(this.item.type)) {
 			pathComps.push("simple-sheet.hbs");
 		} else {
 			pathComps.push(`${this.item.data.type}-sheet.hbs`);
@@ -80,6 +80,7 @@ class BladesItemSheet extends ItemSheet {
 			{
 				editable: this.options.editable,
 				isGM: game.user.isGM,
+				isEmbeddedItem: true, // this.item.parent !== null,
 				// isOwner: ???,
 				actor: itemData,
 				data: itemData.data,
@@ -89,6 +90,10 @@ class BladesItemSheet extends ItemSheet {
 
 		return data;
 	}
+}
+
+declare interface BladesItemSheet {
+	get item(): BladesItem
 }
 
 export default BladesItemSheet;

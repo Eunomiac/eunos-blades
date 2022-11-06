@@ -64,8 +64,6 @@ html, :root {
     --macro-size: 50px;
     --players-width: 200px;
     --form-field-height: 26px;
-    --font-mono: monospace;
-    --font-awesome: "Font Awesome 6 Pro";
     --font-size-11: 0.6875rem;
     --font-size-12: 0.75rem;
     --font-size-13: 0.8125rem;
@@ -87,10 +85,7 @@ html, :root {
     --color-underline-header: var(--blades-grey);
     --color-border-highlight: var(--blades-gold-bright);
     --color-border-highlight-alt: var(--blades-gold);
-    --font-primary: "Minion Pro", serif;
-    --font-mono: "Pragmata", monospace;
     --size-10px: toRem(10px);
-    /* Expansion (not defined by Foundry) */
     --size-11px: var(--font-size-11);
     --size-12px: var(--font-size-12);
     --size-13px: var(--font-size-13);
@@ -101,7 +96,6 @@ html, :root {
     --size-24px: var(--font-size-24);
     --size-28px: var(--font-size-28);
     --size-30px: toRem(30px);
-    /* Expansion (not defined by Foundry) */
     --size-32px: var(--font-size-32);
     --size-48px: var(--font-size-48);
     --blades-white-bright-nums: 255, 255, 255;
@@ -124,6 +118,12 @@ html, :root {
     --blades-grey-dark: rgba(var(--blades-grey-dark-nums), 1);
     --blades-black: rgba(var(--blades-black-nums), 1);
     --blades-black-dark: rgba(var(--blades-black-dark-nums), 1);
+    --blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
+    --blades-gold: rgba(var(--blades-gold-nums), 1);
+    --blades-gold-dark: rgba(var(--blades-gold-dark-nums), 1);
+    --blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
+    --blades-red: rgba(var(--blades-red-nums), 1);
+    --blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
     --blades-white-fade: rgba(var(--blades-white-nums), 0.5);
     --blades-white-fade-strong: rgba(var(--blades-white-nums), 0.25);
     --blades-white-bright-fade: rgba(var(--blades-white-bright-nums), 0.5);
@@ -132,14 +132,6 @@ html, :root {
     --blades-black-fade-strong: rgba(var(--blades-black-nums), 0.25);
     --blades-black-dark-fade: rgba(var(--blades-black-dark-nums), 0.5);
     --blades-black-dark-fade-strong: rgba(var(--blades-black-dark-nums), 0.25);
-    --blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
-    --blades-gold: rgba(var(--blades-gold-nums), 1);
-    --blades-gold-dark: rgba(var(--blades-gold-dark-nums), 1);
-    --blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
-    --blades-red: rgba(var(--blades-red-nums), 1);
-    --blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
-    --blades-color-negative: var(--blades-red-bright);
-    --blades-color-positive: var(--blades-gold-bright);
     --color-primary: var(--blades-white-nums);
     --color-background: var(--blades-black-nums);
     --color-background-lightest: var(--blades-grey-nums);
@@ -160,44 +152,93 @@ html, :root {
     --color-shadow-primary: var(--blades-white-bright-nums);
     --color-text-dark-primary: var(--blades-white-nums);
     --color-bg-option: var(--blades-black-nums);
-    --color-default: var(--blades-white);
-    --background-default: var(--blades-dark);
-    --font-default: var(--font-primary);
-    --font-default-small: "Minion Pro Caption";
-    --font-default-narrow: "Minion Pro Cond";
-    --font-default-small-narrow: "Minion Pro Caption Cond";
-    --font-awesome-alt: "Font Awesome 6 Brands";
-    --font-alt: "Historical FellType";
-    --font-alt-smallcaps: "Historical FellType SC";
+    --blades-color-negative: var(--blades-red-bright);
+    --blades-color-positive: var(--blades-gold-bright);
+    --font-primary: "Minion Pro", serif;
+    --font-primary-smallcaps: var(--font-primary);
+    --font-primary-small: "Minion Pro Caption";
+    --font-primary-narrow: "Minion Pro Cond";
+    --font-primary-small-narrow: "Minion Pro Caption Cond";
+    --font-primary-alt: "Historical FellType";
+    --font-primary-alt-smallcaps: "Historical FellType SC";
     --font-emphasis: "Kirsty";
+    --font-emphasis-smallcaps: var(--font-emphasis);
     --font-emphasis-alt: "Ravenscroft";
+    --font-emphasis-alt-smallcaps: var(--font-emphasis-alt);
+    --font-mono: "Pragmata", monospace;
+    --font-mono-smallcaps: var(--font-mono);
     --font-decorative: "UglyQua";
     --font-decorative-alt: "IM FELL Double Pica";
     --font-decorative-alt-smallcaps: "IM FELL Double Pica SC";
     --font-handwritten: "PWSignaturetwo";
-    --font-monospace: var(--font-mono);
+    --font-awesome: "Font Awesome 6 Pro";
+    --font-awesome-alt: "Font Awesome 6 Brands";
+    --line-height-expanded: 1.4;
+    --line-height-primary: 1.2;
+    --line-height-compact: 1;
+    --text-shadow-dark: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
+    --box-shadow-dark: inset 0 0 0.3rem var(--blades-black-dark-fade);
+    --box-shadow-dark-strong: inset 0 0 0.5rem var(--blades-black-dark);
+    --color-default: var(--blades-white);
+    --background-default: var(--blades-dark);
+    --font-default: var(--font-primary);
     --font-size-default: var(--size-14px);
     --font-weight-default: normal;
     --font-style-default: normal;
     --font-variant-default: normal;
-    --line-height-default: 1.2;
-    --line-height-compact: 1;
+    --line-height-default: var(--line-height-primary);
     --text-shadow-default: none;
-    --text-shadow-dark: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
     --box-shadow-default: none;
-    --box-shadow-inset-dark:
-	--text-transform-default: none;
+    --text-transform-default: none;
     --color-heading: var(--blades-white-bright);
-    --background-heading: var(--blades-grey-dark);
+    --color-heading-strong: var(--color-heading);
+    --background-heading: none;
+    --background-heading-strong: var(--blades-grey-dark);
+    --margin-heading: 0;
+    --margin-heading-strong: 0 0 0.5rem 0;
+    --padding-heading: 0;
+    --padding-heading-strong: 0.5rem;
     --font-heading: var(--font-emphasis);
-    --font-heading-alt: var(--font-emphasis-alt);
+    --font-heading-strong: var(--font-heading);
     --font-weight-heading: bold;
-    --text-shadow-heading: var(--text-shadow-dark);
-    --text-transform-heading: uppercase;
+    --font-weight-heading-strong: var(--font-weight-heading);
+    --font-style-heading: var(--font-style-default);
+    --font-style-heading-strong: var(--font-style-heading);
+    --font-variant-heading: var(--font-variant-default);
+    --font-variant-heading-strong: var(--font-variant-heading);
     --line-height-heading: var(--line-height-compact);
+    --line-height-heading-strong: var(--line-height-heading);
+    --text-shadow-heading: var(--text-shadow-dark);
+    --text-shadow-heading-strong: var(--text-shadow-heading);
+    --box-shadow-heading: none;
+    --box-shadow-heading-strong: var(--box-shadow-input);
+    --text-transform-heading: uppercase;
+    --text-transform-heading-strong: var(--text-transform-heading);
+    --border-color-heading: var(--background-heading-strong);
+    --border-color-heading-strong: var(--border-color-heading);
+    --border-width-heading: toRem(2px);
+    --border-width-heading-strong: var(--border-width-heading);
+    --border-style-heading: none none solid none;
+    --border-style-heading-strong: none;
+    --color-input: var(--blades-white-bright);
     --background-input: var(--blades-black-dark-fade-strong);
-    --border-input: none;
-    --box-shadow-input: inset 0 0 0.3rem var(--blades-black-dark-fade);
+    --margin-input: 0;
+    --padding-input: 0;
+    --font-input: var(--font-emphasis);
+    --font-number-input: var(--font-input);
+    --font-size-input: var(--font-size-primary);
+    --font-weight-input: var(--font-weight-primary);
+    --font-style-input: var(--font-style-primary);
+    --font-variant-input: var(--font-variant-primary);
+    --line-height-input: var(--line-height-compact);
+    --text-shadow-input: var(--text-shadow-dark);
+    --box-shadow-input: var(--box-shadow-dark);
+    --box-shadow-input-strong: var(--box-shadow-dark-strong);
+    --text-transform-input: var(--text-transform-default);
+    --border-color-heading: transparent;
+    --border-width-heading: 0;
+    --border-style-heading: none;
+    --font-monospace: var(--font-mono);
     --content-padding: 8px;
     --blades-spacer-pf: 0.0625rem;
     --blades-spacer-xs: 0.125rem;
@@ -375,31 +416,46 @@ html, :root {
       font-family: var(--font-awesome); }
     html i.fab, :root i.fab {
       font-family: var(--font-awesome-alt); }
-    html h1, html h2, html h3, html h4, :root h1, :root h2, :root h3, :root h4 {
+    html h1, html h2, :root h1, :root h2 {
+      margin: var(--margin-heading-strong);
+      padding: var(--padding-heading-strong);
+      color: var(--color-heading-strong);
+      background: var(--background-heading-strong);
+      font-family: var(--font-heading-strong);
+      font-weight: var(--font-weight-heading-strong);
+      font-style: var(--font-style-heading-strong);
+      font-variant: var(--font-variant-heading-strong);
+      line-height: var(--line-height-heading-strong);
+      text-shadow: var(--text-shadow-heading-strong);
+      text-transform: var(--text-transform-heading-strong);
+      border-color: var(--border-color-heading-strong);
+      border-style: var(--border-style-heading-strong);
+      border-width: var(--border-width-heading-strong);
+      box-shadow: var(--box-shadow-heading-strong); }
+    html h3, html h4, :root h3, :root h4 {
+      margin: var(--margin-heading);
+      padding: var(--padding-heading);
       color: var(--color-heading);
+      background: var(--background-heading);
       font-family: var(--font-heading);
       font-weight: var(--font-weight-heading);
+      font-style: var(--font-style-heading);
+      font-variant: var(--font-variant-heading);
       line-height: var(--line-height-heading);
       text-shadow: var(--text-shadow-heading);
-      border: none;
-      padding: 0;
-      margin: 0 0 0.5rem 0; }
+      text-transform: var(--text-transform-heading);
+      border-color: var(--border-color-heading);
+      border-style: var(--border-style-heading);
+      border-width: var(--border-width-heading);
+      box-shadow: var(--box-shadow-heading); }
     html h1, :root h1 {
-      background: var(--background-heading);
-      font-size: var(--size-20px);
-      padding: 0.5rem;
-      text-transform: uppercase; }
-    html h2, :root h2 {
-      background: var(--background-heading);
-      font-size: var(--size-18px);
-      padding: 0.5rem;
-      text-transform: uppercase; }
-    html h3, :root h3 {
-      font-size: var(--size-18px);
-      border-bottom: 2px solid var(--background-heading); }
+      font-size: 1.25rem; }
+    html h2,
+    html h3, :root h2,
+    :root h3 {
+      font-size: 1.125rem; }
     html h4, :root h4 {
-      font-size: var(--size-16px);
-      border-bottom: 1px solid var(--background-heading); }
+      font-size: 1rem; }
     html select,
     html input,
     html option,
@@ -407,10 +463,24 @@ html, :root {
     :root input,
     :root option,
     :root textarea {
+      margin: var(--margin-input);
+      padding: var(--padding-input);
+      color: var(--color-input);
       background: var(--background-input);
-      border: var(--border-input);
+      font-family: var(--font-input);
+      font-size: var(--font-size-input);
+      font-weight: var(--font-weight-input);
+      font-style: var(--font-style-input);
+      font-variant: var(--font-variant-input);
+      line-height: var(--line-height-input);
+      text-shadow: var(--text-shadow-input);
+      text-transform: var(--text-transform-input);
+      border-color: var(--border-color-input);
+      border-style: var(--border-style-input);
+      border-width: var(--border-width-input);
       box-shadow: var(--box-shadow-input); }
-      html select[type="number"], html select[data-dtype="number"], html select[data-dtype="number"] option,
+      html select[type="number"], html select[data-dtype="number"],
+      html select[data-dtype="number"] option,
       html input[type="number"],
       html input[data-dtype="number"],
       html input[data-dtype="number"] option,
@@ -419,7 +489,8 @@ html, :root {
       html option[data-dtype="number"] option,
       html textarea[type="number"],
       html textarea[data-dtype="number"],
-      html textarea[data-dtype="number"] option, :root select[type="number"], :root select[data-dtype="number"], :root select[data-dtype="number"] option,
+      html textarea[data-dtype="number"] option, :root select[type="number"], :root select[data-dtype="number"],
+      :root select[data-dtype="number"] option,
       :root input[type="number"],
       :root input[data-dtype="number"],
       :root input[data-dtype="number"] option,
@@ -429,8 +500,7 @@ html, :root {
       :root textarea[type="number"],
       :root textarea[data-dtype="number"],
       :root textarea[data-dtype="number"] option {
-        text-align: right;
-        font-family: var(--font-emphasis); }
+        text-align: right; }
       html select option,
       html input option,
       html option option,
@@ -440,7 +510,7 @@ html, :root {
       :root textarea option {
         color: var(--blades-white);
         background: var(--blades-black); }
-    html p, :root p {
+    html p + p, :root p + p {
       margin: 0.5rem 0;
       min-height: 1rem; }
     html .window-header, :root .window-header {
@@ -655,7 +725,7 @@ html, :root {
     display: table;
     margin: 1rem auto; }
     html figure figcaption, :root figure figcaption {
-      font-family: var(--font-default-small);
+      font-family: var(--font-primary-small);
       color: var(--blades-grey-bright);
       display: block;
       margin-top: 0.25rem;
@@ -826,11 +896,15 @@ html, :root {
     flex-wrap: nowrap;
     justify-content: space-around;
     align-items: baseline; }
+    html .flex-horizontal.flex-wrap, :root .flex-horizontal.flex-wrap {
+      flex-wrap: wrap;
+      align-content: flex-start; }
   html .flex-vertical, :root .flex-vertical {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center; }
+    align-items: center;
+    min-width: min-content; }
 
 ::-webkit-scrollbar {
   width: var(--blades-spacer-sm); }
@@ -852,7 +926,7 @@ html, :root {
   width: calc(100% + 2 * var(--content-padding));
   margin-left: calc(-1 * var(--content-padding)); }
   #tinymce {
-    min-height: 100px;
+    min-height: 40px;
     background-color: rgba(0, 0, 0, 0.2);
     height: auto;
     max-height: 600px; }
