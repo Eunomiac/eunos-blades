@@ -1,76 +1,44 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
 
-	<img class="char-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
-	<div class="char-img-bg full-width">
+	<img class="sheet-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+	<div class="sheet-img-bg full-width">
 		<img src="{{actor.img}}" />
 	</div>
 
-	{{#if items.playbook}}
-	<div class="labelled-item labelled-horizontal playbook-experience">
-		<div class="labelled-item-container">
-				{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-					data=data.experience.playbook
-					target="data.experience.playbook.value"
-					svgKey="teeth.tall"
-					svgFull="full|frame"
-					svgEmpty="full|half|frame"
-					blockClass="teeth long-teeth"
-				}}
-		</div>
-	</div>
+	{{#if playbookData}}
+		{{> "systems/eunos-blades/templates/components/comp.hbs"
+			class="comp-xp comp-xp-playbook comp-horizontal comp-teeth comp-teeth-long"
+			dotline=playbookData.dotline
+		}}
 	{{/if}}
 
 	{{!-- Header --}}
 	<section class="sheet-top">
-		<input class="char-name top-title shadowed" type="text" name="name" value="{{actor.name}}">
+		<input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}">
 
-		<div class="char-playbook labelled-item labelled-vertical">
-		{{#if items.playbook}}
-			<div class="labelled-item-container" data-item-id="{{items.playbook.id}}">
-				<img src="{{items.playbook.system.bgImg}}" />
-				<div class="item-name item-title shadowed">{{items.playbook.name}}</div>
-			</div>
-		{{else}}
-			<label class="labelled-item-prompt shadowed">
-				<a class="item-add-popup" data-distinct="true" data-item-type="crew_type">
-					<span class="sur-title">Select Your</span>
-					<span class="main-title">Playbook</span>
-				</a>
-			</label>
-		{{/if}}
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs" items.playbook
+			class="comp-playbook comp-vertical"
+			label="Playbook"
+			addButton=true
+		}}
 
-		<div class="char-reputation labelled-item labelled-vertical">
-			{{#if items.reputation}}
-			<label>
-				<a class="item-add-popup" data-distinct="true" data-item-type="crew_reputation">Reputation</a>
-			</label>
-			<div class="labelled-item-container" data-item-id="{{items.reputation._id}}">
-				<div class="item-name item-title shadowed">{{items.reputation.name}}</div>
-			</div>
-			{{else}}
-			<label class="labelled-item-prompt shadowed">
-				<a class="item-add-popup" data-distinct="true" data-item-type="crew_reputation">
-					<span class="sur-title">Select Your</span>
-					<span class="main-title">Reputation</span>
-				</a>
-			</label>
-			{{/if}}
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs" items.reputation
+			class="comp-reputation comp-vertical"
+			label="Reputation"
+			cat="crew_reputation"
+			addButton=true
+		}}
 
-		<div class="char-hold labelled-item labelled-vertical">
-			<label>Hold</label>
-			{{#if hold}}
-			<div class="labelled-item-container" data-item-id="{{items.background._id}}">
-				<img src="{{items.background.img}}" title="{{items.background.name}}" />
-				<div class="item-name item-title shadowed">{{items.background.name}}</div>
-			</div>
-			{{/if}}
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs" items.preferredOp
+			class="comp-preferred-op comp-vertical"
+			label="Preferred Op"
+			cat="crew_preferred_op"
+			addButton=true
+		}}
 
-		<div class="char-tier labelled-item labelled-vertical">
+		<div class="comp-tier comp-vertical comp">
  			<label>Tier</label>
-			<div class="labelled-item-container">
+			<div class="comp-body">
 				{{> "systems/eunos-blades/templates/parts/dotline.hbs"
 					data=data.tier
 					target="data.tier.value"
@@ -83,69 +51,44 @@
 			</div>
 		</div>
 
-		<div class="char-coins labelled-item labelled-vertical">
- 			<label>Coins</label>
-			<div class="labelled-item-container">
-				{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-					data=data.coins
-					target="data.coins.value"
-					iconEmpty="coin-empty.svg"
-					iconEmptyHover="coin-empty-hover.svg"
-					iconFull="coin-full.svg"
-					iconFullHover="coin-full-hover.svg"
-					blockClass="centered"
-				}}
-			</div>
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs" coinsData
+			class="comp-coins comp-vertical" }}
 	</section>
 
 	{{!-- Rep/Turf, Heat, Wanted --}}
-	<section class="rep-heat flex-horizontal full-width">
-		<div class="rep-turf-teeth flex-horizontal">
-			<label class="dotline-label filled-label">Rep</label>
-			{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-				data=data.rep
-				target="data.rep.value"
-				svgKey="teeth.tall"
-				svgFull="full|half|frame"
-				svgEmpty="full|half|frame"
-				blockClass="teeth long-teeth"
-			}}
-			{{#if (test data.turf.value ">" 0)}}
-			{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-				data=data.turf
-				target="data.turf.value"
-				svgKey="teeth.tall"
-				svgFull="full|half|frame"
-				svgEmpty="full|half|frame"
-				blockClass="teeth long-teeth flex-row-reverse"
-				isLocked="true"
-			}}
-			<label class="dotline-label filled-label">Turf</label>
+	<section class="sheet-mid-bar flex-horizontal full-width">
+
+		{{> "systems/eunos-blades/templates/components/comp.hbs"
+			class="comp-rep comp-horizontal comp-teeth comp-teeth-long"
+			label=repData.name
+			labelClass="filled-label"
+			dotlines=repData.dotlines
+		}}
+
+		<div class="comp-hold comp-vertical comp">
+			<label>Hold</label>
+			{{#if hold}}
+			<div class="comp-body" data-item-id="{{items.background._id}}">
+				<img src="{{items.background.img}}" title="{{items.background.name}}" />
+				<div class="comp-title shadowed">{{items.background.name}}</div>
+			</div>
 			{{/if}}
 		</div>
-		<div class="heat-teeth flex-horizontal">
-			<label class="dotline-label filled-label">Heat</label>
-			{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-				data=data.heat
-				target="data.heat.value"
-				svgKey="teeth.tall"
-				svgFull="full|half|frame"
-				svgEmpty="full|half|frame"
-				blockClass="teeth long-teeth"
-			}}
-		</div>
-		<div class="wanted-teeth flex-vertical">
-			<label class="dotline-label filled-label">Wanted Level</label>
-			{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-				data=data.wanted
-				target="data.wanted.value"
-				svgKey="teeth.short"
-				svgFull="full|frame"
-				svgEmpty="frame"
-				blockClass="teeth short-teeth"
-			}}
-		</div>
+
+		{{> "systems/eunos-blades/templates/components/comp.hbs"
+			class="comp-rep comp-horizontal comp-teeth comp-teeth-long"
+			label=heatData.name
+			labelClass="filled-label"
+			dotline=heatData.dotline
+		}}
+
+		{{> "systems/eunos-blades/templates/components/comp.hbs"
+			class="comp-trauma comp-vertical comp-teeth comp-teeth-short"
+			label=wantedData.name
+			labelClass="filled-label"
+			dotline=wantedData.dotline
+		}}
+
 	</section>
 
 	{{!-- Members --}}
@@ -183,22 +126,22 @@
 		{{!-- Crew Upgrades --}}
 		<div class="tab abilities flex-vertical" data-tab="upgrades">
 			<label class="tab-label">
-				<a class="item-add-popup" data-item-type="crew_upgrade">
+				<a class="comp-control comp-add" data-item-type="crew_upgrade">
 					<i class="fas fa-plus-square"></i>
 				</a>
 				<span class="tab-title">Crew Upgrades</span>
 			</label>
 
 			{{#each items.upgrades}}
-				<div class="labelled-item labelled-horizontal item" data-item-id="{{_id}}">
-					<label class="item-name">
+				<div class="comp comp-horizontal item" data-item-id="{{_id}}">
+					<label class="comp-title">
 						<span class="item-title">{{case "title" name}}</span>
 						<img class="item-img" src="{{img}}" />
 					</label>
-					<div class="labelled-item-container">
-						<div class="item-description shadowed">{{{system.rules}}}</div>
+					<div class="comp-body">
+						<div class="comp-body-text shadowed">{{{system.rules}}}</div>
 					</div>
-					<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
+					<a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
 						<i class="fas fa-trash"></i>
 					</a>
 				</div>
@@ -208,22 +151,22 @@
     {{!-- Crew Abilities --}}
 		<div class="tab abilities flex-vertical" data-tab="abilities">
 			<label class="tab-label">
-				<a class="item-add-popup" data-item-type="crew_ability">
+				<a class="comp-control comp-add" data-item-type="crew_ability">
 					<i class="fas fa-plus-square"></i>
 				</a>
 				<span class="tab-title">Crew Abilities</span>
 			</label>
 
 			{{#each items.abilities}}
-				<div class="labelled-item labelled-horizontal item" data-item-id="{{_id}}">
-					<label class="item-name">
+				<div class="comp comp-horizontal item" data-item-id="{{_id}}">
+					<label class="comp-title">
 						<span class="item-title">{{case "title" name}}</span>
 						<img class="item-img" src="{{img}}" />
 					</label>
-					<div class="labelled-item-container">
-						<div class="item-description shadowed">{{{system.rules}}}</div>
+					<div class="comp-body">
+						<div class="comp-body-text shadowed">{{{system.rules}}}</div>
 					</div>
-					<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
+					<a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
 						<i class="fas fa-trash"></i>
 					</a>
 				</div>
@@ -233,7 +176,7 @@
     {{!-- Cohorts --}}
 		<div class="tab cohorts flex-vertical" data-tab="cohorts">
 			<label class="tab-label">
-				<a class="item-add-popup" data-item-type="cohort">
+				<a class="comp-control comp-add" data-item-type="cohort">
 					<i class="fas fa-plus-square"></i>
 				</a>
 				<span class="tab-title">Cohorts: Gangs & Experts</span>
@@ -277,9 +220,9 @@
 				<div class="item flex-horizontal" data-item-id="{{item._id}}">
 					<div class="item-body item-sheet-open flex-horizontal">
 						<img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
-						<div class="item-name item-title">{{item.name}}</div>
+						<div class="comp-title">{{item.name}}</div>
 					</div>
-					<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
+					<a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
 						<i class="fas fa-trash"></i>
 					</a>
 				</div>

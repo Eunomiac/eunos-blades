@@ -252,6 +252,255 @@ html, :root {
     --blades-spacer-button-sm: 1.25rem;
     --blades-spacer-button-xs: 1.125rem;
     --blades-spacer-sidebar: 17.875rem; }
+  html .comp, :root .comp {
+    display: flex;
+    flex-wrap: nowrap;
+    position: relative;
+    justify-content: center;
+    align-items: center; }
+    html .comp .comp-label, :root .comp .comp-label {
+      color: var(--blades-white-bright);
+      font-size: toRem(12px);
+      line-height: toRem(12px);
+      position: relative;
+      z-index: 1;
+      flex-grow: 0.5; }
+      html .comp .comp-label.comp-prompt, :root .comp .comp-label.comp-prompt {
+        font-size: toRem(16px);
+        line-height: 1.1;
+        font-family: var(--font-emphasis);
+        color: var(--blades-gold);
+        text-transform: uppercase;
+        text-align: center; }
+        html .comp .comp-label.comp-prompt, html .comp .comp-label.comp-prompt *, :root .comp .comp-label.comp-prompt, :root .comp .comp-label.comp-prompt * {
+          transition: 0.25s; }
+        html .comp .comp-label.comp-prompt .sur-title, :root .comp .comp-label.comp-prompt .sur-title {
+          display: block;
+          font-size: toRem(14px);
+          text-transform: lowercase;
+          font-variant: small-caps;
+          text-shadow: none;
+          text-align: center; }
+        html .comp .comp-label.comp-prompt .main-title, :root .comp .comp-label.comp-prompt .main-title {
+          display: block;
+          color: var(--blades-white); }
+        html .comp .comp-label.comp-prompt:hover, :root .comp .comp-label.comp-prompt:hover {
+          transform: scale(1.4);
+          color: var(--blades-gold-bright); }
+    html .comp .comp-control, :root .comp .comp-control {
+      pointer-events: auto; }
+      html .comp .comp-control.comp-add.comp-button, :root .comp .comp-control.comp-add.comp-button {
+        position: absolute;
+        left: toRem(4px);
+        transform: translate(0, -50%);
+        top: 50%;
+        line-height: 1;
+        margin-top: toRem(2px);
+        padding: 0;
+        font-weight: bold;
+        color: var(--blades-white-bright);
+        color: var(--blades-black-dark); }
+        html .comp .comp-control.comp-add.comp-button:hover, :root .comp .comp-control.comp-add.comp-button:hover {
+          color: var(--blades-white-bright); }
+    html .comp .comp-title, :root .comp .comp-title {
+      pointer-events: auto; }
+    html .comp .comp-body, :root .comp .comp-body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+      position: relative; }
+      html .comp .comp-body h1, html .comp .comp-body h2, html .comp .comp-body h3, html .comp .comp-body h4, html .comp .comp-body p, html .comp .comp-body blockquote, html .comp .comp-body table, :root .comp .comp-body h1, :root .comp .comp-body h2, :root .comp .comp-body h3, :root .comp .comp-body h4, :root .comp .comp-body p, :root .comp .comp-body blockquote, :root .comp .comp-body table {
+        margin: 0;
+        padding: 0; }
+    html .comp.long-text label, html .comp.long-text .comp-title, :root .comp.long-text label, :root .comp.long-text .comp-title {
+      max-width: toRem(200px);
+      min-width: toRem(100px);
+      white-space: initial !important; }
+    html .comp.comp-desc-trait, :root .comp.comp-desc-trait {
+      align-items: flex-start;
+      padding: toRem(5px) 0; }
+      html .comp.comp-desc-trait:first-of-type, :root .comp.comp-desc-trait:first-of-type {
+        margin-top: toRem(-5px); }
+      html .comp.comp-desc-trait:not(:first-of-type), :root .comp.comp-desc-trait:not(:first-of-type) {
+        border-top: 1px solid var(--blades-white); }
+      html .comp.comp-desc-trait .comp-body .comp-img, :root .comp.comp-desc-trait .comp-body .comp-img {
+        position: absolute;
+        height: 50px;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        left: toRem(50px);
+        filter: blur(1px);
+        opacity: 0.5; }
+      html .comp.comp-desc-trait .comp-body .comp-title, :root .comp.comp-desc-trait .comp-body .comp-title {
+        position: relative;
+        width: toRem(100px);
+        flex-shrink: 0;
+        flex-grow: 0;
+        min-height: toRem(40px);
+        align-self: flex-start;
+        color: var(--blades-white-bright);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        font-family: var(--font-emphasis);
+        font-size: toRem(14px);
+        padding: 0;
+        text-align: center;
+        z-index: 1;
+        line-height: var(--line-height-default); }
+      html .comp.comp-desc-trait .comp-body .dotline, :root .comp.comp-desc-trait .comp-body .dotline {
+        position: relative;
+        transform: translate(-50%, 0);
+        left: 50%;
+        bottom: 0; }
+      html .comp.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-desc-trait .comp-body .comp-body-text {
+        font-family: "Minion Pro Caption Cond";
+        hyphens: auto;
+        text-align: justify;
+        padding: 0 toRem(5px);
+        justify-content: stretch;
+        align-items: flex-start;
+        line-height: var(--line-height-compact); }
+      html .comp.comp-desc-trait .comp-control.comp-delete, :root .comp.comp-desc-trait .comp-control.comp-delete {
+        align-self: flex-start;
+        color: var(--blades-grey);
+        width: toRem(20px);
+        flex-shrink: 0;
+        text-align: center; }
+        html .comp.comp-desc-trait .comp-control.comp-delete:hover, :root .comp.comp-desc-trait .comp-control.comp-delete:hover {
+          color: var(--blades-red-bright); }
+    html .comp.comp-vertical, :root .comp.comp-vertical {
+      --comp-img-scale: 1.5;
+      --comp-name-size: toRem(16px);
+      flex-direction: column; }
+      html .comp.comp-vertical > label, :root .comp.comp-vertical > label {
+        text-align: center; }
+      html .comp.comp-vertical .comp-title, :root .comp.comp-vertical .comp-title {
+        text-align: center;
+        white-space: nowrap;
+        font-family: var(--font-emphasis);
+        position: absolute;
+        z-index: 2;
+        transform: translate(-50%, -50%);
+        top: 65%;
+        font-size: var(--comp-name-size);
+        left: 50%;
+        color: var(--blades-white-bright);
+        text-transform: uppercase; }
+      html .comp.comp-vertical .comp-body, :root .comp.comp-vertical .comp-body {
+        display: flex;
+        flex-direction: column;
+        min-height: toRem(40px);
+        width: 100%; }
+        html .comp.comp-vertical .comp-body > img, :root .comp.comp-vertical .comp-body > img {
+          position: absolute;
+          transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+          opacity: 0.5;
+          filter: blur(0.5px);
+          top: 70%;
+          left: 50%;
+          height: 100%;
+          z-index: -1; }
+        html .comp.comp-vertical .comp-body .comp-body-text, :root .comp.comp-vertical .comp-body .comp-body-text {
+          display: none; }
+    html .comp.comp-horizontal, :root .comp.comp-horizontal {
+      flex-direction: row;
+      justify-content: flex-start;
+      flex-grow: 0.5;
+      align-items: center; }
+      html .comp.comp-horizontal label, :root .comp.comp-horizontal label {
+        text-align: right; }
+      html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
+        flex-grow: 0; }
+    html .comp .comp-tooltip, :root .comp .comp-tooltip {
+      display: none;
+      position: absolute;
+      padding: 10px;
+      color: var(--blades-white);
+      background-color: var(--blades-black);
+      border: 1px solid #777;
+      border-radius: 3px;
+      z-index: 9999999;
+      max-width: 300px; }
+    html .comp.comp-teeth.comp-teeth-long, :root .comp.comp-teeth.comp-teeth-long {
+      justify-content: flex-start;
+      align-items: flex-start; }
+      html .comp.comp-teeth.comp-teeth-long .dotline, :root .comp.comp-teeth.comp-teeth-long .dotline {
+        padding-left: toRem(4px);
+        --dotline-dot-sizeX: toRem(18px);
+        --dotline-dot-spacing: toRem(4px); }
+        html .comp.comp-teeth.comp-teeth-long .dotline .dot, :root .comp.comp-teeth.comp-teeth-long .dotline .dot {
+          flex-shrink: 1; }
+    html .comp.comp-teeth.comp-teeth-short, :root .comp.comp-teeth.comp-teeth-short {
+      justify-content: flex-start;
+      align-items: flex-end; }
+      html .comp.comp-teeth.comp-teeth-short .dotline-label, :root .comp.comp-teeth.comp-teeth-short .dotline-label {
+        min-width: toRem(90px);
+        text-align: center;
+        margin-left: toRem(20px); }
+      html .comp.comp-teeth.comp-teeth-short .dotline, :root .comp.comp-teeth.comp-teeth-short .dotline {
+        flex-grow: 1;
+        justify-content: center;
+        margin-top: -50%;
+        margin-bottom: -50%;
+        --dotline-dot-sizeX: toRem(16px);
+        --dotline-dot-spacing: toRem(4px); }
+    html .comp.comp-xp, :root .comp.comp-xp {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      pointer-events: none;
+      z-index: 5; }
+      html .comp.comp-xp .comp-body, :root .comp.comp-xp .comp-body {
+        justify-content: flex-end; }
+        html .comp.comp-xp .comp-body .dotline, :root .comp.comp-xp .comp-body .dotline {
+          --dotline-dot-spacing: toRem(2px);
+          --dotline-horiz-align: flex-end;
+          --frame-color: var(--blades-black);
+          --fill-color-full: var(--blades-gold-bright);
+          --fill-color-empty: rgba(0, 0, 0);
+          --half-color-empty: var(--blades-gold-dark); }
+      html .comp.comp-xp.comp-xp-playbook, :root .comp.comp-xp.comp-xp-playbook {
+        min-width: toRem(200px);
+        min-height: toRem(32px); }
+        html .comp.comp-xp.comp-xp-playbook .dotline, :root .comp.comp-xp.comp-xp-playbook .dotline {
+          --dotline-dot-sizeX: toRem(18px); }
+          html .comp.comp-xp.comp-xp-playbook .dotline .dot, :root .comp.comp-xp.comp-xp-playbook .dotline .dot {
+            transform-origin: top;
+            transition: 0.25s;
+            transform: scaleY(1); }
+            html .comp.comp-xp.comp-xp-playbook .dotline .dot.empty-dot, :root .comp.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
+              transform: scaleY(0.5); }
+    html .comp.comp-playbook, :root .comp.comp-playbook {
+      --comp-img-scaleX: -2;
+      --comp-img-scaleY: 2;
+      --comp-name-size: toRem(42px);
+      position: relative; }
+      html .comp.comp-playbook .comp-body img, :root .comp.comp-playbook .comp-body img {
+        height: toRem(120px);
+        width: auto;
+        top: toRem(50px);
+        opacity: 1;
+        left: unset;
+        right: calc(-1 * var(--content-padding));
+        filter: blur(1px);
+        position: absolute; }
+      html .comp.comp-playbook .comp-body .comp-title, :root .comp.comp-playbook .comp-body .comp-title {
+        width: 100%;
+        font-family: var(--font-emphasis-alt);
+        color: var(--blades-white-bright);
+        text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
+        font-size: toRem(70px);
+        text-transform: lowercase;
+        text-align: right;
+        padding-right: toRem(4px);
+        padding-top: toRem(40px); }
+    html .comp.comp-coins .dotline, :root .comp.comp-coins .dotline {
+      --dotline-dot-size: toRem(18px) ; }
+    html .comp.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins .dot:nth-of-type(4n) + .dot {
+      margin-left: toRem(5px); }
   html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
     position: relative;
     height: 1.5rem;
@@ -308,33 +557,38 @@ html, :root {
       opacity: 1; }
     html .button-icon:hover .tooltip, html .toggle-icon:hover .tooltip, :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip {
       display: block; }
-  html .dotline-label, :root .dotline-label {
-    position: relative;
-    z-index: 4;
-    pointer-events: none; }
   html .dotline, :root .dotline {
     --dotline-zero-dot-size: toRem(14px);
     --dotline-dot-size: toRem(14px);
     --dotline-dot-spacing: 0px;
+    --dotline-horiz-align: flex-start;
+    --dotline-vert-align: center;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: center;
+    justify-content: var(--dotline-horiz-align);
+    align-items: var(--dotline-vert-align);
     position: relative; }
     html .dotline.centered, :root .dotline.centered {
-      justify-content: center; }
+      --dotline-horiz-align: center; }
     html .dotline.locked .dot, :root .dotline.locked .dot {
       pointer-events: none;
-      cursor: pointer; }
+      cursor: default; }
     html .dotline .dot, :root .dotline .dot {
+      --dot-frame-color: var(--frame-color, var(--blades-white));
+      --dot-frame-color-empty: var(--frame-color-empty, var(--dot-frame-color));
+      --dot-frame-color-full: var(--frame-color-full, var(--dot-frame-color));
+      --dot-fill-color-empty: var(--fill-color-empty, transparent);
+      --dot-fill-color-full: var(--fill-color-full, var(--blades-white-bright));
+      --dot-half-color-empty: var(--half-color-empty, var(--dot-frame-color));
+      --dot-half-color-full: var(--half-color-full, var(--dot-frame-color));
       height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
       width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
       flex-grow: 0;
       flex-shrink: 0;
       margin: 0 var(--dotline-dot-spacing) 0 0;
       pointer-events: auto;
-      cursor: grab;
+      cursor: pointer;
       position: relative; }
       html .dotline .dot:last-of-type, :root .dotline .dot:last-of-type {
         margin: 0; }
@@ -343,8 +597,26 @@ html, :root {
         height: 100%;
         width: 100%;
         filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
-      html .dotline .dot .img-hover, :root .dotline .dot .img-hover {
-        display: none; }
+        html .dotline .dot .img-main.img-hover, html .dotline .dot .img-hover.img-hover, :root .dotline .dot .img-main.img-hover, :root .dotline .dot .img-hover.img-hover {
+          display: none; }
+      html .dotline .dot.svg-dot, :root .dotline .dot.svg-dot {
+        height: auto; }
+        html .dotline .dot.svg-dot svg, :root .dotline .dot.svg-dot svg {
+          width: 100%;
+          height: auto;
+          max-height: var(--dotline-dot-sizeY, unset); }
+        html .dotline .dot.svg-dot.full-dot svg .full, :root .dotline .dot.svg-dot.full-dot svg .full {
+          fill: var(--current-fill-color, var(--dot-fill-color-full)); }
+        html .dotline .dot.svg-dot.full-dot svg .frame, :root .dotline .dot.svg-dot.full-dot svg .frame {
+          fill: var(--current-frame-color, var(--dot-frame-color-full)); }
+        html .dotline .dot.svg-dot.full-dot svg .half, :root .dotline .dot.svg-dot.full-dot svg .half {
+          fill: var(--current-half-color, var(--dot-half-color-full)); }
+        html .dotline .dot.svg-dot.empty-dot svg .full, :root .dotline .dot.svg-dot.empty-dot svg .full {
+          fill: var(--current-fill-color, var(--dot-fill-color-empty)); }
+        html .dotline .dot.svg-dot.empty-dot svg .frame, :root .dotline .dot.svg-dot.empty-dot svg .frame {
+          fill: var(--current-frame-color, var(--dot-frame-color-empty)); }
+        html .dotline .dot.svg-dot.empty-dot svg .half, :root .dotline .dot.svg-dot.empty-dot svg .half {
+          fill: var(--current-half-color, var(--dot-half-color-empty)); }
       html .dotline .dot:hover .img-main, :root .dotline .dot:hover .img-main {
         opacity: 0.5; }
       html .dotline .dot:hover .img-hover, :root .dotline .dot:hover .img-hover {
@@ -353,36 +625,6 @@ html, :root {
         display: none; }
       html .dotline .dot:hover.svg-dot, :root .dotline .dot:hover.svg-dot {
         opacity: 0.5; }
-    html .dotline.teeth, :root .dotline.teeth {
-      --frame-color: var(--blades-white);
-      --frame-color-empty: var(--frame-color);
-      --frame-color-full: var(--frame-color);
-      --fill-color-empty: transparent;
-      --fill-color-full: var(--frame-color);
-      --half-color-empty: var(--frame-color);
-      --half-color-full: var(--frame-color);
-      align-items: flex-start; }
-      html .dotline.teeth .dot.svg-dot, :root .dotline.teeth .dot.svg-dot {
-        width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
-        height: auto; }
-        html .dotline.teeth .dot.svg-dot.full-dot, :root .dotline.teeth .dot.svg-dot.full-dot {
-          --current-frame-color: var(--frame-color-full);
-          --current-fill-color: var(--fill-color-full);
-          --current-half-color: var(--half-color-full); }
-        html .dotline.teeth .dot.svg-dot.empty-dot, :root .dotline.teeth .dot.svg-dot.empty-dot {
-          --current-frame-color: var(--frame-color-empty);
-          --current-fill-color: var(--fill-color-empty);
-          --current-half-color: var(--half-color-empty); }
-        html .dotline.teeth .dot.svg-dot svg, :root .dotline.teeth .dot.svg-dot svg {
-          width: 100%;
-          height: auto;
-          max-height: var(--dotline-dot-sizeY, unset); }
-          html .dotline.teeth .dot.svg-dot svg .full, :root .dotline.teeth .dot.svg-dot svg .full {
-            fill: var(--current-fill-color); }
-          html .dotline.teeth .dot.svg-dot svg .frame, :root .dotline.teeth .dot.svg-dot svg .frame {
-            fill: var(--current-frame-color); }
-          html .dotline.teeth .dot.svg-dot svg .half, :root .dotline.teeth .dot.svg-dot svg .half {
-            fill: var(--current-half-color); }
   html, :root {
     margin: 0;
     padding: 0;
@@ -550,6 +792,255 @@ html, :root {
       margin: 0;
       border: 0;
       padding: 0; }
+    html .comp, :root .comp {
+      display: flex;
+      flex-wrap: nowrap;
+      position: relative;
+      justify-content: center;
+      align-items: center; }
+      html .comp .comp-label, :root .comp .comp-label {
+        color: var(--blades-white-bright);
+        font-size: 0.75rem;
+        line-height: 0.75rem;
+        position: relative;
+        z-index: 1;
+        flex-grow: 0.5; }
+        html .comp .comp-label.comp-prompt, :root .comp .comp-label.comp-prompt {
+          font-size: 1rem;
+          line-height: 1.1;
+          font-family: var(--font-emphasis);
+          color: var(--blades-gold);
+          text-transform: uppercase;
+          text-align: center; }
+          html .comp .comp-label.comp-prompt, html .comp .comp-label.comp-prompt *, :root .comp .comp-label.comp-prompt, :root .comp .comp-label.comp-prompt * {
+            transition: 0.25s; }
+          html .comp .comp-label.comp-prompt .sur-title, :root .comp .comp-label.comp-prompt .sur-title {
+            display: block;
+            font-size: 0.875rem;
+            text-transform: lowercase;
+            font-variant: small-caps;
+            text-shadow: none;
+            text-align: center; }
+          html .comp .comp-label.comp-prompt .main-title, :root .comp .comp-label.comp-prompt .main-title {
+            display: block;
+            color: var(--blades-white); }
+          html .comp .comp-label.comp-prompt:hover, :root .comp .comp-label.comp-prompt:hover {
+            transform: scale(1.4);
+            color: var(--blades-gold-bright); }
+      html .comp .comp-control, :root .comp .comp-control {
+        pointer-events: auto; }
+        html .comp .comp-control.comp-add.comp-button, :root .comp .comp-control.comp-add.comp-button {
+          position: absolute;
+          left: 0.25rem;
+          transform: translate(0, -50%);
+          top: 50%;
+          line-height: 1;
+          margin-top: 0.125rem;
+          padding: 0;
+          font-weight: bold;
+          color: var(--blades-white-bright);
+          color: var(--blades-black-dark); }
+          html .comp .comp-control.comp-add.comp-button:hover, :root .comp .comp-control.comp-add.comp-button:hover {
+            color: var(--blades-white-bright); }
+      html .comp .comp-title, :root .comp .comp-title {
+        pointer-events: auto; }
+      html .comp .comp-body, :root .comp .comp-body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1;
+        position: relative; }
+        html .comp .comp-body h1, html .comp .comp-body h2, html .comp .comp-body h3, html .comp .comp-body h4, html .comp .comp-body p, html .comp .comp-body blockquote, html .comp .comp-body table, :root .comp .comp-body h1, :root .comp .comp-body h2, :root .comp .comp-body h3, :root .comp .comp-body h4, :root .comp .comp-body p, :root .comp .comp-body blockquote, :root .comp .comp-body table {
+          margin: 0;
+          padding: 0; }
+      html .comp.long-text label, html .comp.long-text .comp-title, :root .comp.long-text label, :root .comp.long-text .comp-title {
+        max-width: 12.5rem;
+        min-width: 6.25rem;
+        white-space: initial !important; }
+      html .comp.comp-desc-trait, :root .comp.comp-desc-trait {
+        align-items: flex-start;
+        padding: 0.3125rem 0; }
+        html .comp.comp-desc-trait:first-of-type, :root .comp.comp-desc-trait:first-of-type {
+          margin-top: -0.3125rem; }
+        html .comp.comp-desc-trait:not(:first-of-type), :root .comp.comp-desc-trait:not(:first-of-type) {
+          border-top: 1px solid var(--blades-white); }
+        html .comp.comp-desc-trait .comp-body .comp-img, :root .comp.comp-desc-trait .comp-body .comp-img {
+          position: absolute;
+          height: 50px;
+          transform: translate(-50%, -50%);
+          top: 50%;
+          left: 3.125rem;
+          filter: blur(1px);
+          opacity: 0.5; }
+        html .comp.comp-desc-trait .comp-body .comp-title, :root .comp.comp-desc-trait .comp-body .comp-title {
+          position: relative;
+          width: 6.25rem;
+          flex-shrink: 0;
+          flex-grow: 0;
+          min-height: 2.5rem;
+          align-self: flex-start;
+          color: var(--blades-white-bright);
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: center;
+          font-family: var(--font-emphasis);
+          font-size: 0.875rem;
+          padding: 0;
+          text-align: center;
+          z-index: 1;
+          line-height: var(--line-height-default); }
+        html .comp.comp-desc-trait .comp-body .dotline, :root .comp.comp-desc-trait .comp-body .dotline {
+          position: relative;
+          transform: translate(-50%, 0);
+          left: 50%;
+          bottom: 0; }
+        html .comp.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-desc-trait .comp-body .comp-body-text {
+          font-family: "Minion Pro Caption Cond";
+          hyphens: auto;
+          text-align: justify;
+          padding: 0 0.3125rem;
+          justify-content: stretch;
+          align-items: flex-start;
+          line-height: var(--line-height-compact); }
+        html .comp.comp-desc-trait .comp-control.comp-delete, :root .comp.comp-desc-trait .comp-control.comp-delete {
+          align-self: flex-start;
+          color: var(--blades-grey);
+          width: 1.25rem;
+          flex-shrink: 0;
+          text-align: center; }
+          html .comp.comp-desc-trait .comp-control.comp-delete:hover, :root .comp.comp-desc-trait .comp-control.comp-delete:hover {
+            color: var(--blades-red-bright); }
+      html .comp.comp-vertical, :root .comp.comp-vertical {
+        --comp-img-scale: 1.5;
+        --comp-name-size: 1rem;
+        flex-direction: column; }
+        html .comp.comp-vertical > label, :root .comp.comp-vertical > label {
+          text-align: center; }
+        html .comp.comp-vertical .comp-title, :root .comp.comp-vertical .comp-title {
+          text-align: center;
+          white-space: nowrap;
+          font-family: var(--font-emphasis);
+          position: absolute;
+          z-index: 2;
+          transform: translate(-50%, -50%);
+          top: 65%;
+          font-size: var(--comp-name-size);
+          left: 50%;
+          color: var(--blades-white-bright);
+          text-transform: uppercase; }
+        html .comp.comp-vertical .comp-body, :root .comp.comp-vertical .comp-body {
+          display: flex;
+          flex-direction: column;
+          min-height: 2.5rem;
+          width: 100%; }
+          html .comp.comp-vertical .comp-body > img, :root .comp.comp-vertical .comp-body > img {
+            position: absolute;
+            transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+            opacity: 0.5;
+            filter: blur(0.5px);
+            top: 70%;
+            left: 50%;
+            height: 100%;
+            z-index: -1; }
+          html .comp.comp-vertical .comp-body .comp-body-text, :root .comp.comp-vertical .comp-body .comp-body-text {
+            display: none; }
+      html .comp.comp-horizontal, :root .comp.comp-horizontal {
+        flex-direction: row;
+        justify-content: flex-start;
+        flex-grow: 0.5;
+        align-items: center; }
+        html .comp.comp-horizontal label, :root .comp.comp-horizontal label {
+          text-align: right; }
+        html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
+          flex-grow: 0; }
+      html .comp .comp-tooltip, :root .comp .comp-tooltip {
+        display: none;
+        position: absolute;
+        padding: 10px;
+        color: var(--blades-white);
+        background-color: var(--blades-black);
+        border: 1px solid #777;
+        border-radius: 3px;
+        z-index: 9999999;
+        max-width: 300px; }
+      html .comp.comp-teeth.comp-teeth-long, :root .comp.comp-teeth.comp-teeth-long {
+        justify-content: flex-start;
+        align-items: flex-start; }
+        html .comp.comp-teeth.comp-teeth-long .dotline, :root .comp.comp-teeth.comp-teeth-long .dotline {
+          padding-left: 0.25rem;
+          --dotline-dot-sizeX: 1.125rem;
+          --dotline-dot-spacing: 0.25rem; }
+          html .comp.comp-teeth.comp-teeth-long .dotline .dot, :root .comp.comp-teeth.comp-teeth-long .dotline .dot {
+            flex-shrink: 1; }
+      html .comp.comp-teeth.comp-teeth-short, :root .comp.comp-teeth.comp-teeth-short {
+        justify-content: flex-start;
+        align-items: flex-end; }
+        html .comp.comp-teeth.comp-teeth-short .dotline-label, :root .comp.comp-teeth.comp-teeth-short .dotline-label {
+          min-width: 5.625rem;
+          text-align: center;
+          margin-left: 1.25rem; }
+        html .comp.comp-teeth.comp-teeth-short .dotline, :root .comp.comp-teeth.comp-teeth-short .dotline {
+          flex-grow: 1;
+          justify-content: center;
+          margin-top: -50%;
+          margin-bottom: -50%;
+          --dotline-dot-sizeX: 1rem;
+          --dotline-dot-spacing: 0.25rem; }
+      html .comp.comp-xp, :root .comp.comp-xp {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        pointer-events: none;
+        z-index: 5; }
+        html .comp.comp-xp .comp-body, :root .comp.comp-xp .comp-body {
+          justify-content: flex-end; }
+          html .comp.comp-xp .comp-body .dotline, :root .comp.comp-xp .comp-body .dotline {
+            --dotline-dot-spacing: 0.125rem;
+            --dotline-horiz-align: flex-end;
+            --frame-color: var(--blades-black);
+            --fill-color-full: var(--blades-gold-bright);
+            --fill-color-empty: rgba(0, 0, 0);
+            --half-color-empty: var(--blades-gold-dark); }
+        html .comp.comp-xp.comp-xp-playbook, :root .comp.comp-xp.comp-xp-playbook {
+          min-width: 12.5rem;
+          min-height: 2rem; }
+          html .comp.comp-xp.comp-xp-playbook .dotline, :root .comp.comp-xp.comp-xp-playbook .dotline {
+            --dotline-dot-sizeX: 1.125rem; }
+            html .comp.comp-xp.comp-xp-playbook .dotline .dot, :root .comp.comp-xp.comp-xp-playbook .dotline .dot {
+              transform-origin: top;
+              transition: 0.25s;
+              transform: scaleY(1); }
+              html .comp.comp-xp.comp-xp-playbook .dotline .dot.empty-dot, :root .comp.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
+                transform: scaleY(0.5); }
+      html .comp.comp-playbook, :root .comp.comp-playbook {
+        --comp-img-scaleX: -2;
+        --comp-img-scaleY: 2;
+        --comp-name-size: 2.625rem;
+        position: relative; }
+        html .comp.comp-playbook .comp-body img, :root .comp.comp-playbook .comp-body img {
+          height: 7.5rem;
+          width: auto;
+          top: 3.125rem;
+          opacity: 1;
+          left: unset;
+          right: calc(-1 * var(--content-padding));
+          filter: blur(1px);
+          position: absolute; }
+        html .comp.comp-playbook .comp-body .comp-title, :root .comp.comp-playbook .comp-body .comp-title {
+          width: 100%;
+          font-family: var(--font-emphasis-alt);
+          color: var(--blades-white-bright);
+          text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
+          font-size: 4.375rem;
+          text-transform: lowercase;
+          text-align: right;
+          padding-right: 0.25rem;
+          padding-top: 2.5rem; }
+      html .comp.comp-coins .dotline, :root .comp.comp-coins .dotline {
+        --dotline-dot-size: 1.125rem ; }
+      html .comp.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins .dot:nth-of-type(4n) + .dot {
+        margin-left: 0.3125rem; }
     html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
       position: relative;
       height: 1.5rem;
@@ -606,33 +1097,38 @@ html, :root {
         opacity: 1; }
       html .button-icon:hover .tooltip, html .toggle-icon:hover .tooltip, :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip {
         display: block; }
-    html .dotline-label, :root .dotline-label {
-      position: relative;
-      z-index: 4;
-      pointer-events: none; }
     html .dotline, :root .dotline {
       --dotline-zero-dot-size: 0.875rem;
       --dotline-dot-size: 0.875rem;
       --dotline-dot-spacing: 0px;
+      --dotline-horiz-align: flex-start;
+      --dotline-vert-align: center;
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
-      justify-content: flex-start;
-      align-items: center;
+      justify-content: var(--dotline-horiz-align);
+      align-items: var(--dotline-vert-align);
       position: relative; }
       html .dotline.centered, :root .dotline.centered {
-        justify-content: center; }
+        --dotline-horiz-align: center; }
       html .dotline.locked .dot, :root .dotline.locked .dot {
         pointer-events: none;
-        cursor: pointer; }
+        cursor: default; }
       html .dotline .dot, :root .dotline .dot {
+        --dot-frame-color: var(--frame-color, var(--blades-white));
+        --dot-frame-color-empty: var(--frame-color-empty, var(--dot-frame-color));
+        --dot-frame-color-full: var(--frame-color-full, var(--dot-frame-color));
+        --dot-fill-color-empty: var(--fill-color-empty, transparent);
+        --dot-fill-color-full: var(--fill-color-full, var(--blades-white-bright));
+        --dot-half-color-empty: var(--half-color-empty, var(--dot-frame-color));
+        --dot-half-color-full: var(--half-color-full, var(--dot-frame-color));
         height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
         width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
         flex-grow: 0;
         flex-shrink: 0;
         margin: 0 var(--dotline-dot-spacing) 0 0;
         pointer-events: auto;
-        cursor: grab;
+        cursor: pointer;
         position: relative; }
         html .dotline .dot:last-of-type, :root .dotline .dot:last-of-type {
           margin: 0; }
@@ -641,8 +1137,26 @@ html, :root {
           height: 100%;
           width: 100%;
           filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
-        html .dotline .dot .img-hover, :root .dotline .dot .img-hover {
-          display: none; }
+          html .dotline .dot .img-main.img-hover, html .dotline .dot .img-hover.img-hover, :root .dotline .dot .img-main.img-hover, :root .dotline .dot .img-hover.img-hover {
+            display: none; }
+        html .dotline .dot.svg-dot, :root .dotline .dot.svg-dot {
+          height: auto; }
+          html .dotline .dot.svg-dot svg, :root .dotline .dot.svg-dot svg {
+            width: 100%;
+            height: auto;
+            max-height: var(--dotline-dot-sizeY, unset); }
+          html .dotline .dot.svg-dot.full-dot svg .full, :root .dotline .dot.svg-dot.full-dot svg .full {
+            fill: var(--current-fill-color, var(--dot-fill-color-full)); }
+          html .dotline .dot.svg-dot.full-dot svg .frame, :root .dotline .dot.svg-dot.full-dot svg .frame {
+            fill: var(--current-frame-color, var(--dot-frame-color-full)); }
+          html .dotline .dot.svg-dot.full-dot svg .half, :root .dotline .dot.svg-dot.full-dot svg .half {
+            fill: var(--current-half-color, var(--dot-half-color-full)); }
+          html .dotline .dot.svg-dot.empty-dot svg .full, :root .dotline .dot.svg-dot.empty-dot svg .full {
+            fill: var(--current-fill-color, var(--dot-fill-color-empty)); }
+          html .dotline .dot.svg-dot.empty-dot svg .frame, :root .dotline .dot.svg-dot.empty-dot svg .frame {
+            fill: var(--current-frame-color, var(--dot-frame-color-empty)); }
+          html .dotline .dot.svg-dot.empty-dot svg .half, :root .dotline .dot.svg-dot.empty-dot svg .half {
+            fill: var(--current-half-color, var(--dot-half-color-empty)); }
         html .dotline .dot:hover .img-main, :root .dotline .dot:hover .img-main {
           opacity: 0.5; }
         html .dotline .dot:hover .img-hover, :root .dotline .dot:hover .img-hover {
@@ -651,36 +1165,6 @@ html, :root {
           display: none; }
         html .dotline .dot:hover.svg-dot, :root .dotline .dot:hover.svg-dot {
           opacity: 0.5; }
-      html .dotline.teeth, :root .dotline.teeth {
-        --frame-color: var(--blades-white);
-        --frame-color-empty: var(--frame-color);
-        --frame-color-full: var(--frame-color);
-        --fill-color-empty: transparent;
-        --fill-color-full: var(--frame-color);
-        --half-color-empty: var(--frame-color);
-        --half-color-full: var(--frame-color);
-        align-items: flex-start; }
-        html .dotline.teeth .dot.svg-dot, :root .dotline.teeth .dot.svg-dot {
-          width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
-          height: auto; }
-          html .dotline.teeth .dot.svg-dot.full-dot, :root .dotline.teeth .dot.svg-dot.full-dot {
-            --current-frame-color: var(--frame-color-full);
-            --current-fill-color: var(--fill-color-full);
-            --current-half-color: var(--half-color-full); }
-          html .dotline.teeth .dot.svg-dot.empty-dot, :root .dotline.teeth .dot.svg-dot.empty-dot {
-            --current-frame-color: var(--frame-color-empty);
-            --current-fill-color: var(--fill-color-empty);
-            --current-half-color: var(--half-color-empty); }
-          html .dotline.teeth .dot.svg-dot svg, :root .dotline.teeth .dot.svg-dot svg {
-            width: 100%;
-            height: auto;
-            max-height: var(--dotline-dot-sizeY, unset); }
-            html .dotline.teeth .dot.svg-dot svg .full, :root .dotline.teeth .dot.svg-dot svg .full {
-              fill: var(--current-fill-color); }
-            html .dotline.teeth .dot.svg-dot svg .frame, :root .dotline.teeth .dot.svg-dot svg .frame {
-              fill: var(--current-frame-color); }
-            html .dotline.teeth .dot.svg-dot svg .half, :root .dotline.teeth .dot.svg-dot svg .half {
-              fill: var(--current-half-color); }
   html blockquote, :root blockquote {
     border-left: 2px solid var(--blades-grey-bright);
     margin-left: 1.5rem;
@@ -746,6 +1230,20 @@ html, :root {
     outline: 1px dotted var(--blades-white);
     padding: 0 0.3125rem;
     margin: 0 0.3125rem; }
+  html .filled-label, :root .filled-label {
+    font-size: 1.25rem;
+    line-height: 1;
+    flex-grow: 0;
+    padding: 0.3125rem;
+    background: var(--blades-white);
+    color: var(--blades-black);
+    font-family: var(--font-emphasis);
+    text-transform: uppercase;
+    position: relative;
+    z-index: 4;
+    display: block;
+    width: min-content;
+    white-space: nowrap; }
   html .number-circle, :root .number-circle {
     --nc-size: var(--number-circle-size, 1.25rem);
     --nc-border-width: calc(var(--nc-size) * (1/10));
@@ -764,102 +1262,7 @@ html, :root {
     color: var(--number-circle-color, var(--blades-white));
     line-height: var(--nc-line-height);
     border: var(--nc-border-width) outset var(--number-circle-color, var(--blades-white)); }
-  html .labelled-item, :root .labelled-item {
-    display: flex;
-    flex-wrap: nowrap;
-    position: relative;
-    justify-content: center;
-    align-items: center; }
-    html .labelled-item label, :root .labelled-item label {
-      color: var(--blades-white-bright);
-      font-size: 0.75rem;
-      line-height: 0.75rem;
-      position: relative;
-      z-index: 1;
-      flex-grow: 0.5; }
-      html .labelled-item label.labelled-item-prompt, :root .labelled-item label.labelled-item-prompt {
-        font-size: 1rem;
-        line-height: 1.1;
-        white-space: wrap;
-        font-family: var(--font-decorative-alt-smallcaps);
-        font-family: var(--font-emphasis);
-        color: var(--blades-gold);
-        transition: 0.25s;
-        text-transform: uppercase;
-        text-align: center; }
-        html .labelled-item label.labelled-item-prompt::first-line, :root .labelled-item label.labelled-item-prompt::first-line {
-          font-size: 0.875rem;
-          text-transform: lowercase;
-          font-variant: small-caps;
-          text-shadow: none;
-          text-align: center;
-          color: var(--blades-white); }
-        html .labelled-item label.labelled-item-prompt:hover, :root .labelled-item label.labelled-item-prompt:hover {
-          transform: scale(1.4);
-          color: var(--blades-gold-bright); }
-          html .labelled-item label.labelled-item-prompt:hover::first-line, :root .labelled-item label.labelled-item-prompt:hover::first-line {
-            color: var(--blades-gold-bright); }
-    html .labelled-item input[type="text"], :root .labelled-item input[type="text"] {
-      font-size: 0.875rem;
-      height: 1.125rem;
-      font-family: var(--font-emphasis);
-      text-transform: uppercase; }
-    html .labelled-item .item-name, html .labelled-item .sub-actor-name, :root .labelled-item .item-name, :root .labelled-item .sub-actor-name {
-      pointer-events: none; }
-      html .labelled-item .item-name.item-title, html .labelled-item .item-name .item-title, html .labelled-item .sub-actor-name.item-title, html .labelled-item .sub-actor-name .item-title, :root .labelled-item .item-name.item-title, :root .labelled-item .item-name .item-title, :root .labelled-item .sub-actor-name.item-title, :root .labelled-item .sub-actor-name .item-title {
-        pointer-events: auto; }
-    html .labelled-item .labelled-item-container, :root .labelled-item .labelled-item-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-grow: 1;
-      position: relative; }
-      html .labelled-item .labelled-item-container h1, html .labelled-item .labelled-item-container h2, html .labelled-item .labelled-item-container h3, html .labelled-item .labelled-item-container h4, html .labelled-item .labelled-item-container p, html .labelled-item .labelled-item-container blockquote, html .labelled-item .labelled-item-container table, :root .labelled-item .labelled-item-container h1, :root .labelled-item .labelled-item-container h2, :root .labelled-item .labelled-item-container h3, :root .labelled-item .labelled-item-container h4, :root .labelled-item .labelled-item-container p, :root .labelled-item .labelled-item-container blockquote, :root .labelled-item .labelled-item-container table {
-        margin: 0;
-        padding: 0; }
-    html .labelled-item.labelled-vertical, :root .labelled-item.labelled-vertical {
-      --labelled-item-img-scale: 1.5;
-      --labelled-item-name-size: 1rem;
-      flex-direction: column; }
-      html .labelled-item.labelled-vertical > label, :root .labelled-item.labelled-vertical > label {
-        text-align: center; }
-      html .labelled-item.labelled-vertical .item-name, html .labelled-item.labelled-vertical .sub-actor-name, :root .labelled-item.labelled-vertical .item-name, :root .labelled-item.labelled-vertical .sub-actor-name {
-        text-align: center;
-        white-space: nowrap;
-        font-family: var(--font-emphasis);
-        position: absolute;
-        z-index: 2;
-        transform: translate(-50%, -50%);
-        top: 65%;
-        font-size: var(--labelled-item-name-size);
-        left: 50%;
-        color: var(--blades-white-bright);
-        text-transform: uppercase; }
-        html .labelled-item.labelled-vertical .item-name.long-name, html .labelled-item.labelled-vertical .sub-actor-name.long-name, :root .labelled-item.labelled-vertical .item-name.long-name, :root .labelled-item.labelled-vertical .sub-actor-name.long-name {
-          white-space: initial; }
-      html .labelled-item.labelled-vertical .labelled-item-container, :root .labelled-item.labelled-vertical .labelled-item-container {
-        display: flex;
-        flex-direction: column;
-        min-height: 2.5rem;
-        width: 100%; }
-        html .labelled-item.labelled-vertical .labelled-item-container > img, :root .labelled-item.labelled-vertical .labelled-item-container > img {
-          position: absolute;
-          transform: translate(-50%, -50%) scaleX(var(--labelled-item-img-scaleX, var(--labelled-item-img-scale))) scaleY(var(--labelled-item-img-scaleY, var(--labelled-item-img-scale)));
-          opacity: 0.5;
-          filter: blur(0.5px);
-          top: 70%;
-          left: 50%;
-          height: 100%;
-          z-index: -1; }
-    html .labelled-item.labelled-horizontal, :root .labelled-item.labelled-horizontal {
-      flex-direction: row;
-      justify-content: stretch;
-      align-items: center; }
-      html .labelled-item.labelled-horizontal label, :root .labelled-item.labelled-horizontal label {
-        text-align: right; }
-        html .labelled-item.labelled-horizontal label .item-img, :root .labelled-item.labelled-horizontal label .item-img {
-          position: absolute; }
-  html .shadowed, html .labelled-item label, html .labelled-item input[type="text"], :root .shadowed, :root .labelled-item label, :root .labelled-item input[type="text"] {
+  html .shadowed, :root .shadowed {
     box-shadow: none;
     background: transparent;
     text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
@@ -876,16 +1279,6 @@ html, :root {
       display: inline-block; }
     html .text-checkbox input[type="checkbox"]:checked + span, :root .text-checkbox input[type="checkbox"]:checked + span {
       color: var(--active-text-color, var(--blades-gold-bright)); }
-  html .tooltip, :root .tooltip {
-    display: none;
-    position: absolute;
-    padding: 10px;
-    color: var(--blades-white);
-    background-color: var(--blades-black);
-    border: 1px solid #777;
-    border-radius: 3px;
-    z-index: 9999999;
-    max-width: 300px; }
   html .full-width, :root .full-width {
     position: relative;
     width: calc(100% + (2 * var(--content-padding)));

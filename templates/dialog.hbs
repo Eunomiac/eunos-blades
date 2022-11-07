@@ -18,10 +18,10 @@
 		<div class="tab flex-horizontal flex-wrap {{~#unless (test (count ../tabs) ">" 1)}} active{{/unless}}" data-tab="{{@index}}">
 				<div class="featured-items">
 					{{#each tabData.featured as |item|}}
-						<div class="labelled-item labelled-vertical">
-							<div class="labelled-item-container" data-item-id="{{item._id}}">
+						<div class="comp comp-vertical">
+							<div class="comp-body" data-item-id="{{item._id}}">
 								<img src="{{item.img}}" />
-								<div class="item-name item-title long-name shadowed">{{item.name}}</div>
+								<div class="comp-title long-name shadowed">{{item.name}}</div>
 								{{#if item.system.load}}
 								<div class="number-circle">{{item.system.load}}</div>
 								{{/if}}
@@ -31,10 +31,10 @@
 				</div>
 
 			{{#each tabData.other as |item|}}
-			<div class="labelled-item labelled-vertical">
-				<div class="labelled-item-container" data-item-id="{{item._id}}">
+			<div class="comp comp-vertical">
+				<div class="comp-body" data-item-id="{{item._id}}">
 					<img src="{{item.img}}" />
-					<div class="item-name item-title long-name shadowed">{{item.name}}</div>
+					<div class="comp-title long-name shadowed">{{item.name}}</div>
 					{{#if item.system.load}}
 					<div class="number-circle">{{item.system.load}}</div>
 					{{/if}}

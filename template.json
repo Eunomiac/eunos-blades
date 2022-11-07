@@ -5,7 +5,13 @@
 			"npc",
 			"crew"
 		],
+		"templates": {
+			"default": {
+				"world_name": ""
+			}
+		},
 		"character": {
+			"templates": ["default"],
 			"full_name": "",
 			"subactors": {},
 			"notes": "",
@@ -100,6 +106,7 @@
 			}
 		},
 		"crew": {
+			"templates": ["default"],
 			"subactors": {},
 			"notes": "",
 			"gm_notes": "",
@@ -121,6 +128,7 @@
 			}
 		},
 		"npc": {
+			"templates": ["default"],
 			"name": "",
 			"alias": "",
 			"concept": "",
@@ -160,7 +168,7 @@
 			"cohort",
 			"crew_ability",
 			"crew_reputation",
-			"crew_type",
+			"crew_playbook",
 			"crew_upgrade",
 			"faction",
 			"feature",
@@ -181,27 +189,31 @@
 			"customizable": {
 				"description": "",
 				"isCustomized": false
+			},
+			"conditional": {
+				"playbooks": [],
+				"num_available": 1,
+				"prereqs": {}
 			}
 		},
 		"ability": {
-			"templates": ["default", "customizable"],
-			"playbooks": [],
+			"templates": ["default", "customizable", "conditional"],
 			"keepAsGhost": false
 		},
 		"background": { "templates": ["default", "customizable"] },
+		"crew_ability": { "templates": ["default", "customizable", "conditional"] },
 		"crew_reputation":  { "templates": ["default", "customizable"] },
+		"crew_upgrade": { "templates": ["default", "customizable", "conditional"] },
 		"feature": {
 			"templates": ["default"],
 			"frame_sizes": ["small", "medium", "heavy"]
 		},
 		"heritage": { "templates": ["default", "customizable"] },
 		"item": {
-			"templates": ["default", "customizable"],
+			"templates": ["default", "customizable", "conditional"],
 			"playbooks": [],
 			"load": 0,
-			"uses": {"value": 0, "max": 1},
-			"num_available": 1,
-			"prereqs": {}
+			"uses": {"value": 0, "max": 1}
 		},
 		"playbook": {
 			"templates": ["default"],
@@ -349,12 +361,7 @@
 			},
 			"armor": false
 		},
-		"crew_ability": {
-			"description": "",
-			"crew_types": [],
-			"num_available": 1
-		},
-		"crew_type": {
+		"crew_playbook": {
 			"description": "",
 			"experience_clues": "",
 			"turfs": {
@@ -449,11 +456,6 @@
 					"connects": []
 				}
 			}
-		},
-		"crew_upgrade": {
-			"description": "",
-			"crew_types": [],
-			"num_available": 1
 		},
 		"faction": {
 			"description": "",

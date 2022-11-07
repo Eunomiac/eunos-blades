@@ -81,13 +81,6 @@
       "type": "Item"
     },
     {
-      "name": "crew_type",
-      "label": "Crew Types",
-      "system": "eunos-blades",
-      "path": "./packs/crew_types.db",
-      "type": "Item"
-    },
-    {
       "name": "crew_upgrade",
       "label": "Crew Upgrades",
       "system": "eunos-blades",

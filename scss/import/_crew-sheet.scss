@@ -23,7 +23,7 @@ $coin_margin: 3px;
   div {
     flex-grow: 2;
   }
-  .item-control {
+  .comp-control {
     flex-grow: 1;
   }
   .item-body,
@@ -74,13 +74,6 @@ nav{
   input[disabled="disabled"] + label {
     background-image: url(../assets/teeth/stresstooth-black.png);
   }
-}
-
-// Turfs.
-
-.turf-container {
-  overflow-x: scroll;
-  overflow-y: clip;
 }
 
 

@@ -1,12 +1,12 @@
-	<div class="labelled-item labelled-horizontal item" data-item-id="{{_id}}">
-		<label class="item-name">
+	<div class="comp comp-horizontal item" data-item-id="{{_id}}">
+		<label class="comp-title">
 			<span class="item-title">{{case "title" name}}</span>
 			<img class="item-img" src="{{img}}" />
 		</label>
-		<div class="labelled-item-container">
-			<div class="item-description shadowed">{{{system.rules}}}</div>
+		<div class="comp-body">
+			<div class="comp-body-text shadowed">{{{system.rules}}}</div>
 		</div>
-		<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
+		<a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
 			<i class="fas fa-trash"></i>
 		</a>
 	</div>
@@ -19,7 +19,7 @@
     <div class="label-stripe">
       <div class="item-sheet-open">{{#if (eq data.cohort "Gang")}}Gang of {{#each data.gang_type as |gang_type key|}}{{gang_type}} {{/each}}{{/if}}{{#if (eq data.cohort "Expert")}}{{data.cohort}} {{data.expert_type}}{{/if}} (click to edit)</div>
       <div>Q:{{data.quality}} S:{{data.scale}}</div>
-      <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+      <a class="comp-control comp-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
     </div>
     <div class="cohort-body">
 

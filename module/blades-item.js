@@ -5,12 +5,59 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import H from "./core/helpers.js";
-import C, { SVGDATA } from "./core/constants.js";
+import C, { SVGDATA, BladesItemType } from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
 class BladesItem extends Item {
-        static async getAllItemsByType(item_type, isIncludingPacks = false) {
+    static Categories = {
+        "ability": BladesItemType.ability,
+        "background": BladesItemType.background,
+        "clock_keeper": BladesItemType.clock_keeper,
+        "cohort": BladesItemType.cohort,
+        "crew_ability": BladesItemType.crew_ability,
+        "crew_reputation": BladesItemType.crew_reputation,
+        "crew_playbook": BladesItemType.crew_playbook,
+        "crew_upgrade": BladesItemType.crew_upgrade,
+        "faction": BladesItemType.faction,
+        "feature": BladesItemType.feature,
+        "gm_tracker": BladesItemType.gm_tracker,
+        "heritage": BladesItemType.heritage,
+        "item": BladesItemType.item,
+        "playbook": BladesItemType.playbook,
+        "stricture": BladesItemType.stricture,
+        "vice": BladesItemType.vice
+    };
+    static get(itemNameOrId) {
+        if (!game.items) {
+            return null;
+        }
+        const item = game.items.find((item) => item.id === itemNameOrId || item.name === itemNameOrId)
+            ?? game.items.find((item) => item.system.world_name === itemNameOrId);
+        ;
+        if (!item) {
+            return null;
+        }
+        return item;
+    }
+    static async Embed(itemRef, parent) {
+        let item;
+        if (typeof itemRef === "string") {
+            const foundItem = BladesItem.get(itemRef);
+            if (!foundItem) {
+                return;
+            }
+            item = foundItem;
+        }
+        else {
+            item = itemRef;
+        }
+        const embItem = BladesItem.create(item, { parent });
+        if (!embItem) {
+            return;
+        }
+        return embItem;
+    }
+    static async getAllItemsByType(item_type, isIncludingPacks = false) {
         if (!game.items) {
             return [];
         }
@@ -37,7 +84,11 @@ class BladesItem extends Item {
         if (this.parent?.documentName !== "Actor") {
             return;
         }
-        await this.parent.deleteEmbeddedDocuments("Item", H.removeDuplicatedItemType(data, this.parent));
+        if (["background", "heritage", "vice", "playbook", "crew_playbook", "crew_reputation"].includes(data.type)) {
+            await this.parent.deleteEmbeddedDocuments("Item", this.parent.items
+                .filter((item) => item.type === data.type)
+                .map((item) => item.id ?? ""));
+        }
     }
     prepareData() {
         super.prepareData();
@@ -79,11 +130,7 @@ class BladesItem extends Item {
     }
     get tier() { return U.pInt(this.parent?.system?.tier); }
     get isCustomizedItem() { return this.isEmbedded && this.system.isCustomized; }
-    get playbooks() {
-        return ["crew_upgrade", "crew_ability"].includes(this.type)
-            ? this.system.crew_types
-            : this.system.playbooks;
-    }
+    get playbooks() { return this.system.playbooks ?? []; }
     isKept(actor) {
         if (this.type !== "ability") {
             return null;
@@ -104,21 +151,21 @@ class BladesItem extends Item {
         let isValid = true;
         if (doc instanceof BladesActor) {
             if (this.type === "item") {
-                isValid = Boolean(this.system.playbooks.includes("ANY")
-                    || (doc.playbookName && this.system.playbooks.includes(doc.playbookName)));
+                isValid = Boolean(this.playbooks.includes("ANY")
+                    || (doc.playbookName && this.playbooks.includes(doc.playbookName)));
             }
             if (this.type === "ability") {
-                isValid = Boolean((doc.playbookName && this.system.playbooks.includes(doc.playbookName))
-                    || (!this.system.playbooks.includes("Ghost")
-                        && !this.system.playbooks.includes("Hull")
-                        && !this.system.playbooks.includes("Vampire")));
+                isValid = Boolean((doc.playbookName && this.playbooks.includes(doc.playbookName))
+                    || (!this.playbooks.includes("Ghost")
+                        && !this.playbooks.includes("Hull")
+                        && !this.playbooks.includes("Vampire")));
             }
             if (this.type === "crew_ability") {
-                isValid = Boolean(doc.playbookName && this.system.crew_types?.includes(doc.playbookName));
+                isValid = Boolean(doc.playbookName);
             }
             if (this.type === "crew_upgrade") {
-                isValid = Boolean(this.system.crew_types?.includes("ANY")
-                    || (doc.playbookName && this.system.crew_types?.includes(doc.playbookName)));
+                isValid = Boolean(this.playbooks.includes("ANY")
+                    || (doc.playbookName && this.playbooks.includes(doc.playbookName)));
             }
             if (!isValid) {
                 return false;

@@ -6,10 +6,30 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-import { Randomizers, Attributes, Actions, Positions, EffectLevels } from "./core/constants.js";
+import { BladesActorType, Randomizers, Attributes, Actions, Positions, EffectLevels } from "./core/constants.js";
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem from "./blades-item.js";
 class BladesActor extends Actor {
+    static Categories = {
+        "pc-crew": BladesActorType.crew,
+        "crew-pc": BladesActorType.pc,
+        "vice_purveyor": BladesActorType.npc,
+        "acquaintance": BladesActorType.npc,
+        "pc": BladesActorType.pc,
+        "npc": BladesActorType.npc,
+        "crew": BladesActorType.crew
+    };
+    static get(actorNameOrId) {
+        if (!game.actors) {
+            return null;
+        }
+        const actor = game.actors.find((actor) => actor.id === actorNameOrId || actor.name === actorNameOrId)
+            ?? game.actors.find((actor) => actor.system.world_name === actorNameOrId);
+        if (!actor) {
+            return null;
+        }
+        return actor;
+    }
         static async getAllActorsByType(aType, isIncludingPacks = false) {
         if (!game.actors) {
             return [];
@@ -62,14 +82,25 @@ class BladesActor extends Actor {
         return true;
     }
     async embedSubActor(category, actor) {
-        this.update({ [`system.subactors.${actor.id}`]: { category, data: {} } });
+        if (!category || !actor) {
+            return;
+        }
+        this.update({ [`system.subactors.${actor.id}`]: { id: actor.id, category, data: {} } });
+    }
+    getSubActor(category) {
+        const subActors = Object.values(this.system.subactors);
+        const actorRef = Object.values(this.system.subactors).find((subActor) => subActor.category === category);
+        if (!actorRef) {
+            return null;
+        }
+        return BladesActor.get(actorRef.id);
     }
     get playbookName() {
         return this.playbook?.name ?? null;
     }
     get playbook() {
         return this.items.find((item) => item.type === "playbook")
-            ?? this.items.find((item) => item.type === "crew_type")
+            ?? this.items.find((item) => item.type === "crew_playbook")
             ?? null;
     }
     get attributes() {

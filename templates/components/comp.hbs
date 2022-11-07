@@ -1,0 +1,77 @@
+{{log "COMP" this}}
+
+<div class="{{#if class}}{{class}} {{/if}}comp"
+	{{~#if (test cat "||" type)}} data-comp-cat="{{#if cat}}{{cat}}{{else}}{{type}}{{/if}}"{{/if}}
+	{{~#if cat}} data-comp-cat="{{cat}}"{{else}}{{#if type}} data-comp-cat="{{type}}"{{/if}}{{/if}}
+	{{~#if _id}} data-comp-id="{{_id}}"{{else}}{{#if id}} data-comp-id="{{id}}"{{/if}}{{/if}}>
+
+	{{~#unless compContainer}}
+
+		{{~#if label}}
+			{{~#if (test id "||" _id)}}
+				<label class="comp-label {{#if labelClass}}{{labelClass}} {{/if}}shadowed">
+					{{~#if (test (test cat "||" type) "&&" addButton)}}
+						<a class="comp-control comp-add">{{label}}</a>
+					{{else}}
+						{{label}}
+					{{/if~}}
+				</label>
+			{{~else}}
+				<label class="comp-label {{~#if addButton}} comp-prompt{{/if}}{{~#if labelClass}} {{labelClass}}{{else}} shadowed{{/if}}">
+					{{~#if addButton}}
+						<a class="comp-control comp-add">
+							<span class="sur-title">Select Your</span>
+							<span class="main-title">{{label}}</span>
+						</a>
+					{{else}}
+						{{label}}
+					{{/if~}}
+				</label>
+			{{/if~}}
+		{{/if~}}
+
+		<div class="comp-body">
+			{{#if (test system "&&" system.bgImg)}}<img src="{{system.bgImg}}" />
+			{{else}}{{#if img}}<img class="comp-img" src="{{img}}" />{{/if}}{{/if}}
+			{{#if name}}<div class="comp-title shadowed">{{name}}</div>{{/if}}
+			{{#if (test system "&&" system.rules)}}<div class="comp-body-text shadowed">{{{system.rules}}}</div>{{/if}}
+			{{#if dotline}}
+				{{> "systems/eunos-blades/templates/parts/dotline.hbs" dotline}}
+			{{/if}}
+			{{#if dotlines}}
+				{{#each dotlines}}
+					{{> "systems/eunos-blades/templates/parts/dotline.hbs" }}
+				{{/each}}
+			{{/if}}
+			{{#if toggle}}
+			<input class="comp-toggle" type="checkbox" data-dtype="Boolean" name="{{toggle}}" value="{{value}}" {{checked value}}/>
+			{{/if}}
+		</div>
+
+		{{#if tooltip}}
+		<div class="comp-tooltip">
+			{{{tooltip}}}
+		</div>
+		{{/if}}
+
+		{{#if remButton}}
+		<a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
+			<i class="fas fa-trash"></i>
+		</a>
+		{{/if}}
+
+	{{else}}
+
+		<div class="{{#if compContainer.class}}{{compContainer.class}} {{/if}}comp-cont">
+			{{#each compContainer.blocks}}
+			<div class="comp-cont-block"
+				{{#each cells}}
+				{{> "systems/eunos-blades/templates/components/comp.hbs" }}
+				{{/each}}
+			</div>
+			{{/each}}
+		</div>
+
+	{{/unless}}
+
+</div>

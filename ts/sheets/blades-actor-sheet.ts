@@ -72,9 +72,9 @@ class BladesActorSheet extends BladesSheet {
 			resolve: {value: this.actor.attributes.resolve, size: 4 + this.actor.system.resistance_bonuses.resolve}
 		};
 
-		//~ Isolate playbook information
-		const playbookItem = data.items.find((item) => item.type === "playbook");
-		const playbook = playbookItem?.name;
+		//~ Arrange grid of Trauma Conditions
+		const allTraumaConditions = Object.keys(this.actor.system.trauma.active)
+		.filter((key) => this.actor.system.trauma.active[key]);
 
 		//~ Override Vice item for classes with locked vices
 		const viceOverride = this.actor.system.vice.override as string;
@@ -87,9 +87,24 @@ class BladesActorSheet extends BladesSheet {
 					abilities: data.items.filter((item) => item.type === "ability"),
 					background: data.items.find((item) => item.type === "background"),
 					heritage: data.items.find((item) => item.type === "heritage"),
-					playbook: data.items.find((item) => item.type === "playbook"),
 					vice: (viceOverride && JSON.parse(viceOverride)) || data.items.find((item) => item.type === "vice"),
-					loadout: data.items.filter((item) => item.type === "item")
+					loadout: data.items.filter((item) => item.type === "item"),
+					crew: this.actor.getSubActor("pc-crew"),
+					playbook: this.actor.playbook
+				},
+				stashData: {
+					label: "Stash:",
+					dotline: {
+						data: this.actor.system.stash,
+						target: "system.stash.value",
+						iconEmpty: "coin-empty.svg",
+						iconEmptyHover: "coin-empty-hover.svg",
+						iconFull: "coin-full.svg",
+						iconFullHover: "coin-full-hover.svg",
+						altIconFull: "coin-ten.svg",
+						altIconFullHover: "coin-ten-hover.svg",
+						altIconStep: 10
+					}
 				},
 				healing_clock: {
 					color: "white",
@@ -105,12 +120,43 @@ class BladesActorSheet extends BladesSheet {
 					selections: C.Loadout.selections,
 					selLoadLevel: this.actor.system.loadout.selected
 				},
+				stressData: {
+					name: this.actor.system.stress.name,
+					dotline: {
+						data: this.actor.system.stress,
+						target: "system.stress.value",
+						svgKey: "teeth.tall",
+						svgFull: "full|half|frame",
+						svgEmpty: "full|half|frame"
+					}
+				},
 				attributes: attrData,
 				traumaData: {
 					name: this.actor.system.trauma.name,
-					value: this.actor.trauma,
-					max: this.actor.system.trauma.max,
-					displayed: this.actor.traumaConditions
+					dotline: {
+						data: {value: this.actor.trauma, max: this.actor.system.trauma.max},
+						svgKey: "teeth.short",
+						svgFull: "full|frame",
+						svgEmpty: "frame",
+						isLocked: true
+					},
+					compContainer: {
+						class: "cont-full-height cont-full-width",
+						blocks: [
+							{cells: allTraumaConditions.slice(0, Math.ceil(allTraumaConditions.length / 2))
+								.map((tName) => ({
+										label: tName,
+										toggle: `system.trauma.checked.${tName}`,
+										value: this.actor.system.trauma.checked[tName] ?? false
+									}))},
+							{cells: allTraumaConditions.slice(Math.ceil(allTraumaConditions.length / 2))
+								.map((tName) => ({
+										label: tName,
+										toggle: `system.trauma.checked.${tName}`,
+										value: this.actor.system.trauma.checked[tName] ?? false
+									}))}
+						]
+					}
 				}
 			}
 		);

@@ -1,103 +1,87 @@
-.dotline-label {
-	position: relative;
-	z-index: 4;
-	pointer-events: none;
-}
-
 .dotline {
 	--dotline-zero-dot-size: #{toRem(14px)};
 	--dotline-dot-size: #{toRem(14px)};
 	--dotline-dot-spacing: 0px;
+	--dotline-horiz-align: flex-start;
+	--dotline-vert-align: center;
 
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
-	justify-content: flex-start;
-	align-items: center;
+	justify-content: var(--dotline-horiz-align);
+	align-items: var(--dotline-vert-align);
 	position: relative;
 
 	&.centered {
-		justify-content: center;
+		--dotline-horiz-align: center;
 	}
 
 	&.locked {
 		.dot {
 			pointer-events: none;
-			cursor: pointer;
+			cursor: default;
 		}
 	}
 
 	.dot {
+		--dot-frame-color: var(--frame-color, var(--blades-white));
+		--dot-frame-color-empty: var(--frame-color-empty, var(--dot-frame-color));
+		--dot-frame-color-full: var(--frame-color-full, var(--dot-frame-color));
+
+		--dot-fill-color-empty: var(--fill-color-empty, transparent);
+		--dot-fill-color-full: var(--fill-color-full, var(--blades-white-bright));
+
+		--dot-half-color-empty: var(--half-color-empty, var(--dot-frame-color));
+		--dot-half-color-full: var(--half-color-full, var(--dot-frame-color));
+
 		height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
 		width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
 		flex-grow: 0;
 		flex-shrink: 0;
 		margin: 0 var(--dotline-dot-spacing) 0 0;
 		pointer-events: auto;
-		cursor: grab;
+		cursor: pointer;
 		position: relative;
 
 		&:last-of-type {
 			margin: 0;
 		}
 
-
-
 		.img-main, .img-hover {
 			display: block;
 			height: 100%;
 			width: 100%;
 			filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black);
+
+			&.img-hover { display: none }
 		}
 
-		.img-hover { display: none }
-
-		&:hover {
-			.img-main { opacity: 0.5 }
-			.img-hover { display: block }
-			.img-hover + .img-main { display: none }
-			&.svg-dot { opacity: 0.5 }
-		}
-	}
-
-	&.teeth {
-		--frame-color: var(--blades-white);
-		--frame-color-empty: var(--frame-color);
-		--frame-color-full: var(--frame-color);
-
-		--fill-color-empty: transparent;
-		--fill-color-full: var(--frame-color);
-
-		--half-color-empty: var(--frame-color);
-		--half-color-full: var(--frame-color);
-
-		align-items: flex-start;
-
-		.dot.svg-dot {
-
-			&.full-dot {
-				--current-frame-color: var(--frame-color-full);
-				--current-fill-color: var(--fill-color-full);
-				--current-half-color: var(--half-color-full);
-			}
-			&.empty-dot {
-				--current-frame-color: var(--frame-color-empty);
-				--current-fill-color: var(--fill-color-empty);
-				--current-half-color: var(--half-color-empty);
-			}
-
-			width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
+		&.svg-dot {
 			height: auto;
 
 			svg {
 				width: 100%;
 				height: auto;
 				max-height: var(--dotline-dot-sizeY, unset);
-
-				.full { fill: var(--current-fill-color) }
-				.frame { fill: var(--current-frame-color) }
-				.half { fill: var(--current-half-color) }
 			}
+
+			&.full-dot {
+				svg .full { fill: var(--current-fill-color, var(--dot-fill-color-full)) }
+				svg .frame { fill: var(--current-frame-color, var(--dot-frame-color-full)) }
+				svg .half { fill: var(--current-half-color, var(--dot-half-color-full)) }
+			}
+			&.empty-dot {
+				svg .full { fill: var(--current-fill-color, var(--dot-fill-color-empty)) }
+				svg .frame { fill: var(--current-frame-color, var(--dot-frame-color-empty)) }
+				svg .half { fill: var(--current-half-color, var(--dot-half-color-empty)) }
+			}
+		}
+
+		&:hover {
+			.img-main { opacity: 0.5 }
+			.img-hover { display: block }
+			.img-hover + .img-main { display: none }
+			&.svg-dot { opacity: 0.5 }
 		}
 	}
 }

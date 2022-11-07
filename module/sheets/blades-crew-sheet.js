@@ -22,27 +22,68 @@ class BladesCrewSheet extends BladesSheet {
         eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", { ...data });
         const actorData = data.actor;
         const actorSystem = actorData.system;
-
-        const playbookItem = data.items.find((item) => item.type === "crew_type");
-        if (playbookItem) {
-            let turfs_amount = 0;
-            Object.entries(playbookItem.system.turfs).forEach(([key, turf]) => {
+        let turfs_amount = 0;
+        if (this.actor.playbook) {
+            Object.entries(this.actor.playbook.system.turfs).forEach(([key, turf]) => {
                 if (game.i18n.localize(turf.name).toLowerCase().replace(/\s/g, "") === game.i18n.localize("BITD.Turf").toLowerCase().replace(/\s/g, "")) {
                     turfs_amount += U.pInt(turf.value);
                 }
             });
-            actorSystem.turfs.value = Math.min(turfs_amount, actorSystem.turfs.max);
-            actorSystem.rep.max -= actorSystem.turfs.value;
-            actorSystem.rep.value = Math.min(actorSystem.rep.value, actorSystem.rep.max);
         }
-        Object.assign(data, {
-            items: {
-                playbook: playbookItem,
-                reputation: data.items.find((item) => item.type === "crew_reputation"),
-                upgrades: data.items.filter((item) => item.type === "crew_upgrade"),
-                abilities: data.items.filter((item) => item.type === "crew_ability"),
-                cohorts: data.items.filter((item) => item.type === "cohort")
+        turfs_amount = Math.min(turfs_amount, this.actor.system.turfs.max);
+        const repData = {
+            name: "Rep",
+            dotlines: [
+                {
+                    data: {
+                        value: Math.min(this.actor.system.rep.value, this.actor.system.rep.max - turfs_amount),
+                        max: this.actor.system.rep.max - turfs_amount
+                    },
+                    target: "system.rep.value",
+                    svgKey: "teeth.tall",
+                    svgFull: "full|half|frame",
+                    svgEmpty: "full|half|frame"
+                },
+                {
+                    data: { value: turfs_amount, max: turfs_amount },
+                    svgKey: "teeth.tall",
+                    svgFull: "full|half|frame",
+                    svgEmpty: "full|half|frame",
+                    class: "flex-row-reverse",
+                    isLocked: true
+                }
+            ]
+        };
+        const heatData = {
+            name: "Heat",
+            dotline: {
+                data: this.actor.system.heat,
+                target: "system.heat.value",
+                svgKey: "teeth.tall",
+                svgFull: "full|half|frame",
+                svgEmpty: "full|half|frame"
             }
+        };
+        const wantedData = {
+            name: "Wanted",
+            dotline: {
+                data: this.actor.system.wanted,
+                target: "system.wanted.value",
+                svgKey: "teeth.short",
+                svgFull: "full|frame",
+                svgEmpty: "frame"
+            }
+        };
+        Object.assign(data.items, {
+            reputation: data.items.find((item) => item.type === "crew_reputation"),
+            upgrades: data.items.filter((item) => item.type === "crew_upgrade"),
+            abilities: data.items.filter((item) => item.type === "crew_ability"),
+            cohorts: data.items.filter((item) => item.type === "cohort")
+        });
+        Object.assign(data, {
+            repData,
+            heatData,
+            wantedData
         });
         eLog.checkLog("actor", "[BladesCrewSheet] return getData()", { ...data });
         return data;
@@ -57,7 +98,7 @@ class BladesCrewSheet extends BladesSheet {
             const item = this.actor.items.get(element.data("itemId"));
             item?.sheet?.render(true);
         });
-        html.find(".item-delete").on("click", async (event) => {
+        html.find(".comp-delete").on("click", async (event) => {
             const element = $(event.currentTarget).parents(".item");
             await this.actor.deleteEmbeddedDocuments("Item", [element.data("itemId")]);
             element.slideUp(200, () => this.render(false));

@@ -141,9 +141,9 @@
 					}
 
 					&.crew {
-						@import 'import/crew-sheet';
+						// @import 'import/crew-sheet';
 						@import './sheets/crew-sheet';
-						@import './sheets/pc-sheet';
+						// @import './sheets/pc-sheet';
 					}
 				}
 
@@ -153,7 +153,7 @@
 						@import './sheets/clock-keeper-sheet'
 					}
 
-					&.crew_type {
+					&.crew_playbook {
 						@import './sheets/crew-type-sheet'
 					}
 				}

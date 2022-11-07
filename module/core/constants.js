@@ -19,7 +19,7 @@ export var BladesItemType;
     BladesItemType["cohort"] = "cohort";
     BladesItemType["crew_ability"] = "crew_ability";
     BladesItemType["crew_reputation"] = "crew_reputation";
-    BladesItemType["crew_type"] = "crew_type";
+    BladesItemType["crew_playbook"] = "crew_playbook";
     BladesItemType["crew_upgrade"] = "crew_upgrade";
     BladesItemType["faction"] = "faction";
     BladesItemType["feature"] = "feature";
@@ -386,7 +386,7 @@ const C = {
         BladesItemType.cohort,
         BladesItemType.crew_ability,
         BladesItemType.crew_reputation,
-        BladesItemType.crew_type,
+        BladesItemType.crew_playbook,
         BladesItemType.crew_upgrade,
         BladesItemType.faction,
         BladesItemType.feature,

@@ -90,7 +90,7 @@
 
   //Abilitiers and loadout
   .navigation-tabs, .loadout {
-    .item-name {
+    .comp-title {
       width: 100px;
     }
     .item-body {
@@ -112,7 +112,7 @@
 
   // Loadout
   .loadout {
-    .item-add-popup {
+    .comp-control comp-add {
       margin-left: 10px;
     }
   }
@@ -231,7 +231,7 @@
     div {
       flex-grow: 2;
     }
-    .item-control {
+    .comp-control {
       flex-grow: 1;
     }
     .item-body,

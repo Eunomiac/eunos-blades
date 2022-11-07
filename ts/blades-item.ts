@@ -1,19 +1,50 @@
-// import BladesClockKeeperSheet from "./clock-keeper-sheet.js";
-import H from "./core/helpers.js";
 import C, {SVGDATA, BladesItemType} from "./core/constants.js";
 import U from "./core/utilities.js";
-import type {ItemDataBaseProperties, ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs.js";
-import type {BaseUser} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents.mjs/baseUser.js";
-import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 import BladesActor from "./blades-actor.js";
-import {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
 
 class BladesItem extends Item {
 
-	/**
-	* Get all available ingame items by Type, including those in packs.
-	*/
+	static Categories: Record<string, BladesItemType> = {
+		"ability": BladesItemType.ability,
+		"background": BladesItemType.background,
+		"clock_keeper": BladesItemType.clock_keeper,
+		"cohort": BladesItemType.cohort,
+		"crew_ability": BladesItemType.crew_ability,
+		"crew_reputation": BladesItemType.crew_reputation,
+		"crew_playbook": BladesItemType.crew_playbook,
+		"crew_upgrade": BladesItemType.crew_upgrade,
+		"faction": BladesItemType.faction,
+		"feature": BladesItemType.feature,
+		"gm_tracker": BladesItemType.gm_tracker,
+		"heritage": BladesItemType.heritage,
+		"item": BladesItemType.item,
+		"playbook": BladesItemType.playbook,
+		"stricture": BladesItemType.stricture,
+		"vice": BladesItemType.vice
+	}
+
+	static get(itemNameOrId: string): BladesItem|null {
+		if (!game.items) { return null }
+		const item = game.items.find((item: BladesItem) => item.id === itemNameOrId || item.name === itemNameOrId)
+			?? game.items.find((item: BladesItem) => item.system.world_name === itemNameOrId);;
+		if (!item) { return null }
+		return item as BladesItem;
+	}
+
+	static async Embed(itemRef: string|BladesItem, parent: BladesActor): Promise<BladesItem|undefined> {
+		let item: BladesItem;
+		if (typeof itemRef === "string") {
+			const foundItem = BladesItem.get(itemRef);
+			if (!foundItem) { return }
+			item = foundItem;
+		} else {
+			item = itemRef;
+		}
+		const embItem = BladesItem.create(item as any, {parent}) as Promise<BladesItem|undefined>;
+		if (!embItem) { return }
+		return embItem;
+	}
+
 	static async getAllItemsByType(item_type: string, isIncludingPacks = false): Promise<BladesItem[]> {
 	 if (!game.items) { return [] }
 
@@ -37,13 +68,17 @@ class BladesItem extends Item {
 	}
 
 
-	override async _preCreate( data: ItemDataConstructorData, options: DocumentModificationOptions, user: BaseUser ) {
+	override async _preCreate( data: any, options: any, user: User ) {
 		await super._preCreate( data, options, user );
 
 		if (user.id !== game.user?.id) { return }
 		if (this.parent?.documentName !== "Actor") { return }
 
-		await this.parent.deleteEmbeddedDocuments("Item", H.removeDuplicatedItemType(data, this.parent));
+		if (["background", "heritage", "vice", "playbook", "crew_playbook", "crew_reputation"].includes(data.type)) {
+			await this.parent.deleteEmbeddedDocuments("Item", this.parent.items
+				.filter((item) => item.type === data.type)
+				.map((item) => item.id ?? ""));
+		}
 	}
 
 	override prepareData() {
@@ -78,11 +113,7 @@ class BladesItem extends Item {
 
 	get tier() { return U.pInt(this.parent?.system?.tier) }
 	get isCustomizedItem() { return this.isEmbedded && this.system.isCustomized }
-	get playbooks() {
-		return ["crew_upgrade", "crew_ability"].includes(this.type)
-			? this.system.crew_types
-			: this.system.playbooks;
-	}
+	get playbooks(): string[] { return this.system.playbooks ?? [] }
 
 	isKept(actor: BladesActor): boolean|null {
 		if (this.type !== "ability") { return null }
@@ -103,21 +134,21 @@ class BladesItem extends Item {
 		if (doc instanceof BladesActor) {
 			//~ Check Playbook Compatibility
 			if (this.type === "item") {
-				isValid = Boolean(this.system.playbooks!.includes("ANY")
-				|| (doc.playbookName && this.system.playbooks!.includes(doc.playbookName)));
+				isValid = Boolean(this.playbooks.includes("ANY")
+				|| (doc.playbookName && this.playbooks.includes(doc.playbookName)));
 			}
 			if (this.type === "ability") {
-				isValid = Boolean((doc.playbookName && this.system.playbooks!.includes(doc.playbookName))
-				|| (!this.system.playbooks!.includes("Ghost")
-				&& !this.system.playbooks!.includes("Hull")
-				&& !this.system.playbooks!.includes("Vampire")));
+				isValid = Boolean((doc.playbookName && this.playbooks.includes(doc.playbookName))
+				|| (!this.playbooks.includes("Ghost")
+				&& !this.playbooks.includes("Hull")
+				&& !this.playbooks.includes("Vampire")));
 			}
 			if (this.type === "crew_ability") {
-				isValid = Boolean(doc.playbookName && this.system.crew_types?.includes(doc.playbookName));
+				isValid = Boolean(doc.playbookName);
 			}
 			if (this.type === "crew_upgrade") {
-				isValid = Boolean(this.system.crew_types?.includes("ANY")
-				|| (doc.playbookName && this.system.crew_types?.includes(doc.playbookName)));
+				isValid = Boolean(this.playbooks.includes("ANY")
+				|| (doc.playbookName && this.playbooks.includes(doc.playbookName)));
 			}
 			if (!isValid) { return false }
 
@@ -256,7 +287,7 @@ class BladesItem extends Item {
 		return this.update({[`system.clock_keys.${keyID}`]: clockKey});
 	}
 
-	override async _onUpdate(changed: DeepPartial<PropertiesToSource<ItemDataBaseProperties>>, options: DocumentModificationOptions, userId: string) {
+	override async _onUpdate(changed: any, options: any, userId: string) {
 		await super._onUpdate(changed, options, userId);
 		if (this.isEmbedded && "isCustomized" in this.system && this.system.isCustomized === false) {
 			this.update({"system.isCustomized": true});
@@ -290,6 +321,8 @@ declare interface BladesItem {
 	parent: BladesActor | null,
 	system: {
 		type: string,
+		world_name: string,
+		bgImg: string,
 		description: string,
 		isCustomized: boolean,
 		rules: string,

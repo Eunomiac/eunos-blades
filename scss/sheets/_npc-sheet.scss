@@ -29,11 +29,11 @@ section.sheet-top {
 			"heritage heritage district district faction faction arena arena"
 			"tabs tabs tabs tabs tabs tabs tabs tabs";
 
-		.char-name {
-			--top-title-font-size: #{toRem(38px)};
+		.comp-name {
+			--sheet-title-font-size: #{toRem(38px)};
 		}
 
-		.char-traits {
+		.comp-traits {
 			grid-area: traits;
 			display: flex;
 			font-family: var(--font-emphasis);
@@ -45,7 +45,7 @@ section.sheet-top {
 			}
 		}
 
-		.char-heritage, .char-faction, .char-district, .char-arena {
+		.comp-heritage, .comp-faction, .comp-district, .comp-arena {
 			text-align: center;
 			background: linear-gradient(to top, var(--blades-black) 25%, transparent) !important;
 			height: calc(100% + 4px);
@@ -54,29 +54,29 @@ section.sheet-top {
 				text-align: center;
 			}
 
-			&.char-arena {
+			&.comp-arena {
 				grid-area: arena;
 				width: calc(100% + 10px);
 			}
 
-			&.char-heritage {
+			&.comp-heritage {
 				grid-area: heritage;
 				width: calc(100% + 10px);
 				left: -10px;
 			}
 
-			&.char-district {
+			&.comp-district {
 				grid-area: district;
 			}
 
-			&.char-faction {
+			&.comp-faction {
 				grid-area: faction;
 			}
 		}
 
 
 
-		.char-short-description {
+		.comp-short-description {
 			grid-area: short-desc;
 			font-style: italic;
 			text-align: center;
@@ -85,7 +85,7 @@ section.sheet-top {
 			padding: 0;
 		}
 
-		.char-tabs {
+		.comp-tabs {
 			grid-area: tabs;
 			// top: -4px;
 			// height: 100%;
@@ -126,8 +126,8 @@ section.sheet-top {
 			}
 		}
 
-		.char-allies,
-		.char-enemies {
+		.comp-allies,
+		.comp-enemies {
 			display: none
 		}
 	}

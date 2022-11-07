@@ -7,28 +7,37 @@
 
 import U from "../core/utilities.js";
 import BladesItem from "../blades-item.js";
+import BladesActor from "../blades-actor.js";
 import BladesDialog from "../blades-dialog.js";
 import BladesActiveEffect from "../blades-active-effect.js";
 class BladesSheet extends ActorSheet {
-    async _onSubActorAddClick(event) {
-        event.preventDefault();
-    }
     async _onItemAddClick(event) {
         event.preventDefault();
-        const item_type = $(event.currentTarget).data("itemType");
+        const dataElem$ = $(event.currentTarget).closest(".comp");
+        const doc_cat = dataElem$.data("compCat");
+        const doc_type = doc_cat in BladesItem.Categories
+            ? BladesItem.Categories[doc_cat]
+            : BladesActor.Categories[doc_cat];
         const initialParams = [
             this.actor,
-            U.tCase(`Add ${item_type}`),
-            item_type
+            U.tCase(`Add ${doc_type.replace(/_/g, " ")}`),
+            doc_type
         ];
-        switch (item_type) {
+        switch (doc_type) {
+            case "crew": {
+                await BladesDialog.Display(...initialParams, async (actorId) => { this.actor.embedSubActor("pc-crew", BladesActor.get(actorId)); });
+            }
             case "item":
             case "crew_upgrade": {
-                await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.create(game.items.get(itemId), { parent: this.actor }); }, {
+                await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.Embed(itemId, this.actor); }, {
                     [`${this.actor.playbookName} Items`]: (item) => Boolean(item.playbooks?.includes(this.actor.playbookName ?? "")),
                     "General Items": (item) => Boolean(item.playbooks?.includes("ANY"))
                 }, {
+                    [`${this.actor.playbookName} Items`]: (item) => item.name.startsWith("Fine"),
                     "General Items": (item) => ["Armor", "Armor, Heavy"].includes(item.name ?? "")
+                }, {
+                    [`${this.actor.playbookName} Items`]: true,
+                    "General Items": false
                 });
                 break;
             }
@@ -37,20 +46,22 @@ class BladesSheet extends ActorSheet {
                 if (!this.actor.playbookName) {
                     return;
                 }
-                await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.create(game.items.get(itemId), { parent: this.actor }); }, {
+                await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.Embed(itemId, this.actor); }, {
                     [this.actor.playbookName]: (item) => Boolean(item.playbooks?.includes(this.actor.playbookName ?? "")),
-                    Veteran: (item) => ![this.actor.playbookName, "Ghost", "Vampire", "Hull"].some((pbName) => item.playbooks?.includes(pbName))
+                    Veteran: (item) => ![this.actor.playbookName, "Ghost", "Vampire", "Hull"].some((pbName) => item.playbooks.includes(pbName))
                 }, {
                     [this.actor.playbookName]: (item) => this.actor.playbook.system.suggested_ability === item.name
-                }, true);
+                }, {
+                    [this.actor.playbookName]: true
+                });
                 break;
             }
             case "heritage":
             case "background":
             case "vice":
             case "playbook":
-            case "crew_type": {
-                await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.create(game.items.get(itemId), { parent: this.actor }); });
+            case "crew_playbook": {
+                await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.Embed(itemId, this.actor); });
                 break;
             }
         }
@@ -73,7 +84,27 @@ class BladesSheet extends ActorSheet {
             editable: this.options.editable,
             isGM: game.user.isGM,
             actor: actorData,
-            data: actorSystem
+            data: actorSystem,
+            playbookData: {
+                dotline: {
+                    data: this.actor.system.experience.playbook,
+                    target: "system.experience.playbook.value",
+                    svgKey: "teeth.tall",
+                    svgFull: "full|frame",
+                    svgEmpty: "full|half|frame"
+                }
+            },
+            coinsData: {
+                label: "Coins",
+                dotline: {
+                    data: this.actor.system.coins,
+                    target: "system.coins.value",
+                    iconEmpty: "coin-empty.svg",
+                    iconEmptyHover: "coin-empty-hover.svg",
+                    iconFull: "coin-full.svg",
+                    iconFullHover: "coin-full-hover.svg"
+                }
+            }
         });
         eLog.checkLog4("actor", "[BladesSheet] return getData()", { ...data });
         return data;
@@ -97,7 +128,7 @@ class BladesSheet extends ActorSheet {
             let targetField = $(elem).data("target");
             if (targetField.startsWith("item")) {
                 targetField = targetField.replace(/^item\./, "");
-                const itemId = $(elem).closest("[data-item-id]").data("itemId");
+                const itemId = $(elem).closest("[data-comp-id]").data("compId");
                 if (!itemId) {
                     return;
                 }
@@ -127,30 +158,32 @@ class BladesSheet extends ActorSheet {
         });
         html.find(".clock-container").on("click", this._onClockLeftClick.bind(this));
         html.find(".clock-container").on("contextmenu", this._onClockRightClick.bind(this));
-        html.find(".item-add-popup").on("click", (event) => {
+        html.find(".comp-control.comp-add").on("click", (event) => {
             this._onItemAddClick(event);
         });
-        html.find(".update-box").on("click", this._onUpdateBoxClick.bind(this));
+        html.find(".comp-control.comp-update").on("click", this._onUpdateBoxClick.bind(this));
+        html.find(".comp-control.comp-delete").on({
+            click: (event) => this._onItemRemoveClick(event)
+        });
         if (this.options.submitOnChange) {
             html.on("change", "textarea", this._onChangeInput.bind(this));
         }
-        html.find("[data-item-id]").find(".item-title").on("click", this._onItemOpenClick.bind(this));
-        html.find("[data-sub-actor-id]").find(".sub-actor-name").on("click", this._onSubActorOpenClick.bind(this));
+        html.find("[data-comp-id]").find(".comp-title").on("click", this._onItemOpenClick.bind(this));
         html.find("[data-roll-attribute]").on("click", this._onRollAttributeDieClick.bind(this));
         const self = this;
-        html.find(".item-delete").on({
-            click: async function () {
-                const element = $(this).parents(".item");
-                await self.actor.removeItem(element.data("itemId"));
-                element.slideUp(200, () => self.render(false));
-            }
-        });
-
+        
         html.find(".effect-control").on({
             click: function (event) {
                 BladesActiveEffect.onManageActiveEffect(event, self.actor);
             }
         });
+    }
+    async _onItemRemoveClick(event) {
+        event.preventDefault();
+        const dataElem$ = $(event.currentTarget).closest(".comp");
+        const docID = dataElem$.data("compId");
+        await this.actor.removeItem(docID);
+        dataElem$.slideUp(200, () => this.render(false));
     }
     async _onClockLeftClick(event) {
         event.preventDefault();
@@ -175,17 +208,12 @@ class BladesSheet extends ActorSheet {
     }
     async _onItemOpenClick(event) {
         event.preventDefault();
-        const itemID = $(event.currentTarget).closest("[data-item-id]").data("itemId");
-        if (itemID) {
-            this.actor.items.get(itemID)?.sheet?.render(true);
+        const docID = $(event.currentTarget).closest(".comp").data("compId");
+        const doc = BladesItem.get(docID) ?? BladesActor.get(docID);
+        if (!doc) {
+            return;
         }
-    }
-    async _onSubActorOpenClick(event) {
-        event.preventDefault();
-        const actorID = $(event.currentTarget).closest("[data-sub-actor-id]").data("subActorId");
-        if (actorID) {
-            game.actors.get(actorID)?.sheet?.render(true);
-        }
+        doc.sheet?.render(true);
     }
     async addItemsToSheet(item_type, el) {
         const items = await BladesItem.getAllItemsByType(item_type);

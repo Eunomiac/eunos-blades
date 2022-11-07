@@ -1,8 +1,3 @@
-import type BladesActor from "../blades-actor.js";
-import type BladesItem from "../blades-item.js";
-import type BladesSheet from "../sheets/blades-sheet";
-import type BladesItemSheet from "../sheets/blades-item-sheet";
-
 export enum BladesActorType {
 	pc = "character",
 	npc = "npc",
@@ -16,7 +11,7 @@ export enum BladesItemType {
 	cohort = "cohort",
 	crew_ability = "crew_ability",
 	crew_reputation = "crew_reputation",
-	crew_type = "crew_type",
+	crew_playbook = "crew_playbook",
 	crew_upgrade = "crew_upgrade",
 	faction = "faction",
 	feature = "feature",
@@ -382,7 +377,7 @@ const C = {
 		BladesItemType.cohort,
 		BladesItemType.crew_ability,
 		BladesItemType.crew_reputation,
-		BladesItemType.crew_type,
+		BladesItemType.crew_playbook,
 		BladesItemType.crew_upgrade,
 		BladesItemType.faction,
 		BladesItemType.feature,

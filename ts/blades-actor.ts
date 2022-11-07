@@ -1,4 +1,3 @@
-import H from "./core/helpers.js";
 import U from "./core/utilities.js";
 import C, {BladesActorType, BladesItemType, Randomizers, Attributes, Actions, Positions, EffectLevels} from "./core/constants.js";
 
@@ -11,6 +10,24 @@ import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-t
 
 
 class BladesActor extends Actor {
+
+	static Categories: Record<string, BladesActorType> = {
+		"pc-crew": BladesActorType.crew,
+		"crew-pc": BladesActorType.pc,
+		"vice_purveyor": BladesActorType.npc,
+		"acquaintance": BladesActorType.npc,
+		"pc": BladesActorType.pc,
+		"npc": BladesActorType.npc,
+		"crew": BladesActorType.crew
+	}
+
+	static get(actorNameOrId: string): BladesActor|null {
+		if (!game.actors) { return null }
+		const actor = game.actors.find((actor: BladesActor) => actor.id === actorNameOrId || actor.name === actorNameOrId)
+			?? game.actors.find((actor: BladesActor) => actor.system.world_name === actorNameOrId);
+		if (!actor) { return null }
+		return actor as BladesActor;
+	}
 
 	/**
 	* Get all available ingame actors by Type, including those in packs.
@@ -88,8 +105,16 @@ class BladesActor extends Actor {
 		return true;
 	}
 
-	async embedSubActor(category: BladesActor.SubActorCategory, actor: BladesActor) {
-		this.update({[`system.subactors.${actor.id}`]: {category, data: {}}});
+	async embedSubActor(category: BladesActor.SubActorCategory, actor: BladesActor|null) {
+		if (!category || !actor) { return }
+		this.update({[`system.subactors.${actor.id}`]: {id: actor.id, category, data: {}}});
+	}
+
+	getSubActor(category: BladesActor.SubActorCategory): BladesActor|null {
+		const subActors = Object.values(this.system.subactors);
+		const actorRef = Object.values(this.system.subactors).find((subActor: BladesActor.SubActorData) => subActor.category === category);
+		if (!actorRef) { return null }
+		return BladesActor.get(actorRef.id)
 	}
 
 	get playbookName() {
@@ -97,7 +122,7 @@ class BladesActor extends Actor {
 	}
 	get playbook() {
 		return this.items.find((item) => item.type === "playbook")
-			?? this.items.find((item) => item.type === "crew_type" )
+			?? this.items.find((item) => item.type === "crew_playbook" )
 			?? null;
 	}
 
@@ -470,8 +495,9 @@ declare interface BladesActor {
 	get type(): BladesActorType,
 	get items(): EmbeddedCollection<typeof BladesItem, ActorData>;
 	system: Actor["data"]["data"] & {
+			world_name: string,
 			full_name: string,
-			subactors: BladesActor.SubActorData,
+			subactors: Record<string,BladesActor.SubActorData>,
 			notes: string,
 			gm_notes: string,
 			vice: {

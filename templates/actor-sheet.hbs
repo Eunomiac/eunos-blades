@@ -1,202 +1,93 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
 
-	<img class="char-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
-	<div class="char-img-bg full-width">
+	{{!-- Actor Img: Portrait & Background Overlay --}}
+	<img class="sheet-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+	<div class="sheet-img-bg full-width">
 		<img src="{{actor.img}}" />
 	</div>
 
-	{{#if items.playbook}}
-	<div class="labelled-item labelled-horizontal playbook-experience">
-		<div class="labelled-item-container">
-				{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-					data=data.experience.playbook
-					target="data.experience.playbook.value"
-					svgKey="teeth.tall"
-					svgFull="full|frame"
-					svgEmpty="full|half|frame"
-					blockClass="teeth long-teeth"
-				}}
-		</div>
-	</div>
+	{{!-- Playbook XP --}}
+	{{#if playbookData}}
+		{{> "systems/eunos-blades/templates/components/comp.hbs"
+			class="comp-xp comp-xp-playbook comp-horizontal comp-teeth comp-teeth-long"
+			dotline=playbookData.dotline
+		}}
 	{{/if}}
 
 	{{!-- Header --}}
 	<section class="sheet-top">
-		<input class="char-name top-title shadowed" type="text" name="name" value="{{actor.name}}">
-		<input class="char-full-name top-subtitle shadowed" type="text" name="data.full_name" value="{{data.full_name}}" placeholder="Full Name">
+		<input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}">
+		<input class="sheet-subtitle shadowed" type="text" name="data.full_name" value="{{data.full_name}}" placeholder="Full Name">
 
-		<div class="char-playbook labelled-item labelled-vertical">
-		{{#if items.playbook}}
-			<div class="labelled-item-container" data-item-id="{{items.playbook.id}}">
-				<img src="{{items.playbook.system.bgImg}}" />
-				<div class="item-name item-title shadowed">{{items.playbook.name}}</div>
-			</div>
-		{{else}}
-			<label class="labelled-item-prompt shadowed">
-				<a class="item-add-popup" data-distinct="true" data-item-type="playbook">
-					<span class="sur-title">Select Your</span>
-					<span class="main-title">Playbook</span>
-				</a>
-			</label>
-		{{/if}}
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs" items.playbook
+			class="comp-playbook comp-vertical"
+			label="Playbook"
+			cat="playbook"
+			addButton=true
+			id=items.playbook._id
+		}}
 
-		<div class="char-heritage labelled-item labelled-vertical">
-			{{#if items.heritage}}
-			<label>
-				<a class="item-add-popup" data-distinct="true" data-item-type="heritage">{{localize "BITD.Heritage"}}</a>
-			</label>
-			<div class="labelled-item-container" data-item-id="{{items.heritage._id}}">
-				<div class="item-name item-title shadowed">{{items.heritage.name}}</div>
-			</div>
-			{{else}}
-			<label class="labelled-item-prompt shadowed">
-				<a class="item-add-popup" data-distinct="true" data-item-type="heritage">
-					<span class="sur-title">Select Your</span>
-					<span class="main-title">Heritage</span>
-				</a>
-			</label>
-			{{/if}}
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs" items.heritage
+			class="comp-heritage comp-vertical long-text"
+			label="Heritage"
+			cat="heritage"
+			addButton=true
+			tooltip=items.heritage.system.rules
+		}}
 
-		<div class="char-background labelled-item labelled-vertical">
-			{{#if items.background}}
-			<label>
-				<a class="item-add-popup" data-distinct="true" data-item-type="background">{{localize "BITD.Background"}}</a>
-			</label>
-			<div class="labelled-item-container" data-item-id="{{items.background._id}}">
-				<img src="{{items.background.img}}" title="{{items.background.name}}" />
-				<div class="item-name item-title shadowed">{{items.background.name}}</div>
-			</div>
-			{{else}}
-			<label class="labelled-item-prompt shadowed">
-				<a class="item-add-popup" data-distinct="true" data-item-type="background">
-					<span class="sur-title">Select Your</span>
-					<span class="main-title">Background</span>
-				</a>
-			</label>
-			{{/if}}
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs" items.background
+			class="comp-background comp-vertical"
+			label="Background"
+			cat="background"
+			addButton=true
+			tooltip=items.background.system.rules
+		}}
 
-		<div class="char-vice labelled-item labelled-vertical">
-			{{#if items.vice}}
-			<label>
-				<a class="item-add-popup" data-distinct="true" data-item-type="vice">{{actor.system.vice.name}}</a>
-			</label>
-			<div class="labelled-item-container" data-item-id="{{items.vice._id}}">
-				<img src="{{items.vice.img}}" title="{{items.vice.name}}" />
-				<div class="item-name item-title long-name shadowed">{{items.vice.name}}</div>
-			</div>
-			{{else}}
-			<label class="labelled-item-prompt shadowed">
-				<a class="item-add-popup" data-distinct="true" data-item-type="vice">
-					<span class="sur-title">Select Your</span>
-					<span class="main-title">Vice</span>
-				</a>
-			</label>
-			{{/if}}
-			{{#if items.vice.secondVice}}
-			<div class="labelled-item-container second-vice" data-item-id="{{items.vice.secondVice._id}}">
-				<img src="{{items.vice.secondVice.img}}" title="{{items.vice.secondVice.name}}" />
-				<div class="item-name item-title long-name shadowed">{{items.vice.secondVice.name}}</div>
-			</div>
-			{{/if}}
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs" items.vice
+			class="comp-vice comp-vertical"
+			label="Vice"
+			cat="vice"
+			addButton=true
+			tooltip=items.vice.system.rules
+		}}
 
-		{{#if comps.crew}}
-		<div class="comp-crew comp-vertical comp" data-comp-cat="pc-crew" data-comp-id="{{comps.crew.id}}">
-		<label class="comp-label">
-			<a class="popup comp-add">Crew</a>
-		</label>
-		<div class="comp-body">
-			<img src="{{comps.crew.img}}" title="{{comps.crew.name}}" />
-			<div class="comp-name long-text shadowed">{{comps.crew.name}}</div>
-		</div>
-		</div>
-		{{else}}
-		<div class="comp-crew comp-vertical comp" data-comp-cat="pc-crew">
-			<label class="comp-prompt shadowed">
-				<a class="popup comp-add">
-					<span class="sur-title">Select Your</span>
-					<span class="main-title">Crew</span>
-				</a>
-			</label>
-		</div>
-		{{/if}}
+		{{> "systems/eunos-blades/templates/components/comp.hbs" items.crew
+			class="comp-crew comp-vertical long-text"
+			label="Crew"
+			cat="pc-crew"
+			addButton=true
+			id=items.crew.id
+		}}
 
-		<div class="char-coins labelled-item labelled-vertical">
- 			<label>Coins</label>
-			<div class="labelled-item-container">
-				{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-					data=data.coins
-					target="data.coins.value"
-					iconEmpty="coin-empty.svg"
-					iconEmptyHover="coin-empty-hover.svg"
-					iconFull="coin-full.svg"
-					iconFullHover="coin-full-hover.svg"
-					blockClass="centered"
-				}}
-			</div>
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs" coinsData
+			class="comp-coins comp-vertical" }}
 
-		<div class="char-stash labelled-item labelled-horizontal">
- 			<label>Stash:</label>
-			<div class="labelled-item-container">
-				{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-					data=data.stash
-					target="data.stash.value"
-					iconEmpty="coin-empty.svg"
-					iconEmptyHover="coin-empty-hover.svg"
-					iconFull="coin-full.svg"
-					iconFullHover="coin-full-hover.svg"
-					altIconFull="coin-ten.svg"
-					altIconFullHover="coin-ten-hover.svg"
-					altIconStep=10
-				}}
-			</div>
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs" stashData
+			class="comp-stash comp-horizontal" }}
 	</section>
 
 	{{!-- Stress and Trauma --}}
-	<section class="stress-trauma flex-horizontal full-width">
-		<div class="stress-teeth flex-horizontal">
-			<label class="dotline-label filled-label">{{data.stress.name}}</label>
-			{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-				data=data.stress
-				target="data.stress.value"
-				svgKey="teeth.tall"
-				svgFull="full|half|frame"
-				svgEmpty="full|half|frame"
-				blockClass="teeth long-teeth"
-			}}
-		</div>
+	<section class="sheet-mid-bar flex-horizontal full-width">
 
-		<div class="trauma-teeth flex-vertical">
-			<label class="dotline-label filled-label">{{traumaData.name}}</label>
-			{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-				data=traumaData
-				target="data.trauma.value"
-				svgKey="teeth.short"
-				svgFull="full|frame"
-				svgEmpty="frame"
-				blockClass="teeth short-teeth"
-				isLocked="true"
-			}}
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs"
+			class="comp-stress comp-horizontal comp-teeth comp-teeth-long"
+			label=stressData.name
+			labelClass="filled-label"
+			dotline=stressData.dotline
+		}}
 
-		<div class="trauma-conditions flex-vertical">
-			<div class="flex-horizontal">
-			{{#each traumaData.displayed as |status displayName|}}
-				<label class="text-checkbox">
-					<input type="checkbox" data-dtype="Boolean" name="data.trauma.checked.{{displayName}}" value="{{status}}" {{checked status}}/>
-					<span>{{displayName}}</span>
-				</label>
-				{{#if (test @index "==" (calc (calc (calc "floor" (count ../traumaData.displayed)) "/" 2) "-" 1))}}
-				</div><div class="flex-horizontal">
-				{{/if}}
-			{{/each}}
-			</div>
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs"
+			class="comp-trauma comp-vertical comp-teeth comp-teeth-short"
+			label=traumaData.name
+			labelClass="filled-label"
+			dotline=traumaData.dotline
+		}}
+
+		{{> "systems/eunos-blades/templates/components/comp.hbs"
+			class="comp-trauma-conditions comp-vertical"
+			compContainer=traumaData.compContainer
+		}}
+
 	</section>
 
 	{{!-- Harm, Healing and Armor --}}
@@ -272,33 +163,25 @@
 
 				{{!-- Abilities Tab --}}
 				<div class="tab abilities flex-vertical" data-tab="abilities">
-					<label class="tab-label">
-						<a class="item-add-popup" data-item-type="ability">
+					<label class="comp tab-label" data-comp-cat="ability">
+						<a class="comp-control comp-button comp-add">
 							<i class="fas fa-plus-square"></i>
 						</a>
 						<span class="tab-title">{{localize "BITD.Abilities"}}</span>
 					</label>
 
 					{{#each items.abilities}}
-						<div class="labelled-item labelled-horizontal item" data-item-id="{{_id}}">
-							<label class="item-name">
-								<span class="item-title">{{case "title" name}}</span>
-								<img class="item-img" src="{{img}}" />
-							</label>
-							<div class="labelled-item-container">
-								<div class="item-description shadowed">{{{system.rules}}}</div>
-							</div>
-							<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
-								<i class="fas fa-trash"></i>
-							</a>
-						</div>
+					{{> "systems/eunos-blades/templates/components/comp.hbs" this
+						class="comp-desc-trait comp-horizontal full-width"
+						remButton=true
+					}}
 					{{/each}}
 				</div>
 
 				{{!-- Loadout Tab --}}
 				<div class="tab loadout flex-vertical" data-tab="loadout">
 					<label class="tab-label">
-						<a class="item-add-popup" data-item-type="item">
+						<a class="comp-control comp-add" data-item-type="item">
 							<i class="fas fa-plus-square"></i>
 						</a>
 						<span class="tab-title">{{localize "BITD.Loadout"}}</span>
@@ -318,8 +201,8 @@
 					</label>
 
 					{{#each items.loadout}}
-						<div class="labelled-item labelled-horizontal item" data-item-id="{{_id}}">
-							<label class="item-name">
+						<div class="comp comp-horizontal item" data-item-id="{{_id}}">
+							<label class="comp-title">
 								<span class="item-title">{{case "title" name}}</span>
 								<img class="item-img" src="{{img}}" />
 								{{#if (test system.uses.max ">" 0)}}
@@ -333,10 +216,10 @@
 								}}
 								{{/if}}
 							</label>
-							<div class="labelled-item-container">
-								<div class="item-description shadowed">{{{system.rules}}}</div>
+							<div class="comp-body">
+								<div class="comp-body-text shadowed">{{{system.rules}}}</div>
 							</div>
-							<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
+							<a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
 								<i class="fas fa-trash"></i>
 							</a>
 							<div class="item-load number-circle">{{system.load}}</div>
@@ -386,9 +269,9 @@
 						<div class="item flex-horizontal" data-item-id="{{item._id}}">
 							<div class="item-body item-sheet-open flex-horizontal">
 								<img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
-								<div class="item-name item-title">{{item.name}}</div>
+								<div class="comp-title">{{item.name}}</div>
 							</div>
-							<a class="item-control item-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
+							<a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
 								<i class="fas fa-trash"></i>
 							</a>
 						</div>
@@ -401,15 +284,15 @@
 		<section class="action-ratings flex-vertical">
 
 				{{#each data.attributes as |attribute_data attribute_name|}}
-				<div class="labelled-item labelled-horizontal labelled-attribute">
-					<div class="attribute-total-clock clock-container">
+				<div class="comp comp-horizontal comp-attribute">
+					<div class="clock-container">
 							{{> "systems/eunos-blades/templates/components/clock.hbs"
 								data=(lookup ../attributes attribute_name)
 							}}
 						</td>
 					</div>
-					<label data-roll-attribute="{{attribute_name}}">{{case "title" attribute_name}}</label>
-					<div class="labelled-item-container">
+					<label class="comp-label" data-roll-attribute="{{attribute_name}}">{{case "title" attribute_name}}</label>
+					<div class="comp-body">
 						{{> "systems/eunos-blades/templates/parts/dotline.hbs"
 							data=(lookup ../data.experience attribute_name)
 							target=(concat "data.experience." attribute_name ".value")
@@ -421,8 +304,8 @@
 					</div>
 				</div>
 				{{#each attribute_data as |action_data action_name|}}
-				<div class="labelled-item labelled-horizontal labelled-action">
-					<div class="labelled-item-container">
+				<div class="comp comp-horizontal comp-action">
+					<div class="comp-body">
 							{{> "systems/eunos-blades/templates/parts/dotline.hbs"
 								data=action_data
 								target=(concat "data.attributes." attribute_name "." action_name ".value")

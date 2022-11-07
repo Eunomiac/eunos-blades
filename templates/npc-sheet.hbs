@@ -1,48 +1,48 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
 
-	<img class="char-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
-	<img class="char-img-bg" src="{{actor.img}}" />
+	<img class="sheet-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+	<img class="sheet-img-bg" src="{{actor.img}}" />
 
 	<section class="sheet-top">
-		<input class="char-name top-title shadowed" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
-		<input class="char-concept top-subtitle shadowed" type="text" name="data.concept" value="{{data.concept}}" placeholder="Concept">
+		<input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
+		<input class="comp-concept sheet-subtitle shadowed" type="text" name="data.concept" value="{{data.concept}}" placeholder="Concept">
 
-		<div class="char-arena labelled-item">
+		<div class="comp-arena comp">
 			<label>Arena:</label>
 			<input type="text" name="data.arena" value="{{data.arena}}">
 		</div>
-		<div class="char-heritage labelled-item">
+		<div class="comp-heritage comp">
 			<label>Heritage:</label>
 			<input type="text" name="data.heritage" value="{{data.heritage}}">
 		</div>
-		<div class="char-district labelled-item">
+		<div class="comp-district comp">
 			<label>District:</label>
 			<input type="text" name="data.district" value="{{data.district}}">
 		</div>
-		<div class="char-faction labelled-item">
+		<div class="comp-faction comp">
 			<label>Faction:</label>
 			<input type="text" name="data.faction" value="{{data.faction}}">
 		</div>
-		<div class="char-allies labelled-item">
+		<div class="comp-allies comp">
 			<label>Allies:</label>
 			<input type="text" name="data.allies" value="{{data.allies}}">
 		</div>
-		<div class="char-enemies labelled-item">
+		<div class="comp-enemies comp">
 			<label>Enemies:</label>
 			<input type="text" name="data.enemies" value="{{data.enemies}}">
 		</div>
-		<div class="char-traits input-group">
+		<div class="comp-traits input-group">
 			<input class="shadowed" type="text" name="data.traits.0" value="{{data.traits.[0]}}" placeholder="Trait">
 			<input class="shadowed" type="text" name="data.traits.1" value="{{data.traits.[1]}}" placeholder="Trait">
 			<input class="shadowed" type="text" name="data.traits.2" value="{{data.traits.[2]}}" placeholder="Trait">
 		</div>
-		<input class="char-short-description shadowed" type="text" name="data.description_short" value="{{data.description_short}}"
+		<input class="comp-short-description shadowed" type="text" name="data.description_short" value="{{data.description_short}}"
 			placeholder="Short Description">
 	</section>
 
 
 
-	<section class="flex-horizontal char-tabs">
+	<section class="flex-horizontal comp-tabs">
 		<div class="tab-content flex-vertical grow-two nav-group">
 			<nav class="tabs flex-horizontal">
 				<a class="item" data-tab="description">Description</a>
@@ -51,26 +51,26 @@
 				<a class="item" data-tab="randomizer">Randomizer</a>
 				{{/if}}
 			</nav>
-			<div id="char-{{actor._id}}-description" class="tab flex-vertical description editor-tab" data-tab="description">
+			<div id="comp-{{actor._id}}-description" class="tab flex-vertical description editor-tab" data-tab="description">
 				{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
 			</div>
 
-			<div id="char-{{actor._id}}-friends-and-foes" class="tab flex-vertical friends-and-foes" data-tab="friends-and-foes">
+			<div id="comp-{{actor._id}}-friends-and-foes" class="tab flex-vertical friends-and-foes" data-tab="friends-and-foes">
 				<div class="flex-horizontal">
-					<div class="char-connections-list allies-list">
+					<div class="comp-connections-list allies-list">
 						<div class="label-stripe flex-horizontal"><p>Allies</p></div>
 					</div>
-					<div class="char-connections-list enemies-list">
+					<div class="comp-connections-list enemies-list">
 						<div class="label-stripe flex-horizontal"><p>Enemies</p></div>
 					</div>
-					<div class="char-connections-list others-list">
+					<div class="comp-connections-list others-list">
 						<div class="label-stripe flex-horizontal"><p>Others</p></div>
 					</div>
 				</div>
 			</div>
 
 				{{#if isGM}}
-			<div id="char-{{actor._id}}-randomizer" class="tab flex-vertical randomizer" data-tab="randomizer">
+			<div id="comp-{{actor._id}}-randomizer" class="tab flex-vertical randomizer" data-tab="randomizer">
 				{{> "systems/eunos-blades/templates/parts/button-icon.hbs"
 					blockClass="tooltip-left"
 					buttonClass="fas fas-galaxy"
@@ -79,7 +79,7 @@
 				}}
 				<div class="randomizer">
 					{{#each randomizers as |data key|}}
-					<div class="char-randomizer-field field-size-{{data.size}}">
+					<div class="comp-randomizer-field field-size-{{data.size}}">
 						{{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
 							isToggled=data.isLocked
 							activeClass="fas fa-lock"

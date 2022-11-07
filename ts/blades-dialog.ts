@@ -1,6 +1,5 @@
 import C, {BladesActorType, BladesItemType} from "./core/constants.js";
 import U from "./core/utilities.js";
-import H from "./core/helpers.js";
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
 
@@ -29,7 +28,7 @@ class BladesDialog extends Dialog {
 		callback: (docID: string) => Promise<void>,
 		tabFilters: Record<string, (a: T) => boolean> = {all: (a: T) => true},
 		featuredFilters?: Record<string, (a: T) => boolean>,
-		isFeaturing = false
+		isFeaturing: Record<string,boolean> = {}
 	) {
 		const app = new BladesDialog({
 			doc,
@@ -82,14 +81,14 @@ class BladesDialog extends Dialog {
 			]));
 	}
 
-	applyFeaturedFilters<T extends BladesActor|BladesItem>(filters: Record<string, (a: T) => boolean>, isFeaturing: boolean) {
+	applyFeaturedFilters<T extends BladesActor|BladesItem>(filters: Record<string, (a: T) => boolean>, isFeaturing: Record<string,boolean>) {
 		for (const [tabName, filterFunc] of Object.entries(filters)) {
 			// const filterFunc = filters[tabName];
 			const [featured, other] = [
 				(this.tabs[tabName].other as T[]).filter((doc: T) => filterFunc(doc)),
 				(this.tabs[tabName].other as T[]).filter((doc: T) => !filterFunc(doc))
 			];
-			if (isFeaturing) {
+			if (isFeaturing[tabName as keyof typeof isFeaturing]) {
 				this.tabs[tabName] = {
 					featured,
 					other
@@ -111,7 +110,7 @@ class BladesDialog extends Dialog {
 			cohort: ["Item", BladesItemType.cohort],
 			crew_ability: ["Item", BladesItemType.crew_ability],
 			crew_reputation: ["Item", BladesItemType.crew_reputation],
-			crew_type: ["Item", BladesItemType.crew_type],
+			crew_playbook: ["Item", BladesItemType.crew_playbook],
 			crew_upgrade: ["Item", BladesItemType.crew_upgrade],
 			faction: ["Item", BladesItemType.faction],
 			gm_tracker: ["Item", BladesItemType.gm_tracker],

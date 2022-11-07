@@ -1,7 +1,7 @@
-import { BladesItem } from "../blades-item";
-import { BladesActor } from "../blades-actor";
+import BladesItem from "../blades-item";
+import BladesActor from "../blades-actor";
 import { bladesRoll } from "../blades-roll";
-import { BladesDialog } from "../blades-dialog";
+import BladesDialog from "../blades-dialog";
 
 declare global {
 
@@ -18,7 +18,7 @@ declare global {
 		cohort = "cohort",
 		crew_ability = "crew_ability",
 		crew_reputation = "crew_reputation",
-		crew_type = "crew_type",
+		crew_playbook = "crew_playbook",
 		crew_upgrade = "crew_upgrade",
 		faction = "faction",
 		feature = "feature",
@@ -128,10 +128,9 @@ declare global {
 		}
 
 		interface SubActorData {
-			[id: ID]: {
-				category: SubActorCategory,
-				data: Partial<Omit<BladesActor["system"],"subactors">>
-			}
+			id: string,
+			category: SubActorCategory,
+			data: Partial<Omit<BladesActor["system"],"subactors">>
 		}
 	}
 

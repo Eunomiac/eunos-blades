@@ -46,7 +46,7 @@ class BladesNPCSheet extends BladesSheet {
 		// });
 
 		// // Delete Inventory Item
-		// html.find('.item-delete').click(ev => {
+		// html.find('.comp-delete').click(ev => {
 		//   const element = $(ev.currentTarget).parents(".item");
 		//   this.actor.deleteEmbeddedDocuments("Item", [element.data("itemId")]);
 		//   element.slideUp(200, () => this.render(false));

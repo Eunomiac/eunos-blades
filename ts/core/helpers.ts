@@ -22,6 +22,7 @@ export async function preloadHandlebarsTemplates() {
 		"systems/eunos-blades/templates/parts/button-icon.hbs",
 		"systems/eunos-blades/templates/parts/dotline.hbs",
 		"systems/eunos-blades/templates/components/armor.hbs",
+		"systems/eunos-blades/templates/components/comp.hbs",
 
 		// Actor Sheet Partials
 		"systems/eunos-blades/templates/parts/turf-list.hbs",
@@ -376,34 +377,3 @@ export function registerHandlebarHelpers() {
 	Object.entries(handlebarHelpers).forEach(([name, func]) => Handlebars.registerHelper(name, func));
 }
 // #endregion ▄▄▄▄▄ Handlebars ▄▄▄▄▄
-
-
-/**~
- * Identifies duplicate items by type and returns a array of item ids to remove.
- */
-const removeDuplicatedItemType = (item_data: ItemDataConstructorData, actor: BladesActor): string[] => {
-	const dupe_list: string[] = [];
-	const distinct_types = ["crew_reputation", "playbook", "vice", "background", "heritage"];
-	const allowed_types = ["item"];
-	const should_be_distinct = distinct_types.includes(item_data.type);
-
-	//~ If the Item has the exact same name - remove it from list.
-	//~ Remove Duplicate items from the array.
-	actor.items.forEach((item) => {
-		const has_double = (item_data.type === item.data.type);
-		if (
-					 (item.name === item_data.name || (should_be_distinct && has_double))
-				&& (!allowed_types.includes(item_data.type))
-				&& (item_data._id !== item.id)
-		) {
-			dupe_list.push(item.id!);
-		}
-	});
-
-	return dupe_list;
-};
-
-
-export default {
-	removeDuplicatedItemType
-};

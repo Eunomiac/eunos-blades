@@ -1,7 +1,6 @@
 
 import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../blades-item.js";
-import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 export default class BladesClockKeeperSheet extends BladesItemSheet {
 
@@ -37,7 +36,7 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
 	}
 
 
-	override async _updateObject(event: unknown, formData: ItemDataConstructorData) {
+	override async _updateObject(event: unknown, formData: any) {
 		const updateData = await this.object.update(formData);
 		socketlib.system.executeForEveryone("renderOverlay");
 		// (this.item as BladesItem).renderOverlay();

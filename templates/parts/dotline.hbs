@@ -1,5 +1,5 @@
 
-<div class="dotline {{~#if blockClass}} {{blockClass}}{{/if}} {{~#if isLocked}} locked{{/if}}" {{~#unless isLocked}}data-target="{{target}}"{{/unless}} data-value="{{data.value}}">
+<div class="dotline {{~#if class}} {{class}}{{/if}} {{~#if isLocked}} locked{{/if}}" {{~#unless isLocked}}data-target="{{target}}"{{/unless}} data-value="{{data.value}}">
 
 	{{!-- Filled Dots --}}
 	{{#forloop 1 (calc (test value "??" data.value) "min" (test (test max "??" data.max) "??" (test value "??" data.value)))}}

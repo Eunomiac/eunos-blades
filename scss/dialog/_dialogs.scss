@@ -46,10 +46,10 @@
 
 
 					&.hovering {
-						.labelled-item {
-							.labelled-item-container:not(.hover-over) {
+						.comp {
+							.comp-body:not(.hover-over) {
 
-								.item-name.item-title {
+								.comp-title.item-title {
 									color: var(--blades-grey);
 								}
 								> img {
@@ -71,14 +71,14 @@
 				transform-origin: center;
 				transform: scale(1.5) translateY(10px);
 			}
-			.labelled-vertical {
+			.comp-vertical {
 				height: 50px;
 				width: 25%;
 				min-width: min-content;
 				flex-grow: 0;
 				margin: 15px 0 35px 0;
 
-				.labelled-item-container {
+				.comp-body {
 					transform-origin: center center;
 
 					&, & * {
@@ -86,7 +86,7 @@
 						transform-origin: center;
 					}
 
-					.item-name.item-title {
+					.comp-title.item-title {
 						font-size: toRem(14px);
 						width: 100%;
 					}
@@ -103,7 +103,7 @@
 
 					&.hover-over {
 						scale: 1.2;
-						.item-name.item-title {
+						.comp-title.item-title {
 							// scale: calc(1 / 1.8);
 						}
 						> img {

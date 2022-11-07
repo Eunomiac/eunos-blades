@@ -1,3 +1,7 @@
+& {
+	background: var(--blades-black);
+}
+
 .window-header {
 	.window-title {
 		font-variant: small-caps;
@@ -20,7 +24,7 @@
 	}
 }
 
-.window-content form.editable .char-img {
+.window-content form.editable .sheet-img {
 	position: absolute;
 	height: 200px;
 	top: -10px;
@@ -30,11 +34,12 @@
 	mask-image: linear-gradient(to right, black 75%, transparent);
 }
 
-.window-content form.editable .char-img-bg {
+.window-content form.editable .sheet-img-bg {
 	position: absolute;
 	width: calc(100% + 2 * var(--content-padding)) !important;
 	height: calc(100% - var(--content-padding)) !important;
 	left: calc(-1 * var(--content-padding));
+	top: calc(-1 * var(--content-padding));
 	overflow: hidden;
 	pointer-events: none;
 
@@ -54,7 +59,7 @@
 
 .window-content section { position: relative; z-index: 2 }
 
-.window-content section.sheet-top, .window-content section.item-top {
+.window-content section.sheet-top {
 	display: grid;
 	width: calc(100% + 2 * var(--content-padding));
 	left: calc(-1 * var(--content-padding));
@@ -68,54 +73,65 @@
 	pointer-events: none;
 	position: relative;
 
-	&.flex-horizontal {
-		display: flex;
-		align-items: center;
-	}
-
 	img[data-edit] {
 		// position: absolute;
 		height: 75px;
 		margin: 0 12.5px 12.5px 0;
 	}
 
-	img[data-edit], input, a, .item-title, .sub-actor-name { pointer-events: auto }
+	img[data-edit], input, a, [name] { pointer-events: auto }
 
 	> * {
 		z-index: 2;
 	}
 
-	.top-title {
-		--top-title-font-size: #{toRem(32px)};
-		--top-title-height-mult: 1.4;
+	.sheet-title {
+		--sheet-title-font-size: #{toRem(32px)};
+		--sheet-title-height-mult: 1.4;
 
-		--top-title-height: calc(var(--top-title-height-mult) * var(--top-title-font-size));
+		--sheet-title-height: calc(var(--sheet-title-height-mult) * var(--sheet-title-font-size));
 
 		grid-area: title;
 		overflow: visible;
 		font-family: var(--font-emphasis);
 		color: var(--blades-white-bright);
-		font-size: var(--top-title-font-size);
+		font-size: var(--sheet-title-font-size);
 		font-variant: small-caps;
-		height: var(--top-title-height);
+		height: var(--sheet-title-height);
 		margin-top: calc(-1 * var(--content-padding));
 		position: relative;
-		// top: calc(-1 * (var(--top-title-font-size) / 6));
+		// top: calc(-1 * (var(--sheet-title-font-size) / 6));
 	}
 
-	.top-subtitle {
-		--top-subtitle-font-size: #{toRem(24px)};
-		--top-subtitle-height-mult: 1.8;
+	.sheet-subtitle {
+		--sheet-subtitle-font-size: #{toRem(24px)};
+		--sheet-subtitle-height-mult: 1.8;
 
-		--top-subtitle-height: calc(var(--top-subtitle-height-mult) * var(--top-subtitle-font-size));
+		--sheet-subtitle-height: calc(var(--sheet-subtitle-height-mult) * var(--sheet-subtitle-font-size));
 
 		grid-area: subtitle;
 		overflow: visible;
 		font-family: var(--font-decorative);
-		font-size: var(--top-subtitle-font-size);
-		height: var(--top-subtitle-height);
-		margin-top: calc(-0.75 * var(--top-subtitle-font-size));
+		font-size: var(--sheet-subtitle-font-size);
+		height: var(--sheet-subtitle-height);
+		margin-top: calc(-0.75 * var(--sheet-subtitle-font-size));
 	}
+}
+
+.window-content section.sheet-mid-bar {
+	display: flex;
+	justify-content: stretch;
+	align-items: stretch;
+	flex-wrap: nowrap;
+	border-top: 2px solid var(--blades-white);
+	border-bottom: 2px solid var(--blades-white);
+	background: linear-gradient(to bottom, var(--blades-white), transparent 25%);
+	background: transparent;
+	position: relative;
+	width: calc(100% + (2 * var(--content-padding)));
+	height: toRem(60px);
+	left: calc(-1 * var(--content-padding));
+	padding: 0 var(--content-padding);
 }
 
 .window-content .effects-list {
@@ -138,24 +154,6 @@
 	justify-content: space-between;
 	justify-content: flex-start;
 	align-items: center;
-
-	.item-add-popup {
-		position: absolute;
-		left: toRem(4px);
-		transform: translate(0, -50%);
-		top: 50%;
-		line-height: 1;
-		margin-top: toRem(2px);
-		padding: 0;
-		// background: red;
-		font-weight: bold;
-		color: var(--blades-white-bright);
-		color: var(--blades-black-dark);
-
-		&:hover {
-			color: var(--blades-white-bright);
-		}
-	}
 
 	.tab-title {
 		font-family: var(--font-emphasis);

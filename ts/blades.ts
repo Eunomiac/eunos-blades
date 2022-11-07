@@ -1,7 +1,7 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import C, {IMPORTDATA, BladesActorType, BladesItemType} from "./core/constants.js";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initFonts} from "./core/settings.js";
-import H, {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers.js";
+import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers.js";
 import U from "./core/utilities.js";
 import registerDebugger from "./core/logger.js";
 
@@ -38,7 +38,6 @@ registerDebugger();
 		IMPORTDATA,
 		bladesRoll,
 		simpleRollPopup,
-		H,
 		U,
 		C,
 		BladesItem,
@@ -52,40 +51,58 @@ registerDebugger();
 		GenerateNPCs: () => Promise.all(IMPORTDATA.npcs.map(({name, type, ...data}) => Actor.create({name, type, data}))),
 		MutateItems: () => {
 			const patternParts = {
-				b: [
+				strong: [
 					{
 						items: ["all"],
 						patterns: [
+							"(?:[^ a-zA-Z]<>)?\\d+d",
 							...[
-								"(?:[^ a-zA-Z])?\\d+d",
-								"(?:[^ a-zA-Z])?\\d+d? effect",
-								"(?:[^ a-zA-Z])?\\d+d? result level",
-								"(?:[^ a-zA-Z])?\\d+d? faction status",
-								"(?:[^ a-zA-Z])?\\d+ dot",
-								"(?:[^ a-zA-Z])?\\d+ stash",
-								"(?:[^ a-zA-Z])?\\d+ load",
-								"(?:[^ a-zA-Z])?\\d+ drain",
-								"(?:[^ a-zA-Z])?\\d+ armor",
-								"(?:[^ a-zA-Z])?\\d+ stress(?: box)?"
-							],
+								"effect",
+								"result level",
+								"faction status(?:es)?",
+								"dot",
+								"stash",
+								"(?:free )?load",
+								"drain",
+								"armor",
+								"scale",
+								"potency",
+								"coin",
+								"quality",
+								"quality",
+								"xp",
+								"stress(?: box)?",
+								"rep",
+								"trauma(?: box)?"
+							].map((pat) => `!B(?:[^ a-zA-Z<>])?\\d+ ${pat}`),
 							...["Hunt", "Study", "Survey", "Tinker", "Finesse", "Prowl", "Skirmish", "Wreck", "Attune", "Command", "Consort", "Sway", "Insight", "Prowess", "Resolve"],
 							...[
+								"crew xp",
 								"special armor",
 								"push yourself",
 								"gather info",
-								"cohort",
+								"cohorts?",
 								"xp trigger",
 								"downtime",
 								"one tick",
 								"two ticks",
-								"Tier",
+								"long-?term project",
+								"Tier(?:\\s*[^ a-zA-Z]\\d+)?",
 								"acquire an asset",
-								"reduce heat",
+								"!B(?:(?:[^ a-zA-Z<>])?\\d+ )?(?:reduce\\s*)?heat",
 								"incarcerated",
 								"gather information",
-								"engagement roll",
+								"engagement(?: roll)?",
 								"hull",
-								"hollow"
+								"hollow",
+								"half the coin",
+								"entanglements",
+								"group action",
+								"teamwork(?:\\s* maneuvers)?",
+								"rep",
+								"wanted level",
+								"resistance)(\\s*rolls?",
+								"healing)(\\s*(?:treatment\\s*)?rolls?"
 							]
 						]
 					},
@@ -95,22 +112,40 @@ registerDebugger();
 					{patterns: ["protect"],
 						items: ["Bodyguard"]},
 					{patterns: ["potency", "quality", "magnitude", "potent"],
-						items: ["Ghost Fighter", "Ghost Hunter (Arrow-Swift)", "Ghost Hunter (Ghost Form)", "Ghost Hunter (Mind Link)", "Infiltrator", "Ghost Voice", "Electroplasmic Projectors", "Undead"]},
+						items: ["The Good Stuff", "Ghost Fighter", "Ghost Hunter (Arrow-Swift)", "Ghost Hunter (Ghost Form)", "Ghost Hunter (Mind Link)", "Infiltrator", "Ghost Voice", "Electroplasmic Projectors", "Undead", "Like Part of the Family"]},
 					{patterns: ["invent", "craft"],
 						items: ["Alchemist"]},
 					{patterns: ["assist", "\\d*\\s*drain", "gloom", "compel"],
 						items: ["Foresight", "Ghost Form", "Manifest"]},
 					{patterns: ["load", "armor", "functions", "drain"],
-						items: ["Automaton"]},
+						items: ["Automaton", "Reavers"]},
 					{patterns: ["items"],
 						items: ["Compartments"]},
 					{patterns: ["frame", "frames", "feature"],
-						items: ["Secondary Hull"]}
+						items: ["Secondary Hull"]},
+					{patterns: ["turf"],
+						items: ["Accord", "Fiends"]},
+					{patterns: ["heat", "rep"],
+						items: ["Crow's Veil"]},
+					{patterns: ["Vice", "assist"],
+						items: ["Conviction", "Vault"]},
+					{patterns: ["workshop", "coin"],
+						items: ["Ritual Sanctum in Lair"]},
+					{patterns: ["quality rating", "Documents", "Gear", "Arcane Implements", "Subterfuge Supplies", "Tools", "Weapons"],
+						items: ["Quality"]}
 				],
-				i: [
+				em: [
 					{
 						items: ["all"],
 						patterns: [
+							...[
+								"Thugs",
+								"Skulks",
+								"Adepts",
+								"Rovers",
+								"Rooks",
+								"!BYou got payback against someone who harmed you or someone you care about.!B"
+							],
 							...[
 								"alchemical)(\\s*features",
 								"spark-craft)(\\s*features",
@@ -118,36 +153,51 @@ registerDebugger();
 							],
 							...[
 								"This factors into effect\\."
-							]
+							],
+							"!B\\([^)]+\\)!B"
 						]
 					},
-					{patterns: ["Whenever you would take stress.+instead\\."],
+					{patterns: ["Whenever you would.+instead"],
 						items: ["Ghost Form", "Automaton"]},
 					{patterns: ["feature"],
-						items: ["Frame Upgrade"]}
+						items: ["Frame Upgrade"]},
+					{patterns: ["Worship"],
+						items: ["Conviction"]},
+					{patterns: ["savage", "unreliable", "wild"],
+						items: ["Hooked"]}
 				]
 			};
 
 			function getPattern(patStr: string): RegExp {
-				return new RegExp(`\\b(${patStr})\\b`, "g");
+				return new RegExp(`\\b(${patStr})\\b`
+					.replace(/^\\b\(!B/, "(")
+					.replace(/!B\)\\b$/, ")"), "g");
 			}
 
 			const patterns = {
-				b: patternParts.b.map(({items, patterns}) => ({
-					items,
+				strong: patternParts.strong.map(({items, patterns}) => ({
+					items: items.map(createKey),
 					patterns: patterns.map((pat) => getPattern(pat))
 				})),
-				i: patternParts.i.map(({items, patterns}) => ({
-					items,
+				em: patternParts.em.map(({items, patterns}) => ({
+					items: items.map(createKey),
 					patterns: patterns.map((pat) => getPattern(pat))
 				}))
 			};
 
 			function createKey(name: string) {
 				return name
-					.replace(/ /g, "_")
-					.replace(/[^A-Za-z_0-9]/g, "")
-					.replace(/^\d+|\d+$/g, "");
+					.replace(/[^A-Za-z_0-9 ]/g, "")
+					.trim()
+					.replace(/ /g, "_");
+			}
+
+			function getPrimaryName(name: string) {
+				return name
+					.replace(/^\s*\d+\s*|\s*\d+\s*$/g, "")
+					.replace(/:.*$/, "")
+					.replace(/\(.*?\)/g, "")
+					.trim();
 			}
 
 			game.items
@@ -157,20 +207,28 @@ registerDebugger();
 					};
 					let ruleString = i.system.rules;
 					if (ruleString) {
+						// ruleString = `<p>${ruleString
+						// 	.replace(/<\/?[^ >]+>/g, "")
+						// 	.replace(/[<>]/g, "")}</p>`;
+
 						ruleString = ruleString
-							.replace(/<[^> ]*?>/g, "")
-							.replace(/[<>]/g, "");
+							.replace(/<strong>|<\/strong>|<em>|<\/em>/g, "")
 						updateData["system.description"] = ruleString;
 						for (const [wrapper, patParts] of Object.entries(patterns)) {
 							for (const {items, patterns} of patParts) {
-								if (items.includes("all") || items.includes(i.name ?? "")) {
+								if (items.includes("all") || items.includes(createKey(i.name!)) || items.includes(createKey(getPrimaryName(i.name!)))) {
 									patterns.forEach((patr) => {
 										ruleString = ruleString
 											.trim()
+											.replace(/-(\d+)/g, "−$1")
 											.replace(patr, `<${wrapper}>$1</${wrapper}>$2`)
 											.replace(/\$2/g, "")
 											.replace(new RegExp(`(<${wrapper}>)+`, "g"), `<${wrapper}>`)
-											.replace(new RegExp(`(</${wrapper}>)+`, "g"), `</${wrapper}>`);
+											.replace(new RegExp(`(</${wrapper}>)+`, "g"), `</${wrapper}>`)
+											.replace(/<(strong|em)>( +)/g, "$2<$1>" )
+											.replace(/( +)<\/(strong|em)>/g, "</$2>$1" )
+											.replace(/ +/g, " ")
+											.trim();
 									});
 								}
 							}
@@ -181,6 +239,12 @@ registerDebugger();
 					i.update(updateData);
 				});
 		},
+		AssignPlaybooks: () => {
+			const playbookMap = {
+				"Cult": ["Ordained", "Ritual Sanctum in Lair"],
+
+			}
+		},
 		GetFlatPackData: async (packName: string) => {
 			const pack = game.packs.find((pack) => pack.metadata.name === packName);
 			if (!pack) { return }
@@ -189,7 +253,7 @@ registerDebugger();
 			const fetchKeysMap = {
 				"name": "name",
 				"system.associated_class": "playbook",
-				"system.associated_crew_type": "crew_type",
+				"system.associated_crew_type": "crew_playbook",
 				"system.associated_faction": "faction",
 				"system.description": "description",
 				"system.description_short": "description_short",
@@ -197,7 +261,7 @@ registerDebugger();
 				"flags.core.sourceId": "flagSource"
 			};
 			const flat_items = [
-				"name|playbook|crew_type|faction|description|description_short|notes|flagSource",
+				"name|playbook|crew_playbook|faction|description|description_short|notes|flagSource",
 				...pack_items.map((pItem) => {
 					const prunedObj: string[] = [];
 					// @ts-expect-error Temp
@@ -280,7 +344,7 @@ Hooks.once("init", async () => {
 	Actors.registerSheet("blades", BladesNPCSheet, {types: ["npc"], makeDefault: true});
 
 	Items.unregisterSheet("core", ItemSheet);
-	Items.registerSheet("blades", BladesItemSheet, {types: ["faction", "item", "playbook", "ability", "heritage", "background", "vice", "crew_upgrade", "cohort", "crew_type", "crew_reputation", "crew_upgrade", "crew_ability"], makeDefault: true});
+	Items.registerSheet("blades", BladesItemSheet, {types: ["faction", "item", "playbook", "ability", "heritage", "background", "vice", "crew_upgrade", "cohort", "crew_playbook", "crew_reputation", "crew_upgrade", "crew_ability"], makeDefault: true});
 
 	// Initialize subclasses
 	await Promise.all([
@@ -300,27 +364,6 @@ Hooks.once("ready", async () => {
 	initTinyMCEStyles();
 	// @ts-expect-error Just never bothered to declare it's a global
 	DebugPC();
-
-	const items = [
-		...(await BladesItem.getAllItemsByType("crew_upgrade")),
-		...(await BladesItem.getAllItemsByType("crew_ability"))
-	];
-
-	await Promise.all(items
-		.map(async (item) => {
-			if (item.type === "crew_ability" && item.system.crew_types!.length === 0) {
-				await item.update({"system.crew_types": [item.system.class]});
-			}
-			return item.update({
-				"system.class": null,
-				"system.class_default": null,
-				"system.crew_type": undefined,
-				"system.logic": null,
-				"system.purchased": null,
-				"system.rules": item.system.description,
-				"img": (item.img ?? "").replace(/crew-upgrade-icons\/|crew-ability-icons\//g, "")
-			});
-		}));
 });
 // #endregion ▄▄▄▄▄ SYSTEM INITIALIZATION ▄▄▄▄▄
 

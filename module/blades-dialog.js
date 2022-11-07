@@ -23,7 +23,7 @@ class BladesDialog extends Dialog {
             "systems/eunos-blades/templates/dialog.hbs"
         ]);
     }
-    static async Display(doc, title, category, callback, tabFilters = { all: (a) => true }, featuredFilters, isFeaturing = false) {
+    static async Display(doc, title, category, callback, tabFilters = { all: (a) => true }, featuredFilters, isFeaturing = {}) {
         const app = new BladesDialog({
             doc,
             title,
@@ -80,7 +80,7 @@ class BladesDialog extends Dialog {
                 this.tabs[tabName].other.filter((doc) => filterFunc(doc)),
                 this.tabs[tabName].other.filter((doc) => !filterFunc(doc))
             ];
-            if (isFeaturing) {
+            if (isFeaturing[tabName]) {
                 this.tabs[tabName] = {
                     featured,
                     other
@@ -102,7 +102,7 @@ class BladesDialog extends Dialog {
             cohort: ["Item", BladesItemType.cohort],
             crew_ability: ["Item", BladesItemType.crew_ability],
             crew_reputation: ["Item", BladesItemType.crew_reputation],
-            crew_type: ["Item", BladesItemType.crew_type],
+            crew_playbook: ["Item", BladesItemType.crew_playbook],
             crew_upgrade: ["Item", BladesItemType.crew_upgrade],
             faction: ["Item", BladesItemType.faction],
             gm_tracker: ["Item", BladesItemType.gm_tracker],

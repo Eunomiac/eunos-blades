@@ -75,6 +75,22 @@
 		margin: 0 #{toRem(5px)};
 	}
 
+	.filled-label {
+		font-size: toRem(20px);
+		line-height: 1;
+		flex-grow: 0;
+		padding: toRem(5px);
+		background: var(--blades-white);
+		color: var(--blades-black);
+		font-family: var(--font-emphasis);
+		text-transform: uppercase;
+		position: relative;
+		z-index: 4;
+		display: block;
+		width: min-content;
+		white-space: nowrap;
+	}
+
 	.number-circle {
 		--nc-size: var(--number-circle-size, #{toRem(20px)});
 		--nc-border-width: calc(var(--nc-size) * (1/10));
@@ -98,146 +114,7 @@
 		// filter: drop-shadow(var(--nc-drop-shadow) var(--nc-drop-shadow) var(--nc-drop-shadow) var(--blades-black-dark));
 	}
 
-	.labelled-item {
-		display: flex;
-		flex-wrap: nowrap;
-		position: relative;
-		justify-content: center;
-		align-items: center;
-
-		label {
-			color: var(--blades-white-bright);
-			font-size: toRem(12px);
-			line-height: toRem(12px);
-			position: relative;
-			z-index: 1;
-			flex-grow: 0.5;
-
-			&.labelled-item-prompt {
-				font-size: toRem(16px);
-				line-height: 1.1;
-				white-space: wrap;
-				font-family: var(--font-decorative-alt-smallcaps);
-				font-family: var(--font-emphasis);
-				color: var(--blades-gold);
-				transition: 0.25s;
-				text-transform: uppercase;
-				text-align: center;
-
-				&::first-line {
-					font-size: toRem(14px);
-					text-transform: lowercase;
-					font-variant: small-caps;
-					text-shadow: none;
-					text-align: center;
-					color: var(--blades-white);
-				}
-
-				&:hover {
-					transform: scale(1.4);
-					color: var(--blades-gold-bright);
-
-					&::first-line {
-						color: var(--blades-gold-bright);
-					}
-				}
-			}
-		}
-
-		input[type="text"] {
-			font-size: toRem(14px);
-			height: toRem(18px);
-			font-family: var(--font-emphasis);
-			text-transform: uppercase;
-		}
-
-		.item-name, .sub-actor-name {
-			pointer-events: none;
-
-			&.item-title, .item-title {
-				pointer-events: auto;
-			}
-		}
-
-		.labelled-item-container {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			flex-grow: 1;
-			position: relative;
-
-
-			h1,h2,h3,h4,p,blockquote,table {
-				margin: 0;
-				padding: 0;
-			}
-		}
-
-		&.labelled-vertical {
-			--labelled-item-img-scale: 1.5;
-			--labelled-item-name-size: #{toRem(16px)};
-			flex-direction: column;
-
-			> label {
-				text-align: center;
-			}
-
-			.item-name, .sub-actor-name {
-				text-align: center;
-				white-space: nowrap;
-				font-family: var(--font-emphasis);
-				position: absolute;
-				z-index: 2;
-				transform: translate(-50%, -50%);
-				top: 65%;
-				font-size: var(--labelled-item-name-size);
-				left: 50%;
-				color: var(--blades-white-bright);
-				text-transform: uppercase;
-
-				&.long-name {
-					white-space: initial;
-				}
-			}
-
-			.labelled-item-container {
-				display: flex;
-				flex-direction: column;
-				min-height: toRem(40px);
-				width: 100%;
-
-				> img {
-					position: absolute;
-					transform:
-						translate(-50%, -50%)
-						scaleX(var(--labelled-item-img-scaleX, var(--labelled-item-img-scale)))
-						scaleY(var(--labelled-item-img-scaleY, var(--labelled-item-img-scale)));
-					opacity: 0.5;
-					filter: blur(0.5px);
-					top: 70%;
-					left: 50%;
-					height: 100%;
-					z-index: -1;
-				}
-			}
-		}
-
-		&.labelled-horizontal {
-			flex-direction: row;
-			justify-content: stretch;
-			align-items: center;
-
-			label {
-				text-align: right;
-
-				.item-img {
-					position: absolute;
-				}
-			}
-		}
-	}
-
-	.shadowed, .labelled-item label, .labelled-item input[type="text"] {
+	.shadowed {
 		box-shadow: none;
 		background: transparent;
 		text-shadow:
@@ -265,19 +142,6 @@
 		input[type="checkbox"]:checked + span {
 			color: var(--active-text-color, var(--blades-gold-bright));
 		}
-	}
-
-	.tooltip {
-		display: none;
-		position: absolute;
-		padding: 10px;
-		color: var(--blades-white);
-		background-color: var(--blades-black);
-		border: 1px solid #777;
-		//box-shadow: 0 1px 3px 1px rgba(0,0,0,0.5);
-		border-radius: 3px;
-		z-index: 9999999;
-		max-width: 300px;
 	}
 
 	.full-width {

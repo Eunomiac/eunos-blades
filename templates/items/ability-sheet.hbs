@@ -1,7 +1,7 @@
 <form class="{{cssClass}}" autocomplete="off">
 	<section class="item-top flex-horizontal">
 		<img src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
-		<input class="item-name top-title shadowed" type="text" name="name" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}" />
+		<input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}" />
 	</section>
 	<section class="item-main flex-vertical">
 		{{#if isEmbeddedItem}}
@@ -26,7 +26,7 @@
 		{{#if isGM}}
 			<label class="tab-label">
 				<span class="tab-title">Active Effects</span>
-				<a class="item-add-popup effect-control" data-action="create" title="Create Effect">
+				<a class="comp-control comp-add effect-control" data-action="create" title="Create Effect">
 						<i class="fas fa-plus-square"></i>
 				</a>
 			</label>
