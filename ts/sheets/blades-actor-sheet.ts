@@ -25,19 +25,19 @@ class BladesActorSheet extends BladesSheet {
 			sheet: BladesActorSheet,
 			{type, uuid}: {type: string, uuid: string}
 		) => {
-			if (type === "Actor") {
-				const droppedActorId = uuid.replace(/^Actor\./, "");
-				const droppedActor = game.actors.get(droppedActorId) as BladesActor|undefined;
-				if (!droppedActor) { return }
-				switch (droppedActor.type) {
-					case "crew": {
-						actor.update({"system.crew": droppedActorId});
-						break;
-					}
-					// no default
-				}
-				return;
-			}
+			// if (type === "Actor") {
+			// 	const droppedActorId = uuid.replace(/^Actor\./, "");
+			// 	const droppedActor = game.actors.get(droppedActorId) as BladesActor|undefined;
+			// 	if (!droppedActor) { return }
+			// 	switch (droppedActor.type) {
+			// 		case "crew": {
+			// 			actor.update({"system.crew": droppedActorId});
+			// 			break;
+			// 		}
+			// 		// no default
+			// 	}
+			// 	return;
+			// }
 			if (type === "Item") {
 				const droppedItemId = uuid.replace(/^Item\./, "");
 				const droppedItem = game.items.get(droppedItemId) as BladesItem|undefined;
@@ -208,22 +208,6 @@ class BladesActorSheet extends BladesSheet {
 			mouseleave: function() {
 				if (!self.activeArmor.includes("special") || self.activeArmor.length === 1) { return }
 				$(this).siblings(".svg-armor.armor-special").removeClass("hover-over");
-			}
-		});
-
-		//~ Delete Inventory Item
-		html.find(".item-delete").on({
-			click: async function() {
-				const element = $(this).parents(".item");
-				await self.actor.removeItem(element.data("itemId"));
-				element.slideUp(200, () => self.render(false));
-			}
-		});
-
-		//~ Manage Active Effects
-		html.find(".effect-control").on({
-			click: function(event: ClickEvent) {
-				BladesActiveEffect.onManageActiveEffect(event, self.actor);
 			}
 		});
 	}

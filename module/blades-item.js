@@ -79,6 +79,11 @@ class BladesItem extends Item {
     }
     get tier() { return U.pInt(this.parent?.system?.tier); }
     get isCustomizedItem() { return this.isEmbedded && this.system.isCustomized; }
+    get playbooks() {
+        return ["crew_upgrade", "crew_ability"].includes(this.type)
+            ? this.system.crew_types
+            : this.system.playbooks;
+    }
     isKept(actor) {
         if (this.type !== "ability") {
             return null;
@@ -107,6 +112,13 @@ class BladesItem extends Item {
                     || (!this.system.playbooks.includes("Ghost")
                         && !this.system.playbooks.includes("Hull")
                         && !this.system.playbooks.includes("Vampire")));
+            }
+            if (this.type === "crew_ability") {
+                isValid = Boolean(doc.playbookName && this.system.crew_types?.includes(doc.playbookName));
+            }
+            if (this.type === "crew_upgrade") {
+                isValid = Boolean(this.system.crew_types?.includes("ANY")
+                    || (doc.playbookName && this.system.crew_types?.includes(doc.playbookName)));
             }
             if (!isValid) {
                 return false;

@@ -95,26 +95,34 @@
 				</a>
 			</label>
 			{{/if}}
+			{{#if items.vice.secondVice}}
+			<div class="labelled-item-container second-vice" data-item-id="{{items.vice.secondVice._id}}">
+				<img src="{{items.vice.secondVice.img}}" title="{{items.vice.secondVice.name}}" />
+				<div class="item-name item-title long-name shadowed">{{items.vice.secondVice.name}}</div>
+			</div>
+			{{/if}}
 		</div>
 
-		<div class="char-crew labelled-item labelled-vertical">
-			{{#if data.crew}}
-			<label>
-				<a class="item-add-popup" data-distinct="true" data-item-type="crew">Crew</a>
-			</label>
-			<div class="labelled-item-container" data-sub-actor-id="{{data.crew.id}}">
-				<img src="{{data.crew.img}}" title="{{data.crew.name}}" />
-				<div class="sub-actor-name long-name shadowed">{{data.crew.name}}</div>
-			</div>
-			{{else}}
-			<label class="labelled-item-prompt shadowed">
-				<a class="item-add-popup" data-distinct="true" data-item-type="crew">
+		{{#if comps.crew}}
+		<div class="comp-crew comp-vertical comp" data-comp-cat="pc-crew" data-comp-id="{{comps.crew.id}}">
+		<label class="comp-label">
+			<a class="popup comp-add">Crew</a>
+		</label>
+		<div class="comp-body">
+			<img src="{{comps.crew.img}}" title="{{comps.crew.name}}" />
+			<div class="comp-name long-text shadowed">{{comps.crew.name}}</div>
+		</div>
+		</div>
+		{{else}}
+		<div class="comp-crew comp-vertical comp" data-comp-cat="pc-crew">
+			<label class="comp-prompt shadowed">
+				<a class="popup comp-add">
 					<span class="sur-title">Select Your</span>
 					<span class="main-title">Crew</span>
 				</a>
 			</label>
-			{{/if}}
 		</div>
+		{{/if}}
 
 		<div class="char-coins labelled-item labelled-vertical">
  			<label>Coins</label>

@@ -84,11 +84,21 @@ class BladesActor extends Actor {
 		});
 	}
 
+	isValidForDoc(parentDoc: BladesActor|BladesItem) {
+		return true;
+	}
+
+	async embedSubActor(category: BladesActor.SubActorCategory, actor: BladesActor) {
+		this.update({[`system.subactors.${actor.id}`]: {category, data: {}}});
+	}
+
 	get playbookName() {
 		return this.playbook?.name ?? null;
 	}
 	get playbook() {
-		return this.items.find((item) => item.type === "playbook") ?? null;
+		return this.items.find((item) => item.type === "playbook")
+			?? this.items.find((item) => item.type === "crew_type" )
+			?? null;
 	}
 
 	get attributes(): Record<Attributes,number> {

@@ -58,11 +58,19 @@ class BladesActor extends Actor {
             }
         });
     }
+    isValidForDoc(parentDoc) {
+        return true;
+    }
+    async embedSubActor(category, actor) {
+        this.update({ [`system.subactors.${actor.id}`]: { category, data: {} } });
+    }
     get playbookName() {
         return this.playbook?.name ?? null;
     }
     get playbook() {
-        return this.items.find((item) => item.type === "playbook") ?? null;
+        return this.items.find((item) => item.type === "playbook")
+            ?? this.items.find((item) => item.type === "crew_type")
+            ?? null;
     }
     get attributes() {
         return {

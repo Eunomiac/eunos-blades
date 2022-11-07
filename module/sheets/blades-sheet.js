@@ -8,6 +8,7 @@
 import U from "../core/utilities.js";
 import BladesItem from "../blades-item.js";
 import BladesDialog from "../blades-dialog.js";
+import BladesActiveEffect from "../blades-active-effect.js";
 class BladesSheet extends ActorSheet {
     async _onSubActorAddClick(event) {
         event.preventDefault();
@@ -20,27 +21,38 @@ class BladesSheet extends ActorSheet {
             U.tCase(`Add ${item_type}`),
             item_type
         ];
-        if (item_type === "item") {
-            await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.create(game.items.get(itemId), { parent: this.actor }); }, {
-                [`${this.actor.playbookName} Items`]: (item) => Boolean(item.system.playbooks?.includes(this.actor.playbookName ?? "")),
-                "General Items": (item) => Boolean(item.system.playbooks?.includes("ANY"))
-            }, {
-                "General Items": (item) => ["Armor", "Armor, Heavy"].includes(item.name ?? "")
-            });
-        }
-        else if (item_type === "ability") {
-            if (!this.actor.playbookName) {
-                return;
+        switch (item_type) {
+            case "item":
+            case "crew_upgrade": {
+                await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.create(game.items.get(itemId), { parent: this.actor }); }, {
+                    [`${this.actor.playbookName} Items`]: (item) => Boolean(item.playbooks?.includes(this.actor.playbookName ?? "")),
+                    "General Items": (item) => Boolean(item.playbooks?.includes("ANY"))
+                }, {
+                    "General Items": (item) => ["Armor", "Armor, Heavy"].includes(item.name ?? "")
+                });
+                break;
             }
-            await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.create(game.items.get(itemId), { parent: this.actor }); }, {
-                [this.actor.playbookName]: (item) => Boolean(item.system.playbooks?.includes(this.actor.playbookName ?? "")),
-                Veteran: (item) => ![this.actor.playbookName, "Ghost", "Vampire", "Hull"].some((pbName) => item.system.playbooks?.includes(pbName))
-            }, {
-                [this.actor.playbookName]: (item) => this.actor.playbook.system.suggested_ability === item.name
-            }, true);
-        }
-        else if (["heritage", "background", "vice", "playbook"].includes(item_type)) {
-            await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.create(game.items.get(itemId), { parent: this.actor }); });
+            case "ability":
+            case "crew_ability": {
+                if (!this.actor.playbookName) {
+                    return;
+                }
+                await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.create(game.items.get(itemId), { parent: this.actor }); }, {
+                    [this.actor.playbookName]: (item) => Boolean(item.playbooks?.includes(this.actor.playbookName ?? "")),
+                    Veteran: (item) => ![this.actor.playbookName, "Ghost", "Vampire", "Hull"].some((pbName) => item.playbooks?.includes(pbName))
+                }, {
+                    [this.actor.playbookName]: (item) => this.actor.playbook.system.suggested_ability === item.name
+                }, true);
+                break;
+            }
+            case "heritage":
+            case "background":
+            case "vice":
+            case "playbook":
+            case "crew_type": {
+                await BladesDialog.Display(...initialParams, async (itemId) => { BladesItem.create(game.items.get(itemId), { parent: this.actor }); });
+                break;
+            }
         }
     }
     async getData() {
@@ -125,6 +137,20 @@ class BladesSheet extends ActorSheet {
         html.find("[data-item-id]").find(".item-title").on("click", this._onItemOpenClick.bind(this));
         html.find("[data-sub-actor-id]").find(".sub-actor-name").on("click", this._onSubActorOpenClick.bind(this));
         html.find("[data-roll-attribute]").on("click", this._onRollAttributeDieClick.bind(this));
+        const self = this;
+        html.find(".item-delete").on({
+            click: async function () {
+                const element = $(this).parents(".item");
+                await self.actor.removeItem(element.data("itemId"));
+                element.slideUp(200, () => self.render(false));
+            }
+        });
+
+        html.find(".effect-control").on({
+            click: function (event) {
+                BladesActiveEffect.onManageActiveEffect(event, self.actor);
+            }
+        });
     }
     async _onClockLeftClick(event) {
         event.preventDefault();

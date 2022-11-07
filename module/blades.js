@@ -276,6 +276,25 @@ Hooks.once("ready", async () => {
     initCanvasStyles();
     initTinyMCEStyles();
     DebugPC();
+    const items = [
+        ...(await BladesItem.getAllItemsByType("crew_upgrade")),
+        ...(await BladesItem.getAllItemsByType("crew_ability"))
+    ];
+    await Promise.all(items
+        .map(async (item) => {
+        if (item.type === "crew_ability" && item.system.crew_types.length === 0) {
+            await item.update({ "system.crew_types": [item.system.class] });
+        }
+        return item.update({
+            "system.class": null,
+            "system.class_default": null,
+            "system.crew_type": undefined,
+            "system.logic": null,
+            "system.purchased": null,
+            "system.rules": item.system.description,
+            "img": (item.img ?? "").replace(/crew-upgrade-icons\/|crew-ability-icons\//g, "")
+        });
+    }));
 });
 
 Hooks.once("socketlib.ready", () => {

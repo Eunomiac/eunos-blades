@@ -8,7 +8,6 @@
 import C from "../core/constants.js";
 import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
-import BladesActiveEffect from "../blades-active-effect.js";
 class BladesActorSheet extends BladesSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -22,20 +21,6 @@ class BladesActorSheet extends BladesSheet {
     static Initialize() {
         Actors.registerSheet("blades", BladesActorSheet, { types: ["character"], makeDefault: true });
         Hooks.on("dropActorSheetData", (actor, sheet, { type, uuid }) => {
-            if (type === "Actor") {
-                const droppedActorId = uuid.replace(/^Actor\./, "");
-                const droppedActor = game.actors.get(droppedActorId);
-                if (!droppedActor) {
-                    return;
-                }
-                switch (droppedActor.type) {
-                    case "crew": {
-                        actor.update({ "system.crew": droppedActorId });
-                        break;
-                    }
-                }
-                return;
-            }
             if (type === "Item") {
                 const droppedItemId = uuid.replace(/^Item\./, "");
                 const droppedItem = game.items.get(droppedItemId);
@@ -215,20 +200,6 @@ class BladesActorSheet extends BladesSheet {
                     return;
                 }
                 $(this).siblings(".svg-armor.armor-special").removeClass("hover-over");
-            }
-        });
-
-        html.find(".item-delete").on({
-            click: async function () {
-                const element = $(this).parents(".item");
-                await self.actor.removeItem(element.data("itemId"));
-                element.slideUp(200, () => self.render(false));
-            }
-        });
-
-        html.find(".effect-control").on({
-            click: function (event) {
-                BladesActiveEffect.onManageActiveEffect(event, self.actor);
             }
         });
     }

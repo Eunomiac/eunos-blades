@@ -6,6 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import { BladesActorType, BladesItemType } from "./core/constants.js";
+import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
 class BladesDialog extends Dialog {
     static get defaultOptions() {
@@ -56,9 +57,8 @@ class BladesDialog extends Dialog {
         }
     }
     async _createActorTabs(tabs) {
-        return;
-        const allTypeActors = await BladesActor.getAllItemsByType(this.docType);
-        const validActors = allTypeActors.filter((actor) => actor.isValidForActor(this.actor));
+        const allTypeActors = await BladesActor.getAllActorsByType(this.docType);
+        const validActors = allTypeActors.filter((actor) => actor.isValidForDoc(this.doc));
         this.tabs = Object.fromEntries((Object.entries(tabs))
             .map(([tabName, tabFilter]) => [
             tabName,
@@ -156,16 +156,16 @@ class BladesDialog extends Dialog {
                 $(this).closest(".tab").addClass("hovering");
                 $(this).addClass("hover-over");
                 if (self.docSuperType === "Item") {
-                    const itemRules = game.items.get($(this).data("itemId"))?.system.rules;
-                    itemDetailPane$.html(itemRules ?? "");
+                    const itemRules = (new Handlebars.SafeString(`<span>${game.items.get($(this).data("itemId"))?.system.rules ?? ""}</span>`)).toString();
+                    itemDetailPane$.html(itemRules);
                 }
                 else if (self.docSuperType === "Actor") {
                     const targetActor = game.actors.get($(this).data("itemId"));
                     if (!targetActor) {
                         return;
                     }
-                    const actorDesc = targetActor.system.concept || targetActor.system.description_short || "";
-                    itemDetailPane$.html(actorDesc ?? "");
+                    const actorDesc = (new Handlebars.SafeString(`<span>${targetActor.system.concept || targetActor.system.description_short || ""}</span>`)).toString();
+                    itemDetailPane$.html(actorDesc);
                 }
             },
             mouseleave: function () {

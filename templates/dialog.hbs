@@ -1,6 +1,9 @@
 <div class="{{cssClass}} dialog-content">
 	<section class="tab-content nav-group flex-vertical">
 
+		{{!-- Item Detail Display --}}
+		<div class="item-details"></div>
+
 		{{#if (test (count tabs) ">" 1)}}
 		{{!-- Nav menu --}}
 		<nav class="nav-tabs flex-horizontal">
@@ -9,9 +12,6 @@
 			{{/each}}
 		</nav>
 		{{/if}}
-
-		{{!-- Item Detail Display --}}
-		<div class="item-details"></div>
 
 		{{!-- Tabs --}}
 		{{#each tabs as |tabData tabName|}}

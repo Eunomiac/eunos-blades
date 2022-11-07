@@ -7,6 +7,7 @@ import type BladesActor from "../blades-actor.js";
 import EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs.js";
 import {ToObjectFalseType} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
 import BladesDialog from "../blades-dialog.js";
+import BladesActiveEffect from "../blades-active-effect.js";
 
 declare global {
 	class BladesSheet<
@@ -51,37 +52,51 @@ class BladesSheet extends ActorSheet {
 			item_type
 		] as const;
 
-		if (item_type === "item") {
-			await BladesDialog.Display(
-				...initialParams,
-				async (itemId) => { BladesItem.create(game.items.get(itemId), {parent: this.actor}) },
-				{
-					[`${this.actor.playbookName} Items`]: (item: BladesItem) => Boolean(item.system.playbooks?.includes(this.actor.playbookName ?? "")),
-					"General Items": (item: BladesItem) => Boolean(item.system.playbooks?.includes("ANY"))
-				},
-				{
-					"General Items": (item: BladesItem) => ["Armor", "Armor, Heavy"].includes(item.name ?? "")
-				}
-			);
-		} else if (item_type === "ability") {
-			if (!this.actor.playbookName) { return }
-			await BladesDialog.Display(
-				...initialParams,
-				async (itemId) => { BladesItem.create(game.items.get(itemId), {parent: this.actor}) },
-				{
-					[this.actor.playbookName]: (item: BladesItem) => Boolean(item.system.playbooks?.includes(this.actor.playbookName ?? "")),
-					Veteran: (item: BladesItem) => ![this.actor.playbookName!, "Ghost", "Vampire", "Hull"].some((pbName) => item.system.playbooks?.includes(pbName))
-				},
-				{
-					[this.actor.playbookName]: (item: BladesItem) => this.actor.playbook!.system.suggested_ability === item.name
-				},
-				true
-			);
-		} else if (["heritage", "background", "vice", "playbook"].includes(item_type)) {
-			await BladesDialog.Display(
-				...initialParams,
-				async (itemId) => { BladesItem.create(game.items.get(itemId), {parent: this.actor}) }
-			);
+		switch (item_type) {
+			case "item":
+			case "crew_upgrade": {
+				await BladesDialog.Display(
+					...initialParams,
+					async (itemId) => { BladesItem.create(game.items.get(itemId), {parent: this.actor}) },
+					{
+						[`${this.actor.playbookName} Items`]: (item: BladesItem) => Boolean(item.playbooks?.includes(this.actor.playbookName ?? "")),
+						"General Items": (item: BladesItem) => Boolean(item.playbooks?.includes("ANY"))
+					},
+					{
+						"General Items": (item: BladesItem) => ["Armor", "Armor, Heavy"].includes(item.name ?? "")
+					}
+				);
+				break;
+			}
+			case "ability":
+			case "crew_ability": {
+				if (!this.actor.playbookName) { return }
+				await BladesDialog.Display(
+					...initialParams,
+					async (itemId) => { BladesItem.create(game.items.get(itemId), {parent: this.actor}) },
+					{
+						[this.actor.playbookName]: (item: BladesItem) => Boolean(item.playbooks?.includes(this.actor.playbookName ?? "")),
+						Veteran: (item: BladesItem) => ![this.actor.playbookName!, "Ghost", "Vampire", "Hull"].some((pbName) => item.playbooks?.includes(pbName))
+					},
+					{
+						[this.actor.playbookName]: (item: BladesItem) => this.actor.playbook!.system.suggested_ability === item.name
+					},
+					true
+				);
+				break;
+			}
+			case "heritage":
+			case "background":
+			case "vice":
+			case "playbook":
+			case "crew_type": {
+				await BladesDialog.Display(
+					...initialParams,
+					async (itemId) => { BladesItem.create(game.items.get(itemId), {parent: this.actor}) }
+				);
+				break;
+			}
+			// no default
 		}
 	}
 
@@ -183,6 +198,23 @@ class BladesSheet extends ActorSheet {
 		html.find("[data-sub-actor-id]").find(".sub-actor-name").on("click", this._onSubActorOpenClick.bind(this));
 
 		html.find("[data-roll-attribute]").on("click", this._onRollAttributeDieClick.bind(this));
+
+		const self = this;
+		//~ Delete Inventory Item
+		html.find(".item-delete").on({
+			click: async function() {
+				const element = $(this).parents(".item");
+				await self.actor.removeItem(element.data("itemId"));
+				element.slideUp(200, () => self.render(false));
+			}
+		});
+
+		//~ Manage Active Effects
+		html.find(".effect-control").on({
+			click: function(event: ClickEvent) {
+				BladesActiveEffect.onManageActiveEffect(event, self.actor);
+			}
+		});
 	}
 
 	async _onClockLeftClick(event: ClickEvent) {
@@ -264,6 +296,7 @@ class BladesSheet extends ActorSheet {
 
 		await this.actor.updateEmbeddedDocuments("Item", [update]);
 	}
+
 }
 
 interface BladesSheet {

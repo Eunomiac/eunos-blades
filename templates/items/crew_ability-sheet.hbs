@@ -18,9 +18,6 @@
 		{{editor content=data.rules target="data.rules" button=true owner=owner editable=editable}}
 
 		{{#if (test isGM "||" data.rules_notes)}}
-		<label class="tab-label">
-			<span class="tab-title">Additional Rules Notes</span>
-		</label>
 		{{editor content=data.rules_notes target="data.rules_notes" button=true owner=owner editable=editable}}
 		{{/if}}
 
