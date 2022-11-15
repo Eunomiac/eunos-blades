@@ -47,6 +47,8 @@ class BladesActor extends Actor {
 			return nameA.localeCompare(nameB);
 		});
 
+		eLog.checkLog3("actorFetch", "BladesActor.getAllGlobalActors", await actors);
+
 		return actors;
 	}
 
@@ -60,9 +62,11 @@ class BladesActor extends Actor {
 
 		// Filter by Category Filters, if present
 		if (actorCat in BladesActor.CategoryFilters) {
+			eLog.checkLog3("actorFetch", `BladesActor.getActorsByCat(${actorCat}) *FILTER*`, await BladesActor.CategoryFilters[actorCat](allTypeActors));
 			return BladesActor.CategoryFilters[actorCat](allTypeActors);
 		}
 
+		eLog.checkLog3("actorFetch", `BladesActor.getActorsByCat(${actorCat})`, await allTypeActors);
 		return allTypeActors;
 	}
 
@@ -93,16 +97,25 @@ class BladesActor extends Actor {
 	//~ BladesActor.GetPersonal: Returns WORLD or PACK instance of referenced BladesActor,
 	//~  merged with any personal data recorded on parent actor.
 	static async GetPersonal(actorRef: string|BladesActor, parent: BladesActor): Promise<EmbeddedBladesActor|null> {
-
 		// Get the global instance of the referenced Actor
 		const actor = await BladesActor.GetGlobal(actorRef);
+		eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name
+		}) -> Global Actor`, await actor);
 		if (!actor || !actor.id) { return null }
 
 		// Get the subactor data from the parent Actor
 		const {category, system} = parent.system.subactors[actor.id];
+		eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name
+		}) -> Subactor Data`, {category, system, parent});
 		if (!category || !system) { return null }
 
 		// Merge personal data into parent Actor data
+		eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name
+		}) -> Merged Actor`, {
+			actor: Object.assign(actor, {
+				category,
+				system: foundry.utils.mergeObject(actor.system, system)
+		 })});
 		return Object.assign(actor, {
 			category,
 			system: foundry.utils.mergeObject(
@@ -222,16 +235,18 @@ class BladesActor extends Actor {
 		docs.forEach(async (doc) => {
 			// eLog.log(`... docs.forEach -> ${doc.name} = ${(doc as BladesItem).type} (${doc instanceof BladesItem})`, doc);
 			if (doc instanceof BladesItem) {
-				doc.update({"system.isArchived": true});
+				// doc.update({"system.isArchived": true});
 				switch (doc.type) {
 					case "playbook": {
 						await this.update({
-							"system.trauma.active": null,
-							"system.trauma.checked": null
-						});
-						this.update({
-							"system.trauma.active": Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond: string) => [tCond, true])),
-							"system.trauma.checked": Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond: string) => [tCond, false]))
+							"system.trauma.active": Object.assign(
+								Object.fromEntries(Object.keys(this.system.trauma.active).map((tCond: string) => [tCond, false])),
+								Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond: string) => [tCond, true]))
+							),
+							"system.trauma.checked": Object.assign(
+								Object.fromEntries(Object.keys(this.system.trauma.checked).map((tCond: string) => [tCond, false])),
+								Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond: string) => [tCond, false]))
+							)
 						});
 						break;
 					}
@@ -243,10 +258,6 @@ class BladesActor extends Actor {
 
 	isValidForDoc(parentDoc: BladesActor|BladesItem) {
 		return true;
-	}
-
-	getData() {
-
 	}
 
 	get playbookName() {
@@ -303,9 +314,9 @@ class BladesActor extends Actor {
 		const doc = (await BladesActor.GetPersonal(docId, this)) ?? (await BladesItem.GetPersonal(docId, this));
 		if (!doc) { return }
 		if (doc instanceof BladesActor) {
-			this.update({[`system.subactors.${docId}.isArchived`]: true});
+			BladesActor.Remove(doc, doc.category, this);
 		} else {
-			doc.update({"system.isArchived": true});
+			BladesItem.Remove(doc, doc.type, this);
 		}
 	}
 

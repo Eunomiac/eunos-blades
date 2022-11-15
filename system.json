@@ -94,6 +94,20 @@
       "path": "./packs/crew_abilities.db",
       "type": "Item"
     },
+    {
+      "name": "crew_playbook",
+      "label": "Playbooks (Crew)",
+      "system": "eunos-blades",
+      "path": "./packs/crew_playbooks.db",
+      "type": "Item"
+    },
+    {
+      "name": "playbook",
+      "label": "Playbooks (Scoundrel)",
+      "system": "eunos-blades",
+      "path": "./packs/playbooks.db",
+      "type": "Item"
+    },
 	{
       "name": "faction",
       "label": "Factions",

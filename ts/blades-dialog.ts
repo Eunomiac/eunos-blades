@@ -57,8 +57,8 @@ class BladesDialog extends Dialog {
 	tabs: Record<string, {featured: Array<BladesActor|BladesItem>, other: Array<BladesActor|BladesItem>}> = {};
 	async createTabs<T extends BladesActor|BladesItem>(tabs: Record<string, (a: T) => boolean>) {
 		switch (this.docSuperType) {
-			case "Actor": this._createActorTabs(tabs as Record<string,(a: BladesActor) => boolean>); return;
-			case "Item": this._createItemTabs(tabs as Record<string,(a: BladesItem) => boolean>); return;
+			case "Actor": return this._createActorTabs(tabs as Record<string,(a: BladesActor) => boolean>);
+			case "Item": return this._createItemTabs(tabs as Record<string,(a: BladesItem) => boolean>);
 			// no default
 		}
 	}

@@ -84,12 +84,14 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
 	const [message, ...data] = content;
 
 	if (key) {
-		const blacklist = ((U.getSetting("blacklist") ?? "") as string).split(/\s*,\s*/);
-		const whitelist = ((U.getSetting("whitelist") ?? "") as string).split(/\s*,\s*/);
-		if (blacklist.includes(key) && !whitelist.includes(key)) {
+		const blacklist = ((U.getSetting("blacklist") ?? "") as string).split(/\s*,\s*/).map((pat) => new RegExp(`\\b${pat}\\b`, "igu"));
+		const whitelist = ((U.getSetting("whitelist") ?? "") as string).split(/\s*,\s*/).map((pat) => new RegExp(`\\b${pat}\\b`, "igu"));
+		const isBlack = blacklist.some((pat) => pat.test(key as string));
+		const isWhite = whitelist.some((pat) => pat.test(key as string));
+		if (isBlack && !isWhite) {
 			dbLevel = Math.max(4, Math.min(5, dbLevel + 2)) as 4|5;
 		}
-		if (whitelist.includes(key)) {
+		if (isWhite && !isBlack) {
 			dbLevel = Math.min(3, Math.max(1, dbLevel - 2)) as 1|2|3;
 		}
 	}

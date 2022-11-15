@@ -47,12 +47,8 @@ class BladesDialog extends Dialog {
     tabs = {};
     async createTabs(tabs) {
         switch (this.docSuperType) {
-            case "Actor":
-                this._createActorTabs(tabs);
-                return;
-            case "Item":
-                this._createItemTabs(tabs);
-                return;
+            case "Actor": return this._createActorTabs(tabs);
+            case "Item": return this._createItemTabs(tabs);
         }
     }
     async _createActorTabs(tabs) {

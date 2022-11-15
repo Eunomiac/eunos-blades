@@ -221,11 +221,6 @@ class BladesItem extends Item {
         if (this.parent?.documentName !== "Actor") {
             return;
         }
-        if (["background", "heritage", "vice", "playbook", "crew_playbook", "crew_reputation"].includes(data.type)) {
-            await this.parent.deleteEmbeddedDocuments("Item", this.parent.items
-                .filter((item) => item.type === data.type)
-                .map((item) => item.id ?? ""));
-        }
     }
     prepareData() {
         super.prepareData();
@@ -284,7 +279,7 @@ class BladesItem extends Item {
         }
         return false;
     }
-    isValidForDoc(doc) {
+    async isValidForDoc(doc) {
         let isValid = true;
         if (doc instanceof BladesActor) {
             if (this.type === "item") {
@@ -314,8 +309,13 @@ class BladesItem extends Item {
             if (!isValid) {
                 return false;
             }
+            const activeItems = await BladesItem.GetActiveCategoryItems(this.type, doc);
+            const dupeItems = activeItems
+                .filter((item) => item.system.world_name === this.system.world_name);
 
-            isValid = doc.items.filter((i) => i.system.world_name === this.system.world_name).length < (this.system.num_available ?? 1);
+            if (dupeItems.length) {
+                isValid = (this.system.num_available ?? 1) > dupeItems.length;
+            }
             if (!isValid) {
                 return false;
             }
@@ -323,7 +323,7 @@ class BladesItem extends Item {
             for (let [dotKey, val] of Object.entries(flattenObject(this.system.prereqs ?? {}))) {
                 if (dotKey.startsWith("item")) {
                     dotKey = dotKey.replace(/^item\.?/, "");
-                    if (doc.items.filter((item) => getProperty(item, dotKey) === val).length === 0) {
+                    if (activeItems.filter((item) => getProperty(item, dotKey) === val).length === 0) {
                         isValid = false;
                         break;
                     }

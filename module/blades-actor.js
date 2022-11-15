@@ -35,6 +35,7 @@ class BladesActor extends Actor {
             const nameB = (b.name ?? "").toUpperCase();
             return nameA.localeCompare(nameB);
         });
+        eLog.checkLog3("actorFetch", "BladesActor.getAllGlobalActors", await actors);
         return actors;
     }
     static async getActorsByCat(actorCat) {
@@ -44,8 +45,10 @@ class BladesActor extends Actor {
         const allActors = await BladesActor.getAllGlobalActors();
         const allTypeActors = allActors.filter((actor) => actor.type === BladesActor.CategoryTypes[actorCat]);
         if (actorCat in BladesActor.CategoryFilters) {
+            eLog.checkLog3("actorFetch", `BladesActor.getActorsByCat(${actorCat}) *FILTER*`, await BladesActor.CategoryFilters[actorCat](allTypeActors));
             return BladesActor.CategoryFilters[actorCat](allTypeActors);
         }
+        eLog.checkLog3("actorFetch", `BladesActor.getActorsByCat(${actorCat})`, await allTypeActors);
         return allTypeActors;
     }
 
@@ -77,13 +80,21 @@ class BladesActor extends Actor {
     }
     static async GetPersonal(actorRef, parent) {
         const actor = await BladesActor.GetGlobal(actorRef);
+        eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name}) -> Global Actor`, await actor);
         if (!actor || !actor.id) {
             return null;
         }
         const { category, system } = parent.system.subactors[actor.id];
+        eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name}) -> Subactor Data`, { category, system, parent });
         if (!category || !system) {
             return null;
         }
+        eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name}) -> Merged Actor`, {
+            actor: Object.assign(actor, {
+                category,
+                system: foundry.utils.mergeObject(actor.system, system)
+            })
+        });
         return Object.assign(actor, {
             category,
             system: foundry.utils.mergeObject(actor.system, system)
@@ -177,16 +188,11 @@ class BladesActor extends Actor {
         eLog.checkLog("actorTrigger", "onCreateEmbeddedDocuments", { embName, docs, args });
         docs.forEach(async (doc) => {
             if (doc instanceof BladesItem) {
-                doc.update({ "system.isArchived": true });
                 switch (doc.type) {
                     case "playbook": {
                         await this.update({
-                            "system.trauma.active": null,
-                            "system.trauma.checked": null
-                        });
-                        this.update({
-                            "system.trauma.active": Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond) => [tCond, true])),
-                            "system.trauma.checked": Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond) => [tCond, false]))
+                            "system.trauma.active": Object.assign(Object.fromEntries(Object.keys(this.system.trauma.active).map((tCond) => [tCond, false])), Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond) => [tCond, true]))),
+                            "system.trauma.checked": Object.assign(Object.fromEntries(Object.keys(this.system.trauma.checked).map((tCond) => [tCond, false])), Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond) => [tCond, false])))
                         });
                         break;
                     }
@@ -196,8 +202,6 @@ class BladesActor extends Actor {
     }
     isValidForDoc(parentDoc) {
         return true;
-    }
-    getData() {
     }
     get playbookName() {
         return this.playbook?.name ?? null;
@@ -245,10 +249,10 @@ class BladesActor extends Actor {
             return;
         }
         if (doc instanceof BladesActor) {
-            this.update({ [`system.subactors.${docId}.isArchived`]: true });
+            BladesActor.Remove(doc, doc.category, this);
         }
         else {
-            doc.update({ "system.isArchived": true });
+            BladesItem.Remove(doc, doc.type, this);
         }
     }
     startScore() {
