@@ -1,5 +1,5 @@
 export enum BladesActorType {
-	pc = "character",
+	pc = "pc",
 	npc = "npc",
 	crew = "crew"
 }
@@ -19,6 +19,7 @@ export enum BladesItemType {
 	heritage = "heritage",
 	item = "item",
 	playbook = "playbook",
+	preferred_op = "preferred_op",
 	stricture = "stricture",
 	vice = "vice"
 }

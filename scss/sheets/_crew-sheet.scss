@@ -5,7 +5,8 @@
 	section.sheet-top {
 		grid-template-areas:
 			". . title title title title title title playbook playbook playbook"
-			". . . reputation reputation preferred-op preferred-op tier tier coins coins";
+			". . members members members members members members members members . "
+			". . reputation reputation preferred-op preferred-op tier tier coins coins . ";
 
 		.sheet-title {
 			--sheet-title-font-size: #{toRem(48px)};
@@ -20,5 +21,11 @@
 		.comp-preferred-op { grid-area: preferred-op }
 		.comp-tier { grid-area: tier }
 		.comp-coins { grid-area: coins }
+		.members {
+			grid-area: members;
+			position: relative;
+			justify-content: flex-start;
+			// height: toRem(80px);
+		}
 	}
 }

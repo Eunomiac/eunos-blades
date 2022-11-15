@@ -1,10 +1,10 @@
 
-import C from "../core/constants.js";
+import C, {BladesActorType, BladesItemType} from "../core/constants.js";
 import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesActiveEffect from "../blades-active-effect.js";
-import type BladesItem from "../blades-item";
-import type BladesActor from "../blades-actor.js";
+import BladesItem from "../blades-item.js";
+import BladesActor from "../blades-actor.js";
 
 class BladesActorSheet extends BladesSheet {
 
@@ -19,19 +19,28 @@ class BladesActorSheet extends BladesSheet {
 	}
 
 	static Initialize() {
-		Actors.registerSheet("blades", BladesActorSheet, {types: ["character"], makeDefault: true});
-		Hooks.on("dropActorSheetData", (
+		Actors.registerSheet("blades", BladesActorSheet, {types: ["pc"], makeDefault: true});
+		Hooks.on("dropActorSheetData", async (
 			actor: BladesActor,
 			sheet: BladesActorSheet,
 			{type, uuid}: {type: string, uuid: string}
 		) => {
 			// if (type === "Actor") {
 			// 	const droppedActorId = uuid.replace(/^Actor\./, "");
-			// 	const droppedActor = game.actors.get(droppedActorId) as BladesActor|undefined;
+			// 	const droppedActor = BladesActor.get(droppedActorId);
 			// 	if (!droppedActor) { return }
 			// 	switch (droppedActor.type) {
-			// 		case "crew": {
-			// 			actor.update({"system.crew": droppedActorId});
+			// 		case BladesActorType.crew {
+			// 			BladesActor.Embed(droppedActor, "pc-crew", actor);
+			// 			break;
+			// 		}
+			// 		case BladesActorType.npc {
+			// 			// Assume acquaintance UNLESS matches Vice Purveyor
+			// 			actor.vice_purveyors
+
+			// 			break;
+			// 		}
+			// 		case BladesActorType.pc {
 			// 			break;
 			// 		}
 			// 		// no default
@@ -40,15 +49,12 @@ class BladesActorSheet extends BladesSheet {
 			// }
 			if (type === "Item") {
 				const droppedItemId = uuid.replace(/^Item\./, "");
-				const droppedItem = game.items.get(droppedItemId) as BladesItem|undefined;
+				const droppedItem = await BladesItem.GetGlobal(droppedItemId);
 				if (!droppedItem) { return }
-				switch (droppedItem.type) {
-					case "playbook": {
-						// actor.changePlaybook(droppedItem.name);
-						break;
-					}
-					// no default
-				}
+				if (!(droppedItem.type in BladesItem.CategoryDefaults)) { return }
+				const category = BladesItem.CategoryDefaults[droppedItem.type];
+				if (!category) { return }
+				BladesItem.Embed(droppedItem, category, actor);
 				return;
 			}
 		});
@@ -57,9 +63,6 @@ class BladesActorSheet extends BladesSheet {
 			"systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
 		]);
 	}
-
-
-	/* -------------------------------------------- */
 
 	override async getData() {
 		const data = await super.getData();
@@ -74,24 +77,30 @@ class BladesActorSheet extends BladesSheet {
 
 		//~ Arrange grid of Trauma Conditions
 		const allTraumaConditions = Object.keys(this.actor.system.trauma.active)
-		.filter((key) => this.actor.system.trauma.active[key]);
+			.filter((key) => this.actor.system.trauma.active[key]);
 
-		//~ Override Vice item for classes with locked vices
-		const viceOverride = this.actor.system.vice.override as string;
+		//~ Assemble embedded actors and items
+		const items = {
+			abilities: await BladesItem.GetActiveCategoryItems("ability", this.actor),
+			background: (await BladesItem.GetActiveCategoryItems("background", this.actor))[0],
+			heritage: (await BladesItem.GetActiveCategoryItems("heritage", this.actor))[0],
+			vice: (this.actor.system.vice.override && JSON.parse(this.actor.system.vice.override as string))
+				|| (await BladesItem.GetActiveCategoryItems("vice", this.actor))[0],
+			loadout: await BladesItem.GetActiveCategoryItems("item", this.actor),
+			playbook: (await BladesItem.GetActiveCategoryItems("playbook", this.actor))[0]
+		};
+		const actors = {
+			crew: (await BladesActor.GetActiveCategoryActors("pc-crew", this.actor))[0]
+		};
+
 
 		Object.assign(
 			data,
 			{
-				effects: this.actor.effects,
-				items: {
-					abilities: data.items.filter((item) => item.type === "ability"),
-					background: data.items.find((item) => item.type === "background"),
-					heritage: data.items.find((item) => item.type === "heritage"),
-					vice: (viceOverride && JSON.parse(viceOverride)) || data.items.find((item) => item.type === "vice"),
-					loadout: data.items.filter((item) => item.type === "item"),
-					crew: this.actor.getSubActor("pc-crew"),
-					playbook: this.actor.playbook
-				},
+				items,
+				actors,
+				playbookData: this.playbookData,
+				coinsData: this.coinsData,
 				stashData: {
 					label: "Stash:",
 					dotline: {
@@ -115,6 +124,27 @@ class BladesActorSheet extends BladesSheet {
 					.filter(([, isActive]) => isActive)
 					.map(([armor]) => [armor, this.actor.system.armor.checked[armor as keyof BladesActor["system"]["armor"]["checked"]]])),
 				loadData: {
+					items: items.loadout.map((item) => {
+						if (item.system.load) {
+							Object.assign(item, {
+								numberCircle: item.system.load,
+								numberCircleClass: "item-load"
+							});
+						}
+						if (item.system.uses?.max) {
+							Object.assign(item, {
+								dotline: {
+									data: item.system.uses,
+									target: "item.system.uses.value",
+									iconEmpty: "dot-empty.svg",
+									iconEmptyHover: "dot-empty-hover.svg",
+									iconFull: "dot-full.svg",
+									iconFullHover: "dot-full-hover.svg"
+								}
+							});
+						}
+						return item;
+					}),
 					curLoad: this.actor.currentLoad,
 					selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected)) as "heavy"|"normal"|"light"|"encumbered"],
 					selections: C.Loadout.selections,
@@ -141,20 +171,20 @@ class BladesActorSheet extends BladesSheet {
 						isLocked: true
 					},
 					compContainer: {
-						class: "cont-full-height cont-full-width",
-						blocks: [
+						"class": "cont-full-height cont-full-width",
+						"blocks": [
 							{cells: allTraumaConditions.slice(0, Math.ceil(allTraumaConditions.length / 2))
 								.map((tName) => ({
-										label: tName,
-										toggle: `system.trauma.checked.${tName}`,
-										value: this.actor.system.trauma.checked[tName] ?? false
-									}))},
+									label: tName,
+									checkControl: `system.trauma.checked.${tName}`,
+									checkValue: this.actor.system.trauma.checked[tName] ?? false
+								}))},
 							{cells: allTraumaConditions.slice(Math.ceil(allTraumaConditions.length / 2))
 								.map((tName) => ({
-										label: tName,
-										toggle: `system.trauma.checked.${tName}`,
-										value: this.actor.system.trauma.checked[tName] ?? false
-									}))}
+									label: tName,
+									checkControl: `system.trauma.checked.${tName}`,
+									checkValue: this.actor.system.trauma.checked[tName] ?? false
+								}))}
 						]
 					}
 				}

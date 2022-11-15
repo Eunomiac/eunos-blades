@@ -1,25 +1,27 @@
 {
 	"ACTOR": {
-		"TypeCharacter": "Scoundrel",
-		"TypeNPC": "NPC",
-		"TypeCrew": "Crew",
-		"TypeFactions": "Record Sheet: Factions"
+		"TypePc": "Scoundrel",
+		"TypeNpc": "NPC",
+		"TypeCrew": "Crew"
 	},
 	"ITEM": {
 		"TypeFaction": "Faction",
 		"TypeItem": "Gear",
-		"TypeClass": "Playbook (Scoundrel)",
 		"TypeAbility": "Scoundrel Ability",
 		"TypeHeritage": "Heritage",
 		"TypeBackground": "Background",
 		"TypeVice": "Vice",
 		"TypeCohort": "Cohort",
-		"TypeCrew_type": "Playbook (Crew)",
+		"TypeStricture": "Stricture (Vampire)",
+		"TypeFeature": "Feature (Hull)",
+		"TypePlaybook": "Playbook (Scoundrel)",
+		"TypeCrew_playbook": "Playbook (Crew)",
 		"TypeCrew_reputation": "Crew Reputation",
 		"TypeCrew_upgrade": "Crew Upgrade",
 		"TypeCrew_ability": "Crew Ability",
-		"TypeGm_tracker": "Record Sheet: GM Overview",
-		"TypeClock_keeper": "Record Sheet: Clocks"
+		"TypeGm_tracker": "Tracker: GM Overview",
+		"TypeClock_keeper": "Tracker: Clocks",
+		"TypePreferred_op": "Preferred Op"
 	},
 	"BITD": {
 		"HelloThere": "General Kenobi",

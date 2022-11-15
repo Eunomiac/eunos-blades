@@ -24,7 +24,7 @@ class BladesDialog extends Dialog {
 	static async Display<T extends BladesActor|BladesItem>(
 		doc: BladesActor|BladesItem,
 		title: string,
-		category: keyof typeof BladesDialog.Categories,
+		category: KeyOf<typeof BladesActor.CategoryTypes|typeof BladesItem.CategoryTypes>,
 		callback: (docID: string) => Promise<void>,
 		tabFilters: Record<string, (a: T) => boolean> = {all: (a: T) => true},
 		featuredFilters?: Record<string, (a: T) => boolean>,
@@ -63,8 +63,8 @@ class BladesDialog extends Dialog {
 		}
 	}
 	async _createActorTabs(tabs: Record<string, (a: BladesActor) => boolean>) {
-		const allTypeActors = await BladesActor.getAllActorsByType(this.docType);
-		const validActors: BladesActor[] = allTypeActors.filter((actor) => actor.isValidForDoc(this.doc));
+		const allCategoryActors = await BladesActor.GetGlobalCategoryActors(this.category, this.doc as BladesActor);
+		const validActors: BladesActor[] = allCategoryActors.filter((actor) => actor.isValidForDoc(this.doc));
 		this.tabs = Object.fromEntries((Object.entries(tabs))
 			.map(([tabName, tabFilter]) => [
 				tabName,
@@ -72,7 +72,7 @@ class BladesDialog extends Dialog {
 			]));
 	}
 	async _createItemTabs(tabs: Record<string,(i: BladesItem) => boolean>) {
-		const allTypeItems = await BladesItem.getAllItemsByType(this.docType);
+		const allTypeItems = await BladesItem.GetGlobalCategoryItems(this.category, this.doc as BladesActor);
 		const validItems = allTypeItems.filter((item) => item.isValidForDoc(this.doc));
 		this.tabs = Object.fromEntries((Object.entries(tabs))
 			.map(([tabName, tabFilter]) => [
@@ -102,36 +102,29 @@ class BladesDialog extends Dialog {
 		}
 	}
 
-	static get Categories(): Record<string, ["Actor"|"Item", BladesItemType|BladesActorType]> {
-		return {
-			ability: ["Item", BladesItemType.ability],
-			background: ["Item", BladesItemType.background],
-			clock_keeper: ["Item", BladesItemType.clock_keeper],
-			cohort: ["Item", BladesItemType.cohort],
-			crew_ability: ["Item", BladesItemType.crew_ability],
-			crew_reputation: ["Item", BladesItemType.crew_reputation],
-			crew_playbook: ["Item", BladesItemType.crew_playbook],
-			crew_upgrade: ["Item", BladesItemType.crew_upgrade],
-			faction: ["Item", BladesItemType.faction],
-			gm_tracker: ["Item", BladesItemType.gm_tracker],
-			heritage: ["Item", BladesItemType.heritage],
-			item: ["Item", BladesItemType.item],
-			playbook: ["Item", BladesItemType.playbook],
-			vice: ["Item", BladesItemType.vice],
-			pc: ["Actor", BladesActorType.pc],
-			npc: ["Actor", BladesActorType.npc],
-			crew: ["Actor", BladesActorType.crew],
-			vicePurveyor: ["Actor", BladesActorType.npc],
-			acquaintance: ["Actor", BladesActorType.npc]
-		};
-	}
-
 	doc: BladesActor|BladesItem;
-	category: KeyOf<typeof BladesDialog.Categories>;
+	category: KeyOf<typeof BladesActor.CategoryTypes|typeof BladesItem.CategoryTypes>;
 	callback: (docID: string) => Promise<void>;
 
-	get docSuperType(): "Actor"|"Item" { return BladesDialog.Categories[this.category][0] }
-	get docType(): BladesItemType|BladesActorType { return BladesDialog.Categories[this.category][1] }
+	get docSuperType(): "Actor"|"Item" {
+		if (this.category in BladesActor.CategoryTypes) {
+			return "Actor";
+		}
+		if (this.category in BladesItem.CategoryTypes) {
+			return "Item";
+		}
+		throw new Error(`Unrecognized Category: ${this.category}`);
+	}
+
+	get docType(): BladesItemType|BladesActorType {
+		if (this.category in BladesActor.CategoryTypes) {
+			return BladesActor.CategoryTypes[this.category];
+		}
+		if (this.category in BladesItem.CategoryTypes) {
+			return BladesItem.CategoryTypes[this.category];
+		}
+		throw new Error(`Unrecognized Category: ${this.category}`);
+	}
 
 	constructor(data: BladesDialog.Data, options?: Partial<BladesDialog.Options>) {
 		eLog.checkLog4("dialog", "[BladesDialog] constructor(data)", {...data});
@@ -169,18 +162,21 @@ class BladesDialog extends Dialog {
 			click: function() {
 				const docId = $(this).data("itemId");
 				if (docId) {
+					eLog.checkLog("dialog", `[BladesDialog] Calling Back (${docId})`);
 					self.callback(docId);
 				}
 				self.close();
 			},
-			mouseenter: function() {
+			mouseenter: async function() {
 				$(this).closest(".tab").addClass("hovering");
 				$(this).addClass("hover-over");
 				if (self.docSuperType === "Item") {
-					const itemRules = (new Handlebars.SafeString(`<span>${(game.items as Collection<BladesItem>).get($(this).data("itemId"))?.system.rules ?? ""}</span>`)).toString();
+					const item = await BladesItem.GetPersonal($(this).data("itemId"), self.doc as BladesActor);
+					if (!item) { return }
+					const itemRules = (new Handlebars.SafeString(`<span>${item.system.rules}</span>`)).toString();
 					itemDetailPane$.html(itemRules);
 				} else if (self.docSuperType === "Actor") {
-					const targetActor = (game.actors as Collection<BladesActor>).get($(this).data("itemId"));
+					const targetActor = await BladesActor.GetPersonal($(this).data("itemId"), self.doc as BladesActor);
 					if (!targetActor) { return }
 					const actorDesc = (new Handlebars.SafeString(`<span>${targetActor.system.concept || targetActor.system.description_short || ""}</span>`)).toString();
 					itemDetailPane$.html(actorDesc);

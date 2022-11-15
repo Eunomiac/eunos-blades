@@ -2,84 +2,9 @@ import BladesItem from "../blades-item";
 import BladesActor from "../blades-actor";
 import { bladesRoll } from "../blades-roll";
 import BladesDialog from "../blades-dialog";
+import BladesItemSheet from "../sheets/blades-item-sheet";
 
 declare global {
-
-	declare enum BladesActorType {
-		pc = "character",
-		npc = "npc",
-		crew = "crew"
-	}
-
-	declare enum BladesItemType {
-		ability = "ability",
-		background = "background",
-		clock_keeper = "clock_keeper",
-		cohort = "cohort",
-		crew_ability = "crew_ability",
-		crew_reputation = "crew_reputation",
-		crew_playbook = "crew_playbook",
-		crew_upgrade = "crew_upgrade",
-		faction = "faction",
-		feature = "feature",
-		gm_tracker = "gm_tracker",
-		heritage = "heritage",
-		item = "item",
-		playbook = "playbook",
-		stricture = "stricture",
-		vice = "vice"
-	}
-
-	declare enum Attributes {
-		insight = "insight",
-		prowess = "prowess",
-		resolve = "resolve"
-	}
-	declare enum InsightActions {
-		hunt = "hunt",
-		study = "study",
-		survey = "survey",
-		tinker = "tinker"
-	}
-	declare enum ProwessActions {
-		finesse = "finesse",
-		prowl = "prowl",
-		skirmish = "skirmish",
-		wreck = "wreck"
-	}
-	declare enum ResolveActions {
-		attune = "attune",
-		command = "command",
-		consort = "consort",
-		sway = "sway"
-	}
-	declare enum Actions {
-		hunt = "hunt",
-		study = "study",
-		survey = "survey",
-		tinker = "tinker",
-		finesse = "finesse",
-		prowl = "prowl",
-		skirmish = "skirmish",
-		wreck = "wreck",
-		attune = "attune",
-		command = "command",
-		consort = "consort",
-		sway = "sway"
-	}
-
-	declare enum Positions {
-		controlled = "controlled",
-		risky = "risky",
-		desperate = "desperate"
-	}
-	declare enum EffectLevels {
-		extreme = "extreme",
-		great = "great",
-		standard = "standard",
-		limited = "limited",
-		zero = "zero"
-	}
 
 	namespace SystemDocs {
 		export type Actor = BladesActor;
@@ -90,9 +15,11 @@ declare global {
 		export type Sheet = BladesSheet|BladesItemSheet;
 	}
 
+
+
 	declare interface Game {
-		items: Collection<StoredDocument<BladesItem>>,
-		actors: Collection<StoredDocument<BladesActor>>,
+		items: Collection<BladesItem>,
+		actors: Collection<BladesActor>,
 		user: {
 			name: string,
 			id: string,
@@ -105,7 +32,7 @@ declare global {
 		system: {
 			model: {
 				Actor: {
-					character: {
+					pc: {
 						attributes: Record<string, {
 							label: string,
 							skills: Record<string, {label: string}>
@@ -115,6 +42,12 @@ declare global {
 			}
 		}
 	}
+
+	type BladesDoc = BladesActor|BladesItem|EmbeddedBladesActor;
+
+	type DocRef = string|BladesDoc;
+	type ActorRef = string|BladesActor|EmbeddedBladesActor;
+	type ItemRef = string|BladesItem;
 
 	namespace BladesActor {
 		export type ID = string;
@@ -130,8 +63,15 @@ declare global {
 		interface SubActorData {
 			id: string,
 			category: SubActorCategory,
-			data: Partial<Omit<BladesActor["system"],"subactors">>
+			system: Partial<Omit<BladesActor["system"],"subactors">>,
+			isArchived?: boolean
 		}
+	}
+
+	type EmbeddedBladesActor = BladesActor & {
+		category: keyof typeof BladesActor.CategoryTypes,
+		isArchived?: boolean,
+		system: BladesActor["system"] & Record<string,any>
 	}
 
 	namespace BladesItem {

@@ -1,21 +1,21 @@
 {
 	"Actor": {
 		"types": [
-			"character",
+			"pc",
 			"npc",
 			"crew"
 		],
 		"templates": {
 			"default": {
-				"world_name": ""
+				"world_name": "",
+				"notes": "",
+				"gm_notes": "",
+				"subactors": {}
 			}
 		},
-		"character": {
+		"pc": {
 			"templates": ["default"],
 			"full_name": "",
-			"subactors": {},
-			"notes": "",
-			"gm_notes": "",
 			"vice": {
 				"name": "Vice",
 				"override": ""
@@ -107,9 +107,6 @@
 		},
 		"crew": {
 			"templates": ["default"],
-			"subactors": {},
-			"notes": "",
-			"gm_notes": "",
 			"experience": {
 				"playbook": { "value": 0, "max": 8 },
 				"clues": []
@@ -122,22 +119,15 @@
 			"turfs": { "value": 0, "max": 6 },
 			"heat": { "value": 0, "max": 9 },
 			"wanted": { "value": 0, "max": 4},
-			"hunting_grounds": {
-				"desc": "",
-				"preferred_op": ""
-			}
+			"hunting_grounds": { "name": "", "value": "" }
 		},
 		"npc": {
 			"templates": ["default"],
-			"name": "",
-			"alias": "",
 			"concept": "",
 			"arena": "",
 			"heritage": "",
 			"district": "",
 			"faction": "",
-			"allies": "",
-			"enemies": "",
 			"traits": [],
 			"description": "",
 			"description_short": "",
@@ -176,6 +166,7 @@
 			"heritage",
 			"item",
 			"playbook",
+			"preferred_op",
 			"stricture",
 			"vice"
 		],
@@ -184,11 +175,10 @@
 				"world_name": "",
 				"rules": "",
 				"rules_notes": "",
-				"isActive": false
+				"isArchived": false
 			},
 			"customizable": {
-				"description": "",
-				"isCustomized": false
+				"description": ""
 			},
 			"conditional": {
 				"playbooks": [],
@@ -227,6 +217,7 @@
 			"suggested_ability": "",
 			"auto_abilities": []
 		},
+		"preferred_op": { "templates": ["default"] },
 		"stricture": { "templates": ["default"] },
 		"vice": {
 			"templates": ["default", "customizable"],

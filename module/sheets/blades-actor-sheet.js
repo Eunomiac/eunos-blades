@@ -8,6 +8,8 @@
 import C from "../core/constants.js";
 import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
+import BladesItem from "../blades-item.js";
+import BladesActor from "../blades-actor.js";
 class BladesActorSheet extends BladesSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -19,19 +21,23 @@ class BladesActorSheet extends BladesSheet {
         });
     }
     static Initialize() {
-        Actors.registerSheet("blades", BladesActorSheet, { types: ["character"], makeDefault: true });
-        Hooks.on("dropActorSheetData", (actor, sheet, { type, uuid }) => {
+        Actors.registerSheet("blades", BladesActorSheet, { types: ["pc"], makeDefault: true });
+        Hooks.on("dropActorSheetData", async (actor, sheet, { type, uuid }) => {
+            
             if (type === "Item") {
                 const droppedItemId = uuid.replace(/^Item\./, "");
-                const droppedItem = game.items.get(droppedItemId);
+                const droppedItem = await BladesItem.GetGlobal(droppedItemId);
                 if (!droppedItem) {
                     return;
                 }
-                switch (droppedItem.type) {
-                    case "playbook": {
-                        break;
-                    }
+                if (!(droppedItem.type in BladesItem.CategoryDefaults)) {
+                    return;
                 }
+                const category = BladesItem.CategoryDefaults[droppedItem.type];
+                if (!category) {
+                    return;
+                }
+                BladesItem.Embed(droppedItem, category, actor);
                 return;
             }
         });
@@ -40,7 +46,6 @@ class BladesActorSheet extends BladesSheet {
             "systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
         ]);
     }
-        
     async getData() {
         const data = await super.getData();
         eLog.checkLog("actor", "[BladesActorSheet] super.getData()", { ...data });
@@ -54,18 +59,23 @@ class BladesActorSheet extends BladesSheet {
         const allTraumaConditions = Object.keys(this.actor.system.trauma.active)
             .filter((key) => this.actor.system.trauma.active[key]);
 
-        const viceOverride = this.actor.system.vice.override;
+        const items = {
+            abilities: await BladesItem.GetActiveCategoryItems("ability", this.actor),
+            background: (await BladesItem.GetActiveCategoryItems("background", this.actor))[0],
+            heritage: (await BladesItem.GetActiveCategoryItems("heritage", this.actor))[0],
+            vice: (this.actor.system.vice.override && JSON.parse(this.actor.system.vice.override))
+                || (await BladesItem.GetActiveCategoryItems("vice", this.actor))[0],
+            loadout: await BladesItem.GetActiveCategoryItems("item", this.actor),
+            playbook: (await BladesItem.GetActiveCategoryItems("playbook", this.actor))[0]
+        };
+        const actors = {
+            crew: (await BladesActor.GetActiveCategoryActors("pc-crew", this.actor))[0]
+        };
         Object.assign(data, {
-            effects: this.actor.effects,
-            items: {
-                abilities: data.items.filter((item) => item.type === "ability"),
-                background: data.items.find((item) => item.type === "background"),
-                heritage: data.items.find((item) => item.type === "heritage"),
-                vice: (viceOverride && JSON.parse(viceOverride)) || data.items.find((item) => item.type === "vice"),
-                loadout: data.items.filter((item) => item.type === "item"),
-                crew: this.actor.getSubActor("pc-crew"),
-                playbook: this.actor.playbook
-            },
+            items,
+            actors,
+            playbookData: this.playbookData,
+            coinsData: this.coinsData,
             stashData: {
                 label: "Stash:",
                 dotline: {
@@ -89,6 +99,27 @@ class BladesActorSheet extends BladesSheet {
                 .filter(([, isActive]) => isActive)
                 .map(([armor]) => [armor, this.actor.system.armor.checked[armor]])),
             loadData: {
+                items: items.loadout.map((item) => {
+                    if (item.system.load) {
+                        Object.assign(item, {
+                            numberCircle: item.system.load,
+                            numberCircleClass: "item-load"
+                        });
+                    }
+                    if (item.system.uses?.max) {
+                        Object.assign(item, {
+                            dotline: {
+                                data: item.system.uses,
+                                target: "item.system.uses.value",
+                                iconEmpty: "dot-empty.svg",
+                                iconEmptyHover: "dot-empty-hover.svg",
+                                iconFull: "dot-full.svg",
+                                iconFullHover: "dot-full-hover.svg"
+                            }
+                        });
+                    }
+                    return item;
+                }),
                 curLoad: this.actor.currentLoad,
                 selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected))],
                 selections: C.Loadout.selections,
@@ -115,19 +146,19 @@ class BladesActorSheet extends BladesSheet {
                     isLocked: true
                 },
                 compContainer: {
-                    class: "cont-full-height cont-full-width",
-                    blocks: [
+                    "class": "cont-full-height cont-full-width",
+                    "blocks": [
                         { cells: allTraumaConditions.slice(0, Math.ceil(allTraumaConditions.length / 2))
                                 .map((tName) => ({
                                 label: tName,
-                                toggle: `system.trauma.checked.${tName}`,
-                                value: this.actor.system.trauma.checked[tName] ?? false
+                                checkControl: `system.trauma.checked.${tName}`,
+                                checkValue: this.actor.system.trauma.checked[tName] ?? false
                             })) },
                         { cells: allTraumaConditions.slice(Math.ceil(allTraumaConditions.length / 2))
                                 .map((tName) => ({
                                 label: tName,
-                                toggle: `system.trauma.checked.${tName}`,
-                                value: this.actor.system.trauma.checked[tName] ?? false
+                                checkControl: `system.trauma.checked.${tName}`,
+                                checkValue: this.actor.system.trauma.checked[tName] ?? false
                             })) }
                     ]
                 }

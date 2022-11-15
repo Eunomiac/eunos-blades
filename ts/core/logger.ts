@@ -72,22 +72,26 @@ const STYLES = {
 };
 
 const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...content: [string, ...any[]]) => {
-	const [message, ...data] = content;
-	let key: string|false = false;
-	let dbLevel: 0|1|2|3|4|5 = [0,1,2,3,4,5].includes(U.getLast(data))
-		? data.pop()
+	let dbLevel: 0|1|2|3|4|5 = [0,1,2,3,4,5].includes(U.getLast(content))
+		? content.pop()
 		: 3;
+	let key: string|false = false;
 	if (type === "checkLog") {
-		key = data.shift();
+		key = content.shift();
+		type = `log${dbLevel}`;
+	}
+
+	const [message, ...data] = content;
+
+	if (key) {
 		const blacklist = ((U.getSetting("blacklist") ?? "") as string).split(/\s*,\s*/);
 		const whitelist = ((U.getSetting("whitelist") ?? "") as string).split(/\s*,\s*/);
-		if (key && blacklist.includes(key) && !whitelist.includes(key)) {
+		if (blacklist.includes(key) && !whitelist.includes(key)) {
 			dbLevel = Math.max(4, Math.min(5, dbLevel + 2)) as 4|5;
 		}
-		if (key && whitelist.includes(key)) {
+		if (whitelist.includes(key)) {
 			dbLevel = Math.min(3, Math.max(1, dbLevel - 2)) as 1|2|3;
 		}
-		type = `log${dbLevel}`;
 	}
 	if (U.getSetting("debug") as 0|1|2|3|4|5 < dbLevel) { return }
 	if (type === "log") {
@@ -149,12 +153,14 @@ const eLog = {
 	log1: (...content: eLogParams) => eLogger("log", ...content, 1),
 	log2: (...content: eLogParams) => eLogger("log", ...content, 2),
 	log: (...content: eLogParams) => eLogger("log", ...content, 3),
+	log3: (...content: eLogParams) => eLogger("log", ...content, 3),
 	log4: (...content: eLogParams) => eLogger("log", ...content, 4),
 	log5: (...content: eLogParams) => eLogger("log", ...content, 5),
 	checkLog0: (...content: eLogParams) => eLogger("checkLog", ...content, 0),
 	checkLog1: (...content: eLogParams) => eLogger("checkLog", ...content, 1),
 	checkLog2: (...content: eLogParams) => eLogger("checkLog", ...content, 2),
 	checkLog: (...content: eLogParams) => eLogger("checkLog", ...content, 3),
+	checkLog3: (...content: eLogParams) => eLogger("checkLog", ...content, 3),
 	checkLog4: (...content: eLogParams) => eLogger("checkLog", ...content, 4),
 	checkLog5: (...content: eLogParams) => eLogger("checkLog", ...content, 5),
 	error: (...content: eLogParams) => eLogger("error", ...content),

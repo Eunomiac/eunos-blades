@@ -1,10 +1,12 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
 
+	{{!-- Crew Img: Portrait & Background Overlay --}}
 	<img class="sheet-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
 	<div class="sheet-img-bg full-width">
 		<img src="{{actor.img}}" />
 	</div>
 
+	{{!-- Playbook XP --}}
 	{{#if playbookData}}
 		{{> "systems/eunos-blades/templates/components/comp.hbs"
 			class="comp-xp comp-xp-playbook comp-horizontal comp-teeth comp-teeth-long"
@@ -14,76 +16,90 @@
 
 	{{!-- Header --}}
 	<section class="sheet-top">
+
 		<input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}">
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs" items.playbook
+			addButton=true
+			cat="playbook"
+			id=items.playbook._id
 			class="comp-playbook comp-vertical"
 			label="Playbook"
-			addButton=true
 		}}
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs" items.reputation
-			class="comp-reputation comp-vertical"
+			addButton=true
 			label="Reputation"
 			cat="crew_reputation"
-			addButton=true
+			id=items.reputation._id
+			class="comp-reputation comp-vertical"
+			tooltip=items.reputation.system.rules
 		}}
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs" items.preferredOp
-			class="comp-preferred-op comp-vertical"
-			label="Preferred Op"
-			cat="crew_preferred_op"
 			addButton=true
+			label="Preferred Op"
+			cat="preferred_op"
+			id=items.preferredOp._id
+			class="comp-preferred-op comp-vertical"
+			tooltip=items.preferredOp.system.rules
 		}}
 
-		<div class="comp-tier comp-vertical comp">
- 			<label>Tier</label>
-			<div class="comp-body">
-				{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-					data=data.tier
-					target="data.tier.value"
-					iconEmpty="coin-empty.svg"
-					iconEmptyHover="coin-empty-hover.svg"
-					iconFull="coin-full.svg"
-					iconFullHover="coin-full-hover.svg"
-					blockClass="centered"
-				}}
-			</div>
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs" tierData
+			label="Tier"
+			class="comp-tier comp-vertical" }}
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs" coinsData
+			label="Coins"
 			class="comp-coins comp-vertical" }}
+
+		{{!-- Members --}}
+		{{> "systems/eunos-blades/templates/components/multi-comp.hbs" membersData
+			addButton=true
+			label="Members"
+			cat="crew_pc"
+			class="comp-members comp-horizontal"
+		}}
+
+		<div class="members comp-horizontal comp">
+			<div class="actors-container flex-horizontal">
+				{{#each actors as |actor|}}
+				{{> "systems/eunos-blades/templates/components/comp.hbs" actor
+					cat="crew-pc"
+					id=member._id
+					class="comp-crew-member comp-actor comp-vertical long-text"
+					remButton=true
+				}}
+				{{/each}}
+			</div>
+		</section>
 	</section>
 
 	{{!-- Rep/Turf, Heat, Wanted --}}
 	<section class="sheet-mid-bar flex-horizontal full-width">
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs"
-			class="comp-rep comp-horizontal comp-teeth comp-teeth-long"
+			class="comp-rep comp-horizontal comp-teeth"
 			label=repData.name
 			labelClass="filled-label"
 			dotlines=repData.dotlines
 		}}
 
-		<div class="comp-hold comp-vertical comp">
-			<label>Hold</label>
-			{{#if hold}}
-			<div class="comp-body" data-item-id="{{items.background._id}}">
-				<img src="{{items.background.img}}" title="{{items.background.name}}" />
-				<div class="comp-title shadowed">{{items.background.name}}</div>
-			</div>
-			{{/if}}
-		</div>
+		{{> "systems/eunos-blades/templates/components/comp.hbs" holdData
+			class="comp-hold comp-vertical"
+			label=(concat (case "upper" holdData.value) " Hold")
+			labelClass=(concat "filled-label" " " holdData.value "-hold")
+		}}
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs"
-			class="comp-rep comp-horizontal comp-teeth comp-teeth-long"
+			class="comp-rep comp-horizontal comp-teeth"
 			label=heatData.name
 			labelClass="filled-label"
 			dotline=heatData.dotline
 		}}
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs"
-			class="comp-trauma comp-vertical comp-teeth comp-teeth-short"
+			class="comp-trauma comp-vertical comp-teeth"
 			label=wantedData.name
 			labelClass="filled-label"
 			dotline=wantedData.dotline
@@ -91,10 +107,6 @@
 
 	</section>
 
-	{{!-- Members --}}
-	<section class="members flex-horizontal full-width">
-			<label class="dotline-label filled-label">Members</label>
-	</section>
 
 	{{!-- Navigable Tabs --}}
 	<section class="tab-content nav-group flex-vertical">
@@ -104,82 +116,65 @@
 			<a class="tab-selector" data-tab="upgrades">Upgrades</a>
 			<a class="tab-selector" data-tab="abilities">Abilities</a>
 			<a class="tab-selector" data-tab="cohorts">Cohorts</a>
-			<a class="tab-selector" data-tab="notes">Notes</a>
+			<a class="tab-selector" data-tab="player-notes">Notes</a>
 			{{#if isGM}}
 				<a class="tab-selector" data-tab="gm-notes">GM Notes</a>
-				<a class="tab-selector" data-tab="all-character-items">All Items</a>
+				<a class="tab-selector" data-tab="all-items">All Items</a>
 			{{/if}}
 		</nav>
 
 		{{!-- Claims --}}
-    <div class="tab" data-tab="claims">
+    <div class="tab claims" data-tab="claims">
       {{#if items.playbook}}
-      <div class="item" data-item-id="{{items.playbook._id}}">
-      {{> "systems/eunos-blades/templates/parts/turf-list.hbs" actor=actor turfs_data=items.playbook.system.turfs can_edit=false}}
-      </div>
+      {{> "systems/eunos-blades/templates/parts/turf-list.hbs"
+				actor=actor
+				turfs_data=items.playbook.system.turfs
+				can_edit=false
+			}}
       {{/if}}
     </div>
 
-
-
-
 		{{!-- Crew Upgrades --}}
-		<div class="tab abilities flex-vertical" data-tab="upgrades">
-			<label class="tab-label">
-				<a class="comp-control comp-add" data-item-type="crew_upgrade">
+		<div class="tab upgrades flex-vertical" data-tab="upgrades">
+			<label class="comp tab-label" data-comp-cat="crew_upgrade">
+				<a class="comp-control comp-button comp-add">
 					<i class="fas fa-plus-square"></i>
 				</a>
 				<span class="tab-title">Crew Upgrades</span>
 			</label>
 
 			{{#each items.upgrades}}
-				<div class="comp comp-horizontal item" data-item-id="{{_id}}">
-					<label class="comp-title">
-						<span class="item-title">{{case "title" name}}</span>
-						<img class="item-img" src="{{img}}" />
-					</label>
-					<div class="comp-body">
-						<div class="comp-body-text shadowed">{{{system.rules}}}</div>
-					</div>
-					<a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
-						<i class="fas fa-trash"></i>
-					</a>
-				</div>
+			{{> "systems/eunos-blades/templates/components/comp.hbs" this
+				class="comp-desc-trait comp-horizontal full-width"
+				remButton=true
+			}}
 			{{/each}}
 		</div>
 
-    {{!-- Crew Abilities --}}
+		{{!-- Crew Abilities --}}
 		<div class="tab abilities flex-vertical" data-tab="abilities">
-			<label class="tab-label">
-				<a class="comp-control comp-add" data-item-type="crew_ability">
+			<label class="comp tab-label" data-comp-cat="crew_ability">
+				<a class="comp-control comp-button comp-add">
 					<i class="fas fa-plus-square"></i>
 				</a>
 				<span class="tab-title">Crew Abilities</span>
 			</label>
 
 			{{#each items.abilities}}
-				<div class="comp comp-horizontal item" data-item-id="{{_id}}">
-					<label class="comp-title">
-						<span class="item-title">{{case "title" name}}</span>
-						<img class="item-img" src="{{img}}" />
-					</label>
-					<div class="comp-body">
-						<div class="comp-body-text shadowed">{{{system.rules}}}</div>
-					</div>
-					<a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
-						<i class="fas fa-trash"></i>
-					</a>
-				</div>
+			{{> "systems/eunos-blades/templates/components/comp.hbs" this
+				class="comp-desc-trait comp-horizontal full-width"
+				remButton=true
+			}}
 			{{/each}}
 		</div>
 
     {{!-- Cohorts --}}
 		<div class="tab cohorts flex-vertical" data-tab="cohorts">
-			<label class="tab-label">
-				<a class="comp-control comp-add" data-item-type="cohort">
+			<label class="comp tab-label" data-comp-cat="cohort">
+				<a class="comp-control comp-button comp-add">
 					<i class="fas fa-plus-square"></i>
 				</a>
-				<span class="tab-title">Cohorts: Gangs & Experts</span>
+				<span class="tab-title">Cohorts</span>
 			</label>
 
 			{{#each items.cohorts}}
@@ -188,7 +183,7 @@
 		</div>
 
 		{{!-- Description & Notes Tab --}}
-		<div class="tab character-notes flex-vertical" data-tab="notes">
+		<div class="tab player-notes flex-vertical" data-tab="player-notes">
 			<label class="tab-label">
 				<span class="tab-title">Description</span>
 			</label>
@@ -199,6 +194,7 @@
 			</label>
 			{{editor content=data.notes target="data.notes" button=true owner=owner editable=editable}}
 		</div>
+
 		{{!-- GM-ONLY TABS --}}
 		{{#if isGM}}
 
@@ -210,22 +206,26 @@
 				{{editor content=data.gm_notes target="data.gm_notes" button=true owner=owner editable=editable}}
 			</div>
 
+			{{!-- Active Effects Tab --}}
+			<div class="tab effects flex-vertical" data-tab="effects">
+				<label class="tab-label">
+					<span class="tab-title">{{localize "BITD.Effects"}}</span>
+				</label>
+				{{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
+			</div>
 
 			{{!-- Full Item List Tab --}}
-			<div class="tab all-items flex-vertical" data-tab="all-character-items">
-				<label class="tab-label">
+			<div class="tab all-items flex-vertical" data-tab="all-items">
+				<label class="comp tab-label">
 					<span class="tab-title">{{localize "BITD.AllItems"}}</span>
 				</label>
+
 				{{#each actor.items as |item id|}}
-				<div class="item flex-horizontal" data-item-id="{{item._id}}">
-					<div class="item-body item-sheet-open flex-horizontal">
-						<img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
-						<div class="comp-title">{{item.name}}</div>
-					</div>
-					<a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
-						<i class="fas fa-trash"></i>
-					</a>
-				</div>
+				{{> "systems/eunos-blades/templates/components/comp.hbs" item
+					id=id
+					class="comp-desc-trait comp-horizontal full-width"
+					remButton=true
+				}}
 				{{/each}}
 			</div>
 

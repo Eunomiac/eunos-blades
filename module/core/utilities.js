@@ -995,6 +995,7 @@ const getSiblings = (elem) => {
 };
 
 const sleep = (duration) => new Promise((resolve) => { setTimeout(resolve, duration >= 100 ? duration : duration * 1000); });
+const isDocID = (docRef) => { return typeof docRef === "string" && /^[A-Za-z0-9]{16}$/.test(docRef); };
 const loc = (locRef, formatDict = {}) => {
     if (/[a-z]/.test(locRef)) {
         locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}\.)*`), `${C.SYSTEM_ID}.`);
@@ -1043,8 +1044,6 @@ export default {
     parseArticles,
     signNum, padNum, stringifyNum, verbalizeNum, ordinalizeNum, romanizeNum,
     loremIpsum, randString, randWord,
-    loc, getSetting, getTemplatePath,
-    getItemsOfType, getActorsOfType, checkUserPermissions,
     fuzzyMatch, isIn, isInExact,
     randNum, randInt,
     coinFlip,
@@ -1067,5 +1066,7 @@ export default {
     getRawCirclePath, drawCirclePath,
     getColorVals, getRGBString, getHEXString, getContrastingColor, getRandomColor,
     getSiblings,
-    sleep
+    sleep,
+    isDocID, loc, getSetting, getTemplatePath,
+    getItemsOfType, getActorsOfType, checkUserPermissions
 };

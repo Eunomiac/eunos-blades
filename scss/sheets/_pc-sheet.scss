@@ -225,24 +225,7 @@
 		align-items: start;
 		overflow: hidden;
 
-		> section {
-			height: 100%;
-			justify-content: flex-start;
-			overflow: hidden;
-		}
-
 		section.nav-group {
-			> * {
-				width: 100%;
-			}
-			.nav-tabs {
-				min-height: toRem(26px);
-			}
-
-			.tab {
-				padding: 0 var(--content-padding);
-			}
-
 			.loadout {
 				.tab-label {
 					// padding-right: toRem(10px);

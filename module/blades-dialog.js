@@ -5,7 +5,6 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import { BladesActorType, BladesItemType } from "./core/constants.js";
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
 class BladesDialog extends Dialog {
@@ -57,8 +56,8 @@ class BladesDialog extends Dialog {
         }
     }
     async _createActorTabs(tabs) {
-        const allTypeActors = await BladesActor.getAllActorsByType(this.docType);
-        const validActors = allTypeActors.filter((actor) => actor.isValidForDoc(this.doc));
+        const allCategoryActors = await BladesActor.GetGlobalCategoryActors(this.category, this.doc);
+        const validActors = allCategoryActors.filter((actor) => actor.isValidForDoc(this.doc));
         this.tabs = Object.fromEntries((Object.entries(tabs))
             .map(([tabName, tabFilter]) => [
             tabName,
@@ -66,7 +65,7 @@ class BladesDialog extends Dialog {
         ]));
     }
     async _createItemTabs(tabs) {
-        const allTypeItems = await BladesItem.getAllItemsByType(this.docType);
+        const allTypeItems = await BladesItem.GetGlobalCategoryItems(this.category, this.doc);
         const validItems = allTypeItems.filter((item) => item.isValidForDoc(this.doc));
         this.tabs = Object.fromEntries((Object.entries(tabs))
             .map(([tabName, tabFilter]) => [
@@ -94,34 +93,27 @@ class BladesDialog extends Dialog {
             }
         }
     }
-    static get Categories() {
-        return {
-            ability: ["Item", BladesItemType.ability],
-            background: ["Item", BladesItemType.background],
-            clock_keeper: ["Item", BladesItemType.clock_keeper],
-            cohort: ["Item", BladesItemType.cohort],
-            crew_ability: ["Item", BladesItemType.crew_ability],
-            crew_reputation: ["Item", BladesItemType.crew_reputation],
-            crew_playbook: ["Item", BladesItemType.crew_playbook],
-            crew_upgrade: ["Item", BladesItemType.crew_upgrade],
-            faction: ["Item", BladesItemType.faction],
-            gm_tracker: ["Item", BladesItemType.gm_tracker],
-            heritage: ["Item", BladesItemType.heritage],
-            item: ["Item", BladesItemType.item],
-            playbook: ["Item", BladesItemType.playbook],
-            vice: ["Item", BladesItemType.vice],
-            pc: ["Actor", BladesActorType.pc],
-            npc: ["Actor", BladesActorType.npc],
-            crew: ["Actor", BladesActorType.crew],
-            vicePurveyor: ["Actor", BladesActorType.npc],
-            acquaintance: ["Actor", BladesActorType.npc]
-        };
-    }
     doc;
     category;
     callback;
-    get docSuperType() { return BladesDialog.Categories[this.category][0]; }
-    get docType() { return BladesDialog.Categories[this.category][1]; }
+    get docSuperType() {
+        if (this.category in BladesActor.CategoryTypes) {
+            return "Actor";
+        }
+        if (this.category in BladesItem.CategoryTypes) {
+            return "Item";
+        }
+        throw new Error(`Unrecognized Category: ${this.category}`);
+    }
+    get docType() {
+        if (this.category in BladesActor.CategoryTypes) {
+            return BladesActor.CategoryTypes[this.category];
+        }
+        if (this.category in BladesItem.CategoryTypes) {
+            return BladesItem.CategoryTypes[this.category];
+        }
+        throw new Error(`Unrecognized Category: ${this.category}`);
+    }
     constructor(data, options) {
         eLog.checkLog4("dialog", "[BladesDialog] constructor(data)", { ...data });
         super(data, options);
@@ -148,19 +140,24 @@ class BladesDialog extends Dialog {
             click: function () {
                 const docId = $(this).data("itemId");
                 if (docId) {
+                    eLog.checkLog("dialog", `[BladesDialog] Calling Back (${docId})`);
                     self.callback(docId);
                 }
                 self.close();
             },
-            mouseenter: function () {
+            mouseenter: async function () {
                 $(this).closest(".tab").addClass("hovering");
                 $(this).addClass("hover-over");
                 if (self.docSuperType === "Item") {
-                    const itemRules = (new Handlebars.SafeString(`<span>${game.items.get($(this).data("itemId"))?.system.rules ?? ""}</span>`)).toString();
+                    const item = await BladesItem.GetPersonal($(this).data("itemId"), self.doc);
+                    if (!item) {
+                        return;
+                    }
+                    const itemRules = (new Handlebars.SafeString(`<span>${item.system.rules}</span>`)).toString();
                     itemDetailPane$.html(itemRules);
                 }
                 else if (self.docSuperType === "Actor") {
-                    const targetActor = game.actors.get($(this).data("itemId"));
+                    const targetActor = await BladesActor.GetPersonal($(this).data("itemId"), self.doc);
                     if (!targetActor) {
                         return;
                     }

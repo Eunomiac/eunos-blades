@@ -153,11 +153,11 @@
 				<nav class="nav-tabs flex-horizontal">
 					<a class="tab-selector" data-tab="abilities">{{localize "BITD.Abilities"}}</a>
 					<a class="tab-selector" data-tab="loadout">{{localize "BITD.Loadout"}}</a>
-					<a class="tab-selector" data-tab="character-notes">{{localize "BITD.Notes"}}</a>
+					<a class="tab-selector" data-tab="player-notes">{{localize "BITD.Notes"}}</a>
 					{{#if isGM}}
 						<a class="tab-selector" data-tab="gm-notes">GM Notes</a>
 						<a class="tab-selector" data-tab="effects">{{localize "BITD.Effects"}}</a>
-						<a class="tab-selector" data-tab="all-character-items">{{localize "BITD.AllItems"}}</a>
+						<a class="tab-selector" data-tab="all-items">{{localize "BITD.AllItems"}}</a>
 					{{/if}}
 				</nav>
 
@@ -180,12 +180,12 @@
 
 				{{!-- Loadout Tab --}}
 				<div class="tab loadout flex-vertical" data-tab="loadout">
-					<label class="tab-label">
-						<a class="comp-control comp-add" data-item-type="item">
+					<label class="comp tab-label" data-comp-cat="item">
+						<a class="comp-control comp-button comp-add">
 							<i class="fas fa-plus-square"></i>
 						</a>
 						<span class="tab-title">{{localize "BITD.Loadout"}}</span>
-						<select class="load-selector" data-dtype="string" name="data.loadout.selected">
+						<select class="load-selector" data-dtype="String" name="system.loadout.selected">
 							{{#select loadData.selLoadLevel}}
 							<option value="" hidden disabled selected></option>
 							{{#each loadData.selections}}
@@ -193,43 +193,21 @@
 							{{/each}}
 							{{/select}}
 						</select>
-
 						<span class="load-selected-count">{{#if loadData.selLoadCount}}(Max <span class="shadowed">{{loadData.selLoadCount}}</span> Load){{/if}}</span>
-
 						<span class="load-level">Current Load:</span>
 						<span class="load-amount number-circle">{{loadData.curLoad}}</span>
 					</label>
 
-					{{#each items.loadout}}
-						<div class="comp comp-horizontal item" data-item-id="{{_id}}">
-							<label class="comp-title">
-								<span class="item-title">{{case "title" name}}</span>
-								<img class="item-img" src="{{img}}" />
-								{{#if (test system.uses.max ">" 0)}}
-								{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-									data=system.uses
-									target="item.system.uses.value"
-									iconEmpty="dot-empty.svg"
-									iconEmptyHover="dot-empty-hover.svg"
-									iconFull="dot-full.svg"
-									iconFullHover="dot-full-hover.svg"
-								}}
-								{{/if}}
-							</label>
-							<div class="comp-body">
-								<div class="comp-body-text shadowed">{{{system.rules}}}</div>
-							</div>
-							<a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
-								<i class="fas fa-trash"></i>
-							</a>
-							<div class="item-load number-circle">{{system.load}}</div>
-						</div>
+					{{#each loadData.items}}
+					{{> "systems/eunos-blades/templates/components/comp.hbs" this
+						class="comp-desc-trait comp-horizontal full-width"
+						remButton=true
+					}}
 					{{/each}}
-
 				</div>
 
 				{{!-- Description & Notes Tab --}}
-				<div class="tab character-notes flex-vertical" data-tab="character-notes">
+				<div class="tab player-notes flex-vertical" data-tab="player-notes">
 					<label class="tab-label">
 						<span class="tab-title">Description</span>
 					</label>
@@ -261,20 +239,17 @@
 					</div>
 
 					{{!-- Full Item List Tab --}}
-					<div class="tab all-items flex-vertical" data-tab="all-character-items">
-						<label class="tab-label">
+					<div class="tab all-items flex-vertical" data-tab="all-items">
+						<label class="comp tab-label">
 							<span class="tab-title">{{localize "BITD.AllItems"}}</span>
 						</label>
-						{{#each actor.items as |item id|}}
-						<div class="item flex-horizontal" data-item-id="{{item._id}}">
-							<div class="item-body item-sheet-open flex-horizontal">
-								<img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
-								<div class="comp-title">{{item.name}}</div>
-							</div>
-							<a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
-								<i class="fas fa-trash"></i>
-							</a>
-						</div>
+
+						{{#each actor.items as |item|}}
+						{{> "systems/eunos-blades/templates/components/comp.hbs" item
+							id=item.id
+							class="comp-desc-trait comp-horizontal full-width"
+							remButton=true
+						}}
 						{{/each}}
 					</div>
 				{{/if}}

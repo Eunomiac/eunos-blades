@@ -7,6 +7,8 @@
 
 import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
+import BladesActor from "../blades-actor.js";
+import BladesItem from "../blades-item.js";
 class BladesCrewSheet extends BladesSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -20,8 +22,6 @@ class BladesCrewSheet extends BladesSheet {
     async getData() {
         const data = await super.getData();
         eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", { ...data });
-        const actorData = data.actor;
-        const actorSystem = actorData.system;
         let turfs_amount = 0;
         if (this.actor.playbook) {
             Object.entries(this.actor.playbook.system.turfs).forEach(([key, turf]) => {
@@ -31,6 +31,40 @@ class BladesCrewSheet extends BladesSheet {
             });
         }
         turfs_amount = Math.min(turfs_amount, this.actor.system.turfs.max);
+
+        const items = {
+            abilities: await BladesItem.GetActiveCategoryItems("crew_ability", this.actor),
+            playbook: (await BladesItem.GetActiveCategoryItems("crew_playbook", this.actor))[0],
+            reputation: (await BladesItem.GetActiveCategoryItems("crew_reputation", this.actor))[0],
+            upgrades: await BladesItem.GetActiveCategoryItems("crew_upgrade", this.actor),
+            cohorts: await BladesItem.GetActiveCategoryItems("cohort", this.actor),
+            preferredOp: (await BladesItem.GetActiveCategoryItems("preferred_op", this.actor))[0]
+        };
+        const actors = {
+            members: await BladesActor.GetActiveCategoryActors("crew-pc", this.actor)
+        };
+        const tierData = {
+            label: "Tier",
+            dotline: {
+                data: this.actor.system.tier,
+                target: "system.tier.value",
+                iconEmpty: "dot-empty.svg",
+                iconEmptyHover: "dot-empty-hover.svg",
+                iconFull: "dot-full.svg",
+                iconFullHover: "dot-full-hover.svg"
+            }
+        };
+        const holdData = {
+            name: "Hold",
+            radioControl: {
+                target: "system.hold",
+                value: this.actor.system.hold,
+                values: [
+                    { value: "weak", label: "Weak" },
+                    { value: "strong", label: "Strong" }
+                ]
+            }
+        };
         const repData = {
             name: "Rep",
             dotlines: [
@@ -45,12 +79,12 @@ class BladesCrewSheet extends BladesSheet {
                     svgEmpty: "full|half|frame"
                 },
                 {
-                    data: { value: turfs_amount, max: turfs_amount },
-                    svgKey: "teeth.tall",
-                    svgFull: "full|half|frame",
-                    svgEmpty: "full|half|frame",
-                    class: "flex-row-reverse",
-                    isLocked: true
+                    "data": { value: turfs_amount, max: turfs_amount },
+                    "svgKey": "teeth.tall",
+                    "svgFull": "full|half|frame",
+                    "svgEmpty": "full|half|frame",
+                    "class": "flex-row-reverse",
+                    "isLocked": true
                 }
             ]
         };
@@ -74,13 +108,13 @@ class BladesCrewSheet extends BladesSheet {
                 svgEmpty: "frame"
             }
         };
-        Object.assign(data.items, {
-            reputation: data.items.find((item) => item.type === "crew_reputation"),
-            upgrades: data.items.filter((item) => item.type === "crew_upgrade"),
-            abilities: data.items.filter((item) => item.type === "crew_ability"),
-            cohorts: data.items.filter((item) => item.type === "cohort")
-        });
         Object.assign(data, {
+            items,
+            actors,
+            playbookData: this.playbookData,
+            coinsData: this.coinsData,
+            tierData,
+            holdData,
             repData,
             heatData,
             wantedData

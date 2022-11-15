@@ -7,6 +7,7 @@ import EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/
 import {ToObjectFalseType} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
 import BladesDialog from "../blades-dialog.js";
 import BladesActiveEffect from "../blades-active-effect.js";
+import {BladesActorType, BladesItemType} from "../core/constants.js";
 
 declare global {
 	class BladesSheet<
@@ -40,9 +41,9 @@ class BladesSheet extends ActorSheet {
 
 		const dataElem$ = $(event.currentTarget).closest(".comp");
 		const doc_cat = dataElem$.data("compCat");
-		const doc_type = doc_cat in BladesItem.Categories
-			? BladesItem.Categories[doc_cat]
-			: BladesActor.Categories[doc_cat];
+		const doc_type = doc_cat in BladesItem.CategoryTypes
+			? BladesItem.CategoryTypes[doc_cat]
+			: BladesActor.CategoryTypes[doc_cat];
 
 		const initialParams = [
 			this.actor,
@@ -50,18 +51,12 @@ class BladesSheet extends ActorSheet {
 			doc_type
 		] as const;
 
-		switch (doc_type) {
-			case "crew": {
-				await BladesDialog.Display(
-					...initialParams,
-					async (actorId) => { this.actor.embedSubActor("pc-crew", BladesActor.get(actorId))}
-				)
-			}
+		switch (doc_cat) {
 			case "item":
 			case "crew_upgrade": {
 				await BladesDialog.Display(
 					...initialParams,
-					async (itemId) => { BladesItem.Embed(itemId, this.actor) },
+					async (itemId) => { BladesItem.Embed(itemId, doc_cat, this.actor) },
 					{
 						[`${this.actor.playbookName} Items`]: (item: BladesItem) => Boolean(item.playbooks?.includes(this.actor.playbookName ?? "")),
 						"General Items": (item: BladesItem) => Boolean(item.playbooks?.includes("ANY"))
@@ -82,7 +77,7 @@ class BladesSheet extends ActorSheet {
 				if (!this.actor.playbookName) { return }
 				await BladesDialog.Display(
 					...initialParams,
-					async (itemId) => { BladesItem.Embed(itemId, this.actor) },
+					async (itemId) => { BladesItem.Embed(itemId, doc_cat, this.actor) },
 					{
 						[this.actor.playbookName]: (item: BladesItem) => Boolean(item.playbooks?.includes(this.actor.playbookName ?? "")),
 						Veteran: (item: BladesItem) => ![this.actor.playbookName!, "Ghost", "Vampire", "Hull"].some((pbName) => item.playbooks.includes(pbName))
@@ -96,15 +91,20 @@ class BladesSheet extends ActorSheet {
 				);
 				break;
 			}
-			case "heritage":
-			case "background":
-			case "vice":
-			case "playbook":
-			case "crew_playbook": {
-				await BladesDialog.Display(
-					...initialParams,
-					async (itemId) => { BladesItem.Embed(itemId, this.actor) }
-				);
+			default: {
+				if (doc_cat in BladesItem.CategoryTypes) {
+					await BladesDialog.Display(
+						...initialParams,
+						async (itemId) => { BladesItem.Embed(itemId, doc_cat, this.actor) }
+					);
+				} else if (doc_cat in BladesActor.CategoryTypes) {
+					await BladesDialog.Display(
+						...initialParams,
+						async (actorId) => { BladesActor.Embed(actorId, doc_cat, this.actor) }
+					);
+				} else {
+					throw new Error(`[BladesSheet.addItem] Unrecognized Doc Category: '${doc_cat}'`);
+				}
 				break;
 			}
 			// no default
@@ -118,14 +118,6 @@ class BladesSheet extends ActorSheet {
 		const actorData = data.actor as BladesActor;
 		const actorSystem = actorData.system;
 
-		// Sort & Compile Linked Subactors
-		const subActors: Record<string,Array<{actor: BladesActor, data: Record<string,any>}>> = {};
-		Object.entries(actorSystem.subactors ?? {}).forEach(([id, {category, data: subActorData}]) => {
-			const actor = game.actors.get(id) as BladesActor;
-			if (!actor) { return }
-			subActors[category] ??= [];
-			subActors[category].push({actor, data: subActorData});
-		});
 
 		Object.assign(
 			data,
@@ -135,30 +127,10 @@ class BladesSheet extends ActorSheet {
 				// isOwner: ???,
 				actor: actorData,
 				data: actorSystem,
-				playbookData: {
-					dotline: {
-						data: this.actor.system.experience.playbook,
-						target: "system.experience.playbook.value",
-						svgKey: "teeth.tall",
-						svgFull: "full|frame",
-						svgEmpty: "full|half|frame"
-					}
-				},
-				coinsData: {
-					label: "Coins",
-					dotline: {
-						data: this.actor.system.coins,
-						target: "system.coins.value",
-						iconEmpty: "coin-empty.svg",
-						iconEmptyHover: "coin-empty-hover.svg",
-						iconFull: "coin-full.svg",
-						iconFullHover: "coin-full-hover.svg"
-					}
-				}
+				effects: this.actor.effects
 			}
 		);
-
-		eLog.checkLog4("actor", "[BladesSheet] return getData()", {...data});
+		eLog.checkLog5("actor", "[BladesSheet] return getData()", {...data});
 		return data;
 	}
 
@@ -215,10 +187,11 @@ class BladesSheet extends ActorSheet {
 		html.find(".clock-container").on("click", this._onClockLeftClick.bind(this));
 		html.find(".clock-container").on("contextmenu", this._onClockRightClick.bind(this));
 
+
+		html.find("[data-comp-id]").find(".comp-title").on("click", this._onItemOpenClick.bind(this));
 		html.find(".comp-control.comp-add").on("click", (event) => {
 			this._onItemAddClick(event);
 		});
-		html.find(".comp-control.comp-update").on("click", this._onUpdateBoxClick.bind(this));
 		html.find(".comp-control.comp-delete").on({
 			click: (event) => this._onItemRemoveClick(event)
 		});
@@ -228,7 +201,6 @@ class BladesSheet extends ActorSheet {
 			html.on("change", "textarea", this._onChangeInput.bind(this));  // Use delegated listener on the form
 		}
 
-		html.find("[data-comp-id]").find(".comp-title").on("click", this._onItemOpenClick.bind(this));
 
 		html.find("[data-roll-attribute]").on("click", this._onRollAttributeDieClick.bind(this));
 
@@ -244,13 +216,53 @@ class BladesSheet extends ActorSheet {
 		});
 	}
 
+	get playbookData() {
+		return {
+			dotline: {
+				data: this.actor.system.experience.playbook,
+				target: "system.experience.playbook.value",
+				svgKey: "teeth.tall",
+				svgFull: "full|frame",
+				svgEmpty: "full|half|frame"
+			}
+		};
+	}
+
+	get coinsData() {
+		return {
+			dotline: {
+				data: this.actor.system.coins,
+				target: "system.coins.value",
+				iconEmpty: "coin-empty.svg",
+				iconEmptyHover: "coin-empty-hover.svg",
+				iconFull: "coin-full.svg",
+				iconFullHover: "coin-full-hover.svg"
+			}
+		};
+	}
+
 	async _onItemRemoveClick(event: ClickEvent) {
 		event.preventDefault();
 
+		const self = this;
+
 		const dataElem$ = $(event.currentTarget).closest(".comp");
 		const docID = dataElem$.data("compId");
-		await this.actor.removeItem(docID);
-		dataElem$.slideUp(200, () => this.render(false));
+		U.gsap.to(
+			dataElem$,
+			{
+				x: "+=100",
+				scale: 1.5,
+				opacity: 0.5,
+				filter: "blur(10px)",
+				duration: 0.5,
+				ease: "power2.out",
+				onComplete() {
+					self.actor.removeDoc(docID);
+				},
+				skewX: -20
+			}
+		);
 	}
 
 	async _onClockLeftClick(event: ClickEvent) {
@@ -275,23 +287,10 @@ class BladesSheet extends ActorSheet {
 	async _onItemOpenClick(event: ClickEvent) {
 		event.preventDefault();
 		const docID = $(event.currentTarget).closest(".comp").data("compId");
-		const doc = BladesItem.get(docID) ?? BladesActor.get(docID);
+		const doc = (await BladesItem.GetPersonal(docID, this.actor)) ?? (await BladesActor.GetPersonal(docID, this.actor));
+		eLog.log("CLICKED!", {docID, doc});
 		if (!doc) { return }
 		doc.sheet?.render(true);
-	}
-
-	async addItemsToSheet(item_type: string, el: JQuery<HTMLElement>) {
-
-		const items = await BladesItem.getAllItemsByType(item_type);
-		const items_to_add: ItemDataConstructorData[] = [];
-
-		el.find("input:checked").each(function addItems() {
-			const item = items.find(e => e.data._id === $(this).val());
-			if (item) { items_to_add.push(item.data as ItemData & ItemDataConstructorData) }
-		});
-
-		// @ts-expect-error What the fuck type is the first parameter to BladesItem.create?!
-		await BladesItem.create(items_to_add, {parent: this.document});
 	}
 
 	/**
@@ -300,30 +299,7 @@ class BladesSheet extends ActorSheet {
 	async _onRollAttributeDieClick(event: ClickEvent) {
 		const attribute_name = $(event.currentTarget).data("rollAttribute");
 		this.actor.rollAttributePopup(attribute_name);
-
 	}
-
-	async _onUpdateBoxClick(event: ClickEvent) {
-		event.preventDefault();
-		const item_id = $(event.currentTarget).data("item");
-		let update_value = $(event.currentTarget).data("value");
-		const update_type = $(event.currentTarget).data("utype");
-		if ( update_value === undefined) {
-			update_value = (document.getElementById("fac-" + update_type + "-" + item_id) as HTMLInputElement)?.value;
-		}
-		let update;
-		if ( update_type === "status" ) {
-			update = {_id: item_id, data:{status:{value: update_value}}};
-		} else if (update_type === "hold") {
-			update = {_id: item_id, data:{hold:{value: update_value}}};
-		} else {
-			eLog.error("update attempted for type undefined in blades-sheet.js onUpdateBoxClick function");
-			return;
-		}
-
-		await this.actor.updateEmbeddedDocuments("Item", [update]);
-	}
-
 }
 
 interface BladesSheet {

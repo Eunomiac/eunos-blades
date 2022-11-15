@@ -75,22 +75,24 @@ const STYLES = {
     }
 };
 const eLogger = (type = "base", ...content) => {
-    const [message, ...data] = content;
-    let key = false;
-    let dbLevel = [0, 1, 2, 3, 4, 5].includes(U.getLast(data))
-        ? data.pop()
+    let dbLevel = [0, 1, 2, 3, 4, 5].includes(U.getLast(content))
+        ? content.pop()
         : 3;
+    let key = false;
     if (type === "checkLog") {
-        key = data.shift();
+        key = content.shift();
+        type = `log${dbLevel}`;
+    }
+    const [message, ...data] = content;
+    if (key) {
         const blacklist = (U.getSetting("blacklist") ?? "").split(/\s*,\s*/);
         const whitelist = (U.getSetting("whitelist") ?? "").split(/\s*,\s*/);
-        if (key && blacklist.includes(key) && !whitelist.includes(key)) {
+        if (blacklist.includes(key) && !whitelist.includes(key)) {
             dbLevel = Math.max(4, Math.min(5, dbLevel + 2));
         }
-        if (key && whitelist.includes(key)) {
+        if (whitelist.includes(key)) {
             dbLevel = Math.min(3, Math.max(1, dbLevel - 2));
         }
-        type = `log${dbLevel}`;
     }
     if (U.getSetting("debug") < dbLevel) {
         return;
@@ -149,12 +151,14 @@ const eLog = {
     log1: (...content) => eLogger("log", ...content, 1),
     log2: (...content) => eLogger("log", ...content, 2),
     log: (...content) => eLogger("log", ...content, 3),
+    log3: (...content) => eLogger("log", ...content, 3),
     log4: (...content) => eLogger("log", ...content, 4),
     log5: (...content) => eLogger("log", ...content, 5),
     checkLog0: (...content) => eLogger("checkLog", ...content, 0),
     checkLog1: (...content) => eLogger("checkLog", ...content, 1),
     checkLog2: (...content) => eLogger("checkLog", ...content, 2),
     checkLog: (...content) => eLogger("checkLog", ...content, 3),
+    checkLog3: (...content) => eLogger("checkLog", ...content, 3),
     checkLog4: (...content) => eLogger("checkLog", ...content, 4),
     checkLog5: (...content) => eLogger("checkLog", ...content, 5),
     error: (...content) => eLogger("error", ...content),

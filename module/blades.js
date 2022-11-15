@@ -43,11 +43,27 @@ Object.assign(globalThis, {
     BladesItemSheet,
     ClearNPCs: () => {
         const npcNames = IMPORTDATA.npcs.map(({ name }) => name);
-        const npcs = Array.from(game.actors ?? [])
+        const npcs = BladesActor.All
             .filter((actor) => npcNames.includes(actor.name ?? ""));
         return Promise.all(npcs.map((npc) => npc.delete()));
     },
     GenerateNPCs: () => Promise.all(IMPORTDATA.npcs.map(({ name, type, ...data }) => Actor.create({ name, type, data }))),
+    AddWorldNames: () => {
+        function createKey(name) {
+            return name
+                .replace(/[^A-Za-z_0-9 ]/g, "")
+                .trim()
+                .replace(/ /g, "_");
+        }
+        game.items
+            .forEach((i) => {
+            i.update({ "system.world_name": createKey(i.name) });
+        });
+        game.actors
+            .forEach((a) => {
+            a.update({ "system.world_name": createKey(a.name) });
+        });
+    },
     MutateItems: () => {
         const patternParts = {
             strong: [
@@ -173,15 +189,15 @@ Object.assign(globalThis, {
         }
         const patterns = {
             strong: patternParts.strong.map(({ items, patterns }) => ({
-                items: items.map(createKey),
+                items: items.map(getWorldName),
                 patterns: patterns.map((pat) => getPattern(pat))
             })),
             em: patternParts.em.map(({ items, patterns }) => ({
-                items: items.map(createKey),
+                items: items.map(getWorldName),
                 patterns: patterns.map((pat) => getPattern(pat))
             }))
         };
-        function createKey(name) {
+        function getWorldName(name) {
             return name
                 .replace(/[^A-Za-z_0-9 ]/g, "")
                 .trim()
@@ -196,9 +212,7 @@ Object.assign(globalThis, {
         }
         game.items
             .forEach((i) => {
-            const updateData = {
-                "system.world_name": createKey(i.name)
-            };
+            const updateData = {};
             let ruleString = i.system.rules;
             if (ruleString) {
                 ruleString = ruleString
@@ -206,7 +220,7 @@ Object.assign(globalThis, {
                 updateData["system.description"] = ruleString;
                 for (const [wrapper, patParts] of Object.entries(patterns)) {
                     for (const { items, patterns } of patParts) {
-                        if (items.includes("all") || items.includes(createKey(i.name)) || items.includes(createKey(getPrimaryName(i.name)))) {
+                        if (items.includes("all") || items.includes(i.system.world_name) || items.includes(getPrimaryName(i.name)) || items.includes(getWorldName(getPrimaryName(i.name)))) {
                             patterns.forEach((patr) => {
                                 ruleString = ruleString
                                     .trim()
@@ -230,7 +244,7 @@ Object.assign(globalThis, {
     },
     AssignPlaybooks: () => {
         const playbookMap = {
-            "Cult": ["Ordained", "Ritual Sanctum in Lair"],
+            Cult: ["Ordained", "Ritual Sanctum in Lair"]
         };
     },
     GetFlatPackData: async (packName) => {
@@ -267,24 +281,24 @@ Object.assign(globalThis, {
         const { clientTop, clientLeft, clientHeight, clientWidth } = document.documentElement;
         const positions = {
             pc: () => ({ top: clientTop, left: clientLeft }),
-            crew: ({ pcSheetElem, width }) => ({ top: clientTop, left: pcSheetElem.position().left + pcSheetElem.width() }),
+            crew: ({ pcSheetElem }) => ({ top: clientTop, left: (pcSheetElem?.position()?.left ?? 0) + (pcSheetElem?.width() ?? 0) }),
             npc: ({ height, width }) => ({ top: (clientTop + clientHeight) - height, left: (clientLeft + clientWidth) - width })
         };
-        const pc = game.actors.filter((actor) => actor.type === BladesActorType.pc).shift();
+        const pc = (await BladesActor.GetGlobalCategoryActors(BladesActorType.pc)).shift();
         if (pc) {
             Object.assign(globalThis, pc);
             if (pc.sheet) {
                 pc.sheet.render(true);
             }
         }
-        const crew = game.actors.filter((actor) => actor.type === BladesActorType.crew).shift();
+        const crew = (await BladesActor.GetGlobalCategoryActors(BladesActorType.crew)).shift();
         if (crew) {
             Object.assign(globalThis, crew);
             if (crew.sheet) {
                 crew.sheet.render(true);
             }
         }
-        const npc = game.actors.filter((actor) => actor.type === BladesActorType.npc).shift();
+        const npc = (await BladesActor.GetGlobalCategoryActors(BladesActorType.npc)).shift();
         if (npc) {
             Object.assign(globalThis, npc);
             if (npc.sheet) {
@@ -292,17 +306,16 @@ Object.assign(globalThis, {
             }
         }
         setTimeout(() => {
-            if (pc.sheet) {
+            if (pc?.sheet) {
                 pc.sheet.setPosition(positions.pc());
             }
-            if (npc.sheet) {
+            if (npc?.sheet) {
                 const height = $(npc.sheet.element).height();
                 const width = $(npc.sheet.element).width();
                 npc.sheet.setPosition(positions.npc({ height, width }));
             }
-            if (crew.sheet) {
-                const width = $(crew.sheet.element).width();
-                crew.sheet.setPosition(positions.crew({ pcSheetElem: pc.sheet.element, width }));
+            if (crew?.sheet) {
+                crew.sheet.setPosition(positions.crew({ pcSheetElem: pc?.sheet?.element }));
             }
         }, 2000);
     }

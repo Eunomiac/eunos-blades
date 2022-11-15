@@ -11,7 +11,10 @@ import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-t
 
 class BladesActor extends Actor {
 
-	static Categories: Record<string, BladesActorType> = {
+	//~ Actors are primarily referenced by category, not type.
+	//~    BladesActor.CategoryTypes -> get actor type for given category
+	//~    BladesActor.CategoryFilters -> pass actor list filtered by type, get one further filtered by category
+	static CategoryTypes: Record<string, BladesActorType> = {
 		"pc-crew": BladesActorType.crew,
 		"crew-pc": BladesActorType.pc,
 		"vice_purveyor": BladesActorType.npc,
@@ -19,56 +22,193 @@ class BladesActor extends Actor {
 		"pc": BladesActorType.pc,
 		"npc": BladesActorType.npc,
 		"crew": BladesActorType.crew
-	}
+	};
 
-	static get(actorNameOrId: string): BladesActor|null {
-		if (!game.actors) { return null }
-		const actor = game.actors.find((actor: BladesActor) => actor.id === actorNameOrId || actor.name === actorNameOrId)
-			?? game.actors.find((actor: BladesActor) => actor.system.world_name === actorNameOrId);
-		if (!actor) { return null }
-		return actor as BladesActor;
-	}
+	static CategoryFilters: Record<string, <T extends BladesActor|EmbeddedBladesActor>(items: T[]) => T[]> = { };
 
-	/**
-	* Get all available ingame actors by Type, including those in packs.
-	*/
-	static async getAllActorsByType(aType: string, isIncludingPacks = false): Promise<BladesActor[]> {
-		if (!game.actors) { return [] }
+	static get All() { return game.actors }
 
-		const actors: BladesActor[] = game.actors.filter((actor: BladesActor) => actor.type === aType);
+	private static async getAllGlobalActors(): Promise<BladesActor[]> {
+		const actors = Array.from(BladesActor.All);
 
-		if (isIncludingPacks || actors.length === 0) {
-			const pack = game.packs.find((pack) => pack.metadata.name === aType);
-			if (pack) {
+		// Get PACK actors.
+		const packs = game.packs.filter((pack) => C.ActorTypes.includes(pack.metadata.name as BladesActorType));
+		const packActors = (await Promise.all(packs.map(async (pack) => {
+			const packDocs = await pack.getDocuments() as BladesActor[];
+			return packDocs.filter((packActor): packActor is BladesActor => !actors.some((act) => act.system.world_name === packActor.system.world_name));
+		}))).flat();
 
-				const pack_actors = await pack.getDocuments() as BladesActor[];
-				actors.push(...pack_actors);
-			}
-		}
+		actors.push(...packActors);
+
+		// Sort by NAME
+		actors.sort(function(a, b) {
+			const nameA = (a.name ?? "").toUpperCase();
+			const nameB = (b.name ?? "").toUpperCase();
+			return nameA.localeCompare(nameB);
+		});
 
 		return actors;
+	}
+
+	private static async getActorsByCat(actorCat: string): Promise<BladesActor[]> {
+		if (!(actorCat in BladesActor.CategoryTypes)) { return [] }
+
+		const allActors = await BladesActor.getAllGlobalActors();
+
+		// Filter by Category Type
+		const allTypeActors = allActors.filter((actor) => actor.type === BladesActor.CategoryTypes[actorCat]);
+
+		// Filter by Category Filters, if present
+		if (actorCat in BladesActor.CategoryFilters) {
+			return BladesActor.CategoryFilters[actorCat](allTypeActors);
+		}
+
+		return allTypeActors;
+	}
+
+	//~ BladesActor.GetGlobal: Returns WORLD or PACK instance of referenced BladesActor.
+	static async GetGlobal(actorRef: string|BladesActor, actorCat?: string): Promise<BladesActor|null> {
+		if (actorCat) {
+			if (!(actorCat in BladesActor.CategoryTypes)) { return null }
+			if (actorRef instanceof BladesActor) {
+				if (actorRef.type !== BladesActor.CategoryTypes[actorCat]) { return null }
+				actorRef = actorRef.system.world_name ?? actorRef.id;
+			}
+		} else if (actorRef instanceof BladesActor) {
+			actorCat = actorRef.type;
+			actorRef = actorRef.system.world_name ?? actorRef.id;
+		}
+
+		const actors = await (actorCat ? BladesActor.getActorsByCat(actorCat) : BladesActor.getAllGlobalActors());
+
+		if (U.isDocID(actorRef)) {
+			return actors.find((actor) => actor.id === actorRef) ?? null;
+		} else {
+			return actors.find((actor) => actor.name === actorRef)
+				?? actors.find((actor) => actor.system.world_name === actorRef)
+				?? null;
+		}
+	}
+
+	//~ BladesActor.GetPersonal: Returns WORLD or PACK instance of referenced BladesActor,
+	//~  merged with any personal data recorded on parent actor.
+	static async GetPersonal(actorRef: string|BladesActor, parent: BladesActor): Promise<EmbeddedBladesActor|null> {
+
+		// Get the global instance of the referenced Actor
+		const actor = await BladesActor.GetGlobal(actorRef);
+		if (!actor || !actor.id) { return null }
+
+		// Get the subactor data from the parent Actor
+		const {category, system} = parent.system.subactors[actor.id];
+		if (!category || !system) { return null }
+
+		// Merge personal data into parent Actor data
+		return Object.assign(actor, {
+			category,
+			system: foundry.utils.mergeObject(
+				actor.system,
+				system
+			)
+		});
+	}
+
+	//~ Embed: Embed a GLOBAL actor into a parent actor UNLESS custom actor exists, in which case unarchive it.
+	static async Embed(actorRef: ActorRef, category: string, parent: BladesActor): Promise<EmbeddedBladesActor|null> {
+		eLog.log2("[BladesActor.Embed(actorRef, category, parent)]", {actorRef, category, parent});
+		const updateData: Record<string, boolean|BladesActor.SubActorData> = {};
+
+		if (!(category in BladesActor.CategoryTypes)) { return null }
+
+		//~ Get global actor from actorRef
+		const globalActor = await BladesActor.GetGlobal(actorRef);
+		if (!globalActor?.id) { return null }
+		if (globalActor.id in parent.system.subactors) {
+			updateData[`system.subactors.${globalActor.id}.isArchived`] = false;
+		}
+		updateData[`system.subactors.${globalActor.id}`] = {id: globalActor.id, category, system: {}, isArchived: false};
+
+		await parent.update(updateData);
+
+		return BladesActor.GetPersonal(actorRef, parent);
+	}
+
+	//~ Remove: Remove an embedded actor by archiving it.
+	static async Remove(actorRef: ActorRef, category: string, parent: BladesActor): Promise<EmbeddedBladesActor|null> {
+		eLog.log2("[BladesActor.Remove(actorRef, category, parent)]", {actorRef, category, parent});
+		const updateData: Record<string, boolean> = {};
+
+		if (!(category in BladesActor.CategoryTypes)) { return null }
+
+		//~ Get global actor from actorRef
+		const globalActor = await BladesActor.GetGlobal(actorRef);
+		if (!globalActor?.id) { return null }
+		if (globalActor.id in parent.system.subactors) {
+			updateData[`system.subactors.${globalActor.id}.isArchived`] = true;
+		}
+
+		await parent.update(updateData);
+
+		return BladesActor.GetPersonal(actorRef, parent);
+	}
+
+	//~ GetEmbeddedCategoryActors: Get ALL embedded actors of given category.
+	static async GetEmbeddedCategoryActors(cat: string, parent: BladesActor): Promise<EmbeddedBladesActor[]> {
+		const catActorData: BladesActor.SubActorData[] = Object.values(parent.system.subactors).filter(({category}) => category === cat);
+		const embActors = await Promise.all(catActorData.map(async ({id}) => BladesActor.GetPersonal(id, parent)));
+		return embActors.filter((actor): actor is EmbeddedBladesActor => actor !== null);
+	}
+
+	//~ GetActiveCategoryActors: Get ACTIVE (unArchived) embedded actors of given category.
+	static async GetActiveCategoryActors(cat: string, parent: BladesActor): Promise<EmbeddedBladesActor[]> {
+		const embActors = await BladesActor.GetEmbeddedCategoryActors(cat, parent);
+		return embActors.filter((actor) => !actor.isArchived);
+	}
+
+	//~ GetGlobalCategoryActors: Get global actors, overwritten by embedded custom actors if parent provided.
+	static async GetGlobalCategoryActors(category: string, parent?: BladesActor): Promise<Array<BladesActor|EmbeddedBladesActor>> {
+		const globalActors = await BladesActor.getActorsByCat(category);
+		if (!parent) { return globalActors }
+		const customizedActors = await Promise.all(globalActors.map((gActor) => {
+			if (gActor.id && gActor.id in parent.system.subactors) {
+				return BladesActor.GetPersonal(gActor, parent);
+			} else {
+				return gActor;
+			}
+		}));
+		return customizedActors.filter((actor) => actor !== null) as Array<BladesActor|EmbeddedBladesActor>;
 	}
 
 	static override async create(data: ActorDataConstructorData, options={}) {
 		data.token = data.token || {};
 
-		//~ For Crew and Character set the Token to sync with charsheet.
+		eLog.checkLog3("actor", "BladesActor.create(data,options)", {data,options});
+
+		//~ For Crew and PC set the Token to sync with charsheet.
 		switch (data.type) {
-			case "character":
+			case "pc":
 			case "crew":
 				data.token.actorLink = true;
 				break;
 			// no default
 		}
 
+		function createWorldName(name: string) {
+			return name
+				.replace(/[^A-Za-z_0-9 ]/g, "")
+				.trim()
+				.replace(/ /g, "_");
+		}
+
+		//~ For All Actors, set world_name to initial name, if not defined.
+		// Object.assign(
+		// 	data.data,
+		// 	{
+		// 		world_name: data.data.world_name || createWorldName(data.name ?? "")
+		// 	}
+		// );
+
 		return super.create(data, options);
 	}
-
-	// override getRollData() {
-	// 	const data = super.getRollData() as object & {dice_amount: Record<string,number>};
-	// 	data.dice_amount = this.getAttributeDiceToThrow();
-	// 	return data;
-	// }
 
 	override async _onCreateEmbeddedDocuments(embName: string, docs: Array<BladesItem|BladesActiveEffect>, ...args: [
 		Array<Record<string, unknown>>,
@@ -82,7 +222,7 @@ class BladesActor extends Actor {
 		docs.forEach(async (doc) => {
 			// eLog.log(`... docs.forEach -> ${doc.name} = ${(doc as BladesItem).type} (${doc instanceof BladesItem})`, doc);
 			if (doc instanceof BladesItem) {
-				doc.update({"system.isActive": true});
+				doc.update({"system.isArchived": true});
 				switch (doc.type) {
 					case "playbook": {
 						await this.update({
@@ -105,16 +245,8 @@ class BladesActor extends Actor {
 		return true;
 	}
 
-	async embedSubActor(category: BladesActor.SubActorCategory, actor: BladesActor|null) {
-		if (!category || !actor) { return }
-		this.update({[`system.subactors.${actor.id}`]: {id: actor.id, category, data: {}}});
-	}
+	getData() {
 
-	getSubActor(category: BladesActor.SubActorCategory): BladesActor|null {
-		const subActors = Object.values(this.system.subactors);
-		const actorRef = Object.values(this.system.subactors).find((subActor: BladesActor.SubActorData) => subActor.category === category);
-		if (!actorRef) { return null }
-		return BladesActor.get(actorRef.id)
 	}
 
 	get playbookName() {
@@ -124,6 +256,9 @@ class BladesActor extends Actor {
 		return this.items.find((item) => item.type === "playbook")
 			?? this.items.find((item) => item.type === "crew_playbook" )
 			?? null;
+	}
+	changePlaybook(playbookItem: BladesItem) {
+
 	}
 
 	get attributes(): Record<Attributes,number> {
@@ -164,17 +299,14 @@ class BladesActor extends Actor {
 		) as Record<string, boolean>;
 	}
 
-	get customItems(): BladesItem[] {
-		return this.items.filter((i) => i.system.isCustomized === true);
-	}
-
-	async removeItem(itemId: string) {
-		const item = this.items.get(itemId);
-		// if (item?.system.isCustomized) {
-		// 	return item.update({"system.isActive": false});
-		// } else {
-		return this.deleteEmbeddedDocuments("Item", [itemId]);
-		// }
+	async removeDoc(docId: string) {
+		const doc = (await BladesActor.GetPersonal(docId, this)) ?? (await BladesItem.GetPersonal(docId, this));
+		if (!doc) { return }
+		if (doc instanceof BladesActor) {
+			this.update({[`system.subactors.${docId}.isArchived`]: true});
+		} else {
+			doc.update({"system.isArchived": true});
+		}
 	}
 
 	startScore() {

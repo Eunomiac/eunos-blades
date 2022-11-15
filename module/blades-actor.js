@@ -6,11 +6,12 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-import { BladesActorType, Randomizers, Attributes, Actions, Positions, EffectLevels } from "./core/constants.js";
+import C, { BladesActorType, Randomizers, Attributes, Actions, Positions, EffectLevels } from "./core/constants.js";
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem from "./blades-item.js";
 class BladesActor extends Actor {
-    static Categories = {
+
+    static CategoryTypes = {
         "pc-crew": BladesActorType.crew,
         "crew-pc": BladesActorType.pc,
         "vice_purveyor": BladesActorType.npc,
@@ -19,49 +20,164 @@ class BladesActor extends Actor {
         "npc": BladesActorType.npc,
         "crew": BladesActorType.crew
     };
-    static get(actorNameOrId) {
-        if (!game.actors) {
-            return null;
-        }
-        const actor = game.actors.find((actor) => actor.id === actorNameOrId || actor.name === actorNameOrId)
-            ?? game.actors.find((actor) => actor.system.world_name === actorNameOrId);
-        if (!actor) {
-            return null;
-        }
-        return actor;
+    static CategoryFilters = {};
+    static get All() { return game.actors; }
+    static async getAllGlobalActors() {
+        const actors = Array.from(BladesActor.All);
+        const packs = game.packs.filter((pack) => C.ActorTypes.includes(pack.metadata.name));
+        const packActors = (await Promise.all(packs.map(async (pack) => {
+            const packDocs = await pack.getDocuments();
+            return packDocs.filter((packActor) => !actors.some((act) => act.system.world_name === packActor.system.world_name));
+        }))).flat();
+        actors.push(...packActors);
+        actors.sort(function (a, b) {
+            const nameA = (a.name ?? "").toUpperCase();
+            const nameB = (b.name ?? "").toUpperCase();
+            return nameA.localeCompare(nameB);
+        });
+        return actors;
     }
-        static async getAllActorsByType(aType, isIncludingPacks = false) {
-        if (!game.actors) {
+    static async getActorsByCat(actorCat) {
+        if (!(actorCat in BladesActor.CategoryTypes)) {
             return [];
         }
-        const actors = game.actors.filter((actor) => actor.type === aType);
-        if (isIncludingPacks || actors.length === 0) {
-            const pack = game.packs.find((pack) => pack.metadata.name === aType);
-            if (pack) {
-                const pack_actors = await pack.getDocuments();
-                actors.push(...pack_actors);
+        const allActors = await BladesActor.getAllGlobalActors();
+        const allTypeActors = allActors.filter((actor) => actor.type === BladesActor.CategoryTypes[actorCat]);
+        if (actorCat in BladesActor.CategoryFilters) {
+            return BladesActor.CategoryFilters[actorCat](allTypeActors);
+        }
+        return allTypeActors;
+    }
+
+    static async GetGlobal(actorRef, actorCat) {
+        if (actorCat) {
+            if (!(actorCat in BladesActor.CategoryTypes)) {
+                return null;
+            }
+            if (actorRef instanceof BladesActor) {
+                if (actorRef.type !== BladesActor.CategoryTypes[actorCat]) {
+                    return null;
+                }
+                actorRef = actorRef.system.world_name ?? actorRef.id;
             }
         }
-        return actors;
+        else if (actorRef instanceof BladesActor) {
+            actorCat = actorRef.type;
+            actorRef = actorRef.system.world_name ?? actorRef.id;
+        }
+        const actors = await (actorCat ? BladesActor.getActorsByCat(actorCat) : BladesActor.getAllGlobalActors());
+        if (U.isDocID(actorRef)) {
+            return actors.find((actor) => actor.id === actorRef) ?? null;
+        }
+        else {
+            return actors.find((actor) => actor.name === actorRef)
+                ?? actors.find((actor) => actor.system.world_name === actorRef)
+                ?? null;
+        }
+    }
+    static async GetPersonal(actorRef, parent) {
+        const actor = await BladesActor.GetGlobal(actorRef);
+        if (!actor || !actor.id) {
+            return null;
+        }
+        const { category, system } = parent.system.subactors[actor.id];
+        if (!category || !system) {
+            return null;
+        }
+        return Object.assign(actor, {
+            category,
+            system: foundry.utils.mergeObject(actor.system, system)
+        });
+    }
+
+    static async Embed(actorRef, category, parent) {
+        eLog.log2("[BladesActor.Embed(actorRef, category, parent)]", { actorRef, category, parent });
+        const updateData = {};
+        if (!(category in BladesActor.CategoryTypes)) {
+            return null;
+        }
+
+        const globalActor = await BladesActor.GetGlobal(actorRef);
+        if (!globalActor?.id) {
+            return null;
+        }
+        if (globalActor.id in parent.system.subactors) {
+            updateData[`system.subactors.${globalActor.id}.isArchived`] = false;
+        }
+        updateData[`system.subactors.${globalActor.id}`] = { id: globalActor.id, category, system: {}, isArchived: false };
+        await parent.update(updateData);
+        return BladesActor.GetPersonal(actorRef, parent);
+    }
+
+    static async Remove(actorRef, category, parent) {
+        eLog.log2("[BladesActor.Remove(actorRef, category, parent)]", { actorRef, category, parent });
+        const updateData = {};
+        if (!(category in BladesActor.CategoryTypes)) {
+            return null;
+        }
+
+        const globalActor = await BladesActor.GetGlobal(actorRef);
+        if (!globalActor?.id) {
+            return null;
+        }
+        if (globalActor.id in parent.system.subactors) {
+            updateData[`system.subactors.${globalActor.id}.isArchived`] = true;
+        }
+        await parent.update(updateData);
+        return BladesActor.GetPersonal(actorRef, parent);
+    }
+
+    static async GetEmbeddedCategoryActors(cat, parent) {
+        const catActorData = Object.values(parent.system.subactors).filter(({ category }) => category === cat);
+        const embActors = await Promise.all(catActorData.map(async ({ id }) => BladesActor.GetPersonal(id, parent)));
+        return embActors.filter((actor) => actor !== null);
+    }
+
+    static async GetActiveCategoryActors(cat, parent) {
+        const embActors = await BladesActor.GetEmbeddedCategoryActors(cat, parent);
+        return embActors.filter((actor) => !actor.isArchived);
+    }
+
+    static async GetGlobalCategoryActors(category, parent) {
+        const globalActors = await BladesActor.getActorsByCat(category);
+        if (!parent) {
+            return globalActors;
+        }
+        const customizedActors = await Promise.all(globalActors.map((gActor) => {
+            if (gActor.id && gActor.id in parent.system.subactors) {
+                return BladesActor.GetPersonal(gActor, parent);
+            }
+            else {
+                return gActor;
+            }
+        }));
+        return customizedActors.filter((actor) => actor !== null);
     }
     static async create(data, options = {}) {
         data.token = data.token || {};
+        eLog.checkLog3("actor", "BladesActor.create(data,options)", { data, options });
 
         switch (data.type) {
-            case "character":
+            case "pc":
             case "crew":
                 data.token.actorLink = true;
                 break;
         }
+        function createWorldName(name) {
+            return name
+                .replace(/[^A-Za-z_0-9 ]/g, "")
+                .trim()
+                .replace(/ /g, "_");
+        }
+        
         return super.create(data, options);
     }
-    
     async _onCreateEmbeddedDocuments(embName, docs, ...args) {
         await super._onCreateEmbeddedDocuments(embName, docs, ...args);
         eLog.checkLog("actorTrigger", "onCreateEmbeddedDocuments", { embName, docs, args });
         docs.forEach(async (doc) => {
             if (doc instanceof BladesItem) {
-                doc.update({ "system.isActive": true });
+                doc.update({ "system.isArchived": true });
                 switch (doc.type) {
                     case "playbook": {
                         await this.update({
@@ -81,19 +197,7 @@ class BladesActor extends Actor {
     isValidForDoc(parentDoc) {
         return true;
     }
-    async embedSubActor(category, actor) {
-        if (!category || !actor) {
-            return;
-        }
-        this.update({ [`system.subactors.${actor.id}`]: { id: actor.id, category, data: {} } });
-    }
-    getSubActor(category) {
-        const subActors = Object.values(this.system.subactors);
-        const actorRef = Object.values(this.system.subactors).find((subActor) => subActor.category === category);
-        if (!actorRef) {
-            return null;
-        }
-        return BladesActor.get(actorRef.id);
+    getData() {
     }
     get playbookName() {
         return this.playbook?.name ?? null;
@@ -102,6 +206,8 @@ class BladesActor extends Actor {
         return this.items.find((item) => item.type === "playbook")
             ?? this.items.find((item) => item.type === "crew_playbook")
             ?? null;
+    }
+    changePlaybook(playbookItem) {
     }
     get attributes() {
         return {
@@ -133,12 +239,17 @@ class BladesActor extends Actor {
     get traumaConditions() {
         return U.objFilter(this.system.trauma?.checked ?? {}, (v, traumaName) => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName]));
     }
-    get customItems() {
-        return this.items.filter((i) => i.system.isCustomized === true);
-    }
-    async removeItem(itemId) {
-        const item = this.items.get(itemId);
-        return this.deleteEmbeddedDocuments("Item", [itemId]);
+    async removeDoc(docId) {
+        const doc = (await BladesActor.GetPersonal(docId, this)) ?? (await BladesItem.GetPersonal(docId, this));
+        if (!doc) {
+            return;
+        }
+        if (doc instanceof BladesActor) {
+            this.update({ [`system.subactors.${docId}.isArchived`]: true });
+        }
+        else {
+            doc.update({ "system.isArchived": true });
+        }
     }
     startScore() {
         this.update({

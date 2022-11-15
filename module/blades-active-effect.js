@@ -5,33 +5,13 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import BladesItem from "./blades-item.js";
 const FUNCQUEUE = {};
 const CUSTOMFUNCS = {
     addItem: async (actor, { name, type }) => {
         eLog.checkLog("activeEffects", "addItem", { actor, name, type });
-        if (actor.items.find((item) => item.name === name && item.type === type)) {
-            eLog.error("... Item Already Added: Skipping");
-            return;
-        }
-        const itemsOfType = await BladesItem.getAllItemsByType(type);
-        const newItem = itemsOfType.find((iData) => iData.name === name);
-        if (newItem) {
-            await actor.createEmbeddedDocuments("Item", [newItem.data]);
-        }
     },
     remItem: async (actor, { name, type }) => {
         eLog.checkLog("activeEffects", "remItem", { actor, name, type });
-        const reversePattern = name.startsWith("!");
-        const namePat = new RegExp(name.replace(/^!/, ""));
-        const itemsToRemove = actor.items
-            .filter((item) => (reversePattern
-            ? !namePat.test(item.name ?? "")
-            : namePat.test(item.name ?? "")) && item.type === type)
-            .map((item) => item.id);
-        if (itemsToRemove.length) {
-            await actor.deleteEmbeddedDocuments("Item", itemsToRemove);
-        }
     }
 };
 class BladesActiveEffect extends ActiveEffect {

@@ -7,7 +7,7 @@
 
 export var BladesActorType;
 (function (BladesActorType) {
-    BladesActorType["pc"] = "character";
+    BladesActorType["pc"] = "pc";
     BladesActorType["npc"] = "npc";
     BladesActorType["crew"] = "crew";
 })(BladesActorType || (BladesActorType = {}));
@@ -27,6 +27,7 @@ export var BladesItemType;
     BladesItemType["heritage"] = "heritage";
     BladesItemType["item"] = "item";
     BladesItemType["playbook"] = "playbook";
+    BladesItemType["preferred_op"] = "preferred_op";
     BladesItemType["stricture"] = "stricture";
     BladesItemType["vice"] = "vice";
 })(BladesItemType || (BladesItemType = {}));

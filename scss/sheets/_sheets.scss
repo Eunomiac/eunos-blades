@@ -165,12 +165,19 @@
 }
 
 .window-content .nav-group {
-	nav {
+	height: 100%;
+	justify-content: flex-start;
+	overflow: hidden;
+
+	> * { width: 100% }
+
+	.nav-tabs {
 		background-color: var(--blades-grey-bright);
 		border: 2px solid var(--blades-white);
 		padding: 0 toRem(10px);
 		width: 100%;
-		height: toRem(24px);
+		height: toRem(26px);
+		min-height: toRem(26px);
 		overflow: visible;
 
 		.tab-selector {
@@ -207,7 +214,11 @@
 	}
   .tab[data-tab] {
     display: none;
+		width: 100%;
 		overflow-y: auto;
+		overflow-x: hidden;
+		padding: 0 var(--content-padding);
+		flex-grow: 1;
 
     &.active {
       display: block;
@@ -241,6 +252,12 @@
 			overflow: visible;
 		}
 	}
+}
+
+.window-content form.editable .actors-container {
+	// position: absolute;
+	height: toRem(60px);
+	justify-content: flex-start;
 }
 
 .window-content .turf-list { @import "../components/turf-block" }

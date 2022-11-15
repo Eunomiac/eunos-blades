@@ -4,69 +4,231 @@ import BladesActor from "./blades-actor.js";
 
 class BladesItem extends Item {
 
-	static Categories: Record<string, BladesItemType> = {
-		"ability": BladesItemType.ability,
-		"background": BladesItemType.background,
-		"clock_keeper": BladesItemType.clock_keeper,
-		"cohort": BladesItemType.cohort,
-		"crew_ability": BladesItemType.crew_ability,
-		"crew_reputation": BladesItemType.crew_reputation,
-		"crew_playbook": BladesItemType.crew_playbook,
-		"crew_upgrade": BladesItemType.crew_upgrade,
-		"faction": BladesItemType.faction,
-		"feature": BladesItemType.feature,
-		"gm_tracker": BladesItemType.gm_tracker,
-		"heritage": BladesItemType.heritage,
-		"item": BladesItemType.item,
-		"playbook": BladesItemType.playbook,
-		"stricture": BladesItemType.stricture,
-		"vice": BladesItemType.vice
+	//~ Items are primarily referenced by category, not type.
+	//~    BladesItem.CategoryTypes -> get item type for given category
+	//~    BladesItem.CategoryFilters -> pass item list filtered by type, get one further filtered by category
+	static CategoryTypes: Record<string, BladesItemType> = {
+		ability: BladesItemType.ability,
+		background: BladesItemType.background,
+		cohort: BladesItemType.cohort,
+		crew_ability: BladesItemType.crew_ability,
+		crew_reputation: BladesItemType.crew_reputation,
+		crew_playbook: BladesItemType.crew_playbook,
+		crew_upgrade: BladesItemType.crew_upgrade,
+		faction: BladesItemType.faction,
+		feature: BladesItemType.feature,
+		heritage: BladesItemType.heritage,
+		item: BladesItemType.item,
+		playbook: BladesItemType.playbook,
+		preferred_op: BladesItemType.preferred_op,
+		stricture: BladesItemType.stricture,
+		vice: BladesItemType.vice
+	};
+
+	static CategoryDefaults: Partial<Record<BladesItemType, keyof typeof BladesItem.CategoryTypes>> = {
+		[BladesItemType.ability]: "ability",
+		[BladesItemType.background]: "background",
+		[BladesItemType.cohort]: "cohort",
+		[BladesItemType.crew_ability]: "crew_ability",
+		[BladesItemType.crew_reputation]: "crew_reputation",
+		[BladesItemType.crew_playbook]: "crew_playbook",
+		[BladesItemType.crew_upgrade]: "crew_upgrade",
+		[BladesItemType.faction]: "faction",
+		[BladesItemType.feature]: "feature",
+		[BladesItemType.heritage]: "heritage",
+		[BladesItemType.item]: "item",
+		[BladesItemType.playbook]: "playbook",
+		[BladesItemType.preferred_op]: "preferred_op",
+		[BladesItemType.stricture]: "stricture",
+		[BladesItemType.vice]: "vice"
+
+	};
+
+	static CategoryFilters: Record<string, (items: BladesItem[]) => BladesItem[]> = { };
+
+	static CategoryUniques: Record<string, boolean> = {
+		ability: false,
+		background: true,
+		clock_keeper: false,
+		cohort: false,
+		crew_ability: false,
+		crew_reputation: true,
+		crew_playbook: true,
+		crew_upgrade: false,
+		faction: false,
+		feature: false,
+		gm_tracker: false,
+		heritage: true,
+		item: false,
+		playbook: true,
+		preferred_op: true,
+		stricture: false,
+		vice: true
+	};
+
+	static get All() { return game.items }
+
+	private static async getAllGlobalItems(): Promise<BladesItem[]> {
+		const items = Array.from(BladesItem.All);
+
+		// Get PACK items.
+		const packs = game.packs.filter((pack) => C.ItemTypes.includes(pack.metadata.name as BladesItemType));
+		const packItems = (await Promise.all(packs.map(async (pack) => {
+			const packDocs = await pack.getDocuments() as BladesItem[];
+			return packDocs.filter((packItem): packItem is BladesItem => !items.some((itm) => itm.system.world_name === packItem.system.world_name));
+		}))).flat();
+
+		items.push(...packItems);
+
+		// Sort by NAME
+		items.sort(function(a, b) {
+			const nameA = (a.name ?? "").toUpperCase();
+			const nameB = (b.name ?? "").toUpperCase();
+			return nameA.localeCompare(nameB);
+		});
+
+		return items;
 	}
 
-	static get(itemNameOrId: string): BladesItem|null {
-		if (!game.items) { return null }
-		const item = game.items.find((item: BladesItem) => item.id === itemNameOrId || item.name === itemNameOrId)
-			?? game.items.find((item: BladesItem) => item.system.world_name === itemNameOrId);;
-		if (!item) { return null }
-		return item as BladesItem;
-	}
+	private static async getItemsByCat(itemCat: string): Promise<BladesItem[]> {
+		if (!(itemCat in BladesItem.CategoryTypes)) { return [] }
 
-	static async Embed(itemRef: string|BladesItem, parent: BladesActor): Promise<BladesItem|undefined> {
-		let item: BladesItem;
-		if (typeof itemRef === "string") {
-			const foundItem = BladesItem.get(itemRef);
-			if (!foundItem) { return }
-			item = foundItem;
-		} else {
-			item = itemRef;
+		const allItems = await BladesItem.getAllGlobalItems();
+
+		// Filter by Category Type
+		const allTypeItems = allItems.filter((item) => item.type === BladesItem.CategoryTypes[itemCat]);
+
+		// Filter by Category Filters, if present
+		if (itemCat in BladesItem.CategoryFilters) {
+			return BladesItem.CategoryFilters[itemCat](allTypeItems);
 		}
-		const embItem = BladesItem.create(item as any, {parent}) as Promise<BladesItem|undefined>;
-		if (!embItem) { return }
-		return embItem;
+
+		return allTypeItems;
 	}
 
-	static async getAllItemsByType(item_type: string, isIncludingPacks = false): Promise<BladesItem[]> {
-	 if (!game.items) { return [] }
+	//~ BladesItem.GetGlobal: Returns WORLD or PACK instance of referenced BladesItem.
+	static async GetGlobal(itemRef: string|BladesItem, itemCat?: string): Promise<BladesItem|null> {
+		if (itemCat) {
+			if (!(itemCat in BladesItem.CategoryTypes)) { return null }
+			if (itemRef instanceof BladesItem) {
+				if (itemRef.type !== BladesItem.CategoryTypes[itemCat]) { return null }
+				itemRef = itemRef.system.world_name ?? itemRef.id;
+			}
+		} else if (itemRef instanceof BladesItem) {
+			itemCat = itemRef.type;
+			itemRef = itemRef.system.world_name ?? itemRef.id;
+		}
 
-	 const items: BladesItem[] = game.items.filter((item: BladesItem) => item.type === item_type);
+		const items = await (itemCat ? BladesItem.getItemsByCat(itemCat) : BladesItem.getAllGlobalItems());
 
-	 if (isIncludingPacks || items.length === 0) {
-		 const pack = game.packs.find((pack) => pack.metadata.name === item_type);
-		 if (pack) {
-			 const pack_items = await pack.getDocuments() as BladesItem[];
-			 items.push(...pack_items);
-		 }
-	 }
-
-	 items.sort(function(a, b) {
-		 const nameA = a.data.name.toUpperCase();
-		 const nameB = b.data.name.toUpperCase();
-		 return nameA.localeCompare(nameB);
-	 });
-
-	 return items;
+		if (U.isDocID(itemRef)) {
+			return items.find((item) => item.id === itemRef) ?? null;
+		} else {
+			return items.find((item) => item.name === itemRef)
+				?? items.find((item) => item.system.world_name === itemRef)
+				?? null;
+		}
 	}
 
+	//~ BladesItem.GetPersonal: Returns WORLD or PACK instance of referenced BladesItem,
+	//~  OVERWRITTEN by embedded item, archived or not.
+	static async GetPersonal(itemRef: string|BladesItem, parent: BladesActor): Promise<BladesItem|null> {
+		if (itemRef instanceof BladesItem && itemRef.id) {
+			itemRef = itemRef.id;
+		}
+		if (!itemRef) { return null }
+
+		let item: BladesItem|null;
+		// Get embedded instance of referenced item, if available.
+		if (U.isDocID(itemRef)) {
+			item = parent.items.find((item) => item.id === itemRef) ?? null;
+		} else {
+			item = parent.items.find((item) => item.name === itemRef)
+				?? parent.items.find((item) => item.system.world_name === itemRef)
+				?? null;
+		}
+
+		if (item) { return item }
+
+		// Get the global instance of the referenced Item
+		item = await BladesItem.GetGlobal(itemRef);
+		if (item) { return item }
+
+		return null;
+	}
+
+	//~ Embed: Embed a GLOBAL item into a parent item, removing previous if unique.
+	static async Embed(itemRef: ItemRef, category: string, parent: BladesActor): Promise<BladesItem|null> {
+		eLog.log2("[BladesItem.Embed(itemRef, category, parent)]", {itemRef, category, parent});
+
+		if (!(category in BladesItem.CategoryTypes)) { return null }
+
+		//~ Get global item from itemRef
+		const globalItem = await BladesItem.GetGlobal(itemRef);
+		if (!globalItem?.id) { return null }
+
+		//~ If embedded item already exists on actor, unarchive it instead of adding another.
+		const embItem = parent.items.find((i) => i.system.world_name === globalItem.system.world_name);
+		if (embItem) {
+			return (await embItem.update({"system.isArchived": false})) ?? null;
+		}
+
+		//~ If embedded item is new, check whether this is a unique item and delete any others if so.
+		if (BladesItem.CategoryUniques[category]) {
+			const categoryItems = await BladesItem.GetEmbeddedCategoryItems(category, parent);
+			await Promise.all(categoryItems.map((i) => BladesItem.Remove(i, category, parent)));
+		}
+
+		//~ ... then embed the new item.
+		// @ts-expect-error Can't figure out how to type 'create()' properly.
+		return BladesItem.create([globalItem], {parent});
+	}
+
+	//~ Remove: Remove an embedded item by archiving it OR deleting it, depending on whether it's Unique
+	static async Remove(itemRef: ItemRef, category: string, parent: BladesActor): Promise<BladesItem|null> {
+		eLog.log2("[BladesItem.Remove(itemRef, category, parent)]", {itemRef, category, parent});
+		const updateData: Record<string, boolean> = {};
+
+		if (!(category in BladesItem.CategoryTypes)) { return null }
+
+		//~ Get embedded item from itemRef
+		const embItem = await BladesItem.GetPersonal(itemRef, parent);
+		if (!embItem?.id) { return null }
+
+		if (BladesItem.CategoryUniques[category]) {
+			return (await embItem.delete()) ?? null;
+		}
+		await embItem.update({"system.isArchived": true});
+
+		return BladesItem.GetPersonal(itemRef, parent);
+	}
+
+	//~ GetEmbeddedCategoryItems: Get ALL embedded items of given category.
+	static async GetEmbeddedCategoryItems(cat: string, parent: BladesActor): Promise<BladesItem[]> {
+		if (!(cat in BladesItem.CategoryTypes)) { return [] }
+		const typeItems = parent.items.filter((item) => item.type === BladesItem.CategoryTypes[cat]);
+		if (cat in BladesItem.CategoryFilters) {
+			return BladesItem.CategoryFilters[cat](typeItems);
+		}
+		return typeItems;
+	}
+
+	//~ GetActiveCategoryItems: Get ACTIVE (unArchived) embedded items of given category.
+	static async GetActiveCategoryItems(cat: string, parent: BladesActor): Promise<BladesItem[]> {
+		const embItems = await BladesItem.GetEmbeddedCategoryItems(cat, parent);
+		return embItems.filter((item) => !item.isArchived);
+	}
+
+	//~ GetGlobalCategoryItems: Get global items, overwritten by embedded custom items if parent provided.
+	static async GetGlobalCategoryItems(category: string, parent?: BladesActor): Promise<BladesItem[]> {
+		const globalItems = await BladesItem.getItemsByCat(category);
+		if (!parent) { return globalItems }
+		const embItems = await BladesItem.GetEmbeddedCategoryItems(category, parent);
+		const customizedItems = globalItems.map((gItem) => {
+			return embItems.find((i) => i.system.world_name === gItem.system.world_name) ?? gItem;
+		});
+		return customizedItems;
+	}
 
 	override async _preCreate( data: any, options: any, user: User ) {
 		await super._preCreate( data, options, user );
@@ -112,7 +274,7 @@ class BladesItem extends Item {
 	}
 
 	get tier() { return U.pInt(this.parent?.system?.tier) }
-	get isCustomizedItem() { return this.isEmbedded && this.system.isCustomized }
+	get isArchived() { return this.system.isArchived }
 	get playbooks(): string[] { return this.system.playbooks ?? [] }
 
 	isKept(actor: BladesActor): boolean|null {
@@ -159,7 +321,7 @@ class BladesItem extends Item {
 			if (!isValid) { return false }
 
 			//~ Check Quantities
-			isValid = doc.items.filter((i) => i.name === this.name).length < (this.system.num_available ?? 1);
+			isValid = doc.items.filter((i) => i.system.world_name === this.system.world_name).length < (this.system.num_available ?? 1);
 			if (!isValid) { return false }
 
 			//~ Check any prerequisites
@@ -322,6 +484,7 @@ declare interface BladesItem {
 	system: {
 		type: string,
 		world_name: string,
+		isArchived: boolean,
 		bgImg: string,
 		description: string,
 		isCustomized: boolean,
@@ -366,7 +529,7 @@ declare interface BladesItem {
 			name: string
 		},
 		load?: number,
-		uses?: number,
+		uses?: ValueMax,
 		keepAsGhost?: boolean,
 		prereqs?: Record<string,any>,
 		additional_info?: string,

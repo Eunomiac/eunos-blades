@@ -1071,6 +1071,8 @@ const sleep = (duration: number): Promise<void> => new Promise((resolve) => { se
 
 // #region ████████ FOUNDRY: Requires Configuration of System ID in constants.ts ████████ ~
 
+const isDocID = (docRef: unknown) => { return typeof docRef === "string" && /^[A-Za-z0-9]{16}$/.test(docRef) };
+
 const loc = (locRef: string, formatDict: Record<string,string> = {}) => {
 	if (/[a-z]/.test(locRef)) { // reference contains lower-case characters: add system ID namespacing to dot notation
 		locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}\.)*`), `${C.SYSTEM_ID}.`);
@@ -1109,6 +1111,8 @@ function getActorsOfType(actorType: string, user?: User): SystemDocs.Actor[] {
 function checkUserPermissions(document: SystemDocs.Sheet, user: User) {
 	return true;
 }
+
+
 // #endregion ▄▄▄▄▄ FOUNDRY ▄▄▄▄▄
 
 export default {
@@ -1139,10 +1143,6 @@ export default {
 	signNum, padNum, stringifyNum, verbalizeNum, ordinalizeNum, romanizeNum,
 	// ░░░░░░░ Content ░░░░░░░
 	loremIpsum, randString, randWord,
-
-	// ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
-	loc, getSetting, getTemplatePath, // dbLog, toggleDebug,
-	getItemsOfType, getActorsOfType, checkUserPermissions,
 
 	// ████████ SEARCHING: Searching Various Data Types w/ Fuzzy Matching ████████
 	fuzzyMatch, isIn, isInExact,
@@ -1183,6 +1183,11 @@ export default {
 	getSiblings,
 
 	// ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████
-	sleep
+	sleep,
+
+	// ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
+	isDocID, loc, getSetting, getTemplatePath,
+	getItemsOfType, getActorsOfType, checkUserPermissions
+
 };
 // #endregion ▄▄▄▄▄ EXPORTS ▄▄▄▄▄

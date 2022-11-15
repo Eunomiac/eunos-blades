@@ -9,72 +9,209 @@ import C, { SVGDATA, BladesItemType } from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
 class BladesItem extends Item {
-    static Categories = {
-        "ability": BladesItemType.ability,
-        "background": BladesItemType.background,
-        "clock_keeper": BladesItemType.clock_keeper,
-        "cohort": BladesItemType.cohort,
-        "crew_ability": BladesItemType.crew_ability,
-        "crew_reputation": BladesItemType.crew_reputation,
-        "crew_playbook": BladesItemType.crew_playbook,
-        "crew_upgrade": BladesItemType.crew_upgrade,
-        "faction": BladesItemType.faction,
-        "feature": BladesItemType.feature,
-        "gm_tracker": BladesItemType.gm_tracker,
-        "heritage": BladesItemType.heritage,
-        "item": BladesItemType.item,
-        "playbook": BladesItemType.playbook,
-        "stricture": BladesItemType.stricture,
-        "vice": BladesItemType.vice
+
+    static CategoryTypes = {
+        ability: BladesItemType.ability,
+        background: BladesItemType.background,
+        cohort: BladesItemType.cohort,
+        crew_ability: BladesItemType.crew_ability,
+        crew_reputation: BladesItemType.crew_reputation,
+        crew_playbook: BladesItemType.crew_playbook,
+        crew_upgrade: BladesItemType.crew_upgrade,
+        faction: BladesItemType.faction,
+        feature: BladesItemType.feature,
+        heritage: BladesItemType.heritage,
+        item: BladesItemType.item,
+        playbook: BladesItemType.playbook,
+        preferred_op: BladesItemType.preferred_op,
+        stricture: BladesItemType.stricture,
+        vice: BladesItemType.vice
     };
-    static get(itemNameOrId) {
-        if (!game.items) {
-            return null;
-        }
-        const item = game.items.find((item) => item.id === itemNameOrId || item.name === itemNameOrId)
-            ?? game.items.find((item) => item.system.world_name === itemNameOrId);
-        ;
-        if (!item) {
-            return null;
-        }
-        return item;
-    }
-    static async Embed(itemRef, parent) {
-        let item;
-        if (typeof itemRef === "string") {
-            const foundItem = BladesItem.get(itemRef);
-            if (!foundItem) {
-                return;
-            }
-            item = foundItem;
-        }
-        else {
-            item = itemRef;
-        }
-        const embItem = BladesItem.create(item, { parent });
-        if (!embItem) {
-            return;
-        }
-        return embItem;
-    }
-    static async getAllItemsByType(item_type, isIncludingPacks = false) {
-        if (!game.items) {
-            return [];
-        }
-        const items = game.items.filter((item) => item.type === item_type);
-        if (isIncludingPacks || items.length === 0) {
-            const pack = game.packs.find((pack) => pack.metadata.name === item_type);
-            if (pack) {
-                const pack_items = await pack.getDocuments();
-                items.push(...pack_items);
-            }
-        }
+    static CategoryDefaults = {
+        [BladesItemType.ability]: "ability",
+        [BladesItemType.background]: "background",
+        [BladesItemType.cohort]: "cohort",
+        [BladesItemType.crew_ability]: "crew_ability",
+        [BladesItemType.crew_reputation]: "crew_reputation",
+        [BladesItemType.crew_playbook]: "crew_playbook",
+        [BladesItemType.crew_upgrade]: "crew_upgrade",
+        [BladesItemType.faction]: "faction",
+        [BladesItemType.feature]: "feature",
+        [BladesItemType.heritage]: "heritage",
+        [BladesItemType.item]: "item",
+        [BladesItemType.playbook]: "playbook",
+        [BladesItemType.preferred_op]: "preferred_op",
+        [BladesItemType.stricture]: "stricture",
+        [BladesItemType.vice]: "vice"
+    };
+    static CategoryFilters = {};
+    static CategoryUniques = {
+        ability: false,
+        background: true,
+        clock_keeper: false,
+        cohort: false,
+        crew_ability: false,
+        crew_reputation: true,
+        crew_playbook: true,
+        crew_upgrade: false,
+        faction: false,
+        feature: false,
+        gm_tracker: false,
+        heritage: true,
+        item: false,
+        playbook: true,
+        preferred_op: true,
+        stricture: false,
+        vice: true
+    };
+    static get All() { return game.items; }
+    static async getAllGlobalItems() {
+        const items = Array.from(BladesItem.All);
+        const packs = game.packs.filter((pack) => C.ItemTypes.includes(pack.metadata.name));
+        const packItems = (await Promise.all(packs.map(async (pack) => {
+            const packDocs = await pack.getDocuments();
+            return packDocs.filter((packItem) => !items.some((itm) => itm.system.world_name === packItem.system.world_name));
+        }))).flat();
+        items.push(...packItems);
         items.sort(function (a, b) {
-            const nameA = a.data.name.toUpperCase();
-            const nameB = b.data.name.toUpperCase();
+            const nameA = (a.name ?? "").toUpperCase();
+            const nameB = (b.name ?? "").toUpperCase();
             return nameA.localeCompare(nameB);
         });
         return items;
+    }
+    static async getItemsByCat(itemCat) {
+        if (!(itemCat in BladesItem.CategoryTypes)) {
+            return [];
+        }
+        const allItems = await BladesItem.getAllGlobalItems();
+        const allTypeItems = allItems.filter((item) => item.type === BladesItem.CategoryTypes[itemCat]);
+        if (itemCat in BladesItem.CategoryFilters) {
+            return BladesItem.CategoryFilters[itemCat](allTypeItems);
+        }
+        return allTypeItems;
+    }
+
+    static async GetGlobal(itemRef, itemCat) {
+        if (itemCat) {
+            if (!(itemCat in BladesItem.CategoryTypes)) {
+                return null;
+            }
+            if (itemRef instanceof BladesItem) {
+                if (itemRef.type !== BladesItem.CategoryTypes[itemCat]) {
+                    return null;
+                }
+                itemRef = itemRef.system.world_name ?? itemRef.id;
+            }
+        }
+        else if (itemRef instanceof BladesItem) {
+            itemCat = itemRef.type;
+            itemRef = itemRef.system.world_name ?? itemRef.id;
+        }
+        const items = await (itemCat ? BladesItem.getItemsByCat(itemCat) : BladesItem.getAllGlobalItems());
+        if (U.isDocID(itemRef)) {
+            return items.find((item) => item.id === itemRef) ?? null;
+        }
+        else {
+            return items.find((item) => item.name === itemRef)
+                ?? items.find((item) => item.system.world_name === itemRef)
+                ?? null;
+        }
+    }
+    static async GetPersonal(itemRef, parent) {
+        if (itemRef instanceof BladesItem && itemRef.id) {
+            itemRef = itemRef.id;
+        }
+        if (!itemRef) {
+            return null;
+        }
+        let item;
+        if (U.isDocID(itemRef)) {
+            item = parent.items.find((item) => item.id === itemRef) ?? null;
+        }
+        else {
+            item = parent.items.find((item) => item.name === itemRef)
+                ?? parent.items.find((item) => item.system.world_name === itemRef)
+                ?? null;
+        }
+        if (item) {
+            return item;
+        }
+        item = await BladesItem.GetGlobal(itemRef);
+        if (item) {
+            return item;
+        }
+        return null;
+    }
+
+    static async Embed(itemRef, category, parent) {
+        eLog.log2("[BladesItem.Embed(itemRef, category, parent)]", { itemRef, category, parent });
+        if (!(category in BladesItem.CategoryTypes)) {
+            return null;
+        }
+
+        const globalItem = await BladesItem.GetGlobal(itemRef);
+        if (!globalItem?.id) {
+            return null;
+        }
+
+        const embItem = parent.items.find((i) => i.system.world_name === globalItem.system.world_name);
+        if (embItem) {
+            return (await embItem.update({ "system.isArchived": false })) ?? null;
+        }
+
+        if (BladesItem.CategoryUniques[category]) {
+            const categoryItems = await BladesItem.GetEmbeddedCategoryItems(category, parent);
+            await Promise.all(categoryItems.map((i) => BladesItem.Remove(i, category, parent)));
+        }
+
+        return BladesItem.create([globalItem], { parent });
+    }
+
+    static async Remove(itemRef, category, parent) {
+        eLog.log2("[BladesItem.Remove(itemRef, category, parent)]", { itemRef, category, parent });
+        const updateData = {};
+        if (!(category in BladesItem.CategoryTypes)) {
+            return null;
+        }
+
+        const embItem = await BladesItem.GetPersonal(itemRef, parent);
+        if (!embItem?.id) {
+            return null;
+        }
+        if (BladesItem.CategoryUniques[category]) {
+            return (await embItem.delete()) ?? null;
+        }
+        await embItem.update({ "system.isArchived": true });
+        return BladesItem.GetPersonal(itemRef, parent);
+    }
+
+    static async GetEmbeddedCategoryItems(cat, parent) {
+        if (!(cat in BladesItem.CategoryTypes)) {
+            return [];
+        }
+        const typeItems = parent.items.filter((item) => item.type === BladesItem.CategoryTypes[cat]);
+        if (cat in BladesItem.CategoryFilters) {
+            return BladesItem.CategoryFilters[cat](typeItems);
+        }
+        return typeItems;
+    }
+
+    static async GetActiveCategoryItems(cat, parent) {
+        const embItems = await BladesItem.GetEmbeddedCategoryItems(cat, parent);
+        return embItems.filter((item) => !item.isArchived);
+    }
+
+    static async GetGlobalCategoryItems(category, parent) {
+        const globalItems = await BladesItem.getItemsByCat(category);
+        if (!parent) {
+            return globalItems;
+        }
+        const embItems = await BladesItem.GetEmbeddedCategoryItems(category, parent);
+        const customizedItems = globalItems.map((gItem) => {
+            return embItems.find((i) => i.system.world_name === gItem.system.world_name) ?? gItem;
+        });
+        return customizedItems;
     }
     async _preCreate(data, options, user) {
         await super._preCreate(data, options, user);
@@ -129,7 +266,7 @@ class BladesItem extends Item {
         }));
     }
     get tier() { return U.pInt(this.parent?.system?.tier); }
-    get isCustomizedItem() { return this.isEmbedded && this.system.isCustomized; }
+    get isArchived() { return this.system.isArchived; }
     get playbooks() { return this.system.playbooks ?? []; }
     isKept(actor) {
         if (this.type !== "ability") {
@@ -178,7 +315,7 @@ class BladesItem extends Item {
                 return false;
             }
 
-            isValid = doc.items.filter((i) => i.name === this.name).length < (this.system.num_available ?? 1);
+            isValid = doc.items.filter((i) => i.system.world_name === this.system.world_name).length < (this.system.num_available ?? 1);
             if (!isValid) {
                 return false;
             }

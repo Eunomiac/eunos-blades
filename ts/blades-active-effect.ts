@@ -10,34 +10,9 @@ const FUNCQUEUE: Record<string, {
 const CUSTOMFUNCS = {
 	addItem: async (actor: BladesActor, {name, type}: {name: string, type: string}) => {
 		eLog.checkLog("activeEffects", "addItem", {actor, name, type});
-
-		// Check if actor already has an item of that name.
-		if (actor.items.find((item) => item.name === name && item.type === type)) {
-			eLog.error("... Item Already Added: Skipping");
-			return;
-		}
-
-		const itemsOfType = await BladesItem.getAllItemsByType(type);
-		const newItem = itemsOfType.find((iData) => iData.name === name);
-		if (newItem) {
-			await actor.createEmbeddedDocuments("Item", [newItem.data as ItemData & Record<string,unknown>]);
-		}
 	},
 	remItem: async (actor: BladesActor, {name, type}: {name: string, type: string}) => {
 		eLog.checkLog("activeEffects", "remItem", {actor, name, type});
-		// Convert name into regular expression pattern (for multiple removals)
-		// If name begins with '!', it means to invert the RegExp pattern.
-		const reversePattern = name.startsWith("!");
-		const namePat = new RegExp(name.replace(/^!/, ""));
-		// Assemble list of matching owned items
-		const itemsToRemove: string[] = actor.items
-			.filter((item): item is BladesItem & {id: string} => (reversePattern
-				? !namePat.test(item.name ?? "")
-				: namePat.test(item.name ?? "")) && item.type === type)
-			.map((item) => item.id);
-		if (itemsToRemove.length) {
-			await actor.deleteEmbeddedDocuments("Item", itemsToRemove);
-		}
 	}
 };
 

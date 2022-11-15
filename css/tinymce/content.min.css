@@ -294,8 +294,6 @@ html, :root {
         left: toRem(4px);
         transform: translate(0, -50%);
         top: 50%;
-        line-height: 1;
-        margin-top: toRem(2px);
         padding: 0;
         font-weight: bold;
         color: var(--blades-white-bright);
@@ -314,8 +312,8 @@ html, :root {
         margin: 0;
         padding: 0; }
     html .comp.long-text label, html .comp.long-text .comp-title, :root .comp.long-text label, :root .comp.long-text .comp-title {
-      max-width: toRem(200px);
       min-width: toRem(100px);
+      width: 100%;
       white-space: initial !important; }
     html .comp.comp-desc-trait, :root .comp.comp-desc-trait {
       align-items: flex-start;
@@ -371,12 +369,50 @@ html, :root {
         text-align: center; }
         html .comp.comp-desc-trait .comp-control.comp-delete:hover, :root .comp.comp-desc-trait .comp-control.comp-delete:hover {
           color: var(--blades-red-bright); }
+    html .comp.comp-actor, :root .comp.comp-actor {
+      height: 100%;
+      flex-basis: toRem(80px); }
+      html .comp.comp-actor .comp-body, :root .comp.comp-actor .comp-body {
+        filter: drop-shadow(0 0 toRem(2px) var(--blades-black-dark));
+        pointer-events: auto; }
+        html .comp.comp-actor .comp-body, html .comp.comp-actor .comp-body *, :root .comp.comp-actor .comp-body, :root .comp.comp-actor .comp-body * {
+          transition: 0.25s; }
+        html .comp.comp-actor .comp-body .comp-title, :root .comp.comp-actor .comp-body .comp-title {
+          top: unset;
+          bottom: 0%;
+          opacity: 0; }
+        html .comp.comp-actor .comp-body .comp-img, :root .comp.comp-actor .comp-body .comp-img {
+          --comp-img-scale: 1.2;
+          height: 100%;
+          opacity: 1;
+          filter: none;
+          clip-path: ellipse(50% 50% at 50% 50%);
+          z-index: 1;
+          position: absolute;
+          top: 50%; }
+        html .comp.comp-actor .comp-body:hover .comp-title,
+        html .comp.comp-actor .comp-body:hover + .comp-control, :root .comp.comp-actor .comp-body:hover .comp-title,
+        :root .comp.comp-actor .comp-body:hover + .comp-control {
+          opacity: 1; }
+      html .comp.comp-actor .comp-control, :root .comp.comp-actor .comp-control {
+        z-index: 2;
+        bottom: -10%;
+        left: 50%;
+        transform: translate(-50%, 0);
+        position: absolute;
+        color: var(--blades-red);
+        opacity: 0; }
+        html .comp.comp-actor .comp-control:hover, :root .comp.comp-actor .comp-control:hover {
+          opacity: 1; }
     html .comp.comp-vertical, :root .comp.comp-vertical {
       --comp-img-scale: 1.5;
       --comp-name-size: toRem(16px);
       flex-direction: column; }
-      html .comp.comp-vertical > label, :root .comp.comp-vertical > label {
+      html .comp.comp-vertical .comp-label, :root .comp.comp-vertical .comp-label {
         text-align: center; }
+        html .comp.comp-vertical .comp-label.comp-prompt, :root .comp.comp-vertical .comp-label.comp-prompt {
+          padding-top: toRem(20px);
+          margin-bottom: toRem(-20px); }
       html .comp.comp-vertical .comp-title, :root .comp.comp-vertical .comp-title {
         text-align: center;
         white-space: nowrap;
@@ -409,38 +445,30 @@ html, :root {
       flex-direction: row;
       justify-content: flex-start;
       flex-grow: 0.5;
-      align-items: center; }
+      align-items: center;
+      align-items: flex-start; }
       html .comp.comp-horizontal label, :root .comp.comp-horizontal label {
         text-align: right; }
       html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
-        flex-grow: 0; }
-    html .comp .comp-tooltip, :root .comp .comp-tooltip {
-      display: none;
-      position: absolute;
-      padding: 10px;
-      color: var(--blades-white);
-      background-color: var(--blades-black);
-      border: 1px solid #777;
-      border-radius: 3px;
-      z-index: 9999999;
-      max-width: 300px; }
-    html .comp.comp-teeth.comp-teeth-long, :root .comp.comp-teeth.comp-teeth-long {
+        justify-content: flex-start;
+        align-items: flex-start; }
+    html .comp.comp-teeth.comp-horizontal, :root .comp.comp-teeth.comp-horizontal {
       justify-content: flex-start;
       align-items: flex-start; }
-      html .comp.comp-teeth.comp-teeth-long .dotline, :root .comp.comp-teeth.comp-teeth-long .dotline {
+      html .comp.comp-teeth.comp-horizontal .dotline, :root .comp.comp-teeth.comp-horizontal .dotline {
         padding-left: toRem(4px);
         --dotline-dot-sizeX: toRem(18px);
         --dotline-dot-spacing: toRem(4px); }
-        html .comp.comp-teeth.comp-teeth-long .dotline .dot, :root .comp.comp-teeth.comp-teeth-long .dotline .dot {
+        html .comp.comp-teeth.comp-horizontal .dotline .dot, :root .comp.comp-teeth.comp-horizontal .dotline .dot {
           flex-shrink: 1; }
-    html .comp.comp-teeth.comp-teeth-short, :root .comp.comp-teeth.comp-teeth-short {
+    html .comp.comp-teeth.comp-vertical, :root .comp.comp-teeth.comp-vertical {
       justify-content: flex-start;
       align-items: flex-end; }
-      html .comp.comp-teeth.comp-teeth-short .dotline-label, :root .comp.comp-teeth.comp-teeth-short .dotline-label {
+      html .comp.comp-teeth.comp-vertical .dotline-label, :root .comp.comp-teeth.comp-vertical .dotline-label {
         min-width: toRem(90px);
         text-align: center;
         margin-left: toRem(20px); }
-      html .comp.comp-teeth.comp-teeth-short .dotline, :root .comp.comp-teeth.comp-teeth-short .dotline {
+      html .comp.comp-teeth.comp-vertical .dotline, :root .comp.comp-teeth.comp-vertical .dotline {
         flex-grow: 1;
         justify-content: center;
         margin-top: -50%;
@@ -498,9 +526,20 @@ html, :root {
         padding-right: toRem(4px);
         padding-top: toRem(40px); }
     html .comp.comp-coins .dotline, :root .comp.comp-coins .dotline {
-      --dotline-dot-size: toRem(18px) ; }
+      --dotline-dot-size: toRem(18px)
+			; }
     html .comp.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins .dot:nth-of-type(4n) + .dot {
       margin-left: toRem(5px); }
+    html .comp .comp-tooltip, :root .comp .comp-tooltip {
+      display: none;
+      position: absolute;
+      padding: toRem(10px);
+      color: var(--blades-white);
+      background-color: var(--blades-black);
+      border: toRem(1px) solid var(--blades-grey);
+      border-radius: toRem(3px);
+      z-index: 10;
+      max-width: toRem(300px); }
   html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
     position: relative;
     height: 1.5rem;
@@ -834,8 +873,6 @@ html, :root {
           left: 0.25rem;
           transform: translate(0, -50%);
           top: 50%;
-          line-height: 1;
-          margin-top: 0.125rem;
           padding: 0;
           font-weight: bold;
           color: var(--blades-white-bright);
@@ -854,8 +891,8 @@ html, :root {
           margin: 0;
           padding: 0; }
       html .comp.long-text label, html .comp.long-text .comp-title, :root .comp.long-text label, :root .comp.long-text .comp-title {
-        max-width: 12.5rem;
         min-width: 6.25rem;
+        width: 100%;
         white-space: initial !important; }
       html .comp.comp-desc-trait, :root .comp.comp-desc-trait {
         align-items: flex-start;
@@ -911,12 +948,50 @@ html, :root {
           text-align: center; }
           html .comp.comp-desc-trait .comp-control.comp-delete:hover, :root .comp.comp-desc-trait .comp-control.comp-delete:hover {
             color: var(--blades-red-bright); }
+      html .comp.comp-actor, :root .comp.comp-actor {
+        height: 100%;
+        flex-basis: 5rem; }
+        html .comp.comp-actor .comp-body, :root .comp.comp-actor .comp-body {
+          filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
+          pointer-events: auto; }
+          html .comp.comp-actor .comp-body, html .comp.comp-actor .comp-body *, :root .comp.comp-actor .comp-body, :root .comp.comp-actor .comp-body * {
+            transition: 0.25s; }
+          html .comp.comp-actor .comp-body .comp-title, :root .comp.comp-actor .comp-body .comp-title {
+            top: unset;
+            bottom: 0%;
+            opacity: 0; }
+          html .comp.comp-actor .comp-body .comp-img, :root .comp.comp-actor .comp-body .comp-img {
+            --comp-img-scale: 1.2;
+            height: 100%;
+            opacity: 1;
+            filter: none;
+            clip-path: ellipse(50% 50% at 50% 50%);
+            z-index: 1;
+            position: absolute;
+            top: 50%; }
+          html .comp.comp-actor .comp-body:hover .comp-title,
+          html .comp.comp-actor .comp-body:hover + .comp-control, :root .comp.comp-actor .comp-body:hover .comp-title,
+          :root .comp.comp-actor .comp-body:hover + .comp-control {
+            opacity: 1; }
+        html .comp.comp-actor .comp-control, :root .comp.comp-actor .comp-control {
+          z-index: 2;
+          bottom: -10%;
+          left: 50%;
+          transform: translate(-50%, 0);
+          position: absolute;
+          color: var(--blades-red);
+          opacity: 0; }
+          html .comp.comp-actor .comp-control:hover, :root .comp.comp-actor .comp-control:hover {
+            opacity: 1; }
       html .comp.comp-vertical, :root .comp.comp-vertical {
         --comp-img-scale: 1.5;
         --comp-name-size: 1rem;
         flex-direction: column; }
-        html .comp.comp-vertical > label, :root .comp.comp-vertical > label {
+        html .comp.comp-vertical .comp-label, :root .comp.comp-vertical .comp-label {
           text-align: center; }
+          html .comp.comp-vertical .comp-label.comp-prompt, :root .comp.comp-vertical .comp-label.comp-prompt {
+            padding-top: 1.25rem;
+            margin-bottom: -1.25rem; }
         html .comp.comp-vertical .comp-title, :root .comp.comp-vertical .comp-title {
           text-align: center;
           white-space: nowrap;
@@ -949,38 +1024,30 @@ html, :root {
         flex-direction: row;
         justify-content: flex-start;
         flex-grow: 0.5;
-        align-items: center; }
+        align-items: center;
+        align-items: flex-start; }
         html .comp.comp-horizontal label, :root .comp.comp-horizontal label {
           text-align: right; }
         html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
-          flex-grow: 0; }
-      html .comp .comp-tooltip, :root .comp .comp-tooltip {
-        display: none;
-        position: absolute;
-        padding: 10px;
-        color: var(--blades-white);
-        background-color: var(--blades-black);
-        border: 1px solid #777;
-        border-radius: 3px;
-        z-index: 9999999;
-        max-width: 300px; }
-      html .comp.comp-teeth.comp-teeth-long, :root .comp.comp-teeth.comp-teeth-long {
+          justify-content: flex-start;
+          align-items: flex-start; }
+      html .comp.comp-teeth.comp-horizontal, :root .comp.comp-teeth.comp-horizontal {
         justify-content: flex-start;
         align-items: flex-start; }
-        html .comp.comp-teeth.comp-teeth-long .dotline, :root .comp.comp-teeth.comp-teeth-long .dotline {
+        html .comp.comp-teeth.comp-horizontal .dotline, :root .comp.comp-teeth.comp-horizontal .dotline {
           padding-left: 0.25rem;
           --dotline-dot-sizeX: 1.125rem;
           --dotline-dot-spacing: 0.25rem; }
-          html .comp.comp-teeth.comp-teeth-long .dotline .dot, :root .comp.comp-teeth.comp-teeth-long .dotline .dot {
+          html .comp.comp-teeth.comp-horizontal .dotline .dot, :root .comp.comp-teeth.comp-horizontal .dotline .dot {
             flex-shrink: 1; }
-      html .comp.comp-teeth.comp-teeth-short, :root .comp.comp-teeth.comp-teeth-short {
+      html .comp.comp-teeth.comp-vertical, :root .comp.comp-teeth.comp-vertical {
         justify-content: flex-start;
         align-items: flex-end; }
-        html .comp.comp-teeth.comp-teeth-short .dotline-label, :root .comp.comp-teeth.comp-teeth-short .dotline-label {
+        html .comp.comp-teeth.comp-vertical .dotline-label, :root .comp.comp-teeth.comp-vertical .dotline-label {
           min-width: 5.625rem;
           text-align: center;
           margin-left: 1.25rem; }
-        html .comp.comp-teeth.comp-teeth-short .dotline, :root .comp.comp-teeth.comp-teeth-short .dotline {
+        html .comp.comp-teeth.comp-vertical .dotline, :root .comp.comp-teeth.comp-vertical .dotline {
           flex-grow: 1;
           justify-content: center;
           margin-top: -50%;
@@ -1038,9 +1105,20 @@ html, :root {
           padding-right: 0.25rem;
           padding-top: 2.5rem; }
       html .comp.comp-coins .dotline, :root .comp.comp-coins .dotline {
-        --dotline-dot-size: 1.125rem ; }
+        --dotline-dot-size: 1.125rem
+			; }
       html .comp.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins .dot:nth-of-type(4n) + .dot {
         margin-left: 0.3125rem; }
+      html .comp .comp-tooltip, :root .comp .comp-tooltip {
+        display: none;
+        position: absolute;
+        padding: 0.625rem;
+        color: var(--blades-white);
+        background-color: var(--blades-black);
+        border: 0.0625rem solid var(--blades-grey);
+        border-radius: 0.1875rem;
+        z-index: 10;
+        max-width: 18.75rem; }
     html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
       position: relative;
       height: 1.5rem;
@@ -1244,6 +1322,8 @@ html, :root {
     display: block;
     width: min-content;
     white-space: nowrap; }
+    html .filled-label .comp-control + .tab-title, :root .filled-label .comp-control + .tab-title {
+      margin-left: 20px; }
   html .number-circle, :root .number-circle {
     --nc-size: var(--number-circle-size, 1.25rem);
     --nc-border-width: calc(var(--nc-size) * (1/10));

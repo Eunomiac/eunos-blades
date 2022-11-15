@@ -89,6 +89,10 @@
 		display: block;
 		width: min-content;
 		white-space: nowrap;
+
+		.comp-control + .tab-title {
+			margin-left: 20px;
+		}
 	}
 
 	.number-circle {
