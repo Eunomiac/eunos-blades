@@ -64,7 +64,10 @@ class BladesDialog extends Dialog {
 	}
 	async _createActorTabs(tabs: Record<string, (a: BladesActor) => boolean>) {
 		const allCategoryActors = await BladesActor.GetGlobalCategoryActors(this.category, this.doc as BladesActor);
-		const validActors: BladesActor[] = allCategoryActors.filter((actor) => actor.isValidForDoc(this.doc));
+		const validatedActors: Array<BladesActor|null> = await Promise.all(allCategoryActors.map(async (actor) => {
+			return (await actor.isValidForDoc(this.doc)) ? actor : null;
+		}));
+		const validActors = validatedActors.filter((actor): actor is BladesActor => actor !== null);
 		this.tabs = Object.fromEntries((Object.entries(tabs))
 			.map(([tabName, tabFilter]) => [
 				tabName,
@@ -72,8 +75,11 @@ class BladesDialog extends Dialog {
 			]));
 	}
 	async _createItemTabs(tabs: Record<string,(i: BladesItem) => boolean>) {
-		const allTypeItems = await BladesItem.GetGlobalCategoryItems(this.category, this.doc as BladesActor);
-		const validItems = allTypeItems.filter((item) => item.isValidForDoc(this.doc));
+		const allCategoryItems = await BladesItem.GetGlobalCategoryItems(this.category, this.doc as BladesActor);
+		const validatedItems: Array<BladesItem|null> = await Promise.all(allCategoryItems.map(async (item) => {
+			return (await item.isValidForDoc(this.doc)) ? item : null;
+		}));
+		const validItems = validatedItems.filter((item): item is BladesItem => item !== null);
 		this.tabs = Object.fromEntries((Object.entries(tabs))
 			.map(([tabName, tabFilter]) => [
 				tabName,
@@ -162,7 +168,7 @@ class BladesDialog extends Dialog {
 			click: function() {
 				const docId = $(this).data("itemId");
 				if (docId) {
-					eLog.checkLog("dialog", `[BladesDialog] Calling Back (${docId})`);
+					// eLog.checkLog("dialog", `[BladesDialog] Calling Back (${docId})`);
 					self.callback(docId);
 				}
 				self.close();

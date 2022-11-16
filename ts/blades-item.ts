@@ -4,6 +4,7 @@ import BladesActor from "./blades-actor.js";
 
 class BladesItem extends Item {
 
+	// #region ████████ Doc Methods: Methods in Common Between BladesActor & BladesItem ████████ ~
 	//~ Items are primarily referenced by category, not type.
 	//~    BladesItem.CategoryTypes -> get item type for given category
 	//~    BladesItem.CategoryFilters -> pass item list filtered by type, get one further filtered by category
@@ -133,8 +134,9 @@ class BladesItem extends Item {
 	//~ BladesItem.GetPersonal: Returns WORLD or PACK instance of referenced BladesItem,
 	//~  OVERWRITTEN by embedded item, archived or not.
 	static async GetPersonal(itemRef: string|BladesItem, parent: BladesActor): Promise<BladesItem|null> {
+		if (!itemRef) { return null }
 		if (itemRef instanceof BladesItem && itemRef.id) {
-			itemRef = itemRef.id;
+			itemRef = itemRef.system.world_name ?? itemRef.id;
 		}
 		if (!itemRef) { return null }
 
@@ -158,20 +160,31 @@ class BladesItem extends Item {
 	}
 
 	//~ Embed: Embed a GLOBAL item into a parent item, removing previous if unique.
-	static async Embed(itemRef: ItemRef, category: string, parent: BladesActor): Promise<BladesItem|null> {
+	static async Embed(itemRef: ItemRef|string, category: string, parent: BladesActor): Promise<BladesItem|null> {
 		eLog.log2("[BladesItem.Embed(itemRef, category, parent)]", {itemRef, category, parent});
 
 		if (!(category in BladesItem.CategoryTypes)) { return null }
 
+		if (U.isDocID(itemRef)) {
+			const foundItem = parent.items.get(itemRef as string) ?? await BladesItem.GetGlobal(itemRef);
+			if (foundItem) {
+				itemRef = foundItem;
+			}
+		}
+		if (itemRef instanceof BladesItem) {
+			itemRef = itemRef.system.world_name;
+		}
+
+		//~ If embedded item already exists on actor, unarchive it instead of adding another.
+		const embItem = parent.items.find((i) => i.system?.world_name === itemRef);
+		if (embItem) {
+			await embItem.update({"system.isArchived": false});
+			return embItem;
+		}
+
 		//~ Get global item from itemRef
 		const globalItem = await BladesItem.GetGlobal(itemRef);
 		if (!globalItem?.id) { return null }
-
-		//~ If embedded item already exists on actor, unarchive it instead of adding another.
-		const embItem = parent.items.find((i) => i.system.world_name === globalItem.system.world_name);
-		if (embItem) {
-			return (await embItem.update({"system.isArchived": false})) ?? null;
-		}
 
 		//~ If embedded item is new, check whether this is a unique item and delete any others if so.
 		if (BladesItem.CategoryUniques[category]) {
@@ -185,22 +198,25 @@ class BladesItem extends Item {
 	}
 
 	//~ Remove: Remove an embedded item by archiving it OR deleting it, depending on whether it's Unique
-	static async Remove(itemRef: ItemRef, category: string, parent: BladesActor): Promise<BladesItem|null> {
+	static async Remove(itemRef: ItemRef, category: string, parent: BladesActor, isFullRemoval = false): Promise<void> {
 		eLog.log2("[BladesItem.Remove(itemRef, category, parent)]", {itemRef, category, parent});
-		const updateData: Record<string, boolean> = {};
 
-		if (!(category in BladesItem.CategoryTypes)) { return null }
+		if (!(category in BladesItem.CategoryTypes)) { return }
 
 		//~ Get embedded item from itemRef
 		const embItem = await BladesItem.GetPersonal(itemRef, parent);
-		if (!embItem?.id) { return null }
+		if (!embItem?.id) { return }
 
-		if (BladesItem.CategoryUniques[category]) {
-			return (await embItem.delete()) ?? null;
+		if (BladesItem.CategoryUniques[category] || isFullRemoval) {
+			await embItem.delete();
+		} else {
+			await embItem.update({"system.isArchived": true});
 		}
-		await embItem.update({"system.isArchived": true});
+	}
 
-		return BladesItem.GetPersonal(itemRef, parent);
+	//~ GetEmbeddedItems: Get ALL embedded items.
+	static async GetEmbeddedItems(parent: BladesActor): Promise<BladesItem[]> {
+		return Array.from(parent.items);
 	}
 
 	//~ GetEmbeddedCategoryItems: Get ALL embedded items of given category.
@@ -295,36 +311,27 @@ class BladesItem extends Item {
 
 		if (doc instanceof BladesActor) {
 			//~ Check Playbook Compatibility
-			if (this.type === "item") {
-				isValid = Boolean(this.playbooks.includes("ANY")
-				|| (doc.playbookName && this.playbooks.includes(doc.playbookName)));
-			}
-			if (this.type === "ability") {
+			if (["item", "crew_upgrade"].includes(this.type)) {
+				isValid = Boolean(this.playbooks.includes("ANY") || (doc.playbookName && this.playbooks.includes(doc.playbookName)));
+			} else if (this.type === "ability") {
 				isValid = Boolean((doc.playbookName && this.playbooks.includes(doc.playbookName))
-				|| (!this.playbooks.includes("Ghost")
-				&& !this.playbooks.includes("Hull")
-				&& !this.playbooks.includes("Vampire")));
-			}
-			if (this.type === "crew_ability") {
-				isValid = Boolean(doc.playbookName);
-			}
-			if (this.type === "crew_upgrade") {
-				isValid = Boolean(this.playbooks.includes("ANY")
-				|| (doc.playbookName && this.playbooks.includes(doc.playbookName)));
+					|| (!this.playbooks.includes("Ghost")
+					&& !this.playbooks.includes("Hull")
+					&& !this.playbooks.includes("Vampire")));
 			}
 			if (!isValid) { return false }
 
 			//~ Check Load Amounts
-			if ("load" in this.system) {
-				isValid = this.system.load! <= doc.remainingLoad;
+			if (this.type === "item") {
+				isValid = (this.system.load ?? 0) <= doc.remainingLoad;
 			}
 			if (!isValid) { return false }
 
+			//~ Check Available Quantities against Active Items on Parent Doc
 			const activeItems = await BladesItem.GetActiveCategoryItems(this.type, doc);
 			const dupeItems = activeItems
 				.filter((item) => item.system.world_name === this.system.world_name);
 
-			//~ Check Quantities
 			if (dupeItems.length) {
 				isValid = (this.system.num_available ?? 1) > dupeItems.length;
 			}
@@ -490,6 +497,7 @@ declare interface BladesItem {
 	system: {
 		type: string,
 		world_name: string,
+		acquaintances_name: string,
 		isArchived: boolean,
 		bgImg: string,
 		description: string,

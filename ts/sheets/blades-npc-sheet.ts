@@ -38,20 +38,6 @@ class BladesNPCSheet extends BladesSheet {
 		});
 		// }
 
-		// Update Inventory Item
-		// html.find('.item-body').click(ev => {
-		//   const element = $(ev.currentTarget).parents(".item");
-		//   const item = this.actor.items.get(element.data("itemId"));
-		//   item.sheet.render(true);
-		// });
-
-		// // Delete Inventory Item
-		// html.find('.comp-delete').click(ev => {
-		//   const element = $(ev.currentTarget).parents(".item");
-		//   this.actor.deleteEmbeddedDocuments("Item", [element.data("itemId")]);
-		//   element.slideUp(200, () => this.render(false));
-		// });
-
 	}
 }
 

@@ -43,11 +43,11 @@ declare global {
 		}
 	}
 
-	type BladesDoc = BladesActor|BladesItem|EmbeddedBladesActor;
+	type BladesDoc = BladesActor|BladesItem|EmbeddedBladesActor|EmbeddedBladesItem;
 
 	type DocRef = string|BladesDoc;
 	type ActorRef = string|BladesActor|EmbeddedBladesActor;
-	type ItemRef = string|BladesItem;
+	type ItemRef = string|BladesItem|EmbeddedBladesItem;
 
 	namespace BladesActor {
 		export type ID = string;
@@ -72,6 +72,12 @@ declare global {
 		category: keyof typeof BladesActor.CategoryTypes,
 		isArchived?: boolean,
 		system: BladesActor["system"] & Record<string,any>
+	}
+
+	type EmbeddedBladesItem = BladesItem & {
+		category: keyof typeof BladesItem.CategoryTypes,
+		isArchived?: boolean,
+		system: BladesItem["system"] & Record<string,any>
 	}
 
 	namespace BladesItem {

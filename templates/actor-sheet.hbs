@@ -20,7 +20,7 @@
 		<input class="sheet-subtitle shadowed" type="text" name="data.full_name" value="{{data.full_name}}" placeholder="Full Name">
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs" items.playbook
-			class="comp-playbook comp-vertical"
+			class="comp-playbook comp-vertical no-label"
 			label="Playbook"
 			cat="playbook"
 			addButton=true
@@ -28,7 +28,8 @@
 		}}
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs" items.heritage
-			class="comp-heritage comp-vertical long-text"
+			id=items.heritage.id
+			class="comp-heritage comp-vertical long-text no-img"
 			label="Heritage"
 			cat="heritage"
 			addButton=true
@@ -36,6 +37,7 @@
 		}}
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs" items.background
+			id=items.background.id
 			class="comp-background comp-vertical"
 			label="Background"
 			cat="background"
@@ -44,6 +46,7 @@
 		}}
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs" items.vice
+			id=items.vice.id
 			class="comp-vice comp-vertical"
 			label="Vice"
 			cat="vice"
@@ -51,15 +54,16 @@
 			tooltip=items.vice.system.rules
 		}}
 
-		{{> "systems/eunos-blades/templates/components/comp.hbs" items.crew
+		{{> "systems/eunos-blades/templates/components/comp.hbs" actors.crew
 			class="comp-crew comp-vertical long-text"
 			label="Crew"
 			cat="pc-crew"
 			addButton=true
-			id=items.crew.id
+			id=actors.crew.id
 		}}
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs" coinsData
+			label="Coins"
 			class="comp-coins comp-vertical" }}
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs" stashData
@@ -153,10 +157,10 @@
 				<nav class="nav-tabs flex-horizontal">
 					<a class="tab-selector" data-tab="abilities">{{localize "BITD.Abilities"}}</a>
 					<a class="tab-selector" data-tab="loadout">{{localize "BITD.Loadout"}}</a>
+					<a class="tab-selector" data-tab="acquaintances">{{acquaintancesName}}</a>
 					<a class="tab-selector" data-tab="player-notes">{{localize "BITD.Notes"}}</a>
 					{{#if isGM}}
 						<a class="tab-selector" data-tab="gm-notes">GM Notes</a>
-						<a class="tab-selector" data-tab="effects">{{localize "BITD.Effects"}}</a>
 						<a class="tab-selector" data-tab="all-items">{{localize "BITD.AllItems"}}</a>
 					{{/if}}
 				</nav>
@@ -174,6 +178,7 @@
 					{{> "systems/eunos-blades/templates/components/comp.hbs" this
 						class="comp-desc-trait comp-horizontal full-width"
 						remButton=true
+						id=id
 					}}
 					{{/each}}
 				</div>
@@ -202,8 +207,36 @@
 					{{> "systems/eunos-blades/templates/components/comp.hbs" this
 						class="comp-desc-trait comp-horizontal full-width"
 						remButton=true
+						id=id
 					}}
 					{{/each}}
+				</div>
+
+				{{!-- Acquaintances Tab --}}
+				<div class="tab acquaintances flex-vertical" data-tab="acquaintances">
+					{{> "systems/eunos-blades/templates/components/comp.hbs" actors.vice_purveyor
+							id=actors.vice_purveyor.id
+							class="comp-vice_purveyor comp-vertical long-text no-img"
+							label="Vice Purveyor"
+							cat="vice-purveyor"
+							addButton=true
+					}}
+					<label class="tab-label" data-comp-cat="acquaintance">
+						<a class="comp-control comp-button comp-add">
+							<i class="fas fa-plus-square"></i>
+						</a>
+						<span class="tab-title">{{acquaintancesName}}</span>
+					</label>
+					<div class="actors-container flex-horizontal">
+						{{#each actors.acquaintances as |actor|}}
+						{{> "systems/eunos-blades/templates/components/comp.hbs" actor
+							cat="acquaintance"
+							id=actor._id
+							class="comp-acquaintance comp-actor comp-vertical long-text"
+							remButton=true
+						}}
+						{{/each}}
+					</div>
 				</div>
 
 				{{!-- Description & Notes Tab --}}
@@ -222,16 +255,12 @@
 				{{!-- GM-ONLY TABS --}}
 				{{#if isGM}}
 
-					{{!-- GM Notes Tab --}}
+					{{!-- GM Notes & Effects Tab --}}
 					<div class="tab gm-notes flex-vertical" data-tab="gm-notes">
 						<label class="tab-label">
 							<span class="tab-title">GM Notes</span>
 						</label>
 						{{editor content=data.gm_notes target="data.gm_notes" button=true owner=owner editable=editable}}
-					</div>
-
-					{{!-- Active Effects Tab --}}
-					<div class="tab effects flex-vertical" data-tab="effects">
 						<label class="tab-label">
 							<span class="tab-title">{{localize "BITD.Effects"}}</span>
 						</label>
@@ -248,7 +277,7 @@
 						{{> "systems/eunos-blades/templates/components/comp.hbs" item
 							id=item.id
 							class="comp-desc-trait comp-horizontal full-width"
-							remButton=true
+							remFullButton=true
 						}}
 						{{/each}}
 					</div>

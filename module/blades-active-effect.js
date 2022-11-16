@@ -89,5 +89,14 @@ class BladesActiveEffect extends ActiveEffect {
         }
         return null;
     }
+    get isSuppressed() {
+        if (!/Actor.*Item/.test(this.origin)) {
+            return super.isSuppressed;
+        }
+        const [actorID, itemID] = this.origin.replace(/Actor\.|Item\./g, "").split(".");
+        const actor = game.actors.get(actorID);
+        const item = actor.items.get(itemID);
+        return super.isSuppressed || item.isArchived;
+    }
 }
 export default BladesActiveEffect;

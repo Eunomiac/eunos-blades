@@ -148,6 +148,10 @@
 		}
 	}
 
+	.no-img {
+		img { display: none }
+	}
+
 	.full-width {
 		position: relative;
 		width: calc(100% + (2 * var(--content-padding)));

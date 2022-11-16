@@ -9,8 +9,20 @@ import type BladesActiveEffect from "./blades-active-effect";
 import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs.js";
 
 
-class BladesActor extends Actor {
+declare abstract class BladesDoc {
+	// static CategoryTypes: Record<string, BladesActorType|BladesItemType>;
+	// static CategoryFilters: Record<string, <T extends BladesActor|BladesItem|EmbeddedBladesActor|EmbeddedBladesItem>(items: T[]) => T[]>;
+	// static CategoryUniques: Record<string, boolean>;
+	// static get All(): Collection<BladesActor>|Collection<BladesItem>;
+	// static GetGlobal(category?: string): Promise<BladesActor|BladesItem|null>;
+	// static GetPersonal(docRef: DocRef, category?: string): Promise<EmbeddedBladesActor|BladesItem|EmbeddedBladesItem|null>;
+	// static Embed<T extends BladesActor|BladesItem>(docRef: DocRef, category: string, parent: T): Promise<T extends BladesActor ? (EmbeddedBladesActor|null) : (EmbeddedBladesItem|null)>;
 
+
+}
+class BladesActor extends Actor implements BladesDoc {
+
+	// #region ████████ Doc Methods: Methods in Common Between BladesActor & BladesItem ████████ ~
 	//~ Actors are primarily referenced by category, not type.
 	//~    BladesActor.CategoryTypes -> get actor type for given category
 	//~    BladesActor.CategoryFilters -> pass actor list filtered by type, get one further filtered by category
@@ -25,6 +37,16 @@ class BladesActor extends Actor {
 	};
 
 	static CategoryFilters: Record<string, <T extends BladesActor|EmbeddedBladesActor>(items: T[]) => T[]> = { };
+
+	static CategoryUniques: Record<string, boolean> = {
+		"pc-crew": true,
+		"crew-pc": false,
+		"vice_purveyor": true,
+		"acquaintance": false,
+		"pc": false,
+		"npc": false,
+		"crew": true
+	};
 
 	static get All() { return game.actors }
 
@@ -94,9 +116,10 @@ class BladesActor extends Actor {
 		}
 	}
 
-	//~ BladesActor.GetPersonal: Returns WORLD or PACK instance of referenced BladesActor,
-	//~  merged with any personal data recorded on parent actor.
+	//~ BladesActor.GetPersonal: Returns WORLD or PACK instance of referenced BladesActor IF Embedded in parent, merged
+	//~  																																	with any personal data recorded on parent actor.
 	static async GetPersonal(actorRef: string|BladesActor, parent: BladesActor): Promise<EmbeddedBladesActor|null> {
+		if (!actorRef) { return null }
 		// Get the global instance of the referenced Actor
 		const actor = await BladesActor.GetGlobal(actorRef);
 		eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name
@@ -146,23 +169,34 @@ class BladesActor extends Actor {
 	}
 
 	//~ Remove: Remove an embedded actor by archiving it.
-	static async Remove(actorRef: ActorRef, category: string, parent: BladesActor): Promise<EmbeddedBladesActor|null> {
+	static async Remove(actorRef: ActorRef, category: string, parent: BladesActor, isFullRemoval = false): Promise<void> {
 		eLog.log2("[BladesActor.Remove(actorRef, category, parent)]", {actorRef, category, parent});
-		const updateData: Record<string, boolean> = {};
 
-		if (!(category in BladesActor.CategoryTypes)) { return null }
+		const updateData: Record<string, boolean|null> = {};
+
+		if (!(category in BladesActor.CategoryTypes)) { return }
 
 		//~ Get global actor from actorRef
 		const globalActor = await BladesActor.GetGlobal(actorRef);
-		if (!globalActor?.id) { return null }
+		if (!globalActor?.id) { return }
 		if (globalActor.id in parent.system.subactors) {
-			updateData[`system.subactors.${globalActor.id}.isArchived`] = true;
+			if (isFullRemoval) {
+				updateData[`system.subactors.${globalActor.id}`] = null;
+			} else {
+				updateData[`system.subactors.${globalActor.id}.isArchived`] = true;
+			}
 		}
 
 		await parent.update(updateData);
 
-		return BladesActor.GetPersonal(actorRef, parent);
+		return;
 	}
+	//~ GetEmbeddedActors: Get ALL embedded actors, GLOBAL instances merged with personal data.
+	static async GetEmbeddedActors(parent: BladesActor): Promise<EmbeddedBladesActor[]> {
+		return (await Promise.all(Object.keys(parent.system.subactors).map((actorID) => BladesActor.GetPersonal(actorID, parent))))
+			.filter((actor): actor is EmbeddedBladesActor => actor !== null);
+	}
+
 
 	//~ GetEmbeddedCategoryActors: Get ALL embedded actors of given category.
 	static async GetEmbeddedCategoryActors(cat: string, parent: BladesActor): Promise<EmbeddedBladesActor[]> {
@@ -190,6 +224,7 @@ class BladesActor extends Actor {
 		}));
 		return customizedActors.filter((actor) => actor !== null) as Array<BladesActor|EmbeddedBladesActor>;
 	}
+	// #endregion ▄▄▄▄▄ Doc Methods ▄▄▄▄▄
 
 	static override async create(data: ActorDataConstructorData, options={}) {
 		data.token = data.token || {};
@@ -268,9 +303,6 @@ class BladesActor extends Actor {
 			?? this.items.find((item) => item.type === "crew_playbook" )
 			?? null;
 	}
-	changePlaybook(playbookItem: BladesItem) {
-
-	}
 
 	get attributes(): Record<Attributes,number> {
 		return {
@@ -310,13 +342,13 @@ class BladesActor extends Actor {
 		) as Record<string, boolean>;
 	}
 
-	async removeDoc(docId: string) {
+	async removeDoc(docId: string, isFullRemoval = false) {
 		const doc = (await BladesActor.GetPersonal(docId, this)) ?? (await BladesItem.GetPersonal(docId, this));
 		if (!doc) { return }
 		if (doc instanceof BladesActor) {
-			BladesActor.Remove(doc, doc.category, this);
+			BladesActor.Remove(doc, doc.category, this, isFullRemoval);
 		} else {
-			BladesItem.Remove(doc, doc.type, this);
+			BladesItem.Remove(doc, doc.type, this, isFullRemoval);
 		}
 	}
 
@@ -344,8 +376,9 @@ class BladesActor extends Actor {
 		});
 	}
 
-	get currentLoad(): number {
-		return U.gsap.utils.clamp(0, 10, this.items
+	get currentLoad() {
+		const activeLoadItems = this.items.filter((item) => item.type === BladesItemType.item && !item.isArchived);
+		return U.gsap.utils.clamp(0, 10, activeLoadItems
 			.reduce((tot, i) => tot + (i.type === "item"
 				? U.pInt(i.system.load)
 				: 0

@@ -58,12 +58,14 @@ class BladesSheet extends ActorSheet {
 					...initialParams,
 					async (itemId) => { BladesItem.Embed(itemId, doc_cat, this.actor) },
 					{
-						[`${this.actor.playbookName} Items`]: (item: BladesItem) => Boolean(item.playbooks?.includes(this.actor.playbookName ?? "")),
+						[`${this.actor.playbookName} Items`]: (item: BladesItem) => {
+							return Boolean(item.playbooks?.includes(this.actor.playbookName ?? ""));
+						},
 						"General Items": (item: BladesItem) => Boolean(item.playbooks?.includes("ANY"))
 					},
 					{
 						[`${this.actor.playbookName} Items`]: (item: BladesItem) => item.name!.startsWith("Fine"),
-						"General Items": (item: BladesItem) => ["Armor", "Armor, Heavy"].includes(item.name ?? "")
+						"General Items": (item: BladesItem) => ["Armor", "Armor_Heavy"].includes(item.system.world_name ?? "")
 					},
 					{
 						[`${this.actor.playbookName} Items`]: true,
@@ -117,7 +119,6 @@ class BladesSheet extends ActorSheet {
 		eLog.checkLog4("actor", "[BladesSheet] super.getData()", {...data});
 		const actorData = data.actor as BladesActor;
 		const actorSystem = actorData.system;
-
 
 		Object.assign(
 			data,
@@ -195,6 +196,9 @@ class BladesSheet extends ActorSheet {
 		html.find(".comp-control.comp-delete").on({
 			click: (event) => this._onItemRemoveClick(event)
 		});
+		html.find(".comp-control.comp-delete-full").on({
+			click: (event) => this._onItemFullRemoveClick(event)
+		});
 
 		// This is a workaround until is being fixed in FoundryVTT.
 		if ( this.options.submitOnChange ) {
@@ -248,21 +252,79 @@ class BladesSheet extends ActorSheet {
 
 		const dataElem$ = $(event.currentTarget).closest(".comp");
 		const docID = dataElem$.data("compId");
-		U.gsap.to(
-			dataElem$,
-			{
-				x: "+=100",
-				scale: 1.5,
-				opacity: 0.5,
-				filter: "blur(10px)",
-				duration: 0.5,
-				ease: "power2.out",
-				onComplete() {
-					self.actor.removeDoc(docID);
+		U.gsap.timeline({
+			onComplete() { self.actor.removeDoc(docID) }
+		})
+			.to(
+				dataElem$,
+				{
+					skewX: -20,
+					duration: 0.25,
+					ease: "back"
+				}
+			)
+			.to(
+				dataElem$,
+				{
+					x: "+=300",
+					marginBottom: U.get(dataElem$[0], "height") as number * -1,
+					marginRight: U.get(dataElem$[0], "width") as number * -1,
+					scale: 1.5,
+					filter: "blur(10px)",
+					duration: 0.5
 				},
-				skewX: -20
-			}
-		);
+				0
+			)
+			.to(
+				dataElem$,
+				{
+					opacity: 0,
+					duration: 0.25,
+					ease: "sine"
+				},
+				0.25
+			);
+	}
+
+	async _onItemFullRemoveClick(event: ClickEvent) {
+		event.preventDefault();
+
+		const self = this;
+
+		const dataElem$ = $(event.currentTarget).closest(".comp");
+		const docID = dataElem$.data("compId");
+		U.gsap.timeline({
+			onComplete() { self.actor.removeDoc(docID) }
+		})
+			.to(
+				dataElem$,
+				{
+					skewX: -20,
+					duration: 0.25,
+					ease: "back"
+				}
+			)
+			.to(
+				dataElem$,
+				{
+					x: "+=300",
+					marginBottom: U.get(dataElem$[0], "height") as number * -1,
+					marginRight: U.get(dataElem$[0], "width") as number * -1,
+					scale: 1.5,
+					filter: "blur(10px)",
+					duration: 0.5
+				},
+				0
+			)
+			.to(
+				dataElem$,
+				{
+					opacity: 0,
+					duration: 0.25,
+					ease: "sine"
+				},
+				0.25
+			);
 	}
 
 	async _onClockLeftClick(event: ClickEvent) {

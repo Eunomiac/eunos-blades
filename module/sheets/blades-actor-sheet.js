@@ -69,7 +69,9 @@ class BladesActorSheet extends BladesSheet {
             playbook: (await BladesItem.GetActiveCategoryItems("playbook", this.actor))[0]
         };
         const actors = {
-            crew: (await BladesActor.GetActiveCategoryActors("pc-crew", this.actor))[0]
+            crew: (await BladesActor.GetActiveCategoryActors("pc-crew", this.actor))[0],
+            vice_purveyor: (await BladesActor.GetActiveCategoryActors("vice-purveyor", this.actor))[0],
+            acquaintances: (await BladesActor.GetActiveCategoryActors("acquaintance", this.actor))
         };
         Object.assign(data, {
             items,
@@ -162,7 +164,8 @@ class BladesActorSheet extends BladesSheet {
                             })) }
                     ]
                 }
-            }
+            },
+            acquaintancesName: items.playbook?.system.acquaintances_name ?? "Friends & Rivals"
         });
         eLog.checkLog("actor", "[BladesActorSheet] return getData()", { ...data });
         return data;

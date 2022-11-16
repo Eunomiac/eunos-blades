@@ -117,6 +117,19 @@ class BladesActiveEffect extends ActiveEffect {
 		}
 		return null;
 	}
+
+	override get isSuppressed() {
+		// Get source item from 'origin' field -- of form 'Actor.<id>.Item.<id>'
+		if (!/Actor.*Item/.test(this.origin)) { return super.isSuppressed }
+		const [actorID, itemID] = this.origin.replace(/Actor\.|Item\./g, "").split(".");
+		const actor = game.actors.get(actorID) as BladesActor;
+		const item = actor.items.get(itemID) as BladesItem;
+		return super.isSuppressed || item.isArchived;
+	}
+}
+
+declare interface BladesActiveEffect {
+	origin: string
 }
 
 export default BladesActiveEffect;

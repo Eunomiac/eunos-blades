@@ -926,17 +926,21 @@ template {
       :root .comp .comp-label.comp-prompt:hover, :root * .comp .comp-label.comp-prompt:hover {
         transform: scale(1.4);
         color: var(--blades-gold-bright); }
+  :root .comp.no-label .comp-label:not(.comp-prompt), :root * .comp.no-label .comp-label:not(.comp-prompt) {
+    display: none; }
   :root .comp .comp-control, :root * .comp .comp-control {
     pointer-events: auto; }
     :root .comp .comp-control.comp-add.comp-button, :root * .comp .comp-control.comp-add.comp-button {
       position: absolute;
       left: 0.25rem;
       transform: translate(0, -50%);
-      top: 50%;
+      top: 45%;
       padding: 0;
       font-weight: bold;
       color: var(--blades-white-bright);
       color: var(--blades-black-dark); }
+      :root .comp .comp-control.comp-add.comp-button + span, :root * .comp .comp-control.comp-add.comp-button + span {
+        margin-left: 20px; }
       :root .comp .comp-control.comp-add.comp-button:hover, :root * .comp .comp-control.comp-add.comp-button:hover {
         color: var(--blades-white-bright); }
   :root .comp .comp-title, :root * .comp .comp-title {
@@ -1013,7 +1017,8 @@ template {
     flex-basis: 5rem; }
     :root .comp.comp-actor .comp-body, :root * .comp.comp-actor .comp-body {
       filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
-      pointer-events: auto; }
+      pointer-events: auto;
+      width: 100%; }
       :root .comp.comp-actor .comp-body, :root .comp.comp-actor .comp-body *, :root * .comp.comp-actor .comp-body, :root * .comp.comp-actor .comp-body * {
         transition: 0.25s; }
       :root .comp.comp-actor .comp-body .comp-title, :root * .comp.comp-actor .comp-body .comp-title {
@@ -1044,7 +1049,7 @@ template {
       :root .comp.comp-actor .comp-control:hover, :root * .comp.comp-actor .comp-control:hover {
         opacity: 1; }
   :root .comp.comp-vertical, :root * .comp.comp-vertical {
-    --comp-img-scale: 1.5;
+    --comp-img-scale: 2;
     --comp-name-size: 1rem;
     flex-direction: column; }
     :root .comp.comp-vertical .comp-label, :root * .comp.comp-vertical .comp-label {
@@ -1074,7 +1079,7 @@ template {
         transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
         opacity: 0.5;
         filter: blur(0.5px);
-        top: 70%;
+        top: 50%;
         left: 50%;
         height: 100%;
         z-index: -1; }
@@ -1493,17 +1498,21 @@ template {
           :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .comp-label.comp-prompt:hover {
             transform: scale(1.4);
             color: var(--blades-gold-bright); }
+      :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.no-label .comp-label:not(.comp-prompt) {
+        display: none; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .comp-control {
         pointer-events: auto; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .comp-control.comp-add.comp-button {
           position: absolute;
           left: 0.25rem;
           transform: translate(0, -50%);
-          top: 50%;
+          top: 45%;
           padding: 0;
           font-weight: bold;
           color: var(--blades-white-bright);
           color: var(--blades-black-dark); }
+          :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .comp-control.comp-add.comp-button + span {
+            margin-left: 20px; }
           :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .comp-control.comp-add.comp-button:hover {
             color: var(--blades-white-bright); }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .comp-title {
@@ -1580,7 +1589,8 @@ template {
         flex-basis: 5rem; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-actor .comp-body {
           filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
-          pointer-events: auto; }
+          pointer-events: auto;
+          width: 100%; }
           :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-actor .comp-body, :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-actor .comp-body * {
             transition: 0.25s; }
           :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-actor .comp-body .comp-title {
@@ -1610,7 +1620,7 @@ template {
           :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-actor .comp-control:hover {
             opacity: 1; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-vertical {
-        --comp-img-scale: 1.5;
+        --comp-img-scale: 2;
         --comp-name-size: 1rem;
         flex-direction: column; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-vertical .comp-label {
@@ -1640,7 +1650,7 @@ template {
             transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
             opacity: 0.5;
             filter: blur(0.5px);
-            top: 70%;
+            top: 50%;
             left: 50%;
             height: 100%;
             z-index: -1; }
@@ -2601,6 +2611,12 @@ template {
         :root body.vtt.game.system-eunos-blades #players .comp .comp-label.comp-prompt:hover {
           transform: scale(1.4);
           color: var(--blades-gold-bright); }
+    :root body.vtt.game.system-eunos-blades #interface .comp.no-label .comp-label:not(.comp-prompt),
+    :root body.vtt.game.system-eunos-blades #controls .comp.no-label .comp-label:not(.comp-prompt),
+    :root body.vtt.game.system-eunos-blades #navigation .comp.no-label .comp-label:not(.comp-prompt),
+    :root body.vtt.game.system-eunos-blades #hotbar .comp.no-label .comp-label:not(.comp-prompt),
+    :root body.vtt.game.system-eunos-blades #players .comp.no-label .comp-label:not(.comp-prompt) {
+      display: none; }
     :root body.vtt.game.system-eunos-blades #interface .comp .comp-control,
     :root body.vtt.game.system-eunos-blades #controls .comp .comp-control,
     :root body.vtt.game.system-eunos-blades #navigation .comp .comp-control,
@@ -2615,11 +2631,17 @@ template {
         position: absolute;
         left: 0.25rem;
         transform: translate(0, -50%);
-        top: 50%;
+        top: 45%;
         padding: 0;
         font-weight: bold;
         color: var(--blades-white-bright);
         color: var(--blades-black-dark); }
+        :root body.vtt.game.system-eunos-blades #interface .comp .comp-control.comp-add.comp-button + span,
+        :root body.vtt.game.system-eunos-blades #controls .comp .comp-control.comp-add.comp-button + span,
+        :root body.vtt.game.system-eunos-blades #navigation .comp .comp-control.comp-add.comp-button + span,
+        :root body.vtt.game.system-eunos-blades #hotbar .comp .comp-control.comp-add.comp-button + span,
+        :root body.vtt.game.system-eunos-blades #players .comp .comp-control.comp-add.comp-button + span {
+          margin-left: 20px; }
         :root body.vtt.game.system-eunos-blades #interface .comp .comp-control.comp-add.comp-button:hover,
         :root body.vtt.game.system-eunos-blades #controls .comp .comp-control.comp-add.comp-button:hover,
         :root body.vtt.game.system-eunos-blades #navigation .comp .comp-control.comp-add.comp-button:hover,
@@ -2788,7 +2810,8 @@ template {
       :root body.vtt.game.system-eunos-blades #hotbar .comp.comp-actor .comp-body,
       :root body.vtt.game.system-eunos-blades #players .comp.comp-actor .comp-body {
         filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
-        pointer-events: auto; }
+        pointer-events: auto;
+        width: 100%; }
         :root body.vtt.game.system-eunos-blades #interface .comp.comp-actor .comp-body, :root body.vtt.game.system-eunos-blades #interface .comp.comp-actor .comp-body *,
         :root body.vtt.game.system-eunos-blades #controls .comp.comp-actor .comp-body,
         :root body.vtt.game.system-eunos-blades #controls .comp.comp-actor .comp-body *,
@@ -2854,7 +2877,7 @@ template {
     :root body.vtt.game.system-eunos-blades #navigation .comp.comp-vertical,
     :root body.vtt.game.system-eunos-blades #hotbar .comp.comp-vertical,
     :root body.vtt.game.system-eunos-blades #players .comp.comp-vertical {
-      --comp-img-scale: 1.5;
+      --comp-img-scale: 2;
       --comp-name-size: 1rem;
       flex-direction: column; }
       :root body.vtt.game.system-eunos-blades #interface .comp.comp-vertical .comp-label,
@@ -2904,7 +2927,7 @@ template {
           transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
           opacity: 0.5;
           filter: blur(0.5px);
-          top: 70%;
+          top: 50%;
           left: 50%;
           height: 100%;
           z-index: -1; }
@@ -3851,6 +3874,12 @@ template {
         :root body.vtt.game.system-eunos-blades #players #chat .comp .comp-label.comp-prompt:hover {
           transform: scale(1.4);
           color: var(--blades-gold-bright); }
+    :root body.vtt.game.system-eunos-blades #interface #chat .comp.no-label .comp-label:not(.comp-prompt),
+    :root body.vtt.game.system-eunos-blades #controls #chat .comp.no-label .comp-label:not(.comp-prompt),
+    :root body.vtt.game.system-eunos-blades #navigation #chat .comp.no-label .comp-label:not(.comp-prompt),
+    :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.no-label .comp-label:not(.comp-prompt),
+    :root body.vtt.game.system-eunos-blades #players #chat .comp.no-label .comp-label:not(.comp-prompt) {
+      display: none; }
     :root body.vtt.game.system-eunos-blades #interface #chat .comp .comp-control,
     :root body.vtt.game.system-eunos-blades #controls #chat .comp .comp-control,
     :root body.vtt.game.system-eunos-blades #navigation #chat .comp .comp-control,
@@ -3865,11 +3894,17 @@ template {
         position: absolute;
         left: 0.25rem;
         transform: translate(0, -50%);
-        top: 50%;
+        top: 45%;
         padding: 0;
         font-weight: bold;
         color: var(--blades-white-bright);
         color: var(--blades-black-dark); }
+        :root body.vtt.game.system-eunos-blades #interface #chat .comp .comp-control.comp-add.comp-button + span,
+        :root body.vtt.game.system-eunos-blades #controls #chat .comp .comp-control.comp-add.comp-button + span,
+        :root body.vtt.game.system-eunos-blades #navigation #chat .comp .comp-control.comp-add.comp-button + span,
+        :root body.vtt.game.system-eunos-blades #hotbar #chat .comp .comp-control.comp-add.comp-button + span,
+        :root body.vtt.game.system-eunos-blades #players #chat .comp .comp-control.comp-add.comp-button + span {
+          margin-left: 20px; }
         :root body.vtt.game.system-eunos-blades #interface #chat .comp .comp-control.comp-add.comp-button:hover,
         :root body.vtt.game.system-eunos-blades #controls #chat .comp .comp-control.comp-add.comp-button:hover,
         :root body.vtt.game.system-eunos-blades #navigation #chat .comp .comp-control.comp-add.comp-button:hover,
@@ -4038,7 +4073,8 @@ template {
       :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.comp-actor .comp-body,
       :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-actor .comp-body {
         filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
-        pointer-events: auto; }
+        pointer-events: auto;
+        width: 100%; }
         :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-actor .comp-body, :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-actor .comp-body *,
         :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-actor .comp-body,
         :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-actor .comp-body *,
@@ -4104,7 +4140,7 @@ template {
     :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-vertical,
     :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.comp-vertical,
     :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-vertical {
-      --comp-img-scale: 1.5;
+      --comp-img-scale: 2;
       --comp-name-size: 1rem;
       flex-direction: column; }
       :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-vertical .comp-label,
@@ -4154,7 +4190,7 @@ template {
           transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
           opacity: 0.5;
           filter: blur(0.5px);
-          top: 70%;
+          top: 50%;
           left: 50%;
           height: 100%;
           z-index: -1; }
@@ -4951,17 +4987,21 @@ template {
         :root body.vtt.game.system-eunos-blades .app.window-app .comp .comp-label.comp-prompt:hover {
           transform: scale(1.4);
           color: var(--blades-gold-bright); }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp.no-label .comp-label:not(.comp-prompt) {
+      display: none; }
     :root body.vtt.game.system-eunos-blades .app.window-app .comp .comp-control {
       pointer-events: auto; }
       :root body.vtt.game.system-eunos-blades .app.window-app .comp .comp-control.comp-add.comp-button {
         position: absolute;
         left: 0.25rem;
         transform: translate(0, -50%);
-        top: 50%;
+        top: 45%;
         padding: 0;
         font-weight: bold;
         color: var(--blades-white-bright);
         color: var(--blades-black-dark); }
+        :root body.vtt.game.system-eunos-blades .app.window-app .comp .comp-control.comp-add.comp-button + span {
+          margin-left: 20px; }
         :root body.vtt.game.system-eunos-blades .app.window-app .comp .comp-control.comp-add.comp-button:hover {
           color: var(--blades-white-bright); }
     :root body.vtt.game.system-eunos-blades .app.window-app .comp .comp-title {
@@ -5038,7 +5078,8 @@ template {
       flex-basis: 5rem; }
       :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-actor .comp-body {
         filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
-        pointer-events: auto; }
+        pointer-events: auto;
+        width: 100%; }
         :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-actor .comp-body, :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-actor .comp-body * {
           transition: 0.25s; }
         :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-actor .comp-body .comp-title {
@@ -5068,7 +5109,7 @@ template {
         :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-actor .comp-control:hover {
           opacity: 1; }
     :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-vertical {
-      --comp-img-scale: 1.5;
+      --comp-img-scale: 2;
       --comp-name-size: 1rem;
       flex-direction: column; }
       :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-vertical .comp-label {
@@ -5098,7 +5139,7 @@ template {
           transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
           opacity: 0.5;
           filter: blur(0.5px);
-          top: 70%;
+          top: 50%;
           left: 50%;
           height: 100%;
           z-index: -1; }
@@ -5445,6 +5486,9 @@ template {
   :root body.vtt.game.system-eunos-blades .app.window-app .text-checkbox input[type="checkbox"]:checked + span {
     color: var(--active-text-color, var(--blades-gold-bright)); }
 
+:root body.vtt.game.system-eunos-blades .app.window-app .no-img img {
+  display: none; }
+
 :root body.vtt.game.system-eunos-blades .app.window-app .full-width {
   position: relative;
   width: calc(100% + (2 * var(--content-padding)));
@@ -5618,6 +5662,8 @@ template {
         display: inline-block; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .text-checkbox input[type="checkbox"]:checked + span {
         color: var(--active-text-color, var(--blades-gold-bright)); }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .no-img img {
+      display: none; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .full-width {
       position: relative;
       width: calc(100% + (2 * var(--content-padding)));
@@ -5650,7 +5696,7 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-img-bg {
   position: absolute;
   width: calc(100% + 2 * var(--content-padding)) !important;
-  height: calc(100% - var(--content-padding)) !important;
+  height: calc(100% + var(--content-padding)) !important;
   left: calc(-1 * var(--content-padding));
   top: calc(-1 * var(--content-padding));
   overflow: hidden;
@@ -5734,7 +5780,6 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .tab-label {
   display: block;
   background: var(--blades-grey);
-  padding: 0.1875rem 1.25rem;
   position: relative;
   height: 1.5rem;
   width: calc(100% + var(--content-padding));
@@ -5927,6 +5972,7 @@ template {
 
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .actors-container {
   height: 3.75rem;
+  width: 100%;
   justify-content: flex-start; }
 
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .turf-list {
@@ -6527,6 +6573,18 @@ template {
       grid-area: members;
       position: relative;
       justify-content: flex-start; }
+
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content .sheet-top {
+  grid-template-areas: ". item-img . title";
+  grid-template-columns: 25px 70px 25px 1fr;
+  grid-template-rows: 60px; }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content .sheet-top .sheet-img {
+    position: static;
+    grid-area: item-img;
+    width: 100%;
+    top: 0;
+    left: 0;
+    mask-image: none; }
 
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .scene-selection {
   position: absolute;

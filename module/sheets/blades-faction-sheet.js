@@ -26,11 +26,6 @@ class BladesFactionSheet extends BladesSheet {
             const item = this.actor.items.get(element.data("itemId"));
             item?.sheet?.render(true);
         });
-        html.find(".comp-delete").on("click", async (event) => {
-            const element = $(event.currentTarget).parents(".item");
-            await this.actor.deleteEmbeddedDocuments("Item", [element.data("itemId")]);
-            element.slideUp(200, () => this.render(false));
-        });
     }
 }
 export default BladesFactionSheet;

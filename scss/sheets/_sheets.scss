@@ -37,7 +37,7 @@
 .window-content form.editable .sheet-img-bg {
 	position: absolute;
 	width: calc(100% + 2 * var(--content-padding)) !important;
-	height: calc(100% - var(--content-padding)) !important;
+	height: calc(100% + var(--content-padding)) !important;
 	left: calc(-1 * var(--content-padding));
 	top: calc(-1 * var(--content-padding));
 	overflow: hidden;
@@ -141,7 +141,7 @@
 .window-content .tab-label {
 	display: block;
 	background: var(--blades-grey);
-	padding: toRem(3px) toRem(20px);
+	// padding: toRem(3px) 0;
 	position: relative;
 	// border: 2px solid var(--blades-black);
 	// border-top: none;
@@ -257,6 +257,7 @@
 .window-content form.editable .actors-container {
 	// position: absolute;
 	height: toRem(60px);
+	width: 100%;
 	justify-content: flex-start;
 }
 

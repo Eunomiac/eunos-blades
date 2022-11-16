@@ -148,6 +148,7 @@
 				}
 
 				&.item {
+					@import './sheets/item-sheets';
 
 					&.clock-keeper {
 						@import './sheets/clock-keeper-sheet'

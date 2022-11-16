@@ -9,7 +9,6 @@ import C, { SVGDATA, BladesItemType } from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
 class BladesItem extends Item {
-
     static CategoryTypes = {
         ability: BladesItemType.ability,
         background: BladesItemType.background,
@@ -119,8 +118,11 @@ class BladesItem extends Item {
         }
     }
     static async GetPersonal(itemRef, parent) {
+        if (!itemRef) {
+            return null;
+        }
         if (itemRef instanceof BladesItem && itemRef.id) {
-            itemRef = itemRef.id;
+            itemRef = itemRef.system.world_name ?? itemRef.id;
         }
         if (!itemRef) {
             return null;
@@ -149,15 +151,25 @@ class BladesItem extends Item {
         if (!(category in BladesItem.CategoryTypes)) {
             return null;
         }
+        if (U.isDocID(itemRef)) {
+            const foundItem = parent.items.get(itemRef) ?? await BladesItem.GetGlobal(itemRef);
+            if (foundItem) {
+                itemRef = foundItem;
+            }
+        }
+        if (itemRef instanceof BladesItem) {
+            itemRef = itemRef.system.world_name;
+        }
+
+        const embItem = parent.items.find((i) => i.system?.world_name === itemRef);
+        if (embItem) {
+            await embItem.update({ "system.isArchived": false });
+            return embItem;
+        }
 
         const globalItem = await BladesItem.GetGlobal(itemRef);
         if (!globalItem?.id) {
             return null;
-        }
-
-        const embItem = parent.items.find((i) => i.system.world_name === globalItem.system.world_name);
-        if (embItem) {
-            return (await embItem.update({ "system.isArchived": false })) ?? null;
         }
 
         if (BladesItem.CategoryUniques[category]) {
@@ -168,22 +180,26 @@ class BladesItem extends Item {
         return BladesItem.create([globalItem], { parent });
     }
 
-    static async Remove(itemRef, category, parent) {
+    static async Remove(itemRef, category, parent, isFullRemoval = false) {
         eLog.log2("[BladesItem.Remove(itemRef, category, parent)]", { itemRef, category, parent });
-        const updateData = {};
         if (!(category in BladesItem.CategoryTypes)) {
-            return null;
+            return;
         }
 
         const embItem = await BladesItem.GetPersonal(itemRef, parent);
         if (!embItem?.id) {
-            return null;
+            return;
         }
-        if (BladesItem.CategoryUniques[category]) {
-            return (await embItem.delete()) ?? null;
+        if (BladesItem.CategoryUniques[category] || isFullRemoval) {
+            await embItem.delete();
         }
-        await embItem.update({ "system.isArchived": true });
-        return BladesItem.GetPersonal(itemRef, parent);
+        else {
+            await embItem.update({ "system.isArchived": true });
+        }
+    }
+
+    static async GetEmbeddedItems(parent) {
+        return Array.from(parent.items);
     }
 
     static async GetEmbeddedCategoryItems(cat, parent) {
@@ -282,37 +298,29 @@ class BladesItem extends Item {
     async isValidForDoc(doc) {
         let isValid = true;
         if (doc instanceof BladesActor) {
-            if (this.type === "item") {
-                isValid = Boolean(this.playbooks.includes("ANY")
-                    || (doc.playbookName && this.playbooks.includes(doc.playbookName)));
+            if (["item", "crew_upgrade"].includes(this.type)) {
+                isValid = Boolean(this.playbooks.includes("ANY") || (doc.playbookName && this.playbooks.includes(doc.playbookName)));
             }
-            if (this.type === "ability") {
+            else if (this.type === "ability") {
                 isValid = Boolean((doc.playbookName && this.playbooks.includes(doc.playbookName))
                     || (!this.playbooks.includes("Ghost")
                         && !this.playbooks.includes("Hull")
                         && !this.playbooks.includes("Vampire")));
             }
-            if (this.type === "crew_ability") {
-                isValid = Boolean(doc.playbookName);
+            if (!isValid) {
+                return false;
             }
-            if (this.type === "crew_upgrade") {
-                isValid = Boolean(this.playbooks.includes("ANY")
-                    || (doc.playbookName && this.playbooks.includes(doc.playbookName)));
+
+            if (this.type === "item") {
+                isValid = (this.system.load ?? 0) <= doc.remainingLoad;
             }
             if (!isValid) {
                 return false;
             }
 
-            if ("load" in this.system) {
-                isValid = this.system.load <= doc.remainingLoad;
-            }
-            if (!isValid) {
-                return false;
-            }
             const activeItems = await BladesItem.GetActiveCategoryItems(this.type, doc);
             const dupeItems = activeItems
                 .filter((item) => item.system.world_name === this.system.world_name);
-
             if (dupeItems.length) {
                 isValid = (this.system.num_available ?? 1) > dupeItems.length;
             }

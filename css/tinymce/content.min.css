@@ -287,17 +287,21 @@ html, :root {
         html .comp .comp-label.comp-prompt:hover, :root .comp .comp-label.comp-prompt:hover {
           transform: scale(1.4);
           color: var(--blades-gold-bright); }
+    html .comp.no-label .comp-label:not(.comp-prompt), :root .comp.no-label .comp-label:not(.comp-prompt) {
+      display: none; }
     html .comp .comp-control, :root .comp .comp-control {
       pointer-events: auto; }
       html .comp .comp-control.comp-add.comp-button, :root .comp .comp-control.comp-add.comp-button {
         position: absolute;
         left: toRem(4px);
         transform: translate(0, -50%);
-        top: 50%;
+        top: 45%;
         padding: 0;
         font-weight: bold;
         color: var(--blades-white-bright);
         color: var(--blades-black-dark); }
+        html .comp .comp-control.comp-add.comp-button + span, :root .comp .comp-control.comp-add.comp-button + span {
+          margin-left: 20px; }
         html .comp .comp-control.comp-add.comp-button:hover, :root .comp .comp-control.comp-add.comp-button:hover {
           color: var(--blades-white-bright); }
     html .comp .comp-title, :root .comp .comp-title {
@@ -374,7 +378,8 @@ html, :root {
       flex-basis: toRem(80px); }
       html .comp.comp-actor .comp-body, :root .comp.comp-actor .comp-body {
         filter: drop-shadow(0 0 toRem(2px) var(--blades-black-dark));
-        pointer-events: auto; }
+        pointer-events: auto;
+        width: 100%; }
         html .comp.comp-actor .comp-body, html .comp.comp-actor .comp-body *, :root .comp.comp-actor .comp-body, :root .comp.comp-actor .comp-body * {
           transition: 0.25s; }
         html .comp.comp-actor .comp-body .comp-title, :root .comp.comp-actor .comp-body .comp-title {
@@ -405,7 +410,7 @@ html, :root {
         html .comp.comp-actor .comp-control:hover, :root .comp.comp-actor .comp-control:hover {
           opacity: 1; }
     html .comp.comp-vertical, :root .comp.comp-vertical {
-      --comp-img-scale: 1.5;
+      --comp-img-scale: 2;
       --comp-name-size: toRem(16px);
       flex-direction: column; }
       html .comp.comp-vertical .comp-label, :root .comp.comp-vertical .comp-label {
@@ -435,7 +440,7 @@ html, :root {
           transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
           opacity: 0.5;
           filter: blur(0.5px);
-          top: 70%;
+          top: 50%;
           left: 50%;
           height: 100%;
           z-index: -1; }
@@ -866,17 +871,21 @@ html, :root {
           html .comp .comp-label.comp-prompt:hover, :root .comp .comp-label.comp-prompt:hover {
             transform: scale(1.4);
             color: var(--blades-gold-bright); }
+      html .comp.no-label .comp-label:not(.comp-prompt), :root .comp.no-label .comp-label:not(.comp-prompt) {
+        display: none; }
       html .comp .comp-control, :root .comp .comp-control {
         pointer-events: auto; }
         html .comp .comp-control.comp-add.comp-button, :root .comp .comp-control.comp-add.comp-button {
           position: absolute;
           left: 0.25rem;
           transform: translate(0, -50%);
-          top: 50%;
+          top: 45%;
           padding: 0;
           font-weight: bold;
           color: var(--blades-white-bright);
           color: var(--blades-black-dark); }
+          html .comp .comp-control.comp-add.comp-button + span, :root .comp .comp-control.comp-add.comp-button + span {
+            margin-left: 20px; }
           html .comp .comp-control.comp-add.comp-button:hover, :root .comp .comp-control.comp-add.comp-button:hover {
             color: var(--blades-white-bright); }
       html .comp .comp-title, :root .comp .comp-title {
@@ -953,7 +962,8 @@ html, :root {
         flex-basis: 5rem; }
         html .comp.comp-actor .comp-body, :root .comp.comp-actor .comp-body {
           filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
-          pointer-events: auto; }
+          pointer-events: auto;
+          width: 100%; }
           html .comp.comp-actor .comp-body, html .comp.comp-actor .comp-body *, :root .comp.comp-actor .comp-body, :root .comp.comp-actor .comp-body * {
             transition: 0.25s; }
           html .comp.comp-actor .comp-body .comp-title, :root .comp.comp-actor .comp-body .comp-title {
@@ -984,7 +994,7 @@ html, :root {
           html .comp.comp-actor .comp-control:hover, :root .comp.comp-actor .comp-control:hover {
             opacity: 1; }
       html .comp.comp-vertical, :root .comp.comp-vertical {
-        --comp-img-scale: 1.5;
+        --comp-img-scale: 2;
         --comp-name-size: 1rem;
         flex-direction: column; }
         html .comp.comp-vertical .comp-label, :root .comp.comp-vertical .comp-label {
@@ -1014,7 +1024,7 @@ html, :root {
             transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
             opacity: 0.5;
             filter: blur(0.5px);
-            top: 70%;
+            top: 50%;
             left: 50%;
             height: 100%;
             z-index: -1; }
@@ -1359,6 +1369,8 @@ html, :root {
       display: inline-block; }
     html .text-checkbox input[type="checkbox"]:checked + span, :root .text-checkbox input[type="checkbox"]:checked + span {
       color: var(--active-text-color, var(--blades-gold-bright)); }
+  html .no-img img, :root .no-img img {
+    display: none; }
   html .full-width, :root .full-width {
     position: relative;
     width: calc(100% + (2 * var(--content-padding)));

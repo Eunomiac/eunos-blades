@@ -1,0 +1,14 @@
+.window-content .sheet-top {
+	grid-template-areas: ". item-img . title";
+	grid-template-columns: 25px 70px 25px 1fr;
+	grid-template-rows: 60px;
+
+	.sheet-img {
+		position: static;
+		grid-area: item-img;
+		width: 100%;
+		top: 0;
+		left: 0;
+		mask-image: none;
+	}
+}

@@ -21,9 +21,9 @@
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs" items.playbook
 			addButton=true
-			cat="playbook"
+			cat="crew_playbook"
 			id=items.playbook._id
-			class="comp-playbook comp-vertical"
+			class="comp-playbook comp-vertical no-label"
 			label="Playbook"
 		}}
 
@@ -32,7 +32,7 @@
 			label="Reputation"
 			cat="crew_reputation"
 			id=items.reputation._id
-			class="comp-reputation comp-vertical"
+			class="comp-reputation comp-vertical no-img"
 			tooltip=items.reputation.system.rules
 		}}
 
@@ -53,20 +53,18 @@
 			label="Coins"
 			class="comp-coins comp-vertical" }}
 
-		{{!-- Members --}}
-		{{> "systems/eunos-blades/templates/components/multi-comp.hbs" membersData
-			addButton=true
-			label="Members"
-			cat="crew_pc"
-			class="comp-members comp-horizontal"
-		}}
-
 		<div class="members comp-horizontal comp">
+			<label class="comp filled-label" data-comp-cat="crew-pc">
+				<a class="comp-control comp-button comp-add">
+					<i class="fas fa-plus-square"></i>
+				</a>
+				<span>Members</span>
+			</label>
 			<div class="actors-container flex-horizontal">
-				{{#each actors as |actor|}}
+				{{#each actors.members as |actor|}}
 				{{> "systems/eunos-blades/templates/components/comp.hbs" actor
 					cat="crew-pc"
-					id=member._id
+					id=actor._id
 					class="comp-crew-member comp-actor comp-vertical long-text"
 					remButton=true
 				}}
@@ -224,7 +222,7 @@
 				{{> "systems/eunos-blades/templates/components/comp.hbs" item
 					id=id
 					class="comp-desc-trait comp-horizontal full-width"
-					remButton=true
+					remFullButton=true
 				}}
 				{{/each}}
 			</div>

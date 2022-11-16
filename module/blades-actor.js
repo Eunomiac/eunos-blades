@@ -6,11 +6,10 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-import C, { BladesActorType, Randomizers, Attributes, Actions, Positions, EffectLevels } from "./core/constants.js";
+import C, { BladesActorType, BladesItemType, Randomizers, Attributes, Actions, Positions, EffectLevels } from "./core/constants.js";
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem from "./blades-item.js";
 class BladesActor extends Actor {
-
     static CategoryTypes = {
         "pc-crew": BladesActorType.crew,
         "crew-pc": BladesActorType.pc,
@@ -21,6 +20,15 @@ class BladesActor extends Actor {
         "crew": BladesActorType.crew
     };
     static CategoryFilters = {};
+    static CategoryUniques = {
+        "pc-crew": true,
+        "crew-pc": false,
+        "vice_purveyor": true,
+        "acquaintance": false,
+        "pc": false,
+        "npc": false,
+        "crew": true
+    };
     static get All() { return game.actors; }
     static async getAllGlobalActors() {
         const actors = Array.from(BladesActor.All);
@@ -79,6 +87,9 @@ class BladesActor extends Actor {
         }
     }
     static async GetPersonal(actorRef, parent) {
+        if (!actorRef) {
+            return null;
+        }
         const actor = await BladesActor.GetGlobal(actorRef);
         eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name}) -> Global Actor`, await actor);
         if (!actor || !actor.id) {
@@ -120,22 +131,31 @@ class BladesActor extends Actor {
         return BladesActor.GetPersonal(actorRef, parent);
     }
 
-    static async Remove(actorRef, category, parent) {
+    static async Remove(actorRef, category, parent, isFullRemoval = false) {
         eLog.log2("[BladesActor.Remove(actorRef, category, parent)]", { actorRef, category, parent });
         const updateData = {};
         if (!(category in BladesActor.CategoryTypes)) {
-            return null;
+            return;
         }
 
         const globalActor = await BladesActor.GetGlobal(actorRef);
         if (!globalActor?.id) {
-            return null;
+            return;
         }
         if (globalActor.id in parent.system.subactors) {
-            updateData[`system.subactors.${globalActor.id}.isArchived`] = true;
+            if (isFullRemoval) {
+                updateData[`system.subactors.${globalActor.id}`] = null;
+            }
+            else {
+                updateData[`system.subactors.${globalActor.id}.isArchived`] = true;
+            }
         }
         await parent.update(updateData);
-        return BladesActor.GetPersonal(actorRef, parent);
+        return;
+    }
+    static async GetEmbeddedActors(parent) {
+        return (await Promise.all(Object.keys(parent.system.subactors).map((actorID) => BladesActor.GetPersonal(actorID, parent))))
+            .filter((actor) => actor !== null);
     }
 
     static async GetEmbeddedCategoryActors(cat, parent) {
@@ -211,8 +231,6 @@ class BladesActor extends Actor {
             ?? this.items.find((item) => item.type === "crew_playbook")
             ?? null;
     }
-    changePlaybook(playbookItem) {
-    }
     get attributes() {
         return {
             insight: Object.values(this.system.attributes.insight).filter(({ value }) => value > 0).length + this.system.resistance_bonuses.insight,
@@ -243,16 +261,16 @@ class BladesActor extends Actor {
     get traumaConditions() {
         return U.objFilter(this.system.trauma?.checked ?? {}, (v, traumaName) => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName]));
     }
-    async removeDoc(docId) {
+    async removeDoc(docId, isFullRemoval = false) {
         const doc = (await BladesActor.GetPersonal(docId, this)) ?? (await BladesItem.GetPersonal(docId, this));
         if (!doc) {
             return;
         }
         if (doc instanceof BladesActor) {
-            BladesActor.Remove(doc, doc.category, this);
+            BladesActor.Remove(doc, doc.category, this, isFullRemoval);
         }
         else {
-            BladesItem.Remove(doc, doc.type, this);
+            BladesItem.Remove(doc, doc.type, this, isFullRemoval);
         }
     }
     startScore() {
@@ -272,7 +290,8 @@ class BladesActor extends Actor {
         });
     }
     get currentLoad() {
-        return U.gsap.utils.clamp(0, 10, this.items
+        const activeLoadItems = this.items.filter((item) => item.type === BladesItemType.item && !item.isArchived);
+        return U.gsap.utils.clamp(0, 10, activeLoadItems
             .reduce((tot, i) => tot + (i.type === "item"
             ? U.pInt(i.system.load)
             : 0), 0));
