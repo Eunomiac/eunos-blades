@@ -10,6 +10,7 @@ import registerSettings, { initTinyMCEStyles, initCanvasStyles, initFonts } from
 import { registerHandlebarHelpers, preloadHandlebarsTemplates } from "./core/helpers.js";
 import U from "./core/utilities.js";
 import registerDebugger from "./core/logger.js";
+import G, { Initialize as GsapInitialize } from "./core/gsap.js";
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
 import BladesItemSheet from "./sheets/blades-item-sheet.js";
@@ -37,6 +38,7 @@ Object.assign(globalThis, {
     IMPORTDATA,
     bladesRoll,
     simpleRollPopup,
+    G,
     U,
     C,
     BladesItem,
@@ -324,6 +326,7 @@ Object.assign(globalThis, {
 Hooks.once("init", async () => {
     registerSettings();
     eLog.display("Initializing Blades In the Dark System");
+    GsapInitialize();
     initFonts();
     CONFIG.Item.documentClass = BladesItem;
     CONFIG.Actor.documentClass = BladesActor;

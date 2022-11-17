@@ -173,20 +173,28 @@ class BladesActorSheet extends BladesSheet {
 						isLocked: true
 					},
 					compContainer: {
-						"class": "cont-full-height cont-full-width",
+						"class": "comp-trauma-conditions comp-vertical full-width",
 						"blocks": [
-							{cells: allTraumaConditions.slice(0, Math.ceil(allTraumaConditions.length / 2))
+							allTraumaConditions.slice(0, Math.ceil(allTraumaConditions.length / 2))
 								.map((tName) => ({
-									label: tName,
-									checkControl: `system.trauma.checked.${tName}`,
+									checkLabel: tName,
+									checkClasses: {
+										active: "comp-toggle-red",
+										inactive: "comp-toggle-grey"
+									},
+									checkTarget: `system.trauma.checked.${tName}`,
 									checkValue: this.actor.system.trauma.checked[tName] ?? false
-								}))},
-							{cells: allTraumaConditions.slice(Math.ceil(allTraumaConditions.length / 2))
+								})),
+							allTraumaConditions.slice(Math.ceil(allTraumaConditions.length / 2))
 								.map((tName) => ({
-									label: tName,
-									checkControl: `system.trauma.checked.${tName}`,
+									checkLabel: tName,
+									checkClasses: {
+										active: "comp-toggle-red",
+										inactive: "comp-toggle-grey"
+									},
+									checkTarget: `system.trauma.checked.${tName}`,
 									checkValue: this.actor.system.trauma.checked[tName] ?? false
-								}))}
+								}))
 						]
 					}
 				},

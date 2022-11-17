@@ -2,81 +2,96 @@
 	min-width: 500px;
 	max-width: 500px;
 	min-height: 300px;
-	max-height: 700px;
+	max-height: 500px;
 
 	--item-info-height: 100px;
 	--buttons-height: 25px;
 
 	.window-content {
 		padding: 0;
+		overflow: visible;
+		max-height: 100%;
+		position: static;
+
 		.dialog-content {
 			height: calc(100% - var(--item-info-height) - var(--buttons-height));
 			padding-block-start: 0;
+			position: static;
 
 			.item-details {
+				opacity: 0;
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
 				align-items: stretch;
 				color: var(--blades-white);
-				height: var(--item-info-height);
-				width: 100%;
-				margin: toRem(5px) 0;
 				padding: var(--content-padding);
-				background: var(--background-input);
 				hyphens: auto;
-				max-width: 100%;
-				white-space: wrap;
 				text-align: justify;
-				box-shadow: var(--box-shadow-input-strong);
-				text-shadow: var(--text-shadow-dark);
+				// box-shadow: var(--box-shadow-input-strong);
+				// text-shadow: var(--text-shadow-dark);
+				// transform-origin: center bottom;
+				position: absolute;
+				top: 0%;
+				// bottom: 100%;
+				// margin-top: -150px;
+				// left: 0;
+				margin-left: 550px;
+				width: 400px;
+				max-width: unset;
+				pointer-events: none;
+				background: var(--blades-black-dark);
+				z-index: 10;
+				outline: 1px solid var(--blades-white);
 			}
 
 			.nav-group {
 				height: 100%;
 				width: 100%;
-				overflow: hidden;
+				overflow: visible;
 
 				.tab[data-tab] {
 					height: 100%;
 					width: 100%;
-					overflow-y: scroll;
-					overflow-x: hidden;
+					align-items: space-around;
+					justify-content: center;
+					padding: 25px 0;
+					// overflow-y: scroll;
+					// overflow-x: hidden;
 					&.active {display: flex}
-
-
-					&.hovering {
-						.comp {
-							.comp-body:not(.hover-over) {
-
-								.comp-title.item-title {
-									color: var(--blades-grey);
-								}
-								> img {
-									filter: blur(3px);
-									opacity: 0.5;
-								}
-							}
-						}
-					}
 				}
 
 			}
 
-			.featured-items {
-				width: 100%;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				transform-origin: center;
-				transform: scale(1.5) translateY(10px);
+			.comp-body {
+				z-index: 1;
+				.comp-title {
+					color: var(--blades-grey-bright);
+				}
+				> img {
+					filter: blur(1px);
+					opacity: 0.5;
+				}
 			}
+			.featured-item .comp-body {
+				.comp-title {
+					color: var(--blades-white-bright);
+				}
+				> img {
+					filter: blur(0.5px);
+					opacity: 0.75;
+				}
+
+			}
+
 			.comp-vertical {
 				height: 50px;
 				width: 25%;
 				min-width: min-content;
 				flex-grow: 0;
-				margin: 15px 0 35px 0;
+				margin: 30px 0;
+				position: static;
+				overflow: visible;
 
 				.comp-body {
 					transform-origin: center center;
@@ -101,16 +116,6 @@
 						transform-origin: center;
 					}
 
-					&.hover-over {
-						scale: 1.2;
-						.comp-title.item-title {
-							// scale: calc(1 / 1.8);
-						}
-						> img {
-							filter: blur(0px);
-							opacity: 1;
-						}
-					}
 				}
 			}
 		}

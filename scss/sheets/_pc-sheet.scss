@@ -20,14 +20,7 @@
 		.comp-coins { grid-area: coins }
 
 		.comp-stash { grid-area: stash;
-			padding: 5px 0;
-			.dotline {
-				--dotline-dot-spacing: 3px;
-				.dot:nth-of-type(10n) {
-					margin-right: 10px;
-				}
-			}
-		}
+			--dotline-dot-spacing: 3px; }
 	}
 
 	section.sheet-mid-bar {
@@ -44,6 +37,10 @@
 				// --frame-color-full: var(--blades-red);
 				--fill-color-full: var(--blades-red-bright);
 			}
+		}
+
+		.comp-trauma-conditions {
+			min-width: toRem(300px);
 		}
 	}
 
@@ -255,11 +252,11 @@
 						justify-self: flex-end;
 					}
 					.load-amount {
-						position: absolute;
-						transform: translate(0%, -50%);
-						right: toRem(-11px);
-						top: 50%;
 						--number-circle-size: #{toRem(30px)};
+						position: absolute;
+						transform: translate(-50%, -50%);
+						right: calc(-1 * var(--number-circle-size));
+						top: 50%;
 					}
 				}
 
@@ -277,13 +274,6 @@
 					+ .comp-title .item-title {
 						margin-left: toRem(12px);
 					}
-				}
-
-				.comp .item-load {
-					--number-circle-size: #{toRem(20px)};
-					position: absolute;
-					top: 25px;
-					right: 1px;
 				}
 			}
 		}

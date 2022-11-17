@@ -4,6 +4,7 @@ import registerSettings, {initTinyMCEStyles, initCanvasStyles, initFonts} from "
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers.js";
 import U from "./core/utilities.js";
 import registerDebugger from "./core/logger.js";
+import G, {Initialize as GsapInitialize} from "./core/gsap.js";
 
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
@@ -38,6 +39,7 @@ registerDebugger();
 		IMPORTDATA,
 		bladesRoll,
 		simpleRollPopup,
+		G,
 		U,
 		C,
 		BladesItem,
@@ -339,14 +341,13 @@ registerDebugger();
 
 // #region ████████ SYSTEM INITIALIZATION: Initializing Blades In The Dark System on 'Init' Hook ████████
 Hooks.once("init", async () => {
+	// Register System Settings
 	registerSettings();
 	eLog.display("Initializing Blades In the Dark System");
 
-	// Register System Settings
+	// Initialize Fonts & Gsap Animations
+	GsapInitialize();
 	initFonts();
-
-	// game.blades = {dice: bladesRoll};
-	// game.system.bobclocks = {sizes: [4, 6, 8]};
 
 	CONFIG.Item.documentClass = BladesItem;
 	CONFIG.Actor.documentClass = BladesActor;

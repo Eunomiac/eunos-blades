@@ -315,6 +315,30 @@ html, :root {
       html .comp .comp-body h1, html .comp .comp-body h2, html .comp .comp-body h3, html .comp .comp-body h4, html .comp .comp-body p, html .comp .comp-body blockquote, html .comp .comp-body table, :root .comp .comp-body h1, :root .comp .comp-body h2, :root .comp .comp-body h3, :root .comp .comp-body h4, :root .comp .comp-body p, :root .comp .comp-body blockquote, :root .comp .comp-body table {
         margin: 0;
         padding: 0; }
+    html .comp .comp-toggle, :root .comp .comp-toggle {
+      font-family: var(--font-emphasis);
+      text-transform: uppercase;
+      transition: 0.25s; }
+      html .comp .comp-toggle:hover, :root .comp .comp-toggle:hover {
+        transform: scale(1.2); }
+      html .comp .comp-toggle.comp-toggle-red, :root .comp .comp-toggle.comp-toggle-red {
+        color: var(--blades-red-bright);
+        font-weight: bold;
+        text-shadow: var(--text-shadow-dark); }
+        html .comp .comp-toggle.comp-toggle-red:hover, :root .comp .comp-toggle.comp-toggle-red:hover {
+          color: var(--blades-red); }
+      html .comp .comp-toggle.comp-toggle-grey, :root .comp .comp-toggle.comp-toggle-grey {
+        color: var(--blades-grey);
+        filter: blur(2px); }
+        html .comp .comp-toggle.comp-toggle-grey:hover, :root .comp .comp-toggle.comp-toggle-grey:hover {
+          filter: blur(0px);
+          color: var(--blades-white); }
+    html .comp .number-circle, :root .comp .number-circle {
+      --number-circle-size: toRem(20px);
+      position: absolute; }
+      html .comp .number-circle.item-load, :root .comp .number-circle.item-load {
+        bottom: toRem(-5px);
+        right: toRem(-15px); }
     html .comp.long-text label, html .comp.long-text .comp-title, :root .comp.long-text label, :root .comp.long-text .comp-title {
       min-width: toRem(100px);
       width: 100%;
@@ -416,8 +440,8 @@ html, :root {
       html .comp.comp-vertical .comp-label, :root .comp.comp-vertical .comp-label {
         text-align: center; }
         html .comp.comp-vertical .comp-label.comp-prompt, :root .comp.comp-vertical .comp-label.comp-prompt {
-          padding-top: toRem(20px);
-          margin-bottom: toRem(-20px); }
+          height: toRem(12px);
+          margin-top: toRem(-10px); }
       html .comp.comp-vertical .comp-title, :root .comp.comp-vertical .comp-title {
         text-align: center;
         white-space: nowrap;
@@ -425,7 +449,7 @@ html, :root {
         position: absolute;
         z-index: 2;
         transform: translate(-50%, -50%);
-        top: 65%;
+        top: 50%;
         font-size: var(--comp-name-size);
         left: 50%;
         color: var(--blades-white-bright);
@@ -433,7 +457,7 @@ html, :root {
       html .comp.comp-vertical .comp-body, :root .comp.comp-vertical .comp-body {
         display: flex;
         flex-direction: column;
-        min-height: toRem(40px);
+        min-height: toRem(48px);
         width: 100%; }
         html .comp.comp-vertical .comp-body > img, :root .comp.comp-vertical .comp-body > img {
           position: absolute;
@@ -530,11 +554,17 @@ html, :root {
         text-align: right;
         padding-right: toRem(4px);
         padding-top: toRem(40px); }
-    html .comp.comp-coins .dotline, :root .comp.comp-coins .dotline {
-      --dotline-dot-size: toRem(18px)
-			; }
-    html .comp.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins .dot:nth-of-type(4n) + .dot {
+    html .comp.comp-coins .dotline, html .comp.comp-stash .dotline, :root .comp.comp-coins .dotline, :root .comp.comp-stash .dotline {
+      --dotline-dot-size: toRem(18px); }
+      html .comp.comp-coins .dotline .dot.empty-dot, html .comp.comp-stash .dotline .dot.empty-dot, :root .comp.comp-coins .dotline .dot.empty-dot, :root .comp.comp-stash .dotline .dot.empty-dot {
+        filter: saturate(0);
+        opacity: 0.5; }
+      html .comp.comp-coins .dotline .dot.full-dot, html .comp.comp-stash .dotline .dot.full-dot, :root .comp.comp-coins .dotline .dot.full-dot, :root .comp.comp-stash .dotline .dot.full-dot {
+        filter: brightness(0.8) saturate(0.75); }
+    html .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
       margin-left: toRem(5px); }
+    html .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot {
+      margin-right: toRem(10px); }
     html .comp .comp-tooltip, :root .comp .comp-tooltip {
       display: none;
       position: absolute;
@@ -899,6 +929,30 @@ html, :root {
         html .comp .comp-body h1, html .comp .comp-body h2, html .comp .comp-body h3, html .comp .comp-body h4, html .comp .comp-body p, html .comp .comp-body blockquote, html .comp .comp-body table, :root .comp .comp-body h1, :root .comp .comp-body h2, :root .comp .comp-body h3, :root .comp .comp-body h4, :root .comp .comp-body p, :root .comp .comp-body blockquote, :root .comp .comp-body table {
           margin: 0;
           padding: 0; }
+      html .comp .comp-toggle, :root .comp .comp-toggle {
+        font-family: var(--font-emphasis);
+        text-transform: uppercase;
+        transition: 0.25s; }
+        html .comp .comp-toggle:hover, :root .comp .comp-toggle:hover {
+          transform: scale(1.2); }
+        html .comp .comp-toggle.comp-toggle-red, :root .comp .comp-toggle.comp-toggle-red {
+          color: var(--blades-red-bright);
+          font-weight: bold;
+          text-shadow: var(--text-shadow-dark); }
+          html .comp .comp-toggle.comp-toggle-red:hover, :root .comp .comp-toggle.comp-toggle-red:hover {
+            color: var(--blades-red); }
+        html .comp .comp-toggle.comp-toggle-grey, :root .comp .comp-toggle.comp-toggle-grey {
+          color: var(--blades-grey);
+          filter: blur(2px); }
+          html .comp .comp-toggle.comp-toggle-grey:hover, :root .comp .comp-toggle.comp-toggle-grey:hover {
+            filter: blur(0px);
+            color: var(--blades-white); }
+      html .comp .number-circle, :root .comp .number-circle {
+        --number-circle-size: 1.25rem;
+        position: absolute; }
+        html .comp .number-circle.item-load, :root .comp .number-circle.item-load {
+          bottom: -0.3125rem;
+          right: -0.9375rem; }
       html .comp.long-text label, html .comp.long-text .comp-title, :root .comp.long-text label, :root .comp.long-text .comp-title {
         min-width: 6.25rem;
         width: 100%;
@@ -1000,8 +1054,8 @@ html, :root {
         html .comp.comp-vertical .comp-label, :root .comp.comp-vertical .comp-label {
           text-align: center; }
           html .comp.comp-vertical .comp-label.comp-prompt, :root .comp.comp-vertical .comp-label.comp-prompt {
-            padding-top: 1.25rem;
-            margin-bottom: -1.25rem; }
+            height: 0.75rem;
+            margin-top: -0.625rem; }
         html .comp.comp-vertical .comp-title, :root .comp.comp-vertical .comp-title {
           text-align: center;
           white-space: nowrap;
@@ -1009,7 +1063,7 @@ html, :root {
           position: absolute;
           z-index: 2;
           transform: translate(-50%, -50%);
-          top: 65%;
+          top: 50%;
           font-size: var(--comp-name-size);
           left: 50%;
           color: var(--blades-white-bright);
@@ -1017,7 +1071,7 @@ html, :root {
         html .comp.comp-vertical .comp-body, :root .comp.comp-vertical .comp-body {
           display: flex;
           flex-direction: column;
-          min-height: 2.5rem;
+          min-height: 3rem;
           width: 100%; }
           html .comp.comp-vertical .comp-body > img, :root .comp.comp-vertical .comp-body > img {
             position: absolute;
@@ -1114,11 +1168,17 @@ html, :root {
           text-align: right;
           padding-right: 0.25rem;
           padding-top: 2.5rem; }
-      html .comp.comp-coins .dotline, :root .comp.comp-coins .dotline {
-        --dotline-dot-size: 1.125rem
-			; }
-      html .comp.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins .dot:nth-of-type(4n) + .dot {
+      html .comp.comp-coins .dotline, html .comp.comp-stash .dotline, :root .comp.comp-coins .dotline, :root .comp.comp-stash .dotline {
+        --dotline-dot-size: 1.125rem; }
+        html .comp.comp-coins .dotline .dot.empty-dot, html .comp.comp-stash .dotline .dot.empty-dot, :root .comp.comp-coins .dotline .dot.empty-dot, :root .comp.comp-stash .dotline .dot.empty-dot {
+          filter: saturate(0);
+          opacity: 0.5; }
+        html .comp.comp-coins .dotline .dot.full-dot, html .comp.comp-stash .dotline .dot.full-dot, :root .comp.comp-coins .dotline .dot.full-dot, :root .comp.comp-stash .dotline .dot.full-dot {
+          filter: brightness(0.8) saturate(0.75); }
+      html .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
         margin-left: 0.3125rem; }
+      html .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot {
+        margin-right: 0.625rem; }
       html .comp .comp-tooltip, :root .comp .comp-tooltip {
         display: none;
         position: absolute;

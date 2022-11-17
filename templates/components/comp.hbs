@@ -42,17 +42,14 @@
 					{{> "systems/eunos-blades/templates/parts/dotline.hbs" }}
 				{{/each}}
 			{{/if}}
-			{{#if checkControl}}
-			<input class="comp-control comp-hidden-control comp-check" type="checkbox" data-dtype="Boolean" name="{{checkControl}}" value="{{checkValue}}" {{checked checkValue}}/>
+			{{#if checkTarget}}
+			{{log "CheckLabel: " checkLabel " CheckValue: " checkValue}}
+			{{#if checkValue}}
+			{{log "... value is TRUE"}}
 			{{/if}}
-			{{#if radioControl}}
-			<div class="comp-control comp-hidden-control comp-radio">
-			{{#with radioControl as |control|}}{{#each control.values}}
-				<input type="radio" name="{{control.target}}" value="{{value}}" {{~#if (test control.value "==" value)}} checked="checked"{{/if}}>
-				<label class="comp-radio-label">{{label}}</label>
-			{{/each}}{{/with}}
-			</div>
+			<label class="comp-control comp-toggle {{#if checkValue}}{{checkClasses.active}}{{else}}{{checkClasses.inactive}}{{/if}}" data-target="{{checkTarget}}">{{checkLabel}}</label>
 			{{/if}}
+
 			{{#if numberCircle}}
 			<div class="number-circle {{~#if numberCircleClass}} {{numberCircleClass}}{{/if}}">{{numberCircle}}</div>
 			{{/if}}
@@ -81,10 +78,10 @@
 	{{else}}
 
 		<div class="{{#if compContainer.class}}{{compContainer.class}} {{/if}}comp-cont">
-			{{#each compContainer.blocks}}
-			<div class="comp-cont-block"
-				{{#each cells}}
-				{{> "systems/eunos-blades/templates/components/comp.hbs" }}
+			{{#each compContainer.blocks as |cells|}}
+			<div class="comp-cont-block flex-horizontal">
+				{{#each cells as |cell|}}
+				{{> "systems/eunos-blades/templates/components/comp.hbs" cell}}
 				{{/each}}
 			</div>
 			{{/each}}

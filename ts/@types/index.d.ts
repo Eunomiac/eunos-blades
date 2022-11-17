@@ -3,8 +3,11 @@ import BladesActor from "../blades-actor";
 import { bladesRoll } from "../blades-roll";
 import BladesDialog from "../blades-dialog";
 import BladesItemSheet from "../sheets/blades-item-sheet";
+import type gsap from "/scripts/greensock/esm/all";
 
 declare global {
+
+	declare const gsap: gsap;
 
 	namespace SystemDocs {
 		export type Actor = BladesActor;

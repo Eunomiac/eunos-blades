@@ -5,6 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import G from "./core/gsap.js";
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
 class BladesDialog extends Dialog {
@@ -56,7 +57,13 @@ class BladesDialog extends Dialog {
         const validatedActors = await Promise.all(allCategoryActors.map(async (actor) => {
             return (await actor.isValidForDoc(this.doc)) ? actor : null;
         }));
-        const validActors = validatedActors.filter((actor) => actor !== null);
+        const validActors = validatedActors
+            .filter((actor) => actor !== null)
+            .map((actor) => Object.assign(actor, {
+            tooltip: (actor.system.concept || actor.system.description_short)
+                ? (new Handlebars.SafeString(`<span>${actor.system.concept || actor.system.description_short}</span>`)).toString()
+                : undefined
+        }));
         this.tabs = Object.fromEntries((Object.entries(tabs))
             .map(([tabName, tabFilter]) => [
             tabName,
@@ -68,7 +75,13 @@ class BladesDialog extends Dialog {
         const validatedItems = await Promise.all(allCategoryItems.map(async (item) => {
             return (await item.isValidForDoc(this.doc)) ? item : null;
         }));
-        const validItems = validatedItems.filter((item) => item !== null);
+        const validItems = validatedItems
+            .filter((item) => item !== null)
+            .map((item) => Object.assign(item, {
+            tooltip: item.system.rules.trim().length
+                ? (new Handlebars.SafeString(`<span>${item.system.rules}</span>`)).toString()
+                : undefined
+        }));
         this.tabs = Object.fromEntries((Object.entries(tabs))
             .map(([tabName, tabFilter]) => [
             tabName,
@@ -136,9 +149,11 @@ class BladesDialog extends Dialog {
     activateListeners(html) {
         super.activateListeners(html);
         const self = this;
-        const itemDetailPane$ = $(html).find(".item-details");
 
-        html.find("[data-item-id]").on({
+        html.find("[data-item-id]")
+            .each(function (i, elem) {
+            $(elem).data("hoverTimeline", G.effects.hoverDialogItem(elem));
+        }).on({
             click: function () {
                 const docId = $(this).data("itemId");
                 if (docId) {
@@ -146,30 +161,11 @@ class BladesDialog extends Dialog {
                 }
                 self.close();
             },
-            mouseenter: async function () {
-                $(this).closest(".tab").addClass("hovering");
-                $(this).addClass("hover-over");
-                if (self.docSuperType === "Item") {
-                    const item = await BladesItem.GetPersonal($(this).data("itemId"), self.doc);
-                    if (!item) {
-                        return;
-                    }
-                    const itemRules = (new Handlebars.SafeString(`<span>${item.system.rules}</span>`)).toString();
-                    itemDetailPane$.html(itemRules);
-                }
-                else if (self.docSuperType === "Actor") {
-                    const targetActor = await BladesActor.GetPersonal($(this).data("itemId"), self.doc);
-                    if (!targetActor) {
-                        return;
-                    }
-                    const actorDesc = (new Handlebars.SafeString(`<span>${targetActor.system.concept || targetActor.system.description_short || ""}</span>`)).toString();
-                    itemDetailPane$.html(actorDesc);
-                }
+            mouseenter: function () {
+                $(this).data("hoverTimeline").play();
             },
             mouseleave: function () {
-                $(this).closest(".tab").removeClass("hovering");
-                $(this).removeClass("hover-over");
-                itemDetailPane$.html("");
+                $(this).data("hoverTimeline").reverse();
             }
         });
     }

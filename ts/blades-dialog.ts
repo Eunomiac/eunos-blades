@@ -1,5 +1,6 @@
 import C, {BladesActorType, BladesItemType} from "./core/constants.js";
 import U from "./core/utilities.js";
+import G from "./core/gsap.js";
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
 
@@ -67,7 +68,12 @@ class BladesDialog extends Dialog {
 		const validatedActors: Array<BladesActor|null> = await Promise.all(allCategoryActors.map(async (actor) => {
 			return (await actor.isValidForDoc(this.doc)) ? actor : null;
 		}));
-		const validActors = validatedActors.filter((actor): actor is BladesActor => actor !== null);
+		const validActors: Array<BladesActor & {tooltip?: string}> = validatedActors
+			.filter((actor): actor is BladesActor => actor !== null)
+			.map((actor) => Object.assign(actor, {
+				tooltip: (actor.system.concept || actor.system.description_short)
+					? (new Handlebars.SafeString(`<span>${actor.system.concept || actor.system.description_short}</span>`)).toString()
+					: undefined}));
 		this.tabs = Object.fromEntries((Object.entries(tabs))
 			.map(([tabName, tabFilter]) => [
 				tabName,
@@ -79,7 +85,12 @@ class BladesDialog extends Dialog {
 		const validatedItems: Array<BladesItem|null> = await Promise.all(allCategoryItems.map(async (item) => {
 			return (await item.isValidForDoc(this.doc)) ? item : null;
 		}));
-		const validItems = validatedItems.filter((item): item is BladesItem => item !== null);
+		const validItems: Array<BladesItem & {tooltip?: string}> = validatedItems
+			.filter((item): item is BladesItem => item !== null)
+			.map((item) => Object.assign(item, {
+				tooltip: item.system.rules.trim().length
+					? (new Handlebars.SafeString(`<span>${item.system.rules}</span>`)).toString()
+					: undefined}));
 		this.tabs = Object.fromEntries((Object.entries(tabs))
 			.map(([tabName, tabFilter]) => [
 				tabName,
@@ -161,39 +172,25 @@ class BladesDialog extends Dialog {
 
 		const self = this;
 
-		const itemDetailPane$ = $(html).find(".item-details");
-
 		//~ Item Control
-		html.find("[data-item-id]").on({
-			click: function() {
-				const docId = $(this).data("itemId");
-				if (docId) {
-					// eLog.checkLog("dialog", `[BladesDialog] Calling Back (${docId})`);
-					self.callback(docId);
+		html.find("[data-item-id]")
+			.each(function(i, elem) {
+				$(elem).data("hoverTimeline", G.effects.hoverDialogItem(elem));
+			}).on({
+				click: function() {
+					const docId = $(this).data("itemId");
+					if (docId) {
+						self.callback(docId);
+					}
+					self.close();
+				},
+				mouseenter: function() {
+					$(this).data("hoverTimeline").play();
+				},
+				mouseleave: function() {
+					$(this).data("hoverTimeline").reverse();
 				}
-				self.close();
-			},
-			mouseenter: async function() {
-				$(this).closest(".tab").addClass("hovering");
-				$(this).addClass("hover-over");
-				if (self.docSuperType === "Item") {
-					const item = await BladesItem.GetPersonal($(this).data("itemId"), self.doc as BladesActor);
-					if (!item) { return }
-					const itemRules = (new Handlebars.SafeString(`<span>${item.system.rules}</span>`)).toString();
-					itemDetailPane$.html(itemRules);
-				} else if (self.docSuperType === "Actor") {
-					const targetActor = await BladesActor.GetPersonal($(this).data("itemId"), self.doc as BladesActor);
-					if (!targetActor) { return }
-					const actorDesc = (new Handlebars.SafeString(`<span>${targetActor.system.concept || targetActor.system.description_short || ""}</span>`)).toString();
-					itemDetailPane$.html(actorDesc);
-				}
-			},
-			mouseleave: function() {
-				$(this).closest(".tab").removeClass("hovering");
-				$(this).removeClass("hover-over");
-				itemDetailPane$.html("");
-			}
-		});
+			});
 	}
 }
 

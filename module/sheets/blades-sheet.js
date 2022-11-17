@@ -6,6 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "../core/utilities.js";
+import G from "../core/gsap.js";
 import BladesItem from "../blades-item.js";
 import BladesActor from "../blades-actor.js";
 import BladesDialog from "../blades-dialog.js";
@@ -101,6 +102,7 @@ class BladesSheet extends ActorSheet {
             }
             let targetDoc = this.actor;
             let targetField = $(elem).data("target");
+            const comp$ = $(elem).closest("comp");
             if (targetField.startsWith("item")) {
                 targetField = targetField.replace(/^item\./, "");
                 const itemId = $(elem).closest("[data-comp-id]").data("compId");
@@ -119,7 +121,13 @@ class BladesSheet extends ActorSheet {
                     event.preventDefault();
                     const thisValue = U.pInt($(dot).data("value"));
                     if (thisValue !== curValue) {
-                        targetDoc.update({ [targetField]: thisValue });
+                        if (comp$.hasClass("comp-coins") || comp$.hasClass("comp-stash")) {
+                            G.effects.fillCoins($(dot).prevAll(".dot"))
+                                .then(() => targetDoc.update({ [targetField]: thisValue }));
+                        }
+                        else {
+                            targetDoc.update({ [targetField]: thisValue });
+                        }
                     }
                 });
                 $(dot).on("contextmenu", (event) => {
@@ -142,6 +150,9 @@ class BladesSheet extends ActorSheet {
         });
         html.find(".comp-control.comp-delete-full").on({
             click: (event) => this._onItemFullRemoveClick(event)
+        });
+        html.find(".comp-control.comp-toggle").on({
+            click: (event) => this.actor.update({ [$(event.currentTarget).data("target")]: !getProperty(this.actor, $(event.currentTarget).data("target")) })
         });
         if (this.options.submitOnChange) {
             html.on("change", "textarea", this._onChangeInput.bind(this));
@@ -171,10 +182,8 @@ class BladesSheet extends ActorSheet {
             dotline: {
                 data: this.actor.system.coins,
                 target: "system.coins.value",
-                iconEmpty: "coin-empty.svg",
-                iconEmptyHover: "coin-empty-hover.svg",
-                iconFull: "coin-full.svg",
-                iconFullHover: "coin-full-hover.svg"
+                iconEmpty: "coin-full.svg",
+                iconFull: "coin-full.svg"
             }
         };
     }
@@ -183,54 +192,14 @@ class BladesSheet extends ActorSheet {
         const self = this;
         const dataElem$ = $(event.currentTarget).closest(".comp");
         const docID = dataElem$.data("compId");
-        U.gsap.timeline({
-            onComplete() { self.actor.removeDoc(docID); }
-        })
-            .to(dataElem$, {
-            skewX: -20,
-            duration: 0.25,
-            ease: "back"
-        })
-            .to(dataElem$, {
-            x: "+=300",
-            marginBottom: U.get(dataElem$[0], "height") * -1,
-            marginRight: U.get(dataElem$[0], "width") * -1,
-            scale: 1.5,
-            filter: "blur(10px)",
-            duration: 0.5
-        }, 0)
-            .to(dataElem$, {
-            opacity: 0,
-            duration: 0.25,
-            ease: "sine"
-        }, 0.25);
+        G.effects.blurRemove(dataElem$).then(() => this.actor.removeDoc(docID));
     }
     async _onItemFullRemoveClick(event) {
         event.preventDefault();
         const self = this;
         const dataElem$ = $(event.currentTarget).closest(".comp");
         const docID = dataElem$.data("compId");
-        U.gsap.timeline({
-            onComplete() { self.actor.removeDoc(docID); }
-        })
-            .to(dataElem$, {
-            skewX: -20,
-            duration: 0.25,
-            ease: "back"
-        })
-            .to(dataElem$, {
-            x: "+=300",
-            marginBottom: U.get(dataElem$[0], "height") * -1,
-            marginRight: U.get(dataElem$[0], "width") * -1,
-            scale: 1.5,
-            filter: "blur(10px)",
-            duration: 0.5
-        }, 0)
-            .to(dataElem$, {
-            opacity: 0,
-            duration: 0.25,
-            ease: "sine"
-        }, 0.25);
+        G.effects.blurRemove(dataElem$).then(() => this.actor.removeDoc(docID, true));
     }
     async _onClockLeftClick(event) {
         event.preventDefault();
@@ -241,7 +210,9 @@ class BladesSheet extends ActorSheet {
         const target = clock$.data("target");
         const curValue = U.pInt(clock$.data("value"));
         const maxValue = U.pInt(clock$.data("size"));
-        this.actor.update({ [target]: U.gsap.utils.wrap(0, maxValue + 1, curValue + 1) });
+        G.effects.pulseClockWedges(clock$.find(("wedges"))).then(() => this.actor.update({
+            [target]: G.utils.wrap(0, maxValue + 1, curValue + 1)
+        }));
     }
     async _onClockRightClick(event) {
         event.preventDefault();
@@ -251,7 +222,9 @@ class BladesSheet extends ActorSheet {
         }
         const target = clock$.data("target");
         const curValue = U.pInt(clock$.data("value"));
-        this.actor.update({ [target]: Math.max(0, curValue - 1) });
+        G.effects.reversePulseClockWedges(clock$.find(("wedges"))).then(() => this.actor.update({
+            [target]: Math.max(0, curValue - 1)
+        }));
     }
     async _onItemOpenClick(event) {
         event.preventDefault();
