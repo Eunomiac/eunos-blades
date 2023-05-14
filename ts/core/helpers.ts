@@ -366,11 +366,11 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 	"removeClassPrefix": (playbookStr: string) => playbookStr.replace(/^\(.*?\)\s*/, "")
 };
 
-handlebarHelpers.eLog1 = function(...args) { handlebarHelpers.eLog(...[1, ...args]) };
-handlebarHelpers.eLog2 = function(...args) { handlebarHelpers.eLog(...[2, ...args]) };
-handlebarHelpers.eLog3 = function(...args) { handlebarHelpers.eLog(...[3, ...args]) };
-handlebarHelpers.eLog4 = function(...args) { handlebarHelpers.eLog(...[4, ...args]) };
-handlebarHelpers.eLog5 = function(...args) { handlebarHelpers.eLog(...[5, ...args]) };
+handlebarHelpers.eLog1 = function(...args) { handlebarHelpers.eLog(...[1, ...args.slice(0, 7)]) };
+handlebarHelpers.eLog2 = function(...args) { handlebarHelpers.eLog(...[2, ...args.slice(0, 7)]) };
+handlebarHelpers.eLog3 = function(...args) { handlebarHelpers.eLog(...[3, ...args.slice(0, 7)]) };
+handlebarHelpers.eLog4 = function(...args) { handlebarHelpers.eLog(...[4, ...args.slice(0, 7)]) };
+handlebarHelpers.eLog5 = function(...args) { handlebarHelpers.eLog(...[5, ...args.slice(0, 7)]) };
 
 Object.assign(handlebarHelpers);
 

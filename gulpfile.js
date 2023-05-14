@@ -184,6 +184,7 @@ const subGroup = (array, groupSize) => {
 // #endregion ▮▮▮▮[UTILITY]▮▮▮▮
 
 const ISRAPIDGULPING = true;
+
 const ISMINIFYINGJS = false;
 const ISMINIFYINGCSS = false;
 const ISBUILDINGDIST = false;
@@ -197,6 +198,8 @@ const PACKAGETYPE = "system";
 
 const DISTDATAROOT = "C:/Users/Ryan/Documents/Projects/!!!!CODING/FoundryVTT/FoundryDistData/Data";
 const DISTROOT = `${DISTDATAROOT}/${PACKAGETYPE}s/${PACKAGEFOLDER}`;
+const CUSTOMCSS_SOURCE = "D:/Users/Ryan/Documents/Projects/!!!!CODING/!!VSC_Custom_CSS/";
+const CUSTOMCSS_DEST = "D:/Users/Ryan/Documents/Projects/!!!!CODING/!!VSC_Custom_CSS/css/";
 
 // #region ████████ CONFIGURATION: Banner Headers, Source/Destination Globs, Build Behavior ████████
 // #region ░░░░░░░[BANNERS]░░░░░░░ ~
@@ -232,7 +235,8 @@ const BUILDFILES = {
 		"./module/": ["module_staging_2/**/*.js"]
 	},
 	css: {
-		"./css/": ["scss/**/*.scss"]
+		"./css/": ["scss/**/*.scss"],
+		[CUSTOMCSS_DEST]: [`${CUSTOMCSS_SOURCE}*.scss`]
 	},
 	hbs: {
 		"./templates/": ["DISABLE"]

@@ -13,7 +13,7 @@ class BladesActor extends Actor {
     static CategoryTypes = {
         "pc-crew": BladesActorType.crew,
         "crew-pc": BladesActorType.pc,
-        "vice_purveyor": BladesActorType.npc,
+        "vice-purveyor": BladesActorType.npc,
         "acquaintance": BladesActorType.npc,
         "pc": BladesActorType.pc,
         "npc": BladesActorType.npc,
@@ -23,7 +23,7 @@ class BladesActor extends Actor {
     static CategoryUniques = {
         "pc-crew": true,
         "crew-pc": false,
-        "vice_purveyor": true,
+        "vice-purveyor": true,
         "acquaintance": false,
         "pc": false,
         "npc": false,
@@ -95,18 +95,23 @@ class BladesActor extends Actor {
         if (!actor || !actor.id) {
             return null;
         }
-        const { category, system } = parent.system.subactors[actor.id];
-        eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name}) -> Subactor Data`, { category, system, parent });
+        if (!(actor.id in parent.system.subactors)) {
+            return null;
+        }
+        const { category, system, isArchived } = parent.system.subactors[actor.id];
+        eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name}) -> Subactor Data`, { category, system, isArchived, parent });
         if (!category || !system) {
             return null;
         }
         eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name}) -> Merged Actor`, {
             actor: Object.assign(actor, {
+                isArchived,
                 category,
                 system: foundry.utils.mergeObject(actor.system, system)
             })
         });
         return Object.assign(actor, {
+            isArchived,
             category,
             system: foundry.utils.mergeObject(actor.system, system)
         });

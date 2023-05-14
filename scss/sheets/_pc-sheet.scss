@@ -235,6 +235,7 @@
 						// margin-left: toRem(10px);
 						font-family: var(--font-emphasis);
 						text-transform: uppercase;
+						text-indent: toRem(3px);
 					}
 
 					.load-selected-count {
@@ -261,14 +262,20 @@
 				}
 
 				.comp .dotline {
-					position: absolute;
-					left: calc(-0.65 * var(--content-padding));
-					top: calc(0.3 * var(--content-padding));
-					flex-direction: column;
-					align-self: flex-start;
+					// position: absolute;
+					// left: calc(-0.65 * var(--content-padding));
+					// top: calc(0.3 * var(--content-padding));
+					// flex-direction: row;
+					// align-self: flex-start;
+					// right: -25px;
+					// top: unset;
+					// bottom: -2px;
+					left: unset;
+					transform: none;
 
 					.dot {
-						margin-top: toRem(4px);
+						// margin-top: toRem(4px);
+						// margin-right: toRem(3px);
 					}
 
 					+ .comp-title .item-title {
@@ -315,7 +322,7 @@
 				}
 
 				.comp-body {
-					justify-content: flex-end;
+					justify-content: flex-start;
 					align-items: flex-start;
 					position: relative;
 					// left: toRem(2px);

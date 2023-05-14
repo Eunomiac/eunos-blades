@@ -95,6 +95,29 @@ class BladesActorSheet extends BladesSheet {
 			acquaintances: (await BladesActor.GetActiveCategoryActors("acquaintance", this.actor))
 		};
 
+		//~ Assign dotlines to abilities with usage data
+		items.abilities = items.abilities.map((item) => {
+			if (item.system.load) {
+				Object.assign(item, {
+					numberCircle: item.system.load,
+					numberCircleClass: "item-load"
+				});
+			}
+			if (item.system.uses?.max) {
+				Object.assign(item, {
+					inRuleDotline: {
+						data: item.system.uses,
+						dotlineLabel: "Uses",
+						target: "item.system.uses.value",
+						iconEmpty: "dot-empty.svg",
+						iconEmptyHover: "dot-empty-hover.svg",
+						iconFull: "dot-full.svg",
+						iconFullHover: "dot-full-hover.svg"
+					}
+				});
+			}
+			return item;
+		});
 
 		Object.assign(
 			data,
@@ -135,8 +158,9 @@ class BladesActorSheet extends BladesSheet {
 						}
 						if (item.system.uses?.max) {
 							Object.assign(item, {
-								dotline: {
+								inRuleDotline: {
 									data: item.system.uses,
+									dotlineLabel: "Uses",
 									target: "item.system.uses.value",
 									iconEmpty: "dot-empty.svg",
 									iconEmptyHover: "dot-empty-hover.svg",

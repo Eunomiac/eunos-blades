@@ -25,6 +25,29 @@
 		{{editor content=data.rules_notes target="data.rules_notes" button=true owner=owner editable=editable}}
 		{{/if}}
 
+		{{#if (test isGM "||" (test data.load "||" (test data.uses.max "||" data.num_available)))}}
+		<div class="flex-horizontal">
+			{{#if (test isGM "||" data.load)}}
+			<div class="comp comp-horizontal">
+				<label>Load: </label>
+				<input data-dtype="Number" type="number" name="data.load" value="{{data.load}}">
+			</div>
+			{{/if}}
+			{{#if (test isGM "||" data.uses.max)}}
+			<div class="comp comp-horizontal">
+				<label>Uses: </label>
+				<input data-dtype="Number" type="number" name="data.uses.max" value="{{data.uses.max}}">
+			</div>
+			{{/if}}
+			{{#if (test isGM "||" data.num_available)}}
+			<div class="comp comp-horizontal">
+				<label>Max per Score: </label>
+				<input data-dtype="Number" type="number" name="data.num_available" value="{{data.num_available}}">
+			</div>
+			{{/if}}
+		</div>
+		{{/if}}
+
 		{{#if isGM}}
 			<label class="tab-label">
 				<span class="tab-title">Active Effects</span>

@@ -1,7 +1,7 @@
 .dotline {
 	--dotline-zero-dot-size: #{toRem(14px)};
 	--dotline-dot-size: #{toRem(14px)};
-	--dotline-dot-spacing: 0px;
+	--dotline-dot-spacing: #{toRem(3px)};
 	--dotline-horiz-align: flex-start;
 	--dotline-vert-align: center;
 

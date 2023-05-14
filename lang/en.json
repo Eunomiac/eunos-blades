@@ -227,8 +227,8 @@
 		"Effect": "Effect",
 		"Modifier": "Modifier",
 
-		"Encumbered": "encumbered",
-		"OverMax": "over max",
+		"Encumbered": "Encumbered",
+		"OverMax": "Over Max",
 
 		"Drain": "Drain",
 		"Wear": "Wear",

@@ -73,6 +73,29 @@ class BladesActorSheet extends BladesSheet {
             vice_purveyor: (await BladesActor.GetActiveCategoryActors("vice-purveyor", this.actor))[0],
             acquaintances: (await BladesActor.GetActiveCategoryActors("acquaintance", this.actor))
         };
+
+        items.abilities = items.abilities.map((item) => {
+            if (item.system.load) {
+                Object.assign(item, {
+                    numberCircle: item.system.load,
+                    numberCircleClass: "item-load"
+                });
+            }
+            if (item.system.uses?.max) {
+                Object.assign(item, {
+                    inRuleDotline: {
+                        data: item.system.uses,
+                        dotlineLabel: "Uses",
+                        target: "item.system.uses.value",
+                        iconEmpty: "dot-empty.svg",
+                        iconEmptyHover: "dot-empty-hover.svg",
+                        iconFull: "dot-full.svg",
+                        iconFullHover: "dot-full-hover.svg"
+                    }
+                });
+            }
+            return item;
+        });
         Object.assign(data, {
             items,
             actors,
@@ -110,8 +133,9 @@ class BladesActorSheet extends BladesSheet {
                     }
                     if (item.system.uses?.max) {
                         Object.assign(item, {
-                            dotline: {
+                            inRuleDotline: {
                                 data: item.system.uses,
+                                dotlineLabel: "Uses",
                                 target: "item.system.uses.value",
                                 iconEmpty: "dot-empty.svg",
                                 iconEmptyHover: "dot-empty-hover.svg",

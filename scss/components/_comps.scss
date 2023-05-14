@@ -178,6 +178,13 @@
 					transform: translate(-50%, 0);
 					left: 50%;
 					bottom: 0;
+
+					.dotline-label {
+						// margin-top: 3px;
+						margin-right: 5px;
+						font-weight: bold;
+						color: white;
+					}
 				}
 
 				.comp-body-text {
@@ -308,8 +315,12 @@
 			align-items: center;
 			align-items: flex-start;
 
-			label {
+			.comp-label {
 				text-align: right;
+				font-size: toRem(14px);
+				line-height: toRem(18px);
+				margin-right: toRem(8px);
+				font-weight: bold;
 			}
 
 			.comp-body {
@@ -323,6 +334,7 @@
 				// flex-grow: 1;
 				justify-content: flex-start;
 				align-items: flex-start;
+
 
 				.dotline {
 					padding-left: toRem(4px);
@@ -429,6 +441,7 @@
 		&.comp-coins, &.comp-stash {
 			.dotline {
 				--dotline-dot-size: #{toRem(18px)};
+				--dotline-dot-spacing: -2px;
 
 				.dot.empty-dot {
 					filter: saturate(0);
@@ -437,13 +450,12 @@
 				.dot.full-dot {
 					filter: brightness(0.8) saturate(0.75);
 				}
-			// padding: 5px 0;
 			}
 			&.comp-coins .dot:nth-of-type(4n) + .dot {
 				margin-left: toRem(5px);
 			}
-			&.comp-coins .dot:nth-of-type(10n) + .dot {
-				margin-right: toRem(10px);
+			&.comp-stash .dot:nth-of-type(10n) + .dot {
+				margin-left: toRem(10px);
 			}
 		}
 

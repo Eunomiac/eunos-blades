@@ -381,6 +381,10 @@ html, :root {
         transform: translate(-50%, 0);
         left: 50%;
         bottom: 0; }
+        html .comp.comp-desc-trait .comp-body .dotline .dotline-label, :root .comp.comp-desc-trait .comp-body .dotline .dotline-label {
+          margin-right: 5px;
+          font-weight: bold;
+          color: white; }
       html .comp.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-desc-trait .comp-body .comp-body-text {
         font-family: "Minion Pro Caption Cond";
         hyphens: auto;
@@ -476,8 +480,12 @@ html, :root {
       flex-grow: 0.5;
       align-items: center;
       align-items: flex-start; }
-      html .comp.comp-horizontal label, :root .comp.comp-horizontal label {
-        text-align: right; }
+      html .comp.comp-horizontal .comp-label, :root .comp.comp-horizontal .comp-label {
+        text-align: right;
+        font-size: toRem(14px);
+        line-height: toRem(18px);
+        margin-right: toRem(8px);
+        font-weight: bold; }
       html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
         justify-content: flex-start;
         align-items: flex-start; }
@@ -555,7 +563,8 @@ html, :root {
         padding-right: toRem(4px);
         padding-top: toRem(40px); }
     html .comp.comp-coins .dotline, html .comp.comp-stash .dotline, :root .comp.comp-coins .dotline, :root .comp.comp-stash .dotline {
-      --dotline-dot-size: toRem(18px); }
+      --dotline-dot-size: toRem(18px);
+      --dotline-dot-spacing: -2px; }
       html .comp.comp-coins .dotline .dot.empty-dot, html .comp.comp-stash .dotline .dot.empty-dot, :root .comp.comp-coins .dotline .dot.empty-dot, :root .comp.comp-stash .dotline .dot.empty-dot {
         filter: saturate(0);
         opacity: 0.5; }
@@ -563,8 +572,8 @@ html, :root {
         filter: brightness(0.8) saturate(0.75); }
     html .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
       margin-left: toRem(5px); }
-    html .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot {
-      margin-right: toRem(10px); }
+    html .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
+      margin-left: toRem(10px); }
     html .comp .comp-tooltip, :root .comp .comp-tooltip {
       display: none;
       position: absolute;
@@ -634,7 +643,7 @@ html, :root {
   html .dotline, :root .dotline {
     --dotline-zero-dot-size: toRem(14px);
     --dotline-dot-size: toRem(14px);
-    --dotline-dot-spacing: 0px;
+    --dotline-dot-spacing: toRem(3px);
     --dotline-horiz-align: flex-start;
     --dotline-vert-align: center;
     display: flex;
@@ -995,6 +1004,10 @@ html, :root {
           transform: translate(-50%, 0);
           left: 50%;
           bottom: 0; }
+          html .comp.comp-desc-trait .comp-body .dotline .dotline-label, :root .comp.comp-desc-trait .comp-body .dotline .dotline-label {
+            margin-right: 5px;
+            font-weight: bold;
+            color: white; }
         html .comp.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-desc-trait .comp-body .comp-body-text {
           font-family: "Minion Pro Caption Cond";
           hyphens: auto;
@@ -1090,8 +1103,12 @@ html, :root {
         flex-grow: 0.5;
         align-items: center;
         align-items: flex-start; }
-        html .comp.comp-horizontal label, :root .comp.comp-horizontal label {
-          text-align: right; }
+        html .comp.comp-horizontal .comp-label, :root .comp.comp-horizontal .comp-label {
+          text-align: right;
+          font-size: 0.875rem;
+          line-height: 1.125rem;
+          margin-right: 0.5rem;
+          font-weight: bold; }
         html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
           justify-content: flex-start;
           align-items: flex-start; }
@@ -1169,7 +1186,8 @@ html, :root {
           padding-right: 0.25rem;
           padding-top: 2.5rem; }
       html .comp.comp-coins .dotline, html .comp.comp-stash .dotline, :root .comp.comp-coins .dotline, :root .comp.comp-stash .dotline {
-        --dotline-dot-size: 1.125rem; }
+        --dotline-dot-size: 1.125rem;
+        --dotline-dot-spacing: -2px; }
         html .comp.comp-coins .dotline .dot.empty-dot, html .comp.comp-stash .dotline .dot.empty-dot, :root .comp.comp-coins .dotline .dot.empty-dot, :root .comp.comp-stash .dotline .dot.empty-dot {
           filter: saturate(0);
           opacity: 0.5; }
@@ -1177,8 +1195,8 @@ html, :root {
           filter: brightness(0.8) saturate(0.75); }
       html .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
         margin-left: 0.3125rem; }
-      html .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot {
-        margin-right: 0.625rem; }
+      html .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
+        margin-left: 0.625rem; }
       html .comp .comp-tooltip, :root .comp .comp-tooltip {
         display: none;
         position: absolute;
@@ -1248,7 +1266,7 @@ html, :root {
     html .dotline, :root .dotline {
       --dotline-zero-dot-size: 0.875rem;
       --dotline-dot-size: 0.875rem;
-      --dotline-dot-spacing: 0px;
+      --dotline-dot-spacing: 0.1875rem;
       --dotline-horiz-align: flex-start;
       --dotline-vert-align: center;
       display: flex;

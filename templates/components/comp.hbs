@@ -33,7 +33,12 @@
 			{{#if (test system "&&" system.bgImg)}}<img class="comp-img" src="{{system.bgImg}}" />
 			{{else}}{{#if img}}<img class="comp-img" src="{{img}}" />{{/if}}{{/if}}
 			{{#if name}}<div class="comp-title shadowed">{{name}}</div>{{/if}}
-			{{#if (test system "&&" system.rules)}}<div class="comp-body-text shadowed">{{{system.rules}}}</div>{{/if}}
+			{{#if (test system "&&" system.rules)}}<div class="comp-body-text shadowed">{{{system.rules}}}
+				{{#if inRuleDotline}}
+					<p></p>
+					{{> "systems/eunos-blades/templates/parts/dotline.hbs" inRuleDotline}}
+				{{/if}}
+			</div>{{/if}}
 			{{#if dotline}}
 				{{> "systems/eunos-blades/templates/parts/dotline.hbs" dotline}}
 			{{/if}}

@@ -1020,6 +1020,10 @@ template {
       transform: translate(-50%, 0);
       left: 50%;
       bottom: 0; }
+      :root .comp.comp-desc-trait .comp-body .dotline .dotline-label, :root * .comp.comp-desc-trait .comp-body .dotline .dotline-label {
+        margin-right: 5px;
+        font-weight: bold;
+        color: white; }
     :root .comp.comp-desc-trait .comp-body .comp-body-text, :root * .comp.comp-desc-trait .comp-body .comp-body-text {
       font-family: "Minion Pro Caption Cond";
       hyphens: auto;
@@ -1115,8 +1119,12 @@ template {
     flex-grow: 0.5;
     align-items: center;
     align-items: flex-start; }
-    :root .comp.comp-horizontal label, :root * .comp.comp-horizontal label {
-      text-align: right; }
+    :root .comp.comp-horizontal .comp-label, :root * .comp.comp-horizontal .comp-label {
+      text-align: right;
+      font-size: 0.875rem;
+      line-height: 1.125rem;
+      margin-right: 0.5rem;
+      font-weight: bold; }
     :root .comp.comp-horizontal .comp-body, :root * .comp.comp-horizontal .comp-body {
       justify-content: flex-start;
       align-items: flex-start; }
@@ -1194,7 +1202,8 @@ template {
       padding-right: 0.25rem;
       padding-top: 2.5rem; }
   :root .comp.comp-coins .dotline, :root .comp.comp-stash .dotline, :root * .comp.comp-coins .dotline, :root * .comp.comp-stash .dotline {
-    --dotline-dot-size: 1.125rem; }
+    --dotline-dot-size: 1.125rem;
+    --dotline-dot-spacing: -2px; }
     :root .comp.comp-coins .dotline .dot.empty-dot, :root .comp.comp-stash .dotline .dot.empty-dot, :root * .comp.comp-coins .dotline .dot.empty-dot, :root * .comp.comp-stash .dotline .dot.empty-dot {
       filter: saturate(0);
       opacity: 0.5; }
@@ -1202,8 +1211,8 @@ template {
       filter: brightness(0.8) saturate(0.75); }
   :root .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot, :root * .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root * .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
     margin-left: 0.3125rem; }
-  :root .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot, :root * .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, :root * .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot {
-    margin-right: 0.625rem; }
+  :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root * .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root * .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
+    margin-left: 0.625rem; }
   :root .comp .comp-tooltip, :root * .comp .comp-tooltip {
     display: none;
     position: absolute;
@@ -1275,7 +1284,7 @@ template {
 :root .dotline, :root * .dotline {
   --dotline-zero-dot-size: 0.875rem;
   --dotline-dot-size: 0.875rem;
-  --dotline-dot-spacing: 0px;
+  --dotline-dot-spacing: 0.1875rem;
   --dotline-horiz-align: flex-start;
   --dotline-vert-align: center;
   display: flex;
@@ -1622,6 +1631,10 @@ template {
           transform: translate(-50%, 0);
           left: 50%;
           bottom: 0; }
+          :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-desc-trait .comp-body .dotline .dotline-label {
+            margin-right: 5px;
+            font-weight: bold;
+            color: white; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-desc-trait .comp-body .comp-body-text {
           font-family: "Minion Pro Caption Cond";
           hyphens: auto;
@@ -1716,8 +1729,12 @@ template {
         flex-grow: 0.5;
         align-items: center;
         align-items: flex-start; }
-        :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-horizontal label {
-          text-align: right; }
+        :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-horizontal .comp-label {
+          text-align: right;
+          font-size: 0.875rem;
+          line-height: 1.125rem;
+          margin-right: 0.5rem;
+          font-weight: bold; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-horizontal .comp-body {
           justify-content: flex-start;
           align-items: flex-start; }
@@ -1795,7 +1812,8 @@ template {
           padding-right: 0.25rem;
           padding-top: 2.5rem; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-coins .dotline, :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-stash .dotline {
-        --dotline-dot-size: 1.125rem; }
+        --dotline-dot-size: 1.125rem;
+        --dotline-dot-spacing: -2px; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-coins .dotline .dot.empty-dot, :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-stash .dotline .dot.empty-dot {
           filter: saturate(0);
           opacity: 0.5; }
@@ -1803,8 +1821,8 @@ template {
           filter: brightness(0.8) saturate(0.75); }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
         margin-left: 0.3125rem; }
-      :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot {
-        margin-right: 0.625rem; }
+      :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
+        margin-left: 0.625rem; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .comp-tooltip {
         display: none;
         position: absolute;
@@ -1874,7 +1892,7 @@ template {
     :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline {
       --dotline-zero-dot-size: 0.875rem;
       --dotline-dot-size: 0.875rem;
-      --dotline-dot-spacing: 0px;
+      --dotline-dot-spacing: 0.1875rem;
       --dotline-horiz-align: flex-start;
       --dotline-vert-align: center;
       display: flex;
@@ -2885,6 +2903,14 @@ template {
         transform: translate(-50%, 0);
         left: 50%;
         bottom: 0; }
+        :root body.vtt.game.system-eunos-blades #interface .comp.comp-desc-trait .comp-body .dotline .dotline-label,
+        :root body.vtt.game.system-eunos-blades #controls .comp.comp-desc-trait .comp-body .dotline .dotline-label,
+        :root body.vtt.game.system-eunos-blades #navigation .comp.comp-desc-trait .comp-body .dotline .dotline-label,
+        :root body.vtt.game.system-eunos-blades #hotbar .comp.comp-desc-trait .comp-body .dotline .dotline-label,
+        :root body.vtt.game.system-eunos-blades #players .comp.comp-desc-trait .comp-body .dotline .dotline-label {
+          margin-right: 5px;
+          font-weight: bold;
+          color: white; }
       :root body.vtt.game.system-eunos-blades #interface .comp.comp-desc-trait .comp-body .comp-body-text,
       :root body.vtt.game.system-eunos-blades #controls .comp.comp-desc-trait .comp-body .comp-body-text,
       :root body.vtt.game.system-eunos-blades #navigation .comp.comp-desc-trait .comp-body .comp-body-text,
@@ -3063,12 +3089,16 @@ template {
       flex-grow: 0.5;
       align-items: center;
       align-items: flex-start; }
-      :root body.vtt.game.system-eunos-blades #interface .comp.comp-horizontal label,
-      :root body.vtt.game.system-eunos-blades #controls .comp.comp-horizontal label,
-      :root body.vtt.game.system-eunos-blades #navigation .comp.comp-horizontal label,
-      :root body.vtt.game.system-eunos-blades #hotbar .comp.comp-horizontal label,
-      :root body.vtt.game.system-eunos-blades #players .comp.comp-horizontal label {
-        text-align: right; }
+      :root body.vtt.game.system-eunos-blades #interface .comp.comp-horizontal .comp-label,
+      :root body.vtt.game.system-eunos-blades #controls .comp.comp-horizontal .comp-label,
+      :root body.vtt.game.system-eunos-blades #navigation .comp.comp-horizontal .comp-label,
+      :root body.vtt.game.system-eunos-blades #hotbar .comp.comp-horizontal .comp-label,
+      :root body.vtt.game.system-eunos-blades #players .comp.comp-horizontal .comp-label {
+        text-align: right;
+        font-size: 0.875rem;
+        line-height: 1.125rem;
+        margin-right: 0.5rem;
+        font-weight: bold; }
       :root body.vtt.game.system-eunos-blades #interface .comp.comp-horizontal .comp-body,
       :root body.vtt.game.system-eunos-blades #controls .comp.comp-horizontal .comp-body,
       :root body.vtt.game.system-eunos-blades #navigation .comp.comp-horizontal .comp-body,
@@ -3222,7 +3252,8 @@ template {
     :root body.vtt.game.system-eunos-blades #hotbar .comp.comp-stash .dotline,
     :root body.vtt.game.system-eunos-blades #players .comp.comp-coins .dotline,
     :root body.vtt.game.system-eunos-blades #players .comp.comp-stash .dotline {
-      --dotline-dot-size: 1.125rem; }
+      --dotline-dot-size: 1.125rem;
+      --dotline-dot-spacing: -2px; }
       :root body.vtt.game.system-eunos-blades #interface .comp.comp-coins .dotline .dot.empty-dot, :root body.vtt.game.system-eunos-blades #interface .comp.comp-stash .dotline .dot.empty-dot,
       :root body.vtt.game.system-eunos-blades #controls .comp.comp-coins .dotline .dot.empty-dot,
       :root body.vtt.game.system-eunos-blades #controls .comp.comp-stash .dotline .dot.empty-dot,
@@ -3254,16 +3285,16 @@ template {
     :root body.vtt.game.system-eunos-blades #players .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot,
     :root body.vtt.game.system-eunos-blades #players .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
       margin-left: 0.3125rem; }
-    :root body.vtt.game.system-eunos-blades #interface .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, :root body.vtt.game.system-eunos-blades #interface .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #controls .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #controls .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #navigation .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #navigation .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #hotbar .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #hotbar .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #players .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #players .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot {
-      margin-right: 0.625rem; }
+    :root body.vtt.game.system-eunos-blades #interface .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root body.vtt.game.system-eunos-blades #interface .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #controls .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #controls .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #navigation .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #navigation .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #hotbar .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #hotbar .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #players .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #players .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
+      margin-left: 0.625rem; }
     :root body.vtt.game.system-eunos-blades #interface .comp .comp-tooltip,
     :root body.vtt.game.system-eunos-blades #controls .comp .comp-tooltip,
     :root body.vtt.game.system-eunos-blades #navigation .comp .comp-tooltip,
@@ -3429,7 +3460,7 @@ template {
   :root body.vtt.game.system-eunos-blades #players .dotline {
     --dotline-zero-dot-size: 0.875rem;
     --dotline-dot-size: 0.875rem;
-    --dotline-dot-spacing: 0px;
+    --dotline-dot-spacing: 0.1875rem;
     --dotline-horiz-align: flex-start;
     --dotline-vert-align: center;
     display: flex;
@@ -4242,6 +4273,14 @@ template {
         transform: translate(-50%, 0);
         left: 50%;
         bottom: 0; }
+        :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-desc-trait .comp-body .dotline .dotline-label,
+        :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-desc-trait .comp-body .dotline .dotline-label,
+        :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-desc-trait .comp-body .dotline .dotline-label,
+        :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.comp-desc-trait .comp-body .dotline .dotline-label,
+        :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-desc-trait .comp-body .dotline .dotline-label {
+          margin-right: 5px;
+          font-weight: bold;
+          color: white; }
       :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-desc-trait .comp-body .comp-body-text,
       :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-desc-trait .comp-body .comp-body-text,
       :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-desc-trait .comp-body .comp-body-text,
@@ -4420,12 +4459,16 @@ template {
       flex-grow: 0.5;
       align-items: center;
       align-items: flex-start; }
-      :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-horizontal label,
-      :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-horizontal label,
-      :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-horizontal label,
-      :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.comp-horizontal label,
-      :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-horizontal label {
-        text-align: right; }
+      :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-horizontal .comp-label,
+      :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-horizontal .comp-label,
+      :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-horizontal .comp-label,
+      :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.comp-horizontal .comp-label,
+      :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-horizontal .comp-label {
+        text-align: right;
+        font-size: 0.875rem;
+        line-height: 1.125rem;
+        margin-right: 0.5rem;
+        font-weight: bold; }
       :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-horizontal .comp-body,
       :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-horizontal .comp-body,
       :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-horizontal .comp-body,
@@ -4579,7 +4622,8 @@ template {
     :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.comp-stash .dotline,
     :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-coins .dotline,
     :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-stash .dotline {
-      --dotline-dot-size: 1.125rem; }
+      --dotline-dot-size: 1.125rem;
+      --dotline-dot-spacing: -2px; }
       :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-coins .dotline .dot.empty-dot, :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-stash .dotline .dot.empty-dot,
       :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-coins .dotline .dot.empty-dot,
       :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-stash .dotline .dot.empty-dot,
@@ -4611,16 +4655,16 @@ template {
     :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot,
     :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
       margin-left: 0.3125rem; }
-    :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot,
-    :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot {
-      margin-right: 0.625rem; }
+    :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
+      margin-left: 0.625rem; }
     :root body.vtt.game.system-eunos-blades #interface #chat .comp .comp-tooltip,
     :root body.vtt.game.system-eunos-blades #controls #chat .comp .comp-tooltip,
     :root body.vtt.game.system-eunos-blades #navigation #chat .comp .comp-tooltip,
@@ -4786,7 +4830,7 @@ template {
   :root body.vtt.game.system-eunos-blades #players #chat .dotline {
     --dotline-zero-dot-size: 0.875rem;
     --dotline-dot-size: 0.875rem;
-    --dotline-dot-spacing: 0px;
+    --dotline-dot-spacing: 0.1875rem;
     --dotline-horiz-align: flex-start;
     --dotline-vert-align: center;
     display: flex;
@@ -5329,6 +5373,10 @@ template {
         transform: translate(-50%, 0);
         left: 50%;
         bottom: 0; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-desc-trait .comp-body .dotline .dotline-label {
+          margin-right: 5px;
+          font-weight: bold;
+          color: white; }
       :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-desc-trait .comp-body .comp-body-text {
         font-family: "Minion Pro Caption Cond";
         hyphens: auto;
@@ -5423,8 +5471,12 @@ template {
       flex-grow: 0.5;
       align-items: center;
       align-items: flex-start; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-horizontal label {
-        text-align: right; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-horizontal .comp-label {
+        text-align: right;
+        font-size: 0.875rem;
+        line-height: 1.125rem;
+        margin-right: 0.5rem;
+        font-weight: bold; }
       :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-horizontal .comp-body {
         justify-content: flex-start;
         align-items: flex-start; }
@@ -5502,7 +5554,8 @@ template {
         padding-right: 0.25rem;
         padding-top: 2.5rem; }
     :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-coins .dotline, :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-stash .dotline {
-      --dotline-dot-size: 1.125rem; }
+      --dotline-dot-size: 1.125rem;
+      --dotline-dot-spacing: -2px; }
       :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-coins .dotline .dot.empty-dot, :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-stash .dotline .dot.empty-dot {
         filter: saturate(0);
         opacity: 0.5; }
@@ -5510,8 +5563,8 @@ template {
         filter: brightness(0.8) saturate(0.75); }
     :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
       margin-left: 0.3125rem; }
-    :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-coins.comp-coins .dot:nth-of-type(10n) + .dot, :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-stash.comp-coins .dot:nth-of-type(10n) + .dot {
-      margin-right: 0.625rem; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
+      margin-left: 0.625rem; }
     :root body.vtt.game.system-eunos-blades .app.window-app .comp .comp-tooltip {
       display: none;
       position: absolute;
@@ -5581,7 +5634,7 @@ template {
   :root body.vtt.game.system-eunos-blades .app.window-app .dotline {
     --dotline-zero-dot-size: 0.875rem;
     --dotline-dot-size: 0.875rem;
-    --dotline-dot-spacing: 0px;
+    --dotline-dot-spacing: 0.1875rem;
     --dotline-horiz-align: flex-start;
     --dotline-vert-align: center;
     display: flex;
@@ -5999,7 +6052,7 @@ template {
   display: grid;
   width: calc(100% + 2 * var(--content-padding));
   left: calc(-1 * var(--content-padding));
-  grid-template-areas: "title" "subtitle";
+  grid-template-areas: "title" "subtitle";
   grid-gap: 0;
   grid-auto-columns: 1fr;
   grid-auto-rows: auto;
@@ -6484,7 +6537,7 @@ template {
   min-width: 775px;
   min-height: 800px; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.sheet-top {
-    grid-template-areas: ". . title title title title title title playbook playbook playbook" ". . . subtitle subtitle subtitle subtitle subtitle subtitle subtitle subtitle" ". heritage heritage background background vice vice crew crew coins coins" "stash stash stash stash stash stash stash stash stash stash stash"; }
+    grid-template-areas: ". . title title title title title title playbook playbook playbook" ". . . subtitle subtitle subtitle subtitle subtitle subtitle subtitle subtitle" ". heritage heritage background background vice vice crew crew coins coins" "stash stash stash stash stash stash stash stash stash stash stash"; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.sheet-top .sheet-title {
       --sheet-title-font-size: 3.625rem ; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.sheet-top .sheet-subtitle {
@@ -6634,7 +6687,8 @@ template {
         width: 9.375rem;
         margin: 0 0.625rem;
         font-family: var(--font-emphasis);
-        text-transform: uppercase; }
+        text-transform: uppercase;
+        text-indent: 0.1875rem; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc div.split-panel section.nav-group .loadout .tab-label .load-selected-count span {
         font-family: var(--font-emphasis); }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc div.split-panel section.nav-group .loadout .tab-label .load-level {
@@ -6649,13 +6703,8 @@ template {
         right: calc(-1 * var(--number-circle-size));
         top: 50%; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc div.split-panel section.nav-group .loadout .comp .dotline {
-      position: absolute;
-      left: calc(-0.65 * var(--content-padding));
-      top: calc(0.3 * var(--content-padding));
-      flex-direction: column;
-      align-self: flex-start; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc div.split-panel section.nav-group .loadout .comp .dotline .dot {
-        margin-top: 0.25rem; }
+      left: unset;
+      transform: none; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc div.split-panel section.nav-group .loadout .comp .dotline + .comp-title .item-title {
         margin-left: 0.75rem; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc div.split-panel section.action-ratings {
@@ -6689,7 +6738,7 @@ template {
           text-indent: 0.3125rem;
           margin-bottom: 0.3125rem; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc div.split-panel section.action-ratings .comp-attribute .comp-body {
-          justify-content: flex-end;
+          justify-content: flex-start;
           align-items: flex-start;
           position: relative;
           max-height: 1.625rem; }

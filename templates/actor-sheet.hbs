@@ -213,28 +213,30 @@
 
 				{{!-- Acquaintances Tab --}}
 				<div class="tab acquaintances flex-vertical" data-tab="acquaintances">
-					{{> "systems/eunos-blades/templates/components/comp.hbs" actors.vice_purveyor
-							id=actors.vice_purveyor.id
-							class="comp-vice_purveyor comp-vertical long-text no-img"
-							label="Vice Purveyor"
-							cat="vice-purveyor"
-							addButton=true
-					}}
-					<label class="tab-label" data-comp-cat="acquaintance">
+					<label class="comp tab-label" data-comp-cat="acquaintance">
 						<a class="comp-control comp-button comp-add">
 							<i class="fas fa-plus-square"></i>
 						</a>
 						<span class="tab-title">{{acquaintancesName}}</span>
 					</label>
-					<div class="actors-container flex-horizontal">
-						{{#each actors.acquaintances as |actor|}}
-						{{> "systems/eunos-blades/templates/components/comp.hbs" actor
-							cat="acquaintance"
-							id=actor._id
-							class="comp-acquaintance comp-actor comp-vertical long-text"
-							remButton=true
-						}}
-						{{/each}}
+
+					<div class="comp comp-horizontal">
+						<div class="actors-container flex-horizontal">
+							{{> "systems/eunos-blades/templates/components/comp.hbs" actors.vice_purveyor
+									id=actors.vice_purveyor.id
+									class="comp-acquaintance comp-actor comp-vertical long-text"
+									cat="vice-purveyor"
+									remButton=true
+							}}
+							{{#each actors.acquaintances as |actor|}}
+							{{> "systems/eunos-blades/templates/components/comp.hbs" actor
+								cat="acquaintance"
+								id=actor._id
+								class="comp-acquaintance comp-actor comp-vertical long-text"
+								remButton=true
+							}}
+							{{/each}}
+						</div>
 					</div>
 				</div>
 
