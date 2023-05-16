@@ -13,54 +13,85 @@ class BladesActor extends Actor {
     static CategoryTypes = {
         "pc-crew": BladesActorType.crew,
         "crew-pc": BladesActorType.pc,
-        "vice-purveyor": BladesActorType.npc,
+        "vice_purveyor": BladesActorType.npc,
         "acquaintance": BladesActorType.npc,
+        "rival": BladesActorType.npc,
         "pc": BladesActorType.pc,
         "npc": BladesActorType.npc,
         "crew": BladesActorType.crew
     };
-    static CategoryFilters = {};
+    static CategoryFilters = {
+        vice_purveyor: (actors, actorRef) => {
+            const vices = [];
+            let actor;
+            if (actorRef) {
+                actor = BladesActor.Get(actorRef);
+            }
+            if (actor) {
+                vices.push(...actor.vices.map((vice) => vice.system.world_name));
+            }
+            else {
+                vices.push(...C.Vices);
+            }
+            eLog.checkLog3("actorFetch", "BladesActor.vicePurveyorFilter", vices);
+            const viceActorIDs = vices.map(vp => game.folders?.find(f => vp.replace(/_/g, " ") === f.name)?.contents)
+                .flat()
+                .filter((obj) => obj instanceof BladesActor)
+                .map((actor) => actor.id);
+            const viceActors = actors.filter((actor) => viceActorIDs.includes(actor.id));
+            return viceActors;
+        }
+    };
     static CategoryUniques = {
         "pc-crew": true,
         "crew-pc": false,
-        "vice-purveyor": true,
+        "vice_purveyor": true,
         "acquaintance": false,
+        "rival": false,
         "pc": false,
         "npc": false,
         "crew": true
     };
     static get All() { return game.actors; }
-    static async getAllGlobalActors() {
+    static Get(actorRef) {
+        if (actorRef instanceof BladesActor) {
+            return actorRef;
+        }
+        if (U.isDocID(actorRef)) {
+            return BladesActor.All.get(actorRef) || null;
+        }
+        let actor = BladesActor.All.find((a) => a.system.world_name === actorRef) || null;
+        if (!actor) {
+            actor = BladesActor.All.find((a) => a.name === actorRef) || null;
+        }
+        return actor;
+    }
+    static getAllGlobalActors() {
         const actors = Array.from(BladesActor.All);
-        const packs = game.packs.filter((pack) => C.ActorTypes.includes(pack.metadata.name));
-        const packActors = (await Promise.all(packs.map(async (pack) => {
-            const packDocs = await pack.getDocuments();
-            return packDocs.filter((packActor) => !actors.some((act) => act.system.world_name === packActor.system.world_name));
-        }))).flat();
-        actors.push(...packActors);
+        
         actors.sort(function (a, b) {
             const nameA = (a.name ?? "").toUpperCase();
             const nameB = (b.name ?? "").toUpperCase();
             return nameA.localeCompare(nameB);
         });
-        eLog.checkLog3("actorFetch", "BladesActor.getAllGlobalActors", await actors);
+        eLog.checkLog3("actorFetch", "BladesActor.getAllGlobalActors", actors);
         return actors;
     }
-    static async getActorsByCat(actorCat) {
+    static getActorsByCat(actorCat, actorRef) {
         if (!(actorCat in BladesActor.CategoryTypes)) {
             return [];
         }
-        const allActors = await BladesActor.getAllGlobalActors();
+        const allActors = BladesActor.getAllGlobalActors();
         const allTypeActors = allActors.filter((actor) => actor.type === BladesActor.CategoryTypes[actorCat]);
         if (actorCat in BladesActor.CategoryFilters) {
-            eLog.checkLog3("actorFetch", `BladesActor.getActorsByCat(${actorCat}) *FILTER*`, await BladesActor.CategoryFilters[actorCat](allTypeActors));
-            return BladesActor.CategoryFilters[actorCat](allTypeActors);
+            eLog.checkLog3("actorFetch", `BladesActor.getActorsByCat(${actorCat}) *FILTER*`, BladesActor.CategoryFilters[actorCat](allTypeActors, actorRef));
+            return BladesActor.CategoryFilters[actorCat](allTypeActors, actorRef);
         }
-        eLog.checkLog3("actorFetch", `BladesActor.getActorsByCat(${actorCat})`, await allTypeActors);
+        eLog.checkLog3("actorFetch", `BladesActor.getActorsByCat(${actorCat})`, allTypeActors);
         return allTypeActors;
     }
 
-    static async GetGlobal(actorRef, actorCat) {
+    static GetGlobal(actorRef, actorCat) {
         if (actorCat) {
             if (!(actorCat in BladesActor.CategoryTypes)) {
                 return null;
@@ -76,7 +107,7 @@ class BladesActor extends Actor {
             actorCat = actorRef.type;
             actorRef = actorRef.system.world_name ?? actorRef.id;
         }
-        const actors = await (actorCat ? BladesActor.getActorsByCat(actorCat) : BladesActor.getAllGlobalActors());
+        const actors = actorCat ? BladesActor.getActorsByCat(actorCat, actorRef) : BladesActor.getAllGlobalActors();
         if (U.isDocID(actorRef)) {
             return actors.find((actor) => actor.id === actorRef) ?? null;
         }
@@ -86,12 +117,12 @@ class BladesActor extends Actor {
                 ?? null;
         }
     }
-    static async GetPersonal(actorRef, parent) {
+    static GetPersonal(actorRef, parent) {
         if (!actorRef) {
             return null;
         }
-        const actor = await BladesActor.GetGlobal(actorRef);
-        eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name}) -> Global Actor`, await actor);
+        const actor = BladesActor.GetGlobal(actorRef);
+        eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name}) -> Global Actor`, actor);
         if (!actor || !actor.id) {
             return null;
         }
@@ -158,35 +189,36 @@ class BladesActor extends Actor {
         await parent.update(updateData);
         return;
     }
-    static async GetEmbeddedActors(parent) {
-        return (await Promise.all(Object.keys(parent.system.subactors).map((actorID) => BladesActor.GetPersonal(actorID, parent))))
+    static GetEmbeddedActors(parent) {
+        return Object.keys(parent.system.subactors)
+            .map((actorID) => BladesActor.GetPersonal(actorID, parent))
             .filter((actor) => actor !== null);
     }
 
-    static async GetEmbeddedCategoryActors(cat, parent) {
+    static GetEmbeddedCategoryActors(cat, parent) {
         const catActorData = Object.values(parent.system.subactors).filter(({ category }) => category === cat);
-        const embActors = await Promise.all(catActorData.map(async ({ id }) => BladesActor.GetPersonal(id, parent)));
+        const embActors = catActorData.map(({ id }) => BladesActor.GetPersonal(id, parent));
         return embActors.filter((actor) => actor !== null);
     }
 
-    static async GetActiveCategoryActors(cat, parent) {
-        const embActors = await BladesActor.GetEmbeddedCategoryActors(cat, parent);
-        return embActors.filter((actor) => !actor.isArchived);
+    static GetActiveEmbeddedCategoryActors(cat, parent) {
+        return BladesActor.GetEmbeddedCategoryActors(cat, parent).filter((actor) => !actor.isArchived);
     }
 
-    static async GetGlobalCategoryActors(category, parent) {
-        const globalActors = await BladesActor.getActorsByCat(category);
+    static GetPersonalGlobalCategoryActors(category, parent) {
+        const globalActors = BladesActor.getActorsByCat(category, parent);
         if (!parent) {
             return globalActors;
         }
-        const customizedActors = await Promise.all(globalActors.map((gActor) => {
+        const customizedActors = globalActors.map((gActor) => {
             if (gActor.id && gActor.id in parent.system.subactors) {
-                return BladesActor.GetPersonal(gActor, parent);
+                return BladesActor.GetPersonal(gActor, parent) || gActor;
             }
             else {
                 return gActor;
             }
-        }));
+        });
+        eLog.checkLog3("actorFetch", `BladesActor.GetPersonalGlobalCategoryActors(${category})`, customizedActors);
         return customizedActors.filter((actor) => actor !== null);
     }
     static async create(data, options = {}) {
@@ -235,6 +267,19 @@ class BladesActor extends Actor {
         return this.items.find((item) => item.type === "playbook")
             ?? this.items.find((item) => item.type === "crew_playbook")
             ?? null;
+    }
+    get vices() {
+        return this.items.filter((item) => item.type === "vice");
+    }
+    get tooltip() {
+        const tooltipText = [
+            this.system.concept,
+            this.system.description_short
+        ].find((str) => Boolean(str));
+        if (tooltipText) {
+            return (new Handlebars.SafeString(tooltipText)).toString();
+        }
+        return tooltipText;
     }
     get attributes() {
         return {

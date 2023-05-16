@@ -15,7 +15,7 @@ export async function preloadHandlebarsTemplates() {
         "systems/eunos-blades/templates/parts/dotline.hbs",
         "systems/eunos-blades/templates/components/armor.hbs",
         "systems/eunos-blades/templates/components/comp.hbs",
-        "systems/eunos-blades/templates/components/multi-comp.hbs",
+        "systems/eunos-blades/templates/components/portrait.hbs",
         "systems/eunos-blades/templates/parts/turf-list.hbs",
         "systems/eunos-blades/templates/parts/cohort-block.hbs",
         "systems/eunos-blades/templates/parts/factions.hbs",

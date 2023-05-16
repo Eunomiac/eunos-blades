@@ -142,7 +142,7 @@ const gsapEffects: Record<string, gsapEffect> = {
 				0
 			)
 			.fromTo(
-				$(targets as string).nextAll(".comp-tooltip")[0],
+				$(targets as string).nextAll(".tooltip")[0],
 				{
 					filter: "blur(50px)",
 					opacity: 0,

@@ -40,7 +40,7 @@ class BladesCrewSheet extends BladesSheet {
 			preferredOp: (await BladesItem.GetActiveCategoryItems("preferred_op", this.actor))[0]
 		};
 		const actors = {
-			members: await BladesActor.GetActiveCategoryActors("crew-pc", this.actor)
+			members: await BladesActor.GetActiveEmbeddedCategoryActors("crew-pc", this.actor)
 		};
 		const tierData = {
 			label: "Tier",

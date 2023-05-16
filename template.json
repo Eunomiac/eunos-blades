@@ -10,6 +10,7 @@
 				"world_name": "",
 				"notes": "",
 				"gm_notes": "",
+				"tags": [],
 				"subactors": {}
 			}
 		},
@@ -210,6 +211,8 @@
 			"bgImg": "",
 			"tagline": "",
 			"acquaintances_name": "",
+			"friends_name": "",
+			"rivals_name": "",
 			"starting_stats": {},
 			"experience_clues": [],
 			"trauma_conditions": [],

@@ -14,6 +14,19 @@
 					{{else}}
 						{{label}}
 					{{/if~}}
+						{{~#if (test id "||" _id)}}
+		{{#if remButton}}
+		<a class="comp-control comp-delete comp-button">
+			<i class="fa-sharp fa-solid fa-xmark"></i>
+		</a>
+		{{/if}}
+		{{#if remFullButton}}
+		<a class="comp-control comp-delete-full comp-button">
+			<i class="fa-sharp fa-solid fa-xmark"></i>
+		</a>
+		{{/if}}
+		</label>
+{{/if}}
 				</label>
 			{{~else}}
 				<label class="comp-label {{~#if addButton}} comp-prompt{{/if}}{{~#if labelClass}} {{labelClass}}{{else}} shadowed{{/if}}">
@@ -27,6 +40,23 @@
 					{{/if~}}
 				</label>
 			{{/if~}}
+
+		{{else}}
+		<label class="comp-label">
+
+					{{~#if (test id "||" _id)}}
+		{{#if remButton}}
+		<a class="comp-control comp-delete comp-button">
+			<i class="fa-sharp fa-solid fa-xmark"></i>
+		</a>
+		{{/if}}
+		{{#if remFullButton}}
+		<a class="comp-control comp-delete-full comp-button">
+			<i class="fa-sharp fa-solid fa-xmark"></i>
+		</a>
+		{{/if}}
+		</label>
+{{/if}}
 		{{/if~}}
 
 		<div class="comp-body">
@@ -48,10 +78,6 @@
 				{{/each}}
 			{{/if}}
 			{{#if checkTarget}}
-			{{log "CheckLabel: " checkLabel " CheckValue: " checkValue}}
-			{{#if checkValue}}
-			{{log "... value is TRUE"}}
-			{{/if}}
 			<label class="comp-control comp-toggle {{#if checkValue}}{{checkClasses.active}}{{else}}{{checkClasses.inactive}}{{/if}}" data-target="{{checkTarget}}">{{checkLabel}}</label>
 			{{/if}}
 
@@ -64,21 +90,12 @@
 		</div>
 
 		{{#if tooltip}}
-		<div class="comp-tooltip">
+		<div class="tooltip">
 			{{{tooltip}}}
 		</div>
 		{{/if}}
 
-		{{#if remButton}}
-		<a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}">
-			<i class="fas fa-trash"></i>
-		</a>
-		{{/if}}
-		{{#if remFullButton}}
-		<a class="comp-control comp-delete-full" title="{{localize 'BITD.TitleDeleteItem'}}">
-			<i class="fas fa-trash"></i>
-		</a>
-		{{/if}}
+
 
 	{{else}}
 

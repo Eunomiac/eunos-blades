@@ -47,23 +47,16 @@ class BladesDialog extends Dialog {
     }
     tabs = {};
     async createTabs(tabs) {
-        switch (this.docSuperType) {
-            case "Actor": return this._createActorTabs(tabs);
-            case "Item": return this._createItemTabs(tabs);
+        if (this.docSuperType === "Actor") {
+            return this._createActorTabs(tabs);
         }
+        return this._createItemTabs(tabs);
     }
     async _createActorTabs(tabs) {
-        const allCategoryActors = await BladesActor.GetGlobalCategoryActors(this.category, this.doc);
-        const validatedActors = await Promise.all(allCategoryActors.map(async (actor) => {
-            return (await actor.isValidForDoc(this.doc)) ? actor : null;
-        }));
-        const validActors = validatedActors
-            .filter((actor) => actor !== null)
-            .map((actor) => Object.assign(actor, {
-            tooltip: (actor.system.concept || actor.system.description_short)
-                ? (new Handlebars.SafeString(`<span>${actor.system.concept || actor.system.description_short}</span>`)).toString()
-                : undefined
-        }));
+        eLog.checkLog3("actorFetch", `BladesDialog._createActorTabs() --- cat = ${this.category}`);
+        const allCategoryActors = BladesActor.GetPersonalGlobalCategoryActors(this.category, this.doc);
+        const validatedActors = allCategoryActors.map((actor) => (actor.isValidForDoc(this.doc) ? actor : null));
+        const validActors = validatedActors.filter((actor) => actor !== null);
         this.tabs = Object.fromEntries((Object.entries(tabs))
             .map(([tabName, tabFilter]) => [
             tabName,
@@ -75,13 +68,7 @@ class BladesDialog extends Dialog {
         const validatedItems = await Promise.all(allCategoryItems.map(async (item) => {
             return (await item.isValidForDoc(this.doc)) ? item : null;
         }));
-        const validItems = validatedItems
-            .filter((item) => item !== null)
-            .map((item) => Object.assign(item, {
-            tooltip: item.system.rules.trim().length
-                ? (new Handlebars.SafeString(`<span>${item.system.rules}</span>`)).toString()
-                : undefined
-        }));
+        const validItems = validatedItems.filter((item) => item !== null);
         this.tabs = Object.fromEntries((Object.entries(tabs))
             .map(([tabName, tabFilter]) => [
             tabName,
@@ -141,7 +128,8 @@ class BladesDialog extends Dialog {
         const data = super.getData();
         eLog.checkLog4("dialog", "[BladesDialog] super.getData()", { ...data });
         Object.assign(data, {
-            tabs: this.tabs
+            tabs: this.tabs,
+            category: this.category
         });
         eLog.checkLog("dialog", "[BladesDialog] return getData()", { ...data });
         return data;

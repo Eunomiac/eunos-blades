@@ -600,6 +600,17 @@ const subGroup = (array, groupSize) => {
     }
     subArrays.push(array);
 };
+const shuffle = (array) => {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]
+        ];
+    }
+    return array;
+};
 const checkVal = ({ k, v }, checkTest) => {
     if (typeof checkTest === "function") {
         if (isDefined(v)) {
@@ -1056,7 +1067,7 @@ export default {
     makeCycler,
     unique, group,
     getLast, removeFirst, pullElement, pullIndex,
-    subGroup,
+    subGroup, shuffle,
     remove, replace, partition,
     objClean, objMap, objFindKey, objFilter, objForEach, objCompact,
     objClone, objMerge, objExpand, objFlatten, objNullify,

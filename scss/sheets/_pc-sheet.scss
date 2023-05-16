@@ -5,7 +5,7 @@
 	section.sheet-top {
 		grid-template-areas:
 			". . title title title title title title playbook playbook playbook"
-			". . . subtitle subtitle subtitle subtitle subtitle subtitle subtitle subtitle"
+			". . . subtitle subtitle subtitle subtitle subtitle subtitle . ."
 			". heritage heritage background background vice vice crew crew coins coins"
 			"stash stash stash stash stash stash stash stash stash stash stash";
 
@@ -41,6 +41,7 @@
 
 		.comp-trauma-conditions {
 			min-width: toRem(300px);
+			margin-right: toRem(10px);
 		}
 	}
 
@@ -218,7 +219,7 @@
 
 	div.split-panel {
 		display: grid;
-		grid-template-columns: 1fr 250px;
+		grid-template-columns: 1fr 200px;
 		align-items: start;
 		overflow: hidden;
 
@@ -226,10 +227,10 @@
 			.loadout {
 				.tab-label {
 					// padding-right: toRem(10px);
-					width: 100%;
+					// width: 100%;
 
 					.load-selector {
-						height: 100%;
+						// height: 100%;
 						width: toRem(150px);
 						margin: 0 toRem(10px);
 						// margin-left: toRem(10px);
@@ -238,26 +239,36 @@
 						text-indent: toRem(3px);
 					}
 
-					.load-selected-count {
-						span {
-							font-family: var(--font-emphasis);
+					.load-selected-count span {
+						color: var(--blades-white-bright);
+						font-weight: bold;
+						font-size: toRem(24px);
+						line-height: inherit;
+						position: relative;
+						top: 2px;
+						margin: 0 2px;
 
-						}
 					}
+					// .load-selected-count span { font-weight: bold; line-height: 16.8px; }
+
 					.load-level {
-						position: absolute;
-						right: toRem(20px);
+						// position: absolute;
+						flex-grow: 1;
+						// right: toRem(35px);
 						// font-family: var(--font-emphasis);
 						// text-transform: uppercase;
 						text-align: right;
-						justify-self: flex-end;
+						padding-right: toRem(5px);
+						// justify-self: flex-end;
 					}
 					.load-amount {
-						--number-circle-size: #{toRem(30px)};
-						position: absolute;
-						transform: translate(-50%, -50%);
-						right: calc(-1 * var(--number-circle-size));
-						top: 50%;
+						--number-circle-size: #{toRem(24px)};
+						filter: brightness(1.5);
+						margin: 0 #{toRem(2px)} 0 #{toRem(5px)};
+						// position: absolute;
+						// transform: translate(-50%, -50%);
+						// right: calc(-1 * var(--number-circle-size) + 50%);
+						// top: 50%;
 					}
 				}
 
@@ -287,16 +298,17 @@
 
 		section.action-ratings {
 			align-items: stretch;
-			flex-grow: 1;
+			// flex-grow: 1;
 
 			.comp-attribute {
 				background: var(--blades-white);
 				margin-bottom: toRem(5px);
+				max-height: toRem(26px);
 
 				.clock-container {
 					padding: 0;
 					width: 30px;
-					height: 24px;
+					height: 26px;
 					--clock-frame-size: 24px;
 					--clock-glow-size: calc(var(--clock-frame-size) * 3);
 					--clock-glow-correction: -164px;
@@ -314,7 +326,8 @@
 					font-size: toRem(16px);
 					font-family: var(--font-emphasis);
 					text-shadow: none;
-					padding: #{toRem(7.5px)} 0 #{toRem(0px)} 0;
+					// padding: 0;
+					line-height: toRem(26px);
 					text-transform: uppercase;
 					text-align: left;
 					text-indent: toRem(5px);
@@ -322,7 +335,7 @@
 				}
 
 				.comp-body {
-					justify-content: flex-start;
+					justify-content: flex-end;
 					align-items: flex-start;
 					position: relative;
 					// left: toRem(2px);

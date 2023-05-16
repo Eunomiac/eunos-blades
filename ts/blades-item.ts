@@ -292,6 +292,13 @@ class BladesItem extends Item {
 	get tier() { return U.pInt(this.parent?.system?.tier) }
 	get isArchived() { return this.system.isArchived }
 	get playbooks(): string[] { return this.system.playbooks ?? [] }
+	get tooltip(): string|undefined {
+		const tooltipText = [
+			this.system.rules
+		].find((str) => Boolean(str));
+		if (tooltipText) { return (new Handlebars.SafeString(tooltipText)).toString() }
+		return tooltipText;
+	}
 
 	isKept(actor: BladesActor): boolean|null {
 		if (this.type !== "ability") { return null }

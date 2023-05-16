@@ -244,11 +244,6 @@ Object.assign(globalThis, {
             i.update(updateData);
         });
     },
-    AssignPlaybooks: () => {
-        const playbookMap = {
-            Cult: ["Ordained", "Ritual Sanctum in Lair"]
-        };
-    },
     GetFlatPackData: async (packName) => {
         const pack = game.packs.find((pack) => pack.metadata.name === packName);
         if (!pack) {
@@ -286,21 +281,21 @@ Object.assign(globalThis, {
             crew: ({ pcSheetElem }) => ({ top: clientTop, left: (pcSheetElem?.position()?.left ?? 0) + (pcSheetElem?.width() ?? 0) }),
             npc: ({ height, width }) => ({ top: (clientTop + clientHeight) - height, left: (clientLeft + clientWidth) - width })
         };
-        const pc = (await BladesActor.GetGlobalCategoryActors(BladesActorType.pc)).shift();
+        const pc = (await BladesActor.GetPersonalGlobalCategoryActors(BladesActorType.pc)).shift();
         if (pc) {
             Object.assign(globalThis, pc);
             if (pc.sheet) {
                 pc.sheet.render(true);
             }
         }
-        const crew = (await BladesActor.GetGlobalCategoryActors(BladesActorType.crew)).shift();
+        const crew = (await BladesActor.GetPersonalGlobalCategoryActors(BladesActorType.crew)).shift();
         if (crew) {
             Object.assign(globalThis, crew);
             if (crew.sheet) {
                 crew.sheet.render(true);
             }
         }
-        const npc = (await BladesActor.GetGlobalCategoryActors(BladesActorType.npc)).shift();
+        const npc = (await BladesActor.GetPersonalGlobalCategoryActors(BladesActorType.npc)).shift();
         if (npc) {
             Object.assign(globalThis, npc);
             if (npc.sheet) {

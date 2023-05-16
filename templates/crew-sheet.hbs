@@ -23,7 +23,7 @@
 			addButton=true
 			cat="crew_playbook"
 			id=items.playbook._id
-			class="comp-playbook comp-vertical no-label"
+			class="comp-playbook comp-vertical"
 			label="Playbook"
 		}}
 
@@ -33,7 +33,6 @@
 			cat="crew_reputation"
 			id=items.reputation._id
 			class="comp-reputation comp-vertical no-img"
-			tooltip=items.reputation.system.rules
 		}}
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs" items.preferredOp
@@ -42,7 +41,6 @@
 			cat="preferred_op"
 			id=items.preferredOp._id
 			class="comp-preferred-op comp-vertical"
-			tooltip=items.preferredOp.system.rules
 		}}
 
 		{{> "systems/eunos-blades/templates/components/comp.hbs" tierData
@@ -60,12 +58,12 @@
 				</a>
 				<span>Members</span>
 			</label>
-			<div class="actors-container flex-horizontal">
+			<div class="portrait-container flex-horizontal">
 				{{#each actors.members as |actor|}}
 				{{> "systems/eunos-blades/templates/components/comp.hbs" actor
 					cat="crew-pc"
 					id=actor._id
-					class="comp-crew-member comp-actor comp-vertical long-text"
+					class="comp-vertical portrait-block"
 					remButton=true
 				}}
 				{{/each}}

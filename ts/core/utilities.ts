@@ -658,6 +658,23 @@ const subGroup = (array: unknown[], groupSize: posInt) => {
 	}
 	subArrays.push(array);
 };
+const shuffle = (array: unknown[]) => {
+	let currentIndex = array.length, randomIndex;
+
+	// While there remain elements to shuffle.
+	while (currentIndex !== 0) {
+
+		// Pick a remaining element.
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex--;
+
+		// And swap it with the current element.
+		[array[currentIndex], array[randomIndex]] = [
+			array[randomIndex], array[currentIndex]];
+	}
+
+	return array;
+};
 // #endregion ▄▄▄▄▄ ARRAYS ▄▄▄▄▄
 
 // #region ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████ ~
@@ -1162,7 +1179,7 @@ export default {
 	makeCycler,
 	unique, group,
 	getLast, removeFirst, pullElement, pullIndex,
-	subGroup,
+	subGroup, shuffle,
 
 	// ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████
 	remove, replace, partition,

@@ -107,7 +107,7 @@ const gsapEffects = {
             duration: 0.25,
             ease: "power2"
         }, 0)
-            .fromTo($(targets).nextAll(".comp-tooltip")[0], {
+            .fromTo($(targets).nextAll(".tooltip")[0], {
             filter: "blur(50px)",
             opacity: 0,
             scale: 1.4,

@@ -49,10 +49,21 @@ class BladesSheet extends ActorSheet {
 		const initialParams = [
 			this.actor,
 			U.tCase(`Add ${doc_type.replace(/_/g, " ")}`),
-			doc_type
+			doc_cat
 		] as const;
 
 		switch (doc_cat) {
+			case "playbook": {
+				await BladesDialog.Display(
+					...initialParams,
+					async (itemId) => { BladesItem.Embed(itemId, doc_cat, this.actor) },
+					{
+						["Basic Playbooks"]: (item: BladesItem) => !["Ghost", "Hull", "Vampire"].includes(item.system.world_name),
+						["Advanced Playbooks"]: (item: BladesItem) => ["Ghost", "Hull", "Vampire"].includes(item.system.world_name)
+					}
+				);
+				break;
+			}
 			case "item":
 			case "crew_upgrade": {
 				await BladesDialog.Display(

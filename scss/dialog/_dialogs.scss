@@ -19,30 +19,24 @@
 			position: static;
 
 			.item-details {
-				opacity: 0;
+				// opacity: 0;
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
 				align-items: stretch;
 				color: var(--blades-white);
-				padding: var(--content-padding);
+				padding: toRem(6px);
 				hyphens: auto;
 				text-align: justify;
-				// box-shadow: var(--box-shadow-input-strong);
-				// text-shadow: var(--text-shadow-dark);
-				// transform-origin: center bottom;
 				position: absolute;
 				top: 0%;
-				// bottom: 100%;
-				// margin-top: -150px;
-				// left: 0;
-				margin-left: 550px;
+				// margin-left: 550px;
 				width: 400px;
 				max-width: unset;
 				pointer-events: none;
 				background: var(--blades-black-dark);
 				z-index: 10;
-				outline: 1px solid var(--blades-white);
+				// outline: 1px solid var(--blades-white);
 			}
 
 			.nav-group {
@@ -53,7 +47,7 @@
 				.tab[data-tab] {
 					height: 100%;
 					width: 100%;
-					align-items: space-around;
+					align-items: flex-start;
 					justify-content: center;
 					padding: 25px 0;
 					// overflow-y: scroll;

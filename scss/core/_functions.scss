@@ -7,3 +7,8 @@ $remPerPixel: 0.0625rem;
 	}
 	@return $pixelSize * $remPerPixel;
 }
+
+@function zLevel($delta: 0) {
+	$z-index-base: 2;
+	@return $z-index-base + $delta;
+}

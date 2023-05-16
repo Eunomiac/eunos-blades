@@ -74,6 +74,44 @@ export enum EffectLevels {
 	limited = "limited",
 	zero = "zero"
 }
+export enum BladesTag {
+	Faith = "Faith",
+	Gambling = "Gambling",
+	Luxury = "Luxury",
+	Obligation = "Obligation",
+	Pleasure = "Pleasure",
+	Stupor = "Stupor",
+	Weird = "Weird",
+	Worship = "Worship",
+	Life_Essence = "Life_Essence",
+	Electroplasmic_Power = "Electroplasmic_Power",
+	cutter = "cutter",
+	hound = "hound",
+	leech = "leech",
+	lurk = "lurk",
+	slide = "slide",
+	spider = "spider",
+	whisper = "whisper",
+	ghost = "ghost",
+	hull = "hull",
+	vampire = "vampire",
+	vice_purveyor = "vice_purveyor",
+	playbook_acquaintance = "playbook_acquaintance",
+	acquaintance = "acquaintance"
+}
+export enum Vice {
+	Faith = "Faith",
+	Gambling = "Gambling",
+	Luxury = "Luxury",
+	Obligation = "Obligation",
+	Pleasure = "Pleasure",
+	Stupor = "Stupor",
+	Weird = "Weird",
+	Worship = "Worship",
+	Life_Essence = "Life_Essence",
+	Electroplasmic_Power = "Electroplasmic_Power",
+}
+
 
 const C = {
 	SYSTEM_ID: "eunos-blades",
@@ -112,7 +150,9 @@ const C = {
 		Cutter: {
 			"system.bgImg": "systems/eunos-blades/assets/icons/cutter-trans.svg",
 			"system.tagline": "A Dangerous & Intimidating Fighter",
-			"system.acquaintances_name": "Dangerous Friends & Rivals",
+			// "system.acquaintances_name": "Dangerous Friends & Rivals",
+			"system.friends_name": "Dangerous Friends",
+			"system.rivals_name": "More Dangerous Rivals",
 			"system.starting_stats.chargen": {
 				"system.attributes.prowess.skirmish.value": 2,
 				"system.attributes.resolve.command.value": 1
@@ -137,7 +177,9 @@ const C = {
 		Hound: {
 			"system.bgImg": "systems/eunos-blades/assets/icons/hound-trans.svg",
 			"system.tagline": "A Deadly Sharpshooter & Tracker",
-			"system.acquaintances_name": "Deadly Friends & Rivals",
+			// "system.acquaintances_name": "Deadly Friends & Rivals",
+			"system.friends_name": "Deadly Friends",
+			"system.rivals_name": "Deadlier Rivals",
 			"system.starting_stats.chargen": {
 				"system.attributes.insight.hunt.value": 2,
 				"system.attributes.insight.survey.value": 1
@@ -162,7 +204,9 @@ const C = {
 		Leech: {
 			"system.bgImg": "systems/eunos-blades/assets/icons/leech-trans.svg",
 			"system.tagline": "A Saboteur & Technician",
-			"system.acquaintances_name": "Clever Friends & Rivals",
+			// "system.acquaintances_name": "Clever Friends & Rivals",
+			"system.friends_name": "Clever Friends",
+			"system.rivals_name": "Cleverer Rivals",
 			"system.starting_stats.chargen": {
 				"system.attributes.insight.tinker.value": 2,
 				"system.attributes.prowess.wreck.value": 1
@@ -187,7 +231,9 @@ const C = {
 		Lurk: {
 			"system.bgImg": "systems/eunos-blades/assets/icons/lurk-trans.svg",
 			"system.tagline": "A Stealthy Infiltrator & Burglar",
-			"system.acquaintances_name": "Shady Friends & Rivals",
+			// "system.acquaintances_name": "Shady Friends & Rivals",
+			"system.friends_name": "Shady Friends",
+			"system.rivals_name": "Shadier Rivals",
 			"system.starting_stats.chargen": {
 				"system.attributes.prowess.prowl.value": 2,
 				"system.attributes.prowess.finesse.value": 1
@@ -212,7 +258,9 @@ const C = {
 		Slide: {
 			"system.bgImg": "systems/eunos-blades/assets/icons/slide-trans.svg",
 			"system.tagline": "A Subtle Manipulator & Spy",
-			"system.acquaintances_name": "Sly Friends & Rivals",
+			// "system.acquaintances_name": "Sly Friends & Rivals",
+			"system.friends_name": "Sly Friends",
+			"system.rivals_name": "Slyer Rivals",
 			"system.starting_stats.chargen": {
 				"system.attributes.resolve.sway.value": 2,
 				"system.attributes.resolve.consort.value": 1
@@ -237,7 +285,9 @@ const C = {
 		Spider: {
 			"system.bgImg": "systems/eunos-blades/assets/icons/spider-trans.svg",
 			"system.tagline": "A Devious Mastermind",
-			"system.acquaintances_name": "Shrewd Friends & Rivals",
+			// "system.acquaintances_name": "Shrewd Friends & Rivals",
+			"system.friends_name": "Shrewd Friends",
+			"system.rivals_name": "Very Shrewd Rivals",
 			"system.starting_stats.chargen": {
 				"system.attributes.resolve.consort.value": 2,
 				"system.attributes.insight.study.value": 1
@@ -262,7 +312,9 @@ const C = {
 		Whisper: {
 			"system.bgImg": "systems/eunos-blades/assets/icons/whisper-trans.svg",
 			"system.tagline": "An Arcane Adept & Channeler",
-			"system.acquaintances_name": "Strange Friends & Rivals",
+			// "system.acquaintances_name": "Strange Friends & Rivals",
+			"system.friends_name": "Strange Friends",
+			"system.rivals_name": "Stranger Rivals",
 			"system.starting_stats.chargen": {
 				"system.attributes.resolve.attune.value": 2,
 				"system.attributes.insight.study.value": 1
@@ -399,6 +451,9 @@ const C = {
 		Attributes.insight,
 		Attributes.resolve,
 		Attributes.prowess
+	],
+	Vices: [
+		Vice.Faith, Vice.Gambling, Vice.Luxury, Vice.Obligation, Vice.Pleasure, Vice.Stupor, Vice.Weird, Vice.Worship, Vice.Life_Essence, Vice.Electroplasmic_Power
 	]
 };
 

@@ -90,9 +90,10 @@ class BladesActorSheet extends BladesSheet {
 			playbook: (await BladesItem.GetActiveCategoryItems("playbook", this.actor))[0]
 		};
 		const actors = {
-			crew: (await BladesActor.GetActiveCategoryActors("pc-crew", this.actor))[0],
-			vice_purveyor: (await BladesActor.GetActiveCategoryActors("vice-purveyor", this.actor))[0],
-			acquaintances: (await BladesActor.GetActiveCategoryActors("acquaintance", this.actor))
+			crew: BladesActor.GetActiveEmbeddedCategoryActors("pc-crew", this.actor)[0],
+			vice_purveyor: BladesActor.GetActiveEmbeddedCategoryActors("vice_purveyor", this.actor)[0],
+			acquaintances: BladesActor.GetActiveEmbeddedCategoryActors("acquaintance", this.actor),
+			rivals: BladesActor.GetActiveEmbeddedCategoryActors("rival", this.actor)
 		};
 
 		//~ Assign dotlines to abilities with usage data
@@ -222,7 +223,9 @@ class BladesActorSheet extends BladesSheet {
 						]
 					}
 				},
-				acquaintancesName: items.playbook?.system.acquaintances_name ?? "Friends & Rivals"
+				acquaintancesName: this.actor.system.acquaintances_name ?? "Friends & Rivals",
+				friendsName: this.actor.system.friends_name,
+				rivalsName: this.actor.system.rivals_name
 			}
 		);
 		eLog.checkLog("actor", "[BladesActorSheet] return getData()", {...data});

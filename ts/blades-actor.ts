@@ -1,5 +1,5 @@
 import U from "./core/utilities.js";
-import C, {BladesActorType, BladesItemType, Randomizers, Attributes, Actions, Positions, EffectLevels} from "./core/constants.js";
+import C, {BladesActorType, BladesItemType, Randomizers, Attributes, Actions, Positions, EffectLevels, Vice, BladesTag} from "./core/constants.js";
 
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import {bladesRoll} from "./blades-roll.js";
@@ -12,7 +12,7 @@ import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-t
 declare abstract class BladesDoc {
 	// static CategoryTypes: Record<string, BladesActorType|BladesItemType>;
 	// static CategoryFilters: Record<string, <T extends BladesActor|BladesItem|EmbeddedBladesActor|EmbeddedBladesItem>(items: T[]) => T[]>;
-	// static CategoryUniques: Record<string, boolean>;
+	// static CategoryUniques: Record<string, boolean>;s
 	// static get All(): Collection<BladesActor>|Collection<BladesItem>;
 	// static GetGlobal(category?: string): Promise<BladesActor|BladesItem|null>;
 	// static GetPersonal(docRef: DocRef, category?: string): Promise<EmbeddedBladesActor|BladesItem|EmbeddedBladesItem|null>;
@@ -20,6 +20,8 @@ declare abstract class BladesDoc {
 
 
 }
+
+type AnyBladesActor = BladesActor|EmbeddedBladesActor;
 class BladesActor extends Actor implements BladesDoc {
 
 	// #region ████████ Doc Methods: Methods in Common Between BladesActor & BladesItem ████████ ~
@@ -29,20 +31,42 @@ class BladesActor extends Actor implements BladesDoc {
 	static CategoryTypes: Record<string, BladesActorType> = {
 		"pc-crew": BladesActorType.crew,
 		"crew-pc": BladesActorType.pc,
-		"vice-purveyor": BladesActorType.npc,
+		"vice_purveyor": BladesActorType.npc,
 		"acquaintance": BladesActorType.npc,
+		"rival": BladesActorType.npc,
 		"pc": BladesActorType.pc,
 		"npc": BladesActorType.npc,
 		"crew": BladesActorType.crew
 	};
 
-	static CategoryFilters: Record<string, <T extends BladesActor|EmbeddedBladesActor>(items: T[]) => T[]> = { };
+	static CategoryFilters: Record<string, (actors: AnyBladesActor[], actorRef?: string|BladesActor) => AnyBladesActor[]> = {
+		vice_purveyor: (actors, actorRef) => {
+			const vices: Vice[] = [];
+			let actor;
+			if (actorRef) { actor = BladesActor.Get(actorRef) }
+			if (actor) {
+				vices.push(...actor.vices.map((vice) => vice.system.world_name as Vice));
+			} else {
+				vices.push(...C.Vices);
+			}
+
+			eLog.checkLog3("actorFetch", "BladesActor.vicePurveyorFilter", vices);
+
+			const viceActorIDs = vices.map(vp => game.folders?.find(f => vp.replace(/_/g, " ") === f.name)?.contents)
+				.flat()
+				.filter((obj): obj is BladesActor => obj instanceof BladesActor)
+				.map((actor: BladesActor) => actor.id);
+			const viceActors = actors.filter((actor) => viceActorIDs.includes(actor.id));
+			return viceActors;
+		}
+	};
 
 	static CategoryUniques: Record<string, boolean> = {
 		"pc-crew": true,
 		"crew-pc": false,
-		"vice-purveyor": true,
+		"vice_purveyor": true,
 		"acquaintance": false,
+		"rival": false,
 		"pc": false,
 		"npc": false,
 		"crew": true
@@ -50,17 +74,27 @@ class BladesActor extends Actor implements BladesDoc {
 
 	static get All() { return game.actors }
 
-	private static async getAllGlobalActors(): Promise<BladesActor[]> {
+	static Get(actorRef: string|BladesActor): BladesActor|null {
+		if (actorRef instanceof BladesActor) { return actorRef }
+		if (U.isDocID(actorRef)) { return BladesActor.All.get(actorRef) || null }
+		let actor = BladesActor.All.find((a) => a.system.world_name === actorRef) || null;
+		if (!actor) {
+			actor = BladesActor.All.find((a) => a.name === actorRef) || null;
+		}
+		return actor;
+	}
+
+	private static getAllGlobalActors(): BladesActor[] {
 		const actors = Array.from(BladesActor.All);
 
-		// Get PACK actors.
-		const packs = game.packs.filter((pack) => C.ActorTypes.includes(pack.metadata.name as BladesActorType));
-		const packActors = (await Promise.all(packs.map(async (pack) => {
-			const packDocs = await pack.getDocuments() as BladesActor[];
-			return packDocs.filter((packActor): packActor is BladesActor => !actors.some((act) => act.system.world_name === packActor.system.world_name));
-		}))).flat();
+		// // Get PACK actors.
+		// const packs = game.packs.filter((pack) => C.ActorTypes.includes(pack.metadata.name as BladesActorType));
+		// const packActors = (await Promise.all(packs.map(async (pack) => {
+		// 	const packDocs = await pack.getDocuments() as BladesActor[];
+		// 	return packDocs.filter((packActor): packActor is BladesActor => !actors.some((act) => act.system.world_name === packActor.system.world_name));
+		// }))).flat();
 
-		actors.push(...packActors);
+		// actors.push(...packActors);
 
 		// Sort by NAME
 		actors.sort(function(a, b) {
@@ -69,31 +103,31 @@ class BladesActor extends Actor implements BladesDoc {
 			return nameA.localeCompare(nameB);
 		});
 
-		eLog.checkLog3("actorFetch", "BladesActor.getAllGlobalActors", await actors);
+		eLog.checkLog3("actorFetch", "BladesActor.getAllGlobalActors", actors);
 
 		return actors;
 	}
 
-	private static async getActorsByCat(actorCat: string): Promise<BladesActor[]> {
+	private static getActorsByCat(actorCat: string, actorRef?: string|BladesActor): BladesActor[] {
 		if (!(actorCat in BladesActor.CategoryTypes)) { return [] }
 
-		const allActors = await BladesActor.getAllGlobalActors();
+		const allActors = BladesActor.getAllGlobalActors();
 
 		// Filter by Category Type
 		const allTypeActors = allActors.filter((actor) => actor.type === BladesActor.CategoryTypes[actorCat]);
 
 		// Filter by Category Filters, if present
 		if (actorCat in BladesActor.CategoryFilters) {
-			eLog.checkLog3("actorFetch", `BladesActor.getActorsByCat(${actorCat}) *FILTER*`, await BladesActor.CategoryFilters[actorCat](allTypeActors));
-			return BladesActor.CategoryFilters[actorCat](allTypeActors);
+			eLog.checkLog3("actorFetch", `BladesActor.getActorsByCat(${actorCat}) *FILTER*`, BladesActor.CategoryFilters[actorCat](allTypeActors, actorRef));
+			return BladesActor.CategoryFilters[actorCat](allTypeActors, actorRef);
 		}
 
-		eLog.checkLog3("actorFetch", `BladesActor.getActorsByCat(${actorCat})`, await allTypeActors);
+		eLog.checkLog3("actorFetch", `BladesActor.getActorsByCat(${actorCat})`, allTypeActors);
 		return allTypeActors;
 	}
 
-	//~ BladesActor.GetGlobal: Returns WORLD or PACK instance of referenced BladesActor.
-	static async GetGlobal(actorRef: string|BladesActor, actorCat?: string): Promise<BladesActor|null> {
+	//~ BladesActor.GetGlobal: Returns WORLD instance of referenced BladesActor.
+	static GetGlobal(actorRef: string|BladesActor, actorCat?: string): BladesActor|null {
 		if (actorCat) {
 			if (!(actorCat in BladesActor.CategoryTypes)) { return null }
 			if (actorRef instanceof BladesActor) {
@@ -105,7 +139,7 @@ class BladesActor extends Actor implements BladesDoc {
 			actorRef = actorRef.system.world_name ?? actorRef.id;
 		}
 
-		const actors = await (actorCat ? BladesActor.getActorsByCat(actorCat) : BladesActor.getAllGlobalActors());
+		const actors = actorCat ? BladesActor.getActorsByCat(actorCat, actorRef) : BladesActor.getAllGlobalActors();
 
 		if (U.isDocID(actorRef)) {
 			return actors.find((actor) => actor.id === actorRef) ?? null;
@@ -116,14 +150,14 @@ class BladesActor extends Actor implements BladesDoc {
 		}
 	}
 
-	//~ BladesActor.GetPersonal: Returns WORLD or PACK instance of referenced BladesActor IF Embedded in parent, merged
+	//~ BladesActor.GetPersonal: Returns WORLD instance of referenced BladesActor IF Embedded in parent, merged
 	//~  																																	with any personal data recorded on parent actor.
-	static async GetPersonal(actorRef: string|BladesActor, parent: BladesActor): Promise<EmbeddedBladesActor|null> {
+	static GetPersonal(actorRef: string|BladesActor, parent: BladesActor): EmbeddedBladesActor|null {
 		if (!actorRef) { return null }
 		// Get the global instance of the referenced Actor
-		const actor = await BladesActor.GetGlobal(actorRef);
+		const actor = BladesActor.GetGlobal(actorRef);
 		eLog.checkLog4("actorFetch", `BladesActor.GetPersonal(${typeof actorRef === "string" ? actorRef : actorRef.name}, ${parent.name
-		}) -> Global Actor`, await actor);
+		}) -> Global Actor`, actor);
 		if (!actor || !actor.id) { return null }
 
 		if (!(actor.id in parent.system.subactors)) { return null }
@@ -193,37 +227,38 @@ class BladesActor extends Actor implements BladesDoc {
 		return;
 	}
 	//~ GetEmbeddedActors: Get ALL embedded actors, GLOBAL instances merged with personal data.
-	static async GetEmbeddedActors(parent: BladesActor): Promise<EmbeddedBladesActor[]> {
-		return (await Promise.all(Object.keys(parent.system.subactors).map((actorID) => BladesActor.GetPersonal(actorID, parent))))
+	static GetEmbeddedActors(parent: BladesActor): EmbeddedBladesActor[] {
+		return Object.keys(parent.system.subactors)
+			.map((actorID) => BladesActor.GetPersonal(actorID, parent))
 			.filter((actor): actor is EmbeddedBladesActor => actor !== null);
 	}
 
 
 	//~ GetEmbeddedCategoryActors: Get ALL embedded actors of given category.
-	static async GetEmbeddedCategoryActors(cat: string, parent: BladesActor): Promise<EmbeddedBladesActor[]> {
+	static GetEmbeddedCategoryActors(cat: string, parent: BladesActor): EmbeddedBladesActor[] {
 		const catActorData: BladesActor.SubActorData[] = Object.values(parent.system.subactors).filter(({category}) => category === cat);
-		const embActors = await Promise.all(catActorData.map(async ({id}) => BladesActor.GetPersonal(id, parent)));
+		const embActors = catActorData.map(({id}) => BladesActor.GetPersonal(id, parent));
 		return embActors.filter((actor): actor is EmbeddedBladesActor => actor !== null);
 	}
 
-	//~ GetActiveCategoryActors: Get ACTIVE (unArchived) embedded actors of given category.
-	static async GetActiveCategoryActors(cat: string, parent: BladesActor): Promise<EmbeddedBladesActor[]> {
-		const embActors = await BladesActor.GetEmbeddedCategoryActors(cat, parent);
-		return embActors.filter((actor) => !actor.isArchived);
+	//~ GetActiveEmbeddedCategoryActors: Get ACTIVE (unArchived) embedded actors of given category.
+	static GetActiveEmbeddedCategoryActors(cat: string, parent: BladesActor): EmbeddedBladesActor[] {
+		return BladesActor.GetEmbeddedCategoryActors(cat, parent).filter((actor) => !actor.isArchived);
 	}
 
 	//~ GetGlobalCategoryActors: Get global actors, overwritten by embedded custom actors if parent provided.
-	static async GetGlobalCategoryActors(category: string, parent?: BladesActor): Promise<Array<BladesActor|EmbeddedBladesActor>> {
-		const globalActors = await BladesActor.getActorsByCat(category);
+	static GetPersonalGlobalCategoryActors(category: string, parent?: BladesActor): AnyBladesActor[] {
+		const globalActors = BladesActor.getActorsByCat(category, parent);
 		if (!parent) { return globalActors }
-		const customizedActors = await Promise.all(globalActors.map((gActor) => {
+		const customizedActors = globalActors.map((gActor) => {
 			if (gActor.id && gActor.id in parent.system.subactors) {
-				return BladesActor.GetPersonal(gActor, parent);
+				return BladesActor.GetPersonal(gActor, parent) || gActor;
 			} else {
 				return gActor;
 			}
-		}));
-		return customizedActors.filter((actor) => actor !== null) as Array<BladesActor|EmbeddedBladesActor>;
+		});
+		eLog.checkLog3("actorFetch", `BladesActor.GetPersonalGlobalCategoryActors(${category})`, customizedActors);
+		return customizedActors.filter((actor) => actor !== null);
 	}
 	// #endregion ▄▄▄▄▄ Doc Methods ▄▄▄▄▄
 
@@ -303,6 +338,18 @@ class BladesActor extends Actor implements BladesDoc {
 		return this.items.find((item) => item.type === "playbook")
 			?? this.items.find((item) => item.type === "crew_playbook" )
 			?? null;
+	}
+	get vices(): BladesItem[] {
+		return this.items.filter((item) => item.type === "vice");
+	}
+
+	get tooltip(): string|undefined {
+		const tooltipText = [
+			this.system.concept,
+			this.system.description_short
+		].find((str) => Boolean(str));
+		if (tooltipText) { return (new Handlebars.SafeString(tooltipText)).toString() }
+		return tooltipText;
 	}
 
 	get attributes(): Record<Attributes,number> {
@@ -677,6 +724,10 @@ declare interface BladesActor {
 			subactors: Record<string,BladesActor.SubActorData>,
 			notes: string,
 			gm_notes: string,
+			tags: BladesTag[],
+			acquaintances_name: string,
+			friends_name?: string,
+			rivals_name?: string,
 			vice: {
 				name: string,
 				override: string|{name: string, img: string}

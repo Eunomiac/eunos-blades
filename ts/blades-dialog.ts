@@ -57,23 +57,16 @@ class BladesDialog extends Dialog {
 
 	tabs: Record<string, {featured: Array<BladesActor|BladesItem>, other: Array<BladesActor|BladesItem>}> = {};
 	async createTabs<T extends BladesActor|BladesItem>(tabs: Record<string, (a: T) => boolean>) {
-		switch (this.docSuperType) {
-			case "Actor": return this._createActorTabs(tabs as Record<string,(a: BladesActor) => boolean>);
-			case "Item": return this._createItemTabs(tabs as Record<string,(a: BladesItem) => boolean>);
-			// no default
+		if (this.docSuperType === "Actor") {
+			return this._createActorTabs(tabs as Record<string,(a: BladesActor) => boolean>);
 		}
+		return this._createItemTabs(tabs as Record<string,(a: BladesItem) => boolean>);
 	}
 	async _createActorTabs(tabs: Record<string, (a: BladesActor) => boolean>) {
-		const allCategoryActors = await BladesActor.GetGlobalCategoryActors(this.category, this.doc as BladesActor);
-		const validatedActors: Array<BladesActor|null> = await Promise.all(allCategoryActors.map(async (actor) => {
-			return (await actor.isValidForDoc(this.doc)) ? actor : null;
-		}));
-		const validActors: Array<BladesActor & {tooltip?: string}> = validatedActors
-			.filter((actor): actor is BladesActor => actor !== null)
-			.map((actor) => Object.assign(actor, {
-				tooltip: (actor.system.concept || actor.system.description_short)
-					? (new Handlebars.SafeString(`<span>${actor.system.concept || actor.system.description_short}</span>`)).toString()
-					: undefined}));
+		eLog.checkLog3("actorFetch", `BladesDialog._createActorTabs() --- cat = ${this.category}`);
+		const allCategoryActors = BladesActor.GetPersonalGlobalCategoryActors(this.category, this.doc as BladesActor);
+		const validatedActors: Array<BladesActor|null> = allCategoryActors.map((actor) => (actor.isValidForDoc(this.doc) ? actor : null));
+		const validActors: BladesActor[] = validatedActors.filter((actor): actor is BladesActor => actor !== null);
 		this.tabs = Object.fromEntries((Object.entries(tabs))
 			.map(([tabName, tabFilter]) => [
 				tabName,
@@ -85,12 +78,7 @@ class BladesDialog extends Dialog {
 		const validatedItems: Array<BladesItem|null> = await Promise.all(allCategoryItems.map(async (item) => {
 			return (await item.isValidForDoc(this.doc)) ? item : null;
 		}));
-		const validItems: Array<BladesItem & {tooltip?: string}> = validatedItems
-			.filter((item): item is BladesItem => item !== null)
-			.map((item) => Object.assign(item, {
-				tooltip: item.system.rules.trim().length
-					? (new Handlebars.SafeString(`<span>${item.system.rules}</span>`)).toString()
-					: undefined}));
+		const validItems: BladesItem[] = validatedItems.filter((item): item is BladesItem => item !== null);
 		this.tabs = Object.fromEntries((Object.entries(tabs))
 			.map(([tabName, tabFilter]) => [
 				tabName,
@@ -159,7 +147,8 @@ class BladesDialog extends Dialog {
 		Object.assign(
 			data,
 			{
-				tabs: this.tabs
+				tabs: this.tabs,
+				category: this.category
 			}
 		);
 
