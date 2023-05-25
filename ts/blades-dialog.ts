@@ -25,7 +25,7 @@ class BladesDialog extends Dialog {
 	static async Display<T extends BladesActor|BladesItem>(
 		doc: BladesActor|BladesItem,
 		title: string,
-		category: KeyOf<typeof BladesActor.CategoryTypes|typeof BladesItem.CategoryTypes>,
+		category: keyof typeof BladesActor.CategoryTypes|keyof typeof BladesItem.CategoryTypes,
 		callback: (docID: string) => Promise<void>,
 		tabFilters: Record<string, (a: T) => boolean> = {all: (a: T) => true},
 		featuredFilters?: Record<string, (a: T) => boolean>,
@@ -62,11 +62,24 @@ class BladesDialog extends Dialog {
 		}
 		return this._createItemTabs(tabs as Record<string,(a: BladesItem) => boolean>);
 	}
+
+	_filterUniqueActors(actors: AnyBladesActor[]) {
+		const actorIDLog: string[] = [];
+		return actors.filter((actor) => {
+			if (actorIDLog.includes(actor.id!)) {
+				return false;
+			} else {
+				actorIDLog.push(actor.id!);
+				return true;
+			}
+		});
+	}
+
 	async _createActorTabs(tabs: Record<string, (a: BladesActor) => boolean>) {
 		eLog.checkLog3("actorFetch", `BladesDialog._createActorTabs() --- cat = ${this.category}`);
-		const allCategoryActors = BladesActor.GetPersonalGlobalCategoryActors(this.category, this.doc as BladesActor);
+		const allCategoryActors = BladesActor.GetPersonalGlobalCategoryActors(this.category as keyof typeof BladesActor.CategoryTypes, this.doc as BladesActor);
 		const validatedActors: Array<BladesActor|null> = allCategoryActors.map((actor) => (actor.isValidForDoc(this.doc) ? actor : null));
-		const validActors: BladesActor[] = validatedActors.filter((actor): actor is BladesActor => actor !== null);
+		const validActors: BladesActor[] = this._filterUniqueActors(validatedActors.filter((actor): actor is BladesActor => actor !== null));
 		this.tabs = Object.fromEntries((Object.entries(tabs))
 			.map(([tabName, tabFilter]) => [
 				tabName,
@@ -74,7 +87,7 @@ class BladesDialog extends Dialog {
 			]));
 	}
 	async _createItemTabs(tabs: Record<string,(i: BladesItem) => boolean>) {
-		const allCategoryItems = await BladesItem.GetGlobalCategoryItems(this.category, this.doc as BladesActor);
+		const allCategoryItems = await BladesItem.GetGlobalCategoryItems(this.category as keyof typeof BladesItem.CategoryTypes, this.doc as BladesActor);
 		const validatedItems: Array<BladesItem|null> = await Promise.all(allCategoryItems.map(async (item) => {
 			return (await item.isValidForDoc(this.doc)) ? item : null;
 		}));
@@ -108,7 +121,7 @@ class BladesDialog extends Dialog {
 	}
 
 	doc: BladesActor|BladesItem;
-	category: KeyOf<typeof BladesActor.CategoryTypes|typeof BladesItem.CategoryTypes>;
+	category: keyof typeof BladesActor.CategoryTypes|keyof typeof BladesItem.CategoryTypes;
 	callback: (docID: string) => Promise<void>;
 
 	get docSuperType(): "Actor"|"Item" {
@@ -123,10 +136,10 @@ class BladesDialog extends Dialog {
 
 	get docType(): BladesItemType|BladesActorType {
 		if (this.category in BladesActor.CategoryTypes) {
-			return BladesActor.CategoryTypes[this.category];
+			return BladesActor.CategoryTypes[this.category as keyof typeof BladesActor.CategoryTypes];
 		}
 		if (this.category in BladesItem.CategoryTypes) {
-			return BladesItem.CategoryTypes[this.category];
+			return BladesItem.CategoryTypes[this.category as keyof typeof BladesItem.CategoryTypes];
 		}
 		throw new Error(`Unrecognized Category: ${this.category}`);
 	}
@@ -136,7 +149,7 @@ class BladesDialog extends Dialog {
 		super(data, options);
 		eLog.checkLog4("dialog", "[BladesDialog] super(data)", {...data});
 		this.doc = data.doc;
-		this.category = data.category as string;
+		this.category = data.category;
 		this.callback = data.callback;
 	}
 

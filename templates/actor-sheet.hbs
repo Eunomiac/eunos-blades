@@ -238,10 +238,17 @@
 									remButton=true
 								}}
 							{{/each}}
+							{{#unless rivalsName}}
+							{{#each actors.rivals as |actor|}}
+								{{> "systems/eunos-blades/templates/components/portrait.hbs" actor
+									cat = "rival"
+									id=actor._id
+									remButton=true
+								}}
+							{{/each}}
+							{{/unless}}
 						</div>
 						{{#if rivalsName}}
-						<br>
-						<br>
 						<label class="comp tab-label" data-comp-cat="rival">
 							<a class="comp-control comp-button comp-add">
 								<i class="fas fa-plus-square"></i>

@@ -52,11 +52,23 @@ class BladesDialog extends Dialog {
         }
         return this._createItemTabs(tabs);
     }
+    _filterUniqueActors(actors) {
+        const actorIDLog = [];
+        return actors.filter((actor) => {
+            if (actorIDLog.includes(actor.id)) {
+                return false;
+            }
+            else {
+                actorIDLog.push(actor.id);
+                return true;
+            }
+        });
+    }
     async _createActorTabs(tabs) {
         eLog.checkLog3("actorFetch", `BladesDialog._createActorTabs() --- cat = ${this.category}`);
         const allCategoryActors = BladesActor.GetPersonalGlobalCategoryActors(this.category, this.doc);
         const validatedActors = allCategoryActors.map((actor) => (actor.isValidForDoc(this.doc) ? actor : null));
-        const validActors = validatedActors.filter((actor) => actor !== null);
+        const validActors = this._filterUniqueActors(validatedActors.filter((actor) => actor !== null));
         this.tabs = Object.fromEntries((Object.entries(tabs))
             .map(([tabName, tabFilter]) => [
             tabName,

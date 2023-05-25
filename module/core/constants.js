@@ -11,6 +11,27 @@ export var BladesActorType;
     BladesActorType["npc"] = "npc";
     BladesActorType["crew"] = "crew";
 })(BladesActorType || (BladesActorType = {}));
+export var District;
+(function (District) {
+    District["Barrowcleft"] = "Barrowcleft";
+    District["Brightstone"] = "Brightstone";
+    District["Charhollow"] = "Charhollow";
+    District["Charterhall"] = "Charterhall";
+    District["Coalridge"] = "Coalridge";
+    District["Crow's Foot"] = "Crow's Foot";
+    District["The Docks"] = "The Docks";
+    District["Dunslough"] = "Dunslough";
+    District["Nightmarket"] = "Nightmarket";
+    District["Silkshore"] = "Silkshore";
+    District["Six Towers"] = "Six Towers";
+    District["Whitecrown"] = "Whitecrown";
+    District["Gaddoc Station"] = "Gaddoc Station";
+    District["The Lost District"] = "The Lost District";
+    District["The Void Sea"] = "The Void Sea";
+    District["Ironhook Prison"] = "Ironhook Prison";
+    District["Old North Port"] = "Old North Port";
+    District["Deathlands"] = "Deathlands";
+})(District || (District = {}));
 export var BladesItemType;
 (function (BladesItemType) {
     BladesItemType["ability"] = "ability";
@@ -87,32 +108,6 @@ export var EffectLevels;
     EffectLevels["limited"] = "limited";
     EffectLevels["zero"] = "zero";
 })(EffectLevels || (EffectLevels = {}));
-export var BladesTag;
-(function (BladesTag) {
-    BladesTag["Faith"] = "Faith";
-    BladesTag["Gambling"] = "Gambling";
-    BladesTag["Luxury"] = "Luxury";
-    BladesTag["Obligation"] = "Obligation";
-    BladesTag["Pleasure"] = "Pleasure";
-    BladesTag["Stupor"] = "Stupor";
-    BladesTag["Weird"] = "Weird";
-    BladesTag["Worship"] = "Worship";
-    BladesTag["Life_Essence"] = "Life_Essence";
-    BladesTag["Electroplasmic_Power"] = "Electroplasmic_Power";
-    BladesTag["cutter"] = "cutter";
-    BladesTag["hound"] = "hound";
-    BladesTag["leech"] = "leech";
-    BladesTag["lurk"] = "lurk";
-    BladesTag["slide"] = "slide";
-    BladesTag["spider"] = "spider";
-    BladesTag["whisper"] = "whisper";
-    BladesTag["ghost"] = "ghost";
-    BladesTag["hull"] = "hull";
-    BladesTag["vampire"] = "vampire";
-    BladesTag["vice_purveyor"] = "vice_purveyor";
-    BladesTag["playbook_acquaintance"] = "playbook_acquaintance";
-    BladesTag["acquaintance"] = "acquaintance";
-})(BladesTag || (BladesTag = {}));
 export var Vice;
 (function (Vice) {
     Vice["Faith"] = "Faith";
@@ -126,6 +121,19 @@ export var Vice;
     Vice["Life_Essence"] = "Life_Essence";
     Vice["Electroplasmic_Power"] = "Electroplasmic_Power";
 })(Vice || (Vice = {}));
+export var Playbook;
+(function (Playbook) {
+    Playbook["Cutter"] = "Cutter";
+    Playbook["Hound"] = "Hound";
+    Playbook["Leech"] = "Leech";
+    Playbook["Lurk"] = "Lurk";
+    Playbook["Slide"] = "Slide";
+    Playbook["Spider"] = "Spider";
+    Playbook["Whisper"] = "Whisper";
+    Playbook["Vampire"] = "Vampire";
+    Playbook["Hull"] = "Hull";
+    Playbook["Ghost"] = "Ghost";
+})(Playbook || (Playbook = {}));
 const C = {
     SYSTEM_ID: "eunos-blades",
     SYSTEM_NAME: "Euno's Blades",

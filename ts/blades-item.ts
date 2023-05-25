@@ -8,16 +8,18 @@ class BladesItem extends Item {
 	//~ Items are primarily referenced by category, not type.
 	//~    BladesItem.CategoryTypes -> get item type for given category
 	//~    BladesItem.CategoryFilters -> pass item list filtered by type, get one further filtered by category
-	static CategoryTypes: Record<string, BladesItemType> = {
+	static CategoryTypes = {
 		ability: BladesItemType.ability,
 		background: BladesItemType.background,
 		cohort: BladesItemType.cohort,
+		clock_keeper: BladesItemType.clock_keeper,
 		crew_ability: BladesItemType.crew_ability,
 		crew_reputation: BladesItemType.crew_reputation,
 		crew_playbook: BladesItemType.crew_playbook,
 		crew_upgrade: BladesItemType.crew_upgrade,
 		faction: BladesItemType.faction,
 		feature: BladesItemType.feature,
+		gm_tracker: BladesItemType.gm_tracker,
 		heritage: BladesItemType.heritage,
 		item: BladesItemType.item,
 		playbook: BladesItemType.playbook,
@@ -91,7 +93,7 @@ class BladesItem extends Item {
 		return items;
 	}
 
-	private static async getItemsByCat(itemCat: string): Promise<BladesItem[]> {
+	private static async getItemsByCat(itemCat: keyof typeof BladesItem.CategoryTypes): Promise<BladesItem[]> {
 		if (!(itemCat in BladesItem.CategoryTypes)) { return [] }
 
 		const allItems = await BladesItem.getAllGlobalItems();
@@ -108,7 +110,7 @@ class BladesItem extends Item {
 	}
 
 	//~ BladesItem.GetGlobal: Returns WORLD or PACK instance of referenced BladesItem.
-	static async GetGlobal(itemRef: string|BladesItem, itemCat?: string): Promise<BladesItem|null> {
+	static async GetGlobal(itemRef: string|BladesItem, itemCat?: keyof typeof BladesItem.CategoryTypes): Promise<BladesItem|null> {
 		if (itemCat) {
 			if (!(itemCat in BladesItem.CategoryTypes)) { return null }
 			if (itemRef instanceof BladesItem) {
@@ -160,7 +162,7 @@ class BladesItem extends Item {
 	}
 
 	//~ Embed: Embed a GLOBAL item into a parent item, removing previous if unique.
-	static async Embed(itemRef: ItemRef|string, category: string, parent: BladesActor): Promise<BladesItem|null> {
+	static async Embed(itemRef: ItemRef|string, category: keyof typeof BladesItem.CategoryTypes, parent: BladesActor): Promise<BladesItem|null> {
 		eLog.log2("[BladesItem.Embed(itemRef, category, parent)]", {itemRef, category, parent});
 
 		if (!(category in BladesItem.CategoryTypes)) { return null }
@@ -220,7 +222,7 @@ class BladesItem extends Item {
 	}
 
 	//~ GetEmbeddedCategoryItems: Get ALL embedded items of given category.
-	static async GetEmbeddedCategoryItems(cat: string, parent: BladesActor): Promise<BladesItem[]> {
+	static async GetEmbeddedCategoryItems(cat: keyof typeof BladesItem.CategoryTypes, parent: BladesActor): Promise<BladesItem[]> {
 		if (!(cat in BladesItem.CategoryTypes)) { return [] }
 		const typeItems = parent.items.filter((item) => item.type === BladesItem.CategoryTypes[cat]);
 		if (cat in BladesItem.CategoryFilters) {
@@ -230,13 +232,13 @@ class BladesItem extends Item {
 	}
 
 	//~ GetActiveCategoryItems: Get ACTIVE (unArchived) embedded items of given category.
-	static async GetActiveCategoryItems(cat: string, parent: BladesActor): Promise<BladesItem[]> {
+	static async GetActiveCategoryItems(cat: keyof typeof BladesItem.CategoryTypes, parent: BladesActor): Promise<BladesItem[]> {
 		const embItems = await BladesItem.GetEmbeddedCategoryItems(cat, parent);
 		return embItems.filter((item) => !item.isArchived);
 	}
 
 	//~ GetGlobalCategoryItems: Get global items, overwritten by embedded custom items if parent provided.
-	static async GetGlobalCategoryItems(category: string, parent?: BladesActor): Promise<BladesItem[]> {
+	static async GetGlobalCategoryItems(category: keyof typeof BladesItem.CategoryTypes, parent?: BladesActor): Promise<BladesItem[]> {
 		const globalItems = await BladesItem.getItemsByCat(category);
 		if (!parent) { return globalItems }
 		const embItems = await BladesItem.GetEmbeddedCategoryItems(category, parent);

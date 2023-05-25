@@ -1,3 +1,4 @@
+import {Vice, District, Playbook} from "../core/constants";
 import BladesItem from "../blades-item";
 import BladesActor from "../blades-actor";
 import { bladesRoll } from "../blades-roll";
@@ -46,16 +47,23 @@ declare global {
 		}
 	}
 
-	type BladesDoc = BladesActor|BladesItem|EmbeddedBladesActor|EmbeddedBladesItem;
+	type AnyBladesActor = BladesActor|EmbeddedBladesActor;
+	type AnyBladesItem = BladesItem|EmbeddedBladesItem;
+	type BladesDoc = AnyBladesActor|AnyBladesItem;
 
 	type DocRef = string|BladesDoc;
-	type ActorRef = string|BladesActor|EmbeddedBladesActor;
-	type ItemRef = string|BladesItem|EmbeddedBladesItem;
+	type ActorRef = string|AnyBladesActor;
+	type ItemRef = string|AnyBladesItem;
+
+	type BladesTag = Vice
+		|Playbook
+		|keyof typeof BladesActor.CategoryTypes
+		|keyof typeof BladesItem.CategoryTypes
+		|District;
 
 	namespace BladesActor {
 		export type ID = string;
-		export type SubActorCategory = string;
-
+		export type SubActorCategory = keyof typeof BladesActor.CategoryTypes;
 		export type RandomizerData = {
 			isLocked: boolean,
 			value: string,
@@ -112,7 +120,7 @@ declare global {
 		}
 		interface Data extends Dialog.Data {
 			doc: BladesActor|BladesItem;
-			category: KeyOf<typeof BladesDialog.Categories>;
+			category: keyof typeof BladesActor.CategoryTypes|keyof typeof BladesItem.CategoryTypes;
 			callback: (docID: string) => Promise<void>;
 			tabs?: Record<string, {featured: Array<BladesActor|BladesItem>, other: Array<BladesActor|BladesItem>}>
 		}

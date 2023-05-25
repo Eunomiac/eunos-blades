@@ -1,5 +1,5 @@
 import U from "./core/utilities.js";
-import C, {BladesActorType, BladesItemType, Randomizers, Attributes, Actions, Positions, EffectLevels, Vice, BladesTag} from "./core/constants.js";
+import C, {BladesActorType, BladesItemType, Randomizers, Attributes, Actions, Positions, EffectLevels, Vice} from "./core/constants.js";
 
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import {bladesRoll} from "./blades-roll.js";
@@ -21,14 +21,23 @@ declare abstract class BladesDoc {
 
 }
 
-type AnyBladesActor = BladesActor|EmbeddedBladesActor;
 class BladesActor extends Actor implements BladesDoc {
+	static FoldersToTags(): void {
+		const folderNames = [...C.Vices, ...Object.keys(C.Playbooks)];
+		const folders = game.folders!.filter((folder) => folderNames.includes(folder.name || ""));
+		folders.forEach((folder) => {
+			const actors = folder.contents as BladesActor[];
+			actors.forEach((actor) => {
+				actor.addTag(folder.name! as BladesTag);
+			});
+		});
+	}
 
 	// #region ████████ Doc Methods: Methods in Common Between BladesActor & BladesItem ████████ ~
-	//~ Actors are primarily referenced by category, not type.
+	//~ Actors are primarily referenced by category, not type: rarely "npc" or "crew" but rather "pc-crew" (a link category) or "rival"
 	//~    BladesActor.CategoryTypes -> get actor type for given category
 	//~    BladesActor.CategoryFilters -> pass actor list filtered by type, get one further filtered by category
-	static CategoryTypes: Record<string, BladesActorType> = {
+	static CategoryTypes = {
 		"pc-crew": BladesActorType.crew,
 		"crew-pc": BladesActorType.pc,
 		"vice_purveyor": BladesActorType.npc,
@@ -40,24 +49,39 @@ class BladesActor extends Actor implements BladesDoc {
 	};
 
 	static CategoryFilters: Record<string, (actors: AnyBladesActor[], actorRef?: string|BladesActor) => AnyBladesActor[]> = {
+		acquaintance: (actors, actorRef) => {
+			const actor: BladesActor|null = actorRef ? BladesActor.Get(actorRef) : null;
+			let npcs;
+			if (actor !== null) {
+				npcs = actors.filter((act) => act.tags.includes(actor.playbookName as BladesTag));
+			} else {
+				npcs = actors.filter((act) => act.type === BladesActorType.npc);
+			}
+			return npcs || [];
+		},
+		rival: (actors, actorRef) => {
+			const actor: BladesActor|null = actorRef ? BladesActor.Get(actorRef) : null;
+			let npcs;
+			if (actor !== null) {
+				npcs = actors.filter((act) => act.tags.includes(actor.playbookName as BladesTag));
+			} else {
+				npcs = actors.filter((act) => act.type === BladesActorType.npc);
+			}
+			return npcs || [];
+		},
 		vice_purveyor: (actors, actorRef) => {
 			const vices: Vice[] = [];
 			let actor;
 			if (actorRef) { actor = BladesActor.Get(actorRef) }
 			if (actor) {
-				vices.push(...actor.vices.map((vice) => vice.system.world_name as Vice));
+				vices.push(...actor.vices.map((vice) => vice.system.world_name as Vice & BladesTag));
 			} else {
 				vices.push(...C.Vices);
 			}
 
 			eLog.checkLog3("actorFetch", "BladesActor.vicePurveyorFilter", vices);
 
-			const viceActorIDs = vices.map(vp => game.folders?.find(f => vp.replace(/_/g, " ") === f.name)?.contents)
-				.flat()
-				.filter((obj): obj is BladesActor => obj instanceof BladesActor)
-				.map((actor: BladesActor) => actor.id);
-			const viceActors = actors.filter((actor) => viceActorIDs.includes(actor.id));
-			return viceActors;
+			return actors.filter((actor) => actor.tags.some((tag) => vices.includes(tag as Vice & BladesTag)));
 		}
 	};
 
@@ -108,13 +132,13 @@ class BladesActor extends Actor implements BladesDoc {
 		return actors;
 	}
 
-	private static getActorsByCat(actorCat: string, actorRef?: string|BladesActor): BladesActor[] {
+	private static getActorsByCat(actorCat: keyof typeof BladesActor.CategoryTypes, actorRef?: string|BladesActor): BladesActor[] {
 		if (!(actorCat in BladesActor.CategoryTypes)) { return [] }
 
 		const allActors = BladesActor.getAllGlobalActors();
 
 		// Filter by Category Type
-		const allTypeActors = allActors.filter((actor) => actor.type === BladesActor.CategoryTypes[actorCat]);
+		const allTypeActors = allActors.filter((actor) => actor.type === BladesActor.CategoryTypes[actorCat] as BladesActorType);
 
 		// Filter by Category Filters, if present
 		if (actorCat in BladesActor.CategoryFilters) {
@@ -127,7 +151,7 @@ class BladesActor extends Actor implements BladesDoc {
 	}
 
 	//~ BladesActor.GetGlobal: Returns WORLD instance of referenced BladesActor.
-	static GetGlobal(actorRef: string|BladesActor, actorCat?: string): BladesActor|null {
+	static GetGlobal(actorRef: string|BladesActor, actorCat?: keyof typeof BladesActor.CategoryTypes): BladesActor|null {
 		if (actorCat) {
 			if (!(actorCat in BladesActor.CategoryTypes)) { return null }
 			if (actorRef instanceof BladesActor) {
@@ -184,7 +208,7 @@ class BladesActor extends Actor implements BladesDoc {
 	}
 
 	//~ Embed: Embed a GLOBAL actor into a parent actor UNLESS custom actor exists, in which case unarchive it.
-	static async Embed(actorRef: ActorRef, category: string, parent: BladesActor): Promise<EmbeddedBladesActor|null> {
+	static async Embed(actorRef: ActorRef, category: keyof typeof BladesActor.CategoryTypes, parent: BladesActor): Promise<EmbeddedBladesActor|null> {
 		eLog.log2("[BladesActor.Embed(actorRef, category, parent)]", {actorRef, category, parent});
 		const updateData: Record<string, boolean|BladesActor.SubActorData> = {};
 
@@ -247,7 +271,7 @@ class BladesActor extends Actor implements BladesDoc {
 	}
 
 	//~ GetGlobalCategoryActors: Get global actors, overwritten by embedded custom actors if parent provided.
-	static GetPersonalGlobalCategoryActors(category: string, parent?: BladesActor): AnyBladesActor[] {
+	static GetPersonalGlobalCategoryActors(category: keyof typeof BladesActor.CategoryTypes, parent?: BladesActor): AnyBladesActor[] {
 		const globalActors = BladesActor.getActorsByCat(category, parent);
 		if (!parent) { return globalActors }
 		const customizedActors = globalActors.map((gActor) => {
@@ -388,6 +412,17 @@ class BladesActor extends Actor implements BladesDoc {
 			this.system.trauma?.checked ?? {},
 			(v: unknown, traumaName: string) => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName])
 		) as Record<string, boolean>;
+	}
+
+	get tags(): BladesTag[] {
+		return this.system.tags;
+	}
+
+	async addTag(tagName: BladesTag) {
+		const curTags = this.tags;
+		if (curTags.includes(tagName)) { return }
+		curTags.push(tagName);
+		this.update({"system.tags": curTags});
 	}
 
 	async removeDoc(docId: string, isFullRemoval = false) {

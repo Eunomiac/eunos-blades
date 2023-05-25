@@ -4,6 +4,28 @@ export enum BladesActorType {
 	crew = "crew"
 }
 
+export enum District {
+	Barrowcleft = "Barrowcleft",
+	Brightstone = "Brightstone",
+	Charhollow = "Charhollow",
+	Charterhall = "Charterhall",
+	Coalridge = "Coalridge",
+	"Crow's Foot" = "Crow's Foot",
+	"The Docks" = "The Docks",
+	Dunslough = "Dunslough",
+	Nightmarket = "Nightmarket",
+	Silkshore = "Silkshore",
+	"Six Towers" = "Six Towers",
+	Whitecrown = "Whitecrown",
+	"Gaddoc Station" = "Gaddoc Station",
+	"The Lost District" = "The Lost District",
+	"The Void Sea" = "The Void Sea",
+	"Ironhook Prison" = "Ironhook Prison",
+	"Old North Port" = "Old North Port",
+	Deathlands = "Deathlands"
+
+}
+
 export enum BladesItemType {
 	ability = "ability",
 	background = "background",
@@ -74,31 +96,6 @@ export enum EffectLevels {
 	limited = "limited",
 	zero = "zero"
 }
-export enum BladesTag {
-	Faith = "Faith",
-	Gambling = "Gambling",
-	Luxury = "Luxury",
-	Obligation = "Obligation",
-	Pleasure = "Pleasure",
-	Stupor = "Stupor",
-	Weird = "Weird",
-	Worship = "Worship",
-	Life_Essence = "Life_Essence",
-	Electroplasmic_Power = "Electroplasmic_Power",
-	cutter = "cutter",
-	hound = "hound",
-	leech = "leech",
-	lurk = "lurk",
-	slide = "slide",
-	spider = "spider",
-	whisper = "whisper",
-	ghost = "ghost",
-	hull = "hull",
-	vampire = "vampire",
-	vice_purveyor = "vice_purveyor",
-	playbook_acquaintance = "playbook_acquaintance",
-	acquaintance = "acquaintance"
-}
 export enum Vice {
 	Faith = "Faith",
 	Gambling = "Gambling",
@@ -110,6 +107,19 @@ export enum Vice {
 	Worship = "Worship",
 	Life_Essence = "Life_Essence",
 	Electroplasmic_Power = "Electroplasmic_Power",
+}
+
+export enum Playbook {
+	Cutter = "Cutter",
+	Hound = "Hound",
+	Leech = "Leech",
+	Lurk = "Lurk",
+	Slide = "Slide",
+	Spider = "Spider",
+	Whisper = "Whisper",
+	Vampire = "Vampire",
+	Hull = "Hull",
+	Ghost = "Ghost"
 }
 
 

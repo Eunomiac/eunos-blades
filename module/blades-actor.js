@@ -10,6 +10,16 @@ import C, { BladesActorType, BladesItemType, Randomizers, Attributes, Actions, P
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem from "./blades-item.js";
 class BladesActor extends Actor {
+    static FoldersToTags() {
+        const folderNames = [...C.Vices, ...Object.keys(C.Playbooks)];
+        const folders = game.folders.filter((folder) => folderNames.includes(folder.name || ""));
+        folders.forEach((folder) => {
+            const actors = folder.contents;
+            actors.forEach((actor) => {
+                actor.addTag(folder.name);
+            });
+        });
+    }
     static CategoryTypes = {
         "pc-crew": BladesActorType.crew,
         "crew-pc": BladesActorType.pc,
@@ -21,6 +31,28 @@ class BladesActor extends Actor {
         "crew": BladesActorType.crew
     };
     static CategoryFilters = {
+        acquaintance: (actors, actorRef) => {
+            const actor = actorRef ? BladesActor.Get(actorRef) : null;
+            let npcs;
+            if (actor !== null) {
+                npcs = actors.filter((act) => act.tags.includes(actor.playbookName));
+            }
+            else {
+                npcs = actors.filter((act) => act.type === BladesActorType.npc);
+            }
+            return npcs || [];
+        },
+        rival: (actors, actorRef) => {
+            const actor = actorRef ? BladesActor.Get(actorRef) : null;
+            let npcs;
+            if (actor !== null) {
+                npcs = actors.filter((act) => act.tags.includes(actor.playbookName));
+            }
+            else {
+                npcs = actors.filter((act) => act.type === BladesActorType.npc);
+            }
+            return npcs || [];
+        },
         vice_purveyor: (actors, actorRef) => {
             const vices = [];
             let actor;
@@ -34,12 +66,7 @@ class BladesActor extends Actor {
                 vices.push(...C.Vices);
             }
             eLog.checkLog3("actorFetch", "BladesActor.vicePurveyorFilter", vices);
-            const viceActorIDs = vices.map(vp => game.folders?.find(f => vp.replace(/_/g, " ") === f.name)?.contents)
-                .flat()
-                .filter((obj) => obj instanceof BladesActor)
-                .map((actor) => actor.id);
-            const viceActors = actors.filter((actor) => viceActorIDs.includes(actor.id));
-            return viceActors;
+            return actors.filter((actor) => actor.tags.some((tag) => vices.includes(tag)));
         }
     };
     static CategoryUniques = {
@@ -310,6 +337,17 @@ class BladesActor extends Actor {
     }
     get traumaConditions() {
         return U.objFilter(this.system.trauma?.checked ?? {}, (v, traumaName) => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName]));
+    }
+    get tags() {
+        return this.system.tags;
+    }
+    async addTag(tagName) {
+        const curTags = this.tags;
+        if (curTags.includes(tagName)) {
+            return;
+        }
+        curTags.push(tagName);
+        this.update({ "system.tags": curTags });
     }
     async removeDoc(docId, isFullRemoval = false) {
         const doc = (await BladesActor.GetPersonal(docId, this)) ?? (await BladesItem.GetPersonal(docId, this));

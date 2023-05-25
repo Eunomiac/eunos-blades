@@ -41,10 +41,10 @@ class BladesSheet extends ActorSheet {
 		event.preventDefault();
 
 		const dataElem$ = $(event.currentTarget).closest(".comp");
-		const doc_cat = dataElem$.data("compCat");
+		const doc_cat = dataElem$.data("compCat") as keyof typeof BladesItem.CategoryTypes|keyof typeof BladesActor.CategoryTypes;
 		const doc_type = doc_cat in BladesItem.CategoryTypes
-			? BladesItem.CategoryTypes[doc_cat]
-			: BladesActor.CategoryTypes[doc_cat];
+			? BladesItem.CategoryTypes[doc_cat as keyof typeof BladesItem.CategoryTypes]
+			: BladesActor.CategoryTypes[doc_cat as keyof typeof BladesActor.CategoryTypes];
 
 		const initialParams = [
 			this.actor,
@@ -109,12 +109,12 @@ class BladesSheet extends ActorSheet {
 				if (doc_cat in BladesItem.CategoryTypes) {
 					await BladesDialog.Display(
 						...initialParams,
-						async (itemId) => { BladesItem.Embed(itemId, doc_cat, this.actor) }
+						async (itemId) => { BladesItem.Embed(itemId, doc_cat as keyof typeof BladesItem.CategoryTypes, this.actor) }
 					);
 				} else if (doc_cat in BladesActor.CategoryTypes) {
 					await BladesDialog.Display(
 						...initialParams,
-						async (actorId) => { BladesActor.Embed(actorId, doc_cat, this.actor) }
+						async (actorId) => { BladesActor.Embed(actorId, doc_cat as keyof typeof BladesActor.CategoryTypes, this.actor) }
 					);
 				} else {
 					throw new Error(`[BladesSheet.addItem] Unrecognized Doc Category: '${doc_cat}'`);
