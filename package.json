@@ -60,6 +60,8 @@
 		"typescript": "^4.8.4"
 	},
 	"dependencies": {
+		"@types/yaireo__tagify": "^4.17.0",
+		"@yaireo/tagify": "^4.17.8",
 		"tinymce": "^6.2.0"
 	},
 	"repository": {

@@ -22,7 +22,8 @@
 	],
   "esmodules": [
     "module/blades.js",
-		"greensock/esm/all.js"
+		"greensock/esm/all.js",
+    "lib/tagify/tagify.esm.js"
   ],
   "styles": [
     "css/style.min.css"

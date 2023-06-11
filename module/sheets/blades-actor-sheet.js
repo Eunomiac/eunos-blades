@@ -5,11 +5,12 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C from "../core/constants.js";
+import C, { District } from "../core/constants.js";
 import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesItem from "../blades-item.js";
 import BladesActor from "../blades-actor.js";
+import Tagify from "../../lib/tagify/tagify.esm.js";
 class BladesActorSheet extends BladesSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -315,6 +316,22 @@ class BladesActorSheet extends BladesSheet {
                     return;
                 }
                 $(this).siblings(".svg-armor.armor-special").removeClass("hover-over");
+            }
+        });
+
+        const tagTest = new Tagify(html.find("input[name='data.harm.heavy.one']")[0], {
+            whitelist: [
+                { "value": District.Barrowcleft, "class": "tag-color-green" },
+                { "value": District.Brightstone, "class": "tag-color-green" },
+                { "value": District.Charhollow, "class": "tag-color-green" }
+            ],
+            dropdown: {
+                classname: "color-blue",
+                enabled: 0,
+                maxItems: 5,
+                position: "text",
+                closeOnSelect: true,
+                highlightFirst: true
             }
         });
     }

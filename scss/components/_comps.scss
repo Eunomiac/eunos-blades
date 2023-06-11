@@ -319,7 +319,9 @@
 					text-align: right;
 					padding-right: toRem(4px);
 					margin-bottom: toRem(40px);
-					margin-top: toRem(20px);
+					margin-bottom: toRem(45px);
+					margin-top: toRem(15px);
+					// margin-top: toRem(20px);
 					// padding-top: toRem(40px);
 				}
 			}
@@ -344,8 +346,8 @@
 			text-align: right;
 			font-size: toRem(14px);
 			line-height: toRem(18px);
-			margin-right: toRem(8px);
-			font-weight: bold;
+			margin: 0;
+			// font-weight: bold;
 		}
 
 		.comp-body {
@@ -437,14 +439,7 @@
 	}
 
 	&.comp-teeth {
-		pointer-events: none;
-		justify-content: flex-start;
-
 		&.comp-horizontal {
-			// flex-grow: 1;
-			align-items: flex-start;
-
-
 			.dotline {
 				padding-left: toRem(4px);
 				--dotline-dot-sizeX: #{toRem(18px)};
@@ -494,9 +489,10 @@
 
 		&.comp-vertical {
 			justify-content: flex-start;
-			align-items: flex-end;
+			align-items: center;
 			height: 100%;
-			margin: 0 toRem(24px);
+			margin: 0;
+			flex-grow: 0.5;
 
 			.comp-body{ top: toRem(-5px) }
 
@@ -520,6 +516,13 @@
 	&.comp-coins, &.comp-stash {
 		margin-bottom: 4px;
 		pointer-events: none;
+
+		&.comp-coins {
+			margin: 0px;
+			justify-content: space-evenly;
+
+			.comp-body { flex-shrink: 0.5; min-height: unset; margin-top: 5px;}
+		}
 		.dotline {
 			--dotline-dot-size: #{toRem(18px)};
 			--dotline-dot-spacing: -2px;

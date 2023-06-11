@@ -8,7 +8,7 @@ import BladesItem from "./blades-item.js";
 import type BladesActiveEffect from "./blades-active-effect";
 import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs.js";
 
-
+// https://foundryvtt.wiki/en/development/guides/polymorphism-actors-items
 declare abstract class BladesDoc {
 	// static CategoryTypes: Record<string, BladesActorType|BladesItemType>;
 	// static CategoryFilters: Record<string, <T extends BladesActor|BladesItem|EmbeddedBladesActor|EmbeddedBladesItem>(items: T[]) => T[]>;

@@ -6,6 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import BladesSheet from "./blades-sheet.js";
+import Tagify from "../../lib/tagify/tagify.esm.js";
 class BladesNPCSheet extends BladesSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -26,6 +27,14 @@ class BladesNPCSheet extends BladesSheet {
         super.activateListeners(html);
         if (!this.options.editable) {
             return;
+        }
+
+        const inputElement = document.querySelector('input[name="data.harm.heavy.one"]');
+        if (inputElement instanceof HTMLInputElement) {
+            new Tagify(inputElement, {});
+        }
+        else {
+            console.log("Not an HTMLInputElement");
         }
 
         html.find("[data-action=\"randomize\"").on("click", (event) => {

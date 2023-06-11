@@ -1,6 +1,7 @@
 
 import BladesSheet from "./blades-sheet.js";
 import type BladesActor from "../blades-actor.js";
+import Tagify from "../../lib/tagify/tagify.esm.js";
 
 class BladesNPCSheet extends BladesSheet {
 
@@ -30,6 +31,10 @@ class BladesNPCSheet extends BladesSheet {
 
 		// Everything below here is only needed if the sheet is editable
 		if (!this.options.editable) {return}
+
+		//~ Configure Tagify input elements
+		const inputElement = document.querySelector('input[name="data.harm.heavy.one"]');
+		if (inputElement instanceof HTMLInputElement) { new Tagify(inputElement, {}) } else { console.log("Not an HTMLInputElement")}
 
 		//~ Enable Randomize Button for NPCs
 		// if ((this.actor as BladesActor).system.type === "npc") {

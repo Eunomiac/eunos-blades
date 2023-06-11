@@ -2,30 +2,41 @@
 	min-width: 775px;
 	min-height: 800px;
 
-	section.sheet-top {
-		grid-template-areas:
-			". . title title title title title title playbook playbook playbook"
-			". . members members members members members members members members . "
-			". . reputation reputation preferred-op preferred-op tier tier coins coins . ";
+	.window-content {
+		form.editable {
+			.sheet-root {
+				> section {
 
-		.sheet-title {
-			--sheet-title-font-size: #{toRem(48px)};
-			overflow: visible;
-			position: relative;
-			width: fit-content;
-			z-index: 4
-		}
+					&.sheet-top {
+						grid-template-areas:
+							". . title title title title title title playbook playbook playbook"
+							". . members members members members members members members members . "
+							". . reputation reputation preferred-op preferred-op tier tier coins coins . ";
 
-		.comp-playbook { grid-area: playbook }
-		.comp-reputation { grid-area: reputation }
-		.comp-preferred-op { grid-area: preferred-op }
-		.comp-tier { grid-area: tier }
-		.comp-coins { grid-area: coins }
-		.members {
-			grid-area: members;
-			position: relative;
-			justify-content: flex-start;
-			// height: toRem(80px);
+						.sheet-title {
+							--sheet-title-font-size: #{toRem(48px)};
+							// overflow: visible;
+							// position: relative;
+							// width: fit-content;
+							// z-index: 4
+						}
+
+						.comp-playbook { grid-area: playbook }
+						.comp-reputation { grid-area: reputation }
+						.comp-preferred-op { grid-area: preferred-op }
+						.comp-tier { grid-area: tier }
+						.comp-coins { grid-area: coins }
+						.members {
+							grid-area: members;
+							// position: relative;
+							// justify-content: flex-start;
+							// height: toRem(80px);
+						}
+					}
+				}
+
+				.turf-list { @import "../components/turf-block" }
+			}
 		}
 	}
 }

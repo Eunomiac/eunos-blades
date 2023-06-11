@@ -56,6 +56,7 @@ class BladesCrewSheet extends BladesSheet {
 
 		const holdData = {
 			name: "Hold",
+			displayVal:  U.uCase(this.actor.system.hold),
 			radioControl: {
 				target: "system.hold",
 				value: this.actor.system.hold,

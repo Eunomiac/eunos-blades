@@ -34,14 +34,13 @@
 
 		.comp-trauma {
 			.dotline {
-				// --frame-color-full: var(--blades-red);
 				--fill-color-full: var(--blades-red-bright);
 			}
 		}
 
 		.comp-trauma-conditions {
 			min-width: toRem(300px);
-			margin-right: toRem(10px);
+			margin-right: toRem(4px);
 		}
 	}
 

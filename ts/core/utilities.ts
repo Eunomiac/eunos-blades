@@ -955,6 +955,13 @@ const getDynamicFunc = (funcName: string, func: (...args: unknown[]) => unknown,
 	}
 	return false;
 };
+
+const withLog = (fn: (...args: unknown[]) => unknown) => {
+	return (...args: unknown[]) => {
+		console.log(`calling ${fn.name}`);
+		return fn(...args);
+	};
+};
 // #endregion ▄▄▄▄▄ FUNCTIONS ▄▄▄▄▄
 
 // #region ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████ ~
@@ -1187,7 +1194,7 @@ export default {
 	objClone, objMerge, objExpand, objFlatten, objNullify,
 
 	// ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████
-	getDynamicFunc,
+	getDynamicFunc, withLog,
 
 	// ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
 	// ░░░░░░░ GreenSock ░░░░░░░

@@ -5,6 +5,8 @@
 @import './core/mixins';
 @import './fonts.scss';
 
+
+
 :root, * {
 	scrollbar-color: var(--blades-white) var(--blades-black);
 	scrollbar-width: thin;
@@ -95,6 +97,19 @@
 			@import "./core/reset";
 			@import './core/globals';
 
+			// Third-Party Library Inputs
+			@import './tagify/tagify';
+
+			// Tagify Configuration
+			.tagify {
+				--tag-bg: var(--blades-black);
+				--tag-text-color: var(--color-default);
+
+				.tag-color-green {
+					--tag-bg: rgba(0, 150, 0, 0.6);
+				}
+			}
+
 			.editor:not(.tinymce) {
 				position: relative;
 				overflow-x: hidden;
@@ -141,9 +156,7 @@
 					}
 
 					&.crew {
-						// @import 'import/crew-sheet';
 						@import './sheets/crew-sheet';
-						// @import './sheets/pc-sheet';
 					}
 				}
 

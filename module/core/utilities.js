@@ -891,6 +891,12 @@ const getDynamicFunc = (funcName, func, context) => {
     }
     return false;
 };
+const withLog = (fn) => {
+    return (...args) => {
+        console.log(`calling ${fn.name}`);
+        return fn(...args);
+    };
+};
 
 const set = (targets, vars) => gsap.set(targets, vars);
 function get(target, property, unit) {
@@ -1071,7 +1077,7 @@ export default {
     remove, replace, partition,
     objClean, objMap, objFindKey, objFilter, objForEach, objCompact,
     objClone, objMerge, objExpand, objFlatten, objNullify,
-    getDynamicFunc,
+    getDynamicFunc, withLog,
 
     gsap, get, set, getGSAngleDelta,
     getRawCirclePath, drawCirclePath,

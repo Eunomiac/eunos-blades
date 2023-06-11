@@ -1,10 +1,10 @@
 
-import C, {BladesActorType, BladesItemType} from "../core/constants.js";
+import C, {District} from "../core/constants.js";
 import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
-import BladesActiveEffect from "../blades-active-effect.js";
 import BladesItem from "../blades-item.js";
 import BladesActor from "../blades-actor.js";
+import Tagify from "../../lib/tagify/tagify.esm.js";
 
 class BladesActorSheet extends BladesSheet {
 
@@ -322,6 +322,28 @@ class BladesActorSheet extends BladesSheet {
 			mouseleave: function() {
 				if (!self.activeArmor.includes("special") || self.activeArmor.length === 1) { return }
 				$(this).siblings(".svg-armor.armor-special").removeClass("hover-over");
+			}
+		});
+
+		//~ Tagify Experiments
+		const tagTest = new Tagify(html.find("input[name='data.harm.heavy.one']")[0], {
+			// id: "actorSheetTest",
+			// enforceWhitelist: true,
+			// editTags: false,
+			// mode: "select",
+			// userInput: false,
+			whitelist : [
+				{"value": District.Barrowcleft, "class": "tag-color-green"},
+				{"value": District.Brightstone, "class": "tag-color-green"},
+				{"value": District.Charhollow, "class": "tag-color-green"}
+			],
+			dropdown : {
+				classname     : "color-blue",
+				enabled       : 0,              // show the dropdown immediately on focus
+				maxItems      : 5,
+				position      : "text",         // place the dropdown near the typed text
+				closeOnSelect : true,          // keep the dropdown open after selecting a suggestion
+				highlightFirst: true
 			}
 		});
 	}
