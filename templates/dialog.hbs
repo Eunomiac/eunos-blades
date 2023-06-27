@@ -1,7 +1,6 @@
 {{log "THIS" this}}
 <div class="{{cssClass}} dialog-content">
 	<section class="tab-content nav-group flex-vertical">
-
 		{{#if (test (count tabs) ">" 1)}}
 		{{!-- Nav menu --}}
 		<nav class="nav-tabs flex-horizontal">
@@ -12,10 +11,10 @@
 		{{/if}}
 
 		{{!-- Tabs --}}
-		{{#each tabs as |tabData tabName|}}
+		{{#each tabs as |tabItems tabName|}}
 		<div class="tab flex-horizontal flex-wrap {{~#unless (test (count ../tabs) ">" 1)}} active{{/unless}}" data-tab="{{@index}}">
-			{{#each tabData.featured as |item|}}
-				<div class="comp comp-vertical featured-item">
+			{{#each tabItems as |item|}}
+				<div class="comp comp-vertical {{item.dialogClass}}">
 					<div class="comp-body" data-item-id="{{item._id}}">
 						<img src="{{item.img}}" />
 						<div class="comp-title shadowed">{{item.name}}</div>
@@ -24,30 +23,10 @@
 						{{/if}}
 					</div>
 					{{#if item.tooltip}}
-					<div class="tooltip {{~#if (test ../../category "==" "playbook")}} playbook-tooltip{{/if}}">
-						{{{item.tooltip}}}
-					</div>
+					<div class="tooltip">{{{item.tooltip}}}</div>
 					{{/if}}
 				</div>
 			{{/each}}
-
-			{{#each tabData.other as |item|}}
-			<div class="comp comp-vertical">
-				<div class="comp-body" data-item-id="{{item._id}}">
-					<img src="{{item.img}}" />
-					<div class="comp-title shadowed">{{item.name}}</div>
-					{{#if item.system.load}}
-					<div class="number-circle">{{item.system.load}}</div>
-					{{/if}}
-				</div>
-				{{#if item.tooltip}}
-				<div class="tooltip {{~#if (test ../../category "==" "playbook")}} playbook-tooltip{{/if}}">
-					{{{item.tooltip}}}
-				</div>
-				{{/if}}
-			</div>
-			{{/each}}
-
 		</div>
 		{{/each}}
 	</section>

@@ -77,8 +77,8 @@ class BladesDialog extends Dialog {
 
 	async _createActorTabs(tabs: Record<string, (a: BladesActor) => boolean>) {
 		eLog.checkLog3("actorFetch", `BladesDialog._createActorTabs() --- cat = ${this.category}`);
-		const allCategoryActors = BladesActor.GetPersonalGlobalCategoryActors(this.category as keyof typeof BladesActor.CategoryTypes, this.doc as BladesActor);
-		const validatedActors: Array<BladesActor|null> = allCategoryActors.map((actor) => (actor.isValidForDoc(this.doc) ? actor : null));
+		const allCategoryActors = BladesActor.GetPersonalGlobalCategoryActors(this.category as keyof typeof BladesActor.CategoryTypes, this.parentDoc as BladesActor);
+		const validatedActors: Array<BladesActor|null> = allCategoryActors.map((actor) => (actor.isValidForDoc(this.parentDoc) ? actor : null));
 		const validActors: BladesActor[] = this._filterUniqueActors(validatedActors.filter((actor): actor is BladesActor => actor !== null));
 		this.tabs = Object.fromEntries((Object.entries(tabs))
 			.map(([tabName, tabFilter]) => [
@@ -87,9 +87,9 @@ class BladesDialog extends Dialog {
 			]));
 	}
 	async _createItemTabs(tabs: Record<string,(i: BladesItem) => boolean>) {
-		const allCategoryItems = await BladesItem.GetGlobalCategoryItems(this.category as keyof typeof BladesItem.CategoryTypes, this.doc as BladesActor);
+		const allCategoryItems = await BladesItem.GetGlobalCategoryItems(this.category as keyof typeof BladesItem.CategoryTypes, this.parentDoc as BladesActor);
 		const validatedItems: Array<BladesItem|null> = await Promise.all(allCategoryItems.map(async (item) => {
-			return (await item.isValidForDoc(this.doc)) ? item : null;
+			return (await item.isValidForDoc(this.parentDoc)) ? item : null;
 		}));
 		const validItems: BladesItem[] = validatedItems.filter((item): item is BladesItem => item !== null);
 		this.tabs = Object.fromEntries((Object.entries(tabs))
@@ -120,7 +120,7 @@ class BladesDialog extends Dialog {
 		}
 	}
 
-	doc: BladesActor|BladesItem;
+	parentDoc: BladesActor|BladesItem;
 	category: keyof typeof BladesActor.CategoryTypes|keyof typeof BladesItem.CategoryTypes;
 	callback: (docID: string) => Promise<void>;
 
@@ -145,10 +145,12 @@ class BladesDialog extends Dialog {
 	}
 
 	constructor(data: BladesDialog.Data, options?: Partial<BladesDialog.Options>) {
-		eLog.checkLog4("dialog", "[BladesDialog] constructor(data)", {...data});
+		// eLog.checkLog4("dialog", "[BladesDialog] constructor(data)", {...data});
 		super(data, options);
-		eLog.checkLog4("dialog", "[BladesDialog] super(data)", {...data});
-		this.doc = data.doc;
+		// eLog.checkLog4("dialog", "[BladesDialog] super(data)", {...data});
+
+
+		this.parentDoc = data.doc;
 		this.category = data.category;
 		this.callback = data.callback;
 	}

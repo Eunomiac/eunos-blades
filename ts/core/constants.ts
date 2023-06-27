@@ -4,6 +4,32 @@ export enum BladesActorType {
 	crew = "crew"
 }
 
+export enum BladesItemType {
+	ability = "ability",
+	background = "background",
+	clock_keeper = "clock_keeper",
+	cohort = "cohort",
+	crew_ability = "crew_ability",
+	crew_reputation = "crew_reputation",
+	crew_playbook = "crew_playbook",
+	crew_upgrade = "crew_upgrade",
+	faction = "faction",
+	feature = "feature",
+	gm_tracker = "gm_tracker",
+	heritage = "heritage",
+	item = "item",
+	playbook = "playbook",
+	preferred_op = "preferred_op",
+	stricture = "stricture",
+	vice = "vice"
+}
+
+export enum BladesActorCategory {
+	vice_purveyor = "vice_purveyor",
+	acquaintance = "acquaintance",
+	rival = "rival"
+}
+
 export enum District {
 	Barrowcleft = "Barrowcleft",
 	Brightstone = "Brightstone",
@@ -24,26 +50,6 @@ export enum District {
 	"Old North Port" = "Old North Port",
 	Deathlands = "Deathlands"
 
-}
-
-export enum BladesItemType {
-	ability = "ability",
-	background = "background",
-	clock_keeper = "clock_keeper",
-	cohort = "cohort",
-	crew_ability = "crew_ability",
-	crew_reputation = "crew_reputation",
-	crew_playbook = "crew_playbook",
-	crew_upgrade = "crew_upgrade",
-	faction = "faction",
-	feature = "feature",
-	gm_tracker = "gm_tracker",
-	heritage = "heritage",
-	item = "item",
-	playbook = "playbook",
-	preferred_op = "preferred_op",
-	stricture = "stricture",
-	vice = "vice"
 }
 
 export enum Attributes {
@@ -120,6 +126,16 @@ export enum Playbook {
 	Vampire = "Vampire",
 	Hull = "Hull",
 	Ghost = "Ghost"
+}
+
+export enum Tag {
+	Archived = "Archived",
+	Fine = "Fine",
+	Featured = "Featured",
+	General = "General",
+	ViceOverride = "ViceOverride",
+	BasicPlaybook = "BasicPlaybook",
+	AdvancedPlaybook = "AdvancedPlaybook"
 }
 
 

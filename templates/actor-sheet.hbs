@@ -319,12 +319,12 @@
 
 					{{#each data.attributes as |attribute_data attribute_name|}}
 					<div class="comp comp-horizontal comp-attribute">
-						<div class="clock-container">
+						{{!-- <div class="clock-container">
 								{{> "systems/eunos-blades/templates/components/clock.hbs"
 									data=(lookup ../attributes attribute_name)
 								}}
 							</td>
-						</div>
+						</div> --}}
 						<label class="comp-label" data-roll-attribute="{{attribute_name}}">{{case "title" attribute_name}}</label>
 						<div class="comp-body">
 							{{> "systems/eunos-blades/templates/parts/dotline.hbs"

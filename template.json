@@ -176,7 +176,7 @@
 				"world_name": "",
 				"rules": "",
 				"rules_notes": "",
-				"isArchived": false
+				"tags": []
 			},
 			"customizable": {
 				"description": ""

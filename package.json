@@ -18,6 +18,7 @@
 	"license": "",
 	"private": true,
 	"devDependencies": {
+		"@yaireo/tagify": "^4.17.8",
 		"@league-of-foundry-developers/foundry-vtt-types": "^9.280.0",
 		"@tsconfig/node16": "^1.0.3",
 		"@types/jquery": "^3.5.14",
@@ -60,8 +61,6 @@
 		"typescript": "^4.8.4"
 	},
 	"dependencies": {
-		"@types/yaireo__tagify": "^4.17.0",
-		"@yaireo/tagify": "^4.17.8",
 		"tinymce": "^6.2.0"
 	},
 	"repository": {

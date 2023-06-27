@@ -1,10 +1,12 @@
 
-import C, {District} from "../core/constants.js";
+import C, {BladesItemType, District} from "../core/constants.js";
 import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesItem from "../blades-item.js";
 import BladesActor from "../blades-actor.js";
 import Tagify from "../../lib/tagify/tagify.esm.js";
+import ConstructorDataType from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
+import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
 class BladesActorSheet extends BladesSheet {
 
@@ -49,12 +51,9 @@ class BladesActorSheet extends BladesSheet {
 			// }
 			if (type === "Item") {
 				const droppedItemId = uuid.replace(/^Item\./, "");
-				const droppedItem = await BladesItem.GetGlobal(droppedItemId);
+				const droppedItem = BladesItem.Get(droppedItemId);
 				if (!droppedItem) { return }
-				if (!(droppedItem.type in BladesItem.CategoryDefaults)) { return }
-				const category = BladesItem.CategoryDefaults[droppedItem.type];
-				if (!category) { return }
-				BladesItem.Embed(droppedItem, category, actor);
+				BladesItem.create([droppedItem] as unknown as ItemDataConstructorData, {parent: actor});
 				return;
 			}
 		});
@@ -81,19 +80,19 @@ class BladesActorSheet extends BladesSheet {
 
 		//~ Assemble embedded actors and items
 		const items = {
-			abilities: await BladesItem.GetActiveCategoryItems("ability", this.actor),
-			background: (await BladesItem.GetActiveCategoryItems("background", this.actor))[0],
-			heritage: (await BladesItem.GetActiveCategoryItems("heritage", this.actor))[0],
+			abilities: this.actor.activeItems.filter((item) => item.type === BladesItemType.ability),
+			background: this.actor.activeItems.find((item) => item.type === BladesItemType.background),
+			heritage: this.actor.activeItems.find((item) => item.type === BladesItemType.heritage),
 			vice: (this.actor.system.vice.override && JSON.parse(this.actor.system.vice.override as string))
-				|| (await BladesItem.GetActiveCategoryItems("vice", this.actor))[0],
-			loadout: await BladesItem.GetActiveCategoryItems("item", this.actor),
-			playbook: (await BladesItem.GetActiveCategoryItems("playbook", this.actor))[0]
+				|| this.actor.activeItems.find((item) => item.type === BladesItemType.vice),
+			loadout: this.actor.activeItems.filter((item) => item.type === BladesItemType.item),
+			playbook: this.actor.playbook
 		};
 		const actors = {
-			crew: BladesActor.GetActiveEmbeddedCategoryActors("pc-crew", this.actor)[0],
-			vice_purveyor: BladesActor.GetActiveEmbeddedCategoryActors("vice_purveyor", this.actor)[0],
-			acquaintances: BladesActor.GetActiveEmbeddedCategoryActors("acquaintance", this.actor),
-			rivals: BladesActor.GetActiveEmbeddedCategoryActors("rival", this.actor)
+			// crew: BladesActor.GetActiveEmbeddedCategoryActors("pc-crew", this.actor)[0],
+			// vice_purveyor: BladesActor.GetActiveEmbeddedCategoryActors("vice_purveyor", this.actor)[0],
+			// acquaintances: BladesActor.GetActiveEmbeddedCategoryActors("acquaintance", this.actor),
+			// rivals: BladesActor.GetActiveEmbeddedCategoryActors("rival", this.actor)
 		};
 
 		//~ Assign dotlines to abilities with usage data

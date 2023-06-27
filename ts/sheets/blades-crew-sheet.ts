@@ -32,15 +32,15 @@ class BladesCrewSheet extends BladesSheet {
 
 		//~ Assemble embedded actors and items
 		const items = {
-			abilities: await BladesItem.GetActiveCategoryItems("crew_ability", this.actor),
-			playbook: (await BladesItem.GetActiveCategoryItems("crew_playbook", this.actor))[0],
-			reputation: (await BladesItem.GetActiveCategoryItems("crew_reputation", this.actor))[0],
-			upgrades: await BladesItem.GetActiveCategoryItems("crew_upgrade", this.actor),
-			cohorts: await BladesItem.GetActiveCategoryItems("cohort", this.actor),
-			preferredOp: (await BladesItem.GetActiveCategoryItems("preferred_op", this.actor))[0]
+			abilities: this.actor.activeItems.filter((item) => item.type === BladesItemType.crew_ability),
+			playbook: this.actor.playbook,
+			reputation: this.actor.activeItems.find((item) => item.type === BladesItemType.crew_reputation),
+			upgrades: this.actor.activeItems.filter((item) => item.type === BladesItemType.crew_upgrade),
+			cohorts: this.actor.activeItems.filter((item) => item.type === BladesItemType.cohort),
+			preferredOp: this.actor.activeItems.find((item) => item.type === BladesItemType.preferred_op)
 		};
 		const actors = {
-			members: await BladesActor.GetActiveEmbeddedCategoryActors("crew-pc", this.actor)
+			// members: await BladesActor.GetActiveEmbeddedCategoryActors("crew-pc", this.actor)
 		};
 		const tierData = {
 			label: "Tier",

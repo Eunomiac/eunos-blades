@@ -474,13 +474,11 @@ html, :root {
           text-transform: lowercase;
           text-align: right;
           padding-right: toRem(4px);
-          margin-bottom: toRem(40px);
           margin-bottom: toRem(45px);
           margin-top: toRem(15px); }
     html .comp.comp-horizontal, :root .comp.comp-horizontal {
       flex-direction: row;
       justify-content: flex-start;
-      align-items: center;
       align-items: flex-start; }
       html .comp.comp-horizontal .comp-button.comp-delete, :root .comp.comp-horizontal .comp-button.comp-delete {
         left: toRem(5px);
@@ -1128,13 +1126,11 @@ html, :root {
             text-transform: lowercase;
             text-align: right;
             padding-right: 0.25rem;
-            margin-bottom: 2.5rem;
             margin-bottom: 2.8125rem;
             margin-top: 0.9375rem; }
       html .comp.comp-horizontal, :root .comp.comp-horizontal {
         flex-direction: row;
         justify-content: flex-start;
-        align-items: center;
         align-items: flex-start; }
         html .comp.comp-horizontal .comp-button.comp-delete, :root .comp.comp-horizontal .comp-button.comp-delete {
           left: 0.3125rem;

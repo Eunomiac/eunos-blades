@@ -1113,13 +1113,11 @@ template {
         text-transform: lowercase;
         text-align: right;
         padding-right: 0.25rem;
-        margin-bottom: 2.5rem;
         margin-bottom: 2.8125rem;
         margin-top: 0.9375rem; }
   :root .comp.comp-horizontal, :root * .comp.comp-horizontal {
     flex-direction: row;
     justify-content: flex-start;
-    align-items: center;
     align-items: flex-start; }
     :root .comp.comp-horizontal .comp-button.comp-delete, :root * .comp.comp-horizontal .comp-button.comp-delete {
       left: 0.3125rem;
@@ -1755,13 +1753,11 @@ template {
             text-transform: lowercase;
             text-align: right;
             padding-right: 0.25rem;
-            margin-bottom: 2.5rem;
             margin-bottom: 2.8125rem;
             margin-top: 0.9375rem; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-horizontal {
         flex-direction: row;
         justify-content: flex-start;
-        align-items: center;
         align-items: flex-start; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-horizontal .comp-button.comp-delete {
           left: 0.3125rem;
@@ -3147,7 +3143,6 @@ template {
           text-transform: lowercase;
           text-align: right;
           padding-right: 0.25rem;
-          margin-bottom: 2.5rem;
           margin-bottom: 2.8125rem;
           margin-top: 0.9375rem; }
     :root body.vtt.game.system-eunos-blades #interface .comp.comp-horizontal,
@@ -3157,7 +3152,6 @@ template {
     :root body.vtt.game.system-eunos-blades #players .comp.comp-horizontal {
       flex-direction: row;
       justify-content: flex-start;
-      align-items: center;
       align-items: flex-start; }
       :root body.vtt.game.system-eunos-blades #interface .comp.comp-horizontal .comp-button.comp-delete,
       :root body.vtt.game.system-eunos-blades #controls .comp.comp-horizontal .comp-button.comp-delete,
@@ -4609,7 +4603,6 @@ template {
           text-transform: lowercase;
           text-align: right;
           padding-right: 0.25rem;
-          margin-bottom: 2.5rem;
           margin-bottom: 2.8125rem;
           margin-top: 0.9375rem; }
     :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-horizontal,
@@ -4619,7 +4612,6 @@ template {
     :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-horizontal {
       flex-direction: row;
       justify-content: flex-start;
-      align-items: center;
       align-items: flex-start; }
       :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-horizontal .comp-button.comp-delete,
       :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-horizontal .comp-button.comp-delete,
@@ -5715,13 +5707,11 @@ template {
             text-transform: lowercase;
             text-align: right;
             padding-right: 0.25rem;
-            margin-bottom: 2.5rem;
             margin-bottom: 2.8125rem;
             margin-top: 0.9375rem; }
       :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-horizontal {
         flex-direction: row;
         justify-content: flex-start;
-        align-items: center;
         align-items: flex-start; }
         :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-horizontal .comp-button.comp-delete {
           left: 0.3125rem;
@@ -6725,7 +6715,7 @@ template {
         left: 0px; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root > section {
           border-top: 2px solid var(--blades-white);
-          border-bottom: none !important; }
+          border-bottom: none; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section {
           z-index: 2; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.sheet-top {
@@ -6765,18 +6755,9 @@ template {
             justify-content: space-between;
             align-items: stretch;
             flex-wrap: nowrap;
-            border-top: 2px solid var(--blades-white);
-            border-bottom: 2px solid var(--blades-white);
-            background: linear-gradient(to bottom, var(--blades-white), transparent 25%);
-            background: transparent;
             position: relative;
-            width: calc(100% + (2 * var(--content-padding)));
-            height: 3.75rem;
-            left: calc(-1 * var(--content-padding));
-            padding: 0 var(--content-padding); }
+            height: 3.75rem; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group {
-            height: 100%;
-            justify-content: flex-start;
             border: 0;
             overflow: hidden; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group > * {
@@ -6785,9 +6766,6 @@ template {
               background-color: var(--blades-grey-bright);
               border: 2px solid var(--blades-white);
               padding: 0 0.625rem;
-              width: 100%;
-              height: 1.625rem;
-              min-height: 1.625rem;
               overflow: visible;
               align-items: center;
               justify-content: space-around; }
@@ -6797,13 +6775,10 @@ template {
                 font-family: Kirsty;
                 line-height: 1.25rem;
                 transition: 0.25s;
-                transform-origin: center center;
                 white-space: nowrap; }
                 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group > .nav-tabs.flex-horizontal .tab-selector.active {
                   background: linear-gradient(to right, transparent, var(--blades-white-bright) 25%, var(--blades-white-bright) 75%, transparent);
-                  transform: scale(1.2);
-                  position: relative;
-                  z-index: 2; }
+                  transform: scale(1.2); }
                 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group > .nav-tabs.flex-horizontal .tab-selector:hover:not(.active) {
                   color: var(--blades-black-dark);
                   transform: scale(1.2);
@@ -6818,15 +6793,11 @@ template {
               :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group .tab[data-tab].active {
                 display: block; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .tab-label {
-      display: block;
       background: var(--blades-grey);
       position: relative;
       height: 1.5rem;
-      width: calc(100% + var(--content-padding));
-      left: calc(-1 * var(--content-padding));
       margin-bottom: 0.3125rem;
       display: flex;
-      justify-content: space-between;
       justify-content: flex-start;
       align-items: center; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .tab-label .tab-title {

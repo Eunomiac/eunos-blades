@@ -296,7 +296,9 @@ registerDebugger();
 				crew: ({pcSheetElem}: {pcSheetElem?: JQuery<HTMLElement>}) => ({top: clientTop, left: (pcSheetElem?.position()?.left ?? 0) + (pcSheetElem?.width() ?? 0)}),
 				npc: ({height, width}: {height: number, width: number}) => ({top: (clientTop + clientHeight) - height, left: (clientLeft + clientWidth) - width})
 			};
-			const pc = (await BladesActor.GetPersonalGlobalCategoryActors(BladesActorType.pc)).shift();
+			const pc = BladesActor.GetTypeWithTags(BladesActorType.pc).shift();
+			const crew = BladesActor.GetTypeWithTags(BladesActorType.crew).shift();
+			const npc = BladesActor.GetTypeWithTags(BladesActorType.npc).shift();
 
 			if (pc) {
 				Object.assign(globalThis, pc);
@@ -304,14 +306,12 @@ registerDebugger();
 					pc.sheet.render(true);
 				}
 			}
-			const crew = (await BladesActor.GetPersonalGlobalCategoryActors(BladesActorType.crew)).shift();
 			if (crew) {
 				Object.assign(globalThis, crew);
 				if (crew.sheet) {
 					crew.sheet.render(true);
 				}
 			}
-			const npc = (await BladesActor.GetPersonalGlobalCategoryActors(BladesActorType.npc)).shift();
 			if (npc) {
 				Object.assign(globalThis, npc);
 				if (npc.sheet) {

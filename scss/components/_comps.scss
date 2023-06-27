@@ -301,10 +301,7 @@
 				img {
 					height: toRem(120px);
 					width: auto;
-					// top: toRem(50px);
 					opacity: 1;
-					// left: unset;
-					// right: calc(-1 * var(--content-padding));
 					filter: blur(1px);
 					position: absolute;
 				}
@@ -318,17 +315,10 @@
 					text-transform: lowercase;
 					text-align: right;
 					padding-right: toRem(4px);
-					margin-bottom: toRem(40px);
 					margin-bottom: toRem(45px);
 					margin-top: toRem(15px);
-					// margin-top: toRem(20px);
-					// padding-top: toRem(40px);
 				}
 			}
-
-		// .comp-button.comp-delete {
-		// 	margin: -7% 0 7% 0;
-		// }
 		}
 
 	}
@@ -336,8 +326,6 @@
 	&.comp-horizontal {
 		flex-direction: row;
 		justify-content: flex-start;
-		// flex-grow: 0.5;
-		align-items: center;
 		align-items: flex-start;
 
 		.comp-button.comp-delete { left: toRem(5px); top: 0; }
@@ -347,7 +335,6 @@
 			font-size: toRem(14px);
 			line-height: toRem(18px);
 			margin: 0;
-			// font-weight: bold;
 		}
 
 		.comp-body {
@@ -417,23 +404,11 @@
 					hyphens: auto;
 					text-align: justify;
 					padding: 0 toRem(5px) 0 0;
-					// padding: 0 toRem(5px);
-					// justify-content: stretch;
-					// align-items: flex-start;
 					line-height: var(--line-height-compact);
 					flex-grow: 1;
 
 					p:not(:last-of-type) { margin-bottom: 6px }
 				}
-			}
-
-			.comp-control.comp-delete {
-				// align-self: flex-start;
-				// color: var(--blades-grey);
-				// width: toRem(20px);
-				// flex-shrink: 0;
-				// text-align: center;
-
 			}
 		}
 	}

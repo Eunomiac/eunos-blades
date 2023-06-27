@@ -1,14 +1,12 @@
 import U from "../core/utilities.js";
 import G from "../core/gsap.js";
+import {Tag} from "../core/constants.js";
+import BladesActor, {SelectionCategory} from "../blades-actor.js";
 import BladesItem from "../blades-item.js";
-import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
-import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import BladesActor from "../blades-actor.js";
 import EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs.js";
 import {ToObjectFalseType} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
 import BladesDialog from "../blades-dialog.js";
 import BladesActiveEffect from "../blades-active-effect.js";
-import {BladesActorType, BladesItemType} from "../core/constants.js";
 
 declare global {
 	class BladesSheet<
@@ -41,88 +39,9 @@ class BladesSheet extends ActorSheet {
 		event.preventDefault();
 
 		const dataElem$ = $(event.currentTarget).closest(".comp");
-		const doc_cat = dataElem$.data("compCat") as keyof typeof BladesItem.CategoryTypes|keyof typeof BladesActor.CategoryTypes;
-		const doc_type = doc_cat in BladesItem.CategoryTypes
-			? BladesItem.CategoryTypes[doc_cat as keyof typeof BladesItem.CategoryTypes]
-			: BladesActor.CategoryTypes[doc_cat as keyof typeof BladesActor.CategoryTypes];
+		const doc_cat = dataElem$.data("compCat") as SelectionCategory;
 
-		const initialParams = [
-			this.actor,
-			U.tCase(`Add ${doc_type.replace(/_/g, " ")}`),
-			doc_cat
-		] as const;
-
-		switch (doc_cat) {
-			case "playbook": {
-				await BladesDialog.Display(
-					...initialParams,
-					async (itemId) => { BladesItem.Embed(itemId, doc_cat, this.actor) },
-					{
-						["Basic Playbooks"]: (item: BladesItem) => !["Ghost", "Hull", "Vampire"].includes(item.system.world_name),
-						["Advanced Playbooks"]: (item: BladesItem) => ["Ghost", "Hull", "Vampire"].includes(item.system.world_name)
-					}
-				);
-				break;
-			}
-			case "item":
-			case "crew_upgrade": {
-				await BladesDialog.Display(
-					...initialParams,
-					async (itemId) => { BladesItem.Embed(itemId, doc_cat, this.actor) },
-					{
-						[`${this.actor.playbookName} Items`]: (item: BladesItem) => {
-							return Boolean(item.playbooks?.includes(this.actor.playbookName ?? ""));
-						},
-						"General Items": (item: BladesItem) => Boolean(item.playbooks?.includes("ANY"))
-					},
-					{
-						[`${this.actor.playbookName} Items`]: (item: BladesItem) => item.name!.startsWith("Fine"),
-						"General Items": (item: BladesItem) => ["Armor", "Armor_Heavy"].includes(item.system.world_name ?? "")
-					},
-					{
-						[`${this.actor.playbookName} Items`]: true,
-						"General Items": false
-					}
-				);
-				break;
-			}
-			case "ability":
-			case "crew_ability": {
-				if (!this.actor.playbookName) { return }
-				await BladesDialog.Display(
-					...initialParams,
-					async (itemId) => { BladesItem.Embed(itemId, doc_cat, this.actor) },
-					{
-						[this.actor.playbookName]: (item: BladesItem) => Boolean(item.playbooks?.includes(this.actor.playbookName ?? "")),
-						Veteran: (item: BladesItem) => ![this.actor.playbookName!, "Ghost", "Vampire", "Hull"].some((pbName) => item.playbooks.includes(pbName))
-					},
-					{
-						[this.actor.playbookName]: (item: BladesItem) => this.actor.playbook!.system.suggested_ability === item.name
-					},
-					{
-						[this.actor.playbookName]: true
-					}
-				);
-				break;
-			}
-			default: {
-				if (doc_cat in BladesItem.CategoryTypes) {
-					await BladesDialog.Display(
-						...initialParams,
-						async (itemId) => { BladesItem.Embed(itemId, doc_cat as keyof typeof BladesItem.CategoryTypes, this.actor) }
-					);
-				} else if (doc_cat in BladesActor.CategoryTypes) {
-					await BladesDialog.Display(
-						...initialParams,
-						async (actorId) => { BladesActor.Embed(actorId, doc_cat as keyof typeof BladesActor.CategoryTypes, this.actor) }
-					);
-				} else {
-					throw new Error(`[BladesSheet.addItem] Unrecognized Doc Category: '${doc_cat}'`);
-				}
-				break;
-			}
-			// no default
-		}
+		// await BladesDialog.Display(this.actor, U.tCase(`Add ${doc_type.replace(/_/g, " ")}`), doc_cat);
 	}
 
 
@@ -273,7 +192,11 @@ class BladesSheet extends ActorSheet {
 		const dataElem$ = $(event.currentTarget).closest(".comp");
 		const docID = dataElem$.data("compId");
 
-		G.effects.blurRemove(dataElem$).then(() => this.actor.removeDoc(docID));
+		const item = this.actor.items.get(docID);
+
+		if (!item) { return }
+
+		G.effects.blurRemove(dataElem$).then(() => item.addTag(Tag.Archived));
 	}
 
 	async _onItemFullRemoveClick(event: ClickEvent) {
@@ -284,7 +207,7 @@ class BladesSheet extends ActorSheet {
 		const dataElem$ = $(event.currentTarget).closest(".comp");
 		const docID = dataElem$.data("compId");
 
-		G.effects.blurRemove(dataElem$).then(() => this.actor.removeDoc(docID, true));
+		// G.effects.blurRemove(dataElem$).then(() => BladesItem.deleteEmbeddedDocuments([docID], {parent: this.actor}));
 	}
 
 	async _onClockLeftClick(event: ClickEvent) {

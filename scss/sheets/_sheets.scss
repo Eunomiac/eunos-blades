@@ -44,7 +44,7 @@
 
 			> section {
 				border-top: 2px solid var(--blades-white);
-				border-bottom: none !important;
+				border-bottom: none;
 			}
 
 			section {
@@ -96,20 +96,11 @@
 					justify-content: space-between;
 					align-items: stretch;
 					flex-wrap: nowrap;
-					border-top: 2px solid var(--blades-white);
-					border-bottom: 2px solid var(--blades-white);
-					background: linear-gradient(to bottom, var(--blades-white), transparent 25%);
-					background: transparent;
 					position: relative;
-					width: calc(100% + (2 * var(--content-padding)));
 					height: toRem(60px);
-					left: calc(-1 * var(--content-padding));
-					padding: 0 var(--content-padding);
 				}
 
 				&.nav-group {
-					height: 100%;
-					justify-content: flex-start;
 					border: 0;
 					overflow: hidden;
 
@@ -119,9 +110,6 @@
 						background-color: var(--blades-grey-bright);
 						border: 2px solid var(--blades-white);
 						padding: 0 toRem(10px);
-						width: 100%;
-						height: toRem(26px);
-						min-height: toRem(26px);
 						overflow: visible;
 						align-items: center;
 						justify-content: space-around;
@@ -132,7 +120,6 @@
 							font-family: Kirsty;
 							line-height: toRem(20px);
 							transition: 0.25s;
-							transform-origin: center center;
 							white-space: nowrap;
 
 							&.active {
@@ -142,8 +129,6 @@
 										var(--blades-white-bright) 75%,
 										transparent);
 								transform: scale(1.2);
-								position: relative;
-								z-index: zLevel();
 							}
 
 							&:hover:not(.active) {
@@ -176,19 +161,16 @@
 	}
 
 	.tab-label {
-		display: block;
+		// display: block;
 		background: var(--blades-grey);
-		// padding: toRem(3px) 0;
 		position: relative;
-		// border: 2px solid var(--blades-black);
-		// border-top: none;
 		height: toRem(24px);
-		width: calc(100% + var(--content-padding));
-		left: calc(-1 * var(--content-padding));
+		// width: 100%;
+		// left: calc(-1 * var(--content-padding));
 		margin-bottom: toRem(5px);
 
 		display: flex;
-		justify-content: space-between;
+		// justify-content: space-between;
 		justify-content: flex-start;
 		align-items: center;
 

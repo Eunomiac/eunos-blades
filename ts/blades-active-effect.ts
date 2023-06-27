@@ -1,6 +1,7 @@
 import type BladesActor from "./blades-actor.js";
 import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 import BladesItem from "./blades-item.js";
+import {Tag} from "./core/constants.js";
 
 const FUNCQUEUE: Record<string, {
 	curFunc: BladesCustomResult,
@@ -124,7 +125,7 @@ class BladesActiveEffect extends ActiveEffect {
 		const [actorID, itemID] = this.origin.replace(/Actor\.|Item\./g, "").split(".");
 		const actor = game.actors.get(actorID) as BladesActor;
 		const item = actor.items.get(itemID) as BladesItem;
-		return super.isSuppressed || item.isArchived;
+		return super.isSuppressed || item.hasTag(Tag.Archived);
 	}
 }
 

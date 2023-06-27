@@ -1,5 +1,5 @@
-import {Vice, District, Playbook} from "../core/constants";
-import BladesItem from "../blades-item";
+import {BladesActorType, BladesItemType, Tag, Vice, District, Playbook} from "../core/constants";
+import BladesItem, {PrereqType} from "../blades-item";
 import BladesActor from "../blades-actor";
 import { bladesRoll } from "../blades-roll";
 import BladesDialog from "../blades-dialog";
@@ -18,9 +18,6 @@ declare global {
 
 		export type Sheet = BladesSheet|BladesItemSheet;
 	}
-
-
-
 	declare interface Game {
 		items: Collection<BladesItem>,
 		actors: Collection<BladesActor>,
@@ -47,23 +44,19 @@ declare global {
 		}
 	}
 
-	type AnyBladesActor = BladesActor|EmbeddedBladesActor;
-	type AnyBladesItem = BladesItem|EmbeddedBladesItem;
-	type BladesDoc = AnyBladesActor|AnyBladesItem;
+	type BladesDoc = BladesActor|BladesItem;
 
 	type DocRef = string|BladesDoc;
-	type ActorRef = string|AnyBladesActor;
-	type ItemRef = string|AnyBladesItem;
+	type ActorRef = string|BladesActor;
+	type ItemRef = string|BladesItem;
 
 	type BladesTag = Vice
 		|Playbook
-		|keyof typeof BladesActor.CategoryTypes
-		|keyof typeof BladesItem.CategoryTypes
-		|District;
+		|District
+		|Tag;
 
 	namespace BladesActor {
 		export type ID = string;
-		export type SubActorCategory = keyof typeof BladesActor.CategoryTypes;
 		export type RandomizerData = {
 			isLocked: boolean,
 			value: string,
@@ -73,26 +66,24 @@ declare global {
 
 		interface SubActorData {
 			id: string,
-			category: SubActorCategory,
-			system: Partial<Omit<BladesActor["system"],"subactors">>,
-			isArchived?: boolean
+			system: Partial<Omit<BladesActor["system"],"subactors">>
 		}
 	}
 
-	type EmbeddedBladesActor = BladesActor & {
-		category: keyof typeof BladesActor.CategoryTypes,
-		isArchived?: boolean,
-		system: BladesActor["system"] & Record<string,any>
-	}
+	declare abstract class BladesDocument<T extends Actor|Item> {
 
-	type EmbeddedBladesItem = BladesItem & {
-		category: keyof typeof BladesItem.CategoryTypes,
-		isArchived?: boolean,
-		system: BladesItem["system"] & Record<string,any>
-	}
+		static get All(): T extends Actor ? BladesActor[] : BladesItem[];
+		static Get(docRef: DocRef): (T extends Actor ? BladesActor[] : BladesItem[])|null;
+		static GetTypeWithTags(type: BladesActorType|BladesItemType, ...tags: BladesTag[]): T extends Actor ? BladesActor[] : BladesItem[];
 
-	namespace BladesItem {
+		tags: BladesTag[];
+		hasTag(...tags: BladesTag[]): boolean
+		addTag(...tags: BladesTag[]): Promise<void>
+		remTag(...tags: BladesTag[]): Promise<void>
 
+		tooltip: string|null;
+
+		dialogCSSClasses?: string[];
 	}
 
 	type clockData = {
@@ -120,46 +111,20 @@ declare global {
 		}
 		interface Data extends Dialog.Data {
 			doc: BladesActor|BladesItem;
-			category: keyof typeof BladesActor.CategoryTypes|keyof typeof BladesItem.CategoryTypes;
 			callback: (docID: string) => Promise<void>;
-			tabs?: Record<string, {featured: Array<BladesActor|BladesItem>, other: Array<BladesActor|BladesItem>}>
+			tabs?: Record<string, Array<BladesActor|BladesItem>>;
 		}
 	}
 
 	type eLogParams = [string, ...any[]];
-	// const eLog = {
-	// 	display: (...content: eLogParams) => eLogger("display", ...content),
-	// 	log0: (...content: eLogParams) => eLogger("log", ...content, 0),
-	// 	log1: (...content: eLogParams) => eLogger("log", ...content, 1),
-	// 	log2: (...content: eLogParams) => eLogger("log", ...content, 2),
-	// 	log: (...content: eLogParams) => eLogger("log", ...content, 3),
-	// 	log4: (...content: eLogParams) => eLogger("log", ...content, 4),
-	// 	log5: (...content: eLogParams) => eLogger("log", ...content, 5),
-	// 	checkLog0: (...content: eLogParams) => eLogger("checkLog", ...content, 0),
-	// 	checkLog1: (...content: eLogParams) => eLogger("checkLog", ...content, 1),
-	// 	checkLog2: (...content: eLogParams) => eLogger("checkLog", ...content, 2),
-	// 	checkLog: (...content: eLogParams) => eLogger("checkLog", ...content, 3),
-	// 	checkLog4: (...content: eLogParams) => eLogger("checkLog", ...content, 4),
-	// 	checkLog5: (...content: eLogParams) => eLogger("checkLog", ...content, 5),
-	// 	error: (...content: eLogParams) => eLogger("error", ...content),
-	// 	hbsLog: (...content: eLogParams) => eLogger("handlebars", ...content)
-	// };
-
 	declare const eLog: Record<string, (...content: eLogParams) => void>
 
-	interface LenientGlobalVariableTypes {
-    game: never;
-  }
+	interface LenientGlobalVariableTypes { game: never }
 
 
 	type ClickEvent = JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
 	type ContextMenuEvent = JQuery.ContextMenuEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
 	type TriggerEvent = JQuery.TriggeredEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
-
-	// declare function $clamp(element: HTMLElement, options: Record<string,any>): {
-	// 	original: string,
-	// 	clamped: string
-	// }
 
 	// #region ████████ SocketLib: SocketLib Types ████████ ~
 	type SocketFunction = (...params: unknown[]) => unknown
