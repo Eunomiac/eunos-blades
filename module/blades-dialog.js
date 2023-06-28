@@ -6,8 +6,8 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import G from "./core/gsap.js";
-import BladesActor from "./blades-actor.js";
-import BladesItem from "./blades-item.js";
+const app = new Dialog({ title: "Test", content: "", buttons: {} });
+const tit = app.title;
 class BladesDialog extends Dialog {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -23,11 +23,11 @@ class BladesDialog extends Dialog {
             "systems/eunos-blades/templates/dialog.hbs"
         ]);
     }
-    static async Display(doc, title, category, callback, tabFilters = { all: (a) => true }, featuredFilters, isFeaturing = {}) {
+    static async Display(parentDoc, title, tabs, callback) {
         const app = new BladesDialog({
-            doc,
+            parentDoc,
             title,
-            category,
+            tabs,
             callback,
             "content": "",
             "buttons": {
@@ -39,110 +39,25 @@ class BladesDialog extends Dialog {
             },
             "default": "cancel"
         });
-        await app.createTabs(tabFilters);
-        if (featuredFilters) {
-            app.applyFeaturedFilters(featuredFilters, isFeaturing);
-        }
         return app.render(true);
     }
-    tabs = {};
-    async createTabs(tabs) {
-        if (this.docSuperType === "Actor") {
-            return this._createActorTabs(tabs);
-        }
-        return this._createItemTabs(tabs);
-    }
-    _filterUniqueActors(actors) {
-        const actorIDLog = [];
-        return actors.filter((actor) => {
-            if (actorIDLog.includes(actor.id)) {
-                return false;
-            }
-            else {
-                actorIDLog.push(actor.id);
-                return true;
-            }
-        });
-    }
-    async _createActorTabs(tabs) {
-        eLog.checkLog3("actorFetch", `BladesDialog._createActorTabs() --- cat = ${this.category}`);
-        const allCategoryActors = BladesActor.GetPersonalGlobalCategoryActors(this.category, this.doc);
-        const validatedActors = allCategoryActors.map((actor) => (actor.isValidForDoc(this.doc) ? actor : null));
-        const validActors = this._filterUniqueActors(validatedActors.filter((actor) => actor !== null));
-        this.tabs = Object.fromEntries((Object.entries(tabs))
-            .map(([tabName, tabFilter]) => [
-            tabName,
-            { featured: [], other: validActors.filter(tabFilter) }
-        ]));
-    }
-    async _createItemTabs(tabs) {
-        const allCategoryItems = await BladesItem.GetGlobalCategoryItems(this.category, this.doc);
-        const validatedItems = await Promise.all(allCategoryItems.map(async (item) => {
-            return (await item.isValidForDoc(this.doc)) ? item : null;
-        }));
-        const validItems = validatedItems.filter((item) => item !== null);
-        this.tabs = Object.fromEntries((Object.entries(tabs))
-            .map(([tabName, tabFilter]) => [
-            tabName,
-            { featured: [], other: validItems.filter(tabFilter) }
-        ]));
-    }
-    applyFeaturedFilters(filters, isFeaturing) {
-        for (const [tabName, filterFunc] of Object.entries(filters)) {
-            const [featured, other] = [
-                this.tabs[tabName].other.filter((doc) => filterFunc(doc)),
-                this.tabs[tabName].other.filter((doc) => !filterFunc(doc))
-            ];
-            if (isFeaturing[tabName]) {
-                this.tabs[tabName] = {
-                    featured,
-                    other
-                };
-            }
-            else {
-                this.tabs[tabName] = {
-                    featured: [],
-                    other: [...featured, ...other]
-                };
-            }
-        }
-    }
-    doc;
-    category;
+    parentDoc;
+    _title;
+    get title() { return this._title; }
+    tabs;
     callback;
-    get docSuperType() {
-        if (this.category in BladesActor.CategoryTypes) {
-            return "Actor";
-        }
-        if (this.category in BladesItem.CategoryTypes) {
-            return "Item";
-        }
-        throw new Error(`Unrecognized Category: ${this.category}`);
-    }
-    get docType() {
-        if (this.category in BladesActor.CategoryTypes) {
-            return BladesActor.CategoryTypes[this.category];
-        }
-        if (this.category in BladesItem.CategoryTypes) {
-            return BladesItem.CategoryTypes[this.category];
-        }
-        throw new Error(`Unrecognized Category: ${this.category}`);
-    }
     constructor(data, options) {
-        eLog.checkLog4("dialog", "[BladesDialog] constructor(data)", { ...data });
         super(data, options);
-        eLog.checkLog4("dialog", "[BladesDialog] super(data)", { ...data });
-        this.doc = data.doc;
-        this.category = data.category;
+        this.parentDoc = data.parentDoc;
+        this._title = data.title;
+        this.tabs = data.tabs;
         this.callback = data.callback;
     }
     getData() {
         const data = super.getData();
         eLog.checkLog4("dialog", "[BladesDialog] super.getData()", { ...data });
-        Object.assign(data, {
-            tabs: this.tabs,
-            category: this.category
-        });
+        data.title = this.title;
+        data.tabs = this.tabs;
         eLog.checkLog("dialog", "[BladesDialog] return getData()", { ...data });
         return data;
     }

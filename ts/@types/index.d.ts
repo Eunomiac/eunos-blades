@@ -110,9 +110,10 @@ declare global {
     interface Options extends DialogOptions {
 		}
 		interface Data extends Dialog.Data {
-			doc: BladesActor|BladesItem;
+			parentDoc: BladesActor;
+			title: string;
+			tabs: Record<string, BladesActor[]|BladesItem[]>;
 			callback: (docID: string) => Promise<void>;
-			tabs?: Record<string, Array<BladesActor|BladesItem>>;
 		}
 	}
 

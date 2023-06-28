@@ -4,37 +4,6 @@
 |*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-const pullElement = (array, checkFunc) => {
-	const index = array.findIndex((v, i, a) => checkFunc(v, i, a));
-	return index !== -1 && array.splice(index, 1).pop();
-};
-
-const testItems = [
-    {world_name: "Azz", name: "Azz_A", isEmbedded: true},
-    {world_name: "Azz", name: "Azz", isEmbedded: false},
-    {world_name: "Azz", name: "Azz_B", isEmbedded: true},
-    {world_name: "Xyx", name: "Xyx_B", isEmbedded: true},
-    {world_name: "Xyx", name: "Xyx_A", isEmbedded: true},
-    {world_name: "Xyx", name: "Xyx", isEmbedded: false}
-];
-
-console.log("Pulling: " + pullElement(testItems, ({name}) => name === "Xyx_B"));
-
-console.log(testItems);
-
-testItems.sort((a, b) => {
-    if (a.world_name > b.world_name) { return 1 }
-    if (a.world_name < b.world_name) { return -1 }
-    if (a.isEmbedded && !b.isEmbedded) { return -1 }
-    if (!a.isEmbedded && b.isEmbedded) { return 1 }
-    if (a.name > b.name) { return 1 }
-    if (a.name < b.name) { return -1 }
-    return 0;
-});
-
-console.log(testItems);
-
-
 
 import C, { IMPORTDATA, BladesActorType } from "./core/constants.js";
 import registerSettings, { initTinyMCEStyles, initCanvasStyles, initFonts } from "./core/settings.js";
@@ -312,21 +281,21 @@ Object.assign(globalThis, {
             crew: ({ pcSheetElem }) => ({ top: clientTop, left: (pcSheetElem?.position()?.left ?? 0) + (pcSheetElem?.width() ?? 0) }),
             npc: ({ height, width }) => ({ top: (clientTop + clientHeight) - height, left: (clientLeft + clientWidth) - width })
         };
-        const pc = (await BladesActor.GetPersonalGlobalCategoryActors(BladesActorType.pc)).shift();
+        const pc = BladesActor.GetTypeWithTags(BladesActorType.pc).shift();
+        const crew = BladesActor.GetTypeWithTags(BladesActorType.crew).shift();
+        const npc = BladesActor.GetTypeWithTags(BladesActorType.npc).shift();
         if (pc) {
             Object.assign(globalThis, pc);
             if (pc.sheet) {
                 pc.sheet.render(true);
             }
         }
-        const crew = (await BladesActor.GetPersonalGlobalCategoryActors(BladesActorType.crew)).shift();
         if (crew) {
             Object.assign(globalThis, crew);
             if (crew.sheet) {
                 crew.sheet.render(true);
             }
         }
-        const npc = (await BladesActor.GetPersonalGlobalCategoryActors(BladesActorType.npc)).shift();
         if (npc) {
             Object.assign(globalThis, npc);
             if (npc.sheet) {

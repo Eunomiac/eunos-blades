@@ -40,8 +40,16 @@ class BladesSheet extends ActorSheet {
 
 		const dataElem$ = $(event.currentTarget).closest(".comp");
 		const doc_cat = dataElem$.data("compCat") as SelectionCategory;
+		const dialogItems = this.actor.getDialogItems(doc_cat);
 
-		// await BladesDialog.Display(this.actor, U.tCase(`Add ${doc_type.replace(/_/g, " ")}`), doc_cat);
+		if (dialogItems === false) { return }
+
+		await BladesDialog.Display(
+			this.actor,
+			U.tCase(`Add ${doc_cat.replace(/_/g, " ")}`),
+			dialogItems,
+			async (docID) => this.actor.addDialogItem(docID)
+		);
 	}
 
 
@@ -238,7 +246,7 @@ class BladesSheet extends ActorSheet {
 	async _onItemOpenClick(event: ClickEvent) {
 		event.preventDefault();
 		const docID = $(event.currentTarget).closest(".comp").data("compId");
-		const doc = (await BladesItem.GetPersonal(docID, this.actor)) ?? (await BladesActor.GetPersonal(docID, this.actor));
+		const doc = this.actor.getEmbeddedDoc(docID);
 		eLog.log("CLICKED!", {docID, doc});
 		if (!doc) { return }
 		doc.sheet?.render(true);

@@ -4,6 +4,8 @@ import G from "./core/gsap.js";
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
 
+const app = new Dialog({title: "Test", content: "", buttons: {}});
+const tit = app.title;
 class BladesDialog extends Dialog {
 
 	static override get defaultOptions() {
@@ -22,19 +24,16 @@ class BladesDialog extends Dialog {
 		]);
 	}
 
-	static async Display<T extends BladesActor|BladesItem>(
-		doc: BladesActor|BladesItem,
+	static async Display(
+		parentDoc: BladesActor,
 		title: string,
-		category: keyof typeof BladesActor.CategoryTypes|keyof typeof BladesItem.CategoryTypes,
-		callback: (docID: string) => Promise<void>,
-		tabFilters: Record<string, (a: T) => boolean> = {all: (a: T) => true},
-		featuredFilters?: Record<string, (a: T) => boolean>,
-		isFeaturing: Record<string,boolean> = {}
+		tabs: Record<string, BladesActor[]|BladesItem[]>,
+		callback: (docID: string) => Promise<void>
 	) {
 		const app = new BladesDialog({
-			doc,
+			parentDoc,
 			title,
-			category,
+			tabs,
 			callback,
 			"content": "",
 			"buttons": {
@@ -45,127 +44,33 @@ class BladesDialog extends Dialog {
 				}
 			},
 			"default": "cancel"
-		});
-
-		await app.createTabs<T>(tabFilters);
-		if (featuredFilters) {
-			app.applyFeaturedFilters<T>(featuredFilters, isFeaturing);
-		}
+		} as BladesDialog.Data);
 
 		return app.render(true);
 	}
 
-	tabs: Record<string, {featured: Array<BladesActor|BladesItem>, other: Array<BladesActor|BladesItem>}> = {};
-	async createTabs<T extends BladesActor|BladesItem>(tabs: Record<string, (a: T) => boolean>) {
-		if (this.docSuperType === "Actor") {
-			return this._createActorTabs(tabs as Record<string,(a: BladesActor) => boolean>);
-		}
-		return this._createItemTabs(tabs as Record<string,(a: BladesItem) => boolean>);
-	}
-
-	_filterUniqueActors(actors: AnyBladesActor[]) {
-		const actorIDLog: string[] = [];
-		return actors.filter((actor) => {
-			if (actorIDLog.includes(actor.id!)) {
-				return false;
-			} else {
-				actorIDLog.push(actor.id!);
-				return true;
-			}
-		});
-	}
-
-	async _createActorTabs(tabs: Record<string, (a: BladesActor) => boolean>) {
-		eLog.checkLog3("actorFetch", `BladesDialog._createActorTabs() --- cat = ${this.category}`);
-		const allCategoryActors = BladesActor.GetPersonalGlobalCategoryActors(this.category as keyof typeof BladesActor.CategoryTypes, this.parentDoc as BladesActor);
-		const validatedActors: Array<BladesActor|null> = allCategoryActors.map((actor) => (actor.isValidForDoc(this.parentDoc) ? actor : null));
-		const validActors: BladesActor[] = this._filterUniqueActors(validatedActors.filter((actor): actor is BladesActor => actor !== null));
-		this.tabs = Object.fromEntries((Object.entries(tabs))
-			.map(([tabName, tabFilter]) => [
-				tabName,
-				{featured: [], other: validActors.filter(tabFilter)}
-			]));
-	}
-	async _createItemTabs(tabs: Record<string,(i: BladesItem) => boolean>) {
-		const allCategoryItems = await BladesItem.GetGlobalCategoryItems(this.category as keyof typeof BladesItem.CategoryTypes, this.parentDoc as BladesActor);
-		const validatedItems: Array<BladesItem|null> = await Promise.all(allCategoryItems.map(async (item) => {
-			return (await item.isValidForDoc(this.parentDoc)) ? item : null;
-		}));
-		const validItems: BladesItem[] = validatedItems.filter((item): item is BladesItem => item !== null);
-		this.tabs = Object.fromEntries((Object.entries(tabs))
-			.map(([tabName, tabFilter]) => [
-				tabName,
-				{featured: [], other: validItems.filter(tabFilter)}
-			]));
-	}
-
-	applyFeaturedFilters<T extends BladesActor|BladesItem>(filters: Record<string, (a: T) => boolean>, isFeaturing: Record<string,boolean>) {
-		for (const [tabName, filterFunc] of Object.entries(filters)) {
-			// const filterFunc = filters[tabName];
-			const [featured, other] = [
-				(this.tabs[tabName].other as T[]).filter((doc: T) => filterFunc(doc)),
-				(this.tabs[tabName].other as T[]).filter((doc: T) => !filterFunc(doc))
-			];
-			if (isFeaturing[tabName as keyof typeof isFeaturing]) {
-				this.tabs[tabName] = {
-					featured,
-					other
-				};
-			} else {
-				this.tabs[tabName] = {
-					featured: [],
-					other: [...featured, ...other]
-				};
-			}
-		}
-	}
-
-	parentDoc: BladesActor|BladesItem;
-	category: keyof typeof BladesActor.CategoryTypes|keyof typeof BladesItem.CategoryTypes;
+	parentDoc: BladesActor;
+	_title: string;
+	override get title(): string { return this._title }
+	tabs: Record<string, BladesActor[]|BladesItem[]>;
 	callback: (docID: string) => Promise<void>;
-
-	get docSuperType(): "Actor"|"Item" {
-		if (this.category in BladesActor.CategoryTypes) {
-			return "Actor";
-		}
-		if (this.category in BladesItem.CategoryTypes) {
-			return "Item";
-		}
-		throw new Error(`Unrecognized Category: ${this.category}`);
-	}
-
-	get docType(): BladesItemType|BladesActorType {
-		if (this.category in BladesActor.CategoryTypes) {
-			return BladesActor.CategoryTypes[this.category as keyof typeof BladesActor.CategoryTypes];
-		}
-		if (this.category in BladesItem.CategoryTypes) {
-			return BladesItem.CategoryTypes[this.category as keyof typeof BladesItem.CategoryTypes];
-		}
-		throw new Error(`Unrecognized Category: ${this.category}`);
-	}
 
 	constructor(data: BladesDialog.Data, options?: Partial<BladesDialog.Options>) {
 		// eLog.checkLog4("dialog", "[BladesDialog] constructor(data)", {...data});
 		super(data, options);
 		// eLog.checkLog4("dialog", "[BladesDialog] super(data)", {...data});
 
-
-		this.parentDoc = data.doc;
-		this.category = data.category;
+		this.parentDoc = data.parentDoc;
+		this._title = data.title;
+		this.tabs = data.tabs;
 		this.callback = data.callback;
 	}
 
 	override getData(): Omit<BladesDialog.Data,"title"> {
-		const data = super.getData();
+		const data = super.getData() as Partial<BladesDialog.Data>;
 		eLog.checkLog4("dialog", "[BladesDialog] super.getData()", {...data});
-
-		Object.assign(
-			data,
-			{
-				tabs: this.tabs,
-				category: this.category
-			}
-		);
+		data.title = this.title;
+		data.tabs = this.tabs;
 
 		eLog.checkLog("dialog", "[BladesDialog] return getData()", {...data});
 		return data as Omit<BladesDialog.Data,"title">;

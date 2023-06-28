@@ -5,6 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import { Tag } from "./core/constants.js";
 const FUNCQUEUE = {};
 const CUSTOMFUNCS = {
     addItem: async (actor, { name, type }) => {
@@ -96,7 +97,7 @@ class BladesActiveEffect extends ActiveEffect {
         const [actorID, itemID] = this.origin.replace(/Actor\.|Item\./g, "").split(".");
         const actor = game.actors.get(actorID);
         const item = actor.items.get(itemID);
-        return super.isSuppressed || item.isArchived;
+        return super.isSuppressed || item.hasTag(Tag.Archived);
     }
 }
 export default BladesActiveEffect;

@@ -11,6 +11,32 @@ export var BladesActorType;
     BladesActorType["npc"] = "npc";
     BladesActorType["crew"] = "crew";
 })(BladesActorType || (BladesActorType = {}));
+export var BladesItemType;
+(function (BladesItemType) {
+    BladesItemType["ability"] = "ability";
+    BladesItemType["background"] = "background";
+    BladesItemType["clock_keeper"] = "clock_keeper";
+    BladesItemType["cohort"] = "cohort";
+    BladesItemType["crew_ability"] = "crew_ability";
+    BladesItemType["crew_reputation"] = "crew_reputation";
+    BladesItemType["crew_playbook"] = "crew_playbook";
+    BladesItemType["crew_upgrade"] = "crew_upgrade";
+    BladesItemType["faction"] = "faction";
+    BladesItemType["feature"] = "feature";
+    BladesItemType["gm_tracker"] = "gm_tracker";
+    BladesItemType["heritage"] = "heritage";
+    BladesItemType["item"] = "item";
+    BladesItemType["playbook"] = "playbook";
+    BladesItemType["preferred_op"] = "preferred_op";
+    BladesItemType["stricture"] = "stricture";
+    BladesItemType["vice"] = "vice";
+})(BladesItemType || (BladesItemType = {}));
+export var BladesActorCategory;
+(function (BladesActorCategory) {
+    BladesActorCategory["vice_purveyor"] = "vice_purveyor";
+    BladesActorCategory["acquaintance"] = "acquaintance";
+    BladesActorCategory["rival"] = "rival";
+})(BladesActorCategory || (BladesActorCategory = {}));
 export var District;
 (function (District) {
     District["Barrowcleft"] = "Barrowcleft";
@@ -32,26 +58,6 @@ export var District;
     District["Old North Port"] = "Old North Port";
     District["Deathlands"] = "Deathlands";
 })(District || (District = {}));
-export var BladesItemType;
-(function (BladesItemType) {
-    BladesItemType["ability"] = "ability";
-    BladesItemType["background"] = "background";
-    BladesItemType["clock_keeper"] = "clock_keeper";
-    BladesItemType["cohort"] = "cohort";
-    BladesItemType["crew_ability"] = "crew_ability";
-    BladesItemType["crew_reputation"] = "crew_reputation";
-    BladesItemType["crew_playbook"] = "crew_playbook";
-    BladesItemType["crew_upgrade"] = "crew_upgrade";
-    BladesItemType["faction"] = "faction";
-    BladesItemType["feature"] = "feature";
-    BladesItemType["gm_tracker"] = "gm_tracker";
-    BladesItemType["heritage"] = "heritage";
-    BladesItemType["item"] = "item";
-    BladesItemType["playbook"] = "playbook";
-    BladesItemType["preferred_op"] = "preferred_op";
-    BladesItemType["stricture"] = "stricture";
-    BladesItemType["vice"] = "vice";
-})(BladesItemType || (BladesItemType = {}));
 export var Attributes;
 (function (Attributes) {
     Attributes["insight"] = "insight";
@@ -134,6 +140,16 @@ export var Playbook;
     Playbook["Hull"] = "Hull";
     Playbook["Ghost"] = "Ghost";
 })(Playbook || (Playbook = {}));
+export var Tag;
+(function (Tag) {
+    Tag["Archived"] = "Archived";
+    Tag["Fine"] = "Fine";
+    Tag["Featured"] = "Featured";
+    Tag["General"] = "General";
+    Tag["ViceOverride"] = "ViceOverride";
+    Tag["BasicPlaybook"] = "BasicPlaybook";
+    Tag["AdvancedPlaybook"] = "AdvancedPlaybook";
+})(Tag || (Tag = {}));
 const C = {
     SYSTEM_ID: "eunos-blades",
     SYSTEM_NAME: "Euno's Blades",

@@ -159,20 +159,19 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 	}
 
 	getDialogItems(dialogRef: SelectionCategory) {
-		/*
-		ITEM DISLPLAY PATTERNS:
 
-		*) Tucked Globals --- shows ALL items, including globals. CSS ".embedded-item + .global-item" selector
-													shifts global items to the left, beneath the last matching embedded-item, just enough so
-													that it can be hovered over, which brings it to the front for selection.  No Toggle button
-													on embedded items here
-		*) Plucked Lists --- no copies of currently-active items are displayed, unless multiple uses allowed:
-		*) Quantity-Constrained Globals --- when multiple copies of the same item are allowed (second upgrades, multiple-use-gear),
-													for each use beyond the first, one "free" embedded item is included without impacting the display of
-													the global items (e.g. can have 2x Bandolier during a score; if actor has 1 custom Bandolier, show that and a fully-visible global so it can be selected for the second use; only start tucking if actor has defined Bandoliers for both usage "slots").
-													Have to allow choosing an active embedded item for second use, even if already selected for first: when done, automatically duplicates the embedded item AND adds " #2" to the name to distinguish it.
-		*) Items w/Prereqs --- item.system.prereqs is a Record<PrereqType, string> which is passed to actor.checkPrereqs(item); switch statement of all PrereqTypes determines how string is used.
-	*/
+		// ITEM DISLPLAY PATTERNS:
+
+		// >> Tucked Globals --- shows ALL items, including globals. CSS ".embedded-item + .global-item" selector
+		// 											shifts global items to the left, beneath the last matching embedded-item, just enough so
+		// 											that it can be hovered over, which brings it to the front for selection.  No Toggle button
+		// 											on embedded items here
+		// >> Plucked Lists --- no copies of currently-active items are displayed, unless multiple uses allowed:
+		// >> Quantity-Constrained Globals --- when multiple copies of the same item are allowed (second upgrades, multiple-use-gear),
+		// 											for each use beyond the first, one "free" embedded item is included without impacting the display of
+		// 											the global items (e.g. can have 2x Bandolier during a score; if actor has 1 custom Bandolier, show that and a fully-visible global so it can be selected for the second use; only start tucking if actor has defined Bandoliers for both usage "slots").
+		// 											Have to allow choosing an active embedded item for second use, even if already selected for first: when done, automatically duplicates the embedded item AND adds " #2" to the name to distinguish it.
+		// >> Items w/Prereqs --- item.system.prereqs is a Record<PrereqType, string> which is passed to actor.checkPrereqs(item); switch statement of all PrereqTypes determines how string is used.
 
 		const dialogData: Record<string, BladesActor[]|BladesItem[]> = {};
 
@@ -261,6 +260,24 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 			}
 		}
 		return true;
+	}
+
+	addDialogItem(docID: string) {
+		// Is it an active (unarchived) Item? Duplicate the item, adding '#2' to title (or more depending on how many)
+
+		// Is it an archived Item? Unarchive it.
+
+		// Is it not embedded at all? Embed from global instance.
+	}
+
+	getEmbeddedDoc(docID: string): BladesActor|BladesItem|false {
+		// Is it an embedded item? Return it.
+		if (this.items.get(docID)) { return this.items.get(docID)! }
+
+		// Is it an embedded actor? Return global actor instance (sheet logic in npc sheet will handle interrupting update/getData sequences)
+		if (docID in this.system.subactors) { return game.actors.get(docID) ?? false }
+
+		return false;
 	}
 
 	get vices(): BladesItem[] {
