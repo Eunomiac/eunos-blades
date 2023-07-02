@@ -10,6 +10,7 @@ import U from "./core/utilities.js";
 export var PrereqType;
 (function (PrereqType) {
     PrereqType["HasActiveItem"] = "HasActiveItem";
+    PrereqType["AdvancedPlaybook"] = "AdvancedPlaybook";
 })(PrereqType || (PrereqType = {}));
 class BladesItem extends Item {
 

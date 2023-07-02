@@ -1,5 +1,5 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import C, {IMPORTDATA, BladesActorType, BladesItemType} from "./core/constants.js";
+import C, {IMPORTDATA, BladesActorType, BladesItemType, Tag, Playbook} from "./core/constants.js";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initFonts} from "./core/settings.js";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers.js";
 import U from "./core/utilities.js";
@@ -15,7 +15,7 @@ import BladesNPCSheet from "./sheets/blades-npc-sheet.js";
 import BladesFactionSheet from "./sheets/blades-faction-sheet.js";
 
 import {bladesRoll, simpleRollPopup} from "./blades-roll.js";
-import BladesDialog from "./blades-dialog.js";
+import BladesSelectorDialog, {SelectionCategory} from "./blades-dialog.js";
 import BladesActiveEffect from "./blades-active-effect.js";
 import BladesTrackerSheet from "./sheets/blades-tracker-sheet.js";
 import BladesClockKeeperSheet from "./sheets/blades-clock-keeper-sheet.js";
@@ -293,11 +293,11 @@ registerDebugger();
 			const {clientTop, clientLeft, clientHeight, clientWidth} = document.documentElement;
 			const positions = {
 				pc: () => ({top: clientTop, left: clientLeft}),
-				crew: ({pcSheetElem}: {pcSheetElem?: JQuery<HTMLElement>}) => ({top: clientTop, left: (pcSheetElem?.position()?.left ?? 0) + (pcSheetElem?.width() ?? 0)}),
+				// crew: ({pcSheetElem}: {pcSheetElem?: JQuery<HTMLElement>}) => ({top: clientTop, left: (pcSheetElem?.position()?.left ?? 0) + (pcSheetElem?.width() ?? 0)}),
 				npc: ({height, width}: {height: number, width: number}) => ({top: (clientTop + clientHeight) - height, left: (clientLeft + clientWidth) - width})
 			};
 			const pc = BladesActor.GetTypeWithTags(BladesActorType.pc).shift();
-			const crew = BladesActor.GetTypeWithTags(BladesActorType.crew).shift();
+			// const crew = BladesActor.GetTypeWithTags(BladesActorType.crew).shift();
 			const npc = BladesActor.GetTypeWithTags(BladesActorType.npc).shift();
 
 			if (pc) {
@@ -306,12 +306,12 @@ registerDebugger();
 					pc.sheet.render(true);
 				}
 			}
-			if (crew) {
-				Object.assign(globalThis, crew);
-				if (crew.sheet) {
-					crew.sheet.render(true);
-				}
-			}
+			// if (crew) {
+			// 	Object.assign(globalThis, crew);
+			// 	if (crew.sheet) {
+			// 		crew.sheet.render(true);
+			// 	}
+			// }
 			if (npc) {
 				Object.assign(globalThis, npc);
 				if (npc.sheet) {
@@ -327,10 +327,64 @@ registerDebugger();
 					const width = $(npc.sheet.element).width()!;
 					npc.sheet.setPosition(positions.npc({height, width}));
 				}
-				if (crew?.sheet) {
-					crew.sheet.setPosition(positions.crew({pcSheetElem: pc?.sheet?.element}));
-				}
+				// if (crew?.sheet) {
+				// 	crew.sheet.setPosition(positions.crew({pcSheetElem: pc?.sheet?.element}));
+				// }
 			}, 2000);
+		},
+		ProcessNPCs: async () => {
+			BladesActor.GetTypeWithTags(BladesActorType.npc).forEach((actor) => {
+				if (Object.keys(C.Playbooks).some((pBook) => actor.hasTag(pBook as Playbook))) {
+					actor.addTag(Tag.Acquaintance);
+				}
+				if (C.Vices.some((vice) => actor.hasTag(vice as BladesTag))) {
+					actor.addTag(Tag.VicePurveyor);
+				}
+			});
+		},
+		ProcessItemFolders: async () => {
+			function processItemFolder(folder: Folder) {
+				const folderItems = folder.contents as BladesItem[];
+				switch (folder.name) {
+					case "Abilities":
+					case "Items":
+					case "Crew Abilities":
+					case "Crew Upgrades": {
+						folderItems.forEach(async (item) => {
+							const tags: BladesTag[] = [];
+							if (folder.name === "Items" && /^Fine /.test(item.name ?? "")) { tags.push(Tag.Fine) }
+							if (folder.name === "Abilities" && ["Battleborn", "Sharpshooter", "Alchemist", "Infiltrator", "Rook's Gambit", "Foresight", "Compel", "Ghost Form", "Automaton", "Undead"].includes(item.name ?? "")) { tags.push(Tag.Featured) }
+							if (folder.name === "Abilities" && [Playbook.Ghost, Playbook.Vampire, Playbook.Hull].some((aTag) => item.system.playbooks?.includes(aTag))) {
+								tags.push(Tag.Advanced);
+								await item.update({["system.prereqs.AdvancedPlaybook"]: true});
+							}
+							tags.push(...(item.system.playbooks ?? []).map((tag) => (tag === "ANY" ? Tag.General : tag) as BladesTag));
+							item.addTag(...U.unique(tags));
+						});
+						break;
+					}
+					case "Playbooks (Crew)":
+					case "Playbooks (Scoundrel)": {
+						folderItems.forEach((item) => {
+							if ([Playbook.Ghost, Playbook.Vampire, Playbook.Hull].includes(item.name as Playbook)) {
+								item.addTag(Tag.Advanced);
+							}
+						});
+						break;
+					}
+					case "Vices": {
+						folderItems.forEach((item) => {
+							const tags: BladesTag[] = [];
+							if (["Electroplasmic Power", "Life Essence", "Worship"].includes(item.name ?? "")) { tags.push(Tag.Hidden) }
+							if (["Electroplasmic Power", "Life Essence"].includes(item.name ?? "")) { tags.push(Tag.ViceOverride) }
+							item.addTag(...tags);
+						});
+						break;
+					}
+					default: break;
+				}
+			}
+			game.folders?.forEach(processItemFolder);
 		}
 	}
 );/*!DEVCODE*/
@@ -363,7 +417,7 @@ Hooks.once("init", async () => {
 		BladesActorSheet.Initialize(),
 		BladesActiveEffect.Initialize(),
 		BladesTrackerSheet.Initialize(),
-		BladesDialog.Initialize(),
+		BladesSelectorDialog.Initialize(),
 		BladesClockKeeperSheet.Initialize(),
 		preloadHandlebarsTemplates()
 	]);

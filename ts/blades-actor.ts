@@ -2,38 +2,41 @@ import U from "./core/utilities.js";
 import C, {BladesActorType, Tag, BladesItemType, Playbook, Randomizers, Attributes, Actions, Positions, EffectLevels, Vice} from "./core/constants.js";
 
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
+import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 import {bladesRoll} from "./blades-roll.js";
 import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs.js";
 import BladesItem, {PrereqType} from "./blades-item.js";
+import {SelectionCategory} from "./blades-dialog.js";
 import type BladesActiveEffect from "./blades-active-effect";
 import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs.js";
 
 // https://foundryvtt.wiki/en/development/guides/polymorphism-actors-items
 
-export enum SelectionCategory {
-	Heritage = "Heritage",
-	Background = "Background",
-	Vice = "Vice",
-	Playbook = "Playbook",
-	Reputation = "Reputation",
-	PreferredOp = "PreferredOp",
-	Gear = "Gear",
-	Ability = "Ability",
-	Upgrade = "Upgrade",
-	Cohort = "Cohort",
-	Feature = "Feature",
-	Stricture = "Stricture",
-	Acquaintance = "Acquaintance",
-	Crew = "Crew"
-}
-
+// #region Abstract Class Interfaces ~
 declare abstract class BladesActorDocument {
 
-	activeItems: BladesItem[];
-	archivedItems: BladesItem[];
+	subActors: BladesActor[];
+	activeSubActors: BladesActor[];
+	archivedSubActors: BladesActor[];
 
-	getDialogItems(dialogRef: SelectionCategory): Record<string,BladesActor[]|BladesItem[]>|false;
-	checkPrereqs(item: BladesItem): boolean
+	getDialogActors(category: SelectionCategory): Record<string, BladesActor[]>|false;
+	// checkActorPrereqs(actorRef: ActorRef): boolean;
+
+	getSubActor(actorRef: ActorRef): BladesActor|false;
+	addSubActor(actorRef: ActorRef): Promise<void>;
+	remSubActor(actorRef: ActorRef): Promise<void>;
+	purgeSubActor(actorRef: ActorRef): Promise<void>;
+
+	activeSubItems: BladesItem[];
+	archivedSubItems: BladesItem[];
+
+	getDialogItems(category: SelectionCategory): Record<string, BladesItem[]>|false;
+	// private checkItemPrereqs(itemRef: ItemRef): boolean;
+
+	getSubItem(itemRef: ItemRef): BladesItem|false;
+	addSubItem(itemRef: ItemRef): Promise<void>;
+	remSubItem(itemRef: ItemRef): Promise<void>;
+	purgeSubItem(itemRef: ItemRef): Promise<void>;
 }
 declare abstract class BladesScoundrelDocument extends BladesActorDocument {
 
@@ -46,12 +49,12 @@ declare abstract class BladesCrewDocument extends BladesActorDocument {
 declare abstract class BladesNPCDocument {
 
 }
-
+// #endregion
 class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundrelDocument,
 																																  BladesCrewDocument,
 																																	BladesNPCDocument {
 
-	// #region BladesDocument Implementation
+	// #region BladesDocument Implementation ~
 	static get All() { return game.actors }
 	static Get(actorRef: ActorRef): BladesActor|null {
 		if (actorRef instanceof BladesActor) { return actorRef }
@@ -94,59 +97,31 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 
 	// #region BladesActorDocument Implementation
 
-	get activeItems() { return this.items.filter((item) => !item.hasTag(Tag.Archived)) }
-	get archivedItems() { return this.items.filter((item) => item.hasTag(Tag.Archived)) }
+	// #region Embedded SubActors
+	get subActors(): BladesActor[] {
+		return Object.keys(this.system.subactors)
+			.map((uuid) => this.getSubActor(uuid))
+			.filter((subActor): subActor is BladesActor => Boolean(subActor));
+	}
 
-	private processEmbeddedMatches(globalItems: BladesItem[]) {
+	get activeSubActors(): BladesActor[] { return this.subActors.filter((subActor) => !subActor.hasTag(Tag.Archived)) }
+	get archivedSubActors(): BladesActor[] { return this.subActors.filter((subActor) => subActor.hasTag(Tag.Archived)) }
+
+	checkActorPrereqs(actor: BladesActor): boolean {
+
+		/* Implement any prerequisite checks for embedding actors */
+
+		return true;
+	}
+	private processEmbeddedActorMatches(globalActors: BladesActor[]) {
 		// Step 0: Filter out globals that fail prereqs.
-		globalItems = globalItems.filter(this.checkPrereqs);
+		globalActors = globalActors.filter(this.checkActorPrereqs);
 
-		// Step 1: Get Currently-Active Items that match
-		const activeItems = this.activeItems.filter((eItem) => globalItems.find((gItem) => gItem.system.world_name === eItem.system.world_name));
+		// Step 1: Merge subactor data onto matching global actors
+		const mergedActors = globalActors.map((gActor) => this.getSubActor(gActor) || gActor);
 
-		// Merge In Unactive (Archived) Embedded Items that match.
-		let processedItems = [
-			...this.archivedItems.filter((eItem) => globalItems.find((gItem) => gItem.system.world_name === eItem.system.world_name)),
-			...globalItems
-		];
-
-		// Step 2: Filter out display of items based on num_available
-		activeItems.forEach((aItem) => {
-			const numActive = activeItems.filter((item) => item.system.world_name === aItem.system.world_name).length;
-			if (aItem.system.num_available ?? 1 <= numActive) {
-				processedItems = processedItems.filter((item) => item.system.world_name === aItem.system.world_name);
-			} else {
-				processedItems.push(aItem);
-			}
-		});
-
-		// Assign CSS classes
-		processedItems.forEach((item) => {
-			item.dialogCSSClasses = [];
-			if (item.isEmbedded) {
-				item.dialogCSSClasses.push("embedded");
-				if (!item.hasTag(Tag.Archived)) {
-					item.dialogCSSClasses.push("active-embedded");
-				}
-			}
-			if (item.hasTag(Tag.Fine)) {
-				item.dialogCSSClasses.push("fine-quality");
-			}
-			if (item.hasTag(Tag.Featured)) {
-				item.dialogCSSClasses.push("featured-item");
-			}
-		});
-
-		// Sort by featured, then by fine, then by world_name, then embedded first sorted by name
-		processedItems.sort((a, b) => {
-			if (a.hasTag(Tag.Featured) && !b.hasTag(Tag.Featured)) { return -1 }
-			if (!a.hasTag(Tag.Featured) && b.hasTag(Tag.Featured)) { return 1 }
-			if (a.hasTag(Tag.Fine) && !b.hasTag(Tag.Fine)) { return -1 }
-			if (!a.hasTag(Tag.Fine) && b.hasTag(Tag.Fine)) { return 1 }
-			if (a.system.world_name > b.system.world_name) { return 1 }
-			if (a.system.world_name < b.system.world_name) { return -1 }
-			if (a.isEmbedded && !b.isEmbedded) { return -1 }
-			if (!a.isEmbedded && b.isEmbedded) { return 1 }
+		// Sort by name
+		mergedActors.sort((a, b) => {
 			if (a.name === b.name) { return 0 }
 			if (a.name === null) { return 1 }
 			if (b.name === null) { return -1 }
@@ -155,67 +130,213 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 			return 0;
 		});
 
-		return processedItems;
+		return mergedActors;
 	}
 
-	getDialogItems(dialogRef: SelectionCategory) {
+	getDialogActors(category: SelectionCategory): Record<string, BladesActor[]>|false {
 
-		// ITEM DISLPLAY PATTERNS:
+		/* **** NEED TO FILTER OUT ACTORS PLAYER DOESN'T HAVE PERMISSION TO SEE **** */
 
-		// >> Tucked Globals --- shows ALL items, including globals. CSS ".embedded-item + .global-item" selector
-		// 											shifts global items to the left, beneath the last matching embedded-item, just enough so
-		// 											that it can be hovered over, which brings it to the front for selection.  No Toggle button
-		// 											on embedded items here
-		// >> Plucked Lists --- no copies of currently-active items are displayed, unless multiple uses allowed:
-		// >> Quantity-Constrained Globals --- when multiple copies of the same item are allowed (second upgrades, multiple-use-gear),
-		// 											for each use beyond the first, one "free" embedded item is included without impacting the display of
-		// 											the global items (e.g. can have 2x Bandolier during a score; if actor has 1 custom Bandolier, show that and a fully-visible global so it can be selected for the second use; only start tucking if actor has defined Bandoliers for both usage "slots").
-		// 											Have to allow choosing an active embedded item for second use, even if already selected for first: when done, automatically duplicates the embedded item AND adds " #2" to the name to distinguish it.
-		// >> Items w/Prereqs --- item.system.prereqs is a Record<PrereqType, string> which is passed to actor.checkPrereqs(item); switch statement of all PrereqTypes determines how string is used.
+		const dialogData: Record<string, BladesActor[]> = {};
 
-		const dialogData: Record<string, BladesActor[]|BladesItem[]> = {};
+		switch (category) {
+			case SelectionCategory.Acquaintance: {
+				if (this.playbookName === null) { return false }
+				dialogData.Main = this.processEmbeddedActorMatches(BladesActor.GetTypeWithTags(BladesActorType.npc, this.playbookName));
+				return dialogData;
+			}
+			case SelectionCategory.VicePurveyor: {
+				if (this.vices.length === 0) { return false }
+				dialogData.Main = this.processEmbeddedActorMatches(BladesActor.GetTypeWithTags(BladesActorType.npc, ...this.vices.map((vice) => vice.name! as Vice)));
+				return dialogData;
+			}
+			case SelectionCategory.Crew: {
+				dialogData.Main = BladesActor.GetTypeWithTags(BladesActorType.crew);
+				return dialogData;
+			}
+			default: return false;
+		}
+	}
 
-		switch (dialogRef) {
+	getSubActor(actorRef: ActorRef): BladesActor|false {
+		const globalActor = BladesActor.Get(actorRef);
+		if (globalActor === null) { return false }
+		if (globalActor.uuid in this.system.subactors) {
+			const subActorData = this.system.subactors[globalActor.uuid];
+			globalActor.system = mergeObject(
+				globalActor.system,
+				subActorData.system
+			) as BladesActorSystem;
+			return globalActor;
+		}
+		return false;
+	}
+	async addSubActor(actorRef: ActorRef, tags?: BladesTag[]): Promise<void> {
+		const globalActor = BladesActor.Get(actorRef);
+		if (globalActor === null) { return }
+		const subActor = this.getSubActor(actorRef);
+		if (subActor) {
+			if (!subActor.hasTag(Tag.Archived)) { return }
+			subActor.remTag(Tag.Archived); // interception of _update method will translate this to this.system.subactors
+		} else {
+			const subActorData: BladesActor.SubActorData = {
+				uuid: globalActor.uuid,
+				system: {}
+			};
+			if (tags) {
+				subActorData.system.tags = U.unique([
+					...globalActor.tags,
+					...tags
+				]);
+			}
+			this.update({[`system.subactors.${globalActor.uuid}`]: subActorData});
+		}
+	}
+	async remSubActor(actorRef: ActorRef): Promise<void> {
+		const subActor = this.getSubActor(actorRef);
+		if (!subActor || subActor.hasTag(Tag.Archived)) { return }
+		subActor.addTag(Tag.Archived); // interception of _update method will translate this to this.system.subactors
+	}
+	async purgeSubActor(actorRef: ActorRef): Promise<void> {
+		const subActor = this.getSubActor(actorRef);
+		if (!subActor) { return }
+		this.update({["system.subactors"]: mergeObject(this.system.subactors, {[`-=${subActor.uuid}`]: null})});
+	}
+	// #endregion
+
+	// #region Embedded Items
+	get activeSubItems() { return this.items.filter((item) => !item.hasTag(Tag.Archived)) }
+	get archivedSubItems() { return this.items.filter((item) => item.hasTag(Tag.Archived)) }
+
+	private _checkItemPrereqs(item: BladesItem): boolean {
+		// const self = this;
+		if (!item.system.prereqs) { return true }
+		for (const [pType, pString] of Object.entries(item.system.prereqs)) {
+			switch (pType) {
+				case PrereqType.HasActiveItem: {
+					if (!this.activeSubItems.find((item) => item.system.world_name === pString)) {
+						return false;
+					}
+					break;
+				}
+				case PrereqType.AdvancedPlaybook: {
+					if (!this.playbookName || ![Playbook.Ghost, Playbook.Hull, Playbook.Vampire].includes(this.playbookName)) {
+						return false;
+					}
+				}
+				// no default
+			}
+		}
+		return true;
+	}
+	private _processEmbeddedItemMatches(globalItems: BladesItem[]) {
+
+		return globalItems
+
+			// Step 1: Filter out globals that fail prereqs.
+			.filter((item) => this._checkItemPrereqs(item))
+
+			// Step 2: Filter out already-active items based on num_available
+			.filter((gItem) => {
+				const matchingActiveSubItems = this.activeSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name);
+				return (gItem.system.num_available ?? 1) > matchingActiveSubItems.length;
+			})
+
+			// Step 3: Replace with matching Archived, Embedded subItems
+			.map((gItem) => {
+				const matchingSubItems = this.archivedSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name);
+				if (matchingSubItems.length > 0) {
+					return matchingSubItems;
+				} else {
+					return gItem;
+				}
+			})
+			.flat()
+
+			// Step 4: Apply CSS classes
+			.map((sItem) => {
+				const cssClasses: string[] = [];
+				if (sItem.isEmbedded) {
+					cssClasses.push("embedded");
+				}
+				if (sItem.hasTag(Tag.Fine)) {
+					cssClasses.push("fine-quality");
+				}
+				if (sItem.hasTag(Tag.Featured)) {
+					cssClasses.push("featured-item");
+				}
+
+				if (cssClasses.length > 0) {
+					sItem.dialogCSSClasses = cssClasses.join(" ");
+				}
+
+				return sItem;
+			})
+
+			// Step 5: Sort by featured, then by fine, then by world_name, then embedded first sorted by name
+			.sort((a, b) => {
+				if (a.hasTag(Tag.Featured) && !b.hasTag(Tag.Featured)) { return -1 }
+				if (!a.hasTag(Tag.Featured) && b.hasTag(Tag.Featured)) { return 1 }
+				if (a.hasTag(Tag.Fine) && !b.hasTag(Tag.Fine)) { return -1 }
+				if (!a.hasTag(Tag.Fine) && b.hasTag(Tag.Fine)) { return 1 }
+				if (a.system.world_name > b.system.world_name) { return 1 }
+				if (a.system.world_name < b.system.world_name) { return -1 }
+				if (a.isEmbedded && !b.isEmbedded) { return -1 }
+				if (!a.isEmbedded && b.isEmbedded) { return 1 }
+				if (a.name === b.name) { return 0 }
+				if (a.name === null) { return 1 }
+				if (b.name === null) { return -1 }
+				if (a.name > b.name) { return 1 }
+				if (a.name < b.name) { return -1 }
+				return 0;
+			});
+	}
+
+	getDialogItems(category: SelectionCategory): Record<string, BladesItem[]>|false {
+
+		const dialogData: Record<string, BladesItem[]> = {};
+
+		switch (category) {
 			case SelectionCategory.Heritage: {
-				dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.heritage));
+				dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.heritage));
 				return dialogData;
 			}
 			case SelectionCategory.Background: {
-				dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.background));
+				dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.background));
 				return dialogData;
 			}
 			case SelectionCategory.Vice: {
 				if (this.playbookName === null) { return false }
 				// If actor contains a vice with the Override tag, return false to prevent selecting something different
 				if (this.vices.some((item) => item.hasTag(Tag.ViceOverride))) { return false }
-				dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.vice, this.playbookName));
+				dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.vice, this.playbookName));
 				return dialogData;
 			}
 			case SelectionCategory.Playbook: {
 				switch (this.type) {
 					case BladesActorType.pc: {
-						dialogData.Basic = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.AdvancedPlaybook));
-						dialogData.Advanced = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.AdvancedPlaybook));
+						dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook).filter((item) => !item.hasTag(Tag.Advanced)));
+						dialogData.Advanced = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Advanced));
 						return dialogData;
 					}
 					case BladesActorType.crew: {
-						dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_playbook));
+						dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_playbook));
 						return dialogData;
 					}
 					default: return false;
 				}
 			}
 			case SelectionCategory.Reputation: {
-				dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_reputation));
+				dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_reputation));
 				return dialogData;
 			}
 			case SelectionCategory.PreferredOp: {
-				dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op));
+				dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op));
 				return dialogData;
 			}
 			case SelectionCategory.Gear: {
 				if (this.playbookName === null) { return false }
-				const gearItems = this.processEmbeddedMatches([
+				const gearItems = this._processEmbeddedItemMatches([
 					...BladesItem.GetTypeWithTags(BladesItemType.item, this.playbookName),
 					...BladesItem.GetTypeWithTags(BladesItemType.item, Tag.General)
 				])
@@ -223,22 +344,47 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 
 				// Two tabs, one for playbook and the other for general items
 				dialogData[this.playbookName] = gearItems.filter((item) => item.hasTag(this.playbookName!));
-				dialogData.General = gearItems.filter((item) => item.hasTag(Tag.General));
+				dialogData.General = gearItems
+					.filter((item) => item.hasTag(Tag.General))
+					// Remove featured class from General items
+					.map((item) => {
+						if (item.dialogCSSClasses) {
+							item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
+						}
+						return item;
+					})
+					// Re-sort by world_name
+					.sort((a, b) => {
+						if (a.system.world_name > b.system.world_name) { return 1 }
+						if (a.system.world_name < b.system.world_name) { return -1 }
+						return 0;
+					});
 
-				// Remove featured class from General items
-				dialogData.General.forEach((item) => U.pullElement(item.dialogCSSClasses ?? [], (cls) => cls === "featured-item"));
 				return dialogData;
 			}
 			case SelectionCategory.Ability: {
 				if (this.playbookName === null) { return false }
 				const itemType = this.type === BladesActorType.crew ? BladesItemType.crew_ability : BladesItemType.ability;
-				dialogData[this.playbookName] = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(itemType, this.playbookName));
-				dialogData.Veteran = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(itemType))
-					.filter((item) => !item.hasTag(this.playbookName!));
+				dialogData[this.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(itemType, this.playbookName));
+				dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(itemType))
+					.filter((item) => !item.hasTag(this.playbookName!))
+					// Remove featured class from Veteran items
+					.map((item) => {
+						if (item.dialogCSSClasses) {
+							item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
+						}
+						return item;
+					})
+					// Re-sort by world_name
+					.sort((a, b) => {
+						if (a.system.world_name > b.system.world_name) { return 1 }
+						if (a.system.world_name < b.system.world_name) { return -1 }
+						return 0;
+					});
 				return dialogData;
 			}
 			case SelectionCategory.Upgrade: {
-				dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade));
+				dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade));
 				return dialogData;
 			}
 			// no default
@@ -246,45 +392,51 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		return dialogData;
 	}
 
-	checkPrereqs(item: BladesItem) {
-		if (!item.system.prereqs) { return true }
-		for (const [pType, pString] of Object.entries(item.system.prereqs)) {
-			switch (pType) {
-				case PrereqType.HasActiveItem: {
-					if (!this.activeItems.find((item) => item.system.world_name === pString)) {
-						return false;
-					}
-					break;
-				}
-				// no default
-			}
+	getSubItem(itemRef: ItemRef): BladesItem|false {
+		if (typeof itemRef === "string" && this.items.get(itemRef)) {
+			return this.items.get(itemRef) ?? false;
 		}
-		return true;
-	}
-
-	addDialogItem(docID: string) {
-		// Is it an active (unarchived) Item? Duplicate the item, adding '#2' to title (or more depending on how many)
-
-		// Is it an archived Item? Unarchive it.
-
-		// Is it not embedded at all? Embed from global instance.
-	}
-
-	getEmbeddedDoc(docID: string): BladesActor|BladesItem|false {
-		// Is it an embedded item? Return it.
-		if (this.items.get(docID)) { return this.items.get(docID)! }
-
-		// Is it an embedded actor? Return global actor instance (sheet logic in npc sheet will handle interrupting update/getData sequences)
-		if (docID in this.system.subactors) { return game.actors.get(docID) ?? false }
-
+		const globalItem = BladesItem.Get(itemRef);
+		if (globalItem && globalItem.id) {
+			return this.items.find((item) => item.system.world_name === globalItem.system.world_name) ?? false;
+		}
 		return false;
 	}
+	async addSubItem(itemRef: ItemRef): Promise<void> {
+		const embeddedItem = this.getSubItem(itemRef);
+		if (embeddedItem) {
+			// Is it an archived Item? Unarchive it.
+			if (embeddedItem.hasTag(Tag.Archived)) {
+				embeddedItem.remTag(Tag.Archived);
+				return;
+			}
+			// Is it an active (unarchived) Item? Duplicate the item.
+			BladesItem.create([embeddedItem] as unknown as ItemDataConstructorData, {parent: this});
+			return;
+		}
+		// Is it not embedded at all? Embed from global instance.
+		const globalItem = BladesItem.Get(itemRef);
+		if (globalItem) {
+			BladesItem.create([globalItem] as unknown as ItemDataConstructorData, {parent: this});
+		}
+	}
+	async remSubItem(itemRef: ItemRef): Promise<void> {
+		const subItem = this.getSubItem(itemRef);
+		if (!subItem) { return }
+		eLog.checkLog("actorTrigger", "Removing SubItem " + subItem.name, subItem);
+		if (subItem.hasTag(Tag.Archived)) { return }
+		subItem.addTag(Tag.Archived);
+	}
+	async purgeSubItem(itemRef: ItemRef): Promise<void> {
+		const subItem = this.getSubItem(itemRef);
+		if (!subItem || subItem.hasTag(Tag.Archived)) { return }
+		subItem.delete();
+	}
+	// #endregion
 
 	get vices(): BladesItem[] {
-		return this.activeItems.filter((item) => item.type === BladesItemType.vice);
+		return this.activeSubItems.filter((item) => item.type === BladesItemType.vice);
 	}
-
-
 	// #endregion
 
 	static override async create(data: ActorDataConstructorData & {data?: {world_name?: string}}, options={}) {
@@ -317,6 +469,21 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 
 		docs.forEach(async (doc) => {
 			if (doc instanceof BladesItem) {
+				eLog.checkLog("actorTrigger", `... doc is Item, docType: ${doc.type}`);
+				if ([
+					BladesItemType.background,
+					BladesItemType.crew_reputation,
+					BladesItemType.crew_playbook,
+					BladesItemType.heritage,
+					BladesItemType.playbook,
+					BladesItemType.preferred_op,
+					BladesItemType.vice
+				].some((iType) => doc.type === iType)) {
+					eLog.checkLog("actorTrigger", "... removing uniques", {activeSubItems: this.activeSubItems, removeDoc: doc});
+					this.activeSubItems
+						.filter((sItem) => sItem.type === doc.type && sItem.id !== doc.id)
+						.forEach((sItem) => this.remSubItem(sItem));
+				}
 				switch (doc.type) {
 					case BladesItemType.playbook: {
 						await this.update({
@@ -337,15 +504,22 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		});
 	}
 
+	override async update(updateData: DeepPartial<ActorDataConstructorData | (ActorDataConstructorData & Record<string, unknown>)> | undefined) {
+		eLog.checkLog2("actor", "actor.update(data)", {updateData, user: game.user});
+		super.update(updateData);
+		return this;
+	}
+
+	// #region Actor Data Getters
 	get playbookName(): (BladesTag & Playbook)|null {
 		return this.playbook?.name as (BladesTag & Playbook)|undefined ?? null;
 	}
 	get playbook() {
 		if (this.type === BladesActorType.pc) {
-			return this.activeItems.find((item) => item.type === BladesItemType.playbook);
+			return this.activeSubItems.find((item) => item.type === BladesItemType.playbook);
 		}
 		if (this.type === BladesActorType.crew) {
-			return this.activeItems.find((item) => item.type === BladesItemType.crew_playbook);
+			return this.activeSubItems.find((item) => item.type === BladesItemType.crew_playbook);
 		}
 		return null;
 	}
@@ -387,9 +561,8 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		) as Record<string, boolean>;
 	}
 
-
 	get currentLoad() {
-		const activeLoadItems = this.activeItems.filter((item) => item.type === BladesItemType.item);
+		const activeLoadItems = this.activeSubItems.filter((item) => item.type === BladesItemType.item);
 		return U.gsap.utils.clamp(0, 10, activeLoadItems
 			.reduce((tot, i) => tot + (i.type === "item"
 				? U.pInt(i.system.load)
@@ -401,7 +574,9 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected).toLowerCase() as keyof BladesActor["system"]["loadout"]["levels"]];
 		return Math.max(0, maxLoad - this.currentLoad);
 	}
+	// #endregion Actor Data Getters
 
+	// #region Rolling Dice
 	rollAttributePopup(attribute_name: Attributes|Actions) {
 		const test = Actions;
 		// const roll = new Roll("1d20 + @abilities.wis.mod", actor.getRollData());
@@ -491,6 +666,69 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		);
 	}
 
+	// /**
+	//  * Create <options> for available actions
+	//  *  which can be performed.
+	//  */
+	// createListOfActions() {
+
+	// 	let text = "", attribute, skill;
+	// 	const {attributes} = this.system;
+
+	// 	for ( attribute in attributes ) {
+
+	// 		const {skills} = attributes[attribute];
+
+	// 		text += `<optgroup label="${attribute} Actions">`;
+	// 		text += `<option value="${attribute}">${attribute} (Resist)</option>`;
+
+	// 		for ( skill in skills ) {
+	// 			text += `<option value="${skill}">${skill}</option>`;
+	// 		}
+
+	// 		text += "</optgroup>";
+
+	// 	}
+
+	// 	return text;
+
+	// }
+
+	/**
+   * Creates <options> modifiers for dice roll.
+   *
+   * @param {int} rs
+   *  Min die modifier
+   * @param {int} re
+   *  Max die modifier
+   * @param {int} s
+   *  Selected die
+   */
+	createListOfDiceMods(rs: number, re: number, s: number|string) {
+
+		let text = "";
+
+		if ( s === "" ) {
+			s = 0;
+		}
+
+		for ( let i = rs; i <= re; i++ ) {
+			let plus = "";
+			if ( i >= 0 ) { plus = "+" }
+			text += `<option value="${i}"`;
+			if ( i === s ) {
+				text += " selected";
+			}
+
+			text += `>${plus}${i}d</option>`;
+		}
+
+		return text;
+	}
+
+	// #endregion Rolling Dice
+
+	// #region NPC Randomizers
 	updateRandomizers() {
 		const rStatus: Record<string, Omit<BladesActor.RandomizerData, "value"|"isLocked">> = {
 			name: {size: 4, label: null},
@@ -616,74 +854,13 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		}
 		return this.update(updateData);
 	}
+	// #endregion NPC Randomizers
 
-	// /**
-	//  * Create <options> for available actions
-	//  *  which can be performed.
-	//  */
-	// createListOfActions() {
-
-	// 	let text = "", attribute, skill;
-	// 	const {attributes} = this.system;
-
-	// 	for ( attribute in attributes ) {
-
-	// 		const {skills} = attributes[attribute];
-
-	// 		text += `<optgroup label="${attribute} Actions">`;
-	// 		text += `<option value="${attribute}">${attribute} (Resist)</option>`;
-
-	// 		for ( skill in skills ) {
-	// 			text += `<option value="${skill}">${skill}</option>`;
-	// 		}
-
-	// 		text += "</optgroup>";
-
-	// 	}
-
-	// 	return text;
-
-	// }
-
-	/**
-   * Creates <options> modifiers for dice roll.
-   *
-   * @param {int} rs
-   *  Min die modifier
-   * @param {int} re
-   *  Max die modifier
-   * @param {int} s
-   *  Selected die
-   */
-	createListOfDiceMods(rs: number, re: number, s: number|string) {
-
-		let text = "";
-
-		if ( s === "" ) {
-			s = 0;
-		}
-
-		for ( let i = rs; i <= re; i++ ) {
-			let plus = "";
-			if ( i >= 0 ) { plus = "+" }
-			text += `<option value="${i}"`;
-			if ( i === s ) {
-				text += " selected";
-			}
-
-			text += `>${plus}${i}d</option>`;
-		}
-
-		return text;
-
-	}
 }
 
-declare interface BladesActor {
-	get type(): BladesActorType,
-	get items(): EmbeddedCollection<typeof BladesItem, ActorData>;
-	system: Actor["data"]["data"] & {
-			world_name: string,
+
+interface BladesActorSystem {
+	world_name: string,
 			full_name: string,
 			subactors: Record<string,BladesActor.SubActorData>,
 			notes: string,
@@ -785,6 +962,11 @@ declare interface BladesActor {
 				preferred_op: string
 			}
 		}
+
+declare interface BladesActor {
+	get type(): BladesActorType,
+	get items(): EmbeddedCollection<typeof BladesItem, ActorData>;
+	system: Actor["data"]["data"] & BladesActorSystem;
 	parent: TokenDocument | null;
 }
 

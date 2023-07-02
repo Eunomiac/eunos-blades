@@ -11,11 +11,12 @@
 		{{/if}}
 
 		{{!-- Tabs --}}
-		{{#each tabs as |tabItems tabName|}}
+		{{#with docType as |docType|}}
+		{{#each ../tabs as |tabItems tabName|}}
 		<div class="tab flex-horizontal flex-wrap {{~#unless (test (count ../tabs) ">" 1)}} active{{/unless}}" data-tab="{{@index}}">
 			{{#each tabItems as |item|}}
-				<div class="comp comp-vertical {{item.dialogClass}}">
-					<div class="comp-body" data-item-id="{{item._id}}">
+				<div class="comp comp-vertical {{item.dialogCSSClasses}}">
+					<div class="comp-body" data-item-id="{{item._id}}" data-doc-type="{{docType}}">
 						<img src="{{item.img}}" />
 						<div class="comp-title shadowed">{{item.name}}</div>
 						{{#if item.system.load}}
@@ -29,6 +30,7 @@
 			{{/each}}
 		</div>
 		{{/each}}
+		{{/with}}
 	</section>
 </div>
 

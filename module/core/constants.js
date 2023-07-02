@@ -139,6 +139,12 @@ export var Playbook;
     Playbook["Vampire"] = "Vampire";
     Playbook["Hull"] = "Hull";
     Playbook["Ghost"] = "Ghost";
+    Playbook["Assassins"] = "Assassins";
+    Playbook["Bravos"] = "Bravos";
+    Playbook["Cult"] = "Cult";
+    Playbook["Hawkers"] = "Hawkers";
+    Playbook["Shadows"] = "Shadows";
+    Playbook["Smugglers"] = "Smugglers";
 })(Playbook || (Playbook = {}));
 export var Tag;
 (function (Tag) {
@@ -147,8 +153,13 @@ export var Tag;
     Tag["Featured"] = "Featured";
     Tag["General"] = "General";
     Tag["ViceOverride"] = "ViceOverride";
-    Tag["BasicPlaybook"] = "BasicPlaybook";
-    Tag["AdvancedPlaybook"] = "AdvancedPlaybook";
+    Tag["Advanced"] = "Advanced";
+    Tag["Hidden"] = "Hidden";
+    Tag["Acquaintance"] = "Acquaintance";
+    Tag["Friend"] = "Friend";
+    Tag["Rival"] = "Rival";
+    Tag["VicePurveyor"] = "VicePurveyor";
+    Tag["MultiplesOK"] = "MultiplesOK";
 })(Tag || (Tag = {}));
 const C = {
     SYSTEM_ID: "eunos-blades",

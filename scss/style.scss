@@ -7,7 +7,8 @@
 
 
 
-:root, * {
+:root,
+* {
 	scrollbar-color: var(--blades-white) var(--blades-black);
 	scrollbar-width: thin;
 }
@@ -30,7 +31,9 @@
 }
 
 :root {
-	&, * {
+
+	&,
+	* {
 		@import './core/vars';
 		@import './core/components';
 	}
@@ -97,18 +100,21 @@
 			@import "./core/reset";
 			@import './core/globals';
 
+			// General App Window Styles
+			@import "./core/app";
+
 			// Third-Party Library Inputs
 			@import './tagify/tagify';
 
 			// Tagify Configuration
-			.tagify {
-				--tag-bg: var(--blades-black);
-				--tag-text-color: var(--color-default);
+			// .tagify {
+			// 	--tag-bg: var(--blades-black);
+			// 	--tag-text-color: var(--color-default);
 
-				.tag-color-green {
-					--tag-bg: rgba(0, 150, 0, 0.6);
-				}
-			}
+			// 	.tag-color-green {
+			// 		--tag-bg: rgba(0, 150, 0, 0.6);
+			// 	}
+			// }
 
 			.editor:not(.tinymce) {
 				position: relative;
@@ -125,6 +131,7 @@
 						opacity: 1
 					}
 				}
+
 				.editor-content {
 					position: relative;
 					width: calc(100% + (2 * var(--content-padding)));

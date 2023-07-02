@@ -5,11 +5,10 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { BladesItemType, District } from "../core/constants.js";
+import C, { BladesActorType, BladesItemType, Tag } from "../core/constants.js";
 import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesItem from "../blades-item.js";
-import Tagify from "../../lib/tagify/tagify.esm.js";
 class BladesActorSheet extends BladesSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -53,15 +52,19 @@ class BladesActorSheet extends BladesSheet {
             .filter((key) => this.actor.system.trauma.active[key]);
 
         const items = {
-            abilities: this.actor.activeItems.filter((item) => item.type === BladesItemType.ability),
-            background: this.actor.activeItems.find((item) => item.type === BladesItemType.background),
-            heritage: this.actor.activeItems.find((item) => item.type === BladesItemType.heritage),
+            abilities: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.ability),
+            background: this.actor.activeSubItems.find((item) => item.type === BladesItemType.background),
+            heritage: this.actor.activeSubItems.find((item) => item.type === BladesItemType.heritage),
             vice: (this.actor.system.vice.override && JSON.parse(this.actor.system.vice.override))
-                || this.actor.activeItems.find((item) => item.type === BladesItemType.vice),
-            loadout: this.actor.activeItems.filter((item) => item.type === BladesItemType.item),
+                || this.actor.activeSubItems.find((item) => item.type === BladesItemType.vice),
+            loadout: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.item),
             playbook: this.actor.playbook
         };
         const actors = {
+            crew: this.actor.activeSubActors.find((actor) => actor.type === BladesActorType.crew),
+            vice_purveyor: this.actor.activeSubActors.find((actor) => actor.hasTag(Tag.VicePurveyor)),
+            friends: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.Friend)),
+            rivals: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.Rival))
         };
 
         items.abilities = items.abilities.map((item) => {
@@ -304,22 +307,6 @@ class BladesActorSheet extends BladesSheet {
                     return;
                 }
                 $(this).siblings(".svg-armor.armor-special").removeClass("hover-over");
-            }
-        });
-
-        const tagTest = new Tagify(html.find("input[name='data.harm.heavy.one']")[0], {
-            whitelist: [
-                { "value": District.Barrowcleft, "class": "tag-color-green" },
-                { "value": District.Brightstone, "class": "tag-color-green" },
-                { "value": District.Charhollow, "class": "tag-color-green" }
-            ],
-            dropdown: {
-                classname: "color-blue",
-                enabled: 0,
-                maxItems: 5,
-                position: "text",
-                closeOnSelect: true,
-                highlightFirst: true
             }
         });
     }

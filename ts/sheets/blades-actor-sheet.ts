@@ -1,5 +1,5 @@
 
-import C, {BladesItemType, District} from "../core/constants.js";
+import C, {BladesActorType, BladesItemType, District, Tag} from "../core/constants.js";
 import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesItem from "../blades-item.js";
@@ -80,19 +80,20 @@ class BladesActorSheet extends BladesSheet {
 
 		//~ Assemble embedded actors and items
 		const items = {
-			abilities: this.actor.activeItems.filter((item) => item.type === BladesItemType.ability),
-			background: this.actor.activeItems.find((item) => item.type === BladesItemType.background),
-			heritage: this.actor.activeItems.find((item) => item.type === BladesItemType.heritage),
+			abilities: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.ability),
+			background: this.actor.activeSubItems.find((item) => item.type === BladesItemType.background),
+			heritage: this.actor.activeSubItems.find((item) => item.type === BladesItemType.heritage),
 			vice: (this.actor.system.vice.override && JSON.parse(this.actor.system.vice.override as string))
-				|| this.actor.activeItems.find((item) => item.type === BladesItemType.vice),
-			loadout: this.actor.activeItems.filter((item) => item.type === BladesItemType.item),
+				|| this.actor.activeSubItems.find((item) => item.type === BladesItemType.vice),
+			loadout: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.item),
 			playbook: this.actor.playbook
 		};
+
 		const actors = {
-			// crew: BladesActor.GetActiveEmbeddedCategoryActors("pc-crew", this.actor)[0],
-			// vice_purveyor: BladesActor.GetActiveEmbeddedCategoryActors("vice_purveyor", this.actor)[0],
-			// acquaintances: BladesActor.GetActiveEmbeddedCategoryActors("acquaintance", this.actor),
-			// rivals: BladesActor.GetActiveEmbeddedCategoryActors("rival", this.actor)
+			crew: this.actor.activeSubActors.find((actor) => actor.type === BladesActorType.crew),
+			vice_purveyor: this.actor.activeSubActors.find((actor) => actor.hasTag(Tag.VicePurveyor)),
+			friends: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.Friend)),
+			rivals: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.Rival))
 		};
 
 		//~ Assign dotlines to abilities with usage data
@@ -321,28 +322,6 @@ class BladesActorSheet extends BladesSheet {
 			mouseleave: function() {
 				if (!self.activeArmor.includes("special") || self.activeArmor.length === 1) { return }
 				$(this).siblings(".svg-armor.armor-special").removeClass("hover-over");
-			}
-		});
-
-		//~ Tagify Experiments
-		const tagTest = new Tagify(html.find("input[name='data.harm.heavy.one']")[0], {
-			// id: "actorSheetTest",
-			// enforceWhitelist: true,
-			// editTags: false,
-			// mode: "select",
-			// userInput: false,
-			whitelist : [
-				{"value": District.Barrowcleft, "class": "tag-color-green"},
-				{"value": District.Brightstone, "class": "tag-color-green"},
-				{"value": District.Charhollow, "class": "tag-color-green"}
-			],
-			dropdown : {
-				classname     : "color-blue",
-				enabled       : 0,              // show the dropdown immediately on focus
-				maxItems      : 5,
-				position      : "text",         // place the dropdown near the typed text
-				closeOnSelect : true,          // keep the dropdown open after selecting a suggestion
-				highlightFirst: true
 			}
 		});
 	}

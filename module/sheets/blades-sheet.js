@@ -7,34 +7,45 @@
 
 import U from "../core/utilities.js";
 import G from "../core/gsap.js";
-import { Tag } from "../core/constants.js";
-import BladesDialog from "../blades-dialog.js";
+import { Tag, District, Playbook, Vice } from "../core/constants.js";
+import Tagify from "../../lib/tagify/tagify.esm.js";
+import BladesSelectorDialog from "../blades-dialog.js";
 import BladesActiveEffect from "../blades-active-effect.js";
 class BladesSheet extends ActorSheet {
-    async _onItemAddClick(event) {
-        event.preventDefault();
-        const dataElem$ = $(event.currentTarget).closest(".comp");
-        const doc_cat = dataElem$.data("compCat");
-        const dialogItems = this.actor.getDialogItems(doc_cat);
-        if (dialogItems === false) {
-            return;
-        }
-        await BladesDialog.Display(this.actor, U.tCase(`Add ${doc_cat.replace(/_/g, " ")}`), dialogItems, async (docID) => this.actor.addDialogItem(docID));
-    }
     async getData() {
-        const data = await super.getData();
-        eLog.checkLog4("actor", "[BladesSheet] super.getData()", { ...data });
-        const actorData = data.actor;
-        const actorSystem = actorData.system;
-        Object.assign(data, {
-            editable: this.options.editable,
-            isGM: game.user.isGM,
-            actor: actorData,
-            data: actorSystem,
-            effects: this.actor.effects
-        });
-        eLog.checkLog5("actor", "[BladesSheet] return getData()", { ...data });
-        return data;
+        const context = await super.getData();
+        eLog.checkLog("actor", "[BladesSheet] super.getData()", { ...context });
+        context.editable = this.options.editable;
+        context.isGM = game.user.isGM;
+        context.activeEffects = this.actor.effects;
+        eLog.checkLog("actor", "[BladesSheet] return getData()", { ...context });
+        return {
+            ...context,
+            actor: this.actor,
+            system: this.actor.system
+        };
+    }
+
+    get playbookData() {
+        return {
+            dotline: {
+                data: this.actor.system.experience.playbook,
+                target: "system.experience.playbook.value",
+                svgKey: "teeth.tall",
+                svgFull: "full|frame",
+                svgEmpty: "full|half|frame"
+            }
+        };
+    }
+    get coinsData() {
+        return {
+            dotline: {
+                data: this.actor.system.coins,
+                target: "system.coins.value",
+                iconEmpty: "coin-full.svg",
+                iconFull: "coin-full.svg"
+            }
+        };
     }
     activateListeners(html) {
         super.activateListeners(html);
@@ -93,68 +104,52 @@ class BladesSheet extends ActorSheet {
         html.find(".clock-container").on("click", this._onClockLeftClick.bind(this));
         html.find(".clock-container").on("contextmenu", this._onClockRightClick.bind(this));
         html.find("[data-comp-id]").find(".comp-title").on("click", this._onItemOpenClick.bind(this));
-        html.find(".comp-control.comp-add").on("click", (event) => {
-            this._onItemAddClick(event);
-        });
-        html.find(".comp-control.comp-delete").on({
-            click: (event) => this._onItemRemoveClick(event)
-        });
-        html.find(".comp-control.comp-delete-full").on({
-            click: (event) => this._onItemFullRemoveClick(event)
-        });
-        html.find(".comp-control.comp-toggle").on({
-            click: (event) => this.actor.update({ [$(event.currentTarget).data("target")]: !getProperty(this.actor, $(event.currentTarget).data("target")) })
-        });
+        html.find(".comp-control.comp-add").on("click", this._onItemAddClick.bind(this));
+        html.find(".comp-control.comp-delete").on("click", this._onItemRemoveClick.bind(this));
+        html.find(".comp-control.comp-delete-full").on("click", this._onItemFullRemoveClick.bind(this));
+        html.find(".comp-control.comp-toggle").on("click", this._onItemToggleClick.bind(this));
+        html.find("[data-roll-attribute]").on("click", this._onRollAttributeDieClick.bind(this));
+        html.find(".effect-control").on("click", this._onActiveEffectControlClick.bind(this));
+        const tagElem = html.find(".tag-entry")[0];
+        if (tagElem) {
+            const tagify = new Tagify(tagElem, {
+                enforceWhitelist: true,
+                editTags: false,
+                whitelist: [
+                    ...Object.values(Tag),
+                    ...Object.values(District),
+                    ...Object.values(Vice),
+                    ...Object.values(Playbook)
+                ],
+                dropdown: {
+                    classname: "tagify-dropdown",
+                    enabled: 0,
+                    maxItems: 5,
+                    appendTarget: html[0]
+                }
+            });
+            tagify.addTags(this.actor.tags.map((tag) => {
+                if (Object.values(Tag).includes(tag)) {
+                    return { "value": tag, "class": "orange" };
+                }
+                if (Object.values(District).includes(tag)) {
+                    return { "value": tag, "class": "green" };
+                }
+                if (Object.values(Playbook).includes(tag)) {
+                    return { "value": tag, "class": "blue" };
+                }
+                if (Object.values(Vice).includes(tag)) {
+                    return { "value": tag, "class": "red" };
+                }
+                return { "value": tag, "class": "white" };
+            }), false, false);
+            tagElem.addEventListener("change", this._onTagifyChange.bind(this));
+        }
         if (this.options.submitOnChange) {
             html.on("change", "textarea", this._onChangeInput.bind(this));
         }
-        html.find("[data-roll-attribute]").on("click", this._onRollAttributeDieClick.bind(this));
-        const self = this;
-        
-        html.find(".effect-control").on({
-            click: function (event) {
-                BladesActiveEffect.onManageActiveEffect(event, self.actor);
-            }
-        });
     }
-    get playbookData() {
-        return {
-            dotline: {
-                data: this.actor.system.experience.playbook,
-                target: "system.experience.playbook.value",
-                svgKey: "teeth.tall",
-                svgFull: "full|frame",
-                svgEmpty: "full|half|frame"
-            }
-        };
-    }
-    get coinsData() {
-        return {
-            dotline: {
-                data: this.actor.system.coins,
-                target: "system.coins.value",
-                iconEmpty: "coin-full.svg",
-                iconFull: "coin-full.svg"
-            }
-        };
-    }
-    async _onItemRemoveClick(event) {
-        event.preventDefault();
-        const self = this;
-        const dataElem$ = $(event.currentTarget).closest(".comp");
-        const docID = dataElem$.data("compId");
-        const item = this.actor.items.get(docID);
-        if (!item) {
-            return;
-        }
-        G.effects.blurRemove(dataElem$).then(() => item.addTag(Tag.Archived));
-    }
-    async _onItemFullRemoveClick(event) {
-        event.preventDefault();
-        const self = this;
-        const dataElem$ = $(event.currentTarget).closest(".comp");
-        const docID = dataElem$.data("compId");
-    }
+
     async _onClockLeftClick(event) {
         event.preventDefault();
         const clock$ = $(event.currentTarget).find(".clock[data-target]");
@@ -180,19 +175,87 @@ class BladesSheet extends ActorSheet {
             [target]: Math.max(0, curValue - 1)
         }));
     }
+    async _onTagifyChange(event) {
+        const tagString = event.target.value;
+        if (tagString) {
+            const tags = JSON.parse(tagString)
+                .map(({ value }) => value);
+            this.actor.update({ "system.tags": tags });
+        }
+        else {
+            this.actor.update({ "system.tags": [] });
+        }
+    }
+
+    _getCompData(event) {
+        const elem$ = $(event.currentTarget).closest(".comp");
+        const compData = {
+            elem$,
+            docID: elem$.data("compId"),
+            docCat: elem$.data("compCat"),
+            docType: elem$.data("compType")
+        };
+        if (compData.docID && compData.docType) {
+            compData.doc = {
+                Actor: this.actor.getSubActor(compData.docID),
+                Item: this.actor.getSubItem(compData.docID)
+            }[compData.docType];
+        }
+        if (compData.docCat && compData.docType) {
+            compData.dialogDocs = {
+                Actor: this.actor.getDialogActors(compData.docCat),
+                Item: this.actor.getDialogItems(compData.docCat)
+            }[compData.docType];
+        }
+        eLog.checkLog2("dialog", "Component Data", { ...compData });
+        return compData;
+    }
     async _onItemOpenClick(event) {
         event.preventDefault();
-        const docID = $(event.currentTarget).closest(".comp").data("compId");
-        const doc = this.actor.getEmbeddedDoc(docID);
-        eLog.log("CLICKED!", { docID, doc });
+        const { doc } = this._getCompData(event);
         if (!doc) {
             return;
         }
         doc.sheet?.render(true);
     }
-        async _onRollAttributeDieClick(event) {
+    async _onItemAddClick(event) {
+        event.preventDefault();
+        const { docCat, docType, dialogDocs } = this._getCompData(event);
+        eLog.checkLog("_onItemAddClick", { docCat, dialogDocs });
+        if (!dialogDocs || !docCat || !docType) {
+            return;
+        }
+        await BladesSelectorDialog.Display(this.actor, U.tCase(`Add ${docCat.replace(/_/g, " ")}`), docType, dialogDocs);
+    }
+    async _onItemRemoveClick(event) {
+        event.preventDefault();
+        const { elem$, doc } = this._getCompData(event);
+        if (!doc) {
+            return;
+        }
+        G.effects.blurRemove(elem$).then(() => doc.addTag(Tag.Archived));
+    }
+    async _onItemFullRemoveClick(event) {
+        event.preventDefault();
+        const { elem$, doc } = this._getCompData(event);
+        if (!doc) {
+            return;
+        }
+        G.effects.blurRemove(elem$).then(() => doc.delete());
+    }
+    async _onItemToggleClick(event) {
+        event.preventDefault();
+        const target = $(event.currentTarget).data("target");
+        this.actor.update({
+            [target]: !getProperty(this.actor, target)
+        });
+    }
+
+    async _onRollAttributeDieClick(event) {
         const attribute_name = $(event.currentTarget).data("rollAttribute");
         this.actor.rollAttributePopup(attribute_name);
     }
+
+    async _onActiveEffectControlClick(event) { BladesActiveEffect.onManageActiveEffect(event, this.actor); }
 }
 export default BladesSheet;

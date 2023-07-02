@@ -125,7 +125,13 @@ export enum Playbook {
 	Whisper = "Whisper",
 	Vampire = "Vampire",
 	Hull = "Hull",
-	Ghost = "Ghost"
+	Ghost = "Ghost",
+	Assassins = "Assassins",
+	Bravos = "Bravos",
+	Cult = "Cult",
+	Hawkers = "Hawkers",
+	Shadows = "Shadows",
+	Smugglers = "Smugglers"
 }
 
 export enum Tag {
@@ -134,8 +140,13 @@ export enum Tag {
 	Featured = "Featured",
 	General = "General",
 	ViceOverride = "ViceOverride",
-	BasicPlaybook = "BasicPlaybook",
-	AdvancedPlaybook = "AdvancedPlaybook"
+	Advanced = "Advanced",
+	Hidden = "Hidden",
+	Acquaintance = "Acquaintance",
+	Friend = "Friend",
+	Rival = "Rival",
+	VicePurveyor = "VicePurveyor",
+	MultiplesOK = "MultiplesOK"
 }
 
 

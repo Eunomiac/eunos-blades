@@ -4,7 +4,8 @@ import BladesActor from "./blades-actor.js";
 
 
 export enum PrereqType {
-	HasActiveItem = "HasActiveItem"
+	HasActiveItem = "HasActiveItem", // Item will only appear in selector if character has Item with world_name (value)
+	AdvancedPlaybook = "AdvancedPlaybook" // Item will only appear in selector if character is a Ghost, Hull or Vampire
 }
 declare abstract class BladesItemDocument {
 	archive: () => Promise<BladesItem>;
@@ -266,7 +267,7 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
 declare interface BladesItem {
 	get type(): string & BladesItemType,
 	parent: BladesActor | null,
-	dialogCSSClasses?: string[],
+	dialogCSSClasses?: string,
 	system: {
 		tags: BladesTag[],
 		type: string,

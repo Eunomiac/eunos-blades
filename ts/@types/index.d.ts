@@ -1,8 +1,8 @@
-import {BladesActorType, BladesItemType, Tag, Vice, District, Playbook} from "../core/constants";
-import BladesItem, {PrereqType} from "../blades-item";
+import { BladesActorType, BladesItemType, Tag, Vice, District, Playbook } from "../core/constants";
+import BladesItem, { PrereqType } from "../blades-item";
 import BladesActor from "../blades-actor";
 import { bladesRoll } from "../blades-roll";
-import BladesDialog from "../blades-dialog";
+import BladesSelectorDialog from "../blades-dialog";
 import BladesItemSheet from "../sheets/blades-item-sheet";
 import type gsap from "/scripts/greensock/esm/all";
 
@@ -16,16 +16,12 @@ declare global {
 		export type ActorSheet = BladesSheet;
 		export type ItemSheet = BladesItemSheet;
 
-		export type Sheet = BladesSheet|BladesItemSheet;
+		export type Sheet = BladesSheet | BladesItemSheet;
 	}
 	declare interface Game {
 		items: Collection<BladesItem>,
 		actors: Collection<BladesActor>,
-		user: {
-			name: string,
-			id: string,
-			isGM: boolean
-		}
+		user: User,
 		eunoblades: {
 			ClockKeeper?: BladesItem,
 			Tracker?: BladesItem
@@ -36,7 +32,7 @@ declare global {
 					pc: {
 						attributes: Record<string, {
 							label: string,
-							skills: Record<string, {label: string}>
+							skills: Record<string, { label: string }>
 						}>
 					}
 				}
@@ -44,59 +40,66 @@ declare global {
 		}
 	}
 
-	type BladesDoc = BladesActor|BladesItem;
+	type BladesDoc = BladesActor | BladesItem;
 
-	type DocRef = string|BladesDoc;
-	type ActorRef = string|BladesActor;
-	type ItemRef = string|BladesItem;
+	type DocRef = string | BladesDoc;
+	type ActorRef = string | BladesActor;
+	type ItemRef = string | BladesItem;
 
 	type BladesTag = Vice
-		|Playbook
-		|District
-		|Tag;
+		| Playbook
+		| District
+		| Tag;
 
 	namespace BladesActor {
 		export type ID = string;
 		export type RandomizerData = {
 			isLocked: boolean,
 			value: string,
-			size: 1|2|4,
-			label: string|null
+			size: 1 | 2 | 4,
+			label: string | null
 		}
 
 		interface SubActorData {
-			id: string,
-			system: Partial<Omit<BladesActor["system"],"subactors">>
+			uuid: string,
+			system: Partial<BladesActor["system"]>
 		}
 	}
 
-	declare abstract class BladesDocument<T extends Actor|Item> {
+	interface TagifyState {
+		state: {
+			inputText: boolean,
+			editing: boolean
+		}
+	}
+
+	declare abstract class BladesDocument<T extends Actor | Item> {
 
 		static get All(): T extends Actor ? BladesActor[] : BladesItem[];
-		static Get(docRef: DocRef): (T extends Actor ? BladesActor[] : BladesItem[])|null;
-		static GetTypeWithTags(type: BladesActorType|BladesItemType, ...tags: BladesTag[]): T extends Actor ? BladesActor[] : BladesItem[];
+		static Get(docRef: DocRef): (T extends Actor ? BladesActor[] : BladesItem[]) | null;
+		static GetTypeWithTags(type: BladesActorType | BladesItemType, ...tags: BladesTag[]): T extends Actor ? BladesActor[] : BladesItem[];
 
 		tags: BladesTag[];
 		hasTag(...tags: BladesTag[]): boolean
 		addTag(...tags: BladesTag[]): Promise<void>
 		remTag(...tags: BladesTag[]): Promise<void>
 
-		tooltip: string|null;
+		tooltip: string | null;
 
-		dialogCSSClasses?: string[];
+		dialogCSSClasses?: string;
 	}
 
 	type clockData = {
-		size: 2|3|4|5|6|8|10|12,
-		value: 0|1|2|3|4|5|6|7|8|9|10|11|12,
-		color: "yellow"|"blue"|"red"|"white",
+		size: 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12,
+		value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12,
+		color: "yellow" | "blue" | "red" | "white",
 		display: string,
 		isActive: boolean,
 		isNameVisible: boolean,
 		isVisible: boolean
 	}
 	type clockKeyData = {
-		clocks: Record<number, clockData|null>,
+		clocks: Record<number, clockData | null>,
 		numClocks: number,
 		id: string,
 		display: string,
@@ -106,14 +109,32 @@ declare global {
 		scene: string
 	};
 
+	declare class BladesSheet<
+									Options extends BladesSheet.Options = BladesSheet.Options,
+									Data extends object = BladesSheet.Data<Options>
+								> extends ActorSheet<BladesSheet.Options, BladesSheet.Data> {
+
+		override getData(options?: Partial<Options>): BladesSheet.Data | Promise<BladesSheet.Data>;
+
+	}
+
+	namespace BladesSheet {
+		interface Options extends ActorSheet.Options { }
+
+		interface Data<Opts extends Options = Options> extends ActorSheet.Data<Opts> {
+			items: EmbeddedCollection<typeof BladesItem, BladesActor["data"]>
+			& ToObjectFalseType<EmbeddedCollection<typeof BladesItem, BladesActor["data"]>>,
+			system: BladesActor["system"]
+		}
+	}
+
 	namespace BladesDialog {
-    interface Options extends DialogOptions {
+		interface Options extends DialogOptions {
 		}
 		interface Data extends Dialog.Data {
-			parentDoc: BladesActor;
-			title: string;
-			tabs: Record<string, BladesActor[]|BladesItem[]>;
-			callback: (docID: string) => Promise<void>;
+			parent: BladesActor;
+			docType: "Actor"|"Item";
+			tabs: Record<string, BladesActor[] | BladesItem[]>;
 		}
 	}
 
@@ -133,18 +154,18 @@ declare global {
 
 		register(funcName: string, func: SocketFunction): void;
 
-	/**
-	 * Chooses One Connected GM Client (at random, if multiple).
-	 * Executes 'handler' on that Client, passing it 'parameters'.
-	 * Can 'await' return value of passed handler function.
-	 */
-	executeAsGM<S extends SocketFunction>(handler: string|S, ...parameters: Parameters<S>): Promise<ReturnType<S>>
+		/**
+		 * Chooses One Connected GM Client (at random, if multiple).
+		 * Executes 'handler' on that Client, passing it 'parameters'.
+		 * Can 'await' return value of passed handler function.
+		 */
+		executeAsGM<S extends SocketFunction>(handler: string | S, ...parameters: Parameters<S>): Promise<ReturnType<S>>
 
-	/**
-		* Chooses Specified User Client, if Connected.
-		* Executes 'handler' on that Client, passing it 'parameters'.
-	* Can 'await' return value of passed handler function.
-		*/
+		/**
+			* Chooses Specified User Client, if Connected.
+			* Executes 'handler' on that Client, passing it 'parameters'.
+		* Can 'await' return value of passed handler function.
+			*/
 		executeAsUser<S extends SocketFunction>(handler: S, userId: string, ...parameters: Parameters<S>): Promise<ReturnType<S>>
 
 		/**
@@ -152,33 +173,33 @@ declare global {
 		 * Executes 'handler' on ALL, passing it 'parameters'.
 		 * CANNOT 'await' return value.
 		 */
-		executeForAllGMs<S extends SocketFunction>(handler: string|S, ...parameters: Parameters<S>): Promise<void>
+		executeForAllGMs<S extends SocketFunction>(handler: string | S, ...parameters: Parameters<S>): Promise<void>
 
-	/**
-		* Chooses GM Clients EXCEPT Caller.
-		* Executes 'handler' on ALL, passing it 'parameters'.
-		* CANNOT 'await' return value.
-		*/
-		executeForOtherGMs<S extends SocketFunction>(handler: string|S, ...parameters: Parameters<S>): Promise<void>
+		/**
+			* Chooses GM Clients EXCEPT Caller.
+			* Executes 'handler' on ALL, passing it 'parameters'.
+			* CANNOT 'await' return value.
+			*/
+		executeForOtherGMs<S extends SocketFunction>(handler: string | S, ...parameters: Parameters<S>): Promise<void>
 
 		/**
 	 * Chooses ALL Clients.
 	 * Executes 'handler' on ALL, passing it 'parameters'.
 		 * CANNOT 'await' return value.
 	 */
-	executeForEveryone<S extends SocketFunction>(handler: string|S, ...parameters: Parameters<S>): Promise<void>
-	/**
-		* Chooses ALL Clients EXCEPT Caller.
-		* Executes 'handler' on ALL, passing it 'parameters'.
-		* CANNOT 'await' return value.
-		*/
-		executeForOthers<S extends SocketFunction>(handler: string|S, ...parameters: Parameters<S>): Promise<void>
-	/**
-		* Chooses ALL Specified User Clients, if Connected.
-		* Executes 'handler' on ALL, passing it 'parameters'.
-		* CANNOT 'await' return value.
-		*/
-		executeForUsers<S extends SocketFunction>(handler: string|S, userIDs: string[], ...parameters: Parameters<S>): Promise<void>
+		executeForEveryone<S extends SocketFunction>(handler: string | S, ...parameters: Parameters<S>): Promise<void>
+		/**
+			* Chooses ALL Clients EXCEPT Caller.
+			* Executes 'handler' on ALL, passing it 'parameters'.
+			* CANNOT 'await' return value.
+			*/
+		executeForOthers<S extends SocketFunction>(handler: string | S, ...parameters: Parameters<S>): Promise<void>
+		/**
+			* Chooses ALL Specified User Clients, if Connected.
+			* Executes 'handler' on ALL, passing it 'parameters'.
+			* CANNOT 'await' return value.
+			*/
+		executeForUsers<S extends SocketFunction>(handler: string | S, userIDs: string[], ...parameters: Parameters<S>): Promise<void>
 
 
 	}
@@ -197,5 +218,5 @@ declare global {
 		value: number
 	}
 
-	type NamedValueMax = ValueMax & {name: string};
+	type NamedValueMax = ValueMax & { name: string };
 }

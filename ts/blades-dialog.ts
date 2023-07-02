@@ -4,9 +4,28 @@ import G from "./core/gsap.js";
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
 
-const app = new Dialog({title: "Test", content: "", buttons: {}});
-const tit = app.title;
-class BladesDialog extends Dialog {
+export enum SelectionCategory {
+	Heritage = "Heritage",
+	Background = "Background",
+	Vice = "Vice",
+	Playbook = "Playbook",
+	Reputation = "Reputation",
+	PreferredOp = "PreferredOp",
+	Gear = "Gear",
+	Ability = "Ability",
+	Faction = "Faction",
+	Upgrade = "Upgrade",
+	Cohort = "Cohort",
+	Feature = "Feature",
+	Stricture = "Stricture",
+	VicePurveyor = "VicePurveyor",
+	Acquaintance = "Acquaintance",
+	Friend = "Friend",
+	Rival = "Rival",
+	Crew = "Crew"
+}
+
+class BladesSelectorDialog extends Dialog {
 
 	static override get defaultOptions() {
 	  return foundry.utils.mergeObject(super.defaultOptions, {
@@ -25,16 +44,17 @@ class BladesDialog extends Dialog {
 	}
 
 	static async Display(
-		parentDoc: BladesActor,
+		parent: BladesActor,
 		title: string,
-		tabs: Record<string, BladesActor[]|BladesItem[]>,
-		callback: (docID: string) => Promise<void>
+		docType: "Actor"|"Item",
+		tabs: Record<string, BladesActor[]|BladesItem[]>
 	) {
-		const app = new BladesDialog({
-			parentDoc,
+		eLog.checkLog("BladesSelectorDialog.Display()", {parent, title, tabs});
+		const app = new BladesSelectorDialog({
+			parent,
 			title,
+			docType,
 			tabs,
-			callback,
 			"content": "",
 			"buttons": {
 				cancel: {
@@ -44,36 +64,31 @@ class BladesDialog extends Dialog {
 				}
 			},
 			"default": "cancel"
-		} as BladesDialog.Data);
+		});
 
 		return app.render(true);
 	}
 
-	parentDoc: BladesActor;
-	_title: string;
-	override get title(): string { return this._title }
+	parent: BladesActor;
 	tabs: Record<string, BladesActor[]|BladesItem[]>;
-	callback: (docID: string) => Promise<void>;
+	docType: "Actor"|"Item";
 
 	constructor(data: BladesDialog.Data, options?: Partial<BladesDialog.Options>) {
-		// eLog.checkLog4("dialog", "[BladesDialog] constructor(data)", {...data});
 		super(data, options);
-		// eLog.checkLog4("dialog", "[BladesDialog] super(data)", {...data});
-
-		this.parentDoc = data.parentDoc;
-		this._title = data.title;
+		this.docType = data.docType;
+		this.parent = data.parent;
 		this.tabs = data.tabs;
-		this.callback = data.callback;
 	}
 
-	override getData(): Omit<BladesDialog.Data,"title"> {
-		const data = super.getData() as Partial<BladesDialog.Data>;
+	override getData() {
+		const data = super.getData() as BladesDialog.Data;
 		eLog.checkLog4("dialog", "[BladesDialog] super.getData()", {...data});
 		data.title = this.title;
 		data.tabs = this.tabs;
+		data.docType = this.docType;
 
 		eLog.checkLog("dialog", "[BladesDialog] return getData()", {...data});
-		return data as Omit<BladesDialog.Data,"title">;
+		return data;
 	}
 
 	override activateListeners(html: JQuery<HTMLElement>) {
@@ -88,8 +103,12 @@ class BladesDialog extends Dialog {
 			}).on({
 				click: function() {
 					const docId = $(this).data("itemId");
-					if (docId) {
-						self.callback(docId);
+					const docType = $(this).data("docType");
+					eLog.checkLog("dialog", "[BladesDialog] on Click", {elem: this, docId, docType});
+					if (docType === "Actor") {
+						self.parent.addSubActor(docId);
+					} else if (docType === "Item") {
+						self.parent.addSubItem(docId);
 					}
 					self.close();
 				},
@@ -103,4 +122,4 @@ class BladesDialog extends Dialog {
 	}
 }
 
-export default BladesDialog;
+export default BladesSelectorDialog;

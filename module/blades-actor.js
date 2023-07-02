@@ -6,26 +6,10 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-import { BladesActorType, Tag, BladesItemType, Randomizers, Attributes, Actions, Positions, EffectLevels } from "./core/constants.js";
+import { BladesActorType, Tag, BladesItemType, Playbook, Randomizers, Attributes, Actions, Positions, EffectLevels } from "./core/constants.js";
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem, { PrereqType } from "./blades-item.js";
-export var SelectionCategory;
-(function (SelectionCategory) {
-    SelectionCategory["Heritage"] = "Heritage";
-    SelectionCategory["Background"] = "Background";
-    SelectionCategory["Vice"] = "Vice";
-    SelectionCategory["Playbook"] = "Playbook";
-    SelectionCategory["Reputation"] = "Reputation";
-    SelectionCategory["PreferredOp"] = "PreferredOp";
-    SelectionCategory["Gear"] = "Gear";
-    SelectionCategory["Ability"] = "Ability";
-    SelectionCategory["Upgrade"] = "Upgrade";
-    SelectionCategory["Cohort"] = "Cohort";
-    SelectionCategory["Feature"] = "Feature";
-    SelectionCategory["Stricture"] = "Stricture";
-    SelectionCategory["Acquaintance"] = "Acquaintance";
-    SelectionCategory["Crew"] = "Crew";
-})(SelectionCategory || (SelectionCategory = {}));
+import { SelectionCategory } from "./blades-dialog.js";
 class BladesActor extends Actor {
 
     static get All() { return game.actors; }
@@ -72,40 +56,176 @@ class BladesActor extends Actor {
         }
         return null;
     }
-    get activeItems() { return this.items.filter((item) => !item.hasTag(Tag.Archived)); }
-    get archivedItems() { return this.items.filter((item) => item.hasTag(Tag.Archived)); }
-    processEmbeddedMatches(globalItems) {
-        globalItems = globalItems.filter(this.checkPrereqs);
-        const activeItems = this.activeItems.filter((eItem) => globalItems.find((gItem) => gItem.system.world_name === eItem.system.world_name));
-        let processedItems = [
-            ...this.archivedItems.filter((eItem) => globalItems.find((gItem) => gItem.system.world_name === eItem.system.world_name)),
-            ...globalItems
-        ];
-        activeItems.forEach((aItem) => {
-            const numActive = activeItems.filter((item) => item.system.world_name === aItem.system.world_name).length;
-            if (aItem.system.num_available ?? 1 <= numActive) {
-                processedItems = processedItems.filter((item) => item.system.world_name === aItem.system.world_name);
+
+    get subActors() {
+        return Object.keys(this.system.subactors)
+            .map((uuid) => this.getSubActor(uuid))
+            .filter((subActor) => Boolean(subActor));
+    }
+    get activeSubActors() { return this.subActors.filter((subActor) => !subActor.hasTag(Tag.Archived)); }
+    get archivedSubActors() { return this.subActors.filter((subActor) => subActor.hasTag(Tag.Archived)); }
+    checkActorPrereqs(actor) {
+                
+        return true;
+    }
+    processEmbeddedActorMatches(globalActors) {
+        globalActors = globalActors.filter(this.checkActorPrereqs);
+        const mergedActors = globalActors.map((gActor) => this.getSubActor(gActor) || gActor);
+        mergedActors.sort((a, b) => {
+            if (a.name === b.name) {
+                return 0;
             }
-            else {
-                processedItems.push(aItem);
+            if (a.name === null) {
+                return 1;
             }
+            if (b.name === null) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            if (a.name < b.name) {
+                return -1;
+            }
+            return 0;
         });
-        processedItems.forEach((item) => {
-            item.dialogCSSClasses = [];
-            if (item.isEmbedded) {
-                item.dialogCSSClasses.push("embedded");
-                if (!item.hasTag(Tag.Archived)) {
-                    item.dialogCSSClasses.push("active-embedded");
+        return mergedActors;
+    }
+    getDialogActors(category) {
+                
+        const dialogData = {};
+        switch (category) {
+            case SelectionCategory.Acquaintance: {
+                if (this.playbookName === null) {
+                    return false;
+                }
+                dialogData.Main = this.processEmbeddedActorMatches(BladesActor.GetTypeWithTags(BladesActorType.npc, this.playbookName));
+                return dialogData;
+            }
+            case SelectionCategory.VicePurveyor: {
+                if (this.vices.length === 0) {
+                    return false;
+                }
+                dialogData.Main = this.processEmbeddedActorMatches(BladesActor.GetTypeWithTags(BladesActorType.npc, ...this.vices.map((vice) => vice.name)));
+                return dialogData;
+            }
+            case SelectionCategory.Crew: {
+                dialogData.Main = BladesActor.GetTypeWithTags(BladesActorType.crew);
+                return dialogData;
+            }
+            default: return false;
+        }
+    }
+    getSubActor(actorRef) {
+        const globalActor = BladesActor.Get(actorRef);
+        if (globalActor === null) {
+            return false;
+        }
+        if (globalActor.uuid in this.system.subactors) {
+            const subActorData = this.system.subactors[globalActor.uuid];
+            globalActor.system = mergeObject(globalActor.system, subActorData.system);
+            return globalActor;
+        }
+        return false;
+    }
+    async addSubActor(actorRef, tags) {
+        const globalActor = BladesActor.Get(actorRef);
+        if (globalActor === null) {
+            return;
+        }
+        const subActor = this.getSubActor(actorRef);
+        if (subActor) {
+            if (!subActor.hasTag(Tag.Archived)) {
+                return;
+            }
+            subActor.remTag(Tag.Archived);
+        }
+        else {
+            const subActorData = {
+                uuid: globalActor.uuid,
+                system: {}
+            };
+            if (tags) {
+                subActorData.system.tags = U.unique([
+                    ...globalActor.tags,
+                    ...tags
+                ]);
+            }
+            this.update({ [`system.subactors.${globalActor.uuid}`]: subActorData });
+        }
+    }
+    async remSubActor(actorRef) {
+        const subActor = this.getSubActor(actorRef);
+        if (!subActor || subActor.hasTag(Tag.Archived)) {
+            return;
+        }
+        subActor.addTag(Tag.Archived);
+    }
+    async purgeSubActor(actorRef) {
+        const subActor = this.getSubActor(actorRef);
+        if (!subActor) {
+            return;
+        }
+        this.update({ ["system.subactors"]: mergeObject(this.system.subactors, { [`-=${subActor.uuid}`]: null }) });
+    }
+
+    get activeSubItems() { return this.items.filter((item) => !item.hasTag(Tag.Archived)); }
+    get archivedSubItems() { return this.items.filter((item) => item.hasTag(Tag.Archived)); }
+    _checkItemPrereqs(item) {
+        if (!item.system.prereqs) {
+            return true;
+        }
+        for (const [pType, pString] of Object.entries(item.system.prereqs)) {
+            switch (pType) {
+                case PrereqType.HasActiveItem: {
+                    if (!this.activeSubItems.find((item) => item.system.world_name === pString)) {
+                        return false;
+                    }
+                    break;
+                }
+                case PrereqType.AdvancedPlaybook: {
+                    if (!this.playbookName || ![Playbook.Ghost, Playbook.Hull, Playbook.Vampire].includes(this.playbookName)) {
+                        return false;
+                    }
                 }
             }
-            if (item.hasTag(Tag.Fine)) {
-                item.dialogCSSClasses.push("fine-quality");
+        }
+        return true;
+    }
+    _processEmbeddedItemMatches(globalItems) {
+        return globalItems
+            .filter((item) => this._checkItemPrereqs(item))
+            .filter((gItem) => {
+            const matchingActiveSubItems = this.activeSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name);
+            return (gItem.system.num_available ?? 1) > matchingActiveSubItems.length;
+        })
+            .map((gItem) => {
+            const matchingSubItems = this.archivedSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name);
+            if (matchingSubItems.length > 0) {
+                return matchingSubItems;
             }
-            if (item.hasTag(Tag.Featured)) {
-                item.dialogCSSClasses.push("featured-item");
+            else {
+                return gItem;
             }
-        });
-        processedItems.sort((a, b) => {
+        })
+            .flat()
+            .map((sItem) => {
+            const cssClasses = [];
+            if (sItem.isEmbedded) {
+                cssClasses.push("embedded");
+            }
+            if (sItem.hasTag(Tag.Fine)) {
+                cssClasses.push("fine-quality");
+            }
+            if (sItem.hasTag(Tag.Featured)) {
+                cssClasses.push("featured-item");
+            }
+            if (cssClasses.length > 0) {
+                sItem.dialogCSSClasses = cssClasses.join(" ");
+            }
+            return sItem;
+        })
+            .sort((a, b) => {
             if (a.hasTag(Tag.Featured) && !b.hasTag(Tag.Featured)) {
                 return -1;
             }
@@ -147,19 +267,16 @@ class BladesActor extends Actor {
             }
             return 0;
         });
-        return processedItems;
     }
-    getDialogItems(dialogRef) {
-        
-        
+    getDialogItems(category) {
         const dialogData = {};
-        switch (dialogRef) {
+        switch (category) {
             case SelectionCategory.Heritage: {
-                dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.heritage));
+                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.heritage));
                 return dialogData;
             }
             case SelectionCategory.Background: {
-                dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.background));
+                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.background));
                 return dialogData;
             }
             case SelectionCategory.Vice: {
@@ -169,43 +286,58 @@ class BladesActor extends Actor {
                 if (this.vices.some((item) => item.hasTag(Tag.ViceOverride))) {
                     return false;
                 }
-                dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.vice, this.playbookName));
+                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.vice, this.playbookName));
                 return dialogData;
             }
             case SelectionCategory.Playbook: {
                 switch (this.type) {
                     case BladesActorType.pc: {
-                        dialogData.Basic = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.AdvancedPlaybook));
-                        dialogData.Advanced = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.AdvancedPlaybook));
+                        dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook).filter((item) => !item.hasTag(Tag.Advanced)));
+                        dialogData.Advanced = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Advanced));
                         return dialogData;
                     }
                     case BladesActorType.crew: {
-                        dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_playbook));
+                        dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_playbook));
                         return dialogData;
                     }
                     default: return false;
                 }
             }
             case SelectionCategory.Reputation: {
-                dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_reputation));
+                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_reputation));
                 return dialogData;
             }
             case SelectionCategory.PreferredOp: {
-                dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op));
+                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op));
                 return dialogData;
             }
             case SelectionCategory.Gear: {
                 if (this.playbookName === null) {
                     return false;
                 }
-                const gearItems = this.processEmbeddedMatches([
+                const gearItems = this._processEmbeddedItemMatches([
                     ...BladesItem.GetTypeWithTags(BladesItemType.item, this.playbookName),
                     ...BladesItem.GetTypeWithTags(BladesItemType.item, Tag.General)
                 ])
                     .filter((item) => this.remainingLoad >= item.load);
                 dialogData[this.playbookName] = gearItems.filter((item) => item.hasTag(this.playbookName));
-                dialogData.General = gearItems.filter((item) => item.hasTag(Tag.General));
-                dialogData.General.forEach((item) => U.pullElement(item.dialogCSSClasses ?? [], (cls) => cls === "featured-item"));
+                dialogData.General = gearItems
+                    .filter((item) => item.hasTag(Tag.General))
+                    .map((item) => {
+                    if (item.dialogCSSClasses) {
+                        item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
+                    }
+                    return item;
+                })
+                    .sort((a, b) => {
+                    if (a.system.world_name > b.system.world_name) {
+                        return 1;
+                    }
+                    if (a.system.world_name < b.system.world_name) {
+                        return -1;
+                    }
+                    return 0;
+                });
                 return dialogData;
             }
             case SelectionCategory.Ability: {
@@ -213,50 +345,79 @@ class BladesActor extends Actor {
                     return false;
                 }
                 const itemType = this.type === BladesActorType.crew ? BladesItemType.crew_ability : BladesItemType.ability;
-                dialogData[this.playbookName] = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(itemType, this.playbookName));
-                dialogData.Veteran = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(itemType))
-                    .filter((item) => !item.hasTag(this.playbookName));
+                dialogData[this.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(itemType, this.playbookName));
+                dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(itemType))
+                    .filter((item) => !item.hasTag(this.playbookName))
+                    .map((item) => {
+                    if (item.dialogCSSClasses) {
+                        item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
+                    }
+                    return item;
+                })
+                    .sort((a, b) => {
+                    if (a.system.world_name > b.system.world_name) {
+                        return 1;
+                    }
+                    if (a.system.world_name < b.system.world_name) {
+                        return -1;
+                    }
+                    return 0;
+                });
                 return dialogData;
             }
             case SelectionCategory.Upgrade: {
-                dialogData.Main = this.processEmbeddedMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade));
+                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade));
                 return dialogData;
             }
         }
         return dialogData;
     }
-    checkPrereqs(item) {
-        if (!item.system.prereqs) {
-            return true;
+    getSubItem(itemRef) {
+        if (typeof itemRef === "string" && this.items.get(itemRef)) {
+            return this.items.get(itemRef) ?? false;
         }
-        for (const [pType, pString] of Object.entries(item.system.prereqs)) {
-            switch (pType) {
-                case PrereqType.HasActiveItem: {
-                    if (!this.activeItems.find((item) => item.system.world_name === pString)) {
-                        return false;
-                    }
-                    break;
-                }
-            }
-        }
-        return true;
-    }
-    addDialogItem(docID) {
-        
-    }
-    getEmbeddedDoc(docID) {
-        if (this.items.get(docID)) {
-            return this.items.get(docID);
-        }
-        if (docID in this.system.subactors) {
-            return game.actors.get(docID) ?? false;
+        const globalItem = BladesItem.Get(itemRef);
+        if (globalItem && globalItem.id) {
+            return this.items.find((item) => item.system.world_name === globalItem.system.world_name) ?? false;
         }
         return false;
     }
-    get vices() {
-        return this.activeItems.filter((item) => item.type === BladesItemType.vice);
+    async addSubItem(itemRef) {
+        const embeddedItem = this.getSubItem(itemRef);
+        if (embeddedItem) {
+            if (embeddedItem.hasTag(Tag.Archived)) {
+                embeddedItem.remTag(Tag.Archived);
+                return;
+            }
+            BladesItem.create([embeddedItem], { parent: this });
+            return;
+        }
+        const globalItem = BladesItem.Get(itemRef);
+        if (globalItem) {
+            BladesItem.create([globalItem], { parent: this });
+        }
     }
-    
+    async remSubItem(itemRef) {
+        const subItem = this.getSubItem(itemRef);
+        if (!subItem) {
+            return;
+        }
+        eLog.checkLog("actorTrigger", "Removing SubItem " + subItem.name, subItem);
+        if (subItem.hasTag(Tag.Archived)) {
+            return;
+        }
+        subItem.addTag(Tag.Archived);
+    }
+    async purgeSubItem(itemRef) {
+        const subItem = this.getSubItem(itemRef);
+        if (!subItem || subItem.hasTag(Tag.Archived)) {
+            return;
+        }
+        subItem.delete();
+    }
+    get vices() {
+        return this.activeSubItems.filter((item) => item.type === BladesItemType.vice);
+    }
     static async create(data, options = {}) {
         data.token = data.token || {};
         data.data = data.data ?? {};
@@ -276,6 +437,21 @@ class BladesActor extends Actor {
         eLog.checkLog("actorTrigger", "onCreateEmbeddedDocuments", { embName, docs, args });
         docs.forEach(async (doc) => {
             if (doc instanceof BladesItem) {
+                eLog.checkLog("actorTrigger", `... doc is Item, docType: ${doc.type}`);
+                if ([
+                    BladesItemType.background,
+                    BladesItemType.crew_reputation,
+                    BladesItemType.crew_playbook,
+                    BladesItemType.heritage,
+                    BladesItemType.playbook,
+                    BladesItemType.preferred_op,
+                    BladesItemType.vice
+                ].some((iType) => doc.type === iType)) {
+                    eLog.checkLog("actorTrigger", "... removing uniques", { activeSubItems: this.activeSubItems, removeDoc: doc });
+                    this.activeSubItems
+                        .filter((sItem) => sItem.type === doc.type && sItem.id !== doc.id)
+                        .forEach((sItem) => this.remSubItem(sItem));
+                }
                 switch (doc.type) {
                     case BladesItemType.playbook: {
                         await this.update({
@@ -288,15 +464,21 @@ class BladesActor extends Actor {
             }
         });
     }
+    async update(updateData) {
+        eLog.checkLog2("actor", "actor.update(data)", { updateData, user: game.user });
+        super.update(updateData);
+        return this;
+    }
+
     get playbookName() {
         return this.playbook?.name ?? null;
     }
     get playbook() {
         if (this.type === BladesActorType.pc) {
-            return this.activeItems.find((item) => item.type === BladesItemType.playbook);
+            return this.activeSubItems.find((item) => item.type === BladesItemType.playbook);
         }
         if (this.type === BladesActorType.crew) {
-            return this.activeItems.find((item) => item.type === BladesItemType.crew_playbook);
+            return this.activeSubItems.find((item) => item.type === BladesItemType.crew_playbook);
         }
         return null;
     }
@@ -331,7 +513,7 @@ class BladesActor extends Actor {
         return U.objFilter(this.system.trauma?.checked ?? {}, (v, traumaName) => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName]));
     }
     get currentLoad() {
-        const activeLoadItems = this.activeItems.filter((item) => item.type === BladesItemType.item);
+        const activeLoadItems = this.activeSubItems.filter((item) => item.type === BladesItemType.item);
         return U.gsap.utils.clamp(0, 10, activeLoadItems
             .reduce((tot, i) => tot + (i.type === "item"
             ? U.pInt(i.system.load)
@@ -344,6 +526,7 @@ class BladesActor extends Actor {
         const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected).toLowerCase()];
         return Math.max(0, maxLoad - this.currentLoad);
     }
+
     rollAttributePopup(attribute_name) {
         const test = Actions;
         const attribute_label = U.tCase(attribute_name);
@@ -416,6 +599,31 @@ class BladesActor extends Actor {
     async rollAttribute(attribute_name, additional_dice_amount = 0, position = Positions.risky, effect = EffectLevels.standard, note) {
         bladesRoll(this.rollable[attribute_name] + additional_dice_amount, attribute_name, position, effect, note);
     }
+    
+    
+    
+    
+    
+    
+        createListOfDiceMods(rs, re, s) {
+        let text = "";
+        if (s === "") {
+            s = 0;
+        }
+        for (let i = rs; i <= re; i++) {
+            let plus = "";
+            if (i >= 0) {
+                plus = "+";
+            }
+            text += `<option value="${i}"`;
+            if (i === s) {
+                text += " selected";
+            }
+            text += `>${plus}${i}d</option>`;
+        }
+        return text;
+    }
+    
     updateRandomizers() {
         const rStatus = {
             name: { size: 4, label: null },
@@ -544,30 +752,6 @@ class BladesActor extends Actor {
             }
         }
         return this.update(updateData);
-    }
-    
-    
-    
-    
-    
-    
-        createListOfDiceMods(rs, re, s) {
-        let text = "";
-        if (s === "") {
-            s = 0;
-        }
-        for (let i = rs; i <= re; i++) {
-            let plus = "";
-            if (i >= 0) {
-                plus = "+";
-            }
-            text += `<option value="${i}"`;
-            if (i === s) {
-                text += " selected";
-            }
-            text += `>${plus}${i}d</option>`;
-        }
-        return text;
     }
 }
 export default BladesActor;

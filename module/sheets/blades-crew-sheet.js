@@ -32,12 +32,12 @@ class BladesCrewSheet extends BladesSheet {
         turfs_amount = Math.min(turfs_amount, this.actor.system.turfs.max);
 
         const items = {
-            abilities: this.actor.activeItems.filter((item) => item.type === BladesItemType.crew_ability),
+            abilities: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.crew_ability),
             playbook: this.actor.playbook,
-            reputation: this.actor.activeItems.find((item) => item.type === BladesItemType.crew_reputation),
-            upgrades: this.actor.activeItems.filter((item) => item.type === BladesItemType.crew_upgrade),
-            cohorts: this.actor.activeItems.filter((item) => item.type === BladesItemType.cohort),
-            preferredOp: this.actor.activeItems.find((item) => item.type === BladesItemType.preferred_op)
+            reputation: this.actor.activeSubItems.find((item) => item.type === BladesItemType.crew_reputation),
+            upgrades: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.crew_upgrade),
+            cohorts: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.cohort),
+            preferredOp: this.actor.activeSubItems.find((item) => item.type === BladesItemType.preferred_op)
         };
         const actors = {
         };

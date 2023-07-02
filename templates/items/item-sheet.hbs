@@ -1,14 +1,18 @@
 <form class="{{cssClass}}" autocomplete="off">
 
+	<div class="sheet-root">
+
 	<section class="sheet-top">
 		<img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
 		<input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}" />
 	</section>
 
+
+		<input type="text" class="tag-entry" />
 	<section class="item-main flex-vertical">
 		{{#if isEmbeddedItem}}
 		<label class="tab-label">
-			<span class="tab-title">Description</span>
+			<span class="tab-title">Description OKAY!</span>
 		</label>
 		{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
 		{{/if}}
@@ -47,4 +51,5 @@
 			{{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
 		{{/if}}
 	</section>
+	</div>
 </form>

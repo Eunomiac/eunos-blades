@@ -6,9 +6,28 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import G from "./core/gsap.js";
-const app = new Dialog({ title: "Test", content: "", buttons: {} });
-const tit = app.title;
-class BladesDialog extends Dialog {
+export var SelectionCategory;
+(function (SelectionCategory) {
+    SelectionCategory["Heritage"] = "Heritage";
+    SelectionCategory["Background"] = "Background";
+    SelectionCategory["Vice"] = "Vice";
+    SelectionCategory["Playbook"] = "Playbook";
+    SelectionCategory["Reputation"] = "Reputation";
+    SelectionCategory["PreferredOp"] = "PreferredOp";
+    SelectionCategory["Gear"] = "Gear";
+    SelectionCategory["Ability"] = "Ability";
+    SelectionCategory["Faction"] = "Faction";
+    SelectionCategory["Upgrade"] = "Upgrade";
+    SelectionCategory["Cohort"] = "Cohort";
+    SelectionCategory["Feature"] = "Feature";
+    SelectionCategory["Stricture"] = "Stricture";
+    SelectionCategory["VicePurveyor"] = "VicePurveyor";
+    SelectionCategory["Acquaintance"] = "Acquaintance";
+    SelectionCategory["Friend"] = "Friend";
+    SelectionCategory["Rival"] = "Rival";
+    SelectionCategory["Crew"] = "Crew";
+})(SelectionCategory || (SelectionCategory = {}));
+class BladesSelectorDialog extends Dialog {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "dialog"],
@@ -23,12 +42,13 @@ class BladesDialog extends Dialog {
             "systems/eunos-blades/templates/dialog.hbs"
         ]);
     }
-    static async Display(parentDoc, title, tabs, callback) {
-        const app = new BladesDialog({
-            parentDoc,
+    static async Display(parent, title, docType, tabs) {
+        eLog.checkLog("BladesSelectorDialog.Display()", { parent, title, tabs });
+        const app = new BladesSelectorDialog({
+            parent,
             title,
+            docType,
             tabs,
-            callback,
             "content": "",
             "buttons": {
                 cancel: {
@@ -41,23 +61,21 @@ class BladesDialog extends Dialog {
         });
         return app.render(true);
     }
-    parentDoc;
-    _title;
-    get title() { return this._title; }
+    parent;
     tabs;
-    callback;
+    docType;
     constructor(data, options) {
         super(data, options);
-        this.parentDoc = data.parentDoc;
-        this._title = data.title;
+        this.docType = data.docType;
+        this.parent = data.parent;
         this.tabs = data.tabs;
-        this.callback = data.callback;
     }
     getData() {
         const data = super.getData();
         eLog.checkLog4("dialog", "[BladesDialog] super.getData()", { ...data });
         data.title = this.title;
         data.tabs = this.tabs;
+        data.docType = this.docType;
         eLog.checkLog("dialog", "[BladesDialog] return getData()", { ...data });
         return data;
     }
@@ -71,8 +89,13 @@ class BladesDialog extends Dialog {
         }).on({
             click: function () {
                 const docId = $(this).data("itemId");
-                if (docId) {
-                    self.callback(docId);
+                const docType = $(this).data("docType");
+                eLog.checkLog("dialog", "[BladesDialog] on Click", { elem: this, docId, docType });
+                if (docType === "Actor") {
+                    self.parent.addSubActor(docId);
+                }
+                else if (docType === "Item") {
+                    self.parent.addSubItem(docId);
                 }
                 self.close();
             },
@@ -85,4 +108,4 @@ class BladesDialog extends Dialog {
         });
     }
 }
-export default BladesDialog;
+export default BladesSelectorDialog;

@@ -5,14 +5,15 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C from "../core/constants.js";
+import C, { Tag, District, Playbook, Vice } from "../core/constants.js";
 import BladesActiveEffect from "../blades-active-effect.js";
+import Tagify from "../../lib/tagify/tagify.esm.js";
 class BladesItemSheet extends ItemSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "item"],
             width: 560,
-            height: "auto",
+            height: 500,
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }]
         });
     }
@@ -40,6 +41,41 @@ class BladesItemSheet extends ItemSheet {
         if (!this.options.editable) {
             return;
         }
+        const tagElem = html.find(".tag-entry")[0];
+        if (tagElem) {
+            const tagify = new Tagify(tagElem, {
+                enforceWhitelist: true,
+                editTags: false,
+                whitelist: [
+                    ...Object.values(Tag),
+                    ...Object.values(District),
+                    ...Object.values(Vice),
+                    ...Object.values(Playbook)
+                ],
+                dropdown: {
+                    classname: "tagify-dropdown",
+                    enabled: 0,
+                    maxItems: 5,
+                    appendTarget: html[0]
+                }
+            });
+            tagElem.addEventListener("change", this._onTagifyChange.bind(this));
+            tagify.addTags(this.item.tags.map((tag) => {
+                if (Object.values(Tag).includes(tag)) {
+                    return { "value": tag, "class": "orange" };
+                }
+                if (Object.values(District).includes(tag)) {
+                    return { "value": tag, "class": "green" };
+                }
+                if (Object.values(Playbook).includes(tag)) {
+                    return { "value": tag, "class": "blue" };
+                }
+                if (Object.values(Vice).includes(tag)) {
+                    return { "value": tag, "class": "red" };
+                }
+                return { "value": tag, "class": "white" };
+            }), false, false);
+        }
         html.find(".effect-control").on("click", (ev) => {
             if (self.item.isOwned) {
                 ui.notifications.warn(game.i18n.localize("BITD.EffectWarning"));
@@ -48,6 +84,17 @@ class BladesItemSheet extends ItemSheet {
             BladesActiveEffect.onManageActiveEffect(ev, self.item);
         });
         html.find("[data-action=\"toggle-turf-connection\"").on("click", this.toggleTurfConnection.bind(this));
+    }
+    async _onTagifyChange(event) {
+        const tagString = event.target.value;
+        if (tagString) {
+            const tags = JSON.parse(tagString)
+                .map(({ value }) => value);
+            this.item.update({ "system.tags": tags });
+        }
+        else {
+            this.item.update({ "system.tags": [] });
+        }
     }
     toggleTurfConnection(event) {
         const button$ = $(event.currentTarget);

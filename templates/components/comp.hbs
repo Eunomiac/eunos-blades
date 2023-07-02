@@ -1,5 +1,5 @@
 
-<div class="{{#if class}}{{class}} {{/if}}comp"
+<div class="{{#if class}}{{class}} {{/if}}comp" data-comp-type="{{docType}}"
 	{{~#if (test cat "||" type)}} data-comp-cat="{{#if cat}}{{cat}}{{else}}{{type}}{{/if}}"{{/if}}
 	{{~#if cat}} data-comp-cat="{{cat}}"{{else}}{{#if type}} data-comp-cat="{{type}}"{{/if}}{{/if}}
 	{{~#if _id}} data-comp-id="{{_id}}"{{else}}{{#if id}} data-comp-id="{{id}}"{{/if}}{{/if}}>

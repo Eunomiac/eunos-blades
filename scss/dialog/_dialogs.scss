@@ -18,26 +18,26 @@
 			padding-block-start: 0;
 			position: static;
 
-			.item-details {
-				// opacity: 0;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				align-items: stretch;
-				color: var(--blades-white);
-				padding: toRem(6px);
-				hyphens: auto;
-				text-align: justify;
-				position: absolute;
-				top: 0%;
-				// margin-left: 550px;
-				width: 400px;
-				max-width: unset;
-				pointer-events: none;
-				background: var(--blades-black-dark);
-				z-index: 10;
-				// outline: 1px solid var(--blades-white);
-			}
+			// .item-details {
+			// 	// opacity: 0;
+			// 	display: flex;
+			// 	flex-direction: column;
+			// 	justify-content: center;
+			// 	align-items: stretch;
+			// 	color: var(--blades-white);
+			// 	padding: toRem(6px);
+			// 	hyphens: auto;
+			// 	text-align: justify;
+			// 	position: absolute;
+			// 	top: 0%;
+			// 	// margin-left: 550px;
+			// 	width: 400px;
+			// 	max-width: unset;
+			// 	pointer-events: none;
+			// 	background: var(--blades-black-dark);
+			// 	z-index: 10;
+			// 	// outline: 1px solid var(--blades-white);
+			// }
 
 			.nav-group {
 				height: 100%;
@@ -50,23 +50,51 @@
 					align-items: flex-start;
 					justify-content: center;
 					padding: 25px 0;
+					display: none;
 					// overflow-y: scroll;
 					// overflow-x: hidden;
 					&.active {display: flex}
-				}
 
+					.comp {
+						.comp-body {
+							z-index: 1;
+							.comp-title { color: var(--blades-grey-bright) }
+							> img { filter: blur(1px); opacity: 0.5 }
+						}
+					}
+
+					.comp.embedded {
+						.comp-body {
+							.comp-title { color: var(--blades-white-bright) }
+							> img { filter: blur(0.75px); opacity: 0.75 }
+						}
+					}
+
+					.comp.featured-item {
+						.comp-body {
+							.comp-title { color: var(--blades-white-bright) }
+							> img { filter: blur(0.5px); opacity: 1 }
+						}
+					}
+
+					.comp.fine-quality {
+						.comp-body {
+							.comp-title { color: rgb(150, 255, 255); }
+						}
+					}
+
+					// .comp.embedded + .comp:not(.embedded) {
+					// 	display: none;
+					// 	margin-left: -15%;
+					// 	opacity: 0.25;
+					// 	filter: blur(2px);
+					// }
+				}
 			}
 
-			.comp-body {
-				z-index: 1;
-				.comp-title {
-					color: var(--blades-grey-bright);
-				}
-				> img {
-					filter: blur(1px);
-					opacity: 0.5;
-				}
-			}
+
+
+
 			.featured-item .comp-body {
 				.comp-title {
 					color: var(--blades-white-bright);

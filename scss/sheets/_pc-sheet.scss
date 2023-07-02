@@ -3,6 +3,7 @@
 	min-height: 800px;
 
 	section.sheet-top {
+		min-height: 200px;
 		grid-template-areas:
 			". . title title title title title title playbook playbook playbook"
 			". . . subtitle subtitle subtitle subtitle subtitle subtitle . ."

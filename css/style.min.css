@@ -622,7 +622,8 @@ template {
   src: url("../assets/fonts/UglyQua/UglyQua i.ttf") format("truetype");
   font-style: italic; }
 
-:root, * {
+:root,
+* {
   scrollbar-color: var(--blades-white) var(--blades-black);
   scrollbar-width: thin; }
 
@@ -640,7 +641,8 @@ template {
   border-radius: 0;
   outline: none; }
 
-:root, :root * {
+:root,
+:root * {
   --color-text-light-highlight: #f0f0e0;
   --color-text-light-heading: #c9c7b8;
   --color-text-light-primary: #b5b3a4;
@@ -891,40 +893,54 @@ template {
   --blades-spacer-button-xs: 1.125rem;
   --blades-spacer-sidebar: 17.875rem; }
 
-:root .comp, :root * .comp {
+:root .comp,
+:root * .comp {
   display: flex;
   flex-wrap: nowrap;
   position: relative;
   justify-content: flex-start;
   align-items: center;
   z-index: 2; }
-  :root .comp.portrait-container, :root * .comp.portrait-container {
+  :root .comp.portrait-container,
+  :root * .comp.portrait-container {
     flex-wrap: wrap;
     width: 100%; }
-  :root .comp .comp-control, :root .comp .comp-title, :root .comp .portrait-block.comp-body, :root * .comp .comp-control, :root * .comp .comp-title, :root * .comp .portrait-block.comp-body {
+  :root .comp .comp-control, :root .comp .comp-title, :root .comp .portrait-block.comp-body,
+  :root * .comp .comp-control,
+  :root * .comp .comp-title,
+  :root * .comp .portrait-block.comp-body {
     transition: 0.25s;
     pointer-events: auto;
     cursor: pointer; }
-  :root .comp .comp-label:hover, :root .comp .comp-title:hover, :root * .comp .comp-label:hover, :root * .comp .comp-title:hover {
+  :root .comp .comp-label:hover, :root .comp .comp-title:hover,
+  :root * .comp .comp-label:hover,
+  :root * .comp .comp-title:hover {
     z-index: 5 !important; }
-    :root .comp .comp-label:hover.comp-label, :root .comp .comp-title:hover.comp-label, :root * .comp .comp-label:hover.comp-label, :root * .comp .comp-title:hover.comp-label {
+    :root .comp .comp-label:hover.comp-label, :root .comp .comp-title:hover.comp-label,
+    :root * .comp .comp-label:hover.comp-label,
+    :root * .comp .comp-title:hover.comp-label {
       color: var(--blades-gold-bright); }
-    :root .comp .comp-label:hover.comp-title, :root .comp .comp-title:hover.comp-title, :root * .comp .comp-label:hover.comp-title, :root * .comp .comp-title:hover.comp-title {
+    :root .comp .comp-label:hover.comp-title, :root .comp .comp-title:hover.comp-title,
+    :root * .comp .comp-label:hover.comp-title,
+    :root * .comp .comp-title:hover.comp-title {
       color: var(--blades-white-bright); }
-  :root .comp .comp-label, :root * .comp .comp-label {
+  :root .comp .comp-label,
+  :root * .comp .comp-label {
     color: var(--blades-white-bright);
     font-size: 0.75rem;
     line-height: 0.75rem;
     z-index: 2;
     flex-grow: 0.5; }
-    :root .comp .comp-label.comp-prompt, :root * .comp .comp-label.comp-prompt {
+    :root .comp .comp-label.comp-prompt,
+    :root * .comp .comp-label.comp-prompt {
       font-size: 1rem;
       line-height: 1.1;
       font-family: var(--font-emphasis);
       color: var(--blades-gold);
       text-transform: uppercase;
       text-align: center; }
-      :root .comp .comp-label.comp-prompt .sur-title, :root * .comp .comp-label.comp-prompt .sur-title {
+      :root .comp .comp-label.comp-prompt .sur-title,
+      :root * .comp .comp-label.comp-prompt .sur-title {
         display: block;
         font-size: 0.875rem;
         text-transform: lowercase;
@@ -932,70 +948,94 @@ template {
         text-shadow: none;
         text-align: center;
         margin-top: 10px; }
-      :root .comp .comp-label.comp-prompt .main-title, :root * .comp .comp-label.comp-prompt .main-title {
+      :root .comp .comp-label.comp-prompt .main-title,
+      :root * .comp .comp-label.comp-prompt .main-title {
         display: block;
         color: var(--blades-white);
         text-align: center; }
-  :root .comp .comp-control, :root * .comp .comp-control {
+  :root .comp .comp-control,
+  :root * .comp .comp-control {
     z-index: 5;
     padding: 0;
     font-weight: bold;
     color: var(--comp-control-color);
     text-shadow: 0 0 0.1875rem var(--comp-control-shadow-color);
     display: block; }
-    :root .comp .comp-control:hover, :root * .comp .comp-control:hover {
+    :root .comp .comp-control:hover,
+    :root * .comp .comp-control:hover {
       transform: scale(1.5); }
-    :root .comp .comp-control.comp-button, :root * .comp .comp-control.comp-button {
+    :root .comp .comp-control.comp-button,
+    :root * .comp .comp-control.comp-button {
       opacity: 0.5; }
-      :root .comp .comp-control.comp-button.comp-delete, :root * .comp .comp-control.comp-button.comp-delete {
+      :root .comp .comp-control.comp-button.comp-delete,
+      :root * .comp .comp-control.comp-button.comp-delete {
         --comp-control-color: var(--blades-white-bright);
         --comp-control-hover-color: var(--blades-red-bright);
         --comp-control-shadow-color: transparent;
         --comp-control-hover-shadow-color: var(--blades-black-dark);
         position: absolute; }
-      :root .comp .comp-control.comp-button.comp-add, :root * .comp .comp-control.comp-button.comp-add {
+      :root .comp .comp-control.comp-button.comp-add,
+      :root * .comp .comp-control.comp-button.comp-add {
         --comp-control-color: var(--blades-black-dark);
         --comp-control-hover-color: var(--blades-white-bright);
         --comp-control-shadow-color: var(--blades-grey);
         --comp-control-hover-shadow-color: var(--blades-black-dark);
         margin-left: 0.625rem; }
-        :root .comp .comp-control.comp-button.comp-add i, :root * .comp .comp-control.comp-button.comp-add i {
+        :root .comp .comp-control.comp-button.comp-add i,
+        :root * .comp .comp-control.comp-button.comp-add i {
           line-height: 1.5rem; }
-      :root .comp .comp-control.comp-button:hover, :root * .comp .comp-control.comp-button:hover {
+      :root .comp .comp-control.comp-button:hover,
+      :root * .comp .comp-control.comp-button:hover {
         opacity: 1;
         color: var(--comp-control-hover-color);
         text-shadow: 0 0 0.1875rem var(--comp-control-hover-shadow-color); }
-  :root .comp .comp-body, :root * .comp .comp-body {
+  :root .comp .comp-body,
+  :root * .comp .comp-body {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-grow: 1;
     position: relative; }
-    :root .comp .comp-body .comp-title, :root * .comp .comp-body .comp-title {
+    :root .comp .comp-body .comp-title,
+    :root * .comp .comp-body .comp-title {
       z-index: 2; }
-    :root .comp .comp-body h1, :root .comp .comp-body h2, :root .comp .comp-body h3, :root .comp .comp-body h4, :root .comp .comp-body p, :root .comp .comp-body blockquote, :root .comp .comp-body table, :root * .comp .comp-body h1, :root * .comp .comp-body h2, :root * .comp .comp-body h3, :root * .comp .comp-body h4, :root * .comp .comp-body p, :root * .comp .comp-body blockquote, :root * .comp .comp-body table {
+    :root .comp .comp-body h1, :root .comp .comp-body h2, :root .comp .comp-body h3, :root .comp .comp-body h4, :root .comp .comp-body p, :root .comp .comp-body blockquote, :root .comp .comp-body table,
+    :root * .comp .comp-body h1,
+    :root * .comp .comp-body h2,
+    :root * .comp .comp-body h3,
+    :root * .comp .comp-body h4,
+    :root * .comp .comp-body p,
+    :root * .comp .comp-body blockquote,
+    :root * .comp .comp-body table {
       margin: 0;
       padding: 0; }
-  :root .comp .comp-toggle, :root * .comp .comp-toggle {
+  :root .comp .comp-toggle,
+  :root * .comp .comp-toggle {
     font-family: var(--font-emphasis);
     text-transform: uppercase;
     font-size: 1rem;
     line-height: 1.25rem; }
-    :root .comp .comp-toggle.comp-toggle-red, :root * .comp .comp-toggle.comp-toggle-red {
+    :root .comp .comp-toggle.comp-toggle-red,
+    :root * .comp .comp-toggle.comp-toggle-red {
       color: var(--blades-red-bright);
       font-weight: bold;
       text-shadow: var(--text-shadow-dark); }
-      :root .comp .comp-toggle.comp-toggle-red:hover, :root * .comp .comp-toggle.comp-toggle-red:hover {
+      :root .comp .comp-toggle.comp-toggle-red:hover,
+      :root * .comp .comp-toggle.comp-toggle-red:hover {
         color: var(--blades-red); }
-    :root .comp .comp-toggle.comp-toggle-grey, :root * .comp .comp-toggle.comp-toggle-grey {
+    :root .comp .comp-toggle.comp-toggle-grey,
+    :root * .comp .comp-toggle.comp-toggle-grey {
       color: var(--blades-grey);
       filter: blur(2px); }
-      :root .comp .comp-toggle.comp-toggle-grey:hover, :root * .comp .comp-toggle.comp-toggle-grey:hover {
+      :root .comp .comp-toggle.comp-toggle-grey:hover,
+      :root * .comp .comp-toggle.comp-toggle-grey:hover {
         filter: blur(0px);
         color: var(--blades-white); }
-  :root .comp .number-circle, :root * .comp .number-circle {
+  :root .comp .number-circle,
+  :root * .comp .number-circle {
     --number-circle-size: 1.25rem; }
-  :root .comp .tooltip, :root * .comp .tooltip {
+  :root .comp .tooltip,
+  :root * .comp .tooltip {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1012,40 +1052,51 @@ template {
     top: 0;
     z-index: 6;
     pointer-events: none; }
-    :root .comp .tooltip.playbook-tooltip, :root * .comp .tooltip.playbook-tooltip {
+    :root .comp .tooltip.playbook-tooltip,
+    :root * .comp .tooltip.playbook-tooltip {
       width: 450px; }
-      :root .comp .tooltip.playbook-tooltip > span, :root * .comp .tooltip.playbook-tooltip > span {
+      :root .comp .tooltip.playbook-tooltip > span,
+      :root * .comp .tooltip.playbook-tooltip > span {
         width: inherit; }
-      :root .comp .tooltip.playbook-tooltip h1, :root .comp .tooltip.playbook-tooltip h2, :root * .comp .tooltip.playbook-tooltip h1, :root * .comp .tooltip.playbook-tooltip h2 {
+      :root .comp .tooltip.playbook-tooltip h1, :root .comp .tooltip.playbook-tooltip h2,
+      :root * .comp .tooltip.playbook-tooltip h1,
+      :root * .comp .tooltip.playbook-tooltip h2 {
         width: 110%;
         margin: -0.4375rem;
         white-space: nowrap; }
-  :root .comp.comp-vertical, :root * .comp.comp-vertical {
+  :root .comp.comp-vertical,
+  :root * .comp.comp-vertical {
     --comp-img-scale: 2;
     --comp-name-size: 1rem;
     flex-direction: column;
     pointer-events: auto;
     --main-title-color: #AAA; }
-    :root .comp.comp-vertical .comp-button.comp-delete, :root * .comp.comp-vertical .comp-button.comp-delete {
+    :root .comp.comp-vertical .comp-button.comp-delete,
+    :root * .comp.comp-vertical .comp-button.comp-delete {
       left: 75%;
       top: 0%; }
-    :root .comp.comp-vertical > .comp-label, :root * .comp.comp-vertical > .comp-label {
+    :root .comp.comp-vertical > .comp-label,
+    :root * .comp.comp-vertical > .comp-label {
       text-align: center; }
-      :root .comp.comp-vertical > .comp-label.comp-prompt, :root * .comp.comp-vertical > .comp-label.comp-prompt {
+      :root .comp.comp-vertical > .comp-label.comp-prompt,
+      :root * .comp.comp-vertical > .comp-label.comp-prompt {
         height: 0.75rem;
         margin-top: -0.625rem; }
-    :root .comp.comp-vertical .comp-title, :root * .comp.comp-vertical .comp-title {
+    :root .comp.comp-vertical .comp-title,
+    :root * .comp.comp-vertical .comp-title {
       text-align: center;
       font-family: var(--font-emphasis);
       font-size: var(--comp-name-size);
       text-transform: uppercase;
       padding-top: 0px; }
-    :root .comp.comp-vertical .comp-body, :root * .comp.comp-vertical .comp-body {
+    :root .comp.comp-vertical .comp-body,
+    :root * .comp.comp-vertical .comp-body {
       display: flex;
       flex-direction: column;
       min-height: 3rem;
       width: 100%; }
-      :root .comp.comp-vertical .comp-body > img, :root * .comp.comp-vertical .comp-body > img {
+      :root .comp.comp-vertical .comp-body > img,
+      :root * .comp.comp-vertical .comp-body > img {
         position: absolute;
         transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
         opacity: 0.5;
@@ -1054,27 +1105,33 @@ template {
         left: 50%;
         height: 100%;
         z-index: 0; }
-      :root .comp.comp-vertical .comp-body .comp-body-text, :root * .comp.comp-vertical .comp-body .comp-body-text {
+      :root .comp.comp-vertical .comp-body .comp-body-text,
+      :root * .comp.comp-vertical .comp-body .comp-body-text {
         display: none; }
-    :root .comp.comp-vertical.portrait-block, :root * .comp.comp-vertical.portrait-block {
+    :root .comp.comp-vertical.portrait-block,
+    :root * .comp.comp-vertical.portrait-block {
       height: 100%;
       flex-basis: 5rem;
       min-width: 90px;
       margin: 10px 0; }
-      :root .comp.comp-vertical.portrait-block .comp-button.comp-delete, :root * .comp.comp-vertical.portrait-block .comp-button.comp-delete {
+      :root .comp.comp-vertical.portrait-block .comp-button.comp-delete,
+      :root * .comp.comp-vertical.portrait-block .comp-button.comp-delete {
         left: unset;
         right: 10%;
         top: -10px; }
-      :root .comp.comp-vertical.portrait-block .comp-body, :root * .comp.comp-vertical.portrait-block .comp-body {
+      :root .comp.comp-vertical.portrait-block .comp-body,
+      :root * .comp.comp-vertical.portrait-block .comp-body {
         filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
         width: 100%; }
-        :root .comp.comp-vertical.portrait-block .comp-body .comp-title, :root * .comp.comp-vertical.portrait-block .comp-body .comp-title {
+        :root .comp.comp-vertical.portrait-block .comp-body .comp-title,
+        :root * .comp.comp-vertical.portrait-block .comp-body .comp-title {
           position: absolute;
           top: 100%;
           left: 50%;
           transform: translate(-50%, -50%) scale(70%);
           color: var(--blades-grey); }
-        :root .comp.comp-vertical.portrait-block .comp-body .comp-img, :root * .comp.comp-vertical.portrait-block .comp-body .comp-img {
+        :root .comp.comp-vertical.portrait-block .comp-body .comp-img,
+        :root * .comp.comp-vertical.portrait-block .comp-body .comp-img {
           --comp-img-scale: 1.5;
           height: 100%;
           opacity: 1;
@@ -1083,7 +1140,8 @@ template {
           z-index: 1;
           position: absolute;
           top: 25%; }
-    :root .comp.comp-vertical.comp-playbook, :root * .comp.comp-vertical.comp-playbook {
+    :root .comp.comp-vertical.comp-playbook,
+    :root * .comp.comp-vertical.comp-playbook {
       --comp-img-scaleX: -2;
       --comp-img-scaleY: 2;
       --comp-name-size: 2.625rem;
@@ -1091,19 +1149,23 @@ template {
       top: 1.25rem;
       margin-bottom: -4.25rem;
       z-index: 0; }
-      :root .comp.comp-vertical.comp-playbook .comp-button.comp-delete, :root * .comp.comp-vertical.comp-playbook .comp-button.comp-delete {
+      :root .comp.comp-vertical.comp-playbook .comp-button.comp-delete,
+      :root * .comp.comp-vertical.comp-playbook .comp-button.comp-delete {
         left: unset;
         right: 0.3125rem;
         top: -10px; }
-      :root .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add, :root * .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add {
+      :root .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add,
+      :root * .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add {
         display: none; }
-      :root .comp.comp-vertical.comp-playbook .comp-body img, :root * .comp.comp-vertical.comp-playbook .comp-body img {
+      :root .comp.comp-vertical.comp-playbook .comp-body img,
+      :root * .comp.comp-vertical.comp-playbook .comp-body img {
         height: 7.5rem;
         width: auto;
         opacity: 1;
         filter: blur(1px);
         position: absolute; }
-      :root .comp.comp-vertical.comp-playbook .comp-body .comp-title, :root * .comp.comp-vertical.comp-playbook .comp-body .comp-title {
+      :root .comp.comp-vertical.comp-playbook .comp-body .comp-title,
+      :root * .comp.comp-vertical.comp-playbook .comp-body .comp-title {
         width: 100%;
         height: 100%;
         font-family: var(--font-emphasis-alt);
@@ -1115,33 +1177,43 @@ template {
         padding-right: 0.25rem;
         margin-bottom: 2.8125rem;
         margin-top: 0.9375rem; }
-  :root .comp.comp-horizontal, :root * .comp.comp-horizontal {
+  :root .comp.comp-horizontal,
+  :root * .comp.comp-horizontal {
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start; }
-    :root .comp.comp-horizontal .comp-button.comp-delete, :root * .comp.comp-horizontal .comp-button.comp-delete {
+    :root .comp.comp-horizontal .comp-button.comp-delete,
+    :root * .comp.comp-horizontal .comp-button.comp-delete {
       left: 0.3125rem;
       top: 0; }
-    :root .comp.comp-horizontal > .comp-label, :root * .comp.comp-horizontal > .comp-label {
+    :root .comp.comp-horizontal > .comp-label,
+    :root * .comp.comp-horizontal > .comp-label {
       text-align: right;
       font-size: 0.875rem;
       line-height: 1.125rem;
       margin: 0; }
-    :root .comp.comp-horizontal .comp-body, :root * .comp.comp-horizontal .comp-body {
+    :root .comp.comp-horizontal .comp-body,
+    :root * .comp.comp-horizontal .comp-body {
       justify-content: flex-start;
       align-items: flex-start; }
-    :root .comp.comp-horizontal.comp-desc-trait, :root * .comp.comp-horizontal.comp-desc-trait {
+    :root .comp.comp-horizontal.comp-desc-trait,
+    :root * .comp.comp-horizontal.comp-desc-trait {
       align-items: flex-start;
       padding: 0.3125rem 0; }
-      :root .comp.comp-horizontal.comp-desc-trait:first-of-type, :root * .comp.comp-horizontal.comp-desc-trait:first-of-type {
+      :root .comp.comp-horizontal.comp-desc-trait:first-of-type,
+      :root * .comp.comp-horizontal.comp-desc-trait:first-of-type {
         margin-top: -0.3125rem; }
-      :root .comp.comp-horizontal.comp-desc-trait:not(:first-of-type), :root * .comp.comp-horizontal.comp-desc-trait:not(:first-of-type) {
+      :root .comp.comp-horizontal.comp-desc-trait:not(:first-of-type),
+      :root * .comp.comp-horizontal.comp-desc-trait:not(:first-of-type) {
         border-top: 1px solid var(--blades-white); }
-      :root .comp.comp-horizontal.comp-desc-trait .comp-label, :root * .comp.comp-horizontal.comp-desc-trait .comp-label {
+      :root .comp.comp-horizontal.comp-desc-trait .comp-label,
+      :root * .comp.comp-horizontal.comp-desc-trait .comp-label {
         max-width: 0px; }
-      :root .comp.comp-horizontal.comp-desc-trait .comp-body, :root * .comp.comp-horizontal.comp-desc-trait .comp-body {
+      :root .comp.comp-horizontal.comp-desc-trait .comp-body,
+      :root * .comp.comp-horizontal.comp-desc-trait .comp-body {
         min-height: 3.125rem; }
-        :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img, :root * .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img {
+        :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img,
+        :root * .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img {
           position: absolute;
           height: 50px;
           transform: translate(-50%, -50%);
@@ -1149,7 +1221,8 @@ template {
           left: 3.125rem;
           filter: blur(1px);
           opacity: 0.5; }
-        :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title, :root * .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title {
+        :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title,
+        :root * .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title {
           position: relative;
           width: 6.25rem;
           flex-shrink: 0;
@@ -1167,93 +1240,128 @@ template {
           text-align: center;
           z-index: 1;
           line-height: var(--line-height-default); }
-        :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline, :root * .comp.comp-horizontal.comp-desc-trait .comp-body .dotline {
+        :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline,
+        :root * .comp.comp-horizontal.comp-desc-trait .comp-body .dotline {
           position: relative;
           transform: translate(-50%, 0);
           left: 50%;
           bottom: 0; }
-          :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label, :root * .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label {
+          :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label,
+          :root * .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label {
             margin-right: 5px;
             font-weight: bold; }
-        :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root * .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
+        :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text,
+        :root * .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
           font-family: "Minion Pro Caption Cond";
           hyphens: auto;
           text-align: justify;
           padding: 0 0.3125rem 0 0;
           line-height: var(--line-height-compact);
           flex-grow: 1; }
-          :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type), :root * .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type) {
+          :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type),
+          :root * .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type) {
             margin-bottom: 6px; }
-  :root .comp.comp-teeth.comp-horizontal .dotline, :root * .comp.comp-teeth.comp-horizontal .dotline {
+  :root .comp.comp-teeth.comp-horizontal .dotline,
+  :root * .comp.comp-teeth.comp-horizontal .dotline {
     padding-left: 0.25rem;
     --dotline-dot-sizeX: 1.125rem;
     --dotline-dot-spacing: 0.25rem; }
-    :root .comp.comp-teeth.comp-horizontal .dotline .dot, :root * .comp.comp-teeth.comp-horizontal .dotline .dot {
+    :root .comp.comp-teeth.comp-horizontal .dotline .dot,
+    :root * .comp.comp-teeth.comp-horizontal .dotline .dot {
       flex-shrink: 1; }
-  :root .comp.comp-teeth.comp-horizontal.comp-xp, :root * .comp.comp-teeth.comp-horizontal.comp-xp {
+  :root .comp.comp-teeth.comp-horizontal.comp-xp,
+  :root * .comp.comp-teeth.comp-horizontal.comp-xp {
     z-index: 3; }
-    :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-label, :root * .comp.comp-teeth.comp-horizontal.comp-xp .comp-label {
+    :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-label,
+    :root * .comp.comp-teeth.comp-horizontal.comp-xp .comp-label {
       flex-grow: 1; }
-    :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body, :root * .comp.comp-teeth.comp-horizontal.comp-xp .comp-body {
+    :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body,
+    :root * .comp.comp-teeth.comp-horizontal.comp-xp .comp-body {
       justify-content: flex-end; }
-      :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline, :root * .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline {
+      :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline,
+      :root * .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline {
         --dotline-dot-spacing: 0.125rem;
         --dotline-horiz-align: flex-end;
         --frame-color: var(--blades-black);
         --fill-color-full: var(--blades-gold-bright);
         --fill-color-empty: rgba(0, 0, 0);
         --half-color-empty: var(--blades-gold-dark); }
-    :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline, :root * .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline {
+    :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline,
+    :root * .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline {
       --dotline-dot-sizeX: 1.125rem; }
-      :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot, :root * .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot {
+      :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot,
+      :root * .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot {
         transform-origin: top;
         transition: 0.25s;
         transform: scaleY(1); }
-        :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot, :root * .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
+        :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot,
+        :root * .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
           transform: scaleY(0.5); }
-  :root .comp.comp-teeth.comp-vertical, :root * .comp.comp-teeth.comp-vertical {
+  :root .comp.comp-teeth.comp-vertical,
+  :root * .comp.comp-teeth.comp-vertical {
     justify-content: flex-start;
     align-items: center;
     height: 100%;
     margin: 0;
     flex-grow: 0.5; }
-    :root .comp.comp-teeth.comp-vertical .comp-body, :root * .comp.comp-teeth.comp-vertical .comp-body {
+    :root .comp.comp-teeth.comp-vertical .comp-body,
+    :root * .comp.comp-teeth.comp-vertical .comp-body {
       top: -0.3125rem; }
-    :root .comp.comp-teeth.comp-vertical .dotline-label, :root * .comp.comp-teeth.comp-vertical .dotline-label {
+    :root .comp.comp-teeth.comp-vertical .dotline-label,
+    :root * .comp.comp-teeth.comp-vertical .dotline-label {
       min-width: 5.625rem;
       text-align: center;
       margin-left: 1.25rem; }
-    :root .comp.comp-teeth.comp-vertical .dotline, :root * .comp.comp-teeth.comp-vertical .dotline {
+    :root .comp.comp-teeth.comp-vertical .dotline,
+    :root * .comp.comp-teeth.comp-vertical .dotline {
       flex-grow: 1;
       justify-content: center;
       margin-top: -50%;
       margin-bottom: -50%;
       --dotline-dot-sizeX: 1rem;
       --dotline-dot-spacing: 0.25rem; }
-  :root .comp.comp-coins, :root .comp.comp-stash, :root * .comp.comp-coins, :root * .comp.comp-stash {
+  :root .comp.comp-coins, :root .comp.comp-stash,
+  :root * .comp.comp-coins,
+  :root * .comp.comp-stash {
     margin-bottom: 4px;
     pointer-events: none; }
-    :root .comp.comp-coins.comp-coins, :root .comp.comp-stash.comp-coins, :root * .comp.comp-coins.comp-coins, :root * .comp.comp-stash.comp-coins {
+    :root .comp.comp-coins.comp-coins, :root .comp.comp-stash.comp-coins,
+    :root * .comp.comp-coins.comp-coins,
+    :root * .comp.comp-stash.comp-coins {
       margin: 0px;
       justify-content: space-evenly; }
-      :root .comp.comp-coins.comp-coins .comp-body, :root .comp.comp-stash.comp-coins .comp-body, :root * .comp.comp-coins.comp-coins .comp-body, :root * .comp.comp-stash.comp-coins .comp-body {
+      :root .comp.comp-coins.comp-coins .comp-body, :root .comp.comp-stash.comp-coins .comp-body,
+      :root * .comp.comp-coins.comp-coins .comp-body,
+      :root * .comp.comp-stash.comp-coins .comp-body {
         flex-shrink: 0.5;
         min-height: unset;
         margin-top: 5px; }
-    :root .comp.comp-coins .dotline, :root .comp.comp-stash .dotline, :root * .comp.comp-coins .dotline, :root * .comp.comp-stash .dotline {
+    :root .comp.comp-coins .dotline, :root .comp.comp-stash .dotline,
+    :root * .comp.comp-coins .dotline,
+    :root * .comp.comp-stash .dotline {
       --dotline-dot-size: 1.125rem;
       --dotline-dot-spacing: -2px; }
-      :root .comp.comp-coins .dotline .dot.empty-dot, :root .comp.comp-stash .dotline .dot.empty-dot, :root * .comp.comp-coins .dotline .dot.empty-dot, :root * .comp.comp-stash .dotline .dot.empty-dot {
+      :root .comp.comp-coins .dotline .dot.empty-dot, :root .comp.comp-stash .dotline .dot.empty-dot,
+      :root * .comp.comp-coins .dotline .dot.empty-dot,
+      :root * .comp.comp-stash .dotline .dot.empty-dot {
         filter: saturate(0);
         opacity: 0.5; }
-      :root .comp.comp-coins .dotline .dot.full-dot, :root .comp.comp-stash .dotline .dot.full-dot, :root * .comp.comp-coins .dotline .dot.full-dot, :root * .comp.comp-stash .dotline .dot.full-dot {
+      :root .comp.comp-coins .dotline .dot.full-dot, :root .comp.comp-stash .dotline .dot.full-dot,
+      :root * .comp.comp-coins .dotline .dot.full-dot,
+      :root * .comp.comp-stash .dotline .dot.full-dot {
         filter: brightness(0.8) saturate(0.75); }
-    :root .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot, :root * .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root * .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
+    :root .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot,
+    :root * .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot,
+    :root * .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
       margin-left: 0.3125rem; }
-    :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root * .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root * .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
+    :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root * .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot,
+    :root * .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
       margin-left: 0.625rem; }
 
-:root .button-icon, :root .toggle-icon, :root * .button-icon, :root * .toggle-icon {
+:root .button-icon, :root .toggle-icon,
+:root * .button-icon,
+:root * .toggle-icon {
   position: relative;
   height: 1.5rem;
   width: 1.5rem;
@@ -1262,7 +1370,9 @@ template {
   justify-content: center;
   align-items: center;
   text-shadow: none; }
-  :root .button-icon i, :root .toggle-icon i, :root * .button-icon i, :root * .toggle-icon i {
+  :root .button-icon i, :root .toggle-icon i,
+  :root * .button-icon i,
+  :root * .toggle-icon i {
     height: 1.5rem;
     width: 1.5rem;
     line-height: 1.75rem;
@@ -1270,9 +1380,13 @@ template {
     opacity: 0.75;
     margin-top: -0.125rem;
     pointer-events: none; }
-    :root .button-icon i.toggle-off, :root .toggle-icon i.toggle-off, :root * .button-icon i.toggle-off, :root * .toggle-icon i.toggle-off {
+    :root .button-icon i.toggle-off, :root .toggle-icon i.toggle-off,
+    :root * .button-icon i.toggle-off,
+    :root * .toggle-icon i.toggle-off {
       opacity: 0.25; }
-  :root .button-icon .tooltip, :root .toggle-icon .tooltip, :root * .button-icon .tooltip, :root * .toggle-icon .tooltip {
+  :root .button-icon .tooltip, :root .toggle-icon .tooltip,
+  :root * .button-icon .tooltip,
+  :root * .toggle-icon .tooltip {
     display: none;
     pointer-events: none;
     position: absolute;
@@ -1287,30 +1401,45 @@ template {
     border: 1px solid var(--blades-white-bright);
     text-align: center;
     white-space: nowrap; }
-    :root .button-icon .tooltip b, :root .toggle-icon .tooltip b, :root * .button-icon .tooltip b, :root * .toggle-icon .tooltip b {
+    :root .button-icon .tooltip b, :root .toggle-icon .tooltip b,
+    :root * .button-icon .tooltip b,
+    :root * .toggle-icon .tooltip b {
       color: var(--blades-white-bright);
       font-size: 12px;
       font-family: var(--font-emphasis);
       text-transform: uppercase; }
-  :root .button-icon .hidden-toggle, :root .toggle-icon .hidden-toggle, :root * .button-icon .hidden-toggle, :root * .toggle-icon .hidden-toggle {
+  :root .button-icon .hidden-toggle, :root .toggle-icon .hidden-toggle,
+  :root * .button-icon .hidden-toggle,
+  :root * .toggle-icon .hidden-toggle {
     margin: 0;
     border: none;
     opacity: 0;
     position: absolute;
     transition: 0.25s; }
-    :root .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root * .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root * .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off {
+    :root .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off,
+    :root * .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off,
+    :root * .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off {
       display: none; }
-    :root .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root * .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root * .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
+    :root .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on,
+    :root * .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on,
+    :root * .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
       display: none; }
-  :root .button-icon.tooltip-left .tooltip, :root .toggle-icon.tooltip-left .tooltip, :root * .button-icon.tooltip-left .tooltip, :root * .toggle-icon.tooltip-left .tooltip {
+  :root .button-icon.tooltip-left .tooltip, :root .toggle-icon.tooltip-left .tooltip,
+  :root * .button-icon.tooltip-left .tooltip,
+  :root * .toggle-icon.tooltip-left .tooltip {
     left: unset;
     right: 15px; }
-  :root .button-icon:hover i, :root .toggle-icon:hover i, :root * .button-icon:hover i, :root * .toggle-icon:hover i {
+  :root .button-icon:hover i, :root .toggle-icon:hover i,
+  :root * .button-icon:hover i,
+  :root * .toggle-icon:hover i {
     opacity: 1; }
-  :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip, :root * .button-icon:hover .tooltip, :root * .toggle-icon:hover .tooltip {
+  :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip,
+  :root * .button-icon:hover .tooltip,
+  :root * .toggle-icon:hover .tooltip {
     display: block; }
 
-:root .dotline, :root * .dotline {
+:root .dotline,
+:root * .dotline {
   --dotline-zero-dot-size: 0.875rem;
   --dotline-dot-size: 0.875rem;
   --dotline-dot-spacing: 0.1875rem;
@@ -1322,12 +1451,15 @@ template {
   justify-content: var(--dotline-horiz-align);
   align-items: var(--dotline-vert-align);
   position: relative; }
-  :root .dotline.centered, :root * .dotline.centered {
+  :root .dotline.centered,
+  :root * .dotline.centered {
     --dotline-horiz-align: center; }
-  :root .dotline.locked .dot, :root * .dotline.locked .dot {
+  :root .dotline.locked .dot,
+  :root * .dotline.locked .dot {
     pointer-events: none;
     cursor: default; }
-  :root .dotline .dot, :root * .dotline .dot {
+  :root .dotline .dot,
+  :root * .dotline .dot {
     --dot-frame-color: var(--frame-color, var(--blades-white));
     --dot-frame-color-empty: var(--frame-color-empty, var(--dot-frame-color));
     --dot-frame-color-full: var(--frame-color-full, var(--dot-frame-color));
@@ -1343,40 +1475,57 @@ template {
     pointer-events: auto;
     cursor: pointer;
     position: relative; }
-    :root .dotline .dot:last-of-type, :root * .dotline .dot:last-of-type {
+    :root .dotline .dot:last-of-type,
+    :root * .dotline .dot:last-of-type {
       margin: 0; }
-    :root .dotline .dot .img-main, :root .dotline .dot .img-hover, :root * .dotline .dot .img-main, :root * .dotline .dot .img-hover {
+    :root .dotline .dot .img-main, :root .dotline .dot .img-hover,
+    :root * .dotline .dot .img-main,
+    :root * .dotline .dot .img-hover {
       display: block;
       height: 100%;
       width: 100%;
       filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
-      :root .dotline .dot .img-main.img-hover, :root .dotline .dot .img-hover.img-hover, :root * .dotline .dot .img-main.img-hover, :root * .dotline .dot .img-hover.img-hover {
+      :root .dotline .dot .img-main.img-hover, :root .dotline .dot .img-hover.img-hover,
+      :root * .dotline .dot .img-main.img-hover,
+      :root * .dotline .dot .img-hover.img-hover {
         display: none; }
-    :root .dotline .dot.svg-dot, :root * .dotline .dot.svg-dot {
+    :root .dotline .dot.svg-dot,
+    :root * .dotline .dot.svg-dot {
       height: auto; }
-      :root .dotline .dot.svg-dot svg, :root * .dotline .dot.svg-dot svg {
+      :root .dotline .dot.svg-dot svg,
+      :root * .dotline .dot.svg-dot svg {
         width: 100%;
         height: auto;
         max-height: var(--dotline-dot-sizeY, unset); }
-      :root .dotline .dot.svg-dot.full-dot svg .full, :root * .dotline .dot.svg-dot.full-dot svg .full {
+      :root .dotline .dot.svg-dot.full-dot svg .full,
+      :root * .dotline .dot.svg-dot.full-dot svg .full {
         fill: var(--current-fill-color, var(--dot-fill-color-full)); }
-      :root .dotline .dot.svg-dot.full-dot svg .frame, :root * .dotline .dot.svg-dot.full-dot svg .frame {
+      :root .dotline .dot.svg-dot.full-dot svg .frame,
+      :root * .dotline .dot.svg-dot.full-dot svg .frame {
         fill: var(--current-frame-color, var(--dot-frame-color-full)); }
-      :root .dotline .dot.svg-dot.full-dot svg .half, :root * .dotline .dot.svg-dot.full-dot svg .half {
+      :root .dotline .dot.svg-dot.full-dot svg .half,
+      :root * .dotline .dot.svg-dot.full-dot svg .half {
         fill: var(--current-half-color, var(--dot-half-color-full)); }
-      :root .dotline .dot.svg-dot.empty-dot svg .full, :root * .dotline .dot.svg-dot.empty-dot svg .full {
+      :root .dotline .dot.svg-dot.empty-dot svg .full,
+      :root * .dotline .dot.svg-dot.empty-dot svg .full {
         fill: var(--current-fill-color, var(--dot-fill-color-empty)); }
-      :root .dotline .dot.svg-dot.empty-dot svg .frame, :root * .dotline .dot.svg-dot.empty-dot svg .frame {
+      :root .dotline .dot.svg-dot.empty-dot svg .frame,
+      :root * .dotline .dot.svg-dot.empty-dot svg .frame {
         fill: var(--current-frame-color, var(--dot-frame-color-empty)); }
-      :root .dotline .dot.svg-dot.empty-dot svg .half, :root * .dotline .dot.svg-dot.empty-dot svg .half {
+      :root .dotline .dot.svg-dot.empty-dot svg .half,
+      :root * .dotline .dot.svg-dot.empty-dot svg .half {
         fill: var(--current-half-color, var(--dot-half-color-empty)); }
-    :root .dotline .dot:hover .img-main, :root * .dotline .dot:hover .img-main {
+    :root .dotline .dot:hover .img-main,
+    :root * .dotline .dot:hover .img-main {
       opacity: 0.5; }
-    :root .dotline .dot:hover .img-hover, :root * .dotline .dot:hover .img-hover {
+    :root .dotline .dot:hover .img-hover,
+    :root * .dotline .dot:hover .img-hover {
       display: block; }
-    :root .dotline .dot:hover .img-hover + .img-main, :root * .dotline .dot:hover .img-hover + .img-main {
+    :root .dotline .dot:hover .img-hover + .img-main,
+    :root * .dotline .dot:hover .img-hover + .img-main {
       display: none; }
-    :root .dotline .dot:hover.svg-dot, :root * .dotline .dot:hover.svg-dot {
+    :root .dotline .dot:hover.svg-dot,
+    :root * .dotline .dot:hover.svg-dot {
       opacity: 0.5; }
 
 :root body.vtt.game.system-eunos-blades #clocks-overlay {
@@ -6091,6 +6240,40 @@ template {
     flex-direction: column;
     justify-content: center;
     align-items: center; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .nav-group {
+    border: 0;
+    overflow: hidden; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .nav-group > * {
+      width: 100%; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .nav-group > .nav-tabs.flex-horizontal {
+      background-color: var(--blades-grey-bright);
+      border: 2px solid var(--blades-white);
+      padding: 0 0.625rem;
+      overflow: visible;
+      align-items: center;
+      justify-content: space-around; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .nav-group > .nav-tabs.flex-horizontal .tab-selector {
+        color: var(--blades-black);
+        padding: 0 0.3125rem;
+        font-family: Kirsty;
+        line-height: 1.25rem;
+        transition: 0.25s;
+        white-space: nowrap; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .nav-group > .nav-tabs.flex-horizontal .tab-selector.active {
+          background: linear-gradient(to right, transparent, var(--blades-white-bright) 25%, var(--blades-white-bright) 75%, transparent);
+          transform: scale(1.2); }
+        :root body.vtt.game.system-eunos-blades .app.window-app .nav-group > .nav-tabs.flex-horizontal .tab-selector:hover:not(.active) {
+          color: var(--blades-black-dark);
+          transform: scale(1.2);
+          background: linear-gradient(to right, transparent, var(--blades-white) 10%, var(--blades-white-bright) 50%, var(--blades-white) 90%, transparent); }
+    :root body.vtt.game.system-eunos-blades .app.window-app .nav-group .tab[data-tab]:not(.active) {
+      display: none !important; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .nav-group .tab[data-tab] {
+      width: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 0 var(--content-padding);
+      flex-grow: 1; }
   :root body.vtt.game.system-eunos-blades .app.window-app :root {
     --tagify-dd-color-primary: rgb(53,149,246);
     --tagify-dd-bg-color: white;
@@ -6528,11 +6711,6 @@ template {
             transform: translateY(-100%);
             opacity: 0;
             transition: inherit; }
-  :root body.vtt.game.system-eunos-blades .app.window-app .tagify {
-    --tag-bg: var(--blades-black);
-    --tag-text-color: var(--color-default); }
-    :root body.vtt.game.system-eunos-blades .app.window-app .tagify .tag-color-green {
-      --tag-bg: rgba(0, 150, 0, 0.6); }
   :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) {
     position: relative;
     overflow-x: hidden;
@@ -6757,41 +6935,10 @@ template {
             flex-wrap: nowrap;
             position: relative;
             height: 3.75rem; }
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group {
-            border: 0;
-            overflow: hidden; }
-            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group > * {
-              width: 100%; }
-            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group > .nav-tabs.flex-horizontal {
-              background-color: var(--blades-grey-bright);
-              border: 2px solid var(--blades-white);
-              padding: 0 0.625rem;
-              overflow: visible;
-              align-items: center;
-              justify-content: space-around; }
-              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group > .nav-tabs.flex-horizontal .tab-selector {
-                color: var(--blades-black);
-                padding: 0 0.3125rem;
-                font-family: Kirsty;
-                line-height: 1.25rem;
-                transition: 0.25s;
-                white-space: nowrap; }
-                :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group > .nav-tabs.flex-horizontal .tab-selector.active {
-                  background: linear-gradient(to right, transparent, var(--blades-white-bright) 25%, var(--blades-white-bright) 75%, transparent);
-                  transform: scale(1.2); }
-                :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group > .nav-tabs.flex-horizontal .tab-selector:hover:not(.active) {
-                  color: var(--blades-black-dark);
-                  transform: scale(1.2);
-                  background: linear-gradient(to right, transparent, var(--blades-white) 10%, var(--blades-white-bright) 50%, var(--blades-white) 90%, transparent); }
-            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group .tab[data-tab] {
-              display: none;
-              width: 100%;
-              overflow-y: auto;
-              overflow-x: hidden;
-              padding: 0 var(--content-padding);
-              flex-grow: 1; }
-              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group .tab[data-tab].active {
-                display: block; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group > * {
+            width: 100%; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .sheet-root section.nav-group .tab[data-tab].active {
+            display: block; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .tab-label {
       background: var(--blades-grey);
       position: relative;
@@ -6943,6 +7090,7 @@ template {
     min-width: 775px;
     min-height: 800px; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.sheet-top {
+      min-height: 200px;
       grid-template-areas: ". . title title title title title title playbook playbook playbook" ". . . subtitle subtitle subtitle subtitle subtitle subtitle . ." ". heritage heritage background background vice vice crew crew coins coins" "stash stash stash stash stash stash stash stash stash stash stash"; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc section.sheet-top .sheet-title {
         --sheet-title-font-size: 3.625rem ; }
@@ -7717,22 +7865,6 @@ template {
         height: calc(100% - var(--item-info-height) - var(--buttons-height));
         padding-block-start: 0;
         position: static; }
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .item-details {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: stretch;
-          color: var(--blades-white);
-          padding: 0.375rem;
-          hyphens: auto;
-          text-align: justify;
-          position: absolute;
-          top: 0%;
-          width: 400px;
-          max-width: unset;
-          pointer-events: none;
-          background: var(--blades-black-dark);
-          z-index: 10; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .nav-group {
           height: 100%;
           width: 100%;
@@ -7742,16 +7874,29 @@ template {
             width: 100%;
             align-items: flex-start;
             justify-content: center;
-            padding: 25px 0; }
+            padding: 25px 0;
+            display: none; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .nav-group .tab[data-tab].active {
               display: flex; }
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .comp-body {
-          z-index: 1; }
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .comp-body .comp-title {
-            color: var(--blades-grey-bright); }
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .comp-body > img {
-            filter: blur(1px);
-            opacity: 0.5; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .nav-group .tab[data-tab] .comp .comp-body {
+              z-index: 1; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .nav-group .tab[data-tab] .comp .comp-body .comp-title {
+                color: var(--blades-grey-bright); }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .nav-group .tab[data-tab] .comp .comp-body > img {
+                filter: blur(1px);
+                opacity: 0.5; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .nav-group .tab[data-tab] .comp.embedded .comp-body .comp-title {
+              color: var(--blades-white-bright); }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .nav-group .tab[data-tab] .comp.embedded .comp-body > img {
+              filter: blur(0.75px);
+              opacity: 0.75; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .nav-group .tab[data-tab] .comp.featured-item .comp-body .comp-title {
+              color: var(--blades-white-bright); }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .nav-group .tab[data-tab] .comp.featured-item .comp-body > img {
+              filter: blur(0.5px);
+              opacity: 1; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .nav-group .tab[data-tab] .comp.fine-quality .comp-body .comp-title {
+              color: #96ffff; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .featured-item .comp-body .comp-title {
           color: var(--blades-white-bright); }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .featured-item .comp-body > img {
