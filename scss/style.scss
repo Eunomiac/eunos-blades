@@ -104,17 +104,11 @@
 			@import "./core/app";
 
 			// Third-Party Library Inputs
-			@import './tagify/tagify';
+			// > TAGIFY
+			@import './lib/tagify';
 
-			// Tagify Configuration
-			// .tagify {
-			// 	--tag-bg: var(--blades-black);
-			// 	--tag-text-color: var(--color-default);
-
-			// 	.tag-color-green {
-			// 		--tag-bg: rgba(0, 150, 0, 0.6);
-			// 	}
-			// }
+			// > TAGIFY CUSTOM CONFIG
+			@import './tagify-custom';
 
 			.editor:not(.tinymce) {
 				position: relative;

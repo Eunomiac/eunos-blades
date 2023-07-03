@@ -1010,6 +1010,14 @@ const getSiblings = (elem) => {
     });
     return siblings;
 };
+const escapeHTML = (str) => (typeof str === "string"
+    ? str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/`|'/g, "&#039;")
+    : str);
 
 const sleep = (duration) => new Promise((resolve) => { setTimeout(resolve, duration >= 100 ? duration : duration * 1000); });
 const isDocID = (docRef) => { return typeof docRef === "string" && /^[A-Za-z0-9]{16}$/.test(docRef); };
@@ -1083,6 +1091,7 @@ export default {
     getRawCirclePath, drawCirclePath,
     getColorVals, getRGBString, getHEXString, getContrastingColor, getRandomColor,
     getSiblings,
+    escapeHTML,
     sleep,
     isDocID, loc, getSetting, getTemplatePath,
     getItemsOfType, getActorsOfType, checkUserPermissions

@@ -32,7 +32,7 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
 			.filter((item) => item.hasTag(...tags));
 	}
 
-	get tags(): BladesTag[] { return this.system.tags }
+	get tags(): BladesTag[] { return this.system.tags ?? [] }
 	hasTag(...tags: BladesTag[]): boolean {
 		return tags.every((tag) => this.tags.includes(tag));
 	}

@@ -1,26 +1,33 @@
 <form class="{{cssClass}} crew-type" autocomplete="off">
-	<section class="sheet-top">
-		<img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
-		<input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}" />
-	</section>
-
-
-		<input type="text" class="tag-entry" />
-  <section class="item-main flex-vertical">
-		<textarea class="crew-type-description" name="data.description" placeholder="(Description)" {{~#unless editable}} readonly{{/unless}}>{{data.description}}</textarea>
-    <label class="label-stripe">{{localize "BITD.ExpClues"}}</label>
-    {{editor content=data.experience_clues target="data.experience_clues" button=true owner=owner editable=editable}}
-
-    <label class="label-stripe">{{localize "BITD.Turf"}}</label>
-    <div id="turf-container">
-			{{> "systems/eunos-blades/templates/parts/turf-list.hbs" turfs_data=data.turfs can_edit=true editable=editable}}
-		</div>
+	<div class="sheet-root">
 
 		{{#if isGM}}
+		<input type="text" class="tag-entry" />
+		{{/if}}
+
+		<section class="sheet-top">
+			<img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+			<input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}"
+				placeholder="{{localize 'BITD.Name'}}" />
+		</section>
+
+		<section class="item-main flex-vertical">
+			<textarea class="crew-type-description" name="data.description" placeholder="(Description)" {{~#unless editable}}
+				readonly{{/unless}}>{{data.description}}</textarea>
+			<label class="label-stripe">{{localize "BITD.ExpClues"}}</label>
+			{{editor content=data.experience_clues target="data.experience_clues" button=true owner=owner editable=editable}}
+
+			<label class="label-stripe">{{localize "BITD.Turf"}}</label>
+			<div id="turf-container">
+				{{> "systems/eunos-blades/templates/parts/turf-list.hbs" turfs_data=data.turfs can_edit=true editable=editable}}
+			</div>
+
+			{{#if isGM}}
 			<label class="tab-label">
 				<span class="tab-title">Active Effects</span>
 			</label>
 			{{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
-		{{/if}}
-  </section>
+			{{/if}}
+		</section>
+	</div>
 </form>

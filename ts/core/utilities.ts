@@ -1087,6 +1087,15 @@ const getSiblings = (elem: Node) => {
 };
 // #endregion ░░░░[DOM]░░░░
 
+const escapeHTML = <T = unknown>(str: T): T => (typeof str === "string"
+	? str
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;")
+		.replace(/`|'/g, "&#039;") as T
+	: str);
+
 // #endregion ▄▄▄▄▄ HTML ▄▄▄▄▄
 
 // #region ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████ ~
@@ -1205,6 +1214,8 @@ export default {
 	getColorVals, getRGBString, getHEXString, getContrastingColor, getRandomColor,
 
 	getSiblings,
+
+	escapeHTML,
 
 	// ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████
 	sleep,

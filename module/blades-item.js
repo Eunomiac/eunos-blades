@@ -30,7 +30,7 @@ class BladesItem extends Item {
         return BladesItem.All.filter((item) => item.type === docType)
             .filter((item) => item.hasTag(...tags));
     }
-    get tags() { return this.system.tags; }
+    get tags() { return this.system.tags ?? []; }
     hasTag(...tags) {
         return tags.every((tag) => this.tags.includes(tag));
     }

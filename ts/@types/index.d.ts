@@ -118,6 +118,10 @@ declare global {
 
 	}
 
+	declare class Tagify {
+		dropdown: Record<string, any>
+	}
+
 	namespace BladesSheet {
 		interface Options extends ActorSheet.Options { }
 

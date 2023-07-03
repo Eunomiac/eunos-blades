@@ -54,6 +54,7 @@
 			}
 
 		}
+
 	}
 
 
@@ -151,6 +152,11 @@
 			// bottom: toRem(-5px);
 			// right: toRem(-15px);
 		}
+	}
+
+	.comp-number-input {
+		width: toRem(26px);
+		text-align: center;
 	}
 
 	.tooltip {
@@ -328,6 +334,7 @@
 		justify-content: flex-start;
 		align-items: flex-start;
 
+
 		.comp-button.comp-delete { left: toRem(5px); top: 0; }
 
 		> .comp-label {
@@ -335,6 +342,11 @@
 			font-size: toRem(14px);
 			line-height: toRem(18px);
 			margin: 0;
+
+			&.comp-input-label {
+				line-height: toRem(26px);
+				margin: 0 5px 0 10px;
+			}
 		}
 
 		.comp-body {

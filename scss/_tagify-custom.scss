@@ -1,0 +1,103 @@
+.tagify {
+  caret-color: transparent;
+  margin-top: 10px;
+
+  --placeholder-color: transparent;
+  --placeholder-color-focus: transparent;
+  --tags-border-color: #343434;
+  --tag-pad: 0.1rem 0.3rem;
+  align-items: center;
+  gap: 0.1rem;
+
+  min-width: 100%;
+  flex-wrap: nowrap;
+  border-style: inset;
+
+  .tagify__tag {
+    font-family: "Fjalla One";
+    padding: 0;
+    margin: 0 0.1rem;
+    border-radius: 5px;
+
+    > div::before {
+      inset: -0.5px;
+    }
+
+    &[data-group="Tags"] {
+      --tag-bg: #{getYIQScaledColor(orange, 150)};
+      --tag-hover: #{getYIQScaledColor(orange, 200)};
+    }
+    &[data-group="Playbooks"] {
+      --tag-bg: #{getYIQScaledColor(blue, 150)};
+      --tag-hover: #{getYIQScaledColor(blue, 200)};
+    }
+    &[data-group="Districts"] {
+      --tag-bg: #{getYIQScaledColor(tan, 150)};
+      --tag-hover: #{getYIQScaledColor(tan, 200)};
+    }
+    &[data-group="Vices"] {
+      --tag-bg: #{getYIQScaledColor(crimson, 150)};
+      --tag-hover: #{getYIQScaledColor(crimson, 200)};
+    }
+  }
+
+  .tagify__input {
+    flex-grow: 0.2;
+    padding: 0.1rem;
+    display: flex;
+    justify-items: center;
+    align-content: center;
+  }
+}
+
+.tagify__dropdown {
+  --tagify-dd-color-primary: #363636;
+  --tagify-dd-bg-color: #242424;
+  min-width: 500px;
+
+  .tagify__dropdown__wrapper {
+    &::-webkit-scrollbar {
+      display: none;
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+
+    h3 {
+      padding: 0 0.3em;
+      margin: 0;
+      color: white;
+      font-family: "Fjalla One";
+      text-transform: uppercase;
+      font-size: 8px;
+    }
+
+    .tagify__dropdown__itemsGroup {
+      padding: 0.15em;
+      &:hover {
+        background: #373737;
+      }
+
+      .tagify__dropdown__item {
+        display: inline-block;
+        font-family: "Fjalla One";
+        margin: 0px 0 3px 3px;
+        color: var(--blades-black);
+        padding: 0.1rem 0.25rem;
+        border-radius: 5px;
+
+        &[data-group="Tags"] {
+          background: #{getYIQScaledColor(orange, 150)};
+        }
+        &[data-group="Playbooks"] {
+          background: #{getYIQScaledColor(blue, 150)};
+        }
+        &[data-group="Districts"] {
+          background: #{getYIQScaledColor(tan, 150)};
+        }
+        &[data-group="Vices"] {
+          background: #{getYIQScaledColor(crimson, 150)};
+        }
+      }
+    }
+  }
+}

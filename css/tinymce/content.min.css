@@ -1,5 +1,6 @@
 html, :root {
   @use "sass:math";
+  @use "sass:color";
   scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
   scrollbar-width: thin; }
   html, :root {
@@ -356,6 +357,9 @@ html, :root {
           color: var(--blades-white); }
     html .comp .number-circle, :root .comp .number-circle {
       --number-circle-size: toRem(20px); }
+    html .comp .comp-number-input, :root .comp .comp-number-input {
+      width: toRem(26px);
+      text-align: center; }
     html .comp .tooltip, :root .comp .tooltip {
       display: flex;
       flex-direction: column;
@@ -488,6 +492,9 @@ html, :root {
         font-size: toRem(14px);
         line-height: toRem(18px);
         margin: 0; }
+        html .comp.comp-horizontal > .comp-label.comp-input-label, :root .comp.comp-horizontal > .comp-label.comp-input-label {
+          line-height: toRem(26px);
+          margin: 0 5px 0 10px; }
       html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
         justify-content: flex-start;
         align-items: flex-start; }
@@ -1008,6 +1015,9 @@ html, :root {
             color: var(--blades-white); }
       html .comp .number-circle, :root .comp .number-circle {
         --number-circle-size: 1.25rem; }
+      html .comp .comp-number-input, :root .comp .comp-number-input {
+        width: 1.625rem;
+        text-align: center; }
       html .comp .tooltip, :root .comp .tooltip {
         display: flex;
         flex-direction: column;
@@ -1140,6 +1150,9 @@ html, :root {
           font-size: 0.875rem;
           line-height: 1.125rem;
           margin: 0; }
+          html .comp.comp-horizontal > .comp-label.comp-input-label, :root .comp.comp-horizontal > .comp-label.comp-input-label {
+            line-height: 1.625rem;
+            margin: 0 5px 0 10px; }
         html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
           justify-content: flex-start;
           align-items: flex-start; }
@@ -1515,6 +1528,9 @@ html, :root {
     html .flex-horizontal.flex-wrap, :root .flex-horizontal.flex-wrap {
       flex-wrap: wrap;
       align-content: flex-start; }
+    html .flex-horizontal.full-width, :root .flex-horizontal.full-width {
+      width: 100%;
+      justify-content: space-evenly; }
   html .flex-vertical, :root .flex-vertical {
     display: flex;
     flex-direction: column;

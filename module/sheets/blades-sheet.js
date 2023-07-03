@@ -13,7 +13,7 @@ import BladesSelectorDialog from "../blades-dialog.js";
 import BladesActiveEffect from "../blades-active-effect.js";
 class BladesSheet extends ActorSheet {
     async getData() {
-        const context = await super.getData();
+        const context = (await super.getData());
         eLog.checkLog("actor", "[BladesSheet] super.getData()", { ...context });
         context.editable = this.options.editable;
         context.isGM = game.user.isGM;
@@ -53,7 +53,7 @@ class BladesSheet extends ActorSheet {
             html.attr("style", "--secret-text-display: initial");
         }
         else {
-            html.find(".editor:not(.tinymce) [data-is-secret=\"true\"]").remove();
+            html.find('.editor:not(.tinymce) [data-is-secret="true"]').remove();
         }
         if (!this.options.editable) {
             return;
@@ -78,13 +78,17 @@ class BladesSheet extends ActorSheet {
                 targetDoc = item;
             }
             const curValue = U.pInt($(elem).data("value"));
-            $(elem).find(".dot").each((j, dot) => {
+            $(elem)
+                .find(".dot")
+                .each((j, dot) => {
                 $(dot).on("click", (event) => {
                     event.preventDefault();
                     const thisValue = U.pInt($(dot).data("value"));
                     if (thisValue !== curValue) {
-                        if (comp$.hasClass("comp-coins") || comp$.hasClass("comp-stash")) {
-                            G.effects.fillCoins($(dot).prevAll(".dot"))
+                        if (comp$.hasClass("comp-coins")
+                            || comp$.hasClass("comp-stash")) {
+                            G.effects
+                                .fillCoins($(dot).prevAll(".dot"))
                                 .then(() => targetDoc.update({ [targetField]: thisValue }));
                         }
                         else {
@@ -101,47 +105,101 @@ class BladesSheet extends ActorSheet {
                 });
             });
         });
-        html.find(".clock-container").on("click", this._onClockLeftClick.bind(this));
-        html.find(".clock-container").on("contextmenu", this._onClockRightClick.bind(this));
-        html.find("[data-comp-id]").find(".comp-title").on("click", this._onItemOpenClick.bind(this));
-        html.find(".comp-control.comp-add").on("click", this._onItemAddClick.bind(this));
-        html.find(".comp-control.comp-delete").on("click", this._onItemRemoveClick.bind(this));
-        html.find(".comp-control.comp-delete-full").on("click", this._onItemFullRemoveClick.bind(this));
-        html.find(".comp-control.comp-toggle").on("click", this._onItemToggleClick.bind(this));
-        html.find("[data-roll-attribute]").on("click", this._onRollAttributeDieClick.bind(this));
-        html.find(".effect-control").on("click", this._onActiveEffectControlClick.bind(this));
+        html
+            .find(".clock-container")
+            .on("click", this._onClockLeftClick.bind(this));
+        html
+            .find(".clock-container")
+            .on("contextmenu", this._onClockRightClick.bind(this));
+        html
+            .find("[data-comp-id]")
+            .find(".comp-title")
+            .on("click", this._onItemOpenClick.bind(this));
+        html
+            .find(".comp-control.comp-add")
+            .on("click", this._onItemAddClick.bind(this));
+        html
+            .find(".comp-control.comp-delete")
+            .on("click", this._onItemRemoveClick.bind(this));
+        html
+            .find(".comp-control.comp-delete-full")
+            .on("click", this._onItemFullRemoveClick.bind(this));
+        html
+            .find(".comp-control.comp-toggle")
+            .on("click", this._onItemToggleClick.bind(this));
+        html
+            .find("[data-roll-attribute]")
+            .on("click", this._onRollAttributeDieClick.bind(this));
+        html
+            .find(".effect-control")
+            .on("click", this._onActiveEffectControlClick.bind(this));
         const tagElem = html.find(".tag-entry")[0];
         if (tagElem) {
             const tagify = new Tagify(tagElem, {
                 enforceWhitelist: true,
                 editTags: false,
                 whitelist: [
-                    ...Object.values(Tag),
-                    ...Object.values(District),
-                    ...Object.values(Vice),
-                    ...Object.values(Playbook)
+                    ...Object.values(Tag).map((tag) => ({
+                        "value": tag,
+                        "data-group": "Tags"
+                    })),
+                    ...Object.values(District).map((tag) => ({
+                        "value": tag,
+                        "data-group": "Districts"
+                    })),
+                    ...Object.values(Vice).map((tag) => ({
+                        "value": tag,
+                        "data-group": "Vices"
+                    })),
+                    ...Object.values(Playbook).map((tag) => ({
+                        "value": tag,
+                        "data-group": "Playbooks"
+                    }))
                 ],
                 dropdown: {
-                    classname: "tagify-dropdown",
                     enabled: 0,
-                    maxItems: 5,
+                    maxItems: 10000,
+                    placeAbove: false,
                     appendTarget: html[0]
                 }
             });
+            tagify.dropdown.createListHTML = (optionsArr) => {
+                const map = {};
+                return structuredClone(optionsArr)
+                    .map((suggestion, idx) => {
+                    const value = tagify.dropdown.getMappedValue.call(tagify, suggestion);
+                    let tagHTMLString = "";
+                    if (!map[suggestion["data-group"]]) {
+                        map[suggestion["data-group"]] = true;
+                        if (Object.keys(map).length) {
+                            tagHTMLString += "</div>";
+                        }
+                        tagHTMLString += `
+								<div class="tagify__dropdown__itemsGroup">
+								<h3>${suggestion["data-group"]}</h3>
+							`;
+                    }
+                    suggestion.value
+                        = value && typeof value === "string" ? U.escapeHTML(value) : value;
+                    tagHTMLString += tagify.settings.templates.dropdownItem.apply(tagify, [suggestion, idx]);
+                    return tagHTMLString;
+                })
+                    .join("");
+            };
             tagify.addTags(this.actor.tags.map((tag) => {
                 if (Object.values(Tag).includes(tag)) {
-                    return { "value": tag, "class": "orange" };
+                    return { "value": tag, "data-group": "Tags" };
                 }
                 if (Object.values(District).includes(tag)) {
-                    return { "value": tag, "class": "green" };
+                    return { "value": tag, "data-group": "Districts" };
                 }
                 if (Object.values(Playbook).includes(tag)) {
-                    return { "value": tag, "class": "blue" };
+                    return { "value": tag, "data-group": "Playbooks" };
                 }
                 if (Object.values(Vice).includes(tag)) {
-                    return { "value": tag, "class": "red" };
+                    return { "value": tag, "data-group": "Vices" };
                 }
-                return { "value": tag, "class": "white" };
+                return { "value": tag, "data-group": "Other" };
             }), false, false);
             tagElem.addEventListener("change", this._onTagifyChange.bind(this));
         }
@@ -159,7 +217,7 @@ class BladesSheet extends ActorSheet {
         const target = clock$.data("target");
         const curValue = U.pInt(clock$.data("value"));
         const maxValue = U.pInt(clock$.data("size"));
-        G.effects.pulseClockWedges(clock$.find(("wedges"))).then(() => this.actor.update({
+        G.effects.pulseClockWedges(clock$.find("wedges")).then(() => this.actor.update({
             [target]: G.utils.wrap(0, maxValue + 1, curValue + 1)
         }));
     }
@@ -171,15 +229,14 @@ class BladesSheet extends ActorSheet {
         }
         const target = clock$.data("target");
         const curValue = U.pInt(clock$.data("value"));
-        G.effects.reversePulseClockWedges(clock$.find(("wedges"))).then(() => this.actor.update({
+        G.effects.reversePulseClockWedges(clock$.find("wedges")).then(() => this.actor.update({
             [target]: Math.max(0, curValue - 1)
         }));
     }
     async _onTagifyChange(event) {
         const tagString = event.target.value;
         if (tagString) {
-            const tags = JSON.parse(tagString)
-                .map(({ value }) => value);
+            const tags = JSON.parse(tagString).map(({ value }) => value);
             this.actor.update({ "system.tags": tags });
         }
         else {
@@ -256,6 +313,8 @@ class BladesSheet extends ActorSheet {
         this.actor.rollAttributePopup(attribute_name);
     }
 
-    async _onActiveEffectControlClick(event) { BladesActiveEffect.onManageActiveEffect(event, this.actor); }
+    async _onActiveEffectControlClick(event) {
+        BladesActiveEffect.onManageActiveEffect(event, this.actor);
+    }
 }
 export default BladesSheet;

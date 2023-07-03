@@ -2,54 +2,57 @@
 
 	<div class="sheet-root">
 
-	<section class="sheet-top">
-		<img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
-		<input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}" />
-	</section>
-
-
-		<input type="text" class="tag-entry" />
-	<section class="item-main flex-vertical">
-		{{#if isEmbeddedItem}}
-		<label class="tab-label">
-			<span class="tab-title">Description OKAY!</span>
-		</label>
-		{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
-		{{/if}}
-
-		<label class="tab-label">
-			<span class="tab-title">Rules</span>
-		</label>
-		{{editor content=data.rules target="data.rules" button=true owner=owner editable=editable}}
-
-		{{#if (test isGM "||" data.rules_notes)}}
-		<label class="tab-label">
-			<span class="tab-title">Additional Rules Notes</span>
-		</label>
-		{{editor content=data.rules_notes target="data.rules_notes" button=true owner=owner editable=editable}}
-		{{/if}}
-
-		<div class="flex-horizontal">
-			<div class="comp comp-horizontal">
-				<label>Load: </label>
-				<input data-dtype="Number" type="number" name="data.load" value="{{data.load}}">
-			</div>
-			<div class="comp comp-horizontal">
-				<label>Uses: </label>
-				<input data-dtype="Number" type="number" name="data.uses.max" value="{{data.uses.max}}">
-			</div>
-			<div class="comp comp-horizontal">
-				<label>Max per Score: </label>
-				<input data-dtype="Number" type="number" name="data.num_available" value="{{data.num_available}}">
-			</div>
-		</div>
-
 		{{#if isGM}}
+		<input type="text" class="tag-entry" />
+		{{/if}}
+
+		<section class="sheet-top">
+			<img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+			<input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}"
+				placeholder="{{localize 'BITD.Name'}}" />
+		</section>
+
+		<section class="item-main flex-vertical">
+			{{#if isEmbeddedItem}}
+			<label class="tab-label">
+				<span class="tab-title">Description OKAY!</span>
+			</label>
+			{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+			{{/if}}
+
+			<label class="tab-label">
+				<span class="tab-title">Rules</span>
+			</label>
+			{{editor content=data.rules target="data.rules" button=true owner=owner editable=editable}}
+
+			{{#if (test isGM "||" data.rules_notes)}}
+			<label class="tab-label">
+				<span class="tab-title">Additional Rules Notes</span>
+			</label>
+			{{editor content=data.rules_notes target="data.rules_notes" button=true owner=owner editable=editable}}
+			{{/if}}
+
+			<div class="flex-horizontal">
+				<div class="comp comp-horizontal">
+					<label>Load: </label>
+					<input data-dtype="Number" type="number" name="data.load" value="{{data.load}}">
+				</div>
+				<div class="comp comp-horizontal">
+					<label>Uses: </label>
+					<input data-dtype="Number" type="number" name="data.uses.max" value="{{data.uses.max}}">
+				</div>
+				<div class="comp comp-horizontal">
+					<label>Max per Score: </label>
+					<input data-dtype="Number" type="number" name="data.num_available" value="{{data.num_available}}">
+				</div>
+			</div>
+
+			{{#if isGM}}
 			<label class="tab-label">
 				<span class="tab-title">Active Effects</span>
 			</label>
 			{{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
-		{{/if}}
-	</section>
+			{{/if}}
+		</section>
 	</div>
 </form>

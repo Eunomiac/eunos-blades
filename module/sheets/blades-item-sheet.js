@@ -6,6 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import C, { Tag, District, Playbook, Vice } from "../core/constants.js";
+import U from "../core/utilities.js";
 import BladesActiveEffect from "../blades-active-effect.js";
 import Tagify from "../../lib/tagify/tagify.esm.js";
 class BladesItemSheet extends ItemSheet {
@@ -47,34 +48,72 @@ class BladesItemSheet extends ItemSheet {
                 enforceWhitelist: true,
                 editTags: false,
                 whitelist: [
-                    ...Object.values(Tag),
-                    ...Object.values(District),
-                    ...Object.values(Vice),
-                    ...Object.values(Playbook)
+                    ...Object.values(Tag).map((tag) => ({
+                        "value": tag,
+                        "data-group": "Tags"
+                    })),
+                    ...Object.values(District).map((tag) => ({
+                        "value": tag,
+                        "data-group": "Districts"
+                    })),
+                    ...Object.values(Vice).map((tag) => ({
+                        "value": tag,
+                        "data-group": "Vices"
+                    })),
+                    ...Object.values(Playbook).map((tag) => ({
+                        "value": tag,
+                        "data-group": "Playbooks"
+                    }))
                 ],
                 dropdown: {
-                    classname: "tagify-dropdown",
                     enabled: 0,
-                    maxItems: 5,
+                    maxItems: 10000,
+                    placeAbove: false,
                     appendTarget: html[0]
                 }
             });
-            tagElem.addEventListener("change", this._onTagifyChange.bind(this));
+            tagify.dropdown.createListHTML = (optionsArr) => {
+                const map = {};
+                return structuredClone(optionsArr)
+                    .map((suggestion, idx) => {
+                    const value = tagify.dropdown.getMappedValue.call(tagify, suggestion);
+                    let tagHTMLString = "";
+                    if (!map[suggestion["data-group"]]) {
+                        map[suggestion["data-group"]] = true;
+                        if (Object.keys(map).length) {
+                            tagHTMLString += "</div>";
+                        }
+                        tagHTMLString += `
+								<div class="tagify__dropdown__itemsGroup">
+								<h3>${suggestion["data-group"]}</h3>
+							`;
+                    }
+                    suggestion.value
+                        = value && typeof value === "string" ? U.escapeHTML(value) : value;
+                    tagHTMLString += tagify.settings.templates.dropdownItem.apply(tagify, [suggestion, idx]);
+                    return tagHTMLString;
+                })
+                    .join("");
+            };
             tagify.addTags(this.item.tags.map((tag) => {
                 if (Object.values(Tag).includes(tag)) {
-                    return { "value": tag, "class": "orange" };
+                    return { "value": tag, "data-group": "Tags" };
                 }
                 if (Object.values(District).includes(tag)) {
-                    return { "value": tag, "class": "green" };
+                    return { "value": tag, "data-group": "Districts" };
                 }
                 if (Object.values(Playbook).includes(tag)) {
-                    return { "value": tag, "class": "blue" };
+                    return { "value": tag, "data-group": "Playbooks" };
                 }
                 if (Object.values(Vice).includes(tag)) {
-                    return { "value": tag, "class": "red" };
+                    return { "value": tag, "data-group": "Vices" };
                 }
-                return { "value": tag, "class": "white" };
+                return { "value": tag, "data-group": "Other" };
             }), false, false);
+            tagElem.addEventListener("change", this._onTagifyChange.bind(this));
+        }
+        if (this.options.submitOnChange) {
+            html.on("change", "textarea", this._onChangeInput.bind(this));
         }
         html.find(".effect-control").on("click", (ev) => {
             if (self.item.isOwned) {

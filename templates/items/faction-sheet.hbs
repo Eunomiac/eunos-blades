@@ -1,13 +1,15 @@
 <form class="{{cssClass}}" autocomplete="off">
+  <div class="sheet-root">
+
+    {{#if isGM}}
+    <input type="text" class="tag-entry" />
+    {{/if}}
 
 	<section class="sheet-top">
 		<img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
 		<input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}" />
 	</section>
 
-
-
-		<input type="text" class="tag-entry" />
   <section class="item-main flex-vertical">
 		<label class="label-stripe">{{localize "BITD.Description"}}</label>
 			<textarea rows="2" name="data.description">{{data.description}}</textarea>
@@ -59,5 +61,5 @@
 					<textarea rows="10" name="data.situation">{{data.situation}}</textarea>
 			{{/if}}
   </section>
-
+	</div>
 </form>

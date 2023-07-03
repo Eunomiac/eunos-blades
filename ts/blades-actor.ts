@@ -68,7 +68,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 			.filter((actor) => actor.hasTag(...tags));
 	}
 
-	get tags(): BladesTag[] { return this.system.tags }
+	get tags(): BladesTag[] { return this.system.tags ?? [] }
 	hasTag(...tags: BladesTag[]): boolean {
 		return tags.every((tag) => this.tags.includes(tag));
 	}

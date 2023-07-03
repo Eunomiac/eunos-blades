@@ -28,7 +28,7 @@ class BladesActor extends Actor {
         return BladesActor.All.filter((actor) => actor.type === docType)
             .filter((actor) => actor.hasTag(...tags));
     }
-    get tags() { return this.system.tags; }
+    get tags() { return this.system.tags ?? []; }
     hasTag(...tags) {
         return tags.every((tag) => this.tags.includes(tag));
     }

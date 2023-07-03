@@ -158,6 +158,8 @@
 			flex-wrap: wrap;
 			align-content: flex-start;
 		}
+
+		&.full-width { width: 100%; justify-content: space-evenly }
 	}
 
 	.flex-vertical {

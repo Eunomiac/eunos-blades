@@ -304,6 +304,7 @@ template {
   display: none; }
 
 @use "sass:math";
+@use "sass:color";
 @use "sass:math";
 /*
 *  Elements that can be changed will hint this by dimming and fading a little on hover
@@ -1034,6 +1035,10 @@ template {
   :root .comp .number-circle,
   :root * .comp .number-circle {
     --number-circle-size: 1.25rem; }
+  :root .comp .comp-number-input,
+  :root * .comp .comp-number-input {
+    width: 1.625rem;
+    text-align: center; }
   :root .comp .tooltip,
   :root * .comp .tooltip {
     display: flex;
@@ -1192,6 +1197,10 @@ template {
       font-size: 0.875rem;
       line-height: 1.125rem;
       margin: 0; }
+      :root .comp.comp-horizontal > .comp-label.comp-input-label,
+      :root * .comp.comp-horizontal > .comp-label.comp-input-label {
+        line-height: 1.625rem;
+        margin: 0 5px 0 10px; }
     :root .comp.comp-horizontal .comp-body,
     :root * .comp.comp-horizontal .comp-body {
       justify-content: flex-start;
@@ -1784,6 +1793,9 @@ template {
             color: var(--blades-white); }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .number-circle {
         --number-circle-size: 1.25rem; }
+      :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .comp-number-input {
+        width: 1.625rem;
+        text-align: center; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .tooltip {
         display: flex;
         flex-direction: column;
@@ -1916,6 +1928,9 @@ template {
           font-size: 0.875rem;
           line-height: 1.125rem;
           margin: 0; }
+          :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-horizontal > .comp-label.comp-input-label {
+            line-height: 1.625rem;
+            margin: 0 5px 0 10px; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-horizontal .comp-body {
           justify-content: flex-start;
           align-items: flex-start; }
@@ -3082,6 +3097,13 @@ template {
     :root body.vtt.game.system-eunos-blades #hotbar .comp .number-circle,
     :root body.vtt.game.system-eunos-blades #players .comp .number-circle {
       --number-circle-size: 1.25rem; }
+    :root body.vtt.game.system-eunos-blades #interface .comp .comp-number-input,
+    :root body.vtt.game.system-eunos-blades #controls .comp .comp-number-input,
+    :root body.vtt.game.system-eunos-blades #navigation .comp .comp-number-input,
+    :root body.vtt.game.system-eunos-blades #hotbar .comp .comp-number-input,
+    :root body.vtt.game.system-eunos-blades #players .comp .comp-number-input {
+      width: 1.625rem;
+      text-align: center; }
     :root body.vtt.game.system-eunos-blades #interface .comp .tooltip,
     :root body.vtt.game.system-eunos-blades #controls .comp .tooltip,
     :root body.vtt.game.system-eunos-blades #navigation .comp .tooltip,
@@ -3318,6 +3340,13 @@ template {
         font-size: 0.875rem;
         line-height: 1.125rem;
         margin: 0; }
+        :root body.vtt.game.system-eunos-blades #interface .comp.comp-horizontal > .comp-label.comp-input-label,
+        :root body.vtt.game.system-eunos-blades #controls .comp.comp-horizontal > .comp-label.comp-input-label,
+        :root body.vtt.game.system-eunos-blades #navigation .comp.comp-horizontal > .comp-label.comp-input-label,
+        :root body.vtt.game.system-eunos-blades #hotbar .comp.comp-horizontal > .comp-label.comp-input-label,
+        :root body.vtt.game.system-eunos-blades #players .comp.comp-horizontal > .comp-label.comp-input-label {
+          line-height: 1.625rem;
+          margin: 0 5px 0 10px; }
       :root body.vtt.game.system-eunos-blades #interface .comp.comp-horizontal .comp-body,
       :root body.vtt.game.system-eunos-blades #controls .comp.comp-horizontal .comp-body,
       :root body.vtt.game.system-eunos-blades #navigation .comp.comp-horizontal .comp-body,
@@ -4542,6 +4571,13 @@ template {
     :root body.vtt.game.system-eunos-blades #hotbar #chat .comp .number-circle,
     :root body.vtt.game.system-eunos-blades #players #chat .comp .number-circle {
       --number-circle-size: 1.25rem; }
+    :root body.vtt.game.system-eunos-blades #interface #chat .comp .comp-number-input,
+    :root body.vtt.game.system-eunos-blades #controls #chat .comp .comp-number-input,
+    :root body.vtt.game.system-eunos-blades #navigation #chat .comp .comp-number-input,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat .comp .comp-number-input,
+    :root body.vtt.game.system-eunos-blades #players #chat .comp .comp-number-input {
+      width: 1.625rem;
+      text-align: center; }
     :root body.vtt.game.system-eunos-blades #interface #chat .comp .tooltip,
     :root body.vtt.game.system-eunos-blades #controls #chat .comp .tooltip,
     :root body.vtt.game.system-eunos-blades #navigation #chat .comp .tooltip,
@@ -4778,6 +4814,13 @@ template {
         font-size: 0.875rem;
         line-height: 1.125rem;
         margin: 0; }
+        :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-horizontal > .comp-label.comp-input-label,
+        :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-horizontal > .comp-label.comp-input-label,
+        :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-horizontal > .comp-label.comp-input-label,
+        :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.comp-horizontal > .comp-label.comp-input-label,
+        :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-horizontal > .comp-label.comp-input-label {
+          line-height: 1.625rem;
+          margin: 0 5px 0 10px; }
       :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-horizontal .comp-body,
       :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-horizontal .comp-body,
       :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-horizontal .comp-body,
@@ -5738,6 +5781,9 @@ template {
             color: var(--blades-white); }
       :root body.vtt.game.system-eunos-blades .app.window-app .comp .number-circle {
         --number-circle-size: 1.25rem; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .comp .comp-number-input {
+        width: 1.625rem;
+        text-align: center; }
       :root body.vtt.game.system-eunos-blades .app.window-app .comp .tooltip {
         display: flex;
         flex-direction: column;
@@ -5870,6 +5916,9 @@ template {
           font-size: 0.875rem;
           line-height: 1.125rem;
           margin: 0; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-horizontal > .comp-label.comp-input-label {
+            line-height: 1.625rem;
+            margin: 0 5px 0 10px; }
         :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-horizontal .comp-body {
           justify-content: flex-start;
           align-items: flex-start; }
@@ -6235,6 +6284,9 @@ template {
     :root body.vtt.game.system-eunos-blades .app.window-app .flex-horizontal.flex-wrap {
       flex-wrap: wrap;
       align-content: flex-start; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .flex-horizontal.full-width {
+      width: 100%;
+      justify-content: space-evenly; }
   :root body.vtt.game.system-eunos-blades .app.window-app .flex-vertical {
     display: flex;
     flex-direction: column;
@@ -6711,6 +6763,79 @@ template {
             transform: translateY(-100%);
             opacity: 0;
             transition: inherit; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .tagify {
+    caret-color: transparent;
+    margin-top: 10px;
+    --placeholder-color: transparent;
+    --placeholder-color-focus: transparent;
+    --tags-border-color: #343434;
+    --tag-pad: 0.1rem 0.3rem;
+    align-items: center;
+    gap: 0.1rem;
+    min-width: 100%;
+    flex-wrap: nowrap;
+    border-style: inset; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .tagify .tagify__tag {
+      font-family: "Fjalla One";
+      padding: 0;
+      margin: 0 0.1rem;
+      border-radius: 5px; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify .tagify__tag > div::before {
+        inset: -0.5px; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify .tagify__tag[data-group="Tags"] {
+        --tag-bg: #d98c19;
+        --tag-hover: #ffbb22; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify .tagify__tag[data-group="Playbooks"] {
+        --tag-bg: #5151ff;
+        --tag-hover: #6c6cff; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify .tagify__tag[data-group="Districts"] {
+        --tag-bg: #ab9272;
+        --tag-hover: #e4c398; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify .tagify__tag[data-group="Vices"] {
+        --tag-bg: #ff3264;
+        --tag-hover: #ff4285; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .tagify .tagify__input {
+      flex-grow: 0.2;
+      padding: 0.1rem;
+      display: flex;
+      justify-items: center;
+      align-content: center; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown {
+    --tagify-dd-color-primary: #363636;
+    --tagify-dd-bg-color: #242424;
+    min-width: 500px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper::-webkit-scrollbar {
+      display: none;
+      -ms-overflow-style: none;
+      /* IE and Edge */
+      scrollbar-width: none;
+      /* Firefox */ }
+    :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper h3 {
+      padding: 0 0.3em;
+      margin: 0;
+      color: white;
+      font-family: "Fjalla One";
+      text-transform: uppercase;
+      font-size: 8px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup {
+      padding: 0.15em; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup:hover {
+        background: #373737; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item {
+        display: inline-block;
+        font-family: "Fjalla One";
+        margin: 0px 0 3px 3px;
+        color: var(--blades-black);
+        padding: 0.1rem 0.25rem;
+        border-radius: 5px; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Tags"] {
+          background: #d98c19; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Playbooks"] {
+          background: #5151ff; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Districts"] {
+          background: #ab9272; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Vices"] {
+          background: #ff3264; }
   :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) {
     position: relative;
     overflow-x: hidden;
@@ -6860,6 +6985,9 @@ template {
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .flex-horizontal.flex-wrap {
           flex-wrap: wrap;
           align-content: flex-start; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .flex-horizontal.full-width {
+          width: 100%;
+          justify-content: space-evenly; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .flex-vertical {
         display: flex;
         flex-direction: column;
@@ -6943,6 +7071,7 @@ template {
       background: var(--blades-grey);
       position: relative;
       height: 1.5rem;
+      width: 100%;
       margin-bottom: 0.3125rem;
       display: flex;
       justify-content: flex-start;
