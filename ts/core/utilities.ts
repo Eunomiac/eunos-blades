@@ -1104,7 +1104,11 @@ const sleep = (duration: number): Promise<void> => new Promise((resolve) => { se
 
 // #region ████████ FOUNDRY: Requires Configuration of System ID in constants.ts ████████ ~
 
-const isDocID = (docRef: unknown) => { return typeof docRef === "string" && /^[A-Za-z0-9]{16}$/.test(docRef) };
+const isDocID = (docRef: unknown, isUUIDok = true) => {
+	return typeof docRef === "string" && (isUUIDok
+		? /^(.*\.)?[A-Za-z0-9]{16}$/.test(docRef)
+		: /^[A-Za-z0-9]{16}$/.test(docRef));
+};
 
 const loc = (locRef: string, formatDict: Record<string,string> = {}) => {
 	if (/[a-z]/.test(locRef)) { // reference contains lower-case characters: add system ID namespacing to dot notation

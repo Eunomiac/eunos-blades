@@ -21,13 +21,9 @@ export enum BladesItemType {
 	playbook = "playbook",
 	preferred_op = "preferred_op",
 	stricture = "stricture",
-	vice = "vice"
-}
-
-export enum BladesActorCategory {
-	vice_purveyor = "vice_purveyor",
-	acquaintance = "acquaintance",
-	rival = "rival"
+	vice = "vice",
+	ritual = "ritual",
+	design = "design" // includes questions, clock for creating or modifying a BladesItemType.item BladesItem
 }
 
 export enum District {
@@ -113,6 +109,7 @@ export enum Vice {
 	Worship = "Worship",
 	Life_Essence = "Life_Essence",
 	Electroplasmic_Power = "Electroplasmic_Power",
+	Servitude = "Servitude"
 }
 
 export enum Playbook {
@@ -131,22 +128,32 @@ export enum Playbook {
 	Cult = "Cult",
 	Hawkers = "Hawkers",
 	Shadows = "Shadows",
-	Smugglers = "Smugglers"
+	Smugglers = "Smugglers",
+	Vigilantes = "Vigilantes"
 }
 
-export enum Tag {
-	Archived = "Archived",
-	Fine = "Fine",
-	Featured = "Featured",
-	General = "General",
-	ViceOverride = "ViceOverride",
-	Advanced = "Advanced",
-	Hidden = "Hidden",
-	Acquaintance = "Acquaintance",
-	Friend = "Friend",
-	Rival = "Rival",
-	VicePurveyor = "VicePurveyor",
-	MultiplesOK = "MultiplesOK"
+export namespace Tag {
+	export enum System {
+		Archived = "Archived",
+		Featured = "Featured",
+		Hidden = "Hidden",
+		MultiplesOK = "MultiplesOK"
+	}
+	export enum Item {
+		Fine = "Fine",
+		General = "General",
+		Advanced = "Advanced",
+		ViceOverride = "ViceOverride"
+	}
+	export enum PC {
+		Member = "Member"
+	}
+	export enum NPC {
+		Acquaintance = "Acquaintance",
+		Friend = "Friend",
+		Rival = "Rival",
+		VicePurveyor = "VicePurveyor",
+	}
 }
 
 
@@ -3680,7 +3687,7 @@ export const IMPORTDATA = {
 		{
 			name: "Combination Harpsichord",
 			category: "Weird Scholarship",
-			desc: "TARNALI was a Whisper composer who built a special harpsichord. When two tones are played, often a third \"ghost'' tone can be heard. By attaching the tuning pegs to crystals and runes, Tarnali built a harpsichord that could interact with the Ghost Field through calculated progressions of played tones.",
+			desc: "TARNALI was a Whisper composer who built a special harpsichord. When two tones are played, often a third \"ghost\" tone can be heard. By attaching the tuning pegs to crystals and runes, Tarnali built a harpsichord that could interact with the Ghost Field through calculated progressions of played tones.",
 			narrative: "This effort is intensely interesting to those who want to find doors hidden in the Ghost Field, draw or repel what lurks Behind the Mirror, or develop more portable tonal energies for non-Whispers ."
 		},
 		{

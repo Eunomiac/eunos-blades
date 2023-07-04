@@ -23,37 +23,23 @@ class BladesActorSheet extends BladesSheet {
 	static Initialize() {
 		Actors.registerSheet("blades", BladesActorSheet, {types: ["pc"], makeDefault: true});
 		Hooks.on("dropActorSheetData", async (
-			actor: BladesActor,
+			parentActor: BladesActor,
 			sheet: BladesActorSheet,
 			{type, uuid}: {type: string, uuid: string}
 		) => {
-			// if (type === "Actor") {
-			// 	const droppedActorId = uuid.replace(/^Actor\./, "");
-			// 	const droppedActor = BladesActor.get(droppedActorId);
-			// 	if (!droppedActor) { return }
-			// 	switch (droppedActor.type) {
-			// 		case BladesActorType.crew {
-			// 			BladesActor.Embed(droppedActor, "pc-crew", actor);
-			// 			break;
-			// 		}
-			// 		case BladesActorType.npc {
-			// 			// Assume acquaintance UNLESS matches Vice Purveyor
-			// 			actor.vice_purveyors
-
-			// 			break;
-			// 		}
-			// 		case BladesActorType.pc {
-			// 			break;
-			// 		}
-			// 		// no default
-			// 	}
-			// 	return;
-			// }
-			if (type === "Item") {
-				const droppedItemId = uuid.replace(/^Item\./, "");
-				const droppedItem = BladesItem.Get(droppedItemId);
-				if (!droppedItem) { return }
-				BladesItem.create([droppedItem] as unknown as ItemDataConstructorData, {parent: actor});
+			const doc = await fromUuid(uuid) as BladesDoc|null;
+			if (doc instanceof BladesActor) {
+				if (parentActor.type === BladesActorType.crew && doc.type === BladesActorType.pc) {
+					// Dropping a PC onto a Crew Sheet: Create as Member
+					parentActor.addSubActor(doc, [Tag.PC.Member]);
+				} else if (parentActor.type === BladesActorType.pc && doc.type === BladesActorType.crew) {
+					// Dropping a Crew onto a PC Sheet: Add
+					parentActor.addSubActor(doc);
+				}
+			}
+			if (doc instanceof BladesItem) {
+				if (!doc) { return }
+				BladesItem.create(doc as {name: string, type: BladesItemType}, {parent: parentActor});
 				return;
 			}
 		});
@@ -91,9 +77,9 @@ class BladesActorSheet extends BladesSheet {
 
 		const actors = {
 			crew: this.actor.activeSubActors.find((actor) => actor.type === BladesActorType.crew),
-			vice_purveyor: this.actor.activeSubActors.find((actor) => actor.hasTag(Tag.VicePurveyor)),
-			friends: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.Friend)),
-			rivals: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.Rival))
+			vice_purveyor: this.actor.activeSubActors.find((actor) => actor.hasTag(Tag.NPC.VicePurveyor)),
+			friends: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Friend)),
+			rivals: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Rival))
 		};
 
 		//~ Assign dotlines to abilities with usage data

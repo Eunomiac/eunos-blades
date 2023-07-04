@@ -10,7 +10,15 @@ import U from "./core/utilities.js";
 export var PrereqType;
 (function (PrereqType) {
     PrereqType["HasActiveItem"] = "HasActiveItem";
+    PrereqType["HasActiveItemsByTag"] = "HasActiveItemByTag";
     PrereqType["AdvancedPlaybook"] = "AdvancedPlaybook";
+    PrereqType["HasAllTags"] = "HasAllTags";
+    PrereqType["HasAnyTag"] = "HasAnyTag";
+    PrereqType["Not_HasActiveItem"] = "Not_HasActiveItem";
+    PrereqType["Not_HasActiveItemsByTag"] = "Not_HasActiveItemsByTag";
+    PrereqType["Not_AdvancedPlaybook"] = "Not_AdvancedPlaybook";
+    PrereqType["Not_HasAllTags"] = "Not_HasAllTags";
+    PrereqType["Not_HasAnyTag"] = "Not_HasAnyTag";
 })(PrereqType || (PrereqType = {}));
 class BladesItem extends Item {
 
@@ -20,11 +28,10 @@ class BladesItem extends Item {
             return itemRef;
         }
         if (U.isDocID(itemRef)) {
-            return BladesItem.All.get(itemRef) || null;
+            return BladesItem.All.get(itemRef);
         }
         return BladesItem.All.find((a) => a.system.world_name === itemRef)
-            || BladesItem.All.find((a) => a.name === itemRef)
-            || null;
+            || BladesItem.All.find((a) => a.name === itemRef);
     }
     static GetTypeWithTags(docType, ...tags) {
         return BladesItem.All.filter((item) => item.type === docType)
@@ -55,14 +62,14 @@ class BladesItem extends Item {
         if (tooltipText) {
             return (new Handlebars.SafeString(tooltipText)).toString();
         }
-        return null;
+        return undefined;
     }
     async archive() {
-        await this.addTag(Tag.Archived);
+        await this.addTag(Tag.System.Archived);
         return this;
     }
     async unarchive() {
-        await this.remTag(Tag.Archived);
+        await this.remTag(Tag.System.Archived);
         return this;
     }
     get load() { return this.system.load ?? 0; }

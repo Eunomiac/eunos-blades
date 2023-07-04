@@ -169,7 +169,9 @@
 			"playbook",
 			"preferred_op",
 			"stricture",
-			"vice"
+			"vice",
+			"ritual",
+			"design"
 		],
 		"templates": {
 			"default": {
@@ -188,8 +190,7 @@
 			}
 		},
 		"ability": {
-			"templates": ["default", "customizable", "conditional"],
-			"keepAsGhost": false
+			"templates": ["default", "customizable", "conditional"]
 		},
 		"background": { "templates": ["default", "customizable"] },
 		"crew_ability": { "templates": ["default", "customizable", "conditional"] },
@@ -229,8 +230,39 @@
 				"selected": ""
 			}
 		},
-
-
+		"ritual": {
+			"templates": ["default", "customizable"],
+			"source": "",
+			"study_clock": {
+				"value": 0,
+				"min": 0,
+				"max": 8
+			},
+			"answers": {
+				"a": "",
+				"b": "",
+				"c": ""
+			},
+			"magnitude": 0,
+			"cast_time": "",
+			"action_roll": "",
+			"fortune_roll": false
+		},
+		"design": {
+			"templates": ["default", "customizable"],
+			"study_clock": {
+				"value": 0,
+				"min": 0,
+				"max": 8
+			},
+			"creation_type": "",
+			"answers": {
+				"a": "",
+				"c": ""
+			},
+			"min_quality": 0,
+			"drawbacks": []
+		},
 		"clock_keeper": {
 			"clock_keys": {}
 		},

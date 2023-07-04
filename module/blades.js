@@ -308,10 +308,10 @@ Object.assign(globalThis, {
     ProcessNPCs: async () => {
         BladesActor.GetTypeWithTags(BladesActorType.npc).forEach((actor) => {
             if (Object.keys(C.Playbooks).some((pBook) => actor.hasTag(pBook))) {
-                actor.addTag(Tag.Acquaintance);
+                actor.addTag(Tag.NPC.Acquaintance);
             }
             if (C.Vices.some((vice) => actor.hasTag(vice))) {
-                actor.addTag(Tag.VicePurveyor);
+                actor.addTag(Tag.NPC.VicePurveyor);
             }
         });
     },
@@ -326,16 +326,16 @@ Object.assign(globalThis, {
                     folderItems.forEach(async (item) => {
                         const tags = [];
                         if (folder.name === "Items" && /^Fine /.test(item.name ?? "")) {
-                            tags.push(Tag.Fine);
+                            tags.push(Tag.Item.Fine);
                         }
                         if (folder.name === "Abilities" && ["Battleborn", "Sharpshooter", "Alchemist", "Infiltrator", "Rook's Gambit", "Foresight", "Compel", "Ghost Form", "Automaton", "Undead"].includes(item.name ?? "")) {
-                            tags.push(Tag.Featured);
+                            tags.push(Tag.System.Featured);
                         }
                         if (folder.name === "Abilities" && [Playbook.Ghost, Playbook.Vampire, Playbook.Hull].some((aTag) => item.system.playbooks?.includes(aTag))) {
-                            tags.push(Tag.Advanced);
+                            tags.push(Tag.Item.Advanced);
                             await item.update({ ["system.prereqs.AdvancedPlaybook"]: true });
                         }
-                        tags.push(...(item.system.playbooks ?? []).map((tag) => (tag === "ANY" ? Tag.General : tag)));
+                        tags.push(...(item.system.playbooks ?? []).map((tag) => (tag === "ANY" ? Tag.Item.General : tag)));
                         item.addTag(...U.unique(tags));
                     });
                     break;
@@ -344,7 +344,7 @@ Object.assign(globalThis, {
                 case "Playbooks (Scoundrel)": {
                     folderItems.forEach((item) => {
                         if ([Playbook.Ghost, Playbook.Vampire, Playbook.Hull].includes(item.name)) {
-                            item.addTag(Tag.Advanced);
+                            item.addTag(Tag.Item.Advanced);
                         }
                     });
                     break;
@@ -353,10 +353,10 @@ Object.assign(globalThis, {
                     folderItems.forEach((item) => {
                         const tags = [];
                         if (["Electroplasmic Power", "Life Essence", "Worship"].includes(item.name ?? "")) {
-                            tags.push(Tag.Hidden);
+                            tags.push(Tag.System.Hidden);
                         }
                         if (["Electroplasmic Power", "Life Essence"].includes(item.name ?? "")) {
-                            tags.push(Tag.ViceOverride);
+                            tags.push(Tag.Item.ViceOverride);
                         }
                         item.addTag(...tags);
                     });

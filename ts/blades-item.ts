@@ -5,7 +5,16 @@ import BladesActor from "./blades-actor.js";
 
 export enum PrereqType {
 	HasActiveItem = "HasActiveItem", // Item will only appear in selector if character has Item with world_name (value)
-	AdvancedPlaybook = "AdvancedPlaybook" // Item will only appear in selector if character is a Ghost, Hull or Vampire
+	HasActiveItemsByTag = "HasActiveItemByTag", // For each Tag, character must have an active Item with that tag.
+	AdvancedPlaybook = "AdvancedPlaybook", // Item will only appear in selector if character is a Ghost, Hull or Vampire
+	HasAllTags = "HasAllTags", // Item will only appear if character has all matching tags.
+	HasAnyTag = "HasAnyTag", // Item will appear if character has any matching tag.
+
+	Not_HasActiveItem = "Not_HasActiveItem",
+	Not_HasActiveItemsByTag = "Not_HasActiveItemsByTag",
+	Not_AdvancedPlaybook = "Not_AdvancedPlaybook",
+	Not_HasAllTags = "Not_HasAllTags",
+	Not_HasAnyTag = "Not_HasAnyTag"
 }
 declare abstract class BladesItemDocument {
 	archive: () => Promise<BladesItem>;
@@ -20,12 +29,11 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
 
 	// #region BladesDocument Implementation
 	static get All() { return game.items }
-	static Get(itemRef: ItemRef): BladesItem|null {
+	static Get(itemRef: ItemRef): BladesItem|undefined {
 		if (itemRef instanceof BladesItem) { return itemRef }
-		if (U.isDocID(itemRef)) { return BladesItem.All.get(itemRef) || null }
+		if (U.isDocID(itemRef)) { return BladesItem.All.get(itemRef) }
 		return BladesItem.All.find((a) => a.system.world_name === itemRef)
-			|| BladesItem.All.find((a) => a.name === itemRef)
-			|| null;
+			|| BladesItem.All.find((a) => a.name === itemRef);
 	}
 	static GetTypeWithTags(docType: BladesItemType, ...tags: BladesTag[]): BladesItem[] {
 		return BladesItem.All.filter((item) => item.type === docType)
@@ -49,23 +57,23 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
 		this.update({"system.tags": curTags});
 	}
 
-	get tooltip(): string|null {
+	get tooltip(): string|undefined {
 		const tooltipText = [
 			this.system.rules
 		].find((str) => Boolean(str));
 		if (tooltipText) { return (new Handlebars.SafeString(tooltipText)).toString() }
-		return null;
+		return undefined;
 	}
 	// #endregion
 
 	// #region BladesItemDocument Implementation
 
 	async archive() {
-		await this.addTag(Tag.Archived);
+		await this.addTag(Tag.System.Archived);
 		return this;
 	}
 	async unarchive() {
-		await this.remTag(Tag.Archived);
+		await this.remTag(Tag.System.Archived);
 		return this;
 	}
 
@@ -80,12 +88,6 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
 
 		if (user.id !== game.user?.id) { return }
 		if (this.parent?.documentName !== "Actor") { return }
-
-		// if (["background", "heritage", "vice", "playbook", "crew_playbook", "crew_reputation"].includes(data.type)) {
-		// 	await this.parent.deleteEmbeddedDocuments("Item", this.parent.items
-		// 		.filter((item) => item.type === data.type)
-		// 		.map((item) => item.id ?? ""));
-		// }
 	}
 
 	override prepareData() {
@@ -318,7 +320,7 @@ declare interface BladesItem {
 		load?: number,
 		uses?: ValueMax,
 		keepAsGhost?: boolean,
-		prereqs?: Record<PrereqType,string>,
+		prereqs?: Record<PrereqType, boolean|string|string[]>,
 		additional_info?: string,
 		equipped?: false,
 		num_available?: number

@@ -42,13 +42,14 @@ class BladesSelectorDialog extends Dialog {
             "systems/eunos-blades/templates/dialog.hbs"
         ]);
     }
-    static async Display(parent, title, docType, tabs) {
+    static async Display(parent, title, docType, tabs, tags) {
         eLog.checkLog("BladesSelectorDialog.Display()", { parent, title, tabs });
         const app = new BladesSelectorDialog({
             parent,
             title,
             docType,
             tabs,
+            tags,
             "content": "",
             "buttons": {
                 cancel: {
@@ -63,12 +64,14 @@ class BladesSelectorDialog extends Dialog {
     }
     parent;
     tabs;
+    tags = [];
     docType;
     constructor(data, options) {
         super(data, options);
         this.docType = data.docType;
         this.parent = data.parent;
         this.tabs = data.tabs;
+        this.tags = data.tags ?? [];
     }
     getData() {
         const data = super.getData();
@@ -76,6 +79,7 @@ class BladesSelectorDialog extends Dialog {
         data.title = this.title;
         data.tabs = this.tabs;
         data.docType = this.docType;
+        data.tags = this.tags;
         eLog.checkLog("dialog", "[BladesDialog] return getData()", { ...data });
         return data;
     }
@@ -90,9 +94,9 @@ class BladesSelectorDialog extends Dialog {
             click: function () {
                 const docId = $(this).data("itemId");
                 const docType = $(this).data("docType");
-                eLog.checkLog("dialog", "[BladesDialog] on Click", { elem: this, docId, docType });
+                eLog.checkLog("dialog", "[BladesDialog] on Click", { elem: this, docId, docType, parent: self.parent });
                 if (docType === "Actor") {
-                    self.parent.addSubActor(docId);
+                    self.parent.addSubActor(docId, self.tags);
                 }
                 else if (docType === "Item") {
                     self.parent.addSubItem(docId);

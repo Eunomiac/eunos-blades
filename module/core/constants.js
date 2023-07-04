@@ -30,13 +30,9 @@ export var BladesItemType;
     BladesItemType["preferred_op"] = "preferred_op";
     BladesItemType["stricture"] = "stricture";
     BladesItemType["vice"] = "vice";
+    BladesItemType["ritual"] = "ritual";
+    BladesItemType["design"] = "design";
 })(BladesItemType || (BladesItemType = {}));
-export var BladesActorCategory;
-(function (BladesActorCategory) {
-    BladesActorCategory["vice_purveyor"] = "vice_purveyor";
-    BladesActorCategory["acquaintance"] = "acquaintance";
-    BladesActorCategory["rival"] = "rival";
-})(BladesActorCategory || (BladesActorCategory = {}));
 export var District;
 (function (District) {
     District["Barrowcleft"] = "Barrowcleft";
@@ -126,6 +122,7 @@ export var Vice;
     Vice["Worship"] = "Worship";
     Vice["Life_Essence"] = "Life_Essence";
     Vice["Electroplasmic_Power"] = "Electroplasmic_Power";
+    Vice["Servitude"] = "Servitude";
 })(Vice || (Vice = {}));
 export var Playbook;
 (function (Playbook) {
@@ -145,21 +142,35 @@ export var Playbook;
     Playbook["Hawkers"] = "Hawkers";
     Playbook["Shadows"] = "Shadows";
     Playbook["Smugglers"] = "Smugglers";
+    Playbook["Vigilantes"] = "Vigilantes";
 })(Playbook || (Playbook = {}));
 export var Tag;
 (function (Tag) {
-    Tag["Archived"] = "Archived";
-    Tag["Fine"] = "Fine";
-    Tag["Featured"] = "Featured";
-    Tag["General"] = "General";
-    Tag["ViceOverride"] = "ViceOverride";
-    Tag["Advanced"] = "Advanced";
-    Tag["Hidden"] = "Hidden";
-    Tag["Acquaintance"] = "Acquaintance";
-    Tag["Friend"] = "Friend";
-    Tag["Rival"] = "Rival";
-    Tag["VicePurveyor"] = "VicePurveyor";
-    Tag["MultiplesOK"] = "MultiplesOK";
+    let System;
+    (function (System) {
+        System["Archived"] = "Archived";
+        System["Featured"] = "Featured";
+        System["Hidden"] = "Hidden";
+        System["MultiplesOK"] = "MultiplesOK";
+    })(System = Tag.System || (Tag.System = {}));
+    let Item;
+    (function (Item) {
+        Item["Fine"] = "Fine";
+        Item["General"] = "General";
+        Item["Advanced"] = "Advanced";
+        Item["ViceOverride"] = "ViceOverride";
+    })(Item = Tag.Item || (Tag.Item = {}));
+    let PC;
+    (function (PC) {
+        PC["Member"] = "Member";
+    })(PC = Tag.PC || (Tag.PC = {}));
+    let NPC;
+    (function (NPC) {
+        NPC["Acquaintance"] = "Acquaintance";
+        NPC["Friend"] = "Friend";
+        NPC["Rival"] = "Rival";
+        NPC["VicePurveyor"] = "VicePurveyor";
+    })(NPC = Tag.NPC || (Tag.NPC = {}));
 })(Tag || (Tag = {}));
 const C = {
     SYSTEM_ID: "eunos-blades",
@@ -3679,7 +3690,7 @@ export const IMPORTDATA = {
         {
             name: "Combination Harpsichord",
             category: "Weird Scholarship",
-            desc: "TARNALI was a Whisper composer who built a special harpsichord. When two tones are played, often a third \"ghost'' tone can be heard. By attaching the tuning pegs to crystals and runes, Tarnali built a harpsichord that could interact with the Ghost Field through calculated progressions of played tones.",
+            desc: "TARNALI was a Whisper composer who built a special harpsichord. When two tones are played, often a third \"ghost\" tone can be heard. By attaching the tuning pegs to crystals and runes, Tarnali built a harpsichord that could interact with the Ghost Field through calculated progressions of played tones.",
             narrative: "This effort is intensely interesting to those who want to find doors hidden in the Ghost Field, draw or repel what lurks Behind the Mirror, or develop more portable tonal energies for non-Whispers ."
         },
         {

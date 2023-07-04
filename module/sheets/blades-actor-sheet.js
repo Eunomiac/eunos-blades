@@ -9,6 +9,7 @@ import C, { BladesActorType, BladesItemType, Tag } from "../core/constants.js";
 import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesItem from "../blades-item.js";
+import BladesActor from "../blades-actor.js";
 class BladesActorSheet extends BladesSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -21,15 +22,21 @@ class BladesActorSheet extends BladesSheet {
     }
     static Initialize() {
         Actors.registerSheet("blades", BladesActorSheet, { types: ["pc"], makeDefault: true });
-        Hooks.on("dropActorSheetData", async (actor, sheet, { type, uuid }) => {
-            
-            if (type === "Item") {
-                const droppedItemId = uuid.replace(/^Item\./, "");
-                const droppedItem = BladesItem.Get(droppedItemId);
-                if (!droppedItem) {
+        Hooks.on("dropActorSheetData", async (parentActor, sheet, { type, uuid }) => {
+            const doc = await fromUuid(uuid);
+            if (doc instanceof BladesActor) {
+                if (parentActor.type === BladesActorType.crew && doc.type === BladesActorType.pc) {
+                    parentActor.addSubActor(doc, [Tag.PC.Member]);
+                }
+                else if (parentActor.type === BladesActorType.pc && doc.type === BladesActorType.crew) {
+                    parentActor.addSubActor(doc);
+                }
+            }
+            if (doc instanceof BladesItem) {
+                if (!doc) {
                     return;
                 }
-                BladesItem.create([droppedItem], { parent: actor });
+                BladesItem.create(doc, { parent: parentActor });
                 return;
             }
         });
@@ -62,9 +69,9 @@ class BladesActorSheet extends BladesSheet {
         };
         const actors = {
             crew: this.actor.activeSubActors.find((actor) => actor.type === BladesActorType.crew),
-            vice_purveyor: this.actor.activeSubActors.find((actor) => actor.hasTag(Tag.VicePurveyor)),
-            friends: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.Friend)),
-            rivals: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.Rival))
+            vice_purveyor: this.actor.activeSubActors.find((actor) => actor.hasTag(Tag.NPC.VicePurveyor)),
+            friends: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Friend)),
+            rivals: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Rival))
         };
 
         items.abilities = items.abilities.map((item) => {

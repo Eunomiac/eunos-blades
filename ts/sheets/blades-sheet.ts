@@ -1,3 +1,5 @@
+// #region IMPORTS~
+
 import U from "../core/utilities.js";
 import G from "../core/gsap.js";
 import {Tag, District, Playbook, Vice} from "../core/constants.js";
@@ -8,16 +10,22 @@ import BladesItem from "../blades-item.js";
 import BladesSelectorDialog, {SelectionCategory} from "../blades-dialog.js";
 import BladesActiveEffect from "../blades-active-effect.js";
 
+// #endregion
+// #region TYPES: BladesCompData ~
 type BladesCompData = {
   elem$: JQuery<HTMLElement>;
   docID?: string;
   docCat?: SelectionCategory;
   docType?: "Actor" | "Item";
+	docTags?: BladesTag[];
   doc?: BladesActor | BladesItem | false;
   dialogDocs?: Record<string, BladesActor[] | BladesItem[]> | false;
 };
+// #endregion
 
 class BladesSheet extends ActorSheet {
+
+
 	override async getData() {
 		const context = (await super.getData()) as BladesSheet.Data &
       Record<string, any>;
@@ -176,9 +184,21 @@ class BladesSheet extends ActorSheet {
 				enforceWhitelist: true,
 				editTags: false,
 				whitelist: [
-					...Object.values(Tag).map((tag) => ({
+					...Object.values(Tag.System).map((tag) => ({
 						"value": tag,
-						"data-group": "Tags"
+						"data-group": "System Tags"
+					})),
+					...Object.values(Tag.Item).map((tag) => ({
+						"value": tag,
+						"data-group": "Item Tags"
+					})),
+					...Object.values(Tag.PC).map((tag) => ({
+						"value": tag,
+						"data-group": "Actor Tags"
+					})),
+					...Object.values(Tag.NPC).map((tag) => ({
+						"value": tag,
+						"data-group": "Actor Tags"
 					})),
 					...Object.values(District).map((tag) => ({
 						"value": tag,
@@ -242,8 +262,14 @@ class BladesSheet extends ActorSheet {
 			// Add existing tags to tagify element
 			tagify.addTags(
 				this.actor.tags.map((tag: BladesTag) => {
-					if (Object.values(Tag).includes(tag as Tag)) {
-						return {"value": tag, "data-group": "Tags"};
+					if (Object.values(Tag.System).includes(tag as Tag.System)) {
+						return {"value": tag, "data-group": "System Tags"};
+					}
+					if (Object.values(Tag.Item).includes(tag as Tag.Item)) {
+						return {"value": tag, "data-group": "Item Tags"};
+					}
+					if (Object.values(Tag.PC).includes(tag as Tag.PC) || Object.values(Tag.NPC).includes(tag as Tag.NPC)) {
+						return {"value": tag, "data-group": "Actor Tags"};
 					}
 					if (Object.values(District).includes(tag as District)) {
 						return {"value": tag, "data-group": "Districts"};
@@ -269,7 +295,7 @@ class BladesSheet extends ActorSheet {
 		}
 	}
 
-	// #region Clock Handlers
+	// #region Clock Handlers ~
 	async _onClockLeftClick(event: ClickEvent) {
 		event.preventDefault();
 		const clock$ = $(event.currentTarget).find(".clock[data-target]");
@@ -319,7 +345,8 @@ class BladesSheet extends ActorSheet {
 			elem$,
 			docID: elem$.data("compId"),
 			docCat: elem$.data("compCat"),
-			docType: elem$.data("compType")
+			docType: elem$.data("compType"),
+			docTags: (elem$.data("compTags") ?? "").split(/\s+/g)
 		};
 
 		if (compData.docID && compData.docType) {
@@ -350,7 +377,7 @@ class BladesSheet extends ActorSheet {
 
 	async _onItemAddClick(event: ClickEvent) {
 		event.preventDefault();
-		const {docCat, docType, dialogDocs} = this._getCompData(event);
+		const {docCat, docType, dialogDocs, docTags} = this._getCompData(event);
 		eLog.checkLog("_onItemAddClick", {docCat, dialogDocs});
 		if (!dialogDocs || !docCat || !docType) {
 			return;
@@ -359,7 +386,8 @@ class BladesSheet extends ActorSheet {
 			this.actor,
 			U.tCase(`Add ${docCat.replace(/_/g, " ")}`),
 			docType,
-			dialogDocs
+			dialogDocs,
+			docTags
 		);
 	}
 
@@ -369,7 +397,7 @@ class BladesSheet extends ActorSheet {
 		if (!doc) {
 			return;
 		}
-		G.effects.blurRemove(elem$).then(() => doc.addTag(Tag.Archived));
+		G.effects.blurRemove(elem$).then(() => doc.addTag(Tag.System.Archived));
 	}
 
 	async _onItemFullRemoveClick(event: ClickEvent) {

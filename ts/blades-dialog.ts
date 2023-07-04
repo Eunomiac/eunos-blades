@@ -47,7 +47,8 @@ class BladesSelectorDialog extends Dialog {
 		parent: BladesActor,
 		title: string,
 		docType: "Actor"|"Item",
-		tabs: Record<string, BladesActor[]|BladesItem[]>
+		tabs: Record<string, BladesActor[]|BladesItem[]>,
+		tags?: BladesTag[]
 	) {
 		eLog.checkLog("BladesSelectorDialog.Display()", {parent, title, tabs});
 		const app = new BladesSelectorDialog({
@@ -55,6 +56,7 @@ class BladesSelectorDialog extends Dialog {
 			title,
 			docType,
 			tabs,
+			tags,
 			"content": "",
 			"buttons": {
 				cancel: {
@@ -71,6 +73,7 @@ class BladesSelectorDialog extends Dialog {
 
 	parent: BladesActor;
 	tabs: Record<string, BladesActor[]|BladesItem[]>;
+	tags: BladesTag[] = [];
 	docType: "Actor"|"Item";
 
 	constructor(data: BladesDialog.Data, options?: Partial<BladesDialog.Options>) {
@@ -78,6 +81,7 @@ class BladesSelectorDialog extends Dialog {
 		this.docType = data.docType;
 		this.parent = data.parent;
 		this.tabs = data.tabs;
+		this.tags = data.tags ?? [];
 	}
 
 	override getData() {
@@ -86,6 +90,7 @@ class BladesSelectorDialog extends Dialog {
 		data.title = this.title;
 		data.tabs = this.tabs;
 		data.docType = this.docType;
+		data.tags = this.tags;
 
 		eLog.checkLog("dialog", "[BladesDialog] return getData()", {...data});
 		return data;
@@ -104,9 +109,9 @@ class BladesSelectorDialog extends Dialog {
 				click: function() {
 					const docId = $(this).data("itemId");
 					const docType = $(this).data("docType");
-					eLog.checkLog("dialog", "[BladesDialog] on Click", {elem: this, docId, docType});
+					eLog.checkLog("dialog", "[BladesDialog] on Click", {elem: this, docId, docType, parent: self.parent});
 					if (docType === "Actor") {
-						self.parent.addSubActor(docId);
+						self.parent.addSubActor(docId, self.tags);
 					} else if (docType === "Item") {
 						self.parent.addSubItem(docId);
 					}

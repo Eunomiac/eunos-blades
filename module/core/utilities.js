@@ -1020,7 +1020,11 @@ const escapeHTML = (str) => (typeof str === "string"
     : str);
 
 const sleep = (duration) => new Promise((resolve) => { setTimeout(resolve, duration >= 100 ? duration : duration * 1000); });
-const isDocID = (docRef) => { return typeof docRef === "string" && /^[A-Za-z0-9]{16}$/.test(docRef); };
+const isDocID = (docRef, isUUIDok = true) => {
+    return typeof docRef === "string" && (isUUIDok
+        ? /^(.*\.)?[A-Za-z0-9]{16}$/.test(docRef)
+        : /^[A-Za-z0-9]{16}$/.test(docRef));
+};
 const loc = (locRef, formatDict = {}) => {
     if (/[a-z]/.test(locRef)) {
         locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}\.)*`), `${C.SYSTEM_ID}.`);

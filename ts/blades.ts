@@ -335,10 +335,10 @@ registerDebugger();
 		ProcessNPCs: async () => {
 			BladesActor.GetTypeWithTags(BladesActorType.npc).forEach((actor) => {
 				if (Object.keys(C.Playbooks).some((pBook) => actor.hasTag(pBook as Playbook))) {
-					actor.addTag(Tag.Acquaintance);
+					actor.addTag(Tag.NPC.Acquaintance);
 				}
 				if (C.Vices.some((vice) => actor.hasTag(vice as BladesTag))) {
-					actor.addTag(Tag.VicePurveyor);
+					actor.addTag(Tag.NPC.VicePurveyor);
 				}
 			});
 		},
@@ -352,13 +352,13 @@ registerDebugger();
 					case "Crew Upgrades": {
 						folderItems.forEach(async (item) => {
 							const tags: BladesTag[] = [];
-							if (folder.name === "Items" && /^Fine /.test(item.name ?? "")) { tags.push(Tag.Fine) }
-							if (folder.name === "Abilities" && ["Battleborn", "Sharpshooter", "Alchemist", "Infiltrator", "Rook's Gambit", "Foresight", "Compel", "Ghost Form", "Automaton", "Undead"].includes(item.name ?? "")) { tags.push(Tag.Featured) }
+							if (folder.name === "Items" && /^Fine /.test(item.name ?? "")) { tags.push(Tag.Item.Fine) }
+							if (folder.name === "Abilities" && ["Battleborn", "Sharpshooter", "Alchemist", "Infiltrator", "Rook's Gambit", "Foresight", "Compel", "Ghost Form", "Automaton", "Undead"].includes(item.name ?? "")) { tags.push(Tag.System.Featured) }
 							if (folder.name === "Abilities" && [Playbook.Ghost, Playbook.Vampire, Playbook.Hull].some((aTag) => item.system.playbooks?.includes(aTag))) {
-								tags.push(Tag.Advanced);
+								tags.push(Tag.Item.Advanced);
 								await item.update({["system.prereqs.AdvancedPlaybook"]: true});
 							}
-							tags.push(...(item.system.playbooks ?? []).map((tag) => (tag === "ANY" ? Tag.General : tag) as BladesTag));
+							tags.push(...(item.system.playbooks ?? []).map((tag) => (tag === "ANY" ? Tag.Item.General : tag) as BladesTag));
 							item.addTag(...U.unique(tags));
 						});
 						break;
@@ -367,7 +367,7 @@ registerDebugger();
 					case "Playbooks (Scoundrel)": {
 						folderItems.forEach((item) => {
 							if ([Playbook.Ghost, Playbook.Vampire, Playbook.Hull].includes(item.name as Playbook)) {
-								item.addTag(Tag.Advanced);
+								item.addTag(Tag.Item.Advanced);
 							}
 						});
 						break;
@@ -375,8 +375,8 @@ registerDebugger();
 					case "Vices": {
 						folderItems.forEach((item) => {
 							const tags: BladesTag[] = [];
-							if (["Electroplasmic Power", "Life Essence", "Worship"].includes(item.name ?? "")) { tags.push(Tag.Hidden) }
-							if (["Electroplasmic Power", "Life Essence"].includes(item.name ?? "")) { tags.push(Tag.ViceOverride) }
+							if (["Electroplasmic Power", "Life Essence", "Worship"].includes(item.name ?? "")) { tags.push(Tag.System.Hidden) }
+							if (["Electroplasmic Power", "Life Essence"].includes(item.name ?? "")) { tags.push(Tag.Item.ViceOverride) }
 							item.addTag(...tags);
 						});
 						break;

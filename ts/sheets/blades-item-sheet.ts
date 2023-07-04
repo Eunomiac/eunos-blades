@@ -54,9 +54,21 @@ class BladesItemSheet extends ItemSheet {
 				enforceWhitelist: true,
 				editTags: false,
 				whitelist: [
-					...Object.values(Tag).map((tag) => ({
+					...Object.values(Tag.System).map((tag) => ({
 						"value": tag,
-						"data-group": "Tags"
+						"data-group": "System Tags"
+					})),
+					...Object.values(Tag.Item).map((tag) => ({
+						"value": tag,
+						"data-group": "Item Tags"
+					})),
+					...Object.values(Tag.PC).map((tag) => ({
+						"value": tag,
+						"data-group": "Actor Tags"
+					})),
+					...Object.values(Tag.NPC).map((tag) => ({
+						"value": tag,
+						"data-group": "Actor Tags"
 					})),
 					...Object.values(District).map((tag) => ({
 						"value": tag,
@@ -105,7 +117,7 @@ class BladesItemSheet extends ItemSheet {
 						}
 
 						suggestion.value
-              = value && typeof value === "string" ? U.escapeHTML(value) : value;
+              = value && typeof value === "string" ? U.escapeHTML(value.replace(/_/g, " ")) : value;
 
 						tagHTMLString += tagify.settings.templates.dropdownItem.apply(
 							tagify,
@@ -120,8 +132,14 @@ class BladesItemSheet extends ItemSheet {
 			// Add existing tags to tagify element
 			tagify.addTags(
 				this.item.tags.map((tag: BladesTag) => {
-					if (Object.values(Tag).includes(tag as Tag)) {
-						return {"value": tag, "data-group": "Tags"};
+					if (Object.values(Tag.System).includes(tag as Tag.System)) {
+						return {"value": tag, "data-group": "System Tags"};
+					}
+					if (Object.values(Tag.Item).includes(tag as Tag.Item)) {
+						return {"value": tag, "data-group": "Item Tags"};
+					}
+					if (Object.values(Tag.PC).includes(tag as Tag.PC) || Object.values(Tag.NPC).includes(tag as Tag.NPC)) {
+						return {"value": tag, "data-group": "Actor Tags"};
 					}
 					if (Object.values(District).includes(tag as District)) {
 						return {"value": tag, "data-group": "Districts"};

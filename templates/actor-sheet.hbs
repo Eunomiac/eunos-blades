@@ -227,7 +227,7 @@
 
 				{{!-- Acquaintances Tab --}}
 				<div class="tab acquaintances flex-vertical" data-tab="acquaintances">
-					<label class="comp tab-label" data-comp-cat="Acquaintance" data-comp-type="Actor">
+					<label class="comp tab-label" data-comp-cat="Friend" data-comp-type="Actor" data-comp-tags="Friend">
 						<a class="comp-control comp-button comp-add">
 							<i class="fas fa-plus-square"></i>
 						</a>
@@ -243,7 +243,7 @@
 						remButton=true
 						addButton=true
 						}}
-						{{#each actors.acquaintances as |actor|}}
+						{{#each actors.friends as |actor|}}
 						{{> "systems/eunos-blades/templates/components/portrait.hbs" actor
 						cat = "Friend"
 						docType = "Actor"
@@ -263,7 +263,7 @@
 						{{/unless}}
 					</div>
 					{{#if rivalsName}}
-					<label class="comp tab-label" data-comp-cat="Acquaintance" data-comp-type="Actor">
+					<label class="comp tab-label" data-comp-cat="Rival" data-comp-type="Actor" data-comp-tags="Rival">
 						<a class="comp-control comp-button comp-add">
 							<i class="fas fa-plus-square"></i>
 						</a>

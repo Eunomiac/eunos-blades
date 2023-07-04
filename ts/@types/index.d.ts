@@ -49,7 +49,10 @@ declare global {
 	type BladesTag = Vice
 		| Playbook
 		| District
-		| Tag;
+		| Tag.System
+		| Tag.Item
+		| Tag.NPC
+		| Tag.PC;
 
 	namespace BladesActor {
 		export type ID = string;
@@ -61,7 +64,7 @@ declare global {
 		}
 
 		interface SubActorData {
-			uuid: string,
+			id: string,
 			system: Partial<BladesActor["system"]>
 		}
 	}
@@ -76,7 +79,7 @@ declare global {
 	declare abstract class BladesDocument<T extends Actor | Item> {
 
 		static get All(): T extends Actor ? BladesActor[] : BladesItem[];
-		static Get(docRef: DocRef): (T extends Actor ? BladesActor[] : BladesItem[]) | null;
+		static Get(docRef: DocRef): (T extends Actor ? BladesActor[] : BladesItem[]) | undefined;
 		static GetTypeWithTags(type: BladesActorType | BladesItemType, ...tags: BladesTag[]): T extends Actor ? BladesActor[] : BladesItem[];
 
 		tags: BladesTag[];
@@ -84,7 +87,7 @@ declare global {
 		addTag(...tags: BladesTag[]): Promise<void>
 		remTag(...tags: BladesTag[]): Promise<void>
 
-		tooltip: string | null;
+		tooltip?: string;
 
 		dialogCSSClasses?: string;
 	}
@@ -139,6 +142,7 @@ declare global {
 			parent: BladesActor;
 			docType: "Actor"|"Item";
 			tabs: Record<string, BladesActor[] | BladesItem[]>;
+			tags?: BladesTag[];
 		}
 	}
 

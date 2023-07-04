@@ -5,6 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+
 import U from "../core/utilities.js";
 import G from "../core/gsap.js";
 import { Tag, District, Playbook, Vice } from "../core/constants.js";
@@ -139,9 +140,21 @@ class BladesSheet extends ActorSheet {
                 enforceWhitelist: true,
                 editTags: false,
                 whitelist: [
-                    ...Object.values(Tag).map((tag) => ({
+                    ...Object.values(Tag.System).map((tag) => ({
                         "value": tag,
-                        "data-group": "Tags"
+                        "data-group": "System Tags"
+                    })),
+                    ...Object.values(Tag.Item).map((tag) => ({
+                        "value": tag,
+                        "data-group": "Item Tags"
+                    })),
+                    ...Object.values(Tag.PC).map((tag) => ({
+                        "value": tag,
+                        "data-group": "Actor Tags"
+                    })),
+                    ...Object.values(Tag.NPC).map((tag) => ({
+                        "value": tag,
+                        "data-group": "Actor Tags"
                     })),
                     ...Object.values(District).map((tag) => ({
                         "value": tag,
@@ -187,8 +200,14 @@ class BladesSheet extends ActorSheet {
                     .join("");
             };
             tagify.addTags(this.actor.tags.map((tag) => {
-                if (Object.values(Tag).includes(tag)) {
-                    return { "value": tag, "data-group": "Tags" };
+                if (Object.values(Tag.System).includes(tag)) {
+                    return { "value": tag, "data-group": "System Tags" };
+                }
+                if (Object.values(Tag.Item).includes(tag)) {
+                    return { "value": tag, "data-group": "Item Tags" };
+                }
+                if (Object.values(Tag.PC).includes(tag) || Object.values(Tag.NPC).includes(tag)) {
+                    return { "value": tag, "data-group": "Actor Tags" };
                 }
                 if (Object.values(District).includes(tag)) {
                     return { "value": tag, "data-group": "Districts" };
@@ -250,7 +269,8 @@ class BladesSheet extends ActorSheet {
             elem$,
             docID: elem$.data("compId"),
             docCat: elem$.data("compCat"),
-            docType: elem$.data("compType")
+            docType: elem$.data("compType"),
+            docTags: (elem$.data("compTags") ?? "").split(/\s+/g)
         };
         if (compData.docID && compData.docType) {
             compData.doc = {
@@ -277,12 +297,12 @@ class BladesSheet extends ActorSheet {
     }
     async _onItemAddClick(event) {
         event.preventDefault();
-        const { docCat, docType, dialogDocs } = this._getCompData(event);
+        const { docCat, docType, dialogDocs, docTags } = this._getCompData(event);
         eLog.checkLog("_onItemAddClick", { docCat, dialogDocs });
         if (!dialogDocs || !docCat || !docType) {
             return;
         }
-        await BladesSelectorDialog.Display(this.actor, U.tCase(`Add ${docCat.replace(/_/g, " ")}`), docType, dialogDocs);
+        await BladesSelectorDialog.Display(this.actor, U.tCase(`Add ${docCat.replace(/_/g, " ")}`), docType, dialogDocs, docTags);
     }
     async _onItemRemoveClick(event) {
         event.preventDefault();
@@ -290,7 +310,7 @@ class BladesSheet extends ActorSheet {
         if (!doc) {
             return;
         }
-        G.effects.blurRemove(elem$).then(() => doc.addTag(Tag.Archived));
+        G.effects.blurRemove(elem$).then(() => doc.addTag(Tag.System.Archived));
     }
     async _onItemFullRemoveClick(event) {
         event.preventDefault();

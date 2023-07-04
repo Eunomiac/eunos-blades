@@ -18,11 +18,10 @@ class BladesActor extends Actor {
             return actorRef;
         }
         if (U.isDocID(actorRef)) {
-            return BladesActor.All.get(actorRef) || null;
+            return BladesActor.All.get(actorRef);
         }
         return BladesActor.All.find((a) => a.system.world_name === actorRef)
-            || BladesActor.All.find((a) => a.name === actorRef)
-            || null;
+            || BladesActor.All.find((a) => a.name === actorRef);
     }
     static GetTypeWithTags(docType, ...tags) {
         return BladesActor.All.filter((actor) => actor.type === docType)
@@ -51,19 +50,20 @@ class BladesActor extends Actor {
             this.system.concept,
             this.system.description_short
         ].find((str) => Boolean(str));
-        if (tooltipText) {
-            return (new Handlebars.SafeString(tooltipText)).toString();
-        }
-        return null;
+        return tooltipText ? (new Handlebars.SafeString(tooltipText)).toString() : undefined;
     }
-
+    get primaryUser() {
+        return game.users.find((user) => user.character?.id === this?.id);
+    }
+    parentActor;
+    isSubActor;
     get subActors() {
         return Object.keys(this.system.subactors)
-            .map((uuid) => this.getSubActor(uuid))
+            .map((id) => this.getSubActor(id))
             .filter((subActor) => Boolean(subActor));
     }
-    get activeSubActors() { return this.subActors.filter((subActor) => !subActor.hasTag(Tag.Archived)); }
-    get archivedSubActors() { return this.subActors.filter((subActor) => subActor.hasTag(Tag.Archived)); }
+    get activeSubActors() { return this.subActors.filter((subActor) => !subActor.hasTag(Tag.System.Archived)); }
+    get archivedSubActors() { return this.subActors.filter((subActor) => subActor.hasTag(Tag.System.Archived)); }
     checkActorPrereqs(actor) {
                 
         return true;
@@ -95,6 +95,8 @@ class BladesActor extends Actor {
                 
         const dialogData = {};
         switch (category) {
+            case SelectionCategory.Rival:
+            case SelectionCategory.Friend:
             case SelectionCategory.Acquaintance: {
                 if (this.playbookName === null) {
                     return false;
@@ -117,75 +119,131 @@ class BladesActor extends Actor {
         }
     }
     getSubActor(actorRef) {
-        const globalActor = BladesActor.Get(actorRef);
-        if (globalActor === null) {
+        const actor = BladesActor.Get(actorRef);
+        if (!actor?.id) {
+            return undefined;
+        }
+        const subActorData = this.system.subactors[actor.id] ?? {};
+        actor.system = mergeObject(actor.system, subActorData.system ?? {});
+        actor.isSubActor = true;
+        if (!this.primaryUser?.id) {
+            return undefined;
+        }
+        actor.ownership[this.primaryUser.id] = 3;
+        actor.parentActor = this;
+        return actor;
+    }
+    hasSubActorOf(actorRef) {
+        const actor = BladesActor.Get(actorRef);
+        if (!actor) {
             return false;
         }
-        if (globalActor.uuid in this.system.subactors) {
-            const subActorData = this.system.subactors[globalActor.uuid];
-            globalActor.system = mergeObject(globalActor.system, subActorData.system);
-            return globalActor;
-        }
-        return false;
+        return (actor?.id ?? "") in this.system.subactors;
     }
     async addSubActor(actorRef, tags) {
-        const globalActor = BladesActor.Get(actorRef);
-        if (globalActor === null) {
+        const actor = BladesActor.Get(actorRef);
+        eLog.checkLog3("subactors", "[addSubActor(actorRef, tags?)]", { actorRef, actor, tags });
+        if (!actor?.id) {
             return;
         }
-        const subActor = this.getSubActor(actorRef);
-        if (subActor) {
-            if (!subActor.hasTag(Tag.Archived)) {
+        if (this.hasSubActorOf(actor)) {
+            const subActor = this.getSubActor(actorRef);
+            if (!subActor) {
                 return;
             }
-            subActor.remTag(Tag.Archived);
+            eLog.checkLog3("subactors", "[addSubActor()] subActor", { subActor });
+            if (!subActor.hasTag(Tag.System.Archived)) {
+                return;
+            }
+            await subActor.remTag(Tag.System.Archived);
         }
         else {
             const subActorData = {
-                uuid: globalActor.uuid,
+                id: actor.id,
                 system: {}
             };
             if (tags) {
                 subActorData.system.tags = U.unique([
-                    ...globalActor.tags,
+                    ...actor.tags,
                     ...tags
                 ]);
             }
-            this.update({ [`system.subactors.${globalActor.uuid}`]: subActorData });
+            eLog.checkLog3("subactors", "[addSubActor()] subActorData (before update)", subActorData);
+            this.update({ [`system.subactors.${actor.id}`]: subActorData });
         }
     }
+    async updateSubActor(actorRef, updateData) {
+        const actor = BladesActor.Get(actorRef);
+        if (!actor) {
+            return undefined;
+        }
+        const curData = this.system.subactors[actor.id] ?? {};
+        const mergedData = mergeObject(curData, updateData);
+        return this.update({ [`system.subactors.${actor.id}`]: mergedData });
+    }
     async remSubActor(actorRef) {
-        const subActor = this.getSubActor(actorRef);
-        if (!subActor || subActor.hasTag(Tag.Archived)) {
+        const actor = BladesActor.Get(actorRef);
+        if (!actor) {
             return;
         }
-        subActor.addTag(Tag.Archived);
+        if (!this.hasSubActorOf(actor)) {
+            return;
+        }
+        const subActor = this.getSubActor(actor);
+        if (!subActor || subActor.hasTag(Tag.System.Archived)) {
+            return;
+        }
+        subActor.addTag(Tag.System.Archived);
     }
     async purgeSubActor(actorRef) {
         const subActor = this.getSubActor(actorRef);
         if (!subActor) {
             return;
         }
-        this.update({ ["system.subactors"]: mergeObject(this.system.subactors, { [`-=${subActor.uuid}`]: null }) });
+        this.update({ ["system.subactors"]: mergeObject(this.system.subactors, { [`-=${subActor.id}`]: null }) });
     }
 
-    get activeSubItems() { return this.items.filter((item) => !item.hasTag(Tag.Archived)); }
-    get archivedSubItems() { return this.items.filter((item) => item.hasTag(Tag.Archived)); }
+    get activeSubItems() { return this.items.filter((item) => !item.hasTag(Tag.System.Archived)); }
+    get archivedSubItems() { return this.items.filter((item) => item.hasTag(Tag.System.Archived)); }
     _checkItemPrereqs(item) {
         if (!item.system.prereqs) {
             return true;
         }
-        for (const [pType, pString] of Object.entries(item.system.prereqs)) {
-            switch (pType) {
-                case PrereqType.HasActiveItem: {
-                    if (!this.activeSubItems.find((item) => item.system.world_name === pString)) {
-                        return false;
+        for (let [pType, pReqs] of Object.entries(item.system.prereqs)) {
+            pReqs = Array.isArray(pReqs) ? pReqs : [pReqs.toString()];
+            const hitRecord = {};
+            while (pReqs.length) {
+                const pString = pReqs.pop();
+                hitRecord[pType] ??= [];
+                switch (pType) {
+                    case PrereqType.HasActiveItem: {
+                        const thisItem = this.activeSubItems
+                            .filter((item) => !hitRecord[pType]?.includes(item.id))
+                            .find((item) => item.system.world_name === pString);
+                        if (thisItem) {
+                            hitRecord[pType].push(thisItem.id);
+                        }
+                        else {
+                            return false;
+                        }
+                        break;
                     }
-                    break;
-                }
-                case PrereqType.AdvancedPlaybook: {
-                    if (!this.playbookName || ![Playbook.Ghost, Playbook.Hull, Playbook.Vampire].includes(this.playbookName)) {
-                        return false;
+                    case PrereqType.HasActiveItemsByTag: {
+                        const thisItem = this.activeSubItems
+                            .filter((item) => !hitRecord[pType]?.includes(item.id))
+                            .find((item) => item.hasTag(pString));
+                        if (thisItem) {
+                            hitRecord[pType].push(thisItem.id);
+                        }
+                        else {
+                            return false;
+                        }
+                        break;
+                    }
+                    case PrereqType.AdvancedPlaybook: {
+                        if (!this.playbookName || ![Playbook.Ghost, Playbook.Hull, Playbook.Vampire].includes(this.playbookName)) {
+                            return false;
+                        }
                     }
                 }
             }
@@ -214,10 +272,10 @@ class BladesActor extends Actor {
             if (sItem.isEmbedded) {
                 cssClasses.push("embedded");
             }
-            if (sItem.hasTag(Tag.Fine)) {
+            if (sItem.hasTag(Tag.Item.Fine)) {
                 cssClasses.push("fine-quality");
             }
-            if (sItem.hasTag(Tag.Featured)) {
+            if (sItem.hasTag(Tag.System.Featured)) {
                 cssClasses.push("featured-item");
             }
             if (cssClasses.length > 0) {
@@ -226,16 +284,16 @@ class BladesActor extends Actor {
             return sItem;
         })
             .sort((a, b) => {
-            if (a.hasTag(Tag.Featured) && !b.hasTag(Tag.Featured)) {
+            if (a.hasTag(Tag.System.Featured) && !b.hasTag(Tag.System.Featured)) {
                 return -1;
             }
-            if (!a.hasTag(Tag.Featured) && b.hasTag(Tag.Featured)) {
+            if (!a.hasTag(Tag.System.Featured) && b.hasTag(Tag.System.Featured)) {
                 return 1;
             }
-            if (a.hasTag(Tag.Fine) && !b.hasTag(Tag.Fine)) {
+            if (a.hasTag(Tag.Item.Fine) && !b.hasTag(Tag.Item.Fine)) {
                 return -1;
             }
-            if (!a.hasTag(Tag.Fine) && b.hasTag(Tag.Fine)) {
+            if (!a.hasTag(Tag.Item.Fine) && b.hasTag(Tag.Item.Fine)) {
                 return 1;
             }
             if (a.system.world_name > b.system.world_name) {
@@ -283,7 +341,7 @@ class BladesActor extends Actor {
                 if (this.playbookName === null) {
                     return false;
                 }
-                if (this.vices.some((item) => item.hasTag(Tag.ViceOverride))) {
+                if (this.vices.some((item) => item.hasTag(Tag.Item.ViceOverride))) {
                     return false;
                 }
                 dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.vice, this.playbookName));
@@ -292,8 +350,8 @@ class BladesActor extends Actor {
             case SelectionCategory.Playbook: {
                 switch (this.type) {
                     case BladesActorType.pc: {
-                        dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook).filter((item) => !item.hasTag(Tag.Advanced)));
-                        dialogData.Advanced = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Advanced));
+                        dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook).filter((item) => !item.hasTag(Tag.Item.Advanced)));
+                        dialogData.Advanced = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Item.Advanced));
                         return dialogData;
                     }
                     case BladesActorType.crew: {
@@ -317,12 +375,12 @@ class BladesActor extends Actor {
                 }
                 const gearItems = this._processEmbeddedItemMatches([
                     ...BladesItem.GetTypeWithTags(BladesItemType.item, this.playbookName),
-                    ...BladesItem.GetTypeWithTags(BladesItemType.item, Tag.General)
+                    ...BladesItem.GetTypeWithTags(BladesItemType.item, Tag.Item.General)
                 ])
                     .filter((item) => this.remainingLoad >= item.load);
                 dialogData[this.playbookName] = gearItems.filter((item) => item.hasTag(this.playbookName));
                 dialogData.General = gearItems
-                    .filter((item) => item.hasTag(Tag.General))
+                    .filter((item) => item.hasTag(Tag.Item.General))
                     .map((item) => {
                     if (item.dialogCSSClasses) {
                         item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
@@ -374,27 +432,51 @@ class BladesActor extends Actor {
     }
     getSubItem(itemRef) {
         if (typeof itemRef === "string" && this.items.get(itemRef)) {
-            return this.items.get(itemRef) ?? false;
+            return this.items.get(itemRef);
         }
         const globalItem = BladesItem.Get(itemRef);
-        if (globalItem && globalItem.id) {
-            return this.items.find((item) => item.system.world_name === globalItem.system.world_name) ?? false;
+        if (!globalItem) {
+            return undefined;
         }
-        return false;
+        return this.items.find((item) => item.system.world_name === globalItem.system.world_name);
     }
     async addSubItem(itemRef) {
+        eLog.checkLog3("subitems", "[addSubItem] itemRef", itemRef);
+        let BladesItemUniqueTypes;
+        (function (BladesItemUniqueTypes) {
+            BladesItemUniqueTypes["background"] = "background";
+            BladesItemUniqueTypes["crew_playbook"] = "crew_playbook";
+            BladesItemUniqueTypes["crew_reputation"] = "crew_reputation";
+            BladesItemUniqueTypes["heritage"] = "heritage";
+            BladesItemUniqueTypes["playbook"] = "playbook";
+            BladesItemUniqueTypes["preferred_op"] = "preferred_op";
+        })(BladesItemUniqueTypes || (BladesItemUniqueTypes = {}));
+        let focusItem;
         const embeddedItem = this.getSubItem(itemRef);
+        eLog.checkLog3("subitems", "[addSubItem] embeddedItem", embeddedItem);
         if (embeddedItem) {
-            if (embeddedItem.hasTag(Tag.Archived)) {
-                embeddedItem.remTag(Tag.Archived);
+            if (embeddedItem.hasTag(Tag.System.Archived)) {
+                await embeddedItem.remTag(Tag.System.Archived);
+                focusItem = embeddedItem;
+            }
+            else {
+                focusItem = await BladesItem.create([embeddedItem], { parent: this });
+            }
+        }
+        else {
+            const globalItem = BladesItem.Get(itemRef);
+            if (!globalItem) {
                 return;
             }
-            BladesItem.create([embeddedItem], { parent: this });
+            focusItem = await BladesItem.create([globalItem], { parent: this });
+        }
+        if (!focusItem) {
             return;
         }
-        const globalItem = BladesItem.Get(itemRef);
-        if (globalItem) {
-            BladesItem.create([globalItem], { parent: this });
+        if (Object.values(BladesItemUniqueTypes).includes(focusItem.type)) {
+            await Promise.all(this.activeSubItems
+                .filter((subItem) => subItem.type === focusItem.type && subItem.id !== focusItem.id && subItem.hasTag(Tag.System.Archived))
+                .map((subItem) => this.remSubItem(subItem.id)));
         }
     }
     async remSubItem(itemRef) {
@@ -403,14 +485,14 @@ class BladesActor extends Actor {
             return;
         }
         eLog.checkLog("actorTrigger", "Removing SubItem " + subItem.name, subItem);
-        if (subItem.hasTag(Tag.Archived)) {
+        if (subItem.hasTag(Tag.System.Archived)) {
             return;
         }
-        subItem.addTag(Tag.Archived);
+        subItem.addTag(Tag.System.Archived);
     }
     async purgeSubItem(itemRef) {
         const subItem = this.getSubItem(itemRef);
-        if (!subItem || subItem.hasTag(Tag.Archived)) {
+        if (!subItem || subItem.hasTag(Tag.System.Archived)) {
             return;
         }
         subItem.delete();
@@ -438,20 +520,6 @@ class BladesActor extends Actor {
         docs.forEach(async (doc) => {
             if (doc instanceof BladesItem) {
                 eLog.checkLog("actorTrigger", `... doc is Item, docType: ${doc.type}`);
-                if ([
-                    BladesItemType.background,
-                    BladesItemType.crew_reputation,
-                    BladesItemType.crew_playbook,
-                    BladesItemType.heritage,
-                    BladesItemType.playbook,
-                    BladesItemType.preferred_op,
-                    BladesItemType.vice
-                ].some((iType) => doc.type === iType)) {
-                    eLog.checkLog("actorTrigger", "... removing uniques", { activeSubItems: this.activeSubItems, removeDoc: doc });
-                    this.activeSubItems
-                        .filter((sItem) => sItem.type === doc.type && sItem.id !== doc.id)
-                        .forEach((sItem) => this.remSubItem(sItem));
-                }
                 switch (doc.type) {
                     case BladesItemType.playbook: {
                         await this.update({
@@ -464,10 +532,22 @@ class BladesActor extends Actor {
             }
         });
     }
-    async update(updateData) {
-        eLog.checkLog2("actor", "actor.update(data)", { updateData, user: game.user });
-        super.update(updateData);
-        return this;
+    async update(updateData, context) {
+        if (!updateData) {
+            return undefined;
+        }
+        eLog.checkLog2("actor", "actor.update(data)", {
+            updateData,
+            user: game.user,
+            isSubActor: this.isSubActor,
+            user_IsNotGM: !game.user.isGM,
+            isNotSubActorUpdate: !Object.keys(updateData).some((key) => /system\.subactors/g.test(key)),
+            user_IsNotOwner: !this.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
+        });
+        if (this.parentActor) {
+            return this.parentActor.updateSubActor(this.id, updateData);
+        }
+        return super.update(updateData, context);
     }
 
     get playbookName() {
