@@ -50,8 +50,8 @@ class BladesActorSheet extends BladesSheet {
 	}
 
 	override async getData() {
-		const data = await super.getData();
-		eLog.checkLog("actor", "[BladesActorSheet] super.getData()", {...data});
+		const context = super.getData() as ReturnType<BladesSheet["getData"]> & List<any>;
+		eLog.checkLog("actor", "[BladesActorSheet] super.getData()", {...context});
 
 		//~ Calculate Attribute Totals
 		const attrData = {
@@ -107,7 +107,7 @@ class BladesActorSheet extends BladesSheet {
 		});
 
 		Object.assign(
-			data,
+			context,
 			{
 				items,
 				actors,
@@ -214,8 +214,8 @@ class BladesActorSheet extends BladesSheet {
 				rivalsName: this.actor.system.rivals_name
 			}
 		);
-		eLog.checkLog("actor", "[BladesActorSheet] return getData()", {...data});
-		return data;
+		eLog.checkLog("actor", "[BladesActorSheet] return getData()", {...context});
+		return context;
 	}
 
 	get activeArmor() {

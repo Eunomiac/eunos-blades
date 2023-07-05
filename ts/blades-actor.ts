@@ -169,6 +169,60 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		}
 	}
 
+	async addSubActor(actorRef: ActorRef, tags?: BladesTag[]): Promise<void> {
+		eLog.checkLog3("subactors", "[addSubActor] actorRef, tags", {actorRef, tags});
+
+		enum BladesActorUniqueTags {
+			"CharacterCrew" = Tag.PC.CharacterCrew,
+			"VicePurveyor" = Tag.NPC.VicePurveyor
+		}
+		let focusSubActor: BladesActor|undefined;
+
+		// Does an embedded subActor of this Actor already exist on the character?
+		if (this.hasSubActorOf(actorRef)) {
+			const subActor = this.getSubActor(actorRef);
+			if (!subActor) { return }
+			// Is it an archived Item?
+			if (subActor.hasTag(Tag.System.Archived)) {
+				// Unarchive it
+				await subActor.remTag(Tag.System.Archived);
+			}
+			// Make it the focus item.
+			focusSubActor = subActor;
+		} else {
+			// Is it not embedded at all? Create new entry in system.subactors from global actor
+			const actor = BladesActor.Get(actorRef);
+			if (!actor) { return }
+			const subActorData: BladesActor.SubActorData = {
+				id: actor.id!,
+				system: {}
+			};
+			if (tags) {
+				subActorData.system.tags = U.unique([
+					...actor.tags,
+					...tags
+				]);
+			}
+			// Await the update, then make the retrieved subactor the focus
+			await this.update({[`system.subactors.${actor.id}`]: subActorData});
+			focusSubActor = this.getSubActor(actor.id!);
+		}
+
+		eLog.checkLog3("subactors", "[addSubActor] Found focusSubActor??");
+		if (!focusSubActor) { return }
+		eLog.checkLog3("subactors", "[addSubActor] ... YES!", focusSubActor);
+
+		// Does this Actor contain any tags limiting it to one per actor?
+		const uniqueTags = focusSubActor.tags.filter((tag) => tag in BladesActorUniqueTags);
+		eLog.checkLog3("subactors", "[addSubActor] Matching Unique Tags?", {subActorTags: focusSubActor.tags, uniqueTags});
+		if (uniqueTags.length > 0) {
+			// ... then archive all other versions.
+			uniqueTags.forEach((uTag) => this.activeSubActors
+				.filter((subActor) => subActor!.id !== focusSubActor!.id && subActor.hasTag(uTag))
+				.map((subActor) => this.remSubActor(subActor.id!)));
+		}
+	}
+
 	getSubActor(actorRef: ActorRef): BladesActor|undefined {
 		const actor = BladesActor.Get(actorRef);
 		if (!actor?.id) { return undefined }
@@ -190,31 +244,31 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		return (actor?.id ?? "") in this.system.subactors;
 	}
 
-	async addSubActor(actorRef: ActorRef, tags?: BladesTag[]): Promise<void> {
-		const actor = BladesActor.Get(actorRef);
-		eLog.checkLog3("subactors", "[addSubActor(actorRef, tags?)]", {actorRef, actor, tags});
-		if (!actor?.id) { return }
-		if (this.hasSubActorOf(actor)) {
-			const subActor = this.getSubActor(actorRef);
-			if (!subActor) { return }
-			eLog.checkLog3("subactors", "[addSubActor()] subActor", {subActor});
-			if (!subActor.hasTag(Tag.System.Archived)) { return }
-			await subActor.remTag(Tag.System.Archived);
-		} else {
-			const subActorData: BladesActor.SubActorData = {
-				id: actor.id,
-				system: {}
-			};
-			if (tags) {
-				subActorData.system.tags = U.unique([
-					...actor.tags,
-					...tags
-				]);
-			}
-			eLog.checkLog3("subactors", "[addSubActor()] subActorData (before update)", subActorData);
-			this.update({[`system.subactors.${actor.id}`]: subActorData});
-		}
-	}
+	// async addSubActor(actorRef: ActorRef, tags?: BladesTag[]): Promise<void> {
+	// 	const actor = BladesActor.Get(actorRef);
+	// 	eLog.checkLog3("subactors", "[addSubActor(actorRef, tags?)]", {actorRef, actor, tags});
+	// 	if (!actor?.id) { return }
+	// 	if (this.hasSubActorOf(actor)) {
+	// 		const subActor = this.getSubActor(actorRef);
+	// 		if (!subActor) { return }
+	// 		eLog.checkLog3("subactors", "[addSubActor()] subActor", {subActor});
+	// 		if (!subActor.hasTag(Tag.System.Archived)) { return }
+	// 		await subActor.remTag(Tag.System.Archived);
+	// 	} else {
+	// 		const subActorData: BladesActor.SubActorData = {
+	// 			id: actor.id,
+	// 			system: {}
+	// 		};
+	// 		if (tags) {
+	// 			subActorData.system.tags = U.unique([
+	// 				...actor.tags,
+	// 				...tags
+	// 			]);
+	// 		}
+	// 		eLog.checkLog3("subactors", "[addSubActor()] subActorData (before update)", subActorData);
+	// 		this.update({[`system.subactors.${actor.id}`]: subActorData});
+	// 	}
+	// }
 	async updateSubActor(actorRef: ActorRef, updateData: DeepPartial<BladesActor.SubActorData & Record<string,any>>): Promise<BladesActor|undefined> {
 		const actor = BladesActor.Get(actorRef);
 		if (!actor) { return undefined }
@@ -479,24 +533,36 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 				// Unarchive it & make it the focus item.
 				await embeddedItem.remTag(Tag.System.Archived);
 				focusItem = embeddedItem;
+				eLog.checkLog3("subitems", `[addSubItem] IS ARCHIVED EMBEDDED > Removing 'Archived' Tag, '${focusItem.id!}':`, focusItem);
 			} else { // Otherwise...
 				// Duplicate the item, and make the newly-created item the focus.
 				focusItem = await BladesItem.create([embeddedItem] as unknown as ItemDataConstructorData, {parent: this}) as BladesItem;
+				eLog.checkLog3("subitems", `[addSubItem] IS ACTIVE EMBEDDED > Duplicating, focusItem '${focusItem.id!}':`, focusItem);
 			}
 		} else {
 			// Is it not embedded at all? Embed from global instance.
 			const globalItem = BladesItem.Get(itemRef);
+
+			eLog.checkLog3("subitems", `[addSubItem] IS NOT EMBEDDED > Fetching Global, globalItem '${globalItem?.id}':`, globalItem);
+
 			if (!globalItem) { return }
 			focusItem = await BladesItem.create([globalItem] as unknown as ItemDataConstructorData, {parent: this}) as BladesItem;
+			focusItem = this.items.getName(globalItem.name!);
+			eLog.checkLog3("subitems", `[addSubItem] ... Duplicated, focusItem '${focusItem!.id}'`, focusItem);
 		}
 
 		if (!focusItem) { return }
+		eLog.checkLog3("subitems", `[addSubItem] Checking Uniqueness of '${focusItem.id}'`, {
+			BladesItemUniqueTypes: Object.values(BladesItemUniqueTypes),
+			focusItemType: focusItem.type,
+			isIncluded: Object.values(BladesItemUniqueTypes).includes(focusItem.type as any)
+		});
 
 		// Is this item type limited to one per actor?
 		if (Object.values(BladesItemUniqueTypes).includes(focusItem.type as any)) {
 			// ... then archive all other versions.
 			await Promise.all(this.activeSubItems
-				.filter((subItem) => subItem.type === focusItem!.type && subItem!.id !== focusItem!.id && subItem.hasTag(Tag.System.Archived))
+				.filter((subItem) => subItem.type === focusItem!.type && subItem!.id !== focusItem!.id && !subItem.hasTag(Tag.System.Archived))
 				.map((subItem) => this.remSubItem(subItem.id!)));
 		}
 	}
@@ -549,21 +615,6 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 
 		docs.forEach(async (doc) => {
 			if (doc instanceof BladesItem) {
-				eLog.checkLog("actorTrigger", `... doc is Item, docType: ${doc.type}`);
-				// if ([
-				// 	BladesItemType.background,
-				// 	BladesItemType.crew_reputation,
-				// 	BladesItemType.crew_playbook,
-				// 	BladesItemType.heritage,
-				// 	BladesItemType.playbook,
-				// 	BladesItemType.preferred_op,
-				// 	BladesItemType.vice
-				// ].some((iType) => doc.type === iType)) {
-				// 	eLog.checkLog("actorTrigger", "... removing uniques", {activeSubItems: this.activeSubItems, removeDoc: doc});
-				// 	this.activeSubItems
-				// 		.filter((sItem) => sItem.type === doc.type && sItem.id !== doc.id)
-				// 		.forEach((sItem) => this.remSubItem(sItem));
-				// }
 				switch (doc.type) {
 					case BladesItemType.playbook: {
 						await this.update({
@@ -586,14 +637,6 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 
 	override async update(updateData: DeepPartial<(ActorDataConstructorData & BladesActor.SubActorData) | (ActorDataConstructorData & BladesActor.SubActorData & Record<string, unknown>)> | undefined, context?: (DocumentModificationContext & MergeObjectOptions) | undefined): Promise<any> {
 		if (!updateData) { return undefined }
-		eLog.checkLog2("actor", "actor.update(data)", {
-			updateData,
-			user: game.user,
-			isSubActor: this.isSubActor,
-			user_IsNotGM: !game.user.isGM,
-			isNotSubActorUpdate: !Object.keys(updateData).some((key: string) => /system\.subactors/g.test(key)),
-			user_IsNotOwner: !this.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
-		});
 
 		if (this.parentActor) {
 			// This is an embedded Actor: Update it as a subActor of parentActor.

@@ -13,18 +13,16 @@ import Tagify from "../../lib/tagify/tagify.esm.js";
 import BladesSelectorDialog from "../blades-dialog.js";
 import BladesActiveEffect from "../blades-active-effect.js";
 class BladesSheet extends ActorSheet {
-    async getData() {
-        const context = (await super.getData());
+    getData() {
+        const context = super.getData();
         eLog.checkLog("actor", "[BladesSheet] super.getData()", { ...context });
         context.editable = this.options.editable;
         context.isGM = game.user.isGM;
         context.activeEffects = this.actor.effects;
+        context.actor = this.actor;
+        context.system = this.actor.system;
         eLog.checkLog("actor", "[BladesSheet] return getData()", { ...context });
-        return {
-            ...context,
-            actor: this.actor,
-            system: this.actor.system
-        };
+        return context;
     }
 
     get playbookData() {

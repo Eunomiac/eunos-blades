@@ -19,7 +19,7 @@
 		{{!-- Header --}}
 		<section class="sheet-top">
 			<input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}">
-			<input class="sheet-subtitle shadowed" type="text" name="system.full_name" value="{{actor.system.full_name}}"
+			<input class="sheet-subtitle shadowed" type="text" name="system.full_name" value="{{system.full_name}}"
 				placeholder="Full Name">
 
 			{{> "systems/eunos-blades/templates/components/comp.hbs" items.playbook
@@ -122,7 +122,7 @@
 					<tr>
 						<td class="harm-level">3</td>
 						<td class="harm-input" colspan="2">
-							<input type="text" name="system.harm.heavy.one" value="{{actor.system.harm.heavy.one}}">
+							<input type="text" name="system.harm.heavy.one" value="{{system.harm.heavy.one}}">
 						</td>
 						<td class="harm-effect">{{localize "BITD.NeedHelp"}}</td>
 						<td class="healing-clock clock-container" rowspan="3">
@@ -139,20 +139,20 @@
 					<tr>
 						<td class="harm-level">2</td>
 						<td class="harm-input">
-							<input type="text" name="system.harm.medium.one" value="{{actor.system.harm.medium.one}}">
+							<input type="text" name="system.harm.medium.one" value="{{system.harm.medium.one}}">
 						</td>
 						<td class="harm-input">
-							<input type="text" name="system.harm.medium.two" value="{{actor.system.harm.medium.two}}">
+							<input type="text" name="system.harm.medium.two" value="{{system.harm.medium.two}}">
 						</td>
 						<td class="harm-effect">&minus;1D</td>
 					</tr>
 					<tr>
 						<td class="harm-level">1</td>
 						<td class="harm-input">
-							<input type="text" name="system.harm.light.one" value="{{actor.system.harm.light.one}}">
+							<input type="text" name="system.harm.light.one" value="{{system.harm.light.one}}">
 						</td>
 						<td class="harm-input">
-							<input type="text" name="system.harm.light.two" value="{{actor.system.harm.light.two}}">
+							<input type="text" name="system.harm.light.two" value="{{system.harm.light.two}}">
 						</td>
 						<td class="harm-effect">{{localize "BITD.LessEffect"}}</td>
 					</tr>
@@ -289,13 +289,13 @@
 					<label class="tab-label">
 						<span class="tab-title">Description</span>
 					</label>
-					{{editor content=actor.system.description target="system.description" button=true owner=owner
+					{{editor content=system.description target="system.description" button=true owner=owner
 					editable=editable}}
 
 					<label class="tab-label">
 						<span class="tab-title">{{localize "BITD.Notes"}}</span>
 					</label>
-					{{editor content=actor.system.notes target="system.notes" button=true owner=owner editable=editable}}
+					{{editor content=system.notes target="system.notes" button=true owner=owner editable=editable}}
 				</div>
 
 				{{!-- GM-ONLY TABS --}}
@@ -306,7 +306,7 @@
 					<label class="tab-label">
 						<span class="tab-title">GM Notes</span>
 					</label>
-					{{editor content=actor.system.gm_notes target="system.gm_notes" button=true owner=owner editable=editable}}
+					{{editor content=system.gm_notes target="system.gm_notes" button=true owner=owner editable=editable}}
 					<label class="tab-label">
 						<span class="tab-title">{{localize "BITD.Effects"}}</span>
 					</label>
@@ -334,12 +334,12 @@
 
 			<section class="action-ratings flex-vertical">
 				{{#with actor as |actor|}}
-				{{#each actor.system.attributes as |attribute_data attribute_name|}}
+				{{#each system.attributes as |attribute_data attribute_name|}}
 				<div class="comp comp-horizontal comp-attribute">
 					<label class="comp-label" data-roll-attribute="{{attribute_name}}">{{case "title" attribute_name}}</label>
 					<div class="comp-body">
 						{{> "systems/eunos-blades/templates/parts/dotline.hbs"
-						data=(lookup actor.system.experience attribute_name)
+						data=(lookup system.experience attribute_name)
 						target=(concat "system.experience." attribute_name ".value")
 						svgKey="teeth.tall"
 						svgFull="full|frame"

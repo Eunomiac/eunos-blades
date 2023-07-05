@@ -16,21 +16,21 @@
 			<label class="tab-label">
 				<span class="tab-title">Description</span>
 			</label>
-			{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+			{{editor content=system.description target="system.description" button=true owner=owner editable=editable}}
 			{{/if}}
 
 			<label class="tab-label">
 				<span class="tab-title">Rules</span>
 			</label>
-			{{editor content=data.rules target="data.rules" button=true owner=owner editable=editable}}
+			{{editor content=system.rules target="system.rules" button=true owner=owner editable=editable}}
 
-			{{#if (test isGM "||" data.rules_notes)}}
-			{{editor content=data.rules_notes target="data.rules_notes" button=true owner=owner editable=editable}}
+			{{#if (test isGM "||" system.rules_notes)}}
+			{{editor content=system.rules_notes target="system.rules_notes" button=true owner=owner editable=editable}}
 			{{/if}}
 
 			<div class="flex-vertical">
 				<label class="label-stripe">{{localize "BITD.AbilityPrice"}}</label>
-				<input data-dtype="Number" id="ability-price" type="text" name="data.price" value="{{data.price}}"
+				<input data-dtype="Number" id="ability-price" type="text" name="system.price" value="{{system.price}}"
 					placeholder="{{localize 'BITD.AbilityPrice'}}">
 			</div>
 

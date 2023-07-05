@@ -207,22 +207,16 @@ class BladesItemSheet extends ItemSheet {
 	}
 
 	override async getData() {
-		const data = await super.getData();
-		const itemData = data.data;
-		Object.assign(
-			data,
-			{
-				editable: this.options.editable,
-				isGM: game.user.isGM,
-				isEmbeddedItem: true, // this.item.parent !== null,
-				// isOwner: ???,
-				actor: itemData,
-				data: itemData.data,
-				effects: this.item.effects
-			}
-		);
+		const context = (await super.getData()) as ReturnType<ItemSheet["getData"]> & List<any>;
 
-		return data;
+		context.editable = this.options.editable;
+		context.isGM = game.user.isGM;
+		context.isEmbeddedItem = this.item.parent !== null;
+		context.item = this.item;
+		context.system = this.item.system;
+		context.effects = this.item.effects;
+
+		return context;
 	}
 }
 

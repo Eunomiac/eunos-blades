@@ -39,29 +39,28 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
 	override async _updateObject(event: unknown, formData: any) {
 		const updateData = await this.object.update(formData);
 		socketlib.system.executeForEveryone("renderOverlay");
-		// (this.item as BladesItem).renderOverlay();
+		// this.item.renderOverlay();
 		return updateData;
 	}
 
 	override async getData() {
-		const data = await super.getData();
-		// @ts-expect-error Fuck.
-		data.data.clock_keys = Object.fromEntries(Object.entries(data.data.clock_keys)
-			// @ts-expect-error Fuck.
-			.filter(([keyID, keyData]) => Boolean(keyData && keyData.scene === data.data.targetScene)));
-		return data;
+		const context = super.getData() as ReturnType<BladesItemSheet["getData"]> & List<any>;
+
+		context.clock_keys = Object.fromEntries((Object.entries(context.clock_keys) as Array<[string, {scene?: string}]>)
+			.filter(([keyID, keyData]) => Boolean(keyData && keyData.scene === context.system.targetScene)));
+		return context;
 	}
 
 	addKey(event: MouseEvent) {
 		event.preventDefault();
-		(this.item as BladesItem).addClockKey();
+		this.item.addClockKey();
 	}
 
 	deleteKey(event: MouseEvent) {
 		event.preventDefault();
 		const keyID = (event.currentTarget as HTMLElement).dataset.id;
 		if (keyID) {
-			(this.item as BladesItem).deleteClockKey(keyID);
+			this.item.deleteClockKey(keyID);
 		}
 	}
 
@@ -69,7 +68,7 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
 		event.preventDefault();
 		const keyID = (event.target as HTMLInputElement).dataset.id;
 		if (keyID) {
-			(this.item as BladesItem).setKeySize(keyID, parseInt((event.target as HTMLInputElement).value));
+			this.item.setKeySize(keyID, parseInt((event.target as HTMLInputElement).value));
 		}
 	}
 

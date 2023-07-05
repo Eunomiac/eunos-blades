@@ -46,8 +46,8 @@ class BladesActorSheet extends BladesSheet {
         ]);
     }
     async getData() {
-        const data = await super.getData();
-        eLog.checkLog("actor", "[BladesActorSheet] super.getData()", { ...data });
+        const context = super.getData();
+        eLog.checkLog("actor", "[BladesActorSheet] super.getData()", { ...context });
 
         const attrData = {
             insight: { value: this.actor.attributes.insight, size: 4 + this.actor.system.resistance_bonuses.insight },
@@ -96,7 +96,7 @@ class BladesActorSheet extends BladesSheet {
             }
             return item;
         });
-        Object.assign(data, {
+        Object.assign(context, {
             items,
             actors,
             playbookData: this.playbookData,
@@ -201,8 +201,8 @@ class BladesActorSheet extends BladesSheet {
             friendsName: this.actor.system.friends_name,
             rivalsName: this.actor.system.rivals_name
         });
-        eLog.checkLog("actor", "[BladesActorSheet] return getData()", { ...data });
-        return data;
+        eLog.checkLog("actor", "[BladesActorSheet] return getData()", { ...context });
+        return context;
     }
     get activeArmor() {
         return Object.keys(U.objFilter(this.actor.system.armor.active, (val) => val === true));

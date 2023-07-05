@@ -16,14 +16,11 @@ class BladesNPCSheet extends BladesSheet {
 	}
 
 	override async getData() {
-		const data = await super.getData();
-		Object.assign(
-			data,
-			{
-				randomizers: (this.actor as BladesActor).system.randomizers
-			}
-		);
-		return data;
+		const context = super.getData() as ReturnType<BladesSheet["getData"]> & Record<string,any>;
+
+		context.randomizers = this.actor.system.randomizers;
+
+		return context;
 	}
 
 	override activateListeners(html: JQuery<HTMLElement>) {
@@ -39,7 +36,7 @@ class BladesNPCSheet extends BladesSheet {
 		//~ Enable Randomize Button for NPCs
 		// if ((this.actor as BladesActor).system.type === "npc") {
 		html.find("[data-action=\"randomize\"").on("click", (event) => {
-			(this.actor as BladesActor).updateRandomizers();
+			this.actor.updateRandomizers();
 		});
 		// }
 

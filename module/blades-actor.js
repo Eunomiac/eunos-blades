@@ -118,6 +118,55 @@ class BladesActor extends Actor {
             default: return false;
         }
     }
+    async addSubActor(actorRef, tags) {
+        eLog.checkLog3("subactors", "[addSubActor] actorRef, tags", { actorRef, tags });
+        let BladesActorUniqueTags;
+        (function (BladesActorUniqueTags) {
+            BladesActorUniqueTags["CharacterCrew"] = "CharacterCrew";
+            BladesActorUniqueTags["VicePurveyor"] = "VicePurveyor";
+        })(BladesActorUniqueTags || (BladesActorUniqueTags = {}));
+        let focusSubActor;
+        if (this.hasSubActorOf(actorRef)) {
+            const subActor = this.getSubActor(actorRef);
+            if (!subActor) {
+                return;
+            }
+            if (subActor.hasTag(Tag.System.Archived)) {
+                await subActor.remTag(Tag.System.Archived);
+            }
+            focusSubActor = subActor;
+        }
+        else {
+            const actor = BladesActor.Get(actorRef);
+            if (!actor) {
+                return;
+            }
+            const subActorData = {
+                id: actor.id,
+                system: {}
+            };
+            if (tags) {
+                subActorData.system.tags = U.unique([
+                    ...actor.tags,
+                    ...tags
+                ]);
+            }
+            await this.update({ [`system.subactors.${actor.id}`]: subActorData });
+            focusSubActor = this.getSubActor(actor.id);
+        }
+        eLog.checkLog3("subactors", "[addSubActor] Found focusSubActor??");
+        if (!focusSubActor) {
+            return;
+        }
+        eLog.checkLog3("subactors", "[addSubActor] ... YES!", focusSubActor);
+        const uniqueTags = focusSubActor.tags.filter((tag) => tag in BladesActorUniqueTags);
+        eLog.checkLog3("subactors", "[addSubActor] Matching Unique Tags?", { subActorTags: focusSubActor.tags, uniqueTags });
+        if (uniqueTags.length > 0) {
+            uniqueTags.forEach((uTag) => this.activeSubActors
+                .filter((subActor) => subActor.id !== focusSubActor.id && subActor.hasTag(uTag))
+                .map((subActor) => this.remSubActor(subActor.id)));
+        }
+    }
     getSubActor(actorRef) {
         const actor = BladesActor.Get(actorRef);
         if (!actor?.id) {
@@ -139,38 +188,6 @@ class BladesActor extends Actor {
             return false;
         }
         return (actor?.id ?? "") in this.system.subactors;
-    }
-    async addSubActor(actorRef, tags) {
-        const actor = BladesActor.Get(actorRef);
-        eLog.checkLog3("subactors", "[addSubActor(actorRef, tags?)]", { actorRef, actor, tags });
-        if (!actor?.id) {
-            return;
-        }
-        if (this.hasSubActorOf(actor)) {
-            const subActor = this.getSubActor(actorRef);
-            if (!subActor) {
-                return;
-            }
-            eLog.checkLog3("subactors", "[addSubActor()] subActor", { subActor });
-            if (!subActor.hasTag(Tag.System.Archived)) {
-                return;
-            }
-            await subActor.remTag(Tag.System.Archived);
-        }
-        else {
-            const subActorData = {
-                id: actor.id,
-                system: {}
-            };
-            if (tags) {
-                subActorData.system.tags = U.unique([
-                    ...actor.tags,
-                    ...tags
-                ]);
-            }
-            eLog.checkLog3("subactors", "[addSubActor()] subActorData (before update)", subActorData);
-            this.update({ [`system.subactors.${actor.id}`]: subActorData });
-        }
     }
     async updateSubActor(actorRef, updateData) {
         const actor = BladesActor.Get(actorRef);
@@ -458,24 +475,34 @@ class BladesActor extends Actor {
             if (embeddedItem.hasTag(Tag.System.Archived)) {
                 await embeddedItem.remTag(Tag.System.Archived);
                 focusItem = embeddedItem;
+                eLog.checkLog3("subitems", `[addSubItem] IS ARCHIVED EMBEDDED > Removing 'Archived' Tag, '${focusItem.id}':`, focusItem);
             }
             else {
                 focusItem = await BladesItem.create([embeddedItem], { parent: this });
+                eLog.checkLog3("subitems", `[addSubItem] IS ACTIVE EMBEDDED > Duplicating, focusItem '${focusItem.id}':`, focusItem);
             }
         }
         else {
             const globalItem = BladesItem.Get(itemRef);
+            eLog.checkLog3("subitems", `[addSubItem] IS NOT EMBEDDED > Fetching Global, globalItem '${globalItem?.id}':`, globalItem);
             if (!globalItem) {
                 return;
             }
             focusItem = await BladesItem.create([globalItem], { parent: this });
+            focusItem = this.items.getName(globalItem.name);
+            eLog.checkLog3("subitems", `[addSubItem] ... Duplicated, focusItem '${focusItem.id}'`, focusItem);
         }
         if (!focusItem) {
             return;
         }
+        eLog.checkLog3("subitems", `[addSubItem] Checking Uniqueness of '${focusItem.id}'`, {
+            BladesItemUniqueTypes: Object.values(BladesItemUniqueTypes),
+            focusItemType: focusItem.type,
+            isIncluded: Object.values(BladesItemUniqueTypes).includes(focusItem.type)
+        });
         if (Object.values(BladesItemUniqueTypes).includes(focusItem.type)) {
             await Promise.all(this.activeSubItems
-                .filter((subItem) => subItem.type === focusItem.type && subItem.id !== focusItem.id && subItem.hasTag(Tag.System.Archived))
+                .filter((subItem) => subItem.type === focusItem.type && subItem.id !== focusItem.id && !subItem.hasTag(Tag.System.Archived))
                 .map((subItem) => this.remSubItem(subItem.id)));
         }
     }
@@ -519,7 +546,6 @@ class BladesActor extends Actor {
         eLog.checkLog("actorTrigger", "onCreateEmbeddedDocuments", { embName, docs, args });
         docs.forEach(async (doc) => {
             if (doc instanceof BladesItem) {
-                eLog.checkLog("actorTrigger", `... doc is Item, docType: ${doc.type}`);
                 switch (doc.type) {
                     case BladesItemType.playbook: {
                         await this.update({
@@ -536,14 +562,6 @@ class BladesActor extends Actor {
         if (!updateData) {
             return undefined;
         }
-        eLog.checkLog2("actor", "actor.update(data)", {
-            updateData,
-            user: game.user,
-            isSubActor: this.isSubActor,
-            user_IsNotGM: !game.user.isGM,
-            isNotSubActorUpdate: !Object.keys(updateData).some((key) => /system\.subactors/g.test(key)),
-            user_IsNotOwner: !this.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
-        });
         if (this.parentActor) {
             return this.parentActor.updateSubActor(this.id, updateData);
         }

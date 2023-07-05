@@ -1,17 +1,17 @@
 <table class="items-list effects-list">
 	{{#each effects as |effect|}}
-		{{#if effect.data.label}}
+		{{#if effect.system.label}}
 		<tr class="item effect" data-effect-id="{{effect.id}}">
 			<td style="width: 30px;">
-				<img class="item-image" src="{{effect.data.icon}}" width="24" height="24"/>
+				<img class="item-image" src="{{effect.system.icon}}" width="24" height="24"/>
 			</td>
 			<td class="effect-name flex">
-				<label class="comp-title">{{effect.data.label}}</label>
+				<label class="comp-title">{{effect.system.label}}</label>
 			</td>
 			<td style="width: 45px;">
 				<div class="item-controls effect-controls flex">
 					<a class="effect-control" data-action="toggle" title="{{localize 'BITD.EffectToggle'}}">
-							<i class="fas {{#if effect.data.disabled}}fa-check{{else}}fa-times{{/if}}"></i>
+							<i class="fas {{#if effect.system.disabled}}fa-check{{else}}fa-times{{/if}}"></i>
 					</a>
 					<a class="effect-control" data-action="edit" title="{{localize 'BITD.EffectEdit'}}">
 							<i class="fas fa-edit"></i>

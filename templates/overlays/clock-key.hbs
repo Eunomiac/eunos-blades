@@ -1,10 +1,10 @@
-{{#if data.isVisible}}
-	<div id="{{data.id}}" class="clock-key {{~#if data.isActive}} active-key{{/if}}" data-size="{{data.numClocks}}">
-		{{#if data.isNameVisible}}
-		<label class="key-label">{{data.display}}</label>
+{{#if system.isVisible}}
+	<div id="{{system.id}}" class="clock-key {{~#if system.isActive}} active-key{{/if}}" data-size="{{system.numClocks}}">
+		{{#if system.isNameVisible}}
+		<label class="key-label">{{system.display}}</label>
 		{{/if}}
 		<div class="clock-label-container">
-			{{#each data.clocks as |clockData clockNum|}}
+			{{#each system.clocks as |clockData clockNum|}}
 			{{#if clockData.isNameVisible}}
 				<label class="clock-label {{~#if clockData.isActive}} clock-active{{/if}}" data-clock-num="{{clockNum}}">
 					<span class="short-label">{{clockData.display}}</span>
@@ -15,12 +15,12 @@
 		</div>
 		<div class="clock-image-container">
 			<svg class="key-image">
-				<use href="#{{data.numClocks}}-key" class="key-bg" />
-				<rect class="metallic-overlay" x="0" y="0" clip-path="url(#{{data.numClocks}}-key-clip" />
+				<use href="#{{system.numClocks}}-key" class="key-bg" />
+				<rect class="metallic-overlay" x="0" y="0" clip-path="url(#{{system.numClocks}}-key-clip" />
 			</svg>
 			{{log "Key This" this}}
-			{{log "Data.Clocks" data.clocks}}
-			{{#each data.clocks as |clockData clockNum|}}
+			{{log "system.Clocks" system.clocks}}
+			{{#each system.clocks as |clockData clockNum|}}
 			{{!-- {{#if clockData.isVisible}} --}}
 				{{> "systems/eunos-blades/templates/components/clock.hbs" clockNum=clockNum data=clockData}}
 			{{!-- {{/if}} --}}

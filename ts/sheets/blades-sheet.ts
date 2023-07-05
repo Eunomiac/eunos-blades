@@ -26,22 +26,20 @@ type BladesCompData = {
 class BladesSheet extends ActorSheet {
 
 
-	override async getData() {
-		const context = (await super.getData()) as BladesSheet.Data &
-      Record<string, any>;
+	override getData() {
+
+		const context = super.getData() as ReturnType<ActorSheet["getData"]> & List<any>;
 		eLog.checkLog("actor", "[BladesSheet] super.getData()", {...context});
 
 		context.editable = this.options.editable;
 		context.isGM = game.user.isGM;
 		context.activeEffects = this.actor.effects;
+		context.actor = this.actor;
+		context.system = this.actor.system;
 
 		eLog.checkLog("actor", "[BladesSheet] return getData()", {...context});
 
-		return {
-			...context,
-			actor: this.actor,
-			system: this.actor.system
-		};
+		return context;
 	}
 
 	// #region DATA PACKAGING GETTERS

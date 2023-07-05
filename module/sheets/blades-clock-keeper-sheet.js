@@ -43,10 +43,10 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
         return updateData;
     }
     async getData() {
-        const data = await super.getData();
-        data.data.clock_keys = Object.fromEntries(Object.entries(data.data.clock_keys)
-            .filter(([keyID, keyData]) => Boolean(keyData && keyData.scene === data.data.targetScene)));
-        return data;
+        const context = super.getData();
+        context.clock_keys = Object.fromEntries(Object.entries(context.clock_keys)
+            .filter(([keyID, keyData]) => Boolean(keyData && keyData.scene === context.system.targetScene)));
+        return context;
     }
     addKey(event) {
         event.preventDefault();

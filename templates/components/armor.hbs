@@ -3,13 +3,13 @@
 	<div class="main-armor-control"></div>
 
 	{{#if (test "heavy" "in" data)}}
-	<div class="svg-armor armor-heavy {{~#if data.heavy}} checked{{/if}}" data-target="data.armor.checked.heavy" data-value="{{data.heavy}}" data-dtype="Boolean">
+	<div class="svg-armor armor-heavy {{~#if data.heavy}} checked{{/if}}" data-target="system.armor.checked.heavy" data-value="{{data.heavy}}" data-dtype="Boolean">
 	{{{compileSvg "armor" "heavy"}}}
 	</div>
 	{{/if}}
 
 	{{#if (test "light" "in" data)}}
-	<div class="svg-armor armor-light {{~#if data.light}} checked{{/if}}" data-target="data.armor.checked.light" data-value="{{data.light}}" data-dtype="Boolean">
+	<div class="svg-armor armor-light {{~#if data.light}} checked{{/if}}" data-target="system.armor.checked.light" data-value="{{data.light}}" data-dtype="Boolean">
 	{{{compileSvg "armor" "light"}}}
 	</div>
 	{{/if}}
@@ -17,7 +17,7 @@
 	<div class="special-armor-control"></div>
 
 	{{#if (test "special" "in" data)}}
-	<div class="svg-armor armor-special {{~#if data.special}} checked{{/if}}" data-target="data.armor.checked.special" data-value="{{data.special}}" data-dtype="Boolean">
+	<div class="svg-armor armor-special {{~#if data.special}} checked{{/if}}" data-target="system.armor.checked.special" data-value="{{data.special}}" data-dtype="Boolean">
 	{{{compileSvg "armor" "specialBg|special"}}}
 	</div>
 	{{/if}}

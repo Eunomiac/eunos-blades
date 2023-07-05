@@ -6,9 +6,9 @@
 	<section class="item-main main">
 		<div class="scene-selection">
 			<label>Scene:</label>
-			<select name="data.targetScene">
-				{{#select data.targetScene}}
-				{{#each data.scenes}}
+			<select name="system.targetScene">
+				{{#select system.targetScene}}
+				{{#each system.scenes}}
 				<option value="{{id}}">{{name}}</option>
 				{{/each}}
 				{{/select}}
@@ -29,7 +29,7 @@
 					</th>
 				</thead>
 				<tbody>
-					{{#each data.clock_keys as |keyData keyID|}}
+					{{#each system.clock_keys as |keyData keyID|}}
 					<tr>
 							<th class="black-white">
 								{{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
@@ -38,14 +38,14 @@
 									activeTooltip="<b>Key is Visible</b><br>Click to Hide"
 									inactiveClass="fas fa-eye-slash"
 									inactiveTooltip="<b>Key is Hidden</b><br>Click to Show"
-									targetKey=(concat "data.clock_keys." keyID ".isVisible") }}
+									targetKey=(concat "system.clock_keys." keyID ".isVisible") }}
 								{{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
 									isToggled=keyData.isActive
 									activeClass="fas fa-bell"
 									activeTooltip="<b>Key is Focused</b><br>Click to Mute"
 									inactiveClass="fas fa-bell-slash"
 									inactiveTooltip="<b>Key is Muted</b><br>Click to Focus"
-									targetKey=(concat "data.clock_keys." keyID ".isActive") }}
+									targetKey=(concat "system.clock_keys." keyID ".isActive") }}
 							</th>
 							<th class="black-white">
 								{{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
@@ -54,11 +54,11 @@
 									activeTooltip="<b>Name is Visible</b><br>Click to Hide"
 									inactiveClass="fas fa-comment-slash"
 									inactiveTooltip="<b>Name is Hidden</b><br>Click to Show"
-									targetKey=(concat "data.clock_keys." keyID ".isNameVisible") }}
-								<input type="text" class="key-input key-input-display" name="data.clock_keys.{{keyID}}.display" value="{{keyData.display}}">
+									targetKey=(concat "system.clock_keys." keyID ".isNameVisible") }}
+								<input type="text" class="key-input key-input-display" name="system.clock_keys.{{keyID}}.display" value="{{keyData.display}}">
 							</th>
 							<th class="black-white">
-								<select class="key-clock-counter" data-dtype="number" data-id="{{keyID}}" name="data.clock_keys.{{keyID}}.numClocks">
+								<select class="key-clock-counter" data-dtype="number" data-id="{{keyID}}" name="system.clock_keys.{{keyID}}.numClocks">
 									{{#select keyData.numClocks}}
 									{{#times_from_1 6}}
 									<option value="{{this}}">{{this}}</option>

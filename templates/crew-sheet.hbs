@@ -180,12 +180,12 @@
 				<label class="tab-label">
 					<span class="tab-title">Description</span>
 				</label>
-				{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+				{{editor content=system.description target="system.description" button=true owner=owner editable=editable}}
 
 				<label class="tab-label">
 					<span class="tab-title">{{localize "BITD.Notes"}}</span>
 				</label>
-				{{editor content=data.notes target="data.notes" button=true owner=owner editable=editable}}
+				{{editor content=system.notes target="system.notes" button=true owner=owner editable=editable}}
 			</div>
 
 			{{!-- GM-ONLY TABS --}}
@@ -196,7 +196,7 @@
 					<label class="tab-label">
 						<span class="tab-title">GM Notes</span>
 					</label>
-					{{editor content=data.gm_notes target="data.gm_notes" button=true owner=owner editable=editable}}
+					{{editor content=system.gm_notes target="system.gm_notes" button=true owner=owner editable=editable}}
 				</div>
 
 				{{!-- Active Effects Tab --}}

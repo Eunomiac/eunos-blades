@@ -12,14 +12,14 @@
 		</section>
 
 		<section class="item-main flex-vertical">
-			<textarea class="crew-type-description" name="data.description" placeholder="(Description)" {{~#unless editable}}
-				readonly{{/unless}}>{{data.description}}</textarea>
+			<textarea class="crew-type-description" name="system.description" placeholder="(Description)" {{~#unless editable}}
+				readonly{{/unless}}>{{system.description}}</textarea>
 			<label class="label-stripe">{{localize "BITD.ExpClues"}}</label>
-			{{editor content=data.experience_clues target="data.experience_clues" button=true owner=owner editable=editable}}
+			{{editor content=system.experience_clues target="system.experience_clues" button=true owner=owner editable=editable}}
 
 			<label class="label-stripe">{{localize "BITD.Turf"}}</label>
 			<div id="turf-container">
-				{{> "systems/eunos-blades/templates/parts/turf-list.hbs" turfs_data=data.turfs can_edit=true editable=editable}}
+				{{> "systems/eunos-blades/templates/parts/turf-list.hbs" turfs_data=system.turfs can_edit=true editable=editable}}
 			</div>
 
 			{{#if isGM}}

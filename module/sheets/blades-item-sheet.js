@@ -173,17 +173,14 @@ class BladesItemSheet extends ItemSheet {
         this.item.update(updateData);
     }
     async getData() {
-        const data = await super.getData();
-        const itemData = data.data;
-        Object.assign(data, {
-            editable: this.options.editable,
-            isGM: game.user.isGM,
-            isEmbeddedItem: true,
-            actor: itemData,
-            data: itemData.data,
-            effects: this.item.effects
-        });
-        return data;
+        const context = (await super.getData());
+        context.editable = this.options.editable;
+        context.isGM = game.user.isGM;
+        context.isEmbeddedItem = this.item.parent !== null;
+        context.item = this.item;
+        context.system = this.item.system;
+        context.effects = this.item.effects;
+        return context;
     }
 }
 export default BladesItemSheet;

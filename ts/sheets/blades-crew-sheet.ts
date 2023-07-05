@@ -17,8 +17,9 @@ class BladesCrewSheet extends BladesSheet {
 	}
 
 	override async getData() {
-		const data = await super.getData();
-		eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", {...data});
+		const context = super.getData() as ReturnType<BladesSheet["getData"]> & List<any>;
+
+		eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", {...context});
 
 		let turfs_amount = 0;
 		if (this.actor.playbook) {
@@ -31,7 +32,7 @@ class BladesCrewSheet extends BladesSheet {
 		turfs_amount = Math.min(turfs_amount, this.actor.system.turfs.max);
 
 		//~ Assemble embedded actors and items
-		const items = {
+		context.items = {
 			abilities: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.crew_ability),
 			playbook: this.actor.playbook,
 			reputation: this.actor.activeSubItems.find((item) => item.type === BladesItemType.crew_reputation),
@@ -39,10 +40,15 @@ class BladesCrewSheet extends BladesSheet {
 			cohorts: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.cohort),
 			preferredOp: this.actor.activeSubItems.find((item) => item.type === BladesItemType.preferred_op)
 		};
-		const actors = {
+		context.actors = {
 			// members: await BladesActor.GetActiveEmbeddedCategoryActors("crew-pc", this.actor)
 		};
-		const tierData = {
+
+		context.playbookData = this.playbookData;
+
+		context.coinsData = this.coinsData;
+
+		context.tierData = {
 			label: "Tier",
 			dotline: {
 				data: this.actor.system.tier,
@@ -54,7 +60,7 @@ class BladesCrewSheet extends BladesSheet {
 			}
 		};
 
-		const holdData = {
+		context.holdData = {
 			name: "Hold",
 			displayVal:  U.uCase(this.actor.system.hold),
 			radioControl: {
@@ -67,7 +73,7 @@ class BladesCrewSheet extends BladesSheet {
 			}
 		};
 
-		const repData = {
+		context.repData = {
 			name: "Rep",
 			dotlines: [
 				{
@@ -91,7 +97,7 @@ class BladesCrewSheet extends BladesSheet {
 			]
 		};
 
-		const heatData = {
+		context.heatData = {
 			name: "Heat",
 			dotline: {
 				data: this.actor.system.heat,
@@ -102,7 +108,7 @@ class BladesCrewSheet extends BladesSheet {
 			}
 		};
 
-		const wantedData = {
+		context.wantedData = {
 			name: "Wanted",
 			dotline: {
 				data: this.actor.system.wanted,
@@ -113,23 +119,8 @@ class BladesCrewSheet extends BladesSheet {
 			}
 		};
 
-		Object.assign(
-			data,
-			{
-				items,
-				actors,
-				playbookData: this.playbookData,
-				coinsData: this.coinsData,
-				tierData,
-				holdData,
-				repData,
-				heatData,
-				wantedData
-			}
-		);
-
-		eLog.checkLog("actor", "[BladesCrewSheet] return getData()", {...data});
-		return data;
+		eLog.checkLog("actor", "[BladesCrewSheet] return getData()", {...context});
+		return context;
 	}
 
 	override activateListeners(html: JQuery<HTMLElement>) {

@@ -163,6 +163,7 @@ export var Tag;
     let PC;
     (function (PC) {
         PC["Member"] = "Member";
+        PC["CharacterCrew"] = "CharacterCrew";
     })(PC = Tag.PC || (Tag.PC = {}));
     let NPC;
     (function (NPC) {

@@ -17,33 +17,33 @@
 			<label class="tab-label">
 				<span class="tab-title">Description OKAY!</span>
 			</label>
-			{{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+			{{editor content=system.description target="system.description" button=true owner=owner editable=editable}}
 			{{/if}}
 
 			<label class="tab-label">
 				<span class="tab-title">Rules</span>
 			</label>
-			{{editor content=data.rules target="data.rules" button=true owner=owner editable=editable}}
+			{{editor content=system.rules target="system.rules" button=true owner=owner editable=editable}}
 
-			{{#if (test isGM "||" data.rules_notes)}}
+			{{#if (test isGM "||" system.rules_notes)}}
 			<label class="tab-label">
 				<span class="tab-title">Additional Rules Notes</span>
 			</label>
-			{{editor content=data.rules_notes target="data.rules_notes" button=true owner=owner editable=editable}}
+			{{editor content=system.rules_notes target="system.rules_notes" button=true owner=owner editable=editable}}
 			{{/if}}
 
 			<div class="flex-horizontal">
 				<div class="comp comp-horizontal">
 					<label>Load: </label>
-					<input data-dtype="Number" type="number" name="data.load" value="{{data.load}}">
+					<input data-dtype="Number" type="number" name="system.load" value="{{system.load}}">
 				</div>
 				<div class="comp comp-horizontal">
 					<label>Uses: </label>
-					<input data-dtype="Number" type="number" name="data.uses.max" value="{{data.uses.max}}">
+					<input data-dtype="Number" type="number" name="system.uses.max" value="{{system.uses.max}}">
 				</div>
 				<div class="comp comp-horizontal">
 					<label>Max per Score: </label>
-					<input data-dtype="Number" type="number" name="data.num_available" value="{{data.num_available}}">
+					<input data-dtype="Number" type="number" name="system.num_available" value="{{system.num_available}}">
 				</div>
 			</div>
 

@@ -17,11 +17,9 @@ class BladesNPCSheet extends BladesSheet {
         });
     }
     async getData() {
-        const data = await super.getData();
-        Object.assign(data, {
-            randomizers: this.actor.system.randomizers
-        });
-        return data;
+        const context = super.getData();
+        context.randomizers = this.actor.system.randomizers;
+        return context;
     }
     activateListeners(html) {
         super.activateListeners(html);
