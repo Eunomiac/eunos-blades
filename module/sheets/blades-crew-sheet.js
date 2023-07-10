@@ -18,9 +18,11 @@ class BladesCrewSheet extends BladesSheet {
             tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "claims" }]
         });
     }
-    async getData() {
+    getData() {
         const context = super.getData();
         eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", { ...context });
+        context.actor = this.actor;
+        context.system = this.actor.system;
         let turfs_amount = 0;
         if (this.actor.playbook) {
             Object.entries(this.actor.playbook.system.turfs).forEach(([key, turf]) => {
@@ -40,6 +42,7 @@ class BladesCrewSheet extends BladesSheet {
             preferredOp: this.actor.activeSubItems.find((item) => item.type === BladesItemType.preferred_op)
         };
         context.actors = {
+            members: this.actor.members
         };
         context.playbookData = this.playbookData;
         context.coinsData = this.coinsData;
@@ -137,7 +140,7 @@ class BladesCrewSheet extends BladesSheet {
             const item_id = element.data("itemId");
             const turf_id = $(event.currentTarget).data("turfId");
             const turf_current_status = $(event.currentTarget).data("turfStatus");
-            const turf_checkbox_name = "data.turfs." + turf_id + ".value";
+            const turf_checkbox_name = "system.turfs." + turf_id + ".value";
             await this.actor.updateEmbeddedDocuments("Item", [{
                     _id: item_id,
                     [turf_checkbox_name]: !turf_current_status
@@ -150,7 +153,7 @@ class BladesCrewSheet extends BladesSheet {
             const harm_id = $(ev.currentTarget).val();
             await this.actor.updateEmbeddedDocuments("Item", [{
                     "_id": item_id,
-                    "data.harm": [harm_id]
+                    "system.harm": [harm_id]
                 }]);
             this.render(false);
         });
@@ -158,7 +161,7 @@ class BladesCrewSheet extends BladesSheet {
                 
     async _updateObject(event, formData) {
         await super._updateObject(event, formData);
-        if (event.target && $(event.target).attr("name") === "data.tier") {
+        if (event.target && $(event.target).attr("name") === "system.tier") {
             this.render(true);
         }
     }

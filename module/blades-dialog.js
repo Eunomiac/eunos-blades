@@ -49,7 +49,7 @@ class BladesSelectorDialog extends Dialog {
             title,
             docType,
             tabs,
-            tags,
+            "tags": tags?.filter((tag) => tag !== ""),
             "content": "",
             "buttons": {
                 cancel: {

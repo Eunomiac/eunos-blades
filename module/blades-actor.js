@@ -55,8 +55,7 @@ class BladesActor extends Actor {
     get primaryUser() {
         return game.users.find((user) => user.character?.id === this?.id);
     }
-    parentActor;
-    isSubActor;
+    
     get subActors() {
         return Object.keys(this.system.subactors)
             .map((id) => this.getSubActor(id))
@@ -174,11 +173,9 @@ class BladesActor extends Actor {
         }
         const subActorData = this.system.subactors[actor.id] ?? {};
         actor.system = mergeObject(actor.system, subActorData.system ?? {});
-        actor.isSubActor = true;
-        if (!this.primaryUser?.id) {
-            return undefined;
+        if (this.primaryUser?.id) {
+            actor.ownership[this.primaryUser.id] = CONST.DOCUMENT_PERMISSION_LEVELS.OWNER;
         }
-        actor.ownership[this.primaryUser.id] = 3;
         actor.parentActor = this;
         return actor;
     }
@@ -187,7 +184,7 @@ class BladesActor extends Actor {
         if (!actor) {
             return false;
         }
-        return (actor?.id ?? "") in this.system.subactors;
+        return actor?.id ? actor.id in this.system.subactors : false;
     }
     async updateSubActor(actorRef, updateData) {
         const actor = BladesActor.Get(actorRef);
@@ -196,7 +193,7 @@ class BladesActor extends Actor {
         }
         const curData = this.system.subactors[actor.id] ?? {};
         const mergedData = mergeObject(curData, updateData);
-        return this.update({ [`system.subactors.${actor.id}`]: mergedData });
+        return this.update({ [`system.subactors.${actor.id}`]: mergedData }, undefined, true);
     }
     async remSubActor(actorRef) {
         const actor = BladesActor.Get(actorRef);
@@ -217,9 +214,9 @@ class BladesActor extends Actor {
         if (!subActor) {
             return;
         }
-        this.update({ ["system.subactors"]: mergeObject(this.system.subactors, { [`-=${subActor.id}`]: null }) });
+        this.update({ ["system.subactors"]: mergeObject(this.system.subactors, { [`-=${subActor.id}`]: null }) }, undefined, true);
     }
-
+    get subItems() { return Array.from(this.items); }
     get activeSubItems() { return this.items.filter((item) => !item.hasTag(Tag.System.Archived)); }
     get archivedSubItems() { return this.items.filter((item) => item.hasTag(Tag.System.Archived)); }
     _checkItemPrereqs(item) {
@@ -524,19 +521,37 @@ class BladesActor extends Actor {
         }
         subItem.delete();
     }
+    parentActor;
+    get isSubActor() { return this.parentActor !== undefined; }
+    
+    
+    isMember(crew) { return this.crew?.id === crew.id; }
     get vices() {
         return this.activeSubItems.filter((item) => item.type === BladesItemType.vice);
     }
+    get crew() {
+        if (this.type !== BladesActorType.pc) {
+            return undefined;
+        }
+        return this.activeSubActors.find((subActor) => subActor.type === BladesActorType.crew);
+    }
+    get members() {
+        if (this.type !== BladesActorType.crew) {
+            return undefined;
+        }
+        return BladesActor.GetTypeWithTags(BladesActorType.pc).filter((actor) => actor.isMember(this));
+    }
+    
     static async create(data, options = {}) {
         data.token = data.token || {};
-        data.data = data.data ?? {};
+        data.system = data.system ?? {};
         eLog.checkLog2("actor", "BladesActor.create(data,options)", { data, options });
 
         if ([BladesActorType.crew, BladesActorType.pc].includes(data.type)) {
             data.token.actorLink = true;
         }
 
-        data.data.world_name = data.data.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "")
+        data.system.world_name = data.system.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "")
             .trim()
             .replace(/ /g, "_");
         return super.create(data, options);
@@ -558,11 +573,11 @@ class BladesActor extends Actor {
             }
         });
     }
-    async update(updateData, context) {
+    async update(updateData, context, isSkippingSubActorCheck = false) {
         if (!updateData) {
             return undefined;
         }
-        if (this.parentActor) {
+        if (this.parentActor && !isSkippingSubActorCheck) {
             return this.parentActor.updateSubActor(this.id, updateData);
         }
         return super.update(updateData, context);

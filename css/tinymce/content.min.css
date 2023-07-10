@@ -571,14 +571,17 @@ html, :root {
           --fill-color-full: var(--blades-gold-bright);
           --fill-color-empty: rgba(0, 0, 0);
           --half-color-empty: var(--blades-gold-dark); }
-      html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline {
-        --dotline-dot-sizeX: toRem(18px); }
-        html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot {
-          transform-origin: top;
-          transition: 0.25s;
-          transform: scaleY(1); }
-          html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
-            transform: scaleY(0.5); }
+      html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook {
+        position: absolute;
+        right: 0; }
+        html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline {
+          --dotline-dot-sizeX: toRem(18px); }
+          html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot {
+            transform-origin: top;
+            transition: 0.25s;
+            transform: scaleY(1); }
+            html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
+              transform: scaleY(0.5); }
     html .comp.comp-teeth.comp-vertical, :root .comp.comp-teeth.comp-vertical {
       justify-content: flex-start;
       align-items: center;
@@ -1229,14 +1232,17 @@ html, :root {
             --fill-color-full: var(--blades-gold-bright);
             --fill-color-empty: rgba(0, 0, 0);
             --half-color-empty: var(--blades-gold-dark); }
-        html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline {
-          --dotline-dot-sizeX: 1.125rem; }
-          html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot {
-            transform-origin: top;
-            transition: 0.25s;
-            transform: scaleY(1); }
-            html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
-              transform: scaleY(0.5); }
+        html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook {
+          position: absolute;
+          right: 0; }
+          html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline {
+            --dotline-dot-sizeX: 1.125rem; }
+            html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot {
+              transform-origin: top;
+              transition: 0.25s;
+              transform: scaleY(1); }
+              html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
+                transform: scaleY(0.5); }
       html .comp.comp-teeth.comp-vertical, :root .comp.comp-teeth.comp-vertical {
         justify-content: flex-start;
         align-items: center;

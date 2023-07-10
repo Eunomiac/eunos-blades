@@ -10,15 +10,20 @@ class BladesNPCSheet extends BladesSheet {
 			classes: ["eunos-blades", "sheet", "actor", "npc"],
 			template: "systems/eunos-blades/templates/npc-sheet.hbs",
 			width: 500,
+			height: 350,
 			// height: "auto",
 			tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "description"}]
 		});
 	}
 
-	override async getData() {
-		const context = super.getData() as ReturnType<BladesSheet["getData"]> & Record<string,any>;
+	override getData() {
+		const context = super.getData() as ReturnType<BladesSheet["getData"]> & {
+			[key: string]: any
+		};
 
-		context.randomizers = this.actor.system.randomizers;
+		context.isSubActor = context.actor.isSubActor;
+		context.parentActor = context.actor.parentActor;
+		context.randomizers = context.actor.system.randomizers;
 
 		return context;
 	}
@@ -30,8 +35,8 @@ class BladesNPCSheet extends BladesSheet {
 		if (!this.options.editable) {return}
 
 		//~ Configure Tagify input elements
-		const inputElement = document.querySelector('input[name="data.harm.heavy.one"]');
-		if (inputElement instanceof HTMLInputElement) { new Tagify(inputElement, {}) } else { console.log("Not an HTMLInputElement")}
+		// const inputElement = document.querySelector('input[name="system.harm.heavy.one"]');
+		// if (inputElement instanceof HTMLInputElement) { new Tagify(inputElement, {}) } else { console.log("Not an HTMLInputElement")}
 
 		//~ Enable Randomize Button for NPCs
 		// if ((this.actor as BladesActor).system.type === "npc") {

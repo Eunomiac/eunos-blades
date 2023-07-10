@@ -15,19 +15,19 @@
 			<label class="tab-label">
 				<span class="tab-title">Description</span>
 			</label>
-			{{editor content=system.description target="system.description" button=true owner=owner editable=editable}}
+			{{editor system.description target="system.description" button=true owner=owner editable=editable}}
 			{{/if}}
 
 			<label class="tab-label">
 				<span class="tab-title">Rules</span>
 			</label>
-			{{editor content=system.rules target="system.rules" button=true owner=owner editable=editable}}
+			{{editor system.rules target="system.rules" button=true owner=owner editable=editable}}
 
 			{{#if (test isGM "||" system.rules_notes)}}
 			<label class="tab-label">
 				<span class="tab-title">Additional Rules Notes</span>
 			</label>
-			{{editor content=system.rules_notes target="system.rules_notes" button=true owner=owner editable=editable}}
+			{{editor system.rules_notes target="system.rules_notes" button=true owner=owner editable=editable}}
 			{{/if}}
 
 			{{#if (test isGM "||" (test system.load "||" (test system.uses.max "||" system.num_available)))}}

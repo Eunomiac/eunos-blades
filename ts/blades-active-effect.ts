@@ -104,7 +104,7 @@ class BladesActiveEffect extends ActiveEffect {
 		}
 		const selector = a.closest("tr");
 		if (selector === null) { return null }
-		const effect = selector.dataset.effectId ? owner.effects.get(selector.dataset.effectId) : null;
+		const effect = selector.dataset.effectId ? owner.effects.get(selector.dataset.effectId) as BladesActiveEffect : null;
 		if (!effect) { return null }
 		switch ( a.dataset.action ) {
 			case "edit":
@@ -113,7 +113,7 @@ class BladesActiveEffect extends ActiveEffect {
 				eLog.checkLog("activeEffects", "delete effect");
 				return effect.delete();
 			case "toggle":
-				return effect.update({disabled: !effect.data.disabled});
+				return effect.update({disabled: !effect.disabled});
 			// no default
 		}
 		return null;
@@ -131,6 +131,7 @@ class BladesActiveEffect extends ActiveEffect {
 
 declare interface BladesActiveEffect {
 	origin: string
+	disabled: boolean
 }
 
 export default BladesActiveEffect;

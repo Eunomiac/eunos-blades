@@ -11,11 +11,12 @@
 
 		.sheet-img {
 			position: absolute;
-			height: 198px;
+			height: 200px;
 			left: -10px;
 			z-index: zLevel(-1);
 			border: none;
 			mask-image: linear-gradient(to right, black 75%, transparent);
+			-webkit-mask-image: linear-gradient(to right, black 75%, transparent);
 		}
 
 		.sheet-img-bg {
@@ -35,14 +36,30 @@
 			}
 		}
 
+		.gm-alert-header {
+			position: relative;
+			z-index: 10;
+			pointer-events: none;
+			display: block;
+			height: toRem(20px);
+			line-height: toRem(20px);
+			width: 100%;
+			background-color: rgb(255, 255, 0);
+			font-weight: bold;
+			font-family: Kirsty;
+			text-align: center;
+			font-size: toRem(14px);
+			color: var(--blades-black);
+		}
+
 		.sheet-root {
-			position: absolute;
+			position: relative;
 			height: 100%;
 			width: 100%;
-			top: -10px;
+			// top: -10px;
 			left: 0px;
 
-			> section {
+			> section:not(.sheet-top) {
 				border-top: 2px solid var(--blades-white);
 				border-bottom: none;
 			}
@@ -53,8 +70,10 @@
 				&.sheet-top {
 					display: grid;
 					grid-auto-columns: 1fr;
+					grid-template-rows: 83px 32px 57px 28px;
 					place-items: center stretch;
 					pointer-events: none;
+					height: 200px;
 
 					input { pointer-events: auto }
 
@@ -98,6 +117,7 @@
 					flex-wrap: nowrap;
 					position: relative;
 					height: toRem(60px);
+					padding-right: toRem(20px);
 				}
 
 				&.nav-group {

@@ -40,8 +40,6 @@ $remPerPixel: 0.0625rem;
   $b: if($b < 0, 0, if($b > 255, 255, $b));
 
   // Return the resulting color
-	@debug "Main: #{$main-color} -- Scaled: #{rgb($r, $g, $b)}";
-
   @return rgb($r, $g, $b);
 }
 
@@ -51,21 +49,16 @@ $remPerPixel: 0.0625rem;
   $g: max(30, green($main-color));
   $b: max(30, blue($main-color));
 
-	@debug "Initial Components:  #{$r}, #{$g}, #{$b}";
-
   // Calculate the current Y component in the YIQ color space
   $current-y: (0.299 * $r + 0.587 * $g + 0.114 * $b);
-	@debug "Current Y-Component: #{$current-y}";
 
   // Calculate the scaling factor to reach the target Y
   $scale: $target-yiq / $current-y;
-	@debug "Scaling Factor: #{$scale}";
 
   // Scale the RGB values of the original color by this factor
   $r: $r * $scale;
   $g: $g * $scale;
   $b: $b * $scale;
-	@debug "Scaled Components: #{$r}, #{$g}, #{$b}";
 
   // Clamp RGB values to [0, 255]
   $r: if($r < 0, 0, if($r > 255, 255, $r));
@@ -73,6 +66,5 @@ $remPerPixel: 0.0625rem;
   $b: if($b < 0, 0, if($b > 255, 255, $b));
 
   // Return the resulting color
-	@debug "Clamped Components: #{$r}, #{$g}, #{$b}";
   @return rgb($r, $g, $b);
 }

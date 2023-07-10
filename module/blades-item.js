@@ -5,7 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { SVGDATA, Tag } from "./core/constants.js";
+import C, { SVGDATA, BladesItemType, Tag } from "./core/constants.js";
 import U from "./core/utilities.js";
 export var PrereqType;
 (function (PrereqType) {
@@ -87,14 +87,12 @@ class BladesItem extends Item {
     }
     prepareData() {
         super.prepareData();
-        if (this.data.type === "faction") {
-            this._prepareFaction();
-        }
-        if (this.data.type === "clock_keeper") {
-            this._prepareClockKeeper();
-        }
-        if (this.data.type === "cohort") {
-            this._prepareCohort();
+        switch (this.type) {
+            case BladesItemType.faction: return this._prepareFaction();
+            case BladesItemType.clock_keeper: return this._prepareClockKeeper();
+            case BladesItemType.cohort: return this._prepareCohort();
+            case BladesItemType.gm_tracker: return this._prepareGMTracker();
+            default: return undefined;
         }
     }
     _prepareFaction() {
@@ -122,6 +120,8 @@ class BladesItem extends Item {
                 .filter(([clockNum, clockData]) => Boolean(clockData)));
             return [keyID, keyData];
         }));
+    }
+    _prepareGMTracker() {
     }
     get tier() { return U.pInt(this.parent?.system?.tier); }
     get playbooks() { return this.system.playbooks ?? []; }

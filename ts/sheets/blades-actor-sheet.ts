@@ -4,10 +4,13 @@ import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesItem from "../blades-item.js";
 import BladesActor from "../blades-actor.js";
-import Tagify from "../../lib/tagify/tagify.esm.js";
-import ConstructorDataType from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
-import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
+// import Tagify from "../../lib/tagify/tagify.esm.js";
+// import ConstructorDataType from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
+// import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
+interface BladesActorSheetData {
+	isOwner: boolean
+}
 class BladesActorSheet extends BladesSheet {
 
 	static override get defaultOptions() {
@@ -49,9 +52,14 @@ class BladesActorSheet extends BladesSheet {
 		]);
 	}
 
-	override async getData() {
-		const context = super.getData() as ReturnType<BladesSheet["getData"]> & List<any>;
+	override getData() {
+		const context = super.getData() as ReturnType<BladesSheet["getData"]>;
+
+		const sheetData: Partial<BladesActorSheetData> = {};
+
 		eLog.checkLog("actor", "[BladesActorSheet] super.getData()", {...context});
+
+		sheetData.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
 
 		//~ Calculate Attribute Totals
 		const attrData = {
@@ -107,7 +115,7 @@ class BladesActorSheet extends BladesSheet {
 		});
 
 		Object.assign(
-			context,
+			sheetData,
 			{
 				items,
 				actors,
@@ -128,7 +136,7 @@ class BladesActorSheet extends BladesSheet {
 					}
 				},
 				healing_clock: {
-					color: "white",
+					// color: "white",
 					size: this.actor.system.healing.max,
 					value: this.actor.system.healing.value
 				},
@@ -214,8 +222,11 @@ class BladesActorSheet extends BladesSheet {
 				rivalsName: this.actor.system.rivals_name
 			}
 		);
-		eLog.checkLog("actor", "[BladesActorSheet] return getData()", {...context});
-		return context;
+
+		return {
+			...context,
+			...sheetData
+		};
 	}
 
 	get activeArmor() {
@@ -313,8 +324,8 @@ class BladesActorSheet extends BladesSheet {
 	}
 }
 
-declare interface BladesActorSheet {
-	get actor(): BladesActor
-}
+// declare interface BladesActorSheet {
+// 	get actor(): BladesActor
+// }
 
 export default BladesActorSheet;

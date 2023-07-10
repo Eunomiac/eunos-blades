@@ -16,10 +16,15 @@ class BladesCrewSheet extends BladesSheet {
 		});
 	}
 
-	override async getData() {
-		const context = super.getData() as ReturnType<BladesSheet["getData"]> & List<any>;
+	override getData() {
+		const context = super.getData() as ReturnType<BladesSheet["getData"]> & {
+			[key: string]: any
+		};
 
 		eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", {...context});
+
+		context.actor = this.actor;
+		context.system = this.actor.system;
 
 		let turfs_amount = 0;
 		if (this.actor.playbook) {
@@ -41,7 +46,7 @@ class BladesCrewSheet extends BladesSheet {
 			preferredOp: this.actor.activeSubItems.find((item) => item.type === BladesItemType.preferred_op)
 		};
 		context.actors = {
-			// members: await BladesActor.GetActiveEmbeddedCategoryActors("crew-pc", this.actor)
+			members: this.actor.members
 		};
 
 		context.playbookData = this.playbookData;
@@ -156,7 +161,7 @@ class BladesCrewSheet extends BladesSheet {
 			const item_id = element.data("itemId");
 			const turf_id = $(event.currentTarget).data("turfId");
 			const turf_current_status = $(event.currentTarget).data("turfStatus");
-			const turf_checkbox_name = "data.turfs." + turf_id + ".value";
+			const turf_checkbox_name = "system.turfs." + turf_id + ".value";
 
 			await this.actor.updateEmbeddedDocuments("Item", [{
 				_id: item_id,
@@ -173,7 +178,7 @@ class BladesCrewSheet extends BladesSheet {
 
 			await this.actor.updateEmbeddedDocuments("Item", [{
 				"_id": item_id,
-				"data.harm": [harm_id]}]);
+				"system.harm": [harm_id]}]);
 			this.render(false);
 		});
 	}
@@ -187,7 +192,7 @@ class BladesCrewSheet extends BladesSheet {
 		// Update the Item
 		await super._updateObject(event, formData);
 
-		if (event.target && $(event.target).attr("name") === "data.tier") {
+		if (event.target && $(event.target).attr("name") === "system.tier") {
 			this.render(true);
 		}
 	}

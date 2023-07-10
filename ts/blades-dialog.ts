@@ -1,5 +1,3 @@
-import C, {BladesActorType, BladesItemType} from "./core/constants.js";
-import U from "./core/utilities.js";
 import G from "./core/gsap.js";
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
@@ -48,7 +46,7 @@ class BladesSelectorDialog extends Dialog {
 		title: string,
 		docType: "Actor"|"Item",
 		tabs: Record<string, BladesActor[]|BladesItem[]>,
-		tags?: BladesTag[]
+		tags?: string[]
 	) {
 		eLog.checkLog("BladesSelectorDialog.Display()", {parent, title, tabs});
 		const app = new BladesSelectorDialog({
@@ -56,7 +54,7 @@ class BladesSelectorDialog extends Dialog {
 			title,
 			docType,
 			tabs,
-			tags,
+			"tags": tags?.filter((tag): tag is BladesTag => tag !== ""),
 			"content": "",
 			"buttons": {
 				cancel: {

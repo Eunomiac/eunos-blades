@@ -86,7 +86,7 @@ class BladesActiveEffect extends ActiveEffect {
                 eLog.checkLog("activeEffects", "delete effect");
                 return effect.delete();
             case "toggle":
-                return effect.update({ disabled: !effect.data.disabled });
+                return effect.update({ disabled: !effect.disabled });
         }
         return null;
     }

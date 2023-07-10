@@ -1,28 +1,19 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
 
-	{{!-- <div class="sheet-root"> --}}
+	<img class="sheet-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+	<img class="sheet-img-bg" src="{{actor.img}}" />
 
-
-		<img class="sheet-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
-		<img class="sheet-img-bg" src="{{actor.img}}" />
-
-		{{#if isGM}}
+	{{#if isGM}}
+		{{#if isSubActor}}<div class="gm-alert-header">Editing as SubActor of {{parentActor.name}}</div>{{/if}}
 		<input type="text" class="tag-entry" />
-		{{/if}}
+	{{/if}}
 
+	<div class="sheet-root">
 		<section class="sheet-top">
 			<input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
 			<input class="comp-concept sheet-subtitle shadowed" type="text" name="system.concept" value="{{system.concept}}"
 				placeholder="Concept">
 
-			<div class="comp-arena comp">
-				<label>Arena:</label>
-				<input type="text" name="system.arena" value="{{system.arena}}">
-			</div>
-			<div class="comp-heritage comp">
-				<label>Heritage:</label>
-				<input type="text" name="system.heritage" value="{{system.heritage}}">
-			</div>
 			<div class="comp-district comp">
 				<label>District:</label>
 				<input type="text" name="system.district" value="{{system.district}}">
@@ -31,14 +22,7 @@
 				<label>Faction:</label>
 				<input type="text" name="system.faction" value="{{system.faction}}">
 			</div>
-			<div class="comp-allies comp">
-				<label>Allies:</label>
-				<input type="text" name="system.allies" value="{{system.allies}}">
-			</div>
-			<div class="comp-enemies comp">
-				<label>Enemies:</label>
-				<input type="text" name="system.enemies" value="{{system.enemies}}">
-			</div>
+
 			<div class="comp-traits input-group">
 				<input class="shadowed" type="text" name="system.traits.0" value="{{system.traits.[0]}}" placeholder="Trait">
 				<input class="shadowed" type="text" name="system.traits.1" value="{{system.traits.[1]}}" placeholder="Trait">
@@ -59,7 +43,7 @@
 				</nav>
 				<div id="comp-{{actor._id}}-description" class="tab flex-vertical description editor-tab"
 					data-tab="description">
-					{{editor content=system.description target="system.description" button=true owner=owner editable=editable}}
+					{{editor system.description target="system.description" button=true owner=owner editable=editable}}
 				</div>
 
 				<div id="comp-{{actor._id}}-friends-and-foes" class="tab flex-vertical friends-and-foes"
@@ -112,5 +96,5 @@
 				{{/if}}
 			</div>
 		</section>
-	{{!-- </div> --}}
+	</div>
 </form>

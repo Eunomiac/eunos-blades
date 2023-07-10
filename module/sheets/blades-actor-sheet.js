@@ -45,9 +45,11 @@ class BladesActorSheet extends BladesSheet {
             "systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
         ]);
     }
-    async getData() {
+    getData() {
         const context = super.getData();
+        const sheetData = {};
         eLog.checkLog("actor", "[BladesActorSheet] super.getData()", { ...context });
+        sheetData.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
 
         const attrData = {
             insight: { value: this.actor.attributes.insight, size: 4 + this.actor.system.resistance_bonuses.insight },
@@ -96,7 +98,7 @@ class BladesActorSheet extends BladesSheet {
             }
             return item;
         });
-        Object.assign(context, {
+        Object.assign(sheetData, {
             items,
             actors,
             playbookData: this.playbookData,
@@ -116,7 +118,6 @@ class BladesActorSheet extends BladesSheet {
                 }
             },
             healing_clock: {
-                color: "white",
                 size: this.actor.system.healing.max,
                 value: this.actor.system.healing.value
             },
@@ -201,8 +202,10 @@ class BladesActorSheet extends BladesSheet {
             friendsName: this.actor.system.friends_name,
             rivalsName: this.actor.system.rivals_name
         });
-        eLog.checkLog("actor", "[BladesActorSheet] return getData()", { ...context });
-        return context;
+        return {
+            ...context,
+            ...sheetData
+        };
     }
     get activeArmor() {
         return Object.keys(U.objFilter(this.actor.system.armor.active, (val) => val === true));

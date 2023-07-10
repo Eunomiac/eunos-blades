@@ -257,14 +257,14 @@ const handlebarHelpers = {
     "crew_vault_coins": (max_coins, options) => {
         let html = options.fn(this);
         for (let i = 1; i <= max_coins; i++) {
-            html += "<input type=\"radio\" id=\"crew-coins-vault-" + i + "\" name=\"data.vault.value\" value=\"" + i + "\"><label for=\"crew-coins-vault-" + i + "\"></label>";
+            html += "<input type=\"radio\" id=\"crew-coins-vault-" + i + "\" name=\"system.vault.value\" value=\"" + i + "\"><label for=\"crew-coins-vault-" + i + "\"></label>";
         }
         return html;
     },
     "crew_experience": (actor, options) => {
         let html = options.fn(this);
         for (let i = 1; i <= 10; i++) {
-            html += `<input type="radio" id="crew-${actor._id}-experience-${i}" name="data.experience" value="${i}" dtype="Radio"><label for="crew-${actor._id}-experience-${i}"></label>`;
+            html += `<input type="radio" id="crew-${actor._id}-experience-${i}" name="system.experience" value="${i}" dtype="Radio"><label for="crew-${actor._id}-experience-${i}"></label>`;
         }
         return html;
     },

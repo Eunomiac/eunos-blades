@@ -1,22 +1,10 @@
 
 
 & {
-	width: 500px !important;
-	height: auto !important;
 	border-radius: 25px;
 	border-top-right-radius: 0;
 	overflow: hidden;
-	position: absolute;
-}
-
-.window-header {
-	padding-left: toRem(20px);
-}
-
-.window-content {
-	form.editable {
-		height: auto;
-	}
+	// position: absolute;
 }
 
 section.sheet-top {
@@ -37,7 +25,7 @@ section.sheet-top {
 			grid-area: traits;
 			display: flex;
 			font-family: var(--font-emphasis);
-			top: 0px;
+			// top: 0px;
 			input {
 				text-transform: uppercase;
 				text-align: center;
@@ -48,7 +36,7 @@ section.sheet-top {
 		.comp-heritage, .comp-faction, .comp-district, .comp-arena {
 			text-align: center;
 			background: linear-gradient(to top, var(--blades-black) 25%, transparent) !important;
-			height: calc(100% + 4px);
+			// height: calc(100% + 4px);
 
 			label {
 				text-align: center;
@@ -56,13 +44,13 @@ section.sheet-top {
 
 			&.comp-arena {
 				grid-area: arena;
-				width: calc(100% + 10px);
+				// width: calc(100% + 10px);
 			}
 
 			&.comp-heritage {
 				grid-area: heritage;
-				width: calc(100% + 10px);
-				left: -10px;
+				// width: calc(100% + 10px);
+				// left: -10px;
 			}
 
 			&.comp-district {
@@ -85,51 +73,51 @@ section.sheet-top {
 			padding: 0;
 		}
 
-		.comp-tabs {
-			grid-area: tabs;
-			// top: -4px;
-			// height: 100%;
+		// .comp-tabs {
+		// 	grid-area: tabs;
+		// 	// top: -4px;
+		// 	// height: 100%;
 
-			.nav-group {
-				nav {
-					width: calc(100% + 2 * 10px);
-					height: 28px;
-					// line-height: 28px;
-					justify-content: stretch;
-					position: relative;
-					left: -10px;
-					z-index: 3;
-					background-color: var(--blades-white);
-					padding: 0 10px;
+		// 	.nav-group {
+		// 		nav {
+		// 			width: calc(100% + 2 * 10px);
+		// 			height: 28px;
+		// 			// line-height: 28px;
+		// 			justify-content: stretch;
+		// 			position: relative;
+		// 			left: -10px;
+		// 			z-index: 3;
+		// 			background-color: var(--blades-white);
+		// 			padding: 0 10px;
 
-					.item {
-						color: var(--blades-grey-dark);
-						flex-grow: 1;
-						font-family: var(--font-emphasis);
-						text-transform: uppercase;
-						font-size: 14px;
-						line-height: 30px;
-						padding: 0 10px;
+		// 			.item {
+		// 				color: var(--blades-grey-dark);
+		// 				flex-grow: 1;
+		// 				font-family: var(--font-emphasis);
+		// 				text-transform: uppercase;
+		// 				font-size: 14px;
+		// 				line-height: 30px;
+		// 				padding: 0 10px;
 
-						&.active {
-							background-color: var(--blades-white-bright);
-							color: var(--blades-black-dark);
-							font-size: 18px;
-						}
+		// 				&.active {
+		// 					background-color: var(--blades-white-bright);
+		// 					color: var(--blades-black-dark);
+		// 					font-size: 18px;
+		// 				}
 
-						&:hover {
-							color: var(--blades-black-dark);
-							background-color: var(--blades-white-bright);
-						}
-					}
-				}
-			}
-		}
+		// 				&:hover {
+		// 					color: var(--blades-black-dark);
+		// 					background-color: var(--blades-white-bright);
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
 
-		.comp-allies,
-		.comp-enemies {
-			display: none
-		}
+		// .comp-allies,
+		// .comp-enemies {
+		// 	display: none
+		// }
 	}
 
 .window-resizable-handle {

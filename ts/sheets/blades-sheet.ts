@@ -2,10 +2,9 @@
 
 import U from "../core/utilities.js";
 import G from "../core/gsap.js";
-import {Tag, District, Playbook, Vice} from "../core/constants.js";
+import {Tag, District, Playbook, Vice, BladesActorType} from "../core/constants.js";
 import Tagify from "../../lib/tagify/tagify.esm.js";
-import type {KeydownEventData, TagData} from "@yaireo/tagify";
-import BladesActor from "../blades-actor.js";
+import BladesActor, {BladesActorSystem} from "../blades-actor.js";
 import BladesItem from "../blades-item.js";
 import BladesSelectorDialog, {SelectionCategory} from "../blades-dialog.js";
 import BladesActiveEffect from "../blades-active-effect.js";
@@ -21,6 +20,14 @@ type BladesCompData = {
   doc?: BladesActor | BladesItem | false;
   dialogDocs?: Record<string, BladesActor[] | BladesItem[]> | false;
 };
+
+interface BladesSheetData {
+		editable: boolean,
+		isGM: boolean,
+		actor: BladesActor,
+		system: BladesActorSystem,
+		activeEffects: BladesActiveEffect[]
+}
 // #endregion
 
 class BladesSheet extends ActorSheet {
@@ -28,22 +35,26 @@ class BladesSheet extends ActorSheet {
 
 	override getData() {
 
-		const context = super.getData() as ReturnType<ActorSheet["getData"]> & List<any>;
-		eLog.checkLog("actor", "[BladesSheet] super.getData()", {...context});
+		const context = super.getData();
 
-		context.editable = this.options.editable;
-		context.isGM = game.user.isGM;
-		context.activeEffects = this.actor.effects;
-		context.actor = this.actor;
-		context.system = this.actor.system;
+		const sheetData: BladesSheetData = {
+			editable: this.options.editable,
+			isGM: game.user.isGM,
+			actor: this.actor,
+			system: this.actor.system,
+			activeEffects: Array.from(this.actor.effects) as BladesActiveEffect[]
+		};
 
-		eLog.checkLog("actor", "[BladesSheet] return getData()", {...context});
+		return {
+			...context,
+			...sheetData
+		};
 
-		return context;
 	}
 
 	// #region DATA PACKAGING GETTERS
 	get playbookData() {
+		if (this.actor.type === BladesActorType.npc) { return undefined }
 		return {
 			dotline: {
 				data: this.actor.system.experience.playbook,
@@ -56,6 +67,7 @@ class BladesSheet extends ActorSheet {
 	}
 
 	get coinsData() {
+		if (this.actor.type === BladesActorType.npc) { return undefined }
 		return {
 			dotline: {
 				data: this.actor.system.coins,
@@ -80,15 +92,11 @@ class BladesSheet extends ActorSheet {
 		}
 
 		// Everything below here is only needed if the sheet is editable
-		if (!this.options.editable) {
-			return;
-		}
+		if (!this.options.editable) { return }
 
 		// Add dotline functionality
-		html.find(".dotline").each((i, elem) => {
-			if ($(elem).hasClass("locked")) {
-				return;
-			}
+		html.find(".dotline").each((_, elem) => {
+			if ($(elem).hasClass("locked")) { return }
 
 			let targetDoc: BladesActor | BladesItem = this.actor as BladesActor;
 			let targetField = $(elem).data("target");

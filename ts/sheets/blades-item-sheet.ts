@@ -31,7 +31,7 @@ class BladesItemSheet extends ItemSheet {
 		if (C.SimpleItemTypes.includes(this.item.type)) {
 			pathComps.push("simple-sheet.hbs");
 		} else {
-			pathComps.push(`${this.item.data.type}-sheet.hbs`);
+			pathComps.push(`${this.item.type}-sheet.hbs`);
 		}
 		return pathComps.join("/");
 	}
@@ -173,8 +173,6 @@ class BladesItemSheet extends ItemSheet {
 		});
 
 		html.find("[data-action=\"toggle-turf-connection\"").on("click", this.toggleTurfConnection.bind(this));
-
-		// <input data-dtype="Boolean" type="checkbox" name="data.turfs.{{id}}.connects.{{dir}}" {{checked connects}}>{{/if}}
 	}
 
 	async _onTagifyChange(event: Event) {

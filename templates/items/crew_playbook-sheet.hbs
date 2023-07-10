@@ -15,7 +15,7 @@
 			<textarea class="crew-type-description" name="system.description" placeholder="(Description)" {{~#unless editable}}
 				readonly{{/unless}}>{{system.description}}</textarea>
 			<label class="label-stripe">{{localize "BITD.ExpClues"}}</label>
-			{{editor content=system.experience_clues target="system.experience_clues" button=true owner=owner editable=editable}}
+			{{editor system.experience_clues target="system.experience_clues" button=true owner=owner editable=editable}}
 
 			<label class="label-stripe">{{localize "BITD.Turf"}}</label>
 			<div id="turf-container">

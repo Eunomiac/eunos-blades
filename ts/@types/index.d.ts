@@ -129,8 +129,8 @@ declare global {
 		interface Options extends ActorSheet.Options { }
 
 		interface Data<Opts extends Options = Options> extends ActorSheet.Data<Opts> {
-			items: EmbeddedCollection<typeof BladesItem, BladesActor["data"]>
-			& ToObjectFalseType<EmbeddedCollection<typeof BladesItem, BladesActor["data"]>>,
+			items: EmbeddedCollection<typeof BladesItem, BladesActor["system"]>
+			& ToObjectFalseType<EmbeddedCollection<typeof BladesItem, BladesActor["system"]>>,
 			system: BladesActor["system"]
 		}
 	}

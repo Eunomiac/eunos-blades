@@ -455,6 +455,8 @@
 				}
 
 				&.comp-xp-playbook {
+					position: absolute;
+					right: 0;
 
 					.dotline {
 						--dotline-dot-sizeX: #{toRem(18px)};

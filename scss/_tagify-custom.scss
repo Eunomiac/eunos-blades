@@ -1,6 +1,6 @@
 .tagify {
   caret-color: transparent;
-  margin-top: 10px;
+  // margin-top: 10px;
 
   --placeholder-color: transparent;
   --placeholder-color-focus: transparent;
@@ -23,9 +23,17 @@
       inset: -0.5px;
     }
 
-    &[data-group="Tags"] {
-      --tag-bg: #{getYIQScaledColor(orange, 150)};
-      --tag-hover: #{getYIQScaledColor(orange, 200)};
+    &[data-group="System Tags"] {
+      --tag-bg: #{getYIQScaledColor(darkgrey, 150)};
+      --tag-hover: #{getYIQScaledColor(darkgrey, 200)};
+    }
+    &[data-group="Item Tags"] {
+      --tag-bg: #{getYIQScaledColor(darkgreen, 150)};
+      --tag-hover: #{getYIQScaledColor(darkgreen, 200)};
+    }
+    &[data-group="Actor Tags"] {
+      --tag-bg: #{getYIQScaledColor(brown, 150)};
+      --tag-hover: #{getYIQScaledColor(brown, 200)};
     }
     &[data-group="Playbooks"] {
       --tag-bg: #{getYIQScaledColor(blue, 150)};
@@ -68,7 +76,7 @@
       color: white;
       font-family: "Fjalla One";
       text-transform: uppercase;
-      font-size: 8px;
+      font-size: 10px;
     }
 
     .tagify__dropdown__itemsGroup {
@@ -85,17 +93,35 @@
         padding: 0.1rem 0.25rem;
         border-radius: 5px;
 
-        &[data-group="Tags"] {
-          background: #{getYIQScaledColor(orange, 150)};
+        background-color: var(--tag-bg);
+        &:hover {
+          background-color: var(--tag-hover);
+        }
+
+
+        &[data-group="System Tags"] {
+          --tag-bg: #{getYIQScaledColor(darkgrey, 150)};
+          --tag-hover: #{getYIQScaledColor(darkgrey, 200)};
+        }
+        &[data-group="Item Tags"] {
+          --tag-bg: #{getYIQScaledColor(darkgreen, 150)};
+          --tag-hover: #{getYIQScaledColor(darkgreen, 200)};
+        }
+        &[data-group="Actor Tags"] {
+          --tag-bg: #{getYIQScaledColor(brown, 150)};
+          --tag-hover: #{getYIQScaledColor(brown, 200)};
         }
         &[data-group="Playbooks"] {
-          background: #{getYIQScaledColor(blue, 150)};
+          --tag-bg: #{getYIQScaledColor(blue, 150)};
+          --tag-hover: #{getYIQScaledColor(blue, 200)};
         }
         &[data-group="Districts"] {
-          background: #{getYIQScaledColor(tan, 150)};
+          --tag-bg: #{getYIQScaledColor(tan, 150)};
+          --tag-hover: #{getYIQScaledColor(tan, 200)};
         }
         &[data-group="Vices"] {
-          background: #{getYIQScaledColor(crimson, 150)};
+          --tag-bg: #{getYIQScaledColor(crimson, 150)};
+          --tag-hover: #{getYIQScaledColor(crimson, 200)};
         }
       }
     }

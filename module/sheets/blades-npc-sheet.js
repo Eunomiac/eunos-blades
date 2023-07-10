@@ -6,19 +6,21 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import BladesSheet from "./blades-sheet.js";
-import Tagify from "../../lib/tagify/tagify.esm.js";
 class BladesNPCSheet extends BladesSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "actor", "npc"],
             template: "systems/eunos-blades/templates/npc-sheet.hbs",
             width: 500,
+            height: 350,
             tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "description" }]
         });
     }
-    async getData() {
+    getData() {
         const context = super.getData();
-        context.randomizers = this.actor.system.randomizers;
+        context.isSubActor = context.actor.isSubActor;
+        context.parentActor = context.actor.parentActor;
+        context.randomizers = context.actor.system.randomizers;
         return context;
     }
     activateListeners(html) {
@@ -26,15 +28,7 @@ class BladesNPCSheet extends BladesSheet {
         if (!this.options.editable) {
             return;
         }
-
-        const inputElement = document.querySelector('input[name="data.harm.heavy.one"]');
-        if (inputElement instanceof HTMLInputElement) {
-            new Tagify(inputElement, {});
-        }
-        else {
-            console.log("Not an HTMLInputElement");
-        }
-
+        
         html.find("[data-action=\"randomize\"").on("click", (event) => {
             this.actor.updateRandomizers();
         });

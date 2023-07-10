@@ -31,7 +31,7 @@ class BladesItemSheet extends ItemSheet {
             pathComps.push("simple-sheet.hbs");
         }
         else {
-            pathComps.push(`${this.item.data.type}-sheet.hbs`);
+            pathComps.push(`${this.item.type}-sheet.hbs`);
         }
         return pathComps.join("/");
     }
