@@ -1,6 +1,7 @@
 import C, {SVGDATA, BladesItemType, Tag} from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
+import {BladesPhase} from "./sheets/blades-tracker-sheet.js";
 
 
 export enum PrereqType {
@@ -93,9 +94,13 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
 	override prepareData() {
 		super.prepareData();
 
-		if (this.data.type === "faction") { this._prepareFaction() }
-		if (this.data.type === "clock_keeper") { this._prepareClockKeeper() }
-		if (this.data.type === "cohort") { this._prepareCohort() }
+		switch (this.type) {
+			case BladesItemType.faction: return this._prepareFaction();
+			case BladesItemType.clock_keeper: return this._prepareClockKeeper();
+			case BladesItemType.cohort: return this._prepareCohort();
+			case BladesItemType.gm_tracker: return this._prepareGMTracker();
+			default: return undefined;
+		}
 	}
 
 	_prepareFaction() {
@@ -118,6 +123,10 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
 					.filter(([clockNum, clockData]) => Boolean(clockData)));
 				return [keyID, keyData];
 			}));
+	}
+
+	_prepareGMTracker() {
+		// GM Tracker stuff
 	}
 
 
@@ -303,6 +312,7 @@ declare interface BladesItem {
 		suggested_ability?: string,
 		goal_clock?: number,
 		notes?: string,
+		game_phase?: BladesPhase,
 		hold?: {
 			value: number[],
 			max: number,

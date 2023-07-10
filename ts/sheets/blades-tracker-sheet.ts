@@ -3,7 +3,32 @@ import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../blades-item.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
-export default class BladesTrackerSheet extends BladesItemSheet {
+export enum BladesPhase {
+	CharGen = "CharGen",
+	Planning = "Planning",
+	Score = "Score",
+	Downtime = "Downtime"
+}
+// declare interface BladesTrackerSheet {
+// 	get type(): BladesItemType.gm_tracker,
+// 	parent: null,
+// 	system: BladesItem["system"] & {
+// 		game_phase: BladesPhase;
+// 	}
+// }
+class BladesTrackerSheet extends BladesItemSheet {
+
+	static async Get() {
+		return game.eunoblades.Tracker || (await BladesItem.create({
+			name: "GM Tracker",
+			type: "gm_tracker",
+			img: "systems/eunos-blades/assets/icons/gm-tracker.svg"
+		})) as BladesItem;
+	}
+
+	static async GetPhase() {
+		return (await BladesTrackerSheet.Get()).system.game_phase;
+	}
 
 	static override get defaultOptions() {
 	  return foundry.utils.mergeObject(super.defaultOptions, {
@@ -41,9 +66,9 @@ export default class BladesTrackerSheet extends BladesItemSheet {
 	}
 
 	override async getData() {
-		const data = await super.getData();
+		const context = await super.getData();
 
-		return data;
+		return context;
 	}
 
 	override async activateListeners(html: JQuery<HTMLElement>) {
@@ -51,3 +76,5 @@ export default class BladesTrackerSheet extends BladesItemSheet {
 
 	}
 }
+
+export default BladesTrackerSheet;
