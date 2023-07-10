@@ -1054,7 +1054,8 @@ template {
     hyphens: auto;
     text-align: justify;
     position: absolute;
-    top: 0;
+    top: unset;
+    bottom: 100px;
     z-index: 6;
     pointer-events: none; }
     :root .comp .tooltip.playbook-tooltip,
@@ -1814,7 +1815,8 @@ template {
         hyphens: auto;
         text-align: justify;
         position: absolute;
-        top: 0;
+        top: unset;
+        bottom: 100px;
         z-index: 6;
         pointer-events: none; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .tooltip.playbook-tooltip {
@@ -3130,7 +3132,8 @@ template {
       hyphens: auto;
       text-align: justify;
       position: absolute;
-      top: 0;
+      top: unset;
+      bottom: 100px;
       z-index: 6;
       pointer-events: none; }
       :root body.vtt.game.system-eunos-blades #interface .comp .tooltip.playbook-tooltip,
@@ -4611,7 +4614,8 @@ template {
       hyphens: auto;
       text-align: justify;
       position: absolute;
-      top: 0;
+      top: unset;
+      bottom: 100px;
       z-index: 6;
       pointer-events: none; }
       :root body.vtt.game.system-eunos-blades #interface #chat .comp .tooltip.playbook-tooltip,
@@ -5820,7 +5824,8 @@ template {
         hyphens: auto;
         text-align: justify;
         position: absolute;
-        top: 0;
+        top: unset;
+        bottom: 100px;
         z-index: 6;
         pointer-events: none; }
         :root body.vtt.game.system-eunos-blades .app.window-app .comp .tooltip.playbook-tooltip {
@@ -7059,8 +7064,8 @@ template {
           mask-image: linear-gradient(to bottom, black, transparent); }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form.editable .gm-alert-header {
         position: relative;
+        pointer-events: auto;
         z-index: 10;
-        pointer-events: none;
         display: block;
         height: 1.25rem;
         line-height: 1.25rem;
@@ -8000,21 +8005,19 @@ template {
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.crew_playbook .turf-list .turf-row .turf-block .turf-control {
             display: none; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog {
-    min-width: 500px;
-    max-width: 500px;
-    min-height: 300px;
-    max-height: 500px;
+    max-width: 900px;
+    height: auto !important;
+    width: auto !important;
     --item-info-height: 100px;
     --buttons-height: 25px; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content {
       padding: 0;
       overflow: visible;
-      max-height: 100%;
       position: static; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content {
-        height: calc(100% - var(--item-info-height) - var(--buttons-height));
         padding-block-start: 0;
-        position: static; }
+        position: static;
+        overflow: visible; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .nav-group {
           height: 100%;
           width: 100%;
@@ -8025,7 +8028,8 @@ template {
             align-items: flex-start;
             justify-content: center;
             padding: 25px 0;
-            display: none; }
+            display: none;
+            overflow: visible; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .nav-group .tab[data-tab].active {
               display: flex; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .nav-group .tab[data-tab] .comp .comp-body {
@@ -8054,12 +8058,12 @@ template {
           opacity: 0.75; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .comp-vertical {
           height: 50px;
-          width: 25%;
-          min-width: min-content;
+          width: 125px;
           flex-grow: 0;
           margin: 30px 0;
-          position: static;
-          overflow: visible; }
+          position: relative;
+          overflow: visible;
+          z-index: 0; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .comp-vertical .comp-body {
             transform-origin: center center; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .comp-vertical .comp-body, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .dialog-content .comp-vertical .comp-body * {

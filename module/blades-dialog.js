@@ -26,6 +26,7 @@ export var SelectionCategory;
     SelectionCategory["Friend"] = "Friend";
     SelectionCategory["Rival"] = "Rival";
     SelectionCategory["Crew"] = "Crew";
+    SelectionCategory["Member"] = "Member";
 })(SelectionCategory || (SelectionCategory = {}));
 class BladesSelectorDialog extends Dialog {
     static get defaultOptions() {
@@ -104,10 +105,13 @@ class BladesSelectorDialog extends Dialog {
                 self.close();
             },
             mouseenter: function () {
+                $(this).parent().css("z-index", 1);
                 $(this).data("hoverTimeline").play();
             },
             mouseleave: function () {
-                $(this).data("hoverTimeline").reverse();
+                $(this).data("hoverTimeline").reverse().then(() => {
+                    $(this).parent().removeAttr("style");
+                });
             }
         });
     }

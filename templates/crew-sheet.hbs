@@ -22,36 +22,44 @@
 			<input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}">
 
 			{{> "systems/eunos-blades/templates/components/comp.hbs" items.playbook
-				addButton=true
-				cat="crew_playbook"
-				id=items.playbook._id
 				class="comp-playbook comp-vertical"
 				label="Playbook"
+				cat="Playbook"
+				docType="Item"
+				addButton=true
+				remButton=true
+				id=items.playbook._id
 			}}
 
 			{{> "systems/eunos-blades/templates/components/comp.hbs" items.reputation
-				addButton=true
-				label="Reputation"
-				cat="crew_reputation"
-				id=items.reputation._id
+				id=items.reputation.id
 				class="comp-reputation comp-vertical no-img"
+				label="Reputation"
+				cat="Reputation"
+				docType="Item"
+				addButton=true
+				remButton=true
 			}}
 
 			{{> "systems/eunos-blades/templates/components/comp.hbs" items.preferredOp
-				addButton=true
-				label="Preferred Op"
-				cat="preferred_op"
 				id=items.preferredOp._id
-				class="comp-preferred-op comp-vertical"
+				class="comp-preferred-op comp-vertical no-img"
+				label="Preferred Op"
+				cat="PreferredOp"
+				docType="Item"
+				addButton=true
+				remButton=true
 			}}
 
 			{{> "systems/eunos-blades/templates/components/comp.hbs" tierData
 				label="Tier"
-				class="comp-tier comp-vertical" }}
+				class="comp-tier comp-vertical"
+			}}
 
 			{{> "systems/eunos-blades/templates/components/comp.hbs" coinsData
 				label="Coins"
-				class="comp-coins comp-vertical" }}
+				class="comp-coins comp-vertical"
+			}}
 
 			<div class="members comp-horizontal comp">
 				<div class="portrait-container flex-horizontal">
@@ -128,35 +136,48 @@
 			</div>
 
 			{{!-- Crew Upgrades --}}
+
+			{{!-- Crew Upgrades --}}
 			<div class="tab upgrades flex-vertical" data-tab="upgrades">
-				<label class="comp tab-label" data-comp-cat="crew_upgrade">
+				<label class="comp tab-label" data-comp-cat="Upgrade" data-comp-type="Item">
+					{{#if items.playbook}}
 					<a class="comp-control comp-button comp-add">
 						<i class="fas fa-plus-square"></i>
 					</a>
+					{{/if}}
 					<span class="tab-title">Crew Upgrades</span>
 				</label>
 
 				{{#each items.upgrades}}
 				{{> "systems/eunos-blades/templates/components/comp.hbs" this
 					class="comp-desc-trait comp-horizontal full-width"
+					docType="Item"
+					cat="Upgrade"
 					remButton=true
+					id=id
 				}}
 				{{/each}}
 			</div>
 
+
 			{{!-- Crew Abilities --}}
 			<div class="tab abilities flex-vertical" data-tab="abilities">
-				<label class="comp tab-label" data-comp-cat="crew_ability">
+				<label class="comp tab-label" data-comp-cat="Ability" data-comp-type="Item">
+					{{#if items.playbook}}
 					<a class="comp-control comp-button comp-add">
 						<i class="fas fa-plus-square"></i>
 					</a>
+					{{/if}}
 					<span class="tab-title">Crew Abilities</span>
 				</label>
 
 				{{#each items.abilities}}
 				{{> "systems/eunos-blades/templates/components/comp.hbs" this
 					class="comp-desc-trait comp-horizontal full-width"
+					docType="Item"
+					cat="Ability"
 					remButton=true
+					id=id
 				}}
 				{{/each}}
 			</div>

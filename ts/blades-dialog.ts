@@ -20,7 +20,8 @@ export enum SelectionCategory {
 	Acquaintance = "Acquaintance",
 	Friend = "Friend",
 	Rival = "Rival",
-	Crew = "Crew"
+	Crew = "Crew",
+	Member = "Member"
 }
 
 class BladesSelectorDialog extends Dialog {
@@ -116,10 +117,13 @@ class BladesSelectorDialog extends Dialog {
 					self.close();
 				},
 				mouseenter: function() {
+					$(this).parent().css("z-index", 1);
 					$(this).data("hoverTimeline").play();
 				},
 				mouseleave: function() {
-					$(this).data("hoverTimeline").reverse();
+					$(this).data("hoverTimeline").reverse().then(() => {
+						$(this).parent().removeAttr("style");
+					});
 				}
 			});
 	}

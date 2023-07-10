@@ -38,8 +38,8 @@
 
 		.gm-alert-header {
 			position: relative;
+			pointer-events: auto;
 			z-index: 10;
-			pointer-events: none;
 			display: block;
 			height: toRem(20px);
 			line-height: toRem(20px);

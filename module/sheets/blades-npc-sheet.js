@@ -28,6 +28,10 @@ class BladesNPCSheet extends BladesSheet {
         if (!this.options.editable) {
             return;
         }
+        html.find(".gm-alert-header").on("click", async (event) => {
+            event.preventDefault();
+            this.actor.clearParentActor();
+        });
         
         html.find("[data-action=\"randomize\"").on("click", (event) => {
             this.actor.updateRandomizers();

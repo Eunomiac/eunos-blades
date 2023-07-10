@@ -8,9 +8,7 @@ import BladesActor from "../blades-actor.js";
 // import ConstructorDataType from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
 // import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
-interface BladesActorSheetData {
-	isOwner: boolean
-}
+
 class BladesActorSheet extends BladesSheet {
 
 	static override get defaultOptions() {
@@ -61,90 +59,34 @@ class BladesActorSheet extends BladesSheet {
 
 		sheetData.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
 
-		//~ Calculate Attribute Totals
-		const attrData = {
-			insight: {value: this.actor.attributes.insight, size: 4 + this.actor.system.resistance_bonuses.insight},
-			prowess: {value: this.actor.attributes.prowess, size: 4 + this.actor.system.resistance_bonuses.prowess},
-			resolve: {value: this.actor.attributes.resolve, size: 4 + this.actor.system.resistance_bonuses.resolve}
-		};
-
-		//~ Arrange grid of Trauma Conditions
-		const allTraumaConditions = Object.keys(this.actor.system.trauma.active)
-			.filter((key) => this.actor.system.trauma.active[key]);
-
-		//~ Assemble embedded actors and items
-		const items = {
-			abilities: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.ability),
-			background: this.actor.activeSubItems.find((item) => item.type === BladesItemType.background),
-			heritage: this.actor.activeSubItems.find((item) => item.type === BladesItemType.heritage),
-			vice: (this.actor.system.vice.override && JSON.parse(this.actor.system.vice.override as string))
-				|| this.actor.activeSubItems.find((item) => item.type === BladesItemType.vice),
-			loadout: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.item),
-			playbook: this.actor.playbook
-		};
-
-		const actors = {
-			crew: this.actor.activeSubActors.find((actor) => actor.type === BladesActorType.crew),
-			vice_purveyor: this.actor.activeSubActors.find((actor) => actor.hasTag(Tag.NPC.VicePurveyor)),
-			friends: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Friend)),
-			rivals: this.actor.activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Rival))
-		};
-
-		//~ Assign dotlines to abilities with usage data
-		items.abilities = items.abilities.map((item) => {
-			if (item.system.load) {
-				Object.assign(item, {
-					numberCircle: item.system.load,
-					numberCircleClass: "item-load"
-				});
-			}
-			if (item.system.uses?.max) {
-				Object.assign(item, {
-					inRuleDotline: {
-						data: item.system.uses,
-						dotlineLabel: "Uses",
-						target: "item.system.uses.value",
-						iconEmpty: "dot-empty.svg",
-						iconEmptyHover: "dot-empty-hover.svg",
-						iconFull: "dot-full.svg",
-						iconFullHover: "dot-full-hover.svg"
-					}
-				});
-			}
-			return item;
-		});
+		const {activeSubItems, activeSubActors} = this.actor;
 
 		Object.assign(
 			sheetData,
 			{
-				items,
-				actors,
-				playbookData: this.playbookData,
-				coinsData: this.coinsData,
-				stashData: {
-					label: "Stash:",
-					dotline: {
-						data: this.actor.system.stash,
-						target: "system.stash.value",
-						iconEmpty: "coin-empty.svg",
-						iconEmptyHover: "coin-empty-hover.svg",
-						iconFull: "coin-full.svg",
-						iconFullHover: "coin-full-hover.svg",
-						altIconFull: "coin-ten.svg",
-						altIconFullHover: "coin-ten-hover.svg",
-						altIconStep: 10
-					}
-				},
-				healing_clock: {
-					// color: "white",
-					size: this.actor.system.healing.max,
-					value: this.actor.system.healing.value
-				},
-				armor: Object.fromEntries(Object.entries(this.actor.system.armor.active)
-					.filter(([, isActive]) => isActive)
-					.map(([armor]) => [armor, this.actor.system.armor.checked[armor as keyof BladesActor["system"]["armor"]["checked"]]])),
-				loadData: {
-					items: items.loadout.map((item) => {
+				items: { //~ Process and sort active subItems
+					abilities: activeSubItems.filter((item) => item.type === BladesItemType.ability).map((item) => {
+						//~ Assign dotlines to abilities with usage data
+						if (item.system.uses?.max) {
+							Object.assign(item, {
+								inRuleDotline: {
+									data: item.system.uses,
+									dotlineLabel: "Uses",
+									target: "item.system.uses.value",
+									iconEmpty: "dot-empty.svg",
+									iconEmptyHover: "dot-empty-hover.svg",
+									iconFull: "dot-full.svg",
+									iconFullHover: "dot-full-hover.svg"
+								}
+							});
+						}
+						return item;
+					}),
+					background: activeSubItems.find((item) => item.type === BladesItemType.background),
+					heritage: activeSubItems.find((item) => item.type === BladesItemType.heritage),
+					vice: activeSubItems.find((item) => item.type === BladesItemType.vice),
+					loadout: activeSubItems.filter((item) => item.type === BladesItemType.item).map((item) => {
+						// Assign load and usage data to gear
 						if (item.system.load) {
 							Object.assign(item, {
 								numberCircle: item.system.load,
@@ -166,10 +108,40 @@ class BladesActorSheet extends BladesSheet {
 						}
 						return item;
 					}),
+					playbook: this.actor.playbook
+				},
+				actors: { //~ Process and sort active subActors
+					crew: activeSubActors.find((actor) => actor.type === BladesActorType.crew),
+					vice_purveyor: activeSubActors.find((actor) => actor.hasTag(Tag.NPC.VicePurveyor)),
+					friends: activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Friend)),
+					rivals: activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Rival))
+				},
+				stashData: {
+					label: "Stash:",
+					dotline: {
+						data: this.actor.system.stash,
+						target: "system.stash.value",
+						iconEmpty: "coin-empty.svg",
+						iconEmptyHover: "coin-empty-hover.svg",
+						iconFull: "coin-full.svg",
+						iconFullHover: "coin-full-hover.svg",
+						altIconFull: "coin-ten.svg",
+						altIconFullHover: "coin-ten-hover.svg",
+						altIconStep: 10
+					}
+				},
+				healing_clock: {
+					value: this.actor.system.healing.value,
+					size: this.actor.system.healing.max
+				},
+				armor: Object.fromEntries(Object.entries(this.actor.system.armor.active)
+					.filter(([, isActive]) => isActive)
+					.map(([armor]) => [armor, this.actor.system.armor.checked[armor as keyof BladesActor["system"]["armor"]["checked"]]])),
+				loadData: {
 					curLoad: this.actor.currentLoad,
-					selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected)) as "heavy"|"normal"|"light"|"encumbered"],
+					selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected.toString())) as "heavy"|"normal"|"light"|"encumbered"],
 					selections: C.Loadout.selections,
-					selLoadLevel: this.actor.system.loadout.selected
+					selLoadLevel: this.actor.system.loadout.selected.toString()
 				},
 				stressData: {
 					name: this.actor.system.stress.name,
@@ -181,7 +153,20 @@ class BladesActorSheet extends BladesSheet {
 						svgEmpty: "full|half|frame"
 					}
 				},
-				attributes: attrData,
+				attributes:  {
+					insight: {
+						value: this.actor.attributes.insight,
+						size: 4 + this.actor.system.resistance_bonuses.insight
+					},
+					prowess: {
+						value: this.actor.attributes.prowess,
+						size: 4 + this.actor.system.resistance_bonuses.prowess
+					},
+					resolve: {
+						value: this.actor.attributes.resolve,
+						size: 4 + this.actor.system.resistance_bonuses.resolve
+					}
+				},
 				traumaData: {
 					name: this.actor.system.trauma.name,
 					dotline: {
@@ -194,7 +179,7 @@ class BladesActorSheet extends BladesSheet {
 					compContainer: {
 						"class": "comp-trauma-conditions comp-vertical full-width",
 						"blocks": [
-							allTraumaConditions.slice(0, Math.ceil(allTraumaConditions.length / 2))
+							this.actor.allActiveTraumaConditions.slice(0, Math.ceil(this.actor.allActiveTraumaConditions.length / 2))
 								.map((tName) => ({
 									checkLabel: tName,
 									checkClasses: {
@@ -204,7 +189,7 @@ class BladesActorSheet extends BladesSheet {
 									checkTarget: `system.trauma.checked.${tName}`,
 									checkValue: this.actor.system.trauma.checked[tName] ?? false
 								})),
-							allTraumaConditions.slice(Math.ceil(allTraumaConditions.length / 2))
+							this.actor.allActiveTraumaConditions.slice(Math.ceil(this.actor.allActiveTraumaConditions.length / 2))
 								.map((tName) => ({
 									checkLabel: tName,
 									checkClasses: {

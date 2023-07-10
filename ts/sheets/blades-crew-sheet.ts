@@ -36,22 +36,20 @@ class BladesCrewSheet extends BladesSheet {
 		}
 		turfs_amount = Math.min(turfs_amount, this.actor.system.turfs.max);
 
+		const {activeSubItems} = this.actor;
+
 		//~ Assemble embedded actors and items
 		context.items = {
-			abilities: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.crew_ability),
+			abilities: activeSubItems.filter((item) => item.type === BladesItemType.crew_ability),
 			playbook: this.actor.playbook,
-			reputation: this.actor.activeSubItems.find((item) => item.type === BladesItemType.crew_reputation),
-			upgrades: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.crew_upgrade),
-			cohorts: this.actor.activeSubItems.filter((item) => item.type === BladesItemType.cohort),
-			preferredOp: this.actor.activeSubItems.find((item) => item.type === BladesItemType.preferred_op)
+			reputation: activeSubItems.find((item) => item.type === BladesItemType.crew_reputation),
+			upgrades: activeSubItems.filter((item) => item.type === BladesItemType.crew_upgrade),
+			cohorts: activeSubItems.filter((item) => item.type === BladesItemType.cohort),
+			preferredOp: activeSubItems.find((item) => item.type === BladesItemType.preferred_op)
 		};
 		context.actors = {
 			members: this.actor.members
 		};
-
-		context.playbookData = this.playbookData;
-
-		context.coinsData = this.coinsData;
 
 		context.tierData = {
 			label: "Tier",
@@ -154,19 +152,14 @@ class BladesCrewSheet extends BladesSheet {
 			return this.actor.createEmbeddedDocuments("Item", [data]);
 		});
 
+
 		// Toggle Turf
 		html.find(".turf-select").on("click", async (event) => {
-			const element = $(event.currentTarget).parents(".item");
 
-			const item_id = element.data("itemId");
 			const turf_id = $(event.currentTarget).data("turfId");
 			const turf_current_status = $(event.currentTarget).data("turfStatus");
-			const turf_checkbox_name = "system.turfs." + turf_id + ".value";
-
-			await this.actor.updateEmbeddedDocuments("Item", [{
-				_id: item_id,
-				[turf_checkbox_name]: !turf_current_status}]);
-			this.render(false);
+			this.actor.playbook?.update({["system.turfs." + turf_id + ".value"]: !turf_current_status})
+				.then(() => this.render(false));
 		});
 
 		// Cohort Block Harm handler

@@ -1,8 +1,11 @@
 & {
-	min-width: 500px;
-	max-width: 500px;
-	min-height: 300px;
-	max-height: 500px;
+	// min-width: 500px;
+	max-width: 900px;
+	// min-height: 300px;
+	// max-height: 500px;
+
+	height: auto !important;
+	width: auto !important;
 
 	--item-info-height: 100px;
 	--buttons-height: 25px;
@@ -10,13 +13,14 @@
 	.window-content {
 		padding: 0;
 		overflow: visible;
-		max-height: 100%;
+		// max-height: 100%;
 		position: static;
 
 		.dialog-content {
-			height: calc(100% - var(--item-info-height) - var(--buttons-height));
+			// height: calc(100% - var(--item-info-height) - var(--buttons-height));
 			padding-block-start: 0;
 			position: static;
+			overflow: visible;
 
 			// .item-details {
 			// 	// opacity: 0;
@@ -51,6 +55,7 @@
 					justify-content: center;
 					padding: 25px 0;
 					display: none;
+					overflow: visible;
 					// overflow-y: scroll;
 					// overflow-x: hidden;
 					&.active {display: flex}
@@ -108,12 +113,13 @@
 
 			.comp-vertical {
 				height: 50px;
-				width: 25%;
-				min-width: min-content;
+				width: 125px;
+				// min-width: min-content;
 				flex-grow: 0;
 				margin: 30px 0;
-				position: static;
+				position: relative;
 				overflow: visible;
+				z-index: 0;
 
 				.comp-body {
 					transform-origin: center center;

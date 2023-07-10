@@ -180,7 +180,8 @@
 		text-align: justify;
 
 		position: absolute;
-		top: 0;
+		top: unset;
+		bottom: 100px;
 		z-index: zLevel(+4);
 
 		pointer-events: none;

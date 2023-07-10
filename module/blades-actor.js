@@ -216,6 +216,15 @@ class BladesActor extends Actor {
         }
         this.update({ ["system.subactors"]: mergeObject(this.system.subactors, { [`-=${subActor.id}`]: null }) }, undefined, true);
     }
+    async clearParentActor() {
+        this.parentActor = undefined;
+        this.ownership = this._source.ownership;
+        this.system = this._source.system;
+        this.prepareData();
+        this.render();
+    }
+    
+    
     get subItems() { return Array.from(this.items); }
     get activeSubItems() { return this.items.filter((item) => !item.hasTag(Tag.System.Archived)); }
     get archivedSubItems() { return this.items.filter((item) => item.hasTag(Tag.System.Archived)); }
@@ -355,9 +364,6 @@ class BladesActor extends Actor {
                 if (this.playbookName === null) {
                     return false;
                 }
-                if (this.vices.some((item) => item.hasTag(Tag.Item.ViceOverride))) {
-                    return false;
-                }
                 dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.vice, this.playbookName));
                 return dialogData;
             }
@@ -384,7 +390,7 @@ class BladesActor extends Actor {
                 return dialogData;
             }
             case SelectionCategory.Gear: {
-                if (this.playbookName === null) {
+                if (this.type !== BladesActorType.pc || this.playbookName === null) {
                     return false;
                 }
                 const gearItems = this._processEmbeddedItemMatches([
@@ -416,29 +422,37 @@ class BladesActor extends Actor {
                 if (this.playbookName === null) {
                     return false;
                 }
-                const itemType = this.type === BladesActorType.crew ? BladesItemType.crew_ability : BladesItemType.ability;
-                dialogData[this.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(itemType, this.playbookName));
-                dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(itemType))
-                    .filter((item) => !item.hasTag(this.playbookName))
-                    .map((item) => {
-                    if (item.dialogCSSClasses) {
-                        item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
-                    }
-                    return item;
-                })
-                    .sort((a, b) => {
-                    if (a.system.world_name > b.system.world_name) {
-                        return 1;
-                    }
-                    if (a.system.world_name < b.system.world_name) {
-                        return -1;
-                    }
-                    return 0;
-                });
+                if (this.type === BladesActorType.pc) {
+                    dialogData[this.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability, this.playbookName));
+                    dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability))
+                        .filter((item) => !item.hasTag(this.playbookName))
+                        .map((item) => {
+                        if (item.dialogCSSClasses) {
+                            item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
+                        }
+                        return item;
+                    })
+                        .sort((a, b) => {
+                        if (a.system.world_name > b.system.world_name) {
+                            return 1;
+                        }
+                        if (a.system.world_name < b.system.world_name) {
+                            return -1;
+                        }
+                        return 0;
+                    });
+                }
+                else {
+                    dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_ability, this.playbookName));
+                }
                 return dialogData;
             }
             case SelectionCategory.Upgrade: {
-                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade));
+                if (this.playbookName === null) {
+                    return false;
+                }
+                dialogData[this.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, this.playbookName));
+                dialogData.General = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, Tag.Item.General));
                 return dialogData;
             }
         }
@@ -557,7 +571,7 @@ class BladesActor extends Actor {
         return super.create(data, options);
     }
     async _onCreateEmbeddedDocuments(embName, docs, ...args) {
-        await super._onCreateEmbeddedDocuments(embName, docs, ...args);
+        super._onCreateEmbeddedDocuments(embName, docs, ...args);
         eLog.checkLog("actorTrigger", "onCreateEmbeddedDocuments", { embName, docs, args });
         docs.forEach(async (doc) => {
             if (doc instanceof BladesItem) {
@@ -615,6 +629,10 @@ class BladesActor extends Actor {
             ...this.actions
         };
     }
+    get allActiveTraumaConditions() {
+        return Object.keys(this.system.trauma.active)
+            .filter((key) => this.system.trauma.active[key]);
+    }
     get trauma() {
         return Object.keys(this.system.trauma?.checked ?? {})
             .filter((traumaName) => {
@@ -636,7 +654,7 @@ class BladesActor extends Actor {
         if (!this.system.loadout.selected) {
             return 0;
         }
-        const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected).toLowerCase()];
+        const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected.toString()).toLowerCase()];
         return Math.max(0, maxLoad - this.currentLoad);
     }
 

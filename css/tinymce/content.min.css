@@ -374,7 +374,8 @@ html, :root {
       hyphens: auto;
       text-align: justify;
       position: absolute;
-      top: 0;
+      top: unset;
+      bottom: 100px;
       z-index: zLevel(4);
       pointer-events: none; }
       html .comp .tooltip.playbook-tooltip, :root .comp .tooltip.playbook-tooltip {
@@ -1035,7 +1036,8 @@ html, :root {
         hyphens: auto;
         text-align: justify;
         position: absolute;
-        top: 0;
+        top: unset;
+        bottom: 100px;
         z-index: 6;
         pointer-events: none; }
         html .comp .tooltip.playbook-tooltip, :root .comp .tooltip.playbook-tooltip {

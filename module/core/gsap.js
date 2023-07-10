@@ -87,40 +87,52 @@ const gsapEffects = {
         defaults: {}
     },
     hoverDialogItem: {
-        effect: (targets, config) => U.gsap.timeline({ paused: true })
-            .to(targets, {
-            scale: 1.2,
-            filter: "blur(0px)",
-            opacity: 1,
-            duration: 0.25,
-            ease: "power2"
-        }, 0)
-            .to($(targets).children(".comp-title")[0], {
-            color: "rgb(255, 255, 255)",
-            opacity: 1,
-            duration: 0.25,
-            ease: "power2"
-        }, 0)
-            .to($(targets).children("img")[0], {
-            filter: "blur(0px)",
-            opacity: 1,
-            duration: 0.25,
-            ease: "power2"
-        }, 0)
-            .fromTo($(targets).nextAll(".tooltip")[0], {
-            filter: "blur(50px)",
-            opacity: 0,
-            scale: 1.4,
-            x: "-=200"
-        }, {
-            filter: "blur(0px)",
-            opacity: 1,
-            scale: 1.25,
-            x: 0,
-            y: 0,
-            duration: 0.5,
-            ease: "power2"
-        }, 0),
+        effect: (targets, config) => {
+            const titleElem = $(targets).children(".comp-title")[0];
+            const imgElem = $(targets).children("img")[0];
+            const tooltipElem = $(targets).nextAll(".tooltip")[0];
+            const tl = U.gsap.timeline({ paused: true })
+                .to(targets, {
+                scale: 1.2,
+                filter: "blur(0px)",
+                opacity: 1,
+                duration: 0.25,
+                ease: "power2"
+            }, 0);
+            if (titleElem) {
+                tl.to(titleElem, {
+                    color: "rgb(255, 255, 255)",
+                    opacity: 1,
+                    duration: 0.25,
+                    ease: "power2"
+                }, 0);
+            }
+            if (imgElem) {
+                tl.to(imgElem, {
+                    filter: "blur(0px)",
+                    opacity: 1,
+                    duration: 0.25,
+                    ease: "power2"
+                }, 0);
+            }
+            if (tooltipElem) {
+                tl.fromTo(tooltipElem, {
+                    filter: "blur(50px)",
+                    opacity: 0,
+                    scale: 1.4,
+                    x: "-=200"
+                }, {
+                    filter: "blur(0px)",
+                    opacity: 1,
+                    scale: 1.25,
+                    x: 0,
+                    y: 0,
+                    duration: 0.5,
+                    ease: "power2"
+                }, 0);
+            }
+            return tl;
+        },
         defaults: {}
     }
 };

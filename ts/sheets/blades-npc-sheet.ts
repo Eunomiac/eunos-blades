@@ -1,8 +1,5 @@
 
 import BladesSheet from "./blades-sheet.js";
-import type BladesActor from "../blades-actor.js";
-import Tagify from "../../lib/tagify/tagify.esm.js";
-
 class BladesNPCSheet extends BladesSheet {
 
 	static override get defaultOptions() {
@@ -33,6 +30,12 @@ class BladesNPCSheet extends BladesSheet {
 
 		// Everything below here is only needed if the sheet is editable
 		if (!this.options.editable) {return}
+
+		html.find(".gm-alert-header").on("click", async (event) => {
+			event.preventDefault();
+
+			this.actor.clearParentActor();
+		});
 
 		//~ Configure Tagify input elements
 		// const inputElement = document.querySelector('input[name="system.harm.heavy.one"]');

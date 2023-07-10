@@ -1,3 +1,4 @@
+// #region Imports ~
 import U from "./core/utilities.js";
 import C, {BladesActorType, Tag, BladesItemType, Playbook, Randomizers, Attributes, Actions, Positions, EffectLevels, Vice} from "./core/constants.js";
 
@@ -10,60 +11,13 @@ import {SelectionCategory} from "./blades-dialog.js";
 import type BladesActiveEffect from "./blades-active-effect";
 import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs.js";
 import {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/utils/helpers.mjs.js";
+// #endregion
 
 // https://foundryvtt.wiki/en/development/guides/polymorphism-actors-items
 
 // #region Abstract Class Interfaces ~
 
-interface BladesPrimaryActor {
-	primaryUser?: User;
-}
-interface SubActorControl {
-	subActors: BladesActor[];
-	activeSubActors: BladesActor[];
-	archivedSubActors: BladesActor[];
 
-	getDialogActors(category: SelectionCategory): Record<string, BladesActor[]>|false;
-
-	getSubActor(actorRef: ActorRef): BladesActor|undefined;
-	addSubActor(actorRef: ActorRef): Promise<void>;
-	updateSubActor(actorRef: ActorRef, updateData: DeepPartial<BladesActor.SubActorData & Record<string,any>>): Promise<BladesActor|undefined>;
-	remSubActor(actorRef: ActorRef): Promise<void>;
-	purgeSubActor(actorRef: ActorRef): Promise<void>;
-
-	hasSubActorOf(actorRef: ActorRef): boolean;
-}
-interface SubItemControl {
-	subItems: BladesItem[];
-	activeSubItems: BladesItem[];
-	archivedSubItems: BladesItem[];
-
-	getDialogItems(category: SelectionCategory): Record<string, BladesItem[]>|false;
-
-	getSubItem(itemRef: ItemRef): BladesItem|undefined;
-	addSubItem(itemRef: ItemRef): Promise<void>;
-	remSubItem(itemRef: ItemRef): Promise<void>;
-	purgeSubItem(itemRef: ItemRef): Promise<void>;
-}
-interface BladesSubActor {
-	isSubActor: boolean;
-	parentActor?: BladesActor;
-}
-
-interface BladesScoundrel extends BladesPrimaryActor, SubActorControl, SubItemControl {
-
-	isMember(crew: BladesActor): boolean;
-
-	get vices(): BladesItem[];
-}
-interface BladesCrew extends SubActorControl, SubItemControl {
-
-	members?: BladesActor[];
-
-}
-interface BladesNPC extends SubItemControl, BladesSubActor {
-
-}
 // #endregion
 class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundrel,
 																																  BladesCrew,
@@ -204,7 +158,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 			// Is it not embedded at all? Create new entry in system.subactors from global actor
 			const actor = BladesActor.Get(actorRef);
 			if (!actor) { return }
-			const subActorData: BladesActor.SubActorData = {
+			const subActorData: SubActorData = {
 				id: actor.id!,
 				system: {}
 			};
@@ -255,7 +209,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		return actor?.id ? actor.id in this.system.subactors : false;
 	}
 
-	async updateSubActor(actorRef: ActorRef, updateData: DeepPartial<BladesActor.SubActorData & Record<string,any>>): Promise<BladesActor|undefined> {
+	async updateSubActor(actorRef: ActorRef, updateData: DeepPartial<SubActorData & Record<string,any>>): Promise<BladesActor|undefined> {
 		const actor = BladesActor.Get(actorRef);
 		if (!actor) { return undefined }
 		const curData = this.system.subactors[actor.id!] ?? {};
@@ -277,6 +231,17 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		if (!subActor) { return }
 		this.update({["system.subactors"]: mergeObject(this.system.subactors, {[`-=${subActor.id}`]: null})}, undefined, true);
 	}
+
+	async clearParentActor() {
+		this.parentActor = undefined;
+		this.ownership = this._source.ownership;
+		this.system = this._source.system;
+		this.prepareData();
+		this.render();
+	}
+
+
+	// this.actor.parentActor = undefined;
 
 	// #endregion
 	// #region SubItemControl Implementation
@@ -405,8 +370,6 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 			}
 			case SelectionCategory.Vice: {
 				if (this.playbookName === null) { return false }
-				// If actor contains a vice with the Override tag, return false to prevent selecting something different
-				if (this.vices.some((item) => item.hasTag(Tag.Item.ViceOverride))) { return false }
 				dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.vice, this.playbookName));
 				return dialogData;
 			}
@@ -433,7 +396,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 				return dialogData;
 			}
 			case SelectionCategory.Gear: {
-				if (this.playbookName === null) { return false }
+				if (this.type !== BladesActorType.pc || this.playbookName === null) { return false }
 				const gearItems = this._processEmbeddedItemMatches([
 					...BladesItem.GetTypeWithTags(BladesItemType.item, this.playbookName),
 					...BladesItem.GetTypeWithTags(BladesItemType.item, Tag.Item.General)
@@ -462,27 +425,32 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 			}
 			case SelectionCategory.Ability: {
 				if (this.playbookName === null) { return false }
-				const itemType = this.type === BladesActorType.crew ? BladesItemType.crew_ability : BladesItemType.ability;
-				dialogData[this.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(itemType, this.playbookName));
-				dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(itemType))
-					.filter((item) => !item.hasTag(this.playbookName!))
+				if (this.type === BladesActorType.pc) {
+					dialogData[this.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability, this.playbookName));
+					dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability))
+						.filter((item) => !item.hasTag(this.playbookName!))
 					// Remove featured class from Veteran items
-					.map((item) => {
-						if (item.dialogCSSClasses) {
-							item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
-						}
-						return item;
-					})
+						.map((item) => {
+							if (item.dialogCSSClasses) {
+								item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
+							}
+							return item;
+						})
 					// Re-sort by world_name
-					.sort((a, b) => {
-						if (a.system.world_name > b.system.world_name) { return 1 }
-						if (a.system.world_name < b.system.world_name) { return -1 }
-						return 0;
-					});
+						.sort((a, b) => {
+							if (a.system.world_name > b.system.world_name) { return 1 }
+							if (a.system.world_name < b.system.world_name) { return -1 }
+							return 0;
+						});
+				} else {
+					dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_ability, this.playbookName));
+				}
 				return dialogData;
 			}
 			case SelectionCategory.Upgrade: {
-				dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade));
+				if (this.playbookName === null) { return false }
+				dialogData[this.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, this.playbookName));
+				dialogData.General = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, Tag.Item.General));
 				return dialogData;
 			}
 			// no default
@@ -627,7 +595,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		DocumentModificationOptions,
 		string
 	]) {
-		await super._onCreateEmbeddedDocuments(embName, docs, ...args);
+		super._onCreateEmbeddedDocuments(embName, docs, ...args);
 
 		eLog.checkLog("actorTrigger", "onCreateEmbeddedDocuments", {embName, docs, args});
 
@@ -653,7 +621,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		});
 	}
 
-	override async update(updateData: DeepPartial<(ActorDataConstructorData & BladesActor.SubActorData) | (ActorDataConstructorData & BladesActor.SubActorData & Record<string, unknown>)> | undefined, context?: (DocumentModificationContext & MergeObjectOptions) | undefined, isSkippingSubActorCheck = false): Promise<any> {
+	override async update(updateData: DeepPartial<(ActorDataConstructorData & SubActorData) | (ActorDataConstructorData & SubActorData & Record<string, unknown>)> | undefined, context?: (DocumentModificationContext & MergeObjectOptions) | undefined, isSkippingSubActorCheck = false): Promise<any> {
 		if (!updateData) { return undefined }
 
 		if (this.parentActor && !isSkippingSubActorCheck) {
@@ -700,6 +668,11 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		};
 	}
 
+	get allActiveTraumaConditions(): string[] {
+		return Object.keys(this.system.trauma.active)
+			.filter((key) => this.system.trauma.active[key]);
+	}
+
 	get trauma(): number {
 		return Object.keys(this.system.trauma?.checked ?? {})
 			.filter((traumaName: string) => {
@@ -725,7 +698,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 	}
 	get remainingLoad(): number {
 		if (!this.system.loadout.selected) { return 0 }
-		const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected).toLowerCase() as keyof BladesActor["system"]["loadout"]["levels"]];
+		const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected.toString()).toLowerCase() as keyof BladesActor["system"]["loadout"]["levels"]];
 		return Math.max(0, maxLoad - this.currentLoad);
 	}
 	// #endregion Actor Data Getters
@@ -884,7 +857,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 
 	// #region NPC Randomizers
 	updateRandomizers() {
-		const rStatus: Record<string, Omit<BladesActor.RandomizerData, "value"|"isLocked">> = {
+		const rStatus: Record<string, Omit<NPCRandomizerData, "value"|"isLocked">> = {
 			name: {size: 4, label: null},
 			heritage: {size: 1, label: "Heritage"},
 			gender: {size: 1, label: "Gender"},
@@ -945,7 +918,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		};
 		const gender = this.system.randomizers.gender.isLocked ? this.system.randomizers.gender.value : randomGen.gender() as string;
 		const updateKeys = (Object.keys(this.system.randomizers) as Array<keyof BladesActor["system"]["randomizers"]>).filter((key) => !this.system.randomizers[key].isLocked);
-		const updateData: Record<string,BladesActor.RandomizerData> = {};
+		const updateData: Record<string,NPCRandomizerData> = {};
 		let isUpdatingTraits = false;
 		updateKeys.forEach((key) => {
 			switch (key) {
@@ -1012,117 +985,14 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 
 }
 
-
-export interface BladesActorSystem {
-	world_name: string,
-	full_name: string,
-	subactors: Record<string,BladesActor.SubActorData>,
-	notes: string,
-	gm_notes: string,
-	tags: BladesTag[],
-	acquaintances_name: string,
-	friends_name?: string,
-	rivals_name?: string,
-	vice: {
-		name: string,
-		override: string|{name: string, img: string}
-	},
-	stress: NamedValueMax,
-	trauma: {
-		name: string,
-		max: number,
-		active: Record<string,boolean|null>,
-		checked: Record<string,boolean|null>
-	},
-	healing: ValueMax,
-	resistance_bonuses: Record<Attributes, number>,
-	experience: {
-		playbook: ValueMax,
-		[Attributes.insight]: ValueMax,
-		[Attributes.prowess]: ValueMax,
-		[Attributes.resolve]: ValueMax,
-		clues: string[]
-	},
-	coins: ValueMax,
-	stash: ValueMax,
-	loadout: {
-		selected: ""|keyof BladesActor["system"]["loadout"]["levels"],
-		levels: {
-			light: number,
-			normal: number,
-			heavy: number,
-			encumbered: number
-		}
-	},
-	harm: {
-		light: {
-			one: string,
-			two: string,
-			effect: string
-		},
-		medium: {
-			one: string,
-			two: string,
-			effect: string
-		},
-		heavy: {
-			one: string,
-			effect: string
-		},
-		fatal: {
-			one: string,
-			effect: string
-		}
-	},
-	armor: {
-		active: {
-			light: boolean,
-			heavy: boolean,
-			special: boolean
-		},
-		checked: {
-			light: boolean,
-			heavy: boolean,
-			special: boolean
-		}
-	},
-	attributes: Record<Attributes, Record<Actions,ValueMax>>,
-	concept?: string,
-	description_short?: string,
-	randomizers: {
-		name: BladesActor.RandomizerData,
-		gender: BladesActor.RandomizerData,
-		heritage: BladesActor.RandomizerData,
-		appearance: BladesActor.RandomizerData,
-		goal: BladesActor.RandomizerData,
-		method: BladesActor.RandomizerData,
-		profession: BladesActor.RandomizerData,
-		trait_1: BladesActor.RandomizerData,
-		trait_2: BladesActor.RandomizerData,
-		trait_3: BladesActor.RandomizerData,
-		interests: BladesActor.RandomizerData,
-		quirk: BladesActor.RandomizerData,
-		style: BladesActor.RandomizerData
-	},
-	rep: ValueMax,
-	tier: ValueMax,
-	deity: string,
-	hold: "strong"|"weak",
-	turfs: ValueMax,
-	heat: ValueMax,
-	wanted: ValueMax,
-	hunting_grounds: {
-		desc: string,
-		preferred_op: string
-	}
-}
-
 declare interface BladesActor {
-	get type(): BladesActorType,
+	get type(): BladesActorType;
 	get items(): EmbeddedCollection<typeof BladesItem, ActorData>;
 	system: Actor["data"]["data"] & BladesActorSystem;
 	parent: TokenDocument | null;
 	ownership: Record<string, ValueOf<typeof CONST.DOCUMENT_PERMISSION_LEVELS>>;
+	_source: BladesActor;
 }
+
 
 export default BladesActor;

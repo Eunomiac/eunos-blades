@@ -6,6 +6,15 @@ import BladesSelectorDialog from "../blades-dialog";
 import BladesItemSheet from "../sheets/blades-item-sheet";
 import type gsap from "/scripts/greensock/esm/all";
 
+
+import "./blades-actor";
+import "./blades-item";
+import "./blades-sheet";
+import "./blades-dialog";
+
+import "./blades-clock";
+import "./blades-tags";
+
 declare global {
 
 	declare const gsap: gsap;
@@ -46,35 +55,7 @@ declare global {
 	type ActorRef = string | BladesActor;
 	type ItemRef = string | BladesItem;
 
-	type BladesTag = Vice
-		| Playbook
-		| District
-		| Tag.System
-		| Tag.Item
-		| Tag.NPC
-		| Tag.PC;
 
-	namespace BladesActor {
-		export type ID = string;
-		export type RandomizerData = {
-			isLocked: boolean,
-			value: string,
-			size: 1 | 2 | 4,
-			label: string | null
-		}
-
-		interface SubActorData {
-			id: string,
-			system: Partial<BladesActor["system"]>
-		}
-	}
-
-	interface TagifyState {
-		state: {
-			inputText: boolean,
-			editing: boolean
-		}
-	}
 
 	declare abstract class BladesDocument<T extends Actor | Item> {
 
@@ -92,59 +73,12 @@ declare global {
 		dialogCSSClasses?: string;
 	}
 
-	type clockData = {
-		size: 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12,
-		value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12,
-		color: "yellow" | "blue" | "red" | "white",
-		display: string,
-		isActive: boolean,
-		isNameVisible: boolean,
-		isVisible: boolean
-	}
-	type clockKeyData = {
-		clocks: Record<number, clockData | null>,
-		numClocks: number,
-		id: string,
-		display: string,
-		isActive: boolean,
-		isNameVisible: boolean,
-		isVisible: boolean,
-		scene: string
-	};
 
-	declare class BladesSheet<
-									Options extends BladesSheet.Options = BladesSheet.Options,
-									Data extends object = BladesSheet.Data<Options>
-								> extends ActorSheet<BladesSheet.Options, BladesSheet.Data> {
 
-		override getData(options?: Partial<Options>): BladesSheet.Data | Promise<BladesSheet.Data>;
 
-	}
 
-	declare class Tagify {
-		dropdown: Record<string, any>
-	}
 
-	namespace BladesSheet {
-		interface Options extends ActorSheet.Options { }
 
-		interface Data<Opts extends Options = Options> extends ActorSheet.Data<Opts> {
-			items: EmbeddedCollection<typeof BladesItem, BladesActor["system"]>
-			& ToObjectFalseType<EmbeddedCollection<typeof BladesItem, BladesActor["system"]>>,
-			system: BladesActor["system"]
-		}
-	}
-
-	namespace BladesDialog {
-		interface Options extends DialogOptions {
-		}
-		interface Data extends Dialog.Data {
-			parent: BladesActor;
-			docType: "Actor"|"Item";
-			tabs: Record<string, BladesActor[] | BladesItem[]>;
-			tags?: BladesTag[];
-		}
-	}
 
 	type eLogParams = [string, ...any[]];
 	declare const eLog: Record<string, (...content: eLogParams) => void>

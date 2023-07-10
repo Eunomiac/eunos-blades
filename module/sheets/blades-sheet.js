@@ -8,7 +8,7 @@
 
 import U from "../core/utilities.js";
 import G from "../core/gsap.js";
-import { Tag, District, Playbook, Vice, BladesActorType } from "../core/constants.js";
+import { Tag, District, Playbook, Vice } from "../core/constants.js";
 import Tagify from "../../lib/tagify/tagify.esm.js";
 import BladesSelectorDialog from "../blades-dialog.js";
 import BladesActiveEffect from "../blades-active-effect.js";
@@ -20,39 +20,28 @@ class BladesSheet extends ActorSheet {
             isGM: game.user.isGM,
             actor: this.actor,
             system: this.actor.system,
-            activeEffects: Array.from(this.actor.effects)
+            activeEffects: Array.from(this.actor.effects),
+            playbookData: {
+                dotline: {
+                    data: this.actor.system.experience?.playbook,
+                    target: "system.experience.playbook.value",
+                    svgKey: "teeth.tall",
+                    svgFull: "full|frame",
+                    svgEmpty: "full|half|frame"
+                }
+            },
+            coinsData: {
+                dotline: {
+                    data: this.actor.system.coins,
+                    target: "system.coins.value",
+                    iconEmpty: "coin-full.svg",
+                    iconFull: "coin-full.svg"
+                }
+            }
         };
         return {
             ...context,
             ...sheetData
-        };
-    }
-
-    get playbookData() {
-        if (this.actor.type === BladesActorType.npc) {
-            return undefined;
-        }
-        return {
-            dotline: {
-                data: this.actor.system.experience.playbook,
-                target: "system.experience.playbook.value",
-                svgKey: "teeth.tall",
-                svgFull: "full|frame",
-                svgEmpty: "full|half|frame"
-            }
-        };
-    }
-    get coinsData() {
-        if (this.actor.type === BladesActorType.npc) {
-            return undefined;
-        }
-        return {
-            dotline: {
-                data: this.actor.system.coins,
-                target: "system.coins.value",
-                iconEmpty: "coin-full.svg",
-                iconFull: "coin-full.svg"
-            }
         };
     }
     activateListeners(html) {

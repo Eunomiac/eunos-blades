@@ -7,7 +7,24 @@
 
 import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../blades-item.js";
-export default class BladesTrackerSheet extends BladesItemSheet {
+export var BladesPhase;
+(function (BladesPhase) {
+    BladesPhase["CharGen"] = "CharGen";
+    BladesPhase["Planning"] = "Planning";
+    BladesPhase["Score"] = "Score";
+    BladesPhase["Downtime"] = "Downtime";
+})(BladesPhase || (BladesPhase = {}));
+class BladesTrackerSheet extends BladesItemSheet {
+    static async Get() {
+        return game.eunoblades.Tracker || (await BladesItem.create({
+            name: "GM Tracker",
+            type: "gm_tracker",
+            img: "systems/eunos-blades/assets/icons/gm-tracker.svg"
+        }));
+    }
+    static async GetPhase() {
+        return (await BladesTrackerSheet.Get()).system.game_phase;
+    }
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "item", "gm-tracker"],
@@ -39,10 +56,11 @@ export default class BladesTrackerSheet extends BladesItemSheet {
         return updateData;
     }
     async getData() {
-        const data = await super.getData();
-        return data;
+        const context = await super.getData();
+        return context;
     }
     async activateListeners(html) {
         super.activateListeners(html);
     }
 }
+export default BladesTrackerSheet;
