@@ -1,13 +1,18 @@
 & {
 	display: flex;
 	flex-direction: column;
-	width: var(--turf-block-width, 855px);
-	height: var(--turf-block-height, auto);
+	width: 880px;
+	height: auto;
+	margin: 0 auto;
 
 	.turf-row {
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
+
+		&:not(:nth-child(-n+3)) {
+			display: none
+		}
 
 		*:first-child {
 			margin-left: 0px;
@@ -16,40 +21,137 @@
 		*:last-child {
 			margin-right: 0px;
 		}
-	}
-
-	&.section-non-editable {
-		.turf-block {
-			@include turf_block(130px, 100px);
-		}
-	}
-
-	&.section-editable {
-		.turf-block {
-			@include turf_block(100px, 125px);
-		}
-	}
-
-	.turf-row {
-		&:not(:nth-child(-n+3)) {
-			display: none
-		}
 
 		.turf-block {
-			cursor: default;
+			$turf-margin: 20px;
+
+			--turf-block-width: 135px;
+			--turf-block-height: 125px;
+			--turf-block-gap: 40px;
+
+			--name-size: #{toRem(18px)};
 
 			&:not(:nth-child(-n+5)) {
 				display: none
 			}
 
-			border-radius: 5px;
+			transition: filter 0.1s;
+			cursor: default;
+
+			&:hover {
+				filter: brightness(0.8);
+				opacity: 0.9;
+			}
+
+
+			width: var(--turf-block-width);
+			height: var(--turf-block-height);
 			background-color: rgba(255, 255, 255, 0.2);
+			position: relative;
+			margin: calc(var(--turf-block-gap) / 2);
+			flex-grow: initial;
+			border-radius: 5px;
 
 			.connector {
+				position: absolute;
+				display: block;
+				pointer-events: none;
+
 				background-color: rgba(255, 255, 255, 0.1);
 
 				&.no-connect {
 					background-color: transparent !important
+				}
+
+				&.right,
+				&.left {
+					width: var(--turf-block-gap);
+					height: calc(var(--turf-block-height) / 5);
+					top: calc(var(--turf-block-height) / 2 - var(--turf-block-height) / 10);
+				}
+
+				&.left {
+					left: calc(-1 * var(--turf-block-gap));
+				}
+
+				&.right {
+					left: var(--turf-block-width);
+				}
+
+				&.top,
+				&.bottom {
+					height: var(--turf-block-gap);
+					width: calc(var(--turf-block-height) / 5);
+					left: calc(var(--turf-block-width) / 2 - var(--turf-block-height) / 10);
+				}
+
+				&.top {
+					top: calc(-1 * var(--turf-block-gap));
+				}
+
+				&.bottom {
+					top: var(--turf-block-height);
+				}
+			}
+
+			.turf-name {
+				/* Size & Position */
+				height: var(--name-size);
+				min-height: unset;
+				margin: 0;
+				padding: 0;
+				position: relative;
+				top: -10px;
+				z-index: 3;
+
+				/* Color, Background, Border & Outline */
+				background: transparent;
+				color: var(--blades-white);
+				border: none;
+				border-radius: 0px;
+				box-shadow: none;
+
+				/* Font & Text */
+				font-family: var(--font-emphasis-narrow);
+				font-size: var(--name-size);
+				font-weight: bold;
+				text-align: center;
+				text-transform: uppercase;
+				line-height: var(--name-size);
+
+				/* Other */
+				overflow: hidden;
+				resize: none;
+			}
+
+			.turf-description {
+				height: calc(100% - 18px);
+				min-height: auto;
+				width: var(--turf-block-width);
+				padding: 0 2px;
+
+				background: none;
+
+				position: relative;
+				top: -10px;
+
+				font-family: var(--font-primary);
+				font-size: 12px;
+				line-height: 13px;
+				text-align: center;
+				text-shadow:
+					0.5px 0.5px 1px var(--blades-black-dark),
+					0.5px 0.5px 1px var(--blades-black-dark),
+					0.5px 0.5px 1px var(--blades-black-dark),
+					0.5px 0.5px 1px var(--blades-black-dark);
+				hyphens: auto;
+
+				border: none;
+				box-shadow: none;
+				resize: none;
+
+				&::placeholder {
+					font-size: 0;
 				}
 			}
 
@@ -59,50 +161,102 @@
 					0 0 2px var(--blades-grey),
 					0 0 2px var(--blades-grey),
 					0 0 2px var(--blades-grey);
+
+				&.turf-select {
+					position: absolute;
+					top: -7px;
+					left: -15px;
+				}
 			}
 
-			textarea {
-				resize: none;
-				background: transparent;
-				padding: 0;
-				cursor: default;
-				margin-top: 10px;
-				overflow: hidden;
+			.turf-readonly {
+				cursor: default
 			}
 
-			.turf-name {
+			&.turf-lair .turf-name {
+				--name-size: #{toRem(32px)};
 				font-family: var(--font-emphasis);
-				text-transform: uppercase;
-				color: var(--blades-white);
-				height: 18px;
-				min-height: unset;
-				line-height: 18px;
 			}
 
-			.turf-description {
-				padding: 0 5px;
+			&.turf-turf .turf-name {
+				--name-size: #{toRem(32px)};
+				font-family: var(--font-emphasis);
 			}
 
-			.turf-editable {
-				border-radius: 5px;
-				background: rgba(0, 0, 0, 0.1);
-				box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.5);
-				padding: 2px;
-				hyphens: auto;
-				cursor: text;
-			}
+			&.turf-turf:not(.turf-selected) {
 
-			&.turf-lair {
-				label { display: none !important }
-				.turf-description { display: none }
+				.turf-name {
+					top: calc(50% - 0.5 * var(--name-size));
+				}
+
+				.turf-description {
+					display: none
+				}
+
+				.turf-district {
+					display: none
+				}
 			}
 
 			&.turf-selected {
-				background-color: rgba(255, 255, 255, 0.75);
 				color: var(--blades-black);
+				background-color: rgba(255, 255, 255, 0.75);
 
 				.connector {
 					background-color: rgba(255, 255, 255, 0.5);
+				}
+
+				.turf-name {
+					color: var(--blades-white-bright);
+				}
+
+				.turf-description {
+					color: var(--blades-black-dark);
+					text-shadow: none;
+					font-weight: bold;
+				}
+
+				&.turf-lair .turf-description,
+				&.turf-turf .turf-description {
+					border-radius: 5px;
+					background: rgba(0, 0, 0, 0.1);
+					box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.5);
+					padding: 2px;
+					hyphens: auto;
+					margin: 0px 2.5px 2.5px;
+					width: calc(100% - 5px);
+					height: calc(100% - 15px - 12px - 5px);
+					cursor: text;
+
+					&::placeholder {
+						font-size: toRem(12px);
+						font-style: italic;
+						color: var(--blades-grey);
+						padding: 30px 5px;
+					}
+				}
+
+				.turf-district {
+					position: absolute;
+					z-index: 10;
+					left: calc(50% - 40px);
+					bottom: -10px;
+					height: toRem(18px);
+					min-height: unset;
+					width: 80px;
+
+					background: var(--blades-black);
+					color: var(--blades-white);
+					border-radius: 7px;
+					outline: 1px outset var(--blades-white);
+
+					font-family: var(--font-emphasis-narrow);
+					font-size: toRem(14px);
+					line-height: toRem(20px);
+					text-align: center;
+
+					overflow: hidden;
+					resize: none;
 				}
 
 				.turf-control {
@@ -111,71 +265,6 @@
 						0 0 12px var(--blades-white-bright),
 						0 0 12px var(--blades-white-bright),
 						0 0 2px var(--blades-black-dark);
-				}
-
-				.turf-name,
-				.turf-description {
-					color: var(--blades-black-dark);
-				}
-			}
-
-			&.turf-lair,
-			&.turf-turf {
-				--name-size: 35px;
-
-				.turf-name {
-					font-size: var(--name-size);
-					margin-top: 0;
-					height: var(--name-size);
-					line-height: var(--name-size);
-				}
-
-				&.turf-turf {
-					--name-size: 32px;
-
-					.turf-name {
-						position: relative;
-						top: calc(50% - 0.5 * var(--name-size));
-					}
-
-					.turf-description {
-						display: none;
-						height: calc(100% - 15px - 12px - 5px);
-						padding: 5px;
-					}
-				}
-
-				label {
-					// text-align: center;
-					margin-left: 2.5px;
-					font-family: var(--font-emphasis);
-					white-space: nowrap;
-					font-size: 12px;
-					font-weight: normal;
-					display: block;
-					text-transform: uppercase;
-					margin-top: 6px;
-					margin-bottom: 2px;
-					line-height: 12px;
-					color: var(--blades-grey-dark);
-				}
-
-				.turf-description {
-					margin-top: 0;
-					border-radius: 5px;
-					background: rgba(0, 0, 0, 0.1);
-					box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.5);
-					padding: 2px;
-					hyphens: auto;
-					margin: 0 2.5px 2.5px;
-					width: calc(100% - 5px);
-					height: calc(100% - 35px - 12px - 10px);
-					cursor: text;
-
-					&::placeholder {
-						font-style: italic;
-						color: var(--blades-grey-dark);
-					}
 				}
 			}
 		}

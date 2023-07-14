@@ -40,6 +40,20 @@
 
 	body.vtt.game.system-eunos-blades {
 
+		#pause {
+			img.fa-spin {
+				top: unset;
+				bottom: -200px;
+			}
+
+			figcaption {
+				text-shadow: 1px 1px 3px #000, 1px 1px 3px #000, 1px 1px 3px #000, 0px 0px 5px #000;
+				font-family: Kirsty !important;
+				line-height: 2rem;
+				padding: 0 25%;
+			}
+		}
+
 		#clocks-overlay {
 			margin-top: toRem(4px);
 			@import "./core/reset";
@@ -169,7 +183,7 @@
 					}
 
 					&.crew_playbook {
-						@import './sheets/crew-type-sheet'
+						@import './sheets/crew-playbook-sheet'
 					}
 				}
 

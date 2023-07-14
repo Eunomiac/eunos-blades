@@ -10,10 +10,41 @@ import BladesItem from "../blades-item.js";
 export var BladesPhase;
 (function (BladesPhase) {
     BladesPhase["CharGen"] = "CharGen";
-    BladesPhase["Planning"] = "Planning";
+    BladesPhase["Freeplay"] = "Freeplay";
     BladesPhase["Score"] = "Score";
     BladesPhase["Downtime"] = "Downtime";
 })(BladesPhase || (BladesPhase = {}));
+export var BladesTipContext;
+(function (BladesTipContext) {
+    BladesTipContext["DiceRoll"] = "DiceRoll";
+    BladesTipContext["Combat"] = "Combat";
+    BladesTipContext["General"] = "General";
+})(BladesTipContext || (BladesTipContext = {}));
+class BladesTipGenerator {
+    static get Tips() {
+        return {
+            [BladesTipContext.DiceRoll]: [],
+            [BladesTipContext.Combat]: [
+                "Every combat encounter should advance the main plot, or else it's filler.",
+                "Inject dialogue into combat encounters, especially from important adversaries.",
+                "Combat encounters should be a challenge, but not a slog. Don't be afraid to end them early.",
+                "Infiltrate/Rescue/Destroy: Use these as additional/secondary goals in combat encounters.",
+                "Tell the next player in the initiative order that they're on deck.",
+                "Don't trigger combats automatically: Use alternate objectives to incite the players to fight, giving them agency.",
+                "Add another layer by drawing focus to collateral effects of the combat: a fire, a hostage, a collapsing building, innocents in danger",
+            ],
+            [BladesTipContext.General]: [
+                "Rolling the dice always means SOMETHING happens.",
+                "Jump straight to the action; don't waste time on establishing scenes or filler.",
+                "Invoke elements of characters' backstories or beliefs to make any scene more personal.",
+            ]
+        };
+    }
+    tipContext;
+    constructor(tipContext) {
+        this.tipContext = tipContext;
+    }
+}
 class BladesTrackerSheet extends BladesItemSheet {
     static async Get() {
         return game.eunoblades.Tracker || (await BladesItem.create({

@@ -368,12 +368,7 @@ declare interface BladesItem {
 		}>,
 		armor?: boolean,
 		crew_types?: string[],
-		turfs?: Record<string, {
-				name: string,
-				value: string,
-				description: string,
-				connects: string[]
-		}>,
+		turfs?: Record<number, BladesClaimData>,
 		clock_keys?: Record<string, clockKeyData|null>,
 		scenes?: Array<{id: string, name: string}>,
 		targetScene?: string

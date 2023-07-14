@@ -5,7 +5,6 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import { BladesItemType } from "../core/constants.js";
 class BladesCrewSheet extends BladesSheet {
@@ -14,7 +13,7 @@ class BladesCrewSheet extends BladesSheet {
             classes: ["eunos-blades", "sheet", "actor", "crew"],
             template: "systems/eunos-blades/templates/crew-sheet.hbs",
             width: 940,
-            height: 1020,
+            height: 820,
             tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "claims" }]
         });
     }
@@ -23,15 +22,6 @@ class BladesCrewSheet extends BladesSheet {
         eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", { ...context });
         context.actor = this.actor;
         context.system = this.actor.system;
-        let turfs_amount = 0;
-        if (this.actor.playbook) {
-            Object.entries(this.actor.playbook.system.turfs).forEach(([key, turf]) => {
-                if (game.i18n.localize(turf.name).toLowerCase().replace(/\s/g, "") === game.i18n.localize("BITD.Turf").toLowerCase().replace(/\s/g, "")) {
-                    turfs_amount += U.pInt(turf.value);
-                }
-            });
-        }
-        turfs_amount = Math.min(turfs_amount, this.actor.system.turfs.max);
         const { activeSubItems } = this.actor;
 
         context.items = {
@@ -43,7 +33,8 @@ class BladesCrewSheet extends BladesSheet {
             preferredOp: activeSubItems.find((item) => item.type === BladesItemType.preferred_op)
         };
         context.actors = {
-            members: this.actor.members
+            members: this.actor.members,
+            contacts: this.actor.contacts
         };
         context.tierData = {
             label: "Tier",
@@ -56,25 +47,13 @@ class BladesCrewSheet extends BladesSheet {
                 iconFullHover: "dot-full-hover.svg"
             }
         };
-        context.holdData = {
-            name: "Hold",
-            displayVal: U.uCase(this.actor.system.hold),
-            radioControl: {
-                target: "system.hold",
-                value: this.actor.system.hold,
-                values: [
-                    { value: "weak", label: "Weak" },
-                    { value: "strong", label: "Strong" }
-                ]
-            }
-        };
         context.repData = {
             name: "Rep",
             dotlines: [
                 {
                     data: {
-                        value: Math.min(this.actor.system.rep.value, this.actor.system.rep.max - turfs_amount),
-                        max: this.actor.system.rep.max - turfs_amount
+                        value: Math.min(this.actor.system.rep.value, this.actor.system.rep.max - this.actor.turfCount),
+                        max: this.actor.system.rep.max - this.actor.turfCount
                     },
                     target: "system.rep.value",
                     svgKey: "teeth.tall",
@@ -82,7 +61,11 @@ class BladesCrewSheet extends BladesSheet {
                     svgEmpty: "full|half|frame"
                 },
                 {
-                    "data": { value: turfs_amount, max: turfs_amount },
+                    "data": {
+                        value: this.actor.turfCount,
+                        max: this.actor.turfCount
+                    },
+                    "target": "none",
                     "svgKey": "teeth.tall",
                     "svgFull": "full|half|frame",
                     "svgEmpty": "full|half|frame",
@@ -134,6 +117,9 @@ class BladesCrewSheet extends BladesSheet {
             };
             return this.actor.createEmbeddedDocuments("Item", [data]);
         });
+        html.find(".hold-toggle").on("click", () => {
+            this.actor.update({ "system.hold": this.actor.system.hold === "weak" ? "strong" : "weak" });
+        });
         html.find(".turf-select").on("click", async (event) => {
             const turf_id = $(event.currentTarget).data("turfId");
             const turf_current_status = $(event.currentTarget).data("turfStatus");
@@ -150,13 +136,6 @@ class BladesCrewSheet extends BladesSheet {
                 }]);
             this.render(false);
         });
-    }
-                
-    async _updateObject(event, formData) {
-        await super._updateObject(event, formData);
-        if (event.target && $(event.target).attr("name") === "system.tier") {
-            this.render(true);
-        }
     }
 }
 export default BladesCrewSheet;

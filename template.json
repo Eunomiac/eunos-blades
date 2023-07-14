@@ -117,10 +117,11 @@
 			"deity": "",
 			"hold": "strong",
 			"coins": { "value": 2, "max": 4 },
-			"turfs": { "value": 0, "max": 6 },
 			"heat": { "value": 0, "max": 9 },
 			"wanted": { "value": 0, "max": 4},
-			"hunting_grounds": { "name": "", "value": "" }
+			"hunting_grounds": "",
+			"lair": "",
+			"upgrade_points": 0
 		},
 		"npc": {
 			"templates": ["default"],

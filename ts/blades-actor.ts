@@ -88,23 +88,23 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		return true;
 	}
 	private processEmbeddedActorMatches(globalActors: BladesActor[]) {
-		// Step 0: Filter out globals that fail prereqs.
-		globalActors = globalActors.filter(this.checkActorPrereqs);
 
-		// Step 1: Merge subactor data onto matching global actors
-		const mergedActors = globalActors.map((gActor) => this.getSubActor(gActor) || gActor);
-
-		// Sort by name
-		mergedActors.sort((a, b) => {
-			if (a.name === b.name) { return 0 }
-			if (a.name === null) { return 1 }
-			if (b.name === null) { return -1 }
-			if (a.name > b.name) { return 1 }
-			if (a.name < b.name) { return -1 }
-			return 0;
-		});
-
-		return mergedActors;
+		return globalActors
+		// Step 1: Filter out globals that fail prereqs.
+			.filter(this.checkActorPrereqs)
+		// Step 2: Filter out actors that are already active subActors
+			.filter((gActor) => !this.activeSubActors.some((aActor) => aActor.id === gActor.id))
+		// Step 3: Merge subactor data onto matching global actors
+			.map((gActor) => this.getSubActor(gActor) || gActor)
+		// Step 4: Sort by name
+			.sort((a, b) => {
+				if (a.name === b.name) { return 0 }
+				if (a.name === null) { return 1 }
+				if (b.name === null) { return -1 }
+				if (a.name > b.name) { return 1 }
+				if (a.name < b.name) { return -1 }
+				return 0;
+			});
 	}
 
 	getDialogActors(category: SelectionCategory): Record<string, BladesActor[]>|false {
@@ -114,6 +114,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		const dialogData: Record<string, BladesActor[]> = {};
 
 		switch (category) {
+			case SelectionCategory.Contact:
 			case SelectionCategory.Rival:
 			case SelectionCategory.Friend:
 			case SelectionCategory.Acquaintance: {
@@ -121,7 +122,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 				dialogData.Main = this.processEmbeddedActorMatches(BladesActor.GetTypeWithTags(BladesActorType.npc, this.playbookName));
 				return dialogData;
 			}
-			case SelectionCategory.VicePurveyor: {
+			case SelectionCategory.Vice_Purveyor: {
 				if (this.vices.length === 0) { return false }
 				dialogData.Main = this.processEmbeddedActorMatches(BladesActor.GetTypeWithTags(BladesActorType.npc, ...this.vices.map((vice) => vice.name! as Vice)));
 				return dialogData;
@@ -191,6 +192,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 	getSubActor(actorRef: ActorRef): BladesActor|undefined {
 		const actor = BladesActor.Get(actorRef);
 		if (!actor?.id) { return undefined }
+		if (actor.type !== BladesActorType.npc) { return actor }
 		const subActorData = this.system.subactors[actor.id] ?? {};
 		actor.system = mergeObject(
 			actor.system,
@@ -214,7 +216,11 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		if (!actor) { return undefined }
 		const curData = this.system.subactors[actor.id!] ?? {};
 		const mergedData = mergeObject(curData, updateData);
-		return this.update({[`system.subactors.${actor.id}`]: mergedData}, undefined, true) as Promise<BladesActor|undefined>;
+		const flatActor = flattenObject(actor);
+		const flatMergedData = flattenObject(mergedData);
+		const diffData = diffObject(flattenObject(actor), flattenObject(mergedData));
+		eLog.checkLog3("subactors", "[updateSubActor] actorRef, updateData, curData, mergedData, flatActor, flatMergedData, diffData", {updateData, curData, mergedData, flatActor, flatMergedData, diffData});
+		return this.update({[`system.subactors.${actor.id}`]: diffData}, undefined, true) as Promise<BladesActor|undefined>;
 	}
 
 	async remSubActor(actorRef: ActorRef): Promise<void> {
@@ -232,7 +238,13 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		this.update({["system.subactors"]: mergeObject(this.system.subactors, {[`-=${subActor.id}`]: null})}, undefined, true);
 	}
 
-	async clearParentActor() {
+	async clearSubActors(): Promise<void> {
+		this.subActors.forEach((subActor) => {
+			if (subActor.parentActor?.id === this.id) { subActor.clearParentActor() }
+		});
+	}
+
+	async clearParentActor(): Promise<void> {
 		this.parentActor = undefined;
 		this.ownership = this._source.ownership;
 		this.system = this._source.system;
@@ -391,7 +403,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 				dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_reputation));
 				return dialogData;
 			}
-			case SelectionCategory.PreferredOp: {
+			case SelectionCategory.Preferred_Op: {
 				dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op));
 				return dialogData;
 			}
@@ -472,6 +484,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 
 		enum BladesItemUniqueTypes {
 			background = BladesItemType.background,
+			vice = BladesItemType.vice,
 			crew_playbook = BladesItemType.crew_playbook,
 			crew_reputation = BladesItemType.crew_reputation,
 			heritage = BladesItemType.heritage,
@@ -564,14 +577,28 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 	// #region BladesCrew Implementation
 
 	get members() {
-		if (this.type !== BladesActorType.crew) { return undefined }
+		if (this.type !== BladesActorType.crew) { return [] }
 		return BladesActor.GetTypeWithTags(BladesActorType.pc).filter((actor) => actor.isMember(this));
 	}
+	get claims(): Record<number,BladesClaimData> {
+		if (this.type !== BladesActorType.crew || !this.playbook) { return {} }
+		return this.playbook.system.turfs!;
+	}
+	get turfCount(): number {
+		if (this.type !== BladesActorType.crew || !this.playbook) { return 0 }
+		return Object.values(this.playbook.system.turfs!)
+			.filter((claim) => claim.isTurf && claim.value).length;
+	}
+	get contacts(): BladesActor[] {
+		if (this.type !== BladesActorType.crew || !this.playbook) { return [] }
+		return this.activeSubActors.filter((actor) => actor.hasTag(this.playbookName));
+	}
+
 
 	// #endregion
 
 
-	static override async create(data: ActorDataConstructorData & {system?: {world_name?: string}}, options={}) {
+	static override async create(data: ActorDataConstructorData & {system?: {description?: string, world_name?: string}}, options={}) {
 		data.token = data.token || {};
 		data.system = data.system ?? {};
 
@@ -622,13 +649,35 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 	}
 
 	override async update(updateData: DeepPartial<(ActorDataConstructorData & SubActorData) | (ActorDataConstructorData & SubActorData & Record<string, unknown>)> | undefined, context?: (DocumentModificationContext & MergeObjectOptions) | undefined, isSkippingSubActorCheck = false): Promise<any> {
-		if (!updateData) { return undefined }
+		if (!updateData) { return super.update(updateData) }
+		switch (this.type) {
+			case BladesActorType.pc: {
+				break;
+			}
+			case BladesActorType.crew: {
+				if (!this.playbook) { return undefined }
+				eLog.checkLog("actorTrigger", "Updating Crew", {updateData, context, isSkippingSubActorCheck});
+				const playbookUpdateData: Partial<ItemDataConstructorData> = Object.fromEntries(Object.entries(flattenObject(updateData))
+					.filter(([key, _]: [string, unknown]) => key.startsWith("system.turfs.")));
+				updateData = Object.fromEntries(Object.entries(flattenObject(updateData))
+					.filter(([key, _]: [string, unknown]) => !key.startsWith("system.turfs.")));
+				eLog.checkLog("actorTrigger", "Updating Crew", {crewUpdateData: updateData, playbookUpdateData});
 
-		if (this.parentActor && !isSkippingSubActorCheck) {
-			// This is an embedded Actor: Update it as a subActor of parentActor.
-			return this.parentActor.updateSubActor(this.id!, updateData);
+				if (!U.isEmpty(playbookUpdateData)) {
+					await this.playbook!.update(playbookUpdateData, context)
+						.then(() => this.sheet?.render(false));
+				}
+
+				break;
+			}
+			case BladesActorType.npc: {
+				if (this.parentActor && !isSkippingSubActorCheck) {
+					// This is an embedded Actor: Update it as a subActor of parentActor.
+					return this.parentActor.updateSubActor(this.id!, updateData);
+				}
+			}
+			// no default
 		}
-
 		return super.update(updateData, context);
 	}
 

@@ -24,7 +24,7 @@
 		color: var(--blades-white-bright);
 		font-size: toRem(12px);
 		line-height: toRem(12px);
-		z-index: zLevel(0);
+		z-index: zLevel(+3);
 		flex-grow: 0.5;
 
 		&.comp-prompt {
@@ -160,7 +160,7 @@
 	}
 
 	.tooltip {
-		// opacity: 1 !important;
+		opacity: 0;
 		// filter: none !important;
 		display: flex;
 		flex-direction: column;
@@ -180,11 +180,15 @@
 		text-align: justify;
 
 		position: absolute;
-		top: unset;
-		bottom: 100px;
+		// top: unset;
+		// bottom: 100px;
 		z-index: zLevel(+4);
 
 		pointer-events: none;
+
+		&.tooltip-low {
+			// bottom: -20px;
+		}
 
 		&.playbook-tooltip {
 			width: 450px;
@@ -336,7 +340,7 @@
 		align-items: flex-start;
 
 
-		.comp-button.comp-delete { left: toRem(5px); top: 0; }
+		.comp-button.comp-delete { left: toRem(5px); top: unset; bottom: 0 }
 
 		> .comp-label {
 			text-align: right;

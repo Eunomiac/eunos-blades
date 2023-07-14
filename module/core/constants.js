@@ -5,6 +5,13 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+export var BladesPermissions;
+(function (BladesPermissions) {
+    BladesPermissions[BladesPermissions["NONE"] = CONST.DOCUMENT_PERMISSION_LEVELS.NONE] = "NONE";
+    BladesPermissions[BladesPermissions["BASIC"] = CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED] = "BASIC";
+    BladesPermissions[BladesPermissions["FULL"] = CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER] = "FULL";
+    BladesPermissions[BladesPermissions["OWNER"] = CONST.DOCUMENT_PERMISSION_LEVELS.OWNER] = "OWNER";
+})(BladesPermissions || (BladesPermissions = {}));
 export var BladesActorType;
 (function (BladesActorType) {
     BladesActorType["pc"] = "pc";
@@ -40,7 +47,7 @@ export var District;
     District["Charhollow"] = "Charhollow";
     District["Charterhall"] = "Charterhall";
     District["Coalridge"] = "Coalridge";
-    District["Crow's Foot"] = "Crow's Foot";
+    District["Crows Foot"] = "Crows Foot";
     District["The Docks"] = "The Docks";
     District["Dunslough"] = "Dunslough";
     District["Nightmarket"] = "Nightmarket";

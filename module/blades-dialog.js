@@ -13,7 +13,7 @@ export var SelectionCategory;
     SelectionCategory["Vice"] = "Vice";
     SelectionCategory["Playbook"] = "Playbook";
     SelectionCategory["Reputation"] = "Reputation";
-    SelectionCategory["PreferredOp"] = "PreferredOp";
+    SelectionCategory["Preferred_Op"] = "Preferred_Op";
     SelectionCategory["Gear"] = "Gear";
     SelectionCategory["Ability"] = "Ability";
     SelectionCategory["Faction"] = "Faction";
@@ -21,12 +21,13 @@ export var SelectionCategory;
     SelectionCategory["Cohort"] = "Cohort";
     SelectionCategory["Feature"] = "Feature";
     SelectionCategory["Stricture"] = "Stricture";
-    SelectionCategory["VicePurveyor"] = "VicePurveyor";
+    SelectionCategory["Vice_Purveyor"] = "Vice_Purveyor";
     SelectionCategory["Acquaintance"] = "Acquaintance";
     SelectionCategory["Friend"] = "Friend";
     SelectionCategory["Rival"] = "Rival";
     SelectionCategory["Crew"] = "Crew";
     SelectionCategory["Member"] = "Member";
+    SelectionCategory["Contact"] = "Contact";
 })(SelectionCategory || (SelectionCategory = {}));
 class BladesSelectorDialog extends Dialog {
     static get defaultOptions() {
@@ -88,22 +89,11 @@ class BladesSelectorDialog extends Dialog {
         super.activateListeners(html);
         const self = this;
 
-        html.find("[data-item-id]")
+        html.find(".tooltip").siblings("[data-item-id]")
             .each(function (i, elem) {
-            $(elem).data("hoverTimeline", G.effects.hoverDialogItem(elem));
-        }).on({
-            click: function () {
-                const docId = $(this).data("itemId");
-                const docType = $(this).data("docType");
-                eLog.checkLog("dialog", "[BladesDialog] on Click", { elem: this, docId, docType, parent: self.parent });
-                if (docType === "Actor") {
-                    self.parent.addSubActor(docId, self.tags);
-                }
-                else if (docType === "Item") {
-                    self.parent.addSubItem(docId);
-                }
-                self.close();
-            },
+            $(elem).data("hoverTimeline", G.effects.hoverTooltip(elem));
+        })
+            .on({
             mouseenter: function () {
                 $(this).parent().css("z-index", 1);
                 $(this).data("hoverTimeline").play();
@@ -113,6 +103,19 @@ class BladesSelectorDialog extends Dialog {
                     $(this).parent().removeAttr("style");
                 });
             }
+        });
+
+        html.find("[data-item-id]").on("click", function () {
+            const docId = $(this).data("itemId");
+            const docType = $(this).data("docType");
+            eLog.checkLog("dialog", "[BladesDialog] on Click", { elem: this, docId, docType, parent: self.parent });
+            if (docType === "Actor") {
+                self.parent.addSubActor(docId, self.tags);
+            }
+            else if (docType === "Item") {
+                self.parent.addSubItem(docId);
+            }
+            self.close();
         });
     }
 }

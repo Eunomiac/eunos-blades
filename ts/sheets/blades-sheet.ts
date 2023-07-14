@@ -2,7 +2,7 @@
 
 import U from "../core/utilities.js";
 import G from "../core/gsap.js";
-import {Tag, District, Playbook, Vice, BladesActorType} from "../core/constants.js";
+import {Tag, District, Playbook, Vice, BladesActorType, BladesPermissions} from "../core/constants.js";
 import Tagify from "../../lib/tagify/tagify.esm.js";
 import BladesActor from "../blades-actor.js";
 import BladesItem from "../blades-item.js";
@@ -28,7 +28,10 @@ interface BladesSheetData {
 		actor: BladesActor,
 		system: BladesActorSystem,
 		activeEffects: BladesActiveEffect[],
-		playbookData: {dotline: DotlineData},
+		hasFullVision: boolean,
+		hasLimitedVision: boolean,
+		hasControl: boolean,
+		playbookData: {tooltip: string, dotline: DotlineData},
 		coinsData: {dotline: DotlineData}
 }
 // #endregion
@@ -46,7 +49,15 @@ class BladesSheet extends ActorSheet {
 			actor: this.actor,
 			system: this.actor.system,
 			activeEffects: Array.from(this.actor.effects) as BladesActiveEffect[],
+			hasFullVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER),
+			hasLimitedVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED),
+			hasControl: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER),
 			playbookData: {
+				tooltip: (new Handlebars.SafeString([
+					"<ul>",
+					... this.actor.playbook?.system.experience_clues?.map((line) => `<li>${line}</li>`) ?? [],
+					"</ul>"
+				].join(""))).toString(),
 				dotline: {
 					data: this.actor.system.experience?.playbook,
 					target: "system.experience.playbook.value",
@@ -83,6 +94,23 @@ class BladesSheet extends ActorSheet {
 		} else {
 			html.find('.editor:not(.tinymce) [data-is-secret="true"]').remove();
 		}
+
+		//~ Tooltips
+		html.find(".tooltip").siblings(".comp-body")
+			.each(function(i, elem) {
+				$(elem).data("hoverTimeline", G.effects.hoverTooltip(elem));
+			})
+			.on({
+				mouseenter: function() {
+					$(this).parent().css("z-index", 1);
+					$(this).data("hoverTimeline").play();
+				},
+				mouseleave: function() {
+					$(this).data("hoverTimeline").reverse().then(() => {
+						$(this).parent().removeAttr("style");
+					});
+				}
+			});
 
 		// Everything below here is only needed if the sheet is editable
 		if (!this.options.editable) { return }
@@ -180,35 +208,37 @@ class BladesSheet extends ActorSheet {
 
 		if (tagElem) {
 			const tagify = new Tagify(tagElem, {
-				enforceWhitelist: true,
-				editTags: false,
+				// enforceWhitelist: true,
+				// editTags: false,
+				enforceWhitelist: false,
+				editTags: true,
 				whitelist: [
 					...Object.values(Tag.System).map((tag) => ({
-						"value": tag,
+						"value": (new Handlebars.SafeString(tag)).toString(),
 						"data-group": "System Tags"
 					})),
 					...Object.values(Tag.Item).map((tag) => ({
-						"value": tag,
+						"value": (new Handlebars.SafeString(tag)).toString(),
 						"data-group": "Item Tags"
 					})),
 					...Object.values(Tag.PC).map((tag) => ({
-						"value": tag,
+						"value": (new Handlebars.SafeString(tag)).toString(),
 						"data-group": "Actor Tags"
 					})),
 					...Object.values(Tag.NPC).map((tag) => ({
-						"value": tag,
+						"value": (new Handlebars.SafeString(tag)).toString(),
 						"data-group": "Actor Tags"
 					})),
 					...Object.values(District).map((tag) => ({
-						"value": tag,
+						"value": (new Handlebars.SafeString(tag)).toString(),
 						"data-group": "Districts"
 					})),
 					...Object.values(Vice).map((tag) => ({
-						"value": tag,
+						"value": (new Handlebars.SafeString(tag)).toString(),
 						"data-group": "Vices"
 					})),
 					...Object.values(Playbook).map((tag) => ({
-						"value": tag,
+						"value": (new Handlebars.SafeString(tag)).toString(),
 						"data-group": "Playbooks"
 					}))
 				],
@@ -262,24 +292,24 @@ class BladesSheet extends ActorSheet {
 			tagify.addTags(
 				this.actor.tags.map((tag: BladesTag) => {
 					if (Object.values(Tag.System).includes(tag as Tag.System)) {
-						return {"value": tag, "data-group": "System Tags"};
+						return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "System Tags"};
 					}
 					if (Object.values(Tag.Item).includes(tag as Tag.Item)) {
-						return {"value": tag, "data-group": "Item Tags"};
+						return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Item Tags"};
 					}
 					if (Object.values(Tag.PC).includes(tag as Tag.PC) || Object.values(Tag.NPC).includes(tag as Tag.NPC)) {
-						return {"value": tag, "data-group": "Actor Tags"};
+						return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Actor Tags"};
 					}
 					if (Object.values(District).includes(tag as District)) {
-						return {"value": tag, "data-group": "Districts"};
+						return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Districts"};
 					}
 					if (Object.values(Playbook).includes(tag as Playbook)) {
-						return {"value": tag, "data-group": "Playbooks"};
+						return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Playbooks"};
 					}
 					if (Object.values(Vice).includes(tag as Vice)) {
-						return {"value": tag, "data-group": "Vices"};
+						return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Vices"};
 					}
-					return {"value": tag, "data-group": "Other"};
+					return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Other"};
 				}),
 				false,
 				false
@@ -292,6 +322,13 @@ class BladesSheet extends ActorSheet {
 		if (this.options.submitOnChange) {
 			html.on("change", "textarea", this._onChangeInput.bind(this)); // Use delegated listener on the form
 		}
+	}
+
+	override async close(options?: FormApplication.CloseOptions): Promise<void> {
+		if (this.actor.type === BladesActorType.pc) {
+			return super.close(options).then(() => this.actor.clearSubActors());
+		}
+		return super.close(options);
 	}
 
 	// #region Clock Handlers ~

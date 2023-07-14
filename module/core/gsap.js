@@ -86,7 +86,7 @@ const gsapEffects = {
         },
         defaults: {}
     },
-    hoverDialogItem: {
+    hoverTooltip: {
         effect: (targets, config) => {
             const titleElem = $(targets).children(".comp-title")[0];
             const imgElem = $(targets).children("img")[0];
@@ -116,17 +116,30 @@ const gsapEffects = {
                 }, 0);
             }
             if (tooltipElem) {
+                let [xStart, xEnd, yStart, yEnd, scale] = [-200, 0, -100, -100, 1.25];
+                if ($(tooltipElem).hasClass("tooltip-low")) {
+                    yStart = 0;
+                    yEnd = 0;
+                }
+                if ($(tooltipElem).hasClass("tooltip-left")) {
+                    xStart = 100;
+                    xEnd = -250;
+                }
+                if ($(tooltipElem).hasClass("tooltip-small")) {
+                    scale = 1;
+                }
                 tl.fromTo(tooltipElem, {
                     filter: "blur(50px)",
                     opacity: 0,
-                    scale: 1.4,
-                    x: "-=200"
+                    scale: 1.25 * scale,
+                    x: xStart,
+                    y: yStart
                 }, {
                     filter: "blur(0px)",
                     opacity: 1,
-                    scale: 1.25,
-                    x: 0,
-                    y: 0,
+                    scale,
+                    x: xEnd,
+                    y: yEnd,
                     duration: 0.5,
                     ease: "power2"
                 }, 0);

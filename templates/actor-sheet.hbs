@@ -8,10 +8,12 @@
 
 	{{!-- Playbook XP --}}
 	{{#if items.playbook}}
-	{{> "systems/eunos-blades/templates/components/comp.hbs"
-	class="comp-xp comp-xp-playbook comp-horizontal comp-teeth comp-teeth-long"
-	dotline=playbookData.dotline
-	}}
+		{{> "systems/eunos-blades/templates/components/comp.hbs"
+		class="comp-xp comp-xp-playbook comp-horizontal comp-teeth comp-teeth-long"
+		dotline=playbookData.dotline
+		tooltip=playbookData.tooltip
+		tooltipClass="tooltip-low tooltip-left"
+		}}
 	{{/if}}
 
 	{{!-- Sheet Container --}}
@@ -24,66 +26,66 @@
 				placeholder="Full Name">
 
 			{{> "systems/eunos-blades/templates/components/comp.hbs" items.playbook
-				class="comp-playbook comp-vertical"
-				label="Playbook"
-				cat="Playbook"
-				docType="Item"
-				addButton=true
-				remButton=true
-				id=items.playbook._id
+			class="comp-playbook comp-vertical"
+			label="Playbook"
+			cat="Playbook"
+			docType="Item"
+			addButton=true
+			remButton=true
+			id=items.playbook._id
 			}}
 
 			{{> "systems/eunos-blades/templates/components/comp.hbs" items.heritage
-				id=items.heritage.id
-				class="comp-heritage comp-vertical no-img"
-				label="Heritage"
-				cat="Heritage"
-				docType="Item"
-				addButton=true
-				remButton=true
+			id=items.heritage.id
+			class="comp-heritage comp-vertical no-img"
+			label="Heritage"
+			cat="Heritage"
+			docType="Item"
+			addButton=true
+			remButton=true
 			}}
 
 			{{> "systems/eunos-blades/templates/components/comp.hbs" items.background
-				id=items.background.id
-				class="comp-background comp-vertical"
-				label="Background"
-				cat="Background"
-				docType="Item"
-				addButton=true
-				remButton=true
+			id=items.background.id
+			class="comp-background comp-vertical"
+			label="Background"
+			cat="Background"
+			docType="Item"
+			addButton=true
+			remButton=true
 			}}
 
 			{{#if items.playbook}}
 			{{> "systems/eunos-blades/templates/components/comp.hbs" items.vice
-				id=items.vice.id
-				class="comp-vice comp-vertical"
-				label="Vice"
-				cat="Vice"
-				docType="Item"
-				addButton=true
-				remButton=true
+			id=items.vice.id
+			class="comp-vice comp-vertical"
+			label="Vice"
+			cat="Vice"
+			docType="Item"
+			addButton=true
+			remButton=true
 			}}
 			{{else}}
 			<div class="comp-vice comp-vertical comp"></div>
 			{{/if}}
 
 			{{> "systems/eunos-blades/templates/components/comp.hbs" actors.crew
-				class="comp-crew comp-vertical"
-				label="Crew"
-				cat="Crew"
-				docType="Actor"
-				addButton=true
-				remButton=true
-				id=actors.crew.id
+			class="comp-crew comp-vertical"
+			label="Crew"
+			cat="Crew"
+			docType="Actor"
+			addButton=true
+			remButton=true
+			id=actors.crew.id
 			}}
 
 			{{> "systems/eunos-blades/templates/components/comp.hbs" coinsData
-				label="Coins"
-				class="comp-coins comp-vertical"
+			label="Coins"
+			class="comp-coins comp-vertical"
 			}}
 
 			{{> "systems/eunos-blades/templates/components/comp.hbs" stashData
-				class="comp-stash comp-horizontal"
+			class="comp-stash comp-horizontal"
 			}}
 
 		</section>

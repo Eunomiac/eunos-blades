@@ -10,6 +10,20 @@ type NPCRandomizerData = {
   label: string | null
 }
 
+type BladesClaimData = {
+	name: string,
+	flavor?: string,
+	description: string,
+	value: boolean,
+	isTurf: boolean,
+	connects: {
+		left: boolean,
+		right: boolean,
+		top: boolean,
+		bottom: boolean
+	}
+}
+
 interface BladesPrimaryActor {
 	primaryUser?: User;
 }
@@ -27,6 +41,8 @@ interface SubActorControl {
 	purgeSubActor(actorRef: ActorRef): Promise<void>;
 
 	hasSubActorOf(actorRef: ActorRef): boolean;
+
+	clearSubActors(): Promise<void>;
 }
 interface SubItemControl {
 	subItems: BladesItem[];
@@ -43,6 +59,8 @@ interface SubItemControl {
 interface BladesSubActor {
 	isSubActor: boolean;
 	parentActor?: BladesActor;
+
+	async clearParentActor(): Promise<void>;
 }
 
 interface BladesScoundrel extends BladesPrimaryActor, SubActorControl, SubItemControl {
@@ -54,7 +72,9 @@ interface BladesScoundrel extends BladesPrimaryActor, SubActorControl, SubItemCo
 }
 interface BladesCrew extends SubActorControl, SubItemControl {
 
-	members?: BladesActor[];
+	members: BladesActor[];
+	claims: Record<number,BladesClaimData>;
+
 
 }
 interface BladesNPC extends SubItemControl, BladesSubActor {
@@ -156,7 +176,7 @@ interface BladesActorSystem {
 	tier: ValueMax,
 	deity: string,
 	hold: "strong"|"weak",
-	turfs: ValueMax,
+	// turfs: ValueMax,
 	heat: ValueMax,
 	wanted: ValueMax,
 	hunting_grounds: {

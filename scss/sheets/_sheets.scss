@@ -1,7 +1,7 @@
 .window-content {
 	background: var(--blades-black);
 	padding: 0;
-	overflow-x: hidden;
+	overflow: visible;
 
 	form.editable {
 		@import "../core/globals";
@@ -52,12 +52,17 @@
 			color: var(--blades-black);
 		}
 
+		.comp-xp-playbook .comp-body {
+			transform: none !important;
+		}
+
 		.sheet-root {
 			position: relative;
 			height: 100%;
 			width: 100%;
 			// top: -10px;
 			left: 0px;
+			overflow: hidden;
 
 			> section:not(.sheet-top) {
 				border-top: 2px solid var(--blades-white);
@@ -66,6 +71,7 @@
 
 			section {
 				z-index: zLevel();
+				max-height: 100%;
 
 				&.sheet-top {
 					display: grid;

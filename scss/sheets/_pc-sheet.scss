@@ -1,9 +1,10 @@
 & {
 	min-width: 775px;
 	min-height: 800px;
+	overflow: visible;
 
 	section.sheet-top {
-		min-height: 200px;
+		// min-height: 200px;
 		grid-template-areas:
 			". . title title title title title title playbook playbook playbook"
 			". . . subtitle subtitle subtitle subtitle subtitle subtitle . ."
@@ -19,9 +20,8 @@
 		.comp-vice { grid-area: vice }
 		.comp-crew { grid-area: crew }
 		.comp-coins { grid-area: coins }
-
 		.comp-stash { grid-area: stash;
-			--dotline-dot-spacing: 3px; }
+			/* --dotline-dot-spacing: 3px; */ }
 	}
 
 	section.sheet-mid-bar {
@@ -145,7 +145,6 @@
 
 								fill: var(--blades-black);
 								stroke: var(--blades-white);
-								// stroke: transparent !important;
 								stroke-width: 8px;
 								stroke-linejoin: bevel;
 								stroke-miterlimit: 10;
@@ -223,18 +222,15 @@
 		grid-template-columns: 1fr 200px;
 		align-items: start;
 		overflow: hidden;
+		height: 375px;
 
 		section.nav-group {
 			.loadout {
 				.tab-label {
-					// padding-right: toRem(10px);
-					// width: 100%;
 
 					.load-selector {
-						// height: 100%;
 						width: toRem(150px);
 						margin: 0 toRem(10px);
-						// margin-left: toRem(10px);
 						font-family: var(--font-emphasis);
 						text-transform: uppercase;
 						text-indent: toRem(3px);
@@ -248,47 +244,22 @@
 						position: relative;
 						top: 2px;
 						margin: 0 2px;
-
 					}
-					// .load-selected-count span { font-weight: bold; line-height: 16.8px; }
-
 					.load-level {
-						// position: absolute;
 						flex-grow: 1;
-						// right: toRem(35px);
-						// font-family: var(--font-emphasis);
-						// text-transform: uppercase;
 						text-align: right;
 						padding-right: toRem(5px);
-						// justify-self: flex-end;
 					}
 					.load-amount {
 						--number-circle-size: #{toRem(24px)};
 						filter: brightness(1.5);
 						margin: 0 #{toRem(2px)} 0 #{toRem(5px)};
-						// position: absolute;
-						// transform: translate(-50%, -50%);
-						// right: calc(-1 * var(--number-circle-size) + 50%);
-						// top: 50%;
 					}
 				}
 
 				.comp .dotline {
-					// position: absolute;
-					// left: calc(-0.65 * var(--content-padding));
-					// top: calc(0.3 * var(--content-padding));
-					// flex-direction: row;
-					// align-self: flex-start;
-					// right: -25px;
-					// top: unset;
-					// bottom: -2px;
 					left: unset;
 					transform: none;
-
-					.dot {
-						// margin-top: toRem(4px);
-						// margin-right: toRem(3px);
-					}
 
 					+ .comp-title .item-title {
 						margin-left: toRem(12px);
@@ -299,7 +270,6 @@
 
 		section.action-ratings {
 			align-items: stretch;
-			// flex-grow: 1;
 
 			.comp-attribute {
 				background: var(--blades-white);
@@ -327,7 +297,6 @@
 					font-size: toRem(16px);
 					font-family: var(--font-emphasis);
 					text-shadow: none;
-					// padding: 0;
 					line-height: toRem(26px);
 					text-transform: uppercase;
 					text-align: left;
@@ -339,20 +308,17 @@
 					justify-content: flex-end;
 					align-items: flex-start;
 					position: relative;
-					// left: toRem(2px);
 					max-height: toRem(26px);
 					.dotline {
 						position: relative;
 						right: 0;
 						left: unset;
-						// top: -50%;
 						justify-content: flex-end;
 
 						--dotline-dot-sizeX: #{toRem(11px)};
 						--dotline-dot-spacing: #{toRem(1px)};
 
 						--frame-color: var(--blades-black);
-						// --frame-color-full: var(--blades-grey);
 						--fill-color-full: var(--blades-gold-bright);
 						--fill-color-empty: rgba(0, 0, 0, 0.25);
 						--half-color-empty: var(--blades-gold-dark);
@@ -410,10 +376,6 @@
 					}
 				}
 			}
-
-			/* don't use ANY of other styles: start from scratch and build visually.
-
-			use radial gradient instead of background for debugging */
 		}
 	}
 }

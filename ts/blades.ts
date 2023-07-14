@@ -19,6 +19,7 @@ import BladesSelectorDialog, {SelectionCategory} from "./blades-dialog.js";
 import BladesActiveEffect from "./blades-active-effect.js";
 import BladesTrackerSheet from "./sheets/blades-tracker-sheet.js";
 import BladesClockKeeperSheet from "./sheets/blades-clock-keeper-sheet.js";
+import {UpdateClaims, UpdateContacts, UpdateOps} from "./data-import/data-import.js";
 
 let socket: Socket; //~ SocketLib interface
 registerDebugger();
@@ -28,6 +29,9 @@ registerDebugger();
 /*DEVCODE*/Object.assign(
 	globalThis,
 	{
+		UpdateClaims,
+		UpdateContacts,
+		UpdateOps,
 		BladesActor,
 		BladesActorSheet,
 		BladesCrewSheet,

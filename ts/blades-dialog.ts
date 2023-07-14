@@ -8,7 +8,7 @@ export enum SelectionCategory {
 	Vice = "Vice",
 	Playbook = "Playbook",
 	Reputation = "Reputation",
-	PreferredOp = "PreferredOp",
+	Preferred_Op = "Preferred_Op",
 	Gear = "Gear",
 	Ability = "Ability",
 	Faction = "Faction",
@@ -16,12 +16,13 @@ export enum SelectionCategory {
 	Cohort = "Cohort",
 	Feature = "Feature",
 	Stricture = "Stricture",
-	VicePurveyor = "VicePurveyor",
+	Vice_Purveyor = "Vice_Purveyor",
 	Acquaintance = "Acquaintance",
 	Friend = "Friend",
 	Rival = "Rival",
 	Crew = "Crew",
-	Member = "Member"
+	Member = "Member",
+	Contact = "Contact"
 }
 
 class BladesSelectorDialog extends Dialog {
@@ -100,22 +101,12 @@ class BladesSelectorDialog extends Dialog {
 
 		const self = this;
 
-		//~ Item Control
-		html.find("[data-item-id]")
+		//~ Tooltips
+		html.find(".tooltip").siblings("[data-item-id]")
 			.each(function(i, elem) {
-				$(elem).data("hoverTimeline", G.effects.hoverDialogItem(elem));
-			}).on({
-				click: function() {
-					const docId = $(this).data("itemId");
-					const docType = $(this).data("docType");
-					eLog.checkLog("dialog", "[BladesDialog] on Click", {elem: this, docId, docType, parent: self.parent});
-					if (docType === "Actor") {
-						self.parent.addSubActor(docId, self.tags);
-					} else if (docType === "Item") {
-						self.parent.addSubItem(docId);
-					}
-					self.close();
-				},
+				$(elem).data("hoverTimeline", G.effects.hoverTooltip(elem));
+			})
+			.on({
 				mouseenter: function() {
 					$(this).parent().css("z-index", 1);
 					$(this).data("hoverTimeline").play();
@@ -126,6 +117,19 @@ class BladesSelectorDialog extends Dialog {
 					});
 				}
 			});
+
+		//~ Item Control
+		html.find("[data-item-id]").on("click", function() {
+			const docId = $(this).data("itemId");
+			const docType = $(this).data("docType");
+			eLog.checkLog("dialog", "[BladesDialog] on Click", {elem: this, docId, docType, parent: self.parent});
+			if (docType === "Actor") {
+				self.parent.addSubActor(docId, self.tags);
+			} else if (docType === "Item") {
+				self.parent.addSubItem(docId);
+			}
+			self.close();
+		});
 	}
 }
 

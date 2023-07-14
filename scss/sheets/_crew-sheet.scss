@@ -10,28 +10,72 @@
 					&.sheet-top {
 						grid-template-areas:
 							". . title title title title title title playbook playbook playbook"
-							". . members members members members members members members members . "
-							". . reputation reputation preferred-op preferred-op tier tier coins coins . ";
+							". . members members members members members members playbook playbook playbook "
+							". . reputation reputation preferred-op preferred-op hunting-grounds hunting-grounds hunting-grounds coins coins ";
+						grid-template-rows: 55px 83px 42px 20px;
 
 						.sheet-title {
 							--sheet-title-font-size: #{toRem(48px)};
-							// overflow: visible;
-							// position: relative;
-							// width: fit-content;
-							// z-index: 4
 						}
 
 						.comp-playbook { grid-area: playbook }
 						.comp-reputation { grid-area: reputation }
 						.comp-preferred-op { grid-area: preferred-op }
-						.comp-tier { grid-area: tier }
+						.comp-hunting-grounds { grid-area: hunting-grounds }
 						.comp-coins { grid-area: coins }
-						.members {
-							grid-area: members;
-							// position: relative;
-							// justify-content: flex-start;
-							// height: toRem(80px);
+						.members { grid-area: members }
+
+						.comp-hunting-grounds {
+							.comp-body {
+								.comp-body-text {
+									display: block;
+									margin-top: 5px;
+									min-height: 50px;
+									margin-bottom: -5px;
+									resize: none;
+									font-family: var(--font-primary);
+									font-size: toRem(12px);
+									line-height: toRem(13px);
+									text-align: center;
+									width: 200px;
+									background-color: var(--blades-black-dark);
+									border-radius: 5px;
+									padding: 5px;
+									box-shadow: inset 0 0 10px var(--blades-black);
+								}
+							}
 						}
+					}
+
+					&.sheet-mid-bar {
+						.comp-rep .comp-body {
+							.dotline { --fill-color-full: var(--blades-gold-dark) }
+							.dotline.locked { --fill-color-full: var(--blades-gold-bright) }
+						}
+						.comp-hold .comp-body { min-height: unset }
+						.comp-heat .comp-body .dotline { --fill-color-full: var(--blades-red) }
+						.comp-wanted .comp-body {
+							min-height: unset;
+							top: unset;
+
+							.dotline {
+								--dotline-dot-sizeY: 2.5rem;
+								--fill-color-full: var(--blades-red-bright);
+								margin: 0;
+								align-items: stretch;
+
+								.dot {
+									height: toRem(25px);
+
+									svg {
+										scale: 1.2 1;
+										margin-top: -2px;
+										pointer-events: none
+									}
+								}
+							}
+						}
+						.comp-tier { max-width: 40px }
 					}
 				}
 

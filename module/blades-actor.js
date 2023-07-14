@@ -68,9 +68,11 @@ class BladesActor extends Actor {
         return true;
     }
     processEmbeddedActorMatches(globalActors) {
-        globalActors = globalActors.filter(this.checkActorPrereqs);
-        const mergedActors = globalActors.map((gActor) => this.getSubActor(gActor) || gActor);
-        mergedActors.sort((a, b) => {
+        return globalActors
+            .filter(this.checkActorPrereqs)
+            .filter((gActor) => !this.activeSubActors.some((aActor) => aActor.id === gActor.id))
+            .map((gActor) => this.getSubActor(gActor) || gActor)
+            .sort((a, b) => {
             if (a.name === b.name) {
                 return 0;
             }
@@ -88,12 +90,12 @@ class BladesActor extends Actor {
             }
             return 0;
         });
-        return mergedActors;
     }
     getDialogActors(category) {
                 
         const dialogData = {};
         switch (category) {
+            case SelectionCategory.Contact:
             case SelectionCategory.Rival:
             case SelectionCategory.Friend:
             case SelectionCategory.Acquaintance: {
@@ -103,7 +105,7 @@ class BladesActor extends Actor {
                 dialogData.Main = this.processEmbeddedActorMatches(BladesActor.GetTypeWithTags(BladesActorType.npc, this.playbookName));
                 return dialogData;
             }
-            case SelectionCategory.VicePurveyor: {
+            case SelectionCategory.Vice_Purveyor: {
                 if (this.vices.length === 0) {
                     return false;
                 }
@@ -171,6 +173,9 @@ class BladesActor extends Actor {
         if (!actor?.id) {
             return undefined;
         }
+        if (actor.type !== BladesActorType.npc) {
+            return actor;
+        }
         const subActorData = this.system.subactors[actor.id] ?? {};
         actor.system = mergeObject(actor.system, subActorData.system ?? {});
         if (this.primaryUser?.id) {
@@ -193,7 +198,11 @@ class BladesActor extends Actor {
         }
         const curData = this.system.subactors[actor.id] ?? {};
         const mergedData = mergeObject(curData, updateData);
-        return this.update({ [`system.subactors.${actor.id}`]: mergedData }, undefined, true);
+        const flatActor = flattenObject(actor);
+        const flatMergedData = flattenObject(mergedData);
+        const diffData = diffObject(flattenObject(actor), flattenObject(mergedData));
+        eLog.checkLog3("subactors", "[updateSubActor] actorRef, updateData, curData, mergedData, flatActor, flatMergedData, diffData", { updateData, curData, mergedData, flatActor, flatMergedData, diffData });
+        return this.update({ [`system.subactors.${actor.id}`]: diffData }, undefined, true);
     }
     async remSubActor(actorRef) {
         const actor = BladesActor.Get(actorRef);
@@ -215,6 +224,13 @@ class BladesActor extends Actor {
             return;
         }
         this.update({ ["system.subactors"]: mergeObject(this.system.subactors, { [`-=${subActor.id}`]: null }) }, undefined, true);
+    }
+    async clearSubActors() {
+        this.subActors.forEach((subActor) => {
+            if (subActor.parentActor?.id === this.id) {
+                subActor.clearParentActor();
+            }
+        });
     }
     async clearParentActor() {
         this.parentActor = undefined;
@@ -385,7 +401,7 @@ class BladesActor extends Actor {
                 dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_reputation));
                 return dialogData;
             }
-            case SelectionCategory.PreferredOp: {
+            case SelectionCategory.Preferred_Op: {
                 dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op));
                 return dialogData;
             }
@@ -473,6 +489,7 @@ class BladesActor extends Actor {
         let BladesItemUniqueTypes;
         (function (BladesItemUniqueTypes) {
             BladesItemUniqueTypes["background"] = "background";
+            BladesItemUniqueTypes["vice"] = "vice";
             BladesItemUniqueTypes["crew_playbook"] = "crew_playbook";
             BladesItemUniqueTypes["crew_reputation"] = "crew_reputation";
             BladesItemUniqueTypes["heritage"] = "heritage";
@@ -551,9 +568,28 @@ class BladesActor extends Actor {
     }
     get members() {
         if (this.type !== BladesActorType.crew) {
-            return undefined;
+            return [];
         }
         return BladesActor.GetTypeWithTags(BladesActorType.pc).filter((actor) => actor.isMember(this));
+    }
+    get claims() {
+        if (this.type !== BladesActorType.crew || !this.playbook) {
+            return {};
+        }
+        return this.playbook.system.turfs;
+    }
+    get turfCount() {
+        if (this.type !== BladesActorType.crew || !this.playbook) {
+            return 0;
+        }
+        return Object.values(this.playbook.system.turfs)
+            .filter((claim) => claim.isTurf && claim.value).length;
+    }
+    get contacts() {
+        if (this.type !== BladesActorType.crew || !this.playbook) {
+            return [];
+        }
+        return this.activeSubActors.filter((actor) => actor.hasTag(this.playbookName));
     }
     
     static async create(data, options = {}) {
@@ -589,10 +625,33 @@ class BladesActor extends Actor {
     }
     async update(updateData, context, isSkippingSubActorCheck = false) {
         if (!updateData) {
-            return undefined;
+            return super.update(updateData);
         }
-        if (this.parentActor && !isSkippingSubActorCheck) {
-            return this.parentActor.updateSubActor(this.id, updateData);
+        switch (this.type) {
+            case BladesActorType.pc: {
+                break;
+            }
+            case BladesActorType.crew: {
+                if (!this.playbook) {
+                    return undefined;
+                }
+                eLog.checkLog("actorTrigger", "Updating Crew", { updateData, context, isSkippingSubActorCheck });
+                const playbookUpdateData = Object.fromEntries(Object.entries(flattenObject(updateData))
+                    .filter(([key, _]) => key.startsWith("system.turfs.")));
+                updateData = Object.fromEntries(Object.entries(flattenObject(updateData))
+                    .filter(([key, _]) => !key.startsWith("system.turfs.")));
+                eLog.checkLog("actorTrigger", "Updating Crew", { crewUpdateData: updateData, playbookUpdateData });
+                if (!U.isEmpty(playbookUpdateData)) {
+                    await this.playbook.update(playbookUpdateData, context)
+                        .then(() => this.sheet?.render(false));
+                }
+                break;
+            }
+            case BladesActorType.npc: {
+                if (this.parentActor && !isSkippingSubActorCheck) {
+                    return this.parentActor.updateSubActor(this.id, updateData);
+                }
+            }
         }
         return super.update(updateData, context);
     }

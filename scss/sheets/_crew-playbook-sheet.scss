@@ -1,0 +1,8 @@
+& {
+    min-width: 675px;
+
+    .turf-list {
+        @import "../components/turf-block";
+        scale: 0.75;
+    }
+}

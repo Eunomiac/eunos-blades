@@ -1,3 +1,10 @@
+export enum BladesPermissions {
+	NONE = CONST.DOCUMENT_PERMISSION_LEVELS.NONE,
+	BASIC = CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED,
+	FULL = CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
+	OWNER = CONST.DOCUMENT_PERMISSION_LEVELS.OWNER
+}
+
 export enum BladesActorType {
 	pc = "pc",
 	npc = "npc",
@@ -32,7 +39,7 @@ export enum District {
 	Charhollow = "Charhollow",
 	Charterhall = "Charterhall",
 	Coalridge = "Coalridge",
-	"Crow's Foot" = "Crow's Foot",
+	"Crows Foot" = "Crows Foot",
 	"The Docks" = "The Docks",
 	Dunslough = "Dunslough",
 	Nightmarket = "Nightmarket",

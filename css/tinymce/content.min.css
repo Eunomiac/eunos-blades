@@ -166,6 +166,7 @@ html, :root {
     --font-emphasis-smallcaps: var(--font-emphasis);
     --font-emphasis-alt: "Ravenscroft";
     --font-emphasis-alt-smallcaps: var(--font-emphasis-alt);
+    --font-emphasis-narrow: "Fjalla One";
     --font-mono: "Pragmata", monospace;
     --font-mono-smallcaps: var(--font-mono);
     --font-decorative: "UglyQua";
@@ -277,7 +278,7 @@ html, :root {
       color: var(--blades-white-bright);
       font-size: toRem(12px);
       line-height: toRem(12px);
-      z-index: zLevel(0);
+      z-index: zLevel(3);
       flex-grow: 0.5; }
       html .comp .comp-label.comp-prompt, :root .comp .comp-label.comp-prompt {
         font-size: toRem(16px);
@@ -361,6 +362,7 @@ html, :root {
       width: toRem(26px);
       text-align: center; }
     html .comp .tooltip, :root .comp .tooltip {
+      opacity: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -374,8 +376,6 @@ html, :root {
       hyphens: auto;
       text-align: justify;
       position: absolute;
-      top: unset;
-      bottom: 100px;
       z-index: zLevel(4);
       pointer-events: none; }
       html .comp .tooltip.playbook-tooltip, :root .comp .tooltip.playbook-tooltip {
@@ -487,7 +487,8 @@ html, :root {
       align-items: flex-start; }
       html .comp.comp-horizontal .comp-button.comp-delete, :root .comp.comp-horizontal .comp-button.comp-delete {
         left: toRem(5px);
-        top: 0; }
+        top: unset;
+        bottom: 0; }
       html .comp.comp-horizontal > .comp-label, :root .comp.comp-horizontal > .comp-label {
         text-align: right;
         font-size: toRem(14px);
@@ -939,7 +940,7 @@ html, :root {
         color: var(--blades-white-bright);
         font-size: 0.75rem;
         line-height: 0.75rem;
-        z-index: 2;
+        z-index: 5;
         flex-grow: 0.5; }
         html .comp .comp-label.comp-prompt, :root .comp .comp-label.comp-prompt {
           font-size: 1rem;
@@ -1023,6 +1024,7 @@ html, :root {
         width: 1.625rem;
         text-align: center; }
       html .comp .tooltip, :root .comp .tooltip {
+        opacity: 0;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -1036,8 +1038,6 @@ html, :root {
         hyphens: auto;
         text-align: justify;
         position: absolute;
-        top: unset;
-        bottom: 100px;
         z-index: 6;
         pointer-events: none; }
         html .comp .tooltip.playbook-tooltip, :root .comp .tooltip.playbook-tooltip {
@@ -1149,7 +1149,8 @@ html, :root {
         align-items: flex-start; }
         html .comp.comp-horizontal .comp-button.comp-delete, :root .comp.comp-horizontal .comp-button.comp-delete {
           left: 0.3125rem;
-          top: 0; }
+          top: unset;
+          bottom: 0; }
         html .comp.comp-horizontal > .comp-label, :root .comp.comp-horizontal > .comp-label {
           text-align: right;
           font-size: 0.875rem;
