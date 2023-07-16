@@ -378,14 +378,8 @@ html, :root {
       position: absolute;
       z-index: zLevel(4);
       pointer-events: none; }
-      html .comp .tooltip.playbook-tooltip, :root .comp .tooltip.playbook-tooltip {
-        width: 450px; }
-        html .comp .tooltip.playbook-tooltip > span, :root .comp .tooltip.playbook-tooltip > span {
-          width: inherit; }
-        html .comp .tooltip.playbook-tooltip h1, html .comp .tooltip.playbook-tooltip h2, :root .comp .tooltip.playbook-tooltip h1, :root .comp .tooltip.playbook-tooltip h2 {
-          width: 110%;
-          margin: toRem(-7px);
-          white-space: nowrap; }
+      html .comp .tooltip.tooltip-left, :root .comp .tooltip.tooltip-left {
+        width: 500px; }
     html .comp.comp-vertical, :root .comp.comp-vertical {
       --comp-img-scale: 2;
       --comp-name-size: toRem(16px);
@@ -698,6 +692,16 @@ html, :root {
     html .dotline.locked .dot, :root .dotline.locked .dot {
       pointer-events: none;
       cursor: default; }
+    html .dotline.dotline-right, :root .dotline.dotline-right {
+      margin-left: auto;
+      margin-right: toRem(20px); }
+    html .dotline .dotline-label, :root .dotline .dotline-label {
+      font-family: var(--font-emphasis);
+      font-size: toRem(14px);
+      color: var(--blades-white);
+      text-transform: uppercase;
+      line-height: toRem(14px);
+      margin-right: toRem(5px); }
     html .dotline .dot, :root .dotline .dot {
       --dot-frame-color: var(--frame-color, var(--blades-white));
       --dot-frame-color-empty: var(--frame-color-empty, var(--dot-frame-color));
@@ -1040,14 +1044,8 @@ html, :root {
         position: absolute;
         z-index: 6;
         pointer-events: none; }
-        html .comp .tooltip.playbook-tooltip, :root .comp .tooltip.playbook-tooltip {
-          width: 450px; }
-          html .comp .tooltip.playbook-tooltip > span, :root .comp .tooltip.playbook-tooltip > span {
-            width: inherit; }
-          html .comp .tooltip.playbook-tooltip h1, html .comp .tooltip.playbook-tooltip h2, :root .comp .tooltip.playbook-tooltip h1, :root .comp .tooltip.playbook-tooltip h2 {
-            width: 110%;
-            margin: -0.4375rem;
-            white-space: nowrap; }
+        html .comp .tooltip.tooltip-left, :root .comp .tooltip.tooltip-left {
+          width: 500px; }
       html .comp.comp-vertical, :root .comp.comp-vertical {
         --comp-img-scale: 2;
         --comp-name-size: 1rem;
@@ -1360,6 +1358,16 @@ html, :root {
       html .dotline.locked .dot, :root .dotline.locked .dot {
         pointer-events: none;
         cursor: default; }
+      html .dotline.dotline-right, :root .dotline.dotline-right {
+        margin-left: auto;
+        margin-right: 1.25rem; }
+      html .dotline .dotline-label, :root .dotline .dotline-label {
+        font-family: var(--font-emphasis);
+        font-size: 0.875rem;
+        color: var(--blades-white);
+        text-transform: uppercase;
+        line-height: 0.875rem;
+        margin-right: 0.3125rem; }
       html .dotline .dot, :root .dotline .dot {
         --dot-frame-color: var(--frame-color, var(--blades-white));
         --dot-frame-color-empty: var(--frame-color-empty, var(--dot-frame-color));

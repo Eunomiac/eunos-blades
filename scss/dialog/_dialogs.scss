@@ -88,6 +88,36 @@
 						}
 					}
 
+					.comp.unaffordable {
+						order: 2;
+						.comp-body {
+							transform: scale(1, 1) !important;
+							img {
+								opacity: 0.25 !important;
+							}
+							.comp-title {
+								color: var(--blades-red-dark) !important;
+								pointer-events: none;
+							}
+							.number-circle {
+								border-color: var(--blades-red-bright);
+								color: var(--blades-red-bright);
+							}
+						}
+					}
+
+					.comp.expensive {
+						.comp-body {
+							.comp-title {
+								color: var(--blades-gold-bright);
+							}
+							.number-circle {
+								border-color: var(--blades-gold-bright);
+								color: var(--blades-gold-bright)
+							}
+						}
+					}
+
 					// .comp.embedded + .comp:not(.embedded) {
 					// 	display: none;
 					// 	margin-left: -15%;

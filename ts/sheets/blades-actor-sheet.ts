@@ -1,5 +1,8 @@
 
-import C, {BladesActorType, BladesItemType, District, Tag} from "../core/constants.js";
+import C, {BladesActorType, BladesItemType, District, Tag, Actions} from "../core/constants.js";
+import type {Attributes} from "../core/constants.js";
+import {BladesPhase} from "./blades-tracker-sheet.js";
+
 import U from "../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesItem from "../blades-item.js";
@@ -23,23 +26,19 @@ class BladesActorSheet extends BladesSheet {
 
 	static Initialize() {
 		Actors.registerSheet("blades", BladesActorSheet, {types: ["pc"], makeDefault: true});
-		Hooks.on("dropActorSheetData", async (
-			parentActor: BladesActor,
-			sheet: BladesActorSheet,
-			{type, uuid}: {type: string, uuid: string}
-		) => {
+
+		Hooks.on("dropActorSheetData", async (parentActor: BladesActor, _, {uuid}: {uuid: string}) => {
 			const doc = await fromUuid(uuid) as BladesDoc|null;
 			if (doc instanceof BladesActor) {
 				if (parentActor.type === BladesActorType.crew && doc.type === BladesActorType.pc) {
-					// Dropping a PC onto a Crew Sheet: Create as Member
-					parentActor.addSubActor(doc, [Tag.PC.Member]);
+					// Dropping a PC onto a Crew Sheet: Add Crew to PC
+					doc.addSubActor(parentActor);
 				} else if (parentActor.type === BladesActorType.pc && doc.type === BladesActorType.crew) {
 					// Dropping a Crew onto a PC Sheet: Add
 					parentActor.addSubActor(doc);
 				}
 			}
 			if (doc instanceof BladesItem) {
-				if (!doc) { return }
 				BladesItem.create(doc as {name: string, type: BladesItemType}, {parent: parentActor});
 				return;
 			}
@@ -51,19 +50,24 @@ class BladesActorSheet extends BladesSheet {
 	}
 
 	override getData() {
-		const context = super.getData() as ReturnType<BladesSheet["getData"]>;
+		const context = super.getData() as ReturnType<BladesSheet["getData"]> & {attributes: Record<Attributes,Record<Actions,ValueMax>>};
 
 		const sheetData: Partial<BladesActorSheetData> = {};
 
-		eLog.checkLog("actor", "[BladesActorSheet] super.getData()", {...context});
 
 		sheetData.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
+
+		context.attributes = U.objMap(context.system.attributes, (attrData: Record<Actions, ValueMax>) => U.objMap(attrData, (value: ValueMax): ValueMax => ({
+			value: value.value,
+			max: game.eunoblades.Tracker!.system.game_phase === BladesPhase.CharGen ? 2 : value.max
+		}))) as Record<Attributes,Record<Actions,ValueMax>>;
 
 		const {activeSubItems, activeSubActors} = this.actor;
 
 		Object.assign(
 			sheetData,
 			{
+				phases: Object.values(BladesPhase),
 				items: { //~ Process and sort active subItems
 					abilities: activeSubItems.filter((item) => item.type === BladesItemType.ability).map((item) => {
 						//~ Assign dotlines to abilities with usage data
@@ -153,20 +157,6 @@ class BladesActorSheet extends BladesSheet {
 						svgEmpty: "full|half|frame"
 					}
 				},
-				attributes:  {
-					insight: {
-						value: this.actor.attributes.insight,
-						size: 4 + this.actor.system.resistance_bonuses.insight
-					},
-					prowess: {
-						value: this.actor.attributes.prowess,
-						size: 4 + this.actor.system.resistance_bonuses.prowess
-					},
-					resolve: {
-						value: this.actor.attributes.resolve,
-						size: 4 + this.actor.system.resistance_bonuses.resolve
-					}
-				},
 				traumaData: {
 					name: this.actor.system.trauma.name,
 					dotline: {
@@ -179,7 +169,7 @@ class BladesActorSheet extends BladesSheet {
 					compContainer: {
 						"class": "comp-trauma-conditions comp-vertical full-width",
 						"blocks": [
-							this.actor.allActiveTraumaConditions.slice(0, Math.ceil(this.actor.allActiveTraumaConditions.length / 2))
+							this.actor.traumaList.slice(0, Math.ceil(this.actor.traumaList.length / 2))
 								.map((tName) => ({
 									checkLabel: tName,
 									checkClasses: {
@@ -189,7 +179,7 @@ class BladesActorSheet extends BladesSheet {
 									checkTarget: `system.trauma.checked.${tName}`,
 									checkValue: this.actor.system.trauma.checked[tName] ?? false
 								})),
-							this.actor.allActiveTraumaConditions.slice(Math.ceil(this.actor.allActiveTraumaConditions.length / 2))
+							this.actor.traumaList.slice(Math.ceil(this.actor.traumaList.length / 2))
 								.map((tName) => ({
 									checkLabel: tName,
 									checkClasses: {
@@ -204,9 +194,23 @@ class BladesActorSheet extends BladesSheet {
 				},
 				acquaintancesName: this.actor.system.acquaintances_name ?? "Friends & Rivals",
 				friendsName: this.actor.system.friends_name,
-				rivalsName: this.actor.system.rivals_name
+				rivalsName: this.actor.system.rivals_name,
+				abilityData: {
+					dotline: {
+						"class": "dotline-right",
+						"data": {
+							value: this.actor.availableAbilityPoints,
+							max: this.actor.availableAbilityPoints
+						},
+						"dotlineLabel": "Available Abilities",
+						"isLocked": true,
+						"iconFull": "dot-full.svg"
+					}
+				}
 			}
 		);
+
+		eLog.checkLog("actor", "[BladesActorSheet] getData()", {...context, ...sheetData});
 
 		return {
 			...context,

@@ -279,35 +279,6 @@ Object.assign(globalThis, {
         eLog.display("Flattened Pack", flat_items);
     },
     DebugPC: async () => {
-        const { clientTop, clientLeft, clientHeight, clientWidth } = document.documentElement;
-        const positions = {
-            pc: () => ({ top: clientTop, left: clientLeft }),
-            npc: ({ height, width }) => ({ top: (clientTop + clientHeight) - height, left: (clientLeft + clientWidth) - width })
-        };
-        const pc = BladesActor.GetTypeWithTags(BladesActorType.pc).shift();
-        const npc = BladesActor.GetTypeWithTags(BladesActorType.npc).shift();
-        if (pc) {
-            Object.assign(globalThis, pc);
-            if (pc.sheet) {
-                pc.sheet.render(true);
-            }
-        }
-        if (npc) {
-            Object.assign(globalThis, npc);
-            if (npc.sheet) {
-                npc.sheet.render(true);
-            }
-        }
-        setTimeout(() => {
-            if (pc?.sheet) {
-                pc.sheet.setPosition(positions.pc());
-            }
-            if (npc?.sheet) {
-                const height = $(npc.sheet.element).height();
-                const width = $(npc.sheet.element).width();
-                npc.sheet.setPosition(positions.npc({ height, width }));
-            }
-        }, 2000);
     },
     ProcessNPCs: async () => {
         BladesActor.GetTypeWithTags(BladesActorType.npc).forEach((actor) => {

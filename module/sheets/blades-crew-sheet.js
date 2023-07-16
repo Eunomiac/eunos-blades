@@ -47,6 +47,42 @@ class BladesCrewSheet extends BladesSheet {
                 iconFullHover: "dot-full-hover.svg"
             }
         };
+        context.upgradeData = {
+            dotline: {
+                "class": "dotline-right",
+                "data": {
+                    value: this.actor.availableUpgradePoints,
+                    max: this.actor.availableUpgradePoints
+                },
+                "dotlineLabel": "Available Upgrade Points",
+                "isLocked": true,
+                "iconFull": "dot-full.svg"
+            }
+        };
+        context.abilityData = {
+            dotline: {
+                "class": "dotline-right",
+                "data": {
+                    value: this.actor.availableAbilityPoints,
+                    max: this.actor.availableAbilityPoints
+                },
+                "dotlineLabel": "Available Ability Points",
+                "isLocked": true,
+                "iconFull": "dot-full.svg"
+            }
+        };
+        context.cohortData = {
+            dotline: {
+                "class": "dotline-right",
+                "data": {
+                    value: this.actor.availableCohortPoints,
+                    max: this.actor.availableCohortPoints
+                },
+                "dotlineLabel": "Available Cohort Points",
+                "isLocked": true,
+                "iconFull": "dot-full.svg"
+            }
+        };
         context.repData = {
             name: "Rep",
             dotlines: [

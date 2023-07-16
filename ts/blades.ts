@@ -279,10 +279,8 @@ registerDebugger();
 				"name|playbook|crew_playbook|faction|description|description_short|notes|flagSource",
 				...pack_items.map((pItem) => {
 					const prunedObj: string[] = [];
-					// @ts-expect-error Temp
 					const flatObj = U.objFlatten(pItem);
 					for (const [sourceKey, targetKey] of Object.entries(fetchKeysMap)) {
-					// @ts-expect-error Temp
 						prunedObj.push((flatObj[sourceKey] ?? "").trim() || "");
 					}
 					return prunedObj.join("|");
@@ -294,47 +292,47 @@ registerDebugger();
 
 		// },
 		DebugPC: async () => {
-			const {clientTop, clientLeft, clientHeight, clientWidth} = document.documentElement;
-			const positions = {
-				pc: () => ({top: clientTop, left: clientLeft}),
-				// crew: ({pcSheetElem}: {pcSheetElem?: JQuery<HTMLElement>}) => ({top: clientTop, left: (pcSheetElem?.position()?.left ?? 0) + (pcSheetElem?.width() ?? 0)}),
-				npc: ({height, width}: {height: number, width: number}) => ({top: (clientTop + clientHeight) - height, left: (clientLeft + clientWidth) - width})
-			};
-			const pc = BladesActor.GetTypeWithTags(BladesActorType.pc).shift();
+			// const {clientTop, clientLeft, clientHeight, clientWidth} = document.documentElement;
+			// const positions = {
+			// 	pc: () => ({top: clientTop, left: clientLeft}),
+			// 	crew: ({pcSheetElem}: {pcSheetElem?: JQuery<HTMLElement>}) => ({top: clientTop, left: (pcSheetElem?.position()?.left ?? 0) + (pcSheetElem?.width() ?? 0)}),
+			// 	npc: ({height, width}: {height: number, width: number}) => ({top: (clientTop + clientHeight) - height, left: (clientLeft + clientWidth) - width})
+			// };
+			// const pc = BladesActor.GetTypeWithTags(BladesActorType.pc).shift();
 			// const crew = BladesActor.GetTypeWithTags(BladesActorType.crew).shift();
-			const npc = BladesActor.GetTypeWithTags(BladesActorType.npc).shift();
+			// const npc = BladesActor.GetTypeWithTags(BladesActorType.npc).shift();
 
-			if (pc) {
-				Object.assign(globalThis, pc);
-				if (pc.sheet) {
-					pc.sheet.render(true);
-				}
-			}
+			// if (pc) {
+			// 	Object.assign(globalThis, {pc});
+			// 	if (pc.sheet) {
+			// 		pc.sheet.render(true);
+			// 	}
+			// }
 			// if (crew) {
-			// 	Object.assign(globalThis, crew);
+			// 	Object.assign(globalThis, {crew});
 			// 	if (crew.sheet) {
 			// 		crew.sheet.render(true);
 			// 	}
 			// }
-			if (npc) {
-				Object.assign(globalThis, npc);
-				if (npc.sheet) {
-					npc.sheet.render(true);
-				}
-			}
-			setTimeout(() => {
-				if (pc?.sheet) {
-					pc.sheet.setPosition(positions.pc());
-				}
-				if (npc?.sheet) {
-					const height = $(npc.sheet.element).height()!;
-					const width = $(npc.sheet.element).width()!;
-					npc.sheet.setPosition(positions.npc({height, width}));
-				}
-				// if (crew?.sheet) {
-				// 	crew.sheet.setPosition(positions.crew({pcSheetElem: pc?.sheet?.element}));
-				// }
-			}, 2000);
+			// if (npc) {
+			// 	Object.assign(globalThis, {npc});
+			// 	if (npc.sheet) {
+			// 		npc.sheet.render(true);
+			// 	}
+			// }
+			// setTimeout(() => {
+			// 	if (pc?.sheet) {
+			// 		pc.sheet.setPosition(positions.pc());
+			// 	}
+			// 	if (npc?.sheet) {
+			// 		const height = $(npc.sheet.element).height()!;
+			// 		const width = $(npc.sheet.element).width()!;
+			// 		npc.sheet.setPosition(positions.npc({height, width}));
+			// 	}
+			// 	if (crew?.sheet) {
+			// 		crew.sheet.setPosition(positions.crew({pcSheetElem: pc?.sheet?.element}));
+			// 	}
+			// }, 2000);
 		},
 		ProcessNPCs: async () => {
 			BladesActor.GetTypeWithTags(BladesActorType.npc).forEach((actor) => {

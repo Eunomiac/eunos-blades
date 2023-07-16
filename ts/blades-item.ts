@@ -340,6 +340,7 @@ declare interface BladesItem {
 		cohort?: string,
 		scale?: number,
 		quality?: number,
+		isUpgraded?: boolean,
 		cohort_list?: Record<string, {label: string}>,
 		gang_type?: string[],
 		gang_type_list?: Record<string, {

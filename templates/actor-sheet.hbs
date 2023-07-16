@@ -200,6 +200,9 @@
 						</a>
 						{{/if}}
 						<span class="tab-title">{{localize "BITD.Abilities"}}</span>
+						{{#if (test items.playbook "&&" (test actor.availableAbilityPoints ">" 0)) }}
+						{{> "systems/eunos-blades/templates/parts/dotline.hbs" abilityData.dotline }}
+						{{/if}}
 					</label>
 
 					{{#each items.abilities}}
@@ -220,8 +223,6 @@
 						<a class="comp-control comp-button comp-add"><i class="fas fa-plus-square"></i></a>
 						{{/if}}
 						<span class="tab-title">{{localize "BITD.Loadout"}}</span>
-						{{log this}}
-						{{log loadData}}
 						<select class="load-selector" data-dtype="String" name="system.loadout.selected">
 							{{#select loadData.selLoadLevel}}
 							<option value="" hidden disabled selected></option>
@@ -359,13 +360,10 @@
 			</section>
 
 			<section class="action-ratings flex-vertical">
-				{{#with actor as |actor|}}
-				{{#each system.attributes as |attribute_data attribute_name|}}
+				{{#each attributes as |attribute_data attribute_name|}}
 				<div class="comp comp-horizontal comp-attribute">
 					<label class="comp-label" data-roll-attribute="{{attribute_name}}">{{case "title" attribute_name}}</label>
 					<div class="comp-body">
-						{{log "TESTING XP: "}}
-						{{log ../system.experience}}
 						{{> "systems/eunos-blades/templates/parts/dotline.hbs"
 						data=(lookup ../system.experience attribute_name)
 						target=(concat "system.experience." attribute_name ".value")
@@ -393,7 +391,6 @@
 				</div>
 				{{/each}}
 				{{/each}}
-				{{/with}}
 			</section>
 		</div>
 

@@ -186,15 +186,8 @@
 
 		pointer-events: none;
 
-		&.tooltip-low {
-			// bottom: -20px;
-		}
-
-		&.playbook-tooltip {
-			width: 450px;
-			> span { width: inherit }
-
-			h1, h2 { width: 110%; margin: toRem(-7px); white-space: nowrap }
+		&.tooltip-left {
+			width: 500px;
 		}
 
 	}

@@ -54,7 +54,8 @@
 						}
 						.comp-hold .comp-body { min-height: unset }
 						.comp-heat .comp-body .dotline { --fill-color-full: var(--blades-red) }
-						.comp-wanted .comp-body {
+						.comp-wanted .comp-body,
+						.comp-tier .comp-body {
 							min-height: unset;
 							top: unset;
 

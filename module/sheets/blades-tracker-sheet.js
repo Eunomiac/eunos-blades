@@ -31,12 +31,12 @@ class BladesTipGenerator {
                 "Infiltrate/Rescue/Destroy: Use these as additional/secondary goals in combat encounters.",
                 "Tell the next player in the initiative order that they're on deck.",
                 "Don't trigger combats automatically: Use alternate objectives to incite the players to fight, giving them agency.",
-                "Add another layer by drawing focus to collateral effects of the combat: a fire, a hostage, a collapsing building, innocents in danger",
+                "Add another layer by drawing focus to collateral effects of the combat: a fire, a hostage, a collapsing building, innocents in danger"
             ],
             [BladesTipContext.General]: [
                 "Rolling the dice always means SOMETHING happens.",
                 "Jump straight to the action; don't waste time on establishing scenes or filler.",
-                "Invoke elements of characters' backstories or beliefs to make any scene more personal.",
+                "Invoke elements of characters' backstories or beliefs to make any scene more personal."
             ]
         };
     }
@@ -52,9 +52,6 @@ class BladesTrackerSheet extends BladesItemSheet {
             type: "gm_tracker",
             img: "systems/eunos-blades/assets/icons/gm-tracker.svg"
         }));
-    }
-    static async GetPhase() {
-        return (await BladesTrackerSheet.Get()).system.game_phase;
     }
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -82,12 +79,12 @@ class BladesTrackerSheet extends BladesItemSheet {
             "systems/eunos-blades/templates/items/gm_tracker-sheet.hbs"
         ]);
     }
-    async _updateObject(event, formData) {
-        const updateData = await this.object.update(formData);
-        return updateData;
-    }
+    get phase() { return this.item.system.game_phase; }
+    set phase(phase) { this.item.update({ system: { game_phase: phase } }); }
+    get actionMax() { return this.phase === BladesPhase.CharGen ? 2 : undefined; }
     async getData() {
         const context = await super.getData();
+        context.system.phases = Object.values(BladesPhase);
         return context;
     }
     async activateListeners(html) {

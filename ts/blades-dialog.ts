@@ -16,7 +16,7 @@ export enum SelectionCategory {
 	Cohort = "Cohort",
 	Feature = "Feature",
 	Stricture = "Stricture",
-	Vice_Purveyor = "Vice_Purveyor",
+	VicePurveyor = "VicePurveyor",
 	Acquaintance = "Acquaintance",
 	Friend = "Friend",
 	Rival = "Rival",
@@ -120,6 +120,7 @@ class BladesSelectorDialog extends Dialog {
 
 		//~ Item Control
 		html.find("[data-item-id]").on("click", function() {
+			if ($(this).parent().hasClass("locked")) { return }
 			const docId = $(this).data("itemId");
 			const docType = $(this).data("docType");
 			eLog.checkLog("dialog", "[BladesDialog] on Click", {elem: this, docId, docType, parent: self.parent});

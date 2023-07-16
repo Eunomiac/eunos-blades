@@ -1,7 +1,4 @@
-type SubActorData = {
-  id: string,
-  system: Partial<BladesActor["system"]>
-}
+type SubActorData = Partial<BladesActor["system"]>
 
 type NPCRandomizerData = {
   isLocked: boolean,
@@ -63,18 +60,63 @@ interface BladesSubActor {
 	async clearParentActor(): Promise<void>;
 }
 
-interface BladesScoundrel extends BladesPrimaryActor, SubActorControl, SubItemControl {
+interface Advancement {
+	get totalAbilityPoints(): number;
+	get spentAbilityPoints(): number;
+	get availableAbilityPoints(): number;
+
+	get totalAdvancementPoints(): number;
+	get spentAdvancementPoints(): number;
+	get availableAdvancementPoints(): number;
+
+	addAdvancementPoints(amount: number): Promise<void>;
+	removeAdvancementPoints(amount: number): Promise<void>;
+
+	advancePlaybook(): Promise<void>;
+}
+
+interface CrewAdvancement extends Advancement {
+	get totalUpgradePoints(): number;
+	get spentUpgradePoints(): number;
+	get availableUpgradePoints(): number;
+
+	get totalCohortPoints(): number;
+	get spentCohortPoints(): number;
+	get availableCohortPoints(): number;
+}
+
+interface BladesScoundrel extends BladesPrimaryActor, SubActorControl, SubItemControl, Advancement {
 
 	isMember(crew: BladesActor): boolean;
 
+	get playbook(): BladesItem|undefined;
+	get playbookName(): (BladesTag & Playbook)|undefined;
+	get vice(): BladesItem|undefined;
+	get crew(): BladesActor|undefined;
+	get abilities(): BladesItem[];
 
-	get vices(): BladesItem[];
+	get attributes(): Record<Attributes,number>|undefined;
+	get actions(): Record<Actions,number>|undefined;
+	get rollable(): Record<Attributes|Actions, number>|undefined;
+
+	get trauma(): number;
+	get traumaList(): string[];
+	get activeTraumaConditions(): Record<string,boolean>
+
+	get currentLoad(): number;
+	get remainingLoad(): number;
+
 }
-interface BladesCrew extends SubActorControl, SubItemControl {
-
+interface BladesCrew extends SubActorControl, SubItemControl, CrewAdvancement {
 	members: BladesActor[];
+	contacts: BladesActor[];
 	claims: Record<number,BladesClaimData>;
+	turfCount: number;
 
+	get playbook(): BladesItem|undefined;
+	get playbookName(): (BladesTag & Playbook)|undefined;
+	get abilities(): BladesItem[];
+	get upgrades(): BladesItem[];
 
 }
 interface BladesNPC extends SubItemControl, BladesSubActor {
@@ -179,8 +221,8 @@ interface BladesActorSystem {
 	// turfs: ValueMax,
 	heat: ValueMax,
 	wanted: ValueMax,
-	hunting_grounds: {
-		desc: string,
-		preferred_op: string
-	}
+	hunting_grounds: string,
+	advancement_points: number,
+	upgrade_points: number,
+	ability_points: number
 }

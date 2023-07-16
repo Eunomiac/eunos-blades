@@ -22,6 +22,9 @@
 						{{#if item.system.load}}
 						<div class="number-circle">{{item.system.load}}</div>
 						{{/if}}
+						{{#if (test item.system.price ">" 1)}}
+						<div class="number-circle">{{item.system.price}}</div>
+						{{/if}}
 					</div>
 					{{#if item.tooltip}}
 					<div class="tooltip">{{{item.tooltip}}}</div>

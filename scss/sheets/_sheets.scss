@@ -127,55 +127,10 @@
 				}
 
 				&.nav-group {
-					// border: 0;
-					// overflow: hidden;
 
 					> * { width: 100% }
 
-					// > .nav-tabs.flex-horizontal {
-					// 	background-color: var(--blades-grey-bright);
-					// 	border: 2px solid var(--blades-white);
-					// 	padding: 0 toRem(10px);
-					// 	overflow: visible;
-					// 	align-items: center;
-					// 	justify-content: space-around;
-
-					// 	.tab-selector {
-					// 		color: var(--blades-black);
-					// 		padding: 0 toRem(5px);
-					// 		font-family: Kirsty;
-					// 		line-height: toRem(20px);
-					// 		transition: 0.25s;
-					// 		white-space: nowrap;
-
-					// 		&.active {
-					// 			background: linear-gradient(to right,
-					// 					transparent,
-					// 					var(--blades-white-bright) 25%,
-					// 					var(--blades-white-bright) 75%,
-					// 					transparent);
-					// 			transform: scale(1.2);
-					// 		}
-
-					// 		&:hover:not(.active) {
-					// 			color: var(--blades-black-dark);
-					// 			transform: scale(1.2);
-					// 			background: linear-gradient(to right,
-					// 					transparent,
-					// 					var(--blades-white) 10%,
-					// 					var(--blades-white-bright) 50%,
-					// 					var(--blades-white) 90%,
-					// 					transparent);
-					// 		}
-					// 	}
-					// }
 					.tab[data-tab] {
-						// display: none;
-						// width: 100%;
-						// overflow-y: auto;
-						// overflow-x: hidden;
-						// padding: 0 var(--content-padding);
-						// flex-grow: 1;
 
 						&.active {
 							display: block;
@@ -187,16 +142,13 @@
 	}
 
 	.tab-label {
-		// display: block;
 		background: var(--blades-grey);
 		position: relative;
 		height: toRem(24px);
 		width: 100%;
-		// left: calc(-1 * var(--content-padding));
 		margin-bottom: toRem(5px);
 
 		display: flex;
-		// justify-content: space-between;
 		justify-content: flex-start;
 		align-items: center;
 
@@ -206,18 +158,9 @@
 			color: var(--blades-white-bright);
 			text-transform: uppercase;
 			margin-left: toRem(5px);
-
+			line-height: toRem(14px);
 		}
 	}
-
-
-	// .editor-tab {
-	// 	position: relative;
-	// 	width: calc(100% + 2 * var(--content-padding));
-	// 	left: calc(-1 * var(--content-padding));
-	// }
-
-	// .effects-list { width: 100% }
 
 	.clock-container {
 		position: relative;

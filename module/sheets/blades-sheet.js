@@ -246,9 +246,20 @@ class BladesSheet extends ActorSheet {
             html.on("change", "textarea", this._onChangeInput.bind(this));
         }
     }
+    async _onSubmit(event, params = {}) {
+        if (!game.user.isGM && !this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)) {
+            eLog.checkLog("actorSheetTrigger", "User does not have permission to edit this actor", { user: game.user, actor: this.actor });
+            return {};
+        }
+        eLog.checkLog("actorSheetTrigger", "Submitting Form Data", { parentActor: this.actor.parentActor, systemTags: this.actor.system.tags, sourceTags: this.actor._source.system.tags, params });
+        return super._onSubmit(event, params);
+    }
     async close(options) {
         if (this.actor.type === BladesActorType.pc) {
             return super.close(options).then(() => this.actor.clearSubActors());
+        }
+        else if (this.actor.type === BladesActorType.npc && this.actor.parentActor) {
+            return super.close(options).then(() => this.actor.clearParentActor(false));
         }
         return super.close(options);
     }

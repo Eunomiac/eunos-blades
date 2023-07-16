@@ -8,6 +8,8 @@ import BladesActor from "../blades-actor.js";
 import BladesItem from "../blades-item.js";
 import BladesSelectorDialog, {SelectionCategory} from "../blades-dialog.js";
 import BladesActiveEffect from "../blades-active-effect.js";
+import {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
+import type {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/utils/helpers.mjs.js";
 
 // #endregion
 // #region TYPES: BladesCompData ~
@@ -324,9 +326,21 @@ class BladesSheet extends ActorSheet {
 		}
 	}
 
+	override async _onSubmit(event: Event, params: List<any> = {}) {
+		if (!game.user.isGM && !this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)) {
+			eLog.checkLog("actorSheetTrigger", "User does not have permission to edit this actor", {user: game.user, actor: this.actor});
+			return {};
+		}
+		eLog.checkLog("actorSheetTrigger", "Submitting Form Data", {parentActor: this.actor.parentActor, systemTags: this.actor.system.tags, sourceTags: this.actor._source.system.tags, params});
+		return super._onSubmit(event, params);
+	}
+
+
 	override async close(options?: FormApplication.CloseOptions): Promise<void> {
 		if (this.actor.type === BladesActorType.pc) {
 			return super.close(options).then(() => this.actor.clearSubActors());
+		} else if (this.actor.type === BladesActorType.npc && this.actor.parentActor) {
+			return super.close(options).then(() => this.actor.clearParentActor(false));
 		}
 		return super.close(options);
 	}

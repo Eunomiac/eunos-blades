@@ -254,7 +254,7 @@ const degToRad = (deg: number, isConstrained = true): number => {
 	deg *= Math.PI / 180;
 	return deg;
 };
-const getKey = <T>(key: string|number|symbol, obj: Record<string|number|symbol, T>): T|null => {
+const getKey = <T>(key: string | number | symbol, obj: Record<string | number | symbol, T>): T | null => {
 	if (key in obj) {
 		return obj[key];
 	}
@@ -501,7 +501,7 @@ const loremIpsum = (numWords = 200) => {
 const randString = (length = 5) => [...new Array(length)].map(() => String.fromCharCode(randInt(...<[number, number]>["a", "z"].map((char) => char.charCodeAt(0))))).join("");
 const randWord = (numWords = 1, wordList = _randomWords) => [...Array(numWords)].map(() => randElem([...wordList])).join(" ");
 const getUID = (id: string): string => {
-	const indexNum = Math.max(0, ...UUIDLOG.filter(([genericID]) => genericID.startsWith(id)).map(([,,num]) => num)) + 1;
+	const indexNum = Math.max(0, ...UUIDLOG.filter(([genericID]) => genericID.startsWith(id)).map(([, , num]) => num)) + 1;
 	const uuid = indexNum === 1 ? id : `${id}_${indexNum}`;
 	UUIDLOG.push([id, uuid, indexNum]);
 	eLog.log(`UUIDify(${id}) --> [${uuid}, ${indexNum}]`);
@@ -633,7 +633,7 @@ const unique = <Type>(array: Type[]): Type[] => {
 	array.forEach((item) => { if (!returnArray.includes(item)) { returnArray.push(item) } });
 	return returnArray;
 };
-const group = <Type extends Record<string,unknown>>(array: Type[], key: KeyOf<Type>): Record<string & ValueOf<Type>, Type[]> => {
+const group = <Type extends Record<string, unknown>>(array: Type[], key: KeyOf<Type>): Record<string & ValueOf<Type>, Type[]> => {
 	const returnObj: Partial<Record<string & ValueOf<Type>, Type[]>> = {};
 	array.forEach((item) => {
 		returnObj[item[key] as string & ValueOf<Type>] ??= [];
@@ -738,7 +738,15 @@ const replace = (obj: Index<unknown>, checkTest: checkTest, repVal: unknown) => 
 	}
 	return true;
 };
-const objClean = <T>(data: T, remVals: Array<false|null|undefined|""|0|Record<string,never>|never[]> = [undefined,null,"",{},[]]): T | Partial<T> | "KILL" => {
+/**
+ * Cleans an object or value by removing specified values recursively.
+ *
+ * @template T - The type of the input object or value.
+ * @param {T} data - The object or value to be cleaned.
+ * @param {Array<any>} [remVals] - An array of values to be removed during the cleaning process.
+ * @returns {T | Partial<T> | "KILL"} - The cleaned version of the input object or value. If marked for removal, returns "KILL".
+ */
+const objClean = <T>(data: T, remVals: Array<false | null | undefined | "" | 0 | Record<string, never> | never[]> = [undefined, null, "", {}, []]): T | Partial<T> | "KILL" => {
 	const remStrings = remVals.map((rVal) => JSON.stringify(rVal));
 	if (remStrings.includes(JSON.stringify(data)) || remVals.includes(data as ValueOf<typeof remVals>)) { return "KILL" }
 	if (Array.isArray(data)) {
@@ -756,8 +764,8 @@ const objClean = <T>(data: T, remVals: Array<false|null|undefined|""|0|Record<st
 };
 
 
-export function toDict<T extends List, K extends string & KeyOf<T>, V extends ValueOf<T>>(items: T[], key: K): V extends key ? Record<V,T> : never {
-	const dict = {} as Record<V,T>;
+export function toDict<T extends List, K extends string & KeyOf<T>, V extends ValueOf<T>>(items: T[], key: K): V extends key ? Record<V, T> : never {
+	const dict = {} as Record<V, T>;
 	const mappedItems = items
 		.map((data) => {
 			let {iData} = data;
@@ -807,7 +815,7 @@ function objMap(obj: Index<unknown>, keyFunc: mapFunc<keyFunc> | mapFunc<valFunc
 	if (isArray(obj)) { return obj.map(valFunc) }
 	return Object.fromEntries(Object.entries(obj).map(([key, val]) => [(<mapFunc<keyFunc>>keyFunc)(key, val), (<mapFunc<valFunc>>valFunc)(val, key)]));
 }
-const objFindKey = <Type extends Index<unknown>>(obj: Type, keyFunc: testFunc<keyFunc> | testFunc<valFunc> | false, valFunc?: testFunc<valFunc>): KeyOf<Type>|false => {
+const objFindKey = <Type extends Index<unknown>>(obj: Type, keyFunc: testFunc<keyFunc> | testFunc<valFunc> | false, valFunc?: testFunc<valFunc>): KeyOf<Type> | false => {
 	// An object-equivalent Array.findIndex() function, which accepts check functions for both keys and/or values.
 	// If only one function is provided, it's assumed to be searching via values and will receive (v, k) args.
 	if (!valFunc) {
@@ -861,7 +869,7 @@ const objClone = <Type>(obj: Type, isStrictlySafe = false): Type => {
 	}
 	return obj;
 };
-function objMerge<Tx,Ty>(target: Tx, source: Ty, {isMutatingOk = false, isStrictlySafe = false, isConcatenatingArrays = true} = {}): Tx & Ty {
+function objMerge<Tx, Ty>(target: Tx, source: Ty, {isMutatingOk = false, isStrictlySafe = false, isConcatenatingArrays = true, isReplacingArrays = false} = {}): Tx & Ty {
 	/* Returns a deep merge of source into target. Does not mutate target unless isMutatingOk = true. */
 	target = isMutatingOk ? target : objClone(target, isStrictlySafe);
 	if (source instanceof Application) {
@@ -876,7 +884,9 @@ function objMerge<Tx,Ty>(target: Tx, source: Ty, {isMutatingOk = false, isStrict
 	if (isIndex(source)) {
 		for (const [key, val] of Object.entries(source)) {
 			const targetVal = target[key as KeyOf<typeof target>];
-			if (isConcatenatingArrays && isArray(target[key as KeyOf<typeof target>]) && isArray(val)) {
+			if (isReplacingArrays && isArray(target[key as KeyOf<typeof target>]) && isArray(val)) {
+				target[key as KeyOf<typeof target>] = val as Tx[KeyOf<Tx>];
+			} else if (isConcatenatingArrays && isArray(target[key as KeyOf<typeof target>]) && isArray(val)) {
 				(target[key as KeyOf<typeof target>] as unknown as any[]).push(...val);
 			} else if (val !== null && typeof val === "object") {
 				if (isUndefined(targetVal) && !(val instanceof Application)) {
@@ -891,6 +901,31 @@ function objMerge<Tx,Ty>(target: Tx, source: Ty, {isMutatingOk = false, isStrict
 	}
 	return target as Tx & Ty;
 }
+/* Write typescript function objDiff(obj1, obj2) (using appropriate typescript generics to avoid implicit any). The function
+		should deep-compare obj1 and obj2 and return an object containing only the keys and values in obj2 that differ from obj1. Where obj2 is missing a key or value contained in obj1, it should set the value in the returned object to null, and prefix the key with "-=" */
+function objDiff(obj1: any, obj2: any): any {
+	const diff: any = {};
+	for (const key in obj2) {
+		if (Object.prototype.hasOwnProperty.call(obj2, key)) {
+			if (Object.prototype.hasOwnProperty.call(obj1, key)) {
+				if (typeof obj1[key] === "object" && typeof obj2[key] === "object" && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key])) {
+					const nestedDiff = objDiff(obj1[key], obj2[key]);
+					if (Object.keys(nestedDiff).length > 0) {
+						diff[key] = nestedDiff;
+					}
+				} else if (Array.isArray(obj1[key]) && Array.isArray(obj2[key]) && obj1[key].toString() !== obj2[key].toString()) {
+					diff[key] = obj2[key];
+				} else if (obj1[key] !== obj2[key]) {
+					diff[key] = obj2[key];
+				}
+			} else {
+				diff["-=" + key] = obj2[key];
+			}
+		}
+	}
+	return diff;
+}
+
 const objExpand = <T>(obj: List<T>): List<T> => {
 	const expObj = {};
 	for (let [key, val] of Object.entries(obj)) {
@@ -915,11 +950,11 @@ const objExpand = <T>(obj: List<T>): List<T> => {
 
 	return arrayify(expObj) as List<T>;
 };
-const objFlatten = <ST extends unknown>(obj: Index<ST>): Record<string, ST> => {
+const objFlatten = <ST extends any = any>(obj: Index<ST>): Record<string, ST> => {
 	const flatObj: Record<string, ST> = {};
 	for (const [key, val] of Object.entries(obj)) {
 		if ((isArray(val) || isList(val)) && hasItems(val)) {
-			for (const [subKey, subVal] of Object.entries(objFlatten(val)) as Array<[string,ST]>) {
+			for (const [subKey, subVal] of Object.entries(objFlatten(val)) as Array<[string, ST]>) {
 				flatObj[`${key}.${subKey}`] = subVal;
 			}
 		} else {
@@ -929,9 +964,9 @@ const objFlatten = <ST extends unknown>(obj: Index<ST>): Record<string, ST> => {
 	return flatObj;
 };
 
-function objNullify<T extends List<any>>(obj: T & Record<KeyOf<T>,null>): Record<KeyOf<T>,null>
+function objNullify<T extends List<any>>(obj: T & Record<KeyOf<T>, null>): Record<KeyOf<T>, null>
 function objNullify<T extends any[]>(obj: T & null[]): null[]
-function objNullify<T>(obj: T): Record<KeyOf<T>,null> | null[] | T {
+function objNullify<T>(obj: T): Record<KeyOf<T>, null> | null[] | T {
 	if (!isIndex(obj)) { return obj }
 	if (Array.isArray(obj)) {
 		for (let i = 0; i < obj.length; i++) {
@@ -939,9 +974,9 @@ function objNullify<T>(obj: T): Record<KeyOf<T>,null> | null[] | T {
 		}
 		return obj as null[];
 	}
-	const test = obj as Record<KeyOf<T>,null>;
+	const test = obj as Record<KeyOf<T>, null>;
 	for (const objKey of Object.keys(obj) as Array<KeyOf<T>>) {
-		(<Record<KeyOf<T>,null>>obj)[objKey] = null;
+		(<Record<KeyOf<T>, null>>obj)[objKey] = null;
 	}
 	return obj;
 }
@@ -1018,7 +1053,7 @@ const getColorVals = (red?: string | number | number[], green?: number, blue?: n
 			.map((color) => (isUndefined(color) ? undefined : parseFloat(color)));
 	}
 	if (isHexColor(red)) {
-		if ([4,5].includes(red.length)) {
+		if ([4, 5].includes(red.length)) {
 			red = red.replace(/([^#])/g, "$1$1");
 		}
 		[red, green, blue, alpha] = red
@@ -1110,7 +1145,7 @@ const isDocID = (docRef: unknown, isUUIDok = true) => {
 		: /^[A-Za-z0-9]{16}$/.test(docRef));
 };
 
-const loc = (locRef: string, formatDict: Record<string,string> = {}) => {
+const loc = (locRef: string, formatDict: Record<string, string> = {}) => {
 	if (/[a-z]/.test(locRef)) { // reference contains lower-case characters: add system ID namespacing to dot notation
 		locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}\.)*`), `${C.SYSTEM_ID}.`);
 	}
@@ -1127,7 +1162,7 @@ const getSetting = (setting: string) => game.settings.get(C.SYSTEM_ID, setting);
 
 function getTemplatePath(subFolder: string, fileName: string): string
 function getTemplatePath(subFolder: string, fileName: string[]): string[]
-function getTemplatePath(subFolder: string, fileName: string|string[]) {
+function getTemplatePath(subFolder: string, fileName: string | string[]) {
 	if (typeof fileName === "string") {
 		return `${C.TEMPLATE_ROOT}/${subFolder}/${fileName.replace(/\..*$/, "")}.hbs`;
 	}
@@ -1204,14 +1239,14 @@ export default {
 	// ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████
 	remove, replace, partition,
 	objClean, objMap, objFindKey, objFilter, objForEach, objCompact,
-	objClone, objMerge, objExpand, objFlatten, objNullify,
+	objClone, objMerge, objDiff, objExpand, objFlatten, objNullify,
 
 	// ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████
 	getDynamicFunc, withLog,
 
 	// ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
 	// ░░░░░░░ GreenSock ░░░░░░░
-	gsap, get, set,	getGSAngleDelta,
+	gsap, get, set, getGSAngleDelta,
 
 	getRawCirclePath, drawCirclePath,
 

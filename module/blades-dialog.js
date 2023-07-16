@@ -21,7 +21,7 @@ export var SelectionCategory;
     SelectionCategory["Cohort"] = "Cohort";
     SelectionCategory["Feature"] = "Feature";
     SelectionCategory["Stricture"] = "Stricture";
-    SelectionCategory["Vice_Purveyor"] = "Vice_Purveyor";
+    SelectionCategory["VicePurveyor"] = "VicePurveyor";
     SelectionCategory["Acquaintance"] = "Acquaintance";
     SelectionCategory["Friend"] = "Friend";
     SelectionCategory["Rival"] = "Rival";
@@ -106,6 +106,9 @@ class BladesSelectorDialog extends Dialog {
         });
 
         html.find("[data-item-id]").on("click", function () {
+            if ($(this).parent().hasClass("locked")) {
+                return;
+            }
             const docId = $(this).data("itemId");
             const docType = $(this).data("docType");
             eLog.checkLog("dialog", "[BladesDialog] on Click", { elem: this, docId, docType, parent: self.parent });

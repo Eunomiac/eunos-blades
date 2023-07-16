@@ -801,7 +801,7 @@ const objClone = (obj, isStrictlySafe = false) => {
     }
     return obj;
 };
-function objMerge(target, source, { isMutatingOk = false, isStrictlySafe = false, isConcatenatingArrays = true } = {}) {
+function objMerge(target, source, { isMutatingOk = false, isStrictlySafe = false, isConcatenatingArrays = true, isReplacingArrays = false } = {}) {
         target = isMutatingOk ? target : objClone(target, isStrictlySafe);
     if (source instanceof Application) {
         return source;
@@ -815,7 +815,10 @@ function objMerge(target, source, { isMutatingOk = false, isStrictlySafe = false
     if (isIndex(source)) {
         for (const [key, val] of Object.entries(source)) {
             const targetVal = target[key];
-            if (isConcatenatingArrays && isArray(target[key]) && isArray(val)) {
+            if (isReplacingArrays && isArray(target[key]) && isArray(val)) {
+                target[key] = val;
+            }
+            else if (isConcatenatingArrays && isArray(target[key]) && isArray(val)) {
                 target[key].push(...val);
             }
             else if (val !== null && typeof val === "object") {
@@ -830,6 +833,31 @@ function objMerge(target, source, { isMutatingOk = false, isStrictlySafe = false
         }
     }
     return target;
+}
+function objDiff(obj1, obj2) {
+    const diff = {};
+    for (const key in obj2) {
+        if (Object.prototype.hasOwnProperty.call(obj2, key)) {
+            if (Object.prototype.hasOwnProperty.call(obj1, key)) {
+                if (typeof obj1[key] === "object" && typeof obj2[key] === "object" && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key])) {
+                    const nestedDiff = objDiff(obj1[key], obj2[key]);
+                    if (Object.keys(nestedDiff).length > 0) {
+                        diff[key] = nestedDiff;
+                    }
+                }
+                else if (Array.isArray(obj1[key]) && Array.isArray(obj2[key]) && obj1[key].toString() !== obj2[key].toString()) {
+                    diff[key] = obj2[key];
+                }
+                else if (obj1[key] !== obj2[key]) {
+                    diff[key] = obj2[key];
+                }
+            }
+            else {
+                diff["-=" + key] = obj2[key];
+            }
+        }
+    }
+    return diff;
 }
 const objExpand = (obj) => {
     const expObj = {};
@@ -1088,7 +1116,7 @@ export default {
     subGroup, shuffle,
     remove, replace, partition,
     objClean, objMap, objFindKey, objFilter, objForEach, objCompact,
-    objClone, objMerge, objExpand, objFlatten, objNullify,
+    objClone, objMerge, objDiff, objExpand, objFlatten, objNullify,
     getDynamicFunc, withLog,
 
     gsap, get, set, getGSAngleDelta,
