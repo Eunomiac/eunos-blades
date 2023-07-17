@@ -1,6 +1,9 @@
 $isCompactLayout: true;
 
 & {
+	--clock-glow-size: 50px;
+	--clock-frame-size: 50px;
+	--clock-glow-correction: -175px;
 // #region ████████ Original: Original Foundry Variables ████████ ~
 	// #region ====== Colors ====== ~
 	--color-text-light-highlight: #f0f0e0;

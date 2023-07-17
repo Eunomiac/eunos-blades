@@ -3,7 +3,8 @@
 		"types": [
 			"pc",
 			"npc",
-			"crew"
+			"crew",
+			"faction"
 		],
 		"templates": {
 			"default": {
@@ -154,6 +155,40 @@
 				"quirk": {"isLocked": false, "value": ""},
 				"style": {"isLocked": false, "value": ""}
 			}
+		},
+		"faction": {
+			"templates": ["default"],
+			"description": "",
+			"tier": 0,
+			"goal_1": {"name": "", "value": 0, "max": 0},
+			"goal_2": {"name": "", "value": 0, "max": 0},
+			"turf": "",
+			"assets": "",
+			"quirks": "",
+			"notables": "",
+			"allies": "",
+			"enemies": "",
+			"situation": "",
+			"goal_clock": 0,
+			"notes": "",
+			"hold": {
+				"value": [
+					1
+				],
+				"max": 2,
+				"max_default": 2,
+				"name_default": "BITD.Hold",
+				"name": "BITD.Hold"
+			},
+			"status": {
+				"value": [
+					4
+				],
+				"max": 7,
+				"max_default": 7,
+				"name_default": "BITD.Status",
+				"name": "BITD.Status"
+			}
 		}
 	},
 	"Item": {
@@ -166,7 +201,6 @@
 			"crew_reputation",
 			"crew_playbook",
 			"crew_upgrade",
-			"faction",
 			"feature",
 			"gm_tracker",
 			"heritage",
@@ -374,44 +408,6 @@
 					"description": "",
 					"connects": []
 				}
-			}
-		},
-		"faction": {
-			"description": "",
-			"type": "",
-			"tier": 0,
-			"goal_1": "",
-			"goal_1_clock_value": 0,
-			"goal_1_clock_max": 0,
-			"goal_2": "",
-			"goal_2_clock_value": 0,
-			"goal_2_clock_max": 0,
-			"turf": "",
-			"assets": "",
-			"quirks": "",
-			"notables": "",
-			"allies": "",
-			"enemies": "",
-			"situation": "",
-			"goal_clock": 0,
-			"notes": "",
-			"hold": {
-				"value": [
-					1
-				],
-				"max": 2,
-				"max_default": 2,
-				"name_default": "BITD.Hold",
-				"name": "BITD.Hold"
-			},
-			"status": {
-				"value": [
-					4
-				],
-				"max": 7,
-				"max_default": 7,
-				"name_default": "BITD.Status",
-				"name": "BITD.Status"
 			}
 		},
 		"gm_tracker": {

@@ -1,6 +1,6 @@
 
 import BladesItemSheet from "./blades-item-sheet.js";
-import BladesItem from "../blades-item.js";
+import BladesItem from "../../blades-item.js";
 
 export default class BladesClockKeeperSheet extends BladesItemSheet {
 

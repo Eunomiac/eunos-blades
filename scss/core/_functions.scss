@@ -14,57 +14,62 @@ $remPerPixel: 0.0625rem;
 	@return $z-index-base + $delta;
 }
 
-@function getYIQScaledColorOld($main-color, $target-yiq: 150) {
-
+@function getYIQScaledColor($main-color, $target-y: 0.6) {
   // Extract RGB values from $main-color
   $r: red($main-color);
   $g: green($main-color);
   $b: blue($main-color);
 
-  // Convert RGB to YIQ
-  $y: (0.299 * $r + 0.587 * $g + 0.114 * $b) / 255;
-  $i: (0.596 * $r - 0.274 * $g - 0.322 * $b) / 255;
-  $q: (0.211 * $r - 0.523 * $g + 0.312 * $b) / 255;
+  // Calculate yiq values
+  $y: 0.6;
+	$i: ((0.596 * $r) + (-0.275 * $g) + (-0.321 * $b)) / 255;
+	$q: ((0.212 * $r) + (-0.523 * $g) + ( 0.311 * $b)) / 255;
 
-  // Scale the Y value to the target
-  $y: $target-yiq;
+  // Convert back to RGB with new target yiq
+	$r: ($y + ( 0.956 * $i) + ( 0.621 * $q)) * 255;
+	$g: ($y + (-0.272 * $i) + (-0.647 * $q)) * 255;
+	$b: ($y + (-1.105 * $i) + ( 1.702 * $q)) * 255;
 
-  // Convert back to RGB
-  $r: $y + 0.956 * $i + 0.621 * $q;
-  $g: $y - 0.272 * $i - 0.647 * $q;
-  $b: $y - 1.105 * $i + 1.702 * $q;
+  // bounds-checking
+	@if ($r < 0){ $r: 0; } @elseif ($r > 255){ $r: 255};
+	@if ($g < 0){ $g: 0; } @elseif ($g > 255){ $g: 255};
+	@if ($b < 0){ $b: 0; } @elseif ($b > 255){ $b: 255};
 
-  // Clamp RGB values to [0, 255]
-  $r: if($r < 0, 0, if($r > 255, 255, $r));
-  $g: if($g < 0, 0, if($g > 255, 255, $g));
-  $b: if($b < 0, 0, if($b > 255, 255, $b));
-
-  // Return the resulting color
   @return rgb($r, $g, $b);
 }
 
-@function getYIQScaledColor($main-color, $target-yiq: 150) {
-  // Extract RGB values from $main-color
-  $r: max(30, red($main-color));
-  $g: max(30, green($main-color));
-  $b: max(30, blue($main-color));
+// @function getYIQScaledColor($main-color, $target-yiq: 0.6) {
+//   // Extract RGB values from $main-color
+//   $r: red($main-color);
+//   $g: green($main-color);
+//   $b: blue($main-color);
+//    // Calculate the current Y component in the YIQ color space
+//   $current-y: (0.299 * $r + 0.587 * $g + 0.114 * $b);
+//    // Calculate the scaling factor to reach the target Y
+//   $scale: $target-yiq / $current-y;
+//    // Scale the RGB values of the original color by this factor
+//   $r: $r * $scale;
+//   $g: $g * $scale;
+//   $b: $b * $scale;
+//    // Adjust the RGB values to ensure they are within [0, 255]
+//   $max-value: max($r, $g, $b);
+//   $min-value: min($r, $g, $b);
+//   $adjustment: $max-value - 255;
+//   $r: if($adjustment > 0, $r - $adjustment, $r);
+//   $g: if($adjustment > 0, $g - $adjustment, $g);
+//   $b: if($adjustment > 0, $b - $adjustment, $b);
+//    // Calculate the new Y component after adjustments
+//   $new-y: (0.299 * $r + 0.587 * $g + 0.114 * $b);
+//    // Log the main color, resulting color, and Y-value of the resulting color
+//   @debug "Color: #{$main-color} | Result: #{rgb($r, $g, $b)} | Y-value: #{$new-y}";
+//    // Return the resulting color
+//   @return rgb($r, $g, $b);
+// }
 
-  // Calculate the current Y component in the YIQ color space
-  $current-y: (0.299 * $r + 0.587 * $g + 0.114 * $b);
-
-  // Calculate the scaling factor to reach the target Y
-  $scale: $target-yiq / $current-y;
-
-  // Scale the RGB values of the original color by this factor
-  $r: $r * $scale;
-  $g: $g * $scale;
-  $b: $b * $scale;
-
-  // Clamp RGB values to [0, 255]
-  $r: if($r < 0, 0, if($r > 255, 255, $r));
-  $g: if($g < 0, 0, if($g > 255, 255, $g));
-  $b: if($b < 0, 0, if($b > 255, 255, $b));
-
-  // Return the resulting color
-  @return rgb($r, $g, $b);
+@function calculate-sum($list) {
+  $sum: 0;
+  @each $value in $list {
+    $sum: $sum + $value;
+  }
+  @return $sum;
 }

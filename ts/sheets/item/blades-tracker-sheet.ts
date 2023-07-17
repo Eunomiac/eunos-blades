@@ -1,14 +1,8 @@
 
+import {BladesPhase} from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
-import BladesItem from "../blades-item.js";
-import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import BladesItem from "../../blades-item.js";
 
-export enum BladesPhase {
-	CharGen = "CharGen",
-	Freeplay = "Freeplay",
-	Score = "Score",
-	Downtime = "Downtime"
-}
 
 export enum BladesTipContext {
 	DiceRoll = "DiceRoll",

@@ -17,6 +17,7 @@ export var BladesActorType;
     BladesActorType["pc"] = "pc";
     BladesActorType["npc"] = "npc";
     BladesActorType["crew"] = "crew";
+    BladesActorType["faction"] = "faction";
 })(BladesActorType || (BladesActorType = {}));
 export var BladesItemType;
 (function (BladesItemType) {
@@ -28,7 +29,6 @@ export var BladesItemType;
     BladesItemType["crew_reputation"] = "crew_reputation";
     BladesItemType["crew_playbook"] = "crew_playbook";
     BladesItemType["crew_upgrade"] = "crew_upgrade";
-    BladesItemType["faction"] = "faction";
     BladesItemType["feature"] = "feature";
     BladesItemType["gm_tracker"] = "gm_tracker";
     BladesItemType["heritage"] = "heritage";
@@ -151,6 +151,13 @@ export var Playbook;
     Playbook["Smugglers"] = "Smugglers";
     Playbook["Vigilantes"] = "Vigilantes";
 })(Playbook || (Playbook = {}));
+export var BladesPhase;
+(function (BladesPhase) {
+    BladesPhase["CharGen"] = "CharGen";
+    BladesPhase["Freeplay"] = "Freeplay";
+    BladesPhase["Score"] = "Score";
+    BladesPhase["Downtime"] = "Downtime";
+})(BladesPhase || (BladesPhase = {}));
 export var Tag;
 (function (Tag) {
     let System;
@@ -478,7 +485,8 @@ const C = {
     ActorTypes: [
         BladesActorType.pc,
         BladesActorType.npc,
-        BladesActorType.crew
+        BladesActorType.crew,
+        BladesActorType.faction
     ],
     ItemTypes: [
         BladesItemType.ability,
@@ -489,7 +497,6 @@ const C = {
         BladesItemType.crew_reputation,
         BladesItemType.crew_playbook,
         BladesItemType.crew_upgrade,
-        BladesItemType.faction,
         BladesItemType.feature,
         BladesItemType.gm_tracker,
         BladesItemType.heritage,

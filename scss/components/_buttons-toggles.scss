@@ -1,11 +1,12 @@
 .button-icon, .toggle-icon {
-	position: relative;
+	position: absolute;
 	height: 1.5rem;
 	width: 1.5rem;
 	line-height: 1.5rem;
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
+	right: 0;
 			text-shadow: none;
 
 	i {

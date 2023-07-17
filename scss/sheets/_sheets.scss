@@ -1,9 +1,18 @@
+
 .window-content {
+
+	$heights: (83px, 32px, 57px, 28px) !default;
+
+	--sheet-header-height: 21px;
+	--sheet-top-height: #{calculate-sum($heights)};
+	--sheet-mid-height: 60px;
+
 	background: var(--blades-black);
 	padding: 0;
 	overflow: visible;
+	max-height: calc(100% - var(--sheet-header-height));
 
-	form.editable {
+	form {
 		@import "../core/globals";
 
 		justify-content: flex-start;
@@ -11,7 +20,7 @@
 
 		.sheet-img {
 			position: absolute;
-			height: 200px;
+			height: var(--sheet-top-height);
 			left: -10px;
 			z-index: zLevel(-1);
 			border: none;
@@ -74,12 +83,13 @@
 				max-height: 100%;
 
 				&.sheet-top {
+
 					display: grid;
 					grid-auto-columns: 1fr;
-					grid-template-rows: 83px 32px 57px 28px;
+					grid-template-rows: $heights; // 83px 32px 57px 28px;
 					place-items: center stretch;
 					pointer-events: none;
-					height: 200px;
+					height: var(--sheet-top-height);
 
 					input { pointer-events: auto }
 
@@ -122,11 +132,12 @@
 					align-items: stretch;
 					flex-wrap: nowrap;
 					position: relative;
-					height: toRem(60px);
+					height: var(--sheet-mid-height);
 					padding-right: toRem(20px);
 				}
 
 				&.nav-group {
+					height: calc(100% - var(--sheet-top-height) - var(--sheet-mid-height));
 
 					> * { width: 100% }
 

@@ -8,17 +8,17 @@ import G, {Initialize as GsapInitialize} from "./core/gsap.js";
 
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
-import BladesItemSheet from "./sheets/blades-item-sheet.js";
-import BladesActorSheet from "./sheets/blades-actor-sheet.js";
-import BladesCrewSheet from "./sheets/blades-crew-sheet.js";
-import BladesNPCSheet from "./sheets/blades-npc-sheet.js";
-import BladesFactionSheet from "./sheets/blades-faction-sheet.js";
+import BladesItemSheet from "./sheets/item/blades-item-sheet.js";
+import BladesActorSheet from "./sheets/actor/blades-actor-sheet.js";
+import BladesCrewSheet from "./sheets/actor/blades-crew-sheet.js";
+import BladesNPCSheet from "./sheets/actor/blades-npc-sheet.js";
+import BladesFactionSheet from "./sheets/actor/blades-faction-sheet.js";
 
 import {bladesRoll, simpleRollPopup} from "./blades-roll.js";
 import BladesSelectorDialog, {SelectionCategory} from "./blades-dialog.js";
 import BladesActiveEffect from "./blades-active-effect.js";
-import BladesTrackerSheet from "./sheets/blades-tracker-sheet.js";
-import BladesClockKeeperSheet from "./sheets/blades-clock-keeper-sheet.js";
+import BladesTrackerSheet from "./sheets/item/blades-tracker-sheet.js";
+import BladesClockKeeperSheet from "./sheets/item/blades-clock-keeper-sheet.js";
 import {UpdateClaims, UpdateContacts, UpdateOps} from "./data-import/data-import.js";
 
 let socket: Socket; //~ SocketLib interface
@@ -48,31 +48,6 @@ registerDebugger();
 		C,
 		BladesItem,
 		BladesItemSheet,
-		ClearNPCs: () => {
-			const npcNames = IMPORTDATA.npcs.map(({name}) => name);
-			const npcs = BladesActor.All
-				.filter((actor) => npcNames.includes(actor.name ?? ""));
-			return Promise.all(npcs.map((npc) => npc.delete()));
-		},
-		GenerateNPCs: () => Promise.all(IMPORTDATA.npcs.map(({name, type, ...data}) => Actor.create({name, type, data}))),
-		AddWorldNames: () => {
-
-			function createKey(name: string) {
-				return name
-					.replace(/[^A-Za-z_0-9 ]/g, "")
-					.trim()
-					.replace(/ /g, "_");
-			}
-
-			game.items
-				.forEach((i: BladesItem) => {
-					i.update({"system.world_name": createKey(i.name!)});
-				});
-			game.actors
-				.forEach((a: BladesActor) => {
-					a.update({"system.world_name": createKey(a.name!)});
-				});
-		},
 		MutateItems: () => {
 			const patternParts = {
 				strong: [
@@ -260,37 +235,6 @@ registerDebugger();
 					i.update(updateData);
 				});
 		},
-		GetFlatPackData: async (packName: string) => {
-			const pack = game.packs.find((pack) => pack.metadata.name === packName);
-			if (!pack) { return }
-			const pack_items = await pack.getDocuments();
-			const model_item: Record<string,any> = {};
-			const fetchKeysMap = {
-				"name": "name",
-				"system.associated_class": "playbook",
-				"system.associated_crew_type": "crew_playbook",
-				"system.associated_faction": "faction",
-				"system.description": "description",
-				"system.description_short": "description_short",
-				"system.notes": "notes",
-				"flags.core.sourceId": "flagSource"
-			};
-			const flat_items = [
-				"name|playbook|crew_playbook|faction|description|description_short|notes|flagSource",
-				...pack_items.map((pItem) => {
-					const prunedObj: string[] = [];
-					const flatObj = U.objFlatten(pItem);
-					for (const [sourceKey, targetKey] of Object.entries(fetchKeysMap)) {
-						prunedObj.push((flatObj[sourceKey] ?? "").trim() || "");
-					}
-					return prunedObj.join("|");
-				})
-			];
-			eLog.display("Flattened Pack", flat_items);
-		},
-		// SpawnVicePurveyors: async () => {
-
-		// },
 		DebugPC: async () => {
 			// const {clientTop, clientLeft, clientHeight, clientWidth} = document.documentElement;
 			// const positions = {
@@ -333,60 +277,6 @@ registerDebugger();
 			// 		crew.sheet.setPosition(positions.crew({pcSheetElem: pc?.sheet?.element}));
 			// 	}
 			// }, 2000);
-		},
-		ProcessNPCs: async () => {
-			BladesActor.GetTypeWithTags(BladesActorType.npc).forEach((actor) => {
-				if (Object.keys(C.Playbooks).some((pBook) => actor.hasTag(pBook as Playbook))) {
-					actor.addTag(Tag.NPC.Acquaintance);
-				}
-				if (C.Vices.some((vice) => actor.hasTag(vice as BladesTag))) {
-					actor.addTag(Tag.NPC.VicePurveyor);
-				}
-			});
-		},
-		ProcessItemFolders: async () => {
-			function processItemFolder(folder: Folder) {
-				const folderItems = folder.contents as BladesItem[];
-				switch (folder.name) {
-					case "Abilities":
-					case "Items":
-					case "Crew Abilities":
-					case "Crew Upgrades": {
-						folderItems.forEach(async (item) => {
-							const tags: BladesTag[] = [];
-							if (folder.name === "Items" && /^Fine /.test(item.name ?? "")) { tags.push(Tag.Item.Fine) }
-							if (folder.name === "Abilities" && ["Battleborn", "Sharpshooter", "Alchemist", "Infiltrator", "Rook's Gambit", "Foresight", "Compel", "Ghost Form", "Automaton", "Undead"].includes(item.name ?? "")) { tags.push(Tag.System.Featured) }
-							if (folder.name === "Abilities" && [Playbook.Ghost, Playbook.Vampire, Playbook.Hull].some((aTag) => item.system.playbooks?.includes(aTag))) {
-								tags.push(Tag.Item.Advanced);
-								await item.update({["system.prereqs.AdvancedPlaybook"]: true});
-							}
-							tags.push(...(item.system.playbooks ?? []).map((tag) => (tag === "ANY" ? Tag.Item.General : tag) as BladesTag));
-							item.addTag(...U.unique(tags));
-						});
-						break;
-					}
-					case "Playbooks (Crew)":
-					case "Playbooks (Scoundrel)": {
-						folderItems.forEach((item) => {
-							if ([Playbook.Ghost, Playbook.Vampire, Playbook.Hull].includes(item.name as Playbook)) {
-								item.addTag(Tag.Item.Advanced);
-							}
-						});
-						break;
-					}
-					case "Vices": {
-						folderItems.forEach((item) => {
-							const tags: BladesTag[] = [];
-							if (["Electroplasmic Power", "Life Essence", "Worship"].includes(item.name ?? "")) { tags.push(Tag.System.Hidden) }
-							if (["Electroplasmic Power", "Life Essence"].includes(item.name ?? "")) { tags.push(Tag.Item.ViceOverride) }
-							item.addTag(...tags);
-						});
-						break;
-					}
-					default: break;
-				}
-			}
-			game.folders?.forEach(processItemFolder);
 		}
 	}
 );/*!DEVCODE*/
@@ -408,11 +298,11 @@ Hooks.once("init", async () => {
 	// Register sheet application classes
 	Actors.unregisterSheet("core", ActorSheet);
 	Actors.registerSheet("blades", BladesCrewSheet, {types: ["crew"], makeDefault: true});
-	Actors.registerSheet("blades", BladesFactionSheet, {types: ["factions"], makeDefault: true});
+	Actors.registerSheet("blades", BladesFactionSheet, {types: ["faction"], makeDefault: true});
 	Actors.registerSheet("blades", BladesNPCSheet, {types: ["npc"], makeDefault: true});
 
 	Items.unregisterSheet("core", ItemSheet);
-	Items.registerSheet("blades", BladesItemSheet, {types: ["faction", "item", "playbook", "ability", "heritage", "background", "vice", "crew_upgrade", "cohort", "crew_playbook", "crew_reputation", "crew_upgrade", "crew_ability"], makeDefault: true});
+	Items.registerSheet("blades", BladesItemSheet, {types: ["item", "playbook", "ability", "heritage", "background", "vice", "crew_upgrade", "cohort", "crew_playbook", "crew_reputation", "crew_upgrade", "crew_ability"], makeDefault: true});
 
 	// Initialize subclasses
 	await Promise.all([

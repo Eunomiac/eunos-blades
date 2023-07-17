@@ -3,7 +3,7 @@ type SubActorData = Partial<BladesActor["system"]>
 type NPCRandomizerData = {
   isLocked: boolean,
   value: string,
-  size: 1 | 2 | 4,
+  size: "05" | 1 | 2 | 4,
   label: string | null
 }
 
@@ -224,5 +224,7 @@ interface BladesActorSystem {
 	hunting_grounds: string,
 	advancement_points: number,
 	upgrade_points: number,
-	ability_points: number
+	ability_points: number,
+	goal_1: NamedValueMax,
+	goal_2: NamedValueMax
 }

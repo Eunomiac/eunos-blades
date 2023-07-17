@@ -4,122 +4,139 @@
 	border-radius: 25px;
 	border-top-right-radius: 0;
 	overflow: hidden;
-	// position: absolute;
-}
 
-section.sheet-top {
+	.window-content {
 
-		grid-template-areas:
-			". . title title title title title title"
-			". . subtitle subtitle subtitle subtitle subtitle subtitle"
-			". . short-desc short-desc short-desc short-desc short-desc short-desc"
-			". . traits traits traits traits traits traits"
-			"heritage heritage district district faction faction arena arena"
-			"tabs tabs tabs tabs tabs tabs tabs tabs";
 
-		.comp-name {
-			--sheet-title-font-size: #{toRem(38px)};
-		}
+		form {
+			$heights: (40px, 35px, 25px, 20px, 30px);
+			--sheet-top-height: #{calculate-sum($heights)};
+			--sheet-mid-height: 0px;
 
-		.comp-traits {
-			grid-area: traits;
-			display: flex;
-			font-family: var(--font-emphasis);
-			// top: 0px;
-			input {
-				text-transform: uppercase;
-				text-align: center;
-				color: var(--blades-gold);
+			.tag-entry { display: none }
+
+			.sheet-img { left: 0 }
+			.sheet-root {
+				section.sheet-top {
+
+						grid-template-areas:
+							". . title title title title title title"
+							". . . subtitle subtitle subtitle subtitle subtitle"
+							". short-desc short-desc short-desc short-desc short-desc short-desc short-desc"
+							". . traits traits traits traits traits traits"
+							". district district district faction faction faction faction";
+
+
+						grid-template-rows: join($heights, " ");
+						height: calculate-sum($heights);
+
+
+						.comp-name {
+							--sheet-title-font-size: #{toRem(38px)};
+						}
+
+						.comp-traits {
+							grid-area: traits;
+							display: flex;
+							font-family: var(--font-emphasis);
+							// top: 0px;
+							input {
+								text-transform: uppercase;
+								text-align: center;
+								color: var(--blades-gold);
+							}
+						}
+
+						.comp-faction, .comp-district {
+							text-align: center;
+
+							label {
+								text-align: center;
+							}
+
+							&.comp-district { grid-area: district }
+							&.comp-faction {grid-area: faction }
+						}
+
+						.comp-short-description {
+							grid-area: short-desc;
+							font-style: italic;
+							text-align: center;
+							color: var(--blades-white);
+							padding: 0;
+						}
+
+					}
+
+				}
+
+				section.tab-content {
+					.tab.randomizer {
+						height: 100%;
+						padding: 0 10px;
+						.button-icon {
+							i { }
+							.tooltip {
+								bottom: 0px;
+							}
+						}
+						.randomizer {
+							display: flex;
+							flex-direction: row;
+							flex-wrap: wrap;
+							gap: 0px 10px;
+
+							.comp-randomizer-field {
+								display: flex;
+								flex-direction: row;
+								flex-wrap: nowrap;
+								flex-grow: 1;
+
+								&.field-size-05 {
+									flex-basis: 10%;
+									input {
+										text-indent: 0;
+										text-transform: uppercase;
+										text-align: center;
+										color: var(--blades-gold);
+									}
+								}
+
+								&.field-size-1 {
+									flex-basis: 20%;
+								}
+								&.field-size-2 {
+									flex-basis: 40%;
+
+								}
+								&.field-size-4 {
+									flex-basis: 80%;
+								}
+								&:first-of-type {
+									margin-right: 40px;
+								}
+
+								.toggle-icon.toggled ~ .randomizer-input {
+									background: var(--blades-grey);
+								}
+
+								label {
+									color: var(--blades-grey);
+									margin-right: 5px
+								}
+								.randomizer-input {
+									font-family: Oswald;
+									font-size: toRem(12px);
+									text-indent: 5px;
+
+								}
+							}
+						}
+					}
+				}
+
+
 			}
 		}
-
-		.comp-heritage, .comp-faction, .comp-district, .comp-arena {
-			text-align: center;
-			background: linear-gradient(to top, var(--blades-black) 25%, transparent) !important;
-			// height: calc(100% + 4px);
-
-			label {
-				text-align: center;
-			}
-
-			&.comp-arena {
-				grid-area: arena;
-				// width: calc(100% + 10px);
-			}
-
-			&.comp-heritage {
-				grid-area: heritage;
-				// width: calc(100% + 10px);
-				// left: -10px;
-			}
-
-			&.comp-district {
-				grid-area: district;
-			}
-
-			&.comp-faction {
-				grid-area: faction;
-			}
-		}
-
-
-
-		.comp-short-description {
-			grid-area: short-desc;
-			font-style: italic;
-			text-align: center;
-			color: var(--blades-white-bright);
-			top: -5px;
-			padding: 0;
-		}
-
-		// .comp-tabs {
-		// 	grid-area: tabs;
-		// 	// top: -4px;
-		// 	// height: 100%;
-
-		// 	.nav-group {
-		// 		nav {
-		// 			width: calc(100% + 2 * 10px);
-		// 			height: 28px;
-		// 			// line-height: 28px;
-		// 			justify-content: stretch;
-		// 			position: relative;
-		// 			left: -10px;
-		// 			z-index: 3;
-		// 			background-color: var(--blades-white);
-		// 			padding: 0 10px;
-
-		// 			.item {
-		// 				color: var(--blades-grey-dark);
-		// 				flex-grow: 1;
-		// 				font-family: var(--font-emphasis);
-		// 				text-transform: uppercase;
-		// 				font-size: 14px;
-		// 				line-height: 30px;
-		// 				padding: 0 10px;
-
-		// 				&.active {
-		// 					background-color: var(--blades-white-bright);
-		// 					color: var(--blades-black-dark);
-		// 					font-size: 18px;
-		// 				}
-
-		// 				&:hover {
-		// 					color: var(--blades-black-dark);
-		// 					background-color: var(--blades-white-bright);
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
-
-		// .comp-allies,
-		// .comp-enemies {
-		// 	display: none
-		// }
-	}
-
-.window-resizable-handle {
-	display: none
+	.window-resizable-handle { display: none }
 }

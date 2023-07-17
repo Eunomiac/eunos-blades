@@ -4,6 +4,9 @@ html, :root {
   scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
   scrollbar-width: thin; }
   html, :root {
+    --clock-glow-size: 50px;
+    --clock-frame-size: 50px;
+    --clock-glow-correction: -175px;
     --color-text-light-highlight: #f0f0e0;
     --color-text-light-heading: #c9c7b8;
     --color-text-light-primary: #b5b3a4;
@@ -264,6 +267,9 @@ html, :root {
     html .comp.portrait-container, :root .comp.portrait-container {
       flex-wrap: wrap;
       width: 100%; }
+    html .comp.comp-labeled-input, :root .comp.comp-labeled-input {
+      gap: 5px;
+      margin-right: 5px; }
     html .comp .comp-control, html .comp .comp-title, html .comp .portrait-block.comp-body, :root .comp .comp-control, :root .comp .comp-title, :root .comp .portrait-block.comp-body {
       transition: 0.25s;
       pointer-events: auto;
@@ -620,13 +626,14 @@ html, :root {
       html .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
         margin-left: toRem(10px); }
   html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
-    position: relative;
+    position: absolute;
     height: 1.5rem;
     width: 1.5rem;
     line-height: 1.5rem;
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    right: 0;
     text-shadow: none; }
     html .button-icon i, html .toggle-icon i, :root .button-icon i, :root .toggle-icon i {
       height: 1.5rem;
@@ -886,7 +893,8 @@ html, :root {
     html .window-header, :root .window-header {
       background: var(--blades-black-dark);
       justify-content: space-between;
-      align-items: center; }
+      align-items: center;
+      padding: 0 0 0 20px; }
       html .window-header > *, :root .window-header > * {
         flex-basis: auto;
         flex-shrink: 0.5; }
@@ -930,6 +938,9 @@ html, :root {
       html .comp.portrait-container, :root .comp.portrait-container {
         flex-wrap: wrap;
         width: 100%; }
+      html .comp.comp-labeled-input, :root .comp.comp-labeled-input {
+        gap: 5px;
+        margin-right: 5px; }
       html .comp .comp-control, html .comp .comp-title, html .comp .portrait-block.comp-body, :root .comp .comp-control, :root .comp .comp-title, :root .comp .portrait-block.comp-body {
         transition: 0.25s;
         pointer-events: auto;
@@ -1286,13 +1297,14 @@ html, :root {
         html .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
           margin-left: 0.625rem; }
     html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
-      position: relative;
+      position: absolute;
       height: 1.5rem;
       width: 1.5rem;
       line-height: 1.5rem;
       display: inline-flex;
       justify-content: center;
       align-items: center;
+      right: 0;
       text-shadow: none; }
       html .button-icon i, html .toggle-icon i, :root .button-icon i, :root .toggle-icon i {
         height: 1.5rem;

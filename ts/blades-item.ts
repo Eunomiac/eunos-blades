@@ -1,7 +1,6 @@
-import C, {SVGDATA, BladesItemType, Tag} from "./core/constants.js";
+import C, {SVGDATA, BladesItemType, Tag, BladesPhase} from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
-import {BladesPhase} from "./sheets/blades-tracker-sheet.js";
 
 
 export enum PrereqType {
@@ -95,7 +94,6 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
 		super.prepareData();
 
 		switch (this.type) {
-			case BladesItemType.faction: return this._prepareFaction();
 			case BladesItemType.clock_keeper: return this._prepareClockKeeper();
 			case BladesItemType.cohort: return this._prepareCohort();
 			case BladesItemType.gm_tracker: return this._prepareGMTracker();
@@ -103,14 +101,6 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
 		}
 	}
 
-	_prepareFaction() {
-		if (this.type === "faction") {
-			this.system.goal_1_clock_value ??= 0;
-			if (this.system.goal_1_clock_max === 0) {this.system.goal_1_clock_max = 4}
-			this.system.goal_2_clock_value ??= 0;
-			if (this.system.goal_2_clock_max === 0) {this.system.goal_2_clock_max = 4}
-		}
-	}
 
 	_prepareClockKeeper() {
 		this.system.scenes = game.scenes?.map((scene) => ({id: scene.id, name: scene.name ?? ""}));
@@ -293,13 +283,9 @@ declare interface BladesItem {
 		purchased?: boolean,
 		class_default?: boolean,
 		tier?: number,
-		goal_1?: string,
-		goal_1_clock_value?: number,
-		goal_1_clock_max?: number,
+		goal_1?: NamedValueMax,
 		size_list_1?: string,
-		goal_2?: string,
-		goal_2_clock_value?: number,
-		goal_2_clock_max?: number,
+		goal_2?: NamedValueMax,
 		playbooks?: string[],
 		size_list_2?: string,
 		turf?: string,

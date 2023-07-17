@@ -16,7 +16,7 @@ import type {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt
 
 // https://foundryvtt.wiki/en/development/guides/polymorphism-actors-items
 // Blades Theme Song: "Bangkok" from The Gray Man soundtrack: https://www.youtube.com/watch?v=cjjImvMqYlo&list=OLAK5uy_k9cZDd1Fbpd25jfDtte5A6HyauD2-cwgk&index=2
-
+// Add "coin" item to general items --> equals 1 Coin worth of value, carried, and has Load 1.
 
 class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundrel,
 	BladesCrew,
@@ -1037,15 +1037,19 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 	updateRandomizers() {
 		const rStatus: Record<string, Omit<NPCRandomizerData, "value" | "isLocked">> = {
 			name: {size: 4, label: null},
+
 			heritage: {size: 1, label: "Heritage"},
 			gender: {size: 1, label: "Gender"},
-			appearance: {size: 2, label: "Appearance"},
-			goal: {size: 4, label: "Goal"},
-			method: {size: 4, label: "Method"},
-			profession: {size: 2, label: "Profession"},
-			trait_1: {size: 1, label: null},
-			trait_2: {size: 1, label: null},
-			trait_3: {size: 1, label: null},
+			appearance: {size: 1, label: "Appearance"},
+			profession: {size: 1, label: "Profession"},
+
+			goal: {size: 2, label: "Goal"},
+			method: {size: 2, label: "Method"},
+
+			trait_1: {size: "05", label: null},
+			trait_2: {size: "05", label: null},
+			trait_3: {size: "05", label: null},
+
 			interests: {size: 4, label: "Interests"},
 			quirk: {size: 4, label: "Quirk"},
 			style: {size: 2, label: "Style"}
@@ -1083,9 +1087,9 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 			gender: () => sampleArray(Randomizers.gender)[0],
 			heritage: () => sampleArray(Randomizers.heritage)[0],
 			appearance: () => sampleArray(Randomizers.appearance)[0],
+			profession: () => sampleArray(Randomizers.profession, [this.system.randomizers.goal.value])[0],
 			goal: () => sampleArray(Randomizers.goal, [this.system.randomizers.goal.value])[0],
 			method: () => sampleArray(Randomizers.method, [this.system.randomizers.goal.value])[0],
-			profession: () => sampleArray(Randomizers.profession, [this.system.randomizers.goal.value])[0],
 			trait: () => sampleArray(Randomizers.trait, [this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1),
 			interests: () => sampleArray(Randomizers.interests)[0],
 			quirk: () => sampleArray(Randomizers.quirk)[0],

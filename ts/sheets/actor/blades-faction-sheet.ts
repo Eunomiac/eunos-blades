@@ -1,6 +1,16 @@
 
 import BladesSheet from "./blades-sheet.js";
 
+type BladesClockData = {
+	value: number,
+	size: number
+}
+
+interface BladesFactionSheetData {
+	goal_1_clock: BladesClockData,
+	goal_2_clock: BladesClockData
+}
+
 class BladesFactionSheet extends BladesSheet {
 
 	static override get defaultOptions() {
@@ -11,6 +21,30 @@ class BladesFactionSheet extends BladesSheet {
 			height: "auto",
 			tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content"}]
 		}) as ActorSheet.Options;
+	}
+
+	override getData() {
+		const context = super.getData() as ReturnType<BladesSheet["getData"]>;
+
+		const sheetData: Partial<BladesFactionSheetData> = {};
+
+		if (context.actor.system.goal_1.max > 0) {
+			sheetData.goal_1_clock = {
+				value: context.actor.system.goal_1.value,
+				size: context.actor.system.goal_1.max
+			};
+		}
+		if (context.actor.system.goal_2.max > 0) {
+			sheetData.goal_2_clock = {
+				value: context.actor.system.goal_2.value,
+				size: context.actor.system.goal_2.max
+			};
+		}
+
+		return {
+			...context,
+			...sheetData
+		};
 	}
 
 	override activateListeners(html: JQuery<HTMLElement>) {

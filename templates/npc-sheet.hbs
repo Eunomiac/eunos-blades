@@ -1,100 +1,115 @@
 <form class="{{cssClass}} actor-sheet" autocomplete="off">
 
+	{{!-- Actor Img: Portrait --}}
 	<img class="sheet-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
-	<img class="sheet-img-bg" src="{{actor.img}}" />
 
+	{{!-- SubActor GM Alert --}}
+	{{#if isGM}}{{#if isSubActor}}
+		<div class="gm-alert-header">Editing as SubActor of {{parentActor.name}}</div>
+	{{/if}}{{/if}}
+
+	{{!-- Tags --}}
 	{{#if isGM}}
-		{{#if isSubActor}}<div class="gm-alert-header">Editing as SubActor of {{parentActor.name}}</div>{{/if}}
 		<input type="text" class="tag-entry" />
 	{{/if}}
 
+	{{!-- Sheet Container --}}
 	<div class="sheet-root">
-		<section class="sheet-top">
-			<input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?">
-			<input class="comp-concept sheet-subtitle shadowed" type="text" name="system.concept" value="{{system.concept}}"
-				placeholder="Concept">
 
-			<div class="comp-district comp">
-				<label>District:</label>
+		{{!-- Header --}}
+		<section class="sheet-top">
+
+			<input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?" />
+
+			<input class="comp comp-concept sheet-subtitle shadowed" type="text" name="system.concept" value="{{system.concept}}" placeholder="Concept" />
+
+			<div class="flex-horizontal comp-horizontal comp comp-labeled-input comp-district">
+				<label class="comp-label shadowed">District:</label>
 				<input type="text" name="system.district" value="{{system.district}}">
 			</div>
-			<div class="comp-faction comp">
-				<label>Faction:</label>
+
+			<div class="flex-horizontal comp-horizontal comp comp-labeled-input comp-faction">
+				<label class="comp-label shadowed">Faction:</label>
 				<input type="text" name="system.faction" value="{{system.faction}}">
 			</div>
 
-			<div class="comp-traits input-group">
+			<div class="comp comp-traits">
 				<input class="shadowed" type="text" name="system.traits.0" value="{{system.traits.[0]}}" placeholder="Trait">
 				<input class="shadowed" type="text" name="system.traits.1" value="{{system.traits.[1]}}" placeholder="Trait">
 				<input class="shadowed" type="text" name="system.traits.2" value="{{system.traits.[2]}}" placeholder="Trait">
 			</div>
-			<input class="comp-short-description shadowed" type="text" name="system.description_short"
-				value="{{system.description_short}}" placeholder="Short Description">
+
+			<input class="comp comp-short-description shadowed" type="text" name="system.description_short" value="{{system.description_short}}" placeholder="Short Description">
+
 		</section>
 
-		<section class="flex-horizontal comp-tabs">
-			<div class="tab-content flex-vertical grow-two nav-group">
-				<nav class="tabs flex-horizontal">
-					<a class="item" data-tab="description">Description</a>
-					<a class="item" data-tab="friends-and-foes">Friends & Foes</a>
-					{{#if isGM}}
-					<a class="item" data-tab="randomizer">Randomizer</a>
-					{{/if}}
-				</nav>
-				<div id="comp-{{actor._id}}-description" class="tab flex-vertical description editor-tab"
-					data-tab="description">
-					{{editor system.description target="system.description" button=true owner=owner editable=editable}}
-				</div>
+		{{!-- Tabs, Tab Navication --}}
+		<section class="tab-content nav-group flex-vertical">
 
-				<div id="comp-{{actor._id}}-friends-and-foes" class="tab flex-vertical friends-and-foes"
-					data-tab="friends-and-foes">
-					<div class="flex-horizontal">
-						<div class="comp-connections-list allies-list">
-							<div class="label-stripe flex-horizontal">
-								<p>Allies</p>
-							</div>
-						</div>
-						<div class="comp-connections-list enemies-list">
-							<div class="label-stripe flex-horizontal">
-								<p>Enemies</p>
-							</div>
-						</div>
-						<div class="comp-connections-list others-list">
-							<div class="label-stripe flex-horizontal">
-								<p>Others</p>
-							</div>
-						</div>
-					</div>
-				</div>
-
+			{{!-- Nav menu --}}
+			<nav class="nav-tabs flex-horizontal">
+				<a class="tab-selector" data-tab="description">Description</a>
+				<a class="tab-selector" data-tab="friends-and-foes">Friends & Foes</a>
 				{{#if isGM}}
-				<div id="comp-{{actor._id}}-randomizer" class="tab flex-vertical randomizer" data-tab="randomizer">
-					{{> "systems/eunos-blades/templates/parts/button-icon.hbs"
-					buttonClass="fas fas-galaxy"
-					tooltip="<b>Randomize!</b>"
-					action="randomize"
-					}}
-					<div class="randomizer">
-						{{#each randomizers as |data key|}}
-						<div class="comp-randomizer-field field-size-{{data.size}}">
-							{{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
-							isToggled=system.isLocked
-							activeClass="fas fa-lock"
-							activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
-							inactiveClass="far fa-lock-open-alt"
-							inactiveTooltip="<b>Randomizing Field</b><br>Click to Freeze"
-							targetKey=(concat "system.randomizers." key ".isLocked") }}
-							{{#if data.label}}
-							<label class="randomizer-label">{{data.label}}</label>
-							{{/if}}
-							<input class="randomizer-input" type="text" value="{{data.value}}"
-								name="system.randomizers.{{key}}.value" />
+				<a class="tab-selector" data-tab="randomizer">Randomizer</a>
+				{{/if}}
+			</nav>
+
+			{{!-- Description --}}
+			<div class="tab description flex-vertical" data-tab="description">
+				<label class="comp tab-label">Description</label>
+				{{editor system.description target="system.description" button=true owner=owner editable=editable}}
+			</div>
+
+			{{!-- Friends & Foes --}}
+			<div class="tab friends-and-foes flex-vertical" data-tab="friends-and-foes">
+				<div class="flex-horizontal">
+					<div class="comp-connections-list allies-list">
+						<div class="label-stripe flex-horizontal">
+							<p>Allies</p>
 						</div>
-						{{/each}}
+					</div>
+					<div class="comp-connections-list enemies-list">
+						<div class="label-stripe flex-horizontal">
+							<p>Enemies</p>
+						</div>
+					</div>
+					<div class="comp-connections-list others-list">
+						<div class="label-stripe flex-horizontal">
+							<p>Others</p>
+						</div>
 					</div>
 				</div>
-				{{/if}}
 			</div>
+
+			{{!-- Randomizer --}}
+			{{#if isGM}}
+			<div class="tab randomizer flex-vertical" data-tab="randomizer">
+				{{> "systems/eunos-blades/templates/parts/button-icon.hbs"
+				buttonClass="fas fas-galaxy"
+				tooltip="<b>Randomize!</b>"
+				action="randomize"
+				}}
+				<div class="randomizer">
+					{{#each randomizers as |data key|}}
+					<div class="comp comp-randomizer-field field-size-{{data.size}}">
+						{{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+						isToggled=data.isLocked
+						activeClass="fas fa-lock"
+						activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
+						inactiveClass="far fa-lock-open-alt"
+						inactiveTooltip="<b>Randomizing Field</b><br>Click to Freeze"
+						targetKey=(concat "system.randomizers." key ".isLocked") }}
+						{{#if data.label}}
+						<label class="comp-label shadowed randomizer-label">{{data.label}}</label>
+						{{/if}}
+						<input class="randomizer-input" type="text" value="{{data.value}}"
+							name="system.randomizers.{{key}}.value" />
+					</div>
+					{{/each}}
+				</div>
+			</div>
+			{{/if}}
 		</section>
 	</div>
 </form>

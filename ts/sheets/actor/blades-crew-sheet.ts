@@ -1,8 +1,8 @@
-import U from "../core/utilities.js";
+import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
-import BladesActor from "../blades-actor.js";
-import BladesItem from "../blades-item.js";
-import {BladesActorType, BladesItemType} from "../core/constants.js";
+import BladesActor from "../../blades-actor.js";
+import BladesItem from "../../blades-item.js";
+import {BladesActorType, BladesItemType} from "../../core/constants.js";
 
 class BladesCrewSheet extends BladesSheet {
 

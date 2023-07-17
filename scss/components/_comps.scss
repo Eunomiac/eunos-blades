@@ -11,6 +11,11 @@
 		width: 100%;
 	}
 
+	&.comp-labeled-input {
+		gap: 5px;
+		margin-right: 5px;
+	}
+
 	.comp-control, .comp-title, .portrait-block.comp-body { transition: 0.25s; pointer-events: auto; cursor: pointer }
 
 	.comp-label:hover, .comp-title:hover {

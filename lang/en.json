@@ -2,10 +2,10 @@
 	"ACTOR": {
 		"TypePc": "Scoundrel",
 		"TypeNpc": "NPC",
-		"TypeCrew": "Crew"
+		"TypeCrew": "Crew",
+		"TypeFaction": "Faction"
 	},
 	"ITEM": {
-		"TypeFaction": "Faction",
 		"TypeItem": "Gear",
 		"TypeAbility": "Scoundrel Ability",
 		"TypeHeritage": "Heritage",
@@ -24,7 +24,6 @@
 		"TypePreferred_op": "Preferred Op"
 	},
 	"BITD": {
-		"HelloThere": "General Kenobi",
 		"Heritage": "Heritage",
 		"Background": "Background",
 		"TitleDeleteItem": "Delete item",

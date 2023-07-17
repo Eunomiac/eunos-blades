@@ -1,5 +1,7 @@
 .clock {
 
+
+
 	svg, svg defs {
 		* { transform-origin: 50% 50% }
 
@@ -25,7 +27,7 @@
 	height: var(--clock-glow-size);
 	width: var(--clock-glow-size);
 	transform: translate(-50%, -50%);
-	position: absolute;
+	position: relative;
 	z-index: 2;
 
 	.clock-frame {

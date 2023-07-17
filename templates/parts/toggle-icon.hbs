@@ -1,4 +1,4 @@
-<span class="toggle-icon {{blockClass}}">
+<span class="toggle-icon {{blockClass}} {{~#if isToggled}} toggled{{/if}}">
 	<input  data-dtype="Boolean" type="checkbox" class="hidden-toggle" name="{{targetKey}}" {{checked isToggled}} />
 	<i class="toggle-on {{activeClass}}"></i>
 	<i class="toggle-off {{inactiveClass}}"></i>

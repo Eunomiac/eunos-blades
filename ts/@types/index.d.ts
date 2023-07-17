@@ -3,8 +3,8 @@ import BladesItem, { PrereqType } from "../blades-item";
 import BladesActor from "../blades-actor";
 import { bladesRoll } from "../blades-roll";
 import BladesSelectorDialog from "../blades-dialog";
-import BladesItemSheet from "../sheets/blades-item-sheet";
-import BladesTrackerSheet from "../sheets/blades-tracker-sheet.js";
+import BladesItemSheet from "../sheets/item/blades-item-sheet";
+import BladesTrackerSheet from "../sheets/item/blades-tracker-sheet.js";
 import type gsap from "/scripts/greensock/esm/all";
 
 

@@ -88,23 +88,10 @@ class BladesItem extends Item {
     prepareData() {
         super.prepareData();
         switch (this.type) {
-            case BladesItemType.faction: return this._prepareFaction();
             case BladesItemType.clock_keeper: return this._prepareClockKeeper();
             case BladesItemType.cohort: return this._prepareCohort();
             case BladesItemType.gm_tracker: return this._prepareGMTracker();
             default: return undefined;
-        }
-    }
-    _prepareFaction() {
-        if (this.type === "faction") {
-            this.system.goal_1_clock_value ??= 0;
-            if (this.system.goal_1_clock_max === 0) {
-                this.system.goal_1_clock_max = 4;
-            }
-            this.system.goal_2_clock_value ??= 0;
-            if (this.system.goal_2_clock_max === 0) {
-                this.system.goal_2_clock_max = 4;
-            }
         }
     }
     _prepareClockKeeper() {

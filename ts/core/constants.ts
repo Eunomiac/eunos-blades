@@ -8,7 +8,8 @@ export enum BladesPermissions {
 export enum BladesActorType {
 	pc = "pc",
 	npc = "npc",
-	crew = "crew"
+	crew = "crew",
+	faction = "faction"
 }
 
 export enum BladesItemType {
@@ -20,7 +21,6 @@ export enum BladesItemType {
 	crew_reputation = "crew_reputation",
 	crew_playbook = "crew_playbook",
 	crew_upgrade = "crew_upgrade",
-	faction = "faction",
 	feature = "feature",
 	gm_tracker = "gm_tracker",
 	heritage = "heritage",
@@ -139,6 +139,12 @@ export enum Playbook {
 	Vigilantes = "Vigilantes"
 }
 
+export enum BladesPhase {
+	CharGen = "CharGen",
+	Freeplay = "Freeplay",
+	Score = "Score",
+	Downtime = "Downtime"
+}
 export namespace Tag {
 	export enum System {
 		Archived = "Archived",
@@ -577,7 +583,8 @@ const C = {
 	ActorTypes: [
 		BladesActorType.pc,
 		BladesActorType.npc,
-		BladesActorType.crew
+		BladesActorType.crew,
+		BladesActorType.faction
 	],
 	ItemTypes: [
 		BladesItemType.ability,
@@ -588,7 +595,6 @@ const C = {
 		BladesItemType.crew_reputation,
 		BladesItemType.crew_playbook,
 		BladesItemType.crew_upgrade,
-		BladesItemType.faction,
 		BladesItemType.feature,
 		BladesItemType.gm_tracker,
 		BladesItemType.heritage,

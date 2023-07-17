@@ -28,7 +28,6 @@ export async function preloadHandlebarsTemplates() {
 		// Actor Sheet Partials
 		"systems/eunos-blades/templates/parts/turf-list.hbs",
 		"systems/eunos-blades/templates/parts/cohort-block.hbs",
-		"systems/eunos-blades/templates/parts/factions.hbs",
 		"systems/eunos-blades/templates/parts/active-effects.hbs",
 
 		// Overlays

@@ -1,9 +1,9 @@
-import C, {Tag, District, Playbook, Vice} from "../core/constants.js";
-import U from "../core/utilities.js";
-import type BladesItem from "../blades-item.js";
-import BladesActiveEffect from "../blades-active-effect.js";
+import C, {Tag, District, Playbook, Vice} from "../../core/constants.js";
+import U from "../../core/utilities.js";
+import type BladesItem from "../../blades-item.js";
+import BladesActiveEffect from "../../blades-active-effect.js";
 
-import Tagify from "../../lib/tagify/tagify.esm.js";
+import Tagify from "../../../lib/tagify/tagify.esm.js";
 import type {KeydownEventData, TagData, TagEventData} from "@yaireo/tagify";
 
 class BladesItemSheet extends ItemSheet {
@@ -212,7 +212,7 @@ class BladesItemSheet extends ItemSheet {
 		context.isEmbeddedItem = this.item.parent !== null;
 		context.item = this.item;
 		context.system = this.item.system;
-		context.effects = this.item.effects;
+		context.activeEffects = this.item.effects;
 
 		return context;
 	}
