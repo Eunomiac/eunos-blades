@@ -10,6 +10,7 @@ import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesItem from "../../blades-item.js";
 import BladesActor from "../../blades-actor.js";
+
 class BladesActorSheet extends BladesSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {

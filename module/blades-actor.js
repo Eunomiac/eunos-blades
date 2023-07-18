@@ -205,6 +205,13 @@ class BladesActor extends Actor {
         }
         return actor?.id ? actor.id in this.system.subactors : false;
     }
+    hasActiveSubActorOf(actorRef) {
+        const actor = BladesActor.Get(actorRef);
+        if (!actor) {
+            return false;
+        }
+        return actor?.id ? (actor.id in this.system.subactors && !this.getSubActor(actorRef)?.hasTag(Tag.System.Archived)) : false;
+    }
     async updateSubActor(actorRef, updateData) {
         updateData = U.objExpand(updateData);
         if (!updateData.system) {
@@ -227,7 +234,7 @@ class BladesActor extends Actor {
         if (!actor) {
             return;
         }
-        if (!this.hasSubActorOf(actor)) {
+        if (!this.hasActiveSubActorOf(actor)) {
             return;
         }
         const subActor = this.getSubActor(actor);
@@ -529,6 +536,20 @@ class BladesActor extends Actor {
             return undefined;
         }
         return this.items.find((item) => item.system.world_name === globalItem.system.world_name);
+    }
+    hasSubItemOf(itemRef) {
+        const item = BladesItem.Get(itemRef);
+        if (!item) {
+            return false;
+        }
+        return Boolean(this.items.find((i) => i.system.world_name === item.system.world_name));
+    }
+    hasActiveSubItemOf(itemRef) {
+        const item = BladesItem.Get(itemRef);
+        if (!item) {
+            return false;
+        }
+        return Boolean(this.items.find((i) => !i.hasTag(Tag.System.Archived) && i.system.world_name === item.system.world_name));
     }
     async addSubItem(itemRef) {
         eLog.checkLog3("subitems", "[addSubItem] itemRef", itemRef);

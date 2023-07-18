@@ -133,11 +133,11 @@
 					flex-wrap: nowrap;
 					position: relative;
 					height: var(--sheet-mid-height);
-					padding-right: toRem(20px);
+					// padding-right: toRem(20px);
 				}
 
 				&.nav-group {
-					height: calc(100% - var(--sheet-top-height) - var(--sheet-mid-height));
+					height: 100%;
 
 					> * { width: 100% }
 

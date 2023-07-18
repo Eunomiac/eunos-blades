@@ -21,7 +21,7 @@ $remPerPixel: 0.0625rem;
   $b: blue($main-color);
 
   // Calculate yiq values
-  $y: 0.6;
+  $y: $target-y;
 	$i: ((0.596 * $r) + (-0.275 * $g) + (-0.321 * $b)) / 255;
 	$q: ((0.212 * $r) + (-0.523 * $g) + ( 0.311 * $b)) / 255;
 

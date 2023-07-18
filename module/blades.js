@@ -5,7 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { IMPORTDATA } from "./core/constants.js";
+import C, { IMPORTDATA, BladesActorType } from "./core/constants.js";
 import registerSettings, { initTinyMCEStyles, initCanvasStyles, initFonts } from "./core/settings.js";
 import { registerHandlebarHelpers, preloadHandlebarsTemplates } from "./core/helpers.js";
 import U from "./core/utilities.js";
@@ -226,6 +226,18 @@ Object.assign(globalThis, {
         });
     },
     DebugPC: async () => {
+    },
+    TransferNPCRandomizerData: async () => {
+        const npcs = game.actors.filter((actor) => actor.type === BladesActorType.npc);
+        npcs.forEach((npc) => {
+            npc.update({
+                "system.randomizers.name.isLocked": false,
+                "system.randomizers.trait_1.isLocked": false,
+                "system.randomizers.trait_2.isLocked": false,
+                "system.randomizers.trait_3.isLocked": false,
+                "system.randomizers.quirk.isLocked": false
+            });
+        });
     }
 });
 

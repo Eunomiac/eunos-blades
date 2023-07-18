@@ -277,6 +277,24 @@ registerDebugger();
 			// 		crew.sheet.setPosition(positions.crew({pcSheetElem: pc?.sheet?.element}));
 			// 	}
 			// }, 2000);
+		},
+		TransferNPCRandomizerData: async () => {
+			const npcs = game.actors.filter((actor) => actor.type === BladesActorType.npc) as BladesActor[];
+
+			npcs.forEach((npc) => {
+				npc.update({
+					// "system.randomizers.name.value": npc.name,
+					"system.randomizers.name.isLocked": false,
+					// "system.randomizers.trait_1.value": npc.system.traits[1],
+					"system.randomizers.trait_1.isLocked": false,
+					// "system.randomizers.trait_2.value": npc.system.traits[2],
+					"system.randomizers.trait_2.isLocked": false,
+					// "system.randomizers.trait_3.value": npc.system.traits[3],
+					"system.randomizers.trait_3.isLocked": false,
+					// "system.randomizers.quirk.value": npc.system.description_short,
+					"system.randomizers.quirk.isLocked": false
+				});
+			});
 		}
 	}
 );/*!DEVCODE*/

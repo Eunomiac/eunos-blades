@@ -8,8 +8,8 @@
 
 import U from "../../core/utilities.js";
 import G from "../../core/gsap.js";
-import { Tag, District, Playbook, Vice, BladesActorType } from "../../core/constants.js";
-import Tagify from "../../../lib/tagify/tagify.esm.js";
+import { Tag, BladesActorType } from "../../core/constants.js";
+import Tags from "../../core/tags.js";
 import BladesSelectorDialog from "../../blades-dialog.js";
 import BladesActiveEffect from "../../blades-active-effect.js";
 class BladesSheet extends ActorSheet {
@@ -76,6 +76,7 @@ class BladesSheet extends ActorSheet {
                 });
             }
         });
+        Tags.InitListeners(html, this.actor);
         if (!this.options.editable) {
             return;
         }
@@ -154,94 +155,6 @@ class BladesSheet extends ActorSheet {
         html
             .find(".effect-control")
             .on("click", this._onActiveEffectControlClick.bind(this));
-        const tagElem = html.find(".tag-entry")[0];
-        if (tagElem) {
-            const tagify = new Tagify(tagElem, {
-                enforceWhitelist: false,
-                editTags: true,
-                whitelist: [
-                    ...Object.values(Tag.System).map((tag) => ({
-                        "value": (new Handlebars.SafeString(tag)).toString(),
-                        "data-group": "System Tags"
-                    })),
-                    ...Object.values(Tag.Item).map((tag) => ({
-                        "value": (new Handlebars.SafeString(tag)).toString(),
-                        "data-group": "Item Tags"
-                    })),
-                    ...Object.values(Tag.PC).map((tag) => ({
-                        "value": (new Handlebars.SafeString(tag)).toString(),
-                        "data-group": "Actor Tags"
-                    })),
-                    ...Object.values(Tag.NPC).map((tag) => ({
-                        "value": (new Handlebars.SafeString(tag)).toString(),
-                        "data-group": "Actor Tags"
-                    })),
-                    ...Object.values(District).map((tag) => ({
-                        "value": (new Handlebars.SafeString(tag)).toString(),
-                        "data-group": "Districts"
-                    })),
-                    ...Object.values(Vice).map((tag) => ({
-                        "value": (new Handlebars.SafeString(tag)).toString(),
-                        "data-group": "Vices"
-                    })),
-                    ...Object.values(Playbook).map((tag) => ({
-                        "value": (new Handlebars.SafeString(tag)).toString(),
-                        "data-group": "Playbooks"
-                    }))
-                ],
-                dropdown: {
-                    enabled: 0,
-                    maxItems: 10000,
-                    placeAbove: false,
-                    appendTarget: html[0]
-                }
-            });
-            tagify.dropdown.createListHTML = (optionsArr) => {
-                const map = {};
-                return structuredClone(optionsArr)
-                    .map((suggestion, idx) => {
-                    const value = tagify.dropdown.getMappedValue.call(tagify, suggestion);
-                    let tagHTMLString = "";
-                    if (!map[suggestion["data-group"]]) {
-                        map[suggestion["data-group"]] = true;
-                        if (Object.keys(map).length) {
-                            tagHTMLString += "</div>";
-                        }
-                        tagHTMLString += `
-								<div class="tagify__dropdown__itemsGroup">
-								<h3>${suggestion["data-group"]}</h3>
-							`;
-                    }
-                    suggestion.value
-                        = value && typeof value === "string" ? U.escapeHTML(value) : value;
-                    tagHTMLString += tagify.settings.templates.dropdownItem.apply(tagify, [suggestion, idx]);
-                    return tagHTMLString;
-                })
-                    .join("");
-            };
-            tagify.addTags(this.actor.tags.map((tag) => {
-                if (Object.values(Tag.System).includes(tag)) {
-                    return { "value": (new Handlebars.SafeString(tag)).toString(), "data-group": "System Tags" };
-                }
-                if (Object.values(Tag.Item).includes(tag)) {
-                    return { "value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Item Tags" };
-                }
-                if (Object.values(Tag.PC).includes(tag) || Object.values(Tag.NPC).includes(tag)) {
-                    return { "value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Actor Tags" };
-                }
-                if (Object.values(District).includes(tag)) {
-                    return { "value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Districts" };
-                }
-                if (Object.values(Playbook).includes(tag)) {
-                    return { "value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Playbooks" };
-                }
-                if (Object.values(Vice).includes(tag)) {
-                    return { "value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Vices" };
-                }
-                return { "value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Other" };
-            }), false, false);
-            tagElem.addEventListener("change", this._onTagifyChange.bind(this));
-        }
         if (this.options.submitOnChange) {
             html.on("change", "textarea", this._onChangeInput.bind(this));
         }
@@ -288,16 +201,6 @@ class BladesSheet extends ActorSheet {
         G.effects.reversePulseClockWedges(clock$.find("wedges")).then(() => this.actor.update({
             [target]: Math.max(0, curValue - 1)
         }));
-    }
-    async _onTagifyChange(event) {
-        const tagString = event.target.value;
-        if (tagString) {
-            const tags = JSON.parse(tagString).map(({ value }) => value);
-            this.actor.update({ "system.tags": tags });
-        }
-        else {
-            this.actor.update({ "system.tags": [] });
-        }
     }
 
     _getCompData(event) {

@@ -6,7 +6,6 @@ import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesItem from "../../blades-item.js";
 import BladesActor from "../../blades-actor.js";
-// import Tagify from "../../lib/tagify/tagify.esm.js";
 // import ConstructorDataType from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
 // import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 

@@ -10,7 +10,7 @@
 
 	{{!-- Tags --}}
 	{{#if isGM}}
-		<input type="text" class="tag-entry" />
+		<input type="text" class="comp-tags tags-gm" />
 	{{/if}}
 
 	{{!-- Sheet Container --}}
@@ -25,12 +25,12 @@
 
 			<div class="flex-horizontal comp-horizontal comp comp-labeled-input comp-district">
 				<label class="comp-label shadowed">District:</label>
-				<input type="text" name="system.district" value="{{system.district}}">
+				<input class="comp-tags tags-district" data-tag-target="system.district" type="text">
 			</div>
 
 			<div class="flex-horizontal comp-horizontal comp comp-labeled-input comp-faction">
 				<label class="comp-label shadowed">Faction:</label>
-				<input type="text" name="system.faction" value="{{system.faction}}">
+				<input class="tagify comp-tags tags-faction" data-tag-target="system.faction" type="text">
 			</div>
 
 			<div class="comp comp-traits">

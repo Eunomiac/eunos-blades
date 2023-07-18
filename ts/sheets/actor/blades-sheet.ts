@@ -2,15 +2,12 @@
 
 import U from "../../core/utilities.js";
 import G from "../../core/gsap.js";
-import {Tag, District, Playbook, Vice, BladesActorType, BladesPermissions} from "../../core/constants.js";
-import Tagify from "../../../lib/tagify/tagify.esm.js";
+import {Tag, BladesActorType, BladesPermissions} from "../../core/constants.js";
+import Tags from "../../core/tags.js";
 import BladesActor from "../../blades-actor.js";
 import BladesItem from "../../blades-item.js";
 import BladesSelectorDialog, {SelectionCategory} from "../../blades-dialog.js";
 import BladesActiveEffect from "../../blades-active-effect.js";
-import {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
-import type {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/utils/helpers.mjs.js";
-
 // #endregion
 // #region TYPES: BladesCompData ~
 type BladesCompData = {
@@ -114,6 +111,8 @@ class BladesSheet extends ActorSheet {
 				}
 			});
 
+		Tags.InitListeners(html, this.actor);
+
 		// Everything below here is only needed if the sheet is editable
 		if (!this.options.editable) { return }
 
@@ -205,120 +204,6 @@ class BladesSheet extends ActorSheet {
 			.find(".effect-control")
 			.on("click", this._onActiveEffectControlClick.bind(this));
 
-		// Tagify Functionality
-		const tagElem = html.find(".tag-entry")[0] as HTMLInputElement;
-
-		if (tagElem) {
-			const tagify = new Tagify(tagElem, {
-				// enforceWhitelist: true,
-				// editTags: false,
-				enforceWhitelist: false,
-				editTags: true,
-				whitelist: [
-					...Object.values(Tag.System).map((tag) => ({
-						"value": (new Handlebars.SafeString(tag)).toString(),
-						"data-group": "System Tags"
-					})),
-					...Object.values(Tag.Item).map((tag) => ({
-						"value": (new Handlebars.SafeString(tag)).toString(),
-						"data-group": "Item Tags"
-					})),
-					...Object.values(Tag.PC).map((tag) => ({
-						"value": (new Handlebars.SafeString(tag)).toString(),
-						"data-group": "Actor Tags"
-					})),
-					...Object.values(Tag.NPC).map((tag) => ({
-						"value": (new Handlebars.SafeString(tag)).toString(),
-						"data-group": "Actor Tags"
-					})),
-					...Object.values(District).map((tag) => ({
-						"value": (new Handlebars.SafeString(tag)).toString(),
-						"data-group": "Districts"
-					})),
-					...Object.values(Vice).map((tag) => ({
-						"value": (new Handlebars.SafeString(tag)).toString(),
-						"data-group": "Vices"
-					})),
-					...Object.values(Playbook).map((tag) => ({
-						"value": (new Handlebars.SafeString(tag)).toString(),
-						"data-group": "Playbooks"
-					}))
-				],
-				dropdown: {
-					enabled: 0,
-					maxItems: 10000,
-					placeAbove: false,
-					appendTarget: html[0]
-				}
-			});
-
-			(tagify as any).dropdown.createListHTML = (optionsArr: Array<{ value: BladesTag; "data-group": string }>) => {
-				const map: Record<string, unknown> = {};
-
-				return structuredClone(optionsArr)
-					.map((suggestion, idx) => {
-
-						const value = (tagify as any).dropdown.getMappedValue.call(
-							tagify,
-							suggestion
-						);
-						let tagHTMLString = "";
-
-						if (!map[suggestion["data-group"]]) {
-							map[suggestion["data-group"]] = true;
-
-							if (Object.keys(map).length) {
-								tagHTMLString += "</div>";
-							}
-
-							tagHTMLString += `
-								<div class="tagify__dropdown__itemsGroup">
-								<h3>${suggestion["data-group"]}</h3>
-							`;
-						}
-
-						suggestion.value
-              = value && typeof value === "string" ? U.escapeHTML(value) : value;
-
-						tagHTMLString += tagify.settings.templates.dropdownItem.apply(
-							tagify,
-							[suggestion, idx]
-						);
-
-						return tagHTMLString;
-					})
-					.join("");
-			};
-
-			// Add existing tags to tagify element
-			tagify.addTags(
-				this.actor.tags.map((tag: BladesTag) => {
-					if (Object.values(Tag.System).includes(tag as Tag.System)) {
-						return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "System Tags"};
-					}
-					if (Object.values(Tag.Item).includes(tag as Tag.Item)) {
-						return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Item Tags"};
-					}
-					if (Object.values(Tag.PC).includes(tag as Tag.PC) || Object.values(Tag.NPC).includes(tag as Tag.NPC)) {
-						return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Actor Tags"};
-					}
-					if (Object.values(District).includes(tag as District)) {
-						return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Districts"};
-					}
-					if (Object.values(Playbook).includes(tag as Playbook)) {
-						return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Playbooks"};
-					}
-					if (Object.values(Vice).includes(tag as Vice)) {
-						return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Vices"};
-					}
-					return {"value": (new Handlebars.SafeString(tag)).toString(), "data-group": "Other"};
-				}),
-				false,
-				false
-			);
-
-			tagElem.addEventListener("change", this._onTagifyChange.bind(this));
-		}
 
 		// This is a workaround until is being fixed in FoundryVTT.
 		if (this.options.submitOnChange) {
@@ -377,16 +262,6 @@ class BladesSheet extends ActorSheet {
 			}));
 	}
 	// #endregion
-
-	async _onTagifyChange(event: Event) {
-		const tagString = (event.target as HTMLInputElement).value;
-		if (tagString) {
-			const tags: BladesTag[] = JSON.parse(tagString).map(({value}: { value: BladesTag }) => value);
-			this.actor.update({"system.tags": tags});
-		} else {
-			this.actor.update({"system.tags": []});
-		}
-	}
 
 	// #region Component Handlers
 	private _getCompData(event: ClickEvent): BladesCompData {

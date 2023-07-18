@@ -229,8 +229,8 @@ html, :root {
     --background-input: var(--blades-black-dark-fade-strong);
     --margin-input: 0;
     --padding-input: 0;
-    --font-input: var(--font-emphasis);
-    --font-number-input: var(--font-input);
+    --font-input: var(--font-primary);
+    --font-number-input: var(--font-emphasis);
     --font-size-input: var(--font-size-primary);
     --font-weight-input: var(--font-weight-primary);
     --font-style-input: var(--font-style-primary);
@@ -1586,7 +1586,7 @@ html, :root {
   width: calc(100% + 2 * var(--content-padding));
   margin-left: calc(-1 * var(--content-padding)); }
   #tinymce {
-    min-height: 40px;
+    min-height: 100px;
     background-color: rgba(0, 0, 0, 0.2);
     height: auto;
     max-height: 600px; }

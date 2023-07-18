@@ -8,6 +8,7 @@
 import { BladesPhase } from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../../blades-item.js";
+import { BladesActorType } from "../../../module_staging_1/core/constants.js";
 export var BladesTipContext;
 (function (BladesTipContext) {
     BladesTipContext["DiceRoll"] = "DiceRoll";
@@ -83,6 +84,12 @@ class BladesTrackerSheet extends BladesItemSheet {
     }
     async activateListeners(html) {
         super.activateListeners(html);
+    }
+    async _onSubmit(event, params = {}) {
+        const submitData = await super._onSubmit(event, params);
+        game.actors.filter((actor) => actor.type === BladesActorType.pc)
+            .forEach((actor) => actor.sheet?.render());
+        return submitData;
     }
 }
 export default BladesTrackerSheet;

@@ -4,15 +4,20 @@
 
 	.window-content {
 		form {
+
+			$heights: (55px 83px 42px 20px);
+			--sheet-top-height: #{calculate-sum($heights)};
+			// --sheet-mid-height: 0px;
+
 			.sheet-root {
 				> section {
 
 					&.sheet-top {
 						grid-template-areas:
 							". . title title title title title title playbook playbook playbook"
-							". . members members members members members members playbook playbook playbook "
-							". . reputation reputation preferred-op preferred-op hunting-grounds hunting-grounds hunting-grounds coins coins ";
-						grid-template-rows: 55px 83px 42px 20px;
+							". . members members members members hunting-grounds hunting-grounds playbook playbook playbook "
+							". . reputation reputation preferred-op preferred-op hunting-grounds hunting-grounds . coins coins ";
+						// grid-template-rows: ;
 
 						.sheet-title {
 							--sheet-title-font-size: #{toRem(48px)};
@@ -26,10 +31,13 @@
 						.members { grid-area: members }
 
 						.comp-hunting-grounds {
+							height: 100%;
 							.comp-body {
+								height: 100%;
 								.comp-body-text {
 									display: block;
 									margin-top: 5px;
+									height: 95%;
 									min-height: 50px;
 									margin-bottom: -5px;
 									resize: none;
@@ -76,7 +84,8 @@
 								}
 							}
 						}
-						.comp-tier { max-width: 40px }
+						.comp-wanted { flex-grow: 0 }
+						// .comp-tier { margin-right: 5px }
 					}
 				}
 

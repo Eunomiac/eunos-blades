@@ -2,6 +2,7 @@
 import {BladesPhase} from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../../blades-item.js";
+import {BladesActorType} from "../../../module_staging_1/core/constants.js";
 
 
 export enum BladesTipContext {
@@ -100,6 +101,13 @@ class BladesTrackerSheet extends BladesItemSheet {
 	override async activateListeners(html: JQuery<HTMLElement>) {
 		super.activateListeners(html);
 
+	}
+
+	override async _onSubmit(event: Event, params: List<any> = {}) {
+		const submitData = await super._onSubmit(event, params);
+		game.actors.filter((actor) => actor.type === BladesActorType.pc)
+			.forEach((actor) => actor.sheet?.render());
+		return submitData;
 	}
 }
 

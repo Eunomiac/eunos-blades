@@ -234,6 +234,12 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		return actor?.id ? actor.id in this.system.subactors : false;
 	}
 
+	hasActiveSubActorOf(actorRef: ActorRef): boolean {
+		const actor = BladesActor.Get(actorRef);
+		if (!actor) { return false }
+		return actor?.id ? (actor.id in this.system.subactors && !this.getSubActor(actorRef)?.hasTag(Tag.System.Archived)) : false;
+	}
+
 	async updateSubActor(actorRef: ActorRef, updateData: DeepPartial<SubActorData & Record<string, any>>): Promise<BladesActor | undefined> {
 		updateData = U.objExpand(updateData);
 		if (!updateData.system) { return undefined }
@@ -262,7 +268,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 	async remSubActor(actorRef: ActorRef): Promise<void> {
 		const actor = BladesActor.Get(actorRef);
 		if (!actor) { return }
-		if (!this.hasSubActorOf(actor)) { return }
+		if (!this.hasActiveSubActorOf(actor)) { return }
 		const subActor = this.getSubActor(actor)!;
 		if (!subActor || subActor.hasTag(Tag.System.Archived)) { return }
 		subActor.addTag(Tag.System.Archived);
@@ -537,6 +543,18 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		const globalItem = BladesItem.Get(itemRef);
 		if (!globalItem) { return undefined }
 		return this.items.find((item) => item.system.world_name === globalItem.system.world_name);
+	}
+
+	hasSubItemOf(itemRef: ItemRef): boolean {
+		const item = BladesItem.Get(itemRef);
+		if (!item) { return false }
+		return Boolean(this.items.find((i) => i.system.world_name === item.system.world_name));
+	}
+
+	hasActiveSubItemOf(itemRef: ItemRef): boolean {
+		const item = BladesItem.Get(itemRef);
+		if (!item) { return false }
+		return Boolean(this.items.find((i) => !i.hasTag(Tag.System.Archived) && i.system.world_name === item.system.world_name));
 	}
 
 	async addSubItem(itemRef: ItemRef): Promise<void> {

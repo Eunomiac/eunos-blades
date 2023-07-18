@@ -92,9 +92,14 @@
 								.healing-clock {
 									padding: 0 toRem(10px);
 									width: 120px;
+
+									&, * {
 									--clock-frame-size: 80px;
 									--clock-glow-size: calc(var(--clock-frame-size) * 3);
 									--clock-glow-correction: -80px;
+									}
+
+									.clock { position: absolute }
 								}
 
 								.armor-uses {

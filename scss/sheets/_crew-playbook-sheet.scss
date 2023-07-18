@@ -1,8 +1,28 @@
 & {
     min-width: 675px;
+    overflow: hidden;
 
-    .turf-list {
-        @import "../components/turf-block";
-        scale: 0.75;
+    .window-content {
+
+        form {
+            $heights: (40px, 35px, 25px, 20px, 30px);
+            --sheet-top-height: #{calculate-sum($heights)};
+            --sheet-mid-height: 0px;
+
+            // .comp-tags { display: none }
+
+            .sheet-img {
+                left: 0
+            }
+
+            .sheet-root {
+                section.sheet-top {}
+
+                .turf-list {
+                    @import "../components/turf-block";
+                    scale: 0.75;
+                }
+            }
+        }
     }
 }

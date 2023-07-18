@@ -214,6 +214,11 @@ interface BladesActorSystem {
 		quirk: NPCRandomizerData,
 		style: NPCRandomizerData
 	},
+	traits: {
+		1: string,
+		2: string,
+		3: string
+	},
 	rep: ValueMax,
 	tier: ValueMax,
 	deity: string,
