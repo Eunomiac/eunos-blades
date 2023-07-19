@@ -1,8 +1,12 @@
 html, :root {
   @use "sass:math";
+  @use "sass:color";
   scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
   scrollbar-width: thin; }
   html, :root {
+    --clock-glow-size: 50px;
+    --clock-frame-size: 50px;
+    --clock-glow-correction: -175px;
     --color-text-light-highlight: #f0f0e0;
     --color-text-light-heading: #c9c7b8;
     --color-text-light-primary: #b5b3a4;
@@ -64,8 +68,6 @@ html, :root {
     --macro-size: 50px;
     --players-width: 200px;
     --form-field-height: 26px;
-    --font-mono: monospace;
-    --font-awesome: "Font Awesome 6 Pro";
     --font-size-11: 0.6875rem;
     --font-size-12: 0.75rem;
     --font-size-13: 0.8125rem;
@@ -87,10 +89,7 @@ html, :root {
     --color-underline-header: var(--blades-grey);
     --color-border-highlight: var(--blades-gold-bright);
     --color-border-highlight-alt: var(--blades-gold);
-    --font-primary: "Minion Pro", serif;
-    --font-mono: "Pragmata", monospace;
     --size-10px: toRem(10px);
-    /* Expansion (not defined by Foundry) */
     --size-11px: var(--font-size-11);
     --size-12px: var(--font-size-12);
     --size-13px: var(--font-size-13);
@@ -101,7 +100,6 @@ html, :root {
     --size-24px: var(--font-size-24);
     --size-28px: var(--font-size-28);
     --size-30px: toRem(30px);
-    /* Expansion (not defined by Foundry) */
     --size-32px: var(--font-size-32);
     --size-48px: var(--font-size-48);
     --blades-white-bright-nums: 255, 255, 255;
@@ -111,13 +109,12 @@ html, :root {
     --blades-grey-dark-nums: 68, 68, 68;
     --blades-black-nums: 32, 32, 32;
     --blades-black-dark-nums: 0, 0, 0;
-    --blades-gold-bright-nums: 253, 212, 112;
-    --blades-gold-nums: 218, 165, 32;
-    --blades-red-nums: 132, 12, 36;
+    --blades-gold-bright-nums: 255, 231, 92;
+    --blades-gold-nums: 255, 215, 0;
+    --blades-gold-dark-nums: 184, 156, 0;
     --blades-red-bright-nums: 220, 20, 60;
-    color: #fdd470;
-    color: goldenrod;
-    color: #ab9254;
+    --blades-red-nums: 204, 0, 0;
+    --blades-red-dark-nums: 122, 0, 0;
     --blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
     --blades-white: rgba(var(--blades-white-nums), 1);
     --blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
@@ -125,6 +122,12 @@ html, :root {
     --blades-grey-dark: rgba(var(--blades-grey-dark-nums), 1);
     --blades-black: rgba(var(--blades-black-nums), 1);
     --blades-black-dark: rgba(var(--blades-black-dark-nums), 1);
+    --blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
+    --blades-gold: rgba(var(--blades-gold-nums), 1);
+    --blades-gold-dark: rgba(var(--blades-gold-dark-nums), 1);
+    --blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
+    --blades-red: rgba(var(--blades-red-nums), 1);
+    --blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
     --blades-white-fade: rgba(var(--blades-white-nums), 0.5);
     --blades-white-fade-strong: rgba(var(--blades-white-nums), 0.25);
     --blades-white-bright-fade: rgba(var(--blades-white-bright-nums), 0.5);
@@ -133,12 +136,6 @@ html, :root {
     --blades-black-fade-strong: rgba(var(--blades-black-nums), 0.25);
     --blades-black-dark-fade: rgba(var(--blades-black-dark-nums), 0.5);
     --blades-black-dark-fade-strong: rgba(var(--blades-black-dark-nums), 0.25);
-    --blades-gold: rgba(var(--blades-gold-nums), 1);
-    --blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
-    --blades-red: rgba(var(--blades-red-nums), 1);
-    --blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
-    --blades-color-negative: var(--blades-red-bright);
-    --blades-color-positive: var(--blades-gold-bright);
     --color-primary: var(--blades-white-nums);
     --color-background: var(--blades-black-nums);
     --color-background-lightest: var(--blades-grey-nums);
@@ -159,44 +156,95 @@ html, :root {
     --color-shadow-primary: var(--blades-white-bright-nums);
     --color-text-dark-primary: var(--blades-white-nums);
     --color-bg-option: var(--blades-black-nums);
-    --color-default: var(--blades-white);
-    --background-default: var(--blades-dark);
-    --font-default: var(--font-primary);
-    --font-default-small: "Minion Pro Caption";
-    --font-default-narrow: "Minion Pro Cond";
-    --font-default-small-narrow: "Minion Pro Caption Cond";
-    --font-awesome-alt: "Font Awesome 6 Brands";
-    --font-alt: "Historical FellType";
-    --font-alt-smallcaps: "Historical FellType SC";
+    --blades-color-negative: var(--blades-red-bright);
+    --blades-color-positive: var(--blades-gold-bright);
+    --font-primary: "Minion Pro", serif;
+    --font-primary-smallcaps: var(--font-primary);
+    --font-primary-small: "Minion Pro Caption";
+    --font-primary-narrow: "Minion Pro Cond";
+    --font-primary-small-narrow: "Minion Pro Caption Cond";
+    --font-primary-alt: "Historical FellType";
+    --font-primary-alt-smallcaps: "Historical FellType SC";
     --font-emphasis: "Kirsty";
+    --font-emphasis-smallcaps: var(--font-emphasis);
     --font-emphasis-alt: "Ravenscroft";
+    --font-emphasis-alt-smallcaps: var(--font-emphasis-alt);
+    --font-emphasis-narrow: "Fjalla One";
+    --font-mono: "Pragmata", monospace;
+    --font-mono-smallcaps: var(--font-mono);
     --font-decorative: "UglyQua";
     --font-decorative-alt: "IM FELL Double Pica";
     --font-decorative-alt-smallcaps: "IM FELL Double Pica SC";
-    --font-monospace: var(--font-mono);
+    --font-handwritten: "PWSignaturetwo";
+    --font-awesome: "Font Awesome 6 Pro";
+    --font-awesome-alt: "Font Awesome 6 Brands";
+    --line-height-expanded: 1.4;
+    --line-height-primary: 1.2;
+    --line-height-compact: 1;
+    --text-shadow-dark: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
+    --box-shadow-dark: inset 0 0 0.3rem var(--blades-black-dark-fade);
+    --box-shadow-dark-strong: inset 0 0 0.5rem var(--blades-black-dark);
+    --color-default: var(--blades-white);
+    --background-default: var(--blades-dark);
+    --font-default: var(--font-primary);
     --font-size-default: var(--size-14px);
     --font-weight-default: normal;
     --font-style-default: normal;
     --font-variant-default: normal;
-    --line-height-default: 1.2;
-    --line-height-compact: 1;
+    --line-height-default: var(--line-height-primary);
     --text-shadow-default: none;
-    --text-shadow-dark: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
     --box-shadow-default: none;
-    --box-shadow-inset-dark:
-	--text-transform-default: none;
+    --text-transform-default: none;
     --color-heading: var(--blades-white-bright);
-    --background-heading: var(--blades-grey-dark);
+    --color-heading-strong: var(--color-heading);
+    --background-heading: none;
+    --background-heading-strong: var(--blades-grey-dark);
+    --margin-heading: 0;
+    --margin-heading-strong: 0 0 0.5rem 0;
+    --padding-heading: 0;
+    --padding-heading-strong: 0.5rem;
     --font-heading: var(--font-emphasis);
-    --font-heading-alt: var(--font-emphasis-alt);
+    --font-heading-strong: var(--font-heading);
     --font-weight-heading: bold;
-    --text-shadow-heading: var(--text-shadow-dark);
-    --text-transform-heading: uppercase;
+    --font-weight-heading-strong: var(--font-weight-heading);
+    --font-style-heading: var(--font-style-default);
+    --font-style-heading-strong: var(--font-style-heading);
+    --font-variant-heading: var(--font-variant-default);
+    --font-variant-heading-strong: var(--font-variant-heading);
     --line-height-heading: var(--line-height-compact);
+    --line-height-heading-strong: var(--line-height-heading);
+    --text-shadow-heading: var(--text-shadow-dark);
+    --text-shadow-heading-strong: var(--text-shadow-heading);
+    --box-shadow-heading: none;
+    --box-shadow-heading-strong: var(--box-shadow-input);
+    --text-transform-heading: uppercase;
+    --text-transform-heading-strong: var(--text-transform-heading);
+    --border-color-heading: var(--background-heading-strong);
+    --border-color-heading-strong: var(--border-color-heading);
+    --border-width-heading: toRem(2px);
+    --border-width-heading-strong: var(--border-width-heading);
+    --border-style-heading: none none solid none;
+    --border-style-heading-strong: none;
+    --color-input: var(--blades-white-bright);
     --background-input: var(--blades-black-dark-fade-strong);
-    --border-input: none;
-    --box-shadow-input: inset 0 0 0.3rem var(--blades-black-dark-fade);
-    --content-padding: 8px;
+    --margin-input: 0;
+    --padding-input: 0;
+    --font-input: var(--font-primary);
+    --font-number-input: var(--font-emphasis);
+    --font-size-input: var(--font-size-primary);
+    --font-weight-input: var(--font-weight-primary);
+    --font-style-input: var(--font-style-primary);
+    --font-variant-input: var(--font-variant-primary);
+    --line-height-input: var(--line-height-compact);
+    --text-shadow-input: var(--text-shadow-dark);
+    --box-shadow-input: var(--box-shadow-dark);
+    --box-shadow-input-strong: var(--box-shadow-dark-strong);
+    --text-transform-input: var(--text-transform-default);
+    --border-color-heading: transparent;
+    --border-width-heading: 0;
+    --border-style-heading: none;
+    --font-monospace: var(--font-mono);
+    --content-padding: 0px;
     --blades-spacer-pf: 0.0625rem;
     --blades-spacer-xs: 0.125rem;
     --blades-spacer-base: 0.125rem;
@@ -209,8 +257,495 @@ html, :root {
     --blades-spacer-button-sm: 1.25rem;
     --blades-spacer-button-xs: 1.125rem;
     --blades-spacer-sidebar: 17.875rem; }
-  html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
+  html .comp, :root .comp {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
     position: relative;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    z-index: zLevel(); }
+    html .comp.full-width, :root .comp.full-width {
+      width: 100%;
+      -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+      justify-content: space-evenly; }
+    html .comp.portrait-container, :root .comp.portrait-container {
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      width: 100%; }
+    html .comp.comp-labeled-input, :root .comp.comp-labeled-input {
+      gap: 5px;
+      margin-right: 5px; }
+    html .comp .comp-control, html .comp .comp-title, html .comp .portrait-block.comp-body, :root .comp .comp-control, :root .comp .comp-title, :root .comp .portrait-block.comp-body {
+      -webkit-transition: 0.25s;
+      transition: 0.25s;
+      pointer-events: auto;
+      cursor: pointer; }
+    html .comp .comp-label:hover, html .comp .comp-title:hover, :root .comp .comp-label:hover, :root .comp .comp-title:hover {
+      z-index: zLevel(3) !important; }
+      html .comp .comp-label:hover.comp-label, html .comp .comp-title:hover.comp-label, :root .comp .comp-label:hover.comp-label, :root .comp .comp-title:hover.comp-label {
+        color: var(--blades-gold-bright); }
+      html .comp .comp-label:hover.comp-title, html .comp .comp-title:hover.comp-title, :root .comp .comp-label:hover.comp-title, :root .comp .comp-title:hover.comp-title {
+        color: var(--blades-white-bright); }
+    html .comp .comp-label, :root .comp .comp-label {
+      color: var(--blades-white-bright);
+      font-size: toRem(12px);
+      line-height: toRem(12px);
+      z-index: zLevel(3);
+      -webkit-box-flex: 0.5;
+      -ms-flex-positive: 0.5;
+      flex-grow: 0.5; }
+      html .comp .comp-label.comp-prompt, :root .comp .comp-label.comp-prompt {
+        font-size: toRem(16px);
+        line-height: 1.1;
+        font-family: var(--font-emphasis);
+        color: var(--blades-gold);
+        text-transform: uppercase;
+        text-align: center; }
+        html .comp .comp-label.comp-prompt .sur-title, :root .comp .comp-label.comp-prompt .sur-title {
+          display: block;
+          font-size: toRem(14px);
+          text-transform: lowercase;
+          font-variant: small-caps;
+          text-shadow: none;
+          text-align: center;
+          margin-top: 10px; }
+        html .comp .comp-label.comp-prompt .main-title, :root .comp .comp-label.comp-prompt .main-title {
+          display: block;
+          color: var(--blades-white);
+          text-align: center; }
+    html .comp .comp-control, :root .comp .comp-control {
+      z-index: zLevel(3);
+      padding: 0;
+      font-weight: bold;
+      color: var(--comp-control-color);
+      text-shadow: 0 0 toRem(3px) var(--comp-control-shadow-color);
+      display: block; }
+      html .comp .comp-control:hover, :root .comp .comp-control:hover {
+        -webkit-transform: scale(1.5);
+        -ms-transform: scale(1.5);
+        transform: scale(1.5); }
+      html .comp .comp-control.comp-button, :root .comp .comp-control.comp-button {
+        opacity: 0.5; }
+        html .comp .comp-control.comp-button.comp-delete, :root .comp .comp-control.comp-button.comp-delete {
+          --comp-control-color: var(--blades-white-bright);
+          --comp-control-hover-color: var(--blades-red-bright);
+          --comp-control-shadow-color: transparent;
+          --comp-control-hover-shadow-color: var(--blades-black-dark);
+          position: absolute; }
+        html .comp .comp-control.comp-button.comp-add, :root .comp .comp-control.comp-button.comp-add {
+          --comp-control-color: var(--blades-black-dark);
+          --comp-control-hover-color: var(--blades-white-bright);
+          --comp-control-shadow-color: var(--blades-grey);
+          --comp-control-hover-shadow-color: var(--blades-black-dark);
+          margin-left: toRem(10px); }
+          html .comp .comp-control.comp-button.comp-add i, :root .comp .comp-control.comp-button.comp-add i {
+            line-height: toRem(24px); }
+        html .comp .comp-control.comp-button:hover, :root .comp .comp-control.comp-button:hover {
+          opacity: 1;
+          color: var(--comp-control-hover-color);
+          text-shadow: 0 0 toRem(3px) var(--comp-control-hover-shadow-color); }
+    html .comp .comp-body, :root .comp .comp-body {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+      flex-grow: 1;
+      position: relative; }
+      html .comp .comp-body .comp-title, :root .comp .comp-body .comp-title {
+        z-index: zLevel(); }
+      html .comp .comp-body h1, html .comp .comp-body h2, html .comp .comp-body h3, html .comp .comp-body h4, html .comp .comp-body p, html .comp .comp-body blockquote, html .comp .comp-body table, :root .comp .comp-body h1, :root .comp .comp-body h2, :root .comp .comp-body h3, :root .comp .comp-body h4, :root .comp .comp-body p, :root .comp .comp-body blockquote, :root .comp .comp-body table {
+        margin: 0;
+        padding: 0; }
+    html .comp .comp-toggle, :root .comp .comp-toggle {
+      font-family: var(--font-emphasis);
+      text-transform: uppercase;
+      font-size: toRem(16px);
+      line-height: toRem(20px); }
+      html .comp .comp-toggle.comp-toggle-red, :root .comp .comp-toggle.comp-toggle-red {
+        color: var(--blades-red-bright);
+        font-weight: bold;
+        text-shadow: var(--text-shadow-dark); }
+        html .comp .comp-toggle.comp-toggle-red:hover, :root .comp .comp-toggle.comp-toggle-red:hover {
+          color: var(--blades-red); }
+      html .comp .comp-toggle.comp-toggle-grey, :root .comp .comp-toggle.comp-toggle-grey {
+        color: var(--blades-grey);
+        -webkit-filter: blur(2px);
+        filter: blur(2px); }
+        html .comp .comp-toggle.comp-toggle-grey:hover, :root .comp .comp-toggle.comp-toggle-grey:hover {
+          -webkit-filter: blur(0px);
+          filter: blur(0px);
+          color: var(--blades-white); }
+    html .comp .number-circle, :root .comp .number-circle {
+      --number-circle-size: toRem(20px); }
+    html .comp .comp-number-input, :root .comp .comp-number-input {
+      width: toRem(26px);
+      text-align: center; }
+    html .comp .tooltip, :root .comp .tooltip {
+      opacity: 0;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+      align-items: stretch;
+      color: var(--blades-white);
+      background: var(--blades-black-dark);
+      width: clamp(300px, 400px, 500px);
+      padding: toRem(6px);
+      border: toRem(1px) solid var(--blades-grey);
+      border-radius: toRem(3px);
+      -webkit-hyphens: auto;
+      -ms-hyphens: auto;
+      hyphens: auto;
+      text-align: justify;
+      position: absolute;
+      z-index: zLevel(4);
+      pointer-events: none; }
+      html .comp .tooltip.tooltip-left, :root .comp .tooltip.tooltip-left {
+        width: 500px; }
+    html .comp.comp-vertical, :root .comp.comp-vertical {
+      --comp-img-scale: 2;
+      --comp-name-size: toRem(16px);
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      pointer-events: auto;
+      --main-title-color: #AAA; }
+      html .comp.comp-vertical .comp-button.comp-delete, :root .comp.comp-vertical .comp-button.comp-delete {
+        left: 75%;
+        top: 0%; }
+      html .comp.comp-vertical > .comp-label, :root .comp.comp-vertical > .comp-label {
+        text-align: center; }
+        html .comp.comp-vertical > .comp-label.comp-prompt, :root .comp.comp-vertical > .comp-label.comp-prompt {
+          height: toRem(12px);
+          margin-top: toRem(-10px); }
+      html .comp.comp-vertical .comp-title, :root .comp.comp-vertical .comp-title {
+        text-align: center;
+        font-family: var(--font-emphasis);
+        font-size: var(--comp-name-size);
+        text-transform: uppercase;
+        padding-top: 0px; }
+      html .comp.comp-vertical .comp-body, :root .comp.comp-vertical .comp-body {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-height: toRem(48px);
+        width: 100%; }
+        html .comp.comp-vertical .comp-body > img, :root .comp.comp-vertical .comp-body > img {
+          position: absolute;
+          -webkit-transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+          -ms-transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+          transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+          opacity: 0.5;
+          -webkit-filter: blur(0.5px);
+          filter: blur(0.5px);
+          top: 40%;
+          left: 50%;
+          height: 100%;
+          z-index: zLevel(-2); }
+        html .comp.comp-vertical .comp-body .comp-body-text, :root .comp.comp-vertical .comp-body .comp-body-text {
+          display: none; }
+      html .comp.comp-vertical.portrait-block, :root .comp.comp-vertical.portrait-block {
+        height: 100%;
+        -ms-flex-preferred-size: toRem(80px);
+        flex-basis: toRem(80px);
+        min-width: 90px;
+        margin: 10px 0; }
+        html .comp.comp-vertical.portrait-block .comp-button.comp-delete, :root .comp.comp-vertical.portrait-block .comp-button.comp-delete {
+          left: unset;
+          right: 10%;
+          top: -10px; }
+        html .comp.comp-vertical.portrait-block .comp-body, :root .comp.comp-vertical.portrait-block .comp-body {
+          -webkit-filter: drop-shadow(0 0 toRem(2px) var(--blades-black-dark));
+          filter: drop-shadow(0 0 toRem(2px) var(--blades-black-dark));
+          width: 100%; }
+          html .comp.comp-vertical.portrait-block .comp-body .comp-title, :root .comp.comp-vertical.portrait-block .comp-body .comp-title {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%) scale(70%);
+            -ms-transform: translate(-50%, -50%) scale(70%);
+            transform: translate(-50%, -50%) scale(70%);
+            color: var(--blades-grey); }
+          html .comp.comp-vertical.portrait-block .comp-body .comp-img, :root .comp.comp-vertical.portrait-block .comp-body .comp-img {
+            --comp-img-scale: 1.5;
+            height: 100%;
+            opacity: 1;
+            -webkit-filter: none;
+            filter: none;
+            -webkit-clip-path: ellipse(50% 50% at 50% 50%);
+            clip-path: ellipse(50% 50% at 50% 50%);
+            z-index: 1;
+            position: absolute;
+            top: 25%; }
+      html .comp.comp-vertical.comp-playbook, :root .comp.comp-vertical.comp-playbook {
+        --comp-img-scaleX: -2;
+        --comp-img-scaleY: 2;
+        --comp-name-size: toRem(42px);
+        position: relative;
+        top: toRem(20px);
+        margin-bottom: toRem(-68px);
+        z-index: zLevel(-2); }
+        html .comp.comp-vertical.comp-playbook .comp-button.comp-delete, :root .comp.comp-vertical.comp-playbook .comp-button.comp-delete {
+          left: unset;
+          right: toRem(5px);
+          top: -10px; }
+        html .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add, :root .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add {
+          display: none; }
+        html .comp.comp-vertical.comp-playbook .comp-body img, :root .comp.comp-vertical.comp-playbook .comp-body img {
+          height: toRem(120px);
+          width: auto;
+          opacity: 1;
+          -webkit-filter: blur(1px);
+          filter: blur(1px);
+          position: absolute; }
+        html .comp.comp-vertical.comp-playbook .comp-body .comp-title, :root .comp.comp-vertical.comp-playbook .comp-body .comp-title {
+          width: 100%;
+          height: 100%;
+          font-family: var(--font-emphasis-alt);
+          color: var(--blades-white-bright);
+          text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
+          font-size: toRem(70px);
+          text-transform: lowercase;
+          text-align: right;
+          padding-right: toRem(4px);
+          margin-bottom: toRem(45px);
+          margin-top: toRem(15px); }
+    html .comp.comp-horizontal, :root .comp.comp-horizontal {
+      -webkit-box-orient: horizontal;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+      flex-direction: row;
+      -webkit-box-pack: start;
+      -ms-flex-pack: start;
+      justify-content: flex-start;
+      -webkit-box-align: start;
+      -ms-flex-align: start;
+      align-items: flex-start; }
+      html .comp.comp-horizontal .comp-button.comp-delete, :root .comp.comp-horizontal .comp-button.comp-delete {
+        left: toRem(5px);
+        top: unset;
+        bottom: 0; }
+      html .comp.comp-horizontal > .comp-label, :root .comp.comp-horizontal > .comp-label {
+        text-align: right;
+        font-size: toRem(14px);
+        line-height: toRem(18px);
+        margin: 0; }
+        html .comp.comp-horizontal > .comp-label.comp-input-label, :root .comp.comp-horizontal > .comp-label.comp-input-label {
+          line-height: toRem(26px);
+          margin: 0 5px 0 10px; }
+      html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start; }
+      html .comp.comp-horizontal.comp-desc-trait, :root .comp.comp-horizontal.comp-desc-trait {
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start;
+        padding: toRem(5px) 0; }
+        html .comp.comp-horizontal.comp-desc-trait:first-of-type, :root .comp.comp-horizontal.comp-desc-trait:first-of-type {
+          margin-top: toRem(-5px); }
+        html .comp.comp-horizontal.comp-desc-trait:not(:first-of-type), :root .comp.comp-horizontal.comp-desc-trait:not(:first-of-type) {
+          border-top: 1px solid var(--blades-white); }
+        html .comp.comp-horizontal.comp-desc-trait .comp-label, :root .comp.comp-horizontal.comp-desc-trait .comp-label {
+          max-width: 0px; }
+        html .comp.comp-horizontal.comp-desc-trait .comp-body, :root .comp.comp-horizontal.comp-desc-trait .comp-body {
+          min-height: toRem(50px); }
+          html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img {
+            position: absolute;
+            height: 50px;
+            -webkit-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: toRem(50px);
+            -webkit-filter: blur(1px);
+            filter: blur(1px);
+            opacity: 0.5; }
+          html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title {
+            position: relative;
+            width: toRem(100px);
+            -ms-flex-negative: 0;
+            flex-shrink: 0;
+            -webkit-box-flex: 0;
+            -ms-flex-positive: 0;
+            flex-grow: 0;
+            min-height: toRem(40px);
+            -ms-flex-item-align: start;
+            align-self: flex-start;
+            color: var(--blades-white-bright);
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            -webkit-box-pack: start;
+            -ms-flex-pack: start;
+            justify-content: flex-start;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            font-family: var(--font-emphasis);
+            font-size: toRem(14px);
+            padding: 0 toRem(7px);
+            text-align: center;
+            z-index: 1;
+            line-height: var(--line-height-default); }
+          html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline {
+            position: relative;
+            -webkit-transform: translate(-50%, 0);
+            -ms-transform: translate(-50%, 0);
+            transform: translate(-50%, 0);
+            left: 50%;
+            bottom: 0; }
+            html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label {
+              margin-right: 5px;
+              font-weight: bold; }
+          html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
+            font-family: "Minion Pro Caption Cond";
+            -webkit-hyphens: auto;
+            -ms-hyphens: auto;
+            hyphens: auto;
+            text-align: justify;
+            padding: 0 toRem(5px) 0 0;
+            line-height: var(--line-height-compact);
+            -webkit-box-flex: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1; }
+            html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type), :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type) {
+              margin-bottom: 6px; }
+    html .comp.comp-teeth.comp-horizontal .dotline, :root .comp.comp-teeth.comp-horizontal .dotline {
+      padding-left: toRem(4px);
+      --dotline-dot-sizeX: toRem(18px);
+      --dotline-dot-spacing: toRem(4px); }
+      html .comp.comp-teeth.comp-horizontal .dotline .dot, :root .comp.comp-teeth.comp-horizontal .dotline .dot {
+        -ms-flex-negative: 1;
+        flex-shrink: 1; }
+    html .comp.comp-teeth.comp-horizontal.comp-xp, :root .comp.comp-teeth.comp-horizontal.comp-xp {
+      z-index: zLevel(1); }
+      html .comp.comp-teeth.comp-horizontal.comp-xp .comp-label, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-label {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1; }
+      html .comp.comp-teeth.comp-horizontal.comp-xp .comp-body, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body {
+        -webkit-box-pack: end;
+        -ms-flex-pack: end;
+        justify-content: flex-end; }
+        html .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline {
+          --dotline-dot-spacing: toRem(2px);
+          --dotline-horiz-align: flex-end;
+          --frame-color: var(--blades-black);
+          --fill-color-full: var(--blades-gold-bright);
+          --fill-color-empty: rgba(0, 0, 0);
+          --half-color-empty: var(--blades-gold-dark); }
+      html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook {
+        position: absolute;
+        right: 0; }
+        html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline {
+          --dotline-dot-sizeX: toRem(18px); }
+          html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot {
+            -webkit-transform-origin: top;
+            -ms-transform-origin: top;
+            transform-origin: top;
+            -webkit-transition: 0.25s;
+            transition: 0.25s;
+            -webkit-transform: scaleY(1);
+            -ms-transform: scaleY(1);
+            transform: scaleY(1); }
+            html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
+              -webkit-transform: scaleY(0.5);
+              -ms-transform: scaleY(0.5);
+              transform: scaleY(0.5); }
+    html .comp.comp-teeth.comp-vertical, :root .comp.comp-teeth.comp-vertical {
+      -webkit-box-pack: start;
+      -ms-flex-pack: start;
+      justify-content: flex-start;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      height: 100%;
+      margin: 0;
+      -webkit-box-flex: 0.5;
+      -ms-flex-positive: 0.5;
+      flex-grow: 0.5; }
+      html .comp.comp-teeth.comp-vertical .comp-body, :root .comp.comp-teeth.comp-vertical .comp-body {
+        top: toRem(-5px); }
+      html .comp.comp-teeth.comp-vertical .dotline-label, :root .comp.comp-teeth.comp-vertical .dotline-label {
+        min-width: toRem(90px);
+        text-align: center;
+        margin-left: toRem(20px); }
+      html .comp.comp-teeth.comp-vertical .dotline, :root .comp.comp-teeth.comp-vertical .dotline {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        margin-top: -50%;
+        margin-bottom: -50%;
+        --dotline-dot-sizeX: toRem(16px);
+        --dotline-dot-spacing: toRem(4px); }
+    html .comp.comp-coins, html .comp.comp-stash, :root .comp.comp-coins, :root .comp.comp-stash {
+      margin-bottom: 4px;
+      pointer-events: none; }
+      html .comp.comp-coins.comp-coins, html .comp.comp-stash.comp-coins, :root .comp.comp-coins.comp-coins, :root .comp.comp-stash.comp-coins {
+        margin: 0px;
+        -webkit-box-pack: space-evenly;
+        -ms-flex-pack: space-evenly;
+        justify-content: space-evenly; }
+        html .comp.comp-coins.comp-coins .comp-body, html .comp.comp-stash.comp-coins .comp-body, :root .comp.comp-coins.comp-coins .comp-body, :root .comp.comp-stash.comp-coins .comp-body {
+          -ms-flex-negative: 0.5;
+          flex-shrink: 0.5;
+          min-height: unset;
+          margin-top: 5px; }
+      html .comp.comp-coins .dotline, html .comp.comp-stash .dotline, :root .comp.comp-coins .dotline, :root .comp.comp-stash .dotline {
+        --dotline-dot-size: toRem(18px);
+        --dotline-dot-spacing: -2px; }
+        html .comp.comp-coins .dotline .dot.empty-dot, html .comp.comp-stash .dotline .dot.empty-dot, :root .comp.comp-coins .dotline .dot.empty-dot, :root .comp.comp-stash .dotline .dot.empty-dot {
+          -webkit-filter: saturate(0);
+          filter: saturate(0);
+          opacity: 0.5; }
+        html .comp.comp-coins .dotline .dot.full-dot, html .comp.comp-stash .dotline .dot.full-dot, :root .comp.comp-coins .dotline .dot.full-dot, :root .comp.comp-stash .dotline .dot.full-dot {
+          -webkit-filter: brightness(0.8) saturate(0.75);
+          filter: brightness(0.8) saturate(0.75); }
+      html .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
+        margin-left: toRem(5px); }
+      html .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
+        margin-left: toRem(10px); }
+  html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
+    position: absolute;
     height: 1.5rem;
     width: 1.5rem;
     line-height: 1.5rem;
@@ -223,6 +758,7 @@ html, :root {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
+    right: 0;
     text-shadow: none; }
     html .button-icon i, html .toggle-icon i, :root .button-icon i, :root .toggle-icon i {
       height: 1.5rem;
@@ -259,9 +795,8 @@ html, :root {
       border: none;
       opacity: 0;
       position: absolute;
-      -webkit-transition: 0.25;
-      -o-transition: 0.25;
-      transition: 0.25; }
+      -webkit-transition: 0.25s;
+      transition: 0.25s; }
       html .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, html .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off {
         display: none; }
       html .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, html .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
@@ -273,6 +808,98 @@ html, :root {
       opacity: 1; }
     html .button-icon:hover .tooltip, html .toggle-icon:hover .tooltip, :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip {
       display: block; }
+  html .dotline, :root .dotline {
+    --dotline-zero-dot-size: toRem(14px);
+    --dotline-dot-size: toRem(14px);
+    --dotline-dot-spacing: toRem(3px);
+    --dotline-horiz-align: flex-start;
+    --dotline-vert-align: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-box-pack: var(--dotline-horiz-align);
+    -ms-flex-pack: var(--dotline-horiz-align);
+    justify-content: var(--dotline-horiz-align);
+    -webkit-box-align: var(--dotline-vert-align);
+    -ms-flex-align: var(--dotline-vert-align);
+    align-items: var(--dotline-vert-align);
+    position: relative; }
+    html .dotline.centered, :root .dotline.centered {
+      --dotline-horiz-align: center; }
+    html .dotline.locked .dot, :root .dotline.locked .dot {
+      pointer-events: none;
+      cursor: default; }
+    html .dotline.dotline-right, :root .dotline.dotline-right {
+      margin-left: auto;
+      margin-right: toRem(20px); }
+    html .dotline .dotline-label, :root .dotline .dotline-label {
+      font-family: var(--font-emphasis);
+      font-size: toRem(14px);
+      color: var(--blades-white);
+      text-transform: uppercase;
+      line-height: toRem(14px);
+      margin-right: toRem(5px); }
+    html .dotline .dot, :root .dotline .dot {
+      --dot-frame-color: var(--frame-color, var(--blades-white));
+      --dot-frame-color-empty: var(--frame-color-empty, var(--dot-frame-color));
+      --dot-frame-color-full: var(--frame-color-full, var(--dot-frame-color));
+      --dot-fill-color-empty: var(--fill-color-empty, transparent);
+      --dot-fill-color-full: var(--fill-color-full, var(--blades-white-bright));
+      --dot-half-color-empty: var(--half-color-empty, var(--dot-frame-color));
+      --dot-half-color-full: var(--half-color-full, var(--dot-frame-color));
+      height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
+      width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
+      -webkit-box-flex: 0;
+      -ms-flex-positive: 0;
+      flex-grow: 0;
+      -ms-flex-negative: 0;
+      flex-shrink: 0;
+      margin: 0 var(--dotline-dot-spacing) 0 0;
+      pointer-events: auto;
+      cursor: pointer;
+      position: relative; }
+      html .dotline .dot:last-of-type, :root .dotline .dot:last-of-type {
+        margin: 0; }
+      html .dotline .dot .img-main, html .dotline .dot .img-hover, :root .dotline .dot .img-main, :root .dotline .dot .img-hover {
+        display: block;
+        height: 100%;
+        width: 100%;
+        -webkit-filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black);
+        filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
+        html .dotline .dot .img-main.img-hover, html .dotline .dot .img-hover.img-hover, :root .dotline .dot .img-main.img-hover, :root .dotline .dot .img-hover.img-hover {
+          display: none; }
+      html .dotline .dot.svg-dot, :root .dotline .dot.svg-dot {
+        height: auto; }
+        html .dotline .dot.svg-dot svg, :root .dotline .dot.svg-dot svg {
+          width: 100%;
+          height: auto;
+          max-height: var(--dotline-dot-sizeY, unset); }
+        html .dotline .dot.svg-dot.full-dot svg .full, :root .dotline .dot.svg-dot.full-dot svg .full {
+          fill: var(--current-fill-color, var(--dot-fill-color-full)); }
+        html .dotline .dot.svg-dot.full-dot svg .frame, :root .dotline .dot.svg-dot.full-dot svg .frame {
+          fill: var(--current-frame-color, var(--dot-frame-color-full)); }
+        html .dotline .dot.svg-dot.full-dot svg .half, :root .dotline .dot.svg-dot.full-dot svg .half {
+          fill: var(--current-half-color, var(--dot-half-color-full)); }
+        html .dotline .dot.svg-dot.empty-dot svg .full, :root .dotline .dot.svg-dot.empty-dot svg .full {
+          fill: var(--current-fill-color, var(--dot-fill-color-empty)); }
+        html .dotline .dot.svg-dot.empty-dot svg .frame, :root .dotline .dot.svg-dot.empty-dot svg .frame {
+          fill: var(--current-frame-color, var(--dot-frame-color-empty)); }
+        html .dotline .dot.svg-dot.empty-dot svg .half, :root .dotline .dot.svg-dot.empty-dot svg .half {
+          fill: var(--current-half-color, var(--dot-half-color-empty)); }
+      html .dotline .dot:hover .img-main, :root .dotline .dot:hover .img-main {
+        opacity: 0.5; }
+      html .dotline .dot:hover .img-hover, :root .dotline .dot:hover .img-hover {
+        display: block; }
+      html .dotline .dot:hover .img-hover + .img-main, :root .dotline .dot:hover .img-hover + .img-main {
+        display: none; }
+      html .dotline .dot:hover.svg-dot, :root .dotline .dot:hover.svg-dot {
+        opacity: 0.5; }
   html, :root {
     margin: 0;
     padding: 0;
@@ -306,31 +933,48 @@ html, :root {
       font-family: var(--font-awesome); }
     html i.fab, :root i.fab {
       font-family: var(--font-awesome-alt); }
-    html h1, html h2, html h3, html h4, :root h1, :root h2, :root h3, :root h4 {
+    html h1, html h2, :root h1, :root h2 {
+      margin: var(--margin-heading-strong);
+      padding: var(--padding-heading-strong);
+      color: var(--color-heading-strong);
+      background: var(--background-heading-strong);
+      font-family: var(--font-heading-strong);
+      font-weight: var(--font-weight-heading-strong);
+      font-style: var(--font-style-heading-strong);
+      font-variant: var(--font-variant-heading-strong);
+      line-height: var(--line-height-heading-strong);
+      text-shadow: var(--text-shadow-heading-strong);
+      text-transform: var(--text-transform-heading-strong);
+      border-color: var(--border-color-heading-strong);
+      border-style: var(--border-style-heading-strong);
+      border-width: var(--border-width-heading-strong);
+      -webkit-box-shadow: var(--box-shadow-heading-strong);
+      box-shadow: var(--box-shadow-heading-strong); }
+    html h3, html h4, :root h3, :root h4 {
+      margin: var(--margin-heading);
+      padding: var(--padding-heading);
       color: var(--color-heading);
+      background: var(--background-heading);
       font-family: var(--font-heading);
       font-weight: var(--font-weight-heading);
+      font-style: var(--font-style-heading);
+      font-variant: var(--font-variant-heading);
       line-height: var(--line-height-heading);
       text-shadow: var(--text-shadow-heading);
-      border: none;
-      padding: 0;
-      margin: 0 0 0.5rem 0; }
+      text-transform: var(--text-transform-heading);
+      border-color: var(--border-color-heading);
+      border-style: var(--border-style-heading);
+      border-width: var(--border-width-heading);
+      -webkit-box-shadow: var(--box-shadow-heading);
+      box-shadow: var(--box-shadow-heading); }
     html h1, :root h1 {
-      background: var(--background-heading);
-      font-size: var(--size-20px);
-      padding: 0.5rem;
-      text-transform: uppercase; }
-    html h2, :root h2 {
-      background: var(--background-heading);
-      font-size: var(--size-18px);
-      padding: 0.5rem;
-      text-transform: uppercase; }
-    html h3, :root h3 {
-      font-size: var(--size-18px);
-      border-bottom: 2px solid var(--background-heading); }
+      font-size: 1.25rem; }
+    html h2,
+    html h3, :root h2,
+    :root h3 {
+      font-size: 1.125rem; }
     html h4, :root h4 {
-      font-size: var(--size-16px);
-      border-bottom: 1px solid var(--background-heading); }
+      font-size: 1rem; }
     html select,
     html input,
     html option,
@@ -338,31 +982,45 @@ html, :root {
     :root input,
     :root option,
     :root textarea {
+      margin: var(--margin-input);
+      padding: var(--padding-input);
+      color: var(--color-input);
       background: var(--background-input);
-      border: var(--border-input);
+      font-family: var(--font-input);
+      font-size: var(--font-size-input);
+      font-weight: var(--font-weight-input);
+      font-style: var(--font-style-input);
+      font-variant: var(--font-variant-input);
+      line-height: var(--line-height-input);
+      text-shadow: var(--text-shadow-input);
+      text-transform: var(--text-transform-input);
+      border-color: var(--border-color-input);
+      border-style: var(--border-style-input);
+      border-width: var(--border-width-input);
       -webkit-box-shadow: var(--box-shadow-input);
       box-shadow: var(--box-shadow-input); }
-      html select[type="number"], html select[data-type="number"], html select[data-type="number"] option,
+      html select[type="number"], html select[data-dtype="number"],
+      html select[data-dtype="number"] option,
       html input[type="number"],
-      html input[data-type="number"],
-      html input[data-type="number"] option,
+      html input[data-dtype="number"],
+      html input[data-dtype="number"] option,
       html option[type="number"],
-      html option[data-type="number"],
-      html option[data-type="number"] option,
+      html option[data-dtype="number"],
+      html option[data-dtype="number"] option,
       html textarea[type="number"],
-      html textarea[data-type="number"],
-      html textarea[data-type="number"] option, :root select[type="number"], :root select[data-type="number"], :root select[data-type="number"] option,
+      html textarea[data-dtype="number"],
+      html textarea[data-dtype="number"] option, :root select[type="number"], :root select[data-dtype="number"],
+      :root select[data-dtype="number"] option,
       :root input[type="number"],
-      :root input[data-type="number"],
-      :root input[data-type="number"] option,
+      :root input[data-dtype="number"],
+      :root input[data-dtype="number"] option,
       :root option[type="number"],
-      :root option[data-type="number"],
-      :root option[data-type="number"] option,
+      :root option[data-dtype="number"],
+      :root option[data-dtype="number"] option,
       :root textarea[type="number"],
-      :root textarea[data-type="number"],
-      :root textarea[data-type="number"] option {
-        text-align: right;
-        font-family: var(--font-emphasis); }
+      :root textarea[data-dtype="number"],
+      :root textarea[data-dtype="number"] option {
+        text-align: right; }
       html select option,
       html input option,
       html option option,
@@ -372,94 +1030,748 @@ html, :root {
       :root textarea option {
         color: var(--blades-white);
         background: var(--blades-black); }
-    html p, :root p {
+    html p + p, :root p + p {
       margin: 0.5rem 0;
       min-height: 1rem; }
+    html .window-header, :root .window-header {
+      background: var(--blades-black-dark);
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      padding: 0 0 0 20px; }
+      html .window-header > *, :root .window-header > * {
+        -ms-flex-preferred-size: auto;
+        flex-basis: auto;
+        -ms-flex-negative: 0.5;
+        flex-shrink: 0.5; }
+      html .window-header .window-title, :root .window-header .window-title {
+        border: none;
+        margin: 0;
+        line-height: 1.2;
+        -ms-flex-negative: 0.5;
+        flex-shrink: 0.5; }
+      html .window-header a, :root .window-header a {
+        margin: 0 0.3125rem; }
+        html .window-header a i, :root .window-header a i {
+          color: var(--blades-white-bright); }
+      html .window-header .close, :root .window-header .close {
+        font-size: 0;
+        margin: 0;
+        -webkit-transform: scale(1.5);
+        -ms-transform: scale(1.5);
+        transform: scale(1.5); }
+        html .window-header .close i, :root .window-header .close i {
+          font-size: initial;
+          font-weight: bold;
+          color: var(--blades-white-bright);
+          font-size: 1.25rem;
+          line-height: 1;
+          margin-top: -0.0625rem;
+          font-family: Kirsty;
+          -webkit-transform-origin: center center;
+          -ms-transform-origin: center center;
+          transform-origin: center center;
+          -webkit-transform: scaleY(0.75);
+          -ms-transform: scaleY(0.75);
+          transform: scaleY(0.75); }
+          html .window-header .close i::before, :root .window-header .close i::before {
+            content: "X";
+            padding-top: 0.25rem; }
+    html .window-content .compendium h1, html .window-content .compendium h2, html .window-content .compendium h3, html .window-content .compendium h4, html .window-content .directory h1, html .window-content .directory h2, html .window-content .directory h3, html .window-content .directory h4, :root .window-content .compendium h1, :root .window-content .compendium h2, :root .window-content .compendium h3, :root .window-content .compendium h4, :root .window-content .directory h1, :root .window-content .directory h2, :root .window-content .directory h3, :root .window-content .directory h4 {
+      margin: 0;
+      border: 0;
+      padding: 0; }
+    html .comp, :root .comp {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+      position: relative;
+      -webkit-box-pack: start;
+      -ms-flex-pack: start;
+      justify-content: flex-start;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      z-index: 2; }
+      html .comp.full-width, :root .comp.full-width {
+        width: 100%;
+        -webkit-box-pack: space-evenly;
+        -ms-flex-pack: space-evenly;
+        justify-content: space-evenly; }
+      html .comp.portrait-container, :root .comp.portrait-container {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        width: 100%; }
+      html .comp.comp-labeled-input, :root .comp.comp-labeled-input {
+        gap: 5px;
+        margin-right: 5px; }
+      html .comp .comp-control, html .comp .comp-title, html .comp .portrait-block.comp-body, :root .comp .comp-control, :root .comp .comp-title, :root .comp .portrait-block.comp-body {
+        -webkit-transition: 0.25s;
+        transition: 0.25s;
+        pointer-events: auto;
+        cursor: pointer; }
+      html .comp .comp-label:hover, html .comp .comp-title:hover, :root .comp .comp-label:hover, :root .comp .comp-title:hover {
+        z-index: 5 !important; }
+        html .comp .comp-label:hover.comp-label, html .comp .comp-title:hover.comp-label, :root .comp .comp-label:hover.comp-label, :root .comp .comp-title:hover.comp-label {
+          color: var(--blades-gold-bright); }
+        html .comp .comp-label:hover.comp-title, html .comp .comp-title:hover.comp-title, :root .comp .comp-label:hover.comp-title, :root .comp .comp-title:hover.comp-title {
+          color: var(--blades-white-bright); }
+      html .comp .comp-label, :root .comp .comp-label {
+        color: var(--blades-white-bright);
+        font-size: 0.75rem;
+        line-height: 0.75rem;
+        z-index: 5;
+        -webkit-box-flex: 0.5;
+        -ms-flex-positive: 0.5;
+        flex-grow: 0.5; }
+        html .comp .comp-label.comp-prompt, :root .comp .comp-label.comp-prompt {
+          font-size: 1rem;
+          line-height: 1.1;
+          font-family: var(--font-emphasis);
+          color: var(--blades-gold);
+          text-transform: uppercase;
+          text-align: center; }
+          html .comp .comp-label.comp-prompt .sur-title, :root .comp .comp-label.comp-prompt .sur-title {
+            display: block;
+            font-size: 0.875rem;
+            text-transform: lowercase;
+            font-variant: small-caps;
+            text-shadow: none;
+            text-align: center;
+            margin-top: 10px; }
+          html .comp .comp-label.comp-prompt .main-title, :root .comp .comp-label.comp-prompt .main-title {
+            display: block;
+            color: var(--blades-white);
+            text-align: center; }
+      html .comp .comp-control, :root .comp .comp-control {
+        z-index: 5;
+        padding: 0;
+        font-weight: bold;
+        color: var(--comp-control-color);
+        text-shadow: 0 0 0.1875rem var(--comp-control-shadow-color);
+        display: block; }
+        html .comp .comp-control:hover, :root .comp .comp-control:hover {
+          -webkit-transform: scale(1.5);
+          -ms-transform: scale(1.5);
+          transform: scale(1.5); }
+        html .comp .comp-control.comp-button, :root .comp .comp-control.comp-button {
+          opacity: 0.5; }
+          html .comp .comp-control.comp-button.comp-delete, :root .comp .comp-control.comp-button.comp-delete {
+            --comp-control-color: var(--blades-white-bright);
+            --comp-control-hover-color: var(--blades-red-bright);
+            --comp-control-shadow-color: transparent;
+            --comp-control-hover-shadow-color: var(--blades-black-dark);
+            position: absolute; }
+          html .comp .comp-control.comp-button.comp-add, :root .comp .comp-control.comp-button.comp-add {
+            --comp-control-color: var(--blades-black-dark);
+            --comp-control-hover-color: var(--blades-white-bright);
+            --comp-control-shadow-color: var(--blades-grey);
+            --comp-control-hover-shadow-color: var(--blades-black-dark);
+            margin-left: 0.625rem; }
+            html .comp .comp-control.comp-button.comp-add i, :root .comp .comp-control.comp-button.comp-add i {
+              line-height: 1.5rem; }
+          html .comp .comp-control.comp-button:hover, :root .comp .comp-control.comp-button:hover {
+            opacity: 1;
+            color: var(--comp-control-hover-color);
+            text-shadow: 0 0 0.1875rem var(--comp-control-hover-shadow-color); }
+      html .comp .comp-body, :root .comp .comp-body {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        position: relative; }
+        html .comp .comp-body .comp-title, :root .comp .comp-body .comp-title {
+          z-index: 2; }
+        html .comp .comp-body h1, html .comp .comp-body h2, html .comp .comp-body h3, html .comp .comp-body h4, html .comp .comp-body p, html .comp .comp-body blockquote, html .comp .comp-body table, :root .comp .comp-body h1, :root .comp .comp-body h2, :root .comp .comp-body h3, :root .comp .comp-body h4, :root .comp .comp-body p, :root .comp .comp-body blockquote, :root .comp .comp-body table {
+          margin: 0;
+          padding: 0; }
+      html .comp .comp-toggle, :root .comp .comp-toggle {
+        font-family: var(--font-emphasis);
+        text-transform: uppercase;
+        font-size: 1rem;
+        line-height: 1.25rem; }
+        html .comp .comp-toggle.comp-toggle-red, :root .comp .comp-toggle.comp-toggle-red {
+          color: var(--blades-red-bright);
+          font-weight: bold;
+          text-shadow: var(--text-shadow-dark); }
+          html .comp .comp-toggle.comp-toggle-red:hover, :root .comp .comp-toggle.comp-toggle-red:hover {
+            color: var(--blades-red); }
+        html .comp .comp-toggle.comp-toggle-grey, :root .comp .comp-toggle.comp-toggle-grey {
+          color: var(--blades-grey);
+          -webkit-filter: blur(2px);
+          filter: blur(2px); }
+          html .comp .comp-toggle.comp-toggle-grey:hover, :root .comp .comp-toggle.comp-toggle-grey:hover {
+            -webkit-filter: blur(0px);
+            filter: blur(0px);
+            color: var(--blades-white); }
+      html .comp .number-circle, :root .comp .number-circle {
+        --number-circle-size: 1.25rem; }
+      html .comp .comp-number-input, :root .comp .comp-number-input {
+        width: 1.625rem;
+        text-align: center; }
+      html .comp .tooltip, :root .comp .tooltip {
+        opacity: 0;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -webkit-box-align: stretch;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        color: var(--blades-white);
+        background: var(--blades-black-dark);
+        width: clamp(300px, 400px, 500px);
+        padding: 0.375rem;
+        border: 0.0625rem solid var(--blades-grey);
+        border-radius: 0.1875rem;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto;
+        text-align: justify;
+        position: absolute;
+        z-index: 6;
+        pointer-events: none; }
+        html .comp .tooltip.tooltip-left, :root .comp .tooltip.tooltip-left {
+          width: 500px; }
+      html .comp.comp-vertical, :root .comp.comp-vertical {
+        --comp-img-scale: 2;
+        --comp-name-size: 1rem;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        pointer-events: auto;
+        --main-title-color: #AAA; }
+        html .comp.comp-vertical .comp-button.comp-delete, :root .comp.comp-vertical .comp-button.comp-delete {
+          left: 75%;
+          top: 0%; }
+        html .comp.comp-vertical > .comp-label, :root .comp.comp-vertical > .comp-label {
+          text-align: center; }
+          html .comp.comp-vertical > .comp-label.comp-prompt, :root .comp.comp-vertical > .comp-label.comp-prompt {
+            height: 0.75rem;
+            margin-top: -0.625rem; }
+        html .comp.comp-vertical .comp-title, :root .comp.comp-vertical .comp-title {
+          text-align: center;
+          font-family: var(--font-emphasis);
+          font-size: var(--comp-name-size);
+          text-transform: uppercase;
+          padding-top: 0px; }
+        html .comp.comp-vertical .comp-body, :root .comp.comp-vertical .comp-body {
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-orient: vertical;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+          flex-direction: column;
+          min-height: 3rem;
+          width: 100%; }
+          html .comp.comp-vertical .comp-body > img, :root .comp.comp-vertical .comp-body > img {
+            position: absolute;
+            -webkit-transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+            -ms-transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+            transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+            opacity: 0.5;
+            -webkit-filter: blur(0.5px);
+            filter: blur(0.5px);
+            top: 40%;
+            left: 50%;
+            height: 100%;
+            z-index: 0; }
+          html .comp.comp-vertical .comp-body .comp-body-text, :root .comp.comp-vertical .comp-body .comp-body-text {
+            display: none; }
+        html .comp.comp-vertical.portrait-block, :root .comp.comp-vertical.portrait-block {
+          height: 100%;
+          -ms-flex-preferred-size: 5rem;
+          flex-basis: 5rem;
+          min-width: 90px;
+          margin: 10px 0; }
+          html .comp.comp-vertical.portrait-block .comp-button.comp-delete, :root .comp.comp-vertical.portrait-block .comp-button.comp-delete {
+            left: unset;
+            right: 10%;
+            top: -10px; }
+          html .comp.comp-vertical.portrait-block .comp-body, :root .comp.comp-vertical.portrait-block .comp-body {
+            -webkit-filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
+            filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
+            width: 100%; }
+            html .comp.comp-vertical.portrait-block .comp-body .comp-title, :root .comp.comp-vertical.portrait-block .comp-body .comp-title {
+              position: absolute;
+              top: 100%;
+              left: 50%;
+              -webkit-transform: translate(-50%, -50%) scale(70%);
+              -ms-transform: translate(-50%, -50%) scale(70%);
+              transform: translate(-50%, -50%) scale(70%);
+              color: var(--blades-grey); }
+            html .comp.comp-vertical.portrait-block .comp-body .comp-img, :root .comp.comp-vertical.portrait-block .comp-body .comp-img {
+              --comp-img-scale: 1.5;
+              height: 100%;
+              opacity: 1;
+              -webkit-filter: none;
+              filter: none;
+              -webkit-clip-path: ellipse(50% 50% at 50% 50%);
+              clip-path: ellipse(50% 50% at 50% 50%);
+              z-index: 1;
+              position: absolute;
+              top: 25%; }
+        html .comp.comp-vertical.comp-playbook, :root .comp.comp-vertical.comp-playbook {
+          --comp-img-scaleX: -2;
+          --comp-img-scaleY: 2;
+          --comp-name-size: 2.625rem;
+          position: relative;
+          top: 1.25rem;
+          margin-bottom: -4.25rem;
+          z-index: 0; }
+          html .comp.comp-vertical.comp-playbook .comp-button.comp-delete, :root .comp.comp-vertical.comp-playbook .comp-button.comp-delete {
+            left: unset;
+            right: 0.3125rem;
+            top: -10px; }
+          html .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add, :root .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add {
+            display: none; }
+          html .comp.comp-vertical.comp-playbook .comp-body img, :root .comp.comp-vertical.comp-playbook .comp-body img {
+            height: 7.5rem;
+            width: auto;
+            opacity: 1;
+            -webkit-filter: blur(1px);
+            filter: blur(1px);
+            position: absolute; }
+          html .comp.comp-vertical.comp-playbook .comp-body .comp-title, :root .comp.comp-vertical.comp-playbook .comp-body .comp-title {
+            width: 100%;
+            height: 100%;
+            font-family: var(--font-emphasis-alt);
+            color: var(--blades-white-bright);
+            text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
+            font-size: 4.375rem;
+            text-transform: lowercase;
+            text-align: right;
+            padding-right: 0.25rem;
+            margin-bottom: 2.8125rem;
+            margin-top: 0.9375rem; }
+      html .comp.comp-horizontal, :root .comp.comp-horizontal {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start; }
+        html .comp.comp-horizontal .comp-button.comp-delete, :root .comp.comp-horizontal .comp-button.comp-delete {
+          left: 0.3125rem;
+          top: unset;
+          bottom: 0; }
+        html .comp.comp-horizontal > .comp-label, :root .comp.comp-horizontal > .comp-label {
+          text-align: right;
+          font-size: 0.875rem;
+          line-height: 1.125rem;
+          margin: 0; }
+          html .comp.comp-horizontal > .comp-label.comp-input-label, :root .comp.comp-horizontal > .comp-label.comp-input-label {
+            line-height: 1.625rem;
+            margin: 0 5px 0 10px; }
+        html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
+          -webkit-box-pack: start;
+          -ms-flex-pack: start;
+          justify-content: flex-start;
+          -webkit-box-align: start;
+          -ms-flex-align: start;
+          align-items: flex-start; }
+        html .comp.comp-horizontal.comp-desc-trait, :root .comp.comp-horizontal.comp-desc-trait {
+          -webkit-box-align: start;
+          -ms-flex-align: start;
+          align-items: flex-start;
+          padding: 0.3125rem 0; }
+          html .comp.comp-horizontal.comp-desc-trait:first-of-type, :root .comp.comp-horizontal.comp-desc-trait:first-of-type {
+            margin-top: -0.3125rem; }
+          html .comp.comp-horizontal.comp-desc-trait:not(:first-of-type), :root .comp.comp-horizontal.comp-desc-trait:not(:first-of-type) {
+            border-top: 1px solid var(--blades-white); }
+          html .comp.comp-horizontal.comp-desc-trait .comp-label, :root .comp.comp-horizontal.comp-desc-trait .comp-label {
+            max-width: 0px; }
+          html .comp.comp-horizontal.comp-desc-trait .comp-body, :root .comp.comp-horizontal.comp-desc-trait .comp-body {
+            min-height: 3.125rem; }
+            html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img {
+              position: absolute;
+              height: 50px;
+              -webkit-transform: translate(-50%, -50%);
+              -ms-transform: translate(-50%, -50%);
+              transform: translate(-50%, -50%);
+              top: 50%;
+              left: 3.125rem;
+              -webkit-filter: blur(1px);
+              filter: blur(1px);
+              opacity: 0.5; }
+            html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title {
+              position: relative;
+              width: 6.25rem;
+              -ms-flex-negative: 0;
+              flex-shrink: 0;
+              -webkit-box-flex: 0;
+              -ms-flex-positive: 0;
+              flex-grow: 0;
+              min-height: 2.5rem;
+              -ms-flex-item-align: start;
+              align-self: flex-start;
+              color: var(--blades-white-bright);
+              display: -webkit-box;
+              display: -ms-flexbox;
+              display: flex;
+              -webkit-box-orient: vertical;
+              -webkit-box-direction: normal;
+              -ms-flex-direction: column;
+              flex-direction: column;
+              -webkit-box-pack: start;
+              -ms-flex-pack: start;
+              justify-content: flex-start;
+              -webkit-box-align: center;
+              -ms-flex-align: center;
+              align-items: center;
+              font-family: var(--font-emphasis);
+              font-size: 0.875rem;
+              padding: 0 0.4375rem;
+              text-align: center;
+              z-index: 1;
+              line-height: var(--line-height-default); }
+            html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline {
+              position: relative;
+              -webkit-transform: translate(-50%, 0);
+              -ms-transform: translate(-50%, 0);
+              transform: translate(-50%, 0);
+              left: 50%;
+              bottom: 0; }
+              html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label {
+                margin-right: 5px;
+                font-weight: bold; }
+            html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
+              font-family: "Minion Pro Caption Cond";
+              -webkit-hyphens: auto;
+              -ms-hyphens: auto;
+              hyphens: auto;
+              text-align: justify;
+              padding: 0 0.3125rem 0 0;
+              line-height: var(--line-height-compact);
+              -webkit-box-flex: 1;
+              -ms-flex-positive: 1;
+              flex-grow: 1; }
+              html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type), :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type) {
+                margin-bottom: 6px; }
+      html .comp.comp-teeth.comp-horizontal .dotline, :root .comp.comp-teeth.comp-horizontal .dotline {
+        padding-left: 0.25rem;
+        --dotline-dot-sizeX: 1.125rem;
+        --dotline-dot-spacing: 0.25rem; }
+        html .comp.comp-teeth.comp-horizontal .dotline .dot, :root .comp.comp-teeth.comp-horizontal .dotline .dot {
+          -ms-flex-negative: 1;
+          flex-shrink: 1; }
+      html .comp.comp-teeth.comp-horizontal.comp-xp, :root .comp.comp-teeth.comp-horizontal.comp-xp {
+        z-index: 3; }
+        html .comp.comp-teeth.comp-horizontal.comp-xp .comp-label, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-label {
+          -webkit-box-flex: 1;
+          -ms-flex-positive: 1;
+          flex-grow: 1; }
+        html .comp.comp-teeth.comp-horizontal.comp-xp .comp-body, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body {
+          -webkit-box-pack: end;
+          -ms-flex-pack: end;
+          justify-content: flex-end; }
+          html .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline {
+            --dotline-dot-spacing: 0.125rem;
+            --dotline-horiz-align: flex-end;
+            --frame-color: var(--blades-black);
+            --fill-color-full: var(--blades-gold-bright);
+            --fill-color-empty: rgba(0, 0, 0);
+            --half-color-empty: var(--blades-gold-dark); }
+        html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook {
+          position: absolute;
+          right: 0; }
+          html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline {
+            --dotline-dot-sizeX: 1.125rem; }
+            html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot {
+              -webkit-transform-origin: top;
+              -ms-transform-origin: top;
+              transform-origin: top;
+              -webkit-transition: 0.25s;
+              transition: 0.25s;
+              -webkit-transform: scaleY(1);
+              -ms-transform: scaleY(1);
+              transform: scaleY(1); }
+              html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
+                -webkit-transform: scaleY(0.5);
+                -ms-transform: scaleY(0.5);
+                transform: scaleY(0.5); }
+      html .comp.comp-teeth.comp-vertical, :root .comp.comp-teeth.comp-vertical {
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        height: 100%;
+        margin: 0;
+        -webkit-box-flex: 0.5;
+        -ms-flex-positive: 0.5;
+        flex-grow: 0.5; }
+        html .comp.comp-teeth.comp-vertical .comp-body, :root .comp.comp-teeth.comp-vertical .comp-body {
+          top: -0.3125rem; }
+        html .comp.comp-teeth.comp-vertical .dotline-label, :root .comp.comp-teeth.comp-vertical .dotline-label {
+          min-width: 5.625rem;
+          text-align: center;
+          margin-left: 1.25rem; }
+        html .comp.comp-teeth.comp-vertical .dotline, :root .comp.comp-teeth.comp-vertical .dotline {
+          -webkit-box-flex: 1;
+          -ms-flex-positive: 1;
+          flex-grow: 1;
+          -webkit-box-pack: center;
+          -ms-flex-pack: center;
+          justify-content: center;
+          margin-top: -50%;
+          margin-bottom: -50%;
+          --dotline-dot-sizeX: 1rem;
+          --dotline-dot-spacing: 0.25rem; }
+      html .comp.comp-coins, html .comp.comp-stash, :root .comp.comp-coins, :root .comp.comp-stash {
+        margin-bottom: 4px;
+        pointer-events: none; }
+        html .comp.comp-coins.comp-coins, html .comp.comp-stash.comp-coins, :root .comp.comp-coins.comp-coins, :root .comp.comp-stash.comp-coins {
+          margin: 0px;
+          -webkit-box-pack: space-evenly;
+          -ms-flex-pack: space-evenly;
+          justify-content: space-evenly; }
+          html .comp.comp-coins.comp-coins .comp-body, html .comp.comp-stash.comp-coins .comp-body, :root .comp.comp-coins.comp-coins .comp-body, :root .comp.comp-stash.comp-coins .comp-body {
+            -ms-flex-negative: 0.5;
+            flex-shrink: 0.5;
+            min-height: unset;
+            margin-top: 5px; }
+        html .comp.comp-coins .dotline, html .comp.comp-stash .dotline, :root .comp.comp-coins .dotline, :root .comp.comp-stash .dotline {
+          --dotline-dot-size: 1.125rem;
+          --dotline-dot-spacing: -2px; }
+          html .comp.comp-coins .dotline .dot.empty-dot, html .comp.comp-stash .dotline .dot.empty-dot, :root .comp.comp-coins .dotline .dot.empty-dot, :root .comp.comp-stash .dotline .dot.empty-dot {
+            -webkit-filter: saturate(0);
+            filter: saturate(0);
+            opacity: 0.5; }
+          html .comp.comp-coins .dotline .dot.full-dot, html .comp.comp-stash .dotline .dot.full-dot, :root .comp.comp-coins .dotline .dot.full-dot, :root .comp.comp-stash .dotline .dot.full-dot {
+            -webkit-filter: brightness(0.8) saturate(0.75);
+            filter: brightness(0.8) saturate(0.75); }
+        html .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
+          margin-left: 0.3125rem; }
+        html .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
+          margin-left: 0.625rem; }
+    html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
+      position: absolute;
+      height: 1.5rem;
+      width: 1.5rem;
+      line-height: 1.5rem;
+      display: -webkit-inline-box;
+      display: -ms-inline-flexbox;
+      display: inline-flex;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      right: 0;
+      text-shadow: none; }
+      html .button-icon i, html .toggle-icon i, :root .button-icon i, :root .toggle-icon i {
+        height: 1.5rem;
+        width: 1.5rem;
+        line-height: 1.75rem;
+        text-align: center;
+        opacity: 0.75;
+        margin-top: -0.125rem;
+        pointer-events: none; }
+        html .button-icon i.toggle-off, html .toggle-icon i.toggle-off, :root .button-icon i.toggle-off, :root .toggle-icon i.toggle-off {
+          opacity: 0.25; }
+      html .button-icon .tooltip, html .toggle-icon .tooltip, :root .button-icon .tooltip, :root .toggle-icon .tooltip {
+        display: none;
+        pointer-events: none;
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        background: var(--blades-black);
+        color: var(--blades-white);
+        font-size: 10px;
+        line-height: 12px;
+        padding: 5px;
+        border-radius: 10px;
+        border: 1px solid var(--blades-white-bright);
+        text-align: center;
+        white-space: nowrap; }
+        html .button-icon .tooltip b, html .toggle-icon .tooltip b, :root .button-icon .tooltip b, :root .toggle-icon .tooltip b {
+          color: var(--blades-white-bright);
+          font-size: 12px;
+          font-family: var(--font-emphasis);
+          text-transform: uppercase; }
+      html .button-icon .hidden-toggle, html .toggle-icon .hidden-toggle, :root .button-icon .hidden-toggle, :root .toggle-icon .hidden-toggle {
+        margin: 0;
+        border: none;
+        opacity: 0;
+        position: absolute;
+        -webkit-transition: 0.25s;
+        transition: 0.25s; }
+        html .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, html .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root .button-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off, :root .toggle-icon .hidden-toggle[type="checkbox"]:checked + .toggle-on + .toggle-off {
+          display: none; }
+        html .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, html .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
+          display: none; }
+      html .button-icon.tooltip-left .tooltip, html .toggle-icon.tooltip-left .tooltip, :root .button-icon.tooltip-left .tooltip, :root .toggle-icon.tooltip-left .tooltip {
+        left: unset;
+        right: 15px; }
+      html .button-icon:hover i, html .toggle-icon:hover i, :root .button-icon:hover i, :root .toggle-icon:hover i {
+        opacity: 1; }
+      html .button-icon:hover .tooltip, html .toggle-icon:hover .tooltip, :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip {
+        display: block; }
+    html .dotline, :root .dotline {
+      --dotline-zero-dot-size: 0.875rem;
+      --dotline-dot-size: 0.875rem;
+      --dotline-dot-spacing: 0.1875rem;
+      --dotline-horiz-align: flex-start;
+      --dotline-vert-align: center;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: horizontal;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+      flex-direction: row;
+      -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+      -webkit-box-pack: var(--dotline-horiz-align);
+      -ms-flex-pack: var(--dotline-horiz-align);
+      justify-content: var(--dotline-horiz-align);
+      -webkit-box-align: var(--dotline-vert-align);
+      -ms-flex-align: var(--dotline-vert-align);
+      align-items: var(--dotline-vert-align);
+      position: relative; }
+      html .dotline.centered, :root .dotline.centered {
+        --dotline-horiz-align: center; }
+      html .dotline.locked .dot, :root .dotline.locked .dot {
+        pointer-events: none;
+        cursor: default; }
+      html .dotline.dotline-right, :root .dotline.dotline-right {
+        margin-left: auto;
+        margin-right: 1.25rem; }
+      html .dotline .dotline-label, :root .dotline .dotline-label {
+        font-family: var(--font-emphasis);
+        font-size: 0.875rem;
+        color: var(--blades-white);
+        text-transform: uppercase;
+        line-height: 0.875rem;
+        margin-right: 0.3125rem; }
+      html .dotline .dot, :root .dotline .dot {
+        --dot-frame-color: var(--frame-color, var(--blades-white));
+        --dot-frame-color-empty: var(--frame-color-empty, var(--dot-frame-color));
+        --dot-frame-color-full: var(--frame-color-full, var(--dot-frame-color));
+        --dot-fill-color-empty: var(--fill-color-empty, transparent);
+        --dot-fill-color-full: var(--fill-color-full, var(--blades-white-bright));
+        --dot-half-color-empty: var(--half-color-empty, var(--dot-frame-color));
+        --dot-half-color-full: var(--half-color-full, var(--dot-frame-color));
+        height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
+        width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
+        -webkit-box-flex: 0;
+        -ms-flex-positive: 0;
+        flex-grow: 0;
+        -ms-flex-negative: 0;
+        flex-shrink: 0;
+        margin: 0 var(--dotline-dot-spacing) 0 0;
+        pointer-events: auto;
+        cursor: pointer;
+        position: relative; }
+        html .dotline .dot:last-of-type, :root .dotline .dot:last-of-type {
+          margin: 0; }
+        html .dotline .dot .img-main, html .dotline .dot .img-hover, :root .dotline .dot .img-main, :root .dotline .dot .img-hover {
+          display: block;
+          height: 100%;
+          width: 100%;
+          -webkit-filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black);
+          filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black); }
+          html .dotline .dot .img-main.img-hover, html .dotline .dot .img-hover.img-hover, :root .dotline .dot .img-main.img-hover, :root .dotline .dot .img-hover.img-hover {
+            display: none; }
+        html .dotline .dot.svg-dot, :root .dotline .dot.svg-dot {
+          height: auto; }
+          html .dotline .dot.svg-dot svg, :root .dotline .dot.svg-dot svg {
+            width: 100%;
+            height: auto;
+            max-height: var(--dotline-dot-sizeY, unset); }
+          html .dotline .dot.svg-dot.full-dot svg .full, :root .dotline .dot.svg-dot.full-dot svg .full {
+            fill: var(--current-fill-color, var(--dot-fill-color-full)); }
+          html .dotline .dot.svg-dot.full-dot svg .frame, :root .dotline .dot.svg-dot.full-dot svg .frame {
+            fill: var(--current-frame-color, var(--dot-frame-color-full)); }
+          html .dotline .dot.svg-dot.full-dot svg .half, :root .dotline .dot.svg-dot.full-dot svg .half {
+            fill: var(--current-half-color, var(--dot-half-color-full)); }
+          html .dotline .dot.svg-dot.empty-dot svg .full, :root .dotline .dot.svg-dot.empty-dot svg .full {
+            fill: var(--current-fill-color, var(--dot-fill-color-empty)); }
+          html .dotline .dot.svg-dot.empty-dot svg .frame, :root .dotline .dot.svg-dot.empty-dot svg .frame {
+            fill: var(--current-frame-color, var(--dot-frame-color-empty)); }
+          html .dotline .dot.svg-dot.empty-dot svg .half, :root .dotline .dot.svg-dot.empty-dot svg .half {
+            fill: var(--current-half-color, var(--dot-half-color-empty)); }
+        html .dotline .dot:hover .img-main, :root .dotline .dot:hover .img-main {
+          opacity: 0.5; }
+        html .dotline .dot:hover .img-hover, :root .dotline .dot:hover .img-hover {
+          display: block; }
+        html .dotline .dot:hover .img-hover + .img-main, :root .dotline .dot:hover .img-hover + .img-main {
+          display: none; }
+        html .dotline .dot:hover.svg-dot, :root .dotline .dot:hover.svg-dot {
+          opacity: 0.5; }
   html blockquote, :root blockquote {
     border-left: 2px solid var(--blades-grey-bright);
     margin-left: 1.5rem;
     padding-left: 1rem; }
+  html table,
+  html table tr,
+  html table tr th,
+  html table tr td,
+  html table thead,
+  html table thead tr,
+  html table thead tr th,
+  html table thead tr td,
+  html table tbody,
+  html table tbody tr,
+  html table tbody td, :root table,
+  :root table tr,
+  :root table tr th,
+  :root table tr td,
+  :root table thead,
+  :root table thead tr,
+  :root table thead tr th,
+  :root table thead tr td,
+  :root table tbody,
+  :root table tbody tr,
+  :root table tbody td {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none; }
   html table, :root table {
     border-collapse: collapse; }
-    html table th.black-white,
-    html table th.black-white label, :root table th.black-white,
-    :root table th.black-white label {
-      background-color: var(--blades-white) !important;
+    html table thead th, :root table thead th {
+      background-color: var(--blades-white);
       text-shadow: none;
-      color: var(--blades-black) !important;
+      color: var(--blades-black);
       font-family: var(--font-emphasis);
       font-weight: normal;
       font-size: 20px;
-      line-height: 24px;
-      padding: 3px; }
-    html table th,
-    html table td, :root table th,
-    :root table td {
-      border: 1px solid var(--blades-grey);
-      padding: 0.4rem; }
-    html table.items-list.effects-list thead th,
-    html table.items-list.effects-list tbody th, :root table.items-list.effects-list thead th,
-    :root table.items-list.effects-list tbody th {
-      margin: 0 !important; }
-    html table.items-list.effects-list thead th:nth-of-type(1),
-    html table.items-list.effects-list thead td:nth-of-type(1),
-    html table.items-list.effects-list tbody th:nth-of-type(1),
-    html table.items-list.effects-list tbody td:nth-of-type(1), :root table.items-list.effects-list thead th:nth-of-type(1),
-    :root table.items-list.effects-list thead td:nth-of-type(1),
-    :root table.items-list.effects-list tbody th:nth-of-type(1),
-    :root table.items-list.effects-list tbody td:nth-of-type(1) {
-      width: 40%; }
-    html table.items-list.effects-list thead th:nth-of-type(2),
-    html table.items-list.effects-list thead td:nth-of-type(2),
-    html table.items-list.effects-list tbody th:nth-of-type(2),
-    html table.items-list.effects-list tbody td:nth-of-type(2), :root table.items-list.effects-list thead th:nth-of-type(2),
-    :root table.items-list.effects-list thead td:nth-of-type(2),
-    :root table.items-list.effects-list tbody th:nth-of-type(2),
-    :root table.items-list.effects-list tbody td:nth-of-type(2) {
-      width: 30%;
-      text-align: center; }
-    html table.items-list.effects-list thead th:nth-of-type(3),
-    html table.items-list.effects-list thead td:nth-of-type(3),
-    html table.items-list.effects-list tbody th:nth-of-type(3),
-    html table.items-list.effects-list tbody td:nth-of-type(3), :root table.items-list.effects-list thead th:nth-of-type(3),
-    :root table.items-list.effects-list thead td:nth-of-type(3),
-    :root table.items-list.effects-list tbody th:nth-of-type(3),
-    :root table.items-list.effects-list tbody td:nth-of-type(3) {
-      width: 15%;
-      text-align: center; }
-    html table.items-list.effects-list thead th:nth-of-type(4),
-    html table.items-list.effects-list thead td:nth-of-type(4),
-    html table.items-list.effects-list tbody th:nth-of-type(4),
-    html table.items-list.effects-list tbody td:nth-of-type(4), :root table.items-list.effects-list thead th:nth-of-type(4),
-    :root table.items-list.effects-list thead td:nth-of-type(4),
-    :root table.items-list.effects-list tbody th:nth-of-type(4),
-    :root table.items-list.effects-list tbody td:nth-of-type(4) {
-      width: 15%;
-      text-align: right; }
-    html table.items-list.effects-list thead td,
-    html table.items-list.effects-list tbody td, :root table.items-list.effects-list thead td,
-    :root table.items-list.effects-list tbody td {
-      line-height: 24px;
-      margin: 0;
-      vertical-align: middle; }
-    html table.items-list.effects-list thead img,
-    html table.items-list.effects-list tbody img, :root table.items-list.effects-list thead img,
-    :root table.items-list.effects-list tbody img {
-      height: 24px;
-      width: 24px;
-      vertical-align: middle; }
-    html table.items-list.effects-list thead h4,
-    html table.items-list.effects-list tbody h4, :root table.items-list.effects-list thead h4,
-    :root table.items-list.effects-list tbody h4 {
-      display: inline-block;
-      line-height: 24px;
-      margin: 0;
-      vertical-align: middle; }
+      font-variant: small-caps;
+      padding: 2px; }
   html figure, :root figure {
     display: table;
     margin: 1rem auto; }
     html figure figcaption, :root figure figcaption {
-      font-family: var(--font-default-small);
+      font-family: var(--font-primary-small);
       color: var(--blades-grey-bright);
       display: block;
       margin-top: 0.25rem;
@@ -480,30 +1792,104 @@ html, :root {
     outline: 1px dotted var(--blades-white);
     padding: 0 0.3125rem;
     margin: 0 0.3125rem; }
-  html .clock-zero-label, :root .clock-zero-label {
-    color: var(--blades-white); }
-  html .stripe,
-  html .stripe label, :root .stripe,
-  :root .stripe label {
-    background-color: var(--blades-white) !important;
-    color: var(--blades-black) !important;
-    height: 1.5rem;
-    line-height: 1.5rem;
-    line-height: 1.5rem; }
-  html .stripe-tooth-body label, :root .stripe-tooth-body label {
-    color: var(--blades-black) !important; }
-  html label.black-label, :root label.black-label {
-    background-color: var(--blades-white);
-    color: var(--blades-black) !important; }
-  html .label-stripe, :root .label-stripe {
-    background-color: var(--blades-grey); }
-  html .label-stripe-gray, :root .label-stripe-gray {
-    margin: 0; }
-    html .label-stripe-gray th,
-    html .label-stripe-gray th > *:not(:hover), :root .label-stripe-gray th,
-    :root .label-stripe-gray th > *:not(:hover) {
-      color: var(--blades-white-bright);
-      text-shadow: 1px 1px 0px var(--blades-black-dark); }
+  html .filled-label, :root .filled-label {
+    font-size: 1.25rem;
+    line-height: 1;
+    -webkit-box-flex: 0;
+    -ms-flex-positive: 0;
+    flex-grow: 0;
+    padding: 0.3125rem;
+    background: var(--blades-white);
+    color: var(--blades-black);
+    font-family: var(--font-emphasis);
+    text-transform: uppercase;
+    position: relative;
+    display: block;
+    width: -webkit-min-content;
+    width: -moz-min-content;
+    width: min-content;
+    white-space: nowrap; }
+  html .number-circle, :root .number-circle {
+    --nc-size: var(--number-circle-size, 1.25rem);
+    --nc-border-width: calc(var(--nc-size) * (1/10));
+    --nc-font-size: calc(var(--nc-size) * (7/10));
+    --nc-border-radius: calc(var(--nc-size) * (5/10));
+    --nc-line-height: calc(var(--nc-size) * (8/10));
+    --nc-drop-shadow: calc(var(--nc-size) * (0.5/10));
+    height: var(--nc-size);
+    width: var(--nc-size);
+    font-weight: bold;
+    font-family: "Minion Pro Caption Cond";
+    font-size: var(--nc-font-size);
+    text-align: center;
+    border-radius: var(--nc-border-radius);
+    background: var(--number-circle-bg, var(--blades-grey-dark));
+    color: var(--number-circle-color, var(--blades-white));
+    line-height: var(--nc-line-height);
+    border: var(--nc-border-width) outset var(--number-circle-color, var(--blades-white));
+    margin: -0.1875rem 0.25rem 0 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0; }
+  html .shadowed, :root .shadowed {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background: transparent;
+    text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
+  html .text-checkbox, :root .text-checkbox {
+    position: relative;
+    display: inline-block; }
+    html .text-checkbox input[type="checkbox"], :root .text-checkbox input[type="checkbox"] {
+      opacity: 0;
+      height: 100%;
+      width: 100%;
+      margin-right: -100%;
+      display: inline-block; }
+    html .text-checkbox span, :root .text-checkbox span {
+      display: inline-block; }
+    html .text-checkbox input[type="checkbox"]:checked + span, :root .text-checkbox input[type="checkbox"]:checked + span {
+      color: var(--active-text-color, var(--blades-gold-bright)); }
+  html .no-img img, :root .no-img img {
+    display: none; }
+  html .flex-horizontal, :root .flex-horizontal {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center; }
+    html .flex-horizontal.flex-wrap, :root .flex-horizontal.flex-wrap {
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      -ms-flex-line-pack: start;
+      align-content: flex-start; }
+    html .flex-horizontal.full-width, :root .flex-horizontal.full-width {
+      width: 100%;
+      -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+      justify-content: space-evenly; }
+  html .flex-vertical, :root .flex-vertical {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center; }
 
 ::-webkit-scrollbar {
   width: var(--blades-spacer-sm); }
@@ -521,6 +1907,10 @@ html, :root {
   outline: none; }
 
 #tinymce {
-  --secret-text-display: initial;
-  height: auto;
-  max-height: 600px; }
+  padding: var(--content-padding) !important;
+  width: calc(100% + 2 * var(--content-padding));
+  margin-left: calc(-1 * var(--content-padding)); }
+  #tinymce {
+    min-height: 100px;
+    background-color: rgba(0, 0, 0, 0.2);
+    height: 100%; }

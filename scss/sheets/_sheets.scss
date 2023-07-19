@@ -37,7 +37,7 @@
 			> img {
 				position: absolute;
 				width: 100%;
-				top: -20%;
+				top: -30%;
 				filter: saturate(0%) blur(3px);
 				opacity: 0.5;
 				transform: scaleX(-1);
@@ -137,14 +137,16 @@
 				}
 
 				&.nav-group {
-					height: 100%;
+					height: calc(100% - var(--sheet-top-height) - var(--sheet-mid-height));
 
 					> * { width: 100% }
 
 					.tab[data-tab] {
 
 						&.active {
-							display: block;
+							display: flex;
+							justify-content: stretch;
+							height: 100%;
 						}
 					}
 				}
@@ -156,6 +158,7 @@
 		background: var(--blades-grey);
 		position: relative;
 		height: toRem(24px);
+		min-height: toRem(24px);
 		width: 100%;
 		margin-bottom: toRem(5px);
 

@@ -96,7 +96,6 @@ body .sidebar-popout .sidebar-tab .directory-header .header-control {
   text-shadow: none;
   -webkit-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1); }
 
@@ -387,7 +386,6 @@ body {
       background-image: none;
       border: none;
       overflow: hidden;
-      -o-text-overflow: ellipsis;
       text-overflow: ellipsis;
       white-space: nowrap;
       -webkit-box-flex: 1;
@@ -478,7 +476,6 @@ body {
     -webkit-box-shadow: none;
     box-shadow: none;
     -webkit-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-    -o-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
     transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
     border-radius: 0;
     display: none;
@@ -502,14 +499,12 @@ body {
     margin-block-end: var(--blades-spacer-sm);
     pointer-events: none;
     -webkit-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-    -o-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
     transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
     z-index: 10; }
     body #hotbar:hover {
       z-index: 11; }
     body #hotbar #action-bar {
       -webkit-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-      -o-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       display: -webkit-box;
       display: -ms-flexbox;
@@ -600,7 +595,6 @@ body {
       color: rgba(var(--color-text-lightest), 1);
       -webkit-transition: border 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: border 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-      -o-transition: border 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: border 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: border 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       width: 3.5rem;
@@ -658,7 +652,7 @@ body {
         font-size: var(--size-14px);
         height: auto;
         left: 0;
-        line-height: auto;
+        line-height: var(--line-height-default);
         -webkit-margin-after: var(--blades-spacer-base);
         margin-block-end: var(--blades-spacer-base);
         min-width: 3.5rem;
@@ -702,7 +696,6 @@ body {
     color: rgba(var(--color-text-lightest), 1);
     -webkit-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
     transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-    -o-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
     transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
     transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
     width: var(--blades-spacer-button-lg);
@@ -924,7 +917,6 @@ body {
     -webkit-box-shadow: none;
     box-shadow: none;
     -webkit-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-    -o-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
     transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
     display: block;
     margin: var(--blades-spacer-sm);
@@ -939,7 +931,6 @@ body {
       border-radius: 0 0 0 0;
       color: rgba(var(--color-text-lightest), 1);
       -webkit-transition: color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-      -o-transition: color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       -webkit-box-align: center;
       -ms-flex-align: center;
@@ -998,7 +989,6 @@ body {
         color: rgba(var(--color-text-lightest), 1);
         text-shadow: none;
         overflow: hidden;
-        -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
         white-space: nowrap;
         -webkit-box-flex: 1;
@@ -1053,7 +1043,6 @@ body {
       pointer-events: none;
       position: relative;
       -webkit-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), left 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-      -o-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), left 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), left 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       width: auto; }
       body #controls .control-tools.main-controls {
@@ -1139,7 +1128,6 @@ body {
     padding: 0;
     pointer-events: none;
     -webkit-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-    -o-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
     transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
     width: calc(100% - var(--blades-spacer-sm) - var(--blades-spacer-sidebar));
     z-index: 10; }
@@ -1173,7 +1161,6 @@ body {
         text-shadow: none;
         -webkit-transition: color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
         transition: color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-        -o-transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
         transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
         transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
         width: auto;
@@ -1205,7 +1192,6 @@ body {
           text-shadow: none;
           width: 100%;
           overflow: hidden;
-          -o-text-overflow: ellipsis;
           text-overflow: ellipsis;
           white-space: nowrap;
           border: none;
@@ -1274,7 +1260,6 @@ body {
     padding: var(--blades-spacer-sm) var(--blades-spacer-md);
     pointer-events: none;
     -webkit-transition: opacity 0.3s cubic-bezier(0.77, 0, 0.175, 1), visibility 0.3s cubic-bezier(0.77, 0, 0.175, 1);
-    -o-transition: opacity 0.3s cubic-bezier(0.77, 0, 0.175, 1), visibility 0.3s cubic-bezier(0.77, 0, 0.175, 1);
     transition: opacity 0.3s cubic-bezier(0.77, 0, 0.175, 1), visibility 0.3s cubic-bezier(0.77, 0, 0.175, 1);
     width: -webkit-max-content;
     width: -moz-max-content;
@@ -1384,7 +1369,7 @@ body {
       border: none;
       -webkit-border-after: rgba(var(--color-border), 1) 1px solid;
       border-block-end: rgba(var(--color-border), 1) 1px solid;
-      border-radius: calc(0 - 4px) calc(0 - 4px) 0 0;
+      border-radius: 0;
       color: rgba(var(--color-text-lightest), 1);
       -webkit-box-align: center;
       -ms-flex-align: center;
@@ -1406,7 +1391,6 @@ body {
       body .window-app .window-header h4.window-title {
         max-width: 100%;
         overflow: hidden;
-        -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
         white-space: nowrap;
         color: rgba(var(--color-text-lightest), 1);
@@ -1479,7 +1463,6 @@ body {
       color: rgba(var(--color-text-lightest), 1);
       -webkit-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-      -o-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       right: 0;
@@ -1571,7 +1554,6 @@ body {
       color: rgba(var(--color-text-lightest), 1);
       -webkit-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-      -o-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       bottom: 0;
@@ -1804,7 +1786,6 @@ body {
       margin: 0;
       padding: var(--blades-spacer-sm);
       -webkit-transition: none;
-      -o-transition: none;
       transition: none;
       width: 100%; }
       body #client-settings.window-app.form .window-content #config-tabs .module-settings-wrapper div.form-group:nth-of-type(even) {
@@ -1953,7 +1934,6 @@ body {
         color: rgba(var(--color-text-lightest), 1);
         max-width: 100%;
         overflow: hidden;
-        -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
         white-space: nowrap;
         display: block;
@@ -1989,7 +1969,6 @@ body {
       body .filepicker.window-app .filepicker-body .filepicker-header .units {
         color: rgba(var(--color-text), 1);
         overflow: hidden;
-        -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
         white-space: nowrap;
         display: block;
@@ -2219,7 +2198,7 @@ body {
         display: flex;
         gap: var(--blades-spacer-base);
         height: auto;
-        line-height: auto; }
+        line-height: var(--line-height-default); }
   body .window-app[id*="JournalEntryPage-"] .editor.tinymce {
     margin: 0 var(--blades-spacer-sm); }
   body .sheet[id*="macro-config-"] .sheet-header h1 {
@@ -2661,7 +2640,6 @@ body {
       margin: 0;
       pointer-events: none;
       -webkit-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), left 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-      -o-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), left 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), left 0.3s cubic-bezier(0.075, 0.82, 0.165, 1); }
     body #df-curvy-walls-tools .control-tool {
       background-color: rgba(var(--color-background-lightest), 1);
@@ -2673,7 +2651,6 @@ body {
       color: rgba(var(--color-text), 1);
       -webkit-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-      -o-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       width: var(--blades-spacer-button-lg);
@@ -2705,7 +2682,7 @@ body {
   body .dice-so-nice .dice-more-theme {
     background: none;
     border: none;
-    border-radius: none;
+    border-radius: 0;
     -webkit-box-shadow: none;
     box-shadow: none;
     font-size: var(--size-16px);
@@ -2933,7 +2910,6 @@ body {
   body .gm-screen-app.gm-screen-drawer.window-app {
     -webkit-transition: -webkit-transform 0.3s cubic-bezier(0.77, 0, 0.175, 1);
     transition: -webkit-transform 0.3s cubic-bezier(0.77, 0, 0.175, 1);
-    -o-transition: transform 0.3s cubic-bezier(0.77, 0, 0.175, 1);
     transition: transform 0.3s cubic-bezier(0.77, 0, 0.175, 1);
     transition: transform 0.3s cubic-bezier(0.77, 0, 0.175, 1), -webkit-transform 0.3s cubic-bezier(0.77, 0, 0.175, 1); }
     body .gm-screen-app.gm-screen-drawer.window-app .gm-screen-actions.tabs {
@@ -2942,11 +2918,9 @@ body {
         display: none; }
       body .gm-screen-app.gm-screen-drawer.window-app .gm-screen-actions.tabs .meta-actions {
         -webkit-transition-delay: initial;
-        -o-transition-delay: initial;
         transition-delay: initial;
         -webkit-transition: -webkit-transform 0.3s cubic-bezier(0.77, 0, 0.175, 1);
         transition: -webkit-transform 0.3s cubic-bezier(0.77, 0, 0.175, 1);
-        -o-transition: transform 0.3s cubic-bezier(0.77, 0, 0.175, 1);
         transition: transform 0.3s cubic-bezier(0.77, 0, 0.175, 1);
         transition: transform 0.3s cubic-bezier(0.77, 0, 0.175, 1), -webkit-transform 0.3s cubic-bezier(0.77, 0, 0.175, 1); }
         body .gm-screen-app.gm-screen-drawer.window-app .gm-screen-actions.tabs .meta-actions button > i {
@@ -3117,7 +3091,6 @@ body {
       color: rgba(var(--color-text-lightest), 1);
       -webkit-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-      -o-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       bottom: 0;
@@ -3367,7 +3340,6 @@ body {
       -ms-transform: initial;
       transform: initial;
       -webkit-transition: none;
-      -o-transition: none;
       transition: none;
       top: auto; }
       body #smalltime-app #dateDisplay.active {
@@ -3441,10 +3413,8 @@ body {
     box-shadow: 0 2px 4px var(--blades-black-dark);
     color: rgba(var(--color-text), 1);
     -webkit-transition: width 0.3s cubic-bezier(0.77, 0, 0.175, 1);
-    -o-transition: width 0.3s cubic-bezier(0.77, 0, 0.175, 1);
     transition: width 0.3s cubic-bezier(0.77, 0, 0.175, 1);
     -webkit-transition-delay: 0s;
-    -o-transition-delay: 0s;
     transition-delay: 0s; }
     body .tidy5e.sheet.actor #item-info-container .info-wrap {
       -webkit-border-end: rgba(var(--color-border-lighter), 1) 1px solid;
@@ -3578,7 +3548,6 @@ body {
       pointer-events: none;
       opacity: 1;
       -webkit-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), left 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-      -o-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), left 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), left 0.3s cubic-bezier(0.075, 0.82, 0.165, 1); }
     body #tokenAttacher .control-tool {
       background-color: rgba(var(--color-background), 0.8);
@@ -3591,7 +3560,6 @@ body {
       font-size: var(--size-16px);
       -webkit-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-      -o-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
       width: var(--blades-spacer-button-lg);
@@ -4061,7 +4029,6 @@ body #client-settings.window-app.form .window-content #config-tabs div.tab[data-
   color: rgba(var(--color-text), 1);
   -webkit-transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1); }
 
@@ -4204,7 +4171,6 @@ body .window-app:not([id*="Actor-"], [id*="Item-"]) select {
   color: rgba(var(--color-text), 1);
   -webkit-transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   -webkit-box-shadow: none;
@@ -4221,7 +4187,6 @@ body .window-app:not([id*="Actor-"], [id*="Item-"]) .-emu-layout select {
   margin: 0;
   padding: 0 var(--blades-spacer-sm);
   position: relative;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis; }
 
 body .dialog select[multiple],
@@ -4259,7 +4224,6 @@ body #module-management .package-title input[type="checkbox"] {
   color: rgba(var(--color-text), 1);
   -webkit-transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1); }
 
@@ -4313,7 +4277,6 @@ body .window-app:not([id*="Actor-"], [id*="Item-"]) input[type="color"][data-edi
   border-radius: 0;
   -webkit-transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1); }
 
@@ -4497,7 +4460,6 @@ body .window-app:not([id*="Actor-"], [id*="Item-"]) textarea {
   color: rgba(var(--color-text), 1);
   -webkit-transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1); }
 
@@ -4514,7 +4476,6 @@ body .window-app:not([id*="Actor-"], [id*="Item-"]) .-emu-layout textarea {
   resize: none;
   -webkit-transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   -webkit-user-select: text;
@@ -5623,7 +5584,6 @@ body .window-app:not([id*="Actor-"], [id*="Item-"]) .directory .directory-item {
   color: rgba(var(--color-text-lightest), 1);
   -webkit-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   -webkit-box-align: center;
@@ -5732,7 +5692,6 @@ body .window-app:not([id*="Actor-"], [id*="Item-"]) .directory .directory-item.f
   color: rgba(var(--color-text), 1);
   -webkit-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   -webkit-box-align: center;
@@ -5764,7 +5723,6 @@ body .window-app:not([id*="Actor-"], [id*="Item-"]) .directory .directory-item.f
   border-block-end: 0;
   color: inherit;
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   white-space: nowrap;
   -webkit-box-flex: 1;
@@ -5864,7 +5822,6 @@ body .window-app:not([id*="Actor-"], [id*="Item-"]) .directory .directory-item h
   color: inherit;
   text-shadow: none;
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   white-space: nowrap;
   -webkit-box-flex: 1;
@@ -5885,14 +5842,12 @@ body #sidebar .directory .directory-item h4 > a,
 body .window-app:not([id*="Actor-"], [id*="Item-"]) .directory .directory-item h3 > a,
 body .window-app:not([id*="Actor-"], [id*="Item-"]) .directory .directory-item h4 > a {
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   white-space: nowrap;
   background-color: transparent;
   border-radius: 0;
   color: inherit;
   -webkit-transition: color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   cursor: pointer;
   display: block;
@@ -6202,7 +6157,6 @@ body #sidebar form .form-group label .units,
 body .window-app:not([id*="Actor-"], [id*="Item-"]) form .form-group label .units {
   color: rgba(var(--color-text), 1);
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
@@ -6642,7 +6596,6 @@ body #hotbar .bar-controls #bar-toggle {
   color: rgba(var(--color-text-lightest), 1);
   -webkit-transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   -webkit-box-align: center;
@@ -6730,7 +6683,6 @@ body #controls .control-tools .control-tool {
   font-size: var(--size-16px);
   -webkit-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   width: var(--blades-spacer-button-lg);
@@ -6865,7 +6817,6 @@ body .sidebar-popout {
   -webkit-box-shadow: none;
   box-shadow: none;
   -webkit-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   top: calc(var(--blades-spacer-md) / 2);
   right: 0;
@@ -6930,7 +6881,6 @@ body .sidebar-popout #sidebar-tabs {
   box-shadow: none;
   -webkit-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   display: -webkit-box;
@@ -6956,7 +6906,6 @@ body .sidebar-popout #sidebar-tabs > .collapse {
   color: rgba(var(--color-text-lightest), 1);
   -webkit-transition: color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   -webkit-box-align: center;
@@ -7081,7 +7030,6 @@ body #sidebar .sidebar-tab .directory-footer button,
 body .sidebar-popout .sidebar-tab .directory-header .header-actions button,
 body .sidebar-popout .sidebar-tab .directory-footer button {
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   white-space: nowrap;
   height: auto;
@@ -7295,7 +7243,6 @@ body .sidebar-popout [data-tab="chat"] #chat-log .message .message-sender {
 body #sidebar [data-tab="chat"] #chat-log .message .message-metadata,
 body .sidebar-popout [data-tab="chat"] #chat-log .message .message-metadata {
   -webkit-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   display: -webkit-box;
   display: -ms-flexbox;
@@ -7544,7 +7491,6 @@ body .sidebar-popout #combat .combat-tracker-header .encounter-controls h4 {
   border-block-end: none;
   color: rgba(var(--color-text-lightest), 1);
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
@@ -7584,7 +7530,6 @@ body .sidebar-popout #combat #combat-tracker .combatant {
   border-radius: 0;
   -webkit-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   -webkit-box-align: center;
@@ -7651,7 +7596,6 @@ body .sidebar-popout #combat #combat-tracker .combatant .token-name h4 {
   border-block-end: 1px solid rgba(var(--color-border-lighter), 0.1);
   max-width: 100%;
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   white-space: nowrap;
   -webkit-box-flex: initial;
@@ -8055,7 +7999,6 @@ body .sidebar-popout #playlists #currently-playing .sound + .sound {
 body #sidebar #playlists #currently-playing .sound .sound-name,
 body .sidebar-popout #playlists #currently-playing .sound .sound-name {
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   white-space: nowrap;
   -webkit-box-align: center;
@@ -8239,11 +8182,9 @@ body .filepicker.window-app .filepicker-body .filepicker-body .directory .file {
   text-shadow: none;
   -webkit-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-  -o-transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   transition: background 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), -webkit-box-shadow 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   white-space: nowrap;
   -webkit-box-align: center;
@@ -8566,7 +8507,6 @@ body .sidebar-popout [data-tab="chat"] section.dice-tray button.dice-tray__butto
 body #sidebar [data-tab="chat"] section.dice-tray button.dice-tray__button svg,
 body .sidebar-popout [data-tab="chat"] section.dice-tray button.dice-tray__button svg {
   -webkit-transition: initial;
-  -o-transition: initial;
   transition: initial; }
 
 body #sidebar [data-tab="chat"] section.dice-tray .dice-tray__flag,
@@ -8575,7 +8515,6 @@ body .sidebar-popout [data-tab="chat"] section.dice-tray .dice-tray__flag {
   border-radius: 0;
   color: rgba(var(--color-text-lightest), 1);
   -webkit-transition: max-height 0.1s cubic-bezier(0.77, 0, 0.175, 1);
-  -o-transition: max-height 0.1s cubic-bezier(0.77, 0, 0.175, 1);
   transition: max-height 0.1s cubic-bezier(0.77, 0, 0.175, 1);
   bottom: 100%;
   left: 0;
@@ -8775,7 +8714,7 @@ body .sidebar-popout .dir__wrp-header .w-100 > * {
 
 body #sidebar [data-tab="chat"] .tabbedchatlog,
 body .sidebar-popout [data-tab="chat"] .tabbedchatlog {
-  border-radius: none;
+  border-radius: 0;
   -webkit-box-shadow: none;
   box-shadow: none; }
 

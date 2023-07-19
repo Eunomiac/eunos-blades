@@ -108,7 +108,7 @@ const Tags = {
 
 		const factions = game.actors.filter((actor) => actor.type === BladesActorType.faction && actor.name !== null).map((faction) => faction.name) as string[];
 
-		makeTagInput(".comp-tags tags-gm", {
+		makeTagInput(".comp-tags.tags-gm", {
 			"System Tags": Object.values(Tag.System),
 			"Item Tags": Object.values(Tag.Item),
 			"Actor Tags": [

@@ -28,7 +28,7 @@ html,:root {
 #tinymce {
 	@import "./tinymce-content";
 
-	--secret-text-display: initial;
+	// --secret-text-display: initial;
 	padding: var(--content-padding) !important;
 	width: calc(100% + 2 * var(--content-padding));
 	margin-left: calc(-1 * var(--content-padding));

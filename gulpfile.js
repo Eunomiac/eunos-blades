@@ -183,7 +183,7 @@ const subGroup = (array, groupSize) => {
 };
 // #endregion ▮▮▮▮[UTILITY]▮▮▮▮
 
-const ISRAPIDGULPING = true;
+const ISRAPIDGULPING = false;
 
 const ISMINIFYINGJS = false;
 const ISMINIFYINGCSS = false;

@@ -21,9 +21,7 @@ class BladesActor extends Actor {
             data.token.actorLink = true;
         }
 
-        data.system.world_name = data.system.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "")
-            .trim()
-            .replace(/ /g, "_");
+        data.system.world_name = data.system.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "").trim().replace(/ /g, "_");
         return super.create(data, options);
     }
 
@@ -565,7 +563,6 @@ class BladesActor extends Actor {
         })(BladesItemUniqueTypes || (BladesItemUniqueTypes = {}));
         let focusItem;
         const embeddedItem = this.getSubItem(itemRef);
-        eLog.checkLog3("subitems", "[addSubItem] embeddedItem", embeddedItem);
         if (embeddedItem) {
             if (embeddedItem.hasTag(Tag.System.Archived)) {
                 await embeddedItem.remTag(Tag.System.Archived);
@@ -585,7 +582,7 @@ class BladesActor extends Actor {
             }
             focusItem = await BladesItem.create([globalItem], { parent: this });
             focusItem = this.items.getName(globalItem.name);
-            eLog.checkLog3("subitems", `[addSubItem] ... Duplicated, focusItem '${focusItem.id}'`, focusItem);
+            eLog.checkLog3("subitems", `[addSubItem] ... NEWLY EMBEDDED, focusItem '${focusItem.id}'`, focusItem);
         }
         if (!focusItem) {
             return;
@@ -593,17 +590,21 @@ class BladesActor extends Actor {
         eLog.checkLog3("subitems", `[addSubItem] Checking Uniqueness of '${focusItem.id}'`, {
             BladesItemUniqueTypes: Object.values(BladesItemUniqueTypes),
             focusItemType: focusItem.type,
-            isIncluded: Object.values(BladesItemUniqueTypes).includes(focusItem.type)
+            isLimited: Object.values(BladesItemUniqueTypes).includes(focusItem.type)
         });
         if (Object.values(BladesItemUniqueTypes).includes(focusItem.type)) {
             await Promise.all(this.activeSubItems
-                .filter((subItem) => subItem.type === focusItem.type && subItem.id !== focusItem.id && !subItem.hasTag(Tag.System.Archived))
-                .map((subItem) => this.remSubItem(subItem.id)));
+                .filter((subItem) => subItem.type === focusItem.type && subItem.system.world_name !== focusItem.system.world_name && !subItem.hasTag(Tag.System.Archived))
+                .map(this.remSubItem.bind(this)));
         }
     }
     async remSubItem(itemRef) {
         const subItem = this.getSubItem(itemRef);
         if (!subItem) {
+            return;
+        }
+        if (subItem.type !== BladesItemType.item) {
+            this.purgeSubItem(itemRef);
             return;
         }
         eLog.checkLog("actorTrigger", "Removing SubItem " + subItem.name, subItem);
@@ -892,7 +893,14 @@ class BladesActor extends Actor {
     }
 
     async _onCreateEmbeddedDocuments(embName, docs, ...args) {
-        super._onCreateEmbeddedDocuments(embName, docs, ...args);
+        docs.forEach(async (doc) => {
+            if (doc instanceof BladesItem && [BladesItemType.playbook, BladesItemType.crew_playbook].includes(doc.type)) {
+                await Promise.all(this.activeSubItems
+                    .filter((aItem) => aItem.type === doc.type && aItem.system.world_name !== doc.system.world_name)
+                    .map((aItem) => this.remSubItem(aItem)));
+            }
+        });
+        await super._onCreateEmbeddedDocuments(embName, docs, ...args);
         eLog.checkLog("actorTrigger", "onCreateEmbeddedDocuments", { embName, docs, args });
         docs.forEach(async (doc) => {
             if (doc instanceof BladesItem) {

@@ -8,8 +8,9 @@
 
 import U from "../../core/utilities.js";
 import G from "../../core/gsap.js";
-import { Tag, BladesActorType } from "../../core/constants.js";
+import { BladesActorType } from "../../core/constants.js";
 import Tags from "../../core/tags.js";
+import BladesItem from "../../blades-item.js";
 import BladesSelectorDialog from "../../blades-dialog.js";
 import BladesActiveEffect from "../../blades-active-effect.js";
 class BladesSheet extends ActorSheet {
@@ -250,7 +251,14 @@ class BladesSheet extends ActorSheet {
         if (!doc) {
             return;
         }
-        G.effects.blurRemove(elem$).then(() => doc.addTag(Tag.System.Archived));
+        G.effects.blurRemove(elem$).then(() => {
+            if (doc instanceof BladesItem) {
+                this.actor.remSubItem(doc);
+            }
+            else {
+                this.actor.remSubActor(doc);
+            }
+        });
     }
     async _onItemFullRemoveClick(event) {
         event.preventDefault();

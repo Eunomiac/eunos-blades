@@ -127,6 +127,7 @@
 			.editor:not(.tinymce) {
 				position: relative;
 				overflow-x: hidden;
+				height: 100%;
 				width: 100%;
 
 				.editor-edit {
@@ -154,6 +155,15 @@
 				position: relative;
 				max-width: unset;
 				width: calc(100% + (2 * var(--content-padding)));
+				height: 100%;
+
+				.tox.tox-tinymce {
+					height: 100% !important;
+				}
+				&:first-child {
+					margin-top: 30px;
+
+				}
 				// left: calc(-1 * var(--content-padding));
 			}
 

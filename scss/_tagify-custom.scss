@@ -6,7 +6,7 @@ $hover-yiq: $bg-yiq * 1.33;
 .tags-gm {
   position: absolute;
   z-index: 20;
-  top: -50px;
+  top: -40px;
 }
 
 .comp-tags {
@@ -19,8 +19,9 @@ $hover-yiq: $bg-yiq * 1.33;
   --placeholder-color: transparent;
   --placeholder-color-focus: transparent;
   --tags-border-color: #343434;
-  --tag-pad: 0.1rem 0.3rem;
+  --tag-pad: 0; // 0.1rem 0.3rem;
   align-items: center;
+  height: 18px;
   gap: 0.1rem;
 
   min-width: 100%;
@@ -31,11 +32,29 @@ $hover-yiq: $bg-yiq * 1.33;
   .tagify__tag {
     font-family: "Fjalla One";
     padding: 0;
-    margin: 0 0.1rem;
+    margin: 1px 0;
+    height: calc(100% - 2 * 1px);
     border-radius: 5px;
 
-    > div::before {
-      inset: -0.5px;
+    > div {
+      height: 100%;
+
+      > span {
+        padding-left: 4px;
+        line-height: 16px;
+        font-size: 12px;
+        white-space: nowrap;
+        // font-variant: small-caps;
+        // font-family: "Oswald";
+      }
+
+      &::before {
+        // inset: 1.5px;
+        // line-height: 14px;
+        height: 16px;
+        top: 0;
+        left: 0;
+      }
     }
 
     &[data-group="System Tags"] {

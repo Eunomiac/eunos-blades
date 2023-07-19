@@ -939,7 +939,6 @@ button::-moz-focus-inner {
 
 .tox .tox-hue-slider-spectrum {
   background: -webkit-gradient(linear, left top, left bottom, from(#f00), color-stop(#ff0080), color-stop(#f0f), color-stop(#8000ff), color-stop(#00f), color-stop(#0080ff), color-stop(#0ff), color-stop(#00ff80), color-stop(#0f0), color-stop(#80ff00), color-stop(#ff0), color-stop(#ff8000), to(#f00));
-  background: -o-linear-gradient(top, #f00, #ff0080, #f0f, #8000ff, #00f, #0080ff, #0ff, #00ff80, #0f0, #80ff00, #ff0, #ff8000, #f00);
   background: linear-gradient(to bottom, #f00, #ff0080, #f0f, #8000ff, #00f, #0080ff, #0ff, #00ff80, #0f0, #80ff00, #ff0, #ff8000, #f00);
   height: 100%;
   width: 100%; }
@@ -1037,7 +1036,6 @@ button::-moz-focus-inner {
   height: 30px;
   -webkit-transition: -webkit-transform 0.15s, -webkit-box-shadow 0.15s;
   transition: -webkit-transform 0.15s, -webkit-box-shadow 0.15s;
-  -o-transition: transform 0.15s, box-shadow 0.15s;
   transition: transform 0.15s, box-shadow 0.15s;
   transition: transform 0.15s, box-shadow 0.15s, -webkit-transform 0.15s, -webkit-box-shadow 0.15s;
   width: 30px; }
@@ -1201,7 +1199,6 @@ button::-moz-focus-inner {
 
 .tox .tox-comment__gradient::after {
   background: -webkit-gradient(linear, left top, left bottom, from(rgba(13, 13, 13, 0)), to(#0d0d0d));
-  background: -o-linear-gradient(rgba(13, 13, 13, 0), #0d0d0d);
   background: linear-gradient(rgba(13, 13, 13, 0), #0d0d0d);
   bottom: 0;
   content: "";
@@ -1735,12 +1732,10 @@ button::-moz-focus-inner {
 
 .tox .tox-dialog-dock-transition {
   -webkit-transition: visibility 0s linear 0.3s, opacity 0.3s ease;
-  -o-transition: visibility 0s linear 0.3s, opacity 0.3s ease;
   transition: visibility 0s linear 0.3s, opacity 0.3s ease; }
 
 .tox .tox-dialog-dock-transition.tox-dialog-dock-fadein {
   -webkit-transition-delay: 0s;
-  -o-transition-delay: 0s;
   transition-delay: 0s; }
 
 .tox.tox-platform-ie {
@@ -1864,7 +1859,6 @@ body.tox-dialog__disable-scroll {
   box-shadow: none;
   -webkit-transition: -webkit-box-shadow 0.5s;
   transition: -webkit-box-shadow 0.5s;
-  -o-transition: box-shadow 0.5s;
   transition: box-shadow 0.5s;
   transition: box-shadow 0.5s, -webkit-box-shadow 0.5s; }
 
@@ -1887,12 +1881,10 @@ body.tox-dialog__disable-scroll {
 
 .tox-editor-dock-transition {
   -webkit-transition: visibility 0s linear 0.25s, opacity 0.25s ease;
-  -o-transition: visibility 0s linear 0.25s, opacity 0.25s ease;
   transition: visibility 0s linear 0.25s, opacity 0.25s ease; }
 
 .tox-editor-dock-transition.tox-editor-dock-fadein {
   -webkit-transition-delay: 0s;
-  -o-transition-delay: 0s;
   transition-delay: 0s; }
 
 .tox .tox-control-wrap {
@@ -1980,7 +1972,6 @@ body.tox-dialog__disable-scroll {
   cursor: pointer; }
 
 .tox .tox-color-input span::before {
-  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%), -o-linear-gradient(135deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%), -o-linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.25) 75%), -o-linear-gradient(135deg, transparent 75%, rgba(255, 255, 255, 0.25) 75%);
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%), linear-gradient(-45deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.25) 75%), linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.25) 75%);
   background-position: 0 0, 0 6px, 6px -6px, -6px 0;
   background-size: 12px 12px;
@@ -2666,7 +2657,6 @@ body.tox-dialog__disable-scroll {
   padding: 3.5px;
   -webkit-transition: opacity 150ms ease-in, -webkit-transform 100ms ease-in;
   transition: opacity 150ms ease-in, -webkit-transform 100ms ease-in;
-  -o-transition: transform 100ms ease-in, opacity 150ms ease-in;
   transition: transform 100ms ease-in, opacity 150ms ease-in;
   transition: transform 100ms ease-in, opacity 150ms ease-in, -webkit-transform 100ms ease-in; }
 
@@ -2814,7 +2804,6 @@ body.tox-dialog__disable-scroll {
 
 .tox .tox-pop--resizing {
   -webkit-transition: width 0.1s ease;
-  -o-transition: width 0.1s ease;
   transition: width 0.1s ease; }
 
 .tox .tox-pop--resizing .tox-toolbar,
@@ -2824,16 +2813,13 @@ body.tox-dialog__disable-scroll {
 
 .tox .tox-pop--transition {
   -webkit-transition: 0.15s ease;
-  -o-transition: 0.15s ease;
   transition: 0.15s ease;
   -webkit-transition-property: left, right, top, bottom;
-  -o-transition-property: left, right, top, bottom;
   transition-property: left, right, top, bottom; }
 
 .tox .tox-pop--transition::before,
 .tox .tox-pop--transition::after {
   -webkit-transition: all 0.15s, visibility 0s, opacity 0.075s ease 0.075s;
-  -o-transition: all 0.15s, visibility 0s, opacity 0.075s ease 0.075s;
   transition: all 0.15s, visibility 0s, opacity 0.075s ease 0.075s; }
 
 .tox .tox-pop__dialog {
@@ -2866,7 +2852,6 @@ body.tox-dialog__disable-scroll {
 .tox .tox-pop.tox-pop--inset::after {
   opacity: 0;
   -webkit-transition: all 0s 0.15s, visibility 0s, opacity 0.075s ease;
-  -o-transition: all 0s 0.15s, visibility 0s, opacity 0.075s ease;
   transition: all 0s 0.15s, visibility 0s, opacity 0.075s ease; }
 
 .tox .tox-pop.tox-pop--bottom::before,
@@ -3000,7 +2985,6 @@ body.tox-dialog__disable-scroll {
 .tox .tox-sidebar--sliding-growing,
 .tox .tox-sidebar--sliding-shrinking {
   -webkit-transition: width 0.5s ease, opacity 0.5s ease;
-  -o-transition: width 0.5s ease, opacity 0.5s ease;
   transition: width 0.5s ease, opacity 0.5s ease; }
 
 .tox .tox-selector {
@@ -3151,7 +3135,6 @@ body.tox-dialog__disable-scroll {
   flex: 1 1 auto;
   margin-right: auto;
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   white-space: nowrap; }
 
@@ -3416,7 +3399,6 @@ body.tox-dialog__disable-scroll {
 
 .tox .tox-tbtn--bespoke .tox-tbtn__select-label {
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 7em; }
@@ -3498,12 +3480,10 @@ body.tox-dialog__disable-scroll {
 
 .tox .tox-toolbar__overflow--growing {
   -webkit-transition: height 0.3s ease, opacity 0.2s linear 0.1s;
-  -o-transition: height 0.3s ease, opacity 0.2s linear 0.1s;
   transition: height 0.3s ease, opacity 0.2s linear 0.1s; }
 
 .tox .tox-toolbar__overflow--shrinking {
   -webkit-transition: opacity 0.3s ease, height 0.2s linear 0.1s, visibility 0s linear 0.3s;
-  -o-transition: opacity 0.3s ease, height 0.2s linear 0.1s, visibility 0s linear 0.3s;
   transition: opacity 0.3s ease, height 0.2s linear 0.1s, visibility 0s linear 0.3s; }
 
 .tox .tox-menubar + .tox-toolbar,
@@ -3712,7 +3692,8 @@ body.tox-dialog__disable-scroll {
     flex-direction: column;
     overflow: hidden;
     position: relative;
-    visibility: inherit !important; }
+    visibility: inherit !important;
+    height: calc(100% + 25px) !important; }
     .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header {
       width: calc(100% / var(--toolbar-scale-factor));
       -webkit-transform-origin: top left;
@@ -3737,7 +3718,6 @@ body.tox-dialog__disable-scroll {
           transform: translateY(0px);
           -webkit-transition: -webkit-transform 0.5s;
           transition: -webkit-transform 0.5s;
-          -o-transition: transform 0.5s;
           transition: transform 0.5s;
           transition: transform 0.5s, -webkit-transform 0.5s; }
           .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar .tox-toolbar__group, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__overflow .tox-toolbar__group, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__primary .tox-toolbar__group {

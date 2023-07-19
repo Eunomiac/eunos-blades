@@ -14,9 +14,8 @@
 
 			// .comp-tags { display: none }
 
-			.sheet-img {
-				left: 0
-			}
+			.sheet-img { left: 0 }
+			// .sheet-img-bg { top: -50px }
 
 			.sheet-root {
 				section.sheet-top {
@@ -40,10 +39,10 @@
 					.comp-traits {
 						grid-area: traits;
 						display: flex;
-						font-family: var(--font-emphasis);
 
 						// top: 0px;
 						input {
+							font-family: var(--font-emphasis);
 							text-transform: uppercase;
 							text-align: center;
 							color: var(--blades-gold);
@@ -52,7 +51,9 @@
 
 					.comp-faction,
 					.comp-district {
+						overflow: hidden;
 						text-align: center;
+						padding-left: 5px;
 
 						label {
 							text-align: center;

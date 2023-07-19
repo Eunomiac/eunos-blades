@@ -2,6 +2,11 @@
 
 	{{!-- Actor Img: Portrait --}}
 	<img class="sheet-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+	{{#unless (test actor.img "==" "icons/svg/mystery-man.svg")}}
+	<div class="sheet-img-bg full-width">
+		<img src="{{actor.img}}" />
+	</div>
+	{{/unless}}
 
 	{{!-- SubActor GM Alert --}}
 	{{#if isGM}}{{#if isSubActor}}
@@ -47,7 +52,7 @@
 		<section class="tab-content nav-group flex-vertical">
 
 			{{!-- Nav menu --}}
-			<nav class="nav-tabs flex-horizontal">
+			<nav class="nav-tabs flex-horizontal full-width">
 				<a class="tab-selector" data-tab="description">Description</a>
 				<a class="tab-selector" data-tab="friends-and-foes">Friends & Foes</a>
 				{{#if isGM}}
@@ -57,7 +62,6 @@
 
 			{{!-- Description --}}
 			<div class="tab description flex-vertical" data-tab="description">
-				<label class="comp tab-label">Description</label>
 				{{editor system.description target="system.description" button=true owner=owner editable=editable}}
 			</div>
 
@@ -65,19 +69,13 @@
 			<div class="tab friends-and-foes flex-vertical" data-tab="friends-and-foes">
 				<div class="flex-horizontal">
 					<div class="comp-connections-list allies-list">
-						<div class="label-stripe flex-horizontal">
-							<p>Allies</p>
-						</div>
+						<label class="comp tab-label"><span class="tab-title">Allies</span></label>
 					</div>
 					<div class="comp-connections-list enemies-list">
-						<div class="label-stripe flex-horizontal">
-							<p>Enemies</p>
-						</div>
+						<label class="comp tab-label"><span class="tab-title">Enemies</span></label>
 					</div>
 					<div class="comp-connections-list others-list">
-						<div class="label-stripe flex-horizontal">
-							<p>Others</p>
-						</div>
+						<label class="comp tab-label"><span class="tab-title">Others</span></label>
 					</div>
 				</div>
 			</div>

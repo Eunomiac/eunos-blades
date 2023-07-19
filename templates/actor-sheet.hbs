@@ -2,9 +2,11 @@
 
 	{{!-- Actor Img: Portrait & Background Overlay --}}
 	<img class="sheet-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+	{{#unless (test actor.img "==" "icons/svg/mystery-man.svg")}}
 	<div class="sheet-img-bg full-width">
 		<img src="{{actor.img}}" />
 	</div>
+	{{/unless}}
 
 	{{!-- Playbook XP --}}
 	{{#if items.playbook}}

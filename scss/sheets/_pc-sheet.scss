@@ -38,6 +38,7 @@
 					}
 
 					.comp-trauma {
+						.comp-label { min-width: 80px; }
 						.dotline {
 							--fill-color-full: var(--blades-red-bright);
 							flex-grow: 0;
@@ -234,6 +235,7 @@
 					height: 375px;
 
 					section.nav-group {
+						height: 100%;
 						.loadout {
 							.tab-label {
 

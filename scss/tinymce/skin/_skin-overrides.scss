@@ -33,6 +33,8 @@
 		overflow: hidden;
 		position: relative;
 		visibility: inherit !important;
+		height: calc(100% + 25px) !important;
+
 
 		.tox-editor-container {
 

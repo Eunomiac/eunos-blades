@@ -6,6 +6,10 @@
 	align-items: center;
 	z-index: zLevel();
 
+
+
+	&.full-width { width: 100%; justify-content: space-evenly }
+
 	&.portrait-container {
 		flex-wrap: wrap;
 		width: 100%;

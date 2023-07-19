@@ -322,7 +322,13 @@ class BladesSheet extends ActorSheet {
 		if (!doc) {
 			return;
 		}
-		G.effects.blurRemove(elem$).then(() => doc.addTag(Tag.System.Archived));
+		G.effects.blurRemove(elem$).then(() => {
+			if (doc instanceof BladesItem) {
+				this.actor.remSubItem(doc);
+			} else {
+				this.actor.remSubActor(doc);
+			}
+		});
 	}
 
 	async _onItemFullRemoveClick(event: ClickEvent) {

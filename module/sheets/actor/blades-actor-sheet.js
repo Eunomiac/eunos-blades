@@ -8,7 +8,6 @@
 import C, { BladesActorType, BladesItemType, Tag, BladesPhase } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
-import BladesItem from "../../blades-item.js";
 import BladesActor from "../../blades-actor.js";
 
 class BladesActorSheet extends BladesSheet {
@@ -32,10 +31,6 @@ class BladesActorSheet extends BladesSheet {
                 else if (parentActor.type === BladesActorType.pc && doc.type === BladesActorType.crew) {
                     parentActor.addSubActor(doc);
                 }
-            }
-            if (doc instanceof BladesItem) {
-                BladesItem.create(doc, { parent: parentActor });
-                return;
             }
         });
         return loadTemplates([
