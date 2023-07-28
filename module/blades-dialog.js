@@ -45,7 +45,6 @@ class BladesSelectorDialog extends Dialog {
         ]);
     }
     static async Display(parent, title, docType, tabs, tags) {
-        eLog.checkLog("BladesSelectorDialog.Display()", { parent, title, tabs });
         const app = new BladesSelectorDialog({
             parent,
             title,
@@ -77,12 +76,10 @@ class BladesSelectorDialog extends Dialog {
     }
     getData() {
         const data = super.getData();
-        eLog.checkLog4("dialog", "[BladesDialog] super.getData()", { ...data });
         data.title = this.title;
         data.tabs = this.tabs;
         data.docType = this.docType;
         data.tags = this.tags;
-        eLog.checkLog("dialog", "[BladesDialog] return getData()", { ...data });
         return data;
     }
     activateListeners(html) {

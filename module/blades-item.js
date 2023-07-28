@@ -22,6 +22,17 @@ export var PrereqType;
 })(PrereqType || (PrereqType = {}));
 class BladesItem extends Item {
 
+    static async create(data, options = {}) {
+        if (Array.isArray(data)) {
+            data = data[0];
+        }
+        data.system = data.system ?? {};
+        eLog.checkLog2("item", "BladesItem.create(data,options)", { data, options });
+
+        data.system.world_name = data.system.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "").trim().replace(/ /g, "_");
+        return super.create(data, options);
+    }
+
     static get All() { return game.items; }
     static Get(itemRef) {
         if (itemRef instanceof BladesItem) {
@@ -112,22 +123,6 @@ class BladesItem extends Item {
     }
     get tier() { return U.pInt(this.parent?.system?.tier); }
     get playbooks() { return this.system.playbooks ?? []; }
-    isKept(actor) {
-        if (this.type !== "ability") {
-            return null;
-        }
-        const playbook = actor.playbookName;
-        if (!playbook) {
-            return null;
-        }
-        if (this.system.playbooks?.includes(actor.playbookName)) {
-            return true;
-        }
-        if (["Ghost", "Hull", "Vampire"].includes(actor.playbookName) && this.system.keepAsGhost) {
-            return true;
-        }
-        return false;
-    }
     _prepareCohort() {
         if (this.parent?.documentName !== "Actor") {
             return;

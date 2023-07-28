@@ -38,6 +38,7 @@
 			id=items.playbook._id
 			}}
 
+			{{#if items.playbook}}
 			{{> "systems/eunos-blades/templates/components/comp.hbs" items.heritage
 			id=items.heritage.id
 			class="comp-heritage comp-vertical no-img"
@@ -47,7 +48,11 @@
 			addButton=true
 			remButton=true
 			}}
+			{{else}}
+			<div class="comp-heritage comp-vertical no-img"></div>
+			{{/if}}
 
+			{{#if items.playbook}}
 			{{> "systems/eunos-blades/templates/components/comp.hbs" items.background
 			id=items.background.id
 			class="comp-background comp-vertical"
@@ -57,12 +62,15 @@
 			addButton=true
 			remButton=true
 			}}
+			{{else}}
+			<div class="comp-background comp-vertical"></div>
+			{{/if}}
 
 			{{#if items.playbook}}
 			{{> "systems/eunos-blades/templates/components/comp.hbs" items.vice
 			id=items.vice.id
 			class="comp-vice comp-vertical"
-			label="Vice"
+			label=system.vice_name
 			cat="Vice"
 			docType="Item"
 			addButton=true
@@ -82,6 +90,7 @@
 			id=actors.crew.id
 			}}
 
+			{{#unless (test actor.playbookName "==" "Hull")}}
 			{{> "systems/eunos-blades/templates/components/comp.hbs" coinsData
 			label="Coins"
 			class="comp-coins comp-vertical"
@@ -90,6 +99,7 @@
 			{{> "systems/eunos-blades/templates/components/comp.hbs" stashData
 			class="comp-stash comp-horizontal"
 			}}
+			{{/unless}}
 
 		</section>
 
@@ -179,6 +189,7 @@
 			</table>
 		</section>
 
+		{{#if items.playbook}}
 		{{!-- Split Panel: Tabs, Tab Navigation /// Attributes --}}
 		<div class="split-panel full-width">
 			{{!-- Navigable Tabs --}}
@@ -187,7 +198,7 @@
 				<nav class="nav-tabs flex-horizontal">
 					<a class="tab-selector" data-tab="abilities">{{localize "BITD.Abilities"}}</a>
 					<a class="tab-selector" data-tab="loadout">{{localize "BITD.Loadout"}}</a>
-					<a class="tab-selector" data-tab="acquaintances">{{acquaintancesName}}</a>
+					<a class="tab-selector" data-tab="acquaintances">Acquaintances</a>
 					<a class="tab-selector" data-tab="player-notes">{{localize "BITD.Notes"}}</a>
 					{{#if isGM}}
 					<a class="tab-selector" data-tab="gm-notes">GM Notes</a>
@@ -260,58 +271,43 @@
 							<i class="fas fa-plus-square"></i>
 						</a>
 						{{/if}}
-						<span class="tab-title">{{#if friendsName}}{{friendsName}}{{else}}{{acquaintancesName}}{{/if}}</span>
+						<span class="tab-title">{{acquaintancesName}}</span>
 					</label>
 
 					<div class="comp comp-horizontal portrait-container actors-container">
-						{{#if items.playbook}}
+						{{#if (test items.playbook "&&" hasVicePurveyor)}}
 						{{> "systems/eunos-blades/templates/components/portrait.hbs" actors.vice_purveyor
 						id = actors.vice_purveyor.id
 						label = "Vice Purveyor"
 						cat="VicePurveyor"
 						docType="Actor"
+						tooltip=actor.tooltip
+						tooltipClass= "tooltip-portrait tooltip-low"
 						remButton=true
 						addButton=true
 						}}
 						{{/if}}
 						{{#each actors.friends as |actor|}}
 						{{> "systems/eunos-blades/templates/components/portrait.hbs" actor
-						cat = "Friend"
+						cat = "Acquaintance"
 						docType = "Actor"
 						id=actor._id
+						tooltip=actor.tooltip
+						tooltipClass= "tooltip-portrait tooltip-low"
 						remButton=true
 						}}
 						{{/each}}
-						{{#unless rivalsName}}
 						{{#each actors.rivals as |actor|}}
 						{{> "systems/eunos-blades/templates/components/portrait.hbs" actor
-						cat = "Rival"
+						cat = "Acquaintance"
 						docType = "Actor"
 						id=actor._id
-						remButton=true
-						}}
-						{{/each}}
-						{{/unless}}
-					</div>
-					{{#if rivalsName}}
-					<label class="comp tab-label" data-comp-cat="Rival" data-comp-type="Actor" data-comp-tags="Rival">
-						<a class="comp-control comp-button comp-add">
-							<i class="fas fa-plus-square"></i>
-						</a>
-						<span class="tab-title">{{rivalsName}}</span>
-					</label>
-
-					<div class="comp comp-horizontal portrait-container actors-container">
-						{{#each actors.rivals as |actor|}}
-						{{> "systems/eunos-blades/templates/components/portrait.hbs" actor
-						cat = "Rival"
-						docType = "Actor"
-						id=actor._id
+						tooltip=actor.tooltip
+						tooltipClass= "tooltip-portrait tooltip-low"
 						remButton=true
 						}}
 						{{/each}}
 					</div>
-					{{/if}}
 
 				</div>
 
@@ -397,6 +393,6 @@
 				{{/each}}
 			</section>
 		</div>
-
+		{{/if}}
 	</div>
 </form>

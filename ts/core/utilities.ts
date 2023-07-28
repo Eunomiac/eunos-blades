@@ -689,7 +689,7 @@ const checkVal = ({k, v}: { k?: unknown, v?: unknown }, checkTest: checkTest) =>
 	}
 	return (new RegExp(checkTest)).test(`${v}`);
 };
-const remove = (obj: Index<unknown>, checkTest: testFunc<keyFunc | valFunc>) => {
+const remove = (obj: Index<unknown>, checkTest: testFunc<keyFunc | valFunc>|number|string) => {
 	// Given an array or list and a search function, will remove the first matching element and return it.
 	if (isArray(obj)) {
 		const index = obj.findIndex((v) => checkVal({v}, checkTest));

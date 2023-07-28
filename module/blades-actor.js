@@ -10,7 +10,180 @@ import { BladesActorType, Tag, Playbook, BladesItemType, Attributes, Actions, Po
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem, { PrereqType } from "./blades-item.js";
 import { SelectionCategory } from "./blades-dialog.js";
+//
 class BladesActor extends Actor {
+    static migrateActor(actor) {
+        const updateData = {};
+        switch (actor.type) {
+            case BladesActorType.npc: {
+                if (actor.system.arena) {
+                    updateData.situation = actor.system.situation || actor.system.arena;
+                }
+                updateData["-=arena"] = null;
+                if (actor.system.notes_gm) {
+                    updateData.gm_notes = actor.system.gm_notes || actor.system.notes_gm;
+                }
+                updateData["-=notes_gm"] = null;
+                if (actor.system.description_short) {
+                    updateData.subtitle = actor.system.subtitle || actor.system.description_short;
+                }
+                updateData["-=description_short"] = null;
+                updateData.persona = actor.system.persona ?? {};
+                ["gender", "appearance", "goal", "method", "interests", "quirk", "style", "trait_1", "trait_2", "trait_3"].forEach((personaTag) => {
+                    if (actor.system.randomizers?.[personaTag]?.isLocked) {
+                        switch (personaTag) {
+                            case "gender": {
+                                if (updateData.persona.gender) {
+                                    break;
+                                }
+                                updateData.persona.gender = {
+                                    isLocked: Boolean(actor.system.randomizers?.gender?.isLocked),
+                                    value: ({
+                                        m: "M",
+                                        f: "F"
+                                    }[(actor.system.randomizers?.gender?.value ?? "").charAt(0).toLowerCase()] ?? "")
+                                };
+                                break;
+                            }
+                            case "appearance":
+                                if (updateData.persona.appearance) {
+                                    break;
+                                }
+                            case "goal":
+                                if (updateData.persona.goal) {
+                                    break;
+                                }
+                            case "method":
+                                if (updateData.persona.method) {
+                                    break;
+                                }
+                            case "interests":
+                                if (updateData.persona.interests) {
+                                    break;
+                                }
+                            case "quirk":
+                                if (updateData.persona.quirk) {
+                                    break;
+                                }
+                            case "style": {
+                                if (updateData.persona.style) {
+                                    break;
+                                }
+                                updateData.persona[personaTag] = { isLocked: true, value: actor.system.randomizers[personaTag].value };
+                                break;
+                            }
+                            case "trait_1": {
+                                if (updateData.persona.trait1) {
+                                    break;
+                                }
+                                updateData.persona.trait1 = { isLocked: true, value: actor.system.randomizers.trait_1.value };
+                                break;
+                            }
+                            case "trait_2": {
+                                if (updateData.persona.trait2) {
+                                    break;
+                                }
+                                updateData.persona.trait2 = { isLocked: true, value: actor.system.randomizers.trait_2.value };
+                                break;
+                            }
+                            case "trait_3": {
+                                if (updateData.persona.trait3) {
+                                    break;
+                                }
+                                updateData.persona.trait3 = { isLocked: true, value: actor.system.randomizers.trait_3.value };
+                                break;
+                            }
+                        }
+                    }
+                });
+                updateData.persona.trait1 ??= { isLocked: Boolean(actor.system.traits[0]), value: actor.system.traits[0] };
+                updateData.persona.trait2 ??= { isLocked: Boolean(actor.system.traits[1]), value: actor.system.traits[1] };
+                updateData.persona.trait3 ??= { isLocked: Boolean(actor.system.traits[2]), value: actor.system.traits[2] };
+                updateData["-=traits"] = null;
+                updateData["-=notes"] = null;
+                updateData["-=randomizers"] = null;
+                const descStrings = [];
+                if (actor.system.prompts) {
+                    descStrings.push(`<p style=\"text-align: center;\"><em>${actor.system.prompts}</em></p>`);
+                }
+                updateData["-=prompts"] = null;
+                if (actor.system.description) {
+                    descStrings.push(`<p>${actor.system.description}</p>`.replace(/(<\/?p>){2}/g, "$1"));
+                }
+                if (["heritage", "allies", "enemies", "faction", "associated_faction"].some((key) => Boolean(actor.system[key]))) {
+                    descStrings.push("<li>");
+                    descStrings.push(...["heritage", "allies", "enemies", "faction", "associated_faction"]
+                        .filter((key) => Boolean(actor.system[key]))
+                        .map((key) => `<ul><b>${U.uCase(key)}:</b> ${actor.system[key]}</ul>`));
+                    descStrings.push("</li>");
+                }
+                ["heritage", "allies", "enemies", "faction", "associated_faction"].forEach((key) => {
+                    updateData[`-=${key}`] = null;
+                });
+                updateData.description = descStrings.join(`
+				`);
+                break;
+            }
+            case BladesActorType.faction: {
+                const descStrings = [];
+                if (actor.system.description) {
+                    descStrings.push(`<p>${actor.system.description}</p>`.replace(/(<\/?p>){2}/g, "$1"));
+                }
+                if (actor.system.quirks) {
+                    descStrings.push(`<p><span class="text-secret" data-is-secret="true">${actor.system.quirks}</span></p>`);
+                }
+                if (["allies", "enemies", "notables"].some((key) => Boolean(actor.system[key]))) {
+                    descStrings.push("<li>");
+                    descStrings.push(...["allies", "enemies", "notables"]
+                        .filter((key) => Boolean(actor.system[key]))
+                        .map((key) => `<ul><b>${U.uCase(key)}:</b> ${actor.system[key]}</ul>`));
+                    descStrings.push("</li>");
+                }
+                updateData.description = descStrings.join(`
+				`);
+                if (actor.system.hold.value === 1) {
+                    updateData.hold = "strong";
+                }
+                else {
+                    updateData.hold = "weak";
+                }
+                if (!actor.system.clocks) {
+                    updateData.clocks = {};
+                    if (actor.system.goal_1.name !== "" || actor.system.goal_1.max !== 0) {
+                        updateData.clocks.Goal_1 = {
+                            title: actor.system.goal_1.name || "Goal 1",
+                            value: 0,
+                            max: actor.system.goal_1.max || 0,
+                            color: "#FFFFFF",
+                            isClockVisible: false,
+                            isTitleVisible: true,
+                            isFocused: false
+                        };
+                    }
+                    if (actor.system.goal_2.name !== "" || actor.system.goal_2.max !== 0) {
+                        updateData.clocks.Goal_2 = {
+                            title: actor.system.goal_2.name || "Goal 2",
+                            value: 0,
+                            max: actor.system.goal_2.max || 0,
+                            color: "#FFFFFF",
+                            isClockVisible: false,
+                            isTitleVisible: true,
+                            isFocused: false
+                        };
+                    }
+                }
+                if (!U.isList(actor.system.tier)) {
+                    updateData.tier = { value: U.pInt(actor.system.tier), max: 8 };
+                }
+                break;
+            }
+        }
+        actor.update({ system: updateData });
+    }
+    static Migrate() {
+        BladesActor.GetTypeWithTags(BladesActorType.faction).forEach((actor) => BladesActor.migrateActor(actor));
+        BladesActor.GetTypeWithTags(BladesActorType.npc).forEach((actor) => BladesActor.migrateActor(actor));
+    }
 
     static async create(data, options = {}) {
         data.token = data.token || {};
@@ -39,6 +212,10 @@ class BladesActor extends Actor {
     static GetTypeWithTags(docType, ...tags) {
         return BladesActor.All.filter((actor) => actor.type === docType)
             .filter((actor) => actor.hasTag(...tags));
+    }
+    static IsType(doc, ...types) {
+        const typeSet = new Set(types);
+        return doc instanceof BladesActor && typeSet.has(doc.type);
     }
     get tags() { return this.system.tags ?? []; }
     hasTag(...tags) {
@@ -106,6 +283,9 @@ class BladesActor extends Actor {
             return 0;
         });
     }
+    reportSubActorTags() {
+        return "";
+    }
     getDialogActors(category) {
                 
         const dialogData = {};
@@ -135,7 +315,7 @@ class BladesActor extends Actor {
         }
     }
     async addSubActor(actorRef, tags) {
-        eLog.checkLog3("subactors", "[addSubActor] actorRef, tags", { actorRef, tags });
+        eLog.checkLog2("subactors", "[addSubActor] actorRef, tags", { actorRef, tags, subTags: this.reportSubActorTags() });
         let BladesActorUniqueTags;
         (function (BladesActorUniqueTags) {
             BladesActorUniqueTags["CharacterCrew"] = "CharacterCrew";
@@ -167,20 +347,22 @@ class BladesActor extends Actor {
             await this.update({ [`system.subactors.${actor.id}`]: subActorData });
             focusSubActor = this.getSubActor(actor.id);
         }
-        eLog.checkLog3("subactors", "[addSubActor] Found focusSubActor??");
         if (!focusSubActor) {
+            eLog.checkLog3("subactors", "[addSubActor] Did NOT Find Subactor! Returning!");
             return;
         }
-        eLog.checkLog3("subactors", "[addSubActor] ... YES!", focusSubActor);
+        eLog.checkLog3("subactors", "[addSubActor] Focus Subactor:", { focusSubActor, subTags: this.reportSubActorTags() });
         const uniqueTags = focusSubActor.tags.filter((tag) => tag in BladesActorUniqueTags);
-        eLog.checkLog3("subactors", "[addSubActor] Matching Unique Tags?", { subActorTags: focusSubActor.tags, uniqueTags });
+        eLog.checkLog3("subactors", "[addSubActor] Matching Unique Tags?", { subActorTags: focusSubActor.tags, uniqueTags, isUnique: uniqueTags.length > 0, subTags: this.reportSubActorTags() });
         if (uniqueTags.length > 0) {
             uniqueTags.forEach((uTag) => this.activeSubActors
                 .filter((subActor) => subActor.id !== focusSubActor.id && subActor.hasTag(uTag))
                 .map((subActor) => this.remSubActor(subActor.id)));
         }
+        eLog.checkLog2("subactors", "[addSubActor] Finished!", { subTags: this.reportSubActorTags() });
     }
     getSubActor(actorRef) {
+        eLog.checkLog4("subactors", "[getSubActor] Tag Report START", { subTags: this.reportSubActorTags() });
         const actor = BladesActor.Get(actorRef);
         if (!actor?.id) {
             return undefined;
@@ -194,6 +376,7 @@ class BladesActor extends Actor {
             actor.ownership[this.primaryUser.id] = CONST.DOCUMENT_PERMISSION_LEVELS.OWNER;
         }
         actor.parentActor = this;
+        eLog.checkLog4("subactors", "[getSubActor] Tag Report END", { subTags: this.reportSubActorTags() });
         return actor;
     }
     hasSubActorOf(actorRef) {
@@ -222,24 +405,22 @@ class BladesActor extends Actor {
         const diffUpdateSystem = U.objDiff(actor.system, updateData.system);
         const mergedSubActorSystem = U.objMerge(this.system.subactors[actor.id] ?? {}, diffUpdateSystem, { isReplacingArrays: true, isConcatenatingArrays: false });
         eLog.checkLog3("subactors", "[updateSubActor] ", {
-            ["3: diffUpdateSystem"]: diffUpdateSystem,
-            ["5: mergedSubActorSystem"]: mergedSubActorSystem
+            ["1: diffUpdateSystem"]: diffUpdateSystem,
+            ["2: curActorSystem"]: JSON.stringify(this.system.subactors[actor.id]),
+            ["3: mergedSubActorSystem"]: JSON.stringify(mergedSubActorSystem),
+            ["4: diffObjForCheck"]: U.objDiff(mergedSubActorSystem, this.system.subactors[actor.id]),
+            subTags: this.reportSubActorTags()
         });
-        return this.update({ [`system.subactors.${actor.id}`]: mergedSubActorSystem }, undefined, true);
+        if (JSON.stringify(this.system.subactors[actor.id]) === JSON.stringify(mergedSubActorSystem)) {
+            return undefined;
+        }
+        return this.update({ [`system.subactors.${actor.id}`]: null }, undefined, true)
+            .then(() => this.update({ [`system.subactors.${actor.id}`]: mergedSubActorSystem }, undefined, true))
+            .then(() => actor.sheet?.render());
     }
     async remSubActor(actorRef) {
-        const actor = BladesActor.Get(actorRef);
-        if (!actor) {
-            return;
-        }
-        if (!this.hasActiveSubActorOf(actor)) {
-            return;
-        }
-        const subActor = this.getSubActor(actor);
-        if (!subActor || subActor.hasTag(Tag.System.Archived)) {
-            return;
-        }
-        subActor.addTag(Tag.System.Archived);
+        this.purgeSubActor(actorRef);
+        return;
     }
     async purgeSubActor(actorRef) {
         const subActor = this.getSubActor(actorRef);
@@ -254,6 +435,7 @@ class BladesActor extends Actor {
                 subActor.clearParentActor(isReRendering);
             }
         });
+        this.sheet?.render();
     }
     async clearParentActor(isReRendering = true) {
         const { parentActor } = this;
@@ -265,7 +447,7 @@ class BladesActor extends Actor {
         this.ownership = this._source.ownership;
         this.prepareData();
         if (isReRendering) {
-            this.render();
+            this.sheet?.render();
         }
     }
     
@@ -789,7 +971,7 @@ class BladesActor extends Actor {
         return undefined;
     }
     get attributes() {
-        if (this.type !== BladesActorType.pc) {
+        if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return undefined;
         }
         return {
@@ -799,7 +981,7 @@ class BladesActor extends Actor {
         };
     }
     get actions() {
-        if (this.type !== BladesActorType.pc) {
+        if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return undefined;
         }
         return U.objMap({
@@ -809,7 +991,7 @@ class BladesActor extends Actor {
         }, ({ value, max }) => U.gsap.utils.clamp(0, max, value));
     }
     get rollable() {
-        if (this.type !== BladesActorType.pc) {
+        if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return undefined;
         }
         return {
@@ -818,23 +1000,27 @@ class BladesActor extends Actor {
         };
     }
     get trauma() {
-        if (this.type !== BladesActorType.pc) {
+        if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return 0;
         }
-        return Object.keys(this.system.trauma?.checked ?? {})
+        return Object.keys(this.system.trauma.checked)
             .filter((traumaName) => {
             return this.system.trauma.active[traumaName] && this.system.trauma.checked[traumaName];
         })
             .length;
     }
     get traumaList() {
-        return Object.keys(this.system.trauma.active ?? {}).filter((key) => this.system.trauma.active[key]);
+        return BladesActor.IsType(this, BladesActorType.pc) ? Object.keys(this.system.trauma.active).filter((key) => this.system.trauma.active[key]) : [];
     }
     get activeTraumaConditions() {
-        return U.objFilter(this.system.trauma?.checked ?? {}, (v, traumaName) => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName]));
+        if (!BladesActor.IsType(this, BladesActorType.pc)) {
+            return {};
+        }
+        return U.objFilter(this.system.trauma.checked, 
+        (v, traumaName) => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName]));
     }
     get currentLoad() {
-        if (this.type !== BladesActorType.pc) {
+        if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return 0;
         }
         const activeLoadItems = this.activeSubItems.filter((item) => item.type === BladesItemType.item);
@@ -844,7 +1030,7 @@ class BladesActor extends Actor {
             : 0), 0));
     }
     get remainingLoad() {
-        if (this.type !== BladesActorType.pc) {
+        if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return 0;
         }
         if (!this.system.loadout.selected) {
@@ -854,6 +1040,9 @@ class BladesActor extends Actor {
         return Math.max(0, maxLoad - this.currentLoad);
     }
     async addStash(amount) {
+        if (!BladesActor.IsType(this, BladesActorType.pc)) {
+            return undefined;
+        }
         return this.update({ "system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max) });
     }
     
@@ -905,7 +1094,19 @@ class BladesActor extends Actor {
         docs.forEach(async (doc) => {
             if (doc instanceof BladesItem) {
                 switch (doc.type) {
+                    case BladesItemType.vice: {
+                        if (!BladesActor.IsType(this, BladesActorType.pc)) {
+                            return;
+                        }
+                        this.activeSubActors
+                            .filter((subActor) => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name))
+                            .forEach((subActor) => this.remSubActor(subActor));
+                        break;
+                    }
                     case BladesItemType.playbook: {
+                        if (!BladesActor.IsType(this, BladesActorType.pc)) {
+                            return;
+                        }
                         await this.update({
                             "system.trauma.active": Object.assign(Object.fromEntries(Object.keys(this.system.trauma.active).map((tCond) => [tCond, false])), Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond) => [tCond, true]))),
                             "system.trauma.checked": Object.assign(Object.fromEntries(Object.keys(this.system.trauma.checked).map((tCond) => [tCond, false])), Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond) => [tCond, false])))
@@ -923,7 +1124,7 @@ class BladesActor extends Actor {
         switch (this.type) {
             case BladesActorType.pc: {
                 if (isSkippingSubActorCheck) {
-                    eLog.checkLog("actorTrigger", "Updating PC SubActor Data", { updateData });
+                    eLog.checkLog3("actorTrigger", "Updating PC SubActor Data", { updateData, subTags: this.reportSubActorTags() });
                 }
                 break;
             }
@@ -945,10 +1146,10 @@ class BladesActor extends Actor {
             }
             case BladesActorType.npc: {
                 if (this.parentActor && !isSkippingSubActorCheck) {
-                    eLog.checkLog("actorTrigger", "Updating NPC as SubActor", { parentActor: this.parentActor, systemTags: this.system.tags, sourceTags: this._source.system.tags, isSkippingSubActorCheck, updateData });
+                    eLog.checkLog3("actorTrigger", "Updating NPC as SubActor", { parentActor: this.parentActor, systemTags: this.system.tags, sourceTags: this._source.system.tags, isSkippingSubActorCheck, updateData, subTags: this.reportSubActorTags() });
                     return this.parentActor.updateSubActor(this.id, updateData);
                 }
-                eLog.checkLog("actorTrigger", "Updating NPC as ACTOR", { parentActor: this.parentActor, systemTags: this.system.tags, sourceTags: this._source.system.tags, isSkippingSubActorCheck, updateData });
+                eLog.checkLog3("actorTrigger", "Updating NPC as ACTOR", { parentActor: this.parentActor, systemTags: this.system.tags, sourceTags: this._source.system.tags, isSkippingSubActorCheck, updateData, subTags: this.reportSubActorTags() });
             }
         }
         return super.update(updateData, context);

@@ -115,6 +115,9 @@ html, :root {
     --blades-red-bright-nums: 220, 20, 60;
     --blades-red-nums: 204, 0, 0;
     --blades-red-dark-nums: 122, 0, 0;
+    --blades-green-bright-nums: 20, 220, 60;
+    --blades-green-nums: 0, 204, 0;
+    --blades-green-dark-nums: 0, 122, 0;
     --blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
     --blades-white: rgba(var(--blades-white-nums), 1);
     --blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
@@ -128,6 +131,9 @@ html, :root {
     --blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
     --blades-red: rgba(var(--blades-red-nums), 1);
     --blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
+    --blades-green-bright: rgba(var(--blades-green-bright-nums), 1);
+    --blades-green: rgba(var(--blades-green-nums), 1);
+    --blades-green-dark: rgba(var(--blades-green-dark-nums), 1);
     --blades-white-fade: rgba(var(--blades-white-nums), 0.5);
     --blades-white-fade-strong: rgba(var(--blades-white-nums), 0.25);
     --blades-white-bright-fade: rgba(var(--blades-white-bright-nums), 0.5);
@@ -333,8 +339,9 @@ html, :root {
         -ms-transform: scale(1.5);
         transform: scale(1.5); }
       html .comp .comp-control.comp-button, :root .comp .comp-control.comp-button {
-        opacity: 0.5; }
-        html .comp .comp-control.comp-button.comp-delete, :root .comp .comp-control.comp-button.comp-delete {
+        opacity: 0.5;
+        text-align: center; }
+        html .comp .comp-control.comp-button.comp-delete, html .comp .comp-control.comp-button.comp-delete-full, :root .comp .comp-control.comp-button.comp-delete, :root .comp .comp-control.comp-button.comp-delete-full {
           --comp-control-color: var(--blades-white-bright);
           --comp-control-hover-color: var(--blades-red-bright);
           --comp-control-shadow-color: transparent;
@@ -412,7 +419,10 @@ html, :root {
       align-items: stretch;
       color: var(--blades-white);
       background: var(--blades-black-dark);
-      width: clamp(300px, 400px, 500px);
+      width: -webkit-max-content;
+      width: -moz-max-content;
+      width: max-content;
+      max-width: 400px;
       padding: toRem(6px);
       border: toRem(1px) solid var(--blades-grey);
       border-radius: toRem(3px);
@@ -425,6 +435,13 @@ html, :root {
       pointer-events: none; }
       html .comp .tooltip.tooltip-left, :root .comp .tooltip.tooltip-left {
         width: 500px; }
+      html .comp .tooltip.tooltip-portrait, :root .comp .tooltip.tooltip-portrait {
+        bottom: 100px;
+        left: 50px; }
+      html .comp .tooltip.trauma-tooltip, :root .comp .tooltip.trauma-tooltip {
+        scale: 1.25;
+        left: -200px;
+        bottom: -75px; }
     html .comp.comp-vertical, :root .comp.comp-vertical {
       --comp-img-scale: 2;
       --comp-name-size: toRem(16px);
@@ -469,31 +486,40 @@ html, :root {
           top: 40%;
           left: 50%;
           height: 100%;
-          z-index: zLevel(-2); }
+          z-index: zLevel(-2);
+          pointer-events: none; }
         html .comp.comp-vertical .comp-body .comp-body-text, :root .comp.comp-vertical .comp-body .comp-body-text {
           display: none; }
       html .comp.comp-vertical.portrait-block, :root .comp.comp-vertical.portrait-block {
-        height: 100%;
+        height: 80px;
         -ms-flex-preferred-size: toRem(80px);
         flex-basis: toRem(80px);
         min-width: 90px;
         margin: 10px 0; }
+        html .comp.comp-vertical.portrait-block .comp-label.shadowed, :root .comp.comp-vertical.portrait-block .comp-label.shadowed {
+          margin-top: -10px;
+          margin-bottom: 10px; }
         html .comp.comp-vertical.portrait-block .comp-button.comp-delete, :root .comp.comp-vertical.portrait-block .comp-button.comp-delete {
-          left: unset;
-          right: 10%;
-          top: -10px; }
+          left: 5px;
+          right: unset;
+          top: 62px; }
         html .comp.comp-vertical.portrait-block .comp-body, :root .comp.comp-vertical.portrait-block .comp-body {
           -webkit-filter: drop-shadow(0 0 toRem(2px) var(--blades-black-dark));
           filter: drop-shadow(0 0 toRem(2px) var(--blades-black-dark));
           width: 100%; }
           html .comp.comp-vertical.portrait-block .comp-body .comp-title, :root .comp.comp-vertical.portrait-block .comp-body .comp-title {
             position: absolute;
-            top: 100%;
+            top: 80%;
             left: 50%;
             -webkit-transform: translate(-50%, -50%) scale(70%);
             -ms-transform: translate(-50%, -50%) scale(70%);
             transform: translate(-50%, -50%) scale(70%);
             color: var(--blades-grey); }
+            html .comp.comp-vertical.portrait-block .comp-body .comp-title:hover, :root .comp.comp-vertical.portrait-block .comp-body .comp-title:hover {
+              -webkit-transform: translate(-50%, -50%) scale(100%);
+              -ms-transform: translate(-50%, -50%) scale(100%);
+              transform: translate(-50%, -50%) scale(100%);
+              color: var(--blades-white-bright); }
           html .comp.comp-vertical.portrait-block .comp-body .comp-img, :root .comp.comp-vertical.portrait-block .comp-body .comp-img {
             --comp-img-scale: 1.5;
             height: 100%;
@@ -504,7 +530,7 @@ html, :root {
             clip-path: ellipse(50% 50% at 50% 50%);
             z-index: 1;
             position: absolute;
-            top: 25%; }
+            top: -5px; }
       html .comp.comp-vertical.comp-playbook, :root .comp.comp-vertical.comp-playbook {
         --comp-img-scaleX: -2;
         --comp-img-scaleY: 2;
@@ -578,7 +604,14 @@ html, :root {
         html .comp.comp-horizontal.comp-desc-trait:not(:first-of-type), :root .comp.comp-horizontal.comp-desc-trait:not(:first-of-type) {
           border-top: 1px solid var(--blades-white); }
         html .comp.comp-horizontal.comp-desc-trait .comp-label, :root .comp.comp-horizontal.comp-desc-trait .comp-label {
-          max-width: 0px; }
+          min-width: 20px;
+          max-width: 20px;
+          min-height: 20px;
+          max-height: 20px;
+          margin-top: -5px;
+          margin-left: 3px;
+          margin-right: -20px;
+          z-index: 15; }
         html .comp.comp-horizontal.comp-desc-trait .comp-body, :root .comp.comp-horizontal.comp-desc-trait .comp-body {
           min-height: toRem(50px); }
           html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img {
@@ -744,6 +777,31 @@ html, :root {
         margin-left: toRem(5px); }
       html .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
         margin-left: toRem(10px); }
+    html .comp .comp-status-toggle, :root .comp .comp-status-toggle {
+      position: absolute;
+      text-shadow: 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark);
+      right: 10px;
+      scale: 1.5;
+      top: -10px;
+      right: 15px; }
+      html .comp .comp-status-toggle > *, :root .comp .comp-status-toggle > * {
+        -webkit-transition: 0.5s;
+        transition: 0.5s; }
+      html .comp .comp-status-toggle .status-positive, :root .comp .comp-status-toggle .status-positive {
+        color: var(--blades-green-bright); }
+      html .comp .comp-status-toggle .status-negative, :root .comp .comp-status-toggle .status-negative {
+        margin-top: -5px;
+        margin-bottom: 5px;
+        color: var(--blades-red-bright); }
+      html .comp .comp-status-toggle .status-neutral, :root .comp .comp-status-toggle .status-neutral {
+        color: var(--blades-grey);
+        opacity: 0.8; }
+      html .comp .comp-status-toggle:hover, :root .comp .comp-status-toggle:hover {
+        -webkit-filter: brightness(1.5);
+        filter: brightness(1.5);
+        scale: 1.75; }
+        html .comp .comp-status-toggle:hover .status-neutral, :root .comp .comp-status-toggle:hover .status-neutral {
+          opacity: 1; }
   html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
     position: absolute;
     height: 1.5rem;
@@ -1160,8 +1218,9 @@ html, :root {
           -ms-transform: scale(1.5);
           transform: scale(1.5); }
         html .comp .comp-control.comp-button, :root .comp .comp-control.comp-button {
-          opacity: 0.5; }
-          html .comp .comp-control.comp-button.comp-delete, :root .comp .comp-control.comp-button.comp-delete {
+          opacity: 0.5;
+          text-align: center; }
+          html .comp .comp-control.comp-button.comp-delete, html .comp .comp-control.comp-button.comp-delete-full, :root .comp .comp-control.comp-button.comp-delete, :root .comp .comp-control.comp-button.comp-delete-full {
             --comp-control-color: var(--blades-white-bright);
             --comp-control-hover-color: var(--blades-red-bright);
             --comp-control-shadow-color: transparent;
@@ -1239,7 +1298,10 @@ html, :root {
         align-items: stretch;
         color: var(--blades-white);
         background: var(--blades-black-dark);
-        width: clamp(300px, 400px, 500px);
+        width: -webkit-max-content;
+        width: -moz-max-content;
+        width: max-content;
+        max-width: 400px;
         padding: 0.375rem;
         border: 0.0625rem solid var(--blades-grey);
         border-radius: 0.1875rem;
@@ -1252,6 +1314,13 @@ html, :root {
         pointer-events: none; }
         html .comp .tooltip.tooltip-left, :root .comp .tooltip.tooltip-left {
           width: 500px; }
+        html .comp .tooltip.tooltip-portrait, :root .comp .tooltip.tooltip-portrait {
+          bottom: 100px;
+          left: 50px; }
+        html .comp .tooltip.trauma-tooltip, :root .comp .tooltip.trauma-tooltip {
+          scale: 1.25;
+          left: -200px;
+          bottom: -75px; }
       html .comp.comp-vertical, :root .comp.comp-vertical {
         --comp-img-scale: 2;
         --comp-name-size: 1rem;
@@ -1296,31 +1365,40 @@ html, :root {
             top: 40%;
             left: 50%;
             height: 100%;
-            z-index: 0; }
+            z-index: 0;
+            pointer-events: none; }
           html .comp.comp-vertical .comp-body .comp-body-text, :root .comp.comp-vertical .comp-body .comp-body-text {
             display: none; }
         html .comp.comp-vertical.portrait-block, :root .comp.comp-vertical.portrait-block {
-          height: 100%;
+          height: 80px;
           -ms-flex-preferred-size: 5rem;
           flex-basis: 5rem;
           min-width: 90px;
           margin: 10px 0; }
+          html .comp.comp-vertical.portrait-block .comp-label.shadowed, :root .comp.comp-vertical.portrait-block .comp-label.shadowed {
+            margin-top: -10px;
+            margin-bottom: 10px; }
           html .comp.comp-vertical.portrait-block .comp-button.comp-delete, :root .comp.comp-vertical.portrait-block .comp-button.comp-delete {
-            left: unset;
-            right: 10%;
-            top: -10px; }
+            left: 5px;
+            right: unset;
+            top: 62px; }
           html .comp.comp-vertical.portrait-block .comp-body, :root .comp.comp-vertical.portrait-block .comp-body {
             -webkit-filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
             filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
             width: 100%; }
             html .comp.comp-vertical.portrait-block .comp-body .comp-title, :root .comp.comp-vertical.portrait-block .comp-body .comp-title {
               position: absolute;
-              top: 100%;
+              top: 80%;
               left: 50%;
               -webkit-transform: translate(-50%, -50%) scale(70%);
               -ms-transform: translate(-50%, -50%) scale(70%);
               transform: translate(-50%, -50%) scale(70%);
               color: var(--blades-grey); }
+              html .comp.comp-vertical.portrait-block .comp-body .comp-title:hover, :root .comp.comp-vertical.portrait-block .comp-body .comp-title:hover {
+                -webkit-transform: translate(-50%, -50%) scale(100%);
+                -ms-transform: translate(-50%, -50%) scale(100%);
+                transform: translate(-50%, -50%) scale(100%);
+                color: var(--blades-white-bright); }
             html .comp.comp-vertical.portrait-block .comp-body .comp-img, :root .comp.comp-vertical.portrait-block .comp-body .comp-img {
               --comp-img-scale: 1.5;
               height: 100%;
@@ -1331,7 +1409,7 @@ html, :root {
               clip-path: ellipse(50% 50% at 50% 50%);
               z-index: 1;
               position: absolute;
-              top: 25%; }
+              top: -5px; }
         html .comp.comp-vertical.comp-playbook, :root .comp.comp-vertical.comp-playbook {
           --comp-img-scaleX: -2;
           --comp-img-scaleY: 2;
@@ -1405,7 +1483,14 @@ html, :root {
           html .comp.comp-horizontal.comp-desc-trait:not(:first-of-type), :root .comp.comp-horizontal.comp-desc-trait:not(:first-of-type) {
             border-top: 1px solid var(--blades-white); }
           html .comp.comp-horizontal.comp-desc-trait .comp-label, :root .comp.comp-horizontal.comp-desc-trait .comp-label {
-            max-width: 0px; }
+            min-width: 20px;
+            max-width: 20px;
+            min-height: 20px;
+            max-height: 20px;
+            margin-top: -5px;
+            margin-left: 3px;
+            margin-right: -20px;
+            z-index: 15; }
           html .comp.comp-horizontal.comp-desc-trait .comp-body, :root .comp.comp-horizontal.comp-desc-trait .comp-body {
             min-height: 3.125rem; }
             html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img {
@@ -1571,6 +1656,31 @@ html, :root {
           margin-left: 0.3125rem; }
         html .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
           margin-left: 0.625rem; }
+      html .comp .comp-status-toggle, :root .comp .comp-status-toggle {
+        position: absolute;
+        text-shadow: 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark);
+        right: 10px;
+        scale: 1.5;
+        top: -10px;
+        right: 15px; }
+        html .comp .comp-status-toggle > *, :root .comp .comp-status-toggle > * {
+          -webkit-transition: 0.5s;
+          transition: 0.5s; }
+        html .comp .comp-status-toggle .status-positive, :root .comp .comp-status-toggle .status-positive {
+          color: var(--blades-green-bright); }
+        html .comp .comp-status-toggle .status-negative, :root .comp .comp-status-toggle .status-negative {
+          margin-top: -5px;
+          margin-bottom: 5px;
+          color: var(--blades-red-bright); }
+        html .comp .comp-status-toggle .status-neutral, :root .comp .comp-status-toggle .status-neutral {
+          color: var(--blades-grey);
+          opacity: 0.8; }
+        html .comp .comp-status-toggle:hover, :root .comp .comp-status-toggle:hover {
+          -webkit-filter: brightness(1.5);
+          filter: brightness(1.5);
+          scale: 1.75; }
+          html .comp .comp-status-toggle:hover .status-neutral, :root .comp .comp-status-toggle:hover .status-neutral {
+            opacity: 1; }
     html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
       position: absolute;
       height: 1.5rem;

@@ -62,9 +62,9 @@
     },
     {
       "name": "item",
-      "label": "Items",
+      "label": "Gear",
       "system": "eunos-blades",
-      "path": "./packs/items.db",
+      "path": "./packs/gear.db",
       "type": "Item"
     },
     {
@@ -78,35 +78,35 @@
       "name": "crew_reputation",
       "label": "Crew Reputation",
       "system": "eunos-blades",
-      "path": "./packs/crew_reputation.db",
+      "path": "./packs/crew-reputation.db",
       "type": "Item"
     },
     {
       "name": "crew_upgrade",
       "label": "Crew Upgrades",
       "system": "eunos-blades",
-      "path": "./packs/crew_upgrades.db",
+      "path": "./packs/crew-upgrades.db",
       "type": "Item"
     },
     {
       "name": "crew_ability",
       "label": "Crew Abilities",
       "system": "eunos-blades",
-      "path": "./packs/crew_abilities.db",
+      "path": "./packs/crew-abilities.db",
       "type": "Item"
     },
     {
       "name": "crew_playbook",
       "label": "Playbooks (Crew)",
       "system": "eunos-blades",
-      "path": "./packs/crew_playbooks.db",
+      "path": "./packs/playbooks-crew.db",
       "type": "Item"
     },
     {
       "name": "playbook",
       "label": "Playbooks (Scoundrel)",
       "system": "eunos-blades",
-      "path": "./packs/playbooks.db",
+      "path": "./packs/playbooks-scoundrel.db",
       "type": "Item"
     },
 	{

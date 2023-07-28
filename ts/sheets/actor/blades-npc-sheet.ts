@@ -1,5 +1,6 @@
 
 import BladesSheet from "./blades-sheet.js";
+import U from "../../core/utilities.js";
 class BladesNPCSheet extends BladesSheet {
 
 	static override get defaultOptions() {
@@ -42,11 +43,33 @@ class BladesNPCSheet extends BladesSheet {
 		// if (inputElement instanceof HTMLInputElement) { new Tagify(inputElement, {}) } else { console.log("Not an HTMLInputElement")}
 
 		//~ Enable Randomize Button for NPCs
-		// if ((this.actor as BladesActor).system.type === "npc") {
 		html.find("[data-action=\"randomize\"").on("click", (event) => {
 			this.actor.updateRandomizers();
 		});
-		// }
+
+		//~ Enable status toggles for NPC subactors
+		html.find(".comp-status-toggle")
+			.on("click", () => {
+				const {tags} = this.actor;
+				if (this.actor.system.status === 1) {
+					U.remove(tags, "Friend");
+					tags.push("Rival");
+					this.actor.update({
+						"system.status": -1,
+						"system.tags": U.unique(tags)
+					});
+				} else {
+					U.remove(tags, "Rival");
+					tags.push("Friend");
+					this.actor.update({
+						"system.status": 1,
+						"system.tags": U.unique(tags)
+					});
+				}
+			})
+			.on("contextmenu", () => {
+				this.actor.update({"system.status": 0});
+			});
 
 	}
 }

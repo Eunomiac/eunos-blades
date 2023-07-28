@@ -1,7 +1,7 @@
 
 .window-content {
 
-	$heights: (83px, 32px, 57px, 28px) !default;
+	$heights: (63px, 52px, 57px, 28px) !default;
 
 	--sheet-header-height: 21px;
 	--sheet-top-height: #{calculate-sum($heights)};
@@ -21,7 +21,7 @@
 		.sheet-img {
 			position: absolute;
 			height: var(--sheet-top-height);
-			left: -10px;
+			// left: -10px;
 			z-index: zLevel(-1);
 			border: none;
 			mask-image: linear-gradient(to right, black 75%, transparent);
@@ -46,9 +46,10 @@
 		}
 
 		.gm-alert-header {
-			position: relative;
+			position: absolute;
 			pointer-events: auto;
 			z-index: 10;
+			top: -60px;
 			display: block;
 			height: toRem(20px);
 			line-height: toRem(20px);
@@ -71,7 +72,7 @@
 			width: 100%;
 			// top: -10px;
 			left: 0px;
-			overflow: hidden;
+			// overflow: hidden;
 
 			> section:not(.sheet-top) {
 				border-top: 2px solid var(--blades-white);
@@ -86,9 +87,10 @@
 
 					display: grid;
 					grid-auto-columns: 1fr;
-					grid-template-rows: $heights; // 83px 32px 57px 28px;
+					grid-template-rows: join($heights, (), $separator: space); // 83px 32px 57px 28px;
 					place-items: center stretch;
 					pointer-events: none;
+					overflow: hidden;
 					height: var(--sheet-top-height);
 
 					input { pointer-events: auto }
@@ -147,6 +149,7 @@
 							display: flex;
 							justify-content: stretch;
 							height: 100%;
+							overflow: visible;
 						}
 					}
 				}

@@ -1,6 +1,7 @@
 import C, {SVGDATA, BladesItemType, Tag, BladesPhase} from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
+import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
 
 export enum PrereqType {
@@ -26,6 +27,20 @@ declare abstract class BladesItemDocument {
 	usesRemaining: int;
 }
 class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocument {
+
+	// #region Static Overrides: Create ~
+	static override async create(data: ItemDataConstructorData & { system?: { world_name?: string, description?: string } }, options = {}) {
+		if (Array.isArray(data)) { data = data[0] }
+		data.system = data.system ?? {};
+
+		eLog.checkLog2("item", "BladesItem.create(data,options)", {data, options});
+
+		//~ Create world_name
+		data.system.world_name = data.system.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "").trim().replace(/ /g, "_");
+
+		return super.create(data, options);
+	}
+	// #endregion
 
 	// #region BladesDocument Implementation
 	static get All() { return game.items }
@@ -123,18 +138,18 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
 	get tier() { return U.pInt(this.parent?.system?.tier) }
 	get playbooks(): string[] { return this.system.playbooks ?? [] }
 
-	isKept(actor: BladesActor): boolean|null {
-		if (this.type !== "ability") { return null }
-		const playbook = actor.playbookName;
-		if (!playbook) { return null }
-		if (this.system.playbooks?.includes(actor.playbookName)) {
-			return true;
-		}
-		if (["Ghost", "Hull", "Vampire"].includes(actor.playbookName) && this.system.keepAsGhost) {
-			return true;
-		}
-		return false;
-	}
+	// isKept(actor: BladesActor): boolean|null {
+	// 	if (this.type !== "ability") { return null }
+	// 	const playbook = actor.playbookName;
+	// 	if (!playbook) { return null }
+	// 	if (this.system.playbooks?.includes(actor.playbookName)) {
+	// 		return true;
+	// 	}
+	// 	if (["Ghost", "Hull", "Vampire"].includes(actor.playbookName) && this.system.keepAsGhost) {
+	// 		return true;
+	// 	}
+	// 	return false;
+	// }
 
 	_prepareCohort() {
 		if (this.parent?.documentName !== "Actor") { return }
@@ -271,14 +286,14 @@ declare interface BladesItem {
 	dialogCSSClasses?: string,
 	system: {
 		tags: BladesTag[],
-		type: string,
+		// type: string,
 		world_name: string,
-		acquaintances_name: string,
-		bgImg: string,
+		// acquaintances_name: string,
+		// bgImg: string,
 		description: string,
 		rules: string,
 		rules_notes: string,
-		class?: string,
+		// class?: string,
 		price?: number,
 		purchased?: boolean,
 		class_default?: boolean,
@@ -315,7 +330,7 @@ declare interface BladesItem {
 		},
 		load?: number,
 		uses?: ValueMax,
-		keepAsGhost?: boolean,
+		// keepAsGhost?: boolean,
 		prereqs?: Record<PrereqType, boolean|string|string[]>,
 		additional_info?: string,
 		equipped?: false,

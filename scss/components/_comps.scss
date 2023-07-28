@@ -13,6 +13,7 @@
 	&.portrait-container {
 		flex-wrap: wrap;
 		width: 100%;
+		// height: 100px;
 	}
 
 	&.comp-labeled-input {
@@ -82,8 +83,9 @@
 
 		&.comp-button {
 			opacity: 0.5;
+			text-align: center;
 
-			&.comp-delete {
+			&.comp-delete, &.comp-delete-full {
 				--comp-control-color: var(--blades-white-bright);
 				--comp-control-hover-color: var(--blades-red-bright);
 				--comp-control-shadow-color: transparent;
@@ -179,7 +181,10 @@
 		color: var(--blades-white);
 		background: var(--blades-black-dark);
 
-		width: clamp(300px, 400px, 500px);
+		width: max-content;
+		max-width: 400px;
+		// top: unset;
+		// bottom: 0;
 
 		padding: toRem(6px);
 		border: #{toRem(1px)} solid var(--blades-grey);
@@ -197,6 +202,17 @@
 
 		&.tooltip-left {
 			width: 500px;
+		}
+
+		&.tooltip-portrait {
+			bottom: 100px;
+			left: 50px;
+		}
+
+		&.trauma-tooltip {
+			scale: 1.25;
+			left: -200px;
+			bottom: -75px;
 		}
 
 	}
@@ -259,18 +275,24 @@
 				left: 50%;
 				height: 100%;
 				z-index: zLevel(-2);
+				pointer-events: none;
 			}
 
 			.comp-body-text { display: none }
 		}
 
 		&.portrait-block {
-			height: 100%;
+			height: 80px;
 			flex-basis: toRem(80px);
 			min-width: 90px;
 			margin: 10px 0;
 
-			.comp-button.comp-delete { left: unset; right: 10%; top: -10px; }
+			.comp-label.shadowed {
+				margin-top: -10px;
+				margin-bottom: 10px;
+			}
+
+			.comp-button.comp-delete { left: 5px; right: unset; top: 62px }
 
 			.comp-body {
 				filter: drop-shadow(0 0 #{toRem(2px)} var(--blades-black-dark));
@@ -278,10 +300,16 @@
 
 				.comp-title {
 					position: absolute;
-					top: 100%;
+					top: 80%;
+					// bottom: 0px;
 					left: 50%;
 					transform: translate(-50%, -50%) scale(70%);
 					color: var(--blades-grey);
+
+					&:hover {
+						transform: translate(-50%, -50%) scale(100%);
+						color: var(--blades-white-bright);
+					}
 				}
 
 				.comp-img {
@@ -292,7 +320,7 @@
 					clip-path: ellipse(50% 50% at 50% 50%);
 					z-index: 1;
 					position: absolute;
-					top: 25%;
+					top: -5px;
 				}
 			}
 		}
@@ -369,7 +397,16 @@
 
 			&:not(:first-of-type) { border-top: 1px solid var(--blades-white); }
 
-			.comp-label { max-width: 0px }
+			.comp-label {
+				min-width: 20px;
+				max-width: 20px;
+				min-height: 20px;
+				max-height: 20px;
+				margin-top: -5px;
+				margin-left: 3px;
+				margin-right: -20px;
+				z-index: 15;
+			}
 
 			.comp-body {
 				min-height: toRem(50px);
@@ -536,6 +573,39 @@
 		}
 		&.comp-stash .dot:nth-of-type(10n) + .dot {
 			margin-left: toRem(10px);
+		}
+	}
+	.comp-status-toggle {
+		position: absolute;
+		text-shadow: 0 0 2px var(--blades-black-dark),0 0 2px var(--blades-black-dark),0 0 2px var(--blades-black-dark),0 0 2px var(--blades-black-dark);
+		right: 10px;
+		scale: 1.5;
+		top: -10px;
+		right: 15px;
+		// pointer-events: all;
+
+		> * { transition: 0.5s }
+
+		.status-positive {
+			color: var(--blades-green-bright);
+		}
+		.status-negative {
+			margin-top: -5px;
+			margin-bottom: 5px;
+			color: var(--blades-red-bright);
+		}
+		.status-neutral {
+			color: var(--blades-grey);
+			opacity: 0.8;
+		}
+
+		&:hover {
+			filter: brightness(1.5);
+			scale: 1.75;
+
+			.status-neutral {
+				opacity: 1;
+			}
 		}
 	}
 }

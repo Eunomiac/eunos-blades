@@ -10,12 +10,12 @@
 
 	{{!-- SubActor GM Alert --}}
 	{{#if isGM}}{{#if isSubActor}}
-		<div class="gm-alert-header">Editing as SubActor of {{parentActor.name}}</div>
+	<div class="gm-alert-header">Editing as SubActor of {{parentActor.name}}</div>
 	{{/if}}{{/if}}
 
 	{{!-- Tags --}}
 	{{#if isGM}}
-		<input type="text" class="comp-tags tags-gm" />
+	<input type="text" class="comp-tags tags-gm" />
 	{{/if}}
 
 	{{!-- Sheet Container --}}
@@ -26,7 +26,31 @@
 
 			<input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}" placeholder="Who Are You?" />
 
-			<input class="comp comp-concept sheet-subtitle shadowed" type="text" name="system.concept" value="{{system.concept}}" placeholder="Concept" />
+			{{#if isSubActor}}
+			{{#if (test "Acquaintance" "in" system.tags)}}
+			<div class="comp comp-vertical comp-status">
+				<label class="comp-label shadowed">status</label>
+				<div class="comp-body">
+					<div class="comp-title comp-status-toggle shadowed">
+					{{#if (test actor.system.status "==" -1)}}
+				<span class="status-negative">▼</span>
+						{{!-- <i class="fa-sharp fa-solid fa-caret-up fa-rotate-180"></i> --}}
+					{{else}}{{#if (test actor.system.status "==" 1)}}
+				<span class="status-positive">▲</span>
+							{{!-- <i class="fa-sharp fa-solid fa-caret-up"></i> --}}
+						{{else}}
+				<span class="status-neutral">◊</span>
+								{{!-- <i class="fa-sharp fa-regular fa-diamond"></i> --}}
+						{{/if}}
+					{{/if}}
+					</div>
+				</div>
+			</div>
+			{{/if}}
+			{{/if}}
+
+			<input class="comp comp-concept sheet-subtitle shadowed" type="text" name="system.concept"
+				value="{{system.concept}}" placeholder="Concept" />
 
 			<div class="flex-horizontal comp-horizontal comp comp-labeled-input comp-district">
 				<label class="comp-label shadowed">District:</label>
@@ -35,20 +59,21 @@
 
 			<div class="flex-horizontal comp-horizontal comp comp-labeled-input comp-faction">
 				<label class="comp-label shadowed">Faction:</label>
-				<input class="tagify comp-tags tags-faction" data-tag-target="system.faction" type="text">
+				<!-- Find a faction subactor with tag = 'Member' and extract name to here -->
 			</div>
 
 			<div class="comp comp-traits">
-				<input class="shadowed" type="text" name="system.traits.0" value="{{system.traits.[0]}}" placeholder="Trait">
-				<input class="shadowed" type="text" name="system.traits.1" value="{{system.traits.[1]}}" placeholder="Trait">
-				<input class="shadowed" type="text" name="system.traits.2" value="{{system.traits.[2]}}" placeholder="Trait">
+				<input class="shadowed" type="text" name="system.persona.trait1.value" value="{{system.persona.trait1.value}}" placeholder="Trait">
+				<input class="shadowed" type="text" name="system.persona.trait2.value" value="{{system.persona.trait2.value}}" placeholder="Trait">
+				<input class="shadowed" type="text" name="system.persona.trait3.value" value="{{system.persona.trait3.value}}" placeholder="Trait">
 			</div>
 
-			<input class="comp comp-short-description shadowed" type="text" name="system.description_short" value="{{system.description_short}}" placeholder="Short Description">
+			<input class="comp comp-short-description shadowed" type="text" name="system.subtitle"
+				value="{{system.subtitle}}" placeholder="Short Description">
 
 		</section>
 
-		{{!-- Tabs, Tab Navication --}}
+		{{!-- Tabs, Tab Navigation --}}
 		<section class="tab-content nav-group flex-vertical">
 
 			{{!-- Nav menu --}}
@@ -67,7 +92,7 @@
 
 			{{!-- Friends & Foes --}}
 			<div class="tab friends-and-foes flex-vertical" data-tab="friends-and-foes">
-				<div class="flex-horizontal">
+				<div class="flex-horizontal full-width">
 					<div class="comp-connections-list allies-list">
 						<label class="comp tab-label"><span class="tab-title">Allies</span></label>
 					</div>

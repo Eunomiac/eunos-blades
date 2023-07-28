@@ -42,7 +42,7 @@ class BladesActorSheet extends BladesSheet {
         const context = super.getData();
         const sheetData = {};
         sheetData.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
-        context.attributes = U.objMap(context.system.attributes, (attrData) => U.objMap(attrData, (value) => ({
+        sheetData.attributes = U.objMap(this.actor.system.attributes, (attrData) => U.objMap(attrData, (value) => ({
             value: value.value,
             max: game.eunoblades.Tracker.system.game_phase === BladesPhase.CharGen ? 2 : value.max
         })));
@@ -99,6 +99,8 @@ class BladesActorSheet extends BladesSheet {
                 friends: activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Friend)),
                 rivals: activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Rival))
             },
+            hasVicePurveyor: Boolean(this.actor.playbook?.hasTag(Tag.Item.Advanced) === false
+                && activeSubItems.find((item) => item.type === BladesItemType.vice)),
             stashData: {
                 label: "Stash:",
                 dotline: {
@@ -156,7 +158,9 @@ class BladesActorSheet extends BladesSheet {
                                 inactive: "comp-toggle-grey"
                             },
                             checkTarget: `system.trauma.checked.${tName}`,
-                            checkValue: this.actor.system.trauma.checked[tName] ?? false
+                            checkValue: this.actor.system.trauma.checked[tName] ?? false,
+                            tooltip: C.TraumaTooltips[tName],
+                            tooltipClass: "trauma-tooltip"
                         })),
                         this.actor.traumaList.slice(Math.ceil(this.actor.traumaList.length / 2))
                             .map((tName) => ({
@@ -166,14 +170,14 @@ class BladesActorSheet extends BladesSheet {
                                 inactive: "comp-toggle-grey"
                             },
                             checkTarget: `system.trauma.checked.${tName}`,
-                            checkValue: this.actor.system.trauma.checked[tName] ?? false
+                            checkValue: this.actor.system.trauma.checked[tName] ?? false,
+                            tooltip: C.TraumaTooltips[tName],
+                            tooltipClass: "trauma-tooltip"
                         }))
                     ]
                 }
             },
             acquaintancesName: this.actor.system.acquaintances_name ?? "Friends & Rivals",
-            friendsName: this.actor.system.friends_name,
-            rivalsName: this.actor.system.rivals_name,
             abilityData: {
                 dotline: {
                     "class": "dotline-right",

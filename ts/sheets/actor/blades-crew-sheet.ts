@@ -6,6 +6,8 @@ import {BladesActorType, BladesItemType} from "../../core/constants.js";
 
 class BladesCrewSheet extends BladesSheet {
 
+	declare actor: BladesActorOfType<BladesActorType.crew>;
+
 	static override get defaultOptions() {
 	  return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["eunos-blades", "sheet", "actor", "crew"],
@@ -16,7 +18,7 @@ class BladesCrewSheet extends BladesSheet {
 		});
 	}
 
-	override getData() {
+	override getData(this: BladesCrewSheet) {
 		const context = super.getData() as ReturnType<BladesSheet["getData"]> & {
 			[key: string]: any
 		};

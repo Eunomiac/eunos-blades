@@ -12,6 +12,8 @@ import BladesActor from "../../blades-actor.js";
 
 class BladesActorSheet extends BladesSheet {
 
+	declare actor: BladesActorOfType<BladesActorType.pc>;
+
 	static override get defaultOptions() {
 	  return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["eunos-blades", "sheet", "actor", "pc"],
@@ -49,14 +51,14 @@ class BladesActorSheet extends BladesSheet {
 	}
 
 	override getData() {
-		const context = super.getData() as ReturnType<BladesSheet["getData"]> & {attributes: Record<Attributes,Record<Actions,ValueMax>>};
+		const context = super.getData() as ReturnType<BladesSheet["getData"]>;
 
 		const sheetData: Partial<BladesActorSheetData> = {};
 
 
 		sheetData.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
 
-		context.attributes = U.objMap(context.system.attributes, (attrData: Record<Actions, ValueMax>) => U.objMap(attrData, (value: ValueMax): ValueMax => ({
+		sheetData.attributes = U.objMap(this.actor.system.attributes, (attrData: Record<Actions, ValueMax>) => U.objMap(attrData, (value: ValueMax): ValueMax => ({
 			value: value.value,
 			max: game.eunoblades.Tracker!.system.game_phase === BladesPhase.CharGen ? 2 : value.max
 		}))) as Record<Attributes,Record<Actions,ValueMax>>;
@@ -119,6 +121,8 @@ class BladesActorSheet extends BladesSheet {
 					friends: activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Friend)),
 					rivals: activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Rival))
 				},
+				hasVicePurveyor: Boolean(this.actor.playbook?.hasTag(Tag.Item.Advanced) === false
+					&& activeSubItems.find((item) => item.type === BladesItemType.vice)),
 				stashData: {
 					label: "Stash:",
 					dotline: {
@@ -139,7 +143,7 @@ class BladesActorSheet extends BladesSheet {
 				},
 				armor: Object.fromEntries(Object.entries(this.actor.system.armor.active)
 					.filter(([, isActive]) => isActive)
-					.map(([armor]) => [armor, this.actor.system.armor.checked[armor as keyof BladesActor["system"]["armor"]["checked"]]])),
+					.map(([armor]) => [armor, this.actor.system.armor.checked[armor as KeyOf<typeof this.actor.system.armor.checked>]])),
 				loadData: {
 					curLoad: this.actor.currentLoad,
 					selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected.toString())) as "heavy"|"normal"|"light"|"encumbered"],
@@ -176,7 +180,9 @@ class BladesActorSheet extends BladesSheet {
 										inactive: "comp-toggle-grey"
 									},
 									checkTarget: `system.trauma.checked.${tName}`,
-									checkValue: this.actor.system.trauma.checked[tName] ?? false
+									checkValue: this.actor.system.trauma.checked[tName] ?? false,
+									tooltip: C.TraumaTooltips[tName as KeyOf<typeof C.TraumaTooltips>],
+									tooltipClass: "trauma-tooltip"
 								})),
 							this.actor.traumaList.slice(Math.ceil(this.actor.traumaList.length / 2))
 								.map((tName) => ({
@@ -186,14 +192,14 @@ class BladesActorSheet extends BladesSheet {
 										inactive: "comp-toggle-grey"
 									},
 									checkTarget: `system.trauma.checked.${tName}`,
-									checkValue: this.actor.system.trauma.checked[tName] ?? false
+									checkValue: this.actor.system.trauma.checked[tName] ?? false,
+									tooltip: C.TraumaTooltips[tName as KeyOf<typeof C.TraumaTooltips>],
+									tooltipClass: "trauma-tooltip"
 								}))
 						]
 					}
 				},
 				acquaintancesName: this.actor.system.acquaintances_name ?? "Friends & Rivals",
-				friendsName: this.actor.system.friends_name,
-				rivalsName: this.actor.system.rivals_name,
 				abilityData: {
 					dotline: {
 						"class": "dotline-right",

@@ -1,7 +1,7 @@
 // #region Imports ~
 import U from "./core/utilities.js";
 import type {Vice} from "./core/constants.js";
-import {BladesActorType, Tag, Playbook, BladesItemType, Attributes, Actions, Positions, EffectLevels, Randomizers} from "./core/constants.js";
+import {BladesActorType, Tag, District, Playbook, BladesItemType, Attributes, Actions, Positions, EffectLevels, Randomizers} from "./core/constants.js";
 
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
@@ -14,6 +14,9 @@ import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-t
 import type {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/utils/helpers.mjs.js";
 // #endregion
 
+//
+
+
 // https://foundryvtt.wiki/en/development/guides/polymorphism-actors-items
 // Blades Theme Song: "Bangkok" from The Gray Man soundtrack: https://www.youtube.com/watch?v=cjjImvMqYlo&list=OLAK5uy_k9cZDd1Fbpd25jfDtte5A6HyauD2-cwgk&index=2
 // Add "coin" item to general items --> equals 1 Coin worth of value, carried, and has Load 1.
@@ -21,6 +24,162 @@ import type {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt
 class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundrel,
 	BladesCrew,
 	BladesNPC {
+	static migrateActor(actor: BladesActor) {
+		const updateData: any = {};
+		switch (actor.type) {
+			case BladesActorType.npc: {
+				if (actor.system.arena) { updateData.situation = actor.system.situation || actor.system.arena }
+				updateData["-=arena"] = null;
+				if (actor.system.notes_gm) { updateData.gm_notes = actor.system.gm_notes || actor.system.notes_gm }
+				updateData["-=notes_gm"] = null;
+				if (actor.system.description_short) { updateData.subtitle = actor.system.subtitle || actor.system.description_short }
+				updateData["-=description_short"] = null;
+				// if (Object.values(actor.system.traits).some(Boolean)) {
+				updateData.persona = actor.system.persona ?? {};
+				(["gender", "appearance", "goal", "method", "interests", "quirk", "style", "trait_1", "trait_2", "trait_3"] as Array<KeyOf<BladesActorSystem["randomizers"]>>).forEach((personaTag: KeyOf<BladesActor["system"]["randomizers"]>) => {
+					if (actor.system.randomizers?.[personaTag]?.isLocked) {
+						switch (personaTag) {
+							case "gender": {
+								if (updateData.persona.gender) { break }
+									updateData.persona!.gender = {
+										isLocked: Boolean(actor.system.randomizers?.gender?.isLocked),
+										value: ({
+											m: "M",
+											f: "F"
+										}[(actor.system.randomizers?.gender?.value ?? "").charAt(0).toLowerCase()] ?? "") as "M"|"F"|""
+									};
+									break;
+							}
+							case "appearance":
+								if (updateData.persona.appearance) { break }
+								// falls through
+							case "goal":
+								if (updateData.persona.goal) { break }
+								// falls through
+							case "method":
+								if (updateData.persona.method) { break }
+								// falls through
+							case "interests":
+								if (updateData.persona.interests) { break }
+								// falls through
+							case "quirk":
+								if (updateData.persona.quirk) { break }
+								// falls through
+							case "style": {
+								if (updateData.persona.style) { break }
+									updateData.persona![personaTag] = {isLocked: true, value: actor.system.randomizers[personaTag].value as any};
+									break;
+							}
+							case "trait_1": {
+								if (updateData.persona.trait1) { break }
+									updateData.persona!.trait1 = {isLocked: true, value: actor.system.randomizers.trait_1.value as any};
+									break;
+							}
+							case "trait_2": {
+								if (updateData.persona.trait2) { break }
+									updateData.persona!.trait2 = {isLocked: true, value: actor.system.randomizers.trait_2.value as any};
+									break;
+							}
+							case "trait_3": {
+								if (updateData.persona.trait3) { break }
+									updateData.persona!.trait3 = {isLocked: true, value: actor.system.randomizers.trait_3.value as any};
+									break;
+							}
+								// no default
+						}
+					}
+				});
+				updateData.persona.trait1 ??= {isLocked: Boolean(actor.system.traits[0]), value: actor.system.traits[0]};
+				updateData.persona.trait2 ??= {isLocked: Boolean(actor.system.traits[1]), value: actor.system.traits[1]};
+				updateData.persona.trait3 ??= {isLocked: Boolean(actor.system.traits[2]), value: actor.system.traits[2]};
+				updateData["-=traits"] = null;
+				updateData["-=notes"] = null;
+				updateData["-=randomizers"] = null;
+
+				const descStrings: string[] = [];
+				if (actor.system.prompts) { descStrings.push(`<p style=\"text-align: center;\"><em>${actor.system.prompts}</em></p>`) }
+				updateData["-=prompts"] = null;
+				if (actor.system.description) { descStrings.push(`<p>${actor.system.description}</p>`.replace(/(<\/?p>){2}/g, "$1")) }
+				// if (actor.system.quirks) { descStrings.push(`<p><span class="text-secret" data-is-secret="true">${actor.system.quirks}</span></p>`) }
+				if ((["heritage", "allies", "enemies", "faction", "associated_faction"] as const).some((key) => Boolean(actor.system[key]))) {
+					descStrings.push("<li>");
+					descStrings.push(...(["heritage", "allies", "enemies", "faction", "associated_faction"] as const)
+						.filter((key) => Boolean(actor.system[key]))
+						.map((key) => `<ul><b>${U.uCase(key)}:</b> ${actor.system[key]}</ul>`));
+					descStrings.push("</li>");
+				}
+				["heritage", "allies", "enemies", "faction", "associated_faction"].forEach((key) => {
+					updateData[`-=${key}`] = null;
+				});
+
+				updateData.description = descStrings.join(`
+				`);
+				break;
+			}
+			case BladesActorType.faction: {
+				const descStrings: string[] = [];
+				if (actor.system.description) { descStrings.push(`<p>${actor.system.description}</p>`.replace(/(<\/?p>){2}/g, "$1")) }
+				if (actor.system.quirks) { descStrings.push(`<p><span class="text-secret" data-is-secret="true">${actor.system.quirks}</span></p>`) }
+				if ((["allies", "enemies", "notables"] as const).some((key) => Boolean(actor.system[key]))) {
+					descStrings.push("<li>");
+					descStrings.push(...(["allies", "enemies", "notables"] as const)
+						.filter((key) => Boolean(actor.system[key]))
+						.map((key) => `<ul><b>${U.uCase(key)}:</b> ${actor.system[key]}</ul>`));
+					descStrings.push("</li>");
+				}
+
+				updateData.description = descStrings.join(`
+				`);
+
+				if (actor.system.hold.value === 1) {
+					updateData.hold = "strong";
+				} else {
+					updateData.hold = "weak";
+				}
+
+				if (!actor.system.clocks) {
+					updateData.clocks = {};
+					if (actor.system.goal_1.name !== "" || actor.system.goal_1.max !== 0) {
+						updateData.clocks.Goal_1 = {
+							title: actor.system.goal_1.name || "Goal 1",
+							value: 0,
+							max: actor.system.goal_1.max || 0,
+							color: "#FFFFFF",
+							isClockVisible: false,
+							isTitleVisible: true,
+							isFocused: false
+						};
+					}
+					if (actor.system.goal_2.name !== "" || actor.system.goal_2.max !== 0) {
+						updateData.clocks.Goal_2 = {
+							title: actor.system.goal_2.name || "Goal 2",
+							value: 0,
+							max: actor.system.goal_2.max || 0,
+							color: "#FFFFFF",
+							isClockVisible: false,
+							isTitleVisible: true,
+							isFocused: false
+						};
+					}
+				}
+
+				if (!U.isList(actor.system.tier)) {
+					updateData.tier = {value: U.pInt(actor.system.tier), max: 8};
+				}
+
+				break;
+			}
+				// no default
+		}
+		actor.update({system: updateData});
+	}
+	static Migrate() {
+
+
+		BladesActor.GetTypeWithTags(BladesActorType.faction).forEach((actor) => BladesActor.migrateActor(actor));
+		BladesActor.GetTypeWithTags(BladesActorType.npc).forEach((actor) => BladesActor.migrateActor(actor));
+
+	}
 
 	// #region Static Overrides: Create ~
 	static override async create(data: ActorDataConstructorData & { system?: { description?: string, world_name?: string } }, options = {}) {
@@ -54,6 +213,11 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 	static GetTypeWithTags(docType: BladesActorType, ...tags: BladesTag[]): BladesActor[] {
 		return BladesActor.All.filter((actor) => actor.type === docType)
 			.filter((actor) => actor.hasTag(...tags));
+	}
+
+	static IsType<T extends BladesActorType>(doc: BladesDoc, ...types: T[]): doc is BladesActorOfType<T> {
+		const typeSet = new Set<BladesActorType>(types);
+		return doc instanceof BladesActor && typeSet.has(doc.type);
 	}
 
 	get tags(): BladesTag[] { return this.system.tags ?? [] }
@@ -127,6 +291,11 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 			});
 	}
 
+	private reportSubActorTags() {
+		return "";
+		// return Object.entries(this.system.subactors).map(([actorID, actorData]) => `${BladesActor.Get(actorID)?.name ?? "??"}: ${actorData?.tags.join(",") ?? "NULL"}`);
+	}
+
 	getDialogActors(category: SelectionCategory): Record<string, BladesActor[]> | false {
 
 		/* **** NEED TO FILTER OUT ACTORS PLAYER DOESN'T HAVE PERMISSION TO SEE **** */
@@ -156,7 +325,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 	}
 
 	async addSubActor(actorRef: ActorRef, tags?: BladesTag[]): Promise<void> {
-		eLog.checkLog3("subactors", "[addSubActor] actorRef, tags", {actorRef, tags});
+		eLog.checkLog2("subactors", "[addSubActor] actorRef, tags", {actorRef, tags, subTags: this.reportSubActorTags()});
 
 		enum BladesActorUniqueTags {
 			"CharacterCrew" = Tag.PC.CharacterCrew,
@@ -191,22 +360,27 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 			focusSubActor = this.getSubActor(actor.id!);
 		}
 
-		eLog.checkLog3("subactors", "[addSubActor] Found focusSubActor??");
-		if (!focusSubActor) { return }
-		eLog.checkLog3("subactors", "[addSubActor] ... YES!", focusSubActor);
+		if (!focusSubActor) {
+			eLog.checkLog3("subactors", "[addSubActor] Did NOT Find Subactor! Returning!");
+			return;
+		}
+
+		eLog.checkLog3("subactors", "[addSubActor] Focus Subactor:", {focusSubActor, subTags: this.reportSubActorTags()});
 
 		// Does this Actor contain any tags limiting it to one per actor?
 		const uniqueTags = focusSubActor.tags.filter((tag) => tag in BladesActorUniqueTags);
-		eLog.checkLog3("subactors", "[addSubActor] Matching Unique Tags?", {subActorTags: focusSubActor.tags, uniqueTags});
+		eLog.checkLog3("subactors", "[addSubActor] Matching Unique Tags?", {subActorTags: focusSubActor.tags, uniqueTags, isUnique: uniqueTags.length > 0, subTags: this.reportSubActorTags()});
 		if (uniqueTags.length > 0) {
 			// ... then archive all other versions.
 			uniqueTags.forEach((uTag) => this.activeSubActors
 				.filter((subActor) => subActor!.id !== focusSubActor!.id && subActor.hasTag(uTag))
 				.map((subActor) => this.remSubActor(subActor.id!)));
 		}
+		eLog.checkLog2("subactors", "[addSubActor] Finished!", {subTags: this.reportSubActorTags()});
 	}
 
 	getSubActor(actorRef: ActorRef): BladesActor | undefined {
+		eLog.checkLog4("subactors", "[getSubActor] Tag Report START", {subTags: this.reportSubActorTags()});
 		const actor = BladesActor.Get(actorRef);
 		if (!actor?.id) { return undefined }
 		if (actor.type !== BladesActorType.npc) { return actor }
@@ -223,6 +397,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 			actor.ownership[this.primaryUser.id] = CONST.DOCUMENT_PERMISSION_LEVELS.OWNER;
 		}
 		actor.parentActor = this;
+		eLog.checkLog4("subactors", "[getSubActor] Tag Report END", {subTags: this.reportSubActorTags()});
 		return actor;
 	}
 
@@ -251,25 +426,33 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		// Merge new update data onto current subactor data.
 		const mergedSubActorSystem = U.objMerge(this.system.subactors[actor.id!] ?? {}, diffUpdateSystem, {isReplacingArrays: true, isConcatenatingArrays: false});
 
-
 		eLog.checkLog3("subactors", "[updateSubActor] ", {
 			// ["1: flatActorSystem"]: flatActorSystem,
 			// ["2: flatUpdateSystem"]: flatUpdateSystem,
-			["3: diffUpdateSystem"]: diffUpdateSystem,
-			// ["4: flatSubActorSystem"]: flatSubActorSystem,
-			["5: mergedSubActorSystem"]: mergedSubActorSystem
+			["1: diffUpdateSystem"]: diffUpdateSystem,
+			["2: curActorSystem"]: JSON.stringify(this.system.subactors[actor.id!]),
+			["3: mergedSubActorSystem"]: JSON.stringify(mergedSubActorSystem),
+			["4: diffObjForCheck"]: U.objDiff(mergedSubActorSystem, this.system.subactors[actor.id!]),
+			subTags: this.reportSubActorTags()
 		});
+		// Confirm this update changes data:
+		if (JSON.stringify(this.system.subactors[actor.id!]) === JSON.stringify(mergedSubActorSystem)) { return undefined }
 		// Update actor with new subactor data.
-		return this.update({[`system.subactors.${actor.id}`]: mergedSubActorSystem}, undefined, true) as Promise<BladesActor | undefined>;
+		return this.update({[`system.subactors.${actor.id}`]: null}, undefined, true)
+			.then(() => this.update({[`system.subactors.${actor.id}`]: mergedSubActorSystem}, undefined, true))
+			.then(() => actor.sheet?.render()) as Promise<BladesActor | undefined>;
 	}
 
 	async remSubActor(actorRef: ActorRef): Promise<void> {
-		const actor = BladesActor.Get(actorRef);
-		if (!actor) { return }
-		if (!this.hasActiveSubActorOf(actor)) { return }
-		const subActor = this.getSubActor(actor)!;
-		if (!subActor || subActor.hasTag(Tag.System.Archived)) { return }
-		subActor.addTag(Tag.System.Archived);
+
+		this.purgeSubActor(actorRef);
+		return;
+		// const actor = BladesActor.Get(actorRef);
+		// if (!actor) { return }
+		// if (!this.hasActiveSubActorOf(actor)) { return }
+		// const subActor = this.getSubActor(actor)!;
+		// if (!subActor || subActor.hasTag(Tag.System.Archived)) { return }
+		// subActor.addTag(Tag.System.Archived).then(() => this.render());
 	}
 
 	async purgeSubActor(actorRef: ActorRef): Promise<void> {
@@ -283,6 +466,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		this.subActors.forEach((subActor) => {
 			if (subActor.parentActor?.id === this.id) { subActor.clearParentActor(isReRendering) }
 		});
+		this.sheet?.render();
 	}
 
 	async clearParentActor(isReRendering = true): Promise<void> {
@@ -294,7 +478,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		// parentActor.update({[`system.subactors.storage.${this.id}`]: null});
 		this.prepareData();
 		if (isReRendering) {
-			this.render();
+			this.sheet?.render();
 		}
 	}
 
@@ -768,7 +952,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		return undefined;
 	}
 	get attributes(): Record<Attributes, number>|undefined {
-		if (this.type !== BladesActorType.pc) { return undefined }
+		if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined }
 		return {
 			insight: Object.values(this.system.attributes.insight).filter(({value}) => value > 0).length + this.system.resistance_bonuses.insight,
 			prowess: Object.values(this.system.attributes.prowess).filter(({value}) => value > 0).length + this.system.resistance_bonuses.prowess,
@@ -776,7 +960,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		};
 	}
 	get actions(): Record<Actions, number>|undefined {
-		if (this.type !== BladesActorType.pc) { return undefined }
+		if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined }
 		return U.objMap({
 			...this.system.attributes.insight,
 			...this.system.attributes.prowess,
@@ -784,31 +968,35 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		}, ({value, max}: ValueMax) => U.gsap.utils.clamp(0, max, value)) as Record<Actions, number>;
 	}
 	get rollable(): Record<Attributes | Actions, number>|undefined {
-		if (this.type !== BladesActorType.pc) { return undefined }
+		if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined }
 		return {
 			...this.attributes!,
 			...this.actions!
 		};
 	}
 	get trauma(): number {
-		if (this.type !== BladesActorType.pc) { return 0 }
-		return Object.keys(this.system.trauma?.checked ?? {})
-			.filter((traumaName: string) => {
+		if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0 }
+		return Object.keys(this.system.trauma.checked)
+			.filter((traumaName) => {
+				// @ts-ignore Compiler linter mismatch.
 				return this.system.trauma.active[traumaName] && this.system.trauma.checked[traumaName];
 			})
 			.length;
 	}
 	get traumaList(): string[] {
-		return Object.keys(this.system.trauma.active ?? {}).filter((key) => this.system.trauma.active[key]);
+		// @ts-ignore Compiler linter mismatch.
+		return BladesActor.IsType(this, BladesActorType.pc) ? Object.keys(this.system.trauma.active).filter((key) => this.system.trauma.active[key]) : [];
 	}
 	get activeTraumaConditions(): Record<string, boolean> {
+		if (!BladesActor.IsType(this, BladesActorType.pc)) { return {} }
 		return U.objFilter(
-			this.system.trauma?.checked ?? {},
-			(v: unknown, traumaName: string) => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName])
+			this.system.trauma.checked,
+			// @ts-ignore Compiler linter mismatch.
+			(v: unknown, traumaName: string): boolean => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName])
 		) as Record<string, boolean>;
 	}
 	get currentLoad(): number {
-		if (this.type !== BladesActorType.pc) { return 0 }
+		if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0 }
 		const activeLoadItems = this.activeSubItems.filter((item) => item.type === BladesItemType.item);
 		return U.gsap.utils.clamp(0, 10, activeLoadItems
 			.reduce((tot, i) => tot + (i.type === "item"
@@ -817,13 +1005,14 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 			), 0));
 	}
 	get remainingLoad(): number {
-		if (this.type !== BladesActorType.pc) { return 0 }
+		if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0 }
 		if (!this.system.loadout.selected) { return 0 }
-		const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected.toString()).toLowerCase() as keyof BladesActor["system"]["loadout"]["levels"]];
+		const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected.toString()).toLowerCase() as KeyOf<typeof this.system.loadout.levels>];
 		return Math.max(0, maxLoad - this.currentLoad);
 	}
 
 	async addStash(amount: number): Promise<void> {
+		if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined }
 		return this.update({"system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max)});
 	}
 	// #endregion
@@ -880,7 +1069,15 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		docs.forEach(async (doc) => {
 			if (doc instanceof BladesItem) {
 				switch (doc.type) {
+					case BladesItemType.vice: {
+						if (!BladesActor.IsType(this, BladesActorType.pc)) { return }
+						this.activeSubActors
+							.filter((subActor) => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name as Vice))
+							.forEach((subActor) => this.remSubActor(subActor));
+						break;
+					}
 					case BladesItemType.playbook: {
+						if (!BladesActor.IsType(this, BladesActorType.pc)) { return }
 						await this.update({
 							"system.trauma.active": Object.assign(
 								Object.fromEntries(Object.keys(this.system.trauma.active).map((tCond: string) => [tCond, false])),
@@ -904,7 +1101,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 		switch (this.type) {
 			case BladesActorType.pc: {
 				if (isSkippingSubActorCheck) {
-					eLog.checkLog("actorTrigger", "Updating PC SubActor Data", {updateData});
+					eLog.checkLog3("actorTrigger", "Updating PC SubActor Data", {updateData, subTags: this.reportSubActorTags()});
 				}
 				break;
 			}
@@ -927,10 +1124,10 @@ class BladesActor extends Actor implements BladesDocument<Actor>, BladesScoundre
 			case BladesActorType.npc: {
 				if (this.parentActor && !isSkippingSubActorCheck) {
 					// This is an embedded Actor: Update it as a subActor of parentActor.
-					eLog.checkLog("actorTrigger", "Updating NPC as SubActor", {parentActor: this.parentActor, systemTags: this.system.tags, sourceTags: this._source.system.tags, isSkippingSubActorCheck, updateData});
+					eLog.checkLog3("actorTrigger", "Updating NPC as SubActor", {parentActor: this.parentActor, systemTags: this.system.tags, sourceTags: this._source.system.tags, isSkippingSubActorCheck, updateData, subTags: this.reportSubActorTags()});
 					return this.parentActor.updateSubActor(this.id!, updateData);
 				}
-				eLog.checkLog("actorTrigger", "Updating NPC as ACTOR", {parentActor: this.parentActor, systemTags: this.system.tags, sourceTags: this._source.system.tags, isSkippingSubActorCheck, updateData});
+				eLog.checkLog3("actorTrigger", "Updating NPC as ACTOR", {parentActor: this.parentActor, systemTags: this.system.tags, sourceTags: this._source.system.tags, isSkippingSubActorCheck, updateData, subTags: this.reportSubActorTags()});
 			}
 			// no default
 		}

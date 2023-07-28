@@ -117,7 +117,7 @@ const gsapEffects: Record<string, gsapEffect> = {
 				.to(
 					targets,
 					{
-						scale: 1.2,
+						// scale: 1.2,
 						filter: "blur(0px)",
 						opacity: 1,
 						duration: 0.25,

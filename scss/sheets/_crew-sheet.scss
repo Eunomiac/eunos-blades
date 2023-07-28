@@ -17,7 +17,7 @@
 							". . title title title title title title playbook playbook playbook"
 							". . members members members members hunting-grounds hunting-grounds playbook playbook playbook "
 							". . reputation reputation preferred-op preferred-op hunting-grounds hunting-grounds . coins coins ";
-						// grid-template-rows: ;
+						grid-template-rows: join($heights, (), $separator: space);
 
 						.sheet-title {
 							--sheet-title-font-size: #{toRem(48px)};

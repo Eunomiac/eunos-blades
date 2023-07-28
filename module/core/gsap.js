@@ -93,7 +93,6 @@ const gsapEffects = {
             const tooltipElem = $(targets).nextAll(".tooltip")[0];
             const tl = U.gsap.timeline({ paused: true })
                 .to(targets, {
-                scale: 1.2,
                 filter: "blur(0px)",
                 opacity: 1,
                 duration: 0.25,

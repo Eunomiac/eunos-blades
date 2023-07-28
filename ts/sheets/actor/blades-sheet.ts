@@ -30,13 +30,12 @@ interface BladesSheetData {
 		hasFullVision: boolean,
 		hasLimitedVision: boolean,
 		hasControl: boolean,
-		playbookData: {tooltip: string, dotline: DotlineData},
-		coinsData: {dotline: DotlineData}
+		playbookData?: {tooltip: string, dotline: DotlineData},
+		coinsData?: {dotline: DotlineData}
 }
 // #endregion
 
 class BladesSheet extends ActorSheet {
-
 
 	override getData() {
 
@@ -50,30 +49,34 @@ class BladesSheet extends ActorSheet {
 			activeEffects: Array.from(this.actor.effects) as BladesActiveEffect[],
 			hasFullVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER),
 			hasLimitedVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED),
-			hasControl: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER),
-			playbookData: {
+			hasControl: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
+		};
+
+		if (BladesActor.IsType(this.actor, BladesActorType.pc, BladesActorType.crew)) {
+			sheetData.playbookData = {
 				tooltip: (new Handlebars.SafeString([
 					"<ul>",
 					... this.actor.playbook?.system.experience_clues?.map((line) => `<li>${line}</li>`) ?? [],
 					"</ul>"
 				].join(""))).toString(),
 				dotline: {
-					data: this.actor.system.experience?.playbook,
+					data: this.actor.system.experience.playbook,
 					target: "system.experience.playbook.value",
 					svgKey: "teeth.tall",
 					svgFull: "full|frame",
 					svgEmpty: "full|half|frame"
 				}
-			},
-			coinsData: {
+			};
+
+			sheetData.coinsData = {
 				dotline: {
 					data: this.actor.system.coins,
 					target: "system.coins.value",
 					iconEmpty: "coin-full.svg",
 					iconFull: "coin-full.svg"
 				}
-			}
-		};
+			};
+		}
 
 		return {
 			...context,
@@ -287,7 +290,7 @@ class BladesSheet extends ActorSheet {
 			}[compData.docType];
 		}
 
-		eLog.checkLog2("dialog", "Component Data", {...compData});
+		// eLog.checkLog2("dialog", "Component Data", {...compData});
 
 		return compData;
 	}
@@ -303,7 +306,7 @@ class BladesSheet extends ActorSheet {
 	async _onItemAddClick(event: ClickEvent) {
 		event.preventDefault();
 		const {docCat, docType, dialogDocs, docTags} = this._getCompData(event);
-		eLog.checkLog("_onItemAddClick", {docCat, dialogDocs});
+		// eLog.checkLog("_onItemAddClick", {docCat, dialogDocs});
 		if (!dialogDocs || !docCat || !docType) {
 			return;
 		}

@@ -1,6 +1,7 @@
 
 interface BladesActorSheetData {
-	isOwner: boolean
+	isOwner: boolean,
+	attributes: Record<Attributes,Record<Actions,ValueMax>>
 }
 
 interface DotlineData {

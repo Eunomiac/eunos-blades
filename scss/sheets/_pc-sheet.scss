@@ -236,6 +236,8 @@
 
 					section.nav-group {
 						height: 100%;
+						overflow: visible;
+
 						.loadout {
 							.tab-label {
 
@@ -285,30 +287,14 @@
 						.comp-attribute {
 							background: var(--blades-white);
 							margin-bottom: toRem(5px);
-							max-height: toRem(26px);
-
-							.clock-container {
-								padding: 0;
-								width: 30px;
-								height: 26px;
-								--clock-frame-size: 24px;
-								--clock-glow-size: calc(var(--clock-frame-size) * 3);
-								--clock-glow-correction: -164px;
-
-								.clock-frame .segmented {
-									stroke: var(--blades-black-dark);
-								}
-								.clock-interior circle {
-									fill: var(--blades-black);
-								}
-							}
+							max-height: toRem(24px);
 
 							label {
 								color: var(--blades-black);
 								font-size: toRem(16px);
 								font-family: var(--font-emphasis);
 								text-shadow: none;
-								line-height: toRem(26px);
+								line-height: toRem(28px);
 								text-transform: uppercase;
 								text-align: left;
 								text-indent: toRem(5px);

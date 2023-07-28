@@ -146,6 +146,7 @@ export enum BladesPhase {
 	Downtime = "Downtime"
 }
 export namespace Tag {
+
 	export enum System {
 		Archived = "Archived",
 		Featured = "Featured",
@@ -307,6 +308,29 @@ const C = {
 	Loadout: {
 		selections: ["BITD.Light", "BITD.Normal", "BITD.Heavy", "BITD.Encumbered"],
 		levels: ["BITD.Light", "BITD.Normal", "BITD.Heavy", "BITD.Encumbered", "BITD.OverMax"]
+	},
+	TraumaTooltips: {
+		Cold: "You're not moved by emotional appeals or social bonds.",
+		Haunted: "You're often lost in reverie, reliving past horrors, seeing things.",
+		Obsessed: "You're enthralled by one thing: an activity, a person, an ideology.",
+		Paranoid: "You imagine danger everywhere; you can't trust others.",
+		Reckless: "You have little regard for your own safety or best interests.",
+		Soft: "You lose your edge; you become sentimental, passive, gentle.",
+		Unstable: "Your emotional state is volatile. You can instantly rage, or fall into despair, act impulsively, or freeze up.",
+		Vicious: "You seek out opportunities to hurt people, even for no good reason.",
+		Chaotic: "You've become so detached from the living that inhibitions fall away, leaving you impulsive and unpredictable.",
+		Destructive: "You are easily angered by reminders of all you've lost, and can lash out violently against the trappings of the living world.",
+		Furious: "Your ravaged soul is fertile kindling for rage, and your fury is easily ignited.",
+		Obsessive: "Your wants and desires become fixations and compulsions, driving you to achieve them at any cost.",
+		Territorial: "You see some place as yours: Trespassers are dealt with, and even guests must respect your claim.",
+		Savage: "When moved to anger or violence, you act with cruelty and feral malevolence.",
+		Clanking: "Your frame has developed a persistent metallic clang with each step, making stealth difficult.",
+		Leaking: "You continuously leak oil, leviathan blood, distilled electroplasm or some other potentially-dangerous substance.",
+		Fixated: "You have become fixated on a function of your choice, and lose all memory of your humanity when you pursue it.",
+		Smoking: "Your frame exudes a constant miasma of acrid, foul-smelling smoke.",
+		Sparking: "Electroplasmic energy erupts in arcing sparks from joints and junctions throughout your frame.",
+		Ruthless: "You lose any sense of humanity when indulging your Vice or pursuing your most important goal.",
+		Secretive: "Knowledge has become so precious to you, that even your closest allies are on a need-to-know basis."
 	},
 	Playbooks: {
 		Cutter: {
@@ -993,7 +1017,7 @@ export const Randomizers = {
 		"Has chronic illness that requires frequent care.",
 		"Holds their position due to blackmail.",
 		"Holds their position to spy for another faction.",
-		"In prison or under noble’s house arrest.",
+		"In prison or under noble's house arrest.",
 		"Inherited their position. May not deserve / want it.",
 		"Intense, unreasonable phobia or loathing.",
 		"Involved with war crimes from the Unity War.",
@@ -1009,7 +1033,7 @@ export const Randomizers = {
 		"Revolutionary. Plots against the Imperium.",
 		"Scandalous reputation (deserved or not).",
 		"Secretly (openly?) controlled by possessing spirit.",
-		"Serves a demon’s agenda (knowingly or not).",
+		"Serves a demon's agenda (knowingly or not).",
 		"Spotless reputation. Highly regarded.",
 		"Superstitious. Believes in signs, magic numbers.",
 		"Surrounded by sycophants, supplicants, toadies.",
@@ -1778,7 +1802,7 @@ export const IMPORTDATA = {
 				"Other guardians have a side business in selling venom and meat and hides. They have venom blowdarts and poisoned daggers."
 			],
 			modsEasier: [
-				"The snakes dislike a certain whistle tone. Let out a blast occasionally and they’ll stay away.",
+				"The snakes dislike a certain whistle tone. Let out a blast occasionally and they'll stay away.",
 				"A former employee knows how guardians got around the site with minimal risk of snakes."
 			]
 		},
@@ -1902,7 +1926,7 @@ export const IMPORTDATA = {
 				"If an innocent triggers the trap, what form does the spirit take then?"
 			],
 			modsHarder: [
-				"The only way to be free is to die, undergo electroplasmic surgery while dead, and be revived. Otherwise the curse is protected by the victim’s life force.",
+				"The only way to be free is to die, undergo electroplasmic surgery while dead, and be revived. Otherwise the curse is protected by the victim's life force.",
 				"The haunting spirit tries to take possession once a day or so, sending the host into a blackout and acting out vicious crimes against allies, loved ones, and bluecoats."
 			],
 			modsEasier: [
@@ -1959,7 +1983,7 @@ export const IMPORTDATA = {
 			],
 			modsHarder: [
 				"Many prepared corpses are stashed in unexpected places, bursting into combat when rejuvenated.",
-				"Once they rise, the desiccated spirit-ridden corpses will chase intruders until they can’t."
+				"Once they rise, the desiccated spirit-ridden corpses will chase intruders until they can't."
 			],
 			modsEasier: [
 				"Only a few corpses are left to revive.",
@@ -2011,7 +2035,7 @@ export const IMPORTDATA = {
 				"How dangerous is the venom?"
 			],
 			modsHarder: [
-				"The building’s architecture assumes use of floormesh, the carpets are woven to look like floormesh so the guardians don’t have to cover the actual pits.",
+				"The building's architecture assumes use of floormesh, the carpets are woven to look like floormesh so the guardians don't have to cover the actual pits.",
 				"The mesh itself has venomous thorns in it, so stepping on it or falling through poisons the target."
 			],
 			modsEasier: [
@@ -2103,8 +2127,8 @@ export const IMPORTDATA = {
 				"Thirstclimber is cultivated at the mid-point of a really difficult climb."
 			],
 			modsEasier: [
-				"Annoyed locals keep it trimmed back on outside walls periodically in spite of the guardian’s threats.",
-				"Guards know the ingredients to make a special paste, and the symbol to paint on skin with it, to protect from the plant’s effects. A former guard might share the secret."
+				"Annoyed locals keep it trimmed back on outside walls periodically in spite of the guardian's threats.",
+				"Guards know the ingredients to make a special paste, and the symbol to paint on skin with it, to protect from the plant's effects. A former guard might share the secret."
 			]
 		},
 		{
@@ -2286,7 +2310,7 @@ export const IMPORTDATA = {
 				"The spears are slathered with some toxin, further affecting the victim."
 			],
 			modsEasier: [
-				"The mechanisms are not well maintained. Sometimes they don’t work, and when they do, there is a screech and they are a bit slow.",
+				"The mechanisms are not well maintained. Sometimes they don't work, and when they do, there is a screech and they are a bit slow.",
 				"The spears are designed to pin an intruder in place, to be interrogated and punished, rather than to kill outright."
 			]
 		},
@@ -2476,7 +2500,7 @@ export const IMPORTDATA = {
 				"The school has an impressive alumni network that visits occasionally and would avenge wrongs to the honor of the school."
 			],
 			modsEasier: [
-				"This is an off-site shrine or expansion, where they send troublemakers and those they can’t eject for political or financial reasons.",
+				"This is an off-site shrine or expansion, where they send troublemakers and those they can't eject for political or financial reasons.",
 				"Leadership is riddled with rivalries and power struggles. Outsiders know some details."
 			]
 		},
@@ -2582,7 +2606,7 @@ export const IMPORTDATA = {
 				"Will the lanterns work if taken off-site?"
 			],
 			modsHarder: [
-				"Guards are trained to tune into the life force energy to also hear conversations of the life shadows. Guards can tune into the life force energy to know the owner’s current location, if in the defended area.",
+				"Guards are trained to tune into the life force energy to also hear conversations of the life shadows. Guards can tune into the life force energy to know the owner's current location, if in the defended area.",
 				"Untended lanterns can be set to transmit detection of a life force to a nearby guardian."
 			],
 			modsEasier: [
@@ -3811,7 +3835,7 @@ export const IMPORTDATA = {
 		{
 			name: "Dyvik's Chaser Mask",
 			category: "Weird Artifact",
-			desc: "This silvery face mask has the word “Elekthiaron” etched along its inner edge. When the word is spoken, the personality of the one touching the mask is pulled into it. The personality that was in the mask goes in the body. If the one in the body doesn’t touch the mask once a week, madness threatens.",
+			desc: "This silvery face mask has the word “Elekthiaron” etched along its inner edge. When the word is spoken, the personality of the one touching the mask is pulled into it. The personality that was in the mask goes in the body. If the one in the body doesn't touch the mask once a week, madness threatens.",
 			narrative: "Has someone been using the mask to pose as someone else? How long has that been going on? Is there someone in the mask that needs rescuing? Was the mask used to cheat biological death?"
 		},
 		{
@@ -3821,7 +3845,7 @@ export const IMPORTDATA = {
 			narrative: "Aristocrats will collect anything. Scholars go to great lengths for research material. Cultists may find religious significance in the folios. (Owning the folios is against the law.)"
 		},
 		{
-			name: "Falheim’s Prod",
+			name: "Falheim's Prod",
 			category: "Historical Curiosity",
 			desc: "This ragged pole with a spear and a silver-cable loop was the first prototype of what became the lightning hook. It doesn't work very well, but it was the first historically known charged object that could consistently interact with the Ghost Field.",
 			narrative: "Apparently this bit of history is an important prestige piece in the turbulent intrigues of a number of underground cults led by Whispers. The city government would also like to display it in a museum."
@@ -3887,7 +3911,7 @@ export const IMPORTDATA = {
 			narrative: "Impressionable people admit the disk whispers to them, they hear the Back of the Mirror when it the disk is near. Many cults see this disk as a conduit to clearer communication with their supernatural patrons."
 		},
 		{
-			name: "Naladicha’s Cartography",
+			name: "Naladicha's Cartography",
 			category: "Historical Curiosity",
 			desc: "The famous cartographer Naladicha died, and his ghost was woven into a spirit anchor connected to a pen on a wire. The drooping pen scribbled nonstop, dipping to indicate a page turn. Two books were filled with scribbles before the pen stilled. These lines and shapes may be maps of the Ghost Field.",
 			narrative: "One consulting Whisper reported that when she attuned to the books using an expensive and difficult ritual, the maps became luminous and four dimensional, revealing lost secrets in Duskwall."
@@ -3920,10 +3944,10 @@ export const IMPORTDATA = {
 			name: "Remote Writer",
 			category: "Weird Artifact",
 			desc: "This little book has a peculiar occult symbol on the cover. If an object is placed between the covers for a full 24 hours, then the book will transcribe any conversation happening in earshot of the object until reset. When the book reaches the end, the writing starts over on the first page, clearing pages as it goes.",
-			narrative: "The book provides remote reading, eavesdropping of a sort. A target’s favorite pen or lucky coin can become the broadcaster, and determined spies can copy the magic book writing so they don't lose it."
+			narrative: "The book provides remote reading, eavesdropping of a sort. A target's favorite pen or lucky coin can become the broadcaster, and determined spies can copy the magic book writing so they don't lose it."
 		},
 		{
-			name: "Rylaria’s Shield",
+			name: "Rylaria's Shield",
 			category: "Family Heirloom",
 			desc: "Rylaria Graefwold was a soldier who gained title and wealth. She wrote her life's story on the back of the shield she used to save a general. Later generations added to the family story. The shield represents the family's honor. It was lost at sea when their first leviathan hunting ship was wrecked. Or was it?",
 			narrative: "Now the family is wealthy, and this artifact would be important to them. Does it have a secret in code?"
@@ -3956,7 +3980,7 @@ export const IMPORTDATA = {
 			name: "Terrorize",
 			category: "Secret Dirty Work",
 			desc: "People can be stubborn, to the point where only fear can unseat their decision. Maybe they feel independent and need to reminded that they need protection. Maybe they feel safe and need to be reminded they are not untouchable.",
-			narrative: "Are you supposed to be someone in particular, like a random street thug or rival’s employee or bluecoat? How far can the terror go? Do you need to trash a home, or maybe converse with a loved one?"
+			narrative: "Are you supposed to be someone in particular, like a random street thug or rival's employee or bluecoat? How far can the terror go? Do you need to trash a home, or maybe converse with a loved one?"
 		},
 		{
 			name: "The Emerald Well",

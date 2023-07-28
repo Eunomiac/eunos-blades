@@ -21,18 +21,16 @@
 
 			<input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}">
 
-			<div class="members comp-horizontal comp">
-				<div class="portrait-container flex-horizontal">
-					{{#each actors.members as |actor|}}
-					{{> "systems/eunos-blades/templates/components/comp.hbs" actor
-					cat="crew-pc"
-					id=actor._id
-					class="comp-vertical portrait-block"
-					remButton=true
-					}}
-					{{/each}}
-				</div>
+			<div class="members comp comp-horizontal portrait-container actors-container">
+				{{#each actors.members as |actor|}}
+				{{> "systems/eunos-blades/templates/components/portrait.hbs" actor
+					id = actor._id
+					cat="Member"
+					docType="Actor"
+				}}
+				{{/each}}
 			</div>
+
 
 			{{> "systems/eunos-blades/templates/components/comp.hbs" items.playbook
 			class="comp-playbook comp-vertical"

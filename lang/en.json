@@ -21,7 +21,12 @@
 		"TypeCrew_ability": "Crew Ability",
 		"TypeGm_tracker": "Tracker: GM Overview",
 		"TypeClock_keeper": "Tracker: Clocks",
-		"TypePreferred_op": "Preferred Op"
+		"TypePreferred_op": "Preferred Op",
+		"TypeProject": "Project",
+		"TypeRitual": "Ritual",
+		"TypeDesign": "Design",
+		"TypeLocation": "Location",
+		"TypeScore": "Score"
 	},
 	"BITD": {
 		"Heritage": "Heritage",

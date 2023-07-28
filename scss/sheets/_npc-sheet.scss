@@ -21,19 +21,81 @@
 				section.sheet-top {
 
 					grid-template-areas:
-						". . title title title title title title"
+						". . title title title title title status"
 						". . . subtitle subtitle subtitle subtitle subtitle"
 						". short-desc short-desc short-desc short-desc short-desc short-desc short-desc"
 						". . traits traits traits traits traits traits"
 						". district district district faction faction faction faction";
 
 
-					grid-template-rows: join($heights, " ");
+					grid-template-rows: join($heights, (), $separator: space);
 					height: calculate-sum($heights);
 
 
 					.comp-name {
 						--sheet-title-font-size: #{toRem(38px)};
+					}
+
+					.comp-status {
+						grid-area: status;
+						margin-top: 10px;
+						z-index: 3;
+						scale: 1;
+						position: static;
+
+						.comp-label.shadowed {
+							font-family: var(--font-emphasis);
+							font-size: toRem(16px);
+							font-variant: small-caps;
+							color: var(--blades-grey-bright);
+						}
+
+						.comp-body {
+							min-height: 1rem;
+
+							.comp-status-toggle {
+								// top: 0;
+								// right: 23px;
+								position: static;
+								margin-top: 5px;
+								pointer-events: all;
+
+								.status-neutral {
+									scale: 2 1;
+									display: block;
+								}
+							}
+						}
+
+						// .status-toggle {
+						// 	margin-top: 5px;
+						// 	pointer-events: all;
+
+						// 	> * { transition: 0.5s }
+
+
+						// 	i.fa-caret-up {
+						// 		color: var(--blades-gold-bright);
+						// 		scale: 2;
+
+						// 		&.fa-rotate-180 {
+						// 			color: var(--blades-red-bright);
+						// 		}
+						// 	}
+
+						// 	i.fa-diamond {
+						// 		color: var(--blades-grey);
+						// 	}
+						// 	&:hover {
+						// 		filter: brightness(1.5);
+						// 		// scale: 2.5;
+
+						// 		i.fa-diamond {
+						// 			scale: 1.25;
+						// 			color: var(--blades-white-bright);
+						// 		}
+						// 	}
+						// }
 					}
 
 					.comp-traits {
