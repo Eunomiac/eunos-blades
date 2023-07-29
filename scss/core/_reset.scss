@@ -112,6 +112,7 @@
 		text: {
 			shadow: var(--text-shadow-input);
 			transform: var(--text-transform-input);
+			indent: toRem(3px);
 		}
 		border-color: var(--border-color-input);
 		border-style: var(--border-style-input);

@@ -208,7 +208,7 @@ html, :root {
     --margin-heading: 0;
     --margin-heading-strong: 0 0 0.5rem 0;
     --padding-heading: 0;
-    --padding-heading-strong: 0.5rem;
+    --padding-heading-strong: 0.25rem;
     --font-heading: var(--font-emphasis);
     --font-heading-strong: var(--font-heading);
     --font-weight-heading: bold;
@@ -1052,6 +1052,7 @@ html, :root {
       line-height: var(--line-height-input);
       text-shadow: var(--text-shadow-input);
       text-transform: var(--text-transform-input);
+      text-indent: 0.1875rem;
       border-color: var(--border-color-input);
       border-style: var(--border-style-input);
       border-width: var(--border-width-input);
@@ -1894,14 +1895,17 @@ html, :root {
     padding: 0.1rem 0.2rem; }
   html .text-secret, :root .text-secret {
     display: var(--secret-text-display, "none");
-    background-color: var(--blades-black-dark);
-    color: var(--blades-grey);
+    background-color: var(--blades-white);
+    color: var(--blades-black);
     font-weight: bold;
     font-style: italic;
     border-radius: 3px;
-    outline: 1px dotted var(--blades-white);
+    -webkit-box-shadow: 0 0 3px var(--blades-white-bright), 0 0 3px var(--blades-white-bright), 0 0 3px var(--blades-white-bright);
+    box-shadow: 0 0 3px var(--blades-white-bright), 0 0 3px var(--blades-white-bright), 0 0 3px var(--blades-white-bright);
     padding: 0 0.3125rem;
     margin: 0 0.3125rem; }
+    html .text-secret:first-child:last-child, :root .text-secret:first-child:last-child {
+      display: block; }
   html .filled-label, :root .filled-label {
     font-size: 1.25rem;
     line-height: 1;
@@ -2000,6 +2004,8 @@ html, :root {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center; }
+  html .full-width, :root .full-width {
+    width: 100%; }
 
 ::-webkit-scrollbar {
   width: var(--blades-spacer-sm); }
@@ -2023,4 +2029,11 @@ html, :root {
   #tinymce {
     min-height: 100px;
     background-color: rgba(0, 0, 0, 0.2);
-    height: 100%; }
+    height: 100%;
+    margin: 0; }
+    #tinymce p {
+      display: block;
+      -webkit-margin-before: 7px;
+      margin-block-start: 7px;
+      -webkit-margin-after: 7px;
+      margin-block-end: 7px; }

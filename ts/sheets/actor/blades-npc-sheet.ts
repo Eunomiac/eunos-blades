@@ -21,7 +21,36 @@ class BladesNPCSheet extends BladesSheet {
 
 		context.isSubActor = context.actor.isSubActor;
 		context.parentActor = context.actor.parentActor;
-		context.randomizers = context.actor.system.randomizers;
+		context.persona = context.actor.system.persona;
+
+		const rStatus: Record<string, {size: "05"|number, label: string|null}> = {
+			name: {size: 4, label: null},
+			heritage: {size: 1, label: "Heritage"},
+			profession: {size: 1, label: "Profession"},
+
+			gender: {size: 1, label: "Gender"},
+			appearance: {size: 1, label: "Appearance"},
+
+			goal: {size: 2, label: "Goal"},
+			method: {size: 2, label: "Method"},
+
+			trait1: {size: "05", label: null},
+			trait2: {size: "05", label: null},
+			trait3: {size: "05", label: null},
+
+			interests: {size: 4, label: "Interests"},
+			quirk: {size: 4, label: "Quirk"},
+			style: {size: 2, label: "Style"}
+		};
+
+		for (const [key] of Object.entries(context.persona)) {
+			if (key in rStatus) {
+				Object.assign(
+					context.persona[key],
+					rStatus[key]
+				);
+			}
+		}
 
 		return context;
 	}

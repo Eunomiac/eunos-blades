@@ -140,6 +140,7 @@
 
 				&.nav-group {
 					height: calc(100% - var(--sheet-top-height) - var(--sheet-mid-height));
+					justify-content: flex-start;
 
 					> * { width: 100% }
 

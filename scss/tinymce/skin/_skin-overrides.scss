@@ -14,7 +14,7 @@
 }
 
 .editor.tinymce {
-	--editor-top-shift: -26px;
+	--editor-top-shift: 0;
 
 	--toolbar-scale-factor: 1; // 0.75;
 	--toolbar-margin-bottom: 0px;
@@ -22,9 +22,9 @@
 	--statusbar-height: 15px;
 
 	position: relative;
-	top: var(--editor-top-shift);
+	// top: var(--editor-top-shift);
 	z-index: 3;
-	margin-bottom: var(--editor-top-shift);
+	// margin-bottom: var(--editor-top-shift);
 	overflow: visible;
 
 	.tox.tox-tinymce {
@@ -33,16 +33,20 @@
 		overflow: hidden;
 		position: relative;
 		visibility: inherit !important;
-		height: calc(100% + 25px) !important;
-
+		height: calc(100% + 26px) !important;
+		margin-top: calc(-26px) !important;
+		// height: 100% !important;
 
 		.tox-editor-container {
 
 			.tox-editor-header {
-				width: calc(100% / var(--toolbar-scale-factor));
-				transform-origin: top left;
-				transform: scale(var(--toolbar-scale-factor));
-				margin-bottom: var(--toolbar-margin-bottom);
+				// width: calc(100% / var(--toolbar-scale-factor));
+				opacity: 0.25;
+				transition: opacity 0.5s;
+				position: relative;
+				top: 2px;
+				margin-left: auto;
+				&:hover { opacity: 1 }
 
 				.tox-toolbar-overlord {
 					background-color: transparent;
@@ -51,9 +55,9 @@
 					.tox-toolbar, .tox-toolbar__overflow, .tox-toolbar__primary {
 						background-color: rgba(0,0,0,1);
 						justify-content: space-between;
-						margin-top: 26px;
-						transform: translateY(0px);
-						transition: transform 0.5s;
+						// margin-top: 26px;
+						// transform: translateY(0px);
+						// transition: opacity 0.5s;
 
 						.tox-toolbar__group {
 							background: rgba(0,0,0,0.5);
@@ -71,12 +75,6 @@
 								}
 							}
 						}
-					}
-				}
-
-				.tox-toolbar-overlord:hover {
-					.tox-toolbar, .tox-toolbar__overflow, .tox-toolbar__primary {
-						transform: translateY(-26px);
 					}
 				}
 			}

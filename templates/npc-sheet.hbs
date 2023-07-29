@@ -114,7 +114,10 @@
 				action="randomize"
 				}}
 				<div class="randomizer">
-					{{#each randomizers as |data key|}}
+					{{#each persona as |data key|}}
+					{{#unless (test key "==" "trait1")}}
+					{{#unless (test key "==" "trait2")}}
+					{{#unless (test key "==" "trait3")}}
 					<div class="comp comp-randomizer-field field-size-{{data.size}}">
 						{{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
 						isToggled=data.isLocked
@@ -122,13 +125,16 @@
 						activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
 						inactiveClass="far fa-lock-open-alt"
 						inactiveTooltip="<b>Randomizing Field</b><br>Click to Freeze"
-						targetKey=(concat "system.randomizers." key ".isLocked") }}
+						targetKey=(concat "system.persona." key ".isLocked") }}
 						{{#if data.label}}
 						<label class="comp-label shadowed randomizer-label">{{data.label}}</label>
 						{{/if}}
 						<input class="randomizer-input" type="text" value="{{data.value}}"
-							name="system.randomizers.{{key}}.value" />
+							name="system.persona.{{key}}.value" />
 					</div>
+					{{/unless}}
+					{{/unless}}
+					{{/unless}}
 					{{/each}}
 				</div>
 			</div>

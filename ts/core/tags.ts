@@ -88,7 +88,7 @@ const Tags = {
 
 			// Check if element specifies an alternate schema target from doc.tags
 			const targetKey = $(elem).data("tagTarget") ?? "system.tags";
-			const curTags = [getProperty(doc, targetKey) ?? []].flat();
+			const curTags = [getProperty(doc, targetKey) ?? []].flat().filter(Boolean);
 			eLog.checkLog("tags", "Current Tags", curTags);
 			tagify.addTags(
 				curTags
@@ -97,8 +97,8 @@ const Tags = {
 						"value": (new Handlebars.SafeString(tag)).toString(),
 						"data-group": findDataGroup(tag)
 					})),
-				false,
-				false
+				true,
+				true
 			);
 
 			// Add event listener for tag changes, setting defined target

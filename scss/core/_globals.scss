@@ -65,14 +65,17 @@
 
 	.text-secret {
 		display: var(--secret-text-display, "none");
-		background-color: var(--blades-black-dark);
-		color: var(--blades-grey);
+		background-color: var(--blades-white);
+		color: var(--blades-black);
 		font-weight: bold;
 		font-style: italic;
 		border-radius: 3px;
-		outline: 1px dotted var(--blades-white);
+		// outline: 1px dotted var(--blades-white);
+		box-shadow: 0 0 3px var(--blades-white-bright), 0 0 3px var(--blades-white-bright), 0 0 3px var(--blades-white-bright);
 		padding: 0 #{toRem(5px)};
 		margin: 0 #{toRem(5px)};
+
+		&:first-child:last-child { display: block }
 	}
 
 	.filled-label {
@@ -168,5 +171,9 @@
 		justify-content: center;
 		align-items: center;
 		// min-width: min-content;
+	}
+
+	.full-width {
+		width: 100%;
 	}
 }

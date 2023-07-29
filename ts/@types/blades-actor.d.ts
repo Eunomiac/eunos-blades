@@ -1,13 +1,13 @@
-import {BladesActorType, Tag, District, Attributes, Actions} from "../core/constants.js";
+import { BladesActorType, Tag, District, Attributes, Actions } from "../core/constants.js";
 import BladesActor from "../blades-actor.js";
 
 declare global {
 	type SubActorData = Partial<BladesActor["system"]>
 
-type NPCRandomizerData = {
-  isLocked: boolean,
-  value: string
-}
+	type BladesRandomizer = {
+		isLocked: boolean,
+		value: string
+	}
 
 	type BladesClaimData = {
 		name: string,
@@ -42,11 +42,11 @@ type NPCRandomizerData = {
 		activeSubActors: BladesActor[];
 		archivedSubActors: BladesActor[];
 
-		getDialogActors(category: SelectionCategory): Record<string, BladesActor[]>|false;
+		getDialogActors(category: SelectionCategory): Record<string, BladesActor[]> | false;
 
-		getSubActor(actorRef: ActorRef): BladesActor|undefined;
+		getSubActor(actorRef: ActorRef): BladesActor | undefined;
 		addSubActor(actorRef: ActorRef): Promise<void>;
-		updateSubActor(actorRef: ActorRef, updateData: DeepPartial<SubActorData & Record<string,any>>): Promise<BladesActor|undefined>;
+		updateSubActor(actorRef: ActorRef, updateData: DeepPartial<SubActorData & Record<string, any>>): Promise<BladesActor | undefined>;
 		remSubActor(actorRef: ActorRef): Promise<void>;
 		purgeSubActor(actorRef: ActorRef): Promise<void>;
 
@@ -59,9 +59,9 @@ type NPCRandomizerData = {
 		activeSubItems: BladesItem[];
 		archivedSubItems: BladesItem[];
 
-		getDialogItems(category: SelectionCategory): Record<string, BladesItem[]>|false;
+		getDialogItems(category: SelectionCategory): Record<string, BladesItem[]> | false;
 
-		getSubItem(itemRef: ItemRef): BladesItem|undefined;
+		getSubItem(itemRef: ItemRef): BladesItem | undefined;
 		addSubItem(itemRef: ItemRef): Promise<void>;
 		remSubItem(itemRef: ItemRef): Promise<void>;
 		purgeSubItem(itemRef: ItemRef): Promise<void>;
@@ -102,19 +102,19 @@ type NPCRandomizerData = {
 
 		isMember(crew: BladesActor): boolean;
 
-		get playbook(): BladesItem|undefined;
-		get playbookName(): (BladesTag & Playbook)|undefined;
-		get vice(): BladesItem|undefined;
-		get crew(): BladesActor|undefined;
+		get playbook(): BladesItem | undefined;
+		get playbookName(): (BladesTag & Playbook) | undefined;
+		get vice(): BladesItem | undefined;
+		get crew(): BladesActor | undefined;
 		get abilities(): BladesItem[];
 
-		get attributes(): Record<Attributes,number>|undefined;
-		get actions(): Record<Actions,number>|undefined;
-		get rollable(): Record<Attributes|Actions, number>|undefined;
+		get attributes(): Record<Attributes, number> | undefined;
+		get actions(): Record<Actions, number> | undefined;
+		get rollable(): Record<Attributes | Actions, number> | undefined;
 
 		get trauma(): number;
 		get traumaList(): string[];
-		get activeTraumaConditions(): Record<string,boolean>
+		get activeTraumaConditions(): Record<string, boolean>
 
 		get currentLoad(): number;
 		get remainingLoad(): number;
@@ -123,11 +123,11 @@ type NPCRandomizerData = {
 	interface BladesCrew extends SubActorControl, SubItemControl, CrewAdvancement {
 		members: BladesActor[];
 		contacts: BladesActor[];
-		claims: Record<number,BladesClaimData>;
+		claims: Record<number, BladesClaimData>;
 		turfCount: number;
 
-		get playbook(): BladesItem|undefined;
-		get playbookName(): (BladesTag & Playbook)|undefined;
+		get playbook(): BladesItem | undefined;
+		get playbookName(): (BladesTag & Playbook) | undefined;
 		get abilities(): BladesItem[];
 		get upgrades(): BladesItem[];
 
@@ -150,13 +150,13 @@ type NPCRandomizerData = {
 		export interface Default extends BladesDocSchemaTemplate.Default {
 			description: string,
 			tier: ValueMax,
-			subactors: Record<string,SubActorData>,
+			subactors: Record<string, SubActorData>,
 			subtitle: string
 		}
 
 		export interface gmChar {
 			concept: string,
-			clocks: Record<string,BladesClockData>,
+			clocks: Record<string, BladesClockData>,
 			district: District,
 			assets: string,
 			situation: string,
@@ -169,9 +169,6 @@ type NPCRandomizerData = {
 			experience: {
 				playbook: ValueMax,
 				clues: string[]
-				// [Attributes.insight]: ValueMax,
-				// [Attributes.prowess]: ValueMax,
-				// [Attributes.resolve]: ValueMax
 			}
 			advancement: {
 				general: number,
@@ -181,7 +178,7 @@ type NPCRandomizerData = {
 		}
 
 		export interface hold {
-			hold: "strong"|"weak"
+			hold: "strong" | "weak"
 		}
 	}
 
@@ -192,8 +189,8 @@ type NPCRandomizerData = {
 
 	namespace BladesActorSchema {
 
-		export interface Scoundrel extends	BladesActorSchemaTemplate.Default,
-																				BladesActorSchemaTemplate.pcChar {
+		export interface Scoundrel extends BladesActorSchemaTemplate.Default,
+			BladesActorSchemaTemplate.pcChar {
 			acquaintances_name: string,
 			vice_name: string,
 			stress: NamedValueMax,
@@ -207,20 +204,20 @@ type NPCRandomizerData = {
 			stash: ValueMax,
 
 			loadout: {
-				selected: ""|"light"|"normal"|"heavy"|"encumbered",
-				levels: Record<"light"|"normal"|"heavy"|"encumbered",number>
+				selected: "" | "light" | "normal" | "heavy" | "encumbered",
+				levels: Record<"light" | "normal" | "heavy" | "encumbered", number>
 			},
 			harm: {
-				light: Record<"one"|"two"|"effect",string>,
-				medium: Record<"one"|"two"|"effect",string>,
-				heavy: Record<"one"|"effect",string>
+				light: Record<"one" | "two" | "effect", string>,
+				medium: Record<"one" | "two" | "effect", string>,
+				heavy: Record<"one" | "effect", string>
 			},
 			armor: {
-				active: Record<"light"|"heavy"|"special",boolean>,
-				checked: Record<"light"|"heavy"|"special",boolean>
+				active: Record<"light" | "heavy" | "special", boolean>,
+				checked: Record<"light" | "heavy" | "special", boolean>
 			},
 
-			attributes: Record<Attributes, Record<Actions,ValueMax>>,
+			attributes: Record<Attributes, Record<Actions, ValueMax>>,
 			resistance_bonus: Record<Attributes, number>,
 
 			experience: BladesActorSchemaTemplate.pcChar["experience"] & {
@@ -231,8 +228,8 @@ type NPCRandomizerData = {
 		}
 
 		export interface Crew extends BladesActorSchemaTemplate.Default,
-																	BladesActorSchemaTemplate.pcChar,
-																	BladesActorSchemaTemplate.hold {
+			BladesActorSchemaTemplate.pcChar,
+			BladesActorSchemaTemplate.hold {
 			rep: ValueMax,
 			deity: string,
 			heat: ValueMax,
@@ -240,10 +237,10 @@ type NPCRandomizerData = {
 			hunting_grounds: string
 		}
 
-		export interface NPC extends  BladesActorSchemaTemplate.Default,
-																	BladesActorSchemaTemplate.gmChar {
+		export interface NPC extends BladesActorSchemaTemplate.Default,
+			BladesActorSchemaTemplate.gmChar {
 			persona: {
-				gender: BladesRandomizer<"M"|"F"|"U"|"X"|"">,
+				gender: BladesRandomizer<"M" | "F" | "U" | "X" | "">,
 				appearance: BladesRandomizer,
 				style: BladesRandomizer,
 				goal: BladesRandomizer,
@@ -254,94 +251,24 @@ type NPCRandomizerData = {
 				trait2: BladesRandomizer,
 				trait3: BladesRandomizer
 			},
-
-			randomizers: {
-				name: NPCRandomizerData,
-				gender: NPCRandomizerData,
-				heritage: NPCRandomizerData,
-				appearance: NPCRandomizerData,
-				goal: NPCRandomizerData,
-				method: NPCRandomizerData,
-				profession: NPCRandomizerData,
-				trait_1: NPCRandomizerData,
-				trait_2: NPCRandomizerData,
-				trait_3: NPCRandomizerData,
-				interests: NPCRandomizerData,
-				quirk: NPCRandomizerData,
-				style: NPCRandomizerData
-			},
-			traits: {
-				1: string,
-				2: string,
-				3: string
-			},
-
 			secret: {
 				goal: BladesRandomizer,
 				method: BladesRandomizer,
 				interests: BladesRandomizer,
 				trait: BladesRandomizer
 			}
-	}
+		}
 
-	export interface Faction extends  BladesActorSchemaTemplate.Default,
-																		BladesActorSchemaTemplate.gmChar,
-																		BladesActorSchemaTemplate.hold { }
-}
+		export interface Faction extends BladesActorSchemaTemplate.Default,
+			BladesActorSchemaTemplate.gmChar,
+			BladesActorSchemaTemplate.hold { }
+	}
 
 	interface BladesActorSystem extends BladesActorSchemaTemplate.Default,
-																			Partial<BladesActorSchema.Scoundrel>,
-																			Partial<BladesActorSchema.Crew>,
-																			Partial<BladesActorSchema.NPC>,
-																			Partial<BladesActorSchema.Faction> {
-
-
-		full_name: string, // subtitle
-		notes: string,
-		allies: string,
-		rivals: string,
-		notables: string,
-		enemies: string,
-		hold: any,
-		arena: any,
-		faction: any,
-		quirks: string,
-		notes_gm: string,
-		associated_faction: string,
-		heritage: string,
-		traits: string[],
-		prompts: string,
-
-		resistance_bonuses: Record<Attributes, number>,
-
-		description_short?: string,
-		randomizers: {
-			name: NPCRandomizerData,
-			gender: NPCRandomizerData,
-			heritage: NPCRandomizerData,
-			appearance: NPCRandomizerData,
-			goal: NPCRandomizerData,
-			method: NPCRandomizerData,
-			profession: NPCRandomizerData,
-			trait_1: NPCRandomizerData,
-			trait_2: NPCRandomizerData,
-			trait_3: NPCRandomizerData,
-			interests: NPCRandomizerData,
-			quirk: NPCRandomizerData,
-			style: NPCRandomizerData
-		},
-		traits: {
-			1: string,
-			2: string,
-			3: string
-		},
-
-		advancement_points: number,
-		upgrade_points: number,
-		ability_points: number,
-		goal_1: NamedValueMax,
-		goal_2: NamedValueMax
-	}
+		Partial<BladesActorSchema.Scoundrel>,
+		Partial<BladesActorSchema.Crew>,
+		Partial<BladesActorSchema.NPC>,
+		Partial<BladesActorSchema.Faction> { }
 
 	type ExtractBladesActorSystem<T extends BladesActorType> = {
 		[BladesActorType.pc]: BladesActorSchema.Scoundrel;
@@ -353,4 +280,35 @@ type NPCRandomizerData = {
 	type BladesActorOfType<T extends BladesActorType> = BladesActor & {
 		system: ExtractBladesActorSystem<T>;
 	};
+
+	type BladesDotlineData = {
+		data: ValueMax,
+		target: string,
+		iconEmpty?: string,
+		iconEmptyHover?: string,
+		iconFull?: string,
+		iconFullHover?: string,
+		svgKey?: string,
+		svgFull?: string,
+		svgEmpty?: string
+	}
+	type BladesCompData = {
+		class?: string,
+		label?: string,
+		labelClass?: string,
+		dotline?: BladesDotlineData
+	}
+
+	namespace BladesSheetData {
+
+		export interface Scoundrel {}
+
+		export interface Crew {}
+
+		export interface NPC {}
+
+		export interface Faction {
+			tierData: BladesCompData
+		}
+	}
 }

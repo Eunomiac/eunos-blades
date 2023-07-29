@@ -10,180 +10,7 @@ import { BladesActorType, Tag, Playbook, BladesItemType, Attributes, Actions, Po
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem, { PrereqType } from "./blades-item.js";
 import { SelectionCategory } from "./blades-dialog.js";
-//
 class BladesActor extends Actor {
-    static migrateActor(actor) {
-        const updateData = {};
-        switch (actor.type) {
-            case BladesActorType.npc: {
-                if (actor.system.arena) {
-                    updateData.situation = actor.system.situation || actor.system.arena;
-                }
-                updateData["-=arena"] = null;
-                if (actor.system.notes_gm) {
-                    updateData.gm_notes = actor.system.gm_notes || actor.system.notes_gm;
-                }
-                updateData["-=notes_gm"] = null;
-                if (actor.system.description_short) {
-                    updateData.subtitle = actor.system.subtitle || actor.system.description_short;
-                }
-                updateData["-=description_short"] = null;
-                updateData.persona = actor.system.persona ?? {};
-                ["gender", "appearance", "goal", "method", "interests", "quirk", "style", "trait_1", "trait_2", "trait_3"].forEach((personaTag) => {
-                    if (actor.system.randomizers?.[personaTag]?.isLocked) {
-                        switch (personaTag) {
-                            case "gender": {
-                                if (updateData.persona.gender) {
-                                    break;
-                                }
-                                updateData.persona.gender = {
-                                    isLocked: Boolean(actor.system.randomizers?.gender?.isLocked),
-                                    value: ({
-                                        m: "M",
-                                        f: "F"
-                                    }[(actor.system.randomizers?.gender?.value ?? "").charAt(0).toLowerCase()] ?? "")
-                                };
-                                break;
-                            }
-                            case "appearance":
-                                if (updateData.persona.appearance) {
-                                    break;
-                                }
-                            case "goal":
-                                if (updateData.persona.goal) {
-                                    break;
-                                }
-                            case "method":
-                                if (updateData.persona.method) {
-                                    break;
-                                }
-                            case "interests":
-                                if (updateData.persona.interests) {
-                                    break;
-                                }
-                            case "quirk":
-                                if (updateData.persona.quirk) {
-                                    break;
-                                }
-                            case "style": {
-                                if (updateData.persona.style) {
-                                    break;
-                                }
-                                updateData.persona[personaTag] = { isLocked: true, value: actor.system.randomizers[personaTag].value };
-                                break;
-                            }
-                            case "trait_1": {
-                                if (updateData.persona.trait1) {
-                                    break;
-                                }
-                                updateData.persona.trait1 = { isLocked: true, value: actor.system.randomizers.trait_1.value };
-                                break;
-                            }
-                            case "trait_2": {
-                                if (updateData.persona.trait2) {
-                                    break;
-                                }
-                                updateData.persona.trait2 = { isLocked: true, value: actor.system.randomizers.trait_2.value };
-                                break;
-                            }
-                            case "trait_3": {
-                                if (updateData.persona.trait3) {
-                                    break;
-                                }
-                                updateData.persona.trait3 = { isLocked: true, value: actor.system.randomizers.trait_3.value };
-                                break;
-                            }
-                        }
-                    }
-                });
-                updateData.persona.trait1 ??= { isLocked: Boolean(actor.system.traits[0]), value: actor.system.traits[0] };
-                updateData.persona.trait2 ??= { isLocked: Boolean(actor.system.traits[1]), value: actor.system.traits[1] };
-                updateData.persona.trait3 ??= { isLocked: Boolean(actor.system.traits[2]), value: actor.system.traits[2] };
-                updateData["-=traits"] = null;
-                updateData["-=notes"] = null;
-                updateData["-=randomizers"] = null;
-                const descStrings = [];
-                if (actor.system.prompts) {
-                    descStrings.push(`<p style=\"text-align: center;\"><em>${actor.system.prompts}</em></p>`);
-                }
-                updateData["-=prompts"] = null;
-                if (actor.system.description) {
-                    descStrings.push(`<p>${actor.system.description}</p>`.replace(/(<\/?p>){2}/g, "$1"));
-                }
-                if (["heritage", "allies", "enemies", "faction", "associated_faction"].some((key) => Boolean(actor.system[key]))) {
-                    descStrings.push("<li>");
-                    descStrings.push(...["heritage", "allies", "enemies", "faction", "associated_faction"]
-                        .filter((key) => Boolean(actor.system[key]))
-                        .map((key) => `<ul><b>${U.uCase(key)}:</b> ${actor.system[key]}</ul>`));
-                    descStrings.push("</li>");
-                }
-                ["heritage", "allies", "enemies", "faction", "associated_faction"].forEach((key) => {
-                    updateData[`-=${key}`] = null;
-                });
-                updateData.description = descStrings.join(`
-				`);
-                break;
-            }
-            case BladesActorType.faction: {
-                const descStrings = [];
-                if (actor.system.description) {
-                    descStrings.push(`<p>${actor.system.description}</p>`.replace(/(<\/?p>){2}/g, "$1"));
-                }
-                if (actor.system.quirks) {
-                    descStrings.push(`<p><span class="text-secret" data-is-secret="true">${actor.system.quirks}</span></p>`);
-                }
-                if (["allies", "enemies", "notables"].some((key) => Boolean(actor.system[key]))) {
-                    descStrings.push("<li>");
-                    descStrings.push(...["allies", "enemies", "notables"]
-                        .filter((key) => Boolean(actor.system[key]))
-                        .map((key) => `<ul><b>${U.uCase(key)}:</b> ${actor.system[key]}</ul>`));
-                    descStrings.push("</li>");
-                }
-                updateData.description = descStrings.join(`
-				`);
-                if (actor.system.hold.value === 1) {
-                    updateData.hold = "strong";
-                }
-                else {
-                    updateData.hold = "weak";
-                }
-                if (!actor.system.clocks) {
-                    updateData.clocks = {};
-                    if (actor.system.goal_1.name !== "" || actor.system.goal_1.max !== 0) {
-                        updateData.clocks.Goal_1 = {
-                            title: actor.system.goal_1.name || "Goal 1",
-                            value: 0,
-                            max: actor.system.goal_1.max || 0,
-                            color: "#FFFFFF",
-                            isClockVisible: false,
-                            isTitleVisible: true,
-                            isFocused: false
-                        };
-                    }
-                    if (actor.system.goal_2.name !== "" || actor.system.goal_2.max !== 0) {
-                        updateData.clocks.Goal_2 = {
-                            title: actor.system.goal_2.name || "Goal 2",
-                            value: 0,
-                            max: actor.system.goal_2.max || 0,
-                            color: "#FFFFFF",
-                            isClockVisible: false,
-                            isTitleVisible: true,
-                            isFocused: false
-                        };
-                    }
-                }
-                if (!U.isList(actor.system.tier)) {
-                    updateData.tier = { value: U.pInt(actor.system.tier), max: 8 };
-                }
-                break;
-            }
-        }
-        actor.update({ system: updateData });
-    }
-    static Migrate() {
-        BladesActor.GetTypeWithTags(BladesActorType.faction).forEach((actor) => BladesActor.migrateActor(actor));
-        BladesActor.GetTypeWithTags(BladesActorType.npc).forEach((actor) => BladesActor.migrateActor(actor));
-    }
 
     static async create(data, options = {}) {
         data.token = data.token || {};
@@ -238,10 +65,9 @@ class BladesActor extends Actor {
         this.update({ "system.tags": curTags });
     }
     get tooltip() {
-        const tooltipText = [
-            this.system.concept,
-            this.system.description_short
-        ].find((str) => Boolean(str));
+        const tooltipText = [this.system.concept, this.system.subtitle]
+            .filter(Boolean)
+            .join("<br><br>");
         return tooltipText ? (new Handlebars.SafeString(tooltipText)).toString() : undefined;
     }
     get primaryUser() {
@@ -804,39 +630,44 @@ class BladesActor extends Actor {
     }
 
     async addAbilityPoints(amount) {
-        this.update({ "system.ability_points": (this.system.ability_points ?? 0) + amount });
+        if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
+            return;
+        }
+        this.update({ "system.advancement.ability": (this.system.advancement.ability ?? 0) + amount });
     }
     async removeAbilityPoints(amount) {
-        this.update({ "system.ability_points": Math.max(0, (this.system.ability_points ?? 0) - amount) });
+        if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
+            return;
+        }
+        this.update({ "system.advancement.ability": Math.max(0, (this.system.advancement.ability ?? 0) - amount) });
     }
     get totalAbilityPoints() {
+        if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
+            return 0;
+        }
         if (!this.playbook) {
             return 0;
         }
         switch (this.type) {
-            case BladesActorType.pc: {
-                return this.system.ability_points ?? 0;
-            }
-            case BladesActorType.crew: {
-                return Math.floor(0.5 * (this.system.advancement_points ?? 0)) + (this.system.ability_points ?? 0);
-            }
+            case BladesActorType.pc: return this.system.advancement.ability ?? 0;
+            case BladesActorType.crew: return Math.floor(0.5 * (this.system.advancement.general ?? 0)) + (this.system.advancement.ability ?? 0);
             default: return 0;
         }
     }
     get spentAbilityPoints() {
-        if (!this.playbook) {
+        if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
             return 0;
         }
-        if (![BladesActorType.pc, BladesActorType.crew].includes(this.type)) {
+        if (!this.playbook) {
             return 0;
         }
         return this.abilities.reduce((total, ability) => total + (ability.system.price ?? 1), 0);
     }
     get availableAbilityPoints() {
-        if (!this.playbook) {
+        if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
             return 0;
         }
-        if (![BladesActorType.pc, BladesActorType.crew].includes(this.type)) {
+        if (!this.playbook) {
             return 0;
         }
         return this.totalAbilityPoints - this.spentAbilityPoints;
@@ -856,52 +687,64 @@ class BladesActor extends Actor {
         }
     }
     get totalUpgradePoints() {
+        if (!BladesActor.IsType(this, BladesActorType.crew)) {
+            return 0;
+        }
         if (!this.playbook) {
             return 0;
         }
-        if (![BladesActorType.crew].includes(this.type)) {
-            return 0;
-        }
-        return (this.system.advancement_points ?? 0) + (this.system.upgrade_points ?? 0);
+        return (this.system.advancement.general ?? 0) + (this.system.advancement.upgrade ?? 0);
     }
     get spentUpgradePoints() {
-        if (!this.playbook) {
+        if (!BladesActor.IsType(this, BladesActorType.crew)) {
             return 0;
         }
-        if (![BladesActorType.crew].includes(this.type)) {
+        if (!this.playbook) {
             return 0;
         }
         return this.upgrades.reduce((total, upgrade) => total + (upgrade.system.price ?? 1), 0);
     }
     get availableUpgradePoints() {
-        if (!this.playbook) {
+        if (!BladesActor.IsType(this, BladesActorType.crew)) {
             return 0;
         }
-        if (![BladesActorType.crew].includes(this.type)) {
+        if (!this.playbook) {
             return 0;
         }
         return this.totalUpgradePoints - this.spentUpgradePoints;
     }
     async addAdvancementPoints(amount) {
-        this.update({ "system.advancement_points": (this.system.advancement_points ?? 0) + amount });
+        if (!BladesActor.IsType(this, BladesActorType.crew)) {
+            return;
+        }
+        if (!this.playbook) {
+            return;
+        }
+        this.update({ "system.advancement.general": (this.system.advancement.general ?? 0) + amount });
     }
     async removeAdvancementPoints(amount) {
-        this.update({ "system.advancement_points": Math.max(0, (this.system.advancement_points ?? 0) - amount) });
+        if (!BladesActor.IsType(this, BladesActorType.crew)) {
+            return;
+        }
+        if (!this.playbook) {
+            return;
+        }
+        this.update({ "system.advancement.general": Math.max(0, (this.system.advancement.general ?? 0) - amount) });
     }
     get totalAdvancementPoints() {
+        if (!BladesActor.IsType(this, BladesActorType.crew)) {
+            return 0;
+        }
         if (!this.playbook) {
             return 0;
         }
-        if (this.type !== BladesActorType.crew) {
-            return 0;
-        }
-        return this.system.advancement_points ?? 0;
+        return this.system.advancement.general ?? 0;
     }
     get spentAdvancementPoints() {
-        if (!this.playbook) {
+        if (!BladesActor.IsType(this, BladesActorType.crew)) {
             return 0;
         }
-        if (this.type !== BladesActorType.crew) {
+        if (!this.playbook) {
             return 0;
         }
         return (2 * this.spentAbilityPoints) + this.spentUpgradePoints;
@@ -975,9 +818,9 @@ class BladesActor extends Actor {
             return undefined;
         }
         return {
-            insight: Object.values(this.system.attributes.insight).filter(({ value }) => value > 0).length + this.system.resistance_bonuses.insight,
-            prowess: Object.values(this.system.attributes.prowess).filter(({ value }) => value > 0).length + this.system.resistance_bonuses.prowess,
-            resolve: Object.values(this.system.attributes.resolve).filter(({ value }) => value > 0).length + this.system.resistance_bonuses.resolve
+            insight: Object.values(this.system.attributes.insight).filter(({ value }) => value > 0).length + this.system.resistance_bonus.insight,
+            prowess: Object.values(this.system.attributes.prowess).filter(({ value }) => value > 0).length + this.system.resistance_bonus.prowess,
+            resolve: Object.values(this.system.attributes.resolve).filter(({ value }) => value > 0).length + this.system.resistance_bonus.resolve
         };
     }
     get actions() {
@@ -1250,21 +1093,9 @@ class BladesActor extends Actor {
     }
     
     updateRandomizers() {
-        const rStatus = {
-            name: { size: 4, label: null },
-            heritage: { size: 1, label: "Heritage" },
-            gender: { size: 1, label: "Gender" },
-            appearance: { size: 1, label: "Appearance" },
-            profession: { size: 1, label: "Profession" },
-            goal: { size: 2, label: "Goal" },
-            method: { size: 2, label: "Method" },
-            trait_1: { size: "05", label: null },
-            trait_2: { size: "05", label: null },
-            trait_3: { size: "05", label: null },
-            interests: { size: 4, label: "Interests" },
-            quirk: { size: 4, label: "Quirk" },
-            style: { size: 2, label: "Style" }
-        };
+        if (!BladesActor.IsType(this, BladesActorType.npc)) {
+            return;
+        }
         const titleChance = 0.05;
         const suffixChance = 0.01;
         function sampleArray(arr, curVals = [], numVals = 1) {
@@ -1302,81 +1133,83 @@ class BladesActor extends Actor {
             gender: () => sampleArray(Randomizers.gender)[0],
             heritage: () => sampleArray(Randomizers.heritage)[0],
             appearance: () => sampleArray(Randomizers.appearance)[0],
-            profession: () => sampleArray(Randomizers.profession, [this.system.randomizers.goal.value])[0],
-            goal: () => sampleArray(Randomizers.goal, [this.system.randomizers.goal.value])[0],
-            method: () => sampleArray(Randomizers.method, [this.system.randomizers.goal.value])[0],
-            trait: () => sampleArray(Randomizers.trait, [this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1),
+            profession: () => sampleArray(Randomizers.profession)[0],
+            goal: () => sampleArray(Randomizers.goal)[0],
+            method: () => sampleArray(Randomizers.method)[0],
+            trait: () => sampleArray(Randomizers.trait, [
+                this.system.persona.trait1.value,
+                this.system.persona.trait2.value,
+                this.system.persona.trait3.value
+            ], 1),
             interests: () => sampleArray(Randomizers.interests)[0],
             quirk: () => sampleArray(Randomizers.quirk)[0],
             style: (gender) => sampleArray([
                 ...((gender ?? "").charAt(0).toLowerCase() !== "m" ? Randomizers.style.female : []),
                 ...((gender ?? "").charAt(0).toLowerCase() !== "f" ? Randomizers.style.male : [])
-            ], [this.system.randomizers.style.value])[0]
+            ])[0]
         };
-        const gender = this.system.randomizers.gender.isLocked ? this.system.randomizers.gender.value : randomGen.gender();
-        const updateKeys = Object.keys(this.system.randomizers).filter((key) => !this.system.randomizers[key].isLocked);
+        const gender = this.system.persona.gender.isLocked
+            ? this.system.persona.gender.value
+            : randomGen.gender();
+        const updateKeys = Object.keys(this.system.persona)
+            .filter((key) => !this.system.persona[key]?.isLocked);
         const updateData = {};
         let isUpdatingTraits = false;
         updateKeys.forEach((key) => {
             switch (key) {
                 case "gender": {
-                    updateData[`system.randomizers.${key}`] = {
-                        isLocked: this.system.randomizers.gender.isLocked,
-                        ...rStatus[key],
+                    updateData[`system.persona.${key}`] = {
+                        isLocked: this.system.persona.gender.isLocked,
                         value: gender
                     };
                     break;
                 }
-                case "trait_1":
-                case "trait_2":
-                case "trait_3": {
+                case "trait1":
+                case "trait2":
+                case "trait3": {
                     isUpdatingTraits = true;
                     break;
                 }
                 default: {
                     const randomVal = randomGen[key]();
-                    updateData[`system.randomizers.${key}`] = {
+                    updateData[`system.persona.${key}`] = {
                         isLocked: false,
-                        ...rStatus[key],
-                        value: randomVal || this.system.randomizers[key].value
+                        value: randomVal || this.system.persona[key].value
                     };
                     break;
                 }
             }
         });
         if (isUpdatingTraits) {
-            const trait1 = this.system.randomizers.trait_1.isLocked
-                ? this.system.randomizers.trait_1.value
-                : sampleArray(Randomizers.trait, [this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
-            const trait2 = this.system.randomizers.trait_2.isLocked
-                ? this.system.randomizers.trait_2.value
-                : sampleArray(Randomizers.trait, [trait1, this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
-            const trait3 = this.system.randomizers.trait_3.isLocked
-                ? this.system.randomizers.trait_3.value
-                : sampleArray(Randomizers.trait, [trait1, trait2, this.system.randomizers.trait_1.value, this.system.randomizers.trait_2.value, this.system.randomizers.trait_3.value], 1)[0];
-            if (!this.system.randomizers.trait_1.isLocked) {
-                updateData["system.randomizers.trait_1"] = {
+            const trait1 = this.system.persona.trait1.isLocked
+                ? this.system.persona.trait1.value
+                : sampleArray(Randomizers.trait, [this.system.persona.trait1.value, this.system.persona.trait2.value, this.system.persona.trait3.value], 1)[0];
+            const trait2 = this.system.persona.trait2.isLocked
+                ? this.system.persona.trait2.value
+                : sampleArray(Randomizers.trait, [trait1, this.system.persona.trait1.value, this.system.persona.trait2.value, this.system.persona.trait3.value], 1)[0];
+            const trait3 = this.system.persona.trait3.isLocked
+                ? this.system.persona.trait3.value
+                : sampleArray(Randomizers.trait, [trait1, trait2, this.system.persona.trait1.value, this.system.persona.trait2.value, this.system.persona.trait3.value], 1)[0];
+            if (!this.system.persona.trait1.isLocked) {
+                updateData["system.persona.trait1"] = {
                     isLocked: false,
-                    ...rStatus.trait_1,
                     value: trait1
                 };
             }
-            if (!this.system.randomizers.trait_2.isLocked) {
-                updateData["system.randomizers.trait_2"] = {
+            if (!this.system.persona.trait2.isLocked) {
+                updateData["system.persona.trait2"] = {
                     isLocked: false,
-                    ...rStatus.trait_2,
                     value: trait2
                 };
             }
-            if (!this.system.randomizers.trait_3.isLocked) {
-                updateData["system.randomizers.trait_3"] = {
+            if (!this.system.persona.trait3.isLocked) {
+                updateData["system.persona.trait3"] = {
                     isLocked: false,
-                    ...rStatus.trait_3,
                     value: trait3
                 };
             }
         }
-        return this.update(updateData);
+        this.update(updateData);
     }
 }
 export default BladesActor;

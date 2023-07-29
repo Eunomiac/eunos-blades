@@ -13,24 +13,26 @@ class BladesFactionSheet extends BladesSheet {
             template: "systems/eunos-blades/templates/faction-sheet.hbs",
             width: 900,
             height: "auto",
-            tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content" }]
+            tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "overview" }]
         });
     }
     getData() {
         const context = super.getData();
-        const sheetData = {};
-        if (context.actor.system.goal_1.max > 0) {
-            sheetData.goal_1_clock = {
-                value: context.actor.system.goal_1.value,
-                size: context.actor.system.goal_1.max
-            };
-        }
-        if (context.actor.system.goal_2.max > 0) {
-            sheetData.goal_2_clock = {
-                value: context.actor.system.goal_2.value,
-                size: context.actor.system.goal_2.max
-            };
-        }
+        const sheetData = {
+            clocks: this.actor.system.clocks,
+            tierData: {
+                "class": "comp-tier comp-vertical comp-teeth",
+                "label": "Tier",
+                "labelClass": "filled-label full-width",
+                "dotline": {
+                    data: this.actor.system.tier,
+                    target: "system.tier.value",
+                    svgKey: "teeth.tall",
+                    svgFull: "full|half|frame",
+                    svgEmpty: "full|half|frame"
+                }
+            }
+        };
         return {
             ...context,
             ...sheetData

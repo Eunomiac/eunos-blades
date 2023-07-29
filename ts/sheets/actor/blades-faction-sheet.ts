@@ -1,16 +1,6 @@
 
 import BladesSheet from "./blades-sheet.js";
 
-type BladesClockData = {
-	value: number,
-	size: number
-}
-
-interface BladesFactionSheetData {
-	goal_1_clock: BladesClockData,
-	goal_2_clock: BladesClockData
-}
-
 class BladesFactionSheet extends BladesSheet {
 
 	static override get defaultOptions() {
@@ -19,27 +9,28 @@ class BladesFactionSheet extends BladesSheet {
 			template: "systems/eunos-blades/templates/faction-sheet.hbs",
 			width: 900,
 			height: "auto",
-			tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content"}]
+			tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "overview"}]
 		}) as ActorSheet.Options;
 	}
 
 	override getData() {
 		const context = super.getData() as ReturnType<BladesSheet["getData"]>;
 
-		const sheetData: Partial<BladesFactionSheetData> = {};
-
-		if (context.actor.system.goal_1.max > 0) {
-			sheetData.goal_1_clock = {
-				value: context.actor.system.goal_1.value,
-				size: context.actor.system.goal_1.max
-			};
-		}
-		if (context.actor.system.goal_2.max > 0) {
-			sheetData.goal_2_clock = {
-				value: context.actor.system.goal_2.value,
-				size: context.actor.system.goal_2.max
-			};
-		}
+		const sheetData: Partial<BladesActorSchema.Faction> & BladesSheetData.Faction = {
+			clocks: this.actor.system.clocks,
+			tierData: {
+				"class": "comp-tier comp-vertical comp-teeth",
+				"label": "Tier",
+				"labelClass": "filled-label full-width",
+				"dotline": {
+					data: this.actor.system.tier,
+					target: "system.tier.value",
+					svgKey: "teeth.tall",
+					svgFull: "full|half|frame",
+					svgEmpty: "full|half|frame"
+				}
+			}
+		};
 
 		return {
 			...context,

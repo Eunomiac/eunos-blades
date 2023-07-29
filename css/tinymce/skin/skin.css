@@ -3673,14 +3673,12 @@ body.tox-dialog__disable-scroll {
   font-family: var(--font-mono); }
 
 .editor.tinymce {
-  --editor-top-shift: -26px;
+  --editor-top-shift: 0;
   --toolbar-scale-factor: 1;
   --toolbar-margin-bottom: 0px;
   --statusbar-height: 15px;
   position: relative;
-  top: var(--editor-top-shift);
   z-index: 3;
-  margin-bottom: var(--editor-top-shift);
   overflow: visible; }
   .editor.tinymce .tox.tox-tinymce {
     display: -webkit-box;
@@ -3693,16 +3691,17 @@ body.tox-dialog__disable-scroll {
     overflow: hidden;
     position: relative;
     visibility: inherit !important;
-    height: calc(100% + 25px) !important; }
+    height: calc(100% + 26px) !important;
+    margin-top: calc(-26px) !important; }
     .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header {
-      width: calc(100% / var(--toolbar-scale-factor));
-      -webkit-transform-origin: top left;
-      -ms-transform-origin: top left;
-      transform-origin: top left;
-      -webkit-transform: scale(var(--toolbar-scale-factor));
-      -ms-transform: scale(var(--toolbar-scale-factor));
-      transform: scale(var(--toolbar-scale-factor));
-      margin-bottom: var(--toolbar-margin-bottom); }
+      opacity: 0.25;
+      -webkit-transition: opacity 0.5s;
+      transition: opacity 0.5s;
+      position: relative;
+      top: 2px;
+      margin-left: auto; }
+      .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header:hover {
+        opacity: 1; }
       .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord {
         background-color: transparent;
         overflow: hidden;
@@ -3711,15 +3710,7 @@ body.tox-dialog__disable-scroll {
           background-color: black;
           -webkit-box-pack: justify;
           -ms-flex-pack: justify;
-          justify-content: space-between;
-          margin-top: 26px;
-          -webkit-transform: translateY(0px);
-          -ms-transform: translateY(0px);
-          transform: translateY(0px);
-          -webkit-transition: -webkit-transform 0.5s;
-          transition: -webkit-transform 0.5s;
-          transition: transform 0.5s;
-          transition: transform 0.5s, -webkit-transform 0.5s; }
+          justify-content: space-between; }
           .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar .tox-toolbar__group, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__overflow .tox-toolbar__group, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__primary .tox-toolbar__group {
             background: rgba(0, 0, 0, 0.5); }
             .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar .tox-toolbar__group .tox-tbtn, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__overflow .tox-toolbar__group .tox-tbtn, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__primary .tox-toolbar__group .tox-tbtn {
@@ -3730,10 +3721,6 @@ body.tox-dialog__disable-scroll {
                 text-align: left; }
               .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__overflow .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__primary .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label {
                 font-family: var(--font-emphasis); }
-      .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord:hover .tox-toolbar, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord:hover .tox-toolbar__overflow, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord:hover .tox-toolbar__primary {
-        -webkit-transform: translateY(-26px);
-        -ms-transform: translateY(-26px);
-        transform: translateY(-26px); }
     .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-sidebar-wrap .tox-edit-area .tox-edit-area__iframe {
       background-color: rgba(0, 0, 0, 0.5);
       -webkit-box-shadow: inset 0px 0px 5px black;

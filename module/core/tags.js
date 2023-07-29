@@ -74,14 +74,14 @@ const Tags = {
                 return false;
             }
             const targetKey = $(elem).data("tagTarget") ?? "system.tags";
-            const curTags = [getProperty(doc, targetKey) ?? []].flat();
+            const curTags = [getProperty(doc, targetKey) ?? []].flat().filter(Boolean);
             eLog.checkLog("tags", "Current Tags", curTags);
             tagify.addTags(curTags
                 .filter(findDataGroup)
                 .map((tag) => ({
                 "value": (new Handlebars.SafeString(tag)).toString(),
                 "data-group": findDataGroup(tag)
-            })), false, false);
+            })), true, true);
 
             setTimeout(() => elem.addEventListener("change", (event) => _onTagifyChange(event, doc, targetKey)), 1000);
         }

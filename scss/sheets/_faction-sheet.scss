@@ -1,0 +1,32 @@
+& {
+	min-width: 775px;
+	min-height: 600px;
+
+	.window-content {
+		form {
+
+			$heights: (60px 40px);
+			--sheet-top-height: #{calculate-sum($heights)};
+			--sheet-mid-height: 0px;
+
+			.sheet-root {
+				> section {
+
+					&.sheet-top {
+						grid-template-areas:
+							". . title title title title title title title title tier"
+							". . subtitle subtitle subtitle subtitle subtitle subtitle subtitle subtitle subtitle";
+						grid-template-rows: join($heights, (), $separator: space);
+
+						.sheet-title {
+							--sheet-title-font-size: #{toRem(48px)};
+						}
+						.comp-tier {
+							grid-area: tier;
+						}
+					}
+				}
+			}
+		}
+	}
+}

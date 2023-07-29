@@ -151,20 +151,20 @@
 				}
 			}
 
+			.tab-label + .editor { margin-top: -0.3125rem !important }
+
 			.editor.tinymce {
 				position: relative;
 				max-width: unset;
 				width: calc(100% + (2 * var(--content-padding)));
 				height: 100%;
 
-				.tox.tox-tinymce {
-					height: 100% !important;
+				.editor-content {
+					@import './tinymce/tinymce-content';
 				}
 				&:first-child {
 					margin-top: 30px;
-
 				}
-				// left: calc(-1 * var(--content-padding));
 			}
 
 			&.sheet {
@@ -182,6 +182,10 @@
 
 					&.crew {
 						@import './sheets/crew-sheet';
+					}
+
+					&.faction {
+						@import './sheets/faction-sheet';
 					}
 				}
 

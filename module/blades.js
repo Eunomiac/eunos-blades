@@ -227,7 +227,7 @@ Object.assign(globalThis, {
     },
     DebugPC: async () => {
     },
-    TransferNPCRandomizerData: async () => {
+    TransferBladesRandomizer: async () => {
         const npcs = game.actors.filter((actor) => actor.type === BladesActorType.npc);
         npcs.forEach((npc) => {
             npc.update({

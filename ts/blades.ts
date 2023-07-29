@@ -278,7 +278,7 @@ registerDebugger();
 			// 	}
 			// }, 2000);
 		},
-		TransferNPCRandomizerData: async () => {
+		TransferBladesRandomizer: async () => {
 			const npcs = game.actors.filter((actor) => actor.type === BladesActorType.npc) as BladesActor[];
 
 			npcs.forEach((npc) => {

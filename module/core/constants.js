@@ -559,12 +559,15 @@ export const Randomizers = {
         "Tycherosi"
     ],
     gender: [
-        "Male",
-        "Male",
-        "Male",
-        "Female",
-        "Female",
-        "Ambiguous/Unknown"
+        "M",
+        "M",
+        "M",
+        "M",
+        "F",
+        "F",
+        "F",
+        "U",
+        "X"
     ],
     appearance: [
         "Athletic",
