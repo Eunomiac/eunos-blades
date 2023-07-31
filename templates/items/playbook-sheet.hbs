@@ -6,30 +6,30 @@
     <input type="text" class="comp-tags tags-gm" />
     {{/if}}
 
-	<section class="sheet-top">
-		<img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
-		<input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}" />
-	</section>
-
-	<section class="item-main flex-vertical">
-		<label class="tab-label">
-			<span class="tab-title">Rules</span>
-		</label>
-		{{editor system.rules target="system.rules" button=true owner=owner editable=editable}}
-
-		{{#if (test isGM "||" system.rules_notes)}}
-		<label class="tab-label">
-			<span class="tab-title">Additional Rules Notes</span>
-		</label>
-		{{editor system.rules_notes target="system.rules_notes" button=true owner=owner editable=editable}}
-		{{/if}}
-
-		{{#if isGM}}
-			<label class="tab-label">
-				<span class="tab-title">Active Effects</span>
-			</label>
-			{{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
-		{{/if}}
+  <section class="sheet-top">
+    <img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+    <input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}" />
   </section>
-	</div>
+
+  <section class="item-main flex-vertical">
+    <label class="tab-label">
+      <span class="tab-title">Rules</span>
+    </label>
+    {{editor system.rules target="system.rules" button=true owner=owner editable=editable}}
+
+    {{#if (test isGM "||" system.rules_notes)}}
+    <label class="tab-label">
+      <span class="tab-title">Additional Rules Notes</span>
+    </label>
+    {{editor system.rules_notes target="system.rules_notes" button=true owner=owner editable=editable}}
+    {{/if}}
+
+    {{#if isGM}}
+      <label class="tab-label">
+        <span class="tab-title">Active Effects</span>
+      </label>
+      {{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
+    {{/if}}
+  </section>
+  </div>
 </form>

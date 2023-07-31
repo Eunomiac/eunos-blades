@@ -54,9 +54,9 @@ const Tags = {
                             tagHTMLString += "</div>";
                         }
                         tagHTMLString += `
-								<div class="tagify__dropdown__itemsGroup">
-								<h3>${suggestion["data-group"]}</h3>
-							`;
+                <div class="tagify__dropdown__itemsGroup">
+                <h3>${suggestion["data-group"]}</h3>
+              `;
                     }
                     suggestion.value
                         = value && typeof value === "string" ? U.escapeHTML(value) : value;
@@ -75,7 +75,6 @@ const Tags = {
             }
             const targetKey = $(elem).data("tagTarget") ?? "system.tags";
             const curTags = [getProperty(doc, targetKey) ?? []].flat().filter(Boolean);
-            eLog.checkLog("tags", "Current Tags", curTags);
             tagify.addTags(curTags
                 .filter(findDataGroup)
                 .map((tag) => ({

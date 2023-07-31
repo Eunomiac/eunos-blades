@@ -1,92 +1,92 @@
 & {
-	.scene-selection {
-		label {
-			font-family: var(--font-emphasis);
-		}
+  .scene-selection {
+    label {
+      font-family: var(--font-emphasis);
+    }
 
-		position: absolute;
-		top: 12px;
-		right: 0;
+    position: absolute;
+    top: 12px;
+    right: 0;
 
-		select {
-			font-family: var(--font-emphasis);
-			color: var(--blades-white-bright);
-			background: var(--blades-black-dark);
-			border: none;
-			width: 200px;
-		}
-	}
+    select {
+      font-family: var(--font-emphasis);
+      color: var(--blades-white-bright);
+      background: var(--blades-black-dark);
+      border: none;
+      width: 200px;
+    }
+  }
 
-	table {
-		margin: 0;
+  table {
+    margin: 0;
 
-		.check-label {
-			font-size: 10px;
-			margin: 0;
-			padding: 0;
-			background: none !important;
-			text-transform: uppercase;
-			transform: rotate(-45deg) scale(0.9);
-			display: inline-block;
-			text-align: center;
-			line-height: 9px;
-			height: 100%;
-			min-height: 100%;
-			vertical-align: middle;
-			margin-top: -5px;
+    .check-label {
+      font-size: 10px;
+      margin: 0;
+      padding: 0;
+      background: none !important;
+      text-transform: uppercase;
+      transform: rotate(-45deg) scale(0.9);
+      display: inline-block;
+      text-align: center;
+      line-height: 9px;
+      height: 100%;
+      min-height: 100%;
+      vertical-align: middle;
+      margin-top: -5px;
 
-		}
+    }
 
-		thead {
-			th.black-white {
-				background: var(--blades-white-bright) !important;
-			}
-		}
-		th,
-		td {
-			text-align: left;
-			color: var(--blades-white);
+    thead {
+      th.black-white {
+        background: var(--blades-white-bright) !important;
+      }
+    }
+    th,
+    td {
+      text-align: left;
+      color: var(--blades-white);
 
-			p {
-				margin: 0
-			}
+      p {
+        margin: 0
+      }
 
-			&:nth-child(1) {
-				width: 64px;
-				white-space: nowrap;
-			}
+      &:nth-child(1) {
+        width: 64px;
+        white-space: nowrap;
+      }
 
-			&:nth-child(2) {
-				width: 60%
-			}
+      &:nth-child(2) {
+        width: 60%
+      }
 
-			&:nth-child(3),
-			&:nth-child(4) {
-				text-align: center;
-			}
-		}
+      &:nth-child(3),
+      &:nth-child(4) {
+        text-align: center;
+      }
+    }
 
-		th {
-			input {
-				color: var(--blades-black);
-			}
+    th {
+      input {
+        color: var(--blades-black);
+      }
 
-			select {
-				color: var(--blades-black);
-				text-align: center;
-			}
-		}
+      select {
+        color: var(--blades-black);
+        text-align: center;
+      }
+    }
 
-		td {
-			select[data-dtype="number"] {
-				vertical-align: top;
+    td {
+      select[data-dtype="number"] {
+        vertical-align: top;
 
-				&[data-dtype="number"] {
-					font-family: var(--font-emphasis);
-					font-size: 18px;
-					color: var(--blades-white-bright);
-				}
-			}
-		}
-	}
+        &[data-dtype="number"] {
+          font-family: var(--font-emphasis);
+          font-size: 18px;
+          color: var(--blades-white-bright);
+        }
+      }
+    }
+  }
 }

@@ -4,45 +4,45 @@ import {gsap} from "gsap/all";
 // #endregion ▮▮▮▮ IMPORTS ▮▮▮▮
 
 declare global {
-	type int = number;
-	type float = number;
-	type posInt = number;
-	type posFloat = number;
-	type key = string | number | symbol;
-	type SmallInt = -10 | -9 | -8 | -7 | -6 | -5 | -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+  type int = number;
+  type float = number;
+  type posInt = number;
+  type posFloat = number;
+  type key = string | number | symbol;
+  type SmallInt = -10 | -9 | -8 | -7 | -6 | -5 | -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 
-	type HTMLCode = string;
-	type HEXColor = string;
-	type RGBColor = string;
-	type jQueryTextTerm = string | number | boolean | ((this: Element, index: number, text: string) => string | number | boolean);
+  type HTMLCode = string;
+  type HEXColor = string;
+  type RGBColor = string;
+  type jQueryTextTerm = string | number | boolean | ((this: Element, index: number, text: string) => string | number | boolean);
 
-	type keyFunc = (key: number | string, val?: any) => unknown;
-	type valFunc = (val: any, key?: number | string) => any;
-	type testFunc<Type extends keyFunc | valFunc> = (...args: Parameters<Type>) => boolean;
-	type mapFunc<Type extends keyFunc | valFunc> = (...args: Parameters<Type>) => unknown;
-	type checkTest = ((...args: any[]) => any) | testFunc<keyFunc> | testFunc<valFunc> | RegExp | number | string;
+  type keyFunc = (key: number | string, val?: any) => unknown;
+  type valFunc = (val: any, key?: number | string) => any;
+  type testFunc<Type extends keyFunc | valFunc> = (...args: Parameters<Type>) => boolean;
+  type mapFunc<Type extends keyFunc | valFunc> = (...args: Parameters<Type>) => unknown;
+  type checkTest = ((...args: any[]) => any) | testFunc<keyFunc> | testFunc<valFunc> | RegExp | number | string;
 
-	type List<Type = any> = Record<number | string | symbol, Type>
-	type Index<Type = any> = List<Type> | Type[];
+  type List<Type = any> = Record<number | string | symbol, Type>
+  type Index<Type = any> = List<Type> | Type[];
 
-	type FreezeProps<T> = {
-		[Prop in keyof T as string extends Prop ? never : number extends Prop ? never : Prop]: T[Prop]
-	};
-	type KeyOf<T> = keyof T;
+  type FreezeProps<T> = {
+    [Prop in keyof T as string extends Prop ? never : number extends Prop ? never : Prop]: T[Prop]
+  };
+  type KeyOf<T> = keyof T;
 
-	type gsapAnim = gsap.core.Tween | gsap.core.Timeline;
+  type gsapAnim = gsap.core.Tween | gsap.core.Timeline;
 }
 
 // #region ▮▮▮▮▮▮▮ [HELPERS] Internal Functions, Data & References Used by Utility Functions ▮▮▮▮▮▮▮ ~
 /* eslint-disable array-element-newline */
 // _noCapWords -- Patterns matching words that should NOT be capitalized when converting to TITLE case.
 const _noCapWords = "a|above|after|an|and|at|below|but|by|down|for|for|from|in|nor|of|off|on|onto|or|out|so|the|to|under|up|with|yet"
-	.split("|")
-	.map((word) => new RegExp(`\\b${word}\\b`, "gui")) as RegExp[];
+  .split("|")
+  .map((word) => new RegExp(`\\b${word}\\b`, "gui")) as RegExp[];
 
 // _capWords -- Patterns matching words that should ALWAYS be capitalized when converting to SENTENCE case.
 const _capWords = [
-	"I", /[^a-z]{3,}|[\.0-9]/gu
+  "I", /[^a-z]{3,}|[\.0-9]/gu
 ].map((word) => (/RegExp/.test(Object.prototype.toString.call(word)) ? word : new RegExp(`\\b${word}\\b`, "gui"))) as RegExp[];
 
 // _loremIpsumText -- Boilerplate lorem ipsum
@@ -132,37 +132,37 @@ wheelhouse|whip|whistle|whitecap|whitefish|whitewall|whitewash|widespread|wilder
 word|work|worm|wound|wren|wrench|wrist|writer|writing|yak|yam|yard|yarn|year|yoke|zebra|zephyr|zinc|zipper|zoo
 `.split("|");
 const _numberWords = {
-	ones: [
-		"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-		"ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen",
-		"twenty"
-	],
-	tens: ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"],
-	tiers: ["", "thousand", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion"],
-	bigPrefixes: ["", "un", "duo", "tre", "quattuor", "quin", "sex", "octo", "novem"],
-	bigSuffixes: ["", "decillion", "vigintillion", "trigintillion", "quadragintillion", "quinquagintillion", "sexagintillion", "septuagintillion", "octogintillion", "nonagintillion", "centillion"]
+  ones: [
+    "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+    "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen",
+    "twenty"
+  ],
+  tens: ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"],
+  tiers: ["", "thousand", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion"],
+  bigPrefixes: ["", "un", "duo", "tre", "quattuor", "quin", "sex", "octo", "novem"],
+  bigSuffixes: ["", "decillion", "vigintillion", "trigintillion", "quadragintillion", "quinquagintillion", "sexagintillion", "septuagintillion", "octogintillion", "nonagintillion", "centillion"]
 } as const;
 const _ordinals = {
-	zero: "zeroeth", one: "first", two: "second", three: "third", four: "fourth", five: "fifth", eight: "eighth", nine: "ninth", twelve: "twelfth",
-	twenty: "twentieth", thirty: "thirtieth", forty: "fortieth", fifty: "fiftieth", sixty: "sixtieth", seventy: "seventieth", eighty: "eightieth", ninety: "ninetieth"
+  zero: "zeroeth", one: "first", two: "second", three: "third", four: "fourth", five: "fifth", eight: "eighth", nine: "ninth", twelve: "twelfth",
+  twenty: "twentieth", thirty: "thirtieth", forty: "fortieth", fifty: "fiftieth", sixty: "sixtieth", seventy: "seventieth", eighty: "eightieth", ninety: "ninetieth"
 } as const;
 const _romanNumerals = {
-	grouped: [
-		["", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ"],
-		["", "Ⅹ", "ⅩⅩ", "ⅩⅩⅩ", "ⅩⅬ", "Ⅼ", "ⅬⅩ", "ⅬⅩⅩ", "ⅬⅩⅩⅩ", "ⅩⅭ"],
-		["", "Ⅽ", "ⅭⅭ", "ⅭⅭⅭ", "ⅭⅮ", "Ⅾ", "ⅮⅭ", "ⅮⅭⅭ", "ⅮⅭⅭⅭ", "ⅭⅯ"],
-		["", "Ⅿ", "ⅯⅯ", "ⅯⅯⅯ", "Ⅿↁ", "ↁ", "ↁⅯ", "ↁⅯⅯ", "ↁⅯⅯⅯ", "ↁↂ"],
-		["", "ↂ", "ↂↂ", "ↂↂↂ", "ↂↇ", "ↇ", "ↇↂ", "ↇↂↂ", "ↇↂↂↂ", "ↇↈ"],
-		["", "ↈ", "ↈↈ", "ↈↈↈ"]
-	],
-	ungrouped: [
-		["", "Ⅰ", "ⅠⅠ", "ⅠⅠⅠ", "ⅠⅤ", "Ⅴ", "ⅤⅠ", "ⅤⅠⅠ", "ⅤⅠⅠⅠ", "ⅠⅩ"],
-		["", "Ⅹ", "ⅩⅩ", "ⅩⅩⅩ", "ⅩⅬ", "Ⅼ", "ⅬⅩ", "ⅬⅩⅩ", "ⅬⅩⅩⅩ", "ⅩⅭ"],
-		["", "Ⅽ", "ⅭⅭ", "ⅭⅭⅭ", "ⅭⅮ", "Ⅾ", "ⅮⅭ", "ⅮⅭⅭ", "ⅮⅭⅭⅭ", "ⅭⅯ"],
-		["", "Ⅿ", "ⅯⅯ", "ⅯⅯⅯ", "Ⅿↁ", "ↁ", "ↁⅯ", "ↁⅯⅯ", "ↁⅯⅯⅯ", "ↁↂ"],
-		["", "ↂ", "ↂↂ", "ↂↂↂ", "ↂↇ", "ↇ", "ↇↂ", "ↇↂↂ", "ↇↂↂↂ", "ↇↈ"],
-		["", "ↈ", "ↈↈ", "ↈↈↈ"]
-	]
+  grouped: [
+    ["", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ"],
+    ["", "Ⅹ", "ⅩⅩ", "ⅩⅩⅩ", "ⅩⅬ", "Ⅼ", "ⅬⅩ", "ⅬⅩⅩ", "ⅬⅩⅩⅩ", "ⅩⅭ"],
+    ["", "Ⅽ", "ⅭⅭ", "ⅭⅭⅭ", "ⅭⅮ", "Ⅾ", "ⅮⅭ", "ⅮⅭⅭ", "ⅮⅭⅭⅭ", "ⅭⅯ"],
+    ["", "Ⅿ", "ⅯⅯ", "ⅯⅯⅯ", "Ⅿↁ", "ↁ", "ↁⅯ", "ↁⅯⅯ", "ↁⅯⅯⅯ", "ↁↂ"],
+    ["", "ↂ", "ↂↂ", "ↂↂↂ", "ↂↇ", "ↇ", "ↇↂ", "ↇↂↂ", "ↇↂↂↂ", "ↇↈ"],
+    ["", "ↈ", "ↈↈ", "ↈↈↈ"]
+  ],
+  ungrouped: [
+    ["", "Ⅰ", "ⅠⅠ", "ⅠⅠⅠ", "ⅠⅤ", "Ⅴ", "ⅤⅠ", "ⅤⅠⅠ", "ⅤⅠⅠⅠ", "ⅠⅩ"],
+    ["", "Ⅹ", "ⅩⅩ", "ⅩⅩⅩ", "ⅩⅬ", "Ⅼ", "ⅬⅩ", "ⅬⅩⅩ", "ⅬⅩⅩⅩ", "ⅩⅭ"],
+    ["", "Ⅽ", "ⅭⅭ", "ⅭⅭⅭ", "ⅭⅮ", "Ⅾ", "ⅮⅭ", "ⅮⅭⅭ", "ⅮⅭⅭⅭ", "ⅭⅯ"],
+    ["", "Ⅿ", "ⅯⅯ", "ⅯⅯⅯ", "Ⅿↁ", "ↁ", "ↁⅯ", "ↁⅯⅯ", "ↁⅯⅯⅯ", "ↁↂ"],
+    ["", "ↂ", "ↂↂ", "ↂↂↂ", "ↂↇ", "ↇ", "ↇↂ", "ↇↂↂ", "ↇↂↂↂ", "ↇↈ"],
+    ["", "ↈ", "ↈↈ", "ↈↈↈ"]
+  ]
 } as const;
 const UUIDLOG: Array<[string, string, number]> = [];
 /* eslint-enable array-element-newline, object-property-newline */
@@ -195,74 +195,74 @@ const hasItems = (ref: Index<unknown>): boolean => !isEmpty(ref);
 const isInstance = <T extends new (...args: unknown[]) => unknown>(classRef: T, ref: unknown): ref is InstanceType<T> => ref instanceof classRef;
 const isInstanceFunc = <T extends new (...args: ConstructorParameters<T>) => InstanceType<T>>(clazz: T) => (instance: unknown): instance is InstanceType<T> => instance instanceof clazz;
 const areEqual = (...refs: unknown[]) => {
-	do {
-		const ref = refs.pop();
-		if (refs.length && !checkEquality(ref, refs[0])) {
-			return false;
-		}
-	} while (refs.length);
-	return true;
+  do {
+    const ref = refs.pop();
+    if (refs.length && !checkEquality(ref, refs[0])) {
+      return false;
+    }
+  } while (refs.length);
+  return true;
 
-	function checkEquality(ref1: unknown, ref2: unknown): boolean {
-		if (typeof ref1 !== typeof ref2) { return false }
-		if ([ref1, ref2].includes(null)) { return ref1 === ref2 }
-		switch (typeof ref1) {
-			case "object": {
-				if (isArray(ref1)) {
-					if (!isArray(ref2)) { return false }
-					if (ref1.length !== ref2.length) { return false }
-					for (let i = 0; i < ref1.length; i++) {
-						if (!checkEquality(ref1[i], ref2[i])) { return false }
-					}
-					return true;
-				} else if (isList(ref1)) {
-					if (!isList(ref2) || Object.keys(ref1).length !== Object.keys(ref2).length) { return false }
-					return checkEquality(Object.keys(ref1), Object.keys(ref2)) && checkEquality(Object.values(ref1), Object.values(ref2));
-				}
-				try {
-					return JSON.stringify(ref1) === JSON.stringify(ref2);
-				} catch {
-					return false;
-				}
-			}
-			default: {
-				return ref1 === ref2;
-			}
-		}
-	}
+  function checkEquality(ref1: unknown, ref2: unknown): boolean {
+    if (typeof ref1 !== typeof ref2) { return false }
+    if ([ref1, ref2].includes(null)) { return ref1 === ref2 }
+    switch (typeof ref1) {
+      case "object": {
+        if (isArray(ref1)) {
+          if (!isArray(ref2)) { return false }
+          if (ref1.length !== ref2.length) { return false }
+          for (let i = 0; i < ref1.length; i++) {
+            if (!checkEquality(ref1[i], ref2[i])) { return false }
+          }
+          return true;
+        } else if (isList(ref1)) {
+          if (!isList(ref2) || Object.keys(ref1).length !== Object.keys(ref2).length) { return false }
+          return checkEquality(Object.keys(ref1), Object.keys(ref2)) && checkEquality(Object.values(ref1), Object.values(ref2));
+        }
+        try {
+          return JSON.stringify(ref1) === JSON.stringify(ref2);
+        } catch {
+          return false;
+        }
+      }
+      default: {
+        return ref1 === ref2;
+      }
+    }
+  }
 
 };
 const pFloat = (ref: unknown, sigDigits?: posInt, isStrict = false): number => {
-	if (typeof ref === "string") {
-		ref = parseFloat(ref);
-	}
-	if (typeof ref === "number") {
-		if (isNaN(ref)) { return isStrict ? NaN : 0 }
-		if (isUndefined(sigDigits)) { return ref }
-		return Math.round(ref * (10 ** sigDigits)) / (10 ** sigDigits);
-	}
-	return isStrict ? NaN : 0;
+  if (typeof ref === "string") {
+    ref = parseFloat(ref);
+  }
+  if (typeof ref === "number") {
+    if (isNaN(ref)) { return isStrict ? NaN : 0 }
+    if (isUndefined(sigDigits)) { return ref }
+    return Math.round(ref * (10 ** sigDigits)) / (10 ** sigDigits);
+  }
+  return isStrict ? NaN : 0;
 };
 const pInt = (ref: unknown, isStrict = false): number => (isNaN(pFloat(ref, 0, isStrict)) ? NaN : Math.round(pFloat(ref, 0, isStrict)));
 const radToDeg = (rad: number, isConstrained = true): number => {
-	rad = isConstrained ? rad % (2 * Math.PI) : rad;
-	rad *= 180 / Math.PI;
-	return rad;
+  rad = isConstrained ? rad % (2 * Math.PI) : rad;
+  rad *= 180 / Math.PI;
+  return rad;
 };
 const degToRad = (deg: number, isConstrained = true): number => {
-	deg = isConstrained ? deg % 360 : deg;
-	deg *= Math.PI / 180;
-	return deg;
+  deg = isConstrained ? deg % 360 : deg;
+  deg *= Math.PI / 180;
+  return deg;
 };
 const getKey = <T>(key: string | number | symbol, obj: Record<string | number | symbol, T>): T | null => {
-	if (key in obj) {
-		return obj[key];
-	}
-	return null;
+  if (key in obj) {
+    return obj[key];
+  }
+  return null;
 };
 
 const FILTERS = {
-	IsInstance: ((classRef: unknown) => ((item: unknown) => typeof classRef === "function" && item instanceof classRef))
+  IsInstance: ((classRef: unknown) => ((item: unknown) => typeof classRef === "function" && item instanceof classRef))
 };
 // #endregion ▄▄▄▄▄ TYPES ▄▄▄▄▄
 
@@ -271,40 +271,40 @@ const FILTERS = {
 const uCase = <T extends unknown>(str: T): Uppercase<string & T> => String(str).toUpperCase() as Uppercase<string & T>;
 const lCase = <T extends unknown>(str: T): Lowercase<string & T> => String(str).toLowerCase() as Lowercase<string & T>;
 const sCase = <T extends unknown>(str: T): Capitalize<string & T> => {
-	let [first, ...rest] = `${str ?? ""}`.split(/\s+/);
-	first = testRegExp(first, _capWords) ? first : `${uCase(first.charAt(0))}${lCase(first.slice(1))}`;
-	if (hasItems(rest)) {
-		rest = rest.map((word) => (testRegExp(word, _capWords) ? word : lCase(word)));
-	}
-	return [first, ...rest].join(" ").trim() as Capitalize<string & T>;
+  let [first, ...rest] = `${str ?? ""}`.split(/\s+/);
+  first = testRegExp(first, _capWords) ? first : `${uCase(first.charAt(0))}${lCase(first.slice(1))}`;
+  if (hasItems(rest)) {
+    rest = rest.map((word) => (testRegExp(word, _capWords) ? word : lCase(word)));
+  }
+  return [first, ...rest].join(" ").trim() as Capitalize<string & T>;
 };
 const tCase = <T extends unknown>(str: T): Titlecase<string & T> => String(str).split(/\s/)
-	.map((word, i) => (i && testRegExp(word, _noCapWords) ? lCase(word) : sCase(word)))
-	.join(" ").trim() as Titlecase<string & T>;
+  .map((word, i) => (i && testRegExp(word, _noCapWords) ? lCase(word) : sCase(word)))
+  .join(" ").trim() as Titlecase<string & T>;
 // #endregion ░░░░[Case Conversion]░░░░
 // #region ░░░░░░░[RegExp]░░░░ Regular Expressions ░░░░░░░ ~
 const testRegExp = (str: unknown, patterns: Array<RegExp | string> = [], flags = "gui", isTestingAll = false) => patterns
-	.map((pattern) => (pattern instanceof RegExp
-		? pattern
-		: new RegExp(`\\b${pattern}\\b`, flags)))[isTestingAll ? "every" : "some"]((pattern) => pattern.test(`${str}`));
+  .map((pattern) => (pattern instanceof RegExp
+    ? pattern
+    : new RegExp(`\\b${pattern}\\b`, flags)))[isTestingAll ? "every" : "some"]((pattern) => pattern.test(`${str}`));
 const regExtract = (ref: unknown, pattern: string | RegExp, flags?: string) => {
-	/* Wrapper around String.match() that removes the need to worry about match()'s different handling of the 'g' flag.
-			- IF your pattern contains unescaped parentheses -> Returns Array of all matching groups.
-			- OTHERWISE -> Returns string that matches the provided pattern. */
-	const splitFlags: string[] = [];
-	[...(flags ?? "").replace(/g/g, ""), "u"].forEach((flag) => {
-		if (flag && !splitFlags.includes(flag)) {
-			splitFlags.push(flag);
-		}
-	});
-	const isGrouping = /[)(]/.test(pattern.toString().replace(/\\\)|\\\(/g, ""));
-	if (isGrouping) {
-		splitFlags.push("g");
-	}
-	flags = splitFlags.join("");
-	pattern = new RegExp(pattern, flags);
-	const matches = `${ref}`.match(pattern) || [];
-	return isGrouping ? Array.from(matches) : matches.pop();
+  /* Wrapper around String.match() that removes the need to worry about match()'s different handling of the 'g' flag.
+      - IF your pattern contains unescaped parentheses -> Returns Array of all matching groups.
+      - OTHERWISE -> Returns string that matches the provided pattern. */
+  const splitFlags: string[] = [];
+  [...(flags ?? "").replace(/g/g, ""), "u"].forEach((flag) => {
+    if (flag && !splitFlags.includes(flag)) {
+      splitFlags.push(flag);
+    }
+  });
+  const isGrouping = /[)(]/.test(pattern.toString().replace(/\\\)|\\\(/g, ""));
+  if (isGrouping) {
+    splitFlags.push("g");
+  }
+  flags = splitFlags.join("");
+  pattern = new RegExp(pattern, flags);
+  const matches = `${ref}`.match(pattern) || [];
+  return isGrouping ? Array.from(matches) : matches.pop();
 };
 
 // #endregion ░░░░[RegExp]░░░░
@@ -313,264 +313,264 @@ const regExtract = (ref: unknown, pattern: string | RegExp, flags?: string) => {
 const unhyphenate = (str: unknown) => `${str}`.replace(/\u00AD|\u200B/gu, "");
 const parseArticles = (str: unknown) => `${str}`.replace(/\b(a|A)\s([aeiouAEIOU])/gu, "$1n $2");
 const pluralize = (singular: string, num: number, plural?: string) => {
-	if (pFloat(num) === 1) { return singular }
-	return plural ?? `${singular.replace(/y$/, "ie").replace(/s$/, "se")}s`;
+  if (pFloat(num) === 1) { return singular }
+  return plural ?? `${singular.replace(/y$/, "ie").replace(/s$/, "se")}s`;
 };
 const oxfordize = (items: Array<number | string>, useOxfordComma = true) => {
-	const lastItem = items.pop();
-	return [
-		items.join(", "),
-		useOxfordComma ? "," : "",
-		" and ",
-		lastItem
-	].join("");
+  const lastItem = items.pop();
+  return [
+    items.join(", "),
+    useOxfordComma ? "," : "",
+    " and ",
+    lastItem
+  ].join("");
 };
 const ellipsize = (text: unknown, maxLength: number) => (`${text}`.length > maxLength ? `${`${text}`.slice(0, maxLength - 3)}…` : `${text}`);
 const pad = (text: unknown, minLength: posInt, delim = " ", decimalPos?: posInt): string => {
-	const str = `${text}`;
-	if (str.length < minLength) {
-		// if (/\./.test(str) && typeof decimalPos === "number") {
-		//   ... position decimal
-		// } else {
-		return `${delim.repeat(minLength - str.length)}${str}`;
-	}
-	return str;
+  const str = `${text}`;
+  if (str.length < minLength) {
+    // if (/\./.test(str) && typeof decimalPos === "number") {
+    //   ... position decimal
+    // } else {
+    return `${delim.repeat(minLength - str.length)}${str}`;
+  }
+  return str;
 };
 const toKey = (text: string): string => (text ?? "").toLowerCase().replace(/ /g, "-").replace(/default/, "DEFAULT");
 // #region ========== Numbers: Formatting Numbers Into Strings =========== ~
 const signNum = (num: int, delim = "", zeroSign = "+") => `${pFloat(num) < 0 ? "-" : (pFloat(num) > 0 ? "+" : zeroSign)}${delim}${Math.abs(pFloat(num))}`;
 const padNum = (num: number, numDecDigits: int, includePlus = false, decimalPos?: posInt) => {
-	const prefix = (includePlus && num >= 0) ? "+" : "";
-	const [leftDigits, rightDigits] = `${pFloat(num)}`.split(/\./);
-	if (getType(rightDigits) === "int") {
-		if (rightDigits.length > numDecDigits) {
-			return `${prefix}${pFloat(num, numDecDigits)}`;
-		} else if (rightDigits.length < numDecDigits) {
-			return `${prefix}${leftDigits}.${rightDigits}${"0".repeat(numDecDigits - rightDigits.length)}`;
-		} else {
-			return `${prefix}${pFloat(num)}`;
-		}
-	}
-	return `${prefix}${leftDigits}.${"0".repeat(numDecDigits)}`;
+  const prefix = (includePlus && num >= 0) ? "+" : "";
+  const [leftDigits, rightDigits] = `${pFloat(num)}`.split(/\./);
+  if (getType(rightDigits) === "int") {
+    if (rightDigits.length > numDecDigits) {
+      return `${prefix}${pFloat(num, numDecDigits)}`;
+    } else if (rightDigits.length < numDecDigits) {
+      return `${prefix}${leftDigits}.${rightDigits}${"0".repeat(numDecDigits - rightDigits.length)}`;
+    } else {
+      return `${prefix}${pFloat(num)}`;
+    }
+  }
+  return `${prefix}${leftDigits}.${"0".repeat(numDecDigits)}`;
 };
 const stringifyNum = (num: number | string) => {
-	// Can take string representations of numbers, either in standard or scientific/engineering notation.
-	// Returns a string representation of the number in standard notation.
-	if (pFloat(num) === 0) { return "0" }
-	const stringyNum = lCase(num).replace(/[^\d.e+-]/g, "");
-	const base = regExtract(stringyNum, /^-?[\d.]+/) as string | undefined;
-	const exp = pInt(regExtract(stringyNum, /e([+-]?\d+)$/) as string | undefined);
-	if (typeof base === "string" && typeof exp === "string") {
-		let baseInts = regExtract(base, /^-?(\d+)/),
-						baseDecs = regExtract(base, /\.(\d+)/);
-		if (isArray(baseInts) && isArray(baseDecs)) {
-			baseInts = baseInts.pop()?.replace(/^0+/, "");
-			baseDecs = lCase(baseDecs?.pop()).replace(/0+$/, "");
-			if (!isUndefined(baseInts) && !isUndefined(baseDecs)) {
-				const numFinalInts = Math.max(0, baseInts.length + exp);
-				const numFinalDecs = Math.max(0, baseDecs.length - exp);
-				const finalInts = [
-					baseInts.slice(0, numFinalInts),
-					baseDecs.slice(0, Math.max(0, exp))
-				].join("") || "0";
-				const finalDecs = [
-					baseInts.length - numFinalInts > 0
-						? baseInts.slice(baseInts.length - numFinalInts - 1)
-						: "",
-					baseDecs.slice(baseDecs.length - numFinalDecs)
-				].join("");
-				return [
-					stringyNum.charAt(0) === "-" ? "-" : "",
-					finalInts,
-					"0".repeat(Math.max(0, numFinalInts - finalInts.length)),
-					finalDecs.length ? "." : "",
-					"0".repeat(Math.max(0, numFinalDecs - finalDecs.length)),
-					finalDecs
-				].join("");
-			}
-		}
-	}
-	return `${num}`;
+  // Can take string representations of numbers, either in standard or scientific/engineering notation.
+  // Returns a string representation of the number in standard notation.
+  if (pFloat(num) === 0) { return "0" }
+  const stringyNum = lCase(num).replace(/[^\d.e+-]/g, "");
+  const base = regExtract(stringyNum, /^-?[\d.]+/) as string | undefined;
+  const exp = pInt(regExtract(stringyNum, /e([+-]?\d+)$/) as string | undefined);
+  if (typeof base === "string" && typeof exp === "string") {
+    let baseInts = regExtract(base, /^-?(\d+)/),
+        baseDecs = regExtract(base, /\.(\d+)/);
+    if (isArray(baseInts) && isArray(baseDecs)) {
+      baseInts = baseInts.pop()?.replace(/^0+/, "");
+      baseDecs = lCase(baseDecs?.pop()).replace(/0+$/, "");
+      if (!isUndefined(baseInts) && !isUndefined(baseDecs)) {
+        const numFinalInts = Math.max(0, baseInts.length + exp);
+        const numFinalDecs = Math.max(0, baseDecs.length - exp);
+        const finalInts = [
+          baseInts.slice(0, numFinalInts),
+          baseDecs.slice(0, Math.max(0, exp))
+        ].join("") || "0";
+        const finalDecs = [
+          baseInts.length - numFinalInts > 0
+            ? baseInts.slice(baseInts.length - numFinalInts - 1)
+            : "",
+          baseDecs.slice(baseDecs.length - numFinalDecs)
+        ].join("");
+        return [
+          stringyNum.charAt(0) === "-" ? "-" : "",
+          finalInts,
+          "0".repeat(Math.max(0, numFinalInts - finalInts.length)),
+          finalDecs.length ? "." : "",
+          "0".repeat(Math.max(0, numFinalDecs - finalDecs.length)),
+          finalDecs
+        ].join("");
+      }
+    }
+  }
+  return `${num}`;
 };
 const verbalizeNum = (num: number | string) => {
-	// Converts a float with absolute magnitude <= 9.99e303 into words.
-	num = stringifyNum(num);
-	const getTier = (trioNum: number) => {
-		if (trioNum < _numberWords.tiers.length) {
-			return _numberWords.tiers[trioNum];
-		}
-		return [
-			_numberWords.bigPrefixes[(trioNum % 10) - 1],
-			_numberWords.bigSuffixes[Math.floor(trioNum / 10)]
-		].join("");
-	};
-	const parseThreeDigits = (trio: string) => {
-		if (pInt(trio) === 0) { return "" }
-		const digits = `${trio}`.split("").map((digit) => pInt(digit)) as number[];
-		let result = "";
-		if (digits.length === 3) {
-			const hundreds = digits.shift();
-			if (isUndefined(hundreds)) {
-				throw new Error(`[U.verbalizeNum] Undefined digit in trio '${digits.join("")}'.`);
-			}
-			result += hundreds > 0 ? `${_numberWords.ones[hundreds]} hundred` : "";
-			if (hundreds && (digits[0] || digits[1])) {
-				result += " and ";
-			}
-		}
-		if (pInt(digits.join("")) <= _numberWords.ones.length) {
-			result += _numberWords.ones[pInt(digits.join(""))];
-		} else {
-			result += `${_numberWords.tens[pInt(digits.shift())]}${pInt(digits[0]) > 0 ? `-${_numberWords.ones[pInt(digits[0])]}` : ""}`;
-		}
-		return result;
-	};
-	const numWords = [];
-	if (num.charAt(0) === "-") {
-		numWords.push("negative");
-	}
-	const [integers, decimals] = num.replace(/[,|\s|-]/g, "").split(".");
-	const intArray = integers.split("").reverse().join("")
-		.match(/.{1,3}/g)
-		?.map((v) => v.split("").reverse().join("")) ?? [];
-	const intStrings = [];
-	while (intArray.length) {
-		const thisTrio = intArray.pop();
-		if (thisTrio) {
-			const theseWords = parseThreeDigits(thisTrio);
-			if (theseWords) {
-				intStrings.push(`${theseWords} ${getTier(intArray.length)}`);
-			}
-		}
-	}
-	numWords.push(intStrings.join(", ").trim());
-	if (getType(decimals) === "int") {
-		if (integers === "0") {
-			numWords.push("zero");
-		}
-		numWords.push("point");
-		for (const digit of decimals.split("")) {
-			numWords.push(_numberWords.ones[pInt(digit)]);
-		}
-	}
-	return numWords.join(" ");
+  // Converts a float with absolute magnitude <= 9.99e303 into words.
+  num = stringifyNum(num);
+  const getTier = (trioNum: number) => {
+    if (trioNum < _numberWords.tiers.length) {
+      return _numberWords.tiers[trioNum];
+    }
+    return [
+      _numberWords.bigPrefixes[(trioNum % 10) - 1],
+      _numberWords.bigSuffixes[Math.floor(trioNum / 10)]
+    ].join("");
+  };
+  const parseThreeDigits = (trio: string) => {
+    if (pInt(trio) === 0) { return "" }
+    const digits = `${trio}`.split("").map((digit) => pInt(digit)) as number[];
+    let result = "";
+    if (digits.length === 3) {
+      const hundreds = digits.shift();
+      if (isUndefined(hundreds)) {
+        throw new Error(`[U.verbalizeNum] Undefined digit in trio '${digits.join("")}'.`);
+      }
+      result += hundreds > 0 ? `${_numberWords.ones[hundreds]} hundred` : "";
+      if (hundreds && (digits[0] || digits[1])) {
+        result += " and ";
+      }
+    }
+    if (pInt(digits.join("")) <= _numberWords.ones.length) {
+      result += _numberWords.ones[pInt(digits.join(""))];
+    } else {
+      result += `${_numberWords.tens[pInt(digits.shift())]}${pInt(digits[0]) > 0 ? `-${_numberWords.ones[pInt(digits[0])]}` : ""}`;
+    }
+    return result;
+  };
+  const numWords = [];
+  if (num.charAt(0) === "-") {
+    numWords.push("negative");
+  }
+  const [integers, decimals] = num.replace(/[,|\s|-]/g, "").split(".");
+  const intArray = integers.split("").reverse().join("")
+    .match(/.{1,3}/g)
+    ?.map((v) => v.split("").reverse().join("")) ?? [];
+  const intStrings = [];
+  while (intArray.length) {
+    const thisTrio = intArray.pop();
+    if (thisTrio) {
+      const theseWords = parseThreeDigits(thisTrio);
+      if (theseWords) {
+        intStrings.push(`${theseWords} ${getTier(intArray.length)}`);
+      }
+    }
+  }
+  numWords.push(intStrings.join(", ").trim());
+  if (getType(decimals) === "int") {
+    if (integers === "0") {
+      numWords.push("zero");
+    }
+    numWords.push("point");
+    for (const digit of decimals.split("")) {
+      numWords.push(_numberWords.ones[pInt(digit)]);
+    }
+  }
+  return numWords.join(" ");
 };
 const ordinalizeNum = (num: string | number, isReturningWords = false) => {
-	if (isReturningWords) {
-		const [numText, suffix]: RegExpMatchArray = lCase(verbalizeNum(num)).match(/.*?[-|\s]?(\w*?)$/) ?? ["", ""];
-		return numText.replace(
-			new RegExp(`${suffix}$`),
-			suffix in _ordinals ? _ordinals[<keyof typeof _ordinals>suffix] : `${suffix}th`
-		);
-	}
-	if (/\.|1[1-3]$/.test(`${num}`)) {
-		return `${num}th`;
-	}
-	return `${num}${["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"][
-		pInt(`${num}`.charAt(`${num}`.length - 1))
-	]
-	}`;
+  if (isReturningWords) {
+    const [numText, suffix]: RegExpMatchArray = lCase(verbalizeNum(num)).match(/.*?[-|\s]?(\w*?)$/) ?? ["", ""];
+    return numText.replace(
+      new RegExp(`${suffix}$`),
+      suffix in _ordinals ? _ordinals[<keyof typeof _ordinals>suffix] : `${suffix}th`
+    );
+  }
+  if (/\.|1[1-3]$/.test(`${num}`)) {
+    return `${num}th`;
+  }
+  return `${num}${["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"][
+    pInt(`${num}`.charAt(`${num}`.length - 1))
+  ]
+  }`;
 };
 const romanizeNum = (num: number, isUsingGroupedChars = true) => {
-	if (isFloat(num)) { throw new Error(`Error: Can't Romanize Floats (${num})`) }
-	if (num >= 400000) { throw new Error(`Error: Can't Romanize >= 400,000 (${num})`) }
-	if (num <= 0) { throw new Error(`Error: Can't Romanize <= 0 (${num})`) }
-	const romanRef = _romanNumerals[isUsingGroupedChars ? "grouped" : "ungrouped"];
-	const romanNum = stringifyNum(num)
-		.split("")
-		.reverse()
-		.map((digit, i) => romanRef[i][pInt(digit)])
-		.reverse()
-		.join("");
-	return isUsingGroupedChars
-		? romanNum.replace(/ⅩⅠ/gu, "Ⅺ").replace(/ⅩⅡ/gu, "Ⅻ")
-		: romanNum;
+  if (isFloat(num)) { throw new Error(`Error: Can't Romanize Floats (${num})`) }
+  if (num >= 400000) { throw new Error(`Error: Can't Romanize >= 400,000 (${num})`) }
+  if (num <= 0) { throw new Error(`Error: Can't Romanize <= 0 (${num})`) }
+  const romanRef = _romanNumerals[isUsingGroupedChars ? "grouped" : "ungrouped"];
+  const romanNum = stringifyNum(num)
+    .split("")
+    .reverse()
+    .map((digit, i) => romanRef[i][pInt(digit)])
+    .reverse()
+    .join("");
+  return isUsingGroupedChars
+    ? romanNum.replace(/ⅩⅠ/gu, "Ⅺ").replace(/ⅩⅡ/gu, "Ⅻ")
+    : romanNum;
 };
 // #endregion _______ Numbers _______
 // #endregion ░░░░[Formatting]░░░░
 // #region ░░░░░░░[Content]░░░░ Lorem Ipsum, Random Content Generation, Randum UUID ░░░░░░░ ~
 const loremIpsum = (numWords = 200) => {
-	const lrWordList = _loremIpsumText.split(/\n?\s+/g);
-	const words = [...lrWordList[randNum(0, lrWordList.length - 1)]];
-	while (words.length < numWords) {
-		words.push(...lrWordList);
-	}
-	words.length = numWords;
-	return `${sCase(words.join(" ")).trim().replace(/[^a-z\s]*$/ui, "")}.`;
+  const lrWordList = _loremIpsumText.split(/\n?\s+/g);
+  const words = [...lrWordList[randNum(0, lrWordList.length - 1)]];
+  while (words.length < numWords) {
+    words.push(...lrWordList);
+  }
+  words.length = numWords;
+  return `${sCase(words.join(" ")).trim().replace(/[^a-z\s]*$/ui, "")}.`;
 };
 const randString = (length = 5) => [...new Array(length)].map(() => String.fromCharCode(randInt(...<[number, number]>["a", "z"].map((char) => char.charCodeAt(0))))).join("");
 const randWord = (numWords = 1, wordList = _randomWords) => [...Array(numWords)].map(() => randElem([...wordList])).join(" ");
 const getUID = (id: string): string => {
-	const indexNum = Math.max(0, ...UUIDLOG.filter(([genericID]) => genericID.startsWith(id)).map(([, , num]) => num)) + 1;
-	const uuid = indexNum === 1 ? id : `${id}_${indexNum}`;
-	UUIDLOG.push([id, uuid, indexNum]);
-	eLog.log(`UUIDify(${id}) --> [${uuid}, ${indexNum}]`);
-	Object.assign(globalThis, {UUIDLOG});
-	return uuid;
+  const indexNum = Math.max(0, ...UUIDLOG.filter(([genericID]) => genericID.startsWith(id)).map(([, , num]) => num)) + 1;
+  const uuid = indexNum === 1 ? id : `${id}_${indexNum}`;
+  UUIDLOG.push([id, uuid, indexNum]);
+  eLog.log(`UUIDify(${id}) --> [${uuid}, ${indexNum}]`);
+  Object.assign(globalThis, {UUIDLOG});
+  return uuid;
 };
 // #endregion ░░░░[Content]░░░░
 // #endregion ▄▄▄▄▄ STRINGS ▄▄▄▄▄
 
 // #region ████████ SEARCHING: Searching Various Data Types w/ Fuzzy Matching ████████ ~
 const fuzzyMatch = (val1: unknown, val2: unknown): boolean => {
-	const [str1, str2] = [val1, val2].map((val) => lCase(String(val).replace(/[^a-zA-Z0-9\.+-]/g, "").trim()));
-	return str1.length > 0 && str1 == str2; // eslint-disable-line eqeqeq
+  const [str1, str2] = [val1, val2].map((val) => lCase(String(val).replace(/[^a-zA-Z0-9\.+-]/g, "").trim()));
+  return str1.length > 0 && str1 == str2; // eslint-disable-line eqeqeq
 };
 const isIn = (needle: unknown, haystack: unknown[] = [], fuzziness = 0) => {
-	// Looks for needle in haystack using fuzzy matching, then returns value as it appears in haystack.
+  // Looks for needle in haystack using fuzzy matching, then returns value as it appears in haystack.
 
-	// STEP ONE: POPULATE SEARCH TESTS ACCORDING TO FUZZINESS SETTING
-	const SearchTests = [
-		(ndl: unknown, item: unknown) => new RegExp(`^${ndl}$`, "gu").test(`${item}`),
-		(ndl: unknown, item: unknown) => new RegExp(`^${ndl}$`, "gui").test(`${item}`)
-	];
-	if (fuzziness >= 1) {
-		const fuzzyTests = [
-			(ndl: unknown, item: unknown) => new RegExp(`^${ndl}`, "gui").test(`${item}`),
-			(ndl: unknown, item: unknown) => new RegExp(`${ndl}$`, "gui").test(`${item}`),
-			(ndl: unknown, item: unknown) => new RegExp(`${ndl}`, "gui").test(`${item}`),
-			(ndl: unknown, item: unknown) => new RegExp(`${item}`, "gui").test(`${ndl}`)
-		];
-		SearchTests.push(...fuzzyTests);
-		if (fuzziness >= 2) {
-			SearchTests.push(...fuzzyTests
-				.map((func) => (ndl: unknown, item: unknown) => func(`${ndl}`.replace(/\W/g, ""), `${item}`.replace(/\W/gu, ""))));
-			if (fuzziness >= 3) {
-				SearchTests.push(() => false); // Have to implement Fuse matching
-			}
-		}
-	}
+  // STEP ONE: POPULATE SEARCH TESTS ACCORDING TO FUZZINESS SETTING
+  const SearchTests = [
+    (ndl: unknown, item: unknown) => new RegExp(`^${ndl}$`, "gu").test(`${item}`),
+    (ndl: unknown, item: unknown) => new RegExp(`^${ndl}$`, "gui").test(`${item}`)
+  ];
+  if (fuzziness >= 1) {
+    const fuzzyTests = [
+      (ndl: unknown, item: unknown) => new RegExp(`^${ndl}`, "gui").test(`${item}`),
+      (ndl: unknown, item: unknown) => new RegExp(`${ndl}$`, "gui").test(`${item}`),
+      (ndl: unknown, item: unknown) => new RegExp(`${ndl}`, "gui").test(`${item}`),
+      (ndl: unknown, item: unknown) => new RegExp(`${item}`, "gui").test(`${ndl}`)
+    ];
+    SearchTests.push(...fuzzyTests);
+    if (fuzziness >= 2) {
+      SearchTests.push(...fuzzyTests
+        .map((func) => (ndl: unknown, item: unknown) => func(`${ndl}`.replace(/\W/g, ""), `${item}`.replace(/\W/gu, ""))));
+      if (fuzziness >= 3) {
+        SearchTests.push(() => false); // Have to implement Fuse matching
+      }
+    }
+  }
 
-	// STEP TWO: PARSE NEEDLE & CONSTRUCT SEARCHABLE HAYSTACK.
-	const searchNeedle = `${needle}`;
-	const searchStack = (() => {
-		if (isArray(haystack)) {
-			return [...haystack] as unknown[];
-		}
-		if (isList(haystack)) {
-			return Object.keys(haystack) as unknown[];
-		}
-		try {
-			return Array.from(haystack) as unknown[];
-		} catch {
-			throw new Error(`Haystack type must be [list, array], not ${typeof haystack}: ${JSON.stringify(haystack)}`);
-		}
-	})();
-	if (!isArray(searchStack)) { return false }
+  // STEP TWO: PARSE NEEDLE & CONSTRUCT SEARCHABLE HAYSTACK.
+  const searchNeedle = `${needle}`;
+  const searchStack = (() => {
+    if (isArray(haystack)) {
+      return [...haystack] as unknown[];
+    }
+    if (isList(haystack)) {
+      return Object.keys(haystack) as unknown[];
+    }
+    try {
+      return Array.from(haystack) as unknown[];
+    } catch {
+      throw new Error(`Haystack type must be [list, array], not ${typeof haystack}: ${JSON.stringify(haystack)}`);
+    }
+  })();
+  if (!isArray(searchStack)) { return false }
 
-	// STEP THREE: SEARCH HAY FOR NEEDLE USING PROGRESSIVELY MORE FUZZY SEARCH TESTS
-	let matchIndex = -1;
-	while (!isPosInt(matchIndex)) {
-		const testFunc = SearchTests.shift();
-		if (!testFunc) {
-			return false;
-		}
-		matchIndex = searchStack.findIndex((item) => testFunc(searchNeedle, `${item}`));
-	}
-	if (isPosInt(matchIndex)) {
-		return isList(haystack) ? Object.values(haystack)[matchIndex] : haystack[matchIndex];
-	}
-	return false;
+  // STEP THREE: SEARCH HAY FOR NEEDLE USING PROGRESSIVELY MORE FUZZY SEARCH TESTS
+  let matchIndex = -1;
+  while (!isPosInt(matchIndex)) {
+    const testFunc = SearchTests.shift();
+    if (!testFunc) {
+      return false;
+    }
+    matchIndex = searchStack.findIndex((item) => testFunc(searchNeedle, `${item}`));
+  }
+  if (isPosInt(matchIndex)) {
+    return isList(haystack) ? Object.values(haystack)[matchIndex] : haystack[matchIndex];
+  }
+  return false;
 };
 const isInExact = (needle: unknown, haystack: unknown[]) => isIn(needle, haystack, 0);
 // #endregion ▄▄▄▄▄ SEARCHING ▄▄▄▄▄
@@ -588,13 +588,13 @@ const average = (...nums: Array<number | number[]>) => sum(...nums) / nums.flat(
 // #region ░░░░░░░[Positioning]░░░░ Relationships On 2D Cartesian Plane ░░░░░░░ ~
 const getDistance = ({x: x1, y: y1}: Point, {x: x2, y: y2}: Point) => (((x1 - x2) ** 2) + ((y1 - y2) ** 2)) ** 0.5;
 const getAngle = (
-	{x: x1, y: y1}: Point,
-	{x: x2, y: y2}: Point,
-	{x: xO, y: yO}: Point = {x: 0, y: 0},
-	range: [number, number] = [0, 360]
+  {x: x1, y: y1}: Point,
+  {x: x2, y: y2}: Point,
+  {x: xO, y: yO}: Point = {x: 0, y: 0},
+  range: [number, number] = [0, 360]
 ) => {
-	x1 -= xO; y1 -= yO; x2 -= xO; y2 -= yO;
-	return cycleAngle(radToDeg(Math.atan2(y2 - y1, x2 - x1)), range);
+  x1 -= xO; y1 -= yO; x2 -= xO; y2 -= yO;
+  return cycleAngle(radToDeg(Math.atan2(y2 - y1, x2 - x1)), range);
 };
 const getAngleDelta = (angleStart: number, angleEnd: number, range: [number, number] = [0, 360]) => cycleAngle(angleEnd - angleStart, range);
 // #endregion ░░░░[Positioning]░░░░
@@ -604,139 +604,139 @@ const getAngleDelta = (angleStart: number, angleEnd: number, range: [number, num
 const randElem = <Type>(array: Type[]): Type => gsap.utils.random(array);
 const randIndex = (array: unknown[]): posInt => randInt(0, array.length - 1);
 const makeIntRange = (min: int, max: int) => {
-	const intRange: int[] = [];
-	for (let i = min; i <= max; i++) {
-		intRange.push(i);
-	}
-	return intRange;
+  const intRange: int[] = [];
+  for (let i = min; i <= max; i++) {
+    intRange.push(i);
+  }
+  return intRange;
 };
 const makeCycler = (array: unknown[], index = 0): Generator => {
-	// Given an array and a starting index, returns a generator function that can be used
-	// to iterate over the array indefinitely, or wrap out-of-bounds index values
-	const wrapper = gsap.utils.wrap(array);
-	index--;
-	return (function* cycler() {
-		while (true) {
-			index++;
-			yield wrapper(index);
-		}
-	}());
+  // Given an array and a starting index, returns a generator function that can be used
+  // to iterate over the array indefinitely, or wrap out-of-bounds index values
+  const wrapper = gsap.utils.wrap(array);
+  index--;
+  return (function* cycler() {
+    while (true) {
+      index++;
+      yield wrapper(index);
+    }
+  }());
 };
 
 
 function getLast<Type extends any[]>(array: Type): ValueOf<Type> {
-	return array.length === 0 ? undefined : array[array.length - 1];
+  return array.length === 0 ? undefined : array[array.length - 1];
 }
 // const getLast = <Type>(array: Type[]): typeof array extends [] ? undefined : Type => ;
 const unique = <Type>(array: Type[]): Type[] => {
-	const returnArray: Type[] = [];
-	array.forEach((item) => { if (!returnArray.includes(item)) { returnArray.push(item) } });
-	return returnArray;
+  const returnArray: Type[] = [];
+  array.forEach((item) => { if (!returnArray.includes(item)) { returnArray.push(item) } });
+  return returnArray;
 };
 const group = <Type extends Record<string, unknown>>(array: Type[], key: KeyOf<Type>): Record<string & ValueOf<Type>, Type[]> => {
-	const returnObj: Partial<Record<string & ValueOf<Type>, Type[]>> = {};
-	array.forEach((item) => {
-		returnObj[item[key] as string & ValueOf<Type>] ??= [];
-		returnObj[item[key] as string & ValueOf<Type>]!.push(item);
-	});
-	return returnObj as Record<string & ValueOf<Type>, Type[]>;
+  const returnObj: Partial<Record<string & ValueOf<Type>, Type[]>> = {};
+  array.forEach((item) => {
+    returnObj[item[key] as string & ValueOf<Type>] ??= [];
+    returnObj[item[key] as string & ValueOf<Type>]!.push(item);
+  });
+  return returnObj as Record<string & ValueOf<Type>, Type[]>;
 };
 const removeFirst = (array: unknown[], element: unknown) => array.splice(array.findIndex((v) => v === element));
 const pullElement = (array: unknown[], checkFunc = (_v: unknown = true, _i = 0, _a: unknown[] = []) => { checkFunc(_v, _i, _a) }) => {
-	const index = array.findIndex((v, i, a) => checkFunc(v, i, a));
-	return index !== -1 && array.splice(index, 1).pop();
+  const index = array.findIndex((v, i, a) => checkFunc(v, i, a));
+  return index !== -1 && array.splice(index, 1).pop();
 };
 const pullIndex = (array: unknown[], index: posInt) => pullElement(array, (v, i) => i === index);
 const subGroup = (array: unknown[], groupSize: posInt) => {
-	const subArrays = [];
-	while (array.length > groupSize) {
-		const subArray = [];
-		while (subArray.length < groupSize) {
-			subArray.push(array.shift());
-		}
-		subArrays.push(subArray);
-	}
-	subArrays.push(array);
+  const subArrays = [];
+  while (array.length > groupSize) {
+    const subArray = [];
+    while (subArray.length < groupSize) {
+      subArray.push(array.shift());
+    }
+    subArrays.push(subArray);
+  }
+  subArrays.push(array);
 };
 const shuffle = (array: unknown[]) => {
-	let currentIndex = array.length, randomIndex;
+  let currentIndex = array.length, randomIndex;
 
-	// While there remain elements to shuffle.
-	while (currentIndex !== 0) {
+  // While there remain elements to shuffle.
+  while (currentIndex !== 0) {
 
-		// Pick a remaining element.
-		randomIndex = Math.floor(Math.random() * currentIndex);
-		currentIndex--;
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
 
-		// And swap it with the current element.
-		[array[currentIndex], array[randomIndex]] = [
-			array[randomIndex], array[currentIndex]];
-	}
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
 
-	return array;
+  return array;
 };
 // #endregion ▄▄▄▄▄ ARRAYS ▄▄▄▄▄
 
 // #region ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████ ~
 
 const checkVal = ({k, v}: { k?: unknown, v?: unknown }, checkTest: checkTest) => {
-	if (typeof checkTest === "function") {
-		if (isDefined(v)) { return checkTest(v, k) }
-		return checkTest(k);
-	}
-	if (typeof checkTest === "number") {
-		checkTest = `${checkTest}`;
-	}
-	return (new RegExp(checkTest)).test(`${v}`);
+  if (typeof checkTest === "function") {
+    if (isDefined(v)) { return checkTest(v, k) }
+    return checkTest(k);
+  }
+  if (typeof checkTest === "number") {
+    checkTest = `${checkTest}`;
+  }
+  return (new RegExp(checkTest)).test(`${v}`);
 };
 const remove = (obj: Index<unknown>, checkTest: testFunc<keyFunc | valFunc>|number|string) => {
-	// Given an array or list and a search function, will remove the first matching element and return it.
-	if (isArray(obj)) {
-		const index = obj.findIndex((v) => checkVal({v}, checkTest));
-		if (index >= 0) {
-			let remVal;
-			for (let i = 0; i <= obj.length; i++) {
-				if (i === index) {
-					remVal = obj.shift();
-				} else {
-					obj.push(obj.shift());
-				}
-			}
-			return remVal;
-		}
-	} else if (isList(obj)) {
-		const [remKey] = Object.entries(obj).find(([k, v]) => checkVal({k, v}, checkTest)) ?? [];
-		if (remKey) {
-			const remVal = obj[remKey];
-			// const {[remKey]: remVal} = obj;
-			delete obj[remKey];
-			return remVal;
-		}
-	}
-	return false;
+  // Given an array or list and a search function, will remove the first matching element and return it.
+  if (isArray(obj)) {
+    const index = obj.findIndex((v) => checkVal({v}, checkTest));
+    if (index >= 0) {
+      let remVal;
+      for (let i = 0; i <= obj.length; i++) {
+        if (i === index) {
+          remVal = obj.shift();
+        } else {
+          obj.push(obj.shift());
+        }
+      }
+      return remVal;
+    }
+  } else if (isList(obj)) {
+    const [remKey] = Object.entries(obj).find(([k, v]) => checkVal({k, v}, checkTest)) ?? [];
+    if (remKey) {
+      const remVal = obj[remKey];
+      // const {[remKey]: remVal} = obj;
+      delete obj[remKey];
+      return remVal;
+    }
+  }
+  return false;
 };
 const replace = (obj: Index<unknown>, checkTest: checkTest, repVal: unknown) => {
-	// As remove, except instead replaces the element with the provided value.
-	// Returns true/false to indicate whether the replace action succeeded.
-	let repKey;
-	if (isList(obj)) {
-		[repKey] = Object.entries(obj).find((v) => checkVal({v}, checkTest)) || [false];
-		if (repKey === false) { return false }
-	} else if (isArray(obj)) {
-		repKey = obj.findIndex((v) => checkVal({v}, checkTest));
-		if (repKey === -1) { return false }
-	}
-	if (typeof repKey !== "number") {
-		repKey = `${repKey}`;
-	}
-	if (typeof repVal === "function") {
-		// @ts-expect-error Hopefully just temporary to get this to compile: Need to figure out how to properly define testFunc<keyFunc | valFunc> (keyFunc/valFunc types?)
-		obj[repKey] = repVal(obj[repKey], repKey);
-	} else {
-		// @ts-expect-error Hopefully just temporary to get this to compile: Need to figure out how to properly define testFunc<keyFunc | valFunc> (keyFunc/valFunc types?)
-		obj[repKey] = repVal;
-	}
-	return true;
+  // As remove, except instead replaces the element with the provided value.
+  // Returns true/false to indicate whether the replace action succeeded.
+  let repKey;
+  if (isList(obj)) {
+    [repKey] = Object.entries(obj).find((v) => checkVal({v}, checkTest)) || [false];
+    if (repKey === false) { return false }
+  } else if (isArray(obj)) {
+    repKey = obj.findIndex((v) => checkVal({v}, checkTest));
+    if (repKey === -1) { return false }
+  }
+  if (typeof repKey !== "number") {
+    repKey = `${repKey}`;
+  }
+  if (typeof repVal === "function") {
+    // @ts-expect-error Hopefully just temporary to get this to compile: Need to figure out how to properly define testFunc<keyFunc | valFunc> (keyFunc/valFunc types?)
+    obj[repKey] = repVal(obj[repKey], repKey);
+  } else {
+    // @ts-expect-error Hopefully just temporary to get this to compile: Need to figure out how to properly define testFunc<keyFunc | valFunc> (keyFunc/valFunc types?)
+    obj[repKey] = repVal;
+  }
+  return true;
 };
 /**
  * Cleans an object or value by removing specified values recursively.
@@ -747,255 +747,255 @@ const replace = (obj: Index<unknown>, checkTest: checkTest, repVal: unknown) => 
  * @returns {T | Partial<T> | "KILL"} - The cleaned version of the input object or value. If marked for removal, returns "KILL".
  */
 const objClean = <T>(data: T, remVals: Array<false | null | undefined | "" | 0 | Record<string, never> | never[]> = [undefined, null, "", {}, []]): T | Partial<T> | "KILL" => {
-	const remStrings = remVals.map((rVal) => JSON.stringify(rVal));
-	if (remStrings.includes(JSON.stringify(data)) || remVals.includes(data as ValueOf<typeof remVals>)) { return "KILL" }
-	if (Array.isArray(data)) {
-		const newData = data.map((elem) => objClean(elem, remVals))
-			.filter((elem) => elem !== "KILL") as T & any[];
-		return newData.length ? newData : "KILL";
-	}
-	if (data && typeof data === "object" && JSON.stringify(data).startsWith("{")) {
-		const newData = Object.entries(data)
-			.map(([key, val]) => [key, objClean(val, remVals)])
-			.filter(([, val]) => val !== "KILL");
-		return newData.length ? Object.fromEntries(newData) : "KILL";
-	}
-	return data;
+  const remStrings = remVals.map((rVal) => JSON.stringify(rVal));
+  if (remStrings.includes(JSON.stringify(data)) || remVals.includes(data as ValueOf<typeof remVals>)) { return "KILL" }
+  if (Array.isArray(data)) {
+    const newData = data.map((elem) => objClean(elem, remVals))
+      .filter((elem) => elem !== "KILL") as T & any[];
+    return newData.length ? newData : "KILL";
+  }
+  if (data && typeof data === "object" && JSON.stringify(data).startsWith("{")) {
+    const newData = Object.entries(data)
+      .map(([key, val]) => [key, objClean(val, remVals)])
+      .filter(([, val]) => val !== "KILL");
+    return newData.length ? Object.fromEntries(newData) : "KILL";
+  }
+  return data;
 };
 
 
 export function toDict<T extends List, K extends string & KeyOf<T>, V extends ValueOf<T>>(items: T[], key: K): V extends key ? Record<V, T> : never {
-	const dict = {} as Record<V, T>;
-	const mappedItems = items
-		.map((data) => {
-			let {iData} = data;
-			if (!iData) { iData = data }
-			return [
-				`${(iData.linkName || iData.sourceItem?.name) ? `>${iData.type.charAt(0)}>` : ""}${iData[key]}`,
-				iData
-			];
-		})
-		.sort(([a], [b]) => a.localeCompare(b)) as Array<[string, T]>;
-	mappedItems.forEach(([newKey, iData]: [string, T]) => {
-		if (newKey in dict) {
-			newKey = indexString(newKey) as V;
-		}
-		dict[newKey as KeyOf<typeof dict>] = iData;
-	});
-	// @ts-expect-error Oh it definitely does.
-	return dict;
+  const dict = {} as Record<V, T>;
+  const mappedItems = items
+    .map((data) => {
+      let {iData} = data;
+      if (!iData) { iData = data }
+      return [
+        `${(iData.linkName || iData.sourceItem?.name) ? `>${iData.type.charAt(0)}>` : ""}${iData[key]}`,
+        iData
+      ];
+    })
+    .sort(([a], [b]) => a.localeCompare(b)) as Array<[string, T]>;
+  mappedItems.forEach(([newKey, iData]: [string, T]) => {
+    if (newKey in dict) {
+      newKey = indexString(newKey) as V;
+    }
+    dict[newKey as KeyOf<typeof dict>] = iData;
+  });
+  // @ts-expect-error Oh it definitely does.
+  return dict;
 
-	function indexString(str: string) {
-		if (/_\d+$/.test(str)) {
-			const [curIndex, ...subStr] = str.split(/_/).reverse();
-			return [
-				...subStr.reverse(),
-				parseInt(curIndex) + 1
-			].join("_");
-		}
-		return `${str}_1`;
-	}
+  function indexString(str: string) {
+    if (/_\d+$/.test(str)) {
+      const [curIndex, ...subStr] = str.split(/_/).reverse();
+      return [
+        ...subStr.reverse(),
+        parseInt(curIndex) + 1
+      ].join("_");
+    }
+    return `${str}_1`;
+  }
 }
 // Given an object and a predicate function, returns array of two objects:
 //   one with entries that pass, one with entries that fail.
 const partition = <Type>(obj: Type[], predicate: testFunc<valFunc> = () => true): [Type[], Type[]] => [
-	objFilter(obj, predicate),
-	objFilter(obj, (v: unknown, k: string | number | undefined) => !predicate(v, k))
+  objFilter(obj, predicate),
+  objFilter(obj, (v: unknown, k: string | number | undefined) => !predicate(v, k))
 ];
 function objMap(obj: Index<unknown>, keyFunc: mapFunc<keyFunc> | mapFunc<valFunc> | false, valFunc?: mapFunc<valFunc>): Index<unknown> {
-	// An object-equivalent Array.map() function, which accepts mapping functions to transform both keys and values.
-	// If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
-	if (!valFunc) {
-		valFunc = keyFunc as mapFunc<valFunc>;
-		keyFunc = false;
-	}
-	if (!keyFunc) {
-		keyFunc = ((k: unknown) => k);
-	}
-	if (isArray(obj)) { return obj.map(valFunc) }
-	return Object.fromEntries(Object.entries(obj).map(([key, val]) => [(<mapFunc<keyFunc>>keyFunc)(key, val), (<mapFunc<valFunc>>valFunc)(val, key)]));
+  // An object-equivalent Array.map() function, which accepts mapping functions to transform both keys and values.
+  // If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
+  if (!valFunc) {
+    valFunc = keyFunc as mapFunc<valFunc>;
+    keyFunc = false;
+  }
+  if (!keyFunc) {
+    keyFunc = ((k: unknown) => k);
+  }
+  if (isArray(obj)) { return obj.map(valFunc) }
+  return Object.fromEntries(Object.entries(obj).map(([key, val]) => [(<mapFunc<keyFunc>>keyFunc)(key, val), (<mapFunc<valFunc>>valFunc)(val, key)]));
 }
 const objFindKey = <Type extends Index<unknown>>(obj: Type, keyFunc: testFunc<keyFunc> | testFunc<valFunc> | false, valFunc?: testFunc<valFunc>): KeyOf<Type> | false => {
-	// An object-equivalent Array.findIndex() function, which accepts check functions for both keys and/or values.
-	// If only one function is provided, it's assumed to be searching via values and will receive (v, k) args.
-	if (!valFunc) {
-		valFunc = keyFunc as testFunc<valFunc>;
-		keyFunc = false;
-	}
-	if (!keyFunc) {
-		keyFunc = <testFunc<keyFunc>>((k: unknown) => k);
-	}
-	if (isArray(obj)) { return obj.findIndex(valFunc) }
-	const kFunc = keyFunc || (() => true);
-	const vFunc = valFunc || (() => true);
-	const validEntry = Object.entries(obj).find(([k, v]) => kFunc(k, v) && vFunc(v, k));
-	if (validEntry) {
-		return validEntry[0] as KeyOf<Type>;
-	}
-	return false;
+  // An object-equivalent Array.findIndex() function, which accepts check functions for both keys and/or values.
+  // If only one function is provided, it's assumed to be searching via values and will receive (v, k) args.
+  if (!valFunc) {
+    valFunc = keyFunc as testFunc<valFunc>;
+    keyFunc = false;
+  }
+  if (!keyFunc) {
+    keyFunc = <testFunc<keyFunc>>((k: unknown) => k);
+  }
+  if (isArray(obj)) { return obj.findIndex(valFunc) }
+  const kFunc = keyFunc || (() => true);
+  const vFunc = valFunc || (() => true);
+  const validEntry = Object.entries(obj).find(([k, v]) => kFunc(k, v) && vFunc(v, k));
+  if (validEntry) {
+    return validEntry[0] as KeyOf<Type>;
+  }
+  return false;
 };
 const objFilter = <Type extends Index<unknown>>(obj: Type, keyFunc: testFunc<keyFunc> | testFunc<valFunc> | false, valFunc?: testFunc<valFunc>): Type => {
-	// An object-equivalent Array.filter() function, which accepts filter functions for both keys and/or values.
-	// If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
-	if (!valFunc) {
-		valFunc = keyFunc as testFunc<valFunc>;
-		keyFunc = false;
-	}
-	if (!keyFunc) {
-		keyFunc = <testFunc<keyFunc>>((k: unknown) => k);
-	}
-	if (isArray(obj)) { return obj.filter(valFunc) as Type }
-	const kFunc = keyFunc || (() => true);
-	const vFunc = valFunc || (() => true);
-	return Object.fromEntries(Object.entries(obj).filter(([key, val]: [string, unknown]) => kFunc(key, val) && vFunc(val, key))) as Type;
+  // An object-equivalent Array.filter() function, which accepts filter functions for both keys and/or values.
+  // If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
+  if (!valFunc) {
+    valFunc = keyFunc as testFunc<valFunc>;
+    keyFunc = false;
+  }
+  if (!keyFunc) {
+    keyFunc = <testFunc<keyFunc>>((k: unknown) => k);
+  }
+  if (isArray(obj)) { return obj.filter(valFunc) as Type }
+  const kFunc = keyFunc || (() => true);
+  const vFunc = valFunc || (() => true);
+  return Object.fromEntries(Object.entries(obj).filter(([key, val]: [string, unknown]) => kFunc(key, val) && vFunc(val, key))) as Type;
 };
 const objForEach = (obj: Index<unknown>, func: valFunc): void => {
-	// An object-equivalent Array.forEach() function, which accepts one function(val, key) to perform for each member.
-	if (isArray(obj)) {
-		obj.forEach(func);
-	} else {
-		Object.entries(obj).forEach(([key, val]) => func(val, key));
-	}
+  // An object-equivalent Array.forEach() function, which accepts one function(val, key) to perform for each member.
+  if (isArray(obj)) {
+    obj.forEach(func);
+  } else {
+    Object.entries(obj).forEach(([key, val]) => func(val, key));
+  }
 };
 // Prunes an object of certain values (undefined by default)
 const objCompact = <Type extends (Index<unknown>)>(obj: Type, preserve: unknown[] = []): Type => objFilter(obj, (val: unknown) => preserve.includes(`${val}`));
 const objClone = <Type>(obj: Type, isStrictlySafe = false): Type => {
-	try {
-		return JSON.parse(JSON.stringify(obj));
-	} catch (err) {
-		if (isStrictlySafe) { throw err }
-		if (isArray(obj)) { return <Type><unknown>[...obj] }
-		if (isList(obj)) { return {...obj} }
-	}
-	return obj;
+  try {
+    return JSON.parse(JSON.stringify(obj));
+  } catch (err) {
+    if (isStrictlySafe) { throw err }
+    if (isArray(obj)) { return <Type><unknown>[...obj] }
+    if (isList(obj)) { return {...obj} }
+  }
+  return obj;
 };
 function objMerge<Tx, Ty>(target: Tx, source: Ty, {isMutatingOk = false, isStrictlySafe = false, isConcatenatingArrays = true, isReplacingArrays = false} = {}): Tx & Ty {
-	/* Returns a deep merge of source into target. Does not mutate target unless isMutatingOk = true. */
-	target = isMutatingOk ? target : objClone(target, isStrictlySafe);
-	if (source instanceof Application) {
-		return source as unknown as Tx & Ty;
-	}
-	if (isUndefined(target)) {
-		return objClone(source) as Tx & Ty;
-	}
-	if (isUndefined(source)) {
-		return target as Tx & Ty;
-	}
-	if (isIndex(source)) {
-		for (const [key, val] of Object.entries(source)) {
-			const targetVal = target[key as KeyOf<typeof target>];
-			if (isReplacingArrays && isArray(target[key as KeyOf<typeof target>]) && isArray(val)) {
-				target[key as KeyOf<typeof target>] = val as Tx[KeyOf<Tx>];
-			} else if (isConcatenatingArrays && isArray(target[key as KeyOf<typeof target>]) && isArray(val)) {
-				(target[key as KeyOf<typeof target>] as unknown as any[]).push(...val);
-			} else if (val !== null && typeof val === "object") {
-				if (isUndefined(targetVal) && !(val instanceof Application)) {
-					// @ts-expect-error TS doesn't recognize __proto__.
-					target[key as KeyOf<typeof target>] = new val.__proto__.constructor();
-				}
-				target[key as KeyOf<typeof target>] = objMerge(target[key as KeyOf<typeof target>], val, {isMutatingOk: true, isStrictlySafe});
-			} else {
-				target[key as KeyOf<typeof target>] = val as Tx[KeyOf<Tx>];
-			}
-		}
-	}
-	return target as Tx & Ty;
+  /* Returns a deep merge of source into target. Does not mutate target unless isMutatingOk = true. */
+  target = isMutatingOk ? target : objClone(target, isStrictlySafe);
+  if (source instanceof Application) {
+    return source as unknown as Tx & Ty;
+  }
+  if (isUndefined(target)) {
+    return objClone(source) as Tx & Ty;
+  }
+  if (isUndefined(source)) {
+    return target as Tx & Ty;
+  }
+  if (isIndex(source)) {
+    for (const [key, val] of Object.entries(source)) {
+      const targetVal = target[key as KeyOf<typeof target>];
+      if (isReplacingArrays && isArray(target[key as KeyOf<typeof target>]) && isArray(val)) {
+        target[key as KeyOf<typeof target>] = val as Tx[KeyOf<Tx>];
+      } else if (isConcatenatingArrays && isArray(target[key as KeyOf<typeof target>]) && isArray(val)) {
+        (target[key as KeyOf<typeof target>] as unknown as any[]).push(...val);
+      } else if (val !== null && typeof val === "object") {
+        if (isUndefined(targetVal) && !(val instanceof Application)) {
+          // @ts-expect-error TS doesn't recognize __proto__.
+          target[key as KeyOf<typeof target>] = new val.__proto__.constructor();
+        }
+        target[key as KeyOf<typeof target>] = objMerge(target[key as KeyOf<typeof target>], val, {isMutatingOk: true, isStrictlySafe});
+      } else {
+        target[key as KeyOf<typeof target>] = val as Tx[KeyOf<Tx>];
+      }
+    }
+  }
+  return target as Tx & Ty;
 }
 /* Write typescript function objDiff(obj1, obj2) (using appropriate typescript generics to avoid implicit any). The function
-		should deep-compare obj1 and obj2 and return an object containing only the keys and values in obj2 that differ from obj1. Where obj2 is missing a key or value contained in obj1, it should set the value in the returned object to null, and prefix the key with "-=" */
+    should deep-compare obj1 and obj2 and return an object containing only the keys and values in obj2 that differ from obj1. Where obj2 is missing a key or value contained in obj1, it should set the value in the returned object to null, and prefix the key with "-=" */
 function objDiff(obj1: any, obj2: any): any {
-	const diff: any = {};
-	for (const key in obj2) {
-		if (Object.prototype.hasOwnProperty.call(obj2, key)) {
-			if (Object.prototype.hasOwnProperty.call(obj1, key)) {
-				if (typeof obj1[key] === "object" && typeof obj2[key] === "object" && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key])) {
-					const nestedDiff = objDiff(obj1[key], obj2[key]);
-					if (Object.keys(nestedDiff).length > 0) {
-						diff[key] = nestedDiff;
-					}
-				} else if (Array.isArray(obj1[key]) && Array.isArray(obj2[key]) && obj1[key].toString() !== obj2[key].toString()) {
-					diff[key] = obj2[key];
-				} else if (obj1[key] !== obj2[key]) {
-					diff[key] = obj2[key];
-				}
-			} else {
-				diff["-=" + key] = obj2[key];
-			}
-		}
-	}
-	return diff;
+  const diff: any = {};
+  for (const key in obj2) {
+    if (Object.prototype.hasOwnProperty.call(obj2, key)) {
+      if (Object.prototype.hasOwnProperty.call(obj1, key)) {
+        if (typeof obj1[key] === "object" && typeof obj2[key] === "object" && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key])) {
+          const nestedDiff = objDiff(obj1[key], obj2[key]);
+          if (Object.keys(nestedDiff).length > 0) {
+            diff[key] = nestedDiff;
+          }
+        } else if (Array.isArray(obj1[key]) && Array.isArray(obj2[key]) && obj1[key].toString() !== obj2[key].toString()) {
+          diff[key] = obj2[key];
+        } else if (obj1[key] !== obj2[key]) {
+          diff[key] = obj2[key];
+        }
+      } else {
+        diff["-=" + key] = obj2[key];
+      }
+    }
+  }
+  return diff;
 }
 
 const objExpand = <T>(obj: List<T>): List<T> => {
-	const expObj = {};
-	for (let [key, val] of Object.entries(obj)) {
-		if (isList(val)) {
-			val = objExpand(val) as T;
-		}
-		setProperty(expObj, key, val);
-	}
-	// Iterate through expanded Object, converting object literals to arrays where it makes sense
-	function arrayify<X>(obj: Index<X> | X): Index<X> | X {
-		if (isList(obj)) {
-			if (/^\d+$/.test(Object.keys(obj).join(""))) {
-				return Object.values(obj).map(arrayify) as X[];
-			}
-			return objMap(obj, (v: unknown): unknown => arrayify(v)) as List<X>;
-		}
-		if (isArray(obj)) {
-			return obj.map(arrayify) as X[];
-		}
-		return obj;
-	}
+  const expObj = {};
+  for (let [key, val] of Object.entries(obj)) {
+    if (isList(val)) {
+      val = objExpand(val) as T;
+    }
+    setProperty(expObj, key, val);
+  }
+  // Iterate through expanded Object, converting object literals to arrays where it makes sense
+  function arrayify<X>(obj: Index<X> | X): Index<X> | X {
+    if (isList(obj)) {
+      if (/^\d+$/.test(Object.keys(obj).join(""))) {
+        return Object.values(obj).map(arrayify) as X[];
+      }
+      return objMap(obj, (v: unknown): unknown => arrayify(v)) as List<X>;
+    }
+    if (isArray(obj)) {
+      return obj.map(arrayify) as X[];
+    }
+    return obj;
+  }
 
-	return arrayify(expObj) as List<T>;
+  return arrayify(expObj) as List<T>;
 };
 const objFlatten = <ST extends any = any>(obj: Index<ST>): Record<string, ST> => {
-	const flatObj: Record<string, ST> = {};
-	for (const [key, val] of Object.entries(obj)) {
-		if ((isArray(val) || isList(val)) && hasItems(val)) {
-			for (const [subKey, subVal] of Object.entries(objFlatten(val)) as Array<[string, ST]>) {
-				flatObj[`${key}.${subKey}`] = subVal;
-			}
-		} else {
-			flatObj[key] = val;
-		}
-	}
-	return flatObj;
+  const flatObj: Record<string, ST> = {};
+  for (const [key, val] of Object.entries(obj)) {
+    if ((isArray(val) || isList(val)) && hasItems(val)) {
+      for (const [subKey, subVal] of Object.entries(objFlatten(val)) as Array<[string, ST]>) {
+        flatObj[`${key}.${subKey}`] = subVal;
+      }
+    } else {
+      flatObj[key] = val;
+    }
+  }
+  return flatObj;
 };
 
 function objNullify<T extends List<any>>(obj: T & Record<KeyOf<T>, null>): Record<KeyOf<T>, null>
 function objNullify<T extends any[]>(obj: T & null[]): null[]
 function objNullify<T>(obj: T): Record<KeyOf<T>, null> | null[] | T {
-	if (!isIndex(obj)) { return obj }
-	if (Array.isArray(obj)) {
-		for (let i = 0; i < obj.length; i++) {
-			obj[i] = null as ValueOf<T>;
-		}
-		return obj as null[];
-	}
-	const test = obj as Record<KeyOf<T>, null>;
-	for (const objKey of Object.keys(obj) as Array<KeyOf<T>>) {
-		(<Record<KeyOf<T>, null>>obj)[objKey] = null;
-	}
-	return obj;
+  if (!isIndex(obj)) { return obj }
+  if (Array.isArray(obj)) {
+    for (let i = 0; i < obj.length; i++) {
+      obj[i] = null as ValueOf<T>;
+    }
+    return obj as null[];
+  }
+  const test = obj as Record<KeyOf<T>, null>;
+  for (const objKey of Object.keys(obj) as Array<KeyOf<T>>) {
+    (<Record<KeyOf<T>, null>>obj)[objKey] = null;
+  }
+  return obj;
 }
 // #endregion ▄▄▄▄▄ OBJECTS ▄▄▄▄▄
 
 // #region ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████ ~
 const getDynamicFunc = (funcName: string, func: (...args: unknown[]) => unknown, context: object) => {
-	if (typeof func === "function") {
-		const dFunc = {[funcName](...args: unknown[]) { return func(...args) }}[funcName];
-		return context ? dFunc.bind(context) : dFunc;
-	}
-	return false;
+  if (typeof func === "function") {
+    const dFunc = {[funcName](...args: unknown[]) { return func(...args) }}[funcName];
+    return context ? dFunc.bind(context) : dFunc;
+  }
+  return false;
 };
 
 const withLog = (fn: (...args: unknown[]) => unknown) => {
-	return (...args: unknown[]) => {
-		console.log(`calling ${fn.name}`);
-		return fn(...args);
-	};
+  return (...args: unknown[]) => {
+    console.log(`calling ${fn.name}`);
+    return fn(...args);
+  };
 };
 // #endregion ▄▄▄▄▄ FUNCTIONS ▄▄▄▄▄
 
@@ -1006,14 +1006,14 @@ const set = (targets: gsap.TweenTarget, vars: gsap.TweenVars): gsap.core.Tween =
 function get(target: gsap.TweenTarget, property: keyof gsap.CSSProperties & string, unit: string): number;
 function get(target: gsap.TweenTarget, property: keyof gsap.CSSProperties & string): string | number;
 function get(target: gsap.TweenTarget, property: keyof gsap.CSSProperties & string, unit?: string): string | number {
-	if (unit) {
-		const propVal = regExtract(gsap.getProperty(target, property, unit), /[\d.]+/);
-		if (typeof propVal === "string") {
-			return pFloat(propVal);
-		}
-		throw new Error(`Unable to extract property '${property}' in '${unit}' units from ${target}`);
-	}
-	return gsap.getProperty(target, property);
+  if (unit) {
+    const propVal = regExtract(gsap.getProperty(target, property, unit), /[\d.]+/);
+    if (typeof propVal === "string") {
+      return pFloat(propVal);
+    }
+    throw new Error(`Unable to extract property '${property}' in '${unit}' units from ${target}`);
+  }
+  return gsap.getProperty(target, property);
 }
 
 const getGSAngleDelta = (startAngle: number, endAngle: number) => signNum(roundNum(getAngleDelta(startAngle, endAngle), 2)).replace(/^(.)/, "$1=");
@@ -1021,115 +1021,115 @@ const getGSAngleDelta = (startAngle: number, endAngle: number) => signNum(roundN
 
 // #region ░░░░░░░[SVG]░░░░ SVG Generation & Manipulation ░░░░░░░ ~
 const getRawCirclePath = (r: number, {x: xO, y: yO}: Point = {x: 0, y: 0}): Array<Array<number | string>> => {
-	[r, xO, yO] = [r, xO, yO].map((val) => roundNum(val, 2));
-	const [b1, b2] = [0.4475 * r, (1 - 0.4475) * r];
-	const [xT, yT] = [xO, yO - r];
-	return [[
-		...[xT, yT],
-		...[b2, 0, r, b1, r, r],
-		...[0, b2, -b1, r, -r, r],
-		...[-b2, 0, -r, -b1, -r, -r],
-		...[0, -b2, b1, -r, r, -r]
-	]];
+  [r, xO, yO] = [r, xO, yO].map((val) => roundNum(val, 2));
+  const [b1, b2] = [0.4475 * r, (1 - 0.4475) * r];
+  const [xT, yT] = [xO, yO - r];
+  return [[
+    ...[xT, yT],
+    ...[b2, 0, r, b1, r, r],
+    ...[0, b2, -b1, r, -r, r],
+    ...[-b2, 0, -r, -b1, -r, -r],
+    ...[0, -b2, b1, -r, r, -r]
+  ]];
 };
 const drawCirclePath = (radius: number, origin: Point) => {
-	const [[xT, yT, ...segments]] = getRawCirclePath(radius, origin);
-	const path: Array<number | string> = [`m ${xT} ${yT}`];
-	segments.forEach((coord, i) => {
-		if (i % 6 === 0) { path.push("c") }
-		path.push(coord);
-	});
-	path.push("z");
-	return path.join(" ");
+  const [[xT, yT, ...segments]] = getRawCirclePath(radius, origin);
+  const path: Array<number | string> = [`m ${xT} ${yT}`];
+  segments.forEach((coord, i) => {
+    if (i % 6 === 0) { path.push("c") }
+    path.push(coord);
+  });
+  path.push("z");
+  return path.join(" ");
 };
 // #endregion ░░░░[SVG]░░░░
 
 // #region ░░░░░░░[Colors]░░░░ Color Manipulation ░░░░░░░ ~
 const getColorVals = (red?: string | number | number[], green?: number, blue?: number, alpha?: number): number[] | null => {
-	if (isRGBColor(red)) {
-		[red, green, blue, alpha] = red
-			.replace(/[^\d.,]/g, "")
-			.split(/,/)
-			.map((color) => (isUndefined(color) ? undefined : parseFloat(color)));
-	}
-	if (isHexColor(red)) {
-		if ([4, 5].includes(red.length)) {
-			red = red.replace(/([^#])/g, "$1$1");
-		}
-		[red, green, blue, alpha] = red
-			.match(/[^#]{2}/g)
-			?.map((val) => parseInt(val, 16)) ?? [];
-	}
-	if ([red, green, blue].every((color) => /^\d+$/.test(`${color}`))) {
-		return [red, green, blue, alpha]
-			.filter((color) => /^[\d.]+$/.test(`${color}`)) as number[];
-	}
-	return null;
+  if (isRGBColor(red)) {
+    [red, green, blue, alpha] = red
+      .replace(/[^\d.,]/g, "")
+      .split(/,/)
+      .map((color) => (isUndefined(color) ? undefined : parseFloat(color)));
+  }
+  if (isHexColor(red)) {
+    if ([4, 5].includes(red.length)) {
+      red = red.replace(/([^#])/g, "$1$1");
+    }
+    [red, green, blue, alpha] = red
+      .match(/[^#]{2}/g)
+      ?.map((val) => parseInt(val, 16)) ?? [];
+  }
+  if ([red, green, blue].every((color) => /^\d+$/.test(`${color}`))) {
+    return [red, green, blue, alpha]
+      .filter((color) => /^[\d.]+$/.test(`${color}`)) as number[];
+  }
+  return null;
 };
 const getRGBString = (red: string | number, green?: number, blue?: number, alpha?: number): RGBColor | null => {
-	if (isRGBColor(red) || isHexColor(red)) {
-		[red, green, blue, alpha] = getColorVals(red) ?? [];
-	}
-	if ([red, green, blue].every((color) => /^[.\d]+$/.test(`${color}`))) {
-		let colorString = "rgb";
-		const colors = [red, green, blue];
-		if (/^[.\d]+$/.test(`${alpha}`)) {
-			colors.push(alpha as number >= 1 ? pInt(alpha) : pFloat(alpha, 2));
-			colorString += "a";
-		}
-		return `${colorString}(${colors.join(", ")})`;
-	}
-	return null;
+  if (isRGBColor(red) || isHexColor(red)) {
+    [red, green, blue, alpha] = getColorVals(red) ?? [];
+  }
+  if ([red, green, blue].every((color) => /^[.\d]+$/.test(`${color}`))) {
+    let colorString = "rgb";
+    const colors = [red, green, blue];
+    if (/^[.\d]+$/.test(`${alpha}`)) {
+      colors.push(alpha as number >= 1 ? pInt(alpha) : pFloat(alpha, 2));
+      colorString += "a";
+    }
+    return `${colorString}(${colors.join(", ")})`;
+  }
+  return null;
 };
 const getHEXString = (red: string | number, green?: number, blue?: number): HEXColor | null => {
-	function componentToHex(c: string | number): string {
-		const hex = c.toString(16);
-		return hex.length === 1 ? "0" + hex : hex;
-	}
-	if (isHexColor(red)) { return red }
-	if (isRGBColor(red)) {
-		[red, green, blue] = getColorVals(red) ?? [];
-	}
-	if (isDefined(red) && isDefined(green) && isDefined(blue) && [red, green, blue].every((color) => /^[.\d]+$/.test(`${color}`))) {
-		return "#" + componentToHex(red ?? 0) + componentToHex(green ?? 0) + componentToHex(blue ?? 0);
-	}
-	return null;
+  function componentToHex(c: string | number): string {
+    const hex = c.toString(16);
+    return hex.length === 1 ? "0" + hex : hex;
+  }
+  if (isHexColor(red)) { return red }
+  if (isRGBColor(red)) {
+    [red, green, blue] = getColorVals(red) ?? [];
+  }
+  if (isDefined(red) && isDefined(green) && isDefined(blue) && [red, green, blue].every((color) => /^[.\d]+$/.test(`${color}`))) {
+    return "#" + componentToHex(red ?? 0) + componentToHex(green ?? 0) + componentToHex(blue ?? 0);
+  }
+  return null;
 };
 const getContrastingColor = (...colorVals: [string] | number[]): RGBColor | null => {
-	const [red, green, blue] = getColorVals(...colorVals) ?? [];
-	if ([red, green, blue].every(isNumber)) {
-		const YIQ = ((red * 299) + (green * 587) + (blue * 114)) / 1000;
-		return (YIQ >= 128) ? "rgba(0, 0, 0, 1)" : "rgba(255, 255, 255, 0.8)";
-	}
-	return null;
+  const [red, green, blue] = getColorVals(...colorVals) ?? [];
+  if ([red, green, blue].every(isNumber)) {
+    const YIQ = ((red * 299) + (green * 587) + (blue * 114)) / 1000;
+    return (YIQ >= 128) ? "rgba(0, 0, 0, 1)" : "rgba(255, 255, 255, 0.8)";
+  }
+  return null;
 };
 const getRandomColor = (): RGBColor => getRGBString(gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1))!;
 // #endregion ░░░░[Colors]░░░░
 
 // #region ░░░░░░░[DOM]░░░░ DOM Manipulation ░░░░░░░ ~
 const getSiblings = (elem: Node) => {
-	const siblings: HTMLElement[] = [];
-	// if no parent, return no sibling
-	if (!elem.parentNode) { return siblings }
+  const siblings: HTMLElement[] = [];
+  // if no parent, return no sibling
+  if (!elem.parentNode) { return siblings }
 
-	Array.from(elem.parentNode.children).forEach((sibling) => {
-		if (sibling !== elem) {
-			siblings.push(sibling as HTMLElement);
-		}
-	});
+  Array.from(elem.parentNode.children).forEach((sibling) => {
+    if (sibling !== elem) {
+      siblings.push(sibling as HTMLElement);
+    }
+  });
 
-	return siblings;
+  return siblings;
 };
 // #endregion ░░░░[DOM]░░░░
 
 const escapeHTML = <T = unknown>(str: T): T => (typeof str === "string"
-	? str
-		.replace(/&/g, "&amp;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;")
-		.replace(/"/g, "&quot;")
-		.replace(/`|'/g, "&#039;") as T
-	: str);
+  ? str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/`|'/g, "&#039;") as T
+  : str);
 
 // #endregion ▄▄▄▄▄ HTML ▄▄▄▄▄
 
@@ -1140,22 +1140,22 @@ const sleep = (duration: number): Promise<void> => new Promise((resolve) => { se
 // #region ████████ FOUNDRY: Requires Configuration of System ID in constants.ts ████████ ~
 
 const isDocID = (docRef: unknown, isUUIDok = true) => {
-	return typeof docRef === "string" && (isUUIDok
-		? /^(.*\.)?[A-Za-z0-9]{16}$/.test(docRef)
-		: /^[A-Za-z0-9]{16}$/.test(docRef));
+  return typeof docRef === "string" && (isUUIDok
+    ? /^(.*\.)?[A-Za-z0-9]{16}$/.test(docRef)
+    : /^[A-Za-z0-9]{16}$/.test(docRef));
 };
 
 const loc = (locRef: string, formatDict: Record<string, string> = {}) => {
-	if (/[a-z]/.test(locRef)) { // reference contains lower-case characters: add system ID namespacing to dot notation
-		locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}\.)*`), `${C.SYSTEM_ID}.`);
-	}
-	if (typeof game.i18n.localize(locRef) === "string") {
-		for (const [key, val] of Object.entries(formatDict)) {
-			formatDict[key] = loc(val);
-		}
-		return game.i18n.format(locRef, formatDict) || game.i18n.localize(locRef) || locRef;
-	}
-	return locRef;
+  if (/[a-z]/.test(locRef)) { // reference contains lower-case characters: add system ID namespacing to dot notation
+    locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}\.)*`), `${C.SYSTEM_ID}.`);
+  }
+  if (typeof game.i18n.localize(locRef) === "string") {
+    for (const [key, val] of Object.entries(formatDict)) {
+      formatDict[key] = loc(val);
+    }
+    return game.i18n.format(locRef, formatDict) || game.i18n.localize(locRef) || locRef;
+  }
+  return locRef;
 };
 
 const getSetting = (setting: string) => game.settings.get(C.SYSTEM_ID, setting);
@@ -1163,105 +1163,88 @@ const getSetting = (setting: string) => game.settings.get(C.SYSTEM_ID, setting);
 function getTemplatePath(subFolder: string, fileName: string): string
 function getTemplatePath(subFolder: string, fileName: string[]): string[]
 function getTemplatePath(subFolder: string, fileName: string | string[]) {
-	if (typeof fileName === "string") {
-		return `${C.TEMPLATE_ROOT}/${subFolder}/${fileName.replace(/\..*$/, "")}.hbs`;
-	}
-	return fileName.map((fName) => getTemplatePath(subFolder, fName));
+  if (typeof fileName === "string") {
+    return `${C.TEMPLATE_ROOT}/${subFolder}/${fileName.replace(/\..*$/, "")}.hbs`;
+  }
+  return fileName.map((fName) => getTemplatePath(subFolder, fName));
 }
-
-function getItemsOfType(itemType: string, user?: User): SystemDocs.Item[] {
-	const items = game.items.filter((item) => fuzzyMatch(item.type, itemType));
-	return items;
-}
-
-function getActorsOfType(actorType: string, user?: User): SystemDocs.Actor[] {
-	const actors = game.actors.filter((actor) => fuzzyMatch(actor.type, actorType));
-	// if (user?.permissions)
-	return actors;
-}
-
-function checkUserPermissions(document: SystemDocs.Sheet, user: User) {
-	return true;
-}
-
 
 // #endregion ▄▄▄▄▄ FOUNDRY ▄▄▄▄▄
 
 export default {
-	// ████████ GETTERS: Basic Data Lookup & Retrieval ████████
-	GMID, getUID,
+  // ████████ GETTERS: Basic Data Lookup & Retrieval ████████
+  GMID, getUID,
 
-	// ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████
-	isNumber, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
-	isHTMLCode, isRGBColor, isHexColor,
-	isUndefined, isDefined, isEmpty, hasItems, isInstance,
-	areEqual,
-	pFloat, pInt, radToDeg, degToRad,
-	getKey,
+  // ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████
+  isNumber, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
+  isHTMLCode, isRGBColor, isHexColor,
+  isUndefined, isDefined, isEmpty, hasItems, isInstance,
+  areEqual,
+  pFloat, pInt, radToDeg, degToRad,
+  getKey,
 
-	FILTERS,
+  FILTERS,
 
-	// ████████ REGEXP: Regular Expressions, Replacing, Matching ████████
-	testRegExp,
-	regExtract,
+  // ████████ REGEXP: Regular Expressions, Replacing, Matching ████████
+  testRegExp,
+  regExtract,
 
-	// ████████ STRINGS: String Parsing, Manipulation, Conversion ████████
-	// ░░░░░░░ Case Conversion ░░░░░░░
-	uCase, lCase, sCase, tCase,
-	// ░░░░░░░ Formatting ░░░░░░░
-	/* hyphenate, */ unhyphenate, pluralize, oxfordize, ellipsize, pad,
-	toKey,
-	parseArticles,
-	signNum, padNum, stringifyNum, verbalizeNum, ordinalizeNum, romanizeNum,
-	// ░░░░░░░ Content ░░░░░░░
-	loremIpsum, randString, randWord,
+  // ████████ STRINGS: String Parsing, Manipulation, Conversion ████████
+  // ░░░░░░░ Case Conversion ░░░░░░░
+  uCase, lCase, sCase, tCase,
+  // ░░░░░░░ Formatting ░░░░░░░
+  /* hyphenate, */ unhyphenate, pluralize, oxfordize, ellipsize, pad,
+  toKey,
+  parseArticles,
+  signNum, padNum, stringifyNum, verbalizeNum, ordinalizeNum, romanizeNum,
+  // ░░░░░░░ Content ░░░░░░░
+  loremIpsum, randString, randWord,
 
-	// ████████ SEARCHING: Searching Various Data Types w/ Fuzzy Matching ████████
-	fuzzyMatch, isIn, isInExact,
+  // ████████ SEARCHING: Searching Various Data Types w/ Fuzzy Matching ████████
+  fuzzyMatch, isIn, isInExact,
 
-	// ████████ NUMBERS: Number Casting, Mathematics, Conversion ████████
-	randNum, randInt,
-	coinFlip,
-	cycleNum, cycleAngle, roundNum, clampNum,
-	sum, average,
-	// ░░░░░░░ Positioning ░░░░░░░
-	getDistance,
-	getAngle, getAngleDelta,
+  // ████████ NUMBERS: Number Casting, Mathematics, Conversion ████████
+  randNum, randInt,
+  coinFlip,
+  cycleNum, cycleAngle, roundNum, clampNum,
+  sum, average,
+  // ░░░░░░░ Positioning ░░░░░░░
+  getDistance,
+  getAngle, getAngleDelta,
 
-	// ████████ ARRAYS: Array Manipulation ████████
-	randElem, randIndex,
-	makeIntRange,
-	makeCycler,
-	unique, group,
-	getLast, removeFirst, pullElement, pullIndex,
-	subGroup, shuffle,
+  // ████████ ARRAYS: Array Manipulation ████████
+  randElem, randIndex,
+  makeIntRange,
+  makeCycler,
+  unique, group,
+  getLast, removeFirst, pullElement, pullIndex,
+  subGroup, shuffle,
 
-	// ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████
-	remove, replace, partition,
-	objClean, objMap, objFindKey, objFilter, objForEach, objCompact,
-	objClone, objMerge, objDiff, objExpand, objFlatten, objNullify,
+  // ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████
+  remove, replace, partition,
+  objClean, objMap, objFindKey, objFilter, objForEach, objCompact,
+  objClone, objMerge, objDiff, objExpand, objFlatten, objNullify,
 
-	// ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████
-	getDynamicFunc, withLog,
+  // ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████
+  getDynamicFunc, withLog,
 
-	// ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
-	// ░░░░░░░ GreenSock ░░░░░░░
-	gsap, get, set, getGSAngleDelta,
+  // ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
+  // ░░░░░░░ GreenSock ░░░░░░░
+  gsap, get, set, getGSAngleDelta,
 
-	getRawCirclePath, drawCirclePath,
+  getRawCirclePath, drawCirclePath,
 
-	getColorVals, getRGBString, getHEXString, getContrastingColor, getRandomColor,
+  getColorVals, getRGBString, getHEXString, getContrastingColor, getRandomColor,
 
-	getSiblings,
+  getSiblings,
 
-	escapeHTML,
+  escapeHTML,
 
-	// ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████
-	sleep,
+  // ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████
+  sleep,
 
-	// ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
-	isDocID, loc, getSetting, getTemplatePath,
-	getItemsOfType, getActorsOfType, checkUserPermissions
+  // ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
+  isDocID, loc, getSetting, getTemplatePath
 
 };
 // #endregion ▄▄▄▄▄ EXPORTS ▄▄▄▄▄

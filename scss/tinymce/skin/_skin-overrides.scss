@@ -1,105 +1,105 @@
 .tox-dialog {
-	&.tox-dialog--width-lg {
-		.tox-dialog__header {
-		}
+  &.tox-dialog--width-lg {
+    .tox-dialog__header {
+    }
 
-		.tox-dialog__body {
-			.tox-dialog__body-content {
-				code { // .tox-textarea {
-					font-family: var(--font-mono);
-				}
-			}
-		}
-	}
+    .tox-dialog__body {
+      .tox-dialog__body-content {
+        code { // .tox-textarea {
+          font-family: var(--font-mono);
+        }
+      }
+    }
+  }
 }
 
 .editor.tinymce {
-	--editor-top-shift: 0;
+  --editor-top-shift: 0;
 
-	--toolbar-scale-factor: 1; // 0.75;
-	--toolbar-margin-bottom: 0px;
+  --toolbar-scale-factor: 1; // 0.75;
+  --toolbar-margin-bottom: 0px;
 
-	--statusbar-height: 15px;
+  --statusbar-height: 15px;
 
-	position: relative;
-	// top: var(--editor-top-shift);
-	z-index: 3;
-	// margin-bottom: var(--editor-top-shift);
-	overflow: visible;
+  position: relative;
+  // top: var(--editor-top-shift);
+  z-index: 3;
+  // margin-bottom: var(--editor-top-shift);
+  overflow: visible;
 
-	.tox.tox-tinymce {
-		display: flex;
-		flex-direction: column;
-		overflow: hidden;
-		position: relative;
-		visibility: inherit !important;
-		height: calc(100% + 26px) !important;
-		margin-top: calc(-26px) !important;
-		// height: 100% !important;
+  .tox.tox-tinymce {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    visibility: inherit !important;
+    height: calc(100% + 26px) !important;
+    margin-top: calc(-26px) !important;
+    // height: 100% !important;
 
-		.tox-editor-container {
+    .tox-editor-container {
 
-			.tox-editor-header {
-				// width: calc(100% / var(--toolbar-scale-factor));
-				opacity: 0.25;
-				transition: opacity 0.5s;
-				position: relative;
-				top: 2px;
-				margin-left: auto;
-				&:hover { opacity: 1 }
+      .tox-editor-header {
+        // width: calc(100% / var(--toolbar-scale-factor));
+        opacity: 0.25;
+        transition: opacity 0.5s;
+        position: relative;
+        top: 2px;
+        margin-left: auto;
+        &:hover { opacity: 1 }
 
-				.tox-toolbar-overlord {
-					background-color: transparent;
-					overflow: hidden;
-					height: 26px;
-					.tox-toolbar, .tox-toolbar__overflow, .tox-toolbar__primary {
-						background-color: rgba(0,0,0,1);
-						justify-content: space-between;
-						// margin-top: 26px;
-						// transform: translateY(0px);
-						// transition: opacity 0.5s;
+        .tox-toolbar-overlord {
+          background-color: transparent;
+          overflow: hidden;
+          height: 26px;
+          .tox-toolbar, .tox-toolbar__overflow, .tox-toolbar__primary {
+            background-color: rgba(0,0,0,1);
+            justify-content: space-between;
+            // margin-top: 26px;
+            // transform: translateY(0px);
+            // transition: opacity 0.5s;
 
-						.tox-toolbar__group {
-							background: rgba(0,0,0,0.5);
-							.tox-tbtn {
-								margin: 0;
-								height: 24px;
+            .tox-toolbar__group {
+              background: rgba(0,0,0,0.5);
+              .tox-tbtn {
+                margin: 0;
+                height: 24px;
 
-								&[title="Formats"] {
-									width: 120px;
-									text-align: left;
-								}
+                &[title="Formats"] {
+                  width: 120px;
+                  text-align: left;
+                }
 
-								.tox-tbtn__select-label {
-									font-family: var(--font-emphasis);
-								}
-							}
-						}
-					}
-				}
-			}
-			.tox-sidebar-wrap {
-				.tox-edit-area {
-					.tox-edit-area__iframe {
-						background-color: rgba(0,0,0,0.5);
-						box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 1);
-					}
-				}
-			}
-		}
-		.tox-statusbar {
-			height: var(--statusbar-height);
+                .tox-tbtn__select-label {
+                  font-family: var(--font-emphasis);
+                }
+              }
+            }
+          }
+        }
+      }
+      .tox-sidebar-wrap {
+        .tox-edit-area {
+          .tox-edit-area__iframe {
+            background-color: rgba(0,0,0,0.5);
+            box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 1);
+          }
+        }
+      }
+    }
+    .tox-statusbar {
+      height: var(--statusbar-height);
 
-			.tox-statusbar__text-container {
+      .tox-statusbar__text-container {
 
-				.tox-statusbar__path {
-					font-family: var(--font-emphasis);
-					font-weight: bold;
-					text-transform: uppercase;
-				}
+        .tox-statusbar__path {
+          font-family: var(--font-emphasis);
+          font-weight: bold;
+          text-transform: uppercase;
+        }
 
-			}
-		}
-	}
+      }
+    }
+  }
 
 }

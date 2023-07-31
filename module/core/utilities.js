@@ -1072,17 +1072,6 @@ function getTemplatePath(subFolder, fileName) {
     }
     return fileName.map((fName) => getTemplatePath(subFolder, fName));
 }
-function getItemsOfType(itemType, user) {
-    const items = game.items.filter((item) => fuzzyMatch(item.type, itemType));
-    return items;
-}
-function getActorsOfType(actorType, user) {
-    const actors = game.actors.filter((actor) => fuzzyMatch(actor.type, actorType));
-    return actors;
-}
-function checkUserPermissions(document, user) {
-    return true;
-}
 export default {
     GMID, getUID,
     isNumber, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
@@ -1125,6 +1114,5 @@ export default {
     getSiblings,
     escapeHTML,
     sleep,
-    isDocID, loc, getSetting, getTemplatePath,
-    getItemsOfType, getActorsOfType, checkUserPermissions
+    isDocID, loc, getSetting, getTemplatePath
 };

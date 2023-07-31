@@ -1,101 +1,101 @@
 .dotline {
-	--dotline-zero-dot-size: #{toRem(14px)};
-	--dotline-dot-size: #{toRem(14px)};
-	--dotline-dot-spacing: #{toRem(3px)};
-	--dotline-horiz-align: flex-start;
-	--dotline-vert-align: center;
+  --dotline-zero-dot-size: #{toRem(14px)};
+  --dotline-dot-size: #{toRem(14px)};
+  --dotline-dot-spacing: #{toRem(3px)};
+  --dotline-horiz-align: flex-start;
+  --dotline-vert-align: center;
 
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	justify-content: var(--dotline-horiz-align);
-	align-items: var(--dotline-vert-align);
-	position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: var(--dotline-horiz-align);
+  align-items: var(--dotline-vert-align);
+  position: relative;
 
-	&.centered {
-		--dotline-horiz-align: center;
-	}
+  &.centered {
+    --dotline-horiz-align: center;
+  }
 
-	&.locked {
-		.dot {
-			pointer-events: none;
-			cursor: default;
-		}
-	}
+  &.locked {
+    .dot {
+      pointer-events: none;
+      cursor: default;
+    }
+  }
 
-	&.dotline-right {
-		margin-left: auto;
-		margin-right: toRem(20px);
-	}
+  &.dotline-right {
+    margin-left: auto;
+    margin-right: toRem(20px);
+  }
 
-	.dotline-label {
-		font-family: var(--font-emphasis);
-		font-size: toRem(14px);
-		color: var(--blades-white);
-		text-transform: uppercase;
-		line-height: toRem(14px);
-		margin-right: toRem(5px);
-	}
+  .dotline-label {
+    font-family: var(--font-emphasis);
+    font-size: toRem(14px);
+    color: var(--blades-white);
+    text-transform: uppercase;
+    line-height: toRem(14px);
+    margin-right: toRem(5px);
+  }
 
-	.dot {
-		--dot-frame-color: var(--frame-color, var(--blades-white));
-		--dot-frame-color-empty: var(--frame-color-empty, var(--dot-frame-color));
-		--dot-frame-color-full: var(--frame-color-full, var(--dot-frame-color));
+  .dot {
+    --dot-frame-color: var(--frame-color, var(--blades-white));
+    --dot-frame-color-empty: var(--frame-color-empty, var(--dot-frame-color));
+    --dot-frame-color-full: var(--frame-color-full, var(--dot-frame-color));
 
-		--dot-fill-color-empty: var(--fill-color-empty, transparent);
-		--dot-fill-color-full: var(--fill-color-full, var(--blades-white-bright));
+    --dot-fill-color-empty: var(--fill-color-empty, transparent);
+    --dot-fill-color-full: var(--fill-color-full, var(--blades-white-bright));
 
-		--dot-half-color-empty: var(--half-color-empty, var(--dot-frame-color));
-		--dot-half-color-full: var(--half-color-full, var(--dot-frame-color));
+    --dot-half-color-empty: var(--half-color-empty, var(--dot-frame-color));
+    --dot-half-color-full: var(--half-color-full, var(--dot-frame-color));
 
-		height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
-		width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
-		flex-grow: 0;
-		flex-shrink: 0;
-		margin: 0 var(--dotline-dot-spacing) 0 0;
-		pointer-events: auto;
-		cursor: pointer;
-		position: relative;
+    height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
+    width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 0 var(--dotline-dot-spacing) 0 0;
+    pointer-events: auto;
+    cursor: pointer;
+    position: relative;
 
-		&:last-of-type {
-			margin: 0;
-		}
+    &:last-of-type {
+      margin: 0;
+    }
 
-		.img-main, .img-hover {
-			display: block;
-			height: 100%;
-			width: 100%;
-			filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black);
+    .img-main, .img-hover {
+      display: block;
+      height: 100%;
+      width: 100%;
+      filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black);
 
-			&.img-hover { display: none }
-		}
+      &.img-hover { display: none }
+    }
 
-		&.svg-dot {
-			height: auto;
+    &.svg-dot {
+      height: auto;
 
-			svg {
-				width: 100%;
-				height: auto;
-				max-height: var(--dotline-dot-sizeY, unset);
-			}
+      svg {
+        width: 100%;
+        height: auto;
+        max-height: var(--dotline-dot-sizeY, unset);
+      }
 
-			&.full-dot {
-				svg .full { fill: var(--current-fill-color, var(--dot-fill-color-full)) }
-				svg .frame { fill: var(--current-frame-color, var(--dot-frame-color-full)) }
-				svg .half { fill: var(--current-half-color, var(--dot-half-color-full)) }
-			}
-			&.empty-dot {
-				svg .full { fill: var(--current-fill-color, var(--dot-fill-color-empty)) }
-				svg .frame { fill: var(--current-frame-color, var(--dot-frame-color-empty)) }
-				svg .half { fill: var(--current-half-color, var(--dot-half-color-empty)) }
-			}
-		}
+      &.full-dot {
+        svg .full { fill: var(--current-fill-color, var(--dot-fill-color-full)) }
+        svg .frame { fill: var(--current-frame-color, var(--dot-frame-color-full)) }
+        svg .half { fill: var(--current-half-color, var(--dot-half-color-full)) }
+      }
+      &.empty-dot {
+        svg .full { fill: var(--current-fill-color, var(--dot-fill-color-empty)) }
+        svg .frame { fill: var(--current-frame-color, var(--dot-frame-color-empty)) }
+        svg .half { fill: var(--current-half-color, var(--dot-half-color-empty)) }
+      }
+    }
 
-		&:hover {
-			.img-main { opacity: 0.5 }
-			.img-hover { display: block }
-			.img-hover + .img-main { display: none }
-			&.svg-dot { opacity: 0.5 }
-		}
-	}
+    &:hover {
+      .img-main { opacity: 0.5 }
+      .img-hover { display: block }
+      .img-hover + .img-main { display: none }
+      &.svg-dot { opacity: 0.5 }
+    }
+  }
 }

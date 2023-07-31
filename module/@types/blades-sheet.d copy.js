@@ -5,10 +5,4 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-const testItem = {
-    get test() { return "WORKED!" },
-    arrowFunc: () => console.log(`Arrow Func: ${this.test}`),
-    normalFunc: function() { console.log(`Normal Func: ${this.test}`) }
-}
-testItem.arrowFunc()
-testItem.normalFunc()
+"use strict";

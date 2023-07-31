@@ -9,12 +9,12 @@
 		"templates": {
 			"default": {
 				"world_name": "",
-				"gm_notes": "",
-				"tags": [],
 				"description": "",
+				"subtitle": "",
 				"tier": { "value": 0, "max": 8},
 				"subactors": {},
-				"subtitle": ""
+				"gm_notes": "",
+				"tags": []
 			},
 			"gmChar": {
 				"concept": "",
@@ -60,6 +60,10 @@
 				"prowess": { "value": 0, "max": 6 },
 				"resolve": { "value": 0, "max": 6 }
 			},
+			"gather_info": [],
+			"advancement": {
+				"ability": 1
+			},
 			"loadout": {
 				"selected": "",
 				"levels": {
@@ -99,30 +103,25 @@
 			},
 			"attributes": {
 				"insight": {
-					"hunt": { "value": 0, "max": 2 },
-					"study": { "value": 0, "max": 2 },
-					"survey": { "value": 0, "max": 2 },
-					"tinker": { "value": 0, "max": 2 }
+					"hunt": { "value": 0, "max": 3 },
+					"study": { "value": 0, "max": 3 },
+					"survey": { "value": 0, "max": 3 },
+					"tinker": { "value": 0, "max": 3 }
 				},
 				"prowess": {
-					"finesse": { "value": 0, "max": 2 },
-					"prowl": { "value": 0, "max": 2 },
-					"skirmish": { "value": 0, "max": 2 },
-					"wreck": { "value": 0, "max": 2 }
+					"finesse": { "value": 0, "max": 3 },
+					"prowl": { "value": 0, "max": 3 },
+					"skirmish": { "value": 0, "max": 3 },
+					"wreck": { "value": 0, "max": 3 }
 				},
 				"resolve": {
-					"attune": { "value": 0, "max": 2 },
-					"command": { "value": 0, "max": 2 },
-					"consort": { "value": 0, "max": 2 },
-					"sway": { "value": 0, "max": 2 }
+					"attune": { "value": 0, "max": 3 },
+					"command": { "value": 0, "max": 3 },
+					"consort": { "value": 0, "max": 3 },
+					"sway": { "value": 0, "max": 3 }
 				}
 			},
 			"resistance_bonus": {
-				"insight": 0,
-				"prowess": 0,
-				"resolve": 0
-			},
-			"resistance_bonuses": {
 				"insight": 0,
 				"prowess": 0,
 				"resolve": 0
@@ -130,6 +129,11 @@
 		},
 		"crew": {
 			"templates": ["default", "pcChar", "hold"],
+			"coins": { "value": 2, "max": 4 },
+			"advancement": {
+				"ability": 1,
+				"upgrade": 4
+			},
 			"rep": { "value": 0, "max": 12 },
 			"tier": { "value": 0, "max": 4},
 			"deity": "",
@@ -154,9 +158,14 @@
 			"secret": {
 				"goal": {"isLocked": false, "value": ""},
 				"method": {"isLocked": false, "value": ""},
-				"trait1": {"isLocked": false, "value": ""},
-				"trait2": {"isLocked": false, "value": ""},
-				"trait3": {"isLocked": false, "value": ""}
+				"interests": {"isLocked": false, "value": ""},
+				"trait": {"isLocked": false, "value": ""}
+			},
+			"random": {
+				"name": {"isLocked": false, "value": ""},
+				"background": {"isLocked": false, "value": ""},
+				"heritage": {"isLocked": false, "value": ""},
+				"profession": {"isLocked": false, "value": ""}
 			}
 		},
 		"faction": {

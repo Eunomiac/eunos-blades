@@ -9,8 +9,8 @@ module.exports = {
     'block-no-empty': true,
     'at-rule-no-unknown': null,
   },
-	overrides: [{
-		files: ["**/*.scss"],
-		customSyntax: "postcss-scss"
-	}]
+  overrides: [{
+    files: ["**/*.scss"],
+    customSyntax: "postcss-scss"
+  }]
 }

@@ -1,30 +1,27 @@
-{{#if system.isVisible}}
-	<div id="{{system.id}}" class="clock-key {{~#if system.isActive}} active-key{{/if}}" data-size="{{system.numClocks}}">
-		{{#if system.isNameVisible}}
-		<label class="key-label">{{system.display}}</label>
-		{{/if}}
-		<div class="clock-label-container">
-			{{#each system.clocks as |clockData clockNum|}}
-			{{#if clockData.isNameVisible}}
-				<label class="clock-label {{~#if clockData.isActive}} clock-active{{/if}}" data-clock-num="{{clockNum}}">
-					<span class="short-label">{{clockData.display}}</span>
-					<span class="hover-label">{{clockData.fullDisplay}}</span>
-				</label>
-			{{/if}}
-			{{/each}}
-		</div>
-		<div class="clock-image-container">
-			<svg class="key-image">
-				<use href="#{{system.numClocks}}-key" class="key-bg" />
-				<rect class="metallic-overlay" x="0" y="0" clip-path="url(#{{system.numClocks}}-key-clip" />
-			</svg>
-			{{log "Key This" this}}
-			{{log "system.Clocks" system.clocks}}
-			{{#each system.clocks as |clockData clockNum|}}
-			{{!-- {{#if clockData.isVisible}} --}}
-				{{> "systems/eunos-blades/templates/components/clock.hbs" clockNum=clockNum data=clockData}}
-			{{!-- {{/if}} --}}
-			{{/each}}
-		</div>
-	</div>
+{{#if isKeyVisible}}
+  <div id="{{id}}" class="clock-key {{~#if isFocused}} active-key{{/if}}" data-size="{{countSize clocks}}">
+    {{#if isTitleVisible}}
+    <label class="key-label">{{title}}</label>
+    {{/if}}
+    <div class="clock-label-container">
+      {{#each clocks as |clockData clockNum|}}
+      {{#if clockData.isTitleVisible}}
+        <label class="clock-label {{~#if clockData.isFocused}} clock-active{{/if}}" data-clock-num="{{clockNum}}">
+          <span class="short-label">{{clockData.title}}</span>
+          {{#if clockData.tooltip}}<span class="hover-label">{{clockData.tooltip}}</span>{{/if}}
+        </label>
+      {{/if}}
+      {{/each}}
+    </div>
+    <div class="clock-image-container">
+      <svg class="key-image">
+        <use href="#{{countSize clocks}}-key" class="key-bg" />
+        <rect class="metallic-overlay" x="0" y="0" clip-path="url(#{{countSize clocks}}-key-clip" />
+      </svg>
+      {{#each clocks as |clockData clockNum|}}
+        {{> "systems/eunos-blades/templates/components/clock.hbs" clockData
+          clockNum=clockNum}}
+      {{/each}}
+    </div>
+  </div>
 {{/if}}

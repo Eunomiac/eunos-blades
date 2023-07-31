@@ -40,162 +40,161 @@ class BladesActorSheet extends BladesSheet {
     }
     getData() {
         const context = super.getData();
-        const sheetData = {};
-        sheetData.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
-        sheetData.attributes = U.objMap(this.actor.system.attributes, (attrData) => U.objMap(attrData, (value) => ({
+        context.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
+        context.attributes = U.objMap(this.actor.system.attributes, (attrData) => U.objMap(attrData, (value) => ({
             value: value.value,
             max: game.eunoblades.Tracker.system.game_phase === BladesPhase.CharGen ? 2 : value.max
         })));
+        context.acquaintancesName = this.actor.system.acquaintances_name ?? "Friends & Rivals";
         const { activeSubItems, activeSubActors } = this.actor;
-        Object.assign(sheetData, {
-            phases: Object.values(BladesPhase),
-            items: {
-                abilities: activeSubItems.filter((item) => item.type === BladesItemType.ability).map((item) => {
-                    if (item.system.uses?.max) {
-                        Object.assign(item, {
-                            inRuleDotline: {
-                                data: item.system.uses,
-                                dotlineLabel: "Uses",
-                                target: "item.system.uses.value",
-                                iconEmpty: "dot-empty.svg",
-                                iconEmptyHover: "dot-empty-hover.svg",
-                                iconFull: "dot-full.svg",
-                                iconFullHover: "dot-full-hover.svg"
-                            }
-                        });
-                    }
-                    return item;
-                }),
-                background: activeSubItems.find((item) => item.type === BladesItemType.background),
-                heritage: activeSubItems.find((item) => item.type === BladesItemType.heritage),
-                vice: activeSubItems.find((item) => item.type === BladesItemType.vice),
-                loadout: activeSubItems.filter((item) => item.type === BladesItemType.item).map((item) => {
-                    if (item.system.load) {
-                        Object.assign(item, {
-                            numberCircle: item.system.load,
-                            numberCircleClass: "item-load"
-                        });
-                    }
-                    if (item.system.uses?.max) {
-                        Object.assign(item, {
-                            inRuleDotline: {
-                                data: item.system.uses,
-                                dotlineLabel: "Uses",
-                                target: "item.system.uses.value",
-                                iconEmpty: "dot-empty.svg",
-                                iconEmptyHover: "dot-empty-hover.svg",
-                                iconFull: "dot-full.svg",
-                                iconFullHover: "dot-full-hover.svg"
-                            }
-                        });
-                    }
-                    return item;
-                }),
-                playbook: this.actor.playbook
-            },
-            actors: {
-                crew: activeSubActors.find((actor) => actor.type === BladesActorType.crew),
-                vice_purveyor: activeSubActors.find((actor) => actor.hasTag(Tag.NPC.VicePurveyor)),
-                friends: activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Friend)),
-                rivals: activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Rival))
-            },
-            hasVicePurveyor: Boolean(this.actor.playbook?.hasTag(Tag.Item.Advanced) === false
-                && activeSubItems.find((item) => item.type === BladesItemType.vice)),
-            stashData: {
-                label: "Stash:",
-                dotline: {
-                    data: this.actor.system.stash,
-                    target: "system.stash.value",
-                    iconEmpty: "coin-empty.svg",
-                    iconEmptyHover: "coin-empty-hover.svg",
-                    iconFull: "coin-full.svg",
-                    iconFullHover: "coin-full-hover.svg",
-                    altIconFull: "coin-ten.svg",
-                    altIconFullHover: "coin-ten-hover.svg",
-                    altIconStep: 10
+        context.preparedItems = {
+            abilities: activeSubItems
+                .filter((item) => item.type === BladesItemType.ability)
+                .map((item) => {
+                if (item.system.uses?.max) {
+                    Object.assign(item, {
+                        inRuleDotline: {
+                            data: item.system.uses,
+                            dotlineLabel: "Uses",
+                            target: "item.system.uses.value",
+                            iconEmpty: "dot-empty.svg",
+                            iconEmptyHover: "dot-empty-hover.svg",
+                            iconFull: "dot-full.svg",
+                            iconFullHover: "dot-full-hover.svg"
+                        }
+                    });
                 }
-            },
-            healing_clock: {
-                value: this.actor.system.healing.value,
-                size: this.actor.system.healing.max
-            },
-            armor: Object.fromEntries(Object.entries(this.actor.system.armor.active)
-                .filter(([, isActive]) => isActive)
-                .map(([armor]) => [armor, this.actor.system.armor.checked[armor]])),
-            loadData: {
-                curLoad: this.actor.currentLoad,
-                selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected.toString()))],
-                selections: C.Loadout.selections,
-                selLoadLevel: this.actor.system.loadout.selected.toString()
-            },
-            stressData: {
-                name: this.actor.system.stress.name,
-                dotline: {
-                    data: this.actor.system.stress,
-                    target: "system.stress.value",
-                    svgKey: "teeth.tall",
-                    svgFull: "full|half|frame",
-                    svgEmpty: "full|half|frame"
+                return item;
+            }),
+            background: activeSubItems.find((item) => item.type === BladesItemType.background),
+            heritage: activeSubItems.find((item) => item.type === BladesItemType.heritage),
+            vice: activeSubItems.find((item) => item.type === BladesItemType.vice),
+            loadout: activeSubItems.filter((item) => item.type === BladesItemType.item).map((item) => {
+                if (item.system.load) {
+                    Object.assign(item, {
+                        numberCircle: item.system.load,
+                        numberCircleClass: "item-load"
+                    });
                 }
-            },
-            traumaData: {
-                name: this.actor.system.trauma.name,
-                dotline: {
-                    data: { value: this.actor.trauma, max: this.actor.system.trauma.max },
-                    svgKey: "teeth.short",
-                    svgFull: "full|frame",
-                    svgEmpty: "frame",
-                    isLocked: true
-                },
-                compContainer: {
-                    "class": "comp-trauma-conditions comp-vertical full-width",
-                    "blocks": [
-                        this.actor.traumaList.slice(0, Math.ceil(this.actor.traumaList.length / 2))
-                            .map((tName) => ({
-                            checkLabel: tName,
-                            checkClasses: {
-                                active: "comp-toggle-red",
-                                inactive: "comp-toggle-grey"
-                            },
-                            checkTarget: `system.trauma.checked.${tName}`,
-                            checkValue: this.actor.system.trauma.checked[tName] ?? false,
-                            tooltip: C.TraumaTooltips[tName],
-                            tooltipClass: "trauma-tooltip"
-                        })),
-                        this.actor.traumaList.slice(Math.ceil(this.actor.traumaList.length / 2))
-                            .map((tName) => ({
-                            checkLabel: tName,
-                            checkClasses: {
-                                active: "comp-toggle-red",
-                                inactive: "comp-toggle-grey"
-                            },
-                            checkTarget: `system.trauma.checked.${tName}`,
-                            checkValue: this.actor.system.trauma.checked[tName] ?? false,
-                            tooltip: C.TraumaTooltips[tName],
-                            tooltipClass: "trauma-tooltip"
-                        }))
-                    ]
+                if (item.system.uses?.max) {
+                    Object.assign(item, {
+                        inRuleDotline: {
+                            data: item.system.uses,
+                            dotlineLabel: "Uses",
+                            target: "item.system.uses.value",
+                            iconEmpty: "dot-empty.svg",
+                            iconEmptyHover: "dot-empty-hover.svg",
+                            iconFull: "dot-full.svg",
+                            iconFullHover: "dot-full-hover.svg"
+                        }
+                    });
                 }
-            },
-            acquaintancesName: this.actor.system.acquaintances_name ?? "Friends & Rivals",
-            abilityData: {
-                dotline: {
-                    "class": "dotline-right",
-                    "data": {
-                        value: this.actor.availableAbilityPoints,
-                        max: this.actor.availableAbilityPoints
-                    },
-                    "dotlineLabel": "Available Abilities",
-                    "isLocked": true,
-                    "iconFull": "dot-full.svg"
-                }
-            }
-        });
-        eLog.checkLog("actor", "[BladesActorSheet] getData()", { ...context, ...sheetData });
-        return {
-            ...context,
-            ...sheetData
+                return item;
+            }),
+            playbook: this.actor.playbook
         };
+        context.preparedActors = {
+            crew: activeSubActors.find((actor) => actor.type === BladesActorType.crew),
+            vice_purveyor: activeSubActors.find((actor) => actor.hasTag(Tag.NPC.VicePurveyor)),
+            acquaintances: activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Acquaintance))
+        };
+        context.hasVicePurveyor = Boolean(this.actor.playbook?.hasTag(Tag.Item.Advanced) === false
+            && activeSubItems.find((item) => item.type === BladesItemType.vice));
+        context.healing_clock = {
+            title: "Healing",
+            target: "system.healing.value",
+            color: "white",
+            isClockVisible: true,
+            isTitleVisible: false,
+            isFocused: false,
+            ...this.actor.system.healing
+        };
+        context.stashData = {
+            label: "Stash:",
+            dotline: {
+                data: this.actor.system.stash,
+                target: "system.stash.value",
+                iconEmpty: "coin-empty.svg",
+                iconEmptyHover: "coin-empty-hover.svg",
+                iconFull: "coin-full.svg",
+                iconFullHover: "coin-full-hover.svg",
+                altIconFull: "coin-ten.svg",
+                altIconFullHover: "coin-ten-hover.svg",
+                altIconStep: 10
+            }
+        };
+        context.stressData = {
+            label: this.actor.system.stress.name,
+            dotline: {
+                data: this.actor.system.stress,
+                target: "system.stress.value",
+                svgKey: "teeth.tall",
+                svgFull: "full|half|frame",
+                svgEmpty: "full|half|frame"
+            }
+        };
+        context.traumaData = {
+            label: this.actor.system.trauma.name,
+            dotline: {
+                data: { value: this.actor.trauma, max: this.actor.system.trauma.max },
+                svgKey: "teeth.short",
+                svgFull: "full|frame",
+                svgEmpty: "frame",
+                isLocked: true
+            },
+            compContainer: {
+                "class": "comp-trauma-conditions comp-vertical full-width",
+                "blocks": [
+                    this.actor.traumaList.slice(0, Math.ceil(this.actor.traumaList.length / 2))
+                        .map((tName) => ({
+                        checkLabel: tName,
+                        checkClasses: {
+                            active: "comp-toggle-red",
+                            inactive: "comp-toggle-grey"
+                        },
+                        checkTarget: `system.trauma.checked.${tName}`,
+                        checkValue: this.actor.system.trauma.checked[tName] ?? false,
+                        tooltip: C.TraumaTooltips[tName],
+                        tooltipClass: "trauma-tooltip"
+                    })),
+                    this.actor.traumaList.slice(Math.ceil(this.actor.traumaList.length / 2))
+                        .map((tName) => ({
+                        checkLabel: tName,
+                        checkClasses: {
+                            active: "comp-toggle-red",
+                            inactive: "comp-toggle-grey"
+                        },
+                        checkTarget: `system.trauma.checked.${tName}`,
+                        checkValue: this.actor.system.trauma.checked[tName] ?? false,
+                        tooltip: C.TraumaTooltips[tName],
+                        tooltipClass: "trauma-tooltip"
+                    }))
+                ]
+            }
+        };
+        context.abilityData = {
+            dotline: {
+                dotlineClass: "dotline-right dotline-glow",
+                data: {
+                    value: this.actor.availableAbilityPoints,
+                    max: this.actor.availableAbilityPoints
+                },
+                dotlineLabel: "Available Abilities",
+                isLocked: true,
+                iconFull: "dot-full.svg"
+            }
+        };
+        context.loadData = {
+            curLoad: this.actor.currentLoad,
+            selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected.toString()))],
+            selections: C.Loadout.selections,
+            selLoadLevel: this.actor.system.loadout.selected.toString()
+        };
+        context.armor = Object.fromEntries(Object.entries(this.actor.system.armor.active)
+            .filter(([, isActive]) => isActive)
+            .map(([armor]) => [armor, this.actor.system.armor.checked[armor]])),
+            eLog.checkLog("actor", "[BladesActorSheet] getData()", { ...context });
+        return context;
     }
     get activeArmor() {
         return Object.keys(U.objFilter(this.actor.system.armor.active, (val) => val === true));

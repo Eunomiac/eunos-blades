@@ -1,47 +1,47 @@
 
 <div class="{{cssClass}} dialog-content">
-	<section class="tab-content nav-group flex-vertical">
-		{{#if (test (count tabs) ">" 1)}}
-		{{!-- Nav menu --}}
-		<nav class="nav-tabs flex-horizontal">
-			{{#each tabs as |itemList tabName|}}
-			<a class="tab-selector" data-tab="{{@index}}">{{tabName}}</a>
-			{{/each}}
-		</nav>
-		{{/if}}
+  <section class="tab-content nav-group flex-vertical">
+    {{#if (test (count tabs) ">" 1)}}
+    {{!-- Nav menu --}}
+    <nav class="nav-tabs flex-horizontal">
+      {{#each tabs as |itemList tabName|}}
+      <a class="tab-selector" data-tab="{{@index}}">{{tabName}}</a>
+      {{/each}}
+    </nav>
+    {{/if}}
 
-		{{!-- Tabs --}}
-		{{#with docType as |docType|}}
-		{{#each ../tabs as |tabItems tabName|}}
-		<div class="tab flex-horizontal flex-wrap {{~#unless (test (count ../tabs) ">" 1)}} active{{/unless}}" data-tab="{{@index}}">
-			{{#each tabItems as |item|}}
-				<div class="comp comp-vertical {{item.dialogCSSClasses}}">
-					<div class="comp-body" data-item-id="{{item._id}}" data-doc-type="{{docType}}">
-						<img src="{{item.img}}" />
-						<div class="comp-title shadowed">{{item.name}}</div>
-						{{#if item.system.load}}
-						<div class="number-circle">{{item.system.load}}</div>
-						{{/if}}
-						{{#if (test item.system.price ">" 1)}}
-						<div class="number-circle">{{item.system.price}}</div>
-						{{/if}}
-					</div>
-					{{#if item.tooltip}}
-					<div class="tooltip">{{{item.tooltip}}}</div>
-					{{/if}}
-				</div>
-			{{/each}}
-		</div>
-		{{/each}}
-		{{/with}}
-	</section>
+    {{!-- Tabs --}}
+    {{#with docType as |docType|}}
+    {{#each ../tabs as |tabItems tabName|}}
+    <div class="tab flex-horizontal flex-wrap {{~#unless (test (count ../tabs) ">" 1)}} active{{/unless}}" data-tab="{{@index}}">
+      {{#each tabItems as |item|}}
+        <div class="comp comp-vertical {{item.dialogCSSClasses}}">
+          <div class="comp-body" data-item-id="{{item._id}}" data-doc-type="{{docType}}">
+            <img src="{{item.img}}" />
+            <div class="comp-title shadowed">{{item.name}}</div>
+            {{#if item.system.load}}
+            <div class="number-circle">{{item.system.load}}</div>
+            {{/if}}
+            {{#if (test item.system.price ">" 1)}}
+            <div class="number-circle">{{item.system.price}}</div>
+            {{/if}}
+          </div>
+          {{#if item.tooltip}}
+          <div class="tooltip">{{{item.tooltip}}}</div>
+          {{/if}}
+        </div>
+      {{/each}}
+    </div>
+    {{/each}}
+    {{/with}}
+  </section>
 </div>
 
 <div class="dialog-buttons">
-	{{#each buttons as |bData bName|}}
-	<button class="dialog-button {{bName}} {{~#if (test ../default "==" bName)}} default{{/if}}" data-button="{{bName}}">
-		{{{bData.icon}}}
-		{{{bData.label}}}
-	</button>
-	{{/each}}
+  {{#each buttons as |bData bName|}}
+  <button class="dialog-button {{bName}} {{~#if (test ../default "==" bName)}} default{{/if}}" data-button="{{bName}}">
+    {{{bData.icon}}}
+    {{{bData.label}}}
+  </button>
+  {{/each}}
 </div>

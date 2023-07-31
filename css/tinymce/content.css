@@ -434,14 +434,14 @@ html, :root {
       z-index: zLevel(4);
       pointer-events: none; }
       html .comp .tooltip.tooltip-left, :root .comp .tooltip.tooltip-left {
-        width: 500px; }
+        max-width: unset; }
       html .comp .tooltip.tooltip-portrait, :root .comp .tooltip.tooltip-portrait {
         bottom: 100px;
         left: 50px; }
       html .comp .tooltip.trauma-tooltip, :root .comp .tooltip.trauma-tooltip {
         scale: 1.25;
         left: -200px;
-        bottom: -75px; }
+        bottom: -65px; }
     html .comp.comp-vertical, :root .comp.comp-vertical {
       --comp-img-scale: 2;
       --comp-name-size: toRem(16px);
@@ -1042,6 +1042,7 @@ html, :root {
     :root textarea {
       margin: var(--margin-input);
       padding: var(--padding-input);
+      min-height: unset;
       color: var(--color-input);
       background: var(--background-input);
       font-family: var(--font-input);
@@ -1314,14 +1315,14 @@ html, :root {
         z-index: 6;
         pointer-events: none; }
         html .comp .tooltip.tooltip-left, :root .comp .tooltip.tooltip-left {
-          width: 500px; }
+          max-width: unset; }
         html .comp .tooltip.tooltip-portrait, :root .comp .tooltip.tooltip-portrait {
           bottom: 100px;
           left: 50px; }
         html .comp .tooltip.trauma-tooltip, :root .comp .tooltip.trauma-tooltip {
           scale: 1.25;
           left: -200px;
-          bottom: -75px; }
+          bottom: -65px; }
       html .comp.comp-vertical, :root .comp.comp-vertical {
         --comp-img-scale: 2;
         --comp-name-size: 1rem;

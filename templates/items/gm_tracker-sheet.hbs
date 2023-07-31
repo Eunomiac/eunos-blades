@@ -1,20 +1,20 @@
 <form class="{{cssClass}} tracker-sheet" autocomplete="off">
-	{{log "Tracker Sheet" this}}
+  {{log "Tracker Sheet" this}}
 
-	{{!-- Sheet Container --}}
-	<div class="sheet-root">
-		<section class="sheet-top">
-		</section>
-		<section class="sheet-mid-bar flex-vertical full-width">
-			<select class="phase-select" data-dtype="String" name="system.game_phase">
-				{{#select system.game_phase}}
-				<option value="" hidden disabled selected></option>
-				{{#each system.phases}}
-				<option value="{{this}}">{{localize this}}</option>
-				{{/each}}
-				{{/select}}
-			</select>
-		</section>
+  {{!-- Sheet Container --}}
+  <div class="sheet-root">
+    <section class="sheet-top">
+    </section>
+    <section class="sheet-mid-bar flex-vertical full-width">
+      <select class="phase-select" data-dtype="String" name="system.game_phase">
+        {{#select system.game_phase}}
+        <option value="" hidden disabled selected></option>
+        {{#each system.phases}}
+        <option value="{{this}}">{{localize this}}</option>
+        {{/each}}
+        {{/select}}
+      </select>
+    </section>
 
 
 </form>

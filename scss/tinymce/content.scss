@@ -1,35 +1,35 @@
 // @import "../fonts";
 
 html,:root {
-	@import "../core/vars";
-	@import "../core/components";
-	@import "../core/functions";
-	@import "../core/reset";
-	@import "../core/globals";
+  @import "../core/vars";
+  @import "../core/components";
+  @import "../core/functions";
+  @import "../core/reset";
+  @import "../core/globals";
 
-	scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
-	scrollbar-width: thin;
+  scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
+  scrollbar-width: thin;
 }
 ::-webkit-scrollbar {
-	width: var(--blades-spacer-sm);
+  width: var(--blades-spacer-sm);
 }
 ::-webkit-scrollbar-track {
-	box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
-	border: none;
-	border-radius: 0;
+  box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
+  border: none;
+  border-radius: 0;
 }
 ::-webkit-scrollbar-thumb {
-	background-color: rgba(var(--color-background-light), 1);
-	border: none;
-	border-radius: 0;
-	outline: none;
+  background-color: rgba(var(--color-background-light), 1);
+  border: none;
+  border-radius: 0;
+  outline: none;
 }
 
 #tinymce {
-	@import "./tinymce-content";
+  @import "./tinymce-content";
 
-	// --secret-text-display: initial;
-	padding: var(--content-padding) !important;
-	width: calc(100% + 2 * var(--content-padding));
-	margin-left: calc(-1 * var(--content-padding));
+  // --secret-text-display: initial;
+  padding: var(--content-padding) !important;
+  width: calc(100% + 2 * var(--content-padding));
+  margin-left: calc(-1 * var(--content-padding));
 }

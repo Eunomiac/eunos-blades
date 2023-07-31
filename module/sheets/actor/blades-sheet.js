@@ -22,6 +22,7 @@ class BladesSheet extends ActorSheet {
             isGM: game.user.isGM,
             actor: this.actor,
             system: this.actor.system,
+            rollData: this.actor.getRollData(),
             activeEffects: Array.from(this.actor.effects),
             hasFullVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER),
             hasLimitedVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED),
@@ -31,7 +32,7 @@ class BladesSheet extends ActorSheet {
             sheetData.playbookData = {
                 tooltip: (new Handlebars.SafeString([
                     "<ul>",
-                    ...this.actor.playbook?.system.experience_clues?.map((line) => `<li>${line}</li>`) ?? [],
+                    ...this.actor.system.experience.clues?.map((line) => `<li>${line}</li>`) ?? [],
                     "</ul>"
                 ].join(""))).toString(),
                 dotline: {
@@ -168,7 +169,6 @@ class BladesSheet extends ActorSheet {
             eLog.checkLog("actorSheetTrigger", "User does not have permission to edit this actor", { user: game.user, actor: this.actor });
             return {};
         }
-        eLog.checkLog("actorSheetTrigger", "Submitting Form Data", { parentActor: this.actor.parentActor, systemTags: this.actor.system.tags, sourceTags: this.actor._source.system.tags, params });
         return super._onSubmit(event, params);
     }
     async close(options) {

@@ -1,96 +1,96 @@
 & {
-	min-width: 775px;
-	min-height: 800px;
+  min-width: 775px;
+  min-height: 800px;
 
-	.window-content {
-		form {
+  .window-content {
+    form {
 
-			$heights: (55px 83px 42px 20px);
-			--sheet-top-height: #{calculate-sum($heights)};
-			// --sheet-mid-height: 0px;
+      $heights: (55px 83px 42px 20px);
+      --sheet-top-height: #{calculate-sum($heights)};
+      // --sheet-mid-height: 0px;
 
-			.sheet-root {
-				> section {
+      .sheet-root {
+        > section {
 
-					&.sheet-top {
-						grid-template-areas:
-							". . title title title title title title playbook playbook playbook"
-							". . members members members members hunting-grounds hunting-grounds playbook playbook playbook "
-							". . reputation reputation preferred-op preferred-op hunting-grounds hunting-grounds . coins coins ";
-						grid-template-rows: join($heights, (), $separator: space);
+          &.sheet-top {
+            grid-template-areas:
+              ". . title title title title title title playbook playbook playbook"
+              ". . members members members members hunting-grounds hunting-grounds playbook playbook playbook "
+              ". . reputation reputation preferred-op preferred-op hunting-grounds hunting-grounds . coins coins ";
+            grid-template-rows: join($heights, (), $separator: space);
 
-						.sheet-title {
-							--sheet-title-font-size: #{toRem(48px)};
-						}
+            .sheet-title {
+              --sheet-title-font-size: #{toRem(48px)};
+            }
 
-						.comp-playbook { grid-area: playbook }
-						.comp-reputation { grid-area: reputation }
-						.comp-preferred-op { grid-area: preferred-op }
-						.comp-hunting-grounds { grid-area: hunting-grounds }
-						.comp-coins { grid-area: coins }
-						.members { grid-area: members }
+            .comp-playbook { grid-area: playbook }
+            .comp-reputation { grid-area: reputation }
+            .comp-preferred-op { grid-area: preferred-op }
+            .comp-hunting-grounds { grid-area: hunting-grounds }
+            .comp-coins { grid-area: coins }
+            .members { grid-area: members }
 
-						.comp-hunting-grounds {
-							height: 100%;
-							.comp-body {
-								height: 100%;
-								.comp-body-text {
-									display: block;
-									margin-top: 5px;
-									height: 95%;
-									min-height: 50px;
-									margin-bottom: -5px;
-									resize: none;
-									font-family: var(--font-primary);
-									font-size: toRem(12px);
-									line-height: toRem(13px);
-									text-align: center;
-									width: 200px;
-									background-color: var(--blades-black-dark);
-									border-radius: 5px;
-									padding: 5px;
-									box-shadow: inset 0 0 10px var(--blades-black);
-								}
-							}
-						}
-					}
+            .comp-hunting-grounds {
+              height: 100%;
+              .comp-body {
+                height: 100%;
+                .comp-body-text {
+                  display: block;
+                  margin-top: 5px;
+                  height: 95%;
+                  min-height: 50px;
+                  margin-bottom: -5px;
+                  resize: none;
+                  font-family: var(--font-primary);
+                  font-size: toRem(12px);
+                  line-height: toRem(13px);
+                  text-align: center;
+                  width: 200px;
+                  background-color: var(--blades-black-dark);
+                  border-radius: 5px;
+                  padding: 5px;
+                  box-shadow: inset 0 0 10px var(--blades-black);
+                }
+              }
+            }
+          }
 
-					&.sheet-mid-bar {
-						.comp-rep .comp-body {
-							.dotline { --fill-color-full: var(--blades-gold-dark) }
-							.dotline.locked { --fill-color-full: var(--blades-gold-bright) }
-						}
-						.comp-hold .comp-body { min-height: unset }
-						.comp-heat .comp-body .dotline { --fill-color-full: var(--blades-red) }
-						.comp-wanted .comp-body,
-						.comp-tier .comp-body {
-							min-height: unset;
-							top: unset;
+          &.sheet-mid-bar {
+            .comp-rep .comp-body {
+              .dotline { --fill-color-full: var(--blades-gold-dark) }
+              .dotline.locked { --fill-color-full: var(--blades-gold-bright) }
+            }
+            .comp-hold .comp-body { min-height: unset }
+            .comp-heat .comp-body .dotline { --fill-color-full: var(--blades-red) }
+            .comp-wanted .comp-body,
+            .comp-tier .comp-body {
+              min-height: unset;
+              top: unset;
 
-							.dotline {
-								--dotline-dot-sizeY: 2.5rem;
-								--fill-color-full: var(--blades-red-bright);
-								margin: 0;
-								align-items: stretch;
+              .dotline {
+                --dotline-dot-sizeY: 2.5rem;
+                --fill-color-full: var(--blades-red-bright);
+                margin: 0;
+                align-items: stretch;
 
-								.dot {
-									height: toRem(25px);
+                .dot {
+                  height: toRem(25px);
 
-									svg {
-										scale: 1.2 1;
-										margin-top: -2px;
-										pointer-events: none
-									}
-								}
-							}
-						}
-						.comp-wanted { flex-grow: 0 }
-						// .comp-tier { margin-right: 5px }
-					}
-				}
+                  svg {
+                    scale: 1.2 1;
+                    margin-top: -2px;
+                    pointer-events: none
+                  }
+                }
+              }
+            }
+            .comp-wanted { flex-grow: 0 }
+            // .comp-tier { margin-right: 5px }
+          }
+        }
 
-				.turf-list { @import "../components/turf-block" }
-			}
-		}
-	}
+        .turf-list { @import "../components/turf-block" }
+      }
+    }
+  }
 }

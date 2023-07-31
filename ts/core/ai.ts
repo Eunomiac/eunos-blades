@@ -8,11 +8,11 @@ const SYSTEM_INTRO = `
 `;
 
 AI.QuerySystem = (keyword: string) => {
-	// Scans in-game objects for keyword. Crafts system message that incorporates retrieved data.
+  // Scans in-game objects for keyword. Crafts system message that incorporates retrieved data.
 };
 
 AI.QueryAssistant = (type: BladesActorType|BladesItemType, keys: string[]) => {
-	// Given a type and a list of keys, will return suitable examples of JSON objects containing those keys.
+  // Given a type and a list of keys, will return suitable examples of JSON objects containing those keys.
 };
 
 export default AI;

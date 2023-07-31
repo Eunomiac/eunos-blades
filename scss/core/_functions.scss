@@ -3,15 +3,15 @@
 $remPerPixel: 0.0625rem;
 
 @function toRem($pixelSize) {
-	@if not unitless($pixelSize) {
-		$pixelSize: $pixelSize / 1px;
-	}
-	@return $pixelSize * $remPerPixel;
+  @if not unitless($pixelSize) {
+    $pixelSize: $pixelSize / 1px;
+  }
+  @return $pixelSize * $remPerPixel;
 }
 
 @function zLevel($delta: 0) {
-	$z-index-base: 2;
-	@return $z-index-base + $delta;
+  $z-index-base: 2;
+  @return $z-index-base + $delta;
 }
 
 @function getYIQScaledColor($main-color, $target-y: 0.6) {
@@ -22,18 +22,18 @@ $remPerPixel: 0.0625rem;
 
   // Calculate yiq values
   $y: $target-y;
-	$i: ((0.596 * $r) + (-0.275 * $g) + (-0.321 * $b)) / 255;
-	$q: ((0.212 * $r) + (-0.523 * $g) + ( 0.311 * $b)) / 255;
+  $i: ((0.596 * $r) + (-0.275 * $g) + (-0.321 * $b)) / 255;
+  $q: ((0.212 * $r) + (-0.523 * $g) + ( 0.311 * $b)) / 255;
 
   // Convert back to RGB with new target yiq
-	$r: ($y + ( 0.956 * $i) + ( 0.621 * $q)) * 255;
-	$g: ($y + (-0.272 * $i) + (-0.647 * $q)) * 255;
-	$b: ($y + (-1.105 * $i) + ( 1.702 * $q)) * 255;
+  $r: ($y + ( 0.956 * $i) + ( 0.621 * $q)) * 255;
+  $g: ($y + (-0.272 * $i) + (-0.647 * $q)) * 255;
+  $b: ($y + (-1.105 * $i) + ( 1.702 * $q)) * 255;
 
   // bounds-checking
-	@if ($r < 0){ $r: 0; } @elseif ($r > 255){ $r: 255};
-	@if ($g < 0){ $g: 0; } @elseif ($g > 255){ $g: 255};
-	@if ($b < 0){ $b: 0; } @elseif ($b > 255){ $b: 255};
+  @if ($r < 0){ $r: 0; } @elseif ($r > 255){ $r: 255};
+  @if ($g < 0){ $g: 0; } @elseif ($g > 255){ $g: 255};
+  @if ($b < 0){ $b: 0; } @elseif ($b > 255){ $b: 255};
 
   @return rgb($r, $g, $b);
 }

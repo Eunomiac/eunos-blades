@@ -5,7 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { SVGDATA, BladesItemType, Tag } from "./core/constants.js";
+import C, { SVGDATA, BladesItemType, Tag, BladesPhase } from "./core/constants.js";
 import U from "./core/utilities.js";
 export var PrereqType;
 (function (PrereqType) {
@@ -68,13 +68,15 @@ class BladesItem extends Item {
     }
     get tooltip() {
         const tooltipText = [
+            this.system.description,
             this.system.rules
-        ].find((str) => Boolean(str));
+        ].filter(Boolean).join("");
         if (tooltipText) {
             return (new Handlebars.SafeString(tooltipText)).toString();
         }
         return undefined;
     }
+    dialogCSSClasses = "";
     async archive() {
         await this.addTag(Tag.System.Archived);
         return this;
@@ -87,6 +89,9 @@ class BladesItem extends Item {
     get maxPerScore() { return this.system.num_available ?? 1; }
     get usesPerScore() { return this.system.uses?.max ?? 1; }
     get usesRemaining() { return Math.max(0, this.usesPerScore - (this.system.uses?.value ?? 0)); }
+    get phase() { return this.system.game_phase; }
+    set phase(phase) { this.update({ system: { game_phase: phase } }); }
+    get actionMax() { return this.phase === BladesPhase.CharGen ? 2 : undefined; }
     async _preCreate(data, options, user) {
         await super._preCreate(data, options, user);
         if (user.id !== game.user?.id) {
@@ -216,22 +221,21 @@ class BladesItem extends Item {
         if (!clockKey) {
             return this;
         }
-        clockKey.numClocks = keySize;
         [...new Array(keySize)].map((_, i) => i + 1)
             .forEach((clockNum) => {
             clockKey.clocks[clockNum] ??= {
-                display: "",
-                isVisible: false,
-                isNameVisible: false,
-                isActive: false,
+                title: "",
+                value: 0,
+                max: 4,
                 color: "yellow",
-                size: 4,
-                value: 0
+                isClockVisible: false,
+                isTitleVisible: false,
+                isFocused: false
             };
         });
         [...new Array(6 - keySize)].map((_, i) => keySize + i + 1)
             .forEach((clockNum) => {
-            clockKey.clocks[clockNum] = null;
+            delete clockKey.clocks[clockNum];
         });
         return this.update({ [`system.clock_keys.${keyID}`]: clockKey });
     }

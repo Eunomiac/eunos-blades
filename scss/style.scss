@@ -9,204 +9,204 @@
 
 :root,
 * {
-	scrollbar-color: var(--blades-white) var(--blades-black);
-	scrollbar-width: thin;
+  scrollbar-color: var(--blades-white) var(--blades-black);
+  scrollbar-width: thin;
 }
 
 *::-webkit-scrollbar {
-	width: var(--blades-spacer-sm);
+  width: var(--blades-spacer-sm);
 }
 
 *::-webkit-scrollbar-track {
-	box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
-	border: none;
-	border-radius: 0;
+  box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
+  border: none;
+  border-radius: 0;
 }
 
 *::-webkit-scrollbar-thumb {
-	background-color: rgba(var(--color-background-light), 1);
-	border: none;
-	border-radius: 0;
-	outline: none;
+  background-color: rgba(var(--color-background-light), 1);
+  border: none;
+  border-radius: 0;
+  outline: none;
 }
 
 :root {
 
-	&,
-	* {
-		@import './core/vars';
-		@import './core/components';
-	}
+  &,
+  * {
+    @import './core/vars';
+    @import './core/components';
+  }
 
-	body.vtt.game.system-eunos-blades {
+  body.vtt.game.system-eunos-blades {
 
-		#pause {
-			img.fa-spin {
-				top: unset;
-				bottom: -200px;
-			}
+    #pause {
+      img.fa-spin {
+        top: unset;
+        bottom: -200px;
+      }
 
-			figcaption {
-				text-shadow: 1px 1px 3px #000, 1px 1px 3px #000, 1px 1px 3px #000, 0px 0px 5px #000;
-				font-family: Kirsty !important;
-				line-height: 2rem;
-				padding: 0 25%;
-			}
-		}
+      figcaption {
+        text-shadow: 1px 1px 3px #000, 1px 1px 3px #000, 1px 1px 3px #000, 0px 0px 5px #000;
+        font-family: Kirsty !important;
+        line-height: 2rem;
+        padding: 0 25%;
+      }
+    }
 
-		#clocks-overlay {
-			margin-top: toRem(4px);
-			@import "./core/reset";
-			@import './components/clocks-overlay';
-		}
+    #clocks-overlay {
+      margin-top: toRem(4px);
+      @import "./core/reset";
+      @import './components/clocks-overlay';
+    }
 
-		#interface,
-		#controls,
-		#navigation,
-		#hotbar,
-		#players {
-			@import "./core/reset";
+    #interface,
+    #controls,
+    #navigation,
+    #hotbar,
+    #players {
+      @import "./core/reset";
 
-			&,
-			* {
-				--font-primary: "Fjalla One";
-				--font-heading: "Fjalla One";
-				--font-weight-heading: normal;
-				--text-shadow-heading: none;
-				--line-height-heading: 1.2;
-			}
+      &,
+      * {
+        --font-primary: "Fjalla One";
+        --font-heading: "Fjalla One";
+        --font-weight-heading: normal;
+        --text-shadow-heading: none;
+        --line-height-heading: 1.2;
+      }
 
-			.control-tools .scene-control:hover {
-				height: calc(var(--blades-spacer-button-lg) - 2px);
-				width: calc(var(--blades-spacer-button-lg) - 2px);
-			}
+      .control-tools .scene-control:hover {
+        height: calc(var(--blades-spacer-button-lg) - 2px);
+        width: calc(var(--blades-spacer-button-lg) - 2px);
+      }
 
-			#chat {
-				@import "./core/reset";
+      #chat {
+        @import "./core/reset";
 
-				&,
-				* {
-					--font-primary: "Minion Pro";
-					--font-heading: "Kirsty";
-					--font-weight-heading: normal;
-					--text-shadow-heading: none;
-					--line-height-heading: 1.2;
-				}
+        &,
+        * {
+          --font-primary: "Minion Pro";
+          --font-heading: "Kirsty";
+          --font-weight-heading: normal;
+          --text-shadow-heading: none;
+          --line-height-heading: 1.2;
+        }
 
-				@import './chat/chat';
-			}
+        @import './chat/chat';
+      }
 
-		}
+    }
 
-		#controls,
-		#navigation,
-		#hotbar,
-		#players {
-			opacity: 0.5;
-			transition: 0.25s;
+    #controls,
+    #navigation,
+    #hotbar,
+    #players {
+      opacity: 0.5;
+      transition: 0.25s;
 
-			&:hover {
-				opacity: 1
-			}
-		}
+      &:hover {
+        opacity: 1
+      }
+    }
 
-		.app.window-app {
-			@import "./core/reset";
-			@import './core/globals';
+    .app.window-app {
+      @import "./core/reset";
+      @import './core/globals';
 
-			// General App Window Styles
-			@import "./core/app";
+      // General App Window Styles
+      @import "./core/app";
 
-			// Third-Party Library Inputs
-			// > TAGIFY
-			@import './lib/tagify';
+      // Third-Party Library Inputs
+      // > TAGIFY
+      @import './lib/tagify';
 
-			// > TAGIFY CUSTOM CONFIG
-			@import './tagify-custom';
+      // > TAGIFY CUSTOM CONFIG
+      @import './tagify-custom';
 
-			.editor:not(.tinymce) {
-				position: relative;
-				overflow-x: hidden;
-				height: 100%;
-				width: 100%;
+      .editor:not(.tinymce) {
+        position: relative;
+        overflow-x: hidden;
+        height: 100%;
+        width: 100%;
 
-				.editor-edit {
-					display: block;
-					opacity: 0.25;
-					pointer-events: auto;
-					z-index: zLevel(+1);
+        .editor-edit {
+          display: block;
+          opacity: 0.25;
+          pointer-events: auto;
+          z-index: zLevel(+1);
 
-					&:hover {
-						opacity: 1
-					}
-				}
+          &:hover {
+            opacity: 1
+          }
+        }
 
-				.editor-content {
-					position: relative;
-					width: calc(100% + (2 * var(--content-padding)));
-					left: calc(-1 * var(--content-padding));
-					padding-left: var(--content-padding);
-					padding-right: var(--content-padding);
-					@import './tinymce/tinymce-content';
-				}
-			}
+        .editor-content {
+          position: relative;
+          width: calc(100% + (2 * var(--content-padding)));
+          left: calc(-1 * var(--content-padding));
+          padding-left: var(--content-padding);
+          padding-right: var(--content-padding);
+          @import './tinymce/tinymce-content';
+        }
+      }
 
-			.tab-label + .editor { margin-top: -0.3125rem !important }
+      .tab-label + .editor { margin-top: -0.3125rem !important }
 
-			.editor.tinymce {
-				position: relative;
-				max-width: unset;
-				width: calc(100% + (2 * var(--content-padding)));
-				height: 100%;
+      .editor.tinymce {
+        position: relative;
+        max-width: unset;
+        width: calc(100% + (2 * var(--content-padding)));
+        height: 100%;
 
-				.editor-content {
-					@import './tinymce/tinymce-content';
-				}
-				&:first-child {
-					margin-top: 30px;
-				}
-			}
+        .editor-content {
+          @import './tinymce/tinymce-content';
+        }
+        &:first-child {
+          margin-top: 30px;
+        }
+      }
 
-			&.sheet {
+      &.sheet {
 
-				@import './sheets/sheets';
+        @import './sheets/sheets';
 
-				&.actor {
-					&.pc {
-						@import './sheets/pc-sheet';
-					}
+        &.actor {
+          &.pc {
+            @import './sheets/pc-sheet';
+          }
 
-					&.npc {
-						@import './sheets/npc-sheet'
-					}
+          &.npc {
+            @import './sheets/npc-sheet'
+          }
 
-					&.crew {
-						@import './sheets/crew-sheet';
-					}
+          &.crew {
+            @import './sheets/crew-sheet';
+          }
 
-					&.faction {
-						@import './sheets/faction-sheet';
-					}
-				}
+          &.faction {
+            @import './sheets/faction-sheet';
+          }
+        }
 
-				&.item {
-					@import './sheets/item-sheets';
+        &.item {
+          @import './sheets/item-sheets';
 
-					&.clock-keeper {
-						@import './sheets/clock-keeper-sheet'
-					}
+          &.clock-keeper {
+            @import './sheets/clock-keeper-sheet'
+          }
 
-					&.crew_playbook {
-						@import './sheets/crew-playbook-sheet'
-					}
-				}
+          &.crew_playbook {
+            @import './sheets/crew-playbook-sheet'
+          }
+        }
 
-				&.dialog {
-					@import './dialog/dialogs'
-				}
-			}
-		}
-	}
+        &.dialog {
+          @import './dialog/dialogs'
+        }
+      }
+    }
+  }
 }
 
 @import "./emu-styles.scss";

@@ -1,218 +1,218 @@
 $key-sizes: (
-	1: (height: 455px, width: 202px),
-	2: (height: 624.438px, width: 202px),
-	3: (height: 915px, width: 280px),
-	4: (height: 1140px, width: 376px),
-	5: (height: 1140px, width: 376px),
-	6: (height: 1150px, width: 376px)
+  1: (height: 455px, width: 202px),
+  2: (height: 624.438px, width: 202px),
+  3: (height: 915px, width: 280px),
+  4: (height: 1140px, width: 376px),
+  5: (height: 1140px, width: 376px),
+  6: (height: 1150px, width: 376px)
 );
 $clock-positions: (
-	1: (
-		1: (x: 101px, y: 99px)
-	),
-	2: (
-		1: (x: 101px, y: 99px),
-		2: (x: 101px, y: 279px)
-	),
-	3: (
-		1: (x: 140px, y: 99px),
-		2: (x: 74px, y: 211px),
-		3: (x: 206px, y: 211px)
-	),
-	4: (
-		1: (x: 188px, y: 99px),
-		2: (x: 101px, y: 185px),
-		3: (x: 275px, y: 185px),
-		4: (x: 188px, y: 273px)
-	),
-	5: (
-		1: (x: 188px, y: 99px),
-		2: (x: 101px, y: 185px),
-		3: (x: 275px, y: 185px),
-		4: (x: 188px, y: 273px),
-		5: (x: 188px, y: 452px)
-	),
-	6: (
-		1: (x: 188px, y: 99px),
-		2: (x: 101px, y: 185px),
-		3: (x: 275px, y: 185px),
-		4: (x: 188px, y: 273px),
-		5: (x: 188px, y: 452px),
-		6: (x: 188px, y: 683px)
-	)
+  1: (
+    1: (x: 101px, y: 99px)
+  ),
+  2: (
+    1: (x: 101px, y: 99px),
+    2: (x: 101px, y: 279px)
+  ),
+  3: (
+    1: (x: 140px, y: 99px),
+    2: (x: 74px, y: 211px),
+    3: (x: 206px, y: 211px)
+  ),
+  4: (
+    1: (x: 188px, y: 99px),
+    2: (x: 101px, y: 185px),
+    3: (x: 275px, y: 185px),
+    4: (x: 188px, y: 273px)
+  ),
+  5: (
+    1: (x: 188px, y: 99px),
+    2: (x: 101px, y: 185px),
+    3: (x: 275px, y: 185px),
+    4: (x: 188px, y: 273px),
+    5: (x: 188px, y: 452px)
+  ),
+  6: (
+    1: (x: 188px, y: 99px),
+    2: (x: 101px, y: 185px),
+    3: (x: 275px, y: 185px),
+    4: (x: 188px, y: 273px),
+    5: (x: 188px, y: 452px),
+    6: (x: 188px, y: 683px)
+  )
 );
 
 & {
-	--top-shift: 50px;
-	--left-shift: 75px;
-	--key-scale: 0.33;
-	--alternating-top-shift: 120px;
-	--clock-frame-size: 108px;
-	--clock-glow-size: calc(var(--clock-frame-size) * 3);
-	--clock-glow-correction: -37px;
+  --top-shift: 50px;
+  --left-shift: 75px;
+  --key-scale: 0.33;
+  --alternating-top-shift: 120px;
+  --clock-frame-size: 108px;
+  --clock-glow-size: calc(var(--clock-frame-size) * 3);
+  --clock-glow-correction: -37px;
 
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	justify-content: flex-start;
-	align-items: flex-start;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
 
-	transform-origin: 0 0;
-	transform: scale(var(--key-scale));
+  transform-origin: 0 0;
+  transform: scale(var(--key-scale));
 
-	position: absolute !important;
-	width: calc((100% / var(--key-scale)) - var(--left-shift));
-	height: calc((100% / var(--key-scale)) - var(--top-shift));
-	top: var(--top-shift);
-	left: var(--left-shift);
-	pointer-events: none;
-	z-index: 50;
+  position: absolute !important;
+  width: calc((100% / var(--key-scale)) - var(--left-shift));
+  height: calc((100% / var(--key-scale)) - var(--top-shift));
+  top: var(--top-shift);
+  left: var(--left-shift);
+  pointer-events: none;
+  z-index: 50;
 
-	svg, svg defs {
-		* { transform-origin: 50% 50% }
+  svg, svg defs {
+    * { transform-origin: 50% 50% }
 
-		.segmented {
-			--rotation-step-size: calc(360deg / var(--rotation-steps));
-			--segment-scale: 1;
-		}
-		clipPath.segmented { --segment-scale: 2 }
+    .segmented {
+      --rotation-step-size: calc(360deg / var(--rotation-steps));
+      --segment-scale: 1;
+    }
+    clipPath.segmented { --segment-scale: 2 }
 
-		@each $clockSize in (1, 2, 3, 4, 5, 6, 8, 10, 12) {
-			.segmented[data-size="#{$clockSize}"] { --rotation-steps: #{$clockSize} }
-		}
+    @each $clockSize in (1, 2, 3, 4, 5, 6, 8, 10, 12) {
+      .segmented[data-size="#{$clockSize}"] { --rotation-steps: #{$clockSize} }
+    }
 
-		.segmented > use {
-			transform: scale(var(--segment-scale)) rotate(var(--segment-rotation));
+    .segmented > use {
+      transform: scale(var(--segment-scale)) rotate(var(--segment-rotation));
 
-			@for $i from 1 through 12 {
-				&:nth-child(#{$i}) { --segment-rotation: calc(#{$i - 1} * var(--rotation-step-size)) }
-			}
-		}
-	}
+      @for $i from 1 through 12 {
+        &:nth-child(#{$i}) { --segment-rotation: calc(#{$i - 1} * var(--rotation-step-size)) }
+      }
+    }
+  }
 
-	svg, .clock, img { position: absolute }
+  svg, .clock, img { position: absolute }
 
-	.clock-key {
-		position: relative;
-		margin: 0 20px;
-		height: var(--key-height);
-		width: var(--key-width);
+  .clock-key {
+    position: relative;
+    margin: 0 20px;
+    height: var(--key-height);
+    width: var(--key-width);
 
-		& > * { position: absolute }
+    & > * { position: absolute }
 
-		.key-label { display: none }
+    .key-label { display: none }
 
-		.clock-label-container {
-			display: none;
-		}
+    .clock-label-container {
+      display: none;
+    }
 
-		.clock-image-container {
-			height: var(--key-height);
-			width: var(--key-width);
+    .clock-image-container {
+      height: var(--key-height);
+      width: var(--key-width);
 
-			.key-image {
-				height: var(--key-height);
-				width: var(--key-width);
-				z-index: 1;
-				overflow: visible;
-				filter:
-					drop-shadow(0px 0px 10px var(--blades-white-bright))
-					drop-shadow(30px 30px 10px var(--blades-black-dark))
-					brightness(0.5);
+      .key-image {
+        height: var(--key-height);
+        width: var(--key-width);
+        z-index: 1;
+        overflow: visible;
+        filter:
+          drop-shadow(0px 0px 10px var(--blades-white-bright))
+          drop-shadow(30px 30px 10px var(--blades-black-dark))
+          brightness(0.5);
 
 
-				.key-bg {
-					fill: var(--blades-black);
-				}
+        .key-bg {
+          fill: var(--blades-black);
+        }
 
-				.metallic-overlay {
-					height: var(--key-height);
-					width: var(--key-width);
-					filter: url(#metallicFilter) blur(1px);
-					fill: var(--blades-grey-dark);
-				}
-			}
-			@import "./clocks";
-			// .clock {
+        .metallic-overlay {
+          height: var(--key-height);
+          width: var(--key-width);
+          filter: url(#metallicFilter) blur(1px);
+          fill: var(--blades-grey-dark);
+        }
+      }
+      @import "./clocks";
+      // .clock {
 
-			// 	height: var(--clock-glow-size);
-			// 	width: var(--clock-glow-size);
-			// 	transform: translate(-50%, -50%);
-			// 	z-index: 2;
+      //   height: var(--clock-glow-size);
+      //   width: var(--clock-glow-size);
+      //   transform: translate(-50%, -50%);
+      //   z-index: 2;
 
-			// 	.clock-frame {
-			// 		height: var(--clock-frame-size);
-			// 		width: var(--clock-frame-size);
-			// 		transform: translate(-50%, -50%) translate(calc(var(--clock-glow-size) / 2), calc(var(--clock-glow-size) / 2));
-			// 		fill: transparent;
-			// 		stroke: var(--blades-black);
-			// 		stroke-width: 10px;
-			// 		z-index: 2;
-			// 		pointer-events: auto;
+      //   .clock-frame {
+      //     height: var(--clock-frame-size);
+      //     width: var(--clock-frame-size);
+      //     transform: translate(-50%, -50%) translate(calc(var(--clock-glow-size) / 2), calc(var(--clock-glow-size) / 2));
+      //     fill: transparent;
+      //     stroke: var(--blades-black);
+      //     stroke-width: 10px;
+      //     z-index: 2;
+      //     pointer-events: auto;
 
-			// 		g {
-			// 			transform: scale(0.99);
-			// 			transform-origin: 50% 50%;
-			// 		}
-			// 	}
+      //     g {
+      //       transform: scale(0.99);
+      //       transform-origin: 50% 50%;
+      //     }
+      //   }
 
-			// 	.clock-interior {
-			// 		position: absolute;
-			// 		height: 400px;
-			// 		width: 400px;
-			// 		transform: translate(-50%, -50%) translate(calc(50% + var(--clock-glow-correction)), calc(50% + var(--clock-glow-correction)));
-			// 		svg {
-			// 			height: var(--clock-frame-size);
-			// 			width: var(--clock-frame-size);
-			// 			transform: translate(-50%, -50%);
-			// 			top: 50%;
-			// 			left: 50%;
+      //   .clock-interior {
+      //     position: absolute;
+      //     height: 400px;
+      //     width: 400px;
+      //     transform: translate(-50%, -50%) translate(calc(50% + var(--clock-glow-correction)), calc(50% + var(--clock-glow-correction)));
+      //     svg {
+      //       height: var(--clock-frame-size);
+      //       width: var(--clock-frame-size);
+      //       transform: translate(-50%, -50%);
+      //       top: 50%;
+      //       left: 50%;
 
-			// 			circle {
-			// 				height: var(--clock-frame-size);
-			// 				width: var(--clock-frame-size);
-			// 				// transform: translate(-50%, -50%);
-			// 				// top: 50%;
-			// 				// left: 50%;
-			// 			}
-			// 		}
-			// 		.clock-interior-img {
-			// 			height: var(--clock-frame-size);
-			// 			width: var(--clock-frame-size);
-			// 			transform: translate(-50%, -50%);
-			// 			top: 50%;
-			// 			left: 50%;
-			// 		}
-			// 	}
+      //       circle {
+      //         height: var(--clock-frame-size);
+      //         width: var(--clock-frame-size);
+      //         // transform: translate(-50%, -50%);
+      //         // top: 50%;
+      //         // left: 50%;
+      //       }
+      //     }
+      //     .clock-interior-img {
+      //       height: var(--clock-frame-size);
+      //       width: var(--clock-frame-size);
+      //       transform: translate(-50%, -50%);
+      //       top: 50%;
+      //       left: 50%;
+      //     }
+      //   }
 
-			// 	&.clock-active {
-			// 		.clock-glow {
-			// 			position: absolute;
-			// 			z-index: 0;
-			// 			top: var(--clock-glow-correction);
-			// 			left: var(--clock-glow-correction);
-			// 			height: 400px;
-			// 			width: 400px;
-			// 			background: url("../assets/animations/clock-flare.webp") 50%/contain no-repeat border-box border-box;
-			// 			background-position-y: 5px;
-			// 		}
-			// 	}
-			// }
-		}
+      //   &.clock-active {
+      //     .clock-glow {
+      //       position: absolute;
+      //       z-index: 0;
+      //       top: var(--clock-glow-correction);
+      //       left: var(--clock-glow-correction);
+      //       height: 400px;
+      //       width: 400px;
+      //       background: url("../assets/animations/clock-flare.webp") 50%/contain no-repeat border-box border-box;
+      //       background-position-y: 5px;
+      //     }
+      //   }
+      // }
+    }
 
-		@each $key, $clocks in $clock-positions {
-			&[data-size="#{$key}"] {
-				--key-height: #{map-get(map-get($key-sizes, $key), "height")};
-				--key-width: #{map-get(map-get($key-sizes, $key), "width")};
-				@each $clock, $pos in $clocks {
-					.clock:nth-of-type(#{$clock}) {
-						left: map-get($pos, "x");
-						top: map-get($pos, "y");
-					}
-				}
-			}
-		}
+    @each $key, $clocks in $clock-positions {
+      &[data-size="#{$key}"] {
+        --key-height: #{map-get(map-get($key-sizes, $key), "height")};
+        --key-width: #{map-get(map-get($key-sizes, $key), "width")};
+        @each $clock, $pos in $clocks {
+          .clock:nth-of-type(#{$clock}) {
+            left: map-get($pos, "x");
+            top: map-get($pos, "y");
+          }
+        }
+      }
+    }
 
-		&:nth-child(2n+1) { top: var(--alternating-top-shift) }
-	}
+    &:nth-child(2n+1) { top: var(--alternating-top-shift) }
+  }
 }

@@ -22,26 +22,33 @@ class BladesNPCSheet extends BladesSheet {
         context.isSubActor = context.actor.isSubActor;
         context.parentActor = context.actor.parentActor;
         context.persona = context.actor.system.persona;
+        context.random = context.actor.system.random;
+        context.secret = context.actor.system.secret;
         const rStatus = {
-            name: { size: 4, label: null },
-            heritage: { size: 1, label: "Heritage" },
-            profession: { size: 1, label: "Profession" },
-            gender: { size: 1, label: "Gender" },
-            appearance: { size: 1, label: "Appearance" },
+            name: { size: 3, label: "Name" },
+            gender: { size: "half", label: "Gender" },
+            heritage: { size: "third", label: "Heritage" },
+            background: { size: "third", label: "Background" },
+            profession: { size: "third", label: "Profession" },
+            appearance: { size: 2, label: "Appearance" },
+            style: { size: 2, label: "Style" },
+            quirk: { size: 4, label: "Quirk" },
             goal: { size: 2, label: "Goal" },
             method: { size: 2, label: "Method" },
-            trait1: { size: "05", label: null },
-            trait2: { size: "05", label: null },
-            trait3: { size: "05", label: null },
             interests: { size: 4, label: "Interests" },
-            quirk: { size: 4, label: "Quirk" },
-            style: { size: 2, label: "Style" }
+            trait: { size: "half", label: "Trait" },
+            trait1: { size: "half", label: null },
+            trait2: { size: "half", label: null },
+            trait3: { size: "half", label: null }
         };
-        for (const [key] of Object.entries(context.persona)) {
-            if (key in rStatus) {
-                Object.assign(context.persona[key], rStatus[key]);
+        for (const cat of ["persona", "random", "secret"]) {
+            for (const [key] of Object.entries(context[cat])) {
+                if (key in rStatus) {
+                    Object.assign(context[cat][key], rStatus[key]);
+                }
             }
         }
+        console.log({ persona: context.persona, random: context.random, secret: context.secret });
         return context;
     }
     activateListeners(html) {

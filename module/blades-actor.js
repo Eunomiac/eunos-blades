@@ -22,6 +22,33 @@ class BladesActor extends Actor {
         }
 
         data.system.world_name = data.system.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "").trim().replace(/ /g, "_");
+
+        if (data.type === BladesActorType.pc) {
+            data.system.experience = {
+                playbook: { value: 0, max: 8 },
+                insight: { value: 0, max: 6 },
+                prowess: { value: 0, max: 6 },
+                resolve: { value: 0, max: 6 },
+                clues: [],
+                ...data.system.experience ?? {}
+            };
+            data.system.experience.clues = [
+                "You expressed your beliefs, drives, heritage, or background.",
+                "You struggled with issues from your vice or traumas during the session."
+            ];
+        }
+        if (data.type === BladesActorType.crew) {
+            data.system.experience = {
+                playbook: { value: 0, max: 8 },
+                clues: [],
+                ...data.system.experience ?? {}
+            };
+            data.system.experience.clues = [
+                "You contended with challenges above your current station.",
+                "You bolstered your crew's reputation, or developed a new one.",
+                "You expressed the goals, drives, inner conflict, or essential nature of the crew."
+            ];
+        }
         return super.create(data, options);
     }
 
@@ -70,8 +97,9 @@ class BladesActor extends Actor {
             .join("<br><br>");
         return tooltipText ? (new Handlebars.SafeString(tooltipText)).toString() : undefined;
     }
+    get dialogCSSClasses() { return ""; }
     get primaryUser() {
-        return game.users.find((user) => user.character?.id === this?.id);
+        return game.users?.find((user) => user.character?.id === this?.id) || null;
     }
     
     get subActors() {
@@ -109,9 +137,6 @@ class BladesActor extends Actor {
             return 0;
         });
     }
-    reportSubActorTags() {
-        return "";
-    }
     getDialogActors(category) {
                 
         const dialogData = {};
@@ -141,7 +166,6 @@ class BladesActor extends Actor {
         }
     }
     async addSubActor(actorRef, tags) {
-        eLog.checkLog2("subactors", "[addSubActor] actorRef, tags", { actorRef, tags, subTags: this.reportSubActorTags() });
         let BladesActorUniqueTags;
         (function (BladesActorUniqueTags) {
             BladesActorUniqueTags["CharacterCrew"] = "CharacterCrew";
@@ -174,35 +198,29 @@ class BladesActor extends Actor {
             focusSubActor = this.getSubActor(actor.id);
         }
         if (!focusSubActor) {
-            eLog.checkLog3("subactors", "[addSubActor] Did NOT Find Subactor! Returning!");
             return;
         }
-        eLog.checkLog3("subactors", "[addSubActor] Focus Subactor:", { focusSubActor, subTags: this.reportSubActorTags() });
         const uniqueTags = focusSubActor.tags.filter((tag) => tag in BladesActorUniqueTags);
-        eLog.checkLog3("subactors", "[addSubActor] Matching Unique Tags?", { subActorTags: focusSubActor.tags, uniqueTags, isUnique: uniqueTags.length > 0, subTags: this.reportSubActorTags() });
         if (uniqueTags.length > 0) {
             uniqueTags.forEach((uTag) => this.activeSubActors
                 .filter((subActor) => subActor.id !== focusSubActor.id && subActor.hasTag(uTag))
                 .map((subActor) => this.remSubActor(subActor.id)));
         }
-        eLog.checkLog2("subactors", "[addSubActor] Finished!", { subTags: this.reportSubActorTags() });
     }
     getSubActor(actorRef) {
-        eLog.checkLog4("subactors", "[getSubActor] Tag Report START", { subTags: this.reportSubActorTags() });
         const actor = BladesActor.Get(actorRef);
         if (!actor?.id) {
             return undefined;
         }
-        if (actor.type !== BladesActorType.npc) {
+        if (!BladesActor.IsType(actor, BladesActorType.npc, BladesActorType.faction)) {
             return actor;
         }
         const subActorData = this.system.subactors[actor.id] ?? {};
-        actor.system = mergeObject(actor.system, subActorData ?? {});
+        Object.assign(actor.system, mergeObject(actor.system, subActorData));
         if (this.primaryUser?.id) {
             actor.ownership[this.primaryUser.id] = CONST.DOCUMENT_PERMISSION_LEVELS.OWNER;
         }
         actor.parentActor = this;
-        eLog.checkLog4("subactors", "[getSubActor] Tag Report END", { subTags: this.reportSubActorTags() });
         return actor;
     }
     hasSubActorOf(actorRef) {
@@ -212,13 +230,7 @@ class BladesActor extends Actor {
         }
         return actor?.id ? actor.id in this.system.subactors : false;
     }
-    hasActiveSubActorOf(actorRef) {
-        const actor = BladesActor.Get(actorRef);
-        if (!actor) {
-            return false;
-        }
-        return actor?.id ? (actor.id in this.system.subactors && !this.getSubActor(actorRef)?.hasTag(Tag.System.Archived)) : false;
-    }
+    
     async updateSubActor(actorRef, updateData) {
         updateData = U.objExpand(updateData);
         if (!updateData.system) {
@@ -230,13 +242,6 @@ class BladesActor extends Actor {
         }
         const diffUpdateSystem = U.objDiff(actor.system, updateData.system);
         const mergedSubActorSystem = U.objMerge(this.system.subactors[actor.id] ?? {}, diffUpdateSystem, { isReplacingArrays: true, isConcatenatingArrays: false });
-        eLog.checkLog3("subactors", "[updateSubActor] ", {
-            ["1: diffUpdateSystem"]: diffUpdateSystem,
-            ["2: curActorSystem"]: JSON.stringify(this.system.subactors[actor.id]),
-            ["3: mergedSubActorSystem"]: JSON.stringify(mergedSubActorSystem),
-            ["4: diffObjForCheck"]: U.objDiff(mergedSubActorSystem, this.system.subactors[actor.id]),
-            subTags: this.reportSubActorTags()
-        });
         if (JSON.stringify(this.system.subactors[actor.id]) === JSON.stringify(mergedSubActorSystem)) {
             return undefined;
         }
@@ -244,11 +249,8 @@ class BladesActor extends Actor {
             .then(() => this.update({ [`system.subactors.${actor.id}`]: mergedSubActorSystem }, undefined, true))
             .then(() => actor.sheet?.render());
     }
+    
     async remSubActor(actorRef) {
-        this.purgeSubActor(actorRef);
-        return;
-    }
-    async purgeSubActor(actorRef) {
         const subActor = this.getSubActor(actorRef);
         if (!subActor) {
             return;
@@ -629,18 +631,6 @@ class BladesActor extends Actor {
         subItem.delete();
     }
 
-    async addAbilityPoints(amount) {
-        if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
-            return;
-        }
-        this.update({ "system.advancement.ability": (this.system.advancement.ability ?? 0) + amount });
-    }
-    async removeAbilityPoints(amount) {
-        if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
-            return;
-        }
-        this.update({ "system.advancement.ability": Math.max(0, (this.system.advancement.ability ?? 0) - amount) });
-    }
     get totalAbilityPoints() {
         if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
             return 0;
@@ -672,6 +662,18 @@ class BladesActor extends Actor {
         }
         return this.totalAbilityPoints - this.spentAbilityPoints;
     }
+    async addAbilityPoints(amount) {
+        if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
+            return;
+        }
+        this.update({ "system.advancement.ability": (this.system.advancement.ability ?? 0) + amount });
+    }
+    async removeAbilityPoints(amount) {
+        if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
+            return;
+        }
+        this.update({ "system.advancement.ability": Math.max(0, (this.system.advancement.ability ?? 0) - amount) });
+    }
     async advancePlaybook() {
         if (!this.playbook) {
             return undefined;
@@ -686,6 +688,9 @@ class BladesActor extends Actor {
             default: return undefined;
         }
     }
+    
+    
+
     get totalUpgradePoints() {
         if (!BladesActor.IsType(this, BladesActorType.crew)) {
             return 0;
@@ -924,6 +929,51 @@ class BladesActor extends Actor {
         return this.activeSubItems.filter((item) => item.type === BladesItemType.cohort);
     }
 
+    prepareDerivedData() {
+        if (BladesActor.IsType(this, BladesActorType.pc)) {
+            this._preparePCData(this.system);
+        }
+        if (BladesActor.IsType(this, BladesActorType.crew)) {
+            this._prepareCrewData(this.system);
+        }
+        if (BladesActor.IsType(this, BladesActorType.npc)) {
+            this._prepareNPCData(this.system);
+        }
+        if (BladesActor.IsType(this, BladesActorType.faction)) {
+            this._prepareFactionData(this.system);
+        }
+    }
+    _preparePCData(system) {
+        if (!BladesActor.IsType(this, BladesActorType.pc)) {
+            return;
+        }
+        if (game.eunoblades.Tracker?.actionMax) {
+            for (const [attribute, attrData] of Object.entries(system.attributes)) {
+                for (const [action, actionData] of Object.entries(attrData)) {
+                    actionData.max = game.eunoblades.Tracker.actionMax;
+                    system.attributes[attribute][action] = actionData;
+                }
+            }
+        }
+        system.experience.clues.reverse();
+    }
+    _prepareCrewData(system) {
+        if (!BladesActor.IsType(this, BladesActorType.crew)) {
+            return;
+        }
+        system.experience.clues.reverse();
+    }
+    _prepareNPCData(system) {
+        if (!BladesActor.IsType(this, BladesActorType.npc)) {
+            return;
+        }
+    }
+    _prepareFactionData(system) {
+        if (!BladesActor.IsType(this, BladesActorType.faction)) {
+            return;
+        }
+    }
+    
     async _onCreateEmbeddedDocuments(embName, docs, ...args) {
         docs.forEach(async (doc) => {
             if (doc instanceof BladesItem && [BladesItemType.playbook, BladesItemType.crew_playbook].includes(doc.type)) {
@@ -965,12 +1015,7 @@ class BladesActor extends Actor {
             return super.update(updateData);
         }
         switch (this.type) {
-            case BladesActorType.pc: {
-                if (isSkippingSubActorCheck) {
-                    eLog.checkLog3("actorTrigger", "Updating PC SubActor Data", { updateData, subTags: this.reportSubActorTags() });
-                }
-                break;
-            }
+            case BladesActorType.pc: break;
             case BladesActorType.crew: {
                 if (!this.playbook) {
                     return undefined;
@@ -987,12 +1032,12 @@ class BladesActor extends Actor {
                 }
                 break;
             }
-            case BladesActorType.npc: {
+            case BladesActorType.npc:
+            case BladesActorType.faction: {
                 if (this.parentActor && !isSkippingSubActorCheck) {
-                    eLog.checkLog3("actorTrigger", "Updating NPC as SubActor", { parentActor: this.parentActor, systemTags: this.system.tags, sourceTags: this._source.system.tags, isSkippingSubActorCheck, updateData, subTags: this.reportSubActorTags() });
                     return this.parentActor.updateSubActor(this.id, updateData);
                 }
-                eLog.checkLog3("actorTrigger", "Updating NPC as ACTOR", { parentActor: this.parentActor, systemTags: this.system.tags, sourceTags: this._source.system.tags, isSkippingSubActorCheck, updateData, subTags: this.reportSubActorTags() });
+                break;
             }
         }
         return super.update(updateData, context);
@@ -1098,20 +1143,13 @@ class BladesActor extends Actor {
         }
         const titleChance = 0.05;
         const suffixChance = 0.01;
-        function sampleArray(arr, curVals = [], numVals = 1) {
+        const { persona, secret, random } = this.system;
+        function sampleArray(arr, ...curVals) {
             arr = arr.filter((elem) => !curVals.includes(elem));
             if (!arr.length) {
-                return [];
+                return "";
             }
-            const returnVals = [];
-            while (returnVals.length < numVals) {
-                arr = arr.filter((elem) => ![...curVals, ...returnVals].includes(elem));
-                if (!arr.length) {
-                    return returnVals;
-                }
-                returnVals.push(arr[Math.floor(Math.random() * arr.length)]);
-            }
-            return returnVals;
+            return arr[Math.floor(Math.random() * arr.length)];
         }
         const randomGen = {
             name: (gender) => {
@@ -1130,85 +1168,113 @@ class BladesActor extends Actor {
                         : ""
                 ].filter((val) => Boolean(val)).join(" ");
             },
-            gender: () => sampleArray(Randomizers.gender)[0],
-            heritage: () => sampleArray(Randomizers.heritage)[0],
-            appearance: () => sampleArray(Randomizers.appearance)[0],
-            profession: () => sampleArray(Randomizers.profession)[0],
-            goal: () => sampleArray(Randomizers.goal)[0],
-            method: () => sampleArray(Randomizers.method)[0],
-            trait: () => sampleArray(Randomizers.trait, [
-                this.system.persona.trait1.value,
-                this.system.persona.trait2.value,
-                this.system.persona.trait3.value
-            ], 1),
-            interests: () => sampleArray(Randomizers.interests)[0],
-            quirk: () => sampleArray(Randomizers.quirk)[0],
-            style: (gender) => sampleArray([
-                ...((gender ?? "").charAt(0).toLowerCase() !== "m" ? Randomizers.style.female : []),
-                ...((gender ?? "").charAt(0).toLowerCase() !== "f" ? Randomizers.style.male : [])
-            ])[0]
+            background: () => sampleArray(Randomizers.background, random.background.value),
+            heritage: () => sampleArray(Randomizers.heritage, random.heritage.value),
+            profession: () => sampleArray(Randomizers.profession, random.profession.value),
+            gender: () => sampleArray(Randomizers.gender, persona.gender.value),
+            appearance: () => sampleArray(Randomizers.appearance, persona.appearance.value),
+            goal: () => sampleArray(Randomizers.goal, persona.goal.value, secret.goal.value),
+            method: () => sampleArray(Randomizers.method, persona.method.value, secret.method.value),
+            trait: () => sampleArray(Randomizers.trait, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value),
+            interests: () => sampleArray(Randomizers.interests, persona.interests.value, secret.interests.value),
+            quirk: () => sampleArray(Randomizers.quirk, persona.quirk.value),
+            style: (gender = "") => sampleArray([
+                ...(gender.charAt(0).toLowerCase() !== "m" ? Randomizers.style.female : []),
+                ...(gender.charAt(0).toLowerCase() !== "f" ? Randomizers.style.male : [])
+            ], persona.style.value)
         };
-        const gender = this.system.persona.gender.isLocked
-            ? this.system.persona.gender.value
-            : randomGen.gender();
-        const updateKeys = Object.keys(this.system.persona)
-            .filter((key) => !this.system.persona[key]?.isLocked);
+        const gender = persona.gender.isLocked ? persona.gender.value : randomGen.gender();
+        const updateKeys = [
+            ...Object.keys(persona).filter((key) => !persona[key]?.isLocked),
+            ...Object.keys(random).filter((key) => !random[key]?.isLocked),
+            ...Object.keys(secret).filter((key) => !secret[key]?.isLocked)
+                .map((secretKey) => `secret-${secretKey}`)
+        ];
+        eLog.checkLog("Update Keys", { updateKeys });
         const updateData = {};
-        let isUpdatingTraits = false;
         updateKeys.forEach((key) => {
             switch (key) {
+                case "name":
+                case "heritage":
+                case "background":
+                case "profession": {
+                    const randomVal = randomGen[key]();
+                    updateData[`system.random.${key}`] = {
+                        isLocked: false,
+                        value: randomVal || random[key].value
+                    };
+                    break;
+                }
+                case "secret-goal":
+                case "secret-interests":
+                case "secret-method": {
+                    key = key.replace(/^secret-/, "");
+                    const randomVal = randomGen[key]();
+                    updateData[`system.secret.${key}`] = {
+                        isLocked: false,
+                        value: randomVal || secret[key].value
+                    };
+                    break;
+                }
                 case "gender": {
                     updateData[`system.persona.${key}`] = {
-                        isLocked: this.system.persona.gender.isLocked,
+                        isLocked: persona.gender.isLocked,
                         value: gender
                     };
                     break;
                 }
                 case "trait1":
                 case "trait2":
-                case "trait3": {
-                    isUpdatingTraits = true;
+                case "trait3":
+                case "secret-trait": {
+                    const trait1 = persona.trait1.isLocked
+                        ? persona.trait1.value
+                        : sampleArray(Randomizers.trait, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value);
+                    const trait2 = persona.trait2.isLocked
+                        ? persona.trait2.value
+                        : sampleArray(Randomizers.trait, trait1, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value);
+                    const trait3 = persona.trait3.isLocked
+                        ? persona.trait3.value
+                        : sampleArray(Randomizers.trait, trait1, trait2, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value);
+                    const secretTrait = secret.trait.isLocked
+                        ? secret.trait.value
+                        : sampleArray(Randomizers.trait, trait1, trait2, trait3, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value);
+                    if (!persona.trait1.isLocked) {
+                        updateData["system.persona.trait1"] = {
+                            isLocked: false,
+                            value: trait1
+                        };
+                    }
+                    if (!persona.trait2.isLocked) {
+                        updateData["system.persona.trait2"] = {
+                            isLocked: false,
+                            value: trait2
+                        };
+                    }
+                    if (!persona.trait3.isLocked) {
+                        updateData["system.persona.trait3"] = {
+                            isLocked: false,
+                            value: trait3
+                        };
+                    }
+                    if (!secret.trait.isLocked) {
+                        updateData["system.secret.trait"] = {
+                            isLocked: false,
+                            value: secretTrait
+                        };
+                    }
                     break;
                 }
                 default: {
                     const randomVal = randomGen[key]();
                     updateData[`system.persona.${key}`] = {
                         isLocked: false,
-                        value: randomVal || this.system.persona[key].value
+                        value: randomVal || persona[key].value
                     };
                     break;
                 }
             }
         });
-        if (isUpdatingTraits) {
-            const trait1 = this.system.persona.trait1.isLocked
-                ? this.system.persona.trait1.value
-                : sampleArray(Randomizers.trait, [this.system.persona.trait1.value, this.system.persona.trait2.value, this.system.persona.trait3.value], 1)[0];
-            const trait2 = this.system.persona.trait2.isLocked
-                ? this.system.persona.trait2.value
-                : sampleArray(Randomizers.trait, [trait1, this.system.persona.trait1.value, this.system.persona.trait2.value, this.system.persona.trait3.value], 1)[0];
-            const trait3 = this.system.persona.trait3.isLocked
-                ? this.system.persona.trait3.value
-                : sampleArray(Randomizers.trait, [trait1, trait2, this.system.persona.trait1.value, this.system.persona.trait2.value, this.system.persona.trait3.value], 1)[0];
-            if (!this.system.persona.trait1.isLocked) {
-                updateData["system.persona.trait1"] = {
-                    isLocked: false,
-                    value: trait1
-                };
-            }
-            if (!this.system.persona.trait2.isLocked) {
-                updateData["system.persona.trait2"] = {
-                    isLocked: false,
-                    value: trait2
-                };
-            }
-            if (!this.system.persona.trait3.isLocked) {
-                updateData["system.persona.trait3"] = {
-                    isLocked: false,
-                    value: trait3
-                };
-            }
-        }
         this.update(updateData);
     }
 }

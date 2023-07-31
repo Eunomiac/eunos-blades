@@ -1,210 +1,215 @@
 
 .window-content {
 
-	$heights: (63px, 52px, 57px, 28px) !default;
+  $heights: (75px, 40px, 57px, 28px) !default;
 
-	--sheet-header-height: 21px;
-	--sheet-top-height: #{calculate-sum($heights)};
-	--sheet-mid-height: 60px;
+  --sheet-header-height: 21px;
+  --sheet-top-height: #{calculate-sum($heights)};
+  --sheet-mid-height: 60px;
 
-	background: var(--blades-black);
-	padding: 0;
-	overflow: visible;
-	max-height: calc(100% - var(--sheet-header-height));
+  background: var(--blades-black);
+  padding: 0;
+  overflow: visible;
+  max-height: calc(100% - var(--sheet-header-height));
 
-	form {
-		@import "../core/globals";
+  form {
+    @import "../core/globals";
 
-		justify-content: flex-start;
-		max-height: 100%;
+    justify-content: flex-start;
+    max-height: 100%;
 
-		.sheet-img {
-			position: absolute;
-			height: var(--sheet-top-height);
-			// left: -10px;
-			z-index: zLevel(-1);
-			border: none;
-			mask-image: linear-gradient(to right, black 75%, transparent);
-			-webkit-mask-image: linear-gradient(to right, black 75%, transparent);
-		}
+    .sheet-img {
+      position: absolute;
+      height: var(--sheet-top-height);
+      // left: -10px;
+      z-index: zLevel(-1);
+      border: none;
+      mask-image: linear-gradient(to right, black 75%, transparent);
+      -webkit-mask-image: linear-gradient(to right, black 75%, transparent);
+    }
 
-		.sheet-img-bg {
-			position: absolute;
-			height: 100%;
-			width: 100%;
-			overflow: hidden;
+    .sheet-img-bg {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
 
-			> img {
-				position: absolute;
-				width: 100%;
-				top: -30%;
-				filter: saturate(0%) blur(3px);
-				opacity: 0.5;
-				transform: scaleX(-1);
-				mask-image: linear-gradient(to bottom, black, transparent);
-			}
-		}
+      > img {
+        position: absolute;
+        width: 100%;
+        top: -30%;
+        filter: saturate(0%) blur(3px);
+        opacity: 0.5;
+        transform: scaleX(-1);
+        mask-image: linear-gradient(to bottom, black, transparent);
+      }
+    }
 
-		.gm-alert-header {
-			position: absolute;
-			pointer-events: auto;
-			z-index: 10;
-			top: -60px;
-			display: block;
-			height: toRem(20px);
-			line-height: toRem(20px);
-			width: 100%;
-			background-color: rgb(255, 255, 0);
-			font-weight: bold;
-			font-family: Kirsty;
-			text-align: center;
-			font-size: toRem(14px);
-			color: var(--blades-black);
-		}
+    .gm-alert-header {
+      position: absolute;
+      pointer-events: auto;
+      z-index: 10;
+      top: -60px;
+      display: block;
+      height: toRem(20px);
+      line-height: toRem(20px);
+      width: 100%;
+      background-color: rgb(255, 255, 0);
+      font-weight: bold;
+      font-family: Kirsty;
+      text-align: center;
+      font-size: toRem(14px);
+      color: var(--blades-black);
+    }
 
-		.comp-xp-playbook .comp-body {
-			transform: none !important;
-		}
+    .comp-xp-playbook .comp-body {
+      transform: none !important;
+    }
 
-		.sheet-root {
-			position: relative;
-			height: 100%;
-			width: 100%;
-			// top: -10px;
-			left: 0px;
-			// overflow: hidden;
+    .sheet-root {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      // top: -10px;
+      left: 0px;
+      // overflow: hidden;
 
-			> section:not(.sheet-top) {
-				border-top: 2px solid var(--blades-white);
-				border-bottom: none;
-			}
+      > section:not(.sheet-top) {
+        border-top: 2px solid var(--blades-white);
+        border-bottom: none;
+      }
 
-			section {
-				z-index: zLevel();
-				max-height: 100%;
+      section {
+        z-index: zLevel();
+        max-height: 100%;
 
-				&.sheet-top {
+        &.sheet-top {
 
-					display: grid;
-					grid-auto-columns: 1fr;
-					grid-template-rows: join($heights, (), $separator: space); // 83px 32px 57px 28px;
-					place-items: center stretch;
-					pointer-events: none;
-					overflow: hidden;
-					height: var(--sheet-top-height);
+          display: grid;
+          grid-auto-columns: 1fr;
+          grid-template-rows: join($heights, (), $separator: space); // 83px 32px 57px 28px;
+          place-items: center stretch;
+          pointer-events: none;
+          overflow: hidden;
+          height: var(--sheet-top-height);
 
-					input { pointer-events: auto }
+          input { pointer-events: auto }
 
-					.comp-control.comp-button.comp-delete { display: none }
+          .comp-control.comp-button.comp-delete { display: none }
 
-					img[data-edit] { height: 75px }
+          img[data-edit] { height: 75px }
 
-					.sheet-title {
-						--sheet-title-font-size: #{toRem(32px)};
-						--sheet-title-height-mult: 1.5;
+          .sheet-title {
+            --sheet-title-font-size: #{toRem(32px)};
+            --sheet-title-height-mult: 1.5;
 
-						grid-area: title;
-						overflow: visible;
-						font-family: var(--font-emphasis);
-						color: var(--blades-white-bright);
-						font-size: var(--sheet-title-font-size);
-						font-variant: small-caps;
-						height: calc(var(--sheet-title-height-mult) * var(--sheet-title-font-size));
-						margin-top: calc(-1 * var(--content-padding));
-						position: relative;
-						// top: calc(-1 * (var(--sheet-title-font-size) / 6));
-					}
+            grid-area: title;
+            // overflow: visible;
+            font-family: var(--font-emphasis);
+            color: var(--blades-white-bright);
+            font-size: var(--sheet-title-font-size);
+            font-variant: small-caps;
+            height: 100%;
+            // height: calc(var(--sheet-title-height-mult) * var(--sheet-title-font-size));
+            // margin-top: calc(-1 * var(--content-padding));
+            // position: relative;
+            // top: calc(-1 * (var(--sheet-title-font-size) / 6));
+          }
 
-					.sheet-subtitle {
-						--sheet-subtitle-font-size: #{toRem(24px)};
-						--sheet-subtitle-height-mult: 1.8;
+          .sheet-subtitle {
+            --sheet-subtitle-font-size: #{toRem(20px)};
+            // --sheet-subtitle-height-mult: 1.8;
 
-						grid-area: subtitle;
-						overflow: visible;
-						font-family: var(--font-decorative);
-						font-size: var(--sheet-subtitle-font-size);
-						height: calc(var(--sheet-subtitle-height-mult) * var(--sheet-subtitle-font-size));
-						margin-top: calc(-0.75 * var(--sheet-subtitle-font-size));
-					}
-				}
+            grid-area: subtitle;
+            // overflow: visible;
+            font-family: var(--font-decorative);
+            font-size: var(--sheet-subtitle-font-size);
+            // height: calc(var(--sheet-subtitle-height-mult) * var(--sheet-subtitle-font-size));
+            height: 100%;
+            // line-height: var(--sheet-subtitle-font-size);
+            padding-bottom: 5px;
+            // margin-top: calc(-0.75 * var(--sheet-subtitle-font-size));
+          }
+        }
 
-				&.sheet-mid-bar {
-					display: flex;
-					justify-content: space-between;
-					align-items: stretch;
-					flex-wrap: nowrap;
-					position: relative;
-					height: var(--sheet-mid-height);
-					// padding-right: toRem(20px);
-				}
+        &.sheet-mid-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: stretch;
+          flex-wrap: nowrap;
+          position: relative;
+          height: var(--sheet-mid-height);
+          // padding-right: toRem(20px);
+        }
 
-				&.nav-group {
-					height: calc(100% - var(--sheet-top-height) - var(--sheet-mid-height));
-					justify-content: flex-start;
+        &.nav-group {
+          height: calc(100% - var(--sheet-top-height) - var(--sheet-mid-height));
+          justify-content: flex-start;
 
-					> * { width: 100% }
+          > * { width: 100% }
 
-					.tab[data-tab] {
+          .tab[data-tab] {
 
-						&.active {
-							display: flex;
-							justify-content: stretch;
-							height: 100%;
-							overflow: visible;
-						}
-					}
-				}
-			}
-		}
-	}
+            &.active {
+              display: flex;
+              justify-content: stretch;
+              height: 100%;
+              overflow: visible;
+              min-height: 100px;
+            }
+          }
+        }
+      }
+    }
+  }
 
-	.tab-label {
-		background: var(--blades-grey);
-		position: relative;
-		height: toRem(24px);
-		min-height: toRem(24px);
-		width: 100%;
-		margin-bottom: toRem(5px);
+  .tab-label {
+    background: var(--blades-grey);
+    position: relative;
+    height: toRem(24px);
+    min-height: toRem(24px);
+    width: 100%;
+    margin-bottom: toRem(5px);
 
-		display: flex;
-		justify-content: flex-start;
-		align-items: center;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 
-		.tab-title {
-			font-family: var(--font-emphasis);
-			font-size: toRem(14px);
-			color: var(--blades-white-bright);
-			text-transform: uppercase;
-			margin-left: toRem(5px);
-			line-height: toRem(14px);
-		}
-	}
+    .tab-title {
+      font-family: var(--font-emphasis);
+      font-size: toRem(14px);
+      color: var(--blades-white-bright);
+      text-transform: uppercase;
+      margin-left: toRem(5px);
+      line-height: toRem(14px);
+    }
+  }
 
-	.clock-container {
-		position: relative;
-		pointer-events: none;
+  .clock-container {
+    position: relative;
+    pointer-events: none;
 
-		@import "../components/clocks";
+    @import "../components/clocks";
 
-		.clock {
-			top: 50%;
-			left: 50%;
+    .clock {
+      top: 50%;
+      left: 50%;
 
-			* { position: absolute }
+      * { position: absolute }
 
-			.clock-interior {
-				circle { fill: var(--blades-black-fade-strong) }
+      .clock-interior {
+        circle { fill: var(--blades-black-fade-strong) }
 
-				.clock-interior-img {
-					pointer-events: auto;
-				}
-			}
+        .clock-interior-img {
+          pointer-events: auto;
+        }
+      }
 
-			.clock-frame {
-				stroke-width: 15px;
-				stroke: var(--blades-black-dark-fade);
-				overflow: visible;
-			}
-		}
-	}
+      .clock-frame {
+        stroke-width: 15px;
+        stroke: var(--blades-black-dark-fade);
+        overflow: visible;
+      }
+    }
+  }
 }

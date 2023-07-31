@@ -1,382 +1,385 @@
 & {
-	min-width: 775px;
-	min-height: 800px;
-	overflow: visible;
+  min-width: 775px;
+  min-height: 800px;
+  overflow: visible;
 
-	.window-content {
-		form {
-			.sheet-root {
+  .window-content {
+    form {
+      .sheet-root {
 
-				section.sheet-top {
-					// min-height: 200px;
-					grid-template-areas:
-						". . title title title title title title playbook playbook playbook"
-						". . . subtitle subtitle subtitle subtitle subtitle subtitle . ."
-						". heritage heritage background background vice vice crew crew coins coins"
-						"stash stash stash stash stash stash stash stash stash stash stash";
+        section.sheet-top {
+          // min-height: 200px;
+          grid-template-areas:
+            ". . title title title title title title playbook playbook playbook"
+            ". . . subtitle subtitle subtitle subtitle subtitle subtitle . ."
+            ". heritage heritage background background vice vice crew crew coins coins"
+            "stash stash stash stash stash stash stash stash stash stash stash";
 
-					.sheet-title { --sheet-title-font-size: #{toRem(58px)} }
-					.sheet-subtitle { --sheet-subtitle-font-size: #{toRem(32px)} }
+          .sheet-title { --sheet-title-font-size: #{toRem(72px)} }
+          .sheet-subtitle {
+            --sheet-subtitle-font-size: #{toRem(28px)};
+            padding-bottom: 15px;
+          }
 
-					.comp-playbook { grid-area: playbook }
-					.comp-heritage { grid-area: heritage }
-					.comp-background { grid-area: background }
-					.comp-vice { grid-area: vice }
-					.comp-crew { grid-area: crew }
-					.comp-coins { grid-area: coins }
-					.comp-stash { grid-area: stash;
-						/* --dotline-dot-spacing: 3px; */ }
-				}
+          .comp-playbook { grid-area: playbook }
+          .comp-heritage { grid-area: heritage }
+          .comp-background { grid-area: background }
+          .comp-vice { grid-area: vice }
+          .comp-crew { grid-area: crew }
+          .comp-coins { grid-area: coins }
+          .comp-stash { grid-area: stash;
+            /* --dotline-dot-spacing: 3px; */ }
+        }
 
-				section.sheet-mid-bar {
+        section.sheet-mid-bar {
 
-					.comp-stress {
-						.dotline {
-							--fill-color-full: var(--blades-red-dark);
-							--half-color-full: var(--blades-red-bright);
-						}
-					}
+          .comp-stress {
+            .dotline {
+              --fill-color-full: var(--blades-red-dark);
+              --half-color-full: var(--blades-red-bright);
+            }
+          }
 
-					.comp-trauma {
-						.comp-label { min-width: 80px; }
-						.dotline {
-							--fill-color-full: var(--blades-red-bright);
-							flex-grow: 0;
-						}
-					}
+          .comp-trauma {
+            .comp-label { min-width: 80px; }
+            .dotline {
+              --fill-color-full: var(--blades-red-bright);
+              flex-grow: 0;
+            }
+          }
 
-					.comp-trauma-conditions {
-						min-width: toRem(300px);
-						margin-right: toRem(4px);
-					}
-				}
+          .comp-trauma-conditions {
+            min-width: toRem(300px);
+            margin-right: toRem(4px);
+          }
+        }
 
-				section.harm-armor {
-					margin-top: -2px;
-					padding: 0 var(--content-padding);
-					> table {
-						> tbody {
-							> tr {
-								height: toRem(35px);
+        section.harm-armor {
+          margin-top: -2px;
+          padding: 0 var(--content-padding);
+          > table {
+            > tbody {
+              > tr {
+                height: toRem(35px);
 
-								&:nth-child(2n) {
-									background: var(--blades-black-fade);
-									.harm-effect {
-										text-align: center;
-										font-size: toRem(16px);
-									}
-								}
+                &:nth-child(2n) {
+                  background: var(--blades-black-fade);
+                  .harm-effect {
+                    text-align: center;
+                    font-size: toRem(16px);
+                  }
+                }
 
-								.harm-level {
-									width: toRem(35px);
-									font-family: var(--font-emphasis);
-									font-size: toRem(28px);
-									line-height: toRem(35px);
-									text-align: center;
-									color: var(--blades-white-bright);
-								}
+                .harm-level {
+                  width: toRem(35px);
+                  font-family: var(--font-emphasis);
+                  font-size: toRem(28px);
+                  line-height: toRem(35px);
+                  text-align: center;
+                  color: var(--blades-white-bright);
+                }
 
-								.harm-input {
-									input[type="text"] {
-										font-family: var(--font-decorative);
-										font-style: italic;
-										font-size: toRem(18px);
-										text-align: center;
-									}
-								}
+                .harm-input {
+                  input[type="text"] {
+                    font-family: var(--font-decorative);
+                    font-style: italic;
+                    font-size: toRem(18px);
+                    text-align: center;
+                  }
+                }
 
-								.harm-effect {
-									color: var(--blades-white-bright);
-									text-align: right;
-								}
+                .harm-effect {
+                  color: var(--blades-white-bright);
+                  text-align: right;
+                }
 
-								.healing-clock {
-									padding: 0 toRem(10px);
-									width: 120px;
+                .healing-clock {
+                  padding: 0 toRem(10px);
+                  width: 120px;
 
-									&, * {
-									--clock-frame-size: 80px;
-									--clock-glow-size: calc(var(--clock-frame-size) * 3);
-									--clock-glow-correction: -80px;
-									}
+                  &, * {
+                  --clock-frame-size: 80px;
+                  --clock-glow-size: calc(var(--clock-frame-size) * 3);
+                  --clock-glow-correction: -80px;
+                  }
 
-									.clock { position: absolute }
-								}
+                  .clock { position: absolute }
+                }
 
-								.armor-uses {
-									padding: 0 toRem(10px);
-									width: 100px;
-									.comp-armor {
-										position: relative;
-										height: 100px;
-										width: 100px;
-										pointer-events: none;
+                .armor-uses {
+                  padding: 0 toRem(10px);
+                  width: 100px;
+                  .comp-armor {
+                    position: relative;
+                    height: 100px;
+                    width: 100px;
+                    pointer-events: none;
 
-										.main-armor-control,
-										.special-armor-control {
-											position: absolute;
-											pointer-events: auto;
+                    .main-armor-control,
+                    .special-armor-control {
+                      position: absolute;
+                      pointer-events: auto;
 
-											&.main-armor-control {
-												z-index: 1;
+                      &.main-armor-control {
+                        z-index: 1;
 
-												height: 100%;
-												width: 100%;
-												top: 0px;
-												left: 0px;
-											}
+                        height: 100%;
+                        width: 100%;
+                        top: 0px;
+                        left: 0px;
+                      }
 
-											&.special-armor-control {
-												z-index: 2;
+                      &.special-armor-control {
+                        z-index: 2;
 
-												height: 50%;
-												width: 50%;
-												right: 0px;
-												bottom: 0px;
-											}
-										}
+                        height: 50%;
+                        width: 50%;
+                        right: 0px;
+                        bottom: 0px;
+                      }
+                    }
 
-										.main-armor-control + .special-armor-control {
-											display: none;
-										}
+                    .main-armor-control + .special-armor-control {
+                      display: none;
+                    }
 
-										.svg-armor {
-											position: absolute;
-											height: 100px;
-											width: 100px;
-											top: 0;
-											left: 0;
-											transition: 0.5s;
+                    .svg-armor {
+                      position: absolute;
+                      height: 100px;
+                      width: 100px;
+                      top: 0;
+                      left: 0;
+                      transition: 0.5s;
 
-											svg {
-												height: 100%;
-												width: auto;
-											}
+                      svg {
+                        height: 100%;
+                        width: auto;
+                      }
 
-											fill: var(--blades-black);
-											stroke: var(--blades-white);
-											stroke-width: 8px;
-											stroke-linejoin: bevel;
-											stroke-miterlimit: 10;
-
-
-											&.hover-over {
-												filter: blur(0px) brightness(1.5);
-												opacity: 1;
-												&:not(.checked) {
-													transform: scale(1.2);
-												}
-											}
-
-											&.checked {
-												fill: none;
-												stroke: var(--blades-grey-bright);
-												opacity: 0.5;
-												filter: blur(1px);
-											}
-
-											&.armor-light {
-												transform: scale(1.1);
-
-												&.hover-over:not(.checked) {
-													transform: scale(1.4);
-												}
-											}
-
-											&.armor-special {
-												height: 75px;
-												width: auto;
-												top: 12.5px;
-												left: 12.5px;
-												stroke: none;
-
-												.specialBg {
-													fill: var(--blades-black);
-												}
-												.special {
-													fill: var(--blades-white);
-												}
-
-												&.checked {
-													.specialBg {
-														fill: var(--blades-grey-dark);
-													}
-													.special {
-														fill: var(--blades-grey-bright);
-													}
-												}
-											}
-										}
-
-										.svg-armor.armor-heavy:not(.checked) + .svg-armor.armor-light {
-											display: none;
-										}
-
-										.svg-armor ~ .svg-armor.armor-special {
-											height: 50px;
-											width: auto;
-											top: unset;
-											left: unset;
-											right: -10px;
-											bottom: 0;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-
-				div.split-panel {
-					display: grid;
-					grid-template-columns: 1fr 200px;
-					align-items: start;
-					overflow: hidden;
-					height: 375px;
-
-					section.nav-group {
-						height: 100%;
-						overflow: visible;
-
-						.loadout {
-							.tab-label {
-
-								.load-selector {
-									width: toRem(150px);
-									margin: 0 toRem(10px);
-									font-family: var(--font-emphasis);
-									text-transform: uppercase;
-									text-indent: toRem(3px);
-								}
-
-								.load-selected-count span {
-									color: var(--blades-white-bright);
-									font-weight: bold;
-									font-size: toRem(24px);
-									line-height: inherit;
-									position: relative;
-									top: 2px;
-									margin: 0 2px;
-								}
-								.load-level {
-									flex-grow: 1;
-									text-align: right;
-									padding-right: toRem(5px);
-								}
-								.load-amount {
-									--number-circle-size: #{toRem(24px)};
-									filter: brightness(1.5);
-									margin: 0 #{toRem(2px)} 0 #{toRem(5px)};
-								}
-							}
-
-							.comp .dotline {
-								left: unset;
-								transform: none;
-
-								+ .comp-title .item-title {
-									margin-left: toRem(12px);
-								}
-							}
-						}
-					}
-
-					section.action-ratings {
-						align-items: stretch;
-
-						.comp-attribute {
-							background: var(--blades-white);
-							margin-bottom: toRem(5px);
-							max-height: toRem(24px);
-
-							label {
-								color: var(--blades-black);
-								font-size: toRem(16px);
-								font-family: var(--font-emphasis);
-								text-shadow: none;
-								line-height: toRem(28px);
-								text-transform: uppercase;
-								text-align: left;
-								text-indent: toRem(5px);
-								margin-bottom: toRem(5px);
-							}
-
-							.comp-body {
-								justify-content: flex-end;
-								align-items: flex-start;
-								position: relative;
-								max-height: toRem(26px);
-								.dotline {
-									position: relative;
-									right: 0;
-									left: unset;
-									justify-content: flex-end;
-
-									--dotline-dot-sizeX: #{toRem(11px)};
-									--dotline-dot-spacing: #{toRem(1px)};
-
-									--frame-color: var(--blades-black);
-									--fill-color-full: var(--blades-gold-bright);
-									--fill-color-empty: rgba(0, 0, 0, 0.25);
-									--half-color-empty: var(--blades-gold-dark);
+                      fill: var(--blades-black);
+                      stroke: var(--blades-white);
+                      stroke-width: 8px;
+                      stroke-linejoin: bevel;
+                      stroke-miterlimit: 10;
 
 
-									.dot {
-										transform-origin: top;
-										transition: 0.25s;
-										transform: scaleY(1);
+                      &.hover-over {
+                        filter: blur(0px) brightness(1.5);
+                        opacity: 1;
+                        &:not(.checked) {
+                          transform: scale(1.2);
+                        }
+                      }
 
-										&.empty-dot {
-											transform: scaleY(0.7);
-										}
-									}
-								}
-							}
+                      &.checked {
+                        fill: none;
+                        stroke: var(--blades-grey-bright);
+                        opacity: 0.5;
+                        filter: blur(1px);
+                      }
 
-							&:not(:first-child) {
-								margin-top: toRem(5px);
-							}
-						}
+                      &.armor-light {
+                        transform: scale(1.1);
 
-						.comp-action {
-							padding: #{toRem(1.5px)} #{toRem(20px)} #{toRem(1.5px)} #{toRem(10px)};
+                        &.hover-over:not(.checked) {
+                          transform: scale(1.4);
+                        }
+                      }
 
-							label {
-								text-align: left;
-								flex-grow: 1;
-								margin-left: toRem(20px);
-								font-size: toRem(16px);
-								line-height: 1.2;
-							}
-							.comp-body {
-								justify-content: flex-end;
-								flex-grow: 0;
+                      &.armor-special {
+                        height: 75px;
+                        width: auto;
+                        top: 12.5px;
+                        left: 12.5px;
+                        stroke: none;
 
-								.dotline {
-									--dotline-dot-spacing: #{toRem(2px)};
+                        .specialBg {
+                          fill: var(--blades-black);
+                        }
+                        .special {
+                          fill: var(--blades-white);
+                        }
 
-									.img-main, .img-hover {
-										filter: drop-shadow(0px 0px 1px var(--blades-grey-dark))
-									}
+                        &.checked {
+                          .specialBg {
+                            fill: var(--blades-grey-dark);
+                          }
+                          .special {
+                            fill: var(--blades-grey-bright);
+                          }
+                        }
+                      }
+                    }
 
-									.dot:first-child {
-										height: 18px;
-										border-right: 1px dotted var(--blades-white);
-										margin-right: toRem(2.5px);
-										padding-right: toRem(2.5px);
-										width: 17.5px;
-									}
+                    .svg-armor.armor-heavy:not(.checked) + .svg-armor.armor-light {
+                      display: none;
+                    }
 
-									.dot:nth-child(2) {
-										margin-left: toRem(2.5px);
-									}
-								}
-							}
-						}
-					}
-				}
+                    .svg-armor ~ .svg-armor.armor-special {
+                      height: 50px;
+                      width: auto;
+                      top: unset;
+                      left: unset;
+                      right: -10px;
+                      bottom: 0;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
 
-			}
-		}
-	}
+        div.split-panel {
+          display: grid;
+          grid-template-columns: 1fr 200px;
+          align-items: start;
+          overflow: hidden;
+          height: 375px;
+
+          section.nav-group {
+            height: 100%;
+            overflow: visible;
+
+            .loadout {
+              .tab-label {
+
+                .load-selector {
+                  width: toRem(150px);
+                  margin: 0 toRem(10px);
+                  font-family: var(--font-emphasis);
+                  text-transform: uppercase;
+                  text-indent: toRem(3px);
+                }
+
+                .load-selected-count span {
+                  color: var(--blades-white-bright);
+                  font-weight: bold;
+                  font-size: toRem(24px);
+                  line-height: inherit;
+                  position: relative;
+                  top: 2px;
+                  margin: 0 2px;
+                }
+                .load-level {
+                  flex-grow: 1;
+                  text-align: right;
+                  padding-right: toRem(5px);
+                }
+                .load-amount {
+                  --number-circle-size: #{toRem(24px)};
+                  filter: brightness(1.5);
+                  margin: 0 #{toRem(2px)} 0 #{toRem(5px)};
+                }
+              }
+
+              .comp .dotline {
+                left: unset;
+                transform: none;
+
+                + .comp-title .item-title {
+                  margin-left: toRem(12px);
+                }
+              }
+            }
+          }
+
+          section.action-ratings {
+            align-items: stretch;
+
+            .comp-attribute {
+              background: var(--blades-white);
+              margin-bottom: toRem(5px);
+              max-height: toRem(24px);
+
+              label {
+                color: var(--blades-black);
+                font-size: toRem(16px);
+                font-family: var(--font-emphasis);
+                text-shadow: none;
+                line-height: toRem(28px);
+                text-transform: uppercase;
+                text-align: left;
+                text-indent: toRem(5px);
+                margin-bottom: toRem(5px);
+              }
+
+              .comp-body {
+                justify-content: flex-end;
+                align-items: flex-start;
+                position: relative;
+                max-height: toRem(26px);
+                .dotline {
+                  position: relative;
+                  right: 0;
+                  left: unset;
+                  justify-content: flex-end;
+
+                  --dotline-dot-sizeX: #{toRem(11px)};
+                  --dotline-dot-spacing: #{toRem(1px)};
+
+                  --frame-color: var(--blades-black);
+                  --fill-color-full: var(--blades-gold-bright);
+                  --fill-color-empty: rgba(0, 0, 0, 0.25);
+                  --half-color-empty: var(--blades-gold-dark);
+
+
+                  .dot {
+                    transform-origin: top;
+                    transition: 0.25s;
+                    transform: scaleY(1);
+
+                    &.empty-dot {
+                      transform: scaleY(0.7);
+                    }
+                  }
+                }
+              }
+
+              &:not(:first-child) {
+                margin-top: toRem(5px);
+              }
+            }
+
+            .comp-action {
+              padding: #{toRem(1.5px)} #{toRem(20px)} #{toRem(1.5px)} #{toRem(10px)};
+
+              label {
+                text-align: left;
+                flex-grow: 1;
+                margin-left: toRem(20px);
+                font-size: toRem(16px);
+                line-height: 1.2;
+              }
+              .comp-body {
+                justify-content: flex-end;
+                flex-grow: 0;
+
+                .dotline {
+                  --dotline-dot-spacing: #{toRem(2px)};
+
+                  .img-main, .img-hover {
+                    filter: drop-shadow(0px 0px 1px var(--blades-grey-dark))
+                  }
+
+                  .dot:first-child {
+                    height: 18px;
+                    border-right: 1px dotted var(--blades-white);
+                    margin-right: toRem(2.5px);
+                    padding-right: toRem(2.5px);
+                    width: 17.5px;
+                  }
+
+                  .dot:nth-child(2) {
+                    margin-left: toRem(2.5px);
+                  }
+                }
+              }
+            }
+          }
+        }
+
+      }
+    }
+  }
 }

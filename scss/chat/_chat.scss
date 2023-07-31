@@ -1,79 +1,79 @@
 .chat-message {
 
-	background: var(--blades-black);
-	.message-header {
+  background: var(--blades-black);
+  .message-header {
 
-	}
+  }
 
-	.message-content {
+  .message-content {
 
-		.chat-label {
-			background-color: var(--blades-grey-bright);
-			font-family: var(--font-emphasis);
-			color: var(--blades-white);
-			font-size: 21px;
-			text-align: center;
-			padding: 0px 5px;
-			height: 30px;
-			text-transform: capitalize;
-		}
-		.chat-label-small {
-			background-color: var(--blades-grey);
-			color: var(--blades-black);
-			font-size: small;
-			text-align: center;
-			padding: 3px 5px;
-			height: 20px;
-		}
+    .chat-label {
+      background-color: var(--blades-grey-bright);
+      font-family: var(--font-emphasis);
+      color: var(--blades-white);
+      font-size: 21px;
+      text-align: center;
+      padding: 0px 5px;
+      height: 30px;
+      text-transform: capitalize;
+    }
+    .chat-label-small {
+      background-color: var(--blades-grey);
+      color: var(--blades-black);
+      font-size: small;
+      text-align: center;
+      padding: 3px 5px;
+      height: 20px;
+    }
 
-		.label-stripe-chat {
-			text-transform: uppercase;
-			background-color: var(--blades-black);
-			color: var(--blades-white);
-			margin-bottom: 10px;
-			position: relative;
-			padding-top: 3px;
-			display: flex;
-			font-weight: bold;
-			margin: 0;
-		}
+    .label-stripe-chat {
+      text-transform: uppercase;
+      background-color: var(--blades-black);
+      color: var(--blades-white);
+      margin-bottom: 10px;
+      position: relative;
+      padding-top: 3px;
+      display: flex;
+      font-weight: bold;
+      margin: 0;
+    }
 
-		.label-stripe-chat-small {
-			text-transform: capitalize;
-			background-color: var(--blades-grey);
-			color: var(--blades-black);
-			margin-bottom: 10px;
-			position: relative;
-			padding-top: 3px;
-			display: flex;
-			font-weight: bold;
-		}
-
-
-		.blades-die-tooltip {
-			.die {
-				font-weight: bold;
-				text-transform: capitalize;
-				font-size: large;
-
-				&.critical-success {
-					color: var(--blades-color-positive);
-				}
-
-				&.success {
-					color: var(--blades-white-bright);
-				}
-
-				&.partial-success {
-					color: var(--blades-grey-bright);
-				}
-
-				&.failure {
-					color: var(--blades-color-negative);
-				}
-			}
-		}
+    .label-stripe-chat-small {
+      text-transform: capitalize;
+      background-color: var(--blades-grey);
+      color: var(--blades-black);
+      margin-bottom: 10px;
+      position: relative;
+      padding-top: 3px;
+      display: flex;
+      font-weight: bold;
+    }
 
 
-	}
+    .blades-die-tooltip {
+      .die {
+        font-weight: bold;
+        text-transform: capitalize;
+        font-size: large;
+
+        &.critical-success {
+          color: var(--blades-color-positive);
+        }
+
+        &.success {
+          color: var(--blades-white-bright);
+        }
+
+        &.partial-success {
+          color: var(--blades-grey-bright);
+        }
+
+        &.failure {
+          color: var(--blades-color-negative);
+        }
+      }
+    }
+
+
+  }
 }

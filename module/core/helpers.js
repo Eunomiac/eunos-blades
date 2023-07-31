@@ -118,6 +118,10 @@ const handlebarHelpers = {
             : params;
         return calcs[operator](param1, param2);
     },
+    "isIn": function () {
+        const [testStr, ...contents] = arguments;
+        return contents.includes(testStr);
+    },
     "case": function (mode, str) {
         switch (mode) {
             case "upper": return U.uCase(str);
@@ -130,6 +134,12 @@ const handlebarHelpers = {
     "count": function (param) {
         if (Array.isArray(param) || U.isList(param)) {
             return Object.values(param).filter((val) => val !== null && val !== undefined).length;
+        }
+        return param ? 1 : 0;
+    },
+    "countSize": function (param) {
+        if (Array.isArray(param) || U.isList(param)) {
+            return Object.keys(param).length;
         }
         return param ? 1 : 0;
     },
@@ -316,30 +326,9 @@ const handlebarHelpers = {
         }
         Object.entries(choices).forEach(e => option(...e));
         return new Handlebars.SafeString(html);
-    },
-        "blades-clock": (parameter_name, type, current_value, uniq_id) => {
-        let html = "";
-        if (current_value === null || current_value === "null") {
-            current_value = 0;
-        }
-        if (parseInt(current_value) > parseInt(type)) {
-            current_value = type;
-        }
-        html += `<label class="clock-zero-label" for="clock-0-${uniq_id}}"><i class="fab fa-creative-commons-zero nullifier"></i></label>`;
-        html += `<div id="blades-clock-${uniq_id}" class="blades-clock clock-${type} clock-${type}-${current_value}" style="background-image:url('systems/eunos-blades/assets/progressclocks-svg/Progress Clock ${type}-${current_value}.svg');">`;
-        const zero_checked = (parseInt(current_value) === 0) ? 'checked="checked"' : "";
-        html += `<input type="radio" value="0" id="clock-0-${uniq_id}}" name="${parameter_name}" ${zero_checked}>`;
-        for (let i = 1; i <= parseInt(type); i++) {
-            const checked = (parseInt(current_value) === i) ? 'checked="checked"' : "";
-            html += `
-        <input type="radio" value="${i}" id="clock-${i}-${uniq_id}" name="${parameter_name}" ${checked}>
-        <label for="clock-${i}-${uniq_id}"></label>
-      `;
-        }
-        html += "</div>";
-        return html;
-    },
-        "removeClassPrefix": (playbookStr) => playbookStr.replace(/^\(.*?\)\s*/, "")
+    }
+    
+    
 };
 handlebarHelpers.eLog1 = function (...args) { handlebarHelpers.eLog(...[1, ...args.slice(0, 7)]); };
 handlebarHelpers.eLog2 = function (...args) { handlebarHelpers.eLog(...[2, ...args.slice(0, 7)]); };

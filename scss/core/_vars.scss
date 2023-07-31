@@ -2,375 +2,375 @@ $isCompactLayout: true;
 
 & {
 
-	--clock-glow-size: 50px;
-	--clock-frame-size: 50px;
-	--clock-glow-correction: -175px;
+  --clock-glow-size: 50px;
+  --clock-frame-size: 50px;
+  --clock-glow-correction: -175px;
 // #region ████████ Original: Original Foundry Variables ████████ ~
-	// #region ====== Colors ====== ~
-	--color-text-light-highlight: #f0f0e0;
-	--color-text-light-heading: #c9c7b8;
-	--color-text-light-primary: #b5b3a4;
-	--color-text-dark-primary: #191813;
-	--color-text-dark-secondary: #4b4a44;
-	--color-text-dark-header: #23221d;
-	--color-text-dark-inactive: #7a7971;
-	// --color-text-hyperlink: #ff6400;
-	--color-text-light-0: #fff;
-	--color-text-light-1: #eee;
-	--color-text-light-2: #ddd;
-	--color-text-light-3: #ccc;
-	--color-text-light-4: #bbb;
-	--color-text-light-5: #aaa;
-	--color-text-light-6: #999;
-	--color-text-light-7: #888;
-	--color-text-dark-1: #111;
-	--color-text-dark-2: #222;
-	--color-text-dark-3: #444;
-	--color-text-dark-4: #555;
-	--color-text-dark-5: #666;
-	--color-text-dark-6: #777;
-	--color-border-light-1: #ddd;
-	--color-border-light-2: #999;
-	--color-border-dark-1: #111;
-	--color-border-dark-2: #222;
-	--color-border-dark-3: #333;
-	--color-border-dark-4: #444;
-	--color-border-dark-5: #666;
-	// --color-shadow-primary: #ff0000;
-	// --color-shadow-highlight: #ff6400;
-	--color-shadow-dark: #000;
-	--color-underline-inactive: #7a7971;
-	--color-underline-active: #44191A;
-	// --color-underline-header: #782e22;
-	--color-border-light-highlight: #f0f0e0;
-	--color-border-light-primary: #b5b3a4;
-	--color-border-light-secondary: #c9c7b8;
-	--color-border-light-tertiary: #7a7971;
-	--color-border-dark: #000;
-	--color-border-dark-primary: #191813;
-	--color-border-dark-secondary: #23221d;
-	--color-border-dark-tertiary: #4b4a44;
-	// --color-border-highlight: #ff6400;
-	// --color-border-highlight-alt: #ff0000;
-	--color-bg-btn-minor-inactive: #c9c7b8;
-	--color-bg-btn-minor-active: #b5b3a4;
-	--color-bg-option: #dad8cc;
-	--color-ownership-none: #5500ff;
-	--color-ownership-observer: #7a7971;
-	--color-ownership-owner: #b5b3a4;
+  // #region ====== Colors ====== ~
+  --color-text-light-highlight: #f0f0e0;
+  --color-text-light-heading: #c9c7b8;
+  --color-text-light-primary: #b5b3a4;
+  --color-text-dark-primary: #191813;
+  --color-text-dark-secondary: #4b4a44;
+  --color-text-dark-header: #23221d;
+  --color-text-dark-inactive: #7a7971;
+  // --color-text-hyperlink: #ff6400;
+  --color-text-light-0: #fff;
+  --color-text-light-1: #eee;
+  --color-text-light-2: #ddd;
+  --color-text-light-3: #ccc;
+  --color-text-light-4: #bbb;
+  --color-text-light-5: #aaa;
+  --color-text-light-6: #999;
+  --color-text-light-7: #888;
+  --color-text-dark-1: #111;
+  --color-text-dark-2: #222;
+  --color-text-dark-3: #444;
+  --color-text-dark-4: #555;
+  --color-text-dark-5: #666;
+  --color-text-dark-6: #777;
+  --color-border-light-1: #ddd;
+  --color-border-light-2: #999;
+  --color-border-dark-1: #111;
+  --color-border-dark-2: #222;
+  --color-border-dark-3: #333;
+  --color-border-dark-4: #444;
+  --color-border-dark-5: #666;
+  // --color-shadow-primary: #ff0000;
+  // --color-shadow-highlight: #ff6400;
+  --color-shadow-dark: #000;
+  --color-underline-inactive: #7a7971;
+  --color-underline-active: #44191A;
+  // --color-underline-header: #782e22;
+  --color-border-light-highlight: #f0f0e0;
+  --color-border-light-primary: #b5b3a4;
+  --color-border-light-secondary: #c9c7b8;
+  --color-border-light-tertiary: #7a7971;
+  --color-border-dark: #000;
+  --color-border-dark-primary: #191813;
+  --color-border-dark-secondary: #23221d;
+  --color-border-dark-tertiary: #4b4a44;
+  // --color-border-highlight: #ff6400;
+  // --color-border-highlight-alt: #ff0000;
+  --color-bg-btn-minor-inactive: #c9c7b8;
+  --color-bg-btn-minor-active: #b5b3a4;
+  --color-bg-option: #dad8cc;
+  --color-ownership-none: #5500ff;
+  --color-ownership-observer: #7a7971;
+  --color-ownership-owner: #b5b3a4;
 
   --color-level-info: #5c87b9;
   --color-level-warning: #b18404;
   --color-level-error: #750003;
-	// #endregion ___ Colors ___
-	// #region ====== Z-Indices ====== ~
-	--z-index-canvas: 0;
-	--z-index-app: 30;
-	--z-index-ui: 60;
-	--z-index-window: 100;
-	--z-index-tooltip: 9999;
-	// #endregion ___ Z-Indices ___
-	// #region ====== Layout ====== ~
-	--sidebar-width: 300px;
-	--sidebar-header-height: 32px;
-	--sidebar-item-height: 48px;
-	--hotbar-height: 52px;
-	--hotbar-width: 578px;
-	--macro-size: 50px;
-	--players-width: 200px;
-	--form-field-height: 26px;
-	// #endregion ___ Layout ___
-	// #region ====== Text ====== ~
-	// --font-primary: "Signika", sans-serif;
+  // #endregion ___ Colors ___
+  // #region ====== Z-Indices ====== ~
+  --z-index-canvas: 0;
+  --z-index-app: 30;
+  --z-index-ui: 60;
+  --z-index-window: 100;
+  --z-index-tooltip: 9999;
+  // #endregion ___ Z-Indices ___
+  // #region ====== Layout ====== ~
+  --sidebar-width: 300px;
+  --sidebar-header-height: 32px;
+  --sidebar-item-height: 48px;
+  --hotbar-height: 52px;
+  --hotbar-width: 578px;
+  --macro-size: 50px;
+  --players-width: 200px;
+  --form-field-height: 26px;
+  // #endregion ___ Layout ___
+  // #region ====== Text ====== ~
+  // --font-primary: "Signika", sans-serif;
   // --font-mono: monospace;
   // --font-awesome: "Font Awesome 6 Pro";
 
-	--font-size-11: 0.6875rem;
-	--font-size-12: 0.75rem;
-	--font-size-13: 0.8125rem;
-	--font-size-14: 0.875rem;
-	--font-size-16: 1rem;
-	--font-size-18: 1.125rem;
-	--font-size-20: 1.25rem;
-	--font-size-24: 1.5rem;
-	--font-size-28: 1.75rem;
-	--font-size-32: 2rem;
-	--font-size-48: 3rem;
+  --font-size-11: 0.6875rem;
+  --font-size-12: 0.75rem;
+  --font-size-13: 0.8125rem;
+  --font-size-14: 0.875rem;
+  --font-size-16: 1rem;
+  --font-size-18: 1.125rem;
+  --font-size-20: 1.25rem;
+  --font-size-24: 1.5rem;
+  --font-size-28: 1.75rem;
+  --font-size-32: 2rem;
+  --font-size-48: 3rem;
 
-	--line-height-12: 0.75rem;
+  --line-height-12: 0.75rem;
   --line-height-16: 1rem;
   --line-height-20: 1.25rem;
   --line-height-30: 1.875rem;
-	// #endregion ___ Text ___
+  // #endregion ___ Text ___
 // #endregion ▄▄▄▄▄ Original ▄▄▄▄▄
 
 // #region ████████ Overrides: Foundry Variable Overrides ████████
-	// Comment out any changed vars in 'Original' section, to keep track.
-	// #region ====== Colors ======
-	--color-text-hyperlink: var(--blades-gold-bright); // #ff6400;
-	--color-shadow-primary: var(--blades-white); // #ff0000;
-	--color-shadow-highlight: var(--blades-gold-bright); // #ff6400;
-	--color-underline-header: var(--blades-grey); // #782e22;
-	--color-border-highlight: var(--blades-gold-bright); // #ff6400;
-	--color-border-highlight-alt: var(--blades-gold); // #ff0000;
-	// #endregion ___ Colors ___
+  // Comment out any changed vars in 'Original' section, to keep track.
+  // #region ====== Colors ======
+  --color-text-hyperlink: var(--blades-gold-bright); // #ff6400;
+  --color-shadow-primary: var(--blades-white); // #ff0000;
+  --color-shadow-highlight: var(--blades-gold-bright); // #ff6400;
+  --color-underline-header: var(--blades-grey); // #782e22;
+  --color-border-highlight: var(--blades-gold-bright); // #ff6400;
+  --color-border-highlight-alt: var(--blades-gold); // #ff0000;
+  // #endregion ___ Colors ___
 // #endregion ▄▄▄▄▄ Overrides ▄▄▄▄▄
 
 // #region ████████ Pixels to Rem: Pixel Sizes Converted to Rems ████████ ~
-	--size-10px: #{toRem(10px)};      // 0.6125rem /* Expansion (not defined by Foundry) */
-	--size-11px: var(--font-size-11); // 0.6875rem
-	--size-12px: var(--font-size-12); // 0.75rem
-	--size-13px: var(--font-size-13); // 0.8125rem
-	--size-14px: var(--font-size-14); // 0.875rem
-	--size-16px: var(--font-size-16); // 1rem
-	--size-18px: var(--font-size-18); // 1.125rem
-	--size-20px: var(--font-size-20); // 1.25rem
-	--size-24px: var(--font-size-24); // 1.5rem
-	--size-28px: var(--font-size-28); // 1.75rem
-	--size-30px: #{toRem(30px)};      // 1.875rem /* Expansion (not defined by Foundry) */
-	--size-32px: var(--font-size-32); // 2rem
-	--size-48px: var(--font-size-48); // 3rem
+  --size-10px: #{toRem(10px)};      // 0.6125rem /* Expansion (not defined by Foundry) */
+  --size-11px: var(--font-size-11); // 0.6875rem
+  --size-12px: var(--font-size-12); // 0.75rem
+  --size-13px: var(--font-size-13); // 0.8125rem
+  --size-14px: var(--font-size-14); // 0.875rem
+  --size-16px: var(--font-size-16); // 1rem
+  --size-18px: var(--font-size-18); // 1.125rem
+  --size-20px: var(--font-size-20); // 1.25rem
+  --size-24px: var(--font-size-24); // 1.5rem
+  --size-28px: var(--font-size-28); // 1.75rem
+  --size-30px: #{toRem(30px)};      // 1.875rem /* Expansion (not defined by Foundry) */
+  --size-32px: var(--font-size-32); // 2rem
+  --size-48px: var(--font-size-48); // 3rem
 // #endregion ▄▄▄▄▄ Pixels to Rem ▄▄▄▄▄
 
 // #region ████████ Colors: System Color Settings ████████ ~
-	// #region ░░░░░░░ Blades Colors & Fades ░░░░░░░ ~
-	--blades-white-bright-nums: 255, 255, 255;
-	--blades-white-nums: 200, 200, 200;
-	--blades-grey-bright-nums: 170, 170, 170;
-	--blades-grey-nums: 119, 119, 119;
-	--blades-grey-dark-nums: 68, 68, 68;
-	--blades-black-nums: 32, 32, 32;
-	--blades-black-dark-nums: 0, 0, 0;
+  // #region ░░░░░░░ Blades Colors & Fades ░░░░░░░ ~
+  --blades-white-bright-nums: 255, 255, 255;
+  --blades-white-nums: 200, 200, 200;
+  --blades-grey-bright-nums: 170, 170, 170;
+  --blades-grey-nums: 119, 119, 119;
+  --blades-grey-dark-nums: 68, 68, 68;
+  --blades-black-nums: 32, 32, 32;
+  --blades-black-dark-nums: 0, 0, 0;
 
-	--blades-gold-bright-nums: 255, 231, 92; // 253, 212, 112;
-	--blades-gold-nums: 255, 215, 0; // 171, 146, 84;
-	--blades-gold-dark-nums: 184, 156, 0;
+  --blades-gold-bright-nums: 255, 231, 92; // 253, 212, 112;
+  --blades-gold-nums: 255, 215, 0; // 171, 146, 84;
+  --blades-gold-dark-nums: 184, 156, 0;
 
-	--blades-red-bright-nums: 220, 20, 60;
-	--blades-red-nums: 204, 0, 0;
-	--blades-red-dark-nums: 122, 0, 0;
+  --blades-red-bright-nums: 220, 20, 60;
+  --blades-red-nums: 204, 0, 0;
+  --blades-red-dark-nums: 122, 0, 0;
 
-	--blades-green-bright-nums: 20, 220, 60;
-	--blades-green-nums: 0, 204, 0;
-	--blades-green-dark-nums: 0, 122, 0;
+  --blades-green-bright-nums: 20, 220, 60;
+  --blades-green-nums: 0, 204, 0;
+  --blades-green-dark-nums: 0, 122, 0;
 
-	--blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
-	--blades-white: rgba(var(--blades-white-nums), 1);
-	--blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
-	--blades-grey: rgba(var(--blades-grey-nums), 1);
-	--blades-grey-dark: rgba(var(--blades-grey-dark-nums), 1);
-	--blades-black: rgba(var(--blades-black-nums), 1);
-	--blades-black-dark: rgba(var(--blades-black-dark-nums), 1);
+  --blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
+  --blades-white: rgba(var(--blades-white-nums), 1);
+  --blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
+  --blades-grey: rgba(var(--blades-grey-nums), 1);
+  --blades-grey-dark: rgba(var(--blades-grey-dark-nums), 1);
+  --blades-black: rgba(var(--blades-black-nums), 1);
+  --blades-black-dark: rgba(var(--blades-black-dark-nums), 1);
 
-	--blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
-	--blades-gold: rgba(var(--blades-gold-nums), 1);
-	--blades-gold-dark: rgba(var(--blades-gold-dark-nums), 1);
+  --blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
+  --blades-gold: rgba(var(--blades-gold-nums), 1);
+  --blades-gold-dark: rgba(var(--blades-gold-dark-nums), 1);
 
-	--blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
-	--blades-red: rgba(var(--blades-red-nums), 1);
-	--blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
+  --blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
+  --blades-red: rgba(var(--blades-red-nums), 1);
+  --blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
 
-	--blades-green-bright: rgba(var(--blades-green-bright-nums), 1);
-	--blades-green: rgba(var(--blades-green-nums), 1);
-	--blades-green-dark: rgba(var(--blades-green-dark-nums), 1);
+  --blades-green-bright: rgba(var(--blades-green-bright-nums), 1);
+  --blades-green: rgba(var(--blades-green-nums), 1);
+  --blades-green-dark: rgba(var(--blades-green-dark-nums), 1);
 
-	--blades-white-fade: rgba(var(--blades-white-nums), 0.5);
-	--blades-white-fade-strong: rgba(var(--blades-white-nums), 0.25);
-	--blades-white-bright-fade: rgba(var(--blades-white-bright-nums), 0.5);
-	--blades-white-bright-fade-strong: rgba(var(--blades-white-bright-nums), 0.25);
+  --blades-white-fade: rgba(var(--blades-white-nums), 0.5);
+  --blades-white-fade-strong: rgba(var(--blades-white-nums), 0.25);
+  --blades-white-bright-fade: rgba(var(--blades-white-bright-nums), 0.5);
+  --blades-white-bright-fade-strong: rgba(var(--blades-white-bright-nums), 0.25);
 
-	--blades-black-fade: rgba(var(--blades-black-nums), 0.5);
-	--blades-black-fade-strong: rgba(var(--blades-black-nums), 0.25);
-	--blades-black-dark-fade: rgba(var(--blades-black-dark-nums), 0.5);
-	--blades-black-dark-fade-strong: rgba(var(--blades-black-dark-nums), 0.25);
-	// #endregion ░░░░[Blades Colors & Fades]░░░░
-	// #region ░░░░░░░ Numerically-Defined Colors (for Emu Stylesheet) ░░░░░░░ ~
-	--color-primary: var(--blades-white-nums);
-	--color-background: var(--blades-black-nums);
-	--color-background-lightest: var(--blades-grey-nums);
-	--color-background-light: var(--blades-grey-dark-nums);
-	--color-background-darkest: var(--blades-black-dark-nums);
-	--color-background-button: var(--blades-grey-dark-nums);
-	--color-background-chat-message: var(--blades-black-nums);
-	--color-background-chat-message-whisper: var(--blades-grey-nums);
-	--color-background-chat-message-blind: var(--blades-grey-dark-nums);
-	--color-border: var(--blades-grey-dark-nums);
-	--color-border-lighter: var(--blades-grey-nums);
-	--color-folder-header: var(--blades-grey-nums);
-	--color-folder-directory: var(--blades-grey-dark-nums);
-	--color-folder-subdirectory: var(--blades-black-nums);
-	--color-text: var(--blades-white-nums);
-	--color-text-lightest: var(--blades-white-bright-nums);
-	--color-text-darker: var(--blades-grey-bright-nums);
-	--color-shadow-primary: var(--blades-white-bright-nums);
-	--color-text-dark-primary: var(--blades-white-nums);
-	--color-bg-option: var(--blades-black-nums);
-	// #endregion ░░░░[Numerically-Defined Colors (for Emu Stylesheet)]░░░░
+  --blades-black-fade: rgba(var(--blades-black-nums), 0.5);
+  --blades-black-fade-strong: rgba(var(--blades-black-nums), 0.25);
+  --blades-black-dark-fade: rgba(var(--blades-black-dark-nums), 0.5);
+  --blades-black-dark-fade-strong: rgba(var(--blades-black-dark-nums), 0.25);
+  // #endregion ░░░░[Blades Colors & Fades]░░░░
+  // #region ░░░░░░░ Numerically-Defined Colors (for Emu Stylesheet) ░░░░░░░ ~
+  --color-primary: var(--blades-white-nums);
+  --color-background: var(--blades-black-nums);
+  --color-background-lightest: var(--blades-grey-nums);
+  --color-background-light: var(--blades-grey-dark-nums);
+  --color-background-darkest: var(--blades-black-dark-nums);
+  --color-background-button: var(--blades-grey-dark-nums);
+  --color-background-chat-message: var(--blades-black-nums);
+  --color-background-chat-message-whisper: var(--blades-grey-nums);
+  --color-background-chat-message-blind: var(--blades-grey-dark-nums);
+  --color-border: var(--blades-grey-dark-nums);
+  --color-border-lighter: var(--blades-grey-nums);
+  --color-folder-header: var(--blades-grey-nums);
+  --color-folder-directory: var(--blades-grey-dark-nums);
+  --color-folder-subdirectory: var(--blades-black-nums);
+  --color-text: var(--blades-white-nums);
+  --color-text-lightest: var(--blades-white-bright-nums);
+  --color-text-darker: var(--blades-grey-bright-nums);
+  --color-shadow-primary: var(--blades-white-bright-nums);
+  --color-text-dark-primary: var(--blades-white-nums);
+  --color-bg-option: var(--blades-black-nums);
+  // #endregion ░░░░[Numerically-Defined Colors (for Emu Stylesheet)]░░░░
 // #endregion ▄▄▄▄▄ Colors ▄▄▄▄▄
 
 // #region 🟩🟩🟩 STYLES 🟩🟩🟩
-	// #region ████████ COLORS & FONTS ████████
+  // #region ████████ COLORS & FONTS ████████
 
-	--blades-color-negative: var(--blades-red-bright);
-	--blades-color-positive: var(--blades-gold-bright);
+  --blades-color-negative: var(--blades-red-bright);
+  --blades-color-positive: var(--blades-gold-bright);
 
-	// #region ░░░░░░░[Style Components]░░░░: Defining Components; Do Not USE Outside of Vars.scss ░░░░░░░
-	--font-primary: "Minion Pro", serif; // "Signika", sans-serif;
-	--font-primary-smallcaps: var(--font-primary);
-	--font-primary-small: "Minion Pro Caption";
-	--font-primary-narrow: "Minion Pro Cond";
-	--font-primary-small-narrow: "Minion Pro Caption Cond";
+  // #region ░░░░░░░[Style Components]░░░░: Defining Components; Do Not USE Outside of Vars.scss ░░░░░░░
+  --font-primary: "Minion Pro", serif; // "Signika", sans-serif;
+  --font-primary-smallcaps: var(--font-primary);
+  --font-primary-small: "Minion Pro Caption";
+  --font-primary-narrow: "Minion Pro Cond";
+  --font-primary-small-narrow: "Minion Pro Caption Cond";
 
-	--font-primary-alt: "Historical FellType";
-	--font-primary-alt-smallcaps: "Historical FellType SC";
+  --font-primary-alt: "Historical FellType";
+  --font-primary-alt-smallcaps: "Historical FellType SC";
 
-	--font-emphasis: "Kirsty";
-	--font-emphasis-smallcaps: var(--font-emphasis);
-	--font-emphasis-alt: "Ravenscroft";
-	--font-emphasis-alt-smallcaps: var(--font-emphasis-alt);
-	--font-emphasis-narrow: "Fjalla One";
+  --font-emphasis: "Kirsty";
+  --font-emphasis-smallcaps: var(--font-emphasis);
+  --font-emphasis-alt: "Ravenscroft";
+  --font-emphasis-alt-smallcaps: var(--font-emphasis-alt);
+  --font-emphasis-narrow: "Fjalla One";
 
-	--font-mono: "Pragmata", monospace; // monospace;
-	--font-mono-smallcaps: var(--font-mono);
+  --font-mono: "Pragmata", monospace; // monospace;
+  --font-mono-smallcaps: var(--font-mono);
 
-	--font-decorative: "UglyQua";
-	--font-decorative-alt: "IM FELL Double Pica";
-	--font-decorative-alt-smallcaps: "IM FELL Double Pica SC";
+  --font-decorative: "UglyQua";
+  --font-decorative-alt: "IM FELL Double Pica";
+  --font-decorative-alt-smallcaps: "IM FELL Double Pica SC";
 
-	--font-handwritten: "PWSignaturetwo";
+  --font-handwritten: "PWSignaturetwo";
 
-	--font-awesome: "Font Awesome 6 Pro";
-	--font-awesome-alt: "Font Awesome 6 Brands";
+  --font-awesome: "Font Awesome 6 Pro";
+  --font-awesome-alt: "Font Awesome 6 Brands";
 
-	--line-height-expanded: 1.4;
-	--line-height-primary: 1.2;
-	--line-height-compact: 1;
+  --line-height-expanded: 1.4;
+  --line-height-primary: 1.2;
+  --line-height-compact: 1;
 
-	--text-shadow-dark: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
-	--box-shadow-dark: inset 0 0 0.3rem var(--blades-black-dark-fade);
-	--box-shadow-dark-strong: inset 0 0 0.5rem var(--blades-black-dark);
-	// #endregion ░░░░[Style Components]░░░░
+  --text-shadow-dark: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
+  --box-shadow-dark: inset 0 0 0.3rem var(--blades-black-dark-fade);
+  --box-shadow-dark-strong: inset 0 0 0.5rem var(--blades-black-dark);
+  // #endregion ░░░░[Style Components]░░░░
 
 
-	// #region ░░░░░░░ Default/Baseline Style ░░░░░░░
-	--color-default: var(--blades-white);
-	--background-default: var(--blades-dark);
+  // #region ░░░░░░░ Default/Baseline Style ░░░░░░░
+  --color-default: var(--blades-white);
+  --background-default: var(--blades-dark);
 
-	--font-default: var(--font-primary);
+  --font-default: var(--font-primary);
 
-	--font-size-default: var(--size-14px);
-	--font-weight-default: normal;
-	--font-style-default: normal;
-	--font-variant-default: normal;
+  --font-size-default: var(--size-14px);
+  --font-weight-default: normal;
+  --font-style-default: normal;
+  --font-variant-default: normal;
 
-	--line-height-default: var(--line-height-primary);
+  --line-height-default: var(--line-height-primary);
 
-	--text-shadow-default: none;
-	--box-shadow-default: none;
-	--text-transform-default: none;
-	// #endregion ░░░░[Default/Baseline Style]░░░░
+  --text-shadow-default: none;
+  --box-shadow-default: none;
+  --text-transform-default: none;
+  // #endregion ░░░░[Default/Baseline Style]░░░░
 
-	// #region ░░░░░░░ Heading Style ░░░░░░░
-	--color-heading: var(--blades-white-bright);
-	--color-heading-strong: var(--color-heading);
-	--background-heading: none;
-	--background-heading-strong: var(--blades-grey-dark);
+  // #region ░░░░░░░ Heading Style ░░░░░░░
+  --color-heading: var(--blades-white-bright);
+  --color-heading-strong: var(--color-heading);
+  --background-heading: none;
+  --background-heading-strong: var(--blades-grey-dark);
 
-	--margin-heading: 0;
-	--margin-heading-strong: 0 0 0.5rem 0;
-	--padding-heading: 0;
-	--padding-heading-strong: 0.25rem;
+  --margin-heading: 0;
+  --margin-heading-strong: 0 0 0.5rem 0;
+  --padding-heading: 0;
+  --padding-heading-strong: 0.25rem;
 
-	--font-heading: var(--font-emphasis);
-	--font-heading-strong: var(--font-heading);
+  --font-heading: var(--font-emphasis);
+  --font-heading-strong: var(--font-heading);
 
-	--font-weight-heading: bold;
-	--font-weight-heading-strong: var(--font-weight-heading);
-	--font-style-heading: var(--font-style-default);
-	--font-style-heading-strong: var(--font-style-heading);
-	--font-variant-heading: var(--font-variant-default);
-	--font-variant-heading-strong: var(--font-variant-heading);
+  --font-weight-heading: bold;
+  --font-weight-heading-strong: var(--font-weight-heading);
+  --font-style-heading: var(--font-style-default);
+  --font-style-heading-strong: var(--font-style-heading);
+  --font-variant-heading: var(--font-variant-default);
+  --font-variant-heading-strong: var(--font-variant-heading);
 
-	--line-height-heading: var(--line-height-compact);
-	--line-height-heading-strong: var(--line-height-heading);
+  --line-height-heading: var(--line-height-compact);
+  --line-height-heading-strong: var(--line-height-heading);
 
-	--text-shadow-heading: var(--text-shadow-dark);
-	--text-shadow-heading-strong: var(--text-shadow-heading);
-	--box-shadow-heading: none;
-	--box-shadow-heading-strong: var(--box-shadow-input);
-	--text-transform-heading: uppercase;
-	--text-transform-heading-strong: var(--text-transform-heading);
+  --text-shadow-heading: var(--text-shadow-dark);
+  --text-shadow-heading-strong: var(--text-shadow-heading);
+  --box-shadow-heading: none;
+  --box-shadow-heading-strong: var(--box-shadow-input);
+  --text-transform-heading: uppercase;
+  --text-transform-heading-strong: var(--text-transform-heading);
 
-	--border-color-heading: var(--background-heading-strong);
-	--border-color-heading-strong: var(--border-color-heading);
-	--border-width-heading: #{toRem(2px)};
-	--border-width-heading-strong: var(--border-width-heading);
-	--border-style-heading: none none solid none;
-	--border-style-heading-strong: none;
-	// #endregion ░░░░[Heading Style]░░░░
+  --border-color-heading: var(--background-heading-strong);
+  --border-color-heading-strong: var(--border-color-heading);
+  --border-width-heading: #{toRem(2px)};
+  --border-width-heading-strong: var(--border-width-heading);
+  --border-style-heading: none none solid none;
+  --border-style-heading-strong: none;
+  // #endregion ░░░░[Heading Style]░░░░
 
-	// #region ░░░░░░░ Inputs Style ░░░░░░░
-	--color-input: var(--blades-white-bright);
-	--background-input: var(--blades-black-dark-fade-strong);
+  // #region ░░░░░░░ Inputs Style ░░░░░░░
+  --color-input: var(--blades-white-bright);
+  --background-input: var(--blades-black-dark-fade-strong);
 
-	--margin-input: 0;
-	--padding-input: 0;
+  --margin-input: 0;
+  --padding-input: 0;
 
-	--font-input: var(--font-primary);
-	--font-number-input: var(--font-emphasis);
+  --font-input: var(--font-primary);
+  --font-number-input: var(--font-emphasis);
 
-	--font-size-input: var(--font-size-primary);
-	--font-weight-input: var(--font-weight-primary);
-	--font-style-input: var(--font-style-primary);
-	--font-variant-input: var(--font-variant-primary);
+  --font-size-input: var(--font-size-primary);
+  --font-weight-input: var(--font-weight-primary);
+  --font-style-input: var(--font-style-primary);
+  --font-variant-input: var(--font-variant-primary);
 
-	--line-height-input: var(--line-height-compact);
+  --line-height-input: var(--line-height-compact);
 
-	--text-shadow-input: var(--text-shadow-dark);
-	--box-shadow-input: var(--box-shadow-dark);
-	--box-shadow-input-strong: var(--box-shadow-dark-strong);
-	--text-transform-input: var(--text-transform-default);
+  --text-shadow-input: var(--text-shadow-dark);
+  --box-shadow-input: var(--box-shadow-dark);
+  --box-shadow-input-strong: var(--box-shadow-dark-strong);
+  --text-transform-input: var(--text-transform-default);
 
-	--border-color-heading: transparent;
-	--border-width-heading: 0;
-	--border-style-heading: none;
-	// #endregion ░░░░[Inputs Style]░░░░
+  --border-color-heading: transparent;
+  --border-width-heading: 0;
+  --border-style-heading: none;
+  // #endregion ░░░░[Inputs Style]░░░░
 
-	// #region ░░░░░░░ Other Styles ░░░░░░░ ~
-	--font-monospace: var(--font-mono);
-	// #endregion ░░░░[Other Styles]░░░░
+  // #region ░░░░░░░ Other Styles ░░░░░░░ ~
+  --font-monospace: var(--font-mono);
+  // #endregion ░░░░[Other Styles]░░░░
 
-	// #endregion ▄▄▄▄▄ COLORS & FONTS ▄▄▄▄▄
+  // #endregion ▄▄▄▄▄ COLORS & FONTS ▄▄▄▄▄
 
-	// #region ████████ LAYOUT ████████ ~
-	--content-padding: 0px;
+  // #region ████████ LAYOUT ████████ ~
+  --content-padding: 0px;
 
-	--blades-spacer-pf: 0.0625rem;
-	--blades-spacer-xs: 0.125rem;
+  --blades-spacer-pf: 0.0625rem;
+  --blades-spacer-xs: 0.125rem;
 
-	@if $isCompactLayout {
-		--blades-spacer-base: 0.125rem;
-		--blades-spacer-sm: 0.25rem;
-		--blades-spacer-md: 0.5rem;
-		--blades-spacer-lg: 0.75rem;
-		--blades-spacer-xl: 1rem;
-		--blades-spacer-button-lg: 2rem;
-		--blades-spacer-button: 1.5rem;
-		--blades-spacer-button-sm: 1.25rem;
-		--blades-spacer-button-xs: 1.125rem;
-		--blades-spacer-sidebar: 17.875rem;
-	} @else {
-		--blades-spacer-base: 0.25rem;
-		--blades-spacer-sm: 0.5rem;
-		--blades-spacer-md: 1rem;
-		--blades-spacer-lg: 1.5rem;
-		--blades-spacer-xl: 2rem;
-		--blades-spacer-button-lg: 2.5rem;
-		--blades-spacer-button: 2rem;
-		--blades-spacer-button-sm: 1.5rem;
-		--blades-spacer-button-xs: 1.25rem;
-		--blades-spacer-sidebar: 20rem;
-	}
-	// #endregion ▄▄▄▄▄ LAYOUT ▄▄▄▄▄
+  @if $isCompactLayout {
+    --blades-spacer-base: 0.125rem;
+    --blades-spacer-sm: 0.25rem;
+    --blades-spacer-md: 0.5rem;
+    --blades-spacer-lg: 0.75rem;
+    --blades-spacer-xl: 1rem;
+    --blades-spacer-button-lg: 2rem;
+    --blades-spacer-button: 1.5rem;
+    --blades-spacer-button-sm: 1.25rem;
+    --blades-spacer-button-xs: 1.125rem;
+    --blades-spacer-sidebar: 17.875rem;
+  } @else {
+    --blades-spacer-base: 0.25rem;
+    --blades-spacer-sm: 0.5rem;
+    --blades-spacer-md: 1rem;
+    --blades-spacer-lg: 1.5rem;
+    --blades-spacer-xl: 2rem;
+    --blades-spacer-button-lg: 2.5rem;
+    --blades-spacer-button: 2rem;
+    --blades-spacer-button-sm: 1.5rem;
+    --blades-spacer-button-xs: 1.25rem;
+    --blades-spacer-sidebar: 20rem;
+  }
+  // #endregion ▄▄▄▄▄ LAYOUT ▄▄▄▄▄
 // #endregion 🟩🟩🟩 PRIMARY STYLES 🟩🟩🟩
 }

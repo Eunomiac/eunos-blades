@@ -74,9 +74,6 @@ class BladesTrackerSheet extends BladesItemSheet {
             "systems/eunos-blades/templates/items/gm_tracker-sheet.hbs"
         ]);
     }
-    get phase() { return this.item.system.game_phase; }
-    set phase(phase) { this.item.update({ system: { game_phase: phase } }); }
-    get actionMax() { return this.phase === BladesPhase.CharGen ? 2 : undefined; }
     async getData() {
         const context = await super.getData();
         context.system.phases = Object.values(BladesPhase);

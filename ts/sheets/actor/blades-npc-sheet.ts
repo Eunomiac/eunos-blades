@@ -3,104 +3,112 @@ import BladesSheet from "./blades-sheet.js";
 import U from "../../core/utilities.js";
 class BladesNPCSheet extends BladesSheet {
 
-	static override get defaultOptions() {
-	  return foundry.utils.mergeObject(super.defaultOptions, {
-			classes: ["eunos-blades", "sheet", "actor", "npc"],
-			template: "systems/eunos-blades/templates/npc-sheet.hbs",
-			width: 500,
-			height: 400,
-			// height: "auto",
-			tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "description"}]
-		});
-	}
+  static override get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["eunos-blades", "sheet", "actor", "npc"],
+      template: "systems/eunos-blades/templates/npc-sheet.hbs",
+      width: 500,
+      height: 400,
+      // height: "auto",
+      tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "description"}]
+    });
+  }
 
-	override getData() {
-		const context = super.getData() as ReturnType<BladesSheet["getData"]> & {
-			[key: string]: any
-		};
+  override getData() {
+    const context = super.getData() as ReturnType<BladesSheet["getData"]> & {
+      [key: string]: any
+    };
 
-		context.isSubActor = context.actor.isSubActor;
-		context.parentActor = context.actor.parentActor;
-		context.persona = context.actor.system.persona;
+    context.isSubActor = context.actor.isSubActor;
+    context.parentActor = context.actor.parentActor;
+    context.persona = context.actor.system.persona;
+    context.random = context.actor.system.random;
+    context.secret = context.actor.system.secret;
 
-		const rStatus: Record<string, {size: "05"|number, label: string|null}> = {
-			name: {size: 4, label: null},
-			heritage: {size: 1, label: "Heritage"},
-			profession: {size: 1, label: "Profession"},
+    const rStatus: Record<string, {size: "third"|"half"|number, label: string|null}> = {
+      name: {size: 3, label: "Name"},
+      gender: {size: "half", label: "Gender"},
 
-			gender: {size: 1, label: "Gender"},
-			appearance: {size: 1, label: "Appearance"},
+      heritage: {size: "third", label: "Heritage"},
+      background: {size: "third", label: "Background"},
+      profession: {size: "third", label: "Profession"},
 
-			goal: {size: 2, label: "Goal"},
-			method: {size: 2, label: "Method"},
+      appearance: {size: 2, label: "Appearance"},
+      style: {size: 2, label: "Style"},
+      quirk: {size: 4, label: "Quirk"},
 
-			trait1: {size: "05", label: null},
-			trait2: {size: "05", label: null},
-			trait3: {size: "05", label: null},
+      goal: {size: 2, label: "Goal"},
+      method: {size: 2, label: "Method"},
 
-			interests: {size: 4, label: "Interests"},
-			quirk: {size: 4, label: "Quirk"},
-			style: {size: 2, label: "Style"}
-		};
+      interests: {size: 4, label: "Interests"},
 
-		for (const [key] of Object.entries(context.persona)) {
-			if (key in rStatus) {
-				Object.assign(
-					context.persona[key],
-					rStatus[key]
-				);
-			}
-		}
+      trait: {size: "half", label: "Trait"},
+      trait1: {size: "half", label: null},
+      trait2: {size: "half", label: null},
+      trait3: {size: "half", label: null}
+    };
+    for (const cat of ["persona", "random", "secret"]) {
+      for (const [key] of Object.entries(context[cat])) {
+        if (key in rStatus) {
+          Object.assign(
+            context[cat][key],
+            rStatus[key]
+          );
+        }
+      }
+    }
 
-		return context;
-	}
+    console.log({persona: context.persona, random: context.random, secret: context.secret});
 
-	override activateListeners(html: JQuery<HTMLElement>) {
-		super.activateListeners(html);
+    return context;
+  }
 
-		// Everything below here is only needed if the sheet is editable
-		if (!this.options.editable) {return}
+  override activateListeners(html: JQuery<HTMLElement>) {
+    super.activateListeners(html);
 
-		html.find(".gm-alert-header").on("click", async (event) => {
-			event.preventDefault();
+    // Everything below here is only needed if the sheet is editable
+    if (!this.options.editable) {return}
 
-			this.actor.clearParentActor();
-		});
+    html.find(".gm-alert-header").on("click", async (event) => {
+      event.preventDefault();
 
-		//~ Configure Tagify input elements
-		// const inputElement = document.querySelector('input[name="system.harm.heavy.one"]');
-		// if (inputElement instanceof HTMLInputElement) { new Tagify(inputElement, {}) } else { console.log("Not an HTMLInputElement")}
+      this.actor.clearParentActor();
+    });
 
-		//~ Enable Randomize Button for NPCs
-		html.find("[data-action=\"randomize\"").on("click", (event) => {
-			this.actor.updateRandomizers();
-		});
+    //~ Configure Tagify input elements
+    // const inputElement = document.querySelector('input[name="system.harm.heavy.one"]');
+    // if (inputElement instanceof HTMLInputElement) { new Tagify(inputElement, {}) } else { console.log("Not an HTMLInputElement")}
 
-		//~ Enable status toggles for NPC subactors
-		html.find(".comp-status-toggle")
-			.on("click", () => {
-				const {tags} = this.actor;
-				if (this.actor.system.status === 1) {
-					U.remove(tags, "Friend");
-					tags.push("Rival");
-					this.actor.update({
-						"system.status": -1,
-						"system.tags": U.unique(tags)
-					});
-				} else {
-					U.remove(tags, "Rival");
-					tags.push("Friend");
-					this.actor.update({
-						"system.status": 1,
-						"system.tags": U.unique(tags)
-					});
-				}
-			})
-			.on("contextmenu", () => {
-				this.actor.update({"system.status": 0});
-			});
+    //~ Enable Randomize Button for NPCs
+    html.find("[data-action=\"randomize\"").on("click", (event) => {
+      this.actor.updateRandomizers();
+    });
 
-	}
+    //~ Enable status toggles for NPC subactors
+    html.find(".comp-status-toggle")
+      .on("click", () => {
+        const {tags} = this.actor;
+        if (this.actor.system.status === 1) {
+          U.remove(tags, "Friend");
+          tags.push("Rival");
+          this.actor.update({
+            "system.status": -1,
+            "system.tags": U.unique(tags)
+          });
+        } else {
+          U.remove(tags, "Rival");
+          tags.push("Friend");
+          this.actor.update({
+            "system.status": 1,
+            "system.tags": U.unique(tags)
+          });
+        }
+      })
+      .on("contextmenu", () => {
+        this.actor.update({"system.status": 0});
+      });
+
+  }
 }
 
 export default BladesNPCSheet;

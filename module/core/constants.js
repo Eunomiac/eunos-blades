@@ -240,16 +240,111 @@ const C = {
         Ruthless: "You lose any sense of humanity when indulging your Vice or pursuing your most important goal.",
         Secretive: "Knowledge has become so precious to you, that even your closest allies are on a need-to-know basis."
     },
+    ExperienceClues: {
+        Scoundrel: [
+            "You expressed your beliefs, drives, heritage, or background.",
+            "You struggled with issues from your vice or traumas during the session."
+        ],
+        Crew: [
+            "You contended with challenges above your current station.",
+            "You bolstered your crew's reputation, or developed a new one.",
+            "You expressed the goals, drives, inner conflict, or essential nature of the crew."
+        ]
+    },
+    GatherInfoQuestions: {
+        Cutter: [
+            "How can I hurt them?",
+            "Who's most afraid of me?",
+            "Who's most dangerous here?",
+            "What do they intend to do?",
+            "How can I get them to [X]?",
+            "Are they telling the truth?",
+            "What's really going on here?"
+        ],
+        Hound: [
+            "What do they intend to do?",
+            "How can I get them to [X]?",
+            "What are they really feeling?",
+            "Where are they vulnerable?",
+            "Where did [X] go?",
+            "How can I find [X]?",
+            "What's really going on here?"
+        ],
+        Leech: [
+            "What do they intend to do?",
+            "How can I get them to [X]?",
+            "Are they telling the truth?",
+            "What can I tinker with here?",
+            "What might happen if I [X]?",
+            "How can I find [X]?",
+            "What's really going on here?"
+        ],
+        Lurk: [
+            "What do they intend to do?",
+            "How can I get them to [X]?",
+            "What should I look out for?",
+            "What's the best way in?",
+            "Where can I hide here?",
+            "How can I find [X]?",
+            "What's really going on here?"
+        ],
+        Slide: [
+            "What do they intend to do?",
+            "How can I get them to [X]?",
+            "Are they telling the truth?",
+            "What are they really feeling?",
+            "What do they really care about?",
+            "How can I blend in here?",
+            "What's really going on here?"
+        ],
+        Spider: [
+            "What do they want most?",
+            "What should I look out for?",
+            "Where's the leverage here?",
+            "How can I discover [X]?",
+            "What do they intend to do?",
+            "How can I get them to [X]?",
+            "What's really going on here?"
+        ],
+        Whisper: [
+            "What is arcane or weird here?",
+            "What echoes in the ghost field?",
+            "What is hidden or lost here?",
+            "What do they intend to do?",
+            "What drives them to do this?",
+            "How can I reveal [X]?",
+            "What's really going on here?"
+        ],
+        Ghost: [
+            "What do they intend to do?",
+            "How can I get them to [X]?",
+            "What are they really feeling?",
+            "What should I lookout for?",
+            "Where's the weakness here?",
+            "How can I find [X]?",
+            "What's really going on here?"
+        ],
+        Hull: [
+            "What do they intend to do?",
+            "How can I get them to [X]?",
+            "What are they really doing?",
+            "What should I lookout for?",
+            "Where's the weakness here?",
+            "How can I find [X]?",
+            "What's really going on here?"
+        ],
+        Vampire: [
+            "What do they intend to do?",
+            "How can I get them to [X]?",
+            "What are they really feeling?",
+            "What should I lookout for?",
+            "Where's the weakness here?",
+            "How can I find [X]?",
+            "What's really going on here?"
+        ]
+    },
     Playbooks: {
         Cutter: {
-            "system.bgImg": "systems/eunos-blades/assets/icons/cutter-trans.svg",
-            "system.tagline": "A Dangerous & Intimidating Fighter",
-            "system.friends_name": "Dangerous Friends",
-            "system.rivals_name": "More Dangerous Rivals",
-            "system.starting_stats.chargen": {
-                "system.attributes.prowess.skirmish.value": 2,
-                "system.attributes.resolve.command.value": 1
-            },
             "system.experience_clues": [
                 "You addressed a challenge with violence or coercion.",
                 "You expressed your beliefs, drives, heritage, or background.",
@@ -557,6 +652,38 @@ export const Randomizers = {
         "Skovlander",
         "Skovlander",
         "Tycherosi"
+    ],
+    background: [
+        "Academic",
+        "Academic",
+        "Academic",
+        "Labor",
+        "Labor",
+        "Labor",
+        "Labor",
+        "Law",
+        "Law",
+        "Law",
+        "Military",
+        "Military",
+        "Military",
+        "Military",
+        "Military",
+        "New Money",
+        "New Money",
+        "Old Money",
+        "Old Money",
+        "Politics",
+        "Politics",
+        "Trade",
+        "Trade",
+        "Trade",
+        "Underworld",
+        "Underworld",
+        "Underworld",
+        "Underworld",
+        "Underworld",
+        "Weird"
     ],
     gender: [
         "M",

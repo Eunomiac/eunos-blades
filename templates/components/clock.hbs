@@ -1,26 +1,22 @@
-<div class="clock {{~#if data.isActive}} clock-active{{/if}}" {{~#if target}} data-target="{{target}}"{{/if}} {{~#if clockNum}} data-index="{{clockNum}}"{{/if}} data-size="{{data.size}}" data-value="{{data.value}}">
-	{{#with data as |data|}}
-	{{#with data.value as |value|}}
-	{{#with data.size as |size|}}
-	<div class="clock-interior" style="clip-path: url(#{{value}}-of-{{size}}); {{~#if (test value "==" 0)}} opacity: 0;{{/if}}">
-		<svg viewBox="0 0 400 400">
-			<circle cx="200" cy="200" r="200" />
-		</svg>
-		{{#if data.color}}
-		<img class="clock-interior-img" src="systems/eunos-blades/assets/clocks/clock-glow-{{data.color}}.webp" style="{{#if (test value "==" 0)}}opacity: 0;{{/if}}" />
-		{{/if}}
-	</div>
-	<svg class="clock-frame" viewBox="0 0 400 400">
-		<g class="segmented" data-size="{{size}}">
-			{{#forloop 1 size}}
-				<use href="#{{size}}-segment" />
-			{{/forloop}}
-		</g>
-	</svg>
-	{{#unless (test value "==" 0)}}
-	<div class="clock-glow" style="{{#unless (test value "==" size)}}clip-path: url(#{{value}}-of-{{size}});{{/unless}}"></div>
-	{{/unless}}
-	{{/with}}
-	{{/with}}
-	{{/with}}
+<div class="clock {{~#if isFocused}} clock-active{{/if}}" {{~#if target}} data-target="{{target}}"{{/if}} {{~#if clockNum}} data-index="{{clockNum}}"{{/if}} data-size="{{max}}" data-value="{{value}}">
+  <div class="clock-interior" style="clip-path: url(#{{value}}-of-{{max}}); {{~#if (test value "==" 0)}} opacity: 0;{{/if}}">
+    <svg viewBox="0 0 400 400">
+      <circle cx="200" cy="200" r="200" />
+    </svg>
+    {{#if color}}
+    <img class="clock-interior-img" src="systems/eunos-blades/assets/clocks/clock-glow-{{color}}.webp" style="{{#if (test value "==" 0)}}opacity: 0;{{/if}}" />
+    {{/if}}
+  </div>
+  <svg class="clock-frame" viewBox="0 0 400 400">
+    <g class="segmented" data-size="{{max}}">
+      {{#with max as |max|}}
+      {{#forloop 1 max}}
+        <use href="#{{max}}-segment" />
+      {{/forloop}}
+      {{/with}}
+    </g>
+  </svg>
+  {{#unless (test value "==" 0)}}
+  <div class="clock-glow" style="{{#unless (test value "==" max)}}clip-path: url(#{{value}}-of-{{max}});{{/unless}}"></div>
+  {{/unless}}
 </div>

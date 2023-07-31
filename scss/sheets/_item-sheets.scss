@@ -1,29 +1,29 @@
 & {
-	.window-content
+  .window-content
 
-	form {
-		$heights: (60px);
-		--sheet-top-height: #{calculate-sum($heights)};
-		--sheet-mid-height: 0px;
+  form {
+    $heights: (60px);
+    --sheet-top-height: #{calculate-sum($heights)};
+    --sheet-mid-height: 0px;
 
-		.sheet-img {
-			// position: static;
-			// grid-area: item-img;
-			// width: 100%;
-			// top: 0;
-			// left: 0;
-			// mask-image: none;
-		}
+    .sheet-img {
+      // position: static;
+      // grid-area: item-img;
+      // width: 100%;
+      // top: 0;
+      // left: 0;
+      // mask-image: none;
+    }
 
-		.sheet-root {
+    .sheet-root {
 
-			section.sheet-top {
-				grid-template-areas: ". item-img . title";
-				grid-template-columns: 25px 70px 25px 1fr;
-				grid-template-rows: join($heights, " ");
-				height: calculate-sum($heights);
+      section.sheet-top {
+        grid-template-areas: ". item-img . title";
+        grid-template-columns: 25px 70px 25px 1fr;
+        grid-template-rows: join($heights, " ");
+        height: calculate-sum($heights);
 
-			}
-		}
-	}
+      }
+    }
+  }
 }
