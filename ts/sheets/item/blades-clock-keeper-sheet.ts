@@ -43,7 +43,7 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
     return updateData;
   }
 
-  override async getData() {
+  override getData() {
     const context = super.getData() as ReturnType<BladesItemSheet["getData"]> & List<any>;
 
     context.clock_keys = Object.fromEntries((Object.entries(context.clock_keys) as Array<[string, {scene?: string}]>)

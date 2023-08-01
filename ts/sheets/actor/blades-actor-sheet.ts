@@ -51,7 +51,7 @@ class BladesActorSheet extends BladesSheet {
   }
 
   override getData() {
-    const context = super.getData() as ReturnType<BladesSheet["getData"]> & Partial<BladesSheetData.Scoundrel>;
+    const context = super.getData() as ReturnType<BladesSheet["getData"]> & Partial<BladesActorSheetData.Scoundrel>;
 
     context.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
 

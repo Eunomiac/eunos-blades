@@ -142,6 +142,10 @@
           // padding-right: toRem(20px);
         }
 
+        &.tab-content {
+          height: 100%;
+        }
+
         &.nav-group {
           height: calc(100% - var(--sheet-top-height) - var(--sheet-mid-height));
           justify-content: flex-start;

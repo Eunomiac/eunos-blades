@@ -926,7 +926,7 @@ class BladesActor extends Actor {
         return this.activeSubItems.filter((item) => item.type === BladesItemType.crew_upgrade);
     }
     get cohorts() {
-        return this.activeSubItems.filter((item) => item.type === BladesItemType.cohort);
+        return this.activeSubItems.filter((item) => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type));
     }
 
     prepareDerivedData() {

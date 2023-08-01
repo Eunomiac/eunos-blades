@@ -75,14 +75,12 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
   // #region BladesDocument Implementation ~
   static get All() { return game.actors }
-
   static Get(actorRef: ActorRef): BladesActor | undefined {
     if (actorRef instanceof BladesActor) { return actorRef }
     if (U.isDocID(actorRef)) { return BladesActor.All.get(actorRef) }
     return BladesActor.All.find((a) => a.system.world_name === actorRef)
       || BladesActor.All.find((a) => a.name === actorRef);
   }
-
   static GetTypeWithTags(docType: BladesActorType, ...tags: BladesTag[]): BladesActor[] {
     return BladesActor.All.filter((actor) => actor.type === docType)
       .filter((actor) => actor.hasTag(...tags));
@@ -941,7 +939,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
     return this.activeSubItems.filter((item) => item.type === BladesItemType.crew_upgrade);
   }
   get cohorts(): BladesItem[] {
-    return this.activeSubItems.filter((item) => item.type === BladesItemType.cohort);
+    return this.activeSubItems.filter((item) => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type));
   }
   // #endregion
 

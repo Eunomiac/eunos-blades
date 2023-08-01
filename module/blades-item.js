@@ -5,8 +5,9 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { SVGDATA, BladesItemType, Tag, BladesPhase } from "./core/constants.js";
+import C, { SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase } from "./core/constants.js";
 import U from "./core/utilities.js";
+import BladesActor from "./blades-actor.js";
 export var PrereqType;
 (function (PrereqType) {
     PrereqType["HasActiveItem"] = "HasActiveItem";
@@ -47,6 +48,10 @@ class BladesItem extends Item {
     static GetTypeWithTags(docType, ...tags) {
         return BladesItem.All.filter((item) => item.type === docType)
             .filter((item) => item.hasTag(...tags));
+    }
+    static IsType(doc, ...types) {
+        const typeSet = new Set(types);
+        return doc instanceof BladesItem && typeSet.has(doc.type);
     }
     get tags() { return this.system.tags ?? []; }
     hasTag(...tags) {
@@ -101,19 +106,25 @@ class BladesItem extends Item {
             return;
         }
     }
-    prepareData() {
-        super.prepareData();
-        switch (this.type) {
-            case BladesItemType.clock_keeper: return this._prepareClockKeeper();
-            case BladesItemType.cohort: return this._prepareCohort();
-            case BladesItemType.gm_tracker: return this._prepareGMTracker();
-            default: return undefined;
+
+    prepareDerivedData() {
+        if (BladesItem.IsType(this, BladesItemType.clock_keeper)) {
+            this._prepareClockKeeperData(this.system);
+        }
+        if (BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
+            this._prepareCohortData(this.system);
+        }
+        if (BladesItem.IsType(this, BladesItemType.gm_tracker)) {
+            this._prepareGmTrackerData(this.system);
         }
     }
-    _prepareClockKeeper() {
-        this.system.scenes = game.scenes?.map((scene) => ({ id: scene.id, name: scene.name ?? "" }));
-        this.system.targetScene ??= game.scenes?.current?.id;
-        this.system.clock_keys = Object.fromEntries(Object.entries(this.system.clock_keys ?? {})
+    _prepareClockKeeperData(system) {
+        if (!BladesItem.IsType(this, BladesItemType.clock_keeper)) {
+            return;
+        }
+        system.scenes = game.scenes.map((scene) => ({ id: scene.id, name: scene.name ?? "" }));
+        system.targetScene ??= game.scenes.current?.id || null;
+        system.clock_keys = Object.fromEntries(Object.entries(system.clock_keys ?? {})
             .filter(([keyID, keyData]) => Boolean(keyData))
             .map(([keyID, keyData]) => {
             if (keyData === null) {
@@ -124,19 +135,26 @@ class BladesItem extends Item {
             return [keyID, keyData];
         }));
     }
-    _prepareGMTracker() {
+    _prepareGmTrackerData(system) {
+        if (!BladesItem.IsType(this, BladesItemType.gm_tracker)) {
+            return;
+        }
     }
-    get tier() { return U.pInt(this.parent?.system?.tier); }
-    get playbooks() { return this.system.playbooks ?? []; }
-    _prepareCohort() {
-        if (this.parent?.documentName !== "Actor") {
+    _prepareCohortData(system) {
+        if (!BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
             return;
         }
-        if (!this.system.cohort) {
+        if (!this.parent || !BladesActor.IsType(this.parent, BladesActorType.pc, BladesActorType.crew)) {
             return;
         }
-        this.system.scale = { Gang: this.tier, Expert: 0 }[this.system.cohort];
-        this.system.quality = { Gang: this.tier, Expert: this.tier + 1 }[this.system.cohort];
+        if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
+            system.scale = system.tier.value + this.system.tier.value;
+            system.quality = system.tier.value + this.system.tier.value;
+        }
+        if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
+            system.scale = 0;
+            system.quality = system.tier.value + this.system.tier.value + 1;
+        }
     }
     async activateOverlayListeners() {
         $("#clocks-overlay").find(".clock-frame").on("wheel", async (event) => {

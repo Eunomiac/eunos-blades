@@ -36,7 +36,7 @@ class BladesCrewSheet extends BladesSheet {
       playbook: this.actor.playbook,
       reputation: activeSubItems.find((item) => item.type === BladesItemType.crew_reputation),
       upgrades: activeSubItems.filter((item) => item.type === BladesItemType.crew_upgrade),
-      cohorts: activeSubItems.filter((item) => item.type === BladesItemType.cohort),
+      cohorts: activeSubItems.filter((item) => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type)),
       preferredOp: activeSubItems.find((item) => item.type === BladesItemType.preferred_op)
     };
     context.actors = {

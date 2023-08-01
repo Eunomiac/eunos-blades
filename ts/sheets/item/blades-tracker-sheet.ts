@@ -85,13 +85,13 @@ class BladesTrackerSheet extends BladesItemSheet {
     ]);
   }
 
-  override async getData() {
-    const context: any = await (super.getData() as ReturnType<BladesItemSheet["getData"]> & {system: any});
+  // override getData() {
+  //   const context: any = super.getData() as ReturnType<BladesItemSheet["getData"]> & {system: any}
 
-    context.system.phases = Object.values(BladesPhase);
+  //   context.system.phases = Object.values(BladesPhase);
 
-    return context;
-  }
+  //   return context;
+  // }
 
   override async activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);

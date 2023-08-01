@@ -1,10 +1,11 @@
-import { BladesItemType } from "../core/constants.js";
+import { BladesItemType, District } from "../core/constants.js";
 import BladesItem from "../blades-item.js";
+import { BladesPhase } from '../core/constants';
 
 declare global {
 
   // #region Utility Types for BladesItems
-
+  type TurfNum = "1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15";
   // #endregion
 
   // #region Data Types for BladesItems
@@ -15,19 +16,31 @@ declare global {
   namespace BladesItemSchemaTemplate {
 
     export interface Default extends BladesDocSchemaTemplate.Default {
-      description: string,
-      tier: ValueMax,
-      subactors: Record<string, SubActorData>,
-      subtitle: string
+      prereqs: Record<string,string>
+      rules: string
+      notes: string
+      description: string
+      tier: ValueMax
     }
 
-    export interface district { }
+    export interface district { district: District }
 
-    export interface clocks { }
-    export interface buyable { }
-    export interface limitUses { }
-    export interface cohort { }
-    export interface answers { }
+    export interface clocks { clocks: Record<string, BladesClockData> }
+
+    export interface buyable { price: number }
+
+    export interface limitUses { uses_per_score: ValueMax }
+
+    export interface cohort {
+      subtypes: string[],
+      edges: Record<string, string>,
+      flaws: Record<string, string>,
+      harm: ValueMax,
+      scale: number,
+      quality: number
+    }
+
+    export interface answers { answers: Record<"a"|"b"|"c"|"d", string> }
   }
 
   // Compiled "system" Schemas for BladesItem Types
@@ -36,29 +49,87 @@ declare global {
     export interface Ability extends BladesItemSchemaTemplate.Default,
                                      BladesItemSchemaTemplate.buyable,
                                      BladesItemSchemaTemplate.limitUses {}
-
     export interface Background extends BladesItemSchemaTemplate.Default {}
-    export interface Clock_Keeper extends BladesItemSchemaTemplate.Default {}
-    export interface Cohort_Gang extends BladesItemSchemaTemplate.Default {}
-    export interface Cohort_Expert extends BladesItemSchemaTemplate.Default {}
-    export interface Crew_Ability extends BladesItemSchemaTemplate.Default {}
+    export interface Clock_Keeper extends BladesItemSchemaTemplate.Default {
+      scenes: Array<{id: string, name: string}>,
+      targetScene: string|null,
+      clock_keys: Record<string, BladesMultiClockData|null>
+    }
+    export interface Cohort_Gang extends BladesItemSchemaTemplate.Default,
+                                         BladesItemSchemaTemplate.district,
+                                         BladesItemSchemaTemplate.clocks,
+                                         BladesItemSchemaTemplate.cohort { }
+    export interface Cohort_Expert extends BladesItemSchemaTemplate.Default,
+                                         BladesItemSchemaTemplate.district,
+                                         BladesItemSchemaTemplate.clocks,
+                                         BladesItemSchemaTemplate.cohort { }
+    export interface Crew_Ability extends BladesItemSchemaTemplate.Default,
+                                          BladesItemSchemaTemplate.district,
+                                          BladesItemSchemaTemplate.buyable,
+                                          BladesItemSchemaTemplate.limitUses {}
     export interface Crew_Reputation extends BladesItemSchemaTemplate.Default {}
-    export interface Crew_Playbook extends BladesItemSchemaTemplate.Default {}
-    export interface Crew_Upgrade extends BladesItemSchemaTemplate.Default {}
-    export interface Feature extends BladesItemSchemaTemplate.Default {}
-    export interface Gm_Tracker extends BladesItemSchemaTemplate.Default {}
+    export interface Crew_Playbook extends BladesItemSchemaTemplate.Default {
+      turfs: Record<TurfNum, BladesClaimData>
+    }
+    export interface Crew_Upgrade extends BladesItemSchemaTemplate.Default,
+                                          BladesItemSchemaTemplate.district,
+                                          BladesItemSchemaTemplate.buyable,
+                                          BladesItemSchemaTemplate.limitUses {}
+    export interface Feature extends BladesItemSchemaTemplate.Default,
+                                     BladesItemSchemaTemplate.buyable,
+                                     BladesItemSchemaTemplate.limitUses {}
+    export interface Gm_Tracker extends BladesItemSchemaTemplate.Default,
+                                        BladesItemSchemaTemplate.clocks {
+      phase: BladesPhase
+    }
     export interface Heritage extends BladesItemSchemaTemplate.Default {}
-    export interface Item extends BladesItemSchemaTemplate.Default {}
+    export interface Item extends BladesItemSchemaTemplate.Default,
+                                  BladesItemSchemaTemplate.clocks,
+                                  BladesItemSchemaTemplate.limitUses {
+      max_per_score: number,
+      load: number
+    }
     export interface Playbook extends BladesItemSchemaTemplate.Default {}
-    export interface Preferred_Op extends BladesItemSchemaTemplate.Default {}
+    export interface Preferred_Op extends BladesItemSchemaTemplate.Default,
+                                         BladesItemSchemaTemplate.district {}
     export interface Stricture extends BladesItemSchemaTemplate.Default {}
     export interface Vice extends BladesItemSchemaTemplate.Default {}
-    export interface Project extends BladesItemSchemaTemplate.Default {}
-    export interface Ritual extends BladesItemSchemaTemplate.Default {}
-    export interface Design extends BladesItemSchemaTemplate.Default {}
-    export interface Location extends BladesItemSchemaTemplate.Default {}
-    export interface Score extends BladesItemSchemaTemplate.Default {}
+    export interface Project extends BladesItemSchemaTemplate.Default,
+                                     BladesItemSchemaTemplate.district,
+                                     BladesItemSchemaTemplate.clocks {}
+    export interface Ritual extends BladesItemSchemaTemplate.Default,
+                                     BladesItemSchemaTemplate.district,
+                                     BladesItemSchemaTemplate.clocks,
+                                     BladesItemSchemaTemplate.answers {
+      source: string,
+      magnitude: ValueMax,
+      cast_time: string,
+      action_roll: string,
+      fortune_roll: string
 
+    }
+    export interface Design extends BladesItemSchemaTemplate.Default,
+                                     BladesItemSchemaTemplate.district,
+                                     BladesItemSchemaTemplate.clocks,
+                                     BladesItemSchemaTemplate.answers {
+      creation_type: string,
+      min_quality: number,
+      drawbacks: Record<string,string>
+    }
+    export interface Location extends BladesItemSchemaTemplate.Default,
+                                     BladesItemSchemaTemplate.district,
+                                     BladesItemSchemaTemplate.clocks {}
+    export interface Score extends BladesItemSchemaTemplate.Default,
+                                     BladesItemSchemaTemplate.district,
+                                     BladesItemSchemaTemplate.clocks {
+      target: string,
+      operation: string,
+      detail: string,
+      engagement_result: string,
+      entanglements: Record<string,string>,
+      reward: string,
+      locations: string[]
+    }
   }
 
   // Distinguishing schema types for BladesItem subtypes
@@ -114,5 +185,95 @@ declare global {
                                       Partial<BladesItemSchema.Ritual>,
                                       Partial<BladesItemSchema.Design>,
                                       Partial<BladesItemSchema.Location>,
-                                      Partial<BladesItemSchema.Score> { }
+                                      Partial<BladesItemSchema.Score> {
+                                          tags: BladesTag[],
+                                          // type: string,
+                                          world_name: string,
+                                          // acquaintances_name: string,
+                                          // bgImg: string,
+                                          description: string,
+                                          rules: string,
+                                          rules_notes: string,
+                                          // class?: string,
+                                          price?: number,
+                                          purchased?: boolean,
+                                          class_default?: boolean,
+                                          tier?: number,
+                                          goal_1?: NamedValueMax,
+                                          size_list_1?: string,
+                                          goal_2?: NamedValueMax,
+                                          playbooks?: string[],
+                                          size_list_2?: string,
+                                          turf?: string,
+                                          assets?: string,
+                                          quirks?: string,
+                                          notables?: string,
+                                          allies?: string,
+                                          enemies?: string,
+                                          situation?: string,
+                                          suggested_ability?: string,
+                                          goal_clock?: number,
+                                          notes?: string,
+                                          game_phase?: BladesPhase,
+                                          hold?: {
+                                            value: number[],
+                                            max: number,
+                                            max_default: number,
+                                            name_default: string,
+                                            name: string
+                                          },
+                                          status?: {
+                                            value: number[],
+                                            max: number,
+                                            max_default: number,
+                                            name_default: string,
+                                            name: string
+                                          },
+                                          load?: number,
+                                          uses?: ValueMax,
+                                          // keepAsGhost?: boolean,
+                                          prereqs?: Record<PrereqType, boolean|string|string[]>,
+                                          additional_info?: string,
+                                          equipped?: false,
+                                          num_available?: number
+                                          experience_clues?: string[],
+                                          trauma_conditions?: string[],
+                                          base_skills?: Record<string, number[]>,
+                                          cohort?: string,
+                                          scale?: number,
+                                          quality?: number,
+                                          isUpgraded?: boolean,
+                                          cohort_list?: Record<string, {label: string}>,
+                                          gang_type?: string[],
+                                          gang_type_list?: Record<string, {
+                                            label: string,
+                                            description: string
+                                          }>,
+                                          expert_type?: string,
+                                          statuses?: string[],
+                                          edges?: string[],
+                                          edges_list?: Record<string, {
+                                            label: string,
+                                            description: string,
+                                            selected: boolean
+                                          }>,
+                                          flaws?: string[],
+                                          flaws_list?: Record<string, {
+                                            label: string,
+                                            description: string,
+                                            selected: boolean
+                                          }>,
+                                          harm?: string[],
+                                          harm_list?: Record<string, {
+                                            label: string,
+                                            description: string,
+                                            value: number
+                                          }>,
+                                          armor?: boolean,
+                                          crew_types?: string[],
+                                          turfs?: Record<number, BladesClaimData>,
+                                          // clock_keys?: Record<string, BladesMultiClockData|null>,
+                                          // scenes?: Array<{id: string, name: string}>,
+                                          // targetScene?: string
+                                      }
 }

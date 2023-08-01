@@ -1,4 +1,4 @@
-import C, {SVGDATA, BladesItemType, Tag, BladesPhase} from "./core/constants.js";
+import C, {SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase} from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
 import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
@@ -53,6 +53,11 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
   static GetTypeWithTags(docType: BladesItemType, ...tags: BladesTag[]): BladesItem[] {
     return BladesItem.All.filter((item) => item.type === docType)
       .filter((item) => item.hasTag(...tags));
+  }
+
+  static IsType<T extends BladesItemType>(doc: BladesDoc, ...types: T[]): doc is BladesItemOfType<T> {
+    const typeSet = new Set<BladesItemType>(types);
+    return doc instanceof BladesItem && typeSet.has(doc.type);
   }
 
   get tags(): BladesTag[] { return this.system.tags ?? [] }
@@ -115,22 +120,37 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
     if (this.parent?.documentName !== "Actor") { return }
   }
 
-  override prepareData() {
-    super.prepareData();
-
-    switch (this.type) {
-      case BladesItemType.clock_keeper: return this._prepareClockKeeper();
-      case BladesItemType.cohort: return this._prepareCohort();
-      case BladesItemType.gm_tracker: return this._prepareGMTracker();
-      default: return undefined;
-    }
+  // #region PREPARING DERIVED DATA
+  override prepareDerivedData() {
+    // if (BladesItem.IsType(this, BladesItemType.ability)) { this._prepareAbilityData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.background)) { this._prepareBackgroundData(this.system) }
+    if (BladesItem.IsType(this, BladesItemType.clock_keeper)) { this._prepareClockKeeperData(this.system) }
+    if (BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { this._prepareCohortData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.crew_ability)) { this._prepareCrewAbilityData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.crew_reputation)) { this._prepareCrewReputationData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { this._prepareCrewPlaybookData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { this._prepareCrewUpgradeData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.feature)) { this._prepareFeatureData(this.system) }
+    if (BladesItem.IsType(this, BladesItemType.gm_tracker)) { this._prepareGmTrackerData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.heritage)) { this._prepareHeritageData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.item)) { this._prepareItemData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.playbook)) { this._preparePlaybookData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.preferred_op)) { this._preparePreferredOpData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.stricture)) { this._prepareStrictureData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.vice)) { this._prepareViceData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.project)) { this._prepareProjectData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.ritual)) { this._prepareRitualData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.design)) { this._prepareDesignData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.location)) { this._prepareLocationData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.score)) { this._prepareScoreData(this.system) }
   }
 
+  _prepareClockKeeperData(system: ExtractBladesItemSystem<BladesItemType.clock_keeper>) {
+    if (!BladesItem.IsType(this, BladesItemType.clock_keeper)) { return }
 
-  _prepareClockKeeper() {
-    this.system.scenes = game.scenes?.map((scene) => ({id: scene.id, name: scene.name ?? ""}));
-    this.system.targetScene ??= game.scenes?.current?.id;
-    this.system.clock_keys = Object.fromEntries(Object.entries(this.system.clock_keys ?? {})
+    system.scenes = game.scenes.map((scene) => ({id: scene.id, name: scene.name ?? ""}));
+    system.targetScene ??= game.scenes.current?.id || null;
+    system.clock_keys = Object.fromEntries(Object.entries(system.clock_keys ?? {})
       .filter(([keyID, keyData]) => Boolean(keyData))
       .map(([keyID, keyData]) => {
         if (keyData === null) { return [keyID, null] }
@@ -140,32 +160,22 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
       }));
   }
 
-  _prepareGMTracker() {
-    // GM Tracker stuff
+  _prepareGmTrackerData(system: ExtractBladesItemSystem<BladesItemType.gm_tracker>) {
+    if (!BladesItem.IsType(this, BladesItemType.gm_tracker)) { return }
+
   }
 
-
-  get tier() { return U.pInt(this.parent?.system?.tier) }
-  get playbooks(): string[] { return this.system.playbooks ?? [] }
-
-  // isKept(actor: BladesActor): boolean|null {
-  //   if (this.type !== "ability") { return null }
-  //   const playbook = actor.playbookName;
-  //   if (!playbook) { return null }
-  //   if (this.system.playbooks?.includes(actor.playbookName)) {
-  //     return true;
-  //   }
-  //   if (["Ghost", "Hull", "Vampire"].includes(actor.playbookName) && this.system.keepAsGhost) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-  _prepareCohort() {
-    if (this.parent?.documentName !== "Actor") { return }
-    if (!this.system.cohort) { return }
-    this.system.scale = {Gang: this.tier, Expert: 0}[this.system.cohort];
-    this.system.quality = {Gang: this.tier, Expert: this.tier + 1}[this.system.cohort];
+  _prepareCohortData(system: ExtractBladesItemSystem<BladesItemType.cohort_gang|BladesItemType.cohort_expert>) {
+    if (!BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { return }
+    if (!this.parent || !BladesActor.IsType(this.parent, BladesActorType.pc, BladesActorType.crew)) { return }
+    if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
+      system.scale = system.tier.value + this.system.tier.value;
+      system.quality = system.tier.value + this.system.tier.value;
+    }
+    if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
+      system.scale = 0;
+      system.quality = system.tier.value + this.system.tier.value + 1;
+    }
   }
 
   async activateOverlayListeners() {
@@ -292,98 +302,7 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
 declare interface BladesItem {
   get type(): string & BladesItemType,
   parent: BladesActor | null,
-  system: {
-    tags: BladesTag[],
-    // type: string,
-    world_name: string,
-    // acquaintances_name: string,
-    // bgImg: string,
-    description: string,
-    rules: string,
-    rules_notes: string,
-    // class?: string,
-    price?: number,
-    purchased?: boolean,
-    class_default?: boolean,
-    tier?: number,
-    goal_1?: NamedValueMax,
-    size_list_1?: string,
-    goal_2?: NamedValueMax,
-    playbooks?: string[],
-    size_list_2?: string,
-    turf?: string,
-    assets?: string,
-    quirks?: string,
-    notables?: string,
-    allies?: string,
-    enemies?: string,
-    situation?: string,
-    suggested_ability?: string,
-    goal_clock?: number,
-    notes?: string,
-    game_phase?: BladesPhase,
-    hold?: {
-      value: number[],
-      max: number,
-      max_default: number,
-      name_default: string,
-      name: string
-    },
-    status?: {
-      value: number[],
-      max: number,
-      max_default: number,
-      name_default: string,
-      name: string
-    },
-    load?: number,
-    uses?: ValueMax,
-    // keepAsGhost?: boolean,
-    prereqs?: Record<PrereqType, boolean|string|string[]>,
-    additional_info?: string,
-    equipped?: false,
-    num_available?: number
-    experience_clues?: string[],
-    trauma_conditions?: string[],
-    base_skills?: Record<string, number[]>,
-    cohort?: string,
-    scale?: number,
-    quality?: number,
-    isUpgraded?: boolean,
-    cohort_list?: Record<string, {label: string}>,
-    gang_type?: string[],
-    gang_type_list?: Record<string, {
-      label: string,
-      description: string
-    }>,
-    expert_type?: string,
-    statuses?: string[],
-    edges?: string[],
-    edges_list?: Record<string, {
-      label: string,
-      description: string,
-      selected: boolean
-    }>,
-    flaws?: string[],
-    flaws_list?: Record<string, {
-      label: string,
-      description: string,
-      selected: boolean
-    }>,
-    harm?: string[],
-    harm_list?: Record<string, {
-      label: string,
-      description: string,
-      value: number
-    }>,
-    armor?: boolean,
-    crew_types?: string[],
-    turfs?: Record<number, BladesClaimData>,
-    clock_keys?: Record<string, BladesMultiClockData|null>,
-    scenes?: Array<{id: string, name: string}>,
-    targetScene?: string
-  }
-
+  system: BladesItemSystem
 }
 
 export default BladesItem;

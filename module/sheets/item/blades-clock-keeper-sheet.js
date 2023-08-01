@@ -42,7 +42,7 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
         socketlib.system.executeForEveryone("renderOverlay");
         return updateData;
     }
-    async getData() {
+    getData() {
         const context = super.getData();
         context.clock_keys = Object.fromEntries(Object.entries(context.clock_keys)
             .filter(([keyID, keyData]) => Boolean(keyData && keyData.scene === context.system.targetScene)));

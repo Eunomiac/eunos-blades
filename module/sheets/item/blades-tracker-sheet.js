@@ -5,7 +5,6 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import { BladesPhase } from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../../blades-item.js";
 import { BladesActorType } from "../../../module_staging_1/core/constants.js";
@@ -74,11 +73,8 @@ class BladesTrackerSheet extends BladesItemSheet {
             "systems/eunos-blades/templates/items/gm_tracker-sheet.hbs"
         ]);
     }
-    async getData() {
-        const context = await super.getData();
-        context.system.phases = Object.values(BladesPhase);
-        return context;
-    }
+    
+    
     async activateListeners(html) {
         super.activateListeners(html);
     }

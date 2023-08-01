@@ -16,7 +16,7 @@ class BladesFactionSheet extends BladesSheet {
   override getData() {
     const context = super.getData() as ReturnType<BladesSheet["getData"]>;
 
-    const sheetData: Partial<BladesActorSchema.Faction> & BladesSheetData.Faction = {
+    const sheetData: Partial<BladesActorSchema.Faction> & BladesActorSheetData.Faction = {
       clocks: this.actor.system.clocks,
       tierData: {
         "class": "comp-tier comp-vertical comp-teeth",

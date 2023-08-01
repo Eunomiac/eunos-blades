@@ -24,7 +24,8 @@ export var BladesItemType;
     BladesItemType["ability"] = "ability";
     BladesItemType["background"] = "background";
     BladesItemType["clock_keeper"] = "clock_keeper";
-    BladesItemType["cohort"] = "cohort";
+    BladesItemType["cohort_gang"] = "cohort_gang";
+    BladesItemType["cohort_expert"] = "cohort_expert";
     BladesItemType["crew_ability"] = "crew_ability";
     BladesItemType["crew_reputation"] = "crew_reputation";
     BladesItemType["crew_playbook"] = "crew_playbook";
@@ -37,8 +38,11 @@ export var BladesItemType;
     BladesItemType["preferred_op"] = "preferred_op";
     BladesItemType["stricture"] = "stricture";
     BladesItemType["vice"] = "vice";
+    BladesItemType["project"] = "project";
     BladesItemType["ritual"] = "ritual";
     BladesItemType["design"] = "design";
+    BladesItemType["location"] = "location";
+    BladesItemType["score"] = "score";
 })(BladesItemType || (BladesItemType = {}));
 export var District;
 (function (District) {
@@ -610,7 +614,8 @@ const C = {
         BladesItemType.ability,
         BladesItemType.background,
         BladesItemType.clock_keeper,
-        BladesItemType.cohort,
+        BladesItemType.cohort_gang,
+        BladesItemType.cohort_expert,
         BladesItemType.crew_ability,
         BladesItemType.crew_reputation,
         BladesItemType.crew_playbook,
@@ -620,8 +625,14 @@ const C = {
         BladesItemType.heritage,
         BladesItemType.item,
         BladesItemType.playbook,
+        BladesItemType.preferred_op,
         BladesItemType.stricture,
-        BladesItemType.vice
+        BladesItemType.vice,
+        BladesItemType.project,
+        BladesItemType.ritual,
+        BladesItemType.design,
+        BladesItemType.location,
+        BladesItemType.score
     ],
     SimpleItemTypes: [
         BladesItemType.background,

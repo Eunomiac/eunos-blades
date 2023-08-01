@@ -21,7 +21,7 @@ type BladesCompData = {
 };
 
 
-interface BladesSheetData {
+interface BladesActorSheetData {
     editable: boolean,
     isGM: boolean,
     actor: BladesActor,
@@ -42,7 +42,7 @@ class BladesSheet extends ActorSheet {
 
     const context = super.getData();
 
-    const sheetData: BladesSheetData = {
+    const sheetData: BladesActorSheetData = {
       editable: this.options.editable,
       isGM: game.user.isGM,
       actor: this.actor,

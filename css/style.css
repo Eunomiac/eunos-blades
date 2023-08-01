@@ -8358,8 +8358,6 @@ template {
         margin-block-start: 7px;
         -webkit-margin-after: 7px;
         margin-block-end: 7px; }
-    :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce:first-child {
-      margin-top: 30px; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content {
     --sheet-header-height: 21px;
     --sheet-top-height: 200px;
@@ -8633,6 +8631,8 @@ template {
             flex-wrap: nowrap;
             position: relative;
             height: var(--sheet-mid-height); }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content {
+            height: 100%; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.nav-group {
             height: calc(100% - var(--sheet-top-height) - var(--sheet-mid-height));
             -webkit-box-pack: start;

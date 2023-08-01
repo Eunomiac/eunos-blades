@@ -2,7 +2,7 @@ import {Attributes, Actions, BladesPhase} from "./core/constants";
 
 declare global {
   // Final data sent to Handlebars through BladesActorSheet.getData()
-  namespace BladesSheetData {
+  namespace BladesActorSheetData {
 
     export interface Scoundrel {
       isOwner: boolean,

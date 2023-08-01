@@ -16,7 +16,8 @@ export enum BladesItemType {
   ability = "ability",
   background = "background",
   clock_keeper = "clock_keeper",
-  cohort = "cohort",
+  cohort_gang = "cohort_gang",
+  cohort_expert = "cohort_expert",
   crew_ability = "crew_ability",
   crew_reputation = "crew_reputation",
   crew_playbook = "crew_playbook",
@@ -29,8 +30,11 @@ export enum BladesItemType {
   preferred_op = "preferred_op",
   stricture = "stricture",
   vice = "vice",
+  project = "project",
   ritual = "ritual",
-  design = "design" // includes questions, clock for creating or modifying a BladesItemType.item BladesItem
+  design = "design",
+  location = "location",
+  score = "score"
 }
 
 export enum District {
@@ -708,7 +712,8 @@ const C = {
     BladesItemType.ability,
     BladesItemType.background,
     BladesItemType.clock_keeper,
-    BladesItemType.cohort,
+    BladesItemType.cohort_gang,
+    BladesItemType.cohort_expert,
     BladesItemType.crew_ability,
     BladesItemType.crew_reputation,
     BladesItemType.crew_playbook,
@@ -718,8 +723,14 @@ const C = {
     BladesItemType.heritage,
     BladesItemType.item,
     BladesItemType.playbook,
+    BladesItemType.preferred_op,
     BladesItemType.stricture,
-    BladesItemType.vice
+    BladesItemType.vice,
+    BladesItemType.project,
+    BladesItemType.ritual,
+    BladesItemType.design,
+    BladesItemType.location,
+    BladesItemType.score
   ],
   SimpleItemTypes: [
     BladesItemType.background,

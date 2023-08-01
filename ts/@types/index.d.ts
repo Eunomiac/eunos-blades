@@ -24,6 +24,7 @@ declare global {
     items: Collection<BladesItem>,
     actors: Collection<BladesActor>,
     user: User,
+    scenes: Scenes,
     eunoblades: {
       ClockKeeper?: BladesItem,
       Tracker?: BladesItem,

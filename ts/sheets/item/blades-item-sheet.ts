@@ -1,6 +1,6 @@
-import C, {Tag, District, Playbook, Vice} from "../../core/constants.js";
+import C, {BladesItemType, BladesPhase, Tag, District, Playbook, Vice} from "../../core/constants.js";
 import U from "../../core/utilities.js";
-import type BladesItem from "../../blades-item.js";
+import BladesItem from "../../blades-item.js";
 import BladesActiveEffect from "../../blades-active-effect.js";
 
 // import Tagify from "../../../lib/tagify/tagify.esm.js";
@@ -20,10 +20,287 @@ class BladesItemSheet extends ItemSheet {
 
   /* -------------------------------------------- */
 
-  constructor(item: BladesItem, options: Partial<ItemSheet.Options> = {}) {
-    options.classes = [...options.classes ?? [], "eunos-blades", "sheet", "item", item.type];
-    super(item, options);
+  // constructor(item: BladesItem, options: Partial<ItemSheet.Options> = {}) {
+  //   options.classes = [...options.classes ?? [], "eunos-blades", "sheet", "item", item.type];
+  //   super(item, options);
+  // }
+
+  // override async getData() {
+
+
+  override getData() {
+    const context = super.getData() as BladesBaseItemSheetContext;
+
+    context.editable = this.options.editable;
+    context.isGM = game.user.isGM;
+    context.isEmbeddedItem = this.item.parent !== null;
+    context.item = this.item;
+    context.system = this.item.system;
+    context.activeEffects = Array.from(this.item.effects) as BladesActiveEffect[];
+
+    return this._getTypedItemData[this.item.type]!(context);
   }
+
+  _getTypedItemData: Record<BladesItemType, (context: BladesBaseItemSheetContext) => BladesItemSheetData> = {
+    [BladesItemType.ability]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.ability)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.ability> = {};
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.background]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.background)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.background> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.clock_keeper]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.clock_keeper)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.ability> = {
+        phases: Object.values(BladesPhase)
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.cohort_gang]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.cohort_gang)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.cohort_gang> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.cohort_expert]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.cohort_expert)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.cohort_expert> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.crew_ability]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.crew_ability)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.crew_ability> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.crew_reputation]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.crew_reputation)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.crew_reputation> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.crew_playbook]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.crew_playbook)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.crew_playbook> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.crew_upgrade]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.crew_upgrade)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.crew_upgrade> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.feature]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.feature)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.feature> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.gm_tracker]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.gm_tracker)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.gm_tracker> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.heritage]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.heritage)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.heritage> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.item]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.item)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.item> = {
+        tierData: {
+          "class": "comp-tier comp-vertical comp-teeth",
+          "label": "Tier",
+          "labelClass": "filled-label full-width",
+          "dotline": {
+            data: this.item.system.tier,
+            target: "system.tier.value",
+            svgKey: "teeth.tall",
+            svgFull: "full|half|frame",
+            svgEmpty: "full|half|frame"
+          }
+        }
+      };
+
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.playbook]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.playbook)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.playbook> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.preferred_op]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.preferred_op)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.preferred_op> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.stricture]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.stricture)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.stricture> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.vice]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.vice)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.vice> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.project]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.project)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.project> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.ritual]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.ritual)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.ritual> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.design]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.design)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.design> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.location]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.location)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.location> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    },
+    [BladesItemType.score]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.score)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.score> = {
+      };
+      return {
+        ...context,
+        ...sheetData
+      };
+    }
+  };
+
+  //   switch (this.item.type) {
+  //     case BladesItemType.item: return this._getItemData(context);
+  //     case BladesItemType.ability: return this._getAbilityData(context);
+  //     // no default
+  //   }
+
+  //   return context;
+  // }
+
+  // _getItemData(context) {
+  //   if (!BladesItem.IsType(this.item, BladesItemType.item)) { return undefined as never }
+
+  //   const sheetData: Partial<BladesItemSchema.Item> & BladesItemSheetData.Item = {
+  //     clocks: this.item.system.clocks,
+  //     tierData: {
+  //       "class": "comp-tier comp-vertical comp-teeth",
+  //       "label": "Tier",
+  //       "labelClass": "filled-label full-width",
+  //       "dotline": {
+  //         data: this.item.system.tier,
+  //         target: "system.tier.value",
+  //         svgKey: "teeth.tall",
+  //         svgFull: "full|half|frame",
+  //         svgEmpty: "full|half|frame"
+  //       }
+  //     }
+  //   };
+
+  //   return {
+  //     ...context,
+  //     ...sheetData
+  //   };
+  // }
+
+  // _getAbilityData(context: ItemSheet.Data<DocumentSheetOptions>) {
+  //   if (!BladesItem.IsType(this.item, BladesItemType.ability)) { return undefined as never }
+
+  //   const sheetData: Partial<BladesItemSchema.Ability> & BladesItemSheetData.Ability = { };
+
+  //   return {
+  //     ...context,
+  //     ...sheetData
+  //   };
+  // }
+
+  // }
 
   override get template() {
     const pathComps = [
@@ -82,18 +359,6 @@ class BladesItemSheet extends ItemSheet {
     this.item.update(updateData);
   }
 
-  override async getData() {
-    const context = (await super.getData()) as ReturnType<ItemSheet["getData"]> & List<any>;
-
-    context.editable = this.options.editable;
-    context.isGM = game.user.isGM;
-    context.isEmbeddedItem = this.item.parent !== null;
-    context.item = this.item;
-    context.system = this.item.system;
-    context.activeEffects = this.item.effects;
-
-    return context;
-  }
 }
 
 declare interface BladesItemSheet {
