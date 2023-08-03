@@ -79,10 +79,12 @@
         }
       }
       .tox-sidebar-wrap {
+        min-height: var(--min-tinymce-height);
         .tox-edit-area {
           .tox-edit-area__iframe {
             background-color: rgba(0,0,0,0.5);
             box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 1);
+            padding: 0 var(--content-padding, 5px);
           }
         }
       }

@@ -1,4 +1,4 @@
-&  {
+& {
 
   margin: 0;
   padding: 0;
@@ -20,7 +20,7 @@
     transform: var(--text-transform-default);
   }
 
-  * {
+  *:not(i):not(button) {
     color: inherit;
     font: {
       family: inherit;
@@ -36,10 +36,12 @@
     }
   }
 
-  b, strong { font-weight: bold; color: var(--blades-white-bright) }
+  b, strong { font-weight: bold !important; color: var(--blades-white-bright) !important}
   i:not([class]), em { font-style: italic }
   i[class] { font-family: var(--font-awesome) }
   i.fab { font-family: var(--font-awesome-alt)}
+  i.fa-duotone { font-family: var(--font-awesome-duotone)}
+  button { color: var(--blades-white) }
 
   h1, h2 {
     margin: var(--margin-heading-strong);

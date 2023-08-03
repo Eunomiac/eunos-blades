@@ -5,7 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { BladesActorType, BladesItemType, Tag, BladesPhase } from "../../core/constants.js";
+import C, { BladesActorType, BladesItemType, Tag } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesActor from "../../blades-actor.js";
@@ -43,7 +43,7 @@ class BladesActorSheet extends BladesSheet {
         context.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
         context.attributes = U.objMap(this.actor.system.attributes, (attrData) => U.objMap(attrData, (value) => ({
             value: value.value,
-            max: game.eunoblades.Tracker.phase === BladesPhase.CharGen ? 2 : value.max
+            max: game.eunoblades.Tracker?.actionMax ?? value.max
         })));
         context.acquaintancesName = this.actor.system.acquaintances_name ?? "Friends & Rivals";
         const { activeSubItems, activeSubActors } = this.actor;

@@ -141,6 +141,7 @@ class BladesItem extends Item {
         if (!BladesItem.IsType(this, BladesItemType.gm_tracker)) {
             return;
         }
+        system.phases = Object.values(BladesPhase);
     }
     _prepareCohortData(system) {
         if (!BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
@@ -261,6 +262,9 @@ class BladesItem extends Item {
     }
     async _onUpdate(changed, options, userId) {
         await super._onUpdate(changed, options, userId);
+        if (BladesItem.IsType(this, BladesItemType.gm_tracker)) {
+            BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
+        }
     }
     _overlayElement;
     get overlayElement() {

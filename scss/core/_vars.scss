@@ -1,10 +1,12 @@
 $isCompactLayout: true;
 
 & {
+  --min-tinymce-height: 40px;
 
   --clock-glow-size: 50px;
   --clock-frame-size: 50px;
   --clock-glow-correction: -175px;
+
 // #region ████████ Original: Original Foundry Variables ████████ ~
   // #region ====== Colors ====== ~
   --color-text-light-highlight: #f0f0e0;
@@ -241,6 +243,7 @@ $isCompactLayout: true;
 
   --font-awesome: "Font Awesome 6 Pro";
   --font-awesome-alt: "Font Awesome 6 Brands";
+  --font-awesome-duotone: "Font Awesome 6 Duotone";
 
   --line-height-expanded: 1.4;
   --line-height-primary: 1.2;
@@ -343,7 +346,7 @@ $isCompactLayout: true;
   // #endregion ▄▄▄▄▄ COLORS & FONTS ▄▄▄▄▄
 
   // #region ████████ LAYOUT ████████ ~
-  --content-padding: 0px;
+  // --content-padding: 0px;
 
   --blades-spacer-pf: 0.0625rem;
   --blades-spacer-xs: 0.125rem;

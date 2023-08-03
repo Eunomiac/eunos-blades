@@ -6,8 +6,8 @@
     <section class="sheet-top">
     </section>
     <section class="sheet-mid-bar flex-vertical full-width">
-      <select class="phase-select" data-dtype="String" name="system.game_phase">
-        {{#select system.game_phase}}
+      <select class="phase-select" data-dtype="String" name="system.phase">
+        {{#select system.phase}}
         <option value="" hidden disabled selected></option>
         {{#each system.phases}}
         <option value="{{this}}">{{localize this}}</option>

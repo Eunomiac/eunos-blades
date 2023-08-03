@@ -988,7 +988,7 @@ class BladesActor extends Actor {
         }
     }
     
-    async _onCreateEmbeddedDocuments(embName, docs, ...args) {
+    async _onCreateDescendantDocuments(parent, collection, docs, data, options, userId) {
         docs.forEach(async (doc) => {
             if (doc instanceof BladesItem && [BladesItemType.playbook, BladesItemType.crew_playbook].includes(doc.type)) {
                 await Promise.all(this.activeSubItems
@@ -996,8 +996,8 @@ class BladesActor extends Actor {
                     .map((aItem) => this.remSubItem(aItem)));
             }
         });
-        await super._onCreateEmbeddedDocuments(embName, docs, ...args);
-        eLog.checkLog("actorTrigger", "onCreateEmbeddedDocuments", { embName, docs, args });
+        await super._onCreateDescendantDocuments(parent, collection, docs, data, options, userId);
+        eLog.checkLog("actorTrigger", "_onCreateDescendantDocuments", { parent, collection, docs, data, options, userId });
         docs.forEach(async (doc) => {
             if (doc instanceof BladesItem) {
                 switch (doc.type) {

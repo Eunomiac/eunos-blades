@@ -6,6 +6,7 @@
   --sheet-header-height: 21px;
   --sheet-top-height: #{calculate-sum($heights)};
   --sheet-mid-height: 60px;
+  --content-padding: 5px;
 
   background: var(--blades-black);
   padding: 0;
@@ -143,7 +144,7 @@
         }
 
         &.tab-content {
-          height: 100%;
+          height: auto;
         }
 
         &.nav-group {
@@ -159,9 +160,15 @@
               justify-content: stretch;
               height: 100%;
               overflow: visible;
-              min-height: 100px;
+              min-height: var(--min-tinymce-height);
             }
           }
+        }
+
+        &.sheet-footer-small {
+          display: block;
+          height: 20px;
+          border: none;
         }
       }
     }
@@ -173,6 +180,7 @@
     height: toRem(24px);
     min-height: toRem(24px);
     width: 100%;
+    margin-left: calc(-0.5 * var(--content-padding, 0));
     margin-bottom: toRem(5px);
 
     display: flex;

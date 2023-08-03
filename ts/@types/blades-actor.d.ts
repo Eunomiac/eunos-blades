@@ -3,6 +3,11 @@ import BladesActor from "../blades-actor.js";
 
 declare global {
 
+  // Extending Type Definitions of 'Actor' Base Class to Foundry V11
+  // declare class SeActor extends Actor {
+  //   async _onCreateDescendantDocuments(...args: any[]): Promise<void>
+  // }
+
   // Basic & Utility Types for BladesActors
   type BladesRandomizer<T extends string = string> = { isLocked: boolean, value: T }
   type SubActorData = Partial<BladesActor["system"]>

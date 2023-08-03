@@ -16,6 +16,11 @@
     }}
   {{/if}}
 
+  {{!-- Tags --}}
+  {{#if isGM}}
+  <input type="text" class="comp-tags tags-gm" />
+  {{/if}}
+
   {{!-- Sheet Container --}}
   <div class="sheet-root">
 
@@ -369,7 +374,7 @@
             blockClass="action"
             }}
           </div>
-          <label data-roll-attribute="{{action_name}}">{{case "upper" action_name}}</label>
+          <label class="comp-label" data-roll-attribute="{{action_name}}">{{case "upper" action_name}}</label>
         </div>
         {{/each}}
         {{/each}}

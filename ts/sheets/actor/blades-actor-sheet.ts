@@ -57,7 +57,7 @@ class BladesActorSheet extends BladesSheet {
 
     context.attributes = U.objMap(this.actor.system.attributes, (attrData: Record<Actions, ValueMax>) => U.objMap(attrData, (value: ValueMax): ValueMax => ({
       value: value.value,
-      max: game.eunoblades.Tracker!.phase === BladesPhase.CharGen ? 2 : value.max
+      max: game.eunoblades.Tracker?.actionMax ?? value.max
     }))) as Record<Attributes,Record<Actions,ValueMax>>;
 
     context.acquaintancesName = this.actor.system.acquaintances_name ?? "Friends & Rivals";

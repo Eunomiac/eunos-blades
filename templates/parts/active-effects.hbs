@@ -1,13 +1,13 @@
 <table class="items-list effects-list">
   {{log "Active Effects" activeEffects}}
   {{#each activeEffects as |effect|}}
-    {{#if effect.label}}
+    {{#if effect.name}}
     <tr class="item effect" data-effect-id="{{effect.id}}">
       <td style="width: 30px;">
         <img class="item-image" src="{{effect.icon}}" width="24" height="24"/>
       </td>
       <td class="effect-name flex">
-        <label class="comp-title">{{effect.label}}</label>
+        <label class="comp-title">{{effect.name}}</label>
       </td>
       <td style="width: 45px;">
         <div class="item-controls effect-controls flex">

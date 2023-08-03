@@ -3,6 +3,10 @@
   min-height: 800px;
   overflow: visible;
 
+  * {
+    --content-padding: 0px;
+  }
+
   .window-content {
     form {
       .sheet-root {

@@ -19,6 +19,10 @@ import type {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt
 // Blades Theme Song: "Bangkok" from The Gray Man soundtrack: https://www.youtube.com/watch?v=cjjImvMqYlo&list=OLAK5uy_k9cZDd1Fbpd25jfDtte5A6HyauD2-cwgk&index=2
 // Add "coin" item to general items --> equals 1 Coin worth of value, carried, and has Load 1.
 
+// declare interface Actor {
+//   _onCreateDescendantDocuments(...args: any[]): Promise<void>
+// }
+
 class BladesActor extends Actor implements BladesDocument<Actor>,
                                            BladesActorSubClass.Scoundrel,
                                            BladesActorSubClass.Crew,
@@ -1006,14 +1010,8 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   // #endregion
 
   // #region Overrides: _onCreateEmbeddedDocuments, update ~
-  override async _onCreateEmbeddedDocuments(embName: string, docs: Array<BladesItem | BladesActiveEffect>, ...args: [
-    Array<Record<string, unknown>>,
-    DocumentModificationOptions,
-    string
-  ]) {
-    // docs = docs.filter((doc) => !this.hasSubItemOf(doc as BladesItem));
-
-    // if (docs.length === 0) { return }
+  // @ts-expect-error New method not defined in @league VTT types.
+  override async _onCreateDescendantDocuments(parent: BladesActor, collection: "items"|"effects", docs: BladesItem[]|BladesActiveEffect[], data: BladesItem[]|BladesActiveEffect[], options: Record<string,boolean>, userId: string): Promise<void> {
     docs.forEach(async (doc) => {
       if (doc instanceof BladesItem && [BladesItemType.playbook, BladesItemType.crew_playbook].includes(doc.type)) {
         await Promise.all(this.activeSubItems
@@ -1022,9 +1020,10 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       }
     });
 
-    await super._onCreateEmbeddedDocuments(embName, docs, ...args);
+    // @ts-expect-error New method not defined in @league VTT types.
+    await super._onCreateDescendantDocuments(parent, collection, docs, data, options, userId);
 
-    eLog.checkLog("actorTrigger", "onCreateEmbeddedDocuments", {embName, docs, args});
+    eLog.checkLog("actorTrigger", "_onCreateDescendantDocuments", {parent, collection, docs, data, options, userId});
 
     docs.forEach(async (doc) => {
       if (doc instanceof BladesItem) {

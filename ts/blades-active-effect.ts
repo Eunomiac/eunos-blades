@@ -1,4 +1,4 @@
-import type BladesActor from "./blades-actor.js";
+import BladesActor from "./blades-actor.js";
 import U from "./core/utilities.js";
 import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 import BladesItem from "./blades-item.js";
@@ -12,7 +12,6 @@ const FUNCQUEUE: Record<string, {
 const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, isReversing: boolean) => Promise<void>> = {
   addItem: async (actor: BladesActor, funcData: string, isReversing = false) => {
     eLog.checkLog("activeEffects", "addItem", {actor, funcData, isReversing});
-    if (!actor) { return undefined }
     if (actor.hasActiveSubItemOf(funcData)) {
       if (isReversing) {
         return actor.remSubItem(funcData);
@@ -26,7 +25,6 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, isRever
   },
   addIfChargen: async (actor: BladesActor, funcData: string, isReversing = false) => {
     eLog.checkLog("activeEffects", "addIfChargen", {actor, funcData, isReversing});
-    if (!actor) { return undefined }
     if (!isReversing && game.eunoblades.Tracker!.system.phase !== BladesPhase.CharGen) { return undefined }
     const [target, qty] = funcData.split(/:/);
     if (isReversing) {
@@ -38,7 +36,6 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, isRever
 
   // },
   remItem: async (actor: BladesActor, funcData: string, isReversing = false) => {
-    if (!actor) { return undefined }
 
     function testString(targetString: string, testDef: string) {
       if (/^rX/.test(testDef)) {
@@ -107,6 +104,7 @@ class BladesActiveEffect extends ActiveEffect {
 
     Hooks.on("preCreateActiveEffect", async (effect: BladesActiveEffect) => {
 
+      if (!(effect.parent instanceof BladesActor)) { return }
       // Partition effect.changes into permanent and non-permanent changes:
 
       const [permChanges, changes] = U.partition(effect.changes, (change) => /^perm/.test(change.key));
@@ -136,6 +134,8 @@ class BladesActiveEffect extends ActiveEffect {
 
     Hooks.on("applyActiveEffect", (actor: BladesActor, changeData: EffectChangeData) => {
 
+      if (!(actor instanceof BladesActor)) { return }
+
       if (changeData.key in CUSTOMFUNCS) {
         const funcData: BladesCustomFuncData = {
           funcName: changeData.key as BladesCustomFuncName,
@@ -147,6 +147,7 @@ class BladesActiveEffect extends ActiveEffect {
     });
 
     Hooks.on("updateActiveEffect", (effect: BladesActiveEffect, {disabled}: {disabled: boolean}) => {
+      if (!(effect.parent instanceof BladesActor)) { return }
       const customEffects = effect.changes.filter((changes: EffectChangeData) => changes.mode === 0);
       customEffects.forEach(({key, value}) => {
         const funcData: BladesCustomFuncData = {
@@ -159,6 +160,7 @@ class BladesActiveEffect extends ActiveEffect {
     });
 
     Hooks.on("deleteActiveEffect", (effect: BladesActiveEffect) => {
+      if (!(effect.parent instanceof BladesActor)) { return }
       const customEffects = effect.changes.filter((changes: EffectChangeData) => changes.mode === 0);
       customEffects.forEach(({key, value}) => {
         const funcData: BladesCustomFuncData = {
@@ -219,7 +221,7 @@ class BladesActiveEffect extends ActiveEffect {
     const a = event.currentTarget as HTMLElement;
     if (a.dataset.action === "create") {
       return owner.createEmbeddedDocuments("ActiveEffect", [{
-        label: "New Effect",
+        name: "New Effect",
         icon: "systems/eunos-blades/assets/icons/Icon.3_13.png",
         origin: owner.uuid
       }]);

@@ -1,0 +1,31 @@
+& {
+  min-width: 600px;
+  height: auto !important;
+
+  .window-content {
+    form {
+
+      section.tab.active {
+        max-height: 600px;
+        overflow-y: scroll;
+        padding: 0 10px;
+
+        &[data-tab="effects"] {
+          header.effects-header {
+            .key { flex-grow: 2 }
+            .mode { flex-grow: 1 }
+            .value { flex-grow: 3 }
+
+          }
+          ol.changes-list {
+            li.effect-change.flexrow {
+              .key { flex-grow: 2 }
+              .mode { flex-grow: 1 }
+              .value { flex-grow: 3 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

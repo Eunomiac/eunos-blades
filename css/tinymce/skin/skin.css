@@ -3721,10 +3721,13 @@ body.tox-dialog__disable-scroll {
                 text-align: left; }
               .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__overflow .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__primary .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label {
                 font-family: var(--font-emphasis); }
-    .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-sidebar-wrap .tox-edit-area .tox-edit-area__iframe {
-      background-color: rgba(0, 0, 0, 0.5);
-      -webkit-box-shadow: inset 0px 0px 5px black;
-      box-shadow: inset 0px 0px 5px black; }
+    .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-sidebar-wrap {
+      min-height: var(--min-tinymce-height); }
+      .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-sidebar-wrap .tox-edit-area .tox-edit-area__iframe {
+        background-color: rgba(0, 0, 0, 0.5);
+        -webkit-box-shadow: inset 0px 0px 5px black;
+        box-shadow: inset 0px 0px 5px black;
+        padding: 0 var(--content-padding, 5px); }
     .editor.tinymce .tox.tox-tinymce .tox-statusbar {
       height: var(--statusbar-height); }
       .editor.tinymce .tox.tox-tinymce .tox-statusbar .tox-statusbar__text-container .tox-statusbar__path {

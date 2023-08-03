@@ -4,6 +4,7 @@ html, :root {
   scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
   scrollbar-width: thin; }
   html, :root {
+    --min-tinymce-height: 40px;
     --clock-glow-size: 50px;
     --clock-frame-size: 50px;
     --clock-glow-correction: -175px;
@@ -184,6 +185,7 @@ html, :root {
     --font-handwritten: "PWSignaturetwo";
     --font-awesome: "Font Awesome 6 Pro";
     --font-awesome-alt: "Font Awesome 6 Brands";
+    --font-awesome-duotone: "Font Awesome 6 Duotone";
     --line-height-expanded: 1.4;
     --line-height-primary: 1.2;
     --line-height-compact: 1;
@@ -250,7 +252,6 @@ html, :root {
     --border-width-heading: 0;
     --border-style-heading: none;
     --font-monospace: var(--font-mono);
-    --content-padding: 0px;
     --blades-spacer-pf: 0.0625rem;
     --blades-spacer-xs: 0.125rem;
     --blades-spacer-base: 0.125rem;
@@ -400,7 +401,9 @@ html, :root {
     html .comp .number-circle, :root .comp .number-circle {
       --number-circle-size: toRem(20px); }
     html .comp .comp-number-input, :root .comp .comp-number-input {
-      width: toRem(26px);
+      font-family: var(--font-emphasis);
+      color: var(--blades-white-bright);
+      width: toRem(32px);
       text-align: center; }
     html .comp .tooltip, :root .comp .tooltip {
       opacity: 0;
@@ -483,7 +486,7 @@ html, :root {
           opacity: 0.5;
           -webkit-filter: blur(0.5px);
           filter: blur(0.5px);
-          top: 40%;
+          top: 50%;
           left: 50%;
           height: 100%;
           z-index: zLevel(-2);
@@ -972,7 +975,7 @@ html, :root {
     line-height: var(--line-height-default);
     text-shadow: var(--text-shadow-default);
     text-transform: var(--text-transform-default); }
-    html *, :root * {
+    html *:not(i):not(button), :root *:not(i):not(button) {
       color: inherit;
       font-family: inherit;
       font-size: inherit;
@@ -983,14 +986,18 @@ html, :root {
       text-shadow: inherit;
       text-transform: inherit; }
     html b, html strong, :root b, :root strong {
-      font-weight: bold;
-      color: var(--blades-white-bright); }
+      font-weight: bold !important;
+      color: var(--blades-white-bright) !important; }
     html i:not([class]), html em, :root i:not([class]), :root em {
       font-style: italic; }
     html i[class], :root i[class] {
       font-family: var(--font-awesome); }
     html i.fab, :root i.fab {
       font-family: var(--font-awesome-alt); }
+    html i.fa-duotone, :root i.fa-duotone {
+      font-family: var(--font-awesome-duotone); }
+    html button, :root button {
+      color: var(--blades-white); }
     html h1, html h2, :root h1, :root h2 {
       margin: var(--margin-heading-strong);
       padding: var(--padding-heading-strong);
@@ -1281,7 +1288,9 @@ html, :root {
       html .comp .number-circle, :root .comp .number-circle {
         --number-circle-size: 1.25rem; }
       html .comp .comp-number-input, :root .comp .comp-number-input {
-        width: 1.625rem;
+        font-family: var(--font-emphasis);
+        color: var(--blades-white-bright);
+        width: 2rem;
         text-align: center; }
       html .comp .tooltip, :root .comp .tooltip {
         opacity: 0;
@@ -1364,7 +1373,7 @@ html, :root {
             opacity: 0.5;
             -webkit-filter: blur(0.5px);
             filter: blur(0.5px);
-            top: 40%;
+            top: 50%;
             left: 50%;
             height: 100%;
             z-index: 0;
@@ -1907,6 +1916,9 @@ html, :root {
     margin: 0 0.3125rem; }
     html .text-secret:first-child:last-child, :root .text-secret:first-child:last-child {
       display: block; }
+  html label:not([class]), :root label:not([class]) {
+    color: var(--blades-white-bright);
+    font-weight: bold; }
   html .filled-label, :root .filled-label {
     font-size: 1.25rem;
     line-height: 1;
@@ -2028,7 +2040,7 @@ html, :root {
   width: calc(100% + 2 * var(--content-padding));
   margin-left: calc(-1 * var(--content-padding)); }
   #tinymce {
-    min-height: 100px;
+    min-height: var(--min-tinymce-height);
     background-color: rgba(0, 0, 0, 0.2);
     height: 100%;
     margin: 0; }

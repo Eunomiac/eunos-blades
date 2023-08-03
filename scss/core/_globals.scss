@@ -78,6 +78,12 @@
     &:first-child:last-child { display: block }
   }
 
+  label:not([class]) {
+    // background: var(--blades-grey-bright);
+    color: var(--blades-white-bright);
+    font-weight: bold;
+  }
+
   .filled-label {
     font-size: toRem(20px);
     line-height: 1;

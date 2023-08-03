@@ -1,33 +1,36 @@
 {
-	"ACTOR": {
-		"TypePc": "Scoundrel",
-		"TypeNpc": "NPC",
-		"TypeCrew": "Crew",
-		"TypeFaction": "Faction"
-	},
-	"ITEM": {
-		"TypeItem": "Gear",
-		"TypeAbility": "Scoundrel Ability",
-		"TypeHeritage": "Heritage",
-		"TypeBackground": "Background",
-		"TypeVice": "Vice",
-		"TypeCohort": "Cohort",
-		"TypeStricture": "Stricture (Vampire)",
-		"TypeFeature": "Feature (Hull)",
-		"TypePlaybook": "Playbook (Scoundrel)",
-		"TypeCrew_playbook": "Playbook (Crew)",
-		"TypeCrew_reputation": "Crew Reputation",
-		"TypeCrew_upgrade": "Crew Upgrade",
-		"TypeCrew_ability": "Crew Ability",
-		"TypeGm_tracker": "Tracker: GM Overview",
-		"TypeClock_keeper": "Tracker: Clocks",
-		"TypePreferred_op": "Preferred Op",
-		"TypeProject": "Project",
-		"TypeRitual": "Ritual",
-		"TypeDesign": "Design",
-		"TypeLocation": "Location",
-		"TypeScore": "Score"
-	},
+  "TYPES": {
+    "Actor": {
+      "pc": "Scoundrel",
+      "npc": "NPC",
+      "crew": "Crew",
+      "faction": "Faction"
+    },
+    "Item": {
+      "ability": "Scoundrel Ability",
+      "background": "Background",
+      "clock_keeper": "Tracker: Clock Keeper",
+      "cohort_expert": "Cohort (Expert)",
+      "cohort_gang": "Cohort (Gang)",
+      "crew_ability": "Crew Ability",
+      "crew_playbook": "Playbook (Crew)",
+      "crew_reputation": "Crew Reputation",
+      "crew_upgrade": "Crew Upgrade",
+      "design": "Design",
+      "feature": "Feature",
+      "gear": "Gear",
+      "gm_tracker": "Tracker: GM Overview",
+      "heritage": "Heritage",
+      "location": "Location",
+      "playbook": "Playbook (Scoundrel)",
+      "preferred_op": "Preferred Op",
+      "project": "Project",
+      "ritual": "Ritual",
+      "score": "Score",
+      "stricture": "Stricture",
+      "vice": "Vice"
+    }
+  },
 	"BITD": {
 		"Heritage": "Heritage",
 		"Background": "Background",

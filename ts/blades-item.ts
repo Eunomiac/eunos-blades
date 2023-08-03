@@ -158,7 +158,7 @@ class BladesItem extends Item implements BladesDocument<Item> {
 
   _prepareGmTrackerData(system: ExtractBladesItemSystem<BladesItemType.gm_tracker>) {
     if (!BladesItem.IsType(this, BladesItemType.gm_tracker)) { return }
-
+    system.phases = Object.values(BladesPhase);
   }
 
   _prepareCohortData(system: ExtractBladesItemSystem<BladesItemType.cohort_gang|BladesItemType.cohort_expert>) {
@@ -271,6 +271,9 @@ class BladesItem extends Item implements BladesDocument<Item> {
 
   override async _onUpdate(changed: any, options: any, userId: string) {
     await super._onUpdate(changed, options, userId);
+    if (BladesItem.IsType(this, BladesItemType.gm_tracker)) {
+      BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
+    }
   }
 
   _overlayElement?: HTMLElement;

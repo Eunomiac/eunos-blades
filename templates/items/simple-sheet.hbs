@@ -10,6 +10,11 @@
       <img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
       <input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}"
         placeholder="{{localize 'BITD.Name'}}" />
+      {{#if tierData}}
+      {{> "systems/eunos-blades/templates/components/comp.hbs" tierData}}
+      {{/if}}
+      {{#if system.subtitle}}
+      <input class="sheet-subtitle shadowed" type="text" name="system.subtitle" value="{{system.subtitle}}">
     </section>
 
     <section class="item-main flex-vertical">

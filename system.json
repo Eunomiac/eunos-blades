@@ -4,9 +4,9 @@
   "description": "Blades in the dark game system, modified for personal use by Eunomiac.",
   "version": "0.1",
   "compatibility": {
-    "minimum": "10",
-    "verified": "10",
-    "maximum": "10"
+    "minimum": "11",
+    "verified": "11",
+    "maximum": "11"
   },
 	"socket": true,
 	"authors": [

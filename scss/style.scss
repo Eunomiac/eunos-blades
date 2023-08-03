@@ -129,6 +129,25 @@
         overflow-x: hidden;
         height: 100%;
         width: 100%;
+        min-height: var(--min-tinymce-height);
+
+        &.prosemirror, &.prosemirror * {
+          --color-control-bg: var(--blades-black-dark);
+          --color-hover-bg: var(--blades-black);
+          color: var(--blades-white-bright);
+
+          .menu button {
+            background: var(--blades-black);
+
+            &:hover, &.active {
+              background: var(--blades-black-dark);
+            }
+          }
+
+          .menu button:hover, .menu button:active {
+            background: var(--blades-black-dark);
+          }
+        }
 
         .editor-edit {
           display: block;
@@ -143,8 +162,8 @@
 
         .editor-content {
           position: relative;
-          width: calc(100% + (2 * var(--content-padding)));
-          left: calc(-1 * var(--content-padding));
+          // width: calc(100% + (2 * var(--content-padding)));
+          // left: calc(-1 * var(--content-padding));
           padding-left: var(--content-padding);
           padding-right: var(--content-padding);
           @import './tinymce/tinymce-content';
@@ -156,8 +175,10 @@
       .editor.tinymce {
         position: relative;
         max-width: unset;
-        width: calc(100% + (2 * var(--content-padding)));
+        // width: calc(100% + (2 * var(--content-padding)));
+        width: 100%;
         height: 100%;
+        min-height: var(--min-tinymce-height);
 
         .editor-content {
           @import './tinymce/tinymce-content';
@@ -203,6 +224,10 @@
 
         &.dialog {
           @import './dialog/dialogs'
+        }
+
+        &.active-effect-sheet {
+          @import './sheets/active-effect-config'
         }
       }
     }

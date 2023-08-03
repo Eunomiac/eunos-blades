@@ -1,16 +1,21 @@
 <form class="{{cssClass}}" autocomplete="off">
+
+  {{!-- Tags --}}
+  {{#if isGM}}
+  <input type="text" class="comp-tags tags-gm" />
+  {{/if}}
+
+  {{!-- Sheet Container --}}
   <div class="sheet-root">
 
-    {{#if isGM}}
-    <input type="text" class="comp-tags tags-gm" />
-    {{/if}}
-
+    {{!-- Header --}}
     <section class="sheet-top">
       <img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
-      <input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}"
-        placeholder="{{localize 'BITD.Name'}}" />
+      <input class="sheet-title shadowed" type="text" name="name" value="{{item.name}}">
     </section>
-    <section class="item-main flex-vertical">
+
+    {{!-- Body --}}
+    <section class="tab-content flex-vertical">
       {{#if (test isGM "||" isEmbeddedItem)}}
       <label class="tab-label">
         <span class="tab-title">Description</span>
@@ -23,47 +28,48 @@
       </label>
       {{editor system.rules target="system.rules" button=true owner=owner editable=editable}}
 
-      {{#if (test isGM "||" system.rules_notes)}}
+      {{#if (test isGM "||" system.notes)}}
       <label class="tab-label">
-        <span class="tab-title">Additional Rules Notes</span>
+        <span class="tab-title">Notes</span>
       </label>
-      {{editor system.rules_notes target="system.rules_notes" button=true owner=owner editable=editable}}
+      {{editor system.notes target="system.notes" button=true owner=owner editable=editable}}
       {{/if}}
 
-      {{#if (test isGM "||" (test system.load "||" (test system.uses.max "||" system.num_available)))}}
+      {{#if (test isGM "||" system.uses_per_score)}}
       <div class="flex-horizontal full-width">
         {{#if (test isGM "||" system.price)}}
         <div class="comp comp-horizontal">
           <label class="comp-label comp-input-label">Cost: </label>
-          <input class="comp-number-input" data-dtype="Number" type="number" name="system.price" value="{{system.price}}">
+          <input class="comp-number-input shadowed" data-dtype="Number" type="number" name="system.price" value="{{system.price}}">
         </div>
         {{/if}}
-        {{#if (test isGM "||" system.uses.max)}}
+        {{#if (test isGM "||" system.uses_per_score.max)}}
         <div class="comp comp-horizontal">
           <label class="comp-label comp-input-label">Uses: </label>
-          <input class="comp-number-input" data-dtype="Number" type="number" name="system.uses.max"
-            value="{{system.uses.max}}">
+          <input class="comp-number-input shadowed" data-dtype="Number" type="number" name="system.uses_per_score.max"
+            value="{{system.uses_per_score.max}}">
         </div>
         {{/if}}
-        {{#if (test isGM "||" system.num_available)}}
+        {{#if (test isGM "||" system.max_per_score)}}
         <div class="comp comp-horizontal">
           <label class="comp-label comp-input-label">Max per Score: </label>
-          <input class="comp-number-input" data-dtype="Number" type="number" name="system.num_available"
-            value="{{system.num_available}}">
+          <input class="comp-number-input shadowed" data-dtype="Number" type="number" name="system.max_per_score"
+            value="{{system.max_per_score}}">
         </div>
         {{/if}}
       </div>
       {{/if}}
 
       {{#if isGM}}
-      <label class="tab-label">
-        <span class="tab-title">Active Effects</span>
-        <a class="comp-control comp-add effect-control" data-action="create" title="Create Effect">
+      <label class="comp tab-label">
+        <a class="comp-control comp-button comp-add effect-control" data-action="create" title="Create Effect">
           <i class="fas fa-plus-square"></i>
         </a>
+        <span class="tab-title">Active Effects</span>
       </label>
       {{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
       {{/if}}
     </section>
+    <section class="sheet-footer-small"></section>
   </div>
 </form>

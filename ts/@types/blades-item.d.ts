@@ -86,7 +86,8 @@ declare global {
 
     export interface Gm_Tracker extends BladesItemSchemaTemplate.Default,
       BladesItemSchemaTemplate.clocks {
-      phase: BladesPhase
+      phase: BladesPhase,
+      phases: BladesPhase[]
     }
 
     export interface Heritage extends BladesItemSchemaTemplate.Default { }
