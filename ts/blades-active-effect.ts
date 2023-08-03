@@ -27,7 +27,7 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, isRever
   addIfChargen: async (actor: BladesActor, funcData: string, isReversing = false) => {
     eLog.checkLog("activeEffects", "addIfChargen", {actor, funcData, isReversing});
     if (!actor) { return undefined }
-    if (!isReversing && game.eunoblades.Tracker!.system.game_phase !== BladesPhase.CharGen) { return undefined }
+    if (!isReversing && game.eunoblades.Tracker!.system.phase !== BladesPhase.CharGen) { return undefined }
     const [target, qty] = funcData.split(/:/);
     if (isReversing) {
       return actor.update({[target]: U.pInt(getProperty(actor, target)) - U.pInt(qty)});

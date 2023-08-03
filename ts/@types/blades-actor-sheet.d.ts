@@ -1,4 +1,4 @@
-import {Attributes, Actions, BladesPhase} from "./core/constants";
+import {Attributes, Actions, BladesPhase} from "../core/constants";
 
 declare global {
   // Final data sent to Handlebars through BladesActorSheet.getData()

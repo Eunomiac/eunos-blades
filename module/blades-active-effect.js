@@ -31,7 +31,7 @@ const CUSTOMFUNCS = {
         if (!actor) {
             return undefined;
         }
-        if (!isReversing && game.eunoblades.Tracker.system.game_phase !== BladesPhase.CharGen) {
+        if (!isReversing && game.eunoblades.Tracker.system.phase !== BladesPhase.CharGen) {
             return undefined;
         }
         const [target, qty] = funcData.split(/:/);

@@ -161,7 +161,7 @@ export namespace Tag {
     Fine = "Fine",
     General = "General",
     Advanced = "Advanced",
-    ViceOverride = "ViceOverride"
+    Upgraded = "Upgraded"
   }
   export enum PC {
     Member = "Member",

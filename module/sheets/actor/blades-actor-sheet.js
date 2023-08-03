@@ -43,7 +43,7 @@ class BladesActorSheet extends BladesSheet {
         context.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
         context.attributes = U.objMap(this.actor.system.attributes, (attrData) => U.objMap(attrData, (value) => ({
             value: value.value,
-            max: game.eunoblades.Tracker.system.game_phase === BladesPhase.CharGen ? 2 : value.max
+            max: game.eunoblades.Tracker.phase === BladesPhase.CharGen ? 2 : value.max
         })));
         context.acquaintancesName = this.actor.system.acquaintances_name ?? "Friends & Rivals";
         const { activeSubItems, activeSubActors } = this.actor;
@@ -51,12 +51,12 @@ class BladesActorSheet extends BladesSheet {
             abilities: activeSubItems
                 .filter((item) => item.type === BladesItemType.ability)
                 .map((item) => {
-                if (item.system.uses?.max) {
+                if (item.system.uses_per_score.max) {
                     Object.assign(item, {
                         inRuleDotline: {
-                            data: item.system.uses,
+                            data: item.system.uses_per_score,
                             dotlineLabel: "Uses",
-                            target: "item.system.uses.value",
+                            target: "item.system.uses_per_score.value",
                             iconEmpty: "dot-empty.svg",
                             iconEmptyHover: "dot-empty-hover.svg",
                             iconFull: "dot-full.svg",
@@ -76,12 +76,12 @@ class BladesActorSheet extends BladesSheet {
                         numberCircleClass: "item-load"
                     });
                 }
-                if (item.system.uses?.max) {
+                if (item.system.uses_per_score.max) {
                     Object.assign(item, {
                         inRuleDotline: {
-                            data: item.system.uses,
+                            data: item.system.uses_per_score,
                             dotlineLabel: "Uses",
-                            target: "item.system.uses.value",
+                            target: "item.system.uses_per_score.value",
                             iconEmpty: "dot-empty.svg",
                             iconEmptyHover: "dot-empty-hover.svg",
                             iconFull: "dot-full.svg",

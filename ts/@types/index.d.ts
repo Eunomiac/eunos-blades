@@ -25,6 +25,10 @@ declare global {
     actors: Collection<BladesActor>,
     user: User,
     scenes: Scenes,
+    model: {
+      Actor: Record<BladesActorType, BladesActorSystem>,
+      Item: Record<BladesItemType, BladesItemSystem>
+    },
     eunoblades: {
       ClockKeeper?: BladesItem,
       Tracker?: BladesItem,

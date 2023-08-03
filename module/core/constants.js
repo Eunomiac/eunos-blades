@@ -176,7 +176,7 @@ export var Tag;
         Item["Fine"] = "Fine";
         Item["General"] = "General";
         Item["Advanced"] = "Advanced";
-        Item["ViceOverride"] = "ViceOverride";
+        Item["Upgraded"] = "Upgraded";
     })(Item = Tag.Item || (Tag.Item = {}));
     let PC;
     (function (PC) {

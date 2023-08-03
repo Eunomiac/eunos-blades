@@ -25,6 +25,26 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
                                            BladesActorSubClass.NPC,
                                            BladesActorSubClass.Faction {
 
+  static async CleanData(actor?: BladesActor): Promise<unknown> {
+    if (!actor) { return Promise.all(BladesActor.All.map(BladesActor.CleanData)) }
+    // Only for factions and npcs
+    if (BladesActor.IsType(actor, BladesActorType.pc, BladesActorType.crew)) { return undefined }
+
+    // Get flattened schema from game.model
+    const flatSchema = flattenObject(game.model.Actor[actor.type]);
+
+    // Map actor data onto new schema
+    for (const dotKey of Object.keys(flatSchema)) {
+      flatSchema[dotKey] = getProperty(actor.system, dotKey);
+    }
+
+    // Create new actor
+    await BladesActor.create({name: actor.name!, img: actor.img, type: actor.type, system: flatSchema});
+
+    // Delete original actor
+    return actor.delete();
+  }
+
   // #region Static Overrides: Create ~
   static override async create(data: ActorDataConstructorData & { system?: Partial<BladesActorSystem> }, options = {}) {
     data.token = data.token || {};
@@ -81,8 +101,8 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
     return BladesActor.All.find((a) => a.system.world_name === actorRef)
       || BladesActor.All.find((a) => a.name === actorRef);
   }
-  static GetTypeWithTags(docType: BladesActorType, ...tags: BladesTag[]): BladesActor[] {
-    return BladesActor.All.filter((actor) => actor.type === docType)
+  static GetTypeWithTags<T extends BladesActorType>(docType: T, ...tags: BladesTag[]): Array<BladesActorOfType<T>> {
+    return BladesActor.All.filter((actor): actor is BladesActorOfType<T> => actor.type === docType)
       .filter((actor) => actor.hasTag(...tags));
   }
 
@@ -376,21 +396,21 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
     }
     return true;
   }
-  private _processEmbeddedItemMatches(globalItems: BladesItem[]) {
+  private _processEmbeddedItemMatches<T extends BladesItemType>(globalItems: Array<BladesItemOfType<T>>): Array<BladesItemOfType<T>> {
 
     return globalItems
 
     // Step 1: Filter out globals that fail prereqs.
       .filter((item) => this._checkItemPrereqs(item))
 
-    // Step 2: Filter out already-active items based on num_available (unless MultiplesOk)
+    // Step 2: Filter out already-active items based on max_per_score (unless MultiplesOk)
       .filter((gItem) => {
-        return gItem.hasTag(Tag.System.MultiplesOK) || (gItem.system.num_available ?? 1) > this.activeSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name).length;
+        return gItem.hasTag(Tag.System.MultiplesOK) || (gItem.system.max_per_score ?? 1) > this.activeSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name).length;
       })
 
     // Step 3: Replace with matching Archived, Embedded subItems
       .map((gItem) => {
-        const matchingSubItems = this.archivedSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name);
+        const matchingSubItems = this.archivedSubItems.filter((sItem): sItem is BladesItemOfType<T> => sItem.system.world_name === gItem.system.world_name);
         if (matchingSubItems.length > 0) {
           return matchingSubItems;
         } else {
@@ -503,7 +523,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
           ...BladesItem.GetTypeWithTags(BladesItemType.item, this.playbookName),
           ...BladesItem.GetTypeWithTags(BladesItemType.item, Tag.Item.General)
         ])
-          .filter((item) => this.remainingLoad >= item.load);
+          .filter((item) => this.remainingLoad >= item.system.load);
 
         // Two tabs, one for playbook and the other for general items
         dialogData[this.playbookName] = gearItems.filter((item) => item.hasTag(this.playbookName!));
@@ -802,7 +822,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   get spentCohortPoints(): number {
     if (!this.playbook) { return 0 }
     if (![BladesActorType.crew].includes(this.type)) { return 0 }
-    return this.cohorts.length + this.cohorts.filter((cohort) => cohort.system.isUpgraded).length;
+    return this.cohorts.length + this.cohorts.filter((cohort) => cohort.hasTag(Tag.Item.Upgraded)).length;
   }
   get availableCohortPoints(): number {
     if (!this.playbook) { return 0 }
@@ -916,7 +936,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   // #endregion
   // #region BladesCrew Implementation ~
 
-  get members() {
+  get members(): Array<BladesActorOfType<BladesActorType.pc>> {
     if (this.type !== BladesActorType.crew) { return [] }
     return BladesActor.GetTypeWithTags(BladesActorType.pc).filter((actor) => actor.isMember(this));
   }
@@ -1016,20 +1036,20 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
               .forEach((subActor) => this.remSubActor(subActor));
             break;
           }
-          case BladesItemType.playbook: {
-            if (!BladesActor.IsType(this, BladesActorType.pc)) { return }
-            await this.update({
-              "system.trauma.active": Object.assign(
-                Object.fromEntries(Object.keys(this.system.trauma.active).map((tCond: string) => [tCond, false])),
-                Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond: string) => [tCond, true]))
-              ),
-              "system.trauma.checked": Object.assign(
-                Object.fromEntries(Object.keys(this.system.trauma.checked).map((tCond: string) => [tCond, false])),
-                Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond: string) => [tCond, false]))
-              )
-            });
-            break;
-          }
+          // case BladesItemType.playbook: {
+          //   if (!BladesActor.IsType(this, BladesActorType.pc)) { return }
+          //   await this.update({
+          //     "system.trauma.active": Object.assign(
+          //       Object.fromEntries(Object.keys(this.system.trauma.active).map((tCond: string) => [tCond, false])),
+          //       Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond: string) => [tCond, true]))
+          //     ),
+          //     "system.trauma.checked": Object.assign(
+          //       Object.fromEntries(Object.keys(this.system.trauma.checked).map((tCond: string) => [tCond, false])),
+          //       Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond: string) => [tCond, false]))
+          //     )
+          //   });
+          //   break;
+          // }
           // no default
         }
       }

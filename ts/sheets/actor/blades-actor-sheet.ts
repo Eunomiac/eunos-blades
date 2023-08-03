@@ -57,7 +57,7 @@ class BladesActorSheet extends BladesSheet {
 
     context.attributes = U.objMap(this.actor.system.attributes, (attrData: Record<Actions, ValueMax>) => U.objMap(attrData, (value: ValueMax): ValueMax => ({
       value: value.value,
-      max: game.eunoblades.Tracker!.system.game_phase === BladesPhase.CharGen ? 2 : value.max
+      max: game.eunoblades.Tracker!.phase === BladesPhase.CharGen ? 2 : value.max
     }))) as Record<Attributes,Record<Actions,ValueMax>>;
 
     context.acquaintancesName = this.actor.system.acquaintances_name ?? "Friends & Rivals";
@@ -66,15 +66,15 @@ class BladesActorSheet extends BladesSheet {
 
     context.preparedItems = {
       abilities: activeSubItems
-        .filter((item) => item.type === BladesItemType.ability)
+        .filter((item): item is BladesItemOfType<BladesItemType.ability> => item.type === BladesItemType.ability)
         .map((item) => {
           //~ Assign dotlines to abilities with usage data
-          if (item.system.uses?.max) {
+          if (item.system.uses_per_score.max) {
             Object.assign(item, {
               inRuleDotline: {
-                data: item.system.uses,
+                data: item.system.uses_per_score,
                 dotlineLabel: "Uses",
-                target: "item.system.uses.value",
+                target: "item.system.uses_per_score.value",
                 iconEmpty: "dot-empty.svg",
                 iconEmptyHover: "dot-empty-hover.svg",
                 iconFull: "dot-full.svg",
@@ -87,7 +87,7 @@ class BladesActorSheet extends BladesSheet {
       background: activeSubItems.find((item) => item.type === BladesItemType.background),
       heritage: activeSubItems.find((item) => item.type === BladesItemType.heritage),
       vice: activeSubItems.find((item) => item.type === BladesItemType.vice),
-      loadout: activeSubItems.filter((item) => item.type === BladesItemType.item).map((item) => {
+      loadout: activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.item> => item.type === BladesItemType.item).map((item) => {
         // Assign load and usage data to gear
         if (item.system.load) {
           Object.assign(item, {
@@ -95,12 +95,12 @@ class BladesActorSheet extends BladesSheet {
             numberCircleClass: "item-load"
           });
         }
-        if (item.system.uses?.max) {
+        if (item.system.uses_per_score.max) {
           Object.assign(item, {
             inRuleDotline: {
-              data: item.system.uses,
+              data: item.system.uses_per_score,
               dotlineLabel: "Uses",
-              target: "item.system.uses.value",
+              target: "item.system.uses_per_score.value",
               iconEmpty: "dot-empty.svg",
               iconEmptyHover: "dot-empty-hover.svg",
               iconFull: "dot-full.svg",

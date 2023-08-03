@@ -90,12 +90,14 @@ class BladesItem extends Item {
         await this.remTag(Tag.System.Archived);
         return this;
     }
-    get load() { return this.system.load ?? 0; }
-    get maxPerScore() { return this.system.num_available ?? 1; }
-    get usesPerScore() { return this.system.uses?.max ?? 1; }
-    get usesRemaining() { return Math.max(0, this.usesPerScore - (this.system.uses?.value ?? 0)); }
-    get phase() { return this.system.game_phase; }
-    set phase(phase) { this.update({ system: { game_phase: phase } }); }
+    
+    
+    get phase() { return BladesItem.IsType(this, BladesItemType.gm_tracker) && this.system.phase; }
+    set phase(phase) {
+        if (phase && BladesItem.IsType(this, BladesItemType.gm_tracker)) {
+            this.update({ "system.phase": phase });
+        }
+    }
     get actionMax() { return this.phase === BladesPhase.CharGen ? 2 : undefined; }
     async _preCreate(data, options, user) {
         await super._preCreate(data, options, user);

@@ -11,6 +11,20 @@ import { bladesRoll } from "./blades-roll.js";
 import BladesItem, { PrereqType } from "./blades-item.js";
 import { SelectionCategory } from "./blades-dialog.js";
 class BladesActor extends Actor {
+    static async CleanData(actor) {
+        if (!actor) {
+            return Promise.all(BladesActor.All.map(BladesActor.CleanData));
+        }
+        if (BladesActor.IsType(actor, BladesActorType.pc, BladesActorType.crew)) {
+            return undefined;
+        }
+        const flatSchema = flattenObject(game.model.Actor[actor.type]);
+        for (const dotKey of Object.keys(flatSchema)) {
+            flatSchema[dotKey] = getProperty(actor.system, dotKey);
+        }
+        await BladesActor.create({ name: actor.name, img: actor.img, type: actor.type, system: flatSchema });
+        return actor.delete();
+    }
 
     static async create(data, options = {}) {
         data.token = data.token || {};
@@ -332,7 +346,7 @@ class BladesActor extends Actor {
         return globalItems
             .filter((item) => this._checkItemPrereqs(item))
             .filter((gItem) => {
-            return gItem.hasTag(Tag.System.MultiplesOK) || (gItem.system.num_available ?? 1) > this.activeSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name).length;
+            return gItem.hasTag(Tag.System.MultiplesOK) || (gItem.system.max_per_score ?? 1) > this.activeSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name).length;
         })
             .map((gItem) => {
             const matchingSubItems = this.archivedSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name);
@@ -474,7 +488,7 @@ class BladesActor extends Actor {
                     ...BladesItem.GetTypeWithTags(BladesItemType.item, this.playbookName),
                     ...BladesItem.GetTypeWithTags(BladesItemType.item, Tag.Item.General)
                 ])
-                    .filter((item) => this.remainingLoad >= item.load);
+                    .filter((item) => this.remainingLoad >= item.system.load);
                 dialogData[this.playbookName] = gearItems.filter((item) => item.hasTag(this.playbookName));
                 dialogData.General = gearItems
                     .filter((item) => item.hasTag(Tag.Item.General))
@@ -771,7 +785,7 @@ class BladesActor extends Actor {
         if (![BladesActorType.crew].includes(this.type)) {
             return 0;
         }
-        return this.cohorts.length + this.cohorts.filter((cohort) => cohort.system.isUpgraded).length;
+        return this.cohorts.length + this.cohorts.filter((cohort) => cohort.hasTag(Tag.Item.Upgraded)).length;
     }
     get availableCohortPoints() {
         if (!this.playbook) {
@@ -994,16 +1008,6 @@ class BladesActor extends Actor {
                         this.activeSubActors
                             .filter((subActor) => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name))
                             .forEach((subActor) => this.remSubActor(subActor));
-                        break;
-                    }
-                    case BladesItemType.playbook: {
-                        if (!BladesActor.IsType(this, BladesActorType.pc)) {
-                            return;
-                        }
-                        await this.update({
-                            "system.trauma.active": Object.assign(Object.fromEntries(Object.keys(this.system.trauma.active).map((tCond) => [tCond, false])), Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond) => [tCond, true]))),
-                            "system.trauma.checked": Object.assign(Object.fromEntries(Object.keys(this.system.trauma.checked).map((tCond) => [tCond, false])), Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond) => [tCond, false])))
-                        });
                         break;
                     }
                 }

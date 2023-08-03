@@ -17,16 +17,8 @@ export enum PrereqType {
   Not_HasAllTags = "Not_HasAllTags",
   Not_HasAnyTag = "Not_HasAnyTag"
 }
-declare abstract class BladesItemDocument {
-  archive: () => Promise<BladesItem>;
-  unarchive: () => Promise<BladesItem>;
 
-  load: int|null;
-  maxPerScore: int;
-  usesPerScore: int;
-  usesRemaining: int;
-}
-class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocument {
+class BladesItem extends Item implements BladesDocument<Item> {
 
   // #region Static Overrides: Create ~
   static override async create(data: ItemDataConstructorData & { system?: { world_name?: string, description?: string } }, options = {}) {
@@ -50,8 +42,8 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
     return BladesItem.All.find((a) => a.system.world_name === itemRef)
       || BladesItem.All.find((a) => a.name === itemRef);
   }
-  static GetTypeWithTags(docType: BladesItemType, ...tags: BladesTag[]): BladesItem[] {
-    return BladesItem.All.filter((item) => item.type === docType)
+  static GetTypeWithTags<T extends BladesItemType>(docType: T, ...tags: BladesTag[]): Array<BladesItemOfType<T>> {
+    return BladesItem.All.filter((item): item is BladesItemOfType<T> => item.type === docType)
       .filter((item) => item.hasTag(...tags));
   }
 
@@ -99,16 +91,20 @@ class BladesItem extends Item implements BladesDocument<Item>, BladesItemDocumen
     return this;
   }
 
-  get load() { return this.system.load ?? 0 }
-  get maxPerScore() { return this.system.num_available ?? 1 }
-  get usesPerScore() { return this.system.uses?.max ?? 1 }
-  get usesRemaining() { return Math.max(0, this.usesPerScore - (this.system.uses?.value ?? 0)) }
+  // get load() { return this.system.load ?? 0 }
+  // get maxPerScore() { return this.system.max_per_score ?? 1 }
+  // get usesPerScore() { return this.system.uses_per_score?.max ?? 1 }
+  // get usesRemaining() { return Math.max(0, this.usesPerScore - (this.system.uses_per_score?.value ?? 0)) }
   // #endregion
 
   // #region BladesGMTracker Implementation
 
-  get phase() { return this.system.game_phase as BladesPhase }
-  set phase(phase: BladesPhase) { this.update({system: {game_phase: phase}}) }
+  get phase(): BladesPhase|false { return BladesItem.IsType(this, BladesItemType.gm_tracker) && this.system.phase }
+  set phase(phase: BladesPhase|false) {
+    if (phase && BladesItem.IsType(this, BladesItemType.gm_tracker)) {
+      this.update({"system.phase": phase});
+    }
+  }
 
   get actionMax() { return this.phase === BladesPhase.CharGen ? 2 : undefined}
 

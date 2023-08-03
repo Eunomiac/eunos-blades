@@ -7,7 +7,6 @@ declare global {
   type BladesRandomizer<T extends string = string> = { isLocked: boolean, value: T }
   type SubActorData = Partial<BladesActor["system"]>
 
-
   // #region SCHEMA DATA: TEMPLATE.JSON & SYSTEM
 
   // template.json "template" definitions for BladesActors
@@ -142,20 +141,20 @@ declare global {
 
   // Distinguishing schema types for BladesActor subtypes
   type BladesActorOfType<T extends BladesActorType> = BladesActor & {
-    system: ExtractBladesActorSystem<T>;
+    system: ExtractBladesActorSystem<T>
   };
 
   type ExtractBladesActorSystem<T extends BladesActorType | "ANY" = "ANY"> = {
-    [BladesActorType.pc]: BladesActorSchema.Scoundrel;
-    [BladesActorType.crew]: BladesActorSchema.Crew;
-    [BladesActorType.npc]: BladesActorSchema.NPC;
-    [BladesActorType.faction]: BladesActorSchema.Faction;
-    ["ANY"]: BladesActorSystem;
+    [BladesActorType.pc]: BladesActorSchema.Scoundrel,
+    [BladesActorType.crew]: BladesActorSchema.Crew,
+    [BladesActorType.npc]: BladesActorSchema.NPC,
+    [BladesActorType.faction]: BladesActorSchema.Faction,
+    ["ANY"]: BladesActorSystem
   }[T];
 
   // #endregion BASIC DATA
 
-  // #region SUBCLASS DEFINITIONS: ACCESSORS & METHODS
+  // #region ACTOR SUBCLASS DEFINITIONS: ACCESSORS & METHODS
 
   namespace BladesActorComponent {
 
@@ -293,6 +292,7 @@ declare global {
 
   }
 
+  // #region Interface Contracts for Implementation by BladesActor Subclass
   interface BladesPrimaryActor {
     primaryUser?: User;
   }
@@ -397,12 +397,16 @@ declare global {
   interface BladesNPC extends SubItemControl, BladesSubActor {
 
   }
+  // #endregion
 
+  // #endregion
 
-  // Actor getRollData() Schema
+  // #region ACTOR getRollData() SCHEMA
   interface BladesActorRoll { }
 
   type BladesActorRollData<T extends BladesActorType | "ANY" = "ANY"> = T extends "ANY"
     ? BladesActorSystem & BladesActorRoll
     : ExtractBladesActorSystem<T> & BladesActorRoll;
+  // #endregion
+
 }

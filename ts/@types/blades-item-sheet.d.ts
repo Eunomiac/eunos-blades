@@ -41,34 +41,6 @@ declare global {
     export interface Score {}
   }
 
-  // Distinguishing schema types for BladesItem subtypes
-  type BladesItemSheetDataOfType<T extends BladesItemType> = {
-    [BladesItemType.ability]: BladesItemSheetTypedData.Ability,
-    [BladesItemType.background]: BladesItemSheetTypedData.Background,
-    [BladesItemType.clock_keeper]: BladesItemSheetTypedData.Clock_Keeper,
-    [BladesItemType.cohort_gang]: BladesItemSheetTypedData.Cohort_Gang,
-    [BladesItemType.cohort_expert]: BladesItemSheetTypedData.Cohort_Expert,
-    [BladesItemType.crew_ability]: BladesItemSheetTypedData.Crew_Ability,
-    [BladesItemType.crew_reputation]: BladesItemSheetTypedData.Crew_Reputation,
-    [BladesItemType.crew_playbook]: BladesItemSheetTypedData.Crew_Playbook,
-    [BladesItemType.crew_upgrade]: BladesItemSheetTypedData.Crew_Upgrade,
-    [BladesItemType.feature]: BladesItemSheetTypedData.Feature,
-    [BladesItemType.gm_tracker]: BladesItemSheetTypedData.Gm_Tracker,
-    [BladesItemType.heritage]: BladesItemSheetTypedData.Heritage,
-    [BladesItemType.item]: BladesItemSheetTypedData.Item,
-    [BladesItemType.playbook]: BladesItemSheetTypedData.Playbook,
-    [BladesItemType.preferred_op]: BladesItemSheetTypedData.Preferred_Op,
-    [BladesItemType.stricture]: BladesItemSheetTypedData.Stricture,
-    [BladesItemType.vice]: BladesItemSheetTypedData.Vice,
-    [BladesItemType.project]: BladesItemSheetTypedData.Project,
-    [BladesItemType.ritual]: BladesItemSheetTypedData.Ritual,
-    [BladesItemType.design]: BladesItemSheetTypedData.Design,
-    [BladesItemType.location]: BladesItemSheetTypedData.Location,
-    [BladesItemType.score]: BladesItemSheetTypedData.Score
-  }[T];
-
-  type BladesItemDataOfType<T extends BladesItemType> = BladesItemSheetDataOfType<T>
-
   // Merged Actor Subtype Schemas into Master BladesItem System Schema
   interface BladesItemSheetData extends BladesBaseItemSheetContext,
                                       Partial<BladesItemSheetTypedData.Ability>,
@@ -93,5 +65,31 @@ declare global {
                                       Partial<BladesItemSheetTypedData.Design>,
                                       Partial<BladesItemSheetTypedData.Location>,
                                       Partial<BladesItemSheetTypedData.Score> { }
+
+  // Distinguishing schema types for BladesItem subtypes
+  type BladesItemDataOfType<T extends BladesItemType> = {
+    [BladesItemType.ability]: BladesItemSheetTypedData.Ability,
+    [BladesItemType.background]: BladesItemSheetTypedData.Background,
+    [BladesItemType.clock_keeper]: BladesItemSheetTypedData.Clock_Keeper,
+    [BladesItemType.cohort_gang]: BladesItemSheetTypedData.Cohort_Gang,
+    [BladesItemType.cohort_expert]: BladesItemSheetTypedData.Cohort_Expert,
+    [BladesItemType.crew_ability]: BladesItemSheetTypedData.Crew_Ability,
+    [BladesItemType.crew_reputation]: BladesItemSheetTypedData.Crew_Reputation,
+    [BladesItemType.crew_playbook]: BladesItemSheetTypedData.Crew_Playbook,
+    [BladesItemType.crew_upgrade]: BladesItemSheetTypedData.Crew_Upgrade,
+    [BladesItemType.feature]: BladesItemSheetTypedData.Feature,
+    [BladesItemType.gm_tracker]: BladesItemSheetTypedData.Gm_Tracker,
+    [BladesItemType.heritage]: BladesItemSheetTypedData.Heritage,
+    [BladesItemType.item]: BladesItemSheetTypedData.Item,
+    [BladesItemType.playbook]: BladesItemSheetTypedData.Playbook,
+    [BladesItemType.preferred_op]: BladesItemSheetTypedData.Preferred_Op,
+    [BladesItemType.stricture]: BladesItemSheetTypedData.Stricture,
+    [BladesItemType.vice]: BladesItemSheetTypedData.Vice,
+    [BladesItemType.project]: BladesItemSheetTypedData.Project,
+    [BladesItemType.ritual]: BladesItemSheetTypedData.Ritual,
+    [BladesItemType.design]: BladesItemSheetTypedData.Design,
+    [BladesItemType.location]: BladesItemSheetTypedData.Location,
+    [BladesItemType.score]: BladesItemSheetTypedData.Score
+  }[T];
 
 }
