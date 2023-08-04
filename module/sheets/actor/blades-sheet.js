@@ -18,8 +18,9 @@ class BladesSheet extends ActorSheet {
     getData() {
         const context = super.getData();
         const sheetData = {
+            cssClass: this.actor.type,
             editable: this.options.editable,
-            isGM: game.user.isGM,
+            isGM: game.eunoblades.Tracker.system.is_spoofing_player ? false : game.user.isGM,
             actor: this.actor,
             system: this.actor.system,
             rollData: this.actor.getRollData(),

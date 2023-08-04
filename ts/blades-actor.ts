@@ -430,7 +430,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
         if (sItem.isEmbedded) {
           cssClasses.push("embedded");
         }
-        if (sItem.hasTag(Tag.Item.Fine)) {
+        if (sItem.hasTag(Tag.Gear.Fine)) {
           cssClasses.push("fine-quality");
         }
         if (sItem.hasTag(Tag.System.Featured)) {
@@ -466,8 +466,8 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       .sort((a, b) => {
         if (a.hasTag(Tag.System.Featured) && !b.hasTag(Tag.System.Featured)) { return -1 }
         if (!a.hasTag(Tag.System.Featured) && b.hasTag(Tag.System.Featured)) { return 1 }
-        if (a.hasTag(Tag.Item.Fine) && !b.hasTag(Tag.Item.Fine)) { return -1 }
-        if (!a.hasTag(Tag.Item.Fine) && b.hasTag(Tag.Item.Fine)) { return 1 }
+        if (a.hasTag(Tag.Gear.Fine) && !b.hasTag(Tag.Gear.Fine)) { return -1 }
+        if (!a.hasTag(Tag.Gear.Fine) && b.hasTag(Tag.Gear.Fine)) { return 1 }
         if (a.system.world_name > b.system.world_name) { return 1 }
         if (a.system.world_name < b.system.world_name) { return -1 }
         if (a.isEmbedded && !b.isEmbedded) { return -1 }
@@ -502,8 +502,8 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       case SelectionCategory.Playbook: {
         switch (this.type) {
           case BladesActorType.pc: {
-            dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook).filter((item) => !item.hasTag(Tag.Item.Advanced)));
-            dialogData.Advanced = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Item.Advanced));
+            dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook).filter((item) => !item.hasTag(Tag.Gear.Advanced)));
+            dialogData.Advanced = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Gear.Advanced));
             return dialogData;
           }
           case BladesActorType.crew: {
@@ -524,15 +524,15 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       case SelectionCategory.Gear: {
         if (this.type !== BladesActorType.pc || this.playbookName === null) { return false }
         const gearItems = this._processEmbeddedItemMatches([
-          ...BladesItem.GetTypeWithTags(BladesItemType.item, this.playbookName),
-          ...BladesItem.GetTypeWithTags(BladesItemType.item, Tag.Item.General)
+          ...BladesItem.GetTypeWithTags(BladesItemType.gear, this.playbookName),
+          ...BladesItem.GetTypeWithTags(BladesItemType.gear, Tag.Gear.General)
         ])
           .filter((item) => this.remainingLoad >= item.system.load);
 
         // Two tabs, one for playbook and the other for general items
         dialogData[this.playbookName] = gearItems.filter((item) => item.hasTag(this.playbookName!));
         dialogData.General = gearItems
-          .filter((item) => item.hasTag(Tag.Item.General))
+          .filter((item) => item.hasTag(Tag.Gear.General))
         // Remove featured class from General items
           .map((item) => {
             if (item.dialogCSSClasses) {
@@ -576,7 +576,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       case SelectionCategory.Upgrade: {
         if (this.playbookName === null) { return false }
         dialogData[this.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, this.playbookName));
-        dialogData.General = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, Tag.Item.General));
+        dialogData.General = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, Tag.Gear.General));
         return dialogData;
       }
       // no default
@@ -667,7 +667,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   async remSubItem(itemRef: ItemRef): Promise<void> {
     const subItem = this.getSubItem(itemRef);
     if (!subItem) { return }
-    if (subItem.type !== BladesItemType.item) {
+    if (subItem.type !== BladesItemType.gear) {
       this.purgeSubItem(itemRef);
       return;
     }
@@ -826,7 +826,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   get spentCohortPoints(): number {
     if (!this.playbook) { return 0 }
     if (![BladesActorType.crew].includes(this.type)) { return 0 }
-    return this.cohorts.length + this.cohorts.filter((cohort) => cohort.hasTag(Tag.Item.Upgraded)).length;
+    return this.cohorts.length + this.cohorts.filter((cohort) => cohort.hasTag(Tag.Gear.Upgraded)).length;
   }
   get availableCohortPoints(): number {
     if (!this.playbook) { return 0 }
@@ -864,12 +864,12 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   get playbookName(): (BladesTag & Playbook) | undefined {
     return this.playbook?.name as (BladesTag & Playbook) | undefined;
   }
-  get playbook() {
-    if (this.type === BladesActorType.pc) {
-      return this.activeSubItems.find((item) => item.type === BladesItemType.playbook);
+  get playbook(): BladesItemOfType<BladesItemType.playbook|BladesItemType.crew_playbook>|undefined {
+    if (BladesActor.IsType(this, BladesActorType.pc)) {
+      return this.activeSubItems.find((item): item is BladesItemOfType<BladesItemType.playbook> => item.type === BladesItemType.playbook);
     }
-    if (this.type === BladesActorType.crew) {
-      return this.activeSubItems.find((item) => item.type === BladesItemType.crew_playbook);
+    if (BladesActor.IsType(this, BladesActorType.crew)) {
+      return this.activeSubItems.find((item): item is BladesItemOfType<BladesItemType.crew_playbook> => item.type === BladesItemType.crew_playbook);
     }
     return undefined;
   }
@@ -919,12 +919,8 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   }
   get currentLoad(): number {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0 }
-    const activeLoadItems = this.activeSubItems.filter((item) => item.type === BladesItemType.item);
-    return U.gsap.utils.clamp(0, 10, activeLoadItems
-      .reduce((tot, i) => tot + (i.type === "item"
-        ? U.pInt(i.system.load)
-        : 0
-      ), 0));
+    const activeLoadItems = this.activeSubItems.filter((item) => item.type === BladesItemType.gear);
+    return U.gsap.utils.clamp(0, 10, activeLoadItems.reduce((tot, i) => tot + U.pInt(i.system.load), 0));
   }
   get remainingLoad(): number {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0 }
@@ -944,9 +940,9 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
     if (this.type !== BladesActorType.crew) { return [] }
     return BladesActor.GetTypeWithTags(BladesActorType.pc).filter((actor) => actor.isMember(this));
   }
-  get contacts(): BladesActor[] {
+  get contacts(): Array<BladesActorOfType<BladesActorType.npc|BladesActorType.faction>> {
     if (this.type !== BladesActorType.crew || !this.playbook) { return [] }
-    return this.activeSubActors.filter((actor) => actor.hasTag(this.playbookName));
+    return this.activeSubActors.filter((actor): actor is BladesActorOfType<BladesActorType.npc|BladesActorType.faction> => actor.hasTag(this.playbookName));
   }
   get claims(): Record<number, BladesClaimData> {
     if (this.type !== BladesActorType.crew || !this.playbook) { return {} }

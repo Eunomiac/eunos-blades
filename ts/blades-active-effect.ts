@@ -1,8 +1,7 @@
 import BladesActor from "./blades-actor.js";
 import U from "./core/utilities.js";
-import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 import BladesItem from "./blades-item.js";
-import {Tag, BladesPhase} from "./core/constants.js";
+import {Tag, BladesPhase, Attributes, InsightActions, ProwessActions, ResolveActions} from "./core/constants.js";
 
 const FUNCQUEUE: Record<string, {
   curFunc: Promise<void>,
@@ -32,9 +31,37 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, isRever
     }
     return actor.update({[target]: U.pInt(getProperty(actor, target)) + U.pInt(qty)});
   },
-  // applyToMembers: async (crew: BladesActor, changeData: EffectChangeData, isReversing = false) => {
+  applyToMembers: async (crew: BladesActor, funcData: string, isReversing = false) => {
+    const members = crew.members;
+    if (members.length === 0) { return }
+    const [changeType, changeValue] = funcData.split(/:/);
+    switch (changeType) {
+      case "upgradeActionMax": {
+        const changeNum = U.pInt(changeValue);
 
-  // },
+        Promise.all(members.map(async (member) => {
+          const changeData: Record<string,number> = {};
+          for (const actionName of Object.values(InsightActions)) {
+            if (member.system.attributes.insight[actionName].max < changeNum) {
+              changeData[`system.attributes.insight.${actionName}.max`] = changeNum;
+            }
+          }
+          for (const actionName of Object.values(ProwessActions)) {
+            if (member.system.attributes.prowess[actionName].max < changeNum) {
+              changeData[`system.attributes.prowess.${actionName}.max`] = changeNum;
+            }
+          }
+          for (const actionName of Object.values(ResolveActions)) {
+            if (member.system.attributes.resolve[actionName].max < changeNum) {
+              changeData[`system.attributes.resolve.${actionName}.max`] = changeNum;
+            }
+          }
+          return member.update(changeData);
+        }));
+      }
+      // no default
+    }
+  },
   remItem: async (actor: BladesActor, funcData: string, isReversing = false) => {
 
     function testString(targetString: string, testDef: string) {

@@ -40,14 +40,15 @@ class BladesActorSheet extends BladesSheet {
     }
     getData() {
         const context = super.getData();
-        context.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
-        context.attributes = U.objMap(this.actor.system.attributes, (attrData) => U.objMap(attrData, (value) => ({
+        const { activeSubItems, activeSubActors } = this.actor;
+        const sheetData = {};
+        sheetData.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
+        sheetData.attributes = U.objMap(this.actor.system.attributes, (attrData) => U.objMap(attrData, (value) => ({
             value: value.value,
             max: game.eunoblades.Tracker?.actionMax ?? value.max
         })));
-        context.acquaintancesName = this.actor.system.acquaintances_name ?? "Friends & Rivals";
-        const { activeSubItems, activeSubActors } = this.actor;
-        context.preparedItems = {
+        sheetData.acquaintancesName = this.actor.system.acquaintances_name ?? "Friends & Rivals";
+        sheetData.preparedItems = {
             abilities: activeSubItems
                 .filter((item) => item.type === BladesItemType.ability)
                 .map((item) => {
@@ -69,7 +70,7 @@ class BladesActorSheet extends BladesSheet {
             background: activeSubItems.find((item) => item.type === BladesItemType.background),
             heritage: activeSubItems.find((item) => item.type === BladesItemType.heritage),
             vice: activeSubItems.find((item) => item.type === BladesItemType.vice),
-            loadout: activeSubItems.filter((item) => item.type === BladesItemType.item).map((item) => {
+            loadout: activeSubItems.filter((item) => item.type === BladesItemType.gear).map((item) => {
                 if (item.system.load) {
                     Object.assign(item, {
                         numberCircle: item.system.load,
@@ -93,14 +94,14 @@ class BladesActorSheet extends BladesSheet {
             }),
             playbook: this.actor.playbook
         };
-        context.preparedActors = {
+        sheetData.preparedActors = {
             crew: activeSubActors.find((actor) => actor.type === BladesActorType.crew),
             vice_purveyor: activeSubActors.find((actor) => actor.hasTag(Tag.NPC.VicePurveyor)),
             acquaintances: activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Acquaintance))
         };
-        context.hasVicePurveyor = Boolean(this.actor.playbook?.hasTag(Tag.Item.Advanced) === false
+        sheetData.hasVicePurveyor = Boolean(this.actor.playbook?.hasTag(Tag.Gear.Advanced) === false
             && activeSubItems.find((item) => item.type === BladesItemType.vice));
-        context.healing_clock = {
+        sheetData.healing_clock = {
             title: "Healing",
             target: "system.healing.value",
             color: "white",
@@ -109,7 +110,7 @@ class BladesActorSheet extends BladesSheet {
             isFocused: false,
             ...this.actor.system.healing
         };
-        context.stashData = {
+        sheetData.stashData = {
             label: "Stash:",
             dotline: {
                 data: this.actor.system.stash,
@@ -123,7 +124,7 @@ class BladesActorSheet extends BladesSheet {
                 altIconStep: 10
             }
         };
-        context.stressData = {
+        sheetData.stressData = {
             label: this.actor.system.stress.name,
             dotline: {
                 data: this.actor.system.stress,
@@ -133,7 +134,7 @@ class BladesActorSheet extends BladesSheet {
                 svgEmpty: "full|half|frame"
             }
         };
-        context.traumaData = {
+        sheetData.traumaData = {
             label: this.actor.system.trauma.name,
             dotline: {
                 data: { value: this.actor.trauma, max: this.actor.system.trauma.max },
@@ -172,7 +173,7 @@ class BladesActorSheet extends BladesSheet {
                 ]
             }
         };
-        context.abilityData = {
+        sheetData.abilityData = {
             dotline: {
                 dotlineClass: "dotline-right dotline-glow",
                 data: {
@@ -184,17 +185,17 @@ class BladesActorSheet extends BladesSheet {
                 iconFull: "dot-full.svg"
             }
         };
-        context.loadData = {
+        sheetData.loadData = {
             curLoad: this.actor.currentLoad,
             selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected.toString()))],
             selections: C.Loadout.selections,
             selLoadLevel: this.actor.system.loadout.selected.toString()
         };
-        context.armor = Object.fromEntries(Object.entries(this.actor.system.armor.active)
+        sheetData.armor = Object.fromEntries(Object.entries(this.actor.system.armor.active)
             .filter(([, isActive]) => isActive)
             .map(([armor]) => [armor, this.actor.system.armor.checked[armor]])),
-            eLog.checkLog("actor", "[BladesActorSheet] getData()", { ...context });
-        return context;
+            eLog.checkLog("actor", "[BladesActorSheet] getData()", { ...context, ...sheetData });
+        return { ...context, ...sheetData };
     }
     get activeArmor() {
         return Object.keys(U.objFilter(this.actor.system.armor.active, (val) => val === true));

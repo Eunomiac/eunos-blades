@@ -129,7 +129,7 @@ class BladesItem extends Item implements BladesDocument<Item> {
     // if (BladesItem.IsType(this, BladesItemType.feature)) { this._prepareFeatureData(this.system) }
     if (BladesItem.IsType(this, BladesItemType.gm_tracker)) { this._prepareGmTrackerData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.heritage)) { this._prepareHeritageData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.item)) { this._prepareItemData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.gear)) { this._prepareItemData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.playbook)) { this._preparePlaybookData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.preferred_op)) { this._preparePreferredOpData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.stricture)) { this._prepareStrictureData(this.system) }

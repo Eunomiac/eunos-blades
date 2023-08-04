@@ -17,9 +17,27 @@
             grid-template-columns: 25px 70px 25px 1fr;
             grid-template-rows: $heights;
             height: calculate-sum(($heights));
+
+            img.sheet-img { pointer-events: all }
           }
 
           // .tab-label
+        }
+      }
+
+      &.gear {
+
+        .sheet-root {
+
+          section {
+
+            &.sheet-top {
+              grid-template-areas: ". item-img . title tier";
+              grid-template-columns: 25px 70px 25px 1fr 100px;
+
+              .comp-tier { grid-area: tier }
+            }
+          }
         }
       }
     }

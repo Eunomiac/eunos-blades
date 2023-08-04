@@ -11,11 +11,13 @@
     {{!-- Header --}}
     <section class="sheet-top">
       <img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
-      <input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}" />
+      <input class="sheet-title shadowed" type="text" name="name" value="{{item.name}}">
+      {{> "systems/eunos-blades/templates/components/comp.hbs" tierData}}
     </section>
 
     {{!-- Body --}}
     <section class="tab-content flex-vertical">
+
       {{#if (test isGM "||" isEmbeddedItem)}}
       <label class="tab-label">
         <span class="tab-title">Description</span>
@@ -23,12 +25,28 @@
       {{editor system.description target="system.description" button=true owner=owner editable=editable}}
       {{/if}}
 
-      {{#if (test isGM "||" (test system.price "&&" (test system.price ">" 1)))}}
+      {{#if (test isGM "||" system.uses_per_score)}}
       <div class="flex-horizontal full-width">
+        {{#if (test isGM "||" (test system.price "&&" (test system.price ">" 1)))}}
         <div class="comp comp-horizontal">
           <label class="comp-label comp-input-label">Cost: </label>
           <input class="comp-number-input shadowed" data-dtype="Number" type="number" name="system.price" value="{{system.price}}">
         </div>
+        {{/if}}
+        {{#if (test isGM "||" (test system.uses_per_score.max ">=" 1))}}
+        <div class="comp comp-horizontal">
+          <label class="comp-label comp-input-label">Uses: </label>
+          <input class="comp-number-input shadowed" data-dtype="Number" type="number" name="system.uses_per_score.max"
+            value="{{system.uses_per_score.max}}">
+        </div>
+        {{/if}}
+        {{#if (test isGM "||" (test system.max_per_score ">" 1))}}
+        <div class="comp comp-horizontal">
+          <label class="comp-label comp-input-label">Max per Score: </label>
+          <input class="comp-number-input shadowed" data-dtype="Number" type="number" name="system.max_per_score"
+            value="{{system.max_per_score}}">
+        </div>
+        {{/if}}
       </div>
       {{/if}}
 

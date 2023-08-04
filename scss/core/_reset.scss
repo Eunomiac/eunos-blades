@@ -37,7 +37,7 @@
   }
 
   b, strong { font-weight: bold !important; color: var(--blades-white-bright) !important}
-  i:not([class]), em { font-style: italic }
+  i:not([class]), em { font-style: italic  !important }
   i[class] { font-family: var(--font-awesome) }
   i.fab { font-family: var(--font-awesome-alt)}
   i.fa-duotone { font-family: var(--font-awesome-duotone)}

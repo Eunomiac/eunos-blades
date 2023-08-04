@@ -33,7 +33,7 @@ export var BladesItemType;
     BladesItemType["feature"] = "feature";
     BladesItemType["gm_tracker"] = "gm_tracker";
     BladesItemType["heritage"] = "heritage";
-    BladesItemType["item"] = "item";
+    BladesItemType["gear"] = "gear";
     BladesItemType["playbook"] = "playbook";
     BladesItemType["preferred_op"] = "preferred_op";
     BladesItemType["stricture"] = "stricture";
@@ -132,6 +132,7 @@ export var Vice;
     Vice["Weird"] = "Weird";
     Vice["Worship"] = "Worship";
     Vice["Life_Essence"] = "Life_Essence";
+    Vice["Living_Essence"] = "Living_Essence";
     Vice["Electroplasmic_Power"] = "Electroplasmic_Power";
     Vice["Servitude"] = "Servitude";
 })(Vice || (Vice = {}));
@@ -171,23 +172,24 @@ export var Tag;
         System["Hidden"] = "Hidden";
         System["MultiplesOK"] = "MultiplesOK";
     })(System = Tag.System || (Tag.System = {}));
-    let Item;
-    (function (Item) {
-        Item["Fine"] = "Fine";
-        Item["General"] = "General";
-        Item["Advanced"] = "Advanced";
-        Item["Upgraded"] = "Upgraded";
-    })(Item = Tag.Item || (Tag.Item = {}));
+    let Gear;
+    (function (Gear) {
+        Gear["Fine"] = "Fine";
+        Gear["General"] = "General";
+        Gear["Advanced"] = "Advanced";
+        Gear["Upgraded"] = "Upgraded";
+    })(Gear = Tag.Gear || (Tag.Gear = {}));
     let PC;
     (function (PC) {
         PC["Member"] = "Member";
         PC["CharacterCrew"] = "CharacterCrew";
+        PC["Small"] = "Small";
+        PC["Medium"] = "Medium";
+        PC["Large"] = "Large";
     })(PC = Tag.PC || (Tag.PC = {}));
     let NPC;
     (function (NPC) {
         NPC["Acquaintance"] = "Acquaintance";
-        NPC["Friend"] = "Friend";
-        NPC["Rival"] = "Rival";
         NPC["VicePurveyor"] = "VicePurveyor";
     })(NPC = Tag.NPC || (Tag.NPC = {}));
 })(Tag || (Tag = {}));
@@ -623,7 +625,7 @@ const C = {
         BladesItemType.feature,
         BladesItemType.gm_tracker,
         BladesItemType.heritage,
-        BladesItemType.item,
+        BladesItemType.gear,
         BladesItemType.playbook,
         BladesItemType.preferred_op,
         BladesItemType.stricture,

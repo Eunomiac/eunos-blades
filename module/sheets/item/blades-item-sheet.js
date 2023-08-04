@@ -6,6 +6,8 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import C, { BladesItemType, BladesPhase } from "../../core/constants.js";
+import U from "../../core/utilities.js";
+import G from "../../core/gsap.js";
 import BladesItem from "../../blades-item.js";
 import BladesActiveEffect from "../../blades-active-effect.js";
 import Tags from "../../core/tags.js";
@@ -22,13 +24,16 @@ class BladesItemSheet extends ItemSheet {
     
     getData() {
         const context = super.getData();
-        context.editable = this.options.editable;
-        context.isGM = game.user.isGM;
-        context.isEmbeddedItem = this.item.parent !== null;
-        context.item = this.item;
-        context.system = this.item.system;
-        context.activeEffects = Array.from(this.item.effects);
-        return this._getTypedItemData[this.item.type](context);
+        const sheetData = {
+            cssClass: this.item.type,
+            editable: this.options.editable,
+            isGM: (game.eunoblades.Tracker.system.is_spoofing_player ? false : Boolean(game.user.isGM)),
+            isEmbeddedItem: Boolean(this.item.parent),
+            item: this.item,
+            system: this.item.system,
+            activeEffects: Array.from(this.item.effects)
+        };
+        return this._getTypedItemData[this.item.type]({ ...context, ...sheetData });
     }
     _getTypedItemData = {
         [BladesItemType.ability]: (context) => {
@@ -153,24 +158,26 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.item]: (context) => {
-            if (!BladesItem.IsType(this.item, BladesItemType.item)) {
+        [BladesItemType.gear]: (context) => {
+            if (!BladesItem.IsType(this.item, BladesItemType.gear)) {
                 return undefined;
             }
             const sheetData = {
                 tierData: {
                     "class": "comp-tier comp-vertical comp-teeth",
-                    "label": "Tier",
+                    "label": "Quality",
                     "labelClass": "filled-label full-width",
                     "dotline": {
                         data: this.item.system.tier,
                         target: "system.tier.value",
-                        svgKey: "teeth.tall",
-                        svgFull: "full|half|frame",
-                        svgEmpty: "full|half|frame"
+                        iconEmpty: "dot-empty.svg",
+                        iconEmptyHover: "dot-empty-hover.svg",
+                        iconFull: "dot-full.svg",
+                        iconFullHover: "dot-full-hover.svg"
                     }
                 }
             };
+            
             return {
                 ...context,
                 ...sheetData
@@ -267,12 +274,6 @@ class BladesItemSheet extends ItemSheet {
             };
         }
     };
-    
-    
-    
-    
-    
-    
     get template() {
         const pathComps = [
             "systems/eunos-blades/templates/items"
@@ -293,6 +294,41 @@ class BladesItemSheet extends ItemSheet {
         if (!this.options.editable) {
             return;
         }
+        html.find(".dotline").each((_, elem) => {
+            if ($(elem).hasClass("locked")) {
+                return;
+            }
+            const targetDoc = this.item;
+            const targetField = $(elem).data("target");
+            const comp$ = $(elem).closest("comp");
+            const curValue = U.pInt($(elem).data("value"));
+            $(elem)
+                .find(".dot")
+                .each((j, dot) => {
+                $(dot).on("click", (event) => {
+                    event.preventDefault();
+                    const thisValue = U.pInt($(dot).data("value"));
+                    if (thisValue !== curValue) {
+                        if (comp$.hasClass("comp-coins")
+                            || comp$.hasClass("comp-stash")) {
+                            G.effects
+                                .fillCoins($(dot).prevAll(".dot"))
+                                .then(() => targetDoc.update({ [targetField]: thisValue }));
+                        }
+                        else {
+                            targetDoc.update({ [targetField]: thisValue });
+                        }
+                    }
+                });
+                $(dot).on("contextmenu", (event) => {
+                    event.preventDefault();
+                    const thisValue = U.pInt($(dot).data("value")) - 1;
+                    if (thisValue !== curValue) {
+                        targetDoc.update({ [targetField]: thisValue });
+                    }
+                });
+            });
+        });
         if (this.options.submitOnChange) {
             html.on("change", "textarea", this._onChangeInput.bind(this));
         }

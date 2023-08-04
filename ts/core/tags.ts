@@ -110,7 +110,7 @@ const Tags = {
 
     makeTagInput(".comp-tags.tags-gm", {
       "System Tags": Object.values(Tag.System),
-      "Item Tags": Object.values(Tag.Item),
+      "Item Tags": Object.values(Tag.Gear),
       "Actor Tags": [
         ...Object.values(Tag.PC),
         ...Object.values(Tag.NPC)

@@ -1,5 +1,7 @@
 import C, {BladesItemType, BladesPhase, Tag, District, Playbook, Vice} from "../../core/constants.js";
 import U from "../../core/utilities.js";
+import G from "../../core/gsap.js";
+import BladesActor from "../../blades-actor.js";
 import BladesItem from "../../blades-item.js";
 import BladesActiveEffect from "../../blades-active-effect.js";
 
@@ -29,19 +31,22 @@ class BladesItemSheet extends ItemSheet {
 
 
   override getData() {
-    const context = super.getData() as BladesBaseItemSheetContext;
+    const context = super.getData();
 
-    context.editable = this.options.editable;
-    context.isGM = game.user.isGM;
-    context.isEmbeddedItem = this.item.parent !== null;
-    context.item = this.item;
-    context.system = this.item.system;
-    context.activeEffects = Array.from(this.item.effects) as BladesActiveEffect[];
+    const sheetData: Partial<BladesItemSheetData> = {
+      cssClass: this.item.type,
+      editable: this.options.editable,
+      isGM: (game.eunoblades.Tracker!.system.is_spoofing_player ? false : Boolean(game.user.isGM)) as boolean,
+      isEmbeddedItem: Boolean(this.item.parent),
+      item: this.item,
+      system: this.item.system,
+      activeEffects: Array.from(this.item.effects) as BladesActiveEffect[]
+    };
 
-    return this._getTypedItemData[this.item.type]!(context);
+    return this._getTypedItemData[this.item.type]!({...context, ...sheetData} as BladesItemSheetData);
   }
 
-  _getTypedItemData: Record<BladesItemType, (context: BladesBaseItemSheetContext) => BladesItemSheetData> = {
+  _getTypedItemData: Record<BladesItemType, (context: BladesItemSheetData) => BladesItemSheetData> = {
     [BladesItemType.ability]: (context) => {
       if (!BladesItem.IsType(this.item, BladesItemType.ability)) { return undefined as never }
       const sheetData: BladesItemDataOfType<BladesItemType.ability> = {};
@@ -150,22 +155,37 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.item]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.item)) { return undefined as never }
-      const sheetData: BladesItemDataOfType<BladesItemType.item> = {
+    [BladesItemType.gear]: (context) => {
+      if (!BladesItem.IsType(this.item, BladesItemType.gear)) { return undefined as never }
+      const sheetData: BladesItemDataOfType<BladesItemType.gear> = {
         tierData: {
           "class": "comp-tier comp-vertical comp-teeth",
-          "label": "Tier",
+          "label": "Quality",
           "labelClass": "filled-label full-width",
           "dotline": {
             data: this.item.system.tier,
             target: "system.tier.value",
-            svgKey: "teeth.tall",
-            svgFull: "full|half|frame",
-            svgEmpty: "full|half|frame"
+            iconEmpty: "dot-empty.svg",
+            iconEmptyHover: "dot-empty-hover.svg",
+            iconFull: "dot-full.svg",
+            iconFullHover: "dot-full-hover.svg"
           }
         }
       };
+
+      //   tierData: {
+      //     "class": "comp-tier comp-vertical comp-teeth",
+      //     "label": "Quality",
+      //     "labelClass": "filled-label full-width",
+      //     "dotline": {
+      //       data: this.item.system.tier,
+      //       target: "system.tier.value",
+      //       svgKey: "teeth.tall",
+      //       svgFull: "full|half|frame",
+      //       svgEmpty: "full|half|frame"
+      //     }
+      //   }
+      // };
 
       return {
         ...context,
@@ -255,53 +275,6 @@ class BladesItemSheet extends ItemSheet {
     }
   };
 
-  //   switch (this.item.type) {
-  //     case BladesItemType.item: return this._getItemData(context);
-  //     case BladesItemType.ability: return this._getAbilityData(context);
-  //     // no default
-  //   }
-
-  //   return context;
-  // }
-
-  // _getItemData(context) {
-  //   if (!BladesItem.IsType(this.item, BladesItemType.item)) { return undefined as never }
-
-  //   const sheetData: Partial<BladesItemSchema.Item> & BladesItemSheetData.Item = {
-  //     clocks: this.item.system.clocks,
-  //     tierData: {
-  //       "class": "comp-tier comp-vertical comp-teeth",
-  //       "label": "Tier",
-  //       "labelClass": "filled-label full-width",
-  //       "dotline": {
-  //         data: this.item.system.tier,
-  //         target: "system.tier.value",
-  //         svgKey: "teeth.tall",
-  //         svgFull: "full|half|frame",
-  //         svgEmpty: "full|half|frame"
-  //       }
-  //     }
-  //   };
-
-  //   return {
-  //     ...context,
-  //     ...sheetData
-  //   };
-  // }
-
-  // _getAbilityData(context: ItemSheet.Data<DocumentSheetOptions>) {
-  //   if (!BladesItem.IsType(this.item, BladesItemType.ability)) { return undefined as never }
-
-  //   const sheetData: Partial<BladesItemSchema.Ability> & BladesItemSheetData.Ability = { };
-
-  //   return {
-  //     ...context,
-  //     ...sheetData
-  //   };
-  // }
-
-  // }
-
   override get template() {
     const pathComps = [
       "systems/eunos-blades/templates/items"
@@ -324,6 +297,46 @@ class BladesItemSheet extends ItemSheet {
 
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) {return}
+
+    // Add dotline functionality
+    html.find(".dotline").each((_, elem) => {
+      if ($(elem).hasClass("locked")) { return }
+
+      const targetDoc: BladesActor | BladesItem = this.item;
+      const targetField = $(elem).data("target");
+
+      const comp$ = $(elem).closest("comp");
+
+      const curValue = U.pInt($(elem).data("value"));
+      $(elem)
+        .find(".dot")
+        .each((j, dot) => {
+          $(dot).on("click", (event: ClickEvent) => {
+            event.preventDefault();
+            const thisValue = U.pInt($(dot).data("value"));
+            if (thisValue !== curValue) {
+              if (
+                comp$.hasClass("comp-coins")
+                || comp$.hasClass("comp-stash")
+              ) {
+                G.effects
+                  .fillCoins($(dot).prevAll(".dot"))
+                  .then(() => targetDoc.update({[targetField]: thisValue}));
+              } else {
+                targetDoc.update({[targetField]: thisValue});
+              }
+            }
+          });
+          $(dot).on("contextmenu", (event: ContextMenuEvent) => {
+            event.preventDefault();
+            const thisValue = U.pInt($(dot).data("value")) - 1;
+            if (thisValue !== curValue) {
+              targetDoc.update({[targetField]: thisValue});
+            }
+          });
+        });
+    });
+
 
     // This is a workaround until is being fixed in FoundryVTT.
     if (this.options.submitOnChange) {

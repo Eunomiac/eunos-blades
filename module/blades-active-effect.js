@@ -7,7 +7,7 @@
 
 import BladesActor from "./blades-actor.js";
 import U from "./core/utilities.js";
-import { Tag, BladesPhase } from "./core/constants.js";
+import { Tag, BladesPhase, InsightActions, ProwessActions, ResolveActions } from "./core/constants.js";
 const FUNCQUEUE = {};
 const CUSTOMFUNCS = {
     addItem: async (actor, funcData, isReversing = false) => {
@@ -34,6 +34,37 @@ const CUSTOMFUNCS = {
             return actor.update({ [target]: U.pInt(getProperty(actor, target)) - U.pInt(qty) });
         }
         return actor.update({ [target]: U.pInt(getProperty(actor, target)) + U.pInt(qty) });
+    },
+    applyToMembers: async (crew, funcData, isReversing = false) => {
+        const members = crew.members;
+        if (members.length === 0) {
+            return;
+        }
+        const [changeType, changeValue] = funcData.split(/:/);
+        switch (changeType) {
+            case "upgradeActionMax": {
+                const changeNum = U.pInt(changeValue);
+                Promise.all(members.map(async (member) => {
+                    const changeData = {};
+                    for (const actionName of Object.values(InsightActions)) {
+                        if (member.system.attributes.insight[actionName].max < changeNum) {
+                            changeData[`system.attributes.insight.${actionName}.max`] = changeNum;
+                        }
+                    }
+                    for (const actionName of Object.values(ProwessActions)) {
+                        if (member.system.attributes.prowess[actionName].max < changeNum) {
+                            changeData[`system.attributes.prowess.${actionName}.max`] = changeNum;
+                        }
+                    }
+                    for (const actionName of Object.values(ResolveActions)) {
+                        if (member.system.attributes.resolve[actionName].max < changeNum) {
+                            changeData[`system.attributes.resolve.${actionName}.max`] = changeNum;
+                        }
+                    }
+                    return member.update(changeData);
+                }));
+            }
+        }
     },
     remItem: async (actor, funcData, isReversing = false) => {
         function testString(targetString, testDef) {

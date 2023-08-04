@@ -20,11 +20,10 @@ class BladesCrewSheet extends BladesSheet {
     getData() {
         const context = super.getData();
         eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", { ...context });
-        context.actor = this.actor;
-        context.system = this.actor.system;
         const { activeSubItems } = this.actor;
+        const sheetData = {};
 
-        context.items = {
+        sheetData.preparedItems = {
             abilities: activeSubItems.filter((item) => item.type === BladesItemType.crew_ability),
             playbook: this.actor.playbook,
             reputation: activeSubItems.find((item) => item.type === BladesItemType.crew_reputation),
@@ -32,11 +31,11 @@ class BladesCrewSheet extends BladesSheet {
             cohorts: activeSubItems.filter((item) => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type)),
             preferredOp: activeSubItems.find((item) => item.type === BladesItemType.preferred_op)
         };
-        context.actors = {
+        sheetData.preparedActors = {
             members: this.actor.members,
             contacts: this.actor.contacts
         };
-        context.tierData = {
+        sheetData.tierData = {
             label: "Tier",
             dotline: {
                 data: this.actor.system.tier,
@@ -47,44 +46,44 @@ class BladesCrewSheet extends BladesSheet {
                 iconFullHover: "dot-full-hover.svg"
             }
         };
-        context.upgradeData = {
+        sheetData.upgradeData = {
             dotline: {
-                "class": "dotline-right",
-                "data": {
+                dotlineClass: "dotline-right",
+                data: {
                     value: this.actor.availableUpgradePoints,
                     max: this.actor.availableUpgradePoints
                 },
-                "dotlineLabel": "Available Upgrade Points",
-                "isLocked": true,
-                "iconFull": "dot-full.svg"
+                dotlineLabel: "Available Upgrade Points",
+                isLocked: true,
+                iconFull: "dot-full.svg"
             }
         };
-        context.abilityData = {
+        sheetData.abilityData = {
             dotline: {
-                "class": "dotline-right",
-                "data": {
+                dotlineClass: "dotline-right",
+                data: {
                     value: this.actor.availableAbilityPoints,
                     max: this.actor.availableAbilityPoints
                 },
-                "dotlineLabel": "Available Ability Points",
-                "isLocked": true,
-                "iconFull": "dot-full.svg"
+                dotlineLabel: "Available Ability Points",
+                isLocked: true,
+                iconFull: "dot-full.svg"
             }
         };
-        context.cohortData = {
+        sheetData.cohortData = {
             dotline: {
-                "class": "dotline-right",
-                "data": {
+                dotlineClass: "dotline-right",
+                data: {
                     value: this.actor.availableCohortPoints,
                     max: this.actor.availableCohortPoints
                 },
-                "dotlineLabel": "Available Cohort Points",
-                "isLocked": true,
-                "iconFull": "dot-full.svg"
+                dotlineLabel: "Available Cohort Points",
+                isLocked: true,
+                iconFull: "dot-full.svg"
             }
         };
-        context.repData = {
-            name: "Rep",
+        sheetData.repData = {
+            label: "Rep",
             dotlines: [
                 {
                     data: {
@@ -97,21 +96,21 @@ class BladesCrewSheet extends BladesSheet {
                     svgEmpty: "full|half|frame"
                 },
                 {
-                    "data": {
+                    data: {
                         value: this.actor.turfCount,
                         max: this.actor.turfCount
                     },
-                    "target": "none",
-                    "svgKey": "teeth.tall",
-                    "svgFull": "full|half|frame",
-                    "svgEmpty": "full|half|frame",
-                    "class": "flex-row-reverse",
-                    "isLocked": true
+                    target: "none",
+                    svgKey: "teeth.tall",
+                    svgFull: "full|half|frame",
+                    svgEmpty: "full|half|frame",
+                    dotlineClass: "flex-row-reverse",
+                    isLocked: true
                 }
             ]
         };
-        context.heatData = {
-            name: "Heat",
+        sheetData.heatData = {
+            label: "Heat",
             dotline: {
                 data: this.actor.system.heat,
                 target: "system.heat.value",
@@ -120,8 +119,8 @@ class BladesCrewSheet extends BladesSheet {
                 svgEmpty: "full|half|frame"
             }
         };
-        context.wantedData = {
-            name: "Wanted",
+        sheetData.wantedData = {
+            label: "Wanted",
             dotline: {
                 data: this.actor.system.wanted,
                 target: "system.wanted.value",
@@ -130,8 +129,8 @@ class BladesCrewSheet extends BladesSheet {
                 svgEmpty: "frame"
             }
         };
-        eLog.checkLog("actor", "[BladesCrewSheet] return getData()", { ...context });
-        return context;
+        eLog.checkLog("actor", "[BladesCrewSheet] return getData()", { ...context, ...sheetData });
+        return { ...context, ...sheetData };
     }
     activateListeners(html) {
         super.activateListeners(html);

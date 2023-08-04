@@ -25,7 +25,7 @@ export enum BladesItemType {
   feature = "feature",
   gm_tracker = "gm_tracker",
   heritage = "heritage",
-  item = "item",
+  gear = "gear",
   playbook = "playbook",
   preferred_op = "preferred_op",
   stricture = "stricture",
@@ -119,6 +119,7 @@ export enum Vice {
   Weird = "Weird",
   Worship = "Worship",
   Life_Essence = "Life_Essence",
+  Living_Essence = "Living_Essence",
   Electroplasmic_Power = "Electroplasmic_Power",
   Servitude = "Servitude"
 }
@@ -157,7 +158,7 @@ export namespace Tag {
     Hidden = "Hidden",
     MultiplesOK = "MultiplesOK"
   }
-  export enum Item {
+  export enum Gear {
     Fine = "Fine",
     General = "General",
     Advanced = "Advanced",
@@ -165,120 +166,17 @@ export namespace Tag {
   }
   export enum PC {
     Member = "Member",
-    CharacterCrew = "CharacterCrew"
+    CharacterCrew = "CharacterCrew",
+    Small = "Small",
+    Medium = "Medium",
+    Large = "Large"
   }
 
   export enum NPC {
     Acquaintance = "Acquaintance",
-    Friend = "Friend",
-    Rival = "Rival",
     VicePurveyor = "VicePurveyor",
   }
 }
-
-
-// "cohort_list": {
-//   "Gang": {
-//     "label": "BITD.Gang"
-//   },
-//   "Expert": {
-//     "label": "BITD.Expert"
-//   }
-// },
-
-// "harm_list": {
-//   "No": {
-//     "label": "BITD.HarmNoHarm",
-//     "description": "BITD.HarmNoHarmDescription",
-//     "value": 0
-//   },
-//   "Weakened": {
-//     "label": "BITD.HarmWeakened",
-//     "description": "BITD.HarmWeakenedDescription",
-//     "value": 1
-//   },
-//   "Impaired": {
-//     "label": "BITD.HarmImpaired",
-//     "description": "BITD.HarmImpairedDescription",
-//     "value": 2
-//   },
-//   "Broken": {
-//     "label": "BITD.HarmBroken",
-//     "description": "BITD.HarmBrokenDescription",
-//     "value": 3
-//   },
-//   "Dead": {
-//     "label": "BITD.HarmDead",
-//     "description": "BITD.HarmDeadDescription",
-//     "value": 4
-//   }
-// },
-// "flaws_list": {
-//   "Principled": {
-//     "label": "BITD.FlawsPrincipled",
-//     "description": "BITD.FlawsPrincipledDescription",
-//     "selected": false
-//   },
-//   "Savage": {
-//     "label": "BITD.FlawsSavage",
-//     "description": "BITD.FlawsSavageDescription",
-//     "selected": false
-//   },
-//   "Unreliable": {
-//     "label": "BITD.FlawsUnreliable",
-//     "description": "BITD.FlawsUnreliableDescription",
-//     "selected": false
-//   },
-//   "Wild": {
-//     "label": "BITD.FlawsWild",
-//     "description": "BITD.FlawsWildDescription",
-//     "selected": false
-//   }
-// },
-// "edges_list": {
-//   "Fearsome": {
-//     "label": "BITD.EdgesFearsome",
-//     "description": "BITD.EdgesFearsomeDescription",
-//     "selected": false
-//   },
-//   "Independent": {
-//     "label": "BITD.EdgesIndependent",
-//     "description": "BITD.EdgesIndependentDescription",
-//     "selected": false
-//   },
-//   "Loyal": {
-//     "label": "BITD.EdgesLoyal",
-//     "description": "BITD.EdgesLoyalDescription",
-//     "selected": false
-//   },
-//   "Tenacious": {
-//     "label": "BITD.EdgesTenacious",
-//     "description": "BITD.EdgesTenaciousDescription",
-//     "selected": false
-//   }
-// },
-// "gang_type_list": {
-//   "Adepts": {
-//     "label": "BITD.GangTypeAdepts",
-//     "description": "BITD.GangTypeAdeptsDescription"
-//   },
-//   "Rooks": {
-//     "label": "BITD.GangTypeRooks",
-//     "description": "BITD.GangTypeRooksDescription"
-//   },
-//   "Rovers": {
-//     "label": "BITD.GangTypeRovers",
-//     "description": "BITD.GangTypeRoversDescription"
-//   },
-//   "Skulks": {
-//     "label": "BITD.GangTypeSkulks",
-//     "description": "BITD.GangTypeSkulksDescription"
-//   },
-//   "Thugs": {
-//     "label": "BITD.GangTypeThugs",
-//     "description": "BITD.GangTypeThugsDescription"
-//   }
-// },
 
 const C = {
   SYSTEM_ID: "eunos-blades",
@@ -721,7 +619,7 @@ const C = {
     BladesItemType.feature,
     BladesItemType.gm_tracker,
     BladesItemType.heritage,
-    BladesItemType.item,
+    BladesItemType.gear,
     BladesItemType.playbook,
     BladesItemType.preferred_op,
     BladesItemType.stricture,

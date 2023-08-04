@@ -184,9 +184,9 @@
 			"crew_playbook",
 			"crew_upgrade",
 			"feature",
+			"gear",
 			"gm_tracker",
 			"heritage",
-			"item",
 			"playbook",
 			"preferred_op",
 			"stricture",
@@ -238,16 +238,16 @@
     },
 		"crew_upgrade": { "templates": ["default", "district", "buyable", "limitUses"] },
 		"feature": { "templates": ["default", "buyable", "limitUses"] },
+		"gear": {
+      "templates": ["default", "clocks", "limitUses"],
+      "max_per_score": 1,
+      "load": 1
+    },
 		"gm_tracker": {
       "templates": ["default", "clocks"],
       "phase": ""
     },
 		"heritage": { "templates": ["default"] },
-		"item": {
-      "templates": ["default", "clocks", "limitUses"],
-      "max_per_score": 1,
-      "load": 1
-    },
 		"playbook": { "templates": ["default"] },
 		"preferred_op": { "templates": ["default", "district"] },
 		"stricture": { "templates": ["default"] },

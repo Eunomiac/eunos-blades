@@ -220,6 +220,10 @@
           &.crew_playbook {
             @import './sheets/crew-playbook-sheet'
           }
+
+          &.gear {
+            @import './sheets/gear-sheet'
+          }
         }
 
         &.dialog {

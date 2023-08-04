@@ -1789,7 +1789,7 @@ template {
       font-weight: bold !important;
       color: var(--blades-white-bright) !important; }
     :root body.vtt.game.system-eunos-blades #clocks-overlay i:not([class]), :root body.vtt.game.system-eunos-blades #clocks-overlay em {
-      font-style: italic; }
+      font-style: italic  !important; }
     :root body.vtt.game.system-eunos-blades #clocks-overlay i[class] {
       font-family: var(--font-awesome); }
     :root body.vtt.game.system-eunos-blades #clocks-overlay i.fab {
@@ -3025,7 +3025,7 @@ template {
   :root body.vtt.game.system-eunos-blades #hotbar em,
   :root body.vtt.game.system-eunos-blades #players i:not([class]),
   :root body.vtt.game.system-eunos-blades #players em {
-    font-style: italic; }
+    font-style: italic  !important; }
   :root body.vtt.game.system-eunos-blades #interface i[class],
   :root body.vtt.game.system-eunos-blades #controls i[class],
   :root body.vtt.game.system-eunos-blades #navigation i[class],
@@ -4792,7 +4792,7 @@ template {
   :root body.vtt.game.system-eunos-blades #hotbar #chat em,
   :root body.vtt.game.system-eunos-blades #players #chat i:not([class]),
   :root body.vtt.game.system-eunos-blades #players #chat em {
-    font-style: italic; }
+    font-style: italic  !important; }
   :root body.vtt.game.system-eunos-blades #interface #chat i[class],
   :root body.vtt.game.system-eunos-blades #controls #chat i[class],
   :root body.vtt.game.system-eunos-blades #navigation #chat i[class],
@@ -6636,7 +6636,7 @@ template {
       font-weight: bold !important;
       color: var(--blades-white-bright) !important; }
     :root body.vtt.game.system-eunos-blades .app.window-app i:not([class]), :root body.vtt.game.system-eunos-blades .app.window-app em {
-      font-style: italic; }
+      font-style: italic  !important; }
     :root body.vtt.game.system-eunos-blades .app.window-app i[class] {
       font-family: var(--font-awesome); }
     :root body.vtt.game.system-eunos-blades .app.window-app i.fab {
@@ -9682,6 +9682,13 @@ template {
         grid-template-columns: 25px 70px 25px 1fr;
         grid-template-rows: 60px;
         height: 60px; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form .sheet-root section.sheet-top img.sheet-img {
+          pointer-events: all; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.gear .sheet-root section.sheet-top {
+        grid-template-areas: ". item-img . title tier";
+        grid-template-columns: 25px 70px 25px 1fr 100px; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.gear .sheet-root section.sheet-top .comp-tier {
+          grid-area: tier; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .scene-selection {
     position: absolute;
     top: 12px;
@@ -9977,6 +9984,11 @@ template {
                 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.crew_playbook .window-content form .sheet-root .turf-list .turf-row .turf-block.turf-selected .turf-control {
                   color: var(--blades-white-bright);
                   text-shadow: 0 0 12px var(--blades-white-bright), 0 0 12px var(--blades-white-bright), 0 0 12px var(--blades-white-bright), 0 0 2px var(--blades-black-dark); }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.gear .window-content form .sheet-root section.sheet-top {
+    grid-template-areas: ". item-img . title tier";
+    grid-template-columns: 25px 70px 25px 1fr 70px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.gear .window-content form .sheet-root section.sheet-top .comp-tier {
+      grid-area: tier; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog {
     max-width: 900px;
     height: auto !important;

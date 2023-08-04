@@ -14,7 +14,15 @@
         {{/each}}
         {{/select}}
       </select>
+      <div class="flex-horizontal full-width">
+        <div class="comp comp-horizontal">
+          <label class="comp-label comp-input-label">Spoof Player: </label>
+          <input  data-dtype="Boolean" type="checkbox" name="system.is_spoofing_player" {{checked system.is_spoofing_player}} />
+        </div>
+      </div>
     </section>
+    <section class="sheet-footer-small"></section>
+  </div>
 
 
 </form>

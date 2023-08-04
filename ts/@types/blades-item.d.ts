@@ -87,7 +87,8 @@ declare global {
     export interface Gm_Tracker extends BladesItemSchemaTemplate.Default,
       BladesItemSchemaTemplate.clocks {
       phase: BladesPhase,
-      phases: BladesPhase[]
+      phases: BladesPhase[],
+      is_spoofing_player: boolean
     }
 
     export interface Heritage extends BladesItemSchemaTemplate.Default { }
@@ -193,7 +194,7 @@ declare global {
     [BladesItemType.feature]: BladesItemSchema.Feature,
     [BladesItemType.gm_tracker]: BladesItemSchema.Gm_Tracker,
     [BladesItemType.heritage]: BladesItemSchema.Heritage,
-    [BladesItemType.item]: BladesItemSchema.Item,
+    [BladesItemType.gear]: BladesItemSchema.Item,
     [BladesItemType.playbook]: BladesItemSchema.Playbook,
     [BladesItemType.preferred_op]: BladesItemSchema.Preferred_Op,
     [BladesItemType.stricture]: BladesItemSchema.Stricture,

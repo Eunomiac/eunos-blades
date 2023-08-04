@@ -989,7 +989,7 @@ html, :root {
       font-weight: bold !important;
       color: var(--blades-white-bright) !important; }
     html i:not([class]), html em, :root i:not([class]), :root em {
-      font-style: italic; }
+      font-style: italic  !important; }
     html i[class], :root i[class] {
       font-family: var(--font-awesome); }
     html i.fab, :root i.fab {

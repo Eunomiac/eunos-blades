@@ -1,45 +1,66 @@
 <form class="{{cssClass}}" autocomplete="off">
+
+  {{!-- Tags --}}
+  {{#if isGM}}
+  <input type="text" class="comp-tags tags-gm" />
+  {{/if}}
+
+  {{!-- Sheet Container --}}
   <div class="sheet-root">
 
-    {{#if isGM}}
-    <input type="text" class="comp-tags tags-gm" />
-    {{/if}}
-  <section class="sheet-top">
-    <img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
-    <input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}" placeholder="{{localize 'BITD.Name'}}" />
-  </section>
+    {{!-- Header --}}
+    <section class="sheet-top">
+      <img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+      <input class="sheet-title shadowed" type="text" name="name" value="{{item.name}}">
+    </section>
 
+    {{!-- Body --}}
+    <section class="tab-content flex-vertical">
+      {{#if (test isGM "||" isEmbeddedItem)}}
+      <label class="tab-label">
+        <span class="tab-title">Description</span>
+      </label>
+      {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+      {{/if}}
 
-  {{!-- Sheet Body --}}
-  <section class="item-main flex-vertical">
-    {{#if isEmbeddedItem}}
-    <label class="tab-label">
-      <span class="tab-title">Description</span>
-    </label>
-    {{editor system.description target="system.description" button=true owner=owner editable=editable}}
-    {{/if}}
+      {{#if (test isGM "||" (test system.price "&&" (test system.price ">" 1)))}}
+      <div class="flex-horizontal full-width">
+        <div class="comp comp-horizontal">
+          <label class="comp-label comp-input-label">Cost: </label>
+          <input class="comp-number-input shadowed" data-dtype="Number" type="number" name="system.price" value="{{system.price}}">
+        </div>
+      </div>
+      {{/if}}
 
-    <label class="tab-label">
-      <span class="tab-title">Rules</span>
-    </label>
-    {{editor system.rules target="system.rules" button=true owner=owner editable=editable}}
+      <label class="tab-label">
+        <span class="tab-title">Rules</span>
+      </label>
+      {{editor system.rules target="system.rules" button=true owner=owner editable=editable}}
 
-    {{#if (test isGM "||" system.rules_notes)}}
-    <label class="tab-label">
-      <span class="tab-title">Additional Rules Notes</span>
-    </label>
-    {{editor system.rules_notes target="system.rules_notes" button=true owner=owner editable=editable}}
-    {{/if}}
+      {{#if (test isGM "||" system.notes)}}
+      <label class="tab-label">
+        <span class="tab-title">Notes</span>
+      </label>
+      {{editor system.notes target="system.notes" button=true owner=owner editable=editable}}
+      {{/if}}
 
-    <div class="flex-horizontal">
-      <label>{{localize "BITD.Price"}}</label>
-      <input data-dtype="Number" type="number" name="system.price" value="{{system.price}}">
-    </div>
+      {{#if isGM}}
+      <label class="tab-label">
+        <span class="tab-title">GM Notes</span>
+      </label>
+      {{editor system.gm_notes target="system.gm_notes" button=true owner=owner editable=editable}}
+      {{/if}}
 
-    {{#if isGM}}
-      <div class="label-stripe">{{localize "BITD.Effects"}}</div>
-      <div id="effects">{{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}</div>
-    {{/if}}
-  </section>
+      {{#if isGM}}
+      <label class="comp tab-label">
+        <a class="comp-control comp-button comp-add effect-control" data-action="create" title="Create Effect">
+          <i class="fas fa-plus-square"></i>
+        </a>
+        <span class="tab-title">Active Effects</span>
+      </label>
+      {{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
+      {{/if}}
+    </section>
+    <section class="sheet-footer-small"></section>
   </div>
 </form>

@@ -364,7 +364,7 @@ class BladesActor extends Actor {
             if (sItem.isEmbedded) {
                 cssClasses.push("embedded");
             }
-            if (sItem.hasTag(Tag.Item.Fine)) {
+            if (sItem.hasTag(Tag.Gear.Fine)) {
                 cssClasses.push("fine-quality");
             }
             if (sItem.hasTag(Tag.System.Featured)) {
@@ -404,10 +404,10 @@ class BladesActor extends Actor {
             if (!a.hasTag(Tag.System.Featured) && b.hasTag(Tag.System.Featured)) {
                 return 1;
             }
-            if (a.hasTag(Tag.Item.Fine) && !b.hasTag(Tag.Item.Fine)) {
+            if (a.hasTag(Tag.Gear.Fine) && !b.hasTag(Tag.Gear.Fine)) {
                 return -1;
             }
-            if (!a.hasTag(Tag.Item.Fine) && b.hasTag(Tag.Item.Fine)) {
+            if (!a.hasTag(Tag.Gear.Fine) && b.hasTag(Tag.Gear.Fine)) {
                 return 1;
             }
             if (a.system.world_name > b.system.world_name) {
@@ -461,8 +461,8 @@ class BladesActor extends Actor {
             case SelectionCategory.Playbook: {
                 switch (this.type) {
                     case BladesActorType.pc: {
-                        dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook).filter((item) => !item.hasTag(Tag.Item.Advanced)));
-                        dialogData.Advanced = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Item.Advanced));
+                        dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook).filter((item) => !item.hasTag(Tag.Gear.Advanced)));
+                        dialogData.Advanced = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Gear.Advanced));
                         return dialogData;
                     }
                     case BladesActorType.crew: {
@@ -485,13 +485,13 @@ class BladesActor extends Actor {
                     return false;
                 }
                 const gearItems = this._processEmbeddedItemMatches([
-                    ...BladesItem.GetTypeWithTags(BladesItemType.item, this.playbookName),
-                    ...BladesItem.GetTypeWithTags(BladesItemType.item, Tag.Item.General)
+                    ...BladesItem.GetTypeWithTags(BladesItemType.gear, this.playbookName),
+                    ...BladesItem.GetTypeWithTags(BladesItemType.gear, Tag.Gear.General)
                 ])
                     .filter((item) => this.remainingLoad >= item.system.load);
                 dialogData[this.playbookName] = gearItems.filter((item) => item.hasTag(this.playbookName));
                 dialogData.General = gearItems
-                    .filter((item) => item.hasTag(Tag.Item.General))
+                    .filter((item) => item.hasTag(Tag.Gear.General))
                     .map((item) => {
                     if (item.dialogCSSClasses) {
                         item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
@@ -543,7 +543,7 @@ class BladesActor extends Actor {
                     return false;
                 }
                 dialogData[this.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, this.playbookName));
-                dialogData.General = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, Tag.Item.General));
+                dialogData.General = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, Tag.Gear.General));
                 return dialogData;
             }
         }
@@ -627,7 +627,7 @@ class BladesActor extends Actor {
         if (!subItem) {
             return;
         }
-        if (subItem.type !== BladesItemType.item) {
+        if (subItem.type !== BladesItemType.gear) {
             this.purgeSubItem(itemRef);
             return;
         }
@@ -785,7 +785,7 @@ class BladesActor extends Actor {
         if (![BladesActorType.crew].includes(this.type)) {
             return 0;
         }
-        return this.cohorts.length + this.cohorts.filter((cohort) => cohort.hasTag(Tag.Item.Upgraded)).length;
+        return this.cohorts.length + this.cohorts.filter((cohort) => cohort.hasTag(Tag.Gear.Upgraded)).length;
     }
     get availableCohortPoints() {
         if (!this.playbook) {
@@ -824,10 +824,10 @@ class BladesActor extends Actor {
         return this.playbook?.name;
     }
     get playbook() {
-        if (this.type === BladesActorType.pc) {
+        if (BladesActor.IsType(this, BladesActorType.pc)) {
             return this.activeSubItems.find((item) => item.type === BladesItemType.playbook);
         }
-        if (this.type === BladesActorType.crew) {
+        if (BladesActor.IsType(this, BladesActorType.crew)) {
             return this.activeSubItems.find((item) => item.type === BladesItemType.crew_playbook);
         }
         return undefined;
@@ -885,11 +885,8 @@ class BladesActor extends Actor {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return 0;
         }
-        const activeLoadItems = this.activeSubItems.filter((item) => item.type === BladesItemType.item);
-        return U.gsap.utils.clamp(0, 10, activeLoadItems
-            .reduce((tot, i) => tot + (i.type === "item"
-            ? U.pInt(i.system.load)
-            : 0), 0));
+        const activeLoadItems = this.activeSubItems.filter((item) => item.type === BladesItemType.gear);
+        return U.gsap.utils.clamp(0, 10, activeLoadItems.reduce((tot, i) => tot + U.pInt(i.system.load), 0));
     }
     get remainingLoad() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {

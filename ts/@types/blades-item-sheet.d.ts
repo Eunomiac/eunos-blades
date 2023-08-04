@@ -3,9 +3,11 @@ import {BladesActorType, BladesItemType, Attributes, Actions, BladesPhase} from 
 declare global {
 
   type BladesBaseItemSheetContext = ItemSheet.Data<DocumentSheetOptions> & {
+    cssClass: string,
     editable: boolean,
     isGM: boolean,
     isEmbeddedItem: boolean,
+    item: BladesItem,
     system: BladesItemSystem,
     activeEffects: BladesActiveEffect[]
   };
@@ -41,7 +43,7 @@ declare global {
     export interface Score {}
   }
 
-  // Merged Actor Subtype Schemas into Master BladesItem System Schema
+  // Merged Item Subtype Schemas into Master BladesItem System Schema
   interface BladesItemSheetData extends BladesBaseItemSheetContext,
                                       Partial<BladesItemSheetTypedData.Ability>,
                                       Partial<BladesItemSheetTypedData.Background>,
@@ -80,7 +82,7 @@ declare global {
     [BladesItemType.feature]: BladesItemSheetTypedData.Feature,
     [BladesItemType.gm_tracker]: BladesItemSheetTypedData.Gm_Tracker,
     [BladesItemType.heritage]: BladesItemSheetTypedData.Heritage,
-    [BladesItemType.item]: BladesItemSheetTypedData.Item,
+    [BladesItemType.gear]: BladesItemSheetTypedData.Item,
     [BladesItemType.playbook]: BladesItemSheetTypedData.Playbook,
     [BladesItemType.preferred_op]: BladesItemSheetTypedData.Preferred_Op,
     [BladesItemType.stricture]: BladesItemSheetTypedData.Stricture,

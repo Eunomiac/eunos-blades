@@ -18,33 +18,30 @@ class BladesCrewSheet extends BladesSheet {
     });
   }
 
-  override getData(this: BladesCrewSheet) {
-    const context = super.getData() as ReturnType<BladesSheet["getData"]> & {
-      [key: string]: any
-    };
+  override getData() {
+    const context = super.getData();
 
     eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", {...context});
-
-    context.actor = this.actor;
-    context.system = this.actor.system;
-
     const {activeSubItems} = this.actor;
 
+    const sheetData: Partial<BladesActorDataOfType<BladesActorType.crew>> = {};
+
     //~ Assemble embedded actors and items
-    context.items = {
-      abilities: activeSubItems.filter((item) => item.type === BladesItemType.crew_ability),
-      playbook: this.actor.playbook,
-      reputation: activeSubItems.find((item) => item.type === BladesItemType.crew_reputation),
-      upgrades: activeSubItems.filter((item) => item.type === BladesItemType.crew_upgrade),
-      cohorts: activeSubItems.filter((item) => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type)),
-      preferredOp: activeSubItems.find((item) => item.type === BladesItemType.preferred_op)
+    sheetData.preparedItems = {
+      abilities: activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.crew_ability> => item.type === BladesItemType.crew_ability),
+      playbook: this.actor.playbook as BladesItemOfType<BladesItemType.crew_playbook>|undefined,
+      reputation: activeSubItems.find((item): item is BladesItemOfType<BladesItemType.crew_reputation> => item.type === BladesItemType.crew_reputation),
+      upgrades: activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.crew_upgrade> => item.type === BladesItemType.crew_upgrade),
+      cohorts: activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.cohort_gang|BladesItemType.cohort_expert> => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type)),
+      preferredOp: activeSubItems.find((item): item is BladesItemOfType<BladesItemType.preferred_op> => item.type === BladesItemType.preferred_op)
     };
-    context.actors = {
+
+    sheetData.preparedActors = {
       members: this.actor.members,
       contacts: this.actor.contacts
     };
 
-    context.tierData = {
+    sheetData.tierData = {
       label: "Tier",
       dotline: {
         data: this.actor.system.tier,
@@ -56,47 +53,47 @@ class BladesCrewSheet extends BladesSheet {
       }
     };
 
-    context.upgradeData = {
+    sheetData.upgradeData = {
       dotline: {
-        "class": "dotline-right",
-        "data": {
+        dotlineClass: "dotline-right",
+        data: {
           value: this.actor.availableUpgradePoints,
           max: this.actor.availableUpgradePoints
         },
-        "dotlineLabel": "Available Upgrade Points",
-        "isLocked": true,
-        "iconFull": "dot-full.svg"
+        dotlineLabel: "Available Upgrade Points",
+        isLocked: true,
+        iconFull: "dot-full.svg"
       }
     };
 
-    context.abilityData = {
+    sheetData.abilityData = {
       dotline: {
-        "class": "dotline-right",
-        "data": {
+        dotlineClass: "dotline-right",
+        data: {
           value: this.actor.availableAbilityPoints,
           max: this.actor.availableAbilityPoints
         },
-        "dotlineLabel": "Available Ability Points",
-        "isLocked": true,
-        "iconFull": "dot-full.svg"
+        dotlineLabel: "Available Ability Points",
+        isLocked: true,
+        iconFull: "dot-full.svg"
       }
     };
 
-    context.cohortData = {
+    sheetData.cohortData = {
       dotline: {
-        "class": "dotline-right",
-        "data": {
+        dotlineClass: "dotline-right",
+        data: {
           value: this.actor.availableCohortPoints,
           max: this.actor.availableCohortPoints
         },
-        "dotlineLabel": "Available Cohort Points",
-        "isLocked": true,
-        "iconFull": "dot-full.svg"
+        dotlineLabel: "Available Cohort Points",
+        isLocked: true,
+        iconFull: "dot-full.svg"
       }
     };
 
-    context.repData = {
-      name: "Rep",
+    sheetData.repData = {
+      label: "Rep",
       dotlines: [
         {
           data: {
@@ -109,22 +106,22 @@ class BladesCrewSheet extends BladesSheet {
           svgEmpty: "full|half|frame"
         },
         {
-          "data": {
+          data: {
             value: this.actor.turfCount,
             max: this.actor.turfCount
           },
-          "target": "none",
-          "svgKey": "teeth.tall",
-          "svgFull": "full|half|frame",
-          "svgEmpty": "full|half|frame",
-          "class": "flex-row-reverse",
-          "isLocked": true
+          target: "none",
+          svgKey: "teeth.tall",
+          svgFull: "full|half|frame",
+          svgEmpty: "full|half|frame",
+          dotlineClass: "flex-row-reverse",
+          isLocked: true
         }
       ]
     };
 
-    context.heatData = {
-      name: "Heat",
+    sheetData.heatData = {
+      label: "Heat",
       dotline: {
         data: this.actor.system.heat,
         target: "system.heat.value",
@@ -134,8 +131,8 @@ class BladesCrewSheet extends BladesSheet {
       }
     };
 
-    context.wantedData = {
-      name: "Wanted",
+    sheetData.wantedData = {
+      label: "Wanted",
       dotline: {
         data: this.actor.system.wanted,
         target: "system.wanted.value",
@@ -145,8 +142,8 @@ class BladesCrewSheet extends BladesSheet {
       }
     };
 
-    eLog.checkLog("actor", "[BladesCrewSheet] return getData()", {...context});
-    return context;
+    eLog.checkLog("actor", "[BladesCrewSheet] return getData()", {...context, ...sheetData});
+    return {...context, ...sheetData} as BladesActorSheetData;
   }
 
   override activateListeners(html: JQuery<HTMLElement>) {

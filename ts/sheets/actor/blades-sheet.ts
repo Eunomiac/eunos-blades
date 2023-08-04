@@ -21,19 +21,6 @@ type BladesCompData = {
 };
 
 
-interface BladesActorSheetData {
-    editable: boolean,
-    isGM: boolean,
-    actor: BladesActor,
-    system: BladesActorSystem,
-    rollData: BladesActorRollData,
-    activeEffects: BladesActiveEffect[],
-    hasFullVision: boolean,
-    hasLimitedVision: boolean,
-    hasControl: boolean,
-    playbookData?: {tooltip: string, dotline: BladesDotlineData},
-    coinsData?: {dotline: BladesDotlineData}
-}
 // #endregion
 
 class BladesSheet extends ActorSheet {
@@ -42,9 +29,10 @@ class BladesSheet extends ActorSheet {
 
     const context = super.getData();
 
-    const sheetData: BladesActorSheetData = {
+    const sheetData: Partial<BladesActorSheetData> = {
+      cssClass: this.actor.type,
       editable: this.options.editable,
-      isGM: game.user.isGM,
+      isGM: game.eunoblades.Tracker!.system.is_spoofing_player ? false : game.user.isGM,
       actor: this.actor,
       system: this.actor.system,
       rollData: this.actor.getRollData(),

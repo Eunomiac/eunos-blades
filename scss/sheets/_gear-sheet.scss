@@ -1,0 +1,21 @@
+& {
+
+  .window-content {
+
+    form {
+
+      .sheet-root {
+
+        section {
+
+          &.sheet-top {
+            grid-template-areas: ". item-img . title tier";
+            grid-template-columns: 25px 70px 25px 1fr 70px;
+
+            .comp-tier { grid-area: tier }
+          }
+        }
+      }
+    }
+  }
+}

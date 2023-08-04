@@ -32,6 +32,7 @@ declare global {
     checkValue?: boolean,
 
     dotline?: BladesDotlineData,
+    dotlines?: BladesDotlineData[],
 
     compContainer?: {
       class?: string,
