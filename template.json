@@ -210,7 +210,7 @@
 			},
 			"district": { "district": "" },
       "clocks": { "clocks": {} },
-      "buyable": { "price": {} },
+      "buyable": { "price": 1 },
       "limitUses": { "uses_per_score": {"value": 0, "max": 0}},
       "cohort": {
         "subtypes": [],
