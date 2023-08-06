@@ -5,9 +5,9 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import { BladesActorType } from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../../blades-item.js";
-import { BladesActorType } from "../../../module_staging_1/core/constants.js";
 export var BladesTipContext;
 (function (BladesTipContext) {
     BladesTipContext["DiceRoll"] = "DiceRoll";
@@ -40,13 +40,7 @@ class BladesTipGenerator {
     }
 }
 class BladesTrackerSheet extends BladesItemSheet {
-    static async Get() {
-        return game.eunoblades.Tracker || (await BladesItem.create({
-            name: "GM Tracker",
-            type: "gm_tracker",
-            img: "systems/eunos-blades/assets/icons/gm-tracker.svg"
-        }));
-    }
+    static Get() { return game.eunoblades.Tracker; }
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "item", "gm-tracker"],
@@ -64,7 +58,7 @@ class BladesTrackerSheet extends BladesItemSheet {
                 tracker = (await BladesItem.create({
                     name: "GM Tracker",
                     type: "gm_tracker",
-                    img: "systems/eunos-blades/assets/icons/gm-tracker.svg"
+                    img: "systems/eunos-blades/assets/icons/misc-icons/gm-tracker.svg"
                 }));
             }
             game.eunoblades.Tracker = tracker;

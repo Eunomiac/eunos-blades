@@ -249,7 +249,7 @@ class BladesActiveEffect extends ActiveEffect {
     if (a.dataset.action === "create") {
       return owner.createEmbeddedDocuments("ActiveEffect", [{
         name: "New Effect",
-        icon: "systems/eunos-blades/assets/icons/Icon.3_13.png",
+        icon: "systems/eunos-blades/assets/icons/effect-icons/default.png",
         origin: owner.uuid
       }]);
     }

@@ -112,6 +112,11 @@ class BladesItemSheet extends ItemSheet {
             if (!BladesItem.IsType(this.item, BladesItemType.crew_playbook)) {
                 return undefined;
             }
+            if (context.isGM) {
+                const expClueData = {};
+                [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
+                context.system.experience_clues = expClueData;
+            }
             const sheetData = {};
             return {
                 ...context,
@@ -177,7 +182,6 @@ class BladesItemSheet extends ItemSheet {
                     }
                 }
             };
-            
             return {
                 ...context,
                 ...sheetData
@@ -186,6 +190,14 @@ class BladesItemSheet extends ItemSheet {
         [BladesItemType.playbook]: (context) => {
             if (!BladesItem.IsType(this.item, BladesItemType.playbook)) {
                 return undefined;
+            }
+            if (context.isGM) {
+                const expClueData = {};
+                [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
+                context.system.experience_clues = expClueData;
+                const gatherInfoData = {};
+                [...Object.values(context.system.gather_info_questions ?? []).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
+                context.system.gather_info_questions = gatherInfoData;
             }
             const sheetData = {};
             return {

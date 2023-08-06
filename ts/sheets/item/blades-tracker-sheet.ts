@@ -1,9 +1,7 @@
 
-import {BladesPhase} from "../../core/constants.js";
+import {BladesActorType, BladesItemType, BladesPhase} from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../../blades-item.js";
-import {BladesActorType} from "../../../module_staging_1/core/constants.js";
-
 
 export enum BladesTipContext {
   DiceRoll = "DiceRoll",
@@ -49,13 +47,7 @@ class BladesTipGenerator {
 // }
 class BladesTrackerSheet extends BladesItemSheet {
 
-  static async Get() {
-    return game.eunoblades.Tracker || (await BladesItem.create({
-      name: "GM Tracker",
-      type: "gm_tracker",
-      img: "systems/eunos-blades/assets/icons/gm-tracker.svg"
-    })) as BladesItem;
-  }
+  static Get() { return game.eunoblades.Tracker as BladesItemOfType<BladesItemType.gm_tracker> }
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -75,7 +67,7 @@ class BladesTrackerSheet extends BladesItemSheet {
         tracker = (await BladesItem.create({
           name: "GM Tracker",
           type: "gm_tracker",
-          img: "systems/eunos-blades/assets/icons/gm-tracker.svg"
+          img: "systems/eunos-blades/assets/icons/misc-icons/gm-tracker.svg"
         })) as BladesItem;
       }
       game.eunoblades.Tracker = tracker;
@@ -104,6 +96,7 @@ class BladesTrackerSheet extends BladesItemSheet {
       .forEach((actor) => actor.sheet?.render());
     return submitData;
   }
+
 }
 
 export default BladesTrackerSheet;

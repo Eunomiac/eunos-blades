@@ -1,28 +1,30 @@
 & {
-    min-width: 675px;
-    overflow: hidden;
+  --turf-list-width: 600px;
+  --turf-block-width: 135px;
+  --turf-block-height: 125px;
+  --turf-block-gap: 10px;
+  @import "../components/turf-block";
 
-    .window-content {
+  .turf-list {
+      scale: 0.8;
+      transform-origin: top left;
+      margin-right: -40%;
+      margin-bottom: -75px;
+      pointer-events: none;
 
-        form {
-            $heights: (40px, 35px, 25px, 20px, 30px);
-            --sheet-top-height: #{calculate-sum($heights)};
-            --sheet-mid-height: 0px;
+      .turf-row {
+        pointer-events: none;
+        .turf-block {
+          .turf-description {
+            font-size: 14px;
+          }
 
-            // .comp-tags { display: none }
+          .turf-control { display: none }
 
-            .sheet-img {
-                left: 0
-            }
-
-            .sheet-root {
-                section.sheet-top {}
-
-                .turf-list {
-                    @import "../components/turf-block";
-                    scale: 0.75;
-                }
-            }
+          &.turf-lair {
+            .turf-description, .turf-district { display: none }
+          }
         }
-    }
+      }
+  }
 }

@@ -8,26 +8,26 @@
   <span class="dot full-dot {{~#if (test this "==" (test value "??" data.value))}} value-dot{{/if}} {{~#if ../svgKey}} svg-dot{{/if}}" data-value="{{this}}" data-dtype="Number">
     {{#if (test ../altIconStep "&&" (test (calc this "%" ../altIconStep) "==" 0))}}
       {{#if ../altIconFullHover}}
-        <img class="img-hover" src="systems/eunos-blades/assets/icons/dotlines/{{../altIconFullHover}}" />
+        <img class="img-hover" src="systems/eunos-blades/assets/icons/dotline-icons/{{../altIconFullHover}}" />
       {{/if}}
       {{#if ../svgAltFullHover}}
         {{{compileSvg ../svgAltKey ../svgAltFullHover}}}
       {{/if}}
       {{#if ../altIconFull}}
-        <img class="img-main" src="systems/eunos-blades/assets/icons/dotlines/{{../altIconFull}}" />
+        <img class="img-main" src="systems/eunos-blades/assets/icons/dotline-icons/{{../altIconFull}}" />
       {{/if}}
       {{#if ../svgAltFull}}
         {{{compileSvg ../svgAltKey ../svgAltFull}}}
       {{/if}}
     {{else}}
       {{#if ../iconFullHover}}
-        <img class="img-hover" src="systems/eunos-blades/assets/icons/dotlines/{{../iconFullHover}}" />
+        <img class="img-hover" src="systems/eunos-blades/assets/icons/dotline-icons/{{../iconFullHover}}" />
       {{/if}}
       {{#if ../svgFullHover}}
         {{{compileSvg ../svgKey ../svgFullHover}}}
       {{/if}}
       {{#if ../iconFull}}
-        <img class="img-main" src="systems/eunos-blades/assets/icons/dotlines/{{../iconFull}}" />
+        <img class="img-main" src="systems/eunos-blades/assets/icons/dotline-icons/{{../iconFull}}" />
       {{/if}}
       {{#if ../svgFull}}
         {{{compileSvg ../svgKey ../svgFull}}}
@@ -41,13 +41,13 @@
   {{#forloop (calc (test value "??" data.value) "+" 1) (test max "??" data.max)}}
   <span class="dot empty-dot {{~#if ../svgKey}} svg-dot{{/if}}" data-value="{{this}}" data-dtype="Number">
     {{#if ../iconEmptyHover}}
-      <img class="img-hover" src="systems/eunos-blades/assets/icons/dotlines/{{../iconEmptyHover}}" />
+      <img class="img-hover" src="systems/eunos-blades/assets/icons/dotline-icons/{{../iconEmptyHover}}" />
     {{/if}}
     {{#if ../svgEmptyHover}}
       {{{compileSvg ../svgKey ../svgEmptyHover}}}
     {{/if}}
     {{#if ../iconEmpty}}
-      <img class="img-main" src="systems/eunos-blades/assets/icons/dotlines/{{../iconEmpty}}" />
+      <img class="img-main" src="systems/eunos-blades/assets/icons/dotline-icons/{{../iconEmpty}}" />
     {{/if}}
     {{#if ../svgEmpty}}
       {{{compileSvg ../svgKey ../svgEmpty}}}

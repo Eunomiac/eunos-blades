@@ -1,7 +1,7 @@
 & {
   display: flex;
   flex-direction: column;
-  width: 880px;
+  width: var(--turf-list-width, 880px);
   height: auto;
   margin: 0 auto;
 
@@ -23,11 +23,11 @@
     }
 
     .turf-block {
-      $turf-margin: 20px;
+      // $turf-margin: 20px;
 
-      --turf-block-width: 135px;
-      --turf-block-height: 125px;
-      --turf-block-gap: 40px;
+      // --turf-block-width, 135px: 135px;
+      // --turf-block-height, 125px: 125px;
+      // --turf-block-gap: 40px;
 
       --name-size: #{toRem(18px)};
 
@@ -44,11 +44,11 @@
       }
 
 
-      width: var(--turf-block-width);
-      height: var(--turf-block-height);
+      width: var(--turf-block-width, 135px);
+      height: var(--turf-block-height, 125px);
       background-color: rgba(255, 255, 255, 0.2);
       position: relative;
-      margin: calc(var(--turf-block-gap) / 2);
+      margin: calc(var(--turf-block-gap, 40px) / 2);
       flex-grow: initial;
       border-radius: 5px;
 
@@ -65,32 +65,32 @@
 
         &.right,
         &.left {
-          width: var(--turf-block-gap);
-          height: calc(var(--turf-block-height) / 5);
-          top: calc(var(--turf-block-height) / 2 - var(--turf-block-height) / 10);
+          width: var(--turf-block-gap, 40px);
+          height: calc(var(--turf-block-height, 125px) / 5);
+          top: calc(var(--turf-block-height, 125px) / 2 - var(--turf-block-height, 125px) / 10);
         }
 
         &.left {
-          left: calc(-1 * var(--turf-block-gap));
+          left: calc(-1 * var(--turf-block-gap, 40px));
         }
 
         &.right {
-          left: var(--turf-block-width);
+          left: var(--turf-block-width, 135px);
         }
 
         &.top,
         &.bottom {
-          height: var(--turf-block-gap);
-          width: calc(var(--turf-block-height) / 5);
-          left: calc(var(--turf-block-width) / 2 - var(--turf-block-height) / 10);
+          height: var(--turf-block-gap, 40px);
+          width: calc(var(--turf-block-height, 125px) / 5);
+          left: calc(var(--turf-block-width, 135px) / 2 - var(--turf-block-height, 125px) / 10);
         }
 
         &.top {
-          top: calc(-1 * var(--turf-block-gap));
+          top: calc(-1 * var(--turf-block-gap, 40px));
         }
 
         &.bottom {
-          top: var(--turf-block-height);
+          top: var(--turf-block-height, 125px);
         }
       }
 
@@ -127,7 +127,7 @@
       .turf-description {
         height: calc(100% - 18px);
         min-height: auto;
-        width: var(--turf-block-width);
+        width: var(--turf-block-width, 135px);
         padding: 0 2px;
 
         background: none;

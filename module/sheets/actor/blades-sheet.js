@@ -32,8 +32,9 @@ class BladesSheet extends ActorSheet {
         if (BladesActor.IsType(this.actor, BladesActorType.pc, BladesActorType.crew)) {
             sheetData.playbookData = {
                 tooltip: (new Handlebars.SafeString([
+                    "<h2>At the End of Each Session, Gain XP If ...</h2>",
                     "<ul>",
-                    ...this.actor.system.experience.clues?.map((line) => `<li>${line}</li>`) ?? [],
+                    ...Object.values(this.actor.system.experience.clues ?? []).map((line) => `<li>${line}</li>`) ?? [],
                     "</ul>"
                 ].join(""))).toString(),
                 dotline: {

@@ -4,7 +4,7 @@
   <img class="sheet-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
 
   {{!-- Playbook XP --}}
-  {{#if items.playbook}}
+  {{#if preparedItems.playbook}}
   {{> "systems/eunos-blades/templates/components/comp.hbs"
   class="comp-xp comp-xp-playbook comp-horizontal comp-teeth comp-teeth-long"
   dotline=playbookData.dotline
@@ -22,7 +22,7 @@
       <input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}">
 
       <div class="members comp comp-horizontal portrait-container actors-container">
-        {{#each actors.members as |actor|}}
+        {{#each preparedActors.members as |actor|}}
         {{> "systems/eunos-blades/templates/components/portrait.hbs" actor
           id = actor._id
           cat="Member"
@@ -32,18 +32,18 @@
       </div>
 
 
-      {{> "systems/eunos-blades/templates/components/comp.hbs" items.playbook
+      {{> "systems/eunos-blades/templates/components/comp.hbs" preparedItems.playbook
       class="comp-playbook comp-vertical"
       label="Playbook"
       cat="Playbook"
       docType="Item"
       addButton=true
       remButton=true
-      id=items.playbook._id
+      id=preparedItems.playbook._id
       }}
 
-      {{> "systems/eunos-blades/templates/components/comp.hbs" items.reputation
-      id=items.reputation.id
+      {{> "systems/eunos-blades/templates/components/comp.hbs" preparedItems.reputation
+      id=preparedItems.reputation.id
       class="comp-reputation comp-vertical no-img"
       label="Reputation"
       cat="Reputation"
@@ -52,11 +52,11 @@
       remButton=true
       }}
 
-      {{> "systems/eunos-blades/templates/components/comp.hbs" items.preferredOp
-      id=items.preferredOp._id
+      {{> "systems/eunos-blades/templates/components/comp.hbs" preparedItems.preferredOp
+      id=preparedItems.preferredOp._id
       class="comp-preferred-op comp-vertical"
       label="Preferred Op"
-      cat="PreferredOp"
+      cat="Preferred_Op"
       docType="Item"
       addButton=true
       remButton=true
@@ -84,7 +84,7 @@
 
       {{> "systems/eunos-blades/templates/components/comp.hbs"
       class="comp-rep comp-horizontal comp-teeth"
-      label=repData.name
+      label=repData.label
       labelClass="filled-label"
       dotlines=repData.dotlines
       }}
@@ -98,14 +98,14 @@
 
       {{> "systems/eunos-blades/templates/components/comp.hbs"
       class="comp-heat comp-horizontal comp-teeth"
-      label=heatData.name
+      label=heatData.label
       labelClass="filled-label"
       dotline=heatData.dotline
       }}
 
       {{> "systems/eunos-blades/templates/components/comp.hbs"
       class="comp-wanted comp-vertical comp-teeth"
-      label=wantedData.name
+      label=wantedData.label
       labelClass="filled-label"
       dotline=wantedData.dotline
       }}
@@ -113,7 +113,7 @@
       {{> "systems/eunos-blades/templates/components/comp.hbs"
       class="comp-tier comp-vertical comp-teeth"
       label="TIER"
-      labelClass="filled-label"
+      labelClass="filled-label full-width"
       dotline=tierData.dotline
       }}
 
@@ -137,10 +137,10 @@
 
       {{!-- Claims --}}
       <div class="tab claims" data-tab="claims">
-        {{#if items.playbook}}
+        {{#if preparedItems.playbook}}
         {{> "systems/eunos-blades/templates/parts/turf-list.hbs"
         actor=actor
-        turfs_data=items.playbook.system.turfs
+        turfs_data=preparedItems.playbook.system.turfs
         can_edit=false
         }}
         {{/if}}
@@ -149,18 +149,18 @@
       {{!-- Crew Upgrades --}}
       <div class="tab upgrades flex-vertical" data-tab="upgrades">
         <label class="comp tab-label" data-comp-cat="Upgrade" data-comp-type="Item">
-          {{#if items.playbook}}
+          {{#if preparedItems.playbook}}
           <a class="comp-control comp-button comp-add">
             <i class="fas fa-plus-square"></i>
           </a>
           {{/if}}
           <span class="tab-title">Crew Upgrades</span>
-          {{#if (test items.playbook "&&" (test actor.availableUpgradePoints ">" 0)) }}
+          {{#if (test preparedItems.playbook "&&" (test actor.availableUpgradePoints ">" 0)) }}
           {{> "systems/eunos-blades/templates/parts/dotline.hbs" upgradeData.dotline }}
           {{/if}}
         </label>
 
-        {{#each items.upgrades}}
+        {{#each preparedItems.upgrades}}
         {{> "systems/eunos-blades/templates/components/comp.hbs" this
         class="comp-desc-trait comp-horizontal full-width"
         docType="Item"
@@ -175,18 +175,18 @@
       {{!-- Crew Abilities --}}
       <div class="tab abilities flex-vertical" data-tab="abilities">
         <label class="comp tab-label" data-comp-cat="Ability" data-comp-type="Item">
-          {{#if items.playbook}}
+          {{#if preparedItems.playbook}}
           <a class="comp-control comp-button comp-add">
             <i class="fas fa-plus-square"></i>
           </a>
           {{/if}}
           <span class="tab-title">Crew Abilities</span>
-          {{#if (test items.playbook "&&" (test actor.availableAbilityPoints ">" 0)) }}
+          {{#if (test preparedItems.playbook "&&" (test actor.availableAbilityPoints ">" 0)) }}
           {{> "systems/eunos-blades/templates/parts/dotline.hbs" abilityData.dotline }}
           {{/if}}
         </label>
 
-        {{#each items.abilities}}
+        {{#each preparedItems.abilities}}
         {{> "systems/eunos-blades/templates/components/comp.hbs" this
         class="comp-desc-trait comp-horizontal full-width"
         docType="Item"
@@ -200,7 +200,7 @@
       {{!-- Contacts --}}
       <div class="tab contacts flex-vertical" data-tab="contacts">
         <label class="comp tab-label" data-comp-cat="Contact" data-comp-type="Actor">
-          {{#if items.playbook}}
+          {{#if preparedItems.playbook}}
           <a class="comp-control comp-button comp-add">
             <i class="fas fa-plus-square"></i>
           </a>
@@ -209,7 +209,7 @@
         </label>
 
         <div class="comp comp-horizontal portrait-container actors-container">
-          {{#each actors.contacts as |actor|}}
+          {{#each preparedActors.contacts as |actor|}}
           {{> "systems/eunos-blades/templates/components/comp.hbs" actor
           class="comp-vertical portrait-block"
           docType="Actor"
@@ -228,12 +228,12 @@
             <i class="fas fa-plus-square"></i>
           </a>
           <span class="tab-title">Cohorts</span>
-          {{#if (test items.playbook "&&" (test actor.availableCohortPoints ">" 0)) }}
+          {{#if (test preparedItems.playbook "&&" (test actor.availableCohortPoints ">" 0)) }}
           {{> "systems/eunos-blades/templates/parts/dotline.hbs" cohortData.dotline }}
           {{/if}}
         </label>
 
-        {{#each items.cohorts}}
+        {{#each preparedItems.cohorts}}
         {{> "systems/eunos-blades/templates/parts/cohort-block.hbs" }}
         {{/each}}
       </div>
@@ -259,7 +259,7 @@
         <label class="tab-label">
           <span class="tab-title">GM Notes</span>
         </label>
-        {{editor system.gm_notes target="system.gm_notes" button=true owner=owner editable=editable}}
+        {{editor system.gm_notes target="system.gm_notes" button=true owner=owner editable=isGM}}
         <label class="tab-label">
           <span class="tab-title">{{localize "BITD.Effects"}}</span>
         </label>

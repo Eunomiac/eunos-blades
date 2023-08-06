@@ -46,6 +46,11 @@ class BladesItem extends Item {
             || BladesItem.All.find((a) => a.name === itemRef);
     }
     static GetTypeWithTags(docType, ...tags) {
+        if (Array.isArray(docType)) {
+            return docType
+                .map((dType) => BladesItem.All.filter((item) => item.type === dType))
+                .flat();
+        }
         return BladesItem.All.filter((item) => item.type === docType)
             .filter((item) => item.hasTag(...tags));
     }
@@ -73,8 +78,9 @@ class BladesItem extends Item {
     }
     get tooltip() {
         const tooltipText = [
-            this.system.description,
-            this.system.rules
+            this.system.concept,
+            this.system.rules,
+            this.system.notes
         ].filter(Boolean).join("");
         if (tooltipText) {
             return (new Handlebars.SafeString(tooltipText)).toString();
@@ -98,7 +104,6 @@ class BladesItem extends Item {
             this.update({ "system.phase": phase });
         }
     }
-    get actionMax() { return this.phase === BladesPhase.CharGen ? 2 : undefined; }
     async _preCreate(data, options, user) {
         await super._preCreate(data, options, user);
         if (user.id !== game.user?.id) {
@@ -116,8 +121,14 @@ class BladesItem extends Item {
         if (BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
             this._prepareCohortData(this.system);
         }
+        if (BladesItem.IsType(this, BladesItemType.crew_playbook)) {
+            this._preparePlaybookData(this.system);
+        }
         if (BladesItem.IsType(this, BladesItemType.gm_tracker)) {
             this._prepareGmTrackerData(this.system);
+        }
+        if (BladesItem.IsType(this, BladesItemType.playbook)) {
+            this._preparePlaybookData(this.system);
         }
     }
     _prepareClockKeeperData(system) {
@@ -137,12 +148,6 @@ class BladesItem extends Item {
             return [keyID, keyData];
         }));
     }
-    _prepareGmTrackerData(system) {
-        if (!BladesItem.IsType(this, BladesItemType.gm_tracker)) {
-            return;
-        }
-        system.phases = Object.values(BladesPhase);
-    }
     _prepareCohortData(system) {
         if (!BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
             return;
@@ -157,6 +162,27 @@ class BladesItem extends Item {
         if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
             system.scale = 0;
             system.quality = system.tier.value + this.system.tier.value + 1;
+        }
+    }
+    _prepareGmTrackerData(system) {
+        if (!BladesItem.IsType(this, BladesItemType.gm_tracker)) {
+            return;
+        }
+        system.phases = Object.values(BladesPhase);
+    }
+    _preparePlaybookData(system) {
+        if (!BladesItem.IsType(this, BladesItemType.playbook, BladesItemType.crew_playbook)) {
+            return;
+        }
+        const expClueData = {};
+        [...Object.values(system.experience_clues).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
+        system.experience_clues = expClueData;
+        eLog.checkLog3("experienceClues", { expClueData });
+        if (BladesItem.IsType(this, BladesItemType.playbook)) {
+            const gatherInfoData = {};
+            [...Object.values(system.gather_info_questions).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
+            system.gather_info_questions = gatherInfoData;
+            eLog.checkLog3("gatherInfoQuestions", { gatherInfoData });
         }
     }
     async activateOverlayListeners() {
@@ -262,7 +288,7 @@ class BladesItem extends Item {
     }
     async _onUpdate(changed, options, userId) {
         await super._onUpdate(changed, options, userId);
-        if (BladesItem.IsType(this, BladesItemType.gm_tracker)) {
+        if (BladesItem.IsType(this, BladesItemType.gm_tracker, BladesItemType.clock_keeper, BladesItemType.location, BladesItemType.score)) {
             BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
         }
     }

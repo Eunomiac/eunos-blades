@@ -36,6 +36,12 @@ declare global {
       quality: number
     }
 
+    export interface playbook {
+      concept: string,
+      experience_clues: string[],
+      gather_info_questions: string[]
+    }
+
     export interface answers { answers: Record<"a" | "b" | "c" | "d", string> }
   }
 
@@ -71,7 +77,8 @@ declare global {
 
     export interface Crew_Reputation extends BladesItemSchemaTemplate.Default { }
 
-    export interface Crew_Playbook extends BladesItemSchemaTemplate.Default {
+    export interface Crew_Playbook extends BladesItemSchemaTemplate.Default,
+      BladesItemSchemaTemplate.playbook {
       turfs: Record<TurfNum, BladesClaimData>
     }
 
@@ -100,7 +107,8 @@ declare global {
       load: number
     }
 
-    export interface Playbook extends BladesItemSchemaTemplate.Default { }
+    export interface Playbook extends BladesItemSchemaTemplate.Default,
+      BladesItemSchemaTemplate.playbook { }
 
     export interface Preferred_Op extends BladesItemSchemaTemplate.Default,
       BladesItemSchemaTemplate.district { }

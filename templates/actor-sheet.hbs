@@ -268,7 +268,7 @@
               <i class="fas fa-plus-square"></i>
             </a>
             {{/if}}
-            <span class="tab-title">{{acquaintancesName}}</span>
+            <span class="tab-title">{{system.acquaintances_name}}</span>
           </label>
 
           <div class="comp comp-horizontal portrait-container actors-container">
@@ -304,12 +304,12 @@
             <span class="tab-title">Description</span>
           </label>
           {{editor system.description target="system.description" button=true owner=owner
-          editable=editable}}
+          editable=owner}}
 
           <label class="tab-label">
             <span class="tab-title">{{localize "BITD.Notes"}}</span>
           </label>
-          {{editor system.notes target="system.notes" button=true owner=owner editable=editable}}
+          {{editor system.notes target="system.notes" button=true owner=owner editable=owner}}
         </div>
 
         {{!-- GM-ONLY TABS --}}
@@ -320,7 +320,7 @@
           <label class="tab-label">
             <span class="tab-title">GM Notes</span>
           </label>
-          {{editor system.gm_notes target="system.gm_notes" button=true owner=owner editable=editable}}
+          {{editor system.gm_notes target="system.gm_notes" button=true owner=owner editable=isGM}}
           <label class="tab-label">
             <span class="tab-title">{{localize "BITD.Effects"}}</span>
           </label>
@@ -347,7 +347,7 @@
       </section>
 
       <section class="action-ratings flex-vertical">
-        {{#each attributes as |attribute_data attribute_name|}}
+        {{#each attributeData as |attribute_data attribute_name|}}
         <div class="comp comp-horizontal comp-attribute">
           <label class="comp-label" data-roll-attribute="{{attribute_name}}">{{case "title" attribute_name}}</label>
           <div class="comp-body">
@@ -378,6 +378,12 @@
         </div>
         {{/each}}
         {{/each}}
+        <div class="comp gather-info-tooltip">
+          <div class="comp-body">
+            <img class="gather-info-icon" src="systems/eunos-blades/assets/icons/misc-icons/gather-info.svg" />
+          </div>
+          <div class="comp tooltip">{{{gatherInfoTooltip}}}</div>
+        </div>
       </section>
     </div>
     {{/if}}

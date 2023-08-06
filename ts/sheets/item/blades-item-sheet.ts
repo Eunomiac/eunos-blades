@@ -29,7 +29,6 @@ class BladesItemSheet extends ItemSheet {
 
   // override async getData() {
 
-
   override getData() {
     const context = super.getData();
 
@@ -112,6 +111,14 @@ class BladesItemSheet extends ItemSheet {
     },
     [BladesItemType.crew_playbook]: (context) => {
       if (!BladesItem.IsType(this.item, BladesItemType.crew_playbook)) { return undefined as never }
+      if (context.isGM) {
+        const expClueData: Record<string, string> = {};
+        [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue });
+        context.system.experience_clues = expClueData as any;
+      }
+      // if (!context.isGM && context.system.experience_clues) {
+      //   delete context.system.experience_clues[Object.keys(context.system.experience_clues).length];
+      // }
       const sheetData: BladesItemDataOfType<BladesItemType.crew_playbook> = {
       };
       return {
@@ -173,20 +180,6 @@ class BladesItemSheet extends ItemSheet {
         }
       };
 
-      //   tierData: {
-      //     "class": "comp-tier comp-vertical comp-teeth",
-      //     "label": "Quality",
-      //     "labelClass": "filled-label full-width",
-      //     "dotline": {
-      //       data: this.item.system.tier,
-      //       target: "system.tier.value",
-      //       svgKey: "teeth.tall",
-      //       svgFull: "full|half|frame",
-      //       svgEmpty: "full|half|frame"
-      //     }
-      //   }
-      // };
-
       return {
         ...context,
         ...sheetData
@@ -194,8 +187,15 @@ class BladesItemSheet extends ItemSheet {
     },
     [BladesItemType.playbook]: (context) => {
       if (!BladesItem.IsType(this.item, BladesItemType.playbook)) { return undefined as never }
-      const sheetData: BladesItemDataOfType<BladesItemType.playbook> = {
-      };
+      if (context.isGM) {
+        const expClueData: Record<string, string> = {};
+        [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue });
+        context.system.experience_clues = expClueData as any;
+        const gatherInfoData: Record<string, string> = {};
+        [...Object.values(context.system.gather_info_questions ?? []).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question });
+        context.system.gather_info_questions = gatherInfoData as any;
+      }
+      const sheetData: BladesItemDataOfType<BladesItemType.playbook> = {};
       return {
         ...context,
         ...sheetData

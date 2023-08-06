@@ -19,7 +19,7 @@
       {{/unless}}
       {{/each}}
       <textarea class="turf-name {{#unless ../can_edit}}turf-readonly{{/unless}} {{#if (eq id "8"
-        )}}turf-readonly{{/if}} {{~#if ../can_edit}}{{#unless (eq id " 8")}} turf-editable{{/unless}}{{/if}}"
+        )}}turf-readonly{{/if}} {{~#if ../can_edit}}{{#unless (eq id " 8")}} turf-editable{{/unless}}{{/if}} shadowed"
         name="system.turfs.{{id}}.name" {{#unless ../can_edit}}readonly{{/unless}} {{#if (eq id "8"
         )}}readonly{{/if}}>{{localize turf.name}}</textarea>
       {{#if (eq id "8")}}

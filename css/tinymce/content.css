@@ -297,7 +297,7 @@ html, :root {
       cursor: pointer; }
     html .comp .comp-label:hover, html .comp .comp-title:hover, :root .comp .comp-label:hover, :root .comp .comp-title:hover {
       z-index: zLevel(3) !important; }
-      html .comp .comp-label:hover.comp-label, html .comp .comp-title:hover.comp-label, :root .comp .comp-label:hover.comp-label, :root .comp .comp-title:hover.comp-label {
+      html .comp .comp-label:hover.comp-label a, html .comp .comp-title:hover.comp-label a, :root .comp .comp-label:hover.comp-label a, :root .comp .comp-title:hover.comp-label a {
         color: var(--blades-gold-bright); }
       html .comp .comp-label:hover.comp-title, html .comp .comp-title:hover.comp-title, :root .comp .comp-label:hover.comp-title, :root .comp .comp-title:hover.comp-title {
         color: var(--blades-white-bright); }
@@ -434,17 +434,23 @@ html, :root {
       hyphens: auto;
       text-align: justify;
       position: absolute;
+      top: unset;
+      left: -200px;
+      bottom: 50px;
       z-index: zLevel(4);
       pointer-events: none; }
+      html .comp .tooltip h2, :root .comp .tooltip h2 {
+        color: var(--blades-white-bright); }
+      html .comp .tooltip.tooltip-low, :root .comp .tooltip.tooltip-low {
+        bottom: -50px; }
       html .comp .tooltip.tooltip-left, :root .comp .tooltip.tooltip-left {
+        left: 200px;
         max-width: unset; }
       html .comp .tooltip.tooltip-portrait, :root .comp .tooltip.tooltip-portrait {
         bottom: 100px;
         left: 50px; }
       html .comp .tooltip.trauma-tooltip, :root .comp .tooltip.trauma-tooltip {
-        scale: 1.25;
-        left: -200px;
-        bottom: -65px; }
+        left: -300px; }
     html .comp.comp-vertical, :root .comp.comp-vertical {
       --comp-img-scale: 2;
       --comp-name-size: toRem(16px);
@@ -1184,7 +1190,7 @@ html, :root {
         cursor: pointer; }
       html .comp .comp-label:hover, html .comp .comp-title:hover, :root .comp .comp-label:hover, :root .comp .comp-title:hover {
         z-index: 5 !important; }
-        html .comp .comp-label:hover.comp-label, html .comp .comp-title:hover.comp-label, :root .comp .comp-label:hover.comp-label, :root .comp .comp-title:hover.comp-label {
+        html .comp .comp-label:hover.comp-label a, html .comp .comp-title:hover.comp-label a, :root .comp .comp-label:hover.comp-label a, :root .comp .comp-title:hover.comp-label a {
           color: var(--blades-gold-bright); }
         html .comp .comp-label:hover.comp-title, html .comp .comp-title:hover.comp-title, :root .comp .comp-label:hover.comp-title, :root .comp .comp-title:hover.comp-title {
           color: var(--blades-white-bright); }
@@ -1321,17 +1327,23 @@ html, :root {
         hyphens: auto;
         text-align: justify;
         position: absolute;
+        top: unset;
+        left: -200px;
+        bottom: 50px;
         z-index: 6;
         pointer-events: none; }
+        html .comp .tooltip h2, :root .comp .tooltip h2 {
+          color: var(--blades-white-bright); }
+        html .comp .tooltip.tooltip-low, :root .comp .tooltip.tooltip-low {
+          bottom: -50px; }
         html .comp .tooltip.tooltip-left, :root .comp .tooltip.tooltip-left {
+          left: 200px;
           max-width: unset; }
         html .comp .tooltip.tooltip-portrait, :root .comp .tooltip.tooltip-portrait {
           bottom: 100px;
           left: 50px; }
         html .comp .tooltip.trauma-tooltip, :root .comp .tooltip.trauma-tooltip {
-          scale: 1.25;
-          left: -200px;
-          bottom: -65px; }
+          left: -300px; }
       html .comp.comp-vertical, :root .comp.comp-vertical {
         --comp-img-scale: 2;
         --comp-name-size: 1rem;

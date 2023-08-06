@@ -206,7 +206,7 @@
 				"rules": "",
         "notes": "",
         "description": "",
-				"tier": { "value": 0, "max": 4}
+				"tier": { "value": 0, "max": 6}
 			},
 			"district": { "district": "" },
       "clocks": { "clocks": {} },
@@ -217,6 +217,9 @@
         "edges": {},
         "flaws": {},
         "harm": { "value": 0, "max": 4 }
+      },
+      "playbook": {
+        "experience_clues": []
       },
       "answers": { "answers": {"a": "", "b": "", "c": "", "d": ""} }
     },
@@ -233,7 +236,7 @@
 		"crew_ability": { "templates": ["default", "district", "buyable", "limitUses"] },
 		"crew_reputation": { "templates": ["default"] },
 		"crew_playbook": {
-      "templates": ["default"],
+      "templates": ["default", "playbook"],
       "turfs": {}
     },
 		"crew_upgrade": { "templates": ["default", "district", "buyable", "limitUses"] },
@@ -248,7 +251,10 @@
       "phase": ""
     },
 		"heritage": { "templates": ["default"] },
-		"playbook": { "templates": ["default"] },
+		"playbook": {
+      "templates": ["default", "playbook"],
+      "gather_info_questions": []
+    },
 		"preferred_op": { "templates": ["default", "district"] },
 		"stricture": { "templates": ["default"] },
 		"vice": { "templates": ["default"] },

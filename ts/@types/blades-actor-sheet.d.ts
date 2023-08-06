@@ -23,11 +23,6 @@ declare global {
   namespace BladesActorSheetTypedData {
 
     export interface Scoundrel {
-      isOwner: boolean,
-
-      attributes: Record<Attributes, Record<Actions,ValueMax>>,
-
-      acquaintancesName: string,
 
       preparedItems: {
         abilities: Array<BladesItemOfType<BladesItemType.ability> & {
@@ -57,7 +52,10 @@ declare global {
       stressData: BladesCompData,
       traumaData: BladesCompData,
       abilityData: BladesCompData,
-      actionData: BladesCompData,
+
+      attributeData: Record<Attributes, Record<Actions, ValueMax>>,
+
+      gatherInfoTooltip: string,
 
       loadData: {
         curLoad: number,
@@ -79,8 +77,8 @@ declare global {
       }
 
       preparedActors: {
-        members: BladesActorOfType<BladesActorType.pc>[],
-        contacts: BladesActorOfType<BladesActorType.npc|BladesActorType.faction>[]
+        members: Array<BladesActorOfType<BladesActorType.pc>>,
+        contacts: Array<BladesActorOfType<BladesActorType.npc|BladesActorType.faction>>
       }
 
       tierData: BladesCompData,

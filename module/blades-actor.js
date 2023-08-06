@@ -477,7 +477,7 @@ class BladesActor extends Actor {
                 return dialogData;
             }
             case SelectionCategory.Preferred_Op: {
-                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op));
+                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op, this.playbookName));
                 return dialogData;
             }
             case SelectionCategory.Gear: {
@@ -958,21 +958,20 @@ class BladesActor extends Actor {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return;
         }
-        if (game.eunoblades.Tracker?.actionMax) {
-            for (const [attribute, attrData] of Object.entries(system.attributes)) {
-                for (const [action, actionData] of Object.entries(attrData)) {
-                    actionData.max = game.eunoblades.Tracker.actionMax;
-                    system.attributes[attribute][action] = actionData;
-                }
-            }
+        if (this.playbook) {
+            system.experience.clues = Object.values(this.playbook.system.experience_clues).filter((clue) => Boolean(clue.trim()));
         }
-        system.experience.clues.reverse();
+        if (this.playbook) {
+            system.gather_info = Object.values(this.playbook.system.gather_info_questions).filter((question) => Boolean(question.trim()));
+        }
     }
     _prepareCrewData(system) {
         if (!BladesActor.IsType(this, BladesActorType.crew)) {
             return;
         }
-        system.experience.clues.reverse();
+        if (this.playbook) {
+            system.experience.clues = Object.values(this.playbook.system.experience_clues).filter((clue) => Boolean(clue.trim()));
+        }
     }
     _prepareNPCData(system) {
         if (!BladesActor.IsType(this, BladesActorType.npc)) {

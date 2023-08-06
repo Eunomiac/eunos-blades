@@ -6,6 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import G from "./core/gsap.js";
+import U from "./core/utilities.js";
 export var SelectionCategory;
 (function (SelectionCategory) {
     SelectionCategory["Heritage"] = "Heritage";
@@ -61,18 +62,36 @@ class BladesSelectorDialog extends Dialog {
             },
             "default": "cancel"
         });
-        return app.render(true);
+        return app.hasItems ? app.render(true, { width: app.width }) : undefined;
+    }
+    get hasItems() {
+        return Object.values(this.tabs).some((tabItems) => tabItems.length > 0);
     }
     parent;
     tabs;
     tags = [];
+    width;
     docType;
     constructor(data, options) {
         super(data, options);
+        const validTabs = [];
+        for (const [tabName, tabItems] of Object.entries(data.tabs)) {
+            if (tabItems.length === 0) {
+                delete data.tabs[tabName];
+            }
+            else {
+                validTabs.push(tabName);
+            }
+        }
+        if (validTabs.length === 1 && !("Main" in data.tabs)) {
+            data.tabs.Main = [...data.tabs[validTabs[0]]];
+            delete data.tabs[validTabs[0]];
+        }
         this.docType = data.docType;
         this.parent = data.parent;
         this.tabs = data.tabs;
         this.tags = data.tags ?? [];
+        this.width = 150 * Math.ceil(Math.sqrt(Object.values(data.tabs)[0].length));
     }
     getData() {
         const data = super.getData();
@@ -85,6 +104,14 @@ class BladesSelectorDialog extends Dialog {
     activateListeners(html) {
         super.activateListeners(html);
         const self = this;
+
+        html.find(".nav-tabs .tab-selector").on("click", (event) => {
+            const tabIndex = U.pInt($(event.currentTarget).data("tab"));
+            const numItems = Object.values(self.tabs)[tabIndex].length;
+            const width = U.pInt(150 * Math.ceil(Math.sqrt(numItems)));
+            eLog.checkLog3("nav", "Nav Tab Size Recalculation", { tabIndex, numItems, width });
+            this.render(false, { width });
+        });
 
         html.find(".tooltip").siblings("[data-item-id]")
             .each(function (i, elem) {

@@ -357,7 +357,7 @@ const C = {
       "system.suggested_ability": "Battleborn"
     },
     Hound: {
-      "system.bgImg": "systems/eunos-blades/assets/icons/hound-trans.svg",
+      "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/hound-trans.svg",
       "system.tagline": "A Deadly Sharpshooter & Tracker",
       // "system.acquaintances_name": "Deadly Friends & Rivals",
       "system.friends_name": "Deadly Friends",
@@ -384,7 +384,7 @@ const C = {
       "system.suggested_ability": "Sharpshooter"
     },
     Leech: {
-      "system.bgImg": "systems/eunos-blades/assets/icons/leech-trans.svg",
+      "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/leech-trans.svg",
       "system.tagline": "A Saboteur & Technician",
       // "system.acquaintances_name": "Clever Friends & Rivals",
       "system.friends_name": "Clever Friends",
@@ -411,7 +411,7 @@ const C = {
       "system.suggested_ability": "Alchemist"
     },
     Lurk: {
-      "system.bgImg": "systems/eunos-blades/assets/icons/lurk-trans.svg",
+      "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/lurk-trans.svg",
       "system.tagline": "A Stealthy Infiltrator & Burglar",
       // "system.acquaintances_name": "Shady Friends & Rivals",
       "system.friends_name": "Shady Friends",
@@ -438,7 +438,7 @@ const C = {
       "system.suggested_ability": "Infiltrator"
     },
     Slide: {
-      "system.bgImg": "systems/eunos-blades/assets/icons/slide-trans.svg",
+      "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/slide-trans.svg",
       "system.tagline": "A Subtle Manipulator & Spy",
       // "system.acquaintances_name": "Sly Friends & Rivals",
       "system.friends_name": "Sly Friends",
@@ -465,7 +465,7 @@ const C = {
       "system.suggested_ability": "Rook's Gambit"
     },
     Spider: {
-      "system.bgImg": "systems/eunos-blades/assets/icons/spider-trans.svg",
+      "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/spider-trans.svg",
       "system.tagline": "A Devious Mastermind",
       // "system.acquaintances_name": "Shrewd Friends & Rivals",
       "system.friends_name": "Shrewd Friends",
@@ -492,7 +492,7 @@ const C = {
       "system.suggested_ability": "Foresight"
     },
     Whisper: {
-      "system.bgImg": "systems/eunos-blades/assets/icons/whisper-trans.svg",
+      "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/whisper-trans.svg",
       "system.tagline": "An Arcane Adept & Channeler",
       // "system.acquaintances_name": "Strange Friends & Rivals",
       "system.friends_name": "Strange Friends",
@@ -519,7 +519,7 @@ const C = {
       "system.suggested_ability": "Compel"
     },
     Ghost: {
-      "system.bgImg": "systems/eunos-blades/assets/icons/ghost-trans.svg",
+      "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/ghost-trans.svg",
       "system.tagline": "A Vengeful Disembodied Spirit",
       "system.acquaintances_name": "Enemies & Rivals",
       "system.starting_stats.add": {
@@ -545,7 +545,7 @@ const C = {
       "system.auto_abilities": ["Ghost Form"]
     },
     Hull: {
-      "system.bgImg": "systems/eunos-blades/assets/icons/hull-trans.svg",
+      "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/hull-trans.svg",
       "system.tagline": "An Animated Spark-Craft Frame",
       "system.acquaintances_name": "Master",
       "system.starting_stats.add": {
@@ -570,7 +570,7 @@ const C = {
       "system.auto_abilities": ["Automaton"]
     },
     Vampire: {
-      "system.bgImg": "systems/eunos-blades/assets/icons/vampire-trans.svg",
+      "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/vampire-trans.svg",
       "system.tagline": "An Animated Undead Body",
       "system.acquaintances_name": "Dark Servants",
       "system.starting_stats.add": {
@@ -633,7 +633,9 @@ const C = {
   SimpleItemTypes: [
     BladesItemType.background,
     BladesItemType.crew_reputation,
+    BladesItemType.feature,
     BladesItemType.heritage,
+    BladesItemType.preferred_op,
     BladesItemType.stricture
   ],
   Attributes: [
@@ -642,7 +644,7 @@ const C = {
     Attributes.prowess
   ],
   Vices: [
-    Vice.Faith, Vice.Gambling, Vice.Luxury, Vice.Obligation, Vice.Pleasure, Vice.Stupor, Vice.Weird, Vice.Worship, Vice.Life_Essence, Vice.Electroplasmic_Power
+    Vice.Faith, Vice.Gambling, Vice.Luxury, Vice.Obligation, Vice.Pleasure, Vice.Stupor, Vice.Weird, Vice.Worship, Vice.Living_Essence, Vice.Life_Essence, Vice.Electroplasmic_Power
   ]
 };
 

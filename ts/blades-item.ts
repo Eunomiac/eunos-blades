@@ -42,7 +42,12 @@ class BladesItem extends Item implements BladesDocument<Item> {
     return BladesItem.All.find((a) => a.system.world_name === itemRef)
       || BladesItem.All.find((a) => a.name === itemRef);
   }
-  static GetTypeWithTags<T extends BladesItemType>(docType: T, ...tags: BladesTag[]): Array<BladesItemOfType<T>> {
+  static GetTypeWithTags<T extends BladesItemType>(docType: T|T[], ...tags: BladesTag[]): Array<BladesItemOfType<T>> {
+    if (Array.isArray(docType)) {
+      return docType
+        .map((dType) => BladesItem.All.filter((item): item is BladesItemOfType<T> => item.type === dType))
+        .flat();
+    }
     return BladesItem.All.filter((item): item is BladesItemOfType<T> => item.type === docType)
       .filter((item) => item.hasTag(...tags));
   }
@@ -71,8 +76,9 @@ class BladesItem extends Item implements BladesDocument<Item> {
 
   get tooltip(): string|undefined {
     const tooltipText = [
-      this.system.description,
-      this.system.rules
+      this.system.concept,
+      this.system.rules,
+      this.system.notes
     ].filter(Boolean).join("");
     if (tooltipText) { return (new Handlebars.SafeString(tooltipText)).toString() }
     return undefined;
@@ -91,10 +97,6 @@ class BladesItem extends Item implements BladesDocument<Item> {
     return this;
   }
 
-  // get load() { return this.system.load ?? 0 }
-  // get maxPerScore() { return this.system.max_per_score ?? 1 }
-  // get usesPerScore() { return this.system.uses_per_score?.max ?? 1 }
-  // get usesRemaining() { return Math.max(0, this.usesPerScore - (this.system.uses_per_score?.value ?? 0)) }
   // #endregion
 
   // #region BladesGMTracker Implementation
@@ -105,8 +107,6 @@ class BladesItem extends Item implements BladesDocument<Item> {
       this.update({"system.phase": phase});
     }
   }
-
-  get actionMax() { return this.phase === BladesPhase.CharGen ? 2 : undefined}
 
   // #endregion
   override async _preCreate( data: any, options: any, user: User ) {
@@ -124,13 +124,13 @@ class BladesItem extends Item implements BladesDocument<Item> {
     if (BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { this._prepareCohortData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.crew_ability)) { this._prepareCrewAbilityData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.crew_reputation)) { this._prepareCrewReputationData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { this._prepareCrewPlaybookData(this.system) }
+    if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { this._preparePlaybookData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { this._prepareCrewUpgradeData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.feature)) { this._prepareFeatureData(this.system) }
     if (BladesItem.IsType(this, BladesItemType.gm_tracker)) { this._prepareGmTrackerData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.heritage)) { this._prepareHeritageData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.gear)) { this._prepareItemData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.playbook)) { this._preparePlaybookData(this.system) }
+    if (BladesItem.IsType(this, BladesItemType.playbook)) { this._preparePlaybookData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.preferred_op)) { this._preparePreferredOpData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.stricture)) { this._prepareStrictureData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.vice)) { this._prepareViceData(this.system) }
@@ -156,11 +156,6 @@ class BladesItem extends Item implements BladesDocument<Item> {
       }));
   }
 
-  _prepareGmTrackerData(system: ExtractBladesItemSystem<BladesItemType.gm_tracker>) {
-    if (!BladesItem.IsType(this, BladesItemType.gm_tracker)) { return }
-    system.phases = Object.values(BladesPhase);
-  }
-
   _prepareCohortData(system: ExtractBladesItemSystem<BladesItemType.cohort_gang|BladesItemType.cohort_expert>) {
     if (!BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { return }
     if (!this.parent || !BladesActor.IsType(this.parent, BladesActorType.pc, BladesActorType.crew)) { return }
@@ -171,6 +166,27 @@ class BladesItem extends Item implements BladesDocument<Item> {
     if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
       system.scale = 0;
       system.quality = system.tier.value + this.system.tier.value + 1;
+    }
+  }
+
+  _prepareGmTrackerData(system: ExtractBladesItemSystem<BladesItemType.gm_tracker>) {
+    if (!BladesItem.IsType(this, BladesItemType.gm_tracker)) { return }
+    system.phases = Object.values(BladesPhase);
+  }
+
+  _preparePlaybookData(system: ExtractBladesItemSystem<BladesItemType.playbook|BladesItemType.crew_playbook>) {
+    if (!BladesItem.IsType(this, BladesItemType.playbook, BladesItemType.crew_playbook)) { return }
+    const expClueData: Record<string,string> = {};
+    [...Object.values(system.experience_clues).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue });
+    system.experience_clues = expClueData as any;
+    eLog.checkLog3("experienceClues", {expClueData});
+
+    if (BladesItem.IsType(this, BladesItemType.playbook)) {
+      const gatherInfoData: Record<string,string> = {};
+      [...Object.values((<ExtractBladesItemSystem<BladesItemType.playbook>>system).gather_info_questions).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question });
+      (<ExtractBladesItemSystem<BladesItemType.playbook>>system).gather_info_questions = gatherInfoData as any;
+      eLog.checkLog3("gatherInfoQuestions", {gatherInfoData});
+
     }
   }
 
@@ -271,7 +287,7 @@ class BladesItem extends Item implements BladesDocument<Item> {
 
   override async _onUpdate(changed: any, options: any, userId: string) {
     await super._onUpdate(changed, options, userId);
-    if (BladesItem.IsType(this, BladesItemType.gm_tracker)) {
+    if (BladesItem.IsType(this, BladesItemType.gm_tracker, BladesItemType.clock_keeper, BladesItemType.location, BladesItemType.score)) {
       BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
     }
   }
@@ -299,7 +315,7 @@ class BladesItem extends Item implements BladesDocument<Item> {
 }
 
 declare interface BladesItem {
-  get type(): string & BladesItemType,
+  get type(): BladesItemType,
   parent: BladesActor | null,
   system: BladesItemSystem
 }

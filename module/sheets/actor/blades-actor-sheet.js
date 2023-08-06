@@ -5,10 +5,11 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { BladesActorType, BladesItemType, Tag } from "../../core/constants.js";
+import C, { BladesActorType, BladesItemType, Tag, BladesPhase } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesActor from "../../blades-actor.js";
+import BladesTrackerSheet from "../item/blades-tracker-sheet.js";
 
 class BladesActorSheet extends BladesSheet {
     static get defaultOptions() {
@@ -42,12 +43,6 @@ class BladesActorSheet extends BladesSheet {
         const context = super.getData();
         const { activeSubItems, activeSubActors } = this.actor;
         const sheetData = {};
-        sheetData.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
-        sheetData.attributes = U.objMap(this.actor.system.attributes, (attrData) => U.objMap(attrData, (value) => ({
-            value: value.value,
-            max: game.eunoblades.Tracker?.actionMax ?? value.max
-        })));
-        sheetData.acquaintancesName = this.actor.system.acquaintances_name ?? "Friends & Rivals";
         sheetData.preparedItems = {
             abilities: activeSubItems
                 .filter((item) => item.type === BladesItemType.ability)
@@ -193,8 +188,27 @@ class BladesActorSheet extends BladesSheet {
         };
         sheetData.armor = Object.fromEntries(Object.entries(this.actor.system.armor.active)
             .filter(([, isActive]) => isActive)
-            .map(([armor]) => [armor, this.actor.system.armor.checked[armor]])),
-            eLog.checkLog("actor", "[BladesActorSheet] getData()", { ...context, ...sheetData });
+            .map(([armor]) => [armor, this.actor.system.armor.checked[armor]]));
+        sheetData.attributeData = {};
+        const attrEntries = Object.entries(this.actor.system.attributes);
+        for (const [attribute, attrData] of attrEntries) {
+            sheetData.attributeData[attribute] = {};
+            const actionEntries = Object.entries(attrData);
+            for (const [action, actionData] of actionEntries) {
+                sheetData.attributeData[attribute][action] = {
+                    value: actionData.value,
+                    max: BladesTrackerSheet.Get().phase === BladesPhase.CharGen ? 2 : this.actor.system.attributes[attribute][action].max
+                };
+            }
+        }
+        sheetData.gatherInfoTooltip = (new Handlebars.SafeString([
+            "<h2>Gathering Information: Questions to Consider</h2>",
+            "<ul>",
+            ...Object.values(this.actor.system.gather_info ?? []).map((line) => `<li>${line}</li>`) ?? [],
+            "</ul>"
+        ].join(""))).toString();
+        eLog.checkLog("Attributes", "[BladesActorSheet] attributeData", { attributeData: sheetData.attributeData });
+        eLog.checkLog("actor", "[BladesActorSheet] getData()", { ...context, ...sheetData });
         return { ...context, ...sheetData };
     }
     get activeArmor() {

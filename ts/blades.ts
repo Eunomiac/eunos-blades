@@ -320,7 +320,7 @@ Hooks.once("init", async () => {
   Actors.registerSheet("blades", BladesNPCSheet, {types: ["npc"], makeDefault: true});
 
   Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("blades", BladesItemSheet, {types: ["gear", "playbook", "ability", "heritage", "background", "vice", "crew_upgrade", "cohort", "crew_playbook", "crew_reputation", "crew_upgrade", "crew_ability"], makeDefault: true});
+  Items.registerSheet("blades", BladesItemSheet, {types: C.ItemTypes, makeDefault: true});
 
   // Initialize subclasses
   await Promise.all([

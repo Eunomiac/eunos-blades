@@ -1,12 +1,11 @@
 // #region Imports ~
 import U from "./core/utilities.js";
 import type {Vice} from "./core/constants.js";
-import {BladesActorType, Tag, District, Playbook, BladesItemType, Attributes, Actions, Positions, EffectLevels, Randomizers} from "./core/constants.js";
+import {BladesActorType, BladesPhase, Tag, District, Playbook, BladesItemType, Attributes, Actions, Positions, EffectLevels, Randomizers} from "./core/constants.js";
 
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 import {bladesRoll} from "./blades-roll.js";
-import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs.js";
 import BladesItem, {PrereqType} from "./blades-item.js";
 import {SelectionCategory} from "./blades-dialog.js";
 import type BladesActiveEffect from "./blades-active-effect";
@@ -518,7 +517,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
         return dialogData;
       }
       case SelectionCategory.Preferred_Op: {
-        dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op));
+        dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op, this.playbookName as BladesTag));
         return dialogData;
       }
       case SelectionCategory.Gear: {
@@ -974,25 +973,23 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   _preparePCData(system: ExtractBladesActorSystem<BladesActorType.pc>) {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return }
 
-    // Determine base maximum for Action ratings from game phase.
-    if (game.eunoblades.Tracker?.actionMax) {
-      for (const [attribute, attrData] of Object.entries(system.attributes) as Array<[Attributes, Record<Actions,ValueMax>]>) {
-        for (const [action, actionData] of Object.entries(attrData) as Array<[Actions, ValueMax]>) {
-          actionData.max = game.eunoblades.Tracker.actionMax;
-          system.attributes[attribute][action] = actionData;
-        }
-      }
+    // Extract experience clues from playbook item, if any
+    if (this.playbook) {
+      system.experience.clues = Object.values(this.playbook.system.experience_clues).filter((clue) => Boolean(clue.trim()));
     }
-
-    // Reverse order of any experience tooltips, placing default/generic ones at the bottom.
-    system.experience.clues.reverse();
+    // Extract gather information questions from playbook item, if any
+    if (this.playbook) {
+      system.gather_info = Object.values(this.playbook.system.gather_info_questions).filter((question) => Boolean(question.trim()));
+    }
   }
 
   _prepareCrewData(system: ExtractBladesActorSystem<BladesActorType.crew>) {
     if (!BladesActor.IsType(this, BladesActorType.crew)) { return }
 
-    // Reverse order of any experience tooltips, placing default/generic ones at the bottom.
-    system.experience.clues.reverse();
+    // Extract experience clues from playbook item, if any
+    if (this.playbook) {
+      system.experience.clues = Object.values(this.playbook.system.experience_clues).filter((clue) => Boolean(clue.trim()));
+    }
   }
 
   _prepareNPCData(system: ExtractBladesActorSystem<BladesActorType.npc>) {

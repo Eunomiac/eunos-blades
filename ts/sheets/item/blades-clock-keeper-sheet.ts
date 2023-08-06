@@ -1,8 +1,11 @@
 
+import {BladesItemType} from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../../blades-item.js";
 
 export default class BladesClockKeeperSheet extends BladesItemSheet {
+
+  static Get() { return game.eunoblades.ClockKeeper as BladesItemOfType<BladesItemType.gm_tracker> }
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -22,7 +25,7 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
         clockKeeper = (await BladesItem.create({
           name: "Clock Keeper",
           type: "clock_keeper",
-          img: "systems/eunos-blades/assets/icons/clock-keeper.svg"
+          img: "systems/eunos-blades/assets/icons/misc-icons/clock-keeper.svg"
         })) as BladesItem;
       }
       game.eunoblades.ClockKeeper = clockKeeper;

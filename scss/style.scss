@@ -40,6 +40,10 @@
 
   body.vtt.game.system-eunos-blades {
 
+    .notification.error.permanent {
+      display: none !important;
+    }
+
     #pause {
       img.fa-spin {
         top: unset;
@@ -217,8 +221,10 @@
             @import './sheets/clock-keeper-sheet'
           }
 
-          &.crew_playbook {
-            @import './sheets/crew-playbook-sheet'
+          .window-content {
+            form.crew_playbook {
+              @import './sheets/crew-playbook-sheet'
+            }
           }
 
           &.gear {

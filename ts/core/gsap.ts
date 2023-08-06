@@ -150,14 +150,9 @@ const gsapEffects: Record<string, gsapEffect> = {
         );
       }
       if (tooltipElem) {
-        let [xStart, xEnd, yStart, yEnd, scale] = [-200, 0, -100, -100, 1.25];
-        if ($(tooltipElem).hasClass("tooltip-low")) {
-          yStart = 0;
-          yEnd = 0;
-        }
+        let [xMotion, scale] = ["+=200", 1.25];
         if ($(tooltipElem).hasClass("tooltip-left")) {
-          xStart = 100;
-          xEnd = -250;
+          xMotion = "-=250";
         }
         if ($(tooltipElem).hasClass("tooltip-small")) {
           scale = 1;
@@ -168,16 +163,13 @@ const gsapEffects: Record<string, gsapEffect> = {
           {
             filter: "blur(50px)",
             opacity: 0,
-            scale: 1.25 * scale,
-            x: xStart,
-            y: yStart
+            scale: 2 * scale
           },
           {
             filter: "blur(0px)",
             opacity: 1,
             scale,
-            x: xEnd,
-            y: yEnd,
+            x: xMotion,
             duration: 0.5,
             ease: "power2"
           },

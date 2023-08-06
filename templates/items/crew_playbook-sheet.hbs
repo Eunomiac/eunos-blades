@@ -1,37 +1,80 @@
-<form class="{{cssClass}} crew-type" autocomplete="off">
+{{log "CREW PLAYBOOK CONTEXT" this}}
+
+<form class="{{cssClass}}" autocomplete="off">
+
+  {{!-- Tags --}}
+  {{#if isGM}}
+  <input type="text" class="comp-tags tags-gm" />
+  {{/if}}
+
+  {{!-- Sheet Container --}}
   <div class="sheet-root">
 
-    {{#if isGM}}
-    <input type="text" class="comp-tags tags-gm" />
-    {{/if}}
-
+    {{!-- Header --}}
     <section class="sheet-top">
       <img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
-      <input class="comp-title sheet-title shadowed" type="text" name="name" value="{{item.name}}"
-        placeholder="{{localize 'BITD.Name'}}" />
+      <input class="sheet-title shadowed" type="text" name="name" value="{{item.name}}" {{#unless isGM}}readonly{{/unless}}>
     </section>
 
-    <section class="item-main flex-vertical">
+    {{!-- Body --}}
+    <section class="tab-content flex-vertical">
+      <input class="comp comp-concept sheet-subtitle shadowed" type="text" name="system.concept"
+        value="{{system.concept}}" placeholder="Concept" {{#unless isGM}}readonly{{/unless}} />
 
-      <textarea class="crew-type-description" name="system.description" placeholder="(Description)" {{~#unless editable}}
-        readonly{{/unless}}>{{system.description}}</textarea>
-      <label class="label-stripe">{{localize "BITD.ExpClues"}}</label>
-      {{editor system.experience_clues target="system.experience_clues" button=true owner=owner editable=editable}}
+      {{#if (test isGM "||" isEmbeddedItem)}}
+      <label class="tab-label">
+        <span class="tab-title">Description</span>
+      </label>
+      {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+      {{/if}}
 
-      <label class="label-stripe">{{localize "BITD.Turf"}}</label>
-      <div id="turf-container">
-        {{> "systems/eunos-blades/templates/parts/turf-list.hbs" turfs_data=system.turfs can_edit=true editable=editable}}
-      </div>
+      {{#if (test isGM "||" system.rules)}}
+      <label class="tab-label">
+        <span class="tab-title">Rules</span>
+      </label>
+      {{editor system.rules target="system.rules" button=true owner=owner editable=isGM}}
+      {{/if}}
+
+      {{#if (test isGM "||" system.notes)}}
+      <label class="tab-label">
+        <span class="tab-title">Notes</span>
+      </label>
+      {{editor system.notes target="system.notes" button=true owner=owner editable=isGM}}
+      {{/if}}
+
+      <label class="tab-label">
+        <span class="tab-title">Experience Clues</span>
+      </label>
+      {{#each system.experience_clues as |clue|}}
+        {{#if (test ../isGM "||" (test this "!==" " "))}}
+        <input type="text" value="{{clue}}" name="system.experience_clues.{{calc @index "+" 1}}" {{#unless ../isGM}}readonly style="text-align: center;"{{/unless}}>
+        {{/if}}
+      {{/each}}
 
       {{#if isGM}}
       <label class="tab-label">
-        <span class="tab-title">Active Effects</span>
-        <a class="comp-control comp-add effect-control" data-action="create" title="Create Effect">
+        <span class="tab-title">GM Notes</span>
+      </label>
+      {{editor system.gm_notes target="system.gm_notes" button=true owner=owner editable=isGM}}
+      {{/if}}
+
+      <label class="tab-label">
+        <span class="tab-title">Claims</span>
+      </label>
+      <div id="turf-container">
+        {{> "systems/eunos-blades/templates/parts/turf-list.hbs" turfs_data=system.turfs can_edit=isGM editable=isGM}}
+      </div>
+
+      {{#if isGM}}
+      <label class="comp tab-label">
+        <a class="comp-control comp-button comp-add effect-control" data-action="create" title="Create Effect">
           <i class="fas fa-plus-square"></i>
         </a>
+        <span class="tab-title">Active Effects</span>
       </label>
       {{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
       {{/if}}
     </section>
+    <section class="sheet-footer-small"></section>
   </div>
 </form>

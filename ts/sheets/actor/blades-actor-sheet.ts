@@ -1,11 +1,10 @@
 
-import C, {BladesActorType, BladesItemType, District, Tag, Actions, BladesPhase} from "../../core/constants.js";
-import type {Attributes} from "../../core/constants.js";
-
+import C, {BladesActorType, BladesItemType, Attributes, Tag, Actions, BladesPhase} from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
-import BladesItem from "../../blades-item.js";
 import BladesActor from "../../blades-actor.js";
+import BladesItem from "../../blades-item.js";
+import BladesTrackerSheet from "../item/blades-tracker-sheet.js";
 // import ConstructorDataType from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
 // import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
@@ -56,16 +55,6 @@ class BladesActorSheet extends BladesSheet {
     const {activeSubItems, activeSubActors} = this.actor;
 
     const sheetData: Partial<BladesActorDataOfType<BladesActorType.pc>> = {};
-
-    sheetData.isOwner = this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER);
-
-    sheetData.attributes = U.objMap(this.actor.system.attributes, (attrData: Record<Actions, ValueMax>) => U.objMap(attrData, (value: ValueMax): ValueMax => ({
-      value: value.value,
-      max: game.eunoblades.Tracker?.actionMax ?? value.max
-    }))) as Record<Attributes,Record<Actions,ValueMax>>;
-
-    sheetData.acquaintancesName = this.actor.system.acquaintances_name ?? "Friends & Rivals";
-
 
     sheetData.preparedItems = {
       abilities: activeSubItems
@@ -223,7 +212,29 @@ class BladesActorSheet extends BladesSheet {
 
     sheetData.armor = Object.fromEntries(Object.entries(this.actor.system.armor.active)
       .filter(([, isActive]) => isActive)
-      .map(([armor]) => [armor, this.actor.system.armor.checked[armor as KeyOf<typeof this.actor.system.armor.checked>]])),
+      .map(([armor]) => [armor, this.actor.system.armor.checked[armor as KeyOf<typeof this.actor.system.armor.checked>]]));
+
+    sheetData.attributeData = {} as Record<Attributes, Record<Actions, ValueMax>>;
+    const attrEntries = Object.entries(this.actor.system.attributes) as Array<[Attributes, Record<Actions,ValueMax>]>;
+    for (const [attribute, attrData] of attrEntries) {
+      sheetData.attributeData[attribute] = {} as Record<Actions, ValueMax>;
+      const actionEntries = Object.entries(attrData) as Array<[Actions, ValueMax]>;
+      for (const [action, actionData] of actionEntries) {
+        sheetData.attributeData[attribute][action] = {
+          value: actionData.value,
+          max: BladesTrackerSheet.Get().phase === BladesPhase.CharGen ? 2 : this.actor.system.attributes[attribute][action].max
+        };
+      }
+    }
+
+    sheetData.gatherInfoTooltip = (new Handlebars.SafeString([
+      "<h2>Gathering Information: Questions to Consider</h2>",
+      "<ul>",
+      ... Object.values(this.actor.system.gather_info ?? []).map((line) => `<li>${line}</li>`) ?? [],
+      "</ul>"
+    ].join(""))).toString();
+
+    eLog.checkLog("Attributes", "[BladesActorSheet] attributeData", {attributeData: sheetData.attributeData});
 
     eLog.checkLog("actor", "[BladesActorSheet] getData()", {...context, ...sheetData});
 

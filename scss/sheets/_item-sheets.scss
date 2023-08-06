@@ -1,7 +1,14 @@
 & {
-  height: auto !important;
+  height: min-content !important;
+  // min-height: 250px;
+  max-height: 700px;
+
+  width: min-content !important;
+  min-width: 500px;
+  max-width: 1200px;
 
   .window-content {
+
 
     form {
       $heights: 60px;
@@ -9,18 +16,47 @@
       --sheet-mid-height: 0px;
 
       .sheet-root {
+        overflow-x: hidden;
+        overflow-y: scroll;
 
         section {
 
           &.sheet-top {
-            grid-template-areas: ". item-img . title";
-            grid-template-columns: 25px 70px 25px 1fr;
+            grid-template-areas: "item-img title";
+            grid-template-columns: 50px 1fr;
             grid-template-rows: $heights;
             height: calculate-sum(($heights));
 
             img.sheet-img { pointer-events: all }
+
+            .sheet-title { text-align: center; z-index: 2 }
           }
 
+          .sheet-subtitle {
+            text-align: center;
+            background: linear-gradient(45deg, var(--blades-black-dark), var(--blades-black));
+            color: var(--blades-white-bright);
+            font-size: toRem(26px);
+            font-family: var(--font-decorative);
+            border-bottom: 2px solid var(--blades-white-bright);
+            --form-field-height: 60px;
+            font-style: italic;
+          }
+
+          .split-column {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-around;
+
+            > * {
+              flex-basis: 45%;
+              flex-grow: 0;
+              flex-shrink: 0;
+            }
+          }
+
+          input:not([class]) { margin: 2px 0 }
           // .tab-label
         }
       }
@@ -32,8 +68,8 @@
           section {
 
             &.sheet-top {
-              grid-template-areas: ". item-img . title tier";
-              grid-template-columns: 25px 70px 25px 1fr 100px;
+              grid-template-areas: "item-img title tier";
+              grid-template-columns: 50px 1fr 100px;
 
               .comp-tier { grid-area: tier }
             }
