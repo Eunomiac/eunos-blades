@@ -23,11 +23,22 @@
               --sheet-title-font-size: #{toRem(48px)};
             }
 
-            .comp-playbook { grid-area: playbook }
+            .comp-playbook {
+              grid-area: playbook;
+              top: -10px;
+            }
             .comp-reputation { grid-area: reputation }
             .comp-preferred-op { grid-area: preferred-op }
             .comp-hunting-grounds { grid-area: hunting-grounds }
-            .comp-coins { grid-area: coins }
+            .comp-coins {
+              grid-area: coins;
+
+              .dotline {
+                flex-wrap: wrap;
+                max-width: calc(var(--dotline-dot-size) * 8);
+                gap: 5px 0;
+              }
+            }
             .members { grid-area: members }
 
             .comp-hunting-grounds {

@@ -44,20 +44,24 @@ class BladesSheet extends ActorSheet {
 
     if (BladesActor.IsType(this.actor, BladesActorType.pc, BladesActorType.crew)) {
       sheetData.playbookData = {
-        tooltip: (new Handlebars.SafeString([
-          "<h2>At the End of Each Session, Gain XP If ...</h2>",
-          "<ul>",
-          ... Object.values(this.actor.system.experience.clues ?? []).map((line) => `<li>${line}</li>`) ?? [],
-          "</ul>"
-        ].join(""))).toString(),
         dotline: {
           data: this.actor.system.experience.playbook,
+          dotlineClass: "xp-playbook",
           target: "system.experience.playbook.value",
           svgKey: "teeth.tall",
           svgFull: "full|frame",
-          svgEmpty: "full|half|frame"
+          svgEmpty: "full|half|frame",
+          advanceButton: "advance-playbook"
         }
       };
+      if (this.actor.system.experience.playbook.value !== this.actor.system.experience.playbook.max) {
+        sheetData.playbookData.tooltip = (new Handlebars.SafeString([
+          "<h2>At the End of the Session, Gain XP If ...</h2>",
+          "<ul>",
+          ... Object.values(this.actor.system.experience.clues ?? []).map((line) => `<li>${line.replace(/^Y/, "... y")}</li>`) ?? [],
+          "</ul>"
+        ].join(""))).toString();
+      }
 
       sheetData.coinsData = {
         dotline: {
@@ -89,7 +93,7 @@ class BladesSheet extends ActorSheet {
     }
 
     //~ Tooltips
-    html.find(".tooltip").siblings(".comp-body")
+    html.find(".tooltip").siblings(".comp-body:not(.hide-tooltip)")
       .each(function(i, elem) {
         $(elem).data("hoverTimeline", G.effects.hoverTooltip(elem));
       })
@@ -187,6 +191,10 @@ class BladesSheet extends ActorSheet {
     html
       .find(".comp-control.comp-toggle")
       .on("click", this._onItemToggleClick.bind(this));
+
+    html
+      .find(".advance-button")
+      .on("click", this._onAdvanceClick.bind(this));
 
     // Roll Functionality
     html
@@ -340,6 +348,13 @@ class BladesSheet extends ActorSheet {
     this.actor.update({
       [target]: !getProperty(this.actor, target)
     });
+  }
+
+  async _onAdvanceClick(event: ClickEvent) {
+    event.preventDefault();
+    if ($(event.currentTarget).data("action") === "advance-playbook") {
+      this.actor.advancePlaybook();
+    }
   }
   // #endregion
 

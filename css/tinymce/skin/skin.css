@@ -3673,14 +3673,16 @@ body.tox-dialog__disable-scroll {
   font-family: var(--font-mono); }
 
 .editor.tinymce {
-  --editor-top-shift: 0;
+  --editor-top-shift: -32px;
   --toolbar-scale-factor: 1;
   --toolbar-margin-bottom: 0px;
   --statusbar-height: 15px;
   position: relative;
+  margin-top: var(--editor-top-shift) !important;
   z-index: 3;
   overflow: visible; }
   .editor.tinymce .tox.tox-tinymce {
+    min-height: 100px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -3690,9 +3692,7 @@ body.tox-dialog__disable-scroll {
     flex-direction: column;
     overflow: hidden;
     position: relative;
-    visibility: inherit !important;
-    height: calc(100% + 26px) !important;
-    margin-top: calc(-26px) !important; }
+    visibility: inherit !important; }
     .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header {
       opacity: 0.25;
       -webkit-transition: opacity 0.5s;
@@ -3722,7 +3722,7 @@ body.tox-dialog__disable-scroll {
               .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__overflow .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__primary .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label {
                 font-family: var(--font-emphasis); }
     .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-sidebar-wrap {
-      min-height: var(--min-tinymce-height); }
+      min-height: 100px; }
       .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-sidebar-wrap .tox-edit-area .tox-edit-area__iframe {
         background-color: rgba(0, 0, 0, 0.5);
         -webkit-box-shadow: inset 0px 0px 5px black;

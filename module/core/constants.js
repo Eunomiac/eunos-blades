@@ -187,11 +187,36 @@ export var Tag;
         PC["Medium"] = "Medium";
         PC["Large"] = "Large";
     })(PC = Tag.PC || (Tag.PC = {}));
+    let Invention;
+    (function (Invention) {
+        Invention["Arcane"] = "Arcane";
+        Invention["SparkCraft"] = "SparkCraft";
+        Invention["Alchemical"] = "Alchemical";
+        Invention["Mundane"] = "Mundane";
+        Invention["Ritual"] = "Ritual";
+    })(Invention = Tag.Invention || (Tag.Invention = {}));
+    let GearCategory;
+    (function (GearCategory) {
+        GearCategory["ArcaneImplement"] = "ArcaneImplement";
+        GearCategory["Document"] = "Document";
+        GearCategory["Gear"] = "Gear";
+        GearCategory["SubterfugeSupplies"] = "SubterfugeSupplies";
+        GearCategory["Tool"] = "Tool";
+        GearCategory["Weapon"] = "Weapon";
+    })(GearCategory = Tag.GearCategory || (Tag.GearCategory = {}));
     let NPC;
     (function (NPC) {
         NPC["Acquaintance"] = "Acquaintance";
         NPC["VicePurveyor"] = "VicePurveyor";
     })(NPC = Tag.NPC || (Tag.NPC = {}));
+    let Gang;
+    (function (Gang) {
+        Gang["Thugs"] = "Thugs";
+        Gang["Rooks"] = "Rooks";
+        Gang["Adepts"] = "Adepts";
+        Gang["Rovers"] = "Rovers";
+        Gang["Skulks"] = "Skulks";
+    })(Gang = Tag.Gang || (Tag.Gang = {}));
 })(Tag || (Tag = {}));
 const C = {
     SYSTEM_ID: "eunos-blades",

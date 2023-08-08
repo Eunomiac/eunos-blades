@@ -42,6 +42,8 @@
             .dotline {
               --fill-color-full: var(--blades-red-dark);
               --half-color-full: var(--blades-red-bright);
+
+              &.narrow-stress .dot { margin-right: 1px }
             }
           }
 
@@ -69,10 +71,6 @@
 
                 &:nth-child(2n) {
                   background: var(--blades-black-fade);
-                  .harm-effect {
-                    text-align: center;
-                    font-size: toRem(16px);
-                  }
                 }
 
                 .harm-level {
@@ -95,7 +93,8 @@
 
                 .harm-effect {
                   color: var(--blades-white-bright);
-                  text-align: right;
+                  text-align: center;
+                  font-size: toRem(16px);
                 }
 
                 .healing-clock {

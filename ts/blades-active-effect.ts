@@ -1,15 +1,15 @@
 import BladesActor from "./blades-actor.js";
 import U from "./core/utilities.js";
 import BladesItem from "./blades-item.js";
-import {Tag, BladesPhase, Attributes, InsightActions, ProwessActions, ResolveActions} from "./core/constants.js";
+import {Tag, BladesPhase, BladesActorType, BladesItemType, Attributes, InsightActions, ProwessActions, ResolveActions} from "./core/constants.js";
 
 const FUNCQUEUE: Record<string, {
   curFunc: Promise<void>,
   queue: BladesCustomFuncData[]
 }> = {};
 // {type: "ability", name: "rX:/^(?!Ghost)/"}
-const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, isReversing: boolean) => Promise<void>> = {
-  addItem: async (actor: BladesActor, funcData: string, isReversing = false) => {
+const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, effect: BladesActiveEffect, isReversing: boolean) => Promise<void>> = {
+  addItem: async (actor: BladesActor, funcData: string, effect, isReversing = false) => {
     eLog.checkLog("activeEffects", "addItem", {actor, funcData, isReversing});
     if (actor.hasActiveSubItemOf(funcData)) {
       if (isReversing) {
@@ -22,7 +22,7 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, isRever
     }
     return undefined;
   },
-  addIfChargen: async (actor: BladesActor, funcData: string, isReversing = false) => {
+  addIfChargen: async (actor, funcData, effect, isReversing = false) => {
     eLog.checkLog("activeEffects", "addIfChargen", {actor, funcData, isReversing});
     if (!isReversing && game.eunoblades.Tracker!.system.phase !== BladesPhase.CharGen) { return undefined }
     const [target, qty] = funcData.split(/:/);
@@ -31,38 +31,87 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, isRever
     }
     return actor.update({[target]: U.pInt(getProperty(actor, target)) + U.pInt(qty)});
   },
-  applyToMembers: async (crew: BladesActor, funcData: string, isReversing = false) => {
-    const members = crew.members;
-    if (members.length === 0) { return }
-    const [changeType, changeValue] = funcData.split(/:/);
-    switch (changeType) {
-      case "upgradeActionMax": {
-        const changeNum = U.pInt(changeValue);
-
-        Promise.all(members.map(async (member) => {
-          const changeData: Record<string,number> = {};
-          for (const actionName of Object.values(InsightActions)) {
-            if (member.system.attributes.insight[actionName].max < changeNum) {
-              changeData[`system.attributes.insight.${actionName}.max`] = changeNum;
-            }
-          }
-          for (const actionName of Object.values(ProwessActions)) {
-            if (member.system.attributes.prowess[actionName].max < changeNum) {
-              changeData[`system.attributes.prowess.${actionName}.max`] = changeNum;
-            }
-          }
-          for (const actionName of Object.values(ResolveActions)) {
-            if (member.system.attributes.resolve[actionName].max < changeNum) {
-              changeData[`system.attributes.resolve.${actionName}.max`] = changeNum;
-            }
-          }
-          return member.update(changeData);
-        }));
-      }
-      // no default
+  upgradeIfChargen: async (actor, funcData, effect, isReversing = false) => {
+    eLog.checkLog("activeEffects", "upgradeIfChargen", {actor, funcData, isReversing});
+    if (!isReversing && game.eunoblades.Tracker!.system.phase !== BladesPhase.CharGen) { return undefined }
+    const [target, qty] = funcData.split(/:/);
+    if (getProperty(actor, target) < U.pInt(qty)) {
+      return actor.update({[target]: U.pInt(qty)});
     }
+    return undefined;
   },
-  remItem: async (actor: BladesActor, funcData: string, isReversing = false) => {
+  APPLYTOMEMBERS: async () => { return undefined },
+  // memberMultiply: async (actor, funcData, effect, isReversing = false) => {
+
+  // },
+  // memberAdd: async (actor, funcData, effect, isReversing = false) => {
+
+  // },
+  // memberDowngrade: async (actor, funcData, effect, isReversing = false) => {
+
+  // },
+  // memberUpgrade: async (actor, funcData, effect, isReversing = false) => {
+
+  // },
+  // memberOverride: async (actor, funcData, effect, isReversing = false) => {
+
+  // },
+  // applyToMembers: async (actor, funcData, effect, isReversing = false) => {
+  //   const members = actor.members;
+  //   if (members.length === 0) { return }
+  //   const [changeValue, changeKey, changeFunc] = funcData.split(/:/).reverse();
+
+
+  // Instead just create/toggle/remove new effects applied to all member actors
+  // each custom function can be defined separately as an 'independent' active effect
+  // this way all the "spreading to members" logic is contained in here
+  // return owner.createEmbeddedDocuments("ActiveEffect", [{
+  //   name: "New Effect",
+  //   icon: "systems/eunos-blades/assets/icons/effect-icons/default.png",
+  //   origin: this.uuid, // owner.uuid
+  //   /* ? */ type: changeFunc in CUSTOMFUNCS ? "CUSTOM" : changeFunc,
+
+  // }]);
+
+  // switch (changeType) {
+  //   case "upgradeItemQuality": {
+  //     const gearTag = changeValue as BladesTag;
+  //     await Promise.all(members.map(async (member) => member.updateEmbeddedDocuments(
+  //       "Item",
+  //       member.items
+  //         .filter((item): item is BladesItemOfType<BladesItemType.gear> => item.type === BladesItemType.gear && item.hasTag(gearTag))
+  //         .map((item) => ({"_id": item.id, "system.tier.value": item.system.tier.value + (isReversing ? -1 : 1)}))
+  //     )));
+  //     return;
+  //   }
+  //   case "upgradeActionMax": {
+  //     const changeNum = U.pInt(changeValue);
+
+  //     await Promise.all(members.map(async (member) => {
+  //       const changeData: Record<string,number> = {};
+  //       for (const actionName of Object.values(InsightActions)) {
+  //         if (member.system.attributes.insight[actionName].max < changeNum) {
+  //           changeData[`system.attributes.insight.${actionName}.max`] = changeNum;
+  //         }
+  //       }
+  //       for (const actionName of Object.values(ProwessActions)) {
+  //         if (member.system.attributes.prowess[actionName].max < changeNum) {
+  //           changeData[`system.attributes.prowess.${actionName}.max`] = changeNum;
+  //         }
+  //       }
+  //       for (const actionName of Object.values(ResolveActions)) {
+  //         if (member.system.attributes.resolve[actionName].max < changeNum) {
+  //           changeData[`system.attributes.resolve.${actionName}.max`] = changeNum;
+  //         }
+  //       }
+  //       return member.update(changeData);
+  //     }));
+  //     return;
+  //   }
+  //   // no default
+  // }
+  // },
+  remItem: async (actor, funcData, effect, isReversing = false) => {
 
     function testString(targetString: string, testDef: string) {
       if (/^rX/.test(testDef)) {
@@ -112,7 +161,8 @@ type BladesCustomFuncName = KeyOf<typeof CUSTOMFUNCS>;
 type BladesCustomFuncData = {
   funcName: BladesCustomFuncName,
   funcData: string,
-  isReversing: boolean
+  isReversing: boolean,
+  effect: BladesActiveEffect
 }
 
 // type BladesCustomFuncParams = Parameters<ValueOf<typeof CUSTOMFUNCS>>[1];
@@ -131,7 +181,19 @@ class BladesActiveEffect extends ActiveEffect {
 
     Hooks.on("preCreateActiveEffect", async (effect: BladesActiveEffect) => {
 
+      eLog.checkLog3("effect", "TESTING PRE CREATE", {parent: effect.parent?.name});
+
       if (!(effect.parent instanceof BladesActor)) { return }
+
+      // Does this effect have an "APPLYTOMEMBERS" CUSTOM effect?
+      if (BladesActor.IsType(effect.parent, BladesActorType.crew) && effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
+        // Copy the effect, apply it to all members of the crew, then delete changes from original effect so only the APPLYTOMEMBERS key remains.
+        // @ts-expect-error Useless typing for createEmbeddedDocuments
+        await Promise.all(effect.parent.members.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect])));
+        await effect.updateSource({changes: effect.changes.filter((change) => change.key === "APPLYTOMEMBERS")});
+        return;
+      }
+
       // Partition effect.changes into permanent and non-permanent changes:
 
       const [permChanges, changes] = U.partition(effect.changes, (change) => /^perm/.test(change.key));
@@ -144,7 +206,8 @@ class BladesActiveEffect extends ActiveEffect {
           const funcData: BladesCustomFuncData = {
             funcName: permFuncName as BladesCustomFuncName,
             funcData: value,
-            isReversing: false
+            isReversing: false,
+            effect
           };
           BladesActiveEffect.ThrottleCustomFunc(effect.parent as BladesActor, funcData);
         } else {
@@ -167,7 +230,8 @@ class BladesActiveEffect extends ActiveEffect {
         const funcData: BladesCustomFuncData = {
           funcName: changeData.key as BladesCustomFuncName,
           funcData: changeData.value,
-          isReversing: false
+          isReversing: false,
+          effect: changeData.effect
         };
         BladesActiveEffect.ThrottleCustomFunc(actor, funcData);
       }
@@ -180,20 +244,30 @@ class BladesActiveEffect extends ActiveEffect {
         const funcData: BladesCustomFuncData = {
           funcName: key as BladesCustomFuncName,
           funcData: value,
-          isReversing: disabled
+          isReversing: disabled,
+          effect
         };
         BladesActiveEffect.ThrottleCustomFunc(effect.parent as BladesActor, funcData);
       });
     });
 
-    Hooks.on("deleteActiveEffect", (effect: BladesActiveEffect) => {
+    Hooks.on("deleteActiveEffect", async (effect: BladesActiveEffect) => {
       if (!(effect.parent instanceof BladesActor)) { return }
+      // Does this effect have an "APPLYTOMEMBERS" CUSTOM effect?
+      if (BladesActor.IsType(effect.parent, BladesActorType.crew) && effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
+        // Delete matching ActiveEffects from all members.
+        await Promise.all(effect.parent.members
+          .map(async (member) => Promise.all(member.effects
+            .filter((e) => e.name === effect.name)
+            .map(async (e) => e.delete()))));
+      }
       const customEffects = effect.changes.filter((changes: EffectChangeData) => changes.mode === 0);
       customEffects.forEach(({key, value}) => {
         const funcData: BladesCustomFuncData = {
           funcName: key as BladesCustomFuncName,
           funcData: value,
-          isReversing: true
+          isReversing: true,
+          effect
         };
         BladesActiveEffect.ThrottleCustomFunc(effect.parent as BladesActor, funcData);
       });
@@ -201,7 +275,7 @@ class BladesActiveEffect extends ActiveEffect {
   }
 
   static ThrottleCustomFunc(actor: BladesActor, data: BladesCustomFuncData) {
-    const {funcName, funcData, isReversing} = data;
+    const {funcName, funcData, isReversing, effect} = data;
     if (!actor.id) { return }
     eLog.display(`Throttling Func: ${funcName}(${funcData}, ${isReversing})`);
     // Is there a currently-running function for this actor?
@@ -219,7 +293,7 @@ class BladesActiveEffect extends ActiveEffect {
     // If not, create FUNCQUEUE entry and run first function.
     eLog.display("... Creating New FUNCQUEUE, RUNNING:");
     FUNCQUEUE[actor.id] = {
-      curFunc: BladesActiveEffect.RunCustomFunc(actor, CUSTOMFUNCS[funcName](actor, funcData, isReversing)),
+      curFunc: BladesActiveEffect.RunCustomFunc(actor, CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing)),
       queue: []
     };
   }
@@ -230,9 +304,9 @@ class BladesActiveEffect extends ActiveEffect {
     await funcPromise;
     eLog.checkLog("activeEffects", "... Function Complete!");
     if (FUNCQUEUE[actor.id].queue.length) {
-      const {funcName, funcData, isReversing} = FUNCQUEUE[actor.id].queue.shift()!;
+      const {funcName, funcData, isReversing, effect} = FUNCQUEUE[actor.id].queue.shift()!;
       eLog.display(`Progressing Queue: ${funcName}(${funcData}, ${isReversing}) -- ${FUNCQUEUE[actor.id].queue.length} remaining funcs.`);
-      FUNCQUEUE[actor.id].curFunc = BladesActiveEffect.RunCustomFunc(actor, CUSTOMFUNCS[funcName](actor, funcData, isReversing));
+      FUNCQUEUE[actor.id].curFunc = BladesActiveEffect.RunCustomFunc(actor, CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing));
     } else {
       eLog.display("Function Queue Complete! Deleting.");
       delete FUNCQUEUE[actor.id];
@@ -248,8 +322,8 @@ class BladesActiveEffect extends ActiveEffect {
     const a = event.currentTarget as HTMLElement;
     if (a.dataset.action === "create") {
       return owner.createEmbeddedDocuments("ActiveEffect", [{
-        name: "New Effect",
-        icon: "systems/eunos-blades/assets/icons/effect-icons/default.png",
+        name: owner.name,
+        icon: owner.img,
         origin: owner.uuid
       }]);
     }
@@ -268,6 +342,15 @@ class BladesActiveEffect extends ActiveEffect {
       // no default
     }
     return null;
+  }
+
+  override async _preCreate(data: any, options: any, user: User) {
+    eLog.checkLog3("effect", "ActiveEffect._preCreate()", {data, options, user});
+    super._preCreate(data, options, user);
+  }
+  override async _onDelete(options: any, userID: string) {
+    eLog.checkLog3("effect", "ActiveEffect._onDelete()", {options, userID});
+    super._onDelete(options, userID);
   }
 
   override get isSuppressed() {

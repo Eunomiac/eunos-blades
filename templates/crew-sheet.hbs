@@ -5,11 +5,9 @@
 
   {{!-- Playbook XP --}}
   {{#if preparedItems.playbook}}
-  {{> "systems/eunos-blades/templates/components/comp.hbs"
+  {{> "systems/eunos-blades/templates/components/comp.hbs" playbookData
   class="comp-xp comp-xp-playbook comp-horizontal comp-teeth comp-teeth-long"
-  dotline=playbookData.dotline
-  tooltip=playbookData.tooltip
-  tooltipClass="tooltip-low tooltip-left tooltip-small"
+  tooltipClass="tooltip-small tooltip-playbook tooltip-left"
   }}
   {{/if}}
 
@@ -285,6 +283,5 @@
       {{/if}}
 
     </section>
-
   </div>
 </form>

@@ -8,6 +8,11 @@ export enum BladesTipContext {
   Combat = "Combat",
   General = "General"
 }
+
+type OnSubmitEvent = Event & {
+  result: Promise<Record<string,string|number|boolean>>
+}
+
 class BladesTipGenerator {
 
   static get Tips() {
@@ -85,15 +90,63 @@ class BladesTrackerSheet extends BladesItemSheet {
   //   return context;
   // }
 
+
   override async activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
 
   }
 
-  override async _onSubmit(event: Event, params: List<any> = {}) {
+  override async _onSubmit(event: OnSubmitEvent, params: List<any> = {}) {
+    const prevPhase = this.item.system.phase;
     const submitData = await super._onSubmit(event, params);
-    game.actors.filter((actor) => actor.type === BladesActorType.pc)
-      .forEach((actor) => actor.sheet?.render());
+    const newPhase = this.item.system.phase;
+    let isForcingRender = true;
+    if (prevPhase !== newPhase) {
+      switch (prevPhase) {
+        case BladesPhase.CharGen: {
+
+          break;
+        }
+        case BladesPhase.Freeplay: {
+
+          break;
+        }
+        case BladesPhase.Score: {
+          isForcingRender = false;
+          game.actors.filter((actor) => actor.type === BladesActorType.pc)
+            .forEach((actor) => actor.clearLoadout());
+          break;
+        }
+        case BladesPhase.Downtime: {
+
+          break;
+        }
+        // no default
+      }
+      switch (newPhase) {
+        case BladesPhase.CharGen: {
+
+          break;
+        }
+        case BladesPhase.Freeplay: {
+
+          break;
+        }
+        case BladesPhase.Score: {
+
+          break;
+        }
+        case BladesPhase.Downtime: {
+
+          break;
+        }
+        // no default
+      }
+    }
+    if (isForcingRender) {
+      game.actors.filter((actor) => actor.type === BladesActorType.pc)
+        .forEach((actor) => actor.sheet?.render());
+    }
     return submitData;
   }
 

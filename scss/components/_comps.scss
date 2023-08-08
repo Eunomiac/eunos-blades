@@ -6,6 +6,8 @@
   align-items: center;
   z-index: zLevel();
 
+  &:hover { z-index: 10 }
+
   &.full-width { width: 100%; justify-content: space-evenly }
 
   &.portrait-container {
@@ -140,15 +142,17 @@
       color: var(--blades-red-bright);
       font-weight: bold;
       text-shadow: var(--text-shadow-dark);
+      scale: 0.9;
 
-      &:hover { color: var(--blades-red) }
+      &:hover { z-index: 10; color: var(--blades-red) }
     }
 
     &.comp-toggle-grey {
       color: var(--blades-grey);
       filter: blur(2px);
+      scale: 0.8;
 
-      &:hover { filter: blur(0px); color: var(--blades-white) }
+      &:hover { z-index: 10; filter: blur(0px); color: var(--blades-white) }
     }
   }
 
@@ -216,6 +220,12 @@
     &.tooltip-portrait {
       bottom: 100px;
       left: 50px;
+    }
+
+    &.tooltip-playbook {
+      bottom: unset;
+      top: 0px;
+      left: -220px;
     }
 
     &.trauma-tooltip {

@@ -143,6 +143,7 @@ class BladesActorSheet extends BladesSheet {
       label: this.actor.system.stress.name,
       dotline: {
         data: this.actor.system.stress,
+        dotlineClass: this.actor.system.stress.max >= 13 ? "narrow-stress" : "",
         target: "system.stress.value",
         svgKey: "teeth.tall",
         svgFull: "full|half|frame",
@@ -279,6 +280,15 @@ class BladesActorSheet extends BladesSheet {
     if (this.checkedArmor.includes("light")) { return "light" }
     if (this.checkedArmor.includes("heavy")) { return "heavy" }
     return "special";
+  }
+
+  override async _onAdvanceClick(event: ClickEvent) {
+    event.preventDefault();
+    super._onAdvanceClick(event);
+    const action = $(event.currentTarget).data("action").replace(/^advance-/, "");
+    if (action in Attributes) {
+      this.actor.advanceAttribute(action);
+    }
   }
 
   override activateListeners(html: JQuery<HTMLElement>) {

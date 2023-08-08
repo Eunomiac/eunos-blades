@@ -12,7 +12,7 @@
   {{#if preparedItems.playbook}}
     {{> "systems/eunos-blades/templates/components/comp.hbs" playbookData
     class="comp-xp comp-xp-playbook comp-horizontal comp-teeth comp-teeth-long"
-    tooltipClass="tooltip-low tooltip-left tooltip-small"
+    tooltipClass="tooltip-small tooltip-playbook tooltip-left"
     }}
   {{/if}}
 
@@ -151,7 +151,7 @@
             <td class="harm-input" colspan="2">
               <input type="text" name="system.harm.heavy.one" value="{{system.harm.heavy.one}}">
             </td>
-            <td class="harm-effect">{{localize "BITD.NeedHelp"}}</td>
+            <td class="harm-effect">{{{system.harm.heavy.effect}}}</td>
             <td class="healing-clock clock-container" rowspan="3">
               {{#if preparedItems.playbook}}
               {{> "systems/eunos-blades/templates/components/clock.hbs" healing_clock }}
@@ -170,7 +170,7 @@
             <td class="harm-input">
               <input type="text" name="system.harm.medium.two" value="{{system.harm.medium.two}}">
             </td>
-            <td class="harm-effect">&minus;1D</td>
+            <td class="harm-effect">{{{system.harm.medium.effect}}}</td>
           </tr>
           <tr>
             <td class="harm-level">1</td>
@@ -180,7 +180,7 @@
             <td class="harm-input">
               <input type="text" name="system.harm.light.two" value="{{system.harm.light.two}}">
             </td>
-            <td class="harm-effect">{{localize "BITD.LessEffect"}}</td>
+            <td class="harm-effect">{{{system.harm.light.effect}}}</td>
           </tr>
         </tbody>
       </table>
@@ -349,7 +349,7 @@
       <section class="action-ratings flex-vertical">
         {{#each attributeData as |attribute_data attribute_name|}}
         <div class="comp comp-horizontal comp-attribute">
-          <label class="comp-label" data-roll-attribute="{{attribute_name}}">{{case "title" attribute_name}}</label>
+          <label class="comp-label" data-roll-attribute="{{attribute_name}}">{{#if (test (lookup ../system.resistance_bonus attribute_name) ">" 0)}}+{{lookup ../system.resistance_bonus attribute_name}}&nbsp;{{/if}}{{case "title" attribute_name}}</label>
           <div class="comp-body">
             {{> "systems/eunos-blades/templates/parts/dotline.hbs"
             data=(lookup ../system.experience attribute_name)
@@ -358,6 +358,8 @@
             svgFull="full|frame"
             svgEmpty="full|half|frame"
             blockClass="teeth long-teeth"
+            dotlineClass="xp-attribute"
+            advanceButton=(concat "advance-" attribute_name)
             }}
           </div>
         </div>

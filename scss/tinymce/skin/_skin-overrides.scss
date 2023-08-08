@@ -14,7 +14,7 @@
 }
 
 .editor.tinymce {
-  --editor-top-shift: 0;
+  --editor-top-shift: -32px;
 
   --toolbar-scale-factor: 1; // 0.75;
   --toolbar-margin-bottom: 0px;
@@ -22,19 +22,20 @@
   --statusbar-height: 15px;
 
   position: relative;
-  // top: var(--editor-top-shift);
+  margin-top: var(--editor-top-shift) !important;
   z-index: 3;
   // margin-bottom: var(--editor-top-shift);
   overflow: visible;
 
   .tox.tox-tinymce {
+    min-height: 100px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
     visibility: inherit !important;
-    height: calc(100% + 26px) !important;
-    margin-top: calc(-26px) !important;
+    // height: calc(100% + 26px) !important;
+    // margin-top: calc(-26px) !important;
     // height: 100% !important;
 
     .tox-editor-container {
@@ -79,7 +80,7 @@
         }
       }
       .tox-sidebar-wrap {
-        min-height: var(--min-tinymce-height);
+        min-height: 100px; // var(--min-tinymce-height);
         .tox-edit-area {
           .tox-edit-area__iframe {
             background-color: rgba(0,0,0,0.5);

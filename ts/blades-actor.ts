@@ -73,10 +73,6 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
         clues: [],
         ...data.system.experience ?? {}
       };
-      data.system.experience.clues = [
-        "You expressed your beliefs, drives, heritage, or background.",
-        "You struggled with issues from your vice or traumas during the session."
-      ];
     }
 
     if (data.type === BladesActorType.crew) {
@@ -85,11 +81,6 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
         clues: [],
         ...data.system.experience ?? {}
       } as BladesActorSystem["experience"];
-      data.system.experience!.clues = [
-        "You contended with challenges above your current station.",
-        "You bolstered your crew's reputation, or developed a new one.",
-        "You expressed the goals, drives, inner conflict, or essential nature of the crew."
-      ];
     }
 
     return super.create(data, options);
@@ -148,6 +139,25 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   // #region BladesPrimaryActor Implementation ~
   get primaryUser(): User | null {
     return game.users?.find((user) => user.character?.id === this?.id) || null;
+  }
+  async clearLoadout() {
+    this.update({"system.loadout.selected": ""});
+    this.updateEmbeddedDocuments(
+      "Item",
+      [
+        ...this.activeSubItems.filter((item) => BladesItem.IsType(item, BladesItemType.gear) && !item.hasTag(Tag.System.Archived))
+          .map((item) => ({
+            "_id": item.id,
+            "system.tags": [... item.tags, Tag.System.Archived],
+            "system.uses_per_score.value": 0
+          })),
+        ...this.activeSubItems.filter((item) => BladesItem.IsType(item, BladesItemType.ability) && item.system.uses_per_score.max)
+          .map((item) => ({
+            "_id": item.id,
+            "system.uses_per_score.value": 0
+          }))
+      ]
+    );
   }
   // #endregion
   // #region SubActorControl Implementation ~
@@ -583,13 +593,13 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
     return dialogData;
   }
 
-  getSubItem(itemRef: ItemRef): BladesItem | undefined {
+  getSubItem(itemRef: ItemRef, activeOnly = false): BladesItem | undefined {
     if (typeof itemRef === "string" && this.items.get(itemRef)) {
       return this.items.get(itemRef);
     }
     const globalItem = BladesItem.Get(itemRef);
     if (!globalItem) { return undefined }
-    return this.items.find((item) => item.system.world_name === globalItem.system.world_name);
+    return this.items.find((item) => item.name === globalItem.name) ?? this.items.find((item) => item.system.world_name === globalItem.system.world_name);
   }
 
   hasSubItemOf(itemRef: ItemRef): boolean {
@@ -714,7 +724,8 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
   async advancePlaybook(): Promise<void> {
     if (!this.playbook) { return undefined }
-    this.update({"system.experience.playbook.value": 0});
+    await this.update({"system.experience.playbook.value": 0});
+    ui.notifications!.info(`${this.name} Advances ${U.tCase(this.playbookName)} Playbook!`);
     switch (this.type) {
       case BladesActorType.pc: return this.addAbilityPoints(1);
       case BladesActorType.crew: {
@@ -723,6 +734,11 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       }
       default: return undefined;
     }
+  }
+
+  async advanceAttribute(attribute: Attributes) {
+    await this.update({[`system.experience.${attribute}.value`]: 0});
+    ui.notifications!.info(`${this.name} Advances ${U.tCase(attribute)}!`);
   }
 
   // async addActionPoints(amount: number, attribute: Attributes|"action" = "action"): Promise<void> {
@@ -975,11 +991,11 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
     // Extract experience clues from playbook item, if any
     if (this.playbook) {
-      system.experience.clues = Object.values(this.playbook.system.experience_clues).filter((clue) => Boolean(clue.trim()));
+      system.experience.clues = [...system.experience.clues, ...Object.values(this.playbook.system.experience_clues).filter((clue) => Boolean(clue.trim()))];
     }
     // Extract gather information questions from playbook item, if any
     if (this.playbook) {
-      system.gather_info = Object.values(this.playbook.system.gather_info_questions).filter((question) => Boolean(question.trim()));
+      system.gather_info = [...system.gather_info, ...Object.values(this.playbook.system.gather_info_questions).filter((question) => Boolean(question.trim()))];
     }
   }
 
@@ -988,7 +1004,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
     // Extract experience clues from playbook item, if any
     if (this.playbook) {
-      system.experience.clues = Object.values(this.playbook.system.experience_clues).filter((clue) => Boolean(clue.trim()));
+      system.experience.clues = [...system.experience.clues, ...Object.values(this.playbook.system.experience_clues).filter((clue) => Boolean(clue.trim()))];
     }
   }
 

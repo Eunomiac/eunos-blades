@@ -169,6 +169,8 @@ declare global {
 
     export interface PrimaryActor {
       primaryUser: User|null;
+
+      clearLoadout(): Promise<void>;
     }
 
     export interface SubActorControl {

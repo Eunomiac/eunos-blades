@@ -278,6 +278,8 @@ html, :root {
     -ms-flex-align: center;
     align-items: center;
     z-index: zLevel(); }
+    html .comp:hover, :root .comp:hover {
+      z-index: 10; }
     html .comp.full-width, :root .comp.full-width {
       width: 100%;
       -webkit-box-pack: space-evenly;
@@ -387,14 +389,18 @@ html, :root {
       html .comp .comp-toggle.comp-toggle-red, :root .comp .comp-toggle.comp-toggle-red {
         color: var(--blades-red-bright);
         font-weight: bold;
-        text-shadow: var(--text-shadow-dark); }
+        text-shadow: var(--text-shadow-dark);
+        scale: 0.9; }
         html .comp .comp-toggle.comp-toggle-red:hover, :root .comp .comp-toggle.comp-toggle-red:hover {
+          z-index: 10;
           color: var(--blades-red); }
       html .comp .comp-toggle.comp-toggle-grey, :root .comp .comp-toggle.comp-toggle-grey {
         color: var(--blades-grey);
         -webkit-filter: blur(2px);
-        filter: blur(2px); }
+        filter: blur(2px);
+        scale: 0.8; }
         html .comp .comp-toggle.comp-toggle-grey:hover, :root .comp .comp-toggle.comp-toggle-grey:hover {
+          z-index: 10;
           -webkit-filter: blur(0px);
           filter: blur(0px);
           color: var(--blades-white); }
@@ -449,6 +455,10 @@ html, :root {
       html .comp .tooltip.tooltip-portrait, :root .comp .tooltip.tooltip-portrait {
         bottom: 100px;
         left: 50px; }
+      html .comp .tooltip.tooltip-playbook, :root .comp .tooltip.tooltip-playbook {
+        bottom: unset;
+        top: 0px;
+        left: -220px; }
       html .comp .tooltip.trauma-tooltip, :root .comp .tooltip.trauma-tooltip {
         left: -300px; }
     html .comp.comp-vertical, :root .comp.comp-vertical {
@@ -967,6 +977,207 @@ html, :root {
         display: none; }
       html .dotline .dot:hover.svg-dot, :root .dotline .dot:hover.svg-dot {
         opacity: 0.5; }
+      html .dotline .dot.full-dot:last-of-type ~ .advance-button, :root .dotline .dot.full-dot:last-of-type ~ .advance-button {
+        display: block; }
+    html .dotline .advance-button, :root .dotline .advance-button {
+      display: none;
+      position: absolute;
+      cursor: pointer;
+      pointer-events: auto;
+      font-family: Oswald;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      z-index: 10;
+      top: 0px;
+      right: -50px;
+      height: 25px;
+      width: 85px;
+      padding: 3px 3px;
+      -webkit-transition: .5s;
+      transition: .5s; }
+      html .dotline .advance-button.rainbow-glow, :root .dotline .advance-button.rainbow-glow {
+        background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+        border-radius: 10px;
+        color: black;
+        outline: 2px solid var(--blades-black); }
+        html .dotline .advance-button.rainbow-glow:before, :root .dotline .advance-button.rainbow-glow:before {
+          content: '';
+          background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          background-size: 400%;
+          z-index: -1;
+          -webkit-filter: blur(5px);
+          filter: blur(5px);
+          width: calc(100% + 4px);
+          height: calc(100% + 4px);
+          -webkit-animation: glowing 20s linear infinite;
+          animation: glowing 20s linear infinite;
+          opacity: 0;
+          -webkit-transition: opacity .3s ease-in-out;
+          transition: opacity .3s ease-in-out;
+          border-radius: 10px;
+          z-index: -1; }
+        html .dotline .advance-button.rainbow-glow:hover:before, :root .dotline .advance-button.rainbow-glow:hover:before {
+          opacity: 1; }
+        html .dotline .advance-button.rainbow-glow:after, :root .dotline .advance-button.rainbow-glow:after {
+          z-index: -1;
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+          left: 0;
+          top: 0;
+          border-radius: 10px;
+          opacity: 0.5; }
+
+@-webkit-keyframes glowing {
+  0% {
+    background-position: 0 0; }
+  50% {
+    background-position: 400% 0; }
+  100% {
+    background-position: 0 0; } }
+
+@keyframes glowing {
+  0% {
+    background-position: 0 0; }
+  50% {
+    background-position: 400% 0; }
+  100% {
+    background-position: 0 0; } }
+      html .dotline .advance-button.gold-orbit, :root .dotline .advance-button.gold-orbit {
+        --button-glow-color: var(--blades-gold-bright);
+        background: var(--blades-black);
+        color: var(--blades-white-bright);
+        -webkit-box-shadow: 5px 5px 10px var(--blades-black-dark);
+        box-shadow: 5px 5px 10px var(--blades-black-dark);
+        overflow: hidden;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        -webkit-animation: btn-throb 3s ease-in-out infinite;
+        animation: btn-throb 3s ease-in-out infinite; }
+        html .dotline .advance-button.gold-orbit:hover, :root .dotline .advance-button.gold-orbit:hover {
+          -webkit-animation-play-state: paused;
+          animation-play-state: paused;
+          background: var(--button-glow-color);
+          color: #fff;
+          border-radius: 5px;
+          -webkit-box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color);
+          box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color); }
+        html .dotline .advance-button.gold-orbit span, :root .dotline .advance-button.gold-orbit span {
+          position: absolute;
+          display: block; }
+          html .dotline .advance-button.gold-orbit span:nth-child(1), :root .dotline .advance-button.gold-orbit span:nth-child(1) {
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: -webkit-gradient(linear, left top, right top, from(transparent), to(var(--button-glow-color)));
+            background: linear-gradient(90deg, transparent, var(--button-glow-color));
+            -webkit-animation: btn-anim1 1s linear infinite;
+            animation: btn-anim1 1s linear infinite; }
+          html .dotline .advance-button.gold-orbit span:nth-child(2), :root .dotline .advance-button.gold-orbit span:nth-child(2) {
+            top: -100%;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(var(--button-glow-color)));
+            background: linear-gradient(180deg, transparent, var(--button-glow-color));
+            -webkit-animation: btn-anim2 1s linear infinite;
+            animation: btn-anim2 1s linear infinite;
+            -webkit-animation-delay: .25s;
+            animation-delay: .25s; }
+          html .dotline .advance-button.gold-orbit span:nth-child(3), :root .dotline .advance-button.gold-orbit span:nth-child(3) {
+            bottom: 0;
+            right: -100%;
+            width: 100%;
+            height: 2px;
+            background: -webkit-gradient(linear, right top, left top, from(transparent), to(var(--button-glow-color)));
+            background: linear-gradient(270deg, transparent, var(--button-glow-color));
+            -webkit-animation: btn-anim3 1s linear infinite;
+            animation: btn-anim3 1s linear infinite;
+            -webkit-animation-delay: .5s;
+            animation-delay: .5s; }
+          html .dotline .advance-button.gold-orbit span:nth-child(4), :root .dotline .advance-button.gold-orbit span:nth-child(4) {
+            bottom: -100%;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: -webkit-gradient(linear, left bottom, left top, from(transparent), to(var(--button-glow-color)));
+            background: linear-gradient(360deg, transparent, var(--button-glow-color));
+            -webkit-animation: btn-anim4 1s linear infinite;
+            animation: btn-anim4 1s linear infinite;
+            -webkit-animation-delay: .75s;
+            animation-delay: .75s; }
+
+@-webkit-keyframes btn-throb {
+  0% {
+    scale: 0.9; }
+  50% {
+    scale: 1.1; }
+  100% {
+    scale: 0.9; } }
+
+@keyframes btn-throb {
+  0% {
+    scale: 0.9; }
+  50% {
+    scale: 1.1; }
+  100% {
+    scale: 0.9; } }
+
+@-webkit-keyframes btn-anim1 {
+  0% {
+    left: -100%; }
+  50%, 100% {
+    left: 100%; } }
+
+@keyframes btn-anim1 {
+  0% {
+    left: -100%; }
+  50%, 100% {
+    left: 100%; } }
+
+@-webkit-keyframes btn-anim2 {
+  0% {
+    top: -100%; }
+  50%, 100% {
+    top: 100%; } }
+
+@keyframes btn-anim2 {
+  0% {
+    top: -100%; }
+  50%, 100% {
+    top: 100%; } }
+
+@-webkit-keyframes btn-anim3 {
+  0% {
+    right: -100%; }
+  50%, 100% {
+    right: 100%; } }
+
+@keyframes btn-anim3 {
+  0% {
+    right: -100%; }
+  50%, 100% {
+    right: 100%; } }
+
+@-webkit-keyframes btn-anim4 {
+  0% {
+    bottom: -100%; }
+  50%, 100% {
+    bottom: 100%; } }
+
+@keyframes btn-anim4 {
+  0% {
+    bottom: -100%; }
+  50%, 100% {
+    bottom: 100%; } }
   html, :root {
     margin: 0;
     padding: 0;
@@ -1171,6 +1382,8 @@ html, :root {
       -ms-flex-align: center;
       align-items: center;
       z-index: 2; }
+      html .comp:hover, :root .comp:hover {
+        z-index: 10; }
       html .comp.full-width, :root .comp.full-width {
         width: 100%;
         -webkit-box-pack: space-evenly;
@@ -1280,14 +1493,18 @@ html, :root {
         html .comp .comp-toggle.comp-toggle-red, :root .comp .comp-toggle.comp-toggle-red {
           color: var(--blades-red-bright);
           font-weight: bold;
-          text-shadow: var(--text-shadow-dark); }
+          text-shadow: var(--text-shadow-dark);
+          scale: 0.9; }
           html .comp .comp-toggle.comp-toggle-red:hover, :root .comp .comp-toggle.comp-toggle-red:hover {
+            z-index: 10;
             color: var(--blades-red); }
         html .comp .comp-toggle.comp-toggle-grey, :root .comp .comp-toggle.comp-toggle-grey {
           color: var(--blades-grey);
           -webkit-filter: blur(2px);
-          filter: blur(2px); }
+          filter: blur(2px);
+          scale: 0.8; }
           html .comp .comp-toggle.comp-toggle-grey:hover, :root .comp .comp-toggle.comp-toggle-grey:hover {
+            z-index: 10;
             -webkit-filter: blur(0px);
             filter: blur(0px);
             color: var(--blades-white); }
@@ -1342,6 +1559,10 @@ html, :root {
         html .comp .tooltip.tooltip-portrait, :root .comp .tooltip.tooltip-portrait {
           bottom: 100px;
           left: 50px; }
+        html .comp .tooltip.tooltip-playbook, :root .comp .tooltip.tooltip-playbook {
+          bottom: unset;
+          top: 0px;
+          left: -220px; }
         html .comp .tooltip.trauma-tooltip, :root .comp .tooltip.trauma-tooltip {
           left: -300px; }
       html .comp.comp-vertical, :root .comp.comp-vertical {
@@ -1860,6 +2081,167 @@ html, :root {
           display: none; }
         html .dotline .dot:hover.svg-dot, :root .dotline .dot:hover.svg-dot {
           opacity: 0.5; }
+        html .dotline .dot.full-dot:last-of-type ~ .advance-button, :root .dotline .dot.full-dot:last-of-type ~ .advance-button {
+          display: block; }
+      html .dotline .advance-button, :root .dotline .advance-button {
+        display: none;
+        position: absolute;
+        cursor: pointer;
+        pointer-events: auto;
+        font-family: Oswald;
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        z-index: 10;
+        top: 0px;
+        right: -50px;
+        height: 25px;
+        width: 85px;
+        padding: 3px 3px;
+        -webkit-transition: .5s;
+        transition: .5s; }
+        html .dotline .advance-button.rainbow-glow, :root .dotline .advance-button.rainbow-glow {
+          background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+          border-radius: 10px;
+          color: black;
+          outline: 2px solid var(--blades-black); }
+          html .dotline .advance-button.rainbow-glow:before, :root .dotline .advance-button.rainbow-glow:before {
+            content: '';
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            background-size: 400%;
+            z-index: -1;
+            -webkit-filter: blur(5px);
+            filter: blur(5px);
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            -webkit-animation: glowing 20s linear infinite;
+            animation: glowing 20s linear infinite;
+            opacity: 0;
+            -webkit-transition: opacity .3s ease-in-out;
+            transition: opacity .3s ease-in-out;
+            border-radius: 10px;
+            z-index: -1; }
+          html .dotline .advance-button.rainbow-glow:hover:before, :root .dotline .advance-button.rainbow-glow:hover:before {
+            opacity: 1; }
+          html .dotline .advance-button.rainbow-glow:after, :root .dotline .advance-button.rainbow-glow:after {
+            z-index: -1;
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+            left: 0;
+            top: 0;
+            border-radius: 10px;
+            opacity: 0.5; }
+
+@keyframes glowing {
+  0% {
+    background-position: 0 0; }
+  50% {
+    background-position: 400% 0; }
+  100% {
+    background-position: 0 0; } }
+        html .dotline .advance-button.gold-orbit, :root .dotline .advance-button.gold-orbit {
+          --button-glow-color: var(--blades-gold-bright);
+          background: var(--blades-black);
+          color: var(--blades-white-bright);
+          -webkit-box-shadow: 5px 5px 10px var(--blades-black-dark);
+          box-shadow: 5px 5px 10px var(--blades-black-dark);
+          overflow: hidden;
+          -webkit-transition: 0.5s;
+          transition: 0.5s;
+          -webkit-animation: btn-throb 3s ease-in-out infinite;
+          animation: btn-throb 3s ease-in-out infinite; }
+          html .dotline .advance-button.gold-orbit:hover, :root .dotline .advance-button.gold-orbit:hover {
+            -webkit-animation-play-state: paused;
+            animation-play-state: paused;
+            background: var(--button-glow-color);
+            color: #fff;
+            border-radius: 5px;
+            -webkit-box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color);
+            box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color); }
+          html .dotline .advance-button.gold-orbit span, :root .dotline .advance-button.gold-orbit span {
+            position: absolute;
+            display: block; }
+            html .dotline .advance-button.gold-orbit span:nth-child(1), :root .dotline .advance-button.gold-orbit span:nth-child(1) {
+              top: 0;
+              left: -100%;
+              width: 100%;
+              height: 2px;
+              background: -webkit-gradient(linear, left top, right top, from(transparent), to(var(--button-glow-color)));
+              background: linear-gradient(90deg, transparent, var(--button-glow-color));
+              -webkit-animation: btn-anim1 1s linear infinite;
+              animation: btn-anim1 1s linear infinite; }
+            html .dotline .advance-button.gold-orbit span:nth-child(2), :root .dotline .advance-button.gold-orbit span:nth-child(2) {
+              top: -100%;
+              right: 0;
+              width: 2px;
+              height: 100%;
+              background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(var(--button-glow-color)));
+              background: linear-gradient(180deg, transparent, var(--button-glow-color));
+              -webkit-animation: btn-anim2 1s linear infinite;
+              animation: btn-anim2 1s linear infinite;
+              -webkit-animation-delay: .25s;
+              animation-delay: .25s; }
+            html .dotline .advance-button.gold-orbit span:nth-child(3), :root .dotline .advance-button.gold-orbit span:nth-child(3) {
+              bottom: 0;
+              right: -100%;
+              width: 100%;
+              height: 2px;
+              background: -webkit-gradient(linear, right top, left top, from(transparent), to(var(--button-glow-color)));
+              background: linear-gradient(270deg, transparent, var(--button-glow-color));
+              -webkit-animation: btn-anim3 1s linear infinite;
+              animation: btn-anim3 1s linear infinite;
+              -webkit-animation-delay: .5s;
+              animation-delay: .5s; }
+            html .dotline .advance-button.gold-orbit span:nth-child(4), :root .dotline .advance-button.gold-orbit span:nth-child(4) {
+              bottom: -100%;
+              left: 0;
+              width: 2px;
+              height: 100%;
+              background: -webkit-gradient(linear, left bottom, left top, from(transparent), to(var(--button-glow-color)));
+              background: linear-gradient(360deg, transparent, var(--button-glow-color));
+              -webkit-animation: btn-anim4 1s linear infinite;
+              animation: btn-anim4 1s linear infinite;
+              -webkit-animation-delay: .75s;
+              animation-delay: .75s; }
+
+@keyframes btn-throb {
+  0% {
+    scale: 0.9; }
+  50% {
+    scale: 1.1; }
+  100% {
+    scale: 0.9; } }
+
+@keyframes btn-anim1 {
+  0% {
+    left: -100%; }
+  50%, 100% {
+    left: 100%; } }
+
+@keyframes btn-anim2 {
+  0% {
+    top: -100%; }
+  50%, 100% {
+    top: 100%; } }
+
+@keyframes btn-anim3 {
+  0% {
+    right: -100%; }
+  50%, 100% {
+    right: 100%; } }
+
+@keyframes btn-anim4 {
+  0% {
+    bottom: -100%; }
+  50%, 100% {
+    bottom: 100%; } }
   html blockquote, :root blockquote {
     border-left: 2px solid var(--blades-grey-bright);
     margin-left: 1.5rem;

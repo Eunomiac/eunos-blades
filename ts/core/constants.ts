@@ -171,10 +171,31 @@ export namespace Tag {
     Medium = "Medium",
     Large = "Large"
   }
-
+  export enum Invention {
+    Arcane = "Arcane", // Arcane Designs
+    SparkCraft = "SparkCraft", // Spark-Craft Schematics
+    Alchemical = "Alchemical", // Alchemical Formulae
+    Mundane = "Mundane", // Inventions
+    Ritual = "Ritual" // Rituals
+  }
+  export enum GearCategory {
+    ArcaneImplement = "ArcaneImplement",
+    Document = "Document",
+    Gear = "Gear",
+    SubterfugeSupplies = "SubterfugeSupplies",
+    Tool = "Tool",
+    Weapon = "Weapon"
+  }
   export enum NPC {
     Acquaintance = "Acquaintance",
     VicePurveyor = "VicePurveyor",
+  }
+  export enum Gang {
+    Thugs = "Thugs",
+    Rooks = "Rooks",
+    Adepts = "Adepts",
+    Rovers = "Rovers",
+    Skulks = "Skulks"
   }
 }
 

@@ -5,7 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { BladesActorType, BladesItemType, Tag, BladesPhase } from "../../core/constants.js";
+import C, { BladesActorType, BladesItemType, Attributes, Tag, BladesPhase } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesActor from "../../blades-actor.js";
@@ -123,6 +123,7 @@ class BladesActorSheet extends BladesSheet {
             label: this.actor.system.stress.name,
             dotline: {
                 data: this.actor.system.stress,
+                dotlineClass: this.actor.system.stress.max >= 13 ? "narrow-stress" : "",
                 target: "system.stress.value",
                 svgKey: "teeth.tall",
                 svgFull: "full|half|frame",
@@ -257,6 +258,14 @@ class BladesActorSheet extends BladesSheet {
             return "heavy";
         }
         return "special";
+    }
+    async _onAdvanceClick(event) {
+        event.preventDefault();
+        super._onAdvanceClick(event);
+        const action = $(event.currentTarget).data("action").replace(/^advance-/, "");
+        if (action in Attributes) {
+            this.actor.advanceAttribute(action);
+        }
     }
     activateListeners(html) {
         super.activateListeners(html);

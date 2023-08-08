@@ -93,16 +93,17 @@ const gsapEffects = {
             const tooltipElem = $(targets).nextAll(".tooltip")[0];
             const tl = U.gsap.timeline({ paused: true })
                 .to(targets, {
+                scale: 1.2,
                 filter: "blur(0px)",
                 opacity: 1,
-                duration: 0.25,
+                duration: 0.125,
                 ease: "power2"
             }, 0);
             if (titleElem) {
                 tl.to(titleElem, {
                     color: "rgb(255, 255, 255)",
                     opacity: 1,
-                    duration: 0.25,
+                    duration: 0.125,
                     ease: "power2"
                 }, 0);
             }
@@ -110,7 +111,7 @@ const gsapEffects = {
                 tl.to(imgElem, {
                     filter: "blur(0px)",
                     opacity: 1,
-                    duration: 0.25,
+                    duration: 0.125,
                     ease: "power2"
                 }, 0);
             }
@@ -131,7 +132,7 @@ const gsapEffects = {
                     opacity: 1,
                     scale,
                     x: xMotion,
-                    duration: 0.5,
+                    duration: 0.25,
                     ease: "power2"
                 }, 0);
             }

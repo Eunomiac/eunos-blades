@@ -5,7 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import { BladesActorType } from "../../core/constants.js";
+import { BladesActorType, BladesPhase } from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../../blades-item.js";
 export var BladesTipContext;
@@ -73,9 +73,47 @@ class BladesTrackerSheet extends BladesItemSheet {
         super.activateListeners(html);
     }
     async _onSubmit(event, params = {}) {
+        const prevPhase = this.item.system.phase;
         const submitData = await super._onSubmit(event, params);
-        game.actors.filter((actor) => actor.type === BladesActorType.pc)
-            .forEach((actor) => actor.sheet?.render());
+        const newPhase = this.item.system.phase;
+        let isForcingRender = true;
+        if (prevPhase !== newPhase) {
+            switch (prevPhase) {
+                case BladesPhase.CharGen: {
+                    break;
+                }
+                case BladesPhase.Freeplay: {
+                    break;
+                }
+                case BladesPhase.Score: {
+                    isForcingRender = false;
+                    game.actors.filter((actor) => actor.type === BladesActorType.pc)
+                        .forEach((actor) => actor.clearLoadout());
+                    break;
+                }
+                case BladesPhase.Downtime: {
+                    break;
+                }
+            }
+            switch (newPhase) {
+                case BladesPhase.CharGen: {
+                    break;
+                }
+                case BladesPhase.Freeplay: {
+                    break;
+                }
+                case BladesPhase.Score: {
+                    break;
+                }
+                case BladesPhase.Downtime: {
+                    break;
+                }
+            }
+        }
+        if (isForcingRender) {
+            game.actors.filter((actor) => actor.type === BladesActorType.pc)
+                .forEach((actor) => actor.sheet?.render());
+        }
         return submitData;
     }
 }

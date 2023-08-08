@@ -49,7 +49,7 @@ declare global {
 
     svgKey?: string,
     svgFull?: string,
-    svgEmpty?: string
+    svgEmpty?: string,
 
     iconEmpty?: string,
     iconEmptyHover?: string,
@@ -57,7 +57,9 @@ declare global {
     iconFullHover?: string,
     altIconFull?: string,
     altIconFullHover?: string,
-    altIconStep?: number
+    altIconStep?: number,
+
+    advanceButton?: string
   }
   type BladesRandomizer<T extends string = string> = {isLocked: boolean, value: T}
 

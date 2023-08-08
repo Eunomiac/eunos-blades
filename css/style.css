@@ -901,6 +901,9 @@ template {
   -ms-flex-align: center;
   align-items: center;
   z-index: 2; }
+  :root .comp:hover,
+  :root * .comp:hover {
+    z-index: 10; }
   :root .comp.full-width,
   :root * .comp.full-width {
     width: 100%;
@@ -1045,17 +1048,21 @@ template {
     :root * .comp .comp-toggle.comp-toggle-red {
       color: var(--blades-red-bright);
       font-weight: bold;
-      text-shadow: var(--text-shadow-dark); }
+      text-shadow: var(--text-shadow-dark);
+      scale: 0.9; }
       :root .comp .comp-toggle.comp-toggle-red:hover,
       :root * .comp .comp-toggle.comp-toggle-red:hover {
+        z-index: 10;
         color: var(--blades-red); }
     :root .comp .comp-toggle.comp-toggle-grey,
     :root * .comp .comp-toggle.comp-toggle-grey {
       color: var(--blades-grey);
       -webkit-filter: blur(2px);
-      filter: blur(2px); }
+      filter: blur(2px);
+      scale: 0.8; }
       :root .comp .comp-toggle.comp-toggle-grey:hover,
       :root * .comp .comp-toggle.comp-toggle-grey:hover {
+        z-index: 10;
         -webkit-filter: blur(0px);
         filter: blur(0px);
         color: var(--blades-white); }
@@ -1117,6 +1124,11 @@ template {
     :root * .comp .tooltip.tooltip-portrait {
       bottom: 100px;
       left: 50px; }
+    :root .comp .tooltip.tooltip-playbook,
+    :root * .comp .tooltip.tooltip-playbook {
+      bottom: unset;
+      top: 0px;
+      left: -220px; }
     :root .comp .tooltip.trauma-tooltip,
     :root * .comp .tooltip.trauma-tooltip {
       left: -300px; }
@@ -1756,6 +1768,220 @@ template {
     :root .dotline .dot:hover.svg-dot,
     :root * .dotline .dot:hover.svg-dot {
       opacity: 0.5; }
+    :root .dotline .dot.full-dot:last-of-type ~ .advance-button,
+    :root * .dotline .dot.full-dot:last-of-type ~ .advance-button {
+      display: block; }
+  :root .dotline .advance-button,
+  :root * .dotline .advance-button {
+    display: none;
+    position: absolute;
+    cursor: pointer;
+    pointer-events: auto;
+    font-family: Oswald;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    z-index: 10;
+    top: 0px;
+    right: -50px;
+    height: 25px;
+    width: 85px;
+    padding: 3px 3px;
+    -webkit-transition: .5s;
+    transition: .5s; }
+    :root .dotline .advance-button.rainbow-glow,
+    :root * .dotline .advance-button.rainbow-glow {
+      background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+      border-radius: 10px;
+      color: black;
+      outline: 2px solid var(--blades-black); }
+      :root .dotline .advance-button.rainbow-glow:before,
+      :root * .dotline .advance-button.rainbow-glow:before {
+        content: '';
+        background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        background-size: 400%;
+        z-index: -1;
+        -webkit-filter: blur(5px);
+        filter: blur(5px);
+        width: calc(100% + 4px);
+        height: calc(100% + 4px);
+        -webkit-animation: glowing 20s linear infinite;
+        animation: glowing 20s linear infinite;
+        opacity: 0;
+        -webkit-transition: opacity .3s ease-in-out;
+        transition: opacity .3s ease-in-out;
+        border-radius: 10px;
+        z-index: -1; }
+      :root .dotline .advance-button.rainbow-glow:hover:before,
+      :root * .dotline .advance-button.rainbow-glow:hover:before {
+        opacity: 1; }
+      :root .dotline .advance-button.rainbow-glow:after,
+      :root * .dotline .advance-button.rainbow-glow:after {
+        z-index: -1;
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+        left: 0;
+        top: 0;
+        border-radius: 10px;
+        opacity: 0.5; }
+
+@-webkit-keyframes glowing {
+  0% {
+    background-position: 0 0; }
+  50% {
+    background-position: 400% 0; }
+  100% {
+    background-position: 0 0; } }
+
+@keyframes glowing {
+  0% {
+    background-position: 0 0; }
+  50% {
+    background-position: 400% 0; }
+  100% {
+    background-position: 0 0; } }
+    :root .dotline .advance-button.gold-orbit,
+    :root * .dotline .advance-button.gold-orbit {
+      --button-glow-color: var(--blades-gold-bright);
+      background: var(--blades-black);
+      color: var(--blades-white-bright);
+      -webkit-box-shadow: 5px 5px 10px var(--blades-black-dark);
+      box-shadow: 5px 5px 10px var(--blades-black-dark);
+      overflow: hidden;
+      -webkit-transition: 0.5s;
+      transition: 0.5s;
+      -webkit-animation: btn-throb 3s ease-in-out infinite;
+      animation: btn-throb 3s ease-in-out infinite; }
+      :root .dotline .advance-button.gold-orbit:hover,
+      :root * .dotline .advance-button.gold-orbit:hover {
+        -webkit-animation-play-state: paused;
+        animation-play-state: paused;
+        background: var(--button-glow-color);
+        color: #fff;
+        border-radius: 5px;
+        -webkit-box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color);
+        box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color); }
+      :root .dotline .advance-button.gold-orbit span,
+      :root * .dotline .advance-button.gold-orbit span {
+        position: absolute;
+        display: block; }
+        :root .dotline .advance-button.gold-orbit span:nth-child(1),
+        :root * .dotline .advance-button.gold-orbit span:nth-child(1) {
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 2px;
+          background: -webkit-gradient(linear, left top, right top, from(transparent), to(var(--button-glow-color)));
+          background: linear-gradient(90deg, transparent, var(--button-glow-color));
+          -webkit-animation: btn-anim1 1s linear infinite;
+          animation: btn-anim1 1s linear infinite; }
+        :root .dotline .advance-button.gold-orbit span:nth-child(2),
+        :root * .dotline .advance-button.gold-orbit span:nth-child(2) {
+          top: -100%;
+          right: 0;
+          width: 2px;
+          height: 100%;
+          background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(var(--button-glow-color)));
+          background: linear-gradient(180deg, transparent, var(--button-glow-color));
+          -webkit-animation: btn-anim2 1s linear infinite;
+          animation: btn-anim2 1s linear infinite;
+          -webkit-animation-delay: .25s;
+          animation-delay: .25s; }
+        :root .dotline .advance-button.gold-orbit span:nth-child(3),
+        :root * .dotline .advance-button.gold-orbit span:nth-child(3) {
+          bottom: 0;
+          right: -100%;
+          width: 100%;
+          height: 2px;
+          background: -webkit-gradient(linear, right top, left top, from(transparent), to(var(--button-glow-color)));
+          background: linear-gradient(270deg, transparent, var(--button-glow-color));
+          -webkit-animation: btn-anim3 1s linear infinite;
+          animation: btn-anim3 1s linear infinite;
+          -webkit-animation-delay: .5s;
+          animation-delay: .5s; }
+        :root .dotline .advance-button.gold-orbit span:nth-child(4),
+        :root * .dotline .advance-button.gold-orbit span:nth-child(4) {
+          bottom: -100%;
+          left: 0;
+          width: 2px;
+          height: 100%;
+          background: -webkit-gradient(linear, left bottom, left top, from(transparent), to(var(--button-glow-color)));
+          background: linear-gradient(360deg, transparent, var(--button-glow-color));
+          -webkit-animation: btn-anim4 1s linear infinite;
+          animation: btn-anim4 1s linear infinite;
+          -webkit-animation-delay: .75s;
+          animation-delay: .75s; }
+
+@-webkit-keyframes btn-throb {
+  0% {
+    scale: 0.9; }
+  50% {
+    scale: 1.1; }
+  100% {
+    scale: 0.9; } }
+
+@keyframes btn-throb {
+  0% {
+    scale: 0.9; }
+  50% {
+    scale: 1.1; }
+  100% {
+    scale: 0.9; } }
+
+@-webkit-keyframes btn-anim1 {
+  0% {
+    left: -100%; }
+  50%, 100% {
+    left: 100%; } }
+
+@keyframes btn-anim1 {
+  0% {
+    left: -100%; }
+  50%, 100% {
+    left: 100%; } }
+
+@-webkit-keyframes btn-anim2 {
+  0% {
+    top: -100%; }
+  50%, 100% {
+    top: 100%; } }
+
+@keyframes btn-anim2 {
+  0% {
+    top: -100%; }
+  50%, 100% {
+    top: 100%; } }
+
+@-webkit-keyframes btn-anim3 {
+  0% {
+    right: -100%; }
+  50%, 100% {
+    right: 100%; } }
+
+@keyframes btn-anim3 {
+  0% {
+    right: -100%; }
+  50%, 100% {
+    right: 100%; } }
+
+@-webkit-keyframes btn-anim4 {
+  0% {
+    bottom: -100%; }
+  50%, 100% {
+    bottom: 100%; } }
+
+@keyframes btn-anim4 {
+  0% {
+    bottom: -100%; }
+  50%, 100% {
+    bottom: 100%; } }
 
 :root body.vtt.game.system-eunos-blades .notification.error.permanent {
   display: none !important; }
@@ -1959,6 +2185,8 @@ template {
       -ms-flex-align: center;
       align-items: center;
       z-index: 2; }
+      :root body.vtt.game.system-eunos-blades #clocks-overlay .comp:hover {
+        z-index: 10; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.full-width {
         width: 100%;
         -webkit-box-pack: space-evenly;
@@ -2068,14 +2296,18 @@ template {
         :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .comp-toggle.comp-toggle-red {
           color: var(--blades-red-bright);
           font-weight: bold;
-          text-shadow: var(--text-shadow-dark); }
+          text-shadow: var(--text-shadow-dark);
+          scale: 0.9; }
           :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .comp-toggle.comp-toggle-red:hover {
+            z-index: 10;
             color: var(--blades-red); }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .comp-toggle.comp-toggle-grey {
           color: var(--blades-grey);
           -webkit-filter: blur(2px);
-          filter: blur(2px); }
+          filter: blur(2px);
+          scale: 0.8; }
           :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .comp-toggle.comp-toggle-grey:hover {
+            z-index: 10;
             -webkit-filter: blur(0px);
             filter: blur(0px);
             color: var(--blades-white); }
@@ -2130,6 +2362,10 @@ template {
         :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .tooltip.tooltip-portrait {
           bottom: 100px;
           left: 50px; }
+        :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .tooltip.tooltip-playbook {
+          bottom: unset;
+          top: 0px;
+          left: -220px; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .tooltip.trauma-tooltip {
           left: -300px; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-vertical {
@@ -2648,6 +2884,167 @@ template {
           display: none; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .dot:hover.svg-dot {
           opacity: 0.5; }
+        :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .dot.full-dot:last-of-type ~ .advance-button {
+          display: block; }
+      :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .advance-button {
+        display: none;
+        position: absolute;
+        cursor: pointer;
+        pointer-events: auto;
+        font-family: Oswald;
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        z-index: 10;
+        top: 0px;
+        right: -50px;
+        height: 25px;
+        width: 85px;
+        padding: 3px 3px;
+        -webkit-transition: .5s;
+        transition: .5s; }
+        :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .advance-button.rainbow-glow {
+          background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+          border-radius: 10px;
+          color: black;
+          outline: 2px solid var(--blades-black); }
+          :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .advance-button.rainbow-glow:before {
+            content: '';
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            background-size: 400%;
+            z-index: -1;
+            -webkit-filter: blur(5px);
+            filter: blur(5px);
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            -webkit-animation: glowing 20s linear infinite;
+            animation: glowing 20s linear infinite;
+            opacity: 0;
+            -webkit-transition: opacity .3s ease-in-out;
+            transition: opacity .3s ease-in-out;
+            border-radius: 10px;
+            z-index: -1; }
+          :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .advance-button.rainbow-glow:hover:before {
+            opacity: 1; }
+          :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .advance-button.rainbow-glow:after {
+            z-index: -1;
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+            left: 0;
+            top: 0;
+            border-radius: 10px;
+            opacity: 0.5; }
+
+@keyframes glowing {
+  0% {
+    background-position: 0 0; }
+  50% {
+    background-position: 400% 0; }
+  100% {
+    background-position: 0 0; } }
+        :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .advance-button.gold-orbit {
+          --button-glow-color: var(--blades-gold-bright);
+          background: var(--blades-black);
+          color: var(--blades-white-bright);
+          -webkit-box-shadow: 5px 5px 10px var(--blades-black-dark);
+          box-shadow: 5px 5px 10px var(--blades-black-dark);
+          overflow: hidden;
+          -webkit-transition: 0.5s;
+          transition: 0.5s;
+          -webkit-animation: btn-throb 3s ease-in-out infinite;
+          animation: btn-throb 3s ease-in-out infinite; }
+          :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .advance-button.gold-orbit:hover {
+            -webkit-animation-play-state: paused;
+            animation-play-state: paused;
+            background: var(--button-glow-color);
+            color: #fff;
+            border-radius: 5px;
+            -webkit-box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color);
+            box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color); }
+          :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .advance-button.gold-orbit span {
+            position: absolute;
+            display: block; }
+            :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .advance-button.gold-orbit span:nth-child(1) {
+              top: 0;
+              left: -100%;
+              width: 100%;
+              height: 2px;
+              background: -webkit-gradient(linear, left top, right top, from(transparent), to(var(--button-glow-color)));
+              background: linear-gradient(90deg, transparent, var(--button-glow-color));
+              -webkit-animation: btn-anim1 1s linear infinite;
+              animation: btn-anim1 1s linear infinite; }
+            :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .advance-button.gold-orbit span:nth-child(2) {
+              top: -100%;
+              right: 0;
+              width: 2px;
+              height: 100%;
+              background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(var(--button-glow-color)));
+              background: linear-gradient(180deg, transparent, var(--button-glow-color));
+              -webkit-animation: btn-anim2 1s linear infinite;
+              animation: btn-anim2 1s linear infinite;
+              -webkit-animation-delay: .25s;
+              animation-delay: .25s; }
+            :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .advance-button.gold-orbit span:nth-child(3) {
+              bottom: 0;
+              right: -100%;
+              width: 100%;
+              height: 2px;
+              background: -webkit-gradient(linear, right top, left top, from(transparent), to(var(--button-glow-color)));
+              background: linear-gradient(270deg, transparent, var(--button-glow-color));
+              -webkit-animation: btn-anim3 1s linear infinite;
+              animation: btn-anim3 1s linear infinite;
+              -webkit-animation-delay: .5s;
+              animation-delay: .5s; }
+            :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline .advance-button.gold-orbit span:nth-child(4) {
+              bottom: -100%;
+              left: 0;
+              width: 2px;
+              height: 100%;
+              background: -webkit-gradient(linear, left bottom, left top, from(transparent), to(var(--button-glow-color)));
+              background: linear-gradient(360deg, transparent, var(--button-glow-color));
+              -webkit-animation: btn-anim4 1s linear infinite;
+              animation: btn-anim4 1s linear infinite;
+              -webkit-animation-delay: .75s;
+              animation-delay: .75s; }
+
+@keyframes btn-throb {
+  0% {
+    scale: 0.9; }
+  50% {
+    scale: 1.1; }
+  100% {
+    scale: 0.9; } }
+
+@keyframes btn-anim1 {
+  0% {
+    left: -100%; }
+  50%, 100% {
+    left: 100%; } }
+
+@keyframes btn-anim2 {
+  0% {
+    top: -100%; }
+  50%, 100% {
+    top: 100%; } }
+
+@keyframes btn-anim3 {
+  0% {
+    right: -100%; }
+  50%, 100% {
+    right: 100%; } }
+
+@keyframes btn-anim4 {
+  0% {
+    bottom: -100%; }
+  50%, 100% {
+    bottom: 100%; } }
   :root body.vtt.game.system-eunos-blades #clocks-overlay {
     --top-shift: 50px;
     --left-shift: 75px;
@@ -3401,6 +3798,12 @@ template {
     -ms-flex-align: center;
     align-items: center;
     z-index: 2; }
+    :root body.vtt.game.system-eunos-blades #interface .comp:hover,
+    :root body.vtt.game.system-eunos-blades #controls .comp:hover,
+    :root body.vtt.game.system-eunos-blades #navigation .comp:hover,
+    :root body.vtt.game.system-eunos-blades #hotbar .comp:hover,
+    :root body.vtt.game.system-eunos-blades #players .comp:hover {
+      z-index: 10; }
     :root body.vtt.game.system-eunos-blades #interface .comp.full-width,
     :root body.vtt.game.system-eunos-blades #controls .comp.full-width,
     :root body.vtt.game.system-eunos-blades #navigation .comp.full-width,
@@ -3650,12 +4053,14 @@ template {
       :root body.vtt.game.system-eunos-blades #players .comp .comp-toggle.comp-toggle-red {
         color: var(--blades-red-bright);
         font-weight: bold;
-        text-shadow: var(--text-shadow-dark); }
+        text-shadow: var(--text-shadow-dark);
+        scale: 0.9; }
         :root body.vtt.game.system-eunos-blades #interface .comp .comp-toggle.comp-toggle-red:hover,
         :root body.vtt.game.system-eunos-blades #controls .comp .comp-toggle.comp-toggle-red:hover,
         :root body.vtt.game.system-eunos-blades #navigation .comp .comp-toggle.comp-toggle-red:hover,
         :root body.vtt.game.system-eunos-blades #hotbar .comp .comp-toggle.comp-toggle-red:hover,
         :root body.vtt.game.system-eunos-blades #players .comp .comp-toggle.comp-toggle-red:hover {
+          z-index: 10;
           color: var(--blades-red); }
       :root body.vtt.game.system-eunos-blades #interface .comp .comp-toggle.comp-toggle-grey,
       :root body.vtt.game.system-eunos-blades #controls .comp .comp-toggle.comp-toggle-grey,
@@ -3664,12 +4069,14 @@ template {
       :root body.vtt.game.system-eunos-blades #players .comp .comp-toggle.comp-toggle-grey {
         color: var(--blades-grey);
         -webkit-filter: blur(2px);
-        filter: blur(2px); }
+        filter: blur(2px);
+        scale: 0.8; }
         :root body.vtt.game.system-eunos-blades #interface .comp .comp-toggle.comp-toggle-grey:hover,
         :root body.vtt.game.system-eunos-blades #controls .comp .comp-toggle.comp-toggle-grey:hover,
         :root body.vtt.game.system-eunos-blades #navigation .comp .comp-toggle.comp-toggle-grey:hover,
         :root body.vtt.game.system-eunos-blades #hotbar .comp .comp-toggle.comp-toggle-grey:hover,
         :root body.vtt.game.system-eunos-blades #players .comp .comp-toggle.comp-toggle-grey:hover {
+          z-index: 10;
           -webkit-filter: blur(0px);
           filter: blur(0px);
           color: var(--blades-white); }
@@ -3752,6 +4159,14 @@ template {
       :root body.vtt.game.system-eunos-blades #players .comp .tooltip.tooltip-portrait {
         bottom: 100px;
         left: 50px; }
+      :root body.vtt.game.system-eunos-blades #interface .comp .tooltip.tooltip-playbook,
+      :root body.vtt.game.system-eunos-blades #controls .comp .tooltip.tooltip-playbook,
+      :root body.vtt.game.system-eunos-blades #navigation .comp .tooltip.tooltip-playbook,
+      :root body.vtt.game.system-eunos-blades #hotbar .comp .tooltip.tooltip-playbook,
+      :root body.vtt.game.system-eunos-blades #players .comp .tooltip.tooltip-playbook {
+        bottom: unset;
+        top: 0px;
+        left: -220px; }
       :root body.vtt.game.system-eunos-blades #interface .comp .tooltip.trauma-tooltip,
       :root body.vtt.game.system-eunos-blades #controls .comp .tooltip.trauma-tooltip,
       :root body.vtt.game.system-eunos-blades #navigation .comp .tooltip.trauma-tooltip,
@@ -4746,6 +5161,219 @@ template {
       :root body.vtt.game.system-eunos-blades #hotbar .dotline .dot:hover.svg-dot,
       :root body.vtt.game.system-eunos-blades #players .dotline .dot:hover.svg-dot {
         opacity: 0.5; }
+      :root body.vtt.game.system-eunos-blades #interface .dotline .dot.full-dot:last-of-type ~ .advance-button,
+      :root body.vtt.game.system-eunos-blades #controls .dotline .dot.full-dot:last-of-type ~ .advance-button,
+      :root body.vtt.game.system-eunos-blades #navigation .dotline .dot.full-dot:last-of-type ~ .advance-button,
+      :root body.vtt.game.system-eunos-blades #hotbar .dotline .dot.full-dot:last-of-type ~ .advance-button,
+      :root body.vtt.game.system-eunos-blades #players .dotline .dot.full-dot:last-of-type ~ .advance-button {
+        display: block; }
+    :root body.vtt.game.system-eunos-blades #interface .dotline .advance-button,
+    :root body.vtt.game.system-eunos-blades #controls .dotline .advance-button,
+    :root body.vtt.game.system-eunos-blades #navigation .dotline .advance-button,
+    :root body.vtt.game.system-eunos-blades #hotbar .dotline .advance-button,
+    :root body.vtt.game.system-eunos-blades #players .dotline .advance-button {
+      display: none;
+      position: absolute;
+      cursor: pointer;
+      pointer-events: auto;
+      font-family: Oswald;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      z-index: 10;
+      top: 0px;
+      right: -50px;
+      height: 25px;
+      width: 85px;
+      padding: 3px 3px;
+      -webkit-transition: .5s;
+      transition: .5s; }
+      :root body.vtt.game.system-eunos-blades #interface .dotline .advance-button.rainbow-glow,
+      :root body.vtt.game.system-eunos-blades #controls .dotline .advance-button.rainbow-glow,
+      :root body.vtt.game.system-eunos-blades #navigation .dotline .advance-button.rainbow-glow,
+      :root body.vtt.game.system-eunos-blades #hotbar .dotline .advance-button.rainbow-glow,
+      :root body.vtt.game.system-eunos-blades #players .dotline .advance-button.rainbow-glow {
+        background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+        border-radius: 10px;
+        color: black;
+        outline: 2px solid var(--blades-black); }
+        :root body.vtt.game.system-eunos-blades #interface .dotline .advance-button.rainbow-glow:before,
+        :root body.vtt.game.system-eunos-blades #controls .dotline .advance-button.rainbow-glow:before,
+        :root body.vtt.game.system-eunos-blades #navigation .dotline .advance-button.rainbow-glow:before,
+        :root body.vtt.game.system-eunos-blades #hotbar .dotline .advance-button.rainbow-glow:before,
+        :root body.vtt.game.system-eunos-blades #players .dotline .advance-button.rainbow-glow:before {
+          content: '';
+          background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          background-size: 400%;
+          z-index: -1;
+          -webkit-filter: blur(5px);
+          filter: blur(5px);
+          width: calc(100% + 4px);
+          height: calc(100% + 4px);
+          -webkit-animation: glowing 20s linear infinite;
+          animation: glowing 20s linear infinite;
+          opacity: 0;
+          -webkit-transition: opacity .3s ease-in-out;
+          transition: opacity .3s ease-in-out;
+          border-radius: 10px;
+          z-index: -1; }
+        :root body.vtt.game.system-eunos-blades #interface .dotline .advance-button.rainbow-glow:hover:before,
+        :root body.vtt.game.system-eunos-blades #controls .dotline .advance-button.rainbow-glow:hover:before,
+        :root body.vtt.game.system-eunos-blades #navigation .dotline .advance-button.rainbow-glow:hover:before,
+        :root body.vtt.game.system-eunos-blades #hotbar .dotline .advance-button.rainbow-glow:hover:before,
+        :root body.vtt.game.system-eunos-blades #players .dotline .advance-button.rainbow-glow:hover:before {
+          opacity: 1; }
+        :root body.vtt.game.system-eunos-blades #interface .dotline .advance-button.rainbow-glow:after,
+        :root body.vtt.game.system-eunos-blades #controls .dotline .advance-button.rainbow-glow:after,
+        :root body.vtt.game.system-eunos-blades #navigation .dotline .advance-button.rainbow-glow:after,
+        :root body.vtt.game.system-eunos-blades #hotbar .dotline .advance-button.rainbow-glow:after,
+        :root body.vtt.game.system-eunos-blades #players .dotline .advance-button.rainbow-glow:after {
+          z-index: -1;
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+          left: 0;
+          top: 0;
+          border-radius: 10px;
+          opacity: 0.5; }
+
+@keyframes glowing {
+  0% {
+    background-position: 0 0; }
+  50% {
+    background-position: 400% 0; }
+  100% {
+    background-position: 0 0; } }
+      :root body.vtt.game.system-eunos-blades #interface .dotline .advance-button.gold-orbit,
+      :root body.vtt.game.system-eunos-blades #controls .dotline .advance-button.gold-orbit,
+      :root body.vtt.game.system-eunos-blades #navigation .dotline .advance-button.gold-orbit,
+      :root body.vtt.game.system-eunos-blades #hotbar .dotline .advance-button.gold-orbit,
+      :root body.vtt.game.system-eunos-blades #players .dotline .advance-button.gold-orbit {
+        --button-glow-color: var(--blades-gold-bright);
+        background: var(--blades-black);
+        color: var(--blades-white-bright);
+        -webkit-box-shadow: 5px 5px 10px var(--blades-black-dark);
+        box-shadow: 5px 5px 10px var(--blades-black-dark);
+        overflow: hidden;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        -webkit-animation: btn-throb 3s ease-in-out infinite;
+        animation: btn-throb 3s ease-in-out infinite; }
+        :root body.vtt.game.system-eunos-blades #interface .dotline .advance-button.gold-orbit:hover,
+        :root body.vtt.game.system-eunos-blades #controls .dotline .advance-button.gold-orbit:hover,
+        :root body.vtt.game.system-eunos-blades #navigation .dotline .advance-button.gold-orbit:hover,
+        :root body.vtt.game.system-eunos-blades #hotbar .dotline .advance-button.gold-orbit:hover,
+        :root body.vtt.game.system-eunos-blades #players .dotline .advance-button.gold-orbit:hover {
+          -webkit-animation-play-state: paused;
+          animation-play-state: paused;
+          background: var(--button-glow-color);
+          color: #fff;
+          border-radius: 5px;
+          -webkit-box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color);
+          box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color); }
+        :root body.vtt.game.system-eunos-blades #interface .dotline .advance-button.gold-orbit span,
+        :root body.vtt.game.system-eunos-blades #controls .dotline .advance-button.gold-orbit span,
+        :root body.vtt.game.system-eunos-blades #navigation .dotline .advance-button.gold-orbit span,
+        :root body.vtt.game.system-eunos-blades #hotbar .dotline .advance-button.gold-orbit span,
+        :root body.vtt.game.system-eunos-blades #players .dotline .advance-button.gold-orbit span {
+          position: absolute;
+          display: block; }
+          :root body.vtt.game.system-eunos-blades #interface .dotline .advance-button.gold-orbit span:nth-child(1),
+          :root body.vtt.game.system-eunos-blades #controls .dotline .advance-button.gold-orbit span:nth-child(1),
+          :root body.vtt.game.system-eunos-blades #navigation .dotline .advance-button.gold-orbit span:nth-child(1),
+          :root body.vtt.game.system-eunos-blades #hotbar .dotline .advance-button.gold-orbit span:nth-child(1),
+          :root body.vtt.game.system-eunos-blades #players .dotline .advance-button.gold-orbit span:nth-child(1) {
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: -webkit-gradient(linear, left top, right top, from(transparent), to(var(--button-glow-color)));
+            background: linear-gradient(90deg, transparent, var(--button-glow-color));
+            -webkit-animation: btn-anim1 1s linear infinite;
+            animation: btn-anim1 1s linear infinite; }
+          :root body.vtt.game.system-eunos-blades #interface .dotline .advance-button.gold-orbit span:nth-child(2),
+          :root body.vtt.game.system-eunos-blades #controls .dotline .advance-button.gold-orbit span:nth-child(2),
+          :root body.vtt.game.system-eunos-blades #navigation .dotline .advance-button.gold-orbit span:nth-child(2),
+          :root body.vtt.game.system-eunos-blades #hotbar .dotline .advance-button.gold-orbit span:nth-child(2),
+          :root body.vtt.game.system-eunos-blades #players .dotline .advance-button.gold-orbit span:nth-child(2) {
+            top: -100%;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(var(--button-glow-color)));
+            background: linear-gradient(180deg, transparent, var(--button-glow-color));
+            -webkit-animation: btn-anim2 1s linear infinite;
+            animation: btn-anim2 1s linear infinite;
+            -webkit-animation-delay: .25s;
+            animation-delay: .25s; }
+          :root body.vtt.game.system-eunos-blades #interface .dotline .advance-button.gold-orbit span:nth-child(3),
+          :root body.vtt.game.system-eunos-blades #controls .dotline .advance-button.gold-orbit span:nth-child(3),
+          :root body.vtt.game.system-eunos-blades #navigation .dotline .advance-button.gold-orbit span:nth-child(3),
+          :root body.vtt.game.system-eunos-blades #hotbar .dotline .advance-button.gold-orbit span:nth-child(3),
+          :root body.vtt.game.system-eunos-blades #players .dotline .advance-button.gold-orbit span:nth-child(3) {
+            bottom: 0;
+            right: -100%;
+            width: 100%;
+            height: 2px;
+            background: -webkit-gradient(linear, right top, left top, from(transparent), to(var(--button-glow-color)));
+            background: linear-gradient(270deg, transparent, var(--button-glow-color));
+            -webkit-animation: btn-anim3 1s linear infinite;
+            animation: btn-anim3 1s linear infinite;
+            -webkit-animation-delay: .5s;
+            animation-delay: .5s; }
+          :root body.vtt.game.system-eunos-blades #interface .dotline .advance-button.gold-orbit span:nth-child(4),
+          :root body.vtt.game.system-eunos-blades #controls .dotline .advance-button.gold-orbit span:nth-child(4),
+          :root body.vtt.game.system-eunos-blades #navigation .dotline .advance-button.gold-orbit span:nth-child(4),
+          :root body.vtt.game.system-eunos-blades #hotbar .dotline .advance-button.gold-orbit span:nth-child(4),
+          :root body.vtt.game.system-eunos-blades #players .dotline .advance-button.gold-orbit span:nth-child(4) {
+            bottom: -100%;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: -webkit-gradient(linear, left bottom, left top, from(transparent), to(var(--button-glow-color)));
+            background: linear-gradient(360deg, transparent, var(--button-glow-color));
+            -webkit-animation: btn-anim4 1s linear infinite;
+            animation: btn-anim4 1s linear infinite;
+            -webkit-animation-delay: .75s;
+            animation-delay: .75s; }
+
+@keyframes btn-throb {
+  0% {
+    scale: 0.9; }
+  50% {
+    scale: 1.1; }
+  100% {
+    scale: 0.9; } }
+
+@keyframes btn-anim1 {
+  0% {
+    left: -100%; }
+  50%, 100% {
+    left: 100%; } }
+
+@keyframes btn-anim2 {
+  0% {
+    top: -100%; }
+  50%, 100% {
+    top: 100%; } }
+
+@keyframes btn-anim3 {
+  0% {
+    right: -100%; }
+  50%, 100% {
+    right: 100%; } }
+
+@keyframes btn-anim4 {
+  0% {
+    bottom: -100%; }
+  50%, 100% {
+    bottom: 100%; } }
 
 :root body.vtt.game.system-eunos-blades #interface,
 :root body.vtt.game.system-eunos-blades #interface *,
@@ -5182,6 +5810,12 @@ template {
     -ms-flex-align: center;
     align-items: center;
     z-index: 2; }
+    :root body.vtt.game.system-eunos-blades #interface #chat .comp:hover,
+    :root body.vtt.game.system-eunos-blades #controls #chat .comp:hover,
+    :root body.vtt.game.system-eunos-blades #navigation #chat .comp:hover,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat .comp:hover,
+    :root body.vtt.game.system-eunos-blades #players #chat .comp:hover {
+      z-index: 10; }
     :root body.vtt.game.system-eunos-blades #interface #chat .comp.full-width,
     :root body.vtt.game.system-eunos-blades #controls #chat .comp.full-width,
     :root body.vtt.game.system-eunos-blades #navigation #chat .comp.full-width,
@@ -5431,12 +6065,14 @@ template {
       :root body.vtt.game.system-eunos-blades #players #chat .comp .comp-toggle.comp-toggle-red {
         color: var(--blades-red-bright);
         font-weight: bold;
-        text-shadow: var(--text-shadow-dark); }
+        text-shadow: var(--text-shadow-dark);
+        scale: 0.9; }
         :root body.vtt.game.system-eunos-blades #interface #chat .comp .comp-toggle.comp-toggle-red:hover,
         :root body.vtt.game.system-eunos-blades #controls #chat .comp .comp-toggle.comp-toggle-red:hover,
         :root body.vtt.game.system-eunos-blades #navigation #chat .comp .comp-toggle.comp-toggle-red:hover,
         :root body.vtt.game.system-eunos-blades #hotbar #chat .comp .comp-toggle.comp-toggle-red:hover,
         :root body.vtt.game.system-eunos-blades #players #chat .comp .comp-toggle.comp-toggle-red:hover {
+          z-index: 10;
           color: var(--blades-red); }
       :root body.vtt.game.system-eunos-blades #interface #chat .comp .comp-toggle.comp-toggle-grey,
       :root body.vtt.game.system-eunos-blades #controls #chat .comp .comp-toggle.comp-toggle-grey,
@@ -5445,12 +6081,14 @@ template {
       :root body.vtt.game.system-eunos-blades #players #chat .comp .comp-toggle.comp-toggle-grey {
         color: var(--blades-grey);
         -webkit-filter: blur(2px);
-        filter: blur(2px); }
+        filter: blur(2px);
+        scale: 0.8; }
         :root body.vtt.game.system-eunos-blades #interface #chat .comp .comp-toggle.comp-toggle-grey:hover,
         :root body.vtt.game.system-eunos-blades #controls #chat .comp .comp-toggle.comp-toggle-grey:hover,
         :root body.vtt.game.system-eunos-blades #navigation #chat .comp .comp-toggle.comp-toggle-grey:hover,
         :root body.vtt.game.system-eunos-blades #hotbar #chat .comp .comp-toggle.comp-toggle-grey:hover,
         :root body.vtt.game.system-eunos-blades #players #chat .comp .comp-toggle.comp-toggle-grey:hover {
+          z-index: 10;
           -webkit-filter: blur(0px);
           filter: blur(0px);
           color: var(--blades-white); }
@@ -5533,6 +6171,14 @@ template {
       :root body.vtt.game.system-eunos-blades #players #chat .comp .tooltip.tooltip-portrait {
         bottom: 100px;
         left: 50px; }
+      :root body.vtt.game.system-eunos-blades #interface #chat .comp .tooltip.tooltip-playbook,
+      :root body.vtt.game.system-eunos-blades #controls #chat .comp .tooltip.tooltip-playbook,
+      :root body.vtt.game.system-eunos-blades #navigation #chat .comp .tooltip.tooltip-playbook,
+      :root body.vtt.game.system-eunos-blades #hotbar #chat .comp .tooltip.tooltip-playbook,
+      :root body.vtt.game.system-eunos-blades #players #chat .comp .tooltip.tooltip-playbook {
+        bottom: unset;
+        top: 0px;
+        left: -220px; }
       :root body.vtt.game.system-eunos-blades #interface #chat .comp .tooltip.trauma-tooltip,
       :root body.vtt.game.system-eunos-blades #controls #chat .comp .tooltip.trauma-tooltip,
       :root body.vtt.game.system-eunos-blades #navigation #chat .comp .tooltip.trauma-tooltip,
@@ -6527,6 +7173,219 @@ template {
       :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .dot:hover.svg-dot,
       :root body.vtt.game.system-eunos-blades #players #chat .dotline .dot:hover.svg-dot {
         opacity: 0.5; }
+      :root body.vtt.game.system-eunos-blades #interface #chat .dotline .dot.full-dot:last-of-type ~ .advance-button,
+      :root body.vtt.game.system-eunos-blades #controls #chat .dotline .dot.full-dot:last-of-type ~ .advance-button,
+      :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .dot.full-dot:last-of-type ~ .advance-button,
+      :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .dot.full-dot:last-of-type ~ .advance-button,
+      :root body.vtt.game.system-eunos-blades #players #chat .dotline .dot.full-dot:last-of-type ~ .advance-button {
+        display: block; }
+    :root body.vtt.game.system-eunos-blades #interface #chat .dotline .advance-button,
+    :root body.vtt.game.system-eunos-blades #controls #chat .dotline .advance-button,
+    :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .advance-button,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .advance-button,
+    :root body.vtt.game.system-eunos-blades #players #chat .dotline .advance-button {
+      display: none;
+      position: absolute;
+      cursor: pointer;
+      pointer-events: auto;
+      font-family: Oswald;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      z-index: 10;
+      top: 0px;
+      right: -50px;
+      height: 25px;
+      width: 85px;
+      padding: 3px 3px;
+      -webkit-transition: .5s;
+      transition: .5s; }
+      :root body.vtt.game.system-eunos-blades #interface #chat .dotline .advance-button.rainbow-glow,
+      :root body.vtt.game.system-eunos-blades #controls #chat .dotline .advance-button.rainbow-glow,
+      :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .advance-button.rainbow-glow,
+      :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .advance-button.rainbow-glow,
+      :root body.vtt.game.system-eunos-blades #players #chat .dotline .advance-button.rainbow-glow {
+        background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+        border-radius: 10px;
+        color: black;
+        outline: 2px solid var(--blades-black); }
+        :root body.vtt.game.system-eunos-blades #interface #chat .dotline .advance-button.rainbow-glow:before,
+        :root body.vtt.game.system-eunos-blades #controls #chat .dotline .advance-button.rainbow-glow:before,
+        :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .advance-button.rainbow-glow:before,
+        :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .advance-button.rainbow-glow:before,
+        :root body.vtt.game.system-eunos-blades #players #chat .dotline .advance-button.rainbow-glow:before {
+          content: '';
+          background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          background-size: 400%;
+          z-index: -1;
+          -webkit-filter: blur(5px);
+          filter: blur(5px);
+          width: calc(100% + 4px);
+          height: calc(100% + 4px);
+          -webkit-animation: glowing 20s linear infinite;
+          animation: glowing 20s linear infinite;
+          opacity: 0;
+          -webkit-transition: opacity .3s ease-in-out;
+          transition: opacity .3s ease-in-out;
+          border-radius: 10px;
+          z-index: -1; }
+        :root body.vtt.game.system-eunos-blades #interface #chat .dotline .advance-button.rainbow-glow:hover:before,
+        :root body.vtt.game.system-eunos-blades #controls #chat .dotline .advance-button.rainbow-glow:hover:before,
+        :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .advance-button.rainbow-glow:hover:before,
+        :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .advance-button.rainbow-glow:hover:before,
+        :root body.vtt.game.system-eunos-blades #players #chat .dotline .advance-button.rainbow-glow:hover:before {
+          opacity: 1; }
+        :root body.vtt.game.system-eunos-blades #interface #chat .dotline .advance-button.rainbow-glow:after,
+        :root body.vtt.game.system-eunos-blades #controls #chat .dotline .advance-button.rainbow-glow:after,
+        :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .advance-button.rainbow-glow:after,
+        :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .advance-button.rainbow-glow:after,
+        :root body.vtt.game.system-eunos-blades #players #chat .dotline .advance-button.rainbow-glow:after {
+          z-index: -1;
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+          left: 0;
+          top: 0;
+          border-radius: 10px;
+          opacity: 0.5; }
+
+@keyframes glowing {
+  0% {
+    background-position: 0 0; }
+  50% {
+    background-position: 400% 0; }
+  100% {
+    background-position: 0 0; } }
+      :root body.vtt.game.system-eunos-blades #interface #chat .dotline .advance-button.gold-orbit,
+      :root body.vtt.game.system-eunos-blades #controls #chat .dotline .advance-button.gold-orbit,
+      :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .advance-button.gold-orbit,
+      :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .advance-button.gold-orbit,
+      :root body.vtt.game.system-eunos-blades #players #chat .dotline .advance-button.gold-orbit {
+        --button-glow-color: var(--blades-gold-bright);
+        background: var(--blades-black);
+        color: var(--blades-white-bright);
+        -webkit-box-shadow: 5px 5px 10px var(--blades-black-dark);
+        box-shadow: 5px 5px 10px var(--blades-black-dark);
+        overflow: hidden;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        -webkit-animation: btn-throb 3s ease-in-out infinite;
+        animation: btn-throb 3s ease-in-out infinite; }
+        :root body.vtt.game.system-eunos-blades #interface #chat .dotline .advance-button.gold-orbit:hover,
+        :root body.vtt.game.system-eunos-blades #controls #chat .dotline .advance-button.gold-orbit:hover,
+        :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .advance-button.gold-orbit:hover,
+        :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .advance-button.gold-orbit:hover,
+        :root body.vtt.game.system-eunos-blades #players #chat .dotline .advance-button.gold-orbit:hover {
+          -webkit-animation-play-state: paused;
+          animation-play-state: paused;
+          background: var(--button-glow-color);
+          color: #fff;
+          border-radius: 5px;
+          -webkit-box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color);
+          box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color); }
+        :root body.vtt.game.system-eunos-blades #interface #chat .dotline .advance-button.gold-orbit span,
+        :root body.vtt.game.system-eunos-blades #controls #chat .dotline .advance-button.gold-orbit span,
+        :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .advance-button.gold-orbit span,
+        :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .advance-button.gold-orbit span,
+        :root body.vtt.game.system-eunos-blades #players #chat .dotline .advance-button.gold-orbit span {
+          position: absolute;
+          display: block; }
+          :root body.vtt.game.system-eunos-blades #interface #chat .dotline .advance-button.gold-orbit span:nth-child(1),
+          :root body.vtt.game.system-eunos-blades #controls #chat .dotline .advance-button.gold-orbit span:nth-child(1),
+          :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .advance-button.gold-orbit span:nth-child(1),
+          :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .advance-button.gold-orbit span:nth-child(1),
+          :root body.vtt.game.system-eunos-blades #players #chat .dotline .advance-button.gold-orbit span:nth-child(1) {
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: -webkit-gradient(linear, left top, right top, from(transparent), to(var(--button-glow-color)));
+            background: linear-gradient(90deg, transparent, var(--button-glow-color));
+            -webkit-animation: btn-anim1 1s linear infinite;
+            animation: btn-anim1 1s linear infinite; }
+          :root body.vtt.game.system-eunos-blades #interface #chat .dotline .advance-button.gold-orbit span:nth-child(2),
+          :root body.vtt.game.system-eunos-blades #controls #chat .dotline .advance-button.gold-orbit span:nth-child(2),
+          :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .advance-button.gold-orbit span:nth-child(2),
+          :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .advance-button.gold-orbit span:nth-child(2),
+          :root body.vtt.game.system-eunos-blades #players #chat .dotline .advance-button.gold-orbit span:nth-child(2) {
+            top: -100%;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(var(--button-glow-color)));
+            background: linear-gradient(180deg, transparent, var(--button-glow-color));
+            -webkit-animation: btn-anim2 1s linear infinite;
+            animation: btn-anim2 1s linear infinite;
+            -webkit-animation-delay: .25s;
+            animation-delay: .25s; }
+          :root body.vtt.game.system-eunos-blades #interface #chat .dotline .advance-button.gold-orbit span:nth-child(3),
+          :root body.vtt.game.system-eunos-blades #controls #chat .dotline .advance-button.gold-orbit span:nth-child(3),
+          :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .advance-button.gold-orbit span:nth-child(3),
+          :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .advance-button.gold-orbit span:nth-child(3),
+          :root body.vtt.game.system-eunos-blades #players #chat .dotline .advance-button.gold-orbit span:nth-child(3) {
+            bottom: 0;
+            right: -100%;
+            width: 100%;
+            height: 2px;
+            background: -webkit-gradient(linear, right top, left top, from(transparent), to(var(--button-glow-color)));
+            background: linear-gradient(270deg, transparent, var(--button-glow-color));
+            -webkit-animation: btn-anim3 1s linear infinite;
+            animation: btn-anim3 1s linear infinite;
+            -webkit-animation-delay: .5s;
+            animation-delay: .5s; }
+          :root body.vtt.game.system-eunos-blades #interface #chat .dotline .advance-button.gold-orbit span:nth-child(4),
+          :root body.vtt.game.system-eunos-blades #controls #chat .dotline .advance-button.gold-orbit span:nth-child(4),
+          :root body.vtt.game.system-eunos-blades #navigation #chat .dotline .advance-button.gold-orbit span:nth-child(4),
+          :root body.vtt.game.system-eunos-blades #hotbar #chat .dotline .advance-button.gold-orbit span:nth-child(4),
+          :root body.vtt.game.system-eunos-blades #players #chat .dotline .advance-button.gold-orbit span:nth-child(4) {
+            bottom: -100%;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: -webkit-gradient(linear, left bottom, left top, from(transparent), to(var(--button-glow-color)));
+            background: linear-gradient(360deg, transparent, var(--button-glow-color));
+            -webkit-animation: btn-anim4 1s linear infinite;
+            animation: btn-anim4 1s linear infinite;
+            -webkit-animation-delay: .75s;
+            animation-delay: .75s; }
+
+@keyframes btn-throb {
+  0% {
+    scale: 0.9; }
+  50% {
+    scale: 1.1; }
+  100% {
+    scale: 0.9; } }
+
+@keyframes btn-anim1 {
+  0% {
+    left: -100%; }
+  50%, 100% {
+    left: 100%; } }
+
+@keyframes btn-anim2 {
+  0% {
+    top: -100%; }
+  50%, 100% {
+    top: 100%; } }
+
+@keyframes btn-anim3 {
+  0% {
+    right: -100%; }
+  50%, 100% {
+    right: 100%; } }
+
+@keyframes btn-anim4 {
+  0% {
+    bottom: -100%; }
+  50%, 100% {
+    bottom: 100%; } }
 
 :root body.vtt.game.system-eunos-blades #interface #chat,
 :root body.vtt.game.system-eunos-blades #interface #chat *,
@@ -6840,6 +7699,8 @@ template {
       -ms-flex-align: center;
       align-items: center;
       z-index: 2; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .comp:hover {
+        z-index: 10; }
       :root body.vtt.game.system-eunos-blades .app.window-app .comp.full-width {
         width: 100%;
         -webkit-box-pack: space-evenly;
@@ -6949,14 +7810,18 @@ template {
         :root body.vtt.game.system-eunos-blades .app.window-app .comp .comp-toggle.comp-toggle-red {
           color: var(--blades-red-bright);
           font-weight: bold;
-          text-shadow: var(--text-shadow-dark); }
+          text-shadow: var(--text-shadow-dark);
+          scale: 0.9; }
           :root body.vtt.game.system-eunos-blades .app.window-app .comp .comp-toggle.comp-toggle-red:hover {
+            z-index: 10;
             color: var(--blades-red); }
         :root body.vtt.game.system-eunos-blades .app.window-app .comp .comp-toggle.comp-toggle-grey {
           color: var(--blades-grey);
           -webkit-filter: blur(2px);
-          filter: blur(2px); }
+          filter: blur(2px);
+          scale: 0.8; }
           :root body.vtt.game.system-eunos-blades .app.window-app .comp .comp-toggle.comp-toggle-grey:hover {
+            z-index: 10;
             -webkit-filter: blur(0px);
             filter: blur(0px);
             color: var(--blades-white); }
@@ -7011,6 +7876,10 @@ template {
         :root body.vtt.game.system-eunos-blades .app.window-app .comp .tooltip.tooltip-portrait {
           bottom: 100px;
           left: 50px; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .comp .tooltip.tooltip-playbook {
+          bottom: unset;
+          top: 0px;
+          left: -220px; }
         :root body.vtt.game.system-eunos-blades .app.window-app .comp .tooltip.trauma-tooltip {
           left: -300px; }
       :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-vertical {
@@ -7529,6 +8398,167 @@ template {
           display: none; }
         :root body.vtt.game.system-eunos-blades .app.window-app .dotline .dot:hover.svg-dot {
           opacity: 0.5; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .dotline .dot.full-dot:last-of-type ~ .advance-button {
+          display: block; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .dotline .advance-button {
+        display: none;
+        position: absolute;
+        cursor: pointer;
+        pointer-events: auto;
+        font-family: Oswald;
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        z-index: 10;
+        top: 0px;
+        right: -50px;
+        height: 25px;
+        width: 85px;
+        padding: 3px 3px;
+        -webkit-transition: .5s;
+        transition: .5s; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .dotline .advance-button.rainbow-glow {
+          background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+          border-radius: 10px;
+          color: black;
+          outline: 2px solid var(--blades-black); }
+          :root body.vtt.game.system-eunos-blades .app.window-app .dotline .advance-button.rainbow-glow:before {
+            content: '';
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            background-size: 400%;
+            z-index: -1;
+            -webkit-filter: blur(5px);
+            filter: blur(5px);
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            -webkit-animation: glowing 20s linear infinite;
+            animation: glowing 20s linear infinite;
+            opacity: 0;
+            -webkit-transition: opacity .3s ease-in-out;
+            transition: opacity .3s ease-in-out;
+            border-radius: 10px;
+            z-index: -1; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .dotline .advance-button.rainbow-glow:hover:before {
+            opacity: 1; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .dotline .advance-button.rainbow-glow:after {
+            z-index: -1;
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+            left: 0;
+            top: 0;
+            border-radius: 10px;
+            opacity: 0.5; }
+
+@keyframes glowing {
+  0% {
+    background-position: 0 0; }
+  50% {
+    background-position: 400% 0; }
+  100% {
+    background-position: 0 0; } }
+        :root body.vtt.game.system-eunos-blades .app.window-app .dotline .advance-button.gold-orbit {
+          --button-glow-color: var(--blades-gold-bright);
+          background: var(--blades-black);
+          color: var(--blades-white-bright);
+          -webkit-box-shadow: 5px 5px 10px var(--blades-black-dark);
+          box-shadow: 5px 5px 10px var(--blades-black-dark);
+          overflow: hidden;
+          -webkit-transition: 0.5s;
+          transition: 0.5s;
+          -webkit-animation: btn-throb 3s ease-in-out infinite;
+          animation: btn-throb 3s ease-in-out infinite; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .dotline .advance-button.gold-orbit:hover {
+            -webkit-animation-play-state: paused;
+            animation-play-state: paused;
+            background: var(--button-glow-color);
+            color: #fff;
+            border-radius: 5px;
+            -webkit-box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color);
+            box-shadow: 0 0 5px var(--button-glow-color), 0 0 25px var(--button-glow-color), 0 0 50px var(--button-glow-color), 0 0 100px var(--button-glow-color); }
+          :root body.vtt.game.system-eunos-blades .app.window-app .dotline .advance-button.gold-orbit span {
+            position: absolute;
+            display: block; }
+            :root body.vtt.game.system-eunos-blades .app.window-app .dotline .advance-button.gold-orbit span:nth-child(1) {
+              top: 0;
+              left: -100%;
+              width: 100%;
+              height: 2px;
+              background: -webkit-gradient(linear, left top, right top, from(transparent), to(var(--button-glow-color)));
+              background: linear-gradient(90deg, transparent, var(--button-glow-color));
+              -webkit-animation: btn-anim1 1s linear infinite;
+              animation: btn-anim1 1s linear infinite; }
+            :root body.vtt.game.system-eunos-blades .app.window-app .dotline .advance-button.gold-orbit span:nth-child(2) {
+              top: -100%;
+              right: 0;
+              width: 2px;
+              height: 100%;
+              background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(var(--button-glow-color)));
+              background: linear-gradient(180deg, transparent, var(--button-glow-color));
+              -webkit-animation: btn-anim2 1s linear infinite;
+              animation: btn-anim2 1s linear infinite;
+              -webkit-animation-delay: .25s;
+              animation-delay: .25s; }
+            :root body.vtt.game.system-eunos-blades .app.window-app .dotline .advance-button.gold-orbit span:nth-child(3) {
+              bottom: 0;
+              right: -100%;
+              width: 100%;
+              height: 2px;
+              background: -webkit-gradient(linear, right top, left top, from(transparent), to(var(--button-glow-color)));
+              background: linear-gradient(270deg, transparent, var(--button-glow-color));
+              -webkit-animation: btn-anim3 1s linear infinite;
+              animation: btn-anim3 1s linear infinite;
+              -webkit-animation-delay: .5s;
+              animation-delay: .5s; }
+            :root body.vtt.game.system-eunos-blades .app.window-app .dotline .advance-button.gold-orbit span:nth-child(4) {
+              bottom: -100%;
+              left: 0;
+              width: 2px;
+              height: 100%;
+              background: -webkit-gradient(linear, left bottom, left top, from(transparent), to(var(--button-glow-color)));
+              background: linear-gradient(360deg, transparent, var(--button-glow-color));
+              -webkit-animation: btn-anim4 1s linear infinite;
+              animation: btn-anim4 1s linear infinite;
+              -webkit-animation-delay: .75s;
+              animation-delay: .75s; }
+
+@keyframes btn-throb {
+  0% {
+    scale: 0.9; }
+  50% {
+    scale: 1.1; }
+  100% {
+    scale: 0.9; } }
+
+@keyframes btn-anim1 {
+  0% {
+    left: -100%; }
+  50%, 100% {
+    left: 100%; } }
+
+@keyframes btn-anim2 {
+  0% {
+    top: -100%; }
+  50%, 100% {
+    top: 100%; } }
+
+@keyframes btn-anim3 {
+  0% {
+    right: -100%; }
+  50%, 100% {
+    right: 100%; } }
+
+@keyframes btn-anim4 {
+  0% {
+    bottom: -100%; }
+  50%, 100% {
+    bottom: 100%; } }
   :root body.vtt.game.system-eunos-blades .app.window-app blockquote {
     border-left: 2px solid var(--blades-grey-bright);
     margin-left: 1.5rem;
@@ -8326,7 +9356,7 @@ template {
       :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="System Tags"] {
         --tag-bg: gray;
         --tag-hover: #aaaaaa; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="Item Tags"] {
+      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="Gear Tags"] {
         --tag-bg: #45a945;
         --tag-hover: #6fd36f; }
       :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="Actor Tags"] {
@@ -8344,6 +9374,9 @@ template {
       :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="Factions"] {
         --tag-bg: #cb4bcb;
         --tag-hover: #f575f5; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="Inventions"] {
+        --tag-bg: #ff16ff;
+        --tag-hover: #ff40ff; }
     :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__input {
       -webkit-box-flex: 0.2;
       -ms-flex-positive: 0.2;
@@ -8390,7 +9423,7 @@ template {
         :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="System Tags"] {
           --tag-bg: gray;
           --tag-hover: #aaaaaa; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Item Tags"] {
+        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Gear Tags"] {
           --tag-bg: #45a945;
           --tag-hover: #6fd36f; }
         :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Actor Tags"] {
@@ -8406,12 +9439,15 @@ template {
           --tag-bg: #ff3f67;
           --tag-hover: #ff6991; }
         :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Factions"] {
-          --tag-bg: #af5ac7;
-          --tag-hover: #d984f2; }
+          --tag-bg: #cb4bcb;
+          --tag-hover: #f575f5; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Inventions"] {
+          --tag-bg: #ff16ff;
+          --tag-hover: #ff40ff; }
   :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) {
     position: relative;
     overflow-x: hidden;
-    height: 100%;
+    height: auto;
     width: 100%;
     min-height: var(--min-tinymce-height); }
     :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce).prosemirror, :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce).prosemirror * {
@@ -8446,14 +9482,13 @@ template {
           margin-block-start: 7px;
           -webkit-margin-after: 7px;
           margin-block-end: 7px; }
-  :root body.vtt.game.system-eunos-blades .app.window-app .tab-label + .editor {
+  :root body.vtt.game.system-eunos-blades .app.window-app .tab-label + .editor:not(.tinymce) {
     margin-top: -0.3125rem !important; }
   :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce {
     position: relative;
     max-width: unset;
     width: 100%;
-    height: 100%;
-    min-height: var(--min-tinymce-height); }
+    min-height: 100px; }
     :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content {
       min-height: var(--min-tinymce-height);
       background-color: rgba(0, 0, 0, 0.2);
@@ -8467,7 +9502,11 @@ template {
         margin-block-end: 7px; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet {
     overflow: visible; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-header {
+      position: relative;
+      z-index: 0; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content {
+      z-index: 1;
       --sheet-header-height: 21px;
       --sheet-top-height: 200px;
       --sheet-mid-height: 60px;
@@ -8479,7 +9518,7 @@ template {
         -webkit-box-pack: start;
         -ms-flex-pack: start;
         justify-content: flex-start;
-        max-height: 100%; }
+        max-height: 900px; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form blockquote {
           border-left: 2px solid var(--blades-grey-bright);
           margin-left: 1.5rem;
@@ -8946,8 +9985,13 @@ template {
             stroke: var(--blades-black-dark-fade);
             overflow: visible; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-resizable-handle {
+      opacity: 0;
+      -webkit-transition: opacity 0.5s;
+      transition: opacity 0.5s;
       margin-right: -10px;
       margin-bottom: -10px; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-resizable-handle:hover {
+        opacity: 1; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc {
     min-width: 775px;
     min-height: 800px;
@@ -8981,6 +10025,8 @@ template {
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar .comp-stress .dotline {
         --fill-color-full: var(--blades-red-dark);
         --half-color-full: var(--blades-red-bright); }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar .comp-stress .dotline.narrow-stress .dot {
+          margin-right: 1px; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar .comp-trauma .comp-label {
         min-width: 80px; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar .comp-trauma .dotline {
@@ -8998,9 +10044,6 @@ template {
           height: 2.1875rem; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr:nth-child(2n) {
             background: var(--blades-black-fade); }
-            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr:nth-child(2n) .harm-effect {
-              text-align: center;
-              font-size: 1rem; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .harm-level {
             width: 2.1875rem;
             font-family: var(--font-emphasis);
@@ -9015,7 +10058,8 @@ template {
             text-align: center; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .harm-effect {
             color: var(--blades-white-bright);
-            text-align: right; }
+            text-align: center;
+            font-size: 1rem; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock {
             padding: 0 0.625rem;
             width: 120px; }
@@ -9444,7 +10488,8 @@ template {
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .sheet-title {
           --sheet-title-font-size: 3rem; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .comp-playbook {
-          grid-area: playbook; }
+          grid-area: playbook;
+          top: -10px; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .comp-reputation {
           grid-area: reputation; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .comp-preferred-op {
@@ -9453,6 +10498,11 @@ template {
           grid-area: hunting-grounds; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .comp-coins {
           grid-area: coins; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .comp-coins .dotline {
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            max-width: calc(var(--dotline-dot-size) * 8);
+            gap: 5px 0; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .members {
           grid-area: members; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .comp-hunting-grounds {
@@ -9801,6 +10851,8 @@ template {
         grid-template-columns: 50px 1fr 100px; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.gear .sheet-root section.sheet-top .comp-tier {
           grid-area: tier; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-resizable-handle {
+      display: none; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .scene-selection {
     position: absolute;
     top: 12px;
@@ -9862,6 +10914,8 @@ template {
         font-family: var(--font-emphasis);
         font-size: 18px;
         color: var(--blades-white-bright); }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.gm-tracker .window-content form {
+    --sheet-mid-height: 100px; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook {
     --turf-list-width: 600px;
     --turf-block-width: 135px;

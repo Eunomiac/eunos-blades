@@ -3,6 +3,43 @@
 $bg-yiq: 0.5;
 $hover-yiq: $bg-yiq * 1.33;
 
+@mixin tag_colors() {
+
+  &[data-group="System Tags"] {
+    --tag-bg: #{getYIQScaledColor(darkgrey, $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(darkgrey, $hover-yiq)};
+  }
+  &[data-group="Gear Tags"] {
+    --tag-bg: #{getYIQScaledColor(darkgreen, $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(darkgreen, $hover-yiq)};
+  }
+  &[data-group="Actor Tags"] {
+    --tag-bg: #{getYIQScaledColor(brown, $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(brown, $hover-yiq)};
+  }
+  &[data-group="Playbooks"] {
+    --tag-bg: #{getYIQScaledColor(blue, $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(blue, $hover-yiq)};
+  }
+  &[data-group="Districts"] {
+    --tag-bg: #{getYIQScaledColor(tan, $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(tan, $hover-yiq)};
+  }
+  &[data-group="Vices"] {
+    --tag-bg: #{getYIQScaledColor(crimson, $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(crimson, $hover-yiq)};
+  }
+  &[data-group="Factions"] {
+    --tag-bg: #{getYIQScaledColor(purple, $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(purple, $hover-yiq)};
+  }
+  &[data-group="Inventions"] {
+    --tag-bg: #{getYIQScaledColor(magenta, $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(magenta, $hover-yiq)};
+  }
+
+}
+
 .tags-gm {
   position: absolute;
   z-index: 20;
@@ -57,34 +94,7 @@ $hover-yiq: $bg-yiq * 1.33;
       }
     }
 
-    &[data-group="System Tags"] {
-      --tag-bg: #{getYIQScaledColor(darkgrey, $bg-yiq)};
-      --tag-hover: #{getYIQScaledColor(darkgrey, $hover-yiq)};
-    }
-    &[data-group="Item Tags"] {
-      --tag-bg: #{getYIQScaledColor(darkgreen, $bg-yiq)};
-      --tag-hover: #{getYIQScaledColor(darkgreen, $hover-yiq)};
-    }
-    &[data-group="Actor Tags"] {
-      --tag-bg: #{getYIQScaledColor(brown, $bg-yiq)};
-      --tag-hover: #{getYIQScaledColor(brown, $hover-yiq)};
-    }
-    &[data-group="Playbooks"] {
-      --tag-bg: #{getYIQScaledColor(blue, $bg-yiq)};
-      --tag-hover: #{getYIQScaledColor(blue, $hover-yiq)};
-    }
-    &[data-group="Districts"] {
-      --tag-bg: #{getYIQScaledColor(tan, $bg-yiq)};
-      --tag-hover: #{getYIQScaledColor(tan, $hover-yiq)};
-    }
-    &[data-group="Vices"] {
-      --tag-bg: #{getYIQScaledColor(crimson, $bg-yiq)};
-      --tag-hover: #{getYIQScaledColor(crimson, $hover-yiq)};
-    }
-    &[data-group="Factions"] {
-      --tag-bg: #{getYIQScaledColor(purple, $bg-yiq)};
-      --tag-hover: #{getYIQScaledColor(purple, $hover-yiq)};
-    }
+    @include tag-colors();
 
   }
 
@@ -140,36 +150,7 @@ $hover-yiq: $bg-yiq * 1.33;
           background-color: var(--tag-hover);
         }
 
-
-        &[data-group="System Tags"] {
-          --tag-bg: #{getYIQScaledColor(darkgrey, $bg-yiq)};
-          --tag-hover: #{getYIQScaledColor(darkgrey, $hover-yiq)};
-        }
-        &[data-group="Item Tags"] {
-          --tag-bg: #{getYIQScaledColor(darkgreen, $bg-yiq)};
-          --tag-hover: #{getYIQScaledColor(darkgreen, $hover-yiq)};
-        }
-        &[data-group="Actor Tags"] {
-          --tag-bg: #{getYIQScaledColor(brown, $bg-yiq)};
-          --tag-hover: #{getYIQScaledColor(brown, $hover-yiq)};
-        }
-        &[data-group="Playbooks"] {
-          --tag-bg: #{getYIQScaledColor(blue, $bg-yiq)};
-          --tag-hover: #{getYIQScaledColor(blue, $hover-yiq)};
-        }
-        &[data-group="Districts"] {
-          --tag-bg: #{getYIQScaledColor(tan, $bg-yiq)};
-          --tag-hover: #{getYIQScaledColor(tan, $hover-yiq)};
-        }
-        &[data-group="Vices"] {
-          --tag-bg: #{getYIQScaledColor(crimson, $bg-yiq)};
-          --tag-hover: #{getYIQScaledColor(crimson, $hover-yiq)};
-        }
-
-    &[data-group="Factions"] {
-      --tag-bg: #{getYIQScaledColor(rgb(85, 0, 110), $bg-yiq)};
-      --tag-hover: #{getYIQScaledColor(rgb(85, 0, 110), $hover-yiq)};
-    }
+        @include tag-colors();
       }
     }
   }

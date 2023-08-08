@@ -15,7 +15,7 @@ declare global {
     hasFullVision: boolean,
     hasLimitedVision: boolean,
     hasControl: boolean,
-    playbookData?: {tooltip: string, dotline: BladesDotlineData},
+    playbookData?: {tooltip?: string, dotline: BladesDotlineData},
     coinsData?: {dotline: BladesDotlineData}
   };
 
