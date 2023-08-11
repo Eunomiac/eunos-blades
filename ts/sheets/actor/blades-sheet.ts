@@ -173,6 +173,12 @@ class BladesSheet extends ActorSheet {
     html
       .find(".clock-container")
       .on("contextmenu", this._onClockRightClick.bind(this));
+    html
+      .find(".comp-control.comp-add-clock")
+      .on("click", this._onClockAddClick.bind(this));
+    html
+      .find(".comp-control.comp-delete-clock")
+      .on("click", this._onClockDeleteClick.bind(this));
 
     // Component Functionality: Open, Add (via SelectorDialog), Archive, Delete, Toggle
     html
@@ -262,6 +268,32 @@ class BladesSheet extends ActorSheet {
       this.actor.update({
         [target]: Math.max(0, curValue - 1)
       }));
+  }
+
+  async _onClockAddClick(event: ClickEvent) {
+    event.preventDefault();
+    if (!BladesActor.IsType(this.actor, BladesActorType.faction)) { return }
+    const clockID = randomID();
+    this.actor.update({[`system.clocks.${clockID}`]: {
+      color: "white",
+      display: "",
+      gm_notes: "",
+      isVisible: true,
+      isNameVisible: true,
+      isActive: true,
+      max: 4,
+      target: `system.clocks.${clockID}.value`,
+      value: 0,
+      id: clockID
+    }});
+  }
+
+  async _onClockDeleteClick(event: ClickEvent) {
+    event.preventDefault();
+    if (!BladesActor.IsType(this.actor, BladesActorType.faction)) { return }
+    const clockID = $(event.currentTarget).data("clockId");
+    if (!clockID) { return }
+    this.actor.update({[`system.clocks.-=${clockID}`]: null});
   }
   // #endregion
 

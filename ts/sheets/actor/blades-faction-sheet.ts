@@ -1,4 +1,5 @@
 
+import BladesActor from "../../blades-actor.js";
 import BladesSheet from "./blades-sheet.js";
 import {BladesActorType} from "../../core/constants.js";
 
@@ -16,9 +17,22 @@ class BladesFactionSheet extends BladesSheet {
 
   override getData() {
     const context = super.getData() as ReturnType<BladesSheet["getData"]>;
-
+    if (!BladesActor.IsType(this.actor, BladesActorType.faction)) { return context }
     const sheetData: Partial<BladesActorSchema.Faction> & BladesActorDataOfType<BladesActorType.faction> = {
-      clocks: this.actor.system.clocks,
+      clocks: Object.fromEntries(Object.entries(this.actor.system.clocks).map(([clockNum, clockData], i) => [
+        clockNum,
+        {
+          display: clockData?.display ?? "",
+          value: clockData?.value ?? 0,
+          max: clockData?.max ?? 0,
+          isVisible: true,
+          isNameVisible: false,
+          isActive: false,
+          color: "white",
+          target: `system.clocks.${i+1}.value`,
+          gm_notes: clockData?.gm_notes ?? ""
+        }
+      ])) as Record<number, BladesClockData>,
       tierData: {
         "class": "comp-tier comp-vertical comp-teeth",
         "label": "Tier",

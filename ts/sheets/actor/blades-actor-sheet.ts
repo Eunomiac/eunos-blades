@@ -115,12 +115,12 @@ class BladesActorSheet extends BladesSheet {
                                         && activeSubItems.find((item) => item.type === BladesItemType.vice));
 
     sheetData.healing_clock = {
-      title: "Healing",
+      display: "Healing",
       target: "system.healing.value",
       color: "white",
-      isClockVisible: true,
-      isTitleVisible: false,
-      isFocused: false,
+      isVisible: true,
+      isNameVisible: false,
+      isActive: false,
       ...this.actor.system.healing
     };
 

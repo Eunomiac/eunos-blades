@@ -147,10 +147,10 @@ class BladesItem extends Item implements BladesDocument<Item> {
     system.scenes = game.scenes.map((scene) => ({id: scene.id, name: scene.name ?? ""}));
     system.targetScene ??= game.scenes.current?.id || null;
     system.clock_keys = Object.fromEntries(Object.entries(system.clock_keys ?? {})
-      .filter(([keyID, keyData]) => Boolean(keyData))
+      .filter(([keyID, keyData]) => keyData && keyData.id)
       .map(([keyID, keyData]) => {
         if (keyData === null) { return [keyID, null] }
-        keyData.clocks = Object.fromEntries(Object.entries(keyData.clocks)
+        keyData.clocks = Object.fromEntries(Object.entries(keyData.clocks ?? {})
           .filter(([clockNum, clockData]) => Boolean(clockData)));
         return [keyID, keyData];
       }));
@@ -191,6 +191,7 @@ class BladesItem extends Item implements BladesDocument<Item> {
   }
 
   async activateOverlayListeners() {
+    if (!BladesItem.IsType(this, BladesItemType.clock_keeper)) { return }
     $("#clocks-overlay").find(".clock-frame").on("wheel", async (event) => {
       if (!game?.user?.isGM) { return }
       if (!event.currentTarget) { return }
@@ -208,27 +209,45 @@ class BladesItem extends Item implements BladesDocument<Item> {
       const clockNum = clock$.data("index");
       const curClockVal = U.pInt(clock$.data("value"));
       const delta = event.originalEvent.deltaY < 0 ? 1 : -1;
-      const size = U.pInt(clock$.data("size"));
+      const max = U.pInt(clock$.data("size"));
 
-      const newClockVal = U.gsap.utils.clamp(0, size, curClockVal + delta);
+      const newClockVal = U.gsap.utils.clamp(0, max, curClockVal + delta);
 
       if (curClockVal === newClockVal) { return }
 
       await this.update({
         [`system.clock_keys.${keyID}.clocks.${clockNum}.value`]: `${newClockVal}`
       });
-      socketlib.system.executeForEveryone("renderOverlay");
+      // socketlib.system.executeForEveryone("renderOverlay");
     });
 
-    $("#clocks-overlay").find(".clock").on("click", async (event) => {
-      if (!event.currentTarget) { return }
-      if (!game.eunoblades.ClockKeeper) { return }
+    // .on({
+    //   mouseenter: function() {
+    //     $(this).parent().css("z-index", 1);
+    //     $(this).data("hoverTimeline").play();
+    //   },
+    //   mouseleave: function() {
+    //     $(this).data("hoverTimeline").reverse().then(() => {
+    //       $(this).parent().removeAttr("style");
+    //     });
+    //   }
+    $("#clocks-overlay").find(".key-label").on({
+      click: async (event) => {
+        if (!game?.user?.isGM) { return }
+        if (!event.currentTarget) { return }
+        if (!game.eunoblades.ClockKeeper) { return }
 
-      event.preventDefault();
-      const [key] = $(event.currentTarget).closest(".clock-key");
-      if (!(key instanceof HTMLElement)) { return }
+        event.preventDefault();
 
-      $(key).toggleClass("key-faded");
+        const keyID = $(event.currentTarget).data("keyId") as string;
+        eLog.checkLog3("Updating Key isActive", {current: this.system.clock_keys![keyID]?.isActive, update: !(this.system.clock_keys![keyID]?.isActive)});
+        await this.update({[`system.clock_keys.${keyID}.isActive`]: !(this.system.clock_keys![keyID]?.isActive)});
+        // socketlib.system.executeForEveryone("renderOverlay");
+      },
+      contextmenu: () => {
+        if (!game?.user?.isGM) { return }
+        game.eunoblades.ClockKeeper?.sheet?.render(true);
+      }
     });
   }
 
@@ -239,17 +258,17 @@ class BladesItem extends Item implements BladesDocument<Item> {
       display: "",
       isVisible: false,
       isNameVisible: true,
-      isActive: false,
+      isActive: true,
       scene: this.system.targetScene,
       numClocks: 1,
       clocks: {
         1: {
           display: "",
-          isVisible: true,
-          isNameVisible: true,
-          isActive: true,
+          isVisible: false,
+          isNameVisible: false,
+          isActive: false,
           color: "yellow",
-          size: 4,
+          max: 4,
           value: 0
         }
       }
@@ -257,38 +276,47 @@ class BladesItem extends Item implements BladesDocument<Item> {
   }
 
   async deleteClockKey(keyID: string) {
-    const clockKeys = this.system.clock_keys ?? {};
-    clockKeys[keyID] = null;
-    return this.update({"system.clock_keys": clockKeys});
+    return this.update({[`system.clock_keys.-=${keyID}`]: null});
   }
 
   async setKeySize(keyID: string, keySize = 1) {
+    console.log("Setting Key Size");
     keySize = parseInt(`${keySize}`);
+    const updateData: Record<string, any> = {
+      [`system.clock_keys.${keyID}.numClocks`]: keySize
+    };
     const clockKey = this.system.clock_keys![keyID];
     if (!clockKey) { return this }
-    [...new Array(keySize)].map((_, i) => i + 1)
-      .forEach((clockNum) => {
-        clockKey.clocks[clockNum] ??= {
-          title: "",
+    const currentSize = Object.values(clockKey.clocks).length;
+    if (currentSize < keySize) {
+      for (let i = (currentSize + 1); i <= keySize; i++) {
+        updateData[`system.clock_keys.${keyID}.clocks.${i}`] = {
+          display: "",
           value: 0,
           max: 4,
           color: "yellow",
-          isClockVisible: false,
-          isTitleVisible: false,
-          isFocused: false
+          isVisible: false,
+          isNameVisible: true,
+          isActive: false
         };
-      });
-    [...new Array(6 - keySize)].map((_, i) => keySize + i + 1)
-      .forEach((clockNum) => {
-        delete clockKey.clocks[clockNum];
-      });
-    return this.update({[`system.clock_keys.${keyID}`]: clockKey});
+      }
+    } else if (currentSize > keySize) {
+      for (let i = (keySize + 1); i <= currentSize; i++) {
+        updateData[`system.clock_keys.${keyID}.clocks.-=${i}`] = null;
+      }
+    }
+    eLog.checkLog("clock_key", "Clock Key Update Data", {clockKey, updateData});
+    return this.update(updateData);
+    // return socketlib.system.executeForEveryone("renderOverlay");
   }
 
   override async _onUpdate(changed: any, options: any, userId: string) {
     await super._onUpdate(changed, options, userId);
     if (BladesItem.IsType(this, BladesItemType.gm_tracker, BladesItemType.clock_keeper, BladesItemType.location, BladesItemType.score)) {
       BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
+    }
+    if (BladesItem.IsType(this, BladesItemType.clock_keeper)) {
+      socketlib.system.executeForEveryone("renderOverlay");
     }
   }
 

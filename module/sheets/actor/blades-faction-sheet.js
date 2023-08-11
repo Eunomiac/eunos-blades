@@ -5,7 +5,9 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import BladesActor from "../../blades-actor.js";
 import BladesSheet from "./blades-sheet.js";
+import { BladesActorType } from "../../core/constants.js";
 class BladesFactionSheet extends BladesSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -18,8 +20,24 @@ class BladesFactionSheet extends BladesSheet {
     }
     getData() {
         const context = super.getData();
+        if (!BladesActor.IsType(this.actor, BladesActorType.faction)) {
+            return context;
+        }
         const sheetData = {
-            clocks: this.actor.system.clocks,
+            clocks: Object.fromEntries(Object.entries(this.actor.system.clocks).map(([clockNum, clockData], i) => [
+                clockNum,
+                {
+                    display: clockData?.display ?? "",
+                    value: clockData?.value ?? 0,
+                    max: clockData?.max ?? 0,
+                    isVisible: true,
+                    isNameVisible: false,
+                    isActive: false,
+                    color: "white",
+                    target: `system.clocks.${i + 1}.value`,
+                    gm_notes: clockData?.gm_notes ?? ""
+                }
+            ])),
             tierData: {
                 "class": "comp-tier comp-vertical comp-teeth",
                 "label": "Tier",

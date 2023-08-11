@@ -84,7 +84,7 @@
       opacity: 0.5;
       text-align: center;
 
-      &.comp-delete, &.comp-delete-full {
+      &.comp-delete, &.comp-delete-full, &.comp-delete-clock {
         --comp-control-color: var(--blades-white-bright);
         --comp-control-hover-color: var(--blades-red-bright);
         --comp-control-shadow-color: transparent;
@@ -93,7 +93,7 @@
         position: absolute;
       }
 
-      &.comp-add {
+      &.comp-add, &.comp-add-clock {
         --comp-control-color: var(--blades-black-dark);
         --comp-control-hover-color: var(--blades-white-bright);
         --comp-control-shadow-color: var(--blades-grey);

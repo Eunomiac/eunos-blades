@@ -145,6 +145,12 @@ class BladesSheet extends ActorSheet {
             .find(".clock-container")
             .on("contextmenu", this._onClockRightClick.bind(this));
         html
+            .find(".comp-control.comp-add-clock")
+            .on("click", this._onClockAddClick.bind(this));
+        html
+            .find(".comp-control.comp-delete-clock")
+            .on("click", this._onClockDeleteClick.bind(this));
+        html
             .find("[data-comp-id]")
             .find(".comp-title")
             .on("click", this._onItemOpenClick.bind(this));
@@ -214,6 +220,36 @@ class BladesSheet extends ActorSheet {
         G.effects.reversePulseClockWedges(clock$.find("wedges")).then(() => this.actor.update({
             [target]: Math.max(0, curValue - 1)
         }));
+    }
+    async _onClockAddClick(event) {
+        event.preventDefault();
+        if (!BladesActor.IsType(this.actor, BladesActorType.faction)) {
+            return;
+        }
+        const clockID = randomID();
+        this.actor.update({ [`system.clocks.${clockID}`]: {
+                color: "white",
+                display: "",
+                gm_notes: "",
+                isVisible: true,
+                isNameVisible: true,
+                isActive: true,
+                max: 4,
+                target: `system.clocks.${clockID}.value`,
+                value: 0,
+                id: clockID
+            } });
+    }
+    async _onClockDeleteClick(event) {
+        event.preventDefault();
+        if (!BladesActor.IsType(this.actor, BladesActorType.faction)) {
+            return;
+        }
+        const clockID = $(event.currentTarget).data("clockId");
+        if (!clockID) {
+            return;
+        }
+        this.actor.update({ [`system.clocks.-=${clockID}`]: null });
     }
 
     _getCompData(event) {

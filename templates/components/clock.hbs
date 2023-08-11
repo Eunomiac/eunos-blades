@@ -1,4 +1,5 @@
-<div class="clock {{~#if isFocused}} clock-active{{/if}}" {{~#if target}} data-target="{{target}}"{{/if}} {{~#if clockNum}} data-index="{{clockNum}}"{{/if}} data-size="{{max}}" data-value="{{value}}">
+<div class="clock {{~#if isActive}} clock-active{{/if}}" {{~#if target}} data-target="{{target}}"{{/if}} {{~#if clockNum}} data-index="{{clockNum}}"{{/if}} data-size="{{max}}" data-value="{{value}}">
+  {{#if isVisible}}
   <div class="clock-interior" style="clip-path: url(#{{value}}-of-{{max}}); {{~#if (test value "==" 0)}} opacity: 0;{{/if}}">
     <svg viewBox="0 0 400 400">
       <circle cx="200" cy="200" r="200" />
@@ -9,14 +10,18 @@
   </div>
   <svg class="clock-frame" viewBox="0 0 400 400">
     <g class="segmented" data-size="{{max}}">
-      {{#with max as |max|}}
       {{#forloop 1 max}}
-        <use href="#{{max}}-segment" />
+        <use href="#{{../max}}-segment" />
       {{/forloop}}
-      {{/with}}
     </g>
   </svg>
+  {{/if}}
+  <svg class="clock-frame clock-bg {{~#unless isVisible}} hidden-clock{{/unless}}" viewBox="0 0 400 400">
+    <circle class="clock-bg" cx="200" cy="200" r="200" />
+  </svg>
+    {{#if isVisible}}
   {{#unless (test value "==" 0)}}
   <div class="clock-glow" style="{{#unless (test value "==" max)}}clip-path: url(#{{value}}-of-{{max}});{{/unless}}"></div>
   {{/unless}}
+  {{/if}}
 </div>

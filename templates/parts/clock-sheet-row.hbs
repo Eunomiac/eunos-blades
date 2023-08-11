@@ -1,4 +1,3 @@
-{{log "Clock Row" this}}
 <tr class="clock-row">
   <td>
     {{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
@@ -17,8 +16,7 @@
       inactiveClass="fas fa-bell-slash"
       inactiveTooltip="<b>Clock is Muted.</b><br>Click to focus."
       targetKey=(concat "system.clock_keys." keyID ".clocks." clockNum ".isActive") }}
-  </td>
-  <td>
+
     {{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
       cssClass="clock-toggle"
       isToggled=clockData.isNameVisible
@@ -27,12 +25,14 @@
       inactiveClass="fas fa-comment-slash"
       inactiveTooltip="<b>Name is Hidden.</b><br>Click to display."
       targetKey=(concat "system.clock_keys." keyID ".clocks." clockNum ".isNameVisible") }}
-    <input type="text" class="clock-input clock-input-display" name="system.clock_keys.{{keyID}}.clocks.{{clockNum}}.display" value="{{#if clockData}}{{clockData.display}}{{/if}}">
+  </td>
+  <td>
+    <input type="text" class="clock-input clock-input-display" {{~#if clockData.color}} style="color: {{clockData.color}}"{{/if}} name="system.clock_keys.{{keyID}}.clocks.{{clockNum}}.display" value="{{#if clockData}}{{clockData.display}}{{/if}}">
   </td>
   {{#if clockData}}
   <td>
-    <select data-dtype="number" name="system.clock_keys.{{keyID}}.clocks.{{clockNum}}.size">
-      {{#select clockData.size}}
+    <select data-dtype="number" name="system.clock_keys.{{keyID}}.clocks.{{clockNum}}.max">
+      {{#select clockData.max}}
       <option value="2">2</option>
       <option value="3">3</option>
       <option value="4">4</option>
@@ -45,17 +45,17 @@
     </select>
     <select data-dtype="string" name="system.clock_keys.{{keyID}}.clocks.{{clockNum}}.color" data-color="{{clockData.color}}">
       {{#select clockData.color}}
-      <option data-color="yellow" value="yellow">🟨</option>
-      <option data-color="red" value="red">🟥</option>
-      <option data-color="blue" value="blue">🟦</option>
-      <option data-color="white" value="white">⬜</option>
+      <option data-color="yellow" value="yellow" style="background: yellow !important">📀</option>
+      <option data-color="red" value="red" style="background: red !important">🔴</option>
+      <option data-color="cyan" value="cyan" style="background: cyan !important">🔵</option>
+      <option data-color="white" value="white" style="background: white !important">🔘</option>
       {{/select}}
     </select>
   </td>
   <td>
     <select data-dtype="number" name="system.clock_keys.{{keyID}}.clocks.{{clockNum}}.value">
       {{#select clockData.value}}
-      {{#times_from_0 clockData.size}}
+      {{#times_from_0 clockData.max}}
         <option value="{{this}}">{{this}}</option>
       {{/times_from_0}}
       {{/select}}

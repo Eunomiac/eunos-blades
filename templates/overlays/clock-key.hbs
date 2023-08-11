@@ -1,13 +1,14 @@
-{{#if isKeyVisible}}
-  <div id="{{id}}" class="clock-key {{~#if isFocused}} active-key{{/if}}" data-size="{{countSize clocks}}">
-    {{#if isTitleVisible}}
-    <label class="key-label">{{title}}</label>
+{{log "CLOCK KEY" this}}
+{{#if isVisible}}
+  <div id="{{id}}" class="clock-key {{~#if isActive}} active-key{{/if}}" data-size="{{countSize clocks}}">
+    {{#if isNameVisible}}
+    <label class="key-label" data-key-id="{{id}}">{{display}}</label>
     {{/if}}
     <div class="clock-label-container">
       {{#each clocks as |clockData clockNum|}}
-      {{#if clockData.isTitleVisible}}
-        <label class="clock-label {{~#if clockData.isFocused}} clock-active{{/if}}" data-clock-num="{{clockNum}}">
-          <span class="short-label">{{clockData.title}}</span>
+      {{#if clockData.isNameVisible}}
+        <label class="clock-label {{~#if clockData.isActive}} clock-active{{/if}}" data-clock-num="{{clockNum}}">
+          <span class="short-label">{{clockData.display}}</span>
           {{#if clockData.tooltip}}<span class="hover-label">{{clockData.tooltip}}</span>{{/if}}
         </label>
       {{/if}}

@@ -3,6 +3,10 @@ import {BladesItemType} from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../../blades-item.js";
 
+type BladesClockKeeperSheetData = Partial<BladesItemSheetData> & {
+  clock_keys: Record<string, BladesMultiClockData>
+};
+
 export default class BladesClockKeeperSheet extends BladesItemSheet {
 
   static Get() { return game.eunoblades.ClockKeeper as BladesItemOfType<BladesItemType.gm_tracker> }
@@ -39,19 +43,22 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
   }
 
 
-  override async _updateObject(event: unknown, formData: any) {
-    const updateData = await this.object.update(formData);
-    socketlib.system.executeForEveryone("renderOverlay");
-    // this.item.renderOverlay();
-    return updateData;
-  }
+  // override async _updateObject(event: unknown, formData: any) {
+  //   const updateData = await this.object.update(formData);
+  //   socketlib.system.executeForEveryone("renderOverlay");
+  //   // this.item.renderOverlay();
+  //   return updateData;
+  // }
 
   override getData() {
     const context = super.getData() as ReturnType<BladesItemSheet["getData"]> & List<any>;
 
-    context.clock_keys = Object.fromEntries((Object.entries(context.clock_keys) as Array<[string, {scene?: string}]>)
-      .filter(([keyID, keyData]) => Boolean(keyData && keyData.scene === context.system.targetScene)));
-    return context;
+    const sheetData: BladesClockKeeperSheetData = {
+      clock_keys: Object.fromEntries((Object.entries(context.system.clock_keys ?? {})
+        .filter(([keyID, keyData]) => Boolean(keyData && keyData.scene === context.system.targetScene)))) as Record<string, BladesMultiClockData>
+    };
+
+    return {...context, ...sheetData} as BladesItemSheetData;
   }
 
   addKey(event: MouseEvent) {
@@ -83,6 +90,6 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
     // @ts-expect-error Fuck.
     html.find("[data-action=\"delete-key\"").on("click", this.deleteKey.bind(this));
     // @ts-expect-error Fuck.
-    html.find(".clock-counter").on("change", this.setKeySize.bind(this));
+    html.find(".key-clock-counter").on("change", this.setKeySize.bind(this));
   }
 }

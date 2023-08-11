@@ -38,15 +38,24 @@
     z-index: 2;
     pointer-events: auto;
     overflow: visible;
+    filter: drop-shadow(0 0 5px var(--blades-black-dark));
 
     g {
       transform: scale(0.99);
       transform-origin: 50% 50%;
     }
+    &.clock-bg {
+      z-index: 1;
+      circle { fill: var(--blades-grey-dark) }
+      &.hidden-clock {
+        circle { fill: var(--blades-black-dark) }
+      }
+    }
   }
 
   .clock-interior {
     position: absolute;
+    z-index: 2;
     height: 400px;
     width: 400px;
     transform: translate(-50%, -50%) translate(calc(50% + var(--clock-glow-correction)), calc(50% + var(--clock-glow-correction)));

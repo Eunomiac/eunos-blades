@@ -69,9 +69,39 @@
 
       </div>
 
+
       {{!-- Clocks --}}
       <div class="tab clocks flex-vertical" data-tab="clocks">
 
+        <label class="comp tab-label" data-comp-cat="Clock" data-comp-type="Virtual">
+          <a class="comp-control comp-button comp-add-clock">
+            <i class="fas fa-plus-square"></i>
+          </a>
+          <span class="tab-title">Clocks</span>
+        </label>
+
+        {{#each system.clocks}}
+        <div class="clock-row">
+          <div class="clock-container">
+            {{> "systems/eunos-blades/templates/components/clock.hbs" }}
+          </div>
+          <div class="flex-vertical full-width">
+              <div class="flex-horizontal full-width">
+                <input type="text" name="system.clocks.{{id}}.display" class="clock-label shadowed" value="{{display}}" />
+                {{#if ../isGM}}
+                <input type="number" name="system.clocks.{{id}}.max" class="clock-size-input shadowed" value="{{max}}" />
+                <input type="text" name="system.clocks.{{id}}.color" class="clock-color-input shadowed" value="{{color}}" />
+                <a class="comp-button comp-control comp-delete-clock" data-clock-id="{{id}}">
+                  <i class="fas fa-trash"></i>
+                </a>
+                {{/if}}
+              </div>
+            {{#if ../isGM}}
+            <textarea name="system.clocks.{{id}}.gm_notes" class="full-width clock-gm-notes">{{gm_notes}}</textarea>
+            {{/if}}
+          </div>
+        </div>
+        {{/each}}
       </div>
 
 

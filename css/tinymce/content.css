@@ -344,19 +344,19 @@ html, :root {
       html .comp .comp-control.comp-button, :root .comp .comp-control.comp-button {
         opacity: 0.5;
         text-align: center; }
-        html .comp .comp-control.comp-button.comp-delete, html .comp .comp-control.comp-button.comp-delete-full, :root .comp .comp-control.comp-button.comp-delete, :root .comp .comp-control.comp-button.comp-delete-full {
+        html .comp .comp-control.comp-button.comp-delete, html .comp .comp-control.comp-button.comp-delete-full, html .comp .comp-control.comp-button.comp-delete-clock, :root .comp .comp-control.comp-button.comp-delete, :root .comp .comp-control.comp-button.comp-delete-full, :root .comp .comp-control.comp-button.comp-delete-clock {
           --comp-control-color: var(--blades-white-bright);
           --comp-control-hover-color: var(--blades-red-bright);
           --comp-control-shadow-color: transparent;
           --comp-control-hover-shadow-color: var(--blades-black-dark);
           position: absolute; }
-        html .comp .comp-control.comp-button.comp-add, :root .comp .comp-control.comp-button.comp-add {
+        html .comp .comp-control.comp-button.comp-add, html .comp .comp-control.comp-button.comp-add-clock, :root .comp .comp-control.comp-button.comp-add, :root .comp .comp-control.comp-button.comp-add-clock {
           --comp-control-color: var(--blades-black-dark);
           --comp-control-hover-color: var(--blades-white-bright);
           --comp-control-shadow-color: var(--blades-grey);
           --comp-control-hover-shadow-color: var(--blades-black-dark);
           margin-left: toRem(10px); }
-          html .comp .comp-control.comp-button.comp-add i, :root .comp .comp-control.comp-button.comp-add i {
+          html .comp .comp-control.comp-button.comp-add i, html .comp .comp-control.comp-button.comp-add-clock i, :root .comp .comp-control.comp-button.comp-add i, :root .comp .comp-control.comp-button.comp-add-clock i {
             line-height: toRem(24px); }
         html .comp .comp-control.comp-button:hover, :root .comp .comp-control.comp-button:hover {
           opacity: 1;
@@ -1448,19 +1448,19 @@ html, :root {
         html .comp .comp-control.comp-button, :root .comp .comp-control.comp-button {
           opacity: 0.5;
           text-align: center; }
-          html .comp .comp-control.comp-button.comp-delete, html .comp .comp-control.comp-button.comp-delete-full, :root .comp .comp-control.comp-button.comp-delete, :root .comp .comp-control.comp-button.comp-delete-full {
+          html .comp .comp-control.comp-button.comp-delete, html .comp .comp-control.comp-button.comp-delete-full, html .comp .comp-control.comp-button.comp-delete-clock, :root .comp .comp-control.comp-button.comp-delete, :root .comp .comp-control.comp-button.comp-delete-full, :root .comp .comp-control.comp-button.comp-delete-clock {
             --comp-control-color: var(--blades-white-bright);
             --comp-control-hover-color: var(--blades-red-bright);
             --comp-control-shadow-color: transparent;
             --comp-control-hover-shadow-color: var(--blades-black-dark);
             position: absolute; }
-          html .comp .comp-control.comp-button.comp-add, :root .comp .comp-control.comp-button.comp-add {
+          html .comp .comp-control.comp-button.comp-add, html .comp .comp-control.comp-button.comp-add-clock, :root .comp .comp-control.comp-button.comp-add, :root .comp .comp-control.comp-button.comp-add-clock {
             --comp-control-color: var(--blades-black-dark);
             --comp-control-hover-color: var(--blades-white-bright);
             --comp-control-shadow-color: var(--blades-grey);
             --comp-control-hover-shadow-color: var(--blades-black-dark);
             margin-left: 0.625rem; }
-            html .comp .comp-control.comp-button.comp-add i, :root .comp .comp-control.comp-button.comp-add i {
+            html .comp .comp-control.comp-button.comp-add i, html .comp .comp-control.comp-button.comp-add-clock i, :root .comp .comp-control.comp-button.comp-add i, :root .comp .comp-control.comp-button.comp-add-clock i {
               line-height: 1.5rem; }
           html .comp .comp-control.comp-button:hover, :root .comp .comp-control.comp-button:hover {
             opacity: 1;

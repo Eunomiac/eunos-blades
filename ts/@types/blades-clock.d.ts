@@ -1,24 +1,25 @@
 // declare global {
 
-  type BladesClockData = {
-    title: string,
-    tooltip?: string,
-    target?: string,
+  type BladesClockData = null|{
+    display: string,
     value: number,
     max: number,
     color: string,
+    isActive: boolean,
+    isNameVisible: boolean,
+    isVisible: boolean,
     scene?: string,
-    isClockVisible?: boolean,
-    isTitleVisible?: boolean,
-    isFocused?: boolean
+    target?: string,
+    gm_notes?: string
   }
 
   type BladesMultiClockData = {
-    title: string,
-    clocks: Record<number, BladesClockData>,
-    isKeyVisible?: boolean,
-    isTitleVisible?: boolean,
-    isFocused?: boolean,
+    id: string,
+    display: string,
+    clocks: Record<string, BladesClockData>,
+    isActive: boolean,
+    isNameVisible: boolean,
+    isVisible: boolean,
     scene: string
   }
 // }

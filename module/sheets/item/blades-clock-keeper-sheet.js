@@ -38,16 +38,13 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
             "systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
         ]);
     }
-    async _updateObject(event, formData) {
-        const updateData = await this.object.update(formData);
-        socketlib.system.executeForEveryone("renderOverlay");
-        return updateData;
-    }
     getData() {
         const context = super.getData();
-        context.clock_keys = Object.fromEntries(Object.entries(context.clock_keys)
-            .filter(([keyID, keyData]) => Boolean(keyData && keyData.scene === context.system.targetScene)));
-        return context;
+        const sheetData = {
+            clock_keys: Object.fromEntries((Object.entries(context.system.clock_keys ?? {})
+                .filter(([keyID, keyData]) => Boolean(keyData && keyData.scene === context.system.targetScene))))
+        };
+        return { ...context, ...sheetData };
     }
     addKey(event) {
         event.preventDefault();
@@ -71,6 +68,6 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
         super.activateListeners(html);
         html.find("[data-action=\"add-key\"").on("click", this.addKey.bind(this));
         html.find("[data-action=\"delete-key\"").on("click", this.deleteKey.bind(this));
-        html.find(".clock-counter").on("change", this.setKeySize.bind(this));
+        html.find(".key-clock-counter").on("change", this.setKeySize.bind(this));
     }
 }
