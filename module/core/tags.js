@@ -97,7 +97,8 @@ const Tags = {
             ],
             "Vices": Object.values(Vice),
             "Playbooks": Object.values(Playbook),
-            "Inventions": Object.values(Tag.Invention)
+            "Inventions": Object.values(Tag.Invention),
+            "Gang Types": Object.values(Tag.GangType)
         });
         makeTagInput(".tags-district", {
             Districts: Object.values(District)

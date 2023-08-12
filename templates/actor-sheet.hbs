@@ -213,7 +213,7 @@
             {{/if}}
             <span class="tab-title">{{localize "BITD.Abilities"}}</span>
             {{#if (test preparedItems.playbook "&&" (test actor.availableAbilityPoints ">" 0)) }}
-            {{> "systems/eunos-blades/templates/parts/dotline.hbs" abilityData.dotline }}
+            {{> "systems/eunos-blades/templates/components/dotline.hbs" abilityData.dotline }}
             {{/if}}
           </label>
 
@@ -351,7 +351,7 @@
         <div class="comp comp-horizontal comp-attribute">
           <label class="comp-label" data-roll-attribute="{{attribute_name}}">{{#if (test (lookup ../system.resistance_bonus attribute_name) ">" 0)}}+{{lookup ../system.resistance_bonus attribute_name}}&nbsp;{{/if}}{{case "title" attribute_name}}</label>
           <div class="comp-body">
-            {{> "systems/eunos-blades/templates/parts/dotline.hbs"
+            {{> "systems/eunos-blades/templates/components/dotline.hbs"
             data=(lookup ../system.experience attribute_name)
             target=(concat "system.experience." attribute_name ".value")
             svgKey="teeth.tall"
@@ -366,7 +366,7 @@
         {{#each attribute_data as |action_data action_name|}}
         <div class="comp comp-horizontal comp-action">
           <div class="comp-body">
-            {{> "systems/eunos-blades/templates/parts/dotline.hbs"
+            {{> "systems/eunos-blades/templates/components/dotline.hbs"
             data=action_data
             target=(concat "system.attributes." attribute_name "." action_name ".value")
             iconEmpty="dot-empty.svg"

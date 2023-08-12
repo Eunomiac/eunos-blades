@@ -1,6 +1,6 @@
 {{log "CLOCK KEY" this}}
 {{#if isVisible}}
-  <div id="{{id}}" class="clock-key {{~#if isActive}} active-key{{/if}}" data-size="{{countSize clocks}}">
+  <div id="{{id}}" class="clock-key {{~#if isActive}} active-key{{/if}}" data-size="{{count clocks}}">
     {{#if isNameVisible}}
     <label class="key-label" data-key-id="{{id}}">{{display}}</label>
     {{/if}}
@@ -16,8 +16,8 @@
     </div>
     <div class="clock-image-container">
       <svg class="key-image">
-        <use href="#{{countSize clocks}}-key" class="key-bg" />
-        <rect class="metallic-overlay" x="0" y="0" clip-path="url(#{{countSize clocks}}-key-clip" />
+        <use href="#{{count clocks}}-key" class="key-bg" />
+        <rect class="metallic-overlay" x="0" y="0" clip-path="url(#{{count clocks}}-key-clip" />
       </svg>
       {{#each clocks as |clockData clockNum|}}
         {{> "systems/eunos-blades/templates/components/clock.hbs" clockData

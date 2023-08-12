@@ -1,0 +1,96 @@
+{{log "COHORT GANG SHEET" this}}
+<form class="{{cssClass}}" autocomplete="off">
+
+  {{!-- Tags --}}
+  {{#if isGM}}
+  <input type="text" class="comp-tags tags-gm" />
+  {{/if}}
+
+  {{!-- Sheet Container --}}
+  <div class="sheet-root">
+
+    {{!-- Header --}}
+    <section class="sheet-top">
+      <img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+      <input class="sheet-title shadowed" type="text" name="name" value="{{item.name}}" />
+      <div class="sheet-subtitle cohort-type-line">{{subtitle}}</div>
+      {{> "systems/eunos-blades/templates/parts/tier-block.hbs" }}
+    </section>
+
+    {{!-- Harm --}}
+    <section class="cohort-harm full-width flex-horizontal">
+      <label class="filled-label">Harm</label>
+      <div class="flex-horizontal harm-level harm-level-0 {{~#if (test system.harm.value "==" 0)}} active{{/if}}"
+        data-harm-click="0">
+        <div class="flex-vertical">
+          <span class="harm-label shadowed">Healthy</span>
+          <span class="harm-effect shadowed">(no effect)</span>
+        </div>
+      </div>
+      <div class="flex-horizontal harm-level harm-level-1 {{~#if (test system.harm.value "==" 1)}} active{{/if}}"
+        data-harm-click="1">
+        <span class="harm-number shadowed">1</span>
+        <div class="flex-vertical">
+          <span class="harm-label shadowed">Weakened</span>
+          <span class="harm-effect shadowed">Reduced Effect</span>
+        </div>
+      </div>
+      <div class="flex-horizontal harm-level harm-level-2 {{~#if (test system.harm.value "==" 2)}} active{{/if}}"
+        data-harm-click="2">
+        <span class="harm-number shadowed">2</span>
+        <div class="flex-vertical">
+          <span class="harm-label shadowed">Impaired</span>
+          <span class="harm-effect shadowed">-1d</span>
+        </div>
+      </div>
+      <div class="flex-horizontal harm-level harm-level-3 {{~#if (test system.harm.value "==" 3)}} active{{/if}}"
+        data-harm-click="3">
+        <span class="harm-number shadowed">3</span>
+        <div class="flex-vertical">
+          <span class="harm-label shadowed">Broken</span>
+          <span class="harm-effect shadowed">Can't Act</span>
+        </div>
+      </div>
+      <div class="flex-horizontal harm-level harm-level-4 {{~#if (test system.harm.value "==" 4)}} active{{/if}}"
+        data-harm-click="4">
+        <span class="harm-number shadowed">4</span>
+        <div class="flex-vertical">
+          <span class="harm-label shadowed">Dead</span>
+          <span class="harm-effect shadowed">Replace: {{#if item.parent}}{{calc item.parent.system.tier.value "+"
+            2}}{{else}}Tier + 2{{/if}} Coin</span>
+        </div>
+      </div>
+    </section>
+
+    {{!--Main Body --}}
+    <section class="tab-content nav-group flex-vertical">
+      <div class="tab flex-vertical">
+        <label class="tab-label">
+          <span class="tab-title">Description</span>
+        </label>
+        {{editor system.description target="system.description" button=true owner=owner editable=owner}}
+
+        {{#if (test isGM "||" system.rules)}}
+        <label class="tab-label">
+          <span class="tab-title">Rules</span>
+        </label>
+        {{editor system.rules target="system.rules" button=true owner=owner editable=isGM}}
+        {{/if}}
+
+        {{#if (test isGM "||" system.notes)}}
+        <label class="tab-label">
+          <span class="tab-title">Notes</span>
+        </label>
+        {{editor system.notes target="system.notes" button=true owner=owner editable=isGM}}
+        {{/if}}
+
+        {{#if isGM}}
+        <label class="tab-label">
+          <span class="tab-title">GM Notes</span>
+        </label>
+        {{editor system.gm_notes target="system.gm_notes" button=true owner=owner editable=isGM}}
+        {{/if}}
+      </div>
+    </section>
+  </div>
+</form>

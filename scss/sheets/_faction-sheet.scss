@@ -15,7 +15,7 @@
           &.sheet-top {
             grid-template-areas:
               ". . title title title title title title title title tier"
-              ". . subtitle subtitle subtitle subtitle subtitle subtitle subtitle subtitle subtitle";
+              ". . subtitle subtitle subtitle subtitle subtitle subtitle subtitle subtitle tier";
             grid-template-rows: join($heights, (), $separator: space);
 
             .sheet-title {
@@ -23,6 +23,7 @@
             }
             .comp-tier {
               grid-area: tier;
+              margin-top: 10px;
             }
           }
 

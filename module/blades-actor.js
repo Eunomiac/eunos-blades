@@ -103,6 +103,21 @@ class BladesActor extends Actor {
         return tooltipText ? (new Handlebars.SafeString(tooltipText)).toString() : undefined;
     }
     get dialogCSSClasses() { return ""; }
+    getTierTotal() {
+        if (BladesActor.IsType(this, BladesActorType.pc)) {
+            return this.system.tier.value + (this.crew?.system.tier.value ?? 0);
+        }
+        if (BladesActor.IsType(this, BladesActorType.npc)) {
+            return this.system.tier.value;
+        }
+        if (BladesActor.IsType(this, BladesActorType.crew)) {
+            return this.system.tier.value;
+        }
+        if (BladesActor.IsType(this, BladesActorType.faction)) {
+            return this.system.tier.value;
+        }
+        return null;
+    }
     get primaryUser() {
         return game.users?.find((user) => user.character?.id === this?.id) || null;
     }
@@ -950,6 +965,9 @@ class BladesActor extends Actor {
     }
     get cohorts() {
         return this.activeSubItems.filter((item) => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type));
+    }
+    getTaggedItemBonuses(tags) {
+        return 0;
     }
 
     prepareDerivedData() {

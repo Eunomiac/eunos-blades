@@ -19,7 +19,7 @@ declare global {
 
     export interface Default extends BladesDocSchemaTemplate.Default {
       description: string,
-      tier: ValueMax,
+      tier: NamedValueMax,
       subactors: Record<string, SubActorData>,
       subtitle: string
     }
@@ -85,6 +85,7 @@ declare global {
 
       attributes: Record<Attributes, Record<Actions, ValueMax>>,
       resistance_bonus: Record<Attributes, number>,
+      conditional_bonus: Record<RollableStat, string>
 
       experience: BladesActorSchemaTemplate.pcChar["experience"] & {
         [Attributes.insight]: ValueMax,
@@ -165,6 +166,7 @@ declare global {
 
     export interface Default {
       isSubActor: boolean;
+      getTierTotal(): number;
     }
 
     export interface PrimaryActor {
@@ -298,113 +300,6 @@ declare global {
                                      BladesActorComponent.CanSubActor { }
 
   }
-
-  // #region Interface Contracts for Implementation by BladesActor Subclass
-  interface BladesPrimaryActor {
-    primaryUser?: User;
-  }
-  interface SubActorControl {
-    subActors: BladesActor[];
-    activeSubActors: BladesActor[];
-    archivedSubActors: BladesActor[];
-
-    getDialogActors(category: SelectionCategory): Record<string, BladesActor[]> | false;
-
-    getSubActor(actorRef: ActorRef): BladesActor | undefined;
-    addSubActor(actorRef: ActorRef): Promise<void>;
-    updateSubActor(actorRef: ActorRef, updateData: DeepPartial<SubActorData & Record<string, any>>): Promise<BladesActor | undefined>;
-    remSubActor(actorRef: ActorRef): Promise<void>;
-    purgeSubActor(actorRef: ActorRef): Promise<void>;
-
-    hasSubActorOf(actorRef: ActorRef): boolean;
-
-    clearSubActors(): Promise<void>;
-  }
-  interface SubItemControl {
-    subItems: BladesItem[];
-    activeSubItems: BladesItem[];
-    archivedSubItems: BladesItem[];
-
-    getDialogItems(category: SelectionCategory): Record<string, BladesItem[]> | false;
-
-    getSubItem(itemRef: ItemRef): BladesItem | undefined;
-    addSubItem(itemRef: ItemRef): Promise<void>;
-    remSubItem(itemRef: ItemRef): Promise<void>;
-    purgeSubItem(itemRef: ItemRef): Promise<void>;
-  }
-  interface BladesSubActor {
-    isSubActor: boolean;
-    parentActor?: BladesActor;
-
-    async clearParentActor(): Promise<void>;
-  }
-
-  interface Advancement {
-    get totalAbilityPoints(): number;
-    get spentAbilityPoints(): number;
-    get availableAbilityPoints(): number;
-
-    addAbilityPoints(amount: number): Promise<void>;
-    removeAbilityPoints(amount: number): Promise<void>;
-
-    advancePlaybook(): Promise<void>;
-  }
-
-  interface CrewAdvancement extends Advancement {
-    get totalAdvancementPoints(): number;
-    get spentAdvancementPoints(): number;
-    get availableAdvancementPoints(): number;
-
-    addAdvancementPoints(amount: number): Promise<void>;
-    removeAdvancementPoints(amount: number): Promise<void>;
-
-    get totalUpgradePoints(): number;
-    get spentUpgradePoints(): number;
-    get availableUpgradePoints(): number;
-
-    get totalCohortPoints(): number;
-    get spentCohortPoints(): number;
-    get availableCohortPoints(): number;
-  }
-
-  interface BladesScoundrel extends BladesPrimaryActor, SubActorControl, SubItemControl, Advancement {
-
-    isMember(crew: BladesActor): boolean;
-
-    get playbook(): BladesItem | undefined;
-    get playbookName(): (BladesTag & Playbook) | undefined;
-    get vice(): BladesItem | undefined;
-    get crew(): BladesActor | undefined;
-    get abilities(): BladesItem[];
-
-    get attributes(): Record<Attributes, number> | undefined;
-    get actions(): Record<Actions, number> | undefined;
-    get rollable(): Record<Attributes | Actions, number> | undefined;
-
-    get trauma(): number;
-    get traumaList(): string[];
-    get activeTraumaConditions(): Record<string, boolean>
-
-    get currentLoad(): number;
-    get remainingLoad(): number;
-
-  }
-  interface BladesCrew extends SubActorControl, SubItemControl, CrewAdvancement {
-    members: BladesActor[];
-    contacts: BladesActor[];
-    claims: Record<number, BladesClaimData>;
-    turfCount: number;
-
-    get playbook(): BladesItem | undefined;
-    get playbookName(): (BladesTag & Playbook) | undefined;
-    get abilities(): BladesItem[];
-    get upgrades(): BladesItem[];
-
-  }
-  interface BladesNPC extends SubItemControl, BladesSubActor {
-
-  }
-  // #endregion
 
   // #endregion
 

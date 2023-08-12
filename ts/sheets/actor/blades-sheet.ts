@@ -35,6 +35,7 @@ class BladesSheet extends ActorSheet {
       isGM: game.eunoblades.Tracker!.system.is_spoofing_player ? false : game.user.isGM,
       actor: this.actor,
       system: this.actor.system,
+      tierTotal: this.actor.getTierTotal() > 0 ? U.romanizeNum(this.actor.getTierTotal()) : undefined,
       rollData: this.actor.getRollData(),
       activeEffects: Array.from(this.actor.effects) as BladesActiveEffect[],
       hasFullVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER),

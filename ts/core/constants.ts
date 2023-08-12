@@ -190,7 +190,7 @@ export namespace Tag {
     Acquaintance = "Acquaintance",
     VicePurveyor = "VicePurveyor",
   }
-  export enum Gang {
+  export enum GangType {
     Thugs = "Thugs",
     Rooks = "Rooks",
     Adepts = "Adepts",
@@ -255,6 +255,33 @@ const C = {
     Ruthless: "You lose any sense of humanity when indulging your Vice or pursuing your most important goal.",
     Secretive: "Knowledge has become so precious to you, that even your closest allies are on a need-to-know basis."
   },
+  ScaleExamples: [
+    "(1 or 2 members)",
+    "(3 - 6 members)",
+    "(~12 members)",
+    "(~20 members)",
+    "(~40 members)",
+    "(~80 members)",
+    "(~160 members)"
+  ],
+  ScaleSizes: [
+    "",
+    "Small ",
+    "Medium ",
+    "Large ",
+    "Huge ",
+    "Massive ",
+    "Colossal "
+  ],
+  ScaleExamplesFull: [
+    "~1 or 2 people",
+    "a small gang (3-6)",
+    "a medium gang (12)",
+    "a large gang (20)",
+    "a huge gang (40)",
+    "a massive gang (80)",
+    "a colossal gang (160)"
+  ],
   ExperienceClues: {
     Scoundrel: [
       "You expressed your beliefs, drives, heritage, or background.",

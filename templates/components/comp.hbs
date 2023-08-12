@@ -55,8 +55,8 @@
       <i class="fa-sharp fa-solid fa-xmark"></i>
     </a>
     {{/if}}
+    {{/if}}
   </label>
-  {{/if}}
   {{/if~}}
 
   <div class="comp-body">
@@ -66,15 +66,15 @@
     {{#if (test system "&&" system.rules)}}<div class="comp-body-text shadowed">{{{system.rules}}}
       {{#if inRuleDotline}}
       <p></p>
-      {{> "systems/eunos-blades/templates/parts/dotline.hbs" inRuleDotline}}
+      {{> "systems/eunos-blades/templates/components/dotline.hbs" inRuleDotline}}
       {{/if}}
     </div>{{/if}}
     {{#if dotline}}
-    {{> "systems/eunos-blades/templates/parts/dotline.hbs" dotline}}
+    {{> "systems/eunos-blades/templates/components/dotline.hbs" dotline}}
     {{/if}}
     {{#if dotlines}}
     {{#each dotlines}}
-    {{> "systems/eunos-blades/templates/parts/dotline.hbs" }}
+    {{> "systems/eunos-blades/templates/components/dotline.hbs" }}
     {{/each}}
     {{/if}}
     {{#if checkTarget}}

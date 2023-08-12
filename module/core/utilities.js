@@ -275,13 +275,19 @@ const regExtract = (ref, pattern, flags) => {
 
 const unhyphenate = (str) => `${str}`.replace(/\u00AD|\u200B/gu, "");
 const parseArticles = (str) => `${str}`.replace(/\b(a|A)\s([aeiouAEIOU])/gu, "$1n $2");
-const pluralize = (singular, num, plural) => {
+const pluralize = (singular, num = 2, plural) => {
     if (pFloat(num) === 1) {
         return singular;
     }
     return plural ?? `${singular.replace(/y$/, "ie").replace(/s$/, "se")}s`;
 };
 const oxfordize = (items, useOxfordComma = true) => {
+    if (items.length === 0) {
+        return "";
+    }
+    if (items.length === 1) {
+        return `${items[0]}`;
+    }
     const lastItem = items.pop();
     return [
         items.join(", "),

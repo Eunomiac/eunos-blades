@@ -64,7 +64,7 @@
 
       <div class="comp comp-traits">
         <div class="comp comp-randomizer-field field-size-half">
-          {{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+          {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
           isToggled=system.persona.trait1.isLocked
           activeClass="fas fa-lock"
           activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
@@ -75,7 +75,7 @@
         </div>
 
         <div class="comp comp-randomizer-field field-size-half">
-          {{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+          {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
           isToggled=system.persona.trait2.isLocked
           activeClass="fas fa-lock"
           activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
@@ -86,7 +86,7 @@
         </div>
 
         <div class="comp comp-randomizer-field field-size-half">
-          {{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+          {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
           isToggled=system.persona.trait3.isLocked
           activeClass="fas fa-lock"
           activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
@@ -99,7 +99,7 @@
 
       <div class="comp comp-traits comp-secret-trait">
         <div class="comp comp-randomizer-field field-size-half">
-          {{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+          {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
           isToggled=system.secret.trait.isLocked
           activeClass="fas fa-lock"
           activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
@@ -150,7 +150,7 @@
       {{!-- Randomizer --}}
       {{#if isGM}}
       <div class="tab randomizer flex-vertical" data-tab="randomizer">
-        {{> "systems/eunos-blades/templates/parts/button-icon.hbs"
+        {{> "systems/eunos-blades/templates/components/button-icon.hbs"
         blockClass="randomize-button"
         buttonClass="fa-fade fa-shuffle fa-flip-horizontal"
         tooltip="<b>Randomize!</b>"
@@ -161,7 +161,7 @@
 
           {{#each random as |data key|}}
           <div class="comp comp-randomizer-field field-size-{{data.size}}">
-            {{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+            {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
             isToggled=data.isLocked
             activeClass="fas fa-lock"
             activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
@@ -179,7 +179,7 @@
           {{#each persona as |data key|}}
           {{#unless (isIn key "trait1" "trait2" "trait3")}}
           <div class="comp comp-randomizer-field field-size-{{data.size}}">
-            {{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+            {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
             isToggled=data.isLocked
             activeClass="fas fa-lock"
             activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
@@ -199,7 +199,7 @@
           {{#each secret as |data key|}}
           {{#unless (isIn key "trait")}}
           <div class="comp comp-randomizer-field field-size-{{data.size}}">
-            {{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+            {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
             isToggled=data.isLocked
             activeClass="fas fa-lock"
             activeTooltip="<b>Field Frozen</b><br>Click to Randomize"

@@ -22,8 +22,8 @@
         section {
 
           &.sheet-top {
-            grid-template-areas: "item-img title";
-            grid-template-columns: 50px 1fr;
+            grid-template-areas: "item-img title tier";
+            grid-template-columns: 50px 1fr 120px;
             grid-template-rows: $heights;
             height: calculate-sum(($heights));
 
@@ -61,21 +61,6 @@
         }
       }
 
-      &.gear {
-
-        .sheet-root {
-
-          section {
-
-            &.sheet-top {
-              grid-template-areas: "item-img title tier";
-              grid-template-columns: 50px 1fr 100px;
-
-              .comp-tier { grid-area: tier }
-            }
-          }
-        }
-      }
     }
   }
 

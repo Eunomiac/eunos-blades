@@ -161,16 +161,8 @@ class BladesCrewSheet extends BladesSheet {
             this.actor.playbook?.update({ ["system.turfs." + turf_id + ".value"]: !turf_current_status })
                 .then(() => this.render(false));
         });
-        html.find('.cohort-block-harm input[type="radio"]').change(async (ev) => {
-            const element = $(ev.currentTarget).parents(".item");
-            const item_id = element.data("itemId");
-            const harm_id = $(ev.currentTarget).val();
-            await this.actor.updateEmbeddedDocuments("Item", [{
-                    "_id": item_id,
-                    "system.harm": [harm_id]
-                }]);
-            this.render(false);
-        });
+        
+        
     }
 }
 export default BladesCrewSheet;

@@ -17,7 +17,7 @@
     {{!-- Header --}}
     <section class="sheet-top">
 
-      <input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}">
+      <input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}" />
 
       <div class="members comp comp-horizontal portrait-container actors-container">
         {{#each preparedActors.members as |actor|}}
@@ -108,13 +108,7 @@
       dotline=wantedData.dotline
       }}
 
-      {{> "systems/eunos-blades/templates/components/comp.hbs"
-      class="comp-tier comp-vertical comp-teeth"
-      label="TIER"
-      labelClass="filled-label full-width"
-      dotline=tierData.dotline
-      }}
-
+      {{> "systems/eunos-blades/templates/parts/tier-block.hbs" }}
     </section>
 
     {{!-- Tabs, Tab Navigation --}}
@@ -154,7 +148,7 @@
           {{/if}}
           <span class="tab-title">Crew Upgrades</span>
           {{#if (test preparedItems.playbook "&&" (test actor.availableUpgradePoints ">" 0)) }}
-          {{> "systems/eunos-blades/templates/parts/dotline.hbs" upgradeData.dotline }}
+          {{> "systems/eunos-blades/templates/components/dotline.hbs" upgradeData.dotline }}
           {{/if}}
         </label>
 
@@ -180,7 +174,7 @@
           {{/if}}
           <span class="tab-title">Crew Abilities</span>
           {{#if (test preparedItems.playbook "&&" (test actor.availableAbilityPoints ">" 0)) }}
-          {{> "systems/eunos-blades/templates/parts/dotline.hbs" abilityData.dotline }}
+          {{> "systems/eunos-blades/templates/components/dotline.hbs" abilityData.dotline }}
           {{/if}}
         </label>
 
@@ -227,7 +221,7 @@
           </a>
           <span class="tab-title">Cohorts</span>
           {{#if (test preparedItems.playbook "&&" (test actor.availableCohortPoints ">" 0)) }}
-          {{> "systems/eunos-blades/templates/parts/dotline.hbs" cohortData.dotline }}
+          {{> "systems/eunos-blades/templates/components/dotline.hbs" cohortData.dotline }}
           {{/if}}
         </label>
 

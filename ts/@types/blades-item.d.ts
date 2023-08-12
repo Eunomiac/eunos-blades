@@ -16,7 +16,7 @@ declare global {
       rules: string
       notes: string
       description: string
-      tier: ValueMax
+      tier: NamedValueMax
     }
 
     export interface district { district: District }
@@ -29,9 +29,13 @@ declare global {
 
     export interface cohort {
       subtypes: string[],
+      subtitle: string,
       edges: Record<string, string>,
       flaws: Record<string, string>,
       harm: ValueMax,
+      scale_bonus: number,
+      quality_bonus: number,
+
       scale: number,
       quality: number
     }
@@ -100,7 +104,7 @@ declare global {
 
     export interface Heritage extends BladesItemSchemaTemplate.Default { }
 
-    export interface Item extends BladesItemSchemaTemplate.Default,
+    export interface Gear extends BladesItemSchemaTemplate.Default,
       BladesItemSchemaTemplate.clocks,
       BladesItemSchemaTemplate.limitUses {
       max_per_score: number,
@@ -173,7 +177,7 @@ declare global {
     Partial<BladesItemSchema.Feature>,
     Partial<BladesItemSchema.Gm_Tracker>,
     Partial<BladesItemSchema.Heritage>,
-    Partial<BladesItemSchema.Item>,
+    Partial<BladesItemSchema.Gear>,
     Partial<BladesItemSchema.Playbook>,
     Partial<BladesItemSchema.Preferred_Op>,
     Partial<BladesItemSchema.Stricture>,
@@ -202,7 +206,7 @@ declare global {
     [BladesItemType.feature]: BladesItemSchema.Feature,
     [BladesItemType.gm_tracker]: BladesItemSchema.Gm_Tracker,
     [BladesItemType.heritage]: BladesItemSchema.Heritage,
-    [BladesItemType.gear]: BladesItemSchema.Item,
+    [BladesItemType.gear]: BladesItemSchema.Gear,
     [BladesItemType.playbook]: BladesItemSchema.Playbook,
     [BladesItemType.preferred_op]: BladesItemSchema.Preferred_Op,
     [BladesItemType.stricture]: BladesItemSchema.Stricture,
@@ -219,14 +223,40 @@ declare global {
 
   // #region ITEM SUBCLASS DEFINITIONS: ACCESSORS & METHODS
 
-  namespace BladesItemComponent {}
+  namespace BladesItemComponent {
 
-  namespace BladesItemSubClass {}
+    export interface Default {
+      getTierTotal(): number;
+    }
 
-  // #region Interface Contracts for Implementation by BladesActor Subclass
+  }
 
-  // #endregion
+  namespace BladesItemSubClass {
 
+    export interface Ability extends BladesItemComponent.Default {}
+    export interface Background extends BladesItemComponent.Default {}
+    export interface Clock_Keeper extends BladesItemComponent.Default {}
+    export interface Cohort_Gang extends BladesItemComponent.Default {}
+    export interface Cohort_Expert extends BladesItemComponent.Default {}
+    export interface Crew_Ability extends BladesItemComponent.Default {}
+    export interface Crew_Reputation extends BladesItemComponent.Default {}
+    export interface Crew_Playbook extends BladesItemComponent.Default {}
+    export interface Crew_Upgrade extends BladesItemComponent.Default {}
+    export interface Feature extends BladesItemComponent.Default {}
+    export interface Gm_Tracker extends BladesItemComponent.Default {}
+    export interface Heritage extends BladesItemComponent.Default {}
+    export interface Gear extends BladesItemComponent.Default {}
+    export interface Playbook extends BladesItemComponent.Default {}
+    export interface Preferred_Op extends BladesItemComponent.Default {}
+    export interface Stricture extends BladesItemComponent.Default {}
+    export interface Vice extends BladesItemComponent.Default {}
+    export interface Project extends BladesItemComponent.Default {}
+    export interface Ritual extends BladesItemComponent.Default {}
+    export interface Design extends BladesItemComponent.Default {}
+    export interface Location extends BladesItemComponent.Default {}
+    export interface Score extends BladesItemComponent.Default {}
+
+  }
   // #endregion
 
 }

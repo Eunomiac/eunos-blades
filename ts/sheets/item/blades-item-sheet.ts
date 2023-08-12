@@ -1,13 +1,11 @@
-import C, {BladesItemType, BladesPhase, Tag, District, Playbook, Vice} from "../../core/constants.js";
+import C, {BladesActorType, BladesItemType, BladesPhase, Tag} from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import G from "../../core/gsap.js";
 import BladesActor from "../../blades-actor.js";
 import BladesItem from "../../blades-item.js";
 import BladesActiveEffect from "../../blades-active-effect.js";
 
-// import Tagify from "../../../lib/tagify/tagify.esm.js";
 import Tags from "../../core/tags.js";
-import type {KeydownEventData, TagData, TagEventData} from "@yaireo/tagify";
 
 class BladesItemSheet extends ItemSheet {
 
@@ -39,6 +37,7 @@ class BladesItemSheet extends ItemSheet {
       isEmbeddedItem: Boolean(this.item.parent),
       item: this.item,
       system: this.item.system,
+      tierTotal: this.item.getTierTotal() > 0 ? U.romanizeNum(this.item.getTierTotal()) : undefined,
       activeEffects: Array.from(this.item.effects) as BladesActiveEffect[]
     };
 
@@ -74,23 +73,59 @@ class BladesItemSheet extends ItemSheet {
       };
     },
     [BladesItemType.cohort_gang]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.cohort_gang)) { return undefined as never }
-      const sheetData: BladesItemDataOfType<BladesItemType.cohort_gang> = {
+      if (!BladesItem.IsType(this.item, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { return undefined as never }
+      context.tierTotal = this.item.system.quality > 0 ? U.romanizeNum(this.item.system.quality) : undefined;
+      const sheetData: Partial<BladesItemDataOfType<BladesItemType.cohort_gang>> = {
+        tierData: {
+          "class": "comp-tier comp-vertical comp-teeth",
+          "dotline": {
+            data: this.item.system.tier,
+            target: "system.tier.value",
+            iconEmpty: "dot-empty.svg",
+            iconEmptyHover: "dot-empty-hover.svg",
+            iconFull: "dot-full.svg",
+            iconFullHover: "dot-full-hover.svg"
+          }
+        }
       };
+      const scale = Math.min(7, this.item.system.scale);
+      if (BladesItem.IsType(this.item, BladesItemType.cohort_gang)) {
+        sheetData.scaleData = {example: C.ScaleExamples[scale - 1]};
+      }
+      const gangTypes: string[] = this.item.tags.filter((tag) => Object.values(Tag.GangType).includes(tag));
+      if (gangTypes.length === 0 || !BladesActor.IsType(this.item.parent, BladesActorType.crew)) {
+        sheetData.subtitle = BladesItem.IsType(this.item, BladesItemType.cohort_gang) ? `A ${C.ScaleSizes[scale - 1]}Gang` : "An Expert";
+      } else {
+        if (BladesItem.IsType(this.item, BladesItemType.cohort_gang)) {
+          if (this.item.parent && BladesActor.IsType(this.item.parent, BladesActorType.crew)) {
+            const eliteUpgrades = this.item.parent.activeSubItems
+              .filter((item) => item.type === BladesItemType.crew_upgrade && item.name && /^Elite/.test(item.name));
+            const parsedGangTypes = gangTypes
+              .map((gType) => {
+                if (eliteUpgrades.some((eUpg) => eUpg.hasTag(gType as Tag.GangType))) {
+                  return `Elite ${gType}`;
+                }
+                return gType;
+              })
+              .sort((a, b) => (/^Elite/.test(a) ? 1 : 0) - (/^Elite/.test(b) ? 1 : 0));
+            sheetData.subtitle = `A ${C.ScaleSizes[scale - 1]}Gang of ${U.oxfordize(parsedGangTypes, false).replace(/\band\b/g, "&")}`;
+          } else {
+            if (gangTypes.length === 0 || !BladesActor.IsType(this.item.parent, BladesActorType.crew)) {
+              sheetData.subtitle = `A ${C.ScaleSizes[scale - 1]}Gang`;
+            }
+            sheetData.subtitle = `A ${C.ScaleSizes[scale - 1]}Gang of ${U.oxfordize(gangTypes, false).replace(/\band\b/g, "&")}`;
+          }
+        } else if (BladesItem.IsType(this.item, BladesItemType.cohort_expert)) {
+          sheetData.subtitle = "An Expert";
+        }
+      }
+
       return {
         ...context,
         ...sheetData
       };
     },
-    [BladesItemType.cohort_expert]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.cohort_expert)) { return undefined as never }
-      const sheetData: BladesItemDataOfType<BladesItemType.cohort_expert> = {
-      };
-      return {
-        ...context,
-        ...sheetData
-      };
-    },
+    [BladesItemType.cohort_expert]: (context) => this._getTypedItemData[BladesItemType.cohort_gang](context),
     [BladesItemType.crew_ability]: (context) => {
       if (!BladesItem.IsType(this.item, BladesItemType.crew_ability)) { return undefined as never }
       const sheetData: BladesItemDataOfType<BladesItemType.crew_ability> = {

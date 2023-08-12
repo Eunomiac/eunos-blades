@@ -10,18 +10,19 @@ import { SVGDATA } from "./constants.js";
 
 export async function preloadHandlebarsTemplates() {
     const templatePaths = [
-        "systems/eunos-blades/templates/parts/toggle-icon.hbs",
-        "systems/eunos-blades/templates/parts/button-icon.hbs",
-        "systems/eunos-blades/templates/parts/dotline.hbs",
+        "systems/eunos-blades/templates/components/toggle-icon.hbs",
+        "systems/eunos-blades/templates/components/button-icon.hbs",
+        "systems/eunos-blades/templates/components/dotline.hbs",
         "systems/eunos-blades/templates/components/armor.hbs",
         "systems/eunos-blades/templates/components/comp.hbs",
         "systems/eunos-blades/templates/components/portrait.hbs",
+        "systems/eunos-blades/templates/components/clock.hbs",
+        "systems/eunos-blades/templates/parts/tier-block.hbs",
         "systems/eunos-blades/templates/parts/turf-list.hbs",
         "systems/eunos-blades/templates/parts/cohort-block.hbs",
         "systems/eunos-blades/templates/parts/active-effects.hbs",
         "systems/eunos-blades/templates/overlays/clock-overlay.hbs",
-        "systems/eunos-blades/templates/overlays/clock-key.hbs",
-        "systems/eunos-blades/templates/components/clock.hbs"
+        "systems/eunos-blades/templates/overlays/clock-key.hbs"
     ];
     return loadTemplates(templatePaths);
 }
@@ -135,11 +136,8 @@ const handlebarHelpers = {
         if (Array.isArray(param) || U.isList(param)) {
             return Object.values(param).filter((val) => val !== null && val !== undefined).length;
         }
-        return param ? 1 : 0;
-    },
-    "countSize": function (param) {
-        if (Array.isArray(param) || U.isList(param)) {
-            return Object.keys(param).length;
+        else if (typeof param === "string") {
+            return param.length;
         }
         return param ? 1 : 0;
     },

@@ -88,6 +88,31 @@ class BladesItem extends Item {
         return undefined;
     }
     dialogCSSClasses = "";
+    getTierTotal() {
+        if (this.parent instanceof BladesActor && BladesItem.IsType(this, BladesItemType.cohort_gang)) {
+            return this.system.tier.value + this.parent.getTierTotal() + this.system.quality_bonus;
+        }
+        if (this.parent instanceof BladesActor && BladesItem.IsType(this, BladesItemType.cohort_expert)) {
+            return this.system.tier.value + this.parent.getTierTotal() + this.system.quality_bonus + 1;
+        }
+        if (BladesItem.IsType(this, BladesItemType.gear)) {
+            return this.system.tier.value
+                + (this.parent?.getTierTotal() ?? 0)
+                + (this.hasTag("Fine") ? 1 : 0)
+                + (this.parent?.getTaggedItemBonuses(this.tags) ?? 0)
+                + (this.parent?.crew ? this.parent.crew.getTaggedItemBonuses(this.tags) : 0);
+        }
+        if (BladesItem.IsType(this, BladesItemType.project)) {
+            return this.system.tier.value;
+        }
+        if (BladesItem.IsType(this, BladesItemType.ritual)) {
+            return this.system.tier.value;
+        }
+        if (BladesItem.IsType(this, BladesItemType.design)) {
+            return this.system.tier.value;
+        }
+        return null;
+    }
     async archive() {
         await this.addTag(Tag.System.Archived);
         return this;
@@ -127,6 +152,9 @@ class BladesItem extends Item {
         if (BladesItem.IsType(this, BladesItemType.gm_tracker)) {
             this._prepareGmTrackerData(this.system);
         }
+        if (BladesItem.IsType(this, BladesItemType.gear)) {
+            this._prepareGearData(this.system);
+        }
         if (BladesItem.IsType(this, BladesItemType.playbook)) {
             this._preparePlaybookData(this.system);
         }
@@ -155,13 +183,14 @@ class BladesItem extends Item {
         if (!this.parent || !BladesActor.IsType(this.parent, BladesActorType.pc, BladesActorType.crew)) {
             return;
         }
+        system.tier.name = "Quality";
         if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
-            system.scale = system.tier.value + this.system.tier.value;
-            system.quality = system.tier.value + this.system.tier.value;
+            system.scale = this.getTierTotal() + this.system.scale_bonus;
+            system.quality = this.getTierTotal();
         }
         if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
             system.scale = 0;
-            system.quality = system.tier.value + this.system.tier.value + 1;
+            system.quality = this.getTierTotal();
         }
     }
     _prepareGmTrackerData(system) {
@@ -169,6 +198,12 @@ class BladesItem extends Item {
             return;
         }
         system.phases = Object.values(BladesPhase);
+    }
+    _prepareGearData(system) {
+        if (!BladesItem.IsType(this, BladesItemType.gear)) {
+            return;
+        }
+        system.tier.name = "Quality";
     }
     _preparePlaybookData(system) {
         if (!BladesItem.IsType(this, BladesItemType.playbook, BladesItemType.crew_playbook)) {

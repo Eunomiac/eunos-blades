@@ -1,6 +1,6 @@
 <tr class="clock-row">
   <td>
-    {{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+    {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
       cssClass="clock-toggle"
       isToggled=clockData.isVisible
       activeClass="fas fa-eye"
@@ -8,7 +8,7 @@
       inactiveClass="fas fa-eye-slash"
       inactiveTooltip="<b>Clock is Hidden.</b><br>Click to display."
       targetKey=(concat "system.clock_keys." keyID ".clocks." clockNum ".isVisible") }}
-    {{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+    {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
       cssClass="clock-toggle"
       isToggled=clockData.isActive
       activeClass="fas fa-bell"
@@ -17,7 +17,7 @@
       inactiveTooltip="<b>Clock is Muted.</b><br>Click to focus."
       targetKey=(concat "system.clock_keys." keyID ".clocks." clockNum ".isActive") }}
 
-    {{> "systems/eunos-blades/templates/parts/toggle-icon.hbs"
+    {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
       cssClass="clock-toggle"
       isToggled=clockData.isNameVisible
       activeClass="fas fa-comment"

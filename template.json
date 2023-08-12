@@ -13,7 +13,7 @@
 				"tags": [],
 				"description": "",
 				"subtitle": "",
-				"tier": { "value": 0, "max": 8},
+				"tier": { "name": "Tier", "value": 0, "max": 8},
 				"subactors": {}
 			},
 			"gmChar": {
@@ -125,7 +125,8 @@
 				"insight": 0,
 				"prowess": 0,
 				"resolve": 0
-			}
+			},
+      "conditional_bonus": {}
 		},
 		"crew": {
 			"templates": ["default", "pcChar", "hold"],
@@ -135,7 +136,6 @@
 				"upgrade": 4
 			},
 			"rep": { "value": 0, "max": 12 },
-			"tier": { "value": 0, "max": 4},
 			"deity": "",
 			"heat": { "value": 0, "max": 9 },
 			"wanted": { "value": 0, "max": 4},
@@ -206,7 +206,7 @@
 				"rules": "",
         "notes": "",
         "description": "",
-				"tier": { "value": 0, "max": 6}
+				"tier": { "name": "Tier", "value": 0, "max": 6}
 			},
 			"district": { "district": "" },
       "clocks": { "clocks": {} },
@@ -216,7 +216,9 @@
         "subtypes": [],
         "edges": {},
         "flaws": {},
-        "harm": { "value": 0, "max": 4 }
+        "harm": { "value": 0, "max": 4 },
+        "scale_bonus": 0,
+        "quality_bonus": 0
       },
       "playbook": {
         "experience_clues": []
@@ -231,8 +233,14 @@
       "targetScene": null,
       "clock_keys": {}
     },
-		"cohort_gang": { "templates": ["default", "district", "clocks", "cohort"] },
-		"cohort_expert": { "templates": ["default", "district", "clocks", "cohort"] },
+		"cohort_gang": {
+      "templates": ["default", "district", "clocks", "cohort"],
+      "tier": { "name": "Quality", "value": 0, "max": 6}
+    },
+		"cohort_expert": {
+      "templates": ["default", "district", "clocks", "cohort"],
+      "tier": { "name": "Quality", "value": 0, "max": 6}
+    },
 		"crew_ability": { "templates": ["default", "district", "buyable", "limitUses"] },
 		"crew_reputation": { "templates": ["default"] },
 		"crew_playbook": {
@@ -244,7 +252,8 @@
 		"gear": {
       "templates": ["default", "clocks", "limitUses"],
       "max_per_score": 1,
-      "load": 1
+      "load": 1,
+      "tier": { "name": "Quality", "value": 0, "max": 6}
     },
 		"gm_tracker": {
       "templates": ["default", "clocks"],

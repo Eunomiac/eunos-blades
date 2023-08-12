@@ -18,7 +18,29 @@ export enum PrereqType {
   Not_HasAnyTag = "Not_HasAnyTag"
 }
 
-class BladesItem extends Item implements BladesDocument<Item> {
+class BladesItem extends Item implements BladesDocument<Item>,
+                                          BladesItemSubClass.Ability,
+                                          BladesItemSubClass.Background,
+                                          BladesItemSubClass.Clock_Keeper,
+                                          BladesItemSubClass.Cohort_Gang,
+                                          BladesItemSubClass.Cohort_Expert,
+                                          BladesItemSubClass.Crew_Ability,
+                                          BladesItemSubClass.Crew_Reputation,
+                                          BladesItemSubClass.Crew_Playbook,
+                                          BladesItemSubClass.Crew_Upgrade,
+                                          BladesItemSubClass.Feature,
+                                          BladesItemSubClass.Gm_Tracker,
+                                          BladesItemSubClass.Heritage,
+                                          BladesItemSubClass.Gear,
+                                          BladesItemSubClass.Playbook,
+                                          BladesItemSubClass.Preferred_Op,
+                                          BladesItemSubClass.Stricture,
+                                          BladesItemSubClass.Vice,
+                                          BladesItemSubClass.Project,
+                                          BladesItemSubClass.Ritual,
+                                          BladesItemSubClass.Design,
+                                          BladesItemSubClass.Location,
+                                          BladesItemSubClass.Score {
 
   // #region Static Overrides: Create ~
   static override async create(data: ItemDataConstructorData & { system?: { world_name?: string, description?: string } }, options = {}) {
@@ -52,7 +74,7 @@ class BladesItem extends Item implements BladesDocument<Item> {
       .filter((item) => item.hasTag(...tags));
   }
 
-  static IsType<T extends BladesItemType>(doc: BladesDoc, ...types: T[]): doc is BladesItemOfType<T> {
+  static IsType<T extends BladesItemType>(doc: unknown, ...types: T[]): doc is BladesItemOfType<T> {
     const typeSet = new Set<BladesItemType>(types);
     return doc instanceof BladesItem && typeSet.has(doc.type);
   }
@@ -85,6 +107,42 @@ class BladesItem extends Item implements BladesDocument<Item> {
   }
   dialogCSSClasses = "";
   // #endregion
+
+  getTierTotal() {
+    // if (BladesItem.IsType(this, BladesItemType.ability)) { this._prepareAbilityData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.background)) { this._prepareBackgroundData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.clock_keeper)) { this._prepareClockKeeperData(this.system) }
+    if (this.parent instanceof BladesActor && BladesItem.IsType(this, BladesItemType.cohort_gang)) {
+      return this.system.tier.value + this.parent.getTierTotal() + this.system.quality_bonus;
+    }
+    if (this.parent instanceof BladesActor && BladesItem.IsType(this, BladesItemType.cohort_expert)) {
+      return this.system.tier.value + this.parent.getTierTotal() + this.system.quality_bonus + 1;
+    }
+    // if (BladesItem.IsType(this, BladesItemType.crew_ability)) { this._prepareCrewAbilityData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.crew_reputation)) { this._prepareCrewReputationData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { this._preparePlaybookData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { this._prepareCrewUpgradeData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.feature)) { this._prepareFeatureData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.gm_tracker)) { this._prepareGmTrackerData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.heritage)) { this._prepareHeritageData(this.system) }
+    if (BladesItem.IsType(this, BladesItemType.gear)) {
+      return this.system.tier.value
+        + (this.parent?.getTierTotal() ?? 0)
+        + (this.hasTag("Fine") ? 1 : 0)
+        + (this.parent?.getTaggedItemBonuses(this.tags) ?? 0)
+        + (this.parent?.crew ? this.parent.crew.getTaggedItemBonuses(this.tags) : 0);
+    }
+    // if (BladesItem.IsType(this, BladesItemType.playbook)) { this._preparePlaybookData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.preferred_op)) { this._preparePreferredOpData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.stricture)) { this._prepareStrictureData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.vice)) { this._prepareViceData(this.system) }
+    if (BladesItem.IsType(this, BladesItemType.project)) { return this.system.tier.value }
+    if (BladesItem.IsType(this, BladesItemType.ritual)) { return this.system.tier.value }
+    if (BladesItem.IsType(this, BladesItemType.design)) { return this.system.tier.value }
+    // if (BladesItem.IsType(this, BladesItemType.location)) { this._prepareLocationData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.score)) { this._prepareScoreData(this.system) }
+    return null as never;
+  }
 
   // #region BladesItemDocument Implementation
 
@@ -129,7 +187,7 @@ class BladesItem extends Item implements BladesDocument<Item> {
     // if (BladesItem.IsType(this, BladesItemType.feature)) { this._prepareFeatureData(this.system) }
     if (BladesItem.IsType(this, BladesItemType.gm_tracker)) { this._prepareGmTrackerData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.heritage)) { this._prepareHeritageData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.gear)) { this._prepareItemData(this.system) }
+    if (BladesItem.IsType(this, BladesItemType.gear)) { this._prepareGearData(this.system) }
     if (BladesItem.IsType(this, BladesItemType.playbook)) { this._preparePlaybookData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.preferred_op)) { this._preparePreferredOpData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.stricture)) { this._prepareStrictureData(this.system) }
@@ -159,19 +217,26 @@ class BladesItem extends Item implements BladesDocument<Item> {
   _prepareCohortData(system: ExtractBladesItemSystem<BladesItemType.cohort_gang|BladesItemType.cohort_expert>) {
     if (!BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { return }
     if (!this.parent || !BladesActor.IsType(this.parent, BladesActorType.pc, BladesActorType.crew)) { return }
+
+    system.tier.name = "Quality";
     if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
-      system.scale = system.tier.value + this.system.tier.value;
-      system.quality = system.tier.value + this.system.tier.value;
+      system.scale = this.getTierTotal() + this.system.scale_bonus;
+      system.quality = this.getTierTotal();
     }
     if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
       system.scale = 0;
-      system.quality = system.tier.value + this.system.tier.value + 1;
+      system.quality = this.getTierTotal();
     }
   }
 
   _prepareGmTrackerData(system: ExtractBladesItemSystem<BladesItemType.gm_tracker>) {
     if (!BladesItem.IsType(this, BladesItemType.gm_tracker)) { return }
     system.phases = Object.values(BladesPhase);
+  }
+
+  _prepareGearData(system: ExtractBladesItemSystem<BladesItemType.gear>) {
+    if (!BladesItem.IsType(this, BladesItemType.gear)) { return }
+    system.tier.name = "Quality";
   }
 
   _preparePlaybookData(system: ExtractBladesItemSystem<BladesItemType.playbook|BladesItemType.crew_playbook>) {

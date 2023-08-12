@@ -821,6 +821,45 @@ html, :root {
         scale: 1.75; }
         html .comp .comp-status-toggle:hover .status-neutral, :root .comp .comp-status-toggle:hover .status-neutral {
           opacity: 1; }
+    html .comp.comp-tier, :root .comp.comp-tier {
+      height: 100%;
+      min-width: 120px;
+      -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+      align-items: stretch;
+      grid-area: tier; }
+      html .comp.comp-tier > .full-width.flex-horizontal, :root .comp.comp-tier > .full-width.flex-horizontal {
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start; }
+      html .comp.comp-tier .tier-bonus-container, :root .comp.comp-tier .tier-bonus-container {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1; }
+        html .comp.comp-tier .tier-bonus-container .filled-label, :root .comp.comp-tier .tier-bonus-container .filled-label {
+          height: 30px;
+          min-width: 100%; }
+        html .comp.comp-tier .tier-bonus-container .dotline, :root .comp.comp-tier .tier-bonus-container .dotline {
+          height: 30px;
+          width: 100%; }
+          html .comp.comp-tier .tier-bonus-container .dotline .dot.empty-dot ~ .dot.empty-dot, :root .comp.comp-tier .tier-bonus-container .dotline .dot.empty-dot ~ .dot.empty-dot {
+            display: none; }
+        html .comp.comp-tier .tier-bonus-container.hidden-empty-dots .dotline .dot.empty-dot, :root .comp.comp-tier .tier-bonus-container.hidden-empty-dots .dotline .dot.empty-dot {
+          display: none !important; }
+      html .comp.comp-tier .tier-total-container, :root .comp.comp-tier .tier-total-container {
+        position: absolute;
+        right: 0;
+        min-width: 80px;
+        text-align: center;
+        font-size: 100px;
+        line-height: 60px;
+        scale: 0.5 1;
+        pointer-events: none;
+        -webkit-transform-origin: 100% 50%;
+        -ms-transform-origin: 100% 50%;
+        transform-origin: 100% 50%;
+        color: var(--blades-gold-bright);
+        text-shadow: 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright); }
   html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
     position: absolute;
     height: 1.5rem;
@@ -1925,6 +1964,45 @@ html, :root {
           scale: 1.75; }
           html .comp .comp-status-toggle:hover .status-neutral, :root .comp .comp-status-toggle:hover .status-neutral {
             opacity: 1; }
+      html .comp.comp-tier, :root .comp.comp-tier {
+        height: 100%;
+        min-width: 120px;
+        -webkit-box-align: stretch;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        grid-area: tier; }
+        html .comp.comp-tier > .full-width.flex-horizontal, :root .comp.comp-tier > .full-width.flex-horizontal {
+          -webkit-box-align: start;
+          -ms-flex-align: start;
+          align-items: flex-start; }
+        html .comp.comp-tier .tier-bonus-container, :root .comp.comp-tier .tier-bonus-container {
+          -webkit-box-flex: 1;
+          -ms-flex-positive: 1;
+          flex-grow: 1; }
+          html .comp.comp-tier .tier-bonus-container .filled-label, :root .comp.comp-tier .tier-bonus-container .filled-label {
+            height: 30px;
+            min-width: 100%; }
+          html .comp.comp-tier .tier-bonus-container .dotline, :root .comp.comp-tier .tier-bonus-container .dotline {
+            height: 30px;
+            width: 100%; }
+            html .comp.comp-tier .tier-bonus-container .dotline .dot.empty-dot ~ .dot.empty-dot, :root .comp.comp-tier .tier-bonus-container .dotline .dot.empty-dot ~ .dot.empty-dot {
+              display: none; }
+          html .comp.comp-tier .tier-bonus-container.hidden-empty-dots .dotline .dot.empty-dot, :root .comp.comp-tier .tier-bonus-container.hidden-empty-dots .dotline .dot.empty-dot {
+            display: none !important; }
+        html .comp.comp-tier .tier-total-container, :root .comp.comp-tier .tier-total-container {
+          position: absolute;
+          right: 0;
+          min-width: 80px;
+          text-align: center;
+          font-size: 100px;
+          line-height: 60px;
+          scale: 0.5 1;
+          pointer-events: none;
+          -webkit-transform-origin: 100% 50%;
+          -ms-transform-origin: 100% 50%;
+          transform-origin: 100% 50%;
+          color: var(--blades-gold-bright);
+          text-shadow: 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright); }
     html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
       position: absolute;
       height: 1.5rem;
@@ -2330,6 +2408,13 @@ html, :root {
     width: -moz-min-content;
     width: min-content;
     white-space: nowrap; }
+    html .filled-label.narrow-label, :root .filled-label.narrow-label {
+      -webkit-transform-origin: 0 50%;
+      -ms-transform-origin: 0 50%;
+      transform-origin: 0 50%;
+      scale: 0.8 1;
+      min-width: 125%;
+      margin-left: 25%; }
   html .number-circle, :root .number-circle {
     --nc-size: var(--number-circle-size, 1.25rem);
     --nc-border-width: calc(var(--nc-size) * (1/10));

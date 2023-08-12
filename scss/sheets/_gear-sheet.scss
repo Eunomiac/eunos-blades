@@ -1,19 +1,14 @@
 & {
 
-  .window-content {
+  .sheet-root {
 
-    form {
+    section {
 
-      .sheet-root {
+      &.sheet-top {
+        overflow: visible;
 
-        section {
-
-          &.sheet-top {
-            grid-template-areas: ". item-img . title tier";
-            grid-template-columns: 25px 70px 25px 1fr 70px;
-
-            .comp-tier { grid-area: tier }
-          }
+        .comp-tier {
+          margin-top: 10px;
         }
       }
     }

@@ -9,7 +9,8 @@ declare global {
     isEmbeddedItem: boolean,
     item: BladesItem,
     system: BladesItemSystem,
-    activeEffects: BladesActiveEffect[]
+    activeEffects: BladesActiveEffect[],
+    tierTotal?: string
   };
 
   // Final data sent to Handlebars through BladesItemSheet.getData()
@@ -20,8 +21,15 @@ declare global {
     export interface Clock_Keeper {
       phases: BladesPhase[]
     }
-    export interface Cohort_Gang {}
-    export interface Cohort_Expert {}
+    export interface Cohort_Gang {
+      subtitle: string,
+      tierData: BladesCompData
+      scaleData?: {example: string}
+    }
+    export interface Cohort_Expert {
+      tierData: BladesCompData,
+      subtitle: string
+    }
     export interface Crew_Ability {}
     export interface Crew_Reputation {}
     export interface Crew_Playbook {}
@@ -29,7 +37,7 @@ declare global {
     export interface Feature {}
     export interface Gm_Tracker {}
     export interface Heritage {}
-    export interface Item {
+    export interface Gear {
       tierData: BladesCompData
     }
     export interface Playbook {}
@@ -57,7 +65,7 @@ declare global {
                                       Partial<BladesItemSheetTypedData.Feature>,
                                       Partial<BladesItemSheetTypedData.Gm_Tracker>,
                                       Partial<BladesItemSheetTypedData.Heritage>,
-                                      Partial<BladesItemSheetTypedData.Item>,
+                                      Partial<BladesItemSheetTypedData.Gear>,
                                       Partial<BladesItemSheetTypedData.Playbook>,
                                       Partial<BladesItemSheetTypedData.Preferred_Op>,
                                       Partial<BladesItemSheetTypedData.Stricture>,
@@ -82,7 +90,7 @@ declare global {
     [BladesItemType.feature]: BladesItemSheetTypedData.Feature,
     [BladesItemType.gm_tracker]: BladesItemSheetTypedData.Gm_Tracker,
     [BladesItemType.heritage]: BladesItemSheetTypedData.Heritage,
-    [BladesItemType.gear]: BladesItemSheetTypedData.Item,
+    [BladesItemType.gear]: BladesItemSheetTypedData.Gear,
     [BladesItemType.playbook]: BladesItemSheetTypedData.Playbook,
     [BladesItemType.preferred_op]: BladesItemSheetTypedData.Preferred_Op,
     [BladesItemType.stricture]: BladesItemSheetTypedData.Stricture,

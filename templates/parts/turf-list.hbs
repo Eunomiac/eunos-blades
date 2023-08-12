@@ -13,7 +13,7 @@
       <div class="connector {{dir}} {{~#unless connects}} no-connect{{/unless}}" data-index="{{id}}" data-dir="{{dir}}"
         data-partner="{{getConnectorPartner id dir}}">
         {{#if ../../can_edit}}
-        {{> "systems/eunos-blades/templates/parts/button-icon.hbs" action="toggle-turf-connection"}}
+        {{> "systems/eunos-blades/templates/components/button-icon.hbs" action="toggle-turf-connection"}}
         {{/if}}
       </div>
       {{/unless}}
@@ -25,14 +25,12 @@
       {{#if (eq id "8")}}
       <textarea class="turf-description" placeholder="What is it? What makes it unique?" name="system.lair"
         spellcheck="false">{{../system.lair}}</textarea>
-      <textarea class="turf-district" placeholder="(District)" name="system.turfs.{{id}}.district"
-        spellcheck="false">{{turf.district}}</textarea>
+      <input type="text" class="turf-district comp-tags tags-district" data-tag-target="system.turfs.{{id}}.district"/>
       {{else}}
       {{#if (isTurfBlock turf.name)}}
       <textarea class="turf-description" placeholder="What is it? Who held it last?" name="system.turfs.{{id}}.description"
         spellcheck="false">{{localize turf.description}}</textarea>
-      <textarea class="turf-district" placeholder="(District)" name="system.turfs.{{id}}.district"
-        spellcheck="false">{{turf.district}}</textarea>
+      <input type="text" class="turf-district comp-tags tags-district" data-tag-target="system.turfs.{{id}}.district"/>
       {{else}}
       <textarea class="turf-description {{~#if ../can_edit}} turf-editable{{else}} turf-readonly{{/if}}"
         name="system.turfs.{{id}}.description" {{#unless

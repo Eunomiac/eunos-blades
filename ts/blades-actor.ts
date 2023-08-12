@@ -100,7 +100,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       .filter((actor) => actor.hasTag(...tags));
   }
 
-  static IsType<T extends BladesActorType>(doc: BladesDoc, ...types: T[]): doc is BladesActorOfType<T> {
+  static IsType<T extends BladesActorType>(doc: unknown, ...types: T[]): doc is BladesActorOfType<T> {
     const typeSet = new Set<BladesActorType>(types);
     return doc instanceof BladesActor && typeSet.has(doc.type);
   }
@@ -136,6 +136,22 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
   get dialogCSSClasses(): string { return "" }
   // #endregion
+
+  getTierTotal() {
+    if (BladesActor.IsType(this, BladesActorType.pc)) {
+      return this.system.tier.value + (this.crew?.system.tier.value ?? 0);
+    }
+    if (BladesActor.IsType(this, BladesActorType.npc)) {
+      return this.system.tier.value;
+    }
+    if (BladesActor.IsType(this, BladesActorType.crew)) {
+      return this.system.tier.value;
+    }
+    if (BladesActor.IsType(this, BladesActorType.faction)) {
+      return this.system.tier.value;
+    }
+    return null as never;
+  }
   // #region BladesPrimaryActor Implementation ~
   get primaryUser(): User | null {
     return game.users?.find((user) => user.character?.id === this?.id) || null;
@@ -975,6 +991,11 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   }
   get cohorts(): BladesItem[] {
     return this.activeSubItems.filter((item) => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type));
+  }
+
+  getTaggedItemBonuses(tags: BladesTag[]): number {
+    // Check ACTIVE EFFECTS supplied by upgrade/ability against submitted tags?
+    return 0;
   }
   // #endregion
 

@@ -225,15 +225,18 @@
             @import './sheets/gm-tracker-sheet'
           }
 
-          .window-content {
-            form.crew_playbook {
+          .window-content form {
+            &.crew_playbook {
               @import './sheets/crew-playbook-sheet'
+            }
+            &.gear {
+              @import './sheets/gear-sheet'
+            }
+            &.cohort_gang, &.cohort_expert {
+              @import './sheets/cohort-sheet'
             }
           }
 
-          &.gear {
-            @import './sheets/gear-sheet'
-          }
         }
 
         &.dialog {

@@ -37,6 +37,10 @@ $hover-yiq: $bg-yiq * 1.33;
     --tag-bg: #{getYIQScaledColor(magenta, $bg-yiq)};
     --tag-hover: #{getYIQScaledColor(magenta, $hover-yiq)};
   }
+  &[data-group="Gang Types"] {
+    --tag-bg: #{getYIQScaledColor(red, $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(red, $hover-yiq)};
+  }
 
 }
 

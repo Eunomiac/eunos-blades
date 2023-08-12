@@ -312,11 +312,13 @@ const regExtract = (ref: unknown, pattern: string | RegExp, flags?: string) => {
 // const hyphenate = (str: unknown) => (/^<|\u00AD|\u200B/.test(`${str}`) ? `${str}` : _hyph(`${str}`));
 const unhyphenate = (str: unknown) => `${str}`.replace(/\u00AD|\u200B/gu, "");
 const parseArticles = (str: unknown) => `${str}`.replace(/\b(a|A)\s([aeiouAEIOU])/gu, "$1n $2");
-const pluralize = (singular: string, num: number, plural?: string) => {
+const pluralize = (singular: string, num = 2, plural?: string) => {
   if (pFloat(num) === 1) { return singular }
   return plural ?? `${singular.replace(/y$/, "ie").replace(/s$/, "se")}s`;
 };
 const oxfordize = (items: Array<number | string>, useOxfordComma = true) => {
+  if (items.length === 0) { return "" }
+  if (items.length === 1) { return `${items[0]}` }
   const lastItem = items.pop();
   return [
     items.join(", "),

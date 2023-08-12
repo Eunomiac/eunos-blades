@@ -209,14 +209,14 @@ export var Tag;
         NPC["Acquaintance"] = "Acquaintance";
         NPC["VicePurveyor"] = "VicePurveyor";
     })(NPC = Tag.NPC || (Tag.NPC = {}));
-    let Gang;
-    (function (Gang) {
-        Gang["Thugs"] = "Thugs";
-        Gang["Rooks"] = "Rooks";
-        Gang["Adepts"] = "Adepts";
-        Gang["Rovers"] = "Rovers";
-        Gang["Skulks"] = "Skulks";
-    })(Gang = Tag.Gang || (Tag.Gang = {}));
+    let GangType;
+    (function (GangType) {
+        GangType["Thugs"] = "Thugs";
+        GangType["Rooks"] = "Rooks";
+        GangType["Adepts"] = "Adepts";
+        GangType["Rovers"] = "Rovers";
+        GangType["Skulks"] = "Skulks";
+    })(GangType = Tag.GangType || (Tag.GangType = {}));
 })(Tag || (Tag = {}));
 const C = {
     SYSTEM_ID: "eunos-blades",
@@ -271,6 +271,33 @@ const C = {
         Ruthless: "You lose any sense of humanity when indulging your Vice or pursuing your most important goal.",
         Secretive: "Knowledge has become so precious to you, that even your closest allies are on a need-to-know basis."
     },
+    ScaleExamples: [
+        "(1 or 2 members)",
+        "(3 - 6 members)",
+        "(~12 members)",
+        "(~20 members)",
+        "(~40 members)",
+        "(~80 members)",
+        "(~160 members)"
+    ],
+    ScaleSizes: [
+        "",
+        "Small ",
+        "Medium ",
+        "Large ",
+        "Huge ",
+        "Massive ",
+        "Colossal "
+    ],
+    ScaleExamplesFull: [
+        "~1 or 2 people",
+        "a small gang (3-6)",
+        "a medium gang (12)",
+        "a large gang (20)",
+        "a huge gang (40)",
+        "a massive gang (80)",
+        "a colossal gang (160)"
+    ],
     ExperienceClues: {
         Scoundrel: [
             "You expressed your beliefs, drives, heritage, or background.",

@@ -9,6 +9,7 @@ declare global {
     isGM: boolean,
     actor: BladesActor,
     system: BladesActorSystem,
+    tierTotal: string,
     activeEffects: BladesActiveEffect[],
 
     rollData: BladesActorRollData,
