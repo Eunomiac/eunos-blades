@@ -106,25 +106,24 @@ class BladesItem extends Item implements BladesDocument<Item>,
     return undefined;
   }
   dialogCSSClasses = "";
-  // #endregion
 
-  getTierTotal() {
-    // if (BladesItem.IsType(this, BladesItemType.ability)) { this._prepareAbilityData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.background)) { this._prepareBackgroundData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.clock_keeper)) { this._prepareClockKeeperData(this.system) }
-    if (this.parent instanceof BladesActor && BladesItem.IsType(this, BladesItemType.cohort_gang)) {
-      return this.system.tier.value + this.parent.getTierTotal() + this.system.quality_bonus;
+  getTierTotal(): number {
+    // if (BladesItem.IsType(this, BladesItemType.ability)) { return this.system.tier.value }
+    // if (BladesItem.IsType(this, BladesItemType.background)) { return this.system.tier.value }
+    // if (BladesItem.IsType(this, BladesItemType.clock_keeper)) { return this.system.tier.value }
+    if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
+      return this.system.tier.value + (this.parent?.getTierTotal() ?? 0) + this.system.quality_bonus;
     }
-    if (this.parent instanceof BladesActor && BladesItem.IsType(this, BladesItemType.cohort_expert)) {
-      return this.system.tier.value + this.parent.getTierTotal() + this.system.quality_bonus + 1;
+    if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
+      return this.system.tier.value + (this.parent?.getTierTotal() ?? 0) + this.system.quality_bonus + 1;
     }
-    // if (BladesItem.IsType(this, BladesItemType.crew_ability)) { this._prepareCrewAbilityData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.crew_reputation)) { this._prepareCrewReputationData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { this._preparePlaybookData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { this._prepareCrewUpgradeData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.feature)) { this._prepareFeatureData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.gm_tracker)) { this._prepareGmTrackerData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.heritage)) { this._prepareHeritageData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.crew_ability)) { return this.system.tier.value }
+    // if (BladesItem.IsType(this, BladesItemType.crew_reputation)) { return this.system.tier.value }
+    // if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { return this.system.tier.value }
+    // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { return this.system.tier.value }
+    // if (BladesItem.IsType(this, BladesItemType.feature)) { return this.system.tier.value }
+    // if (BladesItem.IsType(this, BladesItemType.gm_tracker)) { return this.system.tier.value }
+    // if (BladesItem.IsType(this, BladesItemType.heritage)) { return this.system.tier.value }
     if (BladesItem.IsType(this, BladesItemType.gear)) {
       return this.system.tier.value
         + (this.parent?.getTierTotal() ?? 0)
@@ -132,17 +131,19 @@ class BladesItem extends Item implements BladesDocument<Item>,
         + (this.parent?.getTaggedItemBonuses(this.tags) ?? 0)
         + (this.parent?.crew ? this.parent.crew.getTaggedItemBonuses(this.tags) : 0);
     }
-    // if (BladesItem.IsType(this, BladesItemType.playbook)) { this._preparePlaybookData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.preferred_op)) { this._preparePreferredOpData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.stricture)) { this._prepareStrictureData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.vice)) { this._prepareViceData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.playbook)) { return this.system.tier.value }
+    // if (BladesItem.IsType(this, BladesItemType.preferred_op)) { return this.system.tier.value }
+    // if (BladesItem.IsType(this, BladesItemType.stricture)) { return this.system.tier.value }
+    // if (BladesItem.IsType(this, BladesItemType.vice)) { return this.system.tier.value }
     if (BladesItem.IsType(this, BladesItemType.project)) { return this.system.tier.value }
     if (BladesItem.IsType(this, BladesItemType.ritual)) { return this.system.tier.value }
     if (BladesItem.IsType(this, BladesItemType.design)) { return this.system.tier.value }
-    // if (BladesItem.IsType(this, BladesItemType.location)) { this._prepareLocationData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.score)) { this._prepareScoreData(this.system) }
+    // if (BladesItem.IsType(this, BladesItemType.location)) { return this.system.tier.value }
+    // if (BladesItem.IsType(this, BladesItemType.score)) { return this.system.tier.value }
     return null as never;
   }
+
+  // #endregion
 
   // #region BladesItemDocument Implementation
 
@@ -167,12 +168,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
   }
 
   // #endregion
-  override async _preCreate( data: any, options: any, user: User ) {
-    await super._preCreate( data, options, user );
 
-    if (user.id !== game.user?.id) { return }
-    if (this.parent?.documentName !== "Actor") { return }
-  }
 
   // #region PREPARING DERIVED DATA
   override prepareDerivedData() {
@@ -216,17 +212,31 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   _prepareCohortData(system: ExtractBladesItemSystem<BladesItemType.cohort_gang|BladesItemType.cohort_expert>) {
     if (!BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { return }
-    if (!this.parent || !BladesActor.IsType(this.parent, BladesActorType.pc, BladesActorType.crew)) { return }
 
     system.tier.name = "Quality";
-    if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
-      system.scale = this.getTierTotal() + this.system.scale_bonus;
-      system.quality = this.getTierTotal();
+
+    const subtypes = Object.values(system.subtypes)
+      .map((subtype) => subtype.trim())
+      .filter((subtype) => /[A-Za-z]/.test(subtype));
+    const elite_subtypes = Object.values(system.elite_subtypes)
+      .map((subtype) => subtype.trim())
+      .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype));
+
+    // Add parent-crew's elite subtype upgrades
+    if (BladesActor.IsType(this.parent, BladesActorType.crew)) {
+      elite_subtypes.push(...this.parent.upgrades
+        .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
+        .filter((upgradeName) => subtypes.includes(upgradeName)));
     }
-    if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
-      system.scale = 0;
-      system.quality = this.getTierTotal();
-    }
+
+    system.subtypes = Object.fromEntries(U.unique(subtypes).map((subtype, i) => [`${i + 1}`, subtype]));
+    system.elite_subtypes = Object.fromEntries(U.unique(elite_subtypes).map((subtype, i) => [`${i + 1}`, subtype]));
+
+    system.quality = this.getTierTotal();
+
+    system.scale = BladesItem.IsType(this, BladesItemType.cohort_gang)
+      ? this.getTierTotal() + this.system.scale_bonus
+      : 0;
   }
 
   _prepareGmTrackerData(system: ExtractBladesItemSystem<BladesItemType.gm_tracker>) {
@@ -254,7 +264,29 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
     }
   }
+  // #endregion
 
+  // #region CLOCKS OVERLAY
+  _overlayElement?: HTMLElement;
+  get overlayElement() {
+    this._overlayElement ??= $("#clocks-overlay")[0];
+    if (!this._overlayElement) {
+      $("body.vtt.game.system-eunos-blades").append("<section id=\"clocks-overlay\"></section>");
+      [this._overlayElement] = $("#clocks-overlay");
+    }
+    return this._overlayElement;
+  }
+
+  async renderOverlay() {
+    if (!game.scenes?.current) { return }
+    this.overlayElement.innerHTML = (await getTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs"))({
+      ...this.system,
+      currentScene: game.scenes?.current.id,
+      clockSizes: C.ClockSizes,
+      svgData: SVGDATA
+    });
+    this.activateOverlayListeners();
+  }
   async activateOverlayListeners() {
     if (!BladesItem.IsType(this, BladesItemType.clock_keeper)) { return }
     $("#clocks-overlay").find(".clock-frame").on("wheel", async (event) => {
@@ -374,7 +406,9 @@ class BladesItem extends Item implements BladesDocument<Item>,
     return this.update(updateData);
     // return socketlib.system.executeForEveryone("renderOverlay");
   }
+  // #endregion
 
+  // #region OVERRIDES: _onUpdate
   override async _onUpdate(changed: any, options: any, userId: string) {
     await super._onUpdate(changed, options, userId);
     if (BladesItem.IsType(this, BladesItemType.gm_tracker, BladesItemType.clock_keeper, BladesItemType.location, BladesItemType.score)) {
@@ -384,27 +418,8 @@ class BladesItem extends Item implements BladesDocument<Item>,
       socketlib.system.executeForEveryone("renderOverlay");
     }
   }
+  // #endregion
 
-  _overlayElement?: HTMLElement;
-  get overlayElement() {
-    this._overlayElement ??= $("#clocks-overlay")[0];
-    if (!this._overlayElement) {
-      $("body.vtt.game.system-eunos-blades").append("<section id=\"clocks-overlay\"></section>");
-      [this._overlayElement] = $("#clocks-overlay");
-    }
-    return this._overlayElement;
-  }
-
-  async renderOverlay() {
-    if (!game.scenes?.current) { return }
-    this.overlayElement.innerHTML = (await getTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs"))({
-      ...this.system,
-      currentScene: game.scenes?.current.id,
-      clockSizes: C.ClockSizes,
-      svgData: SVGDATA
-    });
-    this.activateOverlayListeners();
-  }
 }
 
 declare interface BladesItem {

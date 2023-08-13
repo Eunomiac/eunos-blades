@@ -11807,7 +11807,8 @@ template {
           background: transparent;
           font-size: 18px;
           line-height: 24px;
-          border: none; }
+          border: none;
+          white-space: nowrap; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.sheet-top .comp-tier, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.sheet-top .comp-tier {
           margin-top: 10px; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.sheet-top .comp-scale, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.sheet-top .comp-scale {
@@ -11846,6 +11847,11 @@ template {
             text-align: center;
             white-space: nowrap;
             width: 100%; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-types .cohort-type-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-types .cohort-type-input {
+        background: var(--blades-black-dark);
+        font-family: var(--font-emphasis);
+        color: var(--blades-white-bright);
+        margin: 0px 10px; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm {
         -webkit-box-pack: stretch;
         -ms-flex-pack: stretch;
@@ -11858,12 +11864,15 @@ template {
           height: 100%;
           line-height: 30px; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level {
-          -webkit-box-flex: 1;
-          -ms-flex-positive: 1;
-          flex-grow: 1;
+          pointer-events: all;
+          -webkit-box-flex: 0.25;
+          -ms-flex-positive: 0.25;
+          flex-grow: 0.25;
           -webkit-box-pack: stretch;
           -ms-flex-pack: stretch;
-          justify-content: stretch; }
+          justify-content: stretch;
+          background: var(--blades-red);
+          height: 100%; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level > .flex-vertical, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level > .flex-vertical {
             -webkit-box-pack: start;
             -ms-flex-pack: start;
@@ -11884,8 +11893,11 @@ template {
             font-size: 40px;
             line-height: 40px;
             padding: 0 5px;
+            color: var(--blades-red);
             font-family: var(--font-emphasis);
-            text-align: center; }
+            text-align: center;
+            -webkit-transition: 0.25s;
+            transition: 0.25s; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level .harm-label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level .harm-effect, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level .harm-label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level .harm-effect {
             display: none;
             text-indent: 5px; }
@@ -11893,13 +11905,42 @@ template {
             font-family: var(--font-emphasis);
             text-transform: uppercase;
             color: var(--blades-white-bright);
-            border-bottom: 2px solid var(--blades-white-bright); }
+            border-bottom: 2px solid var(--blades-white-bright);
+            font-size: 14px;
+            line-height: 16px;
+            height: 16px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level .harm-effect, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level .harm-effect {
+            color: var(--blades-white-bright);
+            font-weight: bold;
+            text-indent: 20px;
+            font-size: 16px;
+            line-height: 26px;
+            height: 22px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level.harm-level-0, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level.harm-level-0 {
+            display: none; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level.active, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level.active {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
             -webkit-box-flex: 2;
             -ms-flex-positive: 2;
-            flex-grow: 2; }
+            flex-grow: 2;
+            background: -webkit-gradient(linear, left top, right top, from(var(--blades-red)), color-stop(var(--blades-red-dark)), to(transparent));
+            background: linear-gradient(to right, var(--blades-red), var(--blades-red-dark), transparent); }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level.active.harm-level-0, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level.active.harm-level-0 {
+              background: transparent; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level.active ~ .harm-level, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level.active ~ .harm-level {
+              background: transparent; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level.active ~ .harm-level .harm-number, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level.active ~ .harm-level .harm-number {
+                color: var(--blades-white); }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level.active .harm-number, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level.active .harm-number {
+              color: var(--blades-red-bright); }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level.active .harm-label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level.active .harm-effect, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level.active .harm-label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level.active .harm-effect {
               display: inline; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level:hover .harm-number, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level:hover .harm-number {
+            color: var(--blades-gold-bright) !important; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang.cohort_gang .sheet-root section.sheet-top, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert.cohort_gang .sheet-root section.sheet-top {
+      grid-template-areas: "title title tier" "subtitle subtitle tier"; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog {
     max-width: 900px;
     height: auto !important;

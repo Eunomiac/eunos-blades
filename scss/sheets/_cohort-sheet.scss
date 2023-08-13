@@ -25,6 +25,7 @@
           font-size: 18px;
           line-height: 24px;
           border: none;
+          white-space: nowrap;
         }
 
         .comp-tier {
@@ -56,8 +57,6 @@
             color: var(--blades-gold);
             font-size: toRem(40px);
             line-height: toRem(40px);
-            // transform-origin: 0 50%;
-            // scale: 0.75 1;
           }
 
           .scale-example {
@@ -67,16 +66,18 @@
             font-size: toRem(14px);
             font-family: Oswald;
             text-align: center;
-            // text-align: right;
-            // margin-left: -20px;
-            // text-indent: -15px;
-            // color: var(--blades-white-bright);
             white-space: nowrap;
             width: 100%;
-            // word-wrap: nowrap;
-            // transform-origin: 0 50%;
-            // scale: 0.75 1;
           }
+        }
+      }
+
+      &.cohort-types {
+        .cohort-type-input {
+          background: var(--blades-black-dark);
+          font-family: var(--font-emphasis);
+          color: var(--blades-white-bright);
+          margin: 0px 10px;
         }
       }
 
@@ -90,8 +91,11 @@
           line-height: 30px;
         }
         .harm-level {
-          flex-grow: 1;
+          pointer-events: all;
+          flex-grow: 0.25;
           justify-content: stretch;
+          background: var(--blades-red);
+          height: 100%;
 
           > .flex-vertical {
             justify-content: flex-start;
@@ -104,8 +108,10 @@
             font-size: 40px;
             line-height: 40px;
             padding: 0 5px;
+            color: var(--blades-red);
             font-family: var(--font-emphasis);
             text-align: center;
+            transition: 0.25s;
           }
           .harm-label, .harm-effect {
             display: none;
@@ -116,13 +122,49 @@
             text-transform: uppercase;
             color: var(--blades-white-bright);
             border-bottom: 2px solid var(--blades-white-bright);
+            font-size: 14px;
+            line-height: 16px;
+            height: 16px;
           }
+          .harm-effect {
+            color: var(--blades-white-bright);
+            font-weight: bold;
+            text-indent: 20px;
+            font-size: 16px;
+            line-height: 26px;
+            height: 22px;
+          }
+          &.harm-level-0 { display: none }
           &.active {
+            display: flex;
             flex-grow: 2;
+            background: linear-gradient(to right, var(--blades-red), var(--blades-red-dark), transparent);
+            &.harm-level-0 { background: transparent }
+            ~ .harm-level {
+              background: transparent;
+              .harm-number { color: var(--blades-white) }
+            }
+            .harm-number {
+              color: var(--blades-red-bright);
+            }
             .harm-label, .harm-effect { display: inline }
+          }
+          &:hover .harm-number {
+            color: var(--blades-gold-bright) !important;
           }
         }
       }
     }
   }
+
+  &.cohort_gang {
+    .sheet-root {
+      section.sheet-top {
+        grid-template-areas:
+          "title title tier"
+          "subtitle subtitle tier";
+      }
+    }
+  }
+
 }

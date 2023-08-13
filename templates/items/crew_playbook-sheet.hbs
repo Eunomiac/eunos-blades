@@ -30,7 +30,7 @@
 
       {{#if (test isGM "||" system.rules)}}
       <label class="tab-label">
-        <span class="tab-title">Rules</span>
+        <span class="tab-title">Starting Upgrades</span>
       </label>
       {{editor system.rules target="system.rules" button=true owner=owner editable=isGM}}
       {{/if}}
@@ -47,7 +47,7 @@
       </label>
       {{#each system.experience_clues as |clue|}}
         {{#if (test ../isGM "||" (test this "!==" " "))}}
-        <input type="text" value="{{clue}}" name="system.experience_clues.{{calc @index "+" 1}}" {{#unless ../isGM}}readonly style="text-align: center;"{{/unless}}>
+        <input type="text" class="xp-clue {{~#if (test @index "==" 0)}} shadowed{{/if}}" value="{{clue}}" name="system.experience_clues.{{calc @index "+" 1}}" {{#unless ../isGM}}readonly style="text-align: center; {{~#if (test @index "==" 0)}} color: var(--blades-white-bright); font-weight: bold; font-size: 16px;{{/if}}"{{/unless}}>
         {{/if}}
       {{/each}}
 

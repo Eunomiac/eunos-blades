@@ -47,9 +47,7 @@ const CUSTOMFUNCS = {
         return undefined;
     },
     APPLYTOMEMBERS: async () => { return undefined; },
-    
-    
-    
+    APPLYTOCOHORTS: async () => { return undefined; },
     remItem: async (actor, funcData, effect, isReversing = false) => {
         function testString(targetString, testDef) {
             if (/^rX/.test(testDef)) {
@@ -107,9 +105,15 @@ class BladesActiveEffect extends ActiveEffect {
             if (!(effect.parent instanceof BladesActor)) {
                 return;
             }
-            if (BladesActor.IsType(effect.parent, BladesActorType.crew) && effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
-                await Promise.all(effect.parent.members.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect])));
-                await effect.updateSource({ changes: effect.changes.filter((change) => change.key === "APPLYTOMEMBERS") });
+            if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
+                if (effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
+                    await Promise.all(effect.parent.members.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect])));
+                    await effect.updateSource({ changes: effect.changes.filter((change) => change.key === "APPLYTOMEMBERS") });
+                }
+                else if (effect.parent.cohorts.length > 0 && effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
+                    await Promise.all(effect.parent.cohorts.map(async (cohort) => cohort.createEmbeddedDocuments("ActiveEffect", [effect])));
+                    await effect.updateSource({ changes: effect.changes.filter((change) => change.key === "APPLYTOCOHORTS") });
+                }
                 return;
             }
             
@@ -170,11 +174,19 @@ class BladesActiveEffect extends ActiveEffect {
             if (!(effect.parent instanceof BladesActor)) {
                 return;
             }
-            if (BladesActor.IsType(effect.parent, BladesActorType.crew) && effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
-                await Promise.all(effect.parent.members
-                    .map(async (member) => Promise.all(member.effects
-                    .filter((e) => e.name === effect.name)
-                    .map(async (e) => e.delete()))));
+            if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
+                if (effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
+                    await Promise.all(effect.parent.members
+                        .map(async (member) => Promise.all(member.effects
+                        .filter((e) => e.name === effect.name)
+                        .map(async (e) => e.delete()))));
+                }
+                else if (effect.parent.cohorts.length > 0 && effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
+                    await Promise.all(effect.parent.cohorts
+                        .map(async (cohort) => Promise.all(cohort.effects
+                        .filter((e) => e.name === effect.name)
+                        .map(async (e) => e.delete()))));
+                }
             }
             const customEffects = effect.changes.filter((changes) => changes.mode === 0);
             customEffects.forEach(({ key, value }) => {

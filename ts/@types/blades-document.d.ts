@@ -21,6 +21,8 @@ declare global {
 
     tooltip: string|undefined;
     dialogCSSClasses: string;
+
+    getTierTotal(): number;
   }
 
   // template.json "template" definitions applying to both Actors and Items

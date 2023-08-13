@@ -213,7 +213,9 @@
       "buyable": { "price": 1 },
       "limitUses": { "uses_per_score": {"value": 0, "max": 0}},
       "cohort": {
+        "subtitle": "",
         "subtypes": [],
+        "elite_subtypes": [],
         "edges": {},
         "flaws": {},
         "harm": { "value": 0, "max": 4 },

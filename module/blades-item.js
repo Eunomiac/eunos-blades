@@ -89,11 +89,11 @@ class BladesItem extends Item {
     }
     dialogCSSClasses = "";
     getTierTotal() {
-        if (this.parent instanceof BladesActor && BladesItem.IsType(this, BladesItemType.cohort_gang)) {
-            return this.system.tier.value + this.parent.getTierTotal() + this.system.quality_bonus;
+        if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
+            return this.system.tier.value + (this.parent?.getTierTotal() ?? 0) + this.system.quality_bonus;
         }
-        if (this.parent instanceof BladesActor && BladesItem.IsType(this, BladesItemType.cohort_expert)) {
-            return this.system.tier.value + this.parent.getTierTotal() + this.system.quality_bonus + 1;
+        if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
+            return this.system.tier.value + (this.parent?.getTierTotal() ?? 0) + this.system.quality_bonus + 1;
         }
         if (BladesItem.IsType(this, BladesItemType.gear)) {
             return this.system.tier.value
@@ -113,6 +113,8 @@ class BladesItem extends Item {
         }
         return null;
     }
+    
+    
     async archive() {
         await this.addTag(Tag.System.Archived);
         return this;
@@ -129,16 +131,7 @@ class BladesItem extends Item {
             this.update({ "system.phase": phase });
         }
     }
-    async _preCreate(data, options, user) {
-        await super._preCreate(data, options, user);
-        if (user.id !== game.user?.id) {
-            return;
-        }
-        if (this.parent?.documentName !== "Actor") {
-            return;
-        }
-    }
-
+    
     prepareDerivedData() {
         if (BladesItem.IsType(this, BladesItemType.clock_keeper)) {
             this._prepareClockKeeperData(this.system);
@@ -180,18 +173,24 @@ class BladesItem extends Item {
         if (!BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
             return;
         }
-        if (!this.parent || !BladesActor.IsType(this.parent, BladesActorType.pc, BladesActorType.crew)) {
-            return;
-        }
         system.tier.name = "Quality";
-        if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
-            system.scale = this.getTierTotal() + this.system.scale_bonus;
-            system.quality = this.getTierTotal();
+        const subtypes = Object.values(system.subtypes)
+            .map((subtype) => subtype.trim())
+            .filter((subtype) => /[A-Za-z]/.test(subtype));
+        const elite_subtypes = Object.values(system.elite_subtypes)
+            .map((subtype) => subtype.trim())
+            .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype));
+        if (BladesActor.IsType(this.parent, BladesActorType.crew)) {
+            elite_subtypes.push(...this.parent.upgrades
+                .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
+                .filter((upgradeName) => subtypes.includes(upgradeName)));
         }
-        if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
-            system.scale = 0;
-            system.quality = this.getTierTotal();
-        }
+        system.subtypes = Object.fromEntries(U.unique(subtypes).map((subtype, i) => [`${i + 1}`, subtype]));
+        system.elite_subtypes = Object.fromEntries(U.unique(elite_subtypes).map((subtype, i) => [`${i + 1}`, subtype]));
+        system.quality = this.getTierTotal();
+        system.scale = BladesItem.IsType(this, BladesItemType.cohort_gang)
+            ? this.getTierTotal() + this.system.scale_bonus
+            : 0;
     }
     _prepareGmTrackerData(system) {
         if (!BladesItem.IsType(this, BladesItemType.gm_tracker)) {
@@ -219,6 +218,28 @@ class BladesItem extends Item {
             system.gather_info_questions = gatherInfoData;
             eLog.checkLog3("gatherInfoQuestions", { gatherInfoData });
         }
+    }
+
+    _overlayElement;
+    get overlayElement() {
+        this._overlayElement ??= $("#clocks-overlay")[0];
+        if (!this._overlayElement) {
+            $("body.vtt.game.system-eunos-blades").append("<section id=\"clocks-overlay\"></section>");
+            [this._overlayElement] = $("#clocks-overlay");
+        }
+        return this._overlayElement;
+    }
+    async renderOverlay() {
+        if (!game.scenes?.current) {
+            return;
+        }
+        this.overlayElement.innerHTML = (await getTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs"))({
+            ...this.system,
+            currentScene: game.scenes?.current.id,
+            clockSizes: C.ClockSizes,
+            svgData: SVGDATA
+        });
+        this.activateOverlayListeners();
     }
     async activateOverlayListeners() {
         if (!BladesItem.IsType(this, BladesItemType.clock_keeper)) {
@@ -339,6 +360,7 @@ class BladesItem extends Item {
         eLog.checkLog("clock_key", "Clock Key Update Data", { clockKey, updateData });
         return this.update(updateData);
     }
+
     async _onUpdate(changed, options, userId) {
         await super._onUpdate(changed, options, userId);
         if (BladesItem.IsType(this, BladesItemType.gm_tracker, BladesItemType.clock_keeper, BladesItemType.location, BladesItemType.score)) {
@@ -347,27 +369,6 @@ class BladesItem extends Item {
         if (BladesItem.IsType(this, BladesItemType.clock_keeper)) {
             socketlib.system.executeForEveryone("renderOverlay");
         }
-    }
-    _overlayElement;
-    get overlayElement() {
-        this._overlayElement ??= $("#clocks-overlay")[0];
-        if (!this._overlayElement) {
-            $("body.vtt.game.system-eunos-blades").append("<section id=\"clocks-overlay\"></section>");
-            [this._overlayElement] = $("#clocks-overlay");
-        }
-        return this._overlayElement;
-    }
-    async renderOverlay() {
-        if (!game.scenes?.current) {
-            return;
-        }
-        this.overlayElement.innerHTML = (await getTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs"))({
-            ...this.system,
-            currentScene: game.scenes?.current.id,
-            clockSizes: C.ClockSizes,
-            svgData: SVGDATA
-        });
-        this.activateOverlayListeners();
     }
 }
 export default BladesItem;

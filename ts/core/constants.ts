@@ -265,13 +265,13 @@ const C = {
     "(~160 members)"
   ],
   ScaleSizes: [
-    "",
-    "Small ",
-    "Medium ",
-    "Large ",
-    "Huge ",
-    "Massive ",
-    "Colossal "
+    "A ",
+    "A Small ",
+    "An Average ",
+    "A Large ",
+    "A Huge ",
+    "A Massive ",
+    "A Colossal "
   ],
   ScaleExamplesFull: [
     "~1 or 2 people",

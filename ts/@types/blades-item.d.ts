@@ -28,7 +28,8 @@ declare global {
     export interface limitUses { uses_per_score: ValueMax }
 
     export interface cohort {
-      subtypes: string[],
+      subtypes: Record<string, string>,
+      elite_subtypes: Record<string, string>,
       subtitle: string,
       edges: Record<string, string>,
       flaws: Record<string, string>,

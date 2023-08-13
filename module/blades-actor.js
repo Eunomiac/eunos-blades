@@ -105,7 +105,7 @@ class BladesActor extends Actor {
     get dialogCSSClasses() { return ""; }
     getTierTotal() {
         if (BladesActor.IsType(this, BladesActorType.pc)) {
-            return this.system.tier.value + (this.crew?.system.tier.value ?? 0);
+            return this.system.tier.value + (this.crew?.getTierTotal() ?? 0);
         }
         if (BladesActor.IsType(this, BladesActorType.npc)) {
             return this.system.tier.value;
@@ -118,6 +118,7 @@ class BladesActor extends Actor {
         }
         return null;
     }
+
     get primaryUser() {
         return game.users?.find((user) => user.character?.id === this?.id) || null;
     }
@@ -825,6 +826,8 @@ class BladesActor extends Actor {
     }
     parentActor;
     get isSubActor() { return this.parentActor !== undefined; }
+    
+    
     isMember(crew) { return this.crew?.id === crew.id; }
     get vice() {
         if (this.type !== BladesActorType.pc) {

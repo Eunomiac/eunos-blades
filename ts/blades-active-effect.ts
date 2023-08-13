@@ -41,76 +41,7 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, effect:
     return undefined;
   },
   APPLYTOMEMBERS: async () => { return undefined },
-  // memberMultiply: async (actor, funcData, effect, isReversing = false) => {
-
-  // },
-  // memberAdd: async (actor, funcData, effect, isReversing = false) => {
-
-  // },
-  // memberDowngrade: async (actor, funcData, effect, isReversing = false) => {
-
-  // },
-  // memberUpgrade: async (actor, funcData, effect, isReversing = false) => {
-
-  // },
-  // memberOverride: async (actor, funcData, effect, isReversing = false) => {
-
-  // },
-  // applyToMembers: async (actor, funcData, effect, isReversing = false) => {
-  //   const members = actor.members;
-  //   if (members.length === 0) { return }
-  //   const [changeValue, changeKey, changeFunc] = funcData.split(/:/).reverse();
-
-
-  // Instead just create/toggle/remove new effects applied to all member actors
-  // each custom function can be defined separately as an 'independent' active effect
-  // this way all the "spreading to members" logic is contained in here
-  // return owner.createEmbeddedDocuments("ActiveEffect", [{
-  //   name: "New Effect",
-  //   icon: "systems/eunos-blades/assets/icons/effect-icons/default.png",
-  //   origin: this.uuid, // owner.uuid
-  //   /* ? */ type: changeFunc in CUSTOMFUNCS ? "CUSTOM" : changeFunc,
-
-  // }]);
-
-  // switch (changeType) {
-  //   case "upgradeItemQuality": {
-  //     const gearTag = changeValue as BladesTag;
-  //     await Promise.all(members.map(async (member) => member.updateEmbeddedDocuments(
-  //       "Item",
-  //       member.items
-  //         .filter((item): item is BladesItemOfType<BladesItemType.gear> => item.type === BladesItemType.gear && item.hasTag(gearTag))
-  //         .map((item) => ({"_id": item.id, "system.tier.value": item.system.tier.value + (isReversing ? -1 : 1)}))
-  //     )));
-  //     return;
-  //   }
-  //   case "upgradeActionMax": {
-  //     const changeNum = U.pInt(changeValue);
-
-  //     await Promise.all(members.map(async (member) => {
-  //       const changeData: Record<string,number> = {};
-  //       for (const actionName of Object.values(InsightActions)) {
-  //         if (member.system.attributes.insight[actionName].max < changeNum) {
-  //           changeData[`system.attributes.insight.${actionName}.max`] = changeNum;
-  //         }
-  //       }
-  //       for (const actionName of Object.values(ProwessActions)) {
-  //         if (member.system.attributes.prowess[actionName].max < changeNum) {
-  //           changeData[`system.attributes.prowess.${actionName}.max`] = changeNum;
-  //         }
-  //       }
-  //       for (const actionName of Object.values(ResolveActions)) {
-  //         if (member.system.attributes.resolve[actionName].max < changeNum) {
-  //           changeData[`system.attributes.resolve.${actionName}.max`] = changeNum;
-  //         }
-  //       }
-  //       return member.update(changeData);
-  //     }));
-  //     return;
-  //   }
-  //   // no default
-  // }
-  // },
+  APPLYTOCOHORTS: async () => { return undefined },
   remItem: async (actor, funcData, effect, isReversing = false) => {
 
     function testString(targetString: string, testDef: string) {
@@ -185,12 +116,19 @@ class BladesActiveEffect extends ActiveEffect {
 
       if (!(effect.parent instanceof BladesActor)) { return }
 
-      // Does this effect have an "APPLYTOMEMBERS" CUSTOM effect?
-      if (BladesActor.IsType(effect.parent, BladesActorType.crew) && effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
-        // Copy the effect, apply it to all members of the crew, then delete changes from original effect so only the APPLYTOMEMBERS key remains.
-        // @ts-expect-error Useless typing for createEmbeddedDocuments
-        await Promise.all(effect.parent.members.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect])));
-        await effect.updateSource({changes: effect.changes.filter((change) => change.key === "APPLYTOMEMBERS")});
+      // Does this effect have an "APPLYTOMEMBERS" or "APPLYTOCOHORTS" CUSTOM effect?
+      if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
+        if (effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
+          // Copy the effect, apply it to all members of the crew, then delete changes from original effect so only the APPLYTOMEMBERS key remains.
+          // @ts-expect-error Useless typing for createEmbeddedDocuments
+          await Promise.all(effect.parent.members.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect])));
+          await effect.updateSource({changes: effect.changes.filter((change) => change.key === "APPLYTOMEMBERS")});
+        } else if (effect.parent.cohorts.length > 0 && effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
+          // Copy the effect, apply it to all cohorts of the crew, then delete changes from original effect so only the APPLYTOCOHORTS key remains.
+          // @ts-expect-error Useless typing for createEmbeddedDocuments
+          await Promise.all(effect.parent.cohorts.map(async (cohort) => cohort.createEmbeddedDocuments("ActiveEffect", [effect])));
+          await effect.updateSource({changes: effect.changes.filter((change) => change.key === "APPLYTOCOHORTS")});
+        }
         return;
       }
 
@@ -253,13 +191,23 @@ class BladesActiveEffect extends ActiveEffect {
 
     Hooks.on("deleteActiveEffect", async (effect: BladesActiveEffect) => {
       if (!(effect.parent instanceof BladesActor)) { return }
-      // Does this effect have an "APPLYTOMEMBERS" CUSTOM effect?
-      if (BladesActor.IsType(effect.parent, BladesActorType.crew) && effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
-        // Delete matching ActiveEffects from all members.
-        await Promise.all(effect.parent.members
-          .map(async (member) => Promise.all(member.effects
-            .filter((e) => e.name === effect.name)
-            .map(async (e) => e.delete()))));
+
+      if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
+        // Does this effect have an "APPLYTOMEMBERS" / "APPLYTOCOHORTS" CUSTOM effect?
+        if (effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
+          // Delete matching ActiveEffects from all members.
+          await Promise.all(effect.parent.members
+            .map(async (member) => Promise.all(member.effects
+              .filter((e) => e.name === effect.name)
+              .map(async (e) => e.delete()))));
+        } else if (effect.parent.cohorts.length > 0 && effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
+          // Delete matching ActiveEffects from all cohorts.
+          await Promise.all(effect.parent.cohorts
+            .map(async (cohort) => Promise.all(cohort.effects
+              .filter((e) => e.name === effect.name)
+              .map(async (e) => e.delete()))));
+
+        }
       }
       const customEffects = effect.changes.filter((changes: EffectChangeData) => changes.mode === 0);
       customEffects.forEach(({key, value}) => {

@@ -135,11 +135,10 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   }
 
   get dialogCSSClasses(): string { return "" }
-  // #endregion
 
-  getTierTotal() {
+  getTierTotal(): number {
     if (BladesActor.IsType(this, BladesActorType.pc)) {
-      return this.system.tier.value + (this.crew?.system.tier.value ?? 0);
+      return this.system.tier.value + (this.crew?.getTierTotal() ?? 0);
     }
     if (BladesActor.IsType(this, BladesActorType.npc)) {
       return this.system.tier.value;
@@ -152,6 +151,8 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
     }
     return null as never;
   }
+  // #endregion
+
   // #region BladesPrimaryActor Implementation ~
   get primaryUser(): User | null {
     return game.users?.find((user) => user.character?.id === this?.id) || null;
@@ -872,6 +873,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   get isSubActor() { return this.parentActor !== undefined }
 
   // #endregion
+
   // #region BladesScoundrel Implementation ~
 
   isMember(crew: BladesActor) { return this.crew?.id === crew.id }
@@ -985,12 +987,12 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       .filter((claim) => claim.isTurf && claim.value).length;
   }
 
-  get upgrades(): BladesItem[] {
+  get upgrades(): Array<BladesItemOfType<BladesItemType.crew_upgrade>> {
     if (this.type !== BladesActorType.crew || !this.playbook) { return [] }
-    return this.activeSubItems.filter((item) => item.type === BladesItemType.crew_upgrade);
+    return this.activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.crew_upgrade> => item.type === BladesItemType.crew_upgrade);
   }
-  get cohorts(): BladesItem[] {
-    return this.activeSubItems.filter((item) => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type));
+  get cohorts(): Array<BladesItemOfType<BladesItemType.cohort_gang|BladesItemType.cohort_expert>> {
+    return this.activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.cohort_gang|BladesItemType.cohort_expert> => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type));
   }
 
   getTaggedItemBonuses(tags: BladesTag[]): number {
@@ -1039,7 +1041,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
   // #endregion
 
-  // #region Overrides: _onCreateEmbeddedDocuments, update ~
+  // #region OVERRIDES: _onCreateDescendantDocuments, update ~
   // @ts-expect-error New method not defined in @league VTT types.
   override async _onCreateDescendantDocuments(parent: BladesActor, collection: "items"|"effects", docs: BladesItem[]|BladesActiveEffect[], data: BladesItem[]|BladesActiveEffect[], options: Record<string,boolean>, userId: string): Promise<void> {
     docs.forEach(async (doc) => {

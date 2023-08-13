@@ -37,7 +37,7 @@ class BladesItemSheet extends ItemSheet {
       isEmbeddedItem: Boolean(this.item.parent),
       item: this.item,
       system: this.item.system,
-      tierTotal: this.item.getTierTotal() > 0 ? U.romanizeNum(this.item.getTierTotal()) : undefined,
+      tierTotal: this.item.getTierTotal() > 0 ? U.romanizeNum(this.item.getTierTotal()) : "0",
       activeEffects: Array.from(this.item.effects) as BladesActiveEffect[]
     };
 
@@ -74,7 +74,9 @@ class BladesItemSheet extends ItemSheet {
     },
     [BladesItemType.cohort_gang]: (context) => {
       if (!BladesItem.IsType(this.item, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { return undefined as never }
-      context.tierTotal = this.item.system.quality > 0 ? U.romanizeNum(this.item.system.quality) : undefined;
+      context.tierTotal = this.item.system.quality > 0 ? U.romanizeNum(this.item.system.quality) : "0";
+      context.system.subtypes ??= {};
+      context.system.elite_subtypes ??= {};
       const sheetData: Partial<BladesItemDataOfType<BladesItemType.cohort_gang>> = {
         tierData: {
           "class": "comp-tier comp-vertical comp-teeth",
@@ -88,36 +90,26 @@ class BladesItemSheet extends ItemSheet {
           }
         }
       };
-      const scale = Math.min(7, this.item.system.scale);
+      const scale = Math.min(6, this.item.system.scale);
       if (BladesItem.IsType(this.item, BladesItemType.cohort_gang)) {
-        sheetData.scaleData = {example: C.ScaleExamples[scale - 1]};
+        sheetData.scaleData = {example: C.ScaleExamples[scale]};
       }
-      const gangTypes: string[] = this.item.tags.filter((tag) => Object.values(Tag.GangType).includes(tag));
-      if (gangTypes.length === 0 || !BladesActor.IsType(this.item.parent, BladesActorType.crew)) {
-        sheetData.subtitle = BladesItem.IsType(this.item, BladesItemType.cohort_gang) ? `A ${C.ScaleSizes[scale - 1]}Gang` : "An Expert";
-      } else {
+      sheetData.subtitle = BladesItem.IsType(this.item, BladesItemType.cohort_gang) ? `${C.ScaleSizes[scale]}Gang` : "An Expert";
+
+      const {subtypes, elite_subtypes} = context.system;
+      if (Object.values(subtypes).length + Object.values(elite_subtypes).length > 0) {
         if (BladesItem.IsType(this.item, BladesItemType.cohort_gang)) {
-          if (this.item.parent && BladesActor.IsType(this.item.parent, BladesActorType.crew)) {
-            const eliteUpgrades = this.item.parent.activeSubItems
-              .filter((item) => item.type === BladesItemType.crew_upgrade && item.name && /^Elite/.test(item.name));
-            const parsedGangTypes = gangTypes
-              .map((gType) => {
-                if (eliteUpgrades.some((eUpg) => eUpg.hasTag(gType as Tag.GangType))) {
-                  return `Elite ${gType}`;
-                }
-                return gType;
-              })
-              .sort((a, b) => (/^Elite/.test(a) ? 1 : 0) - (/^Elite/.test(b) ? 1 : 0));
-            sheetData.subtitle = `A ${C.ScaleSizes[scale - 1]}Gang of ${U.oxfordize(parsedGangTypes, false).replace(/\band\b/g, "&")}`;
-          } else {
-            if (gangTypes.length === 0 || !BladesActor.IsType(this.item.parent, BladesActorType.crew)) {
-              sheetData.subtitle = `A ${C.ScaleSizes[scale - 1]}Gang`;
-            }
-            sheetData.subtitle = `A ${C.ScaleSizes[scale - 1]}Gang of ${U.oxfordize(gangTypes, false).replace(/\band\b/g, "&")}`;
-          }
-        } else if (BladesItem.IsType(this.item, BladesItemType.cohort_expert)) {
-          sheetData.subtitle = "An Expert";
+          sheetData.subtitle += " of";
         }
+        sheetData.subtitle += ` ${U.oxfordize([
+          ...Object.values(subtypes).filter((subtype) => /[A-Za-z]/.test(subtype) && !Object.values(elite_subtypes).includes(subtype)),
+          ...Object.values(elite_subtypes).filter((subtype) => /[A-Za-z]/.test(subtype)).map((subtype) => `Elite ${subtype}`)
+        ], false).replace(/\band\b/g, "&")}`;
+      }
+
+      if (context.isGM) {
+        context.system.subtypes[`${Object.values(context.system.subtypes).length + 1}`] = " ";
+        context.system.elite_subtypes[`${Object.values(context.system.elite_subtypes).length + 1}`] = " ";
       }
 
       return {
@@ -372,6 +364,25 @@ class BladesItemSheet extends ItemSheet {
         });
     });
 
+    // Harm Bar Functionality for Cohorts
+    if (BladesItem.IsType(this.item, BladesItemType.cohort_expert, BladesItemType.cohort_gang)) {
+      html.find("[data-harm-click]").on({
+        click: (event) => {
+          event.preventDefault();
+          const harmLevel = U.pInt($(event.currentTarget).data("harmClick"));
+          if ((<BladesItemOfType<BladesItemType.cohort_expert|BladesItemType.cohort_gang>>this.item).system.harm.value !== harmLevel) {
+            this.item.update({"system.harm.value": harmLevel});
+          }
+        },
+        contextmenu: (event) => {
+          event.preventDefault();
+          const harmLevel = Math.max(0, U.pInt($(event.currentTarget).data("harmClick")) - 1);
+          if ((<BladesItemOfType<BladesItemType.cohort_expert|BladesItemType.cohort_gang>>this.item).system.harm.value !== harmLevel) {
+            this.item.update({"system.harm.value": harmLevel});
+          }
+        }
+      });
+    }
 
     // This is a workaround until is being fixed in FoundryVTT.
     if (this.options.submitOnChange) {

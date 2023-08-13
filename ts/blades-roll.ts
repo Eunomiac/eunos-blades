@@ -9,6 +9,10 @@ import {Attributes, Positions, EffectLevels, Actions} from "./core/constants.js"
  * @param {string} effect
  */
 
+/* Convert this to a FormApplication that is rendered to both the rolling player and GM
+simultaneously. Both can make simultaneous edits to the roll; a checkbox for the GM toggles
+the "Roll" button for the player */
+
 export async function bladesRoll(
   dice_amount: number,
   attribute_name: Actions|Attributes|"" = "",
