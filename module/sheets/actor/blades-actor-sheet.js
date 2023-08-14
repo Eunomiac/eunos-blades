@@ -43,7 +43,8 @@ class BladesActorSheet extends BladesSheet {
         const context = super.getData();
         const { activeSubItems, activeSubActors } = this.actor;
         const sheetData = {};
-        sheetData.preparedItems = {
+
+        sheetData.preparedItems = Object.assign(context.preparedItems ?? {}, {
             abilities: activeSubItems
                 .filter((item) => item.type === BladesItemType.ability)
                 .map((item) => {
@@ -88,7 +89,7 @@ class BladesActorSheet extends BladesSheet {
                 return item;
             }),
             playbook: this.actor.playbook
-        };
+        });
         sheetData.preparedActors = {
             crew: activeSubActors.find((actor) => actor.type === BladesActorType.crew),
             vice_purveyor: activeSubActors.find((actor) => actor.hasTag(Tag.NPC.VicePurveyor)),
@@ -152,7 +153,7 @@ class BladesActorSheet extends BladesSheet {
                         checkTarget: `system.trauma.checked.${tName}`,
                         checkValue: this.actor.system.trauma.checked[tName] ?? false,
                         tooltip: C.TraumaTooltips[tName],
-                        tooltipClass: "trauma-tooltip"
+                        tooltipClass: "tooltip-trauma"
                     })),
                     this.actor.traumaList.slice(Math.ceil(this.actor.traumaList.length / 2))
                         .map((tName) => ({
@@ -164,7 +165,7 @@ class BladesActorSheet extends BladesSheet {
                         checkTarget: `system.trauma.checked.${tName}`,
                         checkValue: this.actor.system.trauma.checked[tName] ?? false,
                         tooltip: C.TraumaTooltips[tName],
-                        tooltipClass: "trauma-tooltip"
+                        tooltipClass: "tooltip-trauma"
                     }))
                 ]
             }
@@ -193,10 +194,14 @@ class BladesActorSheet extends BladesSheet {
         sheetData.attributeData = {};
         const attrEntries = Object.entries(this.actor.system.attributes);
         for (const [attribute, attrData] of attrEntries) {
-            sheetData.attributeData[attribute] = {};
+            sheetData.attributeData[attribute] = {
+                tooltip: C.AttributeTooltips[attribute],
+                actions: {}
+            };
             const actionEntries = Object.entries(attrData);
             for (const [action, actionData] of actionEntries) {
-                sheetData.attributeData[attribute][action] = {
+                sheetData.attributeData[attribute].actions[action] = {
+                    tooltip: C.ActionTooltips[action],
                     value: actionData.value,
                     max: BladesTrackerSheet.Get().phase === BladesPhase.CharGen ? 2 : this.actor.system.attributes[attribute][action].max
                 };

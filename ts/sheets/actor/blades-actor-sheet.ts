@@ -56,11 +56,40 @@ class BladesActorSheet extends BladesSheet {
 
     const sheetData: Partial<BladesActorDataOfType<BladesActorType.pc>> = {};
 
-    sheetData.preparedItems = {
-      abilities: activeSubItems
-        .filter((item): item is BladesItemOfType<BladesItemType.ability> => item.type === BladesItemType.ability)
-        .map((item) => {
-          //~ Assign dotlines to abilities with usage data
+    //~ Assemble embedded actors and items
+    sheetData.preparedItems = Object.assign(
+      context.preparedItems ?? {},
+      {
+        abilities: activeSubItems
+          .filter((item): item is BladesItemOfType<BladesItemType.ability> => item.type === BladesItemType.ability)
+          .map((item) => {
+            //~ Assign dotlines to abilities with usage data
+            if (item.system.uses_per_score.max) {
+              Object.assign(item, {
+                inRuleDotline: {
+                  data: item.system.uses_per_score,
+                  dotlineLabel: "Uses",
+                  target: "item.system.uses_per_score.value",
+                  iconEmpty: "dot-empty.svg",
+                  iconEmptyHover: "dot-empty-hover.svg",
+                  iconFull: "dot-full.svg",
+                  iconFullHover: "dot-full-hover.svg"
+                }
+              });
+            }
+            return item;
+          }),
+        background: activeSubItems.find((item) => item.type === BladesItemType.background),
+        heritage: activeSubItems.find((item) => item.type === BladesItemType.heritage),
+        vice: activeSubItems.find((item) => item.type === BladesItemType.vice),
+        loadout: activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.gear> => item.type === BladesItemType.gear).map((item) => {
+          // Assign load and usage data to gear
+          if (item.system.load) {
+            Object.assign(item, {
+              numberCircle: item.system.load,
+              numberCircleClass: "item-load"
+            });
+          }
           if (item.system.uses_per_score.max) {
             Object.assign(item, {
               inRuleDotline: {
@@ -76,34 +105,9 @@ class BladesActorSheet extends BladesSheet {
           }
           return item;
         }),
-      background: activeSubItems.find((item) => item.type === BladesItemType.background),
-      heritage: activeSubItems.find((item) => item.type === BladesItemType.heritage),
-      vice: activeSubItems.find((item) => item.type === BladesItemType.vice),
-      loadout: activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.gear> => item.type === BladesItemType.gear).map((item) => {
-        // Assign load and usage data to gear
-        if (item.system.load) {
-          Object.assign(item, {
-            numberCircle: item.system.load,
-            numberCircleClass: "item-load"
-          });
-        }
-        if (item.system.uses_per_score.max) {
-          Object.assign(item, {
-            inRuleDotline: {
-              data: item.system.uses_per_score,
-              dotlineLabel: "Uses",
-              target: "item.system.uses_per_score.value",
-              iconEmpty: "dot-empty.svg",
-              iconEmptyHover: "dot-empty-hover.svg",
-              iconFull: "dot-full.svg",
-              iconFullHover: "dot-full-hover.svg"
-            }
-          });
-        }
-        return item;
-      }),
-      playbook: this.actor.playbook
-    };
+        playbook: this.actor.playbook
+      }
+    ) as BladesActorDataOfType<BladesActorType.pc>["preparedItems"];
 
     sheetData.preparedActors = {
       crew: activeSubActors.find((actor): actor is BladesActorOfType<BladesActorType.crew> => actor.type === BladesActorType.crew),
@@ -173,7 +177,7 @@ class BladesActorSheet extends BladesSheet {
               checkTarget: `system.trauma.checked.${tName}`,
               checkValue: this.actor.system.trauma.checked[tName] ?? false,
               tooltip: C.TraumaTooltips[tName as KeyOf<typeof C.TraumaTooltips>],
-              tooltipClass: "trauma-tooltip"
+              tooltipClass: "tooltip-trauma"
             })),
           this.actor.traumaList.slice(Math.ceil(this.actor.traumaList.length / 2))
             .map((tName) => ({
@@ -185,7 +189,7 @@ class BladesActorSheet extends BladesSheet {
               checkTarget: `system.trauma.checked.${tName}`,
               checkValue: this.actor.system.trauma.checked[tName] ?? false,
               tooltip: C.TraumaTooltips[tName as KeyOf<typeof C.TraumaTooltips>],
-              tooltipClass: "trauma-tooltip"
+              tooltipClass: "tooltip-trauma"
             }))
         ]
       }
@@ -215,13 +219,20 @@ class BladesActorSheet extends BladesSheet {
       .filter(([, isActive]) => isActive)
       .map(([armor]) => [armor, this.actor.system.armor.checked[armor as KeyOf<typeof this.actor.system.armor.checked>]]));
 
-    sheetData.attributeData = {} as Record<Attributes, Record<Actions, ValueMax>>;
+    sheetData.attributeData = {} as Record<Attributes, {
+      tooltip: string,
+      actions: Record<Actions, ValueMax & {tooltip: string}>
+    }>;
     const attrEntries = Object.entries(this.actor.system.attributes) as Array<[Attributes, Record<Actions,ValueMax>]>;
     for (const [attribute, attrData] of attrEntries) {
-      sheetData.attributeData[attribute] = {} as Record<Actions, ValueMax>;
+      sheetData.attributeData[attribute] = {
+        tooltip: C.AttributeTooltips[attribute],
+        actions: {} as Record<Actions, ValueMax & {tooltip: string}>
+      };
       const actionEntries = Object.entries(attrData) as Array<[Actions, ValueMax]>;
       for (const [action, actionData] of actionEntries) {
-        sheetData.attributeData[attribute][action] = {
+        sheetData.attributeData[attribute].actions[action] = {
+          tooltip: C.ActionTooltips[action],
           value: actionData.value,
           max: BladesTrackerSheet.Get().phase === BladesPhase.CharGen ? 2 : this.actor.system.attributes[attribute][action].max
         };

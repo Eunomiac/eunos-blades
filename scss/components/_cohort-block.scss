@@ -1,0 +1,253 @@
+& {
+  width: 100%;
+
+  .comp-cohort {
+    $heights: (25px 16px 25px);
+    align-items: stretch;
+    border-radius: 10px;
+    border: 2px outset var(--blades-white);
+    margin: 5px;
+    background: linear-gradient(45deg, var(--blades-black-dark), var(--blades-grey));
+    box-shadow: 3px 3px 5px var(--blades-black-dark);
+
+    .cohort-top {
+      display: grid;
+      grid-template-areas:
+        "img title quality"
+        "img subtitle scale"
+        "img harm roll";
+      grid-template-columns: 60px 1fr 120px;
+      grid-template-rows: join($heights, (), $separator: space);
+      height: calculate-sum($heights);
+      border-bottom: 2px solid var(--blades-white);
+
+      .cohort-image-container {
+        grid-area: img;
+        position: relative;
+        pointer-events: none;
+        height: 60px;
+        width: 60px;
+        top: 3px;
+
+        * { pointer-events: none }
+        .half-image {
+          width: 30px;
+          min-height: 60px;
+          overflow: hidden;
+          position: absolute;
+
+          img {
+            max-width: 60px;
+            position: absolute;
+          }
+
+          &.half-image-left, &.half-image-left img {
+            left: 0;
+          }
+          &.half-image-right, &.half-image-right img {
+            right: 0;
+          }
+        }
+      }
+      .cohort-title-container { grid-area: title }
+      .cohort-subtitle-container { grid-area: subtitle }
+      .cohort-quality-container { grid-area: quality }
+      .cohort-scale-container { grid-area: scale }
+      .cohort-harm-container {
+        position: relative;
+        grid-area: harm;
+        padding-right: 10px;
+        &.wide-bar {
+          width: calc(100% + 120px);
+          padding: 0;
+        }
+      }
+      .cohort-roll-container {
+        position: relative;
+        grid-area: roll;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .cohort-name {
+        pointer-events: all;
+        font-family: var(--font-emphasis);
+        font-size: toRem(18px);
+        line-height: 25px;
+        color: var(--blades-white-bright);
+        transition: 0.25s;
+        transform-origin: 0% 50%;
+        display: inline-block;
+
+        &:hover {
+          color: var(--blades-gold);
+          scale: 1.25;
+        }
+      }
+
+      .cohort-subtitle {
+        font-size: toRem(14px);
+        font-style: italic;
+        line-height: 14px;
+        position: relative;
+        top: -3px;
+        font-weight: bold;
+      }
+
+      .cohort-quality-container {
+        text-align: right;
+
+        .cohort-quality-label {
+          font-size: toRem(16px);
+          font-family: var(--font-emphasis);
+        }
+
+        .cohort-quality-number {
+          display: inline-block;
+          font-size: toRem(16px);
+          font-weight: bold;
+          color: var(--blades-gold-bright);
+          transform-origin: 50% 50%;
+          scale: 1.25 2;
+          margin: 0 5px;
+        }
+      }
+
+      .cohort-scale-container {
+        text-align: right;
+        margin-top: -5px;
+
+        .cohort-scale-label {
+          font-size: toRem(16px);
+          font-family: var(--font-emphasis);
+        }
+
+        .cohort-scale-number {
+          display: inline-block;
+          font-size: toRem(16px);
+          font-weight: bold;
+          color: var(--blades-gold-bright);
+          transform-origin: 50% 50%;
+          scale: 1.25;
+          margin: 0 5px;
+        }
+      }
+
+      .cohort-harm-bar {
+        justify-content: stretch;
+        width: 100%;
+        height: 100%;
+        // margin-right: 15px;
+
+        .cohort-harm-box {
+          position: relative;
+          flex-grow: 0.25;
+          border: 1px solid var(--blades-white);
+          border-bottom-width: 2px;
+          background: var(--blades-red-dark);
+          height: 100%;
+          text-align: center;
+
+          .harm-number {
+            display: inline-block;
+            width: 15px;
+            line-height: 23px;
+            font-size: 18px;
+            // flex-grow: 0;
+            // font-size: 40px;
+            // line-height: 40px;
+            // padding: 0 5px;
+            // color: var(--blades-red);
+            color: var(--blades-black-dark);
+            font-family: var(--font-emphasis);
+            text-shadow: none;
+            text-align: center;
+            // text-indent: 10px;
+            transition: 0.25s;
+          }
+          .harm-effect { display: none }
+          .cohort-harm-tooltip {
+            padding: 0;
+            bottom: 22px;
+            > h2, p {padding: 0 10px; margin: 0}
+          }
+
+
+          &.harm-level-0 { display: none }
+          &.active {
+            display: flex;
+            flex-grow: 2;
+            background: linear-gradient(to right, var(--blades-red), var(--blades-red-dark), transparent);
+            &.harm-level-0 { background: transparent }
+            &.harm-level-4 { background: var(--blades-red) }
+            .harm-number {
+              color: var(--blades-white-bright);
+              text-align: left;
+              text-indent: 5px;
+              text-shadow: 0 0 2px var(--blades-black-dark),0 0 2px var(--blades-black-dark),0 0 2px var(--blades-black-dark),0 0 2px var(--blades-black-dark);
+              width: min-content;
+              margin-right: 5px;
+            }
+            .harm-effect {
+              display: inline-block;
+              color: var(--blades-white-bright);
+              line-height: 23px;
+            }
+            ~ .cohort-harm-box {
+              background: transparent;
+              .harm-number { color: var(--blades-grey) }
+            }
+          }
+        }
+
+      }
+
+      .cohort-roll-button {
+        border: none;
+        padding: 0;
+        height: 100%;
+        width: 23px;
+        position: relative;
+
+        svg.roll-button-icon {
+          stroke-width: 20px;
+        }
+        .tooltip-cohort-roll {
+          padding: 0;
+          bottom: 23px;
+          > h2 { padding: 0 10px; margin: 0}
+        }
+
+        &[data-roll-label="Untrained"] {
+          .roll-button-icon {
+            fill: transparent;
+            stroke: var(--blades-white);
+          }
+        }
+        &[data-roll-label="Trained"] {
+          .roll-button-icon {
+            fill: var(--blades-grey-bright);
+            stroke: var(--blades-white);
+          }
+        }
+        &[data-roll-label="Elite"] {
+          .roll-button-icon {
+            fill: rgb(150, 255, 255);
+            stroke: var(--blades-white);
+          }
+        }
+      }
+
+    }
+
+    .filled-label {
+      height: 100%;
+      line-height: 25px;
+      font-size: 18px;
+      padding: 0px;
+      margin-right: 3px;
+      color: var(--blades-white);
+      background: transparent;
+    }
+  }
+}

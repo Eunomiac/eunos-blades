@@ -1,4 +1,4 @@
-import G from "./core/gsap.js";
+import G, {ApplyTooltipListeners} from "./core/gsap.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
@@ -14,7 +14,8 @@ export enum SelectionCategory {
   Ability = "Ability",
   Faction = "Faction",
   Upgrade = "Upgrade",
-  Cohort = "Cohort",
+  Cohort_Gang = "Cohort_Gang",
+  Cohort_Expert = "Cohort_Expert",
   Feature = "Feature",
   Stricture = "Stricture",
   VicePurveyor = "VicePurveyor",
@@ -132,21 +133,7 @@ class BladesSelectorDialog extends Dialog {
     });
 
     //~ Tooltips
-    html.find(".tooltip").siblings("[data-item-id]")
-      .each(function(i, elem) {
-        $(elem).data("hoverTimeline", G.effects.hoverTooltip(elem));
-      })
-      .on({
-        mouseenter: function() {
-          $(this).parent().css("z-index", 1);
-          $(this).data("hoverTimeline").play();
-        },
-        mouseleave: function() {
-          $(this).data("hoverTimeline").reverse().then(() => {
-            $(this).parent().removeAttr("style");
-          });
-        }
-      });
+    ApplyTooltipListeners(html);
 
     //~ Item Control
     html.find("[data-item-id]").on("click", function() {

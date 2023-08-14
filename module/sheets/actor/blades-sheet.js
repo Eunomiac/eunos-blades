@@ -7,8 +7,8 @@
 
 
 import U from "../../core/utilities.js";
-import G from "../../core/gsap.js";
-import { BladesActorType } from "../../core/constants.js";
+import G, { ApplyTooltipListeners } from "../../core/gsap.js";
+import { BladesActorType, BladesItemType } from "../../core/constants.js";
 import Tags from "../../core/tags.js";
 import BladesActor from "../../blades-actor.js";
 import BladesItem from "../../blades-item.js";
@@ -28,7 +28,55 @@ class BladesSheet extends ActorSheet {
             activeEffects: Array.from(this.actor.effects),
             hasFullVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER),
             hasLimitedVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED),
-            hasControl: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
+            hasControl: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER),
+            preparedItems: {
+                cohorts: {
+                    gang: this.actor.activeSubItems
+                        .filter((item) => item.type === BladesItemType.cohort_gang)
+                        .map((item) => {
+                        const subtypes = U.unique(Object.values(item.system.subtypes)
+                            .map((subtype) => subtype.trim())
+                            .filter((subtype) => /[A-Za-z]/.test(subtype)));
+                        const elite_subtypes = U.unique([
+                            ...Object.values(item.system.elite_subtypes),
+                            ...(item.parent?.upgrades ?? [])
+                                .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
+                        ]
+                            .map((subtype) => subtype.trim())
+                            .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
+                        const imgTypes = [...elite_subtypes];
+                        if (imgTypes.length < 2) {
+                            imgTypes.push(...subtypes.filter((subtype) => !imgTypes.includes(subtype)));
+                        }
+                        if (U.unique(imgTypes).length === 1) {
+                            item.system.image = Object.values(item.system.elite_subtypes).includes(imgTypes[0]) ? `elite-${U.lCase(imgTypes[0])}.png` : `${U.lCase(imgTypes[0])}.png`;
+                        }
+                        else if (U.unique(imgTypes).length > 1) {
+                            const [rightType, leftType] = imgTypes;
+                            item.system.imageLeft = Object.values(item.system.elite_subtypes).includes(leftType) ? `elite-${U.lCase(leftType)}.png` : `${U.lCase(leftType)}.png`;
+                            item.system.imageRight = Object.values(item.system.elite_subtypes).includes(rightType) ? `elite-${U.lCase(rightType)}.png` : `${U.lCase(rightType)}.png`;
+                        }
+                        Object.assign(item.system, {
+                            tierTotal: item.getTierTotal() > 0 ? U.romanizeNum(item.getTierTotal()) : "0",
+                            cohortRollData: [
+                                { mode: "untrained", label: "Untrained", color: "transparent", tooltip: "<p>Roll Untrained</p>" }
+                            ]
+                        });
+                        return item;
+                    }),
+                    expert: this.actor.activeSubItems
+                        .filter((item) => item.type === BladesItemType.cohort_expert)
+                        .map((item) => {
+                        Object.assign(item.system, {
+                            tierTotal: item.getTierTotal() > 0 ? U.romanizeNum(item.getTierTotal()) : "0",
+                            cohortRollData: [
+                                { mode: "untrained", label: "Untrained", tooltip: "<h2>Roll Untrained</h2>" }
+                            ]
+                        });
+                        return item;
+                    })
+                }
+            }
         };
         if (BladesActor.IsType(this.actor, BladesActorType.pc, BladesActorType.crew)) {
             sheetData.playbookData = {
@@ -73,21 +121,7 @@ class BladesSheet extends ActorSheet {
             html.find('.editor:not(.tinymce) [data-is-secret="true"]').remove();
         }
 
-        html.find(".tooltip").siblings(".comp-body:not(.hide-tooltip)")
-            .each(function (i, elem) {
-            $(elem).data("hoverTimeline", G.effects.hoverTooltip(elem));
-        })
-            .on({
-            mouseenter: function () {
-                $(this).parent().css("z-index", 1);
-                $(this).data("hoverTimeline").play();
-            },
-            mouseleave: function () {
-                $(this).data("hoverTimeline").reverse().then(() => {
-                    $(this).parent().removeAttr("style");
-                });
-            }
-        });
+        ApplyTooltipListeners(html);
         Tags.InitListeners(html, this.actor);
         if (!this.options.editable) {
             return;
@@ -262,6 +296,7 @@ class BladesSheet extends ActorSheet {
             docType: elem$.data("compType"),
             docTags: (elem$.data("compTags") ?? "").split(/\s+/g)
         };
+        eLog.checkLog2("dialog", "Component Data", { elem: elem$, ...compData });
         if (compData.docID && compData.docType) {
             compData.doc = {
                 Actor: this.actor.getSubActor(compData.docID),
@@ -274,7 +309,6 @@ class BladesSheet extends ActorSheet {
                 Item: this.actor.getDialogItems(compData.docCat)
             }[compData.docType];
         }
-        
         return compData;
     }
     async _onItemOpenClick(event) {
@@ -287,6 +321,19 @@ class BladesSheet extends ActorSheet {
     }
     async _onItemAddClick(event) {
         event.preventDefault();
+        const addType = $(event.currentTarget).closest(".comp").data("addType");
+        if (addType && addType in BladesItemType) {
+            await this.actor.createEmbeddedDocuments("Item", [
+                {
+                    name: {
+                        [BladesItemType.cohort_gang]: "A Gang",
+                        [BladesItemType.cohort_expert]: "An Expert"
+                    }[addType] ?? randomID(),
+                    type: addType
+                }
+            ]);
+            return;
+        }
         const { docCat, docType, dialogDocs, docTags } = this._getCompData(event);
         if (!dialogDocs || !docCat || !docType) {
             return;

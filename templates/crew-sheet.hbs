@@ -214,20 +214,38 @@
       </div>
 
       {{!-- Cohorts --}}
-      <div class="tab cohorts flex-vertical" data-tab="cohorts">
-        <label class="comp tab-label" data-comp-cat="cohort">
-          <a class="comp-control comp-button comp-add">
-            <i class="fas fa-plus-square"></i>
-          </a>
-          <span class="tab-title">Cohorts</span>
-          {{#if (test preparedItems.playbook "&&" (test actor.availableCohortPoints ">" 0)) }}
-          {{> "systems/eunos-blades/templates/components/dotline.hbs" cohortData.dotline }}
-          {{/if}}
-        </label>
+      <div class="tab cohorts flex-horizontal" data-tab="cohorts">
+        <div class="half-panel cohort-gang-panel">
+          <label class="comp tab-label" data-add-type="cohort_gang">
+            {{#if (test preparedItems.playbook "&&" (test actor.availableCohortPoints ">" 0)) }}
+            <a class="comp-control comp-button comp-add">
+              <i class="fas fa-plus-square"></i>
+            </a>
+            {{/if}}
+            <span class="tab-title">Gangs</span>
+          </label>
 
-        {{#each preparedItems.cohorts}}
-        {{> "systems/eunos-blades/templates/parts/cohort-block.hbs" }}
-        {{/each}}
+          {{#each preparedItems.cohorts.gang}}
+          {{> "systems/eunos-blades/templates/parts/cohort-block.hbs" }}
+          {{/each}}
+        </div>
+        <div class="half-panel cohort-expert-panel">
+          <label class="comp tab-label" data-add-type="cohort_expert">
+            {{#if (test preparedItems.playbook "&&" (test actor.availableCohortPoints ">" 0)) }}
+            <a class="comp-control comp-button comp-add">
+              <i class="fas fa-plus-square"></i>
+            </a>
+            {{/if}}
+            <span class="tab-title">Experts</span>
+            {{#if (test preparedItems.playbook "&&" (test actor.availableCohortPoints ">" 0)) }}
+            {{> "systems/eunos-blades/templates/components/dotline.hbs" cohortData.dotline }}
+            {{/if}}
+          </label>
+
+          {{#each preparedItems.cohorts.expert}}
+          {{> "systems/eunos-blades/templates/parts/cohort-block.hbs" }}
+          {{/each}}
+        </div>
       </div>
 
       {{!-- Description & Notes Tab --}}

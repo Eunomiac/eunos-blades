@@ -38,7 +38,11 @@ declare global {
       quality_bonus: number,
 
       scale: number,
-      quality: number
+      scaleExample: string,
+      quality: number,
+      image?: string,
+      imageLeft?: string,
+      imageRight?: string
     }
 
     export interface playbook {

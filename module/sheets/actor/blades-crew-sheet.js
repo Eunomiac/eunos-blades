@@ -23,14 +23,13 @@ class BladesCrewSheet extends BladesSheet {
         const { activeSubItems } = this.actor;
         const sheetData = {};
 
-        sheetData.preparedItems = {
+        sheetData.preparedItems = Object.assign(context.preparedItems ?? {}, {
             abilities: activeSubItems.filter((item) => item.type === BladesItemType.crew_ability),
             playbook: this.actor.playbook,
             reputation: activeSubItems.find((item) => item.type === BladesItemType.crew_reputation),
             upgrades: activeSubItems.filter((item) => item.type === BladesItemType.crew_upgrade),
-            cohorts: activeSubItems.filter((item) => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type)),
             preferredOp: activeSubItems.find((item) => item.type === BladesItemType.preferred_op)
-        };
+        });
         sheetData.preparedActors = {
             members: this.actor.members,
             contacts: this.actor.contacts
@@ -141,16 +140,6 @@ class BladesCrewSheet extends BladesSheet {
             const element = $(event.currentTarget).parents(".item");
             const item = this.actor.items.get(element.data("itemId"));
             item?.sheet?.render(true);
-        });
-        html.find(".add-item").on("click", (event) => {
-            event.preventDefault();
-            const a = event.currentTarget;
-            const item_type = a.dataset.itemType;
-            const data = {
-                name: randomID(),
-                type: item_type
-            };
-            return this.actor.createEmbeddedDocuments("Item", [data]);
         });
         html.find(".hold-toggle").on("click", () => {
             this.actor.update({ "system.hold": this.actor.system.hold === "weak" ? "strong" : "weak" });

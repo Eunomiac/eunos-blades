@@ -1,4 +1,4 @@
-<div class="{{#if class}}{{class}} {{/if}}comp" data-comp-type="{{docType}}" {{~#if (test cat "||" type)}}
+<div class="{{#if class}}{{class}} {{/if}}{{#if tooltip}}tooltip-trigger {{/if}}comp" data-comp-type="{{docType}}" {{~#if (test cat "||" type)}}
   data-comp-cat="{{#if cat}}{{cat}}{{else}}{{type}}{{/if}}" {{/if}} {{~#if cat}} data-comp-cat="{{cat}}" {{else}}{{#if
   type}} data-comp-cat="{{type}}" {{/if}}{{/if}} {{~#if _id}} data-comp-id="{{_id}}" {{else}}{{#if id}}
   data-comp-id="{{id}}" {{/if}}{{/if}}>
@@ -7,7 +7,7 @@
 
   {{~#if label}}
   {{~#if (test id "||" _id)}}
-  <label class="comp-label {{#if labelClass}}{{labelClass}} {{/if}}shadowed">
+  <label class="comp-label {{#if labelClass}}{{labelClass}} {{/if}}{{~#if tooltip}} tooltip-scaling-elem{{/if}} shadowed">
     {{~#if (test (test cat "||" type) "&&" addButton)}}
     <a class="comp-control comp-add">{{label}}</a>
     {{else}}
@@ -29,7 +29,7 @@
   </label>
   {{~else}}
   <label
-    class="comp-label {{~#if addButton}} comp-prompt{{/if}}{{~#if labelClass}} {{labelClass}}{{else}} shadowed{{/if}}">
+    class="comp-label {{~#if addButton}} comp-prompt{{/if}}{{~#if labelClass}} {{labelClass}}{{else}} shadowed{{/if}}{{#if tooltip}} tooltip-scaling-elem{{/if}}">
     {{~#if addButton}}
     <a class="comp-control comp-add">
       <span class="sur-title">Select Your</span>
@@ -60,9 +60,9 @@
   {{/if~}}
 
   <div class="comp-body">
-    {{#if (test system "&&" system.bgImg)}}<img class="comp-img" src="{{system.bgImg}}" />
-    {{else}}{{#if img}}<img class="comp-img" src="{{img}}" />{{/if}}{{/if}}
-    {{#if name}}<div class="comp-title shadowed">{{name}}</div>{{/if}}
+    {{#if (test system "&&" system.bgImg)}}<img class="comp-img{{#if tooltip}} tooltip-scaling-elem{{/if}}" src="{{system.bgImg}}" />
+    {{else}}{{#if img}}<img class="comp-img{{#if tooltip}} tooltip-scaling-elem{{/if}}" src="{{img}}" />{{/if}}{{/if}}
+    {{#if name}}<div class="comp-title shadowed{{#if tooltip}} tooltip-scaling-elem{{/if}}">{{name}}</div>{{/if}}
     {{#if (test system "&&" system.rules)}}<div class="comp-body-text shadowed">{{{system.rules}}}
       {{#if inRuleDotline}}
       <p></p>

@@ -27,14 +27,16 @@ class BladesCrewSheet extends BladesSheet {
     const sheetData: Partial<BladesActorDataOfType<BladesActorType.crew>> = {};
 
     //~ Assemble embedded actors and items
-    sheetData.preparedItems = {
-      abilities: activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.crew_ability> => item.type === BladesItemType.crew_ability),
-      playbook: this.actor.playbook as BladesItemOfType<BladesItemType.crew_playbook>|undefined,
-      reputation: activeSubItems.find((item): item is BladesItemOfType<BladesItemType.crew_reputation> => item.type === BladesItemType.crew_reputation),
-      upgrades: activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.crew_upgrade> => item.type === BladesItemType.crew_upgrade),
-      cohorts: activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.cohort_gang|BladesItemType.cohort_expert> => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type)),
-      preferredOp: activeSubItems.find((item): item is BladesItemOfType<BladesItemType.preferred_op> => item.type === BladesItemType.preferred_op)
-    };
+    sheetData.preparedItems = Object.assign(
+      context.preparedItems ?? {},
+      {
+        abilities: activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.crew_ability> => item.type === BladesItemType.crew_ability),
+        playbook: this.actor.playbook as BladesItemOfType<BladesItemType.crew_playbook>|undefined,
+        reputation: activeSubItems.find((item): item is BladesItemOfType<BladesItemType.crew_reputation> => item.type === BladesItemType.crew_reputation),
+        upgrades: activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.crew_upgrade> => item.type === BladesItemType.crew_upgrade),
+        preferredOp: activeSubItems.find((item): item is BladesItemOfType<BladesItemType.preferred_op> => item.type === BladesItemType.preferred_op)
+      }
+    ) as BladesActorDataOfType<BladesActorType.crew>["preparedItems"];
 
     sheetData.preparedActors = {
       members: this.actor.members,
@@ -157,19 +159,6 @@ class BladesCrewSheet extends BladesSheet {
       const element = $(event.currentTarget).parents(".item");
       const item = this.actor.items.get(element.data("itemId"));
       item?.sheet?.render(true);
-    });
-
-    // Add a new Cohort
-    html.find(".add-item").on("click", (event) => {
-      event.preventDefault();
-      const a = event.currentTarget;
-      const item_type = a.dataset.itemType;
-
-      const data = {
-        name: randomID(),
-        type: item_type
-      };
-      return this.actor.createEmbeddedDocuments("Item", [data]);
     });
 
     // Toggle Hold

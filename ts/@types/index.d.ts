@@ -38,6 +38,7 @@ declare global {
 
   // GreenSock Accessor Object
   declare const gsap: gsap;
+  type BladesTweenTarget = JQuery<HTMLElement> | gsap.TweenTarget;
 
   // Global Debugger/Logger
   type eLogParams = [string, ...any[]];

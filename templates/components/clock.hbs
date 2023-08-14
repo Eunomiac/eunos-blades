@@ -8,13 +8,14 @@
     <img class="clock-interior-img" src="systems/eunos-blades/assets/clocks/clock-glow-{{color}}.webp" style="{{#if (test value "==" 0)}}opacity: 0;{{/if}}" />
     {{/if}}
   </div>
-  <svg class="clock-frame" viewBox="0 0 400 400">
+  <svg class="clock-frame {{~#if tooltip}} tooltip-trigger{{/if}}" viewBox="0 0 400 400">
     <g class="segmented" data-size="{{max}}">
       {{#forloop 1 max}}
         <use href="#{{../max}}-segment" />
       {{/forloop}}
     </g>
   </svg>
+  {{#if tooltip}}<div class="tooltip">{{{tooltip}}}</div>{{/if}}
   {{/if}}
   <svg class="clock-frame clock-bg {{~#unless isVisible}} hidden-clock{{/unless}}" viewBox="0 0 400 400">
     <circle class="clock-bg" cx="200" cy="200" r="200" />

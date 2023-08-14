@@ -232,6 +232,26 @@ const C = {
     selections: ["BITD.Light", "BITD.Normal", "BITD.Heavy", "BITD.Encumbered"],
     levels: ["BITD.Light", "BITD.Normal", "BITD.Heavy", "BITD.Encumbered", "BITD.OverMax"]
   },
+  AttributeTooltips: {
+    [Attributes.insight]: "<p>Resists consequences from <strong>deception</strong> or <strong>understanding</strong></p>",
+    [Attributes.prowess]: "<p>Resists consequences from <strong>physical strain</strong> or <strong>injury</strong></p>",
+    [Attributes.resolve]: "<p>Resists consequences from <strong>mental strain</strong> or <strong>willpower</strong></p>"
+  },
+  ActionTooltips: {
+    [Actions.hunt]: "<p>When you <strong>Hunt</strong>, you carefully track a target.</p><ul><li>You might follow a person or discover their location.</li><li>You might arrange an ambush.</li><li>You might attack with precision shooting from a distance.</li></ul><ul><li>You could try to wield your guns in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
+    [Actions.study]: "<p>When you <strong>Study</strong>, you scrutinize details and interpret evidence.</p><ul><li>You might gather information from documents, newspapers, and books.</li><li>You might do research on an esoteric topic.</li><li>You might closely analyze a person to detect lies or true feelings.</li></ul><ul><li>You could try to understand a pressing situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul>",
+    [Actions.survey]: "<p>When you <strong>Survey</strong>, you observe the situation and anticipate outcomes.</p><ul><li>You might spot telltale signs of trouble before it happens.</li><li>You might uncover opportunities or weaknesses.</li></ul><ul><li>You might detect a person's motives or intentions <em>(but <strong>Studying</strong> might be better)</em>.</li><li>You could try to spot a good ambush point <em>(but <strong>Hunting</strong> might be better)</em>.</li></ul>",
+    [Actions.tinker]: "<p>When you <strong>Tinker</strong>, you fiddle with devices and mechanisms.</p><ul><li>You might create a new gadget or alter an existing item.</li><li>You might pick a lock or crack a safe.</li><li>You might disable an alarm or trap.</li><li>You might turn the sparkcraft and electroplasmic devices around the city to your advantage.</li></ul><ul><li>You could try to control a vehicle with your tech-savvy <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul>",
+    [Actions.finesse]: "<p>When you <strong>Finesse</strong>, you employ dexterity or subtle misdirection.</p><ul><li>You might pick someone's pocket.</li><li>You might handle the controls of a vehicle or direct a mount.</li><li>You might formally duel an opponent with graceful fighting arts.</li></ul><ul><li>You could try to leverage agility in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li><li>You could try to pick a lock <em>(but <strong>Tinkering</strong> might be better)</em>.</li></ul>",
+    [Actions.prowl]: "<p>When you <strong>Prowl</strong>, you traverse skillfully and quietly.</p><ul><li>You might sneak past a guard or hide in the shadows.</li><li>You might run and leap across the rooftops.</li><li>You might attack someone from hiding with a back-stab or blackjack.</li></ul><ul><li>You could try to waylay a victim during combat <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
+    [Actions.skirmish]: "<p>When you <strong>Skirmish</strong>, you entangle a target in melee so they can't escape.</p><ul><li>You might brawl or wrestle with them.</li><li>You might hack and slash.</li><li>You might seize or hold a position in battle.</li></ul><ul><li>You could try to fight in a formal duel <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul>",
+    [Actions.wreck]: "<p>When you <strong>Wreck</strong>, you unleash savage force.</p><ul><li>You might smash down a door or wall with a sledgehammer.</li><li>You might use an explosive to do the same.</li><li>You might use chaos or sabotage to create distractions or overcome obstacles.</li></ul><ul><li>You could try to overwhelm an enemy with sheer force in battle <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
+    [Actions.attune]: "<p>When you <strong>Attune</strong>, you open your mind to the ghost field or channel nearby electroplasmic energy through your body.</p><ul><li>You might communicate with a ghost or understand aspects of spectrology.</li><li>You might peer into the echo of Doskvol in the ghost field.</li></ul><ul><li>You could try to perceive beyond sight in order to better understand your situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul>",
+    [Actions.command]: "<p>When you <strong>Command</strong>, you compel swift obedience.</p><ul><li>You might intimidate or threaten to get what you want.</li><li>You might lead a gang in a group action.</li></ul><ul><li>You could try to persuade people by giving orders <em>(but <strong>Consorting</strong> might be better)</em>.</li></ul>",
+    [Actions.consort]: "<p>When you <strong>Consort</strong>, you socialize with friends and contacts.</p><ul><li>You might gain access to resources, information, people, or places.</li><li>You might make a good impression or win someone over with charm and style.</li><li>You might make new friends or connect with your heritage or background.</li></ul><ul><li>You could try to direct allies with social pressure <em>(but <strong>Commanding</strong> might be better)</em>.</li></ul>",
+    [Actions.sway]: "<p>When you <strong>Sway</strong>, you influence someone with guile, charm, or argument.</p><ul><li>You might lie convincingly.</li><li>You might persuade someone to do what you want.</li><li>You might argue a case that leaves no clear rebuttal.</li></ul><ul><li>You could try to trick people into affection or obedience <em>(but <strong>Consorting</strong> or <strong>Commanding</strong> might be better)</em>.</li></ul>"
+
+  },
   TraumaTooltips: {
     Cold: "You're not moved by emotional appeals or social bonds.",
     Haunted: "You're often lost in reverie, reliving past horrors, seeing things.",
@@ -265,23 +285,21 @@ const C = {
     "(~160 members)"
   ],
   ScaleSizes: [
-    "A ",
-    "A Small ",
-    "An Average ",
-    "A Large ",
-    "A Huge ",
-    "A Massive ",
-    "A Colossal "
+    "A Few ",
+    "A Small Gang of ",
+    "A Gang of ",
+    "A Large Gang of ",
+    "A Small Army of ",
+    "An Army of ",
+    "A Massive Army of "
   ],
-  ScaleExamplesFull: [
-    "~1 or 2 people",
-    "a small gang (3-6)",
-    "a medium gang (12)",
-    "a large gang (20)",
-    "a huge gang (40)",
-    "a massive gang (80)",
-    "a colossal gang (160)"
-  ],
+  GangTypeImages: {
+    elite: {
+    },
+    standard: {
+
+    }
+  },
   ExperienceClues: {
     Scoundrel: [
       "You expressed your beliefs, drives, heritage, or background.",

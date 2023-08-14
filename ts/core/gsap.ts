@@ -5,8 +5,13 @@ const gsapPlugins: gsap.RegisterablePlugins[] = [
   TextPlugin
 ];
 
+type gsapConfig = gsap.TweenVars & {
+  duration: number,
+  targets: Record<string, JQuery<HTMLElement>|Array<JQuery<HTMLElement>>>
+}
+
 type gsapEffect = {
-  effect: (targets: gsap.TweenTarget, config: gsap.TweenVars & {duration: number}) => gsap.core.Timeline|gsap.core.Tween,
+  effect: (targets: BladesTweenTarget, config: gsapConfig) => gsap.core.Timeline|gsap.core.Tween,
   defaults: gsap.TweenVars,
   extendTimeline?: boolean
 }
@@ -109,77 +114,53 @@ const gsapEffects: Record<string, gsapEffect> = {
     defaults: { }
   },
   hoverTooltip: {
-    effect: (targets, config) => {
-      const titleElem = $(targets as string).children(".comp-title")[0];
-      const imgElem = $(targets as string).children("img")[0];
-      const tooltipElem = $(targets as string).nextAll(".tooltip")[0];
-      const tl = U.gsap.timeline({paused: true})
-        .to(
-          targets,
-          {
-            scale: 1.2,
-            filter: "blur(0px)",
-            opacity: 1,
-            duration: 0.125,
-            ease: "power2"
-          },
-          0
-        );
-      if (titleElem) {
-        tl.to(
-          titleElem,
-          {
-            color: "rgb(255, 255, 255)",
-            opacity: 1,
-            duration: 0.125,
-            ease: "power2"
-          },
-          0
-        );
-      }
-      if (imgElem) {
-        tl.to(
-          imgElem,
-          {
-            filter: "blur(0px)",
-            opacity: 1,
-            duration: 0.125,
-            ease: "power2"
-          },
-          0
-        );
-      }
-      if (tooltipElem) {
-        let [xMotion, scale] = ["+=200", 1.25];
-        if ($(tooltipElem).hasClass("tooltip-left")) {
-          xMotion = "-=250";
-        }
-        if ($(tooltipElem).hasClass("tooltip-small")) {
-          scale = 1;
-        }
+    effect: (tooltip, config) => {
+      const tl = U.gsap.timeline({paused: true});
+      if (!tooltip) { return tl }
+      // tooltip = $(tooltip);
+      // const scalingElems = [config.scalingElems as JQuery<HTMLElement>|Array<JQuery<HTMLElement>>|undefined ?? []].flat().filter((elem$) => Boolean(elem$[0]));
 
+      if (config.scalingElems.length > 0) {
+        tl.to(
+          config.scalingElems,
+          {
+            scale: "+=0.2",
+            filter: "none",
+            color: "rgba(255, 255, 255, 1)",
+            opacity: 1,
+            duration: 0.125,
+            ease: "back"
+          },
+          0
+        );
+      }
+
+      if (tooltip) {
         tl.fromTo(
-          tooltipElem,
+          tooltip,
           {
             filter: "blur(50px)",
             opacity: 0,
-            scale: 2 * scale
+            scale: 2 * config.tooltipScale
           },
           {
-            filter: "blur(0px)",
+            filter: "none",
             opacity: 1,
-            scale,
-            x: xMotion,
+            scale: config.tooltipScale,
+            x: config.xMotion,
             duration: 0.25,
             ease: "power2"
           },
-          0
+          0.125
         );
       }
 
       return tl;
     },
-    defaults: { }
+    defaults: {
+      xMotion: "+=200",
+      tooltipScale: 1.25
+    }
   }
 };
 
@@ -189,6 +170,32 @@ export function Initialize() {
   }
   Object.entries(gsapEffects).forEach(([name, effect]) => {
     U.gsap.registerEffect(Object.assign(effect, {name}));
+  });
+}
+
+export function ApplyTooltipListeners(html: JQuery<HTMLElement>) {
+  html.find(".tooltip-trigger").each((_, elem) => {
+    const tooltipElem = $(elem).find(".tooltip")[0] ?? $(elem).next(".tooltip")[0];
+    if (!tooltipElem) { return }
+    $(elem).data("hoverTimeline", U.gsap.effects.hoverTooltip(
+      tooltipElem,
+      {
+        scalingElems: [...$(elem).find(".tooltip-scaling-elem")].filter((elem) => Boolean(elem)),
+        xMotion: $(tooltipElem).hasClass("tooltip-left") ? "-=250" : "+=200",
+        tooltipScale: $(tooltipElem).hasClass("tooltip-small") ? 1 : 1.2
+      }
+    ));
+    $(elem).on({
+      mouseenter: function() {
+        $(elem).css("z-index", 10);
+        $(elem).data("hoverTimeline").play();
+      },
+      mouseleave: function() {
+        $(elem).data("hoverTimeline").reverse().then(() => {
+          $(elem).css("z-index", "");
+        });
+      }
+    });
   });
 }
 

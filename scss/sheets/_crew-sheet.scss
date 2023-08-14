@@ -98,6 +98,9 @@
             .comp-wanted { flex-grow: 0 }
             // .comp-tier { margin-right: 5px }
           }
+
+          &.tab-content {
+          }
         }
 
         .turf-list { @import "../components/turf-block" }

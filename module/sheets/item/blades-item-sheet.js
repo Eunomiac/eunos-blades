@@ -89,21 +89,6 @@ class BladesItemSheet extends ItemSheet {
                     }
                 }
             };
-            const scale = Math.min(6, this.item.system.scale);
-            if (BladesItem.IsType(this.item, BladesItemType.cohort_gang)) {
-                sheetData.scaleData = { example: C.ScaleExamples[scale] };
-            }
-            sheetData.subtitle = BladesItem.IsType(this.item, BladesItemType.cohort_gang) ? `${C.ScaleSizes[scale]}Gang` : "An Expert";
-            const { subtypes, elite_subtypes } = context.system;
-            if (Object.values(subtypes).length + Object.values(elite_subtypes).length > 0) {
-                if (BladesItem.IsType(this.item, BladesItemType.cohort_gang)) {
-                    sheetData.subtitle += " of";
-                }
-                sheetData.subtitle += ` ${U.oxfordize([
-                    ...Object.values(subtypes).filter((subtype) => /[A-Za-z]/.test(subtype) && !Object.values(elite_subtypes).includes(subtype)),
-                    ...Object.values(elite_subtypes).filter((subtype) => /[A-Za-z]/.test(subtype)).map((subtype) => `Elite ${subtype}`)
-                ], false).replace(/\band\b/g, "&")}`;
-            }
             if (context.isGM) {
                 context.system.subtypes[`${Object.values(context.system.subtypes).length + 1}`] = " ";
                 context.system.elite_subtypes[`${Object.values(context.system.elite_subtypes).length + 1}`] = " ";

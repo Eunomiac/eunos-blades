@@ -54,7 +54,10 @@ declare global {
       traumaData: BladesCompData,
       abilityData: BladesCompData,
 
-      attributeData: Record<Attributes, Record<Actions, ValueMax>>,
+      attributeData: Record<Attributes, {
+        tooltip: string,
+        actions: Record<Actions, ValueMax & {tooltip: string}>
+      }>,
 
       gatherInfoTooltip: string,
 
@@ -73,7 +76,10 @@ declare global {
         playbook?: BladesItemOfType<BladesItemType.crew_playbook>,
         reputation?: BladesItemOfType<BladesItemType.crew_reputation>,
         upgrades: BladesItemOfType<BladesItemType.crew_upgrade>[],
-        cohorts: BladesItemOfType<BladesItemType.cohort_gang|BladesItemType.cohort_expert>[],
+        cohorts: {
+          gang: BladesItemOfType<BladesItemType.cohort_gang>[],
+          expert: BladesItemOfType<BladesItemType.cohort_expert>[]
+        },
         preferredOp?: BladesItemOfType<BladesItemType.preferred_op>
       }
 

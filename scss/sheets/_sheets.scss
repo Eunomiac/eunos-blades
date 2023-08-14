@@ -157,6 +157,16 @@
 
           &.tab-content {
             height: auto;
+
+            .cohorts {
+              align-items: flex-start;
+              justify-content: stretch;
+              gap: 0 5px;
+
+              .half-panel {
+                @import "../components/cohort-block";
+              }
+            }
           }
 
           &.nav-group {
@@ -175,6 +185,7 @@
                 overflow-y: scroll;
                 min-height: var(--min-tinymce-height);
               }
+
             }
           }
 

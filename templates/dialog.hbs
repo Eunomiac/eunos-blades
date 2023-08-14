@@ -15,19 +15,19 @@
     {{#each ../tabs as |tabItems tabName|}}
     <div class="tab flex-horizontal flex-wrap {{~#unless (test (count ../tabs) ">" 1)}} active{{/unless}}" data-tab="{{@index}}">
       {{#each tabItems as |item|}}
-        <div class="comp comp-vertical {{item.dialogCSSClasses}}">
+        <div class="comp comp-vertical {{item.dialogCSSClasses}} {{~#if item.tooltip}} tooltip-trigger{{/if}}">
           <div class="comp-body" data-item-id="{{item._id}}" data-doc-type="{{docType}}">
-            <img src="{{item.img}}" />
-            <div class="comp-title shadowed">{{item.name}}</div>
+            <img {{~#if item.tooltip}} class="tooltip-scaling-elem"{{/if}} src="{{item.img}}" />
+            <div class="comp-title shadowed {{~#if item.tooltip}} tooltip-scaling-elem{{/if}}">{{item.name}}</div>
             {{#if item.system.load}}
-            <div class="number-circle">{{item.system.load}}</div>
+            <div class="number-circle {{~#if item.tooltip}} tooltip-scaling-elem{{/if}}">{{item.system.load}}</div>
             {{/if}}
             {{#if (test item.system.price ">" 1)}}
-            <div class="number-circle">{{item.system.price}}</div>
+            <div class="number-circle {{~#if item.tooltip}} tooltip-scaling-elem{{/if}}">{{item.system.price}}</div>
             {{/if}}
           </div>
           {{#if item.tooltip}}
-          <div class="tooltip">{{{item.tooltip}}}</div>
+          <div class="tooltip tooltip-dialog-selection">{{{item.tooltip}}}</div>
           {{/if}}
         </div>
       {{/each}}

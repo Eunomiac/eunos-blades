@@ -215,28 +215,49 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
     system.tier.name = "Quality";
 
-    const subtypes = Object.values(system.subtypes)
+    const subtypes = U.unique(Object.values(system.subtypes)
       .map((subtype) => subtype.trim())
-      .filter((subtype) => /[A-Za-z]/.test(subtype));
-    const elite_subtypes = Object.values(system.elite_subtypes)
+      .filter((subtype) => /[A-Za-z]/.test(subtype)));
+    const elite_subtypes = U.unique([
+      ...Object.values(system.elite_subtypes),
+      ...(this.parent?.upgrades ?? [])
+        .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
+    ]
       .map((subtype) => subtype.trim())
-      .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype));
+      .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
 
     // Add parent-crew's elite subtype upgrades
-    if (BladesActor.IsType(this.parent, BladesActorType.crew)) {
-      elite_subtypes.push(...this.parent.upgrades
-        .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
-        .filter((upgradeName) => subtypes.includes(upgradeName)));
-    }
+    // if (BladesActor.IsType(this.parent, BladesActorType.crew)) {
+    //   elite_subtypes.push(...this.parent.upgrades
+    //     .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
+    //     .filter((upgradeName) => subtypes.includes(upgradeName)));
+    // }
 
-    system.subtypes = Object.fromEntries(U.unique(subtypes).map((subtype, i) => [`${i + 1}`, subtype]));
-    system.elite_subtypes = Object.fromEntries(U.unique(elite_subtypes).map((subtype, i) => [`${i + 1}`, subtype]));
+    system.subtypes = Object.fromEntries(subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
+    system.elite_subtypes = Object.fromEntries(elite_subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
 
     system.quality = this.getTierTotal();
 
-    system.scale = BladesItem.IsType(this, BladesItemType.cohort_gang)
-      ? this.getTierTotal() + this.system.scale_bonus
-      : 0;
+    if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
+      system.scale = this.getTierTotal() + this.system.scale_bonus;
+      const scaleIndex = Math.min(6, system.scale);
+      system.scaleExample = C.ScaleExamples[scaleIndex];
+      system.subtitle = C.ScaleSizes[scaleIndex];
+      if (subtypes.length + elite_subtypes.length === 0) {
+        system.subtitle = system.subtitle.replace(/\s+of\s*/g, "");
+      }
+    } else {
+      system.scale = 0;
+      system.scaleExample = "(1 person)";
+      system.subtitle = "An Expert";
+    }
+
+    if (subtypes.length + elite_subtypes.length > 0) {
+      system.subtitle += ` ${U.oxfordize([
+        ...subtypes.filter((subtype) => !elite_subtypes.includes(subtype)),
+        ...elite_subtypes.map((subtype) => `Elite ${subtype}`)
+      ], false).replace(/\band\b/g, "&")}`;
+    }
   }
 
   _prepareGmTrackerData(system: ExtractBladesItemSystem<BladesItemType.gm_tracker>) {

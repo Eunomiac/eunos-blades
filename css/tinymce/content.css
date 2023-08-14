@@ -60,7 +60,6 @@ html, :root {
     --z-index-app: 30;
     --z-index-ui: 60;
     --z-index-window: 100;
-    --z-index-tooltip: 9999;
     --sidebar-width: 300px;
     --sidebar-header-height: 32px;
     --sidebar-item-height: 48px;
@@ -411,56 +410,6 @@ html, :root {
       color: var(--blades-white-bright);
       width: toRem(32px);
       text-align: center; }
-    html .comp .tooltip, :root .comp .tooltip {
-      opacity: 0;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-orient: vertical;
-      -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-      flex-direction: column;
-      -webkit-box-pack: center;
-      -ms-flex-pack: center;
-      justify-content: center;
-      -webkit-box-align: stretch;
-      -ms-flex-align: stretch;
-      align-items: stretch;
-      color: var(--blades-white);
-      background: var(--blades-black-dark);
-      width: -webkit-max-content;
-      width: -moz-max-content;
-      width: max-content;
-      max-width: 400px;
-      padding: toRem(6px);
-      border: toRem(1px) solid var(--blades-grey);
-      border-radius: toRem(3px);
-      -webkit-hyphens: auto;
-      -ms-hyphens: auto;
-      hyphens: auto;
-      text-align: justify;
-      position: absolute;
-      top: unset;
-      left: -200px;
-      bottom: 50px;
-      z-index: zLevel(4);
-      pointer-events: none; }
-      html .comp .tooltip h2, :root .comp .tooltip h2 {
-        color: var(--blades-white-bright); }
-      html .comp .tooltip.tooltip-low, :root .comp .tooltip.tooltip-low {
-        bottom: -50px; }
-      html .comp .tooltip.tooltip-left, :root .comp .tooltip.tooltip-left {
-        left: 200px;
-        max-width: unset; }
-      html .comp .tooltip.tooltip-portrait, :root .comp .tooltip.tooltip-portrait {
-        bottom: 100px;
-        left: 50px; }
-      html .comp .tooltip.tooltip-playbook, :root .comp .tooltip.tooltip-playbook {
-        bottom: unset;
-        top: 0px;
-        left: -220px; }
-      html .comp .tooltip.trauma-tooltip, :root .comp .tooltip.trauma-tooltip {
-        left: -300px; }
     html .comp.comp-vertical, :root .comp.comp-vertical {
       --comp-img-scale: 2;
       --comp-name-size: toRem(16px);
@@ -886,26 +835,6 @@ html, :root {
       pointer-events: none; }
       html .button-icon i.toggle-off, html .toggle-icon i.toggle-off, :root .button-icon i.toggle-off, :root .toggle-icon i.toggle-off {
         opacity: 0.25; }
-    html .button-icon .tooltip, html .toggle-icon .tooltip, :root .button-icon .tooltip, :root .toggle-icon .tooltip {
-      display: none;
-      pointer-events: none;
-      position: absolute;
-      bottom: 15px;
-      left: 15px;
-      background: var(--blades-black);
-      color: var(--blades-white);
-      font-size: 10px;
-      line-height: 12px;
-      padding: 5px;
-      border-radius: 10px;
-      border: 1px solid var(--blades-white-bright);
-      text-align: center;
-      white-space: nowrap; }
-      html .button-icon .tooltip b, html .toggle-icon .tooltip b, :root .button-icon .tooltip b, :root .toggle-icon .tooltip b {
-        color: var(--blades-white-bright);
-        font-size: 12px;
-        font-family: var(--font-emphasis);
-        text-transform: uppercase; }
     html .button-icon .hidden-toggle, html .toggle-icon .hidden-toggle, :root .button-icon .hidden-toggle, :root .toggle-icon .hidden-toggle {
       margin: 0;
       border: none;
@@ -917,13 +846,6 @@ html, :root {
         display: none; }
       html .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, html .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
         display: none; }
-    html .button-icon.tooltip-left .tooltip, html .toggle-icon.tooltip-left .tooltip, :root .button-icon.tooltip-left .tooltip, :root .toggle-icon.tooltip-left .tooltip {
-      left: unset;
-      right: 15px; }
-    html .button-icon:hover i, html .toggle-icon:hover i, :root .button-icon:hover i, :root .toggle-icon:hover i {
-      opacity: 1; }
-    html .button-icon:hover .tooltip, html .toggle-icon:hover .tooltip, :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip {
-      display: block; }
   html .dotline, :root .dotline {
     --dotline-zero-dot-size: toRem(14px);
     --dotline-dot-size: toRem(14px);
@@ -1554,56 +1476,6 @@ html, :root {
         color: var(--blades-white-bright);
         width: 2rem;
         text-align: center; }
-      html .comp .tooltip, :root .comp .tooltip {
-        opacity: 0;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        -webkit-box-align: stretch;
-        -ms-flex-align: stretch;
-        align-items: stretch;
-        color: var(--blades-white);
-        background: var(--blades-black-dark);
-        width: -webkit-max-content;
-        width: -moz-max-content;
-        width: max-content;
-        max-width: 400px;
-        padding: 0.375rem;
-        border: 0.0625rem solid var(--blades-grey);
-        border-radius: 0.1875rem;
-        -webkit-hyphens: auto;
-        -ms-hyphens: auto;
-        hyphens: auto;
-        text-align: justify;
-        position: absolute;
-        top: unset;
-        left: -200px;
-        bottom: 50px;
-        z-index: 6;
-        pointer-events: none; }
-        html .comp .tooltip h2, :root .comp .tooltip h2 {
-          color: var(--blades-white-bright); }
-        html .comp .tooltip.tooltip-low, :root .comp .tooltip.tooltip-low {
-          bottom: -50px; }
-        html .comp .tooltip.tooltip-left, :root .comp .tooltip.tooltip-left {
-          left: 200px;
-          max-width: unset; }
-        html .comp .tooltip.tooltip-portrait, :root .comp .tooltip.tooltip-portrait {
-          bottom: 100px;
-          left: 50px; }
-        html .comp .tooltip.tooltip-playbook, :root .comp .tooltip.tooltip-playbook {
-          bottom: unset;
-          top: 0px;
-          left: -220px; }
-        html .comp .tooltip.trauma-tooltip, :root .comp .tooltip.trauma-tooltip {
-          left: -300px; }
       html .comp.comp-vertical, :root .comp.comp-vertical {
         --comp-img-scale: 2;
         --comp-name-size: 1rem;
@@ -2029,26 +1901,6 @@ html, :root {
         pointer-events: none; }
         html .button-icon i.toggle-off, html .toggle-icon i.toggle-off, :root .button-icon i.toggle-off, :root .toggle-icon i.toggle-off {
           opacity: 0.25; }
-      html .button-icon .tooltip, html .toggle-icon .tooltip, :root .button-icon .tooltip, :root .toggle-icon .tooltip {
-        display: none;
-        pointer-events: none;
-        position: absolute;
-        bottom: 15px;
-        left: 15px;
-        background: var(--blades-black);
-        color: var(--blades-white);
-        font-size: 10px;
-        line-height: 12px;
-        padding: 5px;
-        border-radius: 10px;
-        border: 1px solid var(--blades-white-bright);
-        text-align: center;
-        white-space: nowrap; }
-        html .button-icon .tooltip b, html .toggle-icon .tooltip b, :root .button-icon .tooltip b, :root .toggle-icon .tooltip b {
-          color: var(--blades-white-bright);
-          font-size: 12px;
-          font-family: var(--font-emphasis);
-          text-transform: uppercase; }
       html .button-icon .hidden-toggle, html .toggle-icon .hidden-toggle, :root .button-icon .hidden-toggle, :root .toggle-icon .hidden-toggle {
         margin: 0;
         border: none;
@@ -2060,13 +1912,6 @@ html, :root {
           display: none; }
         html .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, html .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
           display: none; }
-      html .button-icon.tooltip-left .tooltip, html .toggle-icon.tooltip-left .tooltip, :root .button-icon.tooltip-left .tooltip, :root .toggle-icon.tooltip-left .tooltip {
-        left: unset;
-        right: 15px; }
-      html .button-icon:hover i, html .toggle-icon:hover i, :root .button-icon:hover i, :root .toggle-icon:hover i {
-        opacity: 1; }
-      html .button-icon:hover .tooltip, html .toggle-icon:hover .tooltip, :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip {
-        display: block; }
     html .dotline, :root .dotline {
       --dotline-zero-dot-size: 0.875rem;
       --dotline-dot-size: 0.875rem;
@@ -2498,6 +2343,75 @@ html, :root {
     align-items: center; }
   html .full-width, :root .full-width {
     width: 100%; }
+  html .tooltip-trigger, :root .tooltip-trigger {
+    pointer-events: auto !important; }
+  html .tooltip, :root .tooltip {
+    opacity: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    color: var(--blades-white);
+    background: var(--blades-black-dark);
+    width: -webkit-max-content;
+    width: -moz-max-content;
+    width: max-content;
+    max-width: 400px;
+    padding: 0.375rem;
+    border: 0.0625rem solid var(--blades-grey);
+    border-radius: 0.1875rem;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    text-align: justify;
+    position: absolute;
+    top: unset;
+    left: -200px;
+    bottom: 50px;
+    z-index: 6;
+    pointer-events: none; }
+    html .tooltip h2, :root .tooltip h2 {
+      color: var(--blades-white-bright); }
+    html .tooltip.tooltip-left, :root .tooltip.tooltip-left {
+      left: 200px;
+      max-width: unset; }
+    html .tooltip.tooltip-portrait, :root .tooltip.tooltip-portrait {
+      bottom: -45px;
+      left: -200px; }
+    html .tooltip.tooltip-playbook, :root .tooltip.tooltip-playbook {
+      bottom: unset;
+      top: 0px;
+      left: -220px; }
+    html .tooltip.tooltip-trauma, :root .tooltip.tooltip-trauma {
+      left: -300px; }
+    html .tooltip.tooltip-dialog-selection, :root .tooltip.tooltip-dialog-selection {
+      left: -300px;
+      bottom: 75px; }
+    html .tooltip.tooltip-attribute, :root .tooltip.tooltip-attribute {
+      left: -110px;
+      bottom: 10px;
+      translate: 0% 50% !important; }
+      html .tooltip.tooltip-attribute > p, :root .tooltip.tooltip-attribute > p {
+        font-size: 16px; }
+    html .tooltip.tooltip-action, :root .tooltip.tooltip-action {
+      left: unset;
+      right: -100px;
+      bottom: 0px;
+      max-width: 525px;
+      translate: 0% 50% !important; }
+      html .tooltip.tooltip-action > p, :root .tooltip.tooltip-action > p {
+        font-size: 16px; }
+  html .tooltip-scaling-elem, :root .tooltip-scaling-elem {
+    display: inline-block; }
 
 ::-webkit-scrollbar {
   width: var(--blades-spacer-sm); }

@@ -12,14 +12,14 @@
     {{!-- Header --}}
     <section class="sheet-top">
       <input class="sheet-title shadowed" type="text" name="name" value="{{item.name}}" />
-      <div class="sheet-subtitle cohort-type-line">{{subtitle}}</div>
+      <div class="sheet-subtitle cohort-type-line">{{system.subtitle}}</div>
       {{> "systems/eunos-blades/templates/parts/tier-block.hbs" }}
       <div class="comp-scale flex-vertical">
         <div class="flex-horizontal">
           <label class="filled-label">Scale</label>
           <div class="scale-number shadowed">{{system.scale}}</div>
         </div>
-        <div class="scale-example shadowed">{{scaleData.example}}</div>
+        <div class="scale-example shadowed">{{system.scaleExample}}</div>
       </div>
     </section>
 
@@ -55,7 +55,7 @@
         <span class="harm-number shadowed">2</span>
         <div class="flex-vertical">
           <span class="harm-label shadowed">Impaired</span>
-          <span class="harm-effect shadowed">-1d to Quality Rolls</span>
+          <span class="harm-effect shadowed">Reduced Effect, -1d</span>
         </div>
       </div>
       <div class="flex-horizontal harm-level harm-level-3 {{~#if (test system.harm.value "==" 3)}} active{{/if}}"

@@ -1,8 +1,8 @@
-<div class="comp comp-vertical portrait-block" data-comp-cat="{{cat}}" data-comp-type="{{docType}}" {{~#if id}} data-comp-id="{{id}}"{{/if}}>
+<div class="comp comp-vertical portrait-block tooltip-trigger" data-comp-cat="{{cat}}" data-comp-type="{{docType}}" {{~#if id}} data-comp-id="{{id}}"{{/if}}>
 
   {{~#if label}}
     {{~#if id}}
-      <label class="comp-label {{#if labelClass}}{{labelClass}} {{/if}}shadowed">
+      <label class="comp-label {{#if labelClass}}{{labelClass}} {{/if}}{{~#if tooltip}} tooltip-scaling-elem{{/if}} shadowed">
         {{~#if (test cat "&&" addButton)}}
           <a class="comp-control comp-add">{{label}}</a>
         {{else}}
@@ -10,7 +10,7 @@
         {{/if~}}
       </label>
     {{~else}}
-      <label class="comp-label {{~#if addButton}} comp-prompt{{/if}}{{~#if labelClass}} {{labelClass}}{{else}} shadowed{{/if}}">
+      <label class="comp-label {{~#if addButton}} comp-prompt{{/if}}{{~#if labelClass}} {{labelClass}}{{else}} shadowed{{/if}}{{~#if tooltip}} tooltip-scaling-elem{{/if}}">
         {{~#if addButton}}
           <a class="comp-control comp-add">
             <span class="sur-title">Select Your</span>
@@ -26,8 +26,8 @@
   {{/if~}}
 
   <div class="comp-body">
-    {{#if img}}<img class="comp-img" src="{{img}}" />{{/if}}
-    {{#if name}}<div class="comp-title shadowed">{{name}}</div>{{/if}}
+    {{#if img}}<img class="comp-img{{~#if tooltip}} tooltip-scaling-elem{{/if}} " src="{{img}}" />{{/if}}
+    {{#if name}}<div class="comp-title shadowed{{~#if tooltip}} tooltip-scaling-elem{{/if}}">{{name}}</div>{{/if}}
   </div>
 
   {{#if (test "Acquaintance" "in" system.tags)}}

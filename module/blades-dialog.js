@@ -5,7 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import G from "./core/gsap.js";
+import { ApplyTooltipListeners } from "./core/gsap.js";
 import U from "./core/utilities.js";
 export var SelectionCategory;
 (function (SelectionCategory) {
@@ -19,7 +19,8 @@ export var SelectionCategory;
     SelectionCategory["Ability"] = "Ability";
     SelectionCategory["Faction"] = "Faction";
     SelectionCategory["Upgrade"] = "Upgrade";
-    SelectionCategory["Cohort"] = "Cohort";
+    SelectionCategory["Cohort_Gang"] = "Cohort_Gang";
+    SelectionCategory["Cohort_Expert"] = "Cohort_Expert";
     SelectionCategory["Feature"] = "Feature";
     SelectionCategory["Stricture"] = "Stricture";
     SelectionCategory["VicePurveyor"] = "VicePurveyor";
@@ -113,21 +114,7 @@ class BladesSelectorDialog extends Dialog {
             this.render(false, { width });
         });
 
-        html.find(".tooltip").siblings("[data-item-id]")
-            .each(function (i, elem) {
-            $(elem).data("hoverTimeline", G.effects.hoverTooltip(elem));
-        })
-            .on({
-            mouseenter: function () {
-                $(this).parent().css("z-index", 1);
-                $(this).data("hoverTimeline").play();
-            },
-            mouseleave: function () {
-                $(this).data("hoverTimeline").reverse().then(() => {
-                    $(this).parent().removeAttr("style");
-                });
-            }
-        });
+        ApplyTooltipListeners(html);
 
         html.find("[data-item-id]").on("click", function () {
             if ($(this).parent().hasClass("locked")) {

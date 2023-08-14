@@ -9,7 +9,6 @@
       {{#if clockData.isNameVisible}}
         <label class="clock-label {{~#if clockData.isActive}} clock-active{{/if}}" data-clock-num="{{clockNum}}">
           <span class="short-label">{{clockData.display}}</span>
-          {{#if clockData.tooltip}}<span class="hover-label">{{clockData.tooltip}}</span>{{/if}}
         </label>
       {{/if}}
       {{/each}}

@@ -681,7 +681,6 @@ template {
   --z-index-app: 30;
   --z-index-ui: 60;
   --z-index-window: 100;
-  --z-index-tooltip: 9999;
   --sidebar-width: 300px;
   --sidebar-header-height: 32px;
   --sidebar-item-height: 48px;
@@ -1078,63 +1077,6 @@ template {
     color: var(--blades-white-bright);
     width: 2rem;
     text-align: center; }
-  :root .comp .tooltip,
-  :root * .comp .tooltip {
-    opacity: 0;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    -webkit-box-align: stretch;
-    -ms-flex-align: stretch;
-    align-items: stretch;
-    color: var(--blades-white);
-    background: var(--blades-black-dark);
-    width: -webkit-max-content;
-    width: -moz-max-content;
-    width: max-content;
-    max-width: 400px;
-    padding: 0.375rem;
-    border: 0.0625rem solid var(--blades-grey);
-    border-radius: 0.1875rem;
-    -webkit-hyphens: auto;
-    -ms-hyphens: auto;
-    hyphens: auto;
-    text-align: justify;
-    position: absolute;
-    top: unset;
-    left: -200px;
-    bottom: 50px;
-    z-index: 6;
-    pointer-events: none; }
-    :root .comp .tooltip h2,
-    :root * .comp .tooltip h2 {
-      color: var(--blades-white-bright); }
-    :root .comp .tooltip.tooltip-low,
-    :root * .comp .tooltip.tooltip-low {
-      bottom: -50px; }
-    :root .comp .tooltip.tooltip-left,
-    :root * .comp .tooltip.tooltip-left {
-      left: 200px;
-      max-width: unset; }
-    :root .comp .tooltip.tooltip-portrait,
-    :root * .comp .tooltip.tooltip-portrait {
-      bottom: 100px;
-      left: 50px; }
-    :root .comp .tooltip.tooltip-playbook,
-    :root * .comp .tooltip.tooltip-playbook {
-      bottom: unset;
-      top: 0px;
-      left: -220px; }
-    :root .comp .tooltip.trauma-tooltip,
-    :root * .comp .tooltip.trauma-tooltip {
-      left: -300px; }
   :root .comp.comp-vertical,
   :root * .comp.comp-vertical {
     --comp-img-scale: 2;
@@ -1648,30 +1590,6 @@ template {
     :root * .button-icon i.toggle-off,
     :root * .toggle-icon i.toggle-off {
       opacity: 0.25; }
-  :root .button-icon .tooltip, :root .toggle-icon .tooltip,
-  :root * .button-icon .tooltip,
-  :root * .toggle-icon .tooltip {
-    display: none;
-    pointer-events: none;
-    position: absolute;
-    bottom: 15px;
-    left: 15px;
-    background: var(--blades-black);
-    color: var(--blades-white);
-    font-size: 10px;
-    line-height: 12px;
-    padding: 5px;
-    border-radius: 10px;
-    border: 1px solid var(--blades-white-bright);
-    text-align: center;
-    white-space: nowrap; }
-    :root .button-icon .tooltip b, :root .toggle-icon .tooltip b,
-    :root * .button-icon .tooltip b,
-    :root * .toggle-icon .tooltip b {
-      color: var(--blades-white-bright);
-      font-size: 12px;
-      font-family: var(--font-emphasis);
-      text-transform: uppercase; }
   :root .button-icon .hidden-toggle, :root .toggle-icon .hidden-toggle,
   :root * .button-icon .hidden-toggle,
   :root * .toggle-icon .hidden-toggle {
@@ -1689,19 +1607,6 @@ template {
     :root * .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on,
     :root * .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
       display: none; }
-  :root .button-icon.tooltip-left .tooltip, :root .toggle-icon.tooltip-left .tooltip,
-  :root * .button-icon.tooltip-left .tooltip,
-  :root * .toggle-icon.tooltip-left .tooltip {
-    left: unset;
-    right: 15px; }
-  :root .button-icon:hover i, :root .toggle-icon:hover i,
-  :root * .button-icon:hover i,
-  :root * .toggle-icon:hover i {
-    opacity: 1; }
-  :root .button-icon:hover .tooltip, :root .toggle-icon:hover .tooltip,
-  :root * .button-icon:hover .tooltip,
-  :root * .toggle-icon:hover .tooltip {
-    display: block; }
 
 :root .dotline,
 :root * .dotline {
@@ -2368,56 +2273,6 @@ template {
         color: var(--blades-white-bright);
         width: 2rem;
         text-align: center; }
-      :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .tooltip {
-        opacity: 0;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        -webkit-box-align: stretch;
-        -ms-flex-align: stretch;
-        align-items: stretch;
-        color: var(--blades-white);
-        background: var(--blades-black-dark);
-        width: -webkit-max-content;
-        width: -moz-max-content;
-        width: max-content;
-        max-width: 400px;
-        padding: 0.375rem;
-        border: 0.0625rem solid var(--blades-grey);
-        border-radius: 0.1875rem;
-        -webkit-hyphens: auto;
-        -ms-hyphens: auto;
-        hyphens: auto;
-        text-align: justify;
-        position: absolute;
-        top: unset;
-        left: -200px;
-        bottom: 50px;
-        z-index: 6;
-        pointer-events: none; }
-        :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .tooltip h2 {
-          color: var(--blades-white-bright); }
-        :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .tooltip.tooltip-low {
-          bottom: -50px; }
-        :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .tooltip.tooltip-left {
-          left: 200px;
-          max-width: unset; }
-        :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .tooltip.tooltip-portrait {
-          bottom: 100px;
-          left: 50px; }
-        :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .tooltip.tooltip-playbook {
-          bottom: unset;
-          top: 0px;
-          left: -220px; }
-        :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .tooltip.trauma-tooltip {
-          left: -300px; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-vertical {
         --comp-img-scale: 2;
         --comp-name-size: 1rem;
@@ -2843,26 +2698,6 @@ template {
         pointer-events: none; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .button-icon i.toggle-off, :root body.vtt.game.system-eunos-blades #clocks-overlay .toggle-icon i.toggle-off {
           opacity: 0.25; }
-      :root body.vtt.game.system-eunos-blades #clocks-overlay .button-icon .tooltip, :root body.vtt.game.system-eunos-blades #clocks-overlay .toggle-icon .tooltip {
-        display: none;
-        pointer-events: none;
-        position: absolute;
-        bottom: 15px;
-        left: 15px;
-        background: var(--blades-black);
-        color: var(--blades-white);
-        font-size: 10px;
-        line-height: 12px;
-        padding: 5px;
-        border-radius: 10px;
-        border: 1px solid var(--blades-white-bright);
-        text-align: center;
-        white-space: nowrap; }
-        :root body.vtt.game.system-eunos-blades #clocks-overlay .button-icon .tooltip b, :root body.vtt.game.system-eunos-blades #clocks-overlay .toggle-icon .tooltip b {
-          color: var(--blades-white-bright);
-          font-size: 12px;
-          font-family: var(--font-emphasis);
-          text-transform: uppercase; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .button-icon .hidden-toggle, :root body.vtt.game.system-eunos-blades #clocks-overlay .toggle-icon .hidden-toggle {
         margin: 0;
         border: none;
@@ -2874,13 +2709,6 @@ template {
           display: none; }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root body.vtt.game.system-eunos-blades #clocks-overlay .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
           display: none; }
-      :root body.vtt.game.system-eunos-blades #clocks-overlay .button-icon.tooltip-left .tooltip, :root body.vtt.game.system-eunos-blades #clocks-overlay .toggle-icon.tooltip-left .tooltip {
-        left: unset;
-        right: 15px; }
-      :root body.vtt.game.system-eunos-blades #clocks-overlay .button-icon:hover i, :root body.vtt.game.system-eunos-blades #clocks-overlay .toggle-icon:hover i {
-        opacity: 1; }
-      :root body.vtt.game.system-eunos-blades #clocks-overlay .button-icon:hover .tooltip, :root body.vtt.game.system-eunos-blades #clocks-overlay .toggle-icon:hover .tooltip {
-        display: block; }
     :root body.vtt.game.system-eunos-blades #clocks-overlay .dotline {
       --dotline-zero-dot-size: 0.875rem;
       --dotline-dot-size: 0.875rem;
@@ -4402,84 +4230,6 @@ template {
       color: var(--blades-white-bright);
       width: 2rem;
       text-align: center; }
-    :root body.vtt.game.system-eunos-blades #interface .comp .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls .comp .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation .comp .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar .comp .tooltip,
-    :root body.vtt.game.system-eunos-blades #players .comp .tooltip {
-      opacity: 0;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-orient: vertical;
-      -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-      flex-direction: column;
-      -webkit-box-pack: center;
-      -ms-flex-pack: center;
-      justify-content: center;
-      -webkit-box-align: stretch;
-      -ms-flex-align: stretch;
-      align-items: stretch;
-      color: var(--blades-white);
-      background: var(--blades-black-dark);
-      width: -webkit-max-content;
-      width: -moz-max-content;
-      width: max-content;
-      max-width: 400px;
-      padding: 0.375rem;
-      border: 0.0625rem solid var(--blades-grey);
-      border-radius: 0.1875rem;
-      -webkit-hyphens: auto;
-      -ms-hyphens: auto;
-      hyphens: auto;
-      text-align: justify;
-      position: absolute;
-      top: unset;
-      left: -200px;
-      bottom: 50px;
-      z-index: 6;
-      pointer-events: none; }
-      :root body.vtt.game.system-eunos-blades #interface .comp .tooltip h2,
-      :root body.vtt.game.system-eunos-blades #controls .comp .tooltip h2,
-      :root body.vtt.game.system-eunos-blades #navigation .comp .tooltip h2,
-      :root body.vtt.game.system-eunos-blades #hotbar .comp .tooltip h2,
-      :root body.vtt.game.system-eunos-blades #players .comp .tooltip h2 {
-        color: var(--blades-white-bright); }
-      :root body.vtt.game.system-eunos-blades #interface .comp .tooltip.tooltip-low,
-      :root body.vtt.game.system-eunos-blades #controls .comp .tooltip.tooltip-low,
-      :root body.vtt.game.system-eunos-blades #navigation .comp .tooltip.tooltip-low,
-      :root body.vtt.game.system-eunos-blades #hotbar .comp .tooltip.tooltip-low,
-      :root body.vtt.game.system-eunos-blades #players .comp .tooltip.tooltip-low {
-        bottom: -50px; }
-      :root body.vtt.game.system-eunos-blades #interface .comp .tooltip.tooltip-left,
-      :root body.vtt.game.system-eunos-blades #controls .comp .tooltip.tooltip-left,
-      :root body.vtt.game.system-eunos-blades #navigation .comp .tooltip.tooltip-left,
-      :root body.vtt.game.system-eunos-blades #hotbar .comp .tooltip.tooltip-left,
-      :root body.vtt.game.system-eunos-blades #players .comp .tooltip.tooltip-left {
-        left: 200px;
-        max-width: unset; }
-      :root body.vtt.game.system-eunos-blades #interface .comp .tooltip.tooltip-portrait,
-      :root body.vtt.game.system-eunos-blades #controls .comp .tooltip.tooltip-portrait,
-      :root body.vtt.game.system-eunos-blades #navigation .comp .tooltip.tooltip-portrait,
-      :root body.vtt.game.system-eunos-blades #hotbar .comp .tooltip.tooltip-portrait,
-      :root body.vtt.game.system-eunos-blades #players .comp .tooltip.tooltip-portrait {
-        bottom: 100px;
-        left: 50px; }
-      :root body.vtt.game.system-eunos-blades #interface .comp .tooltip.tooltip-playbook,
-      :root body.vtt.game.system-eunos-blades #controls .comp .tooltip.tooltip-playbook,
-      :root body.vtt.game.system-eunos-blades #navigation .comp .tooltip.tooltip-playbook,
-      :root body.vtt.game.system-eunos-blades #hotbar .comp .tooltip.tooltip-playbook,
-      :root body.vtt.game.system-eunos-blades #players .comp .tooltip.tooltip-playbook {
-        bottom: unset;
-        top: 0px;
-        left: -220px; }
-      :root body.vtt.game.system-eunos-blades #interface .comp .tooltip.trauma-tooltip,
-      :root body.vtt.game.system-eunos-blades #controls .comp .tooltip.trauma-tooltip,
-      :root body.vtt.game.system-eunos-blades #navigation .comp .tooltip.trauma-tooltip,
-      :root body.vtt.game.system-eunos-blades #hotbar .comp .tooltip.trauma-tooltip,
-      :root body.vtt.game.system-eunos-blades #players .comp .tooltip.trauma-tooltip {
-        left: -300px; }
     :root body.vtt.game.system-eunos-blades #interface .comp.comp-vertical,
     :root body.vtt.game.system-eunos-blades #controls .comp.comp-vertical,
     :root body.vtt.game.system-eunos-blades #navigation .comp.comp-vertical,
@@ -5253,42 +5003,6 @@ template {
       :root body.vtt.game.system-eunos-blades #players .button-icon i.toggle-off,
       :root body.vtt.game.system-eunos-blades #players .toggle-icon i.toggle-off {
         opacity: 0.25; }
-    :root body.vtt.game.system-eunos-blades #interface .button-icon .tooltip, :root body.vtt.game.system-eunos-blades #interface .toggle-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls .button-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls .toggle-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation .button-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation .toggle-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar .button-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar .toggle-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #players .button-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #players .toggle-icon .tooltip {
-      display: none;
-      pointer-events: none;
-      position: absolute;
-      bottom: 15px;
-      left: 15px;
-      background: var(--blades-black);
-      color: var(--blades-white);
-      font-size: 10px;
-      line-height: 12px;
-      padding: 5px;
-      border-radius: 10px;
-      border: 1px solid var(--blades-white-bright);
-      text-align: center;
-      white-space: nowrap; }
-      :root body.vtt.game.system-eunos-blades #interface .button-icon .tooltip b, :root body.vtt.game.system-eunos-blades #interface .toggle-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #controls .button-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #controls .toggle-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #navigation .button-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #navigation .toggle-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #hotbar .button-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #hotbar .toggle-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #players .button-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #players .toggle-icon .tooltip b {
-        color: var(--blades-white-bright);
-        font-size: 12px;
-        font-family: var(--font-emphasis);
-        text-transform: uppercase; }
     :root body.vtt.game.system-eunos-blades #interface .button-icon .hidden-toggle, :root body.vtt.game.system-eunos-blades #interface .toggle-icon .hidden-toggle,
     :root body.vtt.game.system-eunos-blades #controls .button-icon .hidden-toggle,
     :root body.vtt.game.system-eunos-blades #controls .toggle-icon .hidden-toggle,
@@ -5324,37 +5038,6 @@ template {
       :root body.vtt.game.system-eunos-blades #players .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on,
       :root body.vtt.game.system-eunos-blades #players .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
         display: none; }
-    :root body.vtt.game.system-eunos-blades #interface .button-icon.tooltip-left .tooltip, :root body.vtt.game.system-eunos-blades #interface .toggle-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls .button-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls .toggle-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation .button-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation .toggle-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar .button-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar .toggle-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #players .button-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #players .toggle-icon.tooltip-left .tooltip {
-      left: unset;
-      right: 15px; }
-    :root body.vtt.game.system-eunos-blades #interface .button-icon:hover i, :root body.vtt.game.system-eunos-blades #interface .toggle-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #controls .button-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #controls .toggle-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #navigation .button-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #navigation .toggle-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #hotbar .button-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #hotbar .toggle-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #players .button-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #players .toggle-icon:hover i {
-      opacity: 1; }
-    :root body.vtt.game.system-eunos-blades #interface .button-icon:hover .tooltip, :root body.vtt.game.system-eunos-blades #interface .toggle-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls .button-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls .toggle-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation .button-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation .toggle-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar .button-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar .toggle-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #players .button-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #players .toggle-icon:hover .tooltip {
-      display: block; }
   :root body.vtt.game.system-eunos-blades #interface .dotline,
   :root body.vtt.game.system-eunos-blades #controls .dotline,
   :root body.vtt.game.system-eunos-blades #navigation .dotline,
@@ -6497,84 +6180,6 @@ template {
       color: var(--blades-white-bright);
       width: 2rem;
       text-align: center; }
-    :root body.vtt.game.system-eunos-blades #interface #chat .comp .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls #chat .comp .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation #chat .comp .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat .comp .tooltip,
-    :root body.vtt.game.system-eunos-blades #players #chat .comp .tooltip {
-      opacity: 0;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-orient: vertical;
-      -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-      flex-direction: column;
-      -webkit-box-pack: center;
-      -ms-flex-pack: center;
-      justify-content: center;
-      -webkit-box-align: stretch;
-      -ms-flex-align: stretch;
-      align-items: stretch;
-      color: var(--blades-white);
-      background: var(--blades-black-dark);
-      width: -webkit-max-content;
-      width: -moz-max-content;
-      width: max-content;
-      max-width: 400px;
-      padding: 0.375rem;
-      border: 0.0625rem solid var(--blades-grey);
-      border-radius: 0.1875rem;
-      -webkit-hyphens: auto;
-      -ms-hyphens: auto;
-      hyphens: auto;
-      text-align: justify;
-      position: absolute;
-      top: unset;
-      left: -200px;
-      bottom: 50px;
-      z-index: 6;
-      pointer-events: none; }
-      :root body.vtt.game.system-eunos-blades #interface #chat .comp .tooltip h2,
-      :root body.vtt.game.system-eunos-blades #controls #chat .comp .tooltip h2,
-      :root body.vtt.game.system-eunos-blades #navigation #chat .comp .tooltip h2,
-      :root body.vtt.game.system-eunos-blades #hotbar #chat .comp .tooltip h2,
-      :root body.vtt.game.system-eunos-blades #players #chat .comp .tooltip h2 {
-        color: var(--blades-white-bright); }
-      :root body.vtt.game.system-eunos-blades #interface #chat .comp .tooltip.tooltip-low,
-      :root body.vtt.game.system-eunos-blades #controls #chat .comp .tooltip.tooltip-low,
-      :root body.vtt.game.system-eunos-blades #navigation #chat .comp .tooltip.tooltip-low,
-      :root body.vtt.game.system-eunos-blades #hotbar #chat .comp .tooltip.tooltip-low,
-      :root body.vtt.game.system-eunos-blades #players #chat .comp .tooltip.tooltip-low {
-        bottom: -50px; }
-      :root body.vtt.game.system-eunos-blades #interface #chat .comp .tooltip.tooltip-left,
-      :root body.vtt.game.system-eunos-blades #controls #chat .comp .tooltip.tooltip-left,
-      :root body.vtt.game.system-eunos-blades #navigation #chat .comp .tooltip.tooltip-left,
-      :root body.vtt.game.system-eunos-blades #hotbar #chat .comp .tooltip.tooltip-left,
-      :root body.vtt.game.system-eunos-blades #players #chat .comp .tooltip.tooltip-left {
-        left: 200px;
-        max-width: unset; }
-      :root body.vtt.game.system-eunos-blades #interface #chat .comp .tooltip.tooltip-portrait,
-      :root body.vtt.game.system-eunos-blades #controls #chat .comp .tooltip.tooltip-portrait,
-      :root body.vtt.game.system-eunos-blades #navigation #chat .comp .tooltip.tooltip-portrait,
-      :root body.vtt.game.system-eunos-blades #hotbar #chat .comp .tooltip.tooltip-portrait,
-      :root body.vtt.game.system-eunos-blades #players #chat .comp .tooltip.tooltip-portrait {
-        bottom: 100px;
-        left: 50px; }
-      :root body.vtt.game.system-eunos-blades #interface #chat .comp .tooltip.tooltip-playbook,
-      :root body.vtt.game.system-eunos-blades #controls #chat .comp .tooltip.tooltip-playbook,
-      :root body.vtt.game.system-eunos-blades #navigation #chat .comp .tooltip.tooltip-playbook,
-      :root body.vtt.game.system-eunos-blades #hotbar #chat .comp .tooltip.tooltip-playbook,
-      :root body.vtt.game.system-eunos-blades #players #chat .comp .tooltip.tooltip-playbook {
-        bottom: unset;
-        top: 0px;
-        left: -220px; }
-      :root body.vtt.game.system-eunos-blades #interface #chat .comp .tooltip.trauma-tooltip,
-      :root body.vtt.game.system-eunos-blades #controls #chat .comp .tooltip.trauma-tooltip,
-      :root body.vtt.game.system-eunos-blades #navigation #chat .comp .tooltip.trauma-tooltip,
-      :root body.vtt.game.system-eunos-blades #hotbar #chat .comp .tooltip.trauma-tooltip,
-      :root body.vtt.game.system-eunos-blades #players #chat .comp .tooltip.trauma-tooltip {
-        left: -300px; }
     :root body.vtt.game.system-eunos-blades #interface #chat .comp.comp-vertical,
     :root body.vtt.game.system-eunos-blades #controls #chat .comp.comp-vertical,
     :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-vertical,
@@ -7348,42 +6953,6 @@ template {
       :root body.vtt.game.system-eunos-blades #players #chat .button-icon i.toggle-off,
       :root body.vtt.game.system-eunos-blades #players #chat .toggle-icon i.toggle-off {
         opacity: 0.25; }
-    :root body.vtt.game.system-eunos-blades #interface #chat .button-icon .tooltip, :root body.vtt.game.system-eunos-blades #interface #chat .toggle-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls #chat .button-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls #chat .toggle-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation #chat .button-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation #chat .toggle-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat .button-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat .toggle-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #players #chat .button-icon .tooltip,
-    :root body.vtt.game.system-eunos-blades #players #chat .toggle-icon .tooltip {
-      display: none;
-      pointer-events: none;
-      position: absolute;
-      bottom: 15px;
-      left: 15px;
-      background: var(--blades-black);
-      color: var(--blades-white);
-      font-size: 10px;
-      line-height: 12px;
-      padding: 5px;
-      border-radius: 10px;
-      border: 1px solid var(--blades-white-bright);
-      text-align: center;
-      white-space: nowrap; }
-      :root body.vtt.game.system-eunos-blades #interface #chat .button-icon .tooltip b, :root body.vtt.game.system-eunos-blades #interface #chat .toggle-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #controls #chat .button-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #controls #chat .toggle-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #navigation #chat .button-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #navigation #chat .toggle-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #hotbar #chat .button-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #hotbar #chat .toggle-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #players #chat .button-icon .tooltip b,
-      :root body.vtt.game.system-eunos-blades #players #chat .toggle-icon .tooltip b {
-        color: var(--blades-white-bright);
-        font-size: 12px;
-        font-family: var(--font-emphasis);
-        text-transform: uppercase; }
     :root body.vtt.game.system-eunos-blades #interface #chat .button-icon .hidden-toggle, :root body.vtt.game.system-eunos-blades #interface #chat .toggle-icon .hidden-toggle,
     :root body.vtt.game.system-eunos-blades #controls #chat .button-icon .hidden-toggle,
     :root body.vtt.game.system-eunos-blades #controls #chat .toggle-icon .hidden-toggle,
@@ -7419,37 +6988,6 @@ template {
       :root body.vtt.game.system-eunos-blades #players #chat .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on,
       :root body.vtt.game.system-eunos-blades #players #chat .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
         display: none; }
-    :root body.vtt.game.system-eunos-blades #interface #chat .button-icon.tooltip-left .tooltip, :root body.vtt.game.system-eunos-blades #interface #chat .toggle-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls #chat .button-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls #chat .toggle-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation #chat .button-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation #chat .toggle-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat .button-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat .toggle-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #players #chat .button-icon.tooltip-left .tooltip,
-    :root body.vtt.game.system-eunos-blades #players #chat .toggle-icon.tooltip-left .tooltip {
-      left: unset;
-      right: 15px; }
-    :root body.vtt.game.system-eunos-blades #interface #chat .button-icon:hover i, :root body.vtt.game.system-eunos-blades #interface #chat .toggle-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #controls #chat .button-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #controls #chat .toggle-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #navigation #chat .button-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #navigation #chat .toggle-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat .button-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat .toggle-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #players #chat .button-icon:hover i,
-    :root body.vtt.game.system-eunos-blades #players #chat .toggle-icon:hover i {
-      opacity: 1; }
-    :root body.vtt.game.system-eunos-blades #interface #chat .button-icon:hover .tooltip, :root body.vtt.game.system-eunos-blades #interface #chat .toggle-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls #chat .button-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #controls #chat .toggle-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation #chat .button-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #navigation #chat .toggle-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat .button-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat .toggle-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #players #chat .button-icon:hover .tooltip,
-    :root body.vtt.game.system-eunos-blades #players #chat .toggle-icon:hover .tooltip {
-      display: block; }
   :root body.vtt.game.system-eunos-blades #interface #chat .dotline,
   :root body.vtt.game.system-eunos-blades #controls #chat .dotline,
   :root body.vtt.game.system-eunos-blades #navigation #chat .dotline,
@@ -8293,56 +7831,6 @@ template {
         color: var(--blades-white-bright);
         width: 2rem;
         text-align: center; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .comp .tooltip {
-        opacity: 0;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        -webkit-box-align: stretch;
-        -ms-flex-align: stretch;
-        align-items: stretch;
-        color: var(--blades-white);
-        background: var(--blades-black-dark);
-        width: -webkit-max-content;
-        width: -moz-max-content;
-        width: max-content;
-        max-width: 400px;
-        padding: 0.375rem;
-        border: 0.0625rem solid var(--blades-grey);
-        border-radius: 0.1875rem;
-        -webkit-hyphens: auto;
-        -ms-hyphens: auto;
-        hyphens: auto;
-        text-align: justify;
-        position: absolute;
-        top: unset;
-        left: -200px;
-        bottom: 50px;
-        z-index: 6;
-        pointer-events: none; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .comp .tooltip h2 {
-          color: var(--blades-white-bright); }
-        :root body.vtt.game.system-eunos-blades .app.window-app .comp .tooltip.tooltip-low {
-          bottom: -50px; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .comp .tooltip.tooltip-left {
-          left: 200px;
-          max-width: unset; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .comp .tooltip.tooltip-portrait {
-          bottom: 100px;
-          left: 50px; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .comp .tooltip.tooltip-playbook {
-          bottom: unset;
-          top: 0px;
-          left: -220px; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .comp .tooltip.trauma-tooltip {
-          left: -300px; }
       :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-vertical {
         --comp-img-scale: 2;
         --comp-name-size: 1rem;
@@ -8768,26 +8256,6 @@ template {
         pointer-events: none; }
         :root body.vtt.game.system-eunos-blades .app.window-app .button-icon i.toggle-off, :root body.vtt.game.system-eunos-blades .app.window-app .toggle-icon i.toggle-off {
           opacity: 0.25; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .button-icon .tooltip, :root body.vtt.game.system-eunos-blades .app.window-app .toggle-icon .tooltip {
-        display: none;
-        pointer-events: none;
-        position: absolute;
-        bottom: 15px;
-        left: 15px;
-        background: var(--blades-black);
-        color: var(--blades-white);
-        font-size: 10px;
-        line-height: 12px;
-        padding: 5px;
-        border-radius: 10px;
-        border: 1px solid var(--blades-white-bright);
-        text-align: center;
-        white-space: nowrap; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .button-icon .tooltip b, :root body.vtt.game.system-eunos-blades .app.window-app .toggle-icon .tooltip b {
-          color: var(--blades-white-bright);
-          font-size: 12px;
-          font-family: var(--font-emphasis);
-          text-transform: uppercase; }
       :root body.vtt.game.system-eunos-blades .app.window-app .button-icon .hidden-toggle, :root body.vtt.game.system-eunos-blades .app.window-app .toggle-icon .hidden-toggle {
         margin: 0;
         border: none;
@@ -8799,13 +8267,6 @@ template {
           display: none; }
         :root body.vtt.game.system-eunos-blades .app.window-app .button-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on, :root body.vtt.game.system-eunos-blades .app.window-app .toggle-icon .hidden-toggle[type="checkbox"]:not(:checked) + .toggle-on {
           display: none; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .button-icon.tooltip-left .tooltip, :root body.vtt.game.system-eunos-blades .app.window-app .toggle-icon.tooltip-left .tooltip {
-        left: unset;
-        right: 15px; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .button-icon:hover i, :root body.vtt.game.system-eunos-blades .app.window-app .toggle-icon:hover i {
-        opacity: 1; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .button-icon:hover .tooltip, :root body.vtt.game.system-eunos-blades .app.window-app .toggle-icon:hover .tooltip {
-        display: block; }
     :root body.vtt.game.system-eunos-blades .app.window-app .dotline {
       --dotline-zero-dot-size: 0.875rem;
       --dotline-dot-size: 0.875rem;
@@ -9227,6 +8688,75 @@ template {
     align-items: center; }
   :root body.vtt.game.system-eunos-blades .app.window-app .full-width {
     width: 100%; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .tooltip-trigger {
+    pointer-events: auto !important; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .tooltip {
+    opacity: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    color: var(--blades-white);
+    background: var(--blades-black-dark);
+    width: -webkit-max-content;
+    width: -moz-max-content;
+    width: max-content;
+    max-width: 400px;
+    padding: 0.375rem;
+    border: 0.0625rem solid var(--blades-grey);
+    border-radius: 0.1875rem;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    text-align: justify;
+    position: absolute;
+    top: unset;
+    left: -200px;
+    bottom: 50px;
+    z-index: 6;
+    pointer-events: none; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .tooltip h2 {
+      color: var(--blades-white-bright); }
+    :root body.vtt.game.system-eunos-blades .app.window-app .tooltip.tooltip-left {
+      left: 200px;
+      max-width: unset; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .tooltip.tooltip-portrait {
+      bottom: -45px;
+      left: -200px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .tooltip.tooltip-playbook {
+      bottom: unset;
+      top: 0px;
+      left: -220px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .tooltip.tooltip-trauma {
+      left: -300px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .tooltip.tooltip-dialog-selection {
+      left: -300px;
+      bottom: 75px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .tooltip.tooltip-attribute {
+      left: -110px;
+      bottom: 10px;
+      translate: 0% 50% !important; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tooltip.tooltip-attribute > p {
+        font-size: 16px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .tooltip.tooltip-action {
+      left: unset;
+      right: -100px;
+      bottom: 0px;
+      max-width: 525px;
+      translate: 0% 50% !important; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tooltip.tooltip-action > p {
+        font-size: 16px; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .tooltip-scaling-elem {
+    display: inline-block; }
   :root body.vtt.game.system-eunos-blades .app.window-app .nav-group {
     border: 0;
     overflow: hidden; }
@@ -10200,6 +9730,75 @@ template {
           align-items: center; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .full-width {
           width: 100%; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip-trigger {
+          pointer-events: auto !important; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip {
+          opacity: 0;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-orient: vertical;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+          flex-direction: column;
+          -webkit-box-pack: center;
+          -ms-flex-pack: center;
+          justify-content: center;
+          -webkit-box-align: stretch;
+          -ms-flex-align: stretch;
+          align-items: stretch;
+          color: var(--blades-white);
+          background: var(--blades-black-dark);
+          width: -webkit-max-content;
+          width: -moz-max-content;
+          width: max-content;
+          max-width: 400px;
+          padding: 0.375rem;
+          border: 0.0625rem solid var(--blades-grey);
+          border-radius: 0.1875rem;
+          -webkit-hyphens: auto;
+          -ms-hyphens: auto;
+          hyphens: auto;
+          text-align: justify;
+          position: absolute;
+          top: unset;
+          left: -200px;
+          bottom: 50px;
+          z-index: 6;
+          pointer-events: none; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip h2 {
+            color: var(--blades-white-bright); }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip.tooltip-left {
+            left: 200px;
+            max-width: unset; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip.tooltip-portrait {
+            bottom: -45px;
+            left: -200px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip.tooltip-playbook {
+            bottom: unset;
+            top: 0px;
+            left: -220px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip.tooltip-trauma {
+            left: -300px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip.tooltip-dialog-selection {
+            left: -300px;
+            bottom: 75px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip.tooltip-attribute {
+            left: -110px;
+            bottom: 10px;
+            translate: 0% 50% !important; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip.tooltip-attribute > p {
+              font-size: 16px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip.tooltip-action {
+            left: unset;
+            right: -100px;
+            bottom: 0px;
+            max-width: 525px;
+            translate: 0% 50% !important; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip.tooltip-action > p {
+              font-size: 16px; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip-scaling-elem {
+          display: inline-block; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-img {
           position: absolute;
           height: var(--sheet-top-height);
@@ -10307,6 +9906,228 @@ template {
               height: var(--sheet-mid-height); }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content {
               height: auto; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts {
+                -webkit-box-align: start;
+                -ms-flex-align: start;
+                align-items: flex-start;
+                -webkit-box-pack: stretch;
+                -ms-flex-pack: stretch;
+                justify-content: stretch;
+                gap: 0 5px; }
+                :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel {
+                  width: 100%; }
+                  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort {
+                    -webkit-box-align: stretch;
+                    -ms-flex-align: stretch;
+                    align-items: stretch;
+                    border-radius: 10px;
+                    border: 2px outset var(--blades-white);
+                    margin: 5px;
+                    background: linear-gradient(45deg, var(--blades-black-dark), var(--blades-grey));
+                    -webkit-box-shadow: 3px 3px 5px var(--blades-black-dark);
+                    box-shadow: 3px 3px 5px var(--blades-black-dark); }
+                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top {
+                      display: grid;
+                      grid-template-areas: "img title quality" "img subtitle scale" "img harm roll";
+                      grid-template-columns: 60px 1fr 120px;
+                      grid-template-rows: 25px 16px 25px;
+                      height: 66px;
+                      border-bottom: 2px solid var(--blades-white); }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container {
+                        grid-area: img;
+                        position: relative;
+                        pointer-events: none;
+                        height: 60px;
+                        width: 60px;
+                        top: 3px; }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container * {
+                          pointer-events: none; }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image {
+                          width: 30px;
+                          min-height: 60px;
+                          overflow: hidden;
+                          position: absolute; }
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image img {
+                            max-width: 60px;
+                            position: absolute; }
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-left, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-left img {
+                            left: 0; }
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-right, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-right img {
+                            right: 0; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-title-container {
+                        grid-area: title; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-subtitle-container {
+                        grid-area: subtitle; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-quality-container {
+                        grid-area: quality; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-scale-container {
+                        grid-area: scale; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-container {
+                        position: relative;
+                        grid-area: harm;
+                        padding-right: 10px; }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-container.wide-bar {
+                          width: calc(100% + 120px);
+                          padding: 0; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-container {
+                        position: relative;
+                        grid-area: roll;
+                        -ms-flex-pack: distribute;
+                        justify-content: space-around;
+                        -webkit-box-align: center;
+                        -ms-flex-align: center;
+                        align-items: center; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-name {
+                        pointer-events: all;
+                        font-family: var(--font-emphasis);
+                        font-size: 1.125rem;
+                        line-height: 25px;
+                        color: var(--blades-white-bright);
+                        -webkit-transition: 0.25s;
+                        transition: 0.25s;
+                        -webkit-transform-origin: 0% 50%;
+                        -ms-transform-origin: 0% 50%;
+                        transform-origin: 0% 50%;
+                        display: inline-block; }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-name:hover {
+                          color: var(--blades-gold);
+                          scale: 1.25; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-subtitle {
+                        font-size: 0.875rem;
+                        font-style: italic;
+                        line-height: 14px;
+                        position: relative;
+                        top: -3px;
+                        font-weight: bold; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-quality-container {
+                        text-align: right; }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-quality-container .cohort-quality-label {
+                          font-size: 1rem;
+                          font-family: var(--font-emphasis); }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-quality-container .cohort-quality-number {
+                          display: inline-block;
+                          font-size: 1rem;
+                          font-weight: bold;
+                          color: var(--blades-gold-bright);
+                          -webkit-transform-origin: 50% 50%;
+                          -ms-transform-origin: 50% 50%;
+                          transform-origin: 50% 50%;
+                          scale: 1.25 2;
+                          margin: 0 5px; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-scale-container {
+                        text-align: right;
+                        margin-top: -5px; }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-scale-container .cohort-scale-label {
+                          font-size: 1rem;
+                          font-family: var(--font-emphasis); }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-scale-container .cohort-scale-number {
+                          display: inline-block;
+                          font-size: 1rem;
+                          font-weight: bold;
+                          color: var(--blades-gold-bright);
+                          -webkit-transform-origin: 50% 50%;
+                          -ms-transform-origin: 50% 50%;
+                          transform-origin: 50% 50%;
+                          scale: 1.25;
+                          margin: 0 5px; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar {
+                        -webkit-box-pack: stretch;
+                        -ms-flex-pack: stretch;
+                        justify-content: stretch;
+                        width: 100%;
+                        height: 100%; }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box {
+                          position: relative;
+                          -webkit-box-flex: 0.25;
+                          -ms-flex-positive: 0.25;
+                          flex-grow: 0.25;
+                          border: 1px solid var(--blades-white);
+                          border-bottom-width: 2px;
+                          background: var(--blades-red-dark);
+                          height: 100%;
+                          text-align: center; }
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .harm-number {
+                            display: inline-block;
+                            width: 15px;
+                            line-height: 23px;
+                            font-size: 18px;
+                            color: var(--blades-black-dark);
+                            font-family: var(--font-emphasis);
+                            text-shadow: none;
+                            text-align: center;
+                            -webkit-transition: 0.25s;
+                            transition: 0.25s; }
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .harm-effect {
+                            display: none; }
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .cohort-harm-tooltip {
+                            padding: 0;
+                            bottom: 22px; }
+                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .cohort-harm-tooltip > h2, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .cohort-harm-tooltip p {
+                              padding: 0 10px;
+                              margin: 0; }
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.harm-level-0 {
+                            display: none; }
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active {
+                            display: -webkit-box;
+                            display: -ms-flexbox;
+                            display: flex;
+                            -webkit-box-flex: 2;
+                            -ms-flex-positive: 2;
+                            flex-grow: 2;
+                            background: -webkit-gradient(linear, left top, right top, from(var(--blades-red)), color-stop(var(--blades-red-dark)), to(transparent));
+                            background: linear-gradient(to right, var(--blades-red), var(--blades-red-dark), transparent); }
+                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active.harm-level-0 {
+                              background: transparent; }
+                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active.harm-level-4 {
+                              background: var(--blades-red); }
+                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active .harm-number {
+                              color: var(--blades-white-bright);
+                              text-align: left;
+                              text-indent: 5px;
+                              text-shadow: 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark);
+                              width: -webkit-min-content;
+                              width: -moz-min-content;
+                              width: min-content;
+                              margin-right: 5px; }
+                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active .harm-effect {
+                              display: inline-block;
+                              color: var(--blades-white-bright);
+                              line-height: 23px; }
+                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active ~ .cohort-harm-box {
+                              background: transparent; }
+                              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active ~ .cohort-harm-box .harm-number {
+                                color: var(--blades-grey); }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button {
+                        border: none;
+                        padding: 0;
+                        height: 100%;
+                        width: 23px;
+                        position: relative; }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button svg.roll-button-icon {
+                          stroke-width: 20px; }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button .tooltip-cohort-roll {
+                          padding: 0;
+                          bottom: 23px; }
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button .tooltip-cohort-roll > h2 {
+                            padding: 0 10px;
+                            margin: 0; }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button[data-roll-label="Untrained"] .roll-button-icon {
+                          fill: transparent;
+                          stroke: var(--blades-white); }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button[data-roll-label="Trained"] .roll-button-icon {
+                          fill: var(--blades-grey-bright);
+                          stroke: var(--blades-white); }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button[data-roll-label="Elite"] .roll-button-icon {
+                          fill: #96ffff;
+                          stroke: var(--blades-white); }
+                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .filled-label {
+                      height: 100%;
+                      line-height: 25px;
+                      font-size: 18px;
+                      padding: 0px;
+                      margin-right: 3px;
+                      color: var(--blades-white);
+                      background: transparent; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.nav-group {
               height: calc(100% - var(--sheet-top-height) - var(--sheet-mid-height));
               -webkit-box-pack: start;
@@ -10730,6 +10551,8 @@ template {
             transform: none; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root div.split-panel section.nav-group .loadout .comp .dotline + .comp-title .item-title {
               margin-left: 0.75rem; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root div.split-panel section.nav-group .acquaintances.active {
+            overflow: visible; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root div.split-panel section.action-ratings {
           -webkit-box-align: stretch;
           -ms-flex-align: stretch;
@@ -11929,6 +11752,8 @@ template {
             background: linear-gradient(to right, var(--blades-red), var(--blades-red-dark), transparent); }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level.active.harm-level-0, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level.active.harm-level-0 {
               background: transparent; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level.active.harm-level-4, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level.active.harm-level-4 {
+              background: var(--blades-red); }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level.active ~ .harm-level, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level.active ~ .harm-level {
               background: transparent; }
               :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm .harm-level.active ~ .harm-level .harm-number, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm .harm-level.active ~ .harm-level .harm-number {

@@ -279,7 +279,7 @@
             cat="VicePurveyor"
             docType="Actor"
             tooltip=preparedActors.vice_purveyor.tooltip
-            tooltipClass= "tooltip-portrait tooltip-low"
+            tooltipClass= "tooltip-portrait"
             remButton=true
             addButton=true
             }}
@@ -290,7 +290,7 @@
             docType = "Actor"
             id=actor._id
             tooltip=actor.tooltip
-            tooltipClass= "tooltip-portrait tooltip-low"
+            tooltipClass= "tooltip-portrait"
             remButton=true
             }}
             {{/each}}
@@ -349,7 +349,8 @@
       <section class="action-ratings flex-vertical">
         {{#each attributeData as |attribute_data attribute_name|}}
         <div class="comp comp-horizontal comp-attribute">
-          <label class="comp-label" data-roll-attribute="{{attribute_name}}">{{#if (test (lookup ../system.resistance_bonus attribute_name) ">" 0)}}+{{lookup ../system.resistance_bonus attribute_name}}&nbsp;{{/if}}{{case "title" attribute_name}}</label>
+          <label class="comp-label tooltip-trigger" data-roll-attribute="{{attribute_name}}"><span class="tooltip-scaling-elem">{{#if (test (lookup ../system.resistance_bonus attribute_name) ">" 0)}}+{{lookup ../system.resistance_bonus attribute_name}}&nbsp;{{/if}}{{case "title" attribute_name}}</span></label>
+          <div class="tooltip tooltip-attribute tooltip-small">{{{attribute_data.tooltip}}}</div>
           <div class="comp-body">
             {{> "systems/eunos-blades/templates/components/dotline.hbs"
             data=(lookup ../system.experience attribute_name)
@@ -363,7 +364,7 @@
             }}
           </div>
         </div>
-        {{#each attribute_data as |action_data action_name|}}
+        {{#each attribute_data.actions as |action_data action_name|}}
         <div class="comp comp-horizontal comp-action">
           <div class="comp-body">
             {{> "systems/eunos-blades/templates/components/dotline.hbs"
@@ -376,15 +377,16 @@
             blockClass="action"
             }}
           </div>
-          <label class="comp-label" data-roll-attribute="{{action_name}}">{{case "upper" action_name}}</label>
+          <label class="comp-label tooltip-trigger" data-roll-attribute="{{action_name}}"><span class="tooltip-scaling-elem">{{case "upper" action_name}}</span></label>
+          <div class="tooltip tooltip-action tooltip-small tooltip-left">{{{action_data.tooltip}}}</div>
         </div>
         {{/each}}
         {{/each}}
-        <div class="comp gather-info-tooltip">
+        <div class="comp gather-info-tooltip tooltip-trigger">
           <div class="comp-body">
-            <img class="gather-info-icon" src="systems/eunos-blades/assets/icons/misc-icons/gather-info.svg" />
+            <img class="gather-info-icon tooltip-scaling-elem" src="systems/eunos-blades/assets/icons/misc-icons/gather-info.svg" />
           </div>
-          <div class="comp tooltip">{{{gatherInfoTooltip}}}</div>
+          <div class="tooltip">{{{gatherInfoTooltip}}}</div>
         </div>
       </section>
     </div>
