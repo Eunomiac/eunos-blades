@@ -707,19 +707,18 @@ class BladesActor extends Actor {
             const abilPointsSpent = U.sum(this.items
                 .filter((item) => BladesItem.IsType(item, BladesItemType.ability, BladesItemType.crew_ability))
                 .map((abil) => abil.system.price ?? 1));
-            const upgradePointsSpent = U.sum(this.items
+            const abilUpgradePointsSpent = U.sum(this.items
                 .filter((item) => BladesItem.IsType(item, BladesItemType.crew_upgrade))
-                .map((upgrade) => upgrade.system.price ?? 1));
-            const upgradePoints = aPoints.filter((aPt) => (aPt.includes(AdvancementPoint.UpgradeOrAbility) && !aPt.includes(AdvancementPoint.Ability))
-                || aPt.includes(AdvancementPoint.Upgrade)).length;
-            const abilityPoints = Math.floor((upgradePoints - upgradePointsSpent) / 2) + aPoints.filter((aPt) => aPt.includes(AdvancementPoint.Ability)).length;
+                .map((upgrade) => upgrade.system.price ?? 1)) - aPoints.filter((aPt) => aPt.includes(AdvancementPoint.Upgrade)
+                && !aPt.includes(AdvancementPoint.Ability)).length;
+            const abilUpgradePoints = aPoints.filter((aPt) => aPt.includes(AdvancementPoint.UpgradeOrAbility)
+                && !aPt.includes(AdvancementPoint.Ability)).length;
+            const abilityPoints = Math.floor((abilUpgradePoints - abilUpgradePointsSpent) / 2) + aPoints.filter((aPt) => aPt.includes(AdvancementPoint.Ability)).length;
             return abilityPoints - abilPointsSpent;
         }
         if (trait === "Cohort") {
-            const numTypes = this.cohorts.map((cohort) => U.unique([
-                ...Object.values(cohort.system.subtypes) ?? [],
-                ...Object.values(cohort.system.elite_subtypes) ?? []
-            ]).filter((subtype) => /[A-Za-z]/.test(subtype))).length;
+            const numTypes = this.cohorts.map((cohort) => U.unique(Object.values(cohort.system.subtypes))
+                .filter((subtype) => /[A-Za-z]/.test(subtype))).length;
             const cohortPoints = aPoints.filter((aPt) => aPt.includes(AdvancementPoint.Cohort)).length;
             return cohortPoints - numTypes;
         }
@@ -731,7 +730,7 @@ class BladesActor extends Actor {
                 .filter((item) => BladesItem.IsType(item, BladesItemType.ability, BladesItemType.crew_ability))
                 .map((abil) => abil.system.price ?? 1));
             const abilityPoints = aPoints.filter((aPt) => aPt.includes(AdvancementPoint.Ability)).length;
-            const upgradeAbilityPointsSpent = -2 * (abilityPoints - abilPointsSpent);
+            const upgradeAbilityPointsSpent = Math.max(0, -2 * (abilityPoints - abilPointsSpent));
             const upgradePointsSpent = U.sum(this.items
                 .filter((item) => BladesItem.IsType(item, BladesItemType.crew_upgrade))
                 .map((upgrade) => upgrade.system.price ?? 1));
