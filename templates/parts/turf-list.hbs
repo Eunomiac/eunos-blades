@@ -1,11 +1,11 @@
-{{!-- {{log "ENTERING TURF-LIST" this}} --}}
+{{!-- {{eLog "ENTERING TURF-LIST" this}} --}}
 <div id="crew-{{actor._id}}-turf-list"
   class="turf-list {{#if can_edit}}section-editable{{else}}section-non-editable{{/if}}">
 
   <div class="turf-row">
 
     {{#each turfs_data as |turf id|}}
-    {{!-- {{log turf id}} --}}
+    {{!-- {{eLog turf id}} --}}
     <div class="turf-block {{~#if turf.value}} turf-selected{{/if}} {{~#if (eq id "8")}} turf-lair {{#if ../can_edit}}
       turf-turf{{/if}}{{/if}} {{~#if (isTurfBlock turf.name)}} turf-turf{{/if}}">
       {{#each turf.connects as |connects dir|}}
@@ -25,12 +25,12 @@
       {{#if (eq id "8")}}
       <textarea class="turf-description" placeholder="What is it? What makes it unique?" name="system.lair"
         spellcheck="false">{{../system.lair}}</textarea>
-      <input type="text" class="turf-district comp-tags tags-district" data-tag-target="system.turfs.{{id}}.district"/>
+      <input type="text" class="turf-district comp-tags tags-district single-tag" data-tag-target="system.turfs.{{id}}.district"/>
       {{else}}
       {{#if (isTurfBlock turf.name)}}
       <textarea class="turf-description" placeholder="What is it? Who held it last?" name="system.turfs.{{id}}.description"
         spellcheck="false">{{localize turf.description}}</textarea>
-      <input type="text" class="turf-district comp-tags tags-district" data-tag-target="system.turfs.{{id}}.district"/>
+      <input type="text" class="turf-district comp-tags tags-district single-tag" data-tag-target="system.turfs.{{id}}.district"/>
       {{else}}
       <textarea class="turf-description {{~#if ../can_edit}} turf-editable{{else}} turf-readonly{{/if}}"
         name="system.turfs.{{id}}.description" {{#unless

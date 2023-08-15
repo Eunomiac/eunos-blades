@@ -1,4 +1,4 @@
-import { BladesActorType, Tag, District, Attributes, Actions } from "../core/constants.js";
+import { BladesActorType, Tag, District, Attribute, Action, AdvancementPoint } from "../core/constants.js";
 import BladesActor from "../blades-actor.js";
 
 declare global {
@@ -45,6 +45,7 @@ declare global {
         ability: number,
         upgrade: number
       }
+      advancement_points: AdvancementPoint[][]
     }
 
     export interface hold {
@@ -83,14 +84,14 @@ declare global {
         checked: Record<"light" | "heavy" | "special", boolean>
       },
 
-      attributes: Record<Attributes, Record<Actions, ValueMax>>,
-      resistance_bonus: Record<Attributes, number>,
+      attributes: Record<Attribute, Record<Action, ValueMax>>,
+      resistance_bonus: Record<Attribute, number>,
       conditional_bonus: Record<RollableStat, string>
 
       experience: BladesActorSchemaTemplate.pcChar["experience"] & {
-        [Attributes.insight]: ValueMax,
-        [Attributes.prowess]: ValueMax,
-        [Attributes.resolve]: ValueMax
+        [Attribute.insight]: ValueMax,
+        [Attribute.prowess]: ValueMax,
+        [Attribute.resolve]: ValueMax
       },
       gather_info: string[]
     }
@@ -102,7 +103,9 @@ declare global {
       deity: string,
       heat: ValueMax,
       wanted: ValueMax,
-      hunting_grounds: string
+      hunting_grounds: string,
+
+      turfs?: Record<TurfNum, BladesClaimData>
     }
 
     export interface NPC extends BladesActorSchemaTemplate.Default,
@@ -257,9 +260,9 @@ declare global {
       get crew(): BladesActor | undefined;
       get abilities(): BladesItem[];
 
-      get attributes(): Record<Attributes, number> | undefined;
-      get actions(): Record<Actions, number> | undefined;
-      get rollable(): Record<Attributes | Actions, number> | undefined;
+      get attributes(): Record<Attribute, number> | undefined;
+      get actions(): Record<Action, number> | undefined;
+      get rollable(): Record<Attribute | Action, number> | undefined;
 
       get trauma(): number;
       get traumaList(): string[];

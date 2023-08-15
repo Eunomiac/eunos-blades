@@ -35,7 +35,8 @@
 					"general": 0,
 					"ability": 0,
 					"upgrade": 0
-				}
+				},
+        "advancement_points": []
 			},
 			"hold": { "hold": "strong" }
 		},

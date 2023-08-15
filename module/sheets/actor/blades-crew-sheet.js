@@ -150,8 +150,6 @@ class BladesCrewSheet extends BladesSheet {
             this.actor.playbook?.update({ ["system.turfs." + turf_id + ".value"]: !turf_current_status })
                 .then(() => this.render(false));
         });
-        
-        
     }
 }
 export default BladesCrewSheet;

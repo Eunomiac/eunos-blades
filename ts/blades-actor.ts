@@ -1,7 +1,7 @@
 // #region Imports ~
 import U from "./core/utilities.js";
 import type {Vice} from "./core/constants.js";
-import {BladesActorType, BladesPhase, Tag, District, Playbook, BladesItemType, Attributes, Actions, Positions, EffectLevels, Randomizers} from "./core/constants.js";
+import C, {BladesActorType, BladesPhase, Tag, District, Playbook, BladesItemType, Attribute, Action, InsightActions, ProwessActions, ResolveActions, Positions, EffectLevels, AdvancementPoint, Randomizers} from "./core/constants.js";
 
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
@@ -710,63 +710,179 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
   // #endregion
   // #region Advancement Implementation ~
-  get totalAbilityPoints(): number {
-    if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) { return 0 }
-    if (!this.playbook) { return 0 }
-    switch (this.type) {
-      case BladesActorType.pc: return this.system.advancement.ability ?? 0;
-      case BladesActorType.crew: return Math.floor(0.5 * (this.system.advancement.general ?? 0)) + (this.system.advancement.ability ?? 0);
-      default: return 0;
-    }
-  }
-  get spentAbilityPoints(): number {
-    if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) { return 0 }
-    if (!this.playbook) { return 0 }
-    return this.abilities.reduce((total, ability) => total + (ability.system.price ?? 1), 0);
-  }
-  get availableAbilityPoints(): number {
-    if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) { return 0 }
-    if (!this.playbook) { return 0 }
-    return this.totalAbilityPoints - this.spentAbilityPoints;
-  }
+  // get totalAbilityPoints(): number {
+  //   if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) { return 0 }
+  //   if (!this.playbook) { return 0 }
+  //   switch (this.type) {
+  //     case BladesActorType.pc: return this.system.advancement.ability ?? 0;
+  //     case BladesActorType.crew: return Math.floor(0.5 * (this.system.advancement.general ?? 0)) + (this.system.advancement.ability ?? 0);
+  //     default: return 0;
+  //   }
+  // }
+  // get spentAbilityPoints(): number {
+  //   if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) { return 0 }
+  //   if (!this.playbook) { return 0 }
+  //   return this.abilities.reduce((total, ability) => total + (ability.system.price ?? 1), 0);
+  // }
+  // get availableAbilityPoints(): number {
+  //   if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) { return 0 }
+  //   if (!this.playbook) { return 0 }
+  //   return this.totalAbilityPoints - this.spentAbilityPoints;
+  // }
 
+  /* Need simple getters for total ability & upgrade points that check for PRICES of items
+        (upgrade.system.price ?? 1) */
   async addAbilityPoints(amount: number): Promise<void> {
     if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) { return }
-    this.update({"system.advancement.ability": (this.system.advancement.ability ?? 0) + amount});
+    this.grantAdvancementPoints([AdvancementPoint.Ability], amount);
+    // this.update({"system.advancement.ability": (this.system.advancement.ability ?? 0) + amount});
   }
   async removeAbilityPoints(amount: number): Promise<void> {
     if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) { return }
-    this.update({"system.advancement.ability": Math.max(0, (this.system.advancement.ability ?? 0) - amount)});
+    this.removeAdvancementPoints([AdvancementPoint.Ability], amount);
+    // this.update({"system.advancement.ability": Math.max(0, (this.system.advancement.ability ?? 0) - amount)});
+  }
+
+  async grantAdvancementPoints(allowedTypes: AdvancementPoint[], amount = 1) {
+    const aPoints = this.system.advancement_points ?? [];
+    for (let i = 0; i < amount; i++) {
+      aPoints.push(allowedTypes);
+    }
+    /* NEED TO ENSURE THERE AREN'T ANY WEIRD ARRAY SHENANEGANS HERE */
+    this.update({"system.advancement_points": aPoints});
+  }
+
+  async removeAdvancementPoints(allowedTypes: AdvancementPoint[], amount = 1): Promise<boolean> {
+    const aPoints = this.system.advancement_points ?? [];
+    for (let i = 0; i < amount; i++) {
+      const elem = U.remove(aPoints, ((aPt: AdvancementPoint[]) => aPt.length === allowedTypes.length
+        && allowedTypes.every((aType) => aPt.includes(aType))) as any);
+      if (elem === false) { return false }
+    }
+    await this.update({"system.advancement_points": aPoints});
+    return true;
+  }
+
+  calcAdvances(trait: "Ability"|"Upgrade"|"Cohort"): number {
+    if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) { return 0 }
+    const aPoints = this.system.advancement_points ?? [];
+    if (trait === "Ability") {
+      const abilPointsSpent = U.sum(this.items
+        .filter((item) => BladesItem.IsType(item, BladesItemType.ability, BladesItemType.crew_ability))
+        .map((abil) => abil.system.price ?? 1));
+      const upgradePointsSpent = U.sum(this.items
+        .filter((item) => BladesItem.IsType(item, BladesItemType.crew_upgrade))
+        .map((upgrade) => upgrade.system.price ?? 1));
+      // Get number of Upgrades, subtract from 'UpgradeOrAbility' available
+      const upgradePoints = aPoints.filter((aPt) =>
+        (aPt.includes(AdvancementPoint.UpgradeOrAbility) && !aPt.includes(AdvancementPoint.Ability))
+        || aPt.includes(AdvancementPoint.Upgrade)).length;
+      // Divide remaining UpgradeOrAbility by 2, Add Ability points
+      const abilityPoints = Math.floor((upgradePoints - upgradePointsSpent) / 2) + aPoints.filter((aPt) =>
+        aPt.includes(AdvancementPoint.Ability)).length;
+      // return AbilityPoints - numAbilities
+      return abilityPoints - abilPointsSpent;
+    }
+    if (trait === "Cohort") {
+      // count cohort TYPES among all active cohorts
+      const numTypes = this.cohorts.map((cohort) => U.unique([
+        ...Object.values(cohort.system.subtypes) ?? [],
+        ...Object.values(cohort.system.elite_subtypes) ?? []
+      ]).filter((subtype) => /[A-Za-z]/.test(subtype))).length;
+      // count advancement points with "Cohort" type
+      const cohortPoints = aPoints.filter((aPt) => aPt.includes(AdvancementPoint.Cohort)).length;
+      return cohortPoints - numTypes;
+    }
+    if (!BladesActor.IsType(this, BladesActorType.crew)) { return 0 }
+    if (trait === "Upgrade") {
+      const abilPointsSpent = U.sum(this.items
+        .filter((item) => BladesItem.IsType(item, BladesItemType.ability, BladesItemType.crew_ability))
+        .map((abil) => abil.system.price ?? 1));
+      const abilityPoints = aPoints.filter((aPt) => aPt.includes(AdvancementPoint.Ability)).length;
+      const upgradeAbilityPointsSpent = -2 * (abilityPoints - abilPointsSpent);
+      const upgradePointsSpent = U.sum(this.items
+        .filter((item) => BladesItem.IsType(item, BladesItemType.crew_upgrade))
+        .map((upgrade) => upgrade.system.price ?? 1));
+      const upgradePoints = aPoints.filter((aPt) =>
+        (aPt.includes(AdvancementPoint.UpgradeOrAbility) && !aPt.includes(AdvancementPoint.Ability))
+        || aPt.includes(AdvancementPoint.Upgrade)).length;
+
+      return upgradePoints - upgradeAbilityPointsSpent - upgradePointsSpent;
+    }
+
+    return 0 as never;
+  }
+
+  isBuyableAdvance(trait: Attribute|Action|"Ability"|"Upgrade"|"Cohort"): boolean {
+    const aPoints = this.system.advancement_points ?? [];
+    if (trait in Attribute) {
+      return Boolean(aPoints.find((aPt) =>
+        aPt.includes(AdvancementPoint.GeneralAttribute)
+        || aPt.includes(trait as AdvancementPoint)));
+    }
+    if (trait in Action) {
+      if (trait in InsightActions) {
+        return Boolean(aPoints.find((aPt) =>
+          aPt.includes(AdvancementPoint.GeneralAction)
+          || aPt.includes(AdvancementPoint.GeneralInsight)
+          || aPt.includes(trait as AdvancementPoint)));
+      }
+      if (trait in ProwessActions) {
+        return Boolean(aPoints.find((aPt) =>
+          aPt.includes(AdvancementPoint.GeneralAction)
+          || aPt.includes(AdvancementPoint.GeneralProwess)
+          || aPt.includes(trait as AdvancementPoint)));
+      }
+      if (trait in ResolveActions) {
+        return Boolean(aPoints.find((aPt) =>
+          aPt.includes(AdvancementPoint.GeneralAction)
+          || aPt.includes(AdvancementPoint.GeneralResolve)
+          || aPt.includes(trait as AdvancementPoint)));
+      }
+      return null as never;
+    }
+    if (trait === "Ability") { return this.calcAdvances("Ability") > 0 }
+    if (trait === "Cohort") { return this.calcAdvances("Cohort") > 0 }
+    if (trait === "Upgrade") { return this.calcAdvances("Upgrade") > 0 }
+    return null as never;
   }
 
   async advancePlaybook(): Promise<void> {
     if (!this.playbook) { return undefined }
     await this.update({"system.experience.playbook.value": 0});
-    ui.notifications!.info(`${this.name} Advances ${U.tCase(this.playbookName)} Playbook!`);
     switch (this.type) {
-      case BladesActorType.pc: return this.addAbilityPoints(1);
+      case BladesActorType.pc: {
+        game.eunoblades.PushController!.pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`);
+        return this.addAbilityPoints(1);
+      }
       case BladesActorType.crew: {
-        this.members.forEach((member) => member.addStash(this.system.tier.value + 2));
+        game.eunoblades.PushController!.pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.");
+        this.members.forEach((member) => {
+          const coinGained = this.system.tier.value + 2;
+          game.eunoblades.PushController!.pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, undefined);
+          member.addStash(coinGained);
+        });
         return this.addAdvancementPoints(2);
       }
       default: return undefined;
     }
   }
 
-  async advanceAttribute(attribute: Attributes) {
+  async advanceAttribute(attribute: Attribute) {
     await this.update({[`system.experience.${attribute}.value`]: 0});
-    ui.notifications!.info(`${this.name} Advances ${U.tCase(attribute)}!`);
+    const actions = C.Action[attribute].map((action) => `<strong>${U.tCase(action)}</strong>`);
+    game.eunoblades.PushController!.pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`);
   }
 
-  // async addActionPoints(amount: number, attribute: Attributes|"action" = "action"): Promise<void> {
+  // async addActionPoints(amount: number, attribute: Attribute|"action" = "action"): Promise<void> {
   //   if (!BladesActor.IsType(this, BladesActorType.pc)) { return }
   //   this.update({[`system.advancement.${attribute}`]: (this.system.advancement[attribute] ?? 0) + amount});
   // }
-  // async removeActionPoints(amount: number, attribute: Attributes|"action" = "action"): Promise<void> {
+  // async removeActionPoints(amount: number, attribute: Attribute|"action" = "action"): Promise<void> {
   //   if (!BladesActor.IsType(this, BladesActorType.pc)) { return }
   //   this.update({[`system.advancement.${attribute}`]: Math.max(0, (this.system.advancement[attribute] ?? 0) - amount)});
   // }
-  // get totalActionPoints(): Record<Attributes|"action",number> {
+  // get totalActionPoints(): Record<Attribute|"action",number> {
   //   if (!BladesActor.IsType(this, BladesActorType.pc)) { return {} as never }
   //   if (!this.playbook) { return {} as never }
   //   return {
@@ -777,7 +893,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   //   };
   // }
 
-  // get spentActionPoints(): Record<Attributes|"action",number> {
+  // get spentActionPoints(): Record<Attribute|"action",number> {
   //   if (!BladesActor.IsType(this, BladesActorType.pc)) { return {} as never }
   //   if (!this.playbook) { return {} as never }
 
@@ -789,7 +905,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   //     resolve: 0
   //   };
 
-  //   for (const [attribute, actionData] of (Object.entries(this.system.attributes) as Array<[Attributes,Record<Actions,ValueMax>]>)) {
+  //   for (const [attribute, actionData] of (Object.entries(this.system.attributes) as Array<[Attribute,Record<Action,ValueMax>]>)) {
   //     const spentAttrPoints = Object.values(actionData).reduce((tot, val) => tot + val.value, 0);
   //     if (spentAttrPoints > totPoints[attribute]) {
   //       spentPoints[attribute] = totPoints[attribute];
@@ -799,7 +915,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
   //   return spentPoints;
   // }
-  // get availableActionPoints(): Record<Attributes|"action",number> {
+  // get availableActionPoints(): Record<Attribute|"action",number> {
   //   if (!BladesActor.IsType(this, BladesActorType.pc)) { return {} as never }
   //   if (!this.playbook) { return {} as never }
   //   const {totalActionPoints, spentActionPoints} = this;
@@ -906,7 +1022,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
     }
     return undefined;
   }
-  get attributes(): Record<Attributes, number>|undefined {
+  get attributes(): Record<Attribute, number>|undefined {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined }
     return {
       insight: Object.values(this.system.attributes.insight).filter(({value}) => value > 0).length + this.system.resistance_bonus.insight,
@@ -914,15 +1030,15 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       resolve: Object.values(this.system.attributes.resolve).filter(({value}) => value > 0).length + this.system.resistance_bonus.resolve
     };
   }
-  get actions(): Record<Actions, number>|undefined {
+  get actions(): Record<Action, number>|undefined {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined }
     return U.objMap({
       ...this.system.attributes.insight,
       ...this.system.attributes.prowess,
       ...this.system.attributes.resolve
-    }, ({value, max}: ValueMax) => U.gsap.utils.clamp(0, max, value)) as Record<Actions, number>;
+    }, ({value, max}: ValueMax) => U.gsap.utils.clamp(0, max, value)) as Record<Action, number>;
   }
-  get rollable(): Record<Attributes | Actions, number>|undefined {
+  get rollable(): Record<Attribute | Action, number>|undefined {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined }
     return {
       ...this.attributes!,
@@ -1025,9 +1141,10 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   _prepareCrewData(system: ExtractBladesActorSystem<BladesActorType.crew>) {
     if (!BladesActor.IsType(this, BladesActorType.crew)) { return }
 
-    // Extract experience clues from playbook item, if any
+    // Extract experience clues and turfs from playbook item, if any
     if (this.playbook) {
       system.experience.clues = [...system.experience.clues, ...Object.values(this.playbook.system.experience_clues).filter((clue) => Boolean(clue.trim()))];
+      system.turfs = this.playbook.system.turfs;
     }
   }
 
@@ -1101,7 +1218,10 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
           .filter(([key, _]: [string, unknown]) => !key.startsWith("system.turfs.")));
         eLog.checkLog("actorTrigger", "Updating Crew", {crewUpdateData: updateData, playbookUpdateData});
 
-        if (!U.isEmpty(playbookUpdateData)) {
+        const diffPlaybookData = diffObject(flattenObject(this.playbook), playbookUpdateData) as Record<string,any> & {_id?: string};
+        delete diffPlaybookData._id;
+
+        if (!U.isEmpty(diffPlaybookData)) {
           await this.playbook!.update(playbookUpdateData, context)
             .then(() => this.sheet?.render(false));
         }
@@ -1124,10 +1244,10 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   // #endregion
 
   // #region Rolling Dice ~
-  rollAttributePopup(attribute_name: Attributes | Actions) {
-    const test = Actions;
+  rollAttributePopup(attribute_name: Attribute | Action) {
+    const test = Action;
     // const roll = new Roll("1d20 + @abilities.wis.mod", actor.getRollData());
-    const attribute_label: Capitalize<Attributes | Actions> = U.tCase(attribute_name);
+    const attribute_label: Capitalize<Attribute | Action> = U.tCase(attribute_name);
 
     let content = `
         <h2>${game.i18n.localize("BITD.Roll")} ${attribute_label}</h2>
@@ -1138,7 +1258,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
               ${this.createListOfDiceMods(-3, +3, 0)}
             </select>
           </div>`;
-    if ([...Object.keys(Attributes), ...Object.keys(Actions)].includes(attribute_name)) {
+    if ([...Object.keys(Attribute), ...Object.keys(Action)].includes(attribute_name)) {
       content += `
             <div class="form-group">
               <label>${game.i18n.localize("BITD.Position")}:</label>
@@ -1198,7 +1318,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   }
 
   async rollAttribute(
-    attribute_name: Attributes | Actions,
+    attribute_name: Attribute | Action,
     additional_dice_amount = 0,
     position: Positions = Positions.risky,
     effect: EffectLevels = EffectLevels.standard,

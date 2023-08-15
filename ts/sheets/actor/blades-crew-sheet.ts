@@ -175,36 +175,7 @@ class BladesCrewSheet extends BladesSheet {
       this.actor.playbook?.update({["system.turfs." + turf_id + ".value"]: !turf_current_status})
         .then(() => this.render(false));
     });
-
-    // // Cohort Block Harm handler
-    // html.find('.cohort-block-harm input[type="radio"]').change( async ev => {
-    //   const element = $(ev.currentTarget).parents(".item");
-
-    //   const item_id = element.data("itemId");
-    //   const harm_id = $(ev.currentTarget).val();
-
-    //   await this.actor.updateEmbeddedDocuments("Item", [{
-    //     "_id": item_id,
-    //     "system.harm": [harm_id]}]);
-    //   this.render(false);
-    // });
   }
-
-  /* -------------------------------------------- */
-  /*  Form Submission                             */
-  /* -------------------------------------------- */
-
-  // override async _updateObject(event: Event, formData: object) {
-
-  //   // Update the Item
-  //   await super._updateObject(event, formData);
-
-  //   if (event.target && $(event.target).attr("name") === "system.tier") {
-  //     this.render(true);
-  //   }
-  // }
-  /* -------------------------------------------- */
-
 }
 
 export default BladesCrewSheet;

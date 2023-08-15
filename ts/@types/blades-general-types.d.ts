@@ -1,4 +1,4 @@
-import {Attributes, Actions, District} from "../core/constants";
+import {Attribute, Action, District} from "../core/constants";
 import BladesItem from "../blades-item";
 import BladesActor from "../blades-actor";
 
@@ -14,7 +14,7 @@ declare global {
   // Utility Types for Variable Template Values
   type ValueMax = { max: number, value: number };
   type NamedValueMax = ValueMax & { name: string };
-  type RollableStat = Attributes | Actions;
+  type RollableStat = Attribute | Action;
 
   // Component Types for Sheets
   type BladesCompData = {

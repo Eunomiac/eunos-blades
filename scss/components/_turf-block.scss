@@ -23,12 +23,6 @@
     }
 
     .turf-block {
-      // $turf-margin: 20px;
-
-      // --turf-block-width, 135px: 135px;
-      // --turf-block-height, 125px: 125px;
-      // --turf-block-gap: 40px;
-
       --name-size: #{toRem(18px)};
 
       &:not(:nth-child(-n+5)) {
@@ -39,14 +33,21 @@
       cursor: default;
 
       &:hover {
-        filter: brightness(0.8);
-        opacity: 0.9;
+        background-color: rgb(41, 41, 41);
+        .turf-name, .turf-description {
+          filter: brightness(0.8);
+          opacity: 0.8;
+        }
+        &.turf-selected {
+          background-color: rgb(142, 142, 142);
+        }
+        // opacity: 0.9;
       }
 
 
       width: var(--turf-block-width, 135px);
       height: var(--turf-block-height, 125px);
-      background-color: rgba(255, 255, 255, 0.2);
+      background-color: rgb(51, 51, 51);
       position: relative;
       margin: calc(var(--turf-block-gap, 40px) / 2);
       flex-grow: initial;
@@ -200,10 +201,10 @@
 
       &.turf-selected {
         color: var(--blades-black);
-        background-color: rgba(255, 255, 255, 0.75);
+        background-color: rgb(192, 192, 192);
 
         .connector {
-          background-color: rgba(255, 255, 255, 0.5);
+          background-color: rgb(128, 128, 128);
         }
 
         .turf-name {
@@ -239,11 +240,12 @@
         .turf-district {
           position: absolute;
           z-index: 10;
-          left: calc(50% - 40px);
-          bottom: -10px;
           height: toRem(18px);
           min-height: unset;
-          width: 80px;
+          min-width: 100px;
+          max-width: 100px;
+          left: calc(50% - 50px);
+          bottom: -10px;
 
           background: var(--blades-black);
           color: var(--blades-white);

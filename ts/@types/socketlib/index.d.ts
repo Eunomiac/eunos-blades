@@ -1,4 +1,4 @@
-type SocketFunction = (...params: unknown[]) => unknown
+type SocketFunction = (...params: any[]) => any
   interface Socket {
 
     register(funcName: string, func: SocketFunction): void;

@@ -316,14 +316,14 @@ const pluralize = (singular: string, num = 2, plural?: string) => {
   if (pFloat(num) === 1) { return singular }
   return plural ?? `${singular.replace(/y$/, "ie").replace(/s$/, "se")}s`;
 };
-const oxfordize = (items: Array<number | string>, useOxfordComma = true) => {
+const oxfordize = (items: Array<number | string>, useOxfordComma = true, andString = "and") => {
   if (items.length === 0) { return "" }
   if (items.length === 1) { return `${items[0]}` }
   const lastItem = items.pop();
   return [
     items.join(", "),
     useOxfordComma ? "," : "",
-    " and ",
+    ` ${andString} `,
     lastItem
   ].join("");
 };

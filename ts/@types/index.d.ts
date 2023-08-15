@@ -1,6 +1,7 @@
 
 import BladesItem from "../blades-item";
 import BladesActor from "../blades-actor";
+import BladesPushController from "../blades-push-notifications";
 import type gsap from "/scripts/greensock/esm/all";
 
 import "./blades-general-types";
@@ -32,6 +33,7 @@ declare global {
     eunoblades: {
       ClockKeeper?: BladesItem,
       Tracker?: BladesItem,
+      PushController?: BladesPushController
     }
   }
   interface LenientGlobalVariableTypes { game: never }

@@ -65,12 +65,36 @@ export var District;
     District["Old North Port"] = "Old North Port";
     District["Deathlands"] = "Deathlands";
 })(District || (District = {}));
-export var Attributes;
-(function (Attributes) {
-    Attributes["insight"] = "insight";
-    Attributes["prowess"] = "prowess";
-    Attributes["resolve"] = "resolve";
-})(Attributes || (Attributes = {}));
+export var MainDistrict;
+(function (MainDistrict) {
+    MainDistrict["Barrowcleft"] = "Barrowcleft";
+    MainDistrict["Brightstone"] = "Brightstone";
+    MainDistrict["Charhollow"] = "Charhollow";
+    MainDistrict["Charterhall"] = "Charterhall";
+    MainDistrict["Coalridge"] = "Coalridge";
+    MainDistrict["Crows Foot"] = "Crows Foot";
+    MainDistrict["The Docks"] = "The Docks";
+    MainDistrict["Dunslough"] = "Dunslough";
+    MainDistrict["Nightmarket"] = "Nightmarket";
+    MainDistrict["Silkshore"] = "Silkshore";
+    MainDistrict["Six Towers"] = "Six Towers";
+    MainDistrict["Whitecrown"] = "Whitecrown";
+})(MainDistrict || (MainDistrict = {}));
+export var OtherDistrict;
+(function (OtherDistrict) {
+    OtherDistrict["Gaddoc Station"] = "Gaddoc Station";
+    OtherDistrict["The Lost District"] = "The Lost District";
+    OtherDistrict["The Void Sea"] = "The Void Sea";
+    OtherDistrict["Ironhook Prison"] = "Ironhook Prison";
+    OtherDistrict["Old North Port"] = "Old North Port";
+    OtherDistrict["Deathlands"] = "Deathlands";
+})(OtherDistrict || (OtherDistrict = {}));
+export var Attribute;
+(function (Attribute) {
+    Attribute["insight"] = "insight";
+    Attribute["prowess"] = "prowess";
+    Attribute["resolve"] = "resolve";
+})(Attribute || (Attribute = {}));
 export var InsightActions;
 (function (InsightActions) {
     InsightActions["hunt"] = "hunt";
@@ -92,21 +116,21 @@ export var ResolveActions;
     ResolveActions["consort"] = "consort";
     ResolveActions["sway"] = "sway";
 })(ResolveActions || (ResolveActions = {}));
-export var Actions;
-(function (Actions) {
-    Actions["hunt"] = "hunt";
-    Actions["study"] = "study";
-    Actions["survey"] = "survey";
-    Actions["tinker"] = "tinker";
-    Actions["finesse"] = "finesse";
-    Actions["prowl"] = "prowl";
-    Actions["skirmish"] = "skirmish";
-    Actions["wreck"] = "wreck";
-    Actions["attune"] = "attune";
-    Actions["command"] = "command";
-    Actions["consort"] = "consort";
-    Actions["sway"] = "sway";
-})(Actions || (Actions = {}));
+export var Action;
+(function (Action) {
+    Action["hunt"] = "hunt";
+    Action["study"] = "study";
+    Action["survey"] = "survey";
+    Action["tinker"] = "tinker";
+    Action["finesse"] = "finesse";
+    Action["prowl"] = "prowl";
+    Action["skirmish"] = "skirmish";
+    Action["wreck"] = "wreck";
+    Action["attune"] = "attune";
+    Action["command"] = "command";
+    Action["consort"] = "consort";
+    Action["sway"] = "sway";
+})(Action || (Action = {}));
 export var Positions;
 (function (Positions) {
     Positions["controlled"] = "controlled";
@@ -156,6 +180,33 @@ export var Playbook;
     Playbook["Smugglers"] = "Smugglers";
     Playbook["Vigilantes"] = "Vigilantes";
 })(Playbook || (Playbook = {}));
+export var AdvancementPoint;
+(function (AdvancementPoint) {
+    AdvancementPoint["UpgradeOrAbility"] = "UpgradeOrAbility";
+    AdvancementPoint["Ability"] = "Ability";
+    AdvancementPoint["Upgrade"] = "Upgrade";
+    AdvancementPoint["Cohort"] = "Cohort";
+    AdvancementPoint["GeneralAttribute"] = "GeneralAttribute";
+    AdvancementPoint["insight"] = "insight";
+    AdvancementPoint["prowess"] = "prowess";
+    AdvancementPoint["resolve"] = "resolve";
+    AdvancementPoint["GeneralAction"] = "GeneralAction";
+    AdvancementPoint["GeneralInsight"] = "GeneralInsight";
+    AdvancementPoint["GeneralProwess"] = "GeneralProwess";
+    AdvancementPoint["GeneralResolve"] = "GeneralResolve";
+    AdvancementPoint["hunt"] = "hunt";
+    AdvancementPoint["study"] = "study";
+    AdvancementPoint["survey"] = "survey";
+    AdvancementPoint["tinker"] = "tinker";
+    AdvancementPoint["finesse"] = "finesse";
+    AdvancementPoint["prowl"] = "prowl";
+    AdvancementPoint["skirmish"] = "skirmish";
+    AdvancementPoint["wreck"] = "wreck";
+    AdvancementPoint["attune"] = "attune";
+    AdvancementPoint["command"] = "command";
+    AdvancementPoint["consort"] = "consort";
+    AdvancementPoint["sway"] = "sway";
+})(AdvancementPoint || (AdvancementPoint = {}));
 export var BladesPhase;
 (function (BladesPhase) {
     BladesPhase["CharGen"] = "CharGen";
@@ -249,23 +300,23 @@ const C = {
         levels: ["BITD.Light", "BITD.Normal", "BITD.Heavy", "BITD.Encumbered", "BITD.OverMax"]
     },
     AttributeTooltips: {
-        [Attributes.insight]: "<p>Resists consequences from <strong>deception</strong> or <strong>understanding</strong></p>",
-        [Attributes.prowess]: "<p>Resists consequences from <strong>physical strain</strong> or <strong>injury</strong></p>",
-        [Attributes.resolve]: "<p>Resists consequences from <strong>mental strain</strong> or <strong>willpower</strong></p>"
+        [Attribute.insight]: "<p>Resists consequences from <strong>deception</strong> or <strong>understanding</strong></p>",
+        [Attribute.prowess]: "<p>Resists consequences from <strong>physical strain</strong> or <strong>injury</strong></p>",
+        [Attribute.resolve]: "<p>Resists consequences from <strong>mental strain</strong> or <strong>willpower</strong></p>"
     },
     ActionTooltips: {
-        [Actions.hunt]: "<p>When you <strong>Hunt</strong>, you carefully track a target.</p><ul><li>You might follow a person or discover their location.</li><li>You might arrange an ambush.</li><li>You might attack with precision shooting from a distance.</li></ul><ul><li>You could try to wield your guns in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
-        [Actions.study]: "<p>When you <strong>Study</strong>, you scrutinize details and interpret evidence.</p><ul><li>You might gather information from documents, newspapers, and books.</li><li>You might do research on an esoteric topic.</li><li>You might closely analyze a person to detect lies or true feelings.</li></ul><ul><li>You could try to understand a pressing situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul>",
-        [Actions.survey]: "<p>When you <strong>Survey</strong>, you observe the situation and anticipate outcomes.</p><ul><li>You might spot telltale signs of trouble before it happens.</li><li>You might uncover opportunities or weaknesses.</li></ul><ul><li>You might detect a person's motives or intentions <em>(but <strong>Studying</strong> might be better)</em>.</li><li>You could try to spot a good ambush point <em>(but <strong>Hunting</strong> might be better)</em>.</li></ul>",
-        [Actions.tinker]: "<p>When you <strong>Tinker</strong>, you fiddle with devices and mechanisms.</p><ul><li>You might create a new gadget or alter an existing item.</li><li>You might pick a lock or crack a safe.</li><li>You might disable an alarm or trap.</li><li>You might turn the sparkcraft and electroplasmic devices around the city to your advantage.</li></ul><ul><li>You could try to control a vehicle with your tech-savvy <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul>",
-        [Actions.finesse]: "<p>When you <strong>Finesse</strong>, you employ dexterity or subtle misdirection.</p><ul><li>You might pick someone's pocket.</li><li>You might handle the controls of a vehicle or direct a mount.</li><li>You might formally duel an opponent with graceful fighting arts.</li></ul><ul><li>You could try to leverage agility in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li><li>You could try to pick a lock <em>(but <strong>Tinkering</strong> might be better)</em>.</li></ul>",
-        [Actions.prowl]: "<p>When you <strong>Prowl</strong>, you traverse skillfully and quietly.</p><ul><li>You might sneak past a guard or hide in the shadows.</li><li>You might run and leap across the rooftops.</li><li>You might attack someone from hiding with a back-stab or blackjack.</li></ul><ul><li>You could try to waylay a victim during combat <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
-        [Actions.skirmish]: "<p>When you <strong>Skirmish</strong>, you entangle a target in melee so they can't escape.</p><ul><li>You might brawl or wrestle with them.</li><li>You might hack and slash.</li><li>You might seize or hold a position in battle.</li></ul><ul><li>You could try to fight in a formal duel <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul>",
-        [Actions.wreck]: "<p>When you <strong>Wreck</strong>, you unleash savage force.</p><ul><li>You might smash down a door or wall with a sledgehammer.</li><li>You might use an explosive to do the same.</li><li>You might use chaos or sabotage to create distractions or overcome obstacles.</li></ul><ul><li>You could try to overwhelm an enemy with sheer force in battle <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
-        [Actions.attune]: "<p>When you <strong>Attune</strong>, you open your mind to the ghost field or channel nearby electroplasmic energy through your body.</p><ul><li>You might communicate with a ghost or understand aspects of spectrology.</li><li>You might peer into the echo of Doskvol in the ghost field.</li></ul><ul><li>You could try to perceive beyond sight in order to better understand your situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul>",
-        [Actions.command]: "<p>When you <strong>Command</strong>, you compel swift obedience.</p><ul><li>You might intimidate or threaten to get what you want.</li><li>You might lead a gang in a group action.</li></ul><ul><li>You could try to persuade people by giving orders <em>(but <strong>Consorting</strong> might be better)</em>.</li></ul>",
-        [Actions.consort]: "<p>When you <strong>Consort</strong>, you socialize with friends and contacts.</p><ul><li>You might gain access to resources, information, people, or places.</li><li>You might make a good impression or win someone over with charm and style.</li><li>You might make new friends or connect with your heritage or background.</li></ul><ul><li>You could try to direct allies with social pressure <em>(but <strong>Commanding</strong> might be better)</em>.</li></ul>",
-        [Actions.sway]: "<p>When you <strong>Sway</strong>, you influence someone with guile, charm, or argument.</p><ul><li>You might lie convincingly.</li><li>You might persuade someone to do what you want.</li><li>You might argue a case that leaves no clear rebuttal.</li></ul><ul><li>You could try to trick people into affection or obedience <em>(but <strong>Consorting</strong> or <strong>Commanding</strong> might be better)</em>.</li></ul>"
+        [Action.hunt]: "<p>When you <strong>Hunt</strong>, you carefully track a target.</p><ul><li>You might follow a person or discover their location.</li><li>You might arrange an ambush.</li><li>You might attack with precision shooting from a distance.</li></ul><ul><li>You could try to wield your guns in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
+        [Action.study]: "<p>When you <strong>Study</strong>, you scrutinize details and interpret evidence.</p><ul><li>You might gather information from documents, newspapers, and books.</li><li>You might do research on an esoteric topic.</li><li>You might closely analyze a person to detect lies or true feelings.</li></ul><ul><li>You could try to understand a pressing situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul>",
+        [Action.survey]: "<p>When you <strong>Survey</strong>, you observe the situation and anticipate outcomes.</p><ul><li>You might spot telltale signs of trouble before it happens.</li><li>You might uncover opportunities or weaknesses.</li></ul><ul><li>You might detect a person's motives or intentions <em>(but <strong>Studying</strong> might be better)</em>.</li><li>You could try to spot a good ambush point <em>(but <strong>Hunting</strong> might be better)</em>.</li></ul>",
+        [Action.tinker]: "<p>When you <strong>Tinker</strong>, you fiddle with devices and mechanisms.</p><ul><li>You might create a new gadget or alter an existing item.</li><li>You might pick a lock or crack a safe.</li><li>You might disable an alarm or trap.</li><li>You might turn the sparkcraft and electroplasmic devices around the city to your advantage.</li></ul><ul><li>You could try to control a vehicle with your tech-savvy <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul>",
+        [Action.finesse]: "<p>When you <strong>Finesse</strong>, you employ dexterity or subtle misdirection.</p><ul><li>You might pick someone's pocket.</li><li>You might handle the controls of a vehicle or direct a mount.</li><li>You might formally duel an opponent with graceful fighting arts.</li></ul><ul><li>You could try to leverage agility in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li><li>You could try to pick a lock <em>(but <strong>Tinkering</strong> might be better)</em>.</li></ul>",
+        [Action.prowl]: "<p>When you <strong>Prowl</strong>, you traverse skillfully and quietly.</p><ul><li>You might sneak past a guard or hide in the shadows.</li><li>You might run and leap across the rooftops.</li><li>You might attack someone from hiding with a back-stab or blackjack.</li></ul><ul><li>You could try to waylay a victim during combat <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
+        [Action.skirmish]: "<p>When you <strong>Skirmish</strong>, you entangle a target in melee so they can't escape.</p><ul><li>You might brawl or wrestle with them.</li><li>You might hack and slash.</li><li>You might seize or hold a position in battle.</li></ul><ul><li>You could try to fight in a formal duel <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul>",
+        [Action.wreck]: "<p>When you <strong>Wreck</strong>, you unleash savage force.</p><ul><li>You might smash down a door or wall with a sledgehammer.</li><li>You might use an explosive to do the same.</li><li>You might use chaos or sabotage to create distractions or overcome obstacles.</li></ul><ul><li>You could try to overwhelm an enemy with sheer force in battle <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
+        [Action.attune]: "<p>When you <strong>Attune</strong>, you open your mind to the ghost field or channel nearby electroplasmic energy through your body.</p><ul><li>You might communicate with a ghost or understand aspects of spectrology.</li><li>You might peer into the echo of Doskvol in the ghost field.</li></ul><ul><li>You could try to perceive beyond sight in order to better understand your situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul>",
+        [Action.command]: "<p>When you <strong>Command</strong>, you compel swift obedience.</p><ul><li>You might intimidate or threaten to get what you want.</li><li>You might lead a gang in a group action.</li></ul><ul><li>You could try to persuade people by giving orders <em>(but <strong>Consorting</strong> might be better)</em>.</li></ul>",
+        [Action.consort]: "<p>When you <strong>Consort</strong>, you socialize with friends and contacts.</p><ul><li>You might gain access to resources, information, people, or places.</li><li>You might make a good impression or win someone over with charm and style.</li><li>You might make new friends or connect with your heritage or background.</li></ul><ul><li>You could try to direct allies with social pressure <em>(but <strong>Commanding</strong> might be better)</em>.</li></ul>",
+        [Action.sway]: "<p>When you <strong>Sway</strong>, you influence someone with guile, charm, or argument.</p><ul><li>You might lie convincingly.</li><li>You might persuade someone to do what you want.</li><li>You might argue a case that leaves no clear rebuttal.</li></ul><ul><li>You could try to trick people into affection or obedience <em>(but <strong>Consorting</strong> or <strong>Commanding</strong> might be better)</em>.</li></ul>"
     },
     TraumaTooltips: {
         Cold: "You're not moved by emotional appeals or social bonds.",
@@ -308,11 +359,6 @@ const C = {
         "An Army of ",
         "A Massive Army of "
     ],
-    GangTypeImages: {
-        elite: {},
-        standard: {
-        }
-    },
     ExperienceClues: {
         Scoundrel: [
             "You expressed your beliefs, drives, heritage, or background.",
@@ -711,11 +757,16 @@ const C = {
         BladesItemType.preferred_op,
         BladesItemType.stricture
     ],
-    Attributes: [
-        Attributes.insight,
-        Attributes.resolve,
-        Attributes.prowess
+    Attribute: [
+        Attribute.insight,
+        Attribute.prowess,
+        Attribute.resolve
     ],
+    Action: {
+        [Attribute.insight]: [Action.hunt, Action.study, Action.survey, Action.tinker],
+        [Attribute.prowess]: [Action.finesse, Action.prowl, Action.skirmish, Action.wreck],
+        [Attribute.resolve]: [Action.attune, Action.command, Action.consort, Action.sway]
+    },
     Vices: [
         Vice.Faith, Vice.Gambling, Vice.Luxury, Vice.Obligation, Vice.Pleasure, Vice.Stupor, Vice.Weird, Vice.Worship, Vice.Living_Essence, Vice.Life_Essence, Vice.Electroplasmic_Power
     ]
@@ -2875,7 +2926,7 @@ export const IMPORTDATA = {
         {
             name: "Quelle Horreur!",
             category: "Downtime Effect",
-            desc: "You suffer nightmares for a week. −1d to all Downtime Actions after this Score.",
+            desc: "You suffer nightmares for a week. −1d to all Downtime Action after this Score.",
             severity: 2
         },
         {
@@ -3157,7 +3208,7 @@ export const IMPORTDATA = {
         {
             name: "Turned Around",
             category: "Immediate Effect",
-            desc: "You lose track of your position. Start a 4-Clock, \"Where Am I?\" You must use Actions looking for your Crew to rejoin them.",
+            desc: "You lose track of your position. Start a 4-Clock, \"Where Am I?\" You must use Action looking for your Crew to rejoin them.",
             severity: 1
         },
         {

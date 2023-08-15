@@ -1,5 +1,5 @@
 import Tagify from "../../lib/tagify/tagify.esm.js";
-import {Tag, District, Vice, Playbook, BladesActorType} from "./constants.js";
+import {Tag, District, MainDistrict, OtherDistrict, Vice, Playbook, BladesActorType} from "./constants.js";
 import U from "./utilities.js";
 
 async function _onTagifyChange(event: Event, doc: BladesDoc, targetKey: keyof BladesDoc) {
@@ -15,11 +15,7 @@ async function _onTagifyChange(event: Event, doc: BladesDoc, targetKey: keyof Bl
 const Tags = {
   InitListeners: (html: JQuery<HTMLElement>, doc: BladesDoc) => {
 
-    function makeTagInput(elemRef: string, tags: Record<string, BladesTag[]>) {
-
-      const elem = html.find(elemRef)[0] as HTMLInputElement;
-
-      if (!elem) { return }
+    function makeTagInput(elem: HTMLElement, tags: Record<string, BladesTag[]>) {
 
       // Create tagify instance; populate dropdown list with tags
       const tagify = new Tagify(elem, {
@@ -106,9 +102,7 @@ const Tags = {
       setTimeout(() => elem.addEventListener("change", (event) => _onTagifyChange(event, doc, targetKey)), 1000);
     }
 
-    const factions = game.actors.filter((actor) => actor.type === BladesActorType.faction && actor.name !== null).map((faction) => faction.name) as string[];
-
-    makeTagInput(".comp-tags.tags-gm", {
+    const systemTags = {
       "System Tags": Object.values(Tag.System),
       "Gear Tags": [
         ...Object.values(Tag.Gear),
@@ -122,15 +116,21 @@ const Tags = {
       "Playbooks": Object.values(Playbook),
       "Inventions": Object.values(Tag.Invention),
       "Gang Types": Object.values(Tag.GangType)
-    });
+    };
+    const districtTags = {
+      "City Districts": Object.values(MainDistrict),
+      "Other Districts": Object.values(OtherDistrict)
+    };
+    const factionTags = {Factions: game.actors
+      .filter((actor): actor is BladesActorOfType<BladesActorType.faction> & {name: string} => actor.type === BladesActorType.faction && actor.name !== null)
+      .map((faction) => faction.name)};
 
-    makeTagInput(".tags-district", {
-      Districts: Object.values(District)
-    });
+    $(html).find(".tags-gm").each((_, e) => makeTagInput(e, systemTags));
 
-    makeTagInput(".tags-faction", {
-      Factions: factions
-    });
+    $(html).find(".tags-district").each((_, e) => makeTagInput(e, districtTags));
+
+    $(html).find(".tags-faction").each((_, e) => makeTagInput(e, factionTags));
+
   }
 };
 

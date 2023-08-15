@@ -1,7 +1,7 @@
 import BladesActor from "./blades-actor.js";
 import U from "./core/utilities.js";
 import BladesItem from "./blades-item.js";
-import {Tag, BladesPhase, BladesActorType, BladesItemType, Attributes, InsightActions, ProwessActions, ResolveActions} from "./core/constants.js";
+import {Tag, BladesPhase, BladesActorType, BladesItemType, Attribute, InsightActions, ProwessActions, ResolveActions} from "./core/constants.js";
 
 const FUNCQUEUE: Record<string, {
   curFunc: Promise<void>,

@@ -64,6 +64,8 @@
       @import './components/clocks-overlay';
     }
 
+    #sidebar { @import "./components/push-notifications" }
+
     #interface,
     #controls,
     #navigation,

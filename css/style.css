@@ -3510,6 +3510,76 @@ template {
       :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key:nth-child(2n+1) {
         top: var(--alternating-top-shift); }
 
+:root body.vtt.game.system-eunos-blades #sidebar {
+  overflow: visible; }
+  :root body.vtt.game.system-eunos-blades #sidebar * {
+    --font-primary: "Minion Pro", serif !important ; }
+  :root body.vtt.game.system-eunos-blades #sidebar #blades-push-notifications {
+    height: auto;
+    width: 300px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    position: absolute;
+    right: calc(100% + 20px); }
+    :root body.vtt.game.system-eunos-blades #sidebar #blades-push-notifications .push-notice {
+      background: var(--blades-white);
+      border: 2px solid var(--blades-black-dark);
+      position: relative;
+      padding: 5px;
+      margin: 5px 0;
+      -webkit-box-shadow: inset 0 0 4px var(--blades-black), 5px 5px 10px var(--blades-black-dark);
+      box-shadow: inset 0 0 4px var(--blades-black), 5px 5px 10px var(--blades-black-dark);
+      border-radius: 5px;
+      -webkit-transition: 0.25s;
+      transition: 0.25s;
+      width: 100%;
+      overflow: hidden;
+      -webkit-transform-origin: 100% 0%;
+      -ms-transform-origin: 100% 0%;
+      transform-origin: 100% 0%; }
+      :root body.vtt.game.system-eunos-blades #sidebar #blades-push-notifications .push-notice.to-gm-notice {
+        background: #6f61af; }
+      :root body.vtt.game.system-eunos-blades #sidebar #blades-push-notifications .push-notice strong {
+        color: var(--blades-black-dark) !important; }
+      :root body.vtt.game.system-eunos-blades #sidebar #blades-push-notifications .push-notice:hover {
+        -webkit-filter: brightness(1.25);
+        filter: brightness(1.25); }
+      :root body.vtt.game.system-eunos-blades #sidebar #blades-push-notifications .push-notice .author {
+        position: absolute;
+        top: 2px;
+        right: 5px;
+        font-size: 12px;
+        font-family: var(--font-primary);
+        text-align: right;
+        color: var(--blades-red-dark);
+        font-weight: bold;
+        font-variant: small-caps; }
+      :root body.vtt.game.system-eunos-blades #sidebar #blades-push-notifications .push-notice .header {
+        width: 100%;
+        font-family: Oswald;
+        font-weight: bold;
+        color: var(--blades-black-dark);
+        text-align: left; }
+      :root body.vtt.game.system-eunos-blades #sidebar #blades-push-notifications .push-notice .body {
+        width: 100%;
+        font-family: var(--font-primary);
+        font-size: 14px;
+        line-height: 14px;
+        text-align: justify;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto;
+        color: var(--blades-black);
+        text-shadow: 0 0 0px var(--blades-black-dark);
+        padding-top: 5px; }
+        :root body.vtt.game.system-eunos-blades #sidebar #blades-push-notifications .push-notice .body:not(.no-border) {
+          border-top: 2px solid var(--blades-black); }
+
 :root body.vtt.game.system-eunos-blades #interface,
 :root body.vtt.game.system-eunos-blades #controls,
 :root body.vtt.game.system-eunos-blades #navigation,
@@ -9351,10 +9421,6 @@ template {
             opacity: 0;
             -webkit-transition: inherit;
             transition: inherit; }
-  :root body.vtt.game.system-eunos-blades .app.window-app .tags-gm {
-    position: absolute;
-    z-index: 20;
-    top: -40px; }
   :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags {
     background-color: rgba(0, 0, 0, 0.5);
     caret-color: transparent;
@@ -9373,6 +9439,39 @@ template {
     flex-wrap: nowrap;
     border-style: inset;
     border: none; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags [data-group="System Tags"] {
+      --tag-bg: gray;
+      --tag-hover: #aaaaaa; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags [data-group="Gear Tags"] {
+      --tag-bg: #45a945;
+      --tag-hover: #6fd36f; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags [data-group="Actor Tags"] {
+      --tag-bg: #d65b5b;
+      --tag-hover: #ff8585; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags [data-group="Playbooks"] {
+      --tag-bg: #6262ff;
+      --tag-hover: #8d8dff; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tags-district, :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags [data-group="Districts"] {
+      --tag-bg: #997b53;
+      --tag-hover: #c3a57d; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags [data-group="City Districts"] {
+      --tag-bg: #967c5a;
+      --tag-hover: #c0a684; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags [data-group="Other Districts"] {
+      --tag-bg: #9b7b51;
+      --tag-hover: #c5a57b; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags [data-group="Vices"] {
+      --tag-bg: #ff3f67;
+      --tag-hover: #ff6991; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags [data-group="Factions"] {
+      --tag-bg: #cb4bcb;
+      --tag-hover: #f575f5; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags [data-group="Inventions"] {
+      --tag-bg: #ff16ff;
+      --tag-hover: #ff40ff; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags [data-group="Gang Types"] {
+      --tag-bg: #ff3334;
+      --tag-hover: #ff5d5e; }
     :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag {
       font-family: "Fjalla One";
       padding: 0;
@@ -9383,40 +9482,13 @@ template {
         height: 100%; }
         :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag > div > span {
           padding-left: 4px;
-          line-height: 16px;
+          line-height: 20px;
           font-size: 12px;
           white-space: nowrap; }
         :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag > div::before {
           height: 16px;
           top: 0;
           left: 0; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="System Tags"] {
-        --tag-bg: gray;
-        --tag-hover: #aaaaaa; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="Gear Tags"] {
-        --tag-bg: #45a945;
-        --tag-hover: #6fd36f; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="Actor Tags"] {
-        --tag-bg: #d65b5b;
-        --tag-hover: #ff8585; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="Playbooks"] {
-        --tag-bg: #6262ff;
-        --tag-hover: #8d8dff; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="Districts"] {
-        --tag-bg: #997b53;
-        --tag-hover: #c3a57d; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="Vices"] {
-        --tag-bg: #ff3f67;
-        --tag-hover: #ff6991; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="Factions"] {
-        --tag-bg: #cb4bcb;
-        --tag-hover: #f575f5; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="Inventions"] {
-        --tag-bg: #ff16ff;
-        --tag-hover: #ff40ff; }
-      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag[data-group="Gang Types"] {
-        --tag-bg: #ff3334;
-        --tag-hover: #ff5d5e; }
     :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__input {
       -webkit-box-flex: 0.2;
       -ms-flex-positive: 0.2;
@@ -9428,6 +9500,28 @@ template {
       justify-items: center;
       -ms-flex-line-pack: center;
       align-content: center; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags.tags-gm {
+      position: absolute;
+      z-index: 20;
+      top: -40px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags.single-tag {
+      cursor: default; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags.single-tag .tagify__tag {
+        margin: 1px auto !important; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags.single-tag .tagify__tag .tagify__tag__removeBtn {
+          margin-right: -14px;
+          opacity: 0; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags.single-tag .tagify__tag + .tagify__input {
+          display: none; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags.single-tag:hover .tagify__tag .tagify__tag__removeBtn {
+        opacity: 1; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags.single-tag:hover .tagify__tag .tagify__tag__removeBtn:not(:hover) {
+        opacity: 0; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags.single-tag:not(.tagify--noTags).tags-district {
+        background: #997b53 !important; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags.single-tag:not(.tagify--noTags) .tagify__input {
+        pointer-events: none;
+        display: none; }
   :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown {
     --tagify-dd-color-primary: #363636;
     --tagify-dd-bg-color: #242424;
@@ -9449,6 +9543,39 @@ template {
       padding: 0.15em; }
       :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup:hover {
         background: #373737; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup [data-group="System Tags"] {
+        --tag-bg: gray;
+        --tag-hover: #aaaaaa; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup [data-group="Gear Tags"] {
+        --tag-bg: #45a945;
+        --tag-hover: #6fd36f; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup [data-group="Actor Tags"] {
+        --tag-bg: #d65b5b;
+        --tag-hover: #ff8585; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup [data-group="Playbooks"] {
+        --tag-bg: #6262ff;
+        --tag-hover: #8d8dff; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tags-district, :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup [data-group="Districts"] {
+        --tag-bg: #997b53;
+        --tag-hover: #c3a57d; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup [data-group="City Districts"] {
+        --tag-bg: #967c5a;
+        --tag-hover: #c0a684; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup [data-group="Other Districts"] {
+        --tag-bg: #9b7b51;
+        --tag-hover: #c5a57b; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup [data-group="Vices"] {
+        --tag-bg: #ff3f67;
+        --tag-hover: #ff6991; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup [data-group="Factions"] {
+        --tag-bg: #cb4bcb;
+        --tag-hover: #f575f5; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup [data-group="Inventions"] {
+        --tag-bg: #ff16ff;
+        --tag-hover: #ff40ff; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup [data-group="Gang Types"] {
+        --tag-bg: #ff3334;
+        --tag-hover: #ff5d5e; }
       :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item {
         display: inline-block;
         font-family: "Fjalla One";
@@ -9457,36 +9584,13 @@ template {
         padding: 0.1rem 0.25rem;
         border-radius: 5px;
         pointer-events: auto;
+        line-height: 18px;
+        max-height: 18px;
+        height: 18px;
+        min-height: 18px;
         background-color: var(--tag-bg); }
         :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item:hover {
           background-color: var(--tag-hover); }
-        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="System Tags"] {
-          --tag-bg: gray;
-          --tag-hover: #aaaaaa; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Gear Tags"] {
-          --tag-bg: #45a945;
-          --tag-hover: #6fd36f; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Actor Tags"] {
-          --tag-bg: #d65b5b;
-          --tag-hover: #ff8585; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Playbooks"] {
-          --tag-bg: #6262ff;
-          --tag-hover: #8d8dff; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Districts"] {
-          --tag-bg: #997b53;
-          --tag-hover: #c3a57d; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Vices"] {
-          --tag-bg: #ff3f67;
-          --tag-hover: #ff6991; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Factions"] {
-          --tag-bg: #cb4bcb;
-          --tag-hover: #f575f5; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Inventions"] {
-          --tag-bg: #ff16ff;
-          --tag-hover: #ff40ff; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item[data-group="Gang Types"] {
-          --tag-bg: #ff3334;
-          --tag-hover: #ff5d5e; }
   :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) {
     position: relative;
     overflow-x: hidden;
@@ -9802,17 +9906,19 @@ template {
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-img {
           position: absolute;
           height: var(--sheet-top-height);
-          z-index: 1;
           border: none;
           mask-image: -webkit-gradient(linear, left top, right top, color-stop(75%, black), to(transparent));
           mask-image: linear-gradient(to right, black 75%, transparent);
           -webkit-mask-image: -webkit-gradient(linear, left top, right top, color-stop(75%, black), to(transparent));
-          -webkit-mask-image: linear-gradient(to right, black 75%, transparent); }
+          -webkit-mask-image: linear-gradient(to right, black 75%, transparent);
+          z-index: 0; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-img-bg {
           position: absolute;
           height: 100%;
           width: 100%;
-          overflow: hidden; }
+          overflow: hidden;
+          pointer-events: none;
+          z-index: -2; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-img-bg > img {
             position: absolute;
             width: 100%;
@@ -9853,13 +9959,15 @@ template {
           width: 100%;
           left: 0px;
           overflow-x: visible;
-          overflow-y: scroll; }
+          overflow-y: scroll;
+          pointer-events: none; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root > section:not(.sheet-top) {
             border-top: 2px solid var(--blades-white);
             border-bottom: none; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section {
             z-index: 2;
-            max-height: 100%; }
+            max-height: 100%;
+            pointer-events: auto; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.sheet-top {
               display: grid;
               grid-auto-columns: 1fr;
@@ -10134,7 +10242,8 @@ template {
               -ms-flex-pack: start;
               justify-content: flex-start; }
               :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.nav-group > * {
-                width: 100%; }
+                width: 100%;
+                pointer-events: auto; }
               :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.nav-group .tab[data-tab].active {
                 display: -webkit-box;
                 display: -ms-flexbox;
@@ -10946,7 +11055,7 @@ template {
             cursor: default;
             width: var(--turf-block-width, 135px);
             height: var(--turf-block-height, 125px);
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: #333333;
             position: relative;
             margin: calc(var(--turf-block-gap, 40px) / 2);
             -webkit-box-flex: initial;
@@ -10956,9 +11065,13 @@ template {
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root .turf-list .turf-row .turf-block:not(:nth-child(-n+5)) {
               display: none; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root .turf-list .turf-row .turf-block:hover {
-              -webkit-filter: brightness(0.8);
-              filter: brightness(0.8);
-              opacity: 0.9; }
+              background-color: #292929; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root .turf-list .turf-row .turf-block:hover .turf-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root .turf-list .turf-row .turf-block:hover .turf-description {
+                -webkit-filter: brightness(0.8);
+                filter: brightness(0.8);
+                opacity: 0.8; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root .turf-list .turf-row .turf-block:hover.turf-selected {
+                background-color: #8e8e8e; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root .turf-list .turf-row .turf-block .connector {
               position: absolute;
               display: block;
@@ -11061,9 +11174,9 @@ template {
               display: none; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root .turf-list .turf-row .turf-block.turf-selected {
               color: var(--blades-black);
-              background-color: rgba(255, 255, 255, 0.75); }
+              background-color: silver; }
               :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root .turf-list .turf-row .turf-block.turf-selected .connector {
-                background-color: rgba(255, 255, 255, 0.5); }
+                background-color: gray; }
               :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root .turf-list .turf-row .turf-block.turf-selected .turf-name {
                 color: var(--blades-white-bright); }
               :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root .turf-list .turf-row .turf-block.turf-selected .turf-description {
@@ -11113,11 +11226,12 @@ template {
               :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root .turf-list .turf-row .turf-block.turf-selected .turf-district {
                 position: absolute;
                 z-index: 10;
-                left: calc(50% - 40px);
-                bottom: -10px;
                 height: 1.125rem;
                 min-height: unset;
-                width: 80px;
+                min-width: 100px;
+                max-width: 100px;
+                left: calc(50% - 50px);
+                bottom: -10px;
                 background: var(--blades-black);
                 color: var(--blades-white);
                 border-radius: 7px;
@@ -11409,7 +11523,7 @@ template {
           cursor: default;
           width: var(--turf-block-width, 135px);
           height: var(--turf-block-height, 125px);
-          background-color: rgba(255, 255, 255, 0.2);
+          background-color: #333333;
           position: relative;
           margin: calc(var(--turf-block-gap, 40px) / 2);
           -webkit-box-flex: initial;
@@ -11419,9 +11533,13 @@ template {
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook .turf-row .turf-block:not(:nth-child(-n+5)) {
             display: none; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook .turf-row .turf-block:hover {
-            -webkit-filter: brightness(0.8);
-            filter: brightness(0.8);
-            opacity: 0.9; }
+            background-color: #292929; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook .turf-row .turf-block:hover .turf-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook .turf-row .turf-block:hover .turf-description {
+              -webkit-filter: brightness(0.8);
+              filter: brightness(0.8);
+              opacity: 0.8; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook .turf-row .turf-block:hover.turf-selected {
+              background-color: #8e8e8e; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook .turf-row .turf-block .connector {
             position: absolute;
             display: block;
@@ -11524,9 +11642,9 @@ template {
             display: none; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook .turf-row .turf-block.turf-selected {
             color: var(--blades-black);
-            background-color: rgba(255, 255, 255, 0.75); }
+            background-color: silver; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook .turf-row .turf-block.turf-selected .connector {
-              background-color: rgba(255, 255, 255, 0.5); }
+              background-color: gray; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook .turf-row .turf-block.turf-selected .turf-name {
               color: var(--blades-white-bright); }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook .turf-row .turf-block.turf-selected .turf-description {
@@ -11576,11 +11694,12 @@ template {
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook .turf-row .turf-block.turf-selected .turf-district {
               position: absolute;
               z-index: 10;
-              left: calc(50% - 40px);
-              bottom: -10px;
               height: 1.125rem;
               min-height: unset;
-              width: 80px;
+              min-width: 100px;
+              max-width: 100px;
+              left: calc(50% - 50px);
+              bottom: -10px;
               background: var(--blades-black);
               color: var(--blades-white);
               border-radius: 7px;

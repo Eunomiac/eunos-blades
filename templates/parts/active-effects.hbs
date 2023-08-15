@@ -1,5 +1,5 @@
 <table class="items-list effects-list">
-  {{log "Active Effects" activeEffects}}
+  {{eLog "Active Effects" activeEffects}}
   {{#each activeEffects as |effect|}}
     {{#if effect.name}}
     <tr class="item effect" data-effect-id="{{effect.id}}">

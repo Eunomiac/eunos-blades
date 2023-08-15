@@ -281,7 +281,7 @@ const pluralize = (singular, num = 2, plural) => {
     }
     return plural ?? `${singular.replace(/y$/, "ie").replace(/s$/, "se")}s`;
 };
-const oxfordize = (items, useOxfordComma = true) => {
+const oxfordize = (items, useOxfordComma = true, andString = "and") => {
     if (items.length === 0) {
         return "";
     }
@@ -292,7 +292,7 @@ const oxfordize = (items, useOxfordComma = true) => {
     return [
         items.join(", "),
         useOxfordComma ? "," : "",
-        " and ",
+        ` ${andString} `,
         lastItem
     ].join("");
 };

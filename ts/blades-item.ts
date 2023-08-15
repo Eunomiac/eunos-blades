@@ -256,7 +256,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
       system.subtitle += ` ${U.oxfordize([
         ...subtypes.filter((subtype) => !elite_subtypes.includes(subtype)),
         ...elite_subtypes.map((subtype) => `Elite ${subtype}`)
-      ], false).replace(/\band\b/g, "&")}`;
+      ], false, "&")}`;
     }
   }
 

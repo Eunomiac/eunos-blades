@@ -2,6 +2,7 @@
 import C, {IMPORTDATA, BladesActorType, BladesItemType, Tag, Playbook} from "./core/constants.js";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initFonts} from "./core/settings.js";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers.js";
+import BladesPushController from "./blades-push-notifications.js";
 import U from "./core/utilities.js";
 import registerDebugger from "./core/logger.js";
 import G, {Initialize as GsapInitialize} from "./core/gsap.js";
@@ -40,6 +41,7 @@ registerDebugger();
     BladesClockKeeperSheet,
     BladesTrackerSheet,
     BladesActiveEffect,
+    BladesPushController,
     IMPORTDATA,
     bladesRoll,
     simpleRollPopup,
@@ -329,6 +331,7 @@ Hooks.once("init", async () => {
     BladesTrackerSheet.Initialize(),
     BladesSelectorDialog.Initialize(),
     BladesClockKeeperSheet.Initialize(),
+    BladesPushController.Initialize(),
     preloadHandlebarsTemplates()
   ]);
 
@@ -350,7 +353,25 @@ Hooks.once("socketlib.ready", () => {
     globalThis,
     {socket, socketlib}
   );/*!DEVCODE*/
-  socket.register("renderOverlay", () => game.eunoblades.ClockKeeper?.renderOverlay());
+
+  let clockOverlayUp: boolean, pushControllerUp: boolean;
+
+  function InitSocketFunctions() {
+    setTimeout(() => {
+      if (!clockOverlayUp && game.eunoblades.ClockKeeper) {
+        socket.register("renderOverlay", game.eunoblades.ClockKeeper.renderOverlay);
+        clockOverlayUp = true;
+      } else { eLog.error("socket", "Unable to Initialize Clock Overlay: Retrying in 2s") }
+      if (!pushControllerUp && game.eunoblades.PushController) {
+        socket.register("pushNotice", game.eunoblades.PushController.push);
+        pushControllerUp = true;
+      } else { eLog.error("socket", "Unable to Initialize Push Controller: Retrying in 2s") }
+      if (clockOverlayUp && pushControllerUp) { return }
+      InitSocketFunctions();
+    }, 2000);
+  }
+
+  InitSocketFunctions();
 });
 // #endregion ░░░░[SocketLib]░░░░
 

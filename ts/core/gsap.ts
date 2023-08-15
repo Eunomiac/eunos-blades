@@ -60,6 +60,36 @@ const gsapEffects: Record<string, gsapEffect> = {
       filter: "blur(10px)"
     }
   },
+  slideUp: {
+    effect: (targets) => U.gsap.to(
+      targets,
+      {
+        height: 0,
+        // paddingTop: 0,
+        // paddingBottom: 0,
+        duration: 0.5,
+        ease: "power3"
+      }
+    ),
+    defaults: {}
+  },
+  pulse: {
+    effect: (targets, config) => U.gsap.to(
+      targets,
+      {
+        repeat: config.repCount,
+        yoyo: true,
+        duration: config.duration / config.repCount,
+        ease: config.ease,
+        opacity: 0.25
+      }
+    ),
+    defaults: {
+      repCount: 3,
+      duration: 5,
+      ease: "sine.inOut"
+    }
+  },
   throb: {
     effect: (targets, config) => U.gsap.to(
       targets,

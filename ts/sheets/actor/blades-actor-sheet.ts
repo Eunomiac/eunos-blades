@@ -1,5 +1,5 @@
 
-import C, {BladesActorType, BladesItemType, Attributes, Tag, Actions, BladesPhase} from "../../core/constants.js";
+import C, {BladesActorType, BladesItemType, Attribute, Tag, Action, BladesPhase} from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesActor from "../../blades-actor.js";
@@ -219,17 +219,17 @@ class BladesActorSheet extends BladesSheet {
       .filter(([, isActive]) => isActive)
       .map(([armor]) => [armor, this.actor.system.armor.checked[armor as KeyOf<typeof this.actor.system.armor.checked>]]));
 
-    sheetData.attributeData = {} as Record<Attributes, {
+    sheetData.attributeData = {} as Record<Attribute, {
       tooltip: string,
-      actions: Record<Actions, ValueMax & {tooltip: string}>
+      actions: Record<Action, ValueMax & {tooltip: string}>
     }>;
-    const attrEntries = Object.entries(this.actor.system.attributes) as Array<[Attributes, Record<Actions,ValueMax>]>;
+    const attrEntries = Object.entries(this.actor.system.attributes) as Array<[Attribute, Record<Action,ValueMax>]>;
     for (const [attribute, attrData] of attrEntries) {
       sheetData.attributeData[attribute] = {
         tooltip: C.AttributeTooltips[attribute],
-        actions: {} as Record<Actions, ValueMax & {tooltip: string}>
+        actions: {} as Record<Action, ValueMax & {tooltip: string}>
       };
-      const actionEntries = Object.entries(attrData) as Array<[Actions, ValueMax]>;
+      const actionEntries = Object.entries(attrData) as Array<[Action, ValueMax]>;
       for (const [action, actionData] of actionEntries) {
         sheetData.attributeData[attribute].actions[action] = {
           tooltip: C.ActionTooltips[action],
@@ -246,7 +246,7 @@ class BladesActorSheet extends BladesSheet {
       "</ul>"
     ].join(""))).toString();
 
-    eLog.checkLog("Attributes", "[BladesActorSheet] attributeData", {attributeData: sheetData.attributeData});
+    eLog.checkLog("Attribute", "[BladesActorSheet] attributeData", {attributeData: sheetData.attributeData});
 
     eLog.checkLog("actor", "[BladesActorSheet] getData()", {...context, ...sheetData});
 
@@ -297,7 +297,7 @@ class BladesActorSheet extends BladesSheet {
     event.preventDefault();
     super._onAdvanceClick(event);
     const action = $(event.currentTarget).data("action").replace(/^advance-/, "");
-    if (action in Attributes) {
+    if (action in Attribute) {
       this.actor.advanceAttribute(action);
     }
   }

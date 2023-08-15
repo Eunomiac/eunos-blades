@@ -1,4 +1,4 @@
-import { Attributes, Actions, BladesPhase, BladesActorType, BladesItemType } from '../core/constants';
+import { Attribute, Action, BladesPhase, BladesActorType, BladesItemType } from '../core/constants';
 import BladesActiveEffect from '../blades-active-effect';
 
 declare global {
@@ -54,9 +54,9 @@ declare global {
       traumaData: BladesCompData,
       abilityData: BladesCompData,
 
-      attributeData: Record<Attributes, {
+      attributeData: Record<Attribute, {
         tooltip: string,
-        actions: Record<Actions, ValueMax & {tooltip: string}>
+        actions: Record<Action, ValueMax & {tooltip: string}>
       }>,
 
       gatherInfoTooltip: string,

@@ -4,50 +4,51 @@ $bg-yiq: 0.5;
 $hover-yiq: $bg-yiq * 1.33;
 
 @mixin tag_colors() {
+  [data-group="System Tags"] {
+    --tag-bg: #{getYIQScaledColor(rgb(169, 169, 169), $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(rgb(169, 169, 169), $hover-yiq)};
+  }
+  [data-group="Gear Tags"] {
+    --tag-bg: #{getYIQScaledColor(rgb(0, 100, 0), $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(rgb(0, 100, 0), $hover-yiq)};
+  }
+  [data-group="Actor Tags"] {
+    --tag-bg: #{getYIQScaledColor(rgb(165, 42, 42), $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(rgb(165, 42, 42), $hover-yiq)};
+  }
+  [data-group="Playbooks"] {
+    --tag-bg: #{getYIQScaledColor(rgb(0, 0, 255), $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(rgb(0, 0, 255), $hover-yiq)};
+  }
+  .tags-district, [data-group="Districts"] {
+    --tag-bg: #{getYIQScaledColor(rgb(210, 180, 140), $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(rgb(210, 180, 140), $hover-yiq)};
+  }
+  [data-group="City Districts"] {
+    --tag-bg: #{getYIQScaledColor(rgb(226, 200, 166), $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(rgb(226, 200, 166), $hover-yiq)};
+  }
+  [data-group="Other Districts"] {
+    --tag-bg: #{getYIQScaledColor(rgb(182, 150, 108), $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(rgb(182, 150, 108), $hover-yiq)};
+  }
+  [data-group="Vices"] {
+    --tag-bg: #{getYIQScaledColor(rgb(220, 20, 60), $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(rgb(220, 20, 60), $hover-yiq)};
+  }
+  [data-group="Factions"] {
+    --tag-bg: #{getYIQScaledColor(rgb(128, 0, 128), $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(rgb(128, 0, 128), $hover-yiq)};
+  }
+  [data-group="Inventions"] {
+    --tag-bg: #{getYIQScaledColor(rgb(255, 0, 255), $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(rgb(255, 0, 255), $hover-yiq)};
+  }
+  [data-group="Gang Types"] {
+    --tag-bg: #{getYIQScaledColor(rgb(255, 0, 0), $bg-yiq)};
+    --tag-hover: #{getYIQScaledColor(rgb(255, 0, 0), $hover-yiq)};
+  }
 
-  &[data-group="System Tags"] {
-    --tag-bg: #{getYIQScaledColor(darkgrey, $bg-yiq)};
-    --tag-hover: #{getYIQScaledColor(darkgrey, $hover-yiq)};
-  }
-  &[data-group="Gear Tags"] {
-    --tag-bg: #{getYIQScaledColor(darkgreen, $bg-yiq)};
-    --tag-hover: #{getYIQScaledColor(darkgreen, $hover-yiq)};
-  }
-  &[data-group="Actor Tags"] {
-    --tag-bg: #{getYIQScaledColor(brown, $bg-yiq)};
-    --tag-hover: #{getYIQScaledColor(brown, $hover-yiq)};
-  }
-  &[data-group="Playbooks"] {
-    --tag-bg: #{getYIQScaledColor(blue, $bg-yiq)};
-    --tag-hover: #{getYIQScaledColor(blue, $hover-yiq)};
-  }
-  &[data-group="Districts"] {
-    --tag-bg: #{getYIQScaledColor(tan, $bg-yiq)};
-    --tag-hover: #{getYIQScaledColor(tan, $hover-yiq)};
-  }
-  &[data-group="Vices"] {
-    --tag-bg: #{getYIQScaledColor(crimson, $bg-yiq)};
-    --tag-hover: #{getYIQScaledColor(crimson, $hover-yiq)};
-  }
-  &[data-group="Factions"] {
-    --tag-bg: #{getYIQScaledColor(purple, $bg-yiq)};
-    --tag-hover: #{getYIQScaledColor(purple, $hover-yiq)};
-  }
-  &[data-group="Inventions"] {
-    --tag-bg: #{getYIQScaledColor(magenta, $bg-yiq)};
-    --tag-hover: #{getYIQScaledColor(magenta, $hover-yiq)};
-  }
-  &[data-group="Gang Types"] {
-    --tag-bg: #{getYIQScaledColor(red, $bg-yiq)};
-    --tag-hover: #{getYIQScaledColor(red, $hover-yiq)};
-  }
-
-}
-
-.tags-gm {
-  position: absolute;
-  z-index: 20;
-  top: -40px;
 }
 
 .comp-tags {
@@ -70,6 +71,8 @@ $hover-yiq: $bg-yiq * 1.33;
   border-style: inset;
   border: none;
 
+  @include tag-colors();
+
   .tagify__tag {
     font-family: "Fjalla One";
     padding: 0;
@@ -82,7 +85,7 @@ $hover-yiq: $bg-yiq * 1.33;
 
       > span {
         padding-left: 4px;
-        line-height: 16px;
+        line-height: 20px;
         font-size: 12px;
         white-space: nowrap;
         // font-variant: small-caps;
@@ -98,11 +101,7 @@ $hover-yiq: $bg-yiq * 1.33;
       }
     }
 
-    @include tag-colors();
-
   }
-
-
 
   .tagify__input {
     flex-grow: 0.2;
@@ -110,6 +109,32 @@ $hover-yiq: $bg-yiq * 1.33;
     display: flex;
     justify-items: center;
     align-content: center;
+  }
+
+  &.tags-gm {
+    position: absolute;
+    z-index: 20;
+    top: -40px;
+  }
+
+  &.single-tag {
+    cursor: default;
+    .tagify__tag {
+      margin: 1px auto !important;
+      .tagify__tag__removeBtn {
+        margin-right: -14px;
+        opacity: 0;
+      }
+      + .tagify__input { display: none }
+    }
+    &:hover .tagify__tag .tagify__tag__removeBtn { opacity: 1 }
+    &:hover .tagify__tag .tagify__tag__removeBtn:not(:hover) { opacity: 0 }
+    &:not(.tagify--noTags) {
+      &.tags-district {
+        background: getYIQScaledColor(tan, $bg-yiq) !important;
+      }
+      .tagify__input { pointer-events: none; display: none }
+    }
   }
 }
 
@@ -140,6 +165,8 @@ $hover-yiq: $bg-yiq * 1.33;
         background: #373737;
       }
 
+      @include tag-colors();
+
       .tagify__dropdown__item {
         display: inline-block;
         font-family: "Fjalla One";
@@ -148,13 +175,15 @@ $hover-yiq: $bg-yiq * 1.33;
         padding: 0.1rem 0.25rem;
         border-radius: 5px;
         pointer-events: auto;
+        line-height: 18px;
+        max-height: 18px;
+        height: 18px;
+        min-height: 18px;
 
         background-color: var(--tag-bg);
         &:hover {
           background-color: var(--tag-hover);
         }
-
-        @include tag-colors();
       }
     }
   }

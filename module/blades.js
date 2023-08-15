@@ -8,6 +8,7 @@
 import C, { IMPORTDATA, BladesActorType } from "./core/constants.js";
 import registerSettings, { initTinyMCEStyles, initCanvasStyles, initFonts } from "./core/settings.js";
 import { registerHandlebarHelpers, preloadHandlebarsTemplates } from "./core/helpers.js";
+import BladesPushController from "./blades-push-notifications.js";
 import U from "./core/utilities.js";
 import registerDebugger from "./core/logger.js";
 import G, { Initialize as GsapInitialize } from "./core/gsap.js";
@@ -39,6 +40,7 @@ Object.assign(globalThis, {
     BladesClockKeeperSheet,
     BladesTrackerSheet,
     BladesActiveEffect,
+    BladesPushController,
     IMPORTDATA,
     bladesRoll,
     simpleRollPopup,
@@ -260,6 +262,7 @@ Hooks.once("init", async () => {
         BladesTrackerSheet.Initialize(),
         BladesSelectorDialog.Initialize(),
         BladesClockKeeperSheet.Initialize(),
+        BladesPushController.Initialize(),
         preloadHandlebarsTemplates()
     ]);
     registerHandlebarHelpers();
@@ -272,7 +275,31 @@ Hooks.once("ready", async () => {
 
 Hooks.once("socketlib.ready", () => {
     socket = socketlib.registerSystem("eunos-blades");
-    Object.assign(globalThis, { socket, socketlib });     socket.register("renderOverlay", () => game.eunoblades.ClockKeeper?.renderOverlay());
+    Object.assign(globalThis, { socket, socketlib });     
+    let clockOverlayUp, pushControllerUp;
+    function InitSocketFunctions() {
+        setTimeout(() => {
+            if (!clockOverlayUp && game.eunoblades.ClockKeeper) {
+                socket.register("renderOverlay", game.eunoblades.ClockKeeper.renderOverlay);
+                clockOverlayUp = true;
+            }
+            else {
+                eLog.error("socket", "Unable to Initialize Clock Overlay: Retrying in 2s");
+            }
+            if (!pushControllerUp && game.eunoblades.PushController) {
+                socket.register("pushNotice", game.eunoblades.PushController.push);
+                pushControllerUp = true;
+            }
+            else {
+                eLog.error("socket", "Unable to Initialize Push Controller: Retrying in 2s");
+            }
+            if (clockOverlayUp && pushControllerUp) {
+                return;
+            }
+            InitSocketFunctions();
+        }, 2000);
+    }
+    InitSocketFunctions();
 });
 
 Hooks.once("renderSceneControls", async (app, html) => {

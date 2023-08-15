@@ -32,10 +32,11 @@
         position: absolute;
         height: var(--sheet-top-height);
         // left: -10px;
-        z-index: zLevel(-1);
+        // z-index: zLevel(-1);
         border: none;
         mask-image: linear-gradient(to right, black 75%, transparent);
         -webkit-mask-image: linear-gradient(to right, black 75%, transparent);
+        z-index: 0;
       }
 
       .sheet-img-bg {
@@ -43,6 +44,8 @@
         height: 100%;
         width: 100%;
         overflow: hidden;
+        pointer-events: none;
+        z-index: -2;
 
         > img {
           position: absolute;
@@ -85,7 +88,7 @@
         left: 0px;
         overflow-x: visible;
         overflow-y: scroll;
-        // overflow: hidden;
+        pointer-events: none;
 
         > section:not(.sheet-top) {
           border-top: 2px solid var(--blades-white);
@@ -95,6 +98,7 @@
         section {
           z-index: zLevel();
           max-height: 100%;
+          pointer-events: auto;
 
           &.sheet-top {
 
@@ -173,7 +177,7 @@
             height: calc(100% - var(--sheet-top-height) - var(--sheet-mid-height));
             justify-content: flex-start;
 
-            > * { width: 100% }
+            > * { width: 100%; pointer-events: auto; }
 
             .tab[data-tab] {
 
