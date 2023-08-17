@@ -112,7 +112,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
     // if (BladesItem.IsType(this, BladesItemType.background)) { return this.system.tier.value }
     // if (BladesItem.IsType(this, BladesItemType.clock_keeper)) { return this.system.tier.value }
     if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
-      return this.system.tier.value + (this.parent?.getTierTotal() ?? 0) + this.system.quality_bonus;
+      return this.system.tier.value + (this.parent?.getTierTotal() ?? 0) + (this.system.quality_bonus ?? 0);
     }
     if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
       return this.system.tier.value + (this.parent?.getTierTotal() ?? 0) + this.system.quality_bonus + 1;
@@ -221,6 +221,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
     const elite_subtypes = U.unique([
       ...Object.values(system.elite_subtypes),
       ...(this.parent?.upgrades ?? [])
+        .filter((upgrade) => /^Elite/.test(upgrade.name ?? ""))
         .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
     ]
       .map((subtype) => subtype.trim())
@@ -235,28 +236,43 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
     system.subtypes = Object.fromEntries(subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
     system.elite_subtypes = Object.fromEntries(elite_subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
+    system.edges = Object.fromEntries(Object.values(system.edges ?? [])
+      .filter((edge) => /[A-Za-z]/.test(edge))
+      .map((edge, i) => [`${i + 1}`, edge.trim()]));
+    system.flaws = Object.fromEntries(Object.values(system.flaws ?? [])
+      .filter((flaw) => /[A-Za-z]/.test(flaw))
+      .map((flaw, i) => [`${i + 1}`, flaw.trim()]));
 
     system.quality = this.getTierTotal();
 
     if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
-      system.scale = this.getTierTotal() + this.system.scale_bonus;
-      const scaleIndex = Math.min(6, system.scale);
-      system.scaleExample = C.ScaleExamples[scaleIndex];
-      system.subtitle = C.ScaleSizes[scaleIndex];
+      if ([...subtypes, ...elite_subtypes].includes(Tag.GangType.Vehicle)) {
+        system.scale = this.getTierTotal() + this.system.scale_bonus;
+        system.scaleExample = "(1 vehicle)";
+      } else {
+        system.scale = this.getTierTotal() + this.system.scale_bonus;
+        const scaleIndex = Math.min(6, system.scale);
+        system.scaleExample = C.ScaleExamples[scaleIndex];
+        system.subtitle = C.ScaleSizes[scaleIndex];
+      }
       if (subtypes.length + elite_subtypes.length === 0) {
         system.subtitle = system.subtitle.replace(/\s+of\s*/g, "");
       }
     } else {
       system.scale = 0;
-      system.scaleExample = "(1 person)";
+      system.scaleExample = [...subtypes, ...elite_subtypes].includes("Pet") ? "(1 animal)" : "(1 person)";
       system.subtitle = "An Expert";
     }
 
     if (subtypes.length + elite_subtypes.length > 0) {
-      system.subtitle += ` ${U.oxfordize([
-        ...subtypes.filter((subtype) => !elite_subtypes.includes(subtype)),
-        ...elite_subtypes.map((subtype) => `Elite ${subtype}`)
-      ], false, "&")}`;
+      if ([...subtypes, ...elite_subtypes].includes(Tag.GangType.Vehicle)) {
+        system.subtitle = C.VehicleDescriptors[Math.min(6, this.getTierTotal())];
+      } else {
+        system.subtitle += ` ${U.oxfordize([
+          ...subtypes.filter((subtype) => !elite_subtypes.includes(subtype)),
+          ...elite_subtypes.map((subtype) => `Elite ${subtype}`)
+        ], false, "&")}`;
+      }
     }
   }
 

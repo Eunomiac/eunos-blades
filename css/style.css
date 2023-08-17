@@ -763,6 +763,10 @@ template {
   --blades-black-fade-strong: rgba(var(--blades-black-nums), 0.25);
   --blades-black-dark-fade: rgba(var(--blades-black-dark-nums), 0.5);
   --blades-black-dark-fade-strong: rgba(var(--blades-black-dark-nums), 0.25);
+  --blades-red-dark-fade: rgba(var(--blades-red-dark-nums), 0.5);
+  --blades-green-dark-fade: rgba(var(--blades-green-dark-nums), 0.5);
+  --blades-red-dark-fade-strong: rgba(var(--blades-red-dark-nums), 0.25);
+  --blades-green-dark-fade-strong: rgba(var(--blades-green-dark-nums), 0.25);
   --color-primary: var(--blades-white-nums);
   --color-background: var(--blades-black-nums);
   --color-background-lightest: var(--blades-grey-nums);
@@ -9665,7 +9669,7 @@ template {
         -webkit-box-pack: start;
         -ms-flex-pack: start;
         justify-content: flex-start;
-        max-height: 900px; }
+        max-height: 800px; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form blockquote {
           border-left: 2px solid var(--blades-grey-bright);
           margin-left: 1.5rem;
@@ -10022,62 +10026,64 @@ template {
                 -ms-flex-pack: stretch;
                 justify-content: stretch;
                 gap: 0 5px; }
-                :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel {
+                :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel {
                   width: 100%; }
-                  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort {
+                  :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort {
                     -webkit-box-align: stretch;
                     -ms-flex-align: stretch;
                     align-items: stretch;
                     border-radius: 10px;
                     border: 2px outset var(--blades-white);
-                    margin: 5px;
+                    margin: 5px 5px 10px 5px;
                     background: linear-gradient(45deg, var(--blades-black-dark), var(--blades-grey));
                     -webkit-box-shadow: 3px 3px 5px var(--blades-black-dark);
-                    box-shadow: 3px 3px 5px var(--blades-black-dark); }
-                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top {
+                    box-shadow: 3px 3px 5px var(--blades-black-dark);
+                    max-width: var(--max-cohort-block-width, 100%); }
+                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top {
                       display: grid;
                       grid-template-areas: "img title quality" "img subtitle scale" "img harm roll";
                       grid-template-columns: 60px 1fr 120px;
                       grid-template-rows: 25px 16px 25px;
                       height: 66px;
                       border-bottom: 2px solid var(--blades-white); }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container {
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-image-container, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container {
                         grid-area: img;
                         position: relative;
                         pointer-events: none;
                         height: 60px;
                         width: 60px;
                         top: 3px; }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container * {
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-image-container *, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container * {
                           pointer-events: none; }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image {
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-image-container .half-image, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image {
                           width: 30px;
                           min-height: 60px;
                           overflow: hidden;
                           position: absolute; }
-                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image img {
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-image-container .half-image img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image img {
                             max-width: 60px;
+                            min-width: 60px;
                             position: absolute; }
-                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-left, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-left img {
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-left, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-left img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-left, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-left img {
                             left: 0; }
-                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-right, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-right img {
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-right, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-right img, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-right, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-image-container .half-image.half-image-right img {
                             right: 0; }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-title-container {
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-title-container, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-title-container {
                         grid-area: title; }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-subtitle-container {
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-subtitle-container, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-subtitle-container {
                         grid-area: subtitle; }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-quality-container {
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-quality-container, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-quality-container {
                         grid-area: quality; }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-scale-container {
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-scale-container, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-scale-container {
                         grid-area: scale; }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-container {
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-container, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-container {
                         position: relative;
                         grid-area: harm;
                         padding-right: 10px; }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-container.wide-bar {
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-container.wide-bar, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-container.wide-bar {
                           width: calc(100% + 120px);
                           padding: 0; }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-container {
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-roll-container, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-container {
                         position: relative;
                         grid-area: roll;
                         -ms-flex-pack: distribute;
@@ -10085,7 +10091,7 @@ template {
                         -webkit-box-align: center;
                         -ms-flex-align: center;
                         align-items: center; }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-name {
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-name {
                         pointer-events: all;
                         font-family: var(--font-emphasis);
                         font-size: 1.125rem;
@@ -10096,23 +10102,25 @@ template {
                         -webkit-transform-origin: 0% 50%;
                         -ms-transform-origin: 0% 50%;
                         transform-origin: 0% 50%;
-                        display: inline-block; }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-name:hover {
+                        display: inline-block;
+                        white-space: nowrap; }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-name:hover, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-name:hover {
                           color: var(--blades-gold);
                           scale: 1.25; }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-subtitle {
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-subtitle, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-subtitle {
                         font-size: 0.875rem;
                         font-style: italic;
                         line-height: 14px;
                         position: relative;
                         top: -3px;
-                        font-weight: bold; }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-quality-container {
+                        font-weight: bold;
+                        white-space: nowrap; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-quality-container, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-quality-container {
                         text-align: right; }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-quality-container .cohort-quality-label {
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-quality-container .cohort-quality-label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-quality-container .cohort-quality-label {
                           font-size: 1rem;
                           font-family: var(--font-emphasis); }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-quality-container .cohort-quality-number {
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-quality-container .cohort-quality-number, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-quality-container .cohort-quality-number {
                           display: inline-block;
                           font-size: 1rem;
                           font-weight: bold;
@@ -10122,13 +10130,13 @@ template {
                           transform-origin: 50% 50%;
                           scale: 1.25 2;
                           margin: 0 5px; }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-scale-container {
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-scale-container, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-scale-container {
                         text-align: right;
                         margin-top: -5px; }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-scale-container .cohort-scale-label {
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-scale-container .cohort-scale-label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-scale-container .cohort-scale-label {
                           font-size: 1rem;
                           font-family: var(--font-emphasis); }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-scale-container .cohort-scale-number {
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-scale-container .cohort-scale-number, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-scale-container .cohort-scale-number {
                           display: inline-block;
                           font-size: 1rem;
                           font-weight: bold;
@@ -10138,13 +10146,13 @@ template {
                           transform-origin: 50% 50%;
                           scale: 1.25;
                           margin: 0 5px; }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar {
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar {
                         -webkit-box-pack: stretch;
                         -ms-flex-pack: stretch;
                         justify-content: stretch;
                         width: 100%;
                         height: 100%; }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box {
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box {
                           position: relative;
                           -webkit-box-flex: 0.25;
                           -ms-flex-positive: 0.25;
@@ -10154,7 +10162,7 @@ template {
                           background: var(--blades-red-dark);
                           height: 100%;
                           text-align: center; }
-                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .harm-number {
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .harm-number, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .harm-number {
                             display: inline-block;
                             width: 15px;
                             line-height: 23px;
@@ -10165,17 +10173,17 @@ template {
                             text-align: center;
                             -webkit-transition: 0.25s;
                             transition: 0.25s; }
-                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .harm-effect {
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .harm-effect, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .harm-effect {
                             display: none; }
-                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .cohort-harm-tooltip {
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .cohort-harm-tooltip, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .cohort-harm-tooltip {
                             padding: 0;
                             bottom: 22px; }
-                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .cohort-harm-tooltip > h2, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .cohort-harm-tooltip p {
+                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .cohort-harm-tooltip > h2, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .cohort-harm-tooltip p, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .cohort-harm-tooltip > h2, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box .cohort-harm-tooltip p {
                               padding: 0 10px;
                               margin: 0; }
-                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.harm-level-0 {
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.harm-level-0, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.harm-level-0 {
                             display: none; }
-                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active {
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active {
                             display: -webkit-box;
                             display: -ms-flexbox;
                             display: flex;
@@ -10184,11 +10192,11 @@ template {
                             flex-grow: 2;
                             background: -webkit-gradient(linear, left top, right top, from(var(--blades-red)), color-stop(var(--blades-red-dark)), to(transparent));
                             background: linear-gradient(to right, var(--blades-red), var(--blades-red-dark), transparent); }
-                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active.harm-level-0 {
+                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active.harm-level-0, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active.harm-level-0 {
                               background: transparent; }
-                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active.harm-level-4 {
+                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active.harm-level-4, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active.harm-level-4 {
                               background: var(--blades-red); }
-                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active .harm-number {
+                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active .harm-number, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active .harm-number {
                               color: var(--blades-white-bright);
                               text-align: left;
                               text-indent: 5px;
@@ -10197,38 +10205,73 @@ template {
                               width: -moz-min-content;
                               width: min-content;
                               margin-right: 5px; }
-                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active .harm-effect {
+                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active .harm-effect, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active .harm-effect {
                               display: inline-block;
                               color: var(--blades-white-bright);
                               line-height: 23px; }
-                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active ~ .cohort-harm-box {
+                            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active ~ .cohort-harm-box, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active ~ .cohort-harm-box {
                               background: transparent; }
-                              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active ~ .cohort-harm-box .harm-number {
+                              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active ~ .cohort-harm-box .harm-number, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-harm-bar .cohort-harm-box.active ~ .cohort-harm-box .harm-number {
                                 color: var(--blades-grey); }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button {
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-roll-button, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button {
                         border: none;
                         padding: 0;
                         height: 100%;
                         width: 23px;
                         position: relative; }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button svg.roll-button-icon {
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-roll-button svg.roll-button-icon, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button svg.roll-button-icon {
                           stroke-width: 20px; }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button .tooltip-cohort-roll {
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-roll-button .tooltip-cohort-roll, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button .tooltip-cohort-roll {
                           padding: 0;
                           bottom: 23px; }
-                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button .tooltip-cohort-roll > h2 {
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-roll-button .tooltip-cohort-roll > h2, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button .tooltip-cohort-roll > h2 {
                             padding: 0 10px;
                             margin: 0; }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button[data-roll-label="Untrained"] .roll-button-icon {
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-roll-button[data-roll-label="Untrained"] .roll-button-icon, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button[data-roll-label="Untrained"] .roll-button-icon {
                           fill: transparent;
                           stroke: var(--blades-white); }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button[data-roll-label="Trained"] .roll-button-icon {
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-roll-button[data-roll-label="Trained"] .roll-button-icon, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button[data-roll-label="Trained"] .roll-button-icon {
                           fill: var(--blades-grey-bright);
                           stroke: var(--blades-white); }
-                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button[data-roll-label="Elite"] .roll-button-icon {
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-top .cohort-roll-button[data-roll-label="Elite"] .roll-button-icon, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-top .cohort-roll-button[data-roll-label="Elite"] .roll-button-icon {
                           fill: #96ffff;
                           stroke: var(--blades-white); }
-                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .filled-label {
+                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-description, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-description {
+                      margin-bottom: 5px; }
+                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-flaws-edges, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-flaws-edges {
+                      -webkit-box-pack: end;
+                      -ms-flex-pack: end;
+                      justify-content: flex-end;
+                      padding: 0 0 5px 0; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-flaws-edges .tooltip-trigger, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-flaws-edges .tooltip-trigger {
+                        margin: -7px 3px -20px 0; }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-flaws-edges .tooltip-trigger .tooltip-scaling-elem, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-flaws-edges .tooltip-trigger .tooltip-scaling-elem {
+                          margin: 0 2px;
+                          padding: 0 8px;
+                          border-radius: 5px;
+                          font-family: var(--font-emphasis);
+                          color: var(--blades-white);
+                          background: var(--blades-black-dark);
+                          font-size: 10px;
+                          text-transform: uppercase;
+                          line-height: 12px; }
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-flaws-edges .tooltip-trigger .tooltip-scaling-elem.edge-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-flaws-edges .tooltip-trigger .tooltip-scaling-elem.edge-name {
+                            outline: 1px inset #00FF00; }
+                          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-flaws-edges .tooltip-trigger .tooltip-scaling-elem.flaw-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-flaws-edges .tooltip-trigger .tooltip-scaling-elem.flaw-name {
+                            outline: 1px inset #FF0000; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-flaws-edges .tooltip, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-flaws-edges .tooltip {
+                        left: unset;
+                        right: 200px;
+                        bottom: 10px; }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-flaws-edges .tooltip.tooltip-edge, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-flaws-edges .tooltip.tooltip-edge {
+                          border-color: var(--blades-green-bright);
+                          -webkit-box-shadow: inset 0 0 3px var(--blades-green-dark), inset 0 0 5px var(--blades-green-dark), inset 0 0 15px var(--blades-green-dark), inset 0 0 15px var(--blades-green-dark);
+                          box-shadow: inset 0 0 3px var(--blades-green-dark), inset 0 0 5px var(--blades-green-dark), inset 0 0 15px var(--blades-green-dark), inset 0 0 15px var(--blades-green-dark); }
+                        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .cohort-flaws-edges .tooltip.tooltip-flaw, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .cohort-flaws-edges .tooltip.tooltip-flaw {
+                          border-color: var(--blades-red-bright);
+                          -webkit-box-shadow: inset 0 0 3px var(--blades-red-dark), inset 0 0 5px var(--blades-red-dark), inset 0 0 15px var(--blades-red-dark), inset 0 0 15px var(--blades-red-dark);
+                          box-shadow: inset 0 0 3px var(--blades-red-dark), inset 0 0 5px var(--blades-red-dark), inset 0 0 15px var(--blades-red-dark), inset 0 0 15px var(--blades-red-dark); }
+                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .comp-cohort .filled-label, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-root section.tab-content .cohorts .half-panel .comp-cohort .filled-label {
                       height: 100%;
                       line-height: 25px;
                       font-size: 18px;
@@ -10487,7 +10530,7 @@ template {
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar .comp-stress .dotline.narrow-stress .dot {
           margin-right: 1px; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar .comp-trauma .comp-label {
-        min-width: 80px; }
+        min-width: 100px; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar .comp-trauma .dotline {
         --fill-color-full: var(--blades-red-bright);
         -webkit-box-flex: 0;
@@ -10945,7 +10988,7 @@ template {
       --sheet-top-height: 200px; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top {
         grid-template-areas: ". . title title title title title title playbook playbook playbook" ". . members members members members hunting-grounds hunting-grounds playbook playbook playbook " ". . reputation reputation preferred-op preferred-op hunting-grounds hunting-grounds . coins coins ";
-        grid-template-rows: 55px 83px 42px 20px; }
+        grid-template-rows: 55px 83px 52px 10px; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .sheet-title {
           --sheet-title-font-size: 3rem; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .comp-playbook {
@@ -10965,7 +11008,15 @@ template {
             max-width: calc(var(--dotline-dot-size) * 8);
             gap: 5px 0; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .members {
-          grid-area: members; }
+          grid-area: members;
+          -ms-flex-wrap: nowrap;
+          flex-wrap: nowrap; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .members .comp-vertical.portrait-block {
+            min-width: unset; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .members .comp-vertical.portrait-block:last-child {
+              margin-right: 20px; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .members .comp-vertical.portrait-block .comp-body .comp-title {
+              margin-top: -10px; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .comp-hunting-grounds {
           height: 100%; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.crew .window-content form .sheet-root > section.sheet-top .comp-hunting-grounds .comp-body {
@@ -11486,7 +11537,8 @@ template {
     --turf-list-width: 600px;
     --turf-block-width: 135px;
     --turf-block-height: 125px;
-    --turf-block-gap: 10px; }
+    --turf-block-gap: 10px;
+    max-height: 600px; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook {
       display: -webkit-box;
       display: -ms-flexbox;
@@ -11789,11 +11841,15 @@ template {
             text-align: center;
             white-space: nowrap;
             width: 100%; }
-      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-types .cohort-type-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-types .cohort-type-input {
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-types .cohort-type-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-types .cohort-edge-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-types .cohort-flaw-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-edges .cohort-type-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-edges .cohort-edge-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-edges .cohort-flaw-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-flaws .cohort-type-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-flaws .cohort-edge-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-flaws .cohort-flaw-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-types .cohort-type-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-types .cohort-edge-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-types .cohort-flaw-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-edges .cohort-type-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-edges .cohort-edge-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-edges .cohort-flaw-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-flaws .cohort-type-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-flaws .cohort-edge-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-flaws .cohort-flaw-input {
         background: var(--blades-black-dark);
         font-family: var(--font-emphasis);
         color: var(--blades-white-bright);
         margin: 0px 10px; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-types .cohort-edge-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-edges .cohort-edge-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-flaws .cohort-edge-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-types .cohort-edge-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-edges .cohort-edge-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-flaws .cohort-edge-input {
+        background: var(--blades-green-dark); }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-types .cohort-flaw-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-edges .cohort-flaw-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-flaws .cohort-flaw-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-types .cohort-flaw-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-edges .cohort-flaw-input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-flaws .cohort-flaw-input {
+        background: var(--blades-red-dark); }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang .sheet-root section.cohort-harm, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert .sheet-root section.cohort-harm {
         -webkit-box-pack: stretch;
         -ms-flex-pack: stretch;
@@ -12034,6 +12090,46 @@ template {
         -webkit-box-flex: 3;
         -ms-flex-positive: 3;
         flex-grow: 3; }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab {
+    --sheet-top-height: 140px;
+    min-width: 500px;
+    max-width: 500px;
+    min-height: 400px;
+    max-height: 400px;
+    overflow: visible;
+    -webkit-box-shadow: none;
+    box-shadow: none; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab * {
+      --content-padding: 0px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-header {
+      opacity: 0;
+      top: 3px;
+      position: absolute;
+      width: 80%;
+      left: 10%;
+      z-index: 10;
+      -webkit-transition: 0.25s;
+      transition: 0.25s; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-header:hover {
+        opacity: 1; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content {
+      border-radius: 60px;
+      -webkit-box-shadow: 25px 25px 15px var(--blades-black-dark-fade);
+      box-shadow: 25px 25px 15px var(--blades-black-dark-fade);
+      border: 3px outset var(--blades-white);
+      background: var(--blades-black-dark-fade); }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root {
+        overflow: visible; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root section.sheet-top {
+          overflow: visible;
+          grid-template-areas: "item-img title tier" "item-img subtitle tier";
+          grid-template-rows: 70px 70px;
+          height: 140px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root section.sheet-top .sheet-title {
+            --sheet-title-font-size: 1.5rem; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root section.sheet-top .sheet-subtitle {
+            --sheet-subtitle-font-size: 1.125rem;
+            padding-bottom: 15px; }
 
 /* stylelint-disable font-family-no-missing-generic-family-keyword */
 /* stylelint-disable selector-type-no-unknown */

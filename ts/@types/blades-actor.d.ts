@@ -40,12 +40,7 @@ declare global {
         playbook: ValueMax,
         clues: string[]
       }
-      advancement: {
-        general: number,
-        ability: number,
-        upgrade: number
-      }
-      advancement_points: AdvancementPoint[][]
+      advancement_points: Record<string,number>
     }
 
     export interface hold {
@@ -216,32 +211,15 @@ declare global {
     }
 
     export interface Advancement {
-      get totalAbilityPoints(): number;
-      get spentAbilityPoints(): number;
-      get availableAbilityPoints(): number;
+      grantAdvancementPoints(aPt: AdvancementPoint|AdvancementPoint[], num: number): Promise<void>
+      removeAdvancementPoints(aPt: AdvancementPoint|AdvancementPoint[], num: number): Promise<void>
 
-      addAbilityPoints(amount: number): Promise<void>;
-      removeAbilityPoints(amount: number): Promise<void>;
+      getAvailableAdvancements(trait: Action|"Ability"|"Upgrade"|"Cohort"): number
 
       advancePlaybook(): Promise<void>;
+      advanceAttribute(attr: Attribute): Promise<void>;
     }
 
-    export interface Advancement_Crew {
-      get totalAdvancementPoints(): number;
-      get spentAdvancementPoints(): number;
-      get availableAdvancementPoints(): number;
-
-      addAdvancementPoints(amount: number): Promise<void>;
-      removeAdvancementPoints(amount: number): Promise<void>;
-
-      get totalUpgradePoints(): number;
-      get spentUpgradePoints(): number;
-      get availableUpgradePoints(): number;
-
-      get totalCohortPoints(): number;
-      get spentCohortPoints(): number;
-      get availableCohortPoints(): number;
-    }
   }
 
   namespace BladesActorSubClass {
@@ -276,8 +254,7 @@ declare global {
     export interface Crew extends BladesActorComponent.Default,
                                   BladesActorComponent.SubActorControl,
                                   BladesActorComponent.SubItemControl,
-                                  BladesActorComponent.Advancement,
-                                  BladesActorComponent.Advancement_Crew {
+                                  BladesActorComponent.Advancement {
 
       members: BladesActor[];
       contacts: BladesActor[];

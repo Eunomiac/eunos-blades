@@ -5,7 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { IMPORTDATA, BladesActorType } from "./core/constants.js";
+import C, { IMPORTDATA } from "./core/constants.js";
 import registerSettings, { initTinyMCEStyles, initCanvasStyles, initFonts } from "./core/settings.js";
 import { registerHandlebarHelpers, preloadHandlebarsTemplates } from "./core/helpers.js";
 import BladesPushController from "./blades-push-notifications.js";
@@ -19,6 +19,7 @@ import BladesActorSheet from "./sheets/actor/blades-actor-sheet.js";
 import BladesCrewSheet from "./sheets/actor/blades-crew-sheet.js";
 import BladesNPCSheet from "./sheets/actor/blades-npc-sheet.js";
 import BladesFactionSheet from "./sheets/actor/blades-faction-sheet.js";
+import BladesRollCollabSheet from "./sheets/blades-roll-collab-sheet.js";
 import { bladesRoll, simpleRollPopup } from "./blades-roll.js";
 import BladesSelectorDialog from "./blades-dialog.js";
 import BladesActiveEffect from "./blades-active-effect.js";
@@ -41,6 +42,7 @@ Object.assign(globalThis, {
     BladesTrackerSheet,
     BladesActiveEffect,
     BladesPushController,
+    BladesRollCollabSheet,
     IMPORTDATA,
     bladesRoll,
     simpleRollPopup,
@@ -228,18 +230,6 @@ Object.assign(globalThis, {
         });
     },
     DebugPC: async () => {
-    },
-    TransferBladesRandomizer: async () => {
-        const npcs = game.actors.filter((actor) => actor.type === BladesActorType.npc);
-        npcs.forEach((npc) => {
-            npc.update({
-                "system.randomizers.name.isLocked": false,
-                "system.randomizers.trait_1.isLocked": false,
-                "system.randomizers.trait_2.isLocked": false,
-                "system.randomizers.trait_3.isLocked": false,
-                "system.randomizers.quirk.isLocked": false
-            });
-        });
     }
 });
 
@@ -263,6 +253,7 @@ Hooks.once("init", async () => {
         BladesSelectorDialog.Initialize(),
         BladesClockKeeperSheet.Initialize(),
         BladesPushController.Initialize(),
+        BladesRollCollabSheet.Initialize(),
         preloadHandlebarsTemplates()
     ]);
     registerHandlebarHelpers();
@@ -277,6 +268,7 @@ Hooks.once("socketlib.ready", () => {
     socket = socketlib.registerSystem("eunos-blades");
     Object.assign(globalThis, { socket, socketlib });     
     let clockOverlayUp, pushControllerUp;
+    socket.register("renderRollCollab", BladesRollCollabSheet.RenderRollCollab);
     function InitSocketFunctions() {
         setTimeout(() => {
             if (!clockOverlayUp && game.eunoblades.ClockKeeper) {

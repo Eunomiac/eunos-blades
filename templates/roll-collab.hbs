@@ -1,0 +1,55 @@
+{{log "ROLL COLLAB CONTEXT" this}}
+
+<form class="{{cssClass}} roll-collab-sheet" autocomplete="off">
+  <div class="sheet-root">
+    <section class="sheet-top">
+      <input class="sheet-title shadowed" type="text" name="flags.eunoblades.rollCollab.title" value="{{flags.eunoblades.rollCollab.title}}">
+      <input class="sheet-subtitle shadowed" type="text" name="flags.eunoblades.rollCollab.subtitle" value="{{flags.eunoblades.rollCollab.subtitle}}" />
+    </section>
+    <section class="sheet-mid">
+
+    </section>
+    <section class="sheet-main">
+    {{!-- First, fix this stupid class name from using 'tab' when there aren't tabs. --}}
+
+    </section>
+    <section class="sheet-footer">
+
+    </section>
+
+
+</form>
+<section class="build-notes" style="display: none">
+   <section class="sheet-top">
+      <p>Summary of roll, roller, stats, etc.</p>
+      <p>List of modifiers that have been automatically applied.</p>
+    </section>
+    <section class="sheet-mid">
+      <p>Summary of opposition: link to Actor or Item (e.g. location/score/plan/ritual) for an image</p>
+      <ul>
+        <li>GM side has toggle options for which of magnitude, quality, tier, scale, etc. are in play, and what those values are</li>
+        <li>GM Side is big grid of buttons, a control panel -- everything should be doable with a single click</li>
+        <li>When choice in a category has been made, fade out other buttons slightly</li>
+      </ul>
+      <p>MUST be careful not to push through any edits that would interrupt a text field being edited or whatever</p>
+      <ul>
+        <li>Instead of pushing updates, could tie them to an on.blur event listener?</li>
+        <li>Or, tie on.focus (or whatever) to Input elements (only) and have them set a flag that the update method can check to see if the update should go through</li>
+        <li>the update method can then activate a blur listener to defer the update</li>
+      </ul>
+    </section>
+    <section class="sheet-main">
+    {{!-- First, fix this stupid class name from using 'tab' when there aren't tabs. --}}
+      <p>The main interactive area where GM and player changes based on negotiations occur.</p>
+      <ul>
+        <li>Player can change Action via dropdown menu: When open, a summary of player's stats pops up like a tooltip</li>
+        <li>Abilities and crew upgrades (with a relevant tag) available for selection via dropdown or Tagify</li>
+        <li>Position & Effect</li>
+        <li>Can bring other players in to roll a group action</li>
+        <li>Assists from other players or setup actions can be recorded on player when they happen, and read by rollCollab to apply them</li>
+      </ul>
+    </section>
+    <section class="sheet-footer">
+      <p>Contains the 'ready' toggle (on the GM side) and the Roll button on the player's side.</p>
+    </section>
+</section>

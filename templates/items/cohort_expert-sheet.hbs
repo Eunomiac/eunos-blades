@@ -23,6 +23,26 @@
       {{#each system.subtypes as |subtype|}}
         <input class="shadowed cohort-type-input" type="text" value="{{subtype}}" name="system.subtypes.{{calc @index "+" 1}}" />
       {{/each}}
+      {{log this}}
+      <input class="shadowed cohort-type-input" type="text" value="" name="system.subtypes.{{calc (count system.subtypes) "+" 1}}" />
+    </section>
+    {{/if}}
+
+    {{!-- Edges & Flaws --}}
+    {{#if isGM}}
+    <section class="cohort-edges full-width flex-horizontal">
+      {{#each edgeData as |edgeTooltip edgeName|}}
+      <input class="shadowed cohort-edge-input tooltip-trigger" type="text" value="{{edgeName}}" name="system.edges.{{calc @index "+" 1}}" />
+      <div class="tooltip">{{{edgeTooltip}}}</div>
+      {{/each}}
+      <input class="shadowed cohort-edge-input" type="text" value="" name="system.edges.{{calc (count system.edges) "+" 1}}" />
+    </section>
+    <section class="cohort-flaws full-width flex-horizontal">
+      {{#each flawData as |flawTooltip flawName|}}
+      <input class="shadowed cohort-flaw-input tooltip-trigger" type="text" value="{{flawName}}" name="system.flaws.{{calc @index "+" 1}}" />
+      <div class="tooltip">{{{flawTooltip}}}</div>
+      {{/each}}
+      <input class="shadowed cohort-flaw-input" type="text" value="" name="system.flaws.{{calc (count system.flaws) "+" 1}}" />
     </section>
     {{/if}}
 

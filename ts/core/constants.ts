@@ -166,14 +166,11 @@ export enum Playbook {
 }
 
 export enum AdvancementPoint {
-  UpgradeOrAbility= "UpgradeOrAbility",
+  UpgradeOrAbility = "UpgradeOrAbility",
   Ability = "Ability",
   Upgrade = "Upgrade",
   Cohort = "Cohort",
-  GeneralAttribute = "GeneralAttribute",
-  insight = "insight",
-  prowess = "prowess",
-  resolve = "resolve",
+  CohortType = "CohortType",
   GeneralAction = "GeneralAction",
   GeneralInsight = "GeneralInsight",
   GeneralProwess = "GeneralProwess",
@@ -243,7 +240,8 @@ export namespace Tag {
     Rooks = "Rooks",
     Adepts = "Adepts",
     Rovers = "Rovers",
-    Skulks = "Skulks"
+    Skulks = "Skulks",
+    Vehicle = "Vehicle"
   }
 }
 
@@ -323,6 +321,72 @@ const C = {
     Ruthless: "You lose any sense of humanity when indulging your Vice or pursuing your most important goal.",
     Secretive: "Knowledge has become so precious to you, that even your closest allies are on a need-to-know basis."
   },
+  EdgeTooltips: {
+    "Fearsome": "<p>The cohort is terrifying in aspect and reputation.</p>",
+    "Independent": "<p>The cohort can be trusted to make good decisions and act on their own initiative in the absence of direct orders.</p>",
+    "Loyal": "<p>The cohort can't be bribed or turned against you. </p>",
+    "Tenacious": "<p>The cohort won't be deterred from a task.</p>",
+    "Nimble": "<p>The vehicle handles easily. Consider this an <strong>assist</strong> for tricky maneuvers.</p>",
+    "Simple": "<p>The vehicle is easy to repair. Remove all of its <strong>Harm</strong> during <strong>downtime</strong></p>",
+    "Sturdy": "<p>The vehicle keeps operating even when <strong>Broken</strong>.</p>",
+    "Arrow-Swift": "<p>Your pet gains <strong>Potency</strong> when tracking or fighting the supernatural.</p><p>It can move extremely quickly, outpacing any other creature or vehicle.</p>",
+    "Ghost Form": "<p>Your pet gains <strong>Potency</strong> when tracking or fighting the supernatural.</p><p>It can transform into electroplasmic vapor as if it were a spirit.</p>",
+    "Mind Link": "<p>Your pet gains <strong>Potency</strong> when tracking or fighting the supernatural.</p><p>You and your pet can share senses and thoughts telepathically.</p>"
+  },
+  FlawTooltips: {
+    Principled: "<p>The cohort has an ethic or values that it won't betray.",
+    Savage: "<p>The cohort is excessively violent and cruel.</p>",
+    Unreliable: "<p>The cohort isn't always available, due to other obligations, stupefaction from their vices, etc.</p>",
+    Wild: "<p>The cohort is drunken, debauched, and loud-mouthed.</p>",
+    Costly: "<p>The vehicle costs <strong>1 Coin</strong> per <strong>downtime</strong> to keep it in operation.</p>",
+    Distinct: "<p>The vehicle has memorable features. Take <strong>+1 Heat</strong> when you use it on a score.</p>",
+    Finicky: "<p>The vehicle has quirks that only one person understands. When operated without them, it has <strong>-1 Quality</strong>.</p>"
+  },
+  QualityDescriptors: [
+    "Poor",
+    "Adequate",
+    "Good",
+    "Excellent",
+    "Superior",
+    "Impeccable",
+    "Legendary"
+  ],
+  ForceDescriptors: [
+    "Weak",
+    "Moderate",
+    "Strong",
+    "Serious",
+    "Powerful",
+    "Overwhelming",
+    "Devastating"
+  ],
+  VehicleDescriptors: [
+    "A Vehicle?",
+    "A Vehicle",
+    "A Respectable Vehicle",
+    "A Respected Vehicle",
+    "A Precision-Built Vehicle",
+    "A Powerful, Advanced Vehicle",
+    "A Uniquely Strong, Extremely Advanced Vehicle"
+  ],
+  PetDescriptors: [
+    "A Weak Hunting Pet",
+    "A Hunting Pet",
+    "A Strong Hunting Pet",
+    "A Serious Hunting Pet",
+    "A Powerful Hunting Pet",
+    "An Overwhelmingly Powerful Hunting Pet",
+    "A Devastating Hunting Pet"
+  ],
+  AreaExamples: [
+    "a closet",
+    "a small room",
+    "a large room",
+    "several rooms",
+    "a small building",
+    "a large building",
+    "a city block"
+  ],
   ScaleExamples: [
     "(1 or 2 members)",
     "(3 - 6 members)",

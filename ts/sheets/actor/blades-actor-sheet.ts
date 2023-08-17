@@ -199,8 +199,8 @@ class BladesActorSheet extends BladesSheet {
       dotline: {
         dotlineClass: "dotline-right dotline-glow",
         data: {
-          value: this.actor.availableAbilityPoints,
-          max: this.actor.availableAbilityPoints
+          value: this.actor.getAvailableAdvancements("Ability"),
+          max: this.actor.getAvailableAdvancements("Ability")
         },
         dotlineLabel: "Available Abilities",
         isLocked: true,

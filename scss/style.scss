@@ -248,6 +248,10 @@
         &.active-effect-sheet {
           @import './sheets/active-effect-config'
         }
+
+        &.roll-collab {
+          @import './sheets/roll-collab-sheet'
+        }
       }
     }
   }

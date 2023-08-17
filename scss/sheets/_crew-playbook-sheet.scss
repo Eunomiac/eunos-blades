@@ -3,6 +3,7 @@
   --turf-block-width: 135px;
   --turf-block-height: 125px;
   --turf-block-gap: 10px;
+  max-height: 600px;
   @import "../components/turf-block";
 
   .turf-list {

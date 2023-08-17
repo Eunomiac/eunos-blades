@@ -31,12 +31,11 @@
 					"clues": []
 				},
 				"coins": { "value": 0, "max": 4 },
-				"advancement": {
-					"general": 0,
-					"ability": 0,
-					"upgrade": 0
-				},
-        "advancement_points": []
+				"advancement_points": {
+          "Ability": 0,
+          "Cohort": 0,
+          "CohortType": 0
+				}
 			},
 			"hold": { "hold": "strong" }
 		},
@@ -62,9 +61,24 @@
 				"resolve": { "value": 0, "max": 6 }
 			},
 			"gather_info": [],
-			"advancement": {
-				"ability": 1
-			},
+      "advancement_points": {
+        "GeneralAction": 0,
+        "GeneralInsight": 0,
+        "GeneralProwess": 0,
+        "GeneralResolve": 0,
+        "hunt": 0,
+        "study": 0,
+        "survey": 0,
+        "tinker": 0,
+        "finesse": 0,
+        "prowl": 0,
+        "skirmish": 0,
+        "wreck": 0,
+        "attune": 0,
+        "command": 0,
+        "consort": 0,
+        "sway": 0
+      },
 			"loadout": {
 				"selected": "",
 				"levels": {
@@ -132,10 +146,10 @@
 		"crew": {
 			"templates": ["default", "pcChar", "hold"],
 			"coins": { "value": 2, "max": 4 },
-			"advancement": {
-				"ability": 1,
-				"upgrade": 4
-			},
+      "advancement_points": {
+        "UpgradeOrAbility": 0,
+        "Upgrade": 0
+      },
 			"rep": { "value": 0, "max": 12 },
 			"deity": "",
 			"heat": { "value": 0, "max": 9 },

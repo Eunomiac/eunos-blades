@@ -6,7 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-import C, { BladesActorType, Tag, Playbook, BladesItemType, Attribute, Action, InsightActions, ProwessActions, ResolveActions, Positions, EffectLevels, AdvancementPoint, Randomizers } from "./core/constants.js";
+import C, { BladesActorType, Tag, Playbook, BladesItemType, Attribute, Action, Positions, EffectLevels, AdvancementPoint, Randomizers } from "./core/constants.js";
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem, { PrereqType } from "./blades-item.js";
 import { SelectionCategory } from "./blades-dialog.js";
@@ -394,10 +394,10 @@ class BladesActor extends Actor {
                 cssClasses.push("featured-item");
             }
             if ([BladesItemType.ability, BladesItemType.crew_ability].includes(sItem.type)) {
-                if (this.availableAbilityPoints === 0) {
+                if (this.getAvailableAdvancements("Ability") === 0) {
                     cssClasses.push("locked");
                 }
-                else if ((sItem.system.price ?? 1) > this.availableAbilityPoints) {
+                else if ((sItem.system.price ?? 1) > this.getAvailableAdvancements("Ability")) {
                     cssClasses.push("locked", "unaffordable");
                 }
                 else if ((sItem.system.price ?? 1) > 1) {
@@ -405,10 +405,10 @@ class BladesActor extends Actor {
                 }
             }
             if ([BladesItemType.crew_upgrade].includes(sItem.type)) {
-                if (this.availableUpgradePoints === 0) {
+                if (this.getAvailableAdvancements("Upgrade") === 0) {
                     cssClasses.push("locked");
                 }
-                else if ((sItem.system.price ?? 1) > this.availableUpgradePoints) {
+                else if ((sItem.system.price ?? 1) > this.getAvailableAdvancements("Upgrade")) {
                     cssClasses.push("locked", "unaffordable");
                 }
                 else if ((sItem.system.price ?? 1) > 1) {
@@ -667,114 +667,72 @@ class BladesActor extends Actor {
         }
         subItem.delete();
     }
-        async addAbilityPoints(amount) {
-        if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
-            return;
-        }
-        this.grantAdvancementPoints([AdvancementPoint.Ability], amount);
-    }
-    async removeAbilityPoints(amount) {
-        if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
-            return;
-        }
-        this.removeAdvancementPoints([AdvancementPoint.Ability], amount);
-    }
+        
     async grantAdvancementPoints(allowedTypes, amount = 1) {
-        const aPoints = this.system.advancement_points ?? [];
-        for (let i = 0; i < amount; i++) {
-            aPoints.push(allowedTypes);
-        }
-                this.update({ "system.advancement_points": aPoints });
+        const aPtKey = Array.isArray(allowedTypes)
+            ? allowedTypes.sort().join("_")
+            : allowedTypes;
+        this.update({ [`system.advancement_points.${aPtKey}`]: (this.system.advancement_points?.[aPtKey] ?? 0) + amount });
     }
     async removeAdvancementPoints(allowedTypes, amount = 1) {
-        const aPoints = this.system.advancement_points ?? [];
-        for (let i = 0; i < amount; i++) {
-            const elem = U.remove(aPoints, ((aPt) => aPt.length === allowedTypes.length
-                && allowedTypes.every((aType) => aPt.includes(aType))));
-            if (elem === false) {
-                return false;
-            }
+        const aPtKey = Array.isArray(allowedTypes)
+            ? allowedTypes.sort().join("_")
+            : allowedTypes;
+        const newCount = this.system.advancement_points?.[aPtKey] ?? 0 - amount;
+        if (newCount <= 0 && aPtKey in (this.system.advancement_points ?? [])) {
+            return this.update({ [`system.advancement_points.-=${aPtKey}`]: null });
         }
-        await this.update({ "system.advancement_points": aPoints });
-        return true;
+        return this.update({ [`system.advancement_points.${aPtKey}`]: newCount });
     }
-    calcAdvances(trait) {
+    getAvailableAdvancements(trait) {
         if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
             return 0;
         }
-        const aPoints = this.system.advancement_points ?? [];
-        if (trait === "Ability") {
-            const abilPointsSpent = U.sum(this.items
-                .filter((item) => BladesItem.IsType(item, BladesItemType.ability, BladesItemType.crew_ability))
-                .map((abil) => abil.system.price ?? 1));
-            const abilUpgradePointsSpent = U.sum(this.items
-                .filter((item) => BladesItem.IsType(item, BladesItemType.crew_upgrade))
-                .map((upgrade) => upgrade.system.price ?? 1)) - aPoints.filter((aPt) => aPt.includes(AdvancementPoint.Upgrade)
-                && !aPt.includes(AdvancementPoint.Ability)).length;
-            const abilUpgradePoints = aPoints.filter((aPt) => aPt.includes(AdvancementPoint.UpgradeOrAbility)
-                && !aPt.includes(AdvancementPoint.Ability)).length;
-            const abilityPoints = Math.floor((abilUpgradePoints - abilUpgradePointsSpent) / 2) + aPoints.filter((aPt) => aPt.includes(AdvancementPoint.Ability)).length;
-            return abilityPoints - abilPointsSpent;
+        if (trait in Action) {
+            return 1;
         }
         if (trait === "Cohort") {
-            const numTypes = this.cohorts.map((cohort) => U.unique(Object.values(cohort.system.subtypes))
-                .filter((subtype) => /[A-Za-z]/.test(subtype))).length;
-            const cohortPoints = aPoints.filter((aPt) => aPt.includes(AdvancementPoint.Cohort)).length;
-            return cohortPoints - numTypes;
+            const pointsCohort = this.system.advancement_points?.[AdvancementPoint.Cohort] ?? 0;
+            const spentCohort = this.cohorts.length;
+            return Math.max(0, pointsCohort - spentCohort);
         }
-        if (!BladesActor.IsType(this, BladesActorType.crew)) {
-            return 0;
+        const pointsAbility = this.system.advancement_points?.[AdvancementPoint.Ability] ?? 0;
+        const pointsCohortType = this.system.advancement_points?.[AdvancementPoint.CohortType] ?? 0;
+        const pointsUpgrade = this.system.advancement_points?.[AdvancementPoint.Upgrade] ?? 0;
+        const pointsUpgradeOrAbility = this.system.advancement_points?.[AdvancementPoint.UpgradeOrAbility] ?? 0;
+        const spentAbility = U.sum(this.items
+            .filter((item) => BladesItem.IsType(item, BladesItemType.ability, BladesItemType.crew_ability))
+            .map((abil) => abil.system.price ?? 1));
+        const spentCohortType = U.sum(this.cohorts.map((cohort) => Math.max(0, U.unique(Object.values(cohort.system.subtypes)).length - 1)));
+        const spentUpgrade = U.sum(this.items
+            .filter((item) => BladesItem.IsType(item, BladesItemType.crew_upgrade))
+            .map((upgrade) => upgrade.system.price ?? 1));
+        const excessUpgrade = Math.max(0, spentUpgrade - pointsUpgrade);
+        const excessCohortType = Math.max(0, spentCohortType - pointsCohortType);
+        const excessAbility = Math.max(0, spentAbility - pointsAbility);
+        const remainingAbility = Math.max(0, pointsAbility - spentAbility);
+        const remainingCohortType = Math.max(0, pointsCohortType - spentCohortType);
+        const remainingUpgrade = Math.max(0, pointsUpgrade - spentUpgrade);
+        const remainingUpgradeOrAbility = Math.max(0, pointsUpgradeOrAbility - excessUpgrade - (2 * excessAbility) - (2 * excessCohortType));
+        if (trait === "Ability") {
+            return remainingAbility + Math.floor(0.5 * remainingUpgradeOrAbility);
         }
         if (trait === "Upgrade") {
-            const abilPointsSpent = U.sum(this.items
-                .filter((item) => BladesItem.IsType(item, BladesItemType.ability, BladesItemType.crew_ability))
-                .map((abil) => abil.system.price ?? 1));
-            const abilityPoints = aPoints.filter((aPt) => aPt.includes(AdvancementPoint.Ability)).length;
-            const upgradeAbilityPointsSpent = Math.max(0, -2 * (abilityPoints - abilPointsSpent));
-            const upgradePointsSpent = U.sum(this.items
-                .filter((item) => BladesItem.IsType(item, BladesItemType.crew_upgrade))
-                .map((upgrade) => upgrade.system.price ?? 1));
-            const upgradePoints = aPoints.filter((aPt) => (aPt.includes(AdvancementPoint.UpgradeOrAbility) && !aPt.includes(AdvancementPoint.Ability))
-                || aPt.includes(AdvancementPoint.Upgrade)).length;
-            return upgradePoints - upgradeAbilityPointsSpent - upgradePointsSpent;
+            return remainingUpgrade + remainingUpgradeOrAbility;
+        }
+        if (trait === "CohortType") {
+            return remainingCohortType + remainingUpgradeOrAbility;
         }
         return 0;
     }
-    isBuyableAdvance(trait) {
-        const aPoints = this.system.advancement_points ?? [];
-        if (trait in Attribute) {
-            return Boolean(aPoints.find((aPt) => aPt.includes(AdvancementPoint.GeneralAttribute)
-                || aPt.includes(trait)));
-        }
-        if (trait in Action) {
-            if (trait in InsightActions) {
-                return Boolean(aPoints.find((aPt) => aPt.includes(AdvancementPoint.GeneralAction)
-                    || aPt.includes(AdvancementPoint.GeneralInsight)
-                    || aPt.includes(trait)));
-            }
-            if (trait in ProwessActions) {
-                return Boolean(aPoints.find((aPt) => aPt.includes(AdvancementPoint.GeneralAction)
-                    || aPt.includes(AdvancementPoint.GeneralProwess)
-                    || aPt.includes(trait)));
-            }
-            if (trait in ResolveActions) {
-                return Boolean(aPoints.find((aPt) => aPt.includes(AdvancementPoint.GeneralAction)
-                    || aPt.includes(AdvancementPoint.GeneralResolve)
-                    || aPt.includes(trait)));
-            }
-            return null;
-        }
-        if (trait === "Ability") {
-            return this.calcAdvances("Ability") > 0;
-        }
-        if (trait === "Cohort") {
-            return this.calcAdvances("Cohort") > 0;
-        }
-        if (trait === "Upgrade") {
-            return this.calcAdvances("Upgrade") > 0;
-        }
-        return null;
-    }
+    get availableAbilityPoints() { return this.getAvailableAdvancements("Ability"); }
+    get availableUpgradePoints() { return this.getAvailableAdvancements("Upgrade"); }
+    get availableCohortPoints() { return this.getAvailableAdvancements("Cohort"); }
+    get availableCohortTypePoints() { return this.getAvailableAdvancements("CohortType"); }
+    get canPurchaseAbility() { return this.availableAbilityPoints > 0; }
+    get canPurchaseUpgrade() { return this.availableUpgradePoints > 0; }
+    get canPurchaseCohort() { return this.availableCohortPoints > 0; }
+    get canPurchaseCohortType() { return this.availableCohortTypePoints > 0; }
     async advancePlaybook() {
         if (!this.playbook) {
             return undefined;
@@ -783,7 +741,7 @@ class BladesActor extends Actor {
         switch (this.type) {
             case BladesActorType.pc: {
                 game.eunoblades.PushController.pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`);
-                return this.addAbilityPoints(1);
+                return this.grantAdvancementPoints(AdvancementPoint.Ability);
             }
             case BladesActorType.crew: {
                 game.eunoblades.PushController.pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.");
@@ -792,7 +750,7 @@ class BladesActor extends Actor {
                     game.eunoblades.PushController.pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, undefined);
                     member.addStash(coinGained);
                 });
-                return this.addAdvancementPoints(2);
+                return this.grantAdvancementPoints(AdvancementPoint.UpgradeOrAbility, 2);
             }
             default: return undefined;
         }
@@ -804,98 +762,7 @@ class BladesActor extends Actor {
     }
     
     
-
-    get totalUpgradePoints() {
-        if (!BladesActor.IsType(this, BladesActorType.crew)) {
-            return 0;
-        }
-        if (!this.playbook) {
-            return 0;
-        }
-        return (this.system.advancement.general ?? 0) + (this.system.advancement.upgrade ?? 0);
-    }
-    get spentUpgradePoints() {
-        if (!BladesActor.IsType(this, BladesActorType.crew)) {
-            return 0;
-        }
-        if (!this.playbook) {
-            return 0;
-        }
-        return this.upgrades.reduce((total, upgrade) => total + (upgrade.system.price ?? 1), 0);
-    }
-    get availableUpgradePoints() {
-        if (!BladesActor.IsType(this, BladesActorType.crew)) {
-            return 0;
-        }
-        if (!this.playbook) {
-            return 0;
-        }
-        return this.totalUpgradePoints - this.spentUpgradePoints;
-    }
-    async addAdvancementPoints(amount) {
-        if (!BladesActor.IsType(this, BladesActorType.crew)) {
-            return;
-        }
-        if (!this.playbook) {
-            return;
-        }
-        this.update({ "system.advancement.general": (this.system.advancement.general ?? 0) + amount });
-    }
-    async removeAdvancementPoints(amount) {
-        if (!BladesActor.IsType(this, BladesActorType.crew)) {
-            return;
-        }
-        if (!this.playbook) {
-            return;
-        }
-        this.update({ "system.advancement.general": Math.max(0, (this.system.advancement.general ?? 0) - amount) });
-    }
-    get totalAdvancementPoints() {
-        if (!BladesActor.IsType(this, BladesActorType.crew)) {
-            return 0;
-        }
-        if (!this.playbook) {
-            return 0;
-        }
-        return this.system.advancement.general ?? 0;
-    }
-    get spentAdvancementPoints() {
-        if (!BladesActor.IsType(this, BladesActorType.crew)) {
-            return 0;
-        }
-        if (!this.playbook) {
-            return 0;
-        }
-        return (2 * this.spentAbilityPoints) + this.spentUpgradePoints;
-    }
-    get availableAdvancementPoints() { return this.totalAdvancementPoints - this.spentAdvancementPoints; }
-    get totalCohortPoints() {
-        if (!this.playbook) {
-            return 0;
-        }
-        if (![BladesActorType.crew].includes(this.type)) {
-            return 0;
-        }
-        return this.upgrades.filter((item) => item.system.world_name === "Cohort").length;
-    }
-    get spentCohortPoints() {
-        if (!this.playbook) {
-            return 0;
-        }
-        if (![BladesActorType.crew].includes(this.type)) {
-            return 0;
-        }
-        return this.cohorts.length + this.cohorts.filter((cohort) => cohort.hasTag(Tag.Gear.Upgraded)).length;
-    }
-    get availableCohortPoints() {
-        if (!this.playbook) {
-            return 0;
-        }
-        if (![BladesActorType.crew].includes(this.type)) {
-            return 0;
-        }
-        return this.totalCohortPoints - this.spentCohortPoints;
-    }
+    
     parentActor;
     get isSubActor() { return this.parentActor !== undefined; }
     

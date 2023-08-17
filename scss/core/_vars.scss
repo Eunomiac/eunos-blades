@@ -184,6 +184,11 @@ $isCompactLayout: true;
   --blades-black-fade-strong: rgba(var(--blades-black-nums), 0.25);
   --blades-black-dark-fade: rgba(var(--blades-black-dark-nums), 0.5);
   --blades-black-dark-fade-strong: rgba(var(--blades-black-dark-nums), 0.25);
+
+  --blades-red-dark-fade: rgba(var(--blades-red-dark-nums), 0.5);
+  --blades-green-dark-fade: rgba(var(--blades-green-dark-nums), 0.5);
+  --blades-red-dark-fade-strong: rgba(var(--blades-red-dark-nums), 0.25);
+  --blades-green-dark-fade-strong: rgba(var(--blades-green-dark-nums), 0.25);
   // #endregion ░░░░[Blades Colors & Fades]░░░░
   // #region ░░░░░░░ Numerically-Defined Colors (for Emu Stylesheet) ░░░░░░░ ~
   --color-primary: var(--blades-white-nums);

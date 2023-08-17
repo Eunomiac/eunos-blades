@@ -142,6 +142,10 @@ html, :root {
     --blades-black-fade-strong: rgba(var(--blades-black-nums), 0.25);
     --blades-black-dark-fade: rgba(var(--blades-black-dark-nums), 0.5);
     --blades-black-dark-fade-strong: rgba(var(--blades-black-dark-nums), 0.25);
+    --blades-red-dark-fade: rgba(var(--blades-red-dark-nums), 0.5);
+    --blades-green-dark-fade: rgba(var(--blades-green-dark-nums), 0.5);
+    --blades-red-dark-fade-strong: rgba(var(--blades-red-dark-nums), 0.25);
+    --blades-green-dark-fade-strong: rgba(var(--blades-green-dark-nums), 0.25);
     --color-primary: var(--blades-white-nums);
     --color-background: var(--blades-black-nums);
     --color-background-lightest: var(--blades-grey-nums);

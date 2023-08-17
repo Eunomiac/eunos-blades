@@ -14,6 +14,7 @@ import BladesActorSheet from "./sheets/actor/blades-actor-sheet.js";
 import BladesCrewSheet from "./sheets/actor/blades-crew-sheet.js";
 import BladesNPCSheet from "./sheets/actor/blades-npc-sheet.js";
 import BladesFactionSheet from "./sheets/actor/blades-faction-sheet.js";
+import BladesRollCollabSheet from "./sheets/blades-roll-collab-sheet.js";
 
 import {bladesRoll, simpleRollPopup} from "./blades-roll.js";
 import BladesSelectorDialog, {SelectionCategory} from "./blades-dialog.js";
@@ -42,6 +43,7 @@ registerDebugger();
     BladesTrackerSheet,
     BladesActiveEffect,
     BladesPushController,
+    BladesRollCollabSheet,
     IMPORTDATA,
     bladesRoll,
     simpleRollPopup,
@@ -279,24 +281,6 @@ registerDebugger();
       //     crew.sheet.setPosition(positions.crew({pcSheetElem: pc?.sheet?.element}));
       //   }
       // }, 2000);
-    },
-    TransferBladesRandomizer: async () => {
-      const npcs = game.actors.filter((actor) => actor.type === BladesActorType.npc) as BladesActor[];
-
-      npcs.forEach((npc) => {
-        npc.update({
-          // "system.randomizers.name.value": npc.name,
-          "system.randomizers.name.isLocked": false,
-          // "system.randomizers.trait_1.value": npc.system.traits[1],
-          "system.randomizers.trait_1.isLocked": false,
-          // "system.randomizers.trait_2.value": npc.system.traits[2],
-          "system.randomizers.trait_2.isLocked": false,
-          // "system.randomizers.trait_3.value": npc.system.traits[3],
-          "system.randomizers.trait_3.isLocked": false,
-          // "system.randomizers.quirk.value": npc.system.description_short,
-          "system.randomizers.quirk.isLocked": false
-        });
-      });
     }
   }
 );/*!DEVCODE*/
@@ -332,6 +316,7 @@ Hooks.once("init", async () => {
     BladesSelectorDialog.Initialize(),
     BladesClockKeeperSheet.Initialize(),
     BladesPushController.Initialize(),
+    BladesRollCollabSheet.Initialize(),
     preloadHandlebarsTemplates()
   ]);
 
@@ -355,6 +340,7 @@ Hooks.once("socketlib.ready", () => {
   );/*!DEVCODE*/
 
   let clockOverlayUp: boolean, pushControllerUp: boolean;
+  socket.register("renderRollCollab", BladesRollCollabSheet.RenderRollCollab);
 
   function InitSocketFunctions() {
     setTimeout(() => {

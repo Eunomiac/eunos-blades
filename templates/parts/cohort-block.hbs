@@ -123,30 +123,30 @@
     </div>
     {{/unless}}
   </div>
-  <div class="cohort-flaws-edges flex-horizontal">
-    {{#if system.edges}}
-    {{#each system.edges as |edgeTooltip edgeName|}}
-    <div class="edge-container tooltip-trigger">
-      <label class="edge-name tooltip-scaling-elem">{{edgeName}}</label>
-    </div>
-    <div class="tooltip edge-tooltip">{{{edgeTooltip}}}</div>
-    {{/each}}
-    {{/if}}
-    {{#if system.flaws}}
-    {{#each system.flaws as |flawTooltip flawName|}}
-    <div class="flaw-container tooltip-trigger">
-      <label class="flaw-name tooltip-scaling-elem">{{flawName}}</label>
-    </div>
-    <div class="tooltip flaw-tooltip">{{{flawTooltip}}}</div>
-    {{/each}}
-    {{/if}}
-  </div>
   <div class="cohort-description full-width">
     <div class="editor">
       <div class="editor-content" data-engine="tinymce" data-collaborate="false">
         {{{system.description}}}
       </div>
     </div>
+  </div>
+  <div class="cohort-flaws-edges flex-horizontal">
+    {{#if system.edgeData}}
+    {{#each system.edgeData as |edgeTooltip edgeName|}}
+    <div class="edge-container tooltip-trigger">
+      <label class="edge-name tooltip-scaling-elem shadowed">{{edgeName}}</label>
+    </div>
+    <div class="tooltip tooltip-small tooltip-edge">{{{edgeTooltip}}}</div>
+    {{/each}}
+    {{/if}}
+    {{#if system.flawData}}
+    {{#each system.flawData as |flawTooltip flawName|}}
+    <div class="flaw-container tooltip-trigger">
+      <label class="flaw-name tooltip-scaling-elem shadowed">{{flawName}}</label>
+    </div>
+    <div class="tooltip tooltip-small tooltip-flaw">{{{flawTooltip}}}</div>
+    {{/each}}
+    {{/if}}
   </div>
 
 

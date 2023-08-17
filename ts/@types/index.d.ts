@@ -36,6 +36,12 @@ declare global {
       PushController?: BladesPushController
     }
   }
+  declare interface User {
+    _id: string,
+    flags: {
+      eunoblades?: Record<string,any>
+    }
+  }
   interface LenientGlobalVariableTypes { game: never }
 
   // GreenSock Accessor Object
@@ -50,5 +56,7 @@ declare global {
   type ClickEvent = JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
   type ContextMenuEvent = JQuery.ContextMenuEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
   type TriggerEvent = JQuery.TriggeredEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
+  type InputChangeEvent = JQuery.TypeEventHandler<HTMLInputElement, undefined, HTMLInputElement, HTMLInputElement, "change">;
+  type BlurEvent = JQuery.TypeEventHandler<HTMLElement, undefined, HTMLElement, HTMLElement, "blur">;
 
 }

@@ -25,6 +25,8 @@ declare global {
       subtitle: string,
       tierData: BladesCompData
       scaleData?: {example: string}
+      edgeData: Record<string, {[string]: string}>
+      flawData: Record<string, {[string]: string}>
     }
     export interface Cohort_Expert {
       tierData: BladesCompData,

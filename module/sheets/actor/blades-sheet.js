@@ -8,7 +8,7 @@
 
 import U from "../../core/utilities.js";
 import G, { ApplyTooltipListeners } from "../../core/gsap.js";
-import { BladesActorType, BladesItemType } from "../../core/constants.js";
+import C, { BladesActorType, BladesItemType } from "../../core/constants.js";
 import Tags from "../../core/tags.js";
 import BladesActor from "../../blades-actor.js";
 import BladesItem from "../../blades-item.js";
@@ -49,18 +49,24 @@ class BladesSheet extends ActorSheet {
                             imgTypes.push(...subtypes.filter((subtype) => !imgTypes.includes(subtype)));
                         }
                         if (U.unique(imgTypes).length === 1) {
-                            item.system.image = Object.values(item.system.elite_subtypes).includes(imgTypes[0]) ? `elite-${U.lCase(imgTypes[0])}.png` : `${U.lCase(imgTypes[0])}.png`;
+                            item.system.image = Object.values(item.system.elite_subtypes).includes(imgTypes[0]) ? `elite-${U.lCase(imgTypes[0])}.svg` : `${U.lCase(imgTypes[0])}.svg`;
                         }
                         else if (U.unique(imgTypes).length > 1) {
                             const [rightType, leftType] = imgTypes;
-                            item.system.imageLeft = Object.values(item.system.elite_subtypes).includes(leftType) ? `elite-${U.lCase(leftType)}.png` : `${U.lCase(leftType)}.png`;
-                            item.system.imageRight = Object.values(item.system.elite_subtypes).includes(rightType) ? `elite-${U.lCase(rightType)}.png` : `${U.lCase(rightType)}.png`;
+                            item.system.imageLeft = Object.values(item.system.elite_subtypes).includes(leftType) ? `elite-${U.lCase(leftType)}.svg` : `${U.lCase(leftType)}.svg`;
+                            item.system.imageRight = Object.values(item.system.elite_subtypes).includes(rightType) ? `elite-${U.lCase(rightType)}.svg` : `${U.lCase(rightType)}.svg`;
                         }
                         Object.assign(item.system, {
                             tierTotal: item.getTierTotal() > 0 ? U.romanizeNum(item.getTierTotal()) : "0",
                             cohortRollData: [
                                 { mode: "untrained", label: "Untrained", color: "transparent", tooltip: "<p>Roll Untrained</p>" }
-                            ]
+                            ],
+                            edgeData: Object.fromEntries(Object.values(item.system.edges ?? [])
+                                .filter((edge) => /[A-Za-z]/.test(edge))
+                                .map((edge) => [edge.trim(), C.EdgeTooltips[edge]])),
+                            flawData: Object.fromEntries(Object.values(item.system.flaws ?? [])
+                                .filter((flaw) => /[A-Za-z]/.test(flaw))
+                                .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw]]))
                         });
                         return item;
                     }),
@@ -71,7 +77,13 @@ class BladesSheet extends ActorSheet {
                             tierTotal: item.getTierTotal() > 0 ? U.romanizeNum(item.getTierTotal()) : "0",
                             cohortRollData: [
                                 { mode: "untrained", label: "Untrained", tooltip: "<h2>Roll Untrained</h2>" }
-                            ]
+                            ],
+                            edgeData: Object.fromEntries(Object.values(item.system.edges ?? [])
+                                .filter((edge) => /[A-Za-z]/.test(edge))
+                                .map((edge) => [edge.trim(), C.EdgeTooltips[edge]])),
+                            flawData: Object.fromEntries(Object.values(item.system.flaws ?? [])
+                                .filter((flaw) => /[A-Za-z]/.test(flaw))
+                                .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw]]))
                         });
                         return item;
                     })

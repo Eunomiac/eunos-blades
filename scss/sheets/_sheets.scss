@@ -26,7 +26,7 @@
       @import "../core/globals";
 
       justify-content: flex-start;
-      max-height: 900px;
+      max-height: 800px;
 
       .sheet-img {
         position: absolute;
@@ -167,7 +167,7 @@
               justify-content: stretch;
               gap: 0 5px;
 
-              .half-panel {
+              &, .half-panel {
                 @import "../components/cohort-block";
               }
             }

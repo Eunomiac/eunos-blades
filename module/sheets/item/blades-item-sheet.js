@@ -89,10 +89,12 @@ class BladesItemSheet extends ItemSheet {
                     }
                 }
             };
-            if (context.isGM) {
-                context.system.subtypes[`${Object.values(context.system.subtypes).length + 1}`] = " ";
-                context.system.elite_subtypes[`${Object.values(context.system.elite_subtypes).length + 1}`] = " ";
-            }
+            sheetData.edgeData = Object.fromEntries(Object.values(context.system.edges ?? [])
+                .filter((edge) => /[A-Za-z]/.test(edge))
+                .map((edge) => [edge.trim(), C.EdgeTooltips[edge]]));
+            sheetData.flawData = Object.fromEntries(Object.values(context.system.flaws ?? [])
+                .filter((flaw) => /[A-Za-z]/.test(flaw))
+                .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw]]));
             return {
                 ...context,
                 ...sheetData

@@ -196,6 +196,9 @@
           <a class="tab-selector" data-tab="abilities">{{localize "BITD.Abilities"}}</a>
           <a class="tab-selector" data-tab="loadout">{{localize "BITD.Loadout"}}</a>
           <a class="tab-selector" data-tab="acquaintances">Acquaintances</a>
+          {{#if (test (test (count preparedItems.cohorts.gang) ">" 0) "||" (test (count preparedItems.cohorts.expert) ">" 0))}}
+          <a class="tab-selector" data-tab="cohorts">Cohorts</a>
+          {{/if}}
           <a class="tab-selector" data-tab="player-notes">{{localize "BITD.Notes"}}</a>
           {{#if isGM}}
           <a class="tab-selector" data-tab="gm-notes">GM Notes</a>
@@ -295,7 +298,19 @@
             }}
             {{/each}}
           </div>
+        </div>
 
+        {{!-- Cohorts Tab --}}
+        <div class="tab cohorts flex-vertical" data-tab="cohorts">
+          <label class="tab-label">
+            <span class="tab-title">Cohorts</span>
+          </label>
+          {{#each preparedItems.cohorts.gang}}
+          {{> "systems/eunos-blades/templates/parts/cohort-block.hbs" }}
+          {{/each}}
+          {{#each preparedItems.cohorts.expert}}
+          {{> "systems/eunos-blades/templates/parts/cohort-block.hbs" }}
+          {{/each}}
         </div>
 
         {{!-- Description & Notes Tab --}}

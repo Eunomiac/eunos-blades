@@ -72,12 +72,18 @@
         }
       }
 
-      &.cohort-types {
-        .cohort-type-input {
+      &.cohort-types, &.cohort-edges, &.cohort-flaws {
+        .cohort-type-input, .cohort-edge-input, .cohort-flaw-input {
           background: var(--blades-black-dark);
           font-family: var(--font-emphasis);
           color: var(--blades-white-bright);
           margin: 0px 10px;
+        }
+        .cohort-edge-input {
+          background: var(--blades-green-dark);
+        }
+        .cohort-flaw-input {
+          background: var(--blades-red-dark);
         }
       }
 

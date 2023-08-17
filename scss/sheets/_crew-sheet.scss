@@ -5,7 +5,7 @@
   .window-content {
     form {
 
-      $heights: (55px 83px 42px 20px);
+      $heights: (55px 83px 52px 10px);
       --sheet-top-height: #{calculate-sum($heights)};
       // --sheet-mid-height: 0px;
 
@@ -39,7 +39,19 @@
                 gap: 5px 0;
               }
             }
-            .members { grid-area: members }
+            .members {
+              grid-area: members;
+              flex-wrap: nowrap;
+              .comp-vertical.portrait-block {
+                min-width: unset;
+                &:last-child { margin-right: 20px }
+                .comp-body {
+                  .comp-title {
+                    margin-top: -10px;
+                  }
+                }
+              }
+            }
 
             .comp-hunting-grounds {
               height: 100%;
