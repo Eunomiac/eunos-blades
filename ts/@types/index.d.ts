@@ -25,6 +25,7 @@ declare global {
     items: Collection<BladesItem>,
     actors: Collection<BladesActor>,
     user: User,
+    users: Collection<User>,
     scenes: Scenes,
     model: {
       Actor: Record<BladesActorType, BladesActorSystem>,

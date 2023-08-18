@@ -1,0 +1,70 @@
+{{log "ROLL COLLAB CONTEXT" this}}
+
+<form class="{{cssClass}} roll-collab-sheet roll-collab-sheet-pc" autocomplete="off">
+
+  <div class="sheet-root sheet-root-left">
+    <section class="sheet-top">
+      <h1 class="roll-type">{{rollType}}</h1>
+      <input class="sheet-title shadowed" type="text" name="flags.eunoblades.rollCollab.title" value="{{flags.eunoblades.rollCollab.title}}">
+      <input class="sheet-subtitle shadowed" type="text" name="flags.eunoblades.rollCollab.subtitle" value="{{flags.eunoblades.rollCollab.subtitle}}" />
+    </section>
+    <section class="sheet-main flex-vertical">
+      <div class="roll-sheet-block rolling-block flex-vertical">
+        <div class="roll-sheet-sub-block rolling-action-block flex-horizontal">
+          <label class="shadowed">Rolling:</label>
+          {{#if rollTraitOptions}}
+          <select class="roll-sheet-select rolling-trait" name="flags.eunoblades.rollCollab.rollTrait">
+            {{#select rollTrait}}
+            {{#each rollTraitOptions}}
+            <option value="{{value}}">{{name}}</option>
+            {{/each}}
+            {{/select}}
+          </select>
+          {{else}}
+          <span class="rolling-trait">{{rollTraitData.name}}</span>
+          {{/if}}
+          {{> "systems/eunos-blades/templates/components/dotline.hbs"
+          data=rollTraitData
+          isLocked=true
+          iconFull="dot-full.svg"
+          }}
+        </div>
+        <div class="roll-sheet-sub-block rolling-pos-effects-block flex-horizontal">
+
+        </div>
+        <div class="roll-sheet-sub-block rolling-neg-effects-block flex-horizontal">
+
+        </div>
+        <div class="roll-sheet-float-block rolling-dice-total-block">
+
+        </div>
+
+      </div>
+      <div class="roll-sheet-block position-block flex-vertical">
+
+      </div>
+      <div class="roll-sheet-block effect-block flex-vertical">
+
+      </div>
+      {{#if isAffectingResult}}
+      <div class="roll-sheet-block result-block flex-vertical">
+
+      </div>
+      {{/if}}
+
+    </section>
+    <section class="sheet-mid">
+
+    </section>
+    <section class="sheet-main">
+    {{!-- First, fix this stupid class name from using 'tab' when there aren't tabs. --}}
+
+    </section>
+    <section class="sheet-footer">
+
+    </section>
+  </div>
+  <div class="sheet-root sheet-root-right">
+
+  </div>
+</form>

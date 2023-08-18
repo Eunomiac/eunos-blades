@@ -1,7 +1,7 @@
 // #region Imports ~
 import U from "./core/utilities.js";
 import type {Vice} from "./core/constants.js";
-import C, {BladesActorType, BladesPhase, Tag, District, Playbook, BladesItemType, Attribute, Action, InsightActions, ProwessActions, ResolveActions, Positions, EffectLevels, AdvancementPoint, Randomizers} from "./core/constants.js";
+import C, {BladesActorType, BladesPhase, Tag, District, Playbook, BladesItemType, Attribute, Action, InsightActions, ProwessActions, ResolveActions, Position, Effect, AdvancementPoint, Randomizers} from "./core/constants.js";
 
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
@@ -972,27 +972,27 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
     }
     return undefined;
   }
-  get attributes(): Record<Attribute, number>|undefined {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined }
+  get attributes(): Record<Attribute, number> {
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never }
     return {
       insight: Object.values(this.system.attributes.insight).filter(({value}) => value > 0).length + this.system.resistance_bonus.insight,
       prowess: Object.values(this.system.attributes.prowess).filter(({value}) => value > 0).length + this.system.resistance_bonus.prowess,
       resolve: Object.values(this.system.attributes.resolve).filter(({value}) => value > 0).length + this.system.resistance_bonus.resolve
     };
   }
-  get actions(): Record<Action, number>|undefined {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined }
+  get actions(): Record<Action, number> {
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never }
     return U.objMap({
       ...this.system.attributes.insight,
       ...this.system.attributes.prowess,
       ...this.system.attributes.resolve
     }, ({value, max}: ValueMax) => U.gsap.utils.clamp(0, max, value)) as Record<Action, number>;
   }
-  get rollable(): Record<Attribute | Action, number>|undefined {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined }
+  get rollable(): Record<Attribute | Action, number> {
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never }
     return {
-      ...this.attributes!,
-      ...this.actions!
+      ...this.attributes,
+      ...this.actions
     };
   }
   get trauma(): number {
@@ -1251,8 +1251,8 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
               html = $(html);
             }
             const modifier = parseInt(`${html.find('[name="mod"]').attr("value") ?? 0}`);
-            const position: Positions = `${html.find('[name="pos"]').attr("value") ?? Positions.risky}` as Positions;
-            const effect: EffectLevels = `${html.find('[name="fx"]').attr("value") ?? EffectLevels.standard}` as EffectLevels;
+            const position: Position = `${html.find('[name="pos"]').attr("value") ?? Position.risky}` as Position;
+            const effect: Effect = `${html.find('[name="fx"]').attr("value") ?? Effect.standard}` as Effect;
             const note = `${html.find('[name="note"]').attr("value") ?? 0}`;
             await this.rollAttribute(attribute_name, modifier, position, effect, note);
           }
@@ -1270,8 +1270,8 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   async rollAttribute(
     attribute_name: Attribute | Action,
     additional_dice_amount = 0,
-    position: Positions = Positions.risky,
-    effect: EffectLevels = EffectLevels.standard,
+    position: Position = Position.risky,
+    effect: Effect = Effect.standard,
     note?: string
   ) {
     if (this.type !== BladesActorType.pc) { return }
@@ -1466,6 +1466,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 }
 
 declare interface BladesActor {
+  get id(): string;
   get type(): BladesActorType;
   get items(): EmbeddedCollection<typeof BladesItem, ActorData>;
   system: BladesActorSystem;

@@ -38,6 +38,13 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
             "systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
         ]);
     }
+    static InitSockets() {
+        if (game.eunoblades.ClockKeeper) {
+            socketlib.system.register("renderOverlay", game.eunoblades.ClockKeeper.renderOverlay);
+            return true;
+        }
+        return false;
+    }
     getData() {
         const context = super.getData();
         const sheetData = {

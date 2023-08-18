@@ -6,7 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-import C, { BladesActorType, Tag, Playbook, BladesItemType, Attribute, Action, Positions, EffectLevels, AdvancementPoint, Randomizers } from "./core/constants.js";
+import C, { BladesActorType, Tag, Playbook, BladesItemType, Attribute, Action, Position, Effect, AdvancementPoint, Randomizers } from "./core/constants.js";
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem, { PrereqType } from "./blades-item.js";
 import { SelectionCategory } from "./blades-dialog.js";
@@ -1073,8 +1073,8 @@ class BladesActor extends Actor {
                             html = $(html);
                         }
                         const modifier = parseInt(`${html.find('[name="mod"]').attr("value") ?? 0}`);
-                        const position = `${html.find('[name="pos"]').attr("value") ?? Positions.risky}`;
-                        const effect = `${html.find('[name="fx"]').attr("value") ?? EffectLevels.standard}`;
+                        const position = `${html.find('[name="pos"]').attr("value") ?? Position.risky}`;
+                        const effect = `${html.find('[name="fx"]').attr("value") ?? Effect.standard}`;
                         const note = `${html.find('[name="note"]').attr("value") ?? 0}`;
                         await this.rollAttribute(attribute_name, modifier, position, effect, note);
                     }
@@ -1087,7 +1087,7 @@ class BladesActor extends Actor {
             "default": "yes"
         }).render(true);
     }
-    async rollAttribute(attribute_name, additional_dice_amount = 0, position = Positions.risky, effect = EffectLevels.standard, note) {
+    async rollAttribute(attribute_name, additional_dice_amount = 0, position = Position.risky, effect = Effect.standard, note) {
         if (this.type !== BladesActorType.pc) {
             return;
         }

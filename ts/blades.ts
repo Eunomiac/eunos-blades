@@ -339,25 +339,18 @@ Hooks.once("socketlib.ready", () => {
     {socket, socketlib}
   );/*!DEVCODE*/
 
-  let clockOverlayUp: boolean, pushControllerUp: boolean;
-  socket.register("renderRollCollab", BladesRollCollabSheet.RenderRollCollab);
+  BladesRollCollabSheet.InitSockets();
 
-  function InitSocketFunctions() {
+  let clockOverlayUp: boolean, pushControllerUp: boolean;
+  function InitOverlaySockets() {
     setTimeout(() => {
-      if (!clockOverlayUp && game.eunoblades.ClockKeeper) {
-        socket.register("renderOverlay", game.eunoblades.ClockKeeper.renderOverlay);
-        clockOverlayUp = true;
-      } else { eLog.error("socket", "Unable to Initialize Clock Overlay: Retrying in 2s") }
-      if (!pushControllerUp && game.eunoblades.PushController) {
-        socket.register("pushNotice", game.eunoblades.PushController.push);
-        pushControllerUp = true;
-      } else { eLog.error("socket", "Unable to Initialize Push Controller: Retrying in 2s") }
+      clockOverlayUp = clockOverlayUp || BladesClockKeeperSheet.InitSockets();
+      pushControllerUp = clockOverlayUp || BladesPushController.InitSockets();
       if (clockOverlayUp && pushControllerUp) { return }
-      InitSocketFunctions();
+      InitOverlaySockets();
     }, 2000);
   }
-
-  InitSocketFunctions();
+  InitOverlaySockets();
 });
 // #endregion ░░░░[SocketLib]░░░░
 

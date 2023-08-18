@@ -238,9 +238,9 @@ declare global {
       get crew(): BladesActor | undefined;
       get abilities(): BladesItem[];
 
-      get attributes(): Record<Attribute, number> | undefined;
-      get actions(): Record<Action, number> | undefined;
-      get rollable(): Record<Attribute | Action, number> | undefined;
+      get attributes(): Record<Attribute, number>;
+      get actions(): Record<Action, number>;
+      get rollable(): Record<Attribute | Action, number>;
 
       get trauma(): number;
       get traumaList(): string[];

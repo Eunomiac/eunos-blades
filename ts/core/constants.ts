@@ -118,17 +118,24 @@ export enum Action {
   sway = "sway"
 }
 
-export enum Positions {
+export enum Position {
   controlled = "controlled",
   risky = "risky",
   desperate = "desperate"
 }
-export enum EffectLevels {
+export enum Effect {
   extreme = "extreme",
+  superior = "superior",
   great = "great",
   standard = "standard",
   limited = "limited",
   zero = "zero"
+}
+export enum Factor {
+  Tier = "Tier",
+  Quality = "Quality",
+  Scale = "Scale",
+  Magnitude = "Magnitude"
 }
 export enum Vice {
   Faith = "Faith",

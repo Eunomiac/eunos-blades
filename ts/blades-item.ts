@@ -460,6 +460,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
 }
 
 declare interface BladesItem {
+  get id(): string;
   get type(): BladesItemType,
   parent: BladesActor | null,
   system: BladesItemSystem

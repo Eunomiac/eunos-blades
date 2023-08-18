@@ -267,31 +267,19 @@ Hooks.once("ready", async () => {
 Hooks.once("socketlib.ready", () => {
     socket = socketlib.registerSystem("eunos-blades");
     Object.assign(globalThis, { socket, socketlib });     
+    BladesRollCollabSheet.InitSockets();
     let clockOverlayUp, pushControllerUp;
-    socket.register("renderRollCollab", BladesRollCollabSheet.RenderRollCollab);
-    function InitSocketFunctions() {
+    function InitOverlaySockets() {
         setTimeout(() => {
-            if (!clockOverlayUp && game.eunoblades.ClockKeeper) {
-                socket.register("renderOverlay", game.eunoblades.ClockKeeper.renderOverlay);
-                clockOverlayUp = true;
-            }
-            else {
-                eLog.error("socket", "Unable to Initialize Clock Overlay: Retrying in 2s");
-            }
-            if (!pushControllerUp && game.eunoblades.PushController) {
-                socket.register("pushNotice", game.eunoblades.PushController.push);
-                pushControllerUp = true;
-            }
-            else {
-                eLog.error("socket", "Unable to Initialize Push Controller: Retrying in 2s");
-            }
+            clockOverlayUp = clockOverlayUp || BladesClockKeeperSheet.InitSockets();
+            pushControllerUp = clockOverlayUp || BladesPushController.InitSockets();
             if (clockOverlayUp && pushControllerUp) {
                 return;
             }
-            InitSocketFunctions();
+            InitOverlaySockets();
         }, 2000);
     }
-    InitSocketFunctions();
+    InitOverlaySockets();
 });
 
 Hooks.once("renderSceneControls", async (app, html) => {

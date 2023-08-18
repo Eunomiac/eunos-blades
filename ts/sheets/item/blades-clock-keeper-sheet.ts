@@ -42,6 +42,14 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
     ]);
   }
 
+  static InitSockets() {
+    if (game.eunoblades.ClockKeeper) {
+      socketlib.system.register("renderOverlay", game.eunoblades.ClockKeeper.renderOverlay);
+      return true;
+    }
+    return false;
+  }
+
 
   // override async _updateObject(event: unknown, formData: any) {
   //   const updateData = await this.object.update(formData);

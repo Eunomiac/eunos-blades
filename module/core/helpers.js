@@ -17,6 +17,8 @@ export async function preloadHandlebarsTemplates() {
         "systems/eunos-blades/templates/components/comp.hbs",
         "systems/eunos-blades/templates/components/portrait.hbs",
         "systems/eunos-blades/templates/components/clock.hbs",
+        "systems/eunos-blades/templates/components/roll-collab-mod.hbs",
+        "systems/eunos-blades/templates/components/roll-collab-opposition.hbs",
         "systems/eunos-blades/templates/parts/tier-block.hbs",
         "systems/eunos-blades/templates/parts/turf-list.hbs",
         "systems/eunos-blades/templates/parts/cohort-block.hbs",
@@ -93,7 +95,7 @@ const handlebarHelpers = {
                     return param1 in param2;
                 }
                 if (typeof param2 === "string") {
-                    return new RegExp(String(param2), "gu").test(String(param1));
+                    return new RegExp(String(param1), "gu").test(String(param2));
                 }
                 return false;
             }

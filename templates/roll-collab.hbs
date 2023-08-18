@@ -1,55 +1,172 @@
 {{log "ROLL COLLAB CONTEXT" this}}
 
-<form class="{{cssClass}} roll-collab-sheet" autocomplete="off">
-  <div class="sheet-root">
+<form class="{{cssClass}} roll-collab-sheet roll-collab-sheet-pc flex-horizontal" autocomplete="off">
+  <div class="full-width">
     <section class="sheet-top">
-      <input class="sheet-title shadowed" type="text" name="flags.eunoblades.rollCollab.title" value="{{flags.eunoblades.rollCollab.title}}">
-      <input class="sheet-subtitle shadowed" type="text" name="flags.eunoblades.rollCollab.subtitle" value="{{flags.eunoblades.rollCollab.subtitle}}" />
+      <h1 class="roll-type">{{rollType}}</h1>
     </section>
-    <section class="sheet-mid">
+    <section class="sheet-mid flex-horizontal">
+      <div class="sheet-mid-left flex-vertical">
+        <div class="roll-sheet-block rolling-block flex-vertical">
+          <div class="roll-sheet-sub-block rolling-header-block flex-horizontal">
+            <label class="shadowed">Rolling:</label>
+            {{#if rollTraitOptions}}
+            <select class="roll-sheet-select roll-sheet-select-trait" name="flags.eunoblades.rollCollab.rollTrait">
+              {{#select rollTrait}}
+              {{#each rollTraitOptions}}
+              <option value="{{value}}">{{name}}</option>
+              {{/each}}
+              {{/select}}
+            </select>
+            {{else}}
+            <span class="shadowed roll-readonly">{{rollTraitData.name}}</span>
+            {{/if}}
+            {{> "systems/eunos-blades/templates/components/dotline.hbs"
+            data=rollTraitData
+            isLocked=true
+            iconFull="dot-full.svg"
+            }}
+          </div>
+          <div class="roll-sheet-sub-block rolling-pos-effects-block flex-horizontal">
+            {{#each rollMods.roll.positive as |mod_status mod_name|}}
+            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+              mod_name=mod_name
+              mod_status=mod_status
+              mod_type="roll"
+              mod_cat="positive" }}
+            {{/each}}
+          </div>
+          <div class="roll-sheet-sub-block rolling-neg-effects-block flex-horizontal">
+            {{#each rollMods.roll.negative as |mod_status mod_name|}}
+            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+              mod_name=mod_name
+              mod_status=mod_status
+              mod_type="roll"
+              mod_cat="negative" }}
+            {{/each}}
+          </div>
+          <div class="roll-sheet-float-block rolling-dice-total-block">
+            <span class="dice-total">{{diceTotal}}</span>
+            <span class="d-symbol">d</span>
+          </div>
 
-    </section>
-    <section class="sheet-main">
-    {{!-- First, fix this stupid class name from using 'tab' when there aren't tabs. --}}
-
+        </div>
+        <div class="roll-sheet-block position-block flex-vertical">
+          <div class="roll-sheet-sub-block position-header-block flex-horizontal">
+            <label class="shadowed">Position:</label>
+            <span class="roll-readonly">{{rollPositionInitial}}</span>
+          </div>
+          <div class="roll-sheet-sub-block rolling-pos-effects-block flex-horizontal">
+            {{#each rollMods.position.positive as |mod_status mod_name|}}
+            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+              mod_name=mod_name
+              mod_status=mod_status
+              mod_type="position"
+              mod_cat="positive" }}
+            {{/each}}
+          </div>
+          <div class="roll-sheet-sub-block rolling-neg-effects-block flex-horizontal">
+            {{#each rollMods.position.negative as |mod_status mod_name|}}
+            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+              mod_name=mod_name
+              mod_status=mod_status
+              mod_type="position"
+              mod_cat="negative" }}
+            {{/each}}
+          </div>
+          <div class="roll-sheet-float-block position-final-block position-{{case "lower" rollPositionFinal}}">
+            <span class="shadowed roll-readonly">{{rollPositionFinal}}</span>
+          </div>
+        </div>
+        <div class="roll-sheet-block effect-block flex-vertical">
+          <div class="roll-sheet-sub-block effect-header-block flex-horizontal">
+            <label class="shadowed">Effect:</label>
+            <span class="roll-readonly">{{rollEffectInitial}}</span>
+          </div>
+          <div class="roll-sheet-sub-block rolling-pos-effects-block flex-horizontal">
+            {{#each rollMods.effect.positive as |mod_status mod_name|}}
+            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+              mod_name=mod_name
+              mod_status=mod_status
+              mod_type="effect"
+              mod_cat="positive" }}
+            {{/each}}
+          </div>
+          <div class="roll-sheet-sub-block rolling-neg-effects-block flex-horizontal">
+            {{#each rollMods.effect.negative as |mod_status mod_name|}}
+            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+              mod_name=mod_name
+              mod_status=mod_status
+              mod_type="effect"
+              mod_cat="negative" }}
+            {{/each}}
+          </div>
+          <div class="roll-sheet-float-block effect-final-block effect-{{case "lower" rollEffectFinal}}">
+            <span class="shadowed roll-readonly">{{rollEffectFinal}}</span>
+          </div>
+        </div>
+        {{#if isAffectingResult}}
+        <div class="roll-sheet-block result-block flex-vertical">
+          <div class="roll-sheet-sub-block result-header-block flex-horizontal">
+            <label class="shadowed">Result:</label>
+          </div>
+          <div class="roll-sheet-sub-block rolling-pos-effects-block flex-horizontal">
+            {{#each rollMods.result.positive as |mod_status mod_name|}}
+            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+              mod_name=mod_name
+              mod_status=mod_status
+              mod_type="result"
+              mod_cat="positive" }}
+            {{/each}}
+          </div>
+          <div class="roll-sheet-sub-block rolling-neg-effects-block flex-horizontal">
+            {{#each rollMods.result.negative as |mod_status mod_name|}}
+            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+              mod_name=mod_name
+              mod_status=mod_status
+              mod_type="result"
+              mod_cat="negative" }}
+            {{/each}}
+          </div>
+          <div class="roll-sheet-float-block result-final-block result-{{#if (test rollResultFinal "<" 0)}}negative{{/if}}{{~#if (test rollResultFinal "==" 0)}}neutral{{/if}}{{~#if (test rollResultFinal ">" 0)}}positive{{/if}}">
+            <span class="shadowed roll-readonly">{{signNum rollResultFinal}} Result</span>
+          </div>
+        </div>
+        {{/if}}
+      </div>
+      <div class="sheet-mid-right flex-vertical">
+        <div class="roll-sheet-block factors-block flex-vertical">
+          {{#each rollFactorData}}
+          <div class="roll-factor flex-horizontal">
+            <label class="shadowed roll-factor-label">{{name}}</label>
+            <span class="shadowed roll-factor-value {{cssClasses}}">{{value}}</span>
+          </div>
+          {{/each}}
+          <label class="shadowed roll-factor-vs">vs.</label>
+        </div>
+        <div class="roll-sheet-block opposition-block flex-vertical">
+          {{#if rollOpposition}}
+          {{> "systems/eunos-blades/templates/components/roll-collab-opposition.hbs" rollOpposition}}
+          {{/if}}
+        </div>
+      </div>
     </section>
     <section class="sheet-footer">
-
+      <div class="roll-sheet-float-block roll-button">
+        <div class="roll-odds-strip">
+          {{#each rollOddsData}}
+          <span class="roll-odds tooltip-trigger {{cssClasses}}" style="width: {{calc odds "*" 100}}%;">{{result}}</span>
+          <span class="tooltip tooltip-roll-odds">{{{tooltip}}}</span>
+          {{/each}}
+        </div>
+        <button class="roll-button {{~#unless isGMReady}} roll-readonly{{/unless}}" {{~#if isGMReady}} data-action="roll" data-roll-id="{{rollID}}"{{/if}}>ROLL</button>
+      </div>
+      {{#if stressData}}
+      <div class="roll-sheet-float-block roll-stress-block tooltip-trigger">
+        <span class="shadowed roll-stress-cost">({{stressData.cost}} Stress)</span>
+        <span class="tooltip tooltip-roll-stress">{{{stressData.tooltip}}}</span>
+      </div>
+      {{/if}}
     </section>
-
-
+  </div>
 </form>
-<section class="build-notes" style="display: none">
-   <section class="sheet-top">
-      <p>Summary of roll, roller, stats, etc.</p>
-      <p>List of modifiers that have been automatically applied.</p>
-    </section>
-    <section class="sheet-mid">
-      <p>Summary of opposition: link to Actor or Item (e.g. location/score/plan/ritual) for an image</p>
-      <ul>
-        <li>GM side has toggle options for which of magnitude, quality, tier, scale, etc. are in play, and what those values are</li>
-        <li>GM Side is big grid of buttons, a control panel -- everything should be doable with a single click</li>
-        <li>When choice in a category has been made, fade out other buttons slightly</li>
-      </ul>
-      <p>MUST be careful not to push through any edits that would interrupt a text field being edited or whatever</p>
-      <ul>
-        <li>Instead of pushing updates, could tie them to an on.blur event listener?</li>
-        <li>Or, tie on.focus (or whatever) to Input elements (only) and have them set a flag that the update method can check to see if the update should go through</li>
-        <li>the update method can then activate a blur listener to defer the update</li>
-      </ul>
-    </section>
-    <section class="sheet-main">
-    {{!-- First, fix this stupid class name from using 'tab' when there aren't tabs. --}}
-      <p>The main interactive area where GM and player changes based on negotiations occur.</p>
-      <ul>
-        <li>Player can change Action via dropdown menu: When open, a summary of player's stats pops up like a tooltip</li>
-        <li>Abilities and crew upgrades (with a relevant tag) available for selection via dropdown or Tagify</li>
-        <li>Position & Effect</li>
-        <li>Can bring other players in to roll a group action</li>
-        <li>Assists from other players or setup actions can be recorded on player when they happen, and read by rollCollab to apply them</li>
-      </ul>
-    </section>
-    <section class="sheet-footer">
-      <p>Contains the 'ready' toggle (on the GM side) and the Roll button on the player's side.</p>
-    </section>
-</section>

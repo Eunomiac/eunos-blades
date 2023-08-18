@@ -131,20 +131,28 @@ export var Action;
     Action["consort"] = "consort";
     Action["sway"] = "sway";
 })(Action || (Action = {}));
-export var Positions;
-(function (Positions) {
-    Positions["controlled"] = "controlled";
-    Positions["risky"] = "risky";
-    Positions["desperate"] = "desperate";
-})(Positions || (Positions = {}));
-export var EffectLevels;
-(function (EffectLevels) {
-    EffectLevels["extreme"] = "extreme";
-    EffectLevels["great"] = "great";
-    EffectLevels["standard"] = "standard";
-    EffectLevels["limited"] = "limited";
-    EffectLevels["zero"] = "zero";
-})(EffectLevels || (EffectLevels = {}));
+export var Position;
+(function (Position) {
+    Position["controlled"] = "controlled";
+    Position["risky"] = "risky";
+    Position["desperate"] = "desperate";
+})(Position || (Position = {}));
+export var Effect;
+(function (Effect) {
+    Effect["extreme"] = "extreme";
+    Effect["superior"] = "superior";
+    Effect["great"] = "great";
+    Effect["standard"] = "standard";
+    Effect["limited"] = "limited";
+    Effect["zero"] = "zero";
+})(Effect || (Effect = {}));
+export var Factor;
+(function (Factor) {
+    Factor["Tier"] = "Tier";
+    Factor["Quality"] = "Quality";
+    Factor["Scale"] = "Scale";
+    Factor["Magnitude"] = "Magnitude";
+})(Factor || (Factor = {}));
 export var Vice;
 (function (Vice) {
     Vice["Faith"] = "Faith";

@@ -20,6 +20,13 @@ export default class BladesPushController {
         });
         Hooks.on("canvasReady", async () => { game.eunoblades.PushController?.initOverlay(); });
     }
+    static InitSockets() {
+        if (game.eunoblades.PushController) {
+            socketlib.system.register("pushNotice", game.eunoblades.PushController.push);
+            return true;
+        }
+        return false;
+    }
     initOverlay() {
         $("#sidebar").append($("<div id='blades-push-notifications'></div>"));
     }

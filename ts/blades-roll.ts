@@ -1,5 +1,5 @@
 import U from "./core/utilities.js";
-import {Attribute, Positions, EffectLevels, Action} from "./core/constants.js";
+import {Attribute, Position, Effect, Action} from "./core/constants.js";
 // import type {Attribute} from "./blades-actor.js";
 /**
  * Roll Dice.
@@ -16,8 +16,8 @@ the "Roll" button for the player */
 export async function bladesRoll(
   dice_amount: number,
   attribute_name: Action|Attribute|"" = "",
-  position: Positions|"" = Positions.risky,
-  effect: EffectLevels|"" = EffectLevels.standard,
+  position: Position|"" = Position.risky,
+  effect: Effect|"" = Effect.standard,
   note = ""
 ) {
 
@@ -47,8 +47,8 @@ async function showChatRollMessage(
   r: Roll,
   zeromode: boolean,
   attribute_name?: Attribute|Action|"",
-  position: Positions|"" = Positions.risky,
-  effect: EffectLevels|"" = EffectLevels.standard,
+  position: Position|"" = Position.risky,
+  effect: Effect|"" = Effect.standard,
   note = ""
 ) {
   const speaker = ChatMessage.getSpeaker();
@@ -62,32 +62,32 @@ async function showChatRollMessage(
   if (attribute_name && attribute_name in Action) {
     let position_localize = "";
     switch (position) {
-      case Positions.controlled:
+      case Position.controlled:
         position_localize = "BITD.PositionControlled";
         break;
-      case Positions.desperate:
+      case Position.desperate:
         position_localize = "BITD.PositionDesperate";
         break;
-      case Positions.risky:
+      case Position.risky:
       default:
         position_localize = "BITD.PositionRisky";
     }
 
     let effect_localize = "";
     switch (effect) {
-      case EffectLevels.limited:
+      case Effect.limited:
         effect_localize = "BITD.EffectLimited";
         break;
-      case EffectLevels.great:
+      case Effect.great:
         effect_localize = "BITD.EffectGreat";
         break;
-      case EffectLevels.zero:
+      case Effect.zero:
         effect_localize = "Zero Effect";
         break;
-      case EffectLevels.extreme:
+      case Effect.extreme:
         effect_localize = "Extreme Effect";
         break;
-      case EffectLevels.standard:
+      case Effect.standard:
       default:
         effect_localize = "BITD.EffectStandard";
     }
