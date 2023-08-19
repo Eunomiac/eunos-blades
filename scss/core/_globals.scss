@@ -131,6 +131,10 @@
     flex-shrink: 0;
   }
 
+  .gold-bright { color: var(--blades-gold-bright) !important }
+  .red-bright { color: var(--blades-red-bright) !important }
+  .uppercase { text-transform: uppercase !important }
+
   .shadowed {
     box-shadow: none;
     background: transparent;
@@ -265,6 +269,17 @@
       translate: 0% 50% !important;
 
       > p { font-size: 16px; }
+    }
+
+    &.tooltip-roll-mod {
+      left: calc(50% + 350px);
+      bottom: 20px;
+      max-width: 350px;
+      width: 350px;
+      min-width: 350px;
+      translate: -50% 0% !important;
+
+      > p { margin: 0 }
     }
   }
 

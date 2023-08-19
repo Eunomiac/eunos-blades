@@ -1,5 +1,10 @@
-<span class="roll-mod status-{{case "lower" mod_status}}" {{~#if (test "Toggle" "in" mod_status)}}
-  data-action="toggle" data-type="{{mod_type}}" data-cat="{{mod_cat}}" data-name="{{mod_name}}"{{/if}}
->
-  {{mod_name}}
+<span class="roll-mod-container">
+  <span class="roll-mod shadowed cat-{{case "lower" cat}} status-{{case "lower" data.status}} {{~#if data.tooltip}} tooltip-trigger{{/if}}{{~#if data.sideString}} roll-mod-sidestring{{/if}}{{~#if data.isAbility}} roll-mod-ability{{/if}}" {{~#if (test "Toggle" "in" data.status)}}
+    data-action="toggle" data-type="{{type}}" data-cat="{{cat}}" data-name="{{name}}"{{/if}}>{{name}}{{#if data.sideString}}:{{/if}}</span>
+  {{#if data.tooltip}}
+  <div class="tooltip tooltip-small tooltip-left tooltip-roll-mod">{{{data.tooltip}}}</div>
+  {{/if}}
+  {{#if data.sideString}}
+  <span class="roll-mod-side-string shadowed">{{{data.sideString}}}</span>
+  {{/if}}
 </span>

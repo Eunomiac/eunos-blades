@@ -1,156 +1,160 @@
 {{log "ROLL COLLAB CONTEXT" this}}
 
-<form class="{{cssClass}} roll-collab-sheet roll-collab-sheet-pc flex-horizontal" autocomplete="off">
-  <div class="full-width">
-    <section class="sheet-top">
-      <h1 class="roll-type">{{rollType}}</h1>
-    </section>
-    <section class="sheet-mid flex-horizontal">
-      <div class="sheet-mid-left flex-vertical">
-        <div class="roll-sheet-block rolling-block flex-vertical">
-          <div class="roll-sheet-sub-block rolling-header-block flex-horizontal">
-            <label class="shadowed">Rolling:</label>
-            {{#if rollTraitOptions}}
-            <select class="roll-sheet-select roll-sheet-select-trait" name="flags.eunoblades.rollCollab.rollTrait">
-              {{#select rollTrait}}
-              {{#each rollTraitOptions}}
-              <option value="{{value}}">{{name}}</option>
+<form class="{{cssClass}} roll-collab-sheet roll-collab-sheet-pc" autocomplete="off">
+  <div class="sheet-root">
+    <div class="split-root flex-horizontal">
+      <div class="split-root-left">
+        <section class="sheet-top roll-sheet-block">
+          <h1 class="shadowed roll-type">{{rollType}} Roll: {{rollSource.name}}</h1>
+        </section>
+        <section class="sheet-main tab-content nav-group flex-vertical">
+          <div class="roll-sheet-block rolling-block flex-vertical">
+            <div class="roll-sheet-sub-block roll-header-block flex-horizontal">
+              <label class="filled-label">Rolling:</label>
+              {{#if rollTraitOptions}}
+              <select class="shadowed roll-sheet-select roll-sheet-select-trait" name="flags.eunos-blades.rollCollab.rollTrait">
+                {{#select rollTrait}}
+                {{#each rollTraitOptions}}
+                <option value="{{value}}">{{name}}</option>
+                {{/each}}
+                {{/select}}
+              </select>
+              {{else}}
+              <span class="shadowed roll-readonly">{{rollTraitData.name}}</span>
+              {{/if}}
+              {{> "systems/eunos-blades/templates/components/dotline.hbs"
+              data=rollTraitData
+              isLocked=true
+              iconFull="dot-full.svg"
+              }}
+            </div>
+            <div class="roll-sheet-sub-block roll-effects-block pos-effects-block flex-horizontal">
+              {{#each rollMods.roll.positive as |mod_data mod_name|}}
+              {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+                name=mod_name
+                data=mod_data
+                type="roll"
+                cat="positive" }}
               {{/each}}
-              {{/select}}
-            </select>
-            {{else}}
-            <span class="shadowed roll-readonly">{{rollTraitData.name}}</span>
-            {{/if}}
-            {{> "systems/eunos-blades/templates/components/dotline.hbs"
-            data=rollTraitData
-            isLocked=true
-            iconFull="dot-full.svg"
-            }}
-          </div>
-          <div class="roll-sheet-sub-block rolling-pos-effects-block flex-horizontal">
-            {{#each rollMods.roll.positive as |mod_status mod_name|}}
-            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
-              mod_name=mod_name
-              mod_status=mod_status
-              mod_type="roll"
-              mod_cat="positive" }}
-            {{/each}}
-          </div>
-          <div class="roll-sheet-sub-block rolling-neg-effects-block flex-horizontal">
-            {{#each rollMods.roll.negative as |mod_status mod_name|}}
-            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
-              mod_name=mod_name
-              mod_status=mod_status
-              mod_type="roll"
-              mod_cat="negative" }}
-            {{/each}}
-          </div>
-          <div class="roll-sheet-float-block rolling-dice-total-block">
-            <span class="dice-total">{{diceTotal}}</span>
-            <span class="d-symbol">d</span>
-          </div>
+            </div>
+            <div class="roll-sheet-sub-block roll-effects-block neg-effects-block flex-horizontal">
+              {{#each rollMods.roll.negative as |mod_data mod_name|}}
+              {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+                name=mod_name
+                data=mod_data
+                type="roll"
+                cat="negative" }}
+              {{/each}}
+            </div>
+            <div class="roll-sheet-float-block rolling-dice-total-block">
+              <span class="dice-total shadowed">{{diceTotal}}</span>
+              <span class="d-symbol shadowed">d</span>
+            </div>
 
-        </div>
-        <div class="roll-sheet-block position-block flex-vertical">
-          <div class="roll-sheet-sub-block position-header-block flex-horizontal">
-            <label class="shadowed">Position:</label>
-            <span class="roll-readonly">{{rollPositionInitial}}</span>
           </div>
-          <div class="roll-sheet-sub-block rolling-pos-effects-block flex-horizontal">
-            {{#each rollMods.position.positive as |mod_status mod_name|}}
-            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
-              mod_name=mod_name
-              mod_status=mod_status
-              mod_type="position"
-              mod_cat="positive" }}
-            {{/each}}
+          <div class="roll-sheet-block position-block flex-vertical">
+            <div class="roll-sheet-sub-block roll-header-block flex-horizontal">
+              <label class="filled-label">Position:</label>
+              <span class="roll-readonly">{{rollPositionInitial}}</span>
+            </div>
+            <div class="roll-sheet-sub-block roll-effects-block pos-effects-block flex-horizontal">
+              {{#each rollMods.position.positive as |mod_data mod_name|}}
+              {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+                name=mod_name
+                data=mod_data
+                type="position"
+                cat="positive" }}
+              {{/each}}
+            </div>
+            <div class="roll-sheet-sub-block roll-effects-block neg-effects-block flex-horizontal">
+              {{#each rollMods.position.negative as |mod_data mod_name|}}
+              {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+                name=mod_name
+                data=mod_data
+                type="position"
+                cat="negative" }}
+              {{/each}}
+            </div>
+            <div class="roll-sheet-float-block final-block position-final-block position-{{case "lower" rollPositionFinal}}">
+              <span class="shadowed roll-readonly">{{rollPositionFinal}}</span>
+            </div>
           </div>
-          <div class="roll-sheet-sub-block rolling-neg-effects-block flex-horizontal">
-            {{#each rollMods.position.negative as |mod_status mod_name|}}
-            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
-              mod_name=mod_name
-              mod_status=mod_status
-              mod_type="position"
-              mod_cat="negative" }}
-            {{/each}}
+          <div class="roll-sheet-block effect-block flex-vertical">
+            <div class="roll-sheet-sub-block roll-header-block flex-horizontal">
+              <label class="filled-label">Effect:</label>
+              <span class="roll-readonly">{{rollEffectInitial}}</span>
+            </div>
+            <div class="roll-sheet-sub-block roll-effects-block pos-effects-block flex-horizontal">
+              {{#each rollMods.effect.positive as |mod_data mod_name|}}
+              {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+                name=mod_name
+                data=mod_data
+                type="effect"
+                cat="positive" }}
+              {{/each}}
+            </div>
+            <div class="roll-sheet-sub-block roll-effects-block neg-effects-block flex-horizontal">
+              {{#each rollMods.effect.negative as |mod_data mod_name|}}
+              {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+                name=mod_name
+                data=mod_data
+                type="effect"
+                cat="negative" }}
+              {{/each}}
+            </div>
+            <div class="roll-sheet-float-block final-block effect-final-block effect-{{case "lower" rollEffectFinal}}">
+              <span class="shadowed roll-readonly">{{rollEffectFinal}}</span>
+            </div>
           </div>
-          <div class="roll-sheet-float-block position-final-block position-{{case "lower" rollPositionFinal}}">
-            <span class="shadowed roll-readonly">{{rollPositionFinal}}</span>
+          {{#if isAffectingResult}}
+          <div class="roll-sheet-block result-block flex-vertical">
+            <div class="roll-sheet-sub-block roll-header-block  flex-horizontal">
+              <label class="filled-label">Result:</label>
+            </div>
+            <div class="roll-sheet-sub-block roll-effects-block pos-effects-block flex-horizontal">
+              {{#each rollMods.result.positive as |mod_data mod_name|}}
+              {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+                name=mod_name
+                data=mod_data
+                type="result"
+                cat="positive" }}
+              {{/each}}
+            </div>
+            <div class="roll-sheet-sub-block roll-effects-block neg-effects-block flex-horizontal">
+              {{#each rollMods.result.negative as |mod_data mod_name|}}
+              {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
+                name=mod_name
+                data=mod_data
+                type="result"
+                cat="negative" }}
+              {{/each}}
+            </div>
+            <div class="roll-sheet-float-block final-block result-final-block result-{{#if (test rollResultFinal "<" 0)}}negative{{/if}}{{~#if (test rollResultFinal "==" 0)}}neutral{{/if}}{{~#if (test rollResultFinal ">" 0)}}positive{{/if}}">
+              <span class="shadowed roll-readonly">{{signNum rollResultFinal}} Result Level</span>
+            </div>
           </div>
-        </div>
-        <div class="roll-sheet-block effect-block flex-vertical">
-          <div class="roll-sheet-sub-block effect-header-block flex-horizontal">
-            <label class="shadowed">Effect:</label>
-            <span class="roll-readonly">{{rollEffectInitial}}</span>
-          </div>
-          <div class="roll-sheet-sub-block rolling-pos-effects-block flex-horizontal">
-            {{#each rollMods.effect.positive as |mod_status mod_name|}}
-            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
-              mod_name=mod_name
-              mod_status=mod_status
-              mod_type="effect"
-              mod_cat="positive" }}
-            {{/each}}
-          </div>
-          <div class="roll-sheet-sub-block rolling-neg-effects-block flex-horizontal">
-            {{#each rollMods.effect.negative as |mod_status mod_name|}}
-            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
-              mod_name=mod_name
-              mod_status=mod_status
-              mod_type="effect"
-              mod_cat="negative" }}
-            {{/each}}
-          </div>
-          <div class="roll-sheet-float-block effect-final-block effect-{{case "lower" rollEffectFinal}}">
-            <span class="shadowed roll-readonly">{{rollEffectFinal}}</span>
-          </div>
-        </div>
-        {{#if isAffectingResult}}
-        <div class="roll-sheet-block result-block flex-vertical">
-          <div class="roll-sheet-sub-block result-header-block flex-horizontal">
-            <label class="shadowed">Result:</label>
-          </div>
-          <div class="roll-sheet-sub-block rolling-pos-effects-block flex-horizontal">
-            {{#each rollMods.result.positive as |mod_status mod_name|}}
-            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
-              mod_name=mod_name
-              mod_status=mod_status
-              mod_type="result"
-              mod_cat="positive" }}
-            {{/each}}
-          </div>
-          <div class="roll-sheet-sub-block rolling-neg-effects-block flex-horizontal">
-            {{#each rollMods.result.negative as |mod_status mod_name|}}
-            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
-              mod_name=mod_name
-              mod_status=mod_status
-              mod_type="result"
-              mod_cat="negative" }}
-            {{/each}}
-          </div>
-          <div class="roll-sheet-float-block result-final-block result-{{#if (test rollResultFinal "<" 0)}}negative{{/if}}{{~#if (test rollResultFinal "==" 0)}}neutral{{/if}}{{~#if (test rollResultFinal ">" 0)}}positive{{/if}}">
-            <span class="shadowed roll-readonly">{{signNum rollResultFinal}} Result</span>
-          </div>
-        </div>
-        {{/if}}
+          {{/if}}
+        </section>
       </div>
-      <div class="sheet-mid-right flex-vertical">
-        <div class="roll-sheet-block factors-block flex-vertical">
-          {{#each rollFactorData}}
-          <div class="roll-factor flex-horizontal">
-            <label class="shadowed roll-factor-label">{{name}}</label>
-            <span class="shadowed roll-factor-value {{cssClasses}}">{{value}}</span>
+      <div class="split-root-right">
+        <section class="sheet-top">
+          <div class="roll-sheet-block factors-block flex-vertical">
+            {{#each rollFactorData}}
+            <div class="roll-factor flex-horizontal">
+              <label class="shadowed roll-factor-label">{{name}}</label>
+              <span class="shadowed roll-factor-value {{cssClasses}}">{{value}}</span>
+            </div>
+            {{/each}}
+            <label class="shadowed roll-factor-vs">vs.</label>
           </div>
-          {{/each}}
-          <label class="shadowed roll-factor-vs">vs.</label>
-        </div>
-        <div class="roll-sheet-block opposition-block flex-vertical">
+        </section>
+        <section class="sheet-main tab-content nav-group flex-vertical">
           {{#if rollOpposition}}
           {{> "systems/eunos-blades/templates/components/roll-collab-opposition.hbs" rollOpposition}}
           {{/if}}
-        </div>
+        </section>
       </div>
-    </section>
+    </div>
     <section class="sheet-footer">
       <div class="roll-sheet-float-block roll-button">
         <div class="roll-odds-strip">

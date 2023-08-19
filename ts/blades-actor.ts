@@ -1,12 +1,12 @@
 // #region Imports ~
 import U from "./core/utilities.js";
 import type {Vice} from "./core/constants.js";
-import C, {BladesActorType, BladesPhase, Tag, District, Playbook, BladesItemType, Attribute, Action, InsightActions, ProwessActions, ResolveActions, Position, Effect, AdvancementPoint, Randomizers} from "./core/constants.js";
+import C, {BladesActorType, BladesPhase, Tag, District, Playbook, BladesItemType, Attribute, Action, InsightActions, ProwessActions, ResolveActions, PrereqType, Position, Effect, AdvancementPoint, Randomizers} from "./core/constants.js";
 
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 import {bladesRoll} from "./blades-roll.js";
-import BladesItem, {PrereqType} from "./blades-item.js";
+import BladesItem from "./blades-item.js";
 import {SelectionCategory} from "./blades-dialog.js";
 import type BladesActiveEffect from "./blades-active-effect";
 import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs.js";

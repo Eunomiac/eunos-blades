@@ -1,22 +1,7 @@
-import C, {SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase} from "./core/constants.js";
+import C, {SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase, PrereqType} from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
 import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
-
-
-export enum PrereqType {
-  HasActiveItem = "HasActiveItem", // Item will only appear in selector if character has Item with world_name (value)
-  HasActiveItemsByTag = "HasActiveItemByTag", // For each Tag, character must have an active Item with that tag.
-  AdvancedPlaybook = "AdvancedPlaybook", // Item will only appear in selector if character is a Ghost, Hull or Vampire
-  HasAllTags = "HasAllTags", // Item will only appear if character has all matching tags.
-  HasAnyTag = "HasAnyTag", // Item will appear if character has any matching tag.
-
-  Not_HasActiveItem = "Not_HasActiveItem",
-  Not_HasActiveItemsByTag = "Not_HasActiveItemsByTag",
-  Not_AdvancedPlaybook = "Not_AdvancedPlaybook",
-  Not_HasAllTags = "Not_HasAllTags",
-  Not_HasAnyTag = "Not_HasAnyTag"
-}
 
 class BladesItem extends Item implements BladesDocument<Item>,
                                           BladesItemSubClass.Ability,

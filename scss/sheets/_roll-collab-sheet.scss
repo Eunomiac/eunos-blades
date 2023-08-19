@@ -2,12 +2,13 @@
 & {
   $heights: (70px, 70px);
   --sheet-top-height: #{calculate-sum($heights)};
-  min-width: 500px;
-  max-width: 500px;
-  min-height: 400px;
-  max-height: 400px;
+  min-width: 600px;
+  // max-width: 500px;
+  // min-height: 400px;
+  // max-height: 400px;
   overflow: visible;
   box-shadow: none;
+  height: auto !important;
 
   * {
     --content-padding: 0px;
@@ -26,41 +27,324 @@
   }
 
   .window-content {
-    border-radius: 60px;
+    border-radius: 30px;
     box-shadow: 25px 25px 15px var(--blades-black-dark-fade);
     border: 3px outset var(--blades-white);
-    background: var(--blades-black-dark-fade);
+    background: var(--blades-black);
+    // overflow: hidden;
 
     form {
       .sheet-root {
         overflow: visible;
 
-        section.sheet-top {
-          overflow: visible;
-          grid-template-areas:
-            "item-img title tier"
-            "item-img subtitle tier";
+        .split-root {
+          align-items: stretch;
+          position: relative;
 
-          grid-template-rows: join($heights, (), $separator: space);
-          height: calculate-sum($heights);
+          .split-root-left {
+            flex-basis: 75%;
+            overflow: visible;
+            position: relative;
+            z-index: 2;
 
-          .sheet-title {
-            --sheet-title-font-size: #{toRem(24px)};
+            .roll-mod-container {
+              margin-right: 3px;
+              position: relative;
 
-            // text-align: left;
-            // text-indent: 10px;
+              .roll-mod {
+                display: inline-block;
+                height: 16px;
+                line-height: 16px;
+                border-radius: 8px;
+                padding: 0 8px;
+                // margin: 2px 4px;
+                border: 1px solid var(--roll-mod-border-color, var(--blades-white));
+                color: var(--roll-mod-text-color, var(--blades-white-bright));
+                background: var(--roll-mod-background-color, var(--blades-grey));
+                font-family: var(--font-emphasis);
+                text-transform: uppercase;
+                font-size: 12px;
+                text-shadow:
+                  0 0 2px var(--blades-black-dark),
+                  0 0 2px var(--blades-black-dark),
+                  0 0 2px var(--blades-black-dark),
+                  0 0 2px var(--blades-black-dark);
+                letter-spacing: 0.75px;
+                vertical-align: middle;
+
+                &.roll-mod-ability {
+                  border-radius: 0;
+                  font-family: Oswald;
+                  line-height: 14px;
+                }
+
+                &.roll-mod-sidestring {
+                  border-top-right-radius: 0;
+                  border-bottom-right-radius: 0;
+                  margin-right: 0;
+
+                  ~ .roll-mod-side-string {
+                    margin: 0 0 0 -8px;
+                    padding: 0px 6px 0px 2px;
+                    font-family: Oswald;
+                    color: var(--blades-black-dark);
+                    background: var(--roll-mod-active-bright, var(--blades-white));
+                    text-shadow: none;
+                    border: none;
+                    border-top-right-radius: 8px;
+                    border-bottom-right-radius: 8px;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    display: inline-block;
+                    height: 16px;
+                    line-height: 16px;
+                    font-weight: bold;
+                    vertical-align: middle;
+                  }
+                }
+                &.status-hidden { display: none }
+
+                &.cat-positive, &.cat-positive ~ .roll-mod-side-string {
+                  --roll-mod-active-bright: var(--blades-gold-bright);
+                  --roll-mod-active-dark: var(--blades-gold-dark);
+                }
+                &.cat-negative, &.cat-negative ~ .roll-mod-side-string {
+                  --roll-mod-active-bright: var(--blades-red-bright);
+                  --roll-mod-active-dark: var(--blades-red-dark);
+                }
+                &.status-toggledon {
+                  --roll-mod-border-color: var(--roll-mod-active-bright);
+                  --roll-mod-text-color: var(--blades-white-bright);
+                  --roll-mod-background-color: var(--roll-mod-active-dark);
+                }
+                &.status-toggledoff {
+                  --roll-mod-border-color: var(--blades-white);
+                  --roll-mod-text-color: var(--blades-black-dark);
+                  --roll-mod-background-color: var(--blades-grey);
+                  text-shadow: none;
+                }
+                &.status-forcedon {
+                  --roll-mod-border-color: var(--roll-mod-active-bright);
+                  --roll-mod-text-color: var(--roll-mod-active-bright);
+                  --roll-mod-background-color: var(--blades-black-dark);
+                  border-width: 1px;
+                  border-right: none;
+                  border-left: none;
+                  line-height: 16px;
+
+                }
+                &.status-forcedoff {
+                  --roll-mod-border-color: var(--blades-grey);
+                  --roll-mod-text-color: var(--blades-grey);
+                  --roll-mod-background-color: var(--blades-black-dark);
+                  border-width: 1px;
+                  border-right: none;
+                  border-left: none;
+                  line-height: 16px;
+                }
+              }
+            }
+
+            section.sheet-top {
+              display: block;
+              height: auto;
+
+              .roll-type {
+                width: 100%;
+                background: transparent;
+                font-family: var(--font-emphasis);
+                color: var(--blades-white-bright);
+                margin: 0 0 0 15px;
+                font-size: toRem(24px);
+                line-height: toRem(24px);
+                text-transform: uppercase;
+                text-align: left;
+              }
+            }
+
+            section.sheet-main {
+              justify-content: flex-start;
+              align-items: flex-start;
+              height: auto;
+              overflow: visible;
+
+              .roll-sheet-block {
+                border-top: 2px solid var(--blades-white-bright);
+                padding: 0px 0px 5px 0px;
+                align-items: flex-start;
+                position: relative;
+
+                &.rolling-block {
+
+                  .roll-sheet-sub-block {
+
+                    &.roll-header-block {
+                      // .filled-label { margin-top: -5px }
+                    }
+                    &.roll-effects-block {
+                      width: 90%;
+                      &.neg-effects-block { margin-bottom: 0 }
+                    }
+                  }
+                }
+
+                .roll-sheet-sub-block {
+                  justify-content: flex-start;
+                  flex-wrap: wrap;
+                  align-items: center;
+                  &.roll-header-block {
+                    .filled-label {
+                      font-size: toRem(16px);
+                      line-height: 20px;
+                      height: 20px;
+                      margin-top: 0;
+                      margin-bottom: 5px;
+                      padding: 1px 4px;
+                    }
+                    .roll-sheet-select, .roll-readonly {
+                      margin: 0 10px 0 5px;
+                      color: var(--blades-white-bright);
+                      background: transparent;
+                      border: none;
+                      outline: none;
+                      box-shadow: none;
+                      font-size: toRem(18px);
+
+                      &.roll-sheet-select {
+                        margin: -2px 5px 2px 5px;
+                        width: 125px;
+                      }
+                    }
+                    .dotline {
+                      margin-top: -2px;
+                      .dot.full-dot .img-main {
+                        filter: brightness(1.5) drop-shadow(0 0 2px var(--blades-black-dark));
+                      }
+                    }
+                  }
+                  &.roll-effects-block {
+                    width: 100%;
+                    margin-bottom: 3px;
+                    padding: 0 0 0 5px;
+
+                    &.pos-effects-block { }
+                    &.neg-effects-block {
+                      justify-content: flex-end;
+                      margin-bottom: 20px;
+                      width: 90%;
+                     }
+                  }
+                }
+
+                .roll-sheet-float-block {
+                  position: absolute;
+                  z-index: 3;
+
+                  &.rolling-dice-total-block {
+                    left: unset;
+                    right: 0px;
+                    height: calc(100% + (2 * 2px));
+                    width: 75px;
+                    border-radius: calc(0.5 * (100% + (2 * 2px)));
+                    border: 2px solid var(--blades-white);
+                    background: var(--blades-grey);
+                    translate: 50% 0%;
+                    top: -2px;
+
+                    .dice-total {
+                      display: block;
+                      position: absolute;
+                      font-size: 54px;
+                      font-family: var(--font-emphasis);
+                      color: var(--blades-white-bright);
+                      // margin: auto auto;
+                      // height: 100%;
+                      width: 100%;
+                      translate: 0% -50%;
+                      top: 50%;
+                      text-align: center;
+                      padding-right: 15px;
+
+                    }
+
+                    .d-symbol {
+                      display: block;
+                      position: absolute;
+                      font-size: 20px;
+                      line-height: 44px;
+                      right: 12px;
+                      font-family: var(--font-emphasis);
+
+                      text-shadow:
+                        0 0 3px var(--blades-black),
+                        0 0 3px var(--blades-black),
+                        0 0 3px var(--blades-black),
+                        0 0 3px var(--blades-black);
+                    }
+                  }
+                  &.final-block {
+                    height: 24px;
+                    width: 150px;
+                    font-family: var(--font-emphasis);
+                    text-transform: uppercase;
+                    background: var(--final-block-background-color, var(--blades-grey));
+                    color: var(--final-block-text-color, var(--blades-white-bright));
+                    border: 2px solid var(--final-block-border-color, var(--blades-white));
+                    font-size: 18px;
+                    line-height: 22px;
+                    text-align: center;
+                    right: 0;
+                    bottom: -2px;
+
+                    &.result-final-block {
+                      width: 180px;
+                      // right: -15px;
+                    }
+                  }
+                }
+              }
+            }
           }
-          .sheet-subtitle {
-            --sheet-subtitle-font-size: #{toRem(18px)};
-            padding-bottom: 15px;
 
-            // background: transparent;
-            // font-size: 18px;
-            // line-height: 24px;
-            // border: none;
-            // white-space: nowrap;
+          .split-root-right {
+            flex-basis: 35%;
+            display: flex;
+            align-items: stretch;
+            justify-content: stretch;
+            flex-direction: column;
+
+
+            section.sheet-top {
+              display: flex;
+              flex-direction: column;
+              height: auto;
+
+              .roll-sheet-block {
+                &.factors-block {
+                  .roll-factor {
+                    .roll-factor-label { }
+                    .roll-factor-value { }
+                    .roll-factor-vs {
+
+                    }
+                  }
+                }
+              }
+            }
+
+            section.sheet-main {
+              flex-grow: 1;
+              background: var(--blades-black-dark);
+              z-index: 0;
+
+            }
           }
         }
+
+        section.sheet-footer {
+
+        }
+
       }
     }
   }

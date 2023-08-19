@@ -2285,6 +2285,12 @@ html, :root {
     margin: -0.1875rem 0.25rem 0 0;
     -ms-flex-negative: 0;
     flex-shrink: 0; }
+  html .gold-bright, :root .gold-bright {
+    color: var(--blades-gold-bright) !important; }
+  html .red-bright, :root .red-bright {
+    color: var(--blades-red-bright) !important; }
+  html .uppercase, :root .uppercase {
+    text-transform: uppercase !important; }
   html .shadowed, :root .shadowed {
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -2414,6 +2420,15 @@ html, :root {
       translate: 0% 50% !important; }
       html .tooltip.tooltip-action > p, :root .tooltip.tooltip-action > p {
         font-size: 16px; }
+    html .tooltip.tooltip-roll-mod, :root .tooltip.tooltip-roll-mod {
+      left: calc(50% + 350px);
+      bottom: 20px;
+      max-width: 350px;
+      width: 350px;
+      min-width: 350px;
+      translate: -50% 0% !important; }
+      html .tooltip.tooltip-roll-mod > p, :root .tooltip.tooltip-roll-mod > p {
+        margin: 0; }
   html .tooltip-scaling-elem, :root .tooltip-scaling-elem {
     display: inline-block; }
 

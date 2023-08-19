@@ -37,6 +37,20 @@ export enum BladesItemType {
   score = "score"
 }
 
+export enum PrereqType {
+  HasActiveItem = "HasActiveItem", // Item will only appear in selector if character has Item with world_name (value)
+  HasActiveItemsByTag = "HasActiveItemByTag", // For each Tag, character must have an active Item with that tag.
+  AdvancedPlaybook = "AdvancedPlaybook", // Item will only appear in selector if character is a Ghost, Hull or Vampire
+  HasAllTags = "HasAllTags", // Item will only appear if character has all matching tags.
+  HasAnyTag = "HasAnyTag", // Item will appear if character has any matching tag.
+
+  Not_HasActiveItem = "Not_HasActiveItem",
+  Not_HasActiveItemsByTag = "Not_HasActiveItemsByTag",
+  Not_AdvancedPlaybook = "Not_AdvancedPlaybook",
+  Not_HasAllTags = "Not_HasAllTags",
+  Not_HasAnyTag = "Not_HasAnyTag"
+}
+
 export enum District {
   Barrowcleft = "Barrowcleft",
   Brightstone = "Brightstone",
@@ -118,6 +132,28 @@ export enum Action {
   sway = "sway"
 }
 
+export enum RollType {
+  Action = "Action",
+  Downtime = "Downtime",
+  Resistance = "Resistance",
+  Fortune = "Fortune"
+}
+
+export enum RollModStatus {
+  Hidden = "Hidden",
+  ToggledOff = "ToggledOff",
+  ToggledOn = "ToggledOn",
+  ForcedOff = "ForcedOff",
+  ForcedOn = "ForcedOn"
+}
+
+export enum RollModCategory {
+  roll = "roll",
+  position = "position",
+  effect = "effect",
+  result = "result",
+  after = "after"
+}
 export enum Position {
   controlled = "controlled",
   risky = "risky",
@@ -125,18 +161,29 @@ export enum Position {
 }
 export enum Effect {
   extreme = "extreme",
-  superior = "superior",
   great = "great",
   standard = "standard",
   limited = "limited",
   zero = "zero"
 }
 export enum Factor {
-  Tier = "Tier",
-  Quality = "Quality",
-  Scale = "Scale",
-  Magnitude = "Magnitude"
+  tier = "tier",
+  quality = "quality",
+  force = "force",
+  scale = "scale",
+  area = "area",
+  duration = "duration",
+  range = "range",
+  magnitude = "magnitude"
 }
+
+export enum Harm {
+  Weakened = "Weakened",
+  Impaired = "Impaired",
+  Broken = "Broken",
+  Dead = "Dead"
+}
+
 export enum Vice {
   Faith = "Faith",
   Gambling = "Gambling",

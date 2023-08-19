@@ -44,6 +44,19 @@ export var BladesItemType;
     BladesItemType["location"] = "location";
     BladesItemType["score"] = "score";
 })(BladesItemType || (BladesItemType = {}));
+export var PrereqType;
+(function (PrereqType) {
+    PrereqType["HasActiveItem"] = "HasActiveItem";
+    PrereqType["HasActiveItemsByTag"] = "HasActiveItemByTag";
+    PrereqType["AdvancedPlaybook"] = "AdvancedPlaybook";
+    PrereqType["HasAllTags"] = "HasAllTags";
+    PrereqType["HasAnyTag"] = "HasAnyTag";
+    PrereqType["Not_HasActiveItem"] = "Not_HasActiveItem";
+    PrereqType["Not_HasActiveItemsByTag"] = "Not_HasActiveItemsByTag";
+    PrereqType["Not_AdvancedPlaybook"] = "Not_AdvancedPlaybook";
+    PrereqType["Not_HasAllTags"] = "Not_HasAllTags";
+    PrereqType["Not_HasAnyTag"] = "Not_HasAnyTag";
+})(PrereqType || (PrereqType = {}));
 export var District;
 (function (District) {
     District["Barrowcleft"] = "Barrowcleft";
@@ -131,6 +144,29 @@ export var Action;
     Action["consort"] = "consort";
     Action["sway"] = "sway";
 })(Action || (Action = {}));
+export var RollType;
+(function (RollType) {
+    RollType["Action"] = "Action";
+    RollType["Downtime"] = "Downtime";
+    RollType["Resistance"] = "Resistance";
+    RollType["Fortune"] = "Fortune";
+})(RollType || (RollType = {}));
+export var RollModStatus;
+(function (RollModStatus) {
+    RollModStatus["Hidden"] = "Hidden";
+    RollModStatus["ToggledOff"] = "ToggledOff";
+    RollModStatus["ToggledOn"] = "ToggledOn";
+    RollModStatus["ForcedOff"] = "ForcedOff";
+    RollModStatus["ForcedOn"] = "ForcedOn";
+})(RollModStatus || (RollModStatus = {}));
+export var RollModCategory;
+(function (RollModCategory) {
+    RollModCategory["roll"] = "roll";
+    RollModCategory["position"] = "position";
+    RollModCategory["effect"] = "effect";
+    RollModCategory["result"] = "result";
+    RollModCategory["after"] = "after";
+})(RollModCategory || (RollModCategory = {}));
 export var Position;
 (function (Position) {
     Position["controlled"] = "controlled";
@@ -140,7 +176,6 @@ export var Position;
 export var Effect;
 (function (Effect) {
     Effect["extreme"] = "extreme";
-    Effect["superior"] = "superior";
     Effect["great"] = "great";
     Effect["standard"] = "standard";
     Effect["limited"] = "limited";
@@ -148,11 +183,22 @@ export var Effect;
 })(Effect || (Effect = {}));
 export var Factor;
 (function (Factor) {
-    Factor["Tier"] = "Tier";
-    Factor["Quality"] = "Quality";
-    Factor["Scale"] = "Scale";
-    Factor["Magnitude"] = "Magnitude";
+    Factor["tier"] = "tier";
+    Factor["quality"] = "quality";
+    Factor["force"] = "force";
+    Factor["scale"] = "scale";
+    Factor["area"] = "area";
+    Factor["duration"] = "duration";
+    Factor["range"] = "range";
+    Factor["magnitude"] = "magnitude";
 })(Factor || (Factor = {}));
+export var Harm;
+(function (Harm) {
+    Harm["Weakened"] = "Weakened";
+    Harm["Impaired"] = "Impaired";
+    Harm["Broken"] = "Broken";
+    Harm["Dead"] = "Dead";
+})(Harm || (Harm = {}));
 export var Vice;
 (function (Vice) {
     Vice["Faith"] = "Faith";

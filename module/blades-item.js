@@ -8,19 +8,6 @@
 import C, { SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase } from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
-export var PrereqType;
-(function (PrereqType) {
-    PrereqType["HasActiveItem"] = "HasActiveItem";
-    PrereqType["HasActiveItemsByTag"] = "HasActiveItemByTag";
-    PrereqType["AdvancedPlaybook"] = "AdvancedPlaybook";
-    PrereqType["HasAllTags"] = "HasAllTags";
-    PrereqType["HasAnyTag"] = "HasAnyTag";
-    PrereqType["Not_HasActiveItem"] = "Not_HasActiveItem";
-    PrereqType["Not_HasActiveItemsByTag"] = "Not_HasActiveItemsByTag";
-    PrereqType["Not_AdvancedPlaybook"] = "Not_AdvancedPlaybook";
-    PrereqType["Not_HasAllTags"] = "Not_HasAllTags";
-    PrereqType["Not_HasAnyTag"] = "Not_HasAnyTag";
-})(PrereqType || (PrereqType = {}));
 class BladesItem extends Item {
 
     static async create(data, options = {}) {

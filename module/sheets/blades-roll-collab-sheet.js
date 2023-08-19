@@ -6,41 +6,25 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "../core/utilities.js";
-import { BladesActorType, Action, Attribute, Position, Effect, Factor } from "../core/constants.js";
+import C, { BladesActorType, RollType, RollModStatus, RollModCategory, Action, Attribute, Position, Effect, Factor, Harm } from "../core/constants.js";
 import BladesActor from "../blades-actor.js";
 import BladesItem from "../blades-item.js";
-var BladesRollType;
-(function (BladesRollType) {
-    BladesRollType["Action"] = "Action";
-    BladesRollType["Downtime"] = "Downtime";
-    BladesRollType["Resistance"] = "Resistance";
-    BladesRollType["Fortune"] = "Fortune";
-})(BladesRollType || (BladesRollType = {}));
-const config = { rollType: "Action", rollTrait: "Consort" };
-var RollModStatus;
-(function (RollModStatus) {
-    RollModStatus["Hidden"] = "Hidden";
-    RollModStatus["ToggledOff"] = "ToggledOff";
-    RollModStatus["ToggledOn"] = "ToggledOn";
-    RollModStatus["ForcedOff"] = "ForcedOff";
-    RollModStatus["ForcedOn"] = "ForcedOn";
-})(RollModStatus || (RollModStatus = {}));
+import { ApplyTooltipListeners } from "../core/gsap.js";
 function isAction(trait) {
     return Boolean(trait && typeof trait === "string" && trait in Action);
 }
 function isAttribute(trait) {
     return Boolean(trait && typeof trait === "string" && trait in Attribute);
 }
-function isTier(trait) { return trait === "Tier"; }
+function isTier(trait) { return U.lCase(trait) === "tier"; }
 function isNumber(trait) { return U.isInt(trait); }
 class BladesRollCollabSheet extends DocumentSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "roll-collab"],
-            template: "systems/eunos-blades/templates/roll-collab.hbs",
+            template: `systems/eunos-blades/templates/roll-collab${game.user.isGM ? "-gm" : ""}.hbs`,
             submitOnChange: true,
-            width: 500,
-            height: 500
+            width: 500
         });
     }
     static Initialize() {
@@ -54,13 +38,102 @@ class BladesRollCollabSheet extends DocumentSheet {
         socketlib.system.register("closeRollCollab", BladesRollCollabSheet.CloseRollCollab);
     }
     static Current = {};
-    static async RenderRollCollab(config) {
-        const user = game.users.get(config.userID);
-        BladesRollCollabSheet.Current[user.flags.eunoblades.rollCollab.rollID] = new BladesRollCollabSheet(user);
-        BladesRollCollabSheet.Current[user.flags.eunoblades.rollCollab.rollID].render(true);
+    static get DefaultFlagData() {
+        return {
+            rollID: randomID(),
+            rollType: RollType.Action,
+            rollSourceType: "Actor",
+            rollSourceID: "",
+            rollTrait: Factor.tier,
+            rollMods: {
+                [RollModCategory.roll]: {
+                    positive: {
+                        Push: {
+                            status: RollModStatus.ToggledOff,
+                            tooltip: "<p>Take <strong class='shadowed red-bright'>2 Stress</strong> to add <strong class='shadowed'>1 die</strong> to your pool. <em>(You cannot also accept a <strong class='shadowed'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
+                        },
+                        Bargain: {
+                            status: RollModStatus.ForcedOff,
+                            tooltip: "<p>Accept a <strong class='shadowed red-bright'>Devil's Bargain</strong> from the GM to add <strong class='shadowed'>1 die</strong> to your pool <em>(You cannot also <strong class='shadowed'>Push</strong> to increase your dice pool: It's one or the other. You can, however, <strong class='shadowed'>Push</strong> to increase your <strong class='shadowed'>Effect</strong>.)</em></p>"
+                        },
+                        Assist: {
+                            status: RollModStatus.Hidden,
+                            sideString: "",
+                            tooltip: "<p>Another character is <strong class='shadowed'>Assisting</strong> your efforts, adding <strong class='shadowed'>1 die</strong> to your pool. <em>(It costs them <span class='shadowed red-bright'>1 Stress</span> to do so.)</em></p>"
+                        }
+                    },
+                    negative: {}
+                },
+                [RollModCategory.position]: {
+                    positive: {
+                        Setup: {
+                            status: RollModStatus.Hidden,
+                            sideString: undefined,
+                            tooltip: "<p>Another character has set you up for success, increasing your <strong class='shadowed'>Position</strong> by one level.</p>"
+                        }
+                    },
+                    negative: {}
+                },
+                [RollModCategory.effect]: {
+                    positive: {
+                        Push: {
+                            status: RollModStatus.ToggledOff,
+                            tooltip: "<p>Take <strong class='shadowed red-bright'>2 Stress</strong> to increase your <strong class='shadowed'>Effect</strong> by one level. <em>(You can both <strong class='shadowed'>Push for Effect</strong> and <strong class='shadowed'>Push for +1d</strong> if you like, for a total cost of <strong class='shadowed red-bright'>4 Stress</strong>.)</em></p>"
+                        },
+                        Setup: {
+                            status: RollModStatus.Hidden,
+                            sideString: undefined,
+                            tooltip: "<p>Another character has set you up for success, increasing your <strong class='shadowed'>Effect</strong> by one level.</p>"
+                        },
+                        Potency: {
+                            status: RollModStatus.Hidden,
+                            tooltip: ""
+                        }
+                    },
+                    negative: {}
+                },
+                [RollModCategory.result]: { positive: {}, negative: {} },
+                [RollModCategory.after]: { positive: {}, negative: {} }
+            },
+            rollPositionInitial: Position.risky,
+            rollEffectInitial: Effect.standard,
+            rollPosEffectTrade: false,
+            rollFactors: {
+                [Factor.tier]: { name: "Tier", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
+                [Factor.quality]: { name: "Quality", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
+                [Factor.force]: { name: "Force", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
+                [Factor.scale]: { name: "Scale", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
+                [Factor.area]: { name: "Area", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
+                [Factor.duration]: { name: "Duration", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
+                [Factor.range]: { name: "Range", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
+                [Factor.magnitude]: { name: "Magnitude", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true }
+            },
+            isGMReady: false,
+            GMBoosts: {
+                Dice: 0,
+                [Factor.tier]: 0,
+                [Factor.quality]: 0,
+                [Factor.force]: 0,
+                [Factor.scale]: 0,
+                [Factor.area]: 0,
+                [Factor.duration]: 0,
+                [Factor.range]: 0,
+                [Factor.magnitude]: 0,
+                Result: 0
+            }
+        };
     }
-    static CloseRollCollab(rollID) {
-        BladesRollCollabSheet.Current[rollID]?.close({}, true);
+    static async RenderRollCollab({ userID, rollID }) {
+        const user = game.users.get(userID);
+        if (!user) {
+            return;
+        }
+        BladesRollCollabSheet.Current[rollID] = new BladesRollCollabSheet(user, rollID);
+        BladesRollCollabSheet.Current[rollID].render(true);
+    }
+    static async CloseRollCollab(rollID) {
+        eLog.checkLog3("rollCollab", "CloseRollCollab()", { rollID });
+        await BladesRollCollabSheet.Current[rollID]?.close({ rollID });
         delete BladesRollCollabSheet.Current[rollID];
     }
     static async NewRoll(config) {
@@ -73,10 +146,9 @@ class BladesRollCollabSheet extends DocumentSheet {
             eLog.error("rollCollab", `[NewRoll()] Can't Find User '${config.userID}'`, config);
             return;
         }
-        const flagUpdateData = {};
-        flagUpdateData.rollID = randomID();
+        const flagUpdateData = BladesRollCollabSheet.DefaultFlagData;
         flagUpdateData.rollType = config.rollType;
-        if (!(flagUpdateData.rollType in BladesRollType)) {
+        if (!(flagUpdateData.rollType in RollType)) {
             eLog.error("rollCollab", `[RenderRollCollab()] Invalid rollType: ${flagUpdateData.rollType}`, config);
             return;
         }
@@ -87,184 +159,227 @@ class BladesRollCollabSheet extends DocumentSheet {
         }
         flagUpdateData.rollSourceID = rollSource.id;
         flagUpdateData.rollSourceType = rollSource instanceof BladesActor ? "Actor" : "Item";
-        switch (flagUpdateData.rollType) {
-            case BladesRollType.Action: {
-                if ((!config.rollTrait && !U.isInt(config.rollTrait))
-                    || !(U.lCase(config.rollTrait) in Action || U.lCase(config.rollTrait !== "tier"))) {
-                    eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Action Roll: ${config.rollTrait}`, config);
-                    return;
+        if (U.isInt(config.rollTrait)) {
+            flagUpdateData.rollTrait = config.rollTrait;
+        }
+        else if (!config.rollTrait) {
+            eLog.error("rollCollab", "[RenderRollCollab()] No RollTrait in Config", config);
+            return;
+        }
+        else {
+            switch (flagUpdateData.rollType) {
+                case RollType.Action: {
+                    if (!(U.lCase(config.rollTrait) in { ...Action, ...Factor })) {
+                        eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Action Roll: ${config.rollTrait}`, config);
+                        return;
+                    }
+                    flagUpdateData.rollTrait = U.lCase(config.rollTrait);
+                    break;
                 }
-                flagUpdateData.rollTrait = U.isInt(config.rollTrait) ? config.rollTrait : U.lCase(config.rollTrait);
-                break;
-            }
-            case BladesRollType.Downtime: {
-                if ((!config.rollTrait && config.rollTrait !== 0)
-                    || !(U.lCase(config.rollTrait) in Action || U.lCase(config.rollTrait !== "tier"))) {
-                    eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Downtime Roll: ${config.rollTrait}`, config);
-                    return;
+                case RollType.Downtime: {
+                    if (!(U.lCase(config.rollTrait) in { ...Action, ...Factor })) {
+                        eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Downtime Roll: ${config.rollTrait}`, config);
+                        return;
+                    }
+                    flagUpdateData.rollTrait = U.lCase(config.rollTrait);
+                    break;
                 }
-                flagUpdateData.rollTrait = U.isInt(config.rollTrait) ? config.rollTrait : U.lCase(config.rollTrait);
-                break;
-            }
-            case BladesRollType.Fortune: {
-                config.rollTrait ??= 0;
-                if (!U.isInt(config.rollTrait)) {
-                    eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Fortune Roll: ${config.rollTrait}`, config);
-                    return;
+                case RollType.Fortune: {
+                    if (!(U.lCase(config.rollTrait) in { ...Action, ...Attribute, ...Factor })) {
+                        eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Fortune Roll: ${config.rollTrait}`, config);
+                        return;
+                    }
+                    flagUpdateData.rollTrait = U.lCase(config.rollTrait);
+                    break;
                 }
-                break;
-            }
-            case BladesRollType.Resistance: {
-                if (!config.rollTrait || !(U.lCase(config.rollTrait) in Attribute)) {
-                    eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Resistance Roll: ${config.rollTrait}`, config);
-                    return;
+                case RollType.Resistance: {
+                    if (!(U.lCase(config.rollTrait) in Attribute)) {
+                        eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Resistance Roll: ${config.rollTrait}`, config);
+                        return;
+                    }
+                    break;
                 }
-                break;
             }
+            flagUpdateData.rollTrait = U.lCase(config.rollTrait);
         }
                 flagUpdateData.rollMods = {
-            roll: {
+            [RollModCategory.roll]: {
                 positive: {
-                    Push: RollModStatus.ToggledOff,
-                    Assist: RollModStatus.ForcedOn
+                    "Push": {
+                        status: RollModStatus.ToggledOff,
+                        tooltip: "<p>Take <strong class='shadowed red-bright'>2 Stress</strong> to add <strong class='shadowed'>1 die</strong> to your pool.</p><p><em>(You cannot also accept a <strong class='shadowed'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
+                    },
+                    "Bargain": {
+                        status: RollModStatus.Hidden,
+                        tooltip: "<p>Accept a <strong class='shadowed red-bright'>Devil's Bargain</strong> from the GM to add <strong class='shadowed'>1 die</strong> to your pool.</p><p><em>(You cannot also <strong class='shadowed'>Push</strong> to increase your dice pool: It's one or the other. You can, however, <strong class='shadowed'>Push</strong> to increase your <strong class='shadowed'>Effect</strong>.)</em></p>"
+                    },
+                    "Assist": {
+                        status: RollModStatus.ForcedOn,
+                        sideString: "Ollie",
+                        tooltip: "<p><strong class='shadowed gold-bright'>Ollie</strong> is <strong class='shadowed'>Assisting</strong> your efforts, adding <strong class='shadowed'>1 die</strong> to your pool. <em>(It costs them <strong class='shadowed red-bright'>1 Stress</strong> to do so.)</em></p>"
+                    },
+                    "Mastermind": {
+                        status: RollModStatus.ToggledOff,
+                        isAbility: true,
+                        tooltip: "<p>You may expend your <strong>special armor</strong> to protect a teammate, or to <strong>push yourself</strong> when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
+                    },
+                    "Trust In Me": {
+                        status: RollModStatus.ToggledOn,
+                        isAbility: true,
+                        tooltip: "<p>You may expend your <strong>special armor</strong> to protect a teammate, or to <strong>push yourself</strong> when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
+                    }
                 },
                 negative: {
-                    Wounded: RollModStatus.ForcedOn
+                    [Harm.Impaired]: {
+                        status: RollModStatus.ForcedOn,
+                        tooltip: `<p><strong class='shadowed uppercase red-bright'>${Harm.Impaired}:</strong> Your injuries reduce your <strong class='shadowed'>dice pool</strong> by one.</p>`
+                    }
                 }
             },
-            position: {
+            [RollModCategory.position]: {
                 positive: {
-                    Setup: RollModStatus.ForcedOn
+                    Setup: {
+                        status: RollModStatus.ForcedOn,
+                        sideString: "Jax",
+                        tooltip: "<p><strong class='shadowed gold-bright'>Jax</strong> has set you up for success with a preceding action, increasing your <strong class='shadowed'>Position</strong> by one level.</p>"
+                    }
                 },
                 negative: {}
             },
-            effect: {
+            [RollModCategory.effect]: {
                 positive: {
-                    Push: RollModStatus.ToggledOn,
-                    Setup: RollModStatus.ForcedOn,
-                    Potency: RollModStatus.ForcedOn
+                    "Push": {
+                        status: RollModStatus.ToggledOn,
+                        tooltip: "<p>Take <strong class='shadowed red-bright'>2 Stress</strong> to increase your <strong class='shadowed'>Effect</strong> by one level.</p><p><em>(You can both <strong class='shadowed'>Push for Effect</strong> and <strong class='shadowed'>Push for +1d</strong>, for a total cost of <strong class='shadowed red-bright'>4 Stress</strong>.)</em></p>"
+                    },
+                    "Setup": {
+                        status: RollModStatus.ForcedOn,
+                        sideString: "High-Flyer",
+                        tooltip: "<p><strong class='shadowed gold-bright'>High-Flyer</strong> has set you up for success with a preceding action, increasing your <strong class='shadowed'>Effect</strong> by one level.</p>"
+                    },
+                    "Potency": {
+                        status: RollModStatus.Hidden,
+                        tooltip: "<p>Circumstances in your favor make this action especially <strong class='shadowed'>Potent</strong>, increasing your <strong class='shadowed'>Effect</strong> by one level.</p>"
+                    },
+                    "Cloak & Dagger": {
+                        status: RollModStatus.ToggledOff,
+                        isAbility: true,
+                        tooltip: "<p>You may expend your <strong>special armor</strong> to protect a teammate, or to <strong>push yourself</strong> when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
+                    }
                 },
                 negative: {
-                    Wounded: RollModStatus.ForcedOn,
-                    Opposition: RollModStatus.ForcedOn
+                    [Harm.Impaired]: {
+                        status: RollModStatus.ForcedOn,
+                        tooltip: `<p><strong class='shadowed uppercase red-bright'>${Harm.Impaired}:</strong> Your injuries reduce your <strong class='shadowed'>Effect</strong> by one level.</p>`
+                    },
+                    Opposition: {
+                        status: RollModStatus.ForcedOn,
+                        tooltip: "<p>The following <strong class='shadowed'>Factors</strong> combine to reduce your <strong class='shadowed'>Effect</strong> by one level:</p><ul><li>Inferior Quality</li><li>Detrimental Scale</li></ul>"
+                    }
                 }
             },
-            result: { positive: {}, negative: {} }
-        };
-        flagUpdateData.rollPositionInitial = Position.desperate;
-        flagUpdateData.rollEffectInitial = Effect.great;
-        flagUpdateData.rollPosEffectTrade = "effect";
-        flagUpdateData.rollFactors = {
-            [Factor.Tier]: {
-                name: "Tier",
-                value: 2,
-                max: 2,
-                isActive: false,
-                isDominant: false,
-                highFavorsPC: true
+            [RollModCategory.result]: {
+                positive: {
+                    Mastermind: {
+                        status: RollModStatus.ToggledOff,
+                        isAbility: true,
+                        tooltip: "<p>You may expend your <strong>special armor</strong> to protect a teammate, or to <strong>push yourself</strong> when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
+                    }
+                }, negative: {}
             },
-            [Factor.Quality]: {
-                name: "Quality",
-                value: 3,
-                max: 3,
-                isActive: true,
-                isDominant: false,
-                highFavorsPC: true
-            },
-            [Factor.Scale]: {
-                name: "Scale",
-                value: 2,
-                max: 2,
-                isActive: true,
-                isDominant: false,
-                highFavorsPC: false
-            },
-            [Factor.Magnitude]: {
-                name: "Force",
-                value: 2,
-                max: 2,
-                isActive: false,
-                isDominant: false,
-                highFavorsPC: true
+            [RollModCategory.after]: {
+                positive: {
+                    Mesmerism: {
+                        status: RollModStatus.ToggledOff,
+                        isAbility: true,
+                        tooltip: "<p>You may expend your <strong>special armor</strong> to protect a teammate, or to <strong>push yourself</strong> when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
+                    }
+                },
+                negative: {}
             }
         };
-        flagUpdateData.rollOppositionID = undefined;
-        flagUpdateData.isGMReady = false;
-        flagUpdateData.GMBoosts = {
-            [Factor.Quality]: -1,
-            Position: 1
-        };
-        await user.update({
-            "flags.eunoblades.rollCollab": flagUpdateData
-        });
-        BladesRollCollabSheet.RenderRollCollab({ ...config, userID: user._id });
-        socketlib.system.executeForAllGMs("renderRollCollab", { ...config, userID: user._id });
+        await user.setFlag(C.SYSTEM_ID, "rollCollab", flagUpdateData);
+        BladesRollCollabSheet.RenderRollCollab({ userID: user._id, rollID: flagUpdateData.rollID });
+        socketlib.system.executeForAllGMs("renderRollCollab", { userID: user._id, rollID: flagUpdateData.rollID });
     }
-
+    rollID;
+    constructor(user, rollID) {
+        super(user);
+        this.rollID = rollID;
+    }
     get rData() {
-        if (!this.document.flags.eunoblades?.rollCollab) {
+        if (!this.document.getFlag(C.SYSTEM_ID, "rollCollab")) {
             eLog.error("rollCollab", "[get flags()] No RollCollab Flags Found on User", { user: this.document, flags: this.document.flags });
             return null;
         }
-        return this.document.flags.eunoblades.rollCollab;
+        return this.document.flags["eunos-blades"].rollCollab;
     }
     get rollSource() {
+        if (!this.rData) {
+            return undefined;
+        }
         return this.rData.rollSourceType === "Actor"
             ? game.actors.get(this.rData.rollSourceID)
             : game.items.get(this.rData.rollSourceID);
     }
     getData() {
         const context = super.getData();
+        const { rData } = this;
+        if (!rData) {
+            return context;
+        }
         const sheetData = {
             cssClass: "roll-collab",
             editable: this.options.editable,
             isGM: game.eunoblades.Tracker.system.is_spoofing_player ? false : game.user.isGM,
-            ...this.rData
+            ...rData
         };
         if (!this.rollSource) {
-            eLog.error("rollCollab", `[getData()] No '${this.rData.rollSourceType}' Found with ID '${this.rData.rollSourceID}'`, { user: this.document, rData: this.rData });
+            eLog.error("rollCollab", `[getData()] No '${rData.rollSourceType}' Found with ID '${rData.rollSourceID}'`, { user: this.document, rData: rData });
             return null;
         }
         sheetData.system = this.rollSource.system;
-        if (BladesActor.IsType(this.rollSource, BladesActorType.pc) && isAction(this.rData.rollTrait)) {
+        sheetData.rollSource = this.rollSource;
+        if (BladesActor.IsType(this.rollSource, BladesActorType.pc) && isAction(rData.rollTrait)) {
             const { rollSource } = this;
             sheetData.rollTraitData = {
-                name: this.rData.rollTrait,
-                value: rollSource.actions[this.rData.rollTrait],
-                max: rollSource.actions[this.rData.rollTrait]
+                name: rData.rollTrait,
+                value: rollSource.actions[rData.rollTrait],
+                max: rollSource.actions[rData.rollTrait]
             };
             sheetData.rollTraitOptions = Object.values(Action)
                 .map((action) => ({
-                name: `${action} ${"●".repeat(rollSource.actions[action])}`,
+                name: U.uCase(action),
                 value: action
             }));
         }
-        else if (BladesActor.IsType(this.rollSource, BladesActorType.pc) && isAttribute(this.rData.rollTrait)) {
+        else if (BladesActor.IsType(this.rollSource, BladesActorType.pc) && isAttribute(rData.rollTrait)) {
             const { rollSource } = this;
             sheetData.rollTraitData = {
-                name: this.rData.rollTrait,
-                value: this.rollSource.attributes[this.rData.rollTrait],
-                max: this.rollSource.attributes[this.rData.rollTrait]
+                name: rData.rollTrait,
+                value: rollSource.attributes[rData.rollTrait],
+                max: rollSource.attributes[rData.rollTrait]
             };
             sheetData.rollTraitOptions = Object.values(Attribute)
                 .map((attribute) => ({
-                name: `${attribute} ${"●".repeat(rollSource.attributes[attribute])}`,
+                name: U.uCase(attribute),
                 value: attribute
             }));
         }
-        else if (this.rData.rollTrait === "tier") {
+        else if (rData.rollTrait === "tier") {
+            const { rollSource } = this;
             sheetData.rollTraitData = {
                 name: "Tier",
-                value: this.rollSource.getTierTotal(),
-                max: this.rollSource.getTierTotal()
+                value: rollSource.getTierTotal(),
+                max: rollSource.getTierTotal()
             };
             sheetData.rollTraitOptions = false;
         }
-        else if (U.isInt(this.rData.rollTrait)) {
+        else if (U.isInt(rData.rollTrait)) {
             sheetData.rollTraitData = {
-                name: `+${this.rData.rollTrait}`,
-                value: this.rData.rollTrait,
-                max: this.rData.rollTrait
+                name: `+${rData.rollTrait}`,
+                value: rData.rollTrait,
+                max: rData.rollTrait
             };
             sheetData.rollTraitOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                 .map((num) => ({
@@ -275,13 +390,13 @@ class BladesRollCollabSheet extends DocumentSheet {
                 
         sheetData.diceTotal = 4;
         sheetData.rollFactorData = [
-            { name: Factor.Quality, value: U.romanizeNum(2), cssClasses: "factor-gold factor-main" },
-            { name: Factor.Scale, value: `${2}`, cssClasses: "factor-gold" }
+            { name: Factor.quality, value: U.romanizeNum(2), cssClasses: "factor-gold factor-main" },
+            { name: Factor.scale, value: `${2}`, cssClasses: "factor-gold" }
         ];
         sheetData.rollOpposition = undefined;
         sheetData.rollPositionInitial = Position.desperate;
         sheetData.rollPositionFinal = Position.risky;
-        sheetData.rollEffectFinal = Effect.superior;
+        sheetData.rollEffectFinal = Effect.extreme;
         sheetData.isAffectingResult = true;
         sheetData.rollResultFinal = 1;
         sheetData.rollOddsData = [
@@ -290,7 +405,7 @@ class BladesRollCollabSheet extends DocumentSheet {
             { odds: 30, result: "Success", cssClasses: "odds-success", tooltip: "<p>A success!</p>" },
             { odds: 5, result: "Critical", cssClasses: "odds-critical", tooltip: "<p>A critical!</p>" }
         ];
-        sheetData.stressData = { cost: 4, tooltip: "<ul><li><strong>2</strong> Stress from Pushing for +1d</li><li><strong>2</strong> Stress from Pushing for Effect</li></ul>" };
+        sheetData.stressData = { cost: 4, tooltip: "<ul><li><strong class='shadowed'>2</strong> Stress from Pushing for +1d</li><li><strong class='shadowed'>2</strong> Stress from Pushing for Effect</li></ul>" };
         eLog.checkLog3("getData", "RollCollab.getData()", { ...context, ...sheetData });
         return {
             ...context,
@@ -299,16 +414,26 @@ class BladesRollCollabSheet extends DocumentSheet {
     }
     activateListeners(html) {
         super.activateListeners(html);
+        ApplyTooltipListeners(html);
     }
     async _onSubmit(event, { updateData } = {}) {
         return super._onSubmit(event, { updateData, preventClose: true })
             .then((returnVal) => { this.render(); return returnVal; });
     }
-    async close(options, isFromSocket = false) {
-        if (!isFromSocket) {
-            await socketlib.system.executeForEveryone("closeRollCollab", this.rData.rollID);
-            this.document.update({ "flags.eunoblades.-=rollCollab": null });
+    async close(options = {}) {
+        eLog.checkLog3("rollCollab", "RollCollab.close()", { options });
+        if (options.rollID) {
+            return super.close({});
         }
+        this.document.setFlag(C.SYSTEM_ID, "rollCollab", null);
+        socketlib.system.executeForEveryone("closeRollCollab", this.rollID);
+        return undefined;
+    }
+    render(force, options) {
+        if (!this.document.getFlag(C.SYSTEM_ID, "rollCollab")) {
+            return this;
+        }
+        return super.render(force, options);
     }
 }
 export default BladesRollCollabSheet;

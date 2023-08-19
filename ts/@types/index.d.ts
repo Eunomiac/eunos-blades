@@ -14,6 +14,7 @@ import "./blades-actor-sheet";
 import "./blades-item";
 import "./blades-item-sheet";
 
+import "./blades-roll";
 import "./blades-dialog";
 import "./blades-clock";
 import "./blades-tags";
@@ -40,7 +41,7 @@ declare global {
   declare interface User {
     _id: string,
     flags: {
-      eunoblades?: Record<string,any>
+      ["eunos-blades"]?: Record<string,any>
     }
   }
   interface LenientGlobalVariableTypes { game: never }

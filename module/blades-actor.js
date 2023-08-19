@@ -6,9 +6,9 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-import C, { BladesActorType, Tag, Playbook, BladesItemType, Attribute, Action, Position, Effect, AdvancementPoint, Randomizers } from "./core/constants.js";
+import C, { BladesActorType, Tag, Playbook, BladesItemType, Attribute, Action, PrereqType, Position, Effect, AdvancementPoint, Randomizers } from "./core/constants.js";
 import { bladesRoll } from "./blades-roll.js";
-import BladesItem, { PrereqType } from "./blades-item.js";
+import BladesItem from "./blades-item.js";
 import { SelectionCategory } from "./blades-dialog.js";
 class BladesActor extends Actor {
     static async CleanData(actor) {
