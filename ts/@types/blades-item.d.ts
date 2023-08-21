@@ -52,6 +52,10 @@ declare global {
     }
 
     export interface answers { answers: Record<"a" | "b" | "c" | "d", string> }
+
+    export interface canRoll {
+      roll_mods: string[]
+    }
   }
 
   // Compiled "system" Schemas for BladesItem Types
@@ -72,12 +76,14 @@ declare global {
     export interface Cohort_Gang extends BladesItemSchemaTemplate.Default,
       BladesItemSchemaTemplate.district,
       BladesItemSchemaTemplate.clocks,
-      BladesItemSchemaTemplate.cohort { }
+      BladesItemSchemaTemplate.cohort,
+      BladesItemSchemaTemplate.canRoll { }
 
     export interface Cohort_Expert extends BladesItemSchemaTemplate.Default,
       BladesItemSchemaTemplate.district,
       BladesItemSchemaTemplate.clocks,
-      BladesItemSchemaTemplate.cohort { }
+      BladesItemSchemaTemplate.cohort,
+      BladesItemSchemaTemplate.canRoll { }
 
     export interface Crew_Ability extends BladesItemSchemaTemplate.Default,
       BladesItemSchemaTemplate.district,

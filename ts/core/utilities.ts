@@ -476,7 +476,8 @@ const ordinalizeNum = (num: string | number, isReturningWords = false) => {
 const romanizeNum = (num: number, isUsingGroupedChars = true) => {
   if (isFloat(num)) { throw new Error(`Error: Can't Romanize Floats (${num})`) }
   if (num >= 400000) { throw new Error(`Error: Can't Romanize >= 400,000 (${num})`) }
-  if (num <= 0) { throw new Error(`Error: Can't Romanize <= 0 (${num})`) }
+  if (num < 0) { throw new Error(`Error: Can't Romanize Negative Numbers (${num})`) }
+  if (num === 0) { return "0" }
   const romanRef = _romanNumerals[isUsingGroupedChars ? "grouped" : "ungrouped"];
   const romanNum = stringifyNum(num)
     .split("")
@@ -644,9 +645,9 @@ const group = <Type extends Record<string, unknown>>(array: Type[], key: KeyOf<T
   return returnObj as Record<string & ValueOf<Type>, Type[]>;
 };
 const removeFirst = (array: unknown[], element: unknown) => array.splice(array.findIndex((v) => v === element));
-const pullElement = (array: unknown[], checkFunc = (_v: unknown = true, _i = 0, _a: unknown[] = []) => { checkFunc(_v, _i, _a) }) => {
+const pullElement = <T extends any>(array: T[], checkFunc = (_v: T = true as any, _i = 0, _a: T[] = []) => { checkFunc(_v, _i, _a) }): T|false => {
   const index = array.findIndex((v, i, a) => checkFunc(v, i, a));
-  return index !== -1 && array.splice(index, 1).pop();
+  return (index !== -1 && array.splice(index, 1).pop()) ?? false;
 };
 const pullIndex = (array: unknown[], index: posInt) => pullElement(array, (v, i) => i === index);
 const subGroup = (array: unknown[], groupSize: posInt) => {

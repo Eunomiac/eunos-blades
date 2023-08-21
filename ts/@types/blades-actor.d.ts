@@ -46,13 +46,18 @@ declare global {
     export interface hold {
       hold: "strong" | "weak"
     }
+
+    export interface canRoll {
+      roll_mods: string[]
+    }
   }
 
   // Compiled "system" Schemas for BladesActor Types
   namespace BladesActorSchema {
 
     export interface Scoundrel extends BladesActorSchemaTemplate.Default,
-      BladesActorSchemaTemplate.pcChar {
+      BladesActorSchemaTemplate.pcChar,
+      BladesItemSchemaTemplate.canRoll {
       acquaintances_name: string,
       vice_name: string,
       stress: NamedValueMax,
@@ -93,7 +98,8 @@ declare global {
 
     export interface Crew extends BladesActorSchemaTemplate.Default,
       BladesActorSchemaTemplate.pcChar,
-      BladesActorSchemaTemplate.hold {
+      BladesActorSchemaTemplate.hold,
+      BladesItemSchemaTemplate.canRoll {
       rep: ValueMax,
       deity: string,
       heat: ValueMax,

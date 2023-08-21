@@ -37,12 +37,14 @@
           "CohortType": 0
 				}
 			},
-			"hold": { "hold": "strong" }
+			"hold": { "hold": "strong" },
+      "canRoll": { "roll_mods": [] }
 		},
 		"pc": {
 			"templates": [
 				"default",
-				"pcChar"
+				"pcChar",
+        "canRoll"
 			],
 			"acquaintances_name": "Friends & Rivals",
 			"vice_name": "Vice",
@@ -144,7 +146,7 @@
       "conditional_bonus": {}
 		},
 		"crew": {
-			"templates": ["default", "pcChar", "hold"],
+			"templates": ["default", "pcChar", "hold", "canRoll"],
 			"coins": { "value": 2, "max": 4 },
       "advancement_points": {
         "UpgradeOrAbility": 0,
@@ -240,7 +242,8 @@
       "playbook": {
         "experience_clues": []
       },
-      "answers": { "answers": {"a": "", "b": "", "c": "", "d": ""} }
+      "answers": { "answers": {"a": "", "b": "", "c": "", "d": ""} },
+      "canRoll": { "roll_mods": [] }
     },
 		"ability": { "templates": ["default", "buyable", "limitUses"] },
 		"background": { "templates": ["default"] },
@@ -251,11 +254,11 @@
       "clock_keys": {}
     },
 		"cohort_gang": {
-      "templates": ["default", "district", "clocks", "cohort"],
+      "templates": ["default", "district", "clocks", "cohort", "canRoll"],
       "tier": { "name": "Quality", "value": 0, "max": 6}
     },
 		"cohort_expert": {
-      "templates": ["default", "district", "clocks", "cohort"],
+      "templates": ["default", "district", "clocks", "cohort", "canRoll"],
       "tier": { "name": "Quality", "value": 0, "max": 6}
     },
 		"crew_ability": { "templates": ["default", "district", "buyable", "limitUses"] },

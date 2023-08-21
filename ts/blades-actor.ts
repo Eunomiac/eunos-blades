@@ -1,7 +1,7 @@
 // #region Imports ~
 import U from "./core/utilities.js";
 import type {Vice} from "./core/constants.js";
-import C, {BladesActorType, BladesPhase, Tag, District, Playbook, BladesItemType, Attribute, Action, InsightActions, ProwessActions, ResolveActions, PrereqType, Position, Effect, AdvancementPoint, Randomizers} from "./core/constants.js";
+import C, {BladesActorType, BladesPhase, Tag, District, Playbook, BladesItemType, Attribute, Action, InsightActions, ProwessActions, ResolveActions, PrereqType, Position, Effect, AdvancementPoint, Randomizers, RollModCategory, RollModStatus, RollType, Factor} from "./core/constants.js";
 
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
@@ -26,7 +26,9 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
                                            BladesActorSubClass.Scoundrel,
                                            BladesActorSubClass.Crew,
                                            BladesActorSubClass.NPC,
-                                           BladesActorSubClass.Faction {
+                                           BladesActorSubClass.Faction,
+                                           BladesRollCollab.SourceDoc,
+                                           BladesRollCollab.OppositionDoc {
 
   static async CleanData(actor?: BladesActor): Promise<unknown> {
     if (!actor) { return Promise.all(BladesActor.All.map(BladesActor.CleanData)) }
@@ -1065,6 +1067,90 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
     // Check ACTIVE EFFECTS supplied by upgrade/ability against submitted tags?
     return 0;
   }
+  // #endregion
+
+  // #region BladesRollCollab Implementation
+
+  get rollMods() {
+    const {roll_mods} = this.system;
+    if (!roll_mods) { return {} }
+    const rollMods: BladesRollCollab.ModData = {};
+
+    roll_mods.forEach((modString) => {
+      const pStrings = modString.split(/@/);
+      const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
+      const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, "")) as string|false;
+      if (!nameVal) { throw new Error(`RollMod Missing Name: '${modString}'`) }
+      const catString = U.pullElement(pStrings, (v) => typeof v === "string" && /^cat/i.test(v));
+      const catVal = (typeof catString === "string" && catString.replace(/^.*:/, "")) as RollModCategory|false;
+      if (!catVal || !(catVal in RollModCategory)) { throw new Error(`RollMod Missing Category: '${modString}'`) }
+      const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
+      const posNegVal = posNegString.replace(/^.*:/, "") as "positive"|"negative";
+      rollMods[catVal] ??= {positive: {}, negative: {}};
+      rollMods[catVal]![posNegVal][nameVal] = {
+        name: nameVal,
+        category: catVal,
+        status: RollModStatus.ToggledOff,
+        value: 1,
+        posNeg: posNegVal,
+        tooltip: ""
+      };
+      pStrings.forEach((pString) => {
+        const [keyString, valString] = pString.split(/:/) as [string, string];
+        const val: string|string[] = /\|/.test(valString) ? valString.split(/\|/) : valString;
+        let key: KeyOf<BladesRollCollab.RollModData>;
+        if (/^stat/i.test(keyString)) { key = "status" } else
+        if (/^val/i.test(keyString)) { key = "value" } else
+        if (/^eff|^ekey/i.test(keyString)) { key = "effectKey" } else
+        if (/^side|^ss/i.test(keyString)) { key = "sideString" } else
+        if (/^tool|^tip/i.test(keyString)) { key = "tooltip" } else
+        if (/^ty/i.test(keyString)) { key = "modType" } else
+        if (/^c.*r?.*ty/i.test(keyString)) { key = "conditionalRollTypes" } else
+        if (/^a.*r?.*y/i.test(keyString)) { key = "autoRollTypes" } else
+        if (/^c.*r?.*tr/i.test(keyString)) { key = "conditionalRollTraits" } else
+        if (/^a.*r?.*tr/i.test(keyString)) { key = "autoRollTraits" } else {
+          throw new Error(`Bad Roll Mod Key: ${keyString}`);
+        }
+        Object.assign(
+          rollMods[catVal]![posNegVal][nameVal],
+          {[key]: key === "value" ? U.pInt(val as number|string) : val}
+        );
+      });
+
+      // name:Alchemist@cat:result@posNeg:positive@type:ability@cTypes:Action|Downtime@cTraits:study|tinker|finesse|wreck|attune@tooltip:<h1>Alchemist</h1><p>When you <strong>invent</strong> or <strong>craft</strong> a creation with <em>alchemical</em> features, you get <strong>+1 result level</strong>to your roll.</p>
+      if (
+        (rollMods[catVal]![posNegVal][nameVal].conditionalRollTypes?.length ?? 0)
+        + (rollMods[catVal]![posNegVal][nameVal].conditionalRollTraits?.length ?? 0)
+        + (rollMods[catVal]![posNegVal][nameVal].autoRollTypes?.length ?? 0)
+        + (rollMods[catVal]![posNegVal][nameVal].autoRollTraits?.length ?? 0) > 0) {
+          rollMods[catVal]![posNegVal][nameVal].isConditional = true;
+      }
+      rollMods[catVal]![posNegVal][nameVal].modType ??= "general";
+    });
+
+    eLog.checkLog3("rollCollab", `Roll Mods (${this.name})`, {system: this.system.roll_mods, rollMods});
+
+    return rollMods;
+  }
+
+  get rollFactors(): Partial<Record<Factor,BladesRollCollab.FactorData>> & Record<Factor.tier, BladesRollCollab.FactorData> {
+    return {
+      [Factor.tier]: {
+        name: Factor.tier,
+        value: this.getTierTotal(),
+        max: this.getTierTotal(),
+        cssClasses: "factor-gold factor-main",
+        isActive: true,
+        isDominant: false,
+        highFavorsPC: true
+      }
+    };
+  }
+  get rollOppImg() { return this.img ?? undefined }
+
+  // #endregion
+  // #region BladesRollCollab.OppositionDoc Implementation
+
   // #endregion
 
   // #region PREPARING DERIVED DATA

@@ -5,7 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase } from "./core/constants.js";
+import C, { SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase, RollModCategory, Factor, RollModStatus } from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
 class BladesItem extends Item {
@@ -101,7 +101,6 @@ class BladesItem extends Item {
         return null;
     }
     
-    
     async archive() {
         await this.addTag(Tag.System.Archived);
         return this;
@@ -119,6 +118,101 @@ class BladesItem extends Item {
         }
     }
     
+    
+    get rollMods() {
+        const { roll_mods } = this.system;
+        if (!roll_mods) {
+            return {};
+        }
+        const rollMods = {};
+        roll_mods.forEach((modString) => {
+            const pStrings = modString.split(/@/);
+            const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
+            const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, ""));
+            if (!nameVal) {
+                throw new Error(`RollMod Missing Name: '${modString}'`);
+            }
+            const catString = U.pullElement(pStrings, (v) => typeof v === "string" && /^cat/i.test(v));
+            const catVal = (typeof catString === "string" && catString.replace(/^.*:/, ""));
+            if (!catVal || !(catVal in RollModCategory)) {
+                throw new Error(`RollMod Missing Category: '${modString}'`);
+            }
+            const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
+            const posNegVal = posNegString.replace(/^.*:/, "");
+            rollMods[catVal] ??= { positive: {}, negative: {} };
+            rollMods[catVal][posNegVal][nameVal] = {
+                name: nameVal,
+                category: catVal,
+                status: RollModStatus.ToggledOff,
+                value: 1,
+                posNeg: posNegVal,
+                tooltip: ""
+            };
+            pStrings.forEach((pString) => {
+                const [keyString, valString] = pString.split(/:/);
+                const val = /\|/.test(valString) ? valString.split(/\|/) : valString;
+                let key;
+                if (/^stat/i.test(keyString)) {
+                    key = "status";
+                }
+                else if (/^val/i.test(keyString)) {
+                    key = "value";
+                }
+                else if (/^eff|^ekey/i.test(keyString)) {
+                    key = "effectKey";
+                }
+                else if (/^side|^ss/i.test(keyString)) {
+                    key = "sideString";
+                }
+                else if (/^tool|^tip/i.test(keyString)) {
+                    key = "tooltip";
+                }
+                else if (/^ty/i.test(keyString)) {
+                    key = "modType";
+                }
+                else if (/^c.*r?.*ty/i.test(keyString)) {
+                    key = "conditionalRollTypes";
+                }
+                else if (/^a.*r?.*y/i.test(keyString)) {
+                    key = "autoRollTypes";
+                }
+                else if (/^c.*r?.*tr/i.test(keyString)) {
+                    key = "conditionalRollTraits";
+                }
+                else if (/^a.*r?.*tr/i.test(keyString)) {
+                    key = "autoRollTraits";
+                }
+                else {
+                    throw new Error(`Bad Roll Mod Key: ${keyString}`);
+                }
+                Object.assign(rollMods[catVal][posNegVal][nameVal], { [key]: key === "value" ? U.pInt(val) : val });
+            });
+            if ((rollMods[catVal][posNegVal][nameVal].conditionalRollTypes?.length ?? 0)
+                + (rollMods[catVal][posNegVal][nameVal].conditionalRollTraits?.length ?? 0)
+                + (rollMods[catVal][posNegVal][nameVal].autoRollTypes?.length ?? 0)
+                + (rollMods[catVal][posNegVal][nameVal].autoRollTraits?.length ?? 0) > 0) {
+                rollMods[catVal][posNegVal][nameVal].isConditional = true;
+            }
+            rollMods[catVal][posNegVal][nameVal].modType ??= "general";
+        });
+        eLog.checkLog3("rollCollab", `Roll Mods (${this.name})`, { system: this.system.roll_mods, rollMods });
+        return rollMods;
+    }
+    get rollFactors() {
+        return {
+            [Factor.tier]: {
+                name: Factor.tier,
+                value: this.getTierTotal(),
+                max: this.getTierTotal(),
+                cssClasses: "factor-gold factor-main",
+                isActive: true,
+                isDominant: false,
+                highFavorsPC: true
+            }
+        };
+    }
+    get rollOppImg() { return this.img ?? undefined; }
+
     prepareDerivedData() {
         if (BladesItem.IsType(this, BladesItemType.clock_keeper)) {
             this._prepareClockKeeperData(this.system);
@@ -254,26 +348,30 @@ class BladesItem extends Item {
         if (!game.scenes?.current) {
             return;
         }
-        this.overlayElement.innerHTML = (await getTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs"))({
-            ...this.system,
+        if (!game.eunoblades.ClockKeeper) {
+            return;
+        }
+        if (!game.eunoblades.ClockKeeper.overlayElement) {
+            eLog.error("clocksOverlay", "[ClocksOverlay] Cannot locate overlay element.");
+            return;
+        }
+        game.eunoblades.ClockKeeper.overlayElement.innerHTML = (await getTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs"))({
+            ...game.eunoblades.ClockKeeper.system,
             currentScene: game.scenes?.current.id,
             clockSizes: C.ClockSizes,
             svgData: SVGDATA
         });
-        this.activateOverlayListeners();
+        game.eunoblades.ClockKeeper.activateOverlayListeners();
     }
     async activateOverlayListeners() {
-        if (!BladesItem.IsType(this, BladesItemType.clock_keeper)) {
+        if (!game?.user?.isGM) {
             return;
         }
         $("#clocks-overlay").find(".clock-frame").on("wheel", async (event) => {
-            if (!game?.user?.isGM) {
-                return;
-            }
             if (!event.currentTarget) {
                 return;
             }
-            if (!game.eunoblades.ClockKeeper) {
+            if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) {
                 return;
             }
             if (!(event.originalEvent instanceof WheelEvent)) {
@@ -294,26 +392,23 @@ class BladesItem extends Item {
             if (curClockVal === newClockVal) {
                 return;
             }
-            await this.update({
+            await game.eunoblades.ClockKeeper.update({
                 [`system.clock_keys.${keyID}.clocks.${clockNum}.value`]: `${newClockVal}`
             });
         });
 
         $("#clocks-overlay").find(".key-label").on({
             click: async (event) => {
-                if (!game?.user?.isGM) {
-                    return;
-                }
                 if (!event.currentTarget) {
                     return;
                 }
-                if (!game.eunoblades.ClockKeeper) {
+                if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) {
                     return;
                 }
                 event.preventDefault();
                 const keyID = $(event.currentTarget).data("keyId");
-                eLog.checkLog3("Updating Key isActive", { current: this.system.clock_keys[keyID]?.isActive, update: !(this.system.clock_keys[keyID]?.isActive) });
-                await this.update({ [`system.clock_keys.${keyID}.isActive`]: !(this.system.clock_keys[keyID]?.isActive) });
+                eLog.checkLog3("clocksOverlay", "Updating Key isActive", { current: game.eunoblades.ClockKeeper.system.clock_keys[keyID]?.isActive, update: !(game.eunoblades.ClockKeeper.system.clock_keys[keyID]?.isActive) });
+                await game.eunoblades.ClockKeeper.update({ [`system.clock_keys.${keyID}.isActive`]: !(game.eunoblades.ClockKeeper.system.clock_keys[keyID]?.isActive) });
             },
             contextmenu: () => {
                 if (!game?.user?.isGM) {
@@ -324,14 +419,17 @@ class BladesItem extends Item {
         });
     }
     async addClockKey() {
+        if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) {
+            return undefined;
+        }
         const keyID = randomID();
-        return this.update({ [`system.clock_keys.${keyID}`]: {
+        return game.eunoblades.ClockKeeper.update({ [`system.clock_keys.${keyID}`]: {
                 id: keyID,
                 display: "",
                 isVisible: false,
                 isNameVisible: true,
                 isActive: true,
-                scene: this.system.targetScene,
+                scene: game.eunoblades.ClockKeeper.system.targetScene,
                 numClocks: 1,
                 clocks: {
                     1: {
@@ -347,17 +445,22 @@ class BladesItem extends Item {
             } });
     }
     async deleteClockKey(keyID) {
-        return this.update({ [`system.clock_keys.-=${keyID}`]: null });
+        if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) {
+            return undefined;
+        }
+        return game.eunoblades.ClockKeeper.update({ [`system.clock_keys.-=${keyID}`]: null });
     }
     async setKeySize(keyID, keySize = 1) {
-        console.log("Setting Key Size");
+        if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) {
+            return undefined;
+        }
         keySize = parseInt(`${keySize}`);
         const updateData = {
             [`system.clock_keys.${keyID}.numClocks`]: keySize
         };
-        const clockKey = this.system.clock_keys[keyID];
+        const clockKey = game.eunoblades.ClockKeeper.system.clock_keys[keyID];
         if (!clockKey) {
-            return this;
+            return game.eunoblades.ClockKeeper;
         }
         const currentSize = Object.values(clockKey.clocks).length;
         if (currentSize < keySize) {
@@ -379,7 +482,7 @@ class BladesItem extends Item {
             }
         }
         eLog.checkLog("clock_key", "Clock Key Update Data", { clockKey, updateData });
-        return this.update(updateData);
+        return game.eunoblades.ClockKeeper.update(updateData);
     }
 
     async _onUpdate(changed, options, userId) {

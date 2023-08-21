@@ -155,6 +155,10 @@ $isCompactLayout: true;
   --blades-green-nums: 0, 204, 0;
   --blades-green-dark-nums: 0, 122, 0;
 
+  --blades-cyan-bright-nums: 198, 255, 255;
+  --blades-cyan-nums: 150, 255, 255;
+  --blades-cyan-dark-nums: 42, 85, 85;
+
   --blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
   --blades-white: rgba(var(--blades-white-nums), 1);
   --blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
@@ -175,6 +179,10 @@ $isCompactLayout: true;
   --blades-green: rgba(var(--blades-green-nums), 1);
   --blades-green-dark: rgba(var(--blades-green-dark-nums), 1);
 
+  --blades-cyan-bright: rgba(var(--blades-cyan-bright-nums), 1);
+  --blades-cyan: rgba(var(--blades-cyan-nums), 1);
+  --blades-cyan-dark: rgba(var(--blades-cyan-dark-nums), 1);
+
   --blades-white-fade: rgba(var(--blades-white-nums), 0.5);
   --blades-white-fade-strong: rgba(var(--blades-white-nums), 0.25);
   --blades-white-bright-fade: rgba(var(--blades-white-bright-nums), 0.5);
@@ -187,8 +195,10 @@ $isCompactLayout: true;
 
   --blades-red-dark-fade: rgba(var(--blades-red-dark-nums), 0.5);
   --blades-green-dark-fade: rgba(var(--blades-green-dark-nums), 0.5);
+  --blades-cyan-dark-fade: rgba(var(--blades-cyan-dark-nums), 0.5);
   --blades-red-dark-fade-strong: rgba(var(--blades-red-dark-nums), 0.25);
   --blades-green-dark-fade-strong: rgba(var(--blades-green-dark-nums), 0.25);
+  --blades-cyan-dark-fade-strong: rgba(var(--blades-cyan-dark-nums), 0.25);
   // #endregion ░░░░[Blades Colors & Fades]░░░░
   // #region ░░░░░░░ Numerically-Defined Colors (for Emu Stylesheet) ░░░░░░░ ~
   --color-primary: var(--blades-white-nums);

@@ -5,11 +5,11 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import U from "../core/utilities.js";
-import C, { BladesActorType, RollType, RollModStatus, RollModCategory, Action, Attribute, Position, Effect, Factor, Harm } from "../core/constants.js";
-import BladesActor from "../blades-actor.js";
-import BladesItem from "../blades-item.js";
-import { ApplyTooltipListeners } from "../core/gsap.js";
+import U from "../../core/utilities.js";
+import C, { BladesActorType, RollType, RollModStatus, RollModCategory, Action, Attribute, Position, Effect, Factor } from "../../core/constants.js";
+import BladesActor from "../../blades-actor.js";
+import BladesItem from "../../blades-item.js";
+import { ApplyTooltipListeners } from "../../core/gsap.js";
 function isAction(trait) {
     return Boolean(trait && typeof trait === "string" && trait in Action);
 }
@@ -18,19 +18,40 @@ function isAttribute(trait) {
 }
 function isTier(trait) { return U.lCase(trait) === "tier"; }
 function isNumber(trait) { return U.isInt(trait); }
+export const ModEffects = {
+    NegateTierPenalty: (mod, sheetData) => {
+                return sheetData;
+    },
+    NegateQualityPenalty: (mod, sheetData) => {
+                return sheetData;
+    },
+    IsPush: (mod, sheetData) => {
+        return sheetData;
+    }
+};
 class BladesRollCollabSheet extends DocumentSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "roll-collab"],
-            template: `systems/eunos-blades/templates/roll-collab${game.user.isGM ? "-gm" : ""}.hbs`,
+            template: `systems/eunos-blades/templates/roll/roll-collab${game.user.isGM ? "-gm" : ""}.hbs`,
             submitOnChange: true,
             width: 500
         });
     }
     static Initialize() {
         return loadTemplates([
-            "systems/eunos-blades/templates/roll-collab-gm.hbs",
-            "systems/eunos-blades/templates/roll-collab.hbs"
+            "systems/eunos-blades/templates/roll/roll-collab.hbs",
+            "systems/eunos-blades/templates/roll/roll-collab-gm.hbs",
+            "systems/eunos-blades/templates/roll/partials/roll-collab-action.hbs",
+            "systems/eunos-blades/templates/roll/partials/roll-collab-action-gm.hbs",
+            "systems/eunos-blades/templates/roll/partials/roll-collab-resistance.hbs",
+            "systems/eunos-blades/templates/roll/partials/roll-collab-resistance-gm.hbs",
+            "systems/eunos-blades/templates/roll/partials/roll-collab-downtime.hbs",
+            "systems/eunos-blades/templates/roll/partials/roll-collab-downtime-gm.hbs",
+            "systems/eunos-blades/templates/roll/partials/roll-collab-fortune.hbs",
+            "systems/eunos-blades/templates/roll/partials/roll-collab-fortune-gm.hbs",
+            "systems/eunos-blades/templates/roll/partials/roll-collab-incarceration.hbs",
+            "systems/eunos-blades/templates/roll/partials/roll-collab-incarceration-gm.hbs"
         ]);
     }
     static InitSockets() {
@@ -49,17 +70,27 @@ class BladesRollCollabSheet extends DocumentSheet {
                 [RollModCategory.roll]: {
                     positive: {
                         Push: {
+                            name: "Push",
+                            category: RollModCategory.roll,
                             status: RollModStatus.ToggledOff,
+                            posNeg: "positive",
+                            stressCost: 2,
                             value: 1,
                             tooltip: "<p>Take <strong class='shadowed red-bright'>2 Stress</strong> to add <strong class='shadowed'>1 die</strong> to your pool. <em>(You cannot also accept a <strong class='shadowed'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
                         },
                         Bargain: {
-                            status: RollModStatus.ForcedOff,
+                            name: "Bargain",
+                            category: RollModCategory.roll,
+                            status: RollModStatus.Hidden,
+                            posNeg: "positive",
                             value: 1,
                             tooltip: "<p>Accept a <strong class='shadowed red-bright'>Devil's Bargain</strong> from the GM to add <strong class='shadowed'>1 die</strong> to your pool <em>(You cannot also <strong class='shadowed'>Push</strong> to increase your dice pool: It's one or the other. You can, however, <strong class='shadowed'>Push</strong> to increase your <strong class='shadowed'>Effect</strong>.)</em></p>"
                         },
                         Assist: {
+                            name: "Assist",
+                            category: RollModCategory.roll,
                             status: RollModStatus.Hidden,
+                            posNeg: "positive",
                             value: 1,
                             sideString: "",
                             tooltip: "<p>Another character is <strong class='shadowed'>Assisting</strong> your efforts, adding <strong class='shadowed'>1 die</strong> to your pool. <em>(It costs them <span class='shadowed red-bright'>1 Stress</span> to do so.)</em></p>"
@@ -70,7 +101,10 @@ class BladesRollCollabSheet extends DocumentSheet {
                 [RollModCategory.position]: {
                     positive: {
                         Setup: {
+                            name: "Setup",
+                            category: RollModCategory.position,
                             status: RollModStatus.Hidden,
+                            posNeg: "positive",
                             value: 1,
                             sideString: undefined,
                             tooltip: "<p>Another character has set you up for success, increasing your <strong class='shadowed'>Position</strong> by one level.</p>"
@@ -81,18 +115,28 @@ class BladesRollCollabSheet extends DocumentSheet {
                 [RollModCategory.effect]: {
                     positive: {
                         Push: {
+                            name: "Push",
+                            category: RollModCategory.effect,
                             status: RollModStatus.ToggledOff,
+                            posNeg: "positive",
+                            stressCost: 2,
                             value: 1,
                             tooltip: "<p>Take <strong class='shadowed red-bright'>2 Stress</strong> to increase your <strong class='shadowed'>Effect</strong> by one level. <em>(You can both <strong class='shadowed'>Push for Effect</strong> and <strong class='shadowed'>Push for +1d</strong> if you like, for a total cost of <strong class='shadowed red-bright'>4 Stress</strong>.)</em></p>"
                         },
                         Setup: {
+                            name: "Setup",
+                            category: RollModCategory.effect,
                             status: RollModStatus.Hidden,
+                            posNeg: "positive",
                             value: 1,
                             sideString: undefined,
                             tooltip: "<p>Another character has set you up for success, increasing your <strong class='shadowed'>Effect</strong> by one level.</p>"
                         },
                         Potency: {
+                            name: "Potency",
+                            category: RollModCategory.effect,
                             status: RollModStatus.Hidden,
+                            posNeg: "positive",
                             value: 1,
                             tooltip: ""
                         }
@@ -106,28 +150,11 @@ class BladesRollCollabSheet extends DocumentSheet {
             rollEffectInitial: Effect.standard,
             rollPosEffectTrade: false,
             rollFactors: {
-                [Factor.tier]: { name: "Tier", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
-                [Factor.quality]: { name: "Quality", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
-                [Factor.force]: { name: "Force", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
-                [Factor.scale]: { name: "Scale", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
-                [Factor.area]: { name: "Area", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
-                [Factor.duration]: { name: "Duration", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
-                [Factor.range]: { name: "Range", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true },
-                [Factor.magnitude]: { name: "Magnitude", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true }
+                [Factor.tier]: { name: "Tier", cssClasses: "roll-factor roll-factor-tier", value: 0, max: 0, isActive: false, isDominant: false, highFavorsPC: true }
             },
             isGMReady: false,
-            GMBoosts: {
-                Dice: 0,
-                [Factor.tier]: 0,
-                [Factor.quality]: 0,
-                [Factor.force]: 0,
-                [Factor.scale]: 0,
-                [Factor.area]: 0,
-                [Factor.duration]: 0,
-                [Factor.range]: 0,
-                [Factor.magnitude]: 0,
-                Result: 0
-            }
+            GMBoosts: {},
+            GMOppBoosts: {}
         };
     }
     static async RenderRollCollab({ userID, rollID }) {
@@ -153,7 +180,7 @@ class BladesRollCollabSheet extends DocumentSheet {
             eLog.error("rollCollab", `[NewRoll()] Can't Find User '${config.userID}'`, config);
             return;
         }
-        const flagUpdateData = BladesRollCollabSheet.DefaultFlagData;
+        const flagUpdateData = { ...BladesRollCollabSheet.DefaultFlagData };
         flagUpdateData.rollType = config.rollType;
         if (!(flagUpdateData.rollType in RollType)) {
             eLog.error("rollCollab", `[RenderRollCollab()] Invalid rollType: ${flagUpdateData.rollType}`, config);
@@ -209,136 +236,6 @@ class BladesRollCollabSheet extends DocumentSheet {
             }
             flagUpdateData.rollTrait = U.lCase(config.rollTrait);
         }
-
-        flagUpdateData.rollMods = {
-            [RollModCategory.roll]: {
-                positive: {
-                    "Push": {
-                        status: RollModStatus.ToggledOff,
-                        value: 1,
-                        tooltip: "<p>Take <strong class='shadowed red-bright'>2 Stress</strong> to add <strong class='shadowed'>1 die</strong> to your pool.</p><p><em>(You cannot also accept a <strong class='shadowed'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
-                    },
-                    "Bargain": {
-                        status: RollModStatus.Hidden,
-                        value: 1,
-                        tooltip: "<p>Accept a <strong class='shadowed red-bright'>Devil's Bargain</strong> from the GM to add <strong class='shadowed'>1 die</strong> to your pool.</p><p><em>(You cannot also <strong class='shadowed'>Push</strong> to increase your dice pool: It's one or the other. You can, however, <strong class='shadowed'>Push</strong> to increase your <strong class='shadowed'>Effect</strong>.)</em></p>"
-                    },
-                    "Assist": {
-                        status: RollModStatus.ForcedOn,
-                        value: 1,
-                        sideString: "Ollie",
-                        tooltip: "<p><strong class='shadowed gold-bright'>Ollie</strong> is <strong class='shadowed'>Assisting</strong> your efforts, adding <strong class='shadowed'>1 die</strong> to your pool. <em>(It costs them <strong class='shadowed red-bright'>1 Stress</strong> to do so.)</em></p>"
-                    },
-                    "Mastermind": {
-                        status: RollModStatus.ToggledOff,
-                        value: 1,
-                        isAbility: true,
-                        tooltip: "<p>You may expend your <strong>special armor</strong> to protect a teammate, or to <strong>push yourself</strong> when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
-                    },
-                    "Trust In Me": {
-                        status: RollModStatus.ToggledOn,
-                        value: 1,
-                        isAbility: true,
-                        tooltip: "<p>You may expend your <strong>special armor</strong> to protect a teammate, or to <strong>push yourself</strong> when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
-                    },
-                    "Forged in the Fire": {
-                        status: RollModStatus.ToggledOff,
-                        value: 1,
-                        isAbility: true,
-                        tooltip: "<p>You may expend your <strong>special armor</strong> to protect a teammate, or to <strong>push yourself</strong> when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
-                    },
-                    "A Little Something on the Side": {
-                        status: RollModStatus.ToggledOff,
-                        value: 1,
-                        isAbility: true,
-                        tooltip: "<p>You may expend your <strong>special armor</strong> to protect a teammate, or to <strong>push yourself</strong> when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
-                    },
-                    "Ghost Hunter (Arrow-Swift)": {
-                        status: RollModStatus.ToggledOff,
-                        value: 1,
-                        isAbility: true,
-                        tooltip: "<p>You may expend your <strong>special armor</strong> to protect a teammate, or to <strong>push yourself</strong> when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
-                    }
-                },
-                negative: {
-                    [Harm.Impaired]: {
-                        status: RollModStatus.ForcedOn,
-                        value: 1,
-                        tooltip: `<p><strong class='shadowed uppercase red-bright'>${Harm.Impaired}:</strong> Your injuries reduce your <strong class='shadowed'>dice pool</strong> by one.</p>`
-                    }
-                }
-            },
-            [RollModCategory.position]: {
-                positive: {
-                    Setup: {
-                        status: RollModStatus.ForcedOn,
-                        value: 1,
-                        sideString: "Jax",
-                        tooltip: "<p><strong class='shadowed gold-bright'>Jax</strong> has set you up for success with a preceding action, increasing your <strong class='shadowed'>Position</strong> by one level.</p>"
-                    }
-                },
-                negative: {}
-            },
-            [RollModCategory.effect]: {
-                positive: {
-                    "Push": {
-                        status: RollModStatus.ToggledOn,
-                        value: 1,
-                        tooltip: "<p>Take <strong class='shadowed red-bright'>2 Stress</strong> to increase your <strong class='shadowed'>Effect</strong> by one level.</p><p><em>(You can both <strong class='shadowed'>Push for Effect</strong> and <strong class='shadowed'>Push for +1d</strong>, for a total cost of <strong class='shadowed red-bright'>4 Stress</strong>.)</em></p>"
-                    },
-                    "Setup": {
-                        status: RollModStatus.ForcedOn,
-                        value: 1,
-                        sideString: "High-Flyer",
-                        tooltip: "<p><strong class='shadowed gold-bright'>High-Flyer</strong> has set you up for success with a preceding action, increasing your <strong class='shadowed'>Effect</strong> by one level.</p>"
-                    },
-                    "Potency": {
-                        status: RollModStatus.Hidden,
-                        value: 1,
-                        tooltip: "<p>Circumstances in your favor make this action especially <strong class='shadowed'>Potent</strong>, increasing your <strong class='shadowed'>Effect</strong> by one level.</p>"
-                    },
-                    "Cloak & Dagger": {
-                        status: RollModStatus.ToggledOff,
-                        value: 1,
-                        isAbility: true,
-                        tooltip: "<p>You may expend your <strong>special armor</strong> to protect a teammate, or to <strong>push yourself</strong> when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
-                    }
-                },
-                negative: {
-                    [Harm.Impaired]: {
-                        status: RollModStatus.ForcedOn,
-                        value: 1,
-                        tooltip: `<p><strong class='shadowed uppercase red-bright'>${Harm.Impaired}:</strong> Your injuries reduce your <strong class='shadowed'>Effect</strong> by one level.</p>`
-                    },
-                    Opposition: {
-                        status: RollModStatus.ForcedOn,
-                        value: 1,
-                        tooltip: "<p>The following <strong class='shadowed'>Factors</strong> combine to reduce your <strong class='shadowed'>Effect</strong> by one level:</p><ul><li>Inferior Quality</li><li>Detrimental Scale</li></ul>"
-                    }
-                }
-            },
-            [RollModCategory.result]: {
-                positive: {
-                    Mastermind: {
-                        status: RollModStatus.ToggledOff,
-                        value: 1,
-                        isAbility: true,
-                        tooltip: "<p>You may expend your <strong>special armor</strong> to protect a teammate, or to <strong>push yourself</strong> when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
-                    }
-                }, negative: {}
-            },
-            [RollModCategory.after]: {
-                positive: {
-                    Mesmerism: {
-                        status: RollModStatus.ToggledOff,
-                        value: 1,
-                        isAbility: true,
-                        tooltip: "<p>You may expend your <strong>special armor</strong> to protect a teammate, or to <strong>push yourself</strong> when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
-                    }
-                },
-                negative: {}
-            }
-        };
         await user.setFlag(C.SYSTEM_ID, "rollCollab", flagUpdateData);
         BladesRollCollabSheet.RenderRollCollab({ userID: user._id, rollID: flagUpdateData.rollID });
         socketlib.system.executeForAllGMs("renderRollCollab", { userID: user._id, rollID: flagUpdateData.rollID });
@@ -376,17 +273,24 @@ class BladesRollCollabSheet extends DocumentSheet {
             ...rData
         };
         if (!this.rollSource) {
-            eLog.error("rollCollab", `[getData()] No '${rData.rollSourceType}' Found with ID '${rData.rollSourceID}'`, { user: this.document, rData: rData });
+            eLog.error("rollCollab", `[getData()] No '${sheetData.rollSourceType}' Found with ID '${sheetData.rollSourceID}'`, { user: this.document, rData: rData });
             return null;
         }
         sheetData.system = this.rollSource.system;
         sheetData.rollSource = this.rollSource;
-        if (BladesActor.IsType(this.rollSource, BladesActorType.pc) && isAction(rData.rollTrait)) {
+        if (sheetData.rollOppositionID) {
+            const rollOpposition = BladesActor.Get(sheetData.rollOppositionID) ?? BladesItem.Get(sheetData.rollOppositionID);
+            if (!rollOpposition) {
+                throw new Error(`Cannot find Roll Opposition with ID '${sheetData.rollOppositionID}'`);
+            }
+            sheetData.rollOpposition = rollOpposition;
+        }
+        if (BladesActor.IsType(this.rollSource, BladesActorType.pc) && isAction(sheetData.rollTrait)) {
             const { rollSource } = this;
             sheetData.rollTraitData = {
-                name: rData.rollTrait,
-                value: rollSource.actions[rData.rollTrait],
-                max: rollSource.actions[rData.rollTrait]
+                name: sheetData.rollTrait,
+                value: rollSource.actions[sheetData.rollTrait],
+                max: rollSource.actions[sheetData.rollTrait]
             };
             sheetData.rollTraitOptions = Object.values(Action)
                 .map((action) => ({
@@ -394,12 +298,12 @@ class BladesRollCollabSheet extends DocumentSheet {
                 value: action
             }));
         }
-        else if (BladesActor.IsType(this.rollSource, BladesActorType.pc) && isAttribute(rData.rollTrait)) {
+        else if (BladesActor.IsType(this.rollSource, BladesActorType.pc) && isAttribute(sheetData.rollTrait)) {
             const { rollSource } = this;
             sheetData.rollTraitData = {
-                name: rData.rollTrait,
-                value: rollSource.attributes[rData.rollTrait],
-                max: rollSource.attributes[rData.rollTrait]
+                name: sheetData.rollTrait,
+                value: rollSource.attributes[sheetData.rollTrait],
+                max: rollSource.attributes[sheetData.rollTrait]
             };
             sheetData.rollTraitOptions = Object.values(Attribute)
                 .map((attribute) => ({
@@ -407,7 +311,7 @@ class BladesRollCollabSheet extends DocumentSheet {
                 value: attribute
             }));
         }
-        else if (rData.rollTrait === "tier") {
+        else if (sheetData.rollTrait === "tier") {
             const { rollSource } = this;
             sheetData.rollTraitData = {
                 name: "Tier",
@@ -416,11 +320,11 @@ class BladesRollCollabSheet extends DocumentSheet {
             };
             sheetData.rollTraitOptions = false;
         }
-        else if (U.isInt(rData.rollTrait)) {
+        else if (U.isInt(sheetData.rollTrait)) {
             sheetData.rollTraitData = {
-                name: `+${rData.rollTrait}`,
-                value: rData.rollTrait,
-                max: rData.rollTrait
+                name: `+${sheetData.rollTrait}`,
+                value: sheetData.rollTrait,
+                max: sheetData.rollTrait
             };
             sheetData.rollTraitOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                 .map((num) => ({
@@ -428,14 +332,39 @@ class BladesRollCollabSheet extends DocumentSheet {
                 value: num
             }));
         }
-
-        sheetData.rollFactorData = [
-            { name: Factor.quality, value: U.romanizeNum(2), cssClasses: "factor-gold factor-main" },
-            { name: Factor.scale, value: `${2}`, cssClasses: "factor-gold" }
-        ];
-        sheetData.rollOpposition = undefined;
-        sheetData.stressData = { cost: 4, tooltip: "<ul><li><strong class='shadowed'>2</strong> Stress from Pushing for +1d</li><li><strong class='shadowed'>2</strong> Stress from Pushing for Effect</li></ul>" };
-        const getModsDelta = (cat) => {
+        sheetData.rollMods = mergeObject(sheetData.rollMods, sheetData.rollSource.rollMods);
+        function isModAutoActive(mod) {
+            const autoRollTypes = mod.autoRollTypes ?? [];
+            const autoRollTraits = mod.autoRollTraits ?? [];
+            return autoRollTypes.length + autoRollTraits.length > 0
+                && (autoRollTypes.length === 0 || autoRollTypes.includes(sheetData.rollType))
+                && (autoRollTraits.length === 0 || autoRollTraits.includes(sheetData.rollTrait));
+        }
+        function isModConditional(mod) {
+            const conditionalRollTypes = mod.conditionalRollTypes ?? [];
+            const conditionalRollTraits = mod.conditionalRollTraits ?? [];
+            return conditionalRollTypes.length + conditionalRollTraits.length > 0
+                && (conditionalRollTypes.length === 0 || conditionalRollTypes.includes(sheetData.rollType))
+                && (conditionalRollTraits.length === 0 || conditionalRollTraits.includes(sheetData.rollTrait));
+        }
+        Object.values(RollModCategory).forEach((modCat) => {
+            Object.values(sheetData.rollMods[modCat]?.positive ?? {})
+                .filter((mod) => mod.isConditional)
+                .forEach((mod) => {
+                if (isModAutoActive(mod)) {
+                    sheetData.rollMods[modCat].positive[mod.name].status = RollModStatus.ForcedOn;
+                }
+                else if (isModConditional(mod)) {
+                    if (![RollModStatus.ForcedOn, RollModStatus.ToggledOn].includes(mod.status)) {
+                        sheetData.rollMods[modCat].positive[mod.name].status = RollModStatus.ToggledOff;
+                    }
+                }
+                else {
+                    sheetData.rollMods[modCat].positive[mod.name].status = RollModStatus.Hidden;
+                }
+            });
+        });
+        function getModsDelta(cat) {
             const activePosMods = Object.values(sheetData.rollMods?.[cat]?.positive ?? {})
                 .filter((mod) => [RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status));
             const posModVals = activePosMods.map((mod) => mod.value);
@@ -444,7 +373,7 @@ class BladesRollCollabSheet extends DocumentSheet {
                 .filter((mod) => [RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status));
             const negModVals = activeNegMods.map((mod) => mod.value);
             const negModSum = U.sum(negModVals);
-            eLog.checkLog3("rollMods", `getModsDelta(${cat}`, { activePosMods, posModVals, posModSum, activeNegMods, negModVals, negModSum, returnVal: U.sum(Object.values(sheetData.rollMods?.[cat]?.positive ?? {})
+            eLog.checkLog3("rollMods", `getModsDelta(${cat})`, { activePosMods, posModVals, posModSum, activeNegMods, negModVals, negModSum, returnVal: U.sum(Object.values(sheetData.rollMods?.[cat]?.positive ?? {})
                     .filter((mod) => [RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status))
                     .map((mod) => mod.value))
                     - U.sum(Object.values(sheetData.rollMods?.[cat]?.negative ?? {})
@@ -456,52 +385,76 @@ class BladesRollCollabSheet extends DocumentSheet {
                 - U.sum(Object.values(sheetData.rollMods?.[cat]?.negative ?? {})
                     .filter((mod) => [RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status))
                     .map((mod) => mod.value));
-        };
+        }
         sheetData.diceTotal = Math.max(0, (sheetData.rollTraitData?.value ?? 0)
             + getModsDelta(RollModCategory.roll)
-            + (rData.GMBoosts.Dice ?? 0));
+            + (sheetData.GMBoosts.Dice ?? 0));
         let finalPosIndex = Object.values(Position).indexOf(sheetData.rollPositionInitial ?? Position.risky)
             + getModsDelta(RollModCategory.position);
         let finalEffectIndex = Object.values(Effect).indexOf(sheetData.rollEffectInitial ?? Effect.standard)
             + getModsDelta(RollModCategory.effect);
-        const isPosEffectTradeValid = rData.rollPosEffectTrade === "position"
-            ? (finalPosIndex < 2 && finalEffectIndex > 0)
-            : (rData.rollPosEffectTrade === "effect"
-                ? (finalPosIndex > 0 && finalEffectIndex < 4)
-                : true);
-        if (isPosEffectTradeValid) {
-            if (rData.rollPosEffectTrade === "position") {
-                finalPosIndex++;
-                finalEffectIndex--;
-            }
-            if (rData.rollPosEffectTrade === "effect") {
-                finalPosIndex--;
-                finalEffectIndex++;
-            }
+        sheetData.canTradePosition = sheetData.rollPosEffectTrade === false
+            && (finalPosIndex > 0 && finalEffectIndex < 4);
+        sheetData.canTradeEffect = sheetData.rollPosEffectTrade === false
+            && (finalPosIndex < 2 && finalEffectIndex > 0);
+        if (sheetData.rollPosEffectTrade === "position") {
+            finalPosIndex++;
+            finalEffectIndex--;
+        }
+        if (sheetData.rollPosEffectTrade === "effect") {
+            finalPosIndex--;
+            finalEffectIndex++;
         }
         sheetData.rollPositionFinal = Object.values(Position)[U.clampNum(finalPosIndex, [0, 2])];
         sheetData.rollEffectFinal = Object.values(Effect)[U.clampNum(finalEffectIndex, [0, 4])];
         sheetData.isAffectingResult = getModsDelta(RollModCategory.result) !== 0
-            || (rData.GMBoosts.Result ?? 0) !== 0;
+            || (sheetData.GMBoosts.Result ?? 0) !== 0
+            || Object.values({
+                ...(sheetData.rollMods.result?.negative ?? {}),
+                ...(sheetData.rollMods.result?.positive ?? {})
+            }).filter((mod) => mod.status !== RollModStatus.Hidden).length > 0;
         if (sheetData.isAffectingResult) {
             sheetData.rollResultFinal = getModsDelta(RollModCategory.result)
-                + (rData.GMBoosts.Result ?? 0);
+                + (sheetData.GMBoosts.Result ?? 0);
         }
-        sheetData.hasInactiveAbilities = {
-            [RollModCategory.roll]: Object.values(rData.rollMods.roll?.positive ?? {})
-                .filter((mod) => mod.isAbility && mod.status === RollModStatus.ToggledOff)
+        if (sheetData.rollFactors) {
+            for (const [factorName] of Object.entries(sheetData.rollFactors)) {
+                if (sheetData.GMBoosts && factorName in sheetData.GMBoosts) {
+                    sheetData.rollFactors[factorName].value += sheetData.GMBoosts[factorName] ?? 0;
+                }
+                if ([Factor.tier, Factor.quality].includes(factorName)) {
+                    sheetData.rollFactors[factorName].display = U.romanizeNum(sheetData.rollFactors[factorName].value);
+                }
+            }
+        }
+        if (sheetData.rollOpposition) {
+            sheetData.rollOppositionFactors = sheetData.rollOpposition.rollFactors;
+            if (sheetData.rollOppositionFactors) {
+                for (const [factorName] of Object.entries(sheetData.rollOppositionFactors)) {
+                    if (sheetData.GMOppBoosts && factorName in sheetData.GMOppBoosts) {
+                        sheetData.rollOppositionFactors[factorName].value += sheetData.GMOppBoosts[factorName] ?? 0;
+                    }
+                    if ([Factor.tier, Factor.quality].includes(factorName)) {
+                        sheetData.rollOppositionFactors[factorName].display = U.romanizeNum(sheetData.rollOppositionFactors[factorName].value);
+                    }
+                }
+            }
+        }
+        sheetData.hasInactiveConditionals = {
+            [RollModCategory.roll]: Object.values(sheetData.rollMods?.roll?.positive ?? {})
+                .filter((mod) => mod.isConditional && mod.status === RollModStatus.ToggledOff)
                 .length > 0,
-            [RollModCategory.position]: Object.values(rData.rollMods.position?.positive ?? {})
-                .filter((mod) => mod.isAbility && mod.status === RollModStatus.ToggledOff)
+            [RollModCategory.position]: Object.values(sheetData.rollMods?.position?.positive ?? {})
+                .filter((mod) => mod.isConditional && mod.status === RollModStatus.ToggledOff)
                 .length > 0,
-            [RollModCategory.effect]: Object.values(rData.rollMods.effect?.positive ?? {})
-                .filter((mod) => mod.isAbility && mod.status === RollModStatus.ToggledOff)
+            [RollModCategory.effect]: Object.values(sheetData.rollMods?.effect?.positive ?? {})
+                .filter((mod) => mod.isConditional && mod.status === RollModStatus.ToggledOff)
                 .length > 0,
-            [RollModCategory.result]: Object.values(rData.rollMods.result?.positive ?? {})
-                .filter((mod) => mod.isAbility && mod.status === RollModStatus.ToggledOff)
+            [RollModCategory.result]: Object.values(sheetData.rollMods?.result?.positive ?? {})
+                .filter((mod) => mod.isConditional && mod.status === RollModStatus.ToggledOff)
                 .length > 0,
-            [RollModCategory.after]: Object.values(rData.rollMods.after?.positive ?? {})
-                .filter((mod) => mod.isAbility && mod.status === RollModStatus.ToggledOff)
+            [RollModCategory.after]: Object.values(sheetData.rollMods?.after?.positive ?? {})
+                .filter((mod) => mod.isConditional && mod.status === RollModStatus.ToggledOff)
                 .length > 0
         };
         const { success, partial, fail } = C.DiceOdds[sheetData.diceTotal ?? 0];
@@ -512,7 +465,23 @@ class BladesRollCollabSheet extends DocumentSheet {
             `var(--blades-white-bright) ${fail + partial + success}%`,
             "var(--blades-gold-bright))"
         ].join(", ");
-        
+        const stressMods = Object.values(sheetData.rollMods ?? {})
+            .map((catModData) => Object.values(catModData)
+            .map((posNegModData) => Object.values(posNegModData)))
+            .flat(3)
+            .filter((modData) => [RollModStatus.ForcedOn, RollModStatus.ToggledOn].includes(modData.status) && (modData.stressCost ?? 0) > 0);
+        const stressTotal = U.sum(stressMods.map((mod) => mod.stressCost));
+        if (stressTotal > 0) {
+            sheetData.stressData = {
+                cost: stressTotal,
+                tooltip: [
+                    `<h1>Stress Cost: <span class='red-bright shadowed'>${stressTotal}</span></h1><ul>`,
+                    ...stressMods
+                        .map((mod) => `<li><strong class='shadowed'>${mod.name} (${mod.category}):</strong> <strong class='shadowed red-bright'>${mod.stressCost}</strong> Stress.</li>`),
+                    "</ul>"
+                ].join("")
+            };
+        }
         eLog.checkLog3("getData", "RollCollab.getData()", { ...context, ...sheetData });
         return {
             ...context,

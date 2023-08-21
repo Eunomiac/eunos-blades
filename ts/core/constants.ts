@@ -155,16 +155,16 @@ export enum RollModCategory {
   after = "after"
 }
 export enum Position {
-  controlled = "controlled",
+  desperate = "desperate",
   risky = "risky",
-  desperate = "desperate"
+  controlled = "controlled"
 }
 export enum Effect {
-  extreme = "extreme",
-  great = "great",
-  standard = "standard",
+  zero = "zero",
   limited = "limited",
-  zero = "zero"
+  standard = "standard",
+  great = "great",
+  extreme = "extreme"
 }
 export enum Factor {
   tier = "tier",
@@ -458,6 +458,29 @@ const C = {
     "A Small Army of ",
     "An Army of ",
     "A Massive Army of "
+  ],
+  DiceOdds: [
+    {crit: 0, success: 2.8, partial: 22.2, fail: 75},
+    {crit: 0, success: 16.7, partial: 33.3, fail: 50},
+    {crit: 2.8, success: 27.8, partial: 44.4, fail: 25},
+    {crit: 7.4, success: 34.7, partial: 45.4, fail: 12.5},
+    {crit: 13.2, success: 38.6, partial: 42, fail: 6.3},
+    {crit: 19.6, success: 40.2, partial: 37.1, fail: 3.1},
+    {crit: 26.3, success: 40.2, partial: 31.9, fail: 1.6},
+    {crit: 33, success: 39.1, partial: 27.1, fail: 0.8},
+    {crit: 39.5, success: 37.2, partial: 22.9, fail: 0.4},
+    {crit: 45.7, success: 34.9, partial: 19.2, fail: 0.2},
+    {crit: 51.5, success: 32.3, partial: 16.1, fail: 0.1},
+    {crit: 56.9, success: 29.6, partial: 13.4, fail: 0},
+    {crit: 61.9, success: 26.9, partial: 11.2, fail: 0},
+    {crit: 66.3, success: 24.3, partial: 9.3, fail: 0},
+    {crit: 70.4, success: 21.8, partial: 7.8, fail: 0},
+    {crit: 74, success: 19.5, partial: 6.5, fail: 0},
+    {crit: 77.3, success: 17.3, partial: 5.4, fail: 0},
+    {crit: 80.2, success: 15.3, partial: 4.5, fail: 0},
+    {crit: 82.7, success: 13.5, partial: 3.8, fail: 0},
+    {crit: 85, success: 11.9, partial: 3.1, fail: 0},
+    {crit: 87, success: 10.4, partial: 2.6, fail: 0}
   ],
   ExperienceClues: {
     Scoundrel: [

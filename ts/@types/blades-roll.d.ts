@@ -1,6 +1,7 @@
 import {BladesActorType, BladesItemType, RollType, RollModStatus, RollModCategory, Action, Attribute, Position, Effect, Factor} from "../core/constants.js";
 import BladesActor from "../blades-actor.js";
 import BladesItem from "../blades-item.js";
+import {ModEffects} from "../sheets/roll/blades-roll-collab-sheet.js";
 
 declare global {
 
@@ -22,10 +23,11 @@ declare global {
       rollPositionInitial: Position;
       rollEffectInitial: Effect;
       rollPosEffectTrade: "position"|"effect"|false,
-      rollFactors: Record<Factor,FactorData>,
+      rollFactors: Partial<Record<Factor,FactorData>> & Record<Factor.tier,FactorData>,
       rollOppositionID?: string,
       isGMReady: boolean,
-      GMBoosts: Record<"Dice"|Factor|"Result",number>
+      GMBoosts: Partial<Record<"Dice"|Factor|"Result",number>>,
+      GMOppBoosts: Partial<Record<Factor,number>>
     }
 
     export interface SheetData extends FlagData {
@@ -35,38 +37,56 @@ declare global {
       system: BladesActorSystem|BladesItemSystem,
       flags: Record<string,any>,
 
-      rollSource: BladesActor|BladesItem,
+      rollSource: BladesActor|BladesItem & SourceDoc,
       rollTraitData: NamedValueMax,
       rollTraitOptions: Array<{name: string, value: RollTrait}>|false,
 
       diceTotal: number,
 
-      rollFactorData: Array<{name: Factor, value: string, cssClasses: string}>,
-
-      rollOpposition?: OppositionData,
+      rollOpposition?: OppositionDoc,
+      rollOppositionFactors?: Partial<Record<Factor,FactorData>> & Record<Factor.tier,FactorData>
 
       rollPositionFinal: Position,
       rollEffectFinal: Effect,
       isAffectingResult: boolean,
       rollResultFinal: number,
 
-      rollOddsData: Array<{odds: number, result: string, cssClasses: string, tooltip: string}>
+      canTradePosition: boolean,
+      canTradeEffect: boolean,
+
+      hasInactiveConditionals: Record<RollModCategory, boolean>,
+
+      oddsGradient: string,
       stressData: {cost: number, tooltip: string}
     }
 
     export type RollTrait = Action|Attribute|Factor|number;
 
     export interface FactorData extends NamedValueMax {
-      isActive: boolean
-      isDominant: boolean
-      highFavorsPC: boolean
+      display?: string,
+      isActive: boolean,
+      isDominant: boolean,
+      highFavorsPC: boolean,
+      cssClasses: string
     }
 
     type RollModData = {
+      name: string,
       status: RollModStatus,
+      value: number,
+      effectKey?: KeyOf<typeof ModEffects>,
       sideString?: string,
       tooltip: string,
-      isAbility?: boolean
+      posNeg: "positive"|"negative",
+      isConditional?: boolean,
+      isOppositional?: boolean,
+      modType?: BladesItemType|"general",
+      conditionalRollTypes?: RollType[],
+      autoRollTypes?: RollType[],
+      conditionalRollTraits?: RollTrait[],
+      autoRollTraits?: RollTrait[],
+      category: RollModCategory,
+      stressCost?: number
     }
 
     export type ModData = Partial<Record<
@@ -78,24 +98,14 @@ declare global {
     >>;
 
     export interface SourceDoc {
-      getTierTotal(): number
-      get rollMods(): BladesRollCollab.ModData
+      get rollMods(): ModData,
+      get rollFactors(): Partial<Record<Factor,FactorData>> & Record<Factor.tier,FactorData>
     }
 
-    export interface OppositionDoc extends SourceDoc {
-      get rollOppImg(): string|undefined
+    export interface OppositionDoc {
+      get rollOppImg(): string|undefined,
+      get rollFactors(): Partial<Record<Factor,FactorData>> & Record<Factor.tier,FactorData>
     }
 
-    export interface OppositionData {
-      doc: (BladesActor|BladesItem) & OppositionDoc,
-      rollFactorData: Array<{name: Factor, value: string, cssClasses: string}>,
-      GMBoosts: Partial<Record<Factor,number>>
-    }
-
-    export interface ModDoc {
-      get rollModData(): {
-
-      }
-    }
   }
 }
