@@ -11,6 +11,7 @@ import {SelectionCategory} from "./blades-dialog.js";
 import type BladesActiveEffect from "./blades-active-effect";
 import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs.js";
 import type {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/utils/helpers.mjs.js";
+import BladesRollCollabSheet from "./blades-roll-collab.js";
 // #endregion
 
 
@@ -1071,10 +1072,10 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
   // #region BladesRollCollab Implementation
 
-  get rollMods() {
+  get rollMods(): BladesRollCollab.RollModData[] {
     const {roll_mods} = this.system;
-    if (!roll_mods) { return {} }
-    const rollMods: BladesRollCollab.ModData = {};
+    if (!roll_mods) { return [] }
+    const rollMods: BladesRollCollab.RollModData[] = [];
 
     roll_mods.forEach((modString) => {
       const pStrings = modString.split(/@/);
@@ -1086,15 +1087,17 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       if (!catVal || !(catVal in RollModCategory)) { throw new Error(`RollMod Missing Category: '${modString}'`) }
       const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
       const posNegVal = posNegString.replace(/^.*:/, "") as "positive"|"negative";
-      rollMods[catVal] ??= {positive: {}, negative: {}};
-      rollMods[catVal]![posNegVal][nameVal] = {
+
+      const rollMod: BladesRollCollab.RollModData = {
         name: nameVal,
         category: catVal,
         status: RollModStatus.ToggledOff,
+        modType: "general",
         value: 1,
         posNeg: posNegVal,
         tooltip: ""
       };
+
       pStrings.forEach((pString) => {
         const [keyString, valString] = pString.split(/:/) as [string, string];
         const val: string|string[] = /\|/.test(valString) ? valString.split(/\|/) : valString;
@@ -1111,21 +1114,50 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
         if (/^a.*r?.*tr/i.test(keyString)) { key = "autoRollTraits" } else {
           throw new Error(`Bad Roll Mod Key: ${keyString}`);
         }
+
         Object.assign(
-          rollMods[catVal]![posNegVal][nameVal],
-          {[key]: key === "value" ? U.pInt(val as number|string) : val}
+          rollMod,
+          {[key]: ["value"].includes(key)
+            ? U.pInt(val)
+            : (["effectKey", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
+                ? [val].flat()
+                : val)}
         );
       });
 
       // name:Alchemist@cat:result@posNeg:positive@type:ability@cTypes:Action|Downtime@cTraits:study|tinker|finesse|wreck|attune@tooltip:<h1>Alchemist</h1><p>When you <strong>invent</strong> or <strong>craft</strong> a creation with <em>alchemical</em> features, you get <strong>+1 result level</strong>to your roll.</p>
       if (
-        (rollMods[catVal]![posNegVal][nameVal].conditionalRollTypes?.length ?? 0)
-        + (rollMods[catVal]![posNegVal][nameVal].conditionalRollTraits?.length ?? 0)
-        + (rollMods[catVal]![posNegVal][nameVal].autoRollTypes?.length ?? 0)
-        + (rollMods[catVal]![posNegVal][nameVal].autoRollTraits?.length ?? 0) > 0) {
-          rollMods[catVal]![posNegVal][nameVal].isConditional = true;
+        (rollMod.conditionalRollTypes?.length ?? 0)
+        + (rollMod.conditionalRollTraits?.length ?? 0)
+        + (rollMod.autoRollTypes?.length ?? 0)
+        + (rollMod.autoRollTraits?.length ?? 0) > 0) {
+        rollMod.isConditional = true;
       }
-      rollMods[catVal]![posNegVal][nameVal].modType ??= "general";
+
+      BladesRollCollabSheet.MergeInRollMod(rollMod, rollMods);
+    });
+
+    // Add roll mods from harm
+    [[/1d/, RollModCategory.roll] as const, [/Less Effect/, RollModCategory.effect] as const].forEach(([effectPat, effectCat]) => {
+      const {one: harmConditionOne, two: harmConditionTwo} = Object.values(this.system.harm ?? {})
+        .find((harmData) => effectPat.test(harmData.effect)) ?? {};
+      const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
+      if (harmString.length > 0) {
+        BladesRollCollabSheet.MergeInRollMod({
+          name: harmString,
+          category: effectCat,
+          posNeg: "negative",
+          status: RollModStatus.ForcedOn,
+          modType: "harm",
+          value: 1,
+          tooltip: [
+            `<h1 class='red-bright'><strong>Harm:</strong> ${harmString}</h1>`,
+            effectCat === RollModCategory.roll
+              ? "<p>Your injuries reduce your <strong class='red-bright'>dice pool</strong> by one.</p>"
+              : "<p>Your injuries reduce your <strong class='red-bright'>Effect</strong> by one level."
+          ].join("")
+        }, rollMods);
+      }
     });
 
     eLog.checkLog3("rollCollab", `Roll Mods (${this.name})`, {system: this.system.roll_mods, rollMods});

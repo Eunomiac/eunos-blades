@@ -15,6 +15,32 @@ function isTier(trait: string | number): trait is BladesRollCollab.RollTrait & "
 function isNumber(trait: string | number): trait is BladesRollCollab.RollTrait & number { return U.isInt(trait) }
 
 export const ModEffects = {
+  AutoEnableOn: (mod: BladesRollCollab.RollModData, sheetData: BladesRollCollab.SheetData, param: string) => {
+
+
+
+  },
+  /*
+  AutoEnableOn-Desperate
+
+  Cost-SpecialArmor
+  Cost-Stress2
+
+  Decrease-Harm1
+
+  ForceOn-BestAction
+  ForceOn-Potency
+  ForceOn-Push
+
+  Increase-Tier1
+
+  Is-Push
+
+  Negate-Consequence
+  Negate-QualityPenalty
+  Negate-ScalePenalty
+  Negate-TierPenalty
+*/
   NegateTierPenalty: (mod: BladesRollCollab.RollModData, sheetData: BladesRollCollab.SheetData) => {
     /* Strip penalties due to Tier */
     return sheetData;
@@ -23,11 +49,56 @@ export const ModEffects = {
     /* Strip penalties due to Quality */
     return sheetData;
   },
+  NegateScalePenalty: (mod: BladesRollCollab.RollModData, sheetData: BladesRollCollab.SheetData) => {
+    /* Strip penalties due to Scale */
+    return sheetData;
+  },
   IsPush: (mod: BladesRollCollab.RollModData, sheetData: BladesRollCollab.SheetData) => {
-    /* ForceOff Push (in right category) and Bargain */
+    /* ForceON Push (in right category) and Bargain. Still costs 2 stress. */
+
+    return sheetData;
+  },
+  NoStress: (mod: BladesRollCollab.RollModData, sheetData: BladesRollCollab.SheetData) => {
+    /* Only relevant if 'IsPush' also set: Counts as Push but doesn't cost 2 stress. */
+
+    return sheetData;
+  },
+  UsesSpecialArmor: (mod: BladesRollCollab.RollModData, sheetData: BladesRollCollab.SheetData) => {
+    /* Uses special armor when roll triggered.  Auto-hide if special armor unavailable. */
+
+    return sheetData;
+  },
+  UsesAbility: (mod: BladesRollCollab.RollModData, sheetData: BladesRollCollab.SheetData) => {
+    /* For abilities with usage limits, uses one 'use' when roll triggered. Auto-hide if no uses available. */
+
+    return sheetData;
+  },
+  GrantPotency: (mod: BladesRollCollab.RollModData, sheetData: BladesRollCollab.SheetData) => {
+    /* Apply Potency to effect. */
+
+    return sheetData;
+  },
+  ToGroupCohorts: (mod: BladesRollCollab.RollModData, sheetData: BladesRollCollab.SheetData) => {
+    /* Apply benefits to rolls made by cohorts included in group action. Auto-hide if not a group action that includes cohorts. */
+
+    return sheetData;
+  },
+  HealingRoll: (mod: BladesRollCollab.RollModData, sheetData: BladesRollCollab.SheetData) => {
+    /* Show if 'Healing Roll' toggled on by GM */
+
+    return sheetData;
+  },
+  ReduceHarm: (mod: BladesRollCollab.RollModData, sheetData: BladesRollCollab.SheetData) => {
+    /* Resistance Rolls only -- Reduce Harm by One Level before resisting */
+
+    return sheetData;
+  },
+  NegateConsequence: (mod: BladesRollCollab.RollModData, sheetData: BladesRollCollab.SheetData) => {
+    /* Resistance Rolls only -- Automatically negate consequence, suffer no stress */
 
     return sheetData;
   }
+
 };
 
 class BladesRollCollabSheet extends DocumentSheet {
@@ -46,6 +117,8 @@ class BladesRollCollabSheet extends DocumentSheet {
     return loadTemplates([
       "systems/eunos-blades/templates/roll/roll-collab.hbs",
       "systems/eunos-blades/templates/roll/roll-collab-gm.hbs",
+      "systems/eunos-blades/templates/roll/partials/roll-collab-gm-number-line.hbs",
+      "systems/eunos-blades/templates/roll/partials/roll-collab-gm-select-doc.hbs",
       "systems/eunos-blades/templates/roll/partials/roll-collab-action.hbs",
       "systems/eunos-blades/templates/roll/partials/roll-collab-action-gm.hbs",
       "systems/eunos-blades/templates/roll/partials/roll-collab-resistance.hbs",
@@ -64,6 +137,17 @@ class BladesRollCollabSheet extends DocumentSheet {
     socketlib.system.register("closeRollCollab", BladesRollCollabSheet.CloseRollCollab);
   }
 
+  static MergeInRollMod(mod: BladesRollCollab.RollModData, modList: BladesRollCollab.RollModData[]): BladesRollCollab.RollModData[] {
+    // Pull matching mod in modList --> Same name, same category, same posNeg
+    U.pullElement(modList, (listMod) => mod && listMod
+      && mod.name === listMod.name
+      && mod.category === listMod.category
+      && mod.posNeg === listMod.posNeg);
+    // Push new mod into modList and return
+    modList.push(mod);
+    return modList;
+  }
+
   static Current: Record<string, BladesRollCollabSheet> = {};
 
   static get DefaultFlagData(): BladesRollCollab.FlagData {
@@ -73,86 +157,85 @@ class BladesRollCollabSheet extends DocumentSheet {
       rollSourceType: "Actor",
       rollSourceID: "",
       rollTrait: Factor.tier,
-      rollMods: {
-        [RollModCategory.roll]: {
-          positive: {
-            Push: {
-              name: "Push",
-              category: RollModCategory.roll,
-              status: RollModStatus.ToggledOff,
-              posNeg: "positive",
-              stressCost: 2,
-              value: 1,
-              tooltip: "<p>Take <strong class='shadowed red-bright'>2 Stress</strong> to add <strong class='shadowed'>1 die</strong> to your pool. <em>(You cannot also accept a <strong class='shadowed'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
-            },
-            Bargain: {
-              name: "Bargain",
-              category: RollModCategory.roll,
-              status: RollModStatus.Hidden,
-              posNeg: "positive",
-              value: 1,
-              tooltip: "<p>Accept a <strong class='shadowed red-bright'>Devil's Bargain</strong> from the GM to add <strong class='shadowed'>1 die</strong> to your pool <em>(You cannot also <strong class='shadowed'>Push</strong> to increase your dice pool: It's one or the other. You can, however, <strong class='shadowed'>Push</strong> to increase your <strong class='shadowed'>Effect</strong>.)</em></p>"
-            },
-            Assist: {
-              name: "Assist",
-              category: RollModCategory.roll,
-              status: RollModStatus.Hidden,
-              posNeg: "positive",
-              value: 1,
-              sideString: "",
-              tooltip: "<p>Another character is <strong class='shadowed'>Assisting</strong> your efforts, adding <strong class='shadowed'>1 die</strong> to your pool. <em>(It costs them <span class='shadowed red-bright'>1 Stress</span> to do so.)</em></p>"
-            }
-          },
-          negative: {}
+      rollMods: [
+        {
+          name: "Push",
+          category: RollModCategory.roll,
+          status: RollModStatus.ToggledOff,
+          posNeg: "positive",
+          modType: "general",
+          stressCost: 2,
+          value: 1,
+          tooltip: "<h1>Push for +1d</h1><p>For <strong class='red-bright'>2 Stress</strong>, add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also accept a <strong class='red-bright'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
         },
-        [RollModCategory.position]: {
-          positive: {
-            Setup: {
-              name: "Setup",
-              category: RollModCategory.position,
-              status: RollModStatus.Hidden,
-              posNeg: "positive",
-              value: 1,
-              sideString: undefined,
-              tooltip: "<p>Another character has set you up for success, increasing your <strong class='shadowed'>Position</strong> by one level.</p>"
-            }
-          },
-          negative: {}
+        {
+          name: "Bargain",
+          category: RollModCategory.roll,
+          status: RollModStatus.Hidden,
+          posNeg: "positive",
+          modType: "general",
+          value: 1,
+          tooltip: "<h1 class='red-bright'>Devil's Bargain</h1><p>The GM has offered you a <strong class='red-bright'>Devil's Bargain</strong>.</p><p><strong class='red-bright'>Accept the terms</strong> to add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also <strong>Push for +1d</strong> to increase your dice pool: It's one or the other.)</em></p>"
         },
-        [RollModCategory.effect]: {
-          positive: {
-            Push: {
-              name: "Push",
-              category: RollModCategory.effect,
-              status: RollModStatus.ToggledOff,
-              posNeg: "positive",
-              stressCost: 2,
-              value: 1,
-              tooltip: "<p>Take <strong class='shadowed red-bright'>2 Stress</strong> to increase your <strong class='shadowed'>Effect</strong> by one level. <em>(You can both <strong class='shadowed'>Push for Effect</strong> and <strong class='shadowed'>Push for +1d</strong> if you like, for a total cost of <strong class='shadowed red-bright'>4 Stress</strong>.)</em></p>"
-            },
-            Setup: {
-              name: "Setup",
-              category: RollModCategory.effect,
-              status: RollModStatus.Hidden,
-              posNeg: "positive",
-              value: 1,
-              sideString: undefined,
-              tooltip: "<p>Another character has set you up for success, increasing your <strong class='shadowed'>Effect</strong> by one level.</p>"
-            },
-            Potency: {
-              name: "Potency",
-              category: RollModCategory.effect,
-              status: RollModStatus.Hidden,
-              posNeg: "positive",
-              value: 1,
-              tooltip: ""
-            }
-          },
-          negative: {}
+        {
+          name: "Assist",
+          category: RollModCategory.roll,
+          status: RollModStatus.Hidden,
+          posNeg: "positive",
+          modType: "teamwork",
+          value: 1,
+          sideString: "",
+          tooltip: "<h1 class='gold-bright'>@CHARACTER_NAME@ Assists</h1><p><strong class='gold-bright'>@CHARACTER_NAME@</strong> is <strong>Assisting</strong> your efforts, adding <strong class='gold-bright'>1 die</strong> to your pool.</p>"
         },
-        [RollModCategory.result]: {positive: {}, negative: {}},
-        [RollModCategory.after]: {positive: {}, negative: {}}
-      },
+        {
+          name: "Setup",
+          category: RollModCategory.position,
+          status: RollModStatus.Hidden,
+          posNeg: "positive",
+          modType: "teamwork",
+          value: 1,
+          sideString: undefined,
+          tooltip: "<h1 class='gold-bright'>@CHARACTER_NAME@ Sets You Up</h1><p><strong class='gold-bright'>@CHARACTER_NAME@</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Position</strong> by one level.</p>"
+        },
+        {
+          name: "Push",
+          category: RollModCategory.effect,
+          status: RollModStatus.ToggledOff,
+          posNeg: "positive",
+          modType: "general",
+          stressCost: 2,
+          value: 1,
+          tooltip: "<h1>Push for Effect</h1><p>For <strong class='red-bright'>2 Stress</strong>, increase your <strong class='gold-bright'>Effect</strong> by one level.</p>"
+        },
+        {
+          name: "Setup",
+          category: RollModCategory.effect,
+          status: RollModStatus.Hidden,
+          posNeg: "positive",
+          modType: "teamwork",
+          value: 1,
+          sideString: undefined,
+          tooltip:  "<h1 class='gold-bright'>@CHARACTER_NAME@ Sets You Up</h1><p><strong class='gold-bright'>@CHARACTER_NAME@</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
+        },
+        {
+          name: "Potency",
+          category: RollModCategory.effect,
+          status: RollModStatus.Hidden,
+          posNeg: "positive",
+          modType: "general",
+          value: 1,
+          tooltip: "<h1>Potency</h1><p>By circumstance or advantage, you have <strong>Potency</strong> in this action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
+        },
+        {
+          name: "Potency",
+          category: RollModCategory.effect,
+          status: RollModStatus.Hidden,
+          posNeg: "negative",
+          modType: "general",
+          value: 1,
+          tooltip: "<h1 class='red-bright'>Potency</h1><p>By circumstance or advantage, <strong class='red-bright'>@OPPOSITION_NAME@</strong> has <strong>Potency</strong> against you, reducing your <strong class='red-bright'>Effect</strong> by one level."
+        }
+      ],
       rollPositionInitial: Position.risky,
       rollEffectInitial: Effect.standard,
       rollPosEffectTrade: false,
@@ -161,7 +244,24 @@ class BladesRollCollabSheet extends DocumentSheet {
       },
       isGMReady: false,
       GMBoosts: {},
-      GMOppBoosts: {}
+      GMOppBoosts: {},
+      docSelections: {
+        [RollModCategory.roll]: {
+          Assist: false,
+          Group_1: false,
+          Group_2: false,
+          Group_3: false,
+          Group_4: false,
+          Group_5: false,
+          Group_6: false
+        },
+        [RollModCategory.position]: {
+          Setup: false
+        },
+        [RollModCategory.effect]: {
+          Setup: false
+        }
+      }
     };
   }
 
@@ -180,12 +280,23 @@ class BladesRollCollabSheet extends DocumentSheet {
 
   static async NewRoll(config: BladesRollCollab.Config) {
     // All flags initialized on user must be set here, or everyone triggered by socket will run updates
-    if (game.user.isGM) { eLog.error("rollCollab", "GM Cannot Use New Roll!"); return }
+    // if (game.user.isGM) { eLog.error("rollCollab", "GM Cannot Use New Roll!"); return }
+
+    // let user: User|undefined;
+    // if (config.userID) {
+    //   user = game.users.get(config.userID);
+    //   if (!(user instanceof User)) { throw new Error(`[BladesRollCollab.NewRoll] Bad UserID: '${config.userID}'`) }
+    // } else if (game.user.isGM) {
+    //   user =
+    //   if (config.RollSource && config.rollSource)
+    // }
+
     const user = game.users.get(config.userID ?? game.user._id);
     if (!(user instanceof User)) {
       eLog.error("rollCollab", `[NewRoll()] Can't Find User '${config.userID}'`, config);
       return;
     }
+    await user.unsetFlag(C.SYSTEM_ID, "rollCollab");
 
     const flagUpdateData: BladesRollCollab.FlagData = {...BladesRollCollabSheet.DefaultFlagData};
 
@@ -280,6 +391,8 @@ class BladesRollCollabSheet extends DocumentSheet {
       cssClass: "roll-collab",
       editable: this.options.editable,
       isGM: game.eunoblades.Tracker!.system.is_spoofing_player ? false : game.user.isGM,
+      rollPositions: Object.values(Position),
+      rollEffects: Object.values(Effect),
       ...rData
     };
 
@@ -345,8 +458,11 @@ class BladesRollCollabSheet extends DocumentSheet {
     }
 
     // Compile roll mods from flags, rollSource and rollOpposition
-    sheetData.rollMods = mergeObject(sheetData.rollMods, sheetData.rollSource!.rollMods);
-
+    sheetData.rollMods = [
+      // Gotta iterate through rollSource rollMods and merge them on top of matching sheetData.rollMods
+      ...(sheetData.rollSource?.rollMods ?? []),
+      ...sheetData.rollMods
+    ]:
 
     // Set status of conditional roll mods based on roll data
     function isModAutoActive(mod: BladesRollCollab.RollModData) {
@@ -366,15 +482,11 @@ class BladesRollCollabSheet extends DocumentSheet {
 
     Object.values(RollModCategory).forEach((modCat) => {
       Object.values(sheetData.rollMods[modCat]?.positive ?? {})
-        .filter((mod) => mod.isConditional)
+        .filter((mod) => mod.isConditional && mod.status === RollModStatus.ToggledOff)
         .forEach((mod) => {
           if (isModAutoActive(mod)) {
             sheetData.rollMods[modCat]!.positive[mod.name].status = RollModStatus.ForcedOn;
-          } else if (isModConditional(mod)) {
-            if (![RollModStatus.ForcedOn, RollModStatus.ToggledOn].includes(mod.status)) {
-              sheetData.rollMods[modCat]!.positive[mod.name].status = RollModStatus.ToggledOff;
-            }
-          } else {
+          } else if (!isModConditional(mod)) {
             sheetData.rollMods[modCat]!.positive[mod.name].status = RollModStatus.Hidden;
           }
         });
@@ -415,10 +527,10 @@ class BladesRollCollabSheet extends DocumentSheet {
     let finalEffectIndex = Object.values(Effect).indexOf(sheetData.rollEffectInitial ?? Effect.standard)
       + getModsDelta(RollModCategory.effect);
 
-    sheetData.canTradePosition = sheetData.rollPosEffectTrade === false
-      && (finalPosIndex > 0 && finalEffectIndex < 4);
-    sheetData.canTradeEffect = sheetData.rollPosEffectTrade === false
-      && (finalPosIndex < 2 && finalEffectIndex > 0);
+    sheetData.canTradePosition = sheetData.rollPosEffectTrade === "position"
+      || (sheetData.rollPosEffectTrade === false && (finalPosIndex > 0 && finalEffectIndex < 4));
+    sheetData.canTradeEffect = sheetData.rollPosEffectTrade === "effect"
+      || (sheetData.rollPosEffectTrade === false && (finalPosIndex < 2 && finalEffectIndex > 1));
 
     if (sheetData.rollPosEffectTrade === "position") {
       finalPosIndex++; finalEffectIndex--;
@@ -436,7 +548,7 @@ class BladesRollCollabSheet extends DocumentSheet {
       || Object.values({
         ...(sheetData.rollMods.result?.negative ?? {}),
         ...(sheetData.rollMods.result?.positive ?? {})
-      }).filter((mod) => mod.status !== RollModStatus.Hidden).length > 0;
+      }).filter((mod) => sheetData.isGM || mod.status !== RollModStatus.Hidden).length > 0;
 
     if (sheetData.isAffectingResult) {
       sheetData.rollResultFinal = getModsDelta(RollModCategory.result)
@@ -528,27 +640,101 @@ class BladesRollCollabSheet extends DocumentSheet {
     };
   }
 
+  _toggleRollModClick(target: string, status: RollModStatus) {
+    switch (status) {
+      case RollModStatus.Hidden: {
+        return this.document.setFlag(C.SYSTEM_ID, target, RollModStatus.ForcedOn);
+      }
+      case RollModStatus.ToggledOff: {
+        return this.document.setFlag(C.SYSTEM_ID, target, RollModStatus.ToggledOn);
+      }
+      case RollModStatus.ToggledOn: {
+        return this.document.setFlag(C.SYSTEM_ID, target, RollModStatus.ToggledOff);
+      }
+      case RollModStatus.ForcedOn: {
+        if (game.user.isGM) {
+          return this.document.setFlag(C.SYSTEM_ID, target, RollModStatus.ToggledOff);
+        }
+        return undefined;
+      }
+      // no default
+    }
+    return undefined;
+  }
+
+  async _toggleRollModContext(target: string, status: RollModStatus) {
+    if (!game.user.isGM) { return undefined }
+    switch (status) {
+      case RollModStatus.Hidden: {
+        return this.document.setFlag(C.SYSTEM_ID, target, RollModStatus.ToggledOff);
+      }
+      case RollModStatus.ToggledOff: {
+        return this.document.setFlag(C.SYSTEM_ID, target, RollModStatus.Hidden);
+      }
+      case RollModStatus.ToggledOn: {
+        return this.document.setFlag(C.SYSTEM_ID, target, RollModStatus.Hidden);
+      }
+      case RollModStatus.ForcedOn: {
+        if (game.user.isGM) {
+          return this.document.setFlag(C.SYSTEM_ID, target, RollModStatus.Hidden);
+        }
+        return undefined;
+      }
+      // no default
+    }
+    return undefined;
+  }
+
   override activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
     ApplyTooltipListeners(html);
 
-    const trade$ = html.find("[data-action='trade']");
-    eLog.checkLog3("rollCollab", "Trade$", {trade: trade$});
-    html.find("[data-action='trade']").on({
-      click: (event) => {
-        const curVal = `${$(event.currentTarget).data("value")}`;
-        eLog.checkLog3("rollCollab", "Click Event", {event, curVal});
-        if (curVal === "false") {
-          this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", "position");
-        } else {
-          this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", false);
+    // Toggleable Roll Mods
+    html.find("[data-action='toggle']").on({
+      click: async (event) => {
+        event.preventDefault();
+        const elem$ = $(event.currentTarget);
+        const status = elem$.data("status") as RollModStatus;
+        const cat = elem$.data("cat");
+        const posNeg = elem$.data("posNeg");
+        const name = elem$.data("name");
+        await this._toggleRollModClick(`rollCollab.rollMods.${cat}.${posNeg}.${name}.status`, status);
+        const bargainStatus = this.document.getFlag(C.SYSTEM_ID, "rollCollab.rollMods.roll.positive.Bargain.status") as RollModStatus;
+        const pushStatus = this.document.getFlag(C.SYSTEM_ID, "rollCollab.rollMods.roll.positive.Push.status") as RollModStatus;
+        if (name === "Bargain") {
+          if ([RollModStatus.ForcedOn, RollModStatus.ToggledOn].includes(bargainStatus ?? "") && pushStatus !== RollModStatus.Hidden) {
+            await this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollMods.roll.positive.Push.status", RollModStatus.Hidden);
+          } else if ([RollModStatus.ToggledOff, RollModStatus.Hidden].includes(bargainStatus ?? "") && pushStatus === RollModStatus.Hidden) {
+            await this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollMods.roll.positive.Push.status", RollModStatus.ToggledOff);
+          }
         }
       },
       contextmenu: (event) => {
+        event.preventDefault();
+        const elem$ = $(event.currentTarget);
+        const status = elem$.data("status") as RollModStatus;
+        const cat = elem$.data("cat");
+        const posNeg = elem$.data("posNeg");
+        const name = elem$.data("name");
+        this._toggleRollModContext(`rollCollab.rollMods.${cat}.${posNeg}.${name}.status`, status);
+      }
+    });
+
+    html.find("[data-action='tradePosition']").on({
+      click: (event) => {
         const curVal = `${$(event.currentTarget).data("value")}`;
-        eLog.checkLog3("rollCollab", "Context Event", {event, curVal});
         if (curVal === "false") {
           this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", "effect");
+        } else {
+          this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", false);
+        }
+      }
+    });
+    html.find("[data-action='tradeEffect']").on({
+      click: (event) => {
+        const curVal = `${$(event.currentTarget).data("value")}`;
+        if (curVal === "false") {
+          this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", "position");
         } else {
           this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", false);
         }

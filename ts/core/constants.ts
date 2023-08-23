@@ -132,6 +132,15 @@ export enum Action {
   sway = "sway"
 }
 
+export enum DowntimeAction {
+  Acquire = "Acquire",
+  Recover = "Recover",
+  Vice = "Vice",
+  Project = "Project",
+  Heat = "Heat",
+  Train = "Train"
+}
+
 export enum RollType {
   Action = "Action",
   Downtime = "Downtime",
@@ -139,11 +148,17 @@ export enum RollType {
   Fortune = "Fortune"
 }
 
+export enum RollSubType {
+  Incarceration = "Incarceration",
+  Healing = "Healing",
+  Engagement = "Engagement",
+  GatherInfo = "GatherInfo"
+}
+
 export enum RollModStatus {
   Hidden = "Hidden",
   ToggledOff = "ToggledOff",
   ToggledOn = "ToggledOn",
-  ForcedOff = "ForcedOff",
   ForcedOn = "ForcedOn"
 }
 
@@ -169,11 +184,7 @@ export enum Effect {
 export enum Factor {
   tier = "tier",
   quality = "quality",
-  force = "force",
   scale = "scale",
-  area = "area",
-  duration = "duration",
-  range = "range",
   magnitude = "magnitude"
 }
 

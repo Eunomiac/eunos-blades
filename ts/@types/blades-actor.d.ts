@@ -77,7 +77,7 @@ declare global {
       harm: {
         light: Record<"one" | "two" | "effect", string>,
         medium: Record<"one" | "two" | "effect", string>,
-        heavy: Record<"one" | "effect", string>
+        heavy: Partial<Record<"one" | "two" | "effect", string>> & Record<"one"|"effect", string>
       },
       armor: {
         active: Record<"light" | "heavy" | "special", boolean>,

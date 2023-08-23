@@ -156,7 +156,6 @@ export var RollModStatus;
     RollModStatus["Hidden"] = "Hidden";
     RollModStatus["ToggledOff"] = "ToggledOff";
     RollModStatus["ToggledOn"] = "ToggledOn";
-    RollModStatus["ForcedOff"] = "ForcedOff";
     RollModStatus["ForcedOn"] = "ForcedOn";
 })(RollModStatus || (RollModStatus = {}));
 export var RollModCategory;

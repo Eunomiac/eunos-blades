@@ -792,7 +792,7 @@ const objForEach = (obj, func) => {
         Object.entries(obj).forEach(([key, val]) => func(val, key));
     }
 };
-const objCompact = (obj, preserve = []) => objFilter(obj, (val) => preserve.includes(`${val}`));
+const objCompact = (obj, remove = [undefined, null]) => objFilter(obj, (val) => !remove.includes(val));
 const objClone = (obj, isStrictlySafe = false) => {
     try {
         return JSON.parse(JSON.stringify(obj));

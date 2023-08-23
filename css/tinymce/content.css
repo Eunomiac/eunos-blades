@@ -2449,7 +2449,8 @@ html, :root {
       max-width: 350px;
       width: 350px;
       min-width: 350px;
-      translate: -50% 0% !important; }
+      translate: -50% 0% !important;
+      text-align: center; }
     html .tooltip.tooltip-pos-effect-trade, :root .tooltip.tooltip-pos-effect-trade {
       width: 330px;
       max-width: 330px;
@@ -2458,7 +2459,8 @@ html, :root {
       left: 0px;
       font-family: var(--font-default);
       font-size: 0.875rem;
-      text-transform: none; }
+      text-transform: none;
+      text-align: center; }
   html .tooltip-scaling-elem, :root .tooltip-scaling-elem {
     display: inline-block; }
 

@@ -1,0 +1,21 @@
+<div class="roll-num-container {{~#if tooltip}} tooltip-trigger{{/if}}" style="--spread-count: {{calc (calc range "*" 2) "+" 1}};">
+  {{#if label}}
+  <label class="num-spread-label">{{label}}</label>
+  {{/if}}
+  <div class="roll-num-spread">
+    {{#forloop (calc range "*" -1) range}}
+      <div class="num-box {{~#if (test @index "==" 0)}} origin-box{{/if}}" data-dtype="number" data-target="flags.eunos-blades.rollCollab.{{target}}" data-value="{{@index}}" {{~#if (test curValue "==" @index)}} data-active="true"{{/if}}>
+        {{calc @index "+" origValue}}
+      </div>
+    {{/forloop}}
+  </div>
+</div>
+
+<!--
+  tooltip?: string
+  range: number
+  label?: string
+  target: string
+  curValue: number
+  origValue: number
+-->

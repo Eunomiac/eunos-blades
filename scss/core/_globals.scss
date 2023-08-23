@@ -300,6 +300,7 @@
       width: 350px;
       min-width: 350px;
       translate: -50% 0% !important;
+      text-align: center;
     }
 
     &.tooltip-pos-effect-trade {
@@ -311,6 +312,7 @@
       font-family: var(--font-default);
       font-size: toRem(14px);
       text-transform: none;
+      text-align: center;
     }
   }
 

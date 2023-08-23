@@ -161,7 +161,7 @@ const gsapEffects: Record<string, gsapEffect> = {
             duration: 0.125,
             ease: "back"
           },
-          0
+          0.5
         );
       }
 
@@ -181,7 +181,7 @@ const gsapEffects: Record<string, gsapEffect> = {
             duration: 0.25,
             ease: "power2"
           },
-          0.125
+          1
         );
       }
 

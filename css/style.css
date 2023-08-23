@@ -8865,7 +8865,8 @@ template {
       max-width: 350px;
       width: 350px;
       min-width: 350px;
-      translate: -50% 0% !important; }
+      translate: -50% 0% !important;
+      text-align: center; }
     :root body.vtt.game.system-eunos-blades .app.window-app .tooltip.tooltip-pos-effect-trade {
       width: 330px;
       max-width: 330px;
@@ -8874,7 +8875,8 @@ template {
       left: 0px;
       font-family: var(--font-default);
       font-size: 0.875rem;
-      text-transform: none; }
+      text-transform: none;
+      text-align: center; }
   :root body.vtt.game.system-eunos-blades .app.window-app .tooltip-scaling-elem {
     display: inline-block; }
   :root body.vtt.game.system-eunos-blades .app.window-app .nav-group {
@@ -9978,7 +9980,8 @@ template {
             max-width: 350px;
             width: 350px;
             min-width: 350px;
-            translate: -50% 0% !important; }
+            translate: -50% 0% !important;
+            text-align: center; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip.tooltip-pos-effect-trade {
             width: 330px;
             max-width: 330px;
@@ -9987,7 +9990,8 @@ template {
             left: 0px;
             font-family: var(--font-default);
             font-size: 0.875rem;
-            text-transform: none; }
+            text-transform: none;
+            text-align: center; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip-scaling-elem {
           display: inline-block; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-img {
@@ -12245,7 +12249,11 @@ template {
                 -webkit-box-align: start;
                 -ms-flex-align: start;
                 align-items: flex-start;
-                position: relative; }
+                -webkit-box-pack: start;
+                -ms-flex-pack: start;
+                justify-content: flex-start;
+                position: relative;
+                gap: 5px 5px; }
                 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-left section.sheet-main .roll-sheet-block.rolling-block {
                   min-height: 62px; }
                   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-left section.sheet-main .roll-sheet-block.rolling-block .roll-sheet-sub-block.roll-effects-block {
@@ -12318,13 +12326,39 @@ template {
                         filter: brightness(1.5) drop-shadow(0 0 2px var(--blades-black-dark)); }
                   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-left section.sheet-main .roll-sheet-block .roll-sheet-sub-block.roll-effects-block {
                     width: 100%;
-                    margin-bottom: 3px;
-                    padding: 0 0 0 5px; }
-                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-left section.sheet-main .roll-sheet-block .roll-sheet-sub-block.roll-effects-block.neg-effects-block {
-                      -webkit-box-pack: end;
-                      -ms-flex-pack: end;
-                      justify-content: flex-end;
-                      width: 90%; }
+                    margin: 0;
+                    padding: 0; }
+                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-left section.sheet-main .roll-sheet-block .roll-sheet-sub-block.roll-effects-block > .roll-mod-block-spacer {
+                      display: -webkit-inline-box;
+                      display: -ms-inline-flexbox;
+                      display: inline-flex;
+                      -webkit-box-flex: 1;
+                      -ms-flex-positive: 1;
+                      flex-grow: 1;
+                      -ms-flex-negative: 1;
+                      flex-shrink: 1;
+                      -ms-flex-preferred-size: 0px;
+                      flex-basis: 0px;
+                      height: 20px; }
+                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-left section.sheet-main .roll-sheet-block .roll-sheet-sub-block.roll-effects-block > .roll-mod-block-spacer.last-spacer {
+                        display: none;
+                        -webkit-box-flex: 0;
+                        -ms-flex-positive: 0;
+                        flex-grow: 0;
+                        -ms-flex-negative: 0;
+                        flex-shrink: 0;
+                        width: 155px;
+                        height: 20px;
+                        display: -webkit-inline-box;
+                        display: -ms-inline-flexbox;
+                        display: inline-flex;
+                        margin-left: auto; }
+                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-left section.sheet-main .roll-sheet-block .roll-sheet-sub-block.roll-effects-block > .roll-mod-container {
+                      -webkit-box-flex: 0;
+                      -ms-flex-positive: 0;
+                      flex-grow: 0;
+                      -ms-flex-negative: 0;
+                      flex-shrink: 0; }
                     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-left section.sheet-main .roll-sheet-block .roll-sheet-sub-block.roll-effects-block.inactive-mod-block {
                       position: absolute;
                       width: auto;
@@ -12502,59 +12536,6 @@ template {
               :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block {
                 position: relative;
                 top: 100px; }
-                :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-num-container {
-                  height: var(--spread-size, 30px);
-                  width: calc(var(--spread-count, 7) * var(--spread-size, 30px)); }
-                  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-num-container .roll-op-num-spread {
-                    height: 100%;
-                    display: -webkit-box;
-                    display: -ms-flexbox;
-                    display: flex;
-                    -ms-flex-wrap: nowrap;
-                    flex-wrap: nowrap;
-                    -webkit-box-pack: start;
-                    -ms-flex-pack: start;
-                    justify-content: flex-start;
-                    -webkit-box-align: stretch;
-                    -ms-flex-align: stretch;
-                    align-items: stretch; }
-                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-num-container .roll-op-num-spread > * {
-                      height: 100%;
-                      width: var(--spread-size, 30px);
-                      -webkit-box-flex: 0;
-                      -ms-flex-positive: 0;
-                      flex-grow: 0;
-                      -ms-flex-negative: 0;
-                      flex-shrink: 0;
-                      border: 2px solid var(--spread-color, var(--blades-white));
-                      font-family: var(--font-emphasis);
-                      font-size: 18px;
-                      line-height: 28px;
-                      color: var(--spread-color, var(--blades-white));
-                      text-align: center; }
-                      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-num-container .roll-op-num-spread > *:hover {
-                        -webkit-filter: brightness(0.8);
-                        filter: brightness(0.8);
-                        opacity: 0.8; }
-                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-num-container .roll-op-num-spread [data-active="true"] {
-                      color: var(--spread-puch-color, var(--blades-black-dark));
-                      text-shadow: none;
-                      font-weight: bold;
-                      -webkit-transform-origin: 50% 50%;
-                      -ms-transform-origin: 50% 50%;
-                      transform-origin: 50% 50%; }
-                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-num-container .roll-op-num-spread [data-active="true"] ~ * {
-                      background: var(--spread-neg-fade, rgba(150, 0, 0, 0.25)); }
-                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-num-container .roll-op-num-spread .center-box ~ * {
-                      background: var(--spread-pos-fade, rgba(0, 150, 0, 0.25)); }
-                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-num-container .roll-op-num-spread [data-active="true"] ~ .center-box ~ * {
-                      background: transparent; }
-                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-num-container .roll-op-num-spread .center-box ~ [data-active="true"] ~ * {
-                      background: transparent; }
-                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-num-container .roll-op-num-spread .center-box {
-                      background: var(--spread-center-fade, rgba(150, 150, 0, 0.35)); }
-                    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-num-container .roll-op-num-spread [data-active="true"] {
-                      background: var(--spread-puck-color, var(--blades-white-bright)); }
                 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-name {
                   color: var(--opp-name-color, var(--blades-white-bright)); }
                   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-name.roll-opp-type-cohort_expert, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main .roll-opp-block .roll-opp-name.roll-opp-type-npc {
@@ -12681,12 +12662,10 @@ template {
                 line-height: 16px;
                 font-weight: bold;
                 vertical-align: middle; }
-            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-mod-container .roll-mod.status-hidden {
-              display: none; }
-            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-mod-container .roll-mod.cat-positive, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-mod-container .roll-mod.cat-positive ~ .roll-mod-side-string {
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-mod-container .roll-mod.posneg-positive, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-mod-container .roll-mod.posneg-positive ~ .roll-mod-side-string {
               --roll-mod-active-bright: var(--blades-gold-bright);
               --roll-mod-active-dark: var(--blades-gold-dark); }
-            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-mod-container .roll-mod.cat-negative, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-mod-container .roll-mod.cat-negative ~ .roll-mod-side-string {
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-mod-container .roll-mod.posneg-negative, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-mod-container .roll-mod.posneg-negative ~ .roll-mod-side-string {
               --roll-mod-active-bright: var(--blades-red-bright);
               --roll-mod-active-dark: var(--blades-red-dark); }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-mod-container .roll-mod.status-toggledon {
@@ -12714,6 +12693,63 @@ template {
               border-right: none;
               border-left: none;
               line-height: 16px; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-mod-container .roll-mod.status-hidden {
+              --roll-mod-border-color: var(--blades-grey-dark);
+              --roll-mod-text-color: var(--blades-grey);
+              --roll-mod-background-color: transparent; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container {
+          height: var(--spread-size, 30px);
+          width: calc(var(--spread-count, 7) * var(--spread-size, 30px)); }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread {
+            height: 100%;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+            -webkit-box-pack: start;
+            -ms-flex-pack: start;
+            justify-content: flex-start;
+            -webkit-box-align: stretch;
+            -ms-flex-align: stretch;
+            align-items: stretch; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread > * {
+              height: 100%;
+              width: var(--spread-size, 30px);
+              -webkit-box-flex: 0;
+              -ms-flex-positive: 0;
+              flex-grow: 0;
+              -ms-flex-negative: 0;
+              flex-shrink: 0;
+              border: 2px solid var(--spread-color, var(--blades-white));
+              font-family: var(--font-emphasis);
+              font-size: 18px;
+              line-height: 28px;
+              color: var(--spread-color, var(--blades-white));
+              text-align: center; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread > *:hover {
+                -webkit-filter: brightness(0.8);
+                filter: brightness(0.8);
+                opacity: 0.8; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread [data-active="true"] {
+              color: var(--spread-puch-color, var(--blades-black-dark));
+              text-shadow: none;
+              font-weight: bold;
+              -webkit-transform-origin: 50% 50%;
+              -ms-transform-origin: 50% 50%;
+              transform-origin: 50% 50%; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread [data-active="true"] ~ * {
+              background: var(--spread-neg-fade, rgba(150, 0, 0, 0.25)); }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread .origin-box ~ * {
+              background: var(--spread-pos-fade, rgba(0, 150, 0, 0.25)); }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread [data-active="true"] ~ .origin-box ~ * {
+              background: transparent; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread .origin-box ~ [data-active="true"] ~ * {
+              background: transparent; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread .origin-box {
+              background: var(--spread-center-fade, rgba(150, 150, 0, 0.35)); }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread [data-active="true"] {
+              background: var(--spread-puck-color, var(--blades-white-bright)); }
 
 /* stylelint-disable font-family-no-missing-generic-family-keyword */
 /* stylelint-disable selector-type-no-unknown */

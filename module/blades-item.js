@@ -144,6 +144,7 @@ class BladesItem extends Item {
                 name: nameVal,
                 category: catVal,
                 status: RollModStatus.ToggledOff,
+                modType: "general",
                 value: 1,
                 posNeg: posNegVal,
                 tooltip: ""

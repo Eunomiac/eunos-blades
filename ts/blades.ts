@@ -1,5 +1,5 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import C, {IMPORTDATA, BladesActorType, BladesItemType, Tag, Playbook} from "./core/constants.js";
+import C, {IMPORTDATA, BladesActorType, BladesItemType, Tag, Playbook, RollType, Action} from "./core/constants.js";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initFonts} from "./core/settings.js";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers.js";
 import BladesPushController from "./blades-push-notifications.js";
@@ -14,7 +14,7 @@ import BladesActorSheet from "./sheets/actor/blades-actor-sheet.js";
 import BladesCrewSheet from "./sheets/actor/blades-crew-sheet.js";
 import BladesNPCSheet from "./sheets/actor/blades-npc-sheet.js";
 import BladesFactionSheet from "./sheets/actor/blades-faction-sheet.js";
-import BladesRollCollabSheet from "./sheets/roll/blades-roll-collab-sheet.js";
+import BladesRollCollabSheet from "./blades-roll-collab.js";
 
 import {bladesRoll, simpleRollPopup} from "./blades-roll.js";
 import BladesSelectorDialog, {SelectionCategory} from "./blades-dialog.js";
@@ -326,6 +326,11 @@ Hooks.once("init", async () => {
 Hooks.once("ready", async () => {
   initCanvasStyles();
   initTinyMCEStyles();
+  // BladesRollCollabSheet.NewRoll({
+  //   rollSource: U.randElem(BladesActor.GetTypeWithTags(BladesActorType.pc)),
+  //   rollType: RollType.Action,
+  //   rollTrait: U.randElem(Object.values(Action))
+  // });
   // @ts-expect-error Just never bothered to declare it's a global
   DebugPC();
 });

@@ -860,8 +860,8 @@ const objForEach = (obj: Index<unknown>, func: valFunc): void => {
     Object.entries(obj).forEach(([key, val]) => func(val, key));
   }
 };
-// Prunes an object of certain values (undefined by default)
-const objCompact = <Type extends (Index<unknown>)>(obj: Type, preserve: unknown[] = []): Type => objFilter(obj, (val: unknown) => preserve.includes(`${val}`));
+// Prunes an object of given set of values, [undefined, null] default
+const objCompact = <Type extends (Index<unknown>)>(obj: Type, remove: unknown[] = [undefined, null]): Type => objFilter(obj, (val: unknown) => !remove.includes(val));
 const objClone = <Type>(obj: Type, isStrictlySafe = false): Type => {
   try {
     return JSON.parse(JSON.stringify(obj));

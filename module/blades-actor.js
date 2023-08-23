@@ -936,6 +936,7 @@ class BladesActor extends Actor {
                 name: nameVal,
                 category: catVal,
                 status: RollModStatus.ToggledOff,
+                modType: "general",
                 value: 1,
                 posNeg: posNegVal,
                 tooltip: ""
@@ -986,6 +987,28 @@ class BladesActor extends Actor {
                 rollMods[catVal][posNegVal][nameVal].isConditional = true;
             }
             rollMods[catVal][posNegVal][nameVal].modType ??= "general";
+        });
+        [[/1d/, RollModCategory.roll], [/Less Effect/, RollModCategory.effect]].forEach(([effectPat, effectCat]) => {
+            const { one: harmConditionOne, two: harmConditionTwo } = Object.values(this.system.harm ?? {})
+                .find((harmData) => effectPat.test(harmData.effect)) ?? {};
+            const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
+            if (harmString.length > 0) {
+                rollMods[effectCat] ??= { positive: {}, negative: {} };
+                rollMods[effectCat].negative[harmString] = {
+                    name: harmString,
+                    status: RollModStatus.ForcedOn,
+                    modType: "harm",
+                    value: 1,
+                    tooltip: [
+                        `<h1 class='red-bright'><strong>Harm:</strong> ${harmString}</h1>`,
+                        effectCat === RollModCategory.roll
+                            ? "<p>Your injuries reduce your <strong class='red-bright'>dice pool</strong> by one.</p>"
+                            : "<p>Your injuries reduce your <strong class='red-bright'>Effect</strong> by one level."
+                    ].join(""),
+                    posNeg: "negative",
+                    category: effectCat
+                };
+            }
         });
         eLog.checkLog3("rollCollab", `Roll Mods (${this.name})`, { system: this.system.roll_mods, rollMods });
         return rollMods;

@@ -123,7 +123,7 @@ const gsapEffects = {
                     opacity: 1,
                     duration: 0.125,
                     ease: "back"
-                }, 0);
+                }, 0.5);
             }
             if (tooltip) {
                 tl.fromTo(tooltip, {
@@ -137,7 +137,7 @@ const gsapEffects = {
                     x: config.xMotion,
                     duration: 0.25,
                     ease: "power2"
-                }, 0.125);
+                }, 1);
             }
             return tl;
         },
