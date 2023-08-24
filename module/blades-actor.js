@@ -10,6 +10,7 @@ import C, { BladesActorType, Tag, Playbook, BladesItemType, Attribute, Action, P
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem from "./blades-item.js";
 import { SelectionCategory } from "./blades-dialog.js";
+import BladesRollCollab from "./blades-roll-collab.js";
 class BladesActor extends Actor {
     static async CleanData(actor) {
         if (!actor) {
@@ -103,20 +104,29 @@ class BladesActor extends Actor {
         return tooltipText ? (new Handlebars.SafeString(tooltipText)).toString() : undefined;
     }
     get dialogCSSClasses() { return ""; }
-    getTierTotal() {
-        if (BladesActor.IsType(this, BladesActorType.pc)) {
-            return this.system.tier.value + (this.crew?.getTierTotal() ?? 0);
+    getFactorTotal(factor) {
+        switch (factor) {
+            case Factor.tier: {
+                if (BladesActor.IsType(this, BladesActorType.pc)) {
+                    return this.system.tier.value + (this.crew?.getFactorTotal(Factor.tier) ?? 0);
+                }
+                return this.system.tier.value;
+            }
+            case Factor.quality: return this.getFactorTotal(Factor.tier);
+            case Factor.scale: {
+                if (BladesActor.IsType(this, BladesActorType.npc)) {
+                    return this.system.scale;
+                }
+                return 0;
+            }
+            case Factor.magnitude: {
+                if (BladesActor.IsType(this, BladesActorType.npc)) {
+                    return this.system.magnitude;
+                }
+                return 0;
+            }
         }
-        if (BladesActor.IsType(this, BladesActorType.npc)) {
-            return this.system.tier.value;
-        }
-        if (BladesActor.IsType(this, BladesActorType.crew)) {
-            return this.system.tier.value;
-        }
-        if (BladesActor.IsType(this, BladesActorType.faction)) {
-            return this.system.tier.value;
-        }
-        return null;
+        return 0;
     }
 
     get primaryUser() {
@@ -914,9 +924,9 @@ class BladesActor extends Actor {
     get rollMods() {
         const { roll_mods } = this.system;
         if (!roll_mods) {
-            return {};
+            return [];
         }
-        const rollMods = {};
+        const rollMods = [];
         roll_mods.forEach((modString) => {
             const pStrings = modString.split(/@/);
             const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
@@ -931,8 +941,7 @@ class BladesActor extends Actor {
             }
             const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
             const posNegVal = posNegString.replace(/^.*:/, "");
-            rollMods[catVal] ??= { positive: {}, negative: {} };
-            rollMods[catVal][posNegVal][nameVal] = {
+            const rollMod = {
                 name: nameVal,
                 category: catVal,
                 status: RollModStatus.ToggledOff,
@@ -978,24 +987,30 @@ class BladesActor extends Actor {
                 else {
                     throw new Error(`Bad Roll Mod Key: ${keyString}`);
                 }
-                Object.assign(rollMods[catVal][posNegVal][nameVal], { [key]: key === "value" ? U.pInt(val) : val });
+                Object.assign(rollMod, { [key]: ["value"].includes(key)
+                        ? U.pInt(val)
+                        : (["effectKey", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
+                            ? [val].flat()
+                            : val) });
             });
-            if ((rollMods[catVal][posNegVal][nameVal].conditionalRollTypes?.length ?? 0)
-                + (rollMods[catVal][posNegVal][nameVal].conditionalRollTraits?.length ?? 0)
-                + (rollMods[catVal][posNegVal][nameVal].autoRollTypes?.length ?? 0)
-                + (rollMods[catVal][posNegVal][nameVal].autoRollTraits?.length ?? 0) > 0) {
-                rollMods[catVal][posNegVal][nameVal].isConditional = true;
+            if ((rollMod.conditionalRollTypes?.length ?? 0)
+                + (rollMod.conditionalRollTraits?.length ?? 0)
+                + (rollMod.autoRollTypes?.length ?? 0)
+                + (rollMod.autoRollTraits?.length ?? 0) > 0) {
+                rollMod.isConditional = true;
+                rollMod.status = RollModStatus.Conditional;
             }
-            rollMods[catVal][posNegVal][nameVal].modType ??= "general";
+            BladesRollCollab.MergeInRollMod(rollMod, rollMods);
         });
         [[/1d/, RollModCategory.roll], [/Less Effect/, RollModCategory.effect]].forEach(([effectPat, effectCat]) => {
             const { one: harmConditionOne, two: harmConditionTwo } = Object.values(this.system.harm ?? {})
                 .find((harmData) => effectPat.test(harmData.effect)) ?? {};
             const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
             if (harmString.length > 0) {
-                rollMods[effectCat] ??= { positive: {}, negative: {} };
-                rollMods[effectCat].negative[harmString] = {
+                BladesRollCollab.MergeInRollMod({
                     name: harmString,
+                    category: effectCat,
+                    posNeg: "negative",
                     status: RollModStatus.ForcedOn,
                     modType: "harm",
                     value: 1,
@@ -1004,21 +1019,19 @@ class BladesActor extends Actor {
                         effectCat === RollModCategory.roll
                             ? "<p>Your injuries reduce your <strong class='red-bright'>dice pool</strong> by one.</p>"
                             : "<p>Your injuries reduce your <strong class='red-bright'>Effect</strong> by one level."
-                    ].join(""),
-                    posNeg: "negative",
-                    category: effectCat
-                };
+                    ].join("")
+                }, rollMods);
             }
         });
-        eLog.checkLog3("rollCollab", `Roll Mods (${this.name})`, { system: this.system.roll_mods, rollMods });
+        
         return rollMods;
     }
     get rollFactors() {
         return {
             [Factor.tier]: {
                 name: Factor.tier,
-                value: this.getTierTotal(),
-                max: this.getTierTotal(),
+                value: this.getFactorTotal(Factor.tier),
+                max: this.getFactorTotal(Factor.tier),
                 cssClasses: "factor-gold factor-main",
                 isActive: true,
                 isDominant: false,

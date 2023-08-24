@@ -237,7 +237,7 @@ declare global {
   namespace BladesItemComponent {
 
     export interface Default {
-      getTierTotal(): number;
+      getFactorTotal(factor: Factor): number;
     }
 
   }

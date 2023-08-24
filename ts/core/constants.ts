@@ -159,7 +159,9 @@ export enum RollModStatus {
   Hidden = "Hidden",
   ToggledOff = "ToggledOff",
   ToggledOn = "ToggledOn",
-  ForcedOn = "ForcedOn"
+  ForcedOn = "ForcedOn",
+  ForcedOff = "ForcedOff",
+  Conditional = "Conditional"
 }
 
 export enum RollModCategory {

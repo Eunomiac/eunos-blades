@@ -8,6 +8,7 @@
 import C, { SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase, RollModCategory, Factor, RollModStatus } from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
+import BladesRollCollab from "./blades-roll-collab.js";
 class BladesItem extends Item {
 
     static async create(data, options = {}) {
@@ -75,30 +76,55 @@ class BladesItem extends Item {
         return undefined;
     }
     dialogCSSClasses = "";
-    getTierTotal() {
-        if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
-            return this.system.tier.value + (this.parent?.getTierTotal() ?? 0) + (this.system.quality_bonus ?? 0);
+    getFactorTotal(factor) {
+        switch (factor) {
+            case Factor.tier: {
+                if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
+                    return this.system.tier.value + (this.parent?.getFactorTotal(Factor.tier) ?? 0);
+                }
+                if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
+                    return this.system.tier.value + (this.parent?.getFactorTotal(Factor.tier) ?? 0);
+                }
+                if (BladesItem.IsType(this, BladesItemType.gear)) {
+                    return this.system.tier.value + (this.parent?.getFactorTotal(Factor.tier) ?? 0);
+                }
+                return this.system.tier.value;
+            }
+            case Factor.quality: {
+                if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
+                    return this.getFactorTotal(Factor.tier) + (this.system.quality_bonus ?? 0);
+                }
+                if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
+                    return this.getFactorTotal(Factor.tier) + (this.system.quality_bonus ?? 0) + 1;
+                }
+                if (BladesItem.IsType(this, BladesItemType.gear)) {
+                    return this.getFactorTotal(Factor.tier)
+                        + (this.hasTag("Fine") ? 1 : 0)
+                        + (this.parent?.getTaggedItemBonuses(this.tags) ?? 0)
+                        + (this.parent?.crew ? this.parent.crew.getTaggedItemBonuses(this.tags) : 0);
+                }
+                if (BladesItem.IsType(this, BladesItemType.design)) {
+                    return this.system.min_quality;
+                }
+                return this.getFactorTotal(Factor.tier);
+            }
+            case Factor.scale: {
+                if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
+                    return this.getFactorTotal(Factor.tier) + (this.system.scale_bonus ?? 0);
+                }
+                if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
+                    return 0 + (this.system.scale_bonus ?? 0);
+                }
+                return 0;
+            }
+            case Factor.magnitude: {
+                if (BladesItem.IsType(this, BladesItemType.ritual)) {
+                    return this.system.magnitude.value;
+                }
+                return 0;
+            }
         }
-        if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
-            return this.system.tier.value + (this.parent?.getTierTotal() ?? 0) + this.system.quality_bonus + 1;
-        }
-        if (BladesItem.IsType(this, BladesItemType.gear)) {
-            return this.system.tier.value
-                + (this.parent?.getTierTotal() ?? 0)
-                + (this.hasTag("Fine") ? 1 : 0)
-                + (this.parent?.getTaggedItemBonuses(this.tags) ?? 0)
-                + (this.parent?.crew ? this.parent.crew.getTaggedItemBonuses(this.tags) : 0);
-        }
-        if (BladesItem.IsType(this, BladesItemType.project)) {
-            return this.system.tier.value;
-        }
-        if (BladesItem.IsType(this, BladesItemType.ritual)) {
-            return this.system.tier.value;
-        }
-        if (BladesItem.IsType(this, BladesItemType.design)) {
-            return this.system.tier.value;
-        }
-        return null;
+        return 0;
     }
     
     async archive() {
@@ -122,9 +148,9 @@ class BladesItem extends Item {
     get rollMods() {
         const { roll_mods } = this.system;
         if (!roll_mods) {
-            return {};
+            return [];
         }
-        const rollMods = {};
+        const rollMods = [];
         roll_mods.forEach((modString) => {
             const pStrings = modString.split(/@/);
             const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
@@ -139,8 +165,7 @@ class BladesItem extends Item {
             }
             const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
             const posNegVal = posNegString.replace(/^.*:/, "");
-            rollMods[catVal] ??= { positive: {}, negative: {} };
-            rollMods[catVal][posNegVal][nameVal] = {
+            const rollMod = {
                 name: nameVal,
                 category: catVal,
                 status: RollModStatus.ToggledOff,
@@ -186,27 +211,59 @@ class BladesItem extends Item {
                 else {
                     throw new Error(`Bad Roll Mod Key: ${keyString}`);
                 }
-                Object.assign(rollMods[catVal][posNegVal][nameVal], { [key]: key === "value" ? U.pInt(val) : val });
+                Object.assign(rollMod, { [key]: ["value"].includes(key)
+                        ? U.pInt(val)
+                        : (["effectKey", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
+                            ? [val].flat()
+                            : val) });
             });
-            if ((rollMods[catVal][posNegVal][nameVal].conditionalRollTypes?.length ?? 0)
-                + (rollMods[catVal][posNegVal][nameVal].conditionalRollTraits?.length ?? 0)
-                + (rollMods[catVal][posNegVal][nameVal].autoRollTypes?.length ?? 0)
-                + (rollMods[catVal][posNegVal][nameVal].autoRollTraits?.length ?? 0) > 0) {
-                rollMods[catVal][posNegVal][nameVal].isConditional = true;
+            if ((rollMod.conditionalRollTypes?.length ?? 0)
+                + (rollMod.conditionalRollTraits?.length ?? 0)
+                + (rollMod.autoRollTypes?.length ?? 0)
+                + (rollMod.autoRollTraits?.length ?? 0) > 0) {
+                rollMod.isConditional = true;
+                rollMod.status = RollModStatus.Conditional;
             }
-            rollMods[catVal][posNegVal][nameVal].modType ??= "general";
+            BladesRollCollab.MergeInRollMod(rollMod, rollMods);
         });
-        eLog.checkLog3("rollCollab", `Roll Mods (${this.name})`, { system: this.system.roll_mods, rollMods });
+        
         return rollMods;
     }
     get rollFactors() {
         return {
             [Factor.tier]: {
                 name: Factor.tier,
-                value: this.getTierTotal(),
-                max: this.getTierTotal(),
+                value: this.getFactorTotal(Factor.tier),
+                max: this.getFactorTotal(Factor.tier),
                 cssClasses: "factor-gold factor-main",
                 isActive: true,
+                isDominant: false,
+                highFavorsPC: true
+            },
+            [Factor.quality]: {
+                name: Factor.quality,
+                value: this.getFactorTotal(Factor.quality),
+                max: this.getFactorTotal(Factor.quality),
+                cssClasses: "factor-gold factor-main",
+                isActive: false,
+                isDominant: false,
+                highFavorsPC: true
+            },
+            [Factor.scale]: {
+                name: Factor.scale,
+                value: this.getFactorTotal(Factor.scale),
+                max: this.getFactorTotal(Factor.scale),
+                cssClasses: "factor-gold",
+                isActive: false,
+                isDominant: false,
+                highFavorsPC: true
+            },
+            [Factor.magnitude]: {
+                name: Factor.magnitude,
+                value: this.getFactorTotal(Factor.magnitude),
+                max: this.getFactorTotal(Factor.magnitude),
+                cssClasses: "factor-gold",
+                isActive: false,
                 isDominant: false,
                 highFavorsPC: true
             }
@@ -275,14 +332,14 @@ class BladesItem extends Item {
         system.flaws = Object.fromEntries(Object.values(system.flaws ?? [])
             .filter((flaw) => /[A-Za-z]/.test(flaw))
             .map((flaw, i) => [`${i + 1}`, flaw.trim()]));
-        system.quality = this.getTierTotal();
+        system.quality = this.getFactorTotal(Factor.quality);
         if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
             if ([...subtypes, ...elite_subtypes].includes(Tag.GangType.Vehicle)) {
-                system.scale = this.getTierTotal() + this.system.scale_bonus;
+                system.scale = this.getFactorTotal(Factor.scale);
                 system.scaleExample = "(1 vehicle)";
             }
             else {
-                system.scale = this.getTierTotal() + this.system.scale_bonus;
+                system.scale = this.getFactorTotal(Factor.scale);
                 const scaleIndex = Math.min(6, system.scale);
                 system.scaleExample = C.ScaleExamples[scaleIndex];
                 system.subtitle = C.ScaleSizes[scaleIndex];
@@ -298,7 +355,7 @@ class BladesItem extends Item {
         }
         if (subtypes.length + elite_subtypes.length > 0) {
             if ([...subtypes, ...elite_subtypes].includes(Tag.GangType.Vehicle)) {
-                system.subtitle = C.VehicleDescriptors[Math.min(6, this.getTierTotal())];
+                system.subtitle = C.VehicleDescriptors[Math.min(6, this.getFactorTotal(Factor.tier))];
             }
             else {
                 system.subtitle += ` ${U.oxfordize([

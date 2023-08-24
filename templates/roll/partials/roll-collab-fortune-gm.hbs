@@ -27,7 +27,7 @@
           </div>
         </div>
         <div class="roll-sheet-sub-block roll-effects-block pos-effects-block flex-horizontal">
-          {{#each rollMods.roll.positive as |mod_data mod_name|}}
+          {{#each posRollMods.roll as |mod_data mod_name|}}
           {{#unless (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
             name=mod_name
@@ -38,7 +38,7 @@
           {{/each}}
         </div>
         <div class="roll-sheet-sub-block roll-effects-block neg-effects-block flex-horizontal">
-          {{#each rollMods.roll.negative as |mod_data mod_name|}}
+          {{#each negRollMods.roll as |mod_data mod_name|}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
             name=mod_name
             data=mod_data
@@ -48,7 +48,7 @@
         </div>
         {{#if hasInactiveConditionals.roll}}
         <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
-          {{#each rollMods.roll.positive as |mod_data mod_name|}}
+          {{#each posRollMods.roll as |mod_data mod_name|}}
           {{#if (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
             name=mod_name
@@ -71,7 +71,7 @@
           <span class="roll-readonly">{{rollPositionInitial}}</span>
         </div>
         <div class="roll-sheet-sub-block roll-effects-block pos-effects-block flex-horizontal">
-          {{#each rollMods.position.positive as |mod_data mod_name|}}
+          {{#each posRollMods.position as |mod_data mod_name|}}
           {{#unless (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
             name=mod_name
@@ -82,7 +82,7 @@
           {{/each}}
         </div>
         <div class="roll-sheet-sub-block roll-effects-block neg-effects-block flex-horizontal">
-          {{#each rollMods.position.negative as |mod_data mod_name|}}
+          {{#each negRollMods.position as |mod_data mod_name|}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
             name=mod_name
             data=mod_data
@@ -92,7 +92,7 @@
         </div>
         {{#if hasInactiveConditionals.position}}
         <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
-          {{#each rollMods.position.positive as |mod_data mod_name|}}
+          {{#each posRollMods.position as |mod_data mod_name|}}
           {{#if (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
             name=mod_name
@@ -113,7 +113,7 @@
           <span class="roll-readonly">{{rollEffectInitial}}</span>
         </div>
         <div class="roll-sheet-sub-block roll-effects-block pos-effects-block flex-horizontal">
-          {{#each rollMods.effect.positive as |mod_data mod_name|}}
+          {{#each posRollMods.effect as |mod_data mod_name|}}
           {{#unless (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
             name=mod_name
@@ -124,7 +124,7 @@
           {{/each}}
         </div>
         <div class="roll-sheet-sub-block roll-effects-block neg-effects-block flex-horizontal">
-          {{#each rollMods.effect.negative as |mod_data mod_name|}}
+          {{#each negRollMods.effect as |mod_data mod_name|}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
             name=mod_name
             data=mod_data
@@ -134,7 +134,7 @@
         </div>
         {{#if hasInactiveConditionals.effect}}
         <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
-          {{#each rollMods.effect.positive as |mod_data mod_name|}}
+          {{#each posRollMods.effect as |mod_data mod_name|}}
           {{#if (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
             name=mod_name
@@ -167,7 +167,7 @@
           <label class="filled-label">Result:</label>
         </div>
         <div class="roll-sheet-sub-block roll-effects-block pos-effects-block flex-horizontal">
-          {{#each rollMods.result.positive as |mod_data mod_name|}}
+          {{#each posRollMods.result as |mod_data mod_name|}}
           {{#unless (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
             name=mod_name
@@ -178,7 +178,7 @@
           {{/each}}
         </div>
         <div class="roll-sheet-sub-block roll-effects-block neg-effects-block flex-horizontal">
-          {{#each rollMods.result.negative as |mod_data mod_name|}}
+          {{#each negRollMods.result as |mod_data mod_name|}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
             name=mod_name
             data=mod_data
@@ -188,7 +188,7 @@
         </div>
         {{#if hasInactiveConditionals.result}}
         <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
-          {{#each rollMods.result.positive as |mod_data mod_name|}}
+          {{#each posRollMods.result as |mod_data mod_name|}}
           {{#if (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs"
             name=mod_name

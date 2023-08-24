@@ -111,6 +111,8 @@ declare global {
 
     export interface NPC extends BladesActorSchemaTemplate.Default,
       BladesActorSchemaTemplate.gmChar {
+      magnitude: number,
+      scale: number,
       persona: {
         gender: BladesRandomizer<"M" | "F" | "U" | "X" | "">,
         appearance: BladesRandomizer,
@@ -170,7 +172,6 @@ declare global {
 
     export interface Default {
       isSubActor: boolean;
-      getTierTotal(): number;
     }
 
     export interface PrimaryActor {

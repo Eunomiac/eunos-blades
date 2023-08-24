@@ -11,7 +11,7 @@ import {SelectionCategory} from "./blades-dialog.js";
 import type BladesActiveEffect from "./blades-active-effect";
 import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs.js";
 import type {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/utils/helpers.mjs.js";
-import BladesRollCollabSheet from "./blades-roll-collab.js";
+import BladesRollCollab from "./blades-roll-collab.js";
 // #endregion
 
 
@@ -139,20 +139,30 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
   get dialogCSSClasses(): string { return "" }
 
-  getTierTotal(): number {
-    if (BladesActor.IsType(this, BladesActorType.pc)) {
-      return this.system.tier.value + (this.crew?.getTierTotal() ?? 0);
+  getFactorTotal(factor: Factor): number {
+    switch (factor) {
+      case Factor.tier: {
+        if (BladesActor.IsType(this, BladesActorType.pc)) {
+          return this.system.tier.value + (this.crew?.getFactorTotal(Factor.tier) ?? 0);
+        }
+        return this.system.tier.value;
+      }
+      case Factor.quality: return this.getFactorTotal(Factor.tier);
+      case Factor.scale: {
+        if (BladesActor.IsType(this, BladesActorType.npc)) {
+          return this.system.scale;
+        }
+        return 0;
+      }
+      case Factor.magnitude: {
+        if (BladesActor.IsType(this, BladesActorType.npc)) {
+          return this.system.magnitude;
+        }
+        return 0;
+      }
+      // no default
     }
-    if (BladesActor.IsType(this, BladesActorType.npc)) {
-      return this.system.tier.value;
-    }
-    if (BladesActor.IsType(this, BladesActorType.crew)) {
-      return this.system.tier.value;
-    }
-    if (BladesActor.IsType(this, BladesActorType.faction)) {
-      return this.system.tier.value;
-    }
-    return null as never;
+    return 0;
   }
   // #endregion
 
@@ -1132,9 +1142,10 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
         + (rollMod.autoRollTypes?.length ?? 0)
         + (rollMod.autoRollTraits?.length ?? 0) > 0) {
         rollMod.isConditional = true;
+        rollMod.status = RollModStatus.Conditional;
       }
 
-      BladesRollCollabSheet.MergeInRollMod(rollMod, rollMods);
+      BladesRollCollab.MergeInRollMod(rollMod, rollMods);
     });
 
     // Add roll mods from harm
@@ -1143,7 +1154,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
         .find((harmData) => effectPat.test(harmData.effect)) ?? {};
       const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
       if (harmString.length > 0) {
-        BladesRollCollabSheet.MergeInRollMod({
+        BladesRollCollab.MergeInRollMod({
           name: harmString,
           category: effectCat,
           posNeg: "negative",
@@ -1160,7 +1171,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       }
     });
 
-    eLog.checkLog3("rollCollab", `Roll Mods (${this.name})`, {system: this.system.roll_mods, rollMods});
+    // eLog.checkLog3("rollCollab", `Roll Mods (${this.name})`, {system: this.system.roll_mods, rollMods});
 
     return rollMods;
   }
@@ -1169,8 +1180,8 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
     return {
       [Factor.tier]: {
         name: Factor.tier,
-        value: this.getTierTotal(),
-        max: this.getTierTotal(),
+        value: this.getFactorTotal(Factor.tier),
+        max: this.getFactorTotal(Factor.tier),
         cssClasses: "factor-gold factor-main",
         isActive: true,
         isDominant: false,

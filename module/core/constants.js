@@ -144,6 +144,15 @@ export var Action;
     Action["consort"] = "consort";
     Action["sway"] = "sway";
 })(Action || (Action = {}));
+export var DowntimeAction;
+(function (DowntimeAction) {
+    DowntimeAction["Acquire"] = "Acquire";
+    DowntimeAction["Recover"] = "Recover";
+    DowntimeAction["Vice"] = "Vice";
+    DowntimeAction["Project"] = "Project";
+    DowntimeAction["Heat"] = "Heat";
+    DowntimeAction["Train"] = "Train";
+})(DowntimeAction || (DowntimeAction = {}));
 export var RollType;
 (function (RollType) {
     RollType["Action"] = "Action";
@@ -151,12 +160,21 @@ export var RollType;
     RollType["Resistance"] = "Resistance";
     RollType["Fortune"] = "Fortune";
 })(RollType || (RollType = {}));
+export var RollSubType;
+(function (RollSubType) {
+    RollSubType["Incarceration"] = "Incarceration";
+    RollSubType["Healing"] = "Healing";
+    RollSubType["Engagement"] = "Engagement";
+    RollSubType["GatherInfo"] = "GatherInfo";
+})(RollSubType || (RollSubType = {}));
 export var RollModStatus;
 (function (RollModStatus) {
     RollModStatus["Hidden"] = "Hidden";
     RollModStatus["ToggledOff"] = "ToggledOff";
     RollModStatus["ToggledOn"] = "ToggledOn";
     RollModStatus["ForcedOn"] = "ForcedOn";
+    RollModStatus["ForcedOff"] = "ForcedOff";
+    RollModStatus["Conditional"] = "Conditional";
 })(RollModStatus || (RollModStatus = {}));
 export var RollModCategory;
 (function (RollModCategory) {
@@ -184,11 +202,7 @@ export var Factor;
 (function (Factor) {
     Factor["tier"] = "tier";
     Factor["quality"] = "quality";
-    Factor["force"] = "force";
     Factor["scale"] = "scale";
-    Factor["area"] = "area";
-    Factor["duration"] = "duration";
-    Factor["range"] = "range";
     Factor["magnitude"] = "magnitude";
 })(Factor || (Factor = {}));
 export var Harm;

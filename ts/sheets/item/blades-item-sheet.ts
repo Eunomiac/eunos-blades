@@ -1,4 +1,4 @@
-import C, {BladesActorType, BladesItemType, BladesPhase, Tag} from "../../core/constants.js";
+import C, {BladesActorType, BladesItemType, BladesPhase, Tag, Factor} from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import G from "../../core/gsap.js";
 import BladesActor from "../../blades-actor.js";
@@ -37,7 +37,7 @@ class BladesItemSheet extends ItemSheet {
       isEmbeddedItem: Boolean(this.item.parent),
       item: this.item,
       system: this.item.system,
-      tierTotal: this.item.getTierTotal() > 0 ? U.romanizeNum(this.item.getTierTotal()) : "0",
+      tierTotal: this.item.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(this.item.getFactorTotal(Factor.tier)) : "0",
       activeEffects: Array.from(this.item.effects) as BladesActiveEffect[]
     };
 

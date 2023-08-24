@@ -17,28 +17,28 @@
           </div>
         </div>
         <div class="roll-sheet-sub-block roll-effects-block flex-horizontal">
-          {{#each rollMods.roll.positive }}
+          {{#each posRollMods.roll }}
           {{#unless (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
           <span class="roll-mod-block-spacer mid-spacer"></span>
-          {{#each rollMods.roll.negative }}
+          {{#each negRollMods.roll }}
           {{#unless (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
         </div>
         {{#if hasInactiveConditionals.roll}}
         <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
-          {{#each rollMods.roll.positive }}
+          {{#each posRollMods.roll }}
           {{#if (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
-          {{#each rollMods.roll.negative }}
+          {{#each negRollMods.roll }}
           {{#if (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
         </div>
@@ -61,28 +61,28 @@
           </select>
         </div>
         <div class="roll-sheet-sub-block roll-effects-block flex-horizontal">
-          {{#each rollMods.position.positive }}
+          {{#each posRollMods.position }}
           {{#unless (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
           <span class="roll-mod-block-spacer mid-spacer"></span>
-          {{#each rollMods.position.negative }}
+          {{#each negRollMods.position }}
           {{#unless (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
         </div>
         {{#if hasInactiveConditionals.position}}
         <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
-          {{#each rollMods.position.positive }}
+          {{#each posRollMods.position }}
           {{#if (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
-          {{#each rollMods.position.negative }}
+          {{#each negRollMods.position }}
           {{#if (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
         </div>
@@ -103,28 +103,28 @@
           </select>
         </div>
         <div class="roll-sheet-sub-block roll-effects-block flex-horizontal">
-          {{#each rollMods.effect.positive }}
+          {{#each posRollMods.effect }}
           {{#unless (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
           <span class="roll-mod-block-spacer mid-spacer"></span>
-          {{#each rollMods.effect.negative }}
+          {{#each negRollMods.effect }}
           {{#unless (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
         </div>
         {{#if hasInactiveConditionals.effect}}
         <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
-          {{#each rollMods.effect.positive }}
+          {{#each posRollMods.effect }}
           {{#if (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
-          {{#each rollMods.effect.negative }}
+          {{#each negRollMods.effect }}
           {{#if (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
         </div>
@@ -139,28 +139,28 @@
           <label class="filled-label">Result:</label>
         </div>
         <div class="roll-sheet-sub-block roll-effects-block flex-horizontal">
-          {{#each rollMods.result.positive }}
+          {{#each posRollMods.result }}
           {{#unless (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
           <span class="roll-mod-block-spacer mid-spacer"></span>
-          {{#each rollMods.result.negative }}
+          {{#each negRollMods.result }}
           {{#unless (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
         </div>
         {{#if hasInactiveConditionals.result}}
         <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
-          {{#each rollMods.result.positive }}
+          {{#each posRollMods.result }}
           {{#if (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
-          {{#each rollMods.result.negative }}
+          {{#each negRollMods.result }}
           {{#if (test mod_data.isConditional "&&" (test (test mod_data.status "==" "ForcedOff") "||" (test mod_data.status "==" "ToggledOff")))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
         </div>

@@ -160,6 +160,8 @@
 		},
 		"npc": {
 			"templates": ["default", "gmChar"],
+      "scale": 0,
+      "magnitude": 0,
 			"persona": {
 				"gender": {"isLocked": false, "value": ""},
 				"appearance": {"isLocked": false, "value": ""},

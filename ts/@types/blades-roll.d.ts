@@ -1,7 +1,6 @@
 import {BladesActorType, BladesItemType, RollType, RollModStatus, RollModCategory, Action, DowntimeAction, Attribute, Position, Effect, Factor} from "../core/constants.js";
 import BladesActor from "../blades-actor.js";
 import BladesItem from "../blades-item.js";
-import {ModEffects} from "../blades-roll-collab.js";
 import { RollModCategory } from '../core/constants';
 
 declare global {
@@ -20,7 +19,7 @@ declare global {
       rollSourceType: "Actor"|"Item";
       rollSourceID: string;
       rollTrait: RollTrait;
-      rollMods: ModData;
+      rollMods: RollModData[];
       rollPositionInitial: Position;
       rollEffectInitial: Effect;
       rollPosEffectTrade: "position"|"effect"|false,
@@ -66,19 +65,25 @@ declare global {
 
       rollPositions: Position[],
       rollEffects: Effect[],
+      teamworkDocs: BladesActor[],
       rollPositionFinal: Position,
       rollEffectFinal: Effect,
       isAffectingResult: boolean,
+      isAffectingAfter: boolean,
       rollResultFinal: number,
 
       canTradePosition: boolean,
       canTradeEffect: boolean,
 
+      posRollMods: Partial<Record<RollModCategory, RollModData[]>>,
+      negRollMods: Partial<Record<RollModCategory, RollModData[]>>,
       hasInactiveConditionals: Record<RollModCategory, boolean>,
 
       oddsGradient: string,
       stressData: {cost: number, tooltip: string}
     }
+
+    export type PartialSheetData = Partial<SheetData> & FlagData;
 
     export type RollTrait = Action|Attribute|Factor|number;
 
@@ -94,7 +99,7 @@ declare global {
       name: string,
       status: RollModStatus,
       value: number,
-      effectKey?: Array<KeyOf<typeof ModEffects>>,
+      effectKey?: string[],
       sideString?: string,
       tooltip: string,
       posNeg: "positive"|"negative",
@@ -109,14 +114,13 @@ declare global {
       stressCost?: number
     }
 
-    export type ModData = RollModData[];
-
     export interface SourceDoc {
-      get rollMods(): ModData,
+      get rollMods(): RollModData[],
       get rollFactors(): Partial<Record<Factor,FactorData>> & Record<Factor.tier,FactorData>
     }
 
     export interface OppositionDoc {
+      get rollMods(): RollModData[]|undefined,
       get rollOppImg(): string|undefined,
       get rollFactors(): Partial<Record<Factor,FactorData>> & Record<Factor.tier,FactorData>
     }

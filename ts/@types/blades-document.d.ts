@@ -1,4 +1,4 @@
-import {BladesActorType, BladesItemType} from "../core/constants";
+import {BladesActorType, BladesItemType, Factor} from "../core/constants";
 import BladesActor from "../blades-actor";
 import BladesItem from "../blades-item";
 
@@ -22,7 +22,8 @@ declare global {
     tooltip: string|undefined;
     dialogCSSClasses: string;
 
-    getTierTotal(): number;
+    getFactorTotal(factor: Factor): number;
+    // getTierTotal(): number;
   }
 
   // template.json "template" definitions applying to both Actors and Items

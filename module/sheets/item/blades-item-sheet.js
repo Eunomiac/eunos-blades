@@ -5,7 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { BladesItemType, BladesPhase } from "../../core/constants.js";
+import C, { BladesItemType, BladesPhase, Factor } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import G from "../../core/gsap.js";
 import BladesItem from "../../blades-item.js";
@@ -31,7 +31,7 @@ class BladesItemSheet extends ItemSheet {
             isEmbeddedItem: Boolean(this.item.parent),
             item: this.item,
             system: this.item.system,
-            tierTotal: this.item.getTierTotal() > 0 ? U.romanizeNum(this.item.getTierTotal()) : "0",
+            tierTotal: this.item.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(this.item.getFactorTotal(Factor.tier)) : "0",
             activeEffects: Array.from(this.item.effects)
         };
         return this._getTypedItemData[this.item.type]({ ...context, ...sheetData });

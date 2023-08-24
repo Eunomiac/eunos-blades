@@ -8,7 +8,7 @@
 
 import U from "../../core/utilities.js";
 import G, { ApplyTooltipListeners } from "../../core/gsap.js";
-import C, { BladesActorType, BladesItemType } from "../../core/constants.js";
+import C, { BladesActorType, BladesItemType, Factor } from "../../core/constants.js";
 import Tags from "../../core/tags.js";
 import BladesActor from "../../blades-actor.js";
 import BladesItem from "../../blades-item.js";
@@ -23,7 +23,7 @@ class BladesSheet extends ActorSheet {
             isGM: game.eunoblades.Tracker.system.is_spoofing_player ? false : game.user.isGM,
             actor: this.actor,
             system: this.actor.system,
-            tierTotal: this.actor.getTierTotal() > 0 ? U.romanizeNum(this.actor.getTierTotal()) : "0",
+            tierTotal: this.actor.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(this.actor.getFactorTotal(Factor.tier)) : "0",
             rollData: this.actor.getRollData(),
             activeEffects: Array.from(this.actor.effects),
             hasFullVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER),
@@ -57,7 +57,7 @@ class BladesSheet extends ActorSheet {
                             item.system.imageRight = Object.values(item.system.elite_subtypes).includes(rightType) ? `elite-${U.lCase(rightType)}.svg` : `${U.lCase(rightType)}.svg`;
                         }
                         Object.assign(item.system, {
-                            tierTotal: item.getTierTotal() > 0 ? U.romanizeNum(item.getTierTotal()) : "0",
+                            tierTotal: item.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(item.getFactorTotal(Factor.tier)) : "0",
                             cohortRollData: [
                                 { mode: "untrained", label: "Untrained", color: "transparent", tooltip: "<p>Roll Untrained</p>" }
                             ],
@@ -74,7 +74,7 @@ class BladesSheet extends ActorSheet {
                         .filter((item) => item.type === BladesItemType.cohort_expert)
                         .map((item) => {
                         Object.assign(item.system, {
-                            tierTotal: item.getTierTotal() > 0 ? U.romanizeNum(item.getTierTotal()) : "0",
+                            tierTotal: item.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(item.getFactorTotal(Factor.tier)) : "0",
                             cohortRollData: [
                                 { mode: "untrained", label: "Untrained", tooltip: "<h2>Roll Untrained</h2>" }
                             ],

@@ -1,4 +1,4 @@
-{{log "ROLL COLLAB CONTEXT" this}}
+{{log "ROLL COLLAB GM CONTEXT" this}}
 
 <form class="{{cssClass}} roll-collab-sheet roll-collab-sheet-pc" autocomplete="off">
   <div class="sheet-root">
@@ -13,9 +13,6 @@
     {{/if}}
     {{#if (test rollType "==" "Fortune")}}
     {{> "systems/eunos-blades/templates/roll/partials/roll-collab-fortune-gm.hbs" }}
-    {{/if}}
-    {{#if (test rollType "==" "Incarceration")}}
-    {{> "systems/eunos-blades/templates/roll/partials/roll-collab-incarceration-gm.hbs" }}
     {{/if}}
   </div>
 </form>

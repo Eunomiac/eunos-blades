@@ -14,7 +14,7 @@ import BladesActorSheet from "./sheets/actor/blades-actor-sheet.js";
 import BladesCrewSheet from "./sheets/actor/blades-crew-sheet.js";
 import BladesNPCSheet from "./sheets/actor/blades-npc-sheet.js";
 import BladesFactionSheet from "./sheets/actor/blades-faction-sheet.js";
-import BladesRollCollabSheet from "./blades-roll-collab.js";
+import BladesRollCollab from "./blades-roll-collab.js";
 
 import {bladesRoll, simpleRollPopup} from "./blades-roll.js";
 import BladesSelectorDialog, {SelectionCategory} from "./blades-dialog.js";
@@ -43,7 +43,7 @@ registerDebugger();
     BladesTrackerSheet,
     BladesActiveEffect,
     BladesPushController,
-    BladesRollCollabSheet,
+    BladesRollCollab,
     IMPORTDATA,
     bladesRoll,
     simpleRollPopup,
@@ -316,7 +316,7 @@ Hooks.once("init", async () => {
     BladesSelectorDialog.Initialize(),
     BladesClockKeeperSheet.Initialize(),
     BladesPushController.Initialize(),
-    BladesRollCollabSheet.Initialize(),
+    BladesRollCollab.Initialize(),
     preloadHandlebarsTemplates()
   ]);
 
@@ -326,7 +326,7 @@ Hooks.once("init", async () => {
 Hooks.once("ready", async () => {
   initCanvasStyles();
   initTinyMCEStyles();
-  // BladesRollCollabSheet.NewRoll({
+  // BladesRollCollab.NewRoll({
   //   rollSource: U.randElem(BladesActor.GetTypeWithTags(BladesActorType.pc)),
   //   rollType: RollType.Action,
   //   rollTrait: U.randElem(Object.values(Action))
@@ -344,7 +344,7 @@ Hooks.once("socketlib.ready", () => {
     {socket, socketlib}
   );/*!DEVCODE*/
 
-  BladesRollCollabSheet.InitSockets();
+  BladesRollCollab.InitSockets();
 
   let clockOverlayUp: boolean, pushControllerUp: boolean;
   function InitOverlaySockets() {
