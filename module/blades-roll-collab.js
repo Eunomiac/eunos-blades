@@ -6,10 +6,570 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-import C, { BladesActorType, RollType, RollModStatus, RollModCategory, Action, Attribute, Position, Effect, Factor } from "./core/constants.js";
+import C, { BladesActorType, BladesItemType, RollType, RollModStatus, RollModCategory, Action, Attribute, Position, Effect, Factor } from "./core/constants.js";
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
 import { ApplyTooltipListeners } from "./core/gsap.js";
+const RollCollabEffectChanges = {
+    [BladesItemType.ability]: {
+        "Battleborn": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Battleborn@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|attune|command@eKey:ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Battleborn</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself during a fight.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Battleborn@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|attune|command@eKey:ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Battleborn</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself during a fight.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Battleborn@cat:roll@type:ability@cTypes:Resistance@val:0@eKey:Cost-SpecialArmor|Decrease-Harm1@status:Conditional@tooltip:<h1>Battleborn</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> to reduce the level of <strong class='red-bright'>harm</strong> you are resisting by one.</p>"
+            }
+        ],
+        "Bodyguard": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Bodyguard@cat:roll@type:ability@cTypes:Resistance@status:Conditional@tooltip:<h1>Bodyguard</h1><p>When you <strong class='cyan-bright'>protect</strong> a teammate, take <strong class='gold-bright'>+1d</strong> to your <strong>resistance</strong> roll.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Bodyguard@cat:effect@type:ability@cTypes:Engagement@status:Conditional@tooltip:<h1>Bodyguard</h1><p>When you <strong class='cyan-bright'>gather information</strong> to anticipate possible threats in the current situation, you get <strong class='gold-bright'>+1 effect</strong>.</p>"
+            }
+        ],
+        "Ghost Fighter": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Ghost Fighter@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|attune|command@val:0@eKey:ForceOn-Potency@status:Conditional@tooltip:<h1>Ghost Fighter</h1><p>You may <strong class='cyan-bright'>imbue</strong> your hands, melee weapons, or tools with spirit energy, giving you <strong class='gold-bright'>Potency</strong> in combat vs. the supernatural. You may also grapple with spirits to restrain and capture them.</p>"
+            }
+        ],
+        "Leader": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Leader@cat:effect@type:ability@cTypes:Action@cTraits:command@eKey:ToGroupCohorts@status:Conditional@tooltip:<h1>Leader</h1><p>Strong leadership grants this cohort <strong class='gold-bright'>+1 effect</strong> during combat.</p>"
+            }
+        ],
+        "Not to Be Trifled With": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Superhuman Feat@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|command@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>Not to Be Trifled With%COLON% Superhuman Feat</h1><p>You can <strong>Push</strong> yourself to perform a feat of physical force that verges on the superhuman <em>(you might break a metal weapon with your bare hands, tackle a galloping horse, lift a huge weight, etc.)</em>. You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Superhuman Feat@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|command@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>Not to Be Trifled With%COLON% Superhuman Feat</h1><p>You can <strong>Push</strong> yourself to perform a feat of physical force that verges on the superhuman <em>(you might break a metal weapon with your bare hands, tackle a galloping horse, lift a huge weight, etc.)</em>. You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Engage Gang@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|attune|command@val:0@eKey:ForceOn-Push|Negate-ScalePenalty@status:Conditional@tooltip:<h1>Not to Be Trifled With%COLON% Engage Gang</h1><p>You can <strong>Push</strong> yourself to engage a gang of up to six members on equal footing (negating any <strong>Scale</strong> penalties). You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Engage Gang@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|attune|command@val:0@eKey:ForceOn-Push|Negate-ScalePenalty@status:Conditional@tooltip:<h1>Not to Be Trifled With%COLON% Engage Gang</h1><p>You can <strong>Push</strong> yourself to engage a gang of up to six members on equal footing (negating any <strong>Scale</strong> penalties). You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            }
+        ],
+        "Savage": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Savage@cat:roll@type:ability@cTypes:Action@cTraits:command@status:Conditional@tooltip:<h1>Savage</h1><p>When you <strong>Command</strong> a fightened target, gain <strong class='gold-bright'>+1d</strong> to your roll.</p>"
+            }
+        ],
+        "Vigorous": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Vigorous@cat:roll@type:ability@cTypes:Downtime@aTypes:Incarceration@status:Conditional@tooltip:<h1>Vigorous</h1><p>You gain <strong class='gold-bright'>+1d</strong> to <strong>healing treatment</strong> rolls.</p>"
+            }
+        ],
+        "Sharpshooter": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Extreme Range@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>Sharpshooter%COLON% Extreme Range</h1><p>You can <strong>Push</strong> yourself to make a ranged attack at extreme distance, one that would otherwise be impossible with the rudimentary firearms of Duskwall. You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Extreme Range@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>Sharpshooter%COLON% Extreme Range</h1><p>You can <strong>Push</strong> yourself to make a ranged attack at extreme distance, one that would otherwise be impossible with the rudimentary firearms of Duskwall. You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Suppression Fire@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>Sharpshooter%COLON% Suppression Fire</h1><p>You can <strong>Push</strong> yourself to maintain a steady rate of suppression fire during a battle, enough to suppress a small gang of up to six members. <em>(When an enemy is suppressed, they're reluctant to maneuver or attack, usually calling for a <strong>fortune</strong> roll to see if they can manage it.)</em> You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Suppression Fire@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>Sharpshooter%COLON% Suppression Fire</h1><p>You can <strong>Push</strong> yourself to maintain a steady rate of suppression fire during a battle, enough to suppress a small gang of up to six members. <em>When an enemy is suppressed, they're reluctant to maneuver or attack, usually calling for a <strong>fortune</strong> roll to see if they can manage it.</em> You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            }
+        ],
+        "Focused": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Focused@cat:roll@type:ability@cTypes:Resistance@cTraits:Insight|Resolve@val:0@eKey:Cost-SpecialArmor|Negate-Consequence@status:Conditional@tooltip:<h1>Focused</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> to completely negate a <strong>consequence</strong> of <strong class='red-bright'>surprise</strong> or <strong class='red-bright'>mental harm</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Focused@cat:roll@type:ability@cTypes:Action@cTraits:hunt|study|survey|finesse|prowl|skirmish|wreck@eKey:ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Focused</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for ranged combat or tracking.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Focused@cat:effect@type:ability@cTypes:Action@cTraits:hunt|study|survey|finesse|prowl|skirmish|wreck@eKey:ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Focused</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for ranged combat or tracking.</p>"
+            }
+        ],
+        "Ghost Hunter (Arrow-Swift)": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Ghost Hunter@cat:effect@type:ability@cTypes:Action@cTraits:quality@val:0@eKey:ForceOn-Potency@status:Conditional@tooltip:<h1>Ghost Hunter</h1><p>This cohort is <strong class='cyan-bright'>imbued</strong> with spirit energy, granting it <strong class='gold-bright'>Potency</strong> against the supernatural.</p>"
+            }
+        ],
+        "Ghost Hunter (Ghost Form)": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Ghost Hunter@cat:effect@type:ability@cTypes:Action@cTraits:quality@val:0@eKey:ForceOn-Potency@status:Conditional@tooltip:<h1>Ghost Hunter</h1><p>This cohort is <strong class='cyan-bright'>imbued</strong> with spirit energy, granting it <strong class='gold-bright'>Potency</strong> against the supernatural.</p>"
+            }
+        ],
+        "Ghost Hunter (Mind Link)": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Ghost Hunter@cat:effect@type:ability@cTypes:Action@cTraits:quality@val:0@eKey:ForceOn-Potency@status:Conditional@tooltip:<h1>Ghost Hunter</h1><p>This cohort is <strong class='cyan-bright'>imbued</strong> with spirit energy, granting it <strong class='gold-bright'>Potency</strong> against the supernatural.</p>"
+            }
+        ],
+        "Scout": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Scout@cat:effect@type:ability@cTypes:Action|Downtime|Clock@cTraits:hunt|study|survey|attune|consort|sway@status:Conditional@tooltip:<h1>Scout</h1><p>When you <strong>gather information</strong> to discover the location of a target <em>(a person, a destination, a good ambush spot, etc)</em>, you gain <strong class='gold-bright'>+1 effect</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Scout@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl@status:Conditional@tooltip:<h1>Scout</h1><p>When you hide in a prepared position or use camouflage, you get <strong class='gold-bright'>+1d</strong> to rolls to avoid detection.</p>"
+            }
+        ],
+        "Alchemist": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Alchemist@cat:result@type:ability@cTypes:Downtime|GatherInfo|Craft@status:Conditional@tooltip:<h1>Alchemist</h1><p>When you <strong>invent</strong> or <strong>craft</strong> a creation with <em>alchemical</em> features, you gain <strong class='gold-bright'>+1 result level</strong> to your roll.</p>"
+            }
+        ],
+        "Artificer": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Artificer@cat:result@type:ability@cTypes:Downtime|GatherInfo|Craft@cTraits:study|tinker@status:Conditional@tooltip:<h1>Artificer</h1><p>When you <strong>invent</strong> or <strong>craft</strong> a creation with <em>spark-craft</em> features, you gain <strong class='gold-bright'>+1 result level</strong> to your roll.</p>"
+            }
+        ],
+        "Fortitude": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Fortitude@cat:roll@type:ability@cTypes:Resistance@val:0@eKey:Cost-SpecialArmor|Negate-Consequence@status:Conditional@tooltip:<h1>Fortitude</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> to completely negate a <strong>consequence</strong> of <strong class='red-bright'>fatigue</strong>, <strong class='red-bright'>weakness</strong>, or <strong class='red-bright'>chemical effects</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Fortitude@cat:roll@type:ability@cTypes:Action@cTraits:study|survey|tinker|finesse|skirmish|wreck@eKey:ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Fortitude</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when working with technical skill or handling alchemicals.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Fortitude@cat:effect@type:ability@cTypes:Action@cTraits:study|survey|tinker|finesse|skirmish|wreck@eKey:ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Fortitude</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when working with technical skill or handling alchemicals.</p>"
+            }
+        ],
+        "Ghost Ward": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Ghost Ward@cat:after@type:ability@cTypes:Action@cTraits:wreck@val:0@status:Conditional@tooltip:<h1>Ghost Ward</h1><p>When you <strong>Wreck</strong> an area with <emarcane</em> substances, ruining it for any other use, it becomes <strong>anathema</strong> or <strong>enticing</strong> to spirits (your choice).</p>"
+            }
+        ],
+        "Physicker": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Physicker@cat:roll@type:ability@cTypes:Downtime@aTypes:Incarceration@status:Conditional@tooltip:<h1>Physicker</h1><p>You gain <strong class='gold-bright'>+1d</strong> to your <strong>healing treatment</strong> rolls.</p>"
+            }
+        ],
+        "Saboteur": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Saboteur@cat:after@type:ability@cTypes:Action|Downtime|Clock@aTraits:wreck@val:0@status:Conditional@tooltip:<h1>Saboteur</h1><p>When you Wreck, your work is much quieter than it should be and the damage is very well-hidden from casual inspection.</p>"
+            }
+        ],
+        "Venomous": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Venomous@cat:roll@type:ability@cTypes:Action@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>Venomous</h1><p>You can <strong>Push</strong> yourself to secrete your chosen drug or poison through your skin or saliva, or exhale it as a vapor. You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Venomous@cat:effect@type:ability@cTypes:Action@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>Venomous</h1><p>You can <strong>Push</strong> yourself to secrete your chosen drug or poison through your skin or saliva, or exhale it as a vapor. You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            }
+        ],
+        "Infiltrator": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Infiltrator@cat:effect@type:ability@cTypes:Action|Downtime|Clock@cTraits:tinker|finesse|wreck|attune@val:0@eKey:Negate-QualityPenalty|Negate-TierPenalty@status:Conditional@tooltip:<h1>Infiltrator</h1><p>You are not affected by low <strong class='red-bright'>Quality</strong> or <strong class='red-bright'>Tier</strong> when you bypass security measures.</p>"
+            }
+        ],
+        "Ambush": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Ambush@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|attune@status:Conditional@tooltip:<h1>Ambush</h1><p>When you attack from hiding or spring a trap, you get <strong class='gold-bright'>+1d</strong> to your roll.</p>"
+            }
+        ],
+        "Daredevil": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Daredevil@cat:roll@type:ability@cTypes:Action@eKey:AutoRevealOn-Desperate|ForceOn-(Daredevil),after@status:Conditional@tooltip:<h1>Daredevil</h1><p>When you make a <strong class='red-bright'>desperate</strong> <strong>action</strong> roll, you may gain <strong>+1d</strong> to your roll, if you also take <strong class='red-bright'>−1d</strong> to <strong>resistance</strong> rolls against any consequences.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Daredevil@cat:roll@posNeg:negative@type:ability@cTypes:Resistance@status:Conditional@tooltip:<h1 class='red-bright'>Daredevil</h1><p>By choosing to gain <strong>+1d</strong> to your <strong class='red-bright'>desperate</strong> <strong>action</strong> roll, you suffer <strong class='red-bright'>−1d</strong> to <strong>resistance</strong> rolls against the consequences of that action.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:(Daredevil)@cat:after@posNeg:negative@type:ability@val:0@status:Hidden@tooltip:<h1 class='red-bright'>Daredevil</h1><p>You will suffer <strong class='red-bright'>−1d</strong> to <strong>resistance</strong> rolls against any consequences of this <strong>action</strong> roll.</p>"
+            }
+        ],
+        "The Devil's Footsteps": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Superhuman Feat@cat:roll@type:ability@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>The Devil's Footsteps%COLON% Superhuman Feat</h1><p>You can <strong>Push</strong> yourself to perform a feat of physical force that verges on the superhuman <em>(you might climb a sheer surface that lacks good hand-holds, tumble safely out of a three-story fall, leap a shocking distance, etc.)</em>. You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Superhuman Feat@cat:effect@type:ability@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>The Devil's Footsteps%COLON% Superhuman Feat</h1><p>You can <strong>Push</strong> yourself to perform a feat of physical force that verges on the superhuman <em>(you might climb a sheer surface that lacks good hand-holds, tumble safely out of a three-story fall, leap a shocking distance, etc.)</em>. You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Sow Confusion@cat:roll@type:ability@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>The Devil's Footsteps%COLON% Sow Confusion</h1><p>You can <strong>Push</strong> yourself to maneuver to confuse your enemies so they mistakenly attack each other. <em>(They attack each other for a moment before they realize their mistake. The GM might make a <strong>fortune</strong> roll to see how badly they harm or interfere with each other.)</em>. You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Sow Confusion@cat:effect@type:ability@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>The Devil's Footsteps%COLON% Sow Confusion</h1><p>You can <strong>Push</strong> yourself to maneuver to confuse your enemies so they mistakenly attack each other. <em>(They attack each other for a moment before they realize their mistake. The GM might make a <strong>fortune</strong> roll to see how badly they harm or interfere with each other.)</em>. You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            }
+        ],
+        "Shadow": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Shadow@cat:roll@type:ability@cTypes:Action@cTraits:hunt|study|survey|tinker|finesse|prowl|skirmish|wreck@eKey:ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Shadow</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for a feat of athletics or stealth.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Shadow@cat:effect@type:ability@cTypes:Action@cTraits:hunt|study|survey|tinker|finesse|prowl|skirmish|wreck@eKey:ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Shadow</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for a feat of athletics or stealth.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Shadow@cat:roll@type:ability@cTypes:Resistance@val:0@eKey:Cost-SpecialArmor|Decrease-Harm1@status:Conditional@tooltip:<h1>Shadow</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> to completely negate a <strong>consequence</strong> of <strong class='red-bright'>detection</strong> or <strong class='red-bright'>security measures</strong>.</p>"
+            }
+        ],
+        "Rook's Gambit": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Rook's Gambit@cat:roll@type:ability@cTypes:Action|Downtime|GatherInfo|Craft|Acquire|Clock@val:0@eKey:ForceOn-BestAction|Cost-Stress2@status:Conditional@tooltip:<h1>Rook's Gambit</h1><p>Take <strong class='red-bright'>2 stress</strong> to roll your best action rating while performing a different action. <em>(Describe how you adapt your skill to this use.)</em></p>"
+            }
+        ],
+        "Cloak & Dagger": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Cloak & Dagger@cat:roll@type:ability@cTypes:Action|Resistance@cTraits:finesse|prowl|attune|command|consort|sway|Insight@status:Conditional@tooltip:<h1>Cloak & Dagger</h1><p>When you use a disguise or other form of covert misdirection, you get <strong class='gold-bright'>+1d</strong> to rolls to confuse or deflect suspicion.</p>"
+            }
+        ],
+        "Ghost Voice": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Ghost Voice@cat:effect@type:ability@cTypes:Action|Downtime|Clock@cTraits:attune|command|consort|sway@val:0@eKey:ForceOn-Potency@status:Conditional@tooltip:<h1>Ghost Voice</h1><p>You gain <strong class='gold-bright'>Potency</strong> when communicating with the supernatural.</p>"
+            }
+        ],
+        "Mesmerism": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Mesmerism@cat:after@type:ability@cTypes:Action@cTraits:sway@val:0@status:Conditional@tooltip:<h1>Mesmerism</h1><p>When you <strong>Sway</strong> someone, you may cause them to forget that it's happened until they next interact with you.</p>"
+            }
+        ],
+        "Subterfuge": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Subterfuge@cat:roll@type:ability@cTypes:Resistance@cTraits:Insight@val:0@eKey:Cost-SpecialArmor|Negate-Consequence@status:Conditional@tooltip:<h1>Subterfuge</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> to completely negate a <strong>consequence</strong> of <strong class='red-bright'>suspicion</strong> or <strong class='red-bright'>persuasion</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Subterfuge@cat:roll@type:ability@cTypes:Action@cTraits:finesse|attune|consort|sway@eKey:ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Subterfuge</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for subterfuge.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Subterfuge@cat:effect@type:ability@cTypes:Action@cTraits:finesse|attune|consort|sway@eKey:ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Subterfuge</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for subterfuge.</p>"
+            }
+        ],
+        "Trust in Me": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Trust in Me@cat:roll@type:ability@cTypes:Action|Downtime|Clock@cTraits:hunt|study|survey|tinker|finesse|prowl|skirmish|wreck|attune|command|consort|sway|Insight|Prowess|Resolve|tier|quality|magnitude|number@status:Conditional@tooltip:<h1>Trust in Me</h1><p>You gain <strong class='gold-bright'>+1d</strong> to rolls opposed by a target with whom you have an intimate relationship.</p>"
+            }
+        ],
+        "Connected": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Connected@cat:result@type:ability@cTypes:Downtime@aTypes:Heat|Acquire@status:Conditional@tooltip:<h1>Connected</h1><p>When you <strong>acquire an asset</strong> or <strong>reduce heat</strong>, you get <strong class='gold-bright'>+1 result level</strong>.</p>"
+            }
+        ],
+        "Jail Bird": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Jail Bird@cat:effect@type:ability@cTypes:Downtime@eKey:Increase-Tier1@status:Conditional@tooltip:<h1>Jail Bird</h1><p>You gain <strong class='gold-bright'>+1 Tier</strong> while <strong>incarcerated</strong>.</p>"
+            }
+        ],
+        "Mastermind": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Mastermind@cat:roll@type:ability@cTypes:Action|Downtime@aTypes:GatherInfo|Craft|Clock@eKey:ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Mastermind</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Mastermind@cat:effect@type:ability@cTypes:Action|Downtime@eKey:ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Mastermind</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
+            }
+        ],
+        "Weaving the Web": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Weaving the Web@cat:roll@type:ability@cTypes:Action|Downtime|Clock@cTraits:consort@status:Conditional@tooltip:<h1>Weaving the Web</h1><p>You gain <strong class='gold-bright'>+1d</strong> to <strong>Consort</strong> when you <strong>gather information</strong> on a target for a <strong>score</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Weaving the Web@cat:roll@type:ability@cTypes:Healing@status:Conditional@tooltip:<h1>Weaving the Web</h1><p>You gain <strong class='gold-bright'>+1d</strong> to the <strong>engagement roll</strong> for the targeted <strong>score</strong>.</p>"
+            }
+        ],
+        "Ghost Mind": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Ghost Mind@cat:roll@type:ability@cTypes:Action|Downtime|Clock@cTraits:hunt|study|survey|tinker|prowl|attune|command|consort|sway@status:Conditional@tooltip:<h1>Ghost Mind</h1><p>You gain <strong class='gold-bright'>+1d</strong> to rolls to <strong>gather information</strong> about the supernatural by any means.</p>"
+            }
+        ],
+        "Iron Will": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Iron Will@cat:roll@type:ability@cTypes:Resistance@aTraits:Resolve@status:Conditional@tooltip:<h1>Iron Will</h1><p>You gain <strong class='gold-bright'>+1d</strong> to <strong>Resolve resistance</strong> rolls.</p>"
+            }
+        ],
+        "Occultist": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Occultist@cat:roll@type:ability@cTypes:Action|Downtime|Clock@cTraits:command@status:Conditional@tooltip:<h1>Occultist</h1><p>You gain <strong class='gold-bright'>+1d</strong> to rolls to <strong>Command</strong> cultists following ancient powers, forgotten gods or demons with whom you have previously <strong>Consort</strong>ed</p>"
+            }
+        ],
+        "Strange Methods": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Strange Methods@cat:result@type:ability@cTypes:Downtime|GatherInfo|Craft@status:Conditional@tooltip:<h1>Strange Methods</h1><p>When you <strong>invent</strong> or <strong>craft</strong> a creation with <em>arcane</em> features, you gain <strong class='gold-bright'>+1 result level</strong> to your roll.</p>"
+            }
+        ],
+        "Tempest": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Lightning@cat:roll@type:ability@cTypes:Action@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>Tempest%COLON% Unleash Lightning</h1><p>You can <strong>Push</strong> yourself to unleash a stroke of lightning as a weapon. The GM will describe its <strong>effect level</strong> and significant collateral damage. If you unleash it in combat against an enemy who's threatening you, you'll still make an <strong>action</strong> roll in the fight (usually with <strong>Attune</strong>). You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Lightning@cat:effect@type:ability@cTypes:Action@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>Tempest%COLON% Unleash Lightning</h1><p>You can <strong>Push</strong> yourself to unleash a stroke of lightning as a weapon. The GM will describe its <strong>effect level</strong> and significant collateral damage. If you unleash it in combat against an enemy who's threatening you, you'll still make an <strong>action</strong> roll in the fight (usually with <strong>Attune</strong>). You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Storm@cat:roll@type:ability@cTypes:Action@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>Tempest%COLON% Call Storm</h1><p>You can <strong>Push</strong> yourself to summon a storm in your immediate vicinity <em>(torrential rain, roaring winds, heavy fog, chilling frost and snow, etc.)</em>. The GM will describe its <strong>effect level</strong>. If you're using this power as cover or distraction, it's probably a <strong>Setup teamwork</strong> maneuver, using <strong>Attune</strong>. You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Storm@cat:effect@type:ability@cTypes:Action@val:0@eKey:ForceOn-Push@status:Conditional@tooltip:<h1>Tempest%COLON% Call Storm</h1><p>You can <strong>Push</strong> yourself to summon a storm in your immediate vicinity <em>(torrential rain, roaring winds, heavy fog, chilling frost and snow, etc.)</em>. The GM will describe its <strong>effect level</strong>. If you're using this power as cover or distraction, it's probably a <strong>Setup teamwork</strong> maneuver, using <strong>Attune</strong>. You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+            }
+        ],
+        "Warded": [
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Warded@cat:roll@type:ability@cTypes:Resistance@val:0@eKey:Cost-SpecialArmor|Negate-Consequence@status:Conditional@tooltip:<h1>Warded</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> to completely negate a <strong>consequence</strong> of <strong class='red-bright'>supernatural</strong> origin.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Warded@cat:roll@type:ability@cTypes:Action@eKey:ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Warded</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when you contend with or employ <em>arcane</em> forces.</p>"
+            },
+            {
+                key: "system.roll_mods",
+                mode: 2,
+                priority: null,
+                value: "name:Warded@cat:effect@type:ability@cTypes:Action@eKey:ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Conditional@tooltip:<h1>Warded</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when you contend with or employ <em>arcane</em> forces.</p>"
+            }
+        ]
+    }
+};
+export const ApplyRollEffects = async () => {
+    Object.entries(RollCollabEffectChanges[BladesItemType.ability])
+        .forEach(async ([aName, eData]) => {
+        const abilityDoc = game.items.getName(aName);
+        if (!abilityDoc) {
+            eLog.error("applyRollEffects", `ApplyRollEffects: Ability ${aName} Not Found.`);
+            return;
+        }
+        eData = eData.map((cData) => {
+            if (/tooltip:/.test(cData.value)) {
+                return cData;
+            }
+            let effectName = ((cData.value.match(/name:(.*?)@/) ?? [])[1] ?? aName).replace(/[()]/g, "");
+            if (effectName !== aName) {
+                effectName = `${aName} - ${effectName}`;
+            }
+            cData.value += `@tooltip:<h1>${effectName}</h1>${abilityDoc.system.rules}`;
+            return cData;
+        });
+        await Promise.all(abilityDoc.effects
+            .filter((effect) => /Test$/.test(effect.name ?? ""))
+            .map(async (effect) => effect.delete()));
+        const abilityEffects = Array.from(abilityDoc.effects ?? []);
+        if (abilityEffects.length > 1) {
+            eLog.error("applyRollEffects", `ApplyRollEffects: Ability ${aName} Has Multiple Active Effects`);
+            return;
+        }
+        const effectData = {
+            name: aName,
+            icon: abilityDoc.img ?? "",
+            changes: eData
+        };
+        if (abilityEffects.length === 1) {
+            const abilityEffect = abilityEffects[0];
+            effectData.name = abilityEffect.name ?? effectData.name;
+            effectData.icon = abilityEffect.icon ?? effectData.icon;
+            effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
+            await abilityEffect.delete();
+        }
+        await abilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
+    });
+};
 function isAction(trait) {
     return Boolean(trait && typeof trait === "string" && U.lCase(trait) in Action);
 }
@@ -45,13 +605,11 @@ class BladesRollCollab extends DocumentSheet {
                     }
                     const curSidestring = rollMod.sideString;
                     const newSidestring = (BladesActor.Get(flatData[key]) ?? BladesItem.Get(flatData[key]) ?? { name: "" }).name;
-                    if (!newSidestring) {
-                        return;
-                    }
-                    if (curSidestring === newSidestring) {
+                    if (newSidestring === null) {
                         return;
                     }
                     rollMod.tooltip = rollMod.tooltip.replace(new RegExp(curSidestring || "%DOC_NAME%", "g"), newSidestring);
+                    rollMod.sideString = newSidestring;
                     rollMods.push(rollMod);
                     user.setFlag("eunos-blades", "rollCollab.rollMods", rollMods);
                 });
@@ -83,7 +641,7 @@ class BladesRollCollab extends DocumentSheet {
             {
                 name: "Push",
                 category: RollModCategory.roll,
-                status: RollModStatus.ToggledOff,
+                base_status: RollModStatus.ToggledOff,
                 posNeg: "positive",
                 modType: "general",
                 value: 1,
@@ -94,7 +652,7 @@ class BladesRollCollab extends DocumentSheet {
             {
                 name: "Bargain",
                 category: RollModCategory.roll,
-                status: RollModStatus.Hidden,
+                base_status: RollModStatus.Hidden,
                 posNeg: "positive",
                 modType: "general",
                 value: 1,
@@ -104,7 +662,7 @@ class BladesRollCollab extends DocumentSheet {
             {
                 name: "Assist",
                 category: RollModCategory.roll,
-                status: RollModStatus.Hidden,
+                base_status: RollModStatus.Hidden,
                 posNeg: "positive",
                 effectKey: ["DocSelect-roll.Assist"],
                 modType: "teamwork",
@@ -115,7 +673,7 @@ class BladesRollCollab extends DocumentSheet {
             {
                 name: "Setup",
                 category: RollModCategory.position,
-                status: RollModStatus.Hidden,
+                base_status: RollModStatus.Hidden,
                 posNeg: "positive",
                 effectKey: ["DocSelect-position.Setup"],
                 modType: "teamwork",
@@ -126,7 +684,7 @@ class BladesRollCollab extends DocumentSheet {
             {
                 name: "Push",
                 category: RollModCategory.effect,
-                status: RollModStatus.ToggledOff,
+                base_status: RollModStatus.ToggledOff,
                 posNeg: "positive",
                 modType: "general",
                 stressCost: 2,
@@ -136,7 +694,7 @@ class BladesRollCollab extends DocumentSheet {
             {
                 name: "Setup",
                 category: RollModCategory.effect,
-                status: RollModStatus.Hidden,
+                base_status: RollModStatus.Hidden,
                 posNeg: "positive",
                 modType: "teamwork",
                 effectKey: ["DocSelect-effect.Setup"],
@@ -147,7 +705,7 @@ class BladesRollCollab extends DocumentSheet {
             {
                 name: "Potency",
                 category: RollModCategory.effect,
-                status: RollModStatus.Hidden,
+                base_status: RollModStatus.Hidden,
                 posNeg: "positive",
                 modType: "general",
                 value: 1,
@@ -156,7 +714,7 @@ class BladesRollCollab extends DocumentSheet {
             {
                 name: "Potency",
                 category: RollModCategory.effect,
-                status: RollModStatus.Hidden,
+                base_status: RollModStatus.Hidden,
                 posNeg: "negative",
                 modType: "general",
                 value: 1,
@@ -297,7 +855,7 @@ class BladesRollCollab extends DocumentSheet {
                     case Position.controlled:
                     case Position.risky:
                     case Position.desperate: {
-                        if (this._getFinalPosition(sheetData) === param && ![RollModStatus.ForcedOn, RollModStatus.ForcedOff].includes(mod.status)) {
+                        if (this._getFinalPosition(sheetData) === param && ![RollModStatus.ForcedOn, RollModStatus.ForcedOff].includes(mod.status ?? mod.held_status ?? mod.base_status)) {
                             mod.status = RollModStatus.ForcedOn;
                         }
                         else if (this._getFinalPosition(sheetData) !== param && mod.status !== RollModStatus.Hidden) {
@@ -334,7 +892,7 @@ class BladesRollCollab extends DocumentSheet {
                 if (!sheetData.rollMods) {
                     return sheetData;
                 }
-                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status)) {
+                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status ?? mod.held_status ?? mod.base_status)) {
                     return sheetData;
                 }
                 const [targetName, targetCat, targetPosNeg] = param.split(/,/);
@@ -357,7 +915,7 @@ class BladesRollCollab extends DocumentSheet {
                 if (!sheetData.rollMods) {
                     return sheetData;
                 }
-                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status)) {
+                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status ?? mod.held_status ?? mod.base_status)) {
                     return sheetData;
                 }
                 const [targetName, targetCat, targetPosNeg] = param.split(/,/);
@@ -376,7 +934,7 @@ class BladesRollCollab extends DocumentSheet {
                 if (!sheetData.rollMods) {
                     return sheetData;
                 }
-                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status)) {
+                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status ?? mod.held_status ?? mod.base_status)) {
                     return sheetData;
                 }
                 const [targetName, targetCat, targetPosNeg] = param.split(/,/);
@@ -384,7 +942,7 @@ class BladesRollCollab extends DocumentSheet {
                 if (!targetMod) {
                     throw new Error(`Unable to find target mod '${targetName}' in category '${targetCat ?? mod.category}'`);
                 }
-                if ([RollModStatus.Hidden, RollModStatus.ForcedOn, RollModStatus.ToggledOff].includes(mod.status)) {
+                if ([RollModStatus.Hidden, RollModStatus.ForcedOn, RollModStatus.ToggledOff].includes(targetMod.status ?? targetMod.held_status ?? targetMod.base_status)) {
                     return sheetData;
                 }
                 targetMod.status = RollModStatus.ToggledOff;
@@ -395,7 +953,7 @@ class BladesRollCollab extends DocumentSheet {
                 if (!sheetData.rollMods) {
                     return sheetData;
                 }
-                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status)) {
+                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status ?? mod.held_status ?? mod.base_status)) {
                     return sheetData;
                 }
                 const [targetName, targetCat, targetPosNeg] = param.split(/,/);
@@ -411,7 +969,7 @@ class BladesRollCollab extends DocumentSheet {
                 if (!sheetData.rollMods) {
                     return sheetData;
                 }
-                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status)) {
+                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status ?? mod.held_status ?? mod.base_status)) {
                     return sheetData;
                 }
                 const docID = getProperty(sheetData.docSelections, param);
@@ -435,7 +993,7 @@ class BladesRollCollab extends DocumentSheet {
                 if (!sheetData.rollMods) {
                     return sheetData;
                 }
-                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status)) {
+                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status ?? mod.held_status ?? mod.base_status)) {
                     return sheetData;
                 }
                 return sheetData;
@@ -444,7 +1002,7 @@ class BladesRollCollab extends DocumentSheet {
                 if (!sheetData.rollMods) {
                     return sheetData;
                 }
-                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status)) {
+                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status ?? mod.held_status ?? mod.base_status)) {
                     return sheetData;
                 }
                 return sheetData;
@@ -453,7 +1011,7 @@ class BladesRollCollab extends DocumentSheet {
                 if (!sheetData.rollMods) {
                     return sheetData;
                 }
-                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status)) {
+                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status ?? mod.held_status ?? mod.base_status)) {
                     return sheetData;
                 }
                 return sheetData;
@@ -462,7 +1020,7 @@ class BladesRollCollab extends DocumentSheet {
                 if (!sheetData.rollMods) {
                     return sheetData;
                 }
-                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status)) {
+                if (![RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status ?? mod.held_status ?? mod.base_status)) {
                     return sheetData;
                 }
                 return sheetData;
@@ -485,145 +1043,23 @@ class BladesRollCollab extends DocumentSheet {
             : game.items.get(this.rData.rollSourceID);
     }
 
-    isModActive(mod) { return [RollModStatus.ForcedOn, RollModStatus.ToggledOn].includes(mod.status); }
-    async forceOnPush(category, isFromEffectKey = false) {
-        const flagData = (this.document.getFlag("eunos-blades", "rollCollab.rollMods") ?? []);
-        const pushMod = this._getMod("Push", category);
-        if (pushMod.status === RollModStatus.ForcedOn) {
-            return;
-        }
-        pushMod.status = RollModStatus.ForcedOn;
-        BladesRollCollab.MergeInRollMod(pushMod, flagData);
-        if (category === RollModCategory.roll && ![RollModStatus.ForcedOff, RollModStatus.Hidden].includes(this._getMod("Bargain").status)) {
-            const bargainMod = this._getMod("Bargain");
-            bargainMod.status = RollModStatus.ForcedOff;
-            BladesRollCollab.MergeInRollMod(bargainMod, flagData);
-        }
-        await this.document.unsetFlag("eunos-blades", "rollCollab.rollMods");
-        this.document.setFlag("eunos-blades", "rollCollab.rollMods", flagData);
-    }
-    async forceOffPush(category, isFromEffectKey = false) {
-        const flagData = (this.document.getFlag("eunos-blades", "rollCollab.rollMods") ?? []);
-        const pushMod = this._getMod("Push", category);
-        if (pushMod.status === RollModStatus.ForcedOff) {
-            return;
-        }
-        pushMod.status = RollModStatus.ForcedOff;
-        BladesRollCollab.MergeInRollMod(pushMod, flagData);
-
-        if (category === RollModCategory.roll && this._getMod("Bargain").status === RollModStatus.ForcedOff) {
-            const bargainMod = this._getMod("Bargain");
-            bargainMod.status = RollModStatus.ToggledOff;
-            BladesRollCollab.MergeInRollMod(bargainMod, flagData);
-        }
-        await this.document.unsetFlag("eunos-blades", "rollCollab.rollMods");
-        this.document.setFlag("eunos-blades", "rollCollab.rollMods", flagData);
-    }
-    async toggleOnPush(category, isFromEffectKey = false) {
-        const flagData = (this.document.getFlag("eunos-blades", "rollCollab.rollMods") ?? []);
-        const pushMod = this._getMod("Push", category);
-                if (this.isModActive(pushMod)) {
-            return;
-        }
-        if (pushMod.status === RollModStatus.ForcedOff
-            && !(isFromEffectKey || game.user.isGM)) {
-            return;
-        }
-        if (category === RollModCategory.roll
-            && this._getMod("Bargain").status === RollModStatus.ForcedOn) {
-            return;
-        }
-        pushMod.status = RollModStatus.ToggledOn;
-        BladesRollCollab.MergeInRollMod(pushMod, flagData);
-        if (category === RollModCategory.roll && this._getMod("Bargain").status === RollModStatus.ToggledOn) {
-            const bargainMod = this._getMod("Bargain");
-            bargainMod.status = RollModStatus.ToggledOff;
-            BladesRollCollab.MergeInRollMod(bargainMod, flagData);
-        }
-        await this.document.unsetFlag("eunos-blades", "rollCollab.rollMods");
-        this.document.setFlag("eunos-blades", "rollCollab.rollMods", flagData);
-    }
-    async toggleOffPush(category, isFromEffectKey = false) {
-        const flagData = (this.document.getFlag("eunos-blades", "rollCollab.rollMods") ?? []);
-        const pushMod = this._getMod("Push", category);
-                if (!this.isModActive(pushMod)) {
-            return;
-        }
-        if (pushMod.status === RollModStatus.ForcedOn
-            && !(isFromEffectKey || game.user.isGM)) {
-            return;
-        }
-        pushMod.status = RollModStatus.ToggledOff;
-        BladesRollCollab.MergeInRollMod(pushMod, flagData);
-        
-        await this.document.unsetFlag("eunos-blades", "rollCollab.rollMods");
-        this.document.setFlag("eunos-blades", "rollCollab.rollMods", flagData);
-    }
-    async offerBargain() {
-        const flagData = (this.document.getFlag("eunos-blades", "rollCollab.rollMods") ?? []);
-        const bargainMod = this._getMod("Bargain");
-        if (bargainMod.status !== RollModStatus.Hidden) {
-            return;
-        }
-        bargainMod.status = RollModStatus.ToggledOff;
-        BladesRollCollab.MergeInRollMod(bargainMod, flagData);
-        await this.document.unsetFlag("eunos-blades", "rollCollab.rollMods");
-        this.document.setFlag("eunos-blades", "rollCollab.rollMods", flagData);
-    }
-    async rescindBargain() {
-        const flagData = (this.document.getFlag("eunos-blades", "rollCollab.rollMods") ?? []);
-        const bargainMod = this._getMod("Bargain");
-        if (bargainMod.status === RollModStatus.Hidden) {
-            return;
-        }
-        bargainMod.status = RollModStatus.Hidden;
-        BladesRollCollab.MergeInRollMod(bargainMod, flagData);
-        await this.document.unsetFlag("eunos-blades", "rollCollab.rollMods");
-        this.document.setFlag("eunos-blades", "rollCollab.rollMods", flagData);
-    }
-    async toggleOnBargain() {
-        const flagData = (this.document.getFlag("eunos-blades", "rollCollab.rollMods") ?? []);
-        const pushMod = this._getMod("Push", RollModCategory.roll);
-        if (pushMod.status === RollModStatus.ForcedOn) {
-            return;
-        }
-        const bargainMod = this._getMod("Bargain");
-        if (bargainMod.status !== RollModStatus.ToggledOff) {
-            return;
-        }
-        bargainMod.status = RollModStatus.ToggledOn;
-        BladesRollCollab.MergeInRollMod(bargainMod, flagData);
-        if (pushMod.status === RollModStatus.ToggledOn) {
-            pushMod.status = RollModStatus.ToggledOff;
-            BladesRollCollab.MergeInRollMod(pushMod, flagData);
-        }
-        await this.document.unsetFlag("eunos-blades", "rollCollab.rollMods");
-        this.document.setFlag("eunos-blades", "rollCollab.rollMods", flagData);
-    }
-    async toggleOffBargain() {
-        const flagData = (this.document.getFlag("eunos-blades", "rollCollab.rollMods") ?? []);
-        const bargainMod = this._getMod("Bargain");
-        if (bargainMod.status === RollModStatus.ToggledOff) {
-            return;
-        }
-        if (bargainMod.status === RollModStatus.ForcedOn) {
-            return;
-        }
-        bargainMod.status = RollModStatus.ToggledOff;
-        BladesRollCollab.MergeInRollMod(bargainMod, flagData);
-        await this.document.unsetFlag("eunos-blades", "rollCollab.rollMods");
-        this.document.setFlag("eunos-blades", "rollCollab.rollMods", flagData);
-    }
-    async resetTeamwork(category, docKey) {
-        const flagData = (this.document.getFlag("eunos-blades", "rollCollab") ?? []);
-        if (!flagData) {
-            return;
-        }
-        Object.assign(flagData.docSelections[category], { [docKey]: false });
-        U.pullElement(flagData.rollMods, (mod) => mod?.category === category && mod?.name === docKey);
-        await this.document.unsetFlag("eunos-blades", "rollCollab");
-        this.document.setFlag("eunos-blades", "rollCollab", flagData);
-    }
+    isModActive(mod) { return [RollModStatus.ForcedOn, RollModStatus.ToggledOn].includes(mod.status ?? mod.held_status ?? mod.base_status); }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     static MergeInRollMod(mod, modList) {
         U.pullElement(modList, (listMod) => mod && listMod
             && mod.name === listMod.name
@@ -649,11 +1085,11 @@ class BladesRollCollab extends DocumentSheet {
     }
     _getVisibleMods(cat, posNeg, rollMods = this.currentRollMods) {
         return this._getMods(cat, posNeg, rollMods)
-            .filter((mod) => ![RollModStatus.Conditional, RollModStatus.Hidden].includes(mod.status));
+            .filter((mod) => ![RollModStatus.Conditional, RollModStatus.Hidden].includes(mod.status ?? mod.held_status ?? mod.base_status));
     }
     _getActiveMods(cat, posNeg, rollMods = this.currentRollMods) {
         return this._getMods(cat, posNeg, rollMods)
-            .filter((mod) => [RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status));
+            .filter((mod) => [RollModStatus.ToggledOn, RollModStatus.ForcedOn].includes(mod.status ?? mod.held_status ?? mod.base_status));
     }
     _sortMods(rollMods = this.currentRollMods) {
         return rollMods.sort((modA, modB) => {
@@ -691,9 +1127,6 @@ class BladesRollCollab extends DocumentSheet {
         ]);
     };
     _getConditionalModStatus(mod, sheetData) {
-        if (mod.status !== RollModStatus.Conditional) {
-            return mod.status;
-        }
         const autoRollTypes = mod.autoRollTypes ?? [];
         const autoRollTraits = mod.autoRollTraits ?? [];
         const conditionalRollTypes = mod.conditionalRollTypes ?? [];
@@ -1065,17 +1498,23 @@ class BladesRollCollab extends DocumentSheet {
         const name = elem$.data("name");
         switch (status) {
             case RollModStatus.Hidden: {
-                return this.updateRollMod({ status: RollModStatus.ForcedOn }, name, cat, posNeg);
+                return this.updateRollMod({ base_status: RollModStatus.ToggledOff }, name, cat, posNeg);
+            }
+            case RollModStatus.ForcedOff: {
+                if (game.user.isGM) {
+                    return this.updateRollMod({ base_status: RollModStatus.ToggledOff }, name, cat, posNeg);
+                }
+                break;
             }
             case RollModStatus.ToggledOff: {
-                return this.updateRollMod({ status: RollModStatus.ToggledOn }, name, cat, posNeg);
+                return this.updateRollMod({ base_status: RollModStatus.ToggledOn }, name, cat, posNeg);
             }
             case RollModStatus.ToggledOn: {
-                return this.updateRollMod({ status: RollModStatus.ToggledOff }, name, cat, posNeg);
+                return this.updateRollMod({ base_status: game.user.isGM ? RollModStatus.ForcedOn : RollModStatus.ToggledOff }, name, cat, posNeg);
             }
             case RollModStatus.ForcedOn: {
                 if (game.user.isGM) {
-                    return this.updateRollMod({ status: RollModStatus.ToggledOff }, name, cat, posNeg);
+                    return this.updateRollMod({ base_status: RollModStatus.ToggledOff }, name, cat, posNeg);
                 }
             }
         }
@@ -1093,18 +1532,19 @@ class BladesRollCollab extends DocumentSheet {
         const name = elem$.data("name");
         switch (status) {
             case RollModStatus.Hidden: {
-                return this.updateRollMod({ status: RollModStatus.ToggledOff }, name, cat, posNeg);
+                return this.updateRollMod({ base_status: RollModStatus.ToggledOff }, name, cat, posNeg);
+            }
+            case RollModStatus.ForcedOff: {
+                return this.updateRollMod({ base_status: RollModStatus.Hidden }, name, cat, posNeg);
             }
             case RollModStatus.ToggledOff: {
-                return this.updateRollMod({ status: RollModStatus.Hidden }, name, cat, posNeg);
+                return this.updateRollMod({ base_status: RollModStatus.ForcedOff }, name, cat, posNeg);
             }
             case RollModStatus.ToggledOn: {
-                return this.updateRollMod({ status: RollModStatus.Hidden }, name, cat, posNeg);
+                return this.updateRollMod({ base_status: RollModStatus.ToggledOff }, name, cat, posNeg);
             }
             case RollModStatus.ForcedOn: {
-                if (game.user.isGM) {
-                    return this.updateRollMod({ status: RollModStatus.Hidden }, name, cat, posNeg);
-                }
+                return this.updateRollMod({ base_status: RollModStatus.ToggledOn }, name, cat, posNeg);
             }
         }
         return undefined;

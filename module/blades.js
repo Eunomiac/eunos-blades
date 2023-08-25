@@ -19,7 +19,7 @@ import BladesActorSheet from "./sheets/actor/blades-actor-sheet.js";
 import BladesCrewSheet from "./sheets/actor/blades-crew-sheet.js";
 import BladesNPCSheet from "./sheets/actor/blades-npc-sheet.js";
 import BladesFactionSheet from "./sheets/actor/blades-faction-sheet.js";
-import BladesRollCollab from "./blades-roll-collab.js";
+import BladesRollCollab, { ApplyRollEffects } from "./blades-roll-collab.js";
 import { bladesRoll, simpleRollPopup } from "./blades-roll.js";
 import BladesSelectorDialog from "./blades-dialog.js";
 import BladesActiveEffect from "./blades-active-effect.js";
@@ -43,6 +43,7 @@ Object.assign(globalThis, {
     BladesActiveEffect,
     BladesPushController,
     BladesRollCollab,
+    ApplyRollEffects,
     IMPORTDATA,
     bladesRoll,
     simpleRollPopup,

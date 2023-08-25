@@ -645,7 +645,14 @@ const group = <Type extends Record<string, unknown>>(array: Type[], key: KeyOf<T
   return returnObj as Record<string & ValueOf<Type>, Type[]>;
 };
 const removeFirst = (array: unknown[], element: unknown) => array.splice(array.findIndex((v) => v === element));
-const pullElement = <T extends any>(array: T[], checkFunc = (_v: T = true as any, _i = 0, _a: T[] = []) => { checkFunc(_v, _i, _a) }): T|false => {
+
+
+function pullElement<T extends any>(array: T[], checkFunc: (_v: T, _i?: number, _a?: T[]) => boolean): T|false {
+  const index = array.findIndex((v, i, a) => checkFunc(v, i, a));
+  return (index !== -1 && array.splice(index, 1).pop()) ?? false;
+}
+
+const oldpullElement = <T extends any>(array: T[], checkFunc = (_v: T = true as any, _i = 0, _a: T[] = []) => { checkFunc(_v, _i, _a) }): T|false => {
   const index = array.findIndex((v, i, a) => checkFunc(v, i, a));
   return (index !== -1 && array.splice(index, 1).pop()) ?? false;
 };

@@ -97,26 +97,59 @@ const CUSTOMFUNCS = {
         return undefined;
     }
 };
+var EffectMode;
+(function (EffectMode) {
+    EffectMode[EffectMode["Custom"] = 0] = "Custom";
+    EffectMode[EffectMode["Multiply"] = 1] = "Multiply";
+    EffectMode[EffectMode["Add"] = 2] = "Add";
+    EffectMode[EffectMode["Downgrade"] = 3] = "Downgrade";
+    EffectMode[EffectMode["Upgrade"] = 4] = "Upgrade";
+    EffectMode[EffectMode["Override"] = 5] = "Override";
+})(EffectMode || (EffectMode = {}));
 class BladesActiveEffect extends ActiveEffect {
     static Initialize() {
         CONFIG.ActiveEffect.documentClass = BladesActiveEffect;
         Hooks.on("preCreateActiveEffect", async (effect) => {
-            eLog.checkLog3("effect", "TESTING PRE CREATE", { parent: effect.parent?.name });
+            eLog.checkLog3("effect", "PRECREATE ActiveEffect", { effect, parent: effect.parent?.name });
             if (!(effect.parent instanceof BladesActor)) {
                 return;
             }
-            if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
-                if (effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
-                    await Promise.all(effect.parent.members.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect])));
-                    await effect.updateSource({ changes: effect.changes.filter((change) => change.key === "APPLYTOMEMBERS") });
+            if (effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
+                if (BladesActor.IsType(effect.parent, BladesActorType.pc) && BladesActor.IsType(effect.parent.crew, BladesActorType.crew)) {
+                    const otherMembers = effect.parent.crew.members.filter((member) => member.id !== effect.parent.id);
+                    if (otherMembers.length > 0) {
+                        effect.changes = effect.changes.filter((change) => change.key !== "APPLYTOMEMBERS");
+                        await Promise.all(otherMembers.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect])));
+                        await effect.parent.setFlag("eunos-blades", `memberEffects.${effect.id}`, {
+                            appliedTo: otherMembers.map((member) => member.id),
+                            effect
+                        });
+                    }
                 }
-                else if (effect.parent.cohorts.length > 0 && effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
-                    await Promise.all(effect.parent.cohorts.map(async (cohort) => cohort.createEmbeddedDocuments("ActiveEffect", [effect])));
+                else if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
+                    const changeKey = U.pullElement(effect.changes, (change) => change.key === "APPLYTOMEMBERS");
+                    if (effect.parent.members.length > 0) {
+                        await Promise.all(effect.parent.members.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect])));
+                    }
+                    await effect.parent.setFlag("eunos-blades", `memberEffects.${effect.id}`, {
+                        appliedTo: effect.parent.members.map((member) => member.id),
+                        effect
+                    });
+                    await effect.updateSource({ changes: [changeKey] });
+                }
+            }
+            else if (effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
+                if (BladesActor.IsType(effect.parent, BladesActorType.pc, BladesActorType.crew)) {
+                    if (effect.parent.cohorts.length > 0) {
+                        await Promise.all(effect.parent.cohorts.map(async (cohort) => cohort.createEmbeddedDocuments("ActiveEffect", [effect])));
+                    }
+                    await effect.parent.setFlag("eunos-blades", `cohortEffects.${effect.id}`, {
+                        appliedTo: effect.parent.cohorts.map((cohort) => cohort.id),
+                        effect
+                    });
                     await effect.updateSource({ changes: effect.changes.filter((change) => change.key === "APPLYTOCOHORTS") });
                 }
-                return;
             }
-            
             const [permChanges, changes] = U.partition(effect.changes, (change) => /^perm/.test(change.key));
             await effect.updateSource({ changes });
             for (const permChange of permChanges) {
@@ -174,18 +207,36 @@ class BladesActiveEffect extends ActiveEffect {
             if (!(effect.parent instanceof BladesActor)) {
                 return;
             }
-            if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
-                if (effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
-                    await Promise.all(effect.parent.members
-                        .map(async (member) => Promise.all(member.effects
-                        .filter((e) => e.name === effect.name)
-                        .map(async (e) => e.delete()))));
+            if (effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
+                if (BladesActor.IsType(effect.parent, BladesActorType.pc) && BladesActor.IsType(effect.parent.crew, BladesActorType.crew)) {
+                    const otherMembers = effect.parent.crew.members.filter((member) => member.id !== effect.parent.id);
+                    if (otherMembers.length > 0) {
+                        await Promise.all(otherMembers
+                            .map(async (member) => Promise.all(member.effects
+                            .filter((e) => e.name === effect.name)
+                            .map(async (e) => e.delete()))));
+                    }
+                    await effect.parent.unsetFlag("eunos-blades", `memberEffects.${effect.id}`);
                 }
-                else if (effect.parent.cohorts.length > 0 && effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
-                    await Promise.all(effect.parent.cohorts
-                        .map(async (cohort) => Promise.all(cohort.effects
-                        .filter((e) => e.name === effect.name)
-                        .map(async (e) => e.delete()))));
+                else if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
+                    if (effect.parent.members.length > 0) {
+                        await Promise.all(effect.parent.members
+                            .map(async (member) => Promise.all(member.effects
+                            .filter((e) => e.name === effect.name)
+                            .map(async (e) => e.delete()))));
+                    }
+                    await effect.parent.unsetFlag("eunos-blades", `memberEffects.${effect.id}`);
+                }
+            }
+            else if (effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
+                if (BladesActor.IsType(effect.parent, BladesActorType.pc, BladesActorType.crew)) {
+                    if (effect.parent.cohorts.length > 0) {
+                        await Promise.all(effect.parent.cohorts
+                            .map(async (cohort) => Promise.all(cohort.effects
+                            .filter((e) => e.name === effect.name)
+                            .map(async (e) => e.delete()))));
+                    }
+                    await effect.parent.unsetFlag("eunos-blades", `cohortEffects.${effect.id}`);
                 }
             }
             const customEffects = effect.changes.filter((changes) => changes.mode === 0);
@@ -199,6 +250,10 @@ class BladesActiveEffect extends ActiveEffect {
                 BladesActiveEffect.ThrottleCustomFunc(effect.parent, funcData);
             });
         });
+    }
+    static async AddActiveEffect(doc, name, eChanges, icon = "systems/eunos-blades/assets/icons/effect-icons/default.png") {
+        const changes = [eChanges].flat();
+        doc.createEmbeddedDocuments("ActiveEffect", [{ name, icon, changes }]);
     }
     static ThrottleCustomFunc(actor, data) {
         const { funcName, funcData, isReversing, effect } = data;

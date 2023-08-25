@@ -1137,10 +1137,11 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
       // name:Alchemist@cat:result@posNeg:positive@type:ability@cTypes:Action|Downtime@cTraits:study|tinker|finesse|wreck|attune@tooltip:<h1>Alchemist</h1><p>When you <strong>invent</strong> or <strong>craft</strong> a creation with <em>alchemical</em> features, you get <strong>+1 result level</strong>to your roll.</p>
       if (
-        (rollMod.conditionalRollTypes?.length ?? 0)
+        rollMod.status === RollModStatus.Conditional
+        || ((rollMod.conditionalRollTypes?.length ?? 0)
         + (rollMod.conditionalRollTraits?.length ?? 0)
         + (rollMod.autoRollTypes?.length ?? 0)
-        + (rollMod.autoRollTraits?.length ?? 0) > 0) {
+        + (rollMod.autoRollTraits?.length ?? 0) > 0)) {
         rollMod.isConditional = true;
         rollMod.status = RollModStatus.Conditional;
       }
@@ -1158,14 +1159,14 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
           name: harmString,
           category: effectCat,
           posNeg: "negative",
-          status: RollModStatus.ForcedOn,
+          status: RollModStatus.ToggledOn,
           modType: "harm",
           value: 1,
           tooltip: [
             `<h1 class='red-bright'><strong>Harm:</strong> ${harmString}</h1>`,
             effectCat === RollModCategory.roll
-              ? "<p>Your injuries reduce your <strong class='red-bright'>dice pool</strong> by one.</p>"
-              : "<p>Your injuries reduce your <strong class='red-bright'>Effect</strong> by one level."
+              ? "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1d</strong> to your roll.</p>"
+              : "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1 effect</strong>."
           ].join("")
         }, rollMods);
       }

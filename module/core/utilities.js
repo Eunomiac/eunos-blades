@@ -593,7 +593,11 @@ const group = (array, key) => {
     return returnObj;
 };
 const removeFirst = (array, element) => array.splice(array.findIndex((v) => v === element));
-const pullElement = (array, checkFunc = (_v = true, _i = 0, _a = []) => { checkFunc(_v, _i, _a); }) => {
+function pullElement(array, checkFunc) {
+    const index = array.findIndex((v, i, a) => checkFunc(v, i, a));
+    return (index !== -1 && array.splice(index, 1).pop()) ?? false;
+}
+const oldpullElement = (array, checkFunc = (_v = true, _i = 0, _a = []) => { checkFunc(_v, _i, _a); }) => {
     const index = array.findIndex((v, i, a) => checkFunc(v, i, a));
     return (index !== -1 && array.splice(index, 1).pop()) ?? false;
 };

@@ -97,7 +97,10 @@ declare global {
 
     type RollModData = {
       name: string,
-      status: RollModStatus,
+      status?: RollModStatus, // Set to held_status ?? user_status ?? base_status at end of getData
+      base_status: RollModStatus, // Original status; never changed
+      user_status: RollModStatus, // User-selected status
+      held_status?: RollModStatus, // Re-checked for each getData
       value: number,
       effectKey?: string[],
       sideString?: string,

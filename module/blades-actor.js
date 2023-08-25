@@ -993,10 +993,11 @@ class BladesActor extends Actor {
                             ? [val].flat()
                             : val) });
             });
-            if ((rollMod.conditionalRollTypes?.length ?? 0)
-                + (rollMod.conditionalRollTraits?.length ?? 0)
-                + (rollMod.autoRollTypes?.length ?? 0)
-                + (rollMod.autoRollTraits?.length ?? 0) > 0) {
+            if (rollMod.status === RollModStatus.Conditional
+                || ((rollMod.conditionalRollTypes?.length ?? 0)
+                    + (rollMod.conditionalRollTraits?.length ?? 0)
+                    + (rollMod.autoRollTypes?.length ?? 0)
+                    + (rollMod.autoRollTraits?.length ?? 0) > 0)) {
                 rollMod.isConditional = true;
                 rollMod.status = RollModStatus.Conditional;
             }
@@ -1011,14 +1012,14 @@ class BladesActor extends Actor {
                     name: harmString,
                     category: effectCat,
                     posNeg: "negative",
-                    status: RollModStatus.ForcedOn,
+                    status: RollModStatus.ToggledOn,
                     modType: "harm",
                     value: 1,
                     tooltip: [
                         `<h1 class='red-bright'><strong>Harm:</strong> ${harmString}</h1>`,
                         effectCat === RollModCategory.roll
-                            ? "<p>Your injuries reduce your <strong class='red-bright'>dice pool</strong> by one.</p>"
-                            : "<p>Your injuries reduce your <strong class='red-bright'>Effect</strong> by one level."
+                            ? "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1d</strong> to your roll.</p>"
+                            : "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1 effect</strong>."
                     ].join("")
                 }, rollMods);
             }

@@ -80,11 +80,19 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, effect:
   }
 };
 
+enum EffectMode {
+  Custom,
+  Multiply,
+  Add,
+  Downgrade,
+  Upgrade,
+  Override
+}
+
 type EffectChangeData = {
-  effect: BladesActiveEffect,
   key: string,
-  mode: number,
-  priority: number,
+  mode: EffectMode,
+  priority: number|null,
   value: string
 };
 
@@ -112,28 +120,55 @@ class BladesActiveEffect extends ActiveEffect {
 
     Hooks.on("preCreateActiveEffect", async (effect: BladesActiveEffect) => {
 
-      eLog.checkLog3("effect", "TESTING PRE CREATE", {parent: effect.parent?.name});
+      eLog.checkLog3("effect", "PRECREATE ActiveEffect", {effect, parent: effect.parent?.name});
 
       if (!(effect.parent instanceof BladesActor)) { return }
 
       // Does this effect have an "APPLYTOMEMBERS" or "APPLYTOCOHORTS" CUSTOM effect?
-      if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
-        if (effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
-          // Copy the effect, apply it to all members of the crew, then delete changes from original effect so only the APPLYTOMEMBERS key remains.
-          // @ts-expect-error Useless typing for createEmbeddedDocuments
-          await Promise.all(effect.parent.members.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect])));
-          await effect.updateSource({changes: effect.changes.filter((change) => change.key === "APPLYTOMEMBERS")});
-        } else if (effect.parent.cohorts.length > 0 && effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
-          // Copy the effect, apply it to all cohorts of the crew, then delete changes from original effect so only the APPLYTOCOHORTS key remains.
-          // @ts-expect-error Useless typing for createEmbeddedDocuments
-          await Promise.all(effect.parent.cohorts.map(async (cohort) => cohort.createEmbeddedDocuments("ActiveEffect", [effect])));
+      if (effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
+        if (BladesActor.IsType(effect.parent, BladesActorType.pc) && BladesActor.IsType(effect.parent.crew, BladesActorType.crew)) {
+          const otherMembers = effect.parent.crew.members.filter((member) => member.id !== effect.parent!.id);
+          if (otherMembers.length > 0) {
+            // If PC & APPLYTOMEMBERS   --> Create effect on members MINUS the 'APPLYTOMEMBERS' key, leave PC's effect unchanged.
+            effect.changes = effect.changes.filter((change) => change.key !== "APPLYTOMEMBERS");
+            await Promise.all(otherMembers.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect as any])));
+            // Set flag with effect's data on member, so future members can have effect applied to them.
+            await effect.parent.setFlag("eunos-blades", `memberEffects.${effect.id}`, {
+              appliedTo: otherMembers.map((member) => member.id),
+              effect
+            });
+          }
+        } else if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
+          const changeKey = U.pullElement(effect.changes, (change) => change.key === "APPLYTOMEMBERS") as EffectChangeData;
+          if (effect.parent.members.length > 0) {
+            // If Crew & APPLYTOMEMBERS --> Create effect on members MINUS the 'APPLYTOMEMBERS' key
+            await Promise.all(effect.parent.members.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect as any])));
+          }
+          // Set flag with effect's data on crew, so future members can have effect applied to them.
+          await effect.parent.setFlag("eunos-blades", `memberEffects.${effect.id}`, {
+            appliedTo: effect.parent.members.map((member) => member.id),
+            effect
+          });
+          // Update effect on crew-parent to only include 'APPLYTOMEMBERS' change
+          await effect.updateSource({changes: [changeKey]});
+        }
+      } else if (effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
+        if (BladesActor.IsType(effect.parent, BladesActorType.pc, BladesActorType.crew)) {
+          if (effect.parent.cohorts.length > 0) {
+            // If APPLYTOCOHORTS   --> Create effect on cohorts
+            await Promise.all(effect.parent.cohorts.map(async (cohort) => cohort.createEmbeddedDocuments("ActiveEffect", [effect as any])));
+          }
+          // Set flag with effect's data on parent, so future cohorts can have effect applied to them.
+          await effect.parent.setFlag("eunos-blades", `cohortEffects.${effect.id}`, {
+            appliedTo: effect.parent.cohorts.map((cohort) => cohort.id),
+            effect
+          });
+          // Update effect on parent to only include 'APPLYTOCOHORTS' change
           await effect.updateSource({changes: effect.changes.filter((change) => change.key === "APPLYTOCOHORTS")});
         }
-        return;
       }
 
       // Partition effect.changes into permanent and non-permanent changes:
-
       const [permChanges, changes] = U.partition(effect.changes, (change) => /^perm/.test(change.key));
       await effect.updateSource({changes});
 
@@ -160,7 +195,7 @@ class BladesActiveEffect extends ActiveEffect {
       }
     });
 
-    Hooks.on("applyActiveEffect", (actor: BladesActor, changeData: EffectChangeData) => {
+    Hooks.on("applyActiveEffect", (actor: BladesActor, changeData: EffectChangeData & {effect: BladesActiveEffect}) => {
 
       if (!(actor instanceof BladesActor)) { return }
 
@@ -192,23 +227,44 @@ class BladesActiveEffect extends ActiveEffect {
     Hooks.on("deleteActiveEffect", async (effect: BladesActiveEffect) => {
       if (!(effect.parent instanceof BladesActor)) { return }
 
-      if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
-        // Does this effect have an "APPLYTOMEMBERS" / "APPLYTOCOHORTS" CUSTOM effect?
-        if (effect.parent.members.length > 0 && effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
-          // Delete matching ActiveEffects from all members.
-          await Promise.all(effect.parent.members
-            .map(async (member) => Promise.all(member.effects
-              .filter((e) => e.name === effect.name)
-              .map(async (e) => e.delete()))));
-        } else if (effect.parent.cohorts.length > 0 && effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
-          // Delete matching ActiveEffects from all cohorts.
-          await Promise.all(effect.parent.cohorts
-            .map(async (cohort) => Promise.all(cohort.effects
-              .filter((e) => e.name === effect.name)
-              .map(async (e) => e.delete()))));
-
+      // Does this effect have an "APPLYTOMEMBERS" or "APPLYTOCOHORTS" CUSTOM effect?
+      if (effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
+        if (BladesActor.IsType(effect.parent, BladesActorType.pc) && BladesActor.IsType(effect.parent.crew, BladesActorType.crew)) {
+          const otherMembers = effect.parent.crew.members.filter((member) => member.id !== effect.parent!.id);
+          if (otherMembers.length > 0) {
+            // If PC & APPLYTOMEMBERS   --> Delete effect on all other members.
+            await Promise.all(otherMembers
+              .map(async (member) => Promise.all(member.effects
+                .filter((e) => e.name === effect.name)
+                .map(async (e) => e.delete()))));
+          }
+          // Clear flag from parent
+          await effect.parent.unsetFlag("eunos-blades", `memberEffects.${effect.id}`);
+        } else if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
+          if (effect.parent.members.length > 0) {
+            // If CREW & APPLYTOMEMBERS   --> Delete effect on all other members.
+            await Promise.all(effect.parent.members
+              .map(async (member) => Promise.all(member.effects
+                .filter((e) => e.name === effect.name)
+                .map(async (e) => e.delete()))));
+          }
+          // Clear flag from parent
+          await effect.parent.unsetFlag("eunos-blades", `memberEffects.${effect.id}`);
+        }
+      } else if (effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
+        if (BladesActor.IsType(effect.parent, BladesActorType.pc, BladesActorType.crew)) {
+          if (effect.parent.cohorts.length > 0) {
+            // If APPLYTOCOHORTS   --> Delete effect on cohorts.
+            await Promise.all(effect.parent.cohorts
+              .map(async (cohort) => Promise.all(cohort.effects
+                .filter((e) => e.name === effect.name)
+                .map(async (e) => e.delete()))));
+          }
+          // Clear flag from parent
+          await effect.parent.unsetFlag("eunos-blades", `cohortEffects.${effect.id}`);
         }
       }
+
       const customEffects = effect.changes.filter((changes: EffectChangeData) => changes.mode === 0);
       customEffects.forEach(({key, value}) => {
         const funcData: BladesCustomFuncData = {
@@ -220,6 +276,11 @@ class BladesActiveEffect extends ActiveEffect {
         BladesActiveEffect.ThrottleCustomFunc(effect.parent as BladesActor, funcData);
       });
     });
+  }
+
+  static async AddActiveEffect(doc: BladesDoc, name: string, eChanges: EffectChangeData|EffectChangeData[], icon = "systems/eunos-blades/assets/icons/effect-icons/default.png") {
+    const changes = [eChanges].flat();
+    doc.createEmbeddedDocuments("ActiveEffect", [{name, icon, changes}]);
   }
 
   static ThrottleCustomFunc(actor: BladesActor, data: BladesCustomFuncData) {
@@ -312,6 +373,7 @@ class BladesActiveEffect extends ActiveEffect {
 }
 
 declare interface BladesActiveEffect {
+  icon: string,
   origin: string
   disabled: boolean
   changes: EffectChangeData[]
