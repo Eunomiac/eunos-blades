@@ -27,8 +27,8 @@ class BladesItem extends Item implements BladesDocument<Item>,
                                           BladesItemSubClass.Design,
                                           BladesItemSubClass.Location,
                                           BladesItemSubClass.Score,
-                                          BladesRollCollab.SourceDoc,
-                                          BladesRollCollab.OppositionDoc {
+                                          BladesRollCollab.SourceDocData,
+                                          BladesRollCollab.OppositionDocData {
 
   // #region Static Overrides: Create ~
   static override async create(data: ItemDataConstructorData & { system?: { world_name?: string, description?: string } }, options = {}) {
@@ -249,12 +249,11 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   // #region BladesRollSource Implementation
 
-  get rollMods(): BladesRollCollab.RollModData[] {
+  get rollModsData(): BladesRollCollab.RollModData[] {
     const {roll_mods} = this.system;
     if (!roll_mods) { return [] }
-    const rollMods: BladesRollCollab.RollModData[] = [];
 
-    roll_mods.forEach((modString) => {
+    const rollModsData: BladesRollCollab.RollModData[] = roll_mods.map((modString) => {
       const pStrings = modString.split(/@/);
       const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
       const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, "")) as string|false;
@@ -265,10 +264,11 @@ class BladesItem extends Item implements BladesDocument<Item>,
       const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
       const posNegVal = posNegString.replace(/^.*:/, "") as "positive"|"negative";
 
-      const rollMod: BladesRollCollab.RollModData = {
+      const rollModData: BladesRollCollab.RollModData = {
+        id: `${nameVal}-${posNegVal}-${catVal}`,
         name: nameVal,
         category: catVal,
-        status: RollModStatus.ToggledOff,
+        base_status: RollModStatus.ToggledOff,
         modType: "general",
         value: 1,
         posNeg: posNegVal,
@@ -277,11 +277,11 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
       pStrings.forEach((pString) => {
         const [keyString, valString] = pString.split(/:/) as [string, string];
-        const val: string|string[] = /\|/.test(valString) ? valString.split(/\|/) : valString;
+        let val: string|string[] = /\|/.test(valString) ? valString.split(/\|/) : valString;
         let key: KeyOf<BladesRollCollab.RollModData>;
-        if (/^stat/i.test(keyString)) { key = "status" } else
+        if (/^stat/i.test(keyString)) { key = "base_status" } else
         if (/^val/i.test(keyString)) { key = "value" } else
-        if (/^eff|^ekey/i.test(keyString)) { key = "effectKey" } else
+        if (/^eff|^ekey/i.test(keyString)) { key = "effectKeys" } else
         if (/^side|^ss/i.test(keyString)) { key = "sideString" } else
         if (/^tool|^tip/i.test(keyString)) { key = "tooltip" } else
         if (/^ty/i.test(keyString)) { key = "modType" } else
@@ -292,99 +292,95 @@ class BladesItem extends Item implements BladesDocument<Item>,
           throw new Error(`Bad Roll Mod Key: ${keyString}`);
         }
 
+        if (key === "base_status" && val === "Conditional") {
+          val = RollModStatus.Hidden;
+        }
+
         Object.assign(
-          rollMod,
+          rollModData,
           {[key]: ["value"].includes(key)
             ? U.pInt(val)
-            : (["effectKey", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
+            : (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
                 ? [val].flat()
-                : val)}
+                : (val as string).replace(/%COLON%/g, ":"))}
         );
       });
 
-      // name:Alchemist@cat:result@posNeg:positive@type:ability@cTypes:Action|Downtime@cTraits:study|tinker|finesse|wreck|attune@tooltip:<h1>Alchemist</h1><p>When you <strong>invent</strong> or <strong>craft</strong> a creation with <em>alchemical</em> features, you get <strong>+1 result level</strong>to your roll.</p>
-      if (
-        (rollMod.conditionalRollTypes?.length ?? 0)
-        + (rollMod.conditionalRollTraits?.length ?? 0)
-        + (rollMod.autoRollTypes?.length ?? 0)
-        + (rollMod.autoRollTraits?.length ?? 0) > 0) {
-        rollMod.isConditional = true;
-        rollMod.status = RollModStatus.Conditional;
-      }
-
-      BladesRollCollab.MergeInRollMod(rollMod, rollMods);
+      return rollModData;
     });
 
-    // Add roll mods from harm for cohorts
-    // [
-    //   [/1d/, RollModCategory.roll] as const,
-    //   [/Less Effect/, RollModCategory.effect] as const
-    // ].forEach(([effectPat, effectCat]) => {
+    // Add roll mods from COHORT harm
+    // [[/1d/, RollModCategory.roll] as const, [/Less Effect/, RollModCategory.effect] as const].forEach(([effectPat, effectCat]) => {
     //   const {one: harmConditionOne, two: harmConditionTwo} = Object.values(this.system.harm ?? {})
     //     .find((harmData) => effectPat.test(harmData.effect)) ?? {};
     //   const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
     //   if (harmString.length > 0) {
-    //     BladesRollCollab.MergeInRollMod({
+    //     rollModsData.push({
+    //       id: `Harm-negative-${effectCat}`,
     //       name: harmString,
     //       category: effectCat,
     //       posNeg: "negative",
-    //       status: RollModStatus.ForcedOn,
+    //       base_status: RollModStatus.ToggledOn,
     //       modType: "harm",
     //       value: 1,
     //       tooltip: [
     //         `<h1 class='red-bright'><strong>Harm:</strong> ${harmString}</h1>`,
     //         effectCat === RollModCategory.roll
-    //           ? "<p>Your injuries reduce your <strong class='red-bright'>dice pool</strong> by one.</p>"
-    //           : "<p>Your injuries reduce your <strong class='red-bright'>Effect</strong> by one level."
+    //           ? "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1d</strong> to your roll.</p>"
+    //           : "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1 effect</strong>."
     //       ].join("")
-    //     }, rollMods);
+    //     });
     //   }
     // });
 
     // eLog.checkLog3("rollCollab", `Roll Mods (${this.name})`, {system: this.system.roll_mods, rollMods});
 
-    return rollMods;
+    return rollModsData;
   }
 
-  get rollFactors(): Partial<Record<Factor,BladesRollCollab.FactorData>> & Record<Factor.tier, BladesRollCollab.FactorData> {
-    return {
-      [Factor.tier]: {
-        name: Factor.tier,
-        value: this.getFactorTotal(Factor.tier),
-        max: this.getFactorTotal(Factor.tier),
-        cssClasses: "factor-gold factor-main",
-        isActive: true,
+  get rollFactors(): Partial<Record<Factor,BladesRollCollab.FactorData>> {
+    const factors: Factor[] = {
+      [BladesItemType.ability]: [],
+      [BladesItemType.background]: [],
+      [BladesItemType.clock_keeper]: [],
+      [BladesItemType.cohort_gang]: [Factor.quality, Factor.scale],
+      [BladesItemType.cohort_expert]: [Factor.quality, Factor.scale],
+      [BladesItemType.crew_ability]: [],
+      [BladesItemType.crew_reputation]: [],
+      [BladesItemType.crew_playbook]: [],
+      [BladesItemType.crew_upgrade]: [],
+      [BladesItemType.feature]: [],
+      [BladesItemType.gm_tracker]: [],
+      [BladesItemType.heritage]: [],
+      [BladesItemType.gear]: [Factor.quality],
+      [BladesItemType.playbook]: [],
+      [BladesItemType.preferred_op]: [],
+      [BladesItemType.stricture]: [],
+      [BladesItemType.vice]: [],
+      [BladesItemType.project]: [Factor.quality],
+      [BladesItemType.ritual]: [Factor.magnitude],
+      [BladesItemType.design]: [Factor.quality],
+      [BladesItemType.location]: [Factor.tier, Factor.quality, Factor.scale],
+      [BladesItemType.score]: [Factor.tier, Factor.quality, Factor.scale, Factor.magnitude]
+    }[this.type];
+
+    const factorData: Partial<Record<Factor,BladesRollCollab.FactorData>> = {};
+    factors.forEach((factor, i) => {
+      const factorTotal = this.getFactorTotal(factor);
+      factorData[factor] = {
+        name: factor,
+        value: factorTotal,
+        max: factorTotal,
+        baseVal: factorTotal,
+        display: [Factor.tier, Factor.quality].includes(factor) ? U.romanizeNum(factorTotal) : `${factorTotal}`,
+        isActive: i === 0,
         isDominant: false,
-        highFavorsPC: true
-      },
-      [Factor.quality]: {
-        name: Factor.quality,
-        value: this.getFactorTotal(Factor.quality),
-        max: this.getFactorTotal(Factor.quality),
-        cssClasses: "factor-gold factor-main",
-        isActive: false,
-        isDominant: false,
-        highFavorsPC: true
-      },
-      [Factor.scale]: {
-        name: Factor.scale,
-        value: this.getFactorTotal(Factor.scale),
-        max: this.getFactorTotal(Factor.scale),
-        cssClasses: "factor-gold",
-        isActive: false,
-        isDominant: false,
-        highFavorsPC: true
-      },
-      [Factor.magnitude]: {
-        name: Factor.magnitude,
-        value: this.getFactorTotal(Factor.magnitude),
-        max: this.getFactorTotal(Factor.magnitude),
-        cssClasses: "factor-gold",
-        isActive: false,
-        isDominant: false,
-        highFavorsPC: true
-      }
-    };
+        highFavorsPC: true,
+        cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`
+      };
+    });
+
+    return factorData;
   }
   get rollOppImg() { return this.img ?? undefined }
   // #endregion

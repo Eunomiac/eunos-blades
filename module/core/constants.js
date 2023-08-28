@@ -167,6 +167,17 @@ export var RollSubType;
     RollSubType["Engagement"] = "Engagement";
     RollSubType["GatherInfo"] = "GatherInfo";
 })(RollSubType || (RollSubType = {}));
+export var ConsequenceType;
+(function (ConsequenceType) {
+    ConsequenceType["ReducedEffect"] = "ReducedEffect";
+    ConsequenceType["Complication"] = "Complication";
+    ConsequenceType["LostOpportunity"] = "LostOpportunity";
+    ConsequenceType["WorsePosition"] = "WorsePosition";
+    ConsequenceType["Harm1"] = "Harm1";
+    ConsequenceType["Harm2"] = "Harm2";
+    ConsequenceType["Harm3"] = "Harm3";
+    ConsequenceType["Harm4"] = "Harm4";
+})(ConsequenceType || (ConsequenceType = {}));
 export var RollModStatus;
 (function (RollModStatus) {
     RollModStatus["Hidden"] = "Hidden";
@@ -174,7 +185,6 @@ export var RollModStatus;
     RollModStatus["ToggledOn"] = "ToggledOn";
     RollModStatus["ForcedOn"] = "ForcedOn";
     RollModStatus["ForcedOff"] = "ForcedOff";
-    RollModStatus["Conditional"] = "Conditional";
 })(RollModStatus || (RollModStatus = {}));
 export var RollModCategory;
 (function (RollModCategory) {

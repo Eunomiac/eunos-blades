@@ -5,13 +5,11 @@
 <span class="roll-mod-container">
   <span
     class="roll-mod shadowed posneg-{{posNeg}} status-{{case "lower" status}} {{~#if tooltip}} tooltip-trigger{{/if}}{{~#if sideString}} roll-mod-sidestring{{/if}}{{~#if modType}} roll-mod-{{modType}}{{/if}}"
-    data-action="{{#if (test @root.isGM "||" (test "Toggle" "in" status))}}toggle{{/if}}"
-    data-status="{{status}}"
-    data-pos-neg="{{posNeg}}"
-    data-cat="{{category}}"
-    data-name="{{name}}"
-  >{{name}}{{#if sideString}}:{{/if}}</span>
-
+    data-action="{{#if (test "Toggle" "in" status)}}toggle{{/if}}"
+    data-id="{{id}}"
+  >
+    <span class="roll-mod-text">{{name}}{{#if sideString}}:{{/if}}</span>
+  </span>
 
   {{#if tooltip}}
   <div class="tooltip tooltip-small tooltip-left tooltip-roll-mod">{{{tooltip}}}</div>
@@ -19,10 +17,17 @@
   {{#if sideString}}
   <span class="roll-mod-side-string shadowed">{{{sideString}}}</span>
   {{/if}}
-  {{#if isGM}}{{#if (test modType "==" "teamwork")}}
-  {{> "systems/eunos-blades/templates/roll/partials/roll-collab-gm-select-doc.hbs"
-    docs = teamworkDocs
-    docCategory = category
-    docTarget = name }}
-  {{/if}}{{/if}}
+  {{#if isGM}}
+    <div class="roll-mod-controls-container">
+      <span class="roll-mod-gm-control" data-id="{{id}}" data-action="force">F</span>
+      <span class="roll-mod-gm-control" data-id="{{id}}" data-action="toggle">T</span>
+      <span class="roll-mod-gm-control" data-id="{{id}}" data-action="hide">H</span>
+    </div>
+    {{#if (test modType "==" "teamwork")}}
+      {{> "systems/eunos-blades/templates/roll/partials/roll-collab-gm-select-doc.hbs"
+        docs = teamworkDocs
+        docCategory = category
+        docTarget = name }}
+    {{/if}}
+  {{/if}}
 </span>

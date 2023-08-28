@@ -14,7 +14,7 @@ import BladesActorSheet from "./sheets/actor/blades-actor-sheet.js";
 import BladesCrewSheet from "./sheets/actor/blades-crew-sheet.js";
 import BladesNPCSheet from "./sheets/actor/blades-npc-sheet.js";
 import BladesFactionSheet from "./sheets/actor/blades-faction-sheet.js";
-import BladesRollCollab, {ApplyRollEffects} from "./blades-roll-collab.js";
+import BladesRollCollab, {ApplyRollEffects, ApplyDescriptions} from "./blades-roll-collab.js";
 
 import {bladesRoll, simpleRollPopup} from "./blades-roll.js";
 import BladesSelectorDialog, {SelectionCategory} from "./blades-dialog.js";
@@ -45,6 +45,7 @@ registerDebugger();
     BladesPushController,
     BladesRollCollab,
     ApplyRollEffects,
+    ApplyDescriptions,
     IMPORTDATA,
     bladesRoll,
     simpleRollPopup,

@@ -10,7 +10,6 @@ import C, { BladesActorType, Tag, Playbook, BladesItemType, Attribute, Action, P
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem from "./blades-item.js";
 import { SelectionCategory } from "./blades-dialog.js";
-import BladesRollCollab from "./blades-roll-collab.js";
 class BladesActor extends Actor {
     static async CleanData(actor) {
         if (!actor) {
@@ -921,13 +920,12 @@ class BladesActor extends Actor {
     getTaggedItemBonuses(tags) {
         return 0;
     }
-    get rollMods() {
+    get rollModsData() {
         const { roll_mods } = this.system;
         if (!roll_mods) {
             return [];
         }
-        const rollMods = [];
-        roll_mods.forEach((modString) => {
+        const rollModsData = roll_mods.map((modString) => {
             const pStrings = modString.split(/@/);
             const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
             const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, ""));
@@ -941,10 +939,11 @@ class BladesActor extends Actor {
             }
             const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
             const posNegVal = posNegString.replace(/^.*:/, "");
-            const rollMod = {
+            const rollModData = {
+                id: `${nameVal}-${posNegVal}-${catVal}`,
                 name: nameVal,
                 category: catVal,
-                status: RollModStatus.ToggledOff,
+                base_status: RollModStatus.ToggledOff,
                 modType: "general",
                 value: 1,
                 posNeg: posNegVal,
@@ -952,16 +951,16 @@ class BladesActor extends Actor {
             };
             pStrings.forEach((pString) => {
                 const [keyString, valString] = pString.split(/:/);
-                const val = /\|/.test(valString) ? valString.split(/\|/) : valString;
+                let val = /\|/.test(valString) ? valString.split(/\|/) : valString;
                 let key;
                 if (/^stat/i.test(keyString)) {
-                    key = "status";
+                    key = "base_status";
                 }
                 else if (/^val/i.test(keyString)) {
                     key = "value";
                 }
                 else if (/^eff|^ekey/i.test(keyString)) {
-                    key = "effectKey";
+                    key = "effectKeys";
                 }
                 else if (/^side|^ss/i.test(keyString)) {
                     key = "sideString";
@@ -987,32 +986,28 @@ class BladesActor extends Actor {
                 else {
                     throw new Error(`Bad Roll Mod Key: ${keyString}`);
                 }
-                Object.assign(rollMod, { [key]: ["value"].includes(key)
+                if (key === "base_status" && val === "Conditional") {
+                    val = RollModStatus.Hidden;
+                }
+                Object.assign(rollModData, { [key]: ["value"].includes(key)
                         ? U.pInt(val)
-                        : (["effectKey", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
+                        : (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
                             ? [val].flat()
-                            : val) });
+                            : val.replace(/%COLON%/g, ":")) });
             });
-            if (rollMod.status === RollModStatus.Conditional
-                || ((rollMod.conditionalRollTypes?.length ?? 0)
-                    + (rollMod.conditionalRollTraits?.length ?? 0)
-                    + (rollMod.autoRollTypes?.length ?? 0)
-                    + (rollMod.autoRollTraits?.length ?? 0) > 0)) {
-                rollMod.isConditional = true;
-                rollMod.status = RollModStatus.Conditional;
-            }
-            BladesRollCollab.MergeInRollMod(rollMod, rollMods);
+            return rollModData;
         });
         [[/1d/, RollModCategory.roll], [/Less Effect/, RollModCategory.effect]].forEach(([effectPat, effectCat]) => {
             const { one: harmConditionOne, two: harmConditionTwo } = Object.values(this.system.harm ?? {})
                 .find((harmData) => effectPat.test(harmData.effect)) ?? {};
             const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
             if (harmString.length > 0) {
-                BladesRollCollab.MergeInRollMod({
+                rollModsData.push({
+                    id: `Harm-negative-${effectCat}`,
                     name: harmString,
                     category: effectCat,
                     posNeg: "negative",
-                    status: RollModStatus.ToggledOn,
+                    base_status: RollModStatus.ToggledOn,
                     modType: "harm",
                     value: 1,
                     tooltip: [
@@ -1021,11 +1016,11 @@ class BladesActor extends Actor {
                             ? "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1d</strong> to your roll.</p>"
                             : "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1 effect</strong>."
                     ].join("")
-                }, rollMods);
+                });
             }
         });
         
-        return rollMods;
+        return rollModsData;
     }
     get rollFactors() {
         return {
@@ -1033,6 +1028,7 @@ class BladesActor extends Actor {
                 name: Factor.tier,
                 value: this.getFactorTotal(Factor.tier),
                 max: this.getFactorTotal(Factor.tier),
+                baseVal: this.getFactorTotal(Factor.tier),
                 cssClasses: "factor-gold factor-main",
                 isActive: true,
                 isDominant: false,

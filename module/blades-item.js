@@ -8,7 +8,6 @@
 import C, { SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase, RollModCategory, Factor, RollModStatus } from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
-import BladesRollCollab from "./blades-roll-collab.js";
 class BladesItem extends Item {
 
     static async create(data, options = {}) {
@@ -145,13 +144,12 @@ class BladesItem extends Item {
     }
     
     
-    get rollMods() {
+    get rollModsData() {
         const { roll_mods } = this.system;
         if (!roll_mods) {
             return [];
         }
-        const rollMods = [];
-        roll_mods.forEach((modString) => {
+        const rollModsData = roll_mods.map((modString) => {
             const pStrings = modString.split(/@/);
             const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
             const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, ""));
@@ -165,10 +163,11 @@ class BladesItem extends Item {
             }
             const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
             const posNegVal = posNegString.replace(/^.*:/, "");
-            const rollMod = {
+            const rollModData = {
+                id: `${nameVal}-${posNegVal}-${catVal}`,
                 name: nameVal,
                 category: catVal,
-                status: RollModStatus.ToggledOff,
+                base_status: RollModStatus.ToggledOff,
                 modType: "general",
                 value: 1,
                 posNeg: posNegVal,
@@ -176,16 +175,16 @@ class BladesItem extends Item {
             };
             pStrings.forEach((pString) => {
                 const [keyString, valString] = pString.split(/:/);
-                const val = /\|/.test(valString) ? valString.split(/\|/) : valString;
+                let val = /\|/.test(valString) ? valString.split(/\|/) : valString;
                 let key;
                 if (/^stat/i.test(keyString)) {
-                    key = "status";
+                    key = "base_status";
                 }
                 else if (/^val/i.test(keyString)) {
                     key = "value";
                 }
                 else if (/^eff|^ekey/i.test(keyString)) {
-                    key = "effectKey";
+                    key = "effectKeys";
                 }
                 else if (/^side|^ss/i.test(keyString)) {
                     key = "sideString";
@@ -211,63 +210,61 @@ class BladesItem extends Item {
                 else {
                     throw new Error(`Bad Roll Mod Key: ${keyString}`);
                 }
-                Object.assign(rollMod, { [key]: ["value"].includes(key)
+                if (key === "base_status" && val === "Conditional") {
+                    val = RollModStatus.Hidden;
+                }
+                Object.assign(rollModData, { [key]: ["value"].includes(key)
                         ? U.pInt(val)
-                        : (["effectKey", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
+                        : (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
                             ? [val].flat()
-                            : val) });
+                            : val.replace(/%COLON%/g, ":")) });
             });
-            if ((rollMod.conditionalRollTypes?.length ?? 0)
-                + (rollMod.conditionalRollTraits?.length ?? 0)
-                + (rollMod.autoRollTypes?.length ?? 0)
-                + (rollMod.autoRollTraits?.length ?? 0) > 0) {
-                rollMod.isConditional = true;
-                rollMod.status = RollModStatus.Conditional;
-            }
-            BladesRollCollab.MergeInRollMod(rollMod, rollMods);
+            return rollModData;
         });
         
-        return rollMods;
+        return rollModsData;
     }
     get rollFactors() {
-        return {
-            [Factor.tier]: {
-                name: Factor.tier,
-                value: this.getFactorTotal(Factor.tier),
-                max: this.getFactorTotal(Factor.tier),
-                cssClasses: "factor-gold factor-main",
-                isActive: true,
+        const factors = {
+            [BladesItemType.ability]: [],
+            [BladesItemType.background]: [],
+            [BladesItemType.clock_keeper]: [],
+            [BladesItemType.cohort_gang]: [Factor.quality, Factor.scale],
+            [BladesItemType.cohort_expert]: [Factor.quality, Factor.scale],
+            [BladesItemType.crew_ability]: [],
+            [BladesItemType.crew_reputation]: [],
+            [BladesItemType.crew_playbook]: [],
+            [BladesItemType.crew_upgrade]: [],
+            [BladesItemType.feature]: [],
+            [BladesItemType.gm_tracker]: [],
+            [BladesItemType.heritage]: [],
+            [BladesItemType.gear]: [Factor.quality],
+            [BladesItemType.playbook]: [],
+            [BladesItemType.preferred_op]: [],
+            [BladesItemType.stricture]: [],
+            [BladesItemType.vice]: [],
+            [BladesItemType.project]: [Factor.quality],
+            [BladesItemType.ritual]: [Factor.magnitude],
+            [BladesItemType.design]: [Factor.quality],
+            [BladesItemType.location]: [Factor.tier, Factor.quality, Factor.scale],
+            [BladesItemType.score]: [Factor.tier, Factor.quality, Factor.scale, Factor.magnitude]
+        }[this.type];
+        const factorData = {};
+        factors.forEach((factor, i) => {
+            const factorTotal = this.getFactorTotal(factor);
+            factorData[factor] = {
+                name: factor,
+                value: factorTotal,
+                max: factorTotal,
+                baseVal: factorTotal,
+                display: [Factor.tier, Factor.quality].includes(factor) ? U.romanizeNum(factorTotal) : `${factorTotal}`,
+                isActive: i === 0,
                 isDominant: false,
-                highFavorsPC: true
-            },
-            [Factor.quality]: {
-                name: Factor.quality,
-                value: this.getFactorTotal(Factor.quality),
-                max: this.getFactorTotal(Factor.quality),
-                cssClasses: "factor-gold factor-main",
-                isActive: false,
-                isDominant: false,
-                highFavorsPC: true
-            },
-            [Factor.scale]: {
-                name: Factor.scale,
-                value: this.getFactorTotal(Factor.scale),
-                max: this.getFactorTotal(Factor.scale),
-                cssClasses: "factor-gold",
-                isActive: false,
-                isDominant: false,
-                highFavorsPC: true
-            },
-            [Factor.magnitude]: {
-                name: Factor.magnitude,
-                value: this.getFactorTotal(Factor.magnitude),
-                max: this.getFactorTotal(Factor.magnitude),
-                cssClasses: "factor-gold",
-                isActive: false,
-                isDominant: false,
-                highFavorsPC: true
-            }
-        };
+                highFavorsPC: true,
+                cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`
+            };
+        });
+        return factorData;
     }
     get rollOppImg() { return this.img ?? undefined; }
 

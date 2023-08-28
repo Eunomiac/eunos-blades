@@ -2297,6 +2297,8 @@ html, :root {
     color: var(--blades-gold-bright) !important; }
   html .red-bright, :root .red-bright {
     color: var(--blades-red-bright) !important; }
+  html .cyan-bright, :root .cyan-bright {
+    color: var(--blades-cyan-bright) !important; }
   html .uppercase, :root .uppercase {
     text-transform: uppercase !important; }
   html .inline-code, :root .inline-code {
@@ -2450,7 +2452,12 @@ html, :root {
       width: 350px;
       min-width: 350px;
       translate: -50% 0% !important;
-      text-align: center; }
+      text-align: center;
+      -webkit-hyphens: none;
+      -ms-hyphens: none;
+      hyphens: none; }
+      html .tooltip.tooltip-roll-mod > p:not(:last-of-type), :root .tooltip.tooltip-roll-mod > p:not(:last-of-type) {
+        margin-bottom: 10px; }
     html .tooltip.tooltip-pos-effect-trade, :root .tooltip.tooltip-pos-effect-trade {
       width: 330px;
       max-width: 330px;

@@ -5,6 +5,18 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+const testStrings = [
+  "Quality2",
+  "SpecialArmor"
+];
+
+testStrings.map((testString) => {
+  const [traitStr, valStr] = (testString.match(/([A-Za-z]+)([0-9]*)/) ?? []).slice(1);
+  console.log(`tS: '${traitStr}', tV: '${valStr}'`);
+})
+
+
+const IS_TESTINGMIXINS = false;
 // #region  Testing Mixins
 class MixinBuilder {
   constructor(superclass) { this.superclass = superclass }
@@ -63,14 +75,15 @@ class SubItemSheet extends MIX(ItemSheet).with(CloseButton, StaticGetAll) {
 const subActorSheet = new SubActorSheet();
 const subItemSheet = new SubItemSheet();
 
-const testMixins = () => {
+if (IS_TESTINGMIXINS) {
   console.log(SubActorSheet.All);
   console.log(SubItemSheet.All);
   subActorSheet.activateListeners("SubActorSheet");
   subItemSheet.activateListeners("SubItemSheet");
-};
+}
 // #endregion
 
+const IS_CALCULATINGODDS = false;
 // #region  Calculating Odds
 const rollDie = () => Math.floor(Math.random() * 6) + 1;
 const rollPool = (poolSize) => {
@@ -108,5 +121,7 @@ const runTrials = (maxDice, numRuns) => {
   return runResults;
 }
 
-console.log(runTrials(20, 10000000));
+if (IS_CALCULATINGODDS) {
+  console.log(runTrials(20, 10000000));
+}
 // #endregion

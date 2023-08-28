@@ -133,6 +133,7 @@
 
   .gold-bright { color: var(--blades-gold-bright) !important }
   .red-bright { color: var(--blades-red-bright) !important }
+  .cyan-bright { color: var(--blades-cyan-bright) !important }
   .uppercase { text-transform: uppercase !important }
   .inline-code {
     font-family: var(--font-mono) !important;
@@ -301,6 +302,9 @@
       min-width: 350px;
       translate: -50% 0% !important;
       text-align: center;
+      hyphens: none;
+
+      > p:not(:last-of-type) { margin-bottom: 10px; }
     }
 
     &.tooltip-pos-effect-trade {

@@ -183,6 +183,7 @@
               top: 100%;
               left: 50%;
               width: 100%;
+              pointer-events: none;
             }
             &.roll-button {
               position: absolute;
@@ -268,6 +269,14 @@
                 0 0 4px var(--blades-black-dark),
                 0 0 4px var(--blades-black-dark),
                 0 0 4px var(--blades-black-dark);
+
+              &.gm-ready { bottom: -50px }
+
+              .tooltip.tooltip-roll-stress {
+                font-family: var(--font-default);
+
+                > ul > li > .shadowed.red-bright { font-family: var(--font-emphasis) }
+              }
             }
           }
           // #747474
@@ -404,7 +413,7 @@
                     font-size: 14px;
                   }
 
-                  &:hover {
+                  &:hover:not(.status-forcedoff) {
                     color: var(--roll-mod-hover-text-color, var(--blades-gold));
                     background: var(--roll-mod-hover-bg-color, var(--blades-grey));
                     outline: 2px solid var(--roll-mod-hover-bg-color, var(--blades-grey));
@@ -416,6 +425,18 @@
                     --roll-mod-hover-text-color: var(--blades-gold);
                     --roll-mod-hover-bg-color: var(--blades-grey);
                     --roll-mod-bullet-symbol: "♦";
+                  }
+
+                  &.status-forcedoff {
+                    --roll-mod-text-color: var(--blades-grey);
+                    --roll-mod-bullet-color: var(--blades-grey);
+                    --roll-mod-bullet-symbol: " ";
+                  }
+
+                  &.status-hidden {
+                    --roll-mod-bullet-color: var(--blades-red-bright);
+                    --roll-mod-text-color: var(--blades-red-bright);
+                    --roll-mod-bullet-symbol: "◊";
                   }
                 }
               }
@@ -587,6 +608,7 @@
               0 0 2px var(--blades-black-dark);
             letter-spacing: 0.75px;
             vertical-align: middle;
+            transition: 0.25s;
 
             &.roll-mod-ability {
               border-radius: 0;
@@ -632,12 +654,14 @@
               --roll-mod-border-color: var(--roll-mod-active-bright);
               --roll-mod-text-color: var(--blades-white-bright);
               --roll-mod-background-color: var(--roll-mod-active-dark);
+              &:hover { filter: brightness(0.75) }
             }
             &.status-toggledoff {
               --roll-mod-border-color: var(--blades-white);
               --roll-mod-text-color: var(--blades-black-dark);
               --roll-mod-background-color: var(--blades-grey);
               text-shadow: none;
+              &:hover { filter: brightness(1.5) }
             }
             &.status-forcedon {
               --roll-mod-border-color: var(--roll-mod-active-bright);
@@ -660,9 +684,56 @@
             }
             &.status-hidden {
               --roll-mod-border-color: var(--blades-grey-dark);
-              --roll-mod-text-color: var(--blades-grey);
+              --roll-mod-text-color: var(--blades-grey-dark);
               --roll-mod-background-color: transparent;
+              border-style: dotted;
             }
+          }
+
+          .roll-mod-controls-container {
+            position: absolute;
+            top: 0px;
+            height: 16px;
+            max-height: 16px;
+            width: 54px;
+            left: 0;
+            display: flex;
+            justify-content: stretch;
+            align-items: center;
+            opacity: 0;
+            transition: 0.15s;
+            &:hover { opacity: 1 }
+
+            .roll-mod-gm-control {
+              background: var(--blades-gold-dark);
+              border: 1px solid var(--blades-black-dark);
+              color: var(--blades-black-dark);
+              font-family: Oswald;
+              text-align: center;
+              height: 18px;
+              width: 18px;
+              pointer-events: auto;
+              transition: 0.15s;
+              &:hover { background: var(--blades-gold-bright) }
+            }
+
+          }
+
+          .roll-doc-select-container {
+            margin-top: -20px;
+            margin-left: 55px;
+            width: min-content;
+
+            .roll-doc-select {
+              .roll-sheet-doc-select {
+                appearance: none;
+                width: 75px;
+                color: transparent;
+                text-shadow: none;
+              }
+            }
+
+
           }
         }
 

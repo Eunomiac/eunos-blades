@@ -155,13 +155,23 @@ export enum RollSubType {
   GatherInfo = "GatherInfo"
 }
 
+export enum ConsequenceType {
+  ReducedEffect = "ReducedEffect",
+  Complication = "Complication",
+  LostOpportunity = "LostOpportunity",
+  WorsePosition = "WorsePosition",
+  Harm1 = "Harm1",
+  Harm2 = "Harm2",
+  Harm3 = "Harm3",
+  Harm4 = "Harm4"
+}
+
 export enum RollModStatus {
   Hidden = "Hidden",
   ToggledOff = "ToggledOff",
   ToggledOn = "ToggledOn",
   ForcedOn = "ForcedOn",
-  ForcedOff = "ForcedOff",
-  Conditional = "Conditional"
+  ForcedOff = "ForcedOff"
 }
 
 export enum RollModCategory {
