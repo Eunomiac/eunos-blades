@@ -158,7 +158,9 @@ declare global {
 
     export interface Location extends BladesItemSchemaTemplate.Default,
       BladesItemSchemaTemplate.district,
-      BladesItemSchemaTemplate.clocks { }
+      BladesItemSchemaTemplate.clocks {
+      scale: number
+    }
 
     export interface Score extends BladesItemSchemaTemplate.Default,
       BladesItemSchemaTemplate.district,

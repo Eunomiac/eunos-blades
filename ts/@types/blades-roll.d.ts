@@ -18,8 +18,17 @@ declare global {
       label?: string
     }
 
+    export type CostData = {
+      id: string,
+      label: string,
+      costType: string,
+      costAmount: number
+    }
+
     export type FactorFlagData = {
+      display: string,
       isActive?: boolean,
+      isPrimary?: boolean,
       isDominant?: boolean,
       highFavorsPC?: boolean
     }
@@ -82,7 +91,12 @@ declare global {
       isAffectingResult: boolean,
       isAffectingAfter: boolean,
       rollResultFinal: number,
+
       rollTraitValOverride?: number,
+      rollFactorPenaltiesNegated: Partial<Record<Factor,boolean>>,
+
+      GMBoosts: Record<"Dice"|Factor|"Result",number>,
+      GMOppBoosts: Record<Factor,number>
 
       canTradePosition: boolean,
       canTradeEffect: boolean,
@@ -94,7 +108,8 @@ declare global {
       rollFactors: Record<"source"|"opposition", Partial<Record<Factor,FactorData>>>,
 
       oddsGradient: string,
-      stressData?: {cost: number, tooltip: string}
+      oddsGradientTestHTML?: string,
+      costData?: Record<"footerLabel"|"tooltip",string>
     }
 
     export type PartialSheetData = Partial<SheetData> & FlagData;
@@ -105,9 +120,10 @@ declare global {
       baseVal: number,
       display?: string,
       isActive: boolean,
+      isPrimary: boolean,
       isDominant: boolean,
       highFavorsPC: boolean,
-      cssClasses: string
+      cssClasses?: string
     }
 
     type RollModData = {
@@ -128,8 +144,7 @@ declare global {
       autoRollTypes?: Array<RollType|DowntimeAction>,
       conditionalRollTraits?: RollTrait[],
       autoRollTraits?: RollTrait[],
-      category: RollModCategory,
-      stressCost?: number
+      category: RollModCategory
     }
 
     export interface SourceDocData {

@@ -87,6 +87,15 @@
   font-weight: bold;
 }
 
+@font-face {
+  font-family: "Micro";
+  src: url("../assets/fonts/SmallPixel.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Tiny";
+  src: url("../assets/fonts/TeenyTinyPixls.ttf") format("truetype");
+}
 // @font-face {
 //   font-family: "Lekton";
 //   src: url("../assets/fonts/Lekton/Lekton.otf") format("opentype");
@@ -307,7 +316,10 @@
   font-style: italic;
   font-weight: bold;
 }
-
+@font-face {
+  font-family: "Oswald";
+  src: url("../assets/fonts/Oswald.ttf") format("truetype");
+}
 @font-face {
   font-family: "PWSignaturetwo";
   src: url("../assets/fonts/PWSignaturetwo/PWSignaturetwo.ttf") format("truetype");

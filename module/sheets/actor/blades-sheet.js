@@ -8,12 +8,13 @@
 
 import U from "../../core/utilities.js";
 import G, { ApplyTooltipListeners } from "../../core/gsap.js";
-import C, { BladesActorType, BladesItemType, Factor } from "../../core/constants.js";
+import C, { BladesActorType, BladesItemType, RollType, Action, Attribute, Factor } from "../../core/constants.js";
 import Tags from "../../core/tags.js";
 import BladesActor from "../../blades-actor.js";
 import BladesItem from "../../blades-item.js";
 import BladesSelectorDialog from "../../blades-dialog.js";
 import BladesActiveEffect from "../../blades-active-effect.js";
+import BladesRollCollab from "../../blades-roll-collab.js";
 class BladesSheet extends ActorSheet {
     getData() {
         const context = super.getData();
@@ -391,7 +392,12 @@ class BladesSheet extends ActorSheet {
 
     async _onRollAttributeDieClick(event) {
         const attribute_name = $(event.currentTarget).data("rollAttribute");
-        this.actor.rollAttributePopup(attribute_name);
+        if (U.lCase(attribute_name) in Attribute) {
+            BladesRollCollab.NewRoll({ rollType: RollType.Resistance, rollTrait: attribute_name });
+        }
+        if (U.lCase(attribute_name) in Action) {
+            BladesRollCollab.NewRoll({ rollType: RollType.Action, rollTrait: attribute_name });
+        }
     }
 
     async _onActiveEffectControlClick(event) {

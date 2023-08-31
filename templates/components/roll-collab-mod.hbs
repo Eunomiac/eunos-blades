@@ -1,33 +1,33 @@
-{{#if (test name "==" "Assist")}}
-{{log "ASSIST CONTEXT" this}}
-{{/if}}
-
-<span class="roll-mod-container">
+<span class="roll-mod-container status-{{case "lower" status}} posneg-{{posNeg}} {{~#if tooltip}} tooltip-trigger{{/if}}{{~#if modType}} roll-mod-{{modType}}{{/if}}">
   <span
-    class="roll-mod shadowed posneg-{{posNeg}} status-{{case "lower" status}} {{~#if tooltip}} tooltip-trigger{{/if}}{{~#if sideString}} roll-mod-sidestring{{/if}}{{~#if modType}} roll-mod-{{modType}}{{/if}}"
+    class="roll-mod shadowed {{~#if (test sideString "||" (test modType "==" "teamwork"))}} roll-mod-sidestring{{/if}}"
     data-action="{{#if (test "Toggle" "in" status)}}toggle{{/if}}"
     data-id="{{id}}"
   >
-    <span class="roll-mod-text">{{name}}{{#if sideString}}:{{/if}}</span>
+    <span class="roll-mod-text">{{name}}{{#if (test sideString "||" (test modType "==" "teamwork"))}}:{{/if}}</span>
   </span>
 
   {{#if tooltip}}
   <div class="tooltip tooltip-small tooltip-left tooltip-roll-mod">{{{tooltip}}}</div>
   {{/if}}
-  {{#if sideString}}
-  <span class="roll-mod-side-string shadowed">{{{sideString}}}</span>
+  {{#if (test sideString "||" (test modType "==" "teamwork"))}}
+  <span class="roll-mod roll-mod-side-string shadowed status-{{case "lower" status}}">{{{sideString}}}&nbsp;</span>
   {{/if}}
   {{#if isGM}}
-    <div class="roll-mod-controls-container">
-      <span class="roll-mod-gm-control" data-id="{{id}}" data-action="force">F</span>
-      <span class="roll-mod-gm-control" data-id="{{id}}" data-action="toggle">T</span>
-      <span class="roll-mod-gm-control" data-id="{{id}}" data-action="hide">H</span>
+    <div class="roll-mod-controls-container controls-container">
+      <span class="roll-mod-gm-control gm-control-hidden {{~#if (test status "==" "Hidden")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="Hidden">X</span>
+      <span class="roll-mod-gm-control gm-control-forcedoff {{~#if (test status "==" "ForcedOff")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ForcedOff">X</span>
+      <span class="roll-mod-gm-control gm-control-toggledoff {{~#if (test status "==" "ToggledOff")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ToggledOff">X</span>
+      <span class="roll-mod-gm-control gm-control-toggledon {{~#if (test status "==" "ToggledOn")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ToggledOn">X</span>
+      <span class="roll-mod-gm-control gm-control-forcedon {{~#if (test status "==" "ForcedOn")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ForcedOn">X</span>
+      <span class="roll-mod-gm-control gm-control-reset" data-id="{{id}}" data-action="gm-reset"></span>
     </div>
     {{#if (test modType "==" "teamwork")}}
       {{> "systems/eunos-blades/templates/roll/partials/roll-collab-gm-select-doc.hbs"
         docs = teamworkDocs
         docCategory = category
         docTarget = name }}
+        </span>
     {{/if}}
   {{/if}}
 </span>

@@ -79,6 +79,14 @@
   font-weight: bold; }
 
 @font-face {
+  font-family: "Micro";
+  src: url("../assets/fonts/SmallPixel.ttf") format("truetype"); }
+
+@font-face {
+  font-family: "Tiny";
+  src: url("../assets/fonts/TeenyTinyPixls.ttf") format("truetype"); }
+
+@font-face {
   font-family: "Minion Pro";
   src: url("../assets/fonts/MinionPro/MinionPro.otf") format("opentype");
   font-style: normal;
@@ -269,6 +277,10 @@
   src: url("../assets/fonts/MinionProCondCapt/MinionProCondCapt Bi.otf") format("opentype");
   font-style: italic;
   font-weight: bold; }
+
+@font-face {
+  font-family: "Oswald";
+  src: url("../assets/fonts/Oswald.ttf") format("truetype"); }
 
 @font-face {
   font-family: "PWSignaturetwo";

@@ -38,6 +38,11 @@
 			}
 		}]
 	},
+  "flags": {
+    "hotReload": {
+        "extensions": ["css", "hbs", "json"]
+    }
+  },
   "packs": [
     {
       "name": "heritage",

@@ -187,7 +187,9 @@ class BladesItem extends Item implements BladesDocument<Item>,
         // if (BladesItem.IsType(this, BladesItemType.project)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.ritual)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.design)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.location)) { return 0 }
+        if (BladesItem.IsType(this, BladesItemType.location)) {
+          return this.system.scale;
+        }
         // if (BladesItem.IsType(this, BladesItemType.score)) { return 0 }
         return 0;
       }
@@ -361,7 +363,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
       [BladesItemType.ritual]: [Factor.magnitude],
       [BladesItemType.design]: [Factor.quality],
       [BladesItemType.location]: [Factor.tier, Factor.quality, Factor.scale],
-      [BladesItemType.score]: [Factor.tier, Factor.quality, Factor.scale, Factor.magnitude]
+      [BladesItemType.score]: [Factor.tier]
     }[this.type];
 
     const factorData: Partial<Record<Factor,BladesRollCollab.FactorData>> = {};
@@ -374,6 +376,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
         baseVal: factorTotal,
         display: [Factor.tier, Factor.quality].includes(factor) ? U.romanizeNum(factorTotal) : `${factorTotal}`,
         isActive: i === 0,
+        isPrimary: i === 0,
         isDominant: false,
         highFavorsPC: true,
         cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`

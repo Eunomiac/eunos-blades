@@ -114,6 +114,9 @@ class BladesItem extends Item {
                 if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
                     return 0 + (this.system.scale_bonus ?? 0);
                 }
+                if (BladesItem.IsType(this, BladesItemType.location)) {
+                    return this.system.scale;
+                }
                 return 0;
             }
             case Factor.magnitude: {
@@ -247,7 +250,7 @@ class BladesItem extends Item {
             [BladesItemType.ritual]: [Factor.magnitude],
             [BladesItemType.design]: [Factor.quality],
             [BladesItemType.location]: [Factor.tier, Factor.quality, Factor.scale],
-            [BladesItemType.score]: [Factor.tier, Factor.quality, Factor.scale, Factor.magnitude]
+            [BladesItemType.score]: [Factor.tier]
         }[this.type];
         const factorData = {};
         factors.forEach((factor, i) => {
@@ -259,6 +262,7 @@ class BladesItem extends Item {
                 baseVal: factorTotal,
                 display: [Factor.tier, Factor.quality].includes(factor) ? U.romanizeNum(factorTotal) : `${factorTotal}`,
                 isActive: i === 0,
+                isPrimary: i === 0,
                 isDominant: false,
                 highFavorsPC: true,
                 cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`

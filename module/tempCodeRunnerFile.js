@@ -12,7 +12,11 @@ const testStrings = [
 
 testStrings.map((testString) => {
   const [traitStr, valStr] = (testString.match(/([A-Za-z]+)([0-9]*)/) ?? []).slice(1);
+  const uuid = "Actor.adhalfeufygkjldfjkaghdkfasfd";
+  const type = "Actor";
+  const [id] = (uuid.match(new RegExp(`${type}\\.(.+)`)) ?? []).slice(1);
   console.log(`tS: '${traitStr}', tV: '${valStr}'`);
+  console.log(id);
 })
 
 

@@ -168,10 +168,11 @@ export enum ConsequenceType {
 
 export enum RollModStatus {
   Hidden = "Hidden",
+  ForcedOff = "ForcedOff",
   ToggledOff = "ToggledOff",
   ToggledOn = "ToggledOn",
   ForcedOn = "ForcedOn",
-  ForcedOff = "ForcedOff"
+  Dominant = "Dominant"
 }
 
 export enum RollModCategory {
@@ -411,7 +412,7 @@ const C = {
     "Mind Link": "<p>Your pet gains <strong>Potency</strong> when tracking or fighting the supernatural.</p><p>You and your pet can share senses and thoughts telepathically.</p>"
   },
   FlawTooltips: {
-    Principled: "<p>The cohort has an ethic or values that it won't betray.",
+    Principled: "<p>The cohort has an ethic or values that it won't betray.</p>",
     Savage: "<p>The cohort is excessively violent and cruel.</p>",
     Unreliable: "<p>The cohort isn't always available, due to other obligations, stupefaction from their vices, etc.</p>",
     Wild: "<p>The cohort is drunken, debauched, and loud-mouthed.</p>",

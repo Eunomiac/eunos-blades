@@ -1,5 +1,3 @@
-{{log "GM-SELECT CONTEXT" this}}
-
 <div class="roll-doc-select-container {{~#if tooltip}} tooltip-trigger{{/if}}">
   {{#if label}}
   <label class="doc-select-label">{{label}}</label>
@@ -7,6 +5,7 @@
   <div class="roll-doc-select">
     <select class="shadowed roll-sheet-select roll-sheet-doc-select" name="flags.eunos-blades.rollCollab.docSelections.{{category}}.{{name}}">
       {{#select (lookup (lookup docSelections category) name)}}
+      <option value="false">(Select)</option>
       {{#each docs}}
       <option value="{{id}}">{{name}}</option>
       {{/each}}

@@ -100,13 +100,7 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Battleborn@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|attune|command@eKey:Is-Push|ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Battleborn</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself during a fight.</p>"
-            },
-            {
-                key: "system.roll_mods",
-                mode: 2,
-                priority: null,
-                value: "name:Battleborn@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|attune|command@eKey:Is-Push|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Battleborn</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself during a fight.</p>"
+                value: "name:Battleborn@cat:after@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|attune|command@eKey:Negate-PushCost|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Battleborn</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself during a fight.</p>"
             },
             {
                 key: "system.roll_mods",
@@ -151,25 +145,25 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Superhuman Feat@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|command@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Not to Be Trifled With%COLON% Superhuman Feat</h1><p>You can <strong>Push</strong> yourself to perform a feat of physical force that verges on the superhuman <em>(you might break a metal weapon with your bare hands, tackle a galloping horse, lift a huge weight, etc.)</em>.</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Superhuman Feat@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|command@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Not to Be Trifled With — Superhuman Feat</h1><p>You can <strong>Push</strong> yourself to perform a feat of physical force that verges on the superhuman <em>(you might break a metal weapon with your bare hands, tackle a galloping horse, lift a huge weight, etc.)</em>.</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             },
             {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Superhuman Feat@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|command@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Not to Be Trifled With%COLON% Superhuman Feat</h1><p>You can <strong>Push</strong> yourself to perform a feat of physical force that verges on the superhuman <em>(you might break a metal weapon with your bare hands, tackle a galloping horse, lift a huge weight, etc.)</em>.</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Superhuman Feat@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|command@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Not to Be Trifled With — Superhuman Feat</h1><p>You can <strong>Push</strong> yourself to perform a feat of physical force that verges on the superhuman <em>(you might break a metal weapon with your bare hands, tackle a galloping horse, lift a huge weight, etc.)</em>.</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             },
             {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Engage Gang@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|attune|command@val:0@eKey:Is-Push|ForceOn-Push|Negate-ScalePenalty@status:Hidden@tooltip:<h1>Not to Be Trifled With%COLON% Engage Gang</h1><p>You can <strong>Push</strong> yourself to engage a gang of up to six members on equal footing (negating any <strong>Scale</strong> penalties).</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Engage Gang@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|attune|command@val:0@eKey:Is-Push|ForceOn-Push|Negate-ScalePenalty@status:Hidden@tooltip:<h1>Not to Be Trifled With — Engage Gang</h1><p>You can <strong>Push</strong> yourself to engage a gang of up to six members on equal footing (negating any <strong>Scale</strong> penalties).</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             },
             {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Engage Gang@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|attune|command@val:0@eKey:Is-Push|ForceOn-Push|Negate-ScalePenalty@status:Hidden@tooltip:<h1>Not to Be Trifled With%COLON% Engage Gang</h1><p>You can <strong>Push</strong> yourself to engage a gang of up to six members on equal footing (negating any <strong>Scale</strong> penalties).</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Engage Gang@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck|attune|command@val:0@eKey:Is-Push|ForceOn-Push|Negate-ScalePenalty@status:Hidden@tooltip:<h1>Not to Be Trifled With — Engage Gang</h1><p>You can <strong>Push</strong> yourself to engage a gang of up to six members on equal footing (negating any <strong>Scale</strong> penalties).</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             }
         ],
         "Savage": [
@@ -193,25 +187,25 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Extreme Range@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck@val:0@eKey:ForceOn-Push@status:Hidden@tooltip:<h1>Sharpshooter%COLON% Extreme Range</h1><p>You can <strong>Push</strong> yourself to make a ranged attack at extreme distance, one that would otherwise be impossible with the rudimentary firearms of Duskwall.</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Extreme Range@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck@val:0@eKey:ForceOn-Push@status:Hidden@tooltip:<h1>Sharpshooter — Extreme Range</h1><p>You can <strong>Push</strong> yourself to make a ranged attack at extreme distance, one that would otherwise be impossible with the rudimentary firearms of Duskwall.</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             },
             {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Extreme Range@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Sharpshooter%COLON% Extreme Range</h1><p>You can <strong>Push</strong> yourself to make a ranged attack at extreme distance, one that would otherwise be impossible with the rudimentary firearms of Duskwall.</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Extreme Range@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Sharpshooter — Extreme Range</h1><p>You can <strong>Push</strong> yourself to make a ranged attack at extreme distance, one that would otherwise be impossible with the rudimentary firearms of Duskwall.</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             },
             {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Suppression Fire@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Sharpshooter%COLON% Suppression Fire</h1><p>You can <strong>Push</strong> yourself to maintain a steady rate of suppression fire during a battle, enough to suppress a small gang of up to six members. <em>(When an enemy is suppressed, they're reluctant to maneuver or attack, usually calling for a <strong>fortune</strong> roll to see if they can manage it.)</em></p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Suppression Fire@cat:roll@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Sharpshooter — Suppression Fire</h1><p>You can <strong>Push</strong> yourself to maintain a steady rate of suppression fire during a battle, enough to suppress a small gang of up to six members. <em>(When an enemy is suppressed, they're reluctant to maneuver or attack, usually calling for a <strong>fortune</strong> roll to see if they can manage it.)</em></p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             },
             {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Suppression Fire@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Sharpshooter%COLON% Suppression Fire</h1><p>You can <strong>Push</strong> yourself to maintain a steady rate of suppression fire during a battle, enough to suppress a small gang of up to six members. <em>When an enemy is suppressed, they're reluctant to maneuver or attack, usually calling for a <strong>fortune</strong> roll to see if they can manage it.</em></p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Suppression Fire@cat:effect@type:ability@cTypes:Action@cTraits:hunt|finesse|prowl|skirmish|wreck@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Sharpshooter — Suppression Fire</h1><p>You can <strong>Push</strong> yourself to maintain a steady rate of suppression fire during a battle, enough to suppress a small gang of up to six members. <em>When an enemy is suppressed, they're reluctant to maneuver or attack, usually calling for a <strong>fortune</strong> roll to see if they can manage it.</em></p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             }
         ],
         "Focused": [
@@ -225,13 +219,7 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Focused@cat:roll@type:ability@cTypes:Action@cTraits:hunt|study|survey|finesse|prowl|skirmish|wreck@eKey:Is-Push|ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Focused</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for ranged combat or tracking.</p>"
-            },
-            {
-                key: "system.roll_mods",
-                mode: 2,
-                priority: null,
-                value: "name:Focused@cat:effect@type:ability@cTypes:Action@cTraits:hunt|study|survey|finesse|prowl|skirmish|wreck@eKey:Is-Push|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Focused</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for ranged combat or tracking.</p>"
+                value: "name:Focused@cat:after@type:ability@cTypes:Action@cTraits:hunt|study|survey|finesse|prowl|skirmish|wreck@eKey:Negate-PushCost|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Focused</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for ranged combat or tracking.</p>"
             }
         ],
         "Ghost Hunter (Arrow-Swift)": [
@@ -302,13 +290,7 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Fortitude@cat:roll@type:ability@cTypes:Action@cTraits:study|survey|tinker|finesse|skirmish|wreck@eKey:Is-Push|ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Fortitude</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when working with technical skill or handling alchemicals.</p>"
-            },
-            {
-                key: "system.roll_mods",
-                mode: 2,
-                priority: null,
-                value: "name:Fortitude@cat:effect@type:ability@cTypes:Action@cTraits:study|survey|tinker|finesse|skirmish|wreck@eKey:Is-Push|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Fortitude</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when working with technical skill or handling alchemicals.</p>"
+                value: "name:Fortitude@cat:after@type:ability@cTypes:Action@cTraits:study|survey|tinker|finesse|skirmish|wreck@eKey:Negate-PushCost|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Fortitude</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when working with technical skill or handling alchemicals.</p>"
             }
         ],
         "Ghost Ward": [
@@ -316,7 +298,7 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Ghost Ward@cat:after@type:ability@cTypes:Action@cTraits:wreck@val:0@status:Hidden@tooltip:<h1>Ghost Ward</h1><p>When you <strong>Wreck</strong> an area with <emarcane</em> substances, ruining it for any other use, it becomes <strong>anathema</strong> or <strong>enticing</strong> to spirits (your choice).</p>"
+                value: "name:Ghost Ward@cat:after@type:ability@cTypes:Action@cTraits:wreck@val:0@status:Hidden@tooltip:<h1>Ghost Ward</h1><p>When you <strong>Wreck</strong> an area with <em>arcane</em> substances, ruining it for any other use, it becomes <strong class='cyan-bright'>anathema</strong> or <strong class='cyan-bright'>enticing</strong> to spirits (your choice).</p>"
             }
         ],
         "Physicker": [
@@ -324,6 +306,7 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
+                isMember: true,
                 value: "name:Physicker@cat:roll@type:ability@cTypes:Downtime@aTypes:Incarceration@status:Hidden@tooltip:<h1>Physicker</h1><p>You gain <strong class='gold-bright'>+1d</strong> to your <strong>healing treatment</strong> rolls.</p>"
             }
         ],
@@ -332,7 +315,7 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Saboteur@cat:after@type:ability@cTypes:Action|Downtime|Clock@aTraits:wreck@val:0@status:Hidden@tooltip:<h1>Saboteur</h1><p>When you Wreck, your work is much quieter than it should be and the damage is very well-hidden from casual inspection.</p>"
+                value: "name:Saboteur@cat:after@type:ability@cTypes:Action|Downtime|Clock@aTraits:wreck@val:0@status:Hidden@tooltip:<h1>Saboteur</h1><p>When you <strong>Wreck</strong>, your work is much quieter than it should be and the damage is very well-hidden from casual inspection.</p>"
             }
         ],
         "Venomous": [
@@ -370,7 +353,7 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Daredevil@cat:roll@type:ability@eKey:AutoRevealOn-Desperate|ForceOn-(Daredevil),after@status:Hidden@tooltip:<h1>Daredevil</h1><p>When you make a <strong class='red-bright'>desperate</strong> <strong>action</strong> roll, you may gain <strong>+1d</strong> to your roll, if you also take <strong class='red-bright'>−1d</strong> to <strong>resistance</strong> rolls against any consequences.</p>"
+                value: "name:Daredevil@cat:roll@type:ability@eKey:AutoRevealOn-Desperate|ForceOn-(Daredevil),after@status:Hidden@tooltip:<h1>Daredevil</h1><p>When you make a <strong class='red-bright'>desperate</strong> <strong>action</strong> roll, you may gain <strong class='gold-bright'>+1d</strong> to your roll, if you also take <strong class='red-bright'>−1d</strong> to <strong>resistance</strong> rolls against any consequences.</p>"
             },
             {
                 key: "system.roll_mods",
@@ -390,25 +373,25 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Superhuman Feat@cat:roll@type:ability@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>The Devil's Footsteps%COLON% Superhuman Feat</h1><p>You can <strong>Push</strong> yourself to perform a feat of physical force that verges on the superhuman <em>(you might climb a sheer surface that lacks good hand-holds, tumble safely out of a three-story fall, leap a shocking distance, etc.)</em>.</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Superhuman Feat@cat:roll@type:ability@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>The Devil's Footsteps — Superhuman Feat</h1><p>You can <strong>Push</strong> yourself to perform a feat of physical force that verges on the superhuman <em>(you might climb a sheer surface that lacks good hand-holds, tumble safely out of a three-story fall, leap a shocking distance, etc.)</em>.</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             },
             {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Superhuman Feat@cat:effect@type:ability@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>The Devil's Footsteps%COLON% Superhuman Feat</h1><p>You can <strong>Push</strong> yourself to perform a feat of physical force that verges on the superhuman <em>(you might climb a sheer surface that lacks good hand-holds, tumble safely out of a three-story fall, leap a shocking distance, etc.)</em>.</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Superhuman Feat@cat:effect@type:ability@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>The Devil's Footsteps — Superhuman Feat</h1><p>You can <strong>Push</strong> yourself to perform a feat of physical force that verges on the superhuman <em>(you might climb a sheer surface that lacks good hand-holds, tumble safely out of a three-story fall, leap a shocking distance, etc.)</em>.</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             },
             {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Sow Confusion@cat:roll@type:ability@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>The Devil's Footsteps%COLON% Sow Confusion</h1><p>You can <strong>Push</strong> yourself to maneuver to confuse your enemies so they mistakenly attack each other. <em>(They attack each other for a moment before they realize their mistake. The GM might make a <strong>fortune</strong> roll to see how badly they harm or interfere with each other.)</em>.</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Sow Confusion@cat:roll@type:ability@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>The Devil's Footsteps — Sow Confusion</h1><p>You can <strong>Push</strong> yourself to maneuver to confuse your enemies so they mistakenly attack each other. <em>(They attack each other for a moment before they realize their mistake. The GM might make a <strong>fortune</strong> roll to see how badly they harm or interfere with each other.)</em>.</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             },
             {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Sow Confusion@cat:effect@type:ability@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>The Devil's Footsteps%COLON% Sow Confusion</h1><p>You can <strong>Push</strong> yourself to maneuver to confuse your enemies so they mistakenly attack each other. <em>(They attack each other for a moment before they realize their mistake. The GM might make a <strong>fortune</strong> roll to see how badly they harm or interfere with each other.)</em>.</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Sow Confusion@cat:effect@type:ability@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>The Devil's Footsteps — Sow Confusion</h1><p>You can <strong>Push</strong> yourself to maneuver to confuse your enemies so they mistakenly attack each other. <em>(They attack each other for a moment before they realize their mistake. The GM might make a <strong>fortune</strong> roll to see how badly they harm or interfere with each other.)</em>.</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             }
         ],
         "Shadow": [
@@ -416,13 +399,7 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Shadow@cat:roll@type:ability@cTypes:Action@cTraits:hunt|study|survey|tinker|finesse|prowl|skirmish|wreck@eKey:Is-Push|ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Shadow</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for a feat of athletics or stealth.</p>"
-            },
-            {
-                key: "system.roll_mods",
-                mode: 2,
-                priority: null,
-                value: "name:Shadow@cat:effect@type:ability@cTypes:Action@cTraits:hunt|study|survey|tinker|finesse|prowl|skirmish|wreck@eKey:Is-Push|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Shadow</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for a feat of athletics or stealth.</p>"
+                value: "name:Shadow@cat:after@type:ability@cTypes:Action@cTraits:hunt|study|survey|tinker|finesse|prowl|skirmish|wreck@eKey:Negate-PushCost|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Shadow</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for a feat of athletics or stealth.</p>"
             },
             {
                 key: "system.roll_mods",
@@ -436,7 +413,7 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Rook's Gambit@cat:roll@type:ability@cTypes:Action|Downtime|GatherInfo|Craft|Acquire|Clock@val:0@eKey:ForceOn-BestAction|Cost-Stress2@status:Hidden@tooltip:<h1>Rook's Gambit</h1><p>Take <strong class='red-bright'>2 stress</strong> to roll your best action rating while performing a different action.</p><p><em>(Describe how you adapt your skill to this use.)</em></p>"
+                value: "name:Rook's Gambit@cat:roll@type:ability@cTypes:Action|Downtime|GatherInfo|Craft|Acquire|Clock@val:0@eKey:ForceOn-BestAction|Cost-Stress2@status:Hidden@tooltip:<h1>Rook's Gambit</h1><p>Take <strong class='red-bright'>2 stress</strong> to roll your <strong class='gold-bright'>best action rating</strong> while performing a different action.</p><p><em>(Describe how you adapt your skill to this use.)</em></p>"
             }
         ],
         "Cloak & Dagger": [
@@ -474,13 +451,7 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Subterfuge@cat:roll@type:ability@cTypes:Action@cTraits:finesse|attune|consort|sway@eKey:Is-Push|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Subterfuge</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for subterfuge.</p>"
-            },
-            {
-                key: "system.roll_mods",
-                mode: 2,
-                priority: null,
-                value: "name:Subterfuge@cat:effect@type:ability@cTypes:Action@cTraits:finesse|attune|consort|sway@eKey:Is-Push|ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Subterfuge</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for subterfuge.</p>"
+                value: "name:Subterfuge@cat:after@type:ability@cTypes:Action@cTraits:finesse|attune|consort|sway@eKey:Negate-PushCost|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Subterfuge</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself for subterfuge.</p>"
             }
         ],
         "Trust in Me": [
@@ -504,7 +475,7 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Jail Bird@cat:effect@type:ability@cTypes:Downtime@eKey:Increase-Tier1@status:Hidden@tooltip:<h1>Jail Bird</h1><p>You gain <strong class='gold-bright'>+1 Tier</strong> while <strong>incarcerated</strong>.</p>"
+                value: "name:Jail Bird@cat:effect@type:ability@cTypes:Downtime@eKey:Increase-Tier1@status:Hidden@tooltip:<h1>Jail Bird</h1><p>You gain <strong class='gold-bright'>+1 Tier</strong> while <strong class='cyan-bright'>incarcerated</strong>.</p>"
             }
         ],
         "Mastermind": [
@@ -512,13 +483,7 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Mastermind@cat:roll@type:ability@cTypes:Action|Downtime@aTypes:GatherInfo|Craft|Clock@eKey:Is-Push|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Mastermind</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
-            },
-            {
-                key: "system.roll_mods",
-                mode: 2,
-                priority: null,
-                value: "name:Mastermind@cat:effect@type:ability@cTypes:Action|Downtime@eKey:Is-Push|ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Mastermind</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
+                value: "name:Mastermind@cat:after@type:ability@cTypes:Action|Downtime|GatherInfo|Craft|Clock@eKey:Negate-PushCost|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Mastermind</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when you <strong>gather information</strong> or work on a <strong>long-term project</strong>.</p>"
             }
         ],
         "Weaving the Web": [
@@ -572,25 +537,25 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Throw Lightning@cat:roll@type:ability@cTypes:Action@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Tempest%COLON% Unleash Lightning</h1><p>You can <strong>Push</strong> yourself to unleash a stroke of lightning as a weapon. The GM will describe its <strong>effect level</strong> and significant collateral damage.</p><p>If you unleash it in combat against an enemy who's threatening you, you'll still make an <strong>action</strong> roll in the fight (usually with <strong>Attune</strong>).</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Throw Lightning@cat:roll@type:ability@cTypes:Action@val:0@eKey:Is-Push|ForceOn-Push|ForceOff-Summon Storm|ForceOff-Throw Lightning,effect|ForceOff-Summon Storm,effect@status:Hidden@tooltip:<h1>Tempest — Throw Lightning</h1><p>You can <strong>Push</strong> yourself to unleash a stroke of lightning as a weapon. The GM will describe its <strong>effect level</strong> and significant collateral damage.</p><p>If you unleash it in combat against an enemy who's threatening you, you'll still make an <strong>action</strong> roll in the fight (usually with <strong>Attune</strong>).</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             },
             {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Throw Lightning@cat:effect@type:ability@cTypes:Action@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Tempest%COLON% Unleash Lightning</h1><p>You can <strong>Push</strong> yourself to unleash a stroke of lightning as a weapon. The GM will describe its <strong>effect level</strong> and significant collateral damage.</p><p>If you unleash it in combat against an enemy who's threatening you, you'll still make an <strong>action</strong> roll in the fight (usually with <strong>Attune</strong>).</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Throw Lightning@cat:effect@type:ability@cTypes:Action@val:0@eKey:Is-Push|ForceOn-Push|ForceOff-Summon Storm|ForceOff-Throw Lightning,roll|ForceOff-Summon Storm,roll@status:Hidden@tooltip:<h1>Tempest — Throw Lightning</h1><p>You can <strong>Push</strong> yourself to unleash a stroke of lightning as a weapon. The GM will describe its <strong>effect level</strong> and significant collateral damage.</p><p>If you unleash it in combat against an enemy who's threatening you, you'll still make an <strong>action</strong> roll in the fight (usually with <strong>Attune</strong>).</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             },
             {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Summon Storm@cat:roll@type:ability@cTypes:Action@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Tempest%COLON% Call Storm</h1><p>You can <strong>Push</strong> yourself to summon a storm in your immediate vicinity <em>(torrential rain, roaring winds, heavy fog, chilling frost and snow, etc.)</em>. The GM will describe its <strong>effect level</strong>. If you're using this power as cover or distraction, it's probably a <strong>Setup teamwork</strong> maneuver, using <strong>Attune</strong>.</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Summon Storm@cat:roll@type:ability@cTypes:Action@val:0@eKey:Is-Push|ForceOn-Push|ForceOff-Throw Lightning|ForceOff-Throw Lightning,effect|ForceOff-Summon Storm,effect@status:Hidden@tooltip:<h1>Tempest — Summon Storm</h1><p>You can <strong>Push</strong> yourself to summon a storm in your immediate vicinity <em>(torrential rain, roaring winds, heavy fog, chilling frost and snow, etc.)</em>. The GM will describe its <strong>effect level</strong>.</p><p>If you're using this power as cover or distraction, it's probably a <strong>Setup teamwork</strong> maneuver, using <strong>Attune</strong>.</p><p>You still gain <strong class='gold-bright'>+1d</strong> to your roll at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             },
             {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Summon Storm@cat:effect@type:ability@cTypes:Action@val:0@eKey:Is-Push|ForceOn-Push@status:Hidden@tooltip:<h1>Tempest%COLON% Call Storm</h1><p>You can <strong>Push</strong> yourself to summon a storm in your immediate vicinity <em>(torrential rain, roaring winds, heavy fog, chilling frost and snow, etc.)</em>. The GM will describe its <strong>effect level</strong>. If you're using this power as cover or distraction, it's probably a <strong>Setup teamwork</strong> maneuver, using <strong>Attune</strong>.</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
+                value: "name:Summon Storm@cat:effect@type:ability@cTypes:Action@val:0@eKey:Is-Push|ForceOn-Push|ForceOff-Throw Lightning|ForceOff-Throw Lightning,roll|ForceOff-Summon Storm,roll@status:Hidden@tooltip:<h1>Tempest — Summon Storm</h1><p>You can <strong>Push</strong> yourself to summon a storm in your immediate vicinity <em>(torrential rain, roaring winds, heavy fog, chilling frost and snow, etc.)</em>. The GM will describe its <strong>effect level</strong>.</p><p>If you're using this power as cover or distraction, it's probably a <strong>Setup teamwork</strong> maneuver, using <strong>Attune</strong>.</p><p>You still gain <strong class='gold-bright'>+1 effect</strong> at the cost of <strong class='red-bright'>2 stress</strong>, as normal for a <strong>Push</strong>.</p>"
             }
         ],
         "Warded": [
@@ -604,13 +569,7 @@ const RollCollabEffectChanges = {
                 key: "system.roll_mods",
                 mode: 2,
                 priority: null,
-                value: "name:Warded@cat:roll@type:ability@cTypes:Action@eKey:Is-Push|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Warded</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when you contend with or employ <em>arcane</em> forces.</p>"
-            },
-            {
-                key: "system.roll_mods",
-                mode: 2,
-                priority: null,
-                value: "name:Warded@cat:effect@type:ability@cTypes:Action@eKey:Is-Push|ForceOff-Bargain|ForceOff-Push|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Warded</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when you contend with or employ <em>arcane</em> forces.</p>"
+                value: "name:Warded@cat:after@type:ability@cTypes:Action@eKey:Negate-PushCost|Cost-SpecialArmor@status:Hidden@tooltip:<h1>Warded</h1><p>You may expend your <strong class='cyan-bright'>special armor</strong> instead of paying <strong class='red-bright'>2 stress</strong> to <strong>Push</strong> yourself when you contend with or employ <em>arcane</em> forces.</p>"
             }
         ]
     },
@@ -689,7 +648,7 @@ const RollCollabEffectChanges = {
                 mode: 2,
                 priority: null,
                 isMember: true,
-                value: "name:The Good Stuff (Crew Ability)@cat:effect@type:crew_ability@cTypes:Action|Downtime@val:0@eKey:Increase-Quality2@status:Hidden@tooltip:<h1>The Good Stuff (Crew Ability)</h1><p>The quality of your product is equal to your <strong>Tier</strong> <strong class='gold-bright'>+2</strong>.</p>"
+                value: "name:The Good Stuff (Crew Ability)@cat:effect@type:crew_ability@cTypes:Action|Downtime@val:0@eKey:Increase-Quality2@status:Hidden@tooltip:<h1>The Good Stuff (Crew Ability)</h1><p>The quality of your product is equal to your <strong class='gold-bright'>Tier +2</strong>.</p>"
             }
         ],
         "High Society": [
@@ -734,7 +693,7 @@ const RollCollabEffectChanges = {
                 priority: null,
                 isMember: true,
                 isCohort: true,
-                value: "name:Synchronized (Crew Ability)@cat:after@type:crew_ability@cTypes:Action@status:Hidden@tooltip:<h1>Synchronized (Crew Ability)</h1><p>When you perform a <strong>group teamwork action</strong>, you may count multiple 6s from different rolls as a <strong class='gold-bright'>critical success</strong>.</p>"
+                value: "name:Synchronized (Crew Ability)@cat:after@type:crew_ability@cTypes:Action@status:Hidden@tooltip:<h1>Synchronized (Crew Ability)</h1><p>When you perform a <strong>group teamwork action</strong>, you may count <strong class='cyan-bright'>multiple 6s from different rolls</strong> as a <strong class='gold-bright'>critical success</strong>.</p>"
             }
         ],
         "Just Passing Through": [
@@ -1148,6 +1107,19 @@ export class BladesRollMod {
             ...this.autoRollTypes
         ].length > 0;
     }
+    get stressCost() {
+        const costKeys = this.effectKeys.filter((key) => /^Cost-Stress/.test(key));
+        if (costKeys.length === 0) {
+            return 0;
+        }
+        let stressCost = 0;
+        costKeys.forEach((key) => {
+            const [thisParam] = (key.split(/-/) ?? []).slice(1);
+            const [_, valStr] = (thisParam.match(/([A-Za-z]+)([0-9]*)/) ?? []).slice(1);
+            stressCost += U.pInt(valStr);
+        });
+        return stressCost;
+    }
     setConditionalStatus() {
         if (!this.isConditional) {
             return false;
@@ -1204,6 +1176,12 @@ export class BladesRollMod {
             switch (thisKey) {
                 case "Negate": {
                     switch (thisParam) {
+                        case "PushCost": {
+                            return this.rollInstance.isRollPushed
+                                && this.rollInstance.rollCostData.some((costData) => /Push/.test(costData.id)
+                                    && costData.costType === "Stress"
+                                    && costData.costAmount > 0);
+                        }
                         case "Consequence": {
                             return this.rollInstance.rollType === RollType.Resistance
                                 && Boolean(this.rollInstance.rollConsequence);
@@ -1279,6 +1257,70 @@ export class BladesRollMod {
         }
         return false;
     }
+    applyRollModEffectKeys() {
+        if (!this.isActive) {
+            return;
+        }
+        const holdKeys = this.effectKeys.filter((key) => /^Negate|^Increase/.test(key));
+        if (holdKeys.length === 0) {
+            return;
+        }
+        holdKeys.forEach((key) => {
+            const [thisKey, thisParam] = key.split(/-/) ?? [];
+            switch (thisKey) {
+                case "Negate": {
+                    switch (thisParam) {
+                        case "PushCost": {
+                            const costlyPushMod = this.rollInstance.getActiveRollMods()
+                                .find((mod) => mod.name === "Push" && mod.stressCost > 0);
+                            if (costlyPushMod) {
+                                U.pullElement(costlyPushMod.effectKeys, (key) => /^Cost-Stress/.test(key));
+                            }
+                            return;
+                        }
+                        case "Consequence": {
+                            return;
+                        }
+                        case "HarmLevel": {
+                            if (!this.rollInstance.rollConsequence) {
+                                return;
+                            }
+                            const consequenceType = this.rollInstance.rollConsequence.type;
+                            if (!consequenceType || !/^Harm/.test(consequenceType)) {
+                                return;
+                            }
+                            const curLevel = [ConsequenceType.Harm1, ConsequenceType.Harm2, ConsequenceType.Harm3, ConsequenceType.Harm4]
+                                .findIndex((cType) => cType === consequenceType) + 1;
+                            if (curLevel > 1) {
+                                this.rollInstance.rollConsequence.type = `Harm${curLevel - 1}`;
+                            }
+                            else {
+                                                            }
+                            return;
+                        }
+                        case "QualityPenalty": {
+                            this.rollInstance.negateFactorPenalty(Factor.quality);
+                            return;
+                        }
+                        case "ScalePenalty": {
+                            this.rollInstance.negateFactorPenalty(Factor.scale);
+                            return;
+                        }
+                        case "TierPenalty": {
+                            this.rollInstance.negateFactorPenalty(Factor.tier);
+                            return;
+                        }
+                    }
+                    break;
+                }
+                case "Increase": {
+                    const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)([0-9]*)/) ?? []).slice(1);
+                    this.rollInstance.tempGMBoosts[traitStr] = U.pInt(valStr);
+                    return;
+                }
+            }
+        });
+    }
     get tooltip() {
         if (this.sideString) {
             return this._tooltip
@@ -1345,9 +1387,31 @@ export class BladesRollMod {
             autoRollTypes: this.autoRollTypes,
             conditionalRollTraits: this.conditionalRollTraits,
             autoRollTraits: this.autoRollTraits,
-            category: this.category,
-            stressCost: this.stressCost
+            category: this.category
         };
+    }
+    get costs() {
+        if (!this.isActive) {
+            return undefined;
+        }
+        const holdKeys = this.effectKeys.filter((key) => /^Cost/.test(key));
+        if (holdKeys.length === 0) {
+            return undefined;
+        }
+        return holdKeys.map((key) => {
+            const [thisParam] = (key.split(/-/) ?? []).slice(1);
+            const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)([0-9]*)/) ?? []).slice(1);
+            return {
+                id: this.id,
+                label: this.name === "Push"
+                    ? (this.posNeg === "negative"
+                        ? `${this.name} (<span class='red-bright'>To Act</span>)`
+                        : `${this.name} (<span class='gold-bright'>${this.category === RollModCategory.roll ? "+1d" : "+1 effect"}</span>)`)
+                    : this.name,
+                costType: traitStr,
+                costAmount: valStr ? U.pInt(valStr) : 1
+            };
+        });
     }
     id;
     name;
@@ -1364,7 +1428,6 @@ export class BladesRollMod {
     conditionalRollTraits;
     autoRollTraits;
     category;
-    stressCost;
     rollInstance;
     constructor(modData, rollInstance) {
         this.rollInstance = rollInstance;
@@ -1383,7 +1446,6 @@ export class BladesRollMod {
         this.conditionalRollTraits = modData.conditionalRollTraits ?? [];
         this.autoRollTraits = modData.autoRollTraits ?? [];
         this.category = modData.category;
-        this.stressCost = modData.stressCost ?? 0;
     }
 }
 
@@ -1394,7 +1456,10 @@ class BladesRollCollab extends DocumentSheet {
             classes: ["eunos-blades", "sheet", "roll-collab"],
             template: `systems/eunos-blades/templates/roll/roll-collab${game.user.isGM ? "-gm" : ""}.hbs`,
             submitOnChange: true,
-            width: 500
+            width: 500,
+            dragDrop: [
+                { dragSelector: null, dropSelector: "[data-action='gm-drop-opposition'" }
+            ]
         });
     }
     static Initialize() {
@@ -1427,6 +1492,7 @@ class BladesRollCollab extends DocumentSheet {
             "systems/eunos-blades/templates/roll/roll-collab-gm.hbs",
             "systems/eunos-blades/templates/roll/partials/roll-collab-gm-number-line.hbs",
             "systems/eunos-blades/templates/roll/partials/roll-collab-gm-select-doc.hbs",
+            "systems/eunos-blades/templates/roll/partials/roll-collab-gm-factor-control.hbs",
             "systems/eunos-blades/templates/roll/partials/roll-collab-action.hbs",
             "systems/eunos-blades/templates/roll/partials/roll-collab-action-gm.hbs",
             "systems/eunos-blades/templates/roll/partials/roll-collab-resistance.hbs",
@@ -1453,8 +1519,7 @@ class BladesRollCollab extends DocumentSheet {
                 posNeg: "positive",
                 modType: "general",
                 value: 1,
-                stressCost: 2,
-                effectKeys: ["ForceOff-Bargain"],
+                effectKeys: ["ForceOff-Bargain", "Cost-Stress2"],
                 tooltip: "<h1>Push for +1d</h1><p>For <strong class='red-bright'>2 Stress</strong>, add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also accept a <strong class='red-bright'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
             },
             {
@@ -1495,8 +1560,8 @@ class BladesRollCollab extends DocumentSheet {
                 base_status: RollModStatus.ToggledOff,
                 posNeg: "positive",
                 modType: "general",
-                stressCost: 2,
                 value: 1,
+                effectKeys: ["Cost-Stress2"],
                 tooltip: "<h1>Push for Effect</h1><p>For <strong class='red-bright'>2 Stress</strong>, increase your <strong class='gold-bright'>Effect</strong> by one level.</p>"
             },
             {
@@ -1543,8 +1608,18 @@ class BladesRollCollab extends DocumentSheet {
             rollEffectInitial: Effect.standard,
             rollPosEffectTrade: false,
             isGMReady: false,
-            GMBoosts: {},
-            GMOppBoosts: {},
+            GMBoosts: {
+                [Factor.tier]: 0,
+                [Factor.quality]: 0,
+                [Factor.scale]: 0,
+                [Factor.magnitude]: 0
+            },
+            GMOppBoosts: {
+                [Factor.tier]: 0,
+                [Factor.quality]: 0,
+                [Factor.scale]: 0,
+                [Factor.magnitude]: 0
+            },
             docSelections: {
                 [RollModCategory.roll]: {
                     Assist: false,
@@ -1563,8 +1638,66 @@ class BladesRollCollab extends DocumentSheet {
                 }
             },
             rollFactorToggles: {
-                source: {},
-                opposition: {}
+                source: {
+                    [Factor.tier]: {
+                        display: "",
+                        isActive: true,
+                        isPrimary: false,
+                        isDominant: false,
+                        highFavorsPC: true
+                    },
+                    [Factor.quality]: {
+                        display: "",
+                        isActive: false,
+                        isPrimary: false,
+                        isDominant: false,
+                        highFavorsPC: true
+                    },
+                    [Factor.scale]: {
+                        display: "",
+                        isActive: false,
+                        isPrimary: false,
+                        isDominant: false,
+                        highFavorsPC: true
+                    },
+                    [Factor.magnitude]: {
+                        display: "",
+                        isActive: false,
+                        isPrimary: false,
+                        isDominant: false,
+                        highFavorsPC: true
+                    }
+                },
+                opposition: {
+                    [Factor.tier]: {
+                        display: "",
+                        isActive: false,
+                        isPrimary: true,
+                        isDominant: false,
+                        highFavorsPC: true
+                    },
+                    [Factor.quality]: {
+                        display: "",
+                        isActive: false,
+                        isPrimary: false,
+                        isDominant: false,
+                        highFavorsPC: true
+                    },
+                    [Factor.scale]: {
+                        display: "",
+                        isActive: false,
+                        isPrimary: false,
+                        isDominant: false,
+                        highFavorsPC: true
+                    },
+                    [Factor.magnitude]: {
+                        display: "",
+                        isActive: false,
+                        isPrimary: false,
+                        isDominant: false,
+                        highFavorsPC: true
+                    }
+                }
             }
         };
     }
@@ -1585,7 +1718,9 @@ class BladesRollCollab extends DocumentSheet {
     }
     static async NewRoll(config) {
         
-        
+        if (game.user.isGM && BladesActor.IsType(config.rollSource, BladesActorType.pc) && config.rollSource.primaryUser) {
+            config.userID = config.rollSource.primaryUser.id;
+        }
         const user = game.users.get(config.userID ?? game.user._id);
         if (!(user instanceof User)) {
             eLog.error("rollCollab", `[NewRoll()] Can't Find User '${config.userID}'`, config);
@@ -1675,6 +1810,13 @@ class BladesRollCollab extends DocumentSheet {
         }
         return this._rollSource;
     }
+    get rollOppositionID() {
+        return this.rData.rollOppositionID;
+    }
+    set rollOppositionID(val) {
+        this._rollOpposition = undefined;
+        this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollOppositionID", val);
+    }
     _rollOpposition;
     get rollOpposition() {
         if (!this._rollOpposition && this.rData.rollOppositionID) {
@@ -1685,6 +1827,7 @@ class BladesRollCollab extends DocumentSheet {
         }
         return this._rollOpposition;
     }
+    
     get rollType() { return this.rData.rollType; }
     get rollTrait() { return this.rData.rollTrait; }
     _rollTraitValOverride;
@@ -1758,8 +1901,14 @@ class BladesRollCollab extends DocumentSheet {
     get initialPosition() {
         return this.rData?.rollPositionInitial ?? Position.risky;
     }
+    set initialPosition(val) {
+        this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPositionInitial", val);
+    }
     get initialEffect() {
         return this.rData?.rollEffectInitial ?? Effect.standard;
+    }
+    set initialEffect(val) {
+        this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollEffectInitial", val);
     }
     get finalPosition() {
         return Object.values(Position)[U.clampNum(Object.values(Position)
@@ -1777,12 +1926,14 @@ class BladesRollCollab extends DocumentSheet {
     }
     get finalResult() {
         return this.getModsDelta(RollModCategory.result)
-            + (this.rData?.GMBoosts.Result ?? 0);
+            + (this.rData?.GMBoosts.Result ?? 0)
+            + (this.tempGMBoosts.Result ?? 0);
     }
     get finalDicePool() {
         return Math.max(0, this.rollTraitData.value
             + this.getModsDelta(RollModCategory.roll)
-            + (this.rData.GMBoosts.Dice ?? 0));
+            + (this.rData.GMBoosts.Dice ?? 0)
+            + (this.tempGMBoosts.Dice ?? 0));
     }
     get rollConsequence() {
         return this.rData.rollConsequence;
@@ -1805,25 +1956,52 @@ class BladesRollCollab extends DocumentSheet {
                     baseVal: 0,
                     cssClasses: "factor-gold",
                     isActive: factorData.isActive ?? false,
+                    isPrimary: factorData.isPrimary ?? factor === Factor.tier ?? false,
                     isDominant: factorData.isDominant ?? false,
                     highFavorsPC: factorData.highFavorsPC ?? true
                 };
             }
         });
         Object.keys(sourceFactors).forEach((factor) => {
-            sourceFactors[factor].value += this.rData.GMBoosts[factor] ?? 0;
+            sourceFactors[factor].value
+                += (this.rData.GMBoosts[factor] ?? 0)
+                    + (this.tempGMBoosts[factor] ?? 0);
+            if (factor === Factor.tier) {
+                sourceFactors[factor].display = U.romanizeNum(sourceFactors[factor].value);
+            }
+            else {
+                sourceFactors[factor].display = `${sourceFactors[factor].value}`;
+            }
         });
-        if (!this.rollOpposition) {
-            return { source: sourceFactors, opposition: {} };
-        }
-        const oppFactors = Object.fromEntries(Object.entries(this.rollOpposition.rollFactors ?? {})
-            .map(([factor, factorData]) => [
-            factor,
-            {
+        
+        const rollOppFactors = this.rollOpposition?.rollFactors
+            ?? Object.fromEntries(([
+                Factor.tier,
+                Factor.quality,
+                Factor.scale,
+                Factor.magnitude
+            ]).map((factor) => [
+                factor,
+                {
+                    name: factor,
+                    value: 0,
+                    max: 0,
+                    baseVal: 0,
+                    cssClasses: "factor-gold",
+                    isActive: false,
+                    isPrimary: factor === Factor.tier ?? false,
+                    isDominant: false,
+                    highFavorsPC: true
+                }
+            ]));
+        const oppFactors = {};
+        Object.entries(rollOppFactors)
+            .forEach(([factor, factorData]) => {
+            oppFactors[factor] = {
                 ...factorData,
                 ...this.rData.rollFactorToggles.opposition[factor] ?? []
-            }
-        ]));
+            };
+        });
         Object.entries(this.rData.rollFactorToggles.opposition).forEach(([factor, factorData]) => {
             if (!(factor in oppFactors)) {
                 oppFactors[factor] = {
@@ -1833,6 +2011,7 @@ class BladesRollCollab extends DocumentSheet {
                     baseVal: 0,
                     cssClasses: "factor-gold",
                     isActive: factorData.isActive ?? false,
+                    isPrimary: factorData.isPrimary ?? factor === Factor.tier ?? false,
                     isDominant: factorData.isDominant ?? false,
                     highFavorsPC: factorData.highFavorsPC ?? true
                 };
@@ -1840,6 +2019,12 @@ class BladesRollCollab extends DocumentSheet {
         });
         Object.keys(oppFactors).forEach((factor) => {
             oppFactors[factor].value += this.rData.GMOppBoosts[factor] ?? 0;
+            if (factor === Factor.tier) {
+                oppFactors[factor].display = U.romanizeNum(oppFactors[factor].value);
+            }
+            else {
+                oppFactors[factor].display = `${oppFactors[factor].value}`;
+            }
         });
         return {
             source: sourceFactors,
@@ -1849,6 +2034,8 @@ class BladesRollCollab extends DocumentSheet {
     
     initRollMods(modsData) {
         this.rollTraitValOverride = undefined;
+        this.rollFactorPenaltiesNegated = {};
+        this.tempGMBoosts = {};
         this.rollMods = modsData.map((modData) => new BladesRollMod(modData, this));
         console.log("HIDDEN AT INITIALIZATION:");
         console.log(this.rollMods.filter((mod) => mod._held_status === RollModStatus.Hidden));
@@ -1860,9 +2047,6 @@ class BladesRollCollab extends DocumentSheet {
         checkDisableMods = checkDisableMods
             .filter((rollMod) => !rollMod.setAutoStatus());
         eLog.checkLog3("rollMod", "[PASS ONE] Auto Status Pass", { rollMods: [...checkDisableMods] });
-        checkDisableMods = checkDisableMods
-            .filter((rollMod) => !rollMod.setRelevancyStatus());
-        eLog.checkLog3("rollMod", "[PASS ONE] Relevancy Status Pass", { rollMods: [...checkDisableMods] });
         checkDisableMods = checkDisableMods
             .filter((rollMod) => !rollMod.setPayableStatus());
         eLog.checkLog3("rollMod", "[PASS ONE] Payable Status Pass", { rollMods: [...checkDisableMods] });
@@ -1913,22 +2097,24 @@ class BladesRollCollab extends DocumentSheet {
                 .filter((mod) => mod.id !== rollMod.id)
                 .forEach((otherMod) => {
                 if (otherMod.name === "Push") {
-                    otherMod.held_status = RollModStatus.ForcedOff;
+                    if (otherMod.posNeg === "positive") {
+                        otherMod.held_status = RollModStatus.ForcedOff;
+                    }
                 }
-                else if (otherMod.effectKeys.includes("Is-Push")) {
+                else if (otherMod.effectKeys.includes("Is-Push") && otherMod.posNeg === "positive") {
                     otherMod.held_status = RollModStatus.Hidden;
                 }
             });
         });
         eLog.checkLog3("rollMod", "[PASS THREE] Force-Off PUSH Pass", { rollMods: this.getActiveRollMods() });
         if (isPushForced[RollModCategory.roll]) {
-            this.getVisibleMods(RollModCategory.roll)
-                .filter((mod) => mod.effectKeys.some((eKey) => eKey === "Is-Push") && mod.id !== isPushForced[RollModCategory.roll])
+            this.getVisibleRollMods(RollModCategory.roll)
+                .filter((mod) => mod.effectKeys.some((eKey) => eKey === "Is-Push") && mod.posNeg === "positive" && mod.id !== isPushForced[RollModCategory.roll])
                 .forEach((mod) => { mod.held_status = RollModStatus.ForcedOff; });
         }
         if (isPushForced[RollModCategory.effect]) {
-            this.getVisibleMods(RollModCategory.effect)
-                .filter((mod) => mod.effectKeys.some((eKey) => eKey === "Is-Push") && mod.id !== isPushForced[RollModCategory.effect])
+            this.getVisibleRollMods(RollModCategory.effect)
+                .filter((mod) => mod.effectKeys.some((eKey) => eKey === "Is-Push") && mod.posNeg === "positive" && mod.id !== isPushForced[RollModCategory.effect])
                 .forEach((mod) => { mod.held_status = RollModStatus.ForcedOff; });
         }
         if (this.getActiveRollMods().find((rollMod) => rollMod.effectKeys.some((eKey) => eKey === "ForceOff-Bargain"))) {
@@ -1957,6 +2143,17 @@ class BladesRollCollab extends DocumentSheet {
                 targetMod.held_status = RollModStatus.ForcedOff;
             }
         });
+                checkDisableMods = checkDisableMods
+            .filter((rollMod) => !rollMod.setRelevancyStatus());
+        eLog.checkLog3("rollMod", "[PASS FOUR] Relevancy Status Pass", { rollMods: [...checkDisableMods] });
+        const specialArmorMods = this.getVisibleRollMods().filter((mod) => mod.effectKeys.includes("Cost-SpecialArmor"))
+            .sort((modA, modB) => {
+            return Object.values(RollModStatus).findIndex((status) => status === modA.status)
+                - Object.values(RollModStatus).findIndex((status) => status === modB.status);
+        });
+        if (specialArmorMods.length && specialArmorMods.shift().isActive) {
+            specialArmorMods.forEach((rollMod) => { rollMod.held_status = RollModStatus.ForcedOff; });
+        }
     }
     isTraitRelevant(trait) {
         if (trait in Factor) {
@@ -1964,6 +2161,33 @@ class BladesRollCollab extends DocumentSheet {
             return Boolean(trait in source && trait in opposition && source[trait]?.isActive);
         }
         return false;
+    }
+    rollFactorPenaltiesNegated = {};
+    negateFactorPenalty(factor) {
+        this.rollFactorPenaltiesNegated[factor] = true;
+    }
+    tempGMBoosts = {};
+    get isRollPushed() {
+        return (this.getRollModByID("Push-negative-roll")?.isActive || this.getRollModByID("Push-positive-roll")?.isActive || this.getRollModByID("Push-positive-effect")?.isActive) ?? false;
+    }
+    get rollCosts() {
+        if (!this.isRollPushed) {
+            return 0;
+        }
+        const harmPush = this.getRollModByID("Push-negative-roll");
+        const rollPush = this.getRollModByID("Push-positive-roll");
+        const effectPush = this.getRollModByID("Push-positive-effect");
+        const negatePushCostMods = this.getActiveRollMods(RollModCategory.after, "positive")
+            .filter((mod) => mod.effectKeys.includes("Negate-PushCost"));
+        return ((harmPush && harmPush.isActive && harmPush.stressCost) || 0)
+            + ((rollPush && rollPush.isActive && rollPush.stressCost) || 0)
+            + ((effectPush && effectPush.isActive && effectPush.stressCost) || 0)
+            - (negatePushCostMods.length * 2);
+    }
+    get rollCostData() {
+        return this.getActiveRollMods()
+            .map((rollMod) => rollMod.costs ?? [])
+            .flat();
     }
     getRollModByName(name, cat, posNeg) {
         const modMatches = this.rollMods.filter((rollMod) => rollMod.name === name
@@ -1983,7 +2207,7 @@ class BladesRollCollab extends DocumentSheet {
         return this.rollMods.filter((rollMod) => (!cat || rollMod.category === cat)
             && (!posNeg || rollMod.posNeg === posNeg));
     }
-    getVisibleMods(cat, posNeg) {
+    getVisibleRollMods(cat, posNeg) {
         return this.getRollMods(cat, posNeg).filter((rollMod) => rollMod.isVisible);
     }
     getActiveRollMods(cat, posNeg) {
@@ -2045,10 +2269,16 @@ class BladesRollCollab extends DocumentSheet {
             }
         }
         this.initRollMods(rollModsData);
+        this.rollMods.forEach((rollMod) => rollMod.applyRollModEffectKeys());
         const isGM = game.eunoblades.Tracker.system.is_spoofing_player ? false : game.user.isGM;
         const { rollSource, rollOpposition, rollTraitData, rollTraitOptions, finalPosition, finalEffect, finalResult, rollMods, posEffectTrade, rollFactors } = this;
-        const stressMods = this.getActiveRollMods().filter((rollMod) => rollMod.stressCost > 0);
-        const stressCost = U.sum(stressMods.map((rollMod) => rollMod.stressCost));
+        const rollCosts = this.getActiveRollMods()
+            .map((rollMod) => rollMod.costs)
+            .flat()
+            .filter((costData) => costData !== undefined);
+        const stressCosts = rollCosts.filter((costData) => costData.costType === "Stress");
+        const specArmorCost = rollCosts.find((costData) => costData.costType === "SpecialArmor");
+        const totalStressCost = U.sum(stressCosts.map((costData) => costData.costAmount));
         const sheetData = {
             ...rData,
             cssClass: "roll-collab",
@@ -2068,10 +2298,25 @@ class BladesRollCollab extends DocumentSheet {
             rollEffectFinal: finalEffect,
             rollResultFinal: finalResult,
             isAffectingResult: finalResult > 0
-                || this.getVisibleMods(RollModCategory.result).length > 0
+                || this.getVisibleRollMods(RollModCategory.result).length > 0
                 || (isGM && this.getRollMods(RollModCategory.result).length > 0),
-            isAffectingAfter: this.getVisibleMods(RollModCategory.after).length > 0
+            isAffectingAfter: this.getVisibleRollMods(RollModCategory.after).length > 0
                 || (isGM && this.getRollMods(RollModCategory.after).length > 0),
+            rollFactorPenaltiesNegated: this.rollFactorPenaltiesNegated,
+            GMBoosts: {
+                Dice: this.rData.GMBoosts.Dice ?? 0,
+                [Factor.tier]: this.rData.GMBoosts[Factor.tier] ?? 0,
+                [Factor.quality]: this.rData.GMBoosts[Factor.quality] ?? 0,
+                [Factor.scale]: this.rData.GMBoosts[Factor.scale] ?? 0,
+                [Factor.magnitude]: this.rData.GMBoosts[Factor.magnitude] ?? 0,
+                Result: this.rData.GMBoosts.Result ?? 0
+            },
+            GMOppBoosts: {
+                [Factor.tier]: this.rData.GMOppBoosts[Factor.tier] ?? 0,
+                [Factor.quality]: this.rData.GMOppBoosts[Factor.quality] ?? 0,
+                [Factor.scale]: this.rData.GMOppBoosts[Factor.scale] ?? 0,
+                [Factor.magnitude]: this.rData.GMOppBoosts[Factor.magnitude] ?? 0
+            },
             canTradePosition: posEffectTrade === "position"
                 || (posEffectTrade === false
                     && finalPosition !== Position.desperate
@@ -2107,26 +2352,45 @@ class BladesRollCollab extends DocumentSheet {
                     .length > 0
             },
             rollFactors,
-            oddsGradient: "",
-            stressData: stressCost > 0
-                ? {
-                    cost: stressCost,
-                    tooltip: [
-                        `<h1>Stress Cost: <span class='red-bright shadowed'>${stressCost}</span></h1><ul>`,
-                        ...stressMods
-                            .map((mod) => `<li><strong class='shadowed'>${mod.name} (<span class='gold-bright'>${mod.category === RollModCategory.roll ? "+1d" : "+1 effect"}</span>):</strong> <strong class='shadowed red-bright'>${mod.stressCost}</strong> Stress.</li>`),
-                        "</ul>"
-                    ].join("")
-                }
-                : undefined
+            oddsGradient: ""
         };
+        if (specArmorCost || totalStressCost) {
+            sheetData.costData = {
+                footerLabel: [
+                    "( Roll Costs",
+                    totalStressCost > 0
+                        ? `<span class='red-bright'><strong>${totalStressCost} Stress</strong></span>`
+                        : null,
+                    specArmorCost && totalStressCost
+                        ? "and"
+                        : null,
+                    specArmorCost
+                        ? "your <span class='cyan-bright'><strong>Special Armor</strong></span>"
+                        : null,
+                    ")"
+                ]
+                    .filter((line) => Boolean(line))
+                    .join(" "),
+                tooltip: [
+                    "<h1>Roll Costs</h1><ul>",
+                    ...stressCosts.map((costData) => `<li><strong class='shadowed'>${costData.label}: <span class='red-bright'>${costData.costAmount}</span> Stress</strong></li>`),
+                    specArmorCost
+                        ? `<li><strong class='shadowed'>${specArmorCost.label}: <strong class='cyan-bright'>Special Armor</strong></strong></li>`
+                        : null,
+                    "</ul>"
+                ]
+                    .filter((line) => Boolean(line))
+                    .join("")
+            };
+        }
         const oddsColors = {
-            crit: "var(--blades-gold-bright)",
-            success: "var(--blades-white-bright)",
-            partial: "var(--blades-grey)",
+            crit: "var(--blades-cyan)",
+            success: "var(--blades-gold)",
+            partial: "var(--blades-grey-bright)",
             fail: "var(--blades-black-dark)"
         };
-        const odds = C.DiceOdds[sheetData.diceTotal ?? 0];
+        const odds = { ...C.DiceOdds[sheetData.diceTotal ?? 0] };
+        
         if ((sheetData.rollResultFinal ?? 0) < 0) {
             for (let i = sheetData.rollResultFinal ?? 0; i < 0; i++) {
                 oddsColors.crit = oddsColors.success;
@@ -2141,13 +2405,29 @@ class BladesRollCollab extends DocumentSheet {
                 oddsColors.success = oddsColors.crit;
             }
         }
+        const gradientStops = {
+            fail: odds.fail,
+            partial: odds.fail + odds.partial,
+            success: odds.fail + odds.partial + odds.success
+        };
+        gradientStops.fail = Math.min(100, Math.max(0, Math.max(gradientStops.fail / 2, gradientStops.fail - 10)));
+        const critSpan = 100 - gradientStops.success;
+        gradientStops.success = Math.min(100, Math.max(0, gradientStops.success - Math.max(critSpan / 2, critSpan - 10)));
         sheetData.oddsGradient = [
             "linear-gradient(to right",
-            `${oddsColors.fail} ${odds.fail}%`,
-            `${oddsColors.partial} ${odds.fail + odds.partial}%`,
-            `${oddsColors.success} ${odds.fail + odds.partial + odds.success}%`,
+            `${oddsColors.fail} ${gradientStops.fail}%`,
+            `${oddsColors.partial} ${gradientStops.partial}%`,
+            `${oddsColors.success} ${gradientStops.success}%`,
             `${oddsColors.crit})`
         ].join(", ");
+        sheetData.oddsGradientTestHTML = [
+            "<div class='odds-gradient-test-html'>",
+            `<div class='odds-gradient-box odds-gradient-fail' style='width: ${odds.fail}%;'></div>`,
+            `<div class='odds-gradient-box odds-gradient-partial' style='width: ${odds.partial}%;'></div>`,
+            `<div class='odds-gradient-box odds-gradient-success' style='width: ${odds.success}%;'></div>`,
+            `<div class='odds-gradient-box odds-gradient-crit' style='width: ${odds.crit}%;'></div>`,
+            "</div>"
+        ].join("");
         eLog.checkLog2("rollCollab", "ROLL COLLAB GETDATA", { context, sheetData, user: this.document, userFlags: this.document.getFlag(C.SYSTEM_ID, "rollCollab"), rollMods: this.rollMods });
         return {
             ...context,
@@ -2209,66 +2489,98 @@ class BladesRollCollab extends DocumentSheet {
                 return;
         }
     }
-    async _gmControlClick(event) {
+    async _gmControlSet(event) {
         event.preventDefault();
         if (!game.user.isGM) {
             return;
         }
         const elem$ = $(event.currentTarget);
         const id = elem$.data("id");
-        const action = elem$.data("action");
-        const rollMod = this.getRollModByID(id);
-        if (!rollMod) {
-            throw new Error(`Unable to find roll mod with id '${id}'`);
-        }
-        switch (action) {
-            case "force": {
-                rollMod.user_status = rollMod.status === RollModStatus.ForcedOn
-                    ? RollModStatus.ForcedOff
-                    : RollModStatus.ForcedOn;
-                return;
-            }
-            case "toggle": {
-                rollMod.user_status = rollMod.status === RollModStatus.ToggledOn
-                    ? RollModStatus.ToggledOff
-                    : RollModStatus.ToggledOn;
-                return;
-            }
-            case "hide": {
-                rollMod.user_status = rollMod.status === RollModStatus.Hidden
-                    ? RollModStatus.ForcedOn
-                    : RollModStatus.Hidden;
-            }
-        }
+        const status = elem$.data("status");
+        this.getRollModByID(id).user_status = status;
     }
-    async _gmControlContext(event) {
+    async _gmControlSetTarget(event) {
+        event.preventDefault();
+        if (!game.user.isGM) {
+            return;
+        }
+        const elem$ = $(event.currentTarget);
+        const target = elem$.data("target").replace(/flags\.eunos-blades\./, "");
+        const value = U.pInt(elem$.data("value"));
+        this.document.setFlag(C.SYSTEM_ID, target, value);
+    }
+    async _gmControlResetTarget(event) {
+        event.preventDefault();
+        if (!game.user.isGM) {
+            return;
+        }
+        const elem$ = $(event.currentTarget);
+        const target = elem$.data("target").replace(/flags\.eunos-blades\./, "");
+        this.document.unsetFlag(C.SYSTEM_ID, target);
+    }
+    async _gmControlReset(event) {
         event.preventDefault();
         if (!game.user.isGM) {
             return;
         }
         const elem$ = $(event.currentTarget);
         const id = elem$.data("id");
-        const action = elem$.data("action");
-        const rollMod = this.getRollModByID(id);
-        if (!rollMod) {
-            throw new Error(`Unable to find roll mod with id '${id}'`);
+        this.getRollModByID(id).user_status = undefined;
+    }
+    async _gmControlSetPosition(event) {
+        event.preventDefault();
+        if (!game.user.isGM) {
+            return;
         }
-        if (action === "hide" && rollMod.status === RollModStatus.Hidden) {
-            rollMod.user_status = RollModStatus.ToggledOff;
+        const elem$ = $(event.currentTarget);
+        const position = elem$.data("status");
+        this.initialPosition = position;
+    }
+    async _gmControlSetEffect(event) {
+        event.preventDefault();
+        if (!game.user.isGM) {
+            return;
         }
-        else {
-            rollMod.user_status = undefined;
+        const elem$ = $(event.currentTarget);
+        const effect = elem$.data("status");
+        this.initialEffect = effect;
+    }
+    async _gmControlToggleFactor(event) {
+        event.preventDefault();
+        if (!game.user.isGM) {
+            return;
         }
+        const elem$ = $(event.currentTarget);
+        const target = elem$.data("target");
+        const value = !elem$.data("value");
+        this.document.setFlag(C.SYSTEM_ID, `rollCollab.${target}`, value);
+    }
+    async _gmControlResetFactor(event) {
+        event.preventDefault();
+        if (!game.user.isGM) {
+            return;
+        }
+        const elem$ = $(event.currentTarget);
+        const target = elem$.data("target");
+        this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.${target}`);
+    }
+    _canDragDrop(selector) {
+        eLog.checkLog3("canDragDrop", "Can DragDrop Selector", { selector });
+        return game.user.isGM;
+    }
+    _onDrop(event) {
+        const data = TextEditor.getDragEventData(event);
+        const { type, uuid } = data;
+        const [id] = (uuid.match(new RegExp(`${type}\\.(.+)`)) ?? []).slice(1);
+        const oppDoc = game[`${U.lCase(type)}s`].get(id);
+        this.rollOppositionID = oppDoc?.id;
+        eLog.checkLog3("dropEvent", "Drop Event", { event, data, oppDoc });
     }
     activateListeners(html) {
         super.activateListeners(html);
         ApplyTooltipListeners(html);
         html.find(".roll-mod[data-action='toggle']").on({
             click: this._toggleRollModClick.bind(this)
-        });
-        html.find(".roll-mod-gm-control").on({
-            click: this._gmControlClick.bind(this),
-            contextmenu: this._gmControlContext.bind(this)
         });
         html.find("[data-action='tradePosition']").on({
             click: (event) => {
@@ -2291,6 +2603,29 @@ class BladesRollCollab extends DocumentSheet {
                     this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", false);
                 }
             }
+        });
+        if (!game.user.isGM) {
+            return;
+        }
+        html.find("[data-action='gm-set'").on({
+            click: this._gmControlSet.bind(this)
+        });
+        html.find("[data-action='gm-reset'").on({
+            click: this._gmControlReset.bind(this)
+        });
+        html.find("[data-action='gm-set-position'").on({
+            click: this._gmControlSetPosition.bind(this)
+        });
+        html.find("[data-action='gm-set-effect'").on({
+            click: this._gmControlSetEffect.bind(this)
+        });
+        html.find("[data-action='gm-set-target'").on({
+            click: this._gmControlSetTarget.bind(this),
+            contextmenu: this._gmControlResetTarget.bind(this)
+        });
+        html.find("[data-action='gm-toggle-factor'").on({
+            click: this._gmControlToggleFactor.bind(this),
+            contextmenu: this._gmControlResetFactor.bind(this)
         });
     }
     async _onSubmit(event, { updateData } = {}) {

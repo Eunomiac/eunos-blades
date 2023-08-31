@@ -1,3 +1,4 @@
+{{!-- <div class="player-header">Player Dialog</div> --}}
 <div class="split-root flex-horizontal">
   <div class="split-root-left">
     <section class="sheet-top roll-sheet-block">
@@ -194,17 +195,29 @@
   </div>
   <div class="split-root-right">
     <section class="sheet-top">
-      <div class="roll-sheet-block factors-block flex-vertical">
-        {{#each rollFactorData}}
-        <div class="roll-factor flex-horizontal">
+      <div class="roll-sheet-block factors-block flex-horizontal">
+        {{#each rollFactors.source}}
+        {{#if isActive}}
+        <div class="roll-factor roll-factor-{{name}} {{~#if isPrimary}} roll-factor-primary{{/if}}{{#if cssClasses}} {{cssClasses}}{{/if}} flex-horizontal">
           <label class="shadowed roll-factor-label">{{name}}</label>
-          <span class="shadowed roll-factor-value {{cssClasses}}">{{value}}</span>
+          <span class="shadowed roll-factor-value">{{display}}</span>
         </div>
+        {{/if}}
         {{/each}}
         <label class="shadowed roll-factor-vs">vs.</label>
       </div>
     </section>
     <section class="sheet-main tab-content nav-group flex-vertical">
+      <div class="roll-sheet-block factors-block flex-vertical">
+        {{#each rollFactors.opposition}}
+        {{#if isActive}}
+        <div class="roll-factor roll-factor-{{name}} {{~#if isPrimary}} roll-factor-primary{{/if}}{{#if cssClasses}} {{cssClasses}}{{/if}} flex-horizontal">
+          <label class="shadowed roll-factor-label">{{name}}</label>
+          <span class="shadowed roll-factor-value">{{display}}</span>
+        </div>
+        {{/if}}
+        {{/each}}
+      </div>
       {{#if rollOpposition}}
       {{> "systems/eunos-blades/templates/components/roll-collab-opposition.hbs" rollOpposition}}
       {{/if}}
@@ -242,6 +255,7 @@
   {{/if}}
   {{/if}}
   <div class="roll-sheet-float-block roll-button">
+    {{{oddsGradientTestHTML}}}
     <div class="roll-odds-strip" style="background: {{{oddsGradient}}};">
       {{#unless isGMReady}}Waiting For GM ...{{/unless}}
     </div>
@@ -249,10 +263,10 @@
     <button class="roll-button" data-action="roll" data-roll-id="{{rollID}}">ROLL</button>
     {{/if}}
   </div>
-  {{#if stressData}}
+  {{#if costData}}
   <div class="roll-sheet-float-block roll-stress-block {{~#if isGMReady}} gm-ready{{/if}} tooltip-trigger">
-    <span class="shadowed roll-stress-cost">(Roll Costs {{stressData.cost}} Stress)</span>
-    <span class="tooltip tooltip-roll-stress">{{{stressData.tooltip}}}</span>
+    <span class="shadowed roll-stress-cost">{{{costData.footerLabel}}}</span>
+    <span class="tooltip tooltip-roll-stress">{{{costData.tooltip}}}</span>
   </div>
   {{/if}}
 </section>

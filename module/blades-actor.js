@@ -997,44 +997,97 @@ class BladesActor extends Actor {
             });
             return rollModData;
         });
-        [[/1d/, RollModCategory.roll], [/Less Effect/, RollModCategory.effect]].forEach(([effectPat, effectCat]) => {
-            const { one: harmConditionOne, two: harmConditionTwo } = Object.values(this.system.harm ?? {})
-                .find((harmData) => effectPat.test(harmData.effect)) ?? {};
-            const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
-            if (harmString.length > 0) {
+        if (this.system.harm) {
+            [[/1d/, RollModCategory.roll], [/Less Effect/, RollModCategory.effect]].forEach(([effectPat, effectCat]) => {
+                const { one: harmConditionOne, two: harmConditionTwo } = Object.values(this.system.harm)
+                    .find((harmData) => effectPat.test(harmData.effect)) ?? {};
+                const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
+                if (harmString.length > 0) {
+                    rollModsData.push({
+                        id: `Harm-negative-${effectCat}`,
+                        name: harmString,
+                        category: effectCat,
+                        posNeg: "negative",
+                        base_status: RollModStatus.ToggledOn,
+                        modType: "harm",
+                        value: 1,
+                        tooltip: [
+                            `<h1 class='red-bright'><strong>Harm:</strong> ${harmString}</h1>`,
+                            effectCat === RollModCategory.roll
+                                ? "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1d</strong> to your roll.</p>"
+                                : "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1 effect</strong>."
+                        ].join("")
+                    });
+                }
+            });
+            if (this.system.harm.heavy.one.trim() !== "") {
                 rollModsData.push({
-                    id: `Harm-negative-${effectCat}`,
-                    name: harmString,
-                    category: effectCat,
+                    id: "Push-negative-roll",
+                    name: "Push",
+                    sideString: this.system.harm.heavy.one,
+                    category: RollModCategory.roll,
                     posNeg: "negative",
                     base_status: RollModStatus.ToggledOn,
                     modType: "harm",
-                    value: 1,
+                    value: 0,
+                    effectKeys: ["Cost-Stress2"],
                     tooltip: [
-                        `<h1 class='red-bright'><strong>Harm:</strong> ${harmString}</h1>`,
-                        effectCat === RollModCategory.roll
-                            ? "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1d</strong> to your roll.</p>"
-                            : "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1 effect</strong>."
+                        `<h1 class='red-bright'><strong>Harm:</strong> ${this.system.harm.heavy.one}</h1>`,
+                        "<p>If your injuries apply to the situation at hand, you must <strong>Push</strong> to act.</p>"
                     ].join("")
                 });
             }
-        });
+        }
         
         return rollModsData;
     }
     get rollFactors() {
-        return {
+        const factorData = {
             [Factor.tier]: {
                 name: Factor.tier,
                 value: this.getFactorTotal(Factor.tier),
                 max: this.getFactorTotal(Factor.tier),
                 baseVal: this.getFactorTotal(Factor.tier),
-                cssClasses: "factor-gold factor-main",
                 isActive: true,
+                isPrimary: true,
+                isDominant: false,
+                highFavorsPC: true
+            },
+            [Factor.quality]: {
+                name: Factor.quality,
+                value: this.getFactorTotal(Factor.quality),
+                max: this.getFactorTotal(Factor.quality),
+                baseVal: this.getFactorTotal(Factor.quality),
+                isActive: false,
+                isPrimary: false,
                 isDominant: false,
                 highFavorsPC: true
             }
         };
+        if (BladesActor.IsType(this, BladesActorType.npc)) {
+            factorData[Factor.scale] = {
+                name: Factor.scale,
+                value: this.getFactorTotal(Factor.scale),
+                max: this.getFactorTotal(Factor.scale),
+                baseVal: this.getFactorTotal(Factor.scale),
+                cssClasses: "factor-grey",
+                isActive: false,
+                isPrimary: false,
+                isDominant: false,
+                highFavorsPC: true
+            };
+            factorData[Factor.magnitude] = {
+                name: Factor.magnitude,
+                value: this.getFactorTotal(Factor.magnitude),
+                max: this.getFactorTotal(Factor.magnitude),
+                baseVal: this.getFactorTotal(Factor.magnitude),
+                isActive: false,
+                isPrimary: false,
+                isDominant: false,
+                highFavorsPC: true
+            };
+        }
+        return factorData;
     }
     get rollOppImg() { return this.img ?? undefined; }
     
