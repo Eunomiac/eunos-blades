@@ -2,15 +2,17 @@
 & {
   $heights: (70px, 70px);
   --sheet-top-height: #{calculate-sum($heights)};
-  min-width: 600px;
-  max-width: 600px;
+  min-width: 550px;
+  max-width: 550px;
   width: unset !important;
-  // max-width: 500px;
-  // min-height: 400px;
-  // max-height: 400px;
   overflow: visible;
   box-shadow: none;
   height: auto !important;
+
+  &.gm-roll-collab {
+    min-width: 750px;
+    max-width: 750px;
+  }
 
   * {
     --content-padding: 0px;
@@ -18,12 +20,13 @@
 
   .window-header {
     opacity: 0;
-    top: 3px;
+    top: -45px;
     position: absolute;
-    width: 80%;
-    left: 10%;
+    width: 100%;
+    left: 0;
     z-index: 10;
     transition: 0.25s;
+    padding: 0 5px;
 
     &:hover { opacity: 1 }
   }
@@ -40,245 +43,571 @@
       &.roll-collab-sheet-gm {
         .sheet-root {
           .split-root {
+            min-width: 750px;
+            max-width: 750px;
 
             .split-root-left {
               min-width: 375px;
               max-width: 375px;
               flex-basis: 50%;
-
-              .sheet-main {
-                .roll-sheet-block {
-
-                  .roll-sheet-sub-block {
-
-                    &.roll-effects-block {
-                      gap: 20px 0;
-                      padding-bottom: 25px;
-                      width: 100% !important;
-                    }
-
-                    .roll-mod-controls-container {
-                      position: absolute;
-                      left: 0px;
-                      height: 10px;
-                      max-height: 10px;
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                      min-width: 100%;
-
-
-                      &.controls-container {
-                        top: 17px;
-                      }
-
-
-
-                      &.position-controls-container, &.effect-controls-container {
-                        height: 24px;
-                        min-height: 24px;
-                        // background: magenta;
-                        right: 160px;
-                        left: unset;
-                        min-width: unset;
-                        margin-top: -2px;
-
-                        .roll-mod-gm-control {
-                          height: 24px;
-                          width: 24px;
-                          line-height: 24px;
-                          font-size: 0;
-                          display: inline-block;
-
-                          background: var(--gm-control-background);
-                          outline: 2px solid var(--gm-control-border);
-
-                          &.gm-control-position-desperate {
-                            --gm-control-border: var(--blades-red-bright);
-                            --gm-control-background: var(--blades-red-dark);
-                          }
-                          &.gm-control-position-risky {
-                            --gm-control-border: var(--blades-grey-bright);
-                            --gm-control-background: var(--blades-grey-dark);
-                          }
-                          &.gm-control-position-controlled {
-                            --gm-control-border: var(--blades-cyan-bright);
-                            --gm-control-background: var(--blades-cyan-dark);
-                          }
-
-
-                        &.effect-final-block {
-                          &.effect-zero {
-                            --final-block-text-color: var(--blades-red-dark);
-                            --final-block-background-color: transparent;
-                            --final-block-border-color: transparent;
-                          }
-                          &.effect-limited {
-                            --final-block-text-color: var(--blades-red-bright);
-                            --final-block-background-color: var(--blades-red-dark-fade);
-                            --final-block-border-color: var(--blades-red);
-                          }
-                          &.effect-great {
-                            --final-block-text-color: var(--blades-cyan-bright);
-                            --final-block-background-color: var(--blades-cyan-dark-fade);
-                            --final-block-border-color: var(--blades-cyan);
-                          }
-                          &.effect-extreme {
-                            --final-block-text-color: var(--blades-white-bright);
-                            --final-block-background-color: var(--blades-gold-dark);
-                            --final-block-border-color: var(--blades-gold-bright);
-                          }
-                        }
-
-                          &.gm-control-effect-zero {
-                            --gm-control-border: var(--blades-red-dark);
-                            --gm-control-background: transparent;
-                          }
-                          &.gm-control-effect-limited {
-                            --gm-control-border: var(--blades-red-bright);
-                            --gm-control-background: var(--blades-red-dark);
-                          }
-                          &.gm-control-effect-standard {
-                            --gm-control-border: var(--blades-grey-bright);
-                            --gm-control-background: var(--blades-grey-dark);
-                          }
-                          &.gm-control-effect-great {
-                            --gm-control-border: var(--blades-cyan-bright);
-                            --gm-control-background: var(--blades-cyan-dark);
-                          }
-                          &.gm-control-effect-extreme {
-                            --gm-control-border: var(--blades-gold-bright);
-                            --gm-control-background: var(--blades-gold-dark);
-                          }
-                        }
-                      }
-
-                      .roll-mod-gm-control {
-                        // border: 1px solid var(--blades-black-dark);
-                        height: 10px;
-                        width: 10px;
-                        margin: 0 1px;
-                        pointer-events: auto;
-                        cursor: pointer;
-                        // transition: 0.15s;
-                        opacity: 0.5;
-                        line-height: 12px;
-                        font-family: Tiny;
-                        padding-left: 2px;
-                        font-size: 0;
-                        text-align: center;
-                        color: var(--roll-mod-gm-control-color, var(--blades-white-bright));
-                        transform-origin: 50% 50%;
-                        scale: 0.5;
-
-                        &.gm-control-active {
-                          filter: brightness(1.2) drop-shadow(0px 0px 3px var(--roll-mod-gm-control-glow-color, var(--blades-white-bright)));
-                          opacity: 1;
-                          scale: 0.7;
-                        }
-
-                        &:hover {
-                          opacity: 1;
-                          filter: brightness(1.2) drop-shadow(0px 0px 10px var(--roll-mod-gm-control-glow-color, var(--blades-white-bright)));
-                          scale: 1;
-                        }
-
-                        &.gm-control-hidden {
-
-                          background: transparent;
-
-                          &:hover { background: var(--blades-black-dark)}
-                        }
-                        &.gm-control-hidden { background: var(--blades-black-dark) }
-                        &.gm-control-forcedoff { background: var(--blades-grey-dark) }
-                        &.gm-control-toggledoff { background: var(--blades-grey-bright) }
-                        &.gm-control-toggledon { background: var(--blades-gold-dark) }
-                        &.gm-control-forcedon { background: var(--blades-gold-bright) }
-                        &.gm-control-reset {
-
-                          background: var(--blades-red-dark);
-
-                          &:hover { background: var(--blades-red-bright) }
-                        }
-
-                        &.gm-control-toggledoff,
-                        &.gm-control-toggledon,
-                        &.gm-control-forcedon { --roll-mod-gm-control-color: var(--blades-black-dark)}
-
-
-                      }
-
-
-                    }
-
-
-                    &.inactive-mod-block {
-                      .roll-mod-controls-container {
-                        left: unset;
-                        position: absolute;
-                        right: 100%;
-                        top: 2px;
-                        background: var(--blades-black-fade);
-                        width: 72px;
-                      }
-                    }
-
-                    .roll-mod-block-spacer { display: none !important }
-
-                    .roll-mod-container {
-                      min-width: 100px;
-                      display: flex;
-
-                      justify-content: center;
-                      align-items: center;
-                      position: relative;
-                      height: 16px;
-
-                      .roll-mod {
-                        margin-top: 0;
-
-                        &.roll-mod-side-string {
-                          min-width: 50px !important;
-
-                          &.status-toggledon {
-                            line-height: 14px !important;
-                          }
-                        }
-                      }
-
-                      .roll-doc-select-container {
-                        width: min-content;
-                        margin-left: -75px;
-
-                        .roll-doc-select {
-                          .roll-sheet-doc-select {
-                            appearance: none;
-                            width: 75px;
-                            color: transparent;
-                            text-shadow: none;
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
             }
             .split-root-right {
               min-width: 375px;
               max-width: 375px;
               flex-basis: 50%;
+
+              .sheet-main {
+                right: 6px;
+              }
+            }
+          }
+
+          .roll-sheet-sub-block {
+
+            &.roll-effects-block:not(.inactive-mod-block) {
+              gap: 20px 0;
+              padding-bottom: 25px;
+              width: 100% !important;
             }
 
+            .roll-mod-controls-container {
+              position: absolute;
+              left: 0px;
+              height: 10px;
+              max-height: 10px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              min-width: 100%;
+
+              &.controls-container {
+                top: 17px;
+              }
+
+              &.position-controls-container, &.effect-controls-container {
+                height: 24px;
+                min-height: 24px;
+                // background: magenta;
+                right: 160px;
+                left: unset;
+                min-width: unset;
+                margin-top: -2px;
+
+                .roll-mod-gm-control {
+                  height: 24px;
+                  width: 24px;
+                  line-height: 24px;
+                  font-size: 0;
+                  display: inline-block;
+
+                  background: var(--gm-control-background);
+                  outline: 2px solid var(--gm-control-border);
+
+                  &.gm-control-position-desperate {
+                    --gm-control-border: var(--blades-red-bright);
+                    --gm-control-background: var(--blades-red-dark);
+                  }
+                  &.gm-control-position-risky {
+                    --gm-control-border: var(--blades-grey-bright);
+                    --gm-control-background: var(--blades-grey-dark);
+                  }
+                  &.gm-control-position-controlled {
+                    --gm-control-border: var(--blades-cyan-bright);
+                    --gm-control-background: var(--blades-cyan-dark);
+                  }
+
+
+                &.effect-final-block {
+                  &.effect-zero {
+                    --final-block-text-color: var(--blades-red-dark);
+                    --final-block-background-color: transparent;
+                    --final-block-border-color: transparent;
+                  }
+                  &.effect-limited {
+                    --final-block-text-color: var(--blades-red-bright);
+                    --final-block-background-color: var(--blades-red-dark-fade);
+                    --final-block-border-color: var(--blades-red);
+                  }
+                  &.effect-great {
+                    --final-block-text-color: var(--blades-cyan-bright);
+                    --final-block-background-color: var(--blades-cyan-dark-fade);
+                    --final-block-border-color: var(--blades-cyan);
+                  }
+                  &.effect-extreme {
+                    --final-block-text-color: var(--blades-white-bright);
+                    --final-block-background-color: var(--blades-gold-dark);
+                    --final-block-border-color: var(--blades-gold-bright);
+                  }
+                }
+
+                  &.gm-control-effect-zero {
+                    --gm-control-border: var(--blades-red-dark);
+                    --gm-control-background: transparent;
+                  }
+                  &.gm-control-effect-limited {
+                    --gm-control-border: var(--blades-red-bright);
+                    --gm-control-background: var(--blades-red-dark);
+                  }
+                  &.gm-control-effect-standard {
+                    --gm-control-border: var(--blades-grey-bright);
+                    --gm-control-background: var(--blades-grey-dark);
+                  }
+                  &.gm-control-effect-great {
+                    --gm-control-border: var(--blades-cyan-bright);
+                    --gm-control-background: var(--blades-cyan-dark);
+                  }
+                  &.gm-control-effect-extreme {
+                    --gm-control-border: var(--blades-gold-bright);
+                    --gm-control-background: var(--blades-gold-dark);
+                  }
+                }
+              }
+
+              .roll-mod-gm-control {
+                // border: 1px solid var(--blades-black-dark);
+                height: 10px;
+                width: 10px;
+                margin: 0 1px;
+                pointer-events: auto;
+                cursor: pointer;
+                // transition: 0.15s;
+                opacity: 0.5;
+                line-height: 12px;
+                font-family: Tiny;
+                padding-left: 2px;
+                font-size: 0;
+                text-align: center;
+                color: var(--roll-mod-gm-control-color, var(--blades-white-bright));
+                transform-origin: 50% 50%;
+                scale: 0.5;
+
+                &.gm-control-active {
+                  filter: brightness(1.2) drop-shadow(0px 0px 3px var(--roll-mod-gm-control-glow-color, var(--blades-white-bright)));
+                  opacity: 1;
+                  scale: 0.7;
+                }
+
+                &:hover {
+                  opacity: 1;
+                  filter: brightness(1.2) drop-shadow(0px 0px 10px var(--roll-mod-gm-control-glow-color, var(--blades-white-bright)));
+                  scale: 1;
+                }
+
+                &.gm-control-hidden {
+
+                  background: transparent;
+
+                  &:hover { background: var(--blades-black-dark)}
+                }
+                &.gm-control-hidden { background: var(--blades-black-dark) }
+                &.gm-control-forcedoff { background: var(--blades-grey-dark) }
+                &.gm-control-toggledoff { background: var(--blades-grey-bright) }
+                &.gm-control-toggledon { background: var(--blades-gold-dark) }
+                &.gm-control-forcedon { background: var(--blades-gold-bright) }
+                &.gm-control-reset {
+
+                  background: var(--blades-red-dark);
+
+                  &:hover { background: var(--blades-red-bright) }
+                }
+
+                &.gm-control-toggledoff,
+                &.gm-control-toggledon,
+                &.gm-control-forcedon { --roll-mod-gm-control-color: var(--blades-black-dark)}
+
+
+              }
+            }
+
+            &.inactive-mod-block {
+              .roll-mod-container {
+                min-width: unset;
+              }
+              .roll-mod-controls-container {
+                left: unset;
+                position: absolute;
+                right: calc(100% + 5px);
+                top: 0;
+                background: var(--blades-black-fade);
+                width: 77px;
+                min-width: unset;
+                background: #181818;
+                padding: 0;
+                border: 1px solid var(--blades-black-dark);
+                box-sizing: content-box;
+                border-right: none;
+                top: -1px;
+              }
+            }
+
+            .roll-mod-block-spacer { display: none !important }
+
+            .roll-mod-container {
+              min-width: 100px;
+              display: flex;
+
+              justify-content: center;
+              align-items: center;
+              position: relative;
+              height: 16px;
+
+              .roll-mod {
+                margin-top: 0;
+
+                &.roll-mod-side-string {
+                  min-width: 50px !important;
+
+                  &.status-toggledon {
+                    line-height: 14px !important;
+                  }
+                }
+              }
+
+              .roll-doc-select-container {
+                width: min-content;
+                margin-left: -75px;
+
+                .roll-doc-select {
+                  .roll-sheet-doc-select {
+                    appearance: none;
+                    width: 75px;
+                    color: transparent;
+                    text-shadow: none;
+                  }
+                }
+              }
+            }
           }
         }
       }
+
+      // Awesome Fire Shader ---  https://codepen.io/eunomiac/pen/OJQeMPr?editors=1010
+      // Great Nav Tabs --- https://codepen.io/abdelRhman345/pen/PXMmdv
+      // Single Flame Shader --- https://codepen.io/osublake/pen/pqNXoq
+      // Great toggle switches --- https://codepen.io/eunomiac/pen/GRNwKmO
+      // Simple toggle switches --- https://codepen.io/thelaazyguy/pen/VzedOm
+      // Awesome toggle switch --- https://codepen.io/cl0udc0ntr0l/pen/njQQbw
+      // Accordian Data Display for Desc/Notes/Rules/etc? --- https://codepen.io/eunomiac/pen/oNYQNPP
+      // SUPER easy pulse glow light ---https://codepen.io/raulghm/pen/EjdwoO
+      // hover glow buttons --- https://codepen.io/Stockin/pen/XPvpoB
+      // Popup radial tiny menu --- https://codepen.io/iremlopsum/pen/Qjoxmv
+
       .sheet-root {
         overflow: visible;
 
+        .sheet-topper {
+          position: absolute;
+          width: 100%;
+          height: toRem(23px);
+          display: block;
+          border: none;
+          top: 0;
+          left: 0;
+
+          &.roll-type {
+            top: -26px;
+            padding: 0 30%;
+            background: linear-gradient(to right, transparent 15%, var(--roll-type-header-bg-color) 35%, var(--roll-type-header-bg-color) 65%, transparent 85%);
+
+            &.roll-type-action {
+              --roll-type-header-color: var(--blades-white-bright);
+              --roll-type-header-bg-color: var(--blades-grey);
+              --roll-type-header-underline-color: var(--blades-white-bright);
+              --roll-type-header-shadow-color: var(--blades-black-dark);
+            }
+
+            &.roll-type-resistance {
+              --roll-type-header-color: var(--blades-white-bright);
+              --roll-type-header-bg-color: var(--blades-red-dark);
+              --roll-type-header-underline-color: var(--blades-red-bright);
+              --roll-type-header-shadow-color: var(--blades-red-dark);
+            }
+
+            &.roll-type-downtime {
+              --roll-type-header-color: var(--blades-gold-bright);
+              --roll-type-header-bg-color: var(--blades-gold-dark);
+              --roll-type-header-underline-color: var(--blades-gold-bright);
+              --roll-type-header-shadow-color: var(--blades-black-dark);
+            }
+
+            &.roll-type-fortune {
+              --roll-type-header-color: var(--blades-cyan-bright);
+              --roll-type-header-bg-color: var(--blades-cyan-dark);
+              --roll-type-header-underline-color: var(--blades-cyan-bright);
+              --roll-type-header-shadow-color: var(--blades-cyan-dark);
+            }
+
+            .roll-type-header {
+              font-family: var(--font-emphasis);
+              font-size: toRem(20px);
+              line-height: toRem(20px);
+              color: var(--roll-type-header-color);
+              text-transform: uppercase;
+              margin-top: 3px;
+              text-align: center;
+              // border-bottom: 1px solid var(--roll-type-header-underline-color, var(--blades-white-bright));
+              text-shadow:
+                0px 0px 3px var(--roll-type-header-shadow-color),
+                0px 0px 3px var(--roll-type-header-shadow-color),
+                0px 0px 3px var(--roll-type-header-shadow-color),
+                0px 0px 3px var(--roll-type-header-shadow-color);
+            }
+          }
+
+          &.roll-factors {
+
+            .factors-block {
+              position: absolute;
+              justify-content: space-between;
+
+              .roll-factor.roll-factor-primary {
+                order: 1;
+                position: relative;
+                padding: 5px 40px 5px 10px;
+                border: 4px outset var(--blades-grey);
+                background: var(--blades-grey-bright);
+                margin: 0px;
+
+                .roll-factor-label {
+                  color: var(--blades-white-bright);
+                }
+
+                &.roll-factor-tier {
+                  .roll-factor-value {
+                    scale: .5 1;
+                    right: -10px;
+                  }
+                }
+
+                .roll-factor-value {
+                  font-family: var(--font-default);
+                  color: var(--blades-gold-bright);
+                  font-size: 70px;
+                  line-height: 30px;
+                  min-width: 80px;
+                  pointer-events: none;
+                  position: absolute;
+                  right: -25px;
+                  text-align: center;
+                  text-shadow:
+                    0 0 5px var(--blades-black-dark),
+                    0 0 5px var(--blades-black-dark),
+                    0 0 5px var(--blades-black-dark),
+                    0 0 5px var(--blades-black-dark),
+                    0 0 2px var(--blades-white-bright),
+                    0 0 2px var(--blades-white-bright),
+                    0 0 2px var(--blades-white-bright),
+                    0 0 2px var(--blades-white-bright),
+                    0 0 2px var(--blades-white-bright);
+                  transform-origin: 100% 50%;
+                }
+
+                &.roll-factor-source {
+                  translate: -100% -5px;
+                  right: -20px;
+                }
+                &.roll-factor-opposition {
+                  translate: 100% -5px;
+                  left: -70px;
+                }
+              }
+            }
+          }
+        }
+
+        .factors-block {
+          gap: 0 10px;
+
+          .roll-factor {
+            gap: 0 5px;
+            align-items: baseline;
+
+            .roll-factor-label {
+              font-family: var(--font-emphasis);
+              text-transform: uppercase;
+            }
+            .roll-factor-value {
+              font-weight: bold;
+
+            }
+            &:not(.roll-factor-primary) {
+              margin: 0;
+
+              .roll-factor-label {
+                font-size: 12px;
+              }
+
+              .roll-factor-value {
+                font-size: 16px;
+                line-height: 9px;
+                color: var(--blades-gold-bright);
+              }
+
+              &.roll-factor-tier {
+                .roll-factor-value {
+                  font-size: 14px;
+                  line-height: 10px;
+                }
+              }
+            }
+          }
+
+          &.flex-vertical {
+            position: relative;
+            top: -10px;
+            right: 0px;
+            align-items: flex-end;
+            transform-origin: 100% 0;
+            // scale: 0.75;
+            padding: 0 10px 0 5px;
+            overflow: visible;
+          }
+
+          &.flex-horizontal {
+            justify-content: flex-end;
+            width: 100%;
+
+            .roll-factor {
+              margin-top: -25px;
+            }
+          }
+          .roll-factor {
+          }
+
+          &.roll-opp-factors {
+            .roll-factor {
+              .roll-factor-label {
+
+              }
+              .roll-factor-value {
+                color: var(--opp-factor-color, var(--blades-gold-bright));
+              }
+
+              &.roll-factor-tier {
+                .roll-factor-value {
+                  margin-right: -7px;
+                }
+              }
+            }
+
+
+            &.roll-opp-type-cohort_expert,
+            &.roll-opp-type-npc {--opp-factor-color: var(--blades-red-bright) }
+            &.roll-opp-type-faction {--opp-factor-color: #bd6dff }
+            &.roll-opp-type-location {--opp-factor-color: #dbe7fd }
+            &.roll-opp-type-ritual {--opp-factor-color: #bd6dff }
+            &.roll-opp-type-project,
+            &.roll-opp-type-design { --opp-factor-color: #ffdcc0}
+            &.roll-opp-type-cohort_gang { --opp-factor-color: var(--blades-red-bright) }
+
+            .factors-block.flex-vertical {
+
+              .roll-factor {
+                .roll-factor-value {
+
+                }
+              }
+
+            }
+          }
+
+        }
+
+        .sheet-header {
+          border: none;
+          height: 32px;
+          left: 0px;
+          top: -3px;
+          width: 100%;
+          align-items: flex-end;
+          justify-content: space-around;
+          overflow: visible;
+          flex-wrap: nowrap;
+          white-space: nowrap;
+          padding-left: 30px;
+          > * {
+            flex-grow: 1;
+            flex-shrink: 1;
+            font-size: 1.5rem;
+            font-family: var(--font-emphasis);
+            text-shadow:
+              0px 0px 5px var(--blades-black-dark),
+              0px 0px 5px var(--blades-black-dark),
+              0px 0px 5px var(--blades-black-dark),
+              0px 0px 5px var(--blades-black-dark);
+            text-transform: uppercase;
+          }
+
+          .source-name {
+            color: var(--source-name-color, var(--blades-white-bright));
+            text-align: right;
+
+            &.source-name-type-pc { --source-name-color: var(--blades-gold-bright) }
+          }
+
+          .vs {
+            flex-grow: 0;
+            color: var(--blades-white-bright);
+            text-transform: lowercase;
+            flex-basis: 40px;
+            text-align: center;
+          }
+          .opp-name {
+            color: var(--opp-name-color, var(--blades-white-bright));
+            transform-origin: 0% 50%;
+            scale: 0.75 1;
+
+            &.opp-name-type-cohort_expert,
+            &.opp-name-type-npc {--opp-name-color: var(--blades-red-bright) }
+            &.opp-name-type-faction {--opp-name-color: #bd6dff }
+            &.opp-name-type-location {--opp-name-color: #dbe7fd }
+            &.opp-name-type-ritual {--opp-name-color: #bd6dff }
+            &.opp-name-type-project,
+            &.opp-name-type-design { --opp-name-color: #ffdcc0}
+            &.opp-name-type-cohort_gang { --opp-name-color: var(--blades-red-bright) }
+          }
+
+
+        }
+
+        .sheet-subheader {
+          height: 10px;
+          border: none;
+          padding: 0 0 0 30px;
+          margin-top: -2px;
+          margin-bottom: 2px;
+          position: relative;
+
+          .factors-block.flex-horizontal {
+            height: 10px;
+            justify-content: flex-start;
+
+            .roll-factor {
+              margin: 0;
+
+              .roll-factor-label {
+                font-size: 12px;
+              }
+
+              .roll-factor-value {
+                font-size: 16px;
+                line-height: 9px;
+                color: var(--blades-gold-bright);
+              }
+
+              &.roll-factor-tier {
+                .roll-factor-value {
+                  font-size: 14px;
+                  line-height: 10px;
+                }
+              }
+            }
+          }
+        }
+
         .split-root {
           align-items: stretch;
-          position: relative;
+          position: static;
 
           .split-root-left {
             flex-basis: 75%;
@@ -286,32 +615,9 @@
             position: relative;
             z-index: 2;
 
-            section.sheet-top {
-              display: block;
-              height: auto;
-
-              .roll-type {
-                width: 100%;
-                background: transparent;
-                font-family: var(--font-emphasis);
-                color: var(--blades-white-bright);
-                margin: 0 0 0 15px;
-                font-size: toRem(24px);
-                line-height: toRem(24px);
-                text-transform: uppercase;
-                text-align: left;
-
-                .source-name {
-                  color: var(--blades-gold-bright);
-                  transform-origin: 0 50%;
-                  scale: 1.2;
-                }
-              }
-            }
-
             section.sheet-main {
               justify-content: flex-start;
-              align-items: flex-start;
+              align-items: stretch;
               height: auto;
               overflow: visible;
 
@@ -344,7 +650,7 @@
                       }
                     }
                   }
-                  .roll-effects-block:not(.inactive-mod-block) { width: 90% }
+                  .roll-effects-block:not(.inactive-mod-block) { width: 90%; }
                 }
 
                 .roll-sheet-sub-block {
@@ -406,358 +712,6 @@
                     }
                   }
 
-                  &.roll-effects-block {
-                    width: 100%;
-                    margin: 0;
-                    padding: 0 5px 5px 5px;
-                    gap: 5px 0;
-
-
-                    > .roll-mod-block-spacer {
-                      display: inline-flex;
-                      flex-grow: 1;
-                      flex-shrink: 1;
-                      flex-basis: 0px;
-                      height: 16px;
-
-
-                      &.last-spacer {
-                        display: none;
-                        flex-grow: 0;
-                        flex-shrink: 0;
-                        width: 155px;
-                        height: 20px;
-                        display: inline-flex;
-                        margin-left: auto;
-                      }
-                    }
-
-                    > .roll-mod-container {
-                      flex-grow: 0;
-                      flex-shrink: 0;
-
-                    }
-
-                    &.inactive-mod-block {
-                      position: absolute;
-                      width: auto;
-                      max-width: 175px;
-                      margin: 0;
-                      // left: calc(-50% - 3px);
-                      right: calc(100% + 3px);
-                      background: rgb(24, 24, 24);
-                      top: 0px;
-                      padding: 2px 0 2px 5px;
-                      outline: 1px solid var(--blades-white);
-                      gap: 0;
-
-                      .roll-mod-container {
-                        display: inline-flex;
-                        flex-direction: row;
-                        align-items: center;
-                        background: transparent;
-                        box-shadow: none;
-                        height: 12px;
-                        margin: 0;
-                        padding: 0;
-
-                        &.roll-mod-ability {
-                          --roll-mod-text-color: var(--blades-grey-bright);
-                          --roll-mod-bullet-color: var(--blades-white-bright);
-                          --roll-mod-hover-text-color: var(--blades-gold);
-                          --roll-mod-hover-bg-color: var(--blades-grey);
-                          --roll-mod-bullet-symbol: "♦";
-                        }
-
-                        &.status-forcedoff {
-                          --roll-mod-text-color: var(--blades-grey);
-                          --roll-mod-bullet-color: var(--blades-grey);
-                          --roll-mod-bullet-symbol: " ";
-                        }
-
-                        &.status-hidden {
-                          --roll-mod-bullet-color: var(--blades-red-bright);
-                          --roll-mod-text-color: var(--blades-red-bright);
-                          --roll-mod-bullet-symbol: "◊";
-                        }
-
-                        .roll-mod {
-                          margin: 0;
-                          padding: 0;
-                          border: none;
-                          background: transparent;
-                          margin-right: 7px;
-                          white-space: nowrap;
-                          font-size: 10px;
-                          height: 12px;
-                          line-height: 12px;
-
-                          --roll-mod-contrast: var(--roll-mod-text-color, var(--blades-grey-bright));
-
-                          &::before {
-                            content: var(--roll-mod-bullet-symbol, "●");
-                            color: var(--roll-mod-bullet-color, var(--blades-white-bright));
-                            padding-right: 3px;
-                            vertical-align: top;
-                            line-height: 10px;
-                            font-size: 10px;
-                          }
-
-                          .roll-mod-text {
-                            text-shadow: none;
-                            // color: var(--blades-white);
-                            line-height: 12px;
-                          }
-
-                          &:hover:not(.status-forcedoff) {
-                            color: var(--roll-mod-hover-text-color, var(--blades-gold));
-                            background: var(--roll-mod-hover-bg-color, var(--blades-grey));
-                            // outline: 2px solid var(--roll-mod-hover-bg-color, var(--blades-grey));
-                          }
-
-                        }
-                      }
-
-
-
-                    }
-                  }
-
-                  .roll-mod-container {
-                    margin-right: 3px;
-                    position: relative;
-                    border-radius: 7px;
-                    background: var(--roll-mod-medium, var(--blades-grey-dark));
-                    box-shadow:
-                      var(--roll-mod-shadow-top),
-                      var(--roll-mod-shadow-bottom);
-                    line-height: 14px;
-
-                    &.roll-mod-ability {
-                      border-radius: 0;
-                      .roll-mod {
-                        margin-top: -2px !important;
-                        .roll-mod-text {
-                          font-family: Oswald;
-                        }
-                      }
-                    }
-
-                    &.posneg-positive, &.posneg-positive .roll-mod-side-string {
-                      --roll-mod-active-bright: var(--blades-gold-bright);
-                      --roll-mod-active-dark: var(--blades-gold-dark);
-                    }
-                    &.posneg-negative, &.posneg-negative .roll-mod-side-string {
-                      --roll-mod-active-bright: var(--blades-red-bright);
-                      --roll-mod-active-dark: var(--blades-red-dark);
-                    }
-
-                    &.status-hidden {
-                      --roll-mod-bright: var(--blades-grey-dark);
-                      --roll-mod-contrast: var(--blades-grey-dark);
-                      --roll-mod-medium: transparent;
-                      --roll-mod-dark: var(--blades-black-dark-fade);
-
-                      --roll-mod-shadow-top: none;
-                      --roll-mod-shadow-bottom: none;
-
-                      .roll-mod {
-                        margin-top: 0;
-                        &.roll-mod-sidestring {
-                          ~ .roll-mod-side-string {
-                            color: var(--roll-mod-bright);
-                            background: var(--roll-mod-dark);
-                            margin-top: -2px;
-                          }
-                        }
-                        .roll-mod-text {
-                          color: var(--roll-mod-contrast);
-                        }
-                      }
-                    }
-
-                    &.status-forcedoff {
-                      --roll-mod-bright: var(--blades-grey);
-                      --roll-mod-contrast: var(--blades-grey);
-                      --roll-mod-medium: var(--blades-black-dark);
-                      --roll-mod-dark: var(--blades-grey-dark);
-
-                      --roll-mod-shadow-top: 1px 1px 1px var(--roll-mod-dark);
-                      --roll-mod-shadow-bottom: -1px -1px 0px var(--roll-mod-bright);
-
-                      .roll-mod {
-                        margin-top: 2px;
-                        &.roll-mod-sidestring {
-                          ~ .roll-mod-side-string {
-                            color: var(--roll-mod-bright);
-                            background: var(--roll-mod-medium);
-                          }
-                        }
-                        // line-height: 14px;
-                        .roll-mod-text {
-                          color: var(--roll-mod-contrast);
-                        }
-                      }
-                    }
-                    &.status-toggledoff {
-                      --roll-mod-bright: var(--blades-white);
-                      --roll-mod-contrast: var(--blades-black);
-                      --roll-mod-medium: var(--blades-grey-dark);
-                      --roll-mod-dark: var(--blades-black-dark);
-
-                      --roll-mod-shadow-top: -1px -1px 0px var(--roll-mod-bright);
-                      --roll-mod-shadow-bottom: 1px 1px 1px var(--roll-mod-dark);
-
-                      &:hover { filter: brightness(1.5) }
-                      .roll-mod {
-                        &.roll-mod-sidestring {
-                          ~ .roll-mod-side-string {
-                            color: var(--roll-mod-contrast);
-                            background: transparent;
-                            text-shadow: none;
-                          }
-                        }
-                        // line-height: 14px;
-                        .roll-mod-text {
-                          color: var(--roll-mod-contrast);
-                          line-height: 16px;
-                          text-shadow:
-                            0.5px 0.5px 0px var(--blades-grey),
-                            -0.25px -0.25px 0px var(--blades-black-dark);
-
-                        }
-                      }
-                    }
-                    &.status-toggledon {
-                      --roll-mod-bright: var(--roll-mod-active-bright);
-                      --roll-mod-contrast: var(--blades-white-bright);
-                      --roll-mod-medium: var(--roll-mod-active-dark);
-                      --roll-mod-dark: var(--blades-black-dark);
-
-                      --roll-mod-shadow-top: -1px -1px 1px var(--roll-mod-dark);
-                      --roll-mod-shadow-bottom: 1px 1px 0px var(--roll-mod-bright);
-
-                      &.roll-mod-harm {
-                        --roll-mod-contrast: var(--blades-white-bright);
-                        --roll-mod-medium: var(--blades-red);
-                      }
-
-                      line-height: 16px;
-
-                      &:hover { filter: brightness(0.75) }
-                      .roll-mod {
-                        &.roll-mod-sidestring {
-                          ~ .roll-mod-side-string {
-                            color: var(--roll-mod-contrast);
-                            background: var(--roll-mod-medium);
-                            line-height: 14px;
-                          }
-                        }
-                        .roll-mod-text {
-                          color: var(--roll-mod-contrast);
-                        }
-                      }
-
-
-                    }
-                    &.status-forcedon {
-                      --roll-mod-bright: var(--roll-mod-active-bright);
-                      --roll-mod-contrast: var(--roll-mod-active-bright);
-                      --roll-mod-medium: var(--blades-black-dark);
-                      --roll-mod-dark: var(--roll-mod-active-dark);
-
-                      --roll-mod-shadow-top: -1px -1px 0px var(--roll-mod-bright);
-                      --roll-mod-shadow-bottom: 1px 1px 1px var(--roll-mod-dark);
-
-                      .roll-mod {
-                        margin-top: 2px;
-                        &.roll-mod-sidestring {
-                          ~ .roll-mod-side-string {
-                            color: var(--roll-mod-contrast);
-                            background: var(--roll-mod-medium);
-                          }
-                        }
-                        // line-height: 14px;
-                        .roll-mod-text {
-                          color: var(--roll-mod-contrast);
-                        }
-                      }
-
-                    }
-                    .roll-mod {
-                      display: inline-block;
-                      height: 14px;
-                      // line-height: 16px;
-                      padding: 0 7px;
-                      // margin: 2px 4px;
-                      // border: 1px solid var(--roll-mod-border-color, var(--blades-white));
-                      color: var(--roll-mod-contrast, var(--blades-white-bright));
-                      font-family: var(--font-emphasis);
-                      text-transform: uppercase;
-                      font-size: 12px;
-                      margin-top: -1px;
-                      text-shadow:
-                        0 0 2px var(--blades-black-dark),
-                        0 0 2px var(--blades-black-dark),
-                        0 0 2px var(--blades-black-dark),
-                        0 0 2px var(--blades-black-dark);
-                      letter-spacing: 0.75px;
-                      vertical-align: middle;
-                      transition: 0.25s;
-
-                      .roll-mod-text {
-                        display: inline-block;
-                        max-height: 100%;
-                      }
-
-
-                      &.roll-mod-harm:not(.roll-mod-sidestring) {
-                        font-family: Oswald;
-                        font-size: 12px;
-                        // line-height: 14px;
-                        text-shadow: none;
-                        // color: var(--blades-black-dark);
-                        // background: var(--blades-red-bright);
-                        letter-spacing: normal;
-                        font-weight: bold;
-                      }
-
-                      &.roll-mod-sidestring, &.roll-mod-teamwork {
-                        border-top-right-radius: 0;
-                        border-bottom-right-radius: 0;
-                        margin-right: 0;
-                        display: inline-block;
-
-                        ~ .roll-mod-side-string {
-                          margin: 0 0 0 -8px;
-                          padding: 0px 6px 0px 2px;
-                          font-family: Oswald;
-                          position: relative;
-                          // color: var(--roll-mod-medium);
-                          // background: var(--roll-mod-dark, var(--blades-black-dark));
-                          // text-shadow: none;
-                          border: none;
-                          border-top-right-radius: 8px;
-                          border-bottom-right-radius: 8px;
-                          border-top-left-radius: 0px;
-                          border-bottom-left-radius: 0px;
-                          font-size: 12px;
-                          text-transform: uppercase;
-                          display: inline-block;
-                          height: 14px;
-                          // line-height: 14px;
-                          font-weight: bold;
-                          min-width: 25px;
-                          vertical-align: middle;
-                        }
-                      }
-                      // &.status-hidden { display: none }
-
-                    }
-
-
-
-                  }
 
                 }
                 .roll-sheet-float-block {
@@ -819,12 +773,13 @@
                     background: var(--final-block-background-color, var(--blades-grey));
                     color: var(--final-block-text-color, var(--blades-white-bright));
                     border: 2px solid var(--final-block-border-color, var(--blades-white));
-                    border-top: none;
                     font-size: 18px;
                     line-height: 22px;
                     text-align: center;
                     right: 0;
-                    top: 0;
+                    top: -2px;
+                    box-sizing: content-box;
+
 
                     &.position-final-block {
                       &.position-desperate {
@@ -903,6 +858,59 @@
 
           }
 
+          .roll-source-bg-img, .roll-source-bg-overlay,
+          .roll-opp-bg-img, .roll-opp-bg-overlay {
+            position: absolute;
+            top: 0px;
+            height: 100%;
+            overflow: hidden;
+
+            img {
+              height: 100%;
+              opacity: 0.8;
+              top: -20px;
+              pointer-events: none;
+            }
+
+            &.roll-source-bg-img, &.roll-source-bg-overlay {
+              // left: -2px;
+              border-top-left-radius: 30px;
+              border-bottom-left-radius: 30px;
+
+              img {
+                filter: blur(1px) brightness(1);
+                scale: 1.5;
+              }
+              &.roll-source-bg-overlay {
+                background: linear-gradient(to right, transparent, var(--blades-black) 80%);
+                width: 50%;
+                top: 0;
+                left: 0;
+              }
+            }
+
+            &.roll-opp-bg-img, &.roll-opp-bg-overlay {
+              top: -2px;
+              right: -2px;
+              border-top-right-radius: 30px;
+              border-bottom-right-radius: 30px;
+
+              img {
+                right: -30px;
+                filter: blur(3px) brightness(0.8);
+              }
+
+              &.roll-opp-bg-overlay {
+                background: linear-gradient(to left, transparent, var(--blades-black) 80%);
+                width: 50%;
+                top: 0;
+                right: 0;
+              }
+            }
+
+
+          }
+
           .split-root-right {
             flex-basis: 35%;
             display: flex;
@@ -911,145 +919,14 @@
             flex-direction: column;
             z-index: 1;
 
-            .factors-block {
-              gap: 0 10px;
-
-              .roll-factor {
-                &.roll-factor-primary {
-                  order: 2;
-                }
-                &:not(.roll-factor-primary) {
-                  order: 1;
-                }
-              }
-
-              &.flex-vertical {
-                position: relative;
-                top: -20px;
-                right: -20px;
-                align-items: flex-end;
-                scale: 0.75;
-                padding: 5px;
-                background: var(--blades-black-dark-fade);
-                border-top-right-radius: 15px;
-
-                .roll-factor {
-                  &.roll-factor-primary {
-                    order: 1;
-                    position: relative;
-                    right: -40px;
-                    padding: 5px 40px 5px 10px;
-                    border: 4px outset var(--blades-grey);
-                    background: var(--blades-grey-bright);
-                    margin-bottom: 10px;
-
-                    .roll-factor-label {
-                      color: var(--blades-white-bright);
-                    }
-
-                    &.roll-factor-tier {
-                      scale: .5 1;
-                      right: -10px;
-                    }
-
-                    .roll-factor-value {
-                      font-family: var(--font-default);
-                      color: var(--blades-gold-bright);
-                      font-size: 100px;
-                      line-height: 60px;
-                      min-width: 80px;
-                      pointer-events: none;
-                      position: absolute;
-                      right: -25px;
-                      text-align: center;
-                      text-shadow: 0 0 5px var(--blades-black-dark),0 0 5px var(--blades-black-dark),0 0 5px var(--blades-black-dark),0 0 5px var(--blades-black-dark),0 0 2px var(--blades-white-bright),0 0 2px var(--blades-white-bright),0 0 2px var(--blades-white-bright),0 0 2px var(--blades-white-bright),0 0 2px var(--blades-white-bright);
-                      transform-origin: 100% 50%
-                    }
-                  }
-
-                  &:not(.roll-factor-primary) {
-                    order: 2;
-                    .roll-factor-label {
-                      font-size: 16px;
-                    }
-                    .roll-factor-value {
-                      font-family: var(--font-emphasis);
-                      color: var(--blades-gold-bright);
-                      font-size: 16px;
-                    }
-
-                    &.roll-factor-tier .roll-factor-value {
-                      font-size: 22px;
-                      line-height: 16px;
-                      margin-top: -2px;
-                    }
-                  }
-
-                }
-
-              }
-              .roll-factor {
-                gap: 0 5px;
-
-                .roll-factor-label {
-                  color: var(--blades-white);
-                  font-size: toRem(32px);
-                  font-family: var(--font-emphasis);
-                  text-align: right;
-                  text-transform: uppercase;
-                }
-                .roll-factor-value {
-                  // position: relative;
-                  // font-size: toRem(72px);
-                  // color: var(--blades-gold-bright);
-                 }
-              }
-
-              .roll-factor-vs {
-                order: 3;
-
-              }
-            }
-
-
-            section.sheet-top {
-              display: flex;
-              flex-direction: column;
-              height: auto;
-              margin-top: -25px;
-              background: rgba(0, 0, 0, 0.5);
-              height: 20px;
-              position: relative;
-              z-index: -5;
-              left: -100px;
-
-              .roll-sheet-block {
-
-              }
-            }
-
             section.sheet-main {
               flex-grow: 1;
-              background: var(--blades-black-dark);
               z-index: 0;
-              overflow: visible;
+              overflow: hidden;
 
-              .roll-opp-block {
+              &.roll-opp-block {
                 position: relative;
-                top: 100px;
-                .roll-opp-name {
-                  color: var(--opp-name-color, var(--blades-white-bright));
-
-                  &.roll-opp-type-cohort_expert,
-                  &.roll-opp-type-npc {--opp-name-color: var(--blades-gold-bright) }
-                  &.roll-opp-type-faction {--opp-name-color: #bd6dff }
-                  &.roll-opp-type-location {--opp-name-color: #dbe7fd }
-                  &.roll-opp-type-ritual {--opp-name-color: #bd6dff }
-                  &.roll-opp-type-project,
-                  &.roll-opp-type-design { --opp-name-color: #ffdcc0}
-                  &.roll-opp-type-cohort_gang { --opp-name-color: var(--blades-red-bright) }
-                }
-
+                overflow: visible;
               }
 
             }
@@ -1058,6 +935,9 @@
 
               --spread-size: 14px;
               justify-content: flex-end;
+              // position: absolute;
+              bottom: 0;
+              right: 20px;
 
               .factor-control-row {
                 align-items: flex-start;
@@ -1092,7 +972,7 @@
                     --roll-factor-inactive-color: var(--blades-red-bright);
                     --roll-factor-active-color: var(--blades-black-dark);
 
-                    &:not(.toggle-active) ~ * { filter: brightness(0.25) }
+                    // &:not(.toggle-active) ~ * { filter: brightness(0.25) }
                   }
 
                   &.factor-toggle-isPrimary {
@@ -1112,7 +992,10 @@
                   width: calc(var(--spread-size, 30px) * 0.5);
                   border: none;
 
-                  &.toggle-active { background: var(--blades-green-dark) }
+                  &.toggle-active {
+                    background: var(--blades-green-dark);
+                    border: none
+                  }
 
                 }
 
@@ -1134,33 +1017,13 @@
               top: 100%;
               left: 50%;
               width: 100%;
+              position: absolute;
               pointer-events: none;
             }
             &.roll-button {
               position: absolute;
               width: 100%;
               left: 0;
-              // overflow: hidden;
-
-              .odds-gradient-test-html {
-                width: 100%;
-                display: block;
-                min-height: 28px;
-                position: absolute;
-
-                .odds-gradient-box {
-                  min-height: 14px;
-                  margin-top: 14px;
-                  display: inline-block;
-                  box-sizing: border-box;
-                  border: 1px dotted var(--odds-color);
-
-                  &.odds-gradient-fail { --odds-color: #FF0000 }
-                  &.odds-gradient-partial { --odds-color: yellow }
-                  &.odds-gradient-success { --odds-color: cyan }
-                  &.odds-gradient-crit { --odds-color: magenta; margin-right: -30px; }
-                }
-              }
 
               .roll-odds-strip {
                 height: 28px;
@@ -1254,6 +1117,359 @@
           // #747474
         }
 
+        .roll-sheet-sub-block {
+
+          &.roll-effects-block {
+            width: 100%;
+            margin: 0;
+            padding: 0 5px 5px 5px;
+            gap: 5px;
+
+            > .roll-mod-block-spacer {
+              display: inline-flex;
+              flex-grow: 1;
+              flex-shrink: 1;
+              flex-basis: 0px;
+              height: 16px;
+
+              &.last-spacer {
+                display: none;
+                flex-grow: 0;
+                flex-shrink: 0;
+                width: 155px;
+                height: 20px;
+                display: inline-flex;
+                margin-left: auto;
+              }
+            }
+
+            > .roll-mod-container {
+              flex-grow: 0;
+              flex-shrink: 0;
+            }
+
+            &.inactive-mod-block {
+              position: absolute;
+              width: auto;
+              max-width: 175px;
+              margin: 0;
+              // left: calc(-50% - 3px);
+              right: calc(100% + 3px);
+              background: rgb(24, 24, 24);
+              top: 0px;
+              padding: 2px 0 2px 5px;
+              outline: 1px solid var(--blades-white);
+              gap: 0;
+
+              .roll-mod-container {
+                display: inline-flex;
+                flex-direction: row;
+                align-items: center;
+                background: transparent;
+                box-shadow: none;
+                height: 12px;
+                margin: 0;
+                padding: 0;
+                justify-content:flex-start;
+
+                &.roll-mod-ability {
+                  --roll-mod-text-color: var(--blades-grey-bright);
+                  --roll-mod-bullet-color: var(--blades-white-bright);
+                  --roll-mod-hover-text-color: var(--blades-gold);
+                  --roll-mod-hover-bg-color: var(--blades-grey);
+                  --roll-mod-bullet-symbol: "♦";
+                }
+
+                &.status-forcedoff {
+                  --roll-mod-text-color: var(--blades-grey);
+                  --roll-mod-bullet-color: var(--blades-grey);
+                  --roll-mod-bullet-symbol: " ";
+                }
+
+                &.status-hidden {
+                  --roll-mod-bullet-color: var(--blades-red-bright);
+                  --roll-mod-text-color: var(--blades-red-bright);
+                  --roll-mod-bullet-symbol: "◊";
+                }
+
+                .roll-mod {
+                  margin: 0;
+                  padding: 0;
+                  border: none;
+                  background: transparent;
+                  margin-right: 7px;
+                  white-space: nowrap;
+                  font-size: 10px;
+                  height: 12px;
+                  line-height: 12px;
+
+                  --roll-mod-contrast: var(--roll-mod-text-color, var(--blades-grey-bright));
+
+                  &::before {
+                    content: var(--roll-mod-bullet-symbol, "●");
+                    color: var(--roll-mod-bullet-color, var(--blades-white-bright));
+                    padding-right: 3px;
+                    vertical-align: top;
+                    line-height: 10px;
+                    font-size: 10px;
+                  }
+
+                  .roll-mod-text {
+                    text-shadow: none;
+                    // color: var(--blades-white);
+                    line-height: 12px;
+                  }
+
+                  &:hover:not(.status-forcedoff) {
+                    color: var(--roll-mod-hover-text-color, var(--blades-gold));
+                    background: var(--roll-mod-hover-bg-color, var(--blades-grey));
+                    // outline: 2px solid var(--roll-mod-hover-bg-color, var(--blades-grey));
+                  }
+
+                }
+              }
+
+
+
+            }
+          }
+
+          .roll-mod-container {
+            margin-right: 3px;
+            position: relative;
+            border-radius: 7px;
+            background: var(--roll-mod-medium, var(--blades-grey-dark));
+            box-shadow:
+              var(--roll-mod-shadow-top),
+              var(--roll-mod-shadow-bottom);
+            line-height: 14px;
+
+            &.roll-mod-ability {
+              border-radius: 0;
+              .roll-mod {
+                margin-top: -2px !important;
+                .roll-mod-text {
+                  font-family: Oswald;
+                }
+              }
+            }
+
+            &.posneg-positive, &.posneg-positive .roll-mod-side-string {
+              --roll-mod-active-bright: var(--blades-gold-bright);
+              --roll-mod-active-dark: var(--blades-gold-dark);
+            }
+            &.posneg-negative, &.posneg-negative .roll-mod-side-string {
+              --roll-mod-active-bright: var(--blades-red-bright);
+              --roll-mod-active-dark: var(--blades-red-dark);
+            }
+
+            &.status-hidden {
+              --roll-mod-bright: var(--blades-grey-dark);
+              --roll-mod-contrast: var(--blades-grey-dark);
+              --roll-mod-medium: transparent;
+              --roll-mod-dark: var(--blades-black-dark-fade);
+
+              --roll-mod-shadow-top: none;
+              --roll-mod-shadow-bottom: none;
+
+              .roll-mod {
+                margin-top: 0;
+                &.roll-mod-sidestring {
+                  ~ .roll-mod-side-string {
+                    color: var(--roll-mod-bright);
+                    background: var(--roll-mod-dark);
+                    margin-top: -2px;
+                  }
+                }
+                .roll-mod-text {
+                  color: var(--roll-mod-contrast);
+                }
+              }
+            }
+
+            &.status-forcedoff {
+              --roll-mod-bright: var(--blades-grey);
+              --roll-mod-contrast: var(--blades-grey);
+              --roll-mod-medium: var(--blades-black-dark);
+              --roll-mod-dark: var(--blades-grey-dark);
+
+              --roll-mod-shadow-top: 1px 1px 1px var(--roll-mod-dark);
+              --roll-mod-shadow-bottom: -1px -1px 0px var(--roll-mod-bright);
+
+              .roll-mod {
+                margin-top: 2px;
+                &.roll-mod-sidestring {
+                  ~ .roll-mod-side-string {
+                    color: var(--roll-mod-bright);
+                    background: var(--roll-mod-medium);
+                  }
+                }
+                // line-height: 14px;
+                .roll-mod-text {
+                  color: var(--roll-mod-contrast);
+                }
+              }
+            }
+            &.status-toggledoff {
+              --roll-mod-bright: var(--blades-white);
+              --roll-mod-contrast: var(--blades-black);
+              --roll-mod-medium: var(--blades-grey-dark);
+              --roll-mod-dark: var(--blades-black-dark);
+
+              --roll-mod-shadow-top: -1px -1px 0px var(--roll-mod-bright);
+              --roll-mod-shadow-bottom: 1px 1px 1px var(--roll-mod-dark);
+
+              &:hover { filter: brightness(1.5) }
+              .roll-mod {
+                &.roll-mod-sidestring {
+                  ~ .roll-mod-side-string {
+                    color: var(--roll-mod-contrast);
+                    background: transparent;
+                    text-shadow: none;
+                  }
+                }
+                // line-height: 14px;
+                .roll-mod-text {
+                  color: var(--roll-mod-contrast);
+                  line-height: 16px;
+                  text-shadow:
+                    0.5px 0.5px 0px var(--blades-grey),
+                    -0.25px -0.25px 0px var(--blades-black-dark);
+
+                }
+              }
+            }
+            &.status-toggledon {
+              --roll-mod-bright: var(--roll-mod-active-bright);
+              --roll-mod-contrast: var(--blades-white-bright);
+              --roll-mod-medium: var(--roll-mod-active-dark);
+              --roll-mod-dark: var(--blades-black-dark);
+
+              --roll-mod-shadow-top: -1px -1px 1px var(--roll-mod-dark);
+              --roll-mod-shadow-bottom: 1px 1px 0px var(--roll-mod-bright);
+
+              &.roll-mod-harm {
+                --roll-mod-contrast: var(--blades-white-bright);
+                --roll-mod-medium: var(--blades-red);
+              }
+
+              line-height: 16px;
+
+              &:hover { filter: brightness(0.75) }
+              .roll-mod {
+                &.roll-mod-sidestring {
+                  ~ .roll-mod-side-string {
+                    color: var(--roll-mod-contrast);
+                    background: var(--roll-mod-medium);
+                    line-height: 14px;
+                  }
+                }
+                .roll-mod-text {
+                  color: var(--roll-mod-contrast);
+                }
+              }
+
+
+            }
+            &.status-forcedon {
+              --roll-mod-bright: var(--roll-mod-active-bright);
+              --roll-mod-contrast: var(--roll-mod-active-bright);
+              --roll-mod-medium: var(--blades-black-dark);
+              --roll-mod-dark: var(--roll-mod-active-dark);
+
+              --roll-mod-shadow-top: -1px -1px 0px var(--roll-mod-bright);
+              --roll-mod-shadow-bottom: 1px 1px 1px var(--roll-mod-dark);
+
+              .roll-mod {
+                margin-top: 2px;
+                &.roll-mod-sidestring {
+                  ~ .roll-mod-side-string {
+                    color: var(--roll-mod-contrast);
+                    background: var(--roll-mod-medium);
+                  }
+                }
+                // line-height: 14px;
+                .roll-mod-text {
+                  color: var(--roll-mod-contrast);
+                }
+              }
+
+            }
+            .roll-mod {
+              display: inline-block;
+              height: 14px;
+              // line-height: 16px;
+              padding: 0 7px;
+              // margin: 2px 4px;
+              // border: 1px solid var(--roll-mod-border-color, var(--blades-white));
+              color: var(--roll-mod-contrast, var(--blades-white-bright));
+              font-family: var(--font-emphasis);
+              text-transform: uppercase;
+              font-size: 12px;
+              margin-top: -1px;
+              text-shadow:
+                0 0 2px var(--blades-black-dark),
+                0 0 2px var(--blades-black-dark),
+                0 0 2px var(--blades-black-dark),
+                0 0 2px var(--blades-black-dark);
+              letter-spacing: 0.75px;
+              vertical-align: middle;
+              transition: 0.25s;
+
+              .roll-mod-text {
+                display: inline-block;
+                max-height: 100%;
+              }
+
+
+              &.roll-mod-harm:not(.roll-mod-sidestring) {
+                font-family: Oswald;
+                font-size: 12px;
+                // line-height: 14px;
+                text-shadow: none;
+                // color: var(--blades-black-dark);
+                // background: var(--blades-red-bright);
+                letter-spacing: normal;
+                font-weight: bold;
+              }
+
+              &.roll-mod-sidestring, &.roll-mod-teamwork {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                margin-right: 0;
+                display: inline-block;
+
+                ~ .roll-mod-side-string {
+                  margin: 0 0 0 -8px;
+                  padding: 0px 6px 0px 2px;
+                  font-family: Oswald;
+                  position: relative;
+                  // color: var(--roll-mod-medium);
+                  // background: var(--roll-mod-dark, var(--blades-black-dark));
+                  // text-shadow: none;
+                  border: none;
+                  border-top-right-radius: 8px;
+                  border-bottom-right-radius: 8px;
+                  border-top-left-radius: 0px;
+                  border-bottom-left-radius: 0px;
+                  font-size: 12px;
+                  text-transform: uppercase;
+                  display: inline-block;
+                  height: 14px;
+                  // line-height: 14px;
+                  font-weight: bold;
+                  min-width: 25px;
+                  vertical-align: middle;
+                }
+              }
+              // &.status-hidden { display: none }
+
+            }
+
+
+
+          }
+        }
 
         .roll-num-container {
           height: var(--spread-size, 30px);

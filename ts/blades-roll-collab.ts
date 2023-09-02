@@ -91,7 +91,7 @@ const DescriptionChanges: Record<string, string> = {
   "Reavers": "<p><em>If your vehicle already has armor, this ability gives an additional armor box.</em></p>",
   "Renegades": "<p><em>Each player may choose the action they prefer (you don't all have to choose the same one).</em></p><p><em>If you take this ability during initial character and crew creation, it supersedes the normal starting limit for action ratings.</em></p>"
 };
-const RollCollabEffectChanges: Partial<Record<BladesItemType.ability|BladesItemType.crew_ability|BladesItemType.crew_upgrade,Record<string,Array<EffectData & {isMember?: boolean, isCohort?: boolean}>>>> = {
+const RollCollabEffectChanges: Partial<Record<BladesItemType.ability | BladesItemType.crew_ability | BladesItemType.crew_upgrade, Record<string, Array<EffectData & { isMember?: boolean, isCohort?: boolean }>>>> = {
   [BladesItemType.ability]: {
     "Battleborn": [
       {
@@ -1171,7 +1171,7 @@ function isFactor(trait: unknown): trait is BladesRollCollab.RollTrait & Factor 
 function isNumber(trait: string | number): trait is BladesRollCollab.RollTrait & number { return U.isInt(trait) }
 // #endregion
 
-// #region *** CLASS *** BladesRollMod
+// #region *** CLASS *** BladesRollMod ~
 export class BladesRollMod {
 
   get status() {
@@ -1188,9 +1188,8 @@ export class BladesRollMod {
   get isVisible() { return this.status !== RollModStatus.Hidden }
 
   _held_status?: RollModStatus;
-  get held_status(): RollModStatus|undefined { return this._held_status }
-  set held_status(val: RollModStatus|undefined) {
-    console.log(`Setting HELD STATUS of ${this.id} to '${val}'`);
+  get held_status(): RollModStatus | undefined { return this._held_status }
+  set held_status(val: RollModStatus | undefined) {
     this._held_status = val;
   }
 
@@ -1199,7 +1198,7 @@ export class BladesRollMod {
 
   get user_status(): RollModStatus | undefined {
     return this.rollInstance.document.getFlag(...this.flagParams) as
-      ValueOf<BladesRollCollab.FlagData["rollModsData"]>|undefined;
+      ValueOf<BladesRollCollab.FlagData["rollModsData"]> | undefined;
   }
   set user_status(val: RollModStatus | undefined) {
     if (val === this.user_status) { return }
@@ -1225,7 +1224,7 @@ export class BladesRollMod {
 
   get stressCost(): number {
     const costKeys = this.effectKeys.filter((key) => /^Cost-Stress/.test(key));
-    if (costKeys.length === 0) { return 0}
+    if (costKeys.length === 0) { return 0 }
     let stressCost = 0;
     costKeys.forEach((key) => {
       const [thisParam] = (key.split(/-/) ?? []).slice(1);
@@ -1432,10 +1431,10 @@ export class BladesRollMod {
         }
         case "Increase": {
           const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)([0-9]*)/) ?? []).slice(1);
-          this.rollInstance.tempGMBoosts[traitStr as "Dice"|Factor|"Result"] = U.pInt(valStr);
+          this.rollInstance.tempGMBoosts[traitStr as "Dice" | Factor | "Result"] = U.pInt(valStr);
           return;
         }
-          // no default
+        // no default
       }
     });
   }
@@ -1455,7 +1454,7 @@ export class BladesRollMod {
     switch (this.category) {
       case RollModCategory.roll: {
         if (this.name === "Assist") {
-          const docID = this.rollInstance.document.getFlag("eunos-blades", "rollCollab.docSelections.roll.Assist") as string|false|undefined;
+          const docID = this.rollInstance.document.getFlag("eunos-blades", "rollCollab.docSelections.roll.Assist") as string | false | undefined;
           if (!docID) { return undefined }
           return (game.actors.get(docID) ?? game.items.get(docID) ?? {}).name ?? undefined;
         }
@@ -1463,7 +1462,7 @@ export class BladesRollMod {
       }
       case RollModCategory.position: {
         if (this.name === "Setup") {
-          const docID = this.rollInstance.document.getFlag("eunos-blades", "rollCollab.docSelections.position.Setup") as string|false|undefined;
+          const docID = this.rollInstance.document.getFlag("eunos-blades", "rollCollab.docSelections.position.Setup") as string | false | undefined;
           if (!docID) { return undefined }
           return (game.actors.get(docID) ?? game.items.get(docID) ?? {}).name ?? undefined;
         }
@@ -1471,7 +1470,7 @@ export class BladesRollMod {
       }
       case RollModCategory.effect: {
         if (this.name === "Setup") {
-          const docID = this.rollInstance.document.getFlag("eunos-blades", "rollCollab.docSelections.effect.Setup") as string|false|undefined;
+          const docID = this.rollInstance.document.getFlag("eunos-blades", "rollCollab.docSelections.effect.Setup") as string | false | undefined;
           if (!docID) { return undefined }
           return (game.actors.get(docID) ?? game.items.get(docID) ?? {}).name ?? undefined;
         }
@@ -1507,7 +1506,7 @@ export class BladesRollMod {
     };
   }
 
-  get costs(): BladesRollCollab.CostData[]|undefined {
+  get costs(): BladesRollCollab.CostData[] | undefined {
     if (!this.isActive) { return undefined }
     const holdKeys = this.effectKeys.filter((key) => /^Cost/.test(key));
     if (holdKeys.length === 0) { return undefined }
@@ -1573,7 +1572,7 @@ class BladesRollCollab extends DocumentSheet {
   // #region STATIC METHODS: INITIALIZATION & DEFAULTS ~
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["eunos-blades", "sheet", "roll-collab"],
+      classes: ["eunos-blades", "sheet", "roll-collab", game.user.isGM ? "gm-roll-collab" : ""],
       template: `systems/eunos-blades/templates/roll/roll-collab${game.user.isGM ? "-gm" : ""}.hbs`,
       submitOnChange: true,
       width: 500,
@@ -1761,7 +1760,7 @@ class BladesRollCollab extends DocumentSheet {
         source: {
           [Factor.tier]: {
             display: "",
-            isActive: true,
+            isActive: false,
             isPrimary: false,
             isDominant: false,
             highFavorsPC: true
@@ -1792,7 +1791,7 @@ class BladesRollCollab extends DocumentSheet {
           [Factor.tier]: {
             display: "",
             isActive: false,
-            isPrimary: true,
+            isPrimary: false,
             isDominant: false,
             highFavorsPC: true
           },
@@ -1840,17 +1839,6 @@ class BladesRollCollab extends DocumentSheet {
   }
 
   static async NewRoll(config: BladesRollCollab.Config) {
-    // All flags initialized on user must be set here, or everyone triggered by socket will run updates
-    // if (game.user.isGM) { eLog.error("rollCollab", "GM Cannot Use New Roll!"); return }
-
-    // let user: User|undefined;
-    // if (config.userID) {
-    //   user = game.users.get(config.userID);
-    //   if (!(user instanceof User)) { throw new Error(`[BladesRollCollab.NewRoll] Bad UserID: '${config.userID}'`) }
-    // } else if (game.user.isGM) {
-    //   user =
-    //   if (config.RollSource && config.rollSource)
-    // }
     if (game.user.isGM && BladesActor.IsType(config.rollSource, BladesActorType.pc) && config.rollSource.primaryUser) {
       config.userID = config.rollSource.primaryUser.id!;
     }
@@ -1931,6 +1919,7 @@ class BladesRollCollab extends DocumentSheet {
   }
   // #endregion
 
+  // #region Basic User Flag Getters/Setters ~
   get rData(): BladesRollCollab.FlagData {
     if (!this.document.getFlag(C.SYSTEM_ID, "rollCollab")) {
       throw new Error("[get flags()] No RollCollab Flags Found on User");
@@ -1949,10 +1938,10 @@ class BladesRollCollab extends DocumentSheet {
     return this._rollSource;
   }
 
-  get rollOppositionID(): string|undefined {
+  get rollOppositionID(): string | undefined {
     return this.rData.rollOppositionID;
   }
-  set rollOppositionID(val: string|undefined) {
+  set rollOppositionID(val: string | undefined) {
     this._rollOpposition = undefined;
     this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollOppositionID", val);
   }
@@ -1960,20 +1949,18 @@ class BladesRollCollab extends DocumentSheet {
   _rollOpposition?: BladesRollCollab.OppositionDoc;
   get rollOpposition(): BladesRollCollab.OppositionDoc | undefined {
     if (!this._rollOpposition && this.rData.rollOppositionID) {
-      this._rollOpposition = (BladesActor.Get(this.rData.rollOppositionID) ?? BladesItem.Get(this.rData.rollOppositionID)) as BladesRollCollab.OppositionDoc|undefined;
+      this._rollOpposition = (BladesActor.Get(this.rData.rollOppositionID) ?? BladesItem.Get(this.rData.rollOppositionID)) as BladesRollCollab.OppositionDoc | undefined;
       if (!this._rollOpposition) { throw new Error(`Cannot find Roll Opposition with ID '${this.rData.rollOppositionID}'`) }
     }
     return this._rollOpposition;
   }
 
-  // get rollFactors():
-
   get rollType(): RollType { return this.rData.rollType }
   get rollTrait(): BladesRollCollab.RollTrait { return this.rData.rollTrait }
 
   _rollTraitValOverride?: number;
-  get rollTraitValOverride(): number|undefined { return this._rollTraitValOverride }
-  set rollTraitValOverride(val: number|undefined) { this._rollTraitValOverride = val }
+  get rollTraitValOverride(): number | undefined { return this._rollTraitValOverride }
+  set rollTraitValOverride(val: number | undefined) { this._rollTraitValOverride = val }
   get rollTraitData(): NamedValueMax {
     if (BladesActor.IsType(this.rollSource, BladesActorType.pc)) {
       if (isAction(this.rollTrait)) {
@@ -2007,7 +1994,7 @@ class BladesRollCollab extends DocumentSheet {
     }
     throw new Error(`[get rollTraitData] Invalid rollTrait: '${this.rollTrait}'`);
   }
-  get rollTraitOptions(): Array<{name: string, value: BladesRollCollab.RollTrait}> {
+  get rollTraitOptions(): Array<{ name: string, value: BladesRollCollab.RollTrait }> {
     if (BladesActor.IsType(this.rollSource, BladesActorType.pc)) {
       if (isAction(this.rollTrait)) {
         return Object.values(Action)
@@ -2037,7 +2024,7 @@ class BladesRollCollab extends DocumentSheet {
     throw new Error(`[get rollTraitOptions] Invalid rollTrait: '${this.rollTrait}'`);
   }
 
-  get posEffectTrade(): "position"|"effect"|false {
+  get posEffectTrade(): "position" | "effect" | false {
     return this.rData?.rollPosEffectTrade ?? false;
   }
   get initialPosition(): Position {
@@ -2052,13 +2039,19 @@ class BladesRollCollab extends DocumentSheet {
   set initialEffect(val: Effect) {
     this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollEffectInitial", val);
   }
+  get rollConsequence(): BladesRollCollab.ConsequenceData | undefined {
+    return this.rData?.rollConsequence;
+  }
+  // #endregion
+
+  // #region GETTERS: DERIVED DATA ~
   get finalPosition(): Position {
     return Object.values(Position)[U.clampNum(
       Object.values(Position)
         .indexOf(this.initialPosition)
-        + this.getModsDelta(RollModCategory.position)
-        + (this.posEffectTrade === "position" ? 1 : 0)
-        + (this.posEffectTrade === "effect" ? -1 : 0),
+      + this.getModsDelta(RollModCategory.position)
+      + (this.posEffectTrade === "position" ? 1 : 0)
+      + (this.posEffectTrade === "effect" ? -1 : 0),
       [0, 2]
     )];
   }
@@ -2083,11 +2076,8 @@ class BladesRollCollab extends DocumentSheet {
       + (this.rData.GMBoosts.Dice ?? 0)
       + (this.tempGMBoosts.Dice ?? 0));
   }
-  get rollConsequence(): BladesRollCollab.ConsequenceData|undefined {
-    return this.rData.rollConsequence;
-  }
-  get rollFactors(): Record<"source"|"opposition", Partial<Record<Factor,BladesRollCollab.FactorData>>> {
-    const sourceFactors: Partial<Record<Factor,BladesRollCollab.FactorData>> = Object.fromEntries((Object.entries(this.rollSource.rollFactors) as Array<[Factor, BladesRollCollab.FactorData]>)
+  get rollFactors(): Record<"source" | "opposition", Partial<Record<Factor, BladesRollCollab.FactorData>>> {
+    const sourceFactors: Partial<Record<Factor, BladesRollCollab.FactorData>> = Object.fromEntries((Object.entries(this.rollSource.rollFactors) as Array<[Factor, BladesRollCollab.FactorData]>)
       .map(([factor, factorData]) => [
         factor,
         {
@@ -2124,7 +2114,7 @@ class BladesRollCollab extends DocumentSheet {
 
     // if (!this.rollOpposition) { return {source: sourceFactors, opposition: sourceFactors} }
 
-    const rollOppFactors = ((this.rollOpposition as any)?.rollFactors as Record<Factor,BladesRollCollab.FactorData>|undefined)
+    const rollOppFactors = ((this.rollOpposition as any)?.rollFactors as Record<Factor, BladesRollCollab.FactorData> | undefined)
       ?? Object.fromEntries(([
         Factor.tier,
         Factor.quality,
@@ -2144,7 +2134,7 @@ class BladesRollCollab extends DocumentSheet {
           highFavorsPC: true
         } as BladesRollCollab.FactorData
       ])) as Record<Factor, BladesRollCollab.FactorData>;
-    const oppFactors: Partial<Record<Factor,BladesRollCollab.FactorData>> = {};
+    const oppFactors: Partial<Record<Factor, BladesRollCollab.FactorData>> = {};
 
 
     (Object.entries(rollOppFactors) as Array<[Factor, BladesRollCollab.FactorData]>)
@@ -2184,6 +2174,8 @@ class BladesRollCollab extends DocumentSheet {
       opposition: oppFactors
     };
   }
+  // #endregion
+
   // #region ROLL MODS: Getters & Update Method ~
 
   initRollMods(modsData: BladesRollCollab.RollModData[]) {
@@ -2193,34 +2185,32 @@ class BladesRollCollab extends DocumentSheet {
     this.tempGMBoosts = {};
 
     this.rollMods = modsData.map((modData) => new BladesRollMod(modData, this));
-    console.log("HIDDEN AT INITIALIZATION:");
-    console.log(this.rollMods.filter((mod) => mod._held_status === RollModStatus.Hidden));
 
     /* *** PASS ONE: DISABLE PASS *** */
     let checkDisableMods = [...this.rollMods];
-    eLog.checkLog3("rollMod", "[INITIAL] INITIAL ROLL MODS", {rollMods: [...checkDisableMods]});
+    // eLog.checkLog3("rollMod", "[INITIAL] INITIAL ROLL MODS", {rollMods: [...checkDisableMods]});
 
     // ... Conditional Status Pass
     checkDisableMods = checkDisableMods
       .filter((rollMod) => !rollMod.setConditionalStatus());
-    eLog.checkLog3("rollMod", "[PASS ONE] Conditional Status Pass", {rollMods: [...checkDisableMods]});
+    // eLog.checkLog3("rollMod", "[PASS ONE] Conditional Status Pass", {rollMods: [...checkDisableMods]});
 
     // ... AutoReveal/AutoEnable Pass
     checkDisableMods = checkDisableMods
       .filter((rollMod) => !rollMod.setAutoStatus());
-    eLog.checkLog3("rollMod", "[PASS ONE] Auto Status Pass", {rollMods: [...checkDisableMods]});
+    // eLog.checkLog3("rollMod", "[PASS ONE] Auto Status Pass", {rollMods: [...checkDisableMods]});
 
     // ... Payable Pass
     checkDisableMods = checkDisableMods
       .filter((rollMod) => !rollMod.setPayableStatus());
-    eLog.checkLog3("rollMod", "[PASS ONE] Payable Status Pass", {rollMods: [...checkDisableMods]});
+    // eLog.checkLog3("rollMod", "[PASS ONE] Payable Status Pass", {rollMods: [...checkDisableMods]});
 
     /* *** PASS TWO: FORCE-ON PASS *** */
-    const isPushForced: Partial<Record<RollModCategory,string|false>> = {
+    const isPushForced: Partial<Record<RollModCategory, string | false>> = {
       [RollModCategory.roll]: false,
       [RollModCategory.effect]: false
     };
-    eLog.checkLog3("rollMod", "[PASS TWO] INITIAL _ACTIVE_ ROLL MODS", {rollMods: this.getActiveRollMods()});
+    // eLog.checkLog3("rollMod", "[PASS TWO] INITIAL _ACTIVE_ ROLL MODS", {rollMods: this.getActiveRollMods()});
     const parseForceOnKeys = (mod: BladesRollMod) => {
       const holdKeys = mod.effectKeys.filter((key) => /^ForceOn/.test(key));
       if (holdKeys.length === 0) { return }
@@ -2233,7 +2223,7 @@ class BladesRollCollab extends DocumentSheet {
           }
           continue;
         }
-        const [targetName, targetCat, targetPosNeg] = thisTarget.split(/,/)! as [string,RollModCategory|undefined, "positive"|"negative"|undefined];
+        const [targetName, targetCat, targetPosNeg] = thisTarget.split(/,/)! as [string, RollModCategory | undefined, "positive" | "negative" | undefined];
         const targetMod = this.getRollModByName(targetName)
           ?? this.getRollModByName(targetName, targetCat ?? mod.category)
           ?? this.getRollModByName(targetName, targetCat ?? mod.category, targetPosNeg ?? mod.posNeg);
@@ -2251,7 +2241,7 @@ class BladesRollCollab extends DocumentSheet {
     };
 
     this.getActiveRollMods().forEach((rollMod) => parseForceOnKeys(rollMod));
-    eLog.checkLog3("rollMod", "[PASS TWO] Force-On Pass", {rollMods: this.getActiveRollMods()});
+    // eLog.checkLog3("rollMod", "[PASS TWO] Force-On Pass", {rollMods: this.getActiveRollMods()});
 
     /* *** PASS THREE: FORCE-OFF PASS *** */
 
@@ -2271,7 +2261,7 @@ class BladesRollCollab extends DocumentSheet {
             }
           });
       });
-    eLog.checkLog3("rollMod", "[PASS THREE] Force-Off PUSH Pass", {rollMods: this.getActiveRollMods()});
+    // eLog.checkLog3("rollMod", "[PASS THREE] Force-Off PUSH Pass", {rollMods: this.getActiveRollMods()});
 
     // ... ForceOff OTHER 'Is-Push' mods IF a mod is already forcing Push
     if (isPushForced[RollModCategory.roll]) {
@@ -2292,7 +2282,7 @@ class BladesRollCollab extends DocumentSheet {
         bargainMod.held_status = RollModStatus.ForcedOff;
       }
     }
-    eLog.checkLog3("rollMod", "[PASS THREE] Force-Off BARGAIN Pass", {rollMods: this.getActiveRollMods()});
+    // eLog.checkLog3("rollMod", "[PASS THREE] Force-Off BARGAIN Pass", {rollMods: this.getActiveRollMods()});
 
     // ... ForceOff-Other Check
     this.getActiveRollMods()
@@ -2302,7 +2292,7 @@ class BladesRollCollab extends DocumentSheet {
         if (holdKeys.length === 0) { return }
         while (holdKeys.length) {
           const thisTarget = holdKeys.pop()!.split(/-/)!.pop()!;
-          const [targetName, targetCat, targetPosNeg] = thisTarget.split(/,/)! as [string,RollModCategory|undefined, "positive"|"negative"|undefined];
+          const [targetName, targetCat, targetPosNeg] = thisTarget.split(/,/)! as [string, RollModCategory | undefined, "positive" | "negative" | undefined];
           const targetMod = this.getRollModByName(targetName)
             ?? this.getRollModByName(targetName, targetCat ?? rollMod.category)
             ?? this.getRollModByName(targetName, targetCat ?? rollMod.category, targetPosNeg ?? rollMod.posNeg);
@@ -2314,14 +2304,14 @@ class BladesRollCollab extends DocumentSheet {
     /* *** PASS FOUR: Relevancy Pass *** */
     checkDisableMods = checkDisableMods
       .filter((rollMod) => !rollMod.setRelevancyStatus());
-    eLog.checkLog3("rollMod", "[PASS FOUR] Relevancy Status Pass", {rollMods: [...checkDisableMods]});
+    // eLog.checkLog3("rollMod", "[PASS FOUR] Relevancy Status Pass", {rollMods: [...checkDisableMods]});
 
     /* *** PASS FIVE: Overpayment Pass *** */
     // ... If 'Cost-SpecialArmor' active, ForceOff other visible Cost-SpecialArmor mods
     const specialArmorMods = this.getVisibleRollMods().filter((mod) => mod.effectKeys.includes("Cost-SpecialArmor"))
       .sort((modA, modB) => {
         return Object.values(RollModStatus).findIndex((status) => status === modA.status)
-        - Object.values(RollModStatus).findIndex((status) => status === modB.status);
+          - Object.values(RollModStatus).findIndex((status) => status === modB.status);
       });
     if (specialArmorMods.length && specialArmorMods.shift()!.isActive) {
       specialArmorMods.forEach((rollMod) => { rollMod.held_status = RollModStatus.ForcedOff });
@@ -2336,12 +2326,12 @@ class BladesRollCollab extends DocumentSheet {
     return false;
   }
 
-  rollFactorPenaltiesNegated: Partial<Record<Factor,boolean>> = {};
+  rollFactorPenaltiesNegated: Partial<Record<Factor, boolean>> = {};
   negateFactorPenalty(factor: Factor) {
     this.rollFactorPenaltiesNegated[factor] = true;
   }
 
-  tempGMBoosts: Partial<Record<"Dice"|Factor|"Result",number>> = {};
+  tempGMBoosts: Partial<Record<"Dice" | Factor | "Result", number>> = {};
 
   get isRollPushed(): boolean {
     return (this.getRollModByID("Push-negative-roll")?.isActive || this.getRollModByID("Push-positive-roll")?.isActive || this.getRollModByID("Push-positive-effect")?.isActive) ?? false;
@@ -2359,13 +2349,13 @@ class BladesRollCollab extends DocumentSheet {
       - (negatePushCostMods.length * 2);
   }
 
-  get rollCostData(): Array<{id: string, label: string, costType: string, costAmount: number}> {
+  get rollCostData(): Array<{ id: string, label: string, costType: string, costAmount: number }> {
     return this.getActiveRollMods()
       .map((rollMod) => rollMod.costs ?? [])
       .flat();
   }
 
-  getRollModByName(name: string, cat?: RollModCategory, posNeg?: "positive"|"negative"): BladesRollMod|undefined {
+  getRollModByName(name: string, cat?: RollModCategory, posNeg?: "positive" | "negative"): BladesRollMod | undefined {
     const modMatches = this.rollMods.filter((rollMod) => rollMod.name === name
       && (!cat || rollMod.category === cat)
       && (!posNeg || rollMod.posNeg === posNeg));
@@ -2414,7 +2404,7 @@ class BladesRollCollab extends DocumentSheet {
 
   // #endregion
 
-  // #region *** GETDATA ***
+  // #region *** GETDATA *** ~
 
   override async getData() {
 
@@ -2476,7 +2466,7 @@ class BladesRollCollab extends DocumentSheet {
         || this.getVisibleRollMods(RollModCategory.result).length > 0
         || (isGM && this.getRollMods(RollModCategory.result).length > 0),
       isAffectingAfter: this.getVisibleRollMods(RollModCategory.after).length > 0
-      || (isGM && this.getRollMods(RollModCategory.after).length > 0),
+        || (isGM && this.getRollMods(RollModCategory.after).length > 0),
 
       rollFactorPenaltiesNegated: this.rollFactorPenaltiesNegated,
 
@@ -2647,7 +2637,7 @@ class BladesRollCollab extends DocumentSheet {
       "</div>"
     ].join("");
 
-    eLog.checkLog2("rollCollab", "ROLL COLLAB GETDATA", {context, sheetData, user: this.document, userFlags: this.document.getFlag(C.SYSTEM_ID, "rollCollab"), rollMods: this.rollMods} );
+    eLog.checkLog2("rollCollab", "ROLL COLLAB GETDATA", {context, sheetData, user: this.document, userFlags: this.document.getFlag(C.SYSTEM_ID, "rollCollab"), rollMods: this.rollMods});
 
     return {
       ...context,
@@ -2656,6 +2646,7 @@ class BladesRollCollab extends DocumentSheet {
   }
   // #endregion
 
+  // #region LISTENER FUNCTIONS ~
   async _toggleRollModClick(event: ClickEvent) {
     event.preventDefault();
     const elem$ = $(event.currentTarget);
@@ -2737,7 +2728,6 @@ class BladesRollCollab extends DocumentSheet {
     this.initialPosition = position;
   }
 
-
   async _gmControlSetEffect(event: ClickEvent) {
     event.preventDefault();
     if (!game.user.isGM) { return }
@@ -2752,7 +2742,25 @@ class BladesRollCollab extends DocumentSheet {
     const elem$ = $(event.currentTarget);
     const target = elem$.data("target");
     const value = !elem$.data("value");
-    this.document.setFlag(C.SYSTEM_ID, `rollCollab.${target}`, value);
+
+    eLog.checkLog3("toggleFactor", "_gmControlToggleFactor", {event, target, value});
+
+    if (value && /isPrimary/.test(target)) {
+      const [_, thisSource, thisFactor] = target.match(/([^.]+)\.([^.]+)\.isPrimary/) as [unknown, "source" | "opposition", Factor];
+      eLog.checkLog3("toggleFactor", "_gmControlToggleFactor - IN", {thisSource, thisFactor});
+      await Promise.all(Object.values(Factor).map((factor) => {
+        if (factor === thisFactor) {
+          eLog.checkLog3("toggleFactor", `_gmControlToggleFactor - Checking ${factor} === ${thisFactor} === TRUE`, {factor, thisFactor, target, customTarget: `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary`});
+          return this.document.setFlag(C.SYSTEM_ID, `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary`, true);
+        } else {
+          eLog.checkLog3("toggleFactor", `_gmControlToggleFactor - Checking ${factor} === ${thisFactor} === FALSE`, {factor, thisFactor, target, customTarget: `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary`});
+          return this.document.setFlag(C.SYSTEM_ID, `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary`, false);
+        }
+      }));
+      eLog.checkLog3("toggleFactor", "_gmControlToggleFactor - ALL DONE", {flags: this.document.getFlag(C.SYSTEM_ID, "rollCollab.rollFactorToggles")});
+    } else {
+      this.document.setFlag(C.SYSTEM_ID, `rollCollab.${target}`, value);
+    }
   }
 
   async _gmControlResetFactor(event: ClickEvent) {
@@ -2762,22 +2770,8 @@ class BladesRollCollab extends DocumentSheet {
     const target = elem$.data("target");
     this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.${target}`);
   }
-
-  override _canDragDrop(selector: string) {
-    eLog.checkLog3("canDragDrop", "Can DragDrop Selector", {selector});
-    return game.user.isGM;
-  }
-
-  override _onDrop(event: DragEvent) {
-    const data = TextEditor.getDragEventData(event) as {type: "Actor"|"Item", uuid: string};
-    const {type, uuid} = data;
-    const [id] = (uuid.match(new RegExp(`${type}\\.(.+)`)) ?? []).slice(1);
-    const oppDoc = game[`${U.lCase(type)}s`].get(id);
-    this.rollOppositionID = oppDoc?.id;
-    // super._onDrop(...args);
-    eLog.checkLog3("dropEvent", "Drop Event", {event, data, oppDoc});
-  }
-
+  // #endregion
+  // #region ACTIVATE LISTENERS ~
   override activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
     ApplyTooltipListeners(html);
@@ -2832,6 +2826,23 @@ class BladesRollCollab extends DocumentSheet {
       contextmenu: this._gmControlResetFactor.bind(this)
     });
   }
+  // #endregion
+
+  // #region OVERRIDES: _canDragDrop, _onDrop, _onSubmit, close, render ~
+  override _canDragDrop(selector: string) {
+    eLog.checkLog3("canDragDrop", "Can DragDrop Selector", {selector});
+    return game.user.isGM;
+  }
+
+  override _onDrop(event: DragEvent) {
+    const data = TextEditor.getDragEventData(event) as { type: "Actor" | "Item", uuid: string };
+    const {type, uuid} = data;
+    const [id] = (uuid.match(new RegExp(`${type}\\.(.+)`)) ?? []).slice(1);
+    const oppDoc = game[`${U.lCase(type)}s`].get(id);
+    this.rollOppositionID = oppDoc?.id;
+    // super._onDrop(...args);
+    // eLog.checkLog3("dropEvent", "Drop Event", {event, data, oppDoc});
+  }
 
   override async _onSubmit(event: Event, {updateData}: FormApplication.OnSubmitOptions = {}) {
     return super._onSubmit(event, {updateData, preventClose: true})
@@ -2839,7 +2850,7 @@ class BladesRollCollab extends DocumentSheet {
   }
 
   override async close(options: FormApplication.CloseOptions & { rollID?: string } = {}) {
-    eLog.checkLog3("rollCollab", "RollCollab.close()", {options});
+    // eLog.checkLog3("rollCollab", "RollCollab.close()", {options});
     if (options.rollID) { return super.close({}) }
     this.document.setFlag(C.SYSTEM_ID, "rollCollab", null);
     socketlib.system.executeForEveryone("closeRollCollab", this.rollID);
@@ -2851,6 +2862,8 @@ class BladesRollCollab extends DocumentSheet {
     if (!this.document.getFlag(C.SYSTEM_ID, "rollCollab")) { return this }
     return super.render(force, options);
   }
+  // #endregion
+
 }
 
 interface BladesRollCollab {

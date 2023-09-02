@@ -14,7 +14,7 @@
   {{> "systems/eunos-blades/templates/roll/partials/roll-collab-gm-number-line.hbs"
     label=(case "title" data.factor)
     range=4
-    target="GMBoosts.{{data.factor}}"
+    target=(concat "GMBoosts." data.factor)
     curValue=sourceBoost
     origValue=(calc sourceData.value "-" sourceBoost)
   }}
@@ -46,7 +46,7 @@
   {{else}}
   {{> "systems/eunos-blades/templates/roll/partials/roll-collab-gm-number-line.hbs"
     range=4
-    target="GMOppBoosts.{{data.factor}}"
+    target=(concat "GMOppBoosts." data.factor)
     curValue=oppBoost
     origValue=(calc 0 "-" oppBoost)
   }}

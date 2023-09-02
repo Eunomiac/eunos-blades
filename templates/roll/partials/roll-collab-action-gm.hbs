@@ -1,10 +1,54 @@
-{{!-- <div class="player-header gm-header">GM Dialog</div> --}}
+<section class="sheet-topper roll-type roll-type-{{case "lower" rollType}}">
+  <div class="roll-type-header">{{rollType}} Roll</div>
+</section>
+
+<section class="sheet-topper roll-factors">
+  <div class="factors-block flex-horizontal">
+    {{#each rollFactors.source}}
+    {{#if (test isActive "&&" isPrimary)}}
+    <div class="roll-factor roll-factor-source roll-factor-{{name}} roll-factor-primary{{#if cssClasses}} {{cssClasses}}{{/if}} flex-horizontal">
+      <label class="shadowed roll-factor-label">{{name}}</label>
+      <span class="shadowed roll-factor-value">{{display}}</span>
+    </div>
+    {{/if}}
+    {{/each}}
+    {{#each rollFactors.opposition}}
+    {{#if (test isActive "&&" isPrimary)}}
+    <div class="roll-factor roll-factor-opposition roll-factor-{{name}} roll-factor-primary{{#if cssClasses}} {{cssClasses}}{{/if}} flex-horizontal">
+      <label class="shadowed roll-factor-label">{{name}}</label>
+      <span class="shadowed roll-factor-value">{{display}}</span>
+    </div>
+    {{/if}}
+    {{/each}}
+  </div>
+</section>
+
+<section class="sheet-header flex-horizontal">
+  <span class="shadowed source-name source-name-type-{{rollSource.type}}" {{#unless rollOpposition}}style="text-align: left; padding-left: 50px;"{{/unless}}>{{rollSource.name}}</span>
+  <span class="shadowed vs">{{#if rollOpposition}}vs.{{else}}&nbsp;{{/if}}</span>
+  <span class="shadowed opp-name {{~#if rollOpposition}} opp-name-type-{{rollOpposition.type}}{{/if}}">{{#if rollOpposition}}{{rollOpposition.name}}{{else}}&nbsp;{{/if}}</span>
+</section>
+
+<section class="sheet-subheader flex-horizontal">
+  <div class="factors-block flex-horizontal">
+    {{#each rollFactors.source}}
+    {{#if isActive}}{{#unless isPrimary}}
+    <div class="roll-factor roll-factor-source roll-factor-{{name}}{{#if cssClasses}} {{cssClasses}}{{/if}} flex-horizontal">
+      <label class="shadowed roll-factor-label">{{name}}</label>
+      <span class="shadowed roll-factor-value">{{display}}</span>
+    </div>
+    {{/unless}}{{/if}}
+    {{/each}}
+  </div>
+</section>
+
 <div class="split-root flex-horizontal">
+  <div class="roll-sheet-float-block roll-source-bg-img">
+    <img src="{{rollSource.img}}" />
+  </div>
+  <div class="roll-sheet-float-block roll-source-bg-overlay">  </div>
   <div class="split-root-left">
-    <section class="sheet-top roll-sheet-block">
-      <h1 class="shadowed roll-type">{{rollType}} Roll: <span class="source-name source-type-{{source.type}}">{{rollSource.name}}</span></h1>
-    </section>
-    <section class="sheet-main tab-content nav-group flex-vertical">
+    <section class="sheet-main flex-vertical">
       <div class="roll-sheet-block rolling-block flex-vertical">
         <div class="roll-sheet-sub-block roll-header-block flex-horizontal">
           <label class="filled-label">Rolling:</label>
@@ -31,7 +75,7 @@
           {{/each}}
         </div>
         {{#if hasInactiveConditionals.roll}}
-        <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-horizontal">
+        <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-vertical">
           {{#each posRollMods.roll }}
           {{#if (test isConditional "&&" (test "!" isActive))}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
@@ -73,7 +117,7 @@
           {{/each}}
         </div>
         {{#if hasInactiveConditionals.position}}
-        <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-horizontal">
+        <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-vertical">
           {{#each posRollMods.position }}
           {{#if (test isConditional "&&" (test "!" isActive))}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
@@ -115,7 +159,7 @@
           {{/each}}
         </div>
         {{#if hasInactiveConditionals.effect}}
-        <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-horizontal">
+        <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-vertical">
           {{#each posRollMods.effect }}
           {{#if (test isConditional "&&" (test "!" isActive))}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
@@ -132,7 +176,6 @@
           <span class="shadowed roll-readonly">{{rollEffectFinal}}</span>
         </div>
       </div>
-      {{#if isAffectingResult}}
       <div class="roll-sheet-block result-block flex-vertical">
         <div class="roll-sheet-sub-block roll-header-block  flex-horizontal">
           <label class="filled-label">Result:</label>
@@ -151,7 +194,7 @@
           {{/each}}
         </div>
         {{#if hasInactiveConditionals.result}}
-        <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-horizontal">
+        <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-vertical">
           {{#each posRollMods.result }}
           {{#if (test isConditional "&&" (test "!" isActive))}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
@@ -168,37 +211,16 @@
           <span class="shadowed roll-readonly">{{signNum rollResultFinal}} Result Level</span>
         </div>
       </div>
-      {{/if}}
     </section>
   </div>
-  <div class="split-root-right">
-    <section class="sheet-top">
-      <div class="roll-sheet-block factors-block flex-horizontal">
-        {{#each rollFactors.source}}
-        {{#if isActive}}
-        <div class="roll-factor roll-factor-{{name}} {{~#if isPrimary}} roll-factor-primary{{/if}}{{#if cssClasses}} {{cssClasses}}{{/if}} flex-horizontal">
-          <label class="shadowed roll-factor-label">{{name}}</label>
-          <span class="shadowed roll-factor-value">{{display}}</span>
-        </div>
-        {{/if}}
-        {{/each}}
-        <label class="shadowed roll-factor-vs">vs.</label>
-      </div>
-    </section>
-    <section class="sheet-main tab-content nav-group flex-vertical">
-      <div class="roll-sheet-block factors-block flex-vertical">
-        {{#each rollFactors.opposition}}
-        {{#if isActive}}
-        <div class="roll-factor roll-factor-{{name}} {{~#if isPrimary}} roll-factor-primary{{/if}}{{#if cssClasses}} {{cssClasses}}{{/if}} flex-horizontal">
-          <label class="shadowed roll-factor-label">{{name}}</label>
-          <span class="shadowed roll-factor-value">{{display}}</span>
-        </div>
-        {{/if}}
-        {{/each}}
-      </div>
-      {{#if rollOpposition}}
-      {{> "systems/eunos-blades/templates/components/roll-collab-opposition.hbs" rollOpposition}}
-      {{/if}}
+
+  <div class="roll-sheet-float-block roll-opp-bg-img">
+    {{#if rollOpposition}}<img src="{{rollOpposition.img}}" />{{/if}}
+  </div>
+  <div class="roll-sheet-float-block roll-opp-bg-overlay">  </div>
+  <div class="split-root-right" data-action='gm-drop-opposition'>
+    <section class="sheet-main tab-content roll-opp-block nav-group flex-vertical">
+      {{> "systems/eunos-blades/templates/components/roll-collab-opposition.hbs" rollOpposition=rollOpposition factorData=rollFactors.opposition}}
     </section>
     <section class="sheet-main flex-vertical factor-controls">
 
@@ -210,7 +232,35 @@
     </section>
   </div>
 </div>
+
 <section class="sheet-footer">
+  <div class="roll-sheet-float-block roll-effects-block flex-horizontal">
+    {{#each posRollMods.after }}
+    {{#unless (test (test "!" isVisible) "||" (test isConditional "&&" (test "!" isActive)))}}
+    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+    {{/unless}}
+    {{/each}}
+    <span class="roll-mod-block-spacer mid-spacer"></span>
+    {{#each negRollMods.after }}
+    {{#unless (test (test "!" isVisible) "||" (test isConditional "&&" (test "!" isActive)))}}
+    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+    {{/unless}}
+    {{/each}}
+  </div>
+  {{#if hasInactiveConditionals.after}}
+  <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
+    {{#each posRollMods.after }}
+    {{#if (test (test isConditional "&&" (test "!" isActive)) "&&" isVisible)}}
+    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+    {{/if}}
+    {{/each}}
+    {{#each negRollMods.after }}
+    {{#if (test (test isConditional "&&" (test "!" isActive)) "&&" isVisible)}}
+    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+    {{/if}}
+    {{/each}}
+  </div>
+  {{/if}}
   <div class="roll-sheet-float-block roll-button">
     <div class="roll-odds-strip" style="background: {{{oddsGradient}}};">
       <input type="checkbox" name="flags.eunos-blades.rollCollab.isGMReady" data-dType="Boolean" {{checked isGMReady}} />
