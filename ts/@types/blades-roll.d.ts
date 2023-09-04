@@ -9,6 +9,7 @@ declare global {
     export interface Config {
       userID?: string,
       rollSource?: (BladesActor|BladesItem) & SourceDoc,
+      rollOpposition?: BladesActor|BladesItem,
       rollType: RollType,
       rollTrait?: RollTrait
     }
@@ -129,6 +130,7 @@ declare global {
     type RollModData = {
       id: string,
       name: string,
+      source_name?: string,
       status?: RollModStatus, // Set to held_status ?? user_status ?? base_status at end of getData
       base_status: RollModStatus, // Original status; never changed
       user_status?: RollModStatus, // User-selected status

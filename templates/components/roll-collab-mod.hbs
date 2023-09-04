@@ -1,33 +1,67 @@
+<svg style="display: none;">
+  <defs>
+    <linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="20%" stop-color="#FFF" />
+      <stop offset="25%" stop-color="#444" />
+      <stop offset="75%" stop-color="#444" />
+      <stop offset="78%" stop-color="#000" />
+    </linearGradient>
+  </defs>
+</svg>
+
 <span class="roll-mod-container status-{{case "lower" status}} posneg-{{posNeg}} {{~#if tooltip}} tooltip-trigger{{/if}}{{~#if modType}} roll-mod-{{modType}}{{/if}}">
-  <span
-    class="roll-mod shadowed {{~#if (test sideString "||" (test modType "==" "teamwork"))}} roll-mod-sidestring{{/if}}"
-    data-action="{{#if (test "Toggle" "in" status)}}toggle{{/if}}"
-    data-id="{{id}}"
-  >
-    <span class="roll-mod-text">{{name}}{{#if (test sideString "||" (test modType "==" "teamwork"))}}:{{/if}}</span>
+
+  <span class="roll-mod roll-mod-icon" {{~#if (test "Toggle" "in" status)}} data-action="toggle" data-id="{{id}}"{{/if}}>
+    <svg viewbox="0 0 100 100">
+      <polygon class="diamond-base" points="10,50 50,10 90,50 50,90" />
+      <line class="shadow-stroke brightest-stroke" x1="5" y1="50" x2="50" y2="5" />
+      <line class="shadow-stroke bright-stroke" x1="50" y1="5" x2="95" y2="50" />
+      <line class="shadow-stroke darkest-stroke" x1="95" y1="50" x2="50" y2="95" />
+      <line class="shadow-stroke dark-stroke" x1="50" y1="95" x2="5" y2="50" />
+      <polygon class="diamond-inner-stroke" points="15,50 50,15 85,50 50,85" />
+    </svg>
+    <div class="icon"><i></i></div>
   </span>
 
-  {{#if tooltip}}
-  <div class="tooltip tooltip-small tooltip-left tooltip-roll-mod">{{{tooltip}}}</div>
-  {{/if}}
-  {{#if (test sideString "||" (test modType "==" "teamwork"))}}
-  <span class="roll-mod roll-mod-side-string shadowed status-{{case "lower" status}}">{{{sideString}}}&nbsp;</span>
-  {{/if}}
-  {{#if isGM}}
-    <div class="roll-mod-controls-container controls-container">
-      <span class="roll-mod-gm-control gm-control-hidden {{~#if (test status "==" "Hidden")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="Hidden">X</span>
-      <span class="roll-mod-gm-control gm-control-forcedoff {{~#if (test status "==" "ForcedOff")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ForcedOff">X</span>
-      <span class="roll-mod-gm-control gm-control-toggledoff {{~#if (test status "==" "ToggledOff")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ToggledOff">X</span>
-      <span class="roll-mod-gm-control gm-control-toggledon {{~#if (test status "==" "ToggledOn")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ToggledOn">X</span>
-      <span class="roll-mod-gm-control gm-control-forcedon {{~#if (test status "==" "ForcedOn")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ForcedOn">X</span>
-      <span class="roll-mod-gm-control gm-control-reset" data-id="{{id}}" data-action="gm-reset"></span>
-    </div>
-    {{#if (test modType "==" "teamwork")}}
-      {{> "systems/eunos-blades/templates/roll/partials/roll-collab-gm-select-doc.hbs"
-        docs = teamworkDocs
-        docCategory = category
-        docTarget = name }}
-        </span>
+  <span class="roll-mod-label">
+    <svg viewbox="0 0 1500 100">
+      <polygon class="label-base" points="5,50 15,15 1475,15 1485,50 1475,85 15,85" />
+      <line class="shadow-stroke brightest-stroke" x1="15" y1="14" x2="1475" y2="14" />
+      <line class="shadow-stroke dark-stroke" x1="1477" y1="14" x2="1487" y2="50" />
+      <line class="shadow-stroke darkest-stroke" x1="1488" y1="50" x2="1478" y2="89" />
+      <line class="shadow-stroke darkest-stroke" x1="1477" y1="87" x2="15" y2="87" />
+      <line class="shadow-stroke brightest-stroke" x1="4" y1="50" x2="14" y2="14" />
+      <line class="shadow-stroke bright-stroke" x1="4" y1="50" x2="14" y2="87" />
+    </svg>
+    <span class="roll-mod-text">{{name}}{{#if (test sideString "||" (test modType "==" "teamwork"))}}:{{/if}}</span>
+    {{#if (test sideString "||" (test modType "==" "teamwork"))}}
+    <span class="roll-mod-text roll-mod-sidestring">{{{sideString}}}&nbsp;</span>
     {{/if}}
-  {{/if}}
+
+{{#if isGM}}
+  {{#if (test modType "==" "teamwork")}}
+    {{> "systems/eunos-blades/templates/roll/partials/roll-collab-gm-select-doc.hbs"
+      docs = teamworkDocs
+      docCategory = category
+      docTarget = name }}
+      {{/if}}
+      </span>
+
+  <div class="roll-mod-controls-container controls-container">
+    <span class="roll-mod-gm-control gm-control-hidden {{~#if (test status "==" "Hidden")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="Hidden">X</span>
+    <span class="roll-mod-gm-control gm-control-forcedoff {{~#if (test status "==" "ForcedOff")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ForcedOff">X</span>
+    <span class="roll-mod-gm-control gm-control-toggledoff {{~#if (test status "==" "ToggledOff")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ToggledOff">X</span>
+    <span class="roll-mod-gm-control gm-control-toggledon {{~#if (test status "==" "ToggledOn")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ToggledOn">X</span>
+    <span class="roll-mod-gm-control gm-control-forcedon {{~#if (test status "==" "ForcedOn")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ForcedOn">X</span>
+    <span class="roll-mod-gm-control gm-control-reset" data-id="{{id}}" data-action="gm-reset"></span>
+  </div>
+{{/if}}
+  </span>
+
+
+
+{{#if tooltip}}
+  <div class="tooltip tooltip-small tooltip-left tooltip-roll-mod">{{{tooltip}}}</div>
+{{/if}}
+
 </span>

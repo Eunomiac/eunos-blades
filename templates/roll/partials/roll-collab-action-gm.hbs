@@ -63,13 +63,13 @@
         </div>
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block flex-horizontal">
           {{#each posRollMods.roll }}
-          {{#unless (test isConditional "&&" (test "!" isActive))}}
+          {{#unless isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
           <span class="roll-mod-block-spacer mid-spacer"></span>
           {{#each negRollMods.roll }}
-          {{#unless (test isConditional "&&" (test "!" isActive))}}
+          {{#unless isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
@@ -77,12 +77,12 @@
         {{#if hasInactiveConditionals.roll}}
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-vertical">
           {{#each posRollMods.roll }}
-          {{#if (test isConditional "&&" (test "!" isActive))}}
+          {{#if isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
           {{#each negRollMods.roll }}
-          {{#if (test isConditional "&&" (test "!" isActive))}}
+          {{#if isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
@@ -105,13 +105,13 @@
         </div>
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block flex-horizontal">
           {{#each posRollMods.position }}
-          {{#unless (test isConditional "&&" (test "!" isActive))}}
+          {{#unless isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
           <span class="roll-mod-block-spacer mid-spacer"></span>
           {{#each negRollMods.position }}
-          {{#unless (test isConditional "&&" (test "!" isActive))}}
+          {{#unless isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
@@ -119,12 +119,12 @@
         {{#if hasInactiveConditionals.position}}
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-vertical">
           {{#each posRollMods.position }}
-          {{#if (test isConditional "&&" (test "!" isActive))}}
+          {{#if isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
           {{#each negRollMods.position }}
-          {{#if (test isConditional "&&" (test "!" isActive))}}
+          {{#if isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
@@ -147,13 +147,13 @@
         </div>
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block flex-horizontal">
           {{#each posRollMods.effect }}
-          {{#unless (test isConditional "&&" (test "!" isActive))}}
+          {{#unless isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
           <span class="roll-mod-block-spacer mid-spacer"></span>
           {{#each negRollMods.effect }}
-          {{#unless (test isConditional "&&" (test "!" isActive))}}
+          {{#unless isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
@@ -161,12 +161,12 @@
         {{#if hasInactiveConditionals.effect}}
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-vertical">
           {{#each posRollMods.effect }}
-          {{#if (test isConditional "&&" (test "!" isActive))}}
+          {{#if isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
           {{#each negRollMods.effect }}
-          {{#if (test isConditional "&&" (test "!" isActive))}}
+          {{#if isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
@@ -182,13 +182,13 @@
         </div>
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block flex-horizontal">
           {{#each posRollMods.result }}
-          {{#unless (test isConditional "&&" (test "!" isActive))}}
+          {{#unless isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
           <span class="roll-mod-block-spacer mid-spacer"></span>
           {{#each negRollMods.result }}
-          {{#unless (test isConditional "&&" (test "!" isActive))}}
+          {{#unless isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/unless}}
           {{/each}}
@@ -196,12 +196,12 @@
         {{#if hasInactiveConditionals.result}}
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-vertical">
           {{#each posRollMods.result }}
-          {{#if (test isConditional "&&" (test "!" isActive))}}
+          {{#if isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
           {{#each negRollMods.result }}
-          {{#if (test isConditional "&&" (test "!" isActive))}}
+          {{#if isInInactiveBlock}}
           {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
           {{/if}}
           {{/each}}
@@ -236,13 +236,13 @@
 <section class="sheet-footer">
   <div class="roll-sheet-float-block roll-effects-block flex-horizontal">
     {{#each posRollMods.after }}
-    {{#unless (test (test "!" isVisible) "||" (test isConditional "&&" (test "!" isActive)))}}
+    {{#unless isInInactiveBlock}}
     {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
     {{/unless}}
     {{/each}}
     <span class="roll-mod-block-spacer mid-spacer"></span>
     {{#each negRollMods.after }}
-    {{#unless (test (test "!" isVisible) "||" (test isConditional "&&" (test "!" isActive)))}}
+    {{#unless isInInactiveBlock}}
     {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
     {{/unless}}
     {{/each}}
@@ -250,12 +250,12 @@
   {{#if hasInactiveConditionals.after}}
   <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
     {{#each posRollMods.after }}
-    {{#if (test (test isConditional "&&" (test "!" isActive)) "&&" isVisible)}}
+    {{#if isInInactiveBlock}}
     {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
     {{/if}}
     {{/each}}
     {{#each negRollMods.after }}
-    {{#if (test (test isConditional "&&" (test "!" isActive)) "&&" isVisible)}}
+    {{#if isInInactiveBlock}}
     {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
     {{/if}}
     {{/each}}

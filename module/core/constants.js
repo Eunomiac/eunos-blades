@@ -216,6 +216,13 @@ export var Factor;
     Factor["scale"] = "scale";
     Factor["magnitude"] = "magnitude";
 })(Factor || (Factor = {}));
+export var RollResult;
+(function (RollResult) {
+    RollResult["critical"] = "critical";
+    RollResult["success"] = "success";
+    RollResult["partial"] = "partial";
+    RollResult["fail"] = "fail";
+})(RollResult || (RollResult = {}));
 export var Harm;
 (function (Harm) {
     Harm["Weakened"] = "Weakened";

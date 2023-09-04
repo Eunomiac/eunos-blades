@@ -192,6 +192,9 @@ class BladesItem extends Item {
                 else if (/^side|^ss/i.test(keyString)) {
                     key = "sideString";
                 }
+                else if (/^s.*ame/i.test(keyString)) {
+                    key = "source_name";
+                }
                 else if (/^tool|^tip/i.test(keyString)) {
                     key = "tooltip";
                 }

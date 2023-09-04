@@ -201,6 +201,13 @@ export enum Factor {
   magnitude = "magnitude"
 }
 
+export enum RollResult {
+  critical = "critical",
+  success = "success",
+  partial = "partial",
+  fail = "fail"
+}
+
 export enum Harm {
   Weakened = "Weakened",
   Impaired = "Impaired",

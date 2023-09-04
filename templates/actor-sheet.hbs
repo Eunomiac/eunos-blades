@@ -364,7 +364,7 @@
       <section class="action-ratings flex-vertical">
         {{#each attributeData as |attribute_data attribute_name|}}
         <div class="comp comp-horizontal comp-attribute">
-          <label class="comp-label tooltip-trigger" data-roll-attribute="{{attribute_name}}"><span class="tooltip-scaling-elem">{{#if (test (lookup ../system.resistance_bonus attribute_name) ">" 0)}}+{{lookup ../system.resistance_bonus attribute_name}}&nbsp;{{/if}}{{case "title" attribute_name}}</span></label>
+          <label class="comp-label tooltip-trigger" data-roll-trait="{{attribute_name}}"><span class="tooltip-scaling-elem">{{#if (test (lookup ../system.resistance_bonus attribute_name) ">" 0)}}+{{lookup ../system.resistance_bonus attribute_name}}&nbsp;{{/if}}{{case "title" attribute_name}}</span></label>
           <div class="tooltip tooltip-attribute tooltip-small">{{{attribute_data.tooltip}}}</div>
           <div class="comp-body">
             {{> "systems/eunos-blades/templates/components/dotline.hbs"
@@ -392,7 +392,7 @@
             blockClass="action"
             }}
           </div>
-          <label class="comp-label tooltip-trigger" data-roll-attribute="{{action_name}}"><span class="tooltip-scaling-elem">{{case "upper" action_name}}</span></label>
+          <label class="comp-label tooltip-trigger" data-roll-trait="{{action_name}}"><span class="tooltip-scaling-elem">{{case "upper" action_name}}</span></label>
           <div class="tooltip tooltip-action tooltip-small tooltip-left">{{{action_data.tooltip}}}</div>
         </div>
         {{/each}}

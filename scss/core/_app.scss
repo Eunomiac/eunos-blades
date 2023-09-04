@@ -1,45 +1,130 @@
 .nav-group {
   border: 0;
-  overflow: hidden;
+  // overflow: hidden;
+  overflow: visible;
+  height: 24px;
 
   > * { width: 100% }
 
   > .nav-tabs.flex-horizontal {
     background-color: var(--blades-grey-bright);
-    border: 2px solid var(--blades-white);
+    // border: 2px solid var(--blades-white);
     padding: 0 toRem(10px);
     overflow: visible;
     align-items: center;
     justify-content: space-around;
+    padding: 0;
+    overflow: visible;
+    height: 24px;
+    position: relative;
+    z-index: 3;
 
     .tab-selector {
-      color: var(--blades-black);
+      height: 24px;
+      top: -1px;
+
+      flex-grow: 1;
+      text-align: center;
+      position: relative;
+      line-height: toRem(26px);
+      display: block;
+      text-transform: uppercase;
+      margin: 0;
       padding: 0 toRem(5px);
-      font-family: Kirsty;
-      line-height: toRem(20px);
+      text-decoration: none;
+      color: var(--blades-black);
+      font-family: var(--font-emphasis);
+      font-size: toRem(14px);
+      // font-weight: 600;
       transition: 0.25s;
+      z-index: 3;
       white-space: nowrap;
 
-      &.active {
-        background: linear-gradient(to right,
-            transparent,
-            var(--blades-white-bright) 25%,
-            var(--blades-white-bright) 75%,
-            transparent);
-        transform: scale(1.2);
+      &:before {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-top: 2px solid var(--blades-white-bright);
+        border-bottom: 2px solid var(--blades-white-bright);
+        transform: scaleY(2);
+        opacity: 0;
+        transition: 0.3s;
       }
-
-      &:hover:not(.active) {
+      &:after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+        top: 2px;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color:  var(--blades-white-bright);
+        transform: scale(0);
+        opacity: 0;
+        transition: 0.3s;
+        z-index: -1;
+      }
+      &:hover {
         color: var(--blades-black-dark);
-        transform: scale(1.2);
-        background: linear-gradient(to right,
-            transparent,
-            var(--blades-white) 10%,
-            var(--blades-white-bright) 50%,
-            var(--blades-white) 90%,
-            transparent);
+        &:before {
+          transform: scaleY(1);
+          opacity: 1;
+        }
+        &:after {
+          transform: scaleY(1);
+          opacity: 1;
+        }
       }
     }
+
+    &:not(:hover) {
+      .tab-selector.active {
+        &:before {
+          transform: scaleY(1);
+          opacity: 1;
+        }
+        &:after {
+          transform: scaleY(1);
+          opacity: 1;
+        }
+      }
+    }
+
+
+
+
+    // .tab-selector {
+    //   color: var(--blades-black);
+    //   padding: 0 toRem(5px);
+    //   font-family: Kirsty;
+    //   line-height: toRem(20px);
+    //   transition: 0.25s;
+    //   white-space: nowrap;
+
+    //   &.active {
+    //     background: linear-gradient(to right,
+    //         transparent,
+    //         var(--blades-white-bright) 25%,
+    //         var(--blades-white-bright) 75%,
+    //         transparent);
+    //     transform: scale(1.2);
+    //   }
+
+    //   &:hover:not(.active) {
+    //     color: var(--blades-black-dark);
+    //     transform: scale(1.2);
+    //     background: linear-gradient(to right,
+    //         transparent,
+    //         var(--blades-white) 10%,
+    //         var(--blades-white-bright) 50%,
+    //         var(--blades-white) 90%,
+    //         transparent);
+    //   }
+    // }
   }
   .tab[data-tab]:not(.active) {
     display: none !important;

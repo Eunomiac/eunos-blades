@@ -285,6 +285,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
         if (/^val/i.test(keyString)) { key = "value" } else
         if (/^eff|^ekey/i.test(keyString)) { key = "effectKeys" } else
         if (/^side|^ss/i.test(keyString)) { key = "sideString" } else
+        if (/^s.*ame/i.test(keyString)) { key = "source_name" } else
         if (/^tool|^tip/i.test(keyString)) { key = "tooltip" } else
         if (/^ty/i.test(keyString)) { key = "modType" } else
         if (/^c.*r?.*ty/i.test(keyString)) { key = "conditionalRollTypes" } else

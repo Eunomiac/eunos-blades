@@ -6,7 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-import C, { BladesActorType, Tag, Playbook, BladesItemType, Attribute, Action, PrereqType, Position, Effect, AdvancementPoint, Randomizers, RollModCategory, RollModStatus, Factor } from "./core/constants.js";
+import C, { BladesActorType, Tag, Playbook, BladesItemType, Attribute, Action, PrereqType, Position, Effect, AdvancementPoint, Randomizers, RollModCategory, RollModStatus, Factor, Harm } from "./core/constants.js";
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem from "./blades-item.js";
 import { SelectionCategory } from "./blades-dialog.js";
@@ -965,6 +965,9 @@ class BladesActor extends Actor {
                 else if (/^side|^ss/i.test(keyString)) {
                     key = "sideString";
                 }
+                else if (/^s.*ame/i.test(keyString)) {
+                    key = "source_name";
+                }
                 else if (/^tool|^tip/i.test(keyString)) {
                     key = "tooltip";
                 }
@@ -1012,7 +1015,8 @@ class BladesActor extends Actor {
                         modType: "harm",
                         value: 1,
                         tooltip: [
-                            `<h1 class='red-bright'><strong>Harm:</strong> ${harmString}</h1>`,
+                            `<h1 class='sur-title'>${effectCat === RollModCategory.roll ? Harm.Impaired : Harm.Weakened} (Harm)</h1>`,
+                            `<h1 class='red-bright'>${harmString}</h1>`,
                             effectCat === RollModCategory.roll
                                 ? "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1d</strong> to your roll.</p>"
                                 : "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1 effect</strong>."
@@ -1020,11 +1024,12 @@ class BladesActor extends Actor {
                     });
                 }
             });
-            if (this.system.harm.heavy.one.trim() !== "") {
+            const { one: harmCondition } = Object.values(this.system.harm).find((harmData) => /Need Help/.test(harmData.effect)) ?? {};
+            if (harmCondition && harmCondition.trim() !== "") {
                 rollModsData.push({
                     id: "Push-negative-roll",
-                    name: "Push",
-                    sideString: this.system.harm.heavy.one,
+                    name: "PUSH",
+                    sideString: harmCondition.trim(),
                     category: RollModCategory.roll,
                     posNeg: "negative",
                     base_status: RollModStatus.ToggledOn,
@@ -1032,7 +1037,8 @@ class BladesActor extends Actor {
                     value: 0,
                     effectKeys: ["Cost-Stress2"],
                     tooltip: [
-                        `<h1 class='red-bright'><strong>Harm:</strong> ${this.system.harm.heavy.one}</h1>`,
+                        "<h1 class='sur-title'>Broken (Harm)</h1>",
+                        `<h1 class='red-bright'>${harmCondition.trim()}</h1>`,
                         "<p>If your injuries apply to the situation at hand, you must <strong>Push</strong> to act.</p>"
                     ].join("")
                 });

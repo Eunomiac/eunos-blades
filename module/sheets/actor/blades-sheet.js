@@ -218,8 +218,8 @@ class BladesSheet extends ActorSheet {
             .find(".advance-button")
             .on("click", this._onAdvanceClick.bind(this));
         html
-            .find("[data-roll-attribute]")
-            .on("click", this._onRollAttributeDieClick.bind(this));
+            .find("[data-roll-trait]")
+            .on("click", this._onRollTraitClick.bind(this));
         html
             .find(".effect-control")
             .on("click", this._onActiveEffectControlClick.bind(this));
@@ -390,13 +390,40 @@ class BladesSheet extends ActorSheet {
         }
     }
 
-    async _onRollAttributeDieClick(event) {
-        const attribute_name = $(event.currentTarget).data("rollAttribute");
-        if (U.lCase(attribute_name) in Attribute) {
-            BladesRollCollab.NewRoll({ rollType: RollType.Resistance, rollTrait: attribute_name });
+    async _onRollTraitClick(event) {
+        const trait_name = $(event.currentTarget).data("rollTrait");
+        const roll_type = $(event.currentTarget).data("rollType");
+        const rollData = {};
+        if (U.lCase(trait_name) in { ...Action, ...Attribute, ...Factor }) {
+            rollData.rollTrait = U.lCase(trait_name);
         }
-        if (U.lCase(attribute_name) in Action) {
-            BladesRollCollab.NewRoll({ rollType: RollType.Action, rollTrait: attribute_name });
+        else if (U.isInt(trait_name)) {
+            rollData.rollTrait = U.pInt(trait_name);
+        }
+        if (U.tCase(roll_type) in RollType) {
+            rollData.rollType = U.tCase(roll_type);
+        }
+        else if (typeof rollData.rollTrait === "string") {
+            if (rollData.rollTrait in Attribute) {
+                rollData.rollType = RollType.Resistance;
+            }
+            else if (rollData.rollTrait in Action) {
+                rollData.rollType = RollType.Action;
+            }
+        }
+        if (game.user.isGM) {
+            if (BladesActor.IsType(this.document, BladesActorType.pc, BladesActorType.crew)) {
+                rollData.rollSource = this.document;
+            }
+            else {
+                rollData.rollOpposition = this.document;
+            }
+        }
+        if (rollData.rollType) {
+            BladesRollCollab.NewRoll(rollData);
+        }
+        else {
+            throw new Error("Unable to determine roll type of roll.");
         }
     }
 

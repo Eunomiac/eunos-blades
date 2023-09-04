@@ -7,7 +7,49 @@
 
   .message-content {
 
-    .chat-label {
+    .dice-roll-strip {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      height: 30px;
+      width: 100%;
+      align-items: stretch;
+      justify-content: space-evenly;
+
+      // `<span class='blades-die blades-die-critical blades-die-${val}'><img src='systems/eunos-blades/assets/dice/faces/${val}.webp' /></span>`
+      .blades-die {
+        display: block;
+        height: 30px;
+
+        img {
+          height: 30px;
+          width: 30px;
+          display: block;
+        }
+
+        &.blades-die-critical {
+          outline: 2px solid var(--blades-gold-bright);
+
+        }
+        &.blades-die-success {
+          outline: 2px solid var(--blades-white-bright);
+        }
+        &.blades-die-partial {
+
+        }
+        &.blades-die-fail {
+
+        }
+        &.blades-die-ghost {
+          img { opacity: 0.5 }
+        }
+        &.blades-die-resistance {
+          outline: 2px solid var(--blades-cyan-bright);
+        }
+      }
+    }
+
+    .chat-label, .chat-trait-label {
       background-color: var(--blades-grey-bright);
       font-family: var(--font-emphasis);
       color: var(--blades-white);

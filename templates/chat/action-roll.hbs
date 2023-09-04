@@ -1,25 +1,30 @@
-<div class="dice-tooltip blades-die-tooltip">
-  {{#if attribute_label}}<div class="chat-label label-stripe-chat">{{localize attribute_label}}</div>{{/if}}
-  {{#if position}}
-    <div class="chat-label-small label-stripe-chat-small">
-      {{{localize position_localize}}} | {{{localize effect_localize}}}
-    </div>
-  {{/if}}
+<div class="blades-roll roll-type-{{type}} roll-position-{{position}} roll-effect-{{effect}} roll-result-{{result}}">
+  <div class="chat-label label-stripe-chat">
+    <span class="source-name">{{case "title" sourceName}}</span>
+    <span class="vs">{{#if oppName}}vs.{{/if}}&nbsp;</span>
+    <span class="opp-name">{{#if oppName}}{{case "title" oppName}}{{/if}}&nbsp;</span>
+  </div>
+  <div class="chat-trait-label">{{trait_label}}</div>
+  <div class="dice-roll-strip">{{{dieVals}}}</div>
+  <div class="chat-label-small label-stripe-chat-small flex-horizontal">
+    <span class="position-label">{{case "title" position}}</span>
+    <span class="effect-label">{{case "title" effect}}</span>
+  </div>
 
-  {{#if (eq roll_status "critical-success")}}
-  <div class="die {{roll_status}}">{{localize "BITD.RollCriticalSuccess"}}</div>
+  {{#if (eq result "critical")}}
+  <div class="die {{result}}">Critical!</div>
   <div class="description">
     <p>{{{localize "BITD.RollDoWithIncreasedEffect"}}}</p>
   </div>
   {{/if}}
 
-  {{#if (eq roll_status "success")}}
-  <div class="die {{roll_status}}">{{localize "BITD.RollSuccess"}}</div>
+  {{#if (eq result "success")}}
+  <div class="die {{result}}">Full Success!</div>
   <div class="description"><p>{{{localize "BITD.RollDo"}}}</p></div>
   {{/if}}
 
-  {{#if (eq roll_status "partial-success")}}
-  <div class="die {{roll_status}}">{{localize "BITD.RollPartialSuccess"}}</div>
+  {{#if (eq result "partial")}}
+  <div class="die {{result}}">Partial Success</div>
   <div class="description">
     <p>
       {{#if (eq position "controlled")}}
@@ -33,8 +38,8 @@
   </div>
   {{/if}}
 
-  {{#if (eq roll_status "failure")}}
-  <div class="die {{roll_status}}">{{localize "BITD.RollFailure"}}</div>
+  {{#if (eq result "fail")}}
+  <div class="die {{result}}">{{localize "BITD.RollFailure"}}</div>
   <div class="description">
     <p>
       {{#if (eq position "controlled")}}
@@ -47,16 +52,6 @@
     </p>
   </div>
   {{/if}}
-  {{#if note}}
-    <em>{{note}}</em>
-  {{/if}}
-  <ol class="dice-rolls">
-    {{#each this.rolls}}
-    {{#if this.result}}
-    <li class="roll die d6">{{{this.result}}}</li>
-    {{else}}
-    <li class="roll die d6">{{{this.roll}}}</li>
-    {{/if}}
-    {{/each}}
-  </ol>
+
+  {{#if note}}<em>{{note}}</em>{{/if}}
 </div>

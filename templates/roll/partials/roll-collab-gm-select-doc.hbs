@@ -3,7 +3,7 @@
   <label class="doc-select-label">{{label}}</label>
   {{/if}}
   <div class="roll-doc-select">
-    <select class="shadowed roll-sheet-select roll-sheet-doc-select" name="flags.eunos-blades.rollCollab.docSelections.{{category}}.{{name}}">
+    <select class="shadowed roll-sheet-select roll-sheet-doc-select tooltip-trigger" name="flags.eunos-blades.rollCollab.docSelections.{{category}}.{{name}}">
       {{#select (lookup (lookup docSelections category) name)}}
       <option value="false">(Select)</option>
       {{#each docs}}
