@@ -7,7 +7,6 @@ import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt
 class BladesItem extends Item implements BladesDocument<Item>,
                                           BladesItemSubClass.Ability,
                                           BladesItemSubClass.Background,
-                                          BladesItemSubClass.Clock_Keeper,
                                           BladesItemSubClass.Cohort_Gang,
                                           BladesItemSubClass.Cohort_Expert,
                                           BladesItemSubClass.Crew_Ability,
@@ -15,7 +14,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
                                           BladesItemSubClass.Crew_Playbook,
                                           BladesItemSubClass.Crew_Upgrade,
                                           BladesItemSubClass.Feature,
-                                          BladesItemSubClass.Gm_Tracker,
                                           BladesItemSubClass.Heritage,
                                           BladesItemSubClass.Gear,
                                           BladesItemSubClass.Playbook,
@@ -25,8 +23,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
                                           BladesItemSubClass.Project,
                                           BladesItemSubClass.Ritual,
                                           BladesItemSubClass.Design,
-                                          BladesItemSubClass.Location,
-                                          BladesItemSubClass.Score,
                                           BladesRollCollab.SourceDocData,
                                           BladesRollCollab.OppositionDocData {
 
@@ -100,7 +96,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
       case Factor.tier: {
         // if (BladesItem.IsType(this, BladesItemType.ability)) { return this.system.tier.value }
         // if (BladesItem.IsType(this, BladesItemType.background)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.clock_keeper)) { return this.system.tier.value }
         if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
           return this.system.tier.value + (this.parent?.getFactorTotal(Factor.tier) ?? 0);
         }
@@ -112,7 +107,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
         // if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { return this.system.tier.value }
         // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { return this.system.tier.value }
         // if (BladesItem.IsType(this, BladesItemType.feature)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.gm_tracker)) { return this.system.tier.value }
         // if (BladesItem.IsType(this, BladesItemType.heritage)) { return this.system.tier.value }
         if (BladesItem.IsType(this, BladesItemType.gear)) {
           return this.system.tier.value + (this.parent?.getFactorTotal(Factor.tier) ?? 0);
@@ -124,14 +118,11 @@ class BladesItem extends Item implements BladesDocument<Item>,
         // if (BladesItem.IsType(this, BladesItemType.project)) { return this.system.tier.value }
         // if (BladesItem.IsType(this, BladesItemType.ritual)) { return this.system.tier.value }
         // if (BladesItem.IsType(this, BladesItemType.design)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.location)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.score)) { return this.system.tier.value }
         return this.system.tier.value;
       }
       case Factor.quality: {
         // if (BladesItem.IsType(this, BladesItemType.ability)) { return this.getFactorTotal(Factor.tier) }
         // if (BladesItem.IsType(this, BladesItemType.background)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.clock_keeper)) { return this.getFactorTotal(Factor.tier) }
         if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
           return this.getFactorTotal(Factor.tier) + (this.system.quality_bonus ?? 0);
         }
@@ -143,7 +134,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
         // if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { return this.getFactorTotal(Factor.tier) }
         // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { return this.getFactorTotal(Factor.tier) }
         // if (BladesItem.IsType(this, BladesItemType.feature)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.gm_tracker)) { return this.getFactorTotal(Factor.tier) }
         // if (BladesItem.IsType(this, BladesItemType.heritage)) { return this.getFactorTotal(Factor.tier) }
         if (BladesItem.IsType(this, BladesItemType.gear)) {
           return this.getFactorTotal(Factor.tier)
@@ -158,14 +148,11 @@ class BladesItem extends Item implements BladesDocument<Item>,
         // if (BladesItem.IsType(this, BladesItemType.project)) { return this.getFactorTotal(Factor.tier) }
         // if (BladesItem.IsType(this, BladesItemType.ritual)) { return this.getFactorTotal(Factor.tier) }
         if (BladesItem.IsType(this, BladesItemType.design)) { return this.system.min_quality }
-        // if (BladesItem.IsType(this, BladesItemType.location)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.score)) { return this.getFactorTotal(Factor.tier) }
         return this.getFactorTotal(Factor.tier);
       }
       case Factor.scale: {
         // if (BladesItem.IsType(this, BladesItemType.ability)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.background)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.clock_keeper)) { return 0 }
         if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
           return this.getFactorTotal(Factor.tier) + (this.system.scale_bonus ?? 0);
         }
@@ -177,7 +164,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
         // if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.feature)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.gm_tracker)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.heritage)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.gear)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.playbook)) { return 0 }
@@ -187,16 +173,11 @@ class BladesItem extends Item implements BladesDocument<Item>,
         // if (BladesItem.IsType(this, BladesItemType.project)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.ritual)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.design)) { return 0 }
-        if (BladesItem.IsType(this, BladesItemType.location)) {
-          return this.system.scale;
-        }
-        // if (BladesItem.IsType(this, BladesItemType.score)) { return 0 }
         return 0;
       }
       case Factor.magnitude: {
         // if (BladesItem.IsType(this, BladesItemType.ability)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.background)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.clock_keeper)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.cohort_gang)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.cohort_expert)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.crew_ability)) { return 0 }
@@ -204,7 +185,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
         // if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.feature)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.gm_tracker)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.heritage)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.gear)) { return 0 }
         // if (BladesItem.IsType(this, BladesItemType.playbook)) { return 0 }
@@ -216,8 +196,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
           return this.system.magnitude.value;
         }
         // if (BladesItem.IsType(this, BladesItemType.design)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.location)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.score)) { return 0 }
         return 0;
       }
       // no default
@@ -234,17 +212,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
   async unarchive() {
     await this.remTag(Tag.System.Archived);
     return this;
-  }
-
-  // #endregion
-
-  // #region BladesGMTracker Implementation
-
-  get phase(): BladesPhase|false { return BladesItem.IsType(this, BladesItemType.gm_tracker) && this.system.phase }
-  set phase(phase: BladesPhase|false) {
-    if (phase && BladesItem.IsType(this, BladesItemType.gm_tracker)) {
-      this.update({"system.phase": phase});
-    }
   }
 
   // #endregion
@@ -342,10 +309,9 @@ class BladesItem extends Item implements BladesDocument<Item>,
   }
 
   get rollFactors(): Partial<Record<Factor,BladesRollCollab.FactorData>> {
-    const factors: Factor[] = {
+    const factorsMap: Partial<Record<BladesItemType, Factor[]>> = {
       [BladesItemType.ability]: [],
       [BladesItemType.background]: [],
-      [BladesItemType.clock_keeper]: [],
       [BladesItemType.cohort_gang]: [Factor.quality, Factor.scale],
       [BladesItemType.cohort_expert]: [Factor.quality, Factor.scale],
       [BladesItemType.crew_ability]: [],
@@ -353,7 +319,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
       [BladesItemType.crew_playbook]: [],
       [BladesItemType.crew_upgrade]: [],
       [BladesItemType.feature]: [],
-      [BladesItemType.gm_tracker]: [],
       [BladesItemType.heritage]: [],
       [BladesItemType.gear]: [Factor.quality],
       [BladesItemType.playbook]: [],
@@ -362,13 +327,14 @@ class BladesItem extends Item implements BladesDocument<Item>,
       [BladesItemType.vice]: [],
       [BladesItemType.project]: [Factor.quality],
       [BladesItemType.ritual]: [Factor.magnitude],
-      [BladesItemType.design]: [Factor.quality],
-      [BladesItemType.location]: [Factor.tier, Factor.quality, Factor.scale],
-      [BladesItemType.score]: [Factor.tier]
-    }[this.type];
+      [BladesItemType.design]: [Factor.quality]
+    };
+    if (!factorsMap[this.type]) { return {} }
+
+    const factors = factorsMap[this.type];
 
     const factorData: Partial<Record<Factor,BladesRollCollab.FactorData>> = {};
-    factors.forEach((factor, i) => {
+    factors!.forEach((factor, i) => {
       const factorTotal = this.getFactorTotal(factor);
       factorData[factor] = {
         name: factor,
@@ -391,16 +357,15 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   // #region PREPARING DERIVED DATA
   override prepareDerivedData() {
+    super.prepareDerivedData();
     // if (BladesItem.IsType(this, BladesItemType.ability)) { this._prepareAbilityData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.background)) { this._prepareBackgroundData(this.system) }
-    if (BladesItem.IsType(this, BladesItemType.clock_keeper)) { this._prepareClockKeeperData(this.system) }
     if (BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { this._prepareCohortData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.crew_ability)) { this._prepareCrewAbilityData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.crew_reputation)) { this._prepareCrewReputationData(this.system) }
     if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { this._preparePlaybookData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { this._prepareCrewUpgradeData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.feature)) { this._prepareFeatureData(this.system) }
-    if (BladesItem.IsType(this, BladesItemType.gm_tracker)) { this._prepareGmTrackerData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.heritage)) { this._prepareHeritageData(this.system) }
     if (BladesItem.IsType(this, BladesItemType.gear)) { this._prepareGearData(this.system) }
     if (BladesItem.IsType(this, BladesItemType.playbook)) { this._preparePlaybookData(this.system) }
@@ -410,24 +375,8 @@ class BladesItem extends Item implements BladesDocument<Item>,
     // if (BladesItem.IsType(this, BladesItemType.project)) { this._prepareProjectData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.ritual)) { this._prepareRitualData(this.system) }
     // if (BladesItem.IsType(this, BladesItemType.design)) { this._prepareDesignData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.location)) { this._prepareLocationData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.score)) { this._prepareScoreData(this.system) }
   }
 
-  _prepareClockKeeperData(system: ExtractBladesItemSystem<BladesItemType.clock_keeper>) {
-    if (!BladesItem.IsType(this, BladesItemType.clock_keeper)) { return }
-
-    system.scenes = game.scenes.map((scene) => ({id: scene.id, name: scene.name ?? ""}));
-    system.targetScene ??= game.scenes.current?.id || null;
-    system.clock_keys = Object.fromEntries(Object.entries(system.clock_keys ?? {})
-      .filter(([keyID, keyData]) => keyData && keyData.id)
-      .map(([keyID, keyData]) => {
-        if (keyData === null) { return [keyID, null] }
-        keyData.clocks = Object.fromEntries(Object.entries(keyData.clocks ?? {})
-          .filter(([clockNum, clockData]) => Boolean(clockData)));
-        return [keyID, keyData];
-      }));
-  }
 
   _prepareCohortData(system: ExtractBladesItemSystem<BladesItemType.cohort_gang|BladesItemType.cohort_expert>) {
     if (!BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { return }
@@ -495,11 +444,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
     }
   }
 
-  _prepareGmTrackerData(system: ExtractBladesItemSystem<BladesItemType.gm_tracker>) {
-    if (!BladesItem.IsType(this, BladesItemType.gm_tracker)) { return }
-    system.phases = Object.values(BladesPhase);
-  }
-
   _prepareGearData(system: ExtractBladesItemSystem<BladesItemType.gear>) {
     if (!BladesItem.IsType(this, BladesItemType.gear)) { return }
     system.tier.name = "Quality";
@@ -521,166 +465,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
     }
   }
   // #endregion
-
-  // #region CLOCKS OVERLAY
-  _overlayElement?: HTMLElement;
-  get overlayElement() {
-    this._overlayElement ??= $("#clocks-overlay")[0];
-    if (!this._overlayElement) {
-      $("body.vtt.game.system-eunos-blades").append("<section id=\"clocks-overlay\"></section>");
-      [this._overlayElement] = $("#clocks-overlay");
-    }
-    return this._overlayElement;
-  }
-
-  async renderOverlay() {
-    if (!game.scenes?.current) { return }
-    if (!game.eunoblades.ClockKeeper) { return }
-    if (!game.eunoblades.ClockKeeper.overlayElement) {
-      eLog.error("clocksOverlay", "[ClocksOverlay] Cannot locate overlay element.");
-      return;
-    }
-    game.eunoblades.ClockKeeper.overlayElement.innerHTML = (await getTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs"))({
-      ...game.eunoblades.ClockKeeper.system,
-      currentScene: game.scenes?.current.id,
-      clockSizes: C.ClockSizes,
-      svgData: SVGDATA
-    });
-    game.eunoblades.ClockKeeper.activateOverlayListeners();
-  }
-  async activateOverlayListeners() {
-    if (!game?.user?.isGM) { return }
-    $("#clocks-overlay").find(".clock-frame").on("wheel", async (event) => {
-      if (!event.currentTarget) { return }
-      if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return }
-      if (!(event.originalEvent instanceof WheelEvent)) { return }
-
-      event.preventDefault();
-
-      const clock$ = $(event.currentTarget).closest(".clock");
-      const [key] = clock$.closest(".clock-key");
-
-      if (!(key instanceof HTMLElement)) { return }
-
-      const keyID = key.id;
-      const clockNum = clock$.data("index");
-      const curClockVal = U.pInt(clock$.data("value"));
-      const delta = event.originalEvent.deltaY < 0 ? 1 : -1;
-      const max = U.pInt(clock$.data("size"));
-
-      const newClockVal = U.gsap.utils.clamp(0, max, curClockVal + delta);
-
-      if (curClockVal === newClockVal) { return }
-
-      await game.eunoblades.ClockKeeper.update({
-        [`system.clock_keys.${keyID}.clocks.${clockNum}.value`]: `${newClockVal}`
-      });
-      // socketlib.system.executeForEveryone("renderOverlay");
-    });
-
-    // .on({
-    //   mouseenter: function() {
-    //     $(this).parent().css("z-index", 1);
-    //     $(this).data("hoverTimeline").play();
-    //   },
-    //   mouseleave: function() {
-    //     $(this).data("hoverTimeline").reverse().then(() => {
-    //       $(this).parent().removeAttr("style");
-    //     });
-    //   }
-    $("#clocks-overlay").find(".key-label").on({
-      click: async (event) => {
-        if (!event.currentTarget) { return }
-        if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return }
-
-        event.preventDefault();
-
-        const keyID = $(event.currentTarget).data("keyId") as string;
-        eLog.checkLog3("clocksOverlay", "Updating Key isActive", {current: game.eunoblades.ClockKeeper.system.clock_keys![keyID]?.isActive, update: !(game.eunoblades.ClockKeeper.system.clock_keys![keyID]?.isActive)});
-        await game.eunoblades.ClockKeeper.update({[`system.clock_keys.${keyID}.isActive`]: !(game.eunoblades.ClockKeeper.system.clock_keys![keyID]?.isActive)});
-        // socketlib.system.executeForEveryone("renderOverlay");
-      },
-      contextmenu: () => {
-        if (!game?.user?.isGM) { return }
-        game.eunoblades.ClockKeeper?.sheet?.render(true);
-      }
-    });
-  }
-
-  async addClockKey(): Promise<BladesItemOfType<BladesItemType.clock_keeper>|undefined> {
-    if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return undefined }
-    const keyID = randomID();
-    return game.eunoblades.ClockKeeper.update({[`system.clock_keys.${keyID}`]: {
-      id: keyID,
-      display: "",
-      isVisible: false,
-      isNameVisible: true,
-      isActive: true,
-      scene: game.eunoblades.ClockKeeper.system.targetScene,
-      numClocks: 1,
-      clocks: {
-        1: {
-          display: "",
-          isVisible: false,
-          isNameVisible: false,
-          isActive: false,
-          color: "yellow",
-          max: 4,
-          value: 0
-        }
-      }
-    }});
-  }
-
-  async deleteClockKey(keyID: string): Promise<BladesItemOfType<BladesItemType.clock_keeper>|undefined> {
-    if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return undefined }
-    return game.eunoblades.ClockKeeper.update({[`system.clock_keys.-=${keyID}`]: null});
-  }
-
-  async setKeySize(keyID: string, keySize = 1): Promise<BladesItemOfType<BladesItemType.clock_keeper>|undefined> {
-    if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return undefined }
-    keySize = parseInt(`${keySize}`);
-    const updateData: Record<string, any> = {
-      [`system.clock_keys.${keyID}.numClocks`]: keySize
-    };
-    const clockKey = game.eunoblades.ClockKeeper.system.clock_keys![keyID];
-    if (!clockKey) { return game.eunoblades.ClockKeeper }
-    const currentSize = Object.values(clockKey.clocks).length;
-    if (currentSize < keySize) {
-      for (let i = (currentSize + 1); i <= keySize; i++) {
-        updateData[`system.clock_keys.${keyID}.clocks.${i}`] = {
-          display: "",
-          value: 0,
-          max: 4,
-          color: "yellow",
-          isVisible: false,
-          isNameVisible: true,
-          isActive: false
-        };
-      }
-    } else if (currentSize > keySize) {
-      for (let i = (keySize + 1); i <= currentSize; i++) {
-        updateData[`system.clock_keys.${keyID}.clocks.-=${i}`] = null;
-      }
-    }
-    eLog.checkLog("clock_key", "Clock Key Update Data", {clockKey, updateData});
-    return game.eunoblades.ClockKeeper.update(updateData);
-    // return socketlib.system.executeForEveryone("renderOverlay");
-  }
-  // #endregion
-
-  // #region OVERRIDES: _onUpdate
-  override async _onUpdate(changed: any, options: any, userId: string) {
-    await super._onUpdate(changed, options, userId);
-    if (BladesItem.IsType(this, BladesItemType.gm_tracker, BladesItemType.clock_keeper, BladesItemType.location, BladesItemType.score)) {
-      BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
-    }
-    if (BladesItem.IsType(this, BladesItemType.clock_keeper)) {
-      socketlib.system.executeForEveryone("renderOverlay");
-    }
-  }
-  // #endregion
-
 }
 
 declare interface BladesItem {

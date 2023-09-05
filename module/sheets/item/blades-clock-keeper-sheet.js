@@ -6,8 +6,8 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import BladesItemSheet from "./blades-item-sheet.js";
-import BladesItem from "../../blades-item.js";
-export default class BladesClockKeeperSheet extends BladesItemSheet {
+import BladesClockKeeper from "../../documents/items/blades-clock-keeper.js";
+class BladesClockKeeperSheet extends BladesItemSheet {
     static Get() { return game.eunoblades.ClockKeeper; }
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -22,8 +22,8 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
         Items.registerSheet("blades", BladesClockKeeperSheet, { types: ["clock_keeper"], makeDefault: true });
         Hooks.once("ready", async () => {
             let clockKeeper = game.items.find((item) => item.type === "clock_keeper");
-            if (!(clockKeeper instanceof BladesItem)) {
-                clockKeeper = (await BladesItem.create({
+            if (!(clockKeeper instanceof BladesClockKeeper)) {
+                clockKeeper = (await BladesClockKeeper.create({
                     name: "Clock Keeper",
                     type: "clock_keeper",
                     img: "systems/eunos-blades/assets/icons/misc-icons/clock-keeper.svg"
@@ -78,3 +78,4 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
         html.find(".key-clock-counter").on("change", this.setKeySize.bind(this));
     }
 }
+export default BladesClockKeeperSheet;

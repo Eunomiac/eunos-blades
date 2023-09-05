@@ -1084,8 +1084,6 @@ function isFactor(trait) {
     return Boolean(trait && typeof trait === "string" && U.lCase(trait) in Factor);
 }
 function isNumber(trait) { return U.isInt(trait); }
-function isPushMod(rollMod) { return U.lCase(rollMod.name) === "push"; }
-
 export class BladesRollMod {
     get status() {
         if (this.user_status && [RollModStatus.ForcedOn, RollModStatus.ForcedOff, RollModStatus.Hidden].includes(this.user_status)) {
@@ -1144,6 +1142,11 @@ export class BladesRollMod {
         return [RollModStatus.ForcedOff, RollModStatus.ToggledOff].includes(this.status)
             && (this.isConditional || [BladesItemType.ability].includes(this.modType));
     }
+    get isPush() {
+        return Boolean(U.lCase(this.name) === "push"
+            || this.effectKeys.find((eKey) => eKey === "Is-Push"));
+    }
+    get isBasicPush() { return U.lCase(this.name) === "push"; }
     get stressCost() {
         const costKeys = this.effectKeys.filter((key) => /^Cost-Stress/.test(key));
         if (costKeys.length === 0) {
@@ -1214,7 +1217,7 @@ export class BladesRollMod {
                 case "Negate": {
                     switch (thisParam) {
                         case "PushCost": {
-                            return this.rollInstance.isRollPushed
+                            return this.rollInstance.isPushed()
                                 && this.rollInstance.rollCostData.some((costData) => /Push/.test(costData.id)
                                     && costData.costType === "Stress"
                                     && costData.costAmount > 0);
@@ -1309,7 +1312,7 @@ export class BladesRollMod {
                     switch (thisParam) {
                         case "PushCost": {
                             const costlyPushMod = this.rollInstance.getActiveRollMods()
-                                .find((mod) => isPushMod(mod) && mod.stressCost > 0);
+                                .find((mod) => mod.isPush && mod.stressCost > 0);
                             if (costlyPushMod) {
                                 U.pullElement(costlyPushMod.effectKeys, (key) => /^Cost-Stress/.test(key));
                             }
@@ -1440,7 +1443,7 @@ export class BladesRollMod {
             const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)([0-9]*)/) ?? []).slice(1);
             return {
                 id: this.id,
-                label: isPushMod(this)
+                label: this.isBasicPush
                     ? (this.posNeg === "negative"
                         ? `${this.name} (<span class='red-bright'>To Act</span>)`
                         : `${this.name} (<span class='gold-bright'>${this.category === RollModCategory.roll ? "+1d" : "+1 effect"}</span>)`)
@@ -1502,30 +1505,7 @@ class BladesRollCollab extends DocumentSheet {
         });
     }
     static Initialize() {
-        Hooks.on("preUpdateUser", async (user, updateData) => {
-            const flatData = flattenObject(updateData);
-            const docSelectKeys = Object.keys(flatData)
-                .filter((key) => /docSelections/.test(key) && flatData[key] !== false);
-            if (docSelectKeys.length > 0) {
-                docSelectKeys.forEach((key) => {
-                    const [_, category, name] = key.match(/docSelections\.(.*?)\.(.*)/);
-                    const rollMods = (user.getFlag("eunos-blades", "rollCollab.rollMods") ?? []);
-                    const rollMod = U.pullElement(rollMods, (mod) => mod?.name === name && mod?.category === category);
-                    if (!rollMod || !rollMod.tooltip) {
-                        return;
-                    }
-                    const curSidestring = rollMod.sideString;
-                    const newSidestring = (BladesActor.Get(flatData[key]) ?? BladesItem.Get(flatData[key]) ?? { name: "" }).name;
-                    if (newSidestring === null) {
-                        return;
-                    }
-                    rollMod.tooltip = rollMod.tooltip.replace(new RegExp(curSidestring || "%DOC_NAME%", "g"), newSidestring);
-                    rollMod.sideString = newSidestring;
-                    rollMods.push(rollMod);
-                    user.setFlag("eunos-blades", "rollCollab.rollMods", rollMods);
-                });
-            }
-        });
+        
         return loadTemplates([
             "systems/eunos-blades/templates/roll/roll-collab.hbs",
             "systems/eunos-blades/templates/roll/roll-collab-gm.hbs",
@@ -1569,7 +1549,7 @@ class BladesRollCollab extends DocumentSheet {
                 posNeg: "positive",
                 modType: "general",
                 value: 1,
-                effectKeys: ["ForceOff-Push"],
+                effectKeys: [],
                 tooltip: "<h1 class='red-bright'>Devil's Bargain</h1><p>The GM has offered you a <strong class='red-bright'>Devil's Bargain</strong>.</p><p><strong class='red-bright'>Accept the terms</strong> to add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also <strong>Push for +1d</strong> to increase your dice pool: It's one or the other.)</em></p>"
             },
             {
@@ -2085,22 +2065,18 @@ class BladesRollCollab extends DocumentSheet {
         this.rollMods = modsData.map((modData) => new BladesRollMod(modData, this));
         this.logModStatus();
         const initReport = {};
-                let checkDisableMods = [...this.rollMods];
-        initReport["[PASS 1] 0. DISABLE PASS"] = this.getStatusSummary();
+                initReport["[PASS 1.0] *** DISABLE PASS ***"] = this.getStatusSummary();
+        let checkDisableMods = [...this.rollMods];
         checkDisableMods = checkDisableMods
             .filter((rollMod) => !rollMod.setConditionalStatus());
-        initReport["[PASS 1] 1. Conditional Status Pass"] = this.getStatusChanges();
+        initReport["[PASS 1.1] Conditional Status Pass"] = this.getStatusChanges();
         checkDisableMods = checkDisableMods
             .filter((rollMod) => !rollMod.setAutoStatus());
-        initReport["[PASS 1] 2. Auto Status Pass"] = this.getStatusChanges();
+        initReport["[PASS 1.2] Auto Status Pass"] = this.getStatusChanges();
         checkDisableMods = checkDisableMods
             .filter((rollMod) => !rollMod.setPayableStatus());
-        initReport["[PASS 1] 3. Payable Status Pass"] = this.getStatusChanges();
-                const isPushForced = {
-            [RollModCategory.roll]: false,
-            [RollModCategory.effect]: false
-        };
-        initReport["[PASS 2] 0. FORCE-ON PASS"] = this.getStatusSummary();
+        initReport["[PASS 1.3] Payable Status Pass"] = this.getStatusChanges();
+                initReport["[PASS 2.0] *** FORCE-ON PASS ***"] = this.getStatusSummary();
         const parseForceOnKeys = (mod) => {
             const holdKeys = mod.effectKeys.filter((key) => /^ForceOn/.test(key));
             if (holdKeys.length === 0) {
@@ -2115,9 +2091,16 @@ class BladesRollCollab extends DocumentSheet {
                     continue;
                 }
                 const [targetName, targetCat, targetPosNeg] = thisTarget.split(/,/);
-                const targetMod = this.getRollModByName(targetName)
-                    ?? this.getRollModByName(targetName, targetCat ?? mod.category)
-                    ?? this.getRollModByName(targetName, targetCat ?? mod.category, targetPosNeg ?? mod.posNeg);
+                let targetMod = this.getRollModByName(targetName)
+                    ?? this.getRollModByName(targetName, targetCat ?? mod.category);
+                if (!targetMod && targetName === "Push") {
+                    [targetMod] = [
+                        ...this.getActiveBasicPushMods(targetCat ?? mod.category, "negative").filter((mod) => mod.status === RollModStatus.ToggledOn),
+                        ...this.getActiveBasicPushMods(targetCat ?? mod.category, "positive").filter((mod) => mod.status === RollModStatus.ToggledOn),
+                        ...this.getInactiveBasicPushMods(targetCat ?? mod.category, "positive").filter((mod) => mod.status === RollModStatus.ToggledOff)
+                    ];
+                }
+                targetMod ??= this.getRollModByName(targetName, targetCat ?? mod.category, targetPosNeg ?? mod.posNeg);
                 if (!targetMod) {
                     throw new Error(`No mod found matching ${targetName}/${targetCat}/${targetPosNeg}`);
                 }
@@ -2128,95 +2111,44 @@ class BladesRollCollab extends DocumentSheet {
                 else {
                     targetMod.held_status = RollModStatus.ForcedOn;
                 }
-                if (isPushMod(targetMod) && targetMod.category === mod.category && !isPushForced[mod.category]) {
-                    isPushForced[mod.category] = mod.id;
-                }
             }
         };
         this.getActiveRollMods().forEach((rollMod) => parseForceOnKeys(rollMod));
-        initReport["[PASS 2] 1. Force-On Pass"] = this.getStatusChanges();
-                
-        initReport["[PASS 3] 0. FORCE-OFF PASS"] = this.getStatusSummary();
-        this.getActiveRollMods()
-            .filter((rollMod) => rollMod.effectKeys.some((eKey) => eKey === "ForceOff-Push"))
-            .forEach((rollMod) => {
-            this.getRollMods(rollMod.category)
-                .filter((mod) => mod.id !== rollMod.id)
-                .forEach((otherMod) => {
-                if (isPushMod(otherMod)) {
-                    if (otherMod.posNeg === "positive") {
-                        otherMod.held_status = RollModStatus.ForcedOff;
-                    }
-                }
-                else if (otherMod.effectKeys.includes("Is-Push") && otherMod.posNeg === "positive") {
-                    otherMod.held_status = RollModStatus.Hidden;
-                }
-            });
-        });
-        initReport["[PASS 3] 1. Force-Off PUSH Check"] = this.getStatusChanges();
-        
-        if (isPushForced[RollModCategory.roll]) {
-            const pushMod = this.getRollModByID(isPushForced[RollModCategory.roll]);
-            if (!pushMod) {
-                throw new Error("Missing Push Mod!");
-            }
-            const checkMods = isPushMod(pushMod) ? this.getVisibleRollMods(RollModCategory.roll) : this.getVisibleRollMods();
-            checkMods
-                .filter((mod) => mod.effectKeys.some((eKey) => eKey === "Is-Push") && mod.posNeg === "positive" && mod.id !== pushMod.id)
+        initReport["[PASS 2.1] Force-On Pass"] = this.getStatusChanges();
+                initReport["[PASS 3.0] *** PUSH-CHECK PASS ***"] = this.getStatusSummary();
+        if (this.isForcePushed()) {
+            this.getInactivePushMods()
+                .filter((mod) => !mod.isBasicPush)
                 .forEach((mod) => { mod.held_status = RollModStatus.ForcedOff; });
+            initReport["[PASS 3.1] Forced-Off 'Is-Push' Pass"] = this.getStatusChanges();
         }
-        if (isPushForced[RollModCategory.effect]) {
-            const pushMod = this.getRollModByID(isPushForced[RollModCategory.effect]);
-            if (!pushMod) {
-                throw new Error("Missing Push Mod!");
-            }
-            const checkMods = isPushMod(pushMod) ? this.getVisibleRollMods(RollModCategory.effect) : this.getVisibleRollMods();
-            checkMods
-                .filter((mod) => mod.effectKeys.some((eKey) => eKey === "Is-Push") && mod.posNeg === "positive" && mod.id !== pushMod.id)
-                .forEach((mod) => { mod.held_status = RollModStatus.ForcedOff; });
-        }
-        initReport["[PASS 3] 2. Force-Off IS-PUSH Check"] = this.getStatusChanges();
-        if (this.getActiveRollMods().find((rollMod) => rollMod.effectKeys.some((eKey) => eKey === "ForceOff-Bargain"))) {
-            const bargainMod = this.getRollModByID("Bargain-positive-roll");
-            if (bargainMod.status !== RollModStatus.Hidden) {
-                bargainMod.held_status = RollModStatus.ForcedOff;
-            }
-        }
-        initReport["[PASS 3] 3. Force-Off BARGAIN Check"] = this.getStatusChanges();
-        this.getActiveRollMods()
-            .filter((rollMod) => rollMod.effectKeys.some((eKey) => /^ForceOff/.test(eKey) && !["ForceOff-Push", "ForceOff-Bargain"].includes(eKey)))
-            .forEach((rollMod) => {
-            const holdKeys = rollMod.effectKeys.filter((key) => /^ForceOff/.test(key));
-            if (holdKeys.length === 0) {
-                return;
-            }
-            while (holdKeys.length) {
-                const thisTarget = holdKeys.pop().split(/-/).pop();
-                const [targetName, targetCat, targetPosNeg] = thisTarget.split(/,/);
-                const targetMod = this.getRollModByName(targetName)
-                    ?? this.getRollModByName(targetName, targetCat ?? rollMod.category)
-                    ?? this.getRollModByName(targetName, targetCat ?? rollMod.category, targetPosNeg ?? rollMod.posNeg);
-                if (!targetMod) {
-                    throw new Error(`No mod found matching ${targetName}/${targetCat}/${targetPosNeg}`);
+        [RollModCategory.roll, RollModCategory.effect].forEach((cat, i) => {
+            if (this.isPushed(cat)) {
+                const bargainMod = this.getRollModByID("Bargain-positive-roll");
+                if (bargainMod?.isVisible) {
+                    bargainMod.held_status = RollModStatus.ForcedOff;
                 }
-                targetMod.held_status = RollModStatus.ForcedOff;
+                initReport[`[PASS 3.2.${i + 1}] {${U.uCase(cat)}}: Force-Off Bargain Pass`] = this.getStatusChanges();
+            }
+            else {
+                this.getInactivePushMods(cat)
+                    .filter((mod) => !mod.isBasicPush)
+                    .forEach((mod) => { mod.held_status = RollModStatus.Hidden; });
+                initReport[`[PASS 3.2.${i + 1}] {${U.uCase(cat)}}: Hide 'Is-Push' Mods`] = this.getStatusChanges();
             }
         });
-        initReport["[PASS 3] 3. Force-Off OTHER Check"] = this.getStatusChanges();
-                initReport["[PASS 4] RELEVANCY PASS"] = this.getStatusSummary();
-        checkDisableMods = checkDisableMods
-            .filter((rollMod) => !rollMod.setRelevancyStatus());
+                initReport["[PASS 4] *** RELEVANCY PASS ***"] = this.getStatusSummary();
+        this.getVisibleRollMods()
+            .forEach((mod) => { mod.setRelevancyStatus(); });
         initReport["[PASS 4] 1. Relevancy Status Pass"] = this.getStatusChanges();
-                initReport["[PASS 5] OVERPAYMENT PASS"] = this.getStatusSummary();
-        const specialArmorMods = this.getVisibleRollMods().filter((mod) => mod.effectKeys.includes("Cost-SpecialArmor"))
-            .sort((modA, modB) => {
-            return Object.values(RollModStatus).findIndex((status) => status === modA.status)
-                - Object.values(RollModStatus).findIndex((status) => status === modB.status);
-        });
-        if (specialArmorMods.length && specialArmorMods.shift().isActive) {
-            specialArmorMods.forEach((rollMod) => { rollMod.held_status = RollModStatus.ForcedOff; });
+                initReport["[PASS 5] *** OVERPAYMENT PASS ***"] = this.getStatusSummary();
+        const activeArmorCostMod = this.getActiveRollMods().find((mod) => mod.effectKeys.includes("Cost-SpecialArmor"));
+        if (activeArmorCostMod) {
+            this.getVisibleRollMods()
+                .filter((mod) => !mod.isActive && mod.effectKeys.includes("Cost-SpecialArmor"))
+                .forEach((mod) => { mod.held_status = RollModStatus.ForcedOff; });
         }
-        initReport["[PASS 5] 1. Special Armor Force-Off Pass"] = this.getStatusChanges();
+        initReport["[PASS 5.1] Special Armor Force-Off Pass"] = this.getStatusChanges();
         eLog.checkLog2("rollMods", "*** initRollMods() PASS ***", initReport);
     }
     isTraitRelevant(trait) {
@@ -2231,11 +2163,11 @@ class BladesRollCollab extends DocumentSheet {
         this.rollFactorPenaltiesNegated[factor] = true;
     }
     tempGMBoosts = {};
-    get isRollPushed() {
-        return (this.getRollModByID("Push-negative-roll")?.isActive || this.getRollModByID("Push-positive-roll")?.isActive || this.getRollModByID("Push-positive-effect")?.isActive) ?? false;
-    }
+    isPushed(cat) { return this.getActiveBasicPushMods(cat).length > 0; }
+    hasOpenPush(cat) { return this.isPushed(cat) && this.getOpenPushMods(cat).length > 0; }
+    isForcePushed(cat) { return this.isPushed(cat) && this.getForcedPushMods(cat).length > 0; }
     get rollCosts() {
-        if (!this.isRollPushed) {
+        if (!this.isPushed) {
             return 0;
         }
         const harmPush = this.getRollModByID("Push-negative-roll");
@@ -2261,7 +2193,6 @@ class BladesRollCollab extends DocumentSheet {
             return undefined;
         }
         if (modMatches.length > 1) {
-            eLog.error("rollMods", `Too Many Mods (${modMatches.length}) Match ${name}/${cat}/${posNeg}: [${modMatches.map((rollMod) => rollMod.id).join(", ")}]`);
             return undefined;
         }
         return modMatches[0];
@@ -2277,6 +2208,37 @@ class BladesRollCollab extends DocumentSheet {
     getActiveRollMods(cat, posNeg) {
         return this.getRollMods(cat, posNeg).filter((rollMod) => rollMod.isActive);
     }
+    getVisibleInactiveRollMods(cat, posNeg) {
+        return this.getVisibleRollMods(cat, posNeg).filter((rollMod) => !rollMod.isActive);
+    }
+    getPushMods(cat, posNeg) {
+        return this.getRollMods(cat, posNeg).filter((rollMod) => rollMod.isPush);
+    }
+    getVisiblePushMods(cat, posNeg) {
+        return this.getPushMods(cat, posNeg).filter((rollMod) => rollMod.isVisible);
+    }
+    getActivePushMods(cat, posNeg) {
+        return this.getVisiblePushMods(cat, posNeg).filter((rollMod) => rollMod.isActive);
+    }
+    getActiveBasicPushMods(cat, posNeg) {
+        return this.getActivePushMods(cat, posNeg).filter((rollMod) => rollMod.isBasicPush);
+    }
+    getInactivePushMods(cat, posNeg) {
+        return this.getVisiblePushMods(cat, posNeg).filter((rollMod) => !rollMod.isActive);
+    }
+    getInactiveBasicPushMods(cat, posNeg) {
+        return this.getInactivePushMods(cat, posNeg).filter((rollMod) => rollMod.isBasicPush);
+    }
+    getForcedPushMods(cat, posNeg) {
+        return this.getActivePushMods(cat, posNeg)
+            .filter((rollMod) => rollMod.isBasicPush
+            && rollMod.status === RollModStatus.ForcedOn);
+    }
+    getOpenPushMods(cat, posNeg) {
+        return this.getActivePushMods(cat, posNeg)
+            .filter((rollMod) => rollMod.isBasicPush
+            && rollMod.status === RollModStatus.ToggledOn);
+    }
     getModsDelta = (cat) => {
         return U.sum([
             ...this.getActiveRollMods(cat, "positive").map((mod) => mod.value),
@@ -2289,10 +2251,22 @@ class BladesRollCollab extends DocumentSheet {
             throw new Error("[get rollMods] No roll mods found!");
         }
         return this._rollMods.sort((modA, modB) => {
-            if (isPushMod(modA)) {
+            if (modA.isBasicPush) {
                 return -1;
             }
-            if (isPushMod(modB)) {
+            if (modB.isBasicPush) {
+                return 1;
+            }
+            if (modA.name === "Bargain" && modA.isActive) {
+                return -1;
+            }
+            if (modB.name === "Bargain" && modB.isActive) {
+                return 1;
+            }
+            if (modA.isPush) {
+                return -1;
+            }
+            if (modB.isPush) {
                 return 1;
             }
             if (modA.name === "Bargain") {

@@ -5,9 +5,8 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase, RollModCategory, Factor, RollModStatus } from "./core/constants.js";
+import C, { BladesItemType, Tag, RollModCategory, Factor, RollModStatus } from "./core/constants.js";
 import U from "./core/utilities.js";
-import BladesActor from "./blades-actor.js";
 class BladesItem extends Item {
 
     static async create(data, options = {}) {
@@ -114,9 +113,6 @@ class BladesItem extends Item {
                 if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
                     return 0 + (this.system.scale_bonus ?? 0);
                 }
-                if (BladesItem.IsType(this, BladesItemType.location)) {
-                    return this.system.scale;
-                }
                 return 0;
             }
             case Factor.magnitude: {
@@ -136,14 +132,6 @@ class BladesItem extends Item {
     async unarchive() {
         await this.remTag(Tag.System.Archived);
         return this;
-    }
-    
-    
-    get phase() { return BladesItem.IsType(this, BladesItemType.gm_tracker) && this.system.phase; }
-    set phase(phase) {
-        if (phase && BladesItem.IsType(this, BladesItemType.gm_tracker)) {
-            this.update({ "system.phase": phase });
-        }
     }
     
     
@@ -231,10 +219,9 @@ class BladesItem extends Item {
         return rollModsData;
     }
     get rollFactors() {
-        const factors = {
+        const factorsMap = {
             [BladesItemType.ability]: [],
             [BladesItemType.background]: [],
-            [BladesItemType.clock_keeper]: [],
             [BladesItemType.cohort_gang]: [Factor.quality, Factor.scale],
             [BladesItemType.cohort_expert]: [Factor.quality, Factor.scale],
             [BladesItemType.crew_ability]: [],
@@ -242,7 +229,6 @@ class BladesItem extends Item {
             [BladesItemType.crew_playbook]: [],
             [BladesItemType.crew_upgrade]: [],
             [BladesItemType.feature]: [],
-            [BladesItemType.gm_tracker]: [],
             [BladesItemType.heritage]: [],
             [BladesItemType.gear]: [Factor.quality],
             [BladesItemType.playbook]: [],
@@ -251,10 +237,12 @@ class BladesItem extends Item {
             [BladesItemType.vice]: [],
             [BladesItemType.project]: [Factor.quality],
             [BladesItemType.ritual]: [Factor.magnitude],
-            [BladesItemType.design]: [Factor.quality],
-            [BladesItemType.location]: [Factor.tier, Factor.quality, Factor.scale],
-            [BladesItemType.score]: [Factor.tier]
-        }[this.type];
+            [BladesItemType.design]: [Factor.quality]
+        };
+        if (!factorsMap[this.type]) {
+            return {};
+        }
+        const factors = factorsMap[this.type];
         const factorData = {};
         factors.forEach((factor, i) => {
             const factorTotal = this.getFactorTotal(factor);
@@ -276,17 +264,12 @@ class BladesItem extends Item {
     get rollOppImg() { return this.img ?? undefined; }
 
     prepareDerivedData() {
-        if (BladesItem.IsType(this, BladesItemType.clock_keeper)) {
-            this._prepareClockKeeperData(this.system);
-        }
+        super.prepareDerivedData();
         if (BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
             this._prepareCohortData(this.system);
         }
         if (BladesItem.IsType(this, BladesItemType.crew_playbook)) {
             this._preparePlaybookData(this.system);
-        }
-        if (BladesItem.IsType(this, BladesItemType.gm_tracker)) {
-            this._prepareGmTrackerData(this.system);
         }
         if (BladesItem.IsType(this, BladesItemType.gear)) {
             this._prepareGearData(this.system);
@@ -294,23 +277,6 @@ class BladesItem extends Item {
         if (BladesItem.IsType(this, BladesItemType.playbook)) {
             this._preparePlaybookData(this.system);
         }
-    }
-    _prepareClockKeeperData(system) {
-        if (!BladesItem.IsType(this, BladesItemType.clock_keeper)) {
-            return;
-        }
-        system.scenes = game.scenes.map((scene) => ({ id: scene.id, name: scene.name ?? "" }));
-        system.targetScene ??= game.scenes.current?.id || null;
-        system.clock_keys = Object.fromEntries(Object.entries(system.clock_keys ?? {})
-            .filter(([keyID, keyData]) => keyData && keyData.id)
-            .map(([keyID, keyData]) => {
-            if (keyData === null) {
-                return [keyID, null];
-            }
-            keyData.clocks = Object.fromEntries(Object.entries(keyData.clocks ?? {})
-                .filter(([clockNum, clockData]) => Boolean(clockData)));
-            return [keyID, keyData];
-        }));
     }
     _prepareCohortData(system) {
         if (!BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
@@ -369,12 +335,6 @@ class BladesItem extends Item {
             }
         }
     }
-    _prepareGmTrackerData(system) {
-        if (!BladesItem.IsType(this, BladesItemType.gm_tracker)) {
-            return;
-        }
-        system.phases = Object.values(BladesPhase);
-    }
     _prepareGearData(system) {
         if (!BladesItem.IsType(this, BladesItemType.gear)) {
             return;
@@ -394,166 +354,6 @@ class BladesItem extends Item {
             [...Object.values(system.gather_info_questions).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
             system.gather_info_questions = gatherInfoData;
             eLog.checkLog3("gatherInfoQuestions", { gatherInfoData });
-        }
-    }
-
-    _overlayElement;
-    get overlayElement() {
-        this._overlayElement ??= $("#clocks-overlay")[0];
-        if (!this._overlayElement) {
-            $("body.vtt.game.system-eunos-blades").append("<section id=\"clocks-overlay\"></section>");
-            [this._overlayElement] = $("#clocks-overlay");
-        }
-        return this._overlayElement;
-    }
-    async renderOverlay() {
-        if (!game.scenes?.current) {
-            return;
-        }
-        if (!game.eunoblades.ClockKeeper) {
-            return;
-        }
-        if (!game.eunoblades.ClockKeeper.overlayElement) {
-            eLog.error("clocksOverlay", "[ClocksOverlay] Cannot locate overlay element.");
-            return;
-        }
-        game.eunoblades.ClockKeeper.overlayElement.innerHTML = (await getTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs"))({
-            ...game.eunoblades.ClockKeeper.system,
-            currentScene: game.scenes?.current.id,
-            clockSizes: C.ClockSizes,
-            svgData: SVGDATA
-        });
-        game.eunoblades.ClockKeeper.activateOverlayListeners();
-    }
-    async activateOverlayListeners() {
-        if (!game?.user?.isGM) {
-            return;
-        }
-        $("#clocks-overlay").find(".clock-frame").on("wheel", async (event) => {
-            if (!event.currentTarget) {
-                return;
-            }
-            if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) {
-                return;
-            }
-            if (!(event.originalEvent instanceof WheelEvent)) {
-                return;
-            }
-            event.preventDefault();
-            const clock$ = $(event.currentTarget).closest(".clock");
-            const [key] = clock$.closest(".clock-key");
-            if (!(key instanceof HTMLElement)) {
-                return;
-            }
-            const keyID = key.id;
-            const clockNum = clock$.data("index");
-            const curClockVal = U.pInt(clock$.data("value"));
-            const delta = event.originalEvent.deltaY < 0 ? 1 : -1;
-            const max = U.pInt(clock$.data("size"));
-            const newClockVal = U.gsap.utils.clamp(0, max, curClockVal + delta);
-            if (curClockVal === newClockVal) {
-                return;
-            }
-            await game.eunoblades.ClockKeeper.update({
-                [`system.clock_keys.${keyID}.clocks.${clockNum}.value`]: `${newClockVal}`
-            });
-        });
-
-        $("#clocks-overlay").find(".key-label").on({
-            click: async (event) => {
-                if (!event.currentTarget) {
-                    return;
-                }
-                if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) {
-                    return;
-                }
-                event.preventDefault();
-                const keyID = $(event.currentTarget).data("keyId");
-                eLog.checkLog3("clocksOverlay", "Updating Key isActive", { current: game.eunoblades.ClockKeeper.system.clock_keys[keyID]?.isActive, update: !(game.eunoblades.ClockKeeper.system.clock_keys[keyID]?.isActive) });
-                await game.eunoblades.ClockKeeper.update({ [`system.clock_keys.${keyID}.isActive`]: !(game.eunoblades.ClockKeeper.system.clock_keys[keyID]?.isActive) });
-            },
-            contextmenu: () => {
-                if (!game?.user?.isGM) {
-                    return;
-                }
-                game.eunoblades.ClockKeeper?.sheet?.render(true);
-            }
-        });
-    }
-    async addClockKey() {
-        if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) {
-            return undefined;
-        }
-        const keyID = randomID();
-        return game.eunoblades.ClockKeeper.update({ [`system.clock_keys.${keyID}`]: {
-                id: keyID,
-                display: "",
-                isVisible: false,
-                isNameVisible: true,
-                isActive: true,
-                scene: game.eunoblades.ClockKeeper.system.targetScene,
-                numClocks: 1,
-                clocks: {
-                    1: {
-                        display: "",
-                        isVisible: false,
-                        isNameVisible: false,
-                        isActive: false,
-                        color: "yellow",
-                        max: 4,
-                        value: 0
-                    }
-                }
-            } });
-    }
-    async deleteClockKey(keyID) {
-        if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) {
-            return undefined;
-        }
-        return game.eunoblades.ClockKeeper.update({ [`system.clock_keys.-=${keyID}`]: null });
-    }
-    async setKeySize(keyID, keySize = 1) {
-        if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) {
-            return undefined;
-        }
-        keySize = parseInt(`${keySize}`);
-        const updateData = {
-            [`system.clock_keys.${keyID}.numClocks`]: keySize
-        };
-        const clockKey = game.eunoblades.ClockKeeper.system.clock_keys[keyID];
-        if (!clockKey) {
-            return game.eunoblades.ClockKeeper;
-        }
-        const currentSize = Object.values(clockKey.clocks).length;
-        if (currentSize < keySize) {
-            for (let i = (currentSize + 1); i <= keySize; i++) {
-                updateData[`system.clock_keys.${keyID}.clocks.${i}`] = {
-                    display: "",
-                    value: 0,
-                    max: 4,
-                    color: "yellow",
-                    isVisible: false,
-                    isNameVisible: true,
-                    isActive: false
-                };
-            }
-        }
-        else if (currentSize > keySize) {
-            for (let i = (keySize + 1); i <= currentSize; i++) {
-                updateData[`system.clock_keys.${keyID}.clocks.-=${i}`] = null;
-            }
-        }
-        eLog.checkLog("clock_key", "Clock Key Update Data", { clockKey, updateData });
-        return game.eunoblades.ClockKeeper.update(updateData);
-    }
-
-    async _onUpdate(changed, options, userId) {
-        await super._onUpdate(changed, options, userId);
-        if (BladesItem.IsType(this, BladesItemType.gm_tracker, BladesItemType.clock_keeper, BladesItemType.location, BladesItemType.score)) {
-            BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
-        }
-        if (BladesItem.IsType(this, BladesItemType.clock_keeper)) {
-            socketlib.system.executeForEveryone("renderOverlay");
         }
     }
 }

@@ -9,6 +9,10 @@ import G, {Initialize as GsapInitialize} from "./core/gsap.js";
 
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
+
+import BladesActorProxy from "./documents/blades-actor-proxy.js";
+import BladesItemProxy from "./documents/blades-item-proxy.js";
+
 import BladesItemSheet from "./sheets/item/blades-item-sheet.js";
 import BladesActorSheet from "./sheets/actor/blades-actor-sheet.js";
 import BladesCrewSheet from "./sheets/actor/blades-crew-sheet.js";
@@ -298,8 +302,8 @@ Hooks.once("init", async () => {
   GsapInitialize();
   initFonts();
 
-  CONFIG.Item.documentClass = BladesItem;
-  CONFIG.Actor.documentClass = BladesActor;
+  CONFIG.Item.documentClass = BladesItemProxy as any;
+  CONFIG.Actor.documentClass = BladesActorProxy as any;
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);

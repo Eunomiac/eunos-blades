@@ -2,14 +2,15 @@
 import {BladesItemType} from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../../blades-item.js";
+import BladesClockKeeper from "../../documents/items/blades-clock-keeper.js";
 
 type BladesClockKeeperSheetData = Partial<BladesItemSheetData> & {
   clock_keys: Record<string, BladesMultiClockData>
 };
 
-export default class BladesClockKeeperSheet extends BladesItemSheet {
+class BladesClockKeeperSheet extends BladesItemSheet {
 
-  static Get() { return game.eunoblades.ClockKeeper as BladesItemOfType<BladesItemType.gm_tracker> }
+  static Get() { return game.eunoblades.ClockKeeper as BladesClockKeeper }
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -24,13 +25,13 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
     game.eunoblades ??= {};
     Items.registerSheet("blades", BladesClockKeeperSheet, {types: ["clock_keeper"], makeDefault: true});
     Hooks.once("ready", async () => {
-      let clockKeeper: BladesItem|undefined = game.items.find((item) => item.type === "clock_keeper");
-      if (!(clockKeeper instanceof BladesItem)) {
-        clockKeeper = (await BladesItem.create({
+      let clockKeeper: BladesClockKeeper|undefined = game.items.find((item): item is BladesClockKeeper => item.type === "clock_keeper");
+      if (!(clockKeeper instanceof BladesClockKeeper)) {
+        clockKeeper = (await BladesClockKeeper.create({
           name: "Clock Keeper",
           type: "clock_keeper",
           img: "systems/eunos-blades/assets/icons/misc-icons/clock-keeper.svg"
-        })) as BladesItem;
+        })) as BladesClockKeeper;
       }
       game.eunoblades.ClockKeeper = clockKeeper;
       game.eunoblades.ClockKeeper.renderOverlay();
@@ -101,3 +102,9 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
     html.find(".key-clock-counter").on("change", this.setKeySize.bind(this));
   }
 }
+
+declare interface BladesClockKeeperSheet {
+  item: BladesClockKeeper
+}
+
+export default BladesClockKeeperSheet;

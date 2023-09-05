@@ -5,9 +5,10 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import { BladesActorType, BladesPhase } from "../../core/constants.js";
+import { BladesActorType, BladesItemType, BladesPhase } from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../../blades-item.js";
+import BladesGMTracker from "../../documents/items/blades-gm-tracker.js";
 export var BladesTipContext;
 (function (BladesTipContext) {
     BladesTipContext["DiceRoll"] = "DiceRoll";
@@ -53,9 +54,9 @@ class BladesTrackerSheet extends BladesItemSheet {
         game.eunoblades ??= {};
         Items.registerSheet("blades", BladesTrackerSheet, { types: ["gm_tracker"], makeDefault: true });
         Hooks.once("ready", async () => {
-            let tracker = game.items.find((item) => item.type === "gm_tracker");
-            if (!(tracker instanceof BladesItem)) {
-                tracker = (await BladesItem.create({
+            let tracker = game.items.find((item) => BladesItem.IsType(item, BladesItemType.gm_tracker));
+            if (!(tracker instanceof BladesGMTracker)) {
+                tracker = (await BladesGMTracker.create({
                     name: "GM Tracker",
                     type: "gm_tracker",
                     img: "systems/eunos-blades/assets/icons/misc-icons/gm-tracker.svg"

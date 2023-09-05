@@ -212,21 +212,22 @@
     color: var(--blades-white);
     background: var(--blades-black-dark);
 
-    width: max-content;
-    max-width: 400px;
+    width: auto;
+    // max-width: 400px;
 
-    padding: toRem(6px);
+    padding: 0 toRem(5px);
     border: #{toRem(1px)} solid var(--blades-grey);
     border-radius: toRem(3px);
 
-    hyphens: auto;
-    text-align: justify;
+    // hyphens: auto;
+    text-align: center;
+    // text-wrap: balance;
 
     position: absolute;
     top: unset;
     left: -200px;
     bottom: 50px;
-    z-index: zLevel(+4);
+    z-index: zLevel(+10);
 
     pointer-events: none;
 
@@ -242,13 +243,21 @@
       width: 90%;
       margin: 0 auto;
       border-bottom: 2px solid var(--blades-white);
+      white-space: nowrap;
 
       &:last-of-type { margin-bottom: 5px }
     }
 
     > p {
-      margin: 0;
+      margin: 5px 0;
       text-wrap: balance;
+    }
+
+    > ul, ol {
+      margin: 5px 0;
+      text-align: left;
+      text-wrap: normal;
+      li { text-wrap: normal }
     }
 
     h2 {
