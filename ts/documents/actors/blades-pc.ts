@@ -4,12 +4,13 @@ import U from "../../core/utilities.js";
 import BladesActor from "../../blades-actor.js";
 import BladesCrew from "./blades-crew.js";
 import BladesRollCollab from "../../blades-roll-collab.js";
+import MIX, {PlayableCharacterMixin} from "../../core/mixins.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 
 // import MIX, {PlayableCharacterMixin} from "../../core/mixins.js";
 
-class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel {
+class BladesPC extends (MIX(BladesActor).with(PlayableCharacterMixin) as typeof BladesActor & typeof PlayableCharacterMixin) {
 
   // #region Static Overrides: Create ~
   static override async create(data: ActorDataConstructorData & { system?: Partial<BladesActorSchema.Scoundrel> }, options = {}) {
@@ -73,7 +74,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel {
   isMember(crew: BladesCrew) { return this.crew?.id === crew.id }
 
   get vice(): BladesItem | undefined {
-    if (this.type !== BladesActorType.pc) { return undefined }
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined }
     return this.activeSubItems.find((item) => item.type === BladesItemType.vice);
   }
 

@@ -6,7 +6,9 @@ import BladesRollCollab from "../../blades-roll-collab.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 
-class BladesFaction extends BladesActor implements BladesActorSubClass.Faction {
+import MIX, {PlayableCharacterMixin} from "../../core/mixins.js";
+
+class BladesFaction extends (MIX(BladesActor).with(PlayableCharacterMixin) as typeof BladesActor & typeof PlayableCharacterMixin) {
 
 }
 

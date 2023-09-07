@@ -6,6 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import BladesActor from "../../blades-actor.js";
-class BladesNPC extends BladesActor {
+import MIX, { PlayableCharacterMixin } from "../../core/mixins.js";
+class BladesNPC extends MIX(BladesActor).with(PlayableCharacterMixin) {
 }
 export default BladesNPC;

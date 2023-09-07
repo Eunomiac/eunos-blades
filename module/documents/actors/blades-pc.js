@@ -9,7 +9,8 @@ import BladesItem from "../../blades-item.js";
 import C, { Attribute, Harm, BladesActorType, BladesItemType, Tag, RollModCategory, RollModStatus } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesActor from "../../blades-actor.js";
-class BladesPC extends BladesActor {
+import MIX, { PlayableCharacterMixin } from "../../core/mixins.js";
+class BladesPC extends MIX(BladesActor).with(PlayableCharacterMixin) {
 
     static async create(data, options = {}) {
         data.token = data.token || {};
@@ -60,7 +61,7 @@ class BladesPC extends BladesActor {
     }
     isMember(crew) { return this.crew?.id === crew.id; }
     get vice() {
-        if (this.type !== BladesActorType.pc) {
+        if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return undefined;
         }
         return this.activeSubItems.find((item) => item.type === BladesItemType.vice);

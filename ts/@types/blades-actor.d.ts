@@ -155,11 +155,13 @@ declare global {
     DeepPartial<BladesActorSchema.Faction> { }
 
   // Distinguishing schema types for BladesActor subtypes
-  type BladesActorOfType<T extends BladesActorType> = (
+  type BladesActorOfType<T extends BladesActorType | "ANY" = "ANY"> = (
     T extends BladesActorType.pc ? BladesPC
     : T extends BladesActorType.npc ? BladesNPC
     : T extends BladesActorType.crew ? BladesCrew
-    : T extends BladesActorType.faction ? BladesFaction : never
+    : T extends BladesActorType.faction ? BladesFaction
+    : T extends "ANY" ? BladesPC|BladesNPC|BladesCrew|BladesFaction
+    : never
   ) & {
     system: ExtractBladesActorSystem<T>
   };
