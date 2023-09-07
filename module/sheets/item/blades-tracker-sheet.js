@@ -9,6 +9,8 @@ import { BladesActorType, BladesItemType, BladesPhase } from "../../core/constan
 import BladesItemSheet from "./blades-item-sheet.js";
 import BladesItem from "../../blades-item.js";
 import BladesGMTracker from "../../documents/items/blades-gm-tracker.js";
+import BladesActor from "../../blades-actor.js";
+import BladesPC from "../../documents/actors/blades-pc.js";
 export var BladesTipContext;
 (function (BladesTipContext) {
     BladesTipContext["DiceRoll"] = "DiceRoll";
@@ -16,6 +18,13 @@ export var BladesTipContext;
     BladesTipContext["General"] = "General";
 })(BladesTipContext || (BladesTipContext = {}));
 class BladesTipGenerator {
+    static Test(pcActor) {
+        if (BladesActor.IsType(pcActor, BladesActorType.pc)) {
+            return pcActor;
+        }
+        return undefined;
+    }
+    testActor = new BladesPC({ name: "blah", type: "pc" });
     static get Tips() {
         return {
             [BladesTipContext.DiceRoll]: [],
@@ -55,7 +64,7 @@ class BladesTrackerSheet extends BladesItemSheet {
         Items.registerSheet("blades", BladesTrackerSheet, { types: ["gm_tracker"], makeDefault: true });
         Hooks.once("ready", async () => {
             let tracker = game.items.find((item) => BladesItem.IsType(item, BladesItemType.gm_tracker));
-            if (!(tracker instanceof BladesGMTracker)) {
+            if (!tracker) {
                 tracker = (await BladesGMTracker.create({
                     name: "GM Tracker",
                     type: "gm_tracker",
@@ -88,7 +97,7 @@ class BladesTrackerSheet extends BladesItemSheet {
                 }
                 case BladesPhase.Score: {
                     isForcingRender = false;
-                    game.actors.filter((actor) => actor.type === BladesActorType.pc)
+                    game.actors.filter((actor) => BladesActor.IsType(actor, BladesActorType.pc))
                         .forEach((actor) => actor.clearLoadout());
                     break;
                 }

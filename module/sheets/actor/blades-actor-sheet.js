@@ -131,45 +131,47 @@ class BladesActorSheet extends BladesSheet {
                 svgEmpty: "full|half|frame"
             }
         };
-        sheetData.traumaData = {
-            label: this.actor.system.trauma.name,
-            dotline: {
-                data: { value: this.actor.trauma, max: this.actor.system.trauma.max },
-                svgKey: "teeth.short",
-                svgFull: "full|frame",
-                svgEmpty: "frame",
-                isLocked: true
-            },
-            compContainer: {
-                "class": "comp-trauma-conditions comp-vertical full-width",
-                "blocks": [
-                    this.actor.traumaList.slice(0, Math.ceil(this.actor.traumaList.length / 2))
-                        .map((tName) => ({
-                        checkLabel: tName,
-                        checkClasses: {
-                            active: "comp-toggle-red",
-                            inactive: "comp-toggle-grey"
-                        },
-                        checkTarget: `system.trauma.checked.${tName}`,
-                        checkValue: this.actor.system.trauma.checked[tName] ?? false,
-                        tooltip: C.TraumaTooltips[tName],
-                        tooltipClass: "tooltip-trauma"
-                    })),
-                    this.actor.traumaList.slice(Math.ceil(this.actor.traumaList.length / 2))
-                        .map((tName) => ({
-                        checkLabel: tName,
-                        checkClasses: {
-                            active: "comp-toggle-red",
-                            inactive: "comp-toggle-grey"
-                        },
-                        checkTarget: `system.trauma.checked.${tName}`,
-                        checkValue: this.actor.system.trauma.checked[tName] ?? false,
-                        tooltip: C.TraumaTooltips[tName],
-                        tooltipClass: "tooltip-trauma"
-                    }))
-                ]
-            }
-        };
+        if (BladesActor.IsType(this.actor, BladesActorType.pc)) {
+            sheetData.traumaData = {
+                label: this.actor.system.trauma.name,
+                dotline: {
+                    data: { value: this.actor.trauma, max: this.actor.system.trauma.max },
+                    svgKey: "teeth.short",
+                    svgFull: "full|frame",
+                    svgEmpty: "frame",
+                    isLocked: true
+                },
+                compContainer: {
+                    "class": "comp-trauma-conditions comp-vertical full-width",
+                    "blocks": [
+                        this.actor.traumaList.slice(0, Math.ceil(this.actor.traumaList.length / 2))
+                            .map((tName) => ({
+                            checkLabel: tName,
+                            checkClasses: {
+                                active: "comp-toggle-red",
+                                inactive: "comp-toggle-grey"
+                            },
+                            checkTarget: `system.trauma.checked.${tName}`,
+                            checkValue: this.actor.system.trauma.checked[tName] ?? false,
+                            tooltip: C.TraumaTooltips[tName],
+                            tooltipClass: "tooltip-trauma"
+                        })),
+                        this.actor.traumaList.slice(Math.ceil(this.actor.traumaList.length / 2))
+                            .map((tName) => ({
+                            checkLabel: tName,
+                            checkClasses: {
+                                active: "comp-toggle-red",
+                                inactive: "comp-toggle-grey"
+                            },
+                            checkTarget: `system.trauma.checked.${tName}`,
+                            checkValue: this.actor.system.trauma.checked[tName] ?? false,
+                            tooltip: C.TraumaTooltips[tName],
+                            tooltipClass: "tooltip-trauma"
+                        }))
+                    ]
+                }
+            };
+        }
         sheetData.abilityData = {
             dotline: {
                 dotlineClass: "dotline-right dotline-glow",

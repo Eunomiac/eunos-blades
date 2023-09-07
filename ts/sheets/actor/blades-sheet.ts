@@ -5,6 +5,10 @@ import G, {ApplyTooltipListeners} from "../../core/gsap.js";
 import C, {Tag, BladesActorType, BladesItemType, BladesPermissions, RollType, Action, Attribute, Factor} from "../../core/constants.js";
 import Tags from "../../core/tags.js";
 import BladesActor from "../../blades-actor.js";
+import BladesPC from "../../documents/actors/blades-pc.js";
+import BladesNPC from "../../documents/actors/blades-npc.js";
+import BladesFaction from "../../documents/actors/blades-faction.js";
+import BladesCrew from "../../documents/actors/blades-crew.js";
 import BladesItem from "../../blades-item.js";
 import BladesSelectorDialog, {SelectionCategory} from "../../blades-dialog.js";
 import BladesActiveEffect from "../../blades-active-effect.js";
@@ -116,7 +120,7 @@ class BladesSheet extends ActorSheet {
       }
     };
 
-    if (BladesActor.IsType(this.actor, BladesActorType.pc, BladesActorType.crew)) {
+    if (BladesActor.IsType(this.actor, BladesActorType.pc) || BladesActor.IsType(this.actor, BladesActorType.crew)) {
       sheetData.playbookData = {
         dotline: {
           data: this.actor.system.experience.playbook,
@@ -484,7 +488,7 @@ class BladesSheet extends ActorSheet {
     }
 
     if (game.user.isGM) {
-      if (BladesActor.IsType(this.document, BladesActorType.pc, BladesActorType.crew)) {
+      if (BladesActor.IsType(this.document, BladesActorType.pc) || BladesActor.IsType(this.document, BladesActorType.crew)) {
         rollData.rollSource = this.document;
       } else {
         rollData.rollOpposition = this.document as BladesActor;

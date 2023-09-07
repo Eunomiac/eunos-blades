@@ -23,7 +23,6 @@
       {{#each system.subtypes as |subtype|}}
         <input class="shadowed cohort-type-input" type="text" value="{{subtype}}" name="system.subtypes.{{calc @index "+" 1}}" />
       {{/each}}
-      {{log this}}
       <input class="shadowed cohort-type-input" type="text" value="" name="system.subtypes.{{calc (count system.subtypes) "+" 1}}" />
     </section>
     {{/if}}

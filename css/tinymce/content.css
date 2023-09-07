@@ -304,13 +304,6 @@ html, :root {
       -webkit-box-pack: space-evenly;
       -ms-flex-pack: space-evenly;
       justify-content: space-evenly; }
-    html .comp.portrait-container, :root .comp.portrait-container {
-      -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-      width: 100%; }
-    html .comp.comp-labeled-input, :root .comp.comp-labeled-input {
-      gap: 5px;
-      margin-right: 5px; }
     html .comp .comp-control, html .comp .comp-title, html .comp .portrait-block.comp-body, :root .comp .comp-control, :root .comp .comp-title, :root .comp .portrait-block.comp-body {
       -webkit-transition: 0.25s;
       transition: 0.25s;
@@ -430,341 +423,6 @@ html, :root {
       color: var(--blades-white-bright);
       width: toRem(32px);
       text-align: center; }
-    html .comp.comp-vertical, :root .comp.comp-vertical {
-      --comp-img-scale: 2;
-      --comp-name-size: toRem(16px);
-      -webkit-box-orient: vertical;
-      -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-      flex-direction: column;
-      pointer-events: auto;
-      --main-title-color: #AAA; }
-      html .comp.comp-vertical .comp-button.comp-delete, :root .comp.comp-vertical .comp-button.comp-delete {
-        left: 75%;
-        top: 0%; }
-      html .comp.comp-vertical > .comp-label, :root .comp.comp-vertical > .comp-label {
-        text-align: center; }
-        html .comp.comp-vertical > .comp-label.comp-prompt, :root .comp.comp-vertical > .comp-label.comp-prompt {
-          height: toRem(12px);
-          margin-top: toRem(-10px); }
-      html .comp.comp-vertical .comp-title, :root .comp.comp-vertical .comp-title {
-        text-align: center;
-        font-family: var(--font-emphasis);
-        font-size: var(--comp-name-size);
-        text-transform: uppercase;
-        padding-top: 0px; }
-      html .comp.comp-vertical .comp-body, :root .comp.comp-vertical .comp-body {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        min-height: toRem(48px);
-        width: 100%; }
-        html .comp.comp-vertical .comp-body > img, :root .comp.comp-vertical .comp-body > img {
-          position: absolute;
-          -webkit-transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
-          -ms-transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
-          transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
-          opacity: 0.5;
-          -webkit-filter: blur(0.5px);
-          filter: blur(0.5px);
-          top: 50%;
-          left: 50%;
-          height: 100%;
-          z-index: zLevel(-2);
-          pointer-events: none; }
-        html .comp.comp-vertical .comp-body .comp-body-text, :root .comp.comp-vertical .comp-body .comp-body-text {
-          display: none; }
-      html .comp.comp-vertical.portrait-block, :root .comp.comp-vertical.portrait-block {
-        height: 80px;
-        -ms-flex-preferred-size: toRem(80px);
-        flex-basis: toRem(80px);
-        min-width: 90px;
-        margin: 10px 0; }
-        html .comp.comp-vertical.portrait-block .comp-label.shadowed, :root .comp.comp-vertical.portrait-block .comp-label.shadowed {
-          margin-top: -10px;
-          margin-bottom: 10px; }
-        html .comp.comp-vertical.portrait-block .comp-button.comp-delete, :root .comp.comp-vertical.portrait-block .comp-button.comp-delete {
-          left: 5px;
-          right: unset;
-          top: 62px; }
-        html .comp.comp-vertical.portrait-block .comp-body, :root .comp.comp-vertical.portrait-block .comp-body {
-          -webkit-filter: drop-shadow(0 0 toRem(2px) var(--blades-black-dark));
-          filter: drop-shadow(0 0 toRem(2px) var(--blades-black-dark));
-          width: 100%; }
-          html .comp.comp-vertical.portrait-block .comp-body .comp-title, :root .comp.comp-vertical.portrait-block .comp-body .comp-title {
-            position: absolute;
-            top: 80%;
-            left: 50%;
-            -webkit-transform: translate(-50%, -50%) scale(70%);
-            -ms-transform: translate(-50%, -50%) scale(70%);
-            transform: translate(-50%, -50%) scale(70%);
-            color: var(--blades-grey); }
-            html .comp.comp-vertical.portrait-block .comp-body .comp-title:hover, :root .comp.comp-vertical.portrait-block .comp-body .comp-title:hover {
-              -webkit-transform: translate(-50%, -50%) scale(100%);
-              -ms-transform: translate(-50%, -50%) scale(100%);
-              transform: translate(-50%, -50%) scale(100%);
-              color: var(--blades-white-bright); }
-          html .comp.comp-vertical.portrait-block .comp-body .comp-img, :root .comp.comp-vertical.portrait-block .comp-body .comp-img {
-            --comp-img-scale: 1.5;
-            height: 100%;
-            opacity: 1;
-            -webkit-filter: none;
-            filter: none;
-            -webkit-clip-path: ellipse(50% 50% at 50% 50%);
-            clip-path: ellipse(50% 50% at 50% 50%);
-            z-index: 1;
-            position: absolute;
-            top: -5px; }
-      html .comp.comp-vertical.comp-playbook, :root .comp.comp-vertical.comp-playbook {
-        --comp-img-scaleX: -2;
-        --comp-img-scaleY: 2;
-        --comp-name-size: toRem(42px);
-        position: relative;
-        top: toRem(20px);
-        margin-bottom: toRem(-68px);
-        z-index: zLevel(-2); }
-        html .comp.comp-vertical.comp-playbook .comp-button.comp-delete, :root .comp.comp-vertical.comp-playbook .comp-button.comp-delete {
-          left: unset;
-          right: toRem(5px);
-          top: -10px; }
-        html .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add, :root .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add {
-          display: none; }
-        html .comp.comp-vertical.comp-playbook .comp-body img, :root .comp.comp-vertical.comp-playbook .comp-body img {
-          height: toRem(120px);
-          width: auto;
-          opacity: 1;
-          -webkit-filter: blur(1px);
-          filter: blur(1px);
-          position: absolute; }
-        html .comp.comp-vertical.comp-playbook .comp-body .comp-title, :root .comp.comp-vertical.comp-playbook .comp-body .comp-title {
-          width: 100%;
-          height: 100%;
-          font-family: var(--font-emphasis-alt);
-          color: var(--blades-white-bright);
-          text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
-          font-size: toRem(70px);
-          text-transform: lowercase;
-          text-align: right;
-          padding-right: toRem(4px);
-          margin-bottom: toRem(45px);
-          margin-top: toRem(15px); }
-    html .comp.comp-horizontal, :root .comp.comp-horizontal {
-      -webkit-box-orient: horizontal;
-      -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-      flex-direction: row;
-      -webkit-box-pack: start;
-      -ms-flex-pack: start;
-      justify-content: flex-start;
-      -webkit-box-align: start;
-      -ms-flex-align: start;
-      align-items: flex-start; }
-      html .comp.comp-horizontal .comp-button.comp-delete, :root .comp.comp-horizontal .comp-button.comp-delete {
-        left: toRem(5px);
-        top: unset;
-        bottom: 0; }
-      html .comp.comp-horizontal > .comp-label, :root .comp.comp-horizontal > .comp-label {
-        text-align: right;
-        font-size: toRem(14px);
-        line-height: toRem(18px);
-        margin: 0; }
-        html .comp.comp-horizontal > .comp-label.comp-input-label, :root .comp.comp-horizontal > .comp-label.comp-input-label {
-          line-height: toRem(26px);
-          margin: 0 5px 0 10px; }
-      html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
-        -webkit-box-pack: start;
-        -ms-flex-pack: start;
-        justify-content: flex-start;
-        -webkit-box-align: start;
-        -ms-flex-align: start;
-        align-items: flex-start; }
-      html .comp.comp-horizontal.comp-desc-trait, :root .comp.comp-horizontal.comp-desc-trait {
-        -webkit-box-align: start;
-        -ms-flex-align: start;
-        align-items: flex-start;
-        padding: toRem(5px) 0; }
-        html .comp.comp-horizontal.comp-desc-trait:first-of-type, :root .comp.comp-horizontal.comp-desc-trait:first-of-type {
-          margin-top: toRem(-5px); }
-        html .comp.comp-horizontal.comp-desc-trait:not(:first-of-type), :root .comp.comp-horizontal.comp-desc-trait:not(:first-of-type) {
-          border-top: 1px solid var(--blades-white); }
-        html .comp.comp-horizontal.comp-desc-trait .comp-label, :root .comp.comp-horizontal.comp-desc-trait .comp-label {
-          min-width: 20px;
-          max-width: 20px;
-          min-height: 20px;
-          max-height: 20px;
-          margin-top: -5px;
-          margin-left: 3px;
-          margin-right: -20px;
-          z-index: 15; }
-        html .comp.comp-horizontal.comp-desc-trait .comp-body, :root .comp.comp-horizontal.comp-desc-trait .comp-body {
-          min-height: toRem(50px); }
-          html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img {
-            position: absolute;
-            height: 50px;
-            -webkit-transform: translate(-50%, -50%);
-            -ms-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-            top: 50%;
-            left: toRem(50px);
-            -webkit-filter: blur(1px);
-            filter: blur(1px);
-            opacity: 0.5; }
-          html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title {
-            position: relative;
-            width: toRem(100px);
-            -ms-flex-negative: 0;
-            flex-shrink: 0;
-            -webkit-box-flex: 0;
-            -ms-flex-positive: 0;
-            flex-grow: 0;
-            min-height: toRem(40px);
-            -ms-flex-item-align: start;
-            align-self: flex-start;
-            color: var(--blades-white-bright);
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-            -webkit-box-orient: vertical;
-            -webkit-box-direction: normal;
-            -ms-flex-direction: column;
-            flex-direction: column;
-            -webkit-box-pack: start;
-            -ms-flex-pack: start;
-            justify-content: flex-start;
-            -webkit-box-align: center;
-            -ms-flex-align: center;
-            align-items: center;
-            font-family: var(--font-emphasis);
-            font-size: toRem(14px);
-            padding: 0 toRem(7px);
-            text-align: center;
-            z-index: 1;
-            line-height: var(--line-height-default); }
-          html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline {
-            position: relative;
-            -webkit-transform: translate(-50%, 0);
-            -ms-transform: translate(-50%, 0);
-            transform: translate(-50%, 0);
-            left: 50%;
-            bottom: 0; }
-            html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label {
-              margin-right: 5px;
-              font-weight: bold; }
-          html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-            font-family: "Minion Pro Caption Cond";
-            -webkit-hyphens: auto;
-            -ms-hyphens: auto;
-            hyphens: auto;
-            text-align: justify;
-            padding: 0 toRem(5px) 0 0;
-            line-height: var(--line-height-compact);
-            -webkit-box-flex: 1;
-            -ms-flex-positive: 1;
-            flex-grow: 1; }
-            html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type), :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type) {
-              margin-bottom: 6px; }
-    html .comp.comp-teeth.comp-horizontal .dotline, :root .comp.comp-teeth.comp-horizontal .dotline {
-      padding-left: toRem(4px);
-      --dotline-dot-sizeX: toRem(18px);
-      --dotline-dot-spacing: toRem(4px); }
-      html .comp.comp-teeth.comp-horizontal .dotline .dot, :root .comp.comp-teeth.comp-horizontal .dotline .dot {
-        -ms-flex-negative: 1;
-        flex-shrink: 1; }
-    html .comp.comp-teeth.comp-horizontal.comp-xp, :root .comp.comp-teeth.comp-horizontal.comp-xp {
-      z-index: zLevel(1); }
-      html .comp.comp-teeth.comp-horizontal.comp-xp .comp-label, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-label {
-        -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-        flex-grow: 1; }
-      html .comp.comp-teeth.comp-horizontal.comp-xp .comp-body, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body {
-        -webkit-box-pack: end;
-        -ms-flex-pack: end;
-        justify-content: flex-end; }
-        html .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline {
-          --dotline-dot-spacing: toRem(2px);
-          --dotline-horiz-align: flex-end;
-          --frame-color: var(--blades-black);
-          --fill-color-full: var(--blades-gold-bright);
-          --fill-color-empty: rgba(0, 0, 0);
-          --half-color-empty: var(--blades-gold-dark); }
-      html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook {
-        position: absolute;
-        right: 0; }
-        html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline {
-          --dotline-dot-sizeX: toRem(18px); }
-          html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot {
-            -webkit-transform-origin: top;
-            -ms-transform-origin: top;
-            transform-origin: top;
-            -webkit-transition: 0.25s;
-            transition: 0.25s;
-            -webkit-transform: scaleY(1);
-            -ms-transform: scaleY(1);
-            transform: scaleY(1); }
-            html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
-              -webkit-transform: scaleY(0.5);
-              -ms-transform: scaleY(0.5);
-              transform: scaleY(0.5); }
-    html .comp.comp-teeth.comp-vertical, :root .comp.comp-teeth.comp-vertical {
-      -webkit-box-pack: start;
-      -ms-flex-pack: start;
-      justify-content: flex-start;
-      -webkit-box-align: center;
-      -ms-flex-align: center;
-      align-items: center;
-      height: 100%;
-      margin: 0;
-      -webkit-box-flex: 0.5;
-      -ms-flex-positive: 0.5;
-      flex-grow: 0.5; }
-      html .comp.comp-teeth.comp-vertical .comp-body, :root .comp.comp-teeth.comp-vertical .comp-body {
-        top: toRem(-5px); }
-      html .comp.comp-teeth.comp-vertical .dotline-label, :root .comp.comp-teeth.comp-vertical .dotline-label {
-        min-width: toRem(90px);
-        text-align: center;
-        margin-left: toRem(20px); }
-      html .comp.comp-teeth.comp-vertical .dotline, :root .comp.comp-teeth.comp-vertical .dotline {
-        -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-        flex-grow: 1;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        margin-top: -50%;
-        margin-bottom: -50%;
-        --dotline-dot-sizeX: toRem(16px);
-        --dotline-dot-spacing: toRem(4px); }
-    html .comp.comp-coins, html .comp.comp-stash, :root .comp.comp-coins, :root .comp.comp-stash {
-      margin-bottom: 4px;
-      pointer-events: none; }
-      html .comp.comp-coins.comp-coins, html .comp.comp-stash.comp-coins, :root .comp.comp-coins.comp-coins, :root .comp.comp-stash.comp-coins {
-        margin: 0px;
-        -webkit-box-pack: space-evenly;
-        -ms-flex-pack: space-evenly;
-        justify-content: space-evenly; }
-        html .comp.comp-coins.comp-coins .comp-body, html .comp.comp-stash.comp-coins .comp-body, :root .comp.comp-coins.comp-coins .comp-body, :root .comp.comp-stash.comp-coins .comp-body {
-          -ms-flex-negative: 0.5;
-          flex-shrink: 0.5;
-          min-height: unset;
-          margin-top: 5px; }
-      html .comp.comp-coins .dotline, html .comp.comp-stash .dotline, :root .comp.comp-coins .dotline, :root .comp.comp-stash .dotline {
-        --dotline-dot-size: toRem(18px);
-        --dotline-dot-spacing: -2px; }
-        html .comp.comp-coins .dotline .dot.empty-dot, html .comp.comp-stash .dotline .dot.empty-dot, :root .comp.comp-coins .dotline .dot.empty-dot, :root .comp.comp-stash .dotline .dot.empty-dot {
-          -webkit-filter: saturate(0);
-          filter: saturate(0);
-          opacity: 0.5; }
-        html .comp.comp-coins .dotline .dot.full-dot, html .comp.comp-stash .dotline .dot.full-dot, :root .comp.comp-coins .dotline .dot.full-dot, :root .comp.comp-stash .dotline .dot.full-dot {
-          -webkit-filter: brightness(0.8) saturate(0.75);
-          filter: brightness(0.8) saturate(0.75); }
-      html .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
-        margin-left: toRem(5px); }
-      html .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
-        margin-left: toRem(10px); }
     html .comp .comp-status-toggle, :root .comp .comp-status-toggle {
       position: absolute;
       text-shadow: 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark);
@@ -790,46 +448,616 @@ html, :root {
         scale: 1.75; }
         html .comp .comp-status-toggle:hover .status-neutral, :root .comp .comp-status-toggle:hover .status-neutral {
           opacity: 1; }
-    html .comp.comp-tier, :root .comp.comp-tier {
-      height: 100%;
-      min-width: 120px;
-      -webkit-box-align: stretch;
-      -ms-flex-align: stretch;
-      align-items: stretch;
-      grid-area: tier; }
-      html .comp.comp-tier > .full-width.flex-horizontal, :root .comp.comp-tier > .full-width.flex-horizontal {
-        -webkit-box-align: start;
-        -ms-flex-align: start;
-        align-items: flex-start; }
-      html .comp.comp-tier .tier-bonus-container, :root .comp.comp-tier .tier-bonus-container {
-        -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-        flex-grow: 1; }
-        html .comp.comp-tier .tier-bonus-container .filled-label, :root .comp.comp-tier .tier-bonus-container .filled-label {
-          height: 30px;
-          min-width: 100%; }
-        html .comp.comp-tier .tier-bonus-container .dotline, :root .comp.comp-tier .tier-bonus-container .dotline {
-          height: 30px;
-          width: 100%; }
-          html .comp.comp-tier .tier-bonus-container .dotline .dot.empty-dot ~ .dot.empty-dot, :root .comp.comp-tier .tier-bonus-container .dotline .dot.empty-dot ~ .dot.empty-dot {
-            display: none; }
-        html .comp.comp-tier .tier-bonus-container.hidden-empty-dots .dotline .dot.empty-dot, :root .comp.comp-tier .tier-bonus-container.hidden-empty-dots .dotline .dot.empty-dot {
-          display: none !important; }
-      html .comp.comp-tier .tier-total-container, :root .comp.comp-tier .tier-total-container {
+  html .comp.portrait-container, :root .comp.portrait-container {
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    width: 100%; }
+  html .comp.comp-labeled-input, :root .comp.comp-labeled-input {
+    gap: 5px;
+    margin-right: 5px; }
+  html .comp.comp-vertical, :root .comp.comp-vertical {
+    --comp-img-scale: 2;
+    --comp-name-size: toRem(16px);
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    pointer-events: auto;
+    --main-title-color: #AAA; }
+    html .comp.comp-vertical .comp-button.comp-delete, :root .comp.comp-vertical .comp-button.comp-delete {
+      left: 75%;
+      top: 0%; }
+    html .comp.comp-vertical > .comp-label, :root .comp.comp-vertical > .comp-label {
+      text-align: center; }
+      html .comp.comp-vertical > .comp-label.comp-prompt, :root .comp.comp-vertical > .comp-label.comp-prompt {
+        height: toRem(12px);
+        margin-top: toRem(-10px); }
+    html .comp.comp-vertical .comp-title, :root .comp.comp-vertical .comp-title {
+      text-align: center;
+      font-family: var(--font-emphasis);
+      font-size: var(--comp-name-size);
+      text-transform: uppercase;
+      padding-top: 0px; }
+    html .comp.comp-vertical .comp-body, :root .comp.comp-vertical .comp-body {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      min-height: toRem(48px);
+      width: 100%; }
+      html .comp.comp-vertical .comp-body > img, :root .comp.comp-vertical .comp-body > img {
         position: absolute;
-        right: 0;
-        top: -5px;
-        min-width: 80px;
-        text-align: center;
-        font-size: 100px;
-        line-height: 60px;
-        scale: 0.5 1;
-        pointer-events: none;
-        -webkit-transform-origin: 100% 50%;
-        -ms-transform-origin: 100% 50%;
-        transform-origin: 100% 50%;
-        color: var(--blades-gold-bright);
-        text-shadow: 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright); }
+        -webkit-transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+        -ms-transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+        transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+        opacity: 0.5;
+        -webkit-filter: blur(0.5px);
+        filter: blur(0.5px);
+        top: 50%;
+        left: 50%;
+        height: 100%;
+        z-index: zLevel(-2);
+        pointer-events: none; }
+      html .comp.comp-vertical .comp-body .comp-body-text, :root .comp.comp-vertical .comp-body .comp-body-text {
+        display: none; }
+    html .comp.comp-vertical.portrait-block, :root .comp.comp-vertical.portrait-block {
+      height: 80px;
+      -ms-flex-preferred-size: toRem(80px);
+      flex-basis: toRem(80px);
+      min-width: 90px;
+      margin: 10px 0; }
+      html .comp.comp-vertical.portrait-block .comp-label.shadowed, :root .comp.comp-vertical.portrait-block .comp-label.shadowed {
+        margin-top: -10px;
+        margin-bottom: 10px; }
+      html .comp.comp-vertical.portrait-block .comp-button.comp-delete, :root .comp.comp-vertical.portrait-block .comp-button.comp-delete {
+        left: 5px;
+        right: unset;
+        top: 62px; }
+      html .comp.comp-vertical.portrait-block .comp-body, :root .comp.comp-vertical.portrait-block .comp-body {
+        -webkit-filter: drop-shadow(0 0 toRem(2px) var(--blades-black-dark));
+        filter: drop-shadow(0 0 toRem(2px) var(--blades-black-dark));
+        width: 100%; }
+        html .comp.comp-vertical.portrait-block .comp-body .comp-title, :root .comp.comp-vertical.portrait-block .comp-body .comp-title {
+          position: absolute;
+          top: 80%;
+          left: 50%;
+          -webkit-transform: translate(-50%, -50%) scale(70%);
+          -ms-transform: translate(-50%, -50%) scale(70%);
+          transform: translate(-50%, -50%) scale(70%);
+          color: var(--blades-grey); }
+          html .comp.comp-vertical.portrait-block .comp-body .comp-title:hover, :root .comp.comp-vertical.portrait-block .comp-body .comp-title:hover {
+            -webkit-transform: translate(-50%, -50%) scale(100%);
+            -ms-transform: translate(-50%, -50%) scale(100%);
+            transform: translate(-50%, -50%) scale(100%);
+            color: var(--blades-white-bright); }
+        html .comp.comp-vertical.portrait-block .comp-body .comp-img, :root .comp.comp-vertical.portrait-block .comp-body .comp-img {
+          --comp-img-scale: 1.5;
+          height: 100%;
+          opacity: 1;
+          -webkit-filter: none;
+          filter: none;
+          -webkit-clip-path: ellipse(50% 50% at 50% 50%);
+          clip-path: ellipse(50% 50% at 50% 50%);
+          z-index: 1;
+          position: absolute;
+          top: -5px; }
+    html .comp.comp-vertical.comp-playbook, :root .comp.comp-vertical.comp-playbook {
+      --comp-img-scaleX: -2;
+      --comp-img-scaleY: 2;
+      --comp-name-size: toRem(42px);
+      position: relative;
+      top: toRem(20px);
+      margin-bottom: toRem(-68px);
+      z-index: zLevel(-2); }
+      html .comp.comp-vertical.comp-playbook .comp-button.comp-delete, :root .comp.comp-vertical.comp-playbook .comp-button.comp-delete {
+        left: unset;
+        right: toRem(5px);
+        top: -10px; }
+      html .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add, :root .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add {
+        display: none; }
+      html .comp.comp-vertical.comp-playbook .comp-body img, :root .comp.comp-vertical.comp-playbook .comp-body img {
+        height: toRem(120px);
+        width: auto;
+        opacity: 1;
+        -webkit-filter: blur(1px);
+        filter: blur(1px);
+        position: absolute; }
+      html .comp.comp-vertical.comp-playbook .comp-body .comp-title, :root .comp.comp-vertical.comp-playbook .comp-body .comp-title {
+        width: 100%;
+        height: 100%;
+        font-family: var(--font-emphasis-alt);
+        color: var(--blades-white-bright);
+        text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
+        font-size: toRem(70px);
+        text-transform: lowercase;
+        text-align: right;
+        padding-right: toRem(4px);
+        margin-bottom: toRem(45px);
+        margin-top: toRem(15px); }
+  html .comp.comp-horizontal, :root .comp.comp-horizontal {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start; }
+    html .comp.comp-horizontal .comp-button.comp-delete, :root .comp.comp-horizontal .comp-button.comp-delete {
+      left: toRem(5px);
+      top: unset;
+      bottom: 0; }
+    html .comp.comp-horizontal > .comp-label, :root .comp.comp-horizontal > .comp-label {
+      text-align: right;
+      font-size: toRem(14px);
+      line-height: toRem(18px);
+      margin: 0; }
+      html .comp.comp-horizontal > .comp-label.comp-input-label, :root .comp.comp-horizontal > .comp-label.comp-input-label {
+        line-height: toRem(26px);
+        margin: 0 5px 0 10px; }
+    html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
+      -webkit-box-pack: start;
+      -ms-flex-pack: start;
+      justify-content: flex-start;
+      -webkit-box-align: start;
+      -ms-flex-align: start;
+      align-items: flex-start; }
+    html .comp.comp-horizontal.comp-desc-trait, :root .comp.comp-horizontal.comp-desc-trait {
+      -webkit-box-align: start;
+      -ms-flex-align: start;
+      align-items: flex-start;
+      padding: toRem(5px) 0; }
+      html .comp.comp-horizontal.comp-desc-trait:first-of-type, :root .comp.comp-horizontal.comp-desc-trait:first-of-type {
+        margin-top: toRem(-5px); }
+      html .comp.comp-horizontal.comp-desc-trait:not(:first-of-type), :root .comp.comp-horizontal.comp-desc-trait:not(:first-of-type) {
+        border-top: 1px solid var(--blades-white); }
+      html .comp.comp-horizontal.comp-desc-trait .comp-label, :root .comp.comp-horizontal.comp-desc-trait .comp-label {
+        min-width: 20px;
+        max-width: 20px;
+        min-height: 20px;
+        max-height: 20px;
+        margin-top: -5px;
+        margin-left: 3px;
+        margin-right: -20px;
+        z-index: 15; }
+      html .comp.comp-horizontal.comp-desc-trait .comp-body, :root .comp.comp-horizontal.comp-desc-trait .comp-body {
+        min-height: toRem(50px); }
+        html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img {
+          position: absolute;
+          height: 50px;
+          -webkit-transform: translate(-50%, -50%);
+          -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+          top: 50%;
+          left: toRem(50px);
+          -webkit-filter: blur(1px);
+          filter: blur(1px);
+          opacity: 0.5; }
+        html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title {
+          position: relative;
+          width: toRem(100px);
+          -ms-flex-negative: 0;
+          flex-shrink: 0;
+          -webkit-box-flex: 0;
+          -ms-flex-positive: 0;
+          flex-grow: 0;
+          min-height: toRem(40px);
+          -ms-flex-item-align: start;
+          align-self: flex-start;
+          color: var(--blades-white-bright);
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-orient: vertical;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+          flex-direction: column;
+          -webkit-box-pack: start;
+          -ms-flex-pack: start;
+          justify-content: flex-start;
+          -webkit-box-align: center;
+          -ms-flex-align: center;
+          align-items: center;
+          font-family: var(--font-emphasis);
+          font-size: toRem(14px);
+          padding: 0 toRem(7px);
+          text-align: center;
+          z-index: 1;
+          line-height: var(--line-height-default); }
+        html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline {
+          position: relative;
+          -webkit-transform: translate(-50%, 0);
+          -ms-transform: translate(-50%, 0);
+          transform: translate(-50%, 0);
+          left: 50%;
+          bottom: 0; }
+          html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label {
+            margin-right: 5px;
+            font-weight: bold; }
+        html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
+          font-family: "Minion Pro Caption Cond";
+          -webkit-hyphens: auto;
+          -ms-hyphens: auto;
+          hyphens: auto;
+          text-align: justify;
+          padding: 0 toRem(5px) 0 0;
+          line-height: var(--line-height-compact);
+          -webkit-box-flex: 1;
+          -ms-flex-positive: 1;
+          flex-grow: 1; }
+          html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type), :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type) {
+            margin-bottom: 6px; }
+  html .comp.comp-teeth.comp-horizontal .dotline, :root .comp.comp-teeth.comp-horizontal .dotline {
+    padding-left: toRem(4px);
+    --dotline-dot-sizeX: toRem(18px);
+    --dotline-dot-spacing: toRem(4px); }
+    html .comp.comp-teeth.comp-horizontal .dotline .dot, :root .comp.comp-teeth.comp-horizontal .dotline .dot {
+      -ms-flex-negative: 1;
+      flex-shrink: 1; }
+  html .comp.comp-teeth.comp-horizontal.comp-xp, :root .comp.comp-teeth.comp-horizontal.comp-xp {
+    z-index: zLevel(1); }
+    html .comp.comp-teeth.comp-horizontal.comp-xp .comp-label, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-label {
+      -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+      flex-grow: 1; }
+    html .comp.comp-teeth.comp-horizontal.comp-xp .comp-body, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body {
+      -webkit-box-pack: end;
+      -ms-flex-pack: end;
+      justify-content: flex-end; }
+      html .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline {
+        --dotline-dot-spacing: toRem(2px);
+        --dotline-horiz-align: flex-end;
+        --frame-color: var(--blades-black);
+        --fill-color-full: var(--blades-gold-bright);
+        --fill-color-empty: rgba(0, 0, 0);
+        --half-color-empty: var(--blades-gold-dark); }
+    html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook {
+      position: absolute;
+      right: 0; }
+      html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline {
+        --dotline-dot-sizeX: toRem(18px); }
+        html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot {
+          -webkit-transform-origin: top;
+          -ms-transform-origin: top;
+          transform-origin: top;
+          -webkit-transition: 0.25s;
+          transition: 0.25s;
+          -webkit-transform: scaleY(1);
+          -ms-transform: scaleY(1);
+          transform: scaleY(1); }
+          html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
+            -webkit-transform: scaleY(0.5);
+            -ms-transform: scaleY(0.5);
+            transform: scaleY(0.5); }
+  html .comp.comp-teeth.comp-vertical, :root .comp.comp-teeth.comp-vertical {
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 100%;
+    margin: 0;
+    -webkit-box-flex: 0.5;
+    -ms-flex-positive: 0.5;
+    flex-grow: 0.5; }
+    html .comp.comp-teeth.comp-vertical .comp-body, :root .comp.comp-teeth.comp-vertical .comp-body {
+      top: toRem(-5px); }
+    html .comp.comp-teeth.comp-vertical .dotline-label, :root .comp.comp-teeth.comp-vertical .dotline-label {
+      min-width: toRem(90px);
+      text-align: center;
+      margin-left: toRem(20px); }
+    html .comp.comp-teeth.comp-vertical .dotline, :root .comp.comp-teeth.comp-vertical .dotline {
+      -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+      flex-grow: 1;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      margin-top: -50%;
+      margin-bottom: -50%;
+      --dotline-dot-sizeX: toRem(16px);
+      --dotline-dot-spacing: toRem(4px); }
+  html .comp.comp-coins, html .comp.comp-stash, :root .comp.comp-coins, :root .comp.comp-stash {
+    margin-bottom: 4px;
+    pointer-events: none; }
+    html .comp.comp-coins.comp-coins, html .comp.comp-stash.comp-coins, :root .comp.comp-coins.comp-coins, :root .comp.comp-stash.comp-coins {
+      margin: 0px;
+      -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+      justify-content: space-evenly; }
+      html .comp.comp-coins.comp-coins .comp-body, html .comp.comp-stash.comp-coins .comp-body, :root .comp.comp-coins.comp-coins .comp-body, :root .comp.comp-stash.comp-coins .comp-body {
+        -ms-flex-negative: 0.5;
+        flex-shrink: 0.5;
+        min-height: unset;
+        margin-top: 5px; }
+    html .comp.comp-coins .dotline, html .comp.comp-stash .dotline, :root .comp.comp-coins .dotline, :root .comp.comp-stash .dotline {
+      --dotline-dot-size: toRem(18px);
+      --dotline-dot-spacing: -2px; }
+      html .comp.comp-coins .dotline .dot.empty-dot, html .comp.comp-stash .dotline .dot.empty-dot, :root .comp.comp-coins .dotline .dot.empty-dot, :root .comp.comp-stash .dotline .dot.empty-dot {
+        -webkit-filter: saturate(0);
+        filter: saturate(0);
+        opacity: 0.5; }
+      html .comp.comp-coins .dotline .dot.full-dot, html .comp.comp-stash .dotline .dot.full-dot, :root .comp.comp-coins .dotline .dot.full-dot, :root .comp.comp-stash .dotline .dot.full-dot {
+        -webkit-filter: brightness(0.8) saturate(0.75);
+        filter: brightness(0.8) saturate(0.75); }
+    html .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
+      margin-left: toRem(5px); }
+    html .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
+      margin-left: toRem(10px); }
+  html .comp.comp-tier, :root .comp.comp-tier {
+    height: 100%;
+    min-width: 120px;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    grid-area: tier; }
+    html .comp.comp-tier > .full-width.flex-horizontal, :root .comp.comp-tier > .full-width.flex-horizontal {
+      -webkit-box-align: start;
+      -ms-flex-align: start;
+      align-items: flex-start; }
+    html .comp.comp-tier .tier-bonus-container, :root .comp.comp-tier .tier-bonus-container {
+      -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+      flex-grow: 1; }
+      html .comp.comp-tier .tier-bonus-container .filled-label, :root .comp.comp-tier .tier-bonus-container .filled-label {
+        height: 30px;
+        min-width: 100%; }
+      html .comp.comp-tier .tier-bonus-container .dotline, :root .comp.comp-tier .tier-bonus-container .dotline {
+        height: 30px;
+        width: 100%; }
+        html .comp.comp-tier .tier-bonus-container .dotline .dot.empty-dot ~ .dot.empty-dot, :root .comp.comp-tier .tier-bonus-container .dotline .dot.empty-dot ~ .dot.empty-dot {
+          display: none; }
+      html .comp.comp-tier .tier-bonus-container.hidden-empty-dots .dotline .dot.empty-dot, :root .comp.comp-tier .tier-bonus-container.hidden-empty-dots .dotline .dot.empty-dot {
+        display: none !important; }
+    html .comp.comp-tier .tier-total-container, :root .comp.comp-tier .tier-total-container {
+      position: absolute;
+      right: 0;
+      top: -5px;
+      min-width: 80px;
+      text-align: center;
+      font-size: 100px;
+      line-height: 60px;
+      scale: 0.5 1;
+      pointer-events: none;
+      -webkit-transform-origin: 100% 50%;
+      -ms-transform-origin: 100% 50%;
+      transform-origin: 100% 50%;
+      color: var(--blades-gold-bright);
+      text-shadow: 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright); }
+  html .comp.controls-container, :root .comp.controls-container {
+    --menu-size: 20px;
+    --control-color: var(--blades-grey);
+    --control-bg-color: var(--blades-grey-dark);
+    --control-hover-color: var(--blades-gold);
+    --control-hover-bg-color: var(--blades-grey-dark);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    left: unset;
+    right: -10px; }
+    html .comp.controls-container .controls-panel, :root .comp.controls-container .controls-panel {
+      width: var(--menu-size);
+      height: var(--menu-size);
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      position: absolute;
+      border-radius: calc(0.5 * var(--menu-size));
+      background-color: var(--blades-black);
+      outline: 1px solid white;
+      -webkit-box-shadow: 0px calc(0.2 * var(--menu-size)) calc(0.6 * var(--menu-size)) calc(-0.25 * var(--menu-size)) black;
+      box-shadow: 0px calc(0.2 * var(--menu-size)) calc(0.6 * var(--menu-size)) calc(-0.25 * var(--menu-size)) black;
+      -webkit-transition: 650ms cubic-bezier(0.79, 0, 0.22, 1);
+      transition: 650ms cubic-bezier(0.79, 0, 0.22, 1); }
+      html .comp.controls-container .controls-panel .controls-toggle, :root .comp.controls-container .controls-panel .controls-toggle {
+        width: calc(0.85 * var(--menu-size));
+        height: calc(0.85 * var(--menu-size));
+        translate: -50% -50%;
+        top: 50%;
+        left: 50%;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        position: absolute;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 100;
+        background-color: var(--blades-grey);
+        -webkit-transition: 300ms cubic-bezier(0.79, 0, 0.22, 1);
+        transition: 300ms cubic-bezier(0.79, 0, 0.22, 1);
+        pointer-events: auto !important; }
+        html .comp.controls-container .controls-panel .controls-toggle:hover, :root .comp.controls-container .controls-panel .controls-toggle:hover {
+          background-color: var(--blades-grey-bright); }
+        html .comp.controls-container .controls-panel .controls-toggle i, :root .comp.controls-container .controls-panel .controls-toggle i {
+          width: calc(0.35 * var(--menu-size));
+          height: calc(1 / 25 * var(--menu-size));
+          position: absolute;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          border-radius: calc(50% * var(--menu-size));
+          background-color: var(--blades-white);
+          -webkit-transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), top 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, bottom 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, -webkit-transform 300ms cubic-bezier(0.6, 0, 0.45, 0.99);
+          transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), top 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, bottom 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, -webkit-transform 300ms cubic-bezier(0.6, 0, 0.45, 0.99);
+          transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), transform 300ms cubic-bezier(0.6, 0, 0.45, 0.99), top 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, bottom 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms;
+          transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), transform 300ms cubic-bezier(0.6, 0, 0.45, 0.99), top 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, bottom 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, -webkit-transform 300ms cubic-bezier(0.6, 0, 0.45, 0.99); }
+          html .comp.controls-container .controls-panel .controls-toggle i:first-of-type, :root .comp.controls-container .controls-panel .controls-toggle i:first-of-type {
+            top: calc(0.33 * var(--menu-size)); }
+          html .comp.controls-container .controls-panel .controls-toggle i:last-of-type, :root .comp.controls-container .controls-panel .controls-toggle i:last-of-type {
+            bottom: calc(0.33 * var(--menu-size)); }
+      html .comp.controls-container .controls-panel .controls-list, :root .comp.controls-container .controls-panel .controls-list {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        margin: 0;
+        right: calc(0.125 * var(--menu-size));
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        visibility: hidden;
+        position: absolute; }
+        html .comp.controls-container .controls-panel .controls-list li, :root .comp.controls-container .controls-panel .controls-list li {
+          width: calc(0.75 * var(--menu-size));
+          height: calc(0.75 * var(--menu-size));
+          margin-left: calc(0.125 * var(--menu-size));
+          list-style: none;
+          border-radius: calc(0.5 * var(--menu-size));
+          background-color: var(--control-bg-color);
+          scale: 0;
+          position: relative;
+          -webkit-transition: 150ms cubic-bezier(0.37, 0.01, 0.43, 1.3);
+          transition: 150ms cubic-bezier(0.37, 0.01, 0.43, 1.3);
+          -webkit-transition-delay: 150ms;
+          transition-delay: 150ms; }
+          html .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(1), :root .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(1) {
+            -webkit-transition-delay: 25ms;
+            transition-delay: 25ms; }
+          html .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(2), :root .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(2) {
+            -webkit-transition-delay: 50ms;
+            transition-delay: 50ms; }
+          html .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(3), :root .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(3) {
+            -webkit-transition-delay: 75ms;
+            transition-delay: 75ms; }
+          html .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(4), :root .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(4) {
+            -webkit-transition-delay: 100ms;
+            transition-delay: 100ms; }
+          html .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(5), :root .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(5) {
+            -webkit-transition-delay: 125ms;
+            transition-delay: 125ms; }
+          html .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(6), :root .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(6) {
+            -webkit-transition-delay: 150ms;
+            transition-delay: 150ms; }
+          html .comp.controls-container .controls-panel .controls-list li > a, :root .comp.controls-container .controls-panel .controls-list li > a {
+            position: static;
+            width: calc(0.75 * var(--menu-size));
+            height: calc(0.75 * var(--menu-size));
+            display: block;
+            border-radius: 50%;
+            z-index: 1;
+            color: var(--control-color);
+            background: var(--control-bg-color);
+            pointer-events: auto !important; }
+            html .comp.controls-container .controls-panel .controls-list li > a.control-hidden, :root .comp.controls-container .controls-panel .controls-list li > a.control-hidden {
+              --control-color: var(--blades-grey);
+              --control-bg-color: var(--blades-black);
+              --control-hover-color: var(--blades-grey-bright);
+              --control-hover-bg-color: var(--blades-grey); }
+            html .comp.controls-container .controls-panel .controls-list li > a::before, :root .comp.controls-container .controls-panel .controls-list li > a::before {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              border-radius: 50%;
+              background: var(--control-hover-color);
+              -webkit-transition: .5s;
+              transition: .5s;
+              -webkit-transform: scale(0.9);
+              -ms-transform: scale(0.9);
+              transform: scale(0.9);
+              z-index: -5; }
+            html .comp.controls-container .controls-panel .controls-list li > a:hover, :root .comp.controls-container .controls-panel .controls-list li > a:hover {
+              color: var(--control-hover-color);
+              -webkit-box-shadow: 0 0 5px var(--control-hover-color);
+              box-shadow: 0 0 5px var(--control-hover-color);
+              text-shadow: 0 0 5px var(--control-hover-color); }
+              html .comp.controls-container .controls-panel .controls-list li > a:hover::before, :root .comp.controls-container .controls-panel .controls-list li > a:hover::before {
+                -webkit-transform: scale(1.1);
+                -ms-transform: scale(1.1);
+                transform: scale(1.1);
+                -webkit-box-shadow: 0 0 15px var(--control-hover-color);
+                box-shadow: 0 0 15px var(--control-hover-color); }
+            html .comp.controls-container .controls-panel .controls-list li > a > i, :root .comp.controls-container .controls-panel .controls-list li > a > i {
+              position: absolute;
+              translate: -50% -50%;
+              top: 50%;
+              left: 50%;
+              font-size: calc(0.4 * var(--menu-size)); }
+      html .comp.controls-container .controls-panel.active, :root .comp.controls-container .controls-panel.active {
+        width: calc(6 * (1.04 * var(--menu-size))); }
+        html .comp.controls-container .controls-panel.active .controls-toggle, :root .comp.controls-container .controls-panel.active .controls-toggle {
+          left: calc(0.5 * var(--menu-size)); }
+          html .comp.controls-container .controls-panel.active .controls-toggle i, :root .comp.controls-container .controls-panel.active .controls-toggle i {
+            width: calc(0.2 * var(--menu-size));
+            -webkit-transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), top 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, bottom 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, -webkit-transform 500ms cubic-bezier(0.6, 0, 0.45, 0.99) 150ms;
+            transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), top 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, bottom 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, -webkit-transform 500ms cubic-bezier(0.6, 0, 0.45, 0.99) 150ms;
+            transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), transform 500ms cubic-bezier(0.6, 0, 0.45, 0.99) 150ms, top 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, bottom 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms;
+            transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), transform 500ms cubic-bezier(0.6, 0, 0.45, 0.99) 150ms, top 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, bottom 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, -webkit-transform 500ms cubic-bezier(0.6, 0, 0.45, 0.99) 150ms; }
+            html .comp.controls-container .controls-panel.active .controls-toggle i:first-of-type, :root .comp.controls-container .controls-panel.active .controls-toggle i:first-of-type {
+              top: calc(0.33 * var(--menu-size));
+              -webkit-transform: rotate(45deg);
+              -ms-transform: rotate(45deg);
+              transform: rotate(45deg); }
+            html .comp.controls-container .controls-panel.active .controls-toggle i:last-of-type, :root .comp.controls-container .controls-panel.active .controls-toggle i:last-of-type {
+              bottom: calc(0.33 * var(--menu-size));
+              -webkit-transform: rotate(-45deg);
+              -ms-transform: rotate(-45deg);
+              transform: rotate(-45deg); }
+        html .comp.controls-container .controls-panel.active .controls-list, :root .comp.controls-container .controls-panel.active .controls-list {
+          visibility: visible; }
+          html .comp.controls-container .controls-panel.active .controls-list li, :root .comp.controls-container .controls-panel.active .controls-list li {
+            scale: 1;
+            -webkit-transition-property: scale, background, color;
+            transition-property: scale, background, color; }
+            html .comp.controls-container .controls-panel.active .controls-list li:nth-child(1), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(1) {
+              -webkit-transition-delay: 200ms, 0ms, 0ms;
+              transition-delay: 200ms, 0ms, 0ms; }
+            html .comp.controls-container .controls-panel.active .controls-list li:nth-child(2), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(2) {
+              -webkit-transition-delay: 175ms, 0ms, 0ms;
+              transition-delay: 175ms, 0ms, 0ms; }
+            html .comp.controls-container .controls-panel.active .controls-list li:nth-child(3), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(3) {
+              -webkit-transition-delay: 150ms, 0ms, 0ms;
+              transition-delay: 150ms, 0ms, 0ms; }
+            html .comp.controls-container .controls-panel.active .controls-list li:nth-child(4), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(4) {
+              -webkit-transition-delay: 125ms, 0ms, 0ms;
+              transition-delay: 125ms, 0ms, 0ms; }
+            html .comp.controls-container .controls-panel.active .controls-list li:nth-child(5), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(5) {
+              -webkit-transition-delay: 100ms, 0ms, 0ms;
+              transition-delay: 100ms, 0ms, 0ms; }
+            html .comp.controls-container .controls-panel.active .controls-list li:nth-child(6), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(6) {
+              -webkit-transition-delay: 75ms, 0ms, 0ms;
+              transition-delay: 75ms, 0ms, 0ms; }
+            html .comp.controls-container .controls-panel.active .controls-list li:hover, :root .comp.controls-container .controls-panel.active .controls-list li:hover {
+              background: var(--control-hover-bg-color); }
+              html .comp.controls-container .controls-panel.active .controls-list li:hover > a > i, :root .comp.controls-container .controls-panel.active .controls-list li:hover > a > i {
+                color: var(--control-hover-color); }
   html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
     position: absolute;
     height: 1.5rem;
@@ -1371,13 +1599,6 @@ html, :root {
         -webkit-box-pack: space-evenly;
         -ms-flex-pack: space-evenly;
         justify-content: space-evenly; }
-      html .comp.portrait-container, :root .comp.portrait-container {
-        -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-        width: 100%; }
-      html .comp.comp-labeled-input, :root .comp.comp-labeled-input {
-        gap: 5px;
-        margin-right: 5px; }
       html .comp .comp-control, html .comp .comp-title, html .comp .portrait-block.comp-body, :root .comp .comp-control, :root .comp .comp-title, :root .comp .portrait-block.comp-body {
         -webkit-transition: 0.25s;
         transition: 0.25s;
@@ -1497,341 +1718,6 @@ html, :root {
         color: var(--blades-white-bright);
         width: 2rem;
         text-align: center; }
-      html .comp.comp-vertical, :root .comp.comp-vertical {
-        --comp-img-scale: 2;
-        --comp-name-size: 1rem;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        pointer-events: auto;
-        --main-title-color: #AAA; }
-        html .comp.comp-vertical .comp-button.comp-delete, :root .comp.comp-vertical .comp-button.comp-delete {
-          left: 75%;
-          top: 0%; }
-        html .comp.comp-vertical > .comp-label, :root .comp.comp-vertical > .comp-label {
-          text-align: center; }
-          html .comp.comp-vertical > .comp-label.comp-prompt, :root .comp.comp-vertical > .comp-label.comp-prompt {
-            height: 0.75rem;
-            margin-top: -0.625rem; }
-        html .comp.comp-vertical .comp-title, :root .comp.comp-vertical .comp-title {
-          text-align: center;
-          font-family: var(--font-emphasis);
-          font-size: var(--comp-name-size);
-          text-transform: uppercase;
-          padding-top: 0px; }
-        html .comp.comp-vertical .comp-body, :root .comp.comp-vertical .comp-body {
-          display: -webkit-box;
-          display: -ms-flexbox;
-          display: flex;
-          -webkit-box-orient: vertical;
-          -webkit-box-direction: normal;
-          -ms-flex-direction: column;
-          flex-direction: column;
-          min-height: 3rem;
-          width: 100%; }
-          html .comp.comp-vertical .comp-body > img, :root .comp.comp-vertical .comp-body > img {
-            position: absolute;
-            -webkit-transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
-            -ms-transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
-            transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
-            opacity: 0.5;
-            -webkit-filter: blur(0.5px);
-            filter: blur(0.5px);
-            top: 50%;
-            left: 50%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none; }
-          html .comp.comp-vertical .comp-body .comp-body-text, :root .comp.comp-vertical .comp-body .comp-body-text {
-            display: none; }
-        html .comp.comp-vertical.portrait-block, :root .comp.comp-vertical.portrait-block {
-          height: 80px;
-          -ms-flex-preferred-size: 5rem;
-          flex-basis: 5rem;
-          min-width: 90px;
-          margin: 10px 0; }
-          html .comp.comp-vertical.portrait-block .comp-label.shadowed, :root .comp.comp-vertical.portrait-block .comp-label.shadowed {
-            margin-top: -10px;
-            margin-bottom: 10px; }
-          html .comp.comp-vertical.portrait-block .comp-button.comp-delete, :root .comp.comp-vertical.portrait-block .comp-button.comp-delete {
-            left: 5px;
-            right: unset;
-            top: 62px; }
-          html .comp.comp-vertical.portrait-block .comp-body, :root .comp.comp-vertical.portrait-block .comp-body {
-            -webkit-filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
-            filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
-            width: 100%; }
-            html .comp.comp-vertical.portrait-block .comp-body .comp-title, :root .comp.comp-vertical.portrait-block .comp-body .comp-title {
-              position: absolute;
-              top: 80%;
-              left: 50%;
-              -webkit-transform: translate(-50%, -50%) scale(70%);
-              -ms-transform: translate(-50%, -50%) scale(70%);
-              transform: translate(-50%, -50%) scale(70%);
-              color: var(--blades-grey); }
-              html .comp.comp-vertical.portrait-block .comp-body .comp-title:hover, :root .comp.comp-vertical.portrait-block .comp-body .comp-title:hover {
-                -webkit-transform: translate(-50%, -50%) scale(100%);
-                -ms-transform: translate(-50%, -50%) scale(100%);
-                transform: translate(-50%, -50%) scale(100%);
-                color: var(--blades-white-bright); }
-            html .comp.comp-vertical.portrait-block .comp-body .comp-img, :root .comp.comp-vertical.portrait-block .comp-body .comp-img {
-              --comp-img-scale: 1.5;
-              height: 100%;
-              opacity: 1;
-              -webkit-filter: none;
-              filter: none;
-              -webkit-clip-path: ellipse(50% 50% at 50% 50%);
-              clip-path: ellipse(50% 50% at 50% 50%);
-              z-index: 1;
-              position: absolute;
-              top: -5px; }
-        html .comp.comp-vertical.comp-playbook, :root .comp.comp-vertical.comp-playbook {
-          --comp-img-scaleX: -2;
-          --comp-img-scaleY: 2;
-          --comp-name-size: 2.625rem;
-          position: relative;
-          top: 1.25rem;
-          margin-bottom: -4.25rem;
-          z-index: 0; }
-          html .comp.comp-vertical.comp-playbook .comp-button.comp-delete, :root .comp.comp-vertical.comp-playbook .comp-button.comp-delete {
-            left: unset;
-            right: 0.3125rem;
-            top: -10px; }
-          html .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add, :root .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add {
-            display: none; }
-          html .comp.comp-vertical.comp-playbook .comp-body img, :root .comp.comp-vertical.comp-playbook .comp-body img {
-            height: 7.5rem;
-            width: auto;
-            opacity: 1;
-            -webkit-filter: blur(1px);
-            filter: blur(1px);
-            position: absolute; }
-          html .comp.comp-vertical.comp-playbook .comp-body .comp-title, :root .comp.comp-vertical.comp-playbook .comp-body .comp-title {
-            width: 100%;
-            height: 100%;
-            font-family: var(--font-emphasis-alt);
-            color: var(--blades-white-bright);
-            text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
-            font-size: 4.375rem;
-            text-transform: lowercase;
-            text-align: right;
-            padding-right: 0.25rem;
-            margin-bottom: 2.8125rem;
-            margin-top: 0.9375rem; }
-      html .comp.comp-horizontal, :root .comp.comp-horizontal {
-        -webkit-box-orient: horizontal;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: row;
-        flex-direction: row;
-        -webkit-box-pack: start;
-        -ms-flex-pack: start;
-        justify-content: flex-start;
-        -webkit-box-align: start;
-        -ms-flex-align: start;
-        align-items: flex-start; }
-        html .comp.comp-horizontal .comp-button.comp-delete, :root .comp.comp-horizontal .comp-button.comp-delete {
-          left: 0.3125rem;
-          top: unset;
-          bottom: 0; }
-        html .comp.comp-horizontal > .comp-label, :root .comp.comp-horizontal > .comp-label {
-          text-align: right;
-          font-size: 0.875rem;
-          line-height: 1.125rem;
-          margin: 0; }
-          html .comp.comp-horizontal > .comp-label.comp-input-label, :root .comp.comp-horizontal > .comp-label.comp-input-label {
-            line-height: 1.625rem;
-            margin: 0 5px 0 10px; }
-        html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
-          -webkit-box-pack: start;
-          -ms-flex-pack: start;
-          justify-content: flex-start;
-          -webkit-box-align: start;
-          -ms-flex-align: start;
-          align-items: flex-start; }
-        html .comp.comp-horizontal.comp-desc-trait, :root .comp.comp-horizontal.comp-desc-trait {
-          -webkit-box-align: start;
-          -ms-flex-align: start;
-          align-items: flex-start;
-          padding: 0.3125rem 0; }
-          html .comp.comp-horizontal.comp-desc-trait:first-of-type, :root .comp.comp-horizontal.comp-desc-trait:first-of-type {
-            margin-top: -0.3125rem; }
-          html .comp.comp-horizontal.comp-desc-trait:not(:first-of-type), :root .comp.comp-horizontal.comp-desc-trait:not(:first-of-type) {
-            border-top: 1px solid var(--blades-white); }
-          html .comp.comp-horizontal.comp-desc-trait .comp-label, :root .comp.comp-horizontal.comp-desc-trait .comp-label {
-            min-width: 20px;
-            max-width: 20px;
-            min-height: 20px;
-            max-height: 20px;
-            margin-top: -5px;
-            margin-left: 3px;
-            margin-right: -20px;
-            z-index: 15; }
-          html .comp.comp-horizontal.comp-desc-trait .comp-body, :root .comp.comp-horizontal.comp-desc-trait .comp-body {
-            min-height: 3.125rem; }
-            html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img {
-              position: absolute;
-              height: 50px;
-              -webkit-transform: translate(-50%, -50%);
-              -ms-transform: translate(-50%, -50%);
-              transform: translate(-50%, -50%);
-              top: 50%;
-              left: 3.125rem;
-              -webkit-filter: blur(1px);
-              filter: blur(1px);
-              opacity: 0.5; }
-            html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title {
-              position: relative;
-              width: 6.25rem;
-              -ms-flex-negative: 0;
-              flex-shrink: 0;
-              -webkit-box-flex: 0;
-              -ms-flex-positive: 0;
-              flex-grow: 0;
-              min-height: 2.5rem;
-              -ms-flex-item-align: start;
-              align-self: flex-start;
-              color: var(--blades-white-bright);
-              display: -webkit-box;
-              display: -ms-flexbox;
-              display: flex;
-              -webkit-box-orient: vertical;
-              -webkit-box-direction: normal;
-              -ms-flex-direction: column;
-              flex-direction: column;
-              -webkit-box-pack: start;
-              -ms-flex-pack: start;
-              justify-content: flex-start;
-              -webkit-box-align: center;
-              -ms-flex-align: center;
-              align-items: center;
-              font-family: var(--font-emphasis);
-              font-size: 0.875rem;
-              padding: 0 0.4375rem;
-              text-align: center;
-              z-index: 1;
-              line-height: var(--line-height-default); }
-            html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline {
-              position: relative;
-              -webkit-transform: translate(-50%, 0);
-              -ms-transform: translate(-50%, 0);
-              transform: translate(-50%, 0);
-              left: 50%;
-              bottom: 0; }
-              html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label {
-                margin-right: 5px;
-                font-weight: bold; }
-            html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-              font-family: "Minion Pro Caption Cond";
-              -webkit-hyphens: auto;
-              -ms-hyphens: auto;
-              hyphens: auto;
-              text-align: justify;
-              padding: 0 0.3125rem 0 0;
-              line-height: var(--line-height-compact);
-              -webkit-box-flex: 1;
-              -ms-flex-positive: 1;
-              flex-grow: 1; }
-              html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type), :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type) {
-                margin-bottom: 6px; }
-      html .comp.comp-teeth.comp-horizontal .dotline, :root .comp.comp-teeth.comp-horizontal .dotline {
-        padding-left: 0.25rem;
-        --dotline-dot-sizeX: 1.125rem;
-        --dotline-dot-spacing: 0.25rem; }
-        html .comp.comp-teeth.comp-horizontal .dotline .dot, :root .comp.comp-teeth.comp-horizontal .dotline .dot {
-          -ms-flex-negative: 1;
-          flex-shrink: 1; }
-      html .comp.comp-teeth.comp-horizontal.comp-xp, :root .comp.comp-teeth.comp-horizontal.comp-xp {
-        z-index: 3; }
-        html .comp.comp-teeth.comp-horizontal.comp-xp .comp-label, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-label {
-          -webkit-box-flex: 1;
-          -ms-flex-positive: 1;
-          flex-grow: 1; }
-        html .comp.comp-teeth.comp-horizontal.comp-xp .comp-body, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body {
-          -webkit-box-pack: end;
-          -ms-flex-pack: end;
-          justify-content: flex-end; }
-          html .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline {
-            --dotline-dot-spacing: 0.125rem;
-            --dotline-horiz-align: flex-end;
-            --frame-color: var(--blades-black);
-            --fill-color-full: var(--blades-gold-bright);
-            --fill-color-empty: rgba(0, 0, 0);
-            --half-color-empty: var(--blades-gold-dark); }
-        html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook {
-          position: absolute;
-          right: 0; }
-          html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline {
-            --dotline-dot-sizeX: 1.125rem; }
-            html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot {
-              -webkit-transform-origin: top;
-              -ms-transform-origin: top;
-              transform-origin: top;
-              -webkit-transition: 0.25s;
-              transition: 0.25s;
-              -webkit-transform: scaleY(1);
-              -ms-transform: scaleY(1);
-              transform: scaleY(1); }
-              html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
-                -webkit-transform: scaleY(0.5);
-                -ms-transform: scaleY(0.5);
-                transform: scaleY(0.5); }
-      html .comp.comp-teeth.comp-vertical, :root .comp.comp-teeth.comp-vertical {
-        -webkit-box-pack: start;
-        -ms-flex-pack: start;
-        justify-content: flex-start;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-        height: 100%;
-        margin: 0;
-        -webkit-box-flex: 0.5;
-        -ms-flex-positive: 0.5;
-        flex-grow: 0.5; }
-        html .comp.comp-teeth.comp-vertical .comp-body, :root .comp.comp-teeth.comp-vertical .comp-body {
-          top: -0.3125rem; }
-        html .comp.comp-teeth.comp-vertical .dotline-label, :root .comp.comp-teeth.comp-vertical .dotline-label {
-          min-width: 5.625rem;
-          text-align: center;
-          margin-left: 1.25rem; }
-        html .comp.comp-teeth.comp-vertical .dotline, :root .comp.comp-teeth.comp-vertical .dotline {
-          -webkit-box-flex: 1;
-          -ms-flex-positive: 1;
-          flex-grow: 1;
-          -webkit-box-pack: center;
-          -ms-flex-pack: center;
-          justify-content: center;
-          margin-top: -50%;
-          margin-bottom: -50%;
-          --dotline-dot-sizeX: 1rem;
-          --dotline-dot-spacing: 0.25rem; }
-      html .comp.comp-coins, html .comp.comp-stash, :root .comp.comp-coins, :root .comp.comp-stash {
-        margin-bottom: 4px;
-        pointer-events: none; }
-        html .comp.comp-coins.comp-coins, html .comp.comp-stash.comp-coins, :root .comp.comp-coins.comp-coins, :root .comp.comp-stash.comp-coins {
-          margin: 0px;
-          -webkit-box-pack: space-evenly;
-          -ms-flex-pack: space-evenly;
-          justify-content: space-evenly; }
-          html .comp.comp-coins.comp-coins .comp-body, html .comp.comp-stash.comp-coins .comp-body, :root .comp.comp-coins.comp-coins .comp-body, :root .comp.comp-stash.comp-coins .comp-body {
-            -ms-flex-negative: 0.5;
-            flex-shrink: 0.5;
-            min-height: unset;
-            margin-top: 5px; }
-        html .comp.comp-coins .dotline, html .comp.comp-stash .dotline, :root .comp.comp-coins .dotline, :root .comp.comp-stash .dotline {
-          --dotline-dot-size: 1.125rem;
-          --dotline-dot-spacing: -2px; }
-          html .comp.comp-coins .dotline .dot.empty-dot, html .comp.comp-stash .dotline .dot.empty-dot, :root .comp.comp-coins .dotline .dot.empty-dot, :root .comp.comp-stash .dotline .dot.empty-dot {
-            -webkit-filter: saturate(0);
-            filter: saturate(0);
-            opacity: 0.5; }
-          html .comp.comp-coins .dotline .dot.full-dot, html .comp.comp-stash .dotline .dot.full-dot, :root .comp.comp-coins .dotline .dot.full-dot, :root .comp.comp-stash .dotline .dot.full-dot {
-            -webkit-filter: brightness(0.8) saturate(0.75);
-            filter: brightness(0.8) saturate(0.75); }
-        html .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
-          margin-left: 0.3125rem; }
-        html .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
-          margin-left: 0.625rem; }
       html .comp .comp-status-toggle, :root .comp .comp-status-toggle {
         position: absolute;
         text-shadow: 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark);
@@ -1857,46 +1743,616 @@ html, :root {
           scale: 1.75; }
           html .comp .comp-status-toggle:hover .status-neutral, :root .comp .comp-status-toggle:hover .status-neutral {
             opacity: 1; }
-      html .comp.comp-tier, :root .comp.comp-tier {
-        height: 100%;
-        min-width: 120px;
-        -webkit-box-align: stretch;
-        -ms-flex-align: stretch;
-        align-items: stretch;
-        grid-area: tier; }
-        html .comp.comp-tier > .full-width.flex-horizontal, :root .comp.comp-tier > .full-width.flex-horizontal {
-          -webkit-box-align: start;
-          -ms-flex-align: start;
-          align-items: flex-start; }
-        html .comp.comp-tier .tier-bonus-container, :root .comp.comp-tier .tier-bonus-container {
-          -webkit-box-flex: 1;
-          -ms-flex-positive: 1;
-          flex-grow: 1; }
-          html .comp.comp-tier .tier-bonus-container .filled-label, :root .comp.comp-tier .tier-bonus-container .filled-label {
-            height: 30px;
-            min-width: 100%; }
-          html .comp.comp-tier .tier-bonus-container .dotline, :root .comp.comp-tier .tier-bonus-container .dotline {
-            height: 30px;
-            width: 100%; }
-            html .comp.comp-tier .tier-bonus-container .dotline .dot.empty-dot ~ .dot.empty-dot, :root .comp.comp-tier .tier-bonus-container .dotline .dot.empty-dot ~ .dot.empty-dot {
-              display: none; }
-          html .comp.comp-tier .tier-bonus-container.hidden-empty-dots .dotline .dot.empty-dot, :root .comp.comp-tier .tier-bonus-container.hidden-empty-dots .dotline .dot.empty-dot {
-            display: none !important; }
-        html .comp.comp-tier .tier-total-container, :root .comp.comp-tier .tier-total-container {
+    html .comp.portrait-container, :root .comp.portrait-container {
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      width: 100%; }
+    html .comp.comp-labeled-input, :root .comp.comp-labeled-input {
+      gap: 5px;
+      margin-right: 5px; }
+    html .comp.comp-vertical, :root .comp.comp-vertical {
+      --comp-img-scale: 2;
+      --comp-name-size: 1rem;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      pointer-events: auto;
+      --main-title-color: #AAA; }
+      html .comp.comp-vertical .comp-button.comp-delete, :root .comp.comp-vertical .comp-button.comp-delete {
+        left: 75%;
+        top: 0%; }
+      html .comp.comp-vertical > .comp-label, :root .comp.comp-vertical > .comp-label {
+        text-align: center; }
+        html .comp.comp-vertical > .comp-label.comp-prompt, :root .comp.comp-vertical > .comp-label.comp-prompt {
+          height: 0.75rem;
+          margin-top: -0.625rem; }
+      html .comp.comp-vertical .comp-title, :root .comp.comp-vertical .comp-title {
+        text-align: center;
+        font-family: var(--font-emphasis);
+        font-size: var(--comp-name-size);
+        text-transform: uppercase;
+        padding-top: 0px; }
+      html .comp.comp-vertical .comp-body, :root .comp.comp-vertical .comp-body {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-height: 3rem;
+        width: 100%; }
+        html .comp.comp-vertical .comp-body > img, :root .comp.comp-vertical .comp-body > img {
           position: absolute;
-          right: 0;
-          top: -5px;
-          min-width: 80px;
-          text-align: center;
-          font-size: 100px;
-          line-height: 60px;
-          scale: 0.5 1;
-          pointer-events: none;
-          -webkit-transform-origin: 100% 50%;
-          -ms-transform-origin: 100% 50%;
-          transform-origin: 100% 50%;
-          color: var(--blades-gold-bright);
-          text-shadow: 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright); }
+          -webkit-transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+          -ms-transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+          transform: translate(-50%, -50%) scaleX(var(--comp-img-scaleX, var(--comp-img-scale))) scaleY(var(--comp-img-scaleY, var(--comp-img-scale)));
+          opacity: 0.5;
+          -webkit-filter: blur(0.5px);
+          filter: blur(0.5px);
+          top: 50%;
+          left: 50%;
+          height: 100%;
+          z-index: 0;
+          pointer-events: none; }
+        html .comp.comp-vertical .comp-body .comp-body-text, :root .comp.comp-vertical .comp-body .comp-body-text {
+          display: none; }
+      html .comp.comp-vertical.portrait-block, :root .comp.comp-vertical.portrait-block {
+        height: 80px;
+        -ms-flex-preferred-size: 5rem;
+        flex-basis: 5rem;
+        min-width: 90px;
+        margin: 10px 0; }
+        html .comp.comp-vertical.portrait-block .comp-label.shadowed, :root .comp.comp-vertical.portrait-block .comp-label.shadowed {
+          margin-top: -10px;
+          margin-bottom: 10px; }
+        html .comp.comp-vertical.portrait-block .comp-button.comp-delete, :root .comp.comp-vertical.portrait-block .comp-button.comp-delete {
+          left: 5px;
+          right: unset;
+          top: 62px; }
+        html .comp.comp-vertical.portrait-block .comp-body, :root .comp.comp-vertical.portrait-block .comp-body {
+          -webkit-filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
+          filter: drop-shadow(0 0 0.125rem var(--blades-black-dark));
+          width: 100%; }
+          html .comp.comp-vertical.portrait-block .comp-body .comp-title, :root .comp.comp-vertical.portrait-block .comp-body .comp-title {
+            position: absolute;
+            top: 80%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%) scale(70%);
+            -ms-transform: translate(-50%, -50%) scale(70%);
+            transform: translate(-50%, -50%) scale(70%);
+            color: var(--blades-grey); }
+            html .comp.comp-vertical.portrait-block .comp-body .comp-title:hover, :root .comp.comp-vertical.portrait-block .comp-body .comp-title:hover {
+              -webkit-transform: translate(-50%, -50%) scale(100%);
+              -ms-transform: translate(-50%, -50%) scale(100%);
+              transform: translate(-50%, -50%) scale(100%);
+              color: var(--blades-white-bright); }
+          html .comp.comp-vertical.portrait-block .comp-body .comp-img, :root .comp.comp-vertical.portrait-block .comp-body .comp-img {
+            --comp-img-scale: 1.5;
+            height: 100%;
+            opacity: 1;
+            -webkit-filter: none;
+            filter: none;
+            -webkit-clip-path: ellipse(50% 50% at 50% 50%);
+            clip-path: ellipse(50% 50% at 50% 50%);
+            z-index: 1;
+            position: absolute;
+            top: -5px; }
+      html .comp.comp-vertical.comp-playbook, :root .comp.comp-vertical.comp-playbook {
+        --comp-img-scaleX: -2;
+        --comp-img-scaleY: 2;
+        --comp-name-size: 2.625rem;
+        position: relative;
+        top: 1.25rem;
+        margin-bottom: -4.25rem;
+        z-index: 0; }
+        html .comp.comp-vertical.comp-playbook .comp-button.comp-delete, :root .comp.comp-vertical.comp-playbook .comp-button.comp-delete {
+          left: unset;
+          right: 0.3125rem;
+          top: -10px; }
+        html .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add, :root .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add {
+          display: none; }
+        html .comp.comp-vertical.comp-playbook .comp-body img, :root .comp.comp-vertical.comp-playbook .comp-body img {
+          height: 7.5rem;
+          width: auto;
+          opacity: 1;
+          -webkit-filter: blur(1px);
+          filter: blur(1px);
+          position: absolute; }
+        html .comp.comp-vertical.comp-playbook .comp-body .comp-title, :root .comp.comp-vertical.comp-playbook .comp-body .comp-title {
+          width: 100%;
+          height: 100%;
+          font-family: var(--font-emphasis-alt);
+          color: var(--blades-white-bright);
+          text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
+          font-size: 4.375rem;
+          text-transform: lowercase;
+          text-align: right;
+          padding-right: 0.25rem;
+          margin-bottom: 2.8125rem;
+          margin-top: 0.9375rem; }
+    html .comp.comp-horizontal, :root .comp.comp-horizontal {
+      -webkit-box-orient: horizontal;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+      flex-direction: row;
+      -webkit-box-pack: start;
+      -ms-flex-pack: start;
+      justify-content: flex-start;
+      -webkit-box-align: start;
+      -ms-flex-align: start;
+      align-items: flex-start; }
+      html .comp.comp-horizontal .comp-button.comp-delete, :root .comp.comp-horizontal .comp-button.comp-delete {
+        left: 0.3125rem;
+        top: unset;
+        bottom: 0; }
+      html .comp.comp-horizontal > .comp-label, :root .comp.comp-horizontal > .comp-label {
+        text-align: right;
+        font-size: 0.875rem;
+        line-height: 1.125rem;
+        margin: 0; }
+        html .comp.comp-horizontal > .comp-label.comp-input-label, :root .comp.comp-horizontal > .comp-label.comp-input-label {
+          line-height: 1.625rem;
+          margin: 0 5px 0 10px; }
+      html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start; }
+      html .comp.comp-horizontal.comp-desc-trait, :root .comp.comp-horizontal.comp-desc-trait {
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start;
+        padding: 0.3125rem 0; }
+        html .comp.comp-horizontal.comp-desc-trait:first-of-type, :root .comp.comp-horizontal.comp-desc-trait:first-of-type {
+          margin-top: -0.3125rem; }
+        html .comp.comp-horizontal.comp-desc-trait:not(:first-of-type), :root .comp.comp-horizontal.comp-desc-trait:not(:first-of-type) {
+          border-top: 1px solid var(--blades-white); }
+        html .comp.comp-horizontal.comp-desc-trait .comp-label, :root .comp.comp-horizontal.comp-desc-trait .comp-label {
+          min-width: 20px;
+          max-width: 20px;
+          min-height: 20px;
+          max-height: 20px;
+          margin-top: -5px;
+          margin-left: 3px;
+          margin-right: -20px;
+          z-index: 15; }
+        html .comp.comp-horizontal.comp-desc-trait .comp-body, :root .comp.comp-horizontal.comp-desc-trait .comp-body {
+          min-height: 3.125rem; }
+          html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img {
+            position: absolute;
+            height: 50px;
+            -webkit-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 3.125rem;
+            -webkit-filter: blur(1px);
+            filter: blur(1px);
+            opacity: 0.5; }
+          html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title {
+            position: relative;
+            width: 6.25rem;
+            -ms-flex-negative: 0;
+            flex-shrink: 0;
+            -webkit-box-flex: 0;
+            -ms-flex-positive: 0;
+            flex-grow: 0;
+            min-height: 2.5rem;
+            -ms-flex-item-align: start;
+            align-self: flex-start;
+            color: var(--blades-white-bright);
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            -webkit-box-pack: start;
+            -ms-flex-pack: start;
+            justify-content: flex-start;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            font-family: var(--font-emphasis);
+            font-size: 0.875rem;
+            padding: 0 0.4375rem;
+            text-align: center;
+            z-index: 1;
+            line-height: var(--line-height-default); }
+          html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline {
+            position: relative;
+            -webkit-transform: translate(-50%, 0);
+            -ms-transform: translate(-50%, 0);
+            transform: translate(-50%, 0);
+            left: 50%;
+            bottom: 0; }
+            html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label {
+              margin-right: 5px;
+              font-weight: bold; }
+          html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
+            font-family: "Minion Pro Caption Cond";
+            -webkit-hyphens: auto;
+            -ms-hyphens: auto;
+            hyphens: auto;
+            text-align: justify;
+            padding: 0 0.3125rem 0 0;
+            line-height: var(--line-height-compact);
+            -webkit-box-flex: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1; }
+            html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type), :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type) {
+              margin-bottom: 6px; }
+    html .comp.comp-teeth.comp-horizontal .dotline, :root .comp.comp-teeth.comp-horizontal .dotline {
+      padding-left: 0.25rem;
+      --dotline-dot-sizeX: 1.125rem;
+      --dotline-dot-spacing: 0.25rem; }
+      html .comp.comp-teeth.comp-horizontal .dotline .dot, :root .comp.comp-teeth.comp-horizontal .dotline .dot {
+        -ms-flex-negative: 1;
+        flex-shrink: 1; }
+    html .comp.comp-teeth.comp-horizontal.comp-xp, :root .comp.comp-teeth.comp-horizontal.comp-xp {
+      z-index: 3; }
+      html .comp.comp-teeth.comp-horizontal.comp-xp .comp-label, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-label {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1; }
+      html .comp.comp-teeth.comp-horizontal.comp-xp .comp-body, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body {
+        -webkit-box-pack: end;
+        -ms-flex-pack: end;
+        justify-content: flex-end; }
+        html .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp .comp-body .dotline {
+          --dotline-dot-spacing: 0.125rem;
+          --dotline-horiz-align: flex-end;
+          --frame-color: var(--blades-black);
+          --fill-color-full: var(--blades-gold-bright);
+          --fill-color-empty: rgba(0, 0, 0);
+          --half-color-empty: var(--blades-gold-dark); }
+      html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook {
+        position: absolute;
+        right: 0; }
+        html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline {
+          --dotline-dot-sizeX: 1.125rem; }
+          html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot {
+            -webkit-transform-origin: top;
+            -ms-transform-origin: top;
+            transform-origin: top;
+            -webkit-transition: 0.25s;
+            transition: 0.25s;
+            -webkit-transform: scaleY(1);
+            -ms-transform: scaleY(1);
+            transform: scaleY(1); }
+            html .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot, :root .comp.comp-teeth.comp-horizontal.comp-xp.comp-xp-playbook .dotline .dot.empty-dot {
+              -webkit-transform: scaleY(0.5);
+              -ms-transform: scaleY(0.5);
+              transform: scaleY(0.5); }
+    html .comp.comp-teeth.comp-vertical, :root .comp.comp-teeth.comp-vertical {
+      -webkit-box-pack: start;
+      -ms-flex-pack: start;
+      justify-content: flex-start;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      height: 100%;
+      margin: 0;
+      -webkit-box-flex: 0.5;
+      -ms-flex-positive: 0.5;
+      flex-grow: 0.5; }
+      html .comp.comp-teeth.comp-vertical .comp-body, :root .comp.comp-teeth.comp-vertical .comp-body {
+        top: -0.3125rem; }
+      html .comp.comp-teeth.comp-vertical .dotline-label, :root .comp.comp-teeth.comp-vertical .dotline-label {
+        min-width: 5.625rem;
+        text-align: center;
+        margin-left: 1.25rem; }
+      html .comp.comp-teeth.comp-vertical .dotline, :root .comp.comp-teeth.comp-vertical .dotline {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        margin-top: -50%;
+        margin-bottom: -50%;
+        --dotline-dot-sizeX: 1rem;
+        --dotline-dot-spacing: 0.25rem; }
+    html .comp.comp-coins, html .comp.comp-stash, :root .comp.comp-coins, :root .comp.comp-stash {
+      margin-bottom: 4px;
+      pointer-events: none; }
+      html .comp.comp-coins.comp-coins, html .comp.comp-stash.comp-coins, :root .comp.comp-coins.comp-coins, :root .comp.comp-stash.comp-coins {
+        margin: 0px;
+        -webkit-box-pack: space-evenly;
+        -ms-flex-pack: space-evenly;
+        justify-content: space-evenly; }
+        html .comp.comp-coins.comp-coins .comp-body, html .comp.comp-stash.comp-coins .comp-body, :root .comp.comp-coins.comp-coins .comp-body, :root .comp.comp-stash.comp-coins .comp-body {
+          -ms-flex-negative: 0.5;
+          flex-shrink: 0.5;
+          min-height: unset;
+          margin-top: 5px; }
+      html .comp.comp-coins .dotline, html .comp.comp-stash .dotline, :root .comp.comp-coins .dotline, :root .comp.comp-stash .dotline {
+        --dotline-dot-size: 1.125rem;
+        --dotline-dot-spacing: -2px; }
+        html .comp.comp-coins .dotline .dot.empty-dot, html .comp.comp-stash .dotline .dot.empty-dot, :root .comp.comp-coins .dotline .dot.empty-dot, :root .comp.comp-stash .dotline .dot.empty-dot {
+          -webkit-filter: saturate(0);
+          filter: saturate(0);
+          opacity: 0.5; }
+        html .comp.comp-coins .dotline .dot.full-dot, html .comp.comp-stash .dotline .dot.full-dot, :root .comp.comp-coins .dotline .dot.full-dot, :root .comp.comp-stash .dotline .dot.full-dot {
+          -webkit-filter: brightness(0.8) saturate(0.75);
+          filter: brightness(0.8) saturate(0.75); }
+      html .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, html .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-coins.comp-coins .dot:nth-of-type(4n) + .dot, :root .comp.comp-stash.comp-coins .dot:nth-of-type(4n) + .dot {
+        margin-left: 0.3125rem; }
+      html .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, html .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-coins.comp-stash .dot:nth-of-type(10n) + .dot, :root .comp.comp-stash.comp-stash .dot:nth-of-type(10n) + .dot {
+        margin-left: 0.625rem; }
+    html .comp.comp-tier, :root .comp.comp-tier {
+      height: 100%;
+      min-width: 120px;
+      -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+      align-items: stretch;
+      grid-area: tier; }
+      html .comp.comp-tier > .full-width.flex-horizontal, :root .comp.comp-tier > .full-width.flex-horizontal {
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start; }
+      html .comp.comp-tier .tier-bonus-container, :root .comp.comp-tier .tier-bonus-container {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1; }
+        html .comp.comp-tier .tier-bonus-container .filled-label, :root .comp.comp-tier .tier-bonus-container .filled-label {
+          height: 30px;
+          min-width: 100%; }
+        html .comp.comp-tier .tier-bonus-container .dotline, :root .comp.comp-tier .tier-bonus-container .dotline {
+          height: 30px;
+          width: 100%; }
+          html .comp.comp-tier .tier-bonus-container .dotline .dot.empty-dot ~ .dot.empty-dot, :root .comp.comp-tier .tier-bonus-container .dotline .dot.empty-dot ~ .dot.empty-dot {
+            display: none; }
+        html .comp.comp-tier .tier-bonus-container.hidden-empty-dots .dotline .dot.empty-dot, :root .comp.comp-tier .tier-bonus-container.hidden-empty-dots .dotline .dot.empty-dot {
+          display: none !important; }
+      html .comp.comp-tier .tier-total-container, :root .comp.comp-tier .tier-total-container {
+        position: absolute;
+        right: 0;
+        top: -5px;
+        min-width: 80px;
+        text-align: center;
+        font-size: 100px;
+        line-height: 60px;
+        scale: 0.5 1;
+        pointer-events: none;
+        -webkit-transform-origin: 100% 50%;
+        -ms-transform-origin: 100% 50%;
+        transform-origin: 100% 50%;
+        color: var(--blades-gold-bright);
+        text-shadow: 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 5px var(--blades-black-dark), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright), 0 0 2px var(--blades-white-bright); }
+    html .comp.controls-container, :root .comp.controls-container {
+      --menu-size: 20px;
+      --control-color: var(--blades-grey);
+      --control-bg-color: var(--blades-grey-dark);
+      --control-hover-color: var(--blades-gold);
+      --control-hover-bg-color: var(--blades-grey-dark);
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-pack: end;
+      -ms-flex-pack: end;
+      justify-content: flex-end;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0px;
+      left: unset;
+      right: -10px; }
+      html .comp.controls-container .controls-panel, :root .comp.controls-container .controls-panel {
+        width: var(--menu-size);
+        height: var(--menu-size);
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        position: absolute;
+        border-radius: calc(0.5 * var(--menu-size));
+        background-color: var(--blades-black);
+        outline: 1px solid white;
+        -webkit-box-shadow: 0px calc(0.2 * var(--menu-size)) calc(0.6 * var(--menu-size)) calc(-0.25 * var(--menu-size)) black;
+        box-shadow: 0px calc(0.2 * var(--menu-size)) calc(0.6 * var(--menu-size)) calc(-0.25 * var(--menu-size)) black;
+        -webkit-transition: 650ms cubic-bezier(0.79, 0, 0.22, 1);
+        transition: 650ms cubic-bezier(0.79, 0, 0.22, 1); }
+        html .comp.controls-container .controls-panel .controls-toggle, :root .comp.controls-container .controls-panel .controls-toggle {
+          width: calc(0.85 * var(--menu-size));
+          height: calc(0.85 * var(--menu-size));
+          translate: -50% -50%;
+          top: 50%;
+          left: 50%;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-align: center;
+          -ms-flex-align: center;
+          align-items: center;
+          -webkit-box-pack: center;
+          -ms-flex-pack: center;
+          justify-content: center;
+          -webkit-box-orient: vertical;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+          flex-direction: column;
+          position: absolute;
+          border-radius: 50%;
+          cursor: pointer;
+          z-index: 100;
+          background-color: var(--blades-grey);
+          -webkit-transition: 300ms cubic-bezier(0.79, 0, 0.22, 1);
+          transition: 300ms cubic-bezier(0.79, 0, 0.22, 1);
+          pointer-events: auto !important; }
+          html .comp.controls-container .controls-panel .controls-toggle:hover, :root .comp.controls-container .controls-panel .controls-toggle:hover {
+            background-color: var(--blades-grey-bright); }
+          html .comp.controls-container .controls-panel .controls-toggle i, :root .comp.controls-container .controls-panel .controls-toggle i {
+            width: calc(0.35 * var(--menu-size));
+            height: calc(1 / 25 * var(--menu-size));
+            position: absolute;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            border-radius: calc(50% * var(--menu-size));
+            background-color: var(--blades-white);
+            -webkit-transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), top 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, bottom 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, -webkit-transform 300ms cubic-bezier(0.6, 0, 0.45, 0.99);
+            transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), top 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, bottom 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, -webkit-transform 300ms cubic-bezier(0.6, 0, 0.45, 0.99);
+            transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), transform 300ms cubic-bezier(0.6, 0, 0.45, 0.99), top 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, bottom 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms;
+            transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), transform 300ms cubic-bezier(0.6, 0, 0.45, 0.99), top 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, bottom 300ms cubic-bezier(0.6, 0, 0.45, 0.99) 300ms, -webkit-transform 300ms cubic-bezier(0.6, 0, 0.45, 0.99); }
+            html .comp.controls-container .controls-panel .controls-toggle i:first-of-type, :root .comp.controls-container .controls-panel .controls-toggle i:first-of-type {
+              top: calc(0.33 * var(--menu-size)); }
+            html .comp.controls-container .controls-panel .controls-toggle i:last-of-type, :root .comp.controls-container .controls-panel .controls-toggle i:last-of-type {
+              bottom: calc(0.33 * var(--menu-size)); }
+        html .comp.controls-container .controls-panel .controls-list, :root .comp.controls-container .controls-panel .controls-list {
+          -webkit-box-orient: horizontal;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: row;
+          flex-direction: row;
+          margin: 0;
+          right: calc(0.125 * var(--menu-size));
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-align: center;
+          -ms-flex-align: center;
+          align-items: center;
+          -webkit-box-pack: center;
+          -ms-flex-pack: center;
+          justify-content: center;
+          visibility: hidden;
+          position: absolute; }
+          html .comp.controls-container .controls-panel .controls-list li, :root .comp.controls-container .controls-panel .controls-list li {
+            width: calc(0.75 * var(--menu-size));
+            height: calc(0.75 * var(--menu-size));
+            margin-left: calc(0.125 * var(--menu-size));
+            list-style: none;
+            border-radius: calc(0.5 * var(--menu-size));
+            background-color: var(--control-bg-color);
+            scale: 0;
+            position: relative;
+            -webkit-transition: 150ms cubic-bezier(0.37, 0.01, 0.43, 1.3);
+            transition: 150ms cubic-bezier(0.37, 0.01, 0.43, 1.3);
+            -webkit-transition-delay: 150ms;
+            transition-delay: 150ms; }
+            html .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(1), :root .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(1) {
+              -webkit-transition-delay: 25ms;
+              transition-delay: 25ms; }
+            html .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(2), :root .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(2) {
+              -webkit-transition-delay: 50ms;
+              transition-delay: 50ms; }
+            html .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(3), :root .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(3) {
+              -webkit-transition-delay: 75ms;
+              transition-delay: 75ms; }
+            html .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(4), :root .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(4) {
+              -webkit-transition-delay: 100ms;
+              transition-delay: 100ms; }
+            html .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(5), :root .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(5) {
+              -webkit-transition-delay: 125ms;
+              transition-delay: 125ms; }
+            html .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(6), :root .comp.controls-container .controls-panel .controls-list li:not(:hover):nth-child(6) {
+              -webkit-transition-delay: 150ms;
+              transition-delay: 150ms; }
+            html .comp.controls-container .controls-panel .controls-list li > a, :root .comp.controls-container .controls-panel .controls-list li > a {
+              position: static;
+              width: calc(0.75 * var(--menu-size));
+              height: calc(0.75 * var(--menu-size));
+              display: block;
+              border-radius: 50%;
+              z-index: 1;
+              color: var(--control-color);
+              background: var(--control-bg-color);
+              pointer-events: auto !important; }
+              html .comp.controls-container .controls-panel .controls-list li > a.control-hidden, :root .comp.controls-container .controls-panel .controls-list li > a.control-hidden {
+                --control-color: var(--blades-grey);
+                --control-bg-color: var(--blades-black);
+                --control-hover-color: var(--blades-grey-bright);
+                --control-hover-bg-color: var(--blades-grey); }
+              html .comp.controls-container .controls-panel .controls-list li > a::before, :root .comp.controls-container .controls-panel .controls-list li > a::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                background: var(--control-hover-color);
+                -webkit-transition: .5s;
+                transition: .5s;
+                -webkit-transform: scale(0.9);
+                -ms-transform: scale(0.9);
+                transform: scale(0.9);
+                z-index: -5; }
+              html .comp.controls-container .controls-panel .controls-list li > a:hover, :root .comp.controls-container .controls-panel .controls-list li > a:hover {
+                color: var(--control-hover-color);
+                -webkit-box-shadow: 0 0 5px var(--control-hover-color);
+                box-shadow: 0 0 5px var(--control-hover-color);
+                text-shadow: 0 0 5px var(--control-hover-color); }
+                html .comp.controls-container .controls-panel .controls-list li > a:hover::before, :root .comp.controls-container .controls-panel .controls-list li > a:hover::before {
+                  -webkit-transform: scale(1.1);
+                  -ms-transform: scale(1.1);
+                  transform: scale(1.1);
+                  -webkit-box-shadow: 0 0 15px var(--control-hover-color);
+                  box-shadow: 0 0 15px var(--control-hover-color); }
+              html .comp.controls-container .controls-panel .controls-list li > a > i, :root .comp.controls-container .controls-panel .controls-list li > a > i {
+                position: absolute;
+                translate: -50% -50%;
+                top: 50%;
+                left: 50%;
+                font-size: calc(0.4 * var(--menu-size)); }
+        html .comp.controls-container .controls-panel.active, :root .comp.controls-container .controls-panel.active {
+          width: calc(6 * (1.04 * var(--menu-size))); }
+          html .comp.controls-container .controls-panel.active .controls-toggle, :root .comp.controls-container .controls-panel.active .controls-toggle {
+            left: calc(0.5 * var(--menu-size)); }
+            html .comp.controls-container .controls-panel.active .controls-toggle i, :root .comp.controls-container .controls-panel.active .controls-toggle i {
+              width: calc(0.2 * var(--menu-size));
+              -webkit-transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), top 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, bottom 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, -webkit-transform 500ms cubic-bezier(0.6, 0, 0.45, 0.99) 150ms;
+              transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), top 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, bottom 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, -webkit-transform 500ms cubic-bezier(0.6, 0, 0.45, 0.99) 150ms;
+              transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), transform 500ms cubic-bezier(0.6, 0, 0.45, 0.99) 150ms, top 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, bottom 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms;
+              transition: width 200ms cubic-bezier(0.6, 0, 0.45, 0.99), transform 500ms cubic-bezier(0.6, 0, 0.45, 0.99) 150ms, top 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, bottom 100ms cubic-bezier(0.6, 0, 0.45, 0.99) 100ms, -webkit-transform 500ms cubic-bezier(0.6, 0, 0.45, 0.99) 150ms; }
+              html .comp.controls-container .controls-panel.active .controls-toggle i:first-of-type, :root .comp.controls-container .controls-panel.active .controls-toggle i:first-of-type {
+                top: calc(0.33 * var(--menu-size));
+                -webkit-transform: rotate(45deg);
+                -ms-transform: rotate(45deg);
+                transform: rotate(45deg); }
+              html .comp.controls-container .controls-panel.active .controls-toggle i:last-of-type, :root .comp.controls-container .controls-panel.active .controls-toggle i:last-of-type {
+                bottom: calc(0.33 * var(--menu-size));
+                -webkit-transform: rotate(-45deg);
+                -ms-transform: rotate(-45deg);
+                transform: rotate(-45deg); }
+          html .comp.controls-container .controls-panel.active .controls-list, :root .comp.controls-container .controls-panel.active .controls-list {
+            visibility: visible; }
+            html .comp.controls-container .controls-panel.active .controls-list li, :root .comp.controls-container .controls-panel.active .controls-list li {
+              scale: 1;
+              -webkit-transition-property: scale, background, color;
+              transition-property: scale, background, color; }
+              html .comp.controls-container .controls-panel.active .controls-list li:nth-child(1), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(1) {
+                -webkit-transition-delay: 200ms, 0ms, 0ms;
+                transition-delay: 200ms, 0ms, 0ms; }
+              html .comp.controls-container .controls-panel.active .controls-list li:nth-child(2), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(2) {
+                -webkit-transition-delay: 175ms, 0ms, 0ms;
+                transition-delay: 175ms, 0ms, 0ms; }
+              html .comp.controls-container .controls-panel.active .controls-list li:nth-child(3), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(3) {
+                -webkit-transition-delay: 150ms, 0ms, 0ms;
+                transition-delay: 150ms, 0ms, 0ms; }
+              html .comp.controls-container .controls-panel.active .controls-list li:nth-child(4), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(4) {
+                -webkit-transition-delay: 125ms, 0ms, 0ms;
+                transition-delay: 125ms, 0ms, 0ms; }
+              html .comp.controls-container .controls-panel.active .controls-list li:nth-child(5), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(5) {
+                -webkit-transition-delay: 100ms, 0ms, 0ms;
+                transition-delay: 100ms, 0ms, 0ms; }
+              html .comp.controls-container .controls-panel.active .controls-list li:nth-child(6), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(6) {
+                -webkit-transition-delay: 75ms, 0ms, 0ms;
+                transition-delay: 75ms, 0ms, 0ms; }
+              html .comp.controls-container .controls-panel.active .controls-list li:hover, :root .comp.controls-container .controls-panel.active .controls-list li:hover {
+                background: var(--control-hover-bg-color); }
+                html .comp.controls-container .controls-panel.active .controls-list li:hover > a > i, :root .comp.controls-container .controls-panel.active .controls-list li:hover > a > i {
+                  color: var(--control-hover-color); }
     html .button-icon, html .toggle-icon, :root .button-icon, :root .toggle-icon {
       position: absolute;
       height: 1.5rem;
@@ -2481,6 +2937,16 @@ html, :root {
       font-size: 0.875rem;
       text-transform: none;
       text-align: center; }
+    html .tooltip.tooltip-roll-trait-pc, :root .tooltip.tooltip-roll-trait-pc {
+      bottom: 100px; }
+      html .tooltip.tooltip-roll-trait-pc table tbody tr:nth-child(4n), :root .tooltip.tooltip-roll-trait-pc table tbody tr:nth-child(4n) {
+        border-bottom: 2px solid var(--blades-white); }
+      html .tooltip.tooltip-roll-trait-pc table tbody tr td:nth-child(1), :root .tooltip.tooltip-roll-trait-pc table tbody tr td:nth-child(1) {
+        text-align: right; }
+      html .tooltip.tooltip-roll-trait-pc table tbody tr td:nth-child(2), :root .tooltip.tooltip-roll-trait-pc table tbody tr td:nth-child(2) {
+        text-align: left; }
+      html .tooltip.tooltip-roll-trait-pc table tbody tr td:nth-child(3), :root .tooltip.tooltip-roll-trait-pc table tbody tr td:nth-child(3) {
+        text-align: left; }
   html .tooltip-scaling-elem, :root .tooltip-scaling-elem {
     display: inline-block; }
 

@@ -3,10 +3,14 @@ import C, {BladesActorType, BladesItemType, Attribute, Tag, Action, BladesPhase}
 import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesActor from "../../blades-actor.js";
+import BladesPC from "../../documents/actors/blades-pc.js";
+import BladesNPC from "../../documents/actors/blades-npc.js";
+import BladesFaction from "../../documents/actors/blades-faction.js";
+import BladesCrew from "../../documents/actors/blades-crew.js";
 import BladesItem from "../../blades-item.js";
 import BladesTrackerSheet from "../item/blades-tracker-sheet.js";
 // import ConstructorDataType from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
-// import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
+// import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
 
 class BladesActorSheet extends BladesSheet {
@@ -52,7 +56,7 @@ class BladesActorSheet extends BladesSheet {
   override getData() {
     const context = super.getData();
 
-    const {activeSubItems, activeSubActors} = this.actor;
+    const {activeSubItems, activeSubActors} = this.actor as BladesActor;
 
     const sheetData: Partial<BladesActorDataOfType<BladesActorType.pc>> = {};
 
@@ -155,45 +159,47 @@ class BladesActorSheet extends BladesSheet {
       }
     };
 
-    sheetData.traumaData = {
-      label: this.actor.system.trauma.name,
-      dotline: {
-        data: {value: this.actor.trauma, max: this.actor.system.trauma.max},
-        svgKey: "teeth.short",
-        svgFull: "full|frame",
-        svgEmpty: "frame",
-        isLocked: true
-      },
-      compContainer: {
-        "class": "comp-trauma-conditions comp-vertical full-width",
-        "blocks": [
-          this.actor.traumaList.slice(0, Math.ceil(this.actor.traumaList.length / 2))
-            .map((tName) => ({
-              checkLabel: tName,
-              checkClasses: {
-                active: "comp-toggle-red",
-                inactive: "comp-toggle-grey"
-              },
-              checkTarget: `system.trauma.checked.${tName}`,
-              checkValue: this.actor.system.trauma.checked[tName] ?? false,
-              tooltip: C.TraumaTooltips[tName as KeyOf<typeof C.TraumaTooltips>],
-              tooltipClass: "tooltip-trauma"
-            })),
-          this.actor.traumaList.slice(Math.ceil(this.actor.traumaList.length / 2))
-            .map((tName) => ({
-              checkLabel: tName,
-              checkClasses: {
-                active: "comp-toggle-red",
-                inactive: "comp-toggle-grey"
-              },
-              checkTarget: `system.trauma.checked.${tName}`,
-              checkValue: this.actor.system.trauma.checked[tName] ?? false,
-              tooltip: C.TraumaTooltips[tName as KeyOf<typeof C.TraumaTooltips>],
-              tooltipClass: "tooltip-trauma"
-            }))
-        ]
-      }
-    };
+    if (BladesActor.IsType(this.actor, BladesActorType.pc)) {
+      sheetData.traumaData = {
+        label: this.actor.system.trauma.name,
+        dotline: {
+          data: {value: this.actor.trauma, max: this.actor.system.trauma.max},
+          svgKey: "teeth.short",
+          svgFull: "full|frame",
+          svgEmpty: "frame",
+          isLocked: true
+        },
+        compContainer: {
+          "class": "comp-trauma-conditions comp-vertical full-width",
+          "blocks": [
+            this.actor.traumaList.slice(0, Math.ceil(this.actor.traumaList.length / 2))
+              .map((tName) => ({
+                checkLabel: tName,
+                checkClasses: {
+                  active: "comp-toggle-red",
+                  inactive: "comp-toggle-grey"
+                },
+                checkTarget: `system.trauma.checked.${tName}`,
+                checkValue: this.actor.system.trauma.checked[tName] ?? false,
+                tooltip: C.TraumaTooltips[tName as KeyOf<typeof C.TraumaTooltips>],
+                tooltipClass: "tooltip-trauma"
+              })),
+            this.actor.traumaList.slice(Math.ceil(this.actor.traumaList.length / 2))
+              .map((tName) => ({
+                checkLabel: tName,
+                checkClasses: {
+                  active: "comp-toggle-red",
+                  inactive: "comp-toggle-grey"
+                },
+                checkTarget: `system.trauma.checked.${tName}`,
+                checkValue: this.actor.system.trauma.checked[tName] ?? false,
+                tooltip: C.TraumaTooltips[tName as KeyOf<typeof C.TraumaTooltips>],
+                tooltipClass: "tooltip-trauma"
+              }))
+          ]
+        }
+      };
+    }
 
     sheetData.abilityData = {
       dotline: {

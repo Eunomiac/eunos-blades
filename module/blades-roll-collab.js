@@ -1857,14 +1857,18 @@ class BladesRollCollab extends DocumentSheet {
                 return {
                     name: this.rollTrait,
                     value: this.rollTraitValOverride ?? this.rollSource.actions[this.rollTrait],
-                    max: this.rollTraitValOverride ?? this.rollSource.actions[this.rollTrait]
+                    max: this.rollTraitValOverride ?? this.rollSource.actions[this.rollTrait],
+                    pcTooltip: this.rollSource.rollTraitPCTooltipActions,
+                    gmTooltip: C.ActionTooltipsGM[this.rollTrait]
                 };
             }
             if (isAttribute(this.rollTrait)) {
                 return {
                     name: this.rollTrait,
                     value: this.rollTraitValOverride ?? this.rollSource.attributes[this.rollTrait],
-                    max: this.rollTraitValOverride ?? this.rollSource.attributes[this.rollTrait]
+                    max: this.rollTraitValOverride ?? this.rollSource.attributes[this.rollTrait],
+                    pcTooltip: this.rollSource.rollTraitPCTooltipAttributes,
+                    gmTooltip: C.AttributeTooltips[this.rollTrait]
                 };
             }
         }
@@ -2124,9 +2128,11 @@ class BladesRollCollab extends DocumentSheet {
         }
         [RollModCategory.roll, RollModCategory.effect].forEach((cat, i) => {
             if (this.isPushed(cat)) {
-                const bargainMod = this.getRollModByID("Bargain-positive-roll");
-                if (bargainMod?.isVisible) {
-                    bargainMod.held_status = RollModStatus.ForcedOff;
+                if (cat === RollModCategory.roll && this.isPushed(cat, "positive")) {
+                    const bargainMod = this.getRollModByID("Bargain-positive-roll");
+                    if (bargainMod?.isVisible) {
+                        bargainMod.held_status = RollModStatus.ForcedOff;
+                    }
                 }
                 initReport[`[PASS 3.2.${i + 1}] {${U.uCase(cat)}}: Force-Off Bargain Pass`] = this.getStatusChanges();
             }
@@ -2163,9 +2169,9 @@ class BladesRollCollab extends DocumentSheet {
         this.rollFactorPenaltiesNegated[factor] = true;
     }
     tempGMBoosts = {};
-    isPushed(cat) { return this.getActiveBasicPushMods(cat).length > 0; }
-    hasOpenPush(cat) { return this.isPushed(cat) && this.getOpenPushMods(cat).length > 0; }
-    isForcePushed(cat) { return this.isPushed(cat) && this.getForcedPushMods(cat).length > 0; }
+    isPushed(cat, posNeg) { return this.getActiveBasicPushMods(cat, posNeg).length > 0; }
+    hasOpenPush(cat, posNeg) { return this.isPushed(cat) && this.getOpenPushMods(cat, posNeg).length > 0; }
+    isForcePushed(cat, posNeg) { return this.isPushed(cat) && this.getForcedPushMods(cat, posNeg).length > 0; }
     get rollCosts() {
         if (!this.isPushed) {
             return 0;
@@ -2295,12 +2301,18 @@ class BladesRollCollab extends DocumentSheet {
     
     _lastStatusData = {};
     logModStatus() {
+        if (!CONFIG.debug.logging) {
+            return;
+        }
         this._lastStatusData = {};
         this.rollMods.forEach((mod) => {
             this._lastStatusData[mod.id] = stringifyRollModStatus(mod);
         });
     }
     getStatusSummary() {
+        if (!CONFIG.debug.logging) {
+            return {};
+        }
         const statusData = {};
         this.rollMods.forEach((mod) => {
             statusData[mod.id] = {
@@ -2311,6 +2323,9 @@ class BladesRollCollab extends DocumentSheet {
         return statusData;
     }
     getStatusChanges() {
+        if (!CONFIG.debug.logging) {
+            return {};
+        }
         const statusChanges = {};
         this.rollMods.forEach((mod) => {
             const changeData = compareRollModStatus(mod, this._lastStatusData[mod.id]);
@@ -2814,6 +2829,12 @@ class BladesRollCollab extends DocumentSheet {
         html.find("[data-action='gm-toggle-factor'").on({
             click: this._gmControlToggleFactor.bind(this),
             contextmenu: this._gmControlResetFactor.bind(this)
+        });
+        html.find(".controls-toggle").on({
+            click: (event) => {
+                event.preventDefault();
+                $(event.currentTarget).parents(".controls-panel").toggleClass("active");
+            }
         });
     }
 

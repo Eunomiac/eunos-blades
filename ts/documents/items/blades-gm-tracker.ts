@@ -3,7 +3,7 @@ import C, {SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase, RollModCa
 import U from "../../core/utilities.js";
 import BladesActor from "../../blades-actor.js";
 import BladesRollCollab from "../../blades-roll-collab.js";
-import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
+import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
 class BladesGMTracker extends BladesItem implements BladesItemSubClass.Gm_Tracker {
 

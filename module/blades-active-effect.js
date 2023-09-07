@@ -139,7 +139,7 @@ class BladesActiveEffect extends ActiveEffect {
                 }
             }
             else if (effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
-                if (BladesActor.IsType(effect.parent, BladesActorType.pc, BladesActorType.crew)) {
+                if (BladesActor.IsType(effect.parent, BladesActorType.pc) || BladesActor.IsType(effect.parent, BladesActorType.crew)) {
                     if (effect.parent.cohorts.length > 0) {
                         await Promise.all(effect.parent.cohorts.map(async (cohort) => cohort.createEmbeddedDocuments("ActiveEffect", [effect])));
                     }

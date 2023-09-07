@@ -2,8 +2,18 @@ import U from "../core/utilities.js";
 import {BladesActorType} from "../core/constants.js";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import BladesActor from "../blades-actor.js";
+import BladesPC from "./actors/blades-pc.js";
+import BladesNPC from "./actors/blades-npc.js";
+import BladesFaction from "./actors/blades-faction.js";
+import BladesCrew from "./actors/blades-crew.js";
 
-const ActorsMap: Partial<Record<BladesActorType,typeof BladesActor>> = {};
+const ActorsMap: Partial<Record<BladesActorType,typeof BladesActor>> = {
+  [BladesActorType.pc]: BladesPC,
+  [BladesActorType.npc]: BladesNPC,
+  [BladesActorType.faction]: BladesFaction,
+  [BladesActorType.crew]: BladesCrew
+
+};
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const BladesActorProxy = new Proxy(function() {}, {
@@ -49,3 +59,4 @@ const BladesActorProxy = new Proxy(function() {}, {
 });
 
 export default BladesActorProxy;
+export {BladesActor, BladesPC, BladesCrew, BladesNPC, BladesFaction};

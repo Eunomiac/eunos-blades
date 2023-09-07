@@ -1,8 +1,12 @@
 import C, {SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase, RollModCategory, PrereqType, Factor, RollModStatus} from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
+import BladesPC from "./documents/actors/blades-pc.js";
+import BladesNPC from "./documents/actors/blades-npc.js";
+import BladesFaction from "./documents/actors/blades-faction.js";
+import BladesCrew from "./documents/actors/blades-crew.js";
 import BladesRollCollab from "./blades-roll-collab.js";
-import {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
+import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
 class BladesItem extends Item implements BladesDocument<Item>,
                                           BladesItemSubClass.Ability,
@@ -139,7 +143,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
           return this.getFactorTotal(Factor.tier)
             + (this.hasTag("Fine") ? 1 : 0)
             + (this.parent?.getTaggedItemBonuses(this.tags) ?? 0)
-            + (this.parent?.crew ? this.parent.crew.getTaggedItemBonuses(this.tags) : 0);
+            + (BladesActor.IsType(this.parent, BladesActorType.pc) && this.parent?.crew ? this.parent.crew.getTaggedItemBonuses(this.tags) : 0);
         }
         // if (BladesItem.IsType(this, BladesItemType.playbook)) { return this.getFactorTotal(Factor.tier) }
         // if (BladesItem.IsType(this, BladesItemType.preferred_op)) { return this.getFactorTotal(Factor.tier) }

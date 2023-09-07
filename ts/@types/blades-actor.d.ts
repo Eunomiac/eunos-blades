@@ -1,6 +1,9 @@
 import { BladesActorType, Tag, District, Attribute, Action, AdvancementPoint } from "../core/constants.js";
 import BladesActor from "../blades-actor.js";
-
+import BladesPC from "../documents/actors/blades-pc.js";
+import BladesNPC from "../documents/actors/blades-npc.js";
+import BladesFaction from "../documents/actors/blades-faction.js";
+import BladesCrew from "../documents/actors/blades-crew.js";
 declare global {
 
   // Extending Type Definitions of 'Actor' Base Class to Foundry V11
@@ -146,13 +149,18 @@ declare global {
 
   // Merged Actor Subtype Schemas into Master BladesActor System Schema
   interface BladesActorSystem extends BladesActorSchemaTemplate.Default,
-    Partial<BladesActorSchema.Scoundrel>,
-    Partial<BladesActorSchema.Crew>,
-    Partial<BladesActorSchema.NPC>,
-    Partial<BladesActorSchema.Faction> { }
+    DeepPartial<BladesActorSchema.Scoundrel>,
+    DeepPartial<BladesActorSchema.Crew>,
+    DeepPartial<BladesActorSchema.NPC>,
+    DeepPartial<BladesActorSchema.Faction> { }
 
   // Distinguishing schema types for BladesActor subtypes
-  type BladesActorOfType<T extends BladesActorType> = BladesActor & {
+  type BladesActorOfType<T extends BladesActorType> = (
+    T extends BladesActorType.pc ? BladesPC
+    : T extends BladesActorType.npc ? BladesNPC
+    : T extends BladesActorType.crew ? BladesCrew
+    : T extends BladesActorType.faction ? BladesFaction : never
+  ) & {
     system: ExtractBladesActorSystem<T>
   };
 

@@ -77,7 +77,7 @@ declare global {
 
       rollMods: BladesRollMod[],
       rollSource: BladesActor|BladesItem & SourceDoc,
-      rollTraitData: NamedValueMax,
+      rollTraitData: NamedValueMax & {gmTooltip?: string, pcTooltip?: string},
       rollTraitOptions: Array<{name: string, value: RollTrait}>,
 
       diceTotal: number,

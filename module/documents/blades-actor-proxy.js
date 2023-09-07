@@ -6,8 +6,18 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "../core/utilities.js";
+import { BladesActorType } from "../core/constants.js";
 import BladesActor from "../blades-actor.js";
-const ActorsMap = {};
+import BladesPC from "./actors/blades-pc.js";
+import BladesNPC from "./actors/blades-npc.js";
+import BladesFaction from "./actors/blades-faction.js";
+import BladesCrew from "./actors/blades-crew.js";
+const ActorsMap = {
+    [BladesActorType.pc]: BladesPC,
+    [BladesActorType.npc]: BladesNPC,
+    [BladesActorType.faction]: BladesFaction,
+    [BladesActorType.crew]: BladesCrew
+};
 const BladesActorProxy = new Proxy(function () { }, {
     construct: function (target, args) {
         const [data] = args;
@@ -39,3 +49,4 @@ const BladesActorProxy = new Proxy(function () { }, {
     }
 });
 export default BladesActorProxy;
+export { BladesActor, BladesPC, BladesCrew, BladesNPC, BladesFaction };

@@ -5,8 +5,9 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { BladesItemType, Tag, RollModCategory, Factor, RollModStatus } from "./core/constants.js";
+import C, { BladesActorType, BladesItemType, Tag, RollModCategory, Factor, RollModStatus } from "./core/constants.js";
 import U from "./core/utilities.js";
+import BladesActor from "./blades-actor.js";
 class BladesItem extends Item {
 
     static async create(data, options = {}) {
@@ -99,7 +100,7 @@ class BladesItem extends Item {
                     return this.getFactorTotal(Factor.tier)
                         + (this.hasTag("Fine") ? 1 : 0)
                         + (this.parent?.getTaggedItemBonuses(this.tags) ?? 0)
-                        + (this.parent?.crew ? this.parent.crew.getTaggedItemBonuses(this.tags) : 0);
+                        + (BladesActor.IsType(this.parent, BladesActorType.pc) && this.parent?.crew ? this.parent.crew.getTaggedItemBonuses(this.tags) : 0);
                 }
                 if (BladesItem.IsType(this, BladesItemType.design)) {
                     return this.system.min_quality;

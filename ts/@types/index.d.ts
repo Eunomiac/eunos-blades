@@ -46,6 +46,11 @@ declare global {
       ["eunos-blades"]?: Record<string,any>
     }
   }
+  declare interface CONFIG {
+    debug: {
+      logging: boolean
+    }
+  }
   interface LenientGlobalVariableTypes { game: never }
 
   // GreenSock Accessor Object

@@ -26,7 +26,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     Items.registerSheet("blades", BladesClockKeeperSheet, {types: ["clock_keeper"], makeDefault: true});
     Hooks.once("ready", async () => {
       let clockKeeper: BladesClockKeeper|undefined = game.items.find((item): item is BladesClockKeeper => item.type === "clock_keeper");
-      if (!(clockKeeper instanceof BladesClockKeeper)) {
+      if (!clockKeeper) {
         clockKeeper = (await BladesClockKeeper.create({
           name: "Clock Keeper",
           type: "clock_keeper",

@@ -28,6 +28,8 @@ import BladesActiveEffect from "./blades-active-effect.js";
 import BladesTrackerSheet from "./sheets/item/blades-tracker-sheet.js";
 import BladesClockKeeperSheet from "./sheets/item/blades-clock-keeper-sheet.js";
 import { UpdateClaims, UpdateContacts, UpdateOps } from "./data-import/data-import.js";
+CONFIG.debug.logging = false;
+CONFIG.debug.logging = true; 
 let socket;
 registerDebugger();
 

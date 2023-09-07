@@ -5,4 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-"use strict";
+import BladesActor from "../../blades-actor.js";
+class BladesFaction extends BladesActor {
+}
+export default BladesFaction;

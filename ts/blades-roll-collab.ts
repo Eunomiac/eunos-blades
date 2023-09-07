@@ -2,6 +2,10 @@
 import U from "./core/utilities.js";
 import C, {BladesActorType, BladesItemType, RollType, RollModStatus, RollModCategory, Action, DowntimeAction, Attribute, Position, Effect, Factor, RollResult, Harm, ConsequenceType} from "./core/constants.js";
 import BladesActor from "./blades-actor.js";
+import BladesPC from "./documents/actors/blades-pc.js";
+import BladesNPC from "./documents/actors/blades-npc.js";
+import BladesFaction from "./documents/actors/blades-faction.js";
+import BladesCrew from "./documents/actors/blades-crew.js";
 import BladesItem from "./blades-item.js";
 import BladesActiveEffect from "./blades-active-effect.js";
 import {ApplyTooltipListeners} from "./core/gsap.js";
@@ -2004,20 +2008,24 @@ class BladesRollCollab extends DocumentSheet {
   _rollTraitValOverride?: number;
   get rollTraitValOverride(): number | undefined { return this._rollTraitValOverride }
   set rollTraitValOverride(val: number | undefined) { this._rollTraitValOverride = val }
-  get rollTraitData(): NamedValueMax {
+  get rollTraitData(): NamedValueMax & {gmTooltip?: string, pcTooltip?: string} {
     if (BladesActor.IsType(this.rollSource, BladesActorType.pc)) {
       if (isAction(this.rollTrait)) {
         return {
           name: this.rollTrait,
           value: this.rollTraitValOverride ?? this.rollSource.actions[this.rollTrait],
-          max: this.rollTraitValOverride ?? this.rollSource.actions[this.rollTrait]
+          max: this.rollTraitValOverride ?? this.rollSource.actions[this.rollTrait],
+          pcTooltip: this.rollSource.rollTraitPCTooltipActions,
+          gmTooltip: C.ActionTooltipsGM[this.rollTrait]
         };
       }
       if (isAttribute(this.rollTrait)) {
         return {
           name: this.rollTrait,
           value: this.rollTraitValOverride ?? this.rollSource.attributes[this.rollTrait],
-          max: this.rollTraitValOverride ?? this.rollSource.attributes[this.rollTrait]
+          max: this.rollTraitValOverride ?? this.rollSource.attributes[this.rollTrait],
+          pcTooltip: this.rollSource.rollTraitPCTooltipAttributes,
+          gmTooltip: C.AttributeTooltips[this.rollTrait]
         };
       }
     }
@@ -2279,7 +2287,7 @@ class BladesRollCollab extends DocumentSheet {
         }
         const [targetName, targetCat, targetPosNeg] = thisTarget.split(/,/)! as [string, RollModCategory | undefined, "positive" | "negative" | undefined];
         let targetMod = this.getRollModByName(targetName)
-          ?? this.getRollModByName(targetName, targetCat ?? mod.category)
+          ?? this.getRollModByName(targetName, targetCat ?? mod.category);
         if (!targetMod && targetName === "Push") {
           [targetMod] = [
             ...this.getActiveBasicPushMods(targetCat ?? mod.category, "negative").filter((mod) => mod.status === RollModStatus.ToggledOn),
@@ -2316,10 +2324,12 @@ class BladesRollCollab extends DocumentSheet {
     // ... BY CATEGORY ...
     [RollModCategory.roll, RollModCategory.effect].forEach((cat, i) => {
       if (this.isPushed(cat)) {
-        // ... Force Off any visible Bargain
-        const bargainMod = this.getRollModByID("Bargain-positive-roll");
-        if (bargainMod?.isVisible) {
-          bargainMod.held_status = RollModStatus.ForcedOff;
+        // ... if pushed by positive mod, Force Off any visible Bargain
+        if (cat === RollModCategory.roll && this.isPushed(cat, "positive")) {
+          const bargainMod = this.getRollModByID("Bargain-positive-roll");
+          if (bargainMod?.isVisible) {
+            bargainMod.held_status = RollModStatus.ForcedOff;
+          }
         }
         initReport[`[PASS 3.2.${i+1}] {${U.uCase(cat)}}: Force-Off Bargain Pass`] = this.getStatusChanges();
       } else {
@@ -2369,9 +2379,9 @@ class BladesRollCollab extends DocumentSheet {
 
   tempGMBoosts: Partial<Record<"Dice" | Factor | "Result", number>> = {};
 
-  isPushed(cat?: RollModCategory): boolean { return this.getActiveBasicPushMods(cat).length > 0 }
-  hasOpenPush(cat?: RollModCategory): boolean { return this.isPushed(cat) && this.getOpenPushMods(cat).length > 0 }
-  isForcePushed(cat?: RollModCategory): boolean { return this.isPushed(cat) && this.getForcedPushMods(cat).length > 0 }
+  isPushed(cat?: RollModCategory, posNeg?: "positive"|"negative"): boolean { return this.getActiveBasicPushMods(cat, posNeg).length > 0 }
+  hasOpenPush(cat?: RollModCategory, posNeg?: "positive"|"negative"): boolean { return this.isPushed(cat) && this.getOpenPushMods(cat, posNeg).length > 0 }
+  isForcePushed(cat?: RollModCategory, posNeg?: "positive"|"negative"): boolean { return this.isPushed(cat) && this.getForcedPushMods(cat, posNeg).length > 0 }
 
 
   get rollCosts(): number {
@@ -2483,12 +2493,14 @@ class BladesRollCollab extends DocumentSheet {
 
   _lastStatusData: Record<string,string> = {};
   logModStatus() {
+    if (!CONFIG.debug.logging) { return }
     this._lastStatusData = {};
     this.rollMods.forEach((mod) => {
       this._lastStatusData[mod.id] = stringifyRollModStatus(mod);
     });
   }
   getStatusSummary() {
+    if (!CONFIG.debug.logging) { return {} }
     const statusData: Record<string, Record<"mod"|"status"|"user_status"|"held_status"|"base_status",BladesRollMod|string|undefined>> = {};
     this.rollMods.forEach((mod) => {
       statusData[mod.id] = {
@@ -2499,6 +2511,7 @@ class BladesRollCollab extends DocumentSheet {
     return statusData;
   }
   getStatusChanges() {
+    if (!CONFIG.debug.logging) { return {} }
     const statusChanges: Record<string, Partial<Record<"status"|"user_status"|"held_status"|"base_status",string|undefined>>|null> = {};
     this.rollMods.forEach((mod) => {
       const changeData = compareRollModStatus(mod, this._lastStatusData[mod.id]);
@@ -3059,6 +3072,13 @@ class BladesRollCollab extends DocumentSheet {
       click: this._gmControlToggleFactor.bind(this),
       contextmenu: this._gmControlResetFactor.bind(this)
     });
+    html.find(".controls-toggle").on({
+      click: (event) => {
+        event.preventDefault();
+        $(event.currentTarget).parents(".controls-panel").toggleClass("active");
+      }
+    });
+
   }
   // #endregion
 

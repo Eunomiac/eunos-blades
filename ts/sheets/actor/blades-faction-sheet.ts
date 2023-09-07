@@ -1,5 +1,9 @@
 
 import BladesActor from "../../blades-actor.js";
+import BladesPC from "../../documents/actors/blades-pc.js";
+import BladesNPC from "../../documents/actors/blades-npc.js";
+import BladesFaction from "../../documents/actors/blades-faction.js";
+import BladesCrew from "../../documents/actors/blades-crew.js";
 import BladesSheet from "./blades-sheet.js";
 import {BladesActorType} from "../../core/constants.js";
 

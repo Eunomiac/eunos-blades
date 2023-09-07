@@ -126,6 +126,7 @@ class BladesActiveEffect extends ActiveEffect {
 
       // Does this effect have an "APPLYTOMEMBERS" or "APPLYTOCOHORTS" CUSTOM effect?
       if (effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
+
         if (BladesActor.IsType(effect.parent, BladesActorType.pc) && BladesActor.IsType(effect.parent.crew, BladesActorType.crew)) {
           const otherMembers = effect.parent.crew.members.filter((member) => member.id !== effect.parent!.id);
           if (otherMembers.length > 0) {
@@ -153,13 +154,13 @@ class BladesActiveEffect extends ActiveEffect {
           await effect.updateSource({changes: [changeKey]});
         }
       } else if (effect.changes.some((change) => change.key === "APPLYTOCOHORTS")) {
-        if (BladesActor.IsType(effect.parent, BladesActorType.pc, BladesActorType.crew)) {
+        if (BladesActor.IsType(effect.parent, BladesActorType.pc) || BladesActor.IsType(effect.parent, BladesActorType.crew)) {
           if (effect.parent.cohorts.length > 0) {
             // If APPLYTOCOHORTS   --> Create effect on cohorts
             await Promise.all(effect.parent.cohorts.map(async (cohort) => cohort.createEmbeddedDocuments("ActiveEffect", [effect as any])));
           }
           // Set flag with effect's data on parent, so future cohorts can have effect applied to them.
-          await effect.parent.setFlag("eunos-blades", `cohortEffects.${effect.id}`, {
+          await (effect.parent as BladesActor).setFlag("eunos-blades", `cohortEffects.${effect.id}`, {
             appliedTo: effect.parent.cohorts.map((cohort) => cohort.id),
             effect
           });

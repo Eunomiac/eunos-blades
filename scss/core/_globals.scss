@@ -331,6 +331,24 @@
       text-transform: none;
       text-align: center;
     }
+
+    &.tooltip-roll-trait-pc {
+      bottom: 100px;
+      table tbody tr {
+        &:nth-child(4n) {
+          border-bottom: 2px solid var(--blades-white);
+        }
+        td:nth-child(1) {
+          text-align: right;
+        }
+        td:nth-child(2) {
+          text-align: left;
+        }
+        td:nth-child(3) {
+          text-align: left;
+        }
+      }
+    }
   }
 
   .tooltip-scaling-elem {

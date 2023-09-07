@@ -75,6 +75,9 @@ const STYLES = {
     }
 };
 const eLogger = (type = "base", ...content) => {
+    if (!(type === "error" || CONFIG.debug.logging)) {
+        return;
+    }
     let dbLevel = [0, 1, 2, 3, 4, 5].includes(U.getLast(content))
         ? content.pop()
         : 3;

@@ -44,19 +44,12 @@
       docs = teamworkDocs
       docCategory = category
       docTarget = name }}
-      {{/if}}
-      </span>
-
-  <div class="roll-mod-controls-container controls-container">
-    <span class="roll-mod-gm-control gm-control-hidden {{~#if (test status "==" "Hidden")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="Hidden">X</span>
-    <span class="roll-mod-gm-control gm-control-forcedoff {{~#if (test status "==" "ForcedOff")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ForcedOff">X</span>
-    <span class="roll-mod-gm-control gm-control-toggledoff {{~#if (test status "==" "ToggledOff")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ToggledOff">X</span>
-    <span class="roll-mod-gm-control gm-control-toggledon {{~#if (test status "==" "ToggledOn")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ToggledOn">X</span>
-    <span class="roll-mod-gm-control gm-control-forcedon {{~#if (test status "==" "ForcedOn")}} gm-control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ForcedOn">X</span>
-    <span class="roll-mod-gm-control gm-control-reset" data-id="{{id}}" data-action="gm-reset"></span>
-  </div>
-{{/if}}
+  {{/if}}
   </span>
+  {{> "systems/eunos-blades/templates/components/slide-out-controls.hbs"}}
+{{else}}
+  </span>
+{{/if}}
 
 
 

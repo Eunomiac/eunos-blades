@@ -122,6 +122,7 @@
 
       // General App Window Styles
       @import "./core/app";
+      @import "./components/accordian-block";
 
       // Third-Party Library Inputs
       // > TAGIFY
@@ -130,10 +131,11 @@
       // > TAGIFY CUSTOM CONFIG
       @import './tagify-custom';
 
+
+
       .editor:not(.tinymce) {
         position: relative;
         overflow-x: hidden;
-        height: auto;
         width: 100%;
         min-height: var(--min-tinymce-height);
 
@@ -188,9 +190,6 @@
 
         .editor-content {
           @import './tinymce/tinymce-content';
-        }
-        &:first-child {
-          // margin-top: 30px;
         }
       }
 

@@ -91,7 +91,7 @@ class BladesSheet extends ActorSheet {
                 }
             }
         };
-        if (BladesActor.IsType(this.actor, BladesActorType.pc, BladesActorType.crew)) {
+        if (BladesActor.IsType(this.actor, BladesActorType.pc) || BladesActor.IsType(this.actor, BladesActorType.crew)) {
             sheetData.playbookData = {
                 dotline: {
                     data: this.actor.system.experience.playbook,
@@ -412,7 +412,7 @@ class BladesSheet extends ActorSheet {
             }
         }
         if (game.user.isGM) {
-            if (BladesActor.IsType(this.document, BladesActorType.pc, BladesActorType.crew)) {
+            if (BladesActor.IsType(this.document, BladesActorType.pc) || BladesActor.IsType(this.document, BladesActorType.crew)) {
                 rollData.rollSource = this.document;
             }
             else {

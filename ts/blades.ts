@@ -27,6 +27,9 @@ import BladesTrackerSheet from "./sheets/item/blades-tracker-sheet.js";
 import BladesClockKeeperSheet from "./sheets/item/blades-clock-keeper-sheet.js";
 import {UpdateClaims, UpdateContacts, UpdateOps} from "./data-import/data-import.js";
 
+CONFIG.debug.logging = false;
+/*DEVCODE*/CONFIG.debug.logging = true; /*!DEVCODE*/
+
 let socket: Socket; //~ SocketLib interface
 registerDebugger();
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮

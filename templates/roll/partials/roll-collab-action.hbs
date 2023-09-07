@@ -53,15 +53,19 @@
         <div class="roll-sheet-sub-block roll-header-block flex-horizontal">
           <label class="filled-label">Rolling:</label>
           {{#if rollTraitOptions}}
-          <select class="shadowed roll-sheet-select roll-sheet-select-trait" name="flags.eunos-blades.rollCollab.rollTrait">
+          <select class="shadowed roll-sheet-select roll-sheet-select-trait tooltip-trigger" name="flags.eunos-blades.rollCollab.rollTrait">
             {{#select rollTrait}}
             {{#each rollTraitOptions}}
             <option value="{{value}}">{{name}}</option>
             {{/each}}
             {{/select}}
           </select>
+          <span class="tooltip tooltip-roll-trait tooltip-roll-trait-pc">{{{rollTraitData.pcTooltip}}}</span>
           {{else}}
-          <span class="shadowed roll-readonly">{{rollTraitData.name}}</span>
+          <span class="shadowed roll-readonly {{~#if rollTraitData.pcTooltip}} tooltip-trigger{{/if}}">{{rollTraitData.name}}</span>
+          {{#if rollTraitData.pcTooltip}}
+          <span class="tooltip tooltip-roll-trait tooltip-roll-trait-pc">{{{rollTraitData.pcTooltip}}}</span>
+          {{/if}}
           {{/if}}
           <div class="roll-dotline-block">
           {{> "systems/eunos-blades/templates/components/dotline.hbs"
@@ -249,47 +253,49 @@
 </div>
 
 <section class="sheet-footer">
-  {{#if isAffectingAfter}}
-  <div class="roll-sheet-float-block roll-sheet-sub-block roll-effects-block flex-horizontal">
-    {{#each posRollMods.after }}
-    {{#unless (test isInInactiveBlock "||" (test "!" isVisible))}}
-    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
-    {{/unless}}
-    {{/each}}
-    <span class="roll-mod-block-spacer mid-spacer"></span>
-    {{#each negRollMods.after }}
-    {{#unless (test isInInactiveBlock "||" (test "!" isVisible))}}
-    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
-    {{/unless}}
-    {{/each}}
-  </div>
-  {{#if hasInactiveConditionals.after}}
-  <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
-    {{#each posRollMods.after }}
-    {{#if (test isInInactiveBlock "&&" isVisible)}}
-    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
-    {{/if}}
-    {{/each}}
-    {{#each negRollMods.after }}
-    {{#if (test isInInactiveBlock "&&" isVisible)}}
-    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
-    {{/if}}
-    {{/each}}
-  </div>
-  {{/if}}
-  {{/if}}
-  <div class="roll-sheet-float-block roll-button">
-    <div class="roll-odds-strip" style="background: {{{oddsGradient}}};">
-      {{#unless isGMReady}}Waiting For GM ...{{/unless}}
+  <div class="roll-sheet-block">
+    {{#if isAffectingAfter}}
+    <div class="roll-sheet-float-block roll-sheet-sub-block roll-effects-block flex-horizontal">
+      {{#each posRollMods.after }}
+      {{#unless (test isInInactiveBlock "||" (test "!" isVisible))}}
+      {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+      {{/unless}}
+      {{/each}}
+      <span class="roll-mod-block-spacer mid-spacer"></span>
+      {{#each negRollMods.after }}
+      {{#unless (test isInInactiveBlock "||" (test "!" isVisible))}}
+      {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+      {{/unless}}
+      {{/each}}
     </div>
-    {{#if isGMReady}}
-    <button class="roll-button" data-action="roll" data-roll-id="{{rollID}}">ROLL</button>
+    {{#if hasInactiveConditionals.after}}
+    <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
+      {{#each posRollMods.after }}
+      {{#if (test isInInactiveBlock "&&" isVisible)}}
+      {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+      {{/if}}
+      {{/each}}
+      {{#each negRollMods.after }}
+      {{#if (test isInInactiveBlock "&&" isVisible)}}
+      {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+      {{/if}}
+      {{/each}}
+    </div>
+    {{/if}}
     {{/if}}
   </div>
-  {{#if costData}}
-  <div class="roll-sheet-float-block roll-stress-block {{~#if isGMReady}} gm-ready{{/if}} tooltip-trigger">
-    <span class="shadowed roll-stress-cost">{{{costData.footerLabel}}}</span>
-    <span class="tooltip tooltip-roll-stress">{{{costData.tooltip}}}</span>
-  </div>
-  {{/if}}
+    <div class="roll-sheet-float-block roll-button">
+      <div class="roll-odds-strip" style="background: {{{oddsGradient}}};">
+        {{#unless isGMReady}}Waiting For GM ...{{/unless}}
+      </div>
+      {{#if isGMReady}}
+      <button class="roll-button" data-action="roll" data-roll-id="{{rollID}}">ROLL</button>
+      {{/if}}
+    </div>
+    {{#if costData}}
+    <div class="roll-sheet-float-block roll-stress-block {{~#if isGMReady}} gm-ready{{/if}} tooltip-trigger">
+      <span class="shadowed roll-stress-cost">{{{costData.footerLabel}}}</span>
+      <span class="tooltip tooltip-roll-stress">{{{costData.tooltip}}}</span>
+    </div>
+    {{/if}}
 </section>

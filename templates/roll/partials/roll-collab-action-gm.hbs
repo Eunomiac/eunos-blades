@@ -52,7 +52,8 @@
       <div class="roll-sheet-block rolling-block flex-vertical">
         <div class="roll-sheet-sub-block roll-header-block flex-horizontal">
           <label class="filled-label">Rolling:</label>
-          <span class="shadowed roll-readonly">{{rollTraitData.name}}</span>
+          <span class="shadowed roll-readonly tooltip-trigger">{{rollTraitData.name}}</span>
+          <span class="tooltip tooltip-roll-trait tooltip-roll-trait-gm">{{{rollTraitData.gmTooltip}}}</span>
           <div class="roll-dotline-block">
           {{> "systems/eunos-blades/templates/components/dotline.hbs"
           data=rollTraitData
@@ -234,16 +235,17 @@
 </div>
 
 <section class="sheet-footer">
-  <div class="roll-sheet-float-block roll-effects-block flex-horizontal">
+  <div class="roll-sheet-block">
+  <div class="roll-sheet-float-block roll-sheet-sub-block roll-effects-block flex-horizontal">
     {{#each posRollMods.after }}
     {{#unless isInInactiveBlock}}
-    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
     {{/unless}}
     {{/each}}
     <span class="roll-mod-block-spacer mid-spacer"></span>
     {{#each negRollMods.after }}
     {{#unless isInInactiveBlock}}
-    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections}}
     {{/unless}}
     {{/each}}
   </div>
@@ -251,16 +253,17 @@
   <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
     {{#each posRollMods.after }}
     {{#if isInInactiveBlock}}
-    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
     {{/if}}
     {{/each}}
     {{#each negRollMods.after }}
     {{#if isInInactiveBlock}}
-    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
     {{/if}}
     {{/each}}
   </div>
   {{/if}}
+  </div>
   <div class="roll-sheet-float-block roll-button">
     <div class="roll-odds-strip" style="background: {{{oddsGradient}}};">
       <input type="checkbox" name="flags.eunos-blades.rollCollab.isGMReady" data-dType="Boolean" {{checked isGMReady}} />

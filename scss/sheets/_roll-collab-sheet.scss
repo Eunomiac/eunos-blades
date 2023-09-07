@@ -117,6 +117,8 @@
       padding: 0 5px 5px 5px;
       gap: 5px;
       flex-wrap: wrap;
+      justify-content: flex-start;
+      min-height: 20px;
 
       >.roll-mod-block-spacer {
         display: inline-flex;
@@ -124,6 +126,7 @@
         flex-shrink: 1;
         flex-basis: 0px;
         height: 16px;
+        display: none;
 
         &.last-spacer {
           display: none;
@@ -149,6 +152,7 @@
         outline: 1px solid var(--blades-white);
         gap: 0;
         flex-wrap: wrap;
+        align-items: flex-end;
 
         .roll-mod-container {
 
@@ -243,7 +247,6 @@
       }
 
       &.roll-mod-ability, &.roll-mod-harm {
-        // --label-font: Oswald;
 
         .roll-mod-label {
           .roll-mod-text:last-of-type {
@@ -251,13 +254,15 @@
             font-weight: bold;
           }
         }
-
-
       }
 
       &.status-hidden {
         --glow-animation: none;
         --roll-mod-color: var(--blades-grey-dark);
+        --roll-mod-text-shadow:
+          -1px -1px 1px var(--blades-grey),
+          1px 1px 2px var(--blades-black-dark),
+          1px 1px 0px var(--blades-black-dark);
 
         .roll-mod-label svg {
           display: none
@@ -275,6 +280,9 @@
       &.status-forcedoff {
         --glow-animation: none;
         --roll-mod-color: var(--blades-grey-bright);
+        --roll-mod-text-shadow:
+          1px 1px 2px var(--blades-black-dark),
+          1px 1px 0px var(--blades-black-dark);
 
         .roll-mod-label svg {
           display: none
@@ -501,6 +509,7 @@
           white-space: nowrap;
           z-index: 1;
           color: var(--roll-mod-color);
+          text-shadow: var(--roll-mod-text-shadow);
           // translate: 0% -50%;
           // top: 50%;
           // height: 100%;
@@ -684,28 +693,60 @@
     min-width: 750px;
     max-width: 750px;
 
-    .window-content .sheet-root {
+    .window-content form .sheet-root {
 
-      .roll-sheet-sub-block.roll-effects-block {
+      .roll-sheet-block {
 
-        .roll-mod-controls-container {
-          position: absolute;
-          left: 0px;
-          height: 10px;
-          max-height: 10px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-width: 100%;
+        .roll-sheet-sub-block {
+          &.roll-effects-block:not(.inactive-mod-block) {
+            width: 85% !important;
+          }
+          .roll-mod-container {
+            min-width: 120px;
 
-          &.controls-container {
-            top: 28px;
-            background: var(--blades-black);
+            &.roll-mod-teamwork {
+              .roll-mod-label {
+                .roll-mod-sidestring {
+                  min-width: 75px;
+                }
+              }
+            }
 
+            .roll-mod-label {
+
+              .roll-doc-select-container {
+                min-width: 120px;
+                max-height: 16px;
+                border-radius: 8px;
+                margin-left: -85px;
+                margin-right: -50px;
+                background: var(--blades-black-dark);
+
+                .roll-doc-select {
+                  .roll-sheet-doc-select {
+                    pointer-events: auto !important;
+                    appearance: none;
+                    width: 85px;
+                    color: transparent;
+                    text-shadow: none;
+                    margin-left: -10px;
+
+                  }
+                }
+              }
+            }
+
+            .tooltip {
+              // bottom: 150px
+            }
           }
 
-          &.position-controls-container,
-          &.effect-controls-container {
+          .roll-mod-block-spacer {
+            display: none !important
+          }
+
+          .position-controls-container,
+          .effect-controls-container {
             height: 24px;
             min-height: 24px;
             // background: magenta;
@@ -713,6 +754,7 @@
             left: unset;
             min-width: unset;
             margin-top: -2px;
+            position: absolute;
 
             .roll-mod-gm-control {
               height: 24px;
@@ -721,23 +763,20 @@
               font-size: 0;
               display: inline-block;
               pointer-events: auto !important;
+              cursor: pointer;
+              scale: 0.5;
 
               background: var(--gm-control-background);
               outline: 2px solid var(--gm-control-border);
 
-              &.gm-control-position-desperate {
-                --gm-control-border: var(--blades-red-bright);
-                --gm-control-background: var(--blades-red-dark);
+              &.active {
+                filter: brightness(1.2) drop-shadow(0 0 3px var(--gm-control-border,var(--blades-white-bright)));
+                scale: 0.7;
               }
 
-              &.gm-control-position-risky {
-                --gm-control-border: var(--blades-grey-bright);
-                --gm-control-background: var(--blades-grey-dark);
-              }
-
-              &.gm-control-position-controlled {
-                --gm-control-border: var(--blades-cyan-bright);
-                --gm-control-background: var(--blades-cyan-dark);
+              &:hover {
+                filter: brightness(1.2) drop-shadow(0px 0px 10px var(--gm-control-border, var(--blades-white-bright)));
+                scale: 1;
               }
 
               &.gm-control-effect-zero {
@@ -745,17 +784,19 @@
                 --gm-control-background: transparent;
               }
 
-              &.gm-control-effect-limited {
+              &.gm-control-effect-limited,
+              &.gm-control-position-desperate {
                 --gm-control-border: var(--blades-red-bright);
                 --gm-control-background: var(--blades-red-dark);
               }
 
-              &.gm-control-effect-standard {
+              &.gm-control-effect-standard,
+              &.gm-control-position-risky {
                 --gm-control-border: var(--blades-grey-bright);
                 --gm-control-background: var(--blades-grey-dark);
               }
-
-              &.gm-control-effect-great {
+              &.gm-control-effect-great,
+              &.gm-control-position-controlled {
                 --gm-control-border: var(--blades-cyan-bright);
                 --gm-control-background: var(--blades-cyan-dark);
               }
@@ -767,103 +808,18 @@
             }
           }
 
-          .roll-mod-gm-control {
-            // border: 1px solid var(--blades-black-dark);
-            height: 10px;
-            width: 10px;
-            margin: 0 1px;
-            pointer-events: auto !important;
-            cursor: pointer;
-            // transition: 0.15s;
-            opacity: 0.5;
-            line-height: 12px;
-            font-family: Tiny;
-            padding-left: 2px;
-            font-size: 0;
-            text-align: center;
-            color: var(--roll-mod-gm-control-color, var(--blades-white-bright));
-            transform-origin: 50% 50%;
-            scale: 0.5;
-
-            &.gm-control-active {
-              filter: brightness(1.2) drop-shadow(0px 0px 3px var(--roll-mod-gm-control-glow-color, var(--blades-white-bright)));
-              opacity: 1;
-              scale: 0.7;
-            }
-
-            &:hover {
-              opacity: 1;
-              filter: brightness(1.2) drop-shadow(0px 0px 10px var(--roll-mod-gm-control-glow-color, var(--blades-white-bright)));
-              scale: 1;
-            }
-
-            &.gm-control-hidden {
-
-              background: transparent;
-
-              &:hover {
-                background: var(--blades-black-dark)
-              }
-            }
-
-            &.gm-control-hidden {
-              background: var(--blades-black-dark)
-            }
-
-            &.gm-control-forcedoff {
-              background: var(--blades-grey-dark)
-            }
-
-            &.gm-control-toggledoff {
-              background: var(--blades-grey-bright)
-            }
-
-            &.gm-control-toggledon {
-              background: var(--blades-gold-dark)
-            }
-
-            &.gm-control-forcedon {
-              background: var(--blades-gold-bright)
-            }
-
-            &.gm-control-reset {
-
-              background: var(--blades-red-dark);
-
-              &:hover {
-                background: var(--blades-red-bright)
-              }
-            }
-
-            &.gm-control-toggledoff,
-            &.gm-control-toggledon,
-            &.gm-control-forcedon {
-              --roll-mod-gm-control-color: var(--blades-black-dark)
-            }
-
-
-          }
-        }
-
-
-        &.inactive-mod-block {
-          .roll-mod-container {
-            min-width: unset;
-
-            .roll-mod-controls-container {
-              left: unset;
-              position: absolute;
-              right: calc(100% + 5px);
-              // top: 0;
-              background: var(--blades-black-fade);
-              width: 77px;
+          &.inactive-mod-block {
+            .roll-mod-container {
               min-width: unset;
-              background: #181818;
-              padding: 0;
-              border: 1px solid var(--blades-black-dark);
-              box-sizing: content-box;
-              border-right: none;
-              top: 4px !important;
+
+              .roll-mod-label .roll-mod-text {
+                text-shadow: none;
+              }
+
+              .comp.controls-container {
+                --menu-size: 16px;
+                right: 0px;
+              }
             }
           }
         }
@@ -877,73 +833,14 @@
           min-width: 375px;
           max-width: 375px;
 
-          * {
-            pointer-events: none !important
-          }
-
-          .sheet-main {
-
-            .roll-sheet-block {
-              padding-bottom: 20px;
-
-              .roll-sheet-sub-block {
-
-                &.roll-effects-block:not(.inactive-mod-block) {
-                  width: unset;
-                }
-                .roll-mod-container {
-                  min-width: 120px;
-
-                  &.roll-mod-teamwork {
-                    .roll-mod-label {
-                      .roll-mod-sidestring {
-                        min-width: 75px;
-                      }
-                    }
-                  }
-
-                  .roll-mod-label {
-
-                    .roll-doc-select-container {
-                      width: min-content;
-                      margin-left: -25px;
-                      margin-right: -50px;
-                      background: var(--blades-black);
-
-                      .roll-doc-select {
-                        .roll-sheet-doc-select {
-                          pointer-events: auto !important;
-                          appearance: none;
-                          width: 85px;
-                          color: transparent;
-                          text-shadow: none;
-                          margin-left: -10px;
-
-                        }
-                      }
-                    }
-                  }
-
-                  .tooltip {
-                    bottom: 150px
-                  }
-                }
-
-                .roll-mod-block-spacer {
-                  display: none !important
-                }
-              }
-            }
-          }
+          * { pointer-events: none }
         }
 
         .split-root-right {
           min-width: 375px;
           max-width: 375px;
 
-          .sheet-main {
-            right: 6px
-          }
+          .sheet-main { right: 6px }
         }
       }
     }
@@ -987,7 +884,7 @@
       .sheet-root {
         overflow: visible;
 
-        > section { z-index: 4 }
+        > section { z-index: 5 }
 
         .sheet-topper {
           position: absolute;
@@ -1158,6 +1055,7 @@
             // scale: 0.75;
             padding: 0 10px 0 5px;
             overflow: visible;
+            border: none;
           }
 
           &.flex-horizontal {
@@ -1337,6 +1235,51 @@
           }
         }
 
+        .roll-sheet-block {
+          border-top: 2px solid var(--blades-white-bright);
+          // padding: 0px 0px 5px 0px;
+          align-items: flex-start;
+          justify-content: flex-start;
+          position: relative;
+          gap: 5px 5px;
+
+
+          &.rolling-block {
+            min-height: 62px;
+
+            .roll-sheet-sub-block.roll-header-block {
+
+              .roll-sheet-select,
+              .roll-readonly {
+                background: var(--blades-white-bright);
+                color: var(--blades-black);
+                border: none;
+                text-align: center;
+                font-size: toRem(18px);
+                font-style: normal;
+                margin-left: 0;
+                position: unset;
+                height: 20px;
+
+                &.roll-sheet-select {
+                  text-align: right;
+                  padding-right: 15px;
+                }
+              }
+            }
+
+            .roll-effects-block:not(.inactive-mod-block) {
+              width: 95% !important;
+            }
+          }
+
+          .roll-sheet-sub-block {
+            &.roll-effects-block:not(.inactive-mod-block) {
+              width: 550px;
+            }
+          }
+        }
+
         .split-root {
           align-items: stretch;
           position: static;
@@ -1346,58 +1289,14 @@
             max-width: 370px;
             overflow: visible;
             position: relative;
-            z-index: 4;
+            z-index: 5;
 
             section.sheet-main {
               justify-content: flex-start;
               align-items: stretch;
               height: auto;
               overflow: visible;
-
-              .roll-sheet-block {
-                border-top: 2px solid var(--blades-white-bright);
-                // padding: 0px 0px 5px 0px;
-                align-items: flex-start;
-                justify-content: flex-start;
-                position: relative;
-                gap: 5px 5px;
-
-                .roll-effects-block:not(.inactive-mod-block) {
-                  width: 550px;
-                }
-
-                &.rolling-block {
-                  min-height: 62px;
-
-                  .roll-sheet-sub-block.roll-header-block {
-
-                    .roll-sheet-select,
-                    .roll-readonly {
-                      background: var(--blades-white-bright);
-                      color: var(--blades-black);
-                      border: none;
-                      text-align: center;
-                      font-size: toRem(18px);
-                      font-style: normal;
-                      margin-left: 0;
-                      position: unset;
-                      height: 20px;
-
-                      &.roll-sheet-select {
-                        text-align: right;
-                        padding-right: 15px;
-                      }
-                    }
-                  }
-
-                  .roll-effects-block:not(.inactive-mod-block) {
-                    width: 95%;
-                  }
-                }
-
-              }
             }
-
           }
 
           .roll-source-bg-img,
@@ -1482,7 +1381,6 @@
                 position: relative;
                 overflow: visible;
               }
-
             }
 
             section.sheet-main.factor-controls {
@@ -1563,24 +1461,34 @@
         section.sheet-footer {
           height: 30px;
           position: relative;
+          display: flex;
+
+          .roll-sheet-block {
+            height: 30px;
+            width: 100%;
+          }
 
           .roll-sheet-float-block {
 
             &.roll-effects-block {
               z-index: 4;
-              padding: 0 20px;
-              translate: -50% -50%;
-              top: 100%;
-              left: 50%;
               width: 100%;
               position: absolute;
               pointer-events: none;
+
+              &:not(.inactive-mod-block) {
+                flex-direction: column;
+                width: unset;
+                align-items: flex-start;
+                gap: 0;
+              }
             }
 
             &.roll-button {
               position: absolute;
               width: 100%;
               left: 0;
+              top: 0;
 
               .roll-odds-strip {
                 height: 28px;

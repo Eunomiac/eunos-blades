@@ -3,6 +3,11 @@ import U from "./core/utilities.js";
 import type {Vice} from "./core/constants.js";
 import C, {BladesActorType, BladesPhase, Tag, District, Playbook, BladesItemType, Attribute, Action, InsightActions, ProwessActions, ResolveActions, PrereqType, Position, Effect, AdvancementPoint, Randomizers, RollModCategory, RollModStatus, RollType, Factor, Harm} from "./core/constants.js";
 
+import BladesPC from "./documents/actors/blades-pc.js";
+import BladesCrew from "./documents/actors/blades-crew.js";
+import BladesNPC from "./documents/actors/blades-npc.js";
+import BladesFaction from "./documents/actors/blades-faction.js";
+
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 import {bladesRoll} from "./blades-roll.js";
@@ -24,67 +29,36 @@ import BladesRollCollab from "./blades-roll-collab.js";
 // }
 
 class BladesActor extends Actor implements BladesDocument<Actor>,
-                                           BladesActorSubClass.Scoundrel,
-                                           BladesActorSubClass.Crew,
-                                           BladesActorSubClass.NPC,
-                                           BladesActorSubClass.Faction,
                                            BladesRollCollab.SourceDocData,
                                            BladesRollCollab.OppositionDocData {
 
-  static async CleanData(actor?: BladesActor): Promise<unknown> {
-    if (!actor) { return Promise.all(BladesActor.All.map(BladesActor.CleanData)) }
-    // Only for factions and npcs
-    if (BladesActor.IsType(actor, BladesActorType.pc, BladesActorType.crew)) { return undefined }
+  // static async CleanData(actor?: BladesActor<unknown>): Promise<unknown> {
+  //   if (!actor) { return Promise.all(BladesActor.All.map(BladesActor.CleanData)) }
+  //   // Only for factions and npcs
+  //   if (BladesActor.IsType(actor, BladesActorType.pc, BladesActorType.crew)) { return undefined }
 
-    // Get flattened schema from game.model
-    const flatSchema = flattenObject(game.model.Actor[actor.type]);
+  //   // Get flattened schema from game.model
+  //   const flatSchema = flattenObject(game.model.Actor[actor.type]);
 
-    // Map actor data onto new schema
-    for (const dotKey of Object.keys(flatSchema)) {
-      flatSchema[dotKey] = getProperty(actor.system, dotKey);
-    }
+  //   // Map actor data onto new schema
+  //   for (const dotKey of Object.keys(flatSchema)) {
+  //     flatSchema[dotKey] = getProperty(actor.system, dotKey);
+  //   }
 
-    // Create new actor
-    await BladesActor.create({name: actor.name!, img: actor.img, type: actor.type, system: flatSchema});
+  //   // Create new actor
+  //   await BladesActor.create({name: actor.name!, img: actor.img, type: actor.type, system: flatSchema});
 
-    // Delete original actor
-    return actor.delete();
-  }
+  //   // Delete original actor
+  //   return actor.delete();
+  // }
 
   // #region Static Overrides: Create ~
   static override async create(data: ActorDataConstructorData & { system?: Partial<BladesActorSystem> }, options = {}) {
     data.token = data.token || {};
     data.system = data.system ?? {};
 
-    eLog.checkLog2("actor", "BladesActor.create(data,options)", {data, options});
-
-    //~ For Crew and PC set the Token to sync with charsheet.
-    if ([BladesActorType.crew, BladesActorType.pc].includes(data.type as BladesActorType)) {
-      data.token.actorLink = true;
-    }
-
     //~ Create world_name
     data.system.world_name = data.system.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "").trim().replace(/ /g, "_");
-
-    //~ Initialize generic experience clues.
-    if (data.type === BladesActorType.pc) {
-      data.system.experience = {
-        playbook: {value: 0, max: 8},
-        insight: {value: 0, max: 6},
-        prowess: {value: 0, max: 6},
-        resolve: {value: 0, max: 6},
-        clues: [],
-        ...data.system.experience ?? {}
-      };
-    }
-
-    if (data.type === BladesActorType.crew) {
-      data.system.experience = {
-        playbook: {value: 0, max: 8},
-        clues: [],
-        ...data.system.experience ?? {}
-      } as BladesActorSystem["experience"];
-    }
 
     return super.create(data, options);
   }
@@ -99,11 +73,11 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       || BladesActor.All.find((a) => a.name === actorRef);
   }
   static GetTypeWithTags<T extends BladesActorType>(docType: T, ...tags: BladesTag[]): Array<BladesActorOfType<T>> {
-    return BladesActor.All.filter((actor): actor is BladesActorOfType<T> => actor.type === docType)
-      .filter((actor) => actor.hasTag(...tags));
+    return BladesActor.All.filter((actor) => actor.type === docType)
+      .filter((actor) => actor.hasTag(...tags)) as Array<BladesActorOfType<T>>;
   }
 
-  static IsType<T extends BladesActorType>(doc: unknown, ...types: T[]): doc is BladesActorOfType<T> {
+  static IsType<T extends BladesActorType>(doc: unknown, ...types: T[]): doc is BladesActor & BladesActorOfType<T> {
     const typeSet = new Set<BladesActorType>(types);
     return doc instanceof BladesActor && typeSet.has(doc.type);
   }
@@ -166,30 +140,6 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   }
   // #endregion
 
-  // #region BladesPrimaryActor Implementation ~
-  get primaryUser(): User | null {
-    return game.users?.find((user) => user.character?.id === this?.id) || null;
-  }
-  async clearLoadout() {
-    this.update({"system.loadout.selected": ""});
-    this.updateEmbeddedDocuments(
-      "Item",
-      [
-        ...this.activeSubItems.filter((item) => BladesItem.IsType(item, BladesItemType.gear) && !item.hasTag(Tag.System.Archived))
-          .map((item) => ({
-            "_id": item.id,
-            "system.tags": [... item.tags, Tag.System.Archived],
-            "system.uses_per_score.value": 0
-          })),
-        ...this.activeSubItems.filter((item) => BladesItem.IsType(item, BladesItemType.ability) && item.system.uses_per_score.max)
-          .map((item) => ({
-            "_id": item.id,
-            "system.uses_per_score.value": 0
-          }))
-      ]
-    );
-  }
-  // #endregion
   // #region SubActorControl Implementation ~
 
   get subActors(): BladesActor[] {
@@ -237,12 +187,12 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       case SelectionCategory.Rival:
       case SelectionCategory.Friend:
       case SelectionCategory.Acquaintance: {
-        if (this.playbookName === null) { return false }
+        if (!(BladesActor.IsType(this, BladesActorType.pc) || BladesActor.IsType(this, BladesActorType.crew)) || this.playbookName === null) { return false }
         dialogData.Main = this.processEmbeddedActorMatches(BladesActor.GetTypeWithTags(BladesActorType.npc, this.playbookName));
         return dialogData;
       }
       case SelectionCategory.VicePurveyor: {
-        if (!this.vice?.name) { return false }
+        if (!BladesActor.IsType(this, BladesActorType.pc) || !this.vice?.name) { return false }
         dialogData.Main = this.processEmbeddedActorMatches(BladesActor.GetTypeWithTags(BladesActorType.npc, this.vice.name as Vice));
         return dialogData;
       }
@@ -310,9 +260,6 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
       actor.system,
       mergeObject(actor.system, subActorData)
     );
-    if (this.primaryUser?.id) {
-      actor.ownership[this.primaryUser.id] = CONST.DOCUMENT_PERMISSION_LEVELS.OWNER;
-    }
     actor.parentActor = this;
     return actor;
   }
@@ -429,6 +376,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
             break;
           }
           case PrereqType.AdvancedPlaybook: {
+            if (!BladesActor.IsType(this, BladesActorType.pc)) { return false }
             if (!this.playbookName || ![Playbook.Ghost, Playbook.Hull, Playbook.Vampire].includes(this.playbookName)) {
               return false;
             }
@@ -526,15 +474,17 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
     switch (category) {
       case SelectionCategory.Heritage: {
+        if (!BladesActor.IsType(this, BladesActorType.pc)) { return false }
         dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.heritage));
         return dialogData;
       }
       case SelectionCategory.Background: {
+        if (!BladesActor.IsType(this, BladesActorType.pc)) { return false }
         dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.background));
         return dialogData;
       }
       case SelectionCategory.Vice: {
-        if (this.playbookName === null) { return false }
+        if (!BladesActor.IsType(this, BladesActorType.pc) || this.playbookName === null) { return false }
         dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.vice, this.playbookName));
         return dialogData;
       }
@@ -553,23 +503,27 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
         }
       }
       case SelectionCategory.Reputation: {
+        if (!BladesActor.IsType(this, BladesActorType.crew)) { return false }
         dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_reputation));
         return dialogData;
       }
       case SelectionCategory.Preferred_Op: {
+        if (!BladesActor.IsType(this, BladesActorType.crew) || this.playbookName === null) { return false }
         dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op, this.playbookName as BladesTag));
         return dialogData;
       }
       case SelectionCategory.Gear: {
-        if (this.type !== BladesActorType.pc || this.playbookName === null) { return false }
+        if (!BladesActor.IsType(this, BladesActorType.pc)) { return false }
+        const self: BladesPC = this as BladesPC;
+        if (this.playbookName === null) { return false }
         const gearItems = this._processEmbeddedItemMatches([
           ...BladesItem.GetTypeWithTags(BladesItemType.gear, this.playbookName),
           ...BladesItem.GetTypeWithTags(BladesItemType.gear, Tag.Gear.General)
         ])
-          .filter((item) => this.remainingLoad >= item.system.load);
+          .filter((item) => self.remainingLoad >= item.system.load);
 
         // Two tabs, one for playbook and the other for general items
-        dialogData[this.playbookName] = gearItems.filter((item) => item.hasTag(this.playbookName!));
+        dialogData[self.playbookName] = gearItems.filter((item) => item.hasTag(self.playbookName));
         dialogData.General = gearItems
           .filter((item) => item.hasTag(Tag.Gear.General))
         // Remove featured class from General items
@@ -589,11 +543,12 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
         return dialogData;
       }
       case SelectionCategory.Ability: {
-        if (this.playbookName === null) { return false }
-        if (this.type === BladesActorType.pc) {
-          dialogData[this.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability, this.playbookName));
+        if (BladesActor.IsType(this, BladesActorType.pc)) {
+          const self: BladesPC = this as BladesPC;
+          if (self.playbookName === null) { return false }
+          dialogData[self.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability, self.playbookName));
           dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability))
-            .filter((item) => !item.hasTag(this.playbookName!))
+            .filter((item) => !item.hasTag(self.playbookName))
           // Remove featured class from Veteran items
             .map((item) => {
               if (item.dialogCSSClasses) {
@@ -607,13 +562,13 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
               if (a.system.world_name < b.system.world_name) { return -1 }
               return 0;
             });
-        } else {
+        } else if (BladesActor.IsType(this, BladesActorType.crew)) {
           dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_ability, this.playbookName));
         }
         return dialogData;
       }
       case SelectionCategory.Upgrade: {
-        if (this.playbookName === null) { return false }
+        if (!BladesActor.IsType(this, BladesActorType.crew) || this.playbookName === null) { return false }
         dialogData[this.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, this.playbookName));
         dialogData.General = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, Tag.Gear.General));
         return dialogData;
@@ -821,24 +776,22 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   get canPurchaseCohortType() { return this.availableCohortTypePoints > 0 }
 
   async advancePlaybook(): Promise<void> {
-    if (!this.playbook) { return undefined }
+    if (!(BladesActor.IsType(this, BladesActorType.pc) || BladesActor.IsType(this, BladesActorType.crew)) || !this.playbook) { return undefined }
     await this.update({"system.experience.playbook.value": 0});
-    switch (this.type) {
-      case BladesActorType.pc: {
-        game.eunoblades.PushController!.pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`);
-        return this.grantAdvancementPoints(AdvancementPoint.Ability);
-      }
-      case BladesActorType.crew: {
-        game.eunoblades.PushController!.pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.");
-        this.members.forEach((member) => {
-          const coinGained = this.system.tier.value + 2;
-          game.eunoblades.PushController!.pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, undefined);
-          member.addStash(coinGained);
-        });
-        return this.grantAdvancementPoints(AdvancementPoint.UpgradeOrAbility, 2);
-      }
-      default: return undefined;
+    if (BladesActor.IsType(this, BladesActorType.pc)) {
+      game.eunoblades.PushController!.pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`);
+      return this.grantAdvancementPoints(AdvancementPoint.Ability);
     }
+    if (BladesActor.IsType(this, BladesActorType.crew)) {
+      game.eunoblades.PushController!.pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.");
+      this.members.forEach((member) => {
+        const coinGained = this.system.tier.value + 2;
+        game.eunoblades.PushController!.pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, undefined);
+        member.addStash(coinGained);
+      });
+      return this.grantAdvancementPoints(AdvancementPoint.UpgradeOrAbility, 2);
+    }
+    return undefined as never;
   }
 
   async advanceAttribute(attribute: Attribute) {
@@ -896,7 +849,7 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   //     action: totalActionPoints.action - spentActionPoints.action,
   //     insight: totalActionPoints.insight - spentActionPoints.insight,
   //     prowess: totalActionPoints.prowess - spentActionPoints.prowess,
-  //     resolve: totalActionPoints.resolve - spentActionPoints.resolve
+  //     resolve: totalActionPoints.resolve - spentActionPoints.resolve]
   //   };
   // }
   // #endregion
@@ -953,121 +906,30 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
   // #endregion
 
-  // #region BladesScoundrel Implementation ~
-
-  isMember(crew: BladesActor) { return this.crew?.id === crew.id }
-
-  get vice(): BladesItem | undefined {
-    if (this.type !== BladesActorType.pc) { return undefined }
-    return this.activeSubItems.find((item) => item.type === BladesItemType.vice);
-  }
-
-  get crew(): BladesActor | undefined {
-    if (this.type !== BladesActorType.pc) { return undefined }
-    return this.activeSubActors.find((subActor) => subActor.type === BladesActorType.crew);
-  }
-
-  get abilities(): BladesItem[] {
-    if (!this.playbook) { return [] }
-    if (![BladesActorType.pc, BladesActorType.crew].includes(this.type)) { return [] }
-    return this.activeSubItems.filter((item) => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
-  }
-
-  get playbookName(): (BladesTag & Playbook) | undefined {
-    return this.playbook?.name as (BladesTag & Playbook) | undefined;
-  }
-  get playbook(): BladesItemOfType<BladesItemType.playbook|BladesItemType.crew_playbook>|undefined {
-    if (BladesActor.IsType(this, BladesActorType.pc)) {
-      return this.activeSubItems.find((item): item is BladesItemOfType<BladesItemType.playbook> => item.type === BladesItemType.playbook);
-    }
-    if (BladesActor.IsType(this, BladesActorType.crew)) {
-      return this.activeSubItems.find((item): item is BladesItemOfType<BladesItemType.crew_playbook> => item.type === BladesItemType.crew_playbook);
-    }
-    return undefined;
-  }
-  get attributes(): Record<Attribute, number> {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never }
-    return {
-      insight: Object.values(this.system.attributes.insight).filter(({value}) => value > 0).length + this.system.resistance_bonus.insight,
-      prowess: Object.values(this.system.attributes.prowess).filter(({value}) => value > 0).length + this.system.resistance_bonus.prowess,
-      resolve: Object.values(this.system.attributes.resolve).filter(({value}) => value > 0).length + this.system.resistance_bonus.resolve
-    };
-  }
-  get actions(): Record<Action, number> {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never }
-    return U.objMap({
-      ...this.system.attributes.insight,
-      ...this.system.attributes.prowess,
-      ...this.system.attributes.resolve
-    }, ({value, max}: ValueMax) => U.gsap.utils.clamp(0, max, value)) as Record<Action, number>;
-  }
-  get rollable(): Record<Attribute | Action, number> {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never }
-    return {
-      ...this.attributes,
-      ...this.actions
-    };
-  }
-  get trauma(): number {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0 }
-    return Object.keys(this.system.trauma.checked)
-      .filter((traumaName) => {
-        // @ts-ignore Compiler linter mismatch.
-        return this.system.trauma.active[traumaName] && this.system.trauma.checked[traumaName];
-      })
-      .length;
-  }
-  get traumaList(): string[] {
-    // @ts-ignore Compiler linter mismatch.
-    return BladesActor.IsType(this, BladesActorType.pc) ? Object.keys(this.system.trauma.active).filter((key) => this.system.trauma.active[key]) : [];
-  }
-  get activeTraumaConditions(): Record<string, boolean> {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return {} }
-    return U.objFilter(
-      this.system.trauma.checked,
-      // @ts-ignore Compiler linter mismatch.
-      (v: unknown, traumaName: string): boolean => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName])
-    ) as Record<string, boolean>;
-  }
-  get currentLoad(): number {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0 }
-    const activeLoadItems = this.activeSubItems.filter((item) => item.type === BladesItemType.gear);
-    return U.gsap.utils.clamp(0, 10, activeLoadItems.reduce((tot, i) => tot + U.pInt(i.system.load), 0));
-  }
-  get remainingLoad(): number {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0 }
-    if (!this.system.loadout.selected) { return 0 }
-    const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected.toString()).toLowerCase() as KeyOf<typeof this.system.loadout.levels>];
-    return Math.max(0, maxLoad - this.currentLoad);
-  }
-
-  async addStash(amount: number): Promise<void> {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined }
-    return this.update({"system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max)});
-  }
-  // #endregion
   // #region BladesCrew Implementation ~
 
-  get members(): Array<BladesActorOfType<BladesActorType.pc>> {
-    if (this.type !== BladesActorType.crew) { return [] }
-    return BladesActor.GetTypeWithTags(BladesActorType.pc).filter((actor) => actor.isMember(this));
+  get members(): BladesPC[] {
+    if (!BladesActor.IsType(this, BladesActorType.crew)) { return [] }
+    const self = this as BladesCrew;
+    return BladesActor.GetTypeWithTags(BladesActorType.pc).filter((actor): actor is BladesPC => actor.isMember(self));
   }
-  get contacts(): Array<BladesActorOfType<BladesActorType.npc|BladesActorType.faction>> {
-    if (this.type !== BladesActorType.crew || !this.playbook) { return [] }
-    return this.activeSubActors.filter((actor): actor is BladesActorOfType<BladesActorType.npc|BladesActorType.faction> => actor.hasTag(this.playbookName));
+  get contacts(): Array<BladesNPC|BladesFaction> {
+    if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) { return [] }
+    const self: BladesCrew = this as BladesCrew;
+    return this.activeSubActors.filter((actor): actor is BladesNPC|BladesFaction => actor.hasTag(self.playbookName));
   }
   get claims(): Record<number, BladesClaimData> {
-    if (this.type !== BladesActorType.crew || !this.playbook) { return {} }
+    if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) { return {} }
     return this.playbook.system.turfs!;
   }
   get turfCount(): number {
-    if (this.type !== BladesActorType.crew || !this.playbook) { return 0 }
+    if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) { return 0 }
     return Object.values(this.playbook.system.turfs!)
       .filter((claim) => claim.isTurf && claim.value).length;
   }
 
   get upgrades(): Array<BladesItemOfType<BladesItemType.crew_upgrade>> {
-    if (this.type !== BladesActorType.crew || !this.playbook) { return [] }
+    if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) { return [] }
     return this.activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.crew_upgrade> => item.type === BladesItemType.crew_upgrade);
   }
   get cohorts(): Array<BladesItemOfType<BladesItemType.cohort_gang|BladesItemType.cohort_expert>> {
@@ -1083,114 +945,68 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
   // #region BladesRollCollab Implementation
 
   get rollModsData(): BladesRollCollab.RollModData[] {
+    if (!(BladesActor.IsType(this, BladesActorType.pc) || BladesActor.IsType(this, BladesActorType.crew))) { return [] }
     const {roll_mods} = this.system;
-    if (!roll_mods) { return [] }
+    if (roll_mods.length === 0) { return [] }
 
-    const rollModsData: BladesRollCollab.RollModData[] = roll_mods.map((modString) => {
-      const pStrings = modString.split(/@/);
-      const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
-      const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, "")) as string|false;
-      if (!nameVal) { throw new Error(`RollMod Missing Name: '${modString}'`) }
-      const catString = U.pullElement(pStrings, (v) => typeof v === "string" && /^cat/i.test(v));
-      const catVal = (typeof catString === "string" && catString.replace(/^.*:/, "")) as RollModCategory|false;
-      if (!catVal || !(catVal in RollModCategory)) { throw new Error(`RollMod Missing Category: '${modString}'`) }
-      const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
-      const posNegVal = posNegString.replace(/^.*:/, "") as "positive"|"negative";
+    const rollModsData = roll_mods
+      .filter((elem): elem is string => elem !== undefined)
+      .map((modString) => {
+        const pStrings = modString.split(/@/);
+        const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
+        const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, "")) as string|false;
+        if (!nameVal) { throw new Error(`RollMod Missing Name: '${modString}'`) }
+        const catString = U.pullElement(pStrings, (v) => typeof v === "string" && /^cat/i.test(v));
+        const catVal = (typeof catString === "string" && catString.replace(/^.*:/, "")) as RollModCategory|false;
+        if (!catVal || !(catVal in RollModCategory)) { throw new Error(`RollMod Missing Category: '${modString}'`) }
+        const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
+        const posNegVal = posNegString.replace(/^.*:/, "") as "positive"|"negative";
 
-      const rollModData: BladesRollCollab.RollModData = {
-        id: `${nameVal}-${posNegVal}-${catVal}`,
-        name: nameVal,
-        category: catVal,
-        base_status: RollModStatus.ToggledOff,
-        modType: "general",
-        value: 1,
-        posNeg: posNegVal,
-        tooltip: ""
-      };
+        const rollModData: BladesRollCollab.RollModData = {
+          id: `${nameVal}-${posNegVal}-${catVal}`,
+          name: nameVal,
+          category: catVal,
+          base_status: RollModStatus.ToggledOff,
+          modType: "general",
+          value: 1,
+          posNeg: posNegVal,
+          tooltip: ""
+        };
 
-      pStrings.forEach((pString) => {
-        const [keyString, valString] = pString.split(/:/) as [string, string];
-        let val: string|string[] = /\|/.test(valString) ? valString.split(/\|/) : valString;
-        let key: KeyOf<BladesRollCollab.RollModData>;
-        if (/^stat/i.test(keyString)) { key = "base_status" } else
-        if (/^val/i.test(keyString)) { key = "value" } else
-        if (/^eff|^ekey/i.test(keyString)) { key = "effectKeys" } else
-        if (/^side|^ss/i.test(keyString)) { key = "sideString" } else
-        if (/^s.*ame/i.test(keyString)) { key = "source_name" } else
-        if (/^tool|^tip/i.test(keyString)) { key = "tooltip" } else
-        if (/^ty/i.test(keyString)) { key = "modType" } else
-        if (/^c.*r?.*ty/i.test(keyString)) { key = "conditionalRollTypes" } else
-        if (/^a.*r?.*y/i.test(keyString)) { key = "autoRollTypes" } else
-        if (/^c.*r?.*tr/i.test(keyString)) { key = "conditionalRollTraits" } else
-        if (/^a.*r?.*tr/i.test(keyString)) { key = "autoRollTraits" } else {
-          throw new Error(`Bad Roll Mod Key: ${keyString}`);
-        }
+        pStrings.forEach((pString) => {
+          const [keyString, valString] = pString.split(/:/) as [string, string];
+          let val: string|string[] = /\|/.test(valString) ? valString.split(/\|/) : valString;
+          let key: KeyOf<BladesRollCollab.RollModData>;
+          if (/^stat/i.test(keyString)) { key = "base_status" } else
+          if (/^val/i.test(keyString)) { key = "value" } else
+          if (/^eff|^ekey/i.test(keyString)) { key = "effectKeys" } else
+          if (/^side|^ss/i.test(keyString)) { key = "sideString" } else
+          if (/^s.*ame/i.test(keyString)) { key = "source_name" } else
+          if (/^tool|^tip/i.test(keyString)) { key = "tooltip" } else
+          if (/^ty/i.test(keyString)) { key = "modType" } else
+          if (/^c.*r?.*ty/i.test(keyString)) { key = "conditionalRollTypes" } else
+          if (/^a.*r?.*y/i.test(keyString)) { key = "autoRollTypes" } else
+          if (/^c.*r?.*tr/i.test(keyString)) { key = "conditionalRollTraits" } else
+          if (/^a.*r?.*tr/i.test(keyString)) { key = "autoRollTraits" } else {
+            throw new Error(`Bad Roll Mod Key: ${keyString}`);
+          }
 
-        if (key === "base_status" && val === "Conditional") {
-          val = RollModStatus.Hidden;
-        }
+          if (key === "base_status" && val === "Conditional") {
+            val = RollModStatus.Hidden;
+          }
 
-        Object.assign(
-          rollModData,
-          {[key]: ["value"].includes(key)
-            ? U.pInt(val)
-            : (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
-                ? [val].flat()
-                : (val as string).replace(/%COLON%/g, ":"))}
-        );
-      });
-
-      return rollModData;
-    });
-
-    // Add roll mods from harm
-    if (this.system.harm) {
-      [[/1d/, RollModCategory.roll] as const, [/Less Effect/, RollModCategory.effect] as const].forEach(([effectPat, effectCat]) => {
-        const {one: harmConditionOne, two: harmConditionTwo} = Object.values(this.system.harm!)
-          .find((harmData) => effectPat.test(harmData.effect)) ?? {};
-        const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
-        if (harmString.length > 0) {
-          rollModsData.push({
-            id: `Harm-negative-${effectCat}`,
-            name: harmString,
-            category: effectCat,
-            posNeg: "negative",
-            base_status: RollModStatus.ToggledOn,
-            modType: "harm",
-            value: 1,
-            tooltip: [
-              `<h1 class='sur-title'>${effectCat === RollModCategory.roll ? Harm.Impaired : Harm.Weakened} (Harm)</h1>`,
-              `<h1 class='red-bright'>${harmString}</h1>`,
-              effectCat === RollModCategory.roll
-                ? "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1d</strong> to your roll.</p>"
-                : "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1 effect</strong>."
-            ].join("")
-          });
-        }
-      });
-      const {one: harmCondition} = Object.values(this.system.harm!).find((harmData) => /Need Help/.test(harmData.effect)) ?? {};
-      if (harmCondition && harmCondition.trim() !== "") {
-        rollModsData.push({
-          id: "Push-negative-roll",
-          name: "PUSH",
-          sideString: harmCondition.trim(),
-          category: RollModCategory.roll,
-          posNeg: "negative",
-          base_status: RollModStatus.ToggledOn,
-          modType: "harm",
-          value: 0,
-          effectKeys: ["Cost-Stress2"],
-          tooltip: [
-            "<h1 class='sur-title'>Broken (Harm)</h1>",
-            `<h1 class='red-bright'>${harmCondition.trim()}</h1>`,
-            "<p>If your injuries apply to the situation at hand, you must <strong>Push</strong> to act.</p>"
-          ].join("")
+          Object.assign(
+            rollModData,
+            {[key]: ["value"].includes(key)
+              ? U.pInt(val)
+              : (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
+                  ? [val].flat()
+                  : (val as string).replace(/%COLON%/g, ":"))}
+          );
         });
-      }
-    }
 
-
-    // eLog.checkLog3("rollCollab", `Roll Mods (${this.name})`, {system: this.system.roll_mods, rollMods});
+        return rollModData;
+      });
 
     return rollModsData;
   }
@@ -1341,38 +1157,30 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
 
   override async update(updateData: DeepPartial<(ActorDataConstructorData & SubActorData) | (ActorDataConstructorData & SubActorData & Record<string, unknown>)> | undefined, context?: (DocumentModificationContext & MergeObjectOptions) | undefined, isSkippingSubActorCheck = false): Promise<any> {
     if (!updateData) { return super.update(updateData) }
-    switch (this.type) {
-      case BladesActorType.pc: break;
-      case BladesActorType.crew: {
-        if (!this.playbook) { return undefined }
+    if (BladesActor.IsType(this, BladesActorType.crew)) {
+      if (!this.playbook) { return undefined }
 
-        eLog.checkLog("actorTrigger", "Updating Crew", {updateData});
-        const playbookUpdateData: Partial<ItemDataConstructorData> = Object.fromEntries(Object.entries(flattenObject(updateData))
-          .filter(([key, _]: [string, unknown]) => key.startsWith("system.turfs.")));
-        updateData = Object.fromEntries(Object.entries(flattenObject(updateData))
-          .filter(([key, _]: [string, unknown]) => !key.startsWith("system.turfs.")));
-        eLog.checkLog("actorTrigger", "Updating Crew", {crewUpdateData: updateData, playbookUpdateData});
+      eLog.checkLog("actorTrigger", "Updating Crew", {updateData});
+      const playbookUpdateData: Partial<ItemDataConstructorData> = Object.fromEntries(Object.entries(flattenObject(updateData))
+        .filter(([key, _]: [string, unknown]) => key.startsWith("system.turfs.")));
+      updateData = Object.fromEntries(Object.entries(flattenObject(updateData))
+        .filter(([key, _]: [string, unknown]) => !key.startsWith("system.turfs.")));
+      eLog.checkLog("actorTrigger", "Updating Crew", {crewUpdateData: updateData, playbookUpdateData});
 
-        const diffPlaybookData = diffObject(flattenObject(this.playbook), playbookUpdateData) as Record<string,any> & {_id?: string};
-        delete diffPlaybookData._id;
+      const diffPlaybookData = diffObject(flattenObject(this.playbook), playbookUpdateData) as Record<string,any> & {_id?: string};
+      delete diffPlaybookData._id;
 
-        if (!U.isEmpty(diffPlaybookData)) {
-          await this.playbook!.update(playbookUpdateData, context)
-            .then(() => this.sheet?.render(false));
-        }
-
-        break;
+      if (!U.isEmpty(diffPlaybookData)) {
+        await this.playbook!.update(playbookUpdateData, context)
+          .then(() => this.sheet?.render(false));
       }
-      case BladesActorType.npc:
-      case BladesActorType.faction: {
-        if (this.parentActor && !isSkippingSubActorCheck) {
-          // This is an embedded Actor: Update it as a subActor of parentActor.
-          return this.parentActor.updateSubActor(this.id!, updateData);
-        }
-        break;
+    } else if (BladesActor.IsType(this, BladesActorType.npc) || BladesActor.IsType(this, BladesActorType.faction)) {
+      if (this.parentActor && !isSkippingSubActorCheck) {
+        // This is an embedded Actor: Update it as a subActor of parentActor.
+        return this.parentActor.updateSubActor(this.id!, updateData);
       }
-      // no default
     }
+
     return super.update(updateData, context);
   }
 
@@ -1459,9 +1267,9 @@ class BladesActor extends Actor implements BladesDocument<Actor>,
     effect: Effect = Effect.standard,
     note?: string
   ) {
-    if (this.type !== BladesActorType.pc) { return }
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return }
     bladesRoll(
-      this.rollable![attribute_name] + additional_dice_amount,
+      this.rollable[attribute_name] + additional_dice_amount,
       attribute_name,
       position,
       effect,
@@ -1654,7 +1462,7 @@ declare interface BladesActor {
   get id(): string;
   get type(): BladesActorType;
   get items(): EmbeddedCollection<typeof BladesItem, ActorData>;
-  system: BladesActorSystem;
+  system: BladesActorSystem,
   getRollData(): BladesActorRollData;
   parent: TokenDocument | null;
   ownership: Record<string, ValueOf<typeof CONST.DOCUMENT_PERMISSION_LEVELS>>;

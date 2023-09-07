@@ -19,6 +19,7 @@ export async function preloadHandlebarsTemplates() {
         "systems/eunos-blades/templates/components/clock.hbs",
         "systems/eunos-blades/templates/components/roll-collab-mod.hbs",
         "systems/eunos-blades/templates/components/roll-collab-opposition.hbs",
+        "systems/eunos-blades/templates/components/slide-out-controls.hbs",
         "systems/eunos-blades/templates/parts/tier-block.hbs",
         "systems/eunos-blades/templates/parts/turf-list.hbs",
         "systems/eunos-blades/templates/parts/cohort-block.hbs",
