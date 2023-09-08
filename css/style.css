@@ -10462,6 +10462,306 @@ template {
         text-align: left; }
   :root body.vtt.game.system-eunos-blades .app.window-app .tooltip-scaling-elem {
     display: inline-block; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary {
+    -ms-flex-preferred-size: 50%;
+    flex-basis: 50%;
+    overflow: visible;
+    padding: 5px;
+    max-width: 50%;
+    position: relative;
+    z-index: 4;
+    pointer-events: auto;
+    display: grid;
+    grid-template-areas: "header header header" "actions assets harm";
+    grid-template-rows: 20px 1fr;
+    grid-template-columns: 1fr 33% 33%; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary:hover {
+      z-index: 5; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary .pc-summary-img {
+      position: absolute;
+      top: 20px;
+      width: 33%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.5; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-header {
+      grid-area: header;
+      display: grid;
+      grid-template-areas: "name name heritage background-img vice-img playbook-img";
+      grid-template-rows: 20px;
+      grid-template-columns: 1fr 1fr 40px 20px 20px 20px;
+      position: relative;
+      width: 100%;
+      grid-gap: 5px;
+      height: -webkit-min-content;
+      height: -moz-min-content;
+      height: min-content; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-header > img {
+        -webkit-filter: drop-shadow(1px 1px 0px var(--blades-black-dark));
+        filter: drop-shadow(1px 1px 0px var(--blades-black-dark)); }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-header > img.pc-summary-background-img {
+          grid-area: background-img; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-header > img.pc-summary-vice-img {
+          grid-area: vice-img; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-header > img.pc-summary-playbook-img {
+          grid-area: playbook-img; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-header .pc-summary-name {
+        grid-area: name;
+        font-family: var(--font-emphasis);
+        font-size: 1.25rem;
+        line-height: 1.25rem;
+        color: var(--blades-white-bright);
+        font-variant: small-caps; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-header .pc-summary-heritage {
+        grid-area: heritage;
+        font-size: 10px;
+        font-family: Oswald;
+        text-transform: uppercase;
+        line-height: 20px;
+        text-align: right;
+        color: var(--blades-white-bright);
+        padding-right: 5px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-actions {
+      grid-area: actions;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: horizontal;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+      flex-direction: row;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      -webkit-box-align: start;
+      -ms-flex-align: start;
+      align-items: flex-start;
+      -ms-flex-line-pack: start;
+      align-content: flex-start; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-actions .pc-summary-attribute {
+        text-align: center;
+        -ms-flex-preferred-size: 100%;
+        flex-basis: 100%;
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        -ms-flex-negative: 0;
+        flex-shrink: 0;
+        line-height: 0.875rem;
+        height: 0.875rem; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-actions .pc-summary-attribute:not(:first-child) {
+          margin-top: 5px; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-actions .pc-summary-attribute label {
+          font-family: Oswald;
+          font-size: 0.75rem;
+          line-height: 0.75rem;
+          color: var(--blades-white); }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-actions .pc-summary-attribute span {
+          font-family: Oswald;
+          font-size: 0.75rem;
+          line-height: 0.75rem;
+          color: var(--blades-white-bright); }
+      :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-actions .pc-summary-action {
+        -ms-flex-preferred-size: 50%;
+        flex-basis: 50%;
+        -webkit-box-flex: 0;
+        -ms-flex-positive: 0;
+        flex-grow: 0;
+        -ms-flex-negative: 0;
+        flex-shrink: 0;
+        line-height: 0.75rem;
+        height: 0.75rem;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-actions .pc-summary-action label {
+          font-family: Oswald;
+          font-size: 0.625rem;
+          line-height: 0.625rem;
+          color: var(--blades-grey-bright);
+          -webkit-box-flex: 1;
+          -ms-flex-positive: 1;
+          flex-grow: 1;
+          text-align: right; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-actions .pc-summary-action span {
+          font-family: Oswald;
+          font-size: 0.625rem;
+          line-height: 0.625rem;
+          color: var(--blades-white-bright);
+          width: 20px;
+          text-align: center; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-assets {
+      grid-area: assets;
+      padding-right: 3px;
+      position: relative;
+      z-index: 5; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-assets:hover {
+        z-index: 10; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-assets .pc-summary-assets-container:not(:first-child) {
+        margin-top: 5px;
+        border-top: 1px dotted var(--blades-white-bright); }
+      :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -ms-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+        -webkit-box-pack: stretch;
+        -ms-flex-pack: stretch;
+        justify-content: stretch;
+        gap: 3px;
+        height: 14px; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container .pc-summary-gear-loadout {
+          -webkit-box-flex: 1;
+          -ms-flex-positive: 1;
+          flex-grow: 1;
+          font-family: "Fjalla One";
+          font-size: 10px;
+          line-height: 12px;
+          text-transform: uppercase;
+          white-space: nowrap;
+          overflow: hidden;
+          text-align: left;
+          color: var(--blades-gold-bright); }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container i {
+          font-size: 10px;
+          line-height: 12px; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-img {
+          height: 12px;
+          -webkit-box-flex: 0;
+          -ms-flex-positive: 0;
+          flex-grow: 0;
+          -ms-flex-negative: 0;
+          flex-shrink: 0;
+          -ms-flex-preferred-size: 12px;
+          flex-basis: 12px; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-name {
+          -webkit-box-flex: 1;
+          -ms-flex-positive: 1;
+          flex-grow: 1;
+          font-family: "Fjalla One";
+          font-size: 10px;
+          line-height: 12px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-transform: uppercase;
+          color: var(--blades-white-bright); }
+          :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-name:hover {
+            overflow: visible; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-assets .pc-summary-assets-container .tooltip.pc-summary-asset-tooltip {
+        font-size: 10px;
+        line-height: 10px; }
+    :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses {
+      grid-area: harm; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses .pc-summary-stress-container {
+        width: 100%;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: end;
+        -ms-flex-pack: end;
+        justify-content: flex-end;
+        height: 14px;
+        overflow: hidden;
+        -ms-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses .pc-summary-stress-container .pc-summary-stress-box {
+          display: block;
+          height: 100%;
+          width: 5px;
+          margin: 0px 1px;
+          border: 1px solid var(--blades-red-dark);
+          border-radius: 3px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses .pc-summary-stress-container .pc-summary-stress-box.stress-box-full {
+            background: var(--blades-red-bright);
+            border-color: var(--blades-red); }
+      :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses .pc-summary-trauma-container {
+        margin-top: 5px;
+        border-bottom: 1px dotted var(--blades-red); }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma {
+          color: var(--blades-red-bright);
+          font-weight: bold;
+          font-family: Kirsty;
+          font-size: 12px;
+          text-transform: uppercase;
+          text-align: center;
+          width: 100%;
+          display: block; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses .pc-summary-harm-container {
+        margin-top: 5px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        -webkit-box-align: stretch;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm {
+          font-size: 10px;
+          font-family: "Fjalla One";
+          overflow: hidden;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-orient: horizontal;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: row;
+          flex-direction: row;
+          -ms-flex-wrap: nowrap;
+          flex-wrap: nowrap;
+          -webkit-box-pack: stretch;
+          -ms-flex-pack: stretch;
+          justify-content: stretch;
+          -webkit-box-flex: 1;
+          -ms-flex-positive: 1;
+          flex-grow: 1;
+          padding: 0 5px;
+          line-height: 15px;
+          pointer-events: auto; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm:hover {
+            overflow: visible; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > label {
+            -webkit-box-flex: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+            white-space: nowrap;
+            padding-left: 4px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > i {
+            line-height: 15px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-heavy {
+            color: var(--blades-white-bright);
+            background: var(--blades-red-dark);
+            font-weight: bold; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-medium {
+            color: var(--blades-red-bright);
+            font-weight: bold; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-light {
+            color: var(--blades-red-bright); }
   :root body.vtt.game.system-eunos-blades .app.window-app .nav-group {
     border: 0;
     overflow: visible;
@@ -11733,6 +12033,306 @@ template {
               text-align: left; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip-scaling-elem {
           display: inline-block; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary {
+          -ms-flex-preferred-size: 50%;
+          flex-basis: 50%;
+          overflow: visible;
+          padding: 5px;
+          max-width: 50%;
+          position: relative;
+          z-index: 4;
+          pointer-events: auto;
+          display: grid;
+          grid-template-areas: "header header header" "actions assets harm";
+          grid-template-rows: 20px 1fr;
+          grid-template-columns: 1fr 33% 33%; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary:hover {
+            z-index: 5; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary .pc-summary-img {
+            position: absolute;
+            top: 20px;
+            width: 33%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.5; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-header {
+            grid-area: header;
+            display: grid;
+            grid-template-areas: "name name heritage background-img vice-img playbook-img";
+            grid-template-rows: 20px;
+            grid-template-columns: 1fr 1fr 40px 20px 20px 20px;
+            position: relative;
+            width: 100%;
+            grid-gap: 5px;
+            height: -webkit-min-content;
+            height: -moz-min-content;
+            height: min-content; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-header > img {
+              -webkit-filter: drop-shadow(1px 1px 0px var(--blades-black-dark));
+              filter: drop-shadow(1px 1px 0px var(--blades-black-dark)); }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-header > img.pc-summary-background-img {
+                grid-area: background-img; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-header > img.pc-summary-vice-img {
+                grid-area: vice-img; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-header > img.pc-summary-playbook-img {
+                grid-area: playbook-img; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-header .pc-summary-name {
+              grid-area: name;
+              font-family: var(--font-emphasis);
+              font-size: 1.25rem;
+              line-height: 1.25rem;
+              color: var(--blades-white-bright);
+              font-variant: small-caps; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-header .pc-summary-heritage {
+              grid-area: heritage;
+              font-size: 10px;
+              font-family: Oswald;
+              text-transform: uppercase;
+              line-height: 20px;
+              text-align: right;
+              color: var(--blades-white-bright);
+              padding-right: 5px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-actions {
+            grid-area: actions;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: row;
+            flex-direction: row;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            -webkit-box-align: start;
+            -ms-flex-align: start;
+            align-items: flex-start;
+            -ms-flex-line-pack: start;
+            align-content: flex-start; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-actions .pc-summary-attribute {
+              text-align: center;
+              -ms-flex-preferred-size: 100%;
+              flex-basis: 100%;
+              -webkit-box-flex: 1;
+              -ms-flex-positive: 1;
+              flex-grow: 1;
+              -ms-flex-negative: 0;
+              flex-shrink: 0;
+              line-height: 0.875rem;
+              height: 0.875rem; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-actions .pc-summary-attribute:not(:first-child) {
+                margin-top: 5px; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-actions .pc-summary-attribute label {
+                font-family: Oswald;
+                font-size: 0.75rem;
+                line-height: 0.75rem;
+                color: var(--blades-white); }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-actions .pc-summary-attribute span {
+                font-family: Oswald;
+                font-size: 0.75rem;
+                line-height: 0.75rem;
+                color: var(--blades-white-bright); }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-actions .pc-summary-action {
+              -ms-flex-preferred-size: 50%;
+              flex-basis: 50%;
+              -webkit-box-flex: 0;
+              -ms-flex-positive: 0;
+              flex-grow: 0;
+              -ms-flex-negative: 0;
+              flex-shrink: 0;
+              line-height: 0.75rem;
+              height: 0.75rem;
+              display: -webkit-box;
+              display: -ms-flexbox;
+              display: flex;
+              -webkit-box-orient: horizontal;
+              -webkit-box-direction: normal;
+              -ms-flex-direction: row;
+              flex-direction: row; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-actions .pc-summary-action label {
+                font-family: Oswald;
+                font-size: 0.625rem;
+                line-height: 0.625rem;
+                color: var(--blades-grey-bright);
+                -webkit-box-flex: 1;
+                -ms-flex-positive: 1;
+                flex-grow: 1;
+                text-align: right; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-actions .pc-summary-action span {
+                font-family: Oswald;
+                font-size: 0.625rem;
+                line-height: 0.625rem;
+                color: var(--blades-white-bright);
+                width: 20px;
+                text-align: center; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-assets {
+            grid-area: assets;
+            padding-right: 3px;
+            position: relative;
+            z-index: 5; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-assets:hover {
+              z-index: 10; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-assets .pc-summary-assets-container:not(:first-child) {
+              margin-top: 5px;
+              border-top: 1px dotted var(--blades-white-bright); }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container {
+              display: -webkit-box;
+              display: -ms-flexbox;
+              display: flex;
+              -webkit-box-orient: horizontal;
+              -webkit-box-direction: normal;
+              -ms-flex-direction: row;
+              flex-direction: row;
+              -ms-flex-wrap: nowrap;
+              flex-wrap: nowrap;
+              -webkit-box-pack: stretch;
+              -ms-flex-pack: stretch;
+              justify-content: stretch;
+              gap: 3px;
+              height: 14px; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container .pc-summary-gear-loadout {
+                -webkit-box-flex: 1;
+                -ms-flex-positive: 1;
+                flex-grow: 1;
+                font-family: "Fjalla One";
+                font-size: 10px;
+                line-height: 12px;
+                text-transform: uppercase;
+                white-space: nowrap;
+                overflow: hidden;
+                text-align: left;
+                color: var(--blades-gold-bright); }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container i {
+                font-size: 10px;
+                line-height: 12px; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset {
+              display: -webkit-box;
+              display: -ms-flexbox;
+              display: flex;
+              -webkit-box-orient: horizontal;
+              -webkit-box-direction: normal;
+              -ms-flex-direction: row;
+              flex-direction: row; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-img {
+                height: 12px;
+                -webkit-box-flex: 0;
+                -ms-flex-positive: 0;
+                flex-grow: 0;
+                -ms-flex-negative: 0;
+                flex-shrink: 0;
+                -ms-flex-preferred-size: 12px;
+                flex-basis: 12px; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-name {
+                -webkit-box-flex: 1;
+                -ms-flex-positive: 1;
+                flex-grow: 1;
+                font-family: "Fjalla One";
+                font-size: 10px;
+                line-height: 12px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-transform: uppercase;
+                color: var(--blades-white-bright); }
+                :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-name:hover {
+                  overflow: visible; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-assets .pc-summary-assets-container .tooltip.pc-summary-asset-tooltip {
+              font-size: 10px;
+              line-height: 10px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses {
+            grid-area: harm; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses .pc-summary-stress-container {
+              width: 100%;
+              display: -webkit-box;
+              display: -ms-flexbox;
+              display: flex;
+              -webkit-box-pack: end;
+              -ms-flex-pack: end;
+              justify-content: flex-end;
+              height: 14px;
+              overflow: hidden;
+              -ms-flex-wrap: nowrap;
+              flex-wrap: nowrap;
+              -webkit-box-orient: horizontal;
+              -webkit-box-direction: normal;
+              -ms-flex-direction: row;
+              flex-direction: row; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses .pc-summary-stress-container .pc-summary-stress-box {
+                display: block;
+                height: 100%;
+                width: 5px;
+                margin: 0px 1px;
+                border: 1px solid var(--blades-red-dark);
+                border-radius: 3px; }
+                :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses .pc-summary-stress-container .pc-summary-stress-box.stress-box-full {
+                  background: var(--blades-red-bright);
+                  border-color: var(--blades-red); }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses .pc-summary-trauma-container {
+              margin-top: 5px;
+              border-bottom: 1px dotted var(--blades-red); }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma {
+                color: var(--blades-red-bright);
+                font-weight: bold;
+                font-family: Kirsty;
+                font-size: 12px;
+                text-transform: uppercase;
+                text-align: center;
+                width: 100%;
+                display: block; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses .pc-summary-harm-container {
+              margin-top: 5px;
+              display: -webkit-box;
+              display: -ms-flexbox;
+              display: flex;
+              -webkit-box-pack: start;
+              -ms-flex-pack: start;
+              justify-content: flex-start;
+              -webkit-box-align: stretch;
+              -ms-flex-align: stretch;
+              align-items: stretch;
+              -webkit-box-orient: vertical;
+              -webkit-box-direction: normal;
+              -ms-flex-direction: column;
+              flex-direction: column; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm {
+                font-size: 10px;
+                font-family: "Fjalla One";
+                overflow: hidden;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-box-orient: horizontal;
+                -webkit-box-direction: normal;
+                -ms-flex-direction: row;
+                flex-direction: row;
+                -ms-flex-wrap: nowrap;
+                flex-wrap: nowrap;
+                -webkit-box-pack: stretch;
+                -ms-flex-pack: stretch;
+                justify-content: stretch;
+                -webkit-box-flex: 1;
+                -ms-flex-positive: 1;
+                flex-grow: 1;
+                padding: 0 5px;
+                line-height: 15px;
+                pointer-events: auto; }
+                :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm:hover {
+                  overflow: visible; }
+                :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > label {
+                  -webkit-box-flex: 1;
+                  -ms-flex-positive: 1;
+                  flex-grow: 1;
+                  white-space: nowrap;
+                  padding-left: 4px; }
+                :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > i {
+                  line-height: 15px; }
+                :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-heavy {
+                  color: var(--blades-white-bright);
+                  background: var(--blades-red-dark);
+                  font-weight: bold; }
+                :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-medium {
+                  color: var(--blades-red-bright);
+                  font-weight: bold; }
+                :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-light {
+                  color: var(--blades-red-bright); }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .sheet-img {
           position: absolute;
           height: var(--sheet-top-height);
@@ -13361,6 +13961,73 @@ template {
             color: var(--blades-black-dark); }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.gm-tracker .window-content form {
     --sheet-mid-height: 100px; }
+  :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.score-sheet {
+    width: 1600px !important;
+    min-width: unset;
+    max-width: unset;
+    min-height: unset;
+    max-height: unset; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.score-sheet.minimized {
+      width: unset !important; }
+    :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.score-sheet .window-content form .sheet-root {
+      overflow-x: hidden;
+      overflow-y: scroll; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.score-sheet .window-content form .sheet-root .sheet-top {
+        grid-template-areas: "controls-left title tier controls-right";
+        grid-template-columns: 30px 1fr 60px 30px;
+        grid-template-rows: 30px;
+        height: 30px;
+        -webkit-box-align: stretch;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        background: var(--blades-black-dark); }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.score-sheet .window-content form .sheet-root .sheet-top .controls-panel {
+          grid-area: controls-left;
+          background: var(--blades-green-dark); }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.score-sheet .window-content form .sheet-root .sheet-top .controls-panel:last-child {
+            grid-area: controls-right;
+            background: var(--blades-cyan-dark); }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.score-sheet .window-content form .sheet-root .sheet-top .sheet-title.shadowed {
+          --sheet-title-font-size: 1rem; }
+      :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.score-sheet .window-content form .sheet-root .three-columns {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-pack: stretch;
+        -ms-flex-pack: stretch;
+        justify-content: stretch;
+        -webkit-box-align: stretch;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        height: 100%;
+        width: 100%; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.score-sheet .window-content form .sheet-root .three-columns .column {
+          -ms-flex-preferred-size: 34%;
+          flex-basis: 34%;
+          -webkit-box-flex: 1;
+          -ms-flex-positive: 1;
+          flex-grow: 1;
+          -ms-flex-negative: 1;
+          flex-shrink: 1;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-orient: horizontal;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: row;
+          flex-direction: row;
+          -ms-flex-wrap: wrap;
+          flex-wrap: wrap; }
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.score-sheet .window-content form .sheet-root .three-columns .column > * {
+            -webkit-box-flex: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+            -ms-flex-negative: 1;
+            flex-shrink: 1; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook {
     --turf-list-width: 600px;
     --turf-block-width: 135px;

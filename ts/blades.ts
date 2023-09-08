@@ -8,10 +8,9 @@ import registerDebugger from "./core/logger.js";
 import G, {Initialize as GsapInitialize} from "./core/gsap.js";
 
 import BladesActor from "./blades-actor.js";
-import BladesItem from "./blades-item.js";
 
 import BladesActorProxy from "./documents/blades-actor-proxy.js";
-import BladesItemProxy from "./documents/blades-item-proxy.js";
+import BladesItemProxy, {BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore} from "./documents/blades-item-proxy.js";
 
 import BladesItemSheet from "./sheets/item/blades-item-sheet.js";
 import BladesActorSheet from "./sheets/actor/blades-actor-sheet.js";
@@ -46,8 +45,6 @@ registerDebugger();
     BladesCrewSheet,
     BladesFactionSheet,
     BladesNPCSheet,
-    BladesClockKeeperSheet,
-    BladesTrackerSheet,
     BladesActiveEffect,
     BladesPushController,
     BladesRollCollab,
@@ -60,7 +57,12 @@ registerDebugger();
     U,
     C,
     BladesItem,
+    BladesClockKeeper,
+    BladesGMTracker,
+    BladesLocation,
     BladesItemSheet,
+    BladesClockKeeperSheet,
+    BladesTrackerSheet,
     MutateItems: () => {
       const patternParts = {
         strong: [
@@ -322,6 +324,7 @@ Hooks.once("init", async () => {
     BladesActorSheet.Initialize(),
     BladesActiveEffect.Initialize(),
     BladesTrackerSheet.Initialize(),
+    BladesScore.Initialize(),
     BladesSelectorDialog.Initialize(),
     BladesClockKeeperSheet.Initialize(),
     BladesPushController.Initialize(),

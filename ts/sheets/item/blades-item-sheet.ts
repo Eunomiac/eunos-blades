@@ -1,6 +1,6 @@
 import C, {BladesActorType, BladesItemType, BladesPhase, Tag, Factor} from "../../core/constants.js";
 import U from "../../core/utilities.js";
-import G from "../../core/gsap.js";
+import G, {ApplyTooltipListeners} from "../../core/gsap.js";
 import BladesActor from "../../blades-actor.js";
 import BladesItem from "../../blades-item.js";
 import BladesActiveEffect from "../../blades-active-effect.js";
@@ -279,12 +279,7 @@ class BladesItemSheet extends ItemSheet {
     },
     [BladesItemType.score]: (context) => {
       if (!BladesItem.IsType(this.item, BladesItemType.score)) { return undefined as never }
-      const sheetData: BladesItemDataOfType<BladesItemType.score> = {
-      };
-      return {
-        ...context,
-        ...sheetData
-      };
+      return context;
     }
   };
 
@@ -307,6 +302,7 @@ class BladesItemSheet extends ItemSheet {
     const self = this;
 
     Tags.InitListeners(html, this.item);
+    ApplyTooltipListeners(html);
 
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) {return}

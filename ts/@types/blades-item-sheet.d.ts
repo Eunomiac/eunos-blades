@@ -50,7 +50,9 @@ declare global {
     export interface Ritual {}
     export interface Design {}
     export interface Location {}
-    export interface Score {}
+    export interface Score {
+      playerCharacters: Array<BladesActorOfType<BladesActorType.pc>>
+    }
   }
 
   // Merged Item Subtype Schemas into Master BladesItem System Schema

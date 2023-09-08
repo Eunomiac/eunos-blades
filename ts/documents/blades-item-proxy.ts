@@ -58,3 +58,4 @@ const BladesItemProxy = new Proxy(function() {}, {
 });
 
 export default BladesItemProxy;
+export {BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore};

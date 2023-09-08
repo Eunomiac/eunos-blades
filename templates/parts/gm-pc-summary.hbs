@@ -1,0 +1,146 @@
+{{log this}}
+{{#with this as |actor|}}
+<div class="pc-summary">
+    <img class="pc-summary-img" src="{{actor.img}}" />
+  <section class="pc-summary-header">
+    <span class="pc-summary-name shadowed">{{actor.name}}</span>
+
+    <span class="pc-summary-heritage shadowed">{{actor.itemTypes.heritage.0.name}}</span>
+    <img class="pc-summary-background-img tooltip-trigger" src="{{actor.itemTypes.background.0.img}}" />
+
+    <div class="tooltip tooltip-pc-summary-background">{{actor.itemTypes.background.0.name}}</div>
+    <img class="pc-summary-vice-img tooltip-trigger" src="{{actor.itemTypes.vice.0.img}}" />
+
+    <div class="tooltip tooltip-pc-summary-vice">{{actor.itemTypes.vice.0.name}}</div>
+    <img class="pc-summary-playbook-img" src="{{actor.playbook.img}}" />
+  </section>
+
+  <section class="pc-summary-actions">
+
+    {{#each actor.actionData as |attrData attrName|}}
+    <div class="pc-summary-attribute shadowed">
+      <label>{{case "upper" attrName}}</label>
+      <span>{{lookup actor.attributes attrName}}</span>
+    </div>
+    {{#each attrData as |actionData actionName|}}
+    {{#unless (test actionData.value "==" 0)}}
+    <div class="pc-summary-action shadowed">
+      <label>{{actionName}}</label>
+      <span>{{actionData.value}}</span>
+    </div>
+    {{/unless}}
+    {{/each}}
+    {{/each}}
+
+  </section>
+
+  <section class="pc-summary-assets">
+    <div class="pc-summary-assets-container pc-summary-gear">
+      <div class="pc-summary-gear-loadout-container">
+        <label class="pc-summary-gear-loadout shadowed">{{localize actor.system.loadout.selected}}</label>
+        {{#if (test actor.armorStatus.max "==" 2)}}
+          {{#if (test actor.armorStatus.value "==" 2)}}
+            <i class="fa-sharp cyan-bright fa-duotone fa-shield-halved"></i>
+          {{else}}
+            {{#if (test actor.armorStatus.value "==" 1)}}
+              <i class="fa-sharp cyan-bright fa-solid fa-shield-halved"></i>
+            {{else}}
+              <i class="fa-sharp cyan-bright fa-light fa-shield-halved"></i>
+            {{/if}}
+          {{/if}}
+        {{else}}
+          {{#if (test actor.armorStatus.max "==" 1)}}
+            {{#if (test actor.armorStatus.value "==" 1)}}
+              <i class="fa-sharp fa-solid fa-shield"></i>
+            {{else}}
+              <i class="fa-sharp fa-regular fa-shield"></i>
+            {{/if}}
+          {{/if}}
+        {{/if}}
+        {{#if (test "special" "in" actor.armorStatus)}}
+          {{#if actor.armorStatus.special}}
+          <i class="fa-light gold-bright fa-shield-quartered"></i>
+          {{else}}
+          <i class="fa-sharp gold-bright fa-duotone fa-shield-quartered"></i>
+          {{/if}}
+        {{/if}}
+      </div>
+
+      {{#each actor.itemTypes.gear}}
+      {{#unless (test tags "includes" "Archived")}}
+      <div class="pc-summary-asset pc-summary-ability tooltip-trigger">
+        <img class="pc-summary-asset-img" src="{{img}}" />
+        <label class="pc-summary-asset-name shadowed {{~#if (test tags "includes" "Fine" )}}
+          cyan-bright{{/if}}">{{name}}</label>
+      </div>
+      <div class="pc-summary-asset-tooltip tooltip">{{{tooltip}}}</div>
+      {{/unless}}
+      {{/each}}
+    </div>
+    <div class="pc-summary-assets-container pc-summary-abilities">
+      {{#each actor.itemTypes.ability}}
+      <div class="pc-summary-asset pc-summary-ability tooltip-trigger">
+        <img class="pc-summary-asset-img" src="{{img}}" />
+        <label class="pc-summary-asset-name shadowed">{{name}}</label>
+      </div>
+      <div class="pc-summary-asset-tooltip tooltip">{{{tooltip}}}</div>
+      {{/each}}
+    </div>
+  </section>
+
+  <section class="pc-summary-maluses">
+    <div class="pc-summary-stress-container">
+      {{#forloop 1 actor.system.stress.value}}
+      <span class="pc-summary-stress-box stress-box-full"></span>
+      {{/forloop}}
+      {{#forloop (calc actor.system.stress.value "+" 1) actor.system.stress.max}}
+      <span class="pc-summary-stress-box stress-box-empty"></span>
+      {{/forloop}}
+    </div>
+    <div class="pc-summary-trauma-container">
+      {{#each actor.system.trauma.checked as |checkedVal traumaName|}}
+      {{#with (lookup actor.system.trauma.active traumaName) as |activeVal|}}
+      {{#if (test checkedVal "&&" activeVal)}}
+      <span class="pc-summary-trauma shadowed">{{traumaName}}</span>
+      {{/if}}
+      {{/with}}
+      {{/each}}
+    </div>
+    <div class="pc-summary-harm-container">
+
+      {{#if system.harm.heavy.one}}
+      <div class="pc-summary-harm pc-harm-heavy">
+        <i class="fa-sharp fa-solid fa-crutches shadowed"></i>
+        <label class="harm-heavy shadowed">{{system.harm.heavy.one}}</label>
+      </div>
+      {{/if}}
+      {{#if system.harm.medium.one}}
+      <div class="pc-summary-harm pc-harm-medium">
+        <i class="fa-sharp fa-solid fa-crutch shadowed"></i>
+        <label class="harm-medium shadowed">{{system.harm.medium.one}}</label>
+      </div>
+      {{/if}}
+      {{#if system.harm.medium.two}}
+      <div class="pc-summary-harm pc-harm-medium">
+        <i class="fa-sharp fa-solid fa-crutch shadowed"></i>
+        <label class="harm-medium shadowed">{{system.harm.medium.two}}</label>
+      </div>
+      {{/if}}
+      {{#if system.harm.light.one}}
+      <div class="pc-summary-harm pc-harm-light">
+        <i class="fa-sharp fa-light fa-crutch fa-flip-horizontal"></i>
+        <label class="harm-light">{{system.harm.light.one}}</label>
+      </div>
+      {{/if}}
+      {{#if system.harm.light.two}}
+      <div class="pc-summary-harm pc-harm-light">
+        <i class="fa-sharp fa-light fa-crutch fa-flip-horizontal"></i>
+        <label class="harm-light">{{system.harm.light.two}}</label>
+      </div>
+      {{/if}}
+
+    </div>
+
+  </section>
+</div>
+{{/with}}

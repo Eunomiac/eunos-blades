@@ -68,6 +68,34 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel {
     return actor;
   }
 
+  get armorStatus() {
+    const armorData: Partial<ValueMax & {special?: boolean}> = {};
+    if (this.system.armor.active.special) {
+      armorData.special = this.system.armor.checked.special;
+    }
+    if (this.system.armor.active.heavy) {
+      armorData.max = 2;
+      if (this.system.armor.checked.light) {
+        armorData.value = 0;
+      } else if (this.system.armor.checked.heavy) {
+        armorData.value = 1;
+      } else {
+        armorData.value = 2;
+      }
+    } else if (this.system.armor.active.light) {
+      armorData.max = 1;
+      if (this.system.armor.checked.light) {
+        armorData.value = 0;
+      } else {
+        armorData.value = 1;
+      }
+    } else {
+      armorData.max = 0;
+      armorData.value = 0;
+    }
+    return armorData as ValueMax & {special?: boolean};
+  }
+
   // #region BladesScoundrel Implementation ~
 
   isMember(crew: BladesCrew) { return this.crew?.id === crew.id }

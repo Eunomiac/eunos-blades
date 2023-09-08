@@ -9,7 +9,16 @@ import BladesItem from "../../blades-item.js";
 import { BladesActorType, Factor } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesActor from "../../blades-actor.js";
+import BladesScoreSheet from "../../sheets/item/blades-score-sheet.js";
 class BladesScore extends BladesItem {
+
+    static async Initialize() {
+        game.eunoblades ??= {};
+        Object.assign(globalThis, { BladesScore, BladesScoreSheet });
+        Items.registerSheet("blades", BladesScoreSheet, { types: ["score"], makeDefault: true });
+        return loadTemplates(["systems/eunos-blades/templates/items/score-sheet.hbs"]);
+    }
+
     get rollFactors() {
         const tierTotal = this.getFactorTotal(Factor.tier);
         return {

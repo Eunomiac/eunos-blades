@@ -1,0 +1,98 @@
+<form class="{{cssClass}}" autocomplete="off">
+
+  {{!-- Controls Header --}}
+  <section class="controls-header">
+
+  </section>
+
+  {{!-- Sheet Container --}}
+  <div class="sheet-root">
+
+    {{!-- Header --}}
+    <section class="sheet-top">
+      <div class="controls-panel"></div>
+      <input class="sheet-title shadowed" type="text" name="name" value="{{item.name}}">
+      <div class="controls-panel"></div>
+
+    </section>
+
+    {{!-- Three-Column Layout --}}
+    <div class="three-columns">
+      <div class="column">
+        {{#each playerCharacters}}
+        {{> "systems/eunos-blades/templates/parts/gm-pc-summary.hbs"}}
+        {{/each}}
+
+      </div>
+      <div class="column">
+        <section class="tab-content flex-vertical">
+          {{#if (test isGM "||" isEmbeddedItem)}}
+          <div class="accordian-block">
+            <input type="radio" name="main" id="main-description" />
+            <label for="main-description" class="accordian-label">
+              <span class="accordian-block-title">Description</span>
+            </label>
+            <div class="accordian-contents tinymce">
+              {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+            </div>
+          </div>
+          {{/if}}
+
+          <div class="accordian-block">
+            <input type="radio" name="main" id="main-rules" checked />
+            <label for="main-rules" class="accordian-label">
+              <span class="accordian-block-title">Rules</span>
+            </label>
+            <div class="accordian-contents tinymce">
+              {{editor system.rules target="system.rules" button=true owner=owner editable=isGM}}
+            </div>
+          </div>
+
+          {{#if (test isGM "||" system.notes)}}
+          <div class="accordian-block">
+            <input type="radio" name="main" id="main-notes" />
+            <label for="main-notes" class="accordian-label">
+              <span class="accordian-block-title">Notes</span>
+            </label>
+            <div class="accordian-contents tinymce">
+              {{editor system.notes target="system.notes" button=true owner=owner editable=isGM}}
+            </div>
+          </div>
+          {{/if}}
+
+          {{#if isGM}}
+          <div class="accordian-block">
+            <input type="radio" name="main" id="main-gm-notes" />
+            <label for="main-gm-notes" class="accordian-label">
+              <span class="accordian-block-title">GM Notes</span>
+            </label>
+            <div class="accordian-contents tinymce">
+              {{editor system.gm_notes target="system.gm_notes" button=true owner=owner editable=isGM}}
+            </div>
+          </div>
+          {{/if}}
+
+          {{#if isGM}}
+          <div class="accordian-block">
+            <input type="radio" name="main" id="main-active-effects" />
+            <label for="main-active-effects" class="comp accordian-label">
+              <a class="comp-control comp-button comp-add effect-control" data-action="create" title="Create Effect">
+                <i class="fas fa-plus-square"></i>
+              </a>
+              <span class="accordian-block-title">Active Effects</span>
+            </label>
+            <div class="accordian-contents">
+              {{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
+            </div>
+          </div>
+          {{/if}}
+        </section>
+      </div>
+      <div class="column">
+
+      </div>
+    </div>
+
+    <section class="sheet-footer-small"></section>
+  </div>
+</form>

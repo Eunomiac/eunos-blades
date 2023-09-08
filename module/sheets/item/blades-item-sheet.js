@@ -7,7 +7,7 @@
 
 import C, { BladesItemType, BladesPhase, Factor } from "../../core/constants.js";
 import U from "../../core/utilities.js";
-import G from "../../core/gsap.js";
+import G, { ApplyTooltipListeners } from "../../core/gsap.js";
 import BladesItem from "../../blades-item.js";
 import BladesActiveEffect from "../../blades-active-effect.js";
 import Tags from "../../core/tags.js";
@@ -292,11 +292,7 @@ class BladesItemSheet extends ItemSheet {
             if (!BladesItem.IsType(this.item, BladesItemType.score)) {
                 return undefined;
             }
-            const sheetData = {};
-            return {
-                ...context,
-                ...sheetData
-            };
+            return context;
         }
     };
     get template() {
@@ -316,6 +312,7 @@ class BladesItemSheet extends ItemSheet {
         super.activateListeners(html);
         const self = this;
         Tags.InitListeners(html, this.item);
+        ApplyTooltipListeners(html);
         if (!this.options.editable) {
             return;
         }

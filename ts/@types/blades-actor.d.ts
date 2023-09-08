@@ -114,6 +114,17 @@ declare global {
 
     export interface NPC extends BladesActorSchemaTemplate.Default,
       BladesActorSchemaTemplate.gmChar {
+        // description: string,
+        // tier: NamedValueMax,
+        // subactors: Record<string, SubActorData>,
+        // subtitle: string
+      // concept: string,
+      // clocks: Record<string, BladesClockData>,
+      // district: District,
+      // assets: string,
+      // situation: string,
+      // turf: string,
+      // status: number
       magnitude: number,
       scale: number,
       persona: {

@@ -34,6 +34,7 @@ export async function preloadHandlebarsTemplates() {
     "systems/eunos-blades/templates/parts/turf-list.hbs",
     "systems/eunos-blades/templates/parts/cohort-block.hbs",
     "systems/eunos-blades/templates/parts/active-effects.hbs",
+    "systems/eunos-blades/templates/parts/gm-pc-summary.hbs",
 
     // Overlays
     "systems/eunos-blades/templates/overlays/clock-overlay.hbs",

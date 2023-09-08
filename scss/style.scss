@@ -226,6 +226,10 @@
             @import './sheets/gm-tracker-sheet'
           }
 
+          &.score-sheet {
+            @import './sheets/score-sheet';
+          }
+
           .window-content form {
             &.crew_playbook {
               @import './sheets/crew-playbook-sheet'

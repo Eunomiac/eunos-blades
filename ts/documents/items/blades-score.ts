@@ -3,12 +3,23 @@ import C, {SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase, RollModCa
 import U from "../../core/utilities.js";
 import BladesActor from "../../blades-actor.js";
 import BladesRollCollab from "../../blades-roll-collab.js";
-import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
+import BladesScoreSheet from "../../sheets/item/blades-score-sheet.js";
+
 
 class BladesScore extends BladesItem implements BladesItemSubClass.Score,
-                                                  BladesRollCollab.OppositionDocData {
+  BladesRollCollab.OppositionDocData {
 
-  override get rollFactors(): Partial<Record<Factor,BladesRollCollab.FactorData>> {
+  // #region INITIALIZATION ~
+  static async Initialize() {
+    game.eunoblades ??= {};
+    Object.assign(globalThis, {BladesScore, BladesScoreSheet});
+    Items.registerSheet("blades", BladesScoreSheet, {types: ["score"], makeDefault: true});
+    return loadTemplates(["systems/eunos-blades/templates/items/score-sheet.hbs"]);
+  }
+  // #endregion
+
+  // #region BladesRollCollab.OppositionDocData Implementation
+  override get rollFactors(): Partial<Record<Factor, BladesRollCollab.FactorData>> {
 
     const tierTotal = this.getFactorTotal(Factor.tier);
     return {
@@ -37,6 +48,7 @@ class BladesScore extends BladesItem implements BladesItemSubClass.Score,
     }
     return 0 as never;
   }
+  // #endregion
 
   // #region OVERRIDES: _onUpdate
   override async _onUpdate(changed: any, options: any, userId: string) {

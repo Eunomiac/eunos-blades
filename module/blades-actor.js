@@ -1121,32 +1121,32 @@ class BladesActor extends Actor {
             name: (gender) => {
                 return [
                     Math.random() <= titleChance
-                        ? sampleArray(Randomizers.name_title)
+                        ? sampleArray(Randomizers.NPC.name_title)
                         : "",
                     sampleArray([
-                        ...((gender ?? "").charAt(0).toLowerCase() !== "m" ? Randomizers.name_first.female : []),
-                        ...((gender ?? "").charAt(0).toLowerCase() !== "f" ? Randomizers.name_first.male : [])
+                        ...((gender ?? "").charAt(0).toLowerCase() !== "m" ? Randomizers.NPC.name_first.female : []),
+                        ...((gender ?? "").charAt(0).toLowerCase() !== "f" ? Randomizers.NPC.name_first.male : [])
                     ]),
-                    `"${sampleArray(Randomizers.name_alias)}"`,
-                    sampleArray(Randomizers.name_surname),
+                    `"${sampleArray(Randomizers.NPC.name_alias)}"`,
+                    sampleArray(Randomizers.NPC.name_surname),
                     Math.random() <= suffixChance
-                        ? sampleArray(Randomizers.name_suffix)
+                        ? sampleArray(Randomizers.NPC.name_suffix)
                         : ""
                 ].filter((val) => Boolean(val)).join(" ");
             },
-            background: () => sampleArray(Randomizers.background, random.background.value),
-            heritage: () => sampleArray(Randomizers.heritage, random.heritage.value),
-            profession: () => sampleArray(Randomizers.profession, random.profession.value),
-            gender: () => sampleArray(Randomizers.gender, persona.gender.value),
-            appearance: () => sampleArray(Randomizers.appearance, persona.appearance.value),
-            goal: () => sampleArray(Randomizers.goal, persona.goal.value, secret.goal.value),
-            method: () => sampleArray(Randomizers.method, persona.method.value, secret.method.value),
-            trait: () => sampleArray(Randomizers.trait, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value),
-            interests: () => sampleArray(Randomizers.interests, persona.interests.value, secret.interests.value),
-            quirk: () => sampleArray(Randomizers.quirk, persona.quirk.value),
+            background: () => sampleArray(Randomizers.NPC.background, random.background.value),
+            heritage: () => sampleArray(Randomizers.NPC.heritage, random.heritage.value),
+            profession: () => sampleArray(Randomizers.NPC.profession, random.profession.value),
+            gender: () => sampleArray(Randomizers.NPC.gender, persona.gender.value),
+            appearance: () => sampleArray(Randomizers.NPC.appearance, persona.appearance.value),
+            goal: () => sampleArray(Randomizers.NPC.goal, persona.goal.value, secret.goal.value),
+            method: () => sampleArray(Randomizers.NPC.method, persona.method.value, secret.method.value),
+            trait: () => sampleArray(Randomizers.NPC.trait, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value),
+            interests: () => sampleArray(Randomizers.NPC.interests, persona.interests.value, secret.interests.value),
+            quirk: () => sampleArray(Randomizers.NPC.quirk, persona.quirk.value),
             style: (gender = "") => sampleArray([
-                ...(gender.charAt(0).toLowerCase() !== "m" ? Randomizers.style.female : []),
-                ...(gender.charAt(0).toLowerCase() !== "f" ? Randomizers.style.male : [])
+                ...(gender.charAt(0).toLowerCase() !== "m" ? Randomizers.NPC.style.female : []),
+                ...(gender.charAt(0).toLowerCase() !== "f" ? Randomizers.NPC.style.male : [])
             ], persona.style.value)
         };
         const gender = persona.gender.isLocked ? persona.gender.value : randomGen.gender();
@@ -1195,16 +1195,16 @@ class BladesActor extends Actor {
                 case "secret-trait": {
                     const trait1 = persona.trait1.isLocked
                         ? persona.trait1.value
-                        : sampleArray(Randomizers.trait, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value);
+                        : sampleArray(Randomizers.NPC.trait, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value);
                     const trait2 = persona.trait2.isLocked
                         ? persona.trait2.value
-                        : sampleArray(Randomizers.trait, trait1, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value);
+                        : sampleArray(Randomizers.NPC.trait, trait1, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value);
                     const trait3 = persona.trait3.isLocked
                         ? persona.trait3.value
-                        : sampleArray(Randomizers.trait, trait1, trait2, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value);
+                        : sampleArray(Randomizers.NPC.trait, trait1, trait2, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value);
                     const secretTrait = secret.trait.isLocked
                         ? secret.trait.value
-                        : sampleArray(Randomizers.trait, trait1, trait2, trait3, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value);
+                        : sampleArray(Randomizers.NPC.trait, trait1, trait2, trait3, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value);
                     if (!persona.trait1.isLocked) {
                         updateData["system.persona.trait1"] = {
                             isLocked: false,
