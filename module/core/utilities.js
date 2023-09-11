@@ -592,6 +592,18 @@ const group = (array, key) => {
     });
     return returnObj;
 };
+const sample = (array, numElems = 1, isUniqueOnly, uniqueTestFunc = (e, a) => !a.includes(e)) => {
+    const elems = [];
+    let overloadCounter = 0;
+    while (elems.length < numElems && overloadCounter < 1000000) {
+        const randomElem = randElem(array);
+        if (uniqueTestFunc(randomElem, elems)) {
+            elems.push(randomElem);
+        }
+        overloadCounter++;
+    }
+    return elems;
+};
 const removeFirst = (array, element) => array.splice(array.findIndex((v) => v === element));
 function pullElement(array, checkFunc) {
     const index = array.findIndex((v, i, a) => checkFunc(v, i, a));
@@ -757,6 +769,7 @@ function objMap(obj, keyFunc, valFunc) {
     }
     return Object.fromEntries(Object.entries(obj).map(([key, val]) => [keyFunc(key, val), valFunc(val, key)]));
 }
+const objSize = (obj) => Object.values(obj).filter((val) => val !== undefined && val !== null).length;
 const objFindKey = (obj, keyFunc, valFunc) => {
     if (!valFunc) {
         valFunc = keyFunc;
@@ -1116,11 +1129,11 @@ export default {
     randElem, randIndex,
     makeIntRange,
     makeCycler,
-    unique, group,
+    unique, group, sample,
     getLast, removeFirst, pullElement, pullIndex,
     subGroup, shuffle,
     remove, replace, partition,
-    objClean, objMap, objFindKey, objFilter, objForEach, objCompact,
+    objClean, objSize, objMap, objFindKey, objFilter, objForEach, objCompact,
     objClone, objMerge, objDiff, objExpand, objFlatten, objNullify,
     getDynamicFunc, withLog,
 

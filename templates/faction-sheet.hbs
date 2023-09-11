@@ -50,7 +50,12 @@
           <span class="tab-title">Description</span>
         </label>
         {{editor system.description target="system.description" button=true owner=owner editable=isGM}}
+        <label class="tab-label">
+          <span class="tab-title">Turf</span>
+        </label>
+        {{editor system.turf target="system.turf" button=true owner=owner editable=isGM}}
 
+        {{#if isGM}}
         <label class="tab-label">
           <span class="tab-title">Assets</span>
         </label>
@@ -60,6 +65,7 @@
           <span class="tab-title">Situation</span>
         </label>
         {{editor system.situation target="system.situation" button=true owner=owner editable=isGM}}
+        {{/if}}
 
       </div>
 

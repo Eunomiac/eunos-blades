@@ -1,4 +1,4 @@
-import {BladesActorType, BladesItemType, RollType, ConsequenceType, RollModStatus, RollModCategory, Action, DowntimeAction, Attribute, Position, Effect, Factor} from "../core/constants.js";
+import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModCategory, Action, DowntimeAction, Attribute, Position, Effect, Factor} from "../core/constants.js";
 import BladesActor from "../blades-actor.js";
 import BladesItem from "../blades-item.js";
 import {BladesRollMod} from "../blades-roll-collab.js";
@@ -7,10 +7,12 @@ declare global {
 
   namespace BladesRollCollab {
     export interface Config {
-      userID?: string,
-      rollSource?: (BladesActor|BladesItem) & SourceDoc,
-      rollOpposition?: BladesActor|BladesItem,
       rollType: RollType,
+      userID?: string,
+      rollSource?: SourceDocData,
+      rollOpposition?: OppositionDocData,
+      rollSubType?: RollSubType,
+      rollDowntimeAction?: DowntimeAction,
       rollTrait?: RollTrait
     }
 
@@ -37,14 +39,19 @@ declare global {
     export interface FlagData {
       rollID: string;
       rollType: RollType;
-      rollSourceType: "Actor"|"Item";
-      rollSourceID: string;
+      rollSubType?: RollSubType;
+      rollDowntimeAction?: DowntimeAction;
+      rollSourceType: string;
+      rollSourceID?: string;
+      rollSourceData?: SourceDocData;
       rollTrait: RollTrait;
       rollModsData: Record<string,RollModStatus>;
       rollPositionInitial: Position;
       rollEffectInitial: Effect;
       rollPosEffectTrade: "position"|"effect"|false,
+      rollOppositionType?: string;
       rollOppositionID?: string,
+      rollOppositionData?: OppositionDocData,
       rollConsequence?: ConsequenceData,
       isGMReady: boolean,
       GMBoosts: Partial<Record<"Dice"|Factor|"Result",number>>,
@@ -73,16 +80,16 @@ declare global {
       cssClass: string,
       editable: boolean,
       isGM: boolean,
-      system: BladesActorSystem|BladesItemSystem,
+      system?: BladesActorSystem|BladesItemSystem,
 
       rollMods: BladesRollMod[],
-      rollSource: BladesActor|BladesItem & SourceDoc,
+      rollSource: SourceDocData,
       rollTraitData: NamedValueMax & {gmTooltip?: string, pcTooltip?: string},
       rollTraitOptions: Array<{name: string, value: RollTrait}>,
 
       diceTotal: number,
 
-      rollOpposition?: OppositionDoc,
+      rollOpposition?: OppositionDocData,
 
       rollPositions: Position[],
       rollEffects: Effect[],
@@ -150,19 +157,29 @@ declare global {
     }
 
     export interface SourceDocData {
-      get rollModsData(): RollModData[],
-      get rollFactors(): Partial<Record<Factor,FactorData>>
-    }
+      rollSourceID: string|undefined,
+      rollSourceDoc: BladesDoc|undefined,
+      rollSourceName: string,
+      rollSourceType: string,
+      rollSourceImg: string|undefined,
 
-    export type SourceDoc = SourceDocData & BladesDoc
+      rollModsData: RollModData[],
+      rollFactors: Partial<Record<Factor,FactorData>>
+    }
 
     export interface OppositionDocData {
-      get rollModsData(): RollModData[]|undefined,
-      get rollOppImg(): string|undefined,
-      get rollFactors(): Partial<Record<Factor,FactorData>>
+      rollOppID: string|undefined,
+      rollOppDoc: BladesDoc|undefined,
+      rollOppName: string,
+      rollOppSubName: string,
+      rollOppType: string,
+      rollOppImg: string|undefined,
+
+      rollModsData: RollModData[]|undefined,
+      rollFactors: Partial<Record<Factor,FactorData>>
     }
 
-    export type OppositionDoc = OppositionDocData & BladesDoc;
+    // export type OppositionDoc = OppositionDocData & BladesDoc;
 
 
   }

@@ -51,7 +51,8 @@ declare global {
     export interface Design {}
     export interface Location {}
     export interface Score {
-      playerCharacters: Array<BladesActorOfType<BladesActorType.pc>>
+      playerCharacters: Array<BladesActorOfType<BladesActorType.pc>>,
+      randomizerData: Record<RandomCat, Record<string, Record<string, any>>>
     }
   }
 

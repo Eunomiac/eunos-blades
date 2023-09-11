@@ -644,6 +644,18 @@ const group = <Type extends Record<string, unknown>>(array: Type[], key: KeyOf<T
   });
   return returnObj as Record<string & ValueOf<Type>, Type[]>;
 };
+const sample = <Type extends unknown>(array: Type[], numElems = 1, isUniqueOnly?: boolean, uniqueTestFunc: (elem: Type, array: Type[]) => boolean = (e, a) => !a.includes(e)): Type[] => {
+  const elems: Type[] = [];
+  let overloadCounter = 0;
+  while (elems.length < numElems && overloadCounter < 1_000_000) {
+    const randomElem = randElem(array);
+    if (uniqueTestFunc(randomElem, elems)) {
+      elems.push(randomElem);
+    }
+    overloadCounter++;
+  }
+  return elems;
+};
 const removeFirst = (array: unknown[], element: unknown) => array.splice(array.findIndex((v) => v === element));
 
 
@@ -826,6 +838,7 @@ function objMap(obj: Index<unknown>, keyFunc: mapFunc<keyFunc> | mapFunc<valFunc
   if (isArray(obj)) { return obj.map(valFunc) }
   return Object.fromEntries(Object.entries(obj).map(([key, val]) => [(<mapFunc<keyFunc>>keyFunc)(key, val), (<mapFunc<valFunc>>valFunc)(val, key)]));
 }
+const objSize = (obj: Index<unknown>) => Object.values(obj).filter((val) => val !== undefined && val !== null).length;
 const objFindKey = <Type extends Index<unknown>>(obj: Type, keyFunc: testFunc<keyFunc> | testFunc<valFunc> | false, valFunc?: testFunc<valFunc>): KeyOf<Type> | false => {
   // An object-equivalent Array.findIndex() function, which accepts check functions for both keys and/or values.
   // If only one function is provided, it's assumed to be searching via values and will receive (v, k) args.
@@ -1227,13 +1240,13 @@ export default {
   randElem, randIndex,
   makeIntRange,
   makeCycler,
-  unique, group,
+  unique, group, sample,
   getLast, removeFirst, pullElement, pullIndex,
   subGroup, shuffle,
 
   // ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████
   remove, replace, partition,
-  objClean, objMap, objFindKey, objFilter, objForEach, objCompact,
+  objClean, objSize, objMap, objFindKey, objFilter, objForEach, objCompact,
   objClone, objMerge, objDiff, objExpand, objFlatten, objNullify,
 
   // ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████

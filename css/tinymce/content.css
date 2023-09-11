@@ -1,3 +1,4 @@
+@charset "UTF-8";
 html, :root {
   @use "sass:math";
   @use "sass:color";
@@ -2949,148 +2950,82 @@ html, :root {
         text-align: left; }
   html .tooltip-scaling-elem, :root .tooltip-scaling-elem {
     display: inline-block; }
-  html .pc-summary, :root .pc-summary {
-    -ms-flex-preferred-size: 50%;
-    flex-basis: 50%;
-    overflow: visible;
-    padding: 5px;
-    max-width: 50%;
-    position: relative;
-    z-index: 4;
-    pointer-events: auto;
-    display: grid;
-    grid-template-areas: "header header header" "actions assets harm";
-    grid-template-rows: 20px 1fr;
-    grid-template-columns: 1fr 33% 33%; }
-    html .pc-summary:hover, :root .pc-summary:hover {
-      z-index: 5; }
-    html .pc-summary .pc-summary-img, :root .pc-summary .pc-summary-img {
-      position: absolute;
-      top: 20px;
-      width: 33%;
-      pointer-events: none;
-      z-index: -1;
-      opacity: 0.5; }
-    html .pc-summary section.pc-summary-header, :root .pc-summary section.pc-summary-header {
-      grid-area: header;
-      display: grid;
-      grid-template-areas: "name name heritage background-img vice-img playbook-img";
-      grid-template-rows: 20px;
-      grid-template-columns: 1fr 1fr 40px 20px 20px 20px;
-      position: relative;
+  html .player-character-summary-panel, :root .player-character-summary-panel {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    height: -webkit-min-content;
+    height: -moz-min-content;
+    height: min-content; }
+    html .player-character-summary-panel > *, :root .player-character-summary-panel > * {
+      -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+      flex-grow: 1;
+      -ms-flex-negative: 1;
+      flex-shrink: 1; }
+    html .player-character-summary-panel .pc-summary, :root .player-character-summary-panel .pc-summary {
       width: 100%;
-      grid-gap: 5px;
-      height: -webkit-min-content;
-      height: -moz-min-content;
-      height: min-content; }
-      html .pc-summary section.pc-summary-header > img, :root .pc-summary section.pc-summary-header > img {
-        -webkit-filter: drop-shadow(1px 1px 0px var(--blades-black-dark));
-        filter: drop-shadow(1px 1px 0px var(--blades-black-dark)); }
-        html .pc-summary section.pc-summary-header > img.pc-summary-background-img, :root .pc-summary section.pc-summary-header > img.pc-summary-background-img {
-          grid-area: background-img; }
-        html .pc-summary section.pc-summary-header > img.pc-summary-vice-img, :root .pc-summary section.pc-summary-header > img.pc-summary-vice-img {
-          grid-area: vice-img; }
-        html .pc-summary section.pc-summary-header > img.pc-summary-playbook-img, :root .pc-summary section.pc-summary-header > img.pc-summary-playbook-img {
-          grid-area: playbook-img; }
-      html .pc-summary section.pc-summary-header .pc-summary-name, :root .pc-summary section.pc-summary-header .pc-summary-name {
-        grid-area: name;
-        font-family: var(--font-emphasis);
-        font-size: 1.25rem;
-        line-height: 1.25rem;
-        color: var(--blades-white-bright);
-        font-variant: small-caps; }
-      html .pc-summary section.pc-summary-header .pc-summary-heritage, :root .pc-summary section.pc-summary-header .pc-summary-heritage {
-        grid-area: heritage;
-        font-size: 10px;
-        font-family: Oswald;
-        text-transform: uppercase;
-        line-height: 20px;
-        text-align: right;
-        color: var(--blades-white-bright);
-        padding-right: 5px; }
-    html .pc-summary section.pc-summary-actions, :root .pc-summary section.pc-summary-actions {
-      grid-area: actions;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-orient: horizontal;
-      -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-      flex-direction: row;
-      -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-      -webkit-box-align: start;
-      -ms-flex-align: start;
-      align-items: flex-start;
-      -ms-flex-line-pack: start;
-      align-content: flex-start; }
-      html .pc-summary section.pc-summary-actions .pc-summary-attribute, :root .pc-summary section.pc-summary-actions .pc-summary-attribute {
-        text-align: center;
-        -ms-flex-preferred-size: 100%;
-        flex-basis: 100%;
-        -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-        flex-grow: 1;
-        -ms-flex-negative: 0;
-        flex-shrink: 0;
-        line-height: 0.875rem;
-        height: 0.875rem; }
-        html .pc-summary section.pc-summary-actions .pc-summary-attribute:not(:first-child), :root .pc-summary section.pc-summary-actions .pc-summary-attribute:not(:first-child) {
-          margin-top: 5px; }
-        html .pc-summary section.pc-summary-actions .pc-summary-attribute label, :root .pc-summary section.pc-summary-actions .pc-summary-attribute label {
-          font-family: Oswald;
-          font-size: 0.75rem;
-          line-height: 0.75rem;
-          color: var(--blades-white); }
-        html .pc-summary section.pc-summary-actions .pc-summary-attribute span, :root .pc-summary section.pc-summary-actions .pc-summary-attribute span {
-          font-family: Oswald;
-          font-size: 0.75rem;
-          line-height: 0.75rem;
-          color: var(--blades-white-bright); }
-      html .pc-summary section.pc-summary-actions .pc-summary-action, :root .pc-summary section.pc-summary-actions .pc-summary-action {
-        -ms-flex-preferred-size: 50%;
-        flex-basis: 50%;
-        -webkit-box-flex: 0;
-        -ms-flex-positive: 0;
-        flex-grow: 0;
-        -ms-flex-negative: 0;
-        flex-shrink: 0;
-        line-height: 0.75rem;
-        height: 0.75rem;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-orient: horizontal;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: row;
-        flex-direction: row; }
-        html .pc-summary section.pc-summary-actions .pc-summary-action label, :root .pc-summary section.pc-summary-actions .pc-summary-action label {
-          font-family: Oswald;
-          font-size: 0.625rem;
-          line-height: 0.625rem;
-          color: var(--blades-grey-bright);
-          -webkit-box-flex: 1;
-          -ms-flex-positive: 1;
-          flex-grow: 1;
-          text-align: right; }
-        html .pc-summary section.pc-summary-actions .pc-summary-action span, :root .pc-summary section.pc-summary-actions .pc-summary-action span {
-          font-family: Oswald;
-          font-size: 0.625rem;
-          line-height: 0.625rem;
-          color: var(--blades-white-bright);
-          width: 20px;
-          text-align: center; }
-    html .pc-summary section.pc-summary-assets, :root .pc-summary section.pc-summary-assets {
-      grid-area: assets;
-      padding-right: 3px;
+      overflow: visible;
+      padding: 5px;
       position: relative;
-      z-index: 5; }
-      html .pc-summary section.pc-summary-assets:hover, :root .pc-summary section.pc-summary-assets:hover {
-        z-index: 10; }
-      html .pc-summary section.pc-summary-assets .pc-summary-assets-container:not(:first-child), :root .pc-summary section.pc-summary-assets .pc-summary-assets-container:not(:first-child) {
-        margin-top: 5px;
-        border-top: 1px dotted var(--blades-white-bright); }
-      html .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container, :root .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container {
+      z-index: 4;
+      pointer-events: auto;
+      display: grid;
+      grid-template-areas: "header header header notes" "actions assets harm notes";
+      grid-template-rows: 20px 1fr;
+      grid-template-columns: 16% 16% 16% 1fr; }
+      html .player-character-summary-panel .pc-summary:hover, :root .player-character-summary-panel .pc-summary:hover {
+        z-index: 5; }
+      html .player-character-summary-panel .pc-summary .pc-summary-img, :root .player-character-summary-panel .pc-summary .pc-summary-img {
+        position: absolute;
+        top: 20px;
+        width: 16%;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.5; }
+      html .player-character-summary-panel .pc-summary section.pc-summary-header, :root .player-character-summary-panel .pc-summary section.pc-summary-header {
+        grid-area: header;
+        display: grid;
+        grid-template-areas: "name name heritage background-img vice-img playbook-img";
+        grid-template-rows: 20px;
+        grid-template-columns: 1fr 1fr 40px 20px 20px 20px;
+        position: relative;
+        width: 100%;
+        grid-gap: 5px;
+        height: -webkit-min-content;
+        height: -moz-min-content;
+        height: min-content; }
+        html .player-character-summary-panel .pc-summary section.pc-summary-header > img, :root .player-character-summary-panel .pc-summary section.pc-summary-header > img {
+          -webkit-filter: drop-shadow(1px 1px 0px var(--blades-black-dark));
+          filter: drop-shadow(1px 1px 0px var(--blades-black-dark)); }
+          html .player-character-summary-panel .pc-summary section.pc-summary-header > img.pc-summary-background-img, :root .player-character-summary-panel .pc-summary section.pc-summary-header > img.pc-summary-background-img {
+            grid-area: background-img; }
+          html .player-character-summary-panel .pc-summary section.pc-summary-header > img.pc-summary-vice-img, :root .player-character-summary-panel .pc-summary section.pc-summary-header > img.pc-summary-vice-img {
+            grid-area: vice-img; }
+          html .player-character-summary-panel .pc-summary section.pc-summary-header > img.pc-summary-playbook-img, :root .player-character-summary-panel .pc-summary section.pc-summary-header > img.pc-summary-playbook-img {
+            grid-area: playbook-img; }
+        html .player-character-summary-panel .pc-summary section.pc-summary-header .pc-summary-name, :root .player-character-summary-panel .pc-summary section.pc-summary-header .pc-summary-name {
+          grid-area: name;
+          font-family: var(--font-emphasis);
+          font-size: 1.25rem;
+          line-height: 1.25rem;
+          color: var(--blades-white-bright);
+          font-variant: small-caps; }
+        html .player-character-summary-panel .pc-summary section.pc-summary-header .pc-summary-heritage, :root .player-character-summary-panel .pc-summary section.pc-summary-header .pc-summary-heritage {
+          grid-area: heritage;
+          font-size: 10px;
+          font-family: Oswald;
+          text-transform: uppercase;
+          line-height: 20px;
+          text-align: right;
+          color: var(--blades-white-bright);
+          padding-right: 5px; }
+      html .player-character-summary-panel .pc-summary section.pc-summary-actions, :root .player-character-summary-panel .pc-summary section.pc-summary-actions {
+        grid-area: actions;
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -3098,120 +3033,80 @@ html, :root {
         -webkit-box-direction: normal;
         -ms-flex-direction: row;
         flex-direction: row;
-        -ms-flex-wrap: nowrap;
-        flex-wrap: nowrap;
-        -webkit-box-pack: stretch;
-        -ms-flex-pack: stretch;
-        justify-content: stretch;
-        gap: 3px;
-        height: 14px; }
-        html .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container .pc-summary-gear-loadout, :root .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container .pc-summary-gear-loadout {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start;
+        -ms-flex-line-pack: start;
+        align-content: flex-start; }
+        html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute {
+          text-align: center;
+          -ms-flex-preferred-size: 100%;
+          flex-basis: 100%;
           -webkit-box-flex: 1;
           -ms-flex-positive: 1;
           flex-grow: 1;
-          font-family: "Fjalla One";
-          font-size: 10px;
-          line-height: 12px;
-          text-transform: uppercase;
-          white-space: nowrap;
-          overflow: hidden;
-          text-align: left;
-          color: var(--blades-gold-bright); }
-        html .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container i, :root .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container i {
-          font-size: 10px;
-          line-height: 12px; }
-      html .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset, :root .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-orient: horizontal;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: row;
-        flex-direction: row; }
-        html .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-img, :root .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-img {
-          height: 12px;
+          -ms-flex-negative: 0;
+          flex-shrink: 0;
+          line-height: 0.875rem;
+          height: 0.875rem; }
+          html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute:not(:first-child), :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute:not(:first-child) {
+            margin-top: 5px; }
+          html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute label, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute label {
+            font-family: Oswald;
+            font-size: 0.75rem;
+            line-height: 0.75rem;
+            color: var(--blades-white); }
+          html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute span, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute span {
+            font-family: Oswald;
+            font-size: 0.75rem;
+            line-height: 0.75rem;
+            color: var(--blades-white-bright); }
+        html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action {
+          -ms-flex-preferred-size: 50%;
+          flex-basis: 50%;
           -webkit-box-flex: 0;
           -ms-flex-positive: 0;
           flex-grow: 0;
           -ms-flex-negative: 0;
           flex-shrink: 0;
-          -ms-flex-preferred-size: 12px;
-          flex-basis: 12px; }
-        html .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-name, :root .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-name {
-          -webkit-box-flex: 1;
-          -ms-flex-positive: 1;
-          flex-grow: 1;
-          font-family: "Fjalla One";
-          font-size: 10px;
-          line-height: 12px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-transform: uppercase;
-          color: var(--blades-white-bright); }
-          html .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-name:hover, :root .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-name:hover {
-            overflow: visible; }
-      html .pc-summary section.pc-summary-assets .pc-summary-assets-container .tooltip.pc-summary-asset-tooltip, :root .pc-summary section.pc-summary-assets .pc-summary-assets-container .tooltip.pc-summary-asset-tooltip {
-        font-size: 10px;
-        line-height: 10px; }
-    html .pc-summary section.pc-summary-maluses, :root .pc-summary section.pc-summary-maluses {
-      grid-area: harm; }
-      html .pc-summary section.pc-summary-maluses .pc-summary-stress-container, :root .pc-summary section.pc-summary-maluses .pc-summary-stress-container {
-        width: 100%;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-pack: end;
-        -ms-flex-pack: end;
-        justify-content: flex-end;
-        height: 14px;
-        overflow: hidden;
-        -ms-flex-wrap: nowrap;
-        flex-wrap: nowrap;
-        -webkit-box-orient: horizontal;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: row;
-        flex-direction: row; }
-        html .pc-summary section.pc-summary-maluses .pc-summary-stress-container .pc-summary-stress-box, :root .pc-summary section.pc-summary-maluses .pc-summary-stress-container .pc-summary-stress-box {
-          display: block;
-          height: 100%;
-          width: 5px;
-          margin: 0px 1px;
-          border: 1px solid var(--blades-red-dark);
-          border-radius: 3px; }
-          html .pc-summary section.pc-summary-maluses .pc-summary-stress-container .pc-summary-stress-box.stress-box-full, :root .pc-summary section.pc-summary-maluses .pc-summary-stress-container .pc-summary-stress-box.stress-box-full {
-            background: var(--blades-red-bright);
-            border-color: var(--blades-red); }
-      html .pc-summary section.pc-summary-maluses .pc-summary-trauma-container, :root .pc-summary section.pc-summary-maluses .pc-summary-trauma-container {
-        margin-top: 5px;
-        border-bottom: 1px dotted var(--blades-red); }
-        html .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma, :root .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma {
-          color: var(--blades-red-bright);
-          font-weight: bold;
-          font-family: Kirsty;
-          font-size: 12px;
-          text-transform: uppercase;
-          text-align: center;
-          width: 100%;
-          display: block; }
-      html .pc-summary section.pc-summary-maluses .pc-summary-harm-container, :root .pc-summary section.pc-summary-maluses .pc-summary-harm-container {
-        margin-top: 5px;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-pack: start;
-        -ms-flex-pack: start;
-        justify-content: flex-start;
-        -webkit-box-align: stretch;
-        -ms-flex-align: stretch;
-        align-items: stretch;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column; }
-        html .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm, :root .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm {
-          font-size: 10px;
-          font-family: "Fjalla One";
-          overflow: hidden;
+          line-height: 0.75rem;
+          height: 0.75rem;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-orient: horizontal;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: row;
+          flex-direction: row; }
+          html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action label, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action label {
+            font-family: Oswald;
+            font-size: 0.625rem;
+            line-height: 0.625rem;
+            color: var(--blades-grey-bright);
+            -webkit-box-flex: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+            text-align: right; }
+          html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action span, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action span {
+            font-family: Oswald;
+            font-size: 0.625rem;
+            line-height: 0.625rem;
+            color: var(--blades-white-bright);
+            width: 20px;
+            text-align: center; }
+      html .player-character-summary-panel .pc-summary section.pc-summary-assets, :root .player-character-summary-panel .pc-summary section.pc-summary-assets {
+        grid-area: assets;
+        padding-right: 3px;
+        position: relative;
+        z-index: 5; }
+        html .player-character-summary-panel .pc-summary section.pc-summary-assets:hover, :root .player-character-summary-panel .pc-summary section.pc-summary-assets:hover {
+          z-index: 10; }
+        html .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container:not(:first-child), :root .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container:not(:first-child) {
+          margin-top: 5px;
+          border-top: 1px dotted var(--blades-white-bright); }
+        html .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container, :root .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container {
           display: -webkit-box;
           display: -ms-flexbox;
           display: flex;
@@ -3224,31 +3119,432 @@ html, :root {
           -webkit-box-pack: stretch;
           -ms-flex-pack: stretch;
           justify-content: stretch;
-          -webkit-box-flex: 1;
-          -ms-flex-positive: 1;
-          flex-grow: 1;
-          padding: 0 5px;
-          line-height: 15px;
-          pointer-events: auto; }
-          html .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm:hover, :root .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm:hover {
-            overflow: visible; }
-          html .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > label, :root .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > label {
+          gap: 3px;
+          height: 14px; }
+          html .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container .pc-summary-gear-loadout, :root .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container .pc-summary-gear-loadout {
             -webkit-box-flex: 1;
             -ms-flex-positive: 1;
             flex-grow: 1;
+            font-family: "Fjalla One";
+            font-size: 10px;
+            line-height: 12px;
+            text-transform: uppercase;
             white-space: nowrap;
-            padding-left: 4px; }
-          html .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > i, :root .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > i {
-            line-height: 15px; }
-          html .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-heavy, :root .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-heavy {
-            color: var(--blades-white-bright);
-            background: var(--blades-red-dark);
-            font-weight: bold; }
-          html .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-medium, :root .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-medium {
+            overflow: hidden;
+            text-align: left;
+            color: var(--blades-gold-bright); }
+          html .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container i, :root .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-gear-loadout-container i {
+            font-size: 10px;
+            line-height: 12px; }
+        html .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset, :root .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset {
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-orient: horizontal;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: row;
+          flex-direction: row; }
+          html .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-img, :root .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-img {
+            height: 12px;
+            -webkit-box-flex: 0;
+            -ms-flex-positive: 0;
+            flex-grow: 0;
+            -ms-flex-negative: 0;
+            flex-shrink: 0;
+            -ms-flex-preferred-size: 12px;
+            flex-basis: 12px; }
+          html .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-name, :root .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-name {
+            -webkit-box-flex: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+            font-family: "Fjalla One";
+            font-size: 10px;
+            line-height: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-transform: uppercase;
+            color: var(--blades-white-bright); }
+            html .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-name:hover, :root .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .pc-summary-asset .pc-summary-asset-name:hover {
+              overflow: visible; }
+        html .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .tooltip.pc-summary-asset-tooltip, :root .player-character-summary-panel .pc-summary section.pc-summary-assets .pc-summary-assets-container .tooltip.pc-summary-asset-tooltip {
+          font-size: 10px;
+          line-height: 10px; }
+      html .player-character-summary-panel .pc-summary section.pc-summary-maluses, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses {
+        grid-area: harm; }
+        html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-stress-container, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-stress-container {
+          width: 100%;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-pack: end;
+          -ms-flex-pack: end;
+          justify-content: flex-end;
+          height: 14px;
+          overflow: hidden;
+          -ms-flex-wrap: nowrap;
+          flex-wrap: nowrap;
+          -webkit-box-orient: horizontal;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: row;
+          flex-direction: row; }
+          html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-stress-container .pc-summary-stress-box, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-stress-container .pc-summary-stress-box {
+            display: block;
+            height: 100%;
+            width: 5px;
+            margin: 0px 1px;
+            border: 1px solid var(--blades-red-dark);
+            border-radius: 3px; }
+            html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-stress-container .pc-summary-stress-box.stress-box-full, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-stress-container .pc-summary-stress-box.stress-box-full {
+              background: var(--blades-red-bright);
+              border-color: var(--blades-red); }
+        html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-trauma-container, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-trauma-container {
+          margin-top: 5px;
+          border-bottom: 1px dotted var(--blades-red); }
+          html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma {
             color: var(--blades-red-bright);
-            font-weight: bold; }
-          html .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-light, :root .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-light {
-            color: var(--blades-red-bright); }
+            font-weight: bold;
+            font-family: Kirsty;
+            font-size: 12px;
+            text-transform: uppercase;
+            text-align: center;
+            width: 100%;
+            display: block; }
+        html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container {
+          margin-top: 5px;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-pack: start;
+          -ms-flex-pack: start;
+          justify-content: flex-start;
+          -webkit-box-align: stretch;
+          -ms-flex-align: stretch;
+          align-items: stretch;
+          -webkit-box-orient: vertical;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+          flex-direction: column; }
+          html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm {
+            font-size: 10px;
+            font-family: "Fjalla One";
+            overflow: hidden;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: row;
+            flex-direction: row;
+            -ms-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+            -webkit-box-pack: stretch;
+            -ms-flex-pack: stretch;
+            justify-content: stretch;
+            -webkit-box-flex: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+            padding: 0 5px;
+            line-height: 15px;
+            pointer-events: auto; }
+            html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm:hover, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm:hover {
+              overflow: visible; }
+            html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > label, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > label {
+              -webkit-box-flex: 1;
+              -ms-flex-positive: 1;
+              flex-grow: 1;
+              white-space: nowrap;
+              padding-left: 4px; }
+            html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > i, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > i {
+              line-height: 15px; }
+            html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-heavy, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-heavy {
+              color: var(--blades-white-bright);
+              background: var(--blades-red-dark);
+              font-weight: bold; }
+            html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-medium, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-medium {
+              color: var(--blades-red-bright);
+              background: var(--blades-red-dark-fade);
+              font-weight: bold; }
+            html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-light, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-light {
+              color: var(--blades-red-bright);
+              background: var(--blades-red-dark-fade-strong); }
+            html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.harm-inactive, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.harm-inactive {
+              background: transparent;
+              color: var(--blades-grey); }
+      html .player-character-summary-panel .pc-summary section.pc-summary-notes, :root .player-character-summary-panel .pc-summary section.pc-summary-notes {
+        grid-area: notes; }
+        html .player-character-summary-panel .pc-summary section.pc-summary-notes .pc-summary-notes-body, :root .player-character-summary-panel .pc-summary section.pc-summary-notes .pc-summary-notes-body {
+          height: 100%;
+          resize: none; }
+  html .selectable-image-panel, :root .selectable-image-panel {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -ms-flex-line-pack: start;
+    align-content: flex-start;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    border-left: 4px double var(--blades-white);
+    border-right: 4px double var(--blades-white);
+    gap: 5px;
+    height: -webkit-min-content;
+    height: -moz-min-content;
+    height: min-content;
+    position: relative;
+    min-height: 100px; }
+    html .selectable-image-panel .selectable-image, :root .selectable-image-panel .selectable-image {
+      pointer-events: auto !important;
+      max-height: 100px;
+      max-width: 100px;
+      -webkit-filter: brightness(1.5);
+      filter: brightness(1.5); }
+      html .selectable-image-panel .selectable-image.image-selected, :root .selectable-image-panel .selectable-image.image-selected {
+        outline: 2px solid var(--blades-green-bright);
+        position: relative;
+        z-index: 2; }
+    html .selectable-image-panel .add-image-control, :root .selectable-image-panel .add-image-control {
+      position: absolute;
+      z-index: 3;
+      top: 10px;
+      right: 10px;
+      pointer-events: auto !important;
+      height: 20px;
+      width: 20px;
+      rotate: 45deg;
+      opacity: 0.5;
+      -webkit-transition: 0.25s;
+      transition: 0.25s; }
+      html .selectable-image-panel .add-image-control:hover, :root .selectable-image-panel .add-image-control:hover {
+        opacity: 1; }
+  html .opposition-creation-panel, :root .opposition-creation-panel {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    height: -webkit-min-content;
+    height: -moz-min-content;
+    height: min-content;
+    -webkit-box-flex: 0;
+    -ms-flex-positive: 0;
+    flex-grow: 0;
+    gap: 5px; }
+    html .opposition-creation-panel .roll-opposition-container, :root .opposition-creation-panel .roll-opposition-container {
+      -ms-flex-preferred-size: 45%;
+      flex-basis: 45%;
+      max-width: 50%;
+      -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+      flex-grow: 1;
+      -ms-flex-negative: 1;
+      flex-shrink: 1;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+      align-items: stretch;
+      -webkit-box-pack: start;
+      -ms-flex-pack: start;
+      justify-content: flex-start; }
+      html .opposition-creation-panel .roll-opposition-container.selected-opposition, :root .opposition-creation-panel .roll-opposition-container.selected-opposition {
+        -webkit-box-shadow: inset 0 0 10px var(--blades-green-bright), inset 0 0 10px var(--blades-green-bright), inset 0 0 10px var(--blades-green-bright);
+        box-shadow: inset 0 0 10px var(--blades-green-bright), inset 0 0 10px var(--blades-green-bright), inset 0 0 10px var(--blades-green-bright); }
+      html .opposition-creation-panel .roll-opposition-container.opposition-blank, :root .opposition-creation-panel .roll-opposition-container.opposition-blank {
+        opacity: 0.5;
+        -webkit-filter: blur(2px);
+        filter: blur(2px); }
+      html .opposition-creation-panel .roll-opposition-container .roll-opposition-top-container, :root .opposition-creation-panel .roll-opposition-container .roll-opposition-top-container {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -ms-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+        -webkit-box-pack: stretch;
+        -ms-flex-pack: stretch;
+        justify-content: stretch;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start; }
+        html .opposition-creation-panel .roll-opposition-container .roll-opposition-top-container .roll-opposition-img, :root .opposition-creation-panel .roll-opposition-container .roll-opposition-top-container .roll-opposition-img {
+          max-height: 58px;
+          max-width: 58px;
+          -webkit-box-flex: 0;
+          -ms-flex-positive: 0;
+          flex-grow: 0;
+          pointer-events: auto !important; }
+        html .opposition-creation-panel .roll-opposition-container .roll-opposition-top-container .roll-opposition-text-container, :root .opposition-creation-panel .roll-opposition-container .roll-opposition-top-container .roll-opposition-text-container {
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-flex: 1;
+          -ms-flex-positive: 1;
+          flex-grow: 1;
+          -webkit-box-orient: vertical;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+          flex-direction: column;
+          -webkit-box-align: stretch;
+          -ms-flex-align: stretch;
+          align-items: stretch;
+          -webkit-box-pack: justify;
+          -ms-flex-pack: justify;
+          justify-content: space-between; }
+      html .opposition-creation-panel .roll-opposition-container .roll-opposition-factors-container,
+      html .opposition-creation-panel .roll-opposition-container .roll-opposition-factor-label-container, :root .opposition-creation-panel .roll-opposition-container .roll-opposition-factors-container,
+      :root .opposition-creation-panel .roll-opposition-container .roll-opposition-factor-label-container {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -ms-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+        -webkit-box-pack: space-evenly;
+        -ms-flex-pack: space-evenly;
+        justify-content: space-evenly;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        gap: 5px; }
+        html .opposition-creation-panel .roll-opposition-container .roll-opposition-factors-container .factor-label,
+        html .opposition-creation-panel .roll-opposition-container .roll-opposition-factor-label-container .factor-label, :root .opposition-creation-panel .roll-opposition-container .roll-opposition-factors-container .factor-label,
+        :root .opposition-creation-panel .roll-opposition-container .roll-opposition-factor-label-container .factor-label {
+          -webkit-box-flex: 1;
+          -ms-flex-positive: 1;
+          flex-grow: 1;
+          text-align: center;
+          font-family: "Fjalla One";
+          font-size: 8px;
+          color: var(--blades-white-bright);
+          max-width: 50px; }
+        html .opposition-creation-panel .roll-opposition-container .roll-opposition-factors-container .factor-selector,
+        html .opposition-creation-panel .roll-opposition-container .roll-opposition-factor-label-container .factor-selector, :root .opposition-creation-panel .roll-opposition-container .roll-opposition-factors-container .factor-selector,
+        :root .opposition-creation-panel .roll-opposition-container .roll-opposition-factor-label-container .factor-selector {
+          -webkit-box-flex: 0;
+          -ms-flex-positive: 0;
+          flex-grow: 0;
+          -ms-flex-preferred-size: 25%;
+          flex-basis: 25%;
+          -ms-flex-negative: 1;
+          flex-shrink: 1;
+          pointer-events: auto !important;
+          font-family: var(--font-emphasis);
+          color: var(--blades-white-bright);
+          text-align: center;
+          font-size: 14px;
+          height: 18px;
+          max-width: 50px; }
+      html .opposition-creation-panel .roll-opposition-container input.shadowed, :root .opposition-creation-panel .roll-opposition-container input.shadowed {
+        pointer-events: auto !important;
+        font-family: "Fjalla One";
+        background: var(--blades-black-dark-fade-strong);
+        border-radius: 3px;
+        -webkit-box-shadow: inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark);
+        box-shadow: inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark);
+        font-size: 0.875rem;
+        color: var(--blades-white-bright);
+        height: 1.125rem;
+        -webkit-transform-origin: 0% 50%;
+        -ms-transform-origin: 0% 50%;
+        transform-origin: 0% 50%;
+        -ms-flex-negative: 1;
+        flex-shrink: 1;
+        scale: 0.75 1;
+        width: calc(100% / 0.75); }
+  html .accordian-label, :root .accordian-label {
+    position: relative;
+    -webkit-filter: sepia(0.75);
+    filter: sepia(0.75); }
+    html .accordian-label .randomizer-trigger, :root .accordian-label .randomizer-trigger {
+      position: absolute;
+      text-indent: 0px;
+      left: 5px;
+      translate: 0 -50%;
+      top: 50%;
+      scale: 1;
+      color: var(--blades-black);
+      text-shadow: none;
+      -webkit-transform-origin: 50% 50%;
+      -ms-transform-origin: 50% 50%;
+      transform-origin: 50% 50%;
+      -webkit-transition: 0.25s;
+      transition: 0.25s; }
+      html .accordian-label .randomizer-trigger:hover, :root .accordian-label .randomizer-trigger:hover {
+        scale: 1.2;
+        color: var(--blades-gold-bright);
+        text-shadow: 0px 0px 4px var(--blades-black-dark), 0px 0px 4px var(--blades-black-dark), 0px 0px 4px var(--blades-black-dark), 0px 0px 4px var(--blades-black-dark); }
+    html .accordian-label.accordian-label-small, :root .accordian-label.accordian-label-small {
+      height: calc(0.75 * var(--header-height));
+      line-height: calc(0.8 * var(--header-height));
+      width: calc(100% - 10px);
+      margin-left: 10px;
+      -webkit-filter: none;
+      filter: none; }
+      html .accordian-label.accordian-label-small .randomizer-trigger, :root .accordian-label.accordian-label-small .randomizer-trigger {
+        top: 60%; }
+  html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item, :root .randomizer-panel .randomizer-container .randomizer-list .randomizer-item {
+    position: relative; }
+    html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item:not(:last-child), :root .randomizer-panel .randomizer-container .randomizer-list .randomizer-item:not(:last-child) {
+      border-bottom: 1px dotted var(--blades-white); }
+    html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item:not(.randomizer-item-locked) .randomizer-input, :root .randomizer-panel .randomizer-container .randomizer-list .randomizer-item:not(.randomizer-item-locked) .randomizer-input {
+      background: transparent;
+      -webkit-box-shadow: none;
+      box-shadow: none; }
+    html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item *:not(i), :root .randomizer-panel .randomizer-container .randomizer-list .randomizer-item *:not(i) {
+      font-family: "Minion Pro Cond"; }
+    html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item textarea, :root .randomizer-panel .randomizer-container .randomizer-list .randomizer-item textarea {
+      resize: none;
+      min-height: 2.5rem;
+      padding: 3px;
+      text-indent: 0;
+      font-size: 10px;
+      overflow: hidden; }
+    html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item ul, :root .randomizer-panel .randomizer-container .randomizer-list .randomizer-item ul {
+      font-size: 10px;
+      margin: 0 0 0 10px;
+      padding: 0;
+      list-style: none; }
+      html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item ul li::before, :root .randomizer-panel .randomizer-container .randomizer-list .randomizer-item ul li::before {
+        content: "● ";
+        margin-left: -9px; }
+    html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item .randomizer-input-title, :root .randomizer-panel .randomizer-container .randomizer-list .randomizer-item .randomizer-input-title {
+      max-width: calc(100% - 25px);
+      margin-left: 25px; }
+    html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item .toggle-icon, :root .randomizer-panel .randomizer-container .randomizer-list .randomizer-item .toggle-icon {
+      position: absolute;
+      cursor: pointer;
+      left: 0;
+      bottom: unset;
+      right: unset;
+      top: 0;
+      pointer-events: auto;
+      z-index: 20; }
 
 ::-webkit-scrollbar {
   width: var(--blades-spacer-sm); }

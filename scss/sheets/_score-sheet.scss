@@ -4,6 +4,7 @@
   // max-height: 1200px;
 
   width: 1600px !important;
+  height: 900px !important;
 
   &.minimized { width: unset !important }
   min-width: unset;
@@ -17,6 +18,7 @@
 
 
     form {
+      max-height: unset;
       // $heights: 60px;
       // --sheet-top-height: #{calculate-sum(($heights))};
       // --sheet-mid-height: 0px;
@@ -28,23 +30,35 @@
       // }
 
       .sheet-root {
-        overflow-x: hidden;
-        overflow-y: scroll;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
 
         .sheet-top {
           grid-template-areas: "controls-left title tier controls-right";
           grid-template-columns: 30px 1fr 60px 30px;
           grid-template-rows: 30px;
           height: 30px;
+          flex-grow: 0;
           align-items: stretch;
           background: var(--blades-black-dark);
 
           .controls-panel {
             grid-area: controls-left;
-            background: var(--blades-green-dark);
+            // background: var(--blades-black-dark);
+            position: relative;
             &:last-child {
               grid-area: controls-right;
-              background: var(--blades-cyan-dark);
+              // background: var(--blades-cyan-dark);
+            }
+
+            .toggle-icon {
+              pointer-events: auto;
+              right: unset;
+              translate: -50% -50%;
+              left: 50%;
+              top: 50%;
             }
 
           }
@@ -60,8 +74,10 @@
           flex-direction: row;
           justify-content: stretch;
           align-items: stretch;
-          height: 100%;
-          width: 100%;
+          flex-grow: 1;
+          flex-shrink: 1;
+          // height: 100%;
+          // width: 100%;
 
           .column {
             flex-basis: 34%;
@@ -69,12 +85,125 @@
             flex-shrink: 1;
 
             > * {
-              flex-grow: 1;
+              flex-grow: 0;
               flex-shrink: 1;
             }
             display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            align-items: stretch;
+
+            &.player-character-summary-column {
+              justify-content: stretch;
+              > * { flex-grow: 1; flex-shrink: 1; flex-basis: 10% }
+            }
+
+
+          }
+        }
+      }
+    }
+  }
+
+  .randomizer-panel {
+    .randomizer-container {
+      .randomizer-list {
+
+        &.randomizer-bargain {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+
+          > * {
+            flex-grow: 0;
+            flex-shrink: 1;
+            flex-basis: 33%;
+          }
+          .randomizer-item {
+            border-bottom: none;
+            &:not(:last-child) {
+              border-bottom: none;
+              border-right: 1px dotted var(--blades-white);
+            }
+            .randomizer-input-title {
+              width: calc(100% - 25px);
+              font-size: toRem(11px);
+              height: 11px;
+            }
+            .randomizer-input-subtitle {
+              width: 100%;
+              font-size: toRem(10px);
+              height: 10px;
+              text-align: center;
+            }
+
+          }
+
+        }
+
+        &.randomizer-obstacle {
+          .randomizer-item {
+            .randomizer-input-container-questions {
+              display: flex;
+              flex-direction: row;
+              flex-wrap: nowrap;
+              justify-content: stretch;
+              > * {
+                flex-basis: 50%;
+                flex-grow: 0;
+                flex-shrink: 1;
+              }
+            }
+
+            .randomizer-input-container-mods {
+              display: flex;
+              flex-direction: row;
+              flex-wrap: nowrap;
+              justify-content: stretch;
+              > * {
+                flex-basis: 50%;
+                flex-grow: 0;
+                flex-shrink: 1;
+              }
+
+              .randomizer-mods-harder-list {
+                color: var(--blades-red);
+              }
+              .randomizer-mods-easier-list {
+                color: var(--blades-green);
+              }
+
+            }
+          }
+        }
+
+        &.randomizer-npc {}
+
+        &.randomizer-score {
+          .randomizer-item {
+            .randomizer-input-narrative {
+              font-style: italic;
+            }
+          }
+        }
+
+        .randomizer-item {
+
+          .randomizer-input-title {
+            display: inline-block;
+            font-family: var(--font-emphasis);
+            color: var(--blades-white-bright);
+            width: calc(60% - 25px);
+          }
+
+          .randomizer-input-subtitle {
+            display: inline-block;
+            width: calc(40% - 4px);
+            text-align: right;
+            font-family: "Fjalla One";
+            font-size: 12px;
+            text-transform: uppercase;
           }
         }
       }

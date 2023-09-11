@@ -1,10 +1,15 @@
-import { BladesItemType, District, BladesPhase } from "../core/constants.js";
+import { BladesItemType, District, BladesPhase, Randomizers } from "../core/constants.js";
 import BladesItem from "../blades-item.js";
+import BladesClockKeeper from '../documents/items/blades-clock-keeper';
+import BladesGMTracker from '../documents/items/blades-gm-tracker';
 
 declare global {
 
   // Utility Types for BladesItems
   type TurfNum = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15";
+
+  // Random categories for BladesScore
+  type RandomCat = keyof typeof Randomizers["GM"];
 
   // #region SCHEMA DATA: TEMPLATE.JSON & SYSTEM
 
@@ -171,7 +176,14 @@ declare global {
       engagement_result: string,
       entanglements: Record<string, string>,
       reward: string,
-      locations: string[]
+      locations: Record<string, string>,
+      images: Record<number, string>,
+      imageSelected: number,
+      oppositions: Record<string, BladesRollCollab.OppositionDocData>,
+      oppositionSelected: string,
+      isActive: boolean,
+      randomizers: Record<RandomCat, Record<string, Record<string, any>>>,
+      pc_notes: Record<string,string>
     }
 
   }
@@ -202,6 +214,18 @@ declare global {
     Partial<BladesItemSchema.Score> { }
 
   // Distinguishing schema types for BladesItem subtypes
+  // type BladesItemOfType<T extends BladesItemType> = (
+  //   T extends BladesItemType.clock_keeper ? BladesClockKeeper
+  //   : T extends BladesItemType.gm_tracker ? BladesGMTracker
+  //   : T extends BladesItemType.score ? BladesScore
+  //   : T extends BladesItemType.location ? BladesLocation : BladesItem
+  // ) & BladesItem & {
+  //   system: ExtractBladesItemSystem<T>
+  // };
+
+
+
+
   type BladesItemOfType<T extends BladesItemType> = BladesItem & {
     system: ExtractBladesItemSystem<T>
   };

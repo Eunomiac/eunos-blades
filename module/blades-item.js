@@ -136,6 +136,17 @@ class BladesItem extends Item {
     }
     
     
+    get rollSourceID() { return this.id; }
+    get rollSourceDoc() { return this; }
+    get rollSourceImg() { return this.img ?? undefined; }
+    get rollSourceName() { return this.name ?? ""; }
+    get rollSourceType() { return this.type; }
+    get rollOppID() { return this.id; }
+    get rollOppDoc() { return this; }
+    get rollOppImg() { return this.img ?? undefined; }
+    get rollOppName() { return this.name ?? ""; }
+    get rollOppSubName() { return ""; }
+    get rollOppType() { return this.type; }
     get rollModsData() {
         const { roll_mods } = this.system;
         if (!roll_mods) {
@@ -262,7 +273,6 @@ class BladesItem extends Item {
         });
         return factorData;
     }
-    get rollOppImg() { return this.img ?? undefined; }
 
     prepareDerivedData() {
         super.prepareDerivedData();

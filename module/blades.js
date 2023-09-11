@@ -5,7 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { IMPORTDATA } from "./core/constants.js";
+import C from "./core/constants.js";
 import registerSettings, { initTinyMCEStyles, initCanvasStyles, initFonts } from "./core/settings.js";
 import { registerHandlebarHelpers, preloadHandlebarsTemplates } from "./core/helpers.js";
 import BladesPushController from "./blades-push-notifications.js";
@@ -46,7 +46,6 @@ Object.assign(globalThis, {
     BladesRollCollab,
     ApplyRollEffects,
     ApplyDescriptions,
-    IMPORTDATA,
     bladesRoll,
     simpleRollPopup,
     G,

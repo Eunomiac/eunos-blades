@@ -1,6 +1,6 @@
 // #region IMPORTS ~
 import U from "./core/utilities.js";
-import C, {BladesActorType, BladesItemType, RollType, RollModStatus, RollModCategory, Action, DowntimeAction, Attribute, Position, Effect, Factor, RollResult, Harm, ConsequenceType} from "./core/constants.js";
+import C, {BladesActorType, BladesItemType, RollType, RollSubType, RollModStatus, RollModCategory, Action, DowntimeAction, Attribute, Position, Effect, Factor, RollResult, Harm, ConsequenceType} from "./core/constants.js";
 import BladesActor from "./blades-actor.js";
 import BladesPC from "./documents/actors/blades-pc.js";
 import BladesNPC from "./documents/actors/blades-npc.js";
@@ -731,7 +731,6 @@ RollCollabEffectChanges[BladesItemType.crew_upgrade] = {
   ]
 };
 
-/* NEED TO ENSURE PLAYERS CAN USE 'Is-Push' EFFECTS TO PUSH TO ACT WHEN BROKEN HARM */
 export const ApplyRollEffects = async () => {
   Object.entries(RollCollabEffectChanges[BladesItemType.ability]!)
     .forEach(async ([aName, eData]) => {
@@ -1164,17 +1163,17 @@ type EffectData = {
   value: string
 };
 
-function getRollModStatus(mod: BladesRollMod) {
-  return {
-    status: mod.status,
-    user_status: mod.user_status,
-    held_status: mod.held_status,
-    base_status: mod.base_status
-  };
-}
-function stringifyRollModStatus(mod: BladesRollMod) {
-  return JSON.stringify(getRollModStatus(mod));
-}
+// function getRollModStatus(mod: BladesRollMod) {
+//   return {
+//     status: mod.status,
+//     user_status: mod.user_status,
+//     held_status: mod.held_status,
+//     base_status: mod.base_status
+//   };
+// }
+// function stringifyRollModStatus(mod: BladesRollMod) {
+//   return JSON.stringify(getRollModStatus(mod));
+// }
 function compareRollModStatus(mod: BladesRollMod, lastStatusData: string) {
   const lastStatus = JSON.parse(lastStatusData) as Record<"status"|"user_status"|"held_status"|"base_status",RollModStatus|undefined>;
   const statusChangeData: Partial<Record<"status"|"user_status"|"held_status"|"base_status",string>> = {};
@@ -1380,7 +1379,7 @@ export class BladesRollMod {
           }
           // no default
         }
-        return false as never;
+        return undefined as never;
       });
     if (relevantKeys.length === 0) {
       this.held_status = RollModStatus.Hidden;
@@ -1675,6 +1674,7 @@ class BladesRollCollab extends DocumentSheet {
     socketlib.system.register("renderRollCollab", BladesRollCollab.RenderRollCollab);
     socketlib.system.register("closeRollCollab", BladesRollCollab.CloseRollCollab);
   }
+
   static get DefaultRollMods(): BladesRollCollab.RollModData[] {
     return [
       {
@@ -1766,7 +1766,7 @@ class BladesRollCollab extends DocumentSheet {
     return {
       rollID: randomID(),
       rollType: RollType.Action,
-      rollSourceType: "Actor",
+      rollSourceType: BladesActorType.pc,
       rollSourceID: "",
       rollTrait: Factor.tier,
       rollModsData: {},
@@ -1872,6 +1872,16 @@ class BladesRollCollab extends DocumentSheet {
   // #region NEW ROLL CREATION: Rendering, Constructor ~
   static Current: Record<string, BladesRollCollab> = {};
 
+  static _Active?: BladesRollCollab;
+  static get Active(): BladesRollCollab|undefined {
+    if (BladesRollCollab._Active) { return BladesRollCollab._Active }
+    if (U.objSize(BladesRollCollab.Current) > 0) { return Object.values(BladesRollCollab.Current)[0] }
+    return undefined;
+  }
+  static set Active(val: BladesRollCollab|undefined) {
+    BladesRollCollab._Active = val;
+  }
+
   static async RenderRollCollab({userID, rollID}: { userID: string, rollID: string }) {
     const user = game.users.get(userID); // as User & {flags: {["eunos-blades"]: {rollCollab: BladesRollCollab.FlagData}}};
     if (!user) { return }
@@ -1974,35 +1984,54 @@ class BladesRollCollab extends DocumentSheet {
     return this.document.getFlag(C.SYSTEM_ID, "rollCollab") as BladesRollCollab.FlagData;
   }
 
-  _rollSource?: BladesRollCollab.SourceDoc;
-  get rollSource(): BladesRollCollab.SourceDoc {
+  _rollSource?: BladesRollCollab.SourceDocData;
+  get rollSource(): BladesRollCollab.SourceDocData {
     if (!this._rollSource) {
-      this._rollSource = this.rData.rollSourceType === "Actor"
-        ? game.actors.get(this.rData.rollSourceID)
-        : game.items.get(this.rData.rollSourceID);
+      if (this.rData.rollSourceData?.rollSourceDoc) {
+        this._rollSource = this.rData.rollSourceData.rollSourceDoc;
+      } else if (this.rData.rollSourceData?.rollSourceID || this.rData.rollSourceID) {
+        const rollSourceID = this.rData.rollSourceData?.rollSourceID ?? this.rData.rollSourceID!;
+        this._rollSource = game.actors.get(rollSourceID) ?? game.items.get(rollSourceID);
+      } else if (this.rData.rollSourceData) {
+        this._rollSource = this.rData.rollSourceData;
+      }
+
       if (!this._rollSource) { throw new Error(`Unable to find rollSource with id '${this.rData.rollSourceID}'`) }
     }
     return this._rollSource;
   }
 
-  get rollOppositionID(): string | undefined {
-    return this.rData.rollOppositionID;
-  }
-  set rollOppositionID(val: string | undefined) {
-    this._rollOpposition = undefined;
-    this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollOppositionID", val);
-  }
+  // get rollOppositionID(): string | undefined {
+  //   return this.rData.rollOppositionID;
+  // }
+  // set rollOppositionID(val: string | undefined) {
+  //   this._rollOpposition = undefined;
+  //   this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollOppositionID", val);
+  // }
 
-  _rollOpposition?: BladesRollCollab.OppositionDoc;
-  get rollOpposition(): BladesRollCollab.OppositionDoc | undefined {
-    if (!this._rollOpposition && this.rData.rollOppositionID) {
-      this._rollOpposition = (BladesActor.Get(this.rData.rollOppositionID) ?? BladesItem.Get(this.rData.rollOppositionID)) as BladesRollCollab.OppositionDoc | undefined;
-      if (!this._rollOpposition) { throw new Error(`Cannot find Roll Opposition with ID '${this.rData.rollOppositionID}'`) }
+  _rollOpposition?: BladesRollCollab.OppositionDocData;
+  get rollOpposition(): BladesRollCollab.OppositionDocData | undefined {
+    if (!this._rollOpposition) {
+      if (this.rData.rollOppositionData?.rollOppDoc) {
+        this._rollOpposition = this.rData.rollOppositionData.rollOppDoc;
+      } else if (this.rData.rollOppositionData?.rollOppID || this.rData.rollOppositionID) {
+        const rollOppositionID = this.rData.rollOppositionData?.rollOppID || this.rData.rollOppositionID!;
+        this._rollOpposition = this.rData.rollOppositionType === "Actor"
+          ? game.actors.get(rollOppositionID)
+          : game.items.get(rollOppositionID);
+      } else if (this.rData.rollOppositionData) {
+        this._rollOpposition = this.rData.rollOppositionData;
+      }
     }
     return this._rollOpposition;
   }
+  set rollOpposition(val: BladesRollCollab.OppositionDocData | undefined) {
+    this._rollOpposition = val;
+  }
 
   get rollType(): RollType { return this.rData.rollType }
+  get rollSubType(): RollSubType|undefined { return this.rData.rollSubType }
+  get rollDowntimeAction(): DowntimeAction|undefined { return this.rData.rollDowntimeAction }
   get rollTrait(): BladesRollCollab.RollTrait { return this.rData.rollTrait }
 
   _rollTraitValOverride?: number;
@@ -2039,8 +2068,8 @@ class BladesRollCollab extends DocumentSheet {
     if (isFactor(this.rollTrait)) {
       return {
         name: U.tCase(this.rollTrait),
-        value: this.rollTraitValOverride ?? this.rollSource.getFactorTotal(this.rollTrait),
-        max: this.rollTraitValOverride ?? this.rollSource.getFactorTotal(this.rollTrait)
+        value: this.rollTraitValOverride ?? this.rollSource.rollFactors[this.rollTrait]?.value ?? 0,
+        max: this.rollTraitValOverride ?? this.rollSource.rollFactors[this.rollTrait]?.max ?? 10
       };
     }
     throw new Error(`[get rollTraitData] Invalid rollTrait: '${this.rollTrait}'`);
@@ -2247,31 +2276,31 @@ class BladesRollCollab extends DocumentSheet {
 
     this.rollMods = modsData.map((modData) => new BladesRollMod(modData, this));
 
-    this.logModStatus();
+    // this.logModStatus();
     const initReport: Record<string, Record<string, Partial<Record<"mod"|"status"|"user_status"|"held_status"|"base_status",string|BladesRollMod|undefined>>|null>> = {};
 
     /* *** PASS ONE: DISABLE PASS *** */
-    initReport["[PASS 1.0] *** DISABLE PASS ***"] = this.getStatusSummary();
+    // initReport["[PASS 1.0] *** DISABLE PASS ***"] = this.getStatusSummary();
 
     let checkDisableMods = [...this.rollMods];
 
     // ... Conditional Status Pass
     checkDisableMods = checkDisableMods
       .filter((rollMod) => !rollMod.setConditionalStatus());
-    initReport["[PASS 1.1] Conditional Status Pass"] = this.getStatusChanges();
+    // initReport["[PASS 1.1] Conditional Status Pass"] = this.getStatusChanges();
 
     // ... AutoReveal/AutoEnable Pass
     checkDisableMods = checkDisableMods
       .filter((rollMod) => !rollMod.setAutoStatus());
-    initReport["[PASS 1.2] Auto Status Pass"] = this.getStatusChanges();
+    // initReport["[PASS 1.2] Auto Status Pass"] = this.getStatusChanges();
 
     // ... Payable Pass
     checkDisableMods = checkDisableMods
       .filter((rollMod) => !rollMod.setPayableStatus());
-    initReport["[PASS 1.3] Payable Status Pass"] = this.getStatusChanges();
+    // initReport["[PASS 1.3] Payable Status Pass"] = this.getStatusChanges();
 
     /* *** PASS TWO: FORCE-ON PASS *** */
-    initReport["[PASS 2.0] *** FORCE-ON PASS ***"] = this.getStatusSummary();
+    // initReport["[PASS 2.0] *** FORCE-ON PASS ***"] = this.getStatusSummary();
 
     const parseForceOnKeys = (mod: BladesRollMod) => {
       const holdKeys = mod.effectKeys.filter((key) => /^ForceOn/.test(key));
@@ -2307,10 +2336,10 @@ class BladesRollCollab extends DocumentSheet {
       }
     };
     this.getActiveRollMods().forEach((rollMod) => parseForceOnKeys(rollMod));
-    initReport["[PASS 2.1] Force-On Pass"] = this.getStatusChanges();
+    // initReport["[PASS 2.1] Force-On Pass"] = this.getStatusChanges();
 
     /* *** PASS THREE: PUSH-CHECK PASS *** */
-    initReport["[PASS 3.0] *** PUSH-CHECK PASS ***"] = this.getStatusSummary();
+    // initReport["[PASS 3.0] *** PUSH-CHECK PASS ***"] = this.getStatusSummary();
 
     // IF ROLL FORCED ...
     if (this.isForcePushed()) {
@@ -2318,7 +2347,7 @@ class BladesRollCollab extends DocumentSheet {
       this.getInactivePushMods()
         .filter((mod) => !mod.isBasicPush)
         .forEach((mod) => { mod.held_status = RollModStatus.ForcedOff });
-      initReport["[PASS 3.1] Forced-Off 'Is-Push' Pass"] = this.getStatusChanges();
+      // initReport["[PASS 3.1] Forced-Off 'Is-Push' Pass"] = this.getStatusChanges();
     }
 
     // ... BY CATEGORY ...
@@ -2331,25 +2360,25 @@ class BladesRollCollab extends DocumentSheet {
             bargainMod.held_status = RollModStatus.ForcedOff;
           }
         }
-        initReport[`[PASS 3.2.${i+1}] {${U.uCase(cat)}}: Force-Off Bargain Pass`] = this.getStatusChanges();
+        // initReport[`[PASS 3.2.${i+1}] {${U.uCase(cat)}}: Force-Off Bargain Pass`] = this.getStatusChanges();
       } else {
         // Otherwise, hide all Is-Push mods
         this.getInactivePushMods(cat)
           .filter((mod) => !mod.isBasicPush)
           .forEach((mod) => { mod.held_status = RollModStatus.Hidden});
-        initReport[`[PASS 3.2.${i+1}] {${U.uCase(cat)}}: Hide 'Is-Push' Mods`] = this.getStatusChanges();
+        // initReport[`[PASS 3.2.${i+1}] {${U.uCase(cat)}}: Hide 'Is-Push' Mods`] = this.getStatusChanges();
       }
     });
 
     /* *** PASS FOUR: Relevancy Pass *** */
-    initReport["[PASS 4] *** RELEVANCY PASS ***"] = this.getStatusSummary();
+    // initReport["[PASS 4] *** RELEVANCY PASS ***"] = this.getStatusSummary();
 
     this.getVisibleRollMods()
       .forEach((mod) => { mod.setRelevancyStatus() });
-    initReport["[PASS 4] 1. Relevancy Status Pass"] = this.getStatusChanges();
+    // initReport["[PASS 4] 1. Relevancy Status Pass"] = this.getStatusChanges();
 
     /* *** PASS FIVE: Overpayment Pass *** */
-    initReport["[PASS 5] *** OVERPAYMENT PASS ***"] = this.getStatusSummary();
+    // initReport["[PASS 5] *** OVERPAYMENT PASS ***"] = this.getStatusSummary();
 
     // ... If 'Cost-SpecialArmor' active, ForceOff other visible Cost-SpecialArmor mods
     const activeArmorCostMod = this.getActiveRollMods().find((mod) => mod.effectKeys.includes("Cost-SpecialArmor"));
@@ -2359,7 +2388,7 @@ class BladesRollCollab extends DocumentSheet {
         .forEach((mod) => { mod.held_status = RollModStatus.ForcedOff });
     }
 
-    initReport["[PASS 5.1] Special Armor Force-Off Pass"] = this.getStatusChanges();
+    // initReport["[PASS 5.1] Special Armor Force-Off Pass"] = this.getStatusChanges();
 
     eLog.checkLog2("rollMods", "*** initRollMods() PASS ***", initReport);
   }
@@ -2491,37 +2520,37 @@ class BladesRollCollab extends DocumentSheet {
 
   // #region *** GETDATA *** ~
 
-  _lastStatusData: Record<string,string> = {};
-  logModStatus() {
-    if (!CONFIG.debug.logging) { return }
-    this._lastStatusData = {};
-    this.rollMods.forEach((mod) => {
-      this._lastStatusData[mod.id] = stringifyRollModStatus(mod);
-    });
-  }
-  getStatusSummary() {
-    if (!CONFIG.debug.logging) { return {} }
-    const statusData: Record<string, Record<"mod"|"status"|"user_status"|"held_status"|"base_status",BladesRollMod|string|undefined>> = {};
-    this.rollMods.forEach((mod) => {
-      statusData[mod.id] = {
-        mod,
-        ...getRollModStatus(mod)
-      };
-    });
-    return statusData;
-  }
-  getStatusChanges() {
-    if (!CONFIG.debug.logging) { return {} }
-    const statusChanges: Record<string, Partial<Record<"status"|"user_status"|"held_status"|"base_status",string|undefined>>|null> = {};
-    this.rollMods.forEach((mod) => {
-      const changeData = compareRollModStatus(mod, this._lastStatusData[mod.id]);
-      if (!U.isEmpty(changeData)) {
-        statusChanges[mod.id] = changeData;
-      }
-    });
-    this.logModStatus();
-    return statusChanges;
-  }
+  // _lastStatusData: Record<string,string> = {};
+  // logModStatus() {
+  //   if (!CONFIG.debug.logging) { return }
+  //   this._lastStatusData = {};
+  //   this.rollMods.forEach((mod) => {
+  //     this._lastStatusData[mod.id] = stringifyRollModStatus(mod);
+  //   });
+  // }
+  // getStatusSummary() {
+  //   if (!CONFIG.debug.logging) { return {} }
+  //   const statusData: Record<string, Record<"mod"|"status"|"user_status"|"held_status"|"base_status",BladesRollMod|string|undefined>> = {};
+  //   this.rollMods.forEach((mod) => {
+  //     statusData[mod.id] = {
+  //       mod,
+  //       ...getRollModStatus(mod)
+  //     };
+  //   });
+  //   return statusData;
+  // }
+  // getStatusChanges() {
+  //   if (!CONFIG.debug.logging) { return {} }
+  //   const statusChanges: Record<string, Partial<Record<"status"|"user_status"|"held_status"|"base_status",string|undefined>>|null> = {};
+  //   this.rollMods.forEach((mod) => {
+  //     const changeData = compareRollModStatus(mod, this._lastStatusData[mod.id]);
+  //     if (!U.isEmpty(changeData)) {
+  //       statusChanges[mod.id] = changeData;
+  //     }
+  //   });
+  //   this.logModStatus();
+  //   return statusChanges;
+  // }
   override async getData() {
 
     const context = super.getData();
@@ -2534,7 +2563,7 @@ class BladesRollCollab extends DocumentSheet {
       ...this.rollSource.rollModsData
     ];
     if (this.rollOpposition instanceof BladesActor || this.rollOpposition instanceof BladesItem) {
-      const oppRollModsData = ((this.rollOpposition as any).rollModsData as any);
+      const oppRollModsData = this.rollOpposition.rollModsData;
       if (oppRollModsData) {
         rollModsData.push(...oppRollModsData);
       }
@@ -2544,10 +2573,10 @@ class BladesRollCollab extends DocumentSheet {
 
     const initReport: Record<string, Record<string, Partial<Record<"mod"|"status"|"user_status"|"held_status"|"base_status",string|undefined|BladesRollMod>>|null>> = {};
 
-    initReport["[PASS 1] 0. EFFECT KEYS PASS"] = this.getStatusSummary();
+    // initReport["[PASS 1] 0. EFFECT KEYS PASS"] = this.getStatusSummary();
 
     this.rollMods.forEach((rollMod) => rollMod.applyRollModEffectKeys());
-    initReport["[PASS 1] 1. Effect Keys Pass"] = this.getStatusChanges();
+    // initReport["[PASS 1] 1. Effect Keys Pass"] = this.getStatusChanges();
 
     eLog.checkLog2("rollMods", "*** getData() PASS ***", initReport);
 
@@ -2567,7 +2596,7 @@ class BladesRollCollab extends DocumentSheet {
       cssClass: "roll-collab",
       editable: this.options.editable,
       isGM,
-      system: this.rollSource.system,
+      system: this.rollSource.rollSourceDoc?.system,
 
       rollMods,
       rollSource,
@@ -2832,9 +2861,11 @@ class BladesRollCollab extends DocumentSheet {
     switch (this.rollType) {
       case RollType.Action: {
         renderedHTML = await renderTemplate("systems/eunos-blades/templates/chat/action-roll.hbs", {
-          sourceName: this.rollSource.name,
-          oppName: (this.rollOpposition as undefined | { name: string })?.name,
+          sourceName: this.rollSource.rollSourceName,
+          oppName: this.rollOpposition?.rollOppName,
           type: U.lCase(this.rollType),
+          subType: U.lCase(this.rollSubType),
+          downtimeAction: U.lCase(this.rollDowntimeAction),
           position: this.finalPosition,
           effect: this.finalEffect,
           result: this.rollResult,
@@ -3052,6 +3083,9 @@ class BladesRollCollab extends DocumentSheet {
     if (!game.user.isGM) { return }
 
     // GM Controls
+    html.on({
+      focusin: () => { BladesRollCollab.Active = this } // Set reference to top-most, focused roll.
+    });
     html.find("[data-action='gm-set'").on({
       click: this._gmControlSet.bind(this)
     });
@@ -3093,7 +3127,7 @@ class BladesRollCollab extends DocumentSheet {
     const {type, uuid} = data;
     const [id] = (uuid.match(new RegExp(`${type}\\.(.+)`)) ?? []).slice(1);
     const oppDoc = game[`${U.lCase(type)}s`].get(id);
-    this.rollOppositionID = oppDoc?.id;
+    this.rollOpposition = oppDoc;
     // super._onDrop(...args);
     // eLog.checkLog3("dropEvent", "Drop Event", {event, data, oppDoc});
   }

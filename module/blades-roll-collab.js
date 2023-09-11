@@ -1046,17 +1046,6 @@ export const ApplyDescriptions = async () => {
         itemDoc.update({ "system.notes": desc });
     });
 };
-function getRollModStatus(mod) {
-    return {
-        status: mod.status,
-        user_status: mod.user_status,
-        held_status: mod.held_status,
-        base_status: mod.base_status
-    };
-}
-function stringifyRollModStatus(mod) {
-    return JSON.stringify(getRollModStatus(mod));
-}
 function compareRollModStatus(mod, lastStatusData) {
     const lastStatus = JSON.parse(lastStatusData);
     const statusChangeData = {};
@@ -1260,7 +1249,7 @@ export class BladesRollMod {
                     return this.rollInstance.isTraitRelevant(traitStr);
                 }
             }
-            return false;
+            return undefined;
         });
         if (relevantKeys.length === 0) {
             this.held_status = RollModStatus.Hidden;
@@ -1619,7 +1608,7 @@ class BladesRollCollab extends DocumentSheet {
         return {
             rollID: randomID(),
             rollType: RollType.Action,
-            rollSourceType: "Actor",
+            rollSourceType: BladesActorType.pc,
             rollSourceID: "",
             rollTrait: Factor.tier,
             rollModsData: {},
@@ -1722,6 +1711,19 @@ class BladesRollCollab extends DocumentSheet {
     }
 
     static Current = {};
+    static _Active;
+    static get Active() {
+        if (BladesRollCollab._Active) {
+            return BladesRollCollab._Active;
+        }
+        if (U.objSize(BladesRollCollab.Current) > 0) {
+            return Object.values(BladesRollCollab.Current)[0];
+        }
+        return undefined;
+    }
+    static set Active(val) {
+        BladesRollCollab._Active = val;
+    }
     static async RenderRollCollab({ userID, rollID }) {
         const user = game.users.get(userID);
         if (!user) {
@@ -1820,33 +1822,47 @@ class BladesRollCollab extends DocumentSheet {
     _rollSource;
     get rollSource() {
         if (!this._rollSource) {
-            this._rollSource = this.rData.rollSourceType === "Actor"
-                ? game.actors.get(this.rData.rollSourceID)
-                : game.items.get(this.rData.rollSourceID);
+            if (this.rData.rollSourceData?.rollSourceDoc) {
+                this._rollSource = this.rData.rollSourceData.rollSourceDoc;
+            }
+            else if (this.rData.rollSourceData?.rollSourceID || this.rData.rollSourceID) {
+                const rollSourceID = this.rData.rollSourceData?.rollSourceID ?? this.rData.rollSourceID;
+                this._rollSource = game.actors.get(rollSourceID) ?? game.items.get(rollSourceID);
+            }
+            else if (this.rData.rollSourceData) {
+                this._rollSource = this.rData.rollSourceData;
+            }
             if (!this._rollSource) {
                 throw new Error(`Unable to find rollSource with id '${this.rData.rollSourceID}'`);
             }
         }
         return this._rollSource;
     }
-    get rollOppositionID() {
-        return this.rData.rollOppositionID;
-    }
-    set rollOppositionID(val) {
-        this._rollOpposition = undefined;
-        this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollOppositionID", val);
-    }
+    
     _rollOpposition;
     get rollOpposition() {
-        if (!this._rollOpposition && this.rData.rollOppositionID) {
-            this._rollOpposition = (BladesActor.Get(this.rData.rollOppositionID) ?? BladesItem.Get(this.rData.rollOppositionID));
-            if (!this._rollOpposition) {
-                throw new Error(`Cannot find Roll Opposition with ID '${this.rData.rollOppositionID}'`);
+        if (!this._rollOpposition) {
+            if (this.rData.rollOppositionData?.rollOppDoc) {
+                this._rollOpposition = this.rData.rollOppositionData.rollOppDoc;
+            }
+            else if (this.rData.rollOppositionData?.rollOppID || this.rData.rollOppositionID) {
+                const rollOppositionID = this.rData.rollOppositionData?.rollOppID || this.rData.rollOppositionID;
+                this._rollOpposition = this.rData.rollOppositionType === "Actor"
+                    ? game.actors.get(rollOppositionID)
+                    : game.items.get(rollOppositionID);
+            }
+            else if (this.rData.rollOppositionData) {
+                this._rollOpposition = this.rData.rollOppositionData;
             }
         }
         return this._rollOpposition;
     }
+    set rollOpposition(val) {
+        this._rollOpposition = val;
+    }
     get rollType() { return this.rData.rollType; }
+    get rollSubType() { return this.rData.rollSubType; }
+    get rollDowntimeAction() { return this.rData.rollDowntimeAction; }
     get rollTrait() { return this.rData.rollTrait; }
     _rollTraitValOverride;
     get rollTraitValOverride() { return this._rollTraitValOverride; }
@@ -1882,8 +1898,8 @@ class BladesRollCollab extends DocumentSheet {
         if (isFactor(this.rollTrait)) {
             return {
                 name: U.tCase(this.rollTrait),
-                value: this.rollTraitValOverride ?? this.rollSource.getFactorTotal(this.rollTrait),
-                max: this.rollTraitValOverride ?? this.rollSource.getFactorTotal(this.rollTrait)
+                value: this.rollTraitValOverride ?? this.rollSource.rollFactors[this.rollTrait]?.value ?? 0,
+                max: this.rollTraitValOverride ?? this.rollSource.rollFactors[this.rollTrait]?.max ?? 10
             };
         }
         throw new Error(`[get rollTraitData] Invalid rollTrait: '${this.rollTrait}'`);
@@ -2067,20 +2083,16 @@ class BladesRollCollab extends DocumentSheet {
         this.rollFactorPenaltiesNegated = {};
         this.tempGMBoosts = {};
         this.rollMods = modsData.map((modData) => new BladesRollMod(modData, this));
-        this.logModStatus();
         const initReport = {};
-                initReport["[PASS 1.0] *** DISABLE PASS ***"] = this.getStatusSummary();
+        
         let checkDisableMods = [...this.rollMods];
         checkDisableMods = checkDisableMods
             .filter((rollMod) => !rollMod.setConditionalStatus());
-        initReport["[PASS 1.1] Conditional Status Pass"] = this.getStatusChanges();
         checkDisableMods = checkDisableMods
             .filter((rollMod) => !rollMod.setAutoStatus());
-        initReport["[PASS 1.2] Auto Status Pass"] = this.getStatusChanges();
         checkDisableMods = checkDisableMods
             .filter((rollMod) => !rollMod.setPayableStatus());
-        initReport["[PASS 1.3] Payable Status Pass"] = this.getStatusChanges();
-                initReport["[PASS 2.0] *** FORCE-ON PASS ***"] = this.getStatusSummary();
+        
         const parseForceOnKeys = (mod) => {
             const holdKeys = mod.effectKeys.filter((key) => /^ForceOn/.test(key));
             if (holdKeys.length === 0) {
@@ -2118,13 +2130,11 @@ class BladesRollCollab extends DocumentSheet {
             }
         };
         this.getActiveRollMods().forEach((rollMod) => parseForceOnKeys(rollMod));
-        initReport["[PASS 2.1] Force-On Pass"] = this.getStatusChanges();
-                initReport["[PASS 3.0] *** PUSH-CHECK PASS ***"] = this.getStatusSummary();
+        
         if (this.isForcePushed()) {
             this.getInactivePushMods()
                 .filter((mod) => !mod.isBasicPush)
                 .forEach((mod) => { mod.held_status = RollModStatus.ForcedOff; });
-            initReport["[PASS 3.1] Forced-Off 'Is-Push' Pass"] = this.getStatusChanges();
         }
         [RollModCategory.roll, RollModCategory.effect].forEach((cat, i) => {
             if (this.isPushed(cat)) {
@@ -2134,27 +2144,24 @@ class BladesRollCollab extends DocumentSheet {
                         bargainMod.held_status = RollModStatus.ForcedOff;
                     }
                 }
-                initReport[`[PASS 3.2.${i + 1}] {${U.uCase(cat)}}: Force-Off Bargain Pass`] = this.getStatusChanges();
             }
             else {
                 this.getInactivePushMods(cat)
                     .filter((mod) => !mod.isBasicPush)
                     .forEach((mod) => { mod.held_status = RollModStatus.Hidden; });
-                initReport[`[PASS 3.2.${i + 1}] {${U.uCase(cat)}}: Hide 'Is-Push' Mods`] = this.getStatusChanges();
             }
         });
-                initReport["[PASS 4] *** RELEVANCY PASS ***"] = this.getStatusSummary();
+        
         this.getVisibleRollMods()
             .forEach((mod) => { mod.setRelevancyStatus(); });
-        initReport["[PASS 4] 1. Relevancy Status Pass"] = this.getStatusChanges();
-                initReport["[PASS 5] *** OVERPAYMENT PASS ***"] = this.getStatusSummary();
+        
         const activeArmorCostMod = this.getActiveRollMods().find((mod) => mod.effectKeys.includes("Cost-SpecialArmor"));
         if (activeArmorCostMod) {
             this.getVisibleRollMods()
                 .filter((mod) => !mod.isActive && mod.effectKeys.includes("Cost-SpecialArmor"))
                 .forEach((mod) => { mod.held_status = RollModStatus.ForcedOff; });
         }
-        initReport["[PASS 5.1] Special Armor Force-Off Pass"] = this.getStatusChanges();
+        
         eLog.checkLog2("rollMods", "*** initRollMods() PASS ***", initReport);
     }
     isTraitRelevant(trait) {
@@ -2299,43 +2306,6 @@ class BladesRollCollab extends DocumentSheet {
     set rollMods(val) { this._rollMods = val; }
     
     
-    _lastStatusData = {};
-    logModStatus() {
-        if (!CONFIG.debug.logging) {
-            return;
-        }
-        this._lastStatusData = {};
-        this.rollMods.forEach((mod) => {
-            this._lastStatusData[mod.id] = stringifyRollModStatus(mod);
-        });
-    }
-    getStatusSummary() {
-        if (!CONFIG.debug.logging) {
-            return {};
-        }
-        const statusData = {};
-        this.rollMods.forEach((mod) => {
-            statusData[mod.id] = {
-                mod,
-                ...getRollModStatus(mod)
-            };
-        });
-        return statusData;
-    }
-    getStatusChanges() {
-        if (!CONFIG.debug.logging) {
-            return {};
-        }
-        const statusChanges = {};
-        this.rollMods.forEach((mod) => {
-            const changeData = compareRollModStatus(mod, this._lastStatusData[mod.id]);
-            if (!U.isEmpty(changeData)) {
-                statusChanges[mod.id] = changeData;
-            }
-        });
-        this.logModStatus();
-        return statusChanges;
-    }
     async getData() {
         const context = super.getData();
         const rData = this.rData;
@@ -2351,9 +2321,8 @@ class BladesRollCollab extends DocumentSheet {
         }
         this.initRollMods(rollModsData);
         const initReport = {};
-        initReport["[PASS 1] 0. EFFECT KEYS PASS"] = this.getStatusSummary();
+        
         this.rollMods.forEach((rollMod) => rollMod.applyRollModEffectKeys());
-        initReport["[PASS 1] 1. Effect Keys Pass"] = this.getStatusChanges();
         eLog.checkLog2("rollMods", "*** getData() PASS ***", initReport);
         const isGM = game.eunoblades.Tracker.system.is_spoofing_player ? false : game.user.isGM;
         const { rollSource, rollOpposition, rollTraitData, rollTraitOptions, finalPosition, finalEffect, finalResult, rollMods, posEffectTrade, rollFactors } = this;
@@ -2369,7 +2338,7 @@ class BladesRollCollab extends DocumentSheet {
             cssClass: "roll-collab",
             editable: this.options.editable,
             isGM,
-            system: this.rollSource.system,
+            system: this.rollSource.rollSourceDoc?.system,
             rollMods,
             rollSource,
             rollTraitData,
@@ -2576,9 +2545,11 @@ class BladesRollCollab extends DocumentSheet {
         switch (this.rollType) {
             case RollType.Action: {
                 renderedHTML = await renderTemplate("systems/eunos-blades/templates/chat/action-roll.hbs", {
-                    sourceName: this.rollSource.name,
-                    oppName: this.rollOpposition?.name,
+                    sourceName: this.rollSource.rollSourceName,
+                    oppName: this.rollOpposition?.rollOppName,
                     type: U.lCase(this.rollType),
+                    subType: U.lCase(this.rollSubType),
+                    downtimeAction: U.lCase(this.rollDowntimeAction),
                     position: this.finalPosition,
                     effect: this.finalEffect,
                     result: this.rollResult,
@@ -2810,6 +2781,9 @@ class BladesRollCollab extends DocumentSheet {
         if (!game.user.isGM) {
             return;
         }
+        html.on({
+            focusin: () => { BladesRollCollab.Active = this; }
+        });
         html.find("[data-action='gm-set'").on({
             click: this._gmControlSet.bind(this)
         });
@@ -2847,7 +2821,7 @@ class BladesRollCollab extends DocumentSheet {
         const { type, uuid } = data;
         const [id] = (uuid.match(new RegExp(`${type}\\.(.+)`)) ?? []).slice(1);
         const oppDoc = game[`${U.lCase(type)}s`].get(id);
-        this.rollOppositionID = oppDoc?.id;
+        this.rollOpposition = oppDoc;
     }
     async _onSubmit(event, { updateData } = {}) {
         return super._onSubmit(event, { updateData, preventClose: true })

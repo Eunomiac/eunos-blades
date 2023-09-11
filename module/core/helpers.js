@@ -23,6 +23,7 @@ export async function preloadHandlebarsTemplates() {
         "systems/eunos-blades/templates/parts/tier-block.hbs",
         "systems/eunos-blades/templates/parts/turf-list.hbs",
         "systems/eunos-blades/templates/parts/cohort-block.hbs",
+        "systems/eunos-blades/templates/parts/roll-opposition-creator.hbs",
         "systems/eunos-blades/templates/parts/active-effects.hbs",
         "systems/eunos-blades/templates/parts/gm-pc-summary.hbs",
         "systems/eunos-blades/templates/overlays/clock-overlay.hbs",
@@ -32,6 +33,9 @@ export async function preloadHandlebarsTemplates() {
 }
 
 const handlebarHelpers = {
+    "randString": function (param1 = 10) {
+        return U.randString(param1);
+    },
     "test": function (param1, operator, param2) {
         const stringMap = {
             "true": true,
@@ -39,7 +43,7 @@ const handlebarHelpers = {
             "null": null,
             "undefined": undefined
         };
-        if (["!", "not"].includes(String(param1))) {
+        if (["!", "not", "=??"].includes(String(param1))) {
             [operator, param1] = [String(param1), operator];
         }
         if (typeof param1 === "string" && param1 in stringMap) {
@@ -52,6 +56,9 @@ const handlebarHelpers = {
             case "!":
             case "not": {
                 return !param1;
+            }
+            case "=??": {
+                return [undefined, null].includes(param1);
             }
             case "&&": {
                 return param1 && param2;

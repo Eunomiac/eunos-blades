@@ -18,6 +18,19 @@ class BladesScore extends BladesItem implements BladesItemSubClass.Score,
   }
   // #endregion
 
+  static get Active(): BladesItemOfType<BladesItemType.score>|undefined {
+    return BladesItem.GetTypeWithTags(BladesItemType.score).find((score) => score.system.isActive);
+  }
+  static set Active(val: BladesItemOfType<BladesItemType.score>|undefined) {
+    BladesItem.GetTypeWithTags(BladesItemType.score)
+      .find((score) => score.system.isActive)?.update({"system.isActive": false})
+      .then(() => {
+        if (val) {
+          val.update({"system.isActive": true});
+        }
+      });
+  }
+
   // #region BladesRollCollab.OppositionDocData Implementation
   override get rollFactors(): Partial<Record<Factor, BladesRollCollab.FactorData>> {
 

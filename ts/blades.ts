@@ -1,5 +1,5 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import C, {IMPORTDATA, BladesActorType, BladesItemType, Tag, Playbook, RollType, Action} from "./core/constants.js";
+import C, {BladesActorType, BladesItemType, Tag, Playbook, RollType, Action} from "./core/constants.js";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initFonts} from "./core/settings.js";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers.js";
 import BladesPushController from "./blades-push-notifications.js";
@@ -50,7 +50,6 @@ registerDebugger();
     BladesRollCollab,
     ApplyRollEffects,
     ApplyDescriptions,
-    IMPORTDATA,
     bladesRoll,
     simpleRollPopup,
     G,

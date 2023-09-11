@@ -1,7 +1,7 @@
-{{log this}}
+
 {{#with this as |actor|}}
 <div class="pc-summary">
-    <img class="pc-summary-img" src="{{actor.img}}" />
+  <img class="pc-summary-img" src="{{actor.img}}" />
   <section class="pc-summary-header">
     <span class="pc-summary-name shadowed">{{actor.name}}</span>
 
@@ -108,39 +108,39 @@
     </div>
     <div class="pc-summary-harm-container">
 
-      {{#if system.harm.heavy.one}}
-      <div class="pc-summary-harm pc-harm-heavy">
+      <div class="pc-summary-harm pc-harm-heavy {{#unless system.harm.heavy.one}} harm-inactive{{/unless}}">
         <i class="fa-sharp fa-solid fa-crutches shadowed"></i>
         <label class="harm-heavy shadowed">{{system.harm.heavy.one}}</label>
       </div>
-      {{/if}}
-      {{#if system.harm.medium.one}}
-      <div class="pc-summary-harm pc-harm-medium">
+
+
+      <div class="pc-summary-harm pc-harm-medium {{#unless system.harm.medium.one}} harm-inactive{{/unless}}">
         <i class="fa-sharp fa-solid fa-crutch shadowed"></i>
         <label class="harm-medium shadowed">{{system.harm.medium.one}}</label>
       </div>
-      {{/if}}
-      {{#if system.harm.medium.two}}
-      <div class="pc-summary-harm pc-harm-medium">
+
+      <div class="pc-summary-harm pc-harm-medium {{#unless system.harm.medium.two}} harm-inactive{{/unless}}">
         <i class="fa-sharp fa-solid fa-crutch shadowed"></i>
         <label class="harm-medium shadowed">{{system.harm.medium.two}}</label>
       </div>
-      {{/if}}
-      {{#if system.harm.light.one}}
-      <div class="pc-summary-harm pc-harm-light">
+
+      <div class="pc-summary-harm pc-harm-light {{#unless system.harm.light.one}} harm-inactive{{/unless}}">
         <i class="fa-sharp fa-light fa-crutch fa-flip-horizontal"></i>
         <label class="harm-light">{{system.harm.light.one}}</label>
       </div>
-      {{/if}}
-      {{#if system.harm.light.two}}
-      <div class="pc-summary-harm pc-harm-light">
+
+      <div class="pc-summary-harm pc-harm-light {{#unless system.harm.light.two}} harm-inactive{{/unless}}">
         <i class="fa-sharp fa-light fa-crutch fa-flip-horizontal"></i>
         <label class="harm-light">{{system.harm.light.two}}</label>
       </div>
-      {{/if}}
+
 
     </div>
 
+  </section>
+
+  <section class="pc-summary-notes">
+    <textarea class="pc-summary-notes-body" data-id="{{actor.id}}">{{actor.system.gm_notes}}</textarea>
   </section>
 </div>
 {{/with}}

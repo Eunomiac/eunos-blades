@@ -772,6 +772,17 @@ class BladesActor extends Actor {
     getTaggedItemBonuses(tags) {
         return 0;
     }
+    get rollSourceID() { return this.id; }
+    get rollSourceDoc() { return this; }
+    get rollSourceImg() { return this.img ?? undefined; }
+    get rollSourceName() { return this.name ?? ""; }
+    get rollSourceType() { return this.type; }
+    get rollOppID() { return this.id; }
+    get rollOppDoc() { return this; }
+    get rollOppImg() { return this.img ?? undefined; }
+    get rollOppName() { return this.name ?? ""; }
+    get rollOppSubName() { return ""; }
+    get rollOppType() { return this.type; }
     get rollModsData() {
         if (!(BladesActor.IsType(this, BladesActorType.pc) || BladesActor.IsType(this, BladesActorType.crew))) {
             return [];
@@ -907,7 +918,6 @@ class BladesActor extends Actor {
         }
         return factorData;
     }
-    get rollOppImg() { return this.img ?? undefined; }
     
     prepareDerivedData() {
         if (BladesActor.IsType(this, BladesActorType.pc)) {

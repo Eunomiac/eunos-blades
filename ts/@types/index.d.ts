@@ -69,5 +69,8 @@ declare global {
   type BlurEvent = JQuery.TypeEventHandler<HTMLElement, undefined, HTMLElement, HTMLElement, "blur">;
   // type DropEvent = JQuery.TypeEventHandler<HTMLElement, undefined, HTMLElement, HTMLElement, "drop">;
   type DropEvent = JQuery.DropEvent<HTMLElement,undefined, HTMLElement, HTMLElement>;
+  type OnSubmitEvent = Event & ClickEvent & {
+    result: Promise<Record<string,string|number|boolean>>
+  }
 
 }

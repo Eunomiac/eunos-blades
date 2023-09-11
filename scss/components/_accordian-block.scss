@@ -41,22 +41,25 @@
   width: 100%;
 
   input[type="radio"] {
-      display: none;
-      &:checked {
-        ~ .accordian-label {
-          background: linear-gradient(var(--blades-white-bright), var(--blades-white));
-        }
-        ~ .accordian-contents {
+    display: none;
+    &:checked {
+      ~ .accordian-label {
+        background: linear-gradient(var(--blades-white-bright), var(--blades-white));
+      }
+      ~ .accordian-contents {
+        height: auto;
+        overflow: visible;
+        transition: 0.1s linear;
+
+        &.editor {
           height: calc(var(--full-block-height) - (var(--num-blocks) * var(--header-height)));
           margin-bottom: -25px;
-          overflow: visible;
-          transition: 0.1s linear;
-
           &.tinymce {
             height: calc(var(--full-block-height) - (var(--num-blocks) * var(--header-height)) - var(--header-height));
           }
         }
       }
+    }
   }
 
   .accordian-label {

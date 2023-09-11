@@ -13,7 +13,11 @@
 				"tags": [],
 				"description": "",
 				"subtitle": "",
-				"tier": { "name": "Tier", "value": 0, "max": 8},
+				"tier": {
+					"name": "Tier",
+					"value": 0,
+					"max": 8
+				},
 				"subactors": {}
 			},
 			"gmChar": {
@@ -27,60 +31,89 @@
 			},
 			"pcChar": {
 				"experience": {
-					"playbook": { "value": 0, "max": 8 },
+					"playbook": {
+						"value": 0,
+						"max": 8
+					},
 					"clues": []
 				},
-				"coins": { "value": 0, "max": 4 },
+				"coins": {
+					"value": 0,
+					"max": 4
+				},
 				"advancement_points": {
-          "Ability": 0,
-          "Cohort": 0,
-          "CohortType": 0
+					"Ability": 0,
+					"Cohort": 0,
+					"CohortType": 0
 				}
 			},
-			"hold": { "hold": "strong" },
-      "canRoll": { "roll_mods": [] }
+			"hold": {
+				"hold": "strong"
+			},
+			"canRoll": {
+				"roll_mods": []
+			}
 		},
 		"pc": {
 			"templates": [
 				"default",
 				"pcChar",
-        "canRoll"
+				"canRoll"
 			],
 			"acquaintances_name": "Friends & Rivals",
 			"vice_name": "Vice",
-			"stress": { "name": "Stress", "value": 0, "max": 9 },
+			"stress": {
+				"name": "Stress",
+				"value": 0,
+				"max": 9
+			},
 			"trauma": {
 				"name": "Trauma",
 				"max": 4,
 				"active": {},
 				"checked": {}
 			},
-			"healing": { "value": 0, "max": 4 },
-			"stash": { "value": 0, "max": 40 },
+			"healing": {
+				"value": 0,
+				"max": 4
+			},
+			"stash": {
+				"value": 0,
+				"max": 40
+			},
 			"experience": {
-				"insight": { "value": 0, "max": 6 },
-				"prowess": { "value": 0, "max": 6 },
-				"resolve": { "value": 0, "max": 6 }
+				"insight": {
+					"value": 0,
+					"max": 6
+				},
+				"prowess": {
+					"value": 0,
+					"max": 6
+				},
+				"resolve": {
+					"value": 0,
+					"max": 6
+				}
 			},
 			"gather_info": [],
-      "advancement_points": {
-        "GeneralAction": 0,
-        "GeneralInsight": 0,
-        "GeneralProwess": 0,
-        "GeneralResolve": 0,
-        "hunt": 0,
-        "study": 0,
-        "survey": 0,
-        "tinker": 0,
-        "finesse": 0,
-        "prowl": 0,
-        "skirmish": 0,
-        "wreck": 0,
-        "attune": 0,
-        "command": 0,
-        "consort": 0,
-        "sway": 0
-      },
+			"advancement_points": {
+				"GeneralAction": 0,
+				"GeneralInsight": 0,
+				"GeneralProwess": 0,
+				"GeneralResolve": 0,
+				"hunt": 0,
+				"study": 0,
+				"survey": 0,
+				"tinker": 0,
+				"finesse": 0,
+				"prowl": 0,
+				"skirmish": 0,
+				"wreck": 0,
+				"attune": 0,
+				"command": 0,
+				"consort": 0,
+				"sway": 0
+			},
 			"loadout": {
 				"selected": "",
 				"levels": {
@@ -120,22 +153,58 @@
 			},
 			"attributes": {
 				"insight": {
-					"hunt": { "value": 0, "max": 3 },
-					"study": { "value": 0, "max": 3 },
-					"survey": { "value": 0, "max": 3 },
-					"tinker": { "value": 0, "max": 3 }
+					"hunt": {
+						"value": 0,
+						"max": 3
+					},
+					"study": {
+						"value": 0,
+						"max": 3
+					},
+					"survey": {
+						"value": 0,
+						"max": 3
+					},
+					"tinker": {
+						"value": 0,
+						"max": 3
+					}
 				},
 				"prowess": {
-					"finesse": { "value": 0, "max": 3 },
-					"prowl": { "value": 0, "max": 3 },
-					"skirmish": { "value": 0, "max": 3 },
-					"wreck": { "value": 0, "max": 3 }
+					"finesse": {
+						"value": 0,
+						"max": 3
+					},
+					"prowl": {
+						"value": 0,
+						"max": 3
+					},
+					"skirmish": {
+						"value": 0,
+						"max": 3
+					},
+					"wreck": {
+						"value": 0,
+						"max": 3
+					}
 				},
 				"resolve": {
-					"attune": { "value": 0, "max": 3 },
-					"command": { "value": 0, "max": 3 },
-					"consort": { "value": 0, "max": 3 },
-					"sway": { "value": 0, "max": 3 }
+					"attune": {
+						"value": 0,
+						"max": 3
+					},
+					"command": {
+						"value": 0,
+						"max": 3
+					},
+					"consort": {
+						"value": 0,
+						"max": 3
+					},
+					"sway": {
+						"value": 0,
+						"max": 3
+					}
 				}
 			},
 			"resistance_bonus": {
@@ -143,70 +212,147 @@
 				"prowess": 0,
 				"resolve": 0
 			},
-      "conditional_bonus": {}
+			"conditional_bonus": {}
 		},
 		"crew": {
-			"templates": ["default", "pcChar", "hold", "canRoll"],
-			"coins": { "value": 2, "max": 4 },
-      "advancement_points": {
-        "UpgradeOrAbility": 0,
-        "Upgrade": 0
-      },
-			"rep": { "value": 0, "max": 12 },
+			"templates": [
+				"default",
+				"pcChar",
+				"hold",
+				"canRoll"
+			],
+			"coins": {
+				"value": 2,
+				"max": 4
+			},
+			"advancement_points": {
+				"UpgradeOrAbility": 0,
+				"Upgrade": 0
+			},
+			"rep": {
+				"value": 0,
+				"max": 12
+			},
 			"deity": "",
-			"heat": { "value": 0, "max": 9 },
-			"wanted": { "value": 0, "max": 4},
+			"heat": {
+				"value": 0,
+				"max": 9
+			},
+			"wanted": {
+				"value": 0,
+				"max": 4
+			},
 			"hunting_grounds": "",
-      "prison_claims": {
-        "1": false,
-        "2": false,
-        "3": false,
-        "4": false,
-        "5": false,
-        "6": false,
-        "7": false,
-        "8": false,
-        "9": false,
-        "10": false,
-        "11": false,
-        "12": false,
-        "13": false,
-        "14": false,
-        "15": false
-      }
-
+			"prison_claims": {
+				"1": false,
+				"2": false,
+				"3": false,
+				"4": false,
+				"5": false,
+				"6": false,
+				"7": false,
+				"8": false,
+				"9": false,
+				"10": false,
+				"11": false,
+				"12": false,
+				"13": false,
+				"14": false,
+				"15": false
+			}
 		},
 		"npc": {
-			"templates": ["default", "gmChar"],
-      "scale": 0,
-      "magnitude": 0,
+			"templates": [
+				"default",
+				"gmChar"
+			],
+			"scale": 0,
+			"magnitude": 0,
 			"persona": {
-				"gender": {"isLocked": false, "value": ""},
-				"appearance": {"isLocked": false, "value": ""},
-				"style": {"isLocked": false, "value": ""},
-				"goal": {"isLocked": false, "value": ""},
-				"method": {"isLocked": false, "value": ""},
-				"quirk": {"isLocked": false, "value": ""},
-				"interests": {"isLocked": false, "value": ""},
-				"trait1": {"isLocked": false, "value": ""},
-				"trait2": {"isLocked": false, "value": ""},
-				"trait3": {"isLocked": false, "value": ""}
+				"gender": {
+					"isLocked": false,
+					"value": ""
+				},
+				"appearance": {
+					"isLocked": false,
+					"value": ""
+				},
+				"style": {
+					"isLocked": false,
+					"value": ""
+				},
+				"goal": {
+					"isLocked": false,
+					"value": ""
+				},
+				"method": {
+					"isLocked": false,
+					"value": ""
+				},
+				"quirk": {
+					"isLocked": false,
+					"value": ""
+				},
+				"interests": {
+					"isLocked": false,
+					"value": ""
+				},
+				"trait1": {
+					"isLocked": false,
+					"value": ""
+				},
+				"trait2": {
+					"isLocked": false,
+					"value": ""
+				},
+				"trait3": {
+					"isLocked": false,
+					"value": ""
+				}
 			},
 			"secret": {
-				"goal": {"isLocked": false, "value": ""},
-				"method": {"isLocked": false, "value": ""},
-				"interests": {"isLocked": false, "value": ""},
-				"trait": {"isLocked": false, "value": ""}
+				"goal": {
+					"isLocked": false,
+					"value": ""
+				},
+				"method": {
+					"isLocked": false,
+					"value": ""
+				},
+				"interests": {
+					"isLocked": false,
+					"value": ""
+				},
+				"trait": {
+					"isLocked": false,
+					"value": ""
+				}
 			},
 			"random": {
-				"name": {"isLocked": false, "value": ""},
-				"background": {"isLocked": false, "value": ""},
-				"heritage": {"isLocked": false, "value": ""},
-				"profession": {"isLocked": false, "value": ""}
+				"name": {
+					"isLocked": false,
+					"value": ""
+				},
+				"background": {
+					"isLocked": false,
+					"value": ""
+				},
+				"heritage": {
+					"isLocked": false,
+					"value": ""
+				},
+				"profession": {
+					"isLocked": false,
+					"value": ""
+				}
 			}
 		},
 		"faction": {
-			"templates": ["default", "gmChar", "hold"]
+			"templates": [
+				"default",
+				"gmChar",
+				"hold"
+			]
 		}
 	},
 	"Item": {
@@ -241,100 +387,256 @@
 				"tags": [],
 				"prereqs": {},
 				"rules": "",
-        "notes": "",
-        "description": "",
-				"tier": { "name": "Tier", "value": 0, "max": 6}
+				"notes": "",
+				"description": "",
+				"tier": {
+					"name": "Tier",
+					"value": 0,
+					"max": 6
+				}
 			},
-			"district": { "district": "" },
-      "clocks": { "clocks": {} },
-      "buyable": { "price": 1 },
-      "limitUses": { "uses_per_score": {"value": 0, "max": 0}},
-      "cohort": {
-        "subtitle": "",
-        "subtypes": [],
-        "elite_subtypes": [],
-        "edges": {},
-        "flaws": {},
-        "harm": { "value": 0, "max": 4 },
-        "scale_bonus": 0,
-        "quality_bonus": 0
-      },
-      "playbook": {
-        "experience_clues": []
-      },
-      "answers": { "answers": {"a": "", "b": "", "c": "", "d": ""} },
-      "canRoll": { "roll_mods": [] }
-    },
-		"ability": { "templates": ["default", "buyable", "limitUses"] },
-		"background": { "templates": ["default"] },
+			"district": {
+				"district": ""
+			},
+			"clocks": {
+				"clocks": {}
+			},
+			"buyable": {
+				"price": 1
+			},
+			"limitUses": {
+				"uses_per_score": {
+					"value": 0,
+					"max": 0
+				}
+			},
+			"cohort": {
+				"subtitle": "",
+				"subtypes": [],
+				"elite_subtypes": [],
+				"edges": {},
+				"flaws": {},
+				"harm": {
+					"value": 0,
+					"max": 4
+				},
+				"scale_bonus": 0,
+				"quality_bonus": 0
+			},
+			"playbook": {
+				"experience_clues": []
+			},
+			"answers": {
+				"answers": {
+					"a": "",
+					"b": "",
+					"c": "",
+					"d": ""
+				}
+			},
+			"canRoll": {
+				"roll_mods": []
+			}
+		},
+		"ability": {
+			"templates": [
+				"default",
+				"buyable",
+				"limitUses"
+			]
+		},
+		"background": {
+			"templates": [
+				"default"
+			]
+		},
 		"clock_keeper": {
-      "templates": ["default"],
-      "scenes": [],
-      "targetScene": null,
-      "clock_keys": {}
-    },
+			"templates": [
+				"default"
+			],
+			"scenes": [],
+			"targetScene": null,
+			"clock_keys": {}
+		},
 		"cohort_gang": {
-      "templates": ["default", "district", "clocks", "cohort", "canRoll"],
-      "tier": { "name": "Quality", "value": 0, "max": 6}
-    },
+			"templates": [
+				"default",
+				"district",
+				"clocks",
+				"cohort",
+				"canRoll"
+			],
+			"tier": {
+				"name": "Quality",
+				"value": 0,
+				"max": 6
+			}
+		},
 		"cohort_expert": {
-      "templates": ["default", "district", "clocks", "cohort", "canRoll"],
-      "tier": { "name": "Quality", "value": 0, "max": 6}
-    },
-		"crew_ability": { "templates": ["default", "district", "buyable", "limitUses"] },
-		"crew_reputation": { "templates": ["default"] },
+			"templates": [
+				"default",
+				"district",
+				"clocks",
+				"cohort",
+				"canRoll"
+			],
+			"tier": {
+				"name": "Quality",
+				"value": 0,
+				"max": 6
+			}
+		},
+		"crew_ability": {
+			"templates": [
+				"default",
+				"district",
+				"buyable",
+				"limitUses"
+			]
+		},
+		"crew_reputation": {
+			"templates": [
+				"default"
+			]
+		},
 		"crew_playbook": {
-      "templates": ["default", "playbook"],
-      "turfs": {}
-    },
-		"crew_upgrade": { "templates": ["default", "district", "buyable", "limitUses"] },
-		"feature": { "templates": ["default", "buyable", "limitUses"] },
+			"templates": [
+				"default",
+				"playbook"
+			],
+			"turfs": {}
+		},
+		"crew_upgrade": {
+			"templates": [
+				"default",
+				"district",
+				"buyable",
+				"limitUses"
+			]
+		},
+		"feature": {
+			"templates": [
+				"default",
+				"buyable",
+				"limitUses"
+			]
+		},
 		"gear": {
-      "templates": ["default", "clocks", "limitUses"],
-      "max_per_score": 1,
-      "load": 1,
-      "tier": { "name": "Quality", "value": 0, "max": 6}
-    },
+			"templates": [
+				"default",
+				"clocks",
+				"limitUses"
+			],
+			"max_per_score": 1,
+			"load": 1,
+			"tier": {
+				"name": "Quality",
+				"value": 0,
+				"max": 6
+			}
+		},
 		"gm_tracker": {
-      "templates": ["default", "clocks"],
-      "phase": ""
-    },
-		"heritage": { "templates": ["default"] },
+			"templates": [
+				"default",
+				"clocks"
+			],
+			"phase": ""
+		},
+		"heritage": {
+			"templates": [
+				"default"
+			]
+		},
 		"playbook": {
-      "templates": ["default", "playbook"],
-      "gather_info_questions": []
-    },
-		"preferred_op": { "templates": ["default", "district"] },
-		"stricture": { "templates": ["default"] },
-		"vice": { "templates": ["default"] },
-		"project": { "templates": ["default", "district", "clocks"] },
+			"templates": [
+				"default",
+				"playbook"
+			],
+			"gather_info_questions": []
+		},
+		"preferred_op": {
+			"templates": [
+				"default",
+				"district"
+			]
+		},
+		"stricture": {
+			"templates": [
+				"default"
+			]
+		},
+		"vice": {
+			"templates": [
+				"default"
+			]
+		},
+		"project": {
+			"templates": [
+				"default",
+				"district",
+				"clocks"
+			]
+		},
 		"ritual": {
-      "templates": ["default", "district", "clocks", "answers"],
-      "source": "",
-      "magnitude": {"value": 0, "max": 10},
-      "cast_time": "",
-      "action_roll": "",
-      "fortune_roll": ""
-    },
+			"templates": [
+				"default",
+				"district",
+				"clocks",
+				"answers"
+			],
+			"source": "",
+			"magnitude": {
+				"value": 0,
+				"max": 10
+			},
+			"cast_time": "",
+			"action_roll": "",
+			"fortune_roll": ""
+		},
 		"design": {
-      "templates": ["default", "district", "clocks", "answers"],
-      "creation_type": "",
-      "min_quality": 0,
-      "drawbacks": {}
-    },
+			"templates": [
+				"default",
+				"district",
+				"clocks",
+				"answers"
+			],
+			"creation_type": "",
+			"min_quality": 0,
+			"drawbacks": {}
+		},
 		"location": {
-      "templates": ["default", "district", "clocks"],
-      "scale": 0
-    },
+			"templates": [
+				"default",
+				"district",
+				"clocks"
+			],
+			"scale": 0
+		},
 		"score": {
-      "templates": ["default", "district", "clocks"],
-      "target": "",
-      "operation": "",
-      "detail": "",
-      "engagement_result": "",
-      "entanglements": {},
-      "reward": "",
-      "locations": []
-    }
+			"templates": [
+				"default",
+				"district",
+				"clocks"
+			],
+			"target": "",
+			"operation": "",
+			"detail": "",
+			"engagement_result": "",
+			"entanglements": {},
+			"reward": "",
+			"locations": {},
+			"images": {},
+			"imageSelected": "",
+			"oppositions": {},
+			"oppositionSelected": "",
+			"isActive": false,
+			"randomizers": {
+				"Bargains": {},
+				"Obstacles": {},
+				"NPCs": {},
+				"Scores": {}
+			},
+			"pc_notes": {}
+		}
 	}
 }

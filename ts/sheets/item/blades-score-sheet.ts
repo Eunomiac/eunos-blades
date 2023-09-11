@@ -1,35 +1,20 @@
 import U from "../../core/utilities.js";
-import {BladesActorType, BladesItemType, BladesPhase, Tag} from "../../core/constants.js";
+import {BladesActorType, BladesItemType, BladesPhase, Tag, Randomizers} from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
-import BladesItem from "../../blades-item.js";
-import BladesGMTracker from "../../documents/items/blades-gm-tracker.js";
-import BladesActor from "../../blades-actor.js";
-import BladesPC from "../../documents/actors/blades-pc.js";
-import BladesNPC from "../../documents/actors/blades-npc.js";
-import BladesFaction from "../../documents/actors/blades-faction.js";
-import BladesCrew from "../../documents/actors/blades-crew.js";
+
+import {BladesActor, BladesPC} from "../../documents/blades-actor-proxy.js";
+import {BladesItem, BladesScore} from "../../documents/blades-item-proxy.js";
+import BladesRollCollab from "../../blades-roll-collab.js";
 
 
+/* #region BladesTipGenerator */
 export enum BladesTipContext {
   DiceRoll = "DiceRoll",
   Combat = "Combat",
   General = "General"
 }
 
-type OnSubmitEvent = Event & {
-  result: Promise<Record<string,string|number|boolean>>
-}
-
 class BladesTipGenerator {
-
-  static Test(pcActor: unknown): BladesPC|undefined {
-    if (BladesActor.IsType(pcActor, BladesActorType.pc)) {
-      return pcActor;
-    }
-    return undefined;
-  }
-
-  testActor: BladesActorOfType<BladesActorType.pc> = new BladesPC({name: "blah", type: "pc"});
 
   static get Tips() {
     return {
@@ -57,13 +42,9 @@ class BladesTipGenerator {
     this.tipContext = tipContext;
   }
 }
-// declare interface BladesTrackerSheet {
-//   get type(): BladesItemType.gm_tracker,
-//   parent: null,
-//   system: BladesItem["system"] & {
-//     game_phase: BladesPhase;
-//   }
-// }
+/* #endregion */
+
+
 class BladesScoreSheet extends BladesItemSheet {
 
   static override get defaultOptions() {
@@ -75,12 +56,87 @@ class BladesScoreSheet extends BladesItemSheet {
     });
   }
 
+  async generateRandomizerData(category?: RandomCat) {
+    // Generate full set of random data.
+    const randomData: Record<RandomCat, Record<string, Record<string, any>>> = {
+      Bargains: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Bargains
+        .filter((bData) => !Object.values(this.document.system.randomizers.Bargains)
+          .some((_bData) => _bData.name === bData.name || _bData.effect === bData.effect)), 3, true, (e, a) => a
+        .filter((_e) => e.category === _e.category).length === 0))
+        .map(([k, v]) => {
+          k = `${k}`;
+          Object.assign(v, {notes: ""});
+          return [k, v];
+        })),
+      Obstacles: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Obstacles
+        .filter((bData) => !Object.values(this.document.system.randomizers.Obstacles)
+          .some((_bData) => _bData.name === bData.name || _bData.desc === bData.desc)), 3, true, (e, a) => a
+        .filter((_e) => e.category === _e.category).length === 0))
+        .map(([k, v]) => {
+          k = `${k}`;
+          Object.assign(v, {notes: ""});
+          return [k, v];
+        })),
+      NPCs: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.NPCs
+        .filter((bData) => !Object.values(this.document.system.randomizers.NPCs)
+          .some((_bData) => _bData.name === bData.name || _bData.description === bData.description)), 3, true, (e, a) => a
+        .filter((_e) => e.arena === _e.arena).length === 0))
+        .map(([k, v]) => {
+          k = `${k}`;
+          Object.assign(v, {notes: ""});
+          return [k, v];
+        })),
+      Scores: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Scores
+        .filter((bData) => !Object.values(this.document.system.randomizers.Scores)
+          .some((_bData) => _bData.name === bData.name || _bData.desc === bData.desc)), 3, true, (e, a) => a
+        .filter((_e) => e.category === _e.category).length === 0))
+        .map(([k, v]) => {
+          k = `${k}`;
+          Object.assign(v, {notes: ""});
+          return [k, v];
+        }))
+    };
+
+    // If category specified, replace all other categories with stored data
+    if (category) {
+      Object.keys(randomData)
+        .filter((cat) => cat !== category)
+        .forEach((cat: string) => {
+          const _cat = cat as RandomCat;
+          randomData[_cat] = this.document.system.randomizers[_cat];
+        });
+    }
+
+    // Combine locked data stored in system with randomly-generated data
+    const finalRandomData: Record<RandomCat, Record<string, Record<string, any>>> = {
+      Bargains: {},
+      Obstacles: {},
+      NPCs: {},
+      Scores: {}
+    };
+
+    // Iterate through all randomizer categories. If system entry isLocked, use that, or use newly-generated data
+    Object.keys(randomData).forEach((cat: string) => {
+      const _cat = cat as RandomCat;
+      Object.entries(randomData[_cat]).forEach(([index, randData]) => {
+        if (this.document.system.randomizers?.[_cat][index].isLocked) {
+          finalRandomData[_cat][index] = this.document.system.randomizers[_cat][index];
+        } else {
+          finalRandomData[_cat][index] = randomData[_cat][index];
+        }
+      });
+    });
+
+    // Overwrite stored data with newly generated & merged randomizer data
+    this.document.update({"system.randomizers": finalRandomData});
+  }
 
   override getData() {
-    const context = super.getData() as ReturnType<BladesItemSheet["getData"]> & {system: BladesItemSystem};
+    const context = super.getData() as ReturnType<BladesItemSheet["getData"]> & {system: ExtractBladesItemSystem<BladesItemType.score>};
 
     const sheetData: Partial<BladesItemDataOfType<BladesItemType.score>> = {};
 
+    // Get player characters, assign simplified actionData that I probably should have coded them with from the start
     sheetData.playerCharacters = BladesActor.GetTypeWithTags(BladesActorType.pc, Tag.PC.ActivePC)
       .map((pc) => {
         return Object.assign(
@@ -103,23 +159,134 @@ class BladesScoreSheet extends BladesItemSheet {
         );
       });
 
+    // Prune system data for blank/empty opposition entries
+    const validOppositions: Record<string, BladesRollCollab.OppositionDocData> = {};
+    for (const [id, data] of Object.entries(context.system.oppositions)) {
+      if (!data.rollOppName && !data.rollOppSubName) { continue }
+      validOppositions[id] = data;
+    }
+    context.system.oppositions = validOppositions;
+
     return {
       ...context,
       ...sheetData
-    } as BladesItemSheetData;
+    } as ReturnType<BladesItemSheet["getData"]> & {system: ExtractBladesItemSystem<BladesItemType.score>};
   }
 
+  _toggleRandomizerLock(event: ClickEvent) {
+    const elem$ = $(event.currentTarget);
+    const elemCat = elem$.data("category") as RandomCat;
+    const elemIndex = `${elem$.data("index")}`;
+    const elemValue = elem$.data("value");
+    if (`${elemValue}` === "true") {
+      this.document.update({[`system.randomizers.${elemCat}.${elemIndex}.isLocked`]: false});
+    } else {
+      // const rData = this.document.system.randomizers[elemCat][elemIndex];
+      this.document.update({[`system.randomizers.${elemCat}.${elemIndex}.isLocked`]: true});
+    }
+  }
+
+  _selectImage(event: ClickEvent) {
+    const elem$ = $(event.currentTarget);
+    const imageNum = elem$.data("imgNum");
+    this.document.update({"system.imageSelected": imageNum});
+  }
+
+  _deselectOrDeleteImage(event: ContextMenuEvent) {
+    const elem$ = $(event.currentTarget);
+    const imageNum = elem$.data("imgNum");
+    if (this.document.system.imageSelected === imageNum) {
+      // eLog.checkLog3("scoreSheet", `imageSelected: ${this.document.system.imageSelected} === imgNum: ${imageNum}: DESELECTING`);
+      this.document.update({"system.-=imageSelected": null});
+      return;
+    }
+    const images = {...this.document.system.images};
+    this.document.update({"system.-=images": null}).then(() => this.document.update({
+      "system.images": Object.fromEntries(Object.entries(Object.values(images)
+        .filter((_, i) => U.pInt(imageNum) !== i)))
+    }));
+  }
+
+  _addImage() {
+    const fp = new FilePicker({
+      type: "image",
+      activeSource: "public",
+      displayMode: "tiles", // ['list', 'thumbs', 'tiles', 'images']
+      callback: path => {
+        const imgIndex = U.objSize(this.document.system.images);
+        return this.document.update({[`system.images.${imgIndex}`]: path});
+      },
+      top: (this.position.top ?? 0) + 40,
+      left: (this.position.left ?? 0) + 10
+    });
+    return fp.browse("systems/eunos-blades/assets");
+  }
+
+  _selectRollOpposition(event: ClickEvent) {
+    eLog.checkLog3("Select Roll Opposition", {event});
+    const elem$ = $(event.currentTarget);
+    const oppId = elem$.data("oppId");
+    this.document.update({"system.oppositionSelected": oppId});
+    if (BladesScore.Active?.id === this.document.id && BladesRollCollab.Active) {
+      BladesRollCollab.Active.rollOpposition = this.document.system.oppositions[oppId];
+    }
+  }
+
+  _triggerRandomize(event: ClickEvent) {
+    const elem$ = $(event.currentTarget);
+    const category = elem$.data("category");
+    if (category && category in Randomizers.GM) {
+      this.generateRandomizerData(category);
+    } else {
+      this.generateRandomizerData();
+    }
+  }
+
+  async _updateGMNotesOnPC(event: JQuery.ChangeEvent) {
+    const elem$ = $(event.currentTarget);
+    const actor = BladesActor.Get(elem$.data("id"));
+    if (!actor) { throw new Error(`Unable to retrieve actor with id '${elem$.data("id")}'`) }
+    const updateText = event.currentTarget.innerHTML;
+    eLog.checkLog3("scoreSheet", "Retrieved Text, Updating ...", {updateText});
+    await actor.update({"system.gm_notes": updateText});
+    eLog.checkLog3("scoreSheet", "Updated!", {gm_notes: actor.system.gm_notes});
+  }
 
   override async activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
 
+    html.find("[data-action='select-image']").on({
+      click: this._selectImage.bind(this),
+      contextmenu: this._deselectOrDeleteImage.bind(this)
+    });
+    html.find("[data-action='add-image']").on({
+      click: this._addImage.bind(this)
+    });
+    html.find(".roll-opposition-name").on({
+      dblclick: this._selectRollOpposition.bind(this)
+    });
+    html.find(".toggle-lock").on({
+      click: this._toggleRandomizerLock.bind(this)
+    });
+    html.find("[data-action='randomize'").on({
+      click: this._triggerRandomize.bind(this)
+    });
+
+    html.find("textarea.pc-summary-notes-body").on({
+      change: this._updateGMNotesOnPC.bind(this)
+    });
   }
 
   override async _onSubmit(event: OnSubmitEvent, params: List<any> = {}) {
+    eLog.checkLog3("scoreSheet", "_onSubmit()", {event, params, elemText: event.currentTarget.innerHTML});
+    let isForcingRender = true;
+    const elem$ = $(event.currentTarget);
+
+
     const prevPhase = this.item.system.phase;
     const submitData = await super._onSubmit(event, params);
+
     const newPhase = this.item.system.phase;
-    let isForcingRender = true;
     if (prevPhase !== newPhase) {
       switch (prevPhase) {
         case BladesPhase.CharGen: {
@@ -169,6 +336,10 @@ class BladesScoreSheet extends BladesItemSheet {
     return submitData;
   }
 
+}
+
+declare interface BladesScoreSheet {
+  get document(): BladesScore
 }
 
 export default BladesScoreSheet;

@@ -6,7 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import BladesItem from "../../blades-item.js";
-import { BladesActorType, Factor } from "../../core/constants.js";
+import { BladesActorType, BladesItemType, Factor } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesActor from "../../blades-actor.js";
 import BladesScoreSheet from "../../sheets/item/blades-score-sheet.js";
@@ -17,6 +17,18 @@ class BladesScore extends BladesItem {
         Object.assign(globalThis, { BladesScore, BladesScoreSheet });
         Items.registerSheet("blades", BladesScoreSheet, { types: ["score"], makeDefault: true });
         return loadTemplates(["systems/eunos-blades/templates/items/score-sheet.hbs"]);
+    }
+    static get Active() {
+        return BladesItem.GetTypeWithTags(BladesItemType.score).find((score) => score.system.isActive);
+    }
+    static set Active(val) {
+        BladesItem.GetTypeWithTags(BladesItemType.score)
+            .find((score) => score.system.isActive)?.update({ "system.isActive": false })
+            .then(() => {
+            if (val) {
+                val.update({ "system.isActive": true });
+            }
+        });
     }
 
     get rollFactors() {

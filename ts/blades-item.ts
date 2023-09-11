@@ -222,6 +222,19 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   // #region BladesRollSource Implementation
 
+  get rollSourceID() { return this.id }
+  get rollSourceDoc() { return this }
+  get rollSourceImg() { return this.img ?? undefined }
+  get rollSourceName() { return this.name ?? "" }
+  get rollSourceType() { return this.type }
+
+  get rollOppID() { return this.id }
+  get rollOppDoc() { return this }
+  get rollOppImg() { return this.img ?? undefined }
+  get rollOppName() { return this.name ?? "" }
+  get rollOppSubName() { return "" }
+  get rollOppType() { return this.type }
+
   get rollModsData(): BladesRollCollab.RollModData[] {
     const {roll_mods} = this.system;
     if (!roll_mods) { return [] }
@@ -356,7 +369,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
     return factorData;
   }
-  get rollOppImg() { return this.img ?? undefined }
   // #endregion
 
   // #region PREPARING DERIVED DATA
