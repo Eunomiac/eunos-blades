@@ -568,3 +568,4 @@ class BladesRollCollabSheet extends DocumentSheet {
     }
 }
 export default BladesRollCollabSheet;
+//# sourceMappingURL=blades-roll-collab-sheet.js.map

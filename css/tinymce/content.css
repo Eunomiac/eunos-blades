@@ -3562,17 +3562,51 @@ html, :root {
   outline: none; }
 
 #tinymce {
-  padding: var(--content-padding) !important;
-  width: calc(100% + 2 * var(--content-padding));
-  margin-left: calc(-1 * var(--content-padding)); }
-  #tinymce {
-    min-height: var(--min-tinymce-height);
-    background-color: rgba(0, 0, 0, 0.2);
-    height: 100%;
-    margin: 0; }
-    #tinymce p {
-      display: block;
-      -webkit-margin-before: 7px;
-      margin-block-start: 7px;
-      -webkit-margin-after: 7px;
-      margin-block-end: 7px; }
+  min-height: var(--min-tinymce-height);
+  background-color: rgba(0, 0, 0, 0.2);
+  height: 100%;
+  margin: 0;
+  padding: var(--content-padding, 0) !important;
+  width: calc(100% + 2 * var(--content-padding, 0));
+  margin-left: calc(-1 * var(--content-padding, 0)); }
+  #tinymce p {
+    display: block;
+    -webkit-margin-before: 7px;
+    margin-block-start: 7px;
+    -webkit-margin-after: 7px;
+    margin-block-end: 7px; }
+  #tinymce .tox-two-column-flex {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    width: 100%;
+    height: auto;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 2px 5px;
+    -ms-flex-line-pack: stretch;
+    align-content: stretch;
+    padding: 0; }
+    #tinymce .tox-two-column-flex > * {
+      -ms-flex-preferred-size: 49%;
+      flex-basis: 49%;
+      -ms-flex-negative: 1;
+      flex-shrink: 1;
+      -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+      flex-grow: 1;
+      max-width: 50%;
+      margin: 0;
+      line-height: 1rem;
+      padding: 3px; }
+      #tinymce .tox-two-column-flex > *::before {
+        content: "◊";
+        margin-right: 5px;
+        font-family: var(--font-emphasis);
+        font-size: toRem(10px);
+        vertical-align: top;
+        color: var(--blades-gold); }

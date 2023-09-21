@@ -1,5 +1,5 @@
 import U from "../../core/utilities.js";
-import {BladesActorType, BladesItemType, BladesPhase, Tag, Randomizers} from "../../core/constants.js";
+import C, {BladesActorType, BladesItemType, BladesPhase, Tag, Randomizers} from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
 
 import {BladesActor, BladesPC} from "../../documents/blades-actor-proxy.js";
@@ -52,6 +52,7 @@ class BladesScoreSheet extends BladesItemSheet {
       classes: ["eunos-blades", "sheet", "item", "score-sheet"],
       template: "systems/eunos-blades/templates/items/score-sheet.hbs",
       width: 900,
+      submitOnChange: false,
       height: 970
     });
   }
@@ -208,18 +209,14 @@ class BladesScoreSheet extends BladesItemSheet {
   }
 
   _addImage() {
-    const fp = new FilePicker({
-      type: "image",
-      activeSource: "public",
-      displayMode: "tiles", // ['list', 'thumbs', 'tiles', 'images']
-      callback: path => {
+    U.displayImageSelector(
+      path => {
         const imgIndex = U.objSize(this.document.system.images);
         return this.document.update({[`system.images.${imgIndex}`]: path});
       },
-      top: (this.position.top ?? 0) + 40,
-      left: (this.position.left ?? 0) + 10
-    });
-    return fp.browse("systems/eunos-blades/assets");
+      "systems/eunos-blades/assets",
+      this.position
+    );
   }
 
   _selectRollOpposition(event: ClickEvent) {

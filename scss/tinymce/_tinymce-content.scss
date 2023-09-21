@@ -4,9 +4,44 @@
   height: 100%;
   margin: 0 ;
 
+  padding: var(--content-padding, 0) !important;
+  width: calc(100% + 2 * var(--content-padding, 0));
+  margin-left: calc(-1 * var(--content-padding, 0));
+
+
   p {
     display: block;
     margin-block-start: 7px;
     margin-block-end: 7px;
+  }
+
+  .tox-two-column-flex {
+    display: flex;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2px 5px;
+    align-content: stretch;
+    padding: 0;
+
+    > * {
+      flex-basis: 49%;
+      flex-shrink: 1;
+      flex-grow: 1;
+      max-width: 50%;
+      margin: 0;
+      line-height: 1rem;
+      padding: 3px;
+
+      &::before {
+        content: "◊";
+        margin-right: 5px;
+        font-family: var(--font-emphasis);
+        font-size: toRem(10px);
+        vertical-align: top;
+        color: var(--blades-gold);
+      }
+    }
   }
 }

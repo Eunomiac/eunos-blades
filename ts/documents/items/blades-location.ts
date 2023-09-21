@@ -44,7 +44,7 @@ class BladesLocation extends BladesItem implements BladesItemSubClass.Location,
     return 0;
   }
 
-  override get rollOppImg() { return this.img ?? undefined }
+  override get rollOppImg() { return this.img ?? "" }
 
   // #region OVERRIDES: _onUpdate
   override async _onUpdate(changed: any, options: any, userId: string) {

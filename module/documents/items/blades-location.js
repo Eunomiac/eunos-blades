@@ -41,7 +41,7 @@ class BladesLocation extends BladesItem {
         }
         return 0;
     }
-    get rollOppImg() { return this.img ?? undefined; }
+    get rollOppImg() { return this.img ?? ""; }
 
     async _onUpdate(changed, options, userId) {
         await super._onUpdate(changed, options, userId);
@@ -49,3 +49,5 @@ class BladesLocation extends BladesItem {
     }
 }
 export default BladesLocation;
+//# sourceMappingURL=blades-location.js.map
+//# sourceMappingURL=blades-location.js.map

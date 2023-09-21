@@ -342,3 +342,5 @@ class BladesActiveEffect extends ActiveEffect {
     }
 }
 export default BladesActiveEffect;
+//# sourceMappingURL=blades-active-effect.js.map
+//# sourceMappingURL=blades-active-effect.js.map

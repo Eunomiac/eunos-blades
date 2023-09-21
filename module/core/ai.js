@@ -15,3 +15,5 @@ AI.QuerySystem = (keyword) => {
 AI.QueryAssistant = (type, keys) => {
 };
 export default AI;
+//# sourceMappingURL=ai.js.map
+//# sourceMappingURL=ai.js.map

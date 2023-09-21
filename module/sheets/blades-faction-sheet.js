@@ -29,3 +29,4 @@ class BladesFactionSheet extends BladesSheet {
     }
 }
 export default BladesFactionSheet;
+//# sourceMappingURL=blades-faction-sheet.js.map

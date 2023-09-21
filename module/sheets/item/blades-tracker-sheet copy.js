@@ -128,3 +128,4 @@ class BladesTrackerSheet extends BladesItemSheet {
     }
 }
 export default BladesTrackerSheet;
+//# sourceMappingURL=blades-tracker-sheet copy.js.map

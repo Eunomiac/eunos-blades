@@ -8,7 +8,6 @@
 import U from "./core/utilities.js";
 import C, { BladesActorType, BladesItemType, RollType, RollModStatus, RollModCategory, Action, Attribute, Position, Effect, Factor, RollResult, ConsequenceType } from "./core/constants.js";
 import BladesActor from "./blades-actor.js";
-import BladesItem from "./blades-item.js";
 import { ApplyTooltipListeners } from "./core/gsap.js";
 const DescriptionChanges = {
     "Battleborn": "<p><em>If you 'reduce harm' that means the level of harm you're facing right now is reduced by one.</em></p><p><em>If you use this ability to push yourself, you get one of the benefits (+1d, +1 effect, act despite severe harm) but you don't take 2 stress.</em></p><p><em>Your special armor is restored at the beginning of downtime.</em></p>",
@@ -1268,14 +1267,14 @@ export class BladesRollMod {
             const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)([0-9]*)/) ?? []).slice(1);
             switch (traitStr) {
                 case "SpecialArmor": {
-                    return BladesActor.IsType(this.rollInstance.rollSource, BladesActorType.pc)
-                        && this.rollInstance.rollSource.system.armor.active.special
-                        && !this.rollInstance.rollSource.system.armor.checked.special;
+                    return BladesActor.IsType(this.rollInstance.rollSource?.rollSourceDoc, BladesActorType.pc)
+                        && this.rollInstance.rollSource.rollSourceDoc.system.armor.active.special
+                        && !this.rollInstance.rollSource.rollSourceDoc.system.armor.checked.special;
                 }
                 case "Stress": {
                     const val = U.pInt(valStr);
-                    return BladesActor.IsType(this.rollInstance.rollSource, BladesActorType.pc)
-                        && this.rollInstance.rollSource.system.stress.max - this.rollInstance.rollSource.system.stress.value >= val;
+                    return BladesActor.IsType(this.rollInstance.rollSource?.rollSourceDoc, BladesActorType.pc)
+                        && this.rollInstance.rollSource.rollSourceDoc.system.stress.max - this.rollInstance.rollSource.rollSourceDoc.system.stress.value >= val;
                 }
             }
             return null;
@@ -1477,6 +1476,118 @@ export class BladesRollMod {
         this.conditionalRollTraits = modData.conditionalRollTraits ?? [];
         this.autoRollTraits = modData.autoRollTraits ?? [];
         this.category = modData.category;
+    }
+}
+class BladesRollOpposition {
+    rollInstance;
+    rollOppID;
+    rollOppDoc;
+    rollOppName;
+    rollOppSubName;
+    rollOppType;
+    rollOppImg;
+    rollModsData;
+    rollFactors;
+    constructor(rollInstance, { rollOppID, rollOppDoc, rollOppName, rollOppSubName, rollOppType, rollOppImg, rollModsData, rollFactors } = {}) {
+        this.rollOppDoc = rollOppDoc;
+        this.rollInstance = rollInstance;
+        if (!this.rollOppDoc) {
+            if (rollOppID) {
+                this.rollOppDoc = game.items.get(rollOppID) ?? game.actors.get(rollOppID);
+            }
+            if (rollOppName) {
+                this.rollOppDoc = game.items.getName(rollOppName) ?? game.actors.getName(rollOppName);
+            }
+        }
+        if (this.rollOppDoc) {
+            this.rollOppID = this.rollOppDoc.rollOppID;
+            this.rollOppName = rollOppName ?? this.rollOppDoc.rollOppName;
+            this.rollOppSubName = rollOppSubName ?? this.rollOppDoc.rollOppSubName;
+            this.rollOppType = this.rollOppDoc.rollOppType;
+            this.rollOppImg = rollOppImg ?? this.rollOppDoc.rollOppImg ?? "";
+            this.rollModsData = [
+                ...rollModsData ?? [],
+                ...this.rollOppDoc.rollModsData ?? []
+            ];
+            this.rollFactors = Object.assign(this.rollOppDoc.rollFactors, rollFactors ?? {});
+        }
+        else {
+            if (!rollOppName) {
+                throw new Error("Must include a rollOppName when constructing a BladesRollOpposition object.");
+            }
+            if (!rollOppSubName) {
+                throw new Error("Must include a rollOppSubName when constructing a BladesRollOpposition object.");
+            }
+            if (!rollOppType) {
+                throw new Error("Must include a rollOppType when constructing a BladesRollOpposition object.");
+            }
+            if (!rollFactors) {
+                throw new Error("Must include a rollFactors when constructing a BladesRollOpposition object.");
+            }
+            this.rollOppID = rollOppID;
+            this.rollOppName = rollOppName;
+            this.rollOppSubName = rollOppSubName;
+            this.rollOppType = rollOppType;
+            this.rollOppImg = rollOppImg ?? "";
+            this.rollModsData = rollModsData ?? [];
+            this.rollFactors = rollFactors;
+        }
+        if (this.rollModsData.length === 0) {
+            this.rollModsData = undefined;
+        }
+    }
+}
+class BladesRollSource {
+    rollInstance;
+    rollSourceID;
+    rollSourceDoc;
+    rollSourceName;
+    rollSourceType;
+    rollSourceImg;
+    rollModsData;
+    rollFactors;
+    constructor(rollInstance, { rollSourceID, rollSourceDoc, rollSourceName, rollSourceType, rollSourceImg, rollModsData, rollFactors } = {}) {
+        this.rollSourceDoc = rollSourceDoc;
+        this.rollInstance = rollInstance;
+        if (!this.rollSourceDoc) {
+            if (rollSourceID) {
+                this.rollSourceDoc = game.items.get(rollSourceID) ?? game.actors.get(rollSourceID);
+            }
+            if (rollSourceName) {
+                this.rollSourceDoc = game.items.getName(rollSourceName) ?? game.actors.getName(rollSourceName);
+            }
+        }
+        if (this.rollSourceDoc) {
+            this.rollSourceID = this.rollSourceDoc.rollSourceID;
+            this.rollSourceName = rollSourceName ?? this.rollSourceDoc.rollSourceName;
+            this.rollSourceType = this.rollSourceDoc.rollSourceType;
+            this.rollSourceImg = rollSourceImg ?? this.rollSourceDoc.rollSourceImg ?? "";
+            this.rollModsData = [
+                ...rollModsData ?? [],
+                ...this.rollSourceDoc.rollModsData ?? []
+            ];
+            this.rollFactors = Object.assign(this.rollSourceDoc.rollFactors, rollFactors ?? {});
+        }
+        else {
+            if (!rollSourceName) {
+                throw new Error("Must include a rollSourceName when constructing a BladesRollSource object.");
+            }
+            if (!rollSourceImg) {
+                throw new Error("Must include a rollSourceImg when constructing a BladesRollSource object.");
+            }
+            if (!rollSourceType) {
+                throw new Error("Must include a rollSourceType when constructing a BladesRollSource object.");
+            }
+            if (!rollFactors) {
+                throw new Error("Must include a rollFactors when constructing a BladesRollSource object.");
+            }
+            this.rollSourceID = rollSourceID;
+            this.rollSourceName = rollSourceName;
+            this.rollSourceType = rollSourceType;
+            this.rollSourceImg = rollSourceImg;
+            this.rollModsData = rollModsData ?? [];
+            this.rollFactors = rollFactors;
+        }
     }
 }
 
@@ -1738,8 +1849,11 @@ class BladesRollCollab extends DocumentSheet {
         delete BladesRollCollab.Current[rollID];
     }
     static async NewRoll(config) {
-        if (game.user.isGM && BladesActor.IsType(config.rollSource, BladesActorType.pc) && config.rollSource.primaryUser) {
-            config.userID = config.rollSource.primaryUser.id;
+        if (game.user.isGM && BladesActor.IsType(config.rollSource, BladesActorType.pc)) {
+            const rSource = config.rollSource;
+            if (rSource.primaryUser?.id) {
+                config.userID = rSource.primaryUser.id;
+            }
         }
         const user = game.users.get(config.userID ?? game.user._id);
         if (!(user instanceof User)) {
@@ -1753,13 +1867,13 @@ class BladesRollCollab extends DocumentSheet {
             eLog.error("rollCollab", `[RenderRollCollab()] Invalid rollType: ${flagUpdateData.rollType}`, config);
             return;
         }
-        const rollSource = config.rollSource ?? user.character;
-        if (!(rollSource instanceof BladesActor || rollSource instanceof BladesItem)) {
-            eLog.error("rollCollab", "[RenderRollCollab()] Invalid rollSource", { rollSource, config });
+        const rollSourceData = config.rollSource ?? user.character;
+        if (!rollSourceData) {
+            eLog.error("rollCollab", "[RenderRollCollab()] Invalid rollSource", { rollSourceData, config });
             return;
         }
-        flagUpdateData.rollSourceID = rollSource.id;
-        flagUpdateData.rollSourceType = rollSource instanceof BladesActor ? "Actor" : "Item";
+        flagUpdateData.rollSourceID = rollSourceData.rollSourceID;
+        flagUpdateData.rollSourceType = rollSourceData.rollSourceType;
         if (U.isInt(config.rollTrait)) {
             flagUpdateData.rollTrait = config.rollTrait;
         }
@@ -1822,43 +1936,43 @@ class BladesRollCollab extends DocumentSheet {
     _rollSource;
     get rollSource() {
         if (!this._rollSource) {
-            if (this.rData.rollSourceData?.rollSourceDoc) {
-                this._rollSource = this.rData.rollSourceData.rollSourceDoc;
-            }
-            else if (this.rData.rollSourceData?.rollSourceID || this.rData.rollSourceID) {
-                const rollSourceID = this.rData.rollSourceData?.rollSourceID ?? this.rData.rollSourceID;
-                this._rollSource = game.actors.get(rollSourceID) ?? game.items.get(rollSourceID);
-            }
-            else if (this.rData.rollSourceData) {
-                this._rollSource = this.rData.rollSourceData;
-            }
-            if (!this._rollSource) {
-                throw new Error(`Unable to find rollSource with id '${this.rData.rollSourceID}'`);
+            if (this.rData.rollSourceData) {
+                this._rollSource = new BladesRollSource(this, this.rData.rollSourceData);
             }
         }
-        return this._rollSource;
+        if (this._rollSource instanceof BladesRollSource) {
+            return this._rollSource;
+        }
+        return undefined;
     }
-    
+    set rollSource(val) {
+        if (val === undefined) {
+            this._rollSource = undefined;
+        }
+        else {
+            this._rollSource = new BladesRollSource(this, val);
+        }
+    }
+    _rollParticipants = [];
     _rollOpposition;
     get rollOpposition() {
         if (!this._rollOpposition) {
-            if (this.rData.rollOppositionData?.rollOppDoc) {
-                this._rollOpposition = this.rData.rollOppositionData.rollOppDoc;
-            }
-            else if (this.rData.rollOppositionData?.rollOppID || this.rData.rollOppositionID) {
-                const rollOppositionID = this.rData.rollOppositionData?.rollOppID || this.rData.rollOppositionID;
-                this._rollOpposition = this.rData.rollOppositionType === "Actor"
-                    ? game.actors.get(rollOppositionID)
-                    : game.items.get(rollOppositionID);
-            }
-            else if (this.rData.rollOppositionData) {
-                this._rollOpposition = this.rData.rollOppositionData;
+            if (this.rData.rollOppositionData) {
+                this._rollOpposition = new BladesRollOpposition(this, this.rData.rollOppositionData);
             }
         }
-        return this._rollOpposition;
+        if (this._rollOpposition instanceof BladesRollOpposition) {
+            return this._rollOpposition;
+        }
+        return undefined;
     }
     set rollOpposition(val) {
-        this._rollOpposition = val;
+        if (val === undefined) {
+            this._rollOpposition = undefined;
+        }
+        else {
+            this._rollOpposition = new BladesRollOpposition(this, val);
+        }
     }
     get rollType() { return this.rData.rollType; }
     get rollSubType() { return this.rData.rollSubType; }
@@ -1868,22 +1982,22 @@ class BladesRollCollab extends DocumentSheet {
     get rollTraitValOverride() { return this._rollTraitValOverride; }
     set rollTraitValOverride(val) { this._rollTraitValOverride = val; }
     get rollTraitData() {
-        if (BladesActor.IsType(this.rollSource, BladesActorType.pc)) {
+        if (BladesActor.IsType(this.rollSource?.rollSourceDoc, BladesActorType.pc)) {
             if (isAction(this.rollTrait)) {
                 return {
                     name: this.rollTrait,
-                    value: this.rollTraitValOverride ?? this.rollSource.actions[this.rollTrait],
-                    max: this.rollTraitValOverride ?? this.rollSource.actions[this.rollTrait],
-                    pcTooltip: this.rollSource.rollTraitPCTooltipActions,
+                    value: this.rollTraitValOverride ?? this.rollSource.rollSourceDoc.actions[this.rollTrait],
+                    max: this.rollTraitValOverride ?? this.rollSource.rollSourceDoc.actions[this.rollTrait],
+                    pcTooltip: this.rollSource.rollSourceDoc.rollTraitPCTooltipActions,
                     gmTooltip: C.ActionTooltipsGM[this.rollTrait]
                 };
             }
             if (isAttribute(this.rollTrait)) {
                 return {
                     name: this.rollTrait,
-                    value: this.rollTraitValOverride ?? this.rollSource.attributes[this.rollTrait],
-                    max: this.rollTraitValOverride ?? this.rollSource.attributes[this.rollTrait],
-                    pcTooltip: this.rollSource.rollTraitPCTooltipAttributes,
+                    value: this.rollTraitValOverride ?? this.rollSource.rollSourceDoc.attributes[this.rollTrait],
+                    max: this.rollTraitValOverride ?? this.rollSource.rollSourceDoc.attributes[this.rollTrait],
+                    pcTooltip: this.rollSource.rollSourceDoc.rollTraitPCTooltipAttributes,
                     gmTooltip: C.AttributeTooltips[this.rollTrait]
                 };
             }
@@ -1898,8 +2012,8 @@ class BladesRollCollab extends DocumentSheet {
         if (isFactor(this.rollTrait)) {
             return {
                 name: U.tCase(this.rollTrait),
-                value: this.rollTraitValOverride ?? this.rollSource.rollFactors[this.rollTrait]?.value ?? 0,
-                max: this.rollTraitValOverride ?? this.rollSource.rollFactors[this.rollTrait]?.max ?? 10
+                value: this.rollTraitValOverride ?? this.rollSource?.rollFactors[this.rollTrait]?.value ?? 0,
+                max: this.rollTraitValOverride ?? this.rollSource?.rollFactors[this.rollTrait]?.max ?? 10
             };
         }
         throw new Error(`[get rollTraitData] Invalid rollTrait: '${this.rollTrait}'`);
@@ -1986,7 +2100,7 @@ class BladesRollCollab extends DocumentSheet {
     _roll;
     get roll() { return (this._roll ??= new Roll(`${this.isRollingZero ? 2 : this.finalDicePool}d6`, {})); }
     get rollFactors() {
-        const sourceFactors = Object.fromEntries(Object.entries(this.rollSource.rollFactors)
+        const sourceFactors = Object.fromEntries(Object.entries(this.rollSource?.rollFactors ?? {})
             .map(([factor, factorData]) => [
             factor,
             {
@@ -2101,8 +2215,8 @@ class BladesRollCollab extends DocumentSheet {
             while (holdKeys.length) {
                 const thisTarget = holdKeys.pop().split(/-/).pop();
                 if (thisTarget === "BestAction") {
-                    if (BladesActor.IsType(this.rollSource, BladesActorType.pc)) {
-                        this.rollTraitValOverride = Math.max(...Object.values(this.rollSource.actions));
+                    if (BladesActor.IsType(this.rollSource?.rollSourceDoc, BladesActorType.pc)) {
+                        this.rollTraitValOverride = Math.max(...Object.values(this.rollSource.rollSourceDoc.actions));
                     }
                     continue;
                 }
@@ -2309,15 +2423,15 @@ class BladesRollCollab extends DocumentSheet {
     async getData() {
         const context = super.getData();
         const rData = this.rData;
+        if (!this.rollSource) {
+            throw new Error("No roll source configured for roll.");
+        }
         const rollModsData = [
             ...BladesRollCollab.DefaultRollMods,
-            ...this.rollSource.rollModsData
+            ...this.rollSource.rollModsData ?? []
         ];
-        if (this.rollOpposition instanceof BladesActor || this.rollOpposition instanceof BladesItem) {
-            const oppRollModsData = this.rollOpposition.rollModsData;
-            if (oppRollModsData) {
-                rollModsData.push(...oppRollModsData);
-            }
+        if (this.rollOpposition?.rollModsData) {
+            rollModsData.push(...this.rollOpposition.rollModsData);
         }
         this.initRollMods(rollModsData);
         const initReport = {};
@@ -2545,7 +2659,7 @@ class BladesRollCollab extends DocumentSheet {
         switch (this.rollType) {
             case RollType.Action: {
                 renderedHTML = await renderTemplate("systems/eunos-blades/templates/chat/action-roll.hbs", {
-                    sourceName: this.rollSource.rollSourceName,
+                    sourceName: this.rollSource?.rollSourceName ?? "",
                     oppName: this.rollOpposition?.rollOppName,
                     type: U.lCase(this.rollType),
                     subType: U.lCase(this.rollSubType),
@@ -2821,7 +2935,9 @@ class BladesRollCollab extends DocumentSheet {
         const { type, uuid } = data;
         const [id] = (uuid.match(new RegExp(`${type}\\.(.+)`)) ?? []).slice(1);
         const oppDoc = game[`${U.lCase(type)}s`].get(id);
-        this.rollOpposition = oppDoc;
+        if (oppDoc) {
+            this.rollOpposition = oppDoc;
+        }
     }
     async _onSubmit(event, { updateData } = {}) {
         return super._onSubmit(event, { updateData, preventClose: true })
@@ -2843,3 +2959,5 @@ class BladesRollCollab extends DocumentSheet {
     }
 }
 export default BladesRollCollab;
+//# sourceMappingURL=blades-roll-collab.js.map
+//# sourceMappingURL=blades-roll-collab.js.map

@@ -9,3 +9,4 @@ import BladesItem from "../../blades-item.js";
 class BladesLocation extends BladesItem {
 }
 export default BladesLocation;
+//# sourceMappingURL=blades-location copy.js.map

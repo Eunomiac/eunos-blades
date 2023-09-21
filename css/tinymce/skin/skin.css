@@ -3722,7 +3722,7 @@ body.tox-dialog__disable-scroll {
               .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__overflow .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label, .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-editor-header .tox-toolbar-overlord .tox-toolbar__primary .tox-toolbar__group .tox-tbtn .tox-tbtn__select-label {
                 font-family: var(--font-emphasis); }
     .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-sidebar-wrap {
-      min-height: 100px; }
+      min-height: var(--min-tinymce-height); }
       .editor.tinymce .tox.tox-tinymce .tox-editor-container .tox-sidebar-wrap .tox-edit-area .tox-edit-area__iframe {
         background-color: rgba(0, 0, 0, 0.5);
         -webkit-box-shadow: inset 0px 0px 5px black;

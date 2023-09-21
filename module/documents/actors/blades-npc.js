@@ -9,3 +9,5 @@ import BladesActor from "../../blades-actor.js";
 class BladesNPC extends BladesActor {
 }
 export default BladesNPC;
+//# sourceMappingURL=blades-npc.js.map
+//# sourceMappingURL=blades-npc.js.map

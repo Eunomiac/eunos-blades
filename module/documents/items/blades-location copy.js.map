@@ -1,0 +1,1 @@
+{"version":3,"sources":["documents/items/blades-location copy.js"],"names":[],"mappings":";;;;;;;AAAA;AACA;AACA;AACA;AACA","file":"blades-location copy.js","sourcesContent":["import BladesItem from \"../../blades-item.js\";\nclass BladesLocation extends BladesItem {\n}\r\n\nexport default BladesLocation;"]}

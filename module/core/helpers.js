@@ -348,3 +348,5 @@ Object.assign(handlebarHelpers);
 export function registerHandlebarHelpers() {
     Object.entries(handlebarHelpers).forEach(([name, func]) => Handlebars.registerHelper(name, func));
 }
+//# sourceMappingURL=helpers.js.map
+//# sourceMappingURL=helpers.js.map

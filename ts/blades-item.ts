@@ -224,13 +224,13 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   get rollSourceID() { return this.id }
   get rollSourceDoc() { return this }
-  get rollSourceImg() { return this.img ?? undefined }
+  get rollSourceImg() { return this.img ?? "" }
   get rollSourceName() { return this.name ?? "" }
   get rollSourceType() { return this.type }
 
   get rollOppID() { return this.id }
   get rollOppDoc() { return this }
-  get rollOppImg() { return this.img ?? undefined }
+  get rollOppImg() { return this.img ?? "" }
   get rollOppName() { return this.name ?? "" }
   get rollOppSubName() { return "" }
   get rollOppType() { return this.type }

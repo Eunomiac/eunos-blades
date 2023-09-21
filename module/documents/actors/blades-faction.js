@@ -9,3 +9,5 @@ import BladesActor from "../../blades-actor.js";
 class BladesFaction extends BladesActor {
 }
 export default BladesFaction;
+//# sourceMappingURL=blades-faction.js.map
+//# sourceMappingURL=blades-faction.js.map

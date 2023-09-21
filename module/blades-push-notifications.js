@@ -81,3 +81,5 @@ export default class BladesPushController {
         socketlib.system.executeForAllGMs("pushNotice", "to-gm-notice", ...args);
     }
 }
+//# sourceMappingURL=blades-push-notifications.js.map
+//# sourceMappingURL=blades-push-notifications.js.map

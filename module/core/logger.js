@@ -174,3 +174,5 @@ const registerDebugger = () => {
     Handlebars.registerHelper("eLog", eLog.hbsLog);
 };
 export default registerDebugger;
+//# sourceMappingURL=logger.js.map
+//# sourceMappingURL=logger.js.map

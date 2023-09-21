@@ -48,7 +48,7 @@ class BladesScore extends BladesItem {
             }
         };
     }
-    get rollOppImg() { return this.img ?? undefined; }
+    get rollOppImg() { return this.img ?? ""; }
     getFactorTotal(factor) {
         switch (factor) {
             case Factor.tier: return this.system.tier.value;
@@ -65,3 +65,5 @@ class BladesScore extends BladesItem {
     }
 }
 export default BladesScore;
+//# sourceMappingURL=blades-score.js.map
+//# sourceMappingURL=blades-score.js.map

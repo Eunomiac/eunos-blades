@@ -1101,6 +1101,17 @@ function getTemplatePath(subFolder, fileName) {
     }
     return fileName.map((fName) => getTemplatePath(subFolder, fName));
 }
+function displayImageSelector(callback, pathRoot = `systems/${C.SYSTEM_ID}/assets`, position = { top: 200, left: 200 }) {
+    const fp = new FilePicker({
+        type: "image",
+        activeSource: "public",
+        displayMode: "tiles",
+        callback,
+        top: position.top ?? 200 + 40,
+        left: position.left ?? 200 + 10
+    });
+    return fp.browse(pathRoot);
+}
 export default {
     GMID, getUID,
     isNumber, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
@@ -1143,5 +1154,7 @@ export default {
     getSiblings,
     escapeHTML,
     sleep,
-    isDocID, loc, getSetting, getTemplatePath
+    isDocID, loc, getSetting, getTemplatePath, displayImageSelector
 };
+//# sourceMappingURL=utilities.js.map
+//# sourceMappingURL=utilities.js.map

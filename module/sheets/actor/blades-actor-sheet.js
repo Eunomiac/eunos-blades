@@ -342,3 +342,5 @@ class BladesActorSheet extends BladesSheet {
     }
 }
 export default BladesActorSheet;
+//# sourceMappingURL=blades-actor-sheet.js.map
+//# sourceMappingURL=blades-actor-sheet.js.map

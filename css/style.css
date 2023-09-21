@@ -11988,13 +11988,51 @@ template {
         min-height: var(--min-tinymce-height);
         background-color: rgba(0, 0, 0, 0.2);
         height: 100%;
-        margin: 0; }
+        margin: 0;
+        padding: var(--content-padding, 0) !important;
+        width: calc(100% + 2 * var(--content-padding, 0));
+        margin-left: calc(-1 * var(--content-padding, 0)); }
         :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content p {
           display: block;
           -webkit-margin-before: 7px;
           margin-block-start: 7px;
           -webkit-margin-after: 7px;
           margin-block-end: 7px; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content .tox-two-column-flex {
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          width: 100%;
+          height: auto;
+          -webkit-box-orient: horizontal;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: row;
+          flex-direction: row;
+          -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+          gap: 2px 5px;
+          -ms-flex-line-pack: stretch;
+          align-content: stretch;
+          padding: 0; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content .tox-two-column-flex > * {
+            -ms-flex-preferred-size: 49%;
+            flex-basis: 49%;
+            -ms-flex-negative: 1;
+            flex-shrink: 1;
+            -webkit-box-flex: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+            max-width: 50%;
+            margin: 0;
+            line-height: 1rem;
+            padding: 3px; }
+            :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content .tox-two-column-flex > *::before {
+              content: "◊";
+              margin-right: 5px;
+              font-family: var(--font-emphasis);
+              font-size: 0.625rem;
+              vertical-align: top;
+              color: var(--blades-gold); }
   :root body.vtt.game.system-eunos-blades .app.window-app .tab-label + .editor:not(.tinymce) {
     margin-top: -0.3125rem !important; }
   :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce {
@@ -12006,13 +12044,51 @@ template {
       min-height: var(--min-tinymce-height);
       background-color: rgba(0, 0, 0, 0.2);
       height: 100%;
-      margin: 0; }
+      margin: 0;
+      padding: var(--content-padding, 0) !important;
+      width: calc(100% + 2 * var(--content-padding, 0));
+      margin-left: calc(-1 * var(--content-padding, 0)); }
       :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content p {
         display: block;
         -webkit-margin-before: 7px;
         margin-block-start: 7px;
         -webkit-margin-after: 7px;
         margin-block-end: 7px; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content .tox-two-column-flex {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        width: 100%;
+        height: auto;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        gap: 2px 5px;
+        -ms-flex-line-pack: stretch;
+        align-content: stretch;
+        padding: 0; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content .tox-two-column-flex > * {
+          -ms-flex-preferred-size: 49%;
+          flex-basis: 49%;
+          -ms-flex-negative: 1;
+          flex-shrink: 1;
+          -webkit-box-flex: 1;
+          -ms-flex-positive: 1;
+          flex-grow: 1;
+          max-width: 50%;
+          margin: 0;
+          line-height: 1rem;
+          padding: 3px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content .tox-two-column-flex > *::before {
+            content: "◊";
+            margin-right: 5px;
+            font-family: var(--font-emphasis);
+            font-size: 0.625rem;
+            vertical-align: top;
+            color: var(--blades-gold); }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet {
     overflow: visible; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-header {
@@ -16608,6 +16684,14 @@ template {
               background: var(--spread-puck-color, var(--blades-white-bright)); }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread .origin-box[data-active="true"] ~ * {
               background: transparent; }
+
+.tox .tox-dialog-wrap .tox-dialog .tox-textarea-wrap {
+  height: 100%; }
+  .tox .tox-dialog-wrap .tox-dialog .tox-textarea-wrap .tox-textarea {
+    height: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 0.875rem; }
 
 /* stylelint-disable font-family-no-missing-generic-family-keyword */
 /* stylelint-disable selector-type-no-unknown */

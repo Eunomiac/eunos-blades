@@ -158,3 +158,5 @@ export function initFonts() {
     
 }
 export default registerSettings;
+//# sourceMappingURL=settings.js.map
+//# sourceMappingURL=settings.js.map

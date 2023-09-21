@@ -48,6 +48,7 @@ class BladesScoreSheet extends BladesItemSheet {
             classes: ["eunos-blades", "sheet", "item", "score-sheet"],
             template: "systems/eunos-blades/templates/items/score-sheet.hbs",
             width: 900,
+            submitOnChange: false,
             height: 970
         });
     }
@@ -182,18 +183,10 @@ class BladesScoreSheet extends BladesItemSheet {
         }));
     }
     _addImage() {
-        const fp = new FilePicker({
-            type: "image",
-            activeSource: "public",
-            displayMode: "tiles",
-            callback: path => {
-                const imgIndex = U.objSize(this.document.system.images);
-                return this.document.update({ [`system.images.${imgIndex}`]: path });
-            },
-            top: (this.position.top ?? 0) + 40,
-            left: (this.position.left ?? 0) + 10
-        });
-        return fp.browse("systems/eunos-blades/assets");
+        U.displayImageSelector(path => {
+            const imgIndex = U.objSize(this.document.system.images);
+            return this.document.update({ [`system.images.${imgIndex}`]: path });
+        }, "systems/eunos-blades/assets", this.position);
     }
     _selectRollOpposition(event) {
         eLog.checkLog3("Select Roll Opposition", { event });
@@ -295,3 +288,5 @@ class BladesScoreSheet extends BladesItemSheet {
     }
 }
 export default BladesScoreSheet;
+//# sourceMappingURL=blades-score-sheet.js.map
+//# sourceMappingURL=blades-score-sheet.js.map

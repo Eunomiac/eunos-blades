@@ -1193,6 +1193,23 @@ function getTemplatePath(subFolder: string, fileName: string | string[]) {
   return fileName.map((fName) => getTemplatePath(subFolder, fName));
 }
 
+// displayImageSelector: Displays a file selector in tiles mode at the indicated path root.
+function displayImageSelector(
+  callback: (path: string) => Promise<unknown>,
+  pathRoot = `systems/${C.SYSTEM_ID}/assets`,
+  position: {top: number|null, left: number|null} = {top: 200, left: 200}
+) {
+  const fp = new FilePicker({
+    type: "image",
+    activeSource: "public",
+    displayMode: "tiles",
+    callback,
+    top: position.top ?? 200 + 40,
+    left: position.left ?? 200 + 10
+  });
+  return fp.browse(pathRoot);
+}
+
 // #endregion ▄▄▄▄▄ FOUNDRY ▄▄▄▄▄
 
 export default {
@@ -1268,7 +1285,6 @@ export default {
   sleep,
 
   // ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
-  isDocID, loc, getSetting, getTemplatePath
-
+  isDocID, loc, getSetting, getTemplatePath, displayImageSelector
 };
 // #endregion ▄▄▄▄▄ EXPORTS ▄▄▄▄▄

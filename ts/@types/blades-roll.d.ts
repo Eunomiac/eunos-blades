@@ -161,7 +161,7 @@ declare global {
       rollSourceDoc: BladesDoc|undefined,
       rollSourceName: string,
       rollSourceType: string,
-      rollSourceImg: string|undefined,
+      rollSourceImg: string,
 
       rollModsData: RollModData[],
       rollFactors: Partial<Record<Factor,FactorData>>
@@ -173,9 +173,20 @@ declare global {
       rollOppName: string,
       rollOppSubName: string,
       rollOppType: string,
-      rollOppImg: string|undefined,
+      rollOppImg: string,
 
       rollModsData: RollModData[]|undefined,
+      rollFactors: Partial<Record<Factor,FactorData>>
+    }
+
+    export interface ParticipantDocData {
+      rollParticipantID: string|undefined,
+      rollParticipantDoc: BladesDoc|undefined,
+      rollParticipantName: string,
+      rollParticipantType: string,
+      rollParticipantIcon: string,
+
+      rollParticipantModsData: RollModData[]|undefined, // As applied to MAIN roll when this participant involved
       rollFactors: Partial<Record<Factor,FactorData>>
     }
 

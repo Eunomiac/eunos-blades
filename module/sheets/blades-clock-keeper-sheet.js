@@ -73,3 +73,4 @@ export default class BladesClockKeeperSheet extends BladesItemSheet {
         html.find(".clock-counter").on("change", this.setKeySize.bind(this));
     }
 }
+//# sourceMappingURL=blades-clock-keeper-sheet.js.map
