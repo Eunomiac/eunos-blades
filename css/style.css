@@ -2298,7 +2298,7 @@ template {
       font-family: var(--font-awesome-duotone); }
     :root body.vtt.game.system-eunos-blades #clocks-overlay button {
       color: var(--blades-white); }
-    :root body.vtt.game.system-eunos-blades #clocks-overlay h1, :root body.vtt.game.system-eunos-blades #clocks-overlay h2 {
+    :root body.vtt.game.system-eunos-blades #clocks-overlay h1:not(i):not(button), :root body.vtt.game.system-eunos-blades #clocks-overlay h2:not(i):not(button) {
       margin: var(--margin-heading-strong);
       padding: var(--padding-heading-strong);
       color: var(--color-heading-strong);
@@ -2315,7 +2315,7 @@ template {
       border-width: var(--border-width-heading-strong);
       -webkit-box-shadow: var(--box-shadow-heading-strong);
       box-shadow: var(--box-shadow-heading-strong); }
-    :root body.vtt.game.system-eunos-blades #clocks-overlay h3, :root body.vtt.game.system-eunos-blades #clocks-overlay h4 {
+    :root body.vtt.game.system-eunos-blades #clocks-overlay h3:not(i):not(button), :root body.vtt.game.system-eunos-blades #clocks-overlay h4:not(i):not(button) {
       margin: var(--margin-heading);
       padding: var(--padding-heading);
       color: var(--color-heading);
@@ -2332,17 +2332,17 @@ template {
       border-width: var(--border-width-heading);
       -webkit-box-shadow: var(--box-shadow-heading);
       box-shadow: var(--box-shadow-heading); }
-    :root body.vtt.game.system-eunos-blades #clocks-overlay h1 {
+    :root body.vtt.game.system-eunos-blades #clocks-overlay h1:not(i):not(button) {
       font-size: 1.25rem; }
-    :root body.vtt.game.system-eunos-blades #clocks-overlay h2,
-    :root body.vtt.game.system-eunos-blades #clocks-overlay h3 {
+    :root body.vtt.game.system-eunos-blades #clocks-overlay h2:not(i):not(button),
+    :root body.vtt.game.system-eunos-blades #clocks-overlay h3:not(i):not(button) {
       font-size: 1.125rem; }
-    :root body.vtt.game.system-eunos-blades #clocks-overlay h4 {
+    :root body.vtt.game.system-eunos-blades #clocks-overlay h4:not(i):not(button) {
       font-size: 1rem; }
-    :root body.vtt.game.system-eunos-blades #clocks-overlay select,
-    :root body.vtt.game.system-eunos-blades #clocks-overlay input,
-    :root body.vtt.game.system-eunos-blades #clocks-overlay option,
-    :root body.vtt.game.system-eunos-blades #clocks-overlay textarea {
+    :root body.vtt.game.system-eunos-blades #clocks-overlay select:not(i):not(button),
+    :root body.vtt.game.system-eunos-blades #clocks-overlay input:not(i):not(button),
+    :root body.vtt.game.system-eunos-blades #clocks-overlay option:not(i):not(button),
+    :root body.vtt.game.system-eunos-blades #clocks-overlay textarea:not(i):not(button) {
       margin: var(--margin-input);
       padding: var(--padding-input);
       min-height: unset;
@@ -2362,22 +2362,22 @@ template {
       border-width: var(--border-width-input);
       -webkit-box-shadow: var(--box-shadow-input);
       box-shadow: var(--box-shadow-input); }
-      :root body.vtt.game.system-eunos-blades #clocks-overlay select[type="number"], :root body.vtt.game.system-eunos-blades #clocks-overlay select[data-dtype="number"],
-      :root body.vtt.game.system-eunos-blades #clocks-overlay select[data-dtype="number"] option,
-      :root body.vtt.game.system-eunos-blades #clocks-overlay input[type="number"],
-      :root body.vtt.game.system-eunos-blades #clocks-overlay input[data-dtype="number"],
-      :root body.vtt.game.system-eunos-blades #clocks-overlay input[data-dtype="number"] option,
-      :root body.vtt.game.system-eunos-blades #clocks-overlay option[type="number"],
-      :root body.vtt.game.system-eunos-blades #clocks-overlay option[data-dtype="number"],
-      :root body.vtt.game.system-eunos-blades #clocks-overlay option[data-dtype="number"] option,
-      :root body.vtt.game.system-eunos-blades #clocks-overlay textarea[type="number"],
-      :root body.vtt.game.system-eunos-blades #clocks-overlay textarea[data-dtype="number"],
-      :root body.vtt.game.system-eunos-blades #clocks-overlay textarea[data-dtype="number"] option {
+      :root body.vtt.game.system-eunos-blades #clocks-overlay select:not(i):not(button)[type="number"], :root body.vtt.game.system-eunos-blades #clocks-overlay select:not(i):not(button)[data-dtype="number"],
+      :root body.vtt.game.system-eunos-blades #clocks-overlay select:not(i):not(button)[data-dtype="number"] option,
+      :root body.vtt.game.system-eunos-blades #clocks-overlay input:not(i):not(button)[type="number"],
+      :root body.vtt.game.system-eunos-blades #clocks-overlay input:not(i):not(button)[data-dtype="number"],
+      :root body.vtt.game.system-eunos-blades #clocks-overlay input:not(i):not(button)[data-dtype="number"] option,
+      :root body.vtt.game.system-eunos-blades #clocks-overlay option:not(i):not(button)[type="number"],
+      :root body.vtt.game.system-eunos-blades #clocks-overlay option:not(i):not(button)[data-dtype="number"],
+      :root body.vtt.game.system-eunos-blades #clocks-overlay option:not(i):not(button)[data-dtype="number"] option,
+      :root body.vtt.game.system-eunos-blades #clocks-overlay textarea:not(i):not(button)[type="number"],
+      :root body.vtt.game.system-eunos-blades #clocks-overlay textarea:not(i):not(button)[data-dtype="number"],
+      :root body.vtt.game.system-eunos-blades #clocks-overlay textarea:not(i):not(button)[data-dtype="number"] option {
         text-align: right; }
-      :root body.vtt.game.system-eunos-blades #clocks-overlay select option,
-      :root body.vtt.game.system-eunos-blades #clocks-overlay input option,
-      :root body.vtt.game.system-eunos-blades #clocks-overlay option option,
-      :root body.vtt.game.system-eunos-blades #clocks-overlay textarea option {
+      :root body.vtt.game.system-eunos-blades #clocks-overlay select:not(i):not(button) option,
+      :root body.vtt.game.system-eunos-blades #clocks-overlay input:not(i):not(button) option,
+      :root body.vtt.game.system-eunos-blades #clocks-overlay option:not(i):not(button) option,
+      :root body.vtt.game.system-eunos-blades #clocks-overlay textarea:not(i):not(button) option {
         color: var(--blades-white);
         background: var(--blades-black); }
     :root body.vtt.game.system-eunos-blades #clocks-overlay p + p {
@@ -4194,15 +4194,15 @@ template {
   :root body.vtt.game.system-eunos-blades #hotbar button,
   :root body.vtt.game.system-eunos-blades #players button {
     color: var(--blades-white); }
-  :root body.vtt.game.system-eunos-blades #interface h1, :root body.vtt.game.system-eunos-blades #interface h2,
-  :root body.vtt.game.system-eunos-blades #controls h1,
-  :root body.vtt.game.system-eunos-blades #controls h2,
-  :root body.vtt.game.system-eunos-blades #navigation h1,
-  :root body.vtt.game.system-eunos-blades #navigation h2,
-  :root body.vtt.game.system-eunos-blades #hotbar h1,
-  :root body.vtt.game.system-eunos-blades #hotbar h2,
-  :root body.vtt.game.system-eunos-blades #players h1,
-  :root body.vtt.game.system-eunos-blades #players h2 {
+  :root body.vtt.game.system-eunos-blades #interface h1:not(i):not(button), :root body.vtt.game.system-eunos-blades #interface h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players h2:not(i):not(button) {
     margin: var(--margin-heading-strong);
     padding: var(--padding-heading-strong);
     color: var(--color-heading-strong);
@@ -4219,15 +4219,15 @@ template {
     border-width: var(--border-width-heading-strong);
     -webkit-box-shadow: var(--box-shadow-heading-strong);
     box-shadow: var(--box-shadow-heading-strong); }
-  :root body.vtt.game.system-eunos-blades #interface h3, :root body.vtt.game.system-eunos-blades #interface h4,
-  :root body.vtt.game.system-eunos-blades #controls h3,
-  :root body.vtt.game.system-eunos-blades #controls h4,
-  :root body.vtt.game.system-eunos-blades #navigation h3,
-  :root body.vtt.game.system-eunos-blades #navigation h4,
-  :root body.vtt.game.system-eunos-blades #hotbar h3,
-  :root body.vtt.game.system-eunos-blades #hotbar h4,
-  :root body.vtt.game.system-eunos-blades #players h3,
-  :root body.vtt.game.system-eunos-blades #players h4 {
+  :root body.vtt.game.system-eunos-blades #interface h3:not(i):not(button), :root body.vtt.game.system-eunos-blades #interface h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players h4:not(i):not(button) {
     margin: var(--margin-heading);
     padding: var(--padding-heading);
     color: var(--color-heading);
@@ -4244,49 +4244,49 @@ template {
     border-width: var(--border-width-heading);
     -webkit-box-shadow: var(--box-shadow-heading);
     box-shadow: var(--box-shadow-heading); }
-  :root body.vtt.game.system-eunos-blades #interface h1,
-  :root body.vtt.game.system-eunos-blades #controls h1,
-  :root body.vtt.game.system-eunos-blades #navigation h1,
-  :root body.vtt.game.system-eunos-blades #hotbar h1,
-  :root body.vtt.game.system-eunos-blades #players h1 {
+  :root body.vtt.game.system-eunos-blades #interface h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players h1:not(i):not(button) {
     font-size: 1.25rem; }
-  :root body.vtt.game.system-eunos-blades #interface h2,
-  :root body.vtt.game.system-eunos-blades #interface h3,
-  :root body.vtt.game.system-eunos-blades #controls h2,
-  :root body.vtt.game.system-eunos-blades #controls h3,
-  :root body.vtt.game.system-eunos-blades #navigation h2,
-  :root body.vtt.game.system-eunos-blades #navigation h3,
-  :root body.vtt.game.system-eunos-blades #hotbar h2,
-  :root body.vtt.game.system-eunos-blades #hotbar h3,
-  :root body.vtt.game.system-eunos-blades #players h2,
-  :root body.vtt.game.system-eunos-blades #players h3 {
+  :root body.vtt.game.system-eunos-blades #interface h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #interface h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players h3:not(i):not(button) {
     font-size: 1.125rem; }
-  :root body.vtt.game.system-eunos-blades #interface h4,
-  :root body.vtt.game.system-eunos-blades #controls h4,
-  :root body.vtt.game.system-eunos-blades #navigation h4,
-  :root body.vtt.game.system-eunos-blades #hotbar h4,
-  :root body.vtt.game.system-eunos-blades #players h4 {
+  :root body.vtt.game.system-eunos-blades #interface h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players h4:not(i):not(button) {
     font-size: 1rem; }
-  :root body.vtt.game.system-eunos-blades #interface select,
-  :root body.vtt.game.system-eunos-blades #interface input,
-  :root body.vtt.game.system-eunos-blades #interface option,
-  :root body.vtt.game.system-eunos-blades #interface textarea,
-  :root body.vtt.game.system-eunos-blades #controls select,
-  :root body.vtt.game.system-eunos-blades #controls input,
-  :root body.vtt.game.system-eunos-blades #controls option,
-  :root body.vtt.game.system-eunos-blades #controls textarea,
-  :root body.vtt.game.system-eunos-blades #navigation select,
-  :root body.vtt.game.system-eunos-blades #navigation input,
-  :root body.vtt.game.system-eunos-blades #navigation option,
-  :root body.vtt.game.system-eunos-blades #navigation textarea,
-  :root body.vtt.game.system-eunos-blades #hotbar select,
-  :root body.vtt.game.system-eunos-blades #hotbar input,
-  :root body.vtt.game.system-eunos-blades #hotbar option,
-  :root body.vtt.game.system-eunos-blades #hotbar textarea,
-  :root body.vtt.game.system-eunos-blades #players select,
-  :root body.vtt.game.system-eunos-blades #players input,
-  :root body.vtt.game.system-eunos-blades #players option,
-  :root body.vtt.game.system-eunos-blades #players textarea {
+  :root body.vtt.game.system-eunos-blades #interface select:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #interface input:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #interface option:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #interface textarea:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls select:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls input:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls option:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls textarea:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation select:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation input:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation option:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation textarea:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar select:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar input:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar option:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar textarea:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players select:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players input:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players option:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players textarea:not(i):not(button) {
     margin: var(--margin-input);
     padding: var(--padding-input);
     min-height: unset;
@@ -4306,86 +4306,86 @@ template {
     border-width: var(--border-width-input);
     -webkit-box-shadow: var(--box-shadow-input);
     box-shadow: var(--box-shadow-input); }
-    :root body.vtt.game.system-eunos-blades #interface select[type="number"], :root body.vtt.game.system-eunos-blades #interface select[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #interface select[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #interface input[type="number"],
-    :root body.vtt.game.system-eunos-blades #interface input[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #interface input[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #interface option[type="number"],
-    :root body.vtt.game.system-eunos-blades #interface option[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #interface option[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #interface textarea[type="number"],
-    :root body.vtt.game.system-eunos-blades #interface textarea[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #interface textarea[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #controls select[type="number"],
-    :root body.vtt.game.system-eunos-blades #controls select[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #controls select[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #controls input[type="number"],
-    :root body.vtt.game.system-eunos-blades #controls input[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #controls input[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #controls option[type="number"],
-    :root body.vtt.game.system-eunos-blades #controls option[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #controls option[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #controls textarea[type="number"],
-    :root body.vtt.game.system-eunos-blades #controls textarea[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #controls textarea[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #navigation select[type="number"],
-    :root body.vtt.game.system-eunos-blades #navigation select[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #navigation select[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #navigation input[type="number"],
-    :root body.vtt.game.system-eunos-blades #navigation input[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #navigation input[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #navigation option[type="number"],
-    :root body.vtt.game.system-eunos-blades #navigation option[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #navigation option[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #navigation textarea[type="number"],
-    :root body.vtt.game.system-eunos-blades #navigation textarea[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #navigation textarea[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #hotbar select[type="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar select[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar select[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #hotbar input[type="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar input[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar input[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #hotbar option[type="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar option[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar option[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #hotbar textarea[type="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar textarea[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar textarea[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #players select[type="number"],
-    :root body.vtt.game.system-eunos-blades #players select[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #players select[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #players input[type="number"],
-    :root body.vtt.game.system-eunos-blades #players input[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #players input[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #players option[type="number"],
-    :root body.vtt.game.system-eunos-blades #players option[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #players option[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #players textarea[type="number"],
-    :root body.vtt.game.system-eunos-blades #players textarea[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #players textarea[data-dtype="number"] option {
+    :root body.vtt.game.system-eunos-blades #interface select:not(i):not(button)[type="number"], :root body.vtt.game.system-eunos-blades #interface select:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #interface select:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #interface input:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #interface input:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #interface input:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #interface option:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #interface option:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #interface option:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #interface textarea:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #interface textarea:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #interface textarea:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #controls select:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #controls select:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #controls select:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #controls input:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #controls input:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #controls input:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #controls option:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #controls option:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #controls option:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #controls textarea:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #controls textarea:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #controls textarea:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #navigation select:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #navigation select:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #navigation select:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #navigation input:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #navigation input:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #navigation input:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #navigation option:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #navigation option:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #navigation option:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #navigation textarea:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #navigation textarea:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #navigation textarea:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #hotbar select:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar select:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar select:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #hotbar input:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar input:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar input:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #hotbar option:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar option:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar option:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #hotbar textarea:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar textarea:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar textarea:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #players select:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #players select:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #players select:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #players input:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #players input:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #players input:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #players option:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #players option:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #players option:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #players textarea:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #players textarea:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #players textarea:not(i):not(button)[data-dtype="number"] option {
       text-align: right; }
-    :root body.vtt.game.system-eunos-blades #interface select option,
-    :root body.vtt.game.system-eunos-blades #interface input option,
-    :root body.vtt.game.system-eunos-blades #interface option option,
-    :root body.vtt.game.system-eunos-blades #interface textarea option,
-    :root body.vtt.game.system-eunos-blades #controls select option,
-    :root body.vtt.game.system-eunos-blades #controls input option,
-    :root body.vtt.game.system-eunos-blades #controls option option,
-    :root body.vtt.game.system-eunos-blades #controls textarea option,
-    :root body.vtt.game.system-eunos-blades #navigation select option,
-    :root body.vtt.game.system-eunos-blades #navigation input option,
-    :root body.vtt.game.system-eunos-blades #navigation option option,
-    :root body.vtt.game.system-eunos-blades #navigation textarea option,
-    :root body.vtt.game.system-eunos-blades #hotbar select option,
-    :root body.vtt.game.system-eunos-blades #hotbar input option,
-    :root body.vtt.game.system-eunos-blades #hotbar option option,
-    :root body.vtt.game.system-eunos-blades #hotbar textarea option,
-    :root body.vtt.game.system-eunos-blades #players select option,
-    :root body.vtt.game.system-eunos-blades #players input option,
-    :root body.vtt.game.system-eunos-blades #players option option,
-    :root body.vtt.game.system-eunos-blades #players textarea option {
+    :root body.vtt.game.system-eunos-blades #interface select:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #interface input:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #interface option:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #interface textarea:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #controls select:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #controls input:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #controls option:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #controls textarea:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #navigation select:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #navigation input:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #navigation option:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #navigation textarea:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #hotbar select:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #hotbar input:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #hotbar option:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #hotbar textarea:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #players select:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #players input:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #players option:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #players textarea:not(i):not(button) option {
       color: var(--blades-white);
       background: var(--blades-black); }
   :root body.vtt.game.system-eunos-blades #interface p + p,
@@ -6517,15 +6517,15 @@ template {
   :root body.vtt.game.system-eunos-blades #hotbar #chat button,
   :root body.vtt.game.system-eunos-blades #players #chat button {
     color: var(--blades-white); }
-  :root body.vtt.game.system-eunos-blades #interface #chat h1, :root body.vtt.game.system-eunos-blades #interface #chat h2,
-  :root body.vtt.game.system-eunos-blades #controls #chat h1,
-  :root body.vtt.game.system-eunos-blades #controls #chat h2,
-  :root body.vtt.game.system-eunos-blades #navigation #chat h1,
-  :root body.vtt.game.system-eunos-blades #navigation #chat h2,
-  :root body.vtt.game.system-eunos-blades #hotbar #chat h1,
-  :root body.vtt.game.system-eunos-blades #hotbar #chat h2,
-  :root body.vtt.game.system-eunos-blades #players #chat h1,
-  :root body.vtt.game.system-eunos-blades #players #chat h2 {
+  :root body.vtt.game.system-eunos-blades #interface #chat h1:not(i):not(button), :root body.vtt.game.system-eunos-blades #interface #chat h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls #chat h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls #chat h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation #chat h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation #chat h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar #chat h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar #chat h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players #chat h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players #chat h2:not(i):not(button) {
     margin: var(--margin-heading-strong);
     padding: var(--padding-heading-strong);
     color: var(--color-heading-strong);
@@ -6542,15 +6542,15 @@ template {
     border-width: var(--border-width-heading-strong);
     -webkit-box-shadow: var(--box-shadow-heading-strong);
     box-shadow: var(--box-shadow-heading-strong); }
-  :root body.vtt.game.system-eunos-blades #interface #chat h3, :root body.vtt.game.system-eunos-blades #interface #chat h4,
-  :root body.vtt.game.system-eunos-blades #controls #chat h3,
-  :root body.vtt.game.system-eunos-blades #controls #chat h4,
-  :root body.vtt.game.system-eunos-blades #navigation #chat h3,
-  :root body.vtt.game.system-eunos-blades #navigation #chat h4,
-  :root body.vtt.game.system-eunos-blades #hotbar #chat h3,
-  :root body.vtt.game.system-eunos-blades #hotbar #chat h4,
-  :root body.vtt.game.system-eunos-blades #players #chat h3,
-  :root body.vtt.game.system-eunos-blades #players #chat h4 {
+  :root body.vtt.game.system-eunos-blades #interface #chat h3:not(i):not(button), :root body.vtt.game.system-eunos-blades #interface #chat h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls #chat h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls #chat h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation #chat h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation #chat h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar #chat h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar #chat h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players #chat h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players #chat h4:not(i):not(button) {
     margin: var(--margin-heading);
     padding: var(--padding-heading);
     color: var(--color-heading);
@@ -6567,49 +6567,49 @@ template {
     border-width: var(--border-width-heading);
     -webkit-box-shadow: var(--box-shadow-heading);
     box-shadow: var(--box-shadow-heading); }
-  :root body.vtt.game.system-eunos-blades #interface #chat h1,
-  :root body.vtt.game.system-eunos-blades #controls #chat h1,
-  :root body.vtt.game.system-eunos-blades #navigation #chat h1,
-  :root body.vtt.game.system-eunos-blades #hotbar #chat h1,
-  :root body.vtt.game.system-eunos-blades #players #chat h1 {
+  :root body.vtt.game.system-eunos-blades #interface #chat h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls #chat h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation #chat h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar #chat h1:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players #chat h1:not(i):not(button) {
     font-size: 1.25rem; }
-  :root body.vtt.game.system-eunos-blades #interface #chat h2,
-  :root body.vtt.game.system-eunos-blades #interface #chat h3,
-  :root body.vtt.game.system-eunos-blades #controls #chat h2,
-  :root body.vtt.game.system-eunos-blades #controls #chat h3,
-  :root body.vtt.game.system-eunos-blades #navigation #chat h2,
-  :root body.vtt.game.system-eunos-blades #navigation #chat h3,
-  :root body.vtt.game.system-eunos-blades #hotbar #chat h2,
-  :root body.vtt.game.system-eunos-blades #hotbar #chat h3,
-  :root body.vtt.game.system-eunos-blades #players #chat h2,
-  :root body.vtt.game.system-eunos-blades #players #chat h3 {
+  :root body.vtt.game.system-eunos-blades #interface #chat h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #interface #chat h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls #chat h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls #chat h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation #chat h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation #chat h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar #chat h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar #chat h3:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players #chat h2:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players #chat h3:not(i):not(button) {
     font-size: 1.125rem; }
-  :root body.vtt.game.system-eunos-blades #interface #chat h4,
-  :root body.vtt.game.system-eunos-blades #controls #chat h4,
-  :root body.vtt.game.system-eunos-blades #navigation #chat h4,
-  :root body.vtt.game.system-eunos-blades #hotbar #chat h4,
-  :root body.vtt.game.system-eunos-blades #players #chat h4 {
+  :root body.vtt.game.system-eunos-blades #interface #chat h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls #chat h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation #chat h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar #chat h4:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players #chat h4:not(i):not(button) {
     font-size: 1rem; }
-  :root body.vtt.game.system-eunos-blades #interface #chat select,
-  :root body.vtt.game.system-eunos-blades #interface #chat input,
-  :root body.vtt.game.system-eunos-blades #interface #chat option,
-  :root body.vtt.game.system-eunos-blades #interface #chat textarea,
-  :root body.vtt.game.system-eunos-blades #controls #chat select,
-  :root body.vtt.game.system-eunos-blades #controls #chat input,
-  :root body.vtt.game.system-eunos-blades #controls #chat option,
-  :root body.vtt.game.system-eunos-blades #controls #chat textarea,
-  :root body.vtt.game.system-eunos-blades #navigation #chat select,
-  :root body.vtt.game.system-eunos-blades #navigation #chat input,
-  :root body.vtt.game.system-eunos-blades #navigation #chat option,
-  :root body.vtt.game.system-eunos-blades #navigation #chat textarea,
-  :root body.vtt.game.system-eunos-blades #hotbar #chat select,
-  :root body.vtt.game.system-eunos-blades #hotbar #chat input,
-  :root body.vtt.game.system-eunos-blades #hotbar #chat option,
-  :root body.vtt.game.system-eunos-blades #hotbar #chat textarea,
-  :root body.vtt.game.system-eunos-blades #players #chat select,
-  :root body.vtt.game.system-eunos-blades #players #chat input,
-  :root body.vtt.game.system-eunos-blades #players #chat option,
-  :root body.vtt.game.system-eunos-blades #players #chat textarea {
+  :root body.vtt.game.system-eunos-blades #interface #chat select:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #interface #chat input:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #interface #chat option:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #interface #chat textarea:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls #chat select:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls #chat input:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls #chat option:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #controls #chat textarea:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation #chat select:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation #chat input:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation #chat option:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #navigation #chat textarea:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar #chat select:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar #chat input:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar #chat option:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #hotbar #chat textarea:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players #chat select:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players #chat input:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players #chat option:not(i):not(button),
+  :root body.vtt.game.system-eunos-blades #players #chat textarea:not(i):not(button) {
     margin: var(--margin-input);
     padding: var(--padding-input);
     min-height: unset;
@@ -6629,86 +6629,86 @@ template {
     border-width: var(--border-width-input);
     -webkit-box-shadow: var(--box-shadow-input);
     box-shadow: var(--box-shadow-input); }
-    :root body.vtt.game.system-eunos-blades #interface #chat select[type="number"], :root body.vtt.game.system-eunos-blades #interface #chat select[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #interface #chat select[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #interface #chat input[type="number"],
-    :root body.vtt.game.system-eunos-blades #interface #chat input[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #interface #chat input[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #interface #chat option[type="number"],
-    :root body.vtt.game.system-eunos-blades #interface #chat option[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #interface #chat option[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #interface #chat textarea[type="number"],
-    :root body.vtt.game.system-eunos-blades #interface #chat textarea[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #interface #chat textarea[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #controls #chat select[type="number"],
-    :root body.vtt.game.system-eunos-blades #controls #chat select[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #controls #chat select[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #controls #chat input[type="number"],
-    :root body.vtt.game.system-eunos-blades #controls #chat input[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #controls #chat input[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #controls #chat option[type="number"],
-    :root body.vtt.game.system-eunos-blades #controls #chat option[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #controls #chat option[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #controls #chat textarea[type="number"],
-    :root body.vtt.game.system-eunos-blades #controls #chat textarea[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #controls #chat textarea[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #navigation #chat select[type="number"],
-    :root body.vtt.game.system-eunos-blades #navigation #chat select[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #navigation #chat select[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #navigation #chat input[type="number"],
-    :root body.vtt.game.system-eunos-blades #navigation #chat input[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #navigation #chat input[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #navigation #chat option[type="number"],
-    :root body.vtt.game.system-eunos-blades #navigation #chat option[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #navigation #chat option[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #navigation #chat textarea[type="number"],
-    :root body.vtt.game.system-eunos-blades #navigation #chat textarea[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #navigation #chat textarea[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat select[type="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar #chat select[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar #chat select[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat input[type="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar #chat input[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar #chat input[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat option[type="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar #chat option[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar #chat option[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat textarea[type="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar #chat textarea[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #hotbar #chat textarea[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #players #chat select[type="number"],
-    :root body.vtt.game.system-eunos-blades #players #chat select[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #players #chat select[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #players #chat input[type="number"],
-    :root body.vtt.game.system-eunos-blades #players #chat input[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #players #chat input[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #players #chat option[type="number"],
-    :root body.vtt.game.system-eunos-blades #players #chat option[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #players #chat option[data-dtype="number"] option,
-    :root body.vtt.game.system-eunos-blades #players #chat textarea[type="number"],
-    :root body.vtt.game.system-eunos-blades #players #chat textarea[data-dtype="number"],
-    :root body.vtt.game.system-eunos-blades #players #chat textarea[data-dtype="number"] option {
+    :root body.vtt.game.system-eunos-blades #interface #chat select:not(i):not(button)[type="number"], :root body.vtt.game.system-eunos-blades #interface #chat select:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #interface #chat select:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #interface #chat input:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #interface #chat input:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #interface #chat input:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #interface #chat option:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #interface #chat option:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #interface #chat option:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #interface #chat textarea:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #interface #chat textarea:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #interface #chat textarea:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #controls #chat select:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #controls #chat select:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #controls #chat select:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #controls #chat input:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #controls #chat input:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #controls #chat input:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #controls #chat option:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #controls #chat option:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #controls #chat option:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #controls #chat textarea:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #controls #chat textarea:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #controls #chat textarea:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #navigation #chat select:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #navigation #chat select:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #navigation #chat select:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #navigation #chat input:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #navigation #chat input:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #navigation #chat input:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #navigation #chat option:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #navigation #chat option:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #navigation #chat option:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #navigation #chat textarea:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #navigation #chat textarea:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #navigation #chat textarea:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat select:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar #chat select:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar #chat select:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat input:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar #chat input:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar #chat input:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat option:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar #chat option:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar #chat option:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat textarea:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar #chat textarea:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #hotbar #chat textarea:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #players #chat select:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #players #chat select:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #players #chat select:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #players #chat input:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #players #chat input:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #players #chat input:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #players #chat option:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #players #chat option:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #players #chat option:not(i):not(button)[data-dtype="number"] option,
+    :root body.vtt.game.system-eunos-blades #players #chat textarea:not(i):not(button)[type="number"],
+    :root body.vtt.game.system-eunos-blades #players #chat textarea:not(i):not(button)[data-dtype="number"],
+    :root body.vtt.game.system-eunos-blades #players #chat textarea:not(i):not(button)[data-dtype="number"] option {
       text-align: right; }
-    :root body.vtt.game.system-eunos-blades #interface #chat select option,
-    :root body.vtt.game.system-eunos-blades #interface #chat input option,
-    :root body.vtt.game.system-eunos-blades #interface #chat option option,
-    :root body.vtt.game.system-eunos-blades #interface #chat textarea option,
-    :root body.vtt.game.system-eunos-blades #controls #chat select option,
-    :root body.vtt.game.system-eunos-blades #controls #chat input option,
-    :root body.vtt.game.system-eunos-blades #controls #chat option option,
-    :root body.vtt.game.system-eunos-blades #controls #chat textarea option,
-    :root body.vtt.game.system-eunos-blades #navigation #chat select option,
-    :root body.vtt.game.system-eunos-blades #navigation #chat input option,
-    :root body.vtt.game.system-eunos-blades #navigation #chat option option,
-    :root body.vtt.game.system-eunos-blades #navigation #chat textarea option,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat select option,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat input option,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat option option,
-    :root body.vtt.game.system-eunos-blades #hotbar #chat textarea option,
-    :root body.vtt.game.system-eunos-blades #players #chat select option,
-    :root body.vtt.game.system-eunos-blades #players #chat input option,
-    :root body.vtt.game.system-eunos-blades #players #chat option option,
-    :root body.vtt.game.system-eunos-blades #players #chat textarea option {
+    :root body.vtt.game.system-eunos-blades #interface #chat select:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #interface #chat input:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #interface #chat option:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #interface #chat textarea:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #controls #chat select:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #controls #chat input:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #controls #chat option:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #controls #chat textarea:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #navigation #chat select:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #navigation #chat input:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #navigation #chat option:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #navigation #chat textarea:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat select:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat input:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat option:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #hotbar #chat textarea:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #players #chat select:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #players #chat input:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #players #chat option:not(i):not(button) option,
+    :root body.vtt.game.system-eunos-blades #players #chat textarea:not(i):not(button) option {
       color: var(--blades-white);
       background: var(--blades-black); }
   :root body.vtt.game.system-eunos-blades #interface #chat p + p,
@@ -8966,7 +8966,7 @@ template {
       font-family: var(--font-awesome-duotone); }
     :root body.vtt.game.system-eunos-blades .app.window-app button {
       color: var(--blades-white); }
-    :root body.vtt.game.system-eunos-blades .app.window-app h1, :root body.vtt.game.system-eunos-blades .app.window-app h2 {
+    :root body.vtt.game.system-eunos-blades .app.window-app h1:not(i):not(button), :root body.vtt.game.system-eunos-blades .app.window-app h2:not(i):not(button) {
       margin: var(--margin-heading-strong);
       padding: var(--padding-heading-strong);
       color: var(--color-heading-strong);
@@ -8983,7 +8983,7 @@ template {
       border-width: var(--border-width-heading-strong);
       -webkit-box-shadow: var(--box-shadow-heading-strong);
       box-shadow: var(--box-shadow-heading-strong); }
-    :root body.vtt.game.system-eunos-blades .app.window-app h3, :root body.vtt.game.system-eunos-blades .app.window-app h4 {
+    :root body.vtt.game.system-eunos-blades .app.window-app h3:not(i):not(button), :root body.vtt.game.system-eunos-blades .app.window-app h4:not(i):not(button) {
       margin: var(--margin-heading);
       padding: var(--padding-heading);
       color: var(--color-heading);
@@ -9000,17 +9000,17 @@ template {
       border-width: var(--border-width-heading);
       -webkit-box-shadow: var(--box-shadow-heading);
       box-shadow: var(--box-shadow-heading); }
-    :root body.vtt.game.system-eunos-blades .app.window-app h1 {
+    :root body.vtt.game.system-eunos-blades .app.window-app h1:not(i):not(button) {
       font-size: 1.25rem; }
-    :root body.vtt.game.system-eunos-blades .app.window-app h2,
-    :root body.vtt.game.system-eunos-blades .app.window-app h3 {
+    :root body.vtt.game.system-eunos-blades .app.window-app h2:not(i):not(button),
+    :root body.vtt.game.system-eunos-blades .app.window-app h3:not(i):not(button) {
       font-size: 1.125rem; }
-    :root body.vtt.game.system-eunos-blades .app.window-app h4 {
+    :root body.vtt.game.system-eunos-blades .app.window-app h4:not(i):not(button) {
       font-size: 1rem; }
-    :root body.vtt.game.system-eunos-blades .app.window-app select,
-    :root body.vtt.game.system-eunos-blades .app.window-app input,
-    :root body.vtt.game.system-eunos-blades .app.window-app option,
-    :root body.vtt.game.system-eunos-blades .app.window-app textarea {
+    :root body.vtt.game.system-eunos-blades .app.window-app select:not(i):not(button),
+    :root body.vtt.game.system-eunos-blades .app.window-app input:not(i):not(button),
+    :root body.vtt.game.system-eunos-blades .app.window-app option:not(i):not(button),
+    :root body.vtt.game.system-eunos-blades .app.window-app textarea:not(i):not(button) {
       margin: var(--margin-input);
       padding: var(--padding-input);
       min-height: unset;
@@ -9030,22 +9030,22 @@ template {
       border-width: var(--border-width-input);
       -webkit-box-shadow: var(--box-shadow-input);
       box-shadow: var(--box-shadow-input); }
-      :root body.vtt.game.system-eunos-blades .app.window-app select[type="number"], :root body.vtt.game.system-eunos-blades .app.window-app select[data-dtype="number"],
-      :root body.vtt.game.system-eunos-blades .app.window-app select[data-dtype="number"] option,
-      :root body.vtt.game.system-eunos-blades .app.window-app input[type="number"],
-      :root body.vtt.game.system-eunos-blades .app.window-app input[data-dtype="number"],
-      :root body.vtt.game.system-eunos-blades .app.window-app input[data-dtype="number"] option,
-      :root body.vtt.game.system-eunos-blades .app.window-app option[type="number"],
-      :root body.vtt.game.system-eunos-blades .app.window-app option[data-dtype="number"],
-      :root body.vtt.game.system-eunos-blades .app.window-app option[data-dtype="number"] option,
-      :root body.vtt.game.system-eunos-blades .app.window-app textarea[type="number"],
-      :root body.vtt.game.system-eunos-blades .app.window-app textarea[data-dtype="number"],
-      :root body.vtt.game.system-eunos-blades .app.window-app textarea[data-dtype="number"] option {
+      :root body.vtt.game.system-eunos-blades .app.window-app select:not(i):not(button)[type="number"], :root body.vtt.game.system-eunos-blades .app.window-app select:not(i):not(button)[data-dtype="number"],
+      :root body.vtt.game.system-eunos-blades .app.window-app select:not(i):not(button)[data-dtype="number"] option,
+      :root body.vtt.game.system-eunos-blades .app.window-app input:not(i):not(button)[type="number"],
+      :root body.vtt.game.system-eunos-blades .app.window-app input:not(i):not(button)[data-dtype="number"],
+      :root body.vtt.game.system-eunos-blades .app.window-app input:not(i):not(button)[data-dtype="number"] option,
+      :root body.vtt.game.system-eunos-blades .app.window-app option:not(i):not(button)[type="number"],
+      :root body.vtt.game.system-eunos-blades .app.window-app option:not(i):not(button)[data-dtype="number"],
+      :root body.vtt.game.system-eunos-blades .app.window-app option:not(i):not(button)[data-dtype="number"] option,
+      :root body.vtt.game.system-eunos-blades .app.window-app textarea:not(i):not(button)[type="number"],
+      :root body.vtt.game.system-eunos-blades .app.window-app textarea:not(i):not(button)[data-dtype="number"],
+      :root body.vtt.game.system-eunos-blades .app.window-app textarea:not(i):not(button)[data-dtype="number"] option {
         text-align: right; }
-      :root body.vtt.game.system-eunos-blades .app.window-app select option,
-      :root body.vtt.game.system-eunos-blades .app.window-app input option,
-      :root body.vtt.game.system-eunos-blades .app.window-app option option,
-      :root body.vtt.game.system-eunos-blades .app.window-app textarea option {
+      :root body.vtt.game.system-eunos-blades .app.window-app select:not(i):not(button) option,
+      :root body.vtt.game.system-eunos-blades .app.window-app input:not(i):not(button) option,
+      :root body.vtt.game.system-eunos-blades .app.window-app option:not(i):not(button) option,
+      :root body.vtt.game.system-eunos-blades .app.window-app textarea:not(i):not(button) option {
         color: var(--blades-white);
         background: var(--blades-black); }
     :root body.vtt.game.system-eunos-blades .app.window-app p + p {
@@ -11997,12 +11997,30 @@ template {
           -webkit-margin-before: 7px;
           margin-block-start: 7px;
           -webkit-margin-after: 7px;
-          margin-block-end: 7px; }
+          margin-block-end: 7px;
+          text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
+        :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content .inline-doc-img {
+          display: inline;
+          height: 24px;
+          width: 24px;
+          vertical-align: top;
+          margin: -5px 5px -5px 0; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content .inline-doc-link {
+          color: var(--blades-black-dark);
+          text-decoration: none;
+          font-family: var(--font-emphasis);
+          text-shadow: none;
+          background: var(--blades-white);
+          border-radius: 6px;
+          padding: 2px 6px;
+          pointer-events: auto;
+          cursor: pointer;
+          -webkit-box-shadow: 0 0 4px var(--blades-black), 0 0 4px var(--blades-black), 0 0 4px var(--blades-black), 0 0 4px var(--blades-black);
+          box-shadow: 0 0 4px var(--blades-black), 0 0 4px var(--blades-black), 0 0 4px var(--blades-black), 0 0 4px var(--blades-black); }
         :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content .tox-two-column-flex {
           display: -webkit-box;
           display: -ms-flexbox;
           display: flex;
-          width: 100%;
           height: auto;
           -webkit-box-orient: horizontal;
           -webkit-box-direction: normal;
@@ -12013,8 +12031,20 @@ template {
           gap: 2px 5px;
           -ms-flex-line-pack: stretch;
           align-content: stretch;
-          padding: 0; }
-          :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content .tox-two-column-flex > * {
+          padding: 0;
+          margin: 0 20px; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content .tox-two-column-flex p {
+            line-height: 1rem;
+            padding: 3px;
+            margin: 4px 0; }
+            :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content .tox-two-column-flex p:not(.inline-doc-link-container)::before {
+              content: "◊";
+              margin-right: 5px;
+              font-family: var(--font-emphasis);
+              font-size: 0.625rem;
+              vertical-align: top;
+              color: var(--blades-gold); }
+          :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content .tox-two-column-flex > *, :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content .tox-two-column-flex > p {
             -ms-flex-preferred-size: 49%;
             flex-basis: 49%;
             -ms-flex-negative: 1;
@@ -12023,16 +12053,7 @@ template {
             -ms-flex-positive: 1;
             flex-grow: 1;
             max-width: 50%;
-            margin: 0;
-            line-height: 1rem;
-            padding: 3px; }
-            :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) .editor-content .tox-two-column-flex > *::before {
-              content: "◊";
-              margin-right: 5px;
-              font-family: var(--font-emphasis);
-              font-size: 0.625rem;
-              vertical-align: top;
-              color: var(--blades-gold); }
+            margin: 0; }
   :root body.vtt.game.system-eunos-blades .app.window-app .tab-label + .editor:not(.tinymce) {
     margin-top: -0.3125rem !important; }
   :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce {
@@ -12053,12 +12074,30 @@ template {
         -webkit-margin-before: 7px;
         margin-block-start: 7px;
         -webkit-margin-after: 7px;
-        margin-block-end: 7px; }
+        margin-block-end: 7px;
+        text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
+      :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content .inline-doc-img {
+        display: inline;
+        height: 24px;
+        width: 24px;
+        vertical-align: top;
+        margin: -5px 5px -5px 0; }
+      :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content .inline-doc-link {
+        color: var(--blades-black-dark);
+        text-decoration: none;
+        font-family: var(--font-emphasis);
+        text-shadow: none;
+        background: var(--blades-white);
+        border-radius: 6px;
+        padding: 2px 6px;
+        pointer-events: auto;
+        cursor: pointer;
+        -webkit-box-shadow: 0 0 4px var(--blades-black), 0 0 4px var(--blades-black), 0 0 4px var(--blades-black), 0 0 4px var(--blades-black);
+        box-shadow: 0 0 4px var(--blades-black), 0 0 4px var(--blades-black), 0 0 4px var(--blades-black), 0 0 4px var(--blades-black); }
       :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content .tox-two-column-flex {
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
-        width: 100%;
         height: auto;
         -webkit-box-orient: horizontal;
         -webkit-box-direction: normal;
@@ -12069,8 +12108,20 @@ template {
         gap: 2px 5px;
         -ms-flex-line-pack: stretch;
         align-content: stretch;
-        padding: 0; }
-        :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content .tox-two-column-flex > * {
+        padding: 0;
+        margin: 0 20px; }
+        :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content .tox-two-column-flex p {
+          line-height: 1rem;
+          padding: 3px;
+          margin: 4px 0; }
+          :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content .tox-two-column-flex p:not(.inline-doc-link-container)::before {
+            content: "◊";
+            margin-right: 5px;
+            font-family: var(--font-emphasis);
+            font-size: 0.625rem;
+            vertical-align: top;
+            color: var(--blades-gold); }
+        :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content .tox-two-column-flex > *, :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content .tox-two-column-flex > p {
           -ms-flex-preferred-size: 49%;
           flex-basis: 49%;
           -ms-flex-negative: 1;
@@ -12079,16 +12130,7 @@ template {
           -ms-flex-positive: 1;
           flex-grow: 1;
           max-width: 50%;
-          margin: 0;
-          line-height: 1rem;
-          padding: 3px; }
-          :root body.vtt.game.system-eunos-blades .app.window-app .editor.tinymce .editor-content .tox-two-column-flex > *::before {
-            content: "◊";
-            margin-right: 5px;
-            font-family: var(--font-emphasis);
-            font-size: 0.625rem;
-            vertical-align: top;
-            color: var(--blades-gold); }
+          margin: 0; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet {
     overflow: visible; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-header {

@@ -1426,7 +1426,7 @@ html, :root {
       font-family: var(--font-awesome-duotone); }
     html button, :root button {
       color: var(--blades-white); }
-    html h1, html h2, :root h1, :root h2 {
+    html h1:not(i):not(button), html h2:not(i):not(button), :root h1:not(i):not(button), :root h2:not(i):not(button) {
       margin: var(--margin-heading-strong);
       padding: var(--padding-heading-strong);
       color: var(--color-heading-strong);
@@ -1443,7 +1443,7 @@ html, :root {
       border-width: var(--border-width-heading-strong);
       -webkit-box-shadow: var(--box-shadow-heading-strong);
       box-shadow: var(--box-shadow-heading-strong); }
-    html h3, html h4, :root h3, :root h4 {
+    html h3:not(i):not(button), html h4:not(i):not(button), :root h3:not(i):not(button), :root h4:not(i):not(button) {
       margin: var(--margin-heading);
       padding: var(--padding-heading);
       color: var(--color-heading);
@@ -1460,21 +1460,21 @@ html, :root {
       border-width: var(--border-width-heading);
       -webkit-box-shadow: var(--box-shadow-heading);
       box-shadow: var(--box-shadow-heading); }
-    html h1, :root h1 {
+    html h1:not(i):not(button), :root h1:not(i):not(button) {
       font-size: 1.25rem; }
-    html h2,
-    html h3, :root h2,
-    :root h3 {
+    html h2:not(i):not(button),
+    html h3:not(i):not(button), :root h2:not(i):not(button),
+    :root h3:not(i):not(button) {
       font-size: 1.125rem; }
-    html h4, :root h4 {
+    html h4:not(i):not(button), :root h4:not(i):not(button) {
       font-size: 1rem; }
-    html select,
-    html input,
-    html option,
-    html textarea, :root select,
-    :root input,
-    :root option,
-    :root textarea {
+    html select:not(i):not(button),
+    html input:not(i):not(button),
+    html option:not(i):not(button),
+    html textarea:not(i):not(button), :root select:not(i):not(button),
+    :root input:not(i):not(button),
+    :root option:not(i):not(button),
+    :root textarea:not(i):not(button) {
       margin: var(--margin-input);
       padding: var(--padding-input);
       min-height: unset;
@@ -1494,35 +1494,35 @@ html, :root {
       border-width: var(--border-width-input);
       -webkit-box-shadow: var(--box-shadow-input);
       box-shadow: var(--box-shadow-input); }
-      html select[type="number"], html select[data-dtype="number"],
-      html select[data-dtype="number"] option,
-      html input[type="number"],
-      html input[data-dtype="number"],
-      html input[data-dtype="number"] option,
-      html option[type="number"],
-      html option[data-dtype="number"],
-      html option[data-dtype="number"] option,
-      html textarea[type="number"],
-      html textarea[data-dtype="number"],
-      html textarea[data-dtype="number"] option, :root select[type="number"], :root select[data-dtype="number"],
-      :root select[data-dtype="number"] option,
-      :root input[type="number"],
-      :root input[data-dtype="number"],
-      :root input[data-dtype="number"] option,
-      :root option[type="number"],
-      :root option[data-dtype="number"],
-      :root option[data-dtype="number"] option,
-      :root textarea[type="number"],
-      :root textarea[data-dtype="number"],
-      :root textarea[data-dtype="number"] option {
+      html select:not(i):not(button)[type="number"], html select:not(i):not(button)[data-dtype="number"],
+      html select:not(i):not(button)[data-dtype="number"] option,
+      html input:not(i):not(button)[type="number"],
+      html input:not(i):not(button)[data-dtype="number"],
+      html input:not(i):not(button)[data-dtype="number"] option,
+      html option:not(i):not(button)[type="number"],
+      html option:not(i):not(button)[data-dtype="number"],
+      html option:not(i):not(button)[data-dtype="number"] option,
+      html textarea:not(i):not(button)[type="number"],
+      html textarea:not(i):not(button)[data-dtype="number"],
+      html textarea:not(i):not(button)[data-dtype="number"] option, :root select:not(i):not(button)[type="number"], :root select:not(i):not(button)[data-dtype="number"],
+      :root select:not(i):not(button)[data-dtype="number"] option,
+      :root input:not(i):not(button)[type="number"],
+      :root input:not(i):not(button)[data-dtype="number"],
+      :root input:not(i):not(button)[data-dtype="number"] option,
+      :root option:not(i):not(button)[type="number"],
+      :root option:not(i):not(button)[data-dtype="number"],
+      :root option:not(i):not(button)[data-dtype="number"] option,
+      :root textarea:not(i):not(button)[type="number"],
+      :root textarea:not(i):not(button)[data-dtype="number"],
+      :root textarea:not(i):not(button)[data-dtype="number"] option {
         text-align: right; }
-      html select option,
-      html input option,
-      html option option,
-      html textarea option, :root select option,
-      :root input option,
-      :root option option,
-      :root textarea option {
+      html select:not(i):not(button) option,
+      html input:not(i):not(button) option,
+      html option:not(i):not(button) option,
+      html textarea:not(i):not(button) option, :root select:not(i):not(button) option,
+      :root input:not(i):not(button) option,
+      :root option:not(i):not(button) option,
+      :root textarea:not(i):not(button) option {
         color: var(--blades-white);
         background: var(--blades-black); }
     html p + p, :root p + p {
@@ -3574,12 +3574,30 @@ html, :root {
     -webkit-margin-before: 7px;
     margin-block-start: 7px;
     -webkit-margin-after: 7px;
-    margin-block-end: 7px; }
+    margin-block-end: 7px;
+    text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark); }
+  #tinymce .inline-doc-img {
+    display: inline;
+    height: 24px;
+    width: 24px;
+    vertical-align: top;
+    margin: -5px 5px -5px 0; }
+  #tinymce .inline-doc-link {
+    color: var(--blades-black-dark);
+    text-decoration: none;
+    font-family: var(--font-emphasis);
+    text-shadow: none;
+    background: var(--blades-white);
+    border-radius: 6px;
+    padding: 2px 6px;
+    pointer-events: auto;
+    cursor: pointer;
+    -webkit-box-shadow: 0 0 4px var(--blades-black), 0 0 4px var(--blades-black), 0 0 4px var(--blades-black), 0 0 4px var(--blades-black);
+    box-shadow: 0 0 4px var(--blades-black), 0 0 4px var(--blades-black), 0 0 4px var(--blades-black), 0 0 4px var(--blades-black); }
   #tinymce .tox-two-column-flex {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    width: 100%;
     height: auto;
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
@@ -3590,8 +3608,20 @@ html, :root {
     gap: 2px 5px;
     -ms-flex-line-pack: stretch;
     align-content: stretch;
-    padding: 0; }
-    #tinymce .tox-two-column-flex > * {
+    padding: 0;
+    margin: 0 20px; }
+    #tinymce .tox-two-column-flex p {
+      line-height: 1rem;
+      padding: 3px;
+      margin: 4px 0; }
+      #tinymce .tox-two-column-flex p:not(.inline-doc-link-container)::before {
+        content: "◊";
+        margin-right: 5px;
+        font-family: var(--font-emphasis);
+        font-size: toRem(10px);
+        vertical-align: top;
+        color: var(--blades-gold); }
+    #tinymce .tox-two-column-flex > *, #tinymce .tox-two-column-flex > p {
       -ms-flex-preferred-size: 49%;
       flex-basis: 49%;
       -ms-flex-negative: 1;
@@ -3600,13 +3630,4 @@ html, :root {
       -ms-flex-positive: 1;
       flex-grow: 1;
       max-width: 50%;
-      margin: 0;
-      line-height: 1rem;
-      padding: 3px; }
-      #tinymce .tox-two-column-flex > *::before {
-        content: "◊";
-        margin-right: 5px;
-        font-family: var(--font-emphasis);
-        font-size: toRem(10px);
-        vertical-align: top;
-        color: var(--blades-gold); }
+      margin: 0; }

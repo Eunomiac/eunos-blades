@@ -24,20 +24,6 @@ class BladesFactionSheet extends BladesSheet {
             return context;
         }
         const sheetData = {
-            clocks: Object.fromEntries(Object.entries(this.actor.system.clocks).map(([clockNum, clockData], i) => [
-                clockNum,
-                {
-                    display: clockData?.display ?? "",
-                    value: clockData?.value ?? 0,
-                    max: clockData?.max ?? 0,
-                    isVisible: true,
-                    isNameVisible: false,
-                    isActive: false,
-                    color: "white",
-                    target: `system.clocks.${i + 1}.value`,
-                    gm_notes: clockData?.gm_notes ?? ""
-                }
-            ])),
             tierData: {
                 "class": "comp-tier comp-vertical comp-teeth",
                 "label": "Tier",
@@ -56,6 +42,18 @@ class BladesFactionSheet extends BladesSheet {
             ...sheetData
         };
     }
+    async _onClockAddClick(event) {
+        event.preventDefault();
+        this.actor.addClock();
+    }
+    async _onClockDeleteClick(event) {
+        event.preventDefault();
+        const clockID = $(event.currentTarget).data("clockId");
+        if (!clockID) {
+            return;
+        }
+        this.actor.deleteClock(clockID);
+    }
     activateListeners(html) {
         super.activateListeners(html);
         if (!this.options.editable) {
@@ -66,6 +64,12 @@ class BladesFactionSheet extends BladesSheet {
             const item = this.actor.items.get(element.data("itemId"));
             item?.sheet?.render(true);
         });
+        html
+            .find(".comp-control.comp-add-clock")
+            .on("click", this._onClockAddClick.bind(this));
+        html
+            .find(".comp-control.comp-delete-clock")
+            .on("click", this._onClockDeleteClick.bind(this));
     }
 }
 export default BladesFactionSheet;

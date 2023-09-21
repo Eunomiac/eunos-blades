@@ -22,21 +22,8 @@ class BladesFactionSheet extends BladesSheet {
   override getData() {
     const context = super.getData() as ReturnType<BladesSheet["getData"]>;
     if (!BladesActor.IsType(this.actor, BladesActorType.faction)) { return context }
+
     const sheetData: Partial<BladesActorSchema.Faction> & BladesActorDataOfType<BladesActorType.faction> = {
-      clocks: Object.fromEntries(Object.entries(this.actor.system.clocks).map(([clockNum, clockData], i) => [
-        clockNum,
-        {
-          display: clockData?.display ?? "",
-          value: clockData?.value ?? 0,
-          max: clockData?.max ?? 0,
-          isVisible: true,
-          isNameVisible: false,
-          isActive: false,
-          color: "white",
-          target: `system.clocks.${i+1}.value`,
-          gm_notes: clockData?.gm_notes ?? ""
-        }
-      ])) as Record<number, BladesClockData>,
       tierData: {
         "class": "comp-tier comp-vertical comp-teeth",
         "label": "Tier",
@@ -57,6 +44,18 @@ class BladesFactionSheet extends BladesSheet {
     };
   }
 
+  async _onClockAddClick(event: ClickEvent) {
+    event.preventDefault();
+    this.actor.addClock();
+  }
+
+  async _onClockDeleteClick(event: ClickEvent) {
+    event.preventDefault();
+    const clockID = $(event.currentTarget).data("clockId");
+    if (!clockID) { return }
+    this.actor.deleteClock(clockID);
+  }
+
   override activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
 
@@ -69,8 +68,18 @@ class BladesFactionSheet extends BladesSheet {
       const item = this.actor.items.get(element.data("itemId"));
       item?.sheet?.render(true);
     });
+    html
+      .find(".comp-control.comp-add-clock")
+      .on("click", this._onClockAddClick.bind(this));
+    html
+      .find(".comp-control.comp-delete-clock")
+      .on("click", this._onClockDeleteClick.bind(this));
 
   }
+}
+
+declare interface BladesFactionSheet {
+  actor: BladesFaction
 }
 
 export default BladesFactionSheet;

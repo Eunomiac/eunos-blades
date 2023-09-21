@@ -129,8 +129,9 @@ class BladesActorSheet extends BladesSheet {
       isVisible: true,
       isNameVisible: false,
       isActive: false,
-      ...this.actor.system.healing
-    };
+      ...this.actor.system.healing,
+      id: randomID()
+    } as BladesClockData;
 
     sheetData.stashData = {
       label: "Stash:",

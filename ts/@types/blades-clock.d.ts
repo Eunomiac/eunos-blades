@@ -1,6 +1,7 @@
 // declare global {
 
-  type BladesClockData = null|{
+  type BladesClockData = {
+    id: string,
     display: string,
     value: number,
     max: number,

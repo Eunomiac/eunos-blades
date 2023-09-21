@@ -43,7 +43,7 @@
   i.fa-duotone { font-family: var(--font-awesome-duotone)}
   button { color: var(--blades-white) }
 
-  h1, h2 {
+  h1:not(i):not(button), h2:not(i):not(button) {
     margin: var(--margin-heading-strong);
     padding: var(--padding-heading-strong);
 
@@ -66,7 +66,7 @@
     box-shadow: var(--box-shadow-heading-strong);
   }
 
-  h3, h4 {
+  h3:not(i):not(button), h4:not(i):not(button) {
     margin: var(--margin-heading);
     padding: var(--padding-heading);
 
@@ -89,15 +89,15 @@
     box-shadow: var(--box-shadow-heading);
   }
 
-  h1 { font-size: toRem(20px) }
-  h2,
-  h3 { font-size: toRem(18px) }
-  h4 { font-size: toRem(16px) }
+  h1:not(i):not(button) { font-size: toRem(20px) }
+  h2:not(i):not(button),
+  h3:not(i):not(button) { font-size: toRem(18px) }
+  h4:not(i):not(button) { font-size: toRem(16px) }
 
-  select,
-  input,
-  option,
-  textarea {
+  select:not(i):not(button),
+  input:not(i):not(button),
+  option:not(i):not(button),
+  textarea:not(i):not(button) {
     margin: var(--margin-input);
     padding: var(--padding-input);
 
