@@ -9,7 +9,7 @@ declare global {
     export interface Config {
       rollType: RollType,
       userID?: string,
-      rollSource?: SourceDocData,
+      rollPrimary?: PrimaryDocData,
       rollOpposition?: OppositionDocData,
       rollSubType?: RollSubType,
       rollDowntimeAction?: DowntimeAction,
@@ -41,9 +41,9 @@ declare global {
       rollType: RollType;
       rollSubType?: RollSubType;
       rollDowntimeAction?: DowntimeAction;
-      rollSourceType: string;
-      rollSourceID?: string;
-      rollSourceData?: SourceDocData;
+      rollPrimaryType: string;
+      rollPrimaryID?: string;
+      rollPrimaryData?: PrimaryDocData;
       rollTrait: RollTrait;
       rollModsData: Record<string,RollModStatus>;
       rollPositionInitial: Position;
@@ -83,7 +83,7 @@ declare global {
       system?: BladesActorSystem|BladesItemSystem,
 
       rollMods: BladesRollMod[],
-      rollSource: SourceDocData,
+      rollPrimary: PrimaryDocData,
       rollTraitData: NamedValueMax & {gmTooltip?: string, pcTooltip?: string},
       rollTraitOptions: Array<{name: string, value: RollTrait}>,
 
@@ -156,32 +156,68 @@ declare global {
       category: RollModCategory
     }
 
-    export interface SourceDocData {
-      rollSourceID: string|undefined,
-      rollSourceDoc: BladesDoc|undefined,
-      rollSourceName: string,
-      rollSourceType: string,
-      rollSourceImg: string,
+    export type PrimaryDoc =
+       BladesActorOfType<BladesActorType.pc>
+      |BladesActorOfType<BladesActorType.crew>
+      |BladesItemOfType<BladesItemType.cohort_gang>
+      |BladesItemOfType<BladesItemType.cohort_expert>
+      |BladesItemOfType<BladesItemType.gm_tracker>;
+
+    export interface PrimaryDocData {
+      rollPrimaryID: string|undefined,
+      rollPrimaryDoc: PrimaryDoc|undefined,
+      rollPrimaryName: string,
+      rollPrimaryType: string,
+      rollPrimaryImg: string,
 
       rollModsData: RollModData[],
       rollFactors: Partial<Record<Factor,FactorData>>
     }
 
+
+    // [BladesItemType.cohort_gang]: BladesItemSchema.Cohort_Gang,
+    // [BladesItemType.cohort_expert]: BladesItemSchema.Cohort_Expert,
+    // [BladesItemType.gm_tracker]: BladesItemSchema.Gm_Tracker,
+    // [BladesItemType.project]: BladesItemSchema.Project,
+    // [BladesItemType.ritual]: BladesItemSchema.Ritual,
+    // [BladesItemType.design]: BladesItemSchema.Design,
+    // [BladesItemType.location]: BladesItemSchema.Location,
+    // [BladesItemType.score]: BladesItemSchema.Score,
+
+
+    export type OppositionDoc =
+       BladesActorOfType<BladesActorType.npc>
+      |BladesActorOfType<BladesActorType.faction>
+      |BladesItemOfType<BladesItemType.cohort_gang>
+      |BladesItemOfType<BladesItemType.cohort_expert>
+      |BladesItemOfType<BladesItemType.gm_tracker>
+      |BladesItemOfType<BladesItemType.project>
+      |BladesItemOfType<BladesItemType.design>
+      |BladesItemOfType<BladesItemType.ritual>;
+
     export interface OppositionDocData {
       rollOppID: string|undefined,
-      rollOppDoc: BladesDoc|undefined,
+      rollOppDoc: OppositionDoc|undefined,
       rollOppName: string,
       rollOppSubName: string,
       rollOppType: string,
       rollOppImg: string,
 
-      rollModsData: RollModData[]|undefined,
+      rollOppModsData: RollModData[]|undefined,
       rollFactors: Partial<Record<Factor,FactorData>>
     }
 
+    export type ParticipantDoc =
+      BladesActorOfType<BladesActorType.pc>
+      |BladesActorOfType<BladesActorType.crew>
+      |BladesActorOfType<BladesActorType.npc>
+      |BladesItemOfType<BladesItemType.cohort_gang>
+      |BladesItemOfType<BladesItemType.cohort_expert>
+      |BladesItemOfType<BladesItemType.gm_tracker>;
+
     export interface ParticipantDocData {
       rollParticipantID: string|undefined,
-      rollParticipantDoc: BladesDoc|undefined,
+      rollParticipantDoc: ParticipantDoc|undefined,
       rollParticipantName: string,
       rollParticipantType: string,
       rollParticipantIcon: string,
@@ -190,7 +226,6 @@ declare global {
       rollFactors: Partial<Record<Factor,FactorData>>
     }
 
-    // export type OppositionDoc = OppositionDocData & BladesDoc;
 
 
   }

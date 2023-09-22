@@ -1,5 +1,5 @@
 import BladesItem from "../../blades-item.js";
-import C, {SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase, RollModCategory, PrereqType, Factor, RollModStatus} from "../../core/constants.js";
+import {BladesActorType, BladesItemType, Factor} from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesActor from "../../blades-actor.js";
 import BladesRollCollab from "../../blades-roll-collab.js";

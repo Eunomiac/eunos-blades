@@ -1,9 +1,9 @@
 import U from "../../core/utilities.js";
-import C, {BladesActorType, BladesItemType, BladesPhase, Tag, Randomizers} from "../../core/constants.js";
+import {BladesActorType, BladesItemType, BladesPhase, Tag, Randomizers} from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
 
 import {BladesActor, BladesPC} from "../../documents/blades-actor-proxy.js";
-import {BladesItem, BladesScore} from "../../documents/blades-item-proxy.js";
+import {BladesScore} from "../../documents/blades-item-proxy.js";
 import BladesRollCollab from "../../blades-roll-collab.js";
 
 
@@ -182,7 +182,7 @@ class BladesScoreSheet extends BladesItemSheet {
     if (`${elemValue}` === "true") {
       this.document.update({[`system.randomizers.${elemCat}.${elemIndex}.isLocked`]: false});
     } else {
-      // const rData = this.document.system.randomizers[elemCat][elemIndex];
+
       this.document.update({[`system.randomizers.${elemCat}.${elemIndex}.isLocked`]: true});
     }
   }
@@ -197,7 +197,7 @@ class BladesScoreSheet extends BladesItemSheet {
     const elem$ = $(event.currentTarget);
     const imageNum = elem$.data("imgNum");
     if (this.document.system.imageSelected === imageNum) {
-      // eLog.checkLog3("scoreSheet", `imageSelected: ${this.document.system.imageSelected} === imgNum: ${imageNum}: DESELECTING`);
+
       this.document.update({"system.-=imageSelected": null});
       return;
     }
@@ -277,7 +277,6 @@ class BladesScoreSheet extends BladesItemSheet {
   override async _onSubmit(event: OnSubmitEvent, params: List<any> = {}) {
     eLog.checkLog3("scoreSheet", "_onSubmit()", {event, params, elemText: event.currentTarget.innerHTML});
     let isForcingRender = true;
-    const elem$ = $(event.currentTarget);
 
 
     const prevPhase = this.item.system.phase;

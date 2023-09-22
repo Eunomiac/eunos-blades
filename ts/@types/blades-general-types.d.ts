@@ -3,6 +3,10 @@ import BladesItem from "../blades-item";
 import BladesActor from "../blades-actor";
 
 declare global {
+  // Type Aliases
+  type MaybeStringOrFalse = string | false | undefined;
+
+
   // Generic Blades Document Type
   type BladesDoc = BladesActor | BladesItem;
 

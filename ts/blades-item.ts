@@ -1,10 +1,6 @@
-import C, {SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase, RollModCategory, PrereqType, Factor, RollModStatus} from "./core/constants.js";
+import C, {BladesActorType, BladesItemType, Tag, RollModCategory, Factor, RollModStatus} from "./core/constants.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
-import BladesPC from "./documents/actors/blades-pc.js";
-import BladesNPC from "./documents/actors/blades-npc.js";
-import BladesFaction from "./documents/actors/blades-faction.js";
-import BladesCrew from "./documents/actors/blades-crew.js";
 import BladesRollCollab from "./blades-roll-collab.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
@@ -26,9 +22,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
                                           BladesItemSubClass.Vice,
                                           BladesItemSubClass.Project,
                                           BladesItemSubClass.Ritual,
-                                          BladesItemSubClass.Design,
-                                          BladesRollCollab.SourceDocData,
-                                          BladesRollCollab.OppositionDocData {
+                                          BladesItemSubClass.Design {
 
   // #region Static Overrides: Create ~
   static override async create(data: ItemDataConstructorData & { system?: { world_name?: string, description?: string } }, options = {}) {
@@ -62,7 +56,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
       .filter((item) => item.hasTag(...tags));
   }
 
-  static IsType<T extends BladesItemType>(doc: unknown, ...types: T[]): doc is BladesItemOfType<T> {
+  static IsType<T extends BladesItemType>(doc: unknown, ...types: T[]): doc is BladesItem & BladesItemOfType<T> {
     const typeSet = new Set<BladesItemType>(types);
     return doc instanceof BladesItem && typeSet.has(doc.type);
   }
@@ -98,108 +92,46 @@ class BladesItem extends Item implements BladesDocument<Item>,
   getFactorTotal(factor: Factor): number {
     switch (factor) {
       case Factor.tier: {
-        // if (BladesItem.IsType(this, BladesItemType.ability)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.background)) { return this.system.tier.value }
         if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
           return this.system.tier.value + (this.parent?.getFactorTotal(Factor.tier) ?? 0);
         }
         if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
           return this.system.tier.value + (this.parent?.getFactorTotal(Factor.tier) ?? 0);
         }
-        // if (BladesItem.IsType(this, BladesItemType.crew_ability)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.crew_reputation)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.feature)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.heritage)) { return this.system.tier.value }
         if (BladesItem.IsType(this, BladesItemType.gear)) {
           return this.system.tier.value + (this.parent?.getFactorTotal(Factor.tier) ?? 0);
         }
-        // if (BladesItem.IsType(this, BladesItemType.playbook)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.preferred_op)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.stricture)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.vice)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.project)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.ritual)) { return this.system.tier.value }
-        // if (BladesItem.IsType(this, BladesItemType.design)) { return this.system.tier.value }
         return this.system.tier.value;
       }
       case Factor.quality: {
-        // if (BladesItem.IsType(this, BladesItemType.ability)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.background)) { return this.getFactorTotal(Factor.tier) }
         if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
           return this.getFactorTotal(Factor.tier) + (this.system.quality_bonus ?? 0);
         }
         if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
           return this.getFactorTotal(Factor.tier) + (this.system.quality_bonus ?? 0) + 1;
         }
-        // if (BladesItem.IsType(this, BladesItemType.crew_ability)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.crew_reputation)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.feature)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.heritage)) { return this.getFactorTotal(Factor.tier) }
         if (BladesItem.IsType(this, BladesItemType.gear)) {
           return this.getFactorTotal(Factor.tier)
             + (this.hasTag("Fine") ? 1 : 0)
             + (this.parent?.getTaggedItemBonuses(this.tags) ?? 0)
             + (BladesActor.IsType(this.parent, BladesActorType.pc) && this.parent?.crew ? this.parent.crew.getTaggedItemBonuses(this.tags) : 0);
         }
-        // if (BladesItem.IsType(this, BladesItemType.playbook)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.preferred_op)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.stricture)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.vice)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.project)) { return this.getFactorTotal(Factor.tier) }
-        // if (BladesItem.IsType(this, BladesItemType.ritual)) { return this.getFactorTotal(Factor.tier) }
         if (BladesItem.IsType(this, BladesItemType.design)) { return this.system.min_quality }
         return this.getFactorTotal(Factor.tier);
       }
       case Factor.scale: {
-        // if (BladesItem.IsType(this, BladesItemType.ability)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.background)) { return 0 }
         if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
           return this.getFactorTotal(Factor.tier) + (this.system.scale_bonus ?? 0);
         }
         if (BladesItem.IsType(this, BladesItemType.cohort_expert)) {
           return 0 + (this.system.scale_bonus ?? 0);
         }
-        // if (BladesItem.IsType(this, BladesItemType.crew_ability)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.crew_reputation)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.feature)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.heritage)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.gear)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.playbook)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.preferred_op)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.stricture)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.vice)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.project)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.ritual)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.design)) { return 0 }
         return 0;
       }
       case Factor.magnitude: {
-        // if (BladesItem.IsType(this, BladesItemType.ability)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.background)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.cohort_gang)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.cohort_expert)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.crew_ability)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.crew_reputation)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.feature)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.heritage)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.gear)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.playbook)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.preferred_op)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.stricture)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.vice)) { return 0 }
-        // if (BladesItem.IsType(this, BladesItemType.project)) { return 0 }
         if (BladesItem.IsType(this, BladesItemType.ritual)) {
           return this.system.magnitude.value;
         }
-        // if (BladesItem.IsType(this, BladesItemType.design)) { return 0 }
         return 0;
       }
       // no default
@@ -220,20 +152,47 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   // #endregion
 
-  // #region BladesRollSource Implementation
+  // #region BladesRollCollab Implementation
 
-  get rollSourceID() { return this.id }
-  get rollSourceDoc() { return this }
-  get rollSourceImg() { return this.img ?? "" }
-  get rollSourceName() { return this.name ?? "" }
-  get rollSourceType() { return this.type }
+  get rollFactors(): Partial<Record<Factor,BladesRollCollab.FactorData>> {
+    const factorsMap: Partial<Record<BladesItemType, Factor[]>> = {
+      [BladesItemType.cohort_gang]: [Factor.quality, Factor.scale],
+      [BladesItemType.cohort_expert]: [Factor.quality, Factor.scale],
+      [BladesItemType.gear]: [Factor.quality],
+      [BladesItemType.project]: [Factor.quality],
+      [BladesItemType.ritual]: [Factor.magnitude],
+      [BladesItemType.design]: [Factor.quality]
+    };
+    if (!factorsMap[this.type]) { return {} }
 
-  get rollOppID() { return this.id }
-  get rollOppDoc() { return this }
-  get rollOppImg() { return this.img ?? "" }
-  get rollOppName() { return this.name ?? "" }
-  get rollOppSubName() { return "" }
-  get rollOppType() { return this.type }
+    const factors = factorsMap[this.type];
+
+    const factorData: Partial<Record<Factor,BladesRollCollab.FactorData>> = {};
+    factors!.forEach((factor, i) => {
+      const factorTotal = this.getFactorTotal(factor);
+      factorData[factor] = {
+        name: factor,
+        value: factorTotal,
+        max: factorTotal,
+        baseVal: factorTotal,
+        display: [Factor.tier, Factor.quality].includes(factor) ? U.romanizeNum(factorTotal) : `${factorTotal}`,
+        isActive: i === 0,
+        isPrimary: i === 0,
+        isDominant: false,
+        highFavorsPC: true,
+        cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`
+      };
+    });
+
+    return factorData;
+  }
+
+  // #region BladesRollCollab.PrimaryDoc Implementation
+  get rollPrimaryID() { return this.id }
+  get rollPrimaryDoc() { return this }
+  get rollPrimaryName() { return this.name! }
+  get rollPrimaryType() { return this.type }
+  get rollPrimaryImg() { return this.img! }
 
   get rollModsData(): BladesRollCollab.RollModData[] {
     const {roll_mods} = this.system;
@@ -283,114 +242,67 @@ class BladesItem extends Item implements BladesDocument<Item>,
           val = RollModStatus.Hidden;
         }
 
-        Object.assign(
-          rollModData,
-          {[key]: ["value"].includes(key)
-            ? U.pInt(val)
-            : (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
-                ? [val].flat()
-                : (val as string).replace(/%COLON%/g, ":"))}
-        );
+        function extractValue(key: string, val: string | string[]): any {
+          if (["value"].includes(key)) {
+            return U.pInt(val);
+          } else if (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
+            return [val].flat();
+          } else {
+            return (val as string).replace(/%COLON%/g, ":");
+          }
+        }
+        Object.assign(rollModData, {[key]: extractValue(key, val)});
+
+        // Object.assign(
+        //   rollModData,
+        //   {[key]: ["value"].includes(key)
+        //     ? U.pInt(val)
+        //     : (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
+        //         ? [val].flat()
+        //         : (val as string).replace(/%COLON%/g, ":"))}
+        // );
       });
 
       return rollModData;
     });
 
     // Add roll mods from COHORT harm
-    // [[/1d/, RollModCategory.roll] as const, [/Less Effect/, RollModCategory.effect] as const].forEach(([effectPat, effectCat]) => {
-    //   const {one: harmConditionOne, two: harmConditionTwo} = Object.values(this.system.harm ?? {})
-    //     .find((harmData) => effectPat.test(harmData.effect)) ?? {};
-    //   const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
-    //   if (harmString.length > 0) {
-    //     rollModsData.push({
-    //       id: `Harm-negative-${effectCat}`,
-    //       name: harmString,
-    //       category: effectCat,
-    //       posNeg: "negative",
-    //       base_status: RollModStatus.ToggledOn,
-    //       modType: "harm",
-    //       value: 1,
-    //       tooltip: [
-    //         `<h1 class='red-bright'><strong>Harm:</strong> ${harmString}</h1>`,
-    //         effectCat === RollModCategory.roll
-    //           ? "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1d</strong> to your roll.</p>"
-    //           : "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1 effect</strong>."
-    //       ].join("")
-    //     });
-    //   }
-    // });
-
-    // eLog.checkLog3("rollCollab", `Roll Mods (${this.name})`, {system: this.system.roll_mods, rollMods});
 
     return rollModsData;
   }
 
-  get rollFactors(): Partial<Record<Factor,BladesRollCollab.FactorData>> {
-    const factorsMap: Partial<Record<BladesItemType, Factor[]>> = {
-      [BladesItemType.ability]: [],
-      [BladesItemType.background]: [],
-      [BladesItemType.cohort_gang]: [Factor.quality, Factor.scale],
-      [BladesItemType.cohort_expert]: [Factor.quality, Factor.scale],
-      [BladesItemType.crew_ability]: [],
-      [BladesItemType.crew_reputation]: [],
-      [BladesItemType.crew_playbook]: [],
-      [BladesItemType.crew_upgrade]: [],
-      [BladesItemType.feature]: [],
-      [BladesItemType.heritage]: [],
-      [BladesItemType.gear]: [Factor.quality],
-      [BladesItemType.playbook]: [],
-      [BladesItemType.preferred_op]: [],
-      [BladesItemType.stricture]: [],
-      [BladesItemType.vice]: [],
-      [BladesItemType.project]: [Factor.quality],
-      [BladesItemType.ritual]: [Factor.magnitude],
-      [BladesItemType.design]: [Factor.quality]
-    };
-    if (!factorsMap[this.type]) { return {} }
+  // #endregion
 
-    const factors = factorsMap[this.type];
+  // #region BladesRollCollab.OppositionDoc Implementation
+  get rollOppID() { return this.id }
+  get rollOppDoc() { return this }
+  get rollOppImg() { return this.img! }
+  get rollOppName() { return this.name! }
+  get rollOppSubName() { return "" }
+  get rollOppType() { return this.type }
 
-    const factorData: Partial<Record<Factor,BladesRollCollab.FactorData>> = {};
-    factors!.forEach((factor, i) => {
-      const factorTotal = this.getFactorTotal(factor);
-      factorData[factor] = {
-        name: factor,
-        value: factorTotal,
-        max: factorTotal,
-        baseVal: factorTotal,
-        display: [Factor.tier, Factor.quality].includes(factor) ? U.romanizeNum(factorTotal) : `${factorTotal}`,
-        isActive: i === 0,
-        isPrimary: i === 0,
-        isDominant: false,
-        highFavorsPC: true,
-        cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`
-      };
-    });
+  get rollOppModsData(): BladesRollCollab.RollModData[] { return [] }
+  // #endregion
 
-    return factorData;
-  }
+  // #region BladesRollCollab.ParticipantDoc Implementation
+  get rollParticipantID() { return this.id }
+  get rollParticipantDoc() { return this }
+  get rollParticipantIcon() { return this.img! }
+  get rollParticipantName() { return this.name! }
+  get rollParticipantType() { return this.type }
+
+  get rollParticipantModsData(): BladesRollCollab.RollModData[] { return [] }
+  // #endregion
+
   // #endregion
 
   // #region PREPARING DERIVED DATA
   override prepareDerivedData() {
     super.prepareDerivedData();
-    // if (BladesItem.IsType(this, BladesItemType.ability)) { this._prepareAbilityData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.background)) { this._prepareBackgroundData(this.system) }
     if (BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { this._prepareCohortData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.crew_ability)) { this._prepareCrewAbilityData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.crew_reputation)) { this._prepareCrewReputationData(this.system) }
     if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { this._preparePlaybookData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.crew_upgrade)) { this._prepareCrewUpgradeData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.feature)) { this._prepareFeatureData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.heritage)) { this._prepareHeritageData(this.system) }
     if (BladesItem.IsType(this, BladesItemType.gear)) { this._prepareGearData(this.system) }
     if (BladesItem.IsType(this, BladesItemType.playbook)) { this._preparePlaybookData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.preferred_op)) { this._preparePreferredOpData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.stricture)) { this._prepareStrictureData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.vice)) { this._prepareViceData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.project)) { this._prepareProjectData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.ritual)) { this._prepareRitualData(this.system) }
-    // if (BladesItem.IsType(this, BladesItemType.design)) { this._prepareDesignData(this.system) }
   }
 
 
@@ -410,13 +322,6 @@ class BladesItem extends Item implements BladesDocument<Item>,
     ]
       .map((subtype) => subtype.trim())
       .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
-
-    // Add parent-crew's elite subtype upgrades
-    // if (BladesActor.IsType(this.parent, BladesActorType.crew)) {
-    //   elite_subtypes.push(...this.parent.upgrades
-    //     .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
-    //     .filter((upgradeName) => subtypes.includes(upgradeName)));
-    // }
 
     system.subtypes = Object.fromEntries(subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
     system.elite_subtypes = Object.fromEntries(elite_subtypes.map((subtype, i) => [`${i + 1}`, subtype]));

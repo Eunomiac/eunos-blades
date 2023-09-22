@@ -24,7 +24,7 @@
 </section>
 
 <section class="sheet-header flex-horizontal">
-  <span class="shadowed source-name source-name-type-{{rollSource.type}}" {{#unless rollOpposition}}style="text-align: left; padding-left: 50px;"{{/unless}}>{{rollSource.name}}</span>
+  <span class="shadowed source-name source-name-type-{{rollPrimary.type}}" {{#unless rollOpposition}}style="text-align: left; padding-left: 50px;"{{/unless}}>{{rollPrimary.name}}</span>
   <span class="shadowed vs">{{#if rollOpposition}}vs.{{else}}&nbsp;{{/if}}</span>
   <span class="shadowed opp-name {{~#if rollOpposition}} opp-name-type-{{rollOpposition.type}}{{/if}}">{{#if rollOpposition}}{{rollOpposition.name}}{{else}}&nbsp;{{/if}}</span>
 </section>
@@ -44,7 +44,7 @@
 
 <div class="split-root flex-horizontal">
   <div class="roll-sheet-float-block roll-source-bg-img">
-    <img src="{{rollSource.img}}" />
+    <img src="{{rollPrimary.img}}" />
   </div>
   <div class="roll-sheet-float-block roll-source-bg-overlay">  </div>
   <div class="split-root-left">

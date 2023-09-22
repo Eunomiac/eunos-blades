@@ -338,7 +338,7 @@ Hooks.once("ready", async () => {
   initCanvasStyles();
   initTinyMCEStyles();
   // BladesRollCollab.NewRoll({
-  //   rollSource: U.randElem(BladesActor.GetTypeWithTags(BladesActorType.pc)),
+  //   rollPrimary: U.randElem(BladesActor.GetTypeWithTags(BladesActorType.pc)),
   //   rollType: RollType.Action,
   //   rollTrait: U.randElem(Object.values(Action))
   // });

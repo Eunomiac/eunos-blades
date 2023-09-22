@@ -457,7 +457,7 @@ class BladesSheet extends ActorSheet {
 
     if (game.user.isGM) {
       if (BladesActor.IsType(this.document, BladesActorType.pc) || BladesActor.IsType(this.document, BladesActorType.crew)) {
-        rollData.rollSource = this.document;
+        rollData.rollPrimary = this.document;
       } else {
         rollData.rollOpposition = this.document as BladesActor;
       }
