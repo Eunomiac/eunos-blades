@@ -3,19 +3,13 @@ import C, {BladesActorType, BladesItemType, Attribute, Tag, Action, BladesPhase}
 import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesActor from "../../blades-actor.js";
-import BladesPC from "../../documents/actors/blades-pc.js";
-import BladesNPC from "../../documents/actors/blades-npc.js";
-import BladesFaction from "../../documents/actors/blades-faction.js";
-import BladesCrew from "../../documents/actors/blades-crew.js";
-import BladesItem from "../../blades-item.js";
 import BladesTrackerSheet from "../item/blades-tracker-sheet.js";
 // import ConstructorDataType from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
 // import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
 
-class BladesActorSheet extends BladesSheet {
+class BladesPCSheet extends BladesSheet {
 
-  declare actor: BladesActorOfType<BladesActorType.pc>;
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -28,7 +22,7 @@ class BladesActorSheet extends BladesSheet {
   }
 
   static Initialize() {
-    Actors.registerSheet("blades", BladesActorSheet, {types: ["pc"], makeDefault: true});
+    Actors.registerSheet("blades", BladesPCSheet, {types: ["pc"], makeDefault: true});
 
     Hooks.on("dropActorSheetData", async (parentActor: BladesActor, _, {uuid}: {uuid: string}) => {
       const doc = await fromUuid(uuid) as BladesDoc|null;
@@ -253,9 +247,9 @@ class BladesActorSheet extends BladesSheet {
       "</ul>"
     ].join(""))).toString();
 
-    eLog.checkLog("Attribute", "[BladesActorSheet] attributeData", {attributeData: sheetData.attributeData});
+    eLog.checkLog("Attribute", "[BladesPCSheet] attributeData", {attributeData: sheetData.attributeData});
 
-    eLog.checkLog("actor", "[BladesActorSheet] getData()", {...context, ...sheetData});
+    eLog.checkLog("actor", "[BladesPCSheet] getData()", {...context, ...sheetData});
 
     return {...context, ...sheetData} as BladesActorSheetData;
   }
@@ -364,8 +358,6 @@ class BladesActorSheet extends BladesSheet {
   }
 }
 
-// declare interface BladesActorSheet {
-//   get actor(): BladesActor
-// }
+// declare interface BladesPCSheet {
 
-export default BladesActorSheet;
+export default BladesPCSheet;

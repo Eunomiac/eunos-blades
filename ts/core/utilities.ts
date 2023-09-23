@@ -268,7 +268,7 @@ const FILTERS = {
 
 // #region ████████ STRINGS: String Parsing, Manipulation, Conversion, Regular Expressions ████████
 // #region ░░░░░░░[Case Conversion]░░░░ Upper, Lower, Sentence & Title Case ░░░░░░░ ~
-const uCase = <T extends unknown>(str: T): Uppercase<string & T> => String(str).toUpperCase() as Uppercase<string & T>;
+const uCase = <T>(str: T): Uppercase<string & T> => String(str).toUpperCase() as Uppercase<string & T>;
 const lCase = <T extends unknown>(str: T): Lowercase<string & T> => String(str).toLowerCase() as Lowercase<string & T>;
 const sCase = <T extends unknown>(str: T): Capitalize<string & T> => {
   let [first, ...rest] = `${str ?? ""}`.split(/\s+/);
@@ -459,7 +459,7 @@ const verbalizeNum = (num: number | string) => {
 };
 const ordinalizeNum = (num: string | number, isReturningWords = false) => {
   if (isReturningWords) {
-    const [numText, suffix]: RegExpMatchArray = lCase(verbalizeNum(num)).match(/.*?[-|\s]?(\w*?)$/) ?? ["", ""];
+    const [numText, suffix]: RegExpMatchArray = lCase(verbalizeNum(num)).match(/.*?[-\s]?(\w*)$/i) ?? ["", ""];
     return numText.replace(
       new RegExp(`${suffix}$`),
       suffix in _ordinals ? _ordinals[<keyof typeof _ordinals>suffix] : `${suffix}th`
@@ -930,8 +930,8 @@ function objMerge<Tx, Ty>(target: Tx, source: Ty, {isMutatingOk = false, isStric
 function objDiff(obj1: any, obj2: any): any {
   const diff: any = {};
   for (const key in obj2) {
-    if (Object.prototype.hasOwnProperty.call(obj2, key)) {
-      if (Object.prototype.hasOwnProperty.call(obj1, key)) {
+    if (Object.hasOwn(obj2, key)) {
+      if (Object.hasOwn(obj1, key)) {
         if (typeof obj1[key] === "object" && typeof obj2[key] === "object" && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key])) {
           const nestedDiff = objDiff(obj1[key], obj2[key]);
           if (Object.keys(nestedDiff).length > 0) {

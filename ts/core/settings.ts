@@ -8,12 +8,11 @@ const registerSettings = function() {
     "scope": "client",      // This specifies a world-level setting
     "config": true,        // This specifies that the setting appears in the configuration view
     "type": Number,
-    // @ts-expect-error For some reason, they don't let me assign to range.
     "range": {             // If range is specified, the resulting setting will be a range slider
       min: 0,
       max: 5,
       step: 1
-    },
+    } as { min: number; max: number; step: number },
     "default": 3         // The default value for the setting
   });
   game.settings.register("eunos-blades", "blacklist", {
@@ -156,34 +155,6 @@ export function initCanvasStyles() {
     wordWrap: true,
     wordWrapWidth: 0.1
   });
-}
-
-export function initFonts() {
-  // CONFIG.fontDefinitions["Roboto"] = {
-  //   editor: true,
-  //   fonts: [
-  //     {urls: ["assets/fonts/Roboto.woff2"]},
-  //     {urls: ["assets/fonts/RobotoBold.woff2"], weight: 700},
-  //     {urls: ["assets/fonts/RobotoItalic.woff2"], style: "italic"}
-  //   ]
-  // };
-
-  // CONFIG.fontFamilies = [
-  //   "Historical FellType",
-  //   "Historical FellType SC",
-  //   "IM FELL Double Pica",
-  //   "IM FELL Double Pica SC",
-  //   "Kirsty",
-  //   "Lekton",
-  //   "Minion Pro",
-  //   "Minion Pro Caption",
-  //   "Minion Pro Cond",
-  //   "Minion Pro Caption Cond",
-  //   "PWSignaturetwo",
-  //   "Ravenscroft",
-  //   "UglyQua"
-  // ];
-  // CONFIG.defaultFontFamily = "Minion Pro";
 }
 
 export default registerSettings;

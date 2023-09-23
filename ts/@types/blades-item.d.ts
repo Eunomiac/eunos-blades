@@ -213,19 +213,6 @@ declare global {
     Partial<BladesItemSchema.Location>,
     Partial<BladesItemSchema.Score> { }
 
-  // Distinguishing schema types for BladesItem subtypes
-  // type BladesItemOfType<T extends BladesItemType> = (
-  //   T extends BladesItemType.clock_keeper ? BladesClockKeeper
-  //   : T extends BladesItemType.gm_tracker ? BladesGMTracker
-  //   : T extends BladesItemType.score ? BladesScore
-  //   : T extends BladesItemType.location ? BladesLocation : BladesItem
-  // ) & BladesItem & {
-  //   system: ExtractBladesItemSystem<T>
-  // };
-
-
-
-
   type BladesItemOfType<T extends BladesItemType> = BladesItem & {
     system: ExtractBladesItemSystem<T>
   };

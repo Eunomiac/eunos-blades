@@ -1,5 +1,5 @@
 import Tagify from "../../lib/tagify/tagify.esm.js";
-import {Tag, District, MainDistrict, OtherDistrict, Vice, Playbook, BladesActorType} from "./constants.js";
+import {Tag, MainDistrict, OtherDistrict, Vice, Playbook, BladesActorType} from "./constants.js";
 import U from "./utilities.js";
 
 async function _onTagifyChange(event: Event, doc: BladesDoc, targetKey: keyof BladesDoc) {
@@ -85,7 +85,6 @@ const Tags = {
       // Check if element specifies an alternate schema target from doc.tags
       const targetKey = $(elem).data("tagTarget") ?? "system.tags";
       const curTags = [getProperty(doc, targetKey) ?? []].flat().filter(Boolean);
-      // eLog.checkLog("tags", "Current Tags", curTags);
       tagify.addTags(
         curTags
           .filter(findDataGroup)

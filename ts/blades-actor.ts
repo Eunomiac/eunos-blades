@@ -875,31 +875,10 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     eLog.checkLog("actorTrigger", "_onCreateDescendantDocuments", {parent, collection, docs, data, options, userId});
 
     docs.forEach(async (doc) => {
-      if (doc instanceof BladesItem) {
-        switch (doc.type) {
-          case BladesItemType.vice: {
-            if (!BladesActor.IsType(this, BladesActorType.pc)) { return }
-            this.activeSubActors
-              .filter((subActor) => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name as Vice))
-              .forEach((subActor) => this.remSubActor(subActor));
-            break;
-          }
-          // case BladesItemType.playbook: {
-          //   if (!BladesActor.IsType(this, BladesActorType.pc)) { return }
-          //   await this.update({
-          //     "system.trauma.active": Object.assign(
-          //       Object.fromEntries(Object.keys(this.system.trauma.active).map((tCond: string) => [tCond, false])),
-          //       Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond: string) => [tCond, true]))
-          //     ),
-          //     "system.trauma.checked": Object.assign(
-          //       Object.fromEntries(Object.keys(this.system.trauma.checked).map((tCond: string) => [tCond, false])),
-          //       Object.fromEntries((doc.system.trauma_conditions ?? []).map((tCond: string) => [tCond, false]))
-          //     )
-          //   });
-          //   break;
-          // }
-          // no default
-        }
+      if (BladesItem.IsType(doc, BladesItemType.vice) && BladesActor.IsType(this, BladesActorType.pc)) {
+        this.activeSubActors
+          .filter((subActor) => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name as Vice))
+          .forEach((subActor) => this.remSubActor(subActor));
       }
     });
   }

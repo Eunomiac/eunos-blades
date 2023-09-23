@@ -2656,23 +2656,41 @@ class BladesRollCollab extends DocumentSheet {
   };
 
   _rollMods?: BladesRollMod[];
+  /**
+   * Compare function for sorting roll mods.
+   * @param modA - First mod to compare.
+   * @param modB - Second mod to compare.
+   * @returns {number} - Comparison result.
+   */
+  private compareMods(modA: BladesRollMod, modB: BladesRollMod): number {
+    // Define the order of mod names for sorting
+    const modOrder = ["Bargain", "Assist", "Setup"];
+
+    // Check for basic push
+    if (modA.isBasicPush) {return -1}
+    if (modB.isBasicPush) {return 1}
+
+    // Check for active Bargain
+    if (modA.name === "Bargain" && modA.isActive) {return -1}
+    if (modB.name === "Bargain" && modB.isActive) {return 1}
+
+    // Check for push
+    if (modA.isPush) {return -1}
+    if (modB.isPush) {return 1}
+
+    // Check for mod name order
+    const modAIndex = modOrder.indexOf(modA.name);
+    const modBIndex = modOrder.indexOf(modB.name);
+    if (modAIndex !== -1 && modBIndex !== -1) {
+      return modAIndex - modBIndex;
+    }
+
+    // Default to alphabetical order
+    return modA.name.localeCompare(modB.name);
+  }
   get rollMods(): BladesRollMod[] {
     if (!this._rollMods) { throw new Error("[get rollMods] No roll mods found!") }
-    return this._rollMods.sort((modA, modB) => {
-      if (modA.isBasicPush) { return -1 }
-      if (modB.isBasicPush) { return 1 }
-      if (modA.name === "Bargain" && modA.isActive) { return -1 }
-      if (modB.name === "Bargain" && modB.isActive) { return 1 }
-      if (modA.isPush) { return -1 }
-      if (modB.isPush) { return 1 }
-      if (modA.name === "Bargain") { return -1 }
-      if (modB.name === "Bargain") { return 1 }
-      if (modA.name === "Assist") { return -1 }
-      if (modB.name === "Assist") { return 1 }
-      if (modA.name === "Setup") { return -1 }
-      if (modB.name === "Setup") { return 1 }
-      return modA.name.localeCompare(modB.name);
-    });
+    return this._rollMods.sort((modA, modB) => this.compareMods(modA, modB));
   }
   set rollMods(val: BladesRollMod[]) { this._rollMods = val }
 
@@ -3569,5 +3587,12 @@ interface BladesRollCollab {
   get document(): User
 }
 // #endregion
+
+export const BladesRollCollabComps = {
+  Mod: BladesRollMod,
+  Primary: BladesRollPrimary,
+  Opposition: BladesRollOpposition,
+  Participant: BladesRollParticipant
+};
 
 export default BladesRollCollab;

@@ -2,13 +2,9 @@
 
 import U from "../../core/utilities.js";
 import G, {ApplyTooltipListeners} from "../../core/gsap.js";
-import C, {Tag, BladesActorType, BladesItemType, BladesPermissions, RollType, Action, Attribute, Factor} from "../../core/constants.js";
+import C, {Tag, BladesActorType, BladesItemType, RollType, Action, Attribute, Factor} from "../../core/constants.js";
 import Tags from "../../core/tags.js";
 import BladesActor from "../../blades-actor.js";
-import BladesPC from "../../documents/actors/blades-pc.js";
-import BladesNPC from "../../documents/actors/blades-npc.js";
-import BladesFaction from "../../documents/actors/blades-faction.js";
-import BladesCrew from "../../documents/actors/blades-crew.js";
 import BladesItem from "../../blades-item.js";
 import BladesSelectorDialog, {SelectionCategory} from "../../blades-dialog.js";
 import BladesActiveEffect from "../../blades-active-effect.js";
@@ -30,16 +26,24 @@ type BladesCompData = {
 
 class BladesSheet extends ActorSheet {
 
+  /**
+   * Override the default getData method to provide additional data for the actor sheet.
+   * This includes cssClass, editable, isGM, actor, system, tierTotal, rollData, activeEffects, hasFullVision, hasLimitedVision, hasControl, preparedItems.
+   * @returns {BladesActorSheetData} The data object for the actor sheet.
+   */
   override getData() {
 
+    // Get the base data context from the parent class.
     const context = super.getData();
 
+    // Prepare additional data specific to this actor's sheet.
     const sheetData: DeepPartial<BladesActorSheetData
     & BladesActorDataOfType<BladesActorType.pc>
     & BladesActorDataOfType<BladesActorType.crew>
     & BladesActorDataOfType<BladesActorType.npc>
     & BladesActorDataOfType<BladesActorType.faction>
     > = {
+      // Basic actor data.
       cssClass: this.actor.type,
       editable: this.options.editable,
       isGM: game.eunoblades.Tracker!.system.is_spoofing_player ? false : game.user.isGM,
@@ -51,11 +55,14 @@ class BladesSheet extends ActorSheet {
       hasFullVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER),
       hasLimitedVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED),
       hasControl: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER),
+
+      // Prepare items for display on the actor sheet.
       preparedItems: {
         cohorts: {
           gang: this.actor.activeSubItems
             .filter((item): item is BladesItemOfType<BladesItemType.cohort_gang> => item.type === BladesItemType.cohort_gang)
             .map((item) => {
+              // Prepare gang cohort items.
               const subtypes = U.unique(Object.values(item.system.subtypes)
                 .map((subtype) => subtype.trim())
                 .filter((subtype) => /[A-Za-z]/.test(subtype))) as Tag.GangType[];
@@ -67,6 +74,7 @@ class BladesSheet extends ActorSheet {
                 .map((subtype) => subtype.trim())
                 .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype as Tag.GangType))) as Tag.GangType[];
 
+              // Prepare images for gang cohort items.
               const imgTypes = [...elite_subtypes];
               if (imgTypes.length < 2) {
                 imgTypes.push(...subtypes.filter((subtype) => !imgTypes.includes(subtype)));
@@ -79,6 +87,7 @@ class BladesSheet extends ActorSheet {
                 item.system.imageRight = Object.values(item.system.elite_subtypes).includes(rightType) ? `elite-${U.lCase(rightType)}.svg` : `${U.lCase(rightType)}.svg`;
               }
 
+              // Prepare additional data for gang cohort items.
               Object.assign(
                 item.system,
                 {
@@ -99,6 +108,7 @@ class BladesSheet extends ActorSheet {
           expert: this.actor.activeSubItems
             .filter((item): item is BladesItemOfType<BladesItemType.cohort_expert> => item.type === BladesItemType.cohort_expert)
             .map((item) => {
+              // Prepare expert cohort items.
               Object.assign(
                 item.system,
                 {
@@ -120,6 +130,7 @@ class BladesSheet extends ActorSheet {
       }
     };
 
+    // Prepare additional data for PC and Crew actors.
     if (BladesActor.IsType(this.actor, BladesActorType.pc) || BladesActor.IsType(this.actor, BladesActorType.crew)) {
       sheetData.playbookData = {
         dotline: {
@@ -151,6 +162,7 @@ class BladesSheet extends ActorSheet {
       };
     }
 
+    // Return the combined data context for the actor sheet.
     return {
       ...context,
       ...sheetData
@@ -282,7 +294,6 @@ class BladesSheet extends ActorSheet {
       eLog.checkLog("actorSheetTrigger", "User does not have permission to edit this actor", {user: game.user, actor: this.actor});
       return {};
     }
-    // eLog.checkLog("actorSheetTrigger", "Submitting Form Data", {parentActor: this.actor.parentActor, systemTags: this.actor.system.tags, sourceTags: this.actor._source.system.tags, params});
     return super._onSubmit(event, params);
   }
 
@@ -381,7 +392,6 @@ class BladesSheet extends ActorSheet {
       return;
     }
     const {docCat, docType, dialogDocs, docTags} = this._getCompData(event);
-    // eLog.checkLog("_onItemAddClick", {docCat, dialogDocs});
     if (!dialogDocs || !docCat || !docType) {
       return;
     }

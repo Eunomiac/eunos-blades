@@ -14433,7 +14433,7 @@ template {
     --sheet-top-height: 100px;
     --sheet-mid-height: 0px; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.faction .window-content form .sheet-root > section.sheet-top {
-      grid-template-areas: ". . title title title title title title title title tier" ". . subtitle subtitle subtitle subtitle subtitle subtitle subtitle subtitle tier";
+      grid-template-areas: ". . title title title title title title title title tier" ". . subtitle subtitle subtitle subtitle subtitle subtitle subtitle subtitle tier";
       grid-template-rows: 60px 40px; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.faction .window-content form .sheet-root > section.sheet-top .sheet-title {
         --sheet-title-font-size: 3rem; }

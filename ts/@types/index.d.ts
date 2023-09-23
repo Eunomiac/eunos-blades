@@ -11,7 +11,7 @@ import "./blades-general-types";
 import "./blades-document";
 
 import "./blades-actor";
-import "./blades-actor-sheet";
+import "./blades-pc-sheet";
 
 import "./blades-item";
 import "./blades-item-sheet";
