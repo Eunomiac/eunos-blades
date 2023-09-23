@@ -136,17 +136,43 @@ class BladesItem extends Item {
     }
     
     
-    get rollSourceID() { return this.id; }
-    get rollSourceDoc() { return this; }
-    get rollSourceImg() { return this.img ?? ""; }
-    get rollSourceName() { return this.name ?? ""; }
-    get rollSourceType() { return this.type; }
-    get rollOppID() { return this.id; }
-    get rollOppDoc() { return this; }
-    get rollOppImg() { return this.img ?? ""; }
-    get rollOppName() { return this.name ?? ""; }
-    get rollOppSubName() { return ""; }
-    get rollOppType() { return this.type; }
+    get rollFactors() {
+        const factorsMap = {
+            [BladesItemType.cohort_gang]: [Factor.quality, Factor.scale],
+            [BladesItemType.cohort_expert]: [Factor.quality, Factor.scale],
+            [BladesItemType.gear]: [Factor.quality],
+            [BladesItemType.project]: [Factor.quality],
+            [BladesItemType.ritual]: [Factor.magnitude],
+            [BladesItemType.design]: [Factor.quality]
+        };
+        if (!factorsMap[this.type]) {
+            return {};
+        }
+        const factors = factorsMap[this.type];
+        const factorData = {};
+        factors.forEach((factor, i) => {
+            const factorTotal = this.getFactorTotal(factor);
+            factorData[factor] = {
+                name: factor,
+                value: factorTotal,
+                max: factorTotal,
+                baseVal: factorTotal,
+                display: [Factor.tier, Factor.quality].includes(factor) ? U.romanizeNum(factorTotal) : `${factorTotal}`,
+                isActive: i === 0,
+                isPrimary: i === 0,
+                isDominant: false,
+                highFavorsPC: true,
+                cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`
+            };
+        });
+        return factorData;
+    }
+
+    get rollPrimaryID() { return this.id; }
+    get rollPrimaryDoc() { return this; }
+    get rollPrimaryName() { return this.name; }
+    get rollPrimaryType() { return this.type; }
+    get rollPrimaryImg() { return this.img; }
     get rollModsData() {
         const { roll_mods } = this.system;
         if (!roll_mods) {
@@ -201,16 +227,16 @@ class BladesItem extends Item {
                 else if (/^ty/i.test(keyString)) {
                     key = "modType";
                 }
-                else if (/^c.*r?.*ty/i.test(keyString)) {
+                else if (/^c.{0,10}r?.{0,3}ty/i.test(keyString)) {
                     key = "conditionalRollTypes";
                 }
-                else if (/^a.*r?.*y/i.test(keyString)) {
+                else if (/^a.{0,3}r?.{0,3}y/i.test(keyString)) {
                     key = "autoRollTypes";
                 }
-                else if (/^c.*r?.*tr/i.test(keyString)) {
+                else if (/^c.{0,10}r?.{0,3}tr/i.test(keyString)) {
                     key = "conditionalRollTraits";
                 }
-                else if (/^a.*r?.*tr/i.test(keyString)) {
+                else if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {
                     key = "autoRollTraits";
                 }
                 else {
@@ -219,61 +245,41 @@ class BladesItem extends Item {
                 if (key === "base_status" && val === "Conditional") {
                     val = RollModStatus.Hidden;
                 }
-                Object.assign(rollModData, { [key]: ["value"].includes(key)
-                        ? U.pInt(val)
-                        : (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
-                            ? [val].flat()
-                            : val.replace(/%COLON%/g, ":")) });
+                function extractValue(key, val) {
+                    if (["value"].includes(key)) {
+                        return U.pInt(val);
+                    }
+                    else if (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
+                        return [val].flat();
+                    }
+                    else {
+                        return val.replace(/%COLON%/g, ":");
+                    }
+                }
+                Object.assign(rollModData, { [key]: extractValue(key, val) });
+
             });
             return rollModData;
         });
         
         return rollModsData;
     }
-    get rollFactors() {
-        const factorsMap = {
-            [BladesItemType.ability]: [],
-            [BladesItemType.background]: [],
-            [BladesItemType.cohort_gang]: [Factor.quality, Factor.scale],
-            [BladesItemType.cohort_expert]: [Factor.quality, Factor.scale],
-            [BladesItemType.crew_ability]: [],
-            [BladesItemType.crew_reputation]: [],
-            [BladesItemType.crew_playbook]: [],
-            [BladesItemType.crew_upgrade]: [],
-            [BladesItemType.feature]: [],
-            [BladesItemType.heritage]: [],
-            [BladesItemType.gear]: [Factor.quality],
-            [BladesItemType.playbook]: [],
-            [BladesItemType.preferred_op]: [],
-            [BladesItemType.stricture]: [],
-            [BladesItemType.vice]: [],
-            [BladesItemType.project]: [Factor.quality],
-            [BladesItemType.ritual]: [Factor.magnitude],
-            [BladesItemType.design]: [Factor.quality]
-        };
-        if (!factorsMap[this.type]) {
-            return {};
-        }
-        const factors = factorsMap[this.type];
-        const factorData = {};
-        factors.forEach((factor, i) => {
-            const factorTotal = this.getFactorTotal(factor);
-            factorData[factor] = {
-                name: factor,
-                value: factorTotal,
-                max: factorTotal,
-                baseVal: factorTotal,
-                display: [Factor.tier, Factor.quality].includes(factor) ? U.romanizeNum(factorTotal) : `${factorTotal}`,
-                isActive: i === 0,
-                isPrimary: i === 0,
-                isDominant: false,
-                highFavorsPC: true,
-                cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`
-            };
-        });
-        return factorData;
-    }
+    
+    get rollOppID() { return this.id; }
+    get rollOppDoc() { return this; }
+    get rollOppImg() { return this.img; }
+    get rollOppName() { return this.name; }
+    get rollOppSubName() { return ""; }
+    get rollOppType() { return this.type; }
+    get rollOppModsData() { return []; }
 
+    get rollParticipantID() { return this.id; }
+    get rollParticipantDoc() { return this; }
+    get rollParticipantIcon() { return this.img; }
+    get rollParticipantName() { return this.name; }
+    get rollParticipantType() { return this.type; }
+    get rollParticipantModsData() { return []; }
+    
     prepareDerivedData() {
         super.prepareDerivedData();
         if (BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
@@ -326,7 +332,7 @@ class BladesItem extends Item {
                 system.subtitle = C.ScaleSizes[scaleIndex];
             }
             if (subtypes.length + elite_subtypes.length === 0) {
-                system.subtitle = system.subtitle.replace(/\s+of\s*/g, "");
+                system.subtitle = system.subtitle.replace(/\s+of\b/g, "").trim();
             }
         }
         else {

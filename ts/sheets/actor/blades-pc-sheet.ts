@@ -2,7 +2,7 @@
 import C, {BladesActorType, BladesItemType, Attribute, Tag, Action, BladesPhase} from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
-import BladesActor from "../../blades-actor.js";
+import {BladesActor, BladesPC} from "../../documents/blades-actor-proxy.js";
 import BladesTrackerSheet from "../item/blades-tracker-sheet.js";
 
 class BladesPCSheet extends BladesSheet {
@@ -46,7 +46,7 @@ class BladesPCSheet extends BladesSheet {
   override getData() {
     const context = super.getData();
 
-    const {activeSubItems, activeSubActors} = this.actor as BladesActor;
+    const {activeSubItems, activeSubActors} = this.actor as BladesPC;
 
     const sheetData: Partial<BladesActorDataOfType<BladesActorType.pc>> = {};
 
@@ -332,7 +332,6 @@ class BladesPCSheet extends BladesSheet {
         $(this).siblings(`.svg-armor.armor-${targetArmor}`).removeClass("hover-over");
       }
     });
-
     html.find(".special-armor-control").on({
       click: function() {
         if (!self.activeArmor.includes("special")) { return }
@@ -351,7 +350,13 @@ class BladesPCSheet extends BladesSheet {
         $(this).siblings(".svg-armor.armor-special").removeClass("hover-over");
       }
     });
+
   }
+
+}
+
+declare interface BladesPCSheet {
+  actor: BladesPC;
 }
 
 export default BladesPCSheet;

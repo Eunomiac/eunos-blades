@@ -71,8 +71,8 @@ async function showChatRollMessage(r, zeromode, attribute_name, position = Posit
     CONFIG.ChatMessage.documentClass.create(messageData, {});
 }
 export function getBladesRollStatus(rolls, zeromode = false) {
-    const sorted_rolls = rolls.map(i => i.result).sort();
-    let roll_status = "failure";
+    const sorted_rolls = rolls.map(i => i.result).sort((a, b) => a - b);
+    let roll_status;
     if (sorted_rolls[0] === 6 && zeromode) {
         roll_status = "critical-success";
     }
@@ -105,9 +105,8 @@ export function getBladesRollStatus(rolls, zeromode = false) {
     return roll_status;
 }
 export function getBladesRollStress(rolls, zeromode = false) {
-    let stress = 6;
-    const sorted_rolls = rolls.map(i => i.result).sort();
-    const roll_status = "failure";
+    let stress;
+    const sorted_rolls = rolls.map(i => i.result).sort((a, b) => a - b);
     if (sorted_rolls[0] === 6 && zeromode) {
         stress = -1;
     }

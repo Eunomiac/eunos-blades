@@ -77,8 +77,6 @@ class BladesTrackerSheet extends BladesItemSheet {
             "systems/eunos-blades/templates/items/gm_tracker-sheet.hbs"
         ]);
     }
-    
-    
     async activateListeners(html) {
         super.activateListeners(html);
     }

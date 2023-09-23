@@ -88,8 +88,8 @@ const eLogger = (type = "base", ...content) => {
     }
     const [message, ...data] = content;
     if (key) {
-        const blacklist = (U.getSetting("blacklist") ?? "").split(/\s*,\s*/).map((pat) => new RegExp(`\\b${pat}\\b`, "igu"));
-        const whitelist = (U.getSetting("whitelist") ?? "").split(/\s*,\s*/).map((pat) => new RegExp(`\\b${pat}\\b`, "igu"));
+        const blacklist = (U.getSetting("blacklist") ?? "").split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
+        const whitelist = (U.getSetting("whitelist") ?? "").split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
         const isBlack = blacklist.some((pat) => pat.test(key));
         const isWhite = whitelist.some((pat) => pat.test(key));
         if (isBlack && !isWhite) {
@@ -112,9 +112,16 @@ const eLogger = (type = "base", ...content) => {
         ...STYLES.base,
         ...STYLES[type] ?? {}
     }).map(([prop, val]) => `${prop}: ${val};`).join(" ");
-    const logFunc = stackTrace
-        ? console.groupCollapsed
-        : (data.length <= 1 ? console.log : console.group);
+    let logFunc;
+    if (stackTrace) {
+        logFunc = console.groupCollapsed;
+    }
+    else if (data.length <= 1) {
+        logFunc = console.log;
+    }
+    else {
+        logFunc = console.group;
+    }
     if (data.length === 0) {
         if (typeof message === "string") {
             logFunc(`%c${message}`, styleLine);
@@ -144,10 +151,10 @@ const eLogger = (type = "base", ...content) => {
     function getStackTrace(regExpFilters = []) {
         regExpFilters.push(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${LOGGERCONFIG.aliases.map(String).join("|")}|Object\\.(log|display|hbsLog|error))`), /^Error/);
         return ((new Error()).stack ?? "")
-            .split(/\s*\n\s*/)
+            .split(/\n/)
+            .map((sLine) => sLine.trim())
             .filter((sLine) => !regExpFilters.some((rTest) => rTest.test(sLine)))
             .join("\n");
-        return null;
     }
 };
 const eLog = {

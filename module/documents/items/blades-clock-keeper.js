@@ -72,7 +72,6 @@ class BladesClockKeeper extends BladesItem {
                 [`system.clock_keys.${keyID}.clocks.${clockNum}.value`]: `${newClockVal}`
             });
         });
-
         $("#clocks-overlay").find(".key-label").on({
             click: async (event) => {
                 if (!event.currentTarget) {
@@ -169,7 +168,7 @@ class BladesClockKeeper extends BladesItem {
         this.system.scenes = game.scenes.map((scene) => ({ id: scene.id, name: scene.name ?? "" }));
         this.system.targetScene ??= game.scenes.current?.id || null;
         this.system.clock_keys = Object.fromEntries(Object.entries(this.system.clock_keys ?? {})
-            .filter(([_, keyData]) => keyData && keyData.id)
+            .filter(([_, keyData]) => keyData?.id)
             .map(([keyID, keyData]) => {
             if (keyData === null) {
                 return [keyID, null];

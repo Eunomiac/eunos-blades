@@ -78,7 +78,7 @@ const Tags = {
                 "data-group": findDataGroup(tag)
             })), true, true);
 
-            setTimeout(() => elem.addEventListener("change", (event) => _onTagifyChange(event, doc, targetKey)), 1000);
+            setTimeout(() => elem.addEventListener("change", async (event) => await _onTagifyChange(event, doc, targetKey)), 1000);
         }
         const systemTags = {
             "System Tags": Object.values(Tag.System),

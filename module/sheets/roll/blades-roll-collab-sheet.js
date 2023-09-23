@@ -65,8 +65,8 @@ class BladesRollCollabSheet extends DocumentSheet {
         return {
             rollID: randomID(),
             rollType: RollType.Action,
-            rollSourceType: "Actor",
-            rollSourceID: "",
+            rollPrimaryType: "Actor",
+            rollPrimaryID: "",
             rollTrait: Factor.tier,
             rollMods: {
                 [RollModCategory.roll]: {
@@ -207,8 +207,7 @@ class BladesRollCollabSheet extends DocumentSheet {
         delete BladesRollCollabSheet.Current[rollID];
     }
     static async NewRoll(config) {
-        
-        
+
         const user = game.users.get(config.userID ?? game.user._id);
         if (!(user instanceof User)) {
             eLog.error("rollCollab", `[NewRoll()] Can't Find User '${config.userID}'`, config);
@@ -221,13 +220,13 @@ class BladesRollCollabSheet extends DocumentSheet {
             eLog.error("rollCollab", `[RenderRollCollab()] Invalid rollType: ${flagUpdateData.rollType}`, config);
             return;
         }
-        const rollSource = config.rollSource ?? user.character;
-        if (!(rollSource instanceof BladesActor || rollSource instanceof BladesItem)) {
-            eLog.error("rollCollab", "[RenderRollCollab()] Invalid rollSource", { rollSource, config });
+        const rollPrimary = config.rollPrimary ?? user.character;
+        if (!(rollPrimary instanceof BladesActor || rollPrimary instanceof BladesItem)) {
+            eLog.error("rollCollab", "[RenderRollCollab()] Invalid rollPrimary", { rollPrimary, config });
             return;
         }
-        flagUpdateData.rollSourceID = rollSource.id;
-        flagUpdateData.rollSourceType = rollSource instanceof BladesActor ? "Actor" : "Item";
+        flagUpdateData.rollPrimaryID = rollPrimary.id;
+        flagUpdateData.rollPrimaryType = rollPrimary instanceof BladesActor ? "Actor" : "Item";
         if (U.isInt(config.rollTrait)) {
             flagUpdateData.rollTrait = config.rollTrait;
         }
@@ -287,13 +286,13 @@ class BladesRollCollabSheet extends DocumentSheet {
         }
         return this.document.flags["eunos-blades"].rollCollab;
     }
-    get rollSource() {
+    get rollPrimary() {
         if (!this.rData) {
             return undefined;
         }
-        return this.rData.rollSourceType === "Actor"
-            ? game.actors.get(this.rData.rollSourceID)
-            : game.items.get(this.rData.rollSourceID);
+        return this.rData.rollPrimaryType === "Actor"
+            ? game.actors.get(this.rData.rollPrimaryID)
+            : game.items.get(this.rData.rollPrimaryID);
     }
     getData() {
         const context = super.getData();
@@ -309,12 +308,12 @@ class BladesRollCollabSheet extends DocumentSheet {
             rollEffects: Object.values(Effect),
             ...rData
         };
-        if (!this.rollSource) {
-            eLog.error("rollCollab", `[getData()] No '${sheetData.rollSourceType}' Found with ID '${sheetData.rollSourceID}'`, { user: this.document, rData: rData });
+        if (!this.rollPrimary) {
+            eLog.error("rollCollab", `[getData()] No '${sheetData.rollPrimaryType}' Found with ID '${sheetData.rollPrimaryID}'`, { user: this.document, rData: rData });
             return null;
         }
-        sheetData.system = this.rollSource.system;
-        sheetData.rollSource = this.rollSource;
+        sheetData.system = this.rollPrimary.system;
+        sheetData.rollPrimary = this.rollPrimary;
         if (sheetData.rollOppositionID) {
             const rollOpposition = BladesActor.Get(sheetData.rollOppositionID) ?? BladesItem.Get(sheetData.rollOppositionID);
             if (!rollOpposition) {
@@ -322,12 +321,12 @@ class BladesRollCollabSheet extends DocumentSheet {
             }
             sheetData.rollOpposition = rollOpposition;
         }
-        if (BladesActor.IsType(this.rollSource, BladesActorType.pc) && isAction(sheetData.rollTrait)) {
-            const { rollSource } = this;
+        if (BladesActor.IsType(this.rollPrimary, BladesActorType.pc) && isAction(sheetData.rollTrait)) {
+            const { rollPrimary } = this;
             sheetData.rollTraitData = {
                 name: sheetData.rollTrait,
-                value: rollSource.actions[sheetData.rollTrait],
-                max: rollSource.actions[sheetData.rollTrait]
+                value: rollPrimary.actions[sheetData.rollTrait],
+                max: rollPrimary.actions[sheetData.rollTrait]
             };
             sheetData.rollTraitOptions = Object.values(Action)
                 .map((action) => ({
@@ -335,12 +334,12 @@ class BladesRollCollabSheet extends DocumentSheet {
                 value: action
             }));
         }
-        else if (BladesActor.IsType(this.rollSource, BladesActorType.pc) && isAttribute(sheetData.rollTrait)) {
-            const { rollSource } = this;
+        else if (BladesActor.IsType(this.rollPrimary, BladesActorType.pc) && isAttribute(sheetData.rollTrait)) {
+            const { rollPrimary } = this;
             sheetData.rollTraitData = {
                 name: sheetData.rollTrait,
-                value: rollSource.attributes[sheetData.rollTrait],
-                max: rollSource.attributes[sheetData.rollTrait]
+                value: rollPrimary.attributes[sheetData.rollTrait],
+                max: rollPrimary.attributes[sheetData.rollTrait]
             };
             sheetData.rollTraitOptions = Object.values(Attribute)
                 .map((attribute) => ({
@@ -349,11 +348,11 @@ class BladesRollCollabSheet extends DocumentSheet {
             }));
         }
         else if (sheetData.rollTrait === "tier") {
-            const { rollSource } = this;
+            const { rollPrimary } = this;
             sheetData.rollTraitData = {
                 name: "Tier",
-                value: rollSource.getTierTotal(),
-                max: rollSource.getTierTotal()
+                value: rollPrimary.getTierTotal(),
+                max: rollPrimary.getTierTotal()
             };
             sheetData.rollTraitOptions = false;
         }

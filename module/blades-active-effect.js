@@ -17,10 +17,8 @@ const CUSTOMFUNCS = {
                 return actor.remSubItem(funcData);
             }
         }
-        else {
-            if (!isReversing) {
-                return actor.addSubItem(funcData);
-            }
+        else if (!isReversing) {
+            return actor.addSubItem(funcData);
         }
         return undefined;
     },
@@ -164,13 +162,9 @@ class BladesActiveEffect extends ActiveEffect {
                     };
                     BladesActiveEffect.ThrottleCustomFunc(effect.parent, funcData);
                 }
-                else {
-                    switch (permFuncName) {
-                        case "Add": {
-                            const [target, qty] = value.split(/:/);
-                            effect.parent.update({ [target]: U.pInt(getProperty(effect.parent, target)) + U.pInt(qty) });
-                        }
-                    }
+                else if (permFuncName === "Add") {
+                    const [target, qty] = value.split(/:/);
+                    effect.parent.update({ [target]: U.pInt(getProperty(effect.parent, target)) + U.pInt(qty) });
                 }
             }
         });

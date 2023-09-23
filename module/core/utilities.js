@@ -12,7 +12,7 @@ const _noCapWords = "a|above|after|an|and|at|below|but|by|down|for|for|from|in|n
     .split("|")
     .map((word) => new RegExp(`\\b${word}\\b`, "gui"));
 const _capWords = [
-    "I", /[^a-z]{3,}|[\.0-9]/gu
+    "I", /[^a-z]{3,}|[.0-9]/gu
 ].map((word) => (/RegExp/.test(Object.prototype.toString.call(word)) ? word : new RegExp(`\\b${word}\\b`, "gui")));
 const _loremIpsumText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies
 nibh sed massa euismod lacinia. Aliquam nec est ac nunc ultricies scelerisque porta vulputate odio.
@@ -148,9 +148,9 @@ const isHexColor = (ref) => typeof ref === "string" && /^#(([0-9a-fA-F]{2}){3,4}
 const isRGBColor = (ref) => typeof ref === "string" && /^rgba?\((\d{1,3},\s*){1,2}?\d{1,3},\s*\d{1,3}(\.\d+)?\)$/.test(ref);
 const isUndefined = (ref) => ref === undefined;
 const isDefined = (ref) => !isUndefined(ref);
-const isEmpty = (ref) => !(() => { for (const i in ref) {
-    return true;
-} return false; })();
+const isEmpty = (ref) => {
+    return Object.keys(ref).length === 0;
+};
 const hasItems = (ref) => !isEmpty(ref);
 const isInstance = (classRef, ref) => ref instanceof classRef;
 const isInstanceFunc = (clazz) => (instance) => instance instanceof clazz;
@@ -169,38 +169,36 @@ const areEqual = (...refs) => {
         if ([ref1, ref2].includes(null)) {
             return ref1 === ref2;
         }
-        switch (typeof ref1) {
-            case "object": {
-                if (isArray(ref1)) {
-                    if (!isArray(ref2)) {
-                        return false;
-                    }
-                    if (ref1.length !== ref2.length) {
-                        return false;
-                    }
-                    for (let i = 0; i < ref1.length; i++) {
-                        if (!checkEquality(ref1[i], ref2[i])) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-                else if (isList(ref1)) {
-                    if (!isList(ref2) || Object.keys(ref1).length !== Object.keys(ref2).length) {
-                        return false;
-                    }
-                    return checkEquality(Object.keys(ref1), Object.keys(ref2)) && checkEquality(Object.values(ref1), Object.values(ref2));
-                }
-                try {
-                    return JSON.stringify(ref1) === JSON.stringify(ref2);
-                }
-                catch {
+        if (typeof ref1 === "object") {
+            if (isArray(ref1)) {
+                if (!isArray(ref2)) {
                     return false;
                 }
+                if (ref1.length !== ref2.length) {
+                    return false;
+                }
+                for (let i = 0; i < ref1.length; i++) {
+                    if (!checkEquality(ref1[i], ref2[i])) {
+                        return false;
+                    }
+                }
+                return true;
             }
-            default: {
-                return ref1 === ref2;
+            else if (isList(ref1)) {
+                if (!isList(ref2) || Object.keys(ref1).length !== Object.keys(ref2).length) {
+                    return false;
+                }
+                return checkEquality(Object.keys(ref1), Object.keys(ref2)) && checkEquality(Object.values(ref1), Object.values(ref2));
             }
+            try {
+                return JSON.stringify(ref1) === JSON.stringify(ref2);
+            }
+            catch {
+                return false;
+            }
+        }
+        else {
+            return ref1 === ref2;
         }
     }
 };
@@ -273,8 +271,8 @@ const regExtract = (ref, pattern, flags) => {
     return isGrouping ? Array.from(matches) : matches.pop();
 };
 
-const unhyphenate = (str) => `${str}`.replace(/\u00AD|\u200B/gu, "");
-const parseArticles = (str) => `${str}`.replace(/\b(a|A)\s([aeiouAEIOU])/gu, "$1n $2");
+const unhyphenate = (str) => `${str}`.replace(/[\u00AD\u200B]/gu, "");
+const parseArticles = (str) => `${str}`.replace(/\b([aA])\s([aeiouAEIOU])/gu, "$1n $2");
 const pluralize = (singular, num = 2, plural) => {
     if (pFloat(num) === 1) {
         return singular;
@@ -296,7 +294,10 @@ const oxfordize = (items, useOxfordComma = true, andString = "and") => {
         lastItem
     ].join("");
 };
-const ellipsize = (text, maxLength) => (`${text}`.length > maxLength ? `${`${text}`.slice(0, maxLength - 3)}…` : `${text}`);
+const ellipsize = (text, maxLength) => {
+    const str = String(text);
+    return str.length > maxLength ? str.slice(0, maxLength - 3) + "…" : str;
+};
 const pad = (text, minLength, delim = " ", decimalPos) => {
     const str = `${text}`;
     if (str.length < minLength) {
@@ -305,7 +306,20 @@ const pad = (text, minLength, delim = " ", decimalPos) => {
     return str;
 };
 const toKey = (text) => (text ?? "").toLowerCase().replace(/ /g, "-").replace(/default/, "DEFAULT");
-const signNum = (num, delim = "", zeroSign = "+") => `${pFloat(num) < 0 ? "-" : (pFloat(num) > 0 ? "+" : zeroSign)}${delim}${Math.abs(pFloat(num))}`;
+const signNum = (num, delim = "", zeroSign = "+") => {
+    let sign;
+    const parsedNum = pFloat(num);
+    if (parsedNum < 0) {
+        sign = "-";
+    }
+    else if (parsedNum === 0) {
+        sign = zeroSign;
+    }
+    else {
+        sign = "+";
+    }
+    return `${sign}${delim}${Math.abs(parsedNum)}`;
+};
 const padNum = (num, numDecDigits, includePlus = false, decimalPos) => {
     const prefix = (includePlus && num >= 0) ? "+" : "";
     const [leftDigits, rightDigits] = `${pFloat(num)}`.split(/\./);
@@ -391,7 +405,9 @@ const verbalizeNum = (num) => {
             result += _numberWords.ones[pInt(digits.join(""))];
         }
         else {
-            result += `${_numberWords.tens[pInt(digits.shift())]}${pInt(digits[0]) > 0 ? `-${_numberWords.ones[pInt(digits[0])]}` : ""}`;
+            const tens = _numberWords.tens[pInt(digits.shift())];
+            const ones = pInt(digits[0]) > 0 ? `-${_numberWords.ones[pInt(digits[0])]}` : "";
+            result += `${tens}${ones}`;
         }
         return result;
     };
@@ -399,7 +415,7 @@ const verbalizeNum = (num) => {
     if (num.charAt(0) === "-") {
         numWords.push("negative");
     }
-    const [integers, decimals] = num.replace(/[,|\s|-]/g, "").split(".");
+    const [integers, decimals] = num.replace(/[,\s-]/g, "").split(".");
     const intArray = integers.split("").reverse().join("")
         .match(/.{1,3}/g)
         ?.map((v) => v.split("").reverse().join("")) ?? [];
@@ -427,10 +443,10 @@ const verbalizeNum = (num) => {
 };
 const ordinalizeNum = (num, isReturningWords = false) => {
     if (isReturningWords) {
-        const [numText, suffix] = lCase(verbalizeNum(num)).match(/.*?[-|\s]?(\w*?)$/) ?? ["", ""];
+        const [numText, suffix] = lCase(verbalizeNum(num)).match(/.*?[-\s]?(\w*)$/i) ?? ["", ""];
         return numText.replace(new RegExp(`${suffix}$`), suffix in _ordinals ? _ordinals[suffix] : `${suffix}th`);
     }
-    if (/\.|1[1-3]$/.test(`${num}`)) {
+    if (/(\.)|(1[1-3]$)/.test(`${num}`)) {
         return `${num}th`;
     }
     return `${num}${["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"][pInt(`${num}`.charAt(`${num}`.length - 1))]}`;
@@ -480,7 +496,7 @@ const getUID = (id) => {
     return uuid;
 };
 const fuzzyMatch = (val1, val2) => {
-    const [str1, str2] = [val1, val2].map((val) => lCase(String(val).replace(/[^a-zA-Z0-9\.+-]/g, "").trim()));
+    const [str1, str2] = [val1, val2].map((val) => lCase(String(val).replace(/[^a-zA-Z0-9.+-]/g, "").trim()));
     return str1.length > 0 && str1 == str2;
 };
 const isIn = (needle, haystack = [], fuzziness = 0) => {
@@ -627,6 +643,7 @@ const subGroup = (array, groupSize) => {
         subArrays.push(subArray);
     }
     subArrays.push(array);
+    return subArrays;
 };
 const shuffle = (array) => {
     let currentIndex = array.length, randomIndex;
@@ -728,10 +745,9 @@ export function toDict(items, key) {
         if (!iData) {
             iData = data;
         }
-        return [
-            `${(iData.linkName || iData.sourceItem?.name) ? `>${iData.type.charAt(0)}>` : ""}${iData[key]}`,
-            iData
-        ];
+        const prefix = iData.linkName || iData.sourceItem?.name ? `>${iData.type.charAt(0)}>` : "";
+        const newKey = `${prefix}${iData[key]}`;
+        return [newKey, iData];
     })
         .sort(([a], [b]) => a.localeCompare(b));
     mappedItems.forEach(([newKey, iData]) => {
@@ -852,7 +868,7 @@ function objMerge(target, source, { isMutatingOk = false, isStrictlySafe = false
             }
             else if (val !== null && typeof val === "object") {
                 if (isUndefined(targetVal) && !(val instanceof Application)) {
-                    target[key] = new val.__proto__.constructor();
+                    target[key] = new (Object.getPrototypeOf(val).constructor)();
                 }
                 target[key] = objMerge(target[key], val, { isMutatingOk: true, isStrictlySafe });
             }
@@ -866,8 +882,8 @@ function objMerge(target, source, { isMutatingOk = false, isStrictlySafe = false
 function objDiff(obj1, obj2) {
     const diff = {};
     for (const key in obj2) {
-        if (Object.prototype.hasOwnProperty.call(obj2, key)) {
-            if (Object.prototype.hasOwnProperty.call(obj1, key)) {
+        if (Object.hasOwn(obj2, key)) {
+            if (Object.hasOwn(obj1, key)) {
                 if (typeof obj1[key] === "object" && typeof obj2[key] === "object" && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key])) {
                     const nestedDiff = objDiff(obj1[key], obj2[key]);
                     if (Object.keys(nestedDiff).length > 0) {
@@ -890,11 +906,14 @@ function objDiff(obj1, obj2) {
 }
 const objExpand = (obj) => {
     const expObj = {};
-    for (let [key, val] of Object.entries(obj)) {
+    for (const [key, val] of Object.entries(obj)) {
         if (isList(val)) {
-            val = objExpand(val);
+            const expandedVal = objExpand(val);
+            setProperty(expObj, key, expandedVal);
         }
-        setProperty(expObj, key, val);
+        else {
+            setProperty(expObj, key, val);
+        }
     }
     function arrayify(obj) {
         if (isList(obj)) {
@@ -934,7 +953,6 @@ function objNullify(obj) {
         }
         return obj;
     }
-    const test = obj;
     for (const objKey of Object.keys(obj)) {
         obj[objKey] = null;
     }
@@ -1073,7 +1091,7 @@ const escapeHTML = (str) => (typeof str === "string"
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
-        .replace(/`|'/g, "&#039;")
+        .replace(/[`']/g, "&#039;")
     : str);
 
 const sleep = (duration) => new Promise((resolve) => { setTimeout(resolve, duration >= 100 ? duration : duration * 1000); });
@@ -1084,7 +1102,7 @@ const isDocID = (docRef, isUUIDok = true) => {
 };
 const loc = (locRef, formatDict = {}) => {
     if (/[a-z]/.test(locRef)) {
-        locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}\.)*`), `${C.SYSTEM_ID}.`);
+        locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}.)*`), `${C.SYSTEM_ID}.`);
     }
     if (typeof game.i18n.localize(locRef) === "string") {
         for (const [key, val] of Object.entries(formatDict)) {

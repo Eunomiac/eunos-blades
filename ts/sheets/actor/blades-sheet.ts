@@ -2,13 +2,13 @@
 
 import U from "../../core/utilities.js";
 import G, {ApplyTooltipListeners} from "../../core/gsap.js";
-import C, {Tag, BladesActorType, BladesItemType, RollType, Action, Attribute, Factor} from "../../core/constants.js";
+import C, {BladesActorType, BladesItemType, Attribute, Tag, Action, Factor, RollType} from "../../core/constants.js";
 import Tags from "../../core/tags.js";
 import BladesActor from "../../blades-actor.js";
 import BladesItem from "../../blades-item.js";
 import BladesSelectorDialog, {SelectionCategory} from "../../blades-dialog.js";
 import BladesActiveEffect from "../../blades-active-effect.js";
-import BladesRollCollab from "../../blades-roll-collab.js";
+import BladesRollCollab, {BladesRollCollabComps} from "../../blades-roll-collab.js";
 // #endregion
 // #region TYPES: BladesCompData ~
 type BladesCompData = {
@@ -272,16 +272,15 @@ class BladesSheet extends ActorSheet {
       .find(".advance-button")
       .on("click", this._onAdvanceClick.bind(this));
 
-    // Roll Functionality
-    html
-      .find("[data-roll-trait]")
-      .on("click", this._onRollTraitClick.bind(this));
-
     // Active Effects Functionality
     html
       .find(".effect-control")
       .on("click", this._onActiveEffectControlClick.bind(this));
 
+    // Roll Functionality
+    html
+      .find("[data-roll-trait]")
+      .on("click", this._onRollTraitClick.bind(this));
 
     // This is a workaround until is being fixed in FoundryVTT.
     if (this.options.submitOnChange) {
@@ -466,10 +465,10 @@ class BladesSheet extends ActorSheet {
     }
 
     if (game.user.isGM) {
-      if (BladesActor.IsType(this.document, BladesActorType.pc) || BladesActor.IsType(this.document, BladesActorType.crew)) {
-        rollData.rollPrimary = this.document;
-      } else {
-        rollData.rollOpposition = this.document as BladesActor;
+      if (BladesRollCollabComps.Primary.IsDoc(this.actor)) {
+        rollData.rollPrimary = this.actor;
+      } else if (BladesRollCollabComps.Opposition.IsDoc(this.actor)) {
+        rollData.rollOpposition = this.actor;
       }
     }
 

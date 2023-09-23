@@ -8,6 +8,7 @@
 import U from "./core/utilities.js";
 import C, { BladesActorType, BladesItemType, RollType, RollModStatus, RollModCategory, Action, Attribute, Position, Effect, Factor, RollResult, ConsequenceType } from "./core/constants.js";
 import BladesActor from "./blades-actor.js";
+import BladesItem from "./blades-item.js";
 import { ApplyTooltipListeners } from "./core/gsap.js";
 const DescriptionChanges = {
     "Battleborn": "<p><em>If you 'reduce harm' that means the level of harm you're facing right now is reduced by one.</em></p><p><em>If you use this ability to push yourself, you get one of the benefits (+1d, +1 effect, act despite severe harm) but you don't take 2 stress.</em></p><p><em>Your special armor is restored at the beginning of downtime.</em></p>",
@@ -1143,7 +1144,7 @@ export class BladesRollMod {
         let stressCost = 0;
         costKeys.forEach((key) => {
             const [thisParam] = (key.split(/-/) ?? []).slice(1);
-            const [_, valStr] = (thisParam.match(/([A-Za-z]+)([0-9]*)/) ?? []).slice(1);
+            const [_, valStr] = (thisParam.match(/([A-Za-z]+)(\d*)/) ?? []).slice(1);
             stressCost += U.pInt(valStr);
         });
         return stressCost;
@@ -1264,17 +1265,17 @@ export class BladesRollMod {
         const payableKeys = holdKeys
             .filter((key) => {
             const [thisParam] = (key.split(/-/) ?? []).slice(1);
-            const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)([0-9]*)/) ?? []).slice(1);
+            const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)(\d*)/) ?? []).slice(1);
             switch (traitStr) {
                 case "SpecialArmor": {
-                    return BladesActor.IsType(this.rollInstance.rollSource?.rollSourceDoc, BladesActorType.pc)
-                        && this.rollInstance.rollSource.rollSourceDoc.system.armor.active.special
-                        && !this.rollInstance.rollSource.rollSourceDoc.system.armor.checked.special;
+                    return BladesActor.IsType(this.rollInstance.rollPrimary?.rollPrimaryDoc, BladesActorType.pc)
+                        && this.rollInstance.rollPrimary.rollPrimaryDoc.system.armor.active.special
+                        && !this.rollInstance.rollPrimary.rollPrimaryDoc.system.armor.checked.special;
                 }
                 case "Stress": {
                     const val = U.pInt(valStr);
-                    return BladesActor.IsType(this.rollInstance.rollSource?.rollSourceDoc, BladesActorType.pc)
-                        && this.rollInstance.rollSource.rollSourceDoc.system.stress.max - this.rollInstance.rollSource.rollSourceDoc.system.stress.value >= val;
+                    return BladesActor.IsType(this.rollInstance.rollPrimary?.rollPrimaryDoc, BladesActorType.pc)
+                        && this.rollInstance.rollPrimary.rollPrimaryDoc.system.stress.max - this.rollInstance.rollPrimary.rollPrimaryDoc.system.stress.value >= val;
                 }
             }
             return null;
@@ -1307,7 +1308,7 @@ export class BladesRollMod {
                             return;
                         }
                         case "Consequence": {
-                            return;
+                                                        return;
                         }
                         case "HarmLevel": {
                             if (!this.rollInstance.rollConsequence) {
@@ -1342,7 +1343,7 @@ export class BladesRollMod {
                     break;
                 }
                 case "Increase": {
-                    const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)([0-9]*)/) ?? []).slice(1);
+                    const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)(\d*)/) ?? []).slice(1);
                     this.rollInstance.tempGMBoosts[traitStr] = U.pInt(valStr);
                     return;
                 }
@@ -1368,7 +1369,7 @@ export class BladesRollMod {
                     if (!docID) {
                         return undefined;
                     }
-                    return (game.actors.get(docID) ?? game.items.get(docID) ?? {}).name ?? undefined;
+                    return (game.actors.get(docID) ?? game.items.get(docID))?.name ?? undefined;
                 }
                 return undefined;
             }
@@ -1378,7 +1379,7 @@ export class BladesRollMod {
                     if (!docID) {
                         return undefined;
                     }
-                    return (game.actors.get(docID) ?? game.items.get(docID) ?? {}).name ?? undefined;
+                    return (game.actors.get(docID) ?? game.items.get(docID))?.name ?? undefined;
                 }
                 return undefined;
             }
@@ -1388,7 +1389,7 @@ export class BladesRollMod {
                     if (!docID) {
                         return undefined;
                     }
-                    return (game.actors.get(docID) ?? game.items.get(docID) ?? {}).name ?? undefined;
+                    return (game.actors.get(docID) ?? game.items.get(docID))?.name ?? undefined;
                 }
                 return undefined;
             }
@@ -1428,14 +1429,20 @@ export class BladesRollMod {
         }
         return holdKeys.map((key) => {
             const [thisParam] = (key.split(/-/) ?? []).slice(1);
-            const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)([0-9]*)/) ?? []).slice(1);
+            const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)(\d*)/) ?? []).slice(1);
+            let label = this.name;
+            if (this.isBasicPush) {
+                if (this.posNeg === "negative") {
+                    label = `${this.name} (<span class='red-bright'>To Act</span>)`;
+                }
+                else {
+                    const effect = this.category === RollModCategory.roll ? "+1d" : "+1 effect";
+                    label = `${this.name} (<span class='gold-bright'>${effect}</span>)`;
+                }
+            }
             return {
                 id: this.id,
-                label: this.isBasicPush
-                    ? (this.posNeg === "negative"
-                        ? `${this.name} (<span class='red-bright'>To Act</span>)`
-                        : `${this.name} (<span class='gold-bright'>${this.category === RollModCategory.roll ? "+1d" : "+1 effect"}</span>)`)
-                    : this.name,
+                label: label,
                 costType: traitStr,
                 costAmount: valStr ? U.pInt(valStr) : 1
             };
@@ -1478,7 +1485,69 @@ export class BladesRollMod {
         this.category = modData.category;
     }
 }
+class BladesRollPrimary {
+    static IsDoc(doc) {
+        return BladesActor.IsType(doc, BladesActorType.pc, BladesActorType.crew)
+            || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker);
+    }
+    rollInstance;
+    rollPrimaryID;
+    rollPrimaryDoc;
+    rollPrimaryName;
+    rollPrimaryType;
+    rollPrimaryImg;
+    rollModsData;
+    rollFactors;
+    constructor(rollInstance, { rollPrimaryID, rollPrimaryDoc, rollPrimaryName, rollPrimaryType, rollPrimaryImg, rollModsData, rollFactors } = {}) {
+        this.rollInstance = rollInstance;
+        let doc = rollPrimaryDoc;
+        if (!doc && rollPrimaryID) {
+            doc = game.items.get(rollPrimaryID) ?? game.actors.get(rollPrimaryID);
+        }
+        if (!doc && rollPrimaryName) {
+            doc = game.items.getName(rollPrimaryName) ?? game.actors.getName(rollPrimaryName);
+        }
+        if (BladesRollPrimary.IsDoc(doc)) {
+            this.rollPrimaryDoc = doc;
+        }
+        if (BladesRollPrimary.IsDoc(this.rollPrimaryDoc)) {
+            this.rollPrimaryID = this.rollPrimaryDoc.rollPrimaryID;
+            this.rollPrimaryName = rollPrimaryName ?? this.rollPrimaryDoc.rollPrimaryName;
+            this.rollPrimaryType = this.rollPrimaryDoc.rollPrimaryType;
+            this.rollPrimaryImg = rollPrimaryImg ?? this.rollPrimaryDoc.rollPrimaryImg ?? "";
+            this.rollModsData = [
+                ...rollModsData ?? [],
+                ...this.rollPrimaryDoc.rollModsData ?? []
+            ];
+            this.rollFactors = Object.assign(this.rollPrimaryDoc.rollFactors, rollFactors ?? {});
+        }
+        else {
+            if (!rollPrimaryName) {
+                throw new Error("Must include a rollPrimaryName when constructing a BladesRollPrimary object.");
+            }
+            if (!rollPrimaryImg) {
+                throw new Error("Must include a rollPrimaryImg when constructing a BladesRollPrimary object.");
+            }
+            if (!rollPrimaryType) {
+                throw new Error("Must include a rollPrimaryType when constructing a BladesRollPrimary object.");
+            }
+            if (!rollFactors) {
+                throw new Error("Must include a rollFactors when constructing a BladesRollPrimary object.");
+            }
+            this.rollPrimaryID = rollPrimaryID;
+            this.rollPrimaryName = rollPrimaryName;
+            this.rollPrimaryType = rollPrimaryType;
+            this.rollPrimaryImg = rollPrimaryImg;
+            this.rollModsData = rollModsData ?? [];
+            this.rollFactors = rollFactors;
+        }
+    }
+}
 class BladesRollOpposition {
+    static IsDoc(doc) {
+        return BladesActor.IsType(doc, BladesActorType.npc, BladesActorType.faction)
+            || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker, BladesItemType.project, BladesItemType.design, BladesItemType.ritual);
+    }
     rollInstance;
     rollOppID;
     rollOppDoc;
@@ -1486,28 +1555,29 @@ class BladesRollOpposition {
     rollOppSubName;
     rollOppType;
     rollOppImg;
-    rollModsData;
+    rollOppModsData;
     rollFactors;
-    constructor(rollInstance, { rollOppID, rollOppDoc, rollOppName, rollOppSubName, rollOppType, rollOppImg, rollModsData, rollFactors } = {}) {
-        this.rollOppDoc = rollOppDoc;
+    constructor(rollInstance, { rollOppID, rollOppDoc, rollOppName, rollOppSubName, rollOppType, rollOppImg, rollOppModsData, rollFactors } = {}) {
         this.rollInstance = rollInstance;
-        if (!this.rollOppDoc) {
-            if (rollOppID) {
-                this.rollOppDoc = game.items.get(rollOppID) ?? game.actors.get(rollOppID);
-            }
-            if (rollOppName) {
-                this.rollOppDoc = game.items.getName(rollOppName) ?? game.actors.getName(rollOppName);
-            }
+        let doc = rollOppDoc;
+        if (!doc && rollOppID) {
+            doc = game.items.get(rollOppID) ?? game.actors.get(rollOppID);
         }
-        if (this.rollOppDoc) {
+        if (!doc && rollOppName) {
+            doc = game.items.getName(rollOppName) ?? game.actors.getName(rollOppName);
+        }
+        if (BladesRollOpposition.IsDoc(doc)) {
+            this.rollOppDoc = doc;
+        }
+        if (BladesRollOpposition.IsDoc(this.rollOppDoc)) {
             this.rollOppID = this.rollOppDoc.rollOppID;
             this.rollOppName = rollOppName ?? this.rollOppDoc.rollOppName;
             this.rollOppSubName = rollOppSubName ?? this.rollOppDoc.rollOppSubName;
             this.rollOppType = this.rollOppDoc.rollOppType;
             this.rollOppImg = rollOppImg ?? this.rollOppDoc.rollOppImg ?? "";
-            this.rollModsData = [
-                ...rollModsData ?? [],
-                ...this.rollOppDoc.rollModsData ?? []
+            this.rollOppModsData = [
+                ...rollOppModsData ?? [],
+                ...this.rollOppDoc.rollOppModsData ?? []
             ];
             this.rollFactors = Object.assign(this.rollOppDoc.rollFactors, rollFactors ?? {});
         }
@@ -1529,64 +1599,72 @@ class BladesRollOpposition {
             this.rollOppSubName = rollOppSubName;
             this.rollOppType = rollOppType;
             this.rollOppImg = rollOppImg ?? "";
-            this.rollModsData = rollModsData ?? [];
+            this.rollOppModsData = rollOppModsData ?? [];
             this.rollFactors = rollFactors;
         }
-        if (this.rollModsData.length === 0) {
-            this.rollModsData = undefined;
+        if (this.rollOppModsData.length === 0) {
+            this.rollOppModsData = undefined;
         }
     }
 }
-class BladesRollSource {
+class BladesRollParticipant {
+    static IsDoc(doc) {
+        return BladesActor.IsType(doc, BladesActorType.pc, BladesActorType.crew, BladesActorType.npc)
+            || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker);
+    }
     rollInstance;
-    rollSourceID;
-    rollSourceDoc;
-    rollSourceName;
-    rollSourceType;
-    rollSourceImg;
-    rollModsData;
+    rollParticipantID;
+    rollParticipantDoc;
+    rollParticipantName;
+    rollParticipantType;
+    rollParticipantIcon;
+    rollParticipantModsData;
     rollFactors;
-    constructor(rollInstance, { rollSourceID, rollSourceDoc, rollSourceName, rollSourceType, rollSourceImg, rollModsData, rollFactors } = {}) {
-        this.rollSourceDoc = rollSourceDoc;
+    constructor(rollInstance, { rollParticipantID, rollParticipantDoc, rollParticipantName, rollParticipantType, rollParticipantIcon, rollParticipantModsData, rollFactors } = {}) {
         this.rollInstance = rollInstance;
-        if (!this.rollSourceDoc) {
-            if (rollSourceID) {
-                this.rollSourceDoc = game.items.get(rollSourceID) ?? game.actors.get(rollSourceID);
-            }
-            if (rollSourceName) {
-                this.rollSourceDoc = game.items.getName(rollSourceName) ?? game.actors.getName(rollSourceName);
-            }
+        let doc = rollParticipantDoc;
+        if (!doc && rollParticipantID) {
+            doc = game.items.get(rollParticipantID) ?? game.actors.get(rollParticipantID);
         }
-        if (this.rollSourceDoc) {
-            this.rollSourceID = this.rollSourceDoc.rollSourceID;
-            this.rollSourceName = rollSourceName ?? this.rollSourceDoc.rollSourceName;
-            this.rollSourceType = this.rollSourceDoc.rollSourceType;
-            this.rollSourceImg = rollSourceImg ?? this.rollSourceDoc.rollSourceImg ?? "";
-            this.rollModsData = [
-                ...rollModsData ?? [],
-                ...this.rollSourceDoc.rollModsData ?? []
+        if (!doc && rollParticipantName) {
+            doc = game.items.getName(rollParticipantName) ?? game.actors.getName(rollParticipantName);
+        }
+        if (BladesRollParticipant.IsDoc(doc)) {
+            this.rollParticipantDoc = doc;
+        }
+        if (this.rollParticipantDoc) {
+            this.rollParticipantID = this.rollParticipantDoc.rollParticipantID;
+            this.rollParticipantName = rollParticipantName ?? this.rollParticipantDoc.rollParticipantName ?? this.rollParticipantDoc.name;
+            this.rollParticipantIcon = rollParticipantIcon ?? this.rollParticipantDoc.rollParticipantIcon ?? this.rollParticipantDoc.img;
+            this.rollParticipantType = this.rollParticipantDoc.rollParticipantType;
+            this.rollParticipantModsData = [
+                ...rollParticipantModsData ?? [],
+                ...this.rollParticipantDoc.rollParticipantModsData ?? []
             ];
-            this.rollFactors = Object.assign(this.rollSourceDoc.rollFactors, rollFactors ?? {});
+            this.rollFactors = Object.assign(this.rollParticipantDoc.rollFactors, rollFactors ?? {});
         }
         else {
-            if (!rollSourceName) {
-                throw new Error("Must include a rollSourceName when constructing a BladesRollSource object.");
+            if (!rollParticipantName) {
+                throw new Error("Must include a rollParticipantName when constructing a BladesRollParticipant object.");
             }
-            if (!rollSourceImg) {
-                throw new Error("Must include a rollSourceImg when constructing a BladesRollSource object.");
+            if (!rollParticipantType) {
+                throw new Error("Must include a rollParticipantType when constructing a BladesRollParticipant object.");
             }
-            if (!rollSourceType) {
-                throw new Error("Must include a rollSourceType when constructing a BladesRollSource object.");
+            if (!rollParticipantIcon) {
+                throw new Error("Must include a rollParticipantIcon when constructing a BladesRollParticipant object.");
             }
             if (!rollFactors) {
-                throw new Error("Must include a rollFactors when constructing a BladesRollSource object.");
+                throw new Error("Must include a rollFactors when constructing a BladesRollParticipant object.");
             }
-            this.rollSourceID = rollSourceID;
-            this.rollSourceName = rollSourceName;
-            this.rollSourceType = rollSourceType;
-            this.rollSourceImg = rollSourceImg;
-            this.rollModsData = rollModsData ?? [];
+            this.rollParticipantID = rollParticipantID;
+            this.rollParticipantName = rollParticipantName;
+            this.rollParticipantType = rollParticipantType;
+            this.rollParticipantIcon = rollParticipantIcon;
+            this.rollParticipantModsData = rollParticipantModsData ?? [];
             this.rollFactors = rollFactors;
+        }
+        if (this.rollParticipantModsData.length === 0) {
+            this.rollParticipantModsData = undefined;
         }
     }
 }
@@ -1719,8 +1797,8 @@ class BladesRollCollab extends DocumentSheet {
         return {
             rollID: randomID(),
             rollType: RollType.Action,
-            rollSourceType: BladesActorType.pc,
-            rollSourceID: "",
+            rollPrimaryType: BladesActorType.pc,
+            rollPrimaryID: "",
             rollTrait: Factor.tier,
             rollModsData: {},
             rollPositionInitial: Position.risky,
@@ -1849,8 +1927,8 @@ class BladesRollCollab extends DocumentSheet {
         delete BladesRollCollab.Current[rollID];
     }
     static async NewRoll(config) {
-        if (game.user.isGM && BladesActor.IsType(config.rollSource, BladesActorType.pc)) {
-            const rSource = config.rollSource;
+        if (game.user.isGM && BladesActor.IsType(config.rollPrimary, BladesActorType.pc)) {
+            const rSource = config.rollPrimary;
             if (rSource.primaryUser?.id) {
                 config.userID = rSource.primaryUser.id;
             }
@@ -1867,13 +1945,13 @@ class BladesRollCollab extends DocumentSheet {
             eLog.error("rollCollab", `[RenderRollCollab()] Invalid rollType: ${flagUpdateData.rollType}`, config);
             return;
         }
-        const rollSourceData = config.rollSource ?? user.character;
-        if (!rollSourceData) {
-            eLog.error("rollCollab", "[RenderRollCollab()] Invalid rollSource", { rollSourceData, config });
+        const rollPrimaryData = config.rollPrimary ?? user.character;
+        if (!rollPrimaryData) {
+            eLog.error("rollCollab", "[RenderRollCollab()] Invalid rollPrimary", { rollPrimaryData, config });
             return;
         }
-        flagUpdateData.rollSourceID = rollSourceData.rollSourceID;
-        flagUpdateData.rollSourceType = rollSourceData.rollSourceType;
+        flagUpdateData.rollPrimaryID = rollPrimaryData.rollPrimaryID;
+        flagUpdateData.rollPrimaryType = rollPrimaryData.rollPrimaryType;
         if (U.isInt(config.rollTrait)) {
             flagUpdateData.rollTrait = config.rollTrait;
         }
@@ -1933,24 +2011,24 @@ class BladesRollCollab extends DocumentSheet {
         }
         return this.document.getFlag(C.SYSTEM_ID, "rollCollab");
     }
-    _rollSource;
-    get rollSource() {
-        if (!this._rollSource) {
-            if (this.rData.rollSourceData) {
-                this._rollSource = new BladesRollSource(this, this.rData.rollSourceData);
+    _rollPrimary;
+    get rollPrimary() {
+        if (!this._rollPrimary) {
+            if (this.rData.rollPrimaryData) {
+                this._rollPrimary = new BladesRollPrimary(this, this.rData.rollPrimaryData);
             }
         }
-        if (this._rollSource instanceof BladesRollSource) {
-            return this._rollSource;
+        if (this._rollPrimary instanceof BladesRollPrimary) {
+            return this._rollPrimary;
         }
         return undefined;
     }
-    set rollSource(val) {
+    set rollPrimary(val) {
         if (val === undefined) {
-            this._rollSource = undefined;
+            this._rollPrimary = undefined;
         }
         else {
-            this._rollSource = new BladesRollSource(this, val);
+            this._rollPrimary = new BladesRollPrimary(this, val);
         }
     }
     _rollParticipants = [];
@@ -1982,22 +2060,22 @@ class BladesRollCollab extends DocumentSheet {
     get rollTraitValOverride() { return this._rollTraitValOverride; }
     set rollTraitValOverride(val) { this._rollTraitValOverride = val; }
     get rollTraitData() {
-        if (BladesActor.IsType(this.rollSource?.rollSourceDoc, BladesActorType.pc)) {
+        if (BladesActor.IsType(this.rollPrimary?.rollPrimaryDoc, BladesActorType.pc)) {
             if (isAction(this.rollTrait)) {
                 return {
                     name: this.rollTrait,
-                    value: this.rollTraitValOverride ?? this.rollSource.rollSourceDoc.actions[this.rollTrait],
-                    max: this.rollTraitValOverride ?? this.rollSource.rollSourceDoc.actions[this.rollTrait],
-                    pcTooltip: this.rollSource.rollSourceDoc.rollTraitPCTooltipActions,
+                    value: this.rollTraitValOverride ?? this.rollPrimary.rollPrimaryDoc.actions[this.rollTrait],
+                    max: this.rollTraitValOverride ?? this.rollPrimary.rollPrimaryDoc.actions[this.rollTrait],
+                    pcTooltip: this.rollPrimary.rollPrimaryDoc.rollTraitPCTooltipActions,
                     gmTooltip: C.ActionTooltipsGM[this.rollTrait]
                 };
             }
             if (isAttribute(this.rollTrait)) {
                 return {
                     name: this.rollTrait,
-                    value: this.rollTraitValOverride ?? this.rollSource.rollSourceDoc.attributes[this.rollTrait],
-                    max: this.rollTraitValOverride ?? this.rollSource.rollSourceDoc.attributes[this.rollTrait],
-                    pcTooltip: this.rollSource.rollSourceDoc.rollTraitPCTooltipAttributes,
+                    value: this.rollTraitValOverride ?? this.rollPrimary.rollPrimaryDoc.attributes[this.rollTrait],
+                    max: this.rollTraitValOverride ?? this.rollPrimary.rollPrimaryDoc.attributes[this.rollTrait],
+                    pcTooltip: this.rollPrimary.rollPrimaryDoc.rollTraitPCTooltipAttributes,
                     gmTooltip: C.AttributeTooltips[this.rollTrait]
                 };
             }
@@ -2012,14 +2090,14 @@ class BladesRollCollab extends DocumentSheet {
         if (isFactor(this.rollTrait)) {
             return {
                 name: U.tCase(this.rollTrait),
-                value: this.rollTraitValOverride ?? this.rollSource?.rollFactors[this.rollTrait]?.value ?? 0,
-                max: this.rollTraitValOverride ?? this.rollSource?.rollFactors[this.rollTrait]?.max ?? 10
+                value: this.rollTraitValOverride ?? this.rollPrimary?.rollFactors[this.rollTrait]?.value ?? 0,
+                max: this.rollTraitValOverride ?? this.rollPrimary?.rollFactors[this.rollTrait]?.max ?? 10
             };
         }
         throw new Error(`[get rollTraitData] Invalid rollTrait: '${this.rollTrait}'`);
     }
     get rollTraitOptions() {
-        if (BladesActor.IsType(this.rollSource, BladesActorType.pc)) {
+        if (BladesActor.IsType(this.rollPrimary, BladesActorType.pc)) {
             if (isAction(this.rollTrait)) {
                 return Object.values(Action)
                     .map((action) => ({
@@ -2098,9 +2176,12 @@ class BladesRollCollab extends DocumentSheet {
             + (this.tempGMBoosts.Dice ?? 0)) <= 0;
     }
     _roll;
-    get roll() { return (this._roll ??= new Roll(`${this.isRollingZero ? 2 : this.finalDicePool}d6`, {})); }
+    get roll() {
+        this._roll ??= new Roll(`${this.isRollingZero ? 2 : this.finalDicePool}d6`, {});
+        return this._roll;
+    }
     get rollFactors() {
-        const sourceFactors = Object.fromEntries(Object.entries(this.rollSource?.rollFactors ?? {})
+        const sourceFactors = Object.fromEntries(Object.entries(this.rollPrimary?.rollFactors ?? {})
             .map(([factor, factorData]) => [
             factor,
             {
@@ -2117,7 +2198,7 @@ class BladesRollCollab extends DocumentSheet {
                     baseVal: 0,
                     cssClasses: "factor-gold",
                     isActive: factorData.isActive ?? false,
-                    isPrimary: factorData.isPrimary ?? factor === Factor.tier ?? false,
+                    isPrimary: factorData.isPrimary ?? (factor === Factor.tier),
                     isDominant: factorData.isDominant ?? false,
                     highFavorsPC: factorData.highFavorsPC ?? true
                 };
@@ -2134,7 +2215,6 @@ class BladesRollCollab extends DocumentSheet {
                 sourceFactors[factor].display = `${sourceFactors[factor].value}`;
             }
         });
-        
         const rollOppFactors = this.rollOpposition?.rollFactors
             ?? Object.fromEntries(([
                 Factor.tier,
@@ -2150,7 +2230,7 @@ class BladesRollCollab extends DocumentSheet {
                     baseVal: 0,
                     cssClasses: "factor-gold",
                     isActive: false,
-                    isPrimary: factor === Factor.tier ?? false,
+                    isPrimary: factor === Factor.tier,
                     isDominant: false,
                     highFavorsPC: true
                 }
@@ -2172,7 +2252,7 @@ class BladesRollCollab extends DocumentSheet {
                     baseVal: 0,
                     cssClasses: "factor-gold",
                     isActive: factorData.isActive ?? false,
-                    isPrimary: factorData.isPrimary ?? factor === Factor.tier ?? false,
+                    isPrimary: factorData.isPrimary ?? (factor === Factor.tier),
                     isDominant: factorData.isDominant ?? false,
                     highFavorsPC: factorData.highFavorsPC ?? true
                 };
@@ -2198,15 +2278,12 @@ class BladesRollCollab extends DocumentSheet {
         this.tempGMBoosts = {};
         this.rollMods = modsData.map((modData) => new BladesRollMod(modData, this));
         const initReport = {};
-        
-        let checkDisableMods = [...this.rollMods];
-        checkDisableMods = checkDisableMods
-            .filter((rollMod) => !rollMod.setConditionalStatus());
-        checkDisableMods = checkDisableMods
-            .filter((rollMod) => !rollMod.setAutoStatus());
-        checkDisableMods = checkDisableMods
-            .filter((rollMod) => !rollMod.setPayableStatus());
-        
+                
+        this.rollMods
+            .filter((rollMod) => !rollMod.setConditionalStatus())
+            .filter((rollMod) => !rollMod.setAutoStatus())
+            .forEach((rollMod) => { rollMod.setPayableStatus(); });
+                
         const parseForceOnKeys = (mod) => {
             const holdKeys = mod.effectKeys.filter((key) => /^ForceOn/.test(key));
             if (holdKeys.length === 0) {
@@ -2215,8 +2292,8 @@ class BladesRollCollab extends DocumentSheet {
             while (holdKeys.length) {
                 const thisTarget = holdKeys.pop().split(/-/).pop();
                 if (thisTarget === "BestAction") {
-                    if (BladesActor.IsType(this.rollSource?.rollSourceDoc, BladesActorType.pc)) {
-                        this.rollTraitValOverride = Math.max(...Object.values(this.rollSource.rollSourceDoc.actions));
+                    if (BladesActor.IsType(this.rollPrimary?.rollPrimaryDoc, BladesActorType.pc)) {
+                        this.rollTraitValOverride = Math.max(...Object.values(this.rollPrimary.rollPrimaryDoc.actions));
                     }
                     continue;
                 }
@@ -2244,7 +2321,7 @@ class BladesRollCollab extends DocumentSheet {
             }
         };
         this.getActiveRollMods().forEach((rollMod) => parseForceOnKeys(rollMod));
-        
+                
         if (this.isForcePushed()) {
             this.getInactivePushMods()
                 .filter((mod) => !mod.isBasicPush)
@@ -2265,17 +2342,16 @@ class BladesRollCollab extends DocumentSheet {
                     .forEach((mod) => { mod.held_status = RollModStatus.Hidden; });
             }
         });
-        
+                
         this.getVisibleRollMods()
             .forEach((mod) => { mod.setRelevancyStatus(); });
-        
+                
         const activeArmorCostMod = this.getActiveRollMods().find((mod) => mod.effectKeys.includes("Cost-SpecialArmor"));
         if (activeArmorCostMod) {
             this.getVisibleRollMods()
                 .filter((mod) => !mod.isActive && mod.effectKeys.includes("Cost-SpecialArmor"))
                 .forEach((mod) => { mod.held_status = RollModStatus.ForcedOff; });
         }
-        
         eLog.checkLog2("rollMods", "*** initRollMods() PASS ***", initReport);
     }
     isTraitRelevant(trait) {
@@ -2302,9 +2378,9 @@ class BladesRollCollab extends DocumentSheet {
         const effectPush = this.getRollModByID("Push-positive-effect");
         const negatePushCostMods = this.getActiveRollMods(RollModCategory.after, "positive")
             .filter((mod) => mod.effectKeys.includes("Negate-PushCost"));
-        return ((harmPush && harmPush.isActive && harmPush.stressCost) || 0)
-            + ((rollPush && rollPush.isActive && rollPush.stressCost) || 0)
-            + ((effectPush && effectPush.isActive && effectPush.stressCost) || 0)
+        return ((harmPush?.isActive && harmPush?.stressCost) || 0)
+            + ((rollPush?.isActive && rollPush?.stressCost) || 0)
+            + ((effectPush?.isActive && effectPush?.stressCost) || 0)
             - (negatePushCostMods.length * 2);
     }
     get rollCostData() {
@@ -2373,73 +2449,260 @@ class BladesRollCollab extends DocumentSheet {
         ]);
     };
     _rollMods;
+        compareMods(modA, modB) {
+        const modOrder = ["Bargain", "Assist", "Setup"];
+        if (modA.isBasicPush) {
+            return -1;
+        }
+        if (modB.isBasicPush) {
+            return 1;
+        }
+        if (modA.name === "Bargain" && modA.isActive) {
+            return -1;
+        }
+        if (modB.name === "Bargain" && modB.isActive) {
+            return 1;
+        }
+        if (modA.isPush) {
+            return -1;
+        }
+        if (modB.isPush) {
+            return 1;
+        }
+        const modAIndex = modOrder.indexOf(modA.name);
+        const modBIndex = modOrder.indexOf(modB.name);
+        if (modAIndex !== -1 && modBIndex !== -1) {
+            return modAIndex - modBIndex;
+        }
+        return modA.name.localeCompare(modB.name);
+    }
     get rollMods() {
         if (!this._rollMods) {
             throw new Error("[get rollMods] No roll mods found!");
         }
-        return this._rollMods.sort((modA, modB) => {
-            if (modA.isBasicPush) {
-                return -1;
-            }
-            if (modB.isBasicPush) {
-                return 1;
-            }
-            if (modA.name === "Bargain" && modA.isActive) {
-                return -1;
-            }
-            if (modB.name === "Bargain" && modB.isActive) {
-                return 1;
-            }
-            if (modA.isPush) {
-                return -1;
-            }
-            if (modB.isPush) {
-                return 1;
-            }
-            if (modA.name === "Bargain") {
-                return -1;
-            }
-            if (modB.name === "Bargain") {
-                return 1;
-            }
-            if (modA.name === "Assist") {
-                return -1;
-            }
-            if (modB.name === "Assist") {
-                return 1;
-            }
-            if (modA.name === "Setup") {
-                return -1;
-            }
-            if (modB.name === "Setup") {
-                return 1;
-            }
-            return modA.name.localeCompare(modB.name);
-        });
+        return this._rollMods.sort((modA, modB) => this.compareMods(modA, modB));
     }
     set rollMods(val) { this._rollMods = val; }
     
     
-    async getData() {
+        async getData() {
+        const context = super.getData();
+        if (!this.rollPrimary) {
+            throw new Error("No roll source configured for roll.");
+        }
+        this.initRollMods(this.getRollModsData());
+        this.rollMods.forEach((rollMod) => rollMod.applyRollModEffectKeys());
+        const sheetData = this.getSheetData(this.getIsGM(), this.getRollCosts());
+        return { ...context, ...sheetData };
+    }
+        getRollModsData() {
+        const defaultMods = [
+            ...BladesRollCollab.DefaultRollMods,
+            ...this.rollPrimary?.rollModsData ?? []
+        ];
+        if (this.rollOpposition?.rollOppModsData) {
+            return [
+                ...defaultMods,
+                ...this.rollOpposition.rollOppModsData
+            ];
+        }
+        return defaultMods;
+    }
+        getIsGM() {
+        return game.eunoblades.Tracker.system.is_spoofing_player ? false : game.user.isGM;
+    }
+        getRollCosts() {
+        return this.getActiveRollMods()
+            .map((rollMod) => rollMod.costs)
+            .flat()
+            .filter((costData) => costData !== undefined);
+    }
+        getStressCosts(rollCosts) {
+        return rollCosts.filter((costData) => costData.costType === "Stress");
+    }
+        getTotalStressCost(stressCosts) {
+        return U.sum(stressCosts.map((costData) => costData.costAmount));
+    }
+        getSpecArmorCost(rollCosts) {
+        return rollCosts.find((costData) => costData.costType === "SpecialArmor");
+    }
+        getSheetData(isGM, rollCosts) {
+        const { rData, rollPrimary, rollTraitData, rollTraitOptions, finalDicePool, finalPosition, finalEffect, finalResult, rollMods, rollFactors } = this;
+        if (!rollPrimary) {
+            throw new Error("A primary roll source is required for BladesRollCollab.");
+        }
+        const baseData = {
+            ...this.rData,
+            cssClass: "roll-collab",
+            editable: this.options.editable,
+            isGM,
+            system: this.rollPrimary?.rollPrimaryDoc?.system,
+            rollMods,
+            rollPrimary,
+            rollTraitData,
+            rollTraitOptions,
+            diceTotal: finalDicePool,
+            rollOpposition: this.rollOpposition,
+            rollEffects: Object.values(Effect),
+            teamworkDocs: game.actors.filter((actor) => BladesActor.IsType(actor, BladesActorType.pc)),
+            rollTraitValOverride: this.rollTraitValOverride,
+            rollFactorPenaltiesNegated: this.rollFactorPenaltiesNegated,
+            posRollMods: Object.fromEntries(Object.values(RollModCategory)
+                .map((cat) => [cat, this.getRollMods(cat, "positive")])),
+            negRollMods: Object.fromEntries(Object.values(RollModCategory)
+                .map((cat) => [cat, this.getRollMods(cat, "negative")])),
+            hasInactiveConditionals: this.calculateHasInactiveConditionalsData(),
+            rollFactors,
+            oddsGradient: this.calculateOddsGradient(finalDicePool, finalResult),
+            costData: this.parseCostsHTML(this.getStressCosts(rollCosts), this.getSpecArmorCost(rollCosts))
+        };
+        const rollPositionData = this.calculatePositionData(finalPosition);
+        const rollEffectData = this.calculateEffectData(isGM, finalEffect);
+        const rollResultData = this.calculateResultData(isGM, finalResult);
+        const GMBoostsData = this.calculateGMBoostsData(rData);
+        const positionEffectTradeData = this.calculatePositionEffectTradeData();
+        return {
+            ...baseData,
+            ...rollPositionData,
+            ...rollEffectData,
+            ...rollResultData,
+            ...GMBoostsData,
+            ...positionEffectTradeData
+        };
+    }
+    calculatePositionData(finalPosition) {
+        return {
+            rollPositions: Object.values(Position),
+            rollPositionFinal: finalPosition
+        };
+    }
+    calculateEffectData(isGM, finalEffect) {
+        return {
+            rollEffects: Object.values(Effect),
+            rollEffectFinal: finalEffect,
+            isAffectingAfter: this.getVisibleRollMods(RollModCategory.after).length > 0
+                || (isGM && this.getRollMods(RollModCategory.after).length > 0)
+        };
+    }
+    calculateResultData(isGM, finalResult) {
+        return {
+            rollResultFinal: finalResult,
+            isAffectingResult: finalResult > 0
+                || this.getVisibleRollMods(RollModCategory.result).length > 0
+                || (isGM && this.getRollMods(RollModCategory.result).length > 0)
+        };
+    }
+    calculateGMBoostsData(flagData) {
+        return {
+            GMBoosts: {
+                Dice: flagData.GMBoosts.Dice ?? 0,
+                [Factor.tier]: flagData.GMBoosts[Factor.tier] ?? 0,
+                [Factor.quality]: flagData.GMBoosts[Factor.quality] ?? 0,
+                [Factor.scale]: flagData.GMBoosts[Factor.scale] ?? 0,
+                [Factor.magnitude]: flagData.GMBoosts[Factor.magnitude] ?? 0,
+                Result: flagData.GMBoosts.Result ?? 0
+            },
+            GMOppBoosts: {
+                [Factor.tier]: flagData.GMOppBoosts[Factor.tier] ?? 0,
+                [Factor.quality]: flagData.GMOppBoosts[Factor.quality] ?? 0,
+                [Factor.scale]: flagData.GMOppBoosts[Factor.scale] ?? 0,
+                [Factor.magnitude]: flagData.GMOppBoosts[Factor.magnitude] ?? 0
+            }
+        };
+    }
+
+        calculateOddsGradient(diceTotal, finalResult) {
+        const oddsColors = {
+            crit: "var(--blades-cyan)",
+            success: "var(--blades-gold)",
+            partial: "var(--blades-grey-bright)",
+            fail: "var(--blades-black-dark)"
+        };
+        const odds = { ...C.DiceOdds[diceTotal] };
+        if (finalResult < 0) {
+            for (let i = finalResult; i < 0; i++) {
+                oddsColors.crit = oddsColors.success;
+                oddsColors.success = oddsColors.partial;
+                oddsColors.partial = oddsColors.fail;
+            }
+        }
+        else if (finalResult > 0) {
+            for (let i = 0; i < finalResult; i++) {
+                oddsColors.fail = oddsColors.partial;
+                oddsColors.partial = oddsColors.success;
+                oddsColors.success = oddsColors.crit;
+            }
+        }
+        const gradientStops = {
+            fail: odds.fail,
+            partial: odds.fail + odds.partial,
+            success: odds.fail + odds.partial + odds.success
+        };
+        gradientStops.fail = Math.min(100, Math.max(0, Math.max(gradientStops.fail / 2, gradientStops.fail - 10)));
+        const critSpan = 100 - gradientStops.success;
+        gradientStops.success = Math.min(100, Math.max(0, gradientStops.success - Math.max(critSpan / 2, critSpan - 10)));
+        return [
+            "linear-gradient(to right",
+            `${oddsColors.fail} ${gradientStops.fail}%`,
+            `${oddsColors.partial} ${gradientStops.partial}%`,
+            `${oddsColors.success} ${gradientStops.success}%`,
+            `${oddsColors.crit})`
+        ].join(", ");
+    }
+        calculatePositionEffectTradeData() {
+        const canTradePosition = this.posEffectTrade === "position" || (this.posEffectTrade === false
+            && this.finalPosition !== Position.desperate
+            && this.finalEffect !== Effect.extreme);
+        const canTradeEffect = this.posEffectTrade === "effect" || (this.posEffectTrade === false
+            && this.finalPosition !== Position.controlled
+            && this.finalEffect !== Effect.zero);
+        return { canTradePosition, canTradeEffect };
+    }
+        calculateHasInactiveConditionalsData() {
+        const hasInactive = {};
+        for (const category of Object.values(RollModCategory)) {
+            hasInactive[category] = this.getRollMods(category).filter((mod) => mod.isInInactiveBlock).length > 0;
+        }
+        return hasInactive;
+    }
+        parseCostsHTML(stressCosts, specArmorCost) {
+        if (specArmorCost || stressCosts.length > 0) {
+            const totalStressCost = this.getTotalStressCost(stressCosts);
+            return {
+                footerLabel: [
+                    "( Roll Costs",
+                    totalStressCost > 0 ? `<span class='red-bright'><strong>${totalStressCost} Stress</strong></span>` : null,
+                    specArmorCost && totalStressCost ? "and" : null,
+                    specArmorCost ? "your <span class='cyan-bright'><strong>Special Armor</strong></span>" : null,
+                    ")"
+                ].filter((line) => Boolean(line)).join(" "),
+                tooltip: [
+                    "<h1>Roll Costs</h1><ul>",
+                    ...stressCosts.map((costData) => `<li><strong class='shadowed'>${costData.label}: <span class='red-bright'>${costData.costAmount}</span> Stress</strong></li>`),
+                    specArmorCost ? `<li><strong class='shadowed'>${specArmorCost.label}: <strong class='cyan-bright'>Special Armor</strong></strong></li>` : null,
+                    "</ul>"
+                ].filter((line) => Boolean(line)).join("")
+            };
+        }
+        return undefined;
+    }
+    async OLDgetData() {
         const context = super.getData();
         const rData = this.rData;
-        if (!this.rollSource) {
+        if (!this.rollPrimary) {
             throw new Error("No roll source configured for roll.");
         }
         const rollModsData = [
             ...BladesRollCollab.DefaultRollMods,
-            ...this.rollSource.rollModsData ?? []
+            ...this.rollPrimary.rollModsData ?? []
         ];
-        if (this.rollOpposition?.rollModsData) {
-            rollModsData.push(...this.rollOpposition.rollModsData);
+        if (this.rollOpposition?.rollOppModsData) {
+            rollModsData.push(...this.rollOpposition.rollOppModsData);
         }
         this.initRollMods(rollModsData);
-        const initReport = {};
-        
         this.rollMods.forEach((rollMod) => rollMod.applyRollModEffectKeys());
-        eLog.checkLog2("rollMods", "*** getData() PASS ***", initReport);
         const isGM = game.eunoblades.Tracker.system.is_spoofing_player ? false : game.user.isGM;
-        const { rollSource, rollOpposition, rollTraitData, rollTraitOptions, finalPosition, finalEffect, finalResult, rollMods, posEffectTrade, rollFactors } = this;
+        const { rollPrimary, rollOpposition, rollTraitData, rollTraitOptions, finalPosition, finalEffect, finalResult, rollMods, posEffectTrade, rollFactors } = this;
         const rollCosts = this.getActiveRollMods()
             .map((rollMod) => rollMod.costs)
             .flat()
@@ -2452,9 +2715,9 @@ class BladesRollCollab extends DocumentSheet {
             cssClass: "roll-collab",
             editable: this.options.editable,
             isGM,
-            system: this.rollSource.rollSourceDoc?.system,
+            system: this.rollPrimary.rollPrimaryDoc?.system,
             rollMods,
-            rollSource,
+            rollPrimary,
             rollTraitData,
             rollTraitOptions,
             diceTotal: this.finalDicePool,
@@ -2553,7 +2816,6 @@ class BladesRollCollab extends DocumentSheet {
             fail: "var(--blades-black-dark)"
         };
         const odds = { ...C.DiceOdds[sheetData.diceTotal ?? 0] };
-        
         if ((sheetData.rollResultFinal ?? 0) < 0) {
             for (let i = sheetData.rollResultFinal ?? 0; i < 0; i++) {
                 oddsColors.crit = oddsColors.success;
@@ -2591,19 +2853,34 @@ class BladesRollCollab extends DocumentSheet {
             `<div class='odds-gradient-box odds-gradient-crit' style='width: ${odds.crit}%;'></div>`,
             "</div>"
         ].join("");
-        eLog.checkLog2("rollCollab", "ROLL COLLAB GETDATA", { context, sheetData, user: this.document, userFlags: this.document.getFlag(C.SYSTEM_ID, "rollCollab"), rollMods: this.rollMods });
         return {
             ...context,
             ...sheetData
         };
     }
-
+    
     _dieVals;
     get dieVals() {
-        return (this._dieVals ??= this.roll.terms[0].results
+        this._dieVals ??= this.roll.terms[0].results
             .map((result) => result.result)
             .sort()
-            .reverse());
+            .reverse();
+        return this._dieVals;
+    }
+    getDieClass(val, i) {
+        if (val === 6 && i <= 1 && this.rollResult === RollResult.critical) {
+            val++;
+        }
+        return [
+            "",
+            "blades-die-fail",
+            "blades-die-fail",
+            "blades-die-fail",
+            "blades-die-partial",
+            "blades-die-partial",
+            "blades-die-success",
+            "blades-die-critical"
+        ][val];
     }
     get dieValsHTML() {
         const dieVals = [...this.dieVals];
@@ -2618,20 +2895,7 @@ class BladesRollCollab extends DocumentSheet {
         }
         else {
             return [
-                ...dieVals.map((val, i) => {
-                    if (val === 6 && i <= 1 && this.rollResult === RollResult.critical) {
-                        return `<span class='blades-die blades-die-critical blades-die-${val}'><img src='systems/eunos-blades/assets/dice/faces/${val}.webp' /></span>`;
-                    }
-                    else if (val === 6) {
-                        return `<span class='blades-die blades-die-success blades-die-${val}'><img src='systems/eunos-blades/assets/dice/faces/${val}.webp' /></span>`;
-                    }
-                    else if ([4, 5].includes(val)) {
-                        return `<span class='blades-die blades-die-partial blades-die-${val}'><img src='systems/eunos-blades/assets/dice/faces/${val}.webp' /></span>`;
-                    }
-                    else {
-                        return `<span class='blades-die blades-die-fail blades-die-${val}'><img src='systems/eunos-blades/assets/dice/faces/${val}.webp' /></span>`;
-                    }
-                }),
+                ...dieVals.map(this.getDieClass),
                 ghostNum ? `<span class='blades-die blades-die-ghost blades-die-${ghostNum}'><img src='systems/eunos-blades/assets/dice/faces/${ghostNum}.webp' /></span>` : null
             ]
                 .filter((val) => typeof val === "string")
@@ -2659,7 +2923,7 @@ class BladesRollCollab extends DocumentSheet {
         switch (this.rollType) {
             case RollType.Action: {
                 renderedHTML = await renderTemplate("systems/eunos-blades/templates/chat/action-roll.hbs", {
-                    sourceName: this.rollSource?.rollSourceName ?? "",
+                    sourceName: this.rollPrimary?.rollPrimaryName ?? "",
                     oppName: this.rollOpposition?.rollOppName,
                     type: U.lCase(this.rollType),
                     subType: U.lCase(this.rollSubType),
@@ -2935,7 +3199,7 @@ class BladesRollCollab extends DocumentSheet {
         const { type, uuid } = data;
         const [id] = (uuid.match(new RegExp(`${type}\\.(.+)`)) ?? []).slice(1);
         const oppDoc = game[`${U.lCase(type)}s`].get(id);
-        if (oppDoc) {
+        if (BladesRollOpposition.IsDoc(oppDoc)) {
             this.rollOpposition = oppDoc;
         }
     }
@@ -2958,6 +3222,12 @@ class BladesRollCollab extends DocumentSheet {
         return super.render(force, options);
     }
 }
+export const BladesRollCollabComps = {
+    Mod: BladesRollMod,
+    Primary: BladesRollPrimary,
+    Opposition: BladesRollOpposition,
+    Participant: BladesRollParticipant
+};
 export default BladesRollCollab;
 //# sourceMappingURL=blades-roll-collab.js.map
 //# sourceMappingURL=blades-roll-collab.js.map

@@ -6,12 +6,12 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-import C, { BladesActorType, Tag, Playbook, BladesItemType, Attribute, Action, PrereqType, Position, Effect, AdvancementPoint, Randomizers, RollModCategory, RollModStatus, Factor } from "./core/constants.js";
+import C, { BladesActorType, Tag, Playbook, BladesItemType, Attribute, Action, PrereqType, Position, Effect, AdvancementPoint, Randomizers, Factor } from "./core/constants.js";
 import { bladesRoll } from "./blades-roll.js";
 import BladesItem from "./blades-item.js";
 import { SelectionCategory } from "./blades-dialog.js";
 class BladesActor extends Actor {
-    
+
     static async create(data, options = {}) {
         data.token = data.token || {};
         data.system = data.system ?? {};
@@ -263,8 +263,6 @@ class BladesActor extends Actor {
             this.sheet?.render();
         }
     }
-    
-    
     get subItems() { return Array.from(this.items); }
     get activeSubItems() { return this.items.filter((item) => !item.hasTag(Tag.System.Archived)); }
     get archivedSubItems() { return this.items.filter((item) => item.hasTag(Tag.System.Archived)); }
@@ -272,11 +270,11 @@ class BladesActor extends Actor {
         if (!item.system.prereqs) {
             return true;
         }
-        for (let [pType, pReqs] of Object.entries(item.system.prereqs)) {
-            pReqs = Array.isArray(pReqs) ? pReqs : [pReqs.toString()];
+        for (const [pType, pReqs] of Object.entries(item.system.prereqs)) {
+            const pReqArray = Array.isArray(pReqs) ? pReqs : [pReqs.toString()];
             const hitRecord = {};
-            while (pReqs.length) {
-                const pString = pReqs.pop();
+            while (pReqArray.length) {
+                const pString = pReqArray.pop();
                 hitRecord[pType] ??= [];
                 switch (pType) {
                     case PrereqType.HasActiveItem: {
@@ -638,13 +636,13 @@ class BladesActor extends Actor {
         
     async grantAdvancementPoints(allowedTypes, amount = 1) {
         const aPtKey = Array.isArray(allowedTypes)
-            ? allowedTypes.sort().join("_")
+            ? allowedTypes.sort((a, b) => a.localeCompare(b)).join("_")
             : allowedTypes;
         this.update({ [`system.advancement_points.${aPtKey}`]: (this.system.advancement_points?.[aPtKey] ?? 0) + amount });
     }
     async removeAdvancementPoints(allowedTypes, amount = 1) {
         const aPtKey = Array.isArray(allowedTypes)
-            ? allowedTypes.sort().join("_")
+            ? allowedTypes.sort((a, b) => a.localeCompare(b)).join("_")
             : allowedTypes;
         const newCount = this.system.advancement_points?.[aPtKey] ?? 0 - amount;
         if (newCount <= 0 && aPtKey in (this.system.advancement_points ?? [])) {
@@ -726,9 +724,6 @@ class BladesActor extends Actor {
         const actions = C.Action[attribute].map((action) => `<strong>${U.tCase(action)}</strong>`);
         game.eunoblades.PushController.pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`);
     }
-    
-    
-    
     parentActor;
     get isSubActor() { return this.parentActor !== undefined; }
     
@@ -772,153 +767,7 @@ class BladesActor extends Actor {
     getTaggedItemBonuses(tags) {
         return 0;
     }
-    get rollSourceID() { return this.id; }
-    get rollSourceDoc() { return this; }
-    get rollSourceImg() { return this.img ?? ""; }
-    get rollSourceName() { return this.name ?? ""; }
-    get rollSourceType() { return this.type; }
-    get rollOppID() { return this.id; }
-    get rollOppDoc() { return this; }
-    get rollOppImg() { return this.img ?? ""; }
-    get rollOppName() { return this.name ?? ""; }
-    get rollOppSubName() { return ""; }
-    get rollOppType() { return this.type; }
-    get rollModsData() {
-        if (!(BladesActor.IsType(this, BladesActorType.pc) || BladesActor.IsType(this, BladesActorType.crew))) {
-            return [];
-        }
-        const { roll_mods } = this.system;
-        if (roll_mods.length === 0) {
-            return [];
-        }
-        const rollModsData = roll_mods
-            .filter((elem) => elem !== undefined)
-            .map((modString) => {
-            const pStrings = modString.split(/@/);
-            const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
-            const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, ""));
-            if (!nameVal) {
-                throw new Error(`RollMod Missing Name: '${modString}'`);
-            }
-            const catString = U.pullElement(pStrings, (v) => typeof v === "string" && /^cat/i.test(v));
-            const catVal = (typeof catString === "string" && catString.replace(/^.*:/, ""));
-            if (!catVal || !(catVal in RollModCategory)) {
-                throw new Error(`RollMod Missing Category: '${modString}'`);
-            }
-            const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
-            const posNegVal = posNegString.replace(/^.*:/, "");
-            const rollModData = {
-                id: `${nameVal}-${posNegVal}-${catVal}`,
-                name: nameVal,
-                category: catVal,
-                base_status: RollModStatus.ToggledOff,
-                modType: "general",
-                value: 1,
-                posNeg: posNegVal,
-                tooltip: ""
-            };
-            pStrings.forEach((pString) => {
-                const [keyString, valString] = pString.split(/:/);
-                let val = /\|/.test(valString) ? valString.split(/\|/) : valString;
-                let key;
-                if (/^stat/i.test(keyString)) {
-                    key = "base_status";
-                }
-                else if (/^val/i.test(keyString)) {
-                    key = "value";
-                }
-                else if (/^eff|^ekey/i.test(keyString)) {
-                    key = "effectKeys";
-                }
-                else if (/^side|^ss/i.test(keyString)) {
-                    key = "sideString";
-                }
-                else if (/^s.*ame/i.test(keyString)) {
-                    key = "source_name";
-                }
-                else if (/^tool|^tip/i.test(keyString)) {
-                    key = "tooltip";
-                }
-                else if (/^ty/i.test(keyString)) {
-                    key = "modType";
-                }
-                else if (/^c.*r?.*ty/i.test(keyString)) {
-                    key = "conditionalRollTypes";
-                }
-                else if (/^a.*r?.*y/i.test(keyString)) {
-                    key = "autoRollTypes";
-                }
-                else if (/^c.*r?.*tr/i.test(keyString)) {
-                    key = "conditionalRollTraits";
-                }
-                else if (/^a.*r?.*tr/i.test(keyString)) {
-                    key = "autoRollTraits";
-                }
-                else {
-                    throw new Error(`Bad Roll Mod Key: ${keyString}`);
-                }
-                if (key === "base_status" && val === "Conditional") {
-                    val = RollModStatus.Hidden;
-                }
-                Object.assign(rollModData, { [key]: ["value"].includes(key)
-                        ? U.pInt(val)
-                        : (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
-                            ? [val].flat()
-                            : val.replace(/%COLON%/g, ":")) });
-            });
-            return rollModData;
-        });
-        return rollModsData;
-    }
-    get rollFactors() {
-        const factorData = {
-            [Factor.tier]: {
-                name: Factor.tier,
-                value: this.getFactorTotal(Factor.tier),
-                max: this.getFactorTotal(Factor.tier),
-                baseVal: this.getFactorTotal(Factor.tier),
-                isActive: true,
-                isPrimary: true,
-                isDominant: false,
-                highFavorsPC: true
-            },
-            [Factor.quality]: {
-                name: Factor.quality,
-                value: this.getFactorTotal(Factor.quality),
-                max: this.getFactorTotal(Factor.quality),
-                baseVal: this.getFactorTotal(Factor.quality),
-                isActive: false,
-                isPrimary: false,
-                isDominant: false,
-                highFavorsPC: true
-            }
-        };
-        if (BladesActor.IsType(this, BladesActorType.npc)) {
-            factorData[Factor.scale] = {
-                name: Factor.scale,
-                value: this.getFactorTotal(Factor.scale),
-                max: this.getFactorTotal(Factor.scale),
-                baseVal: this.getFactorTotal(Factor.scale),
-                cssClasses: "factor-grey",
-                isActive: false,
-                isPrimary: false,
-                isDominant: false,
-                highFavorsPC: true
-            };
-            factorData[Factor.magnitude] = {
-                name: Factor.magnitude,
-                value: this.getFactorTotal(Factor.magnitude),
-                max: this.getFactorTotal(Factor.magnitude),
-                baseVal: this.getFactorTotal(Factor.magnitude),
-                isActive: false,
-                isPrimary: false,
-                isDominant: false,
-                highFavorsPC: true
-            };
-        }
-        return factorData;
-    }
-    
+
     prepareDerivedData() {
         if (BladesActor.IsType(this, BladesActorType.pc)) {
             this._preparePCData(this.system);
@@ -965,28 +814,20 @@ class BladesActor extends Actor {
     }
     
     async _onCreateDescendantDocuments(parent, collection, docs, data, options, userId) {
-        docs.forEach(async (doc) => {
-            if (doc instanceof BladesItem && [BladesItemType.playbook, BladesItemType.crew_playbook].includes(doc.type)) {
+        await Promise.all(docs.map(async (doc) => {
+            if (BladesItem.IsType(doc, BladesItemType.playbook, BladesItemType.crew_playbook)) {
                 await Promise.all(this.activeSubItems
                     .filter((aItem) => aItem.type === doc.type && aItem.system.world_name !== doc.system.world_name)
                     .map((aItem) => this.remSubItem(aItem)));
             }
-        });
+        }));
         await super._onCreateDescendantDocuments(parent, collection, docs, data, options, userId);
         eLog.checkLog("actorTrigger", "_onCreateDescendantDocuments", { parent, collection, docs, data, options, userId });
-        docs.forEach(async (doc) => {
-            if (doc instanceof BladesItem) {
-                switch (doc.type) {
-                    case BladesItemType.vice: {
-                        if (!BladesActor.IsType(this, BladesActorType.pc)) {
-                            return;
-                        }
-                        this.activeSubActors
-                            .filter((subActor) => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name))
-                            .forEach((subActor) => this.remSubActor(subActor));
-                        break;
-                    }
-                }
+        docs.forEach((doc) => {
+            if (BladesItem.IsType(doc, BladesItemType.vice) && BladesActor.IsType(this, BladesActorType.pc)) {
+                this.activeSubActors
+                    .filter((subActor) => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name))
+                    .forEach((subActor) => this.remSubActor(subActor));
             }
         });
     }
@@ -1020,7 +861,6 @@ class BladesActor extends Actor {
     }
     
     rollAttributePopup(attribute_name) {
-        const test = Action;
         const attribute_label = U.tCase(attribute_name);
         let content = `
         <h2>${game.i18n.localize("BITD.Roll")} ${attribute_label}</h2>

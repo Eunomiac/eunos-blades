@@ -5,6 +5,7 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
+import { Factor } from "../../core/constants.js";
 import BladesActor from "../../blades-actor.js";
 const JSONDATA = {
     FACTIONS: {
@@ -1682,6 +1683,40 @@ Object.assign(globalThis, {
     }
 });
 class BladesFaction extends BladesActor {
+    get rollFactors() {
+        const factorData = {
+            [Factor.tier]: {
+                name: Factor.tier,
+                value: this.getFactorTotal(Factor.tier),
+                max: this.getFactorTotal(Factor.tier),
+                baseVal: this.getFactorTotal(Factor.tier),
+                isActive: true,
+                isPrimary: true,
+                isDominant: false,
+                highFavorsPC: true
+            },
+            [Factor.quality]: {
+                name: Factor.quality,
+                value: this.getFactorTotal(Factor.quality),
+                max: this.getFactorTotal(Factor.quality),
+                baseVal: this.getFactorTotal(Factor.quality),
+                isActive: false,
+                isPrimary: false,
+                isDominant: false,
+                highFavorsPC: true
+            }
+        };
+        return factorData;
+    }
+
+    get rollOppID() { return this.id; }
+    get rollOppDoc() { return this; }
+    get rollOppImg() { return this.img ?? ""; }
+    get rollOppName() { return this.name ?? ""; }
+    get rollOppSubName() { return ""; }
+    get rollOppType() { return this.type; }
+    get rollOppModsData() { return []; }
+    
     async addClock(clockData = {}) {
         clockData.id ??= clockData.id ?? randomID();
         clockData.color ??= "white";

@@ -1733,6 +1733,12 @@ class BladesRollOpposition implements BladesRollCollab.OppositionDocData {
 
 
 class BladesRollParticipant implements BladesRollCollab.ParticipantDocData {
+
+  static IsDoc(doc: unknown): doc is BladesRollCollab.ParticipantDoc {
+    return BladesActor.IsType(doc, BladesActorType.pc, BladesActorType.crew, BladesActorType.npc)
+      || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker);
+  }
+
   rollInstance: BladesRollCollab;
   rollParticipantID: string|undefined;
   rollParticipantDoc: BladesRollCollab.ParticipantDoc|undefined;
@@ -1754,9 +1760,8 @@ class BladesRollParticipant implements BladesRollCollab.ParticipantDocData {
       doc = game.items.getName(rollParticipantName) ?? game.actors.getName(rollParticipantName);
     }
 
-    if (BladesActor.IsType(doc, BladesActorType.pc, BladesActorType.crew, BladesActorType.npc)
-      || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker)) {
-      this.rollParticipantDoc = doc as BladesRollCollab.ParticipantDoc;
+    if (BladesRollParticipant.IsDoc(doc)) {
+      this.rollParticipantDoc = doc;
     }
 
     if (this.rollParticipantDoc) {

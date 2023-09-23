@@ -6,7 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import BladesItem from "../../blades-item.js";
-import C, { Attribute, Harm, BladesActorType, BladesItemType, Tag, RollModCategory, RollModStatus } from "../../core/constants.js";
+import C, { Attribute, Harm, BladesActorType, BladesItemType, Tag, RollModCategory, Factor, RollModStatus } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesActor from "../../blades-actor.js";
 class BladesPC extends BladesActor {
@@ -184,55 +184,177 @@ class BladesPC extends BladesActor {
         }
         return this.update({ "system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max) });
     }
-
+    get rollFactors() {
+        const factorData = {
+            [Factor.tier]: {
+                name: Factor.tier,
+                value: this.getFactorTotal(Factor.tier),
+                max: this.getFactorTotal(Factor.tier),
+                baseVal: this.getFactorTotal(Factor.tier),
+                isActive: true,
+                isPrimary: true,
+                isDominant: false,
+                highFavorsPC: true
+            },
+            [Factor.quality]: {
+                name: Factor.quality,
+                value: this.getFactorTotal(Factor.quality),
+                max: this.getFactorTotal(Factor.quality),
+                baseVal: this.getFactorTotal(Factor.quality),
+                isActive: false,
+                isPrimary: false,
+                isDominant: false,
+                highFavorsPC: true
+            }
+        };
+        return factorData;
+    }
+    get rollPrimaryID() { return this.id; }
+    get rollPrimaryDoc() { return this; }
+    get rollPrimaryName() { return this.name; }
+    get rollPrimaryType() { return this.type; }
+    get rollPrimaryImg() { return this.img; }
     get rollModsData() {
-        const rollModsData = super.rollModsData;
-        if (BladesActor.IsType(this, BladesActorType.pc)) {
-            [[/1d/, RollModCategory.roll], [/Less Effect/, RollModCategory.effect]].forEach(([effectPat, effectCat]) => {
-                const { one: harmConditionOne, two: harmConditionTwo } = Object.values(this.system.harm)
-                    .find((harmData) => effectPat.test(harmData.effect)) ?? {};
-                const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
-                if (harmString.length > 0) {
-                    rollModsData.push({
-                        id: `Harm-negative-${effectCat}`,
-                        name: harmString,
-                        category: effectCat,
-                        posNeg: "negative",
-                        base_status: RollModStatus.ToggledOn,
-                        modType: "harm",
-                        value: 1,
-                        tooltip: [
-                            `<h1 class='sur-title'>${effectCat === RollModCategory.roll ? Harm.Impaired : Harm.Weakened} (Harm)</h1>`,
-                            `<h1 class='red-bright'>${harmString}</h1>`,
-                            effectCat === RollModCategory.roll
-                                ? "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1d</strong> to your roll.</p>"
-                                : "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1 effect</strong>."
-                        ].join("")
-                    });
+        const { roll_mods } = this.system;
+        if (roll_mods.length === 0) {
+            return [];
+        }
+        const rollModsData = roll_mods
+            .filter((elem) => elem !== undefined)
+            .map((modString) => {
+            const pStrings = modString.split(/@/);
+            const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
+            const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, ""));
+            if (!nameVal) {
+                throw new Error(`RollMod Missing Name: '${modString}'`);
+            }
+            const catString = U.pullElement(pStrings, (v) => typeof v === "string" && /^cat/i.test(v));
+            const catVal = (typeof catString === "string" && catString.replace(/^.*:/, ""));
+            if (!catVal || !(catVal in RollModCategory)) {
+                throw new Error(`RollMod Missing Category: '${modString}'`);
+            }
+            const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
+            const posNegVal = posNegString.replace(/^.*:/, "");
+            const rollModData = {
+                id: `${nameVal}-${posNegVal}-${catVal}`,
+                name: nameVal,
+                category: catVal,
+                base_status: RollModStatus.ToggledOff,
+                modType: "general",
+                value: 1,
+                posNeg: posNegVal,
+                tooltip: ""
+            };
+            pStrings.forEach((pString) => {
+                const [keyString, valString] = pString.split(/:/);
+                let val = /\|/.test(valString) ? valString.split(/\|/) : valString;
+                let key;
+                if (/^stat/i.test(keyString)) {
+                    key = "base_status";
                 }
+                else if (/^val/i.test(keyString)) {
+                    key = "value";
+                }
+                else if (/^eff|^ekey/i.test(keyString)) {
+                    key = "effectKeys";
+                }
+                else if (/^side|^ss/i.test(keyString)) {
+                    key = "sideString";
+                }
+                else if (/^s.*ame/i.test(keyString)) {
+                    key = "source_name";
+                }
+                else if (/^tool|^tip/i.test(keyString)) {
+                    key = "tooltip";
+                }
+                else if (/^ty/i.test(keyString)) {
+                    key = "modType";
+                }
+                else if (/^c.{0,10}r?.{0,3}ty/i.test(keyString)) {
+                    key = "conditionalRollTypes";
+                }
+                else if (/^a.{0,3}r?.{0,3}y/i.test(keyString)) {
+                    key = "autoRollTypes";
+                }
+                else if (/^c.{0,10}r?.{0,3}tr/i.test(keyString)) {
+                    key = "conditionalRollTraits";
+                }
+                else if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {
+                    key = "autoRollTraits";
+                }
+                else {
+                    throw new Error(`Bad Roll Mod Key: ${keyString}`);
+                }
+                if (key === "base_status" && val === "Conditional") {
+                    val = RollModStatus.Hidden;
+                }
+                let valProcessed;
+                if (["value"].includes(key)) {
+                    valProcessed = U.pInt(val);
+                }
+                else if (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
+                    valProcessed = [val].flat();
+                }
+                else {
+                    valProcessed = val.replace(/%COLON%/g, ":");
+                }
+                Object.assign(rollModData, { [key]: valProcessed });
             });
-            const { one: harmCondition } = Object.values(this.system.harm).find((harmData) => /Need Help/.test(harmData.effect)) ?? {};
-            if (harmCondition && harmCondition.trim() !== "") {
+            return rollModData;
+        });
+        [[/1d/, RollModCategory.roll], [/Less Effect/, RollModCategory.effect]].forEach(([effectPat, effectCat]) => {
+            const { one: harmConditionOne, two: harmConditionTwo } = Object.values(this.system.harm)
+                .find((harmData) => effectPat.test(harmData.effect)) ?? {};
+            const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
+            if (harmString.length > 0) {
                 rollModsData.push({
-                    id: "Push-negative-roll",
-                    name: "PUSH",
-                    sideString: harmCondition.trim(),
-                    category: RollModCategory.roll,
+                    id: `Harm-negative-${effectCat}`,
+                    name: harmString,
+                    category: effectCat,
                     posNeg: "negative",
                     base_status: RollModStatus.ToggledOn,
                     modType: "harm",
-                    value: 0,
-                    effectKeys: ["Cost-Stress2"],
+                    value: 1,
                     tooltip: [
-                        "<h1 class='sur-title'>Broken (Harm)</h1>",
-                        `<h1 class='red-bright'>${harmCondition.trim()}</h1>`,
-                        "<p>If your injuries apply to the situation at hand, you must <strong>Push</strong> to act.</p>"
+                        `<h1 class='sur-title'>${effectCat === RollModCategory.roll ? Harm.Impaired : Harm.Weakened} (Harm)</h1>`,
+                        `<h1 class='red-bright'>${harmString}</h1>`,
+                        effectCat === RollModCategory.roll
+                            ? "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1d</strong> to your roll.</p>"
+                            : "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1 effect</strong>."
                     ].join("")
                 });
             }
+        });
+        const { one: harmCondition } = Object.values(this.system.harm).find((harmData) => /Need Help/.test(harmData.effect)) ?? {};
+        if (harmCondition && harmCondition.trim() !== "") {
+            rollModsData.push({
+                id: "Push-negative-roll",
+                name: "PUSH",
+                sideString: harmCondition.trim(),
+                category: RollModCategory.roll,
+                posNeg: "negative",
+                base_status: RollModStatus.ToggledOn,
+                modType: "harm",
+                value: 0,
+                effectKeys: ["Cost-Stress2"],
+                tooltip: [
+                    "<h1 class='sur-title'>Broken (Harm)</h1>",
+                    `<h1 class='red-bright'>${harmCondition.trim()}</h1>`,
+                    "<p>If your injuries apply to the situation at hand, you must <strong>Push</strong> to act.</p>"
+                ].join("")
+            });
         }
         return rollModsData;
     }
+    
+    
+    get rollParticipantID() { return this.id; }
+    get rollParticipantDoc() { return this; }
+    get rollParticipantIcon() { return this.playbook?.img ?? this.img; }
+    get rollParticipantName() { return this.name ?? ""; }
+    get rollParticipantType() { return this.type; }
+    get rollParticipantModsData() { return []; }
+    
     get rollTraitPCTooltipActions() {
         const tooltipStrings = ["<table><tbody>"];
         const actionRatings = this.actions;
