@@ -17,7 +17,7 @@ class BladesFactionSheet extends BladesSheet {
   }
 
   override getData() {
-    const context = super.getData() as ReturnType<BladesSheet["getData"]>;
+    const context = super.getData();
     if (!BladesActor.IsType(this.actor, BladesActorType.faction)) { return context }
 
     const sheetData: Partial<BladesActorSchema.Faction> & BladesActorDataOfType<BladesActorType.faction> = {

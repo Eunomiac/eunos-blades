@@ -278,8 +278,8 @@ const regExtract = (ref: unknown, pattern: string | RegExp, flags?: string) => {
 // #endregion ░░░░[RegExp]░░░░
 // #region ░░░░░░░[Formatting]░░░░ Hyphenation, Pluralization, "a"/"an" Fixing ░░░░░░░ ~
 // const hyphenate = (str: unknown) => (/^<|\u00AD|\u200B/.test(`${str}`) ? `${str}` : _hyph(`${str}`));
-const unhyphenate = (str: unknown) => `${str}`.replace(/[\u00AD\u200B]/gu, "");
-const parseArticles = (str: unknown) => `${str}`.replace(/\b([aA])\s([aeiouAEIOU])/gu, "$1n $2");
+const unhyphenate = (str: StringLike) => `${str}`.replace(/[\u00AD\u200B]/gu, "");
+const parseArticles = (str: StringLike) => `${str}`.replace(/\b([aA])\s([aeiouAEIOU])/gu, "$1n $2");
 const pluralize = (singular: string, num = 2, plural?: string) => {
   if (pFloat(num) === 1) {return singular}
   return plural ?? `${singular.replace(/y$/, "ie").replace(/s$/, "se")}s`;
