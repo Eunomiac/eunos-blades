@@ -1,12 +1,5 @@
-import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
-import BladesActor from "../../blades-actor.js";
-import BladesPC from "../../documents/actors/blades-pc.js";
 import {BladesCrew} from "../../documents/blades-actor-proxy.js";
-import BladesNPC from "../../documents/actors/blades-npc.js";
-import BladesFaction from "../../documents/actors/blades-faction.js";
-// import BladesCrew from "../../documents/actors/blades-crew.js";
-import BladesItem from "../../blades-item.js";
 import {BladesActorType, BladesItemType} from "../../core/constants.js";
 
 class BladesCrewSheet extends BladesSheet {

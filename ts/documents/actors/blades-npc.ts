@@ -1,10 +1,6 @@
-import BladesItem from "../../blades-item.js";
-import C, {SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase, RollModCategory, PrereqType, Factor, RollModStatus} from "../../core/constants.js";
-import U from "../../core/utilities.js";
+import {BladesActorType, Factor} from "../../core/constants.js";
 import BladesActor from "../../blades-actor.js";
 import BladesRollCollab from "../../blades-roll-collab.js";
-import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
-import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 
 class BladesNPC extends BladesActor implements BladesActorSubClass.NPC,
                                                BladesRollCollab.OppositionDocData,

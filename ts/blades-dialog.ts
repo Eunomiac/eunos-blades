@@ -1,4 +1,4 @@
-import G, {ApplyTooltipListeners} from "./core/gsap.js";
+import {ApplyTooltipListeners} from "./core/gsap.js";
 import U from "./core/utilities.js";
 import BladesActor from "./blades-actor.js";
 import BladesItem from "./blades-item.js";
@@ -52,7 +52,7 @@ class BladesSelectorDialog extends Dialog {
     tabs: Record<string, BladesActor[]|BladesItem[]>,
     tags?: string[]
   ) {
-    // eLog.checkLog("BladesSelectorDialog.Display()", {parent, title, tabs});
+
     const app = new BladesSelectorDialog({
       parent,
       title,
@@ -108,13 +108,13 @@ class BladesSelectorDialog extends Dialog {
 
   override getData() {
     const data = super.getData() as BladesDialog.Data;
-    // eLog.checkLog4("dialog", "[BladesDialog] super.getData()", {...data});
+
     data.title = this.title;
     data.tabs = this.tabs;
     data.docType = this.docType;
     data.tags = this.tags;
 
-    // eLog.checkLog("dialog", "[BladesDialog] return getData()", {...data});
+
     return data;
   }
 

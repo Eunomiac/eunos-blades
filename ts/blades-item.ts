@@ -231,10 +231,10 @@ class BladesItem extends Item implements BladesDocument<Item>,
         if (/^s.*ame/i.test(keyString)) { key = "source_name" } else
         if (/^tool|^tip/i.test(keyString)) { key = "tooltip" } else
         if (/^ty/i.test(keyString)) { key = "modType" } else
-        if (/^c.*r?.*ty/i.test(keyString)) { key = "conditionalRollTypes" } else
-        if (/^a.*r?.*y/i.test(keyString)) { key = "autoRollTypes" } else
-        if (/^c.*r?.*tr/i.test(keyString)) { key = "conditionalRollTraits" } else
-        if (/^a.*r?.*tr/i.test(keyString)) { key = "autoRollTraits" } else {
+        if (/^c.{0,10}r?.{0,3}ty/i.test(keyString)) {key = "conditionalRollTypes"} else
+        if (/^a.{0,3}r?.{0,3}y/i.test(keyString)) {key = "autoRollTypes"} else
+        if (/^c.{0,10}r?.{0,3}tr/i.test(keyString)) {key = "conditionalRollTraits"} else
+        if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {key = "autoRollTraits"} else {
           throw new Error(`Bad Roll Mod Key: ${keyString}`);
         }
 
@@ -345,7 +345,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
         system.subtitle = C.ScaleSizes[scaleIndex];
       }
       if (subtypes.length + elite_subtypes.length === 0) {
-        system.subtitle = system.subtitle.replace(/\s+of\s*/g, "");
+        system.subtitle = system.subtitle.replace(/\s+of\b/g, "").trim();
       }
     } else {
       system.scale = 0;

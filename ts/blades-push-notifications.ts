@@ -85,7 +85,7 @@ export default class BladesPushController {
   pushToSome(...args: [string, string, string|undefined, User[]]) {
     const users = (args.pop() as User[]).map((user) => user.id!);
     const pushArgs = args.slice(0, 3) as [string, string, string|undefined];
-    socketlib.system.executeForUsers("pushNotice", users, "", ...args);
+    socketlib.system.executeForUsers("pushNotice", users, "", ...pushArgs);
   }
 
   pushToGM(...args: [string, string, string|undefined]) {

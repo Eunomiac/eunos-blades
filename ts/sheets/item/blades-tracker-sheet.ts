@@ -5,9 +5,6 @@ import BladesItem from "../../blades-item.js";
 import BladesGMTracker from "../../documents/items/blades-gm-tracker.js";
 import BladesActor from "../../blades-actor.js";
 import BladesPC from "../../documents/actors/blades-pc.js";
-import BladesNPC from "../../documents/actors/blades-npc.js";
-import BladesFaction from "../../documents/actors/blades-faction.js";
-import BladesCrew from "../../documents/actors/blades-crew.js";
 
 
 export enum BladesTipContext {
@@ -59,13 +56,7 @@ class BladesTipGenerator {
 
 
 }
-// declare interface BladesTrackerSheet {
-//   get type(): BladesItemType.gm_tracker,
-//   parent: null,
-//   system: BladesItem["system"] & {
-//     game_phase: BladesPhase;
-//   }
-// }
+
 class BladesTrackerSheet extends BladesItemSheet {
 
   static Get() { return game.eunoblades.Tracker as BladesGMTracker }
@@ -97,15 +88,6 @@ class BladesTrackerSheet extends BladesItemSheet {
       "systems/eunos-blades/templates/items/gm_tracker-sheet.hbs"
     ]);
   }
-
-  // override getData() {
-  //   const context: any = super.getData() as ReturnType<BladesItemSheet["getData"]> & {system: any}
-
-  //   context.system.phases = Object.values(BladesPhase);
-
-  //   return context;
-  // }
-
 
   override async activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);

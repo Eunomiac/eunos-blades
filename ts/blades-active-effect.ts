@@ -1,7 +1,7 @@
 import BladesActor from "./blades-actor.js";
 import U from "./core/utilities.js";
 import BladesItem from "./blades-item.js";
-import {Tag, BladesPhase, BladesActorType, BladesItemType, Attribute, InsightActions, ProwessActions, ResolveActions} from "./core/constants.js";
+import {Tag, BladesPhase, BladesActorType} from "./core/constants.js";
 
 const FUNCQUEUE: Record<string, {
   curFunc: Promise<void>,
@@ -15,10 +15,8 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, effect:
       if (isReversing) {
         return actor.remSubItem(funcData);
       }
-    } else {
-      if (!isReversing) {
-        return actor.addSubItem(funcData);
-      }
+    } else if (!isReversing) {
+      return actor.addSubItem(funcData);
     }
     return undefined;
   },
@@ -104,16 +102,6 @@ type BladesCustomFuncData = {
   effect: BladesActiveEffect
 }
 
-// type BladesCustomFuncParams = Parameters<ValueOf<typeof CUSTOMFUNCS>>[1];
-
-// type BladesCustomFunc = (actor: BladesActor, params: BladesCustomFuncParams) => Promise<void>;
-// type BladesCustomResult = ReturnType<BladesCustomFunc>;
-
-// type BladesCustomEffectData = {
-//   func: BladesCustomFuncName,
-//   params: BladesCustomFuncParams
-// }
-
 class BladesActiveEffect extends ActiveEffect {
   static Initialize() {
     CONFIG.ActiveEffect.documentClass = BladesActiveEffect;
@@ -184,14 +172,9 @@ class BladesActiveEffect extends ActiveEffect {
             effect
           };
           BladesActiveEffect.ThrottleCustomFunc(effect.parent as BladesActor, funcData);
-        } else {
-          switch(permFuncName) {
-            case "Add": {
-              const [target, qty] = value.split(/:/);
-              (<BladesActor>effect.parent).update({[target]: U.pInt(getProperty(<BladesActor>effect.parent, target)) + U.pInt(qty)});
-            }
-            // no default
-          }
+        } else if (permFuncName === "Add") {
+          const [target, qty] = value.split(/:/);
+          (<BladesActor>effect.parent).update({[target]: U.pInt(getProperty(<BladesActor>effect.parent, target)) + U.pInt(qty)});
         }
       }
     });

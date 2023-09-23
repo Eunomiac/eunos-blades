@@ -1,7 +1,5 @@
 
-import {BladesItemType} from "../../core/constants.js";
 import BladesItemSheet from "./blades-item-sheet.js";
-import BladesItem from "../../blades-item.js";
 import BladesClockKeeper from "../../documents/items/blades-clock-keeper.js";
 
 type BladesClockKeeperSheetData = Partial<BladesItemSheetData> & {

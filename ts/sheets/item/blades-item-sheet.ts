@@ -1,4 +1,4 @@
-import C, {BladesActorType, BladesItemType, BladesPhase, Tag, Factor} from "../../core/constants.js";
+import C, {BladesItemType, BladesPhase, Factor} from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import G, {ApplyTooltipListeners} from "../../core/gsap.js";
 import BladesActor from "../../blades-actor.js";
@@ -129,9 +129,6 @@ class BladesItemSheet extends ItemSheet {
         [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue });
         context.system.experience_clues = expClueData as any;
       }
-      // if (!context.isGM && context.system.experience_clues) {
-      //   delete context.system.experience_clues[Object.keys(context.system.experience_clues).length];
-      // }
       const sheetData: BladesItemDataOfType<BladesItemType.crew_playbook> = {
       };
       return {

@@ -1,9 +1,7 @@
 import BladesItem from "../../blades-item.js";
-import C, {SVGDATA, BladesActorType, BladesItemType, Tag, BladesPhase, RollModCategory, PrereqType, Factor, RollModStatus} from "../../core/constants.js";
+import C, {SVGDATA, BladesActorType, BladesItemType} from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesActor from "../../blades-actor.js";
-import BladesRollCollab from "../../blades-roll-collab.js";
-import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
 class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_Keeper {
 
@@ -60,19 +58,8 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
       await game.eunoblades.ClockKeeper.update({
         [`system.clock_keys.${keyID}.clocks.${clockNum}.value`]: `${newClockVal}`
       });
-      // socketlib.system.executeForEveryone("renderOverlay");
     });
 
-    // .on({
-    //   mouseenter: function() {
-    //     $(this).parent().css("z-index", 1);
-    //     $(this).data("hoverTimeline").play();
-    //   },
-    //   mouseleave: function() {
-    //     $(this).data("hoverTimeline").reverse().then(() => {
-    //       $(this).parent().removeAttr("style");
-    //     });
-    //   }
     $("#clocks-overlay").find(".key-label").on({
       click: async (event) => {
         if (!event.currentTarget) { return }
@@ -86,7 +73,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
           update: !(game.eunoblades.ClockKeeper.system.clock_keys[keyID]?.isActive)
         });
         await game.eunoblades.ClockKeeper.update({[`system.clock_keys.${keyID}.isActive`]: !(game.eunoblades.ClockKeeper.system.clock_keys[keyID]?.isActive)});
-        // socketlib.system.executeForEveryone("renderOverlay");
+
       },
       contextmenu: () => {
         if (!game.user.isGM) { return }
@@ -153,7 +140,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
     }
     eLog.checkLog("clock_key", "Clock Key Update Data", {clockKey, updateData});
     return game.eunoblades.ClockKeeper.update(updateData);
-    // return socketlib.system.executeForEveryone("renderOverlay");
+
   }
   // #endregion
 
@@ -164,7 +151,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
     this.system.scenes = game.scenes.map((scene) => ({id: scene.id, name: scene.name ?? ""}));
     this.system.targetScene ??= game.scenes.current?.id || null;
     this.system.clock_keys = Object.fromEntries(Object.entries(this.system.clock_keys ?? {})
-      .filter(([_, keyData]) => keyData && keyData.id)
+      .filter(([_, keyData]) => keyData?.id)
       .map(([keyID, keyData]) => {
         if (keyData === null) { return [keyID, null] }
         keyData.clocks = Object.fromEntries(Object.entries(keyData.clocks ?? {})
