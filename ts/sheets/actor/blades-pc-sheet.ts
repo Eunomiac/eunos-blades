@@ -4,12 +4,8 @@ import U from "../../core/utilities.js";
 import BladesSheet from "./blades-sheet.js";
 import BladesActor from "../../blades-actor.js";
 import BladesTrackerSheet from "../item/blades-tracker-sheet.js";
-// import ConstructorDataType from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
-// import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
-
 
 class BladesPCSheet extends BladesSheet {
-
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -357,7 +353,5 @@ class BladesPCSheet extends BladesSheet {
     });
   }
 }
-
-// declare interface BladesPCSheet {
 
 export default BladesPCSheet;
