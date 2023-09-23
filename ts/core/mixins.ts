@@ -1,11 +1,6 @@
-import U from "./utilities.js";
-import C, {BladesActorType, BladesPhase, Vice, Tag, District, Playbook, BladesItemType, Attribute, Action, InsightActions, ProwessActions, ResolveActions, PrereqType, Position, Effect, AdvancementPoint, Randomizers, RollModCategory, RollModStatus, RollType, Factor, Harm} from "./constants.js";
-import {SelectionCategory} from "../blades-dialog.js";
+import {Playbook, BladesItemType} from "./constants.js";
 import BladesActor from "../blades-actor.js";
 import BladesItem from "../blades-item.js";
-import BladesPC from "../documents/actors/blades-pc.js";
-import BladesCrew from "../documents/actors/blades-crew.js";
-import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
 // type Constructor = new (...args: readonly any[]) => {};
 

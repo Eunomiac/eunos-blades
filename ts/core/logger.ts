@@ -8,7 +8,7 @@ const LOGGERCONFIG: Record<string,any> = {
     handlebars: [/scripts\/handlebars/] // from internal Handlebars module
   }
 };
-// console.log(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${LOGGERCONFIG.aliases.map(String).join("|")}|Object\\.(log|display|hbsLog|error))`));
+
 
 const STYLES = {
   base: {
@@ -86,8 +86,8 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
   const [message, ...data] = content;
 
   if (key) {
-    const blacklist = ((U.getSetting("blacklist") ?? "") as string).split(/\s*,\s*/).map((pat) => new RegExp(`\\b${pat}\\b`, "igu"));
-    const whitelist = ((U.getSetting("whitelist") ?? "") as string).split(/\s*,\s*/).map((pat) => new RegExp(`\\b${pat}\\b`, "igu"));
+    const blacklist = ((U.getSetting("blacklist") ?? "") as string).split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
+    const whitelist = ((U.getSetting("whitelist") ?? "") as string).split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
     const isBlack = blacklist.some((pat) => pat.test(key as string));
     const isWhite = whitelist.some((pat) => pat.test(key as string));
     if (isBlack && !isWhite) {
@@ -109,9 +109,14 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
     ...STYLES[type] ?? {}
   }).map(([prop, val]) => `${prop}: ${val};`).join(" ");
 
-  const logFunc = stackTrace
-    ? console.groupCollapsed
-    : (data.length <= 1 ? console.log : console.group);
+  let logFunc;
+  if (stackTrace) {
+    logFunc = console.groupCollapsed;
+  } else if (data.length <= 1) {
+    logFunc = console.log;
+  } else {
+    logFunc = console.group;
+  }
 
   if (data.length === 0) {
     if (typeof message === "string") {
@@ -143,10 +148,10 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
       LOGGERCONFIG.aliases.map(String).join("|")
     }|Object\\.(log|display|hbsLog|error))`), /^Error/);
     return ((new Error()).stack ?? "")
-      .split(/\s*\n\s*/)
+      .split(/\n/)
+      .map((sLine) => sLine.trim())
       .filter((sLine) => !regExpFilters.some((rTest) => rTest.test(sLine)))
       .join("\n");
-    return null;
   }
 };
 

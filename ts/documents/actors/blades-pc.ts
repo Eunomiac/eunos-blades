@@ -1,13 +1,11 @@
 import BladesItem from "../../blades-item.js";
-import C, {SVGDATA, Playbook, Attribute, Action, Harm, BladesActorType, BladesItemType, Tag, BladesPhase, RollModCategory, PrereqType, Factor, RollModStatus} from "../../core/constants.js";
+import C, {Playbook, Attribute, Action, Harm, BladesActorType, BladesItemType, Tag, RollModCategory, Factor, RollModStatus} from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesActor from "../../blades-actor.js";
 import BladesCrew from "./blades-crew.js";
 import BladesRollCollab from "../../blades-roll-collab.js";
-import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
-import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
+import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 
-// import MIX, {PlayableCharacterMixin} from "../../core/mixins.js";
 
 class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
                                               BladesRollCollab.PrimaryDocData,
@@ -261,10 +259,10 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
           if (/^s.*ame/i.test(keyString)) { key = "source_name" } else
           if (/^tool|^tip/i.test(keyString)) { key = "tooltip" } else
           if (/^ty/i.test(keyString)) { key = "modType" } else
-          if (/^c.*r?.*ty/i.test(keyString)) { key = "conditionalRollTypes" } else
-          if (/^a.*r?.*y/i.test(keyString)) { key = "autoRollTypes" } else
-          if (/^c.*r?.*tr/i.test(keyString)) { key = "conditionalRollTraits" } else
-          if (/^a.*r?.*tr/i.test(keyString)) { key = "autoRollTraits" } else {
+          if (/^c.{0,10}r?.{0,3}ty/i.test(keyString)) {key = "conditionalRollTypes"} else
+          if (/^a.{0,3}r?.{0,3}y/i.test(keyString)) {key = "autoRollTypes"} else
+          if (/^c.{0,10}r?.{0,3}tr/i.test(keyString)) {key = "conditionalRollTraits"} else
+          if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {key = "autoRollTraits"} else {
             throw new Error(`Bad Roll Mod Key: ${keyString}`);
           }
 
@@ -272,13 +270,18 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
             val = RollModStatus.Hidden;
           }
 
+          let valProcessed;
+          if (["value"].includes(key)) {
+            valProcessed = U.pInt(val);
+          } else if (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
+            valProcessed = [val].flat();
+          } else {
+            valProcessed = (val as string).replace(/%COLON%/g, ":");
+          }
+
           Object.assign(
             rollModData,
-            {[key]: ["value"].includes(key)
-              ? U.pInt(val)
-              : (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
-                  ? [val].flat()
-                  : (val as string).replace(/%COLON%/g, ":"))}
+            {[key]: valProcessed}
           );
         });
 

@@ -2468,7 +2468,7 @@ class BladesRollCollab extends DocumentSheet {
       // ... AutoReveal/AutoEnable Pass
       .filter((rollMod) => !rollMod.setAutoStatus())
       // ... Payable Pass
-      .filter((rollMod) => !rollMod.setPayableStatus());
+      .forEach((rollMod) => { rollMod.setPayableStatus() });
 
     /* *** PASS TWO: FORCE-ON PASS *** */
 

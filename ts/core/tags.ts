@@ -98,7 +98,7 @@ const Tags = {
 
       // Add event listener for tag changes, setting defined target
       // Wait briefly, so other tag elements' tags can be set before listener initializes
-      setTimeout(() => elem.addEventListener("change", (event) => _onTagifyChange(event, doc, targetKey)), 1000);
+      setTimeout(() => elem.addEventListener("change", async (event) => await _onTagifyChange(event, doc, targetKey)), 1000);
     }
 
     const systemTags = {

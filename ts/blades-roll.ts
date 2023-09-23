@@ -1,6 +1,6 @@
 import U from "./core/utilities.js";
 import {Attribute, Position, Effect, Action} from "./core/constants.js";
-// import type {Attribute} from "./blades-actor.js";
+
 /**
  * Roll Dice.
  * @param {int} dice_amount
@@ -21,7 +21,6 @@ export async function bladesRoll(
   note = ""
 ) {
 
-  // ChatMessage.getSpeaker(controlledToken)
   let zeromode = false;
 
   if ( dice_amount < 0 ) { dice_amount = 0 }
@@ -121,9 +120,9 @@ async function showChatRollMessage(
 export function getBladesRollStatus(rolls: DiceTerm.Result[], zeromode = false) {
 
   // Sort roll values from lowest to highest.
-  const sorted_rolls = rolls.map(i => i.result).sort();
+  const sorted_rolls = rolls.map(i => i.result).sort((a, b) => a - b);
 
-  let roll_status = "failure";
+  let roll_status;
 
   if (sorted_rolls[0] === 6 && zeromode) {
     roll_status = "critical-success";
@@ -166,12 +165,10 @@ export function getBladesRollStatus(rolls: DiceTerm.Result[], zeromode = false) 
  */
 export function getBladesRollStress(rolls: DiceTerm.Result[], zeromode = false) {
 
-  let stress = 6;
+  let stress;
 
   // Sort roll values from lowest to highest.
-  const sorted_rolls = rolls.map(i => i.result).sort();
-
-  const roll_status = "failure";
+  const sorted_rolls = rolls.map(i => i.result).sort((a, b) => a - b);
 
   if (sorted_rolls[0] === 6 && zeromode) {
     stress = -1;

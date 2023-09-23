@@ -675,14 +675,14 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
   async grantAdvancementPoints(allowedTypes: AdvancementPoint|AdvancementPoint[], amount = 1) {
     const aPtKey: string = Array.isArray(allowedTypes)
-      ? allowedTypes.sort().join("_")
+      ? allowedTypes.sort((a, b) => a.localeCompare(b)).join("_")
       : allowedTypes;
     this.update({[`system.advancement_points.${aPtKey}`]: (this.system.advancement_points?.[aPtKey] ?? 0) + amount});
   }
 
   async removeAdvancementPoints(allowedTypes: AdvancementPoint|AdvancementPoint[], amount = 1) {
     const aPtKey: string = Array.isArray(allowedTypes)
-      ? allowedTypes.sort().join("_")
+      ? allowedTypes.sort((a, b) => a.localeCompare(b)).join("_")
       : allowedTypes;
     const newCount = this.system.advancement_points?.[aPtKey] ?? 0 - amount;
     if (newCount <= 0 && aPtKey in (this.system.advancement_points ?? [])) {
@@ -860,21 +860,21 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
   // #region OVERRIDES: _onCreateDescendantDocuments, update ~
   // @ts-expect-error New method not defined in @league VTT types.
-  override async _onCreateDescendantDocuments(parent: BladesActor, collection: "items"|"effects", docs: BladesItem[]|BladesActiveEffect[], data: BladesItem[]|BladesActiveEffect[], options: Record<string,boolean>, userId: string): Promise<void> {
-    docs.forEach(async (doc) => {
-      if (doc instanceof BladesItem && [BladesItemType.playbook, BladesItemType.crew_playbook].includes(doc.type)) {
+  override async _onCreateDescendantDocuments(parent: BladesActor, collection: "items"|"effects", docs: BladesItem[]|BladesActiveEffect[], data: BladesItem[]|BladesActiveEffect[], options: Record<string,boolean>, userId: string) {
+    await Promise.all(docs.map(async (doc) => {
+      if (BladesItem.IsType(doc, BladesItemType.playbook, BladesItemType.crew_playbook)) {
         await Promise.all(this.activeSubItems
           .filter((aItem) => aItem.type === doc.type && aItem.system.world_name !== doc.system.world_name)
           .map((aItem) => this.remSubItem(aItem)));
       }
-    });
+    }));
 
     // @ts-expect-error New method not defined in @league VTT types.
     await super._onCreateDescendantDocuments(parent, collection, docs, data, options, userId);
 
     eLog.checkLog("actorTrigger", "_onCreateDescendantDocuments", {parent, collection, docs, data, options, userId});
 
-    docs.forEach(async (doc) => {
+    docs.forEach((doc) => {
       if (BladesItem.IsType(doc, BladesItemType.vice) && BladesActor.IsType(this, BladesActorType.pc)) {
         this.activeSubActors
           .filter((subActor) => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name as Vice))
