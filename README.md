@@ -15,7 +15,7 @@ Welcome to Euno's system implementation for "Blades in the Dark" by [Evil Hat Pr
 <br>
 The main highlights include detailed sheets for all character types, easy-to-use progress clocks, and a unique collaborative roll control system that brings players and GMs together during gameplay. Scroll down for a visual overview and key features.
 
-<h1 align="center">⚜⚜⚜ Gorgeous, Heavily-Automated Character Sheets! ⚜⚜⚜</h1>
+<h1 align="center">⚜⚜⚜ Gorgeous Character Sheets! ⚜⚜⚜</h1>
 <table width="100%" style="background-color: #131313;" bgcolor="#131313">
   <tr style="background-color: #131313;" bgcolor="#131313">
     <td width="50%" align="center" valign="top" style="background-color: #131313;" bgcolor="#131313">
@@ -57,7 +57,7 @@ The main highlights include detailed sheets for all character types, easy-to-use
   <img src="https://github.com/Eunomiac/eunos-blades/assets/5692071/4192e21d-1f94-49c6-b49e-7ad6464f8f70" width="800px" alt="Progress Clocks Animation">
 </p>
 
-<h1 align="center">⚜⚜⚜ Collaborative Roll Control! ⚜⚜⚜</h1>
+<h1 align="center">⚜⚜⚜ Collaborative Dice Rolls! ⚜⚜⚜</h1>
 <p>Whenever a player makes a roll, screens pop up for both the player and the GM to aid in collaborating on the details of the roll.</p>
 <p align="center">
   <img src="https://github.com/Eunomiac/eunos-blades/assets/5692071/22ad7d8a-59e7-49c2-86e2-9826be70b238" width="800px" alt="Roll Collab: Player">
