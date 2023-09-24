@@ -2647,30 +2647,30 @@ html, :root {
   html table tr,
   html table tr th,
   html table tr td,
+  html table tbody,
+  html table tbody tr,
+  html table tbody td,
   html table thead,
   html table thead tr,
   html table thead tr th,
-  html table thead tr td,
-  html table tbody,
-  html table tbody tr,
-  html table tbody td, :root table,
+  html table thead tr td, :root table,
   :root table tr,
   :root table tr th,
   :root table tr td,
+  :root table tbody,
+  :root table tbody tr,
+  :root table tbody td,
   :root table thead,
   :root table thead tr,
   :root table thead tr th,
-  :root table thead tr td,
-  :root table tbody,
-  :root table tbody tr,
-  :root table tbody td {
+  :root table thead tr td {
     margin: 0;
     padding: 0;
     background: none;
     border: none; }
   html table, :root table {
     border-collapse: collapse; }
-    html table thead th, :root table thead th {
+    html table thead tr th, :root table thead tr th {
       background-color: var(--blades-white);
       text-shadow: none;
       color: var(--blades-black);

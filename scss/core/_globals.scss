@@ -10,13 +10,13 @@
   table tr,
   table tr th,
   table tr td,
+  table tbody,
+  table tbody tr,
+  table tbody td,
   table thead,
   table thead tr,
   table thead tr th,
-  table thead tr td,
-  table tbody,
-  table tbody tr,
-  table tbody td {
+  table thead tr td {
     margin: 0;
     padding: 0;
     background: none;
@@ -27,7 +27,7 @@
     border-collapse: collapse;
 
     thead {
-      th {
+      tr th {
         background-color: var(--blades-white);
         text-shadow: none;
         color: var(--blades-black);

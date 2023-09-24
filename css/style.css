@@ -10160,20 +10160,20 @@ template {
   :root body.vtt.game.system-eunos-blades .app.window-app table tr,
   :root body.vtt.game.system-eunos-blades .app.window-app table tr th,
   :root body.vtt.game.system-eunos-blades .app.window-app table tr td,
+  :root body.vtt.game.system-eunos-blades .app.window-app table tbody,
+  :root body.vtt.game.system-eunos-blades .app.window-app table tbody tr,
+  :root body.vtt.game.system-eunos-blades .app.window-app table tbody td,
   :root body.vtt.game.system-eunos-blades .app.window-app table thead,
   :root body.vtt.game.system-eunos-blades .app.window-app table thead tr,
   :root body.vtt.game.system-eunos-blades .app.window-app table thead tr th,
-  :root body.vtt.game.system-eunos-blades .app.window-app table thead tr td,
-  :root body.vtt.game.system-eunos-blades .app.window-app table tbody,
-  :root body.vtt.game.system-eunos-blades .app.window-app table tbody tr,
-  :root body.vtt.game.system-eunos-blades .app.window-app table tbody td {
+  :root body.vtt.game.system-eunos-blades .app.window-app table thead tr td {
     margin: 0;
     padding: 0;
     background: none;
     border: none; }
   :root body.vtt.game.system-eunos-blades .app.window-app table {
     border-collapse: collapse; }
-    :root body.vtt.game.system-eunos-blades .app.window-app table thead th {
+    :root body.vtt.game.system-eunos-blades .app.window-app table thead tr th {
       background-color: var(--blades-white);
       text-shadow: none;
       color: var(--blades-black);
@@ -12137,20 +12137,20 @@ template {
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table tr,
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table tr th,
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table tr td,
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table tbody,
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table tbody tr,
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table tbody td,
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table thead,
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table thead tr,
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table thead tr th,
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table thead tr td,
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table tbody,
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table tbody tr,
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table tbody td {
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table thead tr td {
           margin: 0;
           padding: 0;
           background: none;
           border: none; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table {
           border-collapse: collapse; }
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table thead th {
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form table thead tr th {
             background-color: var(--blades-white);
             text-shadow: none;
             color: var(--blades-black);
