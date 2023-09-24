@@ -162,7 +162,7 @@ const handlebarHelpers = {
             return "";
         }
         let html = "";
-        for (let i = parseInt(from || 0); i <= parseInt(to || 0); i++) {
+        for (let i = parseInt(from || 0, 10); i <= parseInt(to || 0, 10); i++) {
             html += options.fn(i);
         }
         return html;
@@ -199,7 +199,7 @@ const handlebarHelpers = {
     },
     "isTurfBlock": (name) => U.fuzzyMatch(name, "Turf"),
     "getConnectorPartner": (index, direction) => {
-        index = parseInt(`${index}`);
+        index = parseInt(`${index}`, 10);
         const partners = {
             1: { right: 2, bottom: 6 },
             2: { left: 1, right: 3, bottom: 7 },
@@ -225,7 +225,7 @@ const handlebarHelpers = {
         return null;
     },
     "isTurfOnEdge": (index, direction) => {
-        index = parseInt(`${index}`);
+        index = parseInt(`${index}`, 10);
         const edges = {
             1: ["top", "left"],
             2: ["top"],
@@ -262,7 +262,7 @@ const handlebarHelpers = {
     },
     "noteq": (a, b, options) => (a !== b ? options.fn(this) : ""),
     "repturf": (turfs_amount, options) => {
-        let html = options.fn(this), turfs_amount_int = parseInt(turfs_amount);
+        let html = options.fn(this), turfs_amount_int = parseInt(turfs_amount, 10);
         if (turfs_amount_int > 6) {
             turfs_amount_int = 6;
         }
@@ -292,7 +292,7 @@ const handlebarHelpers = {
     },
     //
     "times_from_1": (n, block) => {
-        n = parseInt(n);
+        n = parseInt(n, 10);
         let accum = "";
         for (let i = 1; i <= n; ++i) {
             accum += block.fn(i);
@@ -301,7 +301,7 @@ const handlebarHelpers = {
     },
     //
     "times_from_0": (n, block) => {
-        n = parseInt(n);
+        n = parseInt(n, 10);
         let accum = "";
         for (let i = 0; i <= n; ++i) {
             accum += block.fn(i);
@@ -336,8 +336,6 @@ const handlebarHelpers = {
         Object.entries(choices).forEach(e => option(...e));
         return new Handlebars.SafeString(html);
     }
-    
-    
 };
 handlebarHelpers.eLog1 = function (...args) { handlebarHelpers.eLog(...[1, ...args.slice(0, 7)]); };
 handlebarHelpers.eLog2 = function (...args) { handlebarHelpers.eLog(...[2, ...args.slice(0, 7)]); };

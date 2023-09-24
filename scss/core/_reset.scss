@@ -166,14 +166,13 @@
         margin: 0;
         transform: scale(1.5);
         i {
-            font-size: initial;
             font-weight: bold;
             color: var(--blades-white-bright);
             font-size: toRem(20px);
             line-height: 1;
             margin-top: toRem(-1px);
 
-            font-family: Kirsty;
+            font-family: Kirsty, serif;
             transform-origin: center center;
             transform: scaleY(0.75);
             &::before {

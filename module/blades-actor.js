@@ -821,7 +821,7 @@ class BladesActor extends Actor {
             if (BladesItem.IsType(doc, BladesItemType.vice) && BladesActor.IsType(this, BladesActorType.pc)) {
                 this.activeSubActors
                     .filter((subActor) => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name))
-                    .forEach((subActor) => this.remSubActor(subActor));
+                    .forEach((subActor) => { this.remSubActor(subActor); });
             }
         });
     }

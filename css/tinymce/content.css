@@ -427,7 +427,6 @@ html, :root {
     html .comp .comp-status-toggle, :root .comp .comp-status-toggle {
       position: absolute;
       text-shadow: 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark);
-      right: 10px;
       scale: 1.5;
       top: -10px;
       right: 15px; }
@@ -681,7 +680,7 @@ html, :root {
             margin-right: 5px;
             font-weight: bold; }
         html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-          font-family: "Minion Pro Caption Cond";
+          font-family: "Minion Pro Caption Cond", serif;
           -webkit-hyphens: auto;
           -ms-hyphens: auto;
           hyphens: auto;
@@ -1195,7 +1194,7 @@ html, :root {
       position: absolute;
       cursor: pointer;
       pointer-events: auto;
-      font-family: Oswald;
+      font-family: Oswald, sans-serif;
       text-align: center;
       font-size: 16px;
       font-weight: bold;
@@ -1220,7 +1219,6 @@ html, :root {
           top: -2px;
           left: -2px;
           background-size: 400%;
-          z-index: -1;
           -webkit-filter: blur(5px);
           filter: blur(5px);
           width: calc(100% + 4px);
@@ -1559,13 +1557,12 @@ html, :root {
         -ms-transform: scale(1.5);
         transform: scale(1.5); }
         html .window-header .close i, :root .window-header .close i {
-          font-size: initial;
           font-weight: bold;
           color: var(--blades-white-bright);
           font-size: 1.25rem;
           line-height: 1;
           margin-top: -0.0625rem;
-          font-family: Kirsty;
+          font-family: Kirsty, serif;
           -webkit-transform-origin: center center;
           -ms-transform-origin: center center;
           transform-origin: center center;
@@ -1722,7 +1719,6 @@ html, :root {
       html .comp .comp-status-toggle, :root .comp .comp-status-toggle {
         position: absolute;
         text-shadow: 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark);
-        right: 10px;
         scale: 1.5;
         top: -10px;
         right: 15px; }
@@ -1976,7 +1972,7 @@ html, :root {
               margin-right: 5px;
               font-weight: bold; }
           html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-            font-family: "Minion Pro Caption Cond";
+            font-family: "Minion Pro Caption Cond", serif;
             -webkit-hyphens: auto;
             -ms-hyphens: auto;
             hyphens: auto;
@@ -2490,7 +2486,7 @@ html, :root {
         position: absolute;
         cursor: pointer;
         pointer-events: auto;
-        font-family: Oswald;
+        font-family: Oswald, sans-serif;
         text-align: center;
         font-size: 16px;
         font-weight: bold;
@@ -2515,7 +2511,6 @@ html, :root {
             top: -2px;
             left: -2px;
             background-size: 400%;
-            z-index: -1;
             -webkit-filter: blur(5px);
             filter: blur(5px);
             width: calc(100% + 4px);
@@ -2749,7 +2744,7 @@ html, :root {
     height: var(--nc-size);
     width: var(--nc-size);
     font-weight: bold;
-    font-family: "Minion Pro Caption Cond";
+    font-family: "Minion Pro Caption Cond", serif;
     font-size: var(--nc-font-size);
     text-align: center;
     border-radius: var(--nc-border-radius);
@@ -3018,7 +3013,7 @@ html, :root {
         html .player-character-summary-panel .pc-summary section.pc-summary-header .pc-summary-heritage, :root .player-character-summary-panel .pc-summary section.pc-summary-header .pc-summary-heritage {
           grid-area: heritage;
           font-size: 10px;
-          font-family: Oswald;
+          font-family: Oswald, sans-serif;
           text-transform: uppercase;
           line-height: 20px;
           text-align: right;
@@ -3054,12 +3049,12 @@ html, :root {
           html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute:not(:first-child), :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute:not(:first-child) {
             margin-top: 5px; }
           html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute label, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute label {
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: 0.75rem;
             line-height: 0.75rem;
             color: var(--blades-white); }
           html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute span, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute span {
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: 0.75rem;
             line-height: 0.75rem;
             color: var(--blades-white-bright); }
@@ -3081,7 +3076,7 @@ html, :root {
           -ms-flex-direction: row;
           flex-direction: row; }
           html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action label, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action label {
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: 0.625rem;
             line-height: 0.625rem;
             color: var(--blades-grey-bright);
@@ -3090,7 +3085,7 @@ html, :root {
             flex-grow: 1;
             text-align: right; }
           html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action span, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action span {
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: 0.625rem;
             line-height: 0.625rem;
             color: var(--blades-white-bright);
@@ -3125,7 +3120,7 @@ html, :root {
             -webkit-box-flex: 1;
             -ms-flex-positive: 1;
             flex-grow: 1;
-            font-family: "Fjalla One";
+            font-family: "Fjalla One", sans-serif;
             font-size: 10px;
             line-height: 12px;
             text-transform: uppercase;
@@ -3157,7 +3152,7 @@ html, :root {
             -webkit-box-flex: 1;
             -ms-flex-positive: 1;
             flex-grow: 1;
-            font-family: "Fjalla One";
+            font-family: "Fjalla One", sans-serif;
             font-size: 10px;
             line-height: 12px;
             white-space: nowrap;
@@ -3203,7 +3198,7 @@ html, :root {
           html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma {
             color: var(--blades-red-bright);
             font-weight: bold;
-            font-family: Kirsty;
+            font-family: Kirsty, serif;
             font-size: 12px;
             text-transform: uppercase;
             text-align: center;
@@ -3226,7 +3221,7 @@ html, :root {
           flex-direction: column; }
           html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm {
             font-size: 10px;
-            font-family: "Fjalla One";
+            font-family: "Fjalla One", sans-serif;
             overflow: hidden;
             display: -webkit-box;
             display: -ms-flexbox;
@@ -3439,7 +3434,7 @@ html, :root {
           -ms-flex-positive: 1;
           flex-grow: 1;
           text-align: center;
-          font-family: "Fjalla One";
+          font-family: "Fjalla One", sans-serif;
           font-size: 8px;
           color: var(--blades-white-bright);
           max-width: 50px; }
@@ -3462,7 +3457,7 @@ html, :root {
           max-width: 50px; }
       html .opposition-creation-panel .roll-opposition-container input.shadowed, :root .opposition-creation-panel .roll-opposition-container input.shadowed {
         pointer-events: auto !important;
-        font-family: "Fjalla One";
+        font-family: "Fjalla One", sans-serif;
         background: var(--blades-black-dark-fade-strong);
         border-radius: 3px;
         -webkit-box-shadow: inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark);
@@ -3517,7 +3512,7 @@ html, :root {
       -webkit-box-shadow: none;
       box-shadow: none; }
     html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item *:not(i), :root .randomizer-panel .randomizer-container .randomizer-list .randomizer-item *:not(i) {
-      font-family: "Minion Pro Cond"; }
+      font-family: "Minion Pro Cond", serif; }
     html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item textarea, :root .randomizer-panel .randomizer-container .randomizer-list .randomizer-item textarea {
       resize: none;
       min-height: 2.5rem;

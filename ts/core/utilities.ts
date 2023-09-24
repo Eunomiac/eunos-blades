@@ -797,7 +797,7 @@ export function toDict<T extends List, K extends string & KeyOf<T>, V extends Va
       const [curIndex, ...subStr] = str.split(/_/).reverse();
       return [
         ...subStr.reverse(),
-        parseInt(curIndex) + 1
+        parseInt(curIndex, 10) + 1
       ].join("_");
     }
     return `${str}_1`;

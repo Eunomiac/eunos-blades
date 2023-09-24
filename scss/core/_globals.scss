@@ -119,7 +119,7 @@
     height: var(--nc-size);
     width: var(--nc-size);
     font-weight: bold;
-    font-family: "Minion Pro Caption Cond";
+    font-family: "Minion Pro Caption Cond", serif;
     font-size: var(--nc-font-size);
     text-align: center;
     border-radius: var(--nc-border-radius);
@@ -435,7 +435,7 @@
         .pc-summary-heritage {
           grid-area: heritage;
           font-size: 10px;
-          font-family: Oswald;
+          font-family: Oswald, sans-serif;
           text-transform: uppercase;
           line-height: 20px;
           text-align: right;
@@ -463,13 +463,13 @@
             margin-top: 5px;
           }
           label {
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: toRem(12px);
             line-height: toRem(12px);
             color: var(--blades-white);
           }
           span {
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: toRem(12px);
             line-height: toRem(12px);
             color: var(--blades-white-bright);
@@ -485,7 +485,7 @@
           display: flex;
           flex-direction: row;
           label {
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: toRem(10px);
             line-height: toRem(10px);
             color: var(--blades-grey-bright);
@@ -493,7 +493,7 @@
             text-align: right;
           }
           span {
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: toRem(10px);
             line-height: toRem(10px);
             color: var(--blades-white-bright);
@@ -527,7 +527,7 @@
             height: 14px;
             .pc-summary-gear-loadout {
               flex-grow: 1;
-              font-family: "Fjalla One";
+              font-family: "Fjalla One", sans-serif;
               font-size: 10px;
               line-height: 12px;
               text-transform: uppercase;
@@ -555,7 +555,7 @@
 
             .pc-summary-asset-name {
               flex-grow: 1;
-              font-family: "Fjalla One";
+              font-family: "Fjalla One", sans-serif;
               font-size: 10px;
               line-height: 12px;
               white-space: nowrap;
@@ -607,7 +607,7 @@
           .pc-summary-trauma {
             color: var(--blades-red-bright);
             font-weight: bold;
-            font-family: Kirsty;
+            font-family: Kirsty, serif;
             font-size: 12px;
             text-transform: uppercase;
             text-align: center;
@@ -625,7 +625,7 @@
 
           .pc-summary-harm {
             font-size: 10px;
-            font-family: "Fjalla One";
+            font-family: "Fjalla One", sans-serif;
             overflow: hidden;
             display: flex;
             flex-direction: row;
@@ -791,7 +791,7 @@
         .factor-label {
           flex-grow: 1;
           text-align: center;
-          font-family: "Fjalla One";
+          font-family: "Fjalla One", sans-serif;
           font-size: 8px;
           color: var(--blades-white-bright);
           max-width: 50px;
@@ -813,7 +813,7 @@
 
       input.shadowed {
         pointer-events: auto !important;
-        font-family: "Fjalla One";
+        font-family: "Fjalla One", sans-serif;
         background: var(--blades-black-dark-fade-strong);
         border-radius: 3px;
         box-shadow:
@@ -890,7 +890,7 @@
             }
           }
 
-          *:not(i) { font-family: "Minion Pro Cond" };
+          *:not(i) { font-family: "Minion Pro Cond", serif }
 
           textarea {
             resize: none;

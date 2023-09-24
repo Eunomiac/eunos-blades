@@ -874,7 +874,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       if (BladesItem.IsType(doc, BladesItemType.vice) && BladesActor.IsType(this, BladesActorType.pc)) {
         this.activeSubActors
           .filter((subActor) => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name as Vice))
-          .forEach((subActor) => this.remSubActor(subActor));
+          .forEach((subActor) => { this.remSubActor(subActor) });
       }
     });
   }

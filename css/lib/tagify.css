@@ -115,8 +115,6 @@
     content: '';
     vertical-align: middle;
     opacity: 1;
-    width: .7em;
-    height: .7em;
     width: var(--loader-size);
     height: var(--loader-size);
     min-width: 0;
@@ -208,8 +206,6 @@
         content: '';
         vertical-align: middle;
         opacity: 1;
-        width: .7em;
-        height: .7em;
         width: var(--loader-size);
         height: var(--loader-size);
         min-width: 0;

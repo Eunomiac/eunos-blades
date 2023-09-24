@@ -68,7 +68,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         event.preventDefault();
         const keyID = event.target.dataset.id;
         if (keyID) {
-            this.item.setKeySize(keyID, parseInt(event.target.value));
+            this.item.setKeySize(keyID, parseInt(event.target.value, 10));
         }
     }
     async activateListeners(html) {

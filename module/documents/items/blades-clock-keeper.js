@@ -132,7 +132,7 @@ class BladesClockKeeper extends BladesItem {
         if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) {
             return undefined;
         }
-        keySize = parseInt(`${keySize}`);
+        keySize = parseInt(`${keySize}`, 10);
         const updateData = {
             [`system.clock_keys.${keyID}.numClocks`]: keySize
         };

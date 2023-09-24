@@ -108,7 +108,7 @@
     position: absolute;
     cursor: pointer;
     pointer-events: auto;
-    font-family: Oswald;
+    font-family: Oswald, sans-serif;
     text-align: center;
     font-size: 16px;
     font-weight: bold;
@@ -135,7 +135,6 @@
         top: -2px;
         left:-2px;
         background-size: 400%;
-        z-index: -1;
         filter: blur(5px);
         width: calc(100% + 4px);
         height: calc(100% + 4px);

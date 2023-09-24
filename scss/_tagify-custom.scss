@@ -74,7 +74,7 @@ $hover-yiq: $bg-yiq * 1.33;
   @include tag-colors();
 
   .tagify__tag {
-    font-family: "Fjalla One";
+    font-family: "Fjalla One", sans-serif;
     padding: 0;
     margin: 1px 0;
     height: calc(100% - 2 * 1px);
@@ -154,7 +154,7 @@ $hover-yiq: $bg-yiq * 1.33;
       padding: 0 0.3em;
       margin: 0;
       color: white;
-      font-family: "Fjalla One";
+      font-family: "Fjalla One", sans-serif;
       text-transform: uppercase;
       font-size: 10px;
     }
@@ -169,7 +169,7 @@ $hover-yiq: $bg-yiq * 1.33;
 
       .tagify__dropdown__item {
         display: inline-block;
-        font-family: "Fjalla One";
+        font-family: "Fjalla One", sans-serif;
         margin: 0px 0 3px 3px;
         color: var(--blades-black);
         padding: 0.1rem 0.25rem;

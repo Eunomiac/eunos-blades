@@ -41,9 +41,7 @@
     text-transform: inherit;
     vertical-align: inherit;
     white-space: inherit;
-  }
 
-  .tox *:not(svg):not(rect) {
     /* stylelint-disable-line no-duplicate-selectors */
     background: transparent;
     border: 0;
@@ -577,10 +575,6 @@
 
   .tox[dir=rtl] .tox-bar .tox-checkbox {
     margin-right: 3.5px;
-  }
-
-  .tox {
-    /* stylelint-disable-next-line no-descending-specificity */
   }
 
   .tox .tox-collection--toolbar .tox-collection__group {
@@ -1965,20 +1959,12 @@
     cursor: not-allowed;
   }
 
-  .tox:not([dir=rtl]) .tox-color-input {
-    /* stylelint-disable-next-line no-descending-specificity */
-  }
-
   .tox:not([dir=rtl]) .tox-color-input .tox-textfield {
     padding-left: 36px;
   }
 
   .tox:not([dir=rtl]) .tox-color-input span {
     left: 6px;
-  }
-
-  .tox[dir="rtl"] .tox-color-input {
-    /* stylelint-disable-next-line no-descending-specificity */
   }
 
   .tox[dir="rtl"] .tox-color-input .tox-textfield {
@@ -2474,25 +2460,12 @@
     width: 100%;
   }
 
-  .tox:not([dir=rtl]) {
-    /* stylelint-disable-next-line no-descending-specificity */
-  }
-
   .tox:not([dir=rtl]) .tox-insert-table-picker>div:nth-child(10n) {
     border-right: 0;
   }
 
-  .tox[dir=rtl] {
-    /* stylelint-disable-next-line no-descending-specificity */
-  }
-
   .tox[dir=rtl] .tox-insert-table-picker>div:nth-child(10n+1) {
     border-right: 0;
-  }
-
-  .tox {
-    /* stylelint-disable */
-    /* stylelint-enable */
   }
 
   .tox .tox-menu {
@@ -2608,7 +2581,7 @@
 
   .tox .tox-mbtn__select-chevron {
     align-items: center;
-    display: flex;
+    // display: flex;
     justify-content: center;
     width: 16px;
     display: none;

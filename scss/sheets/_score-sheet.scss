@@ -178,8 +178,6 @@
           }
         }
 
-        &.randomizer-npc {}
-
         &.randomizer-score {
           .randomizer-item {
             .randomizer-input-narrative {
@@ -201,7 +199,7 @@
             display: inline-block;
             width: calc(40% - 4px);
             text-align: right;
-            font-family: "Fjalla One";
+            font-family: "Fjalla One", sans-serif;
             font-size: 12px;
             text-transform: uppercase;
           }

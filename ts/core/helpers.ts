@@ -146,7 +146,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
     stepSize = U.pInt(stepSize) || 1;
     if (from > to) { return "" }
     let html = "";
-    for (let i = parseInt(from || 0); i <= parseInt(to || 0); i++) {
+    for (let i = parseInt(from || 0, 10); i <= parseInt(to || 0, 10); i++) {
       html += options.fn(i);
     }
     return html;
@@ -183,7 +183,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
   "isTurfBlock": (name: string): boolean => U.fuzzyMatch(name, "Turf"),
   // Which other connection does this connector overlap with?
   "getConnectorPartner": (index: number|string, direction: "right"|"left"|"top"|"bottom"): string|null => {
-    index = parseInt(`${index}`);
+    index = parseInt(`${index}`, 10);
     const partners: Record<number, Record<string,number>> = {
       1: {right: 2, bottom: 6},
       2: {left: 1, right: 3, bottom: 7},
@@ -208,7 +208,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
   },
   // Is the value Turf side.
   "isTurfOnEdge": (index: number|string, direction: string): boolean => {
-    index = parseInt(`${index}`);
+    index = parseInt(`${index}`, 10);
     const edges: Record<number, string[]> = {
       1: ["top", "left"],
       2: ["top"],
@@ -249,7 +249,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
   // ReputationTurf handlebar.
   "repturf": (turfs_amount, options) => {
     let html = options.fn(this),
-        turfs_amount_int = parseInt(turfs_amount);
+        turfs_amount_int = parseInt(turfs_amount, 10);
 
     // Can't be more than 6.
     if (turfs_amount_int > 6) {
@@ -290,7 +290,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
   //   <span>{{this}}</span>
   // {{/times_from_1}}
   "times_from_1": (n, block) => {
-    n = parseInt(n);
+    n = parseInt(n, 10);
     let accum = "";
     for (let i = 1; i <= n; ++i) {
       accum += block.fn(i);
@@ -305,7 +305,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
   //   <span>{{this}}</span>
   // {{/times_from_0}}
   "times_from_0": (n, block) => {
-    n = parseInt(n);
+    n = parseInt(n, 10);
     let accum = "";
     for (let i = 0; i <= n; ++i) {
       accum += block.fn(i);
@@ -346,35 +346,6 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
 
     return new Handlebars.SafeString(html);
   }
-  /**
-   * Create appropriate Blades clock
-   */
-  // "blades-clock": (parameter_name, type, current_value, uniq_id) => {
-  //   let html = "";
-  //   if (current_value === null || current_value === "null") {
-  //     current_value = 0;
-  //   }
-  //   if (parseInt(current_value) > parseInt(type)) {
-  //     current_value = type;
-  //   }
-
-  //   // Label for 0
-  //   html += `<label class="clock-zero-label" for="clock-0-${uniq_id}}"><i class="fab fa-creative-commons-zero nullifier"></i></label>`;
-  //   html += `<div id="blades-clock-${uniq_id}" class="blades-clock clock-${type} clock-${type}-${current_value}" style="background-image:url('systems/eunos-blades/assets/progressclocks-svg/Progress Clock ${type}-${current_value}.svg');">`;
-  //   const zero_checked = (parseInt(current_value) === 0) ? 'checked="checked"' : "";
-  //   html += `<input type="radio" value="0" id="clock-0-${uniq_id}}" name="${parameter_name}" ${zero_checked}>`;
-
-  //   for (let i = 1; i <= parseInt(type); i++) {
-  //     const checked = (parseInt(current_value) === i) ? 'checked="checked"' : "";
-  //     html += `
-  //       <input type="radio" value="${i}" id="clock-${i}-${uniq_id}" name="${parameter_name}" ${checked}>
-  //       <label for="clock-${i}-${uniq_id}"></label>
-  //     `;
-  //   }
-
-  //   html += "</div>";
-  //   return html;
-  // }
 };
 
 handlebarHelpers.eLog1 = function(...args) { handlebarHelpers.eLog(...[1, ...args.slice(0, 7)]) };

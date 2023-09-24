@@ -382,7 +382,7 @@ class BladesItemSheet extends ItemSheet {
   toggleTurfConnection(event: ClickEvent) {
     const button$ = $(event.currentTarget);
     const connector$ = button$.parent();
-    const turfNum = parseInt(connector$.data("index") ?? 0);
+    const turfNum = parseInt(connector$.data("index") ?? 0, 10);
     const turfDir = connector$.data("dir");
     if (!turfNum || !turfDir) { return }
     const toggleState = connector$.hasClass("no-connect");

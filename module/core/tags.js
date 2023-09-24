@@ -8,7 +8,7 @@
 import Tagify from "../../lib/tagify/tagify.esm.js";
 import { Tag, MainDistrict, OtherDistrict, Vice, Playbook, BladesActorType } from "./constants.js";
 import U from "./utilities.js";
-async function _onTagifyChange(event, doc, targetKey) {
+const _onTagifyChange = (event, doc, targetKey) => {
     const tagString = event.target.value;
     if (tagString) {
         const tags = JSON.parse(tagString).map(({ value }) => value);
@@ -17,7 +17,7 @@ async function _onTagifyChange(event, doc, targetKey) {
     else {
         doc.update({ [targetKey]: [] });
     }
-}
+};
 const Tags = {
     InitListeners: (html, doc) => {
         function makeTagInput(elem, tags) {
@@ -78,7 +78,7 @@ const Tags = {
                 "data-group": findDataGroup(tag)
             })), true, true);
 
-            setTimeout(() => elem.addEventListener("change", async (event) => await _onTagifyChange(event, doc, targetKey)), 1000);
+            setTimeout(() => elem.addEventListener("change", (event) => { _onTagifyChange(event, doc, targetKey); }), 1000);
         }
         const systemTags = {
             "System Tags": Object.values(Tag.System),

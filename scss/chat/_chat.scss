@@ -1,9 +1,9 @@
 .chat-message {
 
   background: var(--blades-black);
-  .message-header {
+  // .message-header {
 
-  }
+  // }
 
   .message-content {
 
@@ -16,7 +16,6 @@
       align-items: stretch;
       justify-content: space-evenly;
 
-      // `<span class='blades-die blades-die-critical blades-die-${val}'><img src='systems/eunos-blades/assets/dice/faces/${val}.webp' /></span>`
       .blades-die {
         display: block;
         height: 30px;
@@ -34,12 +33,12 @@
         &.blades-die-success {
           outline: 2px solid var(--blades-white-bright);
         }
-        &.blades-die-partial {
+        // &.blades-die-partial {
 
-        }
-        &.blades-die-fail {
+        // }
+        // &.blades-die-fail {
 
-        }
+        // }
         &.blades-die-ghost {
           img { opacity: 0.5 }
         }
@@ -72,7 +71,6 @@
       text-transform: uppercase;
       background-color: var(--blades-black);
       color: var(--blades-white);
-      margin-bottom: 10px;
       position: relative;
       padding-top: 3px;
       display: flex;

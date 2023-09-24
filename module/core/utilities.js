@@ -762,7 +762,7 @@ export function toDict(items, key) {
             const [curIndex, ...subStr] = str.split(/_/).reverse();
             return [
                 ...subStr.reverse(),
-                parseInt(curIndex) + 1
+                parseInt(curIndex, 10) + 1
             ].join("_");
         }
         return `${str}_1`;

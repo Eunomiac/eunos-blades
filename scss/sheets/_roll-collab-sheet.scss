@@ -63,9 +63,6 @@
         font-size: toRem(16px);
         line-height: 20px;
         height: 20px;
-        margin-top: 0;
-        margin-bottom: 5px;
-        padding: 1px 4px;
         margin: 0;
         padding: 0 4px;
         display: inline-block;
@@ -121,20 +118,18 @@
       min-height: 20px;
 
       >.roll-mod-block-spacer {
-        display: inline-flex;
+        display: none;
         flex-grow: 1;
         flex-shrink: 1;
         flex-basis: 0px;
         height: 16px;
-        display: none;
 
         &.last-spacer {
-          display: none;
+          display: inline-flex;
           flex-grow: 0;
           flex-shrink: 0;
           width: 155px;
           height: 20px;
-          display: inline-flex;
           margin-left: auto;
         }
       }
@@ -189,7 +184,7 @@
 
             .roll-mod-text {
               font-size: 10px;
-              font-family: Oswald;
+              font-family: Oswald, sans-serif;
               text-transform: uppercase;
               margin: 0 10px 0 0;
               color: var(--blades-white);
@@ -462,7 +457,7 @@
       }
 
       .roll-mod-label {
-        display: block;
+        display: flex;
         width: min-content;
         // background: lime;
         overflow: hidden;
@@ -473,7 +468,6 @@
         top: calc(-1 * var(--roll-mod-size));
         left: 0;
         white-space: nowrap;
-        display: flex;
         align-items: center;
         justify-content: flex-start;
         flex-direction: row;
@@ -525,7 +519,7 @@
           // margin-top: 2px;
 
           &.roll-mod-sidestring {
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             margin-left: 5px;
             text-transform: uppercase;
             font-size: 14px;
@@ -1067,11 +1061,8 @@
             }
           }
 
-          .roll-factor {}
-
           &.roll-opp-factors {
             .roll-factor {
-              .roll-factor-label {}
 
               .roll-factor-value {
                 color: var(--opp-factor-color, var(--blades-gold-bright));
@@ -1109,14 +1100,6 @@
 
             &.roll-opp-type-cohort_gang {
               --opp-factor-color: var(--blades-red-bright)
-            }
-
-            .factors-block.flex-vertical {
-
-              .roll-factor {
-                .roll-factor-value {}
-              }
-
             }
           }
 
@@ -1316,7 +1299,6 @@
               top: 50%;
               left: 50%;
               position: absolute;
-              height: 100%;
               transform-origin: 50% 50%;
             }
 
@@ -1398,7 +1380,7 @@
                 .roll-num-container.factor-spacer {
                   height: var(--spread-size, 30px);
                   width: var(--spread-size, 30px);
-                  font-family: Oswald;
+                  font-family: Oswald, sans-serif;
                   font-size: 10px;
                   line-height: calc(var(--spread-size, 30px) - 2px);
                   border: 1px var(--roll-factor-inactive-border-style, solid) var(--roll-factor-inactive-border);
@@ -1535,8 +1517,6 @@
                 }
 
                 &.roll-readonly {
-                  // top: 50%;
-                  opacity: 0;
                   height: 40px;
                   width: 100px;
                   pointer-events: none;
@@ -1594,7 +1574,7 @@
 
           .num-spread-label {
             position: absolute;
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: 10px;
             // transform: -50% 0%;
             left: 0%;
@@ -1632,7 +1612,7 @@
               text-shadow: none;
               font-weight: bold;
               transform-origin: 50% 50%;
-              // scale: 1.2;
+              background: var(--spread-puck-color, var(--blades-white-bright));
             }
 
             [data-active="true"]~* {
@@ -1653,10 +1633,6 @@
 
             .origin-box {
               background: var(--spread-center-fade, var(--blades-gold-dark))
-            }
-
-            [data-active="true"] {
-              background: var(--spread-puck-color, var(--blades-white-bright))
             }
 
             .origin-box[data-active="true"]~* {

@@ -166,11 +166,9 @@
   .comp-status-toggle {
     position: absolute;
     text-shadow: 0 0 2px var(--blades-black-dark),0 0 2px var(--blades-black-dark),0 0 2px var(--blades-black-dark),0 0 2px var(--blades-black-dark);
-    right: 10px;
     scale: 1.5;
     top: -10px;
     right: 15px;
-    // pointer-events: all;
 
     > * { transition: 0.5s }
 
@@ -448,7 +446,7 @@
       }
 
       .comp-body-text {
-        font-family: "Minion Pro Caption Cond";
+        font-family: "Minion Pro Caption Cond", serif;
         hyphens: auto;
         text-align: justify;
         padding: 0 toRem(5px) 0 0;

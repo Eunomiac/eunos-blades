@@ -44,7 +44,7 @@
     display: none;
     &:checked {
       ~ .accordian-label {
-        background: linear-gradient(var(--blades-white-bright), var(--blades-white));
+        background: linear-gradient(to bottom, var(--blades-white-bright), var(--blades-white));
       }
       ~ .accordian-contents {
         height: auto;
@@ -63,7 +63,7 @@
   }
 
   .accordian-label {
-    background: linear-gradient(var(--blades-grey-dark), var(--blades-grey-bright));
+    background: linear-gradient(to bottom, var(--blades-grey-dark), var(--blades-grey-bright));
       width: 100%;
       text-indent: 22px;
       line-height: var(--header-height);

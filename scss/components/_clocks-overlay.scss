@@ -165,7 +165,7 @@ $label-positions: (
     &:not(.active-key) {
       .key-label {
         color: var(--blades-white);
-        font-family: Oswald;
+        font-family: Oswald, sans-serif;
         font-size: toRem(40px);
         top: unset;
         width: 200px;
@@ -191,7 +191,7 @@ $label-positions: (
         // width: 100%;
         .short-label {
           font-size: toRem(40px);
-          font-family: Oswald;
+          font-family: Oswald, sans-serif;
           text-shadow:
             0 0 15px var(--blades-black-dark),
             0 0 15px var(--blades-black-dark),

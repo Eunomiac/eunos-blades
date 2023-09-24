@@ -1105,7 +1105,6 @@ template {
   :root * .comp .comp-status-toggle {
     position: absolute;
     text-shadow: 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark);
-    right: 10px;
     scale: 1.5;
     top: -10px;
     right: 15px; }
@@ -1406,7 +1405,7 @@ template {
           font-weight: bold; }
       :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text,
       :root * .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-        font-family: "Minion Pro Caption Cond";
+        font-family: "Minion Pro Caption Cond", serif;
         -webkit-hyphens: auto;
         -ms-hyphens: auto;
         hyphens: auto;
@@ -2040,7 +2039,7 @@ template {
     position: absolute;
     cursor: pointer;
     pointer-events: auto;
-    font-family: Oswald;
+    font-family: Oswald, sans-serif;
     text-align: center;
     font-size: 16px;
     font-weight: bold;
@@ -2067,7 +2066,6 @@ template {
         top: -2px;
         left: -2px;
         background-size: 400%;
-        z-index: -1;
         -webkit-filter: blur(5px);
         filter: blur(5px);
         width: calc(100% + 4px);
@@ -2414,13 +2412,12 @@ template {
         -ms-transform: scale(1.5);
         transform: scale(1.5); }
         :root body.vtt.game.system-eunos-blades #clocks-overlay .window-header .close i {
-          font-size: initial;
           font-weight: bold;
           color: var(--blades-white-bright);
           font-size: 1.25rem;
           line-height: 1;
           margin-top: -0.0625rem;
-          font-family: Kirsty;
+          font-family: Kirsty, serif;
           -webkit-transform-origin: center center;
           -ms-transform-origin: center center;
           transform-origin: center center;
@@ -2577,7 +2574,6 @@ template {
       :root body.vtt.game.system-eunos-blades #clocks-overlay .comp .comp-status-toggle {
         position: absolute;
         text-shadow: 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark);
-        right: 10px;
         scale: 1.5;
         top: -10px;
         right: 15px; }
@@ -2831,7 +2827,7 @@ template {
               margin-right: 5px;
               font-weight: bold; }
           :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-            font-family: "Minion Pro Caption Cond";
+            font-family: "Minion Pro Caption Cond", serif;
             -webkit-hyphens: auto;
             -ms-hyphens: auto;
             hyphens: auto;
@@ -3345,7 +3341,7 @@ template {
         position: absolute;
         cursor: pointer;
         pointer-events: auto;
-        font-family: Oswald;
+        font-family: Oswald, sans-serif;
         text-align: center;
         font-size: 16px;
         font-weight: bold;
@@ -3370,7 +3366,6 @@ template {
             top: -2px;
             left: -2px;
             background-size: 400%;
-            z-index: -1;
             -webkit-filter: blur(5px);
             filter: blur(5px);
             width: calc(100% + 4px);
@@ -3614,7 +3609,7 @@ template {
           color: var(--blades-gold-bright) !important; }
       :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key:not(.active-key) .key-label {
         color: var(--blades-white);
-        font-family: Oswald;
+        font-family: Oswald, sans-serif;
         font-size: 2.5rem;
         top: unset;
         width: 200px;
@@ -3635,7 +3630,7 @@ template {
           position: absolute; }
           :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-label-container .clock-label .short-label {
             font-size: 2.5rem;
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             text-shadow: 0 0 15px var(--blades-black-dark), 0 0 15px var(--blades-black-dark), 0 0 15px var(--blades-black-dark), 0 0 15px var(--blades-black-dark); }
           :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-label-container .clock-label.clock-active .short-label {
             color: var(--blades-white-bright); }
@@ -4098,7 +4093,7 @@ template {
         font-variant: small-caps; }
       :root body.vtt.game.system-eunos-blades #sidebar #blades-push-notifications .push-notice .header {
         width: 100%;
-        font-family: Oswald;
+        font-family: Oswald, sans-serif;
         font-weight: bold;
         color: var(--blades-black-dark);
         text-align: left; }
@@ -4454,13 +4449,12 @@ template {
       :root body.vtt.game.system-eunos-blades #navigation .window-header .close i,
       :root body.vtt.game.system-eunos-blades #hotbar .window-header .close i,
       :root body.vtt.game.system-eunos-blades #players .window-header .close i {
-        font-size: initial;
         font-weight: bold;
         color: var(--blades-white-bright);
         font-size: 1.25rem;
         line-height: 1;
         margin-top: -0.0625rem;
-        font-family: Kirsty;
+        font-family: Kirsty, serif;
         -webkit-transform-origin: center center;
         -ms-transform-origin: center center;
         transform-origin: center center;
@@ -4829,7 +4823,6 @@ template {
     :root body.vtt.game.system-eunos-blades #players .comp .comp-status-toggle {
       position: absolute;
       text-shadow: 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark);
-      right: 10px;
       scale: 1.5;
       top: -10px;
       right: 15px; }
@@ -5255,7 +5248,7 @@ template {
         :root body.vtt.game.system-eunos-blades #navigation .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text,
         :root body.vtt.game.system-eunos-blades #hotbar .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text,
         :root body.vtt.game.system-eunos-blades #players .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-          font-family: "Minion Pro Caption Cond";
+          font-family: "Minion Pro Caption Cond", serif;
           -webkit-hyphens: auto;
           -ms-hyphens: auto;
           hyphens: auto;
@@ -6217,7 +6210,7 @@ template {
       position: absolute;
       cursor: pointer;
       pointer-events: auto;
-      font-family: Oswald;
+      font-family: Oswald, sans-serif;
       text-align: center;
       font-size: 16px;
       font-weight: bold;
@@ -6250,7 +6243,6 @@ template {
           top: -2px;
           left: -2px;
           background-size: 400%;
-          z-index: -1;
           -webkit-filter: blur(5px);
           filter: blur(5px);
           width: calc(100% + 4px);
@@ -6777,13 +6769,12 @@ template {
       :root body.vtt.game.system-eunos-blades #navigation #chat .window-header .close i,
       :root body.vtt.game.system-eunos-blades #hotbar #chat .window-header .close i,
       :root body.vtt.game.system-eunos-blades #players #chat .window-header .close i {
-        font-size: initial;
         font-weight: bold;
         color: var(--blades-white-bright);
         font-size: 1.25rem;
         line-height: 1;
         margin-top: -0.0625rem;
-        font-family: Kirsty;
+        font-family: Kirsty, serif;
         -webkit-transform-origin: center center;
         -ms-transform-origin: center center;
         transform-origin: center center;
@@ -7152,7 +7143,6 @@ template {
     :root body.vtt.game.system-eunos-blades #players #chat .comp .comp-status-toggle {
       position: absolute;
       text-shadow: 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark);
-      right: 10px;
       scale: 1.5;
       top: -10px;
       right: 15px; }
@@ -7578,7 +7568,7 @@ template {
         :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text,
         :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text,
         :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-          font-family: "Minion Pro Caption Cond";
+          font-family: "Minion Pro Caption Cond", serif;
           -webkit-hyphens: auto;
           -ms-hyphens: auto;
           hyphens: auto;
@@ -8540,7 +8530,7 @@ template {
       position: absolute;
       cursor: pointer;
       pointer-events: auto;
-      font-family: Oswald;
+      font-family: Oswald, sans-serif;
       text-align: center;
       font-size: 16px;
       font-weight: bold;
@@ -8573,7 +8563,6 @@ template {
           top: -2px;
           left: -2px;
           background-size: 400%;
-          z-index: -1;
           -webkit-filter: blur(5px);
           filter: blur(5px);
           width: calc(100% + 4px);
@@ -8858,7 +8847,6 @@ template {
     text-transform: uppercase;
     background-color: var(--blades-black);
     color: var(--blades-white);
-    margin-bottom: 10px;
     position: relative;
     padding-top: 3px;
     display: -webkit-box;
@@ -9082,13 +9070,12 @@ template {
         -ms-transform: scale(1.5);
         transform: scale(1.5); }
         :root body.vtt.game.system-eunos-blades .app.window-app .window-header .close i {
-          font-size: initial;
           font-weight: bold;
           color: var(--blades-white-bright);
           font-size: 1.25rem;
           line-height: 1;
           margin-top: -0.0625rem;
-          font-family: Kirsty;
+          font-family: Kirsty, serif;
           -webkit-transform-origin: center center;
           -ms-transform-origin: center center;
           transform-origin: center center;
@@ -9245,7 +9232,6 @@ template {
       :root body.vtt.game.system-eunos-blades .app.window-app .comp .comp-status-toggle {
         position: absolute;
         text-shadow: 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark);
-        right: 10px;
         scale: 1.5;
         top: -10px;
         right: 15px; }
@@ -9499,7 +9485,7 @@ template {
               margin-right: 5px;
               font-weight: bold; }
           :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-            font-family: "Minion Pro Caption Cond";
+            font-family: "Minion Pro Caption Cond", serif;
             -webkit-hyphens: auto;
             -ms-hyphens: auto;
             hyphens: auto;
@@ -10013,7 +9999,7 @@ template {
         position: absolute;
         cursor: pointer;
         pointer-events: auto;
-        font-family: Oswald;
+        font-family: Oswald, sans-serif;
         text-align: center;
         font-size: 16px;
         font-weight: bold;
@@ -10038,7 +10024,6 @@ template {
             top: -2px;
             left: -2px;
             background-size: 400%;
-            z-index: -1;
             -webkit-filter: blur(5px);
             filter: blur(5px);
             width: calc(100% + 4px);
@@ -10262,7 +10247,7 @@ template {
     height: var(--nc-size);
     width: var(--nc-size);
     font-weight: bold;
-    font-family: "Minion Pro Caption Cond";
+    font-family: "Minion Pro Caption Cond", serif;
     font-size: var(--nc-font-size);
     text-align: center;
     border-radius: var(--nc-border-radius);
@@ -10531,7 +10516,7 @@ template {
         :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-header .pc-summary-heritage {
           grid-area: heritage;
           font-size: 10px;
-          font-family: Oswald;
+          font-family: Oswald, sans-serif;
           text-transform: uppercase;
           line-height: 20px;
           text-align: right;
@@ -10567,12 +10552,12 @@ template {
           :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute:not(:first-child) {
             margin-top: 5px; }
           :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute label {
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: 0.75rem;
             line-height: 0.75rem;
             color: var(--blades-white); }
           :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute span {
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: 0.75rem;
             line-height: 0.75rem;
             color: var(--blades-white-bright); }
@@ -10594,7 +10579,7 @@ template {
           -ms-flex-direction: row;
           flex-direction: row; }
           :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action label {
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: 0.625rem;
             line-height: 0.625rem;
             color: var(--blades-grey-bright);
@@ -10603,7 +10588,7 @@ template {
             flex-grow: 1;
             text-align: right; }
           :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action span {
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: 0.625rem;
             line-height: 0.625rem;
             color: var(--blades-white-bright);
@@ -10638,7 +10623,7 @@ template {
             -webkit-box-flex: 1;
             -ms-flex-positive: 1;
             flex-grow: 1;
-            font-family: "Fjalla One";
+            font-family: "Fjalla One", sans-serif;
             font-size: 10px;
             line-height: 12px;
             text-transform: uppercase;
@@ -10670,7 +10655,7 @@ template {
             -webkit-box-flex: 1;
             -ms-flex-positive: 1;
             flex-grow: 1;
-            font-family: "Fjalla One";
+            font-family: "Fjalla One", sans-serif;
             font-size: 10px;
             line-height: 12px;
             white-space: nowrap;
@@ -10716,7 +10701,7 @@ template {
           :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma {
             color: var(--blades-red-bright);
             font-weight: bold;
-            font-family: Kirsty;
+            font-family: Kirsty, serif;
             font-size: 12px;
             text-transform: uppercase;
             text-align: center;
@@ -10739,7 +10724,7 @@ template {
           flex-direction: column; }
           :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm {
             font-size: 10px;
-            font-family: "Fjalla One";
+            font-family: "Fjalla One", sans-serif;
             overflow: hidden;
             display: -webkit-box;
             display: -ms-flexbox;
@@ -10950,7 +10935,7 @@ template {
           -ms-flex-positive: 1;
           flex-grow: 1;
           text-align: center;
-          font-family: "Fjalla One";
+          font-family: "Fjalla One", sans-serif;
           font-size: 8px;
           color: var(--blades-white-bright);
           max-width: 50px; }
@@ -10972,7 +10957,7 @@ template {
           max-width: 50px; }
       :root body.vtt.game.system-eunos-blades .app.window-app .opposition-creation-panel .roll-opposition-container input.shadowed {
         pointer-events: auto !important;
-        font-family: "Fjalla One";
+        font-family: "Fjalla One", sans-serif;
         background: var(--blades-black-dark-fade-strong);
         border-radius: 3px;
         -webkit-box-shadow: inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark);
@@ -11027,7 +11012,7 @@ template {
       -webkit-box-shadow: none;
       box-shadow: none; }
     :root body.vtt.game.system-eunos-blades .app.window-app .randomizer-panel .randomizer-container .randomizer-list .randomizer-item *:not(i) {
-      font-family: "Minion Pro Cond"; }
+      font-family: "Minion Pro Cond", serif; }
     :root body.vtt.game.system-eunos-blades .app.window-app .randomizer-panel .randomizer-container .randomizer-list .randomizer-item textarea {
       resize: none;
       min-height: 2.5rem;
@@ -11063,8 +11048,6 @@ template {
       width: 100%; }
     :root body.vtt.game.system-eunos-blades .app.window-app .nav-group > .nav-tabs.flex-horizontal {
       background-color: var(--blades-grey-bright);
-      padding: 0 0.625rem;
-      overflow: visible;
       -webkit-box-align: center;
       -ms-flex-align: center;
       align-items: center;
@@ -11190,7 +11173,7 @@ template {
       display: none; }
       :root body.vtt.game.system-eunos-blades .app.window-app .accordian-block input[type="radio"]:checked ~ .accordian-label {
         background: -webkit-gradient(linear, left top, left bottom, from(var(--blades-white-bright)), to(var(--blades-white)));
-        background: linear-gradient(var(--blades-white-bright), var(--blades-white)); }
+        background: linear-gradient(to bottom, var(--blades-white-bright), var(--blades-white)); }
       :root body.vtt.game.system-eunos-blades .app.window-app .accordian-block input[type="radio"]:checked ~ .accordian-contents {
         height: auto;
         overflow: visible;
@@ -11203,7 +11186,7 @@ template {
             height: calc(var(--full-block-height) - (var(--num-blocks) * var(--header-height)) - var(--header-height)); }
     :root body.vtt.game.system-eunos-blades .app.window-app .accordian-block .accordian-label {
       background: -webkit-gradient(linear, left top, left bottom, from(var(--blades-grey-dark)), to(var(--blades-grey-bright)));
-      background: linear-gradient(var(--blades-grey-dark), var(--blades-grey-bright));
+      background: linear-gradient(to bottom, var(--blades-grey-dark), var(--blades-grey-bright));
       width: 100%;
       text-indent: 22px;
       line-height: var(--header-height);
@@ -11355,8 +11338,6 @@ template {
       content: '';
       vertical-align: middle;
       opacity: 1;
-      width: .7em;
-      height: .7em;
       width: var(--loader-size);
       height: var(--loader-size);
       min-width: 0;
@@ -11448,8 +11429,6 @@ template {
           content: '';
           vertical-align: middle;
           opacity: 1;
-          width: .7em;
-          height: .7em;
           width: var(--loader-size);
           height: var(--loader-size);
           min-width: 0;
@@ -11840,7 +11819,7 @@ template {
       --tag-bg: #ff3334;
       --tag-hover: #ff5d5e; }
     :root body.vtt.game.system-eunos-blades .app.window-app .comp-tags .tagify__tag {
-      font-family: "Fjalla One";
+      font-family: "Fjalla One", sans-serif;
       padding: 0;
       margin: 1px 0;
       height: calc(100% - 2 * 1px);
@@ -11903,7 +11882,7 @@ template {
       padding: 0 0.3em;
       margin: 0;
       color: white;
-      font-family: "Fjalla One";
+      font-family: "Fjalla One", sans-serif;
       text-transform: uppercase;
       font-size: 10px; }
     :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup {
@@ -11945,7 +11924,7 @@ template {
         --tag-hover: #ff5d5e; }
       :root body.vtt.game.system-eunos-blades .app.window-app .tagify__dropdown .tagify__dropdown__wrapper .tagify__dropdown__itemsGroup .tagify__dropdown__item {
         display: inline-block;
-        font-family: "Fjalla One";
+        font-family: "Fjalla One", sans-serif;
         margin: 0px 0 3px 3px;
         color: var(--blades-black);
         padding: 0.1rem 0.25rem;
@@ -12245,7 +12224,7 @@ template {
           height: var(--nc-size);
           width: var(--nc-size);
           font-weight: bold;
-          font-family: "Minion Pro Caption Cond";
+          font-family: "Minion Pro Caption Cond", serif;
           font-size: var(--nc-font-size);
           text-align: center;
           border-radius: var(--nc-border-radius);
@@ -12514,7 +12493,7 @@ template {
               :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-header .pc-summary-heritage {
                 grid-area: heritage;
                 font-size: 10px;
-                font-family: Oswald;
+                font-family: Oswald, sans-serif;
                 text-transform: uppercase;
                 line-height: 20px;
                 text-align: right;
@@ -12550,12 +12529,12 @@ template {
                 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute:not(:first-child) {
                   margin-top: 5px; }
                 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute label {
-                  font-family: Oswald;
+                  font-family: Oswald, sans-serif;
                   font-size: 0.75rem;
                   line-height: 0.75rem;
                   color: var(--blades-white); }
                 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute span {
-                  font-family: Oswald;
+                  font-family: Oswald, sans-serif;
                   font-size: 0.75rem;
                   line-height: 0.75rem;
                   color: var(--blades-white-bright); }
@@ -12577,7 +12556,7 @@ template {
                 -ms-flex-direction: row;
                 flex-direction: row; }
                 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action label {
-                  font-family: Oswald;
+                  font-family: Oswald, sans-serif;
                   font-size: 0.625rem;
                   line-height: 0.625rem;
                   color: var(--blades-grey-bright);
@@ -12586,7 +12565,7 @@ template {
                   flex-grow: 1;
                   text-align: right; }
                 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action span {
-                  font-family: Oswald;
+                  font-family: Oswald, sans-serif;
                   font-size: 0.625rem;
                   line-height: 0.625rem;
                   color: var(--blades-white-bright);
@@ -12621,7 +12600,7 @@ template {
                   -webkit-box-flex: 1;
                   -ms-flex-positive: 1;
                   flex-grow: 1;
-                  font-family: "Fjalla One";
+                  font-family: "Fjalla One", sans-serif;
                   font-size: 10px;
                   line-height: 12px;
                   text-transform: uppercase;
@@ -12653,7 +12632,7 @@ template {
                   -webkit-box-flex: 1;
                   -ms-flex-positive: 1;
                   flex-grow: 1;
-                  font-family: "Fjalla One";
+                  font-family: "Fjalla One", sans-serif;
                   font-size: 10px;
                   line-height: 12px;
                   white-space: nowrap;
@@ -12699,7 +12678,7 @@ template {
                 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma {
                   color: var(--blades-red-bright);
                   font-weight: bold;
-                  font-family: Kirsty;
+                  font-family: Kirsty, serif;
                   font-size: 12px;
                   text-transform: uppercase;
                   text-align: center;
@@ -12722,7 +12701,7 @@ template {
                 flex-direction: column; }
                 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm {
                   font-size: 10px;
-                  font-family: "Fjalla One";
+                  font-family: "Fjalla One", sans-serif;
                   overflow: hidden;
                   display: -webkit-box;
                   display: -ms-flexbox;
@@ -12933,7 +12912,7 @@ template {
                 -ms-flex-positive: 1;
                 flex-grow: 1;
                 text-align: center;
-                font-family: "Fjalla One";
+                font-family: "Fjalla One", sans-serif;
                 font-size: 8px;
                 color: var(--blades-white-bright);
                 max-width: 50px; }
@@ -12955,7 +12934,7 @@ template {
                 max-width: 50px; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .opposition-creation-panel .roll-opposition-container input.shadowed {
               pointer-events: auto !important;
-              font-family: "Fjalla One";
+              font-family: "Fjalla One", sans-serif;
               background: var(--blades-black-dark-fade-strong);
               border-radius: 3px;
               -webkit-box-shadow: inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark), inset 0px 0px 3px var(--blades-black-dark);
@@ -13010,7 +12989,7 @@ template {
             -webkit-box-shadow: none;
             box-shadow: none; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .randomizer-panel .randomizer-container .randomizer-list .randomizer-item *:not(i) {
-            font-family: "Minion Pro Cond"; }
+            font-family: "Minion Pro Cond", serif; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .randomizer-panel .randomizer-container .randomizer-list .randomizer-item textarea {
             resize: none;
             min-height: 2.5rem;
@@ -13079,7 +13058,7 @@ template {
           width: 100%;
           background-color: yellow;
           font-weight: bold;
-          font-family: Kirsty;
+          font-family: Kirsty, serif;
           text-align: center;
           font-size: 0.875rem;
           color: var(--blades-black); }
@@ -14107,7 +14086,7 @@ template {
           margin-right: 5px; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content form .comp-randomizer-field .randomizer-input {
           background: var(--blades-grey);
-          font-family: Oswald;
+          font-family: Oswald, sans-serif;
           text-indent: 5px;
           line-height: 2rem; }
     :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-resizable-handle {
@@ -14863,7 +14842,7 @@ template {
       display: inline-block;
       width: calc(40% - 4px);
       text-align: right;
-      font-family: "Fjalla One";
+      font-family: "Fjalla One", sans-serif;
       font-size: 12px;
       text-transform: uppercase; }
   :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.crew_playbook {
@@ -15170,7 +15149,7 @@ template {
             line-height: 20px;
             font-style: italic;
             font-size: 0.875rem;
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             text-align: center;
             white-space: nowrap;
             width: 100%; }
@@ -15520,9 +15499,6 @@ template {
           font-size: 1rem;
           line-height: 20px;
           height: 20px;
-          margin-top: 0;
-          margin-bottom: 5px;
-          padding: 1px 4px;
           margin: 0;
           padding: 0 4px;
           display: inline-block;
@@ -15570,9 +15546,7 @@ template {
         justify-content: flex-start;
         min-height: 20px; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .roll-sheet-sub-block.roll-effects-block > .roll-mod-block-spacer {
-          display: -webkit-inline-box;
-          display: -ms-inline-flexbox;
-          display: inline-flex;
+          display: none;
           -webkit-box-flex: 1;
           -ms-flex-positive: 1;
           flex-grow: 1;
@@ -15580,10 +15554,11 @@ template {
           flex-shrink: 1;
           -ms-flex-preferred-size: 0px;
           flex-basis: 0px;
-          height: 16px;
-          display: none; }
+          height: 16px; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .roll-sheet-sub-block.roll-effects-block > .roll-mod-block-spacer.last-spacer {
-            display: none;
+            display: -webkit-inline-box;
+            display: -ms-inline-flexbox;
+            display: inline-flex;
             -webkit-box-flex: 0;
             -ms-flex-positive: 0;
             flex-grow: 0;
@@ -15591,9 +15566,6 @@ template {
             flex-shrink: 0;
             width: 155px;
             height: 20px;
-            display: -webkit-inline-box;
-            display: -ms-inline-flexbox;
-            display: inline-flex;
             margin-left: auto; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .roll-sheet-sub-block.roll-effects-block.inactive-mod-block {
           position: absolute;
@@ -15648,7 +15620,7 @@ template {
                 margin-left: calc(-1 * var(--roll-mod-size)); }
               :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .roll-sheet-sub-block.roll-effects-block.inactive-mod-block .roll-mod-container .roll-mod-label .roll-mod-text {
                 font-size: 10px;
-                font-family: Oswald;
+                font-family: Oswald, sans-serif;
                 text-transform: uppercase;
                 margin: 0 10px 0 0;
                 color: var(--blades-white); }
@@ -15831,7 +15803,9 @@ template {
               animation: var(--glow-animation) 2s ease infinite;
               background-color: var(--icon-center-bg-color); }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .roll-sheet-sub-block .roll-mod-container .roll-mod-label {
-          display: block;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
           width: -webkit-min-content;
           width: -moz-min-content;
           width: min-content;
@@ -15843,9 +15817,6 @@ template {
           top: calc(-1 * var(--roll-mod-size));
           left: 0;
           white-space: nowrap;
-          display: -webkit-box;
-          display: -ms-flexbox;
-          display: flex;
           -webkit-box-align: center;
           -ms-flex-align: center;
           align-items: center;
@@ -15884,7 +15855,7 @@ template {
             margin-left: 15px;
             line-height: var(--roll-mod-size); }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .roll-sheet-sub-block .roll-mod-container .roll-mod-label .roll-mod-text.roll-mod-sidestring {
-              font-family: Oswald;
+              font-family: Oswald, sans-serif;
               margin-left: 5px;
               text-transform: uppercase;
               font-size: 14px;
@@ -16415,7 +16386,6 @@ template {
               top: 50%;
               left: 50%;
               position: absolute;
-              height: 100%;
               -webkit-transform-origin: 50% 50%;
               -ms-transform-origin: 50% 50%;
               transform-origin: 50% 50%; }
@@ -16526,7 +16496,7 @@ template {
                 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right section.sheet-main.factor-controls .factor-control-row .roll-num-container.factor-spacer {
                   height: var(--spread-size, 30px);
                   width: var(--spread-size, 30px);
-                  font-family: Oswald;
+                  font-family: Oswald, sans-serif;
                   font-size: 10px;
                   line-height: calc(var(--spread-size, 30px) - 2px);
                   border: 1px var(--roll-factor-inactive-border-style, solid) var(--roll-factor-inactive-border);
@@ -16632,7 +16602,6 @@ template {
                 color: var(--blades-gold-bright);
                 text-shadow: 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark), 0 0 2px var(--blades-black-dark); }
               :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root section.sheet-footer .roll-sheet-float-block.roll-button .roll-button.roll-readonly {
-                opacity: 0;
                 height: 40px;
                 width: 100px;
                 pointer-events: none;
@@ -16669,7 +16638,7 @@ template {
           margin-bottom: 14px; }
           :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .num-spread-label {
             position: absolute;
-            font-family: Oswald;
+            font-family: Oswald, sans-serif;
             font-size: 10px;
             left: 0%;
             top: calc(100% + 1px);
@@ -16711,7 +16680,8 @@ template {
               font-weight: bold;
               -webkit-transform-origin: 50% 50%;
               -ms-transform-origin: 50% 50%;
-              transform-origin: 50% 50%; }
+              transform-origin: 50% 50%;
+              background: var(--spread-puck-color, var(--blades-white-bright)); }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread [data-active="true"] ~ * {
               background: var(--spread-neg-fade, var(--blades-red-dark)); }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread .origin-box ~ * {
@@ -16722,8 +16692,6 @@ template {
               background: transparent; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread .origin-box {
               background: var(--spread-center-fade, var(--blades-gold-dark)); }
-            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread [data-active="true"] {
-              background: var(--spread-puck-color, var(--blades-white-bright)); }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .roll-num-spread .origin-box[data-active="true"] ~ * {
               background: transparent; }
 

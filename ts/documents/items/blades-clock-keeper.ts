@@ -114,7 +114,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
 
   async setKeySize(keyID: string, keySize = 1): Promise<BladesItemOfType<BladesItemType.clock_keeper>|undefined> {
     if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return undefined }
-    keySize = parseInt(`${keySize}`);
+    keySize = parseInt(`${keySize}`, 10);
     const updateData: Record<string, any> = {
       [`system.clock_keys.${keyID}.numClocks`]: keySize
     };
