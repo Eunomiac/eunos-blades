@@ -73,4 +73,6 @@ declare global {
     result: Promise<Record<string,string|number|boolean>>
   }
 
+
+
 }

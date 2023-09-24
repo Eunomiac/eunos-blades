@@ -7,7 +7,6 @@ import BladesPC from "./documents/actors/blades-pc.js";
 import BladesCrew from "./documents/actors/blades-crew.js";
 import BladesNPC from "./documents/actors/blades-npc.js";
 import BladesFaction from "./documents/actors/blades-faction.js";
-
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 import {bladesRoll} from "./blades-roll.js";
