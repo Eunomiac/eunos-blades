@@ -6,43 +6,85 @@ import {gsap} from "gsap/all";
 
 declare global {
   // Type Aliases
+
+  // Represents a string, false, or undefined
   type MaybeStringOrFalse = string | false | undefined;
 
+  // Represents an integer
   type int = number;
+
+  // Represents a floating point number
   type float = number;
+
+  // Represents a positive integer
   type posInt = number;
+
+  // Represents a positive floating point number
   type posFloat = number;
+
+  // Represents a key which can be a string, number, or symbol
   type key = string | number | symbol;
+
+  // Represents a small integer from -10 to 10
   type SmallInt = -10 | -9 | -8 | -7 | -6 | -5 | -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+
+  // Represents a string-like value
   type StringLike = string | number | boolean | null | undefined;
 
+  // Represents HTML code as a string
   type HTMLCode = string;
+
+  // Represents a HEX color as a string
   type HEXColor = string;
+
+  // Represents an RGB color as a string
   type RGBColor = string;
+
+  // Represents a jQuery text term
   type jQueryTextTerm = string | number | boolean | ((this: Element, index: number, text: string) => string | number | boolean);
 
+  // Represents a function that takes a key and an optional value and returns unknown
   type keyFunc = (key: number | string, val?: any) => unknown;
+
+  // Represents a function that takes a value and an optional key and returns any
   type valFunc = (val: any, key?: number | string) => any;
+
+  // Represents a test function
   type testFunc<Type extends keyFunc | valFunc> = (...args: Parameters<Type>) => boolean;
+
+  // Represents a map function
   type mapFunc<Type extends keyFunc | valFunc> = (...args: Parameters<Type>) => unknown;
+
+  // Represents a check test
   type checkTest = ((...args: any[]) => any) | testFunc<keyFunc> | testFunc<valFunc> | RegExp | number | string;
 
+  // Represents a list of a certain type
   type List<Type = any> = Record<number | string | symbol, Type>
+
+  // Represents an index of a certain type
   type Index<Type = any> = List<Type> | Type[];
 
+  // Represents an object with frozen properties
   type FreezeProps<T> = {
     [Prop in keyof T as string extends Prop ? never : number extends Prop ? never : Prop]: T[Prop]
   };
+
+  // Represents a key of a certain type
   type KeyOf<T> = keyof T;
 
+  // Represents a gsap animation
   type gsapAnim = gsap.core.Tween | gsap.core.Timeline;
 
-  // Generic Blades Document Type
+  // Represents a generic Blades document
   type BladesDoc = BladesActor | BladesItem;
 
-  // Reference Types for Blades Documents
+  // Represents a reference to a Blades document
   type DocRef = string | BladesDoc;
+
+  // Represents a reference to a Blades actor
   type ActorRef = string | BladesActor;
+
+  // Represents a reference to a Blades item
   type ItemRef = string | BladesItem;
 
   // Utility Types for Variable Template Values

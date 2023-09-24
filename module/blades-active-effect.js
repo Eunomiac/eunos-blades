@@ -48,13 +48,13 @@ const CUSTOMFUNCS = {
     APPLYTOCOHORTS: async () => undefined,
     remItem: async (actor, funcData, _, isReversing = false) => {
         function testString(targetString, testDef) {
-            if (/^rX/.test(testDef)) {
+            if (testDef.startsWith("rX")) {
                 const pat = new RegExp(testDef.replace(/^rX:\/(.*?)\//, "$1"));
                 return pat.test(targetString);
             }
             return targetString === testDef;
         }
-        if (/^{/.test(funcData)) {
+        if (funcData.startsWith("{")) {
             if (isReversing) {
                 console.error("Cannot reverse a 'remItem' custom effect that was defined with a JSON object.");
                 return undefined;
@@ -126,6 +126,9 @@ class BladesActiveEffect extends ActiveEffect {
                 }
                 else if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
                     const changeKey = U.pullElement(effect.changes, (change) => change.key === "APPLYTOMEMBERS");
+                    if (!changeKey) {
+                        return;
+                    }
                     if (effect.parent.members.length > 0) {
                         await Promise.all(effect.parent.members.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect.toJSON()])));
                     }
@@ -147,7 +150,7 @@ class BladesActiveEffect extends ActiveEffect {
                 });
                 await effect.updateSource({ changes: effect.changes.filter((change) => change.key === "APPLYTOCOHORTS") });
             }
-            const [permChanges, changes] = U.partition(effect.changes, (change) => /^perm/.test(change.key));
+            const [permChanges, changes] = U.partition(effect.changes, (change) => change.key.startsWith("perm"));
             await effect.updateSource({ changes });
             for (const permChange of permChanges) {
                 const { key, value } = permChange;
