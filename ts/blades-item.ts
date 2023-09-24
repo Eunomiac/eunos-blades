@@ -1,6 +1,6 @@
 import C, {BladesActorType, BladesItemType, Tag, Factor} from "./core/constants.js";
 import U from "./core/utilities.js";
-import {BladesActor, BladesCrew} from "./documents/blades-actor-proxy.js";
+import {BladesActor} from "./documents/blades-actor-proxy.js";
 import {BladesRollMod} from "./blades-roll-collab.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
@@ -139,9 +139,8 @@ class BladesItem extends Item implements BladesDocument<Item>,
         }
         return 0;
       }
-      // no default
+      default: return 0;
     }
-    return 0;
   }
   // #endregion
   // #region BladesItemDocument Implementation
@@ -173,7 +172,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
     const factors = factorsMap[this.type];
 
     const factorData: Partial<Record<Factor,BladesRollCollab.FactorData>> = {};
-    factors!.forEach((factor, i) => {
+    (factors ?? []).forEach((factor, i) => {
       const factorTotal = this.getFactorTotal(factor);
       factorData[factor] = {
         name: factor,
@@ -200,11 +199,10 @@ class BladesItem extends Item implements BladesDocument<Item>,
   get rollPrimaryImg() { return this.img }
 
   get rollModsData(): BladesRollCollab.RollModData[] {
-    const rollModData = BladesRollMod.ParseDocRollMods(this);
-
+    // const rollModData = BladesRollMod.ParseDocRollMods(this);
     // Add roll mods from COHORT harm
 
-    return rollModData;
+    return BladesRollMod.ParseDocRollMods(this);
   }
 
   // #endregion
@@ -212,8 +210,8 @@ class BladesItem extends Item implements BladesDocument<Item>,
   // #region BladesRollCollab.OppositionDoc Implementation
   get rollOppID() { return this.id }
   get rollOppDoc() { return this }
-  get rollOppImg() { return this.img! }
-  get rollOppName() { return this.name! }
+  get rollOppImg() { return this.img }
+  get rollOppName() { return this.name }
   get rollOppSubName() { return "" }
   get rollOppType() { return this.type }
 
@@ -223,8 +221,8 @@ class BladesItem extends Item implements BladesDocument<Item>,
   // #region BladesRollCollab.ParticipantDoc Implementation
   get rollParticipantID() { return this.id }
   get rollParticipantDoc() { return this }
-  get rollParticipantIcon() { return this.img! }
-  get rollParticipantName() { return this.name! }
+  get rollParticipantIcon() { return this.img }
+  get rollParticipantName() { return this.name }
   get rollParticipantType() { return this.type }
 
   get rollParticipantModsData(): BladesRollCollab.RollModData[] { return [] }
@@ -250,7 +248,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
     const subtypes = U.unique(Object.values(system.subtypes)
       .map((subtype) => subtype.trim())
       .filter((subtype) => /[A-Za-z]/.test(subtype)));
-    const elite_subtypes = U.unique([
+    const eliteSubtypes = U.unique([
       ...Object.values(system.elite_subtypes),
       ...(this.parent?.upgrades ?? [])
         .filter((upgrade) => /^Elite/.test(upgrade.name ?? ""))
@@ -260,7 +258,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
       .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
 
     system.subtypes = Object.fromEntries(subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
-    system.elite_subtypes = Object.fromEntries(elite_subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
+    system.elite_subtypes = Object.fromEntries(eliteSubtypes.map((subtype, i) => [`${i + 1}`, subtype]));
     system.edges = Object.fromEntries(Object.values(system.edges ?? [])
       .filter((edge) => /[A-Za-z]/.test(edge))
       .map((edge, i) => [`${i + 1}`, edge.trim()]));
@@ -271,7 +269,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
     system.quality = this.getFactorTotal(Factor.quality);
 
     if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
-      if ([...subtypes, ...elite_subtypes].includes(Tag.GangType.Vehicle)) {
+      if ([...subtypes, ...eliteSubtypes].includes(Tag.GangType.Vehicle)) {
         system.scale = this.getFactorTotal(Factor.scale);
         system.scaleExample = "(1 vehicle)";
       } else {
@@ -280,22 +278,22 @@ class BladesItem extends Item implements BladesDocument<Item>,
         system.scaleExample = C.ScaleExamples[scaleIndex];
         system.subtitle = C.ScaleSizes[scaleIndex];
       }
-      if (subtypes.length + elite_subtypes.length === 0) {
+      if (subtypes.length + eliteSubtypes.length === 0) {
         system.subtitle = system.subtitle.replace(/\s+of\b/g, "").trim();
       }
     } else {
       system.scale = 0;
-      system.scaleExample = [...subtypes, ...elite_subtypes].includes("Pet") ? "(1 animal)" : "(1 person)";
+      system.scaleExample = [...subtypes, ...eliteSubtypes].includes("Pet") ? "(1 animal)" : "(1 person)";
       system.subtitle = "An Expert";
     }
 
-    if (subtypes.length + elite_subtypes.length > 0) {
-      if ([...subtypes, ...elite_subtypes].includes(Tag.GangType.Vehicle)) {
+    if (subtypes.length + eliteSubtypes.length > 0) {
+      if ([...subtypes, ...eliteSubtypes].includes(Tag.GangType.Vehicle)) {
         system.subtitle = C.VehicleDescriptors[Math.min(6, this.getFactorTotal(Factor.tier))];
       } else {
         system.subtitle += ` ${U.oxfordize([
-          ...subtypes.filter((subtype) => !elite_subtypes.includes(subtype)),
-          ...elite_subtypes.map((subtype) => `Elite ${subtype}`)
+          ...subtypes.filter((subtype) => !eliteSubtypes.includes(subtype)),
+          ...eliteSubtypes.map((subtype) => `Elite ${subtype}`)
         ], false, "&")}`;
       }
     }
@@ -310,13 +308,13 @@ class BladesItem extends Item implements BladesDocument<Item>,
     if (!BladesItem.IsType(this, BladesItemType.playbook, BladesItemType.crew_playbook)) { return }
     const expClueData: Record<string,string> = {};
     [...Object.values(system.experience_clues).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue });
-    system.experience_clues = expClueData as any;
+    system.experience_clues = expClueData;
     eLog.checkLog3("experienceClues", {expClueData});
 
     if (BladesItem.IsType(this, BladesItemType.playbook)) {
       const gatherInfoData: Record<string,string> = {};
-      [...Object.values((<ExtractBladesItemSystem<BladesItemType.playbook>>system).gather_info_questions).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question });
-      (<ExtractBladesItemSystem<BladesItemType.playbook>>system).gather_info_questions = gatherInfoData as any;
+      [...Object.values(system.gather_info_questions).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question });
+      system.gather_info_questions = gatherInfoData;
       eLog.checkLog3("gatherInfoQuestions", {gatherInfoData});
 
     }

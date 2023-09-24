@@ -87,8 +87,8 @@ class BladesActor extends Actor {
                 }
                 return 0;
             }
+            default: return 0;
         }
-        return 0;
     }
     get subActors() {
         return Object.keys(this.system.subactors)
@@ -99,7 +99,7 @@ class BladesActor extends Actor {
     get archivedSubActors() { return this.subActors.filter((subActor) => subActor.hasTag(Tag.System.Archived)); }
     checkActorPrereqs(actor) {
                 
-        return actor && true;
+        return Boolean(actor);
     }
     processEmbeddedActorMatches(globalActors) {
         return globalActors
@@ -191,7 +191,7 @@ class BladesActor extends Actor {
         const uniqueTags = focusSubActor.tags.filter((tag) => tag in BladesActorUniqueTags);
         if (uniqueTags.length > 0) {
             uniqueTags.forEach((uTag) => this.activeSubActors
-                .filter((subActor) => subActor.id !== focusSubActor.id && subActor.hasTag(uTag))
+                .filter((subActor) => Boolean(focusSubActor?.id && subActor.id !== focusSubActor.id && subActor.hasTag(uTag)))
                 .map((subActor) => this.remSubActor(subActor.id)));
         }
     }
@@ -215,9 +215,8 @@ class BladesActor extends Actor {
         }
         return actor?.id ? actor.id in this.system.subactors : false;
     }
-    
-    async updateSubActor(actorRef, updateData) {
-        updateData = U.objExpand(updateData);
+    async updateSubActor(actorRef, upData) {
+        const updateData = U.objExpand(upData);
         if (!updateData.system) {
             return undefined;
         }
@@ -234,7 +233,6 @@ class BladesActor extends Actor {
             .then(() => this.update({ [`system.subactors.${actor.id}`]: mergedSubActorSystem }, undefined, true))
             .then(() => actor.sheet?.render());
     }
-    
     async remSubActor(actorRef) {
         const subActor = this.getSubActor(actorRef);
         if (!subActor) {
@@ -282,7 +280,7 @@ class BladesActor extends Actor {
                             .filter((i) => !hitRecord[pType]?.includes(i.id))
                             .find((i) => i.system.world_name === pString);
                         if (thisItem) {
-                            hitRecord[pType].push(thisItem.id);
+                            hitRecord[pType]?.push(thisItem.id);
                         }
                         else {
                             return false;
@@ -294,7 +292,7 @@ class BladesActor extends Actor {
                             .filter((i) => !hitRecord[pType]?.includes(i.id))
                             .find((i) => i.hasTag(pString));
                         if (thisItem) {
-                            hitRecord[pType].push(thisItem.id);
+                            hitRecord[pType]?.push(thisItem.id);
                         }
                         else {
                             return false;
@@ -308,7 +306,9 @@ class BladesActor extends Actor {
                         if (!this.playbookName || ![Playbook.Ghost, Playbook.Hull, Playbook.Vampire].includes(this.playbookName)) {
                             return false;
                         }
+                        break;
                     }
+                    default: break;
                 }
             }
         }
@@ -317,9 +317,7 @@ class BladesActor extends Actor {
     _processEmbeddedItemMatches(globalItems) {
         return globalItems
             .filter((item) => this._checkItemPrereqs(item))
-            .filter((gItem) => {
-            return gItem.hasTag(Tag.System.MultiplesOK) || (gItem.system.max_per_score ?? 1) > this.activeSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name).length;
-        })
+            .filter((gItem) => gItem.hasTag(Tag.System.MultiplesOK) || (gItem.system.max_per_score ?? 1) > this.activeSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name).length)
             .map((gItem) => {
             const matchingSubItems = this.archivedSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name);
             if (matchingSubItems.length > 0) {
@@ -535,8 +533,8 @@ class BladesActor extends Actor {
                 dialogData.General = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, Tag.Gear.General));
                 return dialogData;
             }
+            default: return dialogData;
         }
-        return dialogData;
     }
     getSubItem(itemRef, activeOnly = false) {
         const activeCheck = (i) => !activeOnly || !i.hasTag(Tag.System.Archived);
@@ -573,7 +571,6 @@ class BladesActor extends Actor {
         return Boolean(this.items.find((i) => !i.hasTag(Tag.System.Archived) && i.system.world_name === item.system.world_name));
     }
     async addSubItem(itemRef) {
-        eLog.checkLog3("subitems", "[addSubItem] itemRef", itemRef);
         let BladesItemUniqueTypes;
         (function (BladesItemUniqueTypes) {
             BladesItemUniqueTypes["background"] = "background";
@@ -584,6 +581,10 @@ class BladesActor extends Actor {
             BladesItemUniqueTypes["playbook"] = "playbook";
             BladesItemUniqueTypes["preferred_op"] = "preferred_op";
         })(BladesItemUniqueTypes || (BladesItemUniqueTypes = {}));
+        function isBladesItemUniqueTypes(type) {
+            return Object.values(BladesItemUniqueTypes).includes(type);
+        }
+        eLog.checkLog3("subitems", "[addSubItem] itemRef", itemRef);
         let focusItem;
         const embeddedItem = this.getSubItem(itemRef);
         if (embeddedItem) {
@@ -605,19 +606,10 @@ class BladesActor extends Actor {
             }
             focusItem = await BladesItem.create([globalItem], { parent: this });
             focusItem = this.items.getName(globalItem.name);
-            eLog.checkLog3("subitems", `[addSubItem] ... NEWLY EMBEDDED, focusItem '${focusItem.id}'`, focusItem);
         }
-        if (!focusItem) {
-            return;
-        }
-        eLog.checkLog3("subitems", `[addSubItem] Checking Uniqueness of '${focusItem.id}'`, {
-            BladesItemUniqueTypes: Object.values(BladesItemUniqueTypes),
-            focusItemType: focusItem.type,
-            isLimited: Object.values(BladesItemUniqueTypes).includes(focusItem.type)
-        });
-        if (Object.values(BladesItemUniqueTypes).includes(focusItem.type)) {
+        if (focusItem && isBladesItemUniqueTypes(focusItem.type)) {
             await Promise.all(this.activeSubItems
-                .filter((subItem) => subItem.type === focusItem.type && subItem.system.world_name !== focusItem.system.world_name && !subItem.hasTag(Tag.System.Archived))
+                .filter((subItem) => subItem.type === focusItem?.type && subItem.system.world_name !== focusItem?.system.world_name && !subItem.hasTag(Tag.System.Archived))
                 .map(this.remSubItem.bind(this)));
         }
     }
@@ -656,9 +648,11 @@ class BladesActor extends Actor {
             : allowedTypes;
         const newCount = this.system.advancement_points?.[aPtKey] ?? 0 - amount;
         if (newCount <= 0 && aPtKey in (this.system.advancement_points ?? [])) {
-            return this.update({ [`system.advancement_points.-=${aPtKey}`]: null });
+            this.update({ [`system.advancement_points.-=${aPtKey}`]: null });
         }
-        return this.update({ [`system.advancement_points.${aPtKey}`]: newCount });
+        else {
+            this.update({ [`system.advancement_points.${aPtKey}`]: newCount });
+        }
     }
     getAvailableAdvancements(trait) {
         if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)) {
@@ -711,28 +705,28 @@ class BladesActor extends Actor {
     get canPurchaseCohortType() { return this.availableCohortTypePoints > 0; }
     async advancePlaybook() {
         if (!(BladesActor.IsType(this, BladesActorType.pc) || BladesActor.IsType(this, BladesActorType.crew)) || !this.playbook) {
-            return undefined;
+            return;
         }
         await this.update({ "system.experience.playbook.value": 0 });
         if (BladesActor.IsType(this, BladesActorType.pc)) {
-            game.eunoblades.PushController.pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`);
-            return this.grantAdvancementPoints(AdvancementPoint.Ability);
+            game.eunoblades.PushController?.pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`);
+            this.grantAdvancementPoints(AdvancementPoint.Ability);
+            return;
         }
         if (BladesActor.IsType(this, BladesActorType.crew)) {
-            game.eunoblades.PushController.pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.");
+            game.eunoblades.PushController?.pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.");
             this.members.forEach((member) => {
                 const coinGained = this.system.tier.value + 2;
-                game.eunoblades.PushController.pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, undefined);
+                game.eunoblades.PushController?.pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, undefined);
                 member.addStash(coinGained);
             });
-            return this.grantAdvancementPoints(AdvancementPoint.UpgradeOrAbility, 2);
+            this.grantAdvancementPoints(AdvancementPoint.UpgradeOrAbility, 2);
         }
-        return undefined;
     }
     async advanceAttribute(attribute) {
         await this.update({ [`system.experience.${attribute}.value`]: 0 });
         const actions = C.Action[attribute].map((action) => `<strong>${U.tCase(action)}</strong>`);
-        game.eunoblades.PushController.pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`);
+        game.eunoblades.PushController?.pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`);
     }
     parentActor;
     get isSubActor() { return this.parentActor !== undefined; }
@@ -846,20 +840,22 @@ class BladesActor extends Actor {
                     .then(() => this.sheet?.render(false));
             }
         }
-        else if (BladesActor.IsType(this, BladesActorType.npc) || BladesActor.IsType(this, BladesActorType.faction)) {
-            if (this.parentActor && !isSkippingSubActorCheck) {
-                return this.parentActor.updateSubActor(this.id, updateData);
-            }
+        else if ((BladesActor.IsType(this, BladesActorType.npc)
+            || BladesActor.IsType(this, BladesActorType.faction))
+            && this.parentActor
+            && !isSkippingSubActorCheck) {
+            return this.parentActor.updateSubActor(this.id, updateData)
+                .then(() => this);
         }
         return super.update(updateData, context);
     }
     
-    rollAttributePopup(attribute_name) {
-        const attribute_label = U.tCase(attribute_name);
+    rollAttributePopup(attributeName) {
+        const attributeLabel = U.tCase(attributeName);
         const MIN_DICE_MOD = -3;
         const MAX_DICE_MOD = 3;
         let content = `
-        <h2>${game.i18n.localize("BITD.Roll")} ${attribute_label}</h2>
+        <h2>${game.i18n.localize("BITD.Roll")} ${attributeLabel}</h2>
         <form>
           <div class="form-group">
             <label>${game.i18n.localize("BITD.Modifier")}:</label>
@@ -867,7 +863,7 @@ class BladesActor extends Actor {
               ${this.createListOfDiceMods(MIN_DICE_MOD, MAX_DICE_MOD, 0)}
             </select>
           </div>`;
-        if ([...Object.keys(Attribute), ...Object.keys(Action)].includes(attribute_name)) {
+        if ([...Object.keys(Attribute), ...Object.keys(Action)].includes(attributeName)) {
             content += `
             <div class="form-group">
               <label>${game.i18n.localize("BITD.Position")}:</label>
@@ -899,8 +895,8 @@ class BladesActor extends Actor {
         </form>
       `;
         new Dialog({
-            "title": `${game.i18n.localize("BITD.Roll")} ${attribute_label}`,
-            "content": content,
+            "title": `${game.i18n.localize("BITD.Roll")} ${attributeLabel}`,
+            content,
             "buttons": {
                 yes: {
                     icon: "<i class='fas fa-check'></i>",
@@ -913,7 +909,7 @@ class BladesActor extends Actor {
                         const position = `${html.find('[name="pos"]').attr("value") ?? Position.risky}`;
                         const effect = `${html.find('[name="fx"]').attr("value") ?? Effect.standard}`;
                         const note = `${html.find('[name="note"]').attr("value") ?? 0}`;
-                        await this.rollAttribute(attribute_name, modifier, position, effect, note);
+                        await this.rollAttribute(attributeName, modifier, position, effect, note);
                     }
                 },
                 no: {
@@ -924,11 +920,11 @@ class BladesActor extends Actor {
             "default": "yes"
         }).render(true);
     }
-    async rollAttribute(attribute_name, additional_dice_amount = 0, position = Position.risky, effect = Effect.standard, note) {
+    async rollAttribute(attributeName, additionalDiceAmount = 0, position = Position.risky, effect = Effect.standard, note) {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return;
         }
-        bladesRoll(this.rollable[attribute_name] + additional_dice_amount, attribute_name, position, effect, note);
+        bladesRoll(this.rollable[attributeName] + additionalDiceAmount, attributeName, position, effect, note);
     }
         createListOfDiceMods(rs, re, s) {
         let text = "";

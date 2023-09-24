@@ -52,8 +52,8 @@ declare global {
 
     export interface playbook {
       concept: string,
-      experience_clues: string[],
-      gather_info_questions: string[]
+      experience_clues: Record<string,string>,
+      gather_info_questions: Record<string,string>
     }
 
     export interface answers { answers: Record<"a" | "b" | "c" | "d", string> }

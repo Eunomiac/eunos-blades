@@ -24,7 +24,7 @@ import BladesSelectorDialog from "./blades-dialog.js";
 import BladesActiveEffect from "./blades-active-effect.js";
 import BladesTrackerSheet from "./sheets/item/blades-tracker-sheet.js";
 import BladesClockKeeperSheet from "./sheets/item/blades-clock-keeper-sheet.js";
-import {UpdateClaims, UpdateContacts, UpdateOps} from "./data-import/data-import.js";
+import {updateClaims, updateContacts, updateOps, updateFactions} from "./data-import/data-import.js";
 
 CONFIG.debug.logging = false;
 /*DEVCODE*/CONFIG.debug.logging = true; /*!DEVCODE*/
@@ -37,9 +37,10 @@ registerDebugger();
 /*DEVCODE*/Object.assign(
   globalThis,
   {
-    UpdateClaims,
-    UpdateContacts,
-    UpdateOps,
+    updateClaims,
+    updateContacts,
+    updateOps,
+    updateFactions,
     BladesActor,
     BladesPCSheet,
     BladesCrewSheet,
@@ -75,8 +76,8 @@ Hooks.once("init", async () => {
   // Initialize Fonts & Gsap Animations
   GsapInitialize();
 
-  CONFIG.Item.documentClass = BladesItemProxy as any;
-  CONFIG.Actor.documentClass = BladesActorProxy as any;
+  CONFIG.Item.documentClass = BladesItemProxy as unknown as typeof Item;
+  CONFIG.Actor.documentClass = BladesActorProxy as unknown as typeof Actor;
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
@@ -140,21 +141,25 @@ Hooks.once("socketlib.ready", () => {
 // #endregion ░░░░[SocketLib]░░░░
 
 // #region ░░░░░░░[Roll Controller]░░░░ Add Dice Roller to Scene Control Sidebar ░░░░░░░ ~
-Hooks.once("renderSceneControls", async (app: unknown, html: JQuery<HTMLElement>) => {
-  const dice_roller = $('<li class="scene-control" title="Dice Roll"><i class="fas fa-dice"></i></li>');
-  dice_roller.click(async () => {
+Hooks.once("renderSceneControls", async (_: unknown, html: JQuery<HTMLElement>): Promise<void> => {
+  const diceRoller = $('<li class="scene-control" title="Dice Roll"><i class="fas fa-dice"></i></li>');
+  diceRoller.click(async () => {
     await simpleRollPopup();
   });
-  if (!foundry.utils.isNewerVersion("9", game.version ?? game.data.version)) {
-    html.children().first().append(dice_roller);
+  if (!foundry.utils.isNewerVersion("9", game.version)) {
+    html.children().first().append(diceRoller);
   } else {
-    html.append(dice_roller);
+    html.append(diceRoller);
   }
 });
 // #endregion ░░░░[Dice Roll Controller]░░░░
 
 // #region ░░░░░░░[Dice So Nice]░░░░ Dice So Nice Integration ░░░░░░░ ~
-Hooks.once("diceSoNiceReady", (dice3d: Record<any, any>) => {
+type Dice3DController = {
+  addSystem: (data: {id: string, name: string}, status: string) => void,
+  addDicePreset: (data: {type: string, labels: string[], system: string, bumpMaps: string[], emissiveMaps: Array<string|undefined>, emissive: string}) => void
+};
+Hooks.once("diceSoNiceReady", (dice3d: Dice3DController) => {
   dice3d.addSystem({id: "eunos-blades", name: "Euno's Blades"}, "preferred");
   dice3d.addDicePreset({
     type: "d6",

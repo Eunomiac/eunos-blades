@@ -177,8 +177,8 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   }
 
   async addStash(amount: number): Promise<void> {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined }
-    return this.update({"system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max)});
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return }
+    this.update({"system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max)});
   }
   // #endregion
 
@@ -247,7 +247,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
         });
       }
     });
-    const {one: harmCondition} = Object.values(this.system.harm!).find((harmData) => /Need Help/.test(harmData.effect)) ?? {};
+    const {one: harmCondition} = Object.values(this.system.harm).find((harmData) => /Need Help/.test(harmData.effect)) ?? {};
     if (harmCondition && harmCondition.trim() !== "") {
       rollModsData.push({
         id: "Push-negative-roll",
@@ -276,7 +276,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   get rollParticipantID() { return this.id }
   get rollParticipantDoc() { return this }
-  get rollParticipantIcon() { return this.playbook?.img ?? this.img! }
+  get rollParticipantIcon() { return this.playbook?.img ?? this.img }
   get rollParticipantName() { return this.name ?? "" }
   get rollParticipantType() { return this.type }
   get rollParticipantModsData(): BladesRollCollab.RollModData[] { return [] }

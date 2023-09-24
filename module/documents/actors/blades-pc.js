@@ -180,9 +180,9 @@ class BladesPC extends BladesActor {
     }
     async addStash(amount) {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
-            return undefined;
+            return;
         }
-        return this.update({ "system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max) });
+        this.update({ "system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max) });
     }
     get rollFactors() {
         const factorData = {

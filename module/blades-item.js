@@ -126,8 +126,8 @@ class BladesItem extends Item {
                 }
                 return 0;
             }
+            default: return 0;
         }
-        return 0;
     }
     
     async archive() {
@@ -154,7 +154,7 @@ class BladesItem extends Item {
         }
         const factors = factorsMap[this.type];
         const factorData = {};
-        factors.forEach((factor, i) => {
+        (factors ?? []).forEach((factor, i) => {
             const factorTotal = this.getFactorTotal(factor);
             factorData[factor] = {
                 name: factor,
@@ -178,9 +178,8 @@ class BladesItem extends Item {
     get rollPrimaryType() { return this.type; }
     get rollPrimaryImg() { return this.img; }
     get rollModsData() {
-        const rollModData = BladesRollMod.ParseDocRollMods(this);
         
-        return rollModData;
+        return BladesRollMod.ParseDocRollMods(this);
     }
     
     get rollOppID() { return this.id; }
@@ -221,7 +220,7 @@ class BladesItem extends Item {
         const subtypes = U.unique(Object.values(system.subtypes)
             .map((subtype) => subtype.trim())
             .filter((subtype) => /[A-Za-z]/.test(subtype)));
-        const elite_subtypes = U.unique([
+        const eliteSubtypes = U.unique([
             ...Object.values(system.elite_subtypes),
             ...(this.parent?.upgrades ?? [])
                 .filter((upgrade) => /^Elite/.test(upgrade.name ?? ""))
@@ -230,7 +229,7 @@ class BladesItem extends Item {
             .map((subtype) => subtype.trim())
             .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
         system.subtypes = Object.fromEntries(subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
-        system.elite_subtypes = Object.fromEntries(elite_subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
+        system.elite_subtypes = Object.fromEntries(eliteSubtypes.map((subtype, i) => [`${i + 1}`, subtype]));
         system.edges = Object.fromEntries(Object.values(system.edges ?? [])
             .filter((edge) => /[A-Za-z]/.test(edge))
             .map((edge, i) => [`${i + 1}`, edge.trim()]));
@@ -239,7 +238,7 @@ class BladesItem extends Item {
             .map((flaw, i) => [`${i + 1}`, flaw.trim()]));
         system.quality = this.getFactorTotal(Factor.quality);
         if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
-            if ([...subtypes, ...elite_subtypes].includes(Tag.GangType.Vehicle)) {
+            if ([...subtypes, ...eliteSubtypes].includes(Tag.GangType.Vehicle)) {
                 system.scale = this.getFactorTotal(Factor.scale);
                 system.scaleExample = "(1 vehicle)";
             }
@@ -249,23 +248,23 @@ class BladesItem extends Item {
                 system.scaleExample = C.ScaleExamples[scaleIndex];
                 system.subtitle = C.ScaleSizes[scaleIndex];
             }
-            if (subtypes.length + elite_subtypes.length === 0) {
+            if (subtypes.length + eliteSubtypes.length === 0) {
                 system.subtitle = system.subtitle.replace(/\s+of\b/g, "").trim();
             }
         }
         else {
             system.scale = 0;
-            system.scaleExample = [...subtypes, ...elite_subtypes].includes("Pet") ? "(1 animal)" : "(1 person)";
+            system.scaleExample = [...subtypes, ...eliteSubtypes].includes("Pet") ? "(1 animal)" : "(1 person)";
             system.subtitle = "An Expert";
         }
-        if (subtypes.length + elite_subtypes.length > 0) {
-            if ([...subtypes, ...elite_subtypes].includes(Tag.GangType.Vehicle)) {
+        if (subtypes.length + eliteSubtypes.length > 0) {
+            if ([...subtypes, ...eliteSubtypes].includes(Tag.GangType.Vehicle)) {
                 system.subtitle = C.VehicleDescriptors[Math.min(6, this.getFactorTotal(Factor.tier))];
             }
             else {
                 system.subtitle += ` ${U.oxfordize([
-                    ...subtypes.filter((subtype) => !elite_subtypes.includes(subtype)),
-                    ...elite_subtypes.map((subtype) => `Elite ${subtype}`)
+                    ...subtypes.filter((subtype) => !eliteSubtypes.includes(subtype)),
+                    ...eliteSubtypes.map((subtype) => `Elite ${subtype}`)
                 ], false, "&")}`;
             }
         }

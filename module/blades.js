@@ -26,16 +26,17 @@ import BladesSelectorDialog from "./blades-dialog.js";
 import BladesActiveEffect from "./blades-active-effect.js";
 import BladesTrackerSheet from "./sheets/item/blades-tracker-sheet.js";
 import BladesClockKeeperSheet from "./sheets/item/blades-clock-keeper-sheet.js";
-import { UpdateClaims, UpdateContacts, UpdateOps } from "./data-import/data-import.js";
+import { updateClaims, updateContacts, updateOps, updateFactions } from "./data-import/data-import.js";
 CONFIG.debug.logging = false;
 CONFIG.debug.logging = true; 
 let socket;
 registerDebugger();
 
 Object.assign(globalThis, {
-    UpdateClaims,
-    UpdateContacts,
-    UpdateOps,
+    updateClaims,
+    updateContacts,
+    updateOps,
+    updateFactions,
     BladesActor,
     BladesPCSheet,
     BladesCrewSheet,
@@ -109,19 +110,18 @@ Hooks.once("socketlib.ready", () => {
     InitOverlaySockets();
 });
 
-Hooks.once("renderSceneControls", async (app, html) => {
-    const dice_roller = $('<li class="scene-control" title="Dice Roll"><i class="fas fa-dice"></i></li>');
-    dice_roller.click(async () => {
+Hooks.once("renderSceneControls", async (_, html) => {
+    const diceRoller = $('<li class="scene-control" title="Dice Roll"><i class="fas fa-dice"></i></li>');
+    diceRoller.click(async () => {
         await simpleRollPopup();
     });
-    if (!foundry.utils.isNewerVersion("9", game.version ?? game.data.version)) {
-        html.children().first().append(dice_roller);
+    if (!foundry.utils.isNewerVersion("9", game.version)) {
+        html.children().first().append(diceRoller);
     }
     else {
-        html.append(dice_roller);
+        html.append(diceRoller);
     }
 });
-
 Hooks.once("diceSoNiceReady", (dice3d) => {
     dice3d.addSystem({ id: "eunos-blades", name: "Euno's Blades" }, "preferred");
     dice3d.addDicePreset({

@@ -22,21 +22,22 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, effect:
   },
   addIfChargen: async (actor, funcData, effect, isReversing = false) => {
     eLog.checkLog("activeEffects", "addIfChargen", {actor, funcData, isReversing});
-    if (!isReversing && game.eunoblades.Tracker!.system.phase !== BladesPhase.CharGen) { return undefined }
+    if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return }
     const [target, qty] = funcData.split(/:/);
     if (isReversing) {
-      return actor.update({[target]: U.pInt(getProperty(actor, target)) - U.pInt(qty)});
+      actor.update({[target]: U.pInt(getProperty(actor, target)) - U.pInt(qty)});
+      return;
     }
-    return actor.update({[target]: U.pInt(getProperty(actor, target)) + U.pInt(qty)});
+    actor.update({[target]: U.pInt(getProperty(actor, target)) + U.pInt(qty)});
   },
   upgradeIfChargen: async (actor, funcData, effect, isReversing = false) => {
     eLog.checkLog("activeEffects", "upgradeIfChargen", {actor, funcData, isReversing});
-    if (!isReversing && game.eunoblades.Tracker!.system.phase !== BladesPhase.CharGen) { return undefined }
+    if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return }
     const [target, qty] = funcData.split(/:/);
     if (getProperty(actor, target) < U.pInt(qty)) {
-      return actor.update({[target]: U.pInt(qty)});
+      actor.update({[target]: U.pInt(qty)});
+      return;
     }
-    return undefined;
   },
   APPLYTOMEMBERS: async () => { return undefined },
   APPLYTOCOHORTS: async () => { return undefined },
