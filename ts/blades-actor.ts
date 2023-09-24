@@ -967,7 +967,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
             if (html instanceof HTMLElement) {
               html = $(html);
             }
-            const modifier = parseInt(`${html.find('[name="mod"]').attr("value") ?? 0}`);
+            const modifier = parseInt(`${html.find('[name="mod"]').attr("value") ?? 0}`, 10);
             const position: Position = `${html.find('[name="pos"]').attr("value") ?? Position.risky}` as Position;
             const effect: Effect = `${html.find('[name="fx"]').attr("value") ?? Effect.standard}` as Effect;
             const note = `${html.find('[name="note"]').attr("value") ?? 0}`;
