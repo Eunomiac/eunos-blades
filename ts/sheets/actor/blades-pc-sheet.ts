@@ -30,12 +30,7 @@ class BladesPCSheet extends BladesSheet {
           // Dropping a Crew onto a PC Sheet: Add
           parentActor.addSubActor(doc);
         }
-      } // else if (doc instanceof BladesItem) {
-      // parentActor.addSubItem(doc);
-      // BladesItem.create(doc as {name: string, type: BladesItemType}, {parent: parentActor});
-      // return;
-      // }
-      // return false;
+      }
     });
     return loadTemplates([
       "systems/eunos-blades/templates/items/clock_keeper-sheet.hbs",

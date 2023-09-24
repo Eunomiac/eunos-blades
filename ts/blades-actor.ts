@@ -19,10 +19,8 @@ import type {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt
 // #endregion
 
 
-// https://foundryvtt.wiki/en/development/guides/polymorphism-actors-items
 // Blades Theme Song: "Bangkok" from The Gray Man soundtrack: https://www.youtube.com/watch?v=cjjImvMqYlo&list=OLAK5uy_k9cZDd1Fbpd25jfDtte5A6HyauD2-cwgk&index=2
-// Add "coin" item to general items --> equals 1 Coin worth of value, carried, and has Load 1.
-
+// Also check out Discord thread: https://discord.com/channels/325094888133885952/1152316839163068527
 
 class BladesActor extends Actor implements BladesDocument<Actor> {
 
@@ -128,7 +126,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
     /* Implement any prerequisite checks for embedding actors */
 
-    return true;
+    return actor && true;
   }
   private processEmbeddedActorMatches(globalActors: BladesActor[]) {
 
@@ -327,8 +325,8 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
         switch (pType) {
           case PrereqType.HasActiveItem: {
             const thisItem = this.activeSubItems
-              .filter((item) => !hitRecord[<PrereqType>pType]?.includes(item.id!))
-              .find((item) => item.system.world_name === pString);
+              .filter((i) => !hitRecord[<PrereqType>pType]?.includes(i.id!))
+              .find((i) => i.system.world_name === pString);
             if (thisItem) {
               hitRecord[<PrereqType>pType]!.push(thisItem.id!);
             } else {
@@ -338,8 +336,8 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
           }
           case PrereqType.HasActiveItemsByTag: {
             const thisItem = this.activeSubItems
-              .filter((item) => !hitRecord[<PrereqType>pType]?.includes(item.id!))
-              .find((item) => item.hasTag(pString as BladesTag));
+              .filter((i) => !hitRecord[<PrereqType>pType]?.includes(i.id!))
+              .find((i) => i.hasTag(pString as BladesTag));
             if (thisItem) {
               hitRecord[<PrereqType>pType]!.push(thisItem.id!);
             } else {
@@ -551,12 +549,20 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   }
 
   getSubItem(itemRef: ItemRef, activeOnly = false): BladesItem | undefined {
+    const activeCheck = (i: BladesItem) => !activeOnly || !i.hasTag(Tag.System.Archived);
     if (typeof itemRef === "string" && this.items.get(itemRef)) {
-      return this.items.get(itemRef);
+      const returnItem = this.items.get(itemRef);
+      if (returnItem && activeCheck(returnItem)) {
+        return returnItem;
+      } else {
+        return undefined;
+      }
+    } else {
+      const globalItem = BladesItem.Get(itemRef);
+      if (!globalItem) { return undefined }
+      return this.items.find((item) => item.name === globalItem.name && activeCheck(item))
+        ?? this.items.find((item) => item.system.world_name === globalItem.system.world_name && activeCheck(item));
     }
-    const globalItem = BladesItem.Get(itemRef);
-    if (!globalItem) { return undefined }
-    return this.items.find((item) => item.name === globalItem.name) ?? this.items.find((item) => item.system.world_name === globalItem.system.world_name);
   }
 
   hasSubItemOf(itemRef: ItemRef): boolean {
@@ -813,7 +819,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
   getTaggedItemBonuses(tags: BladesTag[]): number {
     // Check ACTIVE EFFECTS supplied by upgrade/ability against submitted tags?
-    return 0;
+    return tags.length; // Placeholder to avoid linter error
   }
   // #endregion
 
@@ -821,8 +827,6 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   override prepareDerivedData() {
     if (BladesActor.IsType(this, BladesActorType.pc)) { this._preparePCData(this.system) }
     if (BladesActor.IsType(this, BladesActorType.crew)) { this._prepareCrewData(this.system) }
-    if (BladesActor.IsType(this, BladesActorType.npc)) { this._prepareNPCData(this.system) }
-    if (BladesActor.IsType(this, BladesActorType.faction)) { this._prepareFactionData(this.system) }
   }
 
   _preparePCData(system: ExtractBladesActorSystem<BladesActorType.pc>) {
@@ -846,14 +850,6 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       system.experience.clues = [...system.experience.clues, ...Object.values(this.playbook.system.experience_clues).filter((clue) => Boolean(clue.trim()))];
       system.turfs = this.playbook.system.turfs;
     }
-  }
-
-  _prepareNPCData(system: ExtractBladesActorSystem<BladesActorType.npc>) {
-    if (!BladesActor.IsType(this, BladesActorType.npc)) { return }
-  }
-
-  _prepareFactionData(system: ExtractBladesActorSystem<BladesActorType.faction>) {
-    if (!BladesActor.IsType(this, BladesActorType.faction)) { return }
   }
 
   // #endregion
@@ -917,6 +913,8 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   // #region Rolling Dice ~
   rollAttributePopup(attribute_name: Attribute | Action) {
     const attribute_label: Capitalize<Attribute | Action> = U.tCase(attribute_name);
+    const MIN_DICE_MOD = -3;
+    const MAX_DICE_MOD = 3;
 
     let content = `
         <h2>${game.i18n.localize("BITD.Roll")} ${attribute_label}</h2>
@@ -924,7 +922,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
           <div class="form-group">
             <label>${game.i18n.localize("BITD.Modifier")}:</label>
             <select id="mod" name="mod">
-              ${this.createListOfDiceMods(-3, +3, 0)}
+              ${this.createListOfDiceMods(MIN_DICE_MOD, MAX_DICE_MOD, 0)}
             </select>
           </div>`;
     if ([...Object.keys(Attribute), ...Object.keys(Action)].includes(attribute_name)) {
@@ -1051,14 +1049,14 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       return arr[Math.floor(Math.random() * arr.length)];
     }
     const randomGen: Record<string, (gender?: string) => string> = {
-      name: (gender?: string) => {
+      name: (gen?: string) => {
         return [
           Math.random() <= titleChance
             ? sampleArray(Randomizers.NPC.name_title)
             : "",
           sampleArray([
-            ...((gender ?? "").charAt(0).toLowerCase() !== "m" ? Randomizers.NPC.name_first.female : []),
-            ...((gender ?? "").charAt(0).toLowerCase() !== "f" ? Randomizers.NPC.name_first.male : [])
+            ...((gen ?? "").charAt(0).toLowerCase() !== "m" ? Randomizers.NPC.name_first.female : []),
+            ...((gen ?? "").charAt(0).toLowerCase() !== "f" ? Randomizers.NPC.name_first.male : [])
           ]),
           `"${sampleArray(Randomizers.NPC.name_alias)}"`,
           sampleArray(Randomizers.NPC.name_surname),
@@ -1077,9 +1075,9 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       trait: () => sampleArray(Randomizers.NPC.trait, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value),
       interests: () => sampleArray(Randomizers.NPC.interests, persona.interests.value, secret.interests.value),
       quirk: () => sampleArray(Randomizers.NPC.quirk, persona.quirk.value),
-      style: (gender = "") => sampleArray([
-        ...(gender.charAt(0).toLowerCase() !== "m" ? Randomizers.NPC.style.female : []),
-        ...(gender.charAt(0).toLowerCase() !== "f" ? Randomizers.NPC.style.male : [])
+      style: (gen = "") => sampleArray([
+        ...(gen.charAt(0).toLowerCase() !== "m" ? Randomizers.NPC.style.female : []),
+        ...(gen.charAt(0).toLowerCase() !== "f" ? Randomizers.NPC.style.male : [])
       ], persona.style.value)
     };
 
