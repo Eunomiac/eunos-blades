@@ -2253,7 +2253,7 @@ template {
 
 :root body.vtt.game.system-eunos-blades #pause figcaption {
   text-shadow: 1px 1px 3px #000, 1px 1px 3px #000, 1px 1px 3px #000, 0px 0px 5px #000;
-  font-family: Kirsty !important;
+  font-family: Kirsty, serif !important;
   line-height: 2rem;
   padding: 0 25%; }
 
