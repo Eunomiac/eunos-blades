@@ -1,7 +1,7 @@
-import C, {BladesActorType, BladesItemType, Tag, RollModCategory, Factor, RollModStatus} from "./core/constants.js";
+import C, {BladesActorType, BladesItemType, Tag, Factor} from "./core/constants.js";
 import U from "./core/utilities.js";
-import BladesActor from "./blades-actor.js";
-import BladesRollCollab from "./blades-roll-collab.js";
+import {BladesActor, BladesCrew} from "./documents/blades-actor-proxy.js";
+import {BladesRollMod} from "./blades-roll-collab.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 
 class BladesItem extends Item implements BladesDocument<Item>,
@@ -56,7 +56,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
       .filter((item) => item.hasTag(...tags));
   }
 
-  static IsType<T extends BladesItemType>(doc: unknown, ...types: T[]): doc is BladesItem & BladesItemOfType<T> {
+  static IsType<T extends BladesItemType>(doc: unknown, ...types: T[]): doc is BladesItemOfType<T> {
     const typeSet = new Set<BladesItemType>(types);
     return doc instanceof BladesItem && typeSet.has(doc.type);
   }
@@ -114,7 +114,12 @@ class BladesItem extends Item implements BladesDocument<Item>,
           return this.getFactorTotal(Factor.tier)
             + (this.hasTag("Fine") ? 1 : 0)
             + (this.parent?.getTaggedItemBonuses(this.tags) ?? 0)
-            + (BladesActor.IsType(this.parent, BladesActorType.pc) && this.parent?.crew ? this.parent.crew.getTaggedItemBonuses(this.tags) : 0);
+            + (
+              BladesActor.IsType(this.parent, BladesActorType.pc)
+                && BladesActor.IsType(this.parent.crew, BladesActorType.crew)
+                ? this.parent.crew.getTaggedItemBonuses(this.tags)
+                : 0
+            );
         }
         if (BladesItem.IsType(this, BladesItemType.design)) { return this.system.min_quality }
         return this.getFactorTotal(Factor.tier);
@@ -190,85 +195,16 @@ class BladesItem extends Item implements BladesDocument<Item>,
   // #region BladesRollCollab.PrimaryDoc Implementation
   get rollPrimaryID() { return this.id }
   get rollPrimaryDoc() { return this }
-  get rollPrimaryName() { return this.name! }
+  get rollPrimaryName() { return this.name }
   get rollPrimaryType() { return this.type }
-  get rollPrimaryImg() { return this.img! }
+  get rollPrimaryImg() { return this.img }
 
   get rollModsData(): BladesRollCollab.RollModData[] {
-    const {roll_mods} = this.system;
-    if (!roll_mods) { return [] }
-
-    const rollModsData: BladesRollCollab.RollModData[] = roll_mods.map((modString) => {
-      const pStrings = modString.split(/@/);
-      const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
-      const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, "")) as string|false;
-      if (!nameVal) { throw new Error(`RollMod Missing Name: '${modString}'`) }
-      const catString = U.pullElement(pStrings, (v) => typeof v === "string" && /^cat/i.test(v));
-      const catVal = (typeof catString === "string" && catString.replace(/^.*:/, "")) as RollModCategory|false;
-      if (!catVal || !(catVal in RollModCategory)) { throw new Error(`RollMod Missing Category: '${modString}'`) }
-      const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
-      const posNegVal = posNegString.replace(/^.*:/, "") as "positive"|"negative";
-
-      const rollModData: BladesRollCollab.RollModData = {
-        id: `${nameVal}-${posNegVal}-${catVal}`,
-        name: nameVal,
-        category: catVal,
-        base_status: RollModStatus.ToggledOff,
-        modType: "general",
-        value: 1,
-        posNeg: posNegVal,
-        tooltip: ""
-      };
-
-      pStrings.forEach((pString) => {
-        const [keyString, valString] = pString.split(/:/) as [string, string];
-        let val: string|string[] = /\|/.test(valString) ? valString.split(/\|/) : valString;
-        let key: KeyOf<BladesRollCollab.RollModData>;
-        if (/^stat/i.test(keyString)) { key = "base_status" } else
-        if (/^val/i.test(keyString)) { key = "value" } else
-        if (/^eff|^ekey/i.test(keyString)) { key = "effectKeys" } else
-        if (/^side|^ss/i.test(keyString)) { key = "sideString" } else
-        if (/^s.*ame/i.test(keyString)) { key = "source_name" } else
-        if (/^tool|^tip/i.test(keyString)) { key = "tooltip" } else
-        if (/^ty/i.test(keyString)) { key = "modType" } else
-        if (/^c.{0,10}r?.{0,3}ty/i.test(keyString)) {key = "conditionalRollTypes"} else
-        if (/^a.{0,3}r?.{0,3}y/i.test(keyString)) {key = "autoRollTypes"} else
-        if (/^c.{0,10}r?.{0,3}tr/i.test(keyString)) {key = "conditionalRollTraits"} else
-        if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {key = "autoRollTraits"} else {
-          throw new Error(`Bad Roll Mod Key: ${keyString}`);
-        }
-
-        if (key === "base_status" && val === "Conditional") {
-          val = RollModStatus.Hidden;
-        }
-
-        function extractValue(key: string, val: string | string[]): any {
-          if (["value"].includes(key)) {
-            return U.pInt(val);
-          } else if (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
-            return [val].flat();
-          } else {
-            return (val as string).replace(/%COLON%/g, ":");
-          }
-        }
-        Object.assign(rollModData, {[key]: extractValue(key, val)});
-
-        // Object.assign(
-        //   rollModData,
-        //   {[key]: ["value"].includes(key)
-        //     ? U.pInt(val)
-        //     : (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)
-        //         ? [val].flat()
-        //         : (val as string).replace(/%COLON%/g, ":"))}
-        // );
-      });
-
-      return rollModData;
-    });
+    const rollModData = BladesRollMod.ParseDocRollMods(this);
 
     // Add roll mods from COHORT harm
 
-    return rollModsData;
+    return rollModData;
   }
 
   // #endregion
@@ -390,6 +326,8 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
 declare interface BladesItem {
   get id(): string;
+  get name(): string;
+  get img(): string;
   get type(): BladesItemType,
   parent: BladesActor | null,
   system: BladesItemSystem

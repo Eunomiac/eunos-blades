@@ -49,7 +49,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       .filter((actor) => actor.hasTag(...tags)) as Array<BladesActorOfType<T>>;
   }
 
-  static IsType<T extends BladesActorType>(doc: unknown, ...types: T[]): doc is BladesActor & BladesActorOfType<T> {
+  static IsType<T extends BladesActorType>(doc: unknown, ...types: T[]): doc is BladesActorOfType<T> {
     const typeSet = new Set<BladesActorType>(types);
     return doc instanceof BladesActor && typeSet.has(doc.type);
   }
@@ -1184,6 +1184,8 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
 declare interface BladesActor {
   get id(): string;
+  get name(): string;
+  get img(): string;
   get type(): BladesActorType;
   get items(): EmbeddedCollection<typeof BladesItem, ActorData>;
   system: BladesActorSystem,

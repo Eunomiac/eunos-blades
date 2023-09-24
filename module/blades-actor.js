@@ -99,7 +99,7 @@ class BladesActor extends Actor {
     get archivedSubActors() { return this.subActors.filter((subActor) => subActor.hasTag(Tag.System.Archived)); }
     checkActorPrereqs(actor) {
                 
-        return true;
+        return actor && true;
     }
     processEmbeddedActorMatches(globalActors) {
         return globalActors
@@ -279,8 +279,8 @@ class BladesActor extends Actor {
                 switch (pType) {
                     case PrereqType.HasActiveItem: {
                         const thisItem = this.activeSubItems
-                            .filter((item) => !hitRecord[pType]?.includes(item.id))
-                            .find((item) => item.system.world_name === pString);
+                            .filter((i) => !hitRecord[pType]?.includes(i.id))
+                            .find((i) => i.system.world_name === pString);
                         if (thisItem) {
                             hitRecord[pType].push(thisItem.id);
                         }
@@ -291,8 +291,8 @@ class BladesActor extends Actor {
                     }
                     case PrereqType.HasActiveItemsByTag: {
                         const thisItem = this.activeSubItems
-                            .filter((item) => !hitRecord[pType]?.includes(item.id))
-                            .find((item) => item.hasTag(pString));
+                            .filter((i) => !hitRecord[pType]?.includes(i.id))
+                            .find((i) => i.hasTag(pString));
                         if (thisItem) {
                             hitRecord[pType].push(thisItem.id);
                         }
@@ -539,14 +539,24 @@ class BladesActor extends Actor {
         return dialogData;
     }
     getSubItem(itemRef, activeOnly = false) {
+        const activeCheck = (i) => !activeOnly || !i.hasTag(Tag.System.Archived);
         if (typeof itemRef === "string" && this.items.get(itemRef)) {
-            return this.items.get(itemRef);
+            const returnItem = this.items.get(itemRef);
+            if (returnItem && activeCheck(returnItem)) {
+                return returnItem;
+            }
+            else {
+                return undefined;
+            }
         }
-        const globalItem = BladesItem.Get(itemRef);
-        if (!globalItem) {
-            return undefined;
+        else {
+            const globalItem = BladesItem.Get(itemRef);
+            if (!globalItem) {
+                return undefined;
+            }
+            return this.items.find((item) => item.name === globalItem.name && activeCheck(item))
+                ?? this.items.find((item) => item.system.world_name === globalItem.system.world_name && activeCheck(item));
         }
-        return this.items.find((item) => item.name === globalItem.name) ?? this.items.find((item) => item.system.world_name === globalItem.system.world_name);
     }
     hasSubItemOf(itemRef) {
         const item = BladesItem.Get(itemRef);
@@ -765,7 +775,7 @@ class BladesActor extends Actor {
         return this.activeSubItems.filter((item) => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type));
     }
     getTaggedItemBonuses(tags) {
-        return 0;
+        return tags.length;
     }
 
     prepareDerivedData() {
@@ -774,12 +784,6 @@ class BladesActor extends Actor {
         }
         if (BladesActor.IsType(this, BladesActorType.crew)) {
             this._prepareCrewData(this.system);
-        }
-        if (BladesActor.IsType(this, BladesActorType.npc)) {
-            this._prepareNPCData(this.system);
-        }
-        if (BladesActor.IsType(this, BladesActorType.faction)) {
-            this._prepareFactionData(this.system);
         }
     }
     _preparePCData(system) {
@@ -800,16 +804,6 @@ class BladesActor extends Actor {
         if (this.playbook) {
             system.experience.clues = [...system.experience.clues, ...Object.values(this.playbook.system.experience_clues).filter((clue) => Boolean(clue.trim()))];
             system.turfs = this.playbook.system.turfs;
-        }
-    }
-    _prepareNPCData(system) {
-        if (!BladesActor.IsType(this, BladesActorType.npc)) {
-            return;
-        }
-    }
-    _prepareFactionData(system) {
-        if (!BladesActor.IsType(this, BladesActorType.faction)) {
-            return;
         }
     }
     
@@ -862,13 +856,15 @@ class BladesActor extends Actor {
     
     rollAttributePopup(attribute_name) {
         const attribute_label = U.tCase(attribute_name);
+        const MIN_DICE_MOD = -3;
+        const MAX_DICE_MOD = 3;
         let content = `
         <h2>${game.i18n.localize("BITD.Roll")} ${attribute_label}</h2>
         <form>
           <div class="form-group">
             <label>${game.i18n.localize("BITD.Modifier")}:</label>
             <select id="mod" name="mod">
-              ${this.createListOfDiceMods(-3, +3, 0)}
+              ${this.createListOfDiceMods(MIN_DICE_MOD, MAX_DICE_MOD, 0)}
             </select>
           </div>`;
         if ([...Object.keys(Attribute), ...Object.keys(Action)].includes(attribute_name)) {
@@ -913,7 +909,7 @@ class BladesActor extends Actor {
                         if (html instanceof HTMLElement) {
                             html = $(html);
                         }
-                        const modifier = parseInt(`${html.find('[name="mod"]').attr("value") ?? 0}`);
+                        const modifier = parseInt(`${html.find('[name="mod"]').attr("value") ?? 0}`, 10);
                         const position = `${html.find('[name="pos"]').attr("value") ?? Position.risky}`;
                         const effect = `${html.find('[name="fx"]').attr("value") ?? Effect.standard}`;
                         const note = `${html.find('[name="note"]').attr("value") ?? 0}`;
@@ -968,14 +964,14 @@ class BladesActor extends Actor {
             return arr[Math.floor(Math.random() * arr.length)];
         }
         const randomGen = {
-            name: (gender) => {
+            name: (gen) => {
                 return [
                     Math.random() <= titleChance
                         ? sampleArray(Randomizers.NPC.name_title)
                         : "",
                     sampleArray([
-                        ...((gender ?? "").charAt(0).toLowerCase() !== "m" ? Randomizers.NPC.name_first.female : []),
-                        ...((gender ?? "").charAt(0).toLowerCase() !== "f" ? Randomizers.NPC.name_first.male : [])
+                        ...((gen ?? "").charAt(0).toLowerCase() !== "m" ? Randomizers.NPC.name_first.female : []),
+                        ...((gen ?? "").charAt(0).toLowerCase() !== "f" ? Randomizers.NPC.name_first.male : [])
                     ]),
                     `"${sampleArray(Randomizers.NPC.name_alias)}"`,
                     sampleArray(Randomizers.NPC.name_surname),
@@ -994,9 +990,9 @@ class BladesActor extends Actor {
             trait: () => sampleArray(Randomizers.NPC.trait, persona.trait1.value, persona.trait2.value, persona.trait3.value, secret.trait.value),
             interests: () => sampleArray(Randomizers.NPC.interests, persona.interests.value, secret.interests.value),
             quirk: () => sampleArray(Randomizers.NPC.quirk, persona.quirk.value),
-            style: (gender = "") => sampleArray([
-                ...(gender.charAt(0).toLowerCase() !== "m" ? Randomizers.NPC.style.female : []),
-                ...(gender.charAt(0).toLowerCase() !== "f" ? Randomizers.NPC.style.male : [])
+            style: (gen = "") => sampleArray([
+                ...(gen.charAt(0).toLowerCase() !== "m" ? Randomizers.NPC.style.female : []),
+                ...(gen.charAt(0).toLowerCase() !== "f" ? Randomizers.NPC.style.male : [])
             ], persona.style.value)
         };
         const gender = persona.gender.isLocked ? persona.gender.value : randomGen.gender();

@@ -5,9 +5,10 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { BladesActorType, BladesItemType, Tag, RollModCategory, Factor, RollModStatus } from "./core/constants.js";
+import C, { BladesActorType, BladesItemType, Tag, Factor } from "./core/constants.js";
 import U from "./core/utilities.js";
-import BladesActor from "./blades-actor.js";
+import { BladesActor } from "./documents/blades-actor-proxy.js";
+import { BladesRollMod } from "./blades-roll-collab.js";
 class BladesItem extends Item {
 
     static async create(data, options = {}) {
@@ -100,7 +101,10 @@ class BladesItem extends Item {
                     return this.getFactorTotal(Factor.tier)
                         + (this.hasTag("Fine") ? 1 : 0)
                         + (this.parent?.getTaggedItemBonuses(this.tags) ?? 0)
-                        + (BladesActor.IsType(this.parent, BladesActorType.pc) && this.parent?.crew ? this.parent.crew.getTaggedItemBonuses(this.tags) : 0);
+                        + (BladesActor.IsType(this.parent, BladesActorType.pc)
+                            && BladesActor.IsType(this.parent.crew, BladesActorType.crew)
+                            ? this.parent.crew.getTaggedItemBonuses(this.tags)
+                            : 0);
                 }
                 if (BladesItem.IsType(this, BladesItemType.design)) {
                     return this.system.min_quality;
@@ -174,95 +178,9 @@ class BladesItem extends Item {
     get rollPrimaryType() { return this.type; }
     get rollPrimaryImg() { return this.img; }
     get rollModsData() {
-        const { roll_mods } = this.system;
-        if (!roll_mods) {
-            return [];
-        }
-        const rollModsData = roll_mods.map((modString) => {
-            const pStrings = modString.split(/@/);
-            const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
-            const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, ""));
-            if (!nameVal) {
-                throw new Error(`RollMod Missing Name: '${modString}'`);
-            }
-            const catString = U.pullElement(pStrings, (v) => typeof v === "string" && /^cat/i.test(v));
-            const catVal = (typeof catString === "string" && catString.replace(/^.*:/, ""));
-            if (!catVal || !(catVal in RollModCategory)) {
-                throw new Error(`RollMod Missing Category: '${modString}'`);
-            }
-            const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
-            const posNegVal = posNegString.replace(/^.*:/, "");
-            const rollModData = {
-                id: `${nameVal}-${posNegVal}-${catVal}`,
-                name: nameVal,
-                category: catVal,
-                base_status: RollModStatus.ToggledOff,
-                modType: "general",
-                value: 1,
-                posNeg: posNegVal,
-                tooltip: ""
-            };
-            pStrings.forEach((pString) => {
-                const [keyString, valString] = pString.split(/:/);
-                let val = /\|/.test(valString) ? valString.split(/\|/) : valString;
-                let key;
-                if (/^stat/i.test(keyString)) {
-                    key = "base_status";
-                }
-                else if (/^val/i.test(keyString)) {
-                    key = "value";
-                }
-                else if (/^eff|^ekey/i.test(keyString)) {
-                    key = "effectKeys";
-                }
-                else if (/^side|^ss/i.test(keyString)) {
-                    key = "sideString";
-                }
-                else if (/^s.*ame/i.test(keyString)) {
-                    key = "source_name";
-                }
-                else if (/^tool|^tip/i.test(keyString)) {
-                    key = "tooltip";
-                }
-                else if (/^ty/i.test(keyString)) {
-                    key = "modType";
-                }
-                else if (/^c.{0,10}r?.{0,3}ty/i.test(keyString)) {
-                    key = "conditionalRollTypes";
-                }
-                else if (/^a.{0,3}r?.{0,3}y/i.test(keyString)) {
-                    key = "autoRollTypes";
-                }
-                else if (/^c.{0,10}r?.{0,3}tr/i.test(keyString)) {
-                    key = "conditionalRollTraits";
-                }
-                else if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {
-                    key = "autoRollTraits";
-                }
-                else {
-                    throw new Error(`Bad Roll Mod Key: ${keyString}`);
-                }
-                if (key === "base_status" && val === "Conditional") {
-                    val = RollModStatus.Hidden;
-                }
-                function extractValue(key, val) {
-                    if (["value"].includes(key)) {
-                        return U.pInt(val);
-                    }
-                    else if (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
-                        return [val].flat();
-                    }
-                    else {
-                        return val.replace(/%COLON%/g, ":");
-                    }
-                }
-                Object.assign(rollModData, { [key]: extractValue(key, val) });
-
-            });
-            return rollModData;
-        });
+        const rollModData = BladesRollMod.ParseDocRollMods(this);
         
-        return rollModsData;
+        return rollModData;
     }
     
     get rollOppID() { return this.id; }
