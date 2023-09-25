@@ -14,6 +14,7 @@ declare global {
   // Basic & Utility Types for BladesActors
   type BladesRandomizer<T extends string = string> = { isLocked: boolean, value: T }
   type SubActorData = Partial<BladesActor["system"]>
+  type AdvancementTrait = Action|"Ability"|"Upgrade"|"Cohort"|"CohortType"
 
   // #region SCHEMA DATA: TEMPLATE.JSON & SYSTEM
 
@@ -240,7 +241,7 @@ declare global {
       grantAdvancementPoints(aPt: AdvancementPoint|AdvancementPoint[], num: number): Promise<void>
       removeAdvancementPoints(aPt: AdvancementPoint|AdvancementPoint[], num: number): Promise<void>
 
-      getAvailableAdvancements(trait: Action|"Ability"|"Upgrade"|"Cohort"): number
+      getAvailableAdvancements(trait: AdvancementTrait): number
 
       advancePlaybook(): Promise<void>;
       advanceAttribute(attr: Attribute): Promise<void>;

@@ -160,9 +160,7 @@ const isHexColor = (ref: unknown): ref is HEXColor => typeof ref === "string" &&
 const isRGBColor = (ref: unknown): ref is RGBColor => typeof ref === "string" && /^rgba?\((\d{1,3},\s*){1,2}?\d{1,3},\s*\d{1,3}(\.\d+)?\)$/.test(ref);
 const isUndefined = (ref: unknown): ref is undefined => ref === undefined;
 const isDefined = (ref: unknown): ref is NonNullable<unknown> | null => !isUndefined(ref);
-const isEmpty = (ref: Record<key, unknown> | unknown[]): boolean => {
-  return Object.keys(ref).length === 0;
-};
+const isEmpty = (ref: Record<key, unknown> | unknown[]): boolean => Object.keys(ref).length === 0;
 const hasItems = (ref: Index<unknown>): boolean => !isEmpty(ref);
 const isInstance = <T extends new (...args: unknown[]) => unknown>(classRef: T, ref: unknown): ref is InstanceType<T> => ref instanceof classRef;
 const isInstanceFunc = <T extends new (...args: ConstructorParameters<T>) => InstanceType<T>>(clazz: T) => (instance: unknown): instance is InstanceType<T> => instance instanceof clazz;
@@ -174,30 +172,43 @@ const areEqual = (...refs: unknown[]) => {
     }
   } while (refs.length);
   return true;
+};
 
-  function checkEquality(ref1: unknown, ref2: unknown): boolean {
-    if (typeof ref1 !== typeof ref2) {return false}
-    if ([ref1, ref2].includes(null)) {return ref1 === ref2}
-    if (typeof ref1 === "object") {
-      if (isArray(ref1)) {
-        if (!isArray(ref2)) {return false}
-        if (ref1.length !== ref2.length) {return false}
-        for (let i = 0; i < ref1.length; i++) {
-          if (!checkEquality(ref1[i], ref2[i])) {return false}
-        }
-        return true;
-      } else if (isList(ref1)) {
-        if (!isList(ref2) || Object.keys(ref1).length !== Object.keys(ref2).length) {return false}
-        return checkEquality(Object.keys(ref1), Object.keys(ref2)) && checkEquality(Object.values(ref1), Object.values(ref2));
-      }
-      try {
-        return JSON.stringify(ref1) === JSON.stringify(ref2);
-      } catch {
-        return false;
-      }
-    } else {
-      return ref1 === ref2;
-    }
+const checkEquality = (ref1: unknown, ref2: unknown): boolean => {
+  if (typeof ref1 !== typeof ref2) {return false}
+  if ([ref1, ref2].includes(null)) {return ref1 === ref2}
+  if (typeof ref1 === "object") {
+    return checkObjectEquality(ref1, ref2);
+  } else {
+    return ref1 === ref2;
+  }
+};
+
+const checkObjectEquality = (obj1: unknown, obj2: unknown): boolean => {
+  if (isArray(obj1)) {
+    return checkArrayEquality(obj1, obj2 as unknown[]);
+  } else if (isList(obj1)) {
+    return checkListEquality(obj1, obj2 as Record<key, unknown>);
+  } else {
+    return checkOtherObjectEquality(obj1, obj2);
+  }
+};
+
+const checkArrayEquality = (arr1: unknown[], arr2: unknown[]): boolean => {
+  if (!isArray(arr2) || arr1.length !== arr2.length) {return false}
+  return arr1.every((value, index) => checkEquality(value, arr2[index]));
+};
+
+const checkListEquality = (list1: Record<key, unknown>, list2: Record<key, unknown>): boolean => {
+  if (!isList(list2) || Object.keys(list1).length !== Object.keys(list2).length) {return false}
+  return checkEquality(Object.keys(list1), Object.keys(list2)) && checkEquality(Object.values(list1), Object.values(list2));
+};
+
+const checkOtherObjectEquality = (obj1: unknown, obj2: unknown): boolean => {
+  try {
+    return JSON.stringify(obj1) === JSON.stringify(obj2);
+  } catch {
+    return false;
   }
 };
 const pFloat = (ref: unknown, sigDigits?: posInt, isStrict = false): number => {
@@ -299,12 +310,9 @@ const ellipsize = (text: unknown, maxLength: number): string => {
   const str = String(text);
   return str.length > maxLength ? str.slice(0, maxLength - 3) + "…" : str;
 };
-const pad = (text: unknown, minLength: posInt, delim = " ", decimalPos?: posInt): string => {
+const pad = (text: unknown, minLength: posInt, delim = " "): string => {
   const str = `${text}`;
   if (str.length < minLength) {
-    // if (/\./.test(str) && typeof decimalPos === "number") {
-    //   ... position decimal
-    // } else {
     return `${delim.repeat(minLength - str.length)}${str}`;
   }
   return str;
@@ -323,7 +331,7 @@ const signNum = (num: int, delim = "", zeroSign = "+") => {
   }
   return `${sign}${delim}${Math.abs(parsedNum)}`;
 };
-const padNum = (num: number, numDecDigits: int, includePlus = false, decimalPos?: posInt) => {
+const padNum = (num: number, numDecDigits: int, includePlus = false) => {
   const prefix = (includePlus && num >= 0) ? "+" : "";
   const [leftDigits, rightDigits] = `${pFloat(num)}`.split(/\./);
   if (getType(rightDigits) === "int") {
@@ -446,7 +454,7 @@ const ordinalizeNum = (num: string | number, isReturningWords = false) => {
     const [numText, suffix]: RegExpMatchArray = lCase(verbalizeNum(num)).match(/.*?[-\s]?(\w*)$/i) ?? ["", ""];
     return numText.replace(
       new RegExp(`${suffix}$`),
-      suffix in _ordinals ? _ordinals[<keyof typeof _ordinals>suffix] : `${suffix}th`
+      suffix in _ordinals ? _ordinals[suffix as KeyOf<typeof _ordinals>] : `${suffix}th`
     );
   }
   if (/(\.)|(1[1-3]$)/.test(`${num}`)) {
@@ -485,8 +493,10 @@ const loremIpsum = (numWords = 200) => {
   words.length = numWords;
   return `${sCase(words.join(" ")).trim().replace(/[^a-z\s]*$/ui, "")}.`;
 };
-const randString = (length = 5) => [...new Array(length)].map(() => String.fromCharCode(randInt(...<[number, number]>["a", "z"].map((char) => char.charCodeAt(0))))).join("");
-const randWord = (numWords = 1, wordList = _randomWords) => [...Array(numWords)].map(() => randElem([...wordList])).join(" ");
+const randString = (length = 5) => Array.from({length})
+  .map(() => String.fromCharCode(randInt(...["a", "z"].map((char) => char.charCodeAt(0)) as [number, number])))
+  .join("");
+const randWord = (numWords = 1, wordList = _randomWords) => Array.from({length: numWords}).map(() => randElem([...wordList])).join(" ");
 const getUID = (id: string): string => {
   const indexNum = Math.max(0, ...UUIDLOG.filter(([genericID]) => genericID.startsWith(id)).map(([, , num]) => num)) + 1;
   const uuid = indexNum === 1 ? id : `${id}_${indexNum}`;
@@ -501,7 +511,7 @@ const getUID = (id: string): string => {
 // #region ████████ SEARCHING: Searching Various Data Types w/ Fuzzy Matching ████████ ~
 const fuzzyMatch = (val1: unknown, val2: unknown): boolean => {
   const [str1, str2] = [val1, val2].map((val) => lCase(String(val).replace(/[^a-zA-Z0-9.+-]/g, "").trim()));
-  return str1.length > 0 && str1 == str2; // eslint-disable-line eqeqeq
+  return str1.length > 0 && str1 === str2;
 };
 const isIn = (needle: unknown, haystack: unknown[] = [], fuzziness = 0) => {
   // Looks for needle in haystack using fuzzy matching, then returns value as it appears in haystack.
@@ -611,7 +621,7 @@ const makeCycler = (array: unknown[], index = 0): Generator => {
 };
 
 
-function getLast<Type extends any[]>(array: Type): ValueOf<Type> {
+function getLast<Type>(array: Type[]): Type | undefined {
   return array.length === 0 ? undefined : array[array.length - 1];
 }
 // const getLast = <Type>(array: Type[]): typeof array extends [] ? undefined : Type => ;
@@ -620,20 +630,25 @@ const unique = <Type>(array: Type[]): Type[] => {
   array.forEach((item) => {if (!returnArray.includes(item)) {returnArray.push(item)} });
   return returnArray;
 };
-const group = <Type extends Record<string, unknown>>(array: Type[], key: KeyOf<Type>): Record<string & ValueOf<Type>, Type[]> => {
+const group = <Type extends Record<string, unknown>>(array: Type[], key: KeyOf<Type>): Partial<Record<string & ValueOf<Type>, Type[]>> => {
   const returnObj: Partial<Record<string & ValueOf<Type>, Type[]>> = {};
   array.forEach((item) => {
-    returnObj[item[key] as string & ValueOf<Type>] ??= [];
-    returnObj[item[key] as string & ValueOf<Type>]!.push(item);
+    const returnKey = item[key] as string & ValueOf<Type>;
+    let returnVal = returnObj[returnKey];
+    if (!returnVal) {
+      returnVal = [];
+      returnObj[returnKey] = returnVal;
+    }
+    returnVal.push(item);
   });
-  return returnObj as Record<string & ValueOf<Type>, Type[]>;
+  return returnObj;
 };
-const sample = <Type>(array: Type[], numElems = 1, isUniqueOnly?: boolean, uniqueTestFunc: (elem: Type, array: Type[]) => boolean = (e, a) => !a.includes(e)): Type[] => {
+const sample = <Type>(array: Type[], numElems = 1, isUniqueOnly = true, uniqueTestFunc: (elem: Type, array: Type[]) => boolean = (e, a) => !a.includes(e)): Type[] => {
   const elems: Type[] = [];
   let overloadCounter = 0;
   while (elems.length < numElems && overloadCounter < 1_000_000) {
     const randomElem = randElem(array);
-    if (uniqueTestFunc(randomElem, elems)) {
+    if (isUniqueOnly && uniqueTestFunc(randomElem, elems)) {
       elems.push(randomElem);
     }
     overloadCounter++;
@@ -649,11 +664,7 @@ function pullElement<T>(array: T[], checkFunc: (_v: T, _i?: number, _a?: T[]) =>
   return array.splice(index, 1).pop();
 }
 
-const oldpullElement = <T>(array: T[], checkFunc = (_v: T = true as any, _i = 0, _a: T[] = []) => {checkFunc(_v, _i, _a)}): T | false => {
-  const index = array.findIndex((v, i, a) => checkFunc(v, i, a));
-  return (index !== -1 && array.splice(index, 1).pop()) ?? false;
-};
-const pullIndex = (array: unknown[], index: posInt) => pullElement(array, (v, i) => i === index);
+const pullIndex = (array: unknown[], index: posInt) => pullElement(array, (_, i) => i === index);
 const subGroup = (array: unknown[], groupSize: posInt) => {
   const subArrays = [];
   while (array.length > groupSize) {
@@ -697,31 +708,55 @@ const checkVal = ({k, v}: {k?: unknown, v?: unknown}, checkTest: checkTest) => {
   }
   return (new RegExp(checkTest)).test(`${v}`);
 };
+/**
+ * Given an array or list and a search function, will remove the first matching element and return it.
+ * @param {Index<unknown>} obj - The array or list to be searched.
+ * @param {testFunc<keyFunc | valFunc> | number | string} checkTest - The search function.
+ * @returns {unknown | false} - The removed element or false if no element was found.
+ */
 const remove = (obj: Index<unknown>, checkTest: testFunc<keyFunc | valFunc> | number | string) => {
-  // Given an array or list and a search function, will remove the first matching element and return it.
   if (isArray(obj)) {
     const index = obj.findIndex((v) => checkVal({v}, checkTest));
     if (index >= 0) {
-      let remVal;
-      for (let i = 0; i <= obj.length; i++) {
-        if (i === index) {
-          remVal = obj.shift();
-        } else {
-          obj.push(obj.shift());
-        }
-      }
-      return remVal;
+      return removeElementFromArray(obj, index);
     }
   } else if (isList(obj)) {
     const [remKey] = Object.entries(obj).find(([k, v]) => checkVal({k, v}, checkTest)) ?? [];
     if (remKey) {
-      const remVal = obj[remKey];
-
-      delete obj[remKey];
-      return remVal;
+      return removeElementFromList(obj, remKey);
     }
   }
   return false;
+};
+
+/**
+ * Removes an element from an array at a given index and returns it.
+ * @param {unknown[]} array - The array to remove the element from.
+ * @param {number} index - The index of the element to remove.
+ * @returns {unknown} - The removed element.
+ */
+const removeElementFromArray = (array: unknown[], index: number) => {
+  let remVal;
+  for (let i = 0; i <= array.length; i++) {
+    if (i === index) {
+      remVal = array.shift();
+    } else {
+      array.push(array.shift());
+    }
+  }
+  return remVal;
+};
+
+/**
+ * Removes an element from a list at a given key and returns it.
+ * @param {List<unknown>} list - The list to remove the element from.
+ * @param {string} key - The key of the element to remove.
+ * @returns {unknown} - The removed element.
+ */
+const removeElementFromList = (list: List<unknown>, key: string) => {
+  const remVal = list[key];
+  delete list[key];
+  return remVal;
 };
 const replace = (obj: Index<unknown>, checkTest: checkTest, repVal: unknown) => {
   // As remove, except instead replaces the element with the provided value.
@@ -754,13 +789,13 @@ const replace = (obj: Index<unknown>, checkTest: checkTest, repVal: unknown) => 
  * @param {Array<any>} [remVals] - An array of values to be removed during the cleaning process.
  * @returns {T | Partial<T> | "KILL"} - The cleaned version of the input object or value. If marked for removal, returns "KILL".
  */
-const objClean = <T>(data: T, remVals: Array<false | null | undefined | "" | 0 | Record<string, never> | never[]> = [undefined, null, "", {}, []]): T | Partial<T> | "KILL" => {
+const objClean = <T>(data: T, remVals: UncleanValues[] = [undefined, null, "", {}, []]): T | Partial<T> | "KILL" => {
   const remStrings = remVals.map((rVal) => JSON.stringify(rVal));
   if (remStrings.includes(JSON.stringify(data)) || remVals.includes(data as ValueOf<typeof remVals>)) {return "KILL"}
   if (Array.isArray(data)) {
     const newData = data.map((elem) => objClean(elem, remVals))
-      .filter((elem) => elem !== "KILL") as T & any[];
-    return newData.length ? newData : "KILL";
+      .filter((elem) => elem !== "KILL") as T;
+    return Array.isArray(newData) && newData.length ? newData : "KILL";
   }
   if (data && typeof data === "object" && JSON.stringify(data).startsWith("{")) {
     const newData = Object.entries(data)
@@ -820,7 +855,7 @@ function objMap(obj: Index<unknown>, keyFunc: mapFunc<keyFunc> | mapFunc<valFunc
     keyFunc = ((k: unknown) => k);
   }
   if (isArray(obj)) {return obj.map(valFunc)}
-  return Object.fromEntries(Object.entries(obj).map(([key, val]) => [(<mapFunc<keyFunc>>keyFunc)(key, val), (<mapFunc<valFunc>>valFunc)(val, key)]));
+  return Object.fromEntries(Object.entries(obj).map(([key, val]) => [(keyFunc as mapFunc<keyFunc>)(key, val), (valFunc as mapFunc<valFunc>)(val, key)]));
 }
 const objSize = (obj: Index<unknown>) => Object.values(obj).filter((val) => val !== undefined && val !== null).length;
 const objFindKey = <Type extends Index<unknown>>(obj: Type, keyFunc: testFunc<keyFunc> | testFunc<valFunc> | false, valFunc?: testFunc<valFunc>): KeyOf<Type> | false => {
@@ -831,7 +866,7 @@ const objFindKey = <Type extends Index<unknown>>(obj: Type, keyFunc: testFunc<ke
     keyFunc = false;
   }
   if (!keyFunc) {
-    keyFunc = <testFunc<keyFunc>>((k: unknown) => k);
+    keyFunc = ((k: unknown) => k) as testFunc<keyFunc>;
   }
   if (isArray(obj)) {return obj.findIndex(valFunc)}
   const kFunc = keyFunc || (() => true);
@@ -850,7 +885,7 @@ const objFilter = <Type extends Index<unknown>>(obj: Type, keyFunc: testFunc<key
     keyFunc = false;
   }
   if (!keyFunc) {
-    keyFunc = <testFunc<keyFunc>>((k: unknown) => k);
+    keyFunc = ((k: unknown) => k) as testFunc<keyFunc>;
   }
   if (isArray(obj)) {return obj.filter(valFunc) as Type}
   const kFunc = keyFunc || (() => true);
@@ -866,69 +901,113 @@ const objForEach = (obj: Index<unknown>, func: valFunc): void => {
   }
 };
 // Prunes an object of given set of values, [undefined, null] default
-const objCompact = <Type extends (Index<unknown>)>(obj: Type, remove: unknown[] = [undefined, null]): Type => objFilter(obj, (val: unknown) => !remove.includes(val));
-const objClone = <Type>(obj: Type, isStrictlySafe = false): Type => {
+const objCompact = <Type extends (Index<unknown>)>(obj: Type, removeWhiteList: unknown[] = [undefined, null]): Type => objFilter(obj, (val: unknown) => !removeWhiteList.includes(val));
+
+function cloneArray<T extends unknown[]>(arr: T): T {
+  return [...arr] as T;
+}
+
+function cloneObject<T>(obj: T): T {
+  return {...obj};
+}
+
+const objClone = <T>(obj: T, isStrictlySafe = false): T => {
   try {
     return JSON.parse(JSON.stringify(obj));
   } catch (err) {
     if (isStrictlySafe) {throw err}
-    if (isArray(obj)) {return <Type><unknown>[...obj]}
-    if (isList(obj)) {return {...obj}}
+    if (Array.isArray(obj)) {return cloneArray(obj as T extends unknown[] ? T : never)}
+    if (typeof obj === "object") {return cloneObject(obj)}
   }
   return obj;
 };
+/**
+ * Returns a deep merge of source into target. Does not mutate target unless isMutatingOk = true.
+ * @param {Tx} target - The target object to be merged.
+ * @param {Ty} source - The source object to be merged.
+ * @param {Object} options - An object containing various options for the merge operation.
+ * @returns {Tx & Ty} - The merged object.
+ */
 function objMerge<Tx, Ty>(target: Tx, source: Ty, {isMutatingOk = false, isStrictlySafe = false, isConcatenatingArrays = true, isReplacingArrays = false} = {}): Tx & Ty {
-  /* Returns a deep merge of source into target. Does not mutate target unless isMutatingOk = true. */
+  // Clone the target if mutation is not allowed
   target = isMutatingOk ? target : objClone(target, isStrictlySafe);
-  if (source instanceof Application) {
+
+  // If source is an instance of Application or target is undefined, return source
+  if (source instanceof Application || isUndefined(target)) {
     return source as unknown as Tx & Ty;
   }
-  if (isUndefined(target)) {
-    return objClone(source) as Tx & Ty;
-  }
+
+  // If source is undefined, return target
   if (isUndefined(source)) {
     return target as Tx & Ty;
   }
-  if (isIndex(source)) {
-    for (const [key, val] of Object.entries(source)) {
-      const targetVal = target[key as KeyOf<typeof target>];
-      if (isReplacingArrays && isArray(target[key as KeyOf<typeof target>]) && isArray(val)) {
-        target[key as KeyOf<typeof target>] = val as Tx[KeyOf<Tx>];
-      } else if (isConcatenatingArrays && isArray(target[key as KeyOf<typeof target>]) && isArray(val)) {
-        (target[key as KeyOf<typeof target>] as unknown as any[]).push(...val);
-      } else if (val !== null && typeof val === "object") {
-        if (isUndefined(targetVal) && !(val instanceof Application)) {
-          target[key as KeyOf<typeof target>] = new (Object.getPrototypeOf(val).constructor)();
-        }
-        target[key as KeyOf<typeof target>] = objMerge(target[key as KeyOf<typeof target>], val, {isMutatingOk: true, isStrictlySafe});
-      } else {
-        target[key as KeyOf<typeof target>] = val as Tx[KeyOf<Tx>];
+
+  // If source is not an index, return target
+  if (!isIndex(source)) {
+    return target as Tx & Ty;
+  }
+
+  // Iterate over each entry in the source object
+  for (const [key, val] of Object.entries(source)) {
+    const targetVal = target[key as KeyOf<typeof target>];
+
+    // If replacing arrays is enabled and both target and source values are arrays, replace target value with source value
+    if (isReplacingArrays && isArray(targetVal) && isArray(val)) {
+      target[key as KeyOf<typeof target>] = val as Tx[KeyOf<Tx>];
+    } else if (isConcatenatingArrays && isArray(targetVal) && isArray(val)) {
+
+      // If concatenating arrays is enabled and both target and source values are arrays, concatenate source value to target value
+      (target[key as KeyOf<typeof target>] as unknown[]).push(...val);
+    } else if (val !== null && typeof val === "object") {
+    // If source value is an object and not null, merge it into target value
+      if (isUndefined(targetVal) && !(val instanceof Application)) {
+        target[key as KeyOf<typeof target>] = new (Object.getPrototypeOf(val).constructor)();
       }
+      target[key as KeyOf<typeof target>] = objMerge(target[key as KeyOf<typeof target>], val, {isMutatingOk: true, isStrictlySafe});
+    } else {
+    // For all other cases, assign source value to target
+      target[key as KeyOf<typeof target>] = val as Tx[KeyOf<Tx>];
     }
   }
+
+  // Return the merged target
   return target as Tx & Ty;
 }
-/* Write typescript function objDiff(obj1, obj2) (using appropriate typescript generics to avoid implicit any). The function
-    should deep-compare obj1 and obj2 and return an object containing only the keys and values in obj2 that differ from obj1. Where obj2 is missing a key or value contained in obj1, it should set the value in the returned object to null, and prefix the key with "-=" */
-function objDiff(obj1: any, obj2: any): any {
-  const diff: any = {};
-  for (const key in obj2) {
-    if (Object.hasOwn(obj2, key)) {
-      if (Object.hasOwn(obj1, key)) {
-        if (typeof obj1[key] === "object" && typeof obj2[key] === "object" && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key])) {
-          const nestedDiff = objDiff(obj1[key], obj2[key]);
-          if (Object.keys(nestedDiff).length > 0) {
-            diff[key] = nestedDiff;
-          }
-        } else if (Array.isArray(obj1[key]) && Array.isArray(obj2[key]) && obj1[key].toString() !== obj2[key].toString()) {
-          diff[key] = obj2[key];
-        } else if (obj1[key] !== obj2[key]) {
-          diff[key] = obj2[key];
-        }
-      } else {
-        diff["-=" + key] = obj2[key];
+/**
+ * Deep-compares two objects and returns an object containing only the keys and values in the second object that differ from the first.
+ * If the second object is missing a key or value contained in the first, it sets the value in the returned object to null, and prefixes the key with "-=".
+ * @param {Tx} obj1 - The first object to be compared.
+ * @param {Ty} obj2 - The second object to be compared.
+ * @returns {Record<string, unknown>} - An object containing the differences between the two input objects.
+ */
+function objDiff<Tx extends Record<string, unknown>, Ty extends Record<string, unknown>>(obj1: Tx, obj2: Ty): Record<string, unknown> {
+  const diff: Record<string, unknown> = {};
+  const bothObj1AndObj2Keys = Object.keys(obj2).filter((key) => Object.hasOwn(obj2, key) && Object.hasOwn(obj1, key));
+  const onlyObj2Keys = Object.keys(obj2).filter((key) => Object.hasOwn(obj2, key) && !Object.hasOwn(obj1, key));
+
+  for (const key of bothObj1AndObj2Keys) {
+    // If both values are non-array objects, recursively compare them
+    if (typeof obj1[key] === "object" && typeof obj2[key] === "object" && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key])) {
+      const nestedDiff = objDiff(obj1[key] as Record<string, unknown>, obj2[key] as Record<string, unknown>);
+      if (Object.keys(nestedDiff).length > 0) {
+        diff[key] = nestedDiff;
       }
+    } else if (Array.isArray(obj1[key]) && Array.isArray(obj2[key])) {
+      const array1 = obj1[key] as unknown[];
+      const array2 = obj2[key] as unknown[];
+      if (array1.toString() !== array2.toString()) {
+        // If both values are arrays and they are not equal, add the second array to the diff
+        diff[key] = obj2[key];
+      }
+    } else if ((obj1[key] as unknown) !== (obj2[key] as unknown)) {
+      // If the values are not equal, add the second value to the diff
+      diff[key] = obj2[key];
     }
+  }
+
+  for (const key of onlyObj2Keys) {
+    // If the second object has a key that the first does not, add it to the diff with a "-=" prefix
+    diff["-=" + key] = obj2[key];
   }
   return diff;
 }
@@ -944,22 +1023,22 @@ const objExpand = <T>(obj: List<T>): List<T> => {
     }
   }
   // Iterate through expanded Object, converting object literals to arrays where it makes sense
-  function arrayify<X>(obj: Index<X> | X): Index<X> | X {
-    if (isList(obj)) {
-      if (/^\d+$/.test(Object.keys(obj).join(""))) {
-        return Object.values(obj).map(arrayify) as X[];
+  function arrayify<X>(o: Index<X> | X): Index<X> | X {
+    if (isList(o)) {
+      if (/^\d+$/.test(Object.keys(o).join(""))) {
+        return Object.values(o).map(arrayify) as X[];
       }
-      return objMap(obj, (v: unknown): unknown => arrayify(v)) as List<X>;
+      return objMap(o, (v: unknown): unknown => arrayify(v)) as List<X>;
     }
-    if (isArray(obj)) {
-      return obj.map(arrayify) as X[];
+    if (isArray(o)) {
+      return o.map(arrayify) as X[];
     }
-    return obj;
+    return o;
   }
 
   return arrayify(expObj) as List<T>;
 };
-const objFlatten = <ST = any>(obj: Index<ST>): Record<string, ST> => {
+const objFlatten = <ST>(obj: Index<ST>): Record<string, ST> => {
   const flatObj: Record<string, ST> = {};
   for (const [key, val] of Object.entries(obj)) {
     if ((isArray(val) || isList(val)) && hasItems(val)) {
@@ -973,19 +1052,31 @@ const objFlatten = <ST = any>(obj: Index<ST>): Record<string, ST> => {
   return flatObj;
 };
 
-function objNullify<T extends List<any>>(obj: T & Record<KeyOf<T>, null>): Record<KeyOf<T>, null>
-function objNullify<T extends any[]>(obj: T & null[]): null[]
+/**
+ * This function nullifies all properties of an object or elements of an array.
+ * If the input is not an object or an array, it returns the input as is.
+ * @param {T} obj - The object or array to be nullified.
+ * @returns {Record<KeyOf<T>, null> | null[] | T} - The nullified object or array, or the input as is.
+ */
+function objNullify<T extends List<unknown>>(obj: T & Record<KeyOf<T>, null>): Record<KeyOf<T>, null>
+function objNullify<T extends unknown[]>(obj: T & null[]): null[]
 function objNullify<T>(obj: T): Record<KeyOf<T>, null> | null[] | T {
+  // Check if the input is an object or an array
   if (!isIndex(obj)) {return obj}
+
+  // If the input is an array, nullify all its elements
   if (Array.isArray(obj)) {
-    for (let i = 0; i < obj.length; i++) {
+    obj.forEach((_, i) => {
       obj[i] = null as ValueOf<T>;
-    }
+    });
     return obj as null[];
   }
-  for (const objKey of Object.keys(obj) as Array<KeyOf<T>>) {
-    (<Record<KeyOf<T>, null>>obj)[objKey] = null;
-  }
+
+  // If the input is an object, nullify all its properties
+  Object.keys(obj).forEach((objKey) => {
+    (obj as Record<KeyOf<T>, null>)[objKey as KeyOf<T>] = null;
+  });
+
   return obj;
 }
 // #endregion ▄▄▄▄▄ OBJECTS ▄▄▄▄▄
@@ -1099,7 +1190,7 @@ const getHEXString = (red: string | number, green?: number, blue?: number): HEXC
     [red, green, blue] = getColorVals(red) ?? [];
   }
   if (isDefined(red) && isDefined(green) && isDefined(blue) && [red, green, blue].every((color) => /^[.\d]+$/.test(`${color}`))) {
-    return "#" + componentToHex(red ?? 0) + componentToHex(green ?? 0) + componentToHex(blue ?? 0);
+    return `#${componentToHex(red ?? 0)}${componentToHex(green ?? 0)}${componentToHex(blue ?? 0)}`;
   }
   return null;
 };
@@ -1111,7 +1202,7 @@ const getContrastingColor = (...colorVals: [string] | number[]): RGBColor | null
   }
   return null;
 };
-const getRandomColor = (): RGBColor => getRGBString(gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1))!;
+const getRandomColor = () => getRGBString(gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1)) as RGBColor;
 // #endregion ░░░░[Colors]░░░░
 
 // #region ░░░░░░░[DOM]░░░░ DOM Manipulation ░░░░░░░ ~

@@ -36,6 +36,8 @@ declare global {
       highFavorsPC?: boolean
     }
 
+    export type ModType = BladesItemType | "general" | "harm" | "teamwork";
+
     export interface FlagData {
       rollID: string;
       rollType: RollType;

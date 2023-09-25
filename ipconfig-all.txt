@@ -1,0 +1,78 @@
+Windows IP Configuration
+
+   Host Name . . . . . . . . . . . . : DESKTOP-IPC1ORD
+   Primary Dns Suffix  . . . . . . . :
+   Node Type . . . . . . . . . . . . : Hybrid
+   IP Routing Enabled. . . . . . . . : No
+   WINS Proxy Enabled. . . . . . . . : No
+   DNS Suffix Search List. . . . . . : phub.net.cable.rogers.com
+
+Ethernet adapter Ethernet:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+   Description . . . . . . . . . . . : Realtek PCIe GbE Family Controller
+   Physical Address. . . . . . . . . : 44-8A-5B-A5-11-34
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+
+Wireless LAN adapter Local Area Connection* 1:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+   Description . . . . . . . . . . . : Microsoft Wi-Fi Direct Virtual Adapter
+   Physical Address. . . . . . . . . : 12-10-B3-07-BA-23
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+
+Wireless LAN adapter Local Area Connection* 2:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+   Description . . . . . . . . . . . : Microsoft Wi-Fi Direct Virtual Adapter #2
+   Physical Address. . . . . . . . . : 22-10-B3-07-BA-23
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+
+Wireless LAN adapter Wi-Fi:
+
+   Connection-specific DNS Suffix  . : phub.net.cable.rogers.com
+   Description . . . . . . . . . . . : Qualcomm Atheros AR5BWB222 Wireless Network Adapter
+   Physical Address. . . . . . . . . : 30-10-B3-07-BA-23
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+   IPv6 Address. . . . . . . . . . . : 2607:fea8:7ca4:2c00::7b0a(Preferred)
+   Lease Obtained. . . . . . . . . . : September 21, 2023 5:00:46 AM
+   Lease Expires . . . . . . . . . . : October 1, 2023 11:36:38 PM
+   IPv6 Address. . . . . . . . . . . : 2607:fea8:7ca4:2c00:a03e:b4f7:4ee1:53b2(Preferred)
+   Temporary IPv6 Address. . . . . . : 2607:fea8:7ca4:2c00:af:afa6:2f29:1f22(Deprecated)
+   Temporary IPv6 Address. . . . . . : 2607:fea8:7ca4:2c00:74f5:3c5c:efde:5ab5(Deprecated)
+   Temporary IPv6 Address. . . . . . : 2607:fea8:7ca4:2c00:a580:801:9184:7257(Deprecated)
+   Temporary IPv6 Address. . . . . . : 2607:fea8:7ca4:2c00:bc89:57a4:a847:a2a3(Preferred)
+   Temporary IPv6 Address. . . . . . : 2607:fea8:7ca4:2c00:e0ae:6aaa:b56e:248b(Deprecated)
+   Link-local IPv6 Address . . . . . : fe80::970c:bf14:163b:9b8e%15(Preferred)
+   IPv4 Address. . . . . . . . . . . : 10.0.0.54(Preferred)
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Lease Obtained. . . . . . . . . . : September 21, 2023 5:00:44 AM
+   Lease Expires . . . . . . . . . . : September 26, 2023 11:37:02 PM
+   Default Gateway . . . . . . . . . : fe80::5a96:30ff:fee1:235b%15
+                                       10.0.0.1
+   DHCP Server . . . . . . . . . . . : 10.0.0.1
+   DHCPv6 IAID . . . . . . . . . . . : 154144947
+   DHCPv6 Client DUID. . . . . . . . : 00-01-00-01-27-E9-2F-A9-44-8A-5B-A5-11-34
+   DNS Servers . . . . . . . . . . . : 2607:f798:18:10:0:640:7125:5204
+                                       2607:f798:18:10:0:640:7125:5198
+                                       1.1.1.1
+                                       1.0.0.1
+                                       2607:f798:18:10:0:640:7125:5204
+                                       2607:f798:18:10:0:640:7125:5198
+   NetBIOS over Tcpip. . . . . . . . : Enabled
+
+Ethernet adapter Bluetooth Network Connection:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+   Description . . . . . . . . . . . : Bluetooth Device (Personal Area Network)
+   Physical Address. . . . . . . . . : 30-10-B3-07-D1-93
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes

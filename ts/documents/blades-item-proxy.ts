@@ -17,17 +17,17 @@ const ItemsMap: Partial<Record<BladesItemType,typeof BladesItem>> = {
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const BladesItemProxy = new Proxy(function() {}, {
 
-  construct: function(target, args) {
-    const [data] = args;
-
-    if (!ItemsMap[data.type as BladesItemType]) {
+  construct(_, args: [ItemDataConstructorData]) {
+    const [{type}] = args;
+    if (!type) { throw new Error(`Invalid Item Type: ${String(type)}`) }
+    const MappedConstructor = ItemsMap[type as BladesItemType];
+    if (!MappedConstructor) {
       return new BladesItem(...args);
     }
-
-    return new ItemsMap[data.type as BladesItemType]!(...args);
+    return new MappedConstructor(...args);
   },
 
-  get: function(target, prop) {
+  get(_, prop) {
     switch (prop) {
       case "create":
       case "createDocuments":
@@ -40,11 +40,11 @@ const BladesItemProxy = new Proxy(function() {}, {
             return data.map((i) => CONFIG.Item.documentClass.create(i, options));
           }
 
-          if (!ItemsMap[data.type as BladesItemType]) {
+          const MappedConstructor = ItemsMap[data.type as BladesItemType];
+          if (!MappedConstructor) {
             return BladesItem.create(data, options);
           }
-
-          return ItemsMap[data.type as BladesItemType]!.create(data, options);
+          return MappedConstructor.create(data, options);
         };
       case Symbol.hasInstance:
         return function(instance: unknown) {

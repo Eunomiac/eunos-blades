@@ -46,7 +46,7 @@ class BladesSheet extends ActorSheet {
       // Basic actor data.
       cssClass: this.actor.type,
       editable: this.options.editable,
-      isGM: game.eunoblades.Tracker!.system.is_spoofing_player ? false : game.user.isGM,
+      isGM: game.eunoblades.Tracker?.system.is_spoofing_player ? false : game.user.isGM,
       actor: this.actor,
       system: this.actor.system,
       tierTotal: this.actor.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(this.actor.getFactorTotal(Factor.tier)) : "0",
@@ -66,7 +66,7 @@ class BladesSheet extends ActorSheet {
               const subtypes = U.unique(Object.values(item.system.subtypes)
                 .map((subtype) => subtype.trim())
                 .filter((subtype) => /[A-Za-z]/.test(subtype))) as Tag.GangType[];
-              const elite_subtypes = U.unique([
+              const eliteSubtypes = U.unique([
                 ...Object.values(item.system.elite_subtypes),
                 ...(item.parent?.upgrades ?? [])
                   .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
@@ -75,7 +75,7 @@ class BladesSheet extends ActorSheet {
                 .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype as Tag.GangType))) as Tag.GangType[];
 
               // Prepare images for gang cohort items.
-              const imgTypes = [...elite_subtypes];
+              const imgTypes = [...eliteSubtypes];
               if (imgTypes.length < 2) {
                 imgTypes.push(...subtypes.filter((subtype) => !imgTypes.includes(subtype)));
               }
@@ -191,7 +191,7 @@ class BladesSheet extends ActorSheet {
     if (!this.options.editable) { return }
 
     // Add dotline functionality
-    html.find(".dotline").each((_, elem) => {
+    html.find(".dotline").each((__, elem) => {
       if ($(elem).hasClass("locked")) { return }
 
       let targetDoc: BladesActor | BladesItem = this.actor as BladesActor;
@@ -215,7 +215,7 @@ class BladesSheet extends ActorSheet {
       const curValue = U.pInt($(elem).data("value"));
       $(elem)
         .find(".dot")
-        .each((j, dot) => {
+        .each((_, dot) => {
           $(dot).on("click", (event: ClickEvent) => {
             event.preventDefault();
             const thisValue = U.pInt($(dot).data("value"));
@@ -288,7 +288,7 @@ class BladesSheet extends ActorSheet {
     }
   }
 
-  override async _onSubmit(event: Event, params: List<any> = {}) {
+  override async _onSubmit(event: Event, params: FormApplication.OnSubmitOptions = {}) {
     if (!game.user.isGM && !this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)) {
       eLog.checkLog("actorSheetTrigger", "User does not have permission to edit this actor", {user: game.user, actor: this.actor});
       return {};
@@ -445,17 +445,17 @@ class BladesSheet extends ActorSheet {
 
   // #region Roll Handlers
   async _onRollTraitClick(event: ClickEvent) {
-    const trait_name = $(event.currentTarget).data("rollTrait");
-    const roll_type = $(event.currentTarget).data("rollType");
+    const traitName = $(event.currentTarget).data("rollTrait");
+    const rollType = $(event.currentTarget).data("rollType");
     const rollData: Partial<BladesRollCollab.Config> = {};
-    if (U.lCase(trait_name) in {...Action, ...Attribute, ...Factor}) {
-      rollData.rollTrait = U.lCase(trait_name) as Action|Attribute|Factor;
-    } else if (U.isInt(trait_name)) {
-      rollData.rollTrait = U.pInt(trait_name);
+    if (U.lCase(traitName) in {...Action, ...Attribute, ...Factor}) {
+      rollData.rollTrait = U.lCase(traitName) as Action|Attribute|Factor;
+    } else if (U.isInt(traitName)) {
+      rollData.rollTrait = U.pInt(traitName);
     }
 
-    if (U.tCase(roll_type) in RollType) {
-      rollData.rollType = U.tCase(roll_type) as RollType;
+    if (U.tCase(rollType) in RollType) {
+      rollData.rollType = U.tCase(rollType) as RollType;
     } else if (typeof rollData.rollTrait === "string") {
       if (rollData.rollTrait in Attribute) {
         rollData.rollType = RollType.Resistance;

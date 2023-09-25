@@ -27,7 +27,7 @@ class BladesItemSheet extends ItemSheet {
         const sheetData = {
             cssClass: this.item.type,
             editable: this.options.editable,
-            isGM: (game.eunoblades.Tracker.system.is_spoofing_player ? false : Boolean(game.user.isGM)),
+            isGM: (game.eunoblades.Tracker?.system.is_spoofing_player ? false : Boolean(game.user.isGM)),
             isEmbeddedItem: Boolean(this.item.parent),
             item: this.item,
             system: this.item.system,
@@ -316,7 +316,7 @@ class BladesItemSheet extends ItemSheet {
         if (!this.options.editable) {
             return;
         }
-        html.find(".dotline").each((_, elem) => {
+        html.find(".dotline").each((__, elem) => {
             if ($(elem).hasClass("locked")) {
                 return;
             }
@@ -326,7 +326,7 @@ class BladesItemSheet extends ItemSheet {
             const curValue = U.pInt($(elem).data("value"));
             $(elem)
                 .find(".dot")
-                .each((j, dot) => {
+                .each((_, dot) => {
                 $(dot).on("click", (event) => {
                     event.preventDefault();
                     const thisValue = U.pInt($(dot).data("value"));
@@ -356,14 +356,14 @@ class BladesItemSheet extends ItemSheet {
                 click: (event) => {
                     event.preventDefault();
                     const harmLevel = U.pInt($(event.currentTarget).data("harmClick"));
-                    if (this.item.system.harm.value !== harmLevel) {
+                    if (this.item.system.harm?.value !== harmLevel) {
                         this.item.update({ "system.harm.value": harmLevel });
                     }
                 },
                 contextmenu: (event) => {
                     event.preventDefault();
                     const harmLevel = Math.max(0, U.pInt($(event.currentTarget).data("harmClick")) - 1);
-                    if (this.item.system.harm.value !== harmLevel) {
+                    if (this.item.system.harm?.value !== harmLevel) {
                         this.item.update({ "system.harm.value": harmLevel });
                     }
                 }
@@ -374,7 +374,7 @@ class BladesItemSheet extends ItemSheet {
         }
         html.find(".effect-control").on("click", (ev) => {
             if (self.item.isOwned) {
-                ui.notifications.warn(game.i18n.localize("BITD.EffectWarning"));
+                ui.notifications?.warn(game.i18n.localize("BITD.EffectWarning"));
                 return;
             }
             BladesActiveEffect.onManageActiveEffect(ev, self.item);

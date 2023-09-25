@@ -1,6 +1,6 @@
 import {BladesActorType, BladesItemType, Playbook} from "../core/constants.js";
 import U from "../core/utilities.js";
-import {BladesActor, BladesFaction} from "../documents/blades-actor-proxy.js";
+import {BladesNPC, BladesFaction} from "../documents/blades-actor-proxy.js";
 import {BladesItem} from "../documents/blades-item-proxy.js";
 
 type CrewObject = {
@@ -2367,7 +2367,7 @@ const {claim, favoredOperation, contact} = U.group(JSONDATA.CREW_OBJECTS, "type"
 export const updateClaims = async () => {
   const errorReport: string[] = [];
   const playbookUpdateData: Partial<Record<Playbook,Record<string, string>>> = {};
-  claim.forEach((cl) => {
+  (claim ?? []).forEach((cl) => {
     const playbookObj = game.items.getName(cl.playbook);
     if (!playbookObj || playbookObj.type !== BladesItemType.crew_playbook) {
       errorReport.push(`Claim ${cl.name} has invalid playbook ${cl.playbook}`);
@@ -2396,7 +2396,7 @@ export const updateClaims = async () => {
 
 export const updateOps = async () => {
   const errorReport: string[] = [];
-  await Promise.all(favoredOperation.map(async (op) => {
+  await Promise.all((favoredOperation ?? []).map(async (op) => {
     const playbookObj = game.items.getName(op.playbook);
     if (!playbookObj || playbookObj.type !== BladesItemType.crew_playbook) {
       errorReport.push(`Favored Op ${op.name} has invalid playbook ${op.playbook}`);
@@ -2420,23 +2420,21 @@ export const updateOps = async () => {
 
 export const updateContacts = async () => {
   const errorReport: string[] = [];
-  await Promise.all(contact.map(async (ct) => {
+  await Promise.all((contact ?? []).map(async (ct) => {
     const playbookObj = game.items.getName(ct.playbook);
     if (!BladesItem.IsType(playbookObj, BladesItemType.crew_playbook)) {
       errorReport.push(`Contact ${ct.name} has invalid playbook ${ct.playbook}`);
       return;
     }
-    const actor = await BladesActor.create({
+    const actor: BladesNPC = await Actor.create({
       name: ct.name,
       type: BladesActorType.npc,
       system: {
         description: ct.description,
         prompts: ct.hints?.join(" ")
       } as Partial<BladesActorSystem>
-    }) as BladesActorOfType<BladesActorType.npc>;
-    if (BladesActor.IsType(actor, BladesActorType.npc)) {
-      actor.addTag(playbookObj.name as Playbook);
-    }
+    }) as BladesNPC;
+    actor.addTag(playbookObj.name as Playbook);
   }));
 
   console.log(errorReport);

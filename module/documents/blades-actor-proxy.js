@@ -19,14 +19,18 @@ const ActorsMap = {
     [BladesActorType.crew]: BladesCrew
 };
 const BladesActorProxy = new Proxy(function () { }, {
-    construct: function (target, args) {
-        const [data] = args;
-        if (!ActorsMap[data.type]) {
+    construct(_, args) {
+        const [{ type }] = args;
+        if (!type) {
+            throw new Error(`Invalid Actor Type: ${String(type)}`);
+        }
+        const MappedConstructor = ActorsMap[type];
+        if (!MappedConstructor) {
             return new BladesActor(...args);
         }
-        return new ActorsMap[data.type](...args);
+        return new MappedConstructor(...args);
     },
-    get: function (target, prop) {
+    get(_, prop) {
         switch (prop) {
             case "create":
             case "createDocuments":
@@ -34,10 +38,11 @@ const BladesActorProxy = new Proxy(function () { }, {
                     if (U.isArray(data)) {
                         return data.map((i) => CONFIG.Actor.documentClass.create(i, options));
                     }
-                    if (!ActorsMap[data.type]) {
+                    const MappedConstructor = ActorsMap[data.type];
+                    if (!MappedConstructor) {
                         return BladesActor.create(data, options);
                     }
-                    return ActorsMap[data.type].create(data, options);
+                    return MappedConstructor.create(data, options);
                 };
             case Symbol.hasInstance:
                 return function (instance) {

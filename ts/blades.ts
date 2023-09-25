@@ -19,7 +19,6 @@ import BladesNPCSheet from "./sheets/actor/blades-npc-sheet.js";
 import BladesFactionSheet from "./sheets/actor/blades-faction-sheet.js";
 import BladesRollCollab, {ApplyRollEffects, ApplyDescriptions} from "./blades-roll-collab.js";
 
-import {bladesRoll, simpleRollPopup} from "./blades-roll.js";
 import BladesSelectorDialog from "./blades-dialog.js";
 import BladesActiveEffect from "./blades-active-effect.js";
 import BladesTrackerSheet from "./sheets/item/blades-tracker-sheet.js";
@@ -51,8 +50,6 @@ registerDebugger();
     BladesRollCollab,
     ApplyRollEffects,
     ApplyDescriptions,
-    bladesRoll,
-    simpleRollPopup,
     G,
     U,
     C,
@@ -139,20 +136,6 @@ Hooks.once("socketlib.ready", () => {
   InitOverlaySockets();
 });
 // #endregion ░░░░[SocketLib]░░░░
-
-// #region ░░░░░░░[Roll Controller]░░░░ Add Dice Roller to Scene Control Sidebar ░░░░░░░ ~
-Hooks.once("renderSceneControls", async (_: unknown, html: JQuery<HTMLElement>): Promise<void> => {
-  const diceRoller = $('<li class="scene-control" title="Dice Roll"><i class="fas fa-dice"></i></li>');
-  diceRoller.click(async () => {
-    await simpleRollPopup();
-  });
-  if (!foundry.utils.isNewerVersion("9", game.version)) {
-    html.children().first().append(diceRoller);
-  } else {
-    html.append(diceRoller);
-  }
-});
-// #endregion ░░░░[Dice Roll Controller]░░░░
 
 // #region ░░░░░░░[Dice So Nice]░░░░ Dice So Nice Integration ░░░░░░░ ~
 type Dice3DController = {

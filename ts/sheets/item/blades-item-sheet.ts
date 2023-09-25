@@ -33,7 +33,7 @@ class BladesItemSheet extends ItemSheet {
     const sheetData: Partial<BladesItemSheetData> = {
       cssClass: this.item.type,
       editable: this.options.editable,
-      isGM: (game.eunoblades.Tracker!.system.is_spoofing_player ? false : Boolean(game.user.isGM)) as boolean,
+      isGM: (game.eunoblades.Tracker?.system.is_spoofing_player ? false : Boolean(game.user.isGM)) as boolean,
       isEmbeddedItem: Boolean(this.item.parent),
       item: this.item,
       system: this.item.system,
@@ -41,7 +41,7 @@ class BladesItemSheet extends ItemSheet {
       activeEffects: Array.from(this.item.effects) as BladesActiveEffect[]
     };
 
-    return this._getTypedItemData[this.item.type]!({...context, ...sheetData} as BladesItemSheetData);
+    return this._getTypedItemData[this.item.type]({...context, ...sheetData} as BladesItemSheetData);
   }
 
   _getTypedItemData: Record<BladesItemType, (context: BladesItemSheetData) => BladesItemSheetData> = {
@@ -127,7 +127,7 @@ class BladesItemSheet extends ItemSheet {
       if (context.isGM) {
         const expClueData: Record<string, string> = {};
         [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue });
-        context.system.experience_clues = expClueData as any;
+        context.system.experience_clues = expClueData;
       }
       const sheetData: BladesItemDataOfType<BladesItemType.crew_playbook> = {
       };
@@ -200,10 +200,10 @@ class BladesItemSheet extends ItemSheet {
       if (context.isGM) {
         const expClueData: Record<string, string> = {};
         [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue });
-        context.system.experience_clues = expClueData as any;
+        context.system.experience_clues = expClueData;
         const gatherInfoData: Record<string, string> = {};
         [...Object.values(context.system.gather_info_questions ?? []).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question });
-        context.system.gather_info_questions = gatherInfoData as any;
+        context.system.gather_info_questions = gatherInfoData;
       }
       const sheetData: BladesItemDataOfType<BladesItemType.playbook> = {};
       return {
@@ -305,7 +305,7 @@ class BladesItemSheet extends ItemSheet {
     if (!this.options.editable) {return}
 
     // Add dotline functionality
-    html.find(".dotline").each((_, elem) => {
+    html.find(".dotline").each((__, elem) => {
       if ($(elem).hasClass("locked")) { return }
 
       const targetDoc: BladesActor | BladesItem = this.item;
@@ -316,7 +316,7 @@ class BladesItemSheet extends ItemSheet {
       const curValue = U.pInt($(elem).data("value"));
       $(elem)
         .find(".dot")
-        .each((j, dot) => {
+        .each((_, dot) => {
           $(dot).on("click", (event: ClickEvent) => {
             event.preventDefault();
             const thisValue = U.pInt($(dot).data("value"));
@@ -349,14 +349,14 @@ class BladesItemSheet extends ItemSheet {
         click: (event) => {
           event.preventDefault();
           const harmLevel = U.pInt($(event.currentTarget).data("harmClick"));
-          if ((<BladesItemOfType<BladesItemType.cohort_expert|BladesItemType.cohort_gang>>this.item).system.harm.value !== harmLevel) {
+          if (this.item.system.harm?.value !== harmLevel) {
             this.item.update({"system.harm.value": harmLevel});
           }
         },
         contextmenu: (event) => {
           event.preventDefault();
           const harmLevel = Math.max(0, U.pInt($(event.currentTarget).data("harmClick")) - 1);
-          if ((<BladesItemOfType<BladesItemType.cohort_expert|BladesItemType.cohort_gang>>this.item).system.harm.value !== harmLevel) {
+          if (this.item.system.harm?.value !== harmLevel) {
             this.item.update({"system.harm.value": harmLevel});
           }
         }
@@ -370,7 +370,7 @@ class BladesItemSheet extends ItemSheet {
 
     html.find(".effect-control").on("click", (ev) => {
       if ( self.item.isOwned ) {
-        ui.notifications!.warn(game.i18n.localize("BITD.EffectWarning"));
+        ui.notifications?.warn(game.i18n.localize("BITD.EffectWarning"));
         return;
       }
       BladesActiveEffect.onManageActiveEffect(ev, self.item);

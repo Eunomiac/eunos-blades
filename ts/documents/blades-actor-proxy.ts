@@ -18,17 +18,17 @@ const ActorsMap: Partial<Record<BladesActorType,typeof BladesActor>> = {
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const BladesActorProxy = new Proxy(function() {}, {
 
-  construct: function(target, args: any[]) {
-    const [data] = args;
-
-    if (!ActorsMap[data.type as BladesActorType]) {
-      return new BladesActor(...args as [ActorDataConstructorData]);
+  construct(_, args: [ActorDataConstructorData]) {
+    const [{type}] = args;
+    if (!type) { throw new Error(`Invalid Actor Type: ${String(type)}`) }
+    const MappedConstructor = ActorsMap[type as BladesActorType];
+    if (!MappedConstructor) {
+      return new BladesActor(...args);
     }
-
-    return new ActorsMap[data.type as BladesActorType]!(...args as [ActorDataConstructorData]);
+    return new MappedConstructor(...args);
   },
 
-  get: function(target, prop) {
+  get(_, prop) {
     switch (prop) {
       case "create":
       case "createDocuments":
@@ -41,11 +41,11 @@ const BladesActorProxy = new Proxy(function() {}, {
             return data.map((i) => CONFIG.Actor.documentClass.create(i, options));
           }
 
-          if (!ActorsMap[data.type as BladesActorType]) {
+          const MappedConstructor = ActorsMap[data.type as BladesActorType];
+          if (!MappedConstructor) {
             return BladesActor.create(data, options);
           }
-
-          return ActorsMap[data.type as BladesActorType]!.create(data, options);
+          return MappedConstructor.create(data, options);
         };
       case Symbol.hasInstance:
         return function(instance: unknown) {

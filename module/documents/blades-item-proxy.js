@@ -19,14 +19,18 @@ const ItemsMap = {
     [BladesItemType.score]: BladesScore
 };
 const BladesItemProxy = new Proxy(function () { }, {
-    construct: function (target, args) {
-        const [data] = args;
-        if (!ItemsMap[data.type]) {
+    construct(_, args) {
+        const [{ type }] = args;
+        if (!type) {
+            throw new Error(`Invalid Item Type: ${String(type)}`);
+        }
+        const MappedConstructor = ItemsMap[type];
+        if (!MappedConstructor) {
             return new BladesItem(...args);
         }
-        return new ItemsMap[data.type](...args);
+        return new MappedConstructor(...args);
     },
-    get: function (target, prop) {
+    get(_, prop) {
         switch (prop) {
             case "create":
             case "createDocuments":
@@ -34,10 +38,11 @@ const BladesItemProxy = new Proxy(function () { }, {
                     if (U.isArray(data)) {
                         return data.map((i) => CONFIG.Item.documentClass.create(i, options));
                     }
-                    if (!ItemsMap[data.type]) {
+                    const MappedConstructor = ItemsMap[data.type];
+                    if (!MappedConstructor) {
                         return BladesItem.create(data, options);
                     }
-                    return ItemsMap[data.type].create(data, options);
+                    return MappedConstructor.create(data, options);
                 };
             case Symbol.hasInstance:
                 return function (instance) {

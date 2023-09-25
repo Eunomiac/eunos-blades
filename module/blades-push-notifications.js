@@ -73,9 +73,13 @@ export default class BladesPushController {
         socketlib.system.executeForEveryone("pushNotice", "", ...args);
     }
     pushToSome(...args) {
-        const users = args.pop().map((user) => user.id);
+        const users = (args.pop() ?? [])
+            .filter((user) => Boolean(user?.id));
+        if (!users || users.length === 0) {
+            return;
+        }
         const pushArgs = args.slice(0, 3);
-        socketlib.system.executeForUsers("pushNotice", users, "", ...pushArgs);
+        socketlib.system.executeForUsers("pushNotice", users.map((user) => user.id), "", ...pushArgs);
     }
     pushToGM(...args) {
         socketlib.system.executeForAllGMs("pushNotice", "to-gm-notice", ...args);

@@ -148,9 +148,7 @@ const isHexColor = (ref) => typeof ref === "string" && /^#(([0-9a-fA-F]{2}){3,4}
 const isRGBColor = (ref) => typeof ref === "string" && /^rgba?\((\d{1,3},\s*){1,2}?\d{1,3},\s*\d{1,3}(\.\d+)?\)$/.test(ref);
 const isUndefined = (ref) => ref === undefined;
 const isDefined = (ref) => !isUndefined(ref);
-const isEmpty = (ref) => {
-    return Object.keys(ref).length === 0;
-};
+const isEmpty = (ref) => Object.keys(ref).length === 0;
 const hasItems = (ref) => !isEmpty(ref);
 const isInstance = (classRef, ref) => ref instanceof classRef;
 const isInstanceFunc = (clazz) => (instance) => instance instanceof clazz;
@@ -162,44 +160,50 @@ const areEqual = (...refs) => {
         }
     } while (refs.length);
     return true;
-    function checkEquality(ref1, ref2) {
-        if (typeof ref1 !== typeof ref2) {
-            return false;
-        }
-        if ([ref1, ref2].includes(null)) {
-            return ref1 === ref2;
-        }
-        if (typeof ref1 === "object") {
-            if (isArray(ref1)) {
-                if (!isArray(ref2)) {
-                    return false;
-                }
-                if (ref1.length !== ref2.length) {
-                    return false;
-                }
-                for (let i = 0; i < ref1.length; i++) {
-                    if (!checkEquality(ref1[i], ref2[i])) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            else if (isList(ref1)) {
-                if (!isList(ref2) || Object.keys(ref1).length !== Object.keys(ref2).length) {
-                    return false;
-                }
-                return checkEquality(Object.keys(ref1), Object.keys(ref2)) && checkEquality(Object.values(ref1), Object.values(ref2));
-            }
-            try {
-                return JSON.stringify(ref1) === JSON.stringify(ref2);
-            }
-            catch {
-                return false;
-            }
-        }
-        else {
-            return ref1 === ref2;
-        }
+};
+const checkEquality = (ref1, ref2) => {
+    if (typeof ref1 !== typeof ref2) {
+        return false;
+    }
+    if ([ref1, ref2].includes(null)) {
+        return ref1 === ref2;
+    }
+    if (typeof ref1 === "object") {
+        return checkObjectEquality(ref1, ref2);
+    }
+    else {
+        return ref1 === ref2;
+    }
+};
+const checkObjectEquality = (obj1, obj2) => {
+    if (isArray(obj1)) {
+        return checkArrayEquality(obj1, obj2);
+    }
+    else if (isList(obj1)) {
+        return checkListEquality(obj1, obj2);
+    }
+    else {
+        return checkOtherObjectEquality(obj1, obj2);
+    }
+};
+const checkArrayEquality = (arr1, arr2) => {
+    if (!isArray(arr2) || arr1.length !== arr2.length) {
+        return false;
+    }
+    return arr1.every((value, index) => checkEquality(value, arr2[index]));
+};
+const checkListEquality = (list1, list2) => {
+    if (!isList(list2) || Object.keys(list1).length !== Object.keys(list2).length) {
+        return false;
+    }
+    return checkEquality(Object.keys(list1), Object.keys(list2)) && checkEquality(Object.values(list1), Object.values(list2));
+};
+const checkOtherObjectEquality = (obj1, obj2) => {
+    try {
+        return JSON.stringify(obj1) === JSON.stringify(obj2);
+    }
+    catch {
+        return false;
     }
 };
 const pFloat = (ref, sigDigits, isStrict = false) => {
@@ -298,7 +302,7 @@ const ellipsize = (text, maxLength) => {
     const str = String(text);
     return str.length > maxLength ? str.slice(0, maxLength - 3) + "…" : str;
 };
-const pad = (text, minLength, delim = " ", decimalPos) => {
+const pad = (text, minLength, delim = " ") => {
     const str = `${text}`;
     if (str.length < minLength) {
         return `${delim.repeat(minLength - str.length)}${str}`;
@@ -320,7 +324,7 @@ const signNum = (num, delim = "", zeroSign = "+") => {
     }
     return `${sign}${delim}${Math.abs(parsedNum)}`;
 };
-const padNum = (num, numDecDigits, includePlus = false, decimalPos) => {
+const padNum = (num, numDecDigits, includePlus = false) => {
     const prefix = (includePlus && num >= 0) ? "+" : "";
     const [leftDigits, rightDigits] = `${pFloat(num)}`.split(/\./);
     if (getType(rightDigits) === "int") {
@@ -485,8 +489,10 @@ const loremIpsum = (numWords = 200) => {
     words.length = numWords;
     return `${sCase(words.join(" ")).trim().replace(/[^a-z\s]*$/ui, "")}.`;
 };
-const randString = (length = 5) => [...new Array(length)].map(() => String.fromCharCode(randInt(...["a", "z"].map((char) => char.charCodeAt(0))))).join("");
-const randWord = (numWords = 1, wordList = _randomWords) => [...Array(numWords)].map(() => randElem([...wordList])).join(" ");
+const randString = (length = 5) => Array.from({ length })
+    .map(() => String.fromCharCode(randInt(...["a", "z"].map((char) => char.charCodeAt(0)))))
+    .join("");
+const randWord = (numWords = 1, wordList = _randomWords) => Array.from({ length: numWords }).map(() => randElem([...wordList])).join(" ");
 const getUID = (id) => {
     const indexNum = Math.max(0, ...UUIDLOG.filter(([genericID]) => genericID.startsWith(id)).map(([, , num]) => num)) + 1;
     const uuid = indexNum === 1 ? id : `${id}_${indexNum}`;
@@ -497,7 +503,7 @@ const getUID = (id) => {
 };
 const fuzzyMatch = (val1, val2) => {
     const [str1, str2] = [val1, val2].map((val) => lCase(String(val).replace(/[^a-zA-Z0-9.+-]/g, "").trim()));
-    return str1.length > 0 && str1 == str2;
+    return str1.length > 0 && str1 === str2;
 };
 const isIn = (needle, haystack = [], fuzziness = 0) => {
     const SearchTests = [
@@ -603,17 +609,22 @@ const unique = (array) => {
 const group = (array, key) => {
     const returnObj = {};
     array.forEach((item) => {
-        returnObj[item[key]] ??= [];
-        returnObj[item[key]].push(item);
+        const returnKey = item[key];
+        let returnVal = returnObj[returnKey];
+        if (!returnVal) {
+            returnVal = [];
+            returnObj[returnKey] = returnVal;
+        }
+        returnVal.push(item);
     });
     return returnObj;
 };
-const sample = (array, numElems = 1, isUniqueOnly, uniqueTestFunc = (e, a) => !a.includes(e)) => {
+const sample = (array, numElems = 1, isUniqueOnly = true, uniqueTestFunc = (e, a) => !a.includes(e)) => {
     const elems = [];
     let overloadCounter = 0;
     while (elems.length < numElems && overloadCounter < 1000000) {
         const randomElem = randElem(array);
-        if (uniqueTestFunc(randomElem, elems)) {
+        if (isUniqueOnly && uniqueTestFunc(randomElem, elems)) {
             elems.push(randomElem);
         }
         overloadCounter++;
@@ -628,11 +639,7 @@ function pullElement(array, checkFunc) {
     }
     return array.splice(index, 1).pop();
 }
-const oldpullElement = (array, checkFunc = (_v = true, _i = 0, _a = []) => { checkFunc(_v, _i, _a); }) => {
-    const index = array.findIndex((v, i, a) => checkFunc(v, i, a));
-    return (index !== -1 && array.splice(index, 1).pop()) ?? false;
-};
-const pullIndex = (array, index) => pullElement(array, (v, i) => i === index);
+const pullIndex = (array, index) => pullElement(array, (_, i) => i === index);
 const subGroup = (array, groupSize) => {
     const subArrays = [];
     while (array.length > groupSize) {
@@ -672,27 +679,33 @@ const remove = (obj, checkTest) => {
     if (isArray(obj)) {
         const index = obj.findIndex((v) => checkVal({ v }, checkTest));
         if (index >= 0) {
-            let remVal;
-            for (let i = 0; i <= obj.length; i++) {
-                if (i === index) {
-                    remVal = obj.shift();
-                }
-                else {
-                    obj.push(obj.shift());
-                }
-            }
-            return remVal;
+            return removeElementFromArray(obj, index);
         }
     }
     else if (isList(obj)) {
         const [remKey] = Object.entries(obj).find(([k, v]) => checkVal({ k, v }, checkTest)) ?? [];
         if (remKey) {
-            const remVal = obj[remKey];
-            delete obj[remKey];
-            return remVal;
+            return removeElementFromList(obj, remKey);
         }
     }
     return false;
+};
+const removeElementFromArray = (array, index) => {
+    let remVal;
+    for (let i = 0; i <= array.length; i++) {
+        if (i === index) {
+            remVal = array.shift();
+        }
+        else {
+            array.push(array.shift());
+        }
+    }
+    return remVal;
+};
+const removeElementFromList = (list, key) => {
+    const remVal = list[key];
+    delete list[key];
+    return remVal;
 };
 const replace = (obj, checkTest, repVal) => {
     let repKey;
@@ -727,7 +740,7 @@ const objClean = (data, remVals = [undefined, null, "", {}, []]) => {
     if (Array.isArray(data)) {
         const newData = data.map((elem) => objClean(elem, remVals))
             .filter((elem) => elem !== "KILL");
-        return newData.length ? newData : "KILL";
+        return Array.isArray(newData) && newData.length ? newData : "KILL";
     }
     if (data && typeof data === "object" && JSON.stringify(data).startsWith("{")) {
         const newData = Object.entries(data)
@@ -828,7 +841,13 @@ const objForEach = (obj, func) => {
         Object.entries(obj).forEach(([key, val]) => func(val, key));
     }
 };
-const objCompact = (obj, remove = [undefined, null]) => objFilter(obj, (val) => !remove.includes(val));
+const objCompact = (obj, removeWhiteList = [undefined, null]) => objFilter(obj, (val) => !removeWhiteList.includes(val));
+function cloneArray(arr) {
+    return [...arr];
+}
+function cloneObject(obj) {
+    return { ...obj };
+}
 const objClone = (obj, isStrictlySafe = false) => {
     try {
         return JSON.parse(JSON.stringify(obj));
@@ -837,70 +856,70 @@ const objClone = (obj, isStrictlySafe = false) => {
         if (isStrictlySafe) {
             throw err;
         }
-        if (isArray(obj)) {
-            return [...obj];
+        if (Array.isArray(obj)) {
+            return cloneArray(obj);
         }
-        if (isList(obj)) {
-            return { ...obj };
+        if (typeof obj === "object") {
+            return cloneObject(obj);
         }
     }
     return obj;
 };
 function objMerge(target, source, { isMutatingOk = false, isStrictlySafe = false, isConcatenatingArrays = true, isReplacingArrays = false } = {}) {
-        target = isMutatingOk ? target : objClone(target, isStrictlySafe);
-    if (source instanceof Application) {
+    target = isMutatingOk ? target : objClone(target, isStrictlySafe);
+    if (source instanceof Application || isUndefined(target)) {
         return source;
-    }
-    if (isUndefined(target)) {
-        return objClone(source);
     }
     if (isUndefined(source)) {
         return target;
     }
-    if (isIndex(source)) {
-        for (const [key, val] of Object.entries(source)) {
-            const targetVal = target[key];
-            if (isReplacingArrays && isArray(target[key]) && isArray(val)) {
-                target[key] = val;
+    if (!isIndex(source)) {
+        return target;
+    }
+    for (const [key, val] of Object.entries(source)) {
+        const targetVal = target[key];
+        if (isReplacingArrays && isArray(targetVal) && isArray(val)) {
+            target[key] = val;
+        }
+        else if (isConcatenatingArrays && isArray(targetVal) && isArray(val)) {
+            target[key].push(...val);
+        }
+        else if (val !== null && typeof val === "object") {
+            if (isUndefined(targetVal) && !(val instanceof Application)) {
+                target[key] = new (Object.getPrototypeOf(val).constructor)();
             }
-            else if (isConcatenatingArrays && isArray(target[key]) && isArray(val)) {
-                target[key].push(...val);
-            }
-            else if (val !== null && typeof val === "object") {
-                if (isUndefined(targetVal) && !(val instanceof Application)) {
-                    target[key] = new (Object.getPrototypeOf(val).constructor)();
-                }
-                target[key] = objMerge(target[key], val, { isMutatingOk: true, isStrictlySafe });
-            }
-            else {
-                target[key] = val;
-            }
+            target[key] = objMerge(target[key], val, { isMutatingOk: true, isStrictlySafe });
+        }
+        else {
+            target[key] = val;
         }
     }
     return target;
 }
 function objDiff(obj1, obj2) {
     const diff = {};
-    for (const key in obj2) {
-        if (Object.hasOwn(obj2, key)) {
-            if (Object.hasOwn(obj1, key)) {
-                if (typeof obj1[key] === "object" && typeof obj2[key] === "object" && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key])) {
-                    const nestedDiff = objDiff(obj1[key], obj2[key]);
-                    if (Object.keys(nestedDiff).length > 0) {
-                        diff[key] = nestedDiff;
-                    }
-                }
-                else if (Array.isArray(obj1[key]) && Array.isArray(obj2[key]) && obj1[key].toString() !== obj2[key].toString()) {
-                    diff[key] = obj2[key];
-                }
-                else if (obj1[key] !== obj2[key]) {
-                    diff[key] = obj2[key];
-                }
-            }
-            else {
-                diff["-=" + key] = obj2[key];
+    const bothObj1AndObj2Keys = Object.keys(obj2).filter((key) => Object.hasOwn(obj2, key) && Object.hasOwn(obj1, key));
+    const onlyObj2Keys = Object.keys(obj2).filter((key) => Object.hasOwn(obj2, key) && !Object.hasOwn(obj1, key));
+    for (const key of bothObj1AndObj2Keys) {
+        if (typeof obj1[key] === "object" && typeof obj2[key] === "object" && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key])) {
+            const nestedDiff = objDiff(obj1[key], obj2[key]);
+            if (Object.keys(nestedDiff).length > 0) {
+                diff[key] = nestedDiff;
             }
         }
+        else if (Array.isArray(obj1[key]) && Array.isArray(obj2[key])) {
+            const array1 = obj1[key];
+            const array2 = obj2[key];
+            if (array1.toString() !== array2.toString()) {
+                diff[key] = obj2[key];
+            }
+        }
+        else if (obj1[key] !== obj2[key]) {
+            diff[key] = obj2[key];
+        }
+    }
+    for (const key of onlyObj2Keys) {
+        diff["-=" + key] = obj2[key];
     }
     return diff;
 }
@@ -915,17 +934,17 @@ const objExpand = (obj) => {
             setProperty(expObj, key, val);
         }
     }
-    function arrayify(obj) {
-        if (isList(obj)) {
-            if (/^\d+$/.test(Object.keys(obj).join(""))) {
-                return Object.values(obj).map(arrayify);
+    function arrayify(o) {
+        if (isList(o)) {
+            if (/^\d+$/.test(Object.keys(o).join(""))) {
+                return Object.values(o).map(arrayify);
             }
-            return objMap(obj, (v) => arrayify(v));
+            return objMap(o, (v) => arrayify(v));
         }
-        if (isArray(obj)) {
-            return obj.map(arrayify);
+        if (isArray(o)) {
+            return o.map(arrayify);
         }
-        return obj;
+        return o;
     }
     return arrayify(expObj);
 };
@@ -948,14 +967,14 @@ function objNullify(obj) {
         return obj;
     }
     if (Array.isArray(obj)) {
-        for (let i = 0; i < obj.length; i++) {
+        obj.forEach((_, i) => {
             obj[i] = null;
-        }
+        });
         return obj;
     }
-    for (const objKey of Object.keys(obj)) {
+    Object.keys(obj).forEach((objKey) => {
         obj[objKey] = null;
-    }
+    });
     return obj;
 }
 
@@ -1059,7 +1078,7 @@ const getHEXString = (red, green, blue) => {
         [red, green, blue] = getColorVals(red) ?? [];
     }
     if (isDefined(red) && isDefined(green) && isDefined(blue) && [red, green, blue].every((color) => /^[.\d]+$/.test(`${color}`))) {
-        return "#" + componentToHex(red ?? 0) + componentToHex(green ?? 0) + componentToHex(blue ?? 0);
+        return `#${componentToHex(red ?? 0)}${componentToHex(green ?? 0)}${componentToHex(blue ?? 0)}`;
     }
     return null;
 };

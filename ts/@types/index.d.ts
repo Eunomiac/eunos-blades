@@ -21,6 +21,8 @@ import "./blades-dialog";
 import "./blades-clock";
 import "./blades-tags";
 
+declare module 'gsap/all';
+
 declare global {
 
   // Foundry Game Document & Lenient Config for 'game' object

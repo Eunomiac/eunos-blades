@@ -6,8 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-import C, { BladesActorType, Tag, Playbook, BladesItemType, Attribute, Action, PrereqType, Position, Effect, AdvancementPoint, Randomizers, Factor } from "./core/constants.js";
-import { bladesRoll } from "./blades-roll.js";
+import C, { BladesActorType, Tag, Playbook, BladesItemType, Action, PrereqType, AdvancementPoint, Randomizers, Factor } from "./core/constants.js";
 import BladesItem from "./blades-item.js";
 import { SelectionCategory } from "./blades-dialog.js";
 class BladesActor extends Actor {
@@ -271,46 +270,66 @@ class BladesActor extends Actor {
         for (const [pType, pReqs] of Object.entries(item.system.prereqs)) {
             const pReqArray = Array.isArray(pReqs) ? pReqs : [pReqs.toString()];
             const hitRecord = {};
-            while (pReqArray.length) {
-                const pString = pReqArray.pop();
-                hitRecord[pType] ??= [];
-                switch (pType) {
-                    case PrereqType.HasActiveItem: {
-                        const thisItem = this.activeSubItems
-                            .filter((i) => !hitRecord[pType]?.includes(i.id))
-                            .find((i) => i.system.world_name === pString);
-                        if (thisItem) {
-                            hitRecord[pType]?.push(thisItem.id);
-                        }
-                        else {
-                            return false;
-                        }
-                        break;
-                    }
-                    case PrereqType.HasActiveItemsByTag: {
-                        const thisItem = this.activeSubItems
-                            .filter((i) => !hitRecord[pType]?.includes(i.id))
-                            .find((i) => i.hasTag(pString));
-                        if (thisItem) {
-                            hitRecord[pType]?.push(thisItem.id);
-                        }
-                        else {
-                            return false;
-                        }
-                        break;
-                    }
-                    case PrereqType.AdvancedPlaybook: {
-                        if (!BladesActor.IsType(this, BladesActorType.pc)) {
-                            return false;
-                        }
-                        if (!this.playbookName || ![Playbook.Ghost, Playbook.Hull, Playbook.Vampire].includes(this.playbookName)) {
-                            return false;
-                        }
-                        break;
-                    }
-                    default: break;
-                }
+            if (!this._processPrereqArray(pReqArray, pType, hitRecord)) {
+                return false;
             }
+        }
+        return true;
+    }
+    _processPrereqArray(pReqArray, pType, hitRecord) {
+        while (pReqArray.length) {
+            const pString = pReqArray.pop();
+            hitRecord[pType] ??= [];
+            if (!this._processPrereqType(pType, pString, hitRecord)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    _processPrereqType(pType, pString, hitRecord) {
+        switch (pType) {
+            case PrereqType.HasActiveItem: {
+                return this._processActiveItemPrereq(pString, hitRecord, pType);
+            }
+            case PrereqType.HasActiveItemsByTag: {
+                return this._processActiveItemsByTagPrereq(pString, hitRecord, pType);
+            }
+            case PrereqType.AdvancedPlaybook: {
+                return this._processAdvancedPlaybookPrereq();
+            }
+            default: return true;
+        }
+    }
+    _processActiveItemPrereq(pString, hitRecord, pType) {
+        const thisItem = this.activeSubItems
+            .filter((i) => !hitRecord[pType]?.includes(i.id))
+            .find((i) => i.system.world_name === pString);
+        if (thisItem) {
+            hitRecord[pType]?.push(thisItem.id);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    _processActiveItemsByTagPrereq(pString, hitRecord, pType) {
+        const thisItem = this.activeSubItems
+            .filter((i) => !hitRecord[pType]?.includes(i.id))
+            .find((i) => i.hasTag(pString));
+        if (thisItem) {
+            hitRecord[pType]?.push(thisItem.id);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    _processAdvancedPlaybookPrereq() {
+        if (!BladesActor.IsType(this, BladesActorType.pc)) {
+            return false;
+        }
+        if (!this.playbookName || ![Playbook.Ghost, Playbook.Hull, Playbook.Vampire].includes(this.playbookName)) {
+            return false;
         }
         return true;
     }
@@ -412,72 +431,73 @@ class BladesActor extends Actor {
     }
     getDialogItems(category) {
         const dialogData = {};
-        switch (category) {
-            case SelectionCategory.Heritage: {
-                if (!BladesActor.IsType(this, BladesActorType.pc)) {
-                    return false;
-                }
-                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.heritage));
-                return dialogData;
+        const isPC = BladesActor.IsType(this, BladesActorType.pc);
+        const isCrew = BladesActor.IsType(this, BladesActorType.crew);
+        if (!BladesActor.IsType(this, BladesActorType.pc) && !BladesActor.IsType(this, BladesActorType.crew)) {
+            return false;
+        }
+        const { playbookName } = this;
+        if (category === SelectionCategory.Heritage && isPC) {
+            dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.heritage));
+        }
+        else if (category === SelectionCategory.Background && isPC) {
+            dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.background));
+        }
+        else if (category === SelectionCategory.Vice && isPC && playbookName !== null) {
+            dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.vice, playbookName));
+        }
+        else if (category === SelectionCategory.Playbook) {
+            if (this.type === BladesActorType.pc) {
+                dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook).filter((item) => !item.hasTag(Tag.Gear.Advanced)));
+                dialogData.Advanced = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Gear.Advanced));
             }
-            case SelectionCategory.Background: {
-                if (!BladesActor.IsType(this, BladesActorType.pc)) {
-                    return false;
-                }
-                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.background));
-                return dialogData;
+            else if (this.type === BladesActorType.crew) {
+                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_playbook));
             }
-            case SelectionCategory.Vice: {
-                if (!BladesActor.IsType(this, BladesActorType.pc) || this.playbookName === null) {
-                    return false;
-                }
-                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.vice, this.playbookName));
-                return dialogData;
+        }
+        else if (category === SelectionCategory.Reputation && isCrew) {
+            dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_reputation));
+        }
+        else if (category === SelectionCategory.Preferred_Op && isCrew && playbookName !== null) {
+            dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op, playbookName));
+        }
+        else if (category === SelectionCategory.Gear && BladesActor.IsType(this, BladesActorType.pc)) {
+            const self = this;
+            if (playbookName === null) {
+                return false;
             }
-            case SelectionCategory.Playbook: {
-                switch (this.type) {
-                    case BladesActorType.pc: {
-                        dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook).filter((item) => !item.hasTag(Tag.Gear.Advanced)));
-                        dialogData.Advanced = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Gear.Advanced));
-                        return dialogData;
-                    }
-                    case BladesActorType.crew: {
-                        dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_playbook));
-                        return dialogData;
-                    }
-                    default: return false;
+            const gearItems = this._processEmbeddedItemMatches([
+                ...BladesItem.GetTypeWithTags(BladesItemType.gear, playbookName),
+                ...BladesItem.GetTypeWithTags(BladesItemType.gear, Tag.Gear.General)
+            ])
+                .filter((item) => self.remainingLoad >= item.system.load);
+            dialogData[playbookName] = gearItems.filter((item) => item.hasTag(playbookName));
+            dialogData.General = gearItems
+                .filter((item) => item.hasTag(Tag.Gear.General))
+                .map((item) => {
+                if (item.dialogCSSClasses) {
+                    item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
                 }
-            }
-            case SelectionCategory.Reputation: {
-                if (!BladesActor.IsType(this, BladesActorType.crew)) {
+                return item;
+            })
+                .sort((a, b) => {
+                if (a.system.world_name > b.system.world_name) {
+                    return 1;
+                }
+                if (a.system.world_name < b.system.world_name) {
+                    return -1;
+                }
+                return 0;
+            });
+        }
+        else if (category === SelectionCategory.Ability) {
+            if (isPC) {
+                if (playbookName === null) {
                     return false;
                 }
-                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_reputation));
-                return dialogData;
-            }
-            case SelectionCategory.Preferred_Op: {
-                if (!BladesActor.IsType(this, BladesActorType.crew) || this.playbookName === null) {
-                    return false;
-                }
-                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op, this.playbookName));
-                return dialogData;
-            }
-            case SelectionCategory.Gear: {
-                if (!BladesActor.IsType(this, BladesActorType.pc)) {
-                    return false;
-                }
-                const self = this;
-                if (this.playbookName === null) {
-                    return false;
-                }
-                const gearItems = this._processEmbeddedItemMatches([
-                    ...BladesItem.GetTypeWithTags(BladesItemType.gear, this.playbookName),
-                    ...BladesItem.GetTypeWithTags(BladesItemType.gear, Tag.Gear.General)
-                ])
-                    .filter((item) => self.remainingLoad >= item.system.load);
-                dialogData[self.playbookName] = gearItems.filter((item) => item.hasTag(self.playbookName));
-                dialogData.General = gearItems
-                    .filter((item) => item.hasTag(Tag.Gear.General))
+                dialogData[playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability, playbookName));
+                dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability))
+                    .filter((item) => !item.hasTag(playbookName))
                     .map((item) => {
                     if (item.dialogCSSClasses) {
                         item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
@@ -493,48 +513,16 @@ class BladesActor extends Actor {
                     }
                     return 0;
                 });
-                return dialogData;
             }
-            case SelectionCategory.Ability: {
-                if (BladesActor.IsType(this, BladesActorType.pc)) {
-                    const self = this;
-                    if (self.playbookName === null) {
-                        return false;
-                    }
-                    dialogData[self.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability, self.playbookName));
-                    dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability))
-                        .filter((item) => !item.hasTag(self.playbookName))
-                        .map((item) => {
-                        if (item.dialogCSSClasses) {
-                            item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
-                        }
-                        return item;
-                    })
-                        .sort((a, b) => {
-                        if (a.system.world_name > b.system.world_name) {
-                            return 1;
-                        }
-                        if (a.system.world_name < b.system.world_name) {
-                            return -1;
-                        }
-                        return 0;
-                    });
-                }
-                else if (BladesActor.IsType(this, BladesActorType.crew)) {
-                    dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_ability, this.playbookName));
-                }
-                return dialogData;
+            else if (isCrew) {
+                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_ability, playbookName));
             }
-            case SelectionCategory.Upgrade: {
-                if (!BladesActor.IsType(this, BladesActorType.crew) || this.playbookName === null) {
-                    return false;
-                }
-                dialogData[this.playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, this.playbookName));
-                dialogData.General = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, Tag.Gear.General));
-                return dialogData;
-            }
-            default: return dialogData;
         }
+        else if (category === SelectionCategory.Upgrade && isCrew && playbookName !== null) {
+            dialogData[playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, playbookName));
+            dialogData.General = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, Tag.Gear.General));
+        }
+        return dialogData;
     }
     getSubItem(itemRef, activeOnly = false) {
         const activeCheck = (i) => !activeOnly || !i.hasTag(Tag.System.Archived);
@@ -850,82 +838,7 @@ class BladesActor extends Actor {
         return super.update(updateData, context);
     }
     
-    rollAttributePopup(attributeName) {
-        const attributeLabel = U.tCase(attributeName);
-        const MIN_DICE_MOD = -3;
-        const MAX_DICE_MOD = 3;
-        let content = `
-        <h2>${game.i18n.localize("BITD.Roll")} ${attributeLabel}</h2>
-        <form>
-          <div class="form-group">
-            <label>${game.i18n.localize("BITD.Modifier")}:</label>
-            <select id="mod" name="mod">
-              ${this.createListOfDiceMods(MIN_DICE_MOD, MAX_DICE_MOD, 0)}
-            </select>
-          </div>`;
-        if ([...Object.keys(Attribute), ...Object.keys(Action)].includes(attributeName)) {
-            content += `
-            <div class="form-group">
-              <label>${game.i18n.localize("BITD.Position")}:</label>
-              <select id="pos" name="pos">
-                <option value="controlled">${game.i18n.localize("BITD.PositionControlled")}</option>
-                <option value="risky" selected>${game.i18n.localize("BITD.PositionRisky")}</option>
-                <option value="desperate">${game.i18n.localize("BITD.PositionDesperate")}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>${game.i18n.localize("BITD.Effect")}:</label>
-              <select id="fx" name="fx">
-                <option value="limited">${game.i18n.localize("BITD.EffectLimited")}</option>
-                <option value="standard" selected>${game.i18n.localize("BITD.EffectStandard")}</option>
-                <option value="great">${game.i18n.localize("BITD.EffectGreat")}</option>
-              </select>
-            </div>`;
-        }
-        else {
-            content += `
-            <input id="pos" name="pos" type="hidden" value="">
-            <input id="fx" name="fx" type="hidden" value="">`;
-        }
-        content += `
-        <div className="form-group">
-          <label>${game.i18n.localize("BITD.Notes")}:</label>
-          <input id="note" name="note" type="text" value="">
-        </div><br/>
-        </form>
-      `;
-        new Dialog({
-            "title": `${game.i18n.localize("BITD.Roll")} ${attributeLabel}`,
-            content,
-            "buttons": {
-                yes: {
-                    icon: "<i class='fas fa-check'></i>",
-                    label: game.i18n.localize("BITD.Roll"),
-                    callback: async (html) => {
-                        if (html instanceof HTMLElement) {
-                            html = $(html);
-                        }
-                        const modifier = parseInt(`${html.find('[name="mod"]').attr("value") ?? 0}`, 10);
-                        const position = `${html.find('[name="pos"]').attr("value") ?? Position.risky}`;
-                        const effect = `${html.find('[name="fx"]').attr("value") ?? Effect.standard}`;
-                        const note = `${html.find('[name="note"]').attr("value") ?? 0}`;
-                        await this.rollAttribute(attributeName, modifier, position, effect, note);
-                    }
-                },
-                no: {
-                    icon: "<i class='fas fa-times'></i>",
-                    label: game.i18n.localize("Close")
-                }
-            },
-            "default": "yes"
-        }).render(true);
-    }
-    async rollAttribute(attributeName, additionalDiceAmount = 0, position = Position.risky, effect = Effect.standard, note) {
-        if (!BladesActor.IsType(this, BladesActorType.pc)) {
-            return;
-        }
-        bladesRoll(this.rollable[attributeName] + additionalDiceAmount, attributeName, position, effect, note);
-    }
+    
         createListOfDiceMods(rs, re, s) {
         let text = "";
         if (s === "") {

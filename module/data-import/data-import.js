@@ -7,7 +7,6 @@
 
 import { BladesActorType, BladesItemType } from "../core/constants.js";
 import U from "../core/utilities.js";
-import { BladesActor } from "../documents/blades-actor-proxy.js";
 import { BladesItem } from "../documents/blades-item-proxy.js";
 const JSONDATA = {
     FACTIONS: {
@@ -2347,7 +2346,7 @@ const { claim, favoredOperation, contact } = U.group(JSONDATA.CREW_OBJECTS, "typ
 export const updateClaims = async () => {
     const errorReport = [];
     const playbookUpdateData = {};
-    claim.forEach((cl) => {
+    (claim ?? []).forEach((cl) => {
         const playbookObj = game.items.getName(cl.playbook);
         if (!playbookObj || playbookObj.type !== BladesItemType.crew_playbook) {
             errorReport.push(`Claim ${cl.name} has invalid playbook ${cl.playbook}`);
@@ -2373,7 +2372,7 @@ export const updateClaims = async () => {
 };
 export const updateOps = async () => {
     const errorReport = [];
-    await Promise.all(favoredOperation.map(async (op) => {
+    await Promise.all((favoredOperation ?? []).map(async (op) => {
         const playbookObj = game.items.getName(op.playbook);
         if (!playbookObj || playbookObj.type !== BladesItemType.crew_playbook) {
             errorReport.push(`Favored Op ${op.name} has invalid playbook ${op.playbook}`);
@@ -2395,13 +2394,13 @@ export const updateOps = async () => {
 };
 export const updateContacts = async () => {
     const errorReport = [];
-    await Promise.all(contact.map(async (ct) => {
+    await Promise.all((contact ?? []).map(async (ct) => {
         const playbookObj = game.items.getName(ct.playbook);
         if (!BladesItem.IsType(playbookObj, BladesItemType.crew_playbook)) {
             errorReport.push(`Contact ${ct.name} has invalid playbook ${ct.playbook}`);
             return;
         }
-        const actor = await BladesActor.create({
+        const actor = await Actor.create({
             name: ct.name,
             type: BladesActorType.npc,
             system: {
@@ -2409,9 +2408,7 @@ export const updateContacts = async () => {
                 prompts: ct.hints?.join(" ")
             }
         });
-        if (BladesActor.IsType(actor, BladesActorType.npc)) {
-            actor.addTag(playbookObj.name);
-        }
+        actor.addTag(playbookObj.name);
     }));
     console.log(errorReport);
 };

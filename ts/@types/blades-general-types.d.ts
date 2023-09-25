@@ -31,6 +31,12 @@ declare global {
   // Represents a string-like value
   type StringLike = string | number | boolean | null | undefined;
 
+  // Represents falsy values and empty objects to be pruned when cleaning list of values
+  type UncleanValues = false | null | undefined | "" | 0 | Record<string, never> | never[];
+
+  // Represents an allowed gender key
+  type Gender = "M"|"F"|"U"|"X";
+
   // Represents HTML code as a string
   type HTMLCode = string;
 
