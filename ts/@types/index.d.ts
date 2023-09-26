@@ -1,9 +1,9 @@
 
-import BladesItem from "../blades-item";
-import BladesActor from "../blades-actor";
-import BladesClockKeeper from "../documents/items/blades-clock-keeper";
-import BladesGMTracker from "../documents/items/blades-gm-tracker";
-import BladesPushController from "../blades-push-notifications";
+import BladesItem from "../BladesItem";
+import BladesActor from "../BladesActor";
+import BladesClockKeeper from "../documents/items/BladesClockKeeper";
+import BladesGMTracker from "../documents/items/BladesGMTracker";
+import BladesPushController from "../BladesPushController";
 import type gsap from "/scripts/greensock/esm/all";
 
 import "./blades-general-types";

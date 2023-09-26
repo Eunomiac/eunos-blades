@@ -1,7 +1,7 @@
 import U from "./utilities.js";
 import C from "./constants.js";
 
-const LOGGERCONFIG: Record<string,any> = {
+const LOGGERCONFIG = {
   fullName: "eLogger",
   aliases: ["dbLog"],
   stackTraceExclusions: {
@@ -71,15 +71,16 @@ const STYLES = {
   }
 };
 
-const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...content: [string, ...any[]]) => {
+const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...content: [string, ...unknown[]]) => {
   if (!(type === "error" || CONFIG.debug.logging)) { return }
+  const lastElem = U.getLast(content);
 
-  let dbLevel: 0|1|2|3|4|5 = [0,1,2,3,4,5].includes(U.getLast(content))
-    ? content.pop()
+  let dbLevel: 0|1|2|3|4|5 = typeof lastElem === "number" && [0,1,2,3,4,5].includes(lastElem)
+    ? content.pop() as 0|1|2|3|4|5
     : 3;
   let key: string|false = false;
   if (type === "checkLog") {
-    key = content.shift();
+    key = content.shift() as string;
     type = `log${dbLevel}`;
   }
 
@@ -103,7 +104,7 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
   }
   const stackTrace = type === "display"
     ? null
-    : getStackTrace(LOGGERCONFIG.stackTraceExclusions[type] ?? []);
+    : getStackTrace(LOGGERCONFIG.stackTraceExclusions[type as KeyOf<typeof LOGGERCONFIG["stackTraceExclusions"]>] ?? []);
   const styleLine = Object.entries({
     ...STYLES.base,
     ...STYLES[type] ?? {}
@@ -155,8 +156,8 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
   }
 };
 
-type eLogParams = [string, ...any[]];
-const eLog = {
+type eLogParams = [string, ...unknown[]];
+const logger = {
   display: (...content: eLogParams) => eLogger("display", ...content),
   log0: (...content: eLogParams) => eLogger("log", ...content, 0),
   log1: (...content: eLogParams) => eLogger("log", ...content, 1),
@@ -176,9 +177,4 @@ const eLog = {
   hbsLog: (...content: eLogParams) => eLogger("handlebars", ...content)
 };
 
-const registerDebugger = () => {
-  Object.assign(globalThis, {eLog});
-  Handlebars.registerHelper("eLog", eLog.hbsLog);
-};
-
-export default registerDebugger;
+export default logger;

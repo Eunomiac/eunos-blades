@@ -94,7 +94,7 @@ export enum OtherDistrict {
   Deathlands = "Deathlands"
 }
 
-export enum Attribute {
+export enum AttributeTrait {
   insight = "insight",
   prowess = "prowess",
   resolve = "resolve"
@@ -117,7 +117,7 @@ export enum ResolveActions {
   consort = "consort",
   sway = "sway"
 }
-export enum Action {
+export enum ActionTrait {
   hunt = "hunt",
   study = "study",
   survey = "survey",
@@ -133,11 +133,11 @@ export enum Action {
 }
 
 export enum DowntimeAction {
-  Acquire = "Acquire",
+  AcquireAsset = "AcquireAsset",
+  IndulgeVice = "IndulgeVice",
+  LongTermProject = "LongTermProject",
   Recover = "Recover",
-  Vice = "Vice",
-  Project = "Project",
-  Heat = "Heat",
+  ReduceHeat = "ReduceHeat",
   Train = "Train"
 }
 
@@ -150,7 +150,6 @@ export enum RollType {
 
 export enum RollSubType {
   Incarceration = "Incarceration",
-  Healing = "Healing",
   Engagement = "Engagement",
   GatherInfo = "GatherInfo"
 }
@@ -312,7 +311,7 @@ export namespace Tag {
   export enum GearCategory {
     ArcaneImplement = "ArcaneImplement",
     Document = "Document",
-    Gear = "Gear",
+    GearKit = "GearKit",
     SubterfugeSupplies = "SubterfugeSupplies",
     Tool = "Tool",
     Weapon = "Weapon"
@@ -365,56 +364,56 @@ const C = {
     levels: ["BITD.Light", "BITD.Normal", "BITD.Heavy", "BITD.Encumbered", "BITD.OverMax"]
   },
   AttributeTooltips: {
-    [Attribute.insight]: "<p>Resists consequences from <strong>deception</strong> or <strong>understanding</strong></p>",
-    [Attribute.prowess]: "<p>Resists consequences from <strong>physical strain</strong> or <strong>injury</strong></p>",
-    [Attribute.resolve]: "<p>Resists consequences from <strong>mental strain</strong> or <strong>willpower</strong></p>"
+    [AttributeTrait.insight]: "<p>Resists consequences from <strong>deception</strong> or <strong>understanding</strong></p>",
+    [AttributeTrait.prowess]: "<p>Resists consequences from <strong>physical strain</strong> or <strong>injury</strong></p>",
+    [AttributeTrait.resolve]: "<p>Resists consequences from <strong>mental strain</strong> or <strong>willpower</strong></p>"
   },
   ShortAttributeTooltips: {
-    [Attribute.insight]: "vs. <strong>deception</strong> or <strong>(mis)understanding</strong>",
-    [Attribute.prowess]: "vs. <strong>physical strain</strong> or <strong>injury</strong>",
-    [Attribute.resolve]: "vs. <strong>mental strain</strong> or <strong>willpower</strong>"
+    [AttributeTrait.insight]: "vs. <strong>deception</strong> or <strong>(mis)understanding</strong>",
+    [AttributeTrait.prowess]: "vs. <strong>physical strain</strong> or <strong>injury</strong>",
+    [AttributeTrait.resolve]: "vs. <strong>mental strain</strong> or <strong>willpower</strong>"
   },
   ShortActionTooltips: {
-    [Action.hunt]: "carefully track a target",
-    [Action.study]: "scrutinize details and interpret evidence",
-    [Action.survey]: "observe the situation and anticipate outcomes",
-    [Action.tinker]: "fiddle with devices and mechanisms",
-    [Action.finesse]: "employ dexterity or subtle misdirection",
-    [Action.prowl]: "traverse skillfully and quietly",
-    [Action.skirmish]: "entangle a target in melee so they can't escape",
-    [Action.wreck]: "unleash savage force",
-    [Action.attune]: "open your mind to the ghost field or channel nearby electroplasmic energy through your body",
-    [Action.command]: "compel swift obedience",
-    [Action.consort]: "socialize with friends and contacts",
-    [Action.sway]: "influence someone with guile, charm, or argument"
+    [ActionTrait.hunt]: "carefully track a target",
+    [ActionTrait.study]: "scrutinize details and interpret evidence",
+    [ActionTrait.survey]: "observe the situation and anticipate outcomes",
+    [ActionTrait.tinker]: "fiddle with devices and mechanisms",
+    [ActionTrait.finesse]: "employ dexterity or subtle misdirection",
+    [ActionTrait.prowl]: "traverse skillfully and quietly",
+    [ActionTrait.skirmish]: "entangle a target in melee so they can't escape",
+    [ActionTrait.wreck]: "unleash savage force",
+    [ActionTrait.attune]: "open your mind to the ghost field or channel nearby electroplasmic energy through your body",
+    [ActionTrait.command]: "compel swift obedience",
+    [ActionTrait.consort]: "socialize with friends and contacts",
+    [ActionTrait.sway]: "influence someone with guile, charm, or argument"
   },
   ActionTooltips: {
-    [Action.hunt]: "<p>When you <strong>Hunt</strong>, you carefully track a target.</p><ul><li>You might follow a person or discover their location.</li><li>You might arrange an ambush.</li><li>You might attack with precision shooting from a distance.</li></ul><ul><li>You could try to wield your guns in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
-    [Action.study]: "<p>When you <strong>Study</strong>, you scrutinize details and interpret evidence.</p><ul><li>You might gather information from documents, newspapers, and books.</li><li>You might do research on an esoteric topic.</li><li>You might closely analyze a person to detect lies or true feelings.</li></ul><ul><li>You could try to understand a pressing situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul>",
-    [Action.survey]: "<p>When you <strong>Survey</strong>, you observe the situation and anticipate outcomes.</p><ul><li>You might spot telltale signs of trouble before it happens.</li><li>You might uncover opportunities or weaknesses.</li></ul><ul><li>You might detect a person's motives or intentions <em>(but <strong>Studying</strong> might be better)</em>.</li><li>You could try to spot a good ambush point <em>(but <strong>Hunting</strong> might be better)</em>.</li></ul>",
-    [Action.tinker]: "<p>When you <strong>Tinker</strong>, you fiddle with devices and mechanisms.</p><ul><li>You might create a new gadget or alter an existing item.</li><li>You might pick a lock or crack a safe.</li><li>You might disable an alarm or trap.</li><li>You might turn the sparkcraft and electroplasmic devices around the city to your advantage.</li></ul><ul><li>You could try to control a vehicle with your tech-savvy <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul>",
-    [Action.finesse]: "<p>When you <strong>Finesse</strong>, you employ dexterity or subtle misdirection.</p><ul><li>You might pick someone's pocket.</li><li>You might handle the controls of a vehicle or direct a mount.</li><li>You might formally duel an opponent with graceful fighting arts.</li></ul><ul><li>You could try to leverage agility in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li><li>You could try to pick a lock <em>(but <strong>Tinkering</strong> might be better)</em>.</li></ul>",
-    [Action.prowl]: "<p>When you <strong>Prowl</strong>, you traverse skillfully and quietly.</p><ul><li>You might sneak past a guard or hide in the shadows.</li><li>You might run and leap across the rooftops.</li><li>You might attack someone from hiding with a back-stab or blackjack.</li></ul><ul><li>You could try to waylay a victim during combat <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
-    [Action.skirmish]: "<p>When you <strong>Skirmish</strong>, you entangle a target in melee so they can't escape.</p><ul><li>You might brawl or wrestle with them.</li><li>You might hack and slash.</li><li>You might seize or hold a position in battle.</li></ul><ul><li>You could try to fight in a formal duel <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul>",
-    [Action.wreck]: "<p>When you <strong>Wreck</strong>, you unleash savage force.</p><ul><li>You might smash down a door or wall with a sledgehammer.</li><li>You might use an explosive to do the same.</li><li>You might use chaos or sabotage to create distractions or overcome obstacles.</li></ul><ul><li>You could try to overwhelm an enemy with sheer force in battle <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
-    [Action.attune]: "<p>When you <strong>Attune</strong>, you open your mind to the ghost field or channel nearby electroplasmic energy through your body.</p><ul><li>You might communicate with a ghost or understand aspects of spectrology.</li><li>You might peer into the echo of Doskvol in the ghost field.</li></ul><ul><li>You could try to perceive beyond sight in order to better understand your situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul>",
-    [Action.command]: "<p>When you <strong>Command</strong>, you compel swift obedience.</p><ul><li>You might intimidate or threaten to get what you want.</li><li>You might lead a gang in a group action.</li></ul><ul><li>You could try to persuade people by giving orders <em>(but <strong>Consorting</strong> might be better)</em>.</li></ul>",
-    [Action.consort]: "<p>When you <strong>Consort</strong>, you socialize with friends and contacts.</p><ul><li>You might gain access to resources, information, people, or places.</li><li>You might make a good impression or win someone over with charm and style.</li><li>You might make new friends or connect with your heritage or background.</li></ul><ul><li>You could try to direct allies with social pressure <em>(but <strong>Commanding</strong> might be better)</em>.</li></ul>",
-    [Action.sway]: "<p>When you <strong>Sway</strong>, you influence someone with guile, charm, or argument.</p><ul><li>You might lie convincingly.</li><li>You might persuade someone to do what you want.</li><li>You might argue a case that leaves no clear rebuttal.</li></ul><ul><li>You could try to trick people into affection or obedience <em>(but <strong>Consorting</strong> or <strong>Commanding</strong> might be better)</em>.</li></ul>"
+    [ActionTrait.hunt]: "<p>When you <strong>Hunt</strong>, you carefully track a target.</p><ul><li>You might follow a person or discover their location.</li><li>You might arrange an ambush.</li><li>You might attack with precision shooting from a distance.</li></ul><ul><li>You could try to wield your guns in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
+    [ActionTrait.study]: "<p>When you <strong>Study</strong>, you scrutinize details and interpret evidence.</p><ul><li>You might gather information from documents, newspapers, and books.</li><li>You might do research on an esoteric topic.</li><li>You might closely analyze a person to detect lies or true feelings.</li></ul><ul><li>You could try to understand a pressing situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul>",
+    [ActionTrait.survey]: "<p>When you <strong>Survey</strong>, you observe the situation and anticipate outcomes.</p><ul><li>You might spot telltale signs of trouble before it happens.</li><li>You might uncover opportunities or weaknesses.</li></ul><ul><li>You might detect a person's motives or intentions <em>(but <strong>Studying</strong> might be better)</em>.</li><li>You could try to spot a good ambush point <em>(but <strong>Hunting</strong> might be better)</em>.</li></ul>",
+    [ActionTrait.tinker]: "<p>When you <strong>Tinker</strong>, you fiddle with devices and mechanisms.</p><ul><li>You might create a new gadget or alter an existing item.</li><li>You might pick a lock or crack a safe.</li><li>You might disable an alarm or trap.</li><li>You might turn the sparkcraft and electroplasmic devices around the city to your advantage.</li></ul><ul><li>You could try to control a vehicle with your tech-savvy <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul>",
+    [ActionTrait.finesse]: "<p>When you <strong>Finesse</strong>, you employ dexterity or subtle misdirection.</p><ul><li>You might pick someone's pocket.</li><li>You might handle the controls of a vehicle or direct a mount.</li><li>You might formally duel an opponent with graceful fighting arts.</li></ul><ul><li>You could try to leverage agility in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li><li>You could try to pick a lock <em>(but <strong>Tinkering</strong> might be better)</em>.</li></ul>",
+    [ActionTrait.prowl]: "<p>When you <strong>Prowl</strong>, you traverse skillfully and quietly.</p><ul><li>You might sneak past a guard or hide in the shadows.</li><li>You might run and leap across the rooftops.</li><li>You might attack someone from hiding with a back-stab or blackjack.</li></ul><ul><li>You could try to waylay a victim during combat <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
+    [ActionTrait.skirmish]: "<p>When you <strong>Skirmish</strong>, you entangle a target in melee so they can't escape.</p><ul><li>You might brawl or wrestle with them.</li><li>You might hack and slash.</li><li>You might seize or hold a position in battle.</li></ul><ul><li>You could try to fight in a formal duel <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul>",
+    [ActionTrait.wreck]: "<p>When you <strong>Wreck</strong>, you unleash savage force.</p><ul><li>You might smash down a door or wall with a sledgehammer.</li><li>You might use an explosive to do the same.</li><li>You might use chaos or sabotage to create distractions or overcome obstacles.</li></ul><ul><li>You could try to overwhelm an enemy with sheer force in battle <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul>",
+    [ActionTrait.attune]: "<p>When you <strong>Attune</strong>, you open your mind to the ghost field or channel nearby electroplasmic energy through your body.</p><ul><li>You might communicate with a ghost or understand aspects of spectrology.</li><li>You might peer into the echo of Doskvol in the ghost field.</li></ul><ul><li>You could try to perceive beyond sight in order to better understand your situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul>",
+    [ActionTrait.command]: "<p>When you <strong>Command</strong>, you compel swift obedience.</p><ul><li>You might intimidate or threaten to get what you want.</li><li>You might lead a gang in a group action.</li></ul><ul><li>You could try to persuade people by giving orders <em>(but <strong>Consorting</strong> might be better)</em>.</li></ul>",
+    [ActionTrait.consort]: "<p>When you <strong>Consort</strong>, you socialize with friends and contacts.</p><ul><li>You might gain access to resources, information, people, or places.</li><li>You might make a good impression or win someone over with charm and style.</li><li>You might make new friends or connect with your heritage or background.</li></ul><ul><li>You could try to direct allies with social pressure <em>(but <strong>Commanding</strong> might be better)</em>.</li></ul>",
+    [ActionTrait.sway]: "<p>When you <strong>Sway</strong>, you influence someone with guile, charm, or argument.</p><ul><li>You might lie convincingly.</li><li>You might persuade someone to do what you want.</li><li>You might argue a case that leaves no clear rebuttal.</li></ul><ul><li>You could try to trick people into affection or obedience <em>(but <strong>Consorting</strong> or <strong>Commanding</strong> might be better)</em>.</li></ul>"
   },
   ActionTooltipsGM: {
-    [Action.hunt]: "<p>When you <strong>Hunt</strong>, you carefully track a target.</p><ul><li>You might follow a person or discover their location.</li><li>You might arrange an ambush.</li><li>You might attack with precision shooting from a distance.</li></ul><ul><li>You could try to wield your guns in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul><hr><ul><li>How do you hunt them down?</li><li>What methods do you use?</li><li>What do you hope to achieve?</li></ul>",
-    [Action.study]: "<p>When you <strong>Study</strong>, you scrutinize details and interpret evidence.</p><ul><li>You might gather information from documents, newspapers, and books.</li><li>You might do research on an esoteric topic.</li><li>You might closely analyze a person to detect lies or true feelings.</li></ul><ul><li>You could try to understand a pressing situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul><hr><ul><li>What do you study?</li><li>What details or evidence do you scrutinize?</li><li>What do you hope to understand?</li></ul>",
-    [Action.survey]: "<p>When you <strong>Survey</strong>, you observe the situation and anticipate outcomes.</p><ul><li>You might spot telltale signs of trouble before it happens.</li><li>You might uncover opportunities or weaknesses.</li></ul><ul><li>You might detect a person's motives or intentions <em>(but <strong>Studying</strong> might be better)</em>.</li><li>You could try to spot a good ambush point <em>(but <strong>Hunting</strong> might be better)</em>.</li></ul><hr><ul><li>How do you survey the situation?</li><li>Is there anything special you're looking out for?</li><li>What do you hope to understand?</li></ul>",
-    [Action.tinker]: "<p>When you <strong>Tinker</strong>, you fiddle with devices and mechanisms.</p><ul><li>You might create a new gadget or alter an existing item.</li><li>You might pick a lock or crack a safe.</li><li>You might disable an alarm or trap.</li><li>You might turn the sparkcraft and electroplasmic devices around the city to your advantage.</li></ul><ul><li>You could try to control a vehicle with your tech-savvy <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul><hr><ul><li>What do you tinker with?</li><li>What do you hope to accomplish?</li></ul>",
-    [Action.finesse]: "<p>When you <strong>Finesse</strong>, you employ dexterity or subtle misdirection.</p><ul><li>You might pick someone's pocket.</li><li>You might handle the controls of a vehicle or direct a mount.</li><li>You might formally duel an opponent with graceful fighting arts.</li></ul><ul><li>You could try to leverage agility in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li><li>You could try to pick a lock <em>(but <strong>Tinkering</strong> might be better)</em>.</li></ul><hr><ul><li>What do you finesse?</li><li>What's graceful or subtle about this?</li><li>What do you hope to achieve?</li></ul>",
-    [Action.prowl]: "<p>When you <strong>Prowl</strong>, you traverse skillfully and quietly.</p><ul><li>You might sneak past a guard or hide in the shadows.</li><li>You might run and leap across the rooftops.</li><li>You might attack someone from hiding with a back-stab or blackjack.</li></ul><ul><li>You could try to waylay a victim during combat <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul><hr><ul><li>How do you prowl?</li><li>How do you use the environment around you?</li><li>What do you hope to achieve?</li></ul>",
-    [Action.skirmish]: "<p>When you <strong>Skirmish</strong>, you entangle a target in melee so they can't escape.</p><ul><li>You might brawl or wrestle with them.</li><li>You might hack and slash.</li><li>You might seize or hold a position in battle.</li></ul><ul><li>You could try to fight in a formal duel <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul><hr><ul><li>How do you skirmish with them?</li><li>What combat methods do you use?</li><li>What do you hope to achieve?</li></ul>",
-    [Action.wreck]: "<p>When you <strong>Wreck</strong>, you unleash savage force.</p><ul><li>You might smash down a door or wall with a sledgehammer.</li><li>You might use an explosive to do the same.</li><li>You might use chaos or sabotage to create distractions or overcome obstacles.</li></ul><ul><li>You could try to overwhelm an enemy with sheer force in battle <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul><hr><ul><li>What do you wreck?</li><li>What force do you bring to bear?</li><li>What do you hope to accomplish?</li></ul>",
-    [Action.attune]: "<p>When you <strong>Attune</strong>, you open your mind to the ghost field or channel nearby electroplasmic energy through your body.</p><ul><li>You might communicate with a ghost or understand aspects of spectrology.</li><li>You might peer into the echo of Doskvol in the ghost field.</li></ul><ul><li>You could try to perceive beyond sight in order to better understand your situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul><hr><ul><li>How do you open your mind to the ghost field?</li><li>What does that look like?</li><li>What energy are you attuning to?</li><li>How are you channeling that energy?</li><li>What do you hope the energy will do?</li></ul>",
-    [Action.command]: "<p>When you <strong>Command</strong>, you compel swift obedience.</p><ul><li>You might intimidate or threaten to get what you want.</li><li>You might lead a gang in a group action.</li></ul><ul><li>You could try to persuade people by giving orders <em>(but <strong>Consorting</strong> might be better)</em>.</li></ul><hr><ul><li>Who do you command?</li><li>How do you do it—what's your leverage here?</li><li>What do you hope they'll do?</li></ul>",
-    [Action.consort]: "<p>When you <strong>Consort</strong>, you socialize with friends and contacts.</p><ul><li>You might gain access to resources, information, people, or places.</li><li>You might make a good impression or win someone over with charm and style.</li><li>You might make new friends or connect with your heritage or background.</li></ul><ul><li>You could try to direct allies with social pressure <em>(but <strong>Commanding</strong> might be better)</em>.</li></ul><hr><ul><li>Who do you consort with?</li><li>Where do you meet?</li><li>What do you talk about?</li><li>What do you hope to achieve?</li></ul>",
-    [Action.sway]: "<p>When you <strong>Sway</strong>, you influence someone with guile, charm, or argument.</p><ul><li>You might lie convincingly.</li><li>You might persuade someone to do what you want.</li><li>You might argue a case that leaves no clear rebuttal.</li></ul><ul><li>You could try to trick people into affection or obedience <em>(but <strong>Consorting</strong> or <strong>Commanding</strong> might be better)</em>.</li></ul><hr><ul><li>Who do you sway?</li><li>What kind of leverage do you have here?</li><li>What do you hope they'll do?</li></ul>"
+    [ActionTrait.hunt]: "<p>When you <strong>Hunt</strong>, you carefully track a target.</p><ul><li>You might follow a person or discover their location.</li><li>You might arrange an ambush.</li><li>You might attack with precision shooting from a distance.</li></ul><ul><li>You could try to wield your guns in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul><hr><ul><li>How do you hunt them down?</li><li>What methods do you use?</li><li>What do you hope to achieve?</li></ul>",
+    [ActionTrait.study]: "<p>When you <strong>Study</strong>, you scrutinize details and interpret evidence.</p><ul><li>You might gather information from documents, newspapers, and books.</li><li>You might do research on an esoteric topic.</li><li>You might closely analyze a person to detect lies or true feelings.</li></ul><ul><li>You could try to understand a pressing situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul><hr><ul><li>What do you study?</li><li>What details or evidence do you scrutinize?</li><li>What do you hope to understand?</li></ul>",
+    [ActionTrait.survey]: "<p>When you <strong>Survey</strong>, you observe the situation and anticipate outcomes.</p><ul><li>You might spot telltale signs of trouble before it happens.</li><li>You might uncover opportunities or weaknesses.</li></ul><ul><li>You might detect a person's motives or intentions <em>(but <strong>Studying</strong> might be better)</em>.</li><li>You could try to spot a good ambush point <em>(but <strong>Hunting</strong> might be better)</em>.</li></ul><hr><ul><li>How do you survey the situation?</li><li>Is there anything special you're looking out for?</li><li>What do you hope to understand?</li></ul>",
+    [ActionTrait.tinker]: "<p>When you <strong>Tinker</strong>, you fiddle with devices and mechanisms.</p><ul><li>You might create a new gadget or alter an existing item.</li><li>You might pick a lock or crack a safe.</li><li>You might disable an alarm or trap.</li><li>You might turn the sparkcraft and electroplasmic devices around the city to your advantage.</li></ul><ul><li>You could try to control a vehicle with your tech-savvy <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul><hr><ul><li>What do you tinker with?</li><li>What do you hope to accomplish?</li></ul>",
+    [ActionTrait.finesse]: "<p>When you <strong>Finesse</strong>, you employ dexterity or subtle misdirection.</p><ul><li>You might pick someone's pocket.</li><li>You might handle the controls of a vehicle or direct a mount.</li><li>You might formally duel an opponent with graceful fighting arts.</li></ul><ul><li>You could try to leverage agility in a melee <em>(but <strong>Skirmishing</strong> might be better)</em>.</li><li>You could try to pick a lock <em>(but <strong>Tinkering</strong> might be better)</em>.</li></ul><hr><ul><li>What do you finesse?</li><li>What's graceful or subtle about this?</li><li>What do you hope to achieve?</li></ul>",
+    [ActionTrait.prowl]: "<p>When you <strong>Prowl</strong>, you traverse skillfully and quietly.</p><ul><li>You might sneak past a guard or hide in the shadows.</li><li>You might run and leap across the rooftops.</li><li>You might attack someone from hiding with a back-stab or blackjack.</li></ul><ul><li>You could try to waylay a victim during combat <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul><hr><ul><li>How do you prowl?</li><li>How do you use the environment around you?</li><li>What do you hope to achieve?</li></ul>",
+    [ActionTrait.skirmish]: "<p>When you <strong>Skirmish</strong>, you entangle a target in melee so they can't escape.</p><ul><li>You might brawl or wrestle with them.</li><li>You might hack and slash.</li><li>You might seize or hold a position in battle.</li></ul><ul><li>You could try to fight in a formal duel <em>(but <strong>Finessing</strong> might be better)</em>.</li></ul><hr><ul><li>How do you skirmish with them?</li><li>What combat methods do you use?</li><li>What do you hope to achieve?</li></ul>",
+    [ActionTrait.wreck]: "<p>When you <strong>Wreck</strong>, you unleash savage force.</p><ul><li>You might smash down a door or wall with a sledgehammer.</li><li>You might use an explosive to do the same.</li><li>You might use chaos or sabotage to create distractions or overcome obstacles.</li></ul><ul><li>You could try to overwhelm an enemy with sheer force in battle <em>(but <strong>Skirmishing</strong> might be better)</em>.</li></ul><hr><ul><li>What do you wreck?</li><li>What force do you bring to bear?</li><li>What do you hope to accomplish?</li></ul>",
+    [ActionTrait.attune]: "<p>When you <strong>Attune</strong>, you open your mind to the ghost field or channel nearby electroplasmic energy through your body.</p><ul><li>You might communicate with a ghost or understand aspects of spectrology.</li><li>You might peer into the echo of Doskvol in the ghost field.</li></ul><ul><li>You could try to perceive beyond sight in order to better understand your situation <em>(but <strong>Surveying</strong> might be better)</em>.</li></ul><hr><ul><li>How do you open your mind to the ghost field?</li><li>What does that look like?</li><li>What energy are you attuning to?</li><li>How are you channeling that energy?</li><li>What do you hope the energy will do?</li></ul>",
+    [ActionTrait.command]: "<p>When you <strong>Command</strong>, you compel swift obedience.</p><ul><li>You might intimidate or threaten to get what you want.</li><li>You might lead a gang in a group action.</li></ul><ul><li>You could try to persuade people by giving orders <em>(but <strong>Consorting</strong> might be better)</em>.</li></ul><hr><ul><li>Who do you command?</li><li>How do you do it—what's your leverage here?</li><li>What do you hope they'll do?</li></ul>",
+    [ActionTrait.consort]: "<p>When you <strong>Consort</strong>, you socialize with friends and contacts.</p><ul><li>You might gain access to resources, information, people, or places.</li><li>You might make a good impression or win someone over with charm and style.</li><li>You might make new friends or connect with your heritage or background.</li></ul><ul><li>You could try to direct allies with social pressure <em>(but <strong>Commanding</strong> might be better)</em>.</li></ul><hr><ul><li>Who do you consort with?</li><li>Where do you meet?</li><li>What do you talk about?</li><li>What do you hope to achieve?</li></ul>",
+    [ActionTrait.sway]: "<p>When you <strong>Sway</strong>, you influence someone with guile, charm, or argument.</p><ul><li>You might lie convincingly.</li><li>You might persuade someone to do what you want.</li><li>You might argue a case that leaves no clear rebuttal.</li></ul><ul><li>You could try to trick people into affection or obedience <em>(but <strong>Consorting</strong> or <strong>Commanding</strong> might be better)</em>.</li></ul><hr><ul><li>Who do you sway?</li><li>What kind of leverage do you have here?</li><li>What do you hope they'll do?</li></ul>"
   },
   TraumaTooltips: {
     Cold: "You're not moved by emotional appeals or social bonds.",
@@ -951,14 +950,14 @@ const C = {
     BladesItemType.stricture
   ],
   Attribute: [
-    Attribute.insight,
-    Attribute.prowess,
-    Attribute.resolve
+    AttributeTrait.insight,
+    AttributeTrait.prowess,
+    AttributeTrait.resolve
   ],
   Action: {
-    [Attribute.insight]: [Action.hunt, Action.study, Action.survey, Action.tinker],
-    [Attribute.prowess]: [Action.finesse, Action.prowl, Action.skirmish, Action.wreck],
-    [Attribute.resolve]: [Action.attune, Action.command, Action.consort, Action.sway]
+    [AttributeTrait.insight]: [ActionTrait.hunt, ActionTrait.study, ActionTrait.survey, ActionTrait.tinker],
+    [AttributeTrait.prowess]: [ActionTrait.finesse, ActionTrait.prowl, ActionTrait.skirmish, ActionTrait.wreck],
+    [AttributeTrait.resolve]: [ActionTrait.attune, ActionTrait.command, ActionTrait.consort, ActionTrait.sway]
   },
   Vices: [
     Vice.Faith, Vice.Gambling, Vice.Luxury, Vice.Obligation, Vice.Pleasure, Vice.Stupor, Vice.Weird, Vice.Worship, Vice.Living_Essence, Vice.Life_Essence, Vice.Electroplasmic_Power

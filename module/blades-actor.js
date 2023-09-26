@@ -7,7 +7,8 @@
 
 import U from "./core/utilities.js";
 import C, { BladesActorType, Tag, Playbook, BladesItemType, Action, PrereqType, AdvancementPoint, Randomizers, Factor } from "./core/constants.js";
-import BladesItem from "./blades-item.js";
+import { BladesItem } from "./documents/blades-item-proxy.js";
+import BladesPushController from "./blades-push-notifications.js";
 import { SelectionCategory } from "./blades-dialog.js";
 class BladesActor extends Actor {
 
@@ -697,7 +698,7 @@ class BladesActor extends Actor {
         }
         await this.update({ "system.experience.playbook.value": 0 });
         if (BladesActor.IsType(this, BladesActorType.pc)) {
-            game.eunoblades.PushController?.pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`);
+            BladesPushController.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`);
             this.grantAdvancementPoints(AdvancementPoint.Ability);
             return;
         }

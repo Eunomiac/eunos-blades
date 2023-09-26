@@ -8,34 +8,36 @@
 import C from "./core/constants.js";
 import registerSettings, { initTinyMCEStyles, initCanvasStyles } from "./core/settings.js";
 import { registerHandlebarHelpers, preloadHandlebarsTemplates } from "./core/helpers.js";
-import BladesPushController from "./blades-push-notifications.js";
+import BladesPushController from "./BladesPushController.js";
 import U from "./core/utilities.js";
-import registerDebugger from "./core/logger.js";
+import logger from "./core/logger.js";
 import G, { Initialize as GsapInitialize } from "./core/gsap.js";
-import BladesActor from "./blades-actor.js";
-import BladesActorProxy from "./documents/blades-actor-proxy.js";
-import BladesItemProxy, { BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore } from "./documents/blades-item-proxy.js";
-import BladesItemSheet from "./sheets/item/blades-item-sheet.js";
-import BladesPCSheet from "./sheets/actor/blades-pc-sheet.js";
-import BladesCrewSheet from "./sheets/actor/blades-crew-sheet.js";
-import BladesNPCSheet from "./sheets/actor/blades-npc-sheet.js";
-import BladesFactionSheet from "./sheets/actor/blades-faction-sheet.js";
-import BladesRollCollab, { ApplyRollEffects, ApplyDescriptions } from "./blades-roll-collab.js";
-import BladesSelectorDialog from "./blades-dialog.js";
-import BladesActiveEffect from "./blades-active-effect.js";
-import BladesTrackerSheet from "./sheets/item/blades-tracker-sheet.js";
-import BladesClockKeeperSheet from "./sheets/item/blades-clock-keeper-sheet.js";
-import { updateClaims, updateContacts, updateOps, updateFactions } from "./data-import/data-import.js";
+import BladesActorProxy, { BladesActor } from "./documents/BladesActorProxy.js";
+import BladesItemProxy, { BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore } from "./documents/BladesItemProxy.js";
+import BladesItemSheet from "./sheets/item/BladesItemSheet.js";
+import BladesPCSheet from "./sheets/actor/BladesPCSheet.js";
+import BladesCrewSheet from "./sheets/actor/BladesCrewSheet.js";
+import BladesNPCSheet from "./sheets/actor/BladesNPCSheet.js";
+import BladesFactionSheet from "./sheets/actor/BladesFactionSheet.js";
+import BladesRollCollab from "./BladesRollCollab.js";
+import BladesSelectorDialog from "./BladesDialog.js";
+import BladesActiveEffect from "./BladesActiveEffect.js";
+import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet.js";
+import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet.js";
+import { updateClaims, updateContacts, updateOps, updateFactions, updateDescriptions, updateRollMods } from "./data-import/data-import.js";
 CONFIG.debug.logging = false;
-CONFIG.debug.logging = true; 
+CONFIG.debug.logging = true;
+Object.assign(globalThis, { eLog: logger });
+Handlebars.registerHelper("eLog", logger.hbsLog); 
 let socket;
-registerDebugger();
 
 Object.assign(globalThis, {
     updateClaims,
     updateContacts,
     updateOps,
     updateFactions,
+    applyDescriptions: updateDescriptions,
+    applyRollEffects: updateRollMods,
     BladesActor,
     BladesPCSheet,
     BladesCrewSheet,
@@ -44,8 +46,6 @@ Object.assign(globalThis, {
     BladesActiveEffect,
     BladesPushController,
     BladesRollCollab,
-    ApplyRollEffects,
-    ApplyDescriptions,
     G,
     U,
     C,
@@ -55,7 +55,7 @@ Object.assign(globalThis, {
     BladesLocation,
     BladesItemSheet,
     BladesClockKeeperSheet,
-    BladesTrackerSheet
+    BladesGMTrackerSheet
 });
 
 Hooks.once("init", async () => {
@@ -73,7 +73,7 @@ Hooks.once("init", async () => {
     await Promise.all([
         BladesPCSheet.Initialize(),
         BladesActiveEffect.Initialize(),
-        BladesTrackerSheet.Initialize(),
+        BladesGMTrackerSheet.Initialize(),
         BladesScore.Initialize(),
         BladesSelectorDialog.Initialize(),
         BladesClockKeeperSheet.Initialize(),
@@ -83,10 +83,9 @@ Hooks.once("init", async () => {
     ]);
     registerHandlebarHelpers();
 });
-Hooks.once("ready", async () => {
+Hooks.once("ready", () => {
     initCanvasStyles();
     initTinyMCEStyles();
-    DebugPC();
 });
 
 Hooks.once("socketlib.ready", () => {

@@ -6,7 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import { BladesItemType } from "./constants.js";
-import BladesItem from "../blades-item.js";
+import BladesItem from "../BladesItem.js";
 class MixinBuilder {
     superclass;
     constructor(superclass) { this.superclass = superclass; }

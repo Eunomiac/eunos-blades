@@ -12,6 +12,18 @@ const _onTagifyChange = (event: Event, doc: BladesDoc, targetKey: keyof BladesDo
   }
 };
 
+interface TagData {
+  value: string;
+  [key: string]: unknown;
+}
+
+interface TagifyFunctions {
+  dropdown: {
+    createListHTML: (optionsArray: Array<{ value: BladesTag; "data-group": string }>) => string,
+    getMappedValue: (tagData: TagData) => string
+  }
+}
+
 const Tags = {
   InitListeners: (html: JQuery<HTMLElement>, doc: BladesDoc) => {
 
@@ -34,15 +46,15 @@ const Tags = {
           placeAbove: false,
           appendTarget: html[0]
         }
-      });
+      }) as Tagify & TagifyFunctions;
 
-      (tagify as any).dropdown.createListHTML = (optionsArr: Array<{ value: BladesTag; "data-group": string }>) => {
+      tagify.dropdown.createListHTML = (optionsArr: Array<{ value: BladesTag; "data-group": string }>) => {
         const map: Record<string, unknown> = {};
 
         return structuredClone(optionsArr)
           .map((suggestion, idx) => {
 
-            const value = (tagify as any).dropdown.getMappedValue.call(
+            const value = tagify.dropdown.getMappedValue.call(
               tagify,
               suggestion
             );

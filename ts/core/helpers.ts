@@ -2,8 +2,8 @@
 import U from "./utilities.js";
 
 import type {ItemData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
-import type BladesActor from "../blades-actor.js";
-import type BladesItem from "../blades-item.js";
+import type BladesActor from "../BladesActor.js";
+import type BladesItem from "../BladesItem.js";
 import {HbsSvgData, SVGDATA} from "./constants.js";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮

@@ -1,4 +1,4 @@
-import {BladesActorType, BladesItemType, Attribute, Action, BladesPhase} from "../core/constants";
+import {BladesActorType, BladesItemType, AttributeTrait, ActionTrait, BladesPhase} from "../core/constants";
 
 declare global {
 

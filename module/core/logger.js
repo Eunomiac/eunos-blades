@@ -78,7 +78,8 @@ const eLogger = (type = "base", ...content) => {
     if (!(type === "error" || CONFIG.debug.logging)) {
         return;
     }
-    let dbLevel = [0, 1, 2, 3, 4, 5].includes(U.getLast(content))
+    const lastElem = U.getLast(content);
+    let dbLevel = typeof lastElem === "number" && [0, 1, 2, 3, 4, 5].includes(lastElem)
         ? content.pop()
         : 3;
     let key = false;
@@ -157,7 +158,7 @@ const eLogger = (type = "base", ...content) => {
             .join("\n");
     }
 };
-const eLog = {
+const logger = {
     display: (...content) => eLogger("display", ...content),
     log0: (...content) => eLogger("log", ...content, 0),
     log1: (...content) => eLogger("log", ...content, 1),
@@ -176,10 +177,6 @@ const eLog = {
     error: (...content) => eLogger("error", ...content),
     hbsLog: (...content) => eLogger("handlebars", ...content)
 };
-const registerDebugger = () => {
-    Object.assign(globalThis, { eLog });
-    Handlebars.registerHelper("eLog", eLog.hbsLog);
-};
-export default registerDebugger;
+export default logger;
 //# sourceMappingURL=logger.js.map
 //# sourceMappingURL=logger.js.map

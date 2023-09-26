@@ -1,7 +1,7 @@
-import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModCategory, Action, DowntimeAction, Attribute, Position, Effect, Factor} from "../core/constants.js";
-import BladesActor from "../blades-actor.js";
-import BladesItem from "../blades-item.js";
-import {BladesRollMod} from "../blades-roll-collab.js";
+import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModCategory, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor} from "../core/constants.js";
+import BladesActor from "../BladesActor.js";
+import BladesItem from "../BladesItem.js";
+import {BladesRollMod} from "../BladesRollCollab.js";
 
 declare global {
 
@@ -9,8 +9,8 @@ declare global {
     export interface Config {
       rollType: RollType,
       userID?: string,
-      rollPrimary?: PrimaryDocData,
-      rollOpposition?: OppositionDocData,
+      rollPrimary?: PrimaryDoc|Partial<PrimaryDocData>;
+      rollOpp?: OppositionDoc|Partial<OppositionDocData>;
       rollSubType?: RollSubType,
       rollDowntimeAction?: DowntimeAction,
       rollTrait?: RollTrait
@@ -43,17 +43,16 @@ declare global {
       rollType: RollType;
       rollSubType?: RollSubType;
       rollDowntimeAction?: DowntimeAction;
-      rollPrimaryType: string;
-      rollPrimaryID?: string;
-      rollPrimaryData?: PrimaryDocData;
+
+      rollPrimaryData?: Partial<PrimaryDocData>;
+      rollOppData?: Partial<OppositionDocData>;
+      rollParticipantData?: Partial<ParticipantDocData>;
+
       rollTrait: RollTrait;
       rollModsData: Record<string,RollModStatus>;
       rollPositionInitial: Position;
       rollEffectInitial: Effect;
       rollPosEffectTrade: "position"|"effect"|false,
-      rollOppositionType?: string;
-      rollOppositionID?: string,
-      rollOppositionData?: OppositionDocData,
       rollConsequence?: ConsequenceData,
       isGMReady: boolean,
       GMBoosts: Partial<Record<"Dice"|Factor|"Result",number>>,
@@ -124,7 +123,7 @@ declare global {
 
     export type PartialSheetData = Partial<SheetData> & FlagData;
 
-    export type RollTrait = Action|Attribute|Factor|number;
+    export type RollTrait = ActionTrait|AttributeTrait|Factor|number;
 
     export interface FactorData extends NamedValueMax {
       baseVal: number,

@@ -8,7 +8,7 @@ import {gsap} from "gsap/all";
 // _noCapWords -- Patterns matching words that should NOT be capitalized when converting to TITLE case.
 const _noCapWords = "a|above|after|an|and|at|below|but|by|down|for|for|from|in|nor|of|off|on|onto|or|out|so|the|to|under|up|with|yet"
   .split("|")
-  .map((word) => new RegExp(`\\b${word}\\b`, "gui")) as RegExp[];
+  .map((word) => new RegExp(`\\b${word}\\b`, "gui"));
 
 // _capWords -- Patterns matching words that should ALWAYS be capitalized when converting to SENTENCE case.
 const _capWords = [
@@ -153,7 +153,7 @@ const isFunc = (ref: unknown): ref is typeof Function => typeof ref === "functio
 const isInt = (ref: unknown): ref is int => isNumber(ref) && Math.round(ref) === ref;
 const isFloat = (ref: unknown): ref is float => isNumber(ref) && /\./.test(`${ref}`);
 const isPosInt = (ref: unknown): ref is posInt => isInt(ref) && ref >= 0;
-const isIndex = <T>(ref: T): ref is T & Index<ValueOf<T>> => isList(ref) || isArray(ref);
+const isIndex = <T>(ref: T): ref is T & Index<ValOf<T>> => isList(ref) || isArray(ref);
 const isIterable = (ref: unknown): ref is Iterable<unknown> => typeof ref === "object" && ref !== null && Symbol.iterator in ref;
 const isHTMLCode = (ref: unknown): ref is HTMLCode => typeof ref === "string" && /^<.*>$/u.test(ref);
 const isHexColor = (ref: unknown): ref is HEXColor => typeof ref === "string" && /^#(([0-9a-fA-F]{2}){3,4}|[0-9a-fA-F]{3,4})$/.test(ref);
@@ -163,7 +163,39 @@ const isDefined = (ref: unknown): ref is NonNullable<unknown> | null => !isUndef
 const isEmpty = (ref: Record<key, unknown> | unknown[]): boolean => Object.keys(ref).length === 0;
 const hasItems = (ref: Index<unknown>): boolean => !isEmpty(ref);
 const isInstance = <T extends new (...args: unknown[]) => unknown>(classRef: T, ref: unknown): ref is InstanceType<T> => ref instanceof classRef;
-const isInstanceFunc = <T extends new (...args: ConstructorParameters<T>) => InstanceType<T>>(clazz: T) => (instance: unknown): instance is InstanceType<T> => instance instanceof clazz;
+/**
+ * Asserts that a given value is of a specified type.
+ * Throws an error if the value is not of the expected type.
+ *
+ * @template T - The expected type of the value.
+ * @param {unknown} val - The value to check.
+ * @param {(new(...args: unknown[]) => T) | string} type - The expected type of the value.
+ * @throws {Error} If the value is not of the expected type.
+ */
+function assertNonNullType<T>(val: unknown, type: (new(...args: unknown[]) => T) | string): asserts val is NonNullable<T> {
+  let valStr: string;
+  // Attempt to convert the value to a string for error messaging.
+  try {
+    valStr = JSON.stringify(val);
+  } catch {
+    valStr = String(val);
+  }
+
+  // Check if the value is undefined
+  if (val === undefined) {
+    throw new Error(`Value ${valStr} is undefined!`);
+  }
+
+  // If the type is a string, compare the typeof the value to the type string.
+  if (typeof type === "string") {
+    if (typeof val !== type) {
+      throw new Error(`Value ${valStr} is not a ${type}!`);
+    }
+  } else if (!(val instanceof type)) {
+    // If the type is a function (constructor), check if the value is an instance of the type.
+    throw new Error(`Value ${valStr} is not a ${type.name}!`);
+  }
+}
 const areEqual = (...refs: unknown[]) => {
   do {
     const ref = refs.pop();
@@ -257,9 +289,9 @@ const sCase = <T>(str: T): Capitalize<string & T> => {
   }
   return [first, ...rest].join(" ").trim() as Capitalize<string & T>;
 };
-const tCase = <T>(str: T): Titlecase<string & T> => String(str).split(/\s/)
+const tCase = <T>(str: T): tCase<string & T> => String(str).split(/\s/)
   .map((word, i) => (i && testRegExp(word, _noCapWords) ? lCase(word) : sCase(word)))
-  .join(" ").trim() as Titlecase<string & T>;
+  .join(" ").trim() as tCase<string & T>;
 // #endregion ░░░░[Case Conversion]░░░░
 // #region ░░░░░░░[RegExp]░░░░ Regular Expressions ░░░░░░░ ~
 const testRegExp = (str: unknown, patterns: Array<RegExp | string> = [], flags = "gui", isTestingAll = false) => patterns
@@ -398,7 +430,7 @@ const verbalizeNum = (num: number | string) => {
   };
   const parseThreeDigits = (trio: string) => {
     if (pInt(trio) === 0) {return ""}
-    const digits = `${trio}`.split("").map((digit) => pInt(digit)) as number[];
+    const digits = `${trio}`.split("").map((digit) => pInt(digit));
     let result = "";
     if (digits.length === 3) {
       const hundreds = digits.shift();
@@ -424,9 +456,9 @@ const verbalizeNum = (num: number | string) => {
     numWords.push("negative");
   }
   const [integers, decimals] = num.replace(/[,\s-]/g, "").split(".");
-  const intArray = integers.split("").reverse().join("")
+  const intArray = [...integers.split("")].reverse().join("")
     .match(/.{1,3}/g)
-    ?.map((v) => v.split("").reverse().join("")) ?? [];
+    ?.map((v) => [...v.split("")].reverse().join("")) ?? [];
   const intStrings = [];
   while (intArray.length) {
     const thisTrio = intArray.pop();
@@ -471,8 +503,7 @@ const romanizeNum = (num: number, isUsingGroupedChars = true) => {
   if (num < 0) {throw new Error(`Error: Can't Romanize Negative Numbers (${num})`)}
   if (num === 0) {return "0"}
   const romanRef = _romanNumerals[isUsingGroupedChars ? "grouped" : "ungrouped"];
-  const romanNum = stringifyNum(num)
-    .split("")
+  const romanNum = [...stringifyNum(num).split("")]
     .reverse()
     .map((digit, i) => romanRef[i][pInt(digit)])
     .reverse()
@@ -548,7 +579,7 @@ const isIn = (needle: unknown, haystack: unknown[] = [], fuzziness = 0) => {
       return Object.keys(haystack) as unknown[];
     }
     try {
-      return Array.from(haystack) as unknown[];
+      return Array.from(haystack);
     } catch {
       throw new Error(`Haystack type must be [list, array], not ${typeof haystack}: ${JSON.stringify(haystack)}`);
     }
@@ -630,10 +661,10 @@ const unique = <Type>(array: Type[]): Type[] => {
   array.forEach((item) => {if (!returnArray.includes(item)) {returnArray.push(item)} });
   return returnArray;
 };
-const group = <Type extends Record<string, unknown>>(array: Type[], key: KeyOf<Type>): Partial<Record<string & ValueOf<Type>, Type[]>> => {
-  const returnObj: Partial<Record<string & ValueOf<Type>, Type[]>> = {};
+const group = <Type extends Record<string, unknown>>(array: Type[], key: KeyOf<Type>): Partial<Record<string & ValOf<Type>, Type[]>> => {
+  const returnObj: Partial<Record<string & ValOf<Type>, Type[]>> = {};
   array.forEach((item) => {
-    const returnKey = item[key] as string & ValueOf<Type>;
+    const returnKey = item[key] as string & ValOf<Type>;
     let returnVal = returnObj[returnKey];
     if (!returnVal) {
       returnVal = [];
@@ -791,7 +822,7 @@ const replace = (obj: Index<unknown>, checkTest: checkTest, repVal: unknown) => 
  */
 const objClean = <T>(data: T, remVals: UncleanValues[] = [undefined, null, "", {}, []]): T | Partial<T> | "KILL" => {
   const remStrings = remVals.map((rVal) => JSON.stringify(rVal));
-  if (remStrings.includes(JSON.stringify(data)) || remVals.includes(data as ValueOf<typeof remVals>)) {return "KILL"}
+  if (remStrings.includes(JSON.stringify(data)) || remVals.includes(data as ValOf<typeof remVals>)) {return "KILL"}
   if (Array.isArray(data)) {
     const newData = data.map((elem) => objClean(elem, remVals))
       .filter((elem) => elem !== "KILL") as T;
@@ -807,7 +838,7 @@ const objClean = <T>(data: T, remVals: UncleanValues[] = [undefined, null, "", {
 };
 
 
-export function toDict<T extends List, K extends string & KeyOf<T>, V extends ValueOf<T>>(items: T[], key: K): V extends key ? Record<V, T> : never {
+export function toDict<T extends List, K extends string & KeyOf<T>, V extends ValOf<T>>(items: T[], key: K): V extends key ? Record<V, T> : never {
   const dict = {} as Record<V, T>;
   const mappedItems = items
     .map((data) => {
@@ -829,9 +860,9 @@ export function toDict<T extends List, K extends string & KeyOf<T>, V extends Va
 
   function indexString(str: string) {
     if (/_\d+$/.test(str)) {
-      const [curIndex, ...subStr] = str.split(/_/).reverse();
+      const [curIndex, ...subStr] = [...str.split(/_/)].reverse();
       return [
-        ...subStr.reverse(),
+        ...[...subStr].reverse(),
         parseInt(curIndex, 10) + 1
       ].join("_");
     }
@@ -847,15 +878,23 @@ const partition = <Type>(obj: Type[], predicate: testFunc<valFunc> = () => true)
 function objMap(obj: Index<unknown>, keyFunc: mapFunc<keyFunc> | mapFunc<valFunc> | false, valFunc?: mapFunc<valFunc>): Index<unknown> {
   // An object-equivalent Array.map() function, which accepts mapping functions to transform both keys and values.
   // If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
-  if (!valFunc) {
-    valFunc = keyFunc as mapFunc<valFunc>;
-    keyFunc = false;
+  let valFuncTyped: mapFunc<valFunc> | undefined = valFunc;
+  let keyFuncTyped: mapFunc<keyFunc> | false = keyFunc;
+
+  if (!valFuncTyped) {
+    valFuncTyped = keyFunc as mapFunc<valFunc>;
+    keyFuncTyped = false;
   }
-  if (!keyFunc) {
-    keyFunc = ((k: unknown) => k);
+  if (!keyFuncTyped) {
+    keyFuncTyped = ((k: unknown) => k) as mapFunc<keyFunc>;
   }
-  if (isArray(obj)) {return obj.map(valFunc)}
-  return Object.fromEntries(Object.entries(obj).map(([key, val]) => [(keyFunc as mapFunc<keyFunc>)(key, val), (valFunc as mapFunc<valFunc>)(val, key)]));
+
+  if (isArray(obj)) {return obj.map(valFuncTyped)}
+
+  return Object.fromEntries(Object.entries(obj).map(([key, val]) => {
+    assertNonNullType(valFuncTyped, "function");
+    return [(keyFuncTyped as mapFunc<keyFunc>)(key, val), valFuncTyped(val, key)];
+  }));
 }
 const objSize = (obj: Index<unknown>) => Object.values(obj).filter((val) => val !== undefined && val !== null).length;
 const objFindKey = <Type extends Index<unknown>>(obj: Type, keyFunc: testFunc<keyFunc> | testFunc<valFunc> | false, valFunc?: testFunc<valFunc>): KeyOf<Type> | false => {
@@ -999,7 +1038,7 @@ function objDiff<Tx extends Record<string, unknown>, Ty extends Record<string, u
         // If both values are arrays and they are not equal, add the second array to the diff
         diff[key] = obj2[key];
       }
-    } else if ((obj1[key] as unknown) !== (obj2[key] as unknown)) {
+    } else if (obj1[key] !== obj2[key]) {
       // If the values are not equal, add the second value to the diff
       diff[key] = obj2[key];
     }
@@ -1067,7 +1106,7 @@ function objNullify<T>(obj: T): Record<KeyOf<T>, null> | null[] | T {
   // If the input is an array, nullify all its elements
   if (Array.isArray(obj)) {
     obj.forEach((_, i) => {
-      obj[i] = null as ValueOf<T>;
+      obj[i] = null as ValOf<T>;
     });
     return obj as null[];
   }
@@ -1298,6 +1337,7 @@ export default {
   areEqual,
   pFloat, pInt, radToDeg, degToRad,
   getKey,
+  assertNonNullType,
 
   FILTERS,
 

@@ -1,6 +1,6 @@
-import {Attribute, Action, District} from "../core/constants";
-import BladesItem from "../blades-item";
-import BladesActor from "../blades-actor";
+import {AttributeTrait, ActionTrait, District} from "../core/constants";
+import BladesItem from "../BladesItem";
+import BladesActor from "../BladesActor";
 import {gsap} from "gsap/all";
 
 
@@ -33,6 +33,11 @@ declare global {
 
   // Represents falsy values and empty objects to be pruned when cleaning list of values
   type UncleanValues = false | null | undefined | "" | 0 | Record<string, never> | never[];
+
+  // Represents a string conversion to title case
+  type tCase<S extends string> = S extends `${infer A} ${infer B}`
+    ? `${tCase<A>} ${tCase<B>}`
+    : Capitalize<Lowercase<S>>;
 
   // Represents an allowed gender key
   type Gender = "M"|"F"|"U"|"X";
@@ -75,8 +80,16 @@ declare global {
     [Prop in keyof T as string extends Prop ? never : number extends Prop ? never : Prop]: T[Prop]
   };
 
+  // Represents a deep-partial of an object
+  type FullPartial<T> = {
+    [P in keyof T]?: T[P] extends object ? FullPartial<T[P]> : T[P];
+  };
+
   // Represents a key of a certain type
   type KeyOf<T> = keyof T;
+
+  // Represents a value of a certain type
+  type ValOf<T> = T extends Array<unknown> | ReadonlyArray<unknown> ? T[number] : T[keyof T];
 
   // Represents a gsap animation
   type gsapAnim = gsap.core.Tween | gsap.core.Timeline;
@@ -96,7 +109,7 @@ declare global {
   // Utility Types for Variable Template Values
   type ValueMax = { max: number, value: number };
   type NamedValueMax = ValueMax & { name: string };
-  type RollableStat = Attribute | Action;
+  type RollableStat = AttributeTrait | ActionTrait;
 
   // Component Types for Sheets
   type BladesCompData = {

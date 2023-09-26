@@ -7,7 +7,13 @@
 
 import U from "./core/utilities.js";
 export default class BladesPushController {
-    static Get() { return game.eunoblades.PushController; }
+    static Get() {
+        if (!game.eunoblades.PushController) {
+            throw new Error("Attempt to Get BladesPushController before 'ready' hook.");
+        }
+        return game.eunoblades.PushController;
+    }
+    static isInitialized = false;
     static Initialize() {
         game.eunoblades ??= {};
         Hooks.once("ready", async () => {
@@ -29,6 +35,7 @@ export default class BladesPushController {
     }
     initOverlay() {
         $("#sidebar").append($("<div id='blades-push-notifications'></div>"));
+        BladesPushController.isInitialized = true;
     }
     get elem$() { return $("#blades-push-notifications"); }
     get elem() { return this.elem$[0]; }

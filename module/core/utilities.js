@@ -151,7 +151,26 @@ const isDefined = (ref) => !isUndefined(ref);
 const isEmpty = (ref) => Object.keys(ref).length === 0;
 const hasItems = (ref) => !isEmpty(ref);
 const isInstance = (classRef, ref) => ref instanceof classRef;
-const isInstanceFunc = (clazz) => (instance) => instance instanceof clazz;
+function assertNonNullType(val, type) {
+    let valStr;
+    try {
+        valStr = JSON.stringify(val);
+    }
+    catch {
+        valStr = String(val);
+    }
+    if (val === undefined) {
+        throw new Error(`Value ${valStr} is undefined!`);
+    }
+    if (typeof type === "string") {
+        if (typeof val !== type) {
+            throw new Error(`Value ${valStr} is not a ${type}!`);
+        }
+    }
+    else if (!(val instanceof type)) {
+        throw new Error(`Value ${valStr} is not a ${type.name}!`);
+    }
+}
 const areEqual = (...refs) => {
     do {
         const ref = refs.pop();
@@ -420,9 +439,9 @@ const verbalizeNum = (num) => {
         numWords.push("negative");
     }
     const [integers, decimals] = num.replace(/[,\s-]/g, "").split(".");
-    const intArray = integers.split("").reverse().join("")
+    const intArray = [...integers.split("")].reverse().join("")
         .match(/.{1,3}/g)
-        ?.map((v) => v.split("").reverse().join("")) ?? [];
+        ?.map((v) => [...v.split("")].reverse().join("")) ?? [];
     const intStrings = [];
     while (intArray.length) {
         const thisTrio = intArray.pop();
@@ -469,8 +488,7 @@ const romanizeNum = (num, isUsingGroupedChars = true) => {
         return "0";
     }
     const romanRef = _romanNumerals[isUsingGroupedChars ? "grouped" : "ungrouped"];
-    const romanNum = stringifyNum(num)
-        .split("")
+    const romanNum = [...stringifyNum(num).split("")]
         .reverse()
         .map((digit, i) => romanRef[i][pInt(digit)])
         .reverse()
@@ -772,9 +790,9 @@ export function toDict(items, key) {
     return dict;
     function indexString(str) {
         if (/_\d+$/.test(str)) {
-            const [curIndex, ...subStr] = str.split(/_/).reverse();
+            const [curIndex, ...subStr] = [...str.split(/_/)].reverse();
             return [
-                ...subStr.reverse(),
+                ...[...subStr].reverse(),
                 parseInt(curIndex, 10) + 1
             ].join("_");
         }
@@ -786,17 +804,22 @@ const partition = (obj, predicate = () => true) => [
     objFilter(obj, (v, k) => !predicate(v, k))
 ];
 function objMap(obj, keyFunc, valFunc) {
-    if (!valFunc) {
-        valFunc = keyFunc;
-        keyFunc = false;
+    let valFuncTyped = valFunc;
+    let keyFuncTyped = keyFunc;
+    if (!valFuncTyped) {
+        valFuncTyped = keyFunc;
+        keyFuncTyped = false;
     }
-    if (!keyFunc) {
-        keyFunc = ((k) => k);
+    if (!keyFuncTyped) {
+        keyFuncTyped = ((k) => k);
     }
     if (isArray(obj)) {
-        return obj.map(valFunc);
+        return obj.map(valFuncTyped);
     }
-    return Object.fromEntries(Object.entries(obj).map(([key, val]) => [keyFunc(key, val), valFunc(val, key)]));
+    return Object.fromEntries(Object.entries(obj).map(([key, val]) => {
+        assertNonNullType(valFuncTyped, "function");
+        return [keyFuncTyped(key, val), valFuncTyped(val, key)];
+    }));
 }
 const objSize = (obj) => Object.values(obj).filter((val) => val !== undefined && val !== null).length;
 const objFindKey = (obj, keyFunc, valFunc) => {
@@ -1157,6 +1180,7 @@ export default {
     areEqual,
     pFloat, pInt, radToDeg, degToRad,
     getKey,
+    assertNonNullType,
     FILTERS,
     testRegExp,
     regExtract,

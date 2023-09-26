@@ -1,6 +1,6 @@
 import {BladesActorType, BladesItemType, Factor} from "../core/constants";
-import BladesActor from "../blades-actor";
-import BladesItem from "../blades-item";
+import BladesActor from "../BladesActor";
+import BladesItem from "../BladesItem";
 
 declare global {
 

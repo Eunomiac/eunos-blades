@@ -1,6 +1,6 @@
 import {Playbook, BladesItemType} from "./constants.js";
-import BladesActor from "../blades-actor.js";
-import BladesItem from "../blades-item.js";
+import BladesActor from "../BladesActor.js";
+import BladesItem from "../BladesItem.js";
 
 // type Constructor = new (...args: readonly any[]) => {};
 

@@ -1,7 +1,7 @@
 import { BladesItemType, District, BladesPhase, Randomizers } from "../core/constants.js";
-import BladesItem from "../blades-item.js";
-import BladesClockKeeper from '../documents/items/blades-clock-keeper';
-import BladesGMTracker from '../documents/items/blades-gm-tracker';
+import BladesItem from "../BladesItem.js";
+import BladesClockKeeper from '../documents/items/BladesClockKeeper.js';
+import BladesGMTracker from '../documents/items/BladesGMTracker.js';
 
 declare global {
 

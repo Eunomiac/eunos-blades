@@ -1,9 +1,9 @@
-import { BladesActorType, Tag, District, Attribute, Action, AdvancementPoint } from "../core/constants.js";
-import BladesActor from "../blades-actor.js";
-import BladesPC from "../documents/actors/blades-pc.js";
-import BladesNPC from "../documents/actors/blades-npc.js";
-import BladesFaction from "../documents/actors/blades-faction.js";
-import BladesCrew from "../documents/actors/blades-crew.js";
+import { BladesActorType, Tag, District, AttributeTrait, ActionTrait, AdvancementPoint } from "../core/constants.js";
+import BladesActor from "../BladesActor.js";
+import BladesPC from "../documents/actors/BladesPC.js";
+import BladesNPC from "../documents/actors/BladesNPC.js";
+import BladesFaction from "../documents/actors/BladesFaction.js";
+import BladesCrew from "../documents/actors/BladesCrew.js";
 declare global {
 
   // Extending Type Definitions of 'Actor' Base Class to Foundry V11
@@ -14,7 +14,8 @@ declare global {
   // Basic & Utility Types for BladesActors
   type BladesRandomizer<T extends string = string> = { isLocked: boolean, value: T }
   type SubActorData = Partial<BladesActor["system"]>
-  type AdvancementTrait = Action|"Ability"|"Upgrade"|"Cohort"|"CohortType"
+  type AdvancementTrait = ActionTrait|"Ability"|"Upgrade"|"Cohort"|"CohortType"
+  type Loadout = "heavy"|"normal"|"light"|"encumbered"
 
   // #region SCHEMA DATA: TEMPLATE.JSON & SYSTEM
 
@@ -88,14 +89,14 @@ declare global {
         checked: Record<"light" | "heavy" | "special", boolean>
       },
 
-      attributes: Record<Attribute, Record<Action, ValueMax>>,
-      resistance_bonus: Record<Attribute, number>,
+      attributes: Record<AttributeTrait, Record<ActionTrait, ValueMax>>,
+      resistance_bonus: Record<AttributeTrait, number>,
       conditional_bonus: Record<RollableStat, string>
 
       experience: BladesActorSchemaTemplate.pcChar["experience"] & {
-        [Attribute.insight]: ValueMax,
-        [Attribute.prowess]: ValueMax,
-        [Attribute.resolve]: ValueMax
+        [AttributeTrait.insight]: ValueMax,
+        [AttributeTrait.prowess]: ValueMax,
+        [AttributeTrait.resolve]: ValueMax
       },
       gather_info: string[]
     }
@@ -244,7 +245,7 @@ declare global {
       getAvailableAdvancements(trait: AdvancementTrait): number
 
       advancePlaybook(): Promise<void>;
-      advanceAttribute(attr: Attribute): Promise<void>;
+      advanceAttribute(attr: AttributeTrait): Promise<void>;
     }
 
   }
@@ -265,9 +266,9 @@ declare global {
       get crew(): BladesActor | undefined;
       get abilities(): BladesItem[];
 
-      get attributes(): Record<Attribute, number>;
-      get actions(): Record<Action, number>;
-      get rollable(): Record<Attribute | Action, number>;
+      get attributes(): Record<AttributeTrait, number>;
+      get actions(): Record<ActionTrait, number>;
+      get rollable(): Record<AttributeTrait | ActionTrait, number>;
 
       get trauma(): number;
       get traumaList(): string[];
