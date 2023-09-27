@@ -2145,7 +2145,7 @@ class BladesRollCollab extends DocumentSheet {
         const value = !elem$.data("value");
         eLog.checkLog3("toggleFactor", "_gmControlToggleFactor", { event, target, value });
         if (value && /isPrimary/.test(target)) {
-            const [_, thisSource, thisFactor] = target.match(/([^.]+)\.([^.]+)\.isPrimary/);
+            const [thisSource, thisFactor] = target.split(/\./).slice(-3, -1);
             eLog.checkLog3("toggleFactor", "_gmControlToggleFactor - IN", { thisSource, thisFactor });
             await Promise.all(Object.values(Factor).map((factor) => {
                 if (factor === thisFactor) {

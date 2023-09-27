@@ -302,7 +302,7 @@ class BladesActiveEffect extends ActiveEffect {
       if (!funcName || !(funcName in CUSTOMFUNCS)) { return }
       if (!funcData) { return }
       eLog.display(`Progressing Queue: ${funcName}(${funcData}, ${isReversing}) -- ${FUNCQUEUE[actor.id].queue.length} remaining funcs.`);
-      FUNCQUEUE[actor.id].curFunc = BladesActiveEffect.RunCustomFunc(actor, CUSTOMFUNCS[funcName as KeyOf<typeof CUSTOMFUNCS>](actor, funcData, effect, isReversing));
+      FUNCQUEUE[actor.id].curFunc = BladesActiveEffect.RunCustomFunc(actor, CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing));
     } else {
       eLog.display("Function Queue Complete! Deleting.");
       delete FUNCQUEUE[actor.id];

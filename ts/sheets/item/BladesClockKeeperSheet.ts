@@ -51,7 +51,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
 
 
   // override async _updateObject(event: unknown, formData: any) {
-  //   const updateData = await this.object.update(formData);
+  //   const updateData = await`this.object.update(formData);
   //   socketlib.system.executeForEveryone("renderOverlay");
   //   // this.item.renderOverlay();
   //   return updateData;
