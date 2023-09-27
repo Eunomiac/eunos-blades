@@ -162,12 +162,12 @@ export class BladesRollMod {
   get isBasicPush(): boolean { return U.lCase(this.name) === "push" }
 
   get stressCost(): number {
-    const costKeys = this.effectKeys.filter((key) => /^Cost-Stress/.test(key));
+    const costKeys = this.effectKeys.filter((key) => key.startsWith("Cost-Stress"));
     if (costKeys.length === 0) { return 0 }
     let stressCost = 0;
     costKeys.forEach((key) => {
       const [thisParam] = (key.split(/-/) ?? []).slice(1);
-      const [_, valStr] = (thisParam.match(/([A-Za-z]+)(\d*)/) ?? []).slice(1);
+      const [_, valStr] = (/([A-Za-z]+)(\d*)/.exec(thisParam) ?? []).slice(1);
       stressCost += U.pInt(valStr);
     });
     return stressCost;
@@ -217,7 +217,7 @@ export class BladesRollMod {
 
   setAutoStatus(): boolean {
     // Check for AutoRevealOn and AutoEnableOn
-    const holdKeys = this.effectKeys.filter((key) => /^Auto/.test(key));
+    const holdKeys = this.effectKeys.filter((key) => key.startsWith("Auto"));
     if (holdKeys.length === 0) { return false }
 
     for (const key of holdKeys) {
@@ -254,7 +254,7 @@ export class BladesRollMod {
             throw new Error(`Unrecognized Negate parameter: ${thisParam}`);
           }
         } else if (thisKey === "Increase") {
-          const [_, traitStr] = thisParam.match(/(\w+)\d+/) ?? [];
+          const [_, traitStr] = /(\w+)\d+/.exec(thisParam) ?? [];
           return this.rollInstance.isTraitRelevant(traitStr as BladesRollCollab.RollTrait);
         } else {
           throw new Error(`Unrecognized Function Key: ${thisKey}`);
@@ -268,13 +268,13 @@ export class BladesRollMod {
   }
 
   setPayableStatus(): boolean {
-    const holdKeys = this.effectKeys.filter((key) => /^Cost/.test(key));
+    const holdKeys = this.effectKeys.filter((key) => key.startsWith("Cost"));
     if (holdKeys.length === 0) { return false }
 
     const payableKeys = holdKeys
       .filter((key) => {
         const [thisParam] = (key.split(/-/) ?? []).slice(1);
-        const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)(\d*)/) ?? []).slice(1);
+        const [traitStr, valStr] = (/([A-Za-z]+)(\d*)/.exec(thisParam) ?? []).slice(1);
         const {rollPrimaryDoc} = this.rollInstance.rollPrimary ?? {};
         if (!BladesRollPrimary.IsDoc(rollPrimaryDoc)) { return false }
         switch (traitStr) {
@@ -322,7 +322,7 @@ export class BladesRollMod {
         HarmLevel: () => {
           if (!this.rollInstance.rollConsequence) { return }
           const consequenceType = this.rollInstance.rollConsequence.type;
-          if (!consequenceType || !/^Harm/.test(consequenceType)) { return }
+          if (!consequenceType || !consequenceType.startsWith("Harm")) { return }
           const curLevel = [ConsequenceType.Harm1, ConsequenceType.Harm2, ConsequenceType.Harm3, ConsequenceType.Harm4]
             .findIndex((cType) => cType === consequenceType) + 1;
           if (curLevel > 1) {
@@ -424,12 +424,12 @@ export class BladesRollMod {
 
   get costs(): BladesRollCollab.CostData[] | undefined {
     if (!this.isActive) { return undefined }
-    const holdKeys = this.effectKeys.filter((key) => /^Cost/.test(key));
+    const holdKeys = this.effectKeys.filter((key) => key.startsWith("Cost"));
     if (holdKeys.length === 0) { return undefined }
 
     return holdKeys.map((key) => {
       const [thisParam] = (key.split(/-/) ?? []).slice(1);
-      const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)(\d*)/) ?? []).slice(1);
+      const [traitStr, valStr] = (/([A-Za-z]+)(\d*)/.exec(thisParam) ?? []).slice(1);
 
       let label = this.name;
       if (this.isBasicPush) {
@@ -1003,8 +1003,6 @@ class BladesRollCollab extends DocumentSheet {
       eLog.error("rollCollab", "[RenderRollCollab()] Invalid rollPrimary", {rollPrimaryData, config});
       return;
     }
-    // flagUpdateData.rollPrimaryID = rollPrimaryData.rollPrimaryID;
-    // flagUpdateData.rollPrimaryType = rollPrimaryData.rollPrimaryType;
     if (U.isInt(config.rollTrait)) {
       flagUpdateData.rollTrait = config.rollTrait;
     } else if (!config.rollTrait) {
@@ -1060,7 +1058,7 @@ class BladesRollCollab extends DocumentSheet {
     primaryData?: BladesRollCollab.PrimaryDoc|Partial<BladesRollCollab.PrimaryDocData>,
     oppData?: BladesRollCollab.OppositionDoc|Partial<BladesRollCollab.OppositionDocData>
   ) {
-    if (!user || !user.id) {
+    if (!user?.id) {
       throw new Error(`Unable to retrieve user id from user '${user}'`);
     }
     super(user);
@@ -1388,7 +1386,7 @@ class BladesRollCollab extends DocumentSheet {
 
     /* *** PASS TWO: FORCE-ON PASS *** */
     const parseForceOnKeys = (mod: BladesRollMod) => {
-      const holdKeys = mod.effectKeys.filter((key) => /^ForceOn/.test(key));
+      const holdKeys = mod.effectKeys.filter((key) => key.startsWith("ForceOn"));
       if (holdKeys.length === 0) { return }
 
       while (holdKeys.length) {
@@ -2346,7 +2344,7 @@ class BladesRollCollab extends DocumentSheet {
     }
   }
 
-  async _gmControlSetPosition(event: ClickEvent) {
+  _gmControlSetPosition(event: ClickEvent) {
     event.preventDefault();
     if (!game.user.isGM) { return }
     const elem$ = $(event.currentTarget);
@@ -2354,7 +2352,7 @@ class BladesRollCollab extends DocumentSheet {
     this.initialPosition = position;
   }
 
-  async _gmControlSetEffect(event: ClickEvent) {
+  _gmControlSetEffect(event: ClickEvent) {
     event.preventDefault();
     if (!game.user.isGM) { return }
     const elem$ = $(event.currentTarget);
@@ -2394,7 +2392,7 @@ class BladesRollCollab extends DocumentSheet {
     if (!game.user.isGM) { return }
     const elem$ = $(event.currentTarget);
     const target = elem$.data("target");
-    this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.${target}`);
+    await this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.${target}`);
   }
 
   get resistanceStressCost(): number {
@@ -2485,7 +2483,7 @@ class BladesRollCollab extends DocumentSheet {
   override _onDrop(event: DragEvent) {
     const data = TextEditor.getDragEventData(event) as { type: "Actor" | "Item", uuid: string };
     const {type, uuid} = data;
-    const [id] = (uuid.match(new RegExp(`${type}\\.(.+)`)) ?? []).slice(1);
+    const [id] = (new RegExp(`${type}\\.(.+)`).exec(uuid) ?? []).slice(1);
     const oppDoc = game[`${U.lCase(type)}s`].get(id);
     if (BladesRollOpposition.IsDoc(oppDoc)) {
       this.rollOpposition = new BladesRollOpposition(this, {rollOppDoc: oppDoc});

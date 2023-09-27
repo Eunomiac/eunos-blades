@@ -58,11 +58,11 @@ class BladesItem extends Item {
             }
             curTags.push(tag);
         });
-        this.update({ "system.tags": curTags });
+        await this.update({ "system.tags": curTags });
     }
     async remTag(...tags) {
         const curTags = this.tags.filter((tag) => !tags.includes(tag));
-        this.update({ "system.tags": curTags });
+        await this.update({ "system.tags": curTags });
     }
     get tooltip() {
         const tooltipText = [
@@ -223,7 +223,7 @@ class BladesItem extends Item {
         const eliteSubtypes = U.unique([
             ...Object.values(system.elite_subtypes),
             ...(this.parent?.upgrades ?? [])
-                .filter((upgrade) => /^Elite/.test(upgrade.name ?? ""))
+                .filter((upgrade) => (upgrade.name ?? "").startsWith("Elite"))
                 .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
         ]
             .map((subtype) => subtype.trim())

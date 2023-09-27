@@ -175,14 +175,14 @@ export class BladesRollMod {
     }
     get isBasicPush() { return U.lCase(this.name) === "push"; }
     get stressCost() {
-        const costKeys = this.effectKeys.filter((key) => /^Cost-Stress/.test(key));
+        const costKeys = this.effectKeys.filter((key) => key.startsWith("Cost-Stress"));
         if (costKeys.length === 0) {
             return 0;
         }
         let stressCost = 0;
         costKeys.forEach((key) => {
             const [thisParam] = (key.split(/-/) ?? []).slice(1);
-            const [_, valStr] = (thisParam.match(/([A-Za-z]+)(\d*)/) ?? []).slice(1);
+            const [_, valStr] = (/([A-Za-z]+)(\d*)/.exec(thisParam) ?? []).slice(1);
             stressCost += U.pInt(valStr);
         });
         return stressCost;
@@ -220,7 +220,7 @@ export class BladesRollMod {
         return false;
     }
     setAutoStatus() {
-        const holdKeys = this.effectKeys.filter((key) => /^Auto/.test(key));
+        const holdKeys = this.effectKeys.filter((key) => key.startsWith("Auto"));
         if (holdKeys.length === 0) {
             return false;
         }
@@ -257,7 +257,7 @@ export class BladesRollMod {
                 }
             }
             else if (thisKey === "Increase") {
-                const [_, traitStr] = thisParam.match(/(\w+)\d+/) ?? [];
+                const [_, traitStr] = /(\w+)\d+/.exec(thisParam) ?? [];
                 return this.rollInstance.isTraitRelevant(traitStr);
             }
             else {
@@ -271,14 +271,14 @@ export class BladesRollMod {
         return false;
     }
     setPayableStatus() {
-        const holdKeys = this.effectKeys.filter((key) => /^Cost/.test(key));
+        const holdKeys = this.effectKeys.filter((key) => key.startsWith("Cost"));
         if (holdKeys.length === 0) {
             return false;
         }
         const payableKeys = holdKeys
             .filter((key) => {
             const [thisParam] = (key.split(/-/) ?? []).slice(1);
-            const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)(\d*)/) ?? []).slice(1);
+            const [traitStr, valStr] = (/([A-Za-z]+)(\d*)/.exec(thisParam) ?? []).slice(1);
             const { rollPrimaryDoc } = this.rollInstance.rollPrimary ?? {};
             if (!BladesRollPrimary.IsDoc(rollPrimaryDoc)) {
                 return false;
@@ -328,7 +328,7 @@ export class BladesRollMod {
                         return;
                     }
                     const consequenceType = this.rollInstance.rollConsequence.type;
-                    if (!consequenceType || !/^Harm/.test(consequenceType)) {
+                    if (!consequenceType || !consequenceType.startsWith("Harm")) {
                         return;
                     }
                     const curLevel = [ConsequenceType.Harm1, ConsequenceType.Harm2, ConsequenceType.Harm3, ConsequenceType.Harm4]
@@ -439,13 +439,13 @@ export class BladesRollMod {
         if (!this.isActive) {
             return undefined;
         }
-        const holdKeys = this.effectKeys.filter((key) => /^Cost/.test(key));
+        const holdKeys = this.effectKeys.filter((key) => key.startsWith("Cost"));
         if (holdKeys.length === 0) {
             return undefined;
         }
         return holdKeys.map((key) => {
             const [thisParam] = (key.split(/-/) ?? []).slice(1);
-            const [traitStr, valStr] = (thisParam.match(/([A-Za-z]+)(\d*)/) ?? []).slice(1);
+            const [traitStr, valStr] = (/([A-Za-z]+)(\d*)/.exec(thisParam) ?? []).slice(1);
             let label = this.name;
             if (this.isBasicPush) {
                 if (this.posNeg === "negative") {
@@ -1015,7 +1015,7 @@ class BladesRollCollab extends DocumentSheet {
     userID;
     rollID;
     constructor(user, primaryData, oppData) {
-        if (!user || !user.id) {
+        if (!user?.id) {
             throw new Error(`Unable to retrieve user id from user '${user}'`);
         }
         super(user);
@@ -1317,7 +1317,7 @@ class BladesRollCollab extends DocumentSheet {
             .filter((rollMod) => !rollMod.setAutoStatus())
             .forEach((rollMod) => { rollMod.setPayableStatus(); });
                 const parseForceOnKeys = (mod) => {
-            const holdKeys = mod.effectKeys.filter((key) => /^ForceOn/.test(key));
+            const holdKeys = mod.effectKeys.filter((key) => key.startsWith("ForceOn"));
             if (holdKeys.length === 0) {
                 return;
             }
@@ -2117,7 +2117,7 @@ class BladesRollCollab extends DocumentSheet {
             rollMod.userStatus = undefined;
         }
     }
-    async _gmControlSetPosition(event) {
+    _gmControlSetPosition(event) {
         event.preventDefault();
         if (!game.user.isGM) {
             return;
@@ -2126,7 +2126,7 @@ class BladesRollCollab extends DocumentSheet {
         const position = elem$.data("status");
         this.initialPosition = position;
     }
-    async _gmControlSetEffect(event) {
+    _gmControlSetEffect(event) {
         event.preventDefault();
         if (!game.user.isGM) {
             return;
@@ -2170,7 +2170,7 @@ class BladesRollCollab extends DocumentSheet {
         }
         const elem$ = $(event.currentTarget);
         const target = elem$.data("target");
-        this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.${target}`);
+        await this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.${target}`);
     }
     get resistanceStressCost() {
         const dieVals = this.dieVals;
@@ -2255,7 +2255,7 @@ class BladesRollCollab extends DocumentSheet {
     _onDrop(event) {
         const data = TextEditor.getDragEventData(event);
         const { type, uuid } = data;
-        const [id] = (uuid.match(new RegExp(`${type}\\.(.+)`)) ?? []).slice(1);
+        const [id] = (new RegExp(`${type}\\.(.+)`).exec(uuid) ?? []).slice(1);
         const oppDoc = game[`${U.lCase(type)}s`].get(id);
         if (BladesRollOpposition.IsDoc(oppDoc)) {
             this.rollOpposition = new BladesRollOpposition(this, { rollOppDoc: oppDoc });
