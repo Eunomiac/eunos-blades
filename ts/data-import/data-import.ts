@@ -3144,7 +3144,7 @@ export const updateOps = async () => {
     const playbookObj = game.items.getName(op.playbook);
     if (!playbookObj || playbookObj.type !== BladesItemType.crew_playbook) {
       errorReport.push(`Favored Op ${op.name} has invalid playbook ${op.playbook}`);
-      return;
+      return undefined;
     }
     const item = await BladesItem.create({
       name: op.name,
@@ -3155,8 +3155,9 @@ export const updateOps = async () => {
       }
     }) as BladesItemOfType<BladesItemType.preferred_op>;
     if (BladesItem.IsType(item, BladesItemType.preferred_op)) {
-      item.addTag(playbookObj.name as Playbook);
+      return item.addTag(playbookObj.name as Playbook);
     }
+    return undefined;
   }));
 
   console.log(errorReport);
@@ -3168,7 +3169,7 @@ export const updateContacts = async () => {
     const playbookObj = game.items.getName(ct.playbook);
     if (!BladesItem.IsType(playbookObj, BladesItemType.crew_playbook)) {
       errorReport.push(`Contact ${ct.name} has invalid playbook ${ct.playbook}`);
-      return;
+      return undefined;
     }
     const actor: BladesNPC = await Actor.create({
       name: ct.name,
@@ -3178,14 +3179,14 @@ export const updateContacts = async () => {
         prompts: ct.hints?.join(" ")
       } as Partial<BladesActorSystem>
     }) as BladesNPC;
-    actor.addTag(playbookObj.name as Playbook);
+    return actor.addTag(playbookObj.name as Playbook);
   }));
 
   console.log(errorReport);
 };
 
 const updateFactionData = async (factionData: FactionData) => {
-  const faction = await game.actors.getName(factionData.name) as BladesFaction|undefined;
+  const faction = game.actors.getName(factionData.name) as BladesFaction|undefined;
   const updateData: Record<string, string|null> = {};
   if (faction) {
     updateData["system.subtitle"] = factionData.subtitle ?? "";
@@ -3242,50 +3243,52 @@ const updateFactionData = async (factionData: FactionData) => {
 };
 
 export const updateFactions = async () => {
-  Object.values(JSONDATA.FACTIONS).forEach(async (factionData) => {
-    updateFactionData(factionData);
-  });
+  await Promise.all(Object.values(JSONDATA.FACTIONS).map(async (factionData) => updateFactionData(factionData)));
   console.log(problemLog);
 };
 
 export const updateRollMods = async () => {
-  Object.entries(JSONDATA.ABILITIES.RollMods)
-    .forEach(async ([aName, eData]) => {
-      // Get ability doc
-      const abilityDoc = game.items.getName(aName);
-      if (!abilityDoc) {
-        eLog.error("updateRollMods", `updateRollMods: Ability ${aName} Not Found.`);
-        return;
-      }
-
-      // Get active effects on abilityDoc
-      const abilityEffects = Array.from(abilityDoc.effects ?? []) as BladesActiveEffect[];
-
-      // Separate out 'APPLYTOMEMBERS' and 'APPLYTOCOHORTS' ActiveEffects
-      const toMemberEffects = abilityEffects.filter((effect) => effect.changes.some((change) => change.key === "APPLYTOMEMBERS"));
-      const toCohortEffects = abilityEffects.filter((effect) => effect.changes.some((change) => change.key === "APPLYTOCOHORTS"));
-      const standardEffects = abilityEffects.filter((effect) => effect.changes.every((change) => !["APPLYTOMEMBERS", "APPLYTOCOHORTS"].includes(change.key)));
-
-      // Confirm eData.isMember and eData.isCohort are consistent across all changes.
-      const testChange = eData[0];
-      if (
-        (testChange.isMember && eData.some((change) => !change.isMember))
-        || (!testChange.isMember && eData.some((change) => change.isMember))
-      ) { eLog.error("updateRollMods", `updateRollMods: Ability ${aName} has inconsistent 'isMember' entries.`); return }
-      if (
-        (testChange.isCohort && eData.some((change) => !change.isCohort))
-        || (!testChange.isCohort && eData.some((change) => change.isCohort))
-      ) { eLog.error("updateRollMods", `updateRollMods: Ability ${aName} has inconsistent 'isCohort' entries.`); return }
-
-      // If eData.isMember or eData.isCohort, first see if there already is such an effect on the doc
-      if (testChange.isMember) {
-        if (toMemberEffects.length > 1) {
-          eLog.error("updateRollMods", `updateRollMods: Ability ${aName} Has Multiple 'APPLYTOMEMBERS' Active Effects`);
-          return;
+  await Promise.all([
+    ...Object.entries(JSONDATA.ABILITIES.RollMods)
+      .map(async ([aName, eData]) => {
+        // Get ability doc
+        const abilityDoc = game.items.getName(aName);
+        if (!abilityDoc) {
+          eLog.error("updateRollMods", `updateRollMods: Ability ${aName} Not Found.`);
+          return undefined;
         }
 
-        // Initialize new effect data
-        const effectData: {
+        // Get active effects on abilityDoc
+        const abilityEffects = Array.from(abilityDoc.effects ?? []) as BladesActiveEffect[];
+
+        // Separate out 'APPLYTOMEMBERS' and 'APPLYTOCOHORTS' ActiveEffects
+        const toMemberEffects = abilityEffects.filter((effect) => effect.changes.some((change) => change.key === "APPLYTOMEMBERS"));
+        const toCohortEffects = abilityEffects.filter((effect) => effect.changes.some((change) => change.key === "APPLYTOCOHORTS"));
+        const standardEffects = abilityEffects.filter((effect) => effect.changes.every((change) => !["APPLYTOMEMBERS", "APPLYTOCOHORTS"].includes(change.key)));
+
+        // Confirm eData.isMember and eData.isCohort are consistent across all changes.
+        const testChange = eData[0];
+        if (
+          (testChange.isMember && eData.some((change) => !change.isMember))
+        || (!testChange.isMember && eData.some((change) => change.isMember))
+        ) {
+          return eLog.error("updateRollMods", `updateRollMods: Ability ${aName} has inconsistent 'isMember' entries.`);
+        }
+        if (
+          (testChange.isCohort && eData.some((change) => !change.isCohort))
+        || (!testChange.isCohort && eData.some((change) => change.isCohort))
+        ) {
+          return eLog.error("updateRollMods", `updateRollMods: Ability ${aName} has inconsistent 'isCohort' entries.`);
+        }
+
+        // If eData.isMember or eData.isCohort, first see if there already is such an effect on the doc
+        if (testChange.isMember) {
+          if (toMemberEffects.length > 1) {
+            return eLog.error("updateRollMods", `updateRollMods: Ability ${aName} Has Multiple 'APPLYTOMEMBERS' Active Effects`);
+          }
+
+          // Initialize new effect data
+          const effectData: {
           name: string,
           icon: string,
           changes: Array<Partial<EffectChangeData>>
@@ -3298,32 +3301,32 @@ export const updateRollMods = async () => {
           })
         };
 
-        // Derive new effect data from existing effect, if any, then delete existing effect
-        if (toMemberEffects.length === 1) {
-          const abilityEffect = toMemberEffects[0] as BladesActiveEffect;
-          effectData.name = abilityEffect.name ?? effectData.name;
-          effectData.icon = abilityEffect.icon ?? effectData.icon;
-          effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
-          await abilityEffect.delete();
-        } else {
-          effectData.changes.unshift({
-            key: "APPLYTOMEMBERS",
-            mode: 0,
-            priority: null,
-            value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Scoundrel Ability)`
-          });
-        }
+          // Derive new effect data from existing effect, if any, then delete existing effect
+          if (toMemberEffects.length === 1) {
+            const abilityEffect = toMemberEffects[0] ;
+            effectData.name = abilityEffect.name ?? effectData.name;
+            effectData.icon = abilityEffect.icon ?? effectData.icon;
+            effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
+            await abilityEffect.delete();
+          } else {
+            effectData.changes.unshift({
+              key: "APPLYTOMEMBERS",
+              mode: 0,
+              priority: null,
+              value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Scoundrel Ability)`
+            });
+          }
 
-        // Create new ActiveEffect
-        await abilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
-      } else if (testChange.isCohort) {
-        if (toCohortEffects.length > 1) {
-          eLog.error("updateRollMods", `updateRollMods: Ability ${aName} Has Multiple 'APPLYTOCOHORTS' Active Effects`);
-          return;
-        }
+          // Create new ActiveEffect
+          return abilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
+        } else if (testChange.isCohort) {
+          if (toCohortEffects.length > 1) {
+            eLog.error("updateRollMods", `updateRollMods: Ability ${aName} Has Multiple 'APPLYTOCOHORTS' Active Effects`);
+            return undefined;
+          }
 
-        // Initialize new effect data
-        const effectData: {
+          // Initialize new effect data
+          const effectData: {
           name: string,
           icon: string,
           changes: Array<Partial<EffectChangeData>>
@@ -3336,32 +3339,32 @@ export const updateRollMods = async () => {
           })
         };
 
-        // Derive new effect data from existing effect, if any, then delete existing effect
-        if (toCohortEffects.length === 1) {
-          const abilityEffect = toCohortEffects[0] as BladesActiveEffect;
-          effectData.name = abilityEffect.name ?? effectData.name;
-          effectData.icon = abilityEffect.icon ?? effectData.icon;
-          effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
-          await abilityEffect.delete();
+          // Derive new effect data from existing effect, if any, then delete existing effect
+          if (toCohortEffects.length === 1) {
+            const abilityEffect = toCohortEffects[0] ;
+            effectData.name = abilityEffect.name ?? effectData.name;
+            effectData.icon = abilityEffect.icon ?? effectData.icon;
+            effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
+            await abilityEffect.delete();
+          } else {
+            effectData.changes.unshift({
+              key: "APPLYTOCOHORTS",
+              mode: 0,
+              priority: null,
+              value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Scoundrel Ability)`
+            });
+          }
+
+          // Create new ActiveEffect
+          return abilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
         } else {
-          effectData.changes.unshift({
-            key: "APPLYTOCOHORTS",
-            mode: 0,
-            priority: null,
-            value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Scoundrel Ability)`
-          });
-        }
+          if (standardEffects.length > 1) {
+            eLog.error("updateRollMods", `updateRollMods: Ability ${aName} Has Multiple Active Effects`);
+            return undefined;
+          }
 
-        // Create new ActiveEffect
-        await abilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
-      } else {
-        if (standardEffects.length > 1) {
-          eLog.error("updateRollMods", `updateRollMods: Ability ${aName} Has Multiple Active Effects`);
-          return;
-        }
-
-        // Initialize new effect data
-        const effectData: {
+          // Initialize new effect data
+          const effectData: {
           name: string,
           icon: string,
           changes: Array<Partial<EffectChangeData>>
@@ -3371,56 +3374,59 @@ export const updateRollMods = async () => {
           changes: eData
         };
 
-        // Derive new effect data from existing effect, if any, then delete existing effect
-        if (standardEffects.length === 1) {
-          const abilityEffect = standardEffects[0] as BladesActiveEffect;
-          effectData.name = abilityEffect.name ?? effectData.name;
-          effectData.icon = abilityEffect.icon ?? effectData.icon;
-          effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
-          await abilityEffect.delete();
+          // Derive new effect data from existing effect, if any, then delete existing effect
+          if (standardEffects.length === 1) {
+            const abilityEffect = standardEffects[0] ;
+            effectData.name = abilityEffect.name ?? effectData.name;
+            effectData.icon = abilityEffect.icon ?? effectData.icon;
+            effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
+            await abilityEffect.delete();
+          }
+
+          // Create new ActiveEffect
+          return abilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
+        }
+      }),
+    ...Object.entries(JSONDATA.CREW_ABILITIES.RollMods)
+      .map(async ([aName, eData]) => {
+        // Get crew ability doc
+        const crewAbilityDoc = game.items.getName(aName);
+        if (!crewAbilityDoc) {
+          eLog.error("updateRollMods", `updateRollMods: Crew Ability ${aName} Not Found.`);
+          return undefined;
         }
 
-        // Create new ActiveEffect
-        await abilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
-      }
-    });
-  Object.entries(JSONDATA.CREW_ABILITIES.RollMods)
-    .forEach(async ([aName, eData]) => {
-      // Get crew ability doc
-      const crewAbilityDoc = game.items.getName(aName);
-      if (!crewAbilityDoc) {
-        eLog.error("updateRollMods", `updateRollMods: Crew Ability ${aName} Not Found.`);
-        return;
-      }
+        // Get active effects on crewAbilityDoc
+        const abilityEffects = Array.from(crewAbilityDoc.effects ?? []) as BladesActiveEffect[];
 
-      // Get active effects on crewAbilityDoc
-      const abilityEffects = Array.from(crewAbilityDoc.effects ?? []) as BladesActiveEffect[];
+        // Separate out 'APPLYTOMEMBERS' and 'APPLYTOCOHORTS' ActiveEffects
+        const toMemberEffects = abilityEffects.filter((effect) => effect.changes.some((change) => change.key === "APPLYTOMEMBERS"));
+        const toCohortEffects = abilityEffects.filter((effect) => effect.changes.some((change) => change.key === "APPLYTOCOHORTS"));
+        const standardEffects = abilityEffects.filter((effect) => effect.changes.every((change) => !["APPLYTOMEMBERS", "APPLYTOCOHORTS"].includes(change.key)));
 
-      // Separate out 'APPLYTOMEMBERS' and 'APPLYTOCOHORTS' ActiveEffects
-      const toMemberEffects = abilityEffects.filter((effect) => effect.changes.some((change) => change.key === "APPLYTOMEMBERS"));
-      const toCohortEffects = abilityEffects.filter((effect) => effect.changes.some((change) => change.key === "APPLYTOCOHORTS"));
-      const standardEffects = abilityEffects.filter((effect) => effect.changes.every((change) => !["APPLYTOMEMBERS", "APPLYTOCOHORTS"].includes(change.key)));
-
-      // Confirm eData.isMember and eData.isCohort are consistent across all changes.
-      const testChange = eData[0];
-      if (
-        (testChange.isMember && eData.some((change) => !change.isMember))
+        // Confirm eData.isMember and eData.isCohort are consistent across all changes.
+        const testChange = eData[0];
+        if (
+          (testChange.isMember && eData.some((change) => !change.isMember))
         || (!testChange.isMember && eData.some((change) => change.isMember))
-      ) { eLog.error("updateRollMods", `updateRollMods: Crew Ability ${aName} has inconsistent 'isMember' entries.`); return }
-      if (
-        (testChange.isCohort && eData.some((change) => !change.isCohort))
+        ) {
+          return eLog.error("updateRollMods", `updateRollMods: Crew Ability ${aName} has inconsistent 'isMember' entries.`);
+        }
+        if (
+          (testChange.isCohort && eData.some((change) => !change.isCohort))
         || (!testChange.isCohort && eData.some((change) => change.isCohort))
-      ) { eLog.error("updateRollMods", `updateRollMods: Crew Ability ${aName} has inconsistent 'isCohort' entries.`); return }
-
-      // If eData.isMember or eData.isCohort, first see if there already is such an effect on the doc
-      if (testChange.isMember) {
-        if (toMemberEffects.length > 1) {
-          eLog.error("updateRollMods", `updateRollMods: Crew Ability ${aName} Has Multiple 'APPLYTOMEMBERS' Active Effects`);
-          return;
+        ) {
+          return eLog.error("updateRollMods", `updateRollMods: Crew Ability ${aName} has inconsistent 'isCohort' entries.`);
         }
 
-        // Initialize new effect data
-        const effectData: {
+        // If eData.isMember or eData.isCohort, first see if there already is such an effect on the doc
+        if (testChange.isMember) {
+          if (toMemberEffects.length > 1) {
+            return eLog.error("updateRollMods", `updateRollMods: Crew Ability ${aName} Has Multiple 'APPLYTOMEMBERS' Active Effects`);
+          }
+
+          // Initialize new effect data
+          const effectData: {
           name: string,
           icon: string,
           changes: Array<Partial<EffectChangeData>>
@@ -3433,32 +3439,32 @@ export const updateRollMods = async () => {
           })
         };
 
-        // Derive new effect data from existing effect, if any, then delete existing effect
-        if (toMemberEffects.length === 1) {
-          const abilityEffect = toMemberEffects[0] as BladesActiveEffect;
-          effectData.name = abilityEffect.name ?? effectData.name;
-          effectData.icon = abilityEffect.icon ?? effectData.icon;
-          effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
-          await abilityEffect.delete();
-        } else {
-          effectData.changes.unshift({
-            key: "APPLYTOMEMBERS",
-            mode: 0,
-            priority: null,
-            value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Crew Ability)`
-          });
-        }
+          // Derive new effect data from existing effect, if any, then delete existing effect
+          if (toMemberEffects.length === 1) {
+            const abilityEffect = toMemberEffects[0] ;
+            effectData.name = abilityEffect.name ?? effectData.name;
+            effectData.icon = abilityEffect.icon ?? effectData.icon;
+            effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
+            await abilityEffect.delete();
+          } else {
+            effectData.changes.unshift({
+              key: "APPLYTOMEMBERS",
+              mode: 0,
+              priority: null,
+              value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Crew Ability)`
+            });
+          }
 
-        // Create new ActiveEffect
-        await crewAbilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
-      } else if (testChange.isCohort) {
-        if (toCohortEffects.length > 1) {
-          eLog.error("updateRollMods", `updateRollMods: Crew Ability ${aName} Has Multiple 'APPLYTOCOHORTS' Active Effects`);
-          return;
-        }
+          // Create new ActiveEffect
+          return crewAbilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
+        } else if (testChange.isCohort) {
+          if (toCohortEffects.length > 1) {
+            eLog.error("updateRollMods", `updateRollMods: Crew Ability ${aName} Has Multiple 'APPLYTOCOHORTS' Active Effects`);
+            return undefined;
+          }
 
-        // Initialize new effect data
-        const effectData: {
+          // Initialize new effect data
+          const effectData: {
           name: string,
           icon: string,
           changes: Array<Partial<EffectChangeData>>
@@ -3471,32 +3477,32 @@ export const updateRollMods = async () => {
           })
         };
 
-        // Derive new effect data from existing effect, if any, then delete existing effect
-        if (toCohortEffects.length === 1) {
-          const abilityEffect = toCohortEffects[0] as BladesActiveEffect;
-          effectData.name = abilityEffect.name ?? effectData.name;
-          effectData.icon = abilityEffect.icon ?? effectData.icon;
-          effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
-          await abilityEffect.delete();
+          // Derive new effect data from existing effect, if any, then delete existing effect
+          if (toCohortEffects.length === 1) {
+            const abilityEffect = toCohortEffects[0] ;
+            effectData.name = abilityEffect.name ?? effectData.name;
+            effectData.icon = abilityEffect.icon ?? effectData.icon;
+            effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
+            await abilityEffect.delete();
+          } else {
+            effectData.changes.unshift({
+              key: "APPLYTOCOHORTS",
+              mode: 0,
+              priority: null,
+              value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Crew Ability)`
+            });
+          }
+
+          // Create new ActiveEffect
+          return crewAbilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
         } else {
-          effectData.changes.unshift({
-            key: "APPLYTOCOHORTS",
-            mode: 0,
-            priority: null,
-            value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Crew Ability)`
-          });
-        }
+          if (standardEffects.length > 1) {
+            eLog.error("updateRollMods", `updateRollMods: Crew Ability ${aName} Has Multiple Active Effects`);
+            return undefined;
+          }
 
-        // Create new ActiveEffect
-        await crewAbilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
-      } else {
-        if (standardEffects.length > 1) {
-          eLog.error("updateRollMods", `updateRollMods: Crew Ability ${aName} Has Multiple Active Effects`);
-          return;
-        }
-
-        // Initialize new effect data
-        const effectData: {
+          // Initialize new effect data
+          const effectData: {
           name: string,
           icon: string,
           changes: Array<Partial<EffectChangeData>>
@@ -3506,56 +3512,59 @@ export const updateRollMods = async () => {
           changes: eData
         };
 
-        // Derive new effect data from existing effect, if any, then delete existing effect
-        if (standardEffects.length === 1) {
-          const abilityEffect = standardEffects[0] as BladesActiveEffect;
-          effectData.name = abilityEffect.name ?? effectData.name;
-          effectData.icon = abilityEffect.icon ?? effectData.icon;
-          effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
-          await abilityEffect.delete();
+          // Derive new effect data from existing effect, if any, then delete existing effect
+          if (standardEffects.length === 1) {
+            const abilityEffect = standardEffects[0] ;
+            effectData.name = abilityEffect.name ?? effectData.name;
+            effectData.icon = abilityEffect.icon ?? effectData.icon;
+            effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
+            await abilityEffect.delete();
+          }
+
+          // Create new ActiveEffect
+          return crewAbilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
+        }
+      }),
+    ...Object.entries(JSONDATA.CREW_UPGRADES.RollMods)
+      .map(async ([aName, eData]) => {
+        // Get crew upgrade doc
+        const crewUpgradeDoc = game.items.getName(aName);
+        if (!crewUpgradeDoc) {
+          eLog.error("updateRollMods", `updateRollMods: Crew Upgrade ${aName} Not Found.`);
+          return undefined;
         }
 
-        // Create new ActiveEffect
-        await crewAbilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
-      }
-    });
-  Object.entries(JSONDATA.CREW_UPGRADES.RollMods)
-    .forEach(async ([aName, eData]) => {
-      // Get crew upgrade doc
-      const crewUpgradeDoc = game.items.getName(aName);
-      if (!crewUpgradeDoc) {
-        eLog.error("updateRollMods", `updateRollMods: Crew Upgrade ${aName} Not Found.`);
-        return;
-      }
+        // Get active effects on crewUpgradeDoc
+        const abilityEffects = Array.from(crewUpgradeDoc.effects ?? []) as BladesActiveEffect[];
 
-      // Get active effects on crewAbilityDoc
-      const abilityEffects = Array.from(crewUpgradeDoc.effects ?? []) as BladesActiveEffect[];
+        // Separate out 'APPLYTOMEMBERS' and 'APPLYTOCOHORTS' ActiveEffects
+        const toMemberEffects = abilityEffects.filter((effect) => effect.changes.some((change) => change.key === "APPLYTOMEMBERS"));
+        const toCohortEffects = abilityEffects.filter((effect) => effect.changes.some((change) => change.key === "APPLYTOCOHORTS"));
+        const standardEffects = abilityEffects.filter((effect) => effect.changes.every((change) => !["APPLYTOMEMBERS", "APPLYTOCOHORTS"].includes(change.key)));
 
-      // Separate out 'APPLYTOMEMBERS' and 'APPLYTOCOHORTS' ActiveEffects
-      const toMemberEffects = abilityEffects.filter((effect) => effect.changes.some((change) => change.key === "APPLYTOMEMBERS"));
-      const toCohortEffects = abilityEffects.filter((effect) => effect.changes.some((change) => change.key === "APPLYTOCOHORTS"));
-      const standardEffects = abilityEffects.filter((effect) => effect.changes.every((change) => !["APPLYTOMEMBERS", "APPLYTOCOHORTS"].includes(change.key)));
-
-      // Confirm eData.isMember and eData.isCohort are consistent across all changes.
-      const testChange = eData[0];
-      if (
-        (testChange.isMember && eData.some((change) => !change.isMember))
+        // Confirm eData.isMember and eData.isCohort are consistent across all changes.
+        const testChange = eData[0];
+        if (
+          (testChange.isMember && eData.some((change) => !change.isMember))
         || (!testChange.isMember && eData.some((change) => change.isMember))
-      ) { eLog.error("updateRollMods", `updateRollMods: Crew Upgrade ${aName} has inconsistent 'isMember' entries.`); return }
-      if (
-        (testChange.isCohort && eData.some((change) => !change.isCohort))
+        ) {
+          return eLog.error("updateRollMods", `updateRollMods: Crew Upgrade ${aName} has inconsistent 'isMember' entries.`);
+        }
+        if (
+          (testChange.isCohort && eData.some((change) => !change.isCohort))
         || (!testChange.isCohort && eData.some((change) => change.isCohort))
-      ) { eLog.error("updateRollMods", `updateRollMods: Crew Upgrade ${aName} has inconsistent 'isCohort' entries.`); return }
-
-      // If eData.isMember or eData.isCohort, first see if there already is such an effect on the doc
-      if (testChange.isMember) {
-        if (toMemberEffects.length > 1) {
-          eLog.error("updateRollMods", `updateRollMods: Crew Upgrade ${aName} Has Multiple 'APPLYTOMEMBERS' Active Effects`);
-          return;
+        ) {
+          return eLog.error("updateRollMods", `updateRollMods: Crew Upgrade ${aName} has inconsistent 'isCohort' entries.`);
         }
 
-        // Initialize new effect data
-        const effectData: {
+        // If eData.isMember or eData.isCohort, first see if there already is such an effect on the doc
+        if (testChange.isMember) {
+          if (toMemberEffects.length > 1) {
+            return eLog.error("updateRollMods", `updateRollMods: Crew Upgrade ${aName} Has Multiple 'APPLYTOMEMBERS' Active Effects`);
+          }
+
+          // Initialize new effect data
+          const effectData: {
           name: string,
           icon: string,
           changes: Array<Partial<EffectChangeData>>
@@ -3568,32 +3577,32 @@ export const updateRollMods = async () => {
           })
         };
 
-        // Derive new effect data from existing effect, if any, then delete existing effect
-        if (toMemberEffects.length === 1) {
-          const abilityEffect = toMemberEffects[0] as BladesActiveEffect;
-          effectData.name = abilityEffect.name ?? effectData.name;
-          effectData.icon = abilityEffect.icon ?? effectData.icon;
-          effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
-          await abilityEffect.delete();
-        } else {
-          effectData.changes.unshift({
-            key: "APPLYTOMEMBERS",
-            mode: 0,
-            priority: null,
-            value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Crew Upgrade)`
-          });
-        }
+          // Derive new effect data from existing effect, if any, then delete existing effect
+          if (toMemberEffects.length === 1) {
+            const abilityEffect = toMemberEffects[0] ;
+            effectData.name = abilityEffect.name ?? effectData.name;
+            effectData.icon = abilityEffect.icon ?? effectData.icon;
+            effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
+            await abilityEffect.delete();
+          } else {
+            effectData.changes.unshift({
+              key: "APPLYTOMEMBERS",
+              mode: 0,
+              priority: null,
+              value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Crew Upgrade)`
+            });
+          }
 
-        // Create new ActiveEffect
-        await crewUpgradeDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
-      } else if (testChange.isCohort) {
-        if (toCohortEffects.length > 1) {
-          eLog.error("updateRollMods", `updateRollMods: Crew Upgrade ${aName} Has Multiple 'APPLYTOCOHORTS' Active Effects`);
-          return;
-        }
+          // Create new ActiveEffect
+          return crewUpgradeDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
+        } else if (testChange.isCohort) {
+          if (toCohortEffects.length > 1) {
+            eLog.error("updateRollMods", `updateRollMods: Crew Upgrade ${aName} Has Multiple 'APPLYTOCOHORTS' Active Effects`);
+            return undefined;
+          }
 
-        // Initialize new effect data
-        const effectData: {
+          // Initialize new effect data
+          const effectData: {
           name: string,
           icon: string,
           changes: Array<Partial<EffectChangeData>>
@@ -3606,32 +3615,32 @@ export const updateRollMods = async () => {
           })
         };
 
-        // Derive new effect data from existing effect, if any, then delete existing effect
-        if (toCohortEffects.length === 1) {
-          const abilityEffect = toCohortEffects[0] as BladesActiveEffect;
-          effectData.name = abilityEffect.name ?? effectData.name;
-          effectData.icon = abilityEffect.icon ?? effectData.icon;
-          effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
-          await abilityEffect.delete();
+          // Derive new effect data from existing effect, if any, then delete existing effect
+          if (toCohortEffects.length === 1) {
+            const abilityEffect = toCohortEffects[0] ;
+            effectData.name = abilityEffect.name ?? effectData.name;
+            effectData.icon = abilityEffect.icon ?? effectData.icon;
+            effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
+            await abilityEffect.delete();
+          } else {
+            effectData.changes.unshift({
+              key: "APPLYTOCOHORTS",
+              mode: 0,
+              priority: null,
+              value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Crew Upgrade)`
+            });
+          }
+
+          // Create new ActiveEffect
+          return crewUpgradeDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
         } else {
-          effectData.changes.unshift({
-            key: "APPLYTOCOHORTS",
-            mode: 0,
-            priority: null,
-            value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Crew Upgrade)`
-          });
-        }
+          if (standardEffects.length > 1) {
+            eLog.error("updateRollMods", `updateRollMods: Crew Upgrade ${aName} Has Multiple Active Effects`);
+            return undefined;
+          }
 
-        // Create new ActiveEffect
-        await crewUpgradeDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
-      } else {
-        if (standardEffects.length > 1) {
-          eLog.error("updateRollMods", `updateRollMods: Crew Upgrade ${aName} Has Multiple Active Effects`);
-          return;
-        }
-
-        // Initialize new effect data
-        const effectData: {
+          // Initialize new effect data
+          const effectData: {
           name: string,
           icon: string,
           changes: Array<Partial<EffectChangeData>>
@@ -3641,35 +3650,36 @@ export const updateRollMods = async () => {
           changes: eData
         };
 
-        // Derive new effect data from existing effect, if any, then delete existing effect
-        if (standardEffects.length === 1) {
-          const abilityEffect = standardEffects[0] as BladesActiveEffect;
-          effectData.name = abilityEffect.name ?? effectData.name;
-          effectData.icon = abilityEffect.icon ?? effectData.icon;
-          effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
-          await abilityEffect.delete();
-        }
+          // Derive new effect data from existing effect, if any, then delete existing effect
+          if (standardEffects.length === 1) {
+            const abilityEffect = standardEffects[0] ;
+            effectData.name = abilityEffect.name ?? effectData.name;
+            effectData.icon = abilityEffect.icon ?? effectData.icon;
+            effectData.changes.unshift(...abilityEffect.changes.filter((change) => change.key !== "system.roll_mods"));
+            await abilityEffect.delete();
+          }
 
-        // Create new ActiveEffect
-        await crewUpgradeDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
-      }
-    });
+          // Create new ActiveEffect
+          return crewUpgradeDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
+        }
+      })
+  ]);
 };
 
 export const updateDescriptions = async () => {
-  Object.entries({
+  return Promise.all(Object.entries({
     ...JSONDATA.ABILITIES.Descriptions,
     ...JSONDATA.CREW_ABILITIES.Descriptions,
     ...JSONDATA.CREW_UPGRADES.Descriptions
   })
-    .forEach(async ([aName, desc]) => {
+    .map(async ([aName, desc]) => {
       const itemDoc = game.items.getName(aName);
       if (!itemDoc) {
         eLog.error("applyRollEffects", `ApplyDescriptions: Item Doc ${aName} Not Found.`);
-        return;
+        return undefined;
       }
 
       // Update system.notes
-      itemDoc.update({"system.notes": desc});
-    });
+      return itemDoc.update({"system.notes": desc});
+    }));
 };

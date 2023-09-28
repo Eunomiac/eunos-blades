@@ -156,15 +156,17 @@ export var DowntimeAction;
 export var RollType;
 (function (RollType) {
     RollType["Action"] = "Action";
-    RollType["Downtime"] = "Downtime";
     RollType["Resistance"] = "Resistance";
     RollType["Fortune"] = "Fortune";
+    RollType["IndulgeVice"] = "Vice";
 })(RollType || (RollType = {}));
 export var RollSubType;
 (function (RollSubType) {
     RollSubType["Incarceration"] = "Incarceration";
     RollSubType["Engagement"] = "Engagement";
     RollSubType["GatherInfo"] = "GatherInfo";
+    RollSubType["GroupLead"] = "GroupLead";
+    RollSubType["GroupParticipant"] = "GroupParticipant";
 })(RollSubType || (RollSubType = {}));
 export var ConsequenceType;
 (function (ConsequenceType) {
@@ -186,14 +188,14 @@ export var RollModStatus;
     RollModStatus["ForcedOn"] = "ForcedOn";
     RollModStatus["Dominant"] = "Dominant";
 })(RollModStatus || (RollModStatus = {}));
-export var RollModCategory;
-(function (RollModCategory) {
-    RollModCategory["roll"] = "roll";
-    RollModCategory["position"] = "position";
-    RollModCategory["effect"] = "effect";
-    RollModCategory["result"] = "result";
-    RollModCategory["after"] = "after";
-})(RollModCategory || (RollModCategory = {}));
+export var RollModSection;
+(function (RollModSection) {
+    RollModSection["roll"] = "roll";
+    RollModSection["position"] = "position";
+    RollModSection["effect"] = "effect";
+    RollModSection["result"] = "result";
+    RollModSection["after"] = "after";
+})(RollModSection || (RollModSection = {}));
 export var Position;
 (function (Position) {
     Position["desperate"] = "desperate";

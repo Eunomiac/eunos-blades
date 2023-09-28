@@ -1,4 +1,4 @@
-import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModCategory, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor} from "../core/constants.js";
+import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor} from "../core/constants.js";
 import BladesActor from "../BladesActor.js";
 import BladesItem from "../BladesItem.js";
 import {BladesRollMod} from "../BladesRollCollab.js";
@@ -16,8 +16,9 @@ declare global {
       rollTrait?: RollTrait
     }
 
-    export type ConsequenceData = {
+    export interface ConsequenceData extends Partial<OppositionDocData> {
       type: ConsequenceType,
+      attribute: AttributeTrait,
       label?: string
     }
 
@@ -58,7 +59,7 @@ declare global {
       GMBoosts: Partial<Record<"Dice"|Factor|"Result",number>>,
       GMOppBoosts: Partial<Record<Factor,number>>,
       docSelections: {
-        [RollModCategory.roll]: {
+        [RollModSection.roll]: {
           Assist: string|false,
           Group_1: string|false,
           Group_2: string|false,
@@ -67,10 +68,10 @@ declare global {
           Group_5: string|false,
           Group_6: string|false,
         },
-        [RollModCategory.position]: {
+        [RollModSection.position]: {
           Setup: string|false
         },
-        [RollModCategory.effect]: {
+        [RollModSection.effect]: {
           Setup: string|false
         }
       }
@@ -110,9 +111,9 @@ declare global {
       canTradePosition: boolean,
       canTradeEffect: boolean,
 
-      posRollMods: Record<RollModCategory, BladesRollMod[]>,
-      negRollMods: Record<RollModCategory, BladesRollMod[]>,
-      hasInactiveConditionals: Record<RollModCategory, boolean>,
+      posRollMods: Record<RollModSection, BladesRollMod[]>,
+      negRollMods: Record<RollModSection, BladesRollMod[]>,
+      hasInactiveConditionals: Record<RollModSection, boolean>,
 
       rollFactors: Record<"source"|"opposition", Partial<Record<Factor,FactorData>>>,
 
@@ -123,6 +124,7 @@ declare global {
 
     export type PartialSheetData = Partial<SheetData> & FlagData;
 
+    export type AnyRollType = RollType|RollSubType|DowntimeAction;
     export type RollTrait = ActionTrait|AttributeTrait|Factor|number;
 
     export interface FactorData extends NamedValueMax {
@@ -150,11 +152,13 @@ declare global {
       posNeg: "positive"|"negative",
       isOppositional?: boolean,
       modType: BladesItemType|"general"|"harm"|"teamwork",
-      conditionalRollTypes?: Array<RollType|DowntimeAction>,
-      autoRollTypes?: Array<RollType|DowntimeAction>,
+      conditionalRollTypes?: AnyRollType[],
+      autoRollTypes?: AnyRollType[],
+      participantRollTypes?: AnyRollType[],
       conditionalRollTraits?: RollTrait[],
       autoRollTraits?: RollTrait[],
-      category: RollModCategory
+      participantRollTraits?: RollTrait[],
+      category: RollModSection
     }
 
     export type PrimaryDoc =

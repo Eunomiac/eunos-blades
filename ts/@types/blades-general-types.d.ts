@@ -42,6 +42,12 @@ declare global {
   // Represents an allowed gender key
   type Gender = "M"|"F"|"U"|"X";
 
+  // Represents an allowed direction
+  type Direction = "top"|"bottom"|"left"|"right";
+
+  // Represents an allowed string case
+  type StringCase = "upper" | "lower" | "sentence" | "title";
+
   // Represents HTML code as a string
   type HTMLCode = string;
 

@@ -196,52 +196,61 @@ function assertNonNullType<T>(val: unknown, type: (new(...args: unknown[]) => T)
     throw new Error(`Value ${valStr} is not a ${type.name}!`);
   }
 }
+/**
+ * Checks if two values are "fuzzy" equal, simulating the behavior of the "==" operator.
+ * This function does not use the "==" operator directly to comply with linting rules.
+ *
+ * @param {unknown} val1 - The first value to compare.
+ * @param {unknown} val2 - The second value to compare.
+ * @returns {boolean} True if the values are "fuzzy" equal, false otherwise.
+ */
+const areFuzzyEqual = (val1: unknown, val2: unknown): boolean => {
+  // If both values are null or undefined, they are considered equal
+  if (([null, undefined] as unknown[]).includes(val1) && ([null, undefined] as unknown[]).includes(val2)) { return true }
+
+  // If only one of the values is null or undefined, they are not equal
+  if (([null, undefined] as unknown[]).includes(val1) || ([null, undefined] as unknown[]).includes(val2)) { return false }
+
+  // If both values are numbers, they are considered equal if they are numerically equal
+  if (typeof val1 === "number" && typeof val2 === "number") { return val1 === val2 }
+
+  // If both values are booleans, they are considered equal if they are both true or both false
+  if (typeof val1 === "boolean" && typeof val2 === "boolean") { return val1 === val2 }
+
+  // If both values are strings, they are considered equal if they are identical
+  if (typeof val1 === "string" && typeof val2 === "string") { return val1 === val2 }
+
+  // If one value is a number and the other is a string, they are considered equal if the string can be converted to the number
+  if (typeof val1 === "number" && typeof val2 === "string") { return val1 === Number(val2) }
+  if (typeof val1 === "string" && typeof val2 === "number") { return Number(val1) === val2 }
+
+  // If one value is a boolean and the other is a non-null object, they are not equal
+  if (typeof val1 === "boolean" && typeof val2 === "object") { return false }
+  if (typeof val1 === "object" && typeof val2 === "boolean") { return false }
+
+  // If one value is a boolean and the other is a string, they are considered equal if the boolean is true and the string is not empty, or if the boolean is false and the string is empty
+  if (typeof val1 === "boolean" && typeof val2 === "string") { return (val1 && val2 !== "") || (!val1 && val2 === "") }
+  if (typeof val1 === "string" && typeof val2 === "boolean") { return (val2 && val1 !== "") || (!val2 && val1 === "") }
+
+  // If one value is a number or a string and the other is an object, they are not equal
+  if ((typeof val1 === "number" || typeof val1 === "string") && typeof val2 === "object") { return false }
+  if (typeof val1 === "object" && (typeof val2 === "number" || typeof val2 === "string")) { return false }
+
+  // If both values are objects, they are considered equal if they are identical
+  if (typeof val1 === "object" && typeof val2 === "object") { return val1 === val2 }
+
+  // If none of the above conditions are met, the values are not equal
+  return false;
+};
+
 const areEqual = (...refs: unknown[]) => {
   do {
     const ref = refs.pop();
-    if (refs.length && !checkEquality(ref, refs[0])) {
+    if (refs.length && !areFuzzyEqual(ref, refs[0])) {
       return false;
     }
   } while (refs.length);
   return true;
-};
-
-const checkEquality = (ref1: unknown, ref2: unknown): boolean => {
-  if (typeof ref1 !== typeof ref2) {return false}
-  if ([ref1, ref2].includes(null)) {return ref1 === ref2}
-  if (typeof ref1 === "object") {
-    return checkObjectEquality(ref1, ref2);
-  } else {
-    return ref1 === ref2;
-  }
-};
-
-const checkObjectEquality = (obj1: unknown, obj2: unknown): boolean => {
-  if (isArray(obj1)) {
-    return checkArrayEquality(obj1, obj2 as unknown[]);
-  } else if (isList(obj1)) {
-    return checkListEquality(obj1, obj2 as Record<key, unknown>);
-  } else {
-    return checkOtherObjectEquality(obj1, obj2);
-  }
-};
-
-const checkArrayEquality = (arr1: unknown[], arr2: unknown[]): boolean => {
-  if (!isArray(arr2) || arr1.length !== arr2.length) {return false}
-  return arr1.every((value, index) => checkEquality(value, arr2[index]));
-};
-
-const checkListEquality = (list1: Record<key, unknown>, list2: Record<key, unknown>): boolean => {
-  if (!isList(list2) || Object.keys(list1).length !== Object.keys(list2).length) {return false}
-  return checkEquality(Object.keys(list1), Object.keys(list2)) && checkEquality(Object.values(list1), Object.values(list2));
-};
-
-const checkOtherObjectEquality = (obj1: unknown, obj2: unknown): boolean => {
-  try {
-    return JSON.stringify(obj1) === JSON.stringify(obj2);
-  } catch {
-    return false;
-  }
 };
 const pFloat = (ref: unknown, sigDigits?: posInt, isStrict = false): number => {
   if (typeof ref === "string") {
@@ -1118,6 +1127,38 @@ function objNullify<T>(obj: T): Record<KeyOf<T>, null> | null[] | T {
 
   return obj;
 }
+
+/**
+ * This function freezes the properties of an object based on a provided schema or keys.
+ * If a property is missing, it throws an error.
+ * @param {Partial<T>} data - The object whose properties are to be frozen.
+ * @param {...Array<keyof T> | [T]} keysOrSchema - The keys or schema to freeze the properties.
+ * @returns {T} - The object with frozen properties.
+ * @throws {Error} - Throws an error if a property is missing.
+ */
+function objFreezeProps<T>(data: Partial<T>, ...keysOrSchema: Array<keyof T> | [T]): T {
+  const firstArg = keysOrSchema[0];
+
+  // If the first argument is an object and not an array, treat it as a schema
+  if (firstArg instanceof Object && !Array.isArray(firstArg)) {
+    const schema = firstArg as T;
+    for (const key in schema) {
+      if (data[key as keyof T] === undefined) {
+        throw new Error(`Missing value for ${key}`);
+      }
+    }
+  } else {
+    // If the first argument is not an object or is an array, treat it as an array of keys
+    for (const key of keysOrSchema as Array<keyof T>) {
+      if (data[key] === undefined) {
+        throw new Error(`Missing value for ${String(key)}`);
+      }
+    }
+  }
+
+  // Return the data as type T
+  return data as T;
+}
 // #endregion ▄▄▄▄▄ OBJECTS ▄▄▄▄▄
 
 // #region ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████ ~
@@ -1334,7 +1375,7 @@ export default {
   isNumber, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
   isHTMLCode, isRGBColor, isHexColor,
   isUndefined, isDefined, isEmpty, hasItems, isInstance,
-  areEqual,
+  areEqual, areFuzzyEqual,
   pFloat, pInt, radToDeg, degToRad,
   getKey,
   assertNonNullType,
@@ -1380,6 +1421,7 @@ export default {
   remove, replace, partition,
   objClean, objSize, objMap, objFindKey, objFilter, objForEach, objCompact,
   objClone, objMerge, objDiff, objExpand, objFlatten, objNullify,
+  objFreezeProps,
 
   // ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████
   getDynamicFunc, withLog,

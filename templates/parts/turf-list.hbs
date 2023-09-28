@@ -38,10 +38,10 @@
       {{/if}}
       {{/if}}
       {{#unless ../can_edit}}
-      {{#noteq id "8"}}
+      {{#if (test id "!=" "8")}}
       <a class="turf-control turf-select" title="Select" data-turf-id="{{id}}" data-turf-status="{{turf.value}}"><i
           class="fas fa-circle"></i></a>
-      {{/noteq}}
+      {{/if}}
       {{/unless}}
     </div>
     {{#if (eq id "5")}}

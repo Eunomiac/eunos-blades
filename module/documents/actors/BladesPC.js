@@ -6,7 +6,7 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import BladesItem from "../../BladesItem.js";
-import C, { AttributeTrait, Harm, BladesActorType, BladesItemType, Tag, RollModCategory, Factor, RollModStatus } from "../../core/constants.js";
+import C, { AttributeTrait, Harm, BladesActorType, BladesItemType, Tag, RollModSection, Factor, RollModStatus } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesActor from "../../BladesActor.js";
 import { BladesRollMod } from "../../BladesRollCollab.js";
@@ -34,7 +34,7 @@ class BladesPC extends BladesActor {
         return game.users?.find((user) => user.character?.id === this?.id) || null;
     }
     async clearLoadout() {
-        this.update({ "system.loadout.selected": "" });
+        await this.update({ "system.loadout.selected": "" });
         this.updateEmbeddedDocuments("Item", [
             ...this.activeSubItems.filter((item) => BladesItem.IsType(item, BladesItemType.gear) && !item.hasTag(Tag.System.Archived))
                 .map((item) => ({
@@ -182,7 +182,7 @@ class BladesPC extends BladesActor {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return;
         }
-        this.update({ "system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max) });
+        await this.update({ "system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max) });
     }
     get rollFactors() {
         const factorData = {
@@ -216,7 +216,7 @@ class BladesPC extends BladesActor {
     get rollPrimaryImg() { return this.img; }
     get rollModsData() {
         const rollModsData = BladesRollMod.ParseDocRollMods(this);
-        [[/1d/, RollModCategory.roll], [/Less Effect/, RollModCategory.effect]].forEach(([effectPat, effectCat]) => {
+        [[/1d/, RollModSection.roll], [/Less Effect/, RollModSection.effect]].forEach(([effectPat, effectCat]) => {
             const { one: harmConditionOne, two: harmConditionTwo } = Object.values(this.system.harm)
                 .find((harmData) => effectPat.test(harmData.effect)) ?? {};
             const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
@@ -230,9 +230,9 @@ class BladesPC extends BladesActor {
                     modType: "harm",
                     value: 1,
                     tooltip: [
-                        `<h1 class='sur-title'>${effectCat === RollModCategory.roll ? Harm.Impaired : Harm.Weakened} (Harm)</h1>`,
+                        `<h1 class='sur-title'>${effectCat === RollModSection.roll ? Harm.Impaired : Harm.Weakened} (Harm)</h1>`,
                         `<h1 class='red-bright'>${harmString}</h1>`,
-                        effectCat === RollModCategory.roll
+                        effectCat === RollModSection.roll
                             ? "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1d</strong> to your roll.</p>"
                             : "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1 effect</strong>."
                     ].join("")
@@ -245,7 +245,7 @@ class BladesPC extends BladesActor {
                 id: "Push-negative-roll",
                 name: "PUSH",
                 sideString: harmCondition.trim(),
-                category: RollModCategory.roll,
+                category: RollModSection.roll,
                 posNeg: "negative",
                 base_status: RollModStatus.ToggledOn,
                 modType: "harm",

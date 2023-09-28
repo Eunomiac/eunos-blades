@@ -55,9 +55,9 @@
   <td>
     <select data-dtype="number" name="system.clock_keys.{{keyID}}.clocks.{{clockNum}}.value">
       {{#select clockData.value}}
-      {{#times_from_0 clockData.max}}
+      {{#forloop 0 clockData.max}}
         <option value="{{this}}">{{this}}</option>
-      {{/times_from_0}}
+      {{/forloop}}
       {{/select}}
     </select>
   </td>

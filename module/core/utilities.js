@@ -171,59 +171,59 @@ function assertNonNullType(val, type) {
         throw new Error(`Value ${valStr} is not a ${type.name}!`);
     }
 }
+const areFuzzyEqual = (val1, val2) => {
+    if ([null, undefined].includes(val1) && [null, undefined].includes(val2)) {
+        return true;
+    }
+    if ([null, undefined].includes(val1) || [null, undefined].includes(val2)) {
+        return false;
+    }
+    if (typeof val1 === "number" && typeof val2 === "number") {
+        return val1 === val2;
+    }
+    if (typeof val1 === "boolean" && typeof val2 === "boolean") {
+        return val1 === val2;
+    }
+    if (typeof val1 === "string" && typeof val2 === "string") {
+        return val1 === val2;
+    }
+    if (typeof val1 === "number" && typeof val2 === "string") {
+        return val1 === Number(val2);
+    }
+    if (typeof val1 === "string" && typeof val2 === "number") {
+        return Number(val1) === val2;
+    }
+    if (typeof val1 === "boolean" && typeof val2 === "object") {
+        return false;
+    }
+    if (typeof val1 === "object" && typeof val2 === "boolean") {
+        return false;
+    }
+    if (typeof val1 === "boolean" && typeof val2 === "string") {
+        return (val1 && val2 !== "") || (!val1 && val2 === "");
+    }
+    if (typeof val1 === "string" && typeof val2 === "boolean") {
+        return (val2 && val1 !== "") || (!val2 && val1 === "");
+    }
+    if ((typeof val1 === "number" || typeof val1 === "string") && typeof val2 === "object") {
+        return false;
+    }
+    if (typeof val1 === "object" && (typeof val2 === "number" || typeof val2 === "string")) {
+        return false;
+    }
+    if (typeof val1 === "object" && typeof val2 === "object") {
+        return val1 === val2;
+    }
+    return false;
+};
 const areEqual = (...refs) => {
     do {
         const ref = refs.pop();
-        if (refs.length && !checkEquality(ref, refs[0])) {
+        if (refs.length && !areFuzzyEqual(ref, refs[0])) {
             return false;
         }
     } while (refs.length);
     return true;
-};
-const checkEquality = (ref1, ref2) => {
-    if (typeof ref1 !== typeof ref2) {
-        return false;
-    }
-    if ([ref1, ref2].includes(null)) {
-        return ref1 === ref2;
-    }
-    if (typeof ref1 === "object") {
-        return checkObjectEquality(ref1, ref2);
-    }
-    else {
-        return ref1 === ref2;
-    }
-};
-const checkObjectEquality = (obj1, obj2) => {
-    if (isArray(obj1)) {
-        return checkArrayEquality(obj1, obj2);
-    }
-    else if (isList(obj1)) {
-        return checkListEquality(obj1, obj2);
-    }
-    else {
-        return checkOtherObjectEquality(obj1, obj2);
-    }
-};
-const checkArrayEquality = (arr1, arr2) => {
-    if (!isArray(arr2) || arr1.length !== arr2.length) {
-        return false;
-    }
-    return arr1.every((value, index) => checkEquality(value, arr2[index]));
-};
-const checkListEquality = (list1, list2) => {
-    if (!isList(list2) || Object.keys(list1).length !== Object.keys(list2).length) {
-        return false;
-    }
-    return checkEquality(Object.keys(list1), Object.keys(list2)) && checkEquality(Object.values(list1), Object.values(list2));
-};
-const checkOtherObjectEquality = (obj1, obj2) => {
-    try {
-        return JSON.stringify(obj1) === JSON.stringify(obj2);
-    }
-    catch {
-        return false;
-    }
 };
 const pFloat = (ref, sigDigits, isStrict = false) => {
     if (typeof ref === "string") {
@@ -1000,6 +1000,25 @@ function objNullify(obj) {
     });
     return obj;
 }
+function objFreezeProps(data, ...keysOrSchema) {
+    const firstArg = keysOrSchema[0];
+    if (firstArg instanceof Object && !Array.isArray(firstArg)) {
+        const schema = firstArg;
+        for (const key in schema) {
+            if (data[key] === undefined) {
+                throw new Error(`Missing value for ${key}`);
+            }
+        }
+    }
+    else {
+        for (const key of keysOrSchema) {
+            if (data[key] === undefined) {
+                throw new Error(`Missing value for ${String(key)}`);
+            }
+        }
+    }
+    return data;
+}
 
 const getDynamicFunc = (funcName, func, context) => {
     if (typeof func === "function") {
@@ -1177,7 +1196,7 @@ export default {
     isNumber, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
     isHTMLCode, isRGBColor, isHexColor,
     isUndefined, isDefined, isEmpty, hasItems, isInstance,
-    areEqual,
+    areEqual, areFuzzyEqual,
     pFloat, pInt, radToDeg, degToRad,
     getKey,
     assertNonNullType,
@@ -1207,6 +1226,7 @@ export default {
     remove, replace, partition,
     objClean, objSize, objMap, objFindKey, objFilter, objForEach, objCompact,
     objClone, objMerge, objDiff, objExpand, objFlatten, objNullify,
+    objFreezeProps,
     getDynamicFunc, withLog,
 
     gsap, get, set, getGSAngleDelta,

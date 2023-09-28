@@ -1,5 +1,5 @@
 import BladesItem from "../../BladesItem.js";
-import C, {Playbook, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModCategory, Factor, RollModStatus} from "../../core/constants.js";
+import C, {Playbook, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModSection, Factor, RollModStatus} from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesActor from "../../BladesActor.js";
 import BladesCrew from "./BladesCrew.js";
@@ -39,7 +39,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     return game.users?.find((user) => user.character?.id === this?.id) || null;
   }
   async clearLoadout() {
-    this.update({"system.loadout.selected": ""});
+    await this.update({"system.loadout.selected": ""});
     this.updateEmbeddedDocuments(
       "Item",
       [
@@ -162,7 +162,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       this.system.trauma.checked,
       // @ts-ignore Compiler linter mismatch.
       (_v: unknown, traumaName: string): boolean => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName])
-    ) as Record<string, boolean>;
+    );
   }
   get currentLoad(): number {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0 }
@@ -178,7 +178,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   async addStash(amount: number): Promise<void> {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return }
-    this.update({"system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max)});
+    await this.update({"system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max)});
   }
   // #endregion
 
@@ -224,7 +224,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     const rollModsData = BladesRollMod.ParseDocRollMods(this);
 
     // Add roll mods from harm
-    [[/1d/, RollModCategory.roll] as const, [/Less Effect/, RollModCategory.effect] as const].forEach(([effectPat, effectCat]) => {
+    [[/1d/, RollModSection.roll] as const, [/Less Effect/, RollModSection.effect] as const].forEach(([effectPat, effectCat]) => {
       const {one: harmConditionOne, two: harmConditionTwo} = Object.values(this.system.harm)
         .find((harmData) => effectPat.test(harmData.effect)) ?? {};
       const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
@@ -238,9 +238,9 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
           modType: "harm",
           value: 1,
           tooltip: [
-            `<h1 class='sur-title'>${effectCat === RollModCategory.roll ? Harm.Impaired : Harm.Weakened} (Harm)</h1>`,
+            `<h1 class='sur-title'>${effectCat === RollModSection.roll ? Harm.Impaired : Harm.Weakened} (Harm)</h1>`,
             `<h1 class='red-bright'>${harmString}</h1>`,
-            effectCat === RollModCategory.roll
+            effectCat === RollModSection.roll
               ? "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1d</strong> to your roll.</p>"
               : "<p>If your injuries apply to the situation at hand, you suffer <strong class='red-bright'>−1 effect</strong>."
           ].join("")
@@ -253,7 +253,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
         id: "Push-negative-roll",
         name: "PUSH",
         sideString: harmCondition.trim(),
-        category: RollModCategory.roll,
+        category: RollModSection.roll,
         posNeg: "negative",
         base_status: RollModStatus.ToggledOn,
         modType: "harm",

@@ -69,9 +69,9 @@
                 <th class="black-white">
                   <select class="key-clock-counter" data-dtype="number" data-id="{{keyID}}" name="system.clock_keys.{{keyID}}.numClocks">
                     {{#select keyData.numClocks}}
-                    {{#times_from_1 6}}
+                    {{#forloop 1 6}}
                     <option value="{{this}}">{{this}}</option>
-                    {{/times_from_1}}
+                    {{/forloop}}
                     {{/select}}
                   </select>
                 </th>
@@ -85,9 +85,9 @@
                 </th>
               </tr>
 
-              {{#times_from_1 keyData.numClocks}}
+              {{#forloop 1 keyData.numClocks}}
               {{> "systems/eunos-blades/templates/parts/clock-sheet-row.hbs" keyID=keyID keyData=keyData clockData=(lookup keyData.clocks this) clockNum=this}}
-              {{/times_from_1}}
+              {{/forloop}}
             </tr>
             {{/each}}
           </tbody>

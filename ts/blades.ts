@@ -41,8 +41,8 @@ let socket: Socket; //~ SocketLib interface
     updateContacts,
     updateOps,
     updateFactions,
-    applyDescriptions: updateDescriptions,
-    applyRollEffects: updateRollMods,
+    updateDescriptions,
+    updateRollMods,
     BladesActor,
     BladesPCSheet,
     BladesCrewSheet,
@@ -105,12 +105,6 @@ Hooks.once("init", async () => {
 Hooks.once("ready", () => {
   initCanvasStyles();
   initTinyMCEStyles();
-  // BladesRollCollab.NewRoll({
-  //   rollPrimary: U.randElem(BladesActor.GetTypeWithTags(BladesActorType.pc)),
-  //   rollType: RollType.Action,
-  //   rollTrait: U.randElem(Object.values(Action))
-  // });
-  // DebugPC();
 });
 // #endregion ▄▄▄▄▄ SYSTEM INITIALIZATION ▄▄▄▄▄
 

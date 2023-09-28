@@ -143,15 +143,17 @@ export enum DowntimeAction {
 
 export enum RollType {
   Action = "Action",
-  Downtime = "Downtime",
   Resistance = "Resistance",
-  Fortune = "Fortune"
+  Fortune = "Fortune",
+  IndulgeVice = "Vice"
 }
 
 export enum RollSubType {
   Incarceration = "Incarceration",
   Engagement = "Engagement",
-  GatherInfo = "GatherInfo"
+  GatherInfo = "GatherInfo",
+  GroupLead = "GroupLead",
+  GroupParticipant = "GroupParticipant"
 }
 
 export enum ConsequenceType {
@@ -174,7 +176,7 @@ export enum RollModStatus {
   Dominant = "Dominant"
 }
 
-export enum RollModCategory {
+export enum RollModSection {
   roll = "roll",
   position = "position",
   effect = "effect",

@@ -290,7 +290,7 @@ class BladesPCSheet extends BladesActorSheet {
     super._onAdvanceClick(event);
     const action = $(event.currentTarget).data("action").replace(/^advance-/, "");
     if (action in AttributeTrait) {
-      this.actor.advanceAttribute(action);
+      await this.actor.advanceAttribute(action);
     }
   }
 

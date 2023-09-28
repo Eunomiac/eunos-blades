@@ -1,6 +1,6 @@
 // #region IMPORTS ~
 import U from "./core/utilities.js";
-import C, {BladesActorType, BladesItemType, RollType, RollSubType, RollModStatus, RollModCategory, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, ConsequenceType} from "./core/constants.js";
+import C, {BladesActorType, BladesItemType, RollType, RollSubType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, ConsequenceType} from "./core/constants.js";
 import BladesActor from "./BladesActor.js";
 import BladesPC from "./documents/actors/BladesPC.js";
 import BladesItem from "./BladesItem.js";
@@ -38,8 +38,8 @@ export class BladesRollMod {
         const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, ""));
         if (!nameVal) { throw new Error(`RollMod Missing Name: '${modString}'`) }
         const catString = U.pullElement(pStrings, (v) => typeof v === "string" && /^cat/i.test(v));
-        const catVal = (typeof catString === "string" && catString.replace(/^.*:/, "")) as RollModCategory|false;
-        if (!catVal || !(catVal in RollModCategory)) { throw new Error(`RollMod Missing Category: '${modString}'`) }
+        const catVal = (typeof catString === "string" && catString.replace(/^.*:/, "")) as RollModSection|false;
+        if (!catVal || !(catVal in RollModSection)) { throw new Error(`RollMod Missing Category: '${modString}'`) }
         const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
         const posNegVal = posNegString.replace(/^.*:/, "") as "positive"|"negative";
 
@@ -67,8 +67,10 @@ export class BladesRollMod {
           if (/^ty/i.test(keyString)) { key = "modType" } else
           if (/^c.{0,10}r?.{0,3}ty/i.test(keyString)) {key = "conditionalRollTypes"} else
           if (/^a.{0,3}r?.{0,3}y/i.test(keyString)) {key = "autoRollTypes"} else
+          if (/^p.{0,10}r?.{0,3}y/i.test(keyString)) {key = "participantRollTypes"} else
           if (/^c.{0,10}r?.{0,3}tr/i.test(keyString)) {key = "conditionalRollTraits"} else
-          if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {key = "autoRollTraits"} else {
+          if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {key = "autoRollTraits"} else
+          if (/^p.{0,10}r?.{0,3}tr/i.test(keyString)) {key = "participantRollTypes"} else {
             throw new Error(`Bad Roll Mod Key: ${keyString}`);
           }
 
@@ -140,8 +142,10 @@ export class BladesRollMod {
     return [
       ...this.conditionalRollTraits,
       ...this.autoRollTraits,
+      ...this.participantRollTraits,
       ...this.conditionalRollTypes,
-      ...this.autoRollTypes
+      ...this.autoRollTypes,
+      ...this.participantRollTypes
     ].length > 0;
   }
 
@@ -173,26 +177,52 @@ export class BladesRollMod {
     return stressCost;
   }
 
+  /**
+   * Sets the conditional status of the roll instance.
+   * @returns {boolean} - Returns false if the status is ForcedOn or ToggledOff, true if the status is Hidden.
+   */
   setConditionalStatus(): boolean {
+    // If the roll instance is not conditional, return false
     if (!this.isConditional) { return false }
 
-    // If ANY auto-Traits/Types apply, ForceOn
-    if (this.autoRollTypes.includes(this.rollInstance.rollType)
-      || this.autoRollTraits.includes(this.rollInstance.rollTrait)) {
+    // If any auto-Traits/Types apply, set status to ForcedOn and return false
+    const autoTypesOrTraitsApply = this.autoRollTypes.includes(this.rollInstance.rollType)
+      || this.autoRollTraits.includes(this.rollInstance.rollTrait);
+    if (autoTypesOrTraitsApply) {
       this.heldStatus = RollModStatus.ForcedOn;
       return false;
     }
 
-    // If BOTH conditionalTypes and conditionalTraits apply, held = ToggledOff
-    if ((this.conditionalRollTypes.length === 0 || this.conditionalRollTypes.includes(this.rollInstance.rollType))
-      && (this.conditionalRollTraits.length === 0 || this.conditionalRollTraits.includes(this.rollInstance.rollTrait))) {
+    // If any conditionalTypes apply and any conditionalTraits apply, set status to ToggledOff and return false
+    const conditionalTypesOrTraitsApply = this.checkTypesOrTraits(this.conditionalRollTypes, this.conditionalRollTraits);
+    if (conditionalTypesOrTraitsApply) {
       this.heldStatus = RollModStatus.ToggledOff;
       return false;
     }
 
-    // OTHERWISE, return HIDDEN
+    // If this is a participant roll and any participantTypes apply and any participantTraits apply, set status to ToggledOff and return false
+    const participantTypesOrTraitsApply = this.rollInstance.isParticipantRoll
+      && this.checkTypesOrTraits(this.participantRollTypes, this.participantRollTraits);
+    if (participantTypesOrTraitsApply) {
+      this.heldStatus = RollModStatus.ToggledOff;
+      return false;
+    }
+
+    // If none of the above conditions apply, set status to Hidden and return true
     this.heldStatus = RollModStatus.Hidden;
     return true;
+  }
+
+  /**
+   * Checks if any types or traits apply to the roll instance.
+   * @param {AnyRollType[]} types - The types to check.
+   * @param {RollTrait[]} traits - The traits to check.
+   * @returns {boolean} - Returns true if any types or traits apply, false otherwise.
+   */
+  private checkTypesOrTraits(types: BladesRollCollab.AnyRollType[], traits: BladesRollCollab.RollTrait[]): boolean {
+    const typesApply = (!this.rollInstance.isParticipantRoll && types.length === 0) || types.includes(this.rollInstance.rollType);
+    const traitsApply = (!this.rollInstance.isParticipantRoll && traits.length === 0) || traits.includes(this.rollInstance.rollTrait);
+    return typesApply && traitsApply;
   }
 
   /**
@@ -322,7 +352,7 @@ export class BladesRollMod {
         HarmLevel: () => {
           if (!this.rollInstance.rollConsequence) { return }
           const consequenceType = this.rollInstance.rollConsequence.type;
-          if (!consequenceType || !consequenceType.startsWith("Harm")) { return }
+          if (!consequenceType?.startsWith("Harm")) { return }
           const curLevel = [ConsequenceType.Harm1, ConsequenceType.Harm2, ConsequenceType.Harm3, ConsequenceType.Harm4]
             .findIndex((cType) => cType === consequenceType) + 1;
           if (curLevel > 1) {
@@ -369,7 +399,7 @@ export class BladesRollMod {
   get sideString(): string | undefined {
     if (this._sideString) { return this._sideString }
     switch (this.category) {
-      case RollModCategory.roll: {
+      case RollModSection.roll: {
         if (this.name === "Assist") {
           const docID = this.rollInstance.document.getFlag("eunos-blades", "rollCollab.docSelections.roll.Assist") as MaybeStringOrFalse;
           if (!docID) { return undefined }
@@ -377,7 +407,7 @@ export class BladesRollMod {
         }
         return undefined;
       }
-      case RollModCategory.position: {
+      case RollModSection.position: {
         if (this.name === "Setup") {
           const docID = this.rollInstance.document.getFlag("eunos-blades", "rollCollab.docSelections.position.Setup") as MaybeStringOrFalse;
           if (!docID) { return undefined }
@@ -385,7 +415,7 @@ export class BladesRollMod {
         }
         return undefined;
       }
-      case RollModCategory.effect: {
+      case RollModSection.effect: {
         if (this.name === "Setup") {
           const docID = this.rollInstance.document.getFlag("eunos-blades", "rollCollab.docSelections.effect.Setup") as MaybeStringOrFalse;
           if (!docID) { return undefined }
@@ -436,7 +466,7 @@ export class BladesRollMod {
         if (this.posNeg === "negative") {
           label = `${this.name} (<span class='red-bright'>To Act</span>)`;
         } else {
-          const effect = this.category === RollModCategory.roll ? "+1d" : "+1 effect";
+          const effect = this.category === RollModSection.roll ? "+1d" : "+1 effect";
           label = `${this.name} (<span class='gold-bright'>${effect}</span>)`;
         }
       }
@@ -461,11 +491,13 @@ export class BladesRollMod {
   posNeg: "positive" | "negative";
   isOppositional: boolean;
   modType: BladesRollCollab.ModType;
-  conditionalRollTypes: Array<RollType | DowntimeAction>;
-  autoRollTypes: Array<RollType | DowntimeAction>;
+  conditionalRollTypes: BladesRollCollab.AnyRollType[];
+  autoRollTypes: BladesRollCollab.AnyRollType[];
+  participantRollTypes: BladesRollCollab.AnyRollType[];
   conditionalRollTraits: BladesRollCollab.RollTrait[];
   autoRollTraits: BladesRollCollab.RollTrait[];
-  category: RollModCategory;
+  participantRollTraits: BladesRollCollab.RollTrait[];
+  category: RollModSection;
 
   rollInstance: BladesRollCollab;
 
@@ -484,8 +516,10 @@ export class BladesRollMod {
     this.modType = modData.modType;
     this.conditionalRollTypes = modData.conditionalRollTypes ?? [];
     this.autoRollTypes = modData.autoRollTypes ?? [];
+    this.participantRollTypes = modData.participantRollTypes ?? [];
     this.conditionalRollTraits = modData.conditionalRollTraits ?? [];
     this.autoRollTraits = modData.autoRollTraits ?? [];
+    this.participantRollTraits = modData.participantRollTraits ?? [];
     this.category = modData.category;
   }
 }
@@ -703,28 +737,6 @@ class BladesRollCollab extends DocumentSheet {
   }
 
   static Initialize() {
-    // Hooks.on("preUpdateUser", async (user: User, updateData: Record<string, any>) => {
-    //   const flatData = flattenObject(updateData);
-    //   const docSelectKeys = Object.keys(flatData)
-    //     .filter((key) => /docSelections/.test(key) && flatData[key] !== false);
-    //   if (docSelectKeys.length > 0) {
-    //     docSelectKeys.forEach((key) => {
-    //       const [_, category, name] = key.match(/docSelections\.(.*?)\.(.*)/) as [never, RollModCategory, string];
-    //       const rollMods = ((user.getFlag("eunos-blades", "rollCollab.rollMods") ?? []) as BladesRollCollab.RollModData[]);
-    //       const rollMod = U.pullElement(rollMods, (mod: BladesRollCollab.RollModData | undefined) => mod?.name === name && mod?.category === category);
-    //       if (!rollMod || !rollMod.tooltip) { return }
-    //       const curSidestring = rollMod.sideString;
-    //       const newSidestring = (BladesActor.Get(flatData[key]) ?? BladesItem.Get(flatData[key]) ?? {name: ""}).name;
-    //       if (newSidestring === null) { return }
-    //       // if (curSidestring === newSidestring) { return }
-    //       rollMod.tooltip = rollMod.tooltip.replace(new RegExp(curSidestring || "%DOC_NAME%", "g"), newSidestring);
-    //       rollMod.sideString = newSidestring;
-    //       rollMods.push(rollMod);
-    //       user.setFlag("eunos-blades", "rollCollab.rollMods", rollMods);
-    //     });
-    //   }
-
-    // });
     return loadTemplates([
       "systems/eunos-blades/templates/roll/roll-collab.hbs",
       "systems/eunos-blades/templates/roll/roll-collab-gm.hbs",
@@ -753,7 +765,7 @@ class BladesRollCollab extends DocumentSheet {
       {
         id: "Push-positive-roll",
         name: "PUSH",
-        category: RollModCategory.roll,
+        category: RollModSection.roll,
         base_status: RollModStatus.ToggledOff,
         posNeg: "positive",
         modType: "general",
@@ -764,7 +776,7 @@ class BladesRollCollab extends DocumentSheet {
       {
         id: "Bargain-positive-roll",
         name: "Bargain",
-        category: RollModCategory.roll,
+        category: RollModSection.roll,
         base_status: RollModStatus.Hidden,
         posNeg: "positive",
         modType: "general",
@@ -775,7 +787,7 @@ class BladesRollCollab extends DocumentSheet {
       {
         id: "Assist-positive-roll",
         name: "Assist",
-        category: RollModCategory.roll,
+        category: RollModSection.roll,
         base_status: RollModStatus.Hidden,
         posNeg: "positive",
         modType: "teamwork",
@@ -785,7 +797,7 @@ class BladesRollCollab extends DocumentSheet {
       {
         id: "Setup-positive-position",
         name: "Setup",
-        category: RollModCategory.position,
+        category: RollModSection.position,
         base_status: RollModStatus.Hidden,
         posNeg: "positive",
         modType: "teamwork",
@@ -795,7 +807,7 @@ class BladesRollCollab extends DocumentSheet {
       {
         id: "Push-positive-effect",
         name: "PUSH",
-        category: RollModCategory.effect,
+        category: RollModSection.effect,
         base_status: RollModStatus.ToggledOff,
         posNeg: "positive",
         modType: "general",
@@ -806,7 +818,7 @@ class BladesRollCollab extends DocumentSheet {
       {
         id: "Setup-positive-effect",
         name: "Setup",
-        category: RollModCategory.effect,
+        category: RollModSection.effect,
         base_status: RollModStatus.Hidden,
         posNeg: "positive",
         modType: "teamwork",
@@ -816,7 +828,7 @@ class BladesRollCollab extends DocumentSheet {
       {
         id: "Potency-positive-effect",
         name: "Potency",
-        category: RollModCategory.effect,
+        category: RollModSection.effect,
         base_status: RollModStatus.Hidden,
         posNeg: "positive",
         modType: "general",
@@ -826,7 +838,7 @@ class BladesRollCollab extends DocumentSheet {
       {
         id: "Potency-negative-effect",
         name: "Potency",
-        category: RollModCategory.effect,
+        category: RollModSection.effect,
         base_status: RollModStatus.Hidden,
         posNeg: "negative",
         modType: "general",
@@ -859,7 +871,7 @@ class BladesRollCollab extends DocumentSheet {
         [Factor.magnitude]: 0
       },
       docSelections: {
-        [RollModCategory.roll]: {
+        [RollModSection.roll]: {
           Assist: false,
           Group_1: false,
           Group_2: false,
@@ -868,10 +880,10 @@ class BladesRollCollab extends DocumentSheet {
           Group_5: false,
           Group_6: false
         },
-        [RollModCategory.position]: {
+        [RollModSection.position]: {
           Setup: false
         },
-        [RollModCategory.effect]: {
+        [RollModSection.effect]: {
           Setup: false
         }
       },
@@ -964,7 +976,6 @@ class BladesRollCollab extends DocumentSheet {
   static async RenderRollCollab({userID, rollID}: { userID: string, rollID: string }) {
     const user = game.users.get(userID); // as User & {flags: {["eunos-blades"]: {rollCollab: BladesRollCollab.FlagData}}};
     if (!user) { return }
-    // BladesRollCollab.Current[rollID] = new BladesRollCollab(user, rollID);
     await BladesRollCollab.Current[rollID]._render(true);
   }
 
@@ -973,6 +984,7 @@ class BladesRollCollab extends DocumentSheet {
     await BladesRollCollab.Current[rollID]?.close({rollID});
     delete BladesRollCollab.Current[rollID];
   }
+
 
   static async NewRoll(config: BladesRollCollab.Config) {
     if (game.user.isGM && BladesActor.IsType(config.rollPrimary, BladesActorType.pc)) {
@@ -1003,7 +1015,18 @@ class BladesRollCollab extends DocumentSheet {
       eLog.error("rollCollab", "[RenderRollCollab()] Invalid rollPrimary", {rollPrimaryData, config});
       return;
     }
-    if (U.isInt(config.rollTrait)) {
+
+    let rollPrimary: BladesRollCollab.PrimaryDoc|undefined;
+    if (BladesRollPrimary.IsDoc(rollPrimaryData)) {
+      rollPrimary = rollPrimaryData;
+    } else if (BladesRollPrimary.IsDoc(rollPrimaryData.rollPrimaryDoc)) {
+      rollPrimary = rollPrimaryData.rollPrimaryDoc;
+    }
+
+    if (flagUpdateData.rollType === RollType.IndulgeVice && BladesActor.IsType(rollPrimary, BladesActorType.pc)) {
+      const minAttrVal = Math.min(...Object.values(rollPrimary.attributes));
+      flagUpdateData.rollTrait = U.objFindKey(rollPrimary.attributes, (val: number) => val === minAttrVal) as AttributeTrait;
+    } else if (U.isInt(config.rollTrait)) {
       flagUpdateData.rollTrait = config.rollTrait;
     } else if (!config.rollTrait) {
       eLog.error("rollCollab", "[RenderRollCollab()] No RollTrait in Config", config);
@@ -1013,14 +1036,6 @@ class BladesRollCollab extends DocumentSheet {
         case RollType.Action: {
           if (!(U.lCase(config.rollTrait) in {...ActionTrait, ...Factor})) {
             eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Action Roll: ${config.rollTrait}`, config);
-            return;
-          }
-          flagUpdateData.rollTrait = U.lCase(config.rollTrait) as ActionTrait | Factor;
-          break;
-        }
-        case RollType.Downtime: {
-          if (!(U.lCase(config.rollTrait) in {...ActionTrait, ...Factor})) {
-            eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Downtime Roll: ${config.rollTrait}`, config);
             return;
           }
           flagUpdateData.rollTrait = U.lCase(config.rollTrait) as ActionTrait | Factor;
@@ -1217,7 +1232,7 @@ class BladesRollCollab extends DocumentSheet {
     return Object.values(Position)[U.clampNum(
       Object.values(Position)
         .indexOf(this.initialPosition)
-      + this.getModsDelta(RollModCategory.position)
+      + this.getModsDelta(RollModSection.position)
       + (this.posEffectTrade === "position" ? 1 : 0)
       + (this.posEffectTrade === "effect" ? -1 : 0),
       [0, 2]
@@ -1227,26 +1242,26 @@ class BladesRollCollab extends DocumentSheet {
     return Object.values(Effect)[U.clampNum(
       Object.values(Effect)
         .indexOf(this.initialEffect)
-      + this.getModsDelta(RollModCategory.effect)
+      + this.getModsDelta(RollModSection.effect)
       + (this.posEffectTrade === "effect" ? 1 : 0)
       + (this.posEffectTrade === "position" ? -1 : 0),
       [0, 4]
     )];
   }
   get finalResult(): number {
-    return this.getModsDelta(RollModCategory.result)
+    return this.getModsDelta(RollModSection.result)
       + (this.rData?.GMBoosts.Result ?? 0)
       + (this.tempGMBoosts.Result ?? 0);
   }
   get finalDicePool(): number {
     return Math.max(0, this.rollTraitData.value
-      + this.getModsDelta(RollModCategory.roll)
+      + this.getModsDelta(RollModSection.roll)
       + (this.rData.GMBoosts.Dice ?? 0)
       + (this.tempGMBoosts.Dice ?? 0));
   }
   get isRollingZero(): boolean {
     return Math.max(0, this.rollTraitData.value
-      + this.getModsDelta(RollModCategory.roll)
+      + this.getModsDelta(RollModSection.roll)
       + (this.rData.GMBoosts.Dice ?? 0)
       + (this.tempGMBoosts.Dice ?? 0)) <= 0;
   }
@@ -1397,7 +1412,7 @@ class BladesRollCollab extends DocumentSheet {
             this.rollTraitValOverride = Math.max(...Object.values(rollPrimaryDoc.actions));
           }
         } else {
-          const [targetName, targetCat, targetPosNeg] = thisTarget?.split(/,/) as [string, RollModCategory | undefined, "positive" | "negative" | undefined] | undefined ?? [];
+          const [targetName, targetCat, targetPosNeg] = thisTarget?.split(/,/) as [string, RollModSection | undefined, "positive" | "negative" | undefined] | undefined ?? [];
           if (!targetName) { throw new Error(`No targetName found in thisTarget: ${thisTarget}.`)}
           let targetMod = this.getRollModByName(targetName)
             ?? this.getRollModByName(targetName, targetCat ?? mod.category);
@@ -1432,10 +1447,10 @@ class BladesRollCollab extends DocumentSheet {
     }
 
     // ... BY CATEGORY ...
-    [RollModCategory.roll, RollModCategory.effect].forEach((cat) => {
+    [RollModSection.roll, RollModSection.effect].forEach((cat) => {
       if (this.isPushed(cat)) {
         // ... if pushed by positive mod, Force Off any visible Bargain
-        if (cat === RollModCategory.roll && this.isPushed(cat, "positive")) {
+        if (cat === RollModSection.roll && this.isPushed(cat, "positive")) {
           const bargainMod = this.getRollModByID("Bargain-positive-roll");
           if (bargainMod?.isVisible) {
             bargainMod.heldStatus = RollModStatus.ForcedOff;
@@ -1475,6 +1490,11 @@ class BladesRollCollab extends DocumentSheet {
     return false;
   }
 
+  get isParticipantRoll() {
+    return (this.rollType === RollType.Fortune && !game.user.isGM)
+      || (this.rollSubType === RollSubType.GroupParticipant);
+  }
+
   rollFactorPenaltiesNegated: Partial<Record<Factor, boolean>> = {};
   negateFactorPenalty(factor: Factor) {
     this.rollFactorPenaltiesNegated[factor] = true;
@@ -1482,9 +1502,9 @@ class BladesRollCollab extends DocumentSheet {
 
   tempGMBoosts: Partial<Record<"Dice" | Factor | "Result", number>> = {};
 
-  isPushed(cat?: RollModCategory, posNeg?: "positive"|"negative"): boolean { return this.getActiveBasicPushMods(cat, posNeg).length > 0 }
-  hasOpenPush(cat?: RollModCategory, posNeg?: "positive"|"negative"): boolean { return this.isPushed(cat) && this.getOpenPushMods(cat, posNeg).length > 0 }
-  isForcePushed(cat?: RollModCategory, posNeg?: "positive"|"negative"): boolean { return this.isPushed(cat) && this.getForcedPushMods(cat, posNeg).length > 0 }
+  isPushed(cat?: RollModSection, posNeg?: "positive"|"negative"): boolean { return this.getActiveBasicPushMods(cat, posNeg).length > 0 }
+  hasOpenPush(cat?: RollModSection, posNeg?: "positive"|"negative"): boolean { return this.isPushed(cat) && this.getOpenPushMods(cat, posNeg).length > 0 }
+  isForcePushed(cat?: RollModSection, posNeg?: "positive"|"negative"): boolean { return this.isPushed(cat) && this.getForcedPushMods(cat, posNeg).length > 0 }
 
 
   get rollCosts(): number {
@@ -1492,7 +1512,7 @@ class BladesRollCollab extends DocumentSheet {
     const harmPush = this.getRollModByID("Push-negative-roll");
     const rollPush = this.getRollModByID("Push-positive-roll");
     const effectPush = this.getRollModByID("Push-positive-effect");
-    const negatePushCostMods = this.getActiveRollMods(RollModCategory.after, "positive")
+    const negatePushCostMods = this.getActiveRollMods(RollModSection.after, "positive")
       .filter((mod) => mod.effectKeys.includes("Negate-PushCost"));
     return ((harmPush?.isActive && harmPush?.stressCost) || 0)
       + ((rollPush?.isActive && rollPush?.stressCost) || 0)
@@ -1506,7 +1526,7 @@ class BladesRollCollab extends DocumentSheet {
       .flat();
   }
 
-  getRollModByName(name: string, cat?: RollModCategory, posNeg?: "positive" | "negative"): BladesRollMod | undefined {
+  getRollModByName(name: string, cat?: RollModSection, posNeg?: "positive" | "negative"): BladesRollMod | undefined {
     const modMatches = this.rollMods.filter((rollMod) => {
       if (U.lCase(rollMod.name) !== U.lCase(name)) {
         return false;
@@ -1526,51 +1546,51 @@ class BladesRollCollab extends DocumentSheet {
     return modMatches[0];
   }
   getRollModByID(id: string) { return this.rollMods.find((rollMod) => rollMod.id === id) }
-  getRollMods(cat?: RollModCategory, posNeg?: "positive" | "negative") {
+  getRollMods(cat?: RollModSection, posNeg?: "positive" | "negative") {
     return this.rollMods.filter((rollMod) =>
       (!cat || rollMod.category === cat)
       && (!posNeg || rollMod.posNeg === posNeg));
   }
-  getVisibleRollMods(cat?: RollModCategory, posNeg?: "positive" | "negative") {
+  getVisibleRollMods(cat?: RollModSection, posNeg?: "positive" | "negative") {
     return this.getRollMods(cat, posNeg).filter((rollMod) => rollMod.isVisible);
   }
-  getActiveRollMods(cat?: RollModCategory, posNeg?: "positive" | "negative") {
+  getActiveRollMods(cat?: RollModSection, posNeg?: "positive" | "negative") {
     return this.getRollMods(cat, posNeg).filter((rollMod) => rollMod.isActive);
   }
-  getVisibleInactiveRollMods(cat?: RollModCategory, posNeg?: "positive" | "negative") {
+  getVisibleInactiveRollMods(cat?: RollModSection, posNeg?: "positive" | "negative") {
     return this.getVisibleRollMods(cat, posNeg).filter((rollMod) => !rollMod.isActive);
   }
-  getPushMods(cat?: RollModCategory, posNeg?: "positive" | "negative") {
+  getPushMods(cat?: RollModSection, posNeg?: "positive" | "negative") {
     return this.getRollMods(cat, posNeg).filter((rollMod) => rollMod.isPush);
   }
-  getVisiblePushMods(cat?: RollModCategory, posNeg?: "positive" | "negative") {
+  getVisiblePushMods(cat?: RollModSection, posNeg?: "positive" | "negative") {
     return this.getPushMods(cat, posNeg).filter((rollMod) => rollMod.isVisible);
   }
-  getActivePushMods(cat?: RollModCategory, posNeg?: "positive" | "negative") {
+  getActivePushMods(cat?: RollModSection, posNeg?: "positive" | "negative") {
     return this.getVisiblePushMods(cat, posNeg).filter((rollMod) => rollMod.isActive);
   }
-  getActiveBasicPushMods(cat?: RollModCategory, posNeg?: "positive" | "negative") {
+  getActiveBasicPushMods(cat?: RollModSection, posNeg?: "positive" | "negative") {
     return this.getActivePushMods(cat, posNeg).filter((rollMod) => rollMod.isBasicPush);
   }
-  getInactivePushMods(cat?: RollModCategory, posNeg?: "positive" | "negative") {
+  getInactivePushMods(cat?: RollModSection, posNeg?: "positive" | "negative") {
     return this.getVisiblePushMods(cat, posNeg).filter((rollMod) => !rollMod.isActive);
   }
-  getInactiveBasicPushMods(cat?: RollModCategory, posNeg?: "positive" | "negative") {
+  getInactiveBasicPushMods(cat?: RollModSection, posNeg?: "positive" | "negative") {
     return this.getInactivePushMods(cat, posNeg).filter((rollMod) => rollMod.isBasicPush);
   }
-  getForcedPushMods(cat?: RollModCategory, posNeg?: "positive" | "negative") {
+  getForcedPushMods(cat?: RollModSection, posNeg?: "positive" | "negative") {
     return this.getActivePushMods(cat, posNeg)
       .filter((rollMod) => rollMod.isBasicPush
         && rollMod.status === RollModStatus.ForcedOn);
   }
-  getOpenPushMods(cat?: RollModCategory, posNeg?: "positive" | "negative") {
+  getOpenPushMods(cat?: RollModSection, posNeg?: "positive" | "negative") {
     return this.getActivePushMods(cat, posNeg)
       .filter((rollMod) => rollMod.isBasicPush
         && rollMod.status === RollModStatus.ToggledOn);
   }
 
 
-  getModsDelta = (cat: RollModCategory) => {
+  getModsDelta = (cat: RollModSection) => {
     return U.sum([
       ...this.getActiveRollMods(cat, "positive").map((mod) => mod.value),
       ...this.getActiveRollMods(cat, "negative").map((mod) => -mod.value)
@@ -1740,10 +1760,10 @@ class BladesRollCollab extends DocumentSheet {
       rollFactorPenaltiesNegated: this.rollFactorPenaltiesNegated,
 
 
-      posRollMods: Object.fromEntries(Object.values(RollModCategory)
-        .map((cat) => [cat, this.getRollMods(cat, "positive")])) as Record<RollModCategory, BladesRollMod[]>,
-      negRollMods: Object.fromEntries(Object.values(RollModCategory)
-        .map((cat) => [cat, this.getRollMods(cat, "negative")])) as Record<RollModCategory, BladesRollMod[]>,
+      posRollMods: Object.fromEntries(Object.values(RollModSection)
+        .map((cat) => [cat, this.getRollMods(cat, "positive")])) as Record<RollModSection, BladesRollMod[]>,
+      negRollMods: Object.fromEntries(Object.values(RollModSection)
+        .map((cat) => [cat, this.getRollMods(cat, "negative")])) as Record<RollModSection, BladesRollMod[]>,
       hasInactiveConditionals: this.calculateHasInactiveConditionalsData(),
 
       rollFactors,
@@ -1780,8 +1800,8 @@ class BladesRollCollab extends DocumentSheet {
     return {
       rollEffects: Object.values(Effect),
       rollEffectFinal: finalEffect,
-      isAffectingAfter: this.getVisibleRollMods(RollModCategory.after).length > 0
-        || (isGM && this.getRollMods(RollModCategory.after).length > 0)
+      isAffectingAfter: this.getVisibleRollMods(RollModSection.after).length > 0
+        || (isGM && this.getRollMods(RollModSection.after).length > 0)
     };
   }
 
@@ -1789,8 +1809,8 @@ class BladesRollCollab extends DocumentSheet {
     return {
       rollResultFinal: finalResult,
       isAffectingResult: finalResult > 0
-        || this.getVisibleRollMods(RollModCategory.result).length > 0
-        || (isGM && this.getRollMods(RollModCategory.result).length > 0)
+        || this.getVisibleRollMods(RollModSection.result).length > 0
+        || (isGM && this.getRollMods(RollModSection.result).length > 0)
     };
   }
 
@@ -1883,11 +1903,11 @@ class BladesRollCollab extends DocumentSheet {
 
   /**
 * Calculate data on whether there are any inactive conditionals.
-* @returns {Record<RollModCategory, boolean>} - Data on inactive conditionals.
+* @returns {Record<RollModSection, boolean>} - Data on inactive conditionals.
 */
-  private calculateHasInactiveConditionalsData(): Record<RollModCategory, boolean> {
-    const hasInactive = {} as Record<RollModCategory, boolean>;
-    for (const category of Object.values(RollModCategory)) {
+  private calculateHasInactiveConditionalsData(): Record<RollModSection, boolean> {
+    const hasInactive = {} as Record<RollModSection, boolean>;
+    for (const category of Object.values(RollModSection)) {
       hasInactive[category] = this.getRollMods(category).filter((mod) => mod.isInInactiveBlock).length > 0;
     }
     return hasInactive;
@@ -1981,10 +2001,10 @@ class BladesRollCollab extends DocumentSheet {
       rollEffectFinal: finalEffect,
       rollResultFinal: finalResult,
       isAffectingResult: finalResult > 0
-        || this.getVisibleRollMods(RollModCategory.result).length > 0
-        || (isGM && this.getRollMods(RollModCategory.result).length > 0),
-      isAffectingAfter: this.getVisibleRollMods(RollModCategory.after).length > 0
-        || (isGM && this.getRollMods(RollModCategory.after).length > 0),
+        || this.getVisibleRollMods(RollModSection.result).length > 0
+        || (isGM && this.getRollMods(RollModSection.result).length > 0),
+      isAffectingAfter: this.getVisibleRollMods(RollModSection.after).length > 0
+        || (isGM && this.getRollMods(RollModSection.after).length > 0),
 
       rollFactorPenaltiesNegated: this.rollFactorPenaltiesNegated,
 
@@ -2016,24 +2036,24 @@ class BladesRollCollab extends DocumentSheet {
           && finalEffect !== Effect.zero
         ),
 
-      posRollMods: Object.fromEntries(Object.values(RollModCategory)
-        .map((cat) => [cat, this.getRollMods(cat, "positive")])) as Record<RollModCategory, BladesRollMod[]>,
-      negRollMods: Object.fromEntries(Object.values(RollModCategory)
-        .map((cat) => [cat, this.getRollMods(cat, "negative")])) as Record<RollModCategory, BladesRollMod[]>,
+      posRollMods: Object.fromEntries(Object.values(RollModSection)
+        .map((cat) => [cat, this.getRollMods(cat, "positive")])) as Record<RollModSection, BladesRollMod[]>,
+      negRollMods: Object.fromEntries(Object.values(RollModSection)
+        .map((cat) => [cat, this.getRollMods(cat, "negative")])) as Record<RollModSection, BladesRollMod[]>,
       hasInactiveConditionals: {
-        [RollModCategory.roll]: this.getRollMods(RollModCategory.roll)
+        [RollModSection.roll]: this.getRollMods(RollModSection.roll)
           .filter((mod) => mod.isInInactiveBlock)
           .length > 0,
-        [RollModCategory.position]: this.getRollMods(RollModCategory.position)
+        [RollModSection.position]: this.getRollMods(RollModSection.position)
           .filter((mod) => mod.isInInactiveBlock)
           .length > 0,
-        [RollModCategory.effect]: this.getRollMods(RollModCategory.effect)
+        [RollModSection.effect]: this.getRollMods(RollModSection.effect)
           .filter((mod) => mod.isInInactiveBlock)
           .length > 0,
-        [RollModCategory.result]: this.getRollMods(RollModCategory.result)
+        [RollModSection.result]: this.getRollMods(RollModSection.result)
           .filter((mod) => mod.isInInactiveBlock)
           .length > 0,
-        [RollModCategory.after]: this.getRollMods(RollModCategory.after)
+        [RollModSection.after]: this.getRollMods(RollModSection.after)
           .filter((mod) => mod.isInInactiveBlock)
           .length > 0
       },
@@ -2234,12 +2254,11 @@ class BladesRollCollab extends DocumentSheet {
 
         break;
       }
-      case RollType.Downtime: {
-
+      case RollType.Fortune: {
 
         break;
       }
-      case RollType.Fortune: {
+      case RollType.IndulgeVice: {
 
         break;
       }

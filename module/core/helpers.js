@@ -33,15 +33,15 @@ export async function preloadHandlebarsTemplates() {
 }
 
 const handlebarHelpers = {
-    "randString": function (param1 = 10) {
+    randString(param1 = 10) {
         return U.randString(param1);
     },
-    "test": function (param1, operator, param2) {
+    test(param1, operator, param2) {
         const stringMap = {
             "true": true,
             "false": false,
             "null": null,
-            "undefined": undefined
+            undefined
         };
         if (["!", "not", "=??"].includes(String(param1))) {
             [operator, param1] = [String(param1), operator];
@@ -67,14 +67,12 @@ const handlebarHelpers = {
                 return param1 || param2;
             }
             case "==": {
-                return param1 == param2;
+                return U.areFuzzyEqual(param1, param2);
             }
             case "===": {
                 return param1 === param2;
             }
-            case "!=": {
-                return param1 != param2;
-            }
+            case "!=":
             case "!==": {
                 return param1 !== param2;
             }
@@ -113,7 +111,7 @@ const handlebarHelpers = {
             }
         }
     },
-    "calc": function (...params) {
+    calc(...params) {
         const calcs = {
             "+": (p1, p2) => U.pInt(p1) + U.pInt(p2),
             "-": (p1, p2) => U.pInt(p1) - U.pInt(p2),
@@ -130,11 +128,11 @@ const handlebarHelpers = {
             : params;
         return calcs[operator](param1, param2);
     },
-    "isIn": function () {
-        const [testStr, ...contents] = arguments;
+    isIn(...args) {
+        const [testStr, ...contents] = args;
         return contents.includes(testStr);
     },
-    "case": function (mode, str) {
+    case(mode, str) {
         switch (mode) {
             case "upper": return U.uCase(str);
             case "lower": return U.lCase(str);
@@ -143,7 +141,7 @@ const handlebarHelpers = {
             default: return str;
         }
     },
-    "count": function (param) {
+    count(param) {
         if (Array.isArray(param) || U.isList(param)) {
             return Object.values(param).filter((val) => val !== null && val !== undefined).length;
         }
@@ -152,7 +150,7 @@ const handlebarHelpers = {
         }
         return param ? 1 : 0;
     },
-    "forloop": (...args) => {
+    forloop: (...args) => {
         const options = args.pop();
         let [from, to, stepSize] = args;
         from = U.pInt(from);
@@ -162,19 +160,15 @@ const handlebarHelpers = {
             return "";
         }
         let html = "";
-        for (let i = parseInt(from || 0, 10); i <= parseInt(to || 0, 10); i++) {
+        for (let i = parseInt(from || 0, 10); i <= parseInt(to || 0, 10); i += stepSize) {
             html += options.fn(i);
         }
         return html;
     },
-    "signNum": function (num) {
+    signNum(num) {
         return U.signNum(num);
     },
-    "areEmpty": function (...args) {
-        args.pop();
-        return !Object.values(args).flat().join("");
-    },
-    "compileSvg": function (...args) {
+    compileSvg(...args) {
         const [svgDotKey, svgPaths] = args;
         const svgData = getProperty(SVGDATA, svgDotKey);
         if (!svgData) {
@@ -189,7 +183,7 @@ const handlebarHelpers = {
             "</svg>"
         ].join("\n");
     },
-    "eLog": function (...args) {
+    eLog(...args) {
         args.pop();
         let dbLevel = 5;
         if ([0, 1, 2, 3, 4, 5].includes(args[0])) {
@@ -197,8 +191,8 @@ const handlebarHelpers = {
         }
         eLog.hbsLog(...args, dbLevel);
     },
-    "isTurfBlock": (name) => U.fuzzyMatch(name, "Turf"),
-    "getConnectorPartner": (index, direction) => {
+    isTurfBlock: (name) => U.fuzzyMatch(name, "Turf"),
+    getConnectorPartner: (index, direction) => {
         index = parseInt(`${index}`, 10);
         const partners = {
             1: { right: 2, bottom: 6 },
@@ -224,7 +218,7 @@ const handlebarHelpers = {
         }
         return null;
     },
-    "isTurfOnEdge": (index, direction) => {
+    isTurfOnEdge: (index, direction) => {
         index = parseInt(`${index}`, 10);
         const edges = {
             1: ["top", "left"],
@@ -248,93 +242,37 @@ const handlebarHelpers = {
         }
         return edges[index].includes(direction);
     },
-    "multiboxes": function (selected, options) {
+    multiboxes(selected, options) {
         let html = options.fn(this);
         selected = [selected].flat(1);
-        selected.forEach((selected_value) => {
-            if (selected_value !== false) {
-                const escapedValue = RegExp.escape(Handlebars.escapeExpression(String(selected_value)));
-                const rgx = new RegExp(' value=\"' + escapedValue + '\"');
+        selected.forEach((selectedVal) => {
+            if (selectedVal !== false) {
+                const escapedValue = RegExp.escape(Handlebars.escapeExpression(String(selectedVal)));
+                const rgx = new RegExp(` value="${escapedValue}"`);
                 html = html.replace(rgx, "$& checked=\"checked\"");
             }
         });
         return html;
     },
-    "noteq": (a, b, options) => (a !== b ? options.fn(this) : ""),
-    "repturf": (turfs_amount, options) => {
-        let html = options.fn(this), turfs_amount_int = parseInt(turfs_amount, 10);
-        if (turfs_amount_int > 6) {
-            turfs_amount_int = 6;
+    repturf: (turfsAmount, options) => {
+        let html = options.fn(this), turfsAmountInt = parseInt(turfsAmount, 10);
+        if (turfsAmountInt > 6) {
+            turfsAmountInt = 6;
         }
-        for (let i = 13 - turfs_amount_int; i <= 12; i++) {
-            const rgx = new RegExp(' value=\"' + i + '\"');
+        for (let i = 13 - turfsAmountInt; i <= 12; i++) {
+            const rgx = new RegExp(` value="${i}"`);
             html = html.replace(rgx, "$& disabled=\"disabled\"");
         }
         return html;
     },
-    "crew_vault_coins": (max_coins, options) => {
-        let html = options.fn(this);
-        for (let i = 1; i <= max_coins; i++) {
-            html += "<input type=\"radio\" id=\"crew-coins-vault-" + i + "\" name=\"system.vault.value\" value=\"" + i + "\"><label for=\"crew-coins-vault-" + i + "\"></label>";
-        }
-        return html;
-    },
-    "crew_experience": (actor, options) => {
-        let html = options.fn(this);
-        for (let i = 1; i <= 10; i++) {
-            html += `<input type="radio" id="crew-${actor._id}-experience-${i}" name="system.experience" value="${i}" dtype="Radio"><label for="crew-${actor._id}-experience-${i}"></label>`;
-        }
-        return html;
-    },
-    "html": (options) => {
-        const text = options.hash.text.replace(/\n/g, "<br />");
-        return new Handlebars.SafeString(text);
-    },
-    //
-    "times_from_1": (n, block) => {
-        n = parseInt(n, 10);
-        let accum = "";
-        for (let i = 1; i <= n; ++i) {
-            accum += block.fn(i);
-        }
-        return accum;
-    },
-    //
-    "times_from_0": (n, block) => {
-        n = parseInt(n, 10);
-        let accum = "";
-        for (let i = 0; i <= n; ++i) {
-            accum += block.fn(i);
-        }
-        return accum;
-    },
-    "concat": function () {
+    concat(...args) {
         let outStr = "";
-        for (const arg in arguments) {
-            if (typeof arguments[arg] !== "object") {
-                outStr += arguments[arg];
+        for (const arg of args) {
+            if (typeof arg === "string") {
+                outStr += arg;
             }
         }
         return outStr;
-    },
-        "selectOptionsWithLabel": (choices, options) => {
-        const localize = options.hash.localize ?? false;
-        let selected = options.hash.selected ?? null;
-        const blank = options.hash.blank || null;
-        selected = selected instanceof Array ? selected.map(String) : [String(selected)];
-        const option = (key, object) => {
-            if (localize) {
-                object.label = game.i18n.localize(object.label);
-            }
-            const isSelected = selected.includes(key);
-            html += `<option value="${key}" ${isSelected ? "selected" : ""}>${object.label}</option>`;
-        };
-        let html = "";
-        if (blank) {
-            option("", blank);
-        }
-        Object.entries(choices).forEach(e => option(...e));
-        return new Handlebars.SafeString(html);
     }
 };
 handlebarHelpers.eLog1 = function (...args) { handlebarHelpers.eLog(...[1, ...args.slice(0, 7)]); };
