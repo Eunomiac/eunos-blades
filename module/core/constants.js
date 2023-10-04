@@ -153,6 +153,13 @@ export var DowntimeAction;
     DowntimeAction["ReduceHeat"] = "ReduceHeat";
     DowntimeAction["Train"] = "Train";
 })(DowntimeAction || (DowntimeAction = {}));
+export var RollPermissions;
+(function (RollPermissions) {
+    RollPermissions["Primary"] = "Primary";
+    RollPermissions["Observer"] = "Observer";
+    RollPermissions["GM"] = "GM";
+    RollPermissions["Participant"] = "Participant";
+})(RollPermissions || (RollPermissions = {}));
 export var RollType;
 (function (RollType) {
     RollType["Action"] = "Action";

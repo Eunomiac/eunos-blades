@@ -163,6 +163,7 @@ const isDefined = (ref: unknown): ref is NonNullable<unknown> | null => !isUndef
 const isEmpty = (ref: Record<key, unknown> | unknown[]): boolean => Object.keys(ref).length === 0;
 const hasItems = (ref: Index<unknown>): boolean => !isEmpty(ref);
 const isInstance = <T extends new (...args: unknown[]) => unknown>(classRef: T, ref: unknown): ref is InstanceType<T> => ref instanceof classRef;
+const isNullish = (ref: unknown): ref is null|undefined => isUndefined(ref) || ref === null;
 /**
  * Asserts that a given value is of a specified type.
  * Throws an error if the value is not of the expected type.
@@ -1374,7 +1375,7 @@ export default {
   // ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████
   isNumber, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
   isHTMLCode, isRGBColor, isHexColor,
-  isUndefined, isDefined, isEmpty, hasItems, isInstance,
+  isUndefined, isDefined, isEmpty, hasItems, isInstance, isNullish,
   areEqual, areFuzzyEqual,
   pFloat, pInt, radToDeg, degToRad,
   getKey,

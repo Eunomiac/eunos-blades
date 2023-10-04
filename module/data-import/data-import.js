@@ -3203,10 +3203,10 @@ export const updateFactions = async () => {
 export const updateRollMods = async () => {
     await Promise.all([
         ...Object.entries(JSONDATA.ABILITIES.RollMods)
-            .map(async ([aName, eData]) => {
-            const abilityDoc = game.items.getName(aName);
+            .map(async ([abilityName, eData]) => {
+            const abilityDoc = game.items.getName(abilityName);
             if (!abilityDoc) {
-                eLog.error("updateRollMods", `updateRollMods: Ability ${aName} Not Found.`);
+                eLog.error("updateRollMods", `updateRollMods: Ability ${abilityName} Not Found.`);
                 return undefined;
             }
             const abilityEffects = Array.from(abilityDoc.effects ?? []);
@@ -3216,18 +3216,18 @@ export const updateRollMods = async () => {
             const testChange = eData[0];
             if ((testChange.isMember && eData.some((change) => !change.isMember))
                 || (!testChange.isMember && eData.some((change) => change.isMember))) {
-                return eLog.error("updateRollMods", `updateRollMods: Ability ${aName} has inconsistent 'isMember' entries.`);
+                return eLog.error("updateRollMods", `updateRollMods: Ability ${abilityName} has inconsistent 'isMember' entries.`);
             }
             if ((testChange.isCohort && eData.some((change) => !change.isCohort))
                 || (!testChange.isCohort && eData.some((change) => change.isCohort))) {
-                return eLog.error("updateRollMods", `updateRollMods: Ability ${aName} has inconsistent 'isCohort' entries.`);
+                return eLog.error("updateRollMods", `updateRollMods: Ability ${abilityName} has inconsistent 'isCohort' entries.`);
             }
             if (testChange.isMember) {
                 if (toMemberEffects.length > 1) {
-                    return eLog.error("updateRollMods", `updateRollMods: Ability ${aName} Has Multiple 'APPLYTOMEMBERS' Active Effects`);
+                    return eLog.error("updateRollMods", `updateRollMods: Ability ${abilityName} Has Multiple 'APPLYTOMEMBERS' Active Effects`);
                 }
                 const effectData = {
-                    name: aName,
+                    name: abilityName,
                     icon: abilityDoc.img ?? "",
                     changes: eData.map((change) => {
                         delete change.isMember;
@@ -3246,18 +3246,18 @@ export const updateRollMods = async () => {
                         key: "APPLYTOMEMBERS",
                         mode: 0,
                         priority: null,
-                        value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Scoundrel Ability)`
+                        value: `${abilityName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Scoundrel Ability)`
                     });
                 }
                 return abilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
             }
             else if (testChange.isCohort) {
                 if (toCohortEffects.length > 1) {
-                    eLog.error("updateRollMods", `updateRollMods: Ability ${aName} Has Multiple 'APPLYTOCOHORTS' Active Effects`);
+                    eLog.error("updateRollMods", `updateRollMods: Ability ${abilityName} Has Multiple 'APPLYTOCOHORTS' Active Effects`);
                     return undefined;
                 }
                 const effectData = {
-                    name: aName,
+                    name: abilityName,
                     icon: abilityDoc.img ?? "",
                     changes: eData.map((change) => {
                         delete change.isCohort;
@@ -3276,18 +3276,18 @@ export const updateRollMods = async () => {
                         key: "APPLYTOCOHORTS",
                         mode: 0,
                         priority: null,
-                        value: `${aName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Scoundrel Ability)`
+                        value: `${abilityName.replace(/\s*\([^()]*? (Ability|Upgrade)\)\s*$/, "")} (Scoundrel Ability)`
                     });
                 }
                 return abilityDoc.createEmbeddedDocuments("ActiveEffect", [effectData]);
             }
             else {
                 if (standardEffects.length > 1) {
-                    eLog.error("updateRollMods", `updateRollMods: Ability ${aName} Has Multiple Active Effects`);
+                    eLog.error("updateRollMods", `updateRollMods: Ability ${abilityName} Has Multiple Active Effects`);
                     return undefined;
                 }
                 const effectData = {
-                    name: aName,
+                    name: abilityName,
                     icon: abilityDoc.img ?? "",
                     changes: eData
                 };

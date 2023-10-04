@@ -6,10 +6,13 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-import C, { BladesActorType, BladesItemType, RollType, RollSubType, RollModStatus, RollModSection, ActionTrait, AttributeTrait, Position, Effect, Factor, RollResult, ConsequenceType } from "./core/constants.js";
-import BladesActor from "./BladesActor.js";
-import BladesItem from "./BladesItem.js";
+import C, { BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModStatus, RollModSection, ActionTrait, AttributeTrait, Position, Effect, Factor, RollResult, ConsequenceType } from "./core/constants.js";
+import { BladesActor, BladesPC, BladesCrew } from "./documents/BladesActorProxy.js";
+import { BladesItem, BladesGMTracker } from "./documents/BladesItemProxy.js";
 import { ApplyTooltipListeners } from "./core/gsap.js";
+function isRollType(str) {
+    return typeof str === "string" && str in RollType;
+}
 function isAction(trait) {
     return Boolean(trait && typeof trait === "string" && U.lCase(trait) in ActionTrait);
 }
@@ -22,6 +25,7 @@ function isFactor(trait) {
 function isModStatus(str) {
     return typeof str === "string" && str in RollModStatus;
 }
+
 export class BladesRollMod {
     static ParseDocRollMods(doc) {
         const { roll_mods } = doc.system;
@@ -200,7 +204,7 @@ export class BladesRollMod {
             return false;
         }
         const autoTypesOrTraitsApply = this.autoRollTypes.includes(this.rollInstance.rollType)
-            || this.autoRollTraits.includes(this.rollInstance.rollTrait);
+            || (!this.rollInstance.rollTrait || this.autoRollTraits.includes(this.rollInstance.rollTrait));
         if (autoTypesOrTraitsApply) {
             this.heldStatus = RollModStatus.ForcedOn;
             return false;
@@ -220,8 +224,10 @@ export class BladesRollMod {
         return true;
     }
         checkTypesOrTraits(types, traits) {
-        const typesApply = (!this.rollInstance.isParticipantRoll && types.length === 0) || types.includes(this.rollInstance.rollType);
-        const traitsApply = (!this.rollInstance.isParticipantRoll && traits.length === 0) || traits.includes(this.rollInstance.rollTrait);
+        const typesApply = Boolean((!this.rollInstance.isParticipantRoll && types.length === 0)
+            || types.includes(this.rollInstance.rollType));
+        const traitsApply = Boolean((!this.rollInstance.isParticipantRoll && traits.length === 0)
+            || (this.rollInstance.rollTrait && traits.includes(this.rollInstance.rollTrait)));
         return typesApply && traitsApply;
     }
         processKey(key) {
@@ -525,7 +531,22 @@ export class BladesRollMod {
         this.category = modData.category;
     }
 }
+
 class BladesRollPrimary {
+
+    static IsValidData(data) {
+        if (BladesRollPrimary.IsDoc(data)) {
+            return true;
+        }
+        return U.isList(data)
+            && typeof data.rollPrimaryName === "string"
+            && typeof data.rollPrimaryType === "string"
+            && typeof data.rollPrimaryImg === "string"
+            && Array.isArray(data.rollModsData)
+            && U.isList(data.rollFactors)
+            && (!data.rollPrimaryID || typeof data.rollPrimaryID === "string")
+            && (!data.rollPrimaryDoc || BladesRollPrimary.IsDoc(data.rollPrimaryDoc));
+    }
     static IsDoc(doc) {
         return BladesActor.IsType(doc, BladesActorType.pc, BladesActorType.crew)
             || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker);
@@ -538,7 +559,8 @@ class BladesRollPrimary {
     rollPrimaryImg;
     rollModsData;
     rollFactors;
-    constructor(rollInstance, { rollPrimaryID, rollPrimaryDoc, rollPrimaryName, rollPrimaryType, rollPrimaryImg, rollModsData, rollFactors } = {}) {
+
+    constructor(rollInstance, { rollPrimaryID, rollPrimaryDoc, rollPrimaryName, rollPrimaryType, rollPrimaryImg, rollModsData, rollFactors }) {
         this.rollInstance = rollInstance;
         let doc = rollPrimaryDoc;
         if (!doc && rollPrimaryID) {
@@ -584,6 +606,21 @@ class BladesRollPrimary {
     }
 }
 class BladesRollOpposition {
+
+    static IsValidData(data) {
+        if (BladesRollOpposition.IsDoc(data)) {
+            return true;
+        }
+        return U.isList(data)
+            && typeof data.rollOppName === "string"
+            && typeof data.rollOppType === "string"
+            && typeof data.rollOppImg === "string"
+            && (!data.rollOppSubName || typeof data.rollOppSubName === "string")
+            && (!data.rollOppModsData || Array.isArray(data.rollOppModsData))
+            && U.isList(data.rollFactors)
+            && (!data.rollOppID || typeof data.rollOppID === "string")
+            && (!data.rollOppDoc || BladesRollOpposition.IsDoc(data.rollOppDoc));
+    }
     static IsDoc(doc) {
         return BladesActor.IsType(doc, BladesActorType.npc, BladesActorType.faction)
             || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker, BladesItemType.project, BladesItemType.design, BladesItemType.ritual);
@@ -597,6 +634,7 @@ class BladesRollOpposition {
     rollOppImg;
     rollOppModsData;
     rollFactors;
+
     constructor(rollInstance, { rollOppID, rollOppDoc, rollOppName, rollOppSubName, rollOppType, rollOppImg, rollOppModsData, rollFactors } = {}) {
         this.rollInstance = rollInstance;
         let doc = rollOppDoc;
@@ -648,6 +686,20 @@ class BladesRollOpposition {
     }
 }
 class BladesRollParticipant {
+
+    static IsValidData(data) {
+        if (BladesRollParticipant.IsDoc(data)) {
+            return true;
+        }
+        return U.isList(data)
+            && typeof data.rollParticipantName === "string"
+            && typeof data.rollParticipantType === "string"
+            && typeof data.rollParticipantIcon === "string"
+            && (!data.rollParticipantModsData || Array.isArray(data.rollParticipantModsData))
+            && U.isList(data.rollFactors)
+            && (!data.rollParticipantID || typeof data.rollParticipantID === "string")
+            && (!data.rollParticipantDoc || BladesRollParticipant.IsDoc(data.rollParticipantDoc));
+    }
     static IsDoc(doc) {
         return BladesActor.IsType(doc, BladesActorType.pc, BladesActorType.crew, BladesActorType.npc)
             || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker);
@@ -660,6 +712,7 @@ class BladesRollParticipant {
     rollParticipantIcon;
     rollParticipantModsData;
     rollFactors;
+
     constructor(rollInstance, { rollParticipantID, rollParticipantDoc, rollParticipantName, rollParticipantType, rollParticipantIcon, rollParticipantModsData, rollFactors } = {}) {
         this.rollInstance = rollInstance;
         let doc = rollParticipantDoc;
@@ -834,9 +887,6 @@ class BladesRollCollab extends DocumentSheet {
     }
     static get DefaultFlagData() {
         return {
-            rollID: randomID(),
-            rollType: RollType.Action,
-            rollTrait: Factor.tier,
             rollModsData: {},
             rollPositionInitial: Position.risky,
             rollEffectInitial: Effect.standard,
@@ -853,23 +903,6 @@ class BladesRollCollab extends DocumentSheet {
                 [Factor.quality]: 0,
                 [Factor.scale]: 0,
                 [Factor.magnitude]: 0
-            },
-            docSelections: {
-                [RollModSection.roll]: {
-                    Assist: false,
-                    Group_1: false,
-                    Group_2: false,
-                    Group_3: false,
-                    Group_4: false,
-                    Group_5: false,
-                    Group_6: false
-                },
-                [RollModSection.position]: {
-                    Setup: false
-                },
-                [RollModSection.effect]: {
-                    Setup: false
-                }
             },
             rollFactorToggles: {
                 source: {
@@ -950,133 +983,220 @@ class BladesRollCollab extends DocumentSheet {
     static set Active(val) {
         BladesRollCollab._Active = val;
     }
-    
-    static async RenderRollCollab({ userID, rollID }) {
-        const user = game.users.get(userID);
-        if (!user) {
-            return;
-        }
-        await BladesRollCollab.Current[rollID]._render(true);
+    static async RenderRollCollab({ storageID, rollID, rollPermission }) {
+        const rollInst = new BladesRollCollab(storageID, rollID, rollPermission);
+        await rollInst._render(true);
     }
     static async CloseRollCollab(rollID) {
         eLog.checkLog3("rollCollab", "CloseRollCollab()", { rollID });
         await BladesRollCollab.Current[rollID]?.close({ rollID });
         delete BladesRollCollab.Current[rollID];
     }
-    static async NewRoll(config) {
-        if (game.user.isGM && BladesActor.IsType(config.rollPrimary, BladesActorType.pc)) {
-            const rSource = config.rollPrimary;
-            if (rSource.primaryUser?.id) {
-                config.userID = rSource.primaryUser.id;
+        static async NewRoll(config) {
+        if (!isRollType(config.rollType)) {
+            throw new Error("[BladesRollCollab.NewRoll()] You must provide a valid rollType in the config object.");
+        }
+        if (!config.rollStorageID) {
+            if (config.rollPrimaryData instanceof BladesActor || config.rollPrimaryData instanceof BladesItem) {
+                config.rollStorageID = config.rollPrimaryData.id;
+            }
+            else if (typeof config.rollPrimaryData?.rollPrimaryID === "string") {
+                config.rollStorageID = config.rollPrimaryData.rollPrimaryID;
+            }
+            else if (!game.user.isGM && game.user instanceof User && BladesRollPrimary.IsDoc(game.user.character)) {
+                config.rollStorageID = game.user.character.id;
             }
         }
-        const user = game.users.get(config.userID ?? game.user._id);
-        if (!(user instanceof User)) {
-            eLog.error("rollCollab", `[NewRoll()] Can't Find User '${config.userID}'`, config);
-            return;
+        const rollStorageDoc = game.actors.get(config.rollStorageID ?? "") ?? game.items.get(config.rollStorageID ?? "") ?? false;
+        if (!rollStorageDoc) {
+            throw new Error("[BladesRollCollab.NewRoll()] A valid rollStorage document must be provided to construct a roll.");
         }
-        await user.unsetFlag(C.SYSTEM_ID, "rollCollab");
-        const flagUpdateData = { ...BladesRollCollab.DefaultFlagData };
-        flagUpdateData.rollType = config.rollType;
-        if (!(flagUpdateData.rollType in RollType)) {
-            eLog.error("rollCollab", `[RenderRollCollab()] Invalid rollType: ${flagUpdateData.rollType}`, config);
-            return;
+        if (!BladesRollPrimary.IsValidData(config.rollPrimaryData)) {
+            let rollPrimarySourceData;
+            if (!game.user.isGM && BladesPC.IsType(game.user.character)) {
+                rollPrimarySourceData = game.user.character;
+            }
+            else if (BladesRollPrimary.IsDoc(rollStorageDoc)) {
+                rollPrimarySourceData = rollStorageDoc;
+            }
+            else {
+                throw new Error("[BladesRollCollab.NewRoll()] A valid source of PrimaryDocData must be provided to construct a roll.");
+            }
+            config.rollPrimaryData = {
+                rollPrimaryID: rollPrimarySourceData.rollPrimaryID,
+                rollPrimaryName: rollPrimarySourceData.rollPrimaryName,
+                rollPrimaryType: rollPrimarySourceData.rollPrimaryType,
+                rollPrimaryImg: rollPrimarySourceData.rollPrimaryImg,
+                rollModsData: rollPrimarySourceData.rollModsData,
+                rollFactors: rollPrimarySourceData.rollFactors
+            };
         }
-        const rollPrimaryData = config.rollPrimary ?? user.character;
-        if (!rollPrimaryData) {
-            eLog.error("rollCollab", "[RenderRollCollab()] Invalid rollPrimary", { rollPrimaryData, config });
-            return;
-        }
-        let rollPrimary;
-        if (BladesRollPrimary.IsDoc(rollPrimaryData)) {
-            rollPrimary = rollPrimaryData;
-        }
-        else if (BladesRollPrimary.IsDoc(rollPrimaryData.rollPrimaryDoc)) {
-            rollPrimary = rollPrimaryData.rollPrimaryDoc;
-        }
-        if (flagUpdateData.rollType === RollType.IndulgeVice && BladesActor.IsType(rollPrimary, BladesActorType.pc)) {
-            const minAttrVal = Math.min(...Object.values(rollPrimary.attributes));
-            flagUpdateData.rollTrait = U.objFindKey(rollPrimary.attributes, (val) => val === minAttrVal);
-        }
-        else if (U.isInt(config.rollTrait)) {
+        const rollPrimaryDoc = game.actors.get(config.rollPrimaryData.rollPrimaryID ?? "")
+            ?? game.items.get(config.rollPrimaryData.rollPrimaryID ?? "");
+        const rollID = randomID();
+        const flagUpdateData = {
+            ...BladesRollCollab.DefaultFlagData,
+            rollID,
+            storageDocID: rollStorageDoc.id,
+            rollType: config.rollType,
+            rollPrimaryData: config.rollPrimaryData
+        };
+        if (U.isInt(config.rollTrait)) {
             flagUpdateData.rollTrait = config.rollTrait;
         }
-        else if (!config.rollTrait) {
-            eLog.error("rollCollab", "[RenderRollCollab()] No RollTrait in Config", config);
-            return;
-        }
-        else {
+        else if (!U.isNullish(config.rollTrait)) {
+            const rollTrait = typeof config.rollTrait === "string" ? U.lCase(config.rollTrait) : config.rollTrait;
             switch (flagUpdateData.rollType) {
+                case RollType.IndulgeVice: {
+                    if (BladesPC.IsType(rollPrimaryDoc)) {
+                        const minAttrVal = Math.min(...Object.values(rollPrimaryDoc.attributes));
+                        flagUpdateData.rollTrait = U.objFindKey(rollPrimaryDoc.attributes, (val) => val === minAttrVal);
+                    }
+                    break;
+                }
                 case RollType.Action: {
-                    if (!(U.lCase(config.rollTrait) in { ...ActionTrait, ...Factor })) {
-                        eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Action Roll: ${config.rollTrait}`, config);
+                    if (!(rollTrait in { ...ActionTrait, ...Factor })) {
+                        eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Action Roll: ${rollTrait}`, config);
                         return;
                     }
-                    flagUpdateData.rollTrait = U.lCase(config.rollTrait);
+                    flagUpdateData.rollTrait = rollTrait;
                     break;
                 }
                 case RollType.Fortune: {
-                    if (!(U.lCase(config.rollTrait) in { ...ActionTrait, ...AttributeTrait, ...Factor })) {
-                        eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Fortune Roll: ${config.rollTrait}`, config);
+                    if (!(rollTrait in { ...ActionTrait, ...AttributeTrait, ...Factor } || U.isInt(rollTrait))) {
+                        eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Fortune Roll: ${rollTrait}`, config);
                         return;
                     }
-                    flagUpdateData.rollTrait = U.lCase(config.rollTrait);
+                    flagUpdateData.rollTrait = rollTrait;
                     break;
                 }
                 case RollType.Resistance: {
-                    if (!(U.lCase(config.rollTrait) in AttributeTrait)) {
-                        eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Resistance Roll: ${config.rollTrait}`, config);
+                    if (!(rollTrait in AttributeTrait)) {
+                        eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Resistance Roll: ${rollTrait}`, config);
                         return;
                     }
                     break;
                 }
                 default: throw new Error(`Unrecognized RollType: ${flagUpdateData.rollType}`);
             }
-            flagUpdateData.rollTrait = U.lCase(config.rollTrait);
         }
-        await user.setFlag(C.SYSTEM_ID, "rollCollab", flagUpdateData);
-        BladesRollCollab.RenderRollCollab({ userID: user._id, rollID: flagUpdateData.rollID });
-        socketlib.system.executeForAllGMs("renderRollCollab", { userID: user._id, rollID: flagUpdateData.rollID });
-    }
-    userID;
-    rollID;
-    constructor(user, primaryData, oppData) {
-        if (!user?.id) {
-            throw new Error(`Unable to retrieve user id from user '${user}'`);
+        eLog.checkLog3("bladesRoll", "BladesRollCollab.NewRoll()", { flagUpdateData, rollPrimaryData: flagUpdateData.rollPrimaryData });
+        if (rollStorageDoc instanceof BladesActor) {
+            await rollStorageDoc.setFlag(C.SYSTEM_ID, `rollCollab.${flagUpdateData.rollID}`, flagUpdateData);
         }
-        super(user);
-        this.userID = user.id;
-        this.rollID = randomID();
-        if (primaryData) {
-            this.rollPrimary = new BladesRollPrimary(this, primaryData);
-        }
-        if (oppData) {
-            this.rollOpposition = new BladesRollOpposition(this, oppData);
-        }
-    }
-
-    get rData() {
-        if (!this.document.getFlag(C.SYSTEM_ID, "rollCollab")) {
-            throw new Error("[get flags()] No RollCollab Flags Found on User");
-        }
-        return this.document.getFlag(C.SYSTEM_ID, "rollCollab");
-    }
-    _rollPrimary;
-    get rollPrimary() {
-        if (this._rollPrimary instanceof BladesRollPrimary) {
-            return this._rollPrimary;
-        }
-        return undefined;
-    }
-    set rollPrimary(val) {
-        if (val === undefined) {
-            this._rollPrimary = undefined;
+        else if (rollStorageDoc instanceof BladesItem) {
+            await rollStorageDoc.setFlag(C.SYSTEM_ID, `rollCollab.${flagUpdateData.rollID}`, flagUpdateData);
         }
         else {
-            this._rollPrimary = val;
+            throw new Error("rollStorageDoc must be an instance of Actor or Item");
         }
+        const userIDs = {
+            primary: [],
+            participants: [],
+            observers: []
+        };
+        const primaryUserIDs = game.users
+            .filter((user) => BladesPC.IsType(user.character) && !user.isGM && typeof user.id === "string")
+            .map((user) => user.id);
+        const GMUserID = game.users.find((user) => user.isGM)?.id;
+        if (!GMUserID) {
+            throw new Error("No GM found!");
+        }
+        if (BladesPC.IsType(rollPrimaryDoc) && typeof rollPrimaryDoc.primaryUser?.id === "string") {
+            userIDs.primary.push(rollPrimaryDoc.primaryUser.id);
+        }
+        else if (BladesCrew.IsType(rollPrimaryDoc)
+            || BladesItem.IsType(rollPrimaryDoc, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
+            userIDs.primary.push(...primaryUserIDs);
+        }
+        else if (BladesGMTracker.IsType(rollPrimaryDoc)) {
+            userIDs.primary.push(GMUserID);
+            userIDs.observers.push(...primaryUserIDs);
+        }
+        if (config.rollParticipantData) {
+            const participantUsers = Object.values(flattenObject(config.rollParticipantData))
+                .map((pData) => {
+                if (BladesRollParticipant.IsDoc(pData)) {
+                    return pData;
+                }
+                if (BladesRollParticipant.IsValidData(pData)) {
+                    if (BladesRollParticipant.IsDoc(pData.rollParticipantDoc)) {
+                        return pData.rollParticipantDoc;
+                    }
+                    else if (typeof pData.rollParticipantID === "string") {
+                        const pDoc = game.actors.get(pData.rollParticipantID) ?? game.items.get(pData.rollParticipantID);
+                        if (BladesRollParticipant.IsDoc(pDoc)) {
+                            return pDoc;
+                        }
+                    }
+                }
+                return null;
+            })
+                .map((pDoc) => {
+                if (BladesPC.IsType(pDoc) && typeof pDoc.primaryUser?.id === "string") {
+                    return pDoc.primaryUser.id;
+                }
+                else if (BladesCrew.IsType(rollPrimaryDoc)
+                    || BladesItem.IsType(rollPrimaryDoc, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
+                    return primaryUserIDs;
+                }
+                return null;
+            })
+                .flat()
+                .filter((pUser) => pUser !== null && !userIDs.primary.includes(pUser));
+            userIDs.participants.push(...participantUsers);
+            userIDs.observers = userIDs.observers.filter((uID) => !userIDs.participants.includes(uID));
+        }
+        socketlib.system.executeForAllGMs("renderRollCollab", { storageID: rollStorageDoc.id, rollID, rollPermission: RollPermissions.GM });
+        socketlib.system.executeForUsers("renderRollCollab", userIDs.primary, { storageID: rollStorageDoc.id, rollID, rollPermission: RollPermissions.Primary });
+        socketlib.system.executeForUsers("renderRollCollab", userIDs.participants, { storageID: rollStorageDoc.id, rollID, rollPermission: RollPermissions.Participant });
+        socketlib.system.executeForUsers("renderRollCollab", userIDs.observers, { storageID: rollStorageDoc.id, rollID, rollPermission: RollPermissions.Observer });
     }
+
+    storageID;
+    rollID;
+    rollPermission;
+    _rollPrimary;
     _rollOpposition;
+    _rollParticipants;
+    constructor(storageID, rollID, rollPermission) {
+        const storageDoc = game.actors.get(storageID) ?? game.items.get(storageID);
+        if (!storageDoc) {
+            throw new Error(`Unable to retrieve storage document with ID '${storageID}'`);
+        }
+        super(storageDoc);
+        this.storageID = storageID;
+        this.rollID = rollID;
+        this.rollPermission = rollPermission;
+        const rollFlagData = storageDoc.getFlag(C.SYSTEM_ID, `rollCollab.${rollID}`);
+        this._rollPrimary = new BladesRollPrimary(this, rollFlagData.rollPrimaryData);
+        if (rollFlagData.rollOppData) {
+            this._rollOpposition = new BladesRollOpposition(this, rollFlagData.rollOppData);
+        }
+        if (rollFlagData.rollParticipantData) {
+            this._rollParticipants = {};
+            for (const [rollSection, rollParticipantList] of Object.entries(rollFlagData.rollParticipantData)) {
+                if ([RollModSection.roll, RollModSection.position, RollModSection.effect].includes(rollSection) && !U.isEmpty(rollParticipantList)) {
+                    const sectionParticipants = {};
+                    for (const [participantType, participantData] of Object.entries(rollParticipantList)) {
+                        sectionParticipants[participantType] = new BladesRollParticipant(this, participantData);
+                    }
+                    this._rollParticipants[rollSection] = sectionParticipants;
+                }
+            }
+        }
+        BladesRollCollab.Current[this.rollID] = this;
+    }
+    
+    get flagData() {
+        if (!this.document.getFlag(C.SYSTEM_ID, `rollCollab.${this.rollID}`)) {
+            throw new Error("[get flags()] No RollCollab Flags Found on Storage Document");
+        }
+        return this.document.getFlag(C.SYSTEM_ID, `rollCollab.${this.rollID}`);
+    }
+    get rollPrimary() {
+        return this._rollPrimary;
+    }
     get rollOpposition() {
         if (this._rollOpposition instanceof BladesRollOpposition) {
             return this._rollOpposition;
@@ -1091,11 +1211,14 @@ class BladesRollCollab extends DocumentSheet {
             this._rollOpposition = val;
         }
     }
-    _rollParticipants = [];
-    get rollType() { return this.rData.rollType; }
-    get rollSubType() { return this.rData.rollSubType; }
-    get rollDowntimeAction() { return this.rData.rollDowntimeAction; }
-    get rollTrait() { return this.rData.rollTrait; }
+    get rollParticipants() {
+        return this._rollParticipants;
+    }
+    
+    get rollType() { return this.flagData.rollType; }
+    get rollSubType() { return this.flagData.rollSubType; }
+    get rollDowntimeAction() { return this.flagData.rollDowntimeAction; }
+    get rollTrait() { return this.flagData.rollTrait; }
     _rollTraitValOverride;
     get rollTraitValOverride() { return this._rollTraitValOverride; }
     set rollTraitValOverride(val) { this._rollTraitValOverride = val; }
@@ -1170,22 +1293,22 @@ class BladesRollCollab extends DocumentSheet {
         throw new Error(`[get rollTraitOptions] Invalid rollTrait: '${this.rollTrait}'`);
     }
     get posEffectTrade() {
-        return this.rData?.rollPosEffectTrade ?? false;
+        return this.flagData?.rollPosEffectTrade ?? false;
     }
     get initialPosition() {
-        return this.rData?.rollPositionInitial ?? Position.risky;
+        return this.flagData?.rollPositionInitial ?? Position.risky;
     }
     set initialPosition(val) {
         this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPositionInitial", val);
     }
     get initialEffect() {
-        return this.rData?.rollEffectInitial ?? Effect.standard;
+        return this.flagData?.rollEffectInitial ?? Effect.standard;
     }
     set initialEffect(val) {
         this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollEffectInitial", val);
     }
     get rollConsequence() {
-        return this.rData?.rollConsequence;
+        return this.flagData?.rollConsequence;
     }
 
     get finalPosition() {
@@ -1204,19 +1327,19 @@ class BladesRollCollab extends DocumentSheet {
     }
     get finalResult() {
         return this.getModsDelta(RollModSection.result)
-            + (this.rData?.GMBoosts.Result ?? 0)
+            + (this.flagData?.GMBoosts.Result ?? 0)
             + (this.tempGMBoosts.Result ?? 0);
     }
     get finalDicePool() {
         return Math.max(0, this.rollTraitData.value
             + this.getModsDelta(RollModSection.roll)
-            + (this.rData.GMBoosts.Dice ?? 0)
+            + (this.flagData.GMBoosts.Dice ?? 0)
             + (this.tempGMBoosts.Dice ?? 0));
     }
     get isRollingZero() {
         return Math.max(0, this.rollTraitData.value
             + this.getModsDelta(RollModSection.roll)
-            + (this.rData.GMBoosts.Dice ?? 0)
+            + (this.flagData.GMBoosts.Dice ?? 0)
             + (this.tempGMBoosts.Dice ?? 0)) <= 0;
     }
     _roll;
@@ -1230,10 +1353,10 @@ class BladesRollCollab extends DocumentSheet {
             factor,
             {
                 ...factorData,
-                ...this.rData.rollFactorToggles.source[factor] ?? []
+                ...this.flagData.rollFactorToggles.source[factor] ?? []
             }
         ]));
-        Object.entries(this.rData.rollFactorToggles.source).forEach(([factor, factorData]) => {
+        Object.entries(this.flagData.rollFactorToggles.source).forEach(([factor, factorData]) => {
             if (!(factor in sourceFactors)) {
                 sourceFactors[factor] = {
                     name: factor,
@@ -1257,7 +1380,7 @@ class BladesRollCollab extends DocumentSheet {
             }
             factorData.value ??= 0;
             factorData.value
-                += (this.rData.GMBoosts[factor] ?? 0)
+                += (this.flagData.GMBoosts[factor] ?? 0)
                     + (this.tempGMBoosts[factor] ?? 0);
         });
         const rollOppFactors = this.rollOpposition?.rollFactors
@@ -1288,10 +1411,10 @@ class BladesRollCollab extends DocumentSheet {
             }
             oppFactors[factor] = {
                 ...factorData,
-                ...this.rData.rollFactorToggles.opposition[factor] ?? []
+                ...this.flagData.rollFactorToggles.opposition[factor] ?? []
             };
         });
-        Object.entries(this.rData.rollFactorToggles.opposition)
+        Object.entries(this.flagData.rollFactorToggles.opposition)
             .forEach(([factor, factorData]) => {
             if (!isFactor(factor)) {
                 return;
@@ -1318,7 +1441,7 @@ class BladesRollCollab extends DocumentSheet {
             if (!factorData) {
                 return;
             }
-            factorData.value += this.rData.GMOppBoosts[factor] ?? 0;
+            factorData.value += this.flagData.GMOppBoosts[factor] ?? 0;
             if (factor === Factor.tier) {
                 factorData.display = U.romanizeNum(factorData.value);
             }
@@ -1603,12 +1726,12 @@ class BladesRollCollab extends DocumentSheet {
         return rollCosts.find((costData) => costData.costType === "SpecialArmor");
     }
         getSheetData(isGM, rollCosts) {
-        const { rData, rollPrimary, rollTraitData, rollTraitOptions, finalDicePool, finalPosition, finalEffect, finalResult, rollMods, rollFactors } = this;
+        const { flagData: rData, rollPrimary, rollTraitData, rollTraitOptions, finalDicePool, finalPosition, finalEffect, finalResult, rollMods, rollFactors } = this;
         if (!rollPrimary) {
             throw new Error("A primary roll source is required for BladesRollCollab.");
         }
         const baseData = {
-            ...this.rData,
+            ...this.flagData,
             cssClass: "roll-collab",
             editable: this.options.editable,
             isGM,
@@ -1764,7 +1887,7 @@ class BladesRollCollab extends DocumentSheet {
     }
     async OLDgetData() {
         const context = super.getData();
-        const rData = this.rData;
+        const rData = this.flagData;
         if (!this.rollPrimary) {
             throw new Error("No roll source configured for roll.");
         }
@@ -1811,18 +1934,18 @@ class BladesRollCollab extends DocumentSheet {
                 || (isGM && this.getRollMods(RollModSection.after).length > 0),
             rollFactorPenaltiesNegated: this.rollFactorPenaltiesNegated,
             GMBoosts: {
-                Dice: this.rData.GMBoosts.Dice ?? 0,
-                [Factor.tier]: this.rData.GMBoosts[Factor.tier] ?? 0,
-                [Factor.quality]: this.rData.GMBoosts[Factor.quality] ?? 0,
-                [Factor.scale]: this.rData.GMBoosts[Factor.scale] ?? 0,
-                [Factor.magnitude]: this.rData.GMBoosts[Factor.magnitude] ?? 0,
-                Result: this.rData.GMBoosts.Result ?? 0
+                Dice: this.flagData.GMBoosts.Dice ?? 0,
+                [Factor.tier]: this.flagData.GMBoosts[Factor.tier] ?? 0,
+                [Factor.quality]: this.flagData.GMBoosts[Factor.quality] ?? 0,
+                [Factor.scale]: this.flagData.GMBoosts[Factor.scale] ?? 0,
+                [Factor.magnitude]: this.flagData.GMBoosts[Factor.magnitude] ?? 0,
+                Result: this.flagData.GMBoosts.Result ?? 0
             },
             GMOppBoosts: {
-                [Factor.tier]: this.rData.GMOppBoosts[Factor.tier] ?? 0,
-                [Factor.quality]: this.rData.GMOppBoosts[Factor.quality] ?? 0,
-                [Factor.scale]: this.rData.GMOppBoosts[Factor.scale] ?? 0,
-                [Factor.magnitude]: this.rData.GMOppBoosts[Factor.magnitude] ?? 0
+                [Factor.tier]: this.flagData.GMOppBoosts[Factor.tier] ?? 0,
+                [Factor.quality]: this.flagData.GMOppBoosts[Factor.quality] ?? 0,
+                [Factor.scale]: this.flagData.GMOppBoosts[Factor.scale] ?? 0,
+                [Factor.magnitude]: this.flagData.GMOppBoosts[Factor.magnitude] ?? 0
             },
             canTradePosition: posEffectTrade === "position"
                 || (posEffectTrade === false
@@ -2310,6 +2433,7 @@ class BladesRollCollab extends DocumentSheet {
         return super.render(force, options);
     }
 }
+
 export const BladesRollCollabComps = {
     Mod: BladesRollMod,
     Primary: BladesRollPrimary,

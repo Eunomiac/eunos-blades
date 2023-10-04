@@ -1,20 +1,61 @@
 import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor} from "../core/constants.js";
 import BladesActor from "../BladesActor.js";
 import BladesItem from "../BladesItem.js";
-import {BladesRollMod} from "../BladesRollCollab.js";
+import {BladesRollMod, BladesRollCollabComps} from "../BladesRollCollab.js";
 
 declare global {
 
   namespace BladesRollCollab {
+
+    export interface RollParticipantData {
+      [RollModSection.roll]?: {
+        Assist?: ParticipantDocData,
+        Group_1?: ParticipantDocData,
+        Group_2?: ParticipantDocData,
+        Group_3?: ParticipantDocData,
+        Group_4?: ParticipantDocData,
+        Group_5?: ParticipantDocData,
+        Group_6?: ParticipantDocData,
+      },
+      [RollModSection.position]?: {
+        Setup?: ParticipantDocData
+      },
+      [RollModSection.effect]?: {
+        Setup?: ParticipantDocData
+      }
+    }
+
+    export interface RollParticipantDocs {
+      [RollModSection.roll]?: {
+        Assist?: BladesRollCollabComps.Participant,
+        Group_1?: BladesRollCollabComps.Participant,
+        Group_2?: BladesRollCollabComps.Participant,
+        Group_3?: BladesRollCollabComps.Participant,
+        Group_4?: BladesRollCollabComps.Participant,
+        Group_5?: BladesRollCollabComps.Participant,
+        Group_6?: BladesRollCollabComps.Participant,
+      },
+      [RollModSection.position]?: {
+        Setup?: BladesRollCollabComps.Participant
+      },
+      [RollModSection.effect]?: {
+        Setup?: BladesRollCollabComps.Participant
+      }
+    }
+
     export interface Config {
       rollType: RollType,
-      userID?: string,
-      rollPrimary?: PrimaryDoc|Partial<PrimaryDocData>;
-      rollOpp?: OppositionDoc|Partial<OppositionDocData>;
+      rollStorageID: string,
+      rollPrimaryData: PrimaryDocData;
+      rollOppData?: OppositionDocData;
+      rollParticipantData?: RollParticipantData,
       rollSubType?: RollSubType,
       rollDowntimeAction?: DowntimeAction,
-      rollTrait?: RollTrait
+      rollTrait?: RollTrait,
+      participantRollTo?: string
     }
+    export type ConstructorConfig = Required<Pick<Config, "rollType">>
+      & Partial<Omit<Config, "rollType">>
 
     export interface ConsequenceData extends Partial<OppositionDocData> {
       type: ConsequenceType,
@@ -41,15 +82,31 @@ declare global {
 
     export interface FlagData {
       rollID: string;
+      storageDocID: string;
       rollType: RollType;
       rollSubType?: RollSubType;
       rollDowntimeAction?: DowntimeAction;
 
-      rollPrimaryData?: Partial<PrimaryDocData>;
-      rollOppData?: Partial<OppositionDocData>;
-      rollParticipantData?: Partial<ParticipantDocData>;
-
-      rollTrait: RollTrait;
+      rollPrimaryData: PrimaryDocData;
+      rollOppData?: OppositionDocData;
+      rollParticipantData?: {
+        [RollModSection.roll]?: {
+          Assist?: ParticipantDocData,
+          Group_1?: ParticipantDocData,
+          Group_2?: ParticipantDocData,
+          Group_3?: ParticipantDocData,
+          Group_4?: ParticipantDocData,
+          Group_5?: ParticipantDocData,
+          Group_6?: ParticipantDocData,
+        },
+        [RollModSection.position]?: {
+          Setup: ParticipantDocData
+        },
+        [RollModSection.effect]?: {
+          Setup: ParticipantDocData
+        }
+      },
+      rollTrait?: RollTrait;
       rollModsData: Record<string,RollModStatus>;
       rollPositionInitial: Position;
       rollEffectInitial: Effect;
@@ -58,23 +115,6 @@ declare global {
       isGMReady: boolean,
       GMBoosts: Partial<Record<"Dice"|Factor|"Result",number>>,
       GMOppBoosts: Partial<Record<Factor,number>>,
-      docSelections: {
-        [RollModSection.roll]: {
-          Assist: string|false,
-          Group_1: string|false,
-          Group_2: string|false,
-          Group_3: string|false,
-          Group_4: string|false,
-          Group_5: string|false,
-          Group_6: string|false,
-        },
-        [RollModSection.position]: {
-          Setup: string|false
-        },
-        [RollModSection.effect]: {
-          Setup: string|false
-        }
-      }
       rollFactorToggles: Record<"source"|"opposition", Partial<Record<Factor, FactorFlagData>>>
     }
 
@@ -169,8 +209,8 @@ declare global {
       |BladesItemOfType<BladesItemType.gm_tracker>;
 
     export interface PrimaryDocData {
-      rollPrimaryID: string|undefined,
-      rollPrimaryDoc: PrimaryDoc|undefined,
+      rollPrimaryID?: string,
+      rollPrimaryDoc?: PrimaryDoc,
       rollPrimaryName: string,
       rollPrimaryType: string,
       rollPrimaryImg: string,
@@ -201,14 +241,14 @@ declare global {
       |BladesItemOfType<BladesItemType.ritual>;
 
     export interface OppositionDocData {
-      rollOppID: string|undefined,
-      rollOppDoc: OppositionDoc|undefined,
+      rollOppID?: string,
+      rollOppDoc?: OppositionDoc,
       rollOppName: string,
-      rollOppSubName: string,
       rollOppType: string,
       rollOppImg: string,
+      rollOppSubName?: string,
 
-      rollOppModsData: RollModData[]|undefined,
+      rollOppModsData?: RollModData[],
       rollFactors: Partial<Record<Factor,FactorData>>
     }
 
@@ -221,13 +261,13 @@ declare global {
       |BladesItemOfType<BladesItemType.gm_tracker>;
 
     export interface ParticipantDocData {
-      rollParticipantID: string|undefined,
-      rollParticipantDoc: ParticipantDoc|undefined,
+      rollParticipantID?: string,
+      rollParticipantDoc?: ParticipantDoc,
       rollParticipantName: string,
       rollParticipantType: string,
       rollParticipantIcon: string,
 
-      rollParticipantModsData: RollModData[]|undefined, // As applied to MAIN roll when this participant involved
+      rollParticipantModsData?: RollModData[], // As applied to MAIN roll when this participant involved
       rollFactors: Partial<Record<Factor,FactorData>>
     }
 

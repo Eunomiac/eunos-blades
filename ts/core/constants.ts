@@ -141,6 +141,13 @@ export enum DowntimeAction {
   Train = "Train"
 }
 
+export enum RollPermissions {
+  Primary = "Primary",
+  Observer = "Observer",
+  GM = "GM",
+  Participant = "Participant"
+}
+
 export enum RollType {
   Action = "Action",
   Resistance = "Resistance",

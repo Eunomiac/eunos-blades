@@ -3430,14 +3430,14 @@ export const updateRollMods = async () => {
           name: string,
           icon: string,
           changes: Array<Partial<EffectChangeData>>
-        } = {
-          name: aName,
-          icon: crewAbilityDoc.img ?? "",
-          changes: eData.map((change) => {
-            delete change.isMember;
-            return change;
-          })
-        };
+          } = {
+            name: aName,
+            icon: crewAbilityDoc.img ?? "",
+            changes: eData.map((change) => {
+              delete change.isMember;
+              return change;
+            })
+          };
 
           // Derive new effect data from existing effect, if any, then delete existing effect
           if (toMemberEffects.length === 1) {
@@ -3468,14 +3468,14 @@ export const updateRollMods = async () => {
           name: string,
           icon: string,
           changes: Array<Partial<EffectChangeData>>
-        } = {
-          name: aName,
-          icon: crewAbilityDoc.img ?? "",
-          changes: eData.map((change) => {
-            delete change.isCohort;
-            return change;
-          })
-        };
+          } = {
+            name: aName,
+            icon: crewAbilityDoc.img ?? "",
+            changes: eData.map((change) => {
+              delete change.isCohort;
+              return change;
+            })
+          };
 
           // Derive new effect data from existing effect, if any, then delete existing effect
           if (toCohortEffects.length === 1) {
@@ -3506,11 +3506,11 @@ export const updateRollMods = async () => {
           name: string,
           icon: string,
           changes: Array<Partial<EffectChangeData>>
-        } = {
-          name: aName,
-          icon: crewAbilityDoc.img ?? "",
-          changes: eData
-        };
+          } = {
+            name: aName,
+            icon: crewAbilityDoc.img ?? "",
+            changes: eData
+          };
 
           // Derive new effect data from existing effect, if any, then delete existing effect
           if (standardEffects.length === 1) {

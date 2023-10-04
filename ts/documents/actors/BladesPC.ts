@@ -12,6 +12,9 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
                                               BladesRollCollab.ParticipantDocData {
 
   // #region Static Overrides: Create ~
+  static override IsType<T extends BladesActorType = BladesActorType.pc>(doc: unknown): doc is BladesActorOfType<T> {
+    return super.IsType(doc, BladesActorType.pc);
+  }
   static override async create(data: ActorDataConstructorData & { system?: Partial<BladesActorSchema.Scoundrel> }, options = {}) {
     data.token = data.token || {};
     data.system = data.system ?? {};

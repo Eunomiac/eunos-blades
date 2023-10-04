@@ -1,0 +1,11 @@
+**/json/**
+**/lang/**
+**/packs/**
+**/assets/**
+.gitattributes
+.stylelintignore
+.stylelintrc.js
+extensions.txt
+sonar-project.properties
+README.md
+LICENSE

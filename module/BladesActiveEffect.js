@@ -29,10 +29,10 @@ const CUSTOMFUNCS = {
         }
         const [target, qty] = funcData.split(/:/);
         if (isReversing) {
-            actor.update({ [target]: U.pInt(getProperty(actor, target)) - U.pInt(qty) });
+            await actor.update({ [target]: U.pInt(getProperty(actor, target)) - U.pInt(qty) });
             return;
         }
-        actor.update({ [target]: U.pInt(getProperty(actor, target)) + U.pInt(qty) });
+        await actor.update({ [target]: U.pInt(getProperty(actor, target)) + U.pInt(qty) });
     },
     upgradeIfChargen: async (actor, funcData, _, isReversing = false) => {
         eLog.checkLog("activeEffects", "upgradeIfChargen", { actor, funcData, isReversing });
@@ -41,11 +41,11 @@ const CUSTOMFUNCS = {
         }
         const [target, qty] = funcData.split(/:/);
         if (getProperty(actor, target) < U.pInt(qty)) {
-            actor.update({ [target]: U.pInt(qty) });
+            await actor.update({ [target]: U.pInt(qty) });
         }
     },
-    APPLYTOMEMBERS: async () => undefined,
-    APPLYTOCOHORTS: async () => undefined,
+    APPLYTOMEMBERS: async () => new Promise(() => undefined),
+    APPLYTOCOHORTS: async () => new Promise(() => undefined),
     remItem: async (actor, funcData, _, isReversing = false) => {
         function testString(targetString, testDef) {
             if (testDef.startsWith("rX")) {
@@ -248,7 +248,7 @@ class BladesActiveEffect extends ActiveEffect {
     }
     static async AddActiveEffect(doc, name, eChanges, icon = "systems/eunos-blades/assets/icons/effect-icons/default.png") {
         const changes = [eChanges].flat();
-        doc.createEmbeddedDocuments("ActiveEffect", [{ name, icon, changes }]);
+        await doc.createEmbeddedDocuments("ActiveEffect", [{ name, icon, changes }]);
     }
     static ThrottleCustomFunc(actor, data) {
         const { funcName, funcData, isReversing, effect } = data;
@@ -326,9 +326,9 @@ class BladesActiveEffect extends ActiveEffect {
     }
     async _preCreate(data, options, user) {
         eLog.checkLog3("effect", "ActiveEffect._preCreate()", { data, options, user });
-        super._preCreate(data, options, user);
+        await super._preCreate(data, options, user);
     }
-    async _onDelete(options, userID) {
+    _onDelete(options, userID) {
         eLog.checkLog3("effect", "ActiveEffect._onDelete()", { options, userID });
         super._onDelete(options, userID);
     }

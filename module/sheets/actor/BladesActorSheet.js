@@ -247,7 +247,7 @@ class BladesActorSheet extends ActorSheet {
         const target = clock$.data("target");
         const curValue = U.pInt(clock$.data("value"));
         const maxValue = U.pInt(clock$.data("size"));
-        G.effects.pulseClockWedges(clock$.find("wedges")).then(() => this.actor.update({
+        await G.effects.pulseClockWedges(clock$.find("wedges")).then(async () => await this.actor.update({
             [target]: G.utils.wrap(0, maxValue + 1, curValue + 1)
         }));
     }
@@ -259,7 +259,7 @@ class BladesActorSheet extends ActorSheet {
         }
         const target = clock$.data("target");
         const curValue = U.pInt(clock$.data("value"));
-        G.effects.reversePulseClockWedges(clock$.find("wedges")).then(() => this.actor.update({
+        await G.effects.reversePulseClockWedges(clock$.find("wedges")).then(async () => await this.actor.update({
             [target]: Math.max(0, curValue - 1)
         }));
     }
@@ -288,7 +288,7 @@ class BladesActorSheet extends ActorSheet {
         }
         return compData;
     }
-    async _onItemOpenClick(event) {
+    _onItemOpenClick(event) {
         event.preventDefault();
         const { doc } = this._getCompData(event);
         if (!doc) {
@@ -323,12 +323,12 @@ class BladesActorSheet extends ActorSheet {
         if (!doc) {
             return;
         }
-        G.effects.blurRemove(elem$).then(() => {
+        await G.effects.blurRemove(elem$).then(async () => {
             if (doc instanceof BladesItem) {
-                this.actor.remSubItem(doc);
+                await this.actor.remSubItem(doc);
             }
             else {
-                this.actor.remSubActor(doc);
+                await this.actor.remSubActor(doc);
             }
         });
     }
@@ -338,19 +338,19 @@ class BladesActorSheet extends ActorSheet {
         if (!doc) {
             return;
         }
-        G.effects.blurRemove(elem$).then(() => doc.delete());
+        await G.effects.blurRemove(elem$).then(async () => await doc.delete());
     }
     async _onItemToggleClick(event) {
         event.preventDefault();
         const target = $(event.currentTarget).data("target");
-        this.actor.update({
+        await this.actor.update({
             [target]: !getProperty(this.actor, target)
         });
     }
     async _onAdvanceClick(event) {
         event.preventDefault();
         if ($(event.currentTarget).data("action") === "advance-playbook") {
-            this.actor.advancePlaybook();
+            await this.actor.advancePlaybook();
         }
     }
 
@@ -377,21 +377,16 @@ class BladesActorSheet extends ActorSheet {
         }
         if (game.user.isGM) {
             if (BladesRollCollabComps.Primary.IsDoc(this.actor)) {
-                rollData.rollPrimary = { rollPrimaryDoc: this.actor };
+                rollData.rollPrimaryData = this.actor;
             }
             else if (BladesRollCollabComps.Opposition.IsDoc(this.actor)) {
-                rollData.rollOpp = { rollOppDoc: this.actor };
+                rollData.rollOppData = this.actor;
             }
         }
-        if (rollData.rollType) {
-            BladesRollCollab.NewRoll(rollData);
-        }
-        else {
-            throw new Error("Unable to determine roll type of roll.");
-        }
+        await BladesRollCollab.NewRoll(rollData);
     }
 
-    async _onActiveEffectControlClick(event) {
+    _onActiveEffectControlClick(event) {
         BladesActiveEffect.onManageActiveEffect(event, this.actor);
     }
 }

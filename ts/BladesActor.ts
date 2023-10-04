@@ -64,13 +64,13 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       curTags.push(tag);
     });
     eLog.checkLog2("actor", "BladesActor.addTag(...tags)", {tags, curTags});
-    this.update({"system.tags": curTags});
+    await this.update({"system.tags": curTags});
   }
 
   async remTag(...tags: BladesTag[]) {
     const curTags = this.tags.filter((tag) => !tags.includes(tag));
     eLog.checkLog2("actor", "BladesActor.remTag(...tags)", {tags, curTags});
-    this.update({"system.tags": curTags});
+    await this.update({"system.tags": curTags});
   }
 
   get tooltip(): string | undefined {
@@ -261,14 +261,14 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   async remSubActor(actorRef: ActorRef): Promise<void> {
     const subActor = this.getSubActor(actorRef);
     if (!subActor) { return }
-    this.update({["system.subactors"]: mergeObject(this.system.subactors, {[`-=${subActor.id}`]: null})}, undefined, true);
+    await this.update({["system.subactors"]: mergeObject(this.system.subactors, {[`-=${subActor.id}`]: null})}, undefined, true);
   }
 
   async clearSubActors(isReRendering = true): Promise<void> {
     this.subActors.forEach((subActor) => {
       if (subActor.parentActor?.id === this.id) { subActor.clearParentActor(isReRendering) }
     });
-    this.sheet?.render();
+    await this.sheet?.render();
   }
 
   async clearParentActor(isReRendering = true): Promise<void> {
@@ -280,11 +280,9 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
     this.prepareData();
     if (isReRendering) {
-      this.sheet?.render();
+      await this.sheet?.render();
     }
   }
-
-
   // #endregion
   // #region SubItemControl Implementation ~
 
@@ -613,13 +611,13 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     }
     eLog.checkLog("actorTrigger", "Removing SubItem " + subItem.name, subItem);
     if (subItem.hasTag(Tag.System.Archived)) { return }
-    subItem.addTag(Tag.System.Archived);
+    await subItem.addTag(Tag.System.Archived);
   }
 
   async purgeSubItem(itemRef: ItemRef): Promise<void> {
     const subItem = this.getSubItem(itemRef);
     if (!subItem || subItem.hasTag(Tag.System.Archived)) { return }
-    subItem.delete();
+    await subItem.delete();
   }
 
   // #endregion
@@ -651,7 +649,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     const aPtKey: string = Array.isArray(allowedTypes)
       ? [...allowedTypes].sort((a, b) => a.localeCompare(b)).join("_")
       : allowedTypes;
-    this.update({[`system.advancement_points.${aPtKey}`]: (this.system.advancement_points?.[aPtKey] ?? 0) + amount});
+    await this.update({[`system.advancement_points.${aPtKey}`]: (this.system.advancement_points?.[aPtKey] ?? 0) + amount});
   }
 
   async removeAdvancementPoints(allowedTypes: AdvancementPoint|AdvancementPoint[], amount = 1) {
@@ -660,9 +658,9 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       : allowedTypes;
     const newCount = this.system.advancement_points?.[aPtKey] ?? 0 - amount;
     if (newCount <= 0 && aPtKey in (this.system.advancement_points ?? [])) {
-      this.update({[`system.advancement_points.-=${aPtKey}`]: null});
+      await this.update({[`system.advancement_points.-=${aPtKey}`]: null});
     } else {
-      this.update({[`system.advancement_points.${aPtKey}`]: newCount});
+      await this.update({[`system.advancement_points.${aPtKey}`]: newCount});
     }
   }
 

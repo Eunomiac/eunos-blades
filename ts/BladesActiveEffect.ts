@@ -27,21 +27,21 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, effect?
     if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return }
     const [target, qty] = funcData.split(/:/);
     if (isReversing) {
-      actor.update({[target]: U.pInt(getProperty(actor, target)) - U.pInt(qty)});
+      await actor.update({[target]: U.pInt(getProperty(actor, target)) - U.pInt(qty)});
       return;
     }
-    actor.update({[target]: U.pInt(getProperty(actor, target)) + U.pInt(qty)});
+    await actor.update({[target]: U.pInt(getProperty(actor, target)) + U.pInt(qty)});
   },
   upgradeIfChargen: async (actor, funcData, _, isReversing = false) => {
     eLog.checkLog("activeEffects", "upgradeIfChargen", {actor, funcData, isReversing});
     if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return }
     const [target, qty] = funcData.split(/:/);
     if (getProperty(actor, target) < U.pInt(qty)) {
-      actor.update({[target]: U.pInt(qty)});
+      await actor.update({[target]: U.pInt(qty)});
     }
   },
-  APPLYTOMEMBERS: async () => undefined,
-  APPLYTOCOHORTS: async () => undefined,
+  APPLYTOMEMBERS: async () => new Promise(() => undefined),
+  APPLYTOCOHORTS: async () => new Promise(() => undefined),
   remItem: async (actor, funcData, _, isReversing = false) => {
 
     function testString(targetString: string, testDef: string) {
@@ -168,7 +168,7 @@ class BladesActiveEffect extends ActiveEffect {
         const permFuncName = key.replace(/^perm/, "");
         if (permFuncName in CUSTOMFUNCS) {
           const funcData: BladesCustomFuncData = {
-            funcName: permFuncName as BladesCustomFuncName,
+            funcName: permFuncName,
             funcData: value,
             isReversing: false,
             effect
@@ -187,7 +187,7 @@ class BladesActiveEffect extends ActiveEffect {
 
       if (changeData.key in CUSTOMFUNCS) {
         const funcData: BladesCustomFuncData = {
-          funcName: changeData.key as BladesCustomFuncName,
+          funcName: changeData.key,
           funcData: changeData.value,
           isReversing: false,
           effect: changeData.effect
@@ -201,7 +201,7 @@ class BladesActiveEffect extends ActiveEffect {
       const customEffects = effect.changes.filter((changes: EffectChangeData) => changes.mode === 0);
       customEffects.forEach(({key, value}) => {
         const funcData: BladesCustomFuncData = {
-          funcName: key as BladesCustomFuncName,
+          funcName: key,
           funcData: value,
           isReversing: disabled,
           effect
@@ -253,7 +253,7 @@ class BladesActiveEffect extends ActiveEffect {
       const customEffects = effect.changes.filter((changes: EffectChangeData) => changes.mode === 0);
       customEffects.forEach(({key, value}) => {
         const funcData: BladesCustomFuncData = {
-          funcName: key as BladesCustomFuncName,
+          funcName: key,
           funcData: value,
           isReversing: true,
           effect
@@ -265,7 +265,7 @@ class BladesActiveEffect extends ActiveEffect {
 
   static async AddActiveEffect(doc: BladesDoc, name: string, eChanges: EffectChangeData|EffectChangeData[], icon = "systems/eunos-blades/assets/icons/effect-icons/default.png") {
     const changes = [eChanges].flat();
-    doc.createEmbeddedDocuments("ActiveEffect", [{name, icon, changes}]);
+    await doc.createEmbeddedDocuments("ActiveEffect", [{name, icon, changes}]);
   }
 
   static ThrottleCustomFunc(actor: BladesActor, data: BladesCustomFuncData) {
@@ -315,7 +315,7 @@ class BladesActiveEffect extends ActiveEffect {
    */
   static onManageActiveEffect(event: ClickEvent, owner: Actor|Item) {
     event.preventDefault();
-    const a = event.currentTarget as HTMLElement;
+    const a = event.currentTarget;
     if (a.dataset.action === "create") {
       return owner.createEmbeddedDocuments("ActiveEffect", [{
         name: owner.name,
@@ -341,9 +341,9 @@ class BladesActiveEffect extends ActiveEffect {
 
   override async _preCreate(data: ActiveEffectDataConstructorData, options: DocumentModificationOptions, user: User) {
     eLog.checkLog3("effect", "ActiveEffect._preCreate()", {data, options, user});
-    super._preCreate(data, options, user);
+    await super._preCreate(data, options, user);
   }
-  override async _onDelete(options: DocumentModificationOptions, userID: string) {
+  override _onDelete(options: DocumentModificationOptions, userID: string) {
     eLog.checkLog3("effect", "ActiveEffect._onDelete()", {options, userID});
     super._onDelete(options, userID);
   }

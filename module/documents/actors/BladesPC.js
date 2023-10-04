@@ -12,6 +12,9 @@ import BladesActor from "../../BladesActor.js";
 import { BladesRollMod } from "../../BladesRollCollab.js";
 class BladesPC extends BladesActor {
 
+    static IsType(doc) {
+        return super.IsType(doc, BladesActorType.pc);
+    }
     static async create(data, options = {}) {
         data.token = data.token || {};
         data.system = data.system ?? {};

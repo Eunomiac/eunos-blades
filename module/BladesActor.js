@@ -52,12 +52,12 @@ class BladesActor extends Actor {
             curTags.push(tag);
         });
         eLog.checkLog2("actor", "BladesActor.addTag(...tags)", { tags, curTags });
-        this.update({ "system.tags": curTags });
+        await this.update({ "system.tags": curTags });
     }
     async remTag(...tags) {
         const curTags = this.tags.filter((tag) => !tags.includes(tag));
         eLog.checkLog2("actor", "BladesActor.remTag(...tags)", { tags, curTags });
-        this.update({ "system.tags": curTags });
+        await this.update({ "system.tags": curTags });
     }
     get tooltip() {
         const tooltipText = [this.system.concept, this.system.subtitle]
@@ -238,7 +238,7 @@ class BladesActor extends Actor {
         if (!subActor) {
             return;
         }
-        this.update({ ["system.subactors"]: mergeObject(this.system.subactors, { [`-=${subActor.id}`]: null }) }, undefined, true);
+        await this.update({ ["system.subactors"]: mergeObject(this.system.subactors, { [`-=${subActor.id}`]: null }) }, undefined, true);
     }
     async clearSubActors(isReRendering = true) {
         this.subActors.forEach((subActor) => {
@@ -246,7 +246,7 @@ class BladesActor extends Actor {
                 subActor.clearParentActor(isReRendering);
             }
         });
-        this.sheet?.render();
+        await this.sheet?.render();
     }
     async clearParentActor(isReRendering = true) {
         const { parentActor } = this;
@@ -258,9 +258,10 @@ class BladesActor extends Actor {
         this.ownership = this._source.ownership;
         this.prepareData();
         if (isReRendering) {
-            this.sheet?.render();
+            await this.sheet?.render();
         }
     }
+    
     get subItems() { return Array.from(this.items); }
     get activeSubItems() { return this.items.filter((item) => !item.hasTag(Tag.System.Archived)); }
     get archivedSubItems() { return this.items.filter((item) => item.hasTag(Tag.System.Archived)); }
@@ -615,21 +616,21 @@ class BladesActor extends Actor {
         if (subItem.hasTag(Tag.System.Archived)) {
             return;
         }
-        subItem.addTag(Tag.System.Archived);
+        await subItem.addTag(Tag.System.Archived);
     }
     async purgeSubItem(itemRef) {
         const subItem = this.getSubItem(itemRef);
         if (!subItem || subItem.hasTag(Tag.System.Archived)) {
             return;
         }
-        subItem.delete();
+        await subItem.delete();
     }
         
     async grantAdvancementPoints(allowedTypes, amount = 1) {
         const aPtKey = Array.isArray(allowedTypes)
             ? [...allowedTypes].sort((a, b) => a.localeCompare(b)).join("_")
             : allowedTypes;
-        this.update({ [`system.advancement_points.${aPtKey}`]: (this.system.advancement_points?.[aPtKey] ?? 0) + amount });
+        await this.update({ [`system.advancement_points.${aPtKey}`]: (this.system.advancement_points?.[aPtKey] ?? 0) + amount });
     }
     async removeAdvancementPoints(allowedTypes, amount = 1) {
         const aPtKey = Array.isArray(allowedTypes)
@@ -637,10 +638,10 @@ class BladesActor extends Actor {
             : allowedTypes;
         const newCount = this.system.advancement_points?.[aPtKey] ?? 0 - amount;
         if (newCount <= 0 && aPtKey in (this.system.advancement_points ?? [])) {
-            this.update({ [`system.advancement_points.-=${aPtKey}`]: null });
+            await this.update({ [`system.advancement_points.-=${aPtKey}`]: null });
         }
         else {
-            this.update({ [`system.advancement_points.${aPtKey}`]: newCount });
+            await this.update({ [`system.advancement_points.${aPtKey}`]: newCount });
         }
     }
     getAvailableAdvancements(trait) {

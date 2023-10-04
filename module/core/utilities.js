@@ -151,6 +151,7 @@ const isDefined = (ref) => !isUndefined(ref);
 const isEmpty = (ref) => Object.keys(ref).length === 0;
 const hasItems = (ref) => !isEmpty(ref);
 const isInstance = (classRef, ref) => ref instanceof classRef;
+const isNullish = (ref) => isUndefined(ref) || ref === null;
 function assertNonNullType(val, type) {
     let valStr;
     try {
@@ -1195,7 +1196,7 @@ export default {
     GMID, getUID,
     isNumber, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
     isHTMLCode, isRGBColor, isHexColor,
-    isUndefined, isDefined, isEmpty, hasItems, isInstance,
+    isUndefined, isDefined, isEmpty, hasItems, isInstance, isNullish,
     areEqual, areFuzzyEqual,
     pFloat, pInt, radToDeg, degToRad,
     getKey,
