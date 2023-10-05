@@ -79,5 +79,3 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     }
 }
 export default BladesClockKeeperSheet;
-//# sourceMappingURL=BladesClockKeeperSheet.js.map
-//# sourceMappingURL=BladesClockKeeperSheet.js.map

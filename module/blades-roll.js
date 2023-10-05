@@ -168,4 +168,3 @@ export async function simpleRollPopup() {
     }).render(true);
 }
 //# sourceMappingURL=blades-roll.js.map
-//# sourceMappingURL=blades-roll.js.map

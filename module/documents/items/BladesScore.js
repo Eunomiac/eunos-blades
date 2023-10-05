@@ -65,5 +65,3 @@ class BladesScore extends BladesItem {
     }
 }
 export default BladesScore;
-//# sourceMappingURL=BladesScore.js.map
-//# sourceMappingURL=BladesScore.js.map

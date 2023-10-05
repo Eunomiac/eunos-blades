@@ -73,5 +73,3 @@ class BladesFactionSheet extends BladesActorSheet {
     }
 }
 export default BladesFactionSheet;
-//# sourceMappingURL=BladesFactionSheet.js.map
-//# sourceMappingURL=BladesFactionSheet.js.map

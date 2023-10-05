@@ -292,5 +292,3 @@ class BladesItem extends Item {
     }
 }
 export default BladesItem;
-//# sourceMappingURL=BladesItem.js.map
-//# sourceMappingURL=BladesItem.js.map

@@ -134,5 +134,3 @@ class BladesSelectorDialog extends Dialog {
     }
 }
 export default BladesSelectorDialog;
-//# sourceMappingURL=BladesDialog.js.map
-//# sourceMappingURL=BladesDialog.js.map

@@ -343,4 +343,3 @@ class BladesPCSheet extends BladesSheet {
 }
 export default BladesPCSheet;
 //# sourceMappingURL=blades-pc-sheet.js.map
-//# sourceMappingURL=blades-pc-sheet.js.map

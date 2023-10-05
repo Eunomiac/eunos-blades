@@ -1002,4 +1002,3 @@ class BladesActor extends Actor {
 }
 export default BladesActor;
 //# sourceMappingURL=blades-actor.js.map
-//# sourceMappingURL=blades-actor.js.map

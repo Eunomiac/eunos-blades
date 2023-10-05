@@ -39,4 +39,3 @@ class BladesNPCSheet extends BladesSheet {
     }
 }
 export default BladesNPCSheet;
-//# sourceMappingURL=blades-npc-sheet.js.map

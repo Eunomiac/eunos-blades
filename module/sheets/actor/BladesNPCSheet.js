@@ -91,5 +91,3 @@ class BladesNPCSheet extends BladesActorSheet {
     }
 }
 export default BladesNPCSheet;
-//# sourceMappingURL=BladesNPCSheet.js.map
-//# sourceMappingURL=BladesNPCSheet.js.map

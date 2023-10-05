@@ -178,5 +178,3 @@ const logger = {
     hbsLog: (...content) => eLogger("handlebars", ...content)
 };
 export default logger;
-//# sourceMappingURL=logger.js.map
-//# sourceMappingURL=logger.js.map

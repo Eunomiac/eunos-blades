@@ -116,5 +116,3 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
         emissive: "#d89300"
     });
 });
-//# sourceMappingURL=blades.js.map
-//# sourceMappingURL=blades.js.map

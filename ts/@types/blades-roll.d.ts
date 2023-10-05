@@ -45,7 +45,7 @@ declare global {
 
     export interface Config {
       rollType: RollType,
-      rollStorageID: string,
+      rollUserID: string,
       rollPrimaryData: PrimaryDocData;
       rollOppData?: OppositionDocData;
       rollParticipantData?: RollParticipantData,
@@ -54,8 +54,7 @@ declare global {
       rollTrait?: RollTrait,
       participantRollTo?: string
     }
-    export type ConstructorConfig = Required<Pick<Config, "rollType">>
-      & Partial<Omit<Config, "rollType">>
+    export type ConstructorConfig = Partial<Config> & Required<Pick<Config, "rollType">>;
 
     export interface ConsequenceData extends Partial<OppositionDocData> {
       type: ConsequenceType,
@@ -82,30 +81,13 @@ declare global {
 
     export interface FlagData {
       rollID: string;
-      storageDocID: string;
       rollType: RollType;
       rollSubType?: RollSubType;
       rollDowntimeAction?: DowntimeAction;
 
       rollPrimaryData: PrimaryDocData;
       rollOppData?: OppositionDocData;
-      rollParticipantData?: {
-        [RollModSection.roll]?: {
-          Assist?: ParticipantDocData,
-          Group_1?: ParticipantDocData,
-          Group_2?: ParticipantDocData,
-          Group_3?: ParticipantDocData,
-          Group_4?: ParticipantDocData,
-          Group_5?: ParticipantDocData,
-          Group_6?: ParticipantDocData,
-        },
-        [RollModSection.position]?: {
-          Setup: ParticipantDocData
-        },
-        [RollModSection.effect]?: {
-          Setup: ParticipantDocData
-        }
-      },
+      rollParticipantData?: RollParticipantData;
       rollTrait?: RollTrait;
       rollModsData: Record<string,RollModStatus>;
       rollPositionInitial: Position;

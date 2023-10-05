@@ -1238,5 +1238,3 @@ export default {
     sleep,
     isDocID, loc, getSetting, getTemplatePath, displayImageSelector
 };
-//# sourceMappingURL=utilities.js.map
-//# sourceMappingURL=utilities.js.map

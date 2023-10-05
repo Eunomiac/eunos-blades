@@ -128,5 +128,3 @@ class BladesGMTrackerSheet extends BladesItemSheet {
     }
 }
 export default BladesGMTrackerSheet;
-//# sourceMappingURL=BladesGMTrackerSheet.js.map
-//# sourceMappingURL=BladesGMTrackerSheet.js.map

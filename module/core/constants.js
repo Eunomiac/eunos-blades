@@ -4259,5 +4259,3 @@ export const SVGDATA = {
     }
 };
 export default C;
-//# sourceMappingURL=constants.js.map
-//# sourceMappingURL=constants.js.map

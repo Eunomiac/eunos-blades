@@ -293,4 +293,3 @@ class BladesItem extends Item {
 }
 export default BladesItem;
 //# sourceMappingURL=blades-item.js.map
-//# sourceMappingURL=blades-item.js.map

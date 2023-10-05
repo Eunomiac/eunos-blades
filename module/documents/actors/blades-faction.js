@@ -60,4 +60,3 @@ class BladesFaction extends BladesActor {
 }
 export default BladesFaction;
 //# sourceMappingURL=blades-faction.js.map
-//# sourceMappingURL=blades-faction.js.map

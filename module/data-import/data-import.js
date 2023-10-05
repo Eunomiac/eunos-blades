@@ -3516,5 +3516,3 @@ export const updateDescriptions = async () => {
         return itemDoc.update({ "system.notes": desc });
     }));
 };
-//# sourceMappingURL=data-import.js.map
-//# sourceMappingURL=data-import.js.map

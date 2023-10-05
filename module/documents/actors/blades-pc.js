@@ -304,4 +304,3 @@ class BladesPC extends BladesActor {
 }
 export default BladesPC;
 //# sourceMappingURL=blades-pc.js.map
-//# sourceMappingURL=blades-pc.js.map

@@ -50,4 +50,3 @@ class BladesLocation extends BladesItem {
 }
 export default BladesLocation;
 //# sourceMappingURL=blades-location.js.map
-//# sourceMappingURL=blades-location.js.map

@@ -155,5 +155,3 @@ export function initCanvasStyles() {
     });
 }
 export default registerSettings;
-//# sourceMappingURL=settings.js.map
-//# sourceMappingURL=settings.js.map

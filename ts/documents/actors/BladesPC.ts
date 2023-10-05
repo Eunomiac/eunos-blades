@@ -1,8 +1,7 @@
-import BladesItem from "../../BladesItem.js";
 import C, {Playbook, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModSection, Factor, RollModStatus} from "../../core/constants.js";
 import U from "../../core/utilities.js";
-import BladesActor from "../../BladesActor.js";
-import BladesCrew from "./BladesCrew.js";
+import {BladesActor, BladesCrew} from "../BladesActorProxy.js";
+import {BladesItem} from "../BladesItemProxy.js";
 import BladesRollCollab, {BladesRollMod} from "../../BladesRollCollab.js";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
 

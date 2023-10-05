@@ -153,5 +153,3 @@ class BladesCrewSheet extends BladesActorSheet {
     }
 }
 export default BladesCrewSheet;
-//# sourceMappingURL=BladesCrewSheet.js.map
-//# sourceMappingURL=BladesCrewSheet.js.map

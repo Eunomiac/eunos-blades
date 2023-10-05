@@ -26,4 +26,3 @@ class BladesGMTracker extends BladesItem {
 }
 export default BladesGMTracker;
 //# sourceMappingURL=blades-gm-tracker.js.map
-//# sourceMappingURL=blades-gm-tracker.js.map

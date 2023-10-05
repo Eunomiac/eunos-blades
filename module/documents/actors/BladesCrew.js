@@ -81,5 +81,3 @@ class BladesCrew extends BladesActor {
     }
 }
 export default BladesCrew;
-//# sourceMappingURL=BladesCrew.js.map
-//# sourceMappingURL=BladesCrew.js.map

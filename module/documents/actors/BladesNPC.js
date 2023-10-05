@@ -73,5 +73,3 @@ class BladesNPC extends BladesActor {
     get rollParticipantModsData() { return []; }
 }
 export default BladesNPC;
-//# sourceMappingURL=BladesNPC.js.map
-//# sourceMappingURL=BladesNPC.js.map

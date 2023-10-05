@@ -287,5 +287,3 @@ class BladesScoreSheet extends BladesItemSheet {
     }
 }
 export default BladesScoreSheet;
-//# sourceMappingURL=BladesScoreSheet.js.map
-//# sourceMappingURL=BladesScoreSheet.js.map

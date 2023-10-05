@@ -22,7 +22,7 @@ const prefixer = require("autoprefixer");
 const minifier = require("cssnano");
 
 const packageJSON = require("./package");
-const sourcemaps = require("gulp-sourcemaps");
+// const sourcemaps = require("gulp-sourcemaps");
 
 const {analyzeProject} = require("codehawk-cli");
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
@@ -411,7 +411,7 @@ const PLUMBING = {
   },
   tsInit: (source, destination) => function pipeTypeScript() {
     const tsStream = src(source, {allowEmpty: true})
-      .pipe(sourcemaps.init())
+      // .pipe(sourcemaps.init())
       .pipe(PIPES.openPipe("tsInit")())
       .pipe(PIPES.replacer("init")())
       .pipe(PIPES.tsProject());
@@ -419,7 +419,7 @@ const PLUMBING = {
       return merger([
         tsStream.js
           .pipe(PIPES.replacer("ts")())
-          .pipe(sourcemaps.write("."))
+          // .pipe(sourcemaps.write("."))
           .pipe(PIPES.closePipe("tsInit", source, destination)),
         tsStream.dts
           .pipe(PIPES.closePipe("tsInit", source, `${destination}definitions`))
@@ -428,27 +428,27 @@ const PLUMBING = {
     return tsStream
       .pipe(PIPES.replacer("ts")())
       .pipe(PIPES.replacer("js")())
-      .pipe(sourcemaps.write("."))
+      // .pipe(sourcemaps.write("."))
       .pipe(PIPES.closePipe("tsInit", source, destination));
   },
   jsFull: (source, destination) => function pipeFullJS() {
     return src(source, {allowEmpty: true})
-      .pipe(sourcemaps.init())
+      // .pipe(sourcemaps.init())
       .pipe(PIPES.openPipe("jsFull")())
       .pipe(header(BANNERS.js.full, {"package": packageJSON}))
       .pipe(PIPES.replacer("js")())
-      .pipe(sourcemaps.write("."))
+      // .pipe(sourcemaps.write("."))
       .pipe(PIPES.closePipe("jsFull", source, destination));
   },
   jsMin: (source, destination) => function pipeMinJS() {
     return src(source, {allowEmpty: true})
-      .pipe(sourcemaps.init())
+      // .pipe(sourcemaps.init())
       .pipe(PIPES.openPipe("jsMin")())
       .pipe(header(BANNERS.js.min, {"package": packageJSON}))
       .pipe(PIPES.replacer("js")())
     // .pipe(renamer({suffix: ".min"}))
       .pipe(PIPES.terser()())
-      .pipe(sourcemaps.write("."))
+      // .pipe(sourcemaps.write("."))
       .pipe(PIPES.closePipe("jsMin", source, destination));
   },
   cssFull: (source, destination) => function pipeFullCSS() {

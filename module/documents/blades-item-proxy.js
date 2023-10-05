@@ -56,4 +56,3 @@ const BladesItemProxy = new Proxy(function () { }, {
 export default BladesItemProxy;
 export { BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore };
 //# sourceMappingURL=blades-item-proxy.js.map
-//# sourceMappingURL=blades-item-proxy.js.map

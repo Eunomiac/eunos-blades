@@ -108,5 +108,3 @@ const Tags = {
     }
 };
 export default Tags;
-//# sourceMappingURL=tags.js.map
-//# sourceMappingURL=tags.js.map

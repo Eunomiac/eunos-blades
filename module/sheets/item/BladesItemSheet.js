@@ -402,5 +402,3 @@ class BladesItemSheet extends ItemSheet {
     }
 }
 export default BladesItemSheet;
-//# sourceMappingURL=BladesItemSheet.js.map
-//# sourceMappingURL=BladesItemSheet.js.map

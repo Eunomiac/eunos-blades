@@ -5,10 +5,10 @@
 |*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import BladesItem from "../../BladesItem.js";
 import C, { AttributeTrait, Harm, BladesActorType, BladesItemType, Tag, RollModSection, Factor, RollModStatus } from "../../core/constants.js";
 import U from "../../core/utilities.js";
-import BladesActor from "../../BladesActor.js";
+import { BladesActor } from "../BladesActorProxy.js";
+import { BladesItem } from "../BladesItemProxy.js";
 import { BladesRollMod } from "../../BladesRollCollab.js";
 class BladesPC extends BladesActor {
 
@@ -306,5 +306,3 @@ class BladesPC extends BladesActor {
     }
 }
 export default BladesPC;
-//# sourceMappingURL=BladesPC.js.map
-//# sourceMappingURL=BladesPC.js.map

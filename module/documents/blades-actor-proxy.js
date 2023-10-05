@@ -56,4 +56,3 @@ const BladesActorProxy = new Proxy(function () { }, {
 export default BladesActorProxy;
 export { BladesActor, BladesPC, BladesCrew, BladesNPC, BladesFaction };
 //# sourceMappingURL=blades-actor-proxy.js.map
-//# sourceMappingURL=blades-actor-proxy.js.map
