@@ -1,7 +1,7 @@
 import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor} from "../core/constants.js";
 import BladesActor from "../BladesActor.js";
 import BladesItem from "../BladesItem.js";
-import {BladesRollMod, BladesRollCollabComps} from "../BladesRollCollab.js";
+import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../BladesRollCollab.js";
 
 declare global {
 
@@ -27,19 +27,19 @@ declare global {
 
     export interface RollParticipantDocs {
       [RollModSection.roll]?: {
-        Assist?: BladesRollCollabComps.Participant,
-        Group_1?: BladesRollCollabComps.Participant,
-        Group_2?: BladesRollCollabComps.Participant,
-        Group_3?: BladesRollCollabComps.Participant,
-        Group_4?: BladesRollCollabComps.Participant,
-        Group_5?: BladesRollCollabComps.Participant,
-        Group_6?: BladesRollCollabComps.Participant,
+        Assist?: BladesRollParticipant,
+        Group_1?: BladesRollParticipant,
+        Group_2?: BladesRollParticipant,
+        Group_3?: BladesRollParticipant,
+        Group_4?: BladesRollParticipant,
+        Group_5?: BladesRollParticipant,
+        Group_6?: BladesRollParticipant,
       },
       [RollModSection.position]?: {
-        Setup?: BladesRollCollabComps.Participant
+        Setup?: BladesRollParticipant
       },
       [RollModSection.effect]?: {
-        Setup?: BladesRollCollabComps.Participant
+        Setup?: BladesRollParticipant
       }
     }
 

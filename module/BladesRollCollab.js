@@ -26,7 +26,7 @@ function isModStatus(str) {
     return typeof str === "string" && str in RollModStatus;
 }
 
-export class BladesRollMod {
+class BladesRollMod {
     static ParseDocRollMods(doc) {
         const { roll_mods } = doc.system;
         if (!roll_mods || roll_mods.length === 0) {
@@ -148,7 +148,7 @@ export class BladesRollMod {
             return;
         }
         if (!val || val === this.baseStatus) {
-            this.rollInstance.document.unsetFlag(...this.flagParams);
+            this.rollInstance.document.unsetFlag(...this.flagParams).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollInstance.rollID));
         }
         else {
             if ([RollModStatus.ForcedOn, RollModStatus.ForcedOff, RollModStatus.Hidden].includes(val)
@@ -159,7 +159,7 @@ export class BladesRollMod {
                 && !game.user.isGM) {
                 return;
             }
-            this.rollInstance.document.setFlag(...this.flagParams, val);
+            this.rollInstance.document.setFlag(...this.flagParams, val).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollInstance.rollID));
         }
     }
     get sourceName() { return this._sourceName; }
@@ -557,7 +557,10 @@ class BladesRollPrimary {
     rollPrimaryName;
     rollPrimaryType;
     rollPrimaryImg;
-    rollModsData;
+    _rollModsData;
+    get rollModsData() {
+        return this.rollPrimaryDoc?.rollModsData ?? this._rollModsData ?? [];
+    }
     rollFactors;
 
     constructor(rollInstance, { rollPrimaryID, rollPrimaryDoc, rollPrimaryName, rollPrimaryType, rollPrimaryImg, rollModsData, rollFactors }) {
@@ -577,10 +580,7 @@ class BladesRollPrimary {
             this.rollPrimaryName = rollPrimaryName ?? this.rollPrimaryDoc.rollPrimaryName;
             this.rollPrimaryType = this.rollPrimaryDoc.rollPrimaryType;
             this.rollPrimaryImg = rollPrimaryImg ?? this.rollPrimaryDoc.rollPrimaryImg ?? "";
-            this.rollModsData = [
-                ...rollModsData ?? [],
-                ...this.rollPrimaryDoc.rollModsData ?? []
-            ];
+            this._rollModsData = rollModsData ?? [];
             this.rollFactors = Object.assign(this.rollPrimaryDoc.rollFactors, rollFactors ?? {});
         }
         else {
@@ -600,7 +600,7 @@ class BladesRollPrimary {
             this.rollPrimaryName = rollPrimaryName;
             this.rollPrimaryType = rollPrimaryType;
             this.rollPrimaryImg = rollPrimaryImg;
-            this.rollModsData = rollModsData ?? [];
+            this._rollModsData = rollModsData ?? [];
             this.rollFactors = rollFactors;
         }
     }
@@ -794,6 +794,7 @@ class BladesRollCollab extends DocumentSheet {
         ]);
     }
     static InitSockets() {
+        socketlib.system.register("constructRollCollab", BladesRollCollab.ConstructRollCollab);
         socketlib.system.register("renderRollCollab", BladesRollCollab.RenderRollCollab);
         socketlib.system.register("closeRollCollab", BladesRollCollab.CloseRollCollab);
     }
@@ -982,10 +983,13 @@ class BladesRollCollab extends DocumentSheet {
     static set Active(val) {
         BladesRollCollab._Active = val;
     }
-    static async RenderRollCollab({ userID, rollID, rollPermission }) {
+    static async ConstructRollCollab({ userID, rollID, rollPermission }) {
         const rollInst = new BladesRollCollab(userID, rollID, rollPermission);
-        eLog.checkLog3("rollCollab", "RenderRollCollab()", { params: { userID, rollID, rollPermission }, rollInst });
+        eLog.checkLog3("rollCollab", "ConstructRollCollab()", { params: { userID, rollID, rollPermission }, rollInst });
         await rollInst._render(true);
+    }
+    static RenderRollCollab(rollID) {
+        BladesRollCollab.Current[rollID]?.render();
     }
     static async CloseRollCollab(rollID) {
         eLog.checkLog3("rollCollab", "CloseRollCollab()", { rollID });
@@ -1042,7 +1046,7 @@ class BladesRollCollab extends DocumentSheet {
                 }
                 case RollType.Action: {
                     if (!(rollTrait in { ...ActionTrait, ...Factor })) {
-                        eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Action Roll: ${rollTrait}`, config);
+                        eLog.error("rollCollab", `[ConstructRollCollab()] Bad RollTrait for Action Roll: ${rollTrait}`, config);
                         return;
                     }
                     flagUpdateData.rollTrait = rollTrait;
@@ -1050,7 +1054,7 @@ class BladesRollCollab extends DocumentSheet {
                 }
                 case RollType.Fortune: {
                     if (!(rollTrait in { ...ActionTrait, ...AttributeTrait, ...Factor } || U.isInt(rollTrait))) {
-                        eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Fortune Roll: ${rollTrait}`, config);
+                        eLog.error("rollCollab", `[ConstructRollCollab()] Bad RollTrait for Fortune Roll: ${rollTrait}`, config);
                         return;
                     }
                     flagUpdateData.rollTrait = rollTrait;
@@ -1058,7 +1062,7 @@ class BladesRollCollab extends DocumentSheet {
                 }
                 case RollType.Resistance: {
                     if (!(rollTrait in AttributeTrait)) {
-                        eLog.error("rollCollab", `[RenderRollCollab()] Bad RollTrait for Resistance Roll: ${rollTrait}`, config);
+                        eLog.error("rollCollab", `[ConstructRollCollab()] Bad RollTrait for Resistance Roll: ${rollTrait}`, config);
                         return;
                     }
                     break;
@@ -1125,10 +1129,10 @@ class BladesRollCollab extends DocumentSheet {
             userIDs.participants.push(...participantUsers);
             userIDs.observers = userIDs.observers.filter((uID) => !userIDs.participants.includes(uID));
         }
-        socketlib.system.executeForAllGMs("renderRollCollab", { userID: rollUser.id, rollID, rollPermission: RollPermissions.GM });
-        socketlib.system.executeForUsers("renderRollCollab", userIDs.primary, { userID: rollUser.id, rollID, rollPermission: RollPermissions.Primary });
-        socketlib.system.executeForUsers("renderRollCollab", userIDs.participants, { userID: rollUser.id, rollID, rollPermission: RollPermissions.Participant });
-        socketlib.system.executeForUsers("renderRollCollab", userIDs.observers, { userID: rollUser.id, rollID, rollPermission: RollPermissions.Observer });
+        socketlib.system.executeForAllGMs("constructRollCollab", { userID: rollUser.id, rollID, rollPermission: RollPermissions.GM });
+        socketlib.system.executeForUsers("constructRollCollab", userIDs.primary, { userID: rollUser.id, rollID, rollPermission: RollPermissions.Primary });
+        socketlib.system.executeForUsers("constructRollCollab", userIDs.participants, { userID: rollUser.id, rollID, rollPermission: RollPermissions.Participant });
+        socketlib.system.executeForUsers("constructRollCollab", userIDs.observers, { userID: rollUser.id, rollID, rollPermission: RollPermissions.Observer });
     }
 
     rollID;
@@ -1280,13 +1284,13 @@ class BladesRollCollab extends DocumentSheet {
         return this.flagData?.rollPositionInitial ?? Position.risky;
     }
     set initialPosition(val) {
-        this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPositionInitial", val);
+        this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPositionInitial", val).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
     }
     get initialEffect() {
         return this.flagData?.rollEffectInitial ?? Effect.standard;
     }
     set initialEffect(val) {
-        this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollEffectInitial", val);
+        this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollEffectInitial", val).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
     }
     get rollConsequence() {
         return this.flagData?.rollConsequence;
@@ -2052,7 +2056,7 @@ class BladesRollCollab extends DocumentSheet {
         const elem$ = $(event.currentTarget);
         const target = elem$.data("target").replace(/flags\.eunos-blades\./, "");
         const value = elem$.data("value");
-        await this.document.setFlag(C.SYSTEM_ID, target, value);
+        await this.document.setFlag(C.SYSTEM_ID, target, value).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
     }
     async _gmControlResetTarget(event) {
         event.preventDefault();
@@ -2061,7 +2065,7 @@ class BladesRollCollab extends DocumentSheet {
         }
         const elem$ = $(event.currentTarget);
         const target = elem$.data("target").replace(/flags\.eunos-blades\./, "");
-        await this.document.unsetFlag(C.SYSTEM_ID, target);
+        await this.document.unsetFlag(C.SYSTEM_ID, target).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
     }
     _gmControlReset(event) {
         event.preventDefault();
@@ -2108,17 +2112,17 @@ class BladesRollCollab extends DocumentSheet {
             await Promise.all(Object.values(Factor).map((factor) => {
                 if (factor === thisFactor) {
                     eLog.checkLog3("toggleFactor", `_gmControlToggleFactor - Checking ${factor} === ${thisFactor} === TRUE`, { factor, thisFactor, target, customTarget: `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary` });
-                    return this.document.setFlag(C.SYSTEM_ID, `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary`, true);
+                    return this.document.setFlag(C.SYSTEM_ID, `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary`, true).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
                 }
                 else {
                     eLog.checkLog3("toggleFactor", `_gmControlToggleFactor - Checking ${factor} === ${thisFactor} === FALSE`, { factor, thisFactor, target, customTarget: `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary` });
-                    return this.document.setFlag(C.SYSTEM_ID, `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary`, false);
+                    return this.document.setFlag(C.SYSTEM_ID, `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary`, false).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
                 }
             }));
             eLog.checkLog3("toggleFactor", "_gmControlToggleFactor - ALL DONE", { flags: this.document.getFlag(C.SYSTEM_ID, "rollCollab.rollFactorToggles") });
         }
         else {
-            this.document.setFlag(C.SYSTEM_ID, `rollCollab.${target}`, value);
+            this.document.setFlag(C.SYSTEM_ID, `rollCollab.${target}`, value).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
         }
     }
     async _gmControlResetFactor(event) {
@@ -2128,7 +2132,7 @@ class BladesRollCollab extends DocumentSheet {
         }
         const elem$ = $(event.currentTarget);
         const target = elem$.data("target");
-        await this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.${target}`);
+        await this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.${target}`).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
     }
     get resistanceStressCost() {
         const dieVals = this.dieVals;
@@ -2151,10 +2155,10 @@ class BladesRollCollab extends DocumentSheet {
             click: (event) => {
                 const curVal = `${$(event.currentTarget).data("value")}`;
                 if (curVal === "false") {
-                    this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", "effect");
+                    this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", "effect").then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
                 }
                 else {
-                    this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", false);
+                    this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", false).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
                 }
             }
         });
@@ -2162,10 +2166,10 @@ class BladesRollCollab extends DocumentSheet {
             click: (event) => {
                 const curVal = `${$(event.currentTarget).data("value")}`;
                 if (curVal === "false") {
-                    this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", "position");
+                    this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", "position").then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
                 }
                 else {
-                    this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", false);
+                    this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", false).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
                 }
             }
         });
@@ -2227,7 +2231,7 @@ class BladesRollCollab extends DocumentSheet {
         if (options.rollID) {
             return super.close({});
         }
-        this.document.setFlag(C.SYSTEM_ID, "rollCollab", null);
+        await this.document.setFlag(C.SYSTEM_ID, "rollCollab", null);
         socketlib.system.executeForEveryone("closeRollCollab", this.rollID);
         return undefined;
     }
@@ -2239,10 +2243,5 @@ class BladesRollCollab extends DocumentSheet {
     }
 }
 
-export const BladesRollCollabComps = {
-    Mod: BladesRollMod,
-    Primary: BladesRollPrimary,
-    Opposition: BladesRollOpposition,
-    Participant: BladesRollParticipant
-};
+export { BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant };
 export default BladesRollCollab;

@@ -8,7 +8,7 @@ import BladesActor from "../../BladesActor.js";
 import BladesItem from "../../BladesItem.js";
 import BladesSelectorDialog, {SelectionCategory} from "../../BladesDialog.js";
 import BladesActiveEffect from "../../BladesActiveEffect.js";
-import BladesRollCollab, {BladesRollCollabComps} from "../../BladesRollCollab.js";
+import BladesRollCollab, {BladesRollPrimary, BladesRollOpposition} from "../../BladesRollCollab.js";
 // #endregion
 // #region TYPES: BladesCompData ~
 type BladesCompData = {
@@ -465,9 +465,9 @@ class BladesActorSheet extends ActorSheet {
     }
 
     if (game.user.isGM) {
-      if (BladesRollCollabComps.Primary.IsDoc(this.actor)) {
+      if (BladesRollPrimary.IsDoc(this.actor)) {
         rollData.rollPrimaryData = this.actor;
-      } else if (BladesRollCollabComps.Opposition.IsDoc(this.actor)) {
+      } else if (BladesRollOpposition.IsDoc(this.actor)) {
         rollData.rollOppData = this.actor;
       }
     }

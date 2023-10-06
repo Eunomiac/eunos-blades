@@ -4,7 +4,7 @@ import BladesItemSheet from "./BladesItemSheet.js";
 
 import {BladesActor, BladesPC} from "../../documents/BladesActorProxy.js";
 import {BladesScore} from "../../documents/BladesItemProxy.js";
-import BladesRollCollab, {BladesRollCollabComps} from "../../BladesRollCollab.js";
+import BladesRollCollab, {BladesRollOpposition} from "../../BladesRollCollab.js";
 
 
 /* #region BladesTipGenerator */
@@ -59,7 +59,7 @@ class BladesScoreSheet extends BladesItemSheet {
 
   async generateRandomizerData(category?: RandomCat) {
     // Generate full set of random data.
-    const randomData: Record<RandomCat, Record<string, Record<string, any>>> = {
+    const randomData: Record<RandomCat, Record<string, Record<string, unknown>>> = {
       Bargains: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Bargains
         .filter((bData) => !Object.values(this.document.system.randomizers.Bargains)
           .some((_bData) => _bData.name === bData.name || _bData.effect === bData.effect)), 3, true, (e, a) => a
@@ -109,7 +109,7 @@ class BladesScoreSheet extends BladesItemSheet {
     }
 
     // Combine locked data stored in system with randomly-generated data
-    const finalRandomData: Record<RandomCat, Record<string, Record<string, any>>> = {
+    const finalRandomData: Record<RandomCat, Record<string, Record<string, unknown>>> = {
       Bargains: {},
       Obstacles: {},
       NPCs: {},
@@ -119,7 +119,7 @@ class BladesScoreSheet extends BladesItemSheet {
     // Iterate through all randomizer categories. If system entry isLocked, use that, or use newly-generated data
     Object.keys(randomData).forEach((cat: string) => {
       const _cat = cat as RandomCat;
-      Object.entries(randomData[_cat]).forEach(([index, randData]) => {
+      Object.keys(randomData[_cat]).forEach((index) => {
         if (this.document.system.randomizers?.[_cat][index].isLocked) {
           finalRandomData[_cat][index] = this.document.system.randomizers[_cat][index];
         } else {
@@ -129,7 +129,7 @@ class BladesScoreSheet extends BladesItemSheet {
     });
 
     // Overwrite stored data with newly generated & merged randomizer data
-    this.document.update({"system.randomizers": finalRandomData});
+    await this.document.update({"system.randomizers": finalRandomData});
   }
 
   override getData() {
@@ -225,7 +225,7 @@ class BladesScoreSheet extends BladesItemSheet {
     const oppId = elem$.data("oppId");
     this.document.update({"system.oppositionSelected": oppId});
     if (BladesScore.Active?.id === this.document.id && BladesRollCollab.Active) {
-      BladesRollCollab.Active.rollOpposition = new BladesRollCollabComps.Opposition(BladesRollCollab.Active, this.document.system.oppositions[oppId]);
+      BladesRollCollab.Active.rollOpposition = new BladesRollOpposition(BladesRollCollab.Active, this.document.system.oppositions[oppId]);
     }
   }
 
@@ -249,7 +249,7 @@ class BladesScoreSheet extends BladesItemSheet {
     eLog.checkLog3("scoreSheet", "Updated!", {gm_notes: actor.system.gm_notes});
   }
 
-  override async activateListeners(html: JQuery<HTMLElement>) {
+  override activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
 
     html.find("[data-action='select-image']").on({
@@ -274,7 +274,7 @@ class BladesScoreSheet extends BladesItemSheet {
     });
   }
 
-  override async _onSubmit(event: OnSubmitEvent, params: List<any> = {}) {
+  override async _onSubmit(event: OnSubmitEvent, params: List<unknown> = {}) {
     eLog.checkLog3("scoreSheet", "_onSubmit()", {event, params, elemText: event.currentTarget.innerHTML});
     let isForcingRender = true;
 
@@ -338,4 +338,5 @@ declare interface BladesScoreSheet {
   get document(): BladesScore
 }
 
+export {BladesTipGenerator};
 export default BladesScoreSheet;

@@ -10,7 +10,7 @@ import { BladesActorType, BladesPhase, Tag, Randomizers } from "../../core/const
 import BladesItemSheet from "./BladesItemSheet.js";
 import { BladesActor } from "../../documents/BladesActorProxy.js";
 import { BladesScore } from "../../documents/BladesItemProxy.js";
-import BladesRollCollab, { BladesRollCollabComps } from "../../BladesRollCollab.js";
+import BladesRollCollab, { BladesRollOpposition } from "../../BladesRollCollab.js";
 export var BladesTipContext;
 (function (BladesTipContext) {
     BladesTipContext["DiceRoll"] = "DiceRoll";
@@ -107,7 +107,7 @@ class BladesScoreSheet extends BladesItemSheet {
         };
         Object.keys(randomData).forEach((cat) => {
             const _cat = cat;
-            Object.entries(randomData[_cat]).forEach(([index, randData]) => {
+            Object.keys(randomData[_cat]).forEach((index) => {
                 if (this.document.system.randomizers?.[_cat][index].isLocked) {
                     finalRandomData[_cat][index] = this.document.system.randomizers[_cat][index];
                 }
@@ -116,7 +116,7 @@ class BladesScoreSheet extends BladesItemSheet {
                 }
             });
         });
-        this.document.update({ "system.randomizers": finalRandomData });
+        await this.document.update({ "system.randomizers": finalRandomData });
     }
     getData() {
         const context = super.getData();
@@ -194,7 +194,7 @@ class BladesScoreSheet extends BladesItemSheet {
         const oppId = elem$.data("oppId");
         this.document.update({ "system.oppositionSelected": oppId });
         if (BladesScore.Active?.id === this.document.id && BladesRollCollab.Active) {
-            BladesRollCollab.Active.rollOpposition = new BladesRollCollabComps.Opposition(BladesRollCollab.Active, this.document.system.oppositions[oppId]);
+            BladesRollCollab.Active.rollOpposition = new BladesRollOpposition(BladesRollCollab.Active, this.document.system.oppositions[oppId]);
         }
     }
     _triggerRandomize(event) {
@@ -218,7 +218,7 @@ class BladesScoreSheet extends BladesItemSheet {
         await actor.update({ "system.gm_notes": updateText });
         eLog.checkLog3("scoreSheet", "Updated!", { gm_notes: actor.system.gm_notes });
     }
-    async activateListeners(html) {
+    activateListeners(html) {
         super.activateListeners(html);
         html.find("[data-action='select-image']").on({
             click: this._selectImage.bind(this),
@@ -286,4 +286,5 @@ class BladesScoreSheet extends BladesItemSheet {
         return submitData;
     }
 }
+export { BladesTipGenerator };
 export default BladesScoreSheet;
