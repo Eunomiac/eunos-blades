@@ -12123,7 +12123,9 @@ template {
       --content-padding: 5px;
       background: var(--blades-black);
       padding: 0;
-      overflow: visible; }
+      overflow: visible;
+      -webkit-box-shadow: 5px 5px 25px var(--blades-black-dark), 5px 5px 25px var(--blades-black-dark) !important;
+      box-shadow: 5px 5px 25px var(--blades-black-dark), 5px 5px 25px var(--blades-black-dark) !important; }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form {
         -webkit-box-pack: start;
         -ms-flex-pack: start;

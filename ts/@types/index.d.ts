@@ -4,6 +4,7 @@ import BladesActor from "../BladesActor";
 import BladesClockKeeper from "../documents/items/BladesClockKeeper";
 import BladesGMTracker from "../documents/items/BladesGMTracker";
 import BladesPushController from "../BladesPushController";
+import C from "../core/constants";
 import type gsap from "/scripts/greensock/esm/all";
 
 import "./blades-general-types";
@@ -54,6 +55,14 @@ declare global {
     }
   }
   interface LenientGlobalVariableTypes { game: never }
+
+  interface FlagConfig {
+    User: {
+      [C.SYSTEM_ID]?: {
+        rollCollab?: BladesRollCollab.FlagData
+      }
+    };
+  }
 
   // GreenSock Accessor Object
   declare const gsap: gsap;

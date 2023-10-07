@@ -9,19 +9,19 @@ declare global {
 
     export interface RollParticipantData {
       [RollModSection.roll]?: {
-        Assist?: ParticipantDocData,
-        Group_1?: ParticipantDocData,
-        Group_2?: ParticipantDocData,
-        Group_3?: ParticipantDocData,
-        Group_4?: ParticipantDocData,
-        Group_5?: ParticipantDocData,
-        Group_6?: ParticipantDocData,
+        Assist?: ParticipantDocData & ParticipantSectionData,
+        Group_1?: ParticipantDocData & ParticipantSectionData,
+        Group_2?: ParticipantDocData & ParticipantSectionData,
+        Group_3?: ParticipantDocData & ParticipantSectionData,
+        Group_4?: ParticipantDocData & ParticipantSectionData,
+        Group_5?: ParticipantDocData & ParticipantSectionData,
+        Group_6?: ParticipantDocData & ParticipantSectionData,
       },
       [RollModSection.position]?: {
-        Setup?: ParticipantDocData
+        Setup?: ParticipantDocData & ParticipantSectionData
       },
       [RollModSection.effect]?: {
-        Setup?: ParticipantDocData
+        Setup?: ParticipantDocData & ParticipantSectionData
       }
     }
 
@@ -42,6 +42,10 @@ declare global {
         Setup?: BladesRollParticipant
       }
     }
+
+    export type RollParticipantSection = RollModSection.roll|RollModSection.position|RollModSection.effect;
+
+    export type RollParticipantSubSection = "Assist"|"Group_1"|"Group_2"|"Group_3"|"Group_4"|"Group_5"|"Group_6"|"Setup";
 
     export interface Config {
       rollType: RollType,
@@ -253,7 +257,11 @@ declare global {
       rollFactors: Partial<Record<Factor,FactorData>>
     }
 
+    export interface ParticipantSectionData {
+      rollParticipantSection: KeyOf<Readonly<RollParticipantDocs>>,
+      rollParticipantSubSection: RollParticipantSubSection
+    }
 
-
+    export type ParticipantConstructorData = ParticipantSectionData & Partial<ParticipantDocData>;
   }
 }

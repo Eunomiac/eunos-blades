@@ -25,7 +25,6 @@ function isFactor(trait) {
 function isModStatus(str) {
     return typeof str === "string" && str in RollModStatus;
 }
-
 class BladesRollMod {
     static ParseDocRollMods(doc) {
         const { roll_mods } = doc.system;
@@ -268,8 +267,10 @@ class BladesRollMod {
             const [thisKey, thisParam] = key.split(/-/) ?? [];
             const negateOperations = {
                 PushCost: () => this.rollInstance.isPushed(),
+                PushCost0: () => this.rollInstance.isPushed(),
                 Consequence: () => this.rollInstance.rollType === RollType.Resistance && Boolean(this.rollInstance.rollConsequence),
-                HarmLevel: () => this.rollInstance.rollType === RollType.Resistance && this.rollInstance.rollConsequence && [ConsequenceType.Harm1, ConsequenceType.Harm2, ConsequenceType.Harm3, ConsequenceType.Harm4].includes(this.rollInstance.rollConsequence.type),
+                HarmLevel: () => this.rollInstance.rollType === RollType.Resistance
+                    && [ConsequenceType.Harm1, ConsequenceType.Harm2, ConsequenceType.Harm3, ConsequenceType.Harm4].includes(this.rollInstance.rollConsequence?.type ?? ""),
                 QualityPenalty: () => this.rollInstance.isTraitRelevant(Factor.quality) && (this.rollInstance.rollFactors.source[Factor.quality]?.value ?? 0) < (this.rollInstance.rollFactors.opposition[Factor.quality]?.value ?? 0),
                 ScalePenalty: () => this.rollInstance.isTraitRelevant(Factor.scale) && (this.rollInstance.rollFactors.source[Factor.scale]?.value ?? 0) < (this.rollInstance.rollFactors.opposition[Factor.scale]?.value ?? 0),
                 TierPenalty: () => this.rollInstance.isTraitRelevant(Factor.tier) && (this.rollInstance.rollFactors.source[Factor.tier]?.value ?? 0) < (this.rollInstance.rollFactors.opposition[Factor.tier]?.value ?? 0)
@@ -338,7 +339,7 @@ class BladesRollMod {
             return;
         }
         holdKeys.forEach((key) => {
-            const [thisKey, thisParam] = key.split(/"-"/) ?? [];
+            const [thisKey, thisParam] = key.split(/-/) ?? [];
             const negateOperations = {
                 PushCost: () => {
                     const costlyPushMod = this.rollInstance.getActiveRollMods()
@@ -388,7 +389,7 @@ class BladesRollMod {
                 return this.rollInstance.isTraitRelevant(traitStr);
             }
             else {
-                throw new Error(`Unrecognized Function Key: ${thisKey}`);
+                throw new Error(`Unrecognized Function Key: ${thisKey} (key: ${key})`);
             }
         });
     }
@@ -531,7 +532,6 @@ class BladesRollMod {
         this.category = modData.category;
     }
 }
-
 class BladesRollPrimary {
 
     static IsValidData(data) {
@@ -684,6 +684,25 @@ class BladesRollOpposition {
             this.rollOppModsData = undefined;
         }
     }
+    get flagParams() {
+        return [C.SYSTEM_ID, "rollCollab.rollOppData"];
+    }
+    get flagData() {
+        return {
+            rollOppID: this.rollOppID,
+            rollOppDoc: this.rollOppDoc,
+            rollOppName: this.rollOppName,
+            rollOppSubName: this.rollOppSubName,
+            rollOppType: this.rollOppType,
+            rollOppImg: this.rollOppImg,
+            rollOppModsData: this.rollOppModsData,
+            rollFactors: this.rollFactors
+        };
+    }
+    async updateRollFlags() {
+        await this.rollInstance.document.setFlag(...this.flagParams, this.flagData);
+        socketlib.system.executeForEveryone("renderRollCollab", this.rollInstance.rollID);
+    }
 }
 class BladesRollParticipant {
 
@@ -710,11 +729,15 @@ class BladesRollParticipant {
     rollParticipantName;
     rollParticipantType;
     rollParticipantIcon;
+    rollParticipantSection;
+    rollParticipantSubSection;
     rollParticipantModsData;
     rollFactors;
 
-    constructor(rollInstance, { rollParticipantID, rollParticipantDoc, rollParticipantName, rollParticipantType, rollParticipantIcon, rollParticipantModsData, rollFactors } = {}) {
+    constructor(rollInstance, { rollParticipantSection, rollParticipantSubSection, rollParticipantID, rollParticipantDoc, rollParticipantName, rollParticipantType, rollParticipantIcon, rollParticipantModsData, rollFactors }) {
         this.rollInstance = rollInstance;
+        this.rollParticipantSection = rollParticipantSection;
+        this.rollParticipantSubSection = rollParticipantSubSection;
         let doc = rollParticipantDoc;
         if (!doc && rollParticipantID) {
             doc = game.items.get(rollParticipantID) ?? game.actors.get(rollParticipantID);
@@ -759,6 +782,25 @@ class BladesRollParticipant {
         if (this.rollParticipantModsData.length === 0) {
             this.rollParticipantModsData = undefined;
         }
+    }
+    get flagParams() {
+        return [C.SYSTEM_ID, `rollCollab.rollParticipantData.${this.rollParticipantSection}.${this.rollParticipantSubSection}`];
+    }
+    get flagData() {
+        return {
+            rollParticipantSection: this.rollParticipantSection,
+            rollParticipantSubSection: this.rollParticipantSubSection,
+            rollParticipantID: this.rollParticipantID,
+            rollParticipantDoc: this.rollParticipantDoc,
+            rollParticipantName: this.rollParticipantName,
+            rollParticipantType: this.rollParticipantType,
+            rollParticipantIcon: this.rollParticipantIcon,
+            rollParticipantModsData: this.rollParticipantModsData,
+            rollFactors: this.rollFactors
+        };
+    }
+    async updateRollFlags() {
+        await this.rollInstance.document.setFlag(...this.flagParams, this.flagData);
     }
 }
 class BladesRollCollab extends DocumentSheet {
@@ -1167,7 +1209,7 @@ class BladesRollCollab extends DocumentSheet {
         }
         BladesRollCollab.Current[this.rollID] = this;
     }
-    
+
     get flagData() {
         if (!this.document.getFlag(C.SYSTEM_ID, "rollCollab")) {
             throw new Error("[get flags()] No RollCollab Flags Found on User Document");
@@ -1190,7 +1232,10 @@ class BladesRollCollab extends DocumentSheet {
         if (this._rollOpposition instanceof BladesRollOpposition) {
             return this._rollOpposition;
         }
-        return undefined;
+        else if (BladesRollOpposition.IsValidData(this.flagData.rollOppData)) {
+            this._rollOpposition = new BladesRollOpposition(this, this.flagData.rollOppData);
+        }
+        return this._rollOpposition;
     }
     set rollOpposition(val) {
         if (val === undefined) {
@@ -1198,12 +1243,38 @@ class BladesRollCollab extends DocumentSheet {
         }
         else {
             this._rollOpposition = val;
+            val.updateRollFlags();
         }
+    }
+        prepareRollParticipantData() {
+        const participantFlagData = this.flagData.rollParticipantData;
+        if (!participantFlagData) {
+            return;
+        }
+        const rollParticipants = {};
+        [RollModSection.roll, RollModSection.position, RollModSection.effect].forEach((rollSection) => {
+            const sectionFlagData = participantFlagData[rollSection];
+            if (sectionFlagData) {
+                const sectionParticipants = {};
+                (Object.keys(sectionFlagData)).forEach((participantType) => {
+                    const participantFlagData = sectionFlagData[participantType];
+                    if (participantFlagData) {
+                        sectionParticipants[participantType] = new BladesRollParticipant(this, participantFlagData);
+                    }
+                });
+                rollParticipants[rollSection] = sectionParticipants;
+            }
+        });
+        this._rollParticipants = rollParticipants;
     }
     get rollParticipants() {
         return this._rollParticipants;
     }
-    
+    async addRollParticipant(participant) {
+        await participant.updateRollFlags();
+        this.prepareRollParticipantData();
+        socketlib.system.executeForEveryone("renderRollCollab", this.rollID);
+    }
     get rollType() { return this.flagData.rollType; }
     get rollSubType() { return this.flagData.rollSubType; }
     get rollDowntimeAction() { return this.flagData.rollDowntimeAction; }
@@ -1876,6 +1947,7 @@ class BladesRollCollab extends DocumentSheet {
         return this._dieVals;
     }
     getDieClass(val, i) {
+        eLog.checkLog3("rollCollab", `getDieClass(${val}, ${i})`, { inst: this });
         if (val === 6 && i <= 1 && this.rollResult === RollResult.critical) {
             val++;
         }
@@ -1891,6 +1963,7 @@ class BladesRollCollab extends DocumentSheet {
         ][val];
     }
     get dieValsHTML() {
+        eLog.checkLog3("rollCollab", "[get dieValsHTML()]", { roll: this, dieVals: this.dieVals });
         const dieVals = [...this.dieVals];
         const ghostNum = this.isRollingZero ? dieVals.shift() : null;
         if (this.rollType === RollType.Resistance) {
@@ -1903,7 +1976,7 @@ class BladesRollCollab extends DocumentSheet {
         }
         else {
             return [
-                ...dieVals.map(this.getDieClass),
+                ...dieVals.map((val, i) => `<span class='blades-die ${this.getDieClass(val, i)} blades-die-${val}'><img src='systems/eunos-blades/assets/dice/faces/${val}.webp' /></span>`),
                 ghostNum ? `<span class='blades-die blades-die-ghost blades-die-${ghostNum}'><img src='systems/eunos-blades/assets/dice/faces/${ghostNum}.webp' /></span>` : null
             ]
                 .filter((val) => typeof val === "string")
@@ -1971,6 +2044,7 @@ class BladesRollCollab extends DocumentSheet {
     }
     async makeRoll() {
         await this.roll.evaluate({ async: true });
+        eLog.checkLog3("rollCollab", "[makeRoll()] After Evaluation, Before Chat", { roll: this, dieVals: this.dieVals });
         await this.outputRollToChat();
         this.close();
     }
@@ -2215,8 +2289,7 @@ class BladesRollCollab extends DocumentSheet {
         return game.user.isGM;
     }
     _onDrop(event) {
-        const data = TextEditor.getDragEventData(event);
-        const { type, uuid } = data;
+        const { type, uuid } = TextEditor.getDragEventData(event);
         const [id] = (new RegExp(`${type}\\.(.+)`).exec(uuid) ?? []).slice(1);
         const oppDoc = game[`${U.lCase(type)}s`].get(id);
         if (BladesRollOpposition.IsDoc(oppDoc)) {
@@ -2224,8 +2297,9 @@ class BladesRollCollab extends DocumentSheet {
         }
     }
     async _onSubmit(event, { updateData } = {}) {
-        return super._onSubmit(event, { updateData, preventClose: true })
-            .then((returnVal) => { this.render(); return returnVal; });
+        const returnVal = await super._onSubmit(event, { updateData, preventClose: true });
+        await socketlib.system.executeForEveryone("renderRollCollab", this.rollID);
+        return returnVal;
     }
     async close(options = {}) {
         if (options.rollID) {

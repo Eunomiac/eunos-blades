@@ -20,6 +20,9 @@
     background: var(--blades-black);
     padding: 0;
     overflow: visible;
+    box-shadow:
+      5px 5px 25px var(--blades-black-dark),
+      5px 5px 25px var(--blades-black-dark) !important;
     // max-height: calc(100% - var(--sheet-header-height));
 
     form {
