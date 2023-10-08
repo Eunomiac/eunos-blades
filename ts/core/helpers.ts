@@ -1,7 +1,7 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import U from "./utilities.js";
+import U from "./utilities";
 
-import {HbsSvgData, SVGDATA} from "./constants.js";
+import {HbsSvgData, SVGDATA} from "./constants";
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 
 // #region ░░░░░░░[Templates]░░░░ Preload Partials, Components & Overlay Templates ░░░░░░░ ~

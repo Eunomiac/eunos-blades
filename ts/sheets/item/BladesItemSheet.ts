@@ -1,11 +1,11 @@
-import C, {BladesItemType, BladesPhase, Factor} from "../../core/constants.js";
-import U from "../../core/utilities.js";
-import G, {ApplyTooltipListeners} from "../../core/gsap.js";
-import BladesActor from "../../BladesActor.js";
-import BladesItem from "../../BladesItem.js";
-import BladesActiveEffect from "../../BladesActiveEffect.js";
+import C, {BladesItemType, BladesPhase, Factor} from "../../core/constants";
+import U from "../../core/utilities";
+import G, {ApplyTooltipListeners} from "../../core/gsap";
+import BladesActor from "../../BladesActor";
+import BladesItem from "../../BladesItem";
+import BladesActiveEffect from "../../BladesActiveEffect";
 
-import Tags from "../../core/tags.js";
+import Tags from "../../core/tags";
 
 class BladesItemSheet extends ItemSheet {
 

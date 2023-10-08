@@ -1,6 +1,6 @@
-import {BladesActorType, Factor} from "../../core/constants.js";
-import BladesActor from "../../BladesActor.js";
-import BladesRollCollab from "../../BladesRollCollab.js";
+import {BladesActorType, Factor} from "../../core/constants";
+import BladesActor from "../../BladesActor";
+import BladesRollCollab from "../../BladesRollCollab";
 
 class BladesNPC extends BladesActor implements BladesActorSubClass.NPC,
                                                BladesRollCollab.OppositionDocData,

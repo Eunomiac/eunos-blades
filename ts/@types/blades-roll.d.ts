@@ -1,7 +1,7 @@
-import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor} from "../core/constants.js";
-import BladesActor from "../BladesActor.js";
-import BladesItem from "../BladesItem.js";
-import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../BladesRollCollab.js";
+import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor} from "../core/constants";
+import BladesActor from "../BladesActor";
+import BladesItem from "../BladesItem";
+import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../BladesRollCollab";
 
 declare global {
 

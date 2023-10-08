@@ -1,6 +1,6 @@
 
-import BladesActorSheet from "./BladesActorSheet.js";
-import U from "../../core/utilities.js";
+import BladesActorSheet from "./BladesActorSheet";
+import U from "../../core/utilities";
 class BladesNPCSheet extends BladesActorSheet {
 
   static override get defaultOptions() {

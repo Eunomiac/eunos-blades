@@ -1,8 +1,8 @@
-import BladesItem from "../../BladesItem.js";
-import {BladesActorType, BladesItemType, Factor} from "../../core/constants.js";
-import U from "../../core/utilities.js";
-import BladesActor from "../../BladesActor.js";
-import BladesRollCollab from "../../BladesRollCollab.js";
+import BladesItem from "../../BladesItem";
+import {BladesActorType, BladesItemType, Factor} from "../../core/constants";
+import U from "../../core/utilities";
+import BladesActor from "../../BladesActor";
+import BladesRollCollab from "../../BladesRollCollab";
 
 class BladesLocation extends BladesItem implements BladesItemSubClass.Location,
                                                     BladesRollCollab.OppositionDocData {

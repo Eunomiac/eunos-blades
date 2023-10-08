@@ -1,8 +1,8 @@
 
-import BladesActor from "../../BladesActor.js";
-import BladesFaction from "../../documents/actors/BladesFaction.js";
-import BladesActorSheet from "./BladesActorSheet.js";
-import {BladesActorType} from "../../core/constants.js";
+import BladesActor from "../../BladesActor";
+import BladesFaction from "../../documents/actors/BladesFaction";
+import BladesActorSheet from "./BladesActorSheet";
+import {BladesActorType} from "../../core/constants";
 
 class BladesFactionSheet extends BladesActorSheet {
 

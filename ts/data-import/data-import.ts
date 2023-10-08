@@ -1,10 +1,10 @@
-import {BladesActorType, BladesItemType, Playbook} from "../core/constants.js";
-import U from "../core/utilities.js";
-import {BladesNPC, BladesFaction} from "../documents/BladesActorProxy.js";
-import {BladesItem} from "../documents/BladesItemProxy.js";
-import BladesActiveEffect from "../BladesActiveEffect.js";
+import {BladesActorType, BladesItemType, Playbook} from "../core/constants";
+import U from "../core/utilities";
+import {BladesNPC, BladesFaction} from "../documents/BladesActorProxy";
+import {BladesItem} from "../documents/BladesItemProxy";
+import BladesActiveEffect from "../BladesActiveEffect";
 
-import type {EffectChangeData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData.js";
+import type {EffectChangeData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData";
 
 type CrewObject = {
   type: string;

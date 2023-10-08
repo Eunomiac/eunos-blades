@@ -1,5 +1,5 @@
-import U from "./utilities.js";
-import C from "./constants.js";
+import U from "./utilities";
+import C from "./constants";
 
 const LOGGERCONFIG = {
   fullName: "eLogger",

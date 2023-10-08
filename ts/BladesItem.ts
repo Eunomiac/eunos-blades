@@ -1,8 +1,8 @@
-import C, {BladesActorType, BladesItemType, Tag, Factor} from "./core/constants.js";
-import U from "./core/utilities.js";
-import {BladesActor} from "./documents/BladesActorProxy.js";
-import {BladesRollMod} from "./BladesRollCollab.js";
-import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
+import C, {BladesActorType, BladesItemType, Tag, Factor} from "./core/constants";
+import U from "./core/utilities";
+import {BladesActor} from "./documents/BladesActorProxy";
+import {BladesRollMod} from "./BladesRollCollab";
+import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 class BladesItem extends Item implements BladesDocument<Item>,
                                           BladesItemSubClass.Ability,
@@ -26,12 +26,12 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   // #region Static Overrides: Create ~
   static override async create(data: ItemDataConstructorData & { system?: { world_name?: string, description?: string } }, options = {}) {
-    if (Array.isArray(data)) { data = data[0] }
+    if (Array.isArray(data)) { data = data[0]; }
     data.system = data.system ?? {};
 
     eLog.checkLog2("item", "BladesItem.create(data,options)", {data, options});
 
-    //~ Create world_name
+    // ~ Create world_name
     data.system.world_name = data.system.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "").trim().replace(/ /g, "_");
 
     return super.create(data, options);
@@ -39,21 +39,23 @@ class BladesItem extends Item implements BladesDocument<Item>,
   // #endregion
 
   // #region BladesDocument Implementation
-  static get All() { return game.items }
+  static get All() { return game.items; }
+
   static Get(itemRef: ItemRef): BladesItem|undefined {
-    if (itemRef instanceof BladesItem) { return itemRef }
-    if (U.isDocID(itemRef)) { return BladesItem.All.get(itemRef) }
-    return BladesItem.All.find((a) => a.system.world_name === itemRef)
-      || BladesItem.All.find((a) => a.name === itemRef);
+    if (itemRef instanceof BladesItem) { return itemRef; }
+    if (U.isDocID(itemRef)) { return BladesItem.All.get(itemRef); }
+    return BladesItem.All.find(a => a.system.world_name === itemRef)
+      || BladesItem.All.find(a => a.name === itemRef);
   }
+
   static GetTypeWithTags<T extends BladesItemType>(docType: T|T[], ...tags: BladesTag[]): Array<BladesItemOfType<T>> {
     if (Array.isArray(docType)) {
       return docType
-        .map((dType) => BladesItem.All.filter((item): item is BladesItemOfType<T> => item.type === dType))
+        .map(dType => BladesItem.All.filter((item): item is BladesItemOfType<T> => item.type === dType))
         .flat();
     }
     return BladesItem.All.filter((item): item is BladesItemOfType<T> => item.type === docType)
-      .filter((item) => item.hasTag(...tags));
+      .filter(item => item.hasTag(...tags));
   }
 
   static IsType<T extends BladesItemType>(doc: unknown, ...types: T[]): doc is BladesItemOfType<T> {
@@ -61,20 +63,23 @@ class BladesItem extends Item implements BladesDocument<Item>,
     return doc instanceof BladesItem && typeSet.has(doc.type);
   }
 
-  get tags(): BladesTag[] { return this.system.tags ?? [] }
+  get tags(): BladesTag[] { return this.system.tags ?? []; }
+
   hasTag(...tags: BladesTag[]): boolean {
-    return tags.every((tag) => this.tags.includes(tag));
+    return tags.every(tag => this.tags.includes(tag));
   }
+
   async addTag(...tags: BladesTag[]) {
     const curTags = this.tags;
-    tags.forEach((tag) => {
-      if (curTags.includes(tag)) { return }
+    tags.forEach(tag => {
+      if (curTags.includes(tag)) { return; }
       curTags.push(tag);
     });
     await this.update({"system.tags": curTags});
   }
+
   async remTag(...tags: BladesTag[]) {
-    const curTags = this.tags.filter((tag) => !tags.includes(tag));
+    const curTags = this.tags.filter(tag => !tags.includes(tag));
     await this.update({"system.tags": curTags});
   }
 
@@ -84,9 +89,10 @@ class BladesItem extends Item implements BladesDocument<Item>,
       this.system.rules,
       this.system.notes
     ].filter(Boolean).join("");
-    if (tooltipText) { return (new Handlebars.SafeString(tooltipText)).toString() }
+    if (tooltipText) { return (new Handlebars.SafeString(tooltipText)).toString(); }
     return undefined;
   }
+
   dialogCSSClasses = "";
 
   getFactorTotal(factor: Factor): number {
@@ -121,7 +127,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
                 : 0
             );
         }
-        if (BladesItem.IsType(this, BladesItemType.design)) { return this.system.min_quality }
+        if (BladesItem.IsType(this, BladesItemType.design)) { return this.system.min_quality; }
         return this.getFactorTotal(Factor.tier);
       }
       case Factor.scale: {
@@ -149,6 +155,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
     await this.addTag(Tag.System.Archived);
     return this;
   }
+
   async unarchive() {
     await this.remTag(Tag.System.Archived);
     return this;
@@ -158,7 +165,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   // #region BladesRollCollab Implementation
 
-  get rollFactors(): Partial<Record<Factor,BladesRollCollab.FactorData>> {
+  get rollFactors(): Partial<Record<Factor, BladesRollCollab.FactorData>> {
     const factorsMap: Partial<Record<BladesItemType, Factor[]>> = {
       [BladesItemType.cohort_gang]: [Factor.quality, Factor.scale],
       [BladesItemType.cohort_expert]: [Factor.quality, Factor.scale],
@@ -167,11 +174,11 @@ class BladesItem extends Item implements BladesDocument<Item>,
       [BladesItemType.ritual]: [Factor.magnitude],
       [BladesItemType.design]: [Factor.quality]
     };
-    if (!factorsMap[this.type]) { return {} }
+    if (!factorsMap[this.type]) { return {}; }
 
     const factors = factorsMap[this.type];
 
-    const factorData: Partial<Record<Factor,BladesRollCollab.FactorData>> = {};
+    const factorData: Partial<Record<Factor, BladesRollCollab.FactorData>> = {};
     (factors ?? []).forEach((factor, i) => {
       const factorTotal = this.getFactorTotal(factor);
       factorData[factor] = {
@@ -192,14 +199,18 @@ class BladesItem extends Item implements BladesDocument<Item>,
   }
 
   // #region BladesRollCollab.PrimaryDoc Implementation
-  get rollPrimaryID() { return this.id }
-  get rollPrimaryDoc() { return this }
-  get rollPrimaryName() { return this.name }
-  get rollPrimaryType() { return this.type }
-  get rollPrimaryImg() { return this.img }
+  get rollPrimaryID() { return this.id; }
+
+  get rollPrimaryDoc() { return this; }
+
+  get rollPrimaryName() { return this.name; }
+
+  get rollPrimaryType() { return this.type; }
+
+  get rollPrimaryImg() { return this.img; }
 
   get rollModsData(): BladesRollCollab.RollModData[] {
-    // const rollModData = BladesRollMod.ParseDocRollMods(this);
+    // Const rollModData = BladesRollMod.ParseDocRollMods(this);
     // Add roll mods from COHORT harm
 
     return BladesRollMod.ParseDocRollMods(this);
@@ -208,24 +219,33 @@ class BladesItem extends Item implements BladesDocument<Item>,
   // #endregion
 
   // #region BladesRollCollab.OppositionDoc Implementation
-  get rollOppID() { return this.id }
-  get rollOppDoc() { return this }
-  get rollOppImg() { return this.img }
-  get rollOppName() { return this.name }
-  get rollOppSubName() { return "" }
-  get rollOppType() { return this.type }
+  get rollOppID() { return this.id; }
 
-  get rollOppModsData(): BladesRollCollab.RollModData[] { return [] }
+  get rollOppDoc() { return this; }
+
+  get rollOppImg() { return this.img; }
+
+  get rollOppName() { return this.name; }
+
+  get rollOppSubName() { return ""; }
+
+  get rollOppType() { return this.type; }
+
+  get rollOppModsData(): BladesRollCollab.RollModData[] { return []; }
   // #endregion
 
   // #region BladesRollCollab.ParticipantDoc Implementation
-  get rollParticipantID() { return this.id }
-  get rollParticipantDoc() { return this }
-  get rollParticipantIcon() { return this.img }
-  get rollParticipantName() { return this.name }
-  get rollParticipantType() { return this.type }
+  get rollParticipantID() { return this.id; }
 
-  get rollParticipantModsData(): BladesRollCollab.RollModData[] { return [] }
+  get rollParticipantDoc() { return this; }
+
+  get rollParticipantIcon() { return this.img; }
+
+  get rollParticipantName() { return this.name; }
+
+  get rollParticipantType() { return this.type; }
+
+  get rollParticipantModsData(): BladesRollCollab.RollModData[] { return []; }
   // #endregion
 
   // #endregion
@@ -233,37 +253,37 @@ class BladesItem extends Item implements BladesDocument<Item>,
   // #region PREPARING DERIVED DATA
   override prepareDerivedData() {
     super.prepareDerivedData();
-    if (BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { this._prepareCohortData(this.system) }
-    if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { this._preparePlaybookData(this.system) }
-    if (BladesItem.IsType(this, BladesItemType.gear)) { this._prepareGearData(this.system) }
-    if (BladesItem.IsType(this, BladesItemType.playbook)) { this._preparePlaybookData(this.system) }
+    if (BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { this._prepareCohortData(this.system); }
+    if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { this._preparePlaybookData(this.system); }
+    if (BladesItem.IsType(this, BladesItemType.gear)) { this._prepareGearData(this.system); }
+    if (BladesItem.IsType(this, BladesItemType.playbook)) { this._preparePlaybookData(this.system); }
   }
 
 
   _prepareCohortData(system: ExtractBladesItemSystem<BladesItemType.cohort_gang|BladesItemType.cohort_expert>) {
-    if (!BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { return }
+    if (!BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { return; }
 
     system.tier.name = "Quality";
 
     const subtypes = U.unique(Object.values(system.subtypes)
-      .map((subtype) => subtype.trim())
-      .filter((subtype) => /[A-Za-z]/.test(subtype)));
+      .map(subtype => subtype.trim())
+      .filter(subtype => /[A-Za-z]/.test(subtype)));
     const eliteSubtypes = U.unique([
       ...Object.values(system.elite_subtypes),
       ...(this.parent?.upgrades ?? [])
-        .filter((upgrade) => (upgrade.name ?? "").startsWith("Elite"))
-        .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
+        .filter(upgrade => (upgrade.name ?? "").startsWith("Elite"))
+        .map(upgrade => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
     ]
-      .map((subtype) => subtype.trim())
-      .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
+      .map(subtype => subtype.trim())
+      .filter(subtype => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
 
     system.subtypes = Object.fromEntries(subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
     system.elite_subtypes = Object.fromEntries(eliteSubtypes.map((subtype, i) => [`${i + 1}`, subtype]));
     system.edges = Object.fromEntries(Object.values(system.edges ?? [])
-      .filter((edge) => /[A-Za-z]/.test(edge))
+      .filter(edge => /[A-Za-z]/.test(edge))
       .map((edge, i) => [`${i + 1}`, edge.trim()]));
     system.flaws = Object.fromEntries(Object.values(system.flaws ?? [])
-      .filter((flaw) => /[A-Za-z]/.test(flaw))
+      .filter(flaw => /[A-Za-z]/.test(flaw))
       .map((flaw, i) => [`${i + 1}`, flaw.trim()]));
 
     system.quality = this.getFactorTotal(Factor.quality);
@@ -292,28 +312,28 @@ class BladesItem extends Item implements BladesDocument<Item>,
         system.subtitle = C.VehicleDescriptors[Math.min(6, this.getFactorTotal(Factor.tier))];
       } else {
         system.subtitle += ` ${U.oxfordize([
-          ...subtypes.filter((subtype) => !eliteSubtypes.includes(subtype)),
-          ...eliteSubtypes.map((subtype) => `Elite ${subtype}`)
+          ...subtypes.filter(subtype => !eliteSubtypes.includes(subtype)),
+          ...eliteSubtypes.map(subtype => `Elite ${subtype}`)
         ], false, "&")}`;
       }
     }
   }
 
   _prepareGearData(system: ExtractBladesItemSystem<BladesItemType.gear>) {
-    if (!BladesItem.IsType(this, BladesItemType.gear)) { return }
+    if (!BladesItem.IsType(this, BladesItemType.gear)) { return; }
     system.tier.name = "Quality";
   }
 
   _preparePlaybookData(system: ExtractBladesItemSystem<BladesItemType.playbook|BladesItemType.crew_playbook>) {
-    if (!BladesItem.IsType(this, BladesItemType.playbook, BladesItemType.crew_playbook)) { return }
-    const expClueData: Record<string,string> = {};
-    [...Object.values(system.experience_clues).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue });
+    if (!BladesItem.IsType(this, BladesItemType.playbook, BladesItemType.crew_playbook)) { return; }
+    const expClueData: Record<string, string> = {};
+    [...Object.values(system.experience_clues).filter(clue => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
     system.experience_clues = expClueData;
     eLog.checkLog3("experienceClues", {expClueData});
 
     if (BladesItem.IsType(this, BladesItemType.playbook)) {
-      const gatherInfoData: Record<string,string> = {};
-      [...Object.values(system.gather_info_questions).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question });
+      const gatherInfoData: Record<string, string> = {};
+      [...Object.values(system.gather_info_questions).filter(question => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
       system.gather_info_questions = gatherInfoData;
       eLog.checkLog3("gatherInfoQuestions", {gatherInfoData});
 

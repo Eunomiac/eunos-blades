@@ -1,8 +1,8 @@
 /* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌████░░░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░░░████▐     *|
+|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
 |*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
+|*     ▌█  License █ v0.1.0 ██▐     *|
+|*     ▌████░░░░  ░░░░█████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import Tagify from "../../lib/tagify/tagify.esm.js";
@@ -20,14 +20,14 @@ const _onTagifyChange = (event, doc, targetKey) => {
 };
 const Tags = {
     InitListeners: (html, doc) => {
-        function makeTagInput(elem, tags) {
+                function makeTagInput(elem, tags) {
             const tagify = new Tagify(elem, {
                 enforceWhitelist: true,
                 editTags: false,
                 whitelist: Object.entries(tags)
                     .map(([dataGroup, tagList]) => tagList
                     .map((tag) => ({
-                    "value": (new Handlebars.SafeString(tag)).toString(),
+                    value: (new Handlebars.SafeString(tag)).toString(),
                     "data-group": dataGroup
                 })))
                     .flat(),
@@ -54,14 +54,14 @@ const Tags = {
                 <h3>${suggestion["data-group"]}</h3>
               `;
                     }
-                    suggestion.value
-                        = value && typeof value === "string" ? U.escapeHTML(value) : value;
+                    suggestion.value =
+                        value && typeof value === "string" ? U.escapeHTML(value) : value;
                     tagHTMLString += tagify.settings.templates.dropdownItem.apply(tagify, [suggestion, idx]);
                     return tagHTMLString;
                 })
                     .join("");
             };
-            function findDataGroup(tag) {
+                        function findDataGroup(tag) {
                 for (const [group, tagList] of Object.entries(tags)) {
                     if (tagList.includes(tag)) {
                         return group;
@@ -74,11 +74,11 @@ const Tags = {
             tagify.addTags(curTags
                 .filter(findDataGroup)
                 .map((tag) => ({
-                "value": (new Handlebars.SafeString(tag)).toString(),
+                value: (new Handlebars.SafeString(tag)).toString(),
                 "data-group": findDataGroup(tag)
             })), true, true);
 
-            setTimeout(() => elem.addEventListener("change", (event) => { _onTagifyChange(event, doc, targetKey); }), 1000);
+            setTimeout(() => elem.addEventListener("change", event => { _onTagifyChange(event, doc, targetKey); }), 1000);
         }
         const systemTags = {
             "System Tags": Object.values(Tag.System),
@@ -90,9 +90,9 @@ const Tags = {
                 ...Object.values(Tag.PC),
                 ...Object.values(Tag.NPC)
             ],
-            "Vices": Object.values(Vice),
-            "Playbooks": Object.values(Playbook),
-            "Inventions": Object.values(Tag.Invention),
+            Vices: Object.values(Vice),
+            Playbooks: Object.values(Playbook),
+            Inventions: Object.values(Tag.Invention),
             "Gang Types": Object.values(Tag.GangType)
         };
         const districtTags = {
@@ -101,7 +101,7 @@ const Tags = {
         };
         const factionTags = { Factions: game.actors
                 .filter((actor) => actor.type === BladesActorType.faction && actor.name !== null)
-                .map((faction) => faction.name) };
+                .map(faction => faction.name) };
         $(html).find(".tags-gm").each((_, e) => makeTagInput(e, systemTags));
         $(html).find(".tags-district").each((_, e) => makeTagInput(e, districtTags));
         $(html).find(".tags-faction").each((_, e) => makeTagInput(e, factionTags));

@@ -1,8 +1,8 @@
 /* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌████░░░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░░░████▐     *|
+|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
 |*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
+|*     ▌█  License █ v0.1.0 ██▐     *|
+|*     ▌████░░░░  ░░░░█████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import C, { AttributeTrait, Harm, BladesActorType, BladesItemType, Tag, RollModSection, Factor, RollModStatus } from "../../core/constants.js";
@@ -19,9 +19,7 @@ class BladesPC extends BladesActor {
         data.token = data.token || {};
         data.system = data.system ?? {};
         eLog.checkLog2("actor", "BladesPC.create(data,options)", { data, options });
-
         data.token.actorLink = true;
-
         data.system.experience = {
             playbook: { value: 0, max: 8 },
             insight: { value: 0, max: 6 },
@@ -34,20 +32,20 @@ class BladesPC extends BladesActor {
     }
 
     get primaryUser() {
-        return game.users?.find((user) => user.character?.id === this?.id) || null;
+        return game.users?.find(user => user.character?.id === this?.id) || null;
     }
     async clearLoadout() {
         await this.update({ "system.loadout.selected": "" });
         this.updateEmbeddedDocuments("Item", [
-            ...this.activeSubItems.filter((item) => BladesItem.IsType(item, BladesItemType.gear) && !item.hasTag(Tag.System.Archived))
-                .map((item) => ({
-                "_id": item.id,
+            ...this.activeSubItems.filter(item => BladesItem.IsType(item, BladesItemType.gear) && !item.hasTag(Tag.System.Archived))
+                .map(item => ({
+                _id: item.id,
                 "system.tags": [...item.tags, Tag.System.Archived],
                 "system.uses_per_score.value": 0
             })),
-            ...this.activeSubItems.filter((item) => BladesItem.IsType(item, BladesItemType.ability) && item.system.uses_per_score.max)
-                .map((item) => ({
-                "_id": item.id,
+            ...this.activeSubItems.filter(item => BladesItem.IsType(item, BladesItemType.ability) && item.system.uses_per_score.max)
+                .map(item => ({
+                _id: item.id,
                 "system.uses_per_score.value": 0
             }))
         ]);
@@ -99,7 +97,7 @@ class BladesPC extends BladesActor {
         if (this.type !== BladesActorType.pc) {
             return undefined;
         }
-        return this.activeSubItems.find((item) => item.type === BladesItemType.vice);
+        return this.activeSubItems.find(item => item.type === BladesItemType.vice);
     }
     get crew() {
         return this.activeSubActors.find((subActor) => BladesActor.IsType(subActor, BladesActorType.crew));
@@ -108,7 +106,7 @@ class BladesPC extends BladesActor {
         if (!this.playbook) {
             return [];
         }
-        return this.activeSubItems.filter((item) => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
+        return this.activeSubItems.filter(item => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
     }
     get playbookName() {
         return this.playbook?.name;
@@ -150,12 +148,12 @@ class BladesPC extends BladesActor {
             return 0;
         }
         return Object.keys(this.system.trauma.checked)
-            .filter((traumaName) => 
+            .filter(traumaName => 
         this.system.trauma.active[traumaName] && this.system.trauma.checked[traumaName])
             .length;
     }
     get traumaList() {
-        return BladesActor.IsType(this, BladesActorType.pc) ? Object.keys(this.system.trauma.active).filter((key) => this.system.trauma.active[key]) : [];
+        return BladesActor.IsType(this, BladesActorType.pc) ? Object.keys(this.system.trauma.active).filter(key => this.system.trauma.active[key]) : [];
     }
     get activeTraumaConditions() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
@@ -168,7 +166,7 @@ class BladesPC extends BladesActor {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return 0;
         }
-        const activeLoadItems = this.activeSubItems.filter((item) => item.type === BladesItemType.gear);
+        const activeLoadItems = this.activeSubItems.filter(item => item.type === BladesItemType.gear);
         return U.gsap.utils.clamp(0, 10, activeLoadItems.reduce((tot, i) => tot + U.pInt(i.system.load), 0));
     }
     get remainingLoad() {
@@ -221,7 +219,7 @@ class BladesPC extends BladesActor {
         const rollModsData = BladesRollMod.ParseDocRollMods(this);
         [[/1d/, RollModSection.roll], [/Less Effect/, RollModSection.effect]].forEach(([effectPat, effectCat]) => {
             const { one: harmConditionOne, two: harmConditionTwo } = Object.values(this.system.harm)
-                .find((harmData) => effectPat.test(harmData.effect)) ?? {};
+                .find(harmData => effectPat.test(harmData.effect)) ?? {};
             const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
             if (harmString.length > 0) {
                 rollModsData.push({
@@ -242,7 +240,7 @@ class BladesPC extends BladesActor {
                 });
             }
         });
-        const { one: harmCondition } = Object.values(this.system.harm).find((harmData) => /Need Help/.test(harmData.effect)) ?? {};
+        const { one: harmCondition } = Object.values(this.system.harm).find(harmData => /Need Help/.test(harmData.effect)) ?? {};
         if (harmCondition && harmCondition.trim() !== "") {
             rollModsData.push({
                 id: "Push-negative-roll",
@@ -275,8 +273,8 @@ class BladesPC extends BladesActor {
     get rollTraitPCTooltipActions() {
         const tooltipStrings = ["<table><tbody>"];
         const actionRatings = this.actions;
-        Object.values(AttributeTrait).forEach((attribute) => {
-            C.Action[attribute].forEach((action) => {
+        Object.values(AttributeTrait).forEach(attribute => {
+            C.Action[attribute].forEach(action => {
                 tooltipStrings.push([
                     "<tr>",
                     `<td><strong>${U.uCase(action)}</strong></td>`,
@@ -292,7 +290,7 @@ class BladesPC extends BladesActor {
     get rollTraitPCTooltipAttributes() {
         const tooltipStrings = ["<table><tbody>"];
         const attributeRatings = this.attributes;
-        Object.values(AttributeTrait).forEach((attribute) => {
+        Object.values(AttributeTrait).forEach(attribute => {
             tooltipStrings.push([
                 "<tr>",
                 `<td><strong>${U.uCase(attribute)}</strong></td>`,

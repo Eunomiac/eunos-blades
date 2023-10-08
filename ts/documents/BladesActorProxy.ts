@@ -1,11 +1,11 @@
-import U from "../core/utilities.js";
-import {BladesActorType} from "../core/constants.js";
-import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
-import BladesActor from "../BladesActor.js";
-import BladesPC from "./actors/BladesPC.js";
-import BladesNPC from "./actors/BladesNPC.js";
-import BladesFaction from "./actors/BladesFaction.js";
-import BladesCrew from "./actors/BladesCrew.js";
+import U from "../core/utilities";
+import {BladesActorType} from "../core/constants";
+import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
+import BladesActor from "../BladesActor";
+import BladesPC from "./actors/BladesPC";
+import BladesNPC from "./actors/BladesNPC";
+import BladesFaction from "./actors/BladesFaction";
+import BladesCrew from "./actors/BladesCrew";
 
 const ActorsMap: Partial<Record<BladesActorType,typeof BladesActor>> = {
   [BladesActorType.pc]: BladesPC,

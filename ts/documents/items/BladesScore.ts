@@ -1,13 +1,13 @@
-import BladesItem from "../../BladesItem.js";
-import {BladesActorType, BladesItemType, Factor} from "../../core/constants.js";
-import U from "../../core/utilities.js";
-import BladesActor from "../../BladesActor.js";
-import BladesRollCollab from "../../BladesRollCollab.js";
-import BladesScoreSheet from "../../sheets/item/BladesScoreSheet.js";
+import BladesItem from "../../BladesItem";
+import {BladesActorType, BladesItemType, Factor} from "../../core/constants";
+import U from "../../core/utilities";
+import BladesActor from "../../BladesActor";
+import BladesRollCollab from "../../BladesRollCollab";
+import BladesScoreSheet from "../../sheets/item/BladesScoreSheet";
 
-import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
-import type {ItemDataBaseProperties} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
-import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs.js";
+import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
+import type {ItemDataBaseProperties} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 
 
 class BladesScore extends BladesItem implements BladesItemSubClass.Score,

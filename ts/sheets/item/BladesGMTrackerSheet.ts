@@ -1,10 +1,10 @@
 
-import {BladesActorType, BladesItemType, BladesPhase} from "../../core/constants.js";
-import BladesItemSheet from "./BladesItemSheet.js";
-import BladesItem from "../../BladesItem.js";
-import BladesGMTracker from "../../documents/items/BladesGMTracker.js";
-import BladesActor from "../../BladesActor.js";
-import BladesPC from "../../documents/actors/BladesPC.js";
+import {BladesActorType, BladesItemType, BladesPhase} from "../../core/constants";
+import BladesItemSheet from "./BladesItemSheet";
+import BladesItem from "../../BladesItem";
+import BladesGMTracker from "../../documents/items/BladesGMTracker";
+import BladesActor from "../../BladesActor";
+import BladesPC from "../../documents/actors/BladesPC";
 
 
 export enum BladesTipContext {

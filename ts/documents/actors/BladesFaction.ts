@@ -1,5 +1,5 @@
-import {BladesActorType, Factor} from "../../core/constants.js";
-import BladesActor from "../../BladesActor.js";
+import {BladesActorType, Factor} from "../../core/constants";
+import BladesActor from "../../BladesActor";
 
 class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
                                                    BladesRollCollab.OppositionDocData {

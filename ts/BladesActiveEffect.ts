@@ -1,9 +1,9 @@
-import BladesActor from "./BladesActor.js";
-import U from "./core/utilities.js";
-import BladesItem from "./BladesItem.js";
-import {Tag, BladesPhase, BladesActorType} from "./core/constants.js";
-import type {ActiveEffectDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData.js";
-import {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs.js";
+import BladesActor from "./BladesActor";
+import U from "./core/utilities";
+import BladesItem from "./BladesItem";
+import {Tag, BladesPhase, BladesActorType} from "./core/constants";
+import type {ActiveEffectDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData";
+import {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 
 const FUNCQUEUE: Record<string, {
   curFunc: Promise<void>,

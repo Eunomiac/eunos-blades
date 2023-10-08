@@ -1,5 +1,5 @@
-import { BladesItemType, District, BladesPhase, Randomizers } from "../core/constants.js";
-import BladesItem from "../BladesItem.js";
+import { BladesItemType, District, BladesPhase, Randomizers } from "../core/constants";
+import BladesItem from "../BladesItem";
 import BladesClockKeeper from '../documents/items/BladesClockKeeper.js';
 import BladesGMTracker from '../documents/items/BladesGMTracker.js';
 

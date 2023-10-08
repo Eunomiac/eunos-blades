@@ -1,10 +1,10 @@
-import U from "../../core/utilities.js";
-import {BladesActorType, BladesItemType, BladesPhase, Tag, Randomizers} from "../../core/constants.js";
-import BladesItemSheet from "./BladesItemSheet.js";
+import U from "../../core/utilities";
+import {BladesActorType, BladesItemType, BladesPhase, Tag, Randomizers} from "../../core/constants";
+import BladesItemSheet from "./BladesItemSheet";
 
-import {BladesActor, BladesPC} from "../../documents/BladesActorProxy.js";
-import {BladesScore} from "../../documents/BladesItemProxy.js";
-import BladesRollCollab, {BladesRollOpposition} from "../../BladesRollCollab.js";
+import {BladesActor, BladesPC} from "../../documents/BladesActorProxy";
+import {BladesScore} from "../../documents/BladesItemProxy";
+import BladesRollCollab, {BladesRollOpposition} from "../../BladesRollCollab";
 
 
 /* #region BladesTipGenerator */

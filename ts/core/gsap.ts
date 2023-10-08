@@ -1,4 +1,4 @@
-import U from "./utilities.js";
+import U from "./utilities";
 import {TextPlugin} from "gsap/all";
 
 const gsapPlugins: gsap.RegisterablePlugins[] = [

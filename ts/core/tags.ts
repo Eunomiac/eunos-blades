@@ -1,6 +1,6 @@
 import Tagify from "../../lib/tagify/tagify.esm.js";
-import {Tag, MainDistrict, OtherDistrict, Vice, Playbook, BladesActorType} from "./constants.js";
-import U from "./utilities.js";
+import {Tag, MainDistrict, OtherDistrict, Vice, Playbook, BladesActorType} from "./constants";
+import U from "./utilities";
 
 const _onTagifyChange = (event: Event, doc: BladesDoc, targetKey: keyof BladesDoc) => {
   const tagString = (event.target as HTMLInputElement).value;
@@ -27,6 +27,11 @@ interface TagifyFunctions {
 const Tags = {
   InitListeners: (html: JQuery<HTMLElement>, doc: BladesDoc) => {
 
+    /**
+     * Applies tags and Tagify functionality to a specified HTML element.
+     * @param {HTMLElement} elem The element to tagify.
+     * @param {Record<string,BladesTag[]>} tags The tags, sorted into groups, to apply.
+     */
     function makeTagInput(elem: HTMLElement, tags: Record<string, BladesTag[]>) {
 
       // Create tagify instance; populate dropdown list with tags
@@ -36,7 +41,7 @@ const Tags = {
         whitelist: Object.entries(tags)
           .map(([dataGroup, tagList]) => tagList
             .map((tag: BladesTag) => ({
-              "value": (new Handlebars.SafeString(tag)).toString(),
+              value: (new Handlebars.SafeString(tag)).toString(),
               "data-group": dataGroup
             })))
           .flat(),
@@ -73,8 +78,8 @@ const Tags = {
               `;
             }
 
-            suggestion.value
-              = value && typeof value === "string" ? U.escapeHTML(value) : value;
+            suggestion.value =
+              value && typeof value === "string" ? U.escapeHTML(value) : value;
 
             tagHTMLString += tagify.settings.templates.dropdownItem.apply(
               tagify,
@@ -86,10 +91,14 @@ const Tags = {
           .join("");
       };
 
-      // Add existing tags on doc to tag element
+      /**
+       * Returns the tag group to which a tag belongs, or false if no group found.
+       * @param {BladesTag|string} tag
+       * @returns {string|false} Either the group containing the given tag, or false if no group found.
+       */
       function findDataGroup(tag: BladesTag|string): string|false {
         for (const [group, tagList] of Object.entries(tags)) {
-          if (tagList.includes(tag)) { return group }
+          if (tagList.includes(tag)) { return group; }
         }
         return false;
       }
@@ -101,7 +110,7 @@ const Tags = {
         curTags
           .filter(findDataGroup)
           .map((tag: BladesTag) => ({
-            "value": (new Handlebars.SafeString(tag)).toString(),
+            value: (new Handlebars.SafeString(tag)).toString(),
             "data-group": findDataGroup(tag)
           })),
         true,
@@ -110,7 +119,7 @@ const Tags = {
 
       // Add event listener for tag changes, setting defined target
       // Wait briefly, so other tag elements' tags can be set before listener initializes
-      setTimeout(() => elem.addEventListener("change", (event) => { _onTagifyChange(event, doc, targetKey) }), 1000);
+      setTimeout(() => elem.addEventListener("change", event => { _onTagifyChange(event, doc, targetKey); }), 1000);
     }
 
     const systemTags = {
@@ -123,9 +132,9 @@ const Tags = {
         ...Object.values(Tag.PC),
         ...Object.values(Tag.NPC)
       ],
-      "Vices": Object.values(Vice),
-      "Playbooks": Object.values(Playbook),
-      "Inventions": Object.values(Tag.Invention),
+      Vices: Object.values(Vice),
+      Playbooks: Object.values(Playbook),
+      Inventions: Object.values(Tag.Invention),
       "Gang Types": Object.values(Tag.GangType)
     };
     const districtTags = {
@@ -133,8 +142,9 @@ const Tags = {
       "Other Districts": Object.values(OtherDistrict)
     };
     const factionTags = {Factions: game.actors
-      .filter((actor): actor is BladesActorOfType<BladesActorType.faction> & {name: string} => actor.type === BladesActorType.faction && actor.name !== null)
-      .map((faction) => faction.name)};
+      .filter((actor): actor is BladesActorOfType<BladesActorType.faction> & {name: string} =>
+        actor.type === BladesActorType.faction && actor.name !== null)
+      .map(faction => faction.name)};
 
     $(html).find(".tags-gm").each((_, e) => makeTagInput(e, systemTags));
 

@@ -1,9 +1,9 @@
-import { BladesActorType, Tag, District, AttributeTrait, ActionTrait, AdvancementPoint } from "../core/constants.js";
-import BladesActor from "../BladesActor.js";
-import BladesPC from "../documents/actors/BladesPC.js";
-import BladesNPC from "../documents/actors/BladesNPC.js";
-import BladesFaction from "../documents/actors/BladesFaction.js";
-import BladesCrew from "../documents/actors/BladesCrew.js";
+import { BladesActorType, Tag, District, AttributeTrait, ActionTrait, AdvancementPoint } from "../core/constants";
+import BladesActor from "../BladesActor";
+import BladesPC from "../documents/actors/BladesPC";
+import BladesNPC from "../documents/actors/BladesNPC";
+import BladesFaction from "../documents/actors/BladesFaction";
+import BladesCrew from "../documents/actors/BladesCrew";
 declare global {
 
   // Extending Type Definitions of 'Actor' Base Class to Foundry V11

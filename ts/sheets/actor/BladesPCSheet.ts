@@ -1,9 +1,9 @@
 
-import C, {BladesActorType, BladesItemType, AttributeTrait, Tag, ActionTrait, BladesPhase} from "../../core/constants.js";
-import U from "../../core/utilities.js";
-import BladesActorSheet from "./BladesActorSheet.js";
-import {BladesActor, BladesPC} from "../../documents/BladesActorProxy.js";
-import BladesGMTrackerSheet from "../item/BladesGMTrackerSheet.js";
+import C, {BladesActorType, BladesItemType, AttributeTrait, Tag, ActionTrait, BladesPhase} from "../../core/constants";
+import U from "../../core/utilities";
+import BladesActorSheet from "./BladesActorSheet";
+import {BladesActor, BladesPC} from "../../documents/BladesActorProxy";
+import BladesGMTrackerSheet from "../item/BladesGMTrackerSheet";
 
 class BladesPCSheet extends BladesActorSheet {
 

@@ -1,9 +1,9 @@
-import C, {Playbook, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModSection, Factor, RollModStatus} from "../../core/constants.js";
-import U from "../../core/utilities.js";
-import {BladesActor, BladesCrew} from "../BladesActorProxy.js";
-import {BladesItem} from "../BladesItemProxy.js";
-import BladesRollCollab, {BladesRollMod} from "../../BladesRollCollab.js";
-import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
+import C, {Playbook, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModSection, Factor, RollModStatus} from "../../core/constants";
+import U from "../../core/utilities";
+import {BladesActor, BladesCrew} from "../BladesActorProxy";
+import {BladesItem} from "../BladesItemProxy";
+import BladesRollCollab, {BladesRollMod} from "../../BladesRollCollab";
+import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 
 class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
@@ -14,16 +14,17 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   static override IsType<T extends BladesActorType = BladesActorType.pc>(doc: unknown): doc is BladesActorOfType<T> {
     return super.IsType(doc, BladesActorType.pc);
   }
+
   static override async create(data: ActorDataConstructorData & { system?: Partial<BladesActorSchema.Scoundrel> }, options = {}) {
     data.token = data.token || {};
     data.system = data.system ?? {};
 
     eLog.checkLog2("actor", "BladesPC.create(data,options)", {data, options});
 
-    //~ Set the Token to sync with charsheet.
+    // ~ Set the Token to sync with charsheet.
     data.token.actorLink = true;
 
-    //~ Initialize generic experience clues.
+    // ~ Initialize generic experience clues.
     data.system.experience = {
       playbook: {value: 0, max: 8},
       insight: {value: 0, max: 6},
@@ -38,22 +39,23 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   // #region BladesPrimaryActor Implementation ~
   get primaryUser(): User | null {
-    return game.users?.find((user) => user.character?.id === this?.id) || null;
+    return game.users?.find(user => user.character?.id === this?.id) || null;
   }
+
   async clearLoadout() {
     await this.update({"system.loadout.selected": ""});
     this.updateEmbeddedDocuments(
       "Item",
       [
-        ...this.activeSubItems.filter((item) => BladesItem.IsType(item, BladesItemType.gear) && !item.hasTag(Tag.System.Archived))
-          .map((item) => ({
-            "_id": item.id,
-            "system.tags": [... item.tags, Tag.System.Archived],
+        ...this.activeSubItems.filter(item => BladesItem.IsType(item, BladesItemType.gear) && !item.hasTag(Tag.System.Archived))
+          .map(item => ({
+            _id: item.id,
+            "system.tags": [...item.tags, Tag.System.Archived],
             "system.uses_per_score.value": 0
           })),
-        ...this.activeSubItems.filter((item) => BladesItem.IsType(item, BladesItemType.ability) && item.system.uses_per_score.max)
-          .map((item) => ({
-            "_id": item.id,
+        ...this.activeSubItems.filter(item => BladesItem.IsType(item, BladesItemType.ability) && item.system.uses_per_score.max)
+          .map(item => ({
+            _id: item.id,
             "system.uses_per_score.value": 0
           }))
       ]
@@ -63,7 +65,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   override getSubActor(actorRef: ActorRef): BladesActor | undefined {
     const actor = super.getSubActor(actorRef);
-    if (!actor) { return undefined }
+    if (!actor) { return undefined; }
     if (this.primaryUser?.id) {
       actor.ownership[this.primaryUser.id] = CONST.DOCUMENT_PERMISSION_LEVELS.OWNER;
     }
@@ -100,11 +102,11 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   // #region BladesScoundrel Implementation ~
 
-  isMember(crew: BladesCrew) { return this.crew?.id === crew.id }
+  isMember(crew: BladesCrew) { return this.crew?.id === crew.id; }
 
   get vice(): BladesItem | undefined {
-    if (this.type !== BladesActorType.pc) { return undefined }
-    return this.activeSubItems.find((item) => item.type === BladesItemType.vice);
+    if (this.type !== BladesActorType.pc) { return undefined; }
+    return this.activeSubItems.find(item => item.type === BladesItemType.vice);
   }
 
   get crew(): BladesCrew | undefined {
@@ -112,82 +114,90 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   }
 
   get abilities(): BladesItem[] {
-    if (!this.playbook) { return [] }
-    return this.activeSubItems.filter((item) => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
+    if (!this.playbook) { return []; }
+    return this.activeSubItems.filter(item => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
   }
 
   get playbookName() {
     return this.playbook?.name as (BladesTag & Playbook) | undefined;
   }
+
   get playbook(): BladesItemOfType<BladesItemType.playbook>|undefined {
     return this.activeSubItems.find((item): item is BladesItemOfType<BladesItemType.playbook> => item.type === BladesItemType.playbook);
   }
 
   get attributes(): Record<AttributeTrait, number> {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never }
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never; }
     return {
       insight: Object.values(this.system.attributes.insight).filter(({value}) => value > 0).length + this.system.resistance_bonus.insight,
       prowess: Object.values(this.system.attributes.prowess).filter(({value}) => value > 0).length + this.system.resistance_bonus.prowess,
       resolve: Object.values(this.system.attributes.resolve).filter(({value}) => value > 0).length + this.system.resistance_bonus.resolve
     };
   }
+
   get actions(): Record<ActionTrait, number> {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never }
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never; }
     return U.objMap({
       ...this.system.attributes.insight,
       ...this.system.attributes.prowess,
       ...this.system.attributes.resolve
     }, ({value, max}: ValueMax) => U.gsap.utils.clamp(0, max, value)) as Record<ActionTrait, number>;
   }
+
   get rollable(): Record<AttributeTrait | ActionTrait, number> {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never }
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never; }
     return {
       ...this.attributes,
       ...this.actions
     };
   }
+
   get trauma(): number {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0 }
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0; }
     return Object.keys(this.system.trauma.checked)
-      .filter((traumaName) =>
+      .filter(traumaName =>
         // @ts-ignore Compiler linter mismatch.
         this.system.trauma.active[traumaName] && this.system.trauma.checked[traumaName])
       .length;
   }
+
   get traumaList(): string[] {
     // @ts-ignore Compiler linter mismatch.
-    return BladesActor.IsType(this, BladesActorType.pc) ? Object.keys(this.system.trauma.active).filter((key) => this.system.trauma.active[key]) : [];
+    return BladesActor.IsType(this, BladesActorType.pc) ? Object.keys(this.system.trauma.active).filter(key => this.system.trauma.active[key]) : [];
   }
+
   get activeTraumaConditions(): Record<string, boolean> {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return {} }
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return {}; }
     return U.objFilter(
       this.system.trauma.checked,
       // @ts-ignore Compiler linter mismatch.
       (_v: unknown, traumaName: string): boolean => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName])
     );
   }
+
   get currentLoad(): number {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0 }
-    const activeLoadItems = this.activeSubItems.filter((item) => item.type === BladesItemType.gear);
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0; }
+    const activeLoadItems = this.activeSubItems.filter(item => item.type === BladesItemType.gear);
     return U.gsap.utils.clamp(0, 10, activeLoadItems.reduce((tot, i) => tot + U.pInt(i.system.load), 0));
   }
+
   get remainingLoad(): number {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0 }
-    if (!this.system.loadout.selected) { return 0 }
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0; }
+    if (!this.system.loadout.selected) { return 0; }
     const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected.toString()).toLowerCase() as KeyOf<typeof this.system.loadout.levels>];
     return Math.max(0, maxLoad - this.currentLoad);
   }
 
   async addStash(amount: number): Promise<void> {
-    if (!BladesActor.IsType(this, BladesActorType.pc)) { return }
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return; }
     await this.update({"system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max)});
   }
   // #endregion
 
   // #region BladesRollCollab Implementation
 
-  get rollFactors(): Partial<Record<Factor,BladesRollCollab.FactorData>> {
-    const factorData: Partial<Record<Factor,BladesRollCollab.FactorData>> = {
+  get rollFactors(): Partial<Record<Factor, BladesRollCollab.FactorData>> {
+    const factorData: Partial<Record<Factor, BladesRollCollab.FactorData>> = {
       [Factor.tier]: {
         name: Factor.tier,
         value: this.getFactorTotal(Factor.tier),
@@ -215,11 +225,15 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   // #region BladesRollCollab.PrimaryDoc Implementation
 
-  get rollPrimaryID() { return this.id }
-  get rollPrimaryDoc() { return this }
-  get rollPrimaryName() { return this.name }
-  get rollPrimaryType() { return this.type }
-  get rollPrimaryImg() { return this.img }
+  get rollPrimaryID() { return this.id; }
+
+  get rollPrimaryDoc() { return this; }
+
+  get rollPrimaryName() { return this.name; }
+
+  get rollPrimaryType() { return this.type; }
+
+  get rollPrimaryImg() { return this.img; }
 
   get rollModsData(): BladesRollCollab.RollModData[] {
 
@@ -228,7 +242,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     // Add roll mods from harm
     [[/1d/, RollModSection.roll] as const, [/Less Effect/, RollModSection.effect] as const].forEach(([effectPat, effectCat]) => {
       const {one: harmConditionOne, two: harmConditionTwo} = Object.values(this.system.harm)
-        .find((harmData) => effectPat.test(harmData.effect)) ?? {};
+        .find(harmData => effectPat.test(harmData.effect)) ?? {};
       const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
       if (harmString.length > 0) {
         rollModsData.push({
@@ -249,7 +263,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
         });
       }
     });
-    const {one: harmCondition} = Object.values(this.system.harm).find((harmData) => /Need Help/.test(harmData.effect)) ?? {};
+    const {one: harmCondition} = Object.values(this.system.harm).find(harmData => /Need Help/.test(harmData.effect)) ?? {};
     if (harmCondition && harmCondition.trim() !== "") {
       rollModsData.push({
         id: "Push-negative-roll",
@@ -276,20 +290,25 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   // #region BladesRollCollab.ParticipantDoc Implementation
 
-  get rollParticipantID() { return this.id }
-  get rollParticipantDoc() { return this }
-  get rollParticipantIcon() { return this.playbook?.img ?? this.img }
-  get rollParticipantName() { return this.name ?? "" }
-  get rollParticipantType() { return this.type }
-  get rollParticipantModsData(): BladesRollCollab.RollModData[] { return [] }
+  get rollParticipantID() { return this.id; }
+
+  get rollParticipantDoc() { return this; }
+
+  get rollParticipantIcon() { return this.playbook?.img ?? this.img; }
+
+  get rollParticipantName() { return this.name ?? ""; }
+
+  get rollParticipantType() { return this.type; }
+
+  get rollParticipantModsData(): BladesRollCollab.RollModData[] { return []; }
 
   // #endregion
 
   get rollTraitPCTooltipActions(): string {
     const tooltipStrings: string[] = ["<table><tbody>"];
     const actionRatings = this.actions;
-    Object.values(AttributeTrait).forEach((attribute) => {
-      C.Action[attribute].forEach((action) => {
+    Object.values(AttributeTrait).forEach(attribute => {
+      C.Action[attribute].forEach(action => {
         tooltipStrings.push([
           "<tr>",
           `<td><strong>${U.uCase(action)}</strong></td>`,
@@ -306,7 +325,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   get rollTraitPCTooltipAttributes(): string {
     const tooltipStrings: string[] = ["<table><tbody>"];
     const attributeRatings = this.attributes;
-    Object.values(AttributeTrait).forEach((attribute) => {
+    Object.values(AttributeTrait).forEach(attribute => {
       tooltipStrings.push([
         "<tr>",
         `<td><strong>${U.uCase(attribute)}</strong></td>`,

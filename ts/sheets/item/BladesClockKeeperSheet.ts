@@ -1,6 +1,6 @@
 
-import BladesItemSheet from "./BladesItemSheet.js";
-import BladesClockKeeper from "../../documents/items/BladesClockKeeper.js";
+import BladesItemSheet from "./BladesItemSheet";
+import BladesClockKeeper from "../../documents/items/BladesClockKeeper";
 
 type BladesClockKeeperSheetData = Partial<BladesItemSheetData> & {
   clock_keys: Record<string, BladesMultiClockData>

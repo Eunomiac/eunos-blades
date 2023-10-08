@@ -1,8 +1,8 @@
 /* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌████░░░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░░░████▐     *|
+|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
 |*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌████████████████████████████  License █ v0.1.0 ████████████████████████████▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░░░░░░  ░░░░░░░░░░░░░░░░░░███████████████████▐     *|
+|*     ▌█  License █ v0.1.0 ██▐     *|
+|*     ▌████░░░░  ░░░░█████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import C from "./core/constants.js";
@@ -92,8 +92,9 @@ Hooks.once("socketlib.ready", () => {
     socket = socketlib.registerSystem("eunos-blades");
     Object.assign(globalThis, { socket, socketlib });     
     BladesRollCollab.InitSockets();
-    let clockOverlayUp, pushControllerUp;
-    function InitOverlaySockets() {
+    let clockOverlayUp;
+    let pushControllerUp;
+        function InitOverlaySockets() {
         setTimeout(() => {
             clockOverlayUp = clockOverlayUp || BladesClockKeeperSheet.InitSockets();
             pushControllerUp = clockOverlayUp || BladesPushController.InitSockets();
@@ -109,9 +110,9 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     dice3d.addSystem({ id: "eunos-blades", name: "Euno's Blades" }, "preferred");
     dice3d.addDicePreset({
         type: "d6",
-        labels: [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/faces/${num}.webp`),
+        labels: [1, 2, 3, 4, 5, 6].map(num => `systems/eunos-blades/assets/dice/faces/${num}.webp`),
         system: "eunos-blades",
-        bumpMaps: [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/bump-maps/${num}.webp`),
+        bumpMaps: [1, 2, 3, 4, 5, 6].map(num => `systems/eunos-blades/assets/dice/bump-maps/${num}.webp`),
         emissiveMaps: [undefined, undefined, undefined, undefined, undefined, "systems/eunos-blades/assets/dice/emission-maps/6.webp"],
         emissive: "#d89300"
     });

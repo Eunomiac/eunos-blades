@@ -1,7 +1,7 @@
-import {ApplyTooltipListeners} from "./core/gsap.js";
-import U from "./core/utilities.js";
-import BladesActor from "./BladesActor.js";
-import BladesItem from "./BladesItem.js";
+import {ApplyTooltipListeners} from "./core/gsap";
+import U from "./core/utilities";
+import BladesActor from "./BladesActor";
+import BladesItem from "./BladesItem";
 
 export enum SelectionCategory {
   Heritage = "Heritage",

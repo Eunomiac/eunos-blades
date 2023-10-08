@@ -1,6 +1,6 @@
-import BladesActorSheet from "./BladesActorSheet.js";
-import {BladesCrew} from "../../documents/BladesActorProxy.js";
-import {BladesActorType, BladesItemType} from "../../core/constants.js";
+import BladesActorSheet from "./BladesActorSheet";
+import {BladesCrew} from "../../documents/BladesActorProxy";
+import {BladesActorType, BladesItemType} from "../../core/constants";
 
 class BladesCrewSheet extends BladesActorSheet {
 

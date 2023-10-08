@@ -1,14 +1,14 @@
 // #region IMPORTS~
 
-import U from "../../core/utilities.js";
-import G, {ApplyTooltipListeners} from "../../core/gsap.js";
-import C, {BladesActorType, BladesItemType, AttributeTrait, Tag, ActionTrait, Factor, RollType} from "../../core/constants.js";
-import Tags from "../../core/tags.js";
-import BladesActor from "../../BladesActor.js";
-import BladesItem from "../../BladesItem.js";
-import BladesSelectorDialog, {SelectionCategory} from "../../BladesDialog.js";
-import BladesActiveEffect from "../../BladesActiveEffect.js";
-import BladesRollCollab, {BladesRollPrimary, BladesRollOpposition} from "../../BladesRollCollab.js";
+import U from "../../core/utilities";
+import G, {ApplyTooltipListeners} from "../../core/gsap";
+import C, {BladesActorType, BladesItemType, AttributeTrait, Tag, ActionTrait, Factor, RollType} from "../../core/constants";
+import Tags from "../../core/tags";
+import BladesActor from "../../BladesActor";
+import BladesItem from "../../BladesItem";
+import BladesSelectorDialog, {SelectionCategory} from "../../BladesDialog";
+import BladesActiveEffect from "../../BladesActiveEffect";
+import BladesRollCollab, {BladesRollPrimary, BladesRollOpposition} from "../../BladesRollCollab";
 // #endregion
 // #region TYPES: BladesCompData ~
 type BladesCompData = {
@@ -28,7 +28,8 @@ class BladesActorSheet extends ActorSheet {
 
   /**
    * Override the default getData method to provide additional data for the actor sheet.
-   * This includes cssClass, editable, isGM, actor, system, tierTotal, rollData, activeEffects, hasFullVision, hasLimitedVision, hasControl, preparedItems.
+   * This includes: cssClass, editable, isGM, actor, system, tierTotal, rollData, activeEffects,
+   *                 hasFullVision, hasLimitedVision, hasControl, preparedItems.
    * @returns {BladesActorSheetData} The data object for the actor sheet.
    */
   override getData() {
@@ -52,32 +53,38 @@ class BladesActorSheet extends ActorSheet {
       tierTotal: this.actor.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(this.actor.getFactorTotal(Factor.tier)) : "0",
       rollData: this.actor.getRollData(),
       activeEffects: Array.from(this.actor.effects) as BladesActiveEffect[],
-      hasFullVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER),
-      hasLimitedVision: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED),
+      hasFullVision: game.user.isGM
+        || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER),
+      hasLimitedVision: game.user.isGM
+        || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED),
       hasControl: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER),
 
       // Prepare items for display on the actor sheet.
       preparedItems: {
         cohorts: {
           gang: this.actor.activeSubItems
-            .filter((item): item is BladesItemOfType<BladesItemType.cohort_gang> => item.type === BladesItemType.cohort_gang)
-            .map((item) => {
+            .filter((item): item is BladesItemOfType<BladesItemType.cohort_gang> =>
+              item.type === BladesItemType.cohort_gang)
+            .map(item => {
               // Prepare gang cohort items.
               const subtypes = U.unique(Object.values(item.system.subtypes)
-                .map((subtype) => subtype.trim())
-                .filter((subtype) => /[A-Za-z]/.test(subtype))) as Tag.GangType[];
+                .map(subtype => subtype.trim())
+                .filter(subtype => /[A-Za-z]/.test(subtype))) as Tag.GangType[];
               const eliteSubtypes = U.unique([
                 ...Object.values(item.system.elite_subtypes),
                 ...(item.parent?.upgrades ?? [])
-                  .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
+                  .map(upgrade => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
               ]
-                .map((subtype) => subtype.trim())
-                .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype as Tag.GangType))) as Tag.GangType[];
+                .map(subtype => subtype.trim())
+                .filter(subtype => /[A-Za-z]/
+                  .test(subtype) && subtypes.includes(subtype as Tag.GangType)
+                )
+              ) as Tag.GangType[];
 
               // Prepare images for gang cohort items.
               const imgTypes = [...eliteSubtypes];
               if (imgTypes.length < 2) {
-                imgTypes.push(...subtypes.filter((subtype) => !imgTypes.includes(subtype)));
+                imgTypes.push(...subtypes.filter(subtype => !imgTypes.includes(subtype)));
               }
               if (U.unique(imgTypes).length === 1) {
                 item.system.image = Object.values(item.system.elite_subtypes).includes(imgTypes[0]) ? `elite-${U.lCase(imgTypes[0])}.svg` : `${U.lCase(imgTypes[0])}.svg`;
@@ -96,18 +103,19 @@ class BladesActorSheet extends ActorSheet {
                     {mode: "untrained", label: "Untrained", color: "transparent", tooltip: "<p>Roll Untrained</p>"}
                   ],
                   edgeData: Object.fromEntries(Object.values(item.system.edges ?? [])
-                    .filter((edge) => /[A-Za-z]/.test(edge))
-                    .map((edge) => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]])),
+                    .filter(edge => /[A-Za-z]/.test(edge))
+                    .map(edge => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]])),
                   flawData: Object.fromEntries(Object.values(item.system.flaws ?? [])
-                    .filter((flaw) => /[A-Za-z]/.test(flaw))
-                    .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]))
+                    .filter(flaw => /[A-Za-z]/.test(flaw))
+                    .map(flaw => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]))
                 }
               );
               return item;
             }),
           expert: this.actor.activeSubItems
-            .filter((item): item is BladesItemOfType<BladesItemType.cohort_expert> => item.type === BladesItemType.cohort_expert)
-            .map((item) => {
+            .filter((item): item is BladesItemOfType<BladesItemType.cohort_expert> =>
+              item.type === BladesItemType.cohort_expert)
+            .map(item => {
               // Prepare expert cohort items.
               Object.assign(
                 item.system,
@@ -117,11 +125,11 @@ class BladesActorSheet extends ActorSheet {
                     {mode: "untrained", label: "Untrained", tooltip: "<h2>Roll Untrained</h2>"}
                   ],
                   edgeData: Object.fromEntries(Object.values(item.system.edges ?? [])
-                    .filter((edge) => /[A-Za-z]/.test(edge))
-                    .map((edge) => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]])),
+                    .filter(edge => /[A-Za-z]/.test(edge))
+                    .map(edge => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]])),
                   flawData: Object.fromEntries(Object.values(item.system.flaws ?? [])
-                    .filter((flaw) => /[A-Za-z]/.test(flaw))
-                    .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]))
+                    .filter(flaw => /[A-Za-z]/.test(flaw))
+                    .map(flaw => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]))
                 }
               );
               return item;
@@ -147,7 +155,7 @@ class BladesActorSheet extends ActorSheet {
         sheetData.playbookData.tooltip = (new Handlebars.SafeString([
           "<h2>At the End of the Session, Gain XP If ...</h2>",
           "<ul>",
-          ... Object.values(this.actor.system.experience.clues ?? []).map((line) => `<li>${line.replace(/^Y/, "... y")}</li>`) ?? [],
+          ...Object.values(this.actor.system.experience.clues ?? []).map(line => `<li>${line.replace(/^Y/, "... y")}</li>`) ?? [],
           "</ul>"
         ].join(""))).toString();
       }
@@ -182,17 +190,17 @@ class BladesActorSheet extends ActorSheet {
       html.find('.editor:not(.tinymce) [data-is-secret="true"]').remove();
     }
 
-    //~ Tooltips
+    // ~ Tooltips
     ApplyTooltipListeners(html);
 
     Tags.InitListeners(html, this.actor);
 
     // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) { return }
+    if (!this.options.editable) { return; }
 
     // Add dotline functionality
     html.find(".dotline").each((__, elem) => {
-      if ($(elem).hasClass("locked")) { return }
+      if ($(elem).hasClass("locked")) { return; }
 
       let targetDoc: BladesActor | BladesItem = this.actor;
       let targetField = $(elem).data("target");
@@ -366,6 +374,7 @@ class BladesActorSheet extends ActorSheet {
 
     return compData;
   }
+
   _onItemOpenClick(event: ClickEvent) {
     event.preventDefault();
     const {doc} = this._getCompData(event);
@@ -472,7 +481,7 @@ class BladesActorSheet extends ActorSheet {
       }
     }
 
-    await BladesRollCollab.NewRoll(rollData);
+    await BladesRollCollab.NewRoll(rollData as BladesRollCollab.ConstructorConfig);
   }
   // #endregion
 

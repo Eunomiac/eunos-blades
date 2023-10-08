@@ -1,11 +1,11 @@
-import U from "../core/utilities.js";
-import {BladesItemType} from "../core/constants.js";
-import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
-import BladesItem from "../BladesItem.js";
-import BladesLocation from "./items/BladesLocation.js";
-import BladesClockKeeper from "./items/BladesClockKeeper.js";
-import BladesGMTracker from "./items/BladesGMTracker.js";
-import BladesScore from "./items/BladesScore.js";
+import U from "../core/utilities";
+import {BladesItemType} from "../core/constants";
+import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import BladesItem from "../BladesItem";
+import BladesLocation from "./items/BladesLocation";
+import BladesClockKeeper from "./items/BladesClockKeeper";
+import BladesGMTracker from "./items/BladesGMTracker";
+import BladesScore from "./items/BladesScore";
 
 const ItemsMap: Partial<Record<BladesItemType,typeof BladesItem>> = {
   [BladesItemType.clock_keeper]: BladesClockKeeper,

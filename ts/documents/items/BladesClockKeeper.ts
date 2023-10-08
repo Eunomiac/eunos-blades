@@ -1,10 +1,10 @@
-import BladesItem from "../../BladesItem.js";
-import C, {SVGDATA, BladesActorType, BladesItemType} from "../../core/constants.js";
-import U from "../../core/utilities.js";
-import BladesActor from "../../BladesActor.js";
-import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.js";
-import type {ItemDataBaseProperties} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData.js";
-import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs.js";
+import BladesItem from "../../BladesItem";
+import C, {SVGDATA, BladesActorType, BladesItemType} from "../../core/constants";
+import U from "../../core/utilities";
+import BladesActor from "../../BladesActor";
+import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
+import type {ItemDataBaseProperties} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 
 class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_Keeper {
 

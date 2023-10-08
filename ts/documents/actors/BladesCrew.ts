@@ -1,8 +1,8 @@
-import BladesItem from "../../BladesItem.js";
-import {BladesActorType, Playbook, BladesItemType, Factor} from "../../core/constants.js";
-import BladesActor from "../../BladesActor.js";
-import BladesRollCollab, {BladesRollMod} from "../../BladesRollCollab.js";
-import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData.js";
+import BladesItem from "../../BladesItem";
+import {BladesActorType, Playbook, BladesItemType, Factor} from "../../core/constants";
+import BladesActor from "../../BladesActor";
+import BladesRollCollab, {BladesRollMod} from "../../BladesRollCollab";
+import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
   BladesRollCollab.PrimaryDocData,

@@ -1,5 +1,5 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import C from "./constants.js";
+import C from "./constants";
 import {gsap} from "gsap/all";
 // #endregion ▮▮▮▮ IMPORTS ▮▮▮▮
 

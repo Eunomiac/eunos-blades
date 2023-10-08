@@ -1,4 +1,4 @@
-import U from "./core/utilities.js";
+import U from "./core/utilities";
 
 export default class BladesPushController {
 

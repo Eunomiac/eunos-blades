@@ -1,6 +1,6 @@
-import BladesItem from "../../BladesItem.js";
-import {BladesActorType, BladesItemType, BladesPhase} from "../../core/constants.js";
-import BladesActor from "../../BladesActor.js";
+import BladesItem from "../../BladesItem";
+import {BladesActorType, BladesItemType, BladesPhase} from "../../core/constants";
+import BladesActor from "../../BladesActor";
 
 class BladesGMTracker extends BladesItem implements BladesItemSubClass.Gm_Tracker {
 
