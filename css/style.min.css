@@ -13601,7 +13601,7 @@ template {
       border-radius: 30px;
       box-shadow: 25px 25px 15px var(--blades-black-dark-fade);
       border: 3px outset var(--blades-white);
-      background: var(--blades-black); }
+      background: var(--blades-black-dark); }
       :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root {
         overflow: visible; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root > section {

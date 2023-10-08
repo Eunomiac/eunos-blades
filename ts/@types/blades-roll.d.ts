@@ -9,19 +9,19 @@ declare global {
 
     export interface RollParticipantData {
       [RollModSection.roll]?: {
-        Assist?: ParticipantDocData & ParticipantSectionData,
-        Group_1?: ParticipantDocData & ParticipantSectionData,
-        Group_2?: ParticipantDocData & ParticipantSectionData,
-        Group_3?: ParticipantDocData & ParticipantSectionData,
-        Group_4?: ParticipantDocData & ParticipantSectionData,
-        Group_5?: ParticipantDocData & ParticipantSectionData,
-        Group_6?: ParticipantDocData & ParticipantSectionData,
+        Assist?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+        Group_1?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+        Group_2?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+        Group_3?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+        Group_4?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+        Group_5?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+        Group_6?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
       },
       [RollModSection.position]?: {
-        Setup?: ParticipantDocData & ParticipantSectionData
+        Setup?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData
       },
       [RollModSection.effect]?: {
-        Setup?: ParticipantDocData & ParticipantSectionData
+        Setup?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData
       }
     }
 
@@ -89,8 +89,8 @@ declare global {
       rollSubType?: RollSubType;
       rollDowntimeAction?: DowntimeAction;
 
-      rollPrimaryData: PrimaryDocData;
-      rollOppData?: OppositionDocData;
+      rollPrimaryData: Omit<PrimaryDocData, "rollPrimaryDoc">;
+      rollOppData?: Omit<OppositionDocData, "rollOppDoc">;
       rollParticipantData?: RollParticipantData;
       rollTrait?: RollTrait;
       rollModsData: Record<string,RollModStatus>;

@@ -55,36 +55,36 @@ class BladesScoreSheet extends BladesItemSheet {
     async generateRandomizerData(category) {
         const randomData = {
             Bargains: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Bargains
-                .filter((bData) => !Object.values(this.document.system.randomizers.Bargains)
-                .some((_bData) => _bData.name === bData.name || _bData.effect === bData.effect)), 3, true, (e, a) => a
-                .filter((_e) => e.category === _e.category).length === 0))
+                .filter(bData => !Object.values(this.document.system.randomizers.Bargains)
+                .some(_bData => _bData.name === bData.name || _bData.effect === bData.effect)), 3, true, (e, a) => a
+                .filter(_e => e.category === _e.category).length === 0))
                 .map(([k, v]) => {
                 k = `${k}`;
                 Object.assign(v, { notes: "" });
                 return [k, v];
             })),
             Obstacles: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Obstacles
-                .filter((bData) => !Object.values(this.document.system.randomizers.Obstacles)
-                .some((_bData) => _bData.name === bData.name || _bData.desc === bData.desc)), 3, true, (e, a) => a
-                .filter((_e) => e.category === _e.category).length === 0))
+                .filter(bData => !Object.values(this.document.system.randomizers.Obstacles)
+                .some(_bData => _bData.name === bData.name || _bData.desc === bData.desc)), 3, true, (e, a) => a
+                .filter(_e => e.category === _e.category).length === 0))
                 .map(([k, v]) => {
                 k = `${k}`;
                 Object.assign(v, { notes: "" });
                 return [k, v];
             })),
             NPCs: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.NPCs
-                .filter((bData) => !Object.values(this.document.system.randomizers.NPCs)
-                .some((_bData) => _bData.name === bData.name || _bData.description === bData.description)), 3, true, (e, a) => a
-                .filter((_e) => e.arena === _e.arena).length === 0))
+                .filter(bData => !Object.values(this.document.system.randomizers.NPCs)
+                .some(_bData => _bData.name === bData.name || _bData.description === bData.description)), 3, true, (e, a) => a
+                .filter(_e => e.arena === _e.arena).length === 0))
                 .map(([k, v]) => {
                 k = `${k}`;
                 Object.assign(v, { notes: "" });
                 return [k, v];
             })),
             Scores: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Scores
-                .filter((bData) => !Object.values(this.document.system.randomizers.Scores)
-                .some((_bData) => _bData.name === bData.name || _bData.desc === bData.desc)), 3, true, (e, a) => a
-                .filter((_e) => e.category === _e.category).length === 0))
+                .filter(bData => !Object.values(this.document.system.randomizers.Scores)
+                .some(_bData => _bData.name === bData.name || _bData.desc === bData.desc)), 3, true, (e, a) => a
+                .filter(_e => e.category === _e.category).length === 0))
                 .map(([k, v]) => {
                 k = `${k}`;
                 Object.assign(v, { notes: "" });
@@ -93,7 +93,7 @@ class BladesScoreSheet extends BladesItemSheet {
         };
         if (category) {
             Object.keys(randomData)
-                .filter((cat) => cat !== category)
+                .filter(cat => cat !== category)
                 .forEach((cat) => {
                 const _cat = cat;
                 randomData[_cat] = this.document.system.randomizers[_cat];
@@ -107,7 +107,7 @@ class BladesScoreSheet extends BladesItemSheet {
         };
         Object.keys(randomData).forEach((cat) => {
             const _cat = cat;
-            Object.keys(randomData[_cat]).forEach((index) => {
+            Object.keys(randomData[_cat]).forEach(index => {
                 if (this.document.system.randomizers?.[_cat][index].isLocked) {
                     finalRandomData[_cat][index] = this.document.system.randomizers[_cat][index];
                 }
@@ -122,7 +122,7 @@ class BladesScoreSheet extends BladesItemSheet {
         const context = super.getData();
         const sheetData = {};
         sheetData.playerCharacters = BladesActor.GetTypeWithTags(BladesActorType.pc, Tag.PC.ActivePC)
-            .map((pc) => {
+            .map(pc => {
             return Object.assign(pc, {
                 actionData: Object.fromEntries(Object.entries(pc.system.attributes)
                     .map(([attrName, attrData]) => {
@@ -257,7 +257,7 @@ class BladesScoreSheet extends BladesItemSheet {
                 case BladesPhase.Score: {
                     isForcingRender = false;
                     game.actors.filter((actor) => BladesActor.IsType(actor, BladesActorType.pc))
-                        .forEach((actor) => actor.clearLoadout());
+                        .forEach(actor => actor.clearLoadout());
                     break;
                 }
                 case BladesPhase.Downtime: {
@@ -280,8 +280,8 @@ class BladesScoreSheet extends BladesItemSheet {
             }
         }
         if (isForcingRender) {
-            game.actors.filter((actor) => actor.type === BladesActorType.pc)
-                .forEach((actor) => actor.sheet?.render());
+            game.actors.filter(actor => actor.type === BladesActorType.pc)
+                .forEach(actor => actor.sheet?.render());
         }
         return submitData;
     }

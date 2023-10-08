@@ -16,7 +16,7 @@ import BladesPCSheet from "./sheets/actor/BladesPCSheet";
 import BladesCrewSheet from "./sheets/actor/BladesCrewSheet";
 import BladesNPCSheet from "./sheets/actor/BladesNPCSheet";
 import BladesFactionSheet from "./sheets/actor/BladesFactionSheet";
-import BladesRollCollab from "./BladesRollCollab";
+import BladesRollCollab, {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "./BladesRollCollab";
 
 import BladesSelectorDialog from "./BladesDialog";
 import BladesActiveEffect from "./BladesActiveEffect";
@@ -33,10 +33,30 @@ let socket: Socket; // ~ SocketLib interface
 
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 
+class GlobalGetter {
+  get roll() { return BladesRollCollab.Active; }
+
+  get user() { return this.roll?.document; }
+
+  get rollFlags() { return this.roll?.flagData; }
+
+  get userFlags() { return this.user?.flags?.["eunos-blades"]?.rollCollab; }
+
+  get rollPrimary() { return this.roll?.rollPrimary; }
+
+  get rollPrimaryDoc() { return this.roll?.rollPrimaryDoc; }
+
+  get rollOpposition() { return this.roll?.rollOpposition; }
+
+  get sheetData() { return this.roll?.getData(); }
+}
+
+
 // #region Globals: Exposing Functionality to Global Scope ~
 /* DEVCODE*/Object.assign(
   globalThis,
   {
+    get: new GlobalGetter(),
     updateClaims,
     updateContacts,
     updateOps,
@@ -51,6 +71,10 @@ let socket: Socket; // ~ SocketLib interface
     BladesActiveEffect,
     BladesPushController,
     BladesRollCollab,
+    BladesRollMod,
+    BladesRollPrimary,
+    BladesRollOpposition,
+    BladesRollParticipant,
     G,
     U,
     C,

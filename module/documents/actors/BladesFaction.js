@@ -38,7 +38,7 @@ class BladesFaction extends BladesActor {
     get rollOppDoc() { return this; }
     get rollOppImg() { return this.img ?? ""; }
     get rollOppName() { return this.name ?? ""; }
-    get rollOppSubName() { return ""; }
+    get rollOppSubName() { return this.system.subtitle || this.system.concept || " "; }
     get rollOppType() { return this.type; }
     get rollOppModsData() { return []; }
     

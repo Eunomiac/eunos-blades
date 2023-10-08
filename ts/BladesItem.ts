@@ -25,7 +25,10 @@ class BladesItem extends Item implements BladesDocument<Item>,
                                           BladesItemSubClass.Design {
 
   // #region Static Overrides: Create ~
-  static override async create(data: ItemDataConstructorData & { system?: { world_name?: string, description?: string } }, options = {}) {
+  static override async create(
+    data: ItemDataConstructorData & { system?: { world_name?: string, description?: string } },
+    options = {}
+  ) {
     if (Array.isArray(data)) { data = data[0]; }
     data.system = data.system ?? {};
 
@@ -253,10 +256,18 @@ class BladesItem extends Item implements BladesDocument<Item>,
   // #region PREPARING DERIVED DATA
   override prepareDerivedData() {
     super.prepareDerivedData();
-    if (BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { this._prepareCohortData(this.system); }
-    if (BladesItem.IsType(this, BladesItemType.crew_playbook)) { this._preparePlaybookData(this.system); }
-    if (BladesItem.IsType(this, BladesItemType.gear)) { this._prepareGearData(this.system); }
-    if (BladesItem.IsType(this, BladesItemType.playbook)) { this._preparePlaybookData(this.system); }
+    if (BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
+      this._prepareCohortData(this.system);
+    }
+    if (BladesItem.IsType(this, BladesItemType.crew_playbook)) {
+      this._preparePlaybookData(this.system);
+    }
+    if (BladesItem.IsType(this, BladesItemType.gear)) {
+      this._prepareGearData(this.system);
+    }
+    if (BladesItem.IsType(this, BladesItemType.playbook)) {
+      this._preparePlaybookData(this.system);
+    }
   }
 
 

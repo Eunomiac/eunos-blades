@@ -10,6 +10,21 @@ import C, { BladesActorType, Tag, Playbook, BladesItemType, ActionTrait, PrereqT
 import { BladesItem } from "./documents/BladesItemProxy.js";
 import BladesPushController from "./BladesPushController.js";
 import { SelectionCategory } from "./BladesDialog.js";
+var BladesActorUniqueTags;
+(function (BladesActorUniqueTags) {
+    BladesActorUniqueTags["CharacterCrew"] = "CharacterCrew";
+    BladesActorUniqueTags["VicePurveyor"] = "VicePurveyor";
+})(BladesActorUniqueTags || (BladesActorUniqueTags = {}));
+var BladesItemUniqueTypes;
+(function (BladesItemUniqueTypes) {
+    BladesItemUniqueTypes["background"] = "background";
+    BladesItemUniqueTypes["vice"] = "vice";
+    BladesItemUniqueTypes["crew_playbook"] = "crew_playbook";
+    BladesItemUniqueTypes["crew_reputation"] = "crew_reputation";
+    BladesItemUniqueTypes["heritage"] = "heritage";
+    BladesItemUniqueTypes["playbook"] = "playbook";
+    BladesItemUniqueTypes["preferred_op"] = "preferred_op";
+})(BladesItemUniqueTypes || (BladesItemUniqueTypes = {}));
 class BladesActor extends Actor {
 
     static async create(data, options = {}) {
@@ -94,8 +109,12 @@ class BladesActor extends Actor {
             .map(id => this.getSubActor(id))
             .filter((subActor) => Boolean(subActor));
     }
-    get activeSubActors() { return this.subActors.filter(subActor => !subActor.hasTag(Tag.System.Archived)); }
-    get archivedSubActors() { return this.subActors.filter(subActor => subActor.hasTag(Tag.System.Archived)); }
+    get activeSubActors() {
+        return this.subActors.filter(subActor => !subActor.hasTag(Tag.System.Archived));
+    }
+    get archivedSubActors() {
+        return this.subActors.filter(subActor => subActor.hasTag(Tag.System.Archived));
+    }
     checkActorPrereqs(actor) {
                 
         return Boolean(actor);
@@ -132,7 +151,8 @@ class BladesActor extends Actor {
             case SelectionCategory.Rival:
             case SelectionCategory.Friend:
             case SelectionCategory.Acquaintance: {
-                if (!(BladesActor.IsType(this, BladesActorType.pc) || BladesActor.IsType(this, BladesActorType.crew)) || this.playbookName === null) {
+                if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew)
+                    || this.playbookName === null) {
                     return false;
                 }
                 dialogData.Main = this.processEmbeddedActorMatches(BladesActor.GetTypeWithTags(BladesActorType.npc, this.playbookName));
@@ -154,11 +174,6 @@ class BladesActor extends Actor {
     }
     async addSubActor(actorRef, tags) {
         let focusSubActor;
-        let BladesActorUniqueTags;
-        (function (BladesActorUniqueTags) {
-            BladesActorUniqueTags["CharacterCrew"] = "CharacterCrew";
-            BladesActorUniqueTags["VicePurveyor"] = "VicePurveyor";
-        })(BladesActorUniqueTags || (BladesActorUniqueTags = {}));
         if (this.hasSubActorOf(actorRef)) {
             const subActor = this.getSubActor(actorRef);
             if (!subActor) {
@@ -190,7 +205,9 @@ class BladesActor extends Actor {
         const uniqueTags = focusSubActor.tags.filter(tag => tag in BladesActorUniqueTags);
         if (uniqueTags.length > 0) {
             uniqueTags.forEach(uTag => this.activeSubActors
-                .filter((subActor) => Boolean(focusSubActor?.id && subActor.id !== focusSubActor.id && subActor.hasTag(uTag)))
+                .filter((subActor) => Boolean(focusSubActor?.id
+                && subActor.id !== focusSubActor.id
+                && subActor.hasTag(uTag)))
                 .map(subActor => this.remSubActor(subActor.id)));
         }
     }
@@ -337,7 +354,9 @@ class BladesActor extends Actor {
     _processEmbeddedItemMatches(globalItems) {
         return globalItems
             .filter(item => this._checkItemPrereqs(item))
-            .filter(gItem => gItem.hasTag(Tag.System.MultiplesOK) || (gItem.system.max_per_score ?? 1) > this.activeSubItems.filter(sItem => sItem.system.world_name === gItem.system.world_name).length)
+            .filter(gItem => gItem.hasTag(Tag.System.MultiplesOK)
+            || (gItem.system.max_per_score ?? 1)
+                > this.activeSubItems.filter(sItem => sItem.system.world_name === gItem.system.world_name).length)
             .map(gItem => {
             const matchingSubItems = this.archivedSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name);
             if (matchingSubItems.length > 0) {
@@ -434,7 +453,8 @@ class BladesActor extends Actor {
         const dialogData = {};
         const isPC = BladesActor.IsType(this, BladesActorType.pc);
         const isCrew = BladesActor.IsType(this, BladesActorType.crew);
-        if (!BladesActor.IsType(this, BladesActorType.pc) && !BladesActor.IsType(this, BladesActorType.crew)) {
+        if (!BladesActor.IsType(this, BladesActorType.pc)
+            && !BladesActor.IsType(this, BladesActorType.crew)) {
             return false;
         }
         const { playbookName } = this;
@@ -449,7 +469,8 @@ class BladesActor extends Actor {
         }
         else if (category === SelectionCategory.Playbook) {
             if (this.type === BladesActorType.pc) {
-                dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook).filter(item => !item.hasTag(Tag.Gear.Advanced)));
+                dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook)
+                    .filter(item => !item.hasTag(Tag.Gear.Advanced)));
                 dialogData.Advanced = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Gear.Advanced));
             }
             else if (this.type === BladesActorType.crew) {
@@ -561,16 +582,6 @@ class BladesActor extends Actor {
             && i.system.world_name === item.system.world_name));
     }
     async addSubItem(itemRef) {
-        let BladesItemUniqueTypes;
-        (function (BladesItemUniqueTypes) {
-            BladesItemUniqueTypes["background"] = "background";
-            BladesItemUniqueTypes["vice"] = "vice";
-            BladesItemUniqueTypes["crew_playbook"] = "crew_playbook";
-            BladesItemUniqueTypes["crew_reputation"] = "crew_reputation";
-            BladesItemUniqueTypes["heritage"] = "heritage";
-            BladesItemUniqueTypes["playbook"] = "playbook";
-            BladesItemUniqueTypes["preferred_op"] = "preferred_op";
-        })(BladesItemUniqueTypes || (BladesItemUniqueTypes = {}));
                 function isBladesItemUniqueTypes(type) {
             return Object.values(BladesItemUniqueTypes).includes(type);
         }
@@ -599,7 +610,9 @@ class BladesActor extends Actor {
         }
         if (focusItem && isBladesItemUniqueTypes(focusItem.type)) {
             await Promise.all(this.activeSubItems
-                .filter(subItem => subItem.type === focusItem?.type && subItem.system.world_name !== focusItem?.system.world_name && !subItem.hasTag(Tag.System.Archived))
+                .filter(subItem => subItem.type === focusItem?.type
+                && subItem.system.world_name !== focusItem?.system.world_name
+                && !subItem.hasTag(Tag.System.Archived))
                 .map(this.remSubItem.bind(this)));
         }
     }
@@ -625,7 +638,7 @@ class BladesActor extends Actor {
         }
         await subItem.delete();
     }
-        
+    
     async grantAdvancementPoints(allowedTypes, amount = 1) {
         const aPtKey = Array.isArray(allowedTypes)
             ? [...allowedTypes].sort((a, b) => a.localeCompare(b)).join("_")
@@ -663,7 +676,8 @@ class BladesActor extends Actor {
         const spentAbility = U.sum(this.items
             .filter(item => BladesItem.IsType(item, BladesItemType.ability, BladesItemType.crew_ability))
             .map(abil => abil.system.price ?? 1));
-        const spentCohortType = U.sum(this.cohorts.map(cohort => Math.max(0, U.unique(Object.values(cohort.system.subtypes)).length - 1)));
+        const spentCohortType = U.sum(this.cohorts
+            .map(cohort => Math.max(0, U.unique(Object.values(cohort.system.subtypes)).length - 1)));
         const spentUpgrade = U.sum(this.items
             .filter(item => BladesItem.IsType(item, BladesItemType.crew_upgrade))
             .map(upgrade => upgrade.system.price ?? 1));
@@ -694,7 +708,7 @@ class BladesActor extends Actor {
     get canPurchaseCohort() { return this.availableCohortPoints > 0; }
     get canPurchaseCohortType() { return this.availableCohortTypePoints > 0; }
     async advancePlaybook() {
-        if (!(BladesActor.IsType(this, BladesActorType.pc) || BladesActor.IsType(this, BladesActorType.crew)) || !this.playbook) {
+        if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew) || !this.playbook) {
             return;
         }
         await this.update({ "system.experience.playbook.value": 0 });
@@ -753,10 +767,12 @@ class BladesActor extends Actor {
         if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) {
             return [];
         }
-        return this.activeSubItems.filter((item) => item.type === BladesItemType.crew_upgrade);
+        return this.activeSubItems
+            .filter((item) => item.type === BladesItemType.crew_upgrade);
     }
     get cohorts() {
-        return this.activeSubItems.filter((item) => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type));
+        return this.activeSubItems
+            .filter((item) => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type));
     }
     getTaggedItemBonuses(tags) {
         return tags.length;
@@ -775,10 +791,18 @@ class BladesActor extends Actor {
             return;
         }
         if (this.playbook) {
-            system.experience.clues = [...system.experience.clues, ...Object.values(this.playbook.system.experience_clues).filter(clue => Boolean(clue.trim()))];
+            system.experience.clues = [
+                ...system.experience.clues,
+                ...Object.values(this.playbook.system.experience_clues)
+                    .filter(clue => Boolean(clue.trim()))
+            ];
         }
         if (this.playbook) {
-            system.gather_info = [...system.gather_info, ...Object.values(this.playbook.system.gather_info_questions).filter(question => Boolean(question.trim()))];
+            system.gather_info = [
+                ...system.gather_info,
+                ...Object.values(this.playbook.system.gather_info_questions)
+                    .filter(question => Boolean(question.trim()))
+            ];
         }
     }
     _prepareCrewData(system) {
@@ -786,7 +810,11 @@ class BladesActor extends Actor {
             return;
         }
         if (this.playbook) {
-            system.experience.clues = [...system.experience.clues, ...Object.values(this.playbook.system.experience_clues).filter(clue => Boolean(clue.trim()))];
+            system.experience.clues = [
+                ...system.experience.clues,
+                ...Object.values(this.playbook.system.experience_clues)
+                    .filter(clue => Boolean(clue.trim()))
+            ];
             system.turfs = this.playbook.system.turfs;
         }
     }

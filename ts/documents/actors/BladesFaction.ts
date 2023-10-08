@@ -7,8 +7,8 @@ class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
 
   // #region BladesRollCollab Implementation
 
-  get rollFactors(): Partial<Record<Factor,BladesRollCollab.FactorData>> {
-    const factorData: Partial<Record<Factor,BladesRollCollab.FactorData>> = {
+  get rollFactors(): Partial<Record<Factor, BladesRollCollab.FactorData>> {
+    const factorData: Partial<Record<Factor, BladesRollCollab.FactorData>> = {
       [Factor.tier]: {
         name: Factor.tier,
         value: this.getFactorTotal(Factor.tier),
@@ -35,14 +35,19 @@ class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
   }
 
   // #region BladesRollCollab.OppositionDoc Implementation
-  get rollOppID() { return this.id }
-  get rollOppDoc() { return this }
-  get rollOppImg() { return this.img ?? "" }
-  get rollOppName() { return this.name ?? "" }
-  get rollOppSubName() { return "" }
-  get rollOppType() { return this.type }
+  get rollOppID() { return this.id; }
 
-  get rollOppModsData(): BladesRollCollab.RollModData[] { return [] }
+  get rollOppDoc() { return this; }
+
+  get rollOppImg() { return this.img ?? ""; }
+
+  get rollOppName() { return this.name ?? ""; }
+
+  get rollOppSubName() { return this.system.subtitle || this.system.concept || " "; }
+
+  get rollOppType() { return this.type; }
+
+  get rollOppModsData(): BladesRollCollab.RollModData[] { return []; }
   // #endregion
 
   // #endregion

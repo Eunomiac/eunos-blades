@@ -629,8 +629,20 @@ class BladesRollOpposition {
             && (!data.rollOppSubName || typeof data.rollOppSubName === "string")
             && (!data.rollOppModsData || Array.isArray(data.rollOppModsData))
             && U.isList(data.rollFactors)
-            && (!data.rollOppID || typeof data.rollOppID === "string")
-            && (!data.rollOppDoc || BladesRollOpposition.IsDoc(data.rollOppDoc));
+            && (!data.rollOppID || typeof data.rollOppID === "string");
+    }
+    static GetDoc(docRef) {
+        let doc = docRef;
+        if (typeof docRef === "string") {
+            doc = game.actors.get(docRef)
+                ?? game.items.get(docRef)
+                ?? game.actors.getName(docRef)
+                ?? game.items.getName(docRef);
+        }
+        if (BladesRollOpposition.IsDoc(doc)) {
+            return doc;
+        }
+        return false;
     }
     static IsDoc(doc) {
         return BladesActor.IsType(doc, BladesActorType.npc, BladesActorType.faction)
@@ -644,7 +656,17 @@ class BladesRollOpposition {
             ]);
     }
     rollInstance;
-    rollOppID;
+    _rollOppID;
+    get rollOppID() { return this._rollOppID; }
+    set rollOppID(val) {
+        if (val) {
+            const doc = BladesRollOpposition.GetDoc(val);
+            if (doc) {
+                this.rollOppDoc = doc;
+            }
+        }
+        this._rollOppID = val;
+    }
     rollOppDoc;
     rollOppName;
     rollOppSubName;
@@ -655,52 +677,42 @@ class BladesRollOpposition {
 
     constructor(rollInstance, { rollOppID, rollOppDoc, rollOppName, rollOppSubName, rollOppType, rollOppImg, rollOppModsData, rollFactors } = {}) {
         this.rollInstance = rollInstance;
-        let doc = rollOppDoc;
-        if (!doc && rollOppID) {
-            doc = game.items.get(rollOppID) ?? game.actors.get(rollOppID);
-        }
-        if (!doc && rollOppName) {
-            doc = game.items.getName(rollOppName) ?? game.actors.getName(rollOppName);
-        }
-        if (BladesRollOpposition.IsDoc(doc)) {
-            this.rollOppDoc = doc;
-        }
-        if (BladesRollOpposition.IsDoc(this.rollOppDoc)) {
-            this.rollOppID = this.rollOppDoc.rollOppID;
-            this.rollOppName = rollOppName ?? this.rollOppDoc.rollOppName;
-            this.rollOppSubName = rollOppSubName ?? this.rollOppDoc.rollOppSubName;
-            this.rollOppType = this.rollOppDoc.rollOppType;
-            this.rollOppImg = rollOppImg ?? this.rollOppDoc.rollOppImg ?? "";
-            this.rollOppModsData = [
+        const doc = BladesRollOpposition.GetDoc(rollOppDoc ?? rollOppID ?? rollOppName);
+        if (doc) {
+            rollOppID = doc.rollOppID;
+            rollOppDoc = doc;
+            rollOppName ??= doc.rollOppName;
+            rollOppSubName ??= doc.rollOppSubName;
+            rollOppType ??= doc.rollOppType;
+            rollOppImg ??= doc.rollOppImg;
+            rollOppModsData = [
                 ...rollOppModsData ?? [],
-                ...this.rollOppDoc.rollOppModsData ?? []
+                ...doc.rollOppModsData ?? []
             ];
-            this.rollFactors = Object.assign(this.rollOppDoc.rollFactors, rollFactors ?? {});
+            rollFactors = {
+                ...doc.rollFactors,
+                ...rollFactors ?? {}
+            };
         }
-        else {
-            if (!rollOppName) {
-                throw new Error("Must include a rollOppName when constructing a BladesRollOpposition object.");
-            }
-            if (!rollOppSubName) {
-                throw new Error("Must include a rollOppSubName when constructing a BladesRollOpposition object.");
-            }
-            if (!rollOppType) {
-                throw new Error("Must include a rollOppType when constructing a BladesRollOpposition object.");
-            }
-            if (!rollFactors) {
-                throw new Error("Must include a rollFactors when constructing a BladesRollOpposition object.");
-            }
-            this.rollOppID = rollOppID;
-            this.rollOppName = rollOppName;
-            this.rollOppSubName = rollOppSubName;
-            this.rollOppType = rollOppType;
-            this.rollOppImg = rollOppImg ?? "";
-            this.rollOppModsData = rollOppModsData ?? [];
-            this.rollFactors = rollFactors;
+        if (!rollOppName) {
+            throw new Error("Must include a rollOppName when constructing a BladesRollOpposition object.");
         }
-        if (this.rollOppModsData.length === 0) {
-            this.rollOppModsData = undefined;
+        if (!rollOppSubName) {
+            throw new Error("Must include a rollOppSubName when constructing a BladesRollOpposition object.");
         }
+        if (!rollOppType) {
+            throw new Error("Must include a rollOppType when constructing a BladesRollOpposition object.");
+        }
+        if (!rollFactors) {
+            throw new Error("Must include a rollFactors when constructing a BladesRollOpposition object.");
+        }
+        this.rollOppID = rollOppID;
+        this.rollOppName = rollOppName;
+        this.rollOppSubName = rollOppSubName;
+        this.rollOppType = rollOppType;
+        this.rollOppImg = rollOppImg ?? "";
+        this.rollOppModsData = rollOppModsData ?? [];
+        this.rollFactors = rollFactors;
     }
     get flagParams() {
         return [C.SYSTEM_ID, "rollCollab.rollOppData"];
@@ -708,7 +720,6 @@ class BladesRollOpposition {
     get flagData() {
         return {
             rollOppID: this.rollOppID,
-            rollOppDoc: this.rollOppDoc,
             rollOppName: this.rollOppName,
             rollOppSubName: this.rollOppSubName,
             rollOppType: this.rollOppType,
@@ -720,6 +731,19 @@ class BladesRollOpposition {
     async updateRollFlags() {
         await this.rollInstance.document.setFlag(...this.flagParams, this.flagData);
         socketlib.system.executeForEveryone("renderRollCollab", this.rollInstance.rollID);
+    }
+    refresh() {
+        const rollOppFlags = this.rollInstance.flagData.rollOppData;
+        if (rollOppFlags) {
+            this.rollOppID = rollOppFlags.rollOppID;
+            this.rollOppName = rollOppFlags.rollOppName;
+            this.rollOppSubName = rollOppFlags.rollOppSubName;
+            this.rollOppType = rollOppFlags.rollOppType;
+            this.rollOppImg = rollOppFlags.rollOppImg;
+            this.rollOppModsData = rollOppFlags.rollOppModsData;
+            this.rollFactors = rollOppFlags.rollFactors;
+        }
+        return this;
     }
 }
 class BladesRollParticipant {
@@ -737,12 +761,35 @@ class BladesRollParticipant {
             && (!data.rollParticipantID || typeof data.rollParticipantID === "string")
             && (!data.rollParticipantDoc || BladesRollParticipant.IsDoc(data.rollParticipantDoc));
     }
+    static GetDoc(docRef) {
+        let doc = docRef;
+        if (typeof docRef === "string") {
+            doc = game.actors.get(docRef)
+                ?? game.items.get(docRef)
+                ?? game.actors.getName(docRef)
+                ?? game.items.getName(docRef);
+        }
+        if (BladesRollParticipant.IsDoc(doc)) {
+            return doc;
+        }
+        return false;
+    }
     static IsDoc(doc) {
         return BladesActor.IsType(doc, BladesActorType.pc, BladesActorType.crew, BladesActorType.npc)
             || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker);
     }
     rollInstance;
-    rollParticipantID;
+    _rollParticipantID;
+    get rollParticipantID() { return this._rollParticipantID; }
+    set rollParticipantID(val) {
+        if (val) {
+            const doc = BladesRollParticipant.GetDoc(val);
+            if (doc) {
+                this.rollParticipantDoc = doc;
+            }
+        }
+        this._rollParticipantID = val;
+    }
     rollParticipantDoc;
     rollParticipantName;
     rollParticipantType;
@@ -754,56 +801,45 @@ class BladesRollParticipant {
 
     constructor(rollInstance, { rollParticipantSection, rollParticipantSubSection, rollParticipantID, rollParticipantDoc, rollParticipantName, rollParticipantType, rollParticipantIcon, rollParticipantModsData, rollFactors }) {
         this.rollInstance = rollInstance;
+        if (!rollParticipantSection) {
+            throw new Error("Must include a rollParticipantSection when constructing a BladesRollParticipant object.");
+        }
+        if (!rollParticipantSubSection) {
+            throw new Error("Must include a rollParticipantSubSection when constructing a BladesRollParticipant object.");
+        }
         this.rollParticipantSection = rollParticipantSection;
         this.rollParticipantSubSection = rollParticipantSubSection;
-        let doc = rollParticipantDoc;
-        if (!doc && rollParticipantID) {
-            doc = game.items.get(rollParticipantID) ?? game.actors.get(rollParticipantID);
-        }
-        if (!doc && rollParticipantName) {
-            doc = game.items.getName(rollParticipantName) ?? game.actors.getName(rollParticipantName);
-        }
-        if (BladesRollParticipant.IsDoc(doc)) {
-            this.rollParticipantDoc = doc;
-        }
-        if (this.rollParticipantDoc) {
-            this.rollParticipantID = this.rollParticipantDoc.rollParticipantID;
-            this.rollParticipantName = rollParticipantName
-                ?? this.rollParticipantDoc.rollParticipantName
-                ?? this.rollParticipantDoc.name;
-            this.rollParticipantIcon = rollParticipantIcon
-                ?? this.rollParticipantDoc.rollParticipantIcon
-                ?? this.rollParticipantDoc.img;
-            this.rollParticipantType = this.rollParticipantDoc.rollParticipantType;
-            this.rollParticipantModsData = [
+        const doc = BladesRollParticipant.GetDoc(rollParticipantDoc ?? rollParticipantID ?? rollParticipantName);
+        if (doc) {
+            rollParticipantID = doc.rollParticipantID;
+            rollParticipantDoc = doc;
+            rollParticipantName ??= doc.rollParticipantName;
+            rollParticipantType ??= doc.rollParticipantType;
+            rollParticipantIcon ??= doc.rollParticipantIcon;
+            rollParticipantModsData = [
                 ...rollParticipantModsData ?? [],
-                ...this.rollParticipantDoc.rollParticipantModsData ?? []
+                ...doc.rollParticipantModsData ?? []
             ];
-            this.rollFactors = Object.assign(this.rollParticipantDoc.rollFactors, rollFactors ?? {});
+            rollFactors = {
+                ...doc.rollFactors,
+                ...rollFactors ?? {}
+            };
         }
-        else {
-            if (!rollParticipantName) {
-                throw new Error("Must include a rollParticipantName when constructing a BladesRollParticipant object.");
-            }
-            if (!rollParticipantType) {
-                throw new Error("Must include a rollParticipantType when constructing a BladesRollParticipant object.");
-            }
-            if (!rollParticipantIcon) {
-                throw new Error("Must include a rollParticipantIcon when constructing a BladesRollParticipant object.");
-            }
-            if (!rollFactors) {
-                throw new Error("Must include a rollFactors when constructing a BladesRollParticipant object.");
-            }
-            this.rollParticipantID = rollParticipantID;
-            this.rollParticipantName = rollParticipantName;
-            this.rollParticipantType = rollParticipantType;
-            this.rollParticipantIcon = rollParticipantIcon;
-            this.rollParticipantModsData = rollParticipantModsData ?? [];
-            this.rollFactors = rollFactors;
+        if (!rollParticipantName) {
+            throw new Error("Must include a rollParticipantName when constructing a BladesRollParticipant object.");
         }
-        if (this.rollParticipantModsData.length === 0) {
-            this.rollParticipantModsData = undefined;
+        if (!rollParticipantType) {
+            throw new Error("Must include a rollParticipantType when constructing a BladesRollParticipant object.");
         }
+        if (!rollFactors) {
+            throw new Error("Must include a rollFactors when constructing a BladesRollParticipant object.");
+        }
+        this.rollParticipantID = rollParticipantID;
+        this.rollParticipantName = rollParticipantName;
+        this.rollParticipantType = rollParticipantType;
+        this.rollParticipantIcon = rollParticipantIcon ?? "";
+        this.rollParticipantModsData = rollParticipantModsData ?? [];
+        this.rollFactors = rollFactors;
     }
     get flagParams() {
         return [C.SYSTEM_ID, `rollCollab.rollParticipantData.${this.rollParticipantSection}.${this.rollParticipantSubSection}`];
@@ -813,7 +849,6 @@ class BladesRollParticipant {
             rollParticipantSection: this.rollParticipantSection,
             rollParticipantSubSection: this.rollParticipantSubSection,
             rollParticipantID: this.rollParticipantID,
-            rollParticipantDoc: this.rollParticipantDoc,
             rollParticipantName: this.rollParticipantName,
             rollParticipantType: this.rollParticipantType,
             rollParticipantIcon: this.rollParticipantIcon,
@@ -823,6 +858,24 @@ class BladesRollParticipant {
     }
     async updateRollFlags() {
         await this.rollInstance.document.setFlag(...this.flagParams, this.flagData);
+        socketlib.system.executeForEveryone("renderRollCollab", this.rollInstance.rollID);
+    }
+    refresh() {
+        const rollParticipantFlagData = this.rollInstance.flagData.rollParticipantData?.[this.rollParticipantSection];
+        if (rollParticipantFlagData) {
+            const rollParticipantFlags = rollParticipantFlagData[this.rollParticipantSubSection];
+            if (rollParticipantFlags) {
+                this.rollParticipantID = rollParticipantFlags.rollParticipantID;
+                this.rollParticipantName = rollParticipantFlags.rollParticipantName;
+                this.rollParticipantType = rollParticipantFlags.rollParticipantType;
+                this.rollParticipantIcon = rollParticipantFlags.rollParticipantIcon;
+                this.rollParticipantSection = rollParticipantFlags.rollParticipantSection;
+                this.rollParticipantSubSection = rollParticipantFlags.rollParticipantSubSection;
+                this.rollParticipantModsData = rollParticipantFlags.rollParticipantModsData;
+                this.rollFactors = rollParticipantFlags.rollFactors;
+            }
+        }
+        return this;
     }
 }
 class BladesRollCollab extends DocumentSheet {
@@ -1069,6 +1122,14 @@ class BladesRollCollab extends DocumentSheet {
         if (!rollUser) {
             throw new Error("[BladesRollCollab.NewRoll()] You must provide a valid rollUserID in the config object.");
         }
+        const flagData = rollUser.getFlag("eunos-blades", "rollCollab");
+        if (flagData) {
+            const { rollID } = flagData;
+            if (BladesRollCollab.Current[rollID]) {
+                throw new Error(`[BladesRollCollab.NewRoll()] User ${rollUser.name} already documenting live roll with ID '${rollID}'`);
+            }
+            await rollUser.unsetFlag("eunos-blades", "rollCollab");
+        }
         if (!BladesRollPrimary.IsValidData(config.rollPrimaryData)) {
             let rollPrimarySourceData;
             if (BladesPC.IsType(rollUser.character)) {
@@ -1252,13 +1313,10 @@ class BladesRollCollab extends DocumentSheet {
         return undefined;
     }
     get rollOpposition() {
-        if (this._rollOpposition instanceof BladesRollOpposition) {
-            return this._rollOpposition;
-        }
-        else if (BladesRollOpposition.IsValidData(this.flagData.rollOppData)) {
+        if (!this._rollOpposition && BladesRollOpposition.IsValidData(this.flagData.rollOppData)) {
             this._rollOpposition = new BladesRollOpposition(this, this.flagData.rollOppData);
         }
-        return this._rollOpposition;
+        return this._rollOpposition?.refresh();
     }
     set rollOpposition(val) {
         if (val === undefined) {
@@ -1466,6 +1524,22 @@ class BladesRollCollab extends DocumentSheet {
             factorData.value +=
                 (this.flagData.GMBoosts[factor] ?? 0)
                     + (this.tempGMBoosts[factor] ?? 0);
+        });
+        Object.keys(sourceFactors)
+            .filter(isFactor)
+            .forEach(factor => {
+            const factorData = sourceFactors[factor];
+            if (!factorData) {
+                return;
+            }
+            factorData.value ??= 0;
+            factorData.value += this.flagData.GMOppBoosts[factor] ?? 0;
+            if (factor === Factor.tier) {
+                factorData.display = U.romanizeNum(factorData.value);
+            }
+            else {
+                factorData.display = `${factorData.value}`;
+            }
         });
         const rollOppFactors = this.rollOpposition?.rollFactors
             ?? Object.fromEntries(([

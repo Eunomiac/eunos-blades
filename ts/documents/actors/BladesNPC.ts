@@ -9,8 +9,8 @@ class BladesNPC extends BladesActor implements BladesActorSubClass.NPC,
 
   // #region BladesRollCollab Implementation
 
-  get rollFactors(): Partial<Record<Factor,BladesRollCollab.FactorData>> {
-    const factorData: Partial<Record<Factor,BladesRollCollab.FactorData>> = {
+  get rollFactors(): Partial<Record<Factor, BladesRollCollab.FactorData>> {
+    const factorData: Partial<Record<Factor, BladesRollCollab.FactorData>> = {
       [Factor.tier]: {
         name: Factor.tier,
         value: this.getFactorTotal(Factor.tier),
@@ -61,24 +61,33 @@ class BladesNPC extends BladesActor implements BladesActorSubClass.NPC,
   }
 
   // #region BladesRollCollab.OppositionDoc Implementation
-  get rollOppID() { return this.id }
-  get rollOppDoc() { return this }
-  get rollOppImg() { return this.img ?? "" }
-  get rollOppName() { return this.name ?? "" }
-  get rollOppSubName() { return "" }
-  get rollOppType() { return this.type }
+  get rollOppID() { return this.id; }
 
-  get rollOppModsData(): BladesRollCollab.RollModData[] { return [] }
+  get rollOppDoc() { return this; }
+
+  get rollOppImg() { return this.img; }
+
+  get rollOppName() { return this.name; }
+
+  get rollOppSubName() { return this.system.subtitle || this.system.concept || " "; }
+
+  get rollOppType() { return this.type; }
+
+  get rollOppModsData(): BladesRollCollab.RollModData[] { return []; }
   // #endregion
 
   // #region BladesRollCollab.ParticipantDoc Implementation
-  get rollParticipantID() { return this.id }
-  get rollParticipantDoc() { return this }
-  get rollParticipantIcon() { return this.img ?? "" }
-  get rollParticipantName() { return this.name ?? "" }
-  get rollParticipantType() { return this.type }
+  get rollParticipantID() { return this.id; }
 
-  get rollParticipantModsData(): BladesRollCollab.RollModData[] { return [] }
+  get rollParticipantDoc() { return this; }
+
+  get rollParticipantIcon() { return this.img; }
+
+  get rollParticipantName() { return this.name; }
+
+  get rollParticipantType() { return this.type; }
+
+  get rollParticipantModsData(): BladesRollCollab.RollModData[] { return []; }
   // #endregion
 
   // #endregion

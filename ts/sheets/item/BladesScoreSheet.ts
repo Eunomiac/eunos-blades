@@ -8,6 +8,8 @@ import BladesRollCollab, {BladesRollOpposition} from "../../BladesRollCollab";
 
 
 /* #region BladesTipGenerator */
+
+// eslint-disable-next-line no-shadow
 export enum BladesTipContext {
   DiceRoll = "DiceRoll",
   Combat = "Combat",
@@ -38,6 +40,7 @@ class BladesTipGenerator {
   }
 
   private readonly tipContext: BladesTipContext;
+
   constructor(tipContext: BladesTipContext) {
     this.tipContext = tipContext;
   }
@@ -61,36 +64,36 @@ class BladesScoreSheet extends BladesItemSheet {
     // Generate full set of random data.
     const randomData: Record<RandomCat, Record<string, Record<string, unknown>>> = {
       Bargains: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Bargains
-        .filter((bData) => !Object.values(this.document.system.randomizers.Bargains)
-          .some((_bData) => _bData.name === bData.name || _bData.effect === bData.effect)), 3, true, (e, a) => a
-        .filter((_e) => e.category === _e.category).length === 0))
+        .filter(bData => !Object.values(this.document.system.randomizers.Bargains)
+          .some(_bData => _bData.name === bData.name || _bData.effect === bData.effect)), 3, true, (e, a) => a
+        .filter(_e => e.category === _e.category).length === 0))
         .map(([k, v]) => {
           k = `${k}`;
           Object.assign(v, {notes: ""});
           return [k, v];
         })),
       Obstacles: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Obstacles
-        .filter((bData) => !Object.values(this.document.system.randomizers.Obstacles)
-          .some((_bData) => _bData.name === bData.name || _bData.desc === bData.desc)), 3, true, (e, a) => a
-        .filter((_e) => e.category === _e.category).length === 0))
+        .filter(bData => !Object.values(this.document.system.randomizers.Obstacles)
+          .some(_bData => _bData.name === bData.name || _bData.desc === bData.desc)), 3, true, (e, a) => a
+        .filter(_e => e.category === _e.category).length === 0))
         .map(([k, v]) => {
           k = `${k}`;
           Object.assign(v, {notes: ""});
           return [k, v];
         })),
       NPCs: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.NPCs
-        .filter((bData) => !Object.values(this.document.system.randomizers.NPCs)
-          .some((_bData) => _bData.name === bData.name || _bData.description === bData.description)), 3, true, (e, a) => a
-        .filter((_e) => e.arena === _e.arena).length === 0))
+        .filter(bData => !Object.values(this.document.system.randomizers.NPCs)
+          .some(_bData => _bData.name === bData.name || _bData.description === bData.description)), 3, true, (e, a) => a
+        .filter(_e => e.arena === _e.arena).length === 0))
         .map(([k, v]) => {
           k = `${k}`;
           Object.assign(v, {notes: ""});
           return [k, v];
         })),
       Scores: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Scores
-        .filter((bData) => !Object.values(this.document.system.randomizers.Scores)
-          .some((_bData) => _bData.name === bData.name || _bData.desc === bData.desc)), 3, true, (e, a) => a
-        .filter((_e) => e.category === _e.category).length === 0))
+        .filter(bData => !Object.values(this.document.system.randomizers.Scores)
+          .some(_bData => _bData.name === bData.name || _bData.desc === bData.desc)), 3, true, (e, a) => a
+        .filter(_e => e.category === _e.category).length === 0))
         .map(([k, v]) => {
           k = `${k}`;
           Object.assign(v, {notes: ""});
@@ -101,7 +104,7 @@ class BladesScoreSheet extends BladesItemSheet {
     // If category specified, replace all other categories with stored data
     if (category) {
       Object.keys(randomData)
-        .filter((cat) => cat !== category)
+        .filter(cat => cat !== category)
         .forEach((cat: string) => {
           const _cat = cat as RandomCat;
           randomData[_cat] = this.document.system.randomizers[_cat];
@@ -119,7 +122,7 @@ class BladesScoreSheet extends BladesItemSheet {
     // Iterate through all randomizer categories. If system entry isLocked, use that, or use newly-generated data
     Object.keys(randomData).forEach((cat: string) => {
       const _cat = cat as RandomCat;
-      Object.keys(randomData[_cat]).forEach((index) => {
+      Object.keys(randomData[_cat]).forEach(index => {
         if (this.document.system.randomizers?.[_cat][index].isLocked) {
           finalRandomData[_cat][index] = this.document.system.randomizers[_cat][index];
         } else {
@@ -139,7 +142,7 @@ class BladesScoreSheet extends BladesItemSheet {
 
     // Get player characters, assign simplified actionData that I probably should have coded them with from the start
     sheetData.playerCharacters = BladesActor.GetTypeWithTags(BladesActorType.pc, Tag.PC.ActivePC)
-      .map((pc) => {
+      .map(pc => {
         return Object.assign(
           pc,
           {
@@ -163,7 +166,7 @@ class BladesScoreSheet extends BladesItemSheet {
     // Prune system data for blank/empty opposition entries
     const validOppositions: Record<string, BladesRollCollab.OppositionDocData> = {};
     for (const [id, data] of Object.entries(context.system.oppositions)) {
-      if (!data.rollOppName && !data.rollOppSubName) { continue }
+      if (!data.rollOppName && !data.rollOppSubName) { continue; }
       validOppositions[id] = data;
     }
     context.system.oppositions = validOppositions;
@@ -225,7 +228,10 @@ class BladesScoreSheet extends BladesItemSheet {
     const oppId = elem$.data("oppId");
     this.document.update({"system.oppositionSelected": oppId});
     if (BladesScore.Active?.id === this.document.id && BladesRollCollab.Active) {
-      BladesRollCollab.Active.rollOpposition = new BladesRollOpposition(BladesRollCollab.Active, this.document.system.oppositions[oppId]);
+      BladesRollCollab.Active.rollOpposition = new BladesRollOpposition(
+        BladesRollCollab.Active,
+        this.document.system.oppositions[oppId]
+      );
     }
   }
 
@@ -242,7 +248,7 @@ class BladesScoreSheet extends BladesItemSheet {
   async _updateGMNotesOnPC(event: JQuery.ChangeEvent) {
     const elem$ = $(event.currentTarget);
     const actor = BladesActor.Get(elem$.data("id"));
-    if (!actor) { throw new Error(`Unable to retrieve actor with id '${elem$.data("id")}'`) }
+    if (!actor) { throw new Error(`Unable to retrieve actor with id '${elem$.data("id")}'`); }
     const updateText = event.currentTarget.innerHTML;
     eLog.checkLog3("scoreSheet", "Retrieved Text, Updating ...", {updateText});
     await actor.update({"system.gm_notes": updateText});
@@ -296,14 +302,14 @@ class BladesScoreSheet extends BladesItemSheet {
         case BladesPhase.Score: {
           isForcingRender = false;
           game.actors.filter((actor): actor is BladesPC => BladesActor.IsType(actor, BladesActorType.pc))
-            .forEach((actor) => actor.clearLoadout());
+            .forEach(actor => actor.clearLoadout());
           break;
         }
         case BladesPhase.Downtime: {
 
           break;
         }
-        // no default
+        // No default
       }
       switch (newPhase) {
         case BladesPhase.CharGen: {
@@ -322,12 +328,12 @@ class BladesScoreSheet extends BladesItemSheet {
 
           break;
         }
-        // no default
+        // No default
       }
     }
     if (isForcingRender) {
-      game.actors.filter((actor) => actor.type === BladesActorType.pc)
-        .forEach((actor) => actor.sheet?.render());
+      game.actors.filter(actor => actor.type === BladesActorType.pc)
+        .forEach(actor => actor.sheet?.render());
     }
     return submitData;
   }

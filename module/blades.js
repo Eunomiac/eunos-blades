@@ -19,7 +19,7 @@ import BladesPCSheet from "./sheets/actor/BladesPCSheet.js";
 import BladesCrewSheet from "./sheets/actor/BladesCrewSheet.js";
 import BladesNPCSheet from "./sheets/actor/BladesNPCSheet.js";
 import BladesFactionSheet from "./sheets/actor/BladesFactionSheet.js";
-import BladesRollCollab from "./BladesRollCollab.js";
+import BladesRollCollab, { BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant } from "./BladesRollCollab.js";
 import BladesSelectorDialog from "./BladesDialog.js";
 import BladesActiveEffect from "./BladesActiveEffect.js";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet.js";
@@ -30,8 +30,19 @@ CONFIG.debug.logging = true;
 Object.assign(globalThis, { eLog: logger });
 Handlebars.registerHelper("eLog", logger.hbsLog); 
 let socket;
+class GlobalGetter {
+    get roll() { return BladesRollCollab.Active; }
+    get user() { return this.roll?.document; }
+    get rollFlags() { return this.roll?.flagData; }
+    get userFlags() { return this.user?.flags?.["eunos-blades"]?.rollCollab; }
+    get rollPrimary() { return this.roll?.rollPrimary; }
+    get rollPrimaryDoc() { return this.roll?.rollPrimaryDoc; }
+    get rollOpposition() { return this.roll?.rollOpposition; }
+    get sheetData() { return this.roll?.getData(); }
+}
 
 Object.assign(globalThis, {
+    get: new GlobalGetter(),
     updateClaims,
     updateContacts,
     updateOps,
@@ -46,6 +57,10 @@ Object.assign(globalThis, {
     BladesActiveEffect,
     BladesPushController,
     BladesRollCollab,
+    BladesRollMod,
+    BladesRollPrimary,
+    BladesRollOpposition,
+    BladesRollParticipant,
     G,
     U,
     C,
