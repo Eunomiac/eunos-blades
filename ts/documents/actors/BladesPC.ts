@@ -15,7 +15,12 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     return super.IsType(doc, BladesActorType.pc);
   }
 
-  static override async create(data: ActorDataConstructorData & { system?: Partial<BladesActorSchema.Scoundrel> }, options = {}) {
+  static override async create(
+    data: ActorDataConstructorData & {
+      system?: Partial<BladesActorSchema.Scoundrel>
+    },
+    options = {}
+  ) {
     data.token = data.token || {};
     data.system = data.system ?? {};
 
@@ -47,13 +52,17 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     this.updateEmbeddedDocuments(
       "Item",
       [
-        ...this.activeSubItems.filter(item => BladesItem.IsType(item, BladesItemType.gear) && !item.hasTag(Tag.System.Archived))
+        ...this.activeSubItems
+          .filter(item => BladesItem.IsType(item, BladesItemType.gear)
+            && !item.hasTag(Tag.System.Archived))
           .map(item => ({
             _id: item.id,
             "system.tags": [...item.tags, Tag.System.Archived],
             "system.uses_per_score.value": 0
           })),
-        ...this.activeSubItems.filter(item => BladesItem.IsType(item, BladesItemType.ability) && item.system.uses_per_score.max)
+        ...this.activeSubItems
+          .filter(item => BladesItem.IsType(item, BladesItemType.ability)
+            && item.system.uses_per_score.max)
           .map(item => ({
             _id: item.id,
             "system.uses_per_score.value": 0
@@ -110,12 +119,14 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   }
 
   get crew(): BladesCrew | undefined {
-    return this.activeSubActors.find((subActor): subActor is BladesCrew => BladesActor.IsType(subActor, BladesActorType.crew));
+    return this.activeSubActors
+      .find((subActor): subActor is BladesCrew => BladesActor.IsType(subActor, BladesActorType.crew));
   }
 
   get abilities(): BladesItem[] {
     if (!this.playbook) { return []; }
-    return this.activeSubItems.filter(item => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
+    return this.activeSubItems
+      .filter(item => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
   }
 
   get playbookName() {
@@ -123,15 +134,22 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   }
 
   get playbook(): BladesItemOfType<BladesItemType.playbook>|undefined {
-    return this.activeSubItems.find((item): item is BladesItemOfType<BladesItemType.playbook> => item.type === BladesItemType.playbook);
+    return this.activeSubItems
+      .find((item): item is BladesItemOfType<BladesItemType.playbook> => item.type === BladesItemType.playbook);
   }
 
   get attributes(): Record<AttributeTrait, number> {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never; }
     return {
-      insight: Object.values(this.system.attributes.insight).filter(({value}) => value > 0).length + this.system.resistance_bonus.insight,
-      prowess: Object.values(this.system.attributes.prowess).filter(({value}) => value > 0).length + this.system.resistance_bonus.prowess,
-      resolve: Object.values(this.system.attributes.resolve).filter(({value}) => value > 0).length + this.system.resistance_bonus.resolve
+      insight: Object.values(this.system.attributes.insight)
+        .filter(({value}) => value > 0).length
+          + this.system.resistance_bonus.insight,
+      prowess: Object.values(this.system.attributes.prowess)
+        .filter(({value}) => value > 0).length
+          + this.system.resistance_bonus.prowess,
+      resolve: Object.values(this.system.attributes.resolve)
+        .filter(({value}) => value > 0).length
+          + this.system.resistance_bonus.resolve
     };
   }
 
@@ -163,7 +181,9 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   get traumaList(): string[] {
     // @ts-ignore Compiler linter mismatch.
-    return BladesActor.IsType(this, BladesActorType.pc) ? Object.keys(this.system.trauma.active).filter(key => this.system.trauma.active[key]) : [];
+    return BladesActor.IsType(this, BladesActorType.pc)
+      ? Object.keys(this.system.trauma.active).filter(key => this.system.trauma.active[key])
+      : [];
   }
 
   get activeTraumaConditions(): Record<string, boolean> {
@@ -171,7 +191,10 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     return U.objFilter(
       this.system.trauma.checked,
       // @ts-ignore Compiler linter mismatch.
-      (_v: unknown, traumaName: string): boolean => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName])
+      (_v: unknown, traumaName: string): boolean => Boolean(
+        traumaName in this.system.trauma.active
+        && this.system.trauma.active[traumaName]
+      )
     );
   }
 
@@ -184,7 +207,10 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   get remainingLoad(): number {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0; }
     if (!this.system.loadout.selected) { return 0; }
-    const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected.toString()).toLowerCase() as KeyOf<typeof this.system.loadout.levels>];
+    const maxLoad = this.system.loadout.levels[
+      game.i18n.localize(this.system.loadout.selected.toString())
+        .toLowerCase() as KeyOf<typeof this.system.loadout.levels>
+    ];
     return Math.max(0, maxLoad - this.currentLoad);
   }
 
@@ -240,7 +266,10 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     const rollModsData = BladesRollMod.ParseDocRollMods(this);
 
     // Add roll mods from harm
-    [[/1d/, RollModSection.roll] as const, [/Less Effect/, RollModSection.effect] as const].forEach(([effectPat, effectCat]) => {
+    [
+      [/1d/, RollModSection.roll] as const,
+      [/Less Effect/, RollModSection.effect] as const
+    ].forEach(([effectPat, effectCat]) => {
       const {one: harmConditionOne, two: harmConditionTwo} = Object.values(this.system.harm)
         .find(harmData => effectPat.test(harmData.effect)) ?? {};
       const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
@@ -263,7 +292,8 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
         });
       }
     });
-    const {one: harmCondition} = Object.values(this.system.harm).find(harmData => /Need Help/.test(harmData.effect)) ?? {};
+    const {one: harmCondition} = Object.values(this.system.harm)
+      .find(harmData => /Need Help/.test(harmData.effect)) ?? {};
     if (harmCondition && harmCondition.trim() !== "") {
       rollModsData.push({
         id: "Push-negative-roll",

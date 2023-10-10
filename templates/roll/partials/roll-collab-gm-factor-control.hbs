@@ -3,6 +3,11 @@
 {{#with (lookup data.GMBoosts data.factor) as |sourceBoost|}}
 {{#with (lookup data.GMOppBoosts data.factor) as |oppBoost|}}
 
+{{log "CONTEXT" data}}
+{{log "Source Data" sourceData}}
+{{log "Source Boost" sourceBoost}}
+{{log "OppBoost" oppBoost}}
+
 <div class="factor-control-row flex-horizontal">
 
   <span class="factor-toggle {{~#if sourceData.isActive}} toggle-active{{/if}} factor-toggle-isActive"

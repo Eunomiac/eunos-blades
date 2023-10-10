@@ -73,6 +73,8 @@ declare global {
       costAmount: number
     }
 
+    export type FactorToggle = "isActive"|"isPrimary"|"isDominant"|"highFavorsPC";
+
     export type FactorFlagData = {
       display: string,
       isActive?: boolean,
@@ -118,6 +120,7 @@ declare global {
       diceTotal: number,
 
       rollOpposition?: OppositionDocData,
+      rollParticipants?: RollParticipantDocs,
 
       rollPositions: Position[],
       rollEffects: Effect[],
@@ -143,8 +146,8 @@ declare global {
 
       rollFactors: Record<"source"|"opposition", Partial<Record<Factor,FactorData>>>,
 
-      oddsGradient: string,
-      oddsGradientTestHTML?: string,
+      oddsHTMLStart: string,
+      oddsHTMLStop: string,
       costData?: Record<"footerLabel"|"tooltip",string>
     }
 

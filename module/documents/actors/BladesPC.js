@@ -37,13 +37,17 @@ class BladesPC extends BladesActor {
     async clearLoadout() {
         await this.update({ "system.loadout.selected": "" });
         this.updateEmbeddedDocuments("Item", [
-            ...this.activeSubItems.filter(item => BladesItem.IsType(item, BladesItemType.gear) && !item.hasTag(Tag.System.Archived))
+            ...this.activeSubItems
+                .filter(item => BladesItem.IsType(item, BladesItemType.gear)
+                && !item.hasTag(Tag.System.Archived))
                 .map(item => ({
                 _id: item.id,
                 "system.tags": [...item.tags, Tag.System.Archived],
                 "system.uses_per_score.value": 0
             })),
-            ...this.activeSubItems.filter(item => BladesItem.IsType(item, BladesItemType.ability) && item.system.uses_per_score.max)
+            ...this.activeSubItems
+                .filter(item => BladesItem.IsType(item, BladesItemType.ability)
+                && item.system.uses_per_score.max)
                 .map(item => ({
                 _id: item.id,
                 "system.uses_per_score.value": 0
@@ -100,28 +104,37 @@ class BladesPC extends BladesActor {
         return this.activeSubItems.find(item => item.type === BladesItemType.vice);
     }
     get crew() {
-        return this.activeSubActors.find((subActor) => BladesActor.IsType(subActor, BladesActorType.crew));
+        return this.activeSubActors
+            .find((subActor) => BladesActor.IsType(subActor, BladesActorType.crew));
     }
     get abilities() {
         if (!this.playbook) {
             return [];
         }
-        return this.activeSubItems.filter(item => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
+        return this.activeSubItems
+            .filter(item => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
     }
     get playbookName() {
         return this.playbook?.name;
     }
     get playbook() {
-        return this.activeSubItems.find((item) => item.type === BladesItemType.playbook);
+        return this.activeSubItems
+            .find((item) => item.type === BladesItemType.playbook);
     }
     get attributes() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return undefined;
         }
         return {
-            insight: Object.values(this.system.attributes.insight).filter(({ value }) => value > 0).length + this.system.resistance_bonus.insight,
-            prowess: Object.values(this.system.attributes.prowess).filter(({ value }) => value > 0).length + this.system.resistance_bonus.prowess,
-            resolve: Object.values(this.system.attributes.resolve).filter(({ value }) => value > 0).length + this.system.resistance_bonus.resolve
+            insight: Object.values(this.system.attributes.insight)
+                .filter(({ value }) => value > 0).length
+                + this.system.resistance_bonus.insight,
+            prowess: Object.values(this.system.attributes.prowess)
+                .filter(({ value }) => value > 0).length
+                + this.system.resistance_bonus.prowess,
+            resolve: Object.values(this.system.attributes.resolve)
+                .filter(({ value }) => value > 0).length
+                + this.system.resistance_bonus.resolve
         };
     }
     get actions() {
@@ -153,14 +166,17 @@ class BladesPC extends BladesActor {
             .length;
     }
     get traumaList() {
-        return BladesActor.IsType(this, BladesActorType.pc) ? Object.keys(this.system.trauma.active).filter(key => this.system.trauma.active[key]) : [];
+        return BladesActor.IsType(this, BladesActorType.pc)
+            ? Object.keys(this.system.trauma.active).filter(key => this.system.trauma.active[key])
+            : [];
     }
     get activeTraumaConditions() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return {};
         }
         return U.objFilter(this.system.trauma.checked, 
-        (_v, traumaName) => Boolean(traumaName in this.system.trauma.active && this.system.trauma.active[traumaName]));
+        (_v, traumaName) => Boolean(traumaName in this.system.trauma.active
+            && this.system.trauma.active[traumaName]));
     }
     get currentLoad() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
@@ -176,7 +192,8 @@ class BladesPC extends BladesActor {
         if (!this.system.loadout.selected) {
             return 0;
         }
-        const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected.toString()).toLowerCase()];
+        const maxLoad = this.system.loadout.levels[game.i18n.localize(this.system.loadout.selected.toString())
+            .toLowerCase()];
         return Math.max(0, maxLoad - this.currentLoad);
     }
     async addStash(amount) {
@@ -217,7 +234,10 @@ class BladesPC extends BladesActor {
     get rollPrimaryImg() { return this.img; }
     get rollModsData() {
         const rollModsData = BladesRollMod.ParseDocRollMods(this);
-        [[/1d/, RollModSection.roll], [/Less Effect/, RollModSection.effect]].forEach(([effectPat, effectCat]) => {
+        [
+            [/1d/, RollModSection.roll],
+            [/Less Effect/, RollModSection.effect]
+        ].forEach(([effectPat, effectCat]) => {
             const { one: harmConditionOne, two: harmConditionTwo } = Object.values(this.system.harm)
                 .find(harmData => effectPat.test(harmData.effect)) ?? {};
             const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
@@ -240,7 +260,8 @@ class BladesPC extends BladesActor {
                 });
             }
         });
-        const { one: harmCondition } = Object.values(this.system.harm).find(harmData => /Need Help/.test(harmData.effect)) ?? {};
+        const { one: harmCondition } = Object.values(this.system.harm)
+            .find(harmData => /Need Help/.test(harmData.effect)) ?? {};
         if (harmCondition && harmCondition.trim() !== "") {
             rollModsData.push({
                 id: "Push-negative-roll",

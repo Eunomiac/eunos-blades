@@ -405,50 +405,20 @@ class BladesRollMod {
         });
     }
     get tooltip() {
-        if (this.sideString) {
-            return this._tooltip
-                .replace(/%COLON%/g, ":")
-                .replace(/%DOC_NAME%/g, this.sideString);
-        }
-        return this._tooltip.replace(/%COLON%/g, ":");
+        return this._tooltip.replace(/%COLON%/g, ":")
+            .replace(/%DOC_NAME%/g, this.sideString ?? "an Ally")
+            .replace(/@OPPOSITION_NAME@/g, this.rollInstance.rollOpposition?.rollOppName ?? "Your Opposition");
     }
     get sideString() {
         if (this._sideString) {
             return this._sideString;
         }
-        switch (this.category) {
-            case RollModSection.roll: {
-                if (this.name === "Assist") {
-                    const docID = this.rollInstance.document.getFlag("eunos-blades", "rollCollab.docSelections.roll.Assist");
-                    if (!docID) {
-                        return undefined;
-                    }
-                    return (game.actors.get(docID) ?? game.items.get(docID))?.name ?? undefined;
-                }
-                return undefined;
-            }
-            case RollModSection.position: {
-                if (this.name === "Setup") {
-                    const docID = this.rollInstance.document.getFlag("eunos-blades", "rollCollab.docSelections.position.Setup");
-                    if (!docID) {
-                        return undefined;
-                    }
-                    return (game.actors.get(docID) ?? game.items.get(docID))?.name ?? undefined;
-                }
-                return undefined;
-            }
-            case RollModSection.effect: {
-                if (this.name === "Setup") {
-                    const docID = this.rollInstance.document.getFlag("eunos-blades", "rollCollab.docSelections.effect.Setup");
-                    if (!docID) {
-                        return undefined;
-                    }
-                    return (game.actors.get(docID) ?? game.items.get(docID))?.name ?? undefined;
-                }
-                return undefined;
-            }
-            default: return undefined;
+        const rollParticipantCategoryData = this.rollInstance.rollParticipants?.[this.category];
+        if (rollParticipantCategoryData && this.name in rollParticipantCategoryData) {
+            const rollParticipant = rollParticipantCategoryData[this.name];
+            return rollParticipant.rollParticipantName;
         }
+        return undefined;
     }
     get allFlagData() {
         return this.rollInstance.document.getFlag("eunos-blades", "rollCollab");
@@ -592,7 +562,10 @@ class BladesRollPrimary {
             this.rollPrimaryType = this.rollPrimaryDoc.rollPrimaryType;
             this.rollPrimaryImg = rollPrimaryImg ?? this.rollPrimaryDoc.rollPrimaryImg ?? "";
             this._rollModsData = rollModsData ?? [];
-            this.rollFactors = Object.assign(this.rollPrimaryDoc.rollFactors, rollFactors ?? {});
+            this.rollFactors = {
+                ...this.rollPrimaryDoc.rollFactors,
+                ...rollFactors ?? {}
+            };
         }
         else {
             if (!rollPrimaryName) {
@@ -1106,6 +1079,7 @@ class BladesRollCollab extends DocumentSheet {
         await rollInst._render(true);
     }
     static RenderRollCollab(rollID) {
+        BladesRollCollab.Current[rollID]?.prepareRollParticipantData();
         BladesRollCollab.Current[rollID]?.render();
     }
     static async CloseRollCollab(rollID) {
@@ -1358,7 +1332,6 @@ class BladesRollCollab extends DocumentSheet {
     }
     async addRollParticipant(participant) {
         await participant.updateRollFlags();
-        this.prepareRollParticipantData();
         socketlib.system.executeForEveryone("renderRollCollab", this.rollID);
     }
     get rollType() { return this.flagData.rollType; }
@@ -1490,126 +1463,85 @@ class BladesRollCollab extends DocumentSheet {
         return this._roll;
     }
     get rollFactors() {
-        const sourceFactors = Object.fromEntries(Object.entries(this.rollPrimary.rollFactors)
-            .map(([factor, factorData]) => [
-            factor,
-            {
-                ...factorData,
-                ...this.flagData.rollFactorToggles.source[factor] ?? []
+        const defaultFactors = {
+            [Factor.tier]: {
+                name: "Tier",
+                value: 0,
+                max: 0,
+                baseVal: 0,
+                display: "?",
+                isActive: false,
+                isPrimary: true,
+                isDominant: false,
+                highFavorsPC: true,
+                cssClasses: "factor-gold"
+            },
+            [Factor.quality]: {
+                name: "Quality",
+                value: 0,
+                max: 0,
+                baseVal: 0,
+                display: "?",
+                isActive: false,
+                isPrimary: false,
+                isDominant: false,
+                highFavorsPC: true,
+                cssClasses: "factor-gold"
+            },
+            [Factor.scale]: {
+                name: "Scale",
+                value: 0,
+                max: 0,
+                baseVal: 0,
+                display: "?",
+                isActive: false,
+                isPrimary: false,
+                isDominant: false,
+                highFavorsPC: true,
+                cssClasses: "factor-gold"
+            },
+            [Factor.magnitude]: {
+                name: "Magnitude",
+                value: 0,
+                max: 0,
+                baseVal: 0,
+                display: "?",
+                isActive: false,
+                isPrimary: false,
+                isDominant: false,
+                highFavorsPC: true,
+                cssClasses: "factor-gold"
             }
-        ]));
-        Object.entries(this.flagData.rollFactorToggles.source).forEach(([factor, factorData]) => {
-            if (!(factor in sourceFactors)) {
-                sourceFactors[factor] = {
-                    name: factor,
-                    value: 0,
-                    max: 0,
-                    baseVal: 0,
-                    cssClasses: "factor-gold",
-                    isActive: factorData.isActive ?? false,
-                    isPrimary: factorData.isPrimary ?? (factor === Factor.tier),
-                    isDominant: factorData.isDominant ?? false,
-                    highFavorsPC: factorData.highFavorsPC ?? true
-                };
-            }
-        });
-        Object.keys(sourceFactors)
-            .filter(isFactor)
-            .forEach(factor => {
-            const factorData = sourceFactors[factor];
-            if (!factorData) {
-                return;
-            }
-            factorData.value ??= 0;
-            factorData.value +=
-                (this.flagData.GMBoosts[factor] ?? 0)
-                    + (this.tempGMBoosts[factor] ?? 0);
-        });
-        Object.keys(sourceFactors)
-            .filter(isFactor)
-            .forEach(factor => {
-            const factorData = sourceFactors[factor];
-            if (!factorData) {
-                return;
-            }
-            factorData.value ??= 0;
-            factorData.value += this.flagData.GMOppBoosts[factor] ?? 0;
-            if (factor === Factor.tier) {
-                factorData.display = U.romanizeNum(factorData.value);
-            }
-            else {
-                factorData.display = `${factorData.value}`;
-            }
-        });
-        const rollOppFactors = this.rollOpposition?.rollFactors
-            ?? Object.fromEntries(([
-                Factor.tier,
-                Factor.quality,
-                Factor.scale,
-                Factor.magnitude
-            ]).map(factor => [
-                factor,
-                {
-                    name: factor,
-                    value: 0,
-                    max: 0,
-                    baseVal: 0,
-                    cssClasses: "factor-gold",
-                    isActive: false,
-                    isPrimary: factor === Factor.tier,
-                    isDominant: false,
-                    highFavorsPC: true
-                }
-            ]));
-        const oppFactors = {};
-        Object.entries(rollOppFactors)
-            .forEach(([factor, factorData]) => {
-            if (!isFactor(factor)) {
-                return;
-            }
-            oppFactors[factor] = {
-                ...factorData,
-                ...this.flagData.rollFactorToggles.opposition[factor] ?? []
-            };
-        });
-        Object.entries(this.flagData.rollFactorToggles.opposition)
-            .forEach(([factor, factorData]) => {
-            if (!isFactor(factor)) {
-                return;
-            }
-            if (!(factor in oppFactors)) {
-                oppFactors[factor] = {
-                    name: factor,
-                    value: 0,
-                    max: 0,
-                    baseVal: 0,
-                    cssClasses: "factor-gold",
-                    isActive: factorData.isActive ?? false,
-                    isPrimary: factorData.isPrimary ?? (factor === Factor.tier),
-                    isDominant: factorData.isDominant ?? false,
-                    highFavorsPC: factorData.highFavorsPC ?? true
-                };
-            }
-        });
-        Object.keys(oppFactors).forEach(factor => {
-            if (!isFactor(factor)) {
-                return;
-            }
-            const factorData = oppFactors[factor];
-            if (!factorData) {
-                return;
-            }
-            factorData.value += this.flagData.GMOppBoosts[factor] ?? 0;
-            if (factor === Factor.tier) {
-                factorData.display = U.romanizeNum(factorData.value);
-            }
-            else {
-                factorData.display = `${factorData.value}`;
-            }
-        });
+        };
+        const mergedSourceFactors = U.objMerge(U.objMerge(defaultFactors, this.rollPrimary.rollFactors, { isMutatingOk: false }), this.flagData.rollFactorToggles.source, { isMutatingOk: false });
+        const mergedOppFactors = this.rollOpposition
+            ? U.objMerge(U.objMerge(defaultFactors, this.rollPrimary.rollFactors, { isMutatingOk: false }), this.flagData.rollFactorToggles.opposition, { isMutatingOk: false })
+            : {};
         return {
-            source: sourceFactors,
-            opposition: oppFactors
+            source: Object.fromEntries(Object.entries(mergedSourceFactors)
+                .map(([factor, factorData]) => {
+                factorData.value +=
+                    (this.flagData.GMBoosts[factor] ?? 0)
+                        + (this.tempGMBoosts[factor] ?? 0);
+                if (factor === Factor.tier) {
+                    factorData.display = U.romanizeNum(factorData.value);
+                }
+                else {
+                    factorData.display = `${factorData.value}`;
+                }
+                return [factor, factorData];
+            })),
+            opposition: Object.fromEntries(Object.entries(mergedOppFactors)
+                .map(([factor, factorData]) => {
+                factorData.value += this.flagData.GMOppBoosts[factor] ?? 0;
+                if (factor === Factor.tier) {
+                    factorData.display = U.romanizeNum(factorData.value);
+                }
+                else {
+                    factorData.display = `${factorData.value}`;
+                }
+                return [factor, factorData];
+            }))
         };
     }
     initRollMods(modsData) {
@@ -1896,6 +1828,7 @@ class BladesRollCollab extends DocumentSheet {
             rollTraitOptions,
             diceTotal: finalDicePool,
             rollOpposition: this.rollOpposition,
+            rollParticipants: this.rollParticipants,
             rollEffects: Object.values(Effect),
             teamworkDocs: game.actors.filter(actor => BladesActor.IsType(actor, BladesActorType.pc)),
             rollTraitValOverride: this.rollTraitValOverride,
@@ -1906,7 +1839,7 @@ class BladesRollCollab extends DocumentSheet {
                 .map(cat => [cat, this.getRollMods(cat, "negative")])),
             hasInactiveConditionals: this.calculateHasInactiveConditionalsData(),
             rollFactors,
-            oddsGradient: this.calculateOddsGradient(finalDicePool, finalResult),
+            ...this.calculateOddsHTML(finalDicePool, finalResult),
             costData: this.parseCostsHTML(this.getStressCosts(rollCosts), this.getSpecArmorCost(rollCosts))
         };
         const rollPositionData = this.calculatePositionData(finalPosition);
@@ -2001,6 +1934,43 @@ class BladesRollCollab extends DocumentSheet {
             `${oddsColors.success} ${gradientStops.success}%`,
             `${oddsColors.crit})`
         ].join(", ");
+    }
+        calculateOddsHTML(diceTotal, finalResult) {
+        const oddsColors = {
+            crit: "var(--blades-gold)",
+            success: "var(--blades-white-bright)",
+            partial: "var(--blades-grey)",
+            fail: "var(--blades-black-dark)"
+        };
+        const odds = { ...C.DiceOdds[diceTotal] };
+        if (finalResult < 0) {
+            for (let i = finalResult; i < 0; i++) {
+                oddsColors.crit = oddsColors.success;
+                oddsColors.success = oddsColors.partial;
+                oddsColors.partial = oddsColors.fail;
+            }
+        }
+        else if (finalResult > 0) {
+            for (let i = 0; i < finalResult; i++) {
+                oddsColors.fail = oddsColors.partial;
+                oddsColors.partial = oddsColors.success;
+                oddsColors.success = oddsColors.crit;
+            }
+        }
+        const resultElements = [];
+        Object.entries(odds).reverse().forEach(([result, chance]) => {
+            if (chance === 0) {
+                return;
+            }
+            resultElements.push(`<div class="odds-section" style="height: 100%; width: ${chance}%; background: ${oddsColors[result]};">&nbsp;</div>`);
+        });
+        return {
+            oddsHTMLStart: [
+                "<div class=\"roll-odds-section-container\">",
+                ...resultElements
+            ].join("\n"),
+            oddsHTMLStop: "</div>"
+        };
     }
         calculatePositionEffectTradeData() {
         const canTradePosition = this.posEffectTrade === "position" || (this.posEffectTrade === false
@@ -2150,7 +2120,6 @@ class BladesRollCollab extends DocumentSheet {
         await this.outputRollToChat();
         this.close();
     }
-
     _toggleRollModClick(event) {
         event.preventDefault();
         const elem$ = $(event.currentTarget);
@@ -2180,37 +2149,7 @@ class BladesRollCollab extends DocumentSheet {
             default: throw new Error(`Unrecognized RollModStatus: ${rollMod.status}`);
         }
     }
-    _toggleRollModContext(event) {
-        event.preventDefault();
-        if (!game.user.isGM) {
-            return;
-        }
-        const elem$ = $(event.currentTarget);
-        const id = elem$.data("id");
-        const rollMod = this.getRollModByID(id);
-        if (!rollMod) {
-            throw new Error(`Unable to find roll mod with id '${id}'`);
-        }
-        switch (rollMod.status) {
-            case RollModStatus.Hidden:
-                rollMod.userStatus = RollModStatus.ToggledOff;
-                return;
-            case RollModStatus.ForcedOff:
-                rollMod.userStatus = RollModStatus.Hidden;
-                return;
-            case RollModStatus.ToggledOff:
-                rollMod.userStatus = RollModStatus.ForcedOff;
-                return;
-            case RollModStatus.ToggledOn:
-                rollMod.userStatus = RollModStatus.ToggledOff;
-                return;
-            case RollModStatus.ForcedOn:
-                rollMod.userStatus = RollModStatus.Hidden;
-                return;
-            default: throw new Error(`Unrecognized RollModStatus: ${rollMod.status}`);
-        }
-    }
-    _gmControlSet(event) {
+        _gmControlSet(event) {
         event.preventDefault();
         if (!game.user.isGM) {
             return;
@@ -2218,15 +2157,15 @@ class BladesRollCollab extends DocumentSheet {
         const elem$ = $(event.currentTarget);
         const id = elem$.data("id");
         const status = elem$.data("status");
-        if (!isModStatus(status)) {
+        if (!isModStatus(status) && status !== "Reset") {
             return;
         }
         const rollMod = this.getRollModByID(id);
         if (rollMod) {
-            rollMod.userStatus = status;
+            rollMod.userStatus = status === "Reset" ? undefined : status;
         }
     }
-    async _gmControlSetTargetToValue(event) {
+        async _gmControlSetTargetToValue(event) {
         event.preventDefault();
         if (!game.user.isGM) {
             return;
@@ -2236,7 +2175,7 @@ class BladesRollCollab extends DocumentSheet {
         const value = elem$.data("value");
         await this.document.setFlag(C.SYSTEM_ID, target, value).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
     }
-    async _gmControlResetTarget(event) {
+        async _gmControlResetTarget(event) {
         event.preventDefault();
         if (!game.user.isGM) {
             return;
@@ -2245,19 +2184,7 @@ class BladesRollCollab extends DocumentSheet {
         const target = elem$.data("target").replace(/flags\.eunos-blades\./, "");
         await this.document.unsetFlag(C.SYSTEM_ID, target).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
     }
-    _gmControlReset(event) {
-        event.preventDefault();
-        if (!game.user.isGM) {
-            return;
-        }
-        const elem$ = $(event.currentTarget);
-        const id = elem$.data("id");
-        const rollMod = this.getRollModByID(id);
-        if (rollMod) {
-            rollMod.userStatus = undefined;
-        }
-    }
-    _gmControlSetPosition(event) {
+        _gmControlSetPosition(event) {
         event.preventDefault();
         if (!game.user.isGM) {
             return;
@@ -2266,7 +2193,7 @@ class BladesRollCollab extends DocumentSheet {
         const position = elem$.data("status");
         this.initialPosition = position;
     }
-    _gmControlSetEffect(event) {
+        _gmControlSetEffect(event) {
         event.preventDefault();
         if (!game.user.isGM) {
             return;
@@ -2275,7 +2202,7 @@ class BladesRollCollab extends DocumentSheet {
         const effect = elem$.data("status");
         this.initialEffect = effect;
     }
-    async _gmControlToggleFactor(event) {
+        async _gmControlToggleFactor(event) {
         event.preventDefault();
         if (!game.user.isGM) {
             return;
@@ -2284,33 +2211,65 @@ class BladesRollCollab extends DocumentSheet {
         const target = elem$.data("target");
         const value = !elem$.data("value");
         eLog.checkLog3("toggleFactor", "_gmControlToggleFactor", { event, target, value });
-        if (value && /isPrimary/.test(target)) {
-            const [thisSource, thisFactor] = target.split(/\./).slice(-3, -1);
-            eLog.checkLog3("toggleFactor", "_gmControlToggleFactor - IN", { thisSource, thisFactor });
-            await Promise.all(Object.values(Factor).map(factor => {
-                if (factor === thisFactor) {
-                    eLog.checkLog3("toggleFactor", `_gmControlToggleFactor - Checking ${factor} === ${thisFactor} === TRUE`, { factor, thisFactor, target, customTarget: `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary` });
-                    return this.document.setFlag(C.SYSTEM_ID, `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary`, true).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
-                }
-                else {
-                    eLog.checkLog3("toggleFactor", `_gmControlToggleFactor - Checking ${factor} === ${thisFactor} === FALSE`, { factor, thisFactor, target, customTarget: `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary` });
-                    return this.document.setFlag(C.SYSTEM_ID, `rollCollab.rollFactorToggles.${thisSource}.${factor}.isPrimary`, false).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
-                }
-            }));
-            eLog.checkLog3("toggleFactor", "_gmControlToggleFactor - ALL DONE", { flags: this.document.getFlag(C.SYSTEM_ID, "rollCollab.rollFactorToggles") });
+        const factorToggleData = this.document.getFlag(C.SYSTEM_ID, "rollCollab.rollFactorToggles");
+        const [thisSource, thisFactor, thisToggle] = target.split(/\./).slice(-3);
+        if (!["isActive", "isPrimary", "isDominant", "highFavorsPC"].includes(thisToggle)) {
+            return this.document.setFlag(C.SYSTEM_ID, `rollCollab.${target}`, value)
+                .then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
         }
-        else {
-            this.document.setFlag(C.SYSTEM_ID, `rollCollab.${target}`, value).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
+        factorToggleData[thisSource][thisFactor] = {
+            ...factorToggleData[thisSource][thisFactor] ?? { display: "" },
+            [thisToggle]: value
+        };
+        switch (thisToggle) {
+            case "isDominant":
+            case "isPrimary": {
+                if (value === true) {
+                    Object.values(Factor)
+                        .filter(factor => factor !== thisFactor)
+                        .forEach(factor => {
+                        if (factorToggleData[thisSource][factor]?.[thisToggle] === true) {
+                            factorToggleData[thisSource][factor] = {
+                                ...factorToggleData[thisSource][factor],
+                                [thisToggle]: false
+                            };
+                        }
+                    });
+                }
+                break;
+            }
+            case "isActive": {
+                if (value === true) {
+                    const otherSource = thisSource === "source" ? "opposition" : "source";
+                    factorToggleData[otherSource][thisFactor] = {
+                        ...factorToggleData[otherSource][thisFactor] ?? { display: "" },
+                        isActive: value
+                    };
+                }
+                break;
+            }
+            default: break;
         }
+        return this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollFactorToggles", factorToggleData)
+            .then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
     }
-    async _gmControlResetFactor(event) {
+    async _gmControlSelectDocument(event) {
         event.preventDefault();
-        if (!game.user.isGM) {
+        const elem$ = $(event.currentTarget);
+        const section = elem$.data("rollSection");
+        const subSection = elem$.data("rollSubSection");
+        const selectedOption = elem$.val();
+        if (typeof selectedOption !== "string") {
             return;
         }
-        const elem$ = $(event.currentTarget);
-        const target = elem$.data("target");
-        await this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.${target}`).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
+        if (selectedOption === "false") {
+            return this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.rollParticipantData.${section}.${subSection}`);
+        }
+        return this.addRollParticipant(new BladesRollParticipant(this, {
+            rollParticipantSection: section,
+            rollParticipantSubSection: subSection,
+            rollParticipantID: selectedOption
+        }));
     }
     get resistanceStressCost() {
         const dieVals = this.dieVals;
@@ -2360,36 +2319,34 @@ class BladesRollCollab extends DocumentSheet {
         html.on({
             focusin: () => { BladesRollCollab.Active = this; }
         });
-        html.find("[data-action='gm-set'").on({
-            click: this._gmControlSet.bind(this)
-        });
-        html.find("[data-action='gm-reset'").on({
-            click: this._gmControlReset.bind(this)
-        });
-        html.find("[data-action='gm-set-position'").on({
-            click: this._gmControlSetPosition.bind(this)
-        });
-        html.find("[data-action='gm-set-effect'").on({
-            click: this._gmControlSetEffect.bind(this)
-        });
-        html.find("[data-action='gm-set-target'").on({
-            click: this._gmControlSetTargetToValue.bind(this),
-            contextmenu: this._gmControlResetTarget.bind(this)
-        });
-        html.find("[data-action='gm-toggle-factor'").on({
-            click: this._gmControlToggleFactor.bind(this),
-            contextmenu: this._gmControlResetFactor.bind(this)
-        });
-        html.find(".controls-toggle").on({
+                html.find(".controls-toggle").on({
             click: event => {
                 event.preventDefault();
                 $(event.currentTarget).parents(".controls-panel").toggleClass("active");
             }
         });
+        html.find("[data-action=\"gm-set\"").on({
+            click: this._gmControlSet.bind(this)
+        });
+                html.find("[data-action=\"gm-set-position\"").on({
+            click: this._gmControlSetPosition.bind(this)
+        });
+                html.find("[data-action=\"gm-set-effect\"").on({
+            click: this._gmControlSetEffect.bind(this)
+        });
+                html.find("[data-action=\"gm-set-target\"").on({
+            click: this._gmControlSetTargetToValue.bind(this),
+            contextmenu: this._gmControlResetTarget.bind(this)
+        });
+                html.find("[data-action=\"gm-toggle-factor\"").on({
+            click: this._gmControlToggleFactor.bind(this)
+        });
+        html.find("select.roll-sheet-doc-select").on({
+            change: this._gmControlSelectDocument.bind(this)
+        });
     }
 
-    _canDragDrop(selector) {
-        eLog.checkLog3("canDragDrop", "Can DragDrop Selector", { selector });
+    _canDragDrop() {
         return game.user.isGM;
     }
     _onDrop(event) {

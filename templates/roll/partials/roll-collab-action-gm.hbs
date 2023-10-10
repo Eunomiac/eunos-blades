@@ -265,7 +265,14 @@
   {{/if}}
   </div>
   <div class="roll-sheet-float-block roll-button">
-    <div class="roll-odds-strip" style="background: {{{oddsGradient}}};">
+    <div class="roll-odds-strip">
+      {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
+      {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
+      {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
+      {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
+      {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
+    </div>
+    <div class="roll-odds-label-container">
       <input type="checkbox" name="flags.eunos-blades.rollCollab.isGMReady" data-dType="Boolean" {{checked isGMReady}} />
       {{#if isGMReady}}Ready!{{else}}Click to Enable Roll{{/if}}
     </div>

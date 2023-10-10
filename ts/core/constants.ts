@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 export enum BladesPermissions {
   NONE = CONST.DOCUMENT_PERMISSION_LEVELS.NONE,
   BASIC = CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED,
@@ -448,13 +449,13 @@ const C = {
     Secretive: "Knowledge has become so precious to you, that even your closest allies are on a need-to-know basis."
   },
   EdgeTooltips: {
-    "Fearsome": "<p>The cohort is terrifying in aspect and reputation.</p>",
-    "Independent": "<p>The cohort can be trusted to make good decisions and act on their own initiative in the absence of direct orders.</p>",
-    "Loyal": "<p>The cohort can't be bribed or turned against you. </p>",
-    "Tenacious": "<p>The cohort won't be deterred from a task.</p>",
-    "Nimble": "<p>The vehicle handles easily. Consider this an <strong>assist</strong> for tricky maneuvers.</p>",
-    "Simple": "<p>The vehicle is easy to repair. Remove all of its <strong>Harm</strong> during <strong>downtime</strong></p>",
-    "Sturdy": "<p>The vehicle keeps operating even when <strong>Broken</strong>.</p>",
+    Fearsome: "<p>The cohort is terrifying in aspect and reputation.</p>",
+    Independent: "<p>The cohort can be trusted to make good decisions and act on their own initiative in the absence of direct orders.</p>",
+    Loyal: "<p>The cohort can't be bribed or turned against you. </p>",
+    Tenacious: "<p>The cohort won't be deterred from a task.</p>",
+    Nimble: "<p>The vehicle handles easily. Consider this an <strong>assist</strong> for tricky maneuvers.</p>",
+    Simple: "<p>The vehicle is easy to repair. Remove all of its <strong>Harm</strong> during <strong>downtime</strong></p>",
+    Sturdy: "<p>The vehicle keeps operating even when <strong>Broken</strong>.</p>",
     "Arrow-Swift": "<p>Your pet gains <strong>Potency</strong> when tracking or fighting the supernatural.</p><p>It can move extremely quickly, outpacing any other creature or vehicle.</p>",
     "Ghost Form": "<p>Your pet gains <strong>Potency</strong> when tracking or fighting the supernatural.</p><p>It can transform into electroplasmic vapor as if it were a spirit.</p>",
     "Mind Link": "<p>Your pet gains <strong>Potency</strong> when tracking or fighting the supernatural.</p><p>You and your pet can share senses and thoughts telepathically.</p>"
@@ -969,7 +970,17 @@ const C = {
     [AttributeTrait.resolve]: [ActionTrait.attune, ActionTrait.command, ActionTrait.consort, ActionTrait.sway]
   },
   Vices: [
-    Vice.Faith, Vice.Gambling, Vice.Luxury, Vice.Obligation, Vice.Pleasure, Vice.Stupor, Vice.Weird, Vice.Worship, Vice.Living_Essence, Vice.Life_Essence, Vice.Electroplasmic_Power
+    Vice.Faith,
+    Vice.Gambling,
+    Vice.Luxury,
+    Vice.Obligation,
+    Vice.Pleasure,
+    Vice.Stupor,
+    Vice.Weird,
+    Vice.Worship,
+    Vice.Living_Essence,
+    Vice.Life_Essence,
+    Vice.Electroplasmic_Power
   ]
 };
 
@@ -4221,7 +4232,7 @@ export const SVGDATA = {
     }
   },
   teeth: {
-    "tall": {
+    tall: {
       viewBox: "0 0 512 1540",
       paths: {
         frame: "M0,0v1540l512-244.2V0H0z M451,1263.5l-390,186V61h390V1263.5z",
@@ -4229,14 +4240,14 @@ export const SVGDATA = {
         full: "M0,0v1540l512-244.2V0H0z"
       }
     },
-    "med": {
+    med: {
       viewBox: "0 0 512 1540",
       paths: {
         frame: "M0,0v1388l512-395.6V0H0z M458,965.7L54,1278V53h404V965.7z",
         full: "M0,0v1540l512-244.2V0H0z"
       }
     },
-    "short": {
+    short: {
       viewBox: "0 0 512 1540",
       paths: {
         frame: "M0,0v991l511.4-247L512,0H0z M470.5,715.2L41,922.6V40h430L470.5,715.2z",

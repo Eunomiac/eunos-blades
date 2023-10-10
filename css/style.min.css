@@ -14007,7 +14007,8 @@ template {
             z-index: 4;
             width: 100%;
             position: absolute;
-            pointer-events: none; }
+            pointer-events: none;
+            margin-top: 20px; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root section.sheet-footer .roll-sheet-float-block.roll-effects-block:not(.inactive-mod-block) {
               flex-direction: column;
               width: unset;
@@ -14023,12 +14024,34 @@ template {
               width: 100%;
               border-bottom-left-radius: 30px;
               border-bottom-right-radius: 30px;
+              overflow: hidden;
+              position: relative; }
+              :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root section.sheet-footer .roll-sheet-float-block.roll-button .roll-odds-strip .roll-odds-section-container {
+                height: 500%;
+                width: 100%;
+                position: absolute;
+                z-index: 5;
+                display: flex;
+                justify-content: stretch;
+                align-items: stretch;
+                flex-wrap: nowrap;
+                filter: blur(50px); }
+                :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root section.sheet-footer .roll-sheet-float-block.roll-button .roll-odds-strip .roll-odds-section-container > * {
+                  flex-grow: 1;
+                  flex-shrink: 1; }
+            :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root section.sheet-footer .roll-sheet-float-block.roll-button .roll-odds-label-container {
+              position: absolute;
+              top: 0px;
+              left: 0px;
+              width: 100%;
+              height: 100%;
               text-align: center;
               line-height: 28px;
               color: var(--blades-gold-dark);
               font-family: var(--font-emphasis);
               font-size: 18px;
-              text-shadow: 1.5px 1.5px 0px var(--blades-black-dark); }
+              text-shadow: 1.5px 1.5px 0px var(--blades-black-dark);
+              z-index: 5; }
             :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root section.sheet-footer .roll-sheet-float-block.roll-button .roll-button {
               display: block;
               padding: 0;
@@ -14048,7 +14071,8 @@ template {
               transform-origin: 50% 50%;
               transition: 0.25s;
               filter: drop-shadow(3px 3px 5px var(--blades-black));
-              opacity: 1; }
+              opacity: 1;
+              z-index: 5; }
               :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root section.sheet-footer .roll-sheet-float-block.roll-button .roll-button:hover {
                 scale: 1.2;
                 color: var(--blades-gold-bright);
