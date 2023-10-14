@@ -3,47 +3,57 @@ import C from "./constants";
 
 const registerSettings = function() {
   game.settings.register("eunos-blades", "debug", {
-    "name": "Debug Level",
-    "hint": "The verbosity of the debug messages to console.",
-    "scope": "client",      // This specifies a world-level setting
-    "config": true,        // This specifies that the setting appears in the configuration view
-    "type": Number,
-    "range": {             // If range is specified, the resulting setting will be a range slider
+    name: "Debug Level",
+    hint: "The verbosity of the debug messages to console.",
+    scope: "client",      // This specifies a world-level setting
+    config: true,        // This specifies that the setting appears in the configuration view
+    type: Number,
+    range: {             // If range is specified, the resulting setting will be a range slider
       min: 0,
       max: 5,
       step: 1
     } as { min: number; max: number; step: number },
-    "default": 3         // The default value for the setting
+    default: 3         // The default value for the setting
   });
   game.settings.register("eunos-blades", "blacklist", {
-    "name": "Debug Blacklist",
-    "hint": "Comma-delimited list of categories of debug messages to silence.",
-    "scope": "client",      // This specifies a world-level setting
-    "config": true,        // This specifies that the setting appears in the configuration view
-    "type": String,
-    "default": ""         // The default value for the setting
+    name: "Debug Blacklist",
+    hint: "Comma-delimited list of categories of debug messages to silence.",
+    scope: "client",      // This specifies a world-level setting
+    config: true,        // This specifies that the setting appears in the configuration view
+    type: String,
+    default: ""         // The default value for the setting
   });
-
+  game.settings.register("eunos-blades", "openAPIKey", {
+    name: "OpenAI API Key",
+    hint: "Your personal OpenAI API Key (necessary to enable AI functionality)",
+    scope: "client",      // This specifies a world-level setting
+    config: true,        // This specifies that the setting appears in the configuration view
+    type: String,
+    default: ""         // The default value for the setting
+  });
   game.settings.register("eunos-blades", "whitelist", {
-    "name": "Debug Whitelist",
-    "hint": "Comma-delimited list of categories of debug messages to promote.",
-    "scope": "client",      // This specifies a world-level setting
-    "config": true,        // This specifies that the setting appears in the configuration view
-    "type": String,
-    "default": ""         // The default value for the setting
+    name: "Debug Whitelist",
+    hint: "Comma-delimited list of categories of debug messages to promote.",
+    scope: "client",      // This specifies a world-level setting
+    config: true,        // This specifies that the setting appears in the configuration view
+    type: String,
+    default: ""         // The default value for the setting
   });
   /**
    * Track the system version upon which point a migration was last applied
    */
   game.settings.register("eunos-blades", "systemMigrationVersion", {
-    "name": "System Migration Version",
-    "scope": "world",
-    "config": false,
-    "type": Number,
-    "default": 0
+    name: "System Migration Version",
+    scope: "world",
+    config: false,
+    type: Number,
+    default: 0
   });
 };
 
+/**
+ *
+ */
 export function initTinyMCEStyles() {
   CONFIG.TinyMCE = {
     ...CONFIG.TinyMCE,
@@ -57,13 +67,13 @@ export function initTinyMCEStyles() {
       autoresize_overflow_padding: 0,
       autoresize_bottom_margin: 0, // 25,
       menubar: false,
-      statusbar: false, // true,
+      statusbar: false, // True,
       elementPath: true,
       branding: false,
       resize: false,
       plugins: "lists image table code save autoresize searchreplace quickbars template",
       save_enablewhendirty: false,
-      // table_default_styles: {},
+      // Table_default_styles: {},
       style_formats: [
         {
           title: "Headings",
@@ -125,6 +135,9 @@ export function initTinyMCEStyles() {
   };
 }
 
+/**
+ *
+ */
 export function initCanvasStyles() {
   CONFIG.canvasTextStyle = new PIXI.TextStyle({
     align: "center",

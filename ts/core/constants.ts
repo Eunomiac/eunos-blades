@@ -217,6 +217,13 @@ export enum RollResult {
   fail = "fail"
 }
 
+export enum RollPhase {
+  Collaboration = "Collaboration",
+  AwaitingResult = "AwaitingResult",
+  AwaitingChatInput = "AwaitingChatInput",
+  Complete = "Complete"
+}
+
 export enum Harm {
   Weakened = "Weakened",
   Impaired = "Impaired",
@@ -532,7 +539,7 @@ const C = {
     "An Army of ",
     "A Massive Army of "
   ],
-  DiceOdds: [
+  DiceOddsStandard: [
     {crit: 0, success: 2.8, partial: 22.2, fail: 75},
     {crit: 0, success: 16.7, partial: 33.3, fail: 50},
     {crit: 2.8, success: 27.8, partial: 44.4, fail: 25},
@@ -554,6 +561,15 @@ const C = {
     {crit: 82.7, success: 13.5, partial: 3.8, fail: 0},
     {crit: 85, success: 11.9, partial: 3.1, fail: 0},
     {crit: 87, success: 10.4, partial: 2.6, fail: 0}
+  ],
+  DiceOddsResistance: [ // Stress Cost: [-1, 0, 1, 2, 3, 4, 5]
+    [0, 2.8, 8.3, 13.9, 19.4, 25, 30.6],
+    [0, 16.7, 16.7, 16.7, 16.6, 16.7, 16.7],
+    [2.8, 27.8, 25, 19.4, 13.9, 8.3, 2.8],
+    [7.4, 34.7, 28.3, 17.1, 8.8, 3.2, 0.5],
+    [13.2, 38.6, 28.5, 13.5, 5, 1.2, 0.1],
+    [19.6, 40.2, 27, 10.1, 2.7, 0.4, 0],
+    [26.3, 40.2, 24.7, 7.2, 1.4, 0.1, 0]
   ],
   ExperienceClues: {
     Scoundrel: [

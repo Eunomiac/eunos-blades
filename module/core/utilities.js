@@ -7,13 +7,12 @@
 
 import C from "./constants.js";
 import { gsap } from "/scripts/greensock/esm/all.js";
-
 const _noCapWords = "a|above|after|an|and|at|below|but|by|down|for|for|from|in|nor|of|off|on|onto|or|out|so|the|to|under|up|with|yet"
     .split("|")
-    .map((word) => new RegExp(`\\b${word}\\b`, "gui"));
+    .map(word => new RegExp(`\\b${word}\\b`, "gui"));
 const _capWords = [
     "I", /[^a-z]{3,}|[.0-9]/gu
-].map((word) => (/RegExp/.test(Object.prototype.toString.call(word)) ? word : new RegExp(`\\b${word}\\b`, "gui")));
+].map(word => (/RegExp/.test(Object.prototype.toString.call(word)) ? word : new RegExp(`\\b${word}\\b`, "gui")));
 const _loremIpsumText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies
 nibh sed massa euismod lacinia. Aliquam nec est ac nunc ultricies scelerisque porta vulputate odio.
 Integer gravida mattis odio, semper volutpat tellus. Ut elit leo, auctor eget fermentum hendrerit,
@@ -132,7 +131,7 @@ const _romanNumerals = {
 };
 const UUIDLOG = [];
 
-const GMID = () => game?.user?.find((user) => user.isGM)?.id ?? false;
+const GMID = () => game?.user?.find(user => user.isGM)?.id ?? false;
 const isNumber = (ref) => typeof ref === "number" && !isNaN(ref);
 const isArray = (ref) => Array.isArray(ref);
 const isSimpleObj = (ref) => ref === Object(ref) && !isArray(ref);
@@ -173,10 +172,12 @@ function assertNonNullType(val, type) {
     }
 }
 const areFuzzyEqual = (val1, val2) => {
-    if ([null, undefined].includes(val1) && [null, undefined].includes(val2)) {
+    if ([null, undefined].includes(val1)
+        && [null, undefined].includes(val2)) {
         return true;
     }
-    if ([null, undefined].includes(val1) || [null, undefined].includes(val2)) {
+    if ([null, undefined].includes(val1)
+        || [null, undefined].includes(val2)) {
         return false;
     }
     if (typeof val1 === "number" && typeof val2 === "number") {
@@ -188,6 +189,7 @@ const areFuzzyEqual = (val1, val2) => {
     if (typeof val1 === "string" && typeof val2 === "string") {
         return val1 === val2;
     }
+
     if (typeof val1 === "number" && typeof val2 === "string") {
         return val1 === Number(val2);
     }
@@ -200,10 +202,12 @@ const areFuzzyEqual = (val1, val2) => {
     if (typeof val1 === "object" && typeof val2 === "boolean") {
         return false;
     }
-    if (typeof val1 === "boolean" && typeof val2 === "string") {
+    if (typeof val1 === "boolean"
+        && typeof val2 === "string") {
         return (val1 && val2 !== "") || (!val1 && val2 === "");
     }
-    if (typeof val1 === "string" && typeof val2 === "boolean") {
+    if (typeof val1 === "string"
+        && typeof val2 === "boolean") {
         return (val2 && val1 !== "") || (!val2 && val1 === "");
     }
     if ((typeof val1 === "number" || typeof val1 === "string") && typeof val2 === "object") {
@@ -267,7 +271,7 @@ const sCase = (str) => {
     let [first, ...rest] = `${str ?? ""}`.split(/\s+/);
     first = testRegExp(first, _capWords) ? first : `${uCase(first.charAt(0))}${lCase(first.slice(1))}`;
     if (hasItems(rest)) {
-        rest = rest.map((word) => (testRegExp(word, _capWords) ? word : lCase(word)));
+        rest = rest.map(word => (testRegExp(word, _capWords) ? word : lCase(word)));
     }
     return [first, ...rest].join(" ").trim();
 };
@@ -275,12 +279,12 @@ const tCase = (str) => String(str).split(/\s/)
     .map((word, i) => (i && testRegExp(word, _noCapWords) ? lCase(word) : sCase(word)))
     .join(" ").trim();
 const testRegExp = (str, patterns = [], flags = "gui", isTestingAll = false) => patterns
-    .map((pattern) => (pattern instanceof RegExp
+    .map(pattern => (pattern instanceof RegExp
     ? pattern
-    : new RegExp(`\\b${pattern}\\b`, flags)))[isTestingAll ? "every" : "some"]((pattern) => pattern.test(`${str}`));
+    : new RegExp(`\\b${pattern}\\b`, flags)))[isTestingAll ? "every" : "some"](pattern => pattern.test(`${str}`));
 const regExtract = (ref, pattern, flags) => {
         const splitFlags = [];
-    [...(flags ?? "").replace(/g/g, ""), "u"].forEach((flag) => {
+    [...(flags ?? "").replace(/g/g, ""), "u"].forEach(flag => {
         if (flag && !splitFlags.includes(flag)) {
             splitFlags.push(flag);
         }
@@ -320,7 +324,7 @@ const oxfordize = (items, useOxfordComma = true, andString = "and") => {
 };
 const ellipsize = (text, maxLength) => {
     const str = String(text);
-    return str.length > maxLength ? str.slice(0, maxLength - 3) + "…" : str;
+    return str.length > maxLength ? `${str.slice(0, maxLength - 3)}…` : str;
 };
 const pad = (text, minLength, delim = " ") => {
     const str = `${text}`;
@@ -368,7 +372,8 @@ const stringifyNum = (num) => {
     const base = regExtract(stringyNum, /^-?[\d.]+/);
     const exp = pInt(regExtract(stringyNum, /e([+-]?\d+)$/));
     if (typeof base === "string" && typeof exp === "string") {
-        let baseInts = regExtract(base, /^-?(\d+)/), baseDecs = regExtract(base, /\.(\d+)/);
+        let baseInts = regExtract(base, /^-?(\d+)/);
+        let baseDecs = regExtract(base, /\.(\d+)/);
         if (isArray(baseInts) && isArray(baseDecs)) {
             baseInts = baseInts.pop()?.replace(/^0+/, "");
             baseDecs = lCase(baseDecs?.pop()).replace(/0+$/, "");
@@ -413,7 +418,7 @@ const verbalizeNum = (num) => {
         if (pInt(trio) === 0) {
             return "";
         }
-        const digits = `${trio}`.split("").map((digit) => pInt(digit));
+        const digits = `${trio}`.split("").map(digit => pInt(digit));
         let result = "";
         if (digits.length === 3) {
             const hundreds = digits.shift();
@@ -442,7 +447,7 @@ const verbalizeNum = (num) => {
     const [integers, decimals] = num.replace(/[,\s-]/g, "").split(".");
     const intArray = [...integers.split("")].reverse().join("")
         .match(/.{1,3}/g)
-        ?.map((v) => [...v.split("")].reverse().join("")) ?? [];
+        ?.map(v => [...v.split("")].reverse().join("")) ?? [];
     const intStrings = [];
     while (intArray.length) {
         const thisTrio = intArray.pop();
@@ -509,7 +514,7 @@ const loremIpsum = (numWords = 200) => {
     return `${sCase(words.join(" ")).trim().replace(/[^a-z\s]*$/ui, "")}.`;
 };
 const randString = (length = 5) => Array.from({ length })
-    .map(() => String.fromCharCode(randInt(...["a", "z"].map((char) => char.charCodeAt(0)))))
+    .map(() => String.fromCharCode(randInt(...["a", "z"].map(char => char.charCodeAt(0)))))
     .join("");
 const randWord = (numWords = 1, wordList = _randomWords) => Array.from({ length: numWords }).map(() => randElem([...wordList])).join(" ");
 const getUID = (id) => {
@@ -521,7 +526,7 @@ const getUID = (id) => {
     return uuid;
 };
 const fuzzyMatch = (val1, val2) => {
-    const [str1, str2] = [val1, val2].map((val) => lCase(String(val).replace(/[^a-zA-Z0-9.+-]/g, "").trim()));
+    const [str1, str2] = [val1, val2].map(val => lCase(String(val).replace(/[^a-zA-Z0-9.+-]/g, "").trim()));
     return str1.length > 0 && str1 === str2;
 };
 const isIn = (needle, haystack = [], fuzziness = 0) => {
@@ -539,7 +544,7 @@ const isIn = (needle, haystack = [], fuzziness = 0) => {
         SearchTests.push(...fuzzyTests);
         if (fuzziness >= 2) {
             SearchTests.push(...fuzzyTests
-                .map((func) => (ndl, item) => func(`${ndl}`.replace(/\W/g, ""), `${item}`.replace(/\W/gu, ""))));
+                .map(func => (ndl, item) => func(`${ndl}`.replace(/\W/g, ""), `${item}`.replace(/\W/gu, ""))));
             if (fuzziness >= 3) {
                 SearchTests.push(() => false);
             }
@@ -569,7 +574,7 @@ const isIn = (needle, haystack = [], fuzziness = 0) => {
         if (!testFunc) {
             return false;
         }
-        matchIndex = searchStack.findIndex((item) => testFunc(searchNeedle, `${item}`));
+        matchIndex = searchStack.findIndex(item => testFunc(searchNeedle, `${item}`));
     }
     if (isPosInt(matchIndex)) {
         return isList(haystack) ? Object.values(haystack)[matchIndex] : haystack[matchIndex];
@@ -608,26 +613,27 @@ const makeIntRange = (min, max) => {
 const makeCycler = (array, index = 0) => {
     const wrapper = gsap.utils.wrap(array);
     index--;
-    return (function* cycler() {
+    return (function* () {
         while (true) {
             index++;
             yield wrapper(index);
         }
-    }());
+    })();
 };
 function getLast(array) {
+    array = Object.values(array);
     return array.length === 0 ? undefined : array[array.length - 1];
 }
 const unique = (array) => {
     const returnArray = [];
-    array.forEach((item) => { if (!returnArray.includes(item)) {
+    array.forEach(item => { if (!returnArray.includes(item)) {
         returnArray.push(item);
     } });
     return returnArray;
 };
 const group = (array, key) => {
     const returnObj = {};
-    array.forEach((item) => {
+    array.forEach(item => {
         const returnKey = item[key];
         let returnVal = returnObj[returnKey];
         if (!returnVal) {
@@ -650,9 +656,16 @@ const sample = (array, numElems = 1, isUniqueOnly = true, uniqueTestFunc = (e, a
     }
     return elems;
 };
-const removeFirst = (array, element) => array.splice(array.findIndex((v) => v === element));
+const removeFirst = (array, element) => array.splice(array.findIndex(v => v === element));
 function pullElement(array, checkFunc) {
-    const index = array.findIndex((v, i, a) => checkFunc(v, i, a));
+    let testFunction;
+    if (typeof checkFunc !== "function") {
+        testFunction = (_v) => _v === checkFunc;
+    }
+    else {
+        testFunction = checkFunc;
+    }
+    const index = array.findIndex((v, i, a) => testFunction(v, i, a));
     if (index === -1) {
         return undefined;
     }
@@ -672,7 +685,8 @@ const subGroup = (array, groupSize) => {
     return subArrays;
 };
 const shuffle = (array) => {
-    let currentIndex = array.length, randomIndex;
+    let currentIndex = array.length;
+    let randomIndex;
     while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
@@ -696,7 +710,7 @@ const checkVal = ({ k, v }, checkTest) => {
 };
 const remove = (obj, checkTest) => {
     if (isArray(obj)) {
-        const index = obj.findIndex((v) => checkVal({ v }, checkTest));
+        const index = obj.findIndex(v => checkVal({ v }, checkTest));
         if (index >= 0) {
             return removeElementFromArray(obj, index);
         }
@@ -729,13 +743,13 @@ const removeElementFromList = (list, key) => {
 const replace = (obj, checkTest, repVal) => {
     let repKey;
     if (isList(obj)) {
-        [repKey] = Object.entries(obj).find((v) => checkVal({ v }, checkTest)) || [false];
+        [repKey] = Object.entries(obj).find(v => checkVal({ v }, checkTest)) || [false];
         if (repKey === false) {
             return false;
         }
     }
     else if (isArray(obj)) {
-        repKey = obj.findIndex((v) => checkVal({ v }, checkTest));
+        repKey = obj.findIndex(v => checkVal({ v }, checkTest));
         if (repKey === -1) {
             return false;
         }
@@ -752,13 +766,13 @@ const replace = (obj, checkTest, repVal) => {
     return true;
 };
 const objClean = (data, remVals = [undefined, null, "", {}, []]) => {
-    const remStrings = remVals.map((rVal) => JSON.stringify(rVal));
+    const remStrings = remVals.map(rVal => JSON.stringify(rVal));
     if (remStrings.includes(JSON.stringify(data)) || remVals.includes(data)) {
         return "KILL";
     }
     if (Array.isArray(data)) {
-        const newData = data.map((elem) => objClean(elem, remVals))
-            .filter((elem) => elem !== "KILL");
+        const newData = data.map(elem => objClean(elem, remVals))
+            .filter(elem => elem !== "KILL");
         return Array.isArray(newData) && newData.length ? newData : "KILL";
     }
     if (data && typeof data === "object" && JSON.stringify(data).startsWith("{")) {
@@ -772,7 +786,7 @@ const objClean = (data, remVals = [undefined, null, "", {}, []]) => {
 export function toDict(items, key) {
     const dict = {};
     const mappedItems = items
-        .map((data) => {
+        .map(data => {
         let { iData } = data;
         if (!iData) {
             iData = data;
@@ -789,7 +803,7 @@ export function toDict(items, key) {
         dict[newKey] = iData;
     });
     return dict;
-    function indexString(str) {
+        function indexString(str) {
         if (/_\d+$/.test(str)) {
             const [curIndex, ...subStr] = [...str.split(/_/)].reverse();
             return [
@@ -822,8 +836,8 @@ function objMap(obj, keyFunc, valFunc) {
         return [keyFuncTyped(key, val), valFuncTyped(val, key)];
     }));
 }
-const objSize = (obj) => Object.values(obj).filter((val) => val !== undefined && val !== null).length;
-const objFindKey = (obj, keyFunc, valFunc) => {
+const objSize = (obj) => Object.values(obj).filter(val => val !== undefined && val !== null).length;
+function objFindKey(obj, keyFunc, valFunc) {
     if (!valFunc) {
         valFunc = keyFunc;
         keyFunc = false;
@@ -841,7 +855,7 @@ const objFindKey = (obj, keyFunc, valFunc) => {
         return validEntry[0];
     }
     return false;
-};
+}
 const objFilter = (obj, keyFunc, valFunc) => {
     if (!valFunc) {
         valFunc = keyFunc;
@@ -922,8 +936,8 @@ function objMerge(target, source, { isMutatingOk = false, isStrictlySafe = false
 }
 function objDiff(obj1, obj2) {
     const diff = {};
-    const bothObj1AndObj2Keys = Object.keys(obj2).filter((key) => Object.hasOwn(obj2, key) && Object.hasOwn(obj1, key));
-    const onlyObj2Keys = Object.keys(obj2).filter((key) => Object.hasOwn(obj2, key) && !Object.hasOwn(obj1, key));
+    const bothObj1AndObj2Keys = Object.keys(obj2).filter(key => Object.hasOwn(obj2, key) && Object.hasOwn(obj1, key));
+    const onlyObj2Keys = Object.keys(obj2).filter(key => Object.hasOwn(obj2, key) && !Object.hasOwn(obj1, key));
     for (const key of bothObj1AndObj2Keys) {
         if (typeof obj1[key] === "object" && typeof obj2[key] === "object" && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key])) {
             const nestedDiff = objDiff(obj1[key], obj2[key]);
@@ -943,7 +957,7 @@ function objDiff(obj1, obj2) {
         }
     }
     for (const key of onlyObj2Keys) {
-        diff["-=" + key] = obj2[key];
+        diff[`-=${key}`] = obj2[key];
     }
     return diff;
 }
@@ -958,7 +972,7 @@ const objExpand = (obj) => {
             setProperty(expObj, key, val);
         }
     }
-    function arrayify(o) {
+        function arrayify(o) {
         if (isList(o)) {
             if (/^\d+$/.test(Object.keys(o).join(""))) {
                 return Object.values(o).map(arrayify);
@@ -996,7 +1010,7 @@ function objNullify(obj) {
         });
         return obj;
     }
-    Object.keys(obj).forEach((objKey) => {
+    Object.keys(obj).forEach(objKey => {
         obj[objKey] = null;
     });
     return obj;
@@ -1049,7 +1063,7 @@ function get(target, property, unit) {
 const getGSAngleDelta = (startAngle, endAngle) => signNum(roundNum(getAngleDelta(startAngle, endAngle), 2)).replace(/^(.)/, "$1=");
 
 const getRawCirclePath = (r, { x: xO, y: yO } = { x: 0, y: 0 }) => {
-    [r, xO, yO] = [r, xO, yO].map((val) => roundNum(val, 2));
+    [r, xO, yO] = [r, xO, yO].map(val => roundNum(val, 2));
     const [b1, b2] = [0.4475 * r, (1 - 0.4475) * r];
     const [xT, yT] = [xO, yO - r];
     return [[
@@ -1078,7 +1092,7 @@ const getColorVals = (red, green, blue, alpha) => {
         [red, green, blue, alpha] = red
             .replace(/[^\d.,]/g, "")
             .split(/,/)
-            .map((color) => (isUndefined(color) ? undefined : parseFloat(color)));
+            .map(color => (isUndefined(color) ? undefined : parseFloat(color)));
     }
     if (isHexColor(red)) {
         if ([4, 5].includes(red.length)) {
@@ -1086,11 +1100,11 @@ const getColorVals = (red, green, blue, alpha) => {
         }
         [red, green, blue, alpha] = red
             .match(/[^#]{2}/g)
-            ?.map((val) => parseInt(val, 16)) ?? [];
+            ?.map(val => parseInt(val, 16)) ?? [];
     }
-    if ([red, green, blue].every((color) => /^\d+$/.test(`${color}`))) {
+    if ([red, green, blue].every(color => /^\d+$/.test(`${color}`))) {
         return [red, green, blue, alpha]
-            .filter((color) => /^[\d.]+$/.test(`${color}`));
+            .filter(color => /^[\d.]+$/.test(`${color}`));
     }
     return null;
 };
@@ -1098,7 +1112,7 @@ const getRGBString = (red, green, blue, alpha) => {
     if (isRGBColor(red) || isHexColor(red)) {
         [red, green, blue, alpha] = getColorVals(red) ?? [];
     }
-    if ([red, green, blue].every((color) => /^[.\d]+$/.test(`${color}`))) {
+    if ([red, green, blue].every(color => /^[.\d]+$/.test(`${color}`))) {
         let colorString = "rgb";
         const colors = [red, green, blue];
         if (/^[.\d]+$/.test(`${alpha}`)) {
@@ -1110,9 +1124,9 @@ const getRGBString = (red, green, blue, alpha) => {
     return null;
 };
 const getHEXString = (red, green, blue) => {
-    function componentToHex(c) {
+        function componentToHex(c) {
         const hex = c.toString(16);
-        return hex.length === 1 ? "0" + hex : hex;
+        return hex.length === 1 ? `0${hex}` : hex;
     }
     if (isHexColor(red)) {
         return red;
@@ -1120,7 +1134,7 @@ const getHEXString = (red, green, blue) => {
     if (isRGBColor(red)) {
         [red, green, blue] = getColorVals(red) ?? [];
     }
-    if (isDefined(red) && isDefined(green) && isDefined(blue) && [red, green, blue].every((color) => /^[.\d]+$/.test(`${color}`))) {
+    if (isDefined(red) && isDefined(green) && isDefined(blue) && [red, green, blue].every(color => /^[.\d]+$/.test(`${color}`))) {
         return `#${componentToHex(red ?? 0)}${componentToHex(green ?? 0)}${componentToHex(blue ?? 0)}`;
     }
     return null;
@@ -1140,7 +1154,7 @@ const getSiblings = (elem) => {
     if (!elem.parentNode) {
         return siblings;
     }
-    Array.from(elem.parentNode.children).forEach((sibling) => {
+    Array.from(elem.parentNode.children).forEach(sibling => {
         if (sibling !== elem) {
             siblings.push(sibling);
         }
@@ -1156,7 +1170,7 @@ const escapeHTML = (str) => (typeof str === "string"
         .replace(/[`']/g, "&#039;")
     : str);
 
-const sleep = (duration) => new Promise((resolve) => { setTimeout(resolve, duration >= 100 ? duration : duration * 1000); });
+const sleep = (duration) => new Promise(resolve => { setTimeout(resolve, duration >= 100 ? duration : duration * 1000); });
 const isDocID = (docRef, isUUIDok = true) => {
     return typeof docRef === "string" && (isUUIDok
         ? /^(.*\.)?[A-Za-z0-9]{16}$/.test(docRef)
@@ -1179,7 +1193,7 @@ function getTemplatePath(subFolder, fileName) {
     if (typeof fileName === "string") {
         return `${C.TEMPLATE_ROOT}/${subFolder}/${fileName.replace(/\..*$/, "")}.hbs`;
     }
-    return fileName.map((fName) => getTemplatePath(subFolder, fName));
+    return fileName.map(fName => getTemplatePath(subFolder, fName));
 }
 function displayImageSelector(callback, pathRoot = `systems/${C.SYSTEM_ID}/assets`, position = { top: 200, left: 200 }) {
     const fp = new FilePicker({

@@ -273,8 +273,21 @@
       {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
     </div>
     <div class="roll-odds-label-container">
-      <input type="checkbox" name="flags.eunos-blades.rollCollab.isGMReady" data-dType="Boolean" {{checked isGMReady}} />
-      {{#if isGMReady}}Ready!{{else}}Click to Enable Roll{{/if}}
+      <div class="input-target-cycler roll-phase-cycler" data-action="cycle-target" data-target="flags.eunos-blades.rollCollab.rollPhase" data-val-0="Collaboration" data-val-1="AwaitingResult" data-cur-val="{{rollPhase}}">
+        {{#if (test rollPhase "==" "Collaboration")}}
+          <i class="fa-duotone fa-messages"></i>
+          <span class=""
+        {{else if (test rollPhase "==" "AwaitingResult")}}
+          <i class="fa-duotone fa-dice"></i>
+        {{/if}}
+      </div>
+      <div class="roll-odds-label-text">
+        {{#if (test rollPhase "==" "Collaboration")}}
+          Click to Enable Roll
+        {{else if (test rollPhase "==" "AwaitingResult")}}
+          Waiting for Roll
+        {{/if}}
+      </div>
     </div>
   </div>
   {{#if costData}}

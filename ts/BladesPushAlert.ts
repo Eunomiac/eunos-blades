@@ -1,26 +1,27 @@
 import U from "./core/utilities";
 
-export default class BladesPushController {
+export default class BladesPushAlert {
 
-  static Get(): BladesPushController {
+  static Get(): BladesPushAlert {
     if (!game.eunoblades.PushController) {
-      throw new Error("Attempt to Get BladesPushController before 'ready' hook.");
+      throw new Error("Attempt to Get BladesPushAlert before 'ready' hook.");
     }
     return game.eunoblades.PushController;
   }
 
   static isInitialized = false;
+
   static Initialize() {
     game.eunoblades ??= {};
     Hooks.once("ready", async () => {
-      let pushController: BladesPushController|undefined = game.eunoblades.PushController;
-      if (!(pushController instanceof BladesPushController)) {
-        pushController = new BladesPushController();
+      let pushController: BladesPushAlert|undefined = game.eunoblades.PushController;
+      if (!(pushController instanceof BladesPushAlert)) {
+        pushController = new BladesPushAlert();
       }
       game.eunoblades.PushController = pushController;
       pushController.initOverlay();
     });
-    Hooks.on("canvasReady", async () => { game.eunoblades.PushController?.initOverlay() });
+    Hooks.on("canvasReady", async () => { game.eunoblades.PushController?.initOverlay(); });
   }
 
   static InitSockets() {
@@ -33,16 +34,17 @@ export default class BladesPushController {
 
   initOverlay() {
     $("#sidebar").append($("<div id='blades-push-notifications'></div>"));
-    BladesPushController.isInitialized = true;
+    BladesPushAlert.isInitialized = true;
   }
 
-  get elem$() { return $("#blades-push-notifications") }
-  get elem() { return this.elem$[0] }
+  get elem$() { return $("#blades-push-notifications"); }
+
+  get elem() { return this.elem$[0]; }
 
   activeNotifications: Record<string, JQuery<HTMLElement>> = {};
 
   push(blockClass: string, charName: string, titleText?: string, bodyText?: string) {
-    const pushController = BladesPushController.Get();
+    const pushController = BladesPushAlert.Get();
     const pushID = randomID();
     const pushLines: string[] = [
       `<div id="#blades-push-${pushID}" class="push-notice${charName === "GM" ? " gm-notice" : ""} ${blockClass}">`
@@ -93,9 +95,9 @@ export default class BladesPushController {
   pushToSome(...args: [string, string, string|undefined, User[]]) {
     const users = (args.pop() as User[]|undefined ?? [])
       .filter((user): user is User & {id: string} => Boolean(user?.id));
-    if (!users || users.length === 0) { return }
+    if (!users || users.length === 0) { return; }
     const pushArgs = args.slice(0, 3) as [string, string, string|undefined];
-    socketlib.system.executeForUsers("pushNotice", users.map((user) => user.id), "", ...pushArgs);
+    socketlib.system.executeForUsers("pushNotice", users.map(user => user.id), "", ...pushArgs);
   }
 
   pushToGM(...args: [string, string, string|undefined]) {

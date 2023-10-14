@@ -45,16 +45,16 @@ class BladesItemSheet extends ItemSheet {
   }
 
   _getTypedItemData: Record<BladesItemType, (context: BladesItemSheetData) => BladesItemSheetData> = {
-    [BladesItemType.ability]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.ability)) { return undefined as never }
+    [BladesItemType.ability]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.ability)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.ability> = {};
       return {
         ...context,
         ...sheetData
       };
     },
-    [BladesItemType.background]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.background)) { return undefined as never }
+    [BladesItemType.background]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.background)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.background> = {
       };
       return {
@@ -62,8 +62,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.clock_keeper]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.clock_keeper)) { return undefined as never }
+    [BladesItemType.clock_keeper]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.clock_keeper)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.ability> = {
         phases: Object.values(BladesPhase)
       };
@@ -72,15 +72,15 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.cohort_gang]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { return undefined as never }
+    [BladesItemType.cohort_gang]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) { return undefined as never; }
       context.tierTotal = this.item.system.quality > 0 ? U.romanizeNum(this.item.system.quality) : "0";
       context.system.subtypes ??= {};
       context.system.elite_subtypes ??= {};
       const sheetData: Partial<BladesItemDataOfType<BladesItemType.cohort_gang>> = {
         tierData: {
-          "class": "comp-tier comp-vertical comp-teeth",
-          "dotline": {
+          class: "comp-tier comp-vertical comp-teeth",
+          dotline: {
             data: this.item.system.tier,
             target: "system.tier.value",
             iconEmpty: "dot-empty.svg",
@@ -92,20 +92,20 @@ class BladesItemSheet extends ItemSheet {
       };
 
       sheetData.edgeData = Object.fromEntries(Object.values(context.system.edges ?? [])
-        .filter((edge) => /[A-Za-z]/.test(edge))
-        .map((edge) => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]]));
+        .filter(edge => /[A-Za-z]/.test(edge))
+        .map(edge => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]]));
       sheetData.flawData = Object.fromEntries(Object.values(context.system.flaws ?? [])
-        .filter((flaw) => /[A-Za-z]/.test(flaw))
-        .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]));
+        .filter(flaw => /[A-Za-z]/.test(flaw))
+        .map(flaw => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]));
 
       return {
         ...context,
         ...sheetData
       };
     },
-    [BladesItemType.cohort_expert]: (context) => this._getTypedItemData[BladesItemType.cohort_gang](context),
-    [BladesItemType.crew_ability]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.crew_ability)) { return undefined as never }
+    [BladesItemType.cohort_expert]: context => this._getTypedItemData[BladesItemType.cohort_gang](context),
+    [BladesItemType.crew_ability]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.crew_ability)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.crew_ability> = {
       };
       return {
@@ -113,8 +113,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.crew_reputation]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.crew_reputation)) { return undefined as never }
+    [BladesItemType.crew_reputation]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.crew_reputation)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.crew_reputation> = {
       };
       return {
@@ -122,11 +122,11 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.crew_playbook]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.crew_playbook)) { return undefined as never }
+    [BladesItemType.crew_playbook]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.crew_playbook)) { return undefined as never; }
       if (context.isGM) {
         const expClueData: Record<string, string> = {};
-        [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue });
+        [...Object.values(context.system.experience_clues ?? []).filter(clue => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
         context.system.experience_clues = expClueData;
       }
       const sheetData: BladesItemDataOfType<BladesItemType.crew_playbook> = {
@@ -136,8 +136,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.crew_upgrade]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.crew_upgrade)) { return undefined as never }
+    [BladesItemType.crew_upgrade]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.crew_upgrade)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.crew_upgrade> = {
       };
       return {
@@ -145,8 +145,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.feature]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.feature)) { return undefined as never }
+    [BladesItemType.feature]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.feature)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.feature> = {
       };
       return {
@@ -154,8 +154,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.gm_tracker]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.gm_tracker)) { return undefined as never }
+    [BladesItemType.gm_tracker]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.gm_tracker)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.gm_tracker> = {
       };
       return {
@@ -163,8 +163,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.heritage]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.heritage)) { return undefined as never }
+    [BladesItemType.heritage]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.heritage)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.heritage> = {
       };
       return {
@@ -172,14 +172,14 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.gear]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.gear)) { return undefined as never }
+    [BladesItemType.gear]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.gear)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.gear> = {
         tierData: {
-          "class": "comp-tier comp-vertical comp-teeth",
-          "label": "Quality",
-          "labelClass": "filled-label full-width",
-          "dotline": {
+          class: "comp-tier comp-vertical comp-teeth",
+          label: "Quality",
+          labelClass: "filled-label full-width",
+          dotline: {
             data: this.item.system.tier,
             target: "system.tier.value",
             iconEmpty: "dot-empty.svg",
@@ -195,14 +195,14 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.playbook]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.playbook)) { return undefined as never }
+    [BladesItemType.playbook]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.playbook)) { return undefined as never; }
       if (context.isGM) {
         const expClueData: Record<string, string> = {};
-        [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue });
+        [...Object.values(context.system.experience_clues ?? []).filter(clue => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
         context.system.experience_clues = expClueData;
         const gatherInfoData: Record<string, string> = {};
-        [...Object.values(context.system.gather_info_questions ?? []).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question });
+        [...Object.values(context.system.gather_info_questions ?? []).filter(question => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
         context.system.gather_info_questions = gatherInfoData;
       }
       const sheetData: BladesItemDataOfType<BladesItemType.playbook> = {};
@@ -211,8 +211,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.preferred_op]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.preferred_op)) { return undefined as never }
+    [BladesItemType.preferred_op]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.preferred_op)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.preferred_op> = {
       };
       return {
@@ -220,8 +220,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.stricture]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.stricture)) { return undefined as never }
+    [BladesItemType.stricture]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.stricture)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.stricture> = {
       };
       return {
@@ -229,8 +229,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.vice]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.vice)) { return undefined as never }
+    [BladesItemType.vice]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.vice)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.vice> = {
       };
       return {
@@ -238,8 +238,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.project]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.project)) { return undefined as never }
+    [BladesItemType.project]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.project)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.project> = {
       };
       return {
@@ -247,8 +247,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.ritual]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.ritual)) { return undefined as never }
+    [BladesItemType.ritual]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.ritual)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.ritual> = {
       };
       return {
@@ -256,8 +256,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.design]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.design)) { return undefined as never }
+    [BladesItemType.design]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.design)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.design> = {
       };
       return {
@@ -265,8 +265,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.location]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.location)) { return undefined as never }
+    [BladesItemType.location]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.location)) { return undefined as never; }
       const sheetData: BladesItemDataOfType<BladesItemType.location> = {
       };
       return {
@@ -274,8 +274,8 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.score]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.score)) { return undefined as never }
+    [BladesItemType.score]: context => {
+      if (!BladesItem.IsType(this.item, BladesItemType.score)) { return undefined as never; }
       return context;
     }
   };
@@ -302,11 +302,11 @@ class BladesItemSheet extends ItemSheet {
     ApplyTooltipListeners(html);
 
     // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) {return}
+    if (!this.options.editable) {return;}
 
     // Add dotline functionality
     html.find(".dotline").each((__, elem) => {
-      if ($(elem).hasClass("locked")) { return }
+      if ($(elem).hasClass("locked")) { return; }
 
       const targetDoc: BladesActor | BladesItem = this.item;
       const targetField = $(elem).data("target");
@@ -346,14 +346,14 @@ class BladesItemSheet extends ItemSheet {
     // Harm Bar Functionality for Cohorts
     if (BladesItem.IsType(this.item, BladesItemType.cohort_expert, BladesItemType.cohort_gang)) {
       html.find("[data-harm-click]").on({
-        click: (event) => {
+        click: event => {
           event.preventDefault();
           const harmLevel = U.pInt($(event.currentTarget).data("harmClick"));
           if (this.item.system.harm?.value !== harmLevel) {
             this.item.update({"system.harm.value": harmLevel});
           }
         },
-        contextmenu: (event) => {
+        contextmenu: event => {
           event.preventDefault();
           const harmLevel = Math.max(0, U.pInt($(event.currentTarget).data("harmClick")) - 1);
           if (this.item.system.harm?.value !== harmLevel) {
@@ -368,7 +368,7 @@ class BladesItemSheet extends ItemSheet {
       html.on("change", "textarea", this._onChangeInput.bind(this)); // Use delegated listener on the form
     }
 
-    html.find(".effect-control").on("click", (ev) => {
+    html.find(".effect-control").on("click", ev => {
       if ( self.item.isOwned ) {
         ui.notifications?.warn(game.i18n.localize("BITD.EffectWarning"));
         return;
@@ -384,7 +384,7 @@ class BladesItemSheet extends ItemSheet {
     const connector$ = button$.parent();
     const turfNum = parseInt(connector$.data("index") ?? 0, 10);
     const turfDir = connector$.data("dir");
-    if (!turfNum || !turfDir) { return }
+    if (!turfNum || !turfDir) { return; }
     const toggleState = connector$.hasClass("no-connect");
     const updateData = {
       [`system.turfs.${turfNum}.connects.${turfDir}`]: toggleState

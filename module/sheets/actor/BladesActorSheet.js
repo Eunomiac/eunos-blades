@@ -14,7 +14,7 @@ import BladesActor from "../../BladesActor.js";
 import BladesItem from "../../BladesItem.js";
 import BladesSelectorDialog from "../../BladesDialog.js";
 import BladesActiveEffect from "../../BladesActiveEffect.js";
-import BladesRollCollab, { BladesRollPrimary, BladesRollOpposition } from "../../BladesRollCollab.js";
+import BladesRoll, { BladesRollPrimary, BladesRollOpposition } from "../../BladesRoll.js";
 class BladesActorSheet extends ActorSheet {
         getData() {
         const context = super.getData();
@@ -385,7 +385,7 @@ class BladesActorSheet extends ActorSheet {
                 rollData.rollOppData = this.actor;
             }
         }
-        await BladesRollCollab.NewRoll(rollData);
+        await BladesRoll.NewRoll(rollData);
     }
 
     _onActiveEffectControlClick(event) {

@@ -14,7 +14,7 @@ export enum BladesTipContext {
 }
 
 type OnSubmitEvent = Event & {
-  result: Promise<Record<string,string|number|boolean>>
+  result: Promise<Record<string, string|number|boolean>>
 }
 
 class BladesTipGenerator {
@@ -50,6 +50,7 @@ class BladesTipGenerator {
   }
 
   private tipContext: BladesTipContext;
+
   constructor(tipContext: BladesTipContext) {
     this.tipContext = tipContext;
   }
@@ -59,7 +60,7 @@ class BladesTipGenerator {
 
 class BladesGMTrackerSheet extends BladesItemSheet {
 
-  static Get() { return game.eunoblades.Tracker as BladesGMTracker }
+  static Get() { return game.eunoblades.Tracker as BladesGMTracker; }
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -112,7 +113,7 @@ class BladesGMTrackerSheet extends BladesItemSheet {
         case BladesPhase.Score: {
           isForcingRender = false;
           game.actors.filter((actor): actor is BladesPC => BladesActor.IsType(actor, BladesActorType.pc))
-            .forEach((actor) => actor.clearLoadout());
+            .forEach(actor => actor.clearLoadout());
           break;
         }
         case BladesPhase.Downtime: {
@@ -142,8 +143,8 @@ class BladesGMTrackerSheet extends BladesItemSheet {
       }
     }
     if (isForcingRender) {
-      game.actors.filter((actor) => actor.type === BladesActorType.pc)
-        .forEach((actor) => actor.sheet?.render());
+      game.actors.filter(actor => actor.type === BladesActorType.pc)
+        .forEach(actor => actor.sheet?.render());
     }
     return submitData;
   }

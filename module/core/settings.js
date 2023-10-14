@@ -9,40 +9,48 @@ import U from "./utilities.js";
 import C from "./constants.js";
 const registerSettings = function () {
     game.settings.register("eunos-blades", "debug", {
-        "name": "Debug Level",
-        "hint": "The verbosity of the debug messages to console.",
-        "scope": "client",
-        "config": true,
-        "type": Number,
-        "range": {
+        name: "Debug Level",
+        hint: "The verbosity of the debug messages to console.",
+        scope: "client",
+        config: true,
+        type: Number,
+        range: {
             min: 0,
             max: 5,
             step: 1
         },
-        "default": 3
+        default: 3
     });
     game.settings.register("eunos-blades", "blacklist", {
-        "name": "Debug Blacklist",
-        "hint": "Comma-delimited list of categories of debug messages to silence.",
-        "scope": "client",
-        "config": true,
-        "type": String,
-        "default": ""
+        name: "Debug Blacklist",
+        hint: "Comma-delimited list of categories of debug messages to silence.",
+        scope: "client",
+        config: true,
+        type: String,
+        default: ""
+    });
+    game.settings.register("eunos-blades", "openAPIKey", {
+        name: "OpenAI API Key",
+        hint: "Your personal OpenAI API Key (necessary to enable AI functionality)",
+        scope: "client",
+        config: true,
+        type: String,
+        default: ""
     });
     game.settings.register("eunos-blades", "whitelist", {
-        "name": "Debug Whitelist",
-        "hint": "Comma-delimited list of categories of debug messages to promote.",
-        "scope": "client",
-        "config": true,
-        "type": String,
-        "default": ""
+        name: "Debug Whitelist",
+        hint: "Comma-delimited list of categories of debug messages to promote.",
+        scope: "client",
+        config: true,
+        type: String,
+        default: ""
     });
         game.settings.register("eunos-blades", "systemMigrationVersion", {
-        "name": "System Migration Version",
-        "scope": "world",
-        "config": false,
-        "type": Number,
-        "default": 0
+        name: "System Migration Version",
+        scope: "world",
+        config: false,
+        type: Number,
+        default: 0
     });
 };
 export function initTinyMCEStyles() {

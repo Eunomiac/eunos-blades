@@ -8,7 +8,7 @@ import BladesActor from "../../BladesActor";
 import BladesItem from "../../BladesItem";
 import BladesSelectorDialog, {SelectionCategory} from "../../BladesDialog";
 import BladesActiveEffect from "../../BladesActiveEffect";
-import BladesRollCollab, {BladesRollPrimary, BladesRollOpposition} from "../../BladesRollCollab";
+import BladesRoll, {BladesRollPrimary, BladesRollOpposition} from "../../BladesRoll";
 // #endregion
 // #region TYPES: BladesCompData ~
 type BladesCompData = {
@@ -456,7 +456,7 @@ class BladesActorSheet extends ActorSheet {
   async _onRollTraitClick(event: ClickEvent) {
     const traitName = $(event.currentTarget).data("rollTrait");
     const rollType = $(event.currentTarget).data("rollType");
-    const rollData: Partial<BladesRollCollab.Config> = {};
+    const rollData: Partial<BladesRoll.Config> = {};
     if (U.lCase(traitName) in {...ActionTrait, ...AttributeTrait, ...Factor}) {
       rollData.rollTrait = U.lCase(traitName) as ActionTrait|AttributeTrait|Factor;
     } else if (U.isInt(traitName)) {
@@ -481,7 +481,7 @@ class BladesActorSheet extends ActorSheet {
       }
     }
 
-    await BladesRollCollab.NewRoll(rollData as BladesRollCollab.ConstructorConfig);
+    await BladesRoll.NewRoll(rollData as BladesRoll.ConstructorConfig);
   }
   // #endregion
 

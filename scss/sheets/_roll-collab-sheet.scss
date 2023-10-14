@@ -2,8 +2,6 @@
 
   height: auto !important;
   width: unset !important;
-  min-width: 550px;
-  max-width: 550px;
 
   overflow: visible;
   box-shadow: none;
@@ -14,20 +12,25 @@
       background-color: var(--blades-gold-darkest);
     }
 
-    10% { background-color: var(--blades-gold-bright) }
+    10% {
+      background-color: var(--blades-gold-bright)
+    }
 
     100% {
       box-shadow: 0 0 20px 30px transparent;
       background-color: var(--blades-gold-darkest);
     }
   }
+
   @keyframes anim-glow-red {
     0% {
       box-shadow: 0 0 0px 0px var(--blades-red-bright);
       background-color: var(--blades-red-darkest);
     }
 
-    10% { background-color: var(--blades-red-bright) }
+    10% {
+      background-color: var(--blades-red-bright)
+    }
 
     100% {
       box-shadow: 0 0 20px 30px transparent;
@@ -41,7 +44,9 @@
       background-color: var(--blades-grey-dark);
     }
 
-    10% { background-color: var(--blades-grey-bright) }
+    10% {
+      background-color: var(--blades-grey-bright)
+    }
 
     100% {
       box-shadow: 0 0 20px 30px transparent;
@@ -195,7 +200,9 @@
             .roll-mod-label {
               left: calc(-1.35 * var(--roll-mod-size));
 
-              svg { opacity: 0 }
+              svg {
+                opacity: 0
+              }
 
               .roll-mod-text {
                 color: var(--blades-grey);
@@ -207,7 +214,9 @@
             .roll-mod-label {
               left: calc(-1.35 * var(--roll-mod-size));
 
-              svg { opacity: 0 }
+              svg {
+                opacity: 0
+              }
 
               .roll-mod-text {
                 color: var(--blades-grey);
@@ -241,7 +250,8 @@
         --roll-mod-dark-color: var(--blades-red-darkest);
       }
 
-      &.roll-mod-ability, &.roll-mod-harm {
+      &.roll-mod-ability,
+      &.roll-mod-harm {
 
         .roll-mod-label {
           .roll-mod-text:last-of-type {
@@ -363,7 +373,10 @@
         --icon-border-color: transparent;
         --icon-border-bg-color: transparent;
 
-        .roll-mod-icon svg .diamond-base { stroke: none }
+        .roll-mod-icon svg .diamond-base {
+          stroke: none
+        }
+
         .icon {
           box-shadow: 0px 0px 15px 8px var(--roll-mod-bright-color)
         }
@@ -684,157 +697,183 @@
   }
 
   &.gm-roll-collab {
-    min-width: 750px;
-    max-width: 750px;
 
-    .window-content form .sheet-root {
+    .window-content form {
+      min-width: var(--full-roll-width, 550px);
+      max-width: var(--full-roll-width, 550px);
 
-      .roll-sheet-block {
+      &.roll-type-action {
+        --full-roll-width: 775px;
+      }
 
-        .roll-sheet-sub-block {
-          &.roll-effects-block:not(.inactive-mod-block) {
-            width: 85% !important;
-          }
-          .roll-mod-container {
-            min-width: 120px;
+      &.roll-type-resistance {
+        --full-roll-width: 550px;
+      }
 
-            &.roll-mod-teamwork {
-              .roll-mod-label {
-                .roll-mod-sidestring {
-                  min-width: 75px;
-                }
-              }
+      .sheet-root {
+
+        .roll-sheet-block {
+
+          .roll-sheet-sub-block {
+            &.roll-effects-block:not(.inactive-mod-block) {
+              width: 85% !important;
             }
 
-            .roll-mod-label {
+            .roll-mod-container {
+              min-width: 120px;
 
-              .roll-doc-select-container {
-                min-width: 120px;
-                max-height: 16px;
-                border-radius: 8px;
-                margin-left: -85px;
-                margin-right: -50px;
-                background: var(--blades-black-dark);
-
-                .roll-doc-select {
-                  .roll-sheet-doc-select {
-                    pointer-events: auto !important;
-                    appearance: none;
-                    width: 85px;
-                    color: transparent;
-                    text-shadow: none;
-                    margin-left: -10px;
-
+              &.roll-mod-teamwork {
+                .roll-mod-label {
+                  .roll-mod-sidestring {
+                    min-width: 75px;
                   }
                 }
               }
+
+              .roll-mod-label {
+
+                .roll-doc-select-container {
+                  min-width: 120px;
+                  max-height: 16px;
+                  border-radius: 8px;
+                  margin-left: -85px;
+                  margin-right: -50px;
+                  background: var(--blades-black-dark);
+
+                  .roll-doc-select {
+                    .roll-sheet-doc-select {
+                      pointer-events: auto !important;
+                      appearance: none;
+                      width: 85px;
+                      color: transparent;
+                      text-shadow: none;
+                      margin-left: -10px;
+
+                    }
+                  }
+                }
+              }
+
+              .tooltip {
+                // bottom: 150px
+              }
             }
 
-            .tooltip {
-              // bottom: 150px
+            .roll-mod-block-spacer {
+              display: none !important
             }
-          }
 
-          .roll-mod-block-spacer {
-            display: none !important
-          }
-
-          .position-controls-container,
-          .effect-controls-container {
-            height: 24px;
-            min-height: 24px;
-            // background: magenta;
-            right: 160px;
-            left: unset;
-            min-width: unset;
-            margin-top: -2px;
-            position: absolute;
-
-            .roll-mod-gm-control {
+            .position-controls-container,
+            .effect-controls-container {
               height: 24px;
-              width: 24px;
-              line-height: 24px;
-              font-size: 0;
-              display: inline-block;
-              pointer-events: auto !important;
-              cursor: pointer;
-              scale: 0.5;
-
-              background: var(--gm-control-background);
-              outline: 2px solid var(--gm-control-border);
-
-              &.active {
-                filter: brightness(1.2) drop-shadow(0 0 3px var(--gm-control-border,var(--blades-white-bright)));
-                scale: 0.7;
-              }
-
-              &:hover {
-                filter: brightness(1.2) drop-shadow(0px 0px 10px var(--gm-control-border, var(--blades-white-bright)));
-                scale: 1;
-              }
-
-              &.gm-control-effect-zero {
-                --gm-control-border: var(--blades-red-dark);
-                --gm-control-background: transparent;
-              }
-
-              &.gm-control-effect-limited,
-              &.gm-control-position-desperate {
-                --gm-control-border: var(--blades-red-bright);
-                --gm-control-background: var(--blades-red-dark);
-              }
-
-              &.gm-control-effect-standard,
-              &.gm-control-position-risky {
-                --gm-control-border: var(--blades-grey-bright);
-                --gm-control-background: var(--blades-grey-dark);
-              }
-              &.gm-control-effect-great,
-              &.gm-control-position-controlled {
-                --gm-control-border: var(--blades-cyan-bright);
-                --gm-control-background: var(--blades-cyan-dark);
-              }
-
-              &.gm-control-effect-extreme {
-                --gm-control-border: var(--blades-gold-bright);
-                --gm-control-background: var(--blades-gold-dark);
-              }
-            }
-          }
-
-          &.inactive-mod-block {
-            .roll-mod-container {
+              min-height: 24px;
+              // background: magenta;
+              right: 160px;
+              left: unset;
               min-width: unset;
+              margin-top: -2px;
+              position: absolute;
 
-              .roll-mod-label .roll-mod-text {
-                text-shadow: none;
+              .roll-mod-gm-control {
+                height: 24px;
+                width: 24px;
+                line-height: 24px;
+                font-size: 0;
+                display: inline-block;
+                pointer-events: auto !important;
+                cursor: pointer;
+                scale: 0.5;
+
+                background: var(--gm-control-background);
+                outline: 2px solid var(--gm-control-border);
+
+                &.active {
+                  filter: brightness(1.2) drop-shadow(0 0 3px var(--gm-control-border, var(--blades-white-bright)));
+                  scale: 0.7;
+                }
+
+                &:hover {
+                  filter: brightness(1.2) drop-shadow(0px 0px 10px var(--gm-control-border, var(--blades-white-bright)));
+                  scale: 1;
+                }
+
+                &.gm-control-effect-zero {
+                  --gm-control-border: var(--blades-red-dark);
+                  --gm-control-background: transparent;
+                }
+
+                &.gm-control-effect-limited,
+                &.gm-control-position-desperate {
+                  --gm-control-border: var(--blades-red-bright);
+                  --gm-control-background: var(--blades-red-dark);
+                }
+
+                &.gm-control-effect-standard,
+                &.gm-control-position-risky {
+                  --gm-control-border: var(--blades-grey-bright);
+                  --gm-control-background: var(--blades-grey-dark);
+                }
+
+                &.gm-control-effect-great,
+                &.gm-control-position-controlled {
+                  --gm-control-border: var(--blades-cyan-bright);
+                  --gm-control-background: var(--blades-cyan-dark);
+                }
+
+                &.gm-control-effect-extreme {
+                  --gm-control-border: var(--blades-gold-bright);
+                  --gm-control-background: var(--blades-gold-dark);
+                }
               }
+            }
 
-              .comp.controls-container {
-                --menu-size: 16px;
-                right: 0px;
+            &.inactive-mod-block {
+              .roll-mod-container {
+                min-width: unset;
+
+                .roll-mod-label .roll-mod-text {
+                  text-shadow: none;
+                }
+
+                .comp.controls-container {
+                  --menu-size: 16px;
+                  right: 0px;
+                }
               }
             }
           }
         }
-      }
 
-      .split-root {
-        min-width: 750px;
-        max-width: 750px;
+        .full-root {
+          min-width: 100%;
+          max-width: 100%;
 
-        .split-root-left {
-          min-width: 375px;
-          max-width: 375px;
-
-          * { pointer-events: none }
+          * {
+            pointer-events: none
+          }
         }
 
-        .split-root-right {
-          min-width: 375px;
-          max-width: 375px;
+        .split-root {
+          min-width: 100%;
+          max-width: 100%;
 
-          .sheet-main { right: 6px }
+          .split-root-left {
+            min-width: 50%;
+            max-width: 50%;
+
+            * {
+              pointer-events: none
+            }
+          }
+
+          .split-root-right {
+            min-width: 50%;
+            max-width: 50%;
+
+            .sheet-main {
+              right: 6px
+            }
+          }
         }
       }
     }
@@ -875,10 +914,131 @@
       // hover glow buttons --- https://codepen.io/Stockin/pen/XPvpoB
       // Popup radial tiny menu --- https://codepen.io/iremlopsum/pen/Qjoxmv
 
+
+      &.roll-type-action {
+        min-width: 775px;
+        max-width: 775px;
+      }
+
+      &.roll-type-resistance {
+        min-width: 500px;
+        max-width: 500px;
+
+        .sheet-root {
+          border-radius: 30px;
+
+          .roll-sheet-float-block.rolling-dice-total-block {
+            // top: 20px;
+            right: 25px;
+          }
+
+          .roll-sheet-block.rolling-block {
+            border: none;
+          }
+
+          .sheet-header {
+            top: unset;
+            align-items: center;
+            padding: 0 10px;
+            border: none;
+            overflow: hidden;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+
+            .consequence-box {
+              width: unset;
+              flex-basis: 40%;
+              flex-direction: row;
+              justify-content: flex-end;
+              align-items: center;
+
+              .consequence-name {
+                font-size: toRem(16px);
+                padding: 0px;
+                margin: 3px 5px -3px 0;
+                text-align: right;
+              }
+              .consequence-label {
+                // font-size: toRem(14px);
+                // line-height: toRem(12px);
+                // padding-top: 3px;
+                // margin: 0px;
+                min-width: 150px;
+                text-transform: none;
+              }
+            }
+          }
+
+          .roll-sheet-block.consequence-block {
+            align-items: center;
+            justify-content: space-between;
+            border: none;
+            padding-top: 5px;
+          }
+
+          .consequence-box {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            justify-content: center;
+            align-items: center;
+            margin: 3px 0;
+
+            &.consequence-strong {
+              --consequence-bg-color: var(--blades-red-dark);
+              --consequence-border-color: var(--blades-red-bright);
+              --consequence-text-color: var(--blades-red-bright);
+            }
+
+            &.consequence-resisted {
+              --consequence-bg-color: var(--blades-red-darkest);
+              --consequence-border-color: var(--blades-red);
+              --consequence-text-color: var(--blades-red);
+            }
+
+            .consequence-name {
+              font-family: var(--font-emphasis);
+              text-transform: uppercase;
+              color: var(--consequence-text-color);
+              text-shadow: var(--text-shadow-dark-strong);
+              width: 100%;
+              text-align: center;
+            }
+
+            .consequence-label {
+              background: var(--consequence-bg-color);
+              font-family: var(--font-decorative);
+              font-style: italic;
+              font-size: 1.25rem;
+              line-height: 1.25rem;
+              color: var(--blades-white-bright);
+              text-shadow: var(--text-shadow-dark-strong);
+              border: 2px outset var(--consequence-border-color);
+              width: 100%;
+              text-align: center;
+              padding-top: 5px;
+            }
+          }
+
+          section.sheet-footer {
+
+            .roll-sheet-float-block.roll-button {
+              .roll-odds-strip {
+                .roll-odds-section-container {
+                  filter: blur(10px);
+                }
+              }
+            }
+          }
+        }
+      }
+
       .sheet-root {
         overflow: visible;
 
-        > section { z-index: 5 }
+        >section {
+          z-index: 5
+        }
 
         .sheet-topper {
           position: absolute;
@@ -1263,23 +1423,125 @@
           }
         }
 
-        .split-root {
+        .split-root,
+        .full-root {
           align-items: stretch;
           position: static;
 
-          .split-root-left {
-            flex-basis: 75%;
-            max-width: 370px;
+          .split-root-left,
+          .split-root-right,
+          .full-root-container {
             overflow: visible;
             position: relative;
             z-index: 5;
 
-            section.sheet-main {
-              justify-content: flex-start;
-              align-items: stretch;
-              height: auto;
-              overflow: visible;
+            &.split-root-left {
+              flex-basis: 75%;
+              max-width: 370px;
             }
+
+            &.split-root-right {
+              flex-basis: 35%;
+              display: flex;
+              align-items: stretch;
+              justify-content: stretch;
+              flex-direction: column;
+              z-index: 4;
+
+              section.sheet-main {
+                flex-grow: 1;
+                z-index: 0;
+                overflow: hidden;
+
+                &.roll-opp-block {
+                  position: relative;
+                  overflow: visible;
+                }
+              }
+
+              section.sheet-main.factor-controls {
+
+                --spread-size: 14px;
+                justify-content: flex-end;
+                // position: absolute;
+                bottom: 0;
+                right: 20px;
+
+                .factor-control-row {
+                  align-items: flex-start;
+
+                  .factor-toggle,
+                  .roll-num-container.factor-spacer {
+                    height: var(--spread-size, 30px);
+                    width: var(--spread-size, 30px);
+                    font-family: Oswald, sans-serif;
+                    font-size: 10px;
+                    line-height: calc(var(--spread-size, 30px) - 2px);
+                    border: 1px var(--roll-factor-inactive-border-style, solid) var(--roll-factor-inactive-border);
+                    color: var(--roll-factor-inactive-color);
+                    text-align: center;
+                    border-radius: calc(var(--spread-size, 30px) * 0.5);
+                    background: var(--roll-factor-inactive-bg);
+
+                    &.toggle-active {
+                      background: var(--roll-factor-active-bg);
+                      border-color: var(--roll-factor-active-border);
+                      border-style: solid;
+                      color: var(--roll-factor-active-color);
+                    }
+
+                    &.factor-toggle-isActive {
+                      --roll-factor-inactive-bg: transparent;
+                      --roll-factor-active-bg: var(--blades-green-bright);
+
+                      --roll-factor-inactive-border: var(--blades-red-bright);
+                      --roll-factor-inactive-border-style: dotted;
+                      --roll-factor-active-border: var(--blades-green-dark);
+
+                      --roll-factor-inactive-color: var(--blades-red-bright);
+                      --roll-factor-active-color: var(--blades-black-dark);
+
+                      // &:not(.toggle-active) ~ * { filter: brightness(0.25) }
+                    }
+
+                    &.factor-toggle-isPrimary {
+                      --roll-factor-inactive-bg: transparent;
+                      --roll-factor-active-bg: var(--blades-gold-bright);
+
+                      --roll-factor-inactive-border: var(--blades-grey-dark);
+                      --roll-factor-active-border: var(--blades-gold-dark);
+
+                      --roll-factor-inactive-color: var(--blades-grey-bright);
+                      --roll-factor-active-color: var(--blades-black-dark);
+                    }
+
+
+                  }
+
+                  .roll-num-container.factor-spacer {
+                    width: calc(var(--spread-size, 30px) * 0.5);
+                    border: none;
+
+                    &.toggle-active {
+                      background: var(--blades-green-dark);
+                      border: none
+                    }
+
+                  }
+
+                }
+              }
+            }
+
+          }
+
+
+
+          section.sheet-main {
+            justify-content: flex-start;
+            align-items: stretch;
+            height: auto;
+            overflow: visible;
           }
 
           .roll-source-bg-img,
@@ -1316,7 +1578,7 @@
               }
 
               &.roll-source-bg-overlay {
-                background: linear-gradient(to right, transparent, var(--blades-black) 80%);
+                background: linear-gradient(to right, transparent, var(--blades-black-dark) 80%);
                 width: 50%;
                 top: 0;
                 left: 0;
@@ -1336,7 +1598,7 @@
               }
 
               &.roll-opp-bg-overlay {
-                background: linear-gradient(to left, transparent, var(--blades-black) 80%);
+                background: linear-gradient(to left, transparent, var(--blades-black-dark) 80%);
                 width: 50%;
                 top: 0;
                 right: 0;
@@ -1344,99 +1606,6 @@
             }
 
 
-          }
-
-          .split-root-right {
-            flex-basis: 35%;
-            display: flex;
-            align-items: stretch;
-            justify-content: stretch;
-            flex-direction: column;
-            z-index: 4;
-
-            section.sheet-main {
-              flex-grow: 1;
-              z-index: 0;
-              overflow: hidden;
-
-              &.roll-opp-block {
-                position: relative;
-                overflow: visible;
-              }
-            }
-
-            section.sheet-main.factor-controls {
-
-              --spread-size: 14px;
-              justify-content: flex-end;
-              // position: absolute;
-              bottom: 0;
-              right: 20px;
-
-              .factor-control-row {
-                align-items: flex-start;
-
-                .factor-toggle,
-                .roll-num-container.factor-spacer {
-                  height: var(--spread-size, 30px);
-                  width: var(--spread-size, 30px);
-                  font-family: Oswald, sans-serif;
-                  font-size: 10px;
-                  line-height: calc(var(--spread-size, 30px) - 2px);
-                  border: 1px var(--roll-factor-inactive-border-style, solid) var(--roll-factor-inactive-border);
-                  color: var(--roll-factor-inactive-color);
-                  text-align: center;
-                  border-radius: calc(var(--spread-size, 30px) * 0.5);
-                  background: var(--roll-factor-inactive-bg);
-
-                  &.toggle-active {
-                    background: var(--roll-factor-active-bg);
-                    border-color: var(--roll-factor-active-border);
-                    border-style: solid;
-                    color: var(--roll-factor-active-color);
-                  }
-
-                  &.factor-toggle-isActive {
-                    --roll-factor-inactive-bg: transparent;
-                    --roll-factor-active-bg: var(--blades-green-bright);
-
-                    --roll-factor-inactive-border: var(--blades-red-bright);
-                    --roll-factor-inactive-border-style: dotted;
-                    --roll-factor-active-border: var(--blades-green-dark);
-
-                    --roll-factor-inactive-color: var(--blades-red-bright);
-                    --roll-factor-active-color: var(--blades-black-dark);
-
-                    // &:not(.toggle-active) ~ * { filter: brightness(0.25) }
-                  }
-
-                  &.factor-toggle-isPrimary {
-                    --roll-factor-inactive-bg: transparent;
-                    --roll-factor-active-bg: var(--blades-gold-bright);
-
-                    --roll-factor-inactive-border: var(--blades-grey-dark);
-                    --roll-factor-active-border: var(--blades-gold-dark);
-
-                    --roll-factor-inactive-color: var(--blades-grey-bright);
-                    --roll-factor-active-color: var(--blades-black-dark);
-                  }
-
-
-                }
-
-                .roll-num-container.factor-spacer {
-                  width: calc(var(--spread-size, 30px) * 0.5);
-                  border: none;
-
-                  &.toggle-active {
-                    background: var(--blades-green-dark);
-                    border: none
-                  }
-
-                }
-
-              }
-            }
           }
         }
 
@@ -1494,7 +1663,7 @@
 
                   filter: blur(50px);
 
-                  > * {
+                  >* {
                     flex-grow: 1;
                     flex-shrink: 1;
                   }
@@ -1571,11 +1740,11 @@
 
             &.roll-stress-block {
               position: absolute;
-              bottom: -24px;
-              translate: -50% 0;
+              translate: -50% 100%;
               left: 50%;
+              // top: 25%;
               font-family: var(--font-emphasis);
-              color: var(--blades-red-bright);
+              color: var(--blades-white);
               text-shadow:
                 0 0 4px var(--blades-black-dark),
                 0 0 4px var(--blades-black-dark),
@@ -1585,6 +1754,18 @@
 
               &.gm-ready {
                 bottom: -50px
+              }
+
+              .gold-bright, .gold-bright * {
+                color: var(--blades-gold-bright) !important;
+              }
+
+              .red-bright, .red-bright * {
+                color: var(--blades-red-bright) !important;
+              }
+
+              .cyan-bright, .cyan-bright * {
+                color: var(--blades-cyan-bright) !important;
               }
 
               .tooltip.tooltip-roll-stress {
@@ -1599,6 +1780,7 @@
 
           // #747474
         }
+
         .roll-num-container {
           height: var(--spread-size, 30px);
           width: calc(var(--spread-count, 7) * var(--spread-size, 30px));

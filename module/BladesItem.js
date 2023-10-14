@@ -8,7 +8,7 @@
 import C, { BladesActorType, BladesItemType, Tag, Factor } from "./core/constants.js";
 import U from "./core/utilities.js";
 import { BladesActor } from "./documents/BladesActorProxy.js";
-import { BladesRollMod } from "./BladesRollCollab.js";
+import { BladesRollMod } from "./BladesRoll.js";
 class BladesItem extends Item {
 
     static async create(data, options = {}) {

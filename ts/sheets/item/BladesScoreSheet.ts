@@ -4,7 +4,7 @@ import BladesItemSheet from "./BladesItemSheet";
 
 import {BladesActor, BladesPC} from "../../documents/BladesActorProxy";
 import {BladesScore} from "../../documents/BladesItemProxy";
-import BladesRollCollab, {BladesRollOpposition} from "../../BladesRollCollab";
+import BladesRoll, {BladesRollOpposition} from "../../BladesRoll";
 
 
 /* #region BladesTipGenerator */
@@ -164,7 +164,7 @@ class BladesScoreSheet extends BladesItemSheet {
       });
 
     // Prune system data for blank/empty opposition entries
-    const validOppositions: Record<string, BladesRollCollab.OppositionDocData> = {};
+    const validOppositions: Record<string, BladesRoll.OppositionDocData> = {};
     for (const [id, data] of Object.entries(context.system.oppositions)) {
       if (!data.rollOppName && !data.rollOppSubName) { continue; }
       validOppositions[id] = data;
@@ -227,9 +227,9 @@ class BladesScoreSheet extends BladesItemSheet {
     const elem$ = $(event.currentTarget);
     const oppId = elem$.data("oppId");
     this.document.update({"system.oppositionSelected": oppId});
-    if (BladesScore.Active?.id === this.document.id && BladesRollCollab.Active) {
-      BladesRollCollab.Active.rollOpposition = new BladesRollOpposition(
-        BladesRollCollab.Active,
+    if (BladesScore.Active?.id === this.document.id && BladesRoll.Active) {
+      BladesRoll.Active.rollOpposition = new BladesRollOpposition(
+        BladesRoll.Active,
         this.document.system.oppositions[oppId]
       );
     }

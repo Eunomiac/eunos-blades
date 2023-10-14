@@ -37,7 +37,7 @@ class BladesItemSheet extends ItemSheet {
         return this._getTypedItemData[this.item.type]({ ...context, ...sheetData });
     }
     _getTypedItemData = {
-        [BladesItemType.ability]: (context) => {
+        [BladesItemType.ability]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.ability)) {
                 return undefined;
             }
@@ -47,7 +47,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.background]: (context) => {
+        [BladesItemType.background]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.background)) {
                 return undefined;
             }
@@ -57,7 +57,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.clock_keeper]: (context) => {
+        [BladesItemType.clock_keeper]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.clock_keeper)) {
                 return undefined;
             }
@@ -69,7 +69,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.cohort_gang]: (context) => {
+        [BladesItemType.cohort_gang]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
                 return undefined;
             }
@@ -78,8 +78,8 @@ class BladesItemSheet extends ItemSheet {
             context.system.elite_subtypes ??= {};
             const sheetData = {
                 tierData: {
-                    "class": "comp-tier comp-vertical comp-teeth",
-                    "dotline": {
+                    class: "comp-tier comp-vertical comp-teeth",
+                    dotline: {
                         data: this.item.system.tier,
                         target: "system.tier.value",
                         iconEmpty: "dot-empty.svg",
@@ -90,18 +90,18 @@ class BladesItemSheet extends ItemSheet {
                 }
             };
             sheetData.edgeData = Object.fromEntries(Object.values(context.system.edges ?? [])
-                .filter((edge) => /[A-Za-z]/.test(edge))
-                .map((edge) => [edge.trim(), C.EdgeTooltips[edge]]));
+                .filter(edge => /[A-Za-z]/.test(edge))
+                .map(edge => [edge.trim(), C.EdgeTooltips[edge]]));
             sheetData.flawData = Object.fromEntries(Object.values(context.system.flaws ?? [])
-                .filter((flaw) => /[A-Za-z]/.test(flaw))
-                .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw]]));
+                .filter(flaw => /[A-Za-z]/.test(flaw))
+                .map(flaw => [flaw.trim(), C.FlawTooltips[flaw]]));
             return {
                 ...context,
                 ...sheetData
             };
         },
-        [BladesItemType.cohort_expert]: (context) => this._getTypedItemData[BladesItemType.cohort_gang](context),
-        [BladesItemType.crew_ability]: (context) => {
+        [BladesItemType.cohort_expert]: context => this._getTypedItemData[BladesItemType.cohort_gang](context),
+        [BladesItemType.crew_ability]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.crew_ability)) {
                 return undefined;
             }
@@ -111,7 +111,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.crew_reputation]: (context) => {
+        [BladesItemType.crew_reputation]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.crew_reputation)) {
                 return undefined;
             }
@@ -121,13 +121,13 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.crew_playbook]: (context) => {
+        [BladesItemType.crew_playbook]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.crew_playbook)) {
                 return undefined;
             }
             if (context.isGM) {
                 const expClueData = {};
-                [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
+                [...Object.values(context.system.experience_clues ?? []).filter(clue => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
                 context.system.experience_clues = expClueData;
             }
             const sheetData = {};
@@ -136,7 +136,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.crew_upgrade]: (context) => {
+        [BladesItemType.crew_upgrade]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.crew_upgrade)) {
                 return undefined;
             }
@@ -146,7 +146,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.feature]: (context) => {
+        [BladesItemType.feature]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.feature)) {
                 return undefined;
             }
@@ -156,7 +156,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.gm_tracker]: (context) => {
+        [BladesItemType.gm_tracker]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.gm_tracker)) {
                 return undefined;
             }
@@ -166,7 +166,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.heritage]: (context) => {
+        [BladesItemType.heritage]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.heritage)) {
                 return undefined;
             }
@@ -176,16 +176,16 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.gear]: (context) => {
+        [BladesItemType.gear]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.gear)) {
                 return undefined;
             }
             const sheetData = {
                 tierData: {
-                    "class": "comp-tier comp-vertical comp-teeth",
-                    "label": "Quality",
-                    "labelClass": "filled-label full-width",
-                    "dotline": {
+                    class: "comp-tier comp-vertical comp-teeth",
+                    label: "Quality",
+                    labelClass: "filled-label full-width",
+                    dotline: {
                         data: this.item.system.tier,
                         target: "system.tier.value",
                         iconEmpty: "dot-empty.svg",
@@ -200,16 +200,16 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.playbook]: (context) => {
+        [BladesItemType.playbook]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.playbook)) {
                 return undefined;
             }
             if (context.isGM) {
                 const expClueData = {};
-                [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
+                [...Object.values(context.system.experience_clues ?? []).filter(clue => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
                 context.system.experience_clues = expClueData;
                 const gatherInfoData = {};
-                [...Object.values(context.system.gather_info_questions ?? []).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
+                [...Object.values(context.system.gather_info_questions ?? []).filter(question => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
                 context.system.gather_info_questions = gatherInfoData;
             }
             const sheetData = {};
@@ -218,7 +218,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.preferred_op]: (context) => {
+        [BladesItemType.preferred_op]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.preferred_op)) {
                 return undefined;
             }
@@ -228,7 +228,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.stricture]: (context) => {
+        [BladesItemType.stricture]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.stricture)) {
                 return undefined;
             }
@@ -238,7 +238,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.vice]: (context) => {
+        [BladesItemType.vice]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.vice)) {
                 return undefined;
             }
@@ -248,7 +248,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.project]: (context) => {
+        [BladesItemType.project]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.project)) {
                 return undefined;
             }
@@ -258,7 +258,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.ritual]: (context) => {
+        [BladesItemType.ritual]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.ritual)) {
                 return undefined;
             }
@@ -268,7 +268,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.design]: (context) => {
+        [BladesItemType.design]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.design)) {
                 return undefined;
             }
@@ -278,7 +278,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.location]: (context) => {
+        [BladesItemType.location]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.location)) {
                 return undefined;
             }
@@ -288,7 +288,7 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.score]: (context) => {
+        [BladesItemType.score]: context => {
             if (!BladesItem.IsType(this.item, BladesItemType.score)) {
                 return undefined;
             }
@@ -353,14 +353,14 @@ class BladesItemSheet extends ItemSheet {
         });
         if (BladesItem.IsType(this.item, BladesItemType.cohort_expert, BladesItemType.cohort_gang)) {
             html.find("[data-harm-click]").on({
-                click: (event) => {
+                click: event => {
                     event.preventDefault();
                     const harmLevel = U.pInt($(event.currentTarget).data("harmClick"));
                     if (this.item.system.harm?.value !== harmLevel) {
                         this.item.update({ "system.harm.value": harmLevel });
                     }
                 },
-                contextmenu: (event) => {
+                contextmenu: event => {
                     event.preventDefault();
                     const harmLevel = Math.max(0, U.pInt($(event.currentTarget).data("harmClick")) - 1);
                     if (this.item.system.harm?.value !== harmLevel) {
@@ -372,7 +372,7 @@ class BladesItemSheet extends ItemSheet {
         if (this.options.submitOnChange) {
             html.on("change", "textarea", this._onChangeInput.bind(this));
         }
-        html.find(".effect-control").on("click", (ev) => {
+        html.find(".effect-control").on("click", ev => {
             if (self.item.isOwned) {
                 ui.notifications?.warn(game.i18n.localize("BITD.EffectWarning"));
                 return;

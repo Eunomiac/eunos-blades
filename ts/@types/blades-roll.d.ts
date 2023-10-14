@@ -1,51 +1,11 @@
-import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor} from "../core/constants";
+import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollPhase} from "../core/constants";
 import BladesActor from "../BladesActor";
 import BladesItem from "../BladesItem";
-import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../BladesRollCollab";
+import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../BladesRoll";
 
 declare global {
 
-  namespace BladesRollCollab {
-
-    export interface RollParticipantData {
-      [RollModSection.roll]?: {
-        Assist?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
-        Group_1?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
-        Group_2?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
-        Group_3?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
-        Group_4?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
-        Group_5?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
-        Group_6?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
-      },
-      [RollModSection.position]?: {
-        Setup?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData
-      },
-      [RollModSection.effect]?: {
-        Setup?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData
-      }
-    }
-
-    export interface RollParticipantDocs {
-      [RollModSection.roll]?: {
-        Assist?: BladesRollParticipant,
-        Group_1?: BladesRollParticipant,
-        Group_2?: BladesRollParticipant,
-        Group_3?: BladesRollParticipant,
-        Group_4?: BladesRollParticipant,
-        Group_5?: BladesRollParticipant,
-        Group_6?: BladesRollParticipant,
-      },
-      [RollModSection.position]?: {
-        Setup?: BladesRollParticipant
-      },
-      [RollModSection.effect]?: {
-        Setup?: BladesRollParticipant
-      }
-    }
-
-    export type RollParticipantSection = RollModSection.roll|RollModSection.position|RollModSection.effect;
-
-    export type RollParticipantSubSection = "Assist"|"Group_1"|"Group_2"|"Group_3"|"Group_4"|"Group_5"|"Group_6"|"Setup";
+  namespace BladesRoll {
 
     export interface Config {
       rollType: RollType,
@@ -56,14 +16,23 @@ declare global {
       rollSubType?: RollSubType,
       rollDowntimeAction?: DowntimeAction,
       rollTrait?: RollTrait,
-      participantRollTo?: string
+      participantRollTo?: string,
+      consequenceData?: ConsequenceData
     }
     export type ConstructorConfig = Partial<Config> & Required<Pick<Config, "rollType">>;
 
-    export interface ConsequenceData extends Partial<OppositionDocData> {
+    export interface ConfigFlags extends Config {
+      rollPrimaryData: Omit<PrimaryDocData, "rollPrimaryDoc">,
+      rollOppData?: Omit<OppositionDocData, "rollOppDoc">,
+      rollParticipantData?: RollParticipantFlagData
+    }
+
+    export interface ConsequenceData {
+      name: string,
       type: ConsequenceType,
       attribute: AttributeTrait,
-      label?: string
+      label?: string,
+      resistedConsequence: Omit<ConsequenceData, "resistedConsequence"|"attribute">|false
     }
 
     export type CostData = {
@@ -85,25 +54,21 @@ declare global {
 
     export type ModType = BladesItemType | "general" | "harm" | "teamwork";
 
-    export interface FlagData {
+    export interface FlagData extends Config {
       rollID: string;
-      rollType: RollType;
-      rollSubType?: RollSubType;
-      rollDowntimeAction?: DowntimeAction;
 
       rollPrimaryData: Omit<PrimaryDocData, "rollPrimaryDoc">;
       rollOppData?: Omit<OppositionDocData, "rollOppDoc">;
-      rollParticipantData?: RollParticipantData;
-      rollTrait?: RollTrait;
+      rollParticipantData?: RollParticipantFlagData;
       rollModsData: Record<string,RollModStatus>;
       rollPositionInitial: Position;
       rollEffectInitial: Effect;
       rollPosEffectTrade: "position"|"effect"|false,
-      rollConsequence?: ConsequenceData,
-      isGMReady: boolean,
+      rollPhase: RollPhase,
       GMBoosts: Partial<Record<"Dice"|Factor|"Result",number>>,
       GMOppBoosts: Partial<Record<Factor,number>>,
-      rollFactorToggles: Record<"source"|"opposition", Partial<Record<Factor, FactorFlagData>>>
+      rollFactorToggles: Record<"source"|"opposition", Partial<Record<Factor, FactorFlagData>>>,
+      userPermissions: Record<string, RollPermissions>
     }
 
     export interface SheetData extends FlagData {
@@ -148,7 +113,9 @@ declare global {
 
       oddsHTMLStart: string,
       oddsHTMLStop: string,
-      costData?: Record<"footerLabel"|"tooltip",string>
+      costData?: Record<"footerLabel"|"tooltip",string>,
+
+      userPermission: RollPermissions
     }
 
     export type PartialSheetData = Partial<SheetData> & FlagData;
@@ -266,5 +233,65 @@ declare global {
     }
 
     export type ParticipantConstructorData = ParticipantSectionData & Partial<ParticipantDocData>;
+
+
+    export interface RollParticipantData {
+      [RollModSection.roll]?: {
+        Assist?: ParticipantDocData & ParticipantSectionData,
+        Group_1?: ParticipantDocData & ParticipantSectionData,
+        Group_2?: ParticipantDocData & ParticipantSectionData,
+        Group_3?: ParticipantDocData & ParticipantSectionData,
+        Group_4?: ParticipantDocData & ParticipantSectionData,
+        Group_5?: ParticipantDocData & ParticipantSectionData,
+        Group_6?: ParticipantDocData & ParticipantSectionData,
+      },
+      [RollModSection.position]?: {
+        Setup?: ParticipantDocData & ParticipantSectionData
+      },
+      [RollModSection.effect]?: {
+        Setup?: ParticipantDocData & ParticipantSectionData
+      }
+    }
+
+    export interface RollParticipantFlagData {
+      [RollModSection.roll]?: {
+        Assist?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+        Group_1?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+        Group_2?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+        Group_3?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+        Group_4?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+        Group_5?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+        Group_6?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+      },
+      [RollModSection.position]?: {
+        Setup?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData
+      },
+      [RollModSection.effect]?: {
+        Setup?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData
+      }
+    }
+
+    export interface RollParticipantDocs {
+      [RollModSection.roll]?: {
+        Assist?: BladesRollParticipant,
+        Group_1?: BladesRollParticipant,
+        Group_2?: BladesRollParticipant,
+        Group_3?: BladesRollParticipant,
+        Group_4?: BladesRollParticipant,
+        Group_5?: BladesRollParticipant,
+        Group_6?: BladesRollParticipant,
+      },
+      [RollModSection.position]?: {
+        Setup?: BladesRollParticipant
+      },
+      [RollModSection.effect]?: {
+        Setup?: BladesRollParticipant
+      }
+    }
+
+    export type RollParticipantSection = RollModSection.roll|RollModSection.position|RollModSection.effect;
+
+    export type RollParticipantSubSection = "Assist"|"Group_1"|"Group_2"|"Group_3"|"Group_4"|"Group_5"|"Group_6"|"Setup";
+
   }
 }

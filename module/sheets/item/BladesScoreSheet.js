@@ -10,7 +10,7 @@ import { BladesActorType, BladesPhase, Tag, Randomizers } from "../../core/const
 import BladesItemSheet from "./BladesItemSheet.js";
 import { BladesActor } from "../../documents/BladesActorProxy.js";
 import { BladesScore } from "../../documents/BladesItemProxy.js";
-import BladesRollCollab, { BladesRollOpposition } from "../../BladesRollCollab.js";
+import BladesRoll, { BladesRollOpposition } from "../../BladesRoll.js";
 export var BladesTipContext;
 (function (BladesTipContext) {
     BladesTipContext["DiceRoll"] = "DiceRoll";
@@ -193,8 +193,8 @@ class BladesScoreSheet extends BladesItemSheet {
         const elem$ = $(event.currentTarget);
         const oppId = elem$.data("oppId");
         this.document.update({ "system.oppositionSelected": oppId });
-        if (BladesScore.Active?.id === this.document.id && BladesRollCollab.Active) {
-            BladesRollCollab.Active.rollOpposition = new BladesRollOpposition(BladesRollCollab.Active, this.document.system.oppositions[oppId]);
+        if (BladesScore.Active?.id === this.document.id && BladesRoll.Active) {
+            BladesRoll.Active.rollOpposition = new BladesRollOpposition(BladesRoll.Active, this.document.system.oppositions[oppId]);
         }
     }
     _triggerRandomize(event) {

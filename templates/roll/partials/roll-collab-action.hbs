@@ -286,16 +286,18 @@
   </div>
     <div class="roll-sheet-float-block roll-button">
       <div class="roll-odds-strip">
-      {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
-      {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
-      {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
-      {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
-      {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
+        {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
+        {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
+        {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
+        {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
+        {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
       </div>
-      {{#unless isGMReady}}
-      <div class="roll-odds-label-container">Waiting For GM ...</div>{{/unless}}
-      {{#if isGMReady}}
-      <button class="roll-button" data-action="roll" data-roll-id="{{rollID}}">ROLL</button>
+      {{#if (test rollPhase "==" "Collaboration")}}
+        <div class="roll-odds-label-container">
+          <div class="roll-odds-label-text">Waiting For GM ...</div>
+        </div>
+      {{else if (test rollPhase "==" "AwaitingResult")}}
+        <button class="roll-button" data-action="roll" data-roll-id="{{rollID}}">ROLL</button>
       {{/if}}
     </div>
     {{#if costData}}

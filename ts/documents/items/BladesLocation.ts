@@ -2,15 +2,15 @@ import BladesItem from "../../BladesItem";
 import {BladesActorType, BladesItemType, Factor} from "../../core/constants";
 import U from "../../core/utilities";
 import BladesActor from "../../BladesActor";
-import BladesRollCollab from "../../BladesRollCollab";
+import BladesRoll from "../../BladesRoll";
 
 class BladesLocation extends BladesItem implements BladesItemSubClass.Location,
-                                                    BladesRollCollab.OppositionDocData {
+                                                    BladesRoll.OppositionDocData {
 
 
-  override get rollFactors(): Partial<Record<Factor,BladesRollCollab.FactorData>> {
+  override get rollFactors(): Partial<Record<Factor,BladesRoll.FactorData>> {
 
-    const factorData: Partial<Record<Factor,BladesRollCollab.FactorData>> = {};
+    const factorData: Partial<Record<Factor,BladesRoll.FactorData>> = {};
     [
       Factor.tier,
       Factor.quality,

@@ -1,6 +1,6 @@
 {{eLog "ROLL COLLAB CONTEXT" this}}
 
-<form class="{{cssClass}} roll-collab-sheet roll-collab-sheet-pc" autocomplete="off">
+<form class="{{cssClass}} roll-collab-sheet roll-collab-sheet-pc roll-type-{{case "lower" rollType}}" autocomplete="off">
   <div class="sheet-root">
     {{#if (test rollType "==" "Action")}}
     {{> "systems/eunos-blades/templates/roll/partials/roll-collab-action.hbs" }}

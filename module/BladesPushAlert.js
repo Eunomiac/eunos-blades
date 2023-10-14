@@ -6,10 +6,10 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-export default class BladesPushController {
+export default class BladesPushAlert {
     static Get() {
         if (!game.eunoblades.PushController) {
-            throw new Error("Attempt to Get BladesPushController before 'ready' hook.");
+            throw new Error("Attempt to Get BladesPushAlert before 'ready' hook.");
         }
         return game.eunoblades.PushController;
     }
@@ -18,8 +18,8 @@ export default class BladesPushController {
         game.eunoblades ??= {};
         Hooks.once("ready", async () => {
             let pushController = game.eunoblades.PushController;
-            if (!(pushController instanceof BladesPushController)) {
-                pushController = new BladesPushController();
+            if (!(pushController instanceof BladesPushAlert)) {
+                pushController = new BladesPushAlert();
             }
             game.eunoblades.PushController = pushController;
             pushController.initOverlay();
@@ -35,13 +35,13 @@ export default class BladesPushController {
     }
     initOverlay() {
         $("#sidebar").append($("<div id='blades-push-notifications'></div>"));
-        BladesPushController.isInitialized = true;
+        BladesPushAlert.isInitialized = true;
     }
     get elem$() { return $("#blades-push-notifications"); }
     get elem() { return this.elem$[0]; }
     activeNotifications = {};
     push(blockClass, charName, titleText, bodyText) {
-        const pushController = BladesPushController.Get();
+        const pushController = BladesPushAlert.Get();
         const pushID = randomID();
         const pushLines = [
             `<div id="#blades-push-${pushID}" class="push-notice${charName === "GM" ? " gm-notice" : ""} ${blockClass}">`
@@ -86,10 +86,9 @@ export default class BladesPushController {
             return;
         }
         const pushArgs = args.slice(0, 3);
-        socketlib.system.executeForUsers("pushNotice", users.map((user) => user.id), "", ...pushArgs);
+        socketlib.system.executeForUsers("pushNotice", users.map(user => user.id), "", ...pushArgs);
     }
     pushToGM(...args) {
         socketlib.system.executeForAllGMs("pushNotice", "to-gm-notice", ...args);
     }
 }
-//# sourceMappingURL=blades-push-notifications.js.map

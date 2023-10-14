@@ -1,14 +1,14 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import C from "./core/constants";
+import C, {AttributeTrait, RollType, ConsequenceType} from "./core/constants";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles} from "./core/settings";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers";
-import BladesPushController from "./BladesPushController";
+import BladesPushAlert from "./BladesPushAlert";
 import U from "./core/utilities";
 import logger from "./core/logger";
 import G, {Initialize as GsapInitialize} from "./core/gsap";
 
 
-import BladesActorProxy, {BladesActor} from "./documents/BladesActorProxy";
+import BladesActorProxy, {BladesActor, BladesPC, BladesCrew, BladesNPC, BladesFaction} from "./documents/BladesActorProxy";
 import BladesItemProxy, {BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore} from "./documents/BladesItemProxy";
 
 import BladesItemSheet from "./sheets/item/BladesItemSheet";
@@ -16,7 +16,7 @@ import BladesPCSheet from "./sheets/actor/BladesPCSheet";
 import BladesCrewSheet from "./sheets/actor/BladesCrewSheet";
 import BladesNPCSheet from "./sheets/actor/BladesNPCSheet";
 import BladesFactionSheet from "./sheets/actor/BladesFactionSheet";
-import BladesRollCollab, {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "./BladesRollCollab";
+import BladesRoll, {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "./BladesRoll";
 
 import BladesSelectorDialog from "./BladesDialog";
 import BladesActiveEffect from "./BladesActiveEffect";
@@ -34,7 +34,7 @@ let socket: Socket; // ~ SocketLib interface
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 
 class GlobalGetter {
-  get roll() { return BladesRollCollab.Active; }
+  get roll() { return BladesRoll.Active; }
 
   get user() { return this.roll?.document; }
 
@@ -49,6 +49,36 @@ class GlobalGetter {
   get rollOpposition() { return this.roll?.rollOpposition; }
 
   get sheetData() { return this.roll?.getData(); }
+
+  newResistanceRoll() {
+    const pc = game.actors.getName("Alistair") as BladesPC|undefined;
+    if (!pc) { return; }
+    const conf = {
+      rollType: RollType.Resistance,
+      rollUserID: game.users.find(user => user.character?.name === "Alistair")?.id as string,
+      rollPrimaryData: {
+        rollPrimaryID: pc.id,
+        rollPrimaryDoc: pc,
+        rollPrimaryName: pc.name,
+        rollPrimaryType: pc.type,
+        rollPrimaryImg: pc.img,
+        rollModsData: pc.rollModsData,
+        rollFactors: pc.rollFactors
+      },
+      consequenceData: {
+        name: "Level 3 Harm",
+        type: ConsequenceType.Harm3,
+        label: "Shattered Knee",
+        attribute: AttributeTrait.prowess,
+        resistedConsequence: {
+          name: "Level 2 Harm",
+          type: ConsequenceType.Harm2,
+          label: "Twisted Knee"
+        }
+      }
+    };
+    BladesRoll.NewRoll(conf);
+  }
 }
 
 
@@ -64,13 +94,17 @@ class GlobalGetter {
     updateDescriptions,
     updateRollMods,
     BladesActor,
+    BladesPC,
+    BladesCrew,
+    BladesNPC,
+    BladesFaction,
     BladesPCSheet,
     BladesCrewSheet,
     BladesFactionSheet,
     BladesNPCSheet,
     BladesActiveEffect,
-    BladesPushController,
-    BladesRollCollab,
+    BladesPushAlert,
+    BladesRoll,
     BladesRollMod,
     BladesRollPrimary,
     BladesRollOpposition,
@@ -118,8 +152,8 @@ Hooks.once("init", async () => {
     BladesScore.Initialize(),
     BladesSelectorDialog.Initialize(),
     BladesClockKeeperSheet.Initialize(),
-    BladesPushController.Initialize(),
-    BladesRollCollab.Initialize(),
+    BladesPushAlert.Initialize(),
+    BladesRoll.Initialize(),
     preloadHandlebarsTemplates()
   ]);
 
@@ -140,12 +174,12 @@ Hooks.once("socketlib.ready", () => {
     {socket, socketlib}
   );/* !DEVCODE*/
 
-  BladesRollCollab.InitSockets();
+  BladesRoll.InitSockets();
 
   let clockOverlayUp: boolean; let pushControllerUp: boolean;
 
   /**
-   * Initializes the overlay sockets for the BladesClockKeeperSheet and BladesPushController.
+   * Initializes the overlay sockets for the BladesClockKeeperSheet and BladesPushAlert.
    * It checks every 2 seconds if the overlays are up and running.
    * If both overlays are up, it stops checking.
    *
@@ -156,7 +190,7 @@ Hooks.once("socketlib.ready", () => {
   function InitOverlaySockets(): void {
     setTimeout(() => {
       clockOverlayUp = clockOverlayUp || BladesClockKeeperSheet.InitSockets();
-      pushControllerUp = clockOverlayUp || BladesPushController.InitSockets();
+      pushControllerUp = clockOverlayUp || BladesPushAlert.InitSockets();
       if (clockOverlayUp && pushControllerUp) { return; }
       InitOverlaySockets();
     }, 2000);

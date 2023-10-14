@@ -3,7 +3,7 @@ import BladesItem from "../BladesItem";
 import BladesActor from "../BladesActor";
 import BladesClockKeeper from "../documents/items/BladesClockKeeper";
 import BladesGMTracker from "../documents/items/BladesGMTracker";
-import BladesPushController from "../BladesPushController";
+import BladesPushAlert from "../BladesPushAlert";
 import C from "../core/constants";
 import type gsap from "/scripts/greensock/esm/all";
 
@@ -40,7 +40,7 @@ declare global {
     eunoblades: {
       ClockKeeper?: BladesClockKeeper,
       Tracker?: BladesGMTracker,
-      PushController?: BladesPushController
+      PushController?: BladesPushAlert
     }
   }
   declare interface User {
@@ -59,7 +59,7 @@ declare global {
   interface FlagConfig {
     User: {
       [C.SYSTEM_ID]?: {
-        rollCollab?: BladesRollCollab.FlagData
+        rollCollab?: BladesRoll.FlagData
       }
     };
   }

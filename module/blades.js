@@ -5,21 +5,21 @@
 |*     ▌████░░░░  ░░░░█████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C from "./core/constants.js";
+import C, { AttributeTrait, RollType, ConsequenceType } from "./core/constants.js";
 import registerSettings, { initTinyMCEStyles, initCanvasStyles } from "./core/settings.js";
 import { registerHandlebarHelpers, preloadHandlebarsTemplates } from "./core/helpers.js";
-import BladesPushController from "./BladesPushController.js";
+import BladesPushAlert from "./BladesPushAlert.js";
 import U from "./core/utilities.js";
 import logger from "./core/logger.js";
 import G, { Initialize as GsapInitialize } from "./core/gsap.js";
-import BladesActorProxy, { BladesActor } from "./documents/BladesActorProxy.js";
+import BladesActorProxy, { BladesActor, BladesPC, BladesCrew, BladesNPC, BladesFaction } from "./documents/BladesActorProxy.js";
 import BladesItemProxy, { BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore } from "./documents/BladesItemProxy.js";
 import BladesItemSheet from "./sheets/item/BladesItemSheet.js";
 import BladesPCSheet from "./sheets/actor/BladesPCSheet.js";
 import BladesCrewSheet from "./sheets/actor/BladesCrewSheet.js";
 import BladesNPCSheet from "./sheets/actor/BladesNPCSheet.js";
 import BladesFactionSheet from "./sheets/actor/BladesFactionSheet.js";
-import BladesRollCollab, { BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant } from "./BladesRollCollab.js";
+import BladesRoll, { BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant } from "./BladesRoll.js";
 import BladesSelectorDialog from "./BladesDialog.js";
 import BladesActiveEffect from "./BladesActiveEffect.js";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet.js";
@@ -31,7 +31,7 @@ Object.assign(globalThis, { eLog: logger });
 Handlebars.registerHelper("eLog", logger.hbsLog); 
 let socket;
 class GlobalGetter {
-    get roll() { return BladesRollCollab.Active; }
+    get roll() { return BladesRoll.Active; }
     get user() { return this.roll?.document; }
     get rollFlags() { return this.roll?.flagData; }
     get userFlags() { return this.user?.flags?.["eunos-blades"]?.rollCollab; }
@@ -39,6 +39,37 @@ class GlobalGetter {
     get rollPrimaryDoc() { return this.roll?.rollPrimaryDoc; }
     get rollOpposition() { return this.roll?.rollOpposition; }
     get sheetData() { return this.roll?.getData(); }
+    newResistanceRoll() {
+        const pc = game.actors.getName("Alistair");
+        if (!pc) {
+            return;
+        }
+        const conf = {
+            rollType: RollType.Resistance,
+            rollUserID: game.users.find(user => user.character?.name === "Alistair")?.id,
+            rollPrimaryData: {
+                rollPrimaryID: pc.id,
+                rollPrimaryDoc: pc,
+                rollPrimaryName: pc.name,
+                rollPrimaryType: pc.type,
+                rollPrimaryImg: pc.img,
+                rollModsData: pc.rollModsData,
+                rollFactors: pc.rollFactors
+            },
+            consequenceData: {
+                name: "Level 3 Harm",
+                type: ConsequenceType.Harm3,
+                label: "Shattered Knee",
+                attribute: AttributeTrait.prowess,
+                resistedConsequence: {
+                    name: "Level 2 Harm",
+                    type: ConsequenceType.Harm2,
+                    label: "Twisted Knee"
+                }
+            }
+        };
+        BladesRoll.NewRoll(conf);
+    }
 }
 
 Object.assign(globalThis, {
@@ -50,13 +81,17 @@ Object.assign(globalThis, {
     updateDescriptions,
     updateRollMods,
     BladesActor,
+    BladesPC,
+    BladesCrew,
+    BladesNPC,
+    BladesFaction,
     BladesPCSheet,
     BladesCrewSheet,
     BladesFactionSheet,
     BladesNPCSheet,
     BladesActiveEffect,
-    BladesPushController,
-    BladesRollCollab,
+    BladesPushAlert,
+    BladesRoll,
     BladesRollMod,
     BladesRollPrimary,
     BladesRollOpposition,
@@ -92,8 +127,8 @@ Hooks.once("init", async () => {
         BladesScore.Initialize(),
         BladesSelectorDialog.Initialize(),
         BladesClockKeeperSheet.Initialize(),
-        BladesPushController.Initialize(),
-        BladesRollCollab.Initialize(),
+        BladesPushAlert.Initialize(),
+        BladesRoll.Initialize(),
         preloadHandlebarsTemplates()
     ]);
     registerHandlebarHelpers();
@@ -106,13 +141,13 @@ Hooks.once("ready", () => {
 Hooks.once("socketlib.ready", () => {
     socket = socketlib.registerSystem("eunos-blades");
     Object.assign(globalThis, { socket, socketlib });     
-    BladesRollCollab.InitSockets();
+    BladesRoll.InitSockets();
     let clockOverlayUp;
     let pushControllerUp;
         function InitOverlaySockets() {
         setTimeout(() => {
             clockOverlayUp = clockOverlayUp || BladesClockKeeperSheet.InitSockets();
-            pushControllerUp = clockOverlayUp || BladesPushController.InitSockets();
+            pushControllerUp = clockOverlayUp || BladesPushAlert.InitSockets();
             if (clockOverlayUp && pushControllerUp) {
                 return;
             }

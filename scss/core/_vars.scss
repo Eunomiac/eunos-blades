@@ -271,7 +271,12 @@ $isCompactLayout: true;
   --line-height-primary: 1.2;
   --line-height-compact: 1;
 
-  --text-shadow-dark: 0.1rem 0.1rem 0.2rem var(--blades-black-dark);
+  --text-shadow-dark:
+    1px 1px 2px var(--blades-black-dark);
+  --text-shadow-dark-strong:
+    1px 1px 2px var(--blades-black-dark),
+    1px 1px 2px var(--blades-black-dark),
+    1px 1px 2px var(--blades-black-dark);
   --box-shadow-dark: inset 0 0 0.3rem var(--blades-black-dark-fade);
   --box-shadow-dark-strong: inset 0 0 0.5rem var(--blades-black-dark);
   // #endregion ░░░░[Style Components]░░░░

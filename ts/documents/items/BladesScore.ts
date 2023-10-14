@@ -2,7 +2,7 @@ import BladesItem from "../../BladesItem";
 import {BladesActorType, BladesItemType, Factor} from "../../core/constants";
 import U from "../../core/utilities";
 import BladesActor from "../../BladesActor";
-import BladesRollCollab from "../../BladesRollCollab";
+import BladesRoll from "../../BladesRoll";
 import BladesScoreSheet from "../../sheets/item/BladesScoreSheet";
 
 import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
@@ -11,7 +11,7 @@ import type {DocumentModificationOptions} from "@league-of-foundry-developers/fo
 
 
 class BladesScore extends BladesItem implements BladesItemSubClass.Score,
-  BladesRollCollab.OppositionDocData {
+  BladesRoll.OppositionDocData {
 
   // #region INITIALIZATION ~
   static async Initialize() {
@@ -35,8 +35,8 @@ class BladesScore extends BladesItem implements BladesItemSubClass.Score,
       });
   }
 
-  // #region BladesRollCollab.OppositionDocData Implementation
-  override get rollFactors(): Partial<Record<Factor, BladesRollCollab.FactorData>> {
+  // #region BladesRoll.OppositionDocData Implementation
+  override get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
 
     const tierTotal = this.getFactorTotal(Factor.tier);
     return {

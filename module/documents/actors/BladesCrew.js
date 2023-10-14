@@ -7,7 +7,7 @@
 
 import { BladesItemType, Factor } from "../../core/constants.js";
 import BladesActor from "../../BladesActor.js";
-import { BladesRollMod } from "../../BladesRollCollab.js";
+import { BladesRollMod } from "../../BladesRoll.js";
 class BladesCrew extends BladesActor {
 
     static async create(data, options = {}) {

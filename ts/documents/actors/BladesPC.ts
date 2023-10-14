@@ -2,13 +2,13 @@ import C, {Playbook, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesI
 import U from "../../core/utilities";
 import {BladesActor, BladesCrew} from "../BladesActorProxy";
 import {BladesItem} from "../BladesItemProxy";
-import BladesRollCollab, {BladesRollMod} from "../../BladesRollCollab";
+import BladesRoll, {BladesRollMod} from "../../BladesRoll";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 
 class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
-                                              BladesRollCollab.PrimaryDocData,
-                                              BladesRollCollab.ParticipantDocData {
+                                              BladesRoll.PrimaryDocData,
+                                              BladesRoll.ParticipantDocData {
 
   // #region Static Overrides: Create ~
   static override IsType<T extends BladesActorType = BladesActorType.pc>(doc: unknown): doc is BladesActorOfType<T> {
@@ -220,10 +220,10 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   }
   // #endregion
 
-  // #region BladesRollCollab Implementation
+  // #region BladesRoll Implementation
 
-  get rollFactors(): Partial<Record<Factor, BladesRollCollab.FactorData>> {
-    const factorData: Partial<Record<Factor, BladesRollCollab.FactorData>> = {
+  get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
+    const factorData: Partial<Record<Factor, BladesRoll.FactorData>> = {
       [Factor.tier]: {
         name: Factor.tier,
         value: this.getFactorTotal(Factor.tier),
@@ -249,7 +249,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     return factorData;
   }
 
-  // #region BladesRollCollab.PrimaryDoc Implementation
+  // #region BladesRoll.PrimaryDoc Implementation
 
   get rollPrimaryID() { return this.id; }
 
@@ -261,7 +261,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   get rollPrimaryImg() { return this.img; }
 
-  get rollModsData(): BladesRollCollab.RollModData[] {
+  get rollModsData(): BladesRoll.RollModData[] {
 
     const rollModsData = BladesRollMod.ParseDocRollMods(this);
 
@@ -318,7 +318,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   // #endregion
 
-  // #region BladesRollCollab.ParticipantDoc Implementation
+  // #region BladesRoll.ParticipantDoc Implementation
 
   get rollParticipantID() { return this.id; }
 
@@ -330,7 +330,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   get rollParticipantType() { return this.type; }
 
-  get rollParticipantModsData(): BladesRollCollab.RollModData[] { return []; }
+  get rollParticipantModsData(): BladesRoll.RollModData[] { return []; }
 
   // #endregion
 

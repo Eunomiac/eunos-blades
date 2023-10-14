@@ -8,7 +8,7 @@ type BladesClockKeeperSheetData = Partial<BladesItemSheetData> & {
 
 class BladesClockKeeperSheet extends BladesItemSheet {
 
-  static Get() { return game.eunoblades.ClockKeeper as BladesClockKeeper }
+  static Get() { return game.eunoblades.ClockKeeper as BladesClockKeeper; }
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -34,7 +34,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       game.eunoblades.ClockKeeper = clockKeeper;
       game.eunoblades.ClockKeeper.renderOverlay();
     });
-    Hooks.on("canvasReady", async () => { game.eunoblades.ClockKeeper?.renderOverlay() });
+    Hooks.on("canvasReady", async () => { game.eunoblades.ClockKeeper?.renderOverlay(); });
     return loadTemplates([
       "systems/eunos-blades/templates/items/clock_keeper-sheet.hbs",
       "systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
@@ -50,7 +50,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
   }
 
 
-  // override async _updateObject(event: unknown, formData: any) {
+  // Override async _updateObject(event: unknown, formData: any) {
   //   const updateData = await`this.object.update(formData);
   //   socketlib.system.executeForEveryone("renderOverlay");
   //   // this.item.renderOverlay();
@@ -58,7 +58,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
   // }
 
   override getData() {
-    const context = super.getData() as ReturnType<BladesItemSheet["getData"]> & List<any>;
+    const context = super.getData();
 
     const sheetData: BladesClockKeeperSheetData = {
       clock_keys: Object.fromEntries((Object.entries(context.system.clock_keys ?? {})

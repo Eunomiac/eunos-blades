@@ -1,12 +1,12 @@
 import BladesItem from "../../BladesItem";
 import {BladesActorType, Playbook, BladesItemType, Factor} from "../../core/constants";
 import BladesActor from "../../BladesActor";
-import BladesRollCollab, {BladesRollMod} from "../../BladesRollCollab";
+import BladesRoll, {BladesRollMod} from "../../BladesRoll";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
-  BladesRollCollab.PrimaryDocData,
-  BladesRollCollab.ParticipantDocData {
+  BladesRoll.PrimaryDocData,
+  BladesRoll.ParticipantDocData {
 
   // #region Static Overrides: Create ~
   static override async create(data: ActorDataConstructorData & {system?: Partial<BladesActorSchema.Crew>}, options = {}) {
@@ -34,14 +34,14 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
   // #endregion
 
 
-  // #region BladesRollCollab Implementation
+  // #region BladesRoll Implementation
 
-  get rollModsData(): BladesRollCollab.RollModData[] {
+  get rollModsData(): BladesRoll.RollModData[] {
     return BladesRollMod.ParseDocRollMods(this);
   }
 
-  get rollFactors(): Partial<Record<Factor, BladesRollCollab.FactorData>> {
-    const factorData: Partial<Record<Factor, BladesRollCollab.FactorData>> = {
+  get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
+    const factorData: Partial<Record<Factor, BladesRoll.FactorData>> = {
       [Factor.tier]: {
         name: Factor.tier,
         value: this.getFactorTotal(Factor.tier),
@@ -66,7 +66,7 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
 
     return factorData;
   }
-  // #region BladesRollCollab.PrimaryDoc Implementation
+  // #region BladesRoll.PrimaryDoc Implementation
   get rollPrimaryID() {return this.id}
   get rollPrimaryDoc() {return this}
   get rollPrimaryName() {return this.name}
@@ -74,14 +74,14 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
   get rollPrimaryImg() {return this.img}
   // #endregion
 
-  // #region BladesRollCollab.ParticipantDoc Implementation
+  // #region BladesRoll.ParticipantDoc Implementation
   get rollParticipantID() {return this.id}
   get rollParticipantDoc() {return this}
   get rollParticipantIcon() {return this.playbook?.img ?? this.img}
   get rollParticipantName() {return this.name}
   get rollParticipantType() {return this.type}
 
-  get rollParticipantModsData(): BladesRollCollab.RollModData[] {return []}
+  get rollParticipantModsData(): BladesRoll.RollModData[] {return []}
   // #endregion
 
 

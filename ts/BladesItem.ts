@@ -1,7 +1,7 @@
 import C, {BladesActorType, BladesItemType, Tag, Factor} from "./core/constants";
 import U from "./core/utilities";
 import {BladesActor} from "./documents/BladesActorProxy";
-import {BladesRollMod} from "./BladesRollCollab";
+import {BladesRollMod} from "./BladesRoll";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 class BladesItem extends Item implements BladesDocument<Item>,
@@ -166,9 +166,9 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   // #endregion
 
-  // #region BladesRollCollab Implementation
+  // #region BladesRoll Implementation
 
-  get rollFactors(): Partial<Record<Factor, BladesRollCollab.FactorData>> {
+  get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
     const factorsMap: Partial<Record<BladesItemType, Factor[]>> = {
       [BladesItemType.cohort_gang]: [Factor.quality, Factor.scale],
       [BladesItemType.cohort_expert]: [Factor.quality, Factor.scale],
@@ -181,7 +181,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
     const factors = factorsMap[this.type];
 
-    const factorData: Partial<Record<Factor, BladesRollCollab.FactorData>> = {};
+    const factorData: Partial<Record<Factor, BladesRoll.FactorData>> = {};
     (factors ?? []).forEach((factor, i) => {
       const factorTotal = this.getFactorTotal(factor);
       factorData[factor] = {
@@ -201,7 +201,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
     return factorData;
   }
 
-  // #region BladesRollCollab.PrimaryDoc Implementation
+  // #region BladesRoll.PrimaryDoc Implementation
   get rollPrimaryID() { return this.id; }
 
   get rollPrimaryDoc() { return this; }
@@ -212,7 +212,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   get rollPrimaryImg() { return this.img; }
 
-  get rollModsData(): BladesRollCollab.RollModData[] {
+  get rollModsData(): BladesRoll.RollModData[] {
     // Const rollModData = BladesRollMod.ParseDocRollMods(this);
     // Add roll mods from COHORT harm
 
@@ -221,7 +221,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   // #endregion
 
-  // #region BladesRollCollab.OppositionDoc Implementation
+  // #region BladesRoll.OppositionDoc Implementation
   get rollOppID() { return this.id; }
 
   get rollOppDoc() { return this; }
@@ -234,10 +234,10 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   get rollOppType() { return this.type; }
 
-  get rollOppModsData(): BladesRollCollab.RollModData[] { return []; }
+  get rollOppModsData(): BladesRoll.RollModData[] { return []; }
   // #endregion
 
-  // #region BladesRollCollab.ParticipantDoc Implementation
+  // #region BladesRoll.ParticipantDoc Implementation
   get rollParticipantID() { return this.id; }
 
   get rollParticipantDoc() { return this; }
@@ -248,7 +248,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   get rollParticipantType() { return this.type; }
 
-  get rollParticipantModsData(): BladesRollCollab.RollModData[] { return []; }
+  get rollParticipantModsData(): BladesRoll.RollModData[] { return []; }
   // #endregion
 
   // #endregion

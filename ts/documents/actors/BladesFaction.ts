@@ -2,13 +2,13 @@ import {BladesActorType, Factor} from "../../core/constants";
 import BladesActor from "../../BladesActor";
 
 class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
-                                                   BladesRollCollab.OppositionDocData {
+                                                   BladesRoll.OppositionDocData {
 
 
-  // #region BladesRollCollab Implementation
+  // #region BladesRoll Implementation
 
-  get rollFactors(): Partial<Record<Factor, BladesRollCollab.FactorData>> {
-    const factorData: Partial<Record<Factor, BladesRollCollab.FactorData>> = {
+  get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
+    const factorData: Partial<Record<Factor, BladesRoll.FactorData>> = {
       [Factor.tier]: {
         name: Factor.tier,
         value: this.getFactorTotal(Factor.tier),
@@ -34,7 +34,7 @@ class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
     return factorData;
   }
 
-  // #region BladesRollCollab.OppositionDoc Implementation
+  // #region BladesRoll.OppositionDoc Implementation
   get rollOppID() { return this.id; }
 
   get rollOppDoc() { return this; }
@@ -47,7 +47,7 @@ class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
 
   get rollOppType() { return this.type; }
 
-  get rollOppModsData(): BladesRollCollab.RollModData[] { return []; }
+  get rollOppModsData(): BladesRoll.RollModData[] { return []; }
   // #endregion
 
   // #endregion

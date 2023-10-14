@@ -5,26 +5,38 @@
 |*     ▌████░░░░  ░░░░█████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-const SYSTEM_INTRO = `
-  You will act as a creative content generator for a game of Blades In The Dark set in the city of Duskvol. You will be prompted with some element of the game world (a location, a character, an event, a faction, a dilemma) in the form of a JSON object. Your job is to analyze the JSON object and replace any values that equal "<GEN>" with original content of your own creation. Original content must meet these requirements:  (A) it should align with and be consistent with the provided contextual information, as well as your broader understanding of the game's themes. (B) It should be presented in a format that matches (in length and in style) other entries for that particular value, examples of which will also be provided. (C) It should be creative, interesting, and daring: Be bold with your creativity
-  Specific context for this prompt is as follows:
-`;
-const AI = {
-    QuerySystem: (keyword) => {
-        if (keyword) {
-            return keyword;
+import axios from "axios.js";
+import U from "./utilities.js";
+export class AI {
+    apiKey;
+    systemMessage;
+    examplePrompts;
+        constructor(systemMessage, examplePrompts) {
+        const apiKey = U.getSetting("openAPIKey");
+        if (!apiKey) {
+            throw new Error("You must configure your OpenAI API Key in Settings to use AI features.");
         }
-        else {
-            return "This is a placeholder.";
-        }
-    },
-    QueryAssistant: (type, keys) => {
-        if (type && keys) {
-            return [type, keys];
-        }
-        else {
-            return "This is a placeholder.";
-        }
+        this.apiKey = apiKey;
+        this.systemMessage = systemMessage;
+        this.examplePrompts = examplePrompts;
     }
-};
-export default AI;
+        async query(prompt) {
+        const response = await axios.post("https://api.openai.com/v1/engines/davinci-codex/completions", {
+            prompt: `${this.systemMessage}\n${this.examplePrompts.join("\n")}\n${prompt}`,
+            max_tokens: 60,
+            temperature: 0.5,
+                        top_p: 1,
+                        frequency_penalty: 0.8,
+                        presence_penalty: 0.8
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${this.apiKey}`
+            }
+        });
+        if (response.status !== 200) {
+            throw new Error(`OpenAI API request failed with status ${response.status}`);
+        }
+        return response.data;
+    }
+}

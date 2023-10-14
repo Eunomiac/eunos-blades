@@ -8,7 +8,7 @@
 import U from "./core/utilities.js";
 import C, { BladesActorType, Tag, Playbook, BladesItemType, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor } from "./core/constants.js";
 import { BladesItem } from "./documents/BladesItemProxy.js";
-import BladesPushController from "./BladesPushController.js";
+import BladesPushAlert from "./BladesPushAlert.js";
 import { SelectionCategory } from "./BladesDialog.js";
 var BladesActorUniqueTags;
 (function (BladesActorUniqueTags) {
@@ -713,15 +713,15 @@ class BladesActor extends Actor {
         }
         await this.update({ "system.experience.playbook.value": 0 });
         if (BladesActor.IsType(this, BladesActorType.pc)) {
-            BladesPushController.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`);
+            BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`);
             this.grantAdvancementPoints(AdvancementPoint.Ability);
             return;
         }
         if (BladesActor.IsType(this, BladesActorType.crew)) {
-            BladesPushController.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.");
+            BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.");
             this.members.forEach(member => {
                 const coinGained = this.system.tier.value + 2;
-                BladesPushController.Get().pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, undefined);
+                BladesPushAlert.Get().pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, undefined);
                 member.addStash(coinGained);
             });
             this.grantAdvancementPoints(AdvancementPoint.UpgradeOrAbility, 2);
@@ -730,7 +730,7 @@ class BladesActor extends Actor {
     async advanceAttribute(attribute) {
         await this.update({ [`system.experience.${attribute}.value`]: 0 });
         const actions = C.Action[attribute].map(action => `<strong>${U.tCase(action)}</strong>`);
-        BladesPushController.Get().pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`);
+        BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`);
     }
     parentActor;
     get isSubActor() { return this.parentActor !== undefined; }

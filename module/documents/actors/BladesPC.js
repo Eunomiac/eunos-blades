@@ -9,7 +9,7 @@ import C, { AttributeTrait, Harm, BladesActorType, BladesItemType, Tag, RollModS
 import U from "../../core/utilities.js";
 import { BladesActor } from "../BladesActorProxy.js";
 import { BladesItem } from "../BladesItemProxy.js";
-import { BladesRollMod } from "../../BladesRollCollab.js";
+import { BladesRollMod } from "../../BladesRoll.js";
 class BladesPC extends BladesActor {
 
     static IsType(doc) {
