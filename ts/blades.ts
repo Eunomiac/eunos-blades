@@ -19,6 +19,7 @@ import BladesFactionSheet from "./sheets/actor/BladesFactionSheet";
 import BladesRoll, {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "./BladesRoll";
 
 import BladesSelectorDialog from "./BladesDialog";
+import BladesAI, {PROMPTS} from "./core/ai";
 import BladesActiveEffect from "./BladesActiveEffect";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet";
@@ -118,7 +119,9 @@ class GlobalGetter {
     BladesLocation,
     BladesItemSheet,
     BladesClockKeeperSheet,
-    BladesGMTrackerSheet
+    BladesGMTrackerSheet,
+    BladesAI,
+    PROMPTS
   }
 );/* !DEVCODE*/
 // #endregion Globals

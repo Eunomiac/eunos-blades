@@ -21,6 +21,7 @@ import BladesNPCSheet from "./sheets/actor/BladesNPCSheet.js";
 import BladesFactionSheet from "./sheets/actor/BladesFactionSheet.js";
 import BladesRoll, { BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant } from "./BladesRoll.js";
 import BladesSelectorDialog from "./BladesDialog.js";
+import BladesAI, { PROMPTS } from "./core/ai.js";
 import BladesActiveEffect from "./BladesActiveEffect.js";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet.js";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet.js";
@@ -105,7 +106,9 @@ Object.assign(globalThis, {
     BladesLocation,
     BladesItemSheet,
     BladesClockKeeperSheet,
-    BladesGMTrackerSheet
+    BladesGMTrackerSheet,
+    BladesAI,
+    PROMPTS
 });
 
 Hooks.once("init", async () => {

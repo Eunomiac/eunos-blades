@@ -352,6 +352,18 @@ const C = {
   SYSTEM_NAME: "Euno's Blades",
   SYSTEM_FULL_NAME: "Euno's Blades In The Dark",
   TEMPLATE_ROOT: "systems/eunos-blades/templates",
+  AI_MODELS: {
+    baseContext: [
+      "babbage-002",
+      "gpt-3.5-turbo",
+      "gpt-4"
+    ],
+    extendedContext: [
+      "gpt-3.5-turbo-16k",
+      "gpt-3.5-turbo-16k",
+      "gpt-4-32k"
+    ]
+  },
   Colors: {
     bWHITE: "rgba(255, 255, 255, 1)",
     WHITE: "rgba(200, 200, 200, 1)",

@@ -15,6 +15,18 @@ const registerSettings = function() {
     } as { min: number; max: number; step: number },
     default: 3         // The default value for the setting
   });
+  game.settings.register("eunos-blades", "openAPIModelLevel", {
+    name: "AI Base Quality",
+    hint: "Lower values are cheaper to run, at the cost of quality.",
+    scope: "client",      // This specifies a world-level setting
+    config: true,        // This specifies that the setting appears in the configuration view
+    type: Number,
+    range: {             // If range is specified, the resulting setting will be a range slider
+      min: 0,
+      max: 2,
+      step: 1
+    } as { min: number; max: number; step: number }
+  });
   game.settings.register("eunos-blades", "blacklist", {
     name: "Debug Blacklist",
     hint: "Comma-delimited list of categories of debug messages to silence.",
