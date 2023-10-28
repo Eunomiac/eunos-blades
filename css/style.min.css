@@ -13504,14 +13504,14 @@ template {
         min-width: 120px; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab.gm-roll-collab .window-content form .sheet-root .roll-sheet-block .roll-sheet-sub-block .roll-mod-container.roll-mod-teamwork .roll-mod-label .roll-mod-sidestring {
           min-width: 75px; }
-        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab.gm-roll-collab .window-content form .sheet-root .roll-sheet-block .roll-sheet-sub-block .roll-mod-container .roll-mod-label .roll-doc-select-container {
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab.gm-roll-collab .window-content form .sheet-root .roll-sheet-block .roll-sheet-sub-block .roll-mod-container .roll-mod-label .roll-select-container {
           min-width: 120px;
           max-height: 16px;
           border-radius: 8px;
           margin-left: -85px;
           margin-right: -50px;
           background: var(--blades-black-dark); }
-          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab.gm-roll-collab .window-content form .sheet-root .roll-sheet-block .roll-sheet-sub-block .roll-mod-container .roll-mod-label .roll-doc-select-container .roll-doc-select .roll-sheet-doc-select {
+          :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab.gm-roll-collab .window-content form .sheet-root .roll-sheet-block .roll-sheet-sub-block .roll-mod-container .roll-mod-label .roll-select-container .roll-select .roll-sheet-select-doc {
             pointer-events: auto !important;
             appearance: none;
             width: 85px;

@@ -223,6 +223,19 @@
     <section class="sheet-main tab-content roll-opp-block nav-group flex-vertical">
       {{> "systems/eunos-blades/templates/components/roll-collab-opposition.hbs" rollOpposition=rollOpposition factorData=rollFactors.opposition}}
     </section>
+    <section class="sheet-main tab-content roll-consequences">
+      <div class="roll-consequence-row">
+        <select class="roll-consequence-type" data-dtype="String" name="consequenceData.type">
+          {{#select consequenceData.type}}
+          <option value="" hidden disabled selected></option>
+          {{#each consequenceTypes}}
+          <option value="{{this}}">{{this}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+      </div>
+      <input type="text"
+    </section>
     <section class="sheet-main flex-vertical factor-controls">
 
       {{> "systems/eunos-blades/templates/roll/partials/roll-collab-gm-factor-control.hbs" factor="tier"}}

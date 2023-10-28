@@ -12,6 +12,7 @@ class BladesNPC extends BladesActor {
         const factorData = {
             [Factor.tier]: {
                 name: Factor.tier,
+                display: "Tier",
                 value: this.getFactorTotal(Factor.tier),
                 max: this.getFactorTotal(Factor.tier),
                 baseVal: this.getFactorTotal(Factor.tier),
@@ -22,6 +23,7 @@ class BladesNPC extends BladesActor {
             },
             [Factor.quality]: {
                 name: Factor.quality,
+                display: "Quality",
                 value: this.getFactorTotal(Factor.quality),
                 max: this.getFactorTotal(Factor.quality),
                 baseVal: this.getFactorTotal(Factor.quality),
@@ -34,6 +36,7 @@ class BladesNPC extends BladesActor {
         if (BladesActor.IsType(this, BladesActorType.npc)) {
             factorData[Factor.scale] = {
                 name: Factor.scale,
+                display: "Scale",
                 value: this.getFactorTotal(Factor.scale),
                 max: this.getFactorTotal(Factor.scale),
                 baseVal: this.getFactorTotal(Factor.scale),
@@ -45,6 +48,7 @@ class BladesNPC extends BladesActor {
             };
             factorData[Factor.magnitude] = {
                 name: Factor.magnitude,
+                display: "Magnitude",
                 value: this.getFactorTotal(Factor.magnitude),
                 max: this.getFactorTotal(Factor.magnitude),
                 baseVal: this.getFactorTotal(Factor.magnitude),

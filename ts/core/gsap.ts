@@ -1,4 +1,5 @@
 import U from "./utilities";
+// eslint-disable-next-line import/no-unresolved
 import {TextPlugin} from "gsap/all";
 
 const gsapPlugins: gsap.RegisterablePlugins[] = [
@@ -61,11 +62,11 @@ const gsapEffects: Record<string, gsapEffect> = {
     }
   },
   slideUp: {
-    effect: (targets) => U.gsap.to(
+    effect: targets => U.gsap.to(
       targets,
       {
         height: 0,
-        // paddingTop: 0,
+        // PaddingTop: 0,
         // paddingBottom: 0,
         duration: 0.5,
         ease: "power3"
@@ -102,10 +103,10 @@ const gsapEffects: Record<string, gsapEffect> = {
         ease: config.ease,
         stagger: config.stagger
           ? {
-              ...config.stagger as gsap.StaggerVars,
-              repeat: 1,
-              yoyo: true
-            }
+            ...config.stagger as gsap.StaggerVars,
+            repeat: 1,
+            yoyo: true
+          }
           : {}
       }
     ),
@@ -133,7 +134,6 @@ const gsapEffects: Record<string, gsapEffect> = {
       // Pulse in size and color
       // Shimmer as they shrink back ?
 
-      // G.effects.fillCoins(".dot.full-dot", {duration: 0.5, ease: "expo.in", stagger: {amount: 0.75, from: "start", repeat: 1, yoyo: true}})
       return U.gsap.effects.throb(targets, {stagger: {
         amount: 0.25,
         from: "start",
@@ -146,9 +146,8 @@ const gsapEffects: Record<string, gsapEffect> = {
   hoverTooltip: {
     effect: (tooltip, config) => {
       const tl = U.gsap.timeline({paused: true});
-      if (!tooltip) { return tl }
-      // tooltip = $(tooltip);
-      // const scalingElems = [config.scalingElems as JQuery<HTMLElement>|Array<JQuery<HTMLElement>>|undefined ?? []].flat().filter((elem$) => Boolean(elem$[0]));
+      if (!tooltip) { return tl; }
+      // Tooltip = $(tooltip);
 
       if (config.scalingElems.length > 0) {
         tl.to(
@@ -194,6 +193,9 @@ const gsapEffects: Record<string, gsapEffect> = {
   }
 };
 
+/**
+ *
+ */
 export function Initialize() {
   if (gsapPlugins.length) {
     U.gsap.registerPlugin(...gsapPlugins);
@@ -203,26 +205,30 @@ export function Initialize() {
   });
 }
 
+/**
+ *
+ * @param html
+ */
 export function ApplyTooltipListeners(html: JQuery<HTMLElement>) {
-  html.find(".tooltip-trigger").each((_, elem) => {
-    const tooltipElem = $(elem).find(".tooltip")[0] ?? $(elem).next(".tooltip")[0];
-    if (!tooltipElem) { return }
-    $(elem).data("hoverTimeline", U.gsap.effects.hoverTooltip(
+  html.find(".tooltip-trigger").each((_, el) => {
+    const tooltipElem = $(el).find(".tooltip")[0] ?? $(el).next(".tooltip")[0];
+    if (!tooltipElem) { return; }
+    $(el).data("hoverTimeline", U.gsap.effects.hoverTooltip(
       tooltipElem,
       {
-        scalingElems: [...$(elem).find(".tooltip-scaling-elem")].filter((elem) => Boolean(elem)),
+        scalingElems: [...$(el).find(".tooltip-scaling-elem")].filter(elem => Boolean(elem)),
         xMotion: $(tooltipElem).hasClass("tooltip-left") ? "-=250" : "+=200",
         tooltipScale: $(tooltipElem).hasClass("tooltip-small") ? 1 : 1.2
       }
     ));
-    $(elem).on({
+    $(el).on({
       mouseenter: function() {
-        $(elem).css("z-index", 10);
-        $(elem).data("hoverTimeline").play();
+        $(el).css("z-index", 10);
+        $(el).data("hoverTimeline").play();
       },
       mouseleave: function() {
-        $(elem).data("hoverTimeline").reverse().then(() => {
-          $(elem).css("z-index", "");
+        $(el).data("hoverTimeline").reverse().then(() => {
+          $(el).css("z-index", "");
         });
       }
     });

@@ -44,7 +44,7 @@ const gsapEffects = {
         }
     },
     slideUp: {
-        effect: (targets) => U.gsap.to(targets, {
+        effect: targets => U.gsap.to(targets, {
             height: 0,
             duration: 0.5,
             ease: "power3"
@@ -114,7 +114,6 @@ const gsapEffects = {
             if (!tooltip) {
                 return tl;
             }
-            
             if (config.scalingElems.length > 0) {
                 tl.to(config.scalingElems, {
                     scale: "+=0.2",
@@ -156,24 +155,24 @@ export function Initialize() {
     });
 }
 export function ApplyTooltipListeners(html) {
-    html.find(".tooltip-trigger").each((_, elem) => {
-        const tooltipElem = $(elem).find(".tooltip")[0] ?? $(elem).next(".tooltip")[0];
+    html.find(".tooltip-trigger").each((_, el) => {
+        const tooltipElem = $(el).find(".tooltip")[0] ?? $(el).next(".tooltip")[0];
         if (!tooltipElem) {
             return;
         }
-        $(elem).data("hoverTimeline", U.gsap.effects.hoverTooltip(tooltipElem, {
-            scalingElems: [...$(elem).find(".tooltip-scaling-elem")].filter((elem) => Boolean(elem)),
+        $(el).data("hoverTimeline", U.gsap.effects.hoverTooltip(tooltipElem, {
+            scalingElems: [...$(el).find(".tooltip-scaling-elem")].filter(elem => Boolean(elem)),
             xMotion: $(tooltipElem).hasClass("tooltip-left") ? "-=250" : "+=200",
             tooltipScale: $(tooltipElem).hasClass("tooltip-small") ? 1 : 1.2
         }));
-        $(elem).on({
+        $(el).on({
             mouseenter: function () {
-                $(elem).css("z-index", 10);
-                $(elem).data("hoverTimeline").play();
+                $(el).css("z-index", 10);
+                $(el).data("hoverTimeline").play();
             },
             mouseleave: function () {
-                $(elem).data("hoverTimeline").reverse().then(() => {
-                    $(elem).css("z-index", "");
+                $(el).data("hoverTimeline").reverse().then(() => {
+                    $(el).css("z-index", "");
                 });
             }
         });

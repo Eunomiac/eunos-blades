@@ -12,6 +12,7 @@ class BladesFaction extends BladesActor {
         const factorData = {
             [Factor.tier]: {
                 name: Factor.tier,
+                display: "Tier",
                 value: this.getFactorTotal(Factor.tier),
                 max: this.getFactorTotal(Factor.tier),
                 baseVal: this.getFactorTotal(Factor.tier),
@@ -22,6 +23,7 @@ class BladesFaction extends BladesActor {
             },
             [Factor.quality]: {
                 name: Factor.quality,
+                display: "Quality",
                 value: this.getFactorTotal(Factor.quality),
                 max: this.getFactorTotal(Factor.quality),
                 baseVal: this.getFactorTotal(Factor.quality),

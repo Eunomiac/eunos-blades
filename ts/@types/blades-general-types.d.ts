@@ -118,6 +118,10 @@ declare global {
   type RollableStat = AttributeTrait | ActionTrait;
 
   // Component Types for Sheets
+  type BladesSelectOption<displayType, valueType = string> = {
+    value: valueType,
+    display: displayType
+  };
   type BladesCompData = {
     class?: string,
     label?: string,

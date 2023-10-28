@@ -6,10 +6,11 @@
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
 import U from "./core/utilities.js";
-import C, { BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType } from "./core/constants.js";
+import C, { BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag } from "./core/constants.js";
 import { BladesActor, BladesPC, BladesCrew } from "./documents/BladesActorProxy.js";
 import { BladesItem, BladesGMTracker } from "./documents/BladesItemProxy.js";
 import { ApplyTooltipListeners } from "./core/gsap.js";
+import BladesAI, { AGENTS } from "./core/ai.js";
 
 function isRollType(str) {
     return typeof str === "string" && str in RollType;
@@ -74,7 +75,7 @@ class BladesRollMod {
             const rollModData = {
                 id: `${nameVal}-${posNegVal}-${catVal}`,
                 name: nameVal,
-                category: catVal,
+                section: catVal,
                 base_status: RollModStatus.ToggledOff,
                 modType: "general",
                 value: 1,
@@ -402,20 +403,28 @@ class BladesRollMod {
                 Consequence: () => {
                                     },
                 HarmLevel: () => {
-                    if (!this.rollInstance.rollConsequence) {
-                        return;
+                    const harmLevels = [
+                        ConsequenceType.Harm1,
+                        ConsequenceType.Harm2,
+                        ConsequenceType.Harm3,
+                        ConsequenceType.Harm4
+                    ];
+                    let harmConsequence = undefined;
+                    while (!harmConsequence && harmLevels.length > 0) {
+                        harmConsequence = Object.values(this.rollInstance.rollConsequences)
+                            .find(({ type }) => type === harmLevels.pop());
                     }
-                    const consequenceType = this.rollInstance.rollConsequence.type;
-                    if (!consequenceType?.startsWith("Harm")) {
-                        return;
+                    if (harmConsequence) {
+                        if (harmConsequence.type === ConsequenceType.Harm1) {
+                            harmConsequence.resistedTo = false;
+                        }
+                        harmConsequence.resistedTo = {
+                            name: harmConsequence.type === ConsequenceType.Harm1
+                                ? "Fully Negated"
+                                : (Object.values(harmConsequence.resistOptions ?? [])[0]?.name ?? harmConsequence.name),
+                            type: C.ResistedConsequenceTypes[harmConsequence.type]
+                                                    };
                     }
-                    const curLevel = [ConsequenceType.Harm1, ConsequenceType.Harm2, ConsequenceType.Harm3, ConsequenceType.Harm4]
-                        .findIndex(cType => cType === consequenceType) + 1;
-                    if (curLevel > 1) {
-                        this.rollInstance.rollConsequence.type = `Harm${curLevel - 1}`;
-                    }
-                    else {
-                                            }
                 },
                 QualityPenalty: () => {
                     this.rollInstance.negateFactorPenalty(Factor.quality);
@@ -453,7 +462,7 @@ class BladesRollMod {
         if (this._sideString) {
             return this._sideString;
         }
-        const rollParticipantCategoryData = this.rollInstance.rollParticipants?.[this.category];
+        const rollParticipantCategoryData = this.rollInstance.rollParticipants?.[this.section];
         if (rollParticipantCategoryData && this.name in rollParticipantCategoryData) {
             const rollParticipant = rollParticipantCategoryData[this.name];
             return rollParticipant.rollParticipantName;
@@ -474,13 +483,12 @@ class BladesRollMod {
             sideString: this._sideString,
             tooltip: this._tooltip,
             posNeg: this.posNeg,
-            isOppositional: this.isOppositional,
             modType: this.modType,
             conditionalRollTypes: this.conditionalRollTypes,
             autoRollTypes: this.autoRollTypes,
             conditionalRollTraits: this.conditionalRollTraits,
             autoRollTraits: this.autoRollTraits,
-            category: this.category
+            section: this.section
         };
     }
     get costs() {
@@ -500,7 +508,7 @@ class BladesRollMod {
                     label = `${this.name} (<span class='red-bright'>To Act</span>)`;
                 }
                 else {
-                    const effect = this.category === RollModSection.roll ? "+1d" : "+1 effect";
+                    const effect = this.section === RollModSection.roll ? "+1d" : "+1 effect";
                     label = `${this.name} (<span class='gold-bright'>${effect}</span>)`;
                 }
             }
@@ -521,7 +529,6 @@ class BladesRollMod {
     _sideString;
     _tooltip;
     posNeg;
-    isOppositional;
     modType;
     conditionalRollTypes;
     autoRollTypes;
@@ -529,7 +536,7 @@ class BladesRollMod {
     conditionalRollTraits;
     autoRollTraits;
     participantRollTraits;
-    category;
+    section;
     rollInstance;
     constructor(modData, rollInstance) {
         this.rollInstance = rollInstance;
@@ -542,7 +549,6 @@ class BladesRollMod {
         this._sideString = modData.sideString;
         this._tooltip = modData.tooltip;
         this.posNeg = modData.posNeg;
-        this.isOppositional = modData.isOppositional ?? false;
         this.modType = modData.modType;
         this.conditionalRollTypes = modData.conditionalRollTypes ?? [];
         this.autoRollTypes = modData.autoRollTypes ?? [];
@@ -550,7 +556,7 @@ class BladesRollMod {
         this.conditionalRollTraits = modData.conditionalRollTraits ?? [];
         this.autoRollTraits = modData.autoRollTraits ?? [];
         this.participantRollTraits = modData.participantRollTraits ?? [];
-        this.category = modData.category;
+        this.section = modData.section;
     }
 }
 class BladesRollPrimary {
@@ -946,7 +952,7 @@ class BladesRoll extends DocumentSheet {
             {
                 id: "Push-positive-roll",
                 name: "PUSH",
-                category: RollModSection.roll,
+                section: RollModSection.roll,
                 base_status: RollModStatus.ToggledOff,
                 posNeg: "positive",
                 modType: "general",
@@ -957,7 +963,7 @@ class BladesRoll extends DocumentSheet {
             {
                 id: "Bargain-positive-roll",
                 name: "Bargain",
-                category: RollModSection.roll,
+                section: RollModSection.roll,
                 base_status: RollModStatus.Hidden,
                 posNeg: "positive",
                 modType: "general",
@@ -968,7 +974,7 @@ class BladesRoll extends DocumentSheet {
             {
                 id: "Assist-positive-roll",
                 name: "Assist",
-                category: RollModSection.roll,
+                section: RollModSection.roll,
                 base_status: RollModStatus.Hidden,
                 posNeg: "positive",
                 modType: "teamwork",
@@ -978,7 +984,7 @@ class BladesRoll extends DocumentSheet {
             {
                 id: "Setup-positive-position",
                 name: "Setup",
-                category: RollModSection.position,
+                section: RollModSection.position,
                 base_status: RollModStatus.Hidden,
                 posNeg: "positive",
                 modType: "teamwork",
@@ -988,7 +994,7 @@ class BladesRoll extends DocumentSheet {
             {
                 id: "Push-positive-effect",
                 name: "PUSH",
-                category: RollModSection.effect,
+                section: RollModSection.effect,
                 base_status: RollModStatus.ToggledOff,
                 posNeg: "positive",
                 modType: "general",
@@ -999,7 +1005,7 @@ class BladesRoll extends DocumentSheet {
             {
                 id: "Setup-positive-effect",
                 name: "Setup",
-                category: RollModSection.effect,
+                section: RollModSection.effect,
                 base_status: RollModStatus.Hidden,
                 posNeg: "positive",
                 modType: "teamwork",
@@ -1009,7 +1015,7 @@ class BladesRoll extends DocumentSheet {
             {
                 id: "Potency-positive-effect",
                 name: "Potency",
-                category: RollModSection.effect,
+                section: RollModSection.effect,
                 base_status: RollModStatus.Hidden,
                 posNeg: "positive",
                 modType: "general",
@@ -1019,7 +1025,7 @@ class BladesRoll extends DocumentSheet {
             {
                 id: "Potency-negative-effect",
                 name: "Potency",
-                category: RollModSection.effect,
+                section: RollModSection.effect,
                 base_status: RollModStatus.Hidden,
                 posNeg: "negative",
                 modType: "general",
@@ -1458,7 +1464,7 @@ class BladesRoll extends DocumentSheet {
         await this.clearFlagVal(`rollParticipantData.${rollSection}.${rollSubSection}`);
     }
     async updateUserPermission(user, permission) {
-    }
+            }
 
     get flagData() {
         if (!this.document.getFlag(C.SYSTEM_ID, "rollCollab")) {
@@ -1628,9 +1634,52 @@ class BladesRoll extends DocumentSheet {
     set initialEffect(val) {
         this.setFlagVal("rollEffectInitial", val);
     }
-    get rollConsequence() {
-        return this.getFlagVal("consequenceData");
+    get isApplyingConsequences() {
+        if (this.rollType !== RollType.Action) {
+            return false;
+        }
+        if (!this.rollResult) {
+            return false;
+        }
+        if (![RollResult.partial, RollResult.fail].includes(this.rollResult)) {
+            return false;
+        }
+        return true;
     }
+    get rollConsequences() {
+        return this.getFlagVal("consequenceData") ?? {};
+    }
+    get rollConsequence() {
+        const chosenConsequence = this.getFlagVal("chosenConsequenceName") ?? null;
+        if (chosenConsequence) {
+            return this.getFlagVal(`consequenceData.${chosenConsequence}`) ?? null;
+        }
+        return null;
+    }
+    async addConsequence(cData) {
+        await this.setFlagVal(`consequenceData.${cData.name}`, cData);
+    }
+    async clearConsequence(cName) {
+        await this.clearFlagVal(`consequenceData.${cName}`);
+    }
+    async addResistanceOptions(cName, rNames) {
+        const cData = this.getFlagVal(`consequenceData.${cName}`);
+        if (!cData) {
+            return;
+        }
+        const cType = cData.type;
+        const rType = C.ResistedConsequenceTypes[cType] ?? undefined;
+        const resistOptions = cData.resistOptions ?? {};
+        for (const rName in rNames) {
+            resistOptions[rName] = { name: rName };
+            if (rType) {
+                resistOptions[rName].type = rType;
+            }
+        }
+        await this.setFlagVal(`consequenceData.${cName}.resistOptions`, resistOptions);
+    }
+    promptGMForConsequences() {
+            }
 
     get finalPosition() {
         return Object.values(Position)[U.clampNum(Object.values(Position)
@@ -1779,15 +1828,15 @@ class BladesRoll extends DocumentSheet {
                         throw new Error(`No targetName found in thisTarget: ${thisTarget}.`);
                     }
                     let targetMod = this.getRollModByName(targetName)
-                        ?? this.getRollModByName(targetName, targetCat ?? mod.category);
+                        ?? this.getRollModByName(targetName, targetCat ?? mod.section);
                     if (!targetMod && targetName === "Push") {
                         [targetMod] = [
-                            ...this.getActiveBasicPushMods(targetCat ?? mod.category, "negative").filter(m => m.status === RollModStatus.ToggledOn),
-                            ...this.getActiveBasicPushMods(targetCat ?? mod.category, "positive").filter(m => m.status === RollModStatus.ToggledOn),
-                            ...this.getInactiveBasicPushMods(targetCat ?? mod.category, "positive").filter(m => m.status === RollModStatus.ToggledOff)
+                            ...this.getActiveBasicPushMods(targetCat ?? mod.section, "negative").filter(m => m.status === RollModStatus.ToggledOn),
+                            ...this.getActiveBasicPushMods(targetCat ?? mod.section, "positive").filter(m => m.status === RollModStatus.ToggledOn),
+                            ...this.getInactiveBasicPushMods(targetCat ?? mod.section, "positive").filter(m => m.status === RollModStatus.ToggledOff)
                         ];
                     }
-                    targetMod ??= this.getRollModByName(targetName, targetCat ?? mod.category, targetPosNeg ?? mod.posNeg);
+                    targetMod ??= this.getRollModByName(targetName, targetCat ?? mod.section, targetPosNeg ?? mod.posNeg);
                     if (!targetMod) {
                         throw new Error(`No mod found matching ${targetName}/${targetCat}/${targetPosNeg}`);
                     }
@@ -1878,7 +1927,7 @@ class BladesRoll extends DocumentSheet {
             if (U.lCase(rollMod.name) !== U.lCase(name)) {
                 return false;
             }
-            if (cat && rollMod.category !== cat) {
+            if (cat && rollMod.section !== cat) {
                 return false;
             }
             if (posNeg && rollMod.posNeg !== posNeg) {
@@ -1896,7 +1945,7 @@ class BladesRoll extends DocumentSheet {
     }
     getRollModByID(id) { return this.rollMods.find(rollMod => rollMod.id === id); }
     getRollMods(cat, posNeg) {
-        return this.rollMods.filter(rollMod => (!cat || rollMod.category === cat)
+        return this.rollMods.filter(rollMod => (!cat || rollMod.section === cat)
             && (!posNeg || rollMod.posNeg === posNeg));
     }
     getVisibleRollMods(cat, posNeg) {
@@ -1979,11 +2028,48 @@ class BladesRoll extends DocumentSheet {
     set rollMods(val) { this._rollMods = val; }
     
     
+    get consequenceTypeOptions() {
+        if (!this.rollResult) {
+            return [];
+        }
+        if (this.rollResult === RollResult.critical || this.rollResult === RollResult.success) {
+            return [];
+        }
+        return C.Consequences[this.finalPosition][this.rollResult]
+            .map(cType => ({ value: cType, display: cType }));
+    }
+    _consequenceAI;
+    async manageConsequenceAI(sData) {
+        const { consequenceData } = sData;
+        if (!consequenceData) {
+            return;
+        }
+        if (!this._consequenceAI) {
+            this._consequenceAI = new BladesAI(AGENTS.ConsequenceAdjuster);
+        }
+        await Promise.all(Object.values(consequenceData).map(cData => {
+            if (!cData.resistOptions) {
+                if (!this._consequenceAI?.hasQueried(cData.name)) {
+                    this._consequenceAI?.query(cData.name, cData.name);
+                }
+                else {
+                    const response = this._consequenceAI?.getResponse(cData.name);
+                    if (response) {
+                        return this.addResistanceOptions(cData.name, response.split("|"));
+                    }
+                }
+            }
+            return undefined;
+        }));
+    }
         async getData() {
         const context = super.getData();
         this.initRollMods(this.getRollModsData());
         this.rollMods.forEach(rollMod => rollMod.applyRollModEffectKeys());
         const sheetData = this.getSheetData(this.getIsGM(), this.getRollCosts());
+        if (game.user.isGM && this.rollConsequences) {
+            this.manageConsequenceAI(sheetData);
+        }
         return { ...context, ...sheetData };
     }
         getRollModsData() {
@@ -2018,7 +2104,7 @@ class BladesRoll extends DocumentSheet {
         return rollCosts.find(costData => costData.costType === "SpecialArmor");
     }
         getSheetData(isGM, rollCosts) {
-        const { flagData: rData, rollPrimary, rollTraitData, rollTraitOptions, finalDicePool, finalPosition, finalEffect, finalResult, rollMods, rollFactors } = this;
+        const { flagData: rData, rollPrimary, rollTraitData, rollTraitOptions, finalDicePool, finalPosition, finalEffect, finalResult, rollMods, rollFactors, consequenceTypeOptions } = this;
         if (!rollPrimary) {
             throw new Error("A primary roll source is required for BladesRoll.");
         }
@@ -2036,7 +2122,9 @@ class BladesRoll extends DocumentSheet {
             rollOpposition: this.rollOpposition,
             rollParticipants: this.rollParticipants,
             rollEffects: Object.values(Effect),
-            teamworkDocs: game.actors.filter(actor => BladesActor.IsType(actor, BladesActorType.pc)),
+            teamworkDocs: game.actors
+                .filter(actor => actor.hasTag(Tag.PC.ActivePC))
+                .map(actor => ({ value: actor.id, display: actor.name })),
             rollTraitValOverride: this.rollTraitValOverride,
             rollFactorPenaltiesNegated: this.rollFactorPenaltiesNegated,
             posRollMods: Object.fromEntries(Object.values(RollModSection)
@@ -2062,6 +2150,7 @@ class BladesRoll extends DocumentSheet {
             ...rollResultData,
             ...GMBoostsData,
             ...positionEffectTradeData,
+            consequenceTypeOptions,
             userPermission
         };
     }
@@ -2198,8 +2287,8 @@ class BladesRoll extends DocumentSheet {
     }
         calculateHasInactiveConditionalsData() {
         const hasInactive = {};
-        for (const category of Object.values(RollModSection)) {
-            hasInactive[category] = this.getRollMods(category).filter(mod => mod.isInInactiveBlock).length > 0;
+        for (const section of Object.values(RollModSection)) {
+            hasInactive[section] = this.getRollMods(section).filter(mod => mod.isInInactiveBlock).length > 0;
         }
         return hasInactive;
     }
@@ -2348,6 +2437,9 @@ class BladesRoll extends DocumentSheet {
         }
     }
     get rollResult() {
+        if ([RollPhase.Collaboration, RollPhase.AwaitingRoll].includes(this.rollPhase)) {
+            return false;
+        }
         const dieVals = this.isRollingZero
             ? [[...this.dieVals].pop()]
             : this.dieVals;
@@ -2363,10 +2455,10 @@ class BladesRoll extends DocumentSheet {
         return RollResult.fail;
     }
     get rollPhase() {
-        return this.getFlagVal("chatStatus.phase") ?? RollPhase.AwaitingResult;
+        return this.getFlagVal("rollPhase") ?? RollPhase.Collaboration;
     }
     set rollPhase(phase) {
-        this.setFlagVal("chatStatus.phase", phase);
+        this.setFlagVal("rollPhase", phase);
     }
     async outputRollToChat() {
         const speaker = ChatMessage.getSpeaker();
@@ -2416,6 +2508,10 @@ class BladesRoll extends DocumentSheet {
     }
     async resolveRoll() {
         await this.roll.evaluate({ async: true });
+        if (this.isApplyingConsequences) {
+            this.rollPhase = RollPhase.ApplyingConsequences;
+            this.promptGMForConsequences();
+        }
         eLog.checkLog3("rollCollab", "[resolveRoll()] After Evaluation, Before Chat", { roll: this, dieVals: this.dieVals });
         await this.outputRollToChat();
         this.close();
@@ -2553,7 +2649,7 @@ class BladesRoll extends DocumentSheet {
         return this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollFactorToggles", factorToggleData)
             .then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
     }
-    async _gmControlSelectDocument(event) {
+    async _gmControlSelect(event) {
         event.preventDefault();
         const elem$ = $(event.currentTarget);
         const section = elem$.data("rollSection");
@@ -2637,8 +2733,8 @@ class BladesRoll extends DocumentSheet {
                 html.find("[data-action=\"gm-toggle-factor\"").on({
             click: this._gmControlToggleFactor.bind(this)
         });
-        html.find("select.roll-sheet-doc-select").on({
-            change: this._gmControlSelectDocument.bind(this)
+        html.find("select[data-action=\"gm-select\"]").on({
+            change: this._gmControlSelect.bind(this)
         });
     }
 

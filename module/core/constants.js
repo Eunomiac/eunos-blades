@@ -165,7 +165,7 @@ export var RollType;
     RollType["Action"] = "Action";
     RollType["Resistance"] = "Resistance";
     RollType["Fortune"] = "Fortune";
-    RollType["IndulgeVice"] = "Vice";
+    RollType["IndulgeVice"] = "IndulgeVice";
 })(RollType || (RollType = {}));
 export var RollSubType;
 (function (RollSubType) {
@@ -178,13 +178,16 @@ export var RollSubType;
 export var ConsequenceType;
 (function (ConsequenceType) {
     ConsequenceType["ReducedEffect"] = "ReducedEffect";
-    ConsequenceType["Complication"] = "Complication";
+    ConsequenceType["ComplicationMinor"] = "ComplicationMinor";
+    ConsequenceType["ComplicationMajor"] = "ComplicationMajor";
+    ConsequenceType["ComplicationSerious"] = "ComplicationSerious";
     ConsequenceType["LostOpportunity"] = "LostOpportunity";
     ConsequenceType["WorsePosition"] = "WorsePosition";
     ConsequenceType["Harm1"] = "Harm1";
     ConsequenceType["Harm2"] = "Harm2";
     ConsequenceType["Harm3"] = "Harm3";
     ConsequenceType["Harm4"] = "Harm4";
+    ConsequenceType["None"] = "None";
 })(ConsequenceType || (ConsequenceType = {}));
 export var RollModStatus;
 (function (RollModStatus) {
@@ -234,7 +237,8 @@ export var RollResult;
 export var RollPhase;
 (function (RollPhase) {
     RollPhase["Collaboration"] = "Collaboration";
-    RollPhase["AwaitingResult"] = "AwaitingResult";
+    RollPhase["AwaitingRoll"] = "AwaitingRoll";
+    RollPhase["ApplyingConsequences"] = "ApplyingConsequences";
     RollPhase["AwaitingChatInput"] = "AwaitingChatInput";
     RollPhase["Complete"] = "Complete";
 })(RollPhase || (RollPhase = {}));
@@ -384,6 +388,57 @@ const C = {
             "gpt-3.5-turbo-16k",
             "gpt-4-32k"
         ]
+    },
+    Consequences: {
+        [Position.controlled]: {
+            [RollResult.partial]: [
+                ConsequenceType.ComplicationMinor,
+                ConsequenceType.ReducedEffect,
+                ConsequenceType.WorsePosition,
+                ConsequenceType.Harm1,
+                ConsequenceType.None
+            ],
+            [RollResult.fail]: [
+                ConsequenceType.WorsePosition,
+                ConsequenceType.None
+            ]
+        },
+        [Position.risky]: {
+            [RollResult.partial]: [
+                ConsequenceType.ComplicationMajor,
+                ConsequenceType.WorsePosition,
+                ConsequenceType.ReducedEffect,
+                ConsequenceType.Harm2,
+                ConsequenceType.None
+            ],
+            [RollResult.fail]: [
+                ConsequenceType.ComplicationMajor,
+                ConsequenceType.WorsePosition,
+                ConsequenceType.LostOpportunity,
+                ConsequenceType.Harm2
+            ]
+        },
+        [Position.desperate]: {
+            [RollResult.partial]: [
+                ConsequenceType.ComplicationSerious,
+                ConsequenceType.ReducedEffect,
+                ConsequenceType.Harm3
+            ],
+            [RollResult.fail]: [
+                ConsequenceType.ComplicationSerious,
+                ConsequenceType.LostOpportunity,
+                ConsequenceType.Harm3
+            ]
+        }
+    },
+    ResistedConsequenceTypes: {
+        [ConsequenceType.Harm4]: ConsequenceType.Harm3,
+        [ConsequenceType.Harm3]: ConsequenceType.Harm2,
+        [ConsequenceType.Harm2]: ConsequenceType.Harm1,
+        [ConsequenceType.Harm1]: ConsequenceType.None,
+        [ConsequenceType.ComplicationSerious]: ConsequenceType.ComplicationMajor,
+        [ConsequenceType.ComplicationMajor]: ConsequenceType.ComplicationMinor,
+        [ConsequenceType.ComplicationMinor]: ConsequenceType.None
     },
     Colors: {
         bWHITE: "rgba(255, 255, 255, 1)",

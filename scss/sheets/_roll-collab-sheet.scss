@@ -732,7 +732,7 @@
 
               .roll-mod-label {
 
-                .roll-doc-select-container {
+                .roll-select-container {
                   min-width: 120px;
                   max-height: 16px;
                   border-radius: 8px;
@@ -740,8 +740,8 @@
                   margin-right: -50px;
                   background: var(--blades-black-dark);
 
-                  .roll-doc-select {
-                    .roll-sheet-doc-select {
+                  .roll-select {
+                    .roll-sheet-select-doc {
                       pointer-events: auto !important;
                       appearance: none;
                       width: 85px;

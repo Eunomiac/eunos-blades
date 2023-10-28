@@ -1,4 +1,4 @@
-import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollPhase} from "../core/constants";
+import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollPhase, RollResult} from "../core/constants";
 import BladesActor from "../BladesActor";
 import BladesItem from "../BladesItem";
 import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../BladesRoll";
@@ -17,7 +17,10 @@ declare global {
       rollDowntimeAction?: DowntimeAction,
       rollTrait?: RollTrait,
       participantRollTo?: string,
-      consequenceData?: ConsequenceData
+      consequenceData?: Record<
+        string, // display name of consequence
+        ConsequenceData
+      >
     }
     export type ConstructorConfig = Partial<Config> & Required<Pick<Config, "rollType">>;
 
@@ -27,12 +30,28 @@ declare global {
       rollParticipantData?: RollParticipantFlagData
     }
 
+
+
+
+
+
+
+    export type ConsequenceResisted = Omit<
+      ConsequenceData,
+      "type"|"resistOptions"|"resistedTo"|"attribute"
+    > & {type?: ConsequenceType}
+
     export interface ConsequenceData {
       name: string,
       type: ConsequenceType,
       attribute: AttributeTrait,
-      label?: string,
-      resistedConsequence: Omit<ConsequenceData, "resistedConsequence"|"attribute">|false
+      resistOptions?: Record<
+        string,  // display name of consequence
+        ConsequenceResisted // ai
+      >,
+      selectedResistOption?: string,
+      resistedTo?: ConsequenceResisted|false
+        // player's choice from chat
     }
 
     export type CostData = {
@@ -40,16 +59,6 @@ declare global {
       label: string,
       costType: string,
       costAmount: number
-    }
-
-    export type FactorToggle = "isActive"|"isPrimary"|"isDominant"|"highFavorsPC";
-
-    export type FactorFlagData = {
-      display: string,
-      isActive?: boolean,
-      isPrimary?: boolean,
-      isDominant?: boolean,
-      highFavorsPC?: boolean
     }
 
     export type ModType = BladesItemType | "general" | "harm" | "teamwork";
@@ -67,7 +76,10 @@ declare global {
       rollPhase: RollPhase,
       GMBoosts: Partial<Record<"Dice"|Factor|"Result",number>>,
       GMOppBoosts: Partial<Record<Factor,number>>,
-      rollFactorToggles: Record<"source"|"opposition", Partial<Record<Factor, FactorFlagData>>>,
+      rollFactorToggles: Record<
+        "source"|"opposition",
+        Partial<Record<Factor, FactorFlagData>>
+      >,
       userPermissions: Record<string, RollPermissions>
     }
 
@@ -89,7 +101,7 @@ declare global {
 
       rollPositions: Position[],
       rollEffects: Effect[],
-      teamworkDocs: BladesActor[],
+      teamworkDocs: BladesSelectOption<string>[],
       rollPositionFinal: Position,
       rollEffectFinal: Effect,
       isAffectingResult: boolean,
@@ -100,7 +112,9 @@ declare global {
       rollFactorPenaltiesNegated: Partial<Record<Factor,boolean>>,
 
       GMBoosts: Record<"Dice"|Factor|"Result",number>,
-      GMOppBoosts: Record<Factor,number>
+      GMOppBoosts: Record<Factor,number>,
+
+      consequenceTypeOptions?: BladesSelectOption<ConsequenceType>[],
 
       canTradePosition: boolean,
       canTradeEffect: boolean,
@@ -123,38 +137,48 @@ declare global {
     export type AnyRollType = RollType|RollSubType|DowntimeAction;
     export type RollTrait = ActionTrait|AttributeTrait|Factor|number;
 
-    export interface FactorData extends NamedValueMax {
-      baseVal: number,
-      display?: string,
-      isActive: boolean,
-      isPrimary: boolean,
-      isDominant: boolean,
-      highFavorsPC: boolean,
-      cssClasses?: string
+    export type FactorToggle = "isActive"|"isPrimary"|"isDominant"|"highFavorsPC";
+
+    export interface FactorFlagData extends Partial<NamedValueMax> {
+      display: string,
+
+      isActive?: boolean,
+      isPrimary?: boolean,
+      isDominant?: boolean,
+      highFavorsPC?: boolean
+    }
+
+    export interface FactorData
+      extends Required<FactorFlagData> {
+        baseVal: number,
+        cssClasses?: string
     }
 
     type RollModData = {
       id: string,
       name: string,
+      modType: BladesItemType|"general"|"harm"|"teamwork",
       source_name?: string,
-      status?: RollModStatus, // Set to held_status ?? user_status ?? base_status at end of getData
-      base_status: RollModStatus, // Original status; never changed
-      user_status?: RollModStatus, // User-selected status
-      held_status?: RollModStatus, // Re-checked for each getData
+      section: RollModSection,
+      posNeg: "positive"|"negative",
+
+      status?: RollModStatus,
+      base_status: RollModStatus,
+      user_status?: RollModStatus,
+      held_status?: RollModStatus,
+
       value: number,
       effectKeys?: string[],
       sideString?: string,
       tooltip: string,
-      posNeg: "positive"|"negative",
-      isOppositional?: boolean,
-      modType: BladesItemType|"general"|"harm"|"teamwork",
+
       conditionalRollTypes?: AnyRollType[],
       autoRollTypes?: AnyRollType[],
       participantRollTypes?: AnyRollType[],
+
       conditionalRollTraits?: RollTrait[],
       autoRollTraits?: RollTrait[],
-      participantRollTraits?: RollTrait[],
-      category: RollModSection
+      participantRollTraits?: RollTrait[]
     }
 
     export type PrimaryDoc =
@@ -223,7 +247,7 @@ declare global {
       rollParticipantType: string,
       rollParticipantIcon: string,
 
-      rollParticipantModsData?: RollModData[], // As applied to MAIN roll when this participant involved
+      rollParticipantModsData?: RollModData[],                                   // As applied to MAIN roll when this participant involved
       rollFactors: Partial<Record<Factor,FactorData>>
     }
 

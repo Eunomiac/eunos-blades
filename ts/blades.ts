@@ -19,7 +19,7 @@ import BladesFactionSheet from "./sheets/actor/BladesFactionSheet";
 import BladesRoll, {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "./BladesRoll";
 
 import BladesSelectorDialog from "./BladesDialog";
-import BladesAI, {PROMPTS} from "./core/ai";
+import BladesAI, {AGENTS} from "./core/ai";
 import BladesActiveEffect from "./BladesActiveEffect";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet";
@@ -67,14 +67,14 @@ class GlobalGetter {
         rollFactors: pc.rollFactors
       },
       consequenceData: {
-        name: "Level 3 Harm",
-        type: ConsequenceType.Harm3,
-        label: "Shattered Knee",
-        attribute: AttributeTrait.prowess,
-        resistedConsequence: {
-          name: "Level 2 Harm",
-          type: ConsequenceType.Harm2,
-          label: "Twisted Knee"
+        "Shattered Knee": {
+          name: "Shattered Knee",
+          type: ConsequenceType.Harm3,
+          attribute: AttributeTrait.prowess,
+          resistOptions: {
+            "Twisted Knee": {name: "Twisted Knee", type: ConsequenceType.Harm2}
+          },
+          selectedResistOption: "Twisted Knee"
         }
       }
     };
@@ -121,7 +121,7 @@ class GlobalGetter {
     BladesClockKeeperSheet,
     BladesGMTrackerSheet,
     BladesAI,
-    PROMPTS
+    AGENTS
   }
 );/* !DEVCODE*/
 // #endregion Globals

@@ -1,9 +1,10 @@
 // #region IMPORTS ~
 import U from "./core/utilities";
-import C, {BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType} from "./core/constants";
+import C, {BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag} from "./core/constants";
 import {BladesActor, BladesPC, BladesCrew} from "./documents/BladesActorProxy";
 import {BladesItem, BladesGMTracker} from "./documents/BladesItemProxy";
 import {ApplyTooltipListeners} from "./core/gsap";
+import BladesAI, {AGENTS} from "./core/ai";
 // #endregion
 // #region Types & Type Checking ~
 
@@ -110,7 +111,7 @@ class BladesRollMod {
         const rollModData: BladesRoll.RollModData = {
           id: `${nameVal}-${posNegVal}-${catVal}`,
           name: nameVal,
-          category: catVal,
+          section: catVal,
           base_status: RollModStatus.ToggledOff,
           modType: "general",
           value: 1,
@@ -462,15 +463,32 @@ class BladesRollMod {
           /* Should cancel roll entirely? */
         },
         HarmLevel: () => {
-          if (!this.rollInstance.rollConsequence) { return; }
-          const consequenceType = this.rollInstance.rollConsequence.type;
-          if (!consequenceType?.startsWith("Harm")) { return; }
-          const curLevel = [ConsequenceType.Harm1, ConsequenceType.Harm2, ConsequenceType.Harm3, ConsequenceType.Harm4]
-            .findIndex(cType => cType === consequenceType) + 1;
-          if (curLevel > 1) {
-            this.rollInstance.rollConsequence.type = `Harm${curLevel - 1}` as ConsequenceType;
-          } else {
-            /* Should cancel roll entirely? */
+          const harmLevels = [
+            ConsequenceType.Harm1,
+            ConsequenceType.Harm2,
+            ConsequenceType.Harm3,
+            ConsequenceType.Harm4
+          ];
+          let harmConsequence: BladesRoll.ConsequenceData|undefined = undefined;
+          while (!harmConsequence && harmLevels.length > 0) {
+            harmConsequence = Object.values(this.rollInstance.rollConsequences)
+              .find(({type}) => type === harmLevels.pop());
+          }
+          if (harmConsequence) {
+            if (harmConsequence.type === ConsequenceType.Harm1) {
+              harmConsequence.resistedTo = false;
+            }
+            harmConsequence.resistedTo = {
+              name: harmConsequence.type === ConsequenceType.Harm1
+                ? "Fully Negated"
+                : (Object.values(harmConsequence.resistOptions ?? [])[0]?.name ?? harmConsequence.name),
+              type: C.ResistedConsequenceTypes[harmConsequence.type as KeyOf<typeof C["ResistedConsequenceTypes"]>]
+              /* Need to get AI to query for this, but it has to be temporary...
+               ... so generate the 'resistOptions' as soon as the consequence is named?
+               No wait: This is a RESISTANCE roll. Resistance rolls should have all that
+                 info fed to them after being determined via previous roll, within config.consequenceData
+               */
+            };
           }
         },
         QualityPenalty: () => {
@@ -508,7 +526,7 @@ class BladesRollMod {
   get sideString(): string | undefined {
     if (this._sideString) { return this._sideString; }
     const rollParticipantCategoryData = this.rollInstance.rollParticipants?.
-      [this.category as BladesRoll.RollParticipantSection];
+      [this.section as BladesRoll.RollParticipantSection];
     if (rollParticipantCategoryData && this.name in rollParticipantCategoryData) {
       const rollParticipant = rollParticipantCategoryData[
         this.name as KeyOf<typeof rollParticipantCategoryData>
@@ -533,13 +551,12 @@ class BladesRollMod {
       sideString: this._sideString,
       tooltip: this._tooltip,
       posNeg: this.posNeg,
-      isOppositional: this.isOppositional,
       modType: this.modType,
       conditionalRollTypes: this.conditionalRollTypes,
       autoRollTypes: this.autoRollTypes,
       conditionalRollTraits: this.conditionalRollTraits,
       autoRollTraits: this.autoRollTraits,
-      category: this.category
+      section: this.section
     };
   }
 
@@ -557,7 +574,7 @@ class BladesRollMod {
         if (this.posNeg === "negative") {
           label = `${this.name} (<span class='red-bright'>To Act</span>)`;
         } else {
-          const effect = this.category === RollModSection.roll ? "+1d" : "+1 effect";
+          const effect = this.section === RollModSection.roll ? "+1d" : "+1 effect";
           label = `${this.name} (<span class='gold-bright'>${effect}</span>)`;
         }
       }
@@ -589,8 +606,6 @@ class BladesRollMod {
 
   posNeg: "positive" | "negative";
 
-  isOppositional: boolean;
-
   modType: BladesRoll.ModType;
 
   conditionalRollTypes: BladesRoll.AnyRollType[];
@@ -605,7 +620,7 @@ class BladesRollMod {
 
   participantRollTraits: BladesRoll.RollTrait[];
 
-  category: RollModSection;
+  section: RollModSection;
 
   rollInstance: BladesRoll;
 
@@ -620,7 +635,6 @@ class BladesRollMod {
     this._sideString = modData.sideString;
     this._tooltip = modData.tooltip;
     this.posNeg = modData.posNeg;
-    this.isOppositional = modData.isOppositional ?? false;
     this.modType = modData.modType;
     this.conditionalRollTypes = modData.conditionalRollTypes ?? [];
     this.autoRollTypes = modData.autoRollTypes ?? [];
@@ -628,7 +642,7 @@ class BladesRollMod {
     this.conditionalRollTraits = modData.conditionalRollTraits ?? [];
     this.autoRollTraits = modData.autoRollTraits ?? [];
     this.participantRollTraits = modData.participantRollTraits ?? [];
-    this.category = modData.category;
+    this.section = modData.section;
   }
 }
 
@@ -1123,7 +1137,7 @@ class BladesRoll extends DocumentSheet {
       {
         id: "Push-positive-roll",
         name: "PUSH",
-        category: RollModSection.roll,
+        section: RollModSection.roll,
         base_status: RollModStatus.ToggledOff,
         posNeg: "positive",
         modType: "general",
@@ -1134,7 +1148,7 @@ class BladesRoll extends DocumentSheet {
       {
         id: "Bargain-positive-roll",
         name: "Bargain",
-        category: RollModSection.roll,
+        section: RollModSection.roll,
         base_status: RollModStatus.Hidden,
         posNeg: "positive",
         modType: "general",
@@ -1145,7 +1159,7 @@ class BladesRoll extends DocumentSheet {
       {
         id: "Assist-positive-roll",
         name: "Assist",
-        category: RollModSection.roll,
+        section: RollModSection.roll,
         base_status: RollModStatus.Hidden,
         posNeg: "positive",
         modType: "teamwork",
@@ -1155,7 +1169,7 @@ class BladesRoll extends DocumentSheet {
       {
         id: "Setup-positive-position",
         name: "Setup",
-        category: RollModSection.position,
+        section: RollModSection.position,
         base_status: RollModStatus.Hidden,
         posNeg: "positive",
         modType: "teamwork",
@@ -1165,7 +1179,7 @@ class BladesRoll extends DocumentSheet {
       {
         id: "Push-positive-effect",
         name: "PUSH",
-        category: RollModSection.effect,
+        section: RollModSection.effect,
         base_status: RollModStatus.ToggledOff,
         posNeg: "positive",
         modType: "general",
@@ -1176,7 +1190,7 @@ class BladesRoll extends DocumentSheet {
       {
         id: "Setup-positive-effect",
         name: "Setup",
-        category: RollModSection.effect,
+        section: RollModSection.effect,
         base_status: RollModStatus.Hidden,
         posNeg: "positive",
         modType: "teamwork",
@@ -1186,7 +1200,7 @@ class BladesRoll extends DocumentSheet {
       {
         id: "Potency-positive-effect",
         name: "Potency",
-        category: RollModSection.effect,
+        section: RollModSection.effect,
         base_status: RollModStatus.Hidden,
         posNeg: "positive",
         modType: "general",
@@ -1196,7 +1210,7 @@ class BladesRoll extends DocumentSheet {
       {
         id: "Potency-negative-effect",
         name: "Potency",
-        category: RollModSection.effect,
+        section: RollModSection.effect,
         base_status: RollModStatus.Hidden,
         posNeg: "negative",
         modType: "general",
@@ -1817,7 +1831,7 @@ class BladesRoll extends DocumentSheet {
     user: User,
     permission: RollPermissions
   ) {
-
+    /* Force-render roll with new permissions */
   }
 
   // #region Basic User Flag Getters/Setters ~
@@ -1986,7 +2000,7 @@ class BladesRoll extends DocumentSheet {
     return this.flagData?.rollPosEffectTrade ?? false;
   }
 
-  getFlagVal<T = unknown>(flagKey?: string): T | undefined {
+  getFlagVal<T>(flagKey?: string): T | undefined {
     if (flagKey) {
       return this.document.getFlag(C.SYSTEM_ID, `rollCollab.${flagKey}`) as T | undefined;
     }
@@ -2024,8 +2038,51 @@ class BladesRoll extends DocumentSheet {
     this.setFlagVal("rollEffectInitial", val);
   }
 
-  get rollConsequence(): BladesRoll.ConsequenceData | undefined {
-    return this.getFlagVal<BladesRoll.ConsequenceData>("consequenceData");
+  get isApplyingConsequences(): boolean {
+    if (this.rollType !== RollType.Action) { return false; }
+    if (!this.rollResult) { return false; }
+    if (![RollResult.partial, RollResult.fail].includes(this.rollResult)) { return false; }
+    return true;
+  }
+
+  get rollConsequences(): Record<string, BladesRoll.ConsequenceData> {
+    return this.getFlagVal<Record<string, BladesRoll.ConsequenceData>>("consequenceData") ?? {};
+  }
+
+  get rollConsequence(): BladesRoll.ConsequenceData | null {
+    const chosenConsequence = this.getFlagVal<string>("chosenConsequenceName") ?? null;
+    if (chosenConsequence) {
+      return this.getFlagVal<BladesRoll.ConsequenceData>(`consequenceData.${chosenConsequence}`) ?? null;
+    }
+    return null;
+  }
+
+  async addConsequence(cData: BladesRoll.ConsequenceData) {
+    await this.setFlagVal(`consequenceData.${cData.name}`, cData);
+  }
+
+  async clearConsequence(cName: string) {
+    await this.clearFlagVal(`consequenceData.${cName}`);
+  }
+
+  async addResistanceOptions(cName: string, rNames: string[]) {
+    const cData = this.getFlagVal<BladesRoll.ConsequenceData>(`consequenceData.${cName}`);
+    if (!cData) { return; }
+    const cType = cData.type as keyof typeof C["ResistedConsequenceTypes"];
+    const rType = C.ResistedConsequenceTypes[cType] ?? undefined;
+    const resistOptions = cData.resistOptions ?? {};
+    for (const rName in rNames) {
+      resistOptions[rName] = {name: rName};
+      if (rType) {
+        resistOptions[rName].type = rType;
+      }
+    }
+    await this.setFlagVal(`consequenceData.${cName}.resistOptions`, resistOptions);
+  }
+
+  promptGMForConsequences() {
+    /* Use BladesDialog to set up a second window for GM to describe consequences,
+      with async AI resistance suggestions appearing when query received */
   }
   // #endregion
 
@@ -2226,15 +2283,15 @@ class BladesRoll extends DocumentSheet {
           const [targetName, targetCat, targetPosNeg] = thisTarget?.split(/,/) as [string, RollModSection | undefined, "positive" | "negative" | undefined] | undefined ?? [];
           if (!targetName) { throw new Error(`No targetName found in thisTarget: ${thisTarget}.`);}
           let targetMod = this.getRollModByName(targetName)
-            ?? this.getRollModByName(targetName, targetCat ?? mod.category);
+            ?? this.getRollModByName(targetName, targetCat ?? mod.section);
           if (!targetMod && targetName === "Push") {
             [targetMod] = [
-              ...this.getActiveBasicPushMods(targetCat ?? mod.category, "negative").filter(m => m.status === RollModStatus.ToggledOn),
-              ...this.getActiveBasicPushMods(targetCat ?? mod.category, "positive").filter(m => m.status === RollModStatus.ToggledOn),
-              ...this.getInactiveBasicPushMods(targetCat ?? mod.category, "positive").filter(m => m.status === RollModStatus.ToggledOff)
+              ...this.getActiveBasicPushMods(targetCat ?? mod.section, "negative").filter(m => m.status === RollModStatus.ToggledOn),
+              ...this.getActiveBasicPushMods(targetCat ?? mod.section, "positive").filter(m => m.status === RollModStatus.ToggledOn),
+              ...this.getInactiveBasicPushMods(targetCat ?? mod.section, "positive").filter(m => m.status === RollModStatus.ToggledOff)
             ];
           }
-          targetMod ??= this.getRollModByName(targetName, targetCat ?? mod.category, targetPosNeg ?? mod.posNeg);
+          targetMod ??= this.getRollModByName(targetName, targetCat ?? mod.section, targetPosNeg ?? mod.posNeg);
           if (!targetMod) { throw new Error(`No mod found matching ${targetName}/${targetCat}/${targetPosNeg}`); }
           if (!targetMod.isActive) {
             targetMod.heldStatus = RollModStatus.ForcedOn;
@@ -2345,7 +2402,7 @@ class BladesRoll extends DocumentSheet {
       if (U.lCase(rollMod.name) !== U.lCase(name)) {
         return false;
       }
-      if (cat && rollMod.category !== cat) {
+      if (cat && rollMod.section !== cat) {
         return false;
       }
       if (posNeg && rollMod.posNeg !== posNeg) {
@@ -2364,7 +2421,7 @@ class BladesRoll extends DocumentSheet {
 
   getRollMods(cat?: RollModSection, posNeg?: "positive" | "negative") {
     return this.rollMods.filter(rollMod =>
-      (!cat || rollMod.category === cat)
+      (!cat || rollMod.section === cat)
       && (!posNeg || rollMod.posNeg === posNeg));
   }
 
@@ -2470,6 +2527,43 @@ class BladesRoll extends DocumentSheet {
 
   // #region *** GETDATA *** ~
 
+  get consequenceTypeOptions(): Array<BladesSelectOption<ConsequenceType>> {
+    if (!this.rollResult) { return []; }
+    if (this.rollResult === RollResult.critical || this.rollResult === RollResult.success) { return []; }
+
+    return C.Consequences[this.finalPosition][this.rollResult]
+      .map(cType => ({value: cType, display: cType}));
+  }
+
+  private _consequenceAI?: BladesAI;
+
+  async manageConsequenceAI(sData: BladesRoll.SheetData) {
+    const {consequenceData} = sData;
+    if (!consequenceData) { return; }
+
+    // If the AI generator has not been initialized, do so.
+    if (!this._consequenceAI) {
+      this._consequenceAI = new BladesAI(AGENTS.ConsequenceAdjuster);
+    }
+
+    await Promise.all(Object.values(consequenceData).map(cData => {
+      // For each consequence, if there are no resistOptions ...
+      if (!cData.resistOptions) {
+        // Check for a pending AI prompt: create a new one if not found.
+        if (!this._consequenceAI?.hasQueried(cData.name)) {
+          this._consequenceAI?.query(cData.name, cData.name);
+        } else {
+          const response = this._consequenceAI?.getResponse(cData.name);
+          if (response) {
+            return this.addResistanceOptions(cData.name, response.split("|"));
+          }
+        }
+      }
+      return undefined;
+    }));
+  }
+
+
   /**
    * Retrieve the data for rendering the base RollCollab sheet.
    * @returns {Promise<object>} The data which can be used to render the HTML of the sheet.
@@ -2480,7 +2574,14 @@ class BladesRoll extends DocumentSheet {
     this.initRollMods(this.getRollModsData());
     this.rollMods.forEach(rollMod => rollMod.applyRollModEffectKeys());
 
-    const sheetData = this.getSheetData(this.getIsGM(), this.getRollCosts());
+    const sheetData = this.getSheetData(
+      this.getIsGM(),
+      this.getRollCosts()
+    );
+
+    if (game.user.isGM && this.rollConsequences) {
+      this.manageConsequenceAI(sheetData);
+    }
 
     return {...context, ...sheetData};
   }
@@ -2570,7 +2671,8 @@ class BladesRoll extends DocumentSheet {
       finalEffect,
       finalResult,
       rollMods,
-      rollFactors
+      rollFactors,
+      consequenceTypeOptions
     } = this;
     if (!rollPrimary) {
       throw new Error("A primary roll source is required for BladesRoll.");
@@ -2592,8 +2694,9 @@ class BladesRoll extends DocumentSheet {
       rollOpposition: this.rollOpposition,
       rollParticipants: this.rollParticipants,
       rollEffects: Object.values(Effect),
-      teamworkDocs: game.actors.filter(actor => BladesActor.IsType(actor, BladesActorType.pc)),
-
+      teamworkDocs: game.actors
+        .filter(actor => actor.hasTag(Tag.PC.ActivePC))
+        .map(actor => ({value: actor.id, display: actor.name})),
       rollTraitValOverride: this.rollTraitValOverride,
       rollFactorPenaltiesNegated: this.rollFactorPenaltiesNegated,
 
@@ -2630,6 +2733,7 @@ class BladesRoll extends DocumentSheet {
       ...rollResultData,
       ...GMBoostsData,
       ...positionEffectTradeData,
+      consequenceTypeOptions,
       userPermission
     };
   }
@@ -2739,13 +2843,12 @@ class BladesRoll extends DocumentSheet {
   /**
    * Calculate odds starting & ending HTML based on given dice total.
    * @param {number} diceTotal Total number of dice.
-   * @param {number} finalResult
    * @returns {{oddsHTMLStart: string, oddsHTMLStop: string}} Opening & Closing HTML for odds bar display
    */
   private calculateOddsHTML_Resistance(
     diceTotal: number
   ): {oddsHTMLStart: string, oddsHTMLStop: string} {
-    // const oddsColors = [
+    // Const oddsColors = [
     //   "var(--blades-gold)", // -1
     //   "var(--blades-white)", // 0
     //   "var(--blades-red-bright)", // 1
@@ -2822,8 +2925,8 @@ class BladesRoll extends DocumentSheet {
    */
   private calculateHasInactiveConditionalsData(): Record<RollModSection, boolean> {
     const hasInactive = {} as Record<RollModSection, boolean>;
-    for (const category of Object.values(RollModSection)) {
-      hasInactive[category] = this.getRollMods(category).filter(mod => mod.isInInactiveBlock).length > 0;
+    for (const section of Object.values(RollModSection)) {
+      hasInactive[section] = this.getRollMods(section).filter(mod => mod.isInInactiveBlock).length > 0;
     }
     return hasInactive;
   }
@@ -3015,7 +3118,11 @@ class BladesRoll extends DocumentSheet {
   }
   // #endregion
 
-  get rollResult(): RollResult {
+  get rollResult(): RollResult|false {
+
+    if ([RollPhase.Collaboration, RollPhase.AwaitingRoll].includes(this.rollPhase)) {
+      return false;
+    }
 
     // If rollingZero, remove highest die.
     const dieVals = this.isRollingZero
@@ -3035,12 +3142,12 @@ class BladesRoll extends DocumentSheet {
 
   }
 
-  get rollPhase() {
-    return this.getFlagVal<RollPhase>("chatStatus.phase") ?? RollPhase.AwaitingResult;
+  get rollPhase(): RollPhase {
+    return this.getFlagVal<RollPhase>("rollPhase") ?? RollPhase.Collaboration;
   }
 
   set rollPhase(phase: RollPhase) {
-    this.setFlagVal("chatStatus.phase", phase);
+    this.setFlagVal("rollPhase", phase);
   }
 
   async outputRollToChat() {
@@ -3102,6 +3209,10 @@ class BladesRoll extends DocumentSheet {
 
   async resolveRoll() {
     await this.roll.evaluate({async: true});
+    if (this.isApplyingConsequences) {
+      this.rollPhase = RollPhase.ApplyingConsequences;
+      this.promptGMForConsequences();
+    }
     eLog.checkLog3("rollCollab", "[resolveRoll()] After Evaluation, Before Chat", {roll: this, dieVals: this.dieVals});
     await this.outputRollToChat();
     this.close();
@@ -3266,7 +3377,7 @@ class BladesRoll extends DocumentSheet {
       .then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
   }
 
-  async _gmControlSelectDocument(event: SelectChangeEvent) {
+  async _gmControlSelect(event: SelectChangeEvent) {
     event.preventDefault();
     const elem$ = $(event.currentTarget);
     const section = elem$.data("rollSection");
@@ -3368,8 +3479,8 @@ class BladesRoll extends DocumentSheet {
       click: this._gmControlToggleFactor.bind(this)
     });
 
-    html.find("select.roll-sheet-doc-select").on({
-      change: this._gmControlSelectDocument.bind(this)
+    html.find("select[data-action=\"gm-select\"]").on({
+      change: this._gmControlSelect.bind(this)
     });
 
   }

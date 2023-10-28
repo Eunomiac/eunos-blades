@@ -41,8 +41,10 @@
 {{#if isGM}}
   {{#if (test modType "==" "teamwork")}}
     {{> "systems/eunos-blades/templates/roll/partials/roll-collab-gm-select-doc.hbs"
-      docs = teamworkDocs
-      docCategory = category
+      options = teamworkDocs
+      targetFlag = (concat "rollCollab.rollParticipantData." section "." name
+      selected = name
+      docCategory = section
       docTarget = name }}
   {{/if}}
   </span>

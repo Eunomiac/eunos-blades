@@ -9,19 +9,22 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
   BladesRoll.ParticipantDocData {
 
   // #region Static Overrides: Create ~
-  static override async create(data: ActorDataConstructorData & {system?: Partial<BladesActorSchema.Crew>}, options = {}) {
+  static override async create(
+    data: ActorDataConstructorData & {system?: Partial<BladesActorSchema.Crew>},
+    options = {}
+  ) {
     data.token = data.token || {};
     data.system = data.system ?? {};
 
     eLog.checkLog2("actor", "BladesActor.create(data,options)", {data, options});
 
-    //~ For Crew and PC set the Token to sync with charsheet.
+    // ~ For Crew and PC set the Token to sync with charsheet.
     data.token.actorLink = true;
 
-    //~ Create world_name
+    // ~ Create world_name
     data.system.world_name = data.system.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "").trim().replace(/ /g, "_");
 
-    //~ Initialize generic experience clues.
+    // ~ Initialize generic experience clues.
     data.system.experience = {
       playbook: {value: 0, max: 8},
       clues: [],
@@ -44,6 +47,7 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
     const factorData: Partial<Record<Factor, BladesRoll.FactorData>> = {
       [Factor.tier]: {
         name: Factor.tier,
+        display: "Tier",
         value: this.getFactorTotal(Factor.tier),
         max: this.getFactorTotal(Factor.tier),
         baseVal: this.getFactorTotal(Factor.tier),
@@ -54,6 +58,7 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
       },
       [Factor.quality]: {
         name: Factor.quality,
+        display: "Quality",
         value: this.getFactorTotal(Factor.quality),
         max: this.getFactorTotal(Factor.quality),
         baseVal: this.getFactorTotal(Factor.quality),
@@ -66,22 +71,31 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
 
     return factorData;
   }
+
   // #region BladesRoll.PrimaryDoc Implementation
-  get rollPrimaryID() {return this.id}
-  get rollPrimaryDoc() {return this}
-  get rollPrimaryName() {return this.name}
-  get rollPrimaryType() {return this.type}
-  get rollPrimaryImg() {return this.img}
+  get rollPrimaryID() {return this.id;}
+
+  get rollPrimaryDoc() {return this;}
+
+  get rollPrimaryName() {return this.name;}
+
+  get rollPrimaryType() {return this.type;}
+
+  get rollPrimaryImg() {return this.img;}
   // #endregion
 
   // #region BladesRoll.ParticipantDoc Implementation
-  get rollParticipantID() {return this.id}
-  get rollParticipantDoc() {return this}
-  get rollParticipantIcon() {return this.playbook?.img ?? this.img}
-  get rollParticipantName() {return this.name}
-  get rollParticipantType() {return this.type}
+  get rollParticipantID() {return this.id;}
 
-  get rollParticipantModsData(): BladesRoll.RollModData[] {return []}
+  get rollParticipantDoc() {return this;}
+
+  get rollParticipantIcon() {return this.playbook?.img ?? this.img;}
+
+  get rollParticipantName() {return this.name;}
+
+  get rollParticipantType() {return this.type;}
+
+  get rollParticipantModsData(): BladesRoll.RollModData[] {return [];}
   // #endregion
 
 
@@ -89,15 +103,19 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
 
 
   get abilities(): BladesItem[] {
-    if (!this.playbook) {return []}
-    return this.activeSubItems.filter((item) => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
+    if (!this.playbook) {return [];}
+    return this.activeSubItems
+      .filter(item => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
   }
 
   get playbookName() {
     return this.playbook?.name as (BladesTag & Playbook) | undefined;
   }
+
   get playbook(): BladesItemOfType<BladesItemType.crew_playbook> | undefined {
-    return this.activeSubItems.find((item): item is BladesItemOfType<BladesItemType.crew_playbook> => item.type === BladesItemType.crew_playbook);
+    return this.activeSubItems
+      .find((item): item is BladesItemOfType<BladesItemType.crew_playbook> =>
+        item.type === BladesItemType.crew_playbook);
   }
 
 }

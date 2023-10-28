@@ -14,11 +14,8 @@ class BladesCrew extends BladesActor {
         data.token = data.token || {};
         data.system = data.system ?? {};
         eLog.checkLog2("actor", "BladesActor.create(data,options)", { data, options });
-
         data.token.actorLink = true;
-
         data.system.world_name = data.system.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "").trim().replace(/ /g, "_");
-
         data.system.experience = {
             playbook: { value: 0, max: 8 },
             clues: [],
@@ -33,6 +30,7 @@ class BladesCrew extends BladesActor {
         const factorData = {
             [Factor.tier]: {
                 name: Factor.tier,
+                display: "Tier",
                 value: this.getFactorTotal(Factor.tier),
                 max: this.getFactorTotal(Factor.tier),
                 baseVal: this.getFactorTotal(Factor.tier),
@@ -43,6 +41,7 @@ class BladesCrew extends BladesActor {
             },
             [Factor.quality]: {
                 name: Factor.quality,
+                display: "Quality",
                 value: this.getFactorTotal(Factor.quality),
                 max: this.getFactorTotal(Factor.quality),
                 baseVal: this.getFactorTotal(Factor.quality),
@@ -54,6 +53,7 @@ class BladesCrew extends BladesActor {
         };
         return factorData;
     }
+
     get rollPrimaryID() { return this.id; }
     get rollPrimaryDoc() { return this; }
     get rollPrimaryName() { return this.name; }
@@ -71,13 +71,15 @@ class BladesCrew extends BladesActor {
         if (!this.playbook) {
             return [];
         }
-        return this.activeSubItems.filter((item) => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
+        return this.activeSubItems
+            .filter(item => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
     }
     get playbookName() {
         return this.playbook?.name;
     }
     get playbook() {
-        return this.activeSubItems.find((item) => item.type === BladesItemType.crew_playbook);
+        return this.activeSubItems
+            .find((item) => item.type === BladesItemType.crew_playbook);
     }
 }
 export default BladesCrew;

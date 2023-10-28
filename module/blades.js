@@ -21,7 +21,7 @@ import BladesNPCSheet from "./sheets/actor/BladesNPCSheet.js";
 import BladesFactionSheet from "./sheets/actor/BladesFactionSheet.js";
 import BladesRoll, { BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant } from "./BladesRoll.js";
 import BladesSelectorDialog from "./BladesDialog.js";
-import BladesAI, { PROMPTS } from "./core/ai.js";
+import BladesAI, { AGENTS } from "./core/ai.js";
 import BladesActiveEffect from "./BladesActiveEffect.js";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet.js";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet.js";
@@ -58,14 +58,14 @@ class GlobalGetter {
                 rollFactors: pc.rollFactors
             },
             consequenceData: {
-                name: "Level 3 Harm",
-                type: ConsequenceType.Harm3,
-                label: "Shattered Knee",
-                attribute: AttributeTrait.prowess,
-                resistedConsequence: {
-                    name: "Level 2 Harm",
-                    type: ConsequenceType.Harm2,
-                    label: "Twisted Knee"
+                "Shattered Knee": {
+                    name: "Shattered Knee",
+                    type: ConsequenceType.Harm3,
+                    attribute: AttributeTrait.prowess,
+                    resistOptions: {
+                        "Twisted Knee": { name: "Twisted Knee", type: ConsequenceType.Harm2 }
+                    },
+                    selectedResistOption: "Twisted Knee"
                 }
             }
         };
@@ -108,7 +108,7 @@ Object.assign(globalThis, {
     BladesClockKeeperSheet,
     BladesGMTrackerSheet,
     BladesAI,
-    PROMPTS
+    AGENTS
 });
 
 Hooks.once("init", async () => {

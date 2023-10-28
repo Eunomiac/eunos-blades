@@ -153,7 +153,7 @@ export enum RollType {
   Action = "Action",
   Resistance = "Resistance",
   Fortune = "Fortune",
-  IndulgeVice = "Vice"
+  IndulgeVice = "IndulgeVice"
 }
 
 export enum RollSubType {
@@ -166,13 +166,16 @@ export enum RollSubType {
 
 export enum ConsequenceType {
   ReducedEffect = "ReducedEffect",
-  Complication = "Complication",
+  ComplicationMinor = "ComplicationMinor",
+  ComplicationMajor = "ComplicationMajor",
+  ComplicationSerious = "ComplicationSerious",
   LostOpportunity = "LostOpportunity",
   WorsePosition = "WorsePosition",
   Harm1 = "Harm1",
   Harm2 = "Harm2",
   Harm3 = "Harm3",
-  Harm4 = "Harm4"
+  Harm4 = "Harm4",
+  None = "None"
 }
 
 export enum RollModStatus {
@@ -218,9 +221,18 @@ export enum RollResult {
 }
 
 export enum RollPhase {
+  // Collaboration: Before GM toggles "Roll" button for player to click.
   Collaboration = "Collaboration",
-  AwaitingResult = "AwaitingResult",
+  // AwaitingRoll: Waiting for player to click "ROLL"
+  AwaitingRoll = "AwaitingRoll",
+  // ApplyingConsequences: Waiting for GM to select consequence(s), AI to
+  //                       respond with resistance options, and GM to select
+  //                       resistance options.
+  ApplyingConsequences = "ApplyingConsequences",
+  // AwaitingChatInput: Consequences and player options output to chat;
+  //                    awaiting player choice there
   AwaitingChatInput = "AwaitingChatInput",
+  // Complete: Roll finished (but may trigger another roll, e.g. resistance)
   Complete = "Complete"
 }
 
@@ -363,6 +375,57 @@ const C = {
       "gpt-3.5-turbo-16k",
       "gpt-4-32k"
     ]
+  },
+  Consequences: {
+    [Position.controlled]: {
+      [RollResult.partial]: [
+        ConsequenceType.ComplicationMinor,
+        ConsequenceType.ReducedEffect,
+        ConsequenceType.WorsePosition,
+        ConsequenceType.Harm1,
+        ConsequenceType.None
+      ],
+      [RollResult.fail]: [
+        ConsequenceType.WorsePosition,
+        ConsequenceType.None
+      ]
+    },
+    [Position.risky]: {
+      [RollResult.partial]: [
+        ConsequenceType.ComplicationMajor,
+        ConsequenceType.WorsePosition,
+        ConsequenceType.ReducedEffect,
+        ConsequenceType.Harm2,
+        ConsequenceType.None
+      ],
+      [RollResult.fail]: [
+        ConsequenceType.ComplicationMajor,
+        ConsequenceType.WorsePosition,
+        ConsequenceType.LostOpportunity,
+        ConsequenceType.Harm2
+      ]
+    },
+    [Position.desperate]: {
+      [RollResult.partial]: [
+        ConsequenceType.ComplicationSerious,
+        ConsequenceType.ReducedEffect,
+        ConsequenceType.Harm3
+      ],
+      [RollResult.fail]: [
+        ConsequenceType.ComplicationSerious,
+        ConsequenceType.LostOpportunity,
+        ConsequenceType.Harm3
+      ]
+    }
+  },
+  ResistedConsequenceTypes: {
+    [ConsequenceType.Harm4]: ConsequenceType.Harm3,
+    [ConsequenceType.Harm3]: ConsequenceType.Harm2,
+    [ConsequenceType.Harm2]: ConsequenceType.Harm1,
+    [ConsequenceType.Harm1]: ConsequenceType.None,
+    [ConsequenceType.ComplicationSerious]: ConsequenceType.ComplicationMajor,
+    [ConsequenceType.ComplicationMajor]: ConsequenceType.ComplicationMinor,
+    [ConsequenceType.ComplicationMinor]: ConsequenceType.None
   },
   Colors: {
     bWHITE: "rgba(255, 255, 255, 1)",
