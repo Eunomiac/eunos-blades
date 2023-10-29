@@ -1232,7 +1232,7 @@ class BladesRoll extends DocumentSheet {
         const userFlagData = {};
         Object.entries(userIDs)
             .forEach(([rollPermission, idsArray]) => {
-            for (const id in idsArray) {
+            for (const id of idsArray) {
                 userFlagData[id] = rollPermission;
             }
         });
@@ -1257,7 +1257,7 @@ class BladesRoll extends DocumentSheet {
         const userFlagData = {};
         Object.entries(userIDs)
             .forEach(([rollPermission, idsArray]) => {
-            for (const id in idsArray) {
+            for (const id of idsArray) {
                 userFlagData[id] = rollPermission;
             }
         });
@@ -1280,7 +1280,7 @@ class BladesRoll extends DocumentSheet {
         const userFlagData = {};
         Object.entries(userIDs)
             .forEach(([rollPermission, idsArray]) => {
-            for (const id in idsArray) {
+            for (const id of idsArray) {
                 userFlagData[id] = rollPermission;
             }
         });
@@ -1309,7 +1309,7 @@ class BladesRoll extends DocumentSheet {
         const userFlagData = {};
         Object.entries(userIDs)
             .forEach(([rollPermission, idsArray]) => {
-            for (const id in idsArray) {
+            for (const id of idsArray) {
                 userFlagData[id] = rollPermission;
             }
         });
@@ -1358,12 +1358,12 @@ class BladesRoll extends DocumentSheet {
         if (!BladesRollPrimary.IsValidData(rollPrimaryData)) {
             throw new Error("[BladesRoll.NewRoll()] A valid source of PrimaryDocData must be provided to construct a roll.");
         }
-        const rollID = randomID();
+        const rID = randomID();
         let userIDs;
         let flagUpdateData;
         switch (config.rollType) {
             case RollType.Action: {
-                ({ userIDs, flagUpdateData } = await BladesRoll.PrepareActionRoll(rollID, {
+                ({ userIDs, flagUpdateData } = await BladesRoll.PrepareActionRoll(rID, {
                     ...config,
                     rollUserID: rollUser.id,
                     rollPrimaryData
@@ -1371,7 +1371,7 @@ class BladesRoll extends DocumentSheet {
                 break;
             }
             case RollType.Resistance: {
-                ({ userIDs, flagUpdateData } = await BladesRoll.PrepareResistanceRoll(rollID, {
+                ({ userIDs, flagUpdateData } = await BladesRoll.PrepareResistanceRoll(rID, {
                     ...config,
                     rollUserID: rollUser.id,
                     rollPrimaryData
@@ -1379,7 +1379,7 @@ class BladesRoll extends DocumentSheet {
                 break;
             }
             case RollType.Fortune: {
-                ({ userIDs, flagUpdateData } = await BladesRoll.PrepareFortuneRoll(rollID, {
+                ({ userIDs, flagUpdateData } = await BladesRoll.PrepareFortuneRoll(rID, {
                     ...config,
                     rollUserID: rollUser.id,
                     rollPrimaryData
@@ -1387,7 +1387,7 @@ class BladesRoll extends DocumentSheet {
                 break;
             }
             case RollType.IndulgeVice: {
-                ({ userIDs, flagUpdateData } = await BladesRoll.PrepareIndulgeViceRoll(rollID, {
+                ({ userIDs, flagUpdateData } = await BladesRoll.PrepareIndulgeViceRoll(rID, {
                     ...config,
                     rollUserID: rollUser.id,
                     rollPrimaryData
@@ -1397,10 +1397,10 @@ class BladesRoll extends DocumentSheet {
         }
         eLog.checkLog3("bladesRoll", "BladesRoll.NewRoll()", { userIDs, flagUpdateData, rollPrimaryData: flagUpdateData.rollPrimaryData });
         await rollUser.setFlag(C.SYSTEM_ID, "rollCollab", flagUpdateData);
-        socketlib.system.executeForUsers("constructRollCollab", userIDs[RollPermissions.GM], { userID: rollUser.id, rollID, rollPermission: RollPermissions.GM });
-        socketlib.system.executeForUsers("constructRollCollab", userIDs[RollPermissions.Primary], { userID: rollUser.id, rollID, rollPermission: RollPermissions.Primary });
-        socketlib.system.executeForUsers("constructRollCollab", userIDs[RollPermissions.Observer], { userID: rollUser.id, rollID, rollPermission: RollPermissions.Observer });
-        socketlib.system.executeForUsers("constructRollCollab", userIDs[RollPermissions.Participant], { userID: rollUser.id, rollID, rollPermission: RollPermissions.Participant });
+        socketlib.system.executeForUsers("constructRollCollab", userIDs[RollPermissions.GM], { userID: rollUser.id, rollID: rID, rollPermission: RollPermissions.GM });
+        socketlib.system.executeForUsers("constructRollCollab", userIDs[RollPermissions.Primary], { userID: rollUser.id, rollID: rID, rollPermission: RollPermissions.Primary });
+        socketlib.system.executeForUsers("constructRollCollab", userIDs[RollPermissions.Observer], { userID: rollUser.id, rollID: rID, rollPermission: RollPermissions.Observer });
+        socketlib.system.executeForUsers("constructRollCollab", userIDs[RollPermissions.Participant], { userID: rollUser.id, rollID: rID, rollPermission: RollPermissions.Participant });
     }
 
     rollID;
@@ -1670,7 +1670,7 @@ class BladesRoll extends DocumentSheet {
         const cType = cData.type;
         const rType = C.ResistedConsequenceTypes[cType] ?? undefined;
         const resistOptions = cData.resistOptions ?? {};
-        for (const rName in rNames) {
+        for (const rName of rNames) {
             resistOptions[rName] = { name: rName };
             if (rType) {
                 resistOptions[rName].type = rType;
@@ -2301,11 +2301,12 @@ class BladesRoll extends DocumentSheet {
                 return this.parseResistanceRollCostsHTML(this.getStressCosts(rollCosts), this.getSpecArmorCost(rollCosts));
             }
             case RollType.Fortune: {
-                return this.parseFortuneRollCostsHTML(this.getStressCosts(rollCosts), this.getSpecArmorCost(rollCosts));
+                return this.parseFortuneRollCostsHTML();
             }
             case RollType.IndulgeVice: {
-                return this.parseIndulgeViceRollCostsHTML(this.getStressCosts(rollCosts), this.getSpecArmorCost(rollCosts));
+                return this.parseIndulgeViceRollCostsHTML();
             }
+            default: return false;
         }
     }
         parseActionRollCostsHTML(stressCosts, specArmorCost) {
@@ -2349,46 +2350,11 @@ class BladesRoll extends DocumentSheet {
             ].filter(line => Boolean(line)).join("")
         };
     }
-    parseFortuneRollCostsHTML(stressCosts, specArmorCost) {
-        const footerLabelStrings = [
-            "( Resisting Costs"
-        ];
-        if (specArmorCost) {
-            footerLabelStrings.push("your <span class='cyan-bright'><strong>Special Armor</strong></span> )");
-        }
-        else {
-            footerLabelStrings.push("(6 - Best Die) Stress,<br />or <span class='gold-bright'><strong>Clears 1 Stress</strong></span> on a Critical Success )");
-        }
-        return {
-            footerLabel: footerLabelStrings.join(" "),
-            tooltip: [
-                "<h1>Roll Costs</h1><ul>",
-                ...stressCosts.map(costData => `<li><strong class='shadowed'>${costData.label}: <span class='red-bright'>${costData.costAmount}</span> Stress</strong></li>`),
-                specArmorCost ? `<li><strong class='shadowed'>${specArmorCost.label}: <strong class='cyan-bright'>Special Armor</strong></strong></li>` : null,
-                "</ul>"
-            ].filter(line => Boolean(line)).join("")
-        };
+    parseFortuneRollCostsHTML() {
+        return { footerLabel: "Fortune Cost Label", tooltip: "Fortune Cost Tooltip" };
     }
-    parseIndulgeViceRollCostsHTML(stressCosts, specArmorCost) {
-        if (specArmorCost || stressCosts.length > 0) {
-            const totalStressCost = this.getTotalStressCost(stressCosts);
-            return {
-                footerLabel: [
-                    "( Roll Costs",
-                    totalStressCost > 0 ? `<span class='red-bright'><strong>${totalStressCost} Stress</strong></span>` : null,
-                    specArmorCost && totalStressCost ? "and" : null,
-                    specArmorCost ? "your <span class='cyan-bright'><strong>Special Armor</strong></span>" : null,
-                    ")"
-                ].filter(line => Boolean(line)).join(" "),
-                tooltip: [
-                    "<h1>Roll Costs</h1><ul>",
-                    ...stressCosts.map(costData => `<li><strong class='shadowed'>${costData.label}: <span class='red-bright'>${costData.costAmount}</span> Stress</strong></li>`),
-                    specArmorCost ? `<li><strong class='shadowed'>${specArmorCost.label}: <strong class='cyan-bright'>Special Armor</strong></strong></li>` : null,
-                    "</ul>"
-                ].filter(line => Boolean(line)).join("")
-            };
-        }
-        return undefined;
+    parseIndulgeViceRollCostsHTML() {
+        return { footerLabel: "Indulge Vice Cost Label", tooltip: "Indulge Vice Cost Tooltip" };
     }
 
     _dieVals;
@@ -2610,7 +2576,7 @@ class BladesRoll extends DocumentSheet {
         const factorToggleData = this.document.getFlag(C.SYSTEM_ID, "rollCollab.rollFactorToggles");
         const [thisSource, thisFactor, thisToggle] = target.split(/\./).slice(-3);
         if (!["isActive", "isPrimary", "isDominant", "highFavorsPC"].includes(thisToggle)) {
-            return this.document.setFlag(C.SYSTEM_ID, `rollCollab.${target}`, value)
+            await this.document.setFlag(C.SYSTEM_ID, `rollCollab.${target}`, value)
                 .then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
         }
         factorToggleData[thisSource][thisFactor] = {
@@ -2646,7 +2612,7 @@ class BladesRoll extends DocumentSheet {
             }
             default: break;
         }
-        return this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollFactorToggles", factorToggleData)
+        await this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollFactorToggles", factorToggleData)
             .then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
     }
     async _gmControlSelect(event) {
@@ -2659,9 +2625,9 @@ class BladesRoll extends DocumentSheet {
             return;
         }
         if (selectedOption === "false") {
-            return this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.rollParticipantData.${section}.${subSection}`);
+            await this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.rollParticipantData.${section}.${subSection}`);
         }
-        return this.addRollParticipant(selectedOption, section, subSection);
+        await this.addRollParticipant(selectedOption, section, subSection);
     }
     get resistanceStressCost() {
         const dieVals = this.dieVals;

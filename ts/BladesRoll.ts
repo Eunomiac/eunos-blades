@@ -1473,7 +1473,7 @@ class BladesRoll extends DocumentSheet {
     const userFlagData: Record<string, RollPermissions> = {};
     (Object.entries(userIDs) as Array<[RollPermissions, string[]]>)
       .forEach(([rollPermission, idsArray]) => {
-        for (const id in idsArray) {
+        for (const id of idsArray) {
           userFlagData[id] = rollPermission;
         }
       });
@@ -1512,7 +1512,7 @@ class BladesRoll extends DocumentSheet {
     const userFlagData: Record<string, RollPermissions> = {};
     (Object.entries(userIDs) as Array<[RollPermissions, string[]]>)
       .forEach(([rollPermission, idsArray]) => {
-        for (const id in idsArray) {
+        for (const id of idsArray) {
           userFlagData[id] = rollPermission;
         }
       });
@@ -1546,7 +1546,7 @@ class BladesRoll extends DocumentSheet {
     const userFlagData: Record<string, RollPermissions> = {};
     (Object.entries(userIDs) as Array<[RollPermissions, string[]]>)
       .forEach(([rollPermission, idsArray]) => {
-        for (const id in idsArray) {
+        for (const id of idsArray) {
           userFlagData[id] = rollPermission;
         }
       });
@@ -1591,7 +1591,7 @@ class BladesRoll extends DocumentSheet {
     const userFlagData: Record<string, RollPermissions> = {};
     (Object.entries(userIDs) as Array<[RollPermissions, string[]]>)
       .forEach(([rollPermission, idsArray]) => {
-        for (const id in idsArray) {
+        for (const id of idsArray) {
           userFlagData[id] = rollPermission;
         }
       });
@@ -1663,7 +1663,7 @@ class BladesRoll extends DocumentSheet {
     }
 
     // Create a random ID for storing the roll instance
-    const rollID = randomID();
+    const rID = randomID();
 
     // Derive user flag data depending on given roll type and subtype
     let userIDs: Record<RollPermissions, string[]>;
@@ -1672,7 +1672,7 @@ class BladesRoll extends DocumentSheet {
     switch (config.rollType) {
       case RollType.Action: {
         ({userIDs, flagUpdateData} = await BladesRoll.PrepareActionRoll(
-          rollID,
+          rID,
           {
             ...config,
             rollUserID: rollUser.id,
@@ -1683,7 +1683,7 @@ class BladesRoll extends DocumentSheet {
       }
       case RollType.Resistance: {
         ({userIDs, flagUpdateData} = await BladesRoll.PrepareResistanceRoll(
-          rollID,
+          rID,
           {
             ...config,
             rollUserID: rollUser.id,
@@ -1694,7 +1694,7 @@ class BladesRoll extends DocumentSheet {
       }
       case RollType.Fortune: {
         ({userIDs, flagUpdateData} = await BladesRoll.PrepareFortuneRoll(
-          rollID,
+          rID,
           {
             ...config,
             rollUserID: rollUser.id,
@@ -1705,7 +1705,7 @@ class BladesRoll extends DocumentSheet {
       }
       case RollType.IndulgeVice: {
         ({userIDs, flagUpdateData} = await BladesRoll.PrepareIndulgeViceRoll(
-          rollID,
+          rID,
           {
             ...config,
             rollUserID: rollUser.id,
@@ -1725,19 +1725,19 @@ class BladesRoll extends DocumentSheet {
     // Send out socket calls to all users to see the roll.
     socketlib.system.executeForUsers("constructRollCollab",
       userIDs[RollPermissions.GM],
-      {userID: rollUser.id, rollID, rollPermission: RollPermissions.GM}
+      {userID: rollUser.id, rollID: rID, rollPermission: RollPermissions.GM}
     );
     socketlib.system.executeForUsers("constructRollCollab",
       userIDs[RollPermissions.Primary],
-      {userID: rollUser.id, rollID, rollPermission: RollPermissions.Primary}
+      {userID: rollUser.id, rollID: rID, rollPermission: RollPermissions.Primary}
     );
     socketlib.system.executeForUsers("constructRollCollab",
       userIDs[RollPermissions.Observer],
-      {userID: rollUser.id, rollID, rollPermission: RollPermissions.Observer}
+      {userID: rollUser.id, rollID: rID, rollPermission: RollPermissions.Observer}
     );
     socketlib.system.executeForUsers("constructRollCollab",
       userIDs[RollPermissions.Participant],
-      {userID: rollUser.id, rollID, rollPermission: RollPermissions.Participant}
+      {userID: rollUser.id, rollID: rID, rollPermission: RollPermissions.Participant}
     );
   }
   // #endregion
@@ -2071,7 +2071,7 @@ class BladesRoll extends DocumentSheet {
     const cType = cData.type as keyof typeof C["ResistedConsequenceTypes"];
     const rType = C.ResistedConsequenceTypes[cType] ?? undefined;
     const resistOptions = cData.resistOptions ?? {};
-    for (const rName in rNames) {
+    for (const rName of rNames) {
       resistOptions[rName] = {name: rName};
       if (rType) {
         resistOptions[rName].type = rType;
@@ -2946,17 +2946,12 @@ class BladesRoll extends DocumentSheet {
         );
       }
       case RollType.Fortune: {
-        return this.parseFortuneRollCostsHTML(
-          this.getStressCosts(rollCosts),
-          this.getSpecArmorCost(rollCosts)
-        );
+        return this.parseFortuneRollCostsHTML();
       }
       case RollType.IndulgeVice: {
-        return this.parseIndulgeViceRollCostsHTML(
-          this.getStressCosts(rollCosts),
-          this.getSpecArmorCost(rollCosts)
-        );
+        return this.parseIndulgeViceRollCostsHTML();
       }
+      default: return false as never;
     }
   }
 
@@ -3015,52 +3010,12 @@ class BladesRoll extends DocumentSheet {
     };
   }
 
-  private parseFortuneRollCostsHTML(
-    stressCosts: BladesRoll.CostData[],
-    specArmorCost?: BladesRoll.CostData
-  ): {footerLabel: string, tooltip: string} | undefined {
-    const footerLabelStrings: string[] = [
-      "( Resisting Costs"
-    ];
-    if (specArmorCost) {
-      footerLabelStrings.push("your <span class='cyan-bright'><strong>Special Armor</strong></span> )");
-    } else {
-      footerLabelStrings.push("(6 - Best Die) Stress,<br />or <span class='gold-bright'><strong>Clears 1 Stress</strong></span> on a Critical Success )");
-    }
-    return {
-      footerLabel: footerLabelStrings.join(" "),
-      tooltip: [
-        "<h1>Roll Costs</h1><ul>",
-        ...stressCosts.map(costData => `<li><strong class='shadowed'>${costData.label}: <span class='red-bright'>${costData.costAmount}</span> Stress</strong></li>`),
-        specArmorCost ? `<li><strong class='shadowed'>${specArmorCost.label}: <strong class='cyan-bright'>Special Armor</strong></strong></li>` : null,
-        "</ul>"
-      ].filter(line => Boolean(line)).join("")
-    };
+  private parseFortuneRollCostsHTML(): {footerLabel: string, tooltip: string} | undefined {
+    return {footerLabel: "Fortune Cost Label", tooltip: "Fortune Cost Tooltip"};
   }
 
-  private parseIndulgeViceRollCostsHTML(
-    stressCosts: BladesRoll.CostData[],
-    specArmorCost?: BladesRoll.CostData
-  ): {footerLabel: string, tooltip: string} | undefined {
-    if (specArmorCost || stressCosts.length > 0) {
-      const totalStressCost = this.getTotalStressCost(stressCosts);
-      return {
-        footerLabel: [
-          "( Roll Costs",
-          totalStressCost > 0 ? `<span class='red-bright'><strong>${totalStressCost} Stress</strong></span>` : null,
-          specArmorCost && totalStressCost ? "and" : null,
-          specArmorCost ? "your <span class='cyan-bright'><strong>Special Armor</strong></span>" : null,
-          ")"
-        ].filter(line => Boolean(line)).join(" "),
-        tooltip: [
-          "<h1>Roll Costs</h1><ul>",
-          ...stressCosts.map(costData => `<li><strong class='shadowed'>${costData.label}: <span class='red-bright'>${costData.costAmount}</span> Stress</strong></li>`),
-          specArmorCost ? `<li><strong class='shadowed'>${specArmorCost.label}: <strong class='cyan-bright'>Special Armor</strong></strong></li>` : null,
-          "</ul>"
-        ].filter(line => Boolean(line)).join("")
-      };
-    }
-    return undefined;
+  private parseIndulgeViceRollCostsHTML(): {footerLabel: string, tooltip: string} | undefined {
+    return {footerLabel: "Indulge Vice Cost Label", tooltip: "Indulge Vice Cost Tooltip"};
   }
   // #endregion
 
@@ -3329,7 +3284,7 @@ class BladesRoll extends DocumentSheet {
 
     // If thisToggle is unrecognized, just toggle whatever value target points at
     if (!["isActive", "isPrimary", "isDominant", "highFavorsPC"].includes(thisToggle)) {
-      return this.document.setFlag(C.SYSTEM_ID, `rollCollab.${target}`, value)
+      await this.document.setFlag(C.SYSTEM_ID, `rollCollab.${target}`, value)
         .then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
     }
 
@@ -3373,7 +3328,7 @@ class BladesRoll extends DocumentSheet {
       default: break;
     }
 
-    return this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollFactorToggles", factorToggleData)
+    await this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollFactorToggles", factorToggleData)
       .then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
   }
 
@@ -3386,9 +3341,9 @@ class BladesRoll extends DocumentSheet {
 
     if (typeof selectedOption !== "string") { return; }
     if (selectedOption === "false") {
-      return this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.rollParticipantData.${section}.${subSection}`);
+      await this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.rollParticipantData.${section}.${subSection}`);
     }
-    return this.addRollParticipant(selectedOption, section, subSection);
+    await this.addRollParticipant(selectedOption, section, subSection);
   }
 
   get resistanceStressCost(): number {
