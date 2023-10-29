@@ -8,6 +8,7 @@
 import U from "./core/utilities.js";
 import C, { BladesActorType, Tag, Playbook, BladesItemType, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor } from "./core/constants.js";
 import { BladesItem } from "./documents/BladesItemProxy.js";
+import { BladesRollMod } from "./BladesRoll.js";
 import BladesPushAlert from "./BladesPushAlert.js";
 import { SelectionCategory } from "./BladesDialog.js";
 var BladesActorUniqueTags;
@@ -735,7 +736,41 @@ class BladesActor extends Actor {
     parentActor;
     get isSubActor() { return this.parentActor !== undefined; }
     
-    
+    get rollModsData() {
+        return BladesRollMod.ParseDocRollMods(this);
+    }
+    get rollFactors() {
+        const factorData = {
+            [Factor.tier]: {
+                name: Factor.tier,
+                display: "Tier",
+                value: this.getFactorTotal(Factor.tier),
+                max: this.getFactorTotal(Factor.tier),
+                baseVal: this.getFactorTotal(Factor.tier),
+                isActive: true,
+                isPrimary: true,
+                isDominant: false,
+                highFavorsPC: true
+            },
+            [Factor.quality]: {
+                name: Factor.quality,
+                display: "Quality",
+                value: this.getFactorTotal(Factor.quality),
+                max: this.getFactorTotal(Factor.quality),
+                baseVal: this.getFactorTotal(Factor.quality),
+                isActive: false,
+                isPrimary: false,
+                isDominant: false,
+                highFavorsPC: true
+            }
+        };
+        return factorData;
+    }
+    get rollPrimaryID() { return this.id; }
+    get rollPrimaryDoc() { return this; }
+    get rollPrimaryName() { return this.name; }
+    get rollPrimaryType() { return this.type; }
+    get rollPrimaryImg() { return this.img; }
     get members() {
         if (!BladesActor.IsType(this, BladesActorType.crew)) {
             return [];

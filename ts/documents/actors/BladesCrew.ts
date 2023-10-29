@@ -1,7 +1,7 @@
 import BladesItem from "../../BladesItem";
-import {BladesActorType, Playbook, BladesItemType, Factor} from "../../core/constants";
+import {BladesActorType, Playbook, BladesItemType} from "../../core/constants";
 import BladesActor from "../../BladesActor";
-import BladesRoll, {BladesRollMod} from "../../BladesRoll";
+import BladesRoll from "../../BladesRoll";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
@@ -39,51 +39,6 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
 
   // #region BladesRoll Implementation
 
-  get rollModsData(): BladesRoll.RollModData[] {
-    return BladesRollMod.ParseDocRollMods(this);
-  }
-
-  get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
-    const factorData: Partial<Record<Factor, BladesRoll.FactorData>> = {
-      [Factor.tier]: {
-        name: Factor.tier,
-        display: "Tier",
-        value: this.getFactorTotal(Factor.tier),
-        max: this.getFactorTotal(Factor.tier),
-        baseVal: this.getFactorTotal(Factor.tier),
-        isActive: true,
-        isPrimary: true,
-        isDominant: false,
-        highFavorsPC: true
-      },
-      [Factor.quality]: {
-        name: Factor.quality,
-        display: "Quality",
-        value: this.getFactorTotal(Factor.quality),
-        max: this.getFactorTotal(Factor.quality),
-        baseVal: this.getFactorTotal(Factor.quality),
-        isActive: false,
-        isPrimary: false,
-        isDominant: false,
-        highFavorsPC: true
-      }
-    };
-
-    return factorData;
-  }
-
-  // #region BladesRoll.PrimaryDoc Implementation
-  get rollPrimaryID() {return this.id;}
-
-  get rollPrimaryDoc() {return this;}
-
-  get rollPrimaryName() {return this.name;}
-
-  get rollPrimaryType() {return this.type;}
-
-  get rollPrimaryImg() {return this.img;}
-  // #endregion
-
   // #region BladesRoll.ParticipantDoc Implementation
   get rollParticipantID() {return this.id;}
 
@@ -97,7 +52,6 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
 
   get rollParticipantModsData(): BladesRoll.RollModData[] {return [];}
   // #endregion
-
 
   // #endregion
 

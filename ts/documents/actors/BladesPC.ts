@@ -1,8 +1,8 @@
-import C, {Playbook, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModSection, Factor, RollModStatus} from "../../core/constants";
+import C, {Playbook, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModSection, RollModStatus} from "../../core/constants";
 import U from "../../core/utilities";
 import {BladesActor, BladesCrew} from "../BladesActorProxy";
 import {BladesItem} from "../BladesItemProxy";
-import BladesRoll, {BladesRollMod} from "../../BladesRoll";
+import BladesRoll from "../../BladesRoll";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 
@@ -220,52 +220,10 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   }
   // #endregion
 
-  // #region BladesRoll Implementation
-
-  get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
-    const factorData: Partial<Record<Factor, BladesRoll.FactorData>> = {
-      [Factor.tier]: {
-        name: Factor.tier,
-        display: "Tier",
-        value: this.getFactorTotal(Factor.tier),
-        max: this.getFactorTotal(Factor.tier),
-        baseVal: this.getFactorTotal(Factor.tier),
-        isActive: true,
-        isPrimary: true,
-        isDominant: false,
-        highFavorsPC: true
-      },
-      [Factor.quality]: {
-        name: Factor.quality,
-        display: "Quality",
-        value: this.getFactorTotal(Factor.quality),
-        max: this.getFactorTotal(Factor.quality),
-        baseVal: this.getFactorTotal(Factor.quality),
-        isActive: false,
-        isPrimary: false,
-        isDominant: false,
-        highFavorsPC: true
-      }
-    };
-
-    return factorData;
-  }
-
   // #region BladesRoll.PrimaryDoc Implementation
+  override get rollModsData(): BladesRoll.RollModData[] {
 
-  get rollPrimaryID() { return this.id; }
-
-  get rollPrimaryDoc() { return this; }
-
-  get rollPrimaryName() { return this.name; }
-
-  get rollPrimaryType() { return this.type; }
-
-  get rollPrimaryImg() { return this.img; }
-
-  get rollModsData(): BladesRoll.RollModData[] {
-
-    const rollModsData = BladesRollMod.ParseDocRollMods(this);
+    const rollModsData = super.rollModsData;
 
     // Add roll mods from harm
     [

@@ -5,36 +5,8 @@
 |*     ▌████░░░░  ░░░░█████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import { Factor } from "../../core/constants.js";
 import BladesActor from "../../BladesActor.js";
 class BladesFaction extends BladesActor {
-    get rollFactors() {
-        const factorData = {
-            [Factor.tier]: {
-                name: Factor.tier,
-                display: "Tier",
-                value: this.getFactorTotal(Factor.tier),
-                max: this.getFactorTotal(Factor.tier),
-                baseVal: this.getFactorTotal(Factor.tier),
-                isActive: true,
-                isPrimary: true,
-                isDominant: false,
-                highFavorsPC: true
-            },
-            [Factor.quality]: {
-                name: Factor.quality,
-                display: "Quality",
-                value: this.getFactorTotal(Factor.quality),
-                max: this.getFactorTotal(Factor.quality),
-                baseVal: this.getFactorTotal(Factor.quality),
-                isActive: false,
-                isPrimary: false,
-                isDominant: false,
-                highFavorsPC: true
-            }
-        };
-        return factorData;
-    }
 
     get rollOppID() { return this.id; }
     get rollOppDoc() { return this; }

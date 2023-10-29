@@ -5,6 +5,7 @@ import C, {BladesActorType, Tag, Playbook, BladesItemType, AttributeTrait, Actio
 import {BladesPC, BladesCrew, BladesNPC, BladesFaction} from "./documents/BladesActorProxy";
 import {BladesItem} from "./documents/BladesItemProxy";
 
+import {BladesRollMod} from "./BladesRoll";
 import BladesPushAlert from "./BladesPushAlert";
 import {SelectionCategory} from "./BladesDialog";
 
@@ -851,6 +852,52 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   get isSubActor() { return this.parentActor !== undefined; }
 
   // #endregion
+
+  // #region BladesRoll Implementation
+  get rollModsData(): BladesRoll.RollModData[] {
+    return BladesRollMod.ParseDocRollMods(this);
+  }
+
+  get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
+    const factorData: Partial<Record<Factor, BladesRoll.FactorData>> = {
+      [Factor.tier]: {
+        name: Factor.tier,
+        display: "Tier",
+        value: this.getFactorTotal(Factor.tier),
+        max: this.getFactorTotal(Factor.tier),
+        baseVal: this.getFactorTotal(Factor.tier),
+        isActive: true,
+        isPrimary: true,
+        isDominant: false,
+        highFavorsPC: true
+      },
+      [Factor.quality]: {
+        name: Factor.quality,
+        display: "Quality",
+        value: this.getFactorTotal(Factor.quality),
+        max: this.getFactorTotal(Factor.quality),
+        baseVal: this.getFactorTotal(Factor.quality),
+        isActive: false,
+        isPrimary: false,
+        isDominant: false,
+        highFavorsPC: true
+      }
+    };
+
+    return factorData;
+  }
+
+  // #region BladesRoll.PrimaryDoc Implementation
+
+  get rollPrimaryID() { return this.id; }
+
+  get rollPrimaryDoc() { return this; }
+
+  get rollPrimaryName() { return this.name; }
+
+  get rollPrimaryType() { return this.type; }
+
+  get rollPrimaryImg() { return this.img; }
 
   // #region BladesCrew Implementation ~
 

@@ -5,9 +5,8 @@
 |*     ▌████░░░░  ░░░░█████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import { BladesItemType, Factor } from "../../core/constants.js";
+import { BladesItemType } from "../../core/constants.js";
 import BladesActor from "../../BladesActor.js";
-import { BladesRollMod } from "../../BladesRoll.js";
 class BladesCrew extends BladesActor {
 
     static async create(data, options = {}) {
@@ -23,42 +22,6 @@ class BladesCrew extends BladesActor {
         };
         return super.create(data, options);
     }
-    get rollModsData() {
-        return BladesRollMod.ParseDocRollMods(this);
-    }
-    get rollFactors() {
-        const factorData = {
-            [Factor.tier]: {
-                name: Factor.tier,
-                display: "Tier",
-                value: this.getFactorTotal(Factor.tier),
-                max: this.getFactorTotal(Factor.tier),
-                baseVal: this.getFactorTotal(Factor.tier),
-                isActive: true,
-                isPrimary: true,
-                isDominant: false,
-                highFavorsPC: true
-            },
-            [Factor.quality]: {
-                name: Factor.quality,
-                display: "Quality",
-                value: this.getFactorTotal(Factor.quality),
-                max: this.getFactorTotal(Factor.quality),
-                baseVal: this.getFactorTotal(Factor.quality),
-                isActive: false,
-                isPrimary: false,
-                isDominant: false,
-                highFavorsPC: true
-            }
-        };
-        return factorData;
-    }
-
-    get rollPrimaryID() { return this.id; }
-    get rollPrimaryDoc() { return this; }
-    get rollPrimaryName() { return this.name; }
-    get rollPrimaryType() { return this.type; }
-    get rollPrimaryImg() { return this.img; }
 
     get rollParticipantID() { return this.id; }
     get rollParticipantDoc() { return this; }
