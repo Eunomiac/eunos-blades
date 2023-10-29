@@ -63,7 +63,8 @@ class BladesGMTrackerSheet extends BladesItemSheet {
         game.eunoblades ??= {};
         Items.registerSheet("blades", BladesGMTrackerSheet, { types: ["gm_tracker"], makeDefault: true });
         Hooks.once("ready", async () => {
-            let tracker = game.items.find((item) => BladesItem.IsType(item, BladesItemType.gm_tracker));
+            let tracker = game.items
+                .find((item) => BladesItem.IsType(item, BladesItemType.gm_tracker));
             if (!tracker) {
                 tracker = (await BladesGMTracker.create({
                     name: "GM Tracker",
@@ -96,7 +97,7 @@ class BladesGMTrackerSheet extends BladesItemSheet {
                 case BladesPhase.Score: {
                     isForcingRender = false;
                     game.actors.filter((actor) => BladesActor.IsType(actor, BladesActorType.pc))
-                        .forEach(actor => actor.clearLoadout());
+                        .forEach((actor) => actor.clearLoadout());
                     break;
                 }
                 case BladesPhase.Downtime: {
@@ -121,10 +122,11 @@ class BladesGMTrackerSheet extends BladesItemSheet {
             }
         }
         if (isForcingRender) {
-            game.actors.filter(actor => actor.type === BladesActorType.pc)
-                .forEach(actor => actor.sheet?.render());
+            game.actors.filter((actor) => actor.type === BladesActorType.pc)
+                .forEach((actor) => actor.sheet?.render());
         }
         return submitData;
     }
 }
 export default BladesGMTrackerSheet;
+export { BladesTipGenerator };

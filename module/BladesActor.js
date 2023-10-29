@@ -43,12 +43,12 @@ class BladesActor extends Actor {
         if (U.isDocID(actorRef)) {
             return BladesActor.All.get(actorRef);
         }
-        return BladesActor.All.find(a => a.system.world_name === actorRef)
-            || BladesActor.All.find(a => a.name === actorRef);
+        return BladesActor.All.find((a) => a.system.world_name === actorRef)
+            || BladesActor.All.find((a) => a.name === actorRef);
     }
     static GetTypeWithTags(docType, ...tags) {
-        return BladesActor.All.filter(actor => actor.type === docType)
-            .filter(actor => actor.hasTag(...tags));
+        return BladesActor.All.filter((actor) => actor.type === docType)
+            .filter((actor) => actor.hasTag(...tags));
     }
     static IsType(doc, ...types) {
         const typeSet = new Set(types);
@@ -56,11 +56,11 @@ class BladesActor extends Actor {
     }
     get tags() { return this.system.tags ?? []; }
     hasTag(...tags) {
-        return tags.every(tag => this.tags.includes(tag));
+        return tags.every((tag) => this.tags.includes(tag));
     }
     async addTag(...tags) {
         const curTags = this.tags;
-        tags.forEach(tag => {
+        tags.forEach((tag) => {
             if (curTags.includes(tag)) {
                 return;
             }
@@ -70,7 +70,7 @@ class BladesActor extends Actor {
         await this.update({ "system.tags": curTags });
     }
     async remTag(...tags) {
-        const curTags = this.tags.filter(tag => !tags.includes(tag));
+        const curTags = this.tags.filter((tag) => !tags.includes(tag));
         eLog.checkLog2("actor", "BladesActor.remTag(...tags)", { tags, curTags });
         await this.update({ "system.tags": curTags });
     }
@@ -107,14 +107,14 @@ class BladesActor extends Actor {
     }
     get subActors() {
         return Object.keys(this.system.subactors)
-            .map(id => this.getSubActor(id))
+            .map((id) => this.getSubActor(id))
             .filter((subActor) => Boolean(subActor));
     }
     get activeSubActors() {
-        return this.subActors.filter(subActor => !subActor.hasTag(Tag.System.Archived));
+        return this.subActors.filter((subActor) => !subActor.hasTag(Tag.System.Archived));
     }
     get archivedSubActors() {
-        return this.subActors.filter(subActor => subActor.hasTag(Tag.System.Archived));
+        return this.subActors.filter((subActor) => subActor.hasTag(Tag.System.Archived));
     }
     checkActorPrereqs(actor) {
                 
@@ -123,8 +123,8 @@ class BladesActor extends Actor {
     processEmbeddedActorMatches(globalActors) {
         return globalActors
             .filter(this.checkActorPrereqs)
-            .filter(gActor => !this.activeSubActors.some(aActor => aActor.id === gActor.id))
-            .map(gActor => this.getSubActor(gActor) || gActor)
+            .filter((gActor) => !this.activeSubActors.some((aActor) => aActor.id === gActor.id))
+            .map((gActor) => this.getSubActor(gActor) || gActor)
             .sort((a, b) => {
             if (a.name === b.name) {
                 return 0;
@@ -203,13 +203,13 @@ class BladesActor extends Actor {
         if (!focusSubActor) {
             return;
         }
-        const uniqueTags = focusSubActor.tags.filter(tag => tag in BladesActorUniqueTags);
+        const uniqueTags = focusSubActor.tags.filter((tag) => tag in BladesActorUniqueTags);
         if (uniqueTags.length > 0) {
-            uniqueTags.forEach(uTag => this.activeSubActors
+            uniqueTags.forEach((uTag) => this.activeSubActors
                 .filter((subActor) => Boolean(focusSubActor?.id
                 && subActor.id !== focusSubActor.id
                 && subActor.hasTag(uTag)))
-                .map(subActor => this.remSubActor(subActor.id)));
+                .map((subActor) => this.remSubActor(subActor.id)));
         }
     }
     getSubActor(actorRef) {
@@ -258,7 +258,7 @@ class BladesActor extends Actor {
         await this.update({ "system.subactors": mergeObject(this.system.subactors, { [`-=${subActor.id}`]: null }) }, undefined, true);
     }
     async clearSubActors(isReRendering = true) {
-        this.subActors.forEach(subActor => {
+        this.subActors.forEach((subActor) => {
             if (subActor.parentActor?.id === this.id) {
                 subActor.clearParentActor(isReRendering);
             }
@@ -280,8 +280,8 @@ class BladesActor extends Actor {
     }
     
     get subItems() { return Array.from(this.items); }
-    get activeSubItems() { return this.items.filter(item => !item.hasTag(Tag.System.Archived)); }
-    get archivedSubItems() { return this.items.filter(item => item.hasTag(Tag.System.Archived)); }
+    get activeSubItems() { return this.items.filter((item) => !item.hasTag(Tag.System.Archived)); }
+    get archivedSubItems() { return this.items.filter((item) => item.hasTag(Tag.System.Archived)); }
     _checkItemPrereqs(item) {
         if (!item.system.prereqs) {
             return true;
@@ -321,8 +321,8 @@ class BladesActor extends Actor {
     }
     _processActiveItemPrereq(pString, hitRecord, pType) {
         const thisItem = this.activeSubItems
-            .filter(i => !hitRecord[pType]?.includes(i.id))
-            .find(i => i.system.world_name === pString);
+            .filter((i) => !hitRecord[pType]?.includes(i.id))
+            .find((i) => i.system.world_name === pString);
         if (thisItem) {
             hitRecord[pType]?.push(thisItem.id);
             return true;
@@ -333,8 +333,8 @@ class BladesActor extends Actor {
     }
     _processActiveItemsByTagPrereq(pString, hitRecord, pType) {
         const thisItem = this.activeSubItems
-            .filter(i => !hitRecord[pType]?.includes(i.id))
-            .find(i => i.hasTag(pString));
+            .filter((i) => !hitRecord[pType]?.includes(i.id))
+            .find((i) => i.hasTag(pString));
         if (thisItem) {
             hitRecord[pType]?.push(thisItem.id);
             return true;
@@ -354,11 +354,11 @@ class BladesActor extends Actor {
     }
     _processEmbeddedItemMatches(globalItems) {
         return globalItems
-            .filter(item => this._checkItemPrereqs(item))
-            .filter(gItem => gItem.hasTag(Tag.System.MultiplesOK)
+            .filter((item) => this._checkItemPrereqs(item))
+            .filter((gItem) => gItem.hasTag(Tag.System.MultiplesOK)
             || (gItem.system.max_per_score ?? 1)
-                > this.activeSubItems.filter(sItem => sItem.system.world_name === gItem.system.world_name).length)
-            .map(gItem => {
+                > this.activeSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name).length)
+            .map((gItem) => {
             const matchingSubItems = this.archivedSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name);
             if (matchingSubItems.length > 0) {
                 return matchingSubItems;
@@ -368,7 +368,7 @@ class BladesActor extends Actor {
             }
         })
             .flat()
-            .map(sItem => {
+            .map((sItem) => {
             sItem.dialogCSSClasses = "";
             const cssClasses = [];
             if (sItem.isEmbedded) {
@@ -471,7 +471,7 @@ class BladesActor extends Actor {
         else if (category === SelectionCategory.Playbook) {
             if (this.type === BladesActorType.pc) {
                 dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook)
-                    .filter(item => !item.hasTag(Tag.Gear.Advanced)));
+                    .filter((item) => !item.hasTag(Tag.Gear.Advanced)));
                 dialogData.Advanced = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Gear.Advanced));
             }
             else if (this.type === BladesActorType.crew) {
@@ -493,11 +493,11 @@ class BladesActor extends Actor {
                 ...BladesItem.GetTypeWithTags(BladesItemType.gear, playbookName),
                 ...BladesItem.GetTypeWithTags(BladesItemType.gear, Tag.Gear.General)
             ])
-                .filter(item => self.remainingLoad >= item.system.load);
-            dialogData[playbookName] = gearItems.filter(item => item.hasTag(playbookName));
+                .filter((item) => self.remainingLoad >= item.system.load);
+            dialogData[playbookName] = gearItems.filter((item) => item.hasTag(playbookName));
             dialogData.General = gearItems
-                .filter(item => item.hasTag(Tag.Gear.General))
-                .map(item => {
+                .filter((item) => item.hasTag(Tag.Gear.General))
+                .map((item) => {
                 if (item.dialogCSSClasses) {
                     item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
                 }
@@ -520,8 +520,8 @@ class BladesActor extends Actor {
                 }
                 dialogData[playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability, playbookName));
                 dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability))
-                    .filter(item => !item.hasTag(playbookName))
-                    .map(item => {
+                    .filter((item) => !item.hasTag(playbookName))
+                    .map((item) => {
                     if (item.dialogCSSClasses) {
                         item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
                     }
@@ -563,8 +563,8 @@ class BladesActor extends Actor {
             if (!globalItem) {
                 return undefined;
             }
-            return this.items.find(item => item.name === globalItem.name && activeCheck(item))
-                ?? this.items.find(item => item.system.world_name === globalItem.system.world_name && activeCheck(item));
+            return this.items.find((item) => item.name === globalItem.name && activeCheck(item))
+                ?? this.items.find((item) => item.system.world_name === globalItem.system.world_name && activeCheck(item));
         }
     }
     hasSubItemOf(itemRef) {
@@ -572,14 +572,14 @@ class BladesActor extends Actor {
         if (!item) {
             return false;
         }
-        return Boolean(this.items.find(i => i.system.world_name === item.system.world_name));
+        return Boolean(this.items.find((i) => i.system.world_name === item.system.world_name));
     }
     hasActiveSubItemOf(itemRef) {
         const item = BladesItem.Get(itemRef);
         if (!item) {
             return false;
         }
-        return Boolean(this.items.find(i => !i.hasTag(Tag.System.Archived)
+        return Boolean(this.items.find((i) => !i.hasTag(Tag.System.Archived)
             && i.system.world_name === item.system.world_name));
     }
     async addSubItem(itemRef) {
@@ -611,7 +611,7 @@ class BladesActor extends Actor {
         }
         if (focusItem && isBladesItemUniqueTypes(focusItem.type)) {
             await Promise.all(this.activeSubItems
-                .filter(subItem => subItem.type === focusItem?.type
+                .filter((subItem) => subItem.type === focusItem?.type
                 && subItem.system.world_name !== focusItem?.system.world_name
                 && !subItem.hasTag(Tag.System.Archived))
                 .map(this.remSubItem.bind(this)));
@@ -675,13 +675,13 @@ class BladesActor extends Actor {
         const pointsUpgrade = this.system.advancement_points?.[AdvancementPoint.Upgrade] ?? 0;
         const pointsUpgradeOrAbility = this.system.advancement_points?.[AdvancementPoint.UpgradeOrAbility] ?? 0;
         const spentAbility = U.sum(this.items
-            .filter(item => BladesItem.IsType(item, BladesItemType.ability, BladesItemType.crew_ability))
-            .map(abil => abil.system.price ?? 1));
+            .filter((item) => BladesItem.IsType(item, BladesItemType.ability, BladesItemType.crew_ability))
+            .map((abil) => abil.system.price ?? 1));
         const spentCohortType = U.sum(this.cohorts
-            .map(cohort => Math.max(0, U.unique(Object.values(cohort.system.subtypes)).length - 1)));
+            .map((cohort) => Math.max(0, U.unique(Object.values(cohort.system.subtypes)).length - 1)));
         const spentUpgrade = U.sum(this.items
-            .filter(item => BladesItem.IsType(item, BladesItemType.crew_upgrade))
-            .map(upgrade => upgrade.system.price ?? 1));
+            .filter((item) => BladesItem.IsType(item, BladesItemType.crew_upgrade))
+            .map((upgrade) => upgrade.system.price ?? 1));
         const excessUpgrade = Math.max(0, spentUpgrade - pointsUpgrade);
         const excessCohortType = Math.max(0, spentCohortType - pointsCohortType);
         const excessAbility = Math.max(0, spentAbility - pointsAbility);
@@ -720,7 +720,7 @@ class BladesActor extends Actor {
         }
         if (BladesActor.IsType(this, BladesActorType.crew)) {
             BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.");
-            this.members.forEach(member => {
+            this.members.forEach((member) => {
                 const coinGained = this.system.tier.value + 2;
                 BladesPushAlert.Get().pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, undefined);
                 member.addStash(coinGained);
@@ -730,7 +730,7 @@ class BladesActor extends Actor {
     }
     async advanceAttribute(attribute) {
         await this.update({ [`system.experience.${attribute}.value`]: 0 });
-        const actions = C.Action[attribute].map(action => `<strong>${U.tCase(action)}</strong>`);
+        const actions = C.Action[attribute].map((action) => `<strong>${U.tCase(action)}</strong>`);
         BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`);
     }
     parentActor;
@@ -796,7 +796,7 @@ class BladesActor extends Actor {
             return 0;
         }
         return Object.values(this.playbook.system.turfs)
-            .filter(claim => claim.isTurf && claim.value).length;
+            .filter((claim) => claim.isTurf && claim.value).length;
     }
     get upgrades() {
         if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) {
@@ -829,14 +829,14 @@ class BladesActor extends Actor {
             system.experience.clues = [
                 ...system.experience.clues,
                 ...Object.values(this.playbook.system.experience_clues)
-                    .filter(clue => Boolean(clue.trim()))
+                    .filter((clue) => Boolean(clue.trim()))
             ];
         }
         if (this.playbook) {
             system.gather_info = [
                 ...system.gather_info,
                 ...Object.values(this.playbook.system.gather_info_questions)
-                    .filter(question => Boolean(question.trim()))
+                    .filter((question) => Boolean(question.trim()))
             ];
         }
     }
@@ -848,7 +848,7 @@ class BladesActor extends Actor {
             system.experience.clues = [
                 ...system.experience.clues,
                 ...Object.values(this.playbook.system.experience_clues)
-                    .filter(clue => Boolean(clue.trim()))
+                    .filter((clue) => Boolean(clue.trim()))
             ];
             system.turfs = this.playbook.system.turfs;
         }
@@ -858,17 +858,17 @@ class BladesActor extends Actor {
         await Promise.all(docs.map(async (doc) => {
             if (BladesItem.IsType(doc, BladesItemType.playbook, BladesItemType.crew_playbook)) {
                 await Promise.all(this.activeSubItems
-                    .filter(aItem => aItem.type === doc.type && aItem.system.world_name !== doc.system.world_name)
-                    .map(aItem => this.remSubItem(aItem)));
+                    .filter((aItem) => aItem.type === doc.type && aItem.system.world_name !== doc.system.world_name)
+                    .map((aItem) => this.remSubItem(aItem)));
             }
         }));
         await super._onCreateDescendantDocuments(parent, collection, docs, data, options, userId);
         eLog.checkLog("actorTrigger", "_onCreateDescendantDocuments", { parent, collection, docs, data, options, userId });
-        docs.forEach(doc => {
+        docs.forEach((doc) => {
             if (BladesItem.IsType(doc, BladesItemType.vice) && BladesActor.IsType(this, BladesActorType.pc)) {
                 this.activeSubActors
-                    .filter(subActor => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name))
-                    .forEach(subActor => { this.remSubActor(subActor); });
+                    .filter((subActor) => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name))
+                    .forEach((subActor) => { this.remSubActor(subActor); });
             }
         });
     }
@@ -931,7 +931,7 @@ class BladesActor extends Actor {
         const suffixChance = 0.01;
         const { persona, secret, random } = this.system;
                 function sampleArray(arr, ...curVals) {
-            arr = arr.filter(elem => !curVals.includes(elem));
+            arr = arr.filter((elem) => !curVals.includes(elem));
             if (!arr.length) {
                 return "";
             }
@@ -952,7 +952,7 @@ class BladesActor extends Actor {
                     Math.random() <= suffixChance
                         ? sampleArray(Randomizers.NPC.name_suffix)
                         : ""
-                ].filter(val => Boolean(val)).join(" ");
+                ].filter((val) => Boolean(val)).join(" ");
             },
             background: () => sampleArray(Randomizers.NPC.background, random.background.value),
             heritage: () => sampleArray(Randomizers.NPC.heritage, random.heritage.value),
@@ -971,14 +971,14 @@ class BladesActor extends Actor {
         };
         const gender = persona.gender.isLocked ? persona.gender.value : randomGen.gender();
         const updateKeys = [
-            ...Object.keys(persona).filter(key => !persona[key]?.isLocked),
-            ...Object.keys(random).filter(key => !random[key]?.isLocked),
-            ...Object.keys(secret).filter(key => !secret[key]?.isLocked)
-                .map(secretKey => `secret-${secretKey}`)
+            ...Object.keys(persona).filter((key) => !persona[key]?.isLocked),
+            ...Object.keys(random).filter((key) => !random[key]?.isLocked),
+            ...Object.keys(secret).filter((key) => !secret[key]?.isLocked)
+                .map((secretKey) => `secret-${secretKey}`)
         ];
         eLog.checkLog("Update Keys", { updateKeys });
         const updateData = {};
-        updateKeys.forEach(key => {
+        updateKeys.forEach((key) => {
             switch (key) {
                 case "name":
                 case "heritage":

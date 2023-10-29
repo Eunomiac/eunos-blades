@@ -47,18 +47,18 @@ class BladesItem extends Item implements BladesDocument<Item>,
   static Get(itemRef: ItemRef): BladesItem|undefined {
     if (itemRef instanceof BladesItem) { return itemRef; }
     if (U.isDocID(itemRef)) { return BladesItem.All.get(itemRef); }
-    return BladesItem.All.find(a => a.system.world_name === itemRef)
-      || BladesItem.All.find(a => a.name === itemRef);
+    return BladesItem.All.find((a) => a.system.world_name === itemRef)
+      || BladesItem.All.find((a) => a.name === itemRef);
   }
 
   static GetTypeWithTags<T extends BladesItemType>(docType: T|T[], ...tags: BladesTag[]): Array<BladesItemOfType<T>> {
     if (Array.isArray(docType)) {
       return docType
-        .map(dType => BladesItem.All.filter((item): item is BladesItemOfType<T> => item.type === dType))
+        .map((dType) => BladesItem.All.filter((item): item is BladesItemOfType<T> => item.type === dType))
         .flat();
     }
     return BladesItem.All.filter((item): item is BladesItemOfType<T> => item.type === docType)
-      .filter(item => item.hasTag(...tags));
+      .filter((item) => item.hasTag(...tags));
   }
 
   static IsType<T extends BladesItemType>(doc: unknown, ...types: T[]): doc is BladesItemOfType<T> {
@@ -69,12 +69,12 @@ class BladesItem extends Item implements BladesDocument<Item>,
   get tags(): BladesTag[] { return this.system.tags ?? []; }
 
   hasTag(...tags: BladesTag[]): boolean {
-    return tags.every(tag => this.tags.includes(tag));
+    return tags.every((tag) => this.tags.includes(tag));
   }
 
   async addTag(...tags: BladesTag[]) {
     const curTags = this.tags;
-    tags.forEach(tag => {
+    tags.forEach((tag) => {
       if (curTags.includes(tag)) { return; }
       curTags.push(tag);
     });
@@ -82,7 +82,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
   }
 
   async remTag(...tags: BladesTag[]) {
-    const curTags = this.tags.filter(tag => !tags.includes(tag));
+    const curTags = this.tags.filter((tag) => !tags.includes(tag));
     await this.update({"system.tags": curTags});
   }
 
@@ -277,24 +277,24 @@ class BladesItem extends Item implements BladesDocument<Item>,
     system.tier.name = "Quality";
 
     const subtypes = U.unique(Object.values(system.subtypes)
-      .map(subtype => subtype.trim())
-      .filter(subtype => /[A-Za-z]/.test(subtype)));
+      .map((subtype) => subtype.trim())
+      .filter((subtype) => /[A-Za-z]/.test(subtype)));
     const eliteSubtypes = U.unique([
       ...Object.values(system.elite_subtypes),
       ...(this.parent?.upgrades ?? [])
-        .filter(upgrade => (upgrade.name ?? "").startsWith("Elite"))
-        .map(upgrade => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
+        .filter((upgrade) => (upgrade.name ?? "").startsWith("Elite"))
+        .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
     ]
-      .map(subtype => subtype.trim())
-      .filter(subtype => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
+      .map((subtype) => subtype.trim())
+      .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
 
     system.subtypes = Object.fromEntries(subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
     system.elite_subtypes = Object.fromEntries(eliteSubtypes.map((subtype, i) => [`${i + 1}`, subtype]));
     system.edges = Object.fromEntries(Object.values(system.edges ?? [])
-      .filter(edge => /[A-Za-z]/.test(edge))
+      .filter((edge) => /[A-Za-z]/.test(edge))
       .map((edge, i) => [`${i + 1}`, edge.trim()]));
     system.flaws = Object.fromEntries(Object.values(system.flaws ?? [])
-      .filter(flaw => /[A-Za-z]/.test(flaw))
+      .filter((flaw) => /[A-Za-z]/.test(flaw))
       .map((flaw, i) => [`${i + 1}`, flaw.trim()]));
 
     system.quality = this.getFactorTotal(Factor.quality);
@@ -323,8 +323,8 @@ class BladesItem extends Item implements BladesDocument<Item>,
         system.subtitle = C.VehicleDescriptors[Math.min(6, this.getFactorTotal(Factor.tier))];
       } else {
         system.subtitle += ` ${U.oxfordize([
-          ...subtypes.filter(subtype => !eliteSubtypes.includes(subtype)),
-          ...eliteSubtypes.map(subtype => `Elite ${subtype}`)
+          ...subtypes.filter((subtype) => !eliteSubtypes.includes(subtype)),
+          ...eliteSubtypes.map((subtype) => `Elite ${subtype}`)
         ], false, "&")}`;
       }
     }
@@ -338,13 +338,13 @@ class BladesItem extends Item implements BladesDocument<Item>,
   _preparePlaybookData(system: ExtractBladesItemSystem<BladesItemType.playbook|BladesItemType.crew_playbook>) {
     if (!BladesItem.IsType(this, BladesItemType.playbook, BladesItemType.crew_playbook)) { return; }
     const expClueData: Record<string, string> = {};
-    [...Object.values(system.experience_clues).filter(clue => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
+    [...Object.values(system.experience_clues).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
     system.experience_clues = expClueData;
     eLog.checkLog3("experienceClues", {expClueData});
 
     if (BladesItem.IsType(this, BladesItemType.playbook)) {
       const gatherInfoData: Record<string, string> = {};
-      [...Object.values(system.gather_info_questions).filter(question => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
+      [...Object.values(system.gather_info_questions).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
       system.gather_info_questions = gatherInfoData;
       eLog.checkLog3("gatherInfoQuestions", {gatherInfoData});
 

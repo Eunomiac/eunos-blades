@@ -47,7 +47,7 @@ class GlobalGetter {
         }
         const conf = {
             rollType: RollType.Resistance,
-            rollUserID: game.users.find(user => user.character?.name === "Alistair")?.id,
+            rollUserID: game.users.find((user) => user.character?.name === "Alistair")?.id,
             rollPrimaryData: {
                 rollPrimaryID: pc.id,
                 rollPrimaryDoc: pc,
@@ -163,9 +163,9 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     dice3d.addSystem({ id: "eunos-blades", name: "Euno's Blades" }, "preferred");
     dice3d.addDicePreset({
         type: "d6",
-        labels: [1, 2, 3, 4, 5, 6].map(num => `systems/eunos-blades/assets/dice/faces/${num}.webp`),
+        labels: [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/faces/${num}.webp`),
         system: "eunos-blades",
-        bumpMaps: [1, 2, 3, 4, 5, 6].map(num => `systems/eunos-blades/assets/dice/bump-maps/${num}.webp`),
+        bumpMaps: [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/bump-maps/${num}.webp`),
         emissiveMaps: [undefined, undefined, undefined, undefined, undefined, "systems/eunos-blades/assets/dice/emission-maps/6.webp"],
         emissive: "#d89300"
     });

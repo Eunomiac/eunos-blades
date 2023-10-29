@@ -29,17 +29,17 @@ class BladesItem extends Item {
         if (U.isDocID(itemRef)) {
             return BladesItem.All.get(itemRef);
         }
-        return BladesItem.All.find(a => a.system.world_name === itemRef)
-            || BladesItem.All.find(a => a.name === itemRef);
+        return BladesItem.All.find((a) => a.system.world_name === itemRef)
+            || BladesItem.All.find((a) => a.name === itemRef);
     }
     static GetTypeWithTags(docType, ...tags) {
         if (Array.isArray(docType)) {
             return docType
-                .map(dType => BladesItem.All.filter((item) => item.type === dType))
+                .map((dType) => BladesItem.All.filter((item) => item.type === dType))
                 .flat();
         }
         return BladesItem.All.filter((item) => item.type === docType)
-            .filter(item => item.hasTag(...tags));
+            .filter((item) => item.hasTag(...tags));
     }
     static IsType(doc, ...types) {
         const typeSet = new Set(types);
@@ -47,11 +47,11 @@ class BladesItem extends Item {
     }
     get tags() { return this.system.tags ?? []; }
     hasTag(...tags) {
-        return tags.every(tag => this.tags.includes(tag));
+        return tags.every((tag) => this.tags.includes(tag));
     }
     async addTag(...tags) {
         const curTags = this.tags;
-        tags.forEach(tag => {
+        tags.forEach((tag) => {
             if (curTags.includes(tag)) {
                 return;
             }
@@ -60,7 +60,7 @@ class BladesItem extends Item {
         await this.update({ "system.tags": curTags });
     }
     async remTag(...tags) {
-        const curTags = this.tags.filter(tag => !tags.includes(tag));
+        const curTags = this.tags.filter((tag) => !tags.includes(tag));
         await this.update({ "system.tags": curTags });
     }
     get tooltip() {
@@ -217,23 +217,23 @@ class BladesItem extends Item {
         }
         system.tier.name = "Quality";
         const subtypes = U.unique(Object.values(system.subtypes)
-            .map(subtype => subtype.trim())
-            .filter(subtype => /[A-Za-z]/.test(subtype)));
+            .map((subtype) => subtype.trim())
+            .filter((subtype) => /[A-Za-z]/.test(subtype)));
         const eliteSubtypes = U.unique([
             ...Object.values(system.elite_subtypes),
             ...(this.parent?.upgrades ?? [])
-                .filter(upgrade => (upgrade.name ?? "").startsWith("Elite"))
-                .map(upgrade => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
+                .filter((upgrade) => (upgrade.name ?? "").startsWith("Elite"))
+                .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
         ]
-            .map(subtype => subtype.trim())
-            .filter(subtype => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
+            .map((subtype) => subtype.trim())
+            .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
         system.subtypes = Object.fromEntries(subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
         system.elite_subtypes = Object.fromEntries(eliteSubtypes.map((subtype, i) => [`${i + 1}`, subtype]));
         system.edges = Object.fromEntries(Object.values(system.edges ?? [])
-            .filter(edge => /[A-Za-z]/.test(edge))
+            .filter((edge) => /[A-Za-z]/.test(edge))
             .map((edge, i) => [`${i + 1}`, edge.trim()]));
         system.flaws = Object.fromEntries(Object.values(system.flaws ?? [])
-            .filter(flaw => /[A-Za-z]/.test(flaw))
+            .filter((flaw) => /[A-Za-z]/.test(flaw))
             .map((flaw, i) => [`${i + 1}`, flaw.trim()]));
         system.quality = this.getFactorTotal(Factor.quality);
         if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
@@ -262,8 +262,8 @@ class BladesItem extends Item {
             }
             else {
                 system.subtitle += ` ${U.oxfordize([
-                    ...subtypes.filter(subtype => !eliteSubtypes.includes(subtype)),
-                    ...eliteSubtypes.map(subtype => `Elite ${subtype}`)
+                    ...subtypes.filter((subtype) => !eliteSubtypes.includes(subtype)),
+                    ...eliteSubtypes.map((subtype) => `Elite ${subtype}`)
                 ], false, "&")}`;
             }
         }
@@ -279,12 +279,12 @@ class BladesItem extends Item {
             return;
         }
         const expClueData = {};
-        [...Object.values(system.experience_clues).filter(clue => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
+        [...Object.values(system.experience_clues).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
         system.experience_clues = expClueData;
         eLog.checkLog3("experienceClues", { expClueData });
         if (BladesItem.IsType(this, BladesItemType.playbook)) {
             const gatherInfoData = {};
-            [...Object.values(system.gather_info_questions).filter(question => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
+            [...Object.values(system.gather_info_questions).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
             system.gather_info_questions = gatherInfoData;
             eLog.checkLog3("gatherInfoQuestions", { gatherInfoData });
         }

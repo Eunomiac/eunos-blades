@@ -78,7 +78,7 @@ const Tags = {
                 "data-group": findDataGroup(tag)
             })), true, true);
 
-            setTimeout(() => elem.addEventListener("change", event => { _onTagifyChange(event, doc, targetKey); }), 1000);
+            setTimeout(() => elem.addEventListener("change", (event) => { _onTagifyChange(event, doc, targetKey); }), 1000);
         }
         const systemTags = {
             "System Tags": Object.values(Tag.System),
@@ -101,7 +101,7 @@ const Tags = {
         };
         const factionTags = { Factions: game.actors
                 .filter((actor) => actor.type === BladesActorType.faction && actor.name !== null)
-                .map(faction => faction.name) };
+                .map((faction) => faction.name) };
         $(html).find(".tags-gm").each((_, e) => makeTagInput(e, systemTags));
         $(html).find(".tags-district").each((_, e) => makeTagInput(e, districtTags));
         $(html).find(".tags-faction").each((_, e) => makeTagInput(e, factionTags));

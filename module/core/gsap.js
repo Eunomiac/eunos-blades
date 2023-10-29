@@ -44,7 +44,7 @@ const gsapEffects = {
         }
     },
     slideUp: {
-        effect: targets => U.gsap.to(targets, {
+        effect: (targets) => U.gsap.to(targets, {
             height: 0,
             duration: 0.5,
             ease: "power3"
@@ -161,7 +161,7 @@ export function ApplyTooltipListeners(html) {
             return;
         }
         $(el).data("hoverTimeline", U.gsap.effects.hoverTooltip(tooltipElem, {
-            scalingElems: [...$(el).find(".tooltip-scaling-elem")].filter(elem => Boolean(elem)),
+            scalingElems: [...$(el).find(".tooltip-scaling-elem")].filter((elem) => Boolean(elem)),
             xMotion: $(tooltipElem).hasClass("tooltip-left") ? "-=250" : "+=200",
             tooltipScale: $(tooltipElem).hasClass("tooltip-small") ? 1 : 1.2
         }));

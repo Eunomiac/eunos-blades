@@ -62,7 +62,7 @@ const gsapEffects: Record<string, gsapEffect> = {
     }
   },
   slideUp: {
-    effect: targets => U.gsap.to(
+    effect: (targets) => U.gsap.to(
       targets,
       {
         height: 0,
@@ -216,7 +216,7 @@ export function ApplyTooltipListeners(html: JQuery<HTMLElement>) {
     $(el).data("hoverTimeline", U.gsap.effects.hoverTooltip(
       tooltipElem,
       {
-        scalingElems: [...$(el).find(".tooltip-scaling-elem")].filter(elem => Boolean(elem)),
+        scalingElems: [...$(el).find(".tooltip-scaling-elem")].filter((elem) => Boolean(elem)),
         xMotion: $(tooltipElem).hasClass("tooltip-left") ? "-=250" : "+=200",
         tooltipScale: $(tooltipElem).hasClass("tooltip-small") ? 1 : 1.2
       }

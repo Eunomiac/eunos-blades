@@ -7,6 +7,7 @@ import BladesActor from "../../BladesActor";
 import BladesPC from "../../documents/actors/BladesPC";
 
 
+// eslint-disable-next-line no-shadow
 export enum BladesTipContext {
   DiceRoll = "DiceRoll",
   Combat = "Combat",
@@ -75,7 +76,8 @@ class BladesGMTrackerSheet extends BladesItemSheet {
     game.eunoblades ??= {};
     Items.registerSheet("blades", BladesGMTrackerSheet, {types: ["gm_tracker"], makeDefault: true});
     Hooks.once("ready", async () => {
-      let tracker: BladesGMTracker|undefined = game.items.find((item): item is BladesGMTracker => BladesItem.IsType(item, BladesItemType.gm_tracker));
+      let tracker: BladesGMTracker|undefined = game.items
+        .find((item): item is BladesGMTracker => BladesItem.IsType(item, BladesItemType.gm_tracker));
       if (!tracker) {
         tracker = (await BladesGMTracker.create({
           name: "GM Tracker",
@@ -113,7 +115,7 @@ class BladesGMTrackerSheet extends BladesItemSheet {
         case BladesPhase.Score: {
           isForcingRender = false;
           game.actors.filter((actor): actor is BladesPC => BladesActor.IsType(actor, BladesActorType.pc))
-            .forEach(actor => actor.clearLoadout());
+            .forEach((actor) => actor.clearLoadout());
           break;
         }
         case BladesPhase.Downtime: {
@@ -143,8 +145,8 @@ class BladesGMTrackerSheet extends BladesItemSheet {
       }
     }
     if (isForcingRender) {
-      game.actors.filter(actor => actor.type === BladesActorType.pc)
-        .forEach(actor => actor.sheet?.render());
+      game.actors.filter((actor) => actor.type === BladesActorType.pc)
+        .forEach((actor) => actor.sheet?.render());
     }
     return submitData;
   }
@@ -152,3 +154,4 @@ class BladesGMTrackerSheet extends BladesItemSheet {
 }
 
 export default BladesGMTrackerSheet;
+export {BladesTipGenerator};

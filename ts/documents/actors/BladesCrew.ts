@@ -59,7 +59,7 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
   get abilities(): BladesItem[] {
     if (!this.playbook) {return [];}
     return this.activeSubItems
-      .filter(item => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
+      .filter((item) => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
   }
 
   get playbookName() {

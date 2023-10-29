@@ -56,13 +56,13 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   static Get(actorRef: ActorRef): BladesActor | undefined {
     if (actorRef instanceof BladesActor) { return actorRef; }
     if (U.isDocID(actorRef)) { return BladesActor.All.get(actorRef); }
-    return BladesActor.All.find(a => a.system.world_name === actorRef)
-      || BladesActor.All.find(a => a.name === actorRef);
+    return BladesActor.All.find((a) => a.system.world_name === actorRef)
+      || BladesActor.All.find((a) => a.name === actorRef);
   }
 
   static GetTypeWithTags<T extends BladesActorType>(docType: T, ...tags: BladesTag[]): Array<BladesActorOfType<T>> {
-    return BladesActor.All.filter(actor => actor.type === docType)
-      .filter(actor => actor.hasTag(...tags)) as Array<BladesActorOfType<T>>;
+    return BladesActor.All.filter((actor) => actor.type === docType)
+      .filter((actor) => actor.hasTag(...tags)) as Array<BladesActorOfType<T>>;
   }
 
   static IsType<T extends BladesActorType>(doc: unknown, ...types: T[]): doc is BladesActorOfType<T> {
@@ -73,12 +73,12 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   get tags(): BladesTag[] { return this.system.tags ?? []; }
 
   hasTag(...tags: BladesTag[]): boolean {
-    return tags.every(tag => this.tags.includes(tag));
+    return tags.every((tag) => this.tags.includes(tag));
   }
 
   async addTag(...tags: BladesTag[]) {
     const curTags = this.tags;
-    tags.forEach(tag => {
+    tags.forEach((tag) => {
       if (curTags.includes(tag)) { return; }
       curTags.push(tag);
     });
@@ -87,7 +87,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   }
 
   async remTag(...tags: BladesTag[]) {
-    const curTags = this.tags.filter(tag => !tags.includes(tag));
+    const curTags = this.tags.filter((tag) => !tags.includes(tag));
     eLog.checkLog2("actor", "BladesActor.remTag(...tags)", {tags, curTags});
     await this.update({"system.tags": curTags});
   }
@@ -131,16 +131,16 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
   get subActors(): BladesActor[] {
     return Object.keys(this.system.subactors)
-      .map(id => this.getSubActor(id))
+      .map((id) => this.getSubActor(id))
       .filter((subActor): subActor is BladesActor => Boolean(subActor));
   }
 
   get activeSubActors(): BladesActor[] {
-    return this.subActors.filter(subActor => !subActor.hasTag(Tag.System.Archived));
+    return this.subActors.filter((subActor) => !subActor.hasTag(Tag.System.Archived));
   }
 
   get archivedSubActors(): BladesActor[] {
-    return this.subActors.filter(subActor => subActor.hasTag(Tag.System.Archived));
+    return this.subActors.filter((subActor) => subActor.hasTag(Tag.System.Archived));
   }
 
   checkActorPrereqs(actor: BladesActor): boolean {
@@ -156,9 +156,9 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     // Step 1: Filter out globals that fail prereqs.
       .filter(this.checkActorPrereqs)
     // Step 2: Filter out actors that are already active subActors
-      .filter(gActor => !this.activeSubActors.some(aActor => aActor.id === gActor.id))
+      .filter((gActor) => !this.activeSubActors.some((aActor) => aActor.id === gActor.id))
     // Step 3: Merge subactor data onto matching global actors
-      .map(gActor => this.getSubActor(gActor) || gActor)
+      .map((gActor) => this.getSubActor(gActor) || gActor)
     // Step 4: Sort by name
       .sort((a, b) => {
         if (a.name === b.name) { return 0; }
@@ -236,16 +236,16 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     if (!focusSubActor) { return; }
 
     // Does this Actor contain any tags limiting it to one per actor?
-    const uniqueTags = focusSubActor.tags.filter(tag => tag in BladesActorUniqueTags);
+    const uniqueTags = focusSubActor.tags.filter((tag) => tag in BladesActorUniqueTags);
     if (uniqueTags.length > 0) {
       // ... then archive all other versions.
-      uniqueTags.forEach(uTag => this.activeSubActors
+      uniqueTags.forEach((uTag) => this.activeSubActors
         .filter((subActor): subActor is BladesActor =>
           Boolean(focusSubActor?.id
             && subActor.id !== focusSubActor.id
             && subActor.hasTag(uTag))
         )
-        .map(subActor => this.remSubActor(subActor.id)));
+        .map((subActor) => this.remSubActor(subActor.id)));
     }
   }
 
@@ -302,7 +302,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   }
 
   async clearSubActors(isReRendering = true): Promise<void> {
-    this.subActors.forEach(subActor => {
+    this.subActors.forEach((subActor) => {
       if (subActor.parentActor?.id === this.id) { subActor.clearParentActor(isReRendering); }
     });
     await this.sheet?.render();
@@ -325,9 +325,9 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
   get subItems() { return Array.from(this.items); }
 
-  get activeSubItems() { return this.items.filter(item => !item.hasTag(Tag.System.Archived)); }
+  get activeSubItems() { return this.items.filter((item) => !item.hasTag(Tag.System.Archived)); }
 
-  get archivedSubItems() { return this.items.filter(item => item.hasTag(Tag.System.Archived)); }
+  get archivedSubItems() { return this.items.filter((item) => item.hasTag(Tag.System.Archived)); }
 
   private _checkItemPrereqs(item: BladesItem): boolean {
     if (!item.system.prereqs) { return true; }
@@ -383,8 +383,8 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     pType: PrereqType
   ): boolean {
     const thisItem = this.activeSubItems
-      .filter(i => !hitRecord[pType]?.includes(i.id))
-      .find(i => i.system.world_name === pString);
+      .filter((i) => !hitRecord[pType]?.includes(i.id))
+      .find((i) => i.system.world_name === pString);
     if (thisItem) {
       hitRecord[pType]?.push(thisItem.id);
       return true;
@@ -399,8 +399,8 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     pType: PrereqType
   ): boolean {
     const thisItem = this.activeSubItems
-      .filter(i => !hitRecord[pType]?.includes(i.id))
-      .find(i => i.hasTag(pString as BladesTag));
+      .filter((i) => !hitRecord[pType]?.includes(i.id))
+      .find((i) => i.hasTag(pString as BladesTag));
     if (thisItem) {
       hitRecord[pType]?.push(thisItem.id);
       return true;
@@ -424,15 +424,15 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     return globalItems
 
     // Step 1: Filter out globals that fail prereqs.
-      .filter(item => this._checkItemPrereqs(item))
+      .filter((item) => this._checkItemPrereqs(item))
 
     // Step 2: Filter out already-active items based on max_per_score (unless MultiplesOk)
-      .filter(gItem => gItem.hasTag(Tag.System.MultiplesOK)
+      .filter((gItem) => gItem.hasTag(Tag.System.MultiplesOK)
         || (gItem.system.max_per_score ?? 1)
-          > this.activeSubItems.filter(sItem => sItem.system.world_name === gItem.system.world_name).length)
+          > this.activeSubItems.filter((sItem) => sItem.system.world_name === gItem.system.world_name).length)
 
     // Step 3: Replace with matching Archived, Embedded subItems
-      .map(gItem => {
+      .map((gItem) => {
         const matchingSubItems = this.archivedSubItems.filter((sItem): sItem is BladesItemOfType<T> =>
           sItem.system.world_name === gItem.system.world_name);
         if (matchingSubItems.length > 0) {
@@ -444,7 +444,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       .flat()
 
     // Step 4: Apply CSS classes
-      .map(sItem => {
+      .map((sItem) => {
         sItem.dialogCSSClasses = "";
         const cssClasses: string[] = [];
         if (sItem.isEmbedded) {
@@ -519,7 +519,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       if (this.type === BladesActorType.pc) {
         dialogData.Basic = this._processEmbeddedItemMatches(
           BladesItem.GetTypeWithTags(BladesItemType.playbook)
-            .filter(item => !item.hasTag(Tag.Gear.Advanced))
+            .filter((item) => !item.hasTag(Tag.Gear.Advanced))
         );
         dialogData.Advanced = this._processEmbeddedItemMatches(
           BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Gear.Advanced)
@@ -540,14 +540,14 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
         ...BladesItem.GetTypeWithTags(BladesItemType.gear, playbookName),
         ...BladesItem.GetTypeWithTags(BladesItemType.gear, Tag.Gear.General)
       ])
-        .filter(item => self.remainingLoad >= item.system.load);
+        .filter((item) => self.remainingLoad >= item.system.load);
 
       // Two tabs, one for playbook and the other for general items
-      dialogData[playbookName] = gearItems.filter(item => item.hasTag(playbookName));
+      dialogData[playbookName] = gearItems.filter((item) => item.hasTag(playbookName));
       dialogData.General = gearItems
-        .filter(item => item.hasTag(Tag.Gear.General))
+        .filter((item) => item.hasTag(Tag.Gear.General))
       // Remove featured class from General items
-        .map(item => {
+        .map((item) => {
           if (item.dialogCSSClasses) {
             item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
           }
@@ -566,9 +566,9 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
           BladesItem.GetTypeWithTags(BladesItemType.ability, playbookName)
         );
         dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability))
-          .filter(item => !item.hasTag(playbookName))
+          .filter((item) => !item.hasTag(playbookName))
         // Remove featured class from Veteran items
-          .map(item => {
+          .map((item) => {
             if (item.dialogCSSClasses) {
               item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
             }
@@ -609,21 +609,21 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     } else {
       const globalItem = BladesItem.Get(itemRef);
       if (!globalItem) { return undefined; }
-      return this.items.find(item => item.name === globalItem.name && activeCheck(item))
-        ?? this.items.find(item => item.system.world_name === globalItem.system.world_name && activeCheck(item));
+      return this.items.find((item) => item.name === globalItem.name && activeCheck(item))
+        ?? this.items.find((item) => item.system.world_name === globalItem.system.world_name && activeCheck(item));
     }
   }
 
   hasSubItemOf(itemRef: ItemRef): boolean {
     const item = BladesItem.Get(itemRef);
     if (!item) { return false; }
-    return Boolean(this.items.find(i => i.system.world_name === item.system.world_name));
+    return Boolean(this.items.find((i) => i.system.world_name === item.system.world_name));
   }
 
   hasActiveSubItemOf(itemRef: ItemRef): boolean {
     const item = BladesItem.Get(itemRef);
     if (!item) { return false; }
-    return Boolean(this.items.find(i => !i.hasTag(Tag.System.Archived)
+    return Boolean(this.items.find((i) => !i.hasTag(Tag.System.Archived)
       && i.system.world_name === item.system.world_name));
   }
 
@@ -681,7 +681,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     if (focusItem && isBladesItemUniqueTypes(focusItem.type)) {
       // ... then archive all other versions.
       await Promise.all(this.activeSubItems
-        .filter(subItem => subItem.type === focusItem?.type
+        .filter((subItem) => subItem.type === focusItem?.type
             && subItem.system.world_name !== focusItem?.system.world_name
             && !subItem.hasTag(Tag.System.Archived))
         .map(this.remSubItem.bind(this)));
@@ -768,14 +768,14 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     const pointsUpgradeOrAbility = this.system.advancement_points?.[AdvancementPoint.UpgradeOrAbility] ?? 0;
 
     const spentAbility = U.sum(this.items
-      .filter(item => BladesItem.IsType(item, BladesItemType.ability, BladesItemType.crew_ability))
-      .map(abil => abil.system.price ?? 1));
+      .filter((item) => BladesItem.IsType(item, BladesItemType.ability, BladesItemType.crew_ability))
+      .map((abil) => abil.system.price ?? 1));
     const spentCohortType = U.sum(this.cohorts
-      .map(cohort => Math.max(0, U.unique(Object.values(cohort.system.subtypes)).length - 1))
+      .map((cohort) => Math.max(0, U.unique(Object.values(cohort.system.subtypes)).length - 1))
     );
     const spentUpgrade = U.sum(this.items
-      .filter(item => BladesItem.IsType(item, BladesItemType.crew_upgrade))
-      .map(upgrade => upgrade.system.price ?? 1));
+      .filter((item) => BladesItem.IsType(item, BladesItemType.crew_upgrade))
+      .map((upgrade) => upgrade.system.price ?? 1));
 
     const excessUpgrade = Math.max(0, spentUpgrade - pointsUpgrade);
     const excessCohortType = Math.max(0, spentCohortType - pointsCohortType);
@@ -828,7 +828,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     }
     if (BladesActor.IsType(this, BladesActorType.crew)) {
       BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.");
-      this.members.forEach(member => {
+      this.members.forEach((member) => {
         const coinGained = this.system.tier.value + 2;
         BladesPushAlert.Get().pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, undefined);
         member.addStash(coinGained);
@@ -839,7 +839,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
   async advanceAttribute(attribute: AttributeTrait) {
     await this.update({[`system.experience.${attribute}.value`]: 0});
-    const actions = C.Action[attribute].map(action => `<strong>${U.tCase(action)}</strong>`);
+    const actions = C.Action[attribute].map((action) => `<strong>${U.tCase(action)}</strong>`);
     BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`);
   }
 
@@ -921,7 +921,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   get turfCount(): number {
     if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) { return 0; }
     return Object.values(this.playbook.system.turfs)
-      .filter(claim => claim.isTurf && claim.value).length;
+      .filter((claim) => claim.isTurf && claim.value).length;
   }
 
   get upgrades(): Array<BladesItemOfType<BladesItemType.crew_upgrade>> {
@@ -957,7 +957,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       system.experience.clues = [
         ...system.experience.clues,
         ...Object.values(this.playbook.system.experience_clues)
-          .filter(clue => Boolean(clue.trim()))
+          .filter((clue) => Boolean(clue.trim()))
       ];
     }
     // Extract gather information questions from playbook item, if any
@@ -965,7 +965,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       system.gather_info = [
         ...system.gather_info,
         ...Object.values(this.playbook.system.gather_info_questions)
-          .filter(question => Boolean(question.trim()))
+          .filter((question) => Boolean(question.trim()))
       ];
     }
   }
@@ -978,7 +978,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       system.experience.clues = [
         ...system.experience.clues,
         ...Object.values(this.playbook.system.experience_clues)
-          .filter(clue => Boolean(clue.trim()))
+          .filter((clue) => Boolean(clue.trim()))
       ];
       system.turfs = this.playbook.system.turfs;
     }
@@ -989,11 +989,11 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   // #region OVERRIDES: _onCreateDescendantDocuments, update ~
   // @ts-expect-error New method not defined in @league VTT types.
   override async _onCreateDescendantDocuments(parent: BladesActor, collection: "items"|"effects", docs: BladesItem[]|BladesActiveEffect[], data: BladesItem[]|BladesActiveEffect[], options: Record<string, boolean>, userId: string) {
-    await Promise.all(docs.map(async doc => {
+    await Promise.all(docs.map(async (doc) => {
       if (BladesItem.IsType(doc, BladesItemType.playbook, BladesItemType.crew_playbook)) {
         await Promise.all(this.activeSubItems
-          .filter(aItem => aItem.type === doc.type && aItem.system.world_name !== doc.system.world_name)
-          .map(aItem => this.remSubItem(aItem)));
+          .filter((aItem) => aItem.type === doc.type && aItem.system.world_name !== doc.system.world_name)
+          .map((aItem) => this.remSubItem(aItem)));
       }
     }));
 
@@ -1002,11 +1002,11 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
     eLog.checkLog("actorTrigger", "_onCreateDescendantDocuments", {parent, collection, docs, data, options, userId});
 
-    docs.forEach(doc => {
+    docs.forEach((doc) => {
       if (BladesItem.IsType(doc, BladesItemType.vice) && BladesActor.IsType(this, BladesActorType.pc)) {
         this.activeSubActors
-          .filter(subActor => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name as Vice))
-          .forEach(subActor => { this.remSubActor(subActor); });
+          .filter((subActor) => subActor.hasTag(Tag.NPC.VicePurveyor) && !subActor.hasTag(doc.name as Vice))
+          .forEach((subActor) => { this.remSubActor(subActor); });
       }
     });
   }
@@ -1104,7 +1104,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
      * @param {...string} curVals The values to exclude from the sample.
      */
     function sampleArray(arr: string[], ...curVals: string[]): string {
-      arr = arr.filter(elem => !curVals.includes(elem));
+      arr = arr.filter((elem) => !curVals.includes(elem));
       if (!arr.length) { return ""; }
       return arr[Math.floor(Math.random() * arr.length)];
     }
@@ -1123,7 +1123,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
           Math.random() <= suffixChance
             ? sampleArray(Randomizers.NPC.name_suffix)
             : ""
-        ].filter(val => Boolean(val)).join(" ");
+        ].filter((val) => Boolean(val)).join(" ");
       },
       background: () => sampleArray(Randomizers.NPC.background, random.background.value),
       heritage: () => sampleArray(Randomizers.NPC.heritage, random.heritage.value),
@@ -1149,16 +1149,16 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
     const gender = persona.gender.isLocked ? persona.gender.value : randomGen.gender();
     const updateKeys = [
-      ...Object.keys(persona).filter(key => !persona[key as KeyOf<typeof persona>]?.isLocked),
-      ...Object.keys(random).filter(key => !random[key as KeyOf<typeof random>]?.isLocked),
-      ...Object.keys(secret).filter(key => !secret[key as KeyOf<typeof secret>]?.isLocked)
-        .map(secretKey => `secret-${secretKey}`)
+      ...Object.keys(persona).filter((key) => !persona[key as KeyOf<typeof persona>]?.isLocked),
+      ...Object.keys(random).filter((key) => !random[key as KeyOf<typeof random>]?.isLocked),
+      ...Object.keys(secret).filter((key) => !secret[key as KeyOf<typeof secret>]?.isLocked)
+        .map((secretKey) => `secret-${secretKey}`)
     ];
 
     eLog.checkLog("Update Keys", {updateKeys});
     const updateData: Record<string, BladesRandomizer> = {};
 
-    updateKeys.forEach(key => {
+    updateKeys.forEach((key) => {
       switch (key) {
         case "name":
         case "heritage":

@@ -44,7 +44,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   // #region BladesPrimaryActor Implementation ~
   get primaryUser(): User | null {
-    return game.users?.find(user => user.character?.id === this?.id) || null;
+    return game.users?.find((user) => user.character?.id === this?.id) || null;
   }
 
   async clearLoadout() {
@@ -53,17 +53,17 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       "Item",
       [
         ...this.activeSubItems
-          .filter(item => BladesItem.IsType(item, BladesItemType.gear)
+          .filter((item) => BladesItem.IsType(item, BladesItemType.gear)
             && !item.hasTag(Tag.System.Archived))
-          .map(item => ({
+          .map((item) => ({
             _id: item.id,
             "system.tags": [...item.tags, Tag.System.Archived],
             "system.uses_per_score.value": 0
           })),
         ...this.activeSubItems
-          .filter(item => BladesItem.IsType(item, BladesItemType.ability)
+          .filter((item) => BladesItem.IsType(item, BladesItemType.ability)
             && item.system.uses_per_score.max)
-          .map(item => ({
+          .map((item) => ({
             _id: item.id,
             "system.uses_per_score.value": 0
           }))
@@ -115,7 +115,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   get vice(): BladesItem | undefined {
     if (this.type !== BladesActorType.pc) { return undefined; }
-    return this.activeSubItems.find(item => item.type === BladesItemType.vice);
+    return this.activeSubItems.find((item) => item.type === BladesItemType.vice);
   }
 
   get crew(): BladesCrew | undefined {
@@ -126,7 +126,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   get abilities(): BladesItem[] {
     if (!this.playbook) { return []; }
     return this.activeSubItems
-      .filter(item => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
+      .filter((item) => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
   }
 
   get playbookName() {
@@ -173,7 +173,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   get trauma(): number {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0; }
     return Object.keys(this.system.trauma.checked)
-      .filter(traumaName =>
+      .filter((traumaName) =>
         // @ts-ignore Compiler linter mismatch.
         this.system.trauma.active[traumaName] && this.system.trauma.checked[traumaName])
       .length;
@@ -182,7 +182,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   get traumaList(): string[] {
     // @ts-ignore Compiler linter mismatch.
     return BladesActor.IsType(this, BladesActorType.pc)
-      ? Object.keys(this.system.trauma.active).filter(key => this.system.trauma.active[key])
+      ? Object.keys(this.system.trauma.active).filter((key) => this.system.trauma.active[key])
       : [];
   }
 
@@ -200,7 +200,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   get currentLoad(): number {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0; }
-    const activeLoadItems = this.activeSubItems.filter(item => item.type === BladesItemType.gear);
+    const activeLoadItems = this.activeSubItems.filter((item) => item.type === BladesItemType.gear);
     return U.gsap.utils.clamp(0, 10, activeLoadItems.reduce((tot, i) => tot + U.pInt(i.system.load), 0));
   }
 
@@ -231,7 +231,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       [/Less Effect/, RollModSection.effect] as const
     ].forEach(([effectPat, effectCat]) => {
       const {one: harmConditionOne, two: harmConditionTwo} = Object.values(this.system.harm)
-        .find(harmData => effectPat.test(harmData.effect)) ?? {};
+        .find((harmData) => effectPat.test(harmData.effect)) ?? {};
       const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
       if (harmString.length > 0) {
         rollModsData.push({
@@ -253,7 +253,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       }
     });
     const {one: harmCondition} = Object.values(this.system.harm)
-      .find(harmData => /Need Help/.test(harmData.effect)) ?? {};
+      .find((harmData) => /Need Help/.test(harmData.effect)) ?? {};
     if (harmCondition && harmCondition.trim() !== "") {
       rollModsData.push({
         id: "Push-negative-roll",
@@ -297,8 +297,8 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   get rollTraitPCTooltipActions(): string {
     const tooltipStrings: string[] = ["<table><tbody>"];
     const actionRatings = this.actions;
-    Object.values(AttributeTrait).forEach(attribute => {
-      C.Action[attribute].forEach(action => {
+    Object.values(AttributeTrait).forEach((attribute) => {
+      C.Action[attribute].forEach((action) => {
         tooltipStrings.push([
           "<tr>",
           `<td><strong>${U.uCase(action)}</strong></td>`,
@@ -315,7 +315,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   get rollTraitPCTooltipAttributes(): string {
     const tooltipStrings: string[] = ["<table><tbody>"];
     const attributeRatings = this.attributes;
-    Object.values(AttributeTrait).forEach(attribute => {
+    Object.values(AttributeTrait).forEach((attribute) => {
       tooltipStrings.push([
         "<tr>",
         `<td><strong>${U.uCase(attribute)}</strong></td>`,

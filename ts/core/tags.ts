@@ -119,7 +119,7 @@ const Tags = {
 
       // Add event listener for tag changes, setting defined target
       // Wait briefly, so other tag elements' tags can be set before listener initializes
-      setTimeout(() => elem.addEventListener("change", event => { _onTagifyChange(event, doc, targetKey); }), 1000);
+      setTimeout(() => elem.addEventListener("change", (event) => { _onTagifyChange(event, doc, targetKey); }), 1000);
     }
 
     const systemTags = {
@@ -144,7 +144,7 @@ const Tags = {
     const factionTags = {Factions: game.actors
       .filter((actor): actor is BladesActorOfType<BladesActorType.faction> & {name: string} =>
         actor.type === BladesActorType.faction && actor.name !== null)
-      .map(faction => faction.name)};
+      .map((faction) => faction.name)};
 
     $(html).find(".tags-gm").each((_, e) => makeTagInput(e, systemTags));
 

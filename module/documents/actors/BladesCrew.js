@@ -35,7 +35,7 @@ class BladesCrew extends BladesActor {
             return [];
         }
         return this.activeSubItems
-            .filter(item => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
+            .filter((item) => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
     }
     get playbookName() {
         return this.playbook?.name;

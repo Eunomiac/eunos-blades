@@ -65,18 +65,18 @@ class BladesActorSheet extends ActorSheet {
           gang: this.actor.activeSubItems
             .filter((item): item is BladesItemOfType<BladesItemType.cohort_gang> =>
               item.type === BladesItemType.cohort_gang)
-            .map(item => {
+            .map((item) => {
               // Prepare gang cohort items.
               const subtypes = U.unique(Object.values(item.system.subtypes)
-                .map(subtype => subtype.trim())
-                .filter(subtype => /[A-Za-z]/.test(subtype))) as Tag.GangType[];
+                .map((subtype) => subtype.trim())
+                .filter((subtype) => /[A-Za-z]/.test(subtype))) as Tag.GangType[];
               const eliteSubtypes = U.unique([
                 ...Object.values(item.system.elite_subtypes),
                 ...(item.parent?.upgrades ?? [])
-                  .map(upgrade => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
+                  .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
               ]
-                .map(subtype => subtype.trim())
-                .filter(subtype => /[A-Za-z]/
+                .map((subtype) => subtype.trim())
+                .filter((subtype) => /[A-Za-z]/
                   .test(subtype) && subtypes.includes(subtype as Tag.GangType)
                 )
               ) as Tag.GangType[];
@@ -84,7 +84,7 @@ class BladesActorSheet extends ActorSheet {
               // Prepare images for gang cohort items.
               const imgTypes = [...eliteSubtypes];
               if (imgTypes.length < 2) {
-                imgTypes.push(...subtypes.filter(subtype => !imgTypes.includes(subtype)));
+                imgTypes.push(...subtypes.filter((subtype) => !imgTypes.includes(subtype)));
               }
               if (U.unique(imgTypes).length === 1) {
                 item.system.image = Object.values(item.system.elite_subtypes).includes(imgTypes[0]) ? `elite-${U.lCase(imgTypes[0])}.svg` : `${U.lCase(imgTypes[0])}.svg`;
@@ -103,11 +103,11 @@ class BladesActorSheet extends ActorSheet {
                     {mode: "untrained", label: "Untrained", color: "transparent", tooltip: "<p>Roll Untrained</p>"}
                   ],
                   edgeData: Object.fromEntries(Object.values(item.system.edges ?? [])
-                    .filter(edge => /[A-Za-z]/.test(edge))
-                    .map(edge => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]])),
+                    .filter((edge) => /[A-Za-z]/.test(edge))
+                    .map((edge) => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]])),
                   flawData: Object.fromEntries(Object.values(item.system.flaws ?? [])
-                    .filter(flaw => /[A-Za-z]/.test(flaw))
-                    .map(flaw => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]))
+                    .filter((flaw) => /[A-Za-z]/.test(flaw))
+                    .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]))
                 }
               );
               return item;
@@ -115,7 +115,7 @@ class BladesActorSheet extends ActorSheet {
           expert: this.actor.activeSubItems
             .filter((item): item is BladesItemOfType<BladesItemType.cohort_expert> =>
               item.type === BladesItemType.cohort_expert)
-            .map(item => {
+            .map((item) => {
               // Prepare expert cohort items.
               Object.assign(
                 item.system,
@@ -125,11 +125,11 @@ class BladesActorSheet extends ActorSheet {
                     {mode: "untrained", label: "Untrained", tooltip: "<h2>Roll Untrained</h2>"}
                   ],
                   edgeData: Object.fromEntries(Object.values(item.system.edges ?? [])
-                    .filter(edge => /[A-Za-z]/.test(edge))
-                    .map(edge => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]])),
+                    .filter((edge) => /[A-Za-z]/.test(edge))
+                    .map((edge) => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]])),
                   flawData: Object.fromEntries(Object.values(item.system.flaws ?? [])
-                    .filter(flaw => /[A-Za-z]/.test(flaw))
-                    .map(flaw => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]))
+                    .filter((flaw) => /[A-Za-z]/.test(flaw))
+                    .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]))
                 }
               );
               return item;
@@ -155,7 +155,7 @@ class BladesActorSheet extends ActorSheet {
         sheetData.playbookData.tooltip = (new Handlebars.SafeString([
           "<h2>At the End of the Session, Gain XP If ...</h2>",
           "<ul>",
-          ...Object.values(this.actor.system.experience.clues ?? []).map(line => `<li>${line.replace(/^Y/, "... y")}</li>`) ?? [],
+          ...Object.values(this.actor.system.experience.clues ?? []).map((line) => `<li>${line.replace(/^Y/, "... y")}</li>`) ?? [],
           "</ul>"
         ].join(""))).toString();
       }
