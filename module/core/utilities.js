@@ -133,6 +133,11 @@ const UUIDLOG = [];
 
 const GMID = () => game?.user?.find((user) => user.isGM)?.id ?? false;
 const isNumber = (ref) => typeof ref === "number" && !isNaN(ref);
+const isNumberString = (ref) => typeof ref === "string"
+    && !isNaN(parseFloat(ref))
+    && isFinite(parseFloat(ref));
+const isBooleanString = (ref) => typeof ref === "string"
+    && (ref === "true" || ref === "false");
 const isArray = (ref) => Array.isArray(ref);
 const isSimpleObj = (ref) => ref === Object(ref) && !isArray(ref);
 const isList = (ref) => ref === Object(ref) && !isArray(ref);
@@ -1170,7 +1175,55 @@ const escapeHTML = (str) => (typeof str === "string"
         .replace(/[`']/g, "&#039;")
     : str);
 
-const sleep = (duration) => new Promise((resolve) => { setTimeout(resolve, duration >= 100 ? duration : duration * 1000); });
+const sleep = (duration) => new Promise((resolve) => {
+    setTimeout(resolve, duration >= 100 ? duration : duration * 1000);
+});
+const EventHandlers = {
+    onSelectChange: async (inst, event) => {
+        const elem = event.currentTarget;
+        const { action, dtype, target, flagTarget } = elem.dataset;
+        if (!action) {
+            throw new Error("Select elements require a data-action attribute.");
+        }
+        if (!target && !flagTarget) {
+            throw new Error("Select elements require a 'data-target' or 'data-flag-target' attribute.");
+        }
+        const dataType = lCase(dtype);
+        let value;
+        switch (dataType) {
+            case "number":
+                value = pFloat(elem.value);
+                break;
+            case "boolean":
+                value = lCase(`${elem.value}`) === "true";
+                break;
+            case "string":
+                value = `${elem.value}`;
+                break;
+            default: {
+                if (isNumberString(value)) {
+                    throw new Error("You must set 'data-dtype=\"Number\"' for <select> elements with number values.");
+                }
+                if (isBooleanString(value)) {
+                    throw new Error("You must set 'data-dtype=\"Boolean\"' for <select> elements with boolean values.");
+                }
+                value = `${elem.value}`;
+                break;
+            }
+        }
+        if (target) {
+            await inst.document.update({ [target]: value });
+        }
+        else if (flagTarget) {
+            if (elem.value === "") {
+                await inst.document.unsetFlag(C.SYSTEM_ID, flagTarget);
+            }
+            else {
+                await inst.document.setFlag(C.SYSTEM_ID, flagTarget, value);
+            }
+        }
+    }
+};
 const isDocID = (docRef, isUUIDok = true) => {
     return typeof docRef === "string" && (isUUIDok
         ? /^(.*\.)?[A-Za-z0-9]{16}$/.test(docRef)
@@ -1208,7 +1261,7 @@ function displayImageSelector(callback, pathRoot = `systems/${C.SYSTEM_ID}/asset
 }
 export default {
     GMID, getUID,
-    isNumber, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
+    isNumber, isNumberString, isBooleanString, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
     isHTMLCode, isRGBColor, isHexColor,
     isUndefined, isDefined, isEmpty, hasItems, isInstance, isNullish,
     areEqual, areFuzzyEqual,
@@ -1250,5 +1303,6 @@ export default {
     getSiblings,
     escapeHTML,
     sleep,
-    isDocID, loc, getSetting, getTemplatePath, displayImageSelector
+    EventHandlers,
+    isDocID, loc, getSetting, getTemplatePath, displayImageSelector,
 };

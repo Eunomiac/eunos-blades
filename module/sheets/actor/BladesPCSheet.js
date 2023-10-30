@@ -42,7 +42,6 @@ class BladesPCSheet extends BladesActorSheet {
         const context = super.getData();
         const { activeSubItems, activeSubActors } = this.actor;
         const sheetData = {};
-
         sheetData.preparedItems = Object.assign(context.preparedItems ?? {}, {
             abilities: activeSubItems
                 .filter((item) => item.type === BladesItemType.ability)
@@ -65,7 +64,9 @@ class BladesPCSheet extends BladesActorSheet {
             background: activeSubItems.find((item) => item.type === BladesItemType.background),
             heritage: activeSubItems.find((item) => item.type === BladesItemType.heritage),
             vice: activeSubItems.find((item) => item.type === BladesItemType.vice),
-            loadout: activeSubItems.filter((item) => item.type === BladesItemType.gear).map((item) => {
+            loadout: activeSubItems
+                .filter((item) => item.type === BladesItemType.gear)
+                .map((item) => {
                 if (item.system.load) {
                     Object.assign(item, {
                         numberCircle: item.system.load,
@@ -90,9 +91,12 @@ class BladesPCSheet extends BladesActorSheet {
             playbook: this.actor.playbook
         });
         sheetData.preparedActors = {
-            crew: activeSubActors.find((actor) => actor.type === BladesActorType.crew),
-            vice_purveyor: activeSubActors.find((actor) => actor.hasTag(Tag.NPC.VicePurveyor)),
-            acquaintances: activeSubActors.filter((actor) => actor.hasTag(Tag.NPC.Acquaintance))
+            crew: activeSubActors
+                .find((actor) => actor.type === BladesActorType.crew),
+            vice_purveyor: activeSubActors
+                .find((actor) => actor.hasTag(Tag.NPC.VicePurveyor)),
+            acquaintances: activeSubActors
+                .filter((actor) => actor.hasTag(Tag.NPC.Acquaintance))
         };
         sheetData.hasVicePurveyor = Boolean(this.actor.playbook?.hasTag(Tag.Gear.Advanced) === false
             && activeSubItems.find((item) => item.type === BladesItemType.vice));
@@ -142,8 +146,8 @@ class BladesPCSheet extends BladesActorSheet {
                     isLocked: true
                 },
                 compContainer: {
-                    "class": "comp-trauma-conditions comp-vertical full-width",
-                    "blocks": [
+                    class: "comp-trauma-conditions comp-vertical full-width",
+                    blocks: [
                         this.actor.traumaList.slice(0, Math.ceil(this.actor.traumaList.length / 2))
                             .map((tName) => ({
                             checkLabel: tName,
@@ -186,13 +190,16 @@ class BladesPCSheet extends BladesActorSheet {
         };
         sheetData.loadData = {
             curLoad: this.actor.currentLoad,
-            selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected.toString()))],
-            selections: C.Loadout.selections,
-            selLoadLevel: this.actor.system.loadout.selected.toString()
+            selLoadCount: this.actor.system.loadout.levels[U.lCase(this.actor.system.loadout.selected)],
+            options: C.Loadout.selections,
+            selected: this.actor.system.loadout.selected ?? ""
         };
         sheetData.armor = Object.fromEntries(Object.entries(this.actor.system.armor.active)
             .filter(([, isActive]) => isActive)
-            .map(([armor]) => [armor, this.actor.system.armor.checked[armor]]));
+            .map(([armor]) => [
+            armor,
+            this.actor.system.armor.checked[armor]
+        ]));
         sheetData.attributeData = {};
         const attrEntries = Object.entries(this.actor.system.attributes);
         for (const [attribute, attrData] of attrEntries) {
@@ -205,7 +212,9 @@ class BladesPCSheet extends BladesActorSheet {
                 sheetData.attributeData[attribute].actions[action] = {
                     tooltip: C.ActionTooltips[action],
                     value: actionData.value,
-                    max: BladesGMTrackerSheet.Get().phase === BladesPhase.CharGen ? 2 : this.actor.system.attributes[attribute][action].max
+                    max: BladesGMTrackerSheet.Get().phase === BladesPhase.CharGen
+                        ? 2
+                        : this.actor.system.attributes[attribute][action].max
                 };
             }
         }
@@ -276,12 +285,10 @@ class BladesPCSheet extends BladesActorSheet {
     }
     activateListeners(html) {
         super.activateListeners(html);
-
         if (!this.options.editable) {
             return;
         }
         const self = this;
-
         html.find(".main-armor-control").on({
             click() {
                 const targetArmor = self._getClickArmor();
@@ -318,13 +325,13 @@ class BladesPCSheet extends BladesActorSheet {
                 if (!self.activeArmor.includes("special")) {
                     return;
                 }
-                self.actor.update({ ["system.armor.checked.special"]: self.uncheckedArmor.includes("special") });
+                self.actor.update({ "system.armor.checked.special": self.uncheckedArmor.includes("special") });
             },
             contextmenu() {
                 if (!self.activeArmor.includes("special")) {
                     return;
                 }
-                self.actor.update({ ["system.armor.checked.special"]: self.uncheckedArmor.includes("special") });
+                self.actor.update({ "system.armor.checked.special": self.uncheckedArmor.includes("special") });
             },
             mouseenter() {
                 if (!self.activeArmor.includes("special") || self.activeArmor.length === 1) {

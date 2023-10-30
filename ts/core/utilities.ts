@@ -147,6 +147,11 @@ const GMID = (): string | false => game?.user?.find((user) => user.isGM)?.id ?? 
 // #region ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████ ~
 
 const isNumber = (ref: unknown): ref is number => typeof ref === "number" && !isNaN(ref);
+const isNumberString = (ref: unknown): ref is string => typeof ref === "string"
+  && !isNaN(parseFloat(ref))
+  && isFinite(parseFloat(ref));
+const isBooleanString = (ref: unknown): ref is "true"|"false" => typeof ref === "string"
+  && (ref === "true" || ref === "false")
 const isArray = (ref: unknown): ref is unknown[] => Array.isArray(ref);
 const isSimpleObj = (ref: unknown): ref is Record<key, unknown> => ref === Object(ref) && !isArray(ref);
 const isList = <T>(ref: T): ref is Record<key, unknown> & T => ref === Object(ref) && !isArray(ref);
@@ -1452,8 +1457,52 @@ const escapeHTML = <T = unknown>(str: T): T => (typeof str === "string"
 // #endregion ▄▄▄▄▄ HTML ▄▄▄▄▄
 
 // #region ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████ ~
-const sleep = (duration: number): Promise<void> => new Promise((resolve) => {setTimeout(resolve, duration >= 100 ? duration : duration * 1000);});
+const sleep = (duration: number): Promise<void> => new Promise(
+  (resolve) => {
+    setTimeout(resolve, duration >= 100 ? duration : duration * 1000);
+  }
+);
 // #endregion ▄▄▄▄▄ ASYNC ▄▄▄▄▄
+
+const EventHandlers = {
+  onSelectChange: async (inst: BladesSheet, event: SelectChangeEvent) => {
+    const elem = event.currentTarget;
+    const {action, dtype, target, flagTarget} = elem.dataset;
+
+    if (!action) {
+      throw new Error("Select elements require a data-action attribute.");
+    }
+    if (!target && !flagTarget) {
+      throw new Error("Select elements require a 'data-target' or 'data-flag-target' attribute.");
+    }
+    const dataType = lCase(dtype);
+    let value;
+    switch (dataType) {
+      case "number": value = pFloat(elem.value); break;
+      case "boolean": value = lCase(`${elem.value}`) === "true"; break;
+      case "string": value = `${elem.value}`; break;
+      default: {
+        if (isNumberString(value)) {
+          throw new Error("You must set 'data-dtype=\"Number\"' for <select> elements with number values.");
+        }
+        if (isBooleanString(value)) {
+          throw new Error("You must set 'data-dtype=\"Boolean\"' for <select> elements with boolean values.");
+        }
+        value = `${elem.value}`;
+        break;
+      }
+    }
+    if (target) {
+      await inst.document.update({[target]: value});
+    } else if (flagTarget) {
+      if (elem.value === "") {
+        await inst.document.unsetFlag(C.SYSTEM_ID, flagTarget);
+      } else {
+        await inst.document.setFlag(C.SYSTEM_ID, flagTarget, value);
+      }
+    }
+  }
+};
 
 // #region ████████ FOUNDRY: Requires Configuration of System ID in constants.ts ████████ ~
 
@@ -1524,7 +1573,7 @@ export default {
   GMID, getUID,
 
   // ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████
-  isNumber, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
+  isNumber, isNumberString, isBooleanString, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
   isHTMLCode, isRGBColor, isHexColor,
   isUndefined, isDefined, isEmpty, hasItems, isInstance, isNullish,
   areEqual, areFuzzyEqual,
@@ -1593,7 +1642,11 @@ export default {
   // ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████
   sleep,
 
+  // EVENT HANDLERS
+  EventHandlers,
   // ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
-  isDocID, loc, getSetting, getTemplatePath, displayImageSelector
+  isDocID, loc, getSetting, getTemplatePath, displayImageSelector,
+
+
 };
 // #endregion ▄▄▄▄▄ EXPORTS ▄▄▄▄▄

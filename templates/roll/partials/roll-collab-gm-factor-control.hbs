@@ -1,11 +1,14 @@
 {{#with this as |data|}}
 {{#with (lookup data.rollFactors.source data.factor) as |sourceData|}}
+{{#with (lookup data.rollFactors.opposition data.factor) as |oppData|}}
 {{#with (lookup data.GMBoosts data.factor) as |sourceBoost|}}
 {{#with (lookup data.GMOppBoosts data.factor) as |oppBoost|}}
 
 {{log "CONTEXT" data}}
 {{log "Source Data" sourceData}}
 {{log "Source Boost" sourceBoost}}
+{{log "Opp Data" oppData}}
+
 {{log "OppBoost" oppBoost}}
 
 <div class="factor-control-row flex-horizontal">
@@ -73,6 +76,7 @@
 
 </div>
 
+{{/with}}
 {{/with}}
 {{/with}}
 {{/with}}

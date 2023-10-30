@@ -64,8 +64,8 @@ declare global {
       loadData: {
         curLoad: number,
         selLoadCount: number,
-        selections: string[],
-        selLoadLevel: string
+        options: BladesSelectOption<string>[],
+        selected: string
       },
       armor: Record<string,boolean>
     }

@@ -238,14 +238,17 @@
             <a class="comp-control comp-button comp-add"><i class="fas fa-plus-square"></i></a>
             {{/if}}
             <span class="tab-title">{{localize "BITD.Loadout"}}</span>
-            <select class="load-selector" data-dtype="String" name="system.loadout.selected">
-              {{#select loadData.selLoadLevel}}
-              <option value="" hidden disabled selected></option>
-              {{#each loadData.selections}}
-              <option value="{{this}}">{{localize this}}</option>
-              {{/each}}
-              {{/select}}
-            </select>
+
+            {{> "systems/eunos-blades/templates/components/select.hbs"
+              cssClass="load-selector"
+              dataAction="player-select"
+              dataTarget="system.loadout.selected"
+              dataFlagTarget=false
+              dataDType="String"
+              dataDocType=false
+              selected=loadData.selLoadLevel
+              options=loadData.selectOptions }}
+
             <span class="load-selected-count shadowed">{{#if loadData.selLoadCount}}(Max
               <span>{{loadData.selLoadCount}}</span> Load){{/if}}</span>
             <span class="load-level shadowed">Current Load:</span>

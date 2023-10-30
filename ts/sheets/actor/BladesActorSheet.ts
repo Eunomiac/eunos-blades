@@ -253,42 +253,48 @@ class BladesActorSheet extends ActorSheet {
     // Clock Functionality
     html
       .find(".clock-container")
-      .on("click", this._onClockLeftClick.bind(this));
+      .on({click: this._onClockLeftClick.bind(this)});
     html
       .find(".clock-container")
-      .on("contextmenu", this._onClockRightClick.bind(this));
+      .on({contextmenu: this._onClockRightClick.bind(this)});
 
-    // Component Functionality: Open, Add (via SelectorDialog), Archive, Delete, Toggle
+    // Component Functionality: Open, Add (via SelectorDialog), Archive, Delete, Toggle, Select
     html
       .find("[data-comp-id]")
       .find(".comp-title")
-      .on("click", this._onItemOpenClick.bind(this));
+      .on({click: this._onItemOpenClick.bind(this)});
     html
       .find(".comp-control.comp-add")
-      .on("click", this._onItemAddClick.bind(this));
+      .on({click: this._onItemAddClick.bind(this)});
     html
       .find(".comp-control.comp-delete")
-      .on("click", this._onItemRemoveClick.bind(this));
+      .on({click: this._onItemRemoveClick.bind(this)});
     html
       .find(".comp-control.comp-delete-full")
-      .on("click", this._onItemFullRemoveClick.bind(this));
+      .on({click: this._onItemFullRemoveClick.bind(this)});
     html
       .find(".comp-control.comp-toggle")
-      .on("click", this._onItemToggleClick.bind(this));
+      .on({click: this._onItemToggleClick.bind(this)});
+    html
+      .find(`
+        select[data-action='player-select'],
+        select[data-action='gm-select']
+      `)
+      .on({change: this._onSelectChange.bind(this)});
 
     html
       .find(".advance-button")
-      .on("click", this._onAdvanceClick.bind(this));
+      .on({click: this._onAdvanceClick.bind(this)});
 
     // Active Effects Functionality
     html
       .find(".effect-control")
-      .on("click", this._onActiveEffectControlClick.bind(this));
+      .on({click: this._onActiveEffectControlClick.bind(this)});
 
     // Roll Functionality
     html
       .find("[data-roll-trait]")
-      .on("click", this._onRollTraitClick.bind(this));
+      .on({click: this._onRollTraitClick.bind(this)});
 
     // This is a workaround until is being fixed in FoundryVTT.
     if (this.options.submitOnChange) {
@@ -442,6 +448,11 @@ class BladesActorSheet extends ActorSheet {
     await this.actor.update({
       [target]: !getProperty(this.actor, target)
     });
+  }
+
+  async _onSelectChange(event: SelectChangeEvent) {
+    event.preventDefault();
+    await U.EventHandlers.onSelectChange(this, event);
   }
 
   async _onAdvanceClick(event: ClickEvent) {

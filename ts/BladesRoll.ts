@@ -71,6 +71,28 @@ function isValidConsequenceData(val: unknown, isRecurring = false): val is Blade
   ) { return false; }
   return true;
 }
+
+/**
+ *
+ * @param section
+ */
+function isParticipantSection(section: RollModSection): section is BladesRoll.RollParticipantSection & RollModSection {
+  return [
+    RollModSection.roll,
+    RollModSection.position,
+    RollModSection.effect
+  ].includes(section);
+}
+
+/**
+ *
+ * @param subSection
+ */
+function isParticipantSubSection(subSection: string): subSection is BladesRoll.RollParticipantSubSection {
+  if (subSection.startsWith("Group_")) { return true; }
+  if (["Assist", "Setup"].includes(subSection)) { return true; }
+  return false;
+}
 // #endregion
 // #region Utility Functions ~
 /**
@@ -187,25 +209,39 @@ class BladesRollMod {
 
   get flagParams() { return [C.SYSTEM_ID, `rollCollab.rollModsData.${this.id}`] as const; }
 
-  getFlag() { return this.rollInstance.document.getFlag(...this.flagParams); }
+  getUserStatusFlag() {
+    return this.rollInstance.document.getFlag(...this.flagParams) as
+      RollModStatus | undefined;
+  }
+
+  async setUserStatusFlag(val: RollModStatus | undefined) {
+    if (val === this.userStatus) { return; }
+    if (!val || val === this.baseStatus) {
+      await this.rollInstance.document.unsetFlag(...this.flagParams);
+    } else {
+      const lockedToGM = [
+        RollModStatus.ForcedOn,
+        RollModStatus.ForcedOff,
+        RollModStatus.Hidden
+      ];
+      if (
+        !game.user.isGM
+        && (
+          lockedToGM.includes(val)
+          || (this.userStatus && lockedToGM.includes(this.userStatus))
+        )
+      ) { return; }
+      await this.rollInstance.document.setFlag(...this.flagParams, val);
+    }
+    await socketlib.system.executeForEveryone("renderRollCollab", this.rollInstance.rollID);
+  }
 
   get userStatus(): RollModStatus | undefined {
-    return this.rollInstance.document.getFlag(...this.flagParams) as
-      ValOf<BladesRoll.FlagData["rollModsData"]> | undefined;
+    return this.getUserStatusFlag();
   }
 
   set userStatus(val: RollModStatus | undefined) {
-    if (val === this.userStatus) { return; }
-    if (!val || val === this.baseStatus) {
-      this.rollInstance.document.unsetFlag(...this.flagParams).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollInstance.rollID));
-    } else {
-      if ([RollModStatus.ForcedOn, RollModStatus.ForcedOff, RollModStatus.Hidden].includes(val)
-        && !game.user.isGM) { return; }
-      if (this.userStatus
-        && [RollModStatus.ForcedOn, RollModStatus.ForcedOff, RollModStatus.Hidden].includes(this.userStatus)
-        && !game.user.isGM) { return; }
-      this.rollInstance.document.setFlag(...this.flagParams, val).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollInstance.rollID));
-    }
+    this.setUserStatusFlag(val);
   }
 
   get sourceName(): string { return this._sourceName; }
@@ -517,21 +553,46 @@ class BladesRollMod {
     });
   }
 
+  get selectOptions(): Array<BladesSelectOption<string>>|null {
+    if (this.modType !== "teamwork") { return null; }
+    if (this.name === "Assist" || this.name === "Setup") {
+      return this.rollInstance.rollParticipantSelectOptions[this.name];
+    } else if (this.name.startsWith("Group_")) {
+      return this.rollInstance.rollParticipantSelectOptions.Group;
+    }
+    return null;
+  }
+
+  get selectedParticipant(): BladesRollParticipant|null {
+    if (this.modType !== "teamwork") { return null; }
+    return this.rollInstance.getRollParticipant(this.section, this.name);
+  }
+
   get tooltip() {
-    return this._tooltip.replace(/%COLON%/g, ":")
-      .replace(/%DOC_NAME%/g, this.sideString ?? "an Ally")
-      .replace(/@OPPOSITION_NAME@/g, this.rollInstance.rollOpposition?.rollOppName ?? "Your Opposition");
+    let parsedTooltip = this._tooltip.replace(/%COLON%/g, ":");
+    if (parsedTooltip.includes("%DOC_NAME%")) {
+      parsedTooltip = parsedTooltip.replace(
+        /%DOC_NAME%/g,
+        this.selectedParticipant
+          ? this.selectedParticipant.rollParticipantName
+          : "an Ally"
+      );
+    }
+    if (parsedTooltip.includes("@OPPOSITION_NAME@")) {
+      parsedTooltip = parsedTooltip.replace(
+        /@OPPOSITION_NAME@/g,
+        this.rollInstance.rollOpposition
+          ? this.rollInstance.rollOpposition.rollOppName
+          : "Your Opposition"
+      );
+    }
+    return parsedTooltip;
   }
 
   get sideString(): string | undefined {
     if (this._sideString) { return this._sideString; }
-    const rollParticipantCategoryData = this.rollInstance.rollParticipants?.
-      [this.section as BladesRoll.RollParticipantSection];
-    if (rollParticipantCategoryData && this.name in rollParticipantCategoryData) {
-      const rollParticipant = rollParticipantCategoryData[
-        this.name as KeyOf<typeof rollParticipantCategoryData>
-      ] as BladesRoll.ParticipantDocData;
-      return rollParticipant.rollParticipantName;
+    if (this.selectedParticipant) {
+      return this.selectedParticipant.rollParticipantName;
     }
     return undefined;
   }
@@ -1889,20 +1950,26 @@ class BladesRoll extends DocumentSheet {
       RollModSection.position,
       RollModSection.effect
     ] as Array<KeyOf<BladesRoll.RollParticipantDocs>>).forEach((rollSection) => {
-      const sectionFlagData = participantFlagData[rollSection];
+      const sectionFlagData = participantFlagData[rollSection] as ValOf<BladesRoll.RollParticipantFlagData>|undefined;
       if (sectionFlagData) {
         const sectionParticipants: Partial<Record<
           BladesRoll.RollParticipantSubSection,
           BladesRollParticipant
         >> = {};
-        (Object.keys(sectionFlagData)).forEach((participantType) => {
-          const subSectionFlagData = sectionFlagData[participantType as KeyOf<typeof sectionFlagData>];
+        (Object.entries(sectionFlagData) as Array<[
+          BladesRoll.RollParticipantSubSection,
+          BladesRoll.RollParticipantData
+        ]>).forEach(([subSection, subSectionFlagData]) => {
           if (subSectionFlagData) {
-            sectionParticipants[participantType as BladesRoll.RollParticipantSubSection] =
-              new BladesRollParticipant(this, subSectionFlagData);
+            sectionParticipants[subSection] =
+              new BladesRollParticipant(this, {
+                ...subSectionFlagData,
+                rollParticipantSection: rollSection,
+                rollParticipantSubSection: subSection
+              });
           }
         });
-        rollParticipants[rollSection] = sectionParticipants as ValOf<BladesRoll.RollParticipantDocs>;
+        rollParticipants[rollSection] = sectionParticipants;
       }
     });
 
@@ -1913,6 +1980,33 @@ class BladesRoll extends DocumentSheet {
     return this._rollParticipants;
   }
 
+
+  getRollParticipant(
+    section: RollModSection,
+    subSection: string
+  ): BladesRollParticipant|null {
+    if (isParticipantSection(section) && isParticipantSubSection(subSection)) {
+      const sectionData = this.rollParticipants?.[section];
+      if (sectionData) {
+        return sectionData[subSection as KeyOf<typeof sectionData>] ?? null;
+      }
+    }
+    return null;
+  }
+
+  get rollParticipantSelectOptions(): Record<
+    "Assist"|"Setup"|"Group",
+    Array<BladesSelectOption<string>>
+    > {
+    const nonPrimaryPCs = BladesPC.All
+      .filter((actor) => actor.hasTag(Tag.PC.ActivePC) && actor.id !== this.rollPrimary.rollPrimaryID)
+      .map((actor) => ({value: actor.id, display: actor.name}));
+    return {
+      Assist: nonPrimaryPCs,
+      Setup: nonPrimaryPCs,
+      Group: nonPrimaryPCs
+    };
+  }
 
   get rollType(): RollType { return this.flagData.rollType; }
 
@@ -2205,7 +2299,7 @@ class BladesRoll extends DocumentSheet {
       ? U.objMerge(
         U.objMerge(
           defaultFactors,
-          this.rollPrimary.rollFactors,
+          this.rollOpposition.rollFactors,
           {isMutatingOk: false}
         ),
         this.flagData.rollFactorToggles.opposition,
@@ -2693,10 +2787,8 @@ class BladesRoll extends DocumentSheet {
 
       rollOpposition: this.rollOpposition,
       rollParticipants: this.rollParticipants,
+      rollParticipantOptions: this.rollParticipantSelectOptions,
       rollEffects: Object.values(Effect),
-      teamworkDocs: game.actors
-        .filter((actor) => actor.hasTag(Tag.PC.ActivePC))
-        .map((actor) => ({value: actor.id, display: actor.name})),
       rollTraitValOverride: this.rollTraitValOverride,
       rollFactorPenaltiesNegated: this.rollFactorPenaltiesNegated,
 
@@ -3332,19 +3424,37 @@ class BladesRoll extends DocumentSheet {
       .then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
   }
 
-  async _gmControlSelect(event: SelectChangeEvent) {
+  async _onSelectChange(event: SelectChangeEvent) {
     event.preventDefault();
-    const elem$ = $(event.currentTarget);
-    const section = elem$.data("rollSection");
-    const subSection = elem$.data("rollSubSection");
-    const selectedOption = elem$.val();
-
-    if (typeof selectedOption !== "string") { return; }
-    if (selectedOption === "false") {
-      await this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.rollParticipantData.${section}.${subSection}`);
+    const elem = event.currentTarget;
+    const {docType} = elem.dataset;
+    if (elem.value !== "" && docType?.startsWith("BladesRollParticipant")) {
+      const [_, section, subSection] = docType.split(".");
+      await this.addRollParticipant(
+        elem.value,
+        section as BladesRoll.RollParticipantSection,
+        subSection as BladesRoll.RollParticipantSubSection
+      );
+    } else {
+      await U.EventHandlers.onSelectChange(this, event);
+      socketlib.system.executeForEveryone("renderRollCollab", this.rollID);
     }
-    await this.addRollParticipant(selectedOption, section, subSection);
   }
+
+  // Async _gmControlSelect(event: SelectChangeEvent) {
+  //   event.preventDefault();
+  //   const elem$ = $(event.currentTarget);
+  //   const section = elem$.data("rollSection");
+  //   const subSection = elem$.data("rollSubSection");
+  //   const selectedOption = elem$.val();
+
+  //   if (typeof selectedOption !== "string") { return; }
+  //   if (selectedOption === "false") {
+  //     await this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.rollParticipantData.${section}.${subSection}`);
+  //   }
+  //   await this.addRollParticipant(selectedOption, section, subSection);
+
+  // }
 
   get resistanceStressCost(): number {
     const dieVals = this.dieVals;
@@ -3388,6 +3498,10 @@ class BladesRoll extends DocumentSheet {
     html.find("[data-action='roll']").on({
       click: () => this.resolveRoll()
     });
+
+    html
+      .find("select[data-action='player-select']")
+      .on({change: this._onSelectChange.bind(this)});
 
     if (!game.user.isGM) { return; }
 
@@ -3434,9 +3548,9 @@ class BladesRoll extends DocumentSheet {
       click: this._gmControlToggleFactor.bind(this)
     });
 
-    html.find("select[data-action=\"gm-select\"]").on({
-      change: this._gmControlSelect.bind(this)
-    });
+    html
+      .find("select[data-action='gm-select']")
+      .on({change: this._onSelectChange.bind(this)});
 
   }
   // #endregion

@@ -49,6 +49,17 @@
   <div class="roll-sheet-float-block roll-source-bg-overlay">  </div>
   <div class="split-root-left">
     <section class="sheet-main flex-vertical">
+      <div class="roll-sheet-block roll-participants-block flex-horizontal">
+        {{#each rollParticipantData as |sectionData section|}}
+          {{#each sectionData as |participantData subSection|}}
+            <span class="flex-horizontal">
+              <label class="section-subsection">{{section}}:{{subSection}} -- </label>
+              <span class="roll-participant-name">{{participantData.rollParticipantName}}</span>
+            </span>
+          {{/each}}
+        {{/each}}
+      </div>
+
       <div class="roll-sheet-block rolling-block flex-vertical">
         <div class="roll-sheet-sub-block roll-header-block flex-horizontal">
           <label class="filled-label">Rolling:</label>
@@ -65,13 +76,13 @@
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block flex-horizontal">
           {{#each posRollMods.roll }}
           {{#unless isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/unless}}
           {{/each}}
           <span class="roll-mod-block-spacer mid-spacer"></span>
           {{#each negRollMods.roll }}
           {{#unless isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/unless}}
           {{/each}}
         </div>
@@ -79,12 +90,12 @@
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-vertical">
           {{#each posRollMods.roll }}
           {{#if isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/if}}
           {{/each}}
           {{#each negRollMods.roll }}
           {{#if isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/if}}
           {{/each}}
         </div>
@@ -107,13 +118,13 @@
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block flex-horizontal">
           {{#each posRollMods.position }}
           {{#unless isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/unless}}
           {{/each}}
           <span class="roll-mod-block-spacer mid-spacer"></span>
           {{#each negRollMods.position }}
           {{#unless isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/unless}}
           {{/each}}
         </div>
@@ -121,12 +132,12 @@
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-vertical">
           {{#each posRollMods.position }}
           {{#if isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/if}}
           {{/each}}
           {{#each negRollMods.position }}
           {{#if isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/if}}
           {{/each}}
         </div>
@@ -149,13 +160,13 @@
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block flex-horizontal">
           {{#each posRollMods.effect }}
           {{#unless isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/unless}}
           {{/each}}
           <span class="roll-mod-block-spacer mid-spacer"></span>
           {{#each negRollMods.effect }}
           {{#unless isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/unless}}
           {{/each}}
         </div>
@@ -163,12 +174,12 @@
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-vertical">
           {{#each posRollMods.effect }}
           {{#if isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/if}}
           {{/each}}
           {{#each negRollMods.effect }}
           {{#if isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/if}}
           {{/each}}
         </div>
@@ -184,13 +195,13 @@
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block flex-horizontal">
           {{#each posRollMods.result }}
           {{#unless isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/unless}}
           {{/each}}
           <span class="roll-mod-block-spacer mid-spacer"></span>
           {{#each negRollMods.result }}
           {{#unless isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/unless}}
           {{/each}}
         </div>
@@ -198,12 +209,12 @@
         <div class="roll-sheet-sub-block roll-effects-block gm-effects-block inactive-mod-block flex-vertical">
           {{#each posRollMods.result }}
           {{#if isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/if}}
           {{/each}}
           {{#each negRollMods.result }}
           {{#if isInInactiveBlock}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
           {{/if}}
           {{/each}}
         </div>
@@ -252,13 +263,13 @@
   <div class="roll-sheet-float-block roll-sheet-sub-block roll-effects-block flex-horizontal">
     {{#each posRollMods.after }}
     {{#unless isInInactiveBlock}}
-    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
     {{/unless}}
     {{/each}}
     <span class="roll-mod-block-spacer mid-spacer"></span>
     {{#each negRollMods.after }}
     {{#unless isInInactiveBlock}}
-    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections}}
+    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM}}
     {{/unless}}
     {{/each}}
   </div>
@@ -266,12 +277,12 @@
   <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
     {{#each posRollMods.after }}
     {{#if isInInactiveBlock}}
-    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
     {{/if}}
     {{/each}}
     {{#each negRollMods.after }}
     {{#if isInInactiveBlock}}
-    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip isGM=@root.isGM teamworkDocs=@root.teamworkDocs docSelections=@root.docSelections }}
+    {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" status=status sideString=sideString tooltip=tooltip selectOptions=selectOptions isGM=@root.isGM }}
     {{/if}}
     {{/each}}
   </div>

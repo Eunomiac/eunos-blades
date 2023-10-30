@@ -103,6 +103,9 @@ declare global {
   // Represents a generic Blades document
   type BladesDoc = BladesActor | BladesItem;
 
+  // Represents any Blades document sheet
+  type BladesSheet = BladesActorSheet | BladesItemSheet | BladesRoll;
+
   // Represents a reference to a Blades document
   type DocRef = string | BladesDoc;
 

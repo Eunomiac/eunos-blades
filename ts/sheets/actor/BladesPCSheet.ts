@@ -45,14 +45,14 @@ class BladesPCSheet extends BladesActorSheet {
 
     const sheetData: Partial<BladesActorDataOfType<BladesActorType.pc>> = {};
 
-    //~ Assemble embedded actors and items
+    // ~ Assemble embedded actors and items
     sheetData.preparedItems = Object.assign(
       context.preparedItems ?? {},
       {
         abilities: activeSubItems
           .filter((item): item is BladesItemOfType<BladesItemType.ability> => item.type === BladesItemType.ability)
           .map((item) => {
-            //~ Assign dotlines to abilities with usage data
+            // ~ Assign dotlines to abilities with usage data
             if (item.system.uses_per_score.max) {
               Object.assign(item, {
                 inRuleDotline: {
@@ -71,37 +71,42 @@ class BladesPCSheet extends BladesActorSheet {
         background: activeSubItems.find((item) => item.type === BladesItemType.background),
         heritage: activeSubItems.find((item) => item.type === BladesItemType.heritage),
         vice: activeSubItems.find((item) => item.type === BladesItemType.vice),
-        loadout: activeSubItems.filter((item): item is BladesItemOfType<BladesItemType.gear> => item.type === BladesItemType.gear).map((item) => {
+        loadout: activeSubItems
+          .filter((item): item is BladesItemOfType<BladesItemType.gear> => item.type === BladesItemType.gear)
+          .map((item) => {
           // Assign load and usage data to gear
-          if (item.system.load) {
-            Object.assign(item, {
-              numberCircle: item.system.load,
-              numberCircleClass: "item-load"
-            });
-          }
-          if (item.system.uses_per_score.max) {
-            Object.assign(item, {
-              inRuleDotline: {
-                data: item.system.uses_per_score,
-                dotlineLabel: "Uses",
-                target: "item.system.uses_per_score.value",
-                iconEmpty: "dot-empty.svg",
-                iconEmptyHover: "dot-empty-hover.svg",
-                iconFull: "dot-full.svg",
-                iconFullHover: "dot-full-hover.svg"
-              }
-            });
-          }
-          return item;
-        }),
+            if (item.system.load) {
+              Object.assign(item, {
+                numberCircle: item.system.load,
+                numberCircleClass: "item-load"
+              });
+            }
+            if (item.system.uses_per_score.max) {
+              Object.assign(item, {
+                inRuleDotline: {
+                  data: item.system.uses_per_score,
+                  dotlineLabel: "Uses",
+                  target: "item.system.uses_per_score.value",
+                  iconEmpty: "dot-empty.svg",
+                  iconEmptyHover: "dot-empty-hover.svg",
+                  iconFull: "dot-full.svg",
+                  iconFullHover: "dot-full-hover.svg"
+                }
+              });
+            }
+            return item;
+          }),
         playbook: this.actor.playbook
       }
     ) as BladesActorDataOfType<BladesActorType.pc>["preparedItems"];
 
     sheetData.preparedActors = {
-      crew: activeSubActors.find((actor): actor is BladesActorOfType<BladesActorType.crew> => actor.type === BladesActorType.crew),
-      vice_purveyor: activeSubActors.find((actor): actor is BladesActorOfType<BladesActorType.npc> => actor.hasTag(Tag.NPC.VicePurveyor)),
-      acquaintances: activeSubActors.filter((actor): actor is BladesActorOfType<BladesActorType.npc> => actor.hasTag(Tag.NPC.Acquaintance))
+      crew: activeSubActors
+        .find((actor): actor is BladesActorOfType<BladesActorType.crew> => actor.type === BladesActorType.crew),
+      vice_purveyor: activeSubActors
+        .find((actor): actor is BladesActorOfType<BladesActorType.npc> => actor.hasTag(Tag.NPC.VicePurveyor)),
+      acquaintances: activeSubActors
+        .filter((actor): actor is BladesActorOfType<BladesActorType.npc> => actor.hasTag(Tag.NPC.Acquaintance))
     };
 
     sheetData.hasVicePurveyor = Boolean(this.actor.playbook?.hasTag(Tag.Gear.Advanced) === false
@@ -156,8 +161,8 @@ class BladesPCSheet extends BladesActorSheet {
           isLocked: true
         },
         compContainer: {
-          "class": "comp-trauma-conditions comp-vertical full-width",
-          "blocks": [
+          class: "comp-trauma-conditions comp-vertical full-width",
+          blocks: [
             this.actor.traumaList.slice(0, Math.ceil(this.actor.traumaList.length / 2))
               .map((tName) => ({
                 checkLabel: tName,
@@ -202,20 +207,27 @@ class BladesPCSheet extends BladesActorSheet {
 
     sheetData.loadData = {
       curLoad: this.actor.currentLoad,
-      selLoadCount: this.actor.system.loadout.levels[U.lCase(game.i18n.localize(this.actor.system.loadout.selected.toString())) as Loadout],
-      selections: C.Loadout.selections,
-      selLoadLevel: this.actor.system.loadout.selected.toString()
+      selLoadCount: this.actor.system.loadout.levels[
+        U.lCase(this.actor.system.loadout.selected as Loadout)
+      ],
+      options: C.Loadout.selections,
+      selected: this.actor.system.loadout.selected ?? ""
     };
 
     sheetData.armor = Object.fromEntries(Object.entries(this.actor.system.armor.active)
       .filter(([, isActive]) => isActive)
-      .map(([armor]) => [armor, this.actor.system.armor.checked[armor as KeyOf<typeof this.actor.system.armor.checked>]]));
+      .map(([armor]) => [
+        armor,
+        this.actor.system.armor.checked[armor as KeyOf<typeof this.actor.system.armor.checked>]
+      ]));
 
     sheetData.attributeData = {} as Record<AttributeTrait, {
       tooltip: string,
       actions: Record<ActionTrait, ValueMax & {tooltip: string}>
     }>;
-    const attrEntries = Object.entries(this.actor.system.attributes) as Array<[AttributeTrait, Record<ActionTrait,ValueMax>]>;
+    const attrEntries = Object.entries(this.actor.system.attributes) as Array<
+      [AttributeTrait, Record<ActionTrait, ValueMax>]
+    >;
     for (const [attribute, attrData] of attrEntries) {
       sheetData.attributeData[attribute] = {
         tooltip: C.AttributeTooltips[attribute],
@@ -226,7 +238,9 @@ class BladesPCSheet extends BladesActorSheet {
         sheetData.attributeData[attribute].actions[action] = {
           tooltip: C.ActionTooltips[action],
           value: actionData.value,
-          max: BladesGMTrackerSheet.Get().phase === BladesPhase.CharGen ? 2 : this.actor.system.attributes[attribute][action].max
+          max: BladesGMTrackerSheet.Get().phase === BladesPhase.CharGen
+            ? 2
+            : this.actor.system.attributes[attribute][action].max
         };
       }
     }
@@ -234,7 +248,7 @@ class BladesPCSheet extends BladesActorSheet {
     sheetData.gatherInfoTooltip = (new Handlebars.SafeString([
       "<h2>Gathering Information: Questions to Consider</h2>",
       "<ul>",
-      ... Object.values(this.actor.system.gather_info ?? []).map((line) => `<li>${line}</li>`) ?? [],
+      ...Object.values(this.actor.system.gather_info ?? []).map((line) => `<li>${line}</li>`) ?? [],
       "</ul>"
     ].join(""))).toString();
 
@@ -248,6 +262,7 @@ class BladesPCSheet extends BladesActorSheet {
   get activeArmor() {
     return Object.keys(U.objFilter(this.actor.system.armor.active, (val: boolean) => val === true));
   }
+
   get checkedArmor() {
     return Object.keys(U.objFilter(
       this.actor.system.armor.checked,
@@ -255,6 +270,7 @@ class BladesPCSheet extends BladesActorSheet {
         && this.actor.system.armor.active[key] === true
     ));
   }
+
   get uncheckedArmor() {
     return Object.keys(U.objFilter(
       this.actor.system.armor.active,
@@ -264,24 +280,24 @@ class BladesPCSheet extends BladesActorSheet {
   }
 
   _getHoverArmor(): string|false {
-    if (!this.activeArmor.length) { return false }
+    if (!this.activeArmor.length) { return false; }
     if (this.activeArmor.includes("heavy")) {
       return this.checkedArmor.includes("heavy") ? "light" : "heavy";
-    } else if (this.activeArmor.includes("light")) { return "light" }
+    } else if (this.activeArmor.includes("light")) { return "light"; }
     return "special";
   }
 
   _getClickArmor(): string|false {
-    if (!this.uncheckedArmor.length) { return false }
-    if (this.uncheckedArmor.includes("heavy")) { return "heavy" }
-    if (this.uncheckedArmor.includes("light")) { return "light" }
+    if (!this.uncheckedArmor.length) { return false; }
+    if (this.uncheckedArmor.includes("heavy")) { return "heavy"; }
+    if (this.uncheckedArmor.includes("light")) { return "light"; }
     return "special";
   }
 
   _getContextMenuArmor(): string|false {
-    if (!this.checkedArmor.length) { return false }
-    if (this.checkedArmor.includes("light")) { return "light" }
-    if (this.checkedArmor.includes("heavy")) { return "heavy" }
+    if (!this.checkedArmor.length) { return false; }
+    if (this.checkedArmor.includes("light")) { return "light"; }
+    if (this.checkedArmor.includes("heavy")) { return "heavy"; }
     return "special";
   }
 
@@ -298,50 +314,50 @@ class BladesPCSheet extends BladesActorSheet {
 
     super.activateListeners(html);
 
-    //~ Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) {return}
+    // ~ Everything below here is only needed if the sheet is editable
+    if (!this.options.editable) {return;}
 
     const self = this;
 
-    //~ Armor Control
+    // ~ Armor Control
     html.find(".main-armor-control").on({
       click() {
         const targetArmor = self._getClickArmor();
-        if (!targetArmor) { return }
+        if (!targetArmor) { return; }
         self.actor.update({[`system.armor.checked.${targetArmor}`]: true});
       },
       contextmenu() {
         const targetArmor = self._getContextMenuArmor();
-        if (!targetArmor) { return }
+        if (!targetArmor) { return; }
         self.actor.update({[`system.armor.checked.${targetArmor}`]: false});
       },
       mouseenter() {
         const targetArmor = self._getHoverArmor();
         eLog.log4("Mouse Enter", targetArmor, this, $(this), $(this).next());
-        if (!targetArmor) { return }
+        if (!targetArmor) { return; }
         $(this).siblings(`.svg-armor.armor-${targetArmor}`).addClass("hover-over");
       },
       mouseleave() {
         const targetArmor = self._getHoverArmor();
-        if (!targetArmor) { return }
+        if (!targetArmor) { return; }
         $(this).siblings(`.svg-armor.armor-${targetArmor}`).removeClass("hover-over");
       }
     });
     html.find(".special-armor-control").on({
       click() {
-        if (!self.activeArmor.includes("special")) { return }
-        self.actor.update({["system.armor.checked.special"]: self.uncheckedArmor.includes("special")});
+        if (!self.activeArmor.includes("special")) { return; }
+        self.actor.update({"system.armor.checked.special": self.uncheckedArmor.includes("special")});
       },
       contextmenu() {
-        if (!self.activeArmor.includes("special")) { return }
-        self.actor.update({["system.armor.checked.special"]: self.uncheckedArmor.includes("special")});
+        if (!self.activeArmor.includes("special")) { return; }
+        self.actor.update({"system.armor.checked.special": self.uncheckedArmor.includes("special")});
       },
       mouseenter() {
-        if (!self.activeArmor.includes("special") || self.activeArmor.length === 1) { return }
+        if (!self.activeArmor.includes("special") || self.activeArmor.length === 1) { return; }
         $(this).siblings(".svg-armor.armor-special").addClass("hover-over");
       },
       mouseleave() {
-        if (!self.activeArmor.includes("special") || self.activeArmor.length === 1) { return }
+        if (!self.activeArmor.includes("special") || self.activeArmor.length === 1) { return; }
         $(this).siblings(".svg-armor.armor-special").removeClass("hover-over");
       }
     });

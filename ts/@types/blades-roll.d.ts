@@ -101,7 +101,10 @@ declare global {
 
       rollPositions: Position[],
       rollEffects: Effect[],
-      teamworkDocs: BladesSelectOption<string>[],
+      rollParticipantOptions: Record<
+        "Assist"|"Setup"|"Group",
+        Array<BladesSelectOption<string>>
+      >,
       rollPositionFinal: Position,
       rollEffectFinal: Effect,
       isAffectingResult: boolean,
@@ -169,6 +172,8 @@ declare global {
 
       value: number,
       effectKeys?: string[],
+
+      selected?: string,
       sideString?: string,
       tooltip: string,
 
@@ -277,21 +282,23 @@ declare global {
       }
     }
 
+    export type RollParticipantData = Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData
+
     export interface RollParticipantFlagData {
       [RollModSection.roll]?: {
-        Assist?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
-        Group_1?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
-        Group_2?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
-        Group_3?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
-        Group_4?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
-        Group_5?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
-        Group_6?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData,
+        Assist?: RollParticipantData,
+        Group_1?: RollParticipantData,
+        Group_2?: RollParticipantData,
+        Group_3?: RollParticipantData,
+        Group_4?: RollParticipantData,
+        Group_5?: RollParticipantData,
+        Group_6?: RollParticipantData,
       },
       [RollModSection.position]?: {
-        Setup?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData
+        Setup?: RollParticipantData
       },
       [RollModSection.effect]?: {
-        Setup?: Omit<ParticipantDocData, "rollParticipantDoc"> & ParticipantSectionData
+        Setup?: RollParticipantData
       }
     }
 

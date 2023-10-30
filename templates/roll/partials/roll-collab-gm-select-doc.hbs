@@ -3,14 +3,14 @@
   <label class="select-label">{{label}}</label>
   {{/if}}
   <div class="roll-select">
-    <select class="shadowed roll-sheet-select roll-sheet-select-doc tooltip-trigger"
-      data-action="gm-select" data-target-flag="{{targetFlag}}">
-      {{#select (lookup (lookup docSelections section) name)}}
-      <option value="false">(Select)</option>
-      {{#each options}}
-      <option value="{{id}}">{{name}}</option>
-      {{/each}}
-      {{/select}}
-    </select>
+    {{> ""
+      cssClass="shadowed roll-sheet-select roll-sheet-select-doc"
+      dataAction="gm-select"
+      dataFlagTarget=(concat "rollCollab.rollParticipantData." section "." name)
+      dataDType="String"
+      dataDocType=(concat "BladesRollParticipant." section "." name)
+      selected=selectedParticipant
+      options=selectOptions
+      }}
   </div>
 </div>

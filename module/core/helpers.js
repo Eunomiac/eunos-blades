@@ -15,6 +15,7 @@ export async function preloadHandlebarsTemplates() {
         "systems/eunos-blades/templates/components/dotline.hbs",
         "systems/eunos-blades/templates/components/armor.hbs",
         "systems/eunos-blades/templates/components/comp.hbs",
+        "systems/eunos-blades/templates/components/select.hbs",
         "systems/eunos-blades/templates/components/portrait.hbs",
         "systems/eunos-blades/templates/components/clock.hbs",
         "systems/eunos-blades/templates/components/roll-collab-mod.hbs",
@@ -38,9 +39,9 @@ const handlebarHelpers = {
     },
     test(param1, operator, param2) {
         const stringMap = {
-            "true": true,
-            "false": false,
-            "null": null,
+            true: true,
+            false: false,
+            null: null,
             undefined
         };
         if (["!", "not", "=??"].includes(String(param1))) {
@@ -118,10 +119,10 @@ const handlebarHelpers = {
             "*": (p1, p2) => U.pInt(p1) * U.pInt(p2),
             "/": (p1, p2) => U.pInt(p1) / U.pInt(p2),
             "%": (p1, p2) => U.pInt(p1) % U.pInt(p2),
-            "max": (p1, p2) => Math.max(U.pInt(p1), U.pInt(p2)),
-            "min": (p1, p2) => Math.min(U.pInt(p1), U.pInt(p2)),
-            "ceil": (p1) => Math.ceil(U.pFloat(p1)),
-            "floor": (p1) => Math.floor(U.pFloat(p1))
+            max: (p1, p2) => Math.max(U.pInt(p1), U.pInt(p2)),
+            min: (p1, p2) => Math.min(U.pInt(p1), U.pInt(p2)),
+            ceil: (p1) => Math.ceil(U.pFloat(p1)),
+            floor: (p1) => Math.floor(U.pFloat(p1))
         };
         const [param1, operator, param2] = typeof params[0] === "string" && params[0] in calcs
             ? [params[1], params[0]]
@@ -255,7 +256,8 @@ const handlebarHelpers = {
         return html;
     },
     repturf: (turfsAmount, options) => {
-        let html = options.fn(this), turfsAmountInt = parseInt(turfsAmount, 10);
+        let html = options.fn(this);
+        let turfsAmountInt = parseInt(turfsAmount, 10);
         if (turfsAmountInt > 6) {
             turfsAmountInt = 6;
         }

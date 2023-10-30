@@ -190,35 +190,41 @@ class BladesActorSheet extends ActorSheet {
         });
         html
             .find(".clock-container")
-            .on("click", this._onClockLeftClick.bind(this));
+            .on({ click: this._onClockLeftClick.bind(this) });
         html
             .find(".clock-container")
-            .on("contextmenu", this._onClockRightClick.bind(this));
+            .on({ contextmenu: this._onClockRightClick.bind(this) });
         html
             .find("[data-comp-id]")
             .find(".comp-title")
-            .on("click", this._onItemOpenClick.bind(this));
+            .on({ click: this._onItemOpenClick.bind(this) });
         html
             .find(".comp-control.comp-add")
-            .on("click", this._onItemAddClick.bind(this));
+            .on({ click: this._onItemAddClick.bind(this) });
         html
             .find(".comp-control.comp-delete")
-            .on("click", this._onItemRemoveClick.bind(this));
+            .on({ click: this._onItemRemoveClick.bind(this) });
         html
             .find(".comp-control.comp-delete-full")
-            .on("click", this._onItemFullRemoveClick.bind(this));
+            .on({ click: this._onItemFullRemoveClick.bind(this) });
         html
             .find(".comp-control.comp-toggle")
-            .on("click", this._onItemToggleClick.bind(this));
+            .on({ click: this._onItemToggleClick.bind(this) });
+        html
+            .find(`
+        select[data-action='player-select'],
+        select[data-action='gm-select']
+      `)
+            .on({ change: this._onSelectChange.bind(this) });
         html
             .find(".advance-button")
-            .on("click", this._onAdvanceClick.bind(this));
+            .on({ click: this._onAdvanceClick.bind(this) });
         html
             .find(".effect-control")
-            .on("click", this._onActiveEffectControlClick.bind(this));
+            .on({ click: this._onActiveEffectControlClick.bind(this) });
         html
             .find("[data-roll-trait]")
-            .on("click", this._onRollTraitClick.bind(this));
+            .on({ click: this._onRollTraitClick.bind(this) });
         if (this.options.submitOnChange) {
             html.on("change", "textarea", this._onChangeInput.bind(this));
         }
@@ -348,6 +354,10 @@ class BladesActorSheet extends ActorSheet {
         await this.actor.update({
             [target]: !getProperty(this.actor, target)
         });
+    }
+    async _onSelectChange(event) {
+        event.preventDefault();
+        await U.EventHandlers.onSelectChange(this, event);
     }
     async _onAdvanceClick(event) {
         event.preventDefault();

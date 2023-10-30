@@ -452,7 +452,11 @@ const C = {
     gBLUE: "rgba(128, 185, 255, 1)"
   },
   Loadout: {
-    selections: ["BITD.Light", "BITD.Normal", "BITD.Heavy", "BITD.Encumbered"],
+    selections: [
+      {value: "Light", display: "Light"},
+      {value: "Normal", display: "Normal"},
+      {value: "Heavy", display: "Heavy"}
+    ],
     levels: ["BITD.Light", "BITD.Normal", "BITD.Heavy", "BITD.Encumbered", "BITD.OverMax"]
   },
   AttributeTooltips: {

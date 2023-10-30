@@ -19,6 +19,7 @@ export async function preloadHandlebarsTemplates() {
     "systems/eunos-blades/templates/components/dotline.hbs",
     "systems/eunos-blades/templates/components/armor.hbs",
     "systems/eunos-blades/templates/components/comp.hbs",
+    "systems/eunos-blades/templates/components/select.hbs",
     "systems/eunos-blades/templates/components/portrait.hbs",
     "systems/eunos-blades/templates/components/clock.hbs",
     "systems/eunos-blades/templates/components/roll-collab-mod.hbs",
@@ -44,15 +45,15 @@ export async function preloadHandlebarsTemplates() {
 // #endregion ░░░░[Preload Templates]░░░░
 
 // #region ████████ Handlebars: Handlebar Helpers Definitions ████████ ~
-const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
+const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
   randString(param1 = 10) {
     return U.randString(param1);
   },
   test(param1: unknown, operator: string, param2: unknown) {
     const stringMap = {
-      "true": true,
-      "false": false,
-      "null": null,
+      true: true,
+      false: false,
+      null: null,
       undefined
     };
     if (["!", "not", "=??"].includes(String(param1))) {
@@ -65,20 +66,20 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
       param2 = stringMap[param2 as keyof typeof stringMap];
     }
     switch (operator) {
-      case "!": case "not": { return !param1 }
-      case "=??": { return ([undefined, null] as unknown[]).includes(param1) }
-      case "&&": { return param1 && param2 }
-      case "||": { return param1 || param2 }
-      case "==": { return U.areFuzzyEqual(param1, param2) }
-      case "===": { return param1 === param2 }
+      case "!": case "not": { return !param1; }
+      case "=??": { return ([undefined, null] as unknown[]).includes(param1); }
+      case "&&": { return param1 && param2; }
+      case "||": { return param1 || param2; }
+      case "==": { return U.areFuzzyEqual(param1, param2); }
+      case "===": { return param1 === param2; }
       case "!=":
-      case "!==": { return param1 !== param2 }
-      case ">": { return typeof param1 === "number" && typeof param2 === "number" && param1 > param2 }
-      case "<": { return typeof param1 === "number" && typeof param2 === "number" && param1 < param2 }
-      case ">=": { return typeof param1 === "number" && typeof param2 === "number" && param1 >= param2 }
-      case "<=": { return typeof param1 === "number" && typeof param2 === "number" && param1 <= param2 }
-      case "??": { return param1 ?? param2 }
-      case "includes": { return Array.isArray(param1) && param1.includes(param2) }
+      case "!==": { return param1 !== param2; }
+      case ">": { return typeof param1 === "number" && typeof param2 === "number" && param1 > param2; }
+      case "<": { return typeof param1 === "number" && typeof param2 === "number" && param1 < param2; }
+      case ">=": { return typeof param1 === "number" && typeof param2 === "number" && param1 >= param2; }
+      case "<=": { return typeof param1 === "number" && typeof param2 === "number" && param1 <= param2; }
+      case "??": { return param1 ?? param2; }
+      case "includes": { return Array.isArray(param1) && param1.includes(param2); }
       case "in": {
         if (Array.isArray(param2)) {
           return param2.includes(param1);
@@ -91,7 +92,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
         }
         return false;
       }
-      default: { return false }
+      default: { return false; }
     }
   },
   calc(...params: unknown[]) {
@@ -101,10 +102,10 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
       "*": (p1, p2) => U.pInt(p1) * U.pInt(p2),
       "/": (p1, p2) => U.pInt(p1) / U.pInt(p2),
       "%": (p1, p2) => U.pInt(p1) % U.pInt(p2),
-      "max": (p1, p2) => Math.max(U.pInt(p1), U.pInt(p2)),
-      "min": (p1, p2) => Math.min(U.pInt(p1), U.pInt(p2)),
-      "ceil": (p1) => Math.ceil(U.pFloat(p1)),
-      "floor": (p1) => Math.floor(U.pFloat(p1))
+      max: (p1, p2) => Math.max(U.pInt(p1), U.pInt(p2)),
+      min: (p1, p2) => Math.min(U.pInt(p1), U.pInt(p2)),
+      ceil: (p1) => Math.ceil(U.pFloat(p1)),
+      floor: (p1) => Math.floor(U.pFloat(p1))
     };
     const [param1, operator, param2] = typeof params[0] === "string" && params[0] in calcs
       ? [params[1], params[0]]
@@ -139,7 +140,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
     from = U.pInt(from);
     to = U.pInt(to);
     stepSize = U.pInt(stepSize) || 1;
-    if (from > to) { return "" }
+    if (from > to) { return ""; }
     let html = "";
     for (let i = parseInt(from || 0, 10); i <= parseInt(to || 0, 10); i += stepSize) {
       html += options.fn(i);
@@ -152,7 +153,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
   compileSvg(...args): string {
     const [svgDotKey, svgPaths]: [string, string] = args as [string, string];
     const svgData = getProperty(SVGDATA, svgDotKey) as HbsSvgData|undefined;
-    if (!svgData) { return "" }
+    if (!svgData) { return ""; }
     const {viewBox, paths} = svgData;
     return [
       `<svg viewBox="${viewBox}">`,
@@ -165,7 +166,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
   eLog(...args) {
     args.pop();
     let dbLevel = 5;
-    if ([0,1,2,3,4,5].includes(args[0])) {
+    if ([0, 1, 2, 3, 4, 5].includes(args[0])) {
       dbLevel = args.shift();
     }
     eLog.hbsLog(...args, dbLevel);
@@ -175,7 +176,7 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
   // Which other connection does this connector overlap with?
   getConnectorPartner: (index: number|string, direction: Direction): string|null => {
     index = parseInt(`${index}`, 10);
-    const partners: Record<number, Record<string,number>> = {
+    const partners: Record<number, Record<string, number>> = {
       1: {right: 2, bottom: 6},
       2: {left: 1, right: 3, bottom: 7},
       3: {left: 2, right: 4, bottom: 8},
@@ -193,8 +194,8 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
       15: {top: 10, left: 14}
     };
     const partnerDir = {left: "right", right: "left", top: "bottom", bottom: "top"}[direction];
-    const partnerNum = partners[index ][direction] ?? 0;
-    if (partnerNum) { return `${partnerNum}-${partnerDir}` }
+    const partnerNum = partners[index][direction] ?? 0;
+    if (partnerNum) { return `${partnerNum}-${partnerDir}`; }
     return null;
   },
   // Is the value Turf side.
@@ -217,8 +218,8 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
       14: ["bottom"],
       15: ["right", "bottom"]
     };
-    if (!(index in edges)) { return true }
-    return edges[index ].includes(direction);
+    if (!(index in edges)) { return true; }
+    return edges[index].includes(direction);
   },
   // Multiboxes
   multiboxes(selected, options) {
@@ -236,8 +237,8 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
     return html;
   },
   repturf: (turfsAmount, options) => {
-    let html = options.fn(this),
-        turfsAmountInt = parseInt(turfsAmount, 10);
+    let html = options.fn(this);
+    let turfsAmountInt = parseInt(turfsAmount, 10);
 
     // Can't be more than 6.
     if (turfsAmountInt > 6) {
@@ -255,8 +256,8 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
   // Usage: (concat 'first 'second')
   concat(...args: unknown[]) {
     let outStr = "";
-    for(const arg of args){
-      if(typeof arg === "string"){
+    for (const arg of args) {
+      if (typeof arg === "string") {
         outStr += arg;
       }
     }
@@ -264,14 +265,17 @@ const handlebarHelpers: Record<string,Handlebars.HelperDelegate> = {
   }
 };
 
-handlebarHelpers.eLog1 = function(...args) { handlebarHelpers.eLog(...[1, ...args.slice(0, 7)]) };
-handlebarHelpers.eLog2 = function(...args) { handlebarHelpers.eLog(...[2, ...args.slice(0, 7)]) };
-handlebarHelpers.eLog3 = function(...args) { handlebarHelpers.eLog(...[3, ...args.slice(0, 7)]) };
-handlebarHelpers.eLog4 = function(...args) { handlebarHelpers.eLog(...[4, ...args.slice(0, 7)]) };
-handlebarHelpers.eLog5 = function(...args) { handlebarHelpers.eLog(...[5, ...args.slice(0, 7)]) };
+handlebarHelpers.eLog1 = function(...args) { handlebarHelpers.eLog(...[1, ...args.slice(0, 7)]); };
+handlebarHelpers.eLog2 = function(...args) { handlebarHelpers.eLog(...[2, ...args.slice(0, 7)]); };
+handlebarHelpers.eLog3 = function(...args) { handlebarHelpers.eLog(...[3, ...args.slice(0, 7)]); };
+handlebarHelpers.eLog4 = function(...args) { handlebarHelpers.eLog(...[4, ...args.slice(0, 7)]); };
+handlebarHelpers.eLog5 = function(...args) { handlebarHelpers.eLog(...[5, ...args.slice(0, 7)]); };
 
 Object.assign(handlebarHelpers);
 
+/**
+ *
+ */
 export function registerHandlebarHelpers() {
   Object.entries(handlebarHelpers).forEach(([name, func]) => Handlebars.registerHelper(name, func));
 }
