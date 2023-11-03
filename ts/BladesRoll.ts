@@ -518,12 +518,8 @@ class BladesRollMod {
               name: harmConsequence.type === ConsequenceType.Harm1
                 ? "Fully Negated"
                 : (Object.values(harmConsequence.resistOptions ?? [])[0]?.name ?? harmConsequence.name),
-              type: C.ResistedConsequenceTypes[harmConsequence.type as KeyOf<typeof C["ResistedConsequenceTypes"]>]
-              /* Need to get AI to query for this, but it has to be temporary...
-               ... so generate the 'resistOptions' as soon as the consequence is named?
-               No wait: This is a RESISTANCE roll. Resistance rolls should have all that
-                 info fed to them after being determined via previous roll, within config.consequenceData
-               */
+              type: C.ResistedConsequenceTypes[harmConsequence.type as KeyOf<typeof C["ResistedConsequenceTypes"]>],
+              isSelected: true
             };
           }
         },
@@ -2159,19 +2155,19 @@ class BladesRoll extends DocumentSheet {
     await this.clearFlagVal(`consequenceData.${cName}`);
   }
 
-  async addResistanceOptions(cName: string, rNames: string[]) {
-    const cData = this.getFlagVal<BladesRoll.ConsequenceData>(`consequenceData.${cName}`);
+  async addResistanceOptions(cResult: RollResult, cIndex: string, rNames: string[]) {
+    const cData = this.getFlagVal<BladesRoll.ConsequenceData>(`consequenceData.${cResult}.${cIndex}`);
     if (!cData) { return; }
     const cType = cData.type as keyof typeof C["ResistedConsequenceTypes"];
     const rType = C.ResistedConsequenceTypes[cType] ?? undefined;
     const resistOptions = cData.resistOptions ?? {};
     for (const rName of rNames) {
-      resistOptions[rName] = {name: rName};
+      resistOptions[rName] = {name: rName, isSelected: false};
       if (rType) {
         resistOptions[rName].type = rType;
       }
     }
-    await this.setFlagVal(`consequenceData.${cName}.resistOptions`, resistOptions);
+    await this.setFlagVal(`consequenceData.${cResult}.${cIndex}.resistOptions`, resistOptions);
   }
 
   promptGMForConsequences() {
@@ -2621,12 +2617,16 @@ class BladesRoll extends DocumentSheet {
 
   // #region *** GETDATA *** ~
 
-  get consequenceTypeOptions(): Array<BladesSelectOption<ConsequenceType>> {
-    if (!this.rollResult) { return []; }
-    if (this.rollResult === RollResult.critical || this.rollResult === RollResult.success) { return []; }
-
-    return C.Consequences[this.finalPosition][this.rollResult]
-      .map((cType) => ({value: cType, display: cType}));
+  get consequenceTypeOptions(): {
+    [RollResult.partial]: Array<BladesSelectOption<ConsequenceType>>,
+    [RollResult.fail]: Array<BladesSelectOption<ConsequenceType>>
+    } {
+    return {
+      [RollResult.partial]: C.Consequences[this.finalPosition][RollResult.partial]
+        .map((cType) => ({value: cType, display: cType})),
+      [RollResult.fail]: C.Consequences[this.finalPosition][RollResult.fail]
+        .map((cType) => ({value: cType, display: cType}))
+    };
   }
 
   private _consequenceAI?: BladesAI;
@@ -2640,21 +2640,31 @@ class BladesRoll extends DocumentSheet {
       this._consequenceAI = new BladesAI(AGENTS.ConsequenceAdjuster);
     }
 
-    await Promise.all(Object.values(consequenceData).map((cData) => {
-      // For each consequence, if there are no resistOptions ...
-      if (!cData.resistOptions) {
-        // Check for a pending AI prompt: create a new one if not found.
-        if (!this._consequenceAI?.hasQueried(cData.name)) {
-          this._consequenceAI?.query(cData.name, cData.name);
-        } else {
-          const response = this._consequenceAI?.getResponse(cData.name);
-          if (response) {
-            return this.addResistanceOptions(cData.name, response.split("|"));
-          }
-        }
-      }
-      return undefined;
-    }));
+    await Promise.all((Object.entries(consequenceData) as Array<[
+      RollResult,
+      Record<string, BladesRoll.ConsequenceData>
+    ]>)
+      .map(([rollResult, cResultData]) =>
+        (Object.entries(cResultData) as Array<[
+          string,
+          BladesRoll.ConsequenceData
+        ]>)
+          .map(([cIndex, cData]) => {
+            // For each consequence, if there are no resistOptions ...
+            if (!cData.resistOptions) {
+              // Check for a pending AI prompt: create a new one if not found.
+              if (!this._consequenceAI?.hasQueried(cData.name)) {
+                this._consequenceAI?.query(cData.name, cData.name);
+              } else {
+                const response = this._consequenceAI?.getResponse(cData.name);
+                if (response) {
+                  return this.addResistanceOptions(rollResult, cIndex, response.split("|"));
+                }
+              }
+            }
+            return undefined;
+          })
+      ));
   }
 
 

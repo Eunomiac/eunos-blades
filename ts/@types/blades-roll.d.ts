@@ -7,21 +7,6 @@ declare global {
 
   namespace BladesRoll {
 
-    export interface Config {
-      rollType: RollType,
-      rollUserID: string,
-      rollPrimaryData: PrimaryDocData;
-      rollOppData?: OppositionDocData;
-      rollParticipantData?: RollParticipantData,
-      rollSubType?: RollSubType,
-      rollDowntimeAction?: DowntimeAction,
-      rollTrait?: RollTrait,
-      participantRollTo?: string,
-      consequenceData?: Record<
-        string, // display name of consequence
-        ConsequenceData
-      >
-    }
     export type ConstructorConfig = Partial<Config> & Required<Pick<Config, "rollType">>;
 
     export interface ConfigFlags extends Config {
@@ -30,16 +15,11 @@ declare global {
       rollParticipantData?: RollParticipantFlagData
     }
 
-
-
-
-
-
-
-    export type ConsequenceResisted = Omit<
-      ConsequenceData,
-      "type"|"resistOptions"|"resistedTo"|"attribute"
-    > & {type?: ConsequenceType}
+    export type ConsequenceResisted = {
+      name: string,
+      type?: ConsequenceType,
+      isSelected: boolean
+    }
 
     export interface ConsequenceData {
       name: string,
@@ -49,7 +29,6 @@ declare global {
         string,  // display name of consequence
         ConsequenceResisted // ai
       >,
-      selectedResistOption?: string,
       resistedTo?: ConsequenceResisted|false
         // player's choice from chat
     }
@@ -63,23 +42,51 @@ declare global {
 
     export type ModType = BladesItemType | "general" | "harm" | "teamwork";
 
-    export interface FlagData extends Config {
+    export interface Config {
+      rollType: RollType,
+      rollSubType?: RollSubType,
+      rollUserID: string,
+      rollTrait?: RollTrait,
+      rollDowntimeAction?: DowntimeAction,
+
+      rollPrimaryData: PrimaryDocData;
+      rollOppData?: OppositionDocData;
+      rollParticipantData?: RollParticipantData,
+
+      participantRollTo?: string,
+      consequenceData?: {
+        [RollResult.partial]?: Record<
+          string, // stringified index
+          ConsequenceData
+        >,
+        [RollResult.fail]?: Record<
+          string, // stringified index
+          ConsequenceData
+        >
+      }
+    }
+
+    export interface FlagData extends ConfigFlags {
       rollID: string;
+
+      rollModsData: Record<string,RollModStatus>;
 
       rollPrimaryData: Omit<PrimaryDocData, "rollPrimaryDoc">;
       rollOppData?: Omit<OppositionDocData, "rollOppDoc">;
       rollParticipantData?: RollParticipantFlagData;
-      rollModsData: Record<string,RollModStatus>;
+
       rollPositionInitial: Position;
       rollEffectInitial: Effect;
       rollPosEffectTrade: "position"|"effect"|false,
       rollPhase: RollPhase,
+
       GMBoosts: Partial<Record<"Dice"|Factor|"Result",number>>,
       GMOppBoosts: Partial<Record<Factor,number>>,
       rollFactorToggles: Record<
         "source"|"opposition",
         Partial<Record<Factor, FactorFlagData>>
       >,
+
       userPermissions: Record<string, RollPermissions>
     }
 
@@ -117,7 +124,10 @@ declare global {
       GMBoosts: Record<"Dice"|Factor|"Result",number>,
       GMOppBoosts: Record<Factor,number>,
 
-      consequenceTypeOptions?: BladesSelectOption<ConsequenceType>[],
+      consequenceTypeOptions?: {
+        [RollResult.partial]: BladesSelectOption<ConsequenceType>[],
+        [RollResult.fail]: BladesSelectOption<ConsequenceType>[]
+      }
 
       canTradePosition: boolean,
       canTradeEffect: boolean,

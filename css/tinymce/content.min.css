@@ -2254,6 +2254,14 @@ html, :root {
     color: var(--blades-gold-bright) !important; }
   html .red-bright, :root .red-bright {
     color: var(--blades-red-bright) !important; }
+  html .red-dark, :root .red-dark {
+    color: var(--blades-red-dark) !important; }
+  html .grey, :root .grey {
+    color: var(--blades-grey) !important; }
+  html .white, :root .white {
+    color: var(--blades-white) !important; }
+  html .white-bright, :root .white-bright {
+    color: var(--blades-white-bright) !important; }
   html .cyan-bright, :root .cyan-bright {
     color: var(--blades-cyan-bright) !important; }
   html .uppercase, :root .uppercase {

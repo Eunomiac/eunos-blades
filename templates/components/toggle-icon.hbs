@@ -1,5 +1,10 @@
 <span class="toggle-icon {{blockClass}} {{~#if isToggled}} toggled{{/if}}">
-  <input  data-dtype="Boolean" type="checkbox" class="hidden-toggle" name="{{targetKey}}" {{checked isToggled}} />
+  {{#if targetKey}}
+    <input data-dtype="Boolean" type="checkbox" class="hidden-toggle" name="{{targetKey}}" {{checked isToggled}} />
+  {{else if targetFlagKey}}
+    <input data-dtype="Boolean" type="checkbox" class="hidden-toggle" data-action="gm-toggle" data-flag-target="{{targetFlagKey}}" {{checked isToggled}} />
+  {{/if}}
+
   <i class="toggle-on {{activeClass}}"></i>
   <i class="toggle-off {{inactiveClass}}"></i>
   {{#if tooltip}}

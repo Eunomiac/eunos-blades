@@ -5,7 +5,7 @@
 |*     ▌████░░░░  ░░░░█████▐     *|
 \* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
 
-import C, { AttributeTrait, RollType, ConsequenceType } from "./core/constants.js";
+import C, { AttributeTrait, RollType, ConsequenceType, RollResult } from "./core/constants.js";
 import registerSettings, { initTinyMCEStyles, initCanvasStyles } from "./core/settings.js";
 import { registerHandlebarHelpers, preloadHandlebarsTemplates } from "./core/helpers.js";
 import BladesPushAlert from "./BladesPushAlert.js";
@@ -58,14 +58,17 @@ class GlobalGetter {
                 rollFactors: pc.rollFactors
             },
             consequenceData: {
-                "Shattered Knee": {
-                    name: "Shattered Knee",
-                    type: ConsequenceType.Harm3,
-                    attribute: AttributeTrait.prowess,
-                    resistOptions: {
-                        "Twisted Knee": { name: "Twisted Knee", type: ConsequenceType.Harm2 }
-                    },
-                    selectedResistOption: "Twisted Knee"
+                [RollResult.fail]: {
+                    0: {
+                        name: "Shattered Knee",
+                        type: ConsequenceType.Harm3,
+                        attribute: AttributeTrait.prowess,
+                        resistOptions: {
+                            "Twisted Knee": { name: "Twisted Knee", type: ConsequenceType.Harm2, isSelected: true },
+                            "Bum Leg": { name: "Bum Leg", type: ConsequenceType.Harm2, isSelected: false },
+                            "Sprained Knee": { name: "Sprained Knee", type: ConsequenceType.Harm2, isSelected: false }
+                        }
+                    }
                 }
             }
         };

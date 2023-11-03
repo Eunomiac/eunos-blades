@@ -8968,6 +8968,14 @@ template {
     color: var(--blades-gold-bright) !important; }
   :root body.vtt.game.system-eunos-blades .app.window-app .red-bright {
     color: var(--blades-red-bright) !important; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .red-dark {
+    color: var(--blades-red-dark) !important; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .grey {
+    color: var(--blades-grey) !important; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .white {
+    color: var(--blades-white) !important; }
+  :root body.vtt.game.system-eunos-blades .app.window-app .white-bright {
+    color: var(--blades-white-bright) !important; }
   :root body.vtt.game.system-eunos-blades .app.window-app .cyan-bright {
     color: var(--blades-cyan-bright) !important; }
   :root body.vtt.game.system-eunos-blades .app.window-app .uppercase {
@@ -10546,6 +10554,14 @@ template {
           color: var(--blades-gold-bright) !important; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .red-bright {
           color: var(--blades-red-bright) !important; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .red-dark {
+          color: var(--blades-red-dark) !important; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .grey {
+          color: var(--blades-grey) !important; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .white {
+          color: var(--blades-white) !important; }
+        :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .white-bright {
+          color: var(--blades-white-bright) !important; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .cyan-bright {
           color: var(--blades-cyan-bright) !important; }
         :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .uppercase {

@@ -445,8 +445,9 @@ class BladesRollMod {
                             name: harmConsequence.type === ConsequenceType.Harm1
                                 ? "Fully Negated"
                                 : (Object.values(harmConsequence.resistOptions ?? [])[0]?.name ?? harmConsequence.name),
-                            type: C.ResistedConsequenceTypes[harmConsequence.type]
-                                                    };
+                            type: C.ResistedConsequenceTypes[harmConsequence.type],
+                            isSelected: true
+                        };
                     }
                 },
                 QualityPenalty: () => {
@@ -1732,8 +1733,8 @@ class BladesRoll extends DocumentSheet {
     async clearConsequence(cName) {
         await this.clearFlagVal(`consequenceData.${cName}`);
     }
-    async addResistanceOptions(cName, rNames) {
-        const cData = this.getFlagVal(`consequenceData.${cName}`);
+    async addResistanceOptions(cResult, cIndex, rNames) {
+        const cData = this.getFlagVal(`consequenceData.${cResult}.${cIndex}`);
         if (!cData) {
             return;
         }
@@ -1741,12 +1742,12 @@ class BladesRoll extends DocumentSheet {
         const rType = C.ResistedConsequenceTypes[cType] ?? undefined;
         const resistOptions = cData.resistOptions ?? {};
         for (const rName of rNames) {
-            resistOptions[rName] = { name: rName };
+            resistOptions[rName] = { name: rName, isSelected: false };
             if (rType) {
                 resistOptions[rName].type = rType;
             }
         }
-        await this.setFlagVal(`consequenceData.${cName}.resistOptions`, resistOptions);
+        await this.setFlagVal(`consequenceData.${cResult}.${cIndex}.resistOptions`, resistOptions);
     }
     promptGMForConsequences() {
             }
@@ -2099,14 +2100,12 @@ class BladesRoll extends DocumentSheet {
     
     
     get consequenceTypeOptions() {
-        if (!this.rollResult) {
-            return [];
-        }
-        if (this.rollResult === RollResult.critical || this.rollResult === RollResult.success) {
-            return [];
-        }
-        return C.Consequences[this.finalPosition][this.rollResult]
-            .map((cType) => ({ value: cType, display: cType }));
+        return {
+            [RollResult.partial]: C.Consequences[this.finalPosition][RollResult.partial]
+                .map((cType) => ({ value: cType, display: cType })),
+            [RollResult.fail]: C.Consequences[this.finalPosition][RollResult.fail]
+                .map((cType) => ({ value: cType, display: cType }))
+        };
     }
     _consequenceAI;
     async manageConsequenceAI(sData) {
@@ -2117,7 +2116,9 @@ class BladesRoll extends DocumentSheet {
         if (!this._consequenceAI) {
             this._consequenceAI = new BladesAI(AGENTS.ConsequenceAdjuster);
         }
-        await Promise.all(Object.values(consequenceData).map((cData) => {
+        await Promise.all(Object.entries(consequenceData)
+            .map(([rollResult, cResultData]) => Object.entries(cResultData)
+            .map(([cIndex, cData]) => {
             if (!cData.resistOptions) {
                 if (!this._consequenceAI?.hasQueried(cData.name)) {
                     this._consequenceAI?.query(cData.name, cData.name);
@@ -2125,12 +2126,12 @@ class BladesRoll extends DocumentSheet {
                 else {
                     const response = this._consequenceAI?.getResponse(cData.name);
                     if (response) {
-                        return this.addResistanceOptions(cData.name, response.split("|"));
+                        return this.addResistanceOptions(rollResult, cIndex, response.split("|"));
                     }
                 }
             }
             return undefined;
-        }));
+        })));
     }
         async getData() {
         const context = super.getData();

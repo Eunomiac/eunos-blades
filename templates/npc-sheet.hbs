@@ -64,13 +64,18 @@
 
       <div class="comp comp-traits">
         <div class="comp comp-randomizer-field field-size-half">
+
           {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
-          isToggled=system.persona.trait1.isLocked
-          activeClass="fas fa-lock"
-          activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
-          inactiveClass="far fa-lock-open-alt"
-          inactiveTooltip="<b>Randomizing Field</b><br>Click to Freeze"
-          targetKey="system.persona.trait1.isLocked" }}
+            isToggled=system.persona.trait1.isLocked
+            activeClass="fas fa-lock"
+            activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
+            inactiveClass="far fa-lock-open-alt"
+            inactiveTooltip="<b>Randomizing Field</b><br>Click to Freeze"
+            targetKey="system.persona.trait1.isLocked"
+            targetFlagKey=false
+          }}
+
+
           <input class="shadowed randomizer-input" type="text" name="system.persona.trait1.value" value="{{system.persona.trait1.value}}" placeholder="Trait">
         </div>
 
