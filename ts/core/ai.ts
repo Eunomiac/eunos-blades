@@ -127,6 +127,7 @@ class BladesAI {
    * @returns {Promise<Response>} The API response
    */
   async query(queryID: string, prompt: string, modelMod?: number, extendedContext = false) {
+    if (!prompt) { return; }
     this.responses[queryID] = null;
     const modelNum = typeof modelMod === "number"
       ? U.clampNum(this.model + modelMod, [0, 2])
@@ -206,6 +207,7 @@ class BladesAI {
 
     // Check if the response status is not 200 (OK)
     if (!response.ok) {
+      console.log("Failed AI Request:", JSON.parse(fetchRequest.body));
       // Throw an error with the status code
       throw new Error(`OpenAI API request failed with status ${response.status}`);
     }

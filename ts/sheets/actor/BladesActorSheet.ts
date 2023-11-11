@@ -409,7 +409,7 @@ class BladesActorSheet extends ActorSheet {
     if (!dialogDocs || !docCat || !docType) {
       return;
     }
-    await BladesSelectorDialog.Display(
+    await BladesSelectorDialog.DisplaySelectionDialog(
       this.actor,
       U.tCase(`Add ${docCat.replace(/_/g, " ")}`),
       docType,

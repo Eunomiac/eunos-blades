@@ -61,12 +61,12 @@ class GlobalGetter {
                 [RollResult.fail]: {
                     0: {
                         name: "Shattered Knee",
-                        type: ConsequenceType.Harm3,
+                        type: ConsequenceType.ProwessHarm3,
                         attribute: AttributeTrait.prowess,
                         resistOptions: {
-                            "Twisted Knee": { name: "Twisted Knee", type: ConsequenceType.Harm2, isSelected: true },
-                            "Bum Leg": { name: "Bum Leg", type: ConsequenceType.Harm2, isSelected: false },
-                            "Sprained Knee": { name: "Sprained Knee", type: ConsequenceType.Harm2, isSelected: false }
+                            "Twisted Knee": { name: "Twisted Knee", type: ConsequenceType.ProwessHarm2, isSelected: true },
+                            "Bum Leg": { name: "Bum Leg", type: ConsequenceType.ProwessHarm2, isSelected: false },
+                            "Sprained Knee": { name: "Sprained Knee", type: ConsequenceType.ProwessHarm2, isSelected: false }
                         }
                     }
                 }

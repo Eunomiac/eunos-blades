@@ -1243,7 +1243,7 @@ body {
 				margin: 0;
 				position: relative;
 				&.offset {
-					margin-inline-start: calc(var(--blades-spacer-sidebar)/ - 4);
+					margin-inline-start: calc(var(--blades-spacer-sidebar) * -0.25);
 				}
 			}
 			#ui-bottom {

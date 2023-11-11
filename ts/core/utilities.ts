@@ -136,7 +136,7 @@ const _romanNumerals = {
   ]
 } as const;
 const UUIDLOG: Array<[string, string, number]> = [];
-/* eslint-enable array-element-newline, object-property-newline */
+
 // #endregion ▮▮▮▮[HELPERS]▮▮▮▮
 
 // #region ████████ GETTERS: Basic Data Lookup & Retrieval ████████ ~
@@ -151,7 +151,7 @@ const isNumberString = (ref: unknown): ref is string => typeof ref === "string"
   && !isNaN(parseFloat(ref))
   && isFinite(parseFloat(ref));
 const isBooleanString = (ref: unknown): ref is "true"|"false" => typeof ref === "string"
-  && (ref === "true" || ref === "false")
+  && (ref === "true" || ref === "false");
 const isArray = (ref: unknown): ref is unknown[] => Array.isArray(ref);
 const isSimpleObj = (ref: unknown): ref is Record<key, unknown> => ref === Object(ref) && !isArray(ref);
 const isList = <T>(ref: T): ref is Record<key, unknown> & T => ref === Object(ref) && !isArray(ref);
@@ -1465,6 +1465,25 @@ const sleep = (duration: number): Promise<void> => new Promise(
 // #endregion ▄▄▄▄▄ ASYNC ▄▄▄▄▄
 
 const EventHandlers = {
+  onTextInputBlur: async (inst: BladesSheet, event: InputChangeEvent) => {
+    const elem = event.target;
+    const {action, target, flagTarget} = elem.dataset;
+    if (!action) {
+      throw new Error("Input text elements require a data-action attribute.");
+    }
+    if (!target && !flagTarget) {
+      throw new Error("Input text elements require a 'data-target' or 'data-flag-target' attribute.");
+    }
+    if (target) {
+      await inst.document.update({[target]: elem.value});
+    } else if (flagTarget) {
+      if (elem.value === "") {
+        await inst.document.unsetFlag(C.SYSTEM_ID, flagTarget);
+      } else {
+        await inst.document.setFlag(C.SYSTEM_ID, flagTarget, elem.value);
+      }
+    }
+  },
   onSelectChange: async (inst: BladesSheet, event: SelectChangeEvent) => {
     const elem = event.currentTarget;
     const {action, dtype, target, flagTarget} = elem.dataset;
@@ -1645,7 +1664,7 @@ export default {
   // EVENT HANDLERS
   EventHandlers,
   // ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
-  isDocID, loc, getSetting, getTemplatePath, displayImageSelector,
+  isDocID, loc, getSetting, getTemplatePath, displayImageSelector
 
 
 };

@@ -79,6 +79,9 @@ class BladesAI {
         return this.prompts[queryID] !== undefined;
     }
         async query(queryID, prompt, modelMod, extendedContext = false) {
+        if (!prompt) {
+            return;
+        }
         this.responses[queryID] = null;
         const modelNum = typeof modelMod === "number"
             ? U.clampNum(this.model + modelMod, [0, 2])
@@ -109,6 +112,7 @@ class BladesAI {
         
         const response = await fetch("https://api.openai.com/v1/chat/completions", fetchRequest);
         if (!response.ok) {
+            console.log("Failed AI Request:", JSON.parse(fetchRequest.body));
             throw new Error(`OpenAI API request failed with status ${response.status}`);
         }
         const data = await response.json();

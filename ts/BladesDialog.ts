@@ -3,6 +3,7 @@ import U from "./core/utilities";
 import BladesActor from "./BladesActor";
 import BladesItem from "./BladesItem";
 
+// eslint-disable-next-line no-shadow
 export enum SelectionCategory {
   Heritage = "Heritage",
   Background = "Background",
@@ -27,6 +28,12 @@ export enum SelectionCategory {
   Contact = "Contact"
 }
 
+// eslint-disable-next-line no-shadow
+export enum BladesDialogType {
+  Selection = "Selection",
+  Consequence = "Consequence"
+}
+
 class BladesSelectorDialog extends Dialog {
 
   static override get defaultOptions() {
@@ -41,11 +48,12 @@ class BladesSelectorDialog extends Dialog {
 
   static Initialize() {
     return loadTemplates([
-      "systems/eunos-blades/templates/dialog.hbs"
+      "systems/eunos-blades/templates/dialog-selection.hbs",
+      "systems/eunos-blades/templates/dialog-consequence.hbs"
     ]);
   }
 
-  static async Display(
+  static async DisplaySelectionDialog(
     parent: BladesActor,
     title: string,
     docType: "Actor"|"Item",
@@ -58,28 +66,42 @@ class BladesSelectorDialog extends Dialog {
       title,
       docType,
       tabs,
-      "tags": tags?.filter((tag): tag is BladesTag => tag !== ""),
-      "content": "",
-      "buttons": {
+      tags: tags?.filter((tag): tag is BladesTag => tag !== ""),
+      content: "",
+      buttons: {
         cancel: {
           icon: '<i class="fas fa-times"></i>',
           label: game.i18n.localize("Cancel"),
           callback: () => false
         }
       },
-      "default": "cancel"
+      default: "cancel"
     });
 
     return app.hasItems ? app.render(true, {width: app.width}) : undefined;
   }
 
+  override get template() {
+    if (this.dialogType === BladesDialogType.Selection) {
+      return "systems/eunos-blades/templates/dialog-selection.hbs";
+    }
+    return "systems/eunos-blades/templates/dialog-consequence.hbs";
+  }
+
   get hasItems() {
     return Object.values(this.tabs).some((tabItems) => tabItems.length > 0);
   }
+
   parent: BladesActor;
+
   tabs: Record<string, BladesActor[]|BladesItem[]>;
+
+  dialogType: BladesDialogType;
+
   tags: BladesTag[] = [];
+
   width: number;
+
   docType: "Actor"|"Item";
 
   constructor(data: BladesDialog.Data, options?: Partial<BladesDialog.Options>) {
@@ -99,6 +121,7 @@ class BladesSelectorDialog extends Dialog {
       delete data.tabs[validTabs[0]];
     }
 
+    this.dialogType = data.dialogType ?? BladesDialogType.Selection;
     this.docType = data.docType;
     this.parent = data.parent;
     this.tabs = data.tabs;
@@ -123,7 +146,7 @@ class BladesSelectorDialog extends Dialog {
 
     const self = this;
 
-    //~ Changing Width on Tab Change Depending on Number of Items
+    // ~ Changing Width on Tab Change Depending on Number of Items
     html.find(".nav-tabs .tab-selector").on("click", (event) => {
       const tabIndex = U.pInt($(event.currentTarget).data("tab"));
       const numItems = Object.values(self.tabs)[tabIndex].length;
@@ -132,12 +155,12 @@ class BladesSelectorDialog extends Dialog {
       this.render(false, {width});
     });
 
-    //~ Tooltips
+    // ~ Tooltips
     ApplyTooltipListeners(html);
 
-    //~ Item Control
+    // ~ Item Control
     html.find("[data-item-id]").on("click", function() {
-      if ($(this).parent().hasClass("locked")) { return }
+      if ($(this).parent().hasClass("locked")) { return; }
       const docId = $(this).data("itemId");
       const docType = $(this).data("docType");
       eLog.checkLog("dialog", "[BladesDialog] on Click", {elem: this, docId, docType, parent: self.parent});

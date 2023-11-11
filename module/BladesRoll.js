@@ -339,7 +339,7 @@ class BladesRollMod {
                 Consequence: () => this.rollInstance.rollType === RollType.Resistance
                     && Boolean(this.rollInstance.rollConsequence),
                 HarmLevel: () => this.rollInstance.rollType === RollType.Resistance
-                    && [ConsequenceType.Harm1, ConsequenceType.Harm2, ConsequenceType.Harm3, ConsequenceType.Harm4].includes(this.rollInstance.rollConsequence?.type ?? ""),
+                    && [ConsequenceType.InsightHarm1, ConsequenceType.InsightHarm2, ConsequenceType.InsightHarm3, ConsequenceType.InsightHarm4, ConsequenceType.ProwessHarm1, ConsequenceType.ProwessHarm2, ConsequenceType.ProwessHarm3, ConsequenceType.ProwessHarm4, ConsequenceType.ResolveHarm1, ConsequenceType.ResolveHarm2, ConsequenceType.ResolveHarm3, ConsequenceType.ResolveHarm4].includes(this.rollInstance.rollConsequence?.type ?? ""),
                 QualityPenalty: () => this.rollInstance.isTraitRelevant(Factor.quality)
                     && (this.rollInstance.rollFactors.source[Factor.quality]?.value ?? 0)
                         < (this.rollInstance.rollFactors.opposition[Factor.quality]?.value ?? 0),
@@ -427,22 +427,23 @@ class BladesRollMod {
                                     },
                 HarmLevel: () => {
                     const harmLevels = [
-                        ConsequenceType.Harm1,
-                        ConsequenceType.Harm2,
-                        ConsequenceType.Harm3,
-                        ConsequenceType.Harm4
+                        [ConsequenceType.InsightHarm1, ConsequenceType.ProwessHarm1, ConsequenceType.ResolveHarm1],
+                        [ConsequenceType.InsightHarm2, ConsequenceType.ProwessHarm2, ConsequenceType.ResolveHarm2],
+                        [ConsequenceType.InsightHarm3, ConsequenceType.ProwessHarm3, ConsequenceType.ResolveHarm3],
+                        [ConsequenceType.InsightHarm4, ConsequenceType.ProwessHarm4, ConsequenceType.ResolveHarm4]
                     ];
                     let harmConsequence = undefined;
                     while (!harmConsequence && harmLevels.length > 0) {
                         harmConsequence = Object.values(this.rollInstance.rollConsequences)
-                            .find(({ type }) => type === harmLevels.pop());
+                            .find(({ type }) => (harmLevels.pop() ?? []).includes(type));
                     }
                     if (harmConsequence) {
-                        if (harmConsequence.type === ConsequenceType.Harm1) {
-                            harmConsequence.resistedTo = false;
-                        }
                         harmConsequence.resistedTo = {
-                            name: harmConsequence.type === ConsequenceType.Harm1
+                            name: [
+                                ConsequenceType.InsightHarm1,
+                                ConsequenceType.ProwessHarm1,
+                                ConsequenceType.ResolveHarm1
+                            ].includes(harmConsequence.type)
                                 ? "Fully Negated"
                                 : (Object.values(harmConsequence.resistOptions ?? [])[0]?.name ?? harmConsequence.name),
                             type: C.ResistedConsequenceTypes[harmConsequence.type],
@@ -1728,6 +1729,7 @@ class BladesRoll extends DocumentSheet {
         return null;
     }
     async addConsequence(cData) {
+        eLog.checkLog2("rollCollab", "addConsequence", cData);
         await this.setFlagVal(`consequenceData.${cData.name}`, cData);
     }
     async clearConsequence(cName) {
@@ -1735,6 +1737,7 @@ class BladesRoll extends DocumentSheet {
     }
     async addResistanceOptions(cResult, cIndex, rNames) {
         const cData = this.getFlagVal(`consequenceData.${cResult}.${cIndex}`);
+        eLog.checkLog2("rollCollab", "addResistanceOptions", { cResult, cIndex, rNames, cData });
         if (!cData) {
             return;
         }
@@ -2697,6 +2700,10 @@ class BladesRoll extends DocumentSheet {
             socketlib.system.executeForEveryone("renderRollCollab", this.rollID);
         }
     }
+    async _onTextInputBlur(event) {
+        await U.EventHandlers.onTextInputBlur(this, event);
+        socketlib.system.executeForEveryone("renderRollCollab", this.rollID);
+    }
     
     get resistanceStressCost() {
         const dieVals = this.dieVals;
@@ -2774,6 +2781,9 @@ class BladesRoll extends DocumentSheet {
         html
             .find("select[data-action='gm-select']")
             .on({ change: this._onSelectChange.bind(this) });
+        html
+            .find("[data-action='gm-text-input']")
+            .on({ blur: this._onTextInputBlur.bind(this) });
     }
 
     _canDragDrop() {

@@ -16,7 +16,7 @@ const replacer = require("gulp-replace");
 const typescript = require("gulp-typescript");
 const terser = require("gulp-terser");
 
-const sasser = require("gulp-sass")(require("node-sass"));
+const sasser = require("gulp-sass")(require("sass"));
 const bundler = require("gulp-postcss");
 // Const filler = require("cq-prolyfill/postcss-plugin");
 const prefixer = require("autoprefixer");
@@ -96,8 +96,8 @@ const ansi = (str, {fg, bg, style} = {}) => {
   style = ANSICOLORS[style ?? "none"];
   return [bg, fg, style, str, ANSICOLORS.x].join("");
 };
-const toBright = color => (`b${color}` in ANSICOLORS ? `b${color}` : color);
-const toDim = color => (color.slice(1) in ANSICOLORS ? color.slice(1) : color);
+const toBright = (color) => (`b${color}` in ANSICOLORS ? `b${color}` : color);
+const toDim = (color) => (color.slice(1) in ANSICOLORS ? color.slice(1) : color);
 const logParts = {
   tag: (tag = "gulp", color = "white", padChar = "█") => ansi(`▌${centerString(tag, 10, padChar)}▐`, {fg: color}),
   error: (tag, message) => [ansi(`[ERROR: ${tag}]`, {fg: "white", bg: "red", style: "bold"}), ansi(message, {fg: "red"})].join(" "),
@@ -120,7 +120,7 @@ const centerString = (str, width, padChar = " ") => {
   }
   return padString.length > width ? padString.slice(1) : padString;
 };
-const padHeaderLines = match => {
+const padHeaderLines = (match) => {
   const padLine = (line, length) => {
     const padLength = length - line.length;
     if (padLength > 0) {
@@ -154,12 +154,12 @@ const padHeaderLines = match => {
   const lines = match.split(/\n/s);
   const returnLines = [];
   let maxLen = 0;
-  lines.forEach(line => {
+  lines.forEach((line) => {
     if (line.length > maxLen) {
       maxLen = line.length;
     }
   });
-  lines.forEach(line => {
+  lines.forEach((line) => {
     if (line.length < maxLen) {
       returnLines.push(padLine(line, maxLen));
     } else {
@@ -299,7 +299,7 @@ const REGEXPPATTERNS = {
                       reverse, for end-of-lines: \s*?(\r\n)?
   */
   init: new Map([
-    [/^\s+$/gm, "/*~ @@DOUBLE-BLANK@@ ~*/"], // Replace double-blank lines with token for later retrieval
+    [/^\s+$/gm, "/*~ @@DOUBLE-BLANK@@ ~*/"] // Replace double-blank lines with token for later retrieval
   ]),
   ts: new Map([[/from "gsap\/all"/gu, 'from "/scripts/greensock/esm/all.js"']]),
   js: new Map([
@@ -320,12 +320,12 @@ const REGEXPPATTERNS = {
     [/((\r?\n)[ \t]*(?:\r?\n))+/g, "\r\n"], // Strip excess blank lines
     [
       /([ \t]*\r?\n\/\*~? @@DOUBLE-BLANK@@ ~\*\/)+/g,
-      "\r\n/*~ @@DOUBLE-BLANK@@ ~*/",
+      "\r\n/*~ @@DOUBLE-BLANK@@ ~*/"
     ], // Collapse multiple double-blank lines
     [/\/\*~? @@DOUBLE-BLANK@@ ~\*\//g, ""], // Restore double-blank lines
     [/([ \t]*\r?\n)*$/, ""], // Strip whitespace from end of files
-    [/^([ \t]*\r?\n)*/, ""], // Strip whitespace from start of files
-  ]),
+    [/^([ \t]*\r?\n)*/, ""] // Strip whitespace from start of files
+  ])
 };
 
 // #endregion ░░░░[REGEXP PATTERNS]░░░░
@@ -346,7 +346,7 @@ const PIPES = {
         this.emit("end");
       });
   },
-  replacer: format => {
+  replacer: (format) => {
     let pipeline = plumber();
     if (format in REGEXPPATTERNS) {
       REGEXPPATTERNS[format].forEach((rParam, sParam) => {
@@ -398,7 +398,7 @@ const PLUMBING = {
               }
               return resultString;
             }), 3)
-            .map(subArray => subArray.join(" ")),
+            .map((subArray) => subArray.join(" ")),
           params: complexityReport.aggregate.paramCount,
           sloc: `Logical: ${complexityReport.aggregate.sloc.logical}, Physical: ${complexityReport.aggregate.sloc.physical}`,
           maintainability: roundNum(complexityReport.maintainability, 2),
@@ -413,7 +413,7 @@ const PLUMBING = {
         analysisString = analysisString.slice(150_000);
         logger(" ");
         logger(`${analysisString.length} to go ...`);
-        await new Promise(resolve => { setTimeout(resolve, 20000); });
+        await new Promise((resolve) => { setTimeout(resolve, 20000); });
       }
       logger(analysisString);
     } catch(err) {
@@ -422,12 +422,12 @@ const PLUMBING = {
     return done();
   },
   initDest: async function(done, destGlobs = ["./dist/", "./module/", "./module_staging_1", "./module_staging_2", "./css/"]) {
-    destGlobs.forEach(d => { try { fs.rmSync(d); } catch{ } });
+    destGlobs.forEach((d) => { try { fs.rmSync(d); } catch{ } });
     return done();
   },
   watch: function() {
     for (const [type, globs] of Object.entries(BUILDFILES)) {
-      Object.values(globs ?? {}).forEach(glob => watch(glob, BUILDFUNCS[type]));
+      Object.values(globs ?? {}).forEach((glob) => watch(glob, BUILDFUNCS[type]));
     }
   },
   tsInit: (source, destination) => function() {
@@ -525,10 +525,10 @@ const BUILDFUNCS = {};
 if (ISCOMPILINGCODE) {
   BUILDFUNCS.ts = /* Series(
     PLUMBING.initWhiteSpace, */
-    parallel(...(buildFiles => {
+    parallel(...((buildFiles) => {
       const funcs = [];
       for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
-        sourceGlobs.forEach(sourceGlob => {
+        sourceGlobs.forEach((sourceGlob) => {
           funcs.push(PLUMBING.tsInit(sourceGlob, destGlob));
         });
       }
@@ -537,10 +537,10 @@ if (ISCOMPILINGCODE) {
   // );
 
   const jsBuildFuncs = [
-    parallel(...(buildFiles => {
+    parallel(...((buildFiles) => {
       const funcs = [];
       for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
-        sourceGlobs.forEach(sourceGlob => {
+        sourceGlobs.forEach((sourceGlob) => {
           funcs.push(PLUMBING.jsFull(sourceGlob, destGlob));
         });
       }
@@ -549,10 +549,10 @@ if (ISCOMPILINGCODE) {
   ];
 
   if (ISMINIFYINGJS) {
-    jsBuildFuncs.push(parallel(...(buildFiles => {
+    jsBuildFuncs.push(parallel(...((buildFiles) => {
       const funcs = [];
       for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
-        sourceGlobs.forEach(sourceGlob => {
+        sourceGlobs.forEach((sourceGlob) => {
           funcs.push(PLUMBING.jsMin(sourceGlob, destGlob));
         });
       }
@@ -568,9 +568,9 @@ if (ISCOMPILINGCODE) {
 // #endregion ▄▄▄▄▄ JS ▄▄▄▄▄
 
 // #region ████████ CSS: Compiling CSS ████████ ~
-BUILDFUNCS.css = parallel(...(sourceDestGlobs => Object.entries(sourceDestGlobs)
+BUILDFUNCS.css = parallel(...((sourceDestGlobs) => Object.entries(sourceDestGlobs)
   .map(([destGlob, sourceGlobs]) => [...sourceGlobs
-    .map(sourceGlob => {
+    .map((sourceGlob) => {
       if (ISRAPIDGULPING) {
         return [PLUMBING.cssFull(sourceGlob, destGlob)];
       } else {
@@ -595,10 +595,10 @@ BUILDFUNCS.css = parallel(...(sourceDestGlobs => Object.entries(sourceDestGlobs)
 
 // #region ████████ HBS: Compiling HBS ████████ ~
 if (ISCOMPILINGCODE) {
-  BUILDFUNCS.hbs = parallel(...(sourceDestGlobs => {
+  BUILDFUNCS.hbs = parallel(...((sourceDestGlobs) => {
     const funcs = [];
     for (const [destGlob, sourceGlobs] of Object.entries(sourceDestGlobs)) {
-      sourceGlobs.forEach(sourceGlob => {
+      sourceGlobs.forEach((sourceGlob) => {
         funcs.push(PLUMBING.hbs(sourceGlob, destGlob));
       });
     }
@@ -609,10 +609,10 @@ if (ISCOMPILINGCODE) {
 
 // #region ████████ ASSETS: Copying Assets to Dist ████████ ~
 if (ISCOMPILINGCODE) {
-  const assetPipe = sourceDestGlobs => {
+  const assetPipe = (sourceDestGlobs) => {
     const funcs = [];
     for (const [destGlob, sourceGlobs] of Object.entries(sourceDestGlobs)) {
-      sourceGlobs.forEach(sourceGlob => funcs.push(PLUMBING.toDest(sourceGlob, destGlob)));
+      sourceGlobs.forEach((sourceGlob) => funcs.push(PLUMBING.toDest(sourceGlob, destGlob)));
     }
     return funcs;
   };
@@ -624,14 +624,14 @@ if (ISCOMPILINGCODE) {
 
 // #region ▒░▒░▒░▒[EXPORTS]▒░▒░▒░▒ ~
 const {ts, js, quickAssets, slowAssets, ...parallelBuildFuncs} = BUILDFUNCS;
-const seriesFuncs = [ts, js, quickAssets].filter(sFunc => sFunc !== undefined);
+const seriesFuncs = [ts, js, quickAssets].filter((sFunc) => sFunc !== undefined);
 if (ISBUILDINGDIST && slowAssets !== undefined) {
   seriesFuncs.push(slowAssets);
 }
 const parallelFuncs = [
   seriesFuncs.length > 0 ? series(...seriesFuncs) : undefined,
   ...Object.values(parallelBuildFuncs)
-].filter(pFunc => pFunc !== undefined);
+].filter((pFunc) => pFunc !== undefined);
 // Const parallelFuncs = parallelBuildFuncs((pFunc) => pFunc !== undefined);
 
 

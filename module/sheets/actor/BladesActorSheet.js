@@ -323,7 +323,7 @@ class BladesActorSheet extends ActorSheet {
         if (!dialogDocs || !docCat || !docType) {
             return;
         }
-        await BladesSelectorDialog.Display(this.actor, U.tCase(`Add ${docCat.replace(/_/g, " ")}`), docType, dialogDocs, docTags);
+        await BladesSelectorDialog.DisplaySelectionDialog(this.actor, U.tCase(`Add ${docCat.replace(/_/g, " ")}`), docType, dialogDocs, docTags);
     }
     async _onItemRemoveClick(event) {
         event.preventDefault();

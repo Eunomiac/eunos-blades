@@ -171,10 +171,18 @@ export enum ConsequenceType {
   ComplicationSerious = "ComplicationSerious",
   LostOpportunity = "LostOpportunity",
   WorsePosition = "WorsePosition",
-  Harm1 = "Harm1",
-  Harm2 = "Harm2",
-  Harm3 = "Harm3",
-  Harm4 = "Harm4",
+  InsightHarm1 = "InsightHarm1",
+  InsightHarm2 = "InsightHarm2",
+  InsightHarm3 = "InsightHarm3",
+  InsightHarm4 = "InsightHarm4",
+  ProwessHarm1 = "ProwessHarm1",
+  ProwessHarm2 = "ProwessHarm2",
+  ProwessHarm3 = "ProwessHarm3",
+  ProwessHarm4 = "ProwessHarm4",
+  ResolveHarm1 = "ResolveHarm1",
+  ResolveHarm2 = "ResolveHarm2",
+  ResolveHarm3 = "ResolveHarm3",
+  ResolveHarm4 = "ResolveHarm4",
   None = "None"
 }
 
@@ -382,7 +390,9 @@ const C = {
         ConsequenceType.ComplicationMinor,
         ConsequenceType.ReducedEffect,
         ConsequenceType.WorsePosition,
-        ConsequenceType.Harm1,
+        ConsequenceType.InsightHarm1,
+        ConsequenceType.ProwessHarm1,
+        ConsequenceType.ResolveHarm1,
         ConsequenceType.None
       ],
       [RollResult.fail]: [
@@ -395,34 +405,59 @@ const C = {
         ConsequenceType.ComplicationMajor,
         ConsequenceType.WorsePosition,
         ConsequenceType.ReducedEffect,
-        ConsequenceType.Harm2,
+        ConsequenceType.InsightHarm1,
+        ConsequenceType.ProwessHarm1,
+        ConsequenceType.ResolveHarm1,
+        ConsequenceType.InsightHarm2,
+        ConsequenceType.ProwessHarm2,
+        ConsequenceType.ResolveHarm2,
         ConsequenceType.None
       ],
       [RollResult.fail]: [
         ConsequenceType.ComplicationMajor,
         ConsequenceType.WorsePosition,
         ConsequenceType.LostOpportunity,
-        ConsequenceType.Harm2
+        ConsequenceType.InsightHarm2,
+        ConsequenceType.ProwessHarm2,
+        ConsequenceType.ResolveHarm2
       ]
     },
     [Position.desperate]: {
       [RollResult.partial]: [
         ConsequenceType.ComplicationSerious,
         ConsequenceType.ReducedEffect,
-        ConsequenceType.Harm3
+        ConsequenceType.InsightHarm2,
+        ConsequenceType.ProwessHarm2,
+        ConsequenceType.ResolveHarm2,
+        ConsequenceType.InsightHarm3,
+        ConsequenceType.ProwessHarm3,
+        ConsequenceType.ResolveHarm3
       ],
       [RollResult.fail]: [
         ConsequenceType.ComplicationSerious,
         ConsequenceType.LostOpportunity,
-        ConsequenceType.Harm3
+        ConsequenceType.InsightHarm3,
+        ConsequenceType.ProwessHarm3,
+        ConsequenceType.ResolveHarm3,
+        ConsequenceType.InsightHarm4,
+        ConsequenceType.ProwessHarm4,
+        ConsequenceType.ResolveHarm4
       ]
     }
   },
   ResistedConsequenceTypes: {
-    [ConsequenceType.Harm4]: ConsequenceType.Harm3,
-    [ConsequenceType.Harm3]: ConsequenceType.Harm2,
-    [ConsequenceType.Harm2]: ConsequenceType.Harm1,
-    [ConsequenceType.Harm1]: ConsequenceType.None,
+    [ConsequenceType.InsightHarm4]: ConsequenceType.InsightHarm3,
+    [ConsequenceType.InsightHarm3]: ConsequenceType.InsightHarm2,
+    [ConsequenceType.InsightHarm2]: ConsequenceType.InsightHarm1,
+    [ConsequenceType.InsightHarm1]: ConsequenceType.None,
+    [ConsequenceType.ProwessHarm4]: ConsequenceType.ProwessHarm3,
+    [ConsequenceType.ProwessHarm3]: ConsequenceType.ProwessHarm2,
+    [ConsequenceType.ProwessHarm2]: ConsequenceType.ProwessHarm1,
+    [ConsequenceType.ProwessHarm1]: ConsequenceType.None,
+    [ConsequenceType.ResolveHarm4]: ConsequenceType.ResolveHarm3,
+    [ConsequenceType.ResolveHarm3]: ConsequenceType.ResolveHarm2,
+    [ConsequenceType.ResolveHarm2]: ConsequenceType.ResolveHarm1,
+    [ConsequenceType.ResolveHarm1]: ConsequenceType.None,
     [ConsequenceType.ComplicationSerious]: ConsequenceType.ComplicationMajor,
     [ConsequenceType.ComplicationMajor]: ConsequenceType.ComplicationMinor,
     [ConsequenceType.ComplicationMinor]: ConsequenceType.None

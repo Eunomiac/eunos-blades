@@ -146,20 +146,20 @@ class BladesRollMod {
           let val: string|string[] = /\|/.test(valString) ? valString.split(/\|/) : valString;
           let key: KeyOf<BladesRoll.RollModData>;
           if (/^stat/i.test(keyString)) { key = "base_status"; } else
-          if (/^val/i.test(keyString)) { key = "value"; } else
-          if (/^eff|^ekey/i.test(keyString)) { key = "effectKeys"; } else
-          if (/^side|^ss/i.test(keyString)) { key = "sideString"; } else
-          if (/^s.*ame/i.test(keyString)) { key = "source_name"; } else
-          if (/^tool|^tip/i.test(keyString)) { key = "tooltip"; } else
-          if (/^ty/i.test(keyString)) { key = "modType"; } else
-          if (/^c.{0,10}r?.{0,3}ty/i.test(keyString)) {key = "conditionalRollTypes";} else
-          if (/^a.{0,3}r?.{0,3}y/i.test(keyString)) {key = "autoRollTypes";} else
-          if (/^p.{0,10}r?.{0,3}y/i.test(keyString)) {key = "participantRollTypes";} else
-          if (/^c.{0,10}r?.{0,3}tr/i.test(keyString)) {key = "conditionalRollTraits";} else
-          if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {key = "autoRollTraits";} else
-          if (/^p.{0,10}r?.{0,3}tr/i.test(keyString)) {key = "participantRollTypes";} else {
-            throw new Error(`Bad Roll Mod Key: ${keyString}`);
-          }
+            if (/^val/i.test(keyString)) { key = "value"; } else
+              if (/^eff|^ekey/i.test(keyString)) { key = "effectKeys"; } else
+                if (/^side|^ss/i.test(keyString)) { key = "sideString"; } else
+                  if (/^s.*ame/i.test(keyString)) { key = "source_name"; } else
+                    if (/^tool|^tip/i.test(keyString)) { key = "tooltip"; } else
+                      if (/^ty/i.test(keyString)) { key = "modType"; } else
+                        if (/^c.{0,10}r?.{0,3}ty/i.test(keyString)) {key = "conditionalRollTypes";} else
+                          if (/^a.{0,3}r?.{0,3}y/i.test(keyString)) {key = "autoRollTypes";} else
+                            if (/^p.{0,10}r?.{0,3}y/i.test(keyString)) {key = "participantRollTypes";} else
+                              if (/^c.{0,10}r?.{0,3}tr/i.test(keyString)) {key = "conditionalRollTraits";} else
+                                if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {key = "autoRollTraits";} else
+                                  if (/^p.{0,10}r?.{0,3}tr/i.test(keyString)) {key = "participantRollTypes";} else {
+                                    throw new Error(`Bad Roll Mod Key: ${keyString}`);
+                                  }
 
           if (key === "base_status" && val === "Conditional") {
             val = RollModStatus.Hidden;
@@ -410,7 +410,7 @@ class BladesRollMod {
           Consequence: () => this.rollInstance.rollType === RollType.Resistance
             && Boolean(this.rollInstance.rollConsequence),
           HarmLevel: () => this.rollInstance.rollType === RollType.Resistance
-            && [ConsequenceType.Harm1, ConsequenceType.Harm2, ConsequenceType.Harm3, ConsequenceType.Harm4].includes(this.rollInstance.rollConsequence?.type ?? "" as ConsequenceType),
+            && [ConsequenceType.InsightHarm1, ConsequenceType.InsightHarm2, ConsequenceType.InsightHarm3, ConsequenceType.InsightHarm4, ConsequenceType.ProwessHarm1, ConsequenceType.ProwessHarm2, ConsequenceType.ProwessHarm3, ConsequenceType.ProwessHarm4, ConsequenceType.ResolveHarm1, ConsequenceType.ResolveHarm2, ConsequenceType.ResolveHarm3, ConsequenceType.ResolveHarm4].includes(this.rollInstance.rollConsequence?.type ?? "" as ConsequenceType),
           QualityPenalty: () => this.rollInstance.isTraitRelevant(Factor.quality)
             && (this.rollInstance.rollFactors.source[Factor.quality]?.value ?? 0)
               < (this.rollInstance.rollFactors.opposition[Factor.quality]?.value ?? 0),
@@ -500,22 +500,23 @@ class BladesRollMod {
         },
         HarmLevel: () => {
           const harmLevels = [
-            ConsequenceType.Harm1,
-            ConsequenceType.Harm2,
-            ConsequenceType.Harm3,
-            ConsequenceType.Harm4
+            [ConsequenceType.InsightHarm1, ConsequenceType.ProwessHarm1, ConsequenceType.ResolveHarm1],
+            [ConsequenceType.InsightHarm2, ConsequenceType.ProwessHarm2, ConsequenceType.ResolveHarm2],
+            [ConsequenceType.InsightHarm3, ConsequenceType.ProwessHarm3, ConsequenceType.ResolveHarm3],
+            [ConsequenceType.InsightHarm4, ConsequenceType.ProwessHarm4, ConsequenceType.ResolveHarm4]
           ];
           let harmConsequence: BladesRoll.ConsequenceData|undefined = undefined;
           while (!harmConsequence && harmLevels.length > 0) {
             harmConsequence = Object.values(this.rollInstance.rollConsequences)
-              .find(({type}) => type === harmLevels.pop());
+              .find(({type}) => (harmLevels.pop() ?? []).includes(type));
           }
           if (harmConsequence) {
-            if (harmConsequence.type === ConsequenceType.Harm1) {
-              harmConsequence.resistedTo = false;
-            }
             harmConsequence.resistedTo = {
-              name: harmConsequence.type === ConsequenceType.Harm1
+              name: [
+                ConsequenceType.InsightHarm1,
+                ConsequenceType.ProwessHarm1,
+                ConsequenceType.ResolveHarm1
+              ].includes(harmConsequence.type)
                 ? "Fully Negated"
                 : (Object.values(harmConsequence.resistOptions ?? [])[0]?.name ?? harmConsequence.name),
               type: C.ResistedConsequenceTypes[harmConsequence.type as KeyOf<typeof C["ResistedConsequenceTypes"]>],
@@ -2148,6 +2149,7 @@ class BladesRoll extends DocumentSheet {
   }
 
   async addConsequence(cData: BladesRoll.ConsequenceData) {
+    eLog.checkLog2("rollCollab", "addConsequence", cData);
     await this.setFlagVal(`consequenceData.${cData.name}`, cData);
   }
 
@@ -2157,6 +2159,7 @@ class BladesRoll extends DocumentSheet {
 
   async addResistanceOptions(cResult: RollResult, cIndex: string, rNames: string[]) {
     const cData = this.getFlagVal<BladesRoll.ConsequenceData>(`consequenceData.${cResult}.${cIndex}`);
+    eLog.checkLog2("rollCollab", "addResistanceOptions", {cResult, cIndex, rNames, cData});
     if (!cData) { return; }
     const cType = cData.type as keyof typeof C["ResistedConsequenceTypes"];
     const rType = C.ResistedConsequenceTypes[cType] ?? undefined;
@@ -3451,6 +3454,11 @@ class BladesRoll extends DocumentSheet {
     }
   }
 
+  async _onTextInputBlur(event: InputChangeEvent) {
+    await U.EventHandlers.onTextInputBlur(this, event);
+    socketlib.system.executeForEveryone("renderRollCollab", this.rollID);
+  }
+
   // Async _gmControlSelect(event: SelectChangeEvent) {
   //   event.preventDefault();
   //   const elem$ = $(event.currentTarget);
@@ -3561,6 +3569,10 @@ class BladesRoll extends DocumentSheet {
     html
       .find("select[data-action='gm-select']")
       .on({change: this._onSelectChange.bind(this)});
+
+    html
+      .find("[data-action='gm-text-input']")
+      .on({blur: this._onTextInputBlur.bind(this)})
 
   }
   // #endregion

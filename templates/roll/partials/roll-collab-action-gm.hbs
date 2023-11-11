@@ -237,18 +237,19 @@
     <section class="sheet-main tab-content roll-consequences">
       <label class="roll-consequence-section-label">Consequence(s): Partial</label>
       {{#each consequenceData.partial as |cData cIndex|}}
-        <div class="roll-consequence-row">
+        {{#if cData}}
+        <div class="roll-consequence-row flex-horizontal">
           {{!-- Type --}}
           {{> "systems/eunos-blades/templates/components/select.hbs"
             cssClass="roll-consequence-type-select"
             dataAction="gm-select"
-            dataFlagTarget=(concat "rollCollab.consequenceData.partial." cIndex ".type")
+            dataFlagTarget=(concat "rollCollab.consequenceData.partial." @index ".type")
             dataDType="String"
             dataDocType=false
             selected=cData.type
-            options=consequenceTypeOptions.partial }}
+            options=../consequenceTypeOptions.partial }}
           {{!-- Name --}}
-          <input class="shadowed consequence-name" type="text" data-action="gm-text-input" data-flag-target="rollCollab.consequenceData.partial.{{cIndex}}.name" value="{{cData.name}}" />
+          <input class="shadowed consequence-name" type="text" value="{{cData.name}}" name="flags.eunos-blades.rollCollab.consequenceData.partial.{{@index}}.name" />
           {{!-- AI Options --}}
           <div class="flex-vertical consequence-resist-options-container">
             {{#each cData.resistOptions as |rData rName|}}
@@ -266,10 +267,12 @@
             {{/each}}
           </div>
         </div>
+        {{/if}}
       {{/each}}
+
       {{!-- Blank Entry for New Consequence --}}
       {{#with (count consequenceData.partial) as |index|}}
-      <div class="roll-consequence-row">
+      <div class="roll-consequence-row flex-horizontal">
         {{!-- Type --}}
         {{> "systems/eunos-blades/templates/components/select.hbs"
           cssClass="roll-consequence-type-select"
@@ -278,25 +281,28 @@
           dataDType="String"
           dataDocType=false
           selected=""
-          options=./consequenceTypeOptions.partial }}
+          options=../consequenceTypeOptions.partial }}
         {{!-- Name --}}
-        <input class="shadowed consequence-name" type="text" data-action="gm-text-input" data-flag-target="rollCollab.consequenceData.partial.{{index}}.name" />
+        <input class="shadowed consequence-name" type="text" name="flags.eunos-blades.rollCollab.consequenceData.partial.{{index}}.name" value="" />
       </div>
       {{/with}}
-      <label class="roll-consequence-section-label">Consequence(s): Fail</label>
+
+
+      <label class="roll-consequence-section-label">Consequence(s): Failure</label>
       {{#each consequenceData.fail as |cData cIndex|}}
-        <div class="roll-consequence-row">
+        {{#if cData}}
+        <div class="roll-consequence-row flex-horizontal">
           {{!-- Type --}}
           {{> "systems/eunos-blades/templates/components/select.hbs"
             cssClass="roll-consequence-type-select"
             dataAction="gm-select"
-            dataFlagTarget=(concat "rollCollab.consequenceData.fail." cIndex ".type")
+            dataFlagTarget=(concat "rollCollab.consequenceData.fail." @index ".type")
             dataDType="String"
             dataDocType=false
             selected=cData.type
-            options=consequenceTypeOptions.fail }}
+            options=../consequenceTypeOptions.fail }}
           {{!-- Name --}}
-          <input class="shadowed consequence-name" type="text" data-action="gm-text-input" data-flag-target="rollCollab.consequenceData.fail.{{cIndex}}.name" value="{{cData.name}}" />
+          <input class="shadowed consequence-name" type="text" value="{{cData.name}}" name="flags.eunos-blades.rollCollab.consequenceData.fail.{{@index}}.name" />
           {{!-- AI Options --}}
           <div class="flex-vertical consequence-resist-options-container">
             {{#each cData.resistOptions as |rData rName|}}
@@ -307,29 +313,31 @@
                   activeTooltip="<b>AI Suggestion</b><br>Click to Select"
                   inactiveClass="fa-solid fa-bandage grey"
                   inactiveTooltip="<b>Selected AI Suggestion</b><br>Click to Deselect"
-                  targetFlagKey=(concat "rollCollab.consequenceData.fail." cIndex ".resistOptions." rName ".isSelected")
+                  targetFlagKey="rollCollab.consequenceData.fail.{{cIndex}}.resistOptions.{{rName}}.isSelected"
                 }}
                 <label class="consequence-name">{{rData.name}}</label>
               </div>
             {{/each}}
           </div>
         </div>
+        {{/if}}
       {{/each}}
+
       {{!-- Blank Entry for New Consequence --}}
       {{#with (count consequenceData.fail) as |index|}}
-        <div class="roll-consequence-row">
-          {{!-- Type --}}
-          {{> "systems/eunos-blades/templates/components/select.hbs"
-            cssClass="roll-consequence-type-select"
-            dataAction="gm-select"
-            dataFlagTarget=(concat "rollCollab.consequenceData.fail." index ".type")
-            dataDType="String"
-            dataDocType=false
-            selected=""
-            options=./consequenceTypeOptions.fail }}
-          {{!-- Name --}}
-          <input class="shadowed consequence-name" type="text" data-action="gm-text-input" data-flag-target="rollCollab.consequenceData.fail.{{index}}.name" />
-        </div>
+      <div class="roll-consequence-row flex-horizontal">
+        {{!-- Type --}}
+        {{> "systems/eunos-blades/templates/components/select.hbs"
+          cssClass="roll-consequence-type-select"
+          dataAction="gm-select"
+          dataFlagTarget=(concat "rollCollab.consequenceData.fail." index ".type")
+          dataDType="String"
+          dataDocType=false
+          selected=""
+          options=../consequenceTypeOptions.fail }}
+        {{!-- Name --}}
+        <input class="shadowed consequence-name" type="text" name="flags.eunos-blades.rollCollab.consequenceData.fail.{{index}}.name" value="" />
+      </div>
       {{/with}}
     </section>
     <section class="sheet-main flex-vertical factor-controls">

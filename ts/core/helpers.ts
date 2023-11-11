@@ -257,7 +257,7 @@ const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
   concat(...args: unknown[]) {
     let outStr = "";
     for (const arg of args) {
-      if (typeof arg === "string") {
+      if (typeof arg === "string" || typeof arg === "number") {
         outStr += arg;
       }
     }

@@ -259,7 +259,7 @@
         &:focus{
             div{  // :not([contenteditable])
                 &::before{
-                    --tag-bg-inset: #{-$tagMargin / 2};
+                    --tag-bg-inset: #{-$tagMargin * 0.5};
                     --tag-bg: var(--tag-hover);
                 }
             }
@@ -368,7 +368,7 @@
 
             width          : $size;
             height         : $size;
-            margin-right   : $size / 3;
+            margin-right   : $size * 0.333;
             margin-left    : auto;
 
             overflow       : hidden;
@@ -547,8 +547,8 @@
             right: 0;
             bottom: 0;
             font: $size monospace;
-            line-height: $size / 2;
-            height: $size / 2;
+            line-height: $size * 0.5;
+            height: $size * 0.5;
             pointer-events: none;
             transform: translate(-150%, -50%) scaleX(1.2) rotate(90deg);
             transition: .2s ease-in-out;

@@ -270,7 +270,7 @@ const handlebarHelpers = {
     concat(...args) {
         let outStr = "";
         for (const arg of args) {
-            if (typeof arg === "string") {
+            if (typeof arg === "string" || typeof arg === "number") {
                 outStr += arg;
             }
         }

@@ -31,6 +31,11 @@ export var SelectionCategory;
     SelectionCategory["Member"] = "Member";
     SelectionCategory["Contact"] = "Contact";
 })(SelectionCategory || (SelectionCategory = {}));
+export var BladesDialogType;
+(function (BladesDialogType) {
+    BladesDialogType["Selection"] = "Selection";
+    BladesDialogType["Consequence"] = "Consequence";
+})(BladesDialogType || (BladesDialogType = {}));
 class BladesSelectorDialog extends Dialog {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -43,33 +48,41 @@ class BladesSelectorDialog extends Dialog {
     }
     static Initialize() {
         return loadTemplates([
-            "systems/eunos-blades/templates/dialog.hbs"
+            "systems/eunos-blades/templates/dialog-selection.hbs",
+            "systems/eunos-blades/templates/dialog-consequence.hbs"
         ]);
     }
-    static async Display(parent, title, docType, tabs, tags) {
+    static async DisplaySelectionDialog(parent, title, docType, tabs, tags) {
         const app = new BladesSelectorDialog({
             parent,
             title,
             docType,
             tabs,
-            "tags": tags?.filter((tag) => tag !== ""),
-            "content": "",
-            "buttons": {
+            tags: tags?.filter((tag) => tag !== ""),
+            content: "",
+            buttons: {
                 cancel: {
                     icon: '<i class="fas fa-times"></i>',
                     label: game.i18n.localize("Cancel"),
                     callback: () => false
                 }
             },
-            "default": "cancel"
+            default: "cancel"
         });
         return app.hasItems ? app.render(true, { width: app.width }) : undefined;
+    }
+    get template() {
+        if (this.dialogType === BladesDialogType.Selection) {
+            return "systems/eunos-blades/templates/dialog-selection.hbs";
+        }
+        return "systems/eunos-blades/templates/dialog-consequence.hbs";
     }
     get hasItems() {
         return Object.values(this.tabs).some((tabItems) => tabItems.length > 0);
     }
     parent;
     tabs;
+    dialogType;
     tags = [];
     width;
     docType;
@@ -88,6 +101,7 @@ class BladesSelectorDialog extends Dialog {
             data.tabs.Main = [...data.tabs[validTabs[0]]];
             delete data.tabs[validTabs[0]];
         }
+        this.dialogType = data.dialogType ?? BladesDialogType.Selection;
         this.docType = data.docType;
         this.parent = data.parent;
         this.tabs = data.tabs;
@@ -105,7 +119,6 @@ class BladesSelectorDialog extends Dialog {
     activateListeners(html) {
         super.activateListeners(html);
         const self = this;
-
         html.find(".nav-tabs .tab-selector").on("click", (event) => {
             const tabIndex = U.pInt($(event.currentTarget).data("tab"));
             const numItems = Object.values(self.tabs)[tabIndex].length;
@@ -113,9 +126,7 @@ class BladesSelectorDialog extends Dialog {
             eLog.checkLog3("nav", "Nav Tab Size Recalculation", { tabIndex, numItems, width });
             this.render(false, { width });
         });
-
         ApplyTooltipListeners(html);
-
         html.find("[data-item-id]").on("click", function () {
             if ($(this).parent().hasClass("locked")) {
                 return;

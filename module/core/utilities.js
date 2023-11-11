@@ -1179,6 +1179,27 @@ const sleep = (duration) => new Promise((resolve) => {
     setTimeout(resolve, duration >= 100 ? duration : duration * 1000);
 });
 const EventHandlers = {
+    onTextInputBlur: async (inst, event) => {
+        const elem = event.target;
+        const { action, target, flagTarget } = elem.dataset;
+        if (!action) {
+            throw new Error("Input text elements require a data-action attribute.");
+        }
+        if (!target && !flagTarget) {
+            throw new Error("Input text elements require a 'data-target' or 'data-flag-target' attribute.");
+        }
+        if (target) {
+            await inst.document.update({ [target]: elem.value });
+        }
+        else if (flagTarget) {
+            if (elem.value === "") {
+                await inst.document.unsetFlag(C.SYSTEM_ID, flagTarget);
+            }
+            else {
+                await inst.document.setFlag(C.SYSTEM_ID, flagTarget, elem.value);
+            }
+        }
+    },
     onSelectChange: async (inst, event) => {
         const elem = event.currentTarget;
         const { action, dtype, target, flagTarget } = elem.dataset;
@@ -1304,5 +1325,5 @@ export default {
     escapeHTML,
     sleep,
     EventHandlers,
-    isDocID, loc, getSetting, getTemplatePath, displayImageSelector,
+    isDocID, loc, getSetting, getTemplatePath, displayImageSelector
 };
