@@ -15258,11 +15258,11 @@ template {
   filter: brightness(1.5) drop-shadow(0 0 4px black);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select {
-  font-family: Oswald, sans-serif;
+  font-family: Oswald, serif;
   flex-basis: 150px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select {
-  font-family: Oswald, sans-serif;
+  font-family: Oswald, serif;
   flex-basis: 95px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .roll-consequence-entry-row .consequence-name {
