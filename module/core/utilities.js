@@ -824,6 +824,7 @@ const partition = (obj, predicate = () => true) => [
     objFilter(obj, (v, k) => !predicate(v, k))
 ];
 function objMap(obj, keyFunc, valFunc) {
+    //
     let valFuncTyped = valFunc;
     let keyFuncTyped = keyFunc;
     if (!valFuncTyped) {
@@ -862,6 +863,7 @@ function objFindKey(obj, keyFunc, valFunc) {
     return false;
 }
 const objFilter = (obj, keyFunc, valFunc) => {
+    //
     if (!valFunc) {
         valFunc = keyFunc;
         keyFunc = false;
@@ -874,7 +876,8 @@ const objFilter = (obj, keyFunc, valFunc) => {
     }
     const kFunc = keyFunc || (() => true);
     const vFunc = valFunc || (() => true);
-    return Object.fromEntries(Object.entries(obj).filter(([key, val]) => kFunc(key, val) && vFunc(val, key)));
+    return Object.fromEntries(Object.entries(obj)
+        .filter(([key, val]) => kFunc(key, val) && vFunc(val, key)));
 };
 const objForEach = (obj, func) => {
     if (isArray(obj)) {
@@ -885,13 +888,9 @@ const objForEach = (obj, func) => {
     }
 };
 const objCompact = (obj, removeWhiteList = [undefined, null]) => objFilter(obj, (val) => !removeWhiteList.includes(val));
-function cloneArray(arr) {
-    return [...arr];
-}
-function cloneObject(obj) {
-    return { ...obj };
-}
 const objClone = (obj, isStrictlySafe = false) => {
+    const cloneArray = (arr) => [...arr];
+    const cloneObject = (o) => ({ ...o });
     try {
         return JSON.parse(JSON.stringify(obj));
     }
@@ -921,10 +920,12 @@ function objMerge(target, source, { isMutatingOk = false, isStrictlySafe = false
     }
     for (const [key, val] of Object.entries(source)) {
         const targetVal = target[key];
+
         if (isReplacingArrays && isArray(targetVal) && isArray(val)) {
             target[key] = val;
         }
         else if (isConcatenatingArrays && isArray(targetVal) && isArray(val)) {
+
             target[key].push(...val);
         }
         else if (val !== null && typeof val === "object") {

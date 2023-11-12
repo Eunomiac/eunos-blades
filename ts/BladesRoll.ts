@@ -73,8 +73,8 @@ function isValidConsequenceData(val: unknown, isRecurring = false): val is Blade
 }
 
 /**
- *
- * @param section
+ * Checks if the given section can contain BladesRollParticipant documents.
+ * @param {RollModSection} section
  */
 function isParticipantSection(section: RollModSection): section is BladesRoll.RollParticipantSection & RollModSection {
   return [
@@ -85,8 +85,8 @@ function isParticipantSection(section: RollModSection): section is BladesRoll.Ro
 }
 
 /**
- *
- * @param subSection
+ * Checks if the given subSection can hold BladesRollParticipant documents.
+ * @param {string} subSection
  */
 function isParticipantSubSection(subSection: string): subSection is BladesRoll.RollParticipantSubSection {
   if (subSection.startsWith("Group_")) { return true; }
@@ -1475,8 +1475,8 @@ class BladesRoll extends DocumentSheet {
     return userIDs;
 
     /**
-     *
-     * @param participantData
+     * Generates BladesRollParticipant documents from the provided schema data.
+     * @param {BladesRoll.RollParticipantData} participantData
      */
     function getParticipantDocs(participantData: BladesRoll.RollParticipantData) {
       return Object.values(flattenObject(participantData))
@@ -1499,9 +1499,9 @@ class BladesRoll extends DocumentSheet {
     }
 
     /**
-     *
-     * @param participantData
-     * @param unassignedIDs
+     * Returns the user ids of potential BladesRollParticipants defined in the provided data schema.
+     * @param {BladesRoll.RollParticipantData} participantData
+     * @param {string[]} unassignedIDs
      */
     function getParticipantDocUserIDs(
       participantData: BladesRoll.RollParticipantData,
@@ -1895,8 +1895,8 @@ class BladesRoll extends DocumentSheet {
   }
 
   async updateUserPermission(
-    user: User,
-    permission: RollPermissions
+    _user: User,
+    _permission: RollPermissions
   ) {
     /* Force-render roll with new permissions */
   }
@@ -2158,7 +2158,7 @@ class BladesRoll extends DocumentSheet {
     return null;
   }
 
-  async applyConsequencesFromDialog(html: JQuery|HTMLElement) {
+  async applyConsequencesFromDialog(_html: JQuery|HTMLElement) {
     /* Convert values of dialog input fields to flag data */
   }
 

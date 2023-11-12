@@ -1526,7 +1526,7 @@ class BladesRoll extends DocumentSheet {
     async removeRollParticipant(rollSection, rollSubSection) {
         await this.clearFlagVal(`rollParticipantData.${rollSection}.${rollSubSection}`);
     }
-    async updateUserPermission(user, permission) {
+    async updateUserPermission(_user, _permission) {
             }
 
     get flagData() {
@@ -1741,7 +1741,7 @@ class BladesRoll extends DocumentSheet {
         }
         return null;
     }
-    async applyConsequencesFromDialog(html) {
+    async applyConsequencesFromDialog(_html) {
             }
     
     get finalPosition() {

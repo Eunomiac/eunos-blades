@@ -201,6 +201,7 @@ function assertNonNullType<T>(
 
   // If the type is a string, compare the typeof the value to the type string.
   if (typeof type === "string") {
+    // eslint-disable-next-line valid-typeof
     if (typeof val !== type) {
       throw new Error(`Value ${valStr} is not a ${type}!`);
     }
@@ -890,10 +891,10 @@ const replace = (obj: Index<unknown>, checkTest: checkTest, repVal: unknown) => 
     repKey = `${repKey}`;
   }
   if (typeof repVal === "function") {
-    // @ts-expect-error Hopefully just temporary to get this to compile: Need to figure out how to properly define testFunc<keyFunc | valFunc> (keyFunc/valFunc types?)
+    // @ts-expect-error Need to figure out how to properly define testFunc<keyFunc | valFunc> (keyFunc/valFunc types?)
     obj[repKey] = repVal(obj[repKey], repKey);
   } else {
-    // @ts-expect-error Hopefully just temporary to get this to compile: Need to figure out how to properly define testFunc<keyFunc | valFunc> (keyFunc/valFunc types?)
+    // @ts-expect-error Need to figure out how to properly define testFunc<keyFunc | valFunc> (keyFunc/valFunc types?)
     obj[repKey] = repVal;
   }
   return true;
@@ -904,7 +905,8 @@ const replace = (obj: Index<unknown>, checkTest: checkTest, repVal: unknown) => 
  * @template T - The type of the input object or value.
  * @param {T} data The object or value to be cleaned.
  * @param {Array<any>} [remVals] An array of values to be removed during the cleaning process.
- * @returns {T | Partial<T> | "KILL"} - The cleaned version of the input object or value. If marked for removal, returns "KILL".
+ * @returns {T | Partial<T> | "KILL"} - The cleaned version of the input object or value.
+ *                                      If marked for removal, returns "KILL".
  */
 const objClean = <T>(data: T, remVals: UncleanValues[] = [undefined, null, "", {}, []]): T | Partial<T> | "KILL" => {
   const remStrings = remVals.map((rVal) => JSON.stringify(rVal));
@@ -929,7 +931,11 @@ const objClean = <T>(data: T, remVals: UncleanValues[] = [undefined, null, "", {
  * @param items
  * @param key
  */
-export function toDict<T extends List, K extends string & KeyOf<T>, V extends ValOf<T>>(items: T[], key: K): V extends key ? Record<V, T> : never {
+export function toDict<
+  T extends List,
+  K extends string & KeyOf<T>,
+  V extends ValOf<T>
+>(items: T[], key: K): V extends key ? Record<V, T> : never {
   const dict = {} as Record<V, T>;
   const mappedItems = items
     .map((data) => {
@@ -950,8 +956,9 @@ export function toDict<T extends List, K extends string & KeyOf<T>, V extends Va
   return dict;
 
   /**
-   *
-   * @param str
+   * Given a string that could have an index suffix, returns the string with
+   *  the suffix incremented by one, or set to one if no suffix exists.
+   * @param {string} str
    */
   function indexString(str: string) {
     if (/_\d+$/.test(str)) {
@@ -971,14 +978,18 @@ const partition = <Type>(obj: Type[], predicate: testFunc<valFunc> = () => true)
   objFilter(obj, (v: unknown, k: string | number | undefined) => !predicate(v, k))
 ];
 /**
- *
- * @param obj
- * @param keyFunc
- * @param valFunc
+ *  An object-equivalent Array.map() function, which accepts mapping functions to transform both keys and values.
+ *  If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
+ * @param {Index<unknown>} obj
+ * @param {mapFunc<keyFunc|valFunc>|false} keyFunc
+ * @param {mapFunc<valFunc>} [valFunc]
  */
-function objMap(obj: Index<unknown>, keyFunc: mapFunc<keyFunc> | mapFunc<valFunc> | false, valFunc?: mapFunc<valFunc>): Index<unknown> {
-  // An object-equivalent Array.map() function, which accepts mapping functions to transform both keys and values.
-  // If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
+function objMap(
+  obj: Index<unknown>,
+  keyFunc: mapFunc<keyFunc> | mapFunc<valFunc> | false,
+  valFunc?: mapFunc<valFunc>
+): Index<unknown> {
+  //
   let valFuncTyped: mapFunc<valFunc> | undefined = valFunc;
   let keyFuncTyped: mapFunc<keyFunc> | false = keyFunc;
 
@@ -1039,9 +1050,22 @@ function objFindKey<Type extends Index<unknown>>(
   // If no entries pass the test, return false
   return false;
 }
-const objFilter = <Type extends Index<unknown>>(obj: Type, keyFunc: testFunc<keyFunc> | testFunc<valFunc> | false, valFunc?: testFunc<valFunc>): Type => {
-  // An object-equivalent Array.filter() function, which accepts filter functions for both keys and/or values.
-  // If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
+
+/**
+ * An object-equivalent Array.filter() function, which accepts filter functions for both keys and/or values.
+ * If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
+ *
+ * @param {Type} obj The object to be searched.
+ * @param {testFunc<keyFunc> | testFunc<valFunc> | false} keyFunc The testing function for keys.
+ * @param {testFunc<valFunc>} [valFunc] The testing function for values.
+ * @returns {Type} The filtered object.
+ */
+const objFilter = <Type extends Index<unknown>>(
+  obj: Type,
+  keyFunc: testFunc<keyFunc> | testFunc<valFunc> | false,
+  valFunc?: testFunc<valFunc>
+): Type => {
+  //
   if (!valFunc) {
     valFunc = keyFunc as testFunc<valFunc>;
     keyFunc = false;
@@ -1052,7 +1076,10 @@ const objFilter = <Type extends Index<unknown>>(obj: Type, keyFunc: testFunc<key
   if (isArray(obj)) {return obj.filter(valFunc) as Type;}
   const kFunc = keyFunc || (() => true);
   const vFunc = valFunc || (() => true);
-  return Object.fromEntries(Object.entries(obj).filter(([key, val]: [string, unknown]) => kFunc(key, val) && vFunc(val, key))) as Type;
+  return Object.fromEntries(
+    Object.entries(obj)
+      .filter(([key, val]: [string, unknown]) => kFunc(key, val) && vFunc(val, key))
+  ) as Type;
 };
 const objForEach = (obj: Index<unknown>, func: valFunc): void => {
   // An object-equivalent Array.forEach() function, which accepts one function(val, key) to perform for each member.
@@ -1063,25 +1090,14 @@ const objForEach = (obj: Index<unknown>, func: valFunc): void => {
   }
 };
 // Prunes an object of given set of values, [undefined, null] default
-const objCompact = <Type extends (Index<unknown>)>(obj: Type, removeWhiteList: unknown[] = [undefined, null]): Type => objFilter(obj, (val: unknown) => !removeWhiteList.includes(val));
-
-/**
- *
- * @param arr
- */
-function cloneArray<T extends unknown[]>(arr: T): T {
-  return [...arr] as T;
-}
-
-/**
- *
- * @param obj
- */
-function cloneObject<T>(obj: T): T {
-  return {...obj};
-}
+const objCompact = <Type extends (Index<unknown>)>(
+  obj: Type,
+  removeWhiteList: unknown[] = [undefined, null]
+): Type => objFilter(obj, (val: unknown) => !removeWhiteList.includes(val));
 
 const objClone = <T>(obj: T, isStrictlySafe = false): T => {
+  const cloneArray = <aT extends unknown[]>(arr: aT): aT => [...arr] as aT;
+  const cloneObject = <oT>(o: oT): oT => ({...o});
   try {
     return JSON.parse(JSON.stringify(obj));
   } catch(err) {
@@ -1096,13 +1112,22 @@ const objClone = <T>(obj: T, isStrictlySafe = false): T => {
  * @param {Tx} target The target object to be merged.
  * @param {Ty} source The source object to be merged.
  * @param {object} options An object containing various options for the merge operation.
- * @param options.isMutatingOk
- * @param options.isStrictlySafe
- * @param options.isConcatenatingArrays
- * @param options.isReplacingArrays
+ * @param {boolean} options.isMutatingOk
+ * @param {boolean} options.isStrictlySafe
+ * @param {boolean} options.isConcatenatingArrays
+ * @param {boolean} options.isReplacingArrays
  * @returns {Tx & Ty} - The merged object.
  */
-function objMerge<Tx, Ty>(target: Tx, source: Ty, {isMutatingOk = false, isStrictlySafe = false, isConcatenatingArrays = true, isReplacingArrays = false} = {}): Tx & Ty {
+function objMerge<Tx, Ty>(
+  target: Tx,
+  source: Ty,
+  {
+    isMutatingOk = false,
+    isStrictlySafe = false,
+    isConcatenatingArrays = true,
+    isReplacingArrays = false
+  } = {}
+): Tx & Ty {
   // Clone the target if mutation is not allowed
   target = isMutatingOk ? target : objClone(target, isStrictlySafe);
 
@@ -1125,19 +1150,25 @@ function objMerge<Tx, Ty>(target: Tx, source: Ty, {isMutatingOk = false, isStric
   for (const [key, val] of Object.entries(source)) {
     const targetVal = target[key as KeyOf<typeof target>];
 
-    // If replacing arrays is enabled and both target and source values are arrays, replace target value with source value
+    // If replacing arrays is enabled and both target and source values are
+    // arrays, replace target value with source value
     if (isReplacingArrays && isArray(targetVal) && isArray(val)) {
       target[key as KeyOf<typeof target>] = val as Tx[KeyOf<Tx>];
     } else if (isConcatenatingArrays && isArray(targetVal) && isArray(val)) {
 
-      // If concatenating arrays is enabled and both target and source values are arrays, concatenate source value to target value
+      // If concatenating arrays is enabled and both target and source values
+      // are arrays, concatenate source value to target value
       (target[key as KeyOf<typeof target>] as unknown[]).push(...val);
     } else if (val !== null && typeof val === "object") {
     // If source value is an object and not null, merge it into target value
       if (isUndefined(targetVal) && !(val instanceof Application)) {
         target[key as KeyOf<typeof target>] = new (Object.getPrototypeOf(val).constructor)();
       }
-      target[key as KeyOf<typeof target>] = objMerge(target[key as KeyOf<typeof target>], val, {isMutatingOk: true, isStrictlySafe});
+      target[key as KeyOf<typeof target>] = objMerge(
+        target[key as KeyOf<typeof target>],
+        val,
+        {isMutatingOk: true, isStrictlySafe}
+      );
     } else {
     // For all other cases, assign source value to target
       target[key as KeyOf<typeof target>] = val as Tx[KeyOf<Tx>];
@@ -1148,13 +1179,18 @@ function objMerge<Tx, Ty>(target: Tx, source: Ty, {isMutatingOk = false, isStric
   return target as Tx & Ty;
 }
 /**
- * Deep-compares two objects and returns an object containing only the keys and values in the second object that differ from the first.
- * If the second object is missing a key or value contained in the first, it sets the value in the returned object to null, and prefixes the key with "-=".
+ * Deep-compares two objects and returns an object containing only the keys and values
+ * in the second object that differ from the first.
+ * If the second object is missing a key or value contained in the first, it sets the
+ * value in the returned object to null, and prefixes the key with "-=".
  * @param {Tx} obj1 The first object to be compared.
  * @param {Ty} obj2 The second object to be compared.
  * @returns {Record<string, unknown>} - An object containing the differences between the two input objects.
  */
-function objDiff<Tx extends Record<string, unknown>, Ty extends Record<string, unknown>>(obj1: Tx, obj2: Ty): Record<string, unknown> {
+function objDiff<
+  Tx extends Record<string, unknown>,
+  Ty extends Record<string, unknown>
+>(obj1: Tx, obj2: Ty): Record<string, unknown> {
   const diff: Record<string, unknown> = {};
   const bothObj1AndObj2Keys = Object.keys(obj2).filter((key) => Object.hasOwn(obj2, key) && Object.hasOwn(obj1, key));
   const onlyObj2Keys = Object.keys(obj2).filter((key) => Object.hasOwn(obj2, key) && !Object.hasOwn(obj1, key));
@@ -1364,7 +1400,12 @@ const drawCirclePath = (radius: number, origin: Point) => {
 // #endregion ░░░░[SVG]░░░░
 
 // #region ░░░░░░░[Colors]░░░░ Color Manipulation ░░░░░░░ ~
-const getColorVals = (red?: string | number | number[], green?: number, blue?: number, alpha?: number): number[] | null => {
+const getColorVals = (
+  red?: string | number | number[],
+  green?: number,
+  blue?: number,
+  alpha?: number
+): number[] | null => {
   if (isRGBColor(red)) {
     [red, green, blue, alpha] = red
       .replace(/[^\d.,]/g, "")
@@ -1426,7 +1467,11 @@ const getContrastingColor = (...colorVals: [string] | number[]): RGBColor | null
   }
   return null;
 };
-const getRandomColor = () => getRGBString(gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1)) as RGBColor;
+const getRandomColor = () => getRGBString(
+  gsap.utils.random(0, 255, 1),
+  gsap.utils.random(0, 255, 1),
+  gsap.utils.random(0, 255, 1)
+) as RGBColor;
 // #endregion ░░░░[Colors]░░░░
 
 // #region ░░░░░░░[DOM]░░░░ DOM Manipulation ░░░░░░░ ~
