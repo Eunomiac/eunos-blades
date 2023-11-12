@@ -4,7 +4,7 @@ import C, {BladesActorType, BladesItemType, RollPermissions, RollType, RollSubTy
 import {BladesActor, BladesPC, BladesCrew} from "./documents/BladesActorProxy";
 import {BladesItem, BladesGMTracker} from "./documents/BladesItemProxy";
 import {ApplyTooltipListeners} from "./core/gsap";
-import BladesAI, {AGENTS} from "./core/ai";
+import BladesDialog from "./BladesDialog";
 // #endregion
 // #region Types & Type Checking ~
 
@@ -59,7 +59,7 @@ function isModStatus(str: unknown): str is RollModStatus {
  * @param {boolean} [isRecurring=false] The recurring status to check.
  * @returns {boolean} True if the val is valid BladesRoll.ConsequenceData, false otherwise.
  */
-function isValidConsequenceData(val: unknown, isRecurring = false): val is BladesRoll.ConsequenceData {
+function isValidConsequenceData(val: unknown, isRecurring = false): val is BladesRoll.ConsequenceDataComplete {
   if (!U.isList(val)) { return false; }
   if (!(typeof val.type === "string" && val.type in ConsequenceType)) { return false; }
   if (!isRecurring && !(typeof val.attribute === "string" && val.attribute in AttributeTrait)) { return false; }
@@ -409,8 +409,17 @@ class BladesRollMod {
           PushCost0: () => this.rollInstance.isPushed(),
           Consequence: () => this.rollInstance.rollType === RollType.Resistance
             && Boolean(this.rollInstance.rollConsequence),
-          HarmLevel: () => this.rollInstance.rollType === RollType.Resistance
-            && [ConsequenceType.InsightHarm1, ConsequenceType.InsightHarm2, ConsequenceType.InsightHarm3, ConsequenceType.InsightHarm4, ConsequenceType.ProwessHarm1, ConsequenceType.ProwessHarm2, ConsequenceType.ProwessHarm3, ConsequenceType.ProwessHarm4, ConsequenceType.ResolveHarm1, ConsequenceType.ResolveHarm2, ConsequenceType.ResolveHarm3, ConsequenceType.ResolveHarm4].includes(this.rollInstance.rollConsequence?.type ?? "" as ConsequenceType),
+          HarmLevel: () => {
+            if (this.rollInstance.rollType !== RollType.Resistance) { return false; }
+            if (!this.rollInstance.rollConsequence?.type) { return false; }
+            const {type: csqType} = this.rollInstance.rollConsequence;
+            return [
+              ConsequenceType.InsightHarm1, ConsequenceType.ProwessHarm1, ConsequenceType.ResolveHarm1,
+              ConsequenceType.InsightHarm2, ConsequenceType.ProwessHarm2, ConsequenceType.ResolveHarm2,
+              ConsequenceType.InsightHarm3, ConsequenceType.ProwessHarm3, ConsequenceType.ResolveHarm3,
+              ConsequenceType.InsightHarm4, ConsequenceType.ProwessHarm4, ConsequenceType.ResolveHarm4
+            ].includes(csqType);
+          },
           QualityPenalty: () => this.rollInstance.isTraitRelevant(Factor.quality)
             && (this.rollInstance.rollFactors.source[Factor.quality]?.value ?? 0)
               < (this.rollInstance.rollFactors.opposition[Factor.quality]?.value ?? 0),
@@ -508,7 +517,7 @@ class BladesRollMod {
           let harmConsequence: BladesRoll.ConsequenceData|undefined = undefined;
           while (!harmConsequence && harmLevels.length > 0) {
             harmConsequence = Object.values(this.rollInstance.rollConsequences)
-              .find(({type}) => (harmLevels.pop() ?? []).includes(type));
+              .find(({type}) => (harmLevels.pop() ?? []).includes(type as ConsequenceType));
           }
           if (harmConsequence) {
             harmConsequence.resistedTo = {
@@ -516,7 +525,7 @@ class BladesRollMod {
                 ConsequenceType.InsightHarm1,
                 ConsequenceType.ProwessHarm1,
                 ConsequenceType.ResolveHarm1
-              ].includes(harmConsequence.type)
+              ].includes(harmConsequence.type as ConsequenceType)
                 ? "Fully Negated"
                 : (Object.values(harmConsequence.resistOptions ?? [])[0]?.name ?? harmConsequence.name),
               type: C.ResistedConsequenceTypes[harmConsequence.type as KeyOf<typeof C["ResistedConsequenceTypes"]>],
@@ -2140,6 +2149,7 @@ class BladesRoll extends DocumentSheet {
     return this.getFlagVal<Record<string, BladesRoll.ConsequenceData>>("consequenceData") ?? {};
   }
 
+  // Get rollConsequence() --> For resistance rolls.
   get rollConsequence(): BladesRoll.ConsequenceData | null {
     const chosenConsequence = this.getFlagVal<string>("chosenConsequenceName") ?? null;
     if (chosenConsequence) {
@@ -2148,35 +2158,10 @@ class BladesRoll extends DocumentSheet {
     return null;
   }
 
-  async addConsequence(cData: BladesRoll.ConsequenceData) {
-    eLog.checkLog2("rollCollab", "addConsequence", cData);
-    await this.setFlagVal(`consequenceData.${cData.name}`, cData);
+  async applyConsequencesFromDialog(html: JQuery|HTMLElement) {
+    /* Convert values of dialog input fields to flag data */
   }
 
-  async clearConsequence(cName: string) {
-    await this.clearFlagVal(`consequenceData.${cName}`);
-  }
-
-  async addResistanceOptions(cResult: RollResult, cIndex: string, rNames: string[]) {
-    const cData = this.getFlagVal<BladesRoll.ConsequenceData>(`consequenceData.${cResult}.${cIndex}`);
-    eLog.checkLog2("rollCollab", "addResistanceOptions", {cResult, cIndex, rNames, cData});
-    if (!cData) { return; }
-    const cType = cData.type as keyof typeof C["ResistedConsequenceTypes"];
-    const rType = C.ResistedConsequenceTypes[cType] ?? undefined;
-    const resistOptions = cData.resistOptions ?? {};
-    for (const rName of rNames) {
-      resistOptions[rName] = {name: rName, isSelected: false};
-      if (rType) {
-        resistOptions[rName].type = rType;
-      }
-    }
-    await this.setFlagVal(`consequenceData.${cResult}.${cIndex}.resistOptions`, resistOptions);
-  }
-
-  promptGMForConsequences() {
-    /* Use BladesDialog to set up a second window for GM to describe consequences,
-      with async AI resistance suggestions appearing when query received */
-  }
   // #endregion
 
   // #region GETTERS: DERIVED DATA ~
@@ -2620,56 +2605,6 @@ class BladesRoll extends DocumentSheet {
 
   // #region *** GETDATA *** ~
 
-  get consequenceTypeOptions(): {
-    [RollResult.partial]: Array<BladesSelectOption<ConsequenceType>>,
-    [RollResult.fail]: Array<BladesSelectOption<ConsequenceType>>
-    } {
-    return {
-      [RollResult.partial]: C.Consequences[this.finalPosition][RollResult.partial]
-        .map((cType) => ({value: cType, display: cType})),
-      [RollResult.fail]: C.Consequences[this.finalPosition][RollResult.fail]
-        .map((cType) => ({value: cType, display: cType}))
-    };
-  }
-
-  private _consequenceAI?: BladesAI;
-
-  async manageConsequenceAI(sData: BladesRoll.SheetData) {
-    const {consequenceData} = sData;
-    if (!consequenceData) { return; }
-
-    // If the AI generator has not been initialized, do so.
-    if (!this._consequenceAI) {
-      this._consequenceAI = new BladesAI(AGENTS.ConsequenceAdjuster);
-    }
-
-    await Promise.all((Object.entries(consequenceData) as Array<[
-      RollResult,
-      Record<string, BladesRoll.ConsequenceData>
-    ]>)
-      .map(([rollResult, cResultData]) =>
-        (Object.entries(cResultData) as Array<[
-          string,
-          BladesRoll.ConsequenceData
-        ]>)
-          .map(([cIndex, cData]) => {
-            // For each consequence, if there are no resistOptions ...
-            if (!cData.resistOptions) {
-              // Check for a pending AI prompt: create a new one if not found.
-              if (!this._consequenceAI?.hasQueried(cData.name)) {
-                this._consequenceAI?.query(cData.name, cData.name);
-              } else {
-                const response = this._consequenceAI?.getResponse(cData.name);
-                if (response) {
-                  return this.addResistanceOptions(rollResult, cIndex, response.split("|"));
-                }
-              }
-            }
-            return undefined;
-          })
-      ));
-  }
-
 
   /**
    * Retrieve the data for rendering the base RollCollab sheet.
@@ -2685,10 +2620,6 @@ class BladesRoll extends DocumentSheet {
       this.getIsGM(),
       this.getRollCosts()
     );
-
-    if (game.user.isGM && this.rollConsequences) {
-      this.manageConsequenceAI(sheetData);
-    }
 
     return {...context, ...sheetData};
   }
@@ -2778,8 +2709,7 @@ class BladesRoll extends DocumentSheet {
       finalEffect,
       finalResult,
       rollMods,
-      rollFactors,
-      consequenceTypeOptions
+      rollFactors
     } = this;
     if (!rollPrimary) {
       throw new Error("A primary roll source is required for BladesRoll.");
@@ -2838,7 +2768,6 @@ class BladesRoll extends DocumentSheet {
       ...rollResultData,
       ...GMBoostsData,
       ...positionEffectTradeData,
-      consequenceTypeOptions,
       userPermission
     };
   }
@@ -3271,7 +3200,6 @@ class BladesRoll extends DocumentSheet {
     await this.roll.evaluate({async: true});
     if (this.isApplyingConsequences) {
       this.rollPhase = RollPhase.ApplyingConsequences;
-      this.promptGMForConsequences();
     }
     eLog.checkLog3("rollCollab", "[resolveRoll()] After Evaluation, Before Chat", {roll: this, dieVals: this.dieVals});
     await this.outputRollToChat();
@@ -3536,33 +3464,33 @@ class BladesRoll extends DocumentSheet {
         $(event.currentTarget).parents(".controls-panel").toggleClass("active");
       }
     });
-    html.find("[data-action=\"gm-set\"").on({
+    html.find("[data-action=\"gm-set\"]").on({
       click: this._gmControlSet.bind(this)
     });
     /**
      * Handles setting of baseline rollPosition via GM button line
      */
-    html.find("[data-action=\"gm-set-position\"").on({
+    html.find("[data-action=\"gm-set-position\"]").on({
       click: this._gmControlSetPosition.bind(this)
     });
     /**
      * Handles setting of baseline rollEffect via GM button line
      */
-    html.find("[data-action=\"gm-set-effect\"").on({
+    html.find("[data-action=\"gm-set-effect\"]").on({
       click: this._gmControlSetEffect.bind(this)
     });
     /**
      * Handles setting values via GM number line (e.g. roll factor boosts/modifications).
      * Handles resetting value associated with GM number line on a right-click.
      */
-    html.find("[data-action=\"gm-set-target\"").on({
+    html.find("[data-action=\"gm-set-target\"]").on({
       click: this._gmControlSetTargetToValue.bind(this),
       contextmenu: this._gmControlResetTarget.bind(this)
     });
     /**
      * Handles setting of Factor toggles: isActive, isPrimary, highFavorsPC, isDominant
      */
-    html.find("[data-action=\"gm-toggle-factor\"").on({
+    html.find("[data-action=\"gm-toggle-factor\"]").on({
       click: this._gmControlToggleFactor.bind(this)
     });
 
@@ -3571,8 +3499,12 @@ class BladesRoll extends DocumentSheet {
       .on({change: this._onSelectChange.bind(this)});
 
     html
+      .find("[data-action=\"gm-edit-consequences\"]")
+      .on({click: () => BladesDialog.DisplayRollConsequenceDialog(this)});
+
+    html
       .find("[data-action='gm-text-input']")
-      .on({blur: this._onTextInputBlur.bind(this)})
+      .on({blur: this._onTextInputBlur.bind(this)});
 
   }
   // #endregion

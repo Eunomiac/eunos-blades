@@ -1,5 +1,7 @@
 & {
 
+  --roll-spacing: 5px;
+
   height: auto !important;
   width: unset !important;
 
@@ -144,8 +146,7 @@
         width: auto;
         max-width: 175px;
         margin: 0;
-        // left: calc(-50% - 3px);
-        right: calc(100% + 3px);
+        right: calc(100% + 2*var(--roll-spacing, 5px) - 2px);
         background: rgb(24, 24, 24);
         top: 0px;
         padding: 2px 0 2px 5px;
@@ -699,8 +700,6 @@
   &.gm-roll-collab {
 
     .window-content form {
-      min-width: var(--full-roll-width, 550px);
-      max-width: var(--full-roll-width, 550px);
 
       &.roll-type-action {
         --full-roll-width: 775px;
@@ -903,6 +902,8 @@
 
     form {
 
+      min-width: var(--full-roll-width, 550px);
+      max-width: var(--full-roll-width, 550px);
       // Awesome Fire Shader ---  https://codepen.io/eunomiac/pen/OJQeMPr?editors=1010
       // Great Nav Tabs --- https://codepen.io/abdelRhman345/pen/PXMmdv
       // Single Flame Shader --- https://codepen.io/osublake/pen/pqNXoq
@@ -916,13 +917,13 @@
 
 
       &.roll-type-action {
-        min-width: 775px;
-        max-width: 775px;
+        // min-width: 775px;
+        // max-width: 775px;
       }
 
       &.roll-type-resistance {
-        min-width: 500px;
-        max-width: 500px;
+        // min-width: 500px;
+        // max-width: 500px;
 
         .sheet-root {
           border-radius: 30px;
@@ -1386,11 +1387,14 @@
           position: relative;
           gap: 5px 5px;
 
+          &.roll-participants-block { border: none }
+
 
           &.rolling-block {
             min-height: 62px;
 
             .roll-sheet-sub-block.roll-header-block {
+              margin-top: -2px;
 
               .roll-sheet-select,
               .roll-readonly {
@@ -1428,6 +1432,9 @@
           align-items: stretch;
           position: static;
 
+          gap: var(--roll-spacing, 5px);;
+          padding: var(--roll-spacing, 5px);
+
           .split-root-left,
           .split-root-right,
           .full-root-container {
@@ -1436,20 +1443,21 @@
             z-index: 5;
 
             &.split-root-left {
-              flex-basis: 75%;
-              max-width: 370px;
+              flex-basis: 85%;
+              max-width: 85%;
+              // max-width: 370px;
             }
 
             &.split-root-right {
-              flex-basis: 35%;
+              flex-basis: 15%;
               display: flex;
               align-items: stretch;
-              justify-content: stretch;
+              justify-content: space-between;
               flex-direction: column;
               z-index: 4;
 
               section.sheet-main {
-                flex-grow: 1;
+                // flex-grow: 1;
                 z-index: 0;
                 overflow: hidden;
 
@@ -1619,6 +1627,12 @@
             width: 100%;
           }
 
+          .roll-sheet-sub-block.roll-effects-block.inactive-mod-block {
+            padding-right: 40px;
+            margin-right: -40px;
+            z-index: -2;
+          }
+
           .roll-sheet-float-block {
 
             &.roll-effects-block {
@@ -1627,13 +1641,10 @@
               position: absolute;
               pointer-events: none;
               margin-top: 20px;
-
-              &:not(.inactive-mod-block) {
-                flex-direction: column;
-                width: unset;
-                align-items: flex-start;
-                gap: 0;
-              }
+              flex-direction: column;
+              width: unset;
+              align-items: flex-start;
+              gap: 0;
             }
 
             &.roll-button {
@@ -1742,7 +1753,7 @@
               position: absolute;
               translate: -50% 100%;
               left: 50%;
-              // top: 25%;
+              top: 50%;
               font-family: var(--font-emphasis);
               color: var(--blades-white);
               text-shadow:

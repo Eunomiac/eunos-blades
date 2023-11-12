@@ -6,7 +6,7 @@ import C, {BladesActorType, BladesItemType, AttributeTrait, Tag, ActionTrait, Fa
 import Tags from "../../core/tags";
 import BladesActor from "../../BladesActor";
 import BladesItem from "../../BladesItem";
-import BladesSelectorDialog, {SelectionCategory} from "../../BladesDialog";
+import BladesDialog, {SelectionCategory} from "../../BladesDialog";
 import BladesActiveEffect from "../../BladesActiveEffect";
 import BladesRoll, {BladesRollPrimary, BladesRollOpposition} from "../../BladesRoll";
 // #endregion
@@ -409,7 +409,7 @@ class BladesActorSheet extends ActorSheet {
     if (!dialogDocs || !docCat || !docType) {
       return;
     }
-    await BladesSelectorDialog.DisplaySelectionDialog(
+    await BladesDialog.DisplaySelectionDialog(
       this.actor,
       U.tCase(`Add ${docCat.replace(/_/g, " ")}`),
       docType,

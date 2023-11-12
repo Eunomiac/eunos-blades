@@ -18,7 +18,7 @@ import BladesNPCSheet from "./sheets/actor/BladesNPCSheet";
 import BladesFactionSheet from "./sheets/actor/BladesFactionSheet";
 import BladesRoll, {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "./BladesRoll";
 
-import BladesSelectorDialog from "./BladesDialog";
+import BladesDialog from "./BladesDialog";
 import BladesAI, {AGENTS} from "./core/ai";
 import BladesActiveEffect from "./BladesActiveEffect";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet";
@@ -156,7 +156,7 @@ Hooks.once("init", async () => {
     BladesActiveEffect.Initialize(),
     BladesGMTrackerSheet.Initialize(),
     BladesScore.Initialize(),
-    BladesSelectorDialog.Initialize(),
+    BladesDialog.Initialize(),
     BladesClockKeeperSheet.Initialize(),
     BladesPushAlert.Initialize(),
     BladesRoll.Initialize(),
@@ -196,7 +196,7 @@ Hooks.once("socketlib.ready", () => {
   function InitOverlaySockets(): void {
     setTimeout(() => {
       clockOverlayUp = clockOverlayUp || BladesClockKeeperSheet.InitSockets();
-      pushControllerUp = clockOverlayUp || BladesPushAlert.InitSockets();
+      pushControllerUp = pushControllerUp || BladesPushAlert.InitSockets();
       if (clockOverlayUp && pushControllerUp) { return; }
       InitOverlaySockets();
     }, 2000);

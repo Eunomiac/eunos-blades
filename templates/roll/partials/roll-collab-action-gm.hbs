@@ -234,111 +234,17 @@
     <section class="sheet-main tab-content roll-opp-block nav-group flex-vertical">
       {{> "systems/eunos-blades/templates/components/roll-collab-opposition.hbs" rollOpposition=rollOpposition factorData=rollFactors.opposition}}
     </section>
-    <section class="sheet-main tab-content roll-consequences">
-      <label class="roll-consequence-section-label">Consequence(s): Partial</label>
-      {{#each consequenceData.partial as |cData cIndex|}}
-        {{#if cData}}
-        <div class="roll-consequence-row flex-horizontal">
-          {{!-- Type --}}
-          {{> "systems/eunos-blades/templates/components/select.hbs"
-            cssClass="roll-consequence-type-select"
-            dataAction="gm-select"
-            dataFlagTarget=(concat "rollCollab.consequenceData.partial." @index ".type")
-            dataDType="String"
-            dataDocType=false
-            selected=cData.type
-            options=../consequenceTypeOptions.partial }}
-          {{!-- Name --}}
-          <input class="shadowed consequence-name" type="text" value="{{cData.name}}" name="flags.eunos-blades.rollCollab.consequenceData.partial.{{@index}}.name" />
-          {{!-- AI Options --}}
-          <div class="flex-vertical consequence-resist-options-container">
-            {{#each cData.resistOptions as |rData rName|}}
-              <div class="flex-horizontal consequence-resist-option">
-                {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
-                  isToggled=rData.isSelected
-                  activeClass="fa-solid fa-bandage red-bright"
-                  activeTooltip="<b>AI Suggestion</b><br>Click to Select"
-                  inactiveClass="fa-solid fa-bandage grey"
-                  inactiveTooltip="<b>Selected AI Suggestion</b><br>Click to Deselect"
-                  targetFlagKey="rollCollab.consequenceData.partial.{{cIndex}}.resistOptions.{{rName}}.isSelected"
-                }}
-                <label class="consequence-name">{{rData.name}}</label>
-              </div>
-            {{/each}}
-          </div>
-        </div>
-        {{/if}}
-      {{/each}}
-
-      {{!-- Blank Entry for New Consequence --}}
-      {{#with (count consequenceData.partial) as |index|}}
-      <div class="roll-consequence-row flex-horizontal">
-        {{!-- Type --}}
-        {{> "systems/eunos-blades/templates/components/select.hbs"
-          cssClass="roll-consequence-type-select"
-          dataAction="gm-select"
-          dataFlagTarget=(concat "rollCollab.consequenceData.partial." index ".type")
-          dataDType="String"
-          dataDocType=false
-          selected=""
-          options=../consequenceTypeOptions.partial }}
-        {{!-- Name --}}
-        <input class="shadowed consequence-name" type="text" name="flags.eunos-blades.rollCollab.consequenceData.partial.{{index}}.name" value="" />
+    <section class="sheet-main tab-content roll-consequences flex-horizontal">
+      <div class="flex-vertical">
+        {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+          blockClass="edit-consequence-button-container"
+          action="gm-edit-consequences"
+          buttonImg="systems/eunos-blades/assets/icons/consequence-icons/gm-csq-button.svg"
+        }}
       </div>
-      {{/with}}
+      <div class="flex-vertical">
 
-
-      <label class="roll-consequence-section-label">Consequence(s): Failure</label>
-      {{#each consequenceData.fail as |cData cIndex|}}
-        {{#if cData}}
-        <div class="roll-consequence-row flex-horizontal">
-          {{!-- Type --}}
-          {{> "systems/eunos-blades/templates/components/select.hbs"
-            cssClass="roll-consequence-type-select"
-            dataAction="gm-select"
-            dataFlagTarget=(concat "rollCollab.consequenceData.fail." @index ".type")
-            dataDType="String"
-            dataDocType=false
-            selected=cData.type
-            options=../consequenceTypeOptions.fail }}
-          {{!-- Name --}}
-          <input class="shadowed consequence-name" type="text" value="{{cData.name}}" name="flags.eunos-blades.rollCollab.consequenceData.fail.{{@index}}.name" />
-          {{!-- AI Options --}}
-          <div class="flex-vertical consequence-resist-options-container">
-            {{#each cData.resistOptions as |rData rName|}}
-              <div class="flex-horizontal consequence-resist-option">
-                {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
-                  isToggled=rData.isSelected
-                  activeClass="fa-solid fa-bandage red-bright"
-                  activeTooltip="<b>AI Suggestion</b><br>Click to Select"
-                  inactiveClass="fa-solid fa-bandage grey"
-                  inactiveTooltip="<b>Selected AI Suggestion</b><br>Click to Deselect"
-                  targetFlagKey="rollCollab.consequenceData.fail.{{cIndex}}.resistOptions.{{rName}}.isSelected"
-                }}
-                <label class="consequence-name">{{rData.name}}</label>
-              </div>
-            {{/each}}
-          </div>
-        </div>
-        {{/if}}
-      {{/each}}
-
-      {{!-- Blank Entry for New Consequence --}}
-      {{#with (count consequenceData.fail) as |index|}}
-      <div class="roll-consequence-row flex-horizontal">
-        {{!-- Type --}}
-        {{> "systems/eunos-blades/templates/components/select.hbs"
-          cssClass="roll-consequence-type-select"
-          dataAction="gm-select"
-          dataFlagTarget=(concat "rollCollab.consequenceData.fail." index ".type")
-          dataDType="String"
-          dataDocType=false
-          selected=""
-          options=../consequenceTypeOptions.fail }}
-        {{!-- Name --}}
-        <input class="shadowed consequence-name" type="text" name="flags.eunos-blades.rollCollab.consequenceData.fail.{{index}}.name" value="" />
       </div>
-      {{/with}}
     </section>
     <section class="sheet-main flex-vertical factor-controls">
 

@@ -2,11 +2,16 @@
   {{#if targetKey}}
     <input data-dtype="Boolean" type="checkbox" class="hidden-toggle" name="{{targetKey}}" {{checked isToggled}} />
   {{else if targetFlagKey}}
-    <input data-dtype="Boolean" type="checkbox" class="hidden-toggle" data-action="gm-toggle" data-flag-target="{{targetFlagKey}}" {{checked isToggled}} />
+    <input data-dtype="Boolean" type="checkbox" class="hidden-toggle" data-action="{{#if dataAction}}{{dataAction}}{{else}}gm-toggle{{/if}}" data-flag-target="{{targetFlagKey}}" {{checked isToggled}} />
+  {{else if dataAction}}
+    <a class="button-icon" data-action="{{dataAction}}">
   {{/if}}
 
-  <i class="toggle-on {{activeClass}}"></i>
-  <i class="toggle-off {{inactiveClass}}"></i>
+  {{#if isToggled}}
+    <i class="toggle-on {{activeClass}}"></i>
+  {{else}}
+    <i class="toggle-off {{inactiveClass}}"></i>
+  {{/if}}
   {{#if tooltip}}
   <span class="tooltip toggle-icon-tooltip">{{{tooltip}}}</span>
   {{/if}}
@@ -20,4 +25,8 @@
       <span class="tooltip toggle-icon-tooltip">{{{inactiveTooltip}}}</span>
     {{/unless}}
   {{/if}}
+
+  {{#unless targetKey}}{{#unless targetFlagKey}}{{#if dataAction}}
+  </a>
+  {{/if}}{{/unless}}{{/unless}}
 </span>

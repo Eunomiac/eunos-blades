@@ -12,7 +12,7 @@ import C, { BladesActorType, BladesItemType, AttributeTrait, ActionTrait, Factor
 import Tags from "../../core/tags.js";
 import BladesActor from "../../BladesActor.js";
 import BladesItem from "../../BladesItem.js";
-import BladesSelectorDialog from "../../BladesDialog.js";
+import BladesDialog from "../../BladesDialog.js";
 import BladesActiveEffect from "../../BladesActiveEffect.js";
 import BladesRoll, { BladesRollPrimary, BladesRollOpposition } from "../../BladesRoll.js";
 class BladesActorSheet extends ActorSheet {
@@ -323,7 +323,7 @@ class BladesActorSheet extends ActorSheet {
         if (!dialogDocs || !docCat || !docType) {
             return;
         }
-        await BladesSelectorDialog.DisplaySelectionDialog(this.actor, U.tCase(`Add ${docCat.replace(/_/g, " ")}`), docType, dialogDocs, docTags);
+        await BladesDialog.DisplaySelectionDialog(this.actor, U.tCase(`Add ${docCat.replace(/_/g, " ")}`), docType, dialogDocs, docTags);
     }
     async _onItemRemoveClick(event) {
         event.preventDefault();

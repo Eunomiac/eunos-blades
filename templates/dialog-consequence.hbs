@@ -1,51 +1,169 @@
 
-<div class="{{cssClass}} dialog-content">
-  <section class="tab-content nav-group flex-vertical">
-    <h1>Roll Consequences</h1>
-    <div class="consequence-section">
-      <h2>Partial Success</h2>
-      
-    </div>
+{{!-- Data Passed:
+  consequenceData: {partial: Array<ConsequenceData>, fail: Array<ConsequenceData>},
+  consequenceTypeOptions: {partial: Array<ConsequenceType>, fail: Array<ConsequenceType>}
 
-
-
-    {{#if (test (count tabs) ">" 1)}}
-    {{!-- Nav menu --}}
-    <nav class="nav-tabs flex-horizontal">
-      {{#each tabs as |itemList tabName|}}
-      <a class="tab-selector" data-tab="{{@index}}">{{tabName}}</a>
-      {{/each}}
-    </nav>
-    {{/if}}
-
-    {{!-- Tabs --}}
-    {{#with docType as |docType|}}
-    {{#each ../tabs as |tabItems tabName|}}
-    <div class="tab flex-horizontal flex-wrap {{~#unless (test (count ../tabs) ">" 1)}} active{{/unless}}" data-tab="{{@index}}">
-      {{#each tabItems as |item|}}
-        <div class="comp comp-vertical {{item.dialogCSSClasses}} {{~#if item.tooltip}} tooltip-trigger{{/if}}">
-          <div class="comp-body" data-item-id="{{item._id}}" data-doc-type="{{docType}}">
-            <img {{~#if item.tooltip}} class="tooltip-scaling-elem"{{/if}} src="{{item.img}}" />
-            <div class="comp-title shadowed {{~#if item.tooltip}} tooltip-scaling-elem{{/if}}">{{item.name}}</div>
-            {{#if item.system.load}}
-            <div class="number-circle {{~#if item.tooltip}} tooltip-scaling-elem{{/if}}">{{item.system.load}}</div>
-            {{/if}}
-            {{#if (test item.system.price ">" 1)}}
-            <div class="number-circle {{~#if item.tooltip}} tooltip-scaling-elem{{/if}}">{{item.system.price}}</div>
-            {{/if}}
+  --}}
+{{log "DialogConsequences" this}}
+<div class="{{cssClass}} dialog-content dialog-consequence">
+  <section class="tab-content flex-vertical">
+    <div class="consequence-section full-width">
+      <h2>On Partial Success</h2>
+      {{#with "partial" as |rollResult|}}
+      {{log "LOOKUP" (lookup ../consequenceData "partial")}}
+      {{#each (lookup ../consequenceData rollResult) as |cData cIndex|}}
+        {{#if cData}}
+        <div class="roll-consequence-row flex-vertical full-width">
+          <div class="roll-consequence-entry-row full-width flex-horizontal">
+            {{!-- Icon --}}
+            <img class="consequence-type-icon" src="{{cData.icon}}" />
+            {{!-- Type --}}
+            {{> "systems/eunos-blades/templates/components/select.hbs"
+              cssClass="roll-consequence-type-select"
+              dataAction="gm-select"
+              dataFlagTarget=(concat "rollCollab.consequenceData." rollResult "." cIndex ".type")
+              dataDType="String"
+              dataDocType=false
+              selected=cData.type
+              options=(lookup ../../consequenceTypeOptions rollResult ) }}
+            {{!-- Attribute --}}
+            {{> "systems/eunos-blades/templates/components/select.hbs"
+              cssClass="roll-consequence-attribute-select"
+              dataAction="gm-select"
+              dataFlagTarget=(concat "rollCollab.consequenceData." rollResult "." cIndex ".attribute")
+              dataDType="String"
+              dataDocType=false
+              selected=cData.attribute
+              options=../../consequenceAttributeOptions }}
+            {{!-- AI Trigger --}}
+            {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+              blockClass="ai-query-button"
+              buttonClass="fa-solid fa-brain-circuit"
+              tooltip="<b>Query AI</b><br>Query OpenAI for suggestions on resisted versions of this consequence."
+              action=(concat "ai-query-" rollResult "-" cIndex)
+            }}
+            {{!-- Name --}}
+            <input class="shadowed consequence-name" type="text" value="{{cData.name}}" data-action="gm-update-dialog" data-flag-target="rollCollab.consequenceData.{{rollResult}}.{{cIndex}}.name" />
           </div>
-          {{#if item.tooltip}}
-          <div class="tooltip tooltip-dialog-selection">{{{item.tooltip}}}</div>
-          {{/if}}
+          {{!-- AI Options --}}
+          <div class="flex-vertical consequence-resist-options-container">
+            {{#each cData.resistOptions as |rData rIndex|}}
+            <div class="flex-horizontal consequence-resist-option">
+              {{!-- Select Resist Option --}}
+              {{#if rData.isSelected}}
+                {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+                  blockClass="resist-select-button"
+                  buttonClass="fa-solid fa-star gold-bright"
+                  tooltip="<b>Selected AI Suggestion</b><br>Click to Deselect"
+                  action=(concat "gm-select-toggle-" rollResult "-" cIndex "-" rIndex)
+                }}
+              {{else}}
+                {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+                  blockClass="resist-select-button"
+                  buttonClass="fa-regular fa-star grey"
+                  tooltip="<b>AI Suggestion</b><br>Click to Select."
+                  action=(concat "gm-select-toggle-" rollResult "-" cIndex "-" rIndex)
+                }}
+              {{/if}}
+              {{!-- Type --}}
+              {{> "systems/eunos-blades/templates/components/select.hbs"
+                cssClass="roll-consequence-type-select"
+                dataAction="gm-select"
+                dataFlagTarget=(concat "rollCollab.consequenceData." rollResult "." cIndex ".resistOptions." rIndex ".type")
+                dataDType="String"
+                dataDocType=false
+                selected=rData.type
+                options=../../../consequenceTypeOptionsAll }}
+              {{!-- Name --}}
+              <input class="shadowed consequence-name" type="text" value="{{rData.name}}" data-action="gm-update-dialog" data-flag-target="rollCollab.consequenceData.{{rollResult}}.{{cIndex}}.resistOptions.{{rIndex}}.name" />
+            </div>
+            {{/each}}
+          </div>
         </div>
+        {{/if}}
       {{/each}}
+      {{/with}}
+
+      <h2>On Failure</h2>
+      {{#with "fail" as |rollResult|}}
+      {{log "LOOKUP" (lookup ../consequenceData "partial")}}
+      {{#each (lookup ../consequenceData rollResult) as |cData cIndex|}}
+        {{#if cData}}
+        <div class="roll-consequence-row flex-vertical full-width">
+          <div class="roll-consequence-entry-row full-width flex-horizontal">
+            {{!-- Icon --}}
+            <img class="consequence-type-icon" src="{{cData.icon}}" />
+            {{!-- Type --}}
+            {{> "systems/eunos-blades/templates/components/select.hbs"
+              cssClass="roll-consequence-type-select"
+              dataAction="gm-select"
+              dataFlagTarget=(concat "rollCollab.consequenceData." rollResult "." cIndex ".type")
+              dataDType="String"
+              dataDocType=false
+              selected=cData.type
+              options=(lookup ../../consequenceTypeOptions rollResult ) }}
+            {{!-- Attribute --}}
+            {{> "systems/eunos-blades/templates/components/select.hbs"
+              cssClass="roll-consequence-attribute-select"
+              dataAction="gm-select"
+              dataFlagTarget=(concat "rollCollab.consequenceData." rollResult "." cIndex ".attribute")
+              dataDType="String"
+              dataDocType=false
+              selected=cData.attribute
+              options=../../consequenceAttributeOptions }}
+            {{!-- AI Trigger --}}
+            {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+              blockClass="ai-query-button"
+              buttonClass="fa-solid fa-brain-circuit"
+              tooltip="<b>Query AI</b><br>Query OpenAI for suggestions on resisted versions of this consequence."
+              action=(concat "ai-query-" rollResult "-" cIndex)
+            }}
+            {{!-- Name --}}
+            <input class="shadowed consequence-name" type="text" value="{{cData.name}}" data-action="gm-update-dialog" data-flag-target="rollCollab.consequenceData.{{rollResult}}.{{cIndex}}.name" />
+          </div>
+          {{!-- AI Options --}}
+          <div class="flex-vertical consequence-resist-options-container">
+            {{#each cData.resistOptions as |rData rIndex|}}
+            <div class="flex-horizontal consequence-resist-option">
+              {{!-- Select Resist Option --}}
+              {{#if rData.isSelected}}
+                {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+                  blockClass="resist-select-button"
+                  buttonClass="fa-solid fa-star gold-bright"
+                  tooltip="<b>Selected AI Suggestion</b><br>Click to Deselect"
+                  action=(concat "gm-select-toggle-" rollResult "-" cIndex "-" rIndex)
+                }}
+              {{else}}
+                {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+                  blockClass="resist-select-button"
+                  buttonClass="fa-regular fa-star grey"
+                  tooltip="<b>AI Suggestion</b><br>Click to Select."
+                  action=(concat "gm-select-toggle-" rollResult "-" cIndex "-" rIndex)
+                }}
+              {{/if}}
+              {{!-- Type --}}
+              {{> "systems/eunos-blades/templates/components/select.hbs"
+                cssClass="roll-consequence-type-select"
+                dataAction="gm-select"
+                dataFlagTarget=(concat "rollCollab.consequenceData." rollResult "." cIndex ".resistOptions." rIndex ".type")
+                dataDType="String"
+                dataDocType=false
+                selected=rData.type
+                options=../../../consequenceTypeOptionsAll }}
+              {{!-- Name --}}
+              <input class="shadowed consequence-name" type="text" value="{{rData.name}}" data-action="gm-update-dialog" data-flag-target="rollCollab.consequenceData.{{rollResult}}.{{cIndex}}.resistOptions.{{rIndex}}.name" />
+            </div>
+            {{/each}}
+          </div>
+        </div>
+        {{/if}}
+      {{/each}}
+      {{/with}}
     </div>
-    {{/each}}
-    {{/with}}
   </section>
 </div>
 
-<div class="dialog-buttons">
+<div class="dialog-buttons flex-horizontal">
   {{#each buttons as |bData bName|}}
   <button class="dialog-button {{bName}} {{~#if (test ../default "==" bName)}} default{{/if}}" data-button="{{bName}}">
     {{{bData.icon}}}

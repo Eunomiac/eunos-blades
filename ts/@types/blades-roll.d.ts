@@ -18,19 +18,30 @@ declare global {
     export type ConsequenceResisted = {
       name: string,
       type?: ConsequenceType,
-      isSelected: boolean
+      icon?: string,
+      isSelected: boolean // Whether GM has selected this as the resisted consequence
     }
 
     export interface ConsequenceData {
       name: string,
-      type: ConsequenceType,
-      attribute: AttributeTrait,
+      type: ConsequenceType|"",
+      icon?: string,
+      attribute: AttributeTrait|"",
       resistOptions?: Record<
-        string,  // display name of consequence
+        string,  // stringified index
         ConsequenceResisted // ai
       >,
       resistedTo?: ConsequenceResisted|false
         // player's choice from chat
+    }
+
+    export interface ConsequenceDataComplete extends ConsequenceData {
+      type: ConsequenceType,
+      attribute: AttributeTrait,
+      resistOptions: Record<
+        string,
+        ConsequenceResisted
+      >
     }
 
     export type CostData = {

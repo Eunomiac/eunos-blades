@@ -15124,6 +15124,7 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog {
   max-width: 900px;
   height: auto !important;
+  width: auto !important;
   --item-info-height: 100px;
   --buttons-height: 25px;
 }
@@ -15245,6 +15246,45 @@ template {
   padding: 0;
   height: var(--buttons-height);
 }
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section {
+  width: 600px;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .button-icon {
+  position: unset;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .roll-consequence-entry-row .consequence-type-icon {
+  width: 24px;
+  min-width: 24px;
+  filter: brightness(1.5) drop-shadow(0 0 4px black);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select {
+  font-family: Oswald;
+  flex-basis: 150px;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select {
+  font-family: Oswald;
+  flex-basis: 95px;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .roll-consequence-entry-row .consequence-name {
+  background: rgba(0, 0, 0, 0.5);
+  flex-basis: 375px;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .consequence-resist-options-container {
+  width: 90%;
+  margin-left: 10%;
+  justify-content: stretch;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .consequence-resist-options-container .consequence-resist-option {
+  width: 100%;
+  justify-content: stretch;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .toggle-icon {
+  position: unset;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .shadowed.consequence-name {
+  flex-grow: 1;
+  background: rgba(0, 0, 0, 0.5);
+}
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.active-effect-sheet {
   min-width: 600px;
   height: auto !important;
@@ -15273,6 +15313,7 @@ template {
   flex-grow: 3;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab {
+  --roll-spacing: 5px;
   height: auto !important;
   width: unset !important;
   overflow: visible;
@@ -15393,7 +15434,7 @@ template {
   width: auto;
   max-width: 175px;
   margin: 0;
-  right: calc(100% + 3px);
+  right: calc(100% + 2 * var(--roll-spacing, 5px) - 2px);
   background: rgb(24, 24, 24);
   top: 0px;
   padding: 2px 0 2px 5px;
@@ -15800,10 +15841,6 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .roll-sheet-float-block.effect-final-block .pos-effect-trade-block .fa-light {
   scale: 0.8;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab.gm-roll-collab .window-content form {
-  min-width: var(--full-roll-width, 550px);
-  max-width: var(--full-roll-width, 550px);
-}
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab.gm-roll-collab .window-content form.roll-type-action {
   --full-roll-width: 775px;
 }
@@ -15953,13 +15990,9 @@ template {
   border: 3px outset var(--blades-white);
   background: var(--blades-black-dark);
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form.roll-type-action {
-  min-width: 775px;
-  max-width: 775px;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form.roll-type-resistance {
-  min-width: 500px;
-  max-width: 500px;
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form {
+  min-width: var(--full-roll-width, 550px);
+  max-width: var(--full-roll-width, 550px);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form.roll-type-resistance .sheet-root {
   border-radius: 30px;
@@ -16300,8 +16333,14 @@ template {
   position: relative;
   gap: 5px 5px;
 }
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-sheet-block.roll-participants-block {
+  border: none;
+}
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-sheet-block.rolling-block {
   min-height: 62px;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-sheet-block.rolling-block .roll-sheet-sub-block.roll-header-block {
+  margin-top: -2px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-sheet-block.rolling-block .roll-sheet-sub-block.roll-header-block .roll-sheet-select,
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-sheet-block.rolling-block .roll-sheet-sub-block.roll-header-block .roll-readonly {
@@ -16330,6 +16369,8 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .full-root {
   align-items: stretch;
   position: static;
+  gap: var(--roll-spacing, 5px);
+  padding: var(--roll-spacing, 5px);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-left,
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right,
@@ -16347,8 +16388,8 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .full-root .split-root-left.split-root-left,
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .full-root .split-root-right.split-root-left,
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .full-root .full-root-container.split-root-left {
-  flex-basis: 75%;
-  max-width: 370px;
+  flex-basis: 85%;
+  max-width: 85%;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-left.split-root-right,
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .split-root .split-root-right.split-root-right,
@@ -16356,10 +16397,10 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .full-root .split-root-left.split-root-right,
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .full-root .split-root-right.split-root-right,
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .full-root .full-root-container.split-root-right {
-  flex-basis: 35%;
+  flex-basis: 15%;
   display: flex;
   align-items: stretch;
-  justify-content: stretch;
+  justify-content: space-between;
   flex-direction: column;
   z-index: 4;
 }
@@ -16369,7 +16410,6 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .full-root .split-root-left.split-root-right section.sheet-main,
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .full-root .split-root-right.split-root-right section.sheet-main,
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .full-root .full-root-container.split-root-right section.sheet-main {
-  flex-grow: 1;
   z-index: 0;
   overflow: hidden;
 }
@@ -16660,14 +16700,17 @@ template {
   height: 30px;
   width: 100%;
 }
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root section.sheet-footer .roll-sheet-sub-block.roll-effects-block.inactive-mod-block {
+  padding-right: 40px;
+  margin-right: -40px;
+  z-index: -2;
+}
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root section.sheet-footer .roll-sheet-float-block.roll-effects-block {
   z-index: 4;
   width: 100%;
   position: absolute;
   pointer-events: none;
   margin-top: 20px;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root section.sheet-footer .roll-sheet-float-block.roll-effects-block:not(.inactive-mod-block) {
   flex-direction: column;
   width: unset;
   align-items: flex-start;
@@ -16761,6 +16804,7 @@ template {
   position: absolute;
   translate: -50% 100%;
   left: 50%;
+  top: 50%;
   font-family: var(--font-emphasis);
   color: var(--blades-white);
   text-shadow: 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark), 0 0 4px var(--blades-black-dark);

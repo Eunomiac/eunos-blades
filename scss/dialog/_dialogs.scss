@@ -5,7 +5,7 @@
   // max-height: 500px;
 
   height: auto !important;
-  // width: auto !important;
+  width: auto !important;
 
   --item-info-height: 100px;
   --buttons-height: 25px;
@@ -180,6 +180,58 @@
       padding: 0;
       height: var(--buttons-height);
 
+    }
+
+    .consequence-section {
+      width: 600px;
+      h2 {
+
+      }
+      .roll-consequence-row {
+        .button-icon {
+          position: unset;
+        }
+        .roll-consequence-entry-row {
+          .consequence-type-icon {
+            width: 24px;
+            min-width: 24px;
+            filter: brightness(1.5) drop-shadow(0 0 4px black);
+          }
+          .roll-consequence-type-select {
+            font-family: Oswald;
+            flex-basis: 150px;
+
+          }
+          .roll-consequence-attribute-select {
+            font-family: Oswald;
+            flex-basis: 95px;
+          }
+          .consequence-name {
+            background: rgba(0,0,0,0.5);
+            flex-basis: 375px;
+          }
+        }
+        .consequence-resist-options-container {
+          width: 90%;
+          margin-left: 10%;
+          justify-content: stretch;
+
+          .consequence-resist-option {
+            width: 100%;
+            justify-content: stretch;
+
+            .toggle-icon {
+              position: unset;
+            }
+
+            .shadowed.consequence-name {
+              // flex-basis: 200px;
+              flex-grow: 1;
+              background: rgba(0, 0, 0, 0.5);
+            }
+          }
+        }
+      }
     }
   }
 }

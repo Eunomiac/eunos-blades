@@ -1,5 +1,13 @@
 <a class="button-icon {{~#if blockClass}} {{blockClass}}{{/if}}" {{~#if targetId}} data-id="{{targetId}}" {{/if~}} data-action="{{action}}">
-  <i {{~#if buttonClass}} class="{{buttonClass}}"{{/if}}></i>
+  {{#if buttonClass}}
+    <i class="{{buttonClass}}"></i>
+  {{/if}}
+  {{#if buttonImg}}
+    <img class="button-img" src="{{buttonImg}}" />
+  {{/if}}
+  {{#if buttonLabel}}
+    <label class="button-label">{{buttonLabel}}</label>
+  {{/if}}
   {{#if tooltip}}
   <span class="tooltip button-icon-tooltip">{{{tooltip}}}</span>
   {{/if}}

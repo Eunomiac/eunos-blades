@@ -220,6 +220,8 @@ class BladesAI {
     eLog.checkLog3("BladesAI", "AI Query", {prompt: fetchRequest, response: data});
 
     this.responses[queryID] = data.choices[0].message.content;
+
+    return this.responses[queryID];
   }
 
 }
@@ -256,12 +258,13 @@ export const AGENTS: Record<
     ]
   },
   ConsequenceAdjuster: {
-    systemMessage: "You will act as a \"Setback Adjuster\" for a game of Blades In The Dark.  You will be prompted with a short phrase describing an injury, lasting consequence or other setback. Your job is to respond with a pipe-delimited list of three possible alternative consequences that are less severe by one level, using the following scale as a rough guide: Level 1 = Lesser (e.g. 'Battered', 'Drained', 'Distracted', 'Scared', 'Confused'), Level 2 = Moderate (e.g. 'Exhausted', 'Deep Cut to Arm', 'Concussion', 'Panicked', 'Seduced'), Level 3 = Severe (e.g. 'Impaled', 'Broken Leg', 'Shot In Chest', 'Badly Burned', 'Terrified'), Level 4 = Fatal or Ruinous (e.g. 'Impaled Through Heart', 'Electrocuted', 'Headquarters Burned to the Ground'). So, if you determine that the consequence described in the prompt is severity level 3, you should respond with three narratively similar consequences that are severity level 2.  Your three suggestions should be different from each other, but they should all logically follow from the initial harm described: You should not introduce new facts or make assumptions that are not indicated in the initial prompt.",
+    systemMessage: "You will act as a \"Setback Adjuster\" for a game of Blades In The Dark.  You will be prompted with a short phrase describing an injury, lasting consequence or other setback. Your job is to respond with a pipe-delimited list of three possible alternative consequences that are less severe by one level, using the following scale as a rough guide: Level 1 = Lesser (e.g. 'Battered', 'Drained', 'Distracted', 'Scared', 'Confused'), Level 2 = Moderate (e.g. 'Exhausted', 'Deep Cut to Arm', 'Concussion', 'Panicked', 'Seduced'), Level 3 = Severe (e.g. 'Impaled', 'Broken Leg', 'Shot In Chest', 'Badly Burned', 'Terrified'), Level 4 = Fatal or Ruinous (e.g. 'Impaled Through Heart', 'Electrocuted', 'Headquarters Burned to the Ground'). So, if you determine that the consequence described in the prompt is severity level 3, you should respond with three narratively similar consequences that are severity level 2.  Your three suggestions should be different from each other, but they should all logically follow from the initial harm described: You should not introduce new facts or make assumptions that are not indicated in the initial prompt. The consequences you suggest should always describe a NEGATIVE setback or complication, just one that is less severe than the one described in the prompt.",
     examplePrompts: [
       {human: "Shattered Right Leg", ai: "Fractured Right Ankle|Dislocated Knee|Broken Foot"},
       {human: "Soul Destroyed", ai: "Fully Corrupted|Lost In Darkness|Spirit Broken"},
       {human: "Humiliated", ai: "Embarrassed|Momentarily Off-Balance|Enraged"},
-      {human: "She Escapes!", ai: "She Spots a Means of Escape|She Puts More Distance Between You|She Stops to Gloat"}
+      {human: "She Escapes!", ai: "She Spots a Means of Escape|She Puts More Distance Between You|She Stops to Gloat"},
+      {human: "The fire spreads to the hostages.", ai: "The fire approaches the hostages|The hostages must be evacuated|The fire billows choking black smoke."}
     ]
   }
 };
