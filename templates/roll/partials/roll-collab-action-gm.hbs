@@ -234,17 +234,44 @@
     <section class="sheet-main tab-content roll-opp-block nav-group flex-vertical">
       {{> "systems/eunos-blades/templates/components/roll-collab-opposition.hbs" rollOpposition=rollOpposition factorData=rollFactors.opposition}}
     </section>
-    <section class="sheet-main tab-content roll-consequences flex-horizontal">
-      <div class="flex-vertical">
+    <section class="sheet-main tab-content roll-consequences flex-vertical full-width">
+        <h2>Consequences</h2>
+        {{#if consequenceData}}
+        {{#with (lookup consequenceData rollPositionFinal) as |csqData|}}
+        <h3 class="gold-bright">On Partial Success:</h3>
+        <br />
+        <br />
+        <div class="consequence-container flex-vertical full-width">
+        {{#each csqData.partial as |cData cIndex|}}
+          {{eLog "Partial cData" cData}}
+          {{#if cData.resistedTo}}
+          {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
+            isResistanceVisible=true }}
+          {{/if}}
+        {{/each}}
+        </div>
+        <br />
+        <br />
+        <h3 class="red-bright">On Failure:</h3>
+        <br />
+        <br />
+        <div class="consequence-container flex-vertical full-width">
+        {{#each csqData.fail as |cData cIndex|}}
+          {{#if cData.resistedTo}}
+          {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
+            isResistanceVisible=true }}
+          {{/if}}
+        {{/each}}
+        </div>
+        <br />
+        <br />
+        {{/with}}
+        {{/if}}
         {{> "systems/eunos-blades/templates/components/button-icon.hbs"
           blockClass="edit-consequence-button-container"
           action="gm-edit-consequences"
           buttonImg="systems/eunos-blades/assets/icons/consequence-icons/gm-csq-button.svg"
         }}
-      </div>
-      <div class="flex-vertical">
-
-      </div>
     </section>
     <section class="sheet-main flex-vertical factor-controls">
 

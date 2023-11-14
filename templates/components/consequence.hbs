@@ -1,0 +1,110 @@
+<div class="comp consequence-display-container full-width"
+      data-user-id="{{userId}}"
+      data-roll-id="{{rollId}}"
+      data-csq-name="{{name}}"
+      data-csq-type="{{type}}"
+      data-resist-attribute="{{attribute}}"
+      data-resist-name="{{resistedTo.name}}"
+      data-resist-type="{{resistedTo.type}}" >
+
+  <div class="consequence-icon-container">
+
+    <div class="consequence-icon-circle base-consequence">
+      {{{compileSvg type icon}}}
+    </div>
+    <div class="consequence-icon-circle resist-consequence start-invisible">
+      {{{compileSvg resistedTo.type resistedTo.icon}}}
+    </div>
+    {{#if specialArmorTo}}
+    <div class="consequence-icon-circle special-armor-consequence start-invisible">
+      {{{compileSvg specialArmorTo.type specialArmorTo.icon}}}
+    </div>
+    {{/if}}
+
+    <div class="consequence-button-container consequence-resist-button-container resist-consequence @@start-invisible">
+      <div class="consequence-button-bg consequence-resist-button-bg start-invisible"></div>
+      <label class="consequence-button-label consequence-resist-button-label">RESIST</label>
+      {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+        blockClass="consequence-resist-button"
+        buttonClass="fa-solid fa-hand-fist"
+        action="resist-consequence"
+      }}
+    </div>
+    <div class="consequence-button-container consequence-accept-button-container base-consequence @@start-invisible">
+      <div class="consequence-button-bg consequence-accept-button-bg start-invisible"></div>
+      {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+        blockClass="consequence-accept-button"
+        buttonClass="fa-regular fa-square-check"
+        action="accept-consequence"
+      }}
+      <label class="consequence-button-label consequence-accept-button-label">ACCEPT</label>
+    </div>
+    {{#if specialArmorTo}}
+    <div class="consequence-button-container consequence-special-armor-button-container special-armor-consequence start-invisible">
+      <div class="consequence-button-bg consequence-special-armor-button-bg start-invisible"></div>
+      <label class="consequence-button-label consequence-special-armor-button-label">SPECIAL</label>
+      {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+        blockClass="consequence-special-armor-button"
+        buttonClass="fa-duotone fa-shield-quartered"
+        action="special-armor-consequence"
+      }}
+    </div>
+    {{/if}}
+
+  </div>
+
+  <div class="consequence-type-container">
+
+    <div class="consequence-type-bg base-consequence"></div>
+    <label class="consequence-type base-consequence">{{typeDisplay}}</label>
+
+    {{#unless (test resistedTo.type "==" "None")}}
+    <label class="consequence-type resist-consequence start-invisible">{{resistedTo.typeDisplay}}</label>
+    {{/unless}}
+
+    {{#if specialArmorTo}}
+    {{#unless (test specialArmorTo.type "==" "None")}}
+    <label class="consequence-type special-armor-consequence start-invisible">{{specialArmorTo.typeDisplay}}</label>
+    {{/unless}}
+    {{/if}}
+
+  </div>
+
+  <div class="consequence-name-container">
+
+    <label class="consequence-name base-consequence">{{name}}</label>
+
+    {{#if (test resistedTo.type "==" "None")}}
+    <label class="consequence-name resist-consequence fully-negated start-invisible">(Fully Negated!)</label>
+    {{else}}
+    <label class="consequence-name resist-consequence start-invisible">{{resistedTo.name}}</label>
+    {{/if}}
+
+    {{#if specialArmorTo}}
+    {{#if (test specialArmorTo.type "==" "None")}}
+    <label class="consequence-name special-armor-consequence fully-negated start-invisible">(Fully Negated!)</label>
+    {{else}}
+    <label class="consequence-name special-armor-consequence start-invisible">{{specialArmorTo.name}}</label>
+    {{/if}}
+    {{/if}}
+
+  </div>
+
+  <div class="consequence-footer-container">
+    <div class="consequence-footer-bg resist-consequence start-invisible"></div>
+    <label class="consequence-resist-attribute flex-horizontal resist-consequence start-invisible">
+      {{case "upper" attribute}}
+      <div class="dotline locked">
+      {{#for 1 attributeVal}}
+      <span class="dot full-dot"></span>
+      {{/for}}
+      </div>
+    </label>
+
+    {{#if specialArmorTo}}
+    <div class="consequence-footer-bg special-armor-consequence start-invisible"></div>
+    {{/if}}
+  </div>
+
+
+</div>

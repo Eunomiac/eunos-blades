@@ -12,13 +12,13 @@
     {{/each}}
 
     {{#each clockSizes as |clockSize|}}
-      {{#forloop 1 clockSize}}
+      {{#for 1 clockSize}}
         <clipPath id="{{this}}-of-{{clockSize}}" class="segmented" data-size="{{clockSize}}">
-          {{#forloop 1 this}}
+          {{#for 1 this}}
             <use href="#{{clockSize}}-segment" />
-          {{/forloop}}
+          {{/for}}
         </clipPath>
-      {{/forloop}}
+      {{/for}}
     {{/each}}
 
     <filter id="metallicFilter">

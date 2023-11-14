@@ -7,11 +7,11 @@
   <label class="num-spread-label">{{data.label}}</label>
   {{/if}}
   <div class="roll-num-spread">
-    {{#forloop (calc -1 "*" data.origValue) (calc (calc -1 "*" data.origValue) "+" (calc spread "-" 1))}}
+    {{#for (calc -1 "*" data.origValue) (calc (calc -1 "*" data.origValue) "+" (calc spread "-" 1))}}
       <div class="num-box {{~#if (test this "==" 0)}} origin-box{{/if}}" data-action="gm-set-target" data-dtype="number" data-target="flags.eunos-blades.rollCollab.{{data.target}}" data-value="{{this}}" {{~#if (test data.curValue "==" this)}} data-active="true"{{/if}}>
         {{calc this "+" data.origValue}}
       </div>
-    {{/forloop}}
+    {{/for}}
   </div>
 </div>
 

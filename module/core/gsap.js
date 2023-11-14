@@ -178,4 +178,118 @@ export function ApplyTooltipListeners(html) {
         });
     });
 }
+export function ApplyConsequenceListeners(html) {
+    html
+        .find(".comp.consequence-display-container")
+        .each((_i, csqContainer) => {
+        const resistButton = $(csqContainer).find(".consequence-resist-button-container")[0];
+        const acceptButton = $(csqContainer).find(".consequence-accept-button-container")[0];
+        const specialArmorButton = $(csqContainer).find(".consequence-special-armor-button-container")[0];
+        const baseElems = Array.from($(csqContainer).find(".base-consequence"));
+        const resistElems = Array.from($(csqContainer).find(".resist-consequence"));
+        const specialArmorElems = Array.from($(csqContainer).find(".special-armor-consequence"));
+        if (resistButton) {
+            $(resistButton)
+                .on({
+                mouseenter: function () {
+                    $(resistButton).css("z-index", 10);
+                    U.gsap.to(resistButton, {
+                        scale: 1.25,
+                        filter: "brightness(1.25)",
+                        duration: 0.25,
+                        ease: "sine.out"
+                    });
+                    U.gsap.to(acceptButton, {
+                        scale: 0.8,
+                        filter: "greyscale(1)",
+                        duration: 0.5,
+                        ease: "sine.inOut"
+                    });
+                    U.gsap.to(specialArmorButton, {
+                        scale: 0.8,
+                        filter: "greyscale(1)",
+                        duration: 0.5,
+                        ease: "sine.inOut"
+                    });
+                    U.gsap.to(baseElems, {
+                        opacity: 0,
+                        duration: 0.5,
+                        ease: "sine.out"
+                    });
+                    U.gsap.to(resistElems, {
+                        opacity: 1,
+                        duration: 0.5,
+                        ease: "sine.out"
+                    });
+                },
+                mouseleave: function () {
+                    U.gsap.to(resistButton, {
+                        scale: 1,
+                        filter: "brightness(1)",
+                        duration: 0.25,
+                        ease: "sine.out"
+                    }).then(() => {
+                        $(resistButton).css("z-index", "");
+                    });
+                    U.gsap.to(acceptButton, {
+                        scale: 1,
+                        filter: "",
+                        duration: 0.5,
+                        ease: "sine.inOut"
+                    });
+                    U.gsap.to(specialArmorButton, {
+                        scale: 1,
+                        filter: "",
+                        duration: 0.5,
+                        ease: "sine.inOut"
+                    });
+                    U.gsap.to(baseElems, {
+                        opacity: 1,
+                        duration: 0.5,
+                        ease: "sine.out"
+                    });
+                    U.gsap.to(resistElems, {
+                        opacity: 0,
+                        duration: 0.5,
+                        ease: "sine.out"
+                    });
+                }
+            });
+        }
+        if (acceptButton) {
+            $(acceptButton)
+                .on({
+                mouseenter: function () {
+                    $(acceptButton).css("z-index", 10);
+                    U.gsap.to(acceptButton, {
+                        scale: 1.25,
+                        filter: "brightness(1.25)",
+                        duration: 0.25,
+                        ease: "sine.out"
+                    });
+                    U.gsap.to(baseElems, {
+                        filter: "brightness(1.25)",
+                        duration: 0.5,
+                        ease: "sine.out"
+                    });
+                },
+                mouseleave: function () {
+                    U.gsap.to(acceptButton, {
+                        scale: 1,
+                        filter: "brightness(1)",
+                        duration: 0.25,
+                        ease: "sine.out"
+                    }).then(() => {
+                        $(acceptButton).css("z-index", "");
+                    });
+                    U.gsap.to(baseElems, {
+                        filter: "brightness(1)",
+                        duration: 0.5,
+                        ease: "sine.out"
+                    });
+                }
+            });
+        }
+    });
+}
 export default U.gsap;

@@ -2,7 +2,7 @@ import BladesActor from "../BladesActor";
 import BladesItem from "../BladesItem";
 import {BladesDialogType} from "../BladesDialog";
 import BladesRoll from "../BladesRoll";
-import {RollResult, AttributeTrait} from "../core/constants";
+import {RollResult, AttributeTrait, Position} from "../core/constants";
 
 declare global {
   namespace BladesDialog {
@@ -13,20 +13,23 @@ declare global {
       docType?: "Actor"|"Item";
       tabs?: Record<string, BladesActor[] | BladesItem[]>;
       tags?: BladesTag[];
-      consequenceData?: {
-        [RollResult.partial]?: Record<
-          string, // stringified index
-          BladesRoll.ConsequenceData
-        >,
-        [RollResult.fail]?: Record<
-          string, // stringified index
-          BladesRoll.ConsequenceData
+      consequenceData?: Record<
+        Position,
+        Record<
+          RollResult.partial|RollResult.fail,
+          Record<
+            string,
+            BladesRoll.ConsequenceData
+          >
         >
-      },
-      consequenceTypeOptions?: {
-        [RollResult.partial]: Array<BladesSelectOption<string, ConsequenceType>>,
-        [RollResult.fail]: Array<BladesSelectOption<string, ConsequenceType>>
-      }
+      >,
+      consequenceTypeOptions?: Record<
+        Position,
+        Record<
+          RollResult.partial|RollResult.fail,
+          Array<BladesSelectOption<string, ConsequenceType>>
+        >
+      >,
       consequenceTypeOptionsAll?: Array<BladesSelectOption<string, ConsequenceType>>,
       consequenceAttributeOptions?: Array<BladesSelectOption<string, AttributeTrait>>
     }

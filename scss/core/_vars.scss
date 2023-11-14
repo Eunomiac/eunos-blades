@@ -160,7 +160,7 @@ $isCompactLayout: true;
 
   --blades-cyan-bright-nums: 198, 255, 255;
   --blades-cyan-nums: 150, 255, 255;
-  --blades-cyan-dark-nums: 42, 85, 85;
+  --blades-cyan-dark-nums: 40, 120, 120;
   --blades-cyan-darkest-nums: 25, 49, 49;
 
   --blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
@@ -189,7 +189,7 @@ $isCompactLayout: true;
   --blades-cyan-bright: rgba(var(--blades-cyan-bright-nums), 1);
   --blades-cyan: rgba(var(--blades-cyan-nums), 1);
   --blades-cyan-dark: rgba(var(--blades-cyan-dark-nums), 1);
-  --blades-cyan-dark: rgba(var(--blades-cyan-darkest-nums), 1);
+  --blades-cyan-darkest: rgba(var(--blades-cyan-darkest-nums), 1);
 
   --blades-white-fade: rgba(var(--blades-white-nums), 0.5);
   --blades-white-fade-strong: rgba(var(--blades-white-nums), 0.25);

@@ -235,4 +235,167 @@ export function ApplyTooltipListeners(html: JQuery<HTMLElement>) {
   });
 }
 
+/**
+ *
+ * @param html
+ */
+export function ApplyConsequenceListeners(html: JQuery<HTMLElement>) {
+  /**
+   * TIMELINES
+   * .comp.consequence-display-container:mouseenter
+   *   = fade in grey interaction buttons
+   *   ...:mouseleave = reverse
+   *
+   * .consequence-accept-button-container:mouseenter
+   *   = turn type line white, text shadow
+   *     slide out .consequence-accept-button-bg from left
+   *     turn .consequence-accept-button i black, and scale
+   *     turn .consequence-accept-button-label black, add letter spacing, bold
+   *   ...:mouseleave = reverse
+   *
+   * .consequence-resist-button-container:mouseenter
+   *   = slide in .consequence-type-bg.base-consequence to left
+   *     fade out all .base-consequence:not(.consequence-type-bg)
+   *     slide out .consequence-type.resist-consequence from left
+   *     slide out .consequence-resist-button-bg from right
+   *     slide out .consequence-footer-bg.resist-consequence from left
+   *     slide out .consequence-resist-attribute from left
+   *     slide out .consequence-name.resist-consequence from left
+   *     fade in .consequence-icon-circle.resist-consequence
+   *   ...:mouseleave = reverse
+   *   --> IF resistedTo.type === "None", blurRemove the base_consequence name and type instead of sliding them in,
+   *                                       and don't slide the resistance ones out at all.
+   * */
+
+
+  html
+    .find(".comp.consequence-display-container")
+    .each((_i, csqContainer) => {
+      const resistButton = $(csqContainer).find(".consequence-resist-button-container")[0];
+      const acceptButton = $(csqContainer).find(".consequence-accept-button-container")[0];
+      const specialArmorButton = $(csqContainer).find(".consequence-special-armor-button-container")[0];
+      const baseElems = Array.from($(csqContainer).find(".base-consequence"));
+      const resistElems = Array.from($(csqContainer).find(".resist-consequence"));
+      const specialArmorElems = Array.from($(csqContainer).find(".special-armor-consequence"));
+      if (resistButton) {
+        $(resistButton)
+          .on({
+            mouseenter: function() {
+              $(resistButton).css("z-index", 10);
+              U.gsap.to(resistButton, {
+                scale: 1.25,
+                filter: "brightness(1.25)",
+                // xPercent: -50,
+                // yPercent: -50,
+                duration: 0.25,
+                ease: "sine.out"
+              });
+              U.gsap.to(acceptButton, {
+                scale: 0.8,
+                filter: "greyscale(1)",
+                // xPercent: -50,
+                // yPercent: -50,
+                duration: 0.5,
+                ease: "sine.inOut"
+              });
+              U.gsap.to(specialArmorButton, {
+                scale: 0.8,
+                filter: "greyscale(1)",
+                // xPercent: -50,
+                // yPercent: -50,
+                duration: 0.5,
+                ease: "sine.inOut"
+              });
+              U.gsap.to(baseElems, {
+                opacity: 0,
+                duration: 0.5,
+                ease: "sine.out"
+              });
+              U.gsap.to(resistElems, {
+                opacity: 1,
+                duration: 0.5,
+                ease: "sine.out"
+              });
+            },
+            mouseleave: function() {
+              U.gsap.to(resistButton, {
+                scale: 1,
+                filter: "brightness(1)",
+                duration: 0.25,
+                // xPercent: -50,
+                // yPercent: -50,
+                ease: "sine.out"
+              }).then(() => {
+                $(resistButton).css("z-index", "");
+              });
+              U.gsap.to(acceptButton, {
+                scale: 1,
+                filter: "",
+                // xPercent: -50,
+                // yPercent: -50,
+                duration: 0.5,
+                ease: "sine.inOut"
+              });
+              U.gsap.to(specialArmorButton, {
+                scale: 1,
+                filter: "",
+                // xPercent: -50,
+                // yPercent: -50,
+                duration: 0.5,
+                ease: "sine.inOut"
+              });
+              U.gsap.to(baseElems, {
+                opacity: 1,
+                duration: 0.5,
+                ease: "sine.out"
+              });
+              U.gsap.to(resistElems, {
+                opacity: 0,
+                duration: 0.5,
+                ease: "sine.out"
+              });
+            }
+          });
+      }
+      if (acceptButton) {
+        $(acceptButton)
+          .on({
+            mouseenter: function() {
+              $(acceptButton).css("z-index", 10);
+              U.gsap.to(acceptButton, {
+                scale: 1.25,
+                // xPercent: -50,
+                // yPercent: -50,
+                filter: "brightness(1.25)",
+                duration: 0.25,
+                ease: "sine.out"
+              });
+              U.gsap.to(baseElems, {
+                filter: "brightness(1.25)",
+                duration: 0.5,
+                ease: "sine.out"
+              });
+            },
+            mouseleave: function() {
+              U.gsap.to(acceptButton, {
+                scale: 1,
+                filter: "brightness(1)",
+                // xPercent: -50,
+                // yPercent: -50,
+                duration: 0.25,
+                ease: "sine.out"
+              }).then(() => {
+                $(acceptButton).css("z-index", "");
+              });
+              U.gsap.to(baseElems, {
+                filter: "brightness(1)",
+                duration: 0.5,
+                ease: "sine.out"
+              });
+            }
+          });
+      }
+    });
+}
+
 export default U.gsap;

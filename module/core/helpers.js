@@ -21,6 +21,7 @@ export async function preloadHandlebarsTemplates() {
         "systems/eunos-blades/templates/components/roll-collab-mod.hbs",
         "systems/eunos-blades/templates/components/roll-collab-opposition.hbs",
         "systems/eunos-blades/templates/components/slide-out-controls.hbs",
+        "systems/eunos-blades/templates/components/consequence.hbs",
         "systems/eunos-blades/templates/parts/tier-block.hbs",
         "systems/eunos-blades/templates/parts/turf-list.hbs",
         "systems/eunos-blades/templates/parts/cohort-block.hbs",
@@ -151,7 +152,16 @@ const handlebarHelpers = {
         }
         return param ? 1 : 0;
     },
-    forloop: (...args) => {
+    concat(...args) {
+        let outStr = "";
+        for (const arg of args) {
+            if (typeof arg === "string" || typeof arg === "number") {
+                outStr += arg;
+            }
+        }
+        return outStr;
+    },
+    for: (...args) => {
         const options = args.pop();
         let [from, to, stepSize] = args;
         from = U.pInt(from);
@@ -172,21 +182,22 @@ const handlebarHelpers = {
     compileSvg(...args) {
         const [svgDotKey, svgPaths] = args;
         const svgData = getProperty(SVGDATA, svgDotKey);
+        eLog.checkLog3("compileSvg", { svgDotKey, svgPaths, svgData });
         if (!svgData) {
             return "";
         }
-        const { viewBox, paths } = svgData;
+        const { viewBox, paths, classes } = svgData;
         return [
             `<svg viewBox="${viewBox}">`,
             ...svgPaths
                 .split("|")
-                .map((path) => `<path class="${path}" d="${paths[path] ?? ""}" />`),
+                .map((path) => `<path class="${path} ${classes?.[path] ?? ""}" d="${paths[path] ?? ""}" />`),
             "</svg>"
         ].join("\n");
     },
     eLog(...args) {
         args.pop();
-        let dbLevel = 5;
+        let dbLevel = 3;
         if ([0, 1, 2, 3, 4, 5].includes(args[0])) {
             dbLevel = args.shift();
         }
@@ -266,15 +277,6 @@ const handlebarHelpers = {
             html = html.replace(rgx, "$& disabled=\"disabled\"");
         }
         return html;
-    },
-    concat(...args) {
-        let outStr = "";
-        for (const arg of args) {
-            if (typeof arg === "string" || typeof arg === "number") {
-                outStr += arg;
-            }
-        }
-        return outStr;
     }
 };
 handlebarHelpers.eLog1 = function (...args) { handlebarHelpers.eLog(...[1, ...args.slice(0, 7)]); };

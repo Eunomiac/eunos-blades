@@ -1,10 +1,28 @@
 import {ApplyTooltipListeners} from "./core/gsap";
 import U from "./core/utilities";
-import BladesActor from "./BladesActor";
+import {BladesActor, BladesPC} from "./documents/BladesActorProxy";
 import BladesItem from "./BladesItem";
 import BladesRoll from "./BladesRoll";
-import C, {RollResult, ConsequenceType, AttributeTrait} from "./core/constants";
+import C, {RollResult, ConsequenceType, AttributeTrait, Position} from "./core/constants";
 import BladesAI, {AGENTS} from "./core/ai";
+
+const baseCsqData = {
+  [RollResult.partial]: {
+    0: {name: "", type: "", attribute: ""},
+    1: {name: "", type: "", attribute: ""},
+    2: {name: "", type: "", attribute: ""}
+  },
+  [RollResult.fail]: {
+    0: {name: "", type: "", attribute: ""},
+    1: {name: "", type: "", attribute: ""},
+    2: {name: "", type: "", attribute: ""}
+  }
+} as Record<
+  RollResult.partial|RollResult.fail,
+  Record<
+    string,
+    BladesRoll.ConsequenceData
+    >>;
 
 // eslint-disable-next-line no-shadow
 export enum SelectionCategory {
@@ -51,7 +69,8 @@ class BladesDialog extends Dialog {
   static Initialize() {
     return loadTemplates([
       "systems/eunos-blades/templates/dialog-selection.hbs",
-      "systems/eunos-blades/templates/dialog-consequence.hbs"
+      "systems/eunos-blades/templates/dialog-consequence.hbs",
+      "systems/eunos-blades/templates/parts/dialog-consequence-block.hbs"
     ]);
   }
 
@@ -138,16 +157,20 @@ class BladesDialog extends Dialog {
 
   docType?: "Actor"|"Item";
 
-  csqData: {
-    [RollResult.partial]: Record<
+  csqData: Record<
+  Position,
+  Record<
+    RollResult.partial|RollResult.fail,
+    Record<
       string,
       BladesRoll.ConsequenceData
-    >,
-    [RollResult.fail]: Record<
-      string,
-      BladesRoll.ConsequenceData
+      >
     >
-  } = {[RollResult.partial]: {}, [RollResult.fail]: {}};
+  > = {
+      [Position.controlled]: {...baseCsqData},
+      [Position.risky]: {...baseCsqData},
+      [Position.desperate]: {...baseCsqData}
+    };
 
   constructor(data: BladesDialog.Data, options?: Partial<BladesDialog.Options>) {
     super(data, options);
@@ -188,36 +211,20 @@ class BladesDialog extends Dialog {
   constructConsequenceData(data: BladesDialog.Data/* , options?: Partial<BladesDialog.Options> */) {
     eLog.checkLog3("dialog", "constructConsequenceData", {incoming: data});
     if (this.parent instanceof BladesRoll) {
-      this.csqData = U.objMerge({
-        [RollResult.partial]: {
-          0: {name: "", type: "", attribute: ""},
-          1: {name: "", type: "", attribute: ""},
-          2: {name: "", type: "", attribute: ""}
-        },
-        [RollResult.fail]: {
-          0: {name: "", type: "", attribute: ""},
-          1: {name: "", type: "", attribute: ""},
-          2: {name: "", type: "", attribute: ""}
-        }
-      }, this.parent.getFlagVal<{
-        [RollResult.partial]: Record<
+
+      this.csqData = U.objMerge(
+        this.csqData,
+        this.parent.getFlagVal("consequenceData") ?? {}
+      ) as Record<
+      Position,
+      Record<
+        RollResult.partial|RollResult.fail,
+        Record<
           string,
           BladesRoll.ConsequenceData
-        >,
-        [RollResult.fail]: Record<
-          string,
-          BladesRoll.ConsequenceData
+          >
         >
-      }>("consequenceData") ?? {}) as {
-        [RollResult.partial]: Record<
-          string,
-          BladesRoll.ConsequenceData
-        >,
-        [RollResult.fail]: Record<
-          string,
-          BladesRoll.ConsequenceData
-        >
-      };
+      >;
       this._consequenceAI = new BladesAI(AGENTS.ConsequenceAdjuster);
     }
   }
@@ -242,12 +249,12 @@ class BladesDialog extends Dialog {
   }
 
   prepareConsequenceData(data: BladesDialog.Data) {
-    eLog.checkLog3("dialog", "updateConsequenceDialog() this.csqData", this.csqData);
+    eLog.checkLog3("dialog", "prepareConsequenceData this.csqData", this.csqData);
     eLog.checkLog3("dialog", "prepareConsequenceData", {incoming: data});
     data.consequenceData = this.csqData;
     data.consequenceTypeOptions = this.consequenceTypeOptions;
-    data.consequenceTypeOptionsAll = Object.entries(C.ConsequenceDisplay)
-      .map(([cType, cDisplay]) => ({value: cType, display: cDisplay}));
+    data.consequenceTypeOptionsAll = Object.keys(C.ConsequenceDisplay)
+      .map((cType) => ({value: cType, display: cType}));
     data.consequenceAttributeOptions = [
       {value: AttributeTrait.insight, display: "Insight"},
       {value: AttributeTrait.prowess, display: "Prowess"},
@@ -257,80 +264,100 @@ class BladesDialog extends Dialog {
     return data;
   }
 
-  get consequenceTypeOptions(): {
-    [RollResult.partial]: Array<BladesSelectOption<string, ConsequenceType>>,
-    [RollResult.fail]: Array<BladesSelectOption<string, ConsequenceType>>
-    } {
+  get consequenceTypeOptions(): Record<
+    Position,
+    Record<
+      RollResult.partial|RollResult.fail,
+      Array<BladesSelectOption<string, ConsequenceType>>
+    >
+    > {
     if (this.parent instanceof BladesRoll) {
-      return {
-        [RollResult.partial]: C.Consequences[this.parent.finalPosition][RollResult.partial]
-          .map((cType) => ({value: cType, display: C.ConsequenceDisplay[cType]})),
-        [RollResult.fail]: C.Consequences[this.parent.finalPosition][RollResult.fail]
-          .map((cType) => ({value: cType, display: C.ConsequenceDisplay[cType]}))
-      };
+      const returnData: Partial<Record<
+      Position,
+      Record<
+        RollResult.partial|RollResult.fail,
+        Array<BladesSelectOption<string, ConsequenceType>>
+      >
+    >> = {};
+      [Position.controlled, Position.risky, Position.desperate].forEach((pos) => {
+        returnData[pos] = {
+          [RollResult.partial]: C.Consequences[pos][RollResult.partial]
+            .map((cType) => ({value: cType, display: cType})),
+          [RollResult.fail]: C.Consequences[pos][RollResult.fail]
+            .map((cType) => ({value: cType, display: cType}))
+        };
+      });
+      return returnData as Record<
+      Position,
+      Record<
+        RollResult.partial|RollResult.fail,
+        Array<BladesSelectOption<string, ConsequenceType>>
+      >
+    >;
     }
     return {} as never;
   }
 
   updateConsequenceDialog(html: JQuery<HTMLElement|HTMLInputElement>, isRendering = true) {
+    if (!(this.parent instanceof BladesRoll)) { return; }
+    const {rollPrimaryDoc} = this.parent;
+    if (!(rollPrimaryDoc instanceof BladesPC)) { return; }
 
-    /** Expected Output:
-     * returnData = {
-     *    [RollResult.partial]: {
-     *      0: {
-     *        name: "Broken Leg",
-     *        type: "ProwessHarm3",
-     *        icon: "system/...",
-     *        attribute: "prowess",
-     *        resistOptions: {
-     *          0: {name: "Sprained Knee", type: "ProwessHarm2", isSelected: false},
-     *          1: {name: "Twisted Ankle", type: "ProwessHarm2", isSelected: false},
-     *          2: {name: "Bruised Femur", type: "ProwessHarm2", isSelected: true}
-     *        }
-     *      },
-     *      1: { / ... / },
-     *      2: { / ... / }
-     *    },
-     *    [RollResult.fail]: { / ... / }
-     * } */
-
-    // const returnData: {
-    //   [RollResult.partial]: Record<
-    //     string,
-    //     BladesRoll.ConsequenceData
-    //   >,
-    //   [RollResult.fail]: Record<
-    //     string,
-    //     BladesRoll.ConsequenceData
-    //   >
-    // } = {[RollResult.partial]: {}, [RollResult.fail]: {}};
-
-    [RollResult.partial, RollResult.fail].forEach((rollResult) => {
-      for (let i = 0; i < 3; i++) {
-        const thisCsqData: BladesRoll.ConsequenceData = {
-          type: (html.find(`[data-flag-target="rollCollab.consequenceData.${rollResult}.${i}.type"]`)[0] as HTMLSelectElement).value as ConsequenceType,
-          attribute: (html.find(`[data-flag-target="rollCollab.consequenceData.${rollResult}.${i}.attribute"]`)[0] as HTMLSelectElement).value as AttributeTrait,
-          name: (html.find(`[data-flag-target="rollCollab.consequenceData.${rollResult}.${i}.name"]`)[0] as HTMLInputElement).value,
-          resistOptions: this.csqData[rollResult as RollResult.partial|RollResult.fail][i]
-            .resistOptions ?? {}
-        };
-        if (thisCsqData.type) {
-          thisCsqData.icon = C.ConsequenceIcons[thisCsqData.type];
-        }
-        const resistOptionElems = Array.from(html.find(`input[type="text"][data-flag-target="rollCollab.consequenceData.${rollResult}.${i}.resistOptions`)) as HTMLInputElement[];
-        eLog.checkLog3("dialog", "...resistOptionElems", {html, resistOptionElems, thisCsqData });
-        if (resistOptionElems.length > 0) {
-          for (let j = 0; j < resistOptionElems.length; j++) {
-            thisCsqData.resistOptions ??= {};
-            thisCsqData.resistOptions[j] = {
-              name: resistOptionElems[i].value,
-              type: (html.find(`[data-flag-target="rollCollab.consequenceData.${rollResult}.${i}.resistOptions.${j}.type"]`)[0] as HTMLSelectElement).value as ConsequenceType,
-              isSelected: (html.find(`[data-flag-target="rollCollab.consequenceData.${rollResult}.${i}.resistOptions.${j}.isSelected"]`)[0] as HTMLInputElement).checked
-            };
+    [Position.controlled, Position.risky, Position.desperate].forEach((rollPos) => {
+      const posCsqData: Partial<Record<RollResult.partial|RollResult.fail,
+      Record<
+        string,
+        BladesRoll.ConsequenceData
+      >>
+    > = {};
+      [RollResult.partial, RollResult.fail].forEach((rollResult) => {
+        posCsqData[rollResult as RollResult.partial|RollResult.fail] = {};
+        for (let i = 0; i < 3; i++) {
+          const attribute = (html.find(`[data-flag-target="rollCollab.consequenceData.${rollPos}.${rollResult}.${i}.attribute"]`)[0] as HTMLSelectElement).value as AttributeTrait;
+          const attributeVal = rollPrimaryDoc.attributes[attribute];
+          const thisCsqData: BladesRoll.ConsequenceData = {
+            type: (html.find(`[data-flag-target="rollCollab.consequenceData.${rollPos}.${rollResult}.${i}.type"]`)[0] as HTMLSelectElement).value as ConsequenceType,
+            attribute,
+            attributeVal,
+            name: (html.find(`[data-flag-target="rollCollab.consequenceData.${rollPos}.${rollResult}.${i}.name"]`)[0] as HTMLInputElement).value,
+            resistOptions: this.csqData[rollPos][rollResult as RollResult.partial|RollResult.fail][i]
+              .resistOptions ?? {},
+            resistedTo: this.csqData[rollPos][rollResult as RollResult.partial|RollResult.fail][i].resistedTo ?? false
+          };
+          if (thisCsqData.type) {
+            thisCsqData.icon = C.ConsequenceIcons[thisCsqData.type];
+            thisCsqData.typeDisplay = C.ConsequenceDisplay[thisCsqData.type];
           }
+          const resistOptionElems = Array.from(html.find(`input[type="text"][data-flag-target="rollCollab.consequenceData.${rollPos}.${rollResult}.${i}.resistOptions`)) as HTMLInputElement[];
+          eLog.checkLog3("dialog", "...resistOptionElems", {html, resistOptionElems, thisCsqData });
+          if (resistOptionElems.length > 0) {
+            thisCsqData.resistedTo = false;
+            for (let j = 0; j < resistOptionElems.length; j++) {
+              thisCsqData.resistOptions ??= {};
+              thisCsqData.resistOptions[j] = {
+                name: resistOptionElems[i].value,
+                type: (html.find(`[data-flag-target="rollCollab.consequenceData.${rollPos}.${rollResult}.${i}.resistOptions.${j}.type"]`)[0] as HTMLSelectElement).value as ConsequenceType,
+                isSelected: (html.find(`[data-flag-target="rollCollab.consequenceData.${rollPos}.${rollResult}.${i}.resistOptions.${j}.isSelected"]`)[0] as HTMLInputElement).checked
+              };
+              if (thisCsqData.resistOptions[j].isSelected) {
+                thisCsqData.resistedTo = thisCsqData.resistOptions[j];
+                if (thisCsqData.resistedTo.type) {
+                  thisCsqData.resistedTo.icon = C.ConsequenceIcons[thisCsqData.resistedTo.type];
+                  thisCsqData.resistedTo.typeDisplay = C.ConsequenceDisplay[thisCsqData.resistedTo.type];
+                }
+              }
+            }
+          }
+          (posCsqData[
+            rollResult as RollResult.partial|RollResult.fail
+          ] as Record<string, BladesRoll.ConsequenceData>)[i] = thisCsqData;
         }
-        this.csqData[rollResult as RollResult.partial|RollResult.fail][i] = thisCsqData;
-      }
+      });
+      this.csqData[rollPos] = posCsqData as Record<RollResult.partial|RollResult.fail,
+      Record<
+        string,
+        BladesRoll.ConsequenceData
+      >>;
     });
     eLog.checkLog3("dialog", "updateConsequenceDialog() this.csqData", this.csqData);
     if (isRendering) {
@@ -356,12 +383,13 @@ class BladesDialog extends Dialog {
     // Get the name of the consequence.
     const dataAction = event.currentTarget.dataset.action;
     if (dataAction && dataAction.startsWith("ai-query")) {
-      const [rollResult, csqIndex] = dataAction.split(/-/).slice(2);
-      const csqName: string|undefined = this.csqData[rollResult as RollResult.partial|RollResult.fail][csqIndex]?.name;
+      const [rollPosition, rollResult, csqIndex] = dataAction.split(/-/).slice(2);
+      const csqName: string|undefined =
+        this.csqData[rollPosition as Position][rollResult as RollResult.partial|RollResult.fail][csqIndex]?.name;
       if (csqName) {
         const response = await this._consequenceAI?.query(csqName, csqName);
         if (response) {
-          this.addResistanceOptions(rollResult as RollResult.partial|RollResult.fail, csqIndex, response.split("|"));
+          this.addResistanceOptions(rollPosition as Position, rollResult as RollResult.partial|RollResult.fail, csqIndex, response.split("|"));
         }
       }
     }
@@ -373,12 +401,12 @@ class BladesDialog extends Dialog {
     }
   }
 
-  async addResistanceOptions(rollResult: RollResult, cIndex: string, rOptions: string[]) {
-    const cData = this.csqData[rollResult as RollResult.partial|RollResult.fail][cIndex];
+  async addResistanceOptions(rollPosition: Position, rollResult: RollResult, cIndex: string, rOptions: string[]) {
+    const cData = this.csqData[rollPosition][rollResult as RollResult.partial|RollResult.fail][cIndex];
     if (!cData) { return; }
     const cType = cData.type as keyof typeof C["ResistedConsequenceTypes"];
     const rType = C.ResistedConsequenceTypes[cType] ?? undefined;
-    const resistOptions: Record<string, BladesRoll.ConsequenceResisted> = {};
+    const resistOptions: Record<string, BladesRoll.ConsequenceResistOption> = {};
     for (let i = 0; i < rOptions.length; i++) {
       resistOptions[i] = {
         name: rOptions[i],
@@ -389,7 +417,7 @@ class BladesDialog extends Dialog {
         resistOptions[i].icon = C.ConsequenceIcons[rType];
       }
     }
-    this.csqData[rollResult as RollResult.partial|RollResult.fail][cIndex].resistOptions = resistOptions;
+    this.csqData[rollPosition][rollResult as RollResult.partial|RollResult.fail][cIndex].resistOptions = resistOptions;
     eLog.checkLog3("dialog", "addResistanceOptions() this.csqData", this.csqData);
     this.render();
   }
@@ -398,23 +426,38 @@ class BladesDialog extends Dialog {
     eLog.checkLog3("dialog", "Clicked Resistance Option", event);
     const dataAction = event.currentTarget.dataset.action;
     if (dataAction && dataAction.startsWith("gm-select-toggle")) {
-      const [rollResult, csqIndex, resIndex] = dataAction.split(/-/).slice(3);
+      const [rollPosition, rollResult, csqIndex, resIndex] = dataAction.split(/-/).slice(3);
       eLog.checkLog3("dialog", "... Action Passed", {rollResult, csqIndex, resIndex});
-      // Get resistance options for this consequence
-      const resOptions = this.csqData[rollResult as RollResult.partial|RollResult.fail][csqIndex].resistOptions ?? {};
+      // Get consequence data
+      const cData = this.csqData[rollPosition as Position][rollResult as RollResult.partial|RollResult.fail][csqIndex];
+      cData.resistOptions ??= {};
 
       // Toggle clicked resistance option
-      resOptions[resIndex].isSelected = !resOptions[resIndex].isSelected;
+      cData.resistOptions[resIndex].isSelected = !cData.resistOptions[resIndex].isSelected;
 
-      // If resistance option is now selected, deselect other options
-      if (resOptions[resIndex].isSelected) {
-        Object.keys(resOptions)
+      // If resistance option is now selected...
+      if (cData.resistOptions[resIndex].isSelected) {
+        // ... deselect other options
+        Object.keys(cData.resistOptions)
           .filter((key) => key !== resIndex)
-          .forEach((key) => { resOptions[key].isSelected = false; });
+          .forEach((key) => { (cData.resistOptions as Record<
+            string,
+            BladesRoll.ConsequenceResistOption
+          >)[key].isSelected = false; });
+
+        // ... and set 'resistedTo' to this consequence.
+        cData.resistedTo = cData.resistOptions[resIndex];
+        if (cData.resistedTo.type) {
+          cData.resistedTo.icon = C.ConsequenceIcons[cData.resistedTo.type];
+          cData.resistedTo.typeDisplay = C.ConsequenceDisplay[cData.resistedTo.type];
+        }
+      } else {
+        // Otherwise, set 'resistedTo' to false.
+        cData.resistedTo = false;
       }
 
-      // Assign new resistance options to instance.
-      this.csqData[rollResult as RollResult.partial|RollResult.fail][csqIndex].resistOptions = resOptions;
+      // Assign new cData instance.
+      this.csqData[rollPosition as Position][rollResult as RollResult.partial|RollResult.fail][csqIndex] = cData;
       this.render();
     }
   }

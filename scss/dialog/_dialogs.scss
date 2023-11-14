@@ -183,54 +183,60 @@
 
     .consequence-section {
       width: 600px;
-      h2 {
+      background: var(--section-bg-color);
 
+      &.consequence-section-controlled { --section-bg-color: var(--blades-cyan-dark-fade) }
+      &.consequence-section-risky { --section-bg-color: transparent }
+      &.consequence-section-desperate { --section-bg-color: var(--blades-red-dark-fade-strong) }
+
+      h1 {
+        font-size: 16px;
+        line-height: 18px;
+        height: 16px;
+        background: var(--h1-color);
+        margin: 0;
+        padding: 0;
+        color: var(--blades-black);
+        text-align: center;
+        text-shadow: none;
+        box-shadow: none;
+
+        &.consequence-header-controlled { --h1-color: var(--blades-cyan) }
+        &.consequence-header-risky { --h1-color: var(--blades-grey-bright) }
+        &.consequence-header-desperate { --h1-color: var(--blades-red) }
+      }
+      h2 {
+        font-size: 14px;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
       }
       .roll-consequence-row {
-        .button-icon {
-          position: unset;
-        }
-        .roll-consequence-entry-row {
-          .consequence-type-icon {
-            width: 24px;
-            min-width: 24px;
-            filter: brightness(1.5) drop-shadow(0 0 4px black);
-          }
-          .roll-consequence-type-select {
-            font-family: Oswald, sans-serif;
-            flex-basis: 150px;
+        .comp.consequence-display-container {
+          display: flex;
+          flex-wrap: nowrap;
+          --container-height: 25px;
 
-          }
-          .roll-consequence-attribute-select {
-            font-family: Oswald, sans-serif;
-            flex-basis: 95px;
-          }
-          .consequence-name {
-            background: rgba(0,0,0,0.5);
-            flex-basis: 375px;
-          }
-        }
-        .consequence-resist-options-container {
-          width: 90%;
-          margin-left: 10%;
-          justify-content: stretch;
+          .consequence-icon-container {
+            left: 0;
+            top: 0;
 
-          .consequence-resist-option {
-            width: 100%;
-            justify-content: stretch;
-
-            .toggle-icon {
-              position: unset;
-            }
-
-            .shadowed.consequence-name {
-              // flex-basis: 200px;
-              flex-grow: 1;
-              background: rgba(0, 0, 0, 0.5);
+            .consequence-icon-circle {
+              outline: none;
+              border: none;
+              height: 25px;
+              width: 25px;
             }
           }
         }
+
+
+        .button-icon { position: unset }
+
+        .blades-select { font-family: Oswald, sans-serif }
       }
+
     }
   }
 }

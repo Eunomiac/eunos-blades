@@ -3,7 +3,7 @@ import U from "./core/utilities";
 import C, {BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag} from "./core/constants";
 import {BladesActor, BladesPC, BladesCrew} from "./documents/BladesActorProxy";
 import {BladesItem, BladesGMTracker} from "./documents/BladesItemProxy";
-import {ApplyTooltipListeners} from "./core/gsap";
+import {ApplyTooltipListeners, ApplyConsequenceListeners} from "./core/gsap";
 import BladesDialog from "./BladesDialog";
 // #endregion
 // #region Types & Type Checking ~
@@ -54,21 +54,27 @@ function isModStatus(str: unknown): str is RollModStatus {
 }
 
 /**
- * Checks if the given value is valid BladesRoll.ConsequenceData.
+ * Checks if the given value is valid consequence data for a Resistance Roll.
  * @param {unknown} val The value to check.
- * @param {boolean} [isRecurring=false] The recurring status to check.
- * @returns {boolean} True if the val is valid BladesRoll.ConsequenceData, false otherwise.
+ * @param {boolean} [isCheckingResistedTo=false] If the check is being recursively
+ *                         applied to the 'resistedTo' value.
+ * @returns {boolean} True if the val is valid BladesRoll.ResistanceRollConsequenceData, false otherwise.
  */
-function isValidConsequenceData(val: unknown, isRecurring = false): val is BladesRoll.ConsequenceDataComplete {
+function isValidConsequenceData(
+  val: unknown,
+  isCheckingResistedTo = false
+): val is BladesRoll.ResistanceRollConsequenceData {
   if (!U.isList(val)) { return false; }
-  if (!(typeof val.type === "string" && val.type in ConsequenceType)) { return false; }
-  if (!isRecurring && !(typeof val.attribute === "string" && val.attribute in AttributeTrait)) { return false; }
-  if (val.label && typeof val.label !== "string") { return false; }
-  if (
-    !isRecurring
-    && val.resistedConsequence !== false
-    && !isValidConsequenceData(val.resistedConsequence, true)
-  ) { return false; }
+  if (typeof val.name !== "string") { return false; }
+  if (typeof val.icon !== "string") { return false; }
+  if (typeof val.type !== "string" || !(val.type in ConsequenceType)) { return false; }
+  if (typeof val.typeDisplay !== "string") { return false; }
+
+  if (isCheckingResistedTo) { return true; }
+
+  if (typeof val.attribute !== "string" || !(val.attribute in AttributeTrait)) { return false; }
+  if (!isValidConsequenceData(val.resistedTo, true)) { return false; }
+
   return true;
 }
 
@@ -507,32 +513,32 @@ class BladesRollMod {
 
           /* Should cancel roll entirely? */
         },
-        HarmLevel: () => {
-          const harmLevels = [
-            [ConsequenceType.InsightHarm1, ConsequenceType.ProwessHarm1, ConsequenceType.ResolveHarm1],
-            [ConsequenceType.InsightHarm2, ConsequenceType.ProwessHarm2, ConsequenceType.ResolveHarm2],
-            [ConsequenceType.InsightHarm3, ConsequenceType.ProwessHarm3, ConsequenceType.ResolveHarm3],
-            [ConsequenceType.InsightHarm4, ConsequenceType.ProwessHarm4, ConsequenceType.ResolveHarm4]
-          ];
-          let harmConsequence: BladesRoll.ConsequenceData|undefined = undefined;
-          while (!harmConsequence && harmLevels.length > 0) {
-            harmConsequence = Object.values(this.rollInstance.rollConsequences)
-              .find(({type}) => (harmLevels.pop() ?? []).includes(type as ConsequenceType));
-          }
-          if (harmConsequence) {
-            harmConsequence.resistedTo = {
-              name: [
-                ConsequenceType.InsightHarm1,
-                ConsequenceType.ProwessHarm1,
-                ConsequenceType.ResolveHarm1
-              ].includes(harmConsequence.type as ConsequenceType)
-                ? "Fully Negated"
-                : (Object.values(harmConsequence.resistOptions ?? [])[0]?.name ?? harmConsequence.name),
-              type: C.ResistedConsequenceTypes[harmConsequence.type as KeyOf<typeof C["ResistedConsequenceTypes"]>],
-              isSelected: true
-            };
-          }
-        },
+        // HarmLevel: () => {
+        //   const harmLevels = [
+        //     [ConsequenceType.InsightHarm1, ConsequenceType.ProwessHarm1, ConsequenceType.ResolveHarm1],
+        //     [ConsequenceType.InsightHarm2, ConsequenceType.ProwessHarm2, ConsequenceType.ResolveHarm2],
+        //     [ConsequenceType.InsightHarm3, ConsequenceType.ProwessHarm3, ConsequenceType.ResolveHarm3],
+        //     [ConsequenceType.InsightHarm4, ConsequenceType.ProwessHarm4, ConsequenceType.ResolveHarm4]
+        //   ];
+        //   let harmConsequence: BladesRoll.ResistanceRollConsequenceData|undefined = undefined;
+        //   while (!harmConsequence && harmLevels.length > 0) {
+        //     harmConsequence = Object.values(this.rollInstance.rollConsequences)
+        //       .find(({type}) => (harmLevels.pop() ?? []).includes(type as ConsequenceType));
+        //   }
+        //   if (harmConsequence) {
+        //     harmConsequence.resistedTo = {
+        //       name: [
+        //         ConsequenceType.InsightHarm1,
+        //         ConsequenceType.ProwessHarm1,
+        //         ConsequenceType.ResolveHarm1
+        //       ].includes(harmConsequence.type as ConsequenceType)
+        //         ? "Fully Negated"
+        //         : (Object.values(harmConsequence.resistOptions ?? [])[0]?.name ?? harmConsequence.name),
+        //       type: C.ResistedConsequenceTypes[harmConsequence.type as KeyOf<typeof C["ResistedConsequenceTypes"]>],
+        //       isSelected: true
+        //     };
+        //   }
+        // },
         QualityPenalty: () => {
           this.rollInstance.negateFactorPenalty(Factor.quality);
         },
@@ -1564,13 +1570,13 @@ class BladesRoll extends DocumentSheet {
   static async PrepareResistanceRoll(rollID: string, config: BladesRoll.Config) {
 
     // Validate consequenceData
-    if (!isValidConsequenceData(config.consequenceData)) {
+    if (!config.resistanceData || !isValidConsequenceData(config.resistanceData?.consequence)) {
       eLog.error("rollCollab", "[PrepareResistanceRoll] Bad Roll Consequence Data.", config);
       throw new Error("[PrepareResistanceRoll()] Bad Consequence Data for Resistance Roll");
     }
 
     // Set rollTrait
-    config.rollTrait = config.consequenceData.attribute;
+    config.rollTrait = config.resistanceData.consequence.attribute;
 
     // Retrieve the roll users
     const userIDs = BladesRoll.GetUserPermissions(config);
@@ -1705,6 +1711,7 @@ class BladesRoll extends DocumentSheet {
       if (BladesRoll.Current[rollID]) {
         throw new Error(`[BladesRoll.NewRoll()] User ${rollUser.name} already documenting live roll with ID '${rollID}'`);
       }
+      await rollUser.setFlag("eunos-blades", `rollCollabArchive.${rollID}`, flagData);
       await rollUser.unsetFlag("eunos-blades", "rollCollab");
     }
 
@@ -2145,17 +2152,9 @@ class BladesRoll extends DocumentSheet {
     return true;
   }
 
-  get rollConsequences(): Record<string, BladesRoll.ConsequenceData> {
-    return this.getFlagVal<Record<string, BladesRoll.ConsequenceData>>("consequenceData") ?? {};
-  }
-
   // Get rollConsequence() --> For resistance rolls.
-  get rollConsequence(): BladesRoll.ConsequenceData | null {
-    const chosenConsequence = this.getFlagVal<string>("chosenConsequenceName") ?? null;
-    if (chosenConsequence) {
-      return this.getFlagVal<BladesRoll.ConsequenceData>(`consequenceData.${chosenConsequence}`) ?? null;
-    }
-    return null;
+  get rollConsequence(): BladesRoll.ResistanceRollConsequenceData|undefined {
+    return this.getFlagVal<BladesRoll.ResistanceRollConsequenceData>("resistanceData.consequence");
   }
 
   async applyConsequencesFromDialog(_html: JQuery|HTMLElement) {
@@ -3414,6 +3413,7 @@ class BladesRoll extends DocumentSheet {
   override activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
     ApplyTooltipListeners(html);
+    ApplyConsequenceListeners(html);
 
     // User-Toggleable Roll Mods
     html.find(".roll-mod[data-action='toggle']").on({

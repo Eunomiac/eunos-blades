@@ -4,7 +4,7 @@
     <label class="dotline-label">{{dotlineLabel}}:&nbsp;</label>
   {{/if}}
   {{!-- Filled Dots --}}
-  {{#forloop 1 (calc (test value "??" data.value) "min" (test (test max "??" data.max) "??" (test value "??" data.value)))}}
+  {{#for 1 (calc (test value "??" data.value) "min" (test (test max "??" data.max) "??" (test value "??" data.value)))}}
   <span class="dot full-dot {{~#if (test this "==" (test value "??" data.value))}} value-dot{{/if}} {{~#if ../svgKey}} svg-dot{{/if}}" data-value="{{this}}" data-dtype="Number">
     {{#if (test ../altIconStep "&&" (test (calc this "%" ../altIconStep) "==" 0))}}
       {{#if ../altIconFullHover}}
@@ -34,11 +34,11 @@
       {{/if}}
     {{/if}}
   </span>
-  {{/forloop}}
+  {{/for}}
 
   {{!-- Empty Dots --}}
   {{#if (test max "??" data.max)}}
-  {{#forloop (calc (test value "??" data.value) "+" 1) (test max "??" data.max)}}
+  {{#for (calc (test value "??" data.value) "+" 1) (test max "??" data.max)}}
   <span class="dot empty-dot {{~#if ../svgKey}} svg-dot{{/if}}" data-value="{{this}}" data-dtype="Number">
     {{#if ../iconEmptyHover}}
       <img class="img-hover" src="systems/eunos-blades/assets/icons/dotline-icons/{{../iconEmptyHover}}" />
@@ -53,7 +53,7 @@
       {{{compileSvg ../svgKey ../svgEmpty}}}
     {{/if}}
   </span>
-  {{/forloop}}
+  {{/for}}
   {{/if}}
 
   {{#if advanceButton}}

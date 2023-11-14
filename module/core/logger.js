@@ -16,25 +16,25 @@ const LOGGERCONFIG = {
 };
 const STYLES = {
     base: {
-        "background": C.Colors.BLACK,
-        "color": C.Colors.bGOLD,
+        background: C.Colors.BLACK,
+        color: C.Colors.bGOLD,
         "font-family": "Pragmata Pro",
-        "padding": "0 25px",
+        padding: "0 25px",
         "margin-right": "25px"
     },
     log0: {
-        "background": C.Colors.bGOLD,
-        "color": C.Colors.dBLACK,
+        background: C.Colors.bGOLD,
+        color: C.Colors.dBLACK,
         "font-size": "16px"
     },
     log1: {
-        "background": C.Colors.dBLACK,
-        "color": C.Colors.gGOLD,
+        background: C.Colors.dBLACK,
+        color: C.Colors.gGOLD,
         "font-size": "16px"
     },
     log2: {
-        "background": C.Colors.dBLACK,
-        "color": C.Colors.bGOLD,
+        background: C.Colors.dBLACK,
+        color: C.Colors.bGOLD,
         "font-size": "16px"
     },
     log3: {
@@ -44,31 +44,31 @@ const STYLES = {
         "font-size": "12px"
     },
     log5: {
-        "background": C.Colors.dGREY,
-        "color": C.Colors.bGREY,
+        background: C.Colors.dGREY,
+        color: C.Colors.bGREY,
         "font-size": "10px"
     },
     display: {
-        "color": C.Colors.gGOLD,
+        color: C.Colors.gGOLD,
         "font-family": "Kirsty Rg",
         "font-size": "16px",
         "margin-left": "-100px",
-        "padding": "0 100px"
+        padding: "0 100px"
     },
     error: {
-        "color": C.Colors.gRED,
-        "background": C.Colors.dRED,
+        color: C.Colors.gRED,
+        background: C.Colors.dRED,
         "font-weight": 500
     },
     handlebars: {
-        "background": C.Colors.GREY,
-        "color": C.Colors.BLUE,
+        background: C.Colors.GREY,
+        color: C.Colors.BLUE,
         "font-family": "Pragmata Pro",
-        "padding": "0",
+        padding: "0",
         "margin-right": "25px"
     },
     stack: {
-        "color": C.Colors.GOLD,
+        color: C.Colors.GOLD,
         "font-weight": 100,
         "font-size": "10px",
         "font-family": "Pragmata Pro"
@@ -148,8 +148,7 @@ const eLogger = (type = "base", ...content) => {
         console.groupEnd();
     }
     console.groupEnd();
-    return;
-    function getStackTrace(regExpFilters = []) {
+        function getStackTrace(regExpFilters = []) {
         regExpFilters.push(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${LOGGERCONFIG.aliases.map(String).join("|")}|Object\\.(log|display|hbsLog|error))`), /^Error/);
         return ((new Error()).stack ?? "")
             .split(/\n/)

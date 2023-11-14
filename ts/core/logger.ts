@@ -5,32 +5,32 @@ const LOGGERCONFIG = {
   fullName: "eLogger",
   aliases: ["dbLog"],
   stackTraceExclusions: {
-    handlebars: [/scripts\/handlebars/] // from internal Handlebars module
+    handlebars: [/scripts\/handlebars/] // From internal Handlebars module
   }
 };
 
 
 const STYLES = {
   base: {
-    "background": C.Colors.BLACK,
-    "color": C.Colors.bGOLD,
+    background: C.Colors.BLACK,
+    color: C.Colors.bGOLD,
     "font-family": "Pragmata Pro",
-    "padding": "0 25px",
+    padding: "0 25px",
     "margin-right": "25px"
   },
   log0: {
-    "background": C.Colors.bGOLD,
-    "color": C.Colors.dBLACK,
+    background: C.Colors.bGOLD,
+    color: C.Colors.dBLACK,
     "font-size": "16px"
   },
   log1: {
-    "background": C.Colors.dBLACK,
-    "color": C.Colors.gGOLD,
+    background: C.Colors.dBLACK,
+    color: C.Colors.gGOLD,
     "font-size": "16px"
   },
   log2: {
-    "background": C.Colors.dBLACK,
-    "color": C.Colors.bGOLD,
+    background: C.Colors.dBLACK,
+    color: C.Colors.bGOLD,
     "font-size": "16px"
   },
   log3: {
@@ -40,31 +40,31 @@ const STYLES = {
     "font-size": "12px"
   },
   log5: {
-    "background": C.Colors.dGREY,
-    "color": C.Colors.bGREY,
+    background: C.Colors.dGREY,
+    color: C.Colors.bGREY,
     "font-size": "10px"
   },
   display: {
-    "color": C.Colors.gGOLD,
+    color: C.Colors.gGOLD,
     "font-family": "Kirsty Rg",
     "font-size": "16px",
     "margin-left": "-100px",
-    "padding": "0 100px"
+    padding: "0 100px"
   },
   error: {
-    "color": C.Colors.gRED,
-    "background": C.Colors.dRED,
+    color: C.Colors.gRED,
+    background: C.Colors.dRED,
     "font-weight": 500
   },
   handlebars: {
-    "background": C.Colors.GREY,
-    "color": C.Colors.BLUE,
+    background: C.Colors.GREY,
+    color: C.Colors.BLUE,
     "font-family": "Pragmata Pro",
-    "padding": "0",
+    padding: "0",
     "margin-right": "25px"
   },
   stack: {
-    "color": C.Colors.GOLD,
+    color: C.Colors.GOLD,
     "font-weight": 100,
     "font-size": "10px",
     "font-family": "Pragmata Pro"
@@ -72,10 +72,10 @@ const STYLES = {
 };
 
 const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...content: [string, ...unknown[]]) => {
-  if (!(type === "error" || CONFIG.debug.logging)) { return }
+  if (!(type === "error" || CONFIG.debug.logging)) { return; }
   const lastElem = U.getLast(content);
 
-  let dbLevel: 0|1|2|3|4|5 = typeof lastElem === "number" && [0,1,2,3,4,5].includes(lastElem)
+  let dbLevel: 0|1|2|3|4|5 = typeof lastElem === "number" && [0, 1, 2, 3, 4, 5].includes(lastElem)
     ? content.pop() as 0|1|2|3|4|5
     : 3;
   let key: string|false = false;
@@ -98,7 +98,7 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
       dbLevel = Math.min(3, Math.max(1, dbLevel - 2)) as 1|2|3;
     }
   }
-  if (U.getSetting("debug") as 0|1|2|3|4|5 < dbLevel) { return }
+  if (U.getSetting("debug") as 0|1|2|3|4|5 < dbLevel) { return; }
   if (type === "log") {
     type = `${type}${dbLevel}`;
   }
@@ -142,8 +142,11 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
   }
   console.groupEnd();
 
-  return;
 
+  /**
+   *
+   * @param regExpFilters
+   */
   function getStackTrace(regExpFilters: RegExp[] = []): string|null {
     regExpFilters.push(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${
       LOGGERCONFIG.aliases.map(String).join("|")

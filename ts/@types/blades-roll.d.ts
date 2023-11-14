@@ -15,9 +15,10 @@ declare global {
       rollParticipantData?: RollParticipantFlagData
     }
 
-    export type ConsequenceResisted = {
+    export type ConsequenceResistOption = {
       name: string,
       type?: ConsequenceType,
+      typeDisplay?: string,
       icon?: string,
       isSelected: boolean // Whether GM has selected this as the resisted consequence
     }
@@ -25,23 +26,21 @@ declare global {
     export interface ConsequenceData {
       name: string,
       type: ConsequenceType|"",
+      typeDisplay?: string,
       icon?: string,
       attribute: AttributeTrait|"",
+      attributeVal?: number,
       resistOptions?: Record<
         string,  // stringified index
-        ConsequenceResisted // ai
+        ConsequenceResistOption // ai
       >,
-      resistedTo?: ConsequenceResisted|false
-        // player's choice from chat
+      resistedTo?: ConsequenceResistOption|false,
+      specialArmorTo?: ConsequenceResistOption
     }
 
-    export interface ConsequenceDataComplete extends ConsequenceData {
-      type: ConsequenceType,
+    export interface ResistanceRollConsequenceData extends FreezeProps<Omit<ConsequenceData, "resistOptions">> {
       attribute: AttributeTrait,
-      resistOptions: Record<
-        string,
-        ConsequenceResisted
-      >
+      resistedTo: FreezeProps<Omit<ConsequenceResistOption, "isSelected">>
     }
 
     export type CostData = {
@@ -65,15 +64,18 @@ declare global {
       rollParticipantData?: RollParticipantData,
 
       participantRollTo?: string,
-      consequenceData?: {
-        [RollResult.partial]?: Record<
-          string, // stringified index
-          ConsequenceData
-        >,
-        [RollResult.fail]?: Record<
-          string, // stringified index
-          ConsequenceData
-        >
+      consequenceData?: Partial<Record<
+        Position,
+        Partial<Record<
+          RollResult.partial|RollResult.fail,
+          Record<
+            string,
+            ConsequenceData
+          >
+        >>
+      >>,
+      resistanceData?: {
+        consequence: ResistanceRollConsequenceData
       }
     }
 
@@ -134,11 +136,6 @@ declare global {
 
       GMBoosts: Record<"Dice"|Factor|"Result",number>,
       GMOppBoosts: Record<Factor,number>,
-
-      consequenceTypeOptions?: {
-        [RollResult.partial]: BladesSelectOption<ConsequenceType>[],
-        [RollResult.fail]: BladesSelectOption<ConsequenceType>[]
-      }
 
       canTradePosition: boolean,
       canTradeEffect: boolean,

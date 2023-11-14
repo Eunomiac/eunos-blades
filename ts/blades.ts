@@ -1,5 +1,5 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import C, {AttributeTrait, RollType, ConsequenceType, RollResult} from "./core/constants";
+import C, {ActionTrait, AttributeTrait, RollType, ConsequenceType, Position, RollResult} from "./core/constants";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles} from "./core/settings";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers";
 import BladesPushAlert from "./BladesPushAlert";
@@ -51,6 +51,111 @@ class GlobalGetter {
 
   get sheetData() { return this.roll?.getData(); }
 
+  newActionRoll() {
+    const pc = game.actors.getName("Alistair") as BladesPC|undefined;
+    if (!pc) {return; }
+    const conf = {
+      rollType: RollType.Action,
+      rollTrait: ActionTrait.finesse,
+      rollUserID: game.users.find((user) => user.character?.name === "Alistair")?.id as string,
+      rollPrimaryData: {
+        rollPrimaryID: pc.id,
+        rollPrimaryDoc: pc,
+        rollPrimaryName: pc.name,
+        rollPrimaryType: pc.type,
+        rollPrimaryImg: pc.img,
+        rollModsData: pc.rollModsData,
+        rollFactors: pc.rollFactors
+      },
+      consequenceData: {
+        [Position.risky]: {
+          [RollResult.partial]: {
+            0: {
+              type: ConsequenceType.ProwessHarm2,
+              attribute: AttributeTrait.prowess,
+              name: "Broken Leg",
+              resistOptions: {
+                0: {
+                  name: "Sprained Ankle",
+                  isSelected: true,
+                  type: ConsequenceType.ProwessHarm1,
+                  icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1],
+                  typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm1]
+                },
+                1: {
+                  name: "Bruised Leg",
+                  isSelected: false,
+                  type: ConsequenceType.ProwessHarm1,
+                  icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1]
+                },
+                2: {
+                  name: "Fractured Foot",
+                  isSelected: false,
+                  type: ConsequenceType.ProwessHarm1,
+                  icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1]
+                }
+              },
+              resistedTo: {
+                name: "Sprained Ankle",
+                isSelected: true,
+                type: ConsequenceType.ProwessHarm1,
+                typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm1],
+                icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1]
+              },
+              specialArmorTo: {
+                name: "Sprained Ankle",
+                isSelected: true,
+                type: ConsequenceType.None,
+                icon: C.ConsequenceIcons[ConsequenceType.None],
+                typeDisplay: ""
+              },
+              icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm2],
+              typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm2]
+            }
+          },
+          [RollResult.fail]: {
+            0: {
+              type: ConsequenceType.ProwessHarm2,
+              attribute: AttributeTrait.prowess,
+              name: "Broken Leg",
+              resistOptions: {
+                0: {
+                  name: "Sprained Ankle",
+                  isSelected: true,
+                  type: ConsequenceType.ProwessHarm1,
+                  icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1],
+                  typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm1]
+                },
+                1: {
+                  name: "Bruised Leg",
+                  isSelected: false,
+                  type: ConsequenceType.ProwessHarm1,
+                  icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1]
+                },
+                2: {
+                  name: "Fractured Foot",
+                  isSelected: false,
+                  type: ConsequenceType.ProwessHarm1,
+                  icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1]
+                }
+              },
+              resistedTo: {
+                name: "Sprained Ankle",
+                isSelected: true,
+                type: ConsequenceType.ProwessHarm1,
+                typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm1],
+                icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1]
+              },
+              icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm2],
+              typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm2]
+            }
+          }
+        }
+      }
+    };
+    BladesRoll.NewRoll(conf);
+  }
+
   newResistanceRoll() {
     const pc = game.actors.getName("Alistair") as BladesPC|undefined;
     if (!pc) { return; }
@@ -66,17 +171,19 @@ class GlobalGetter {
         rollModsData: pc.rollModsData,
         rollFactors: pc.rollFactors
       },
-      consequenceData: {
-        [RollResult.fail]: {
-          0: {
-            name: "Shattered Knee",
-            type: ConsequenceType.ProwessHarm3,
-            attribute: AttributeTrait.prowess,
-            resistOptions: {
-              "Twisted Knee": {name: "Twisted Knee", type: ConsequenceType.ProwessHarm2, isSelected: true},
-              "Bum Leg": {name: "Bum Leg", type: ConsequenceType.ProwessHarm2, isSelected: false},
-              "Sprained Knee": {name: "Sprained Knee", type: ConsequenceType.ProwessHarm2, isSelected: false}
-            }
+      resistanceData: {
+        consequence: {
+          name: "Shattered Knee",
+          icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm3],
+          type: ConsequenceType.ProwessHarm3,
+          typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm3],
+          attribute: AttributeTrait.prowess,
+          resistedTo: {
+            name: "Twisted Knee",
+            icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm2],
+            type: ConsequenceType.ProwessHarm2,
+            typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm2],
+            isSelected: true
           }
         }
       }

@@ -866,11 +866,13 @@
           }
 
           .split-root-right {
+            pointer-events: auto;
             min-width: 50%;
             max-width: 50%;
 
             .sheet-main {
-              right: 6px
+              right: 6px;
+              flex-basis: auto;
             }
           }
         }
@@ -1462,6 +1464,8 @@
                 overflow: hidden;
 
                 &.roll-opp-block {
+                  min-height: 60px;
+                  flex-basis: 60px;
                   position: relative;
                   overflow: visible;
                 }

@@ -4,12 +4,12 @@
 {{#with (lookup data.GMBoosts data.factor) as |sourceBoost|}}
 {{#with (lookup data.GMOppBoosts data.factor) as |oppBoost|}}
 
-{{log "CONTEXT" data}}
-{{log "Source Data" sourceData}}
-{{log "Source Boost" sourceBoost}}
-{{log "Opp Data" oppData}}
+{{eLog "CONTEXT" data}}
+{{eLog "Source Data" sourceData}}
+{{eLog "Source Boost" sourceBoost}}
+{{eLog "Opp Data" oppData}}
 
-{{log "OppBoost" oppBoost}}
+{{eLog "OppBoost" oppBoost}}
 
 <div class="factor-control-row flex-horizontal">
 

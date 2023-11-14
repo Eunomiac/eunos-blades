@@ -6,8 +6,14 @@
   <span class="shadowed source-name source-name-type-pc">{{rollPrimary.rollPrimaryName}}</span>
   <span class="shadowed vs">vs.</span>
   <div class="consequence-box consequence-strong">
-    <span class="consequence-name">{{consequenceData.name}}</span>
-    <span class="consequence-label">{{consequenceData.label}}</span>
+    {{#with resistanceData.consequence as |cData|}}
+      {{!-- Icon --}}
+      {{{compileSvg cData.type cData.icon}}}
+      {{!-- Type --}}
+      <label class="consequence-type-label">{{calc cData.typeDisplay "??" cData.type}}</label>
+      {{!-- Name --}}
+      <label class="consequence-name">{{cData.name}}</label>
+    {{/with}}
   </div>
 </section>
 
@@ -87,14 +93,18 @@
           </defs>
           <polygon points="0,0 30,0 15,30" fill="url(#gradient-fill)" stroke="url(#gradient-stroke)" stroke-width="1" />
         </svg>
-        {{#if consequenceData.resistedConsequence}}
-        <div class="consequence-box consequence-resisted">
-          <span class="consequence-name">{{consequenceData.resistedConsequence.name}}</span>
-          <span class="consequence-label">{{consequenceData.resistedConsequence.label}}</span>
-        </div>
+        {{#if resistanceData.consequence.resistedTo}}
+        {{#with resistanceData.consequence.resistedTo as |rData|}}
+          {{!-- Icon --}}
+          {{{compileSvg rData.type rData.icon}}}
+          {{!-- Type --}}
+          <label class="consequence-type-label">{{calc rData.typeDisplay "??" rData.type}}</label>
+          {{!-- Name --}}
+          <label class="consequence-name">{{rData.name}}</label>
+        {{/with}}
         {{else}}
         <div class="consequence-box consequence-white">
-          <span class="consequence-name">Fully Resisted</span>
+          <label class="consequence-name full-width">Fully Resisted</label>
         </div>
         {{/if}}
       </div>

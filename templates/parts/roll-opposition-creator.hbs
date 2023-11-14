@@ -1,5 +1,5 @@
 
-{{log "Roll Opposition Container" this}}
+{{eLog "Roll Opposition Container" this}}
 
 
 <div class="roll-opposition-container {{~#if (test id "==" selectedID)}} selected-opposition{{/if}}{{~#if isBlank}} opposition-blank{{/if}}">
@@ -21,9 +21,9 @@
         <select class="roll-opposition-factor factor-selector" data-dtype="String" name="system.oppositions.{{id}}.rollFactors.tier.value">
             {{#select rollFactors.tier.value}}
             <option value="" hidden disabled selected></option>
-            {{#forloop 0 10}}
+            {{#for 0 10}}
             <option value="{{this}}">{{this}}</option>
-            {{/forloop}}
+            {{/for}}
             {{/select}}
         </select>
 
@@ -31,16 +31,16 @@
         {{#if (test rollFactors.quality.value "!=" "")}}
             {{#select rollFactors.quality.value}}
             <option value="" hidden disabled selected></option>
-            {{#forloop 0 10}}
+            {{#for 0 10}}
             <option value="{{this}}">{{this}}</option>
-            {{/forloop}}
+            {{/for}}
             {{/select}}
         {{else}}
             {{#select rollFactors.tier.value}}
             <option value="" hidden disabled selected></option>
-            {{#forloop 0 10}}
+            {{#for 0 10}}
             <option value="{{this}}">{{this}}</option>
-            {{/forloop}}
+            {{/for}}
             {{/select}}
         {{/if}}
         </select>
@@ -49,16 +49,16 @@
         {{#if rollFactors.scale}}
             {{#select rollFactors.scale.value}}
             <option value="" hidden disabled selected></option>
-            {{#forloop 0 10}}
+            {{#for 0 10}}
             <option value="{{this}}">{{this}}</option>
-            {{/forloop}}
+            {{/for}}
             {{/select}}
         {{else}}
             {{#select rollFactors.tier.value}}
             <option value="" hidden disabled selected></option>
-            {{#forloop 0 10}}
+            {{#for 0 10}}
             <option value="{{this}}">{{this}}</option>
-            {{/forloop}}
+            {{/for}}
             {{/select}}
         {{/if}}
         </select>
@@ -67,16 +67,16 @@
         {{#if rollFactors.magnitude}}
             {{#select rollFactors.magnitude.value}}
             <option value="" hidden disabled selected></option>
-            {{#forloop 0 10}}
+            {{#for 0 10}}
             <option value="{{this}}">{{this}}</option>
-            {{/forloop}}
+            {{/for}}
             {{/select}}
         {{else}}
             {{#select rollFactors.tier.value}}
             <option value="" hidden disabled selected></option>
-            {{#forloop 0 10}}
+            {{#for 0 10}}
             <option value="{{this}}">{{this}}</option>
-            {{/forloop}}
+            {{/for}}
             {{/select}}
         {{/if}}
         </select>

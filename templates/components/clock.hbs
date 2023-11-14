@@ -10,9 +10,9 @@
   </div>
   <svg class="clock-frame {{~#if tooltip}} tooltip-trigger{{/if}}" viewBox="0 0 400 400">
     <g class="segmented" data-size="{{max}}">
-      {{#forloop 1 max}}
+      {{#for 1 max}}
         <use href="#{{../max}}-segment" />
-      {{/forloop}}
+      {{/for}}
     </g>
   </svg>
   {{#if tooltip}}<div class="tooltip">{{{tooltip}}}</div>{{/if}}

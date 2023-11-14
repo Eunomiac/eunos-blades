@@ -9,7 +9,7 @@ import U from "./core/utilities.js";
 import C, { BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag } from "./core/constants.js";
 import { BladesActor, BladesPC, BladesCrew } from "./documents/BladesActorProxy.js";
 import { BladesItem, BladesGMTracker } from "./documents/BladesItemProxy.js";
-import { ApplyTooltipListeners } from "./core/gsap.js";
+import { ApplyTooltipListeners, ApplyConsequenceListeners } from "./core/gsap.js";
 import BladesDialog from "./BladesDialog.js";
 
 function isRollType(str) {
@@ -27,22 +27,29 @@ function isFactor(trait) {
 function isModStatus(str) {
     return typeof str === "string" && str in RollModStatus;
 }
-function isValidConsequenceData(val, isRecurring = false) {
+function isValidConsequenceData(val, isCheckingResistedTo = false) {
     if (!U.isList(val)) {
         return false;
     }
-    if (!(typeof val.type === "string" && val.type in ConsequenceType)) {
+    if (typeof val.name !== "string") {
         return false;
     }
-    if (!isRecurring && !(typeof val.attribute === "string" && val.attribute in AttributeTrait)) {
+    if (typeof val.icon !== "string") {
         return false;
     }
-    if (val.label && typeof val.label !== "string") {
+    if (typeof val.type !== "string" || !(val.type in ConsequenceType)) {
         return false;
     }
-    if (!isRecurring
-        && val.resistedConsequence !== false
-        && !isValidConsequenceData(val.resistedConsequence, true)) {
+    if (typeof val.typeDisplay !== "string") {
+        return false;
+    }
+    if (isCheckingResistedTo) {
+        return true;
+    }
+    if (typeof val.attribute !== "string" || !(val.attribute in AttributeTrait)) {
+        return false;
+    }
+    if (!isValidConsequenceData(val.resistedTo, true)) {
         return false;
     }
     return true;
@@ -438,32 +445,6 @@ class BladesRollMod {
                 },
                 Consequence: () => {
                                     },
-                HarmLevel: () => {
-                    const harmLevels = [
-                        [ConsequenceType.InsightHarm1, ConsequenceType.ProwessHarm1, ConsequenceType.ResolveHarm1],
-                        [ConsequenceType.InsightHarm2, ConsequenceType.ProwessHarm2, ConsequenceType.ResolveHarm2],
-                        [ConsequenceType.InsightHarm3, ConsequenceType.ProwessHarm3, ConsequenceType.ResolveHarm3],
-                        [ConsequenceType.InsightHarm4, ConsequenceType.ProwessHarm4, ConsequenceType.ResolveHarm4]
-                    ];
-                    let harmConsequence = undefined;
-                    while (!harmConsequence && harmLevels.length > 0) {
-                        harmConsequence = Object.values(this.rollInstance.rollConsequences)
-                            .find(({ type }) => (harmLevels.pop() ?? []).includes(type));
-                    }
-                    if (harmConsequence) {
-                        harmConsequence.resistedTo = {
-                            name: [
-                                ConsequenceType.InsightHarm1,
-                                ConsequenceType.ProwessHarm1,
-                                ConsequenceType.ResolveHarm1
-                            ].includes(harmConsequence.type)
-                                ? "Fully Negated"
-                                : (Object.values(harmConsequence.resistOptions ?? [])[0]?.name ?? harmConsequence.name),
-                            type: C.ResistedConsequenceTypes[harmConsequence.type],
-                            isSelected: true
-                        };
-                    }
-                },
                 QualityPenalty: () => {
                     this.rollInstance.negateFactorPenalty(Factor.quality);
                 },
@@ -1311,11 +1292,11 @@ class BladesRoll extends DocumentSheet {
         };
     }
     static async PrepareResistanceRoll(rollID, config) {
-        if (!isValidConsequenceData(config.consequenceData)) {
+        if (!config.resistanceData || !isValidConsequenceData(config.resistanceData?.consequence)) {
             eLog.error("rollCollab", "[PrepareResistanceRoll] Bad Roll Consequence Data.", config);
             throw new Error("[PrepareResistanceRoll()] Bad Consequence Data for Resistance Roll");
         }
-        config.rollTrait = config.consequenceData.attribute;
+        config.rollTrait = config.resistanceData.consequence.attribute;
         const userIDs = BladesRoll.GetUserPermissions(config);
         const userFlagData = {};
         Object.entries(userIDs)
@@ -1401,6 +1382,7 @@ class BladesRoll extends DocumentSheet {
             if (BladesRoll.Current[rollID]) {
                 throw new Error(`[BladesRoll.NewRoll()] User ${rollUser.name} already documenting live roll with ID '${rollID}'`);
             }
+            await rollUser.setFlag("eunos-blades", `rollCollabArchive.${rollID}`, flagData);
             await rollUser.unsetFlag("eunos-blades", "rollCollab");
         }
         let { rollPrimaryData } = config;
@@ -1731,15 +1713,8 @@ class BladesRoll extends DocumentSheet {
         }
         return true;
     }
-    get rollConsequences() {
-        return this.getFlagVal("consequenceData") ?? {};
-    }
     get rollConsequence() {
-        const chosenConsequence = this.getFlagVal("chosenConsequenceName") ?? null;
-        if (chosenConsequence) {
-            return this.getFlagVal(`consequenceData.${chosenConsequence}`) ?? null;
-        }
-        return null;
+        return this.getFlagVal("resistanceData.consequence");
     }
     async applyConsequencesFromDialog(_html) {
             }
@@ -2669,6 +2644,7 @@ class BladesRoll extends DocumentSheet {
     activateListeners(html) {
         super.activateListeners(html);
         ApplyTooltipListeners(html);
+        ApplyConsequenceListeners(html);
         html.find(".roll-mod[data-action='toggle']").on({
             click: this._toggleRollModClick.bind(this)
         });

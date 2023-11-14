@@ -90,12 +90,12 @@
 
   <section class="pc-summary-maluses">
     <div class="pc-summary-stress-container">
-      {{#forloop 1 actor.system.stress.value}}
+      {{#for 1 actor.system.stress.value}}
       <span class="pc-summary-stress-box stress-box-full"></span>
-      {{/forloop}}
-      {{#forloop (calc actor.system.stress.value "+" 1) actor.system.stress.max}}
+      {{/for}}
+      {{#for (calc actor.system.stress.value "+" 1) actor.system.stress.max}}
       <span class="pc-summary-stress-box stress-box-empty"></span>
-      {{/forloop}}
+      {{/for}}
     </div>
     <div class="pc-summary-trauma-container">
       {{#each actor.system.trauma.checked as |checkedVal traumaName|}}
