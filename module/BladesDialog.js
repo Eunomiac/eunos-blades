@@ -1,16 +1,10 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
 import { ApplyTooltipListeners } from "./core/gsap.js";
 import U from "./core/utilities.js";
 import { BladesActor, BladesPC } from "./documents/BladesActorProxy.js";
 import BladesRoll from "./BladesRoll.js";
 import C, { RollResult, AttributeTrait, Position } from "./core/constants.js";
 import BladesAI, { AGENTS } from "./core/ai.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
 const baseCsqData = {
     [RollResult.partial]: {
         0: { name: "", type: "", attribute: "" },
@@ -23,6 +17,8 @@ const baseCsqData = {
         2: { name: "", type: "", attribute: "" }
     }
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
+// eslint-disable-next-line no-shadow
 export var SelectionCategory;
 (function (SelectionCategory) {
     SelectionCategory["Heritage"] = "Heritage";
@@ -47,12 +43,16 @@ export var SelectionCategory;
     SelectionCategory["Member"] = "Member";
     SelectionCategory["Contact"] = "Contact";
 })(SelectionCategory || (SelectionCategory = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
+// eslint-disable-next-line no-shadow
 export var BladesDialogType;
 (function (BladesDialogType) {
     BladesDialogType["Selection"] = "Selection";
     BladesDialogType["Consequence"] = "Consequence";
 })(BladesDialogType || (BladesDialogType = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesDialog extends Dialog {
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "dialog"],
@@ -61,6 +61,7 @@ class BladesDialog extends Dialog {
             tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "front" }]
         });
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static Initialize() {
         return loadTemplates([
             "systems/eunos-blades/templates/dialog-selection.hbs",
@@ -68,7 +69,9 @@ class BladesDialog extends Dialog {
             "systems/eunos-blades/templates/parts/dialog-consequence-block.hbs"
         ]);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static async DisplaySelectionDialog(parent, title, docType, tabs, tags) {
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const app = new BladesDialog({
             parent,
             title,
@@ -88,9 +91,12 @@ class BladesDialog extends Dialog {
             },
             default: "cancel"
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         return app.hasItems ? app.render(true, { width: app.width }) : undefined;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static async DisplayRollConsequenceDialog(rollInst) {
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const app = new BladesDialog({
             parent: rollInst,
             title: "Consequences",
@@ -114,44 +120,58 @@ class BladesDialog extends Dialog {
             },
             default: "apply"
         }, { classes: ["eunos-blades", "sheet", "dialog", "consequence-dialog"] });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         return app._render(true, { width: app.width }).then(() => eLog.checkLog3("dialog", "Dialog Instance", { this: app }));
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get template() {
         if (this.dialogType === BladesDialogType.Selection) {
             return "systems/eunos-blades/templates/dialog-selection.hbs";
         }
         return "systems/eunos-blades/templates/dialog-consequence.hbs";
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get hasItems() {
         return Object.values(this.tabs ?? []).some((tabItems) => tabItems.length > 0);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     parent;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     tabs;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     dialogType;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     tags = [];
+    /*~ @@DOUBLE-BLANK@@ ~*/
     width;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     docType;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     csqData = {
         [Position.controlled]: { ...baseCsqData },
         [Position.risky]: { ...baseCsqData },
         [Position.desperate]: { ...baseCsqData }
     };
+    /*~ @@DOUBLE-BLANK@@ ~*/
     constructor(data, options) {
         super(data, options);
+        /*~ @@DOUBLE-BLANK@@ ~*/
         this.dialogType = data.dialogType ?? BladesDialogType.Selection;
         this.parent = data.parent;
         this.width = 500;
+        /*~ @@DOUBLE-BLANK@@ ~*/
         switch (this.dialogType) {
             case BladesDialogType.Selection:
-                this.constructSelectionData(data );
+                this.constructSelectionData(data /* , options */);
                 return;
             case BladesDialogType.Consequence:
-                this.constructConsequenceData(data );
+                this.constructConsequenceData(data /* , options */);
                 return;
             default: throw new Error(`Unrecognized type for BladesDialog constructor: '${this.dialogType}'`);
         }
     }
-    constructSelectionData(data ) {
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    constructSelectionData(data /* , options?: Partial<BladesDialog.Options> */) {
         const validTabs = [];
         if (!data.tabs) {
             return;
@@ -164,37 +184,46 @@ class BladesDialog extends Dialog {
                 validTabs.push(tabName);
             }
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         if (validTabs.length === 1 && !("Main" in data.tabs)) {
             data.tabs.Main = [...data.tabs[validTabs[0]]];
             delete data.tabs[validTabs[0]];
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         this.docType = data.docType;
         this.tabs = data.tabs;
         this.tags = data.tags ?? [];
         this.width = 150 * Math.ceil(Math.sqrt(Object.values(data.tabs)[0].length));
     }
-    constructConsequenceData(data ) {
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    constructConsequenceData(data /* , options?: Partial<BladesDialog.Options> */) {
         eLog.checkLog3("dialog", "constructConsequenceData", { incoming: data });
         if (this.parent instanceof BladesRoll) {
+            /*~ @@DOUBLE-BLANK@@ ~*/
             this.csqData = U.objMerge(this.csqData, this.parent.getFlagVal("consequenceData") ?? {});
             this._consequenceAI = new BladesAI(AGENTS.ConsequenceAdjuster);
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     getData() {
         const data = super.getData();
+        /*~ @@DOUBLE-BLANK@@ ~*/
         switch (this.dialogType) {
             case BladesDialogType.Selection: return this.prepareSelectionData(data);
             case BladesDialogType.Consequence: return this.prepareConsequenceData(data);
             default: return null;
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     prepareSelectionData(data) {
         data.title = this.title;
         data.tabs = this.tabs;
         data.docType = this.docType;
         data.tags = this.tags;
+        /*~ @@DOUBLE-BLANK@@ ~*/
         return data;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     prepareConsequenceData(data) {
         eLog.checkLog3("dialog", "prepareConsequenceData this.csqData", this.csqData);
         eLog.checkLog3("dialog", "prepareConsequenceData", { incoming: data });
@@ -210,6 +239,7 @@ class BladesDialog extends Dialog {
         eLog.checkLog3("dialog", "prepareConsequenceData", { outgoing: data });
         return data;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get consequenceTypeOptions() {
         if (this.parent instanceof BladesRoll) {
             const returnData = {};
@@ -225,6 +255,7 @@ class BladesDialog extends Dialog {
         }
         return {};
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     updateConsequenceDialog(html, isRendering = true) {
         if (!(this.parent instanceof BladesRoll)) {
             return;
@@ -233,6 +264,7 @@ class BladesDialog extends Dialog {
         if (!(rollPrimaryDoc instanceof BladesPC)) {
             return;
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         [Position.controlled, Position.risky, Position.desperate].forEach((rollPos) => {
             const posCsqData = {};
             [RollResult.partial, RollResult.fail].forEach((rollResult) => {
@@ -283,17 +315,23 @@ class BladesDialog extends Dialog {
             this.render();
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async writeToRollInstance(html) {
         if (this.parent instanceof BladesRoll) {
             this.updateConsequenceDialog(html, false);
             await this.parent.setFlagVal("consequenceData", this.csqData);
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _consequenceAI;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async queryAI(event) {
+        // If the AI generator has not been initialized, do so.
         if (!this._consequenceAI) {
             this._consequenceAI = new BladesAI(AGENTS.ConsequenceAdjuster);
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Get the name of the consequence.
         const dataAction = event.currentTarget.dataset.action;
         if (dataAction && dataAction.startsWith("ai-query")) {
             const [rollPosition, rollResult, csqIndex] = dataAction.split(/-/).slice(2);
@@ -306,11 +344,13 @@ class BladesDialog extends Dialog {
             }
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async setFlagVal(target, value) {
         if (this.parent instanceof BladesRoll) {
             return this.parent.setFlagVal(target, value, false);
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async addResistanceOptions(rollPosition, rollResult, cIndex, rOptions) {
         const cData = this.csqData[rollPosition][rollResult][cIndex];
         if (!cData) {
@@ -333,21 +373,30 @@ class BladesDialog extends Dialog {
         eLog.checkLog3("dialog", "addResistanceOptions() this.csqData", this.csqData);
         this.render();
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async selectResistOption(event) {
         eLog.checkLog3("dialog", "Clicked Resistance Option", event);
         const dataAction = event.currentTarget.dataset.action;
         if (dataAction && dataAction.startsWith("gm-select-toggle")) {
             const [rollPosition, rollResult, csqIndex, resIndex] = dataAction.split(/-/).slice(3);
             eLog.checkLog3("dialog", "... Action Passed", { rollResult, csqIndex, resIndex });
+            // Get consequence data
             const cData = this.csqData[rollPosition][rollResult][csqIndex];
             cData.resistOptions ??= {};
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Toggle clicked resistance option
             cData.resistOptions[resIndex].isSelected = !cData.resistOptions[resIndex].isSelected;
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // If resistance option is now selected...
             if (cData.resistOptions[resIndex].isSelected) {
+                // ... deselect other options
                 Object.keys(cData.resistOptions)
                     .filter((key) => key !== resIndex)
                     .forEach((key) => {
                     cData.resistOptions[key].isSelected = false;
                 });
+                /*~ @@DOUBLE-BLANK@@ ~*/
+                // ... and set 'resistedTo' to this consequence.
                 cData.resistedTo = cData.resistOptions[resIndex];
                 if (cData.resistedTo.type) {
                     cData.resistedTo.icon = C.ConsequenceIcons[cData.resistedTo.type];
@@ -355,15 +404,22 @@ class BladesDialog extends Dialog {
                 }
             }
             else {
+                // Otherwise, set 'resistedTo' to false.
                 cData.resistedTo = false;
             }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Assign new cData instance.
             this.csqData[rollPosition][rollResult][csqIndex] = cData;
             this.render();
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     activateListeners(html) {
         super.activateListeners(html);
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // ~ Tooltips
         ApplyTooltipListeners(html);
+        /*~ @@DOUBLE-BLANK@@ ~*/
         switch (this.dialogType) {
             case BladesDialogType.Selection:
                 this.activateSelectionListeners(html);
@@ -373,8 +429,11 @@ class BladesDialog extends Dialog {
                 break;
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     activateSelectionListeners(html) {
         const self = this;
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // ~ Changing Width on Tab Change Depending on Number of Items
         html.find(".nav-tabs .tab-selector").on("click", (event) => {
             const tabIndex = U.pInt($(event.currentTarget).data("tab"));
             const numItems = Object.values(self.tabs ?? [])[tabIndex].length;
@@ -382,6 +441,8 @@ class BladesDialog extends Dialog {
             eLog.checkLog3("nav", "Nav Tab Size Recalculation", { tabIndex, numItems, width });
             this.render(false, { width });
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // ~ Item Control
         html.find("[data-item-id]").on("click", function () {
             if ($(this).parent().hasClass("locked")) {
                 return;
@@ -399,7 +460,9 @@ class BladesDialog extends Dialog {
             }
             self.close();
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     activateConsequenceListeners(html) {
         html.find("input").on({ blur: () => this.updateConsequenceDialog(html) });
         html.find("select").on({ change: () => this.updateConsequenceDialog(html) });
@@ -407,4 +470,6 @@ class BladesDialog extends Dialog {
         html.find('[data-action^="gm-select-toggle"]').on({ click: (event) => this.selectResistOption(event) });
     }
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesDialog;
+/*~ @@DOUBLE-BLANK@@ ~*/ 

@@ -1,12 +1,6 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
 import U from "./utilities.js";
 import C from "./constants.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
 const registerSettings = function () {
     game.settings.register("eunos-blades", "debug", {
         name: "Debug Level",
@@ -19,7 +13,7 @@ const registerSettings = function () {
             max: 5,
             step: 1
         },
-        default: 3
+        default: 3 // The default value for the setting
     });
     game.settings.register("eunos-blades", "openAPIModelLevel", {
         name: "AI Base Quality",
@@ -39,7 +33,7 @@ const registerSettings = function () {
         scope: "client",
         config: true,
         type: String,
-        default: ""
+        default: "" // The default value for the setting
     });
     game.settings.register("eunos-blades", "openAPIKey", {
         name: "OpenAI API Key",
@@ -47,7 +41,7 @@ const registerSettings = function () {
         scope: "client",
         config: true,
         type: String,
-        default: ""
+        default: "" // The default value for the setting
     });
     game.settings.register("eunos-blades", "whitelist", {
         name: "Debug Whitelist",
@@ -55,9 +49,12 @@ const registerSettings = function () {
         scope: "client",
         config: true,
         type: String,
-        default: ""
+        default: "" // The default value for the setting
     });
-        game.settings.register("eunos-blades", "systemMigrationVersion", {
+    /**
+     * Track the system version upon which point a migration was last applied
+     */
+    game.settings.register("eunos-blades", "systemMigrationVersion", {
         name: "System Migration Version",
         scope: "world",
         config: false,
@@ -65,6 +62,10 @@ const registerSettings = function () {
         default: 0
     });
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ *
+ */
 export function initTinyMCEStyles() {
     CONFIG.TinyMCE = {
         ...CONFIG.TinyMCE,
@@ -84,6 +85,7 @@ export function initTinyMCEStyles() {
             resize: false,
             plugins: "lists image table code save autoresize searchreplace quickbars template",
             save_enablewhendirty: false,
+            // Table_default_styles: {},
             style_formats: [
                 {
                     title: "Headings",
@@ -99,6 +101,7 @@ export function initTinyMCEStyles() {
                     items: [
                         { title: "Paragraph", block: "p", wrapper: false },
                         { title: "Block Quote", block: "blockquote", wrapper: true }
+                        // {title: "Secret", block: "span", classes: "text-secret", attributes: {"data-is-secret": "true"}, wrapper: false}
                     ]
                 },
                 {
@@ -143,6 +146,10 @@ export function initTinyMCEStyles() {
         }
     };
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ *
+ */
 export function initCanvasStyles() {
     CONFIG.canvasTextStyle = new PIXI.TextStyle({
         align: "center",
@@ -174,4 +181,6 @@ export function initCanvasStyles() {
         wordWrapWidth: 0.1
     });
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default registerSettings;
+/*~ @@DOUBLE-BLANK@@ ~*/ 

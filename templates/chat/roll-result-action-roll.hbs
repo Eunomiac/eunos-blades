@@ -1,0 +1,65 @@
+<div class="chat-message-bg roll-position-{{finalPosition}}"></div>
+
+<div class="blades-roll roll-type-{{case "lower" rollType}} roll-position-{{finalPosition}} roll-effect-{{finalEffect}} roll-result-{{rollResult}}">
+
+  {{!-- Roll Trait  --}}
+  <h1 class="chat-header roll-trait">
+    <span class="trait-label">{{case "upper" rollTrait}}</span>
+  </h1>
+
+  {{!-- Opposition --}}
+  {{#if rollOpposition}}
+  <h3 class="chat-header roll-opposition">
+    <span class="vs">vs.</span>
+    <span class="opp-name">{{case "title" rollOpposition.rollOppName}}</span>
+  </h3>
+  {{/if}}
+
+  {{!-- Position & Effect --}}
+  <div class="roll-states flex-horizontal full-width">
+    <div class="roll-state-container flex-vertical">
+      <h3 class="roll-state roll-state-position roll-state-position-{{finalPosition}}">{{case "title" finalPosition}}</h3>
+      <h4 class="roll-state-label">Position</h4>
+    </div>
+    <div class="roll-state-container flex-vertical">
+      <h3 class="roll-state roll-state-effect roll-state-effect-{{finalEffect}}">{{case "title" finalEffect}}</h3>
+      <h4 class="roll-state-label">Effect</h4>
+    </div>
+  </div>
+
+  {{!-- Dice Rolls --}}
+  <div class="dice-roll-strip">{{{dieValsHTML}}}</div>
+
+  {{!-- Roll Result --}}
+  <h2 class="roll-result roll-result-{{rollResult}}">{{case "upper" rollResult}}</h2>
+
+  {{!-- Roll Result Description --}}
+  <p class="roll-result-description roll-result-{{rollResult}}">{{rollResultDescription}}</p>
+
+  {{!-- Consequences --}}
+  {{#if (test rollResult "==" "partial")}}
+  <div class="consequence-container flex-vertical full-width">
+  {{log "ConsequenceContainer" this}}
+  {{#with (lookup flagData.consequenceData finalPosition) as |csqData|}}
+  {{#each csqData.partial as |cData cIndex|}}
+    {{#if cData.resistedTo}}
+    {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
+      isResistanceVisible=true }}
+    {{/if}}
+  {{/each}}
+  {{/with}}
+  </div>
+  {{/if}}
+  {{#if (test rollResult "==" "fail")}}
+  <div class="consequence-container flex-vertical full-width">
+  {{#with (lookup flagData.consequenceData finalPosition) as |csqData|}}
+  {{#each csqData.fail as |cData cIndex|}}
+    {{#if cData.resistedTo}}
+    {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
+      isResistanceVisible=true }}
+    {{/if}}
+  {{/each}}
+  {{/with}}
+  </div>
+  {{/if}}
+</div>

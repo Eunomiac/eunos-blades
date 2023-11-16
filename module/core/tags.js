@@ -1,13 +1,7 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
 import Tagify from "../../lib/tagify/tagify.esm.js";
 import { Tag, MainDistrict, OtherDistrict, Vice, Playbook, BladesActorType } from "./constants.js";
 import U from "./utilities.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
 const _onTagifyChange = (event, doc, targetKey) => {
     const tagString = event.target.value;
     if (tagString) {
@@ -18,9 +12,18 @@ const _onTagifyChange = (event, doc, targetKey) => {
         doc.update({ [targetKey]: [] });
     }
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 const Tags = {
     InitListeners: (html, doc) => {
-                function makeTagInput(elem, tags) {
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        /**
+         * Applies tags and Tagify functionality to a specified HTML element.
+         * @param {HTMLElement} elem The element to tagify.
+         * @param {Record<string,BladesTag[]>} tags The tags, sorted into groups, to apply.
+         */
+        function makeTagInput(elem, tags) {
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Create tagify instance; populate dropdown list with tags
             const tagify = new Tagify(elem, {
                 enforceWhitelist: true,
                 editTags: false,
@@ -38,30 +41,45 @@ const Tags = {
                     appendTarget: html[0]
                 }
             });
+            /*~ @@DOUBLE-BLANK@@ ~*/
             tagify.dropdown.createListHTML = (optionsArr) => {
                 const map = {};
+                /*~ @@DOUBLE-BLANK@@ ~*/
                 return structuredClone(optionsArr)
                     .map((suggestion, idx) => {
+                    /*~ @@DOUBLE-BLANK@@ ~*/
                     const value = tagify.dropdown.getMappedValue.call(tagify, suggestion);
                     let tagHTMLString = "";
+                    /*~ @@DOUBLE-BLANK@@ ~*/
                     if (!map[suggestion["data-group"]]) {
                         map[suggestion["data-group"]] = true;
+                        /*~ @@DOUBLE-BLANK@@ ~*/
                         if (Object.keys(map).length) {
                             tagHTMLString += "</div>";
                         }
+                        /*~ @@DOUBLE-BLANK@@ ~*/
                         tagHTMLString += `
                 <div class="tagify__dropdown__itemsGroup">
                 <h3>${suggestion["data-group"]}</h3>
               `;
                     }
+                    /*~ @@DOUBLE-BLANK@@ ~*/
                     suggestion.value =
                         value && typeof value === "string" ? U.escapeHTML(value) : value;
+                    /*~ @@DOUBLE-BLANK@@ ~*/
                     tagHTMLString += tagify.settings.templates.dropdownItem.apply(tagify, [suggestion, idx]);
+                    /*~ @@DOUBLE-BLANK@@ ~*/
                     return tagHTMLString;
                 })
                     .join("");
             };
-                        function findDataGroup(tag) {
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            /**
+             * Returns the tag group to which a tag belongs, or false if no group found.
+             * @param {BladesTag|string} tag
+             * @returns {string|false} Either the group containing the given tag, or false if no group found.
+             */
+            function findDataGroup(tag) {
                 for (const [group, tagList] of Object.entries(tags)) {
                     if (tagList.includes(tag)) {
                         return group;
@@ -69,6 +87,8 @@ const Tags = {
                 }
                 return false;
             }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Check if element specifies an alternate schema target from doc.tags
             const targetKey = $(elem).data("tagTarget") ?? "system.tags";
             const curTags = [getProperty(doc, targetKey) ?? []].flat().filter(Boolean);
             tagify.addTags(curTags
@@ -77,9 +97,12 @@ const Tags = {
                 value: (new Handlebars.SafeString(tag)).toString(),
                 "data-group": findDataGroup(tag)
             })), true, true);
-
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Add event listener for tag changes, setting defined target
+            // Wait briefly, so other tag elements' tags can be set before listener initializes
             setTimeout(() => elem.addEventListener("change", (event) => { _onTagifyChange(event, doc, targetKey); }), 1000);
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const systemTags = {
             "System Tags": Object.values(Tag.System),
             "Gear Tags": [
@@ -102,9 +125,15 @@ const Tags = {
         const factionTags = { Factions: game.actors
                 .filter((actor) => actor.type === BladesActorType.faction && actor.name !== null)
                 .map((faction) => faction.name) };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         $(html).find(".tags-gm").each((_, e) => makeTagInput(e, systemTags));
+        /*~ @@DOUBLE-BLANK@@ ~*/
         $(html).find(".tags-district").each((_, e) => makeTagInput(e, districtTags));
+        /*~ @@DOUBLE-BLANK@@ ~*/
         $(html).find(".tags-faction").each((_, e) => makeTagInput(e, factionTags));
+        /*~ @@DOUBLE-BLANK@@ ~*/
     }
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default Tags;
+/*~ @@DOUBLE-BLANK@@ ~*/ 

@@ -3,6 +3,7 @@ import C, {ActionTrait, AttributeTrait, RollType, ConsequenceType, Position, Rol
 import registerSettings, {initTinyMCEStyles, initCanvasStyles} from "./core/settings";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers";
 import BladesPushAlert from "./BladesPushAlert";
+import BladesChat from "./BladesChat";
 import U from "./core/utilities";
 import logger from "./core/logger";
 import G, {Initialize as GsapInitialize} from "./core/gsap";
@@ -73,6 +74,7 @@ class GlobalGetter {
             0: {
               type: ConsequenceType.ProwessHarm2,
               attribute: AttributeTrait.prowess,
+              attributeVal: 3,
               name: "Broken Leg",
               resistOptions: {
                 0: {
@@ -107,47 +109,179 @@ class GlobalGetter {
                 isSelected: true,
                 type: ConsequenceType.None,
                 icon: C.ConsequenceIcons[ConsequenceType.None],
+                footerMsg: "If vs. Physical Harm",
                 typeDisplay: ""
               },
               icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm2],
               typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm2]
+            },
+            1: {
+              type: ConsequenceType.ReducedEffect,
+              attribute: AttributeTrait.insight,
+              attributeVal: 4,
+              name: "You Lose Your Footing",
+              /* "resistOptions": {
+                  "0": {
+                      "name": "Stumble",
+                      "isSelected": false
+                  },
+                  "1": {
+                      "name": "Trip",
+                      "isSelected": false
+                  },
+                  "2": {
+                      "name": "",
+                      "type": "None",
+                      "isSelected": true
+                  }
+              }, */
+              resistedTo: {
+                name: "",
+                type: ConsequenceType.None,
+                isSelected: true
+              },
+              icon: "main",
+              typeDisplay: "Reduced Effect"
+            },
+            2: {
+              type: ConsequenceType.ResolveHarm1,
+              attribute: AttributeTrait.resolve,
+              name: "Traumatic Flashbacks",
+              resistOptions: {
+                0: {
+                  name: "",
+                  type: ConsequenceType.None,
+                  isSelected: true
+                },
+                1: {
+                  name: "",
+                  type: ConsequenceType.None,
+                  isSelected: false
+                },
+                2: {
+                  name: "",
+                  type: ConsequenceType.None,
+                  isSelected: false
+                }
+              },
+              resistedTo: {
+                name: "",
+                type: ConsequenceType.None,
+                isSelected: true
+              },
+              icon: "spikes|eyeball|iris",
+              typeDisplay: "Level 1 Harm (Lesser)",
+              attributeVal: 4
             }
           },
           [RollResult.fail]: {
             0: {
-              type: ConsequenceType.ProwessHarm2,
-              attribute: AttributeTrait.prowess,
-              name: "Broken Leg",
+              type: ConsequenceType.WorsePosition,
+              attribute: AttributeTrait.resolve,
+              attributeVal: 4,
+              name: "Time To Regroup",
               resistOptions: {
                 0: {
-                  name: "Sprained Ankle",
-                  isSelected: true,
-                  type: ConsequenceType.ProwessHarm1,
-                  icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1],
-                  typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm1]
+                  name: "Time to Rest and Recuperate",
+                  isSelected: false
                 },
                 1: {
-                  name: "Bruised Leg",
-                  isSelected: false,
-                  type: ConsequenceType.ProwessHarm1,
-                  icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1]
+                  name: "Time to Reflect and Reevaluate",
+                  isSelected: false
                 },
                 2: {
-                  name: "Fractured Foot",
-                  isSelected: false,
-                  type: ConsequenceType.ProwessHarm1,
-                  icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1]
+                  name: "Time to Reorganize and Strategize",
+                  isSelected: false
                 }
               },
               resistedTo: {
+                name: "",
+                type: ConsequenceType.None,
+                isSelected: true
+              },
+              icon: "horizon|boot|ice",
+              typeDisplay: "Worse Position"
+            },
+            1: {
+              type: ConsequenceType.ComplicationMajor,
+              attribute: AttributeTrait.prowess,
+              name: "Your pick snaps off inside the lock.",
+              resistOptions: {
+                0: {
+                  name: "Lock remains intact but jammed",
+                  isSelected: false,
+                  type: ConsequenceType.ComplicationMinor,
+                  icon: "main"
+                },
+                1: {
+                  name: "Pick breaks, but lock is still pickable",
+                  isSelected: true,
+                  type: ConsequenceType.ComplicationMinor,
+                  icon: "main",
+                  typeDisplay: "Minor Complication"
+                },
+                2: {
+                  name: "You manage to extract the broken pick from the lock.",
+                  isSelected: false,
+                  type: ConsequenceType.ComplicationMinor,
+                  icon: "main"
+                }
+              },
+              resistedTo: {
+                name: "Pick breaks, but lock is still pickable",
+                isSelected: true,
+                type: ConsequenceType.ComplicationMinor,
+                icon: "main",
+                typeDisplay: "Minor Complication"
+              },
+              attributeVal: 3,
+              icon: "main",
+              typeDisplay: "Major Complication"
+            },
+            2: {
+              type: ConsequenceType.InsightHarm2,
+              attribute: AttributeTrait.insight,
+              name: "Completely Misled",
+              resistOptions: {
+                0: {
+                  name: "Partially Misinformed",
+                  isSelected: false,
+                  type: ConsequenceType.InsightHarm1,
+                  icon: "eye|iris",
+                  typeDisplay: "Level 1 Harm (Lesser)"
+                },
+                1: {
+                  name: "Confused by Deception",
+                  isSelected: true,
+                  type: ConsequenceType.InsightHarm1,
+                  icon: "eye|iris",
+                  typeDisplay: "Level 1 Harm (Lesser)"
+                },
+                2: {
+                  name: "Given Partially Incorrect Information",
+                  isSelected: false,
+                  type: ConsequenceType.InsightHarm1,
+                  icon: "eye|iris"
+                }
+              },
+              resistedTo: {
+                name: "Confused by Deception",
+                isSelected: true,
+                type: ConsequenceType.InsightHarm1,
+                typeDisplay: "Level 1 Harm (Lesser)",
+                icon: "eye|iris"
+              },
+              specialArmorTo: {
                 name: "Sprained Ankle",
                 isSelected: true,
-                type: ConsequenceType.ProwessHarm1,
-                typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm1],
-                icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1]
+                type: ConsequenceType.InsightHarm1,
+                footerMsg: "If vs. Supernatural, Arcane Forces",
+                icon: C.ConsequenceIcons[ConsequenceType.InsightHarm1],
+                typeDisplay: "Level 1 Harm (Lesser)"
               },
-              icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm2],
-              typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm2]
+              icon: "eye|iris",
+              typeDisplay: "Level 2 Harm (Moderate)",
+              attributeVal: 4
             }
           }
         }
@@ -220,6 +354,7 @@ class GlobalGetter {
     BladesRollPrimary,
     BladesRollOpposition,
     BladesRollParticipant,
+    BladesChat,
     G,
     U,
     C,
@@ -247,6 +382,7 @@ Hooks.once("init", async () => {
 
   CONFIG.Item.documentClass = BladesItemProxy as unknown as typeof Item;
   CONFIG.Actor.documentClass = BladesActorProxy as unknown as typeof Actor;
+  CONFIG.ChatMessage.documentClass = BladesChat;
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);

@@ -1,16 +1,508 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
 import U from "./utilities.js";
+import C from "./constants.js";
+// eslint-disable-next-line import/no-unresolved
 import { TextPlugin } from "/scripts/greensock/esm/all.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
 const gsapPlugins = [
     TextPlugin
 ];
+/*~ @@DOUBLE-BLANK@@ ~*/
 const gsapEffects = {
+    csqEnter: {
+        effect: (csqContainer, config) => {
+            const csqRoot = U.gsap.utils.selector(csqContainer);
+            // eLog.checkLog3("gsap", "gsapEffects.consequenceEnter -> THIS", {this: this, csqRoot});
+            const csqIconCircle = csqRoot(".consequence-icon-circle.base-consequence");
+            const csqBaseElems = csqRoot(".base-consequence:not(.consequence-icon-circle)");
+            const csqAcceptElems = csqRoot(".accept-consequence:not(.consequence-icon-circle):not(.consequence-button-container)");
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const tl = U.gsap.timeline({ paused: true });
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Fade out base-consequence components
+            tl.fromTo(csqBaseElems, {
+                opacity: 1
+            }, {
+                opacity: 0,
+                duration: config.duration / 3,
+                ease: "none"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Fade in accept-consequence components
+            tl.fromTo(csqAcceptElems, {
+                opacity: 0
+            }, {
+                opacity: 1,
+                duration: config.duration / 3,
+                ease: "none"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Brighten the entire container slightly
+            tl.fromTo(csqContainer, {
+                filter: "brightness(1)"
+            }, {
+                filter: `brightness(${config.brightness})`,
+                duration: config.duration / 3,
+                ease: "none"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Enlarge the icon circle, add stroke
+            tl.fromTo(csqIconCircle, {
+                xPercent: -50,
+                yPercent: -50,
+                scale: 0.75,
+                outlineColor: C.Colors.dBLACK,
+                outlineWidth: 0
+            }, {
+                xPercent: -50,
+                yPercent: -50,
+                scale: 0.85,
+                outlineColor: C.Colors.GREY,
+                outlineWidth: 1,
+                duration: 0.55,
+                ease: "sine.out"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            return tl;
+        },
+        defaults: {
+            brightness: 1.5,
+            duration: 0.5,
+            scale: 1.5,
+            stagger: 0.05,
+            ease: "sine",
+            easeStrength: 1.5
+        }
+    },
+    csqClickIcon: {
+        effect: (csqIconContainer, config) => {
+            const csqRoot = U.gsap.utils.selector(csqIconContainer);
+            const csqInteractionPads = csqRoot(".consequence-interaction-pad");
+            const csqIconCircleBase = csqRoot(".consequence-icon-circle.base-consequence");
+            const csqIconCircleAccept = csqRoot(".consequence-icon-circle.accept-consequence");
+            const csqButtonContainers = csqRoot(".consequence-button-container");
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const tl = U.gsap.timeline({ paused: true });
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Initialize interaction pads to display: none
+            if (csqInteractionPads.length) {
+                tl.set(csqInteractionPads, { display: "none" });
+            }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Fade out the base consequence icon circle
+            tl.fromTo(csqIconCircleBase, {
+                opacity: 1
+            }, {
+                opacity: 0,
+                duration: 0.25,
+                ease: "none"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Fade in the accept consequence icon circle, enlarging the stroke
+            tl.fromTo(csqIconCircleAccept, {
+                opacity: 0,
+                xPercent: -50,
+                yPercent: -50,
+                scale: 0.85
+            }, {
+                opacity: 1,
+                xPercent: -50,
+                yPercent: -50,
+                duration: 0.15,
+                ease: "sine"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            tl.fromTo(csqIconCircleAccept, {
+                outlineWidth: 1,
+                xPercent: -50,
+                yPercent: -50,
+                scale: 0.85
+            }, {
+                scale: 1,
+                xPercent: -50,
+                yPercent: -50,
+                outlineWidth: 2,
+                duration: 0.25,
+                ease: "sine"
+            }, 0.175);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Scale and fade in the button containers
+            tl.fromTo(csqButtonContainers, {
+                scale: config.scale,
+                opacity: 0,
+                filter: "blur(25px)"
+            }, {
+                scale: 1,
+                opacity: 1,
+                filter: "blur(0px)",
+                stagger: config.stagger,
+                duration: config.duration,
+                ease: `${config.ease}.inOut(${config.easeStrength})`
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Finally, toggle on interaction pads
+            if (csqInteractionPads.length) {
+                tl.set(csqInteractionPads, { display: "block" });
+            }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            return tl;
+        },
+        defaults: {
+            duration: 0.5,
+            scale: 1.5,
+            stagger: 0.05,
+            ease: "sine",
+            easeStrength: 1.5
+        }
+    },
+    csqEnterAccept: {
+        effect: (csqContainer) => {
+            const csqRoot = U.gsap.utils.selector(csqContainer);
+            const typeLine = csqRoot(".consequence-type-container .consequence-type.accept-consequence");
+            const typeLineBg = csqRoot(".consequence-type-container .consequence-type-bg.accept-consequence");
+            const buttonRoot = U.gsap.utils.selector(csqRoot(".consequence-button-container.consequence-accept-button-container"));
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const buttonBg = buttonRoot(".consequence-button-bg");
+            const buttonIcon = buttonRoot(".button-icon i");
+            const buttonLabel = buttonRoot(".consequence-button-label");
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const tl = U.gsap.timeline({ paused: true });
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Turn type line white
+            tl.fromTo(typeLine, {
+                color: C.Colors.RED
+            }, {
+                color: C.Colors.WHITE,
+                duration: 0.5,
+                ease: "sine.inOut"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Slide type line background out from under icon
+            tl.fromTo(typeLineBg, {
+                x: 5,
+                scaleX: 0,
+                color: C.Colors.RED,
+                skewX: 0
+            }, {
+                scaleX: 1,
+                skewX: -45,
+                color: C.Colors.RED,
+                duration: 0.5,
+                ease: "back.out"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Slide accept button background out from under icon
+            tl.fromTo(buttonBg, {
+                scaleX: 0,
+                color: C.Colors.RED,
+                skewX: 0
+            }, {
+                x: 0,
+                scaleX: 1,
+                skewX: -45,
+                color: C.Colors.RED,
+                duration: 0.25,
+                ease: "back.out"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Turn button icon black and scale
+            tl.fromTo(buttonIcon, {
+                color: C.Colors.GREY,
+                opacity: 0.75,
+                scale: 1
+            }, {
+                color: C.Colors.dBLACK,
+                scale: 1.25,
+                opacity: 1,
+                duration: 0.5,
+                ease: "sine"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Turn button label black, add letter-spacing, bold
+            tl.fromTo(buttonLabel, {
+                color: C.Colors.GREY,
+                fontWeight: 400,
+                scale: 1
+            }, {
+                color: C.Colors.dBLACK,
+                fontWeight: 800,
+                duration: 0.75,
+                ease: "sine"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            return tl;
+        },
+        defaults: {}
+    },
+    csqEnterResist: {
+        effect: (csqContainer) => {
+            const csqRoot = U.gsap.utils.selector(csqContainer);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const typeLine = csqRoot(".consequence-type-container .consequence-type.resist-consequence");
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const acceptElems = csqRoot(".accept-consequence");
+            const specialArmorElems = csqRoot(".special-armor-consequence");
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const footerBg = csqRoot(".consequence-footer-container .consequence-footer-bg.resist-consequence");
+            const attrElem = csqRoot(".consequence-footer-container .consequence-resist-attribute");
+            const resistCsqName = csqRoot(".consequence-name.resist-consequence");
+            const iconCircle = csqRoot(".consequence-icon-circle.resist-consequence");
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const buttonRoot = U.gsap.utils.selector(csqRoot(".consequence-button-container.consequence-resist-button-container"));
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const buttonBg = buttonRoot(".consequence-button-bg");
+            const buttonIcon = buttonRoot(".button-icon i");
+            const buttonLabel = buttonRoot(".consequence-button-label");
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const tl = U.gsap.timeline({ paused: true });
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Fade out all accept elems and special armor elems
+            tl.to([...acceptElems, ...specialArmorElems], {
+                opacity: 0,
+                duration: 0.25,
+                ease: "sine.out"
+            });
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            if (typeLine.length) {
+                // Slide out .consequence-type.resist-consequence from left
+                tl.fromTo(typeLine, {
+                    x: -15,
+                    scaleX: 0,
+                    opacity: 1,
+                    color: C.Colors.dGOLD
+                }, {
+                    x: 0,
+                    scaleX: 1,
+                    opacity: 1,
+                    color: C.Colors.dGOLD,
+                    duration: 0.5,
+                    ease: "back.out"
+                }, 0);
+            }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Slide out .consequence-resist-button-bg from right
+            tl.fromTo(buttonBg, {
+                scaleX: 0,
+                skewX: 0,
+                opacity: 1
+            }, {
+                scaleX: 1,
+                skewX: -45,
+                opacity: 1,
+                duration: 0.5,
+                ease: "back.inOut"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Slide out .consequence-footer-bg.resist-consequence from left
+            tl.fromTo(footerBg, {
+                scaleX: 0,
+                skewX: 0,
+                opacity: 1
+            }, {
+                scaleX: 1,
+                skewX: -45,
+                opacity: 1,
+                duration: 0.5,
+                ease: "back.inOut"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Slide out .consequence-resist-attribute from left
+            tl.fromTo(attrElem, {
+                scaleX: 0,
+                opacity: 1
+            }, {
+                scaleX: 1,
+                opacity: 1,
+                duration: 0.5,
+                ease: "back.inOut"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Slide out .consequence-name.resist-consequence from left
+            tl.fromTo(resistCsqName, {
+                scaleX: 0,
+                opacity: 1
+            }, {
+                scaleX: 1,
+                opacity: 1,
+                duration: 0.5,
+                ease: "back.inOut"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Fade in .consequence-icon-circle.resist-consequence
+            tl.fromTo(iconCircle, {
+                opacity: 0
+            }, {
+                opacity: 1,
+                duration: 0.5,
+                ease: "back.out"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Turn button icon black and scale
+            tl.fromTo(buttonIcon, {
+                color: C.Colors.GREY,
+                opacity: 0.75,
+                scale: 1
+            }, {
+                color: C.Colors.dBLACK,
+                scale: 1.25,
+                opacity: 1,
+                duration: 0.5,
+                ease: "sine"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Turn button label black, bold
+            tl.fromTo(buttonLabel, {
+                color: C.Colors.GREY,
+                fontWeight: 400,
+                scale: 1
+            }, {
+                color: C.Colors.dBLACK,
+                fontWeight: 800,
+                duration: 0.75,
+                ease: "sine"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            return tl;
+        },
+        defaults: {}
+    },
+    csqEnterSpecialArmor: {
+        effect: (csqContainer) => {
+            const csqRoot = U.gsap.utils.selector(csqContainer);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const typeLine = csqRoot(".consequence-type-container .consequence-type.special-armor-consequence");
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const acceptElems = csqRoot(".accept-consequence");
+            const resistElems = csqRoot(".resist-consequence");
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const footerBg = csqRoot(".consequence-footer-container .consequence-footer-bg.special-armor-consequence");
+            const footerMsg = csqRoot(".consequence-footer-container .consequence-special-armor-message");
+            const specialArmorCsqName = csqRoot(".consequence-name.special-armor-consequence");
+            const iconCircle = csqRoot(".consequence-icon-circle.special-armor-consequence");
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const buttonRoot = U.gsap.utils.selector(csqRoot(".consequence-button-container.consequence-special-armor-button-container"));
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const buttonBg = buttonRoot(".consequence-button-bg");
+            const buttonIcon = buttonRoot(".button-icon i");
+            const buttonLabel = buttonRoot(".consequence-button-label");
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const tl = U.gsap.timeline({ paused: true });
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Fade out all accept elems and resist elems
+            tl.to([...acceptElems, ...resistElems], {
+                opacity: 0,
+                duration: 0.25,
+                ease: "sine.out"
+            });
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            if (typeLine) {
+                // Slide out .consequence-type.special-armor-consequence from left
+                tl.fromTo(typeLine, {
+                    x: -15,
+                    scaleX: 0,
+                    opacity: 1,
+                    color: C.Colors.dBLUE
+                }, {
+                    x: 0,
+                    scaleX: 1,
+                    opacity: 1,
+                    color: C.Colors.dBLUE,
+                    duration: 0.5,
+                    ease: "back.out"
+                }, 0);
+            }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Slide out .consequence-special-armor-button-bg from right
+            tl.fromTo(buttonBg, {
+                scaleX: 0,
+                skewX: 0,
+                opacity: 1
+            }, {
+                scaleX: 1,
+                skewX: -45,
+                opacity: 1,
+                duration: 0.5,
+                ease: "back.inOut"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            if (footerBg) {
+                // Slide out .consequence-footer-bg.special-armor-consequence from left
+                tl.fromTo(footerBg, {
+                    scaleX: 0,
+                    skewX: 0,
+                    opacity: 1
+                }, {
+                    scaleX: 1,
+                    skewX: -45,
+                    opacity: 1,
+                    duration: 0.5,
+                    ease: "back.inOut"
+                }, 0);
+            }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Slide out .consequence-special-armor-message from left
+            if (footerMsg) {
+                tl.fromTo(footerMsg, {
+                    scaleX: 0,
+                    opacity: 1
+                }, {
+                    scaleX: 1,
+                    opacity: 1,
+                    duration: 0.5,
+                    ease: "back.inOut"
+                }, 0);
+            }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Slide out .consequence-name.special-armor-consequence from left
+            if (specialArmorCsqName) {
+                tl.fromTo(specialArmorCsqName, {
+                    scaleX: 0,
+                    opacity: 1
+                }, {
+                    scaleX: 1,
+                    opacity: 1,
+                    duration: 0.5,
+                    ease: "back.inOut"
+                }, 0);
+            }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Fade in .consequence-icon-circle.special-armor-consequence
+            tl.fromTo(iconCircle, {
+                opacity: 0
+            }, {
+                opacity: 1,
+                duration: 0.5,
+                ease: "back.out"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Turn button icon black and scale
+            tl.fromTo(buttonIcon, {
+                color: C.Colors.GREY,
+                opacity: 0.75,
+                scale: 1
+            }, {
+                color: C.Colors.dBLACK,
+                scale: 1.25,
+                opacity: 1,
+                duration: 0.5,
+                ease: "sine"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Turn button label black, bold
+            tl.fromTo(buttonLabel, {
+                color: C.Colors.GREY,
+                fontWeight: 400,
+                scale: 1
+            }, {
+                color: C.Colors.dBLACK,
+                fontWeight: 800,
+                duration: 0.75,
+                ease: "sine"
+            }, 0);
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            return tl;
+        },
+        defaults: {}
+    },
     blurRemove: {
         effect: (targets, config) => U.gsap.timeline()
             .to(targets, {
@@ -46,6 +538,8 @@ const gsapEffects = {
     slideUp: {
         effect: (targets) => U.gsap.to(targets, {
             height: 0,
+            // PaddingTop: 0,
+            // paddingBottom: 0,
             duration: 0.5,
             ease: "power3"
         }),
@@ -90,15 +584,21 @@ const gsapEffects = {
         extendTimeline: true
     },
     pulseClockWedges: {
-        effect: (targets, config) => U.gsap.timeline({ duration: 0 }),
+        effect: () => U.gsap.timeline({ duration: 0 }),
         defaults: {}
     },
     reversePulseClockWedges: {
-        effect: (targets, config) => U.gsap.timeline({ duration: 0 }),
+        effect: () => U.gsap.timeline({ duration: 0 }),
         defaults: {}
     },
     fillCoins: {
         effect: (targets, config) => {
+            // Targets will be all coins from zero to where fill currently is
+            // Some will already be full, others not.
+            // Stagger in timeline
+            // Pulse in size and color
+            // Shimmer as they shrink back ?
+            /*~ @@DOUBLE-BLANK@@ ~*/
             return U.gsap.effects.throb(targets, { stagger: {
                     amount: 0.25,
                     from: "start",
@@ -114,16 +614,19 @@ const gsapEffects = {
             if (!tooltip) {
                 return tl;
             }
+            // Tooltip = $(tooltip);
+            /*~ @@DOUBLE-BLANK@@ ~*/
             if (config.scalingElems.length > 0) {
                 tl.to(config.scalingElems, {
                     scale: "+=0.2",
                     filter: "none",
-                    color: "rgba(255, 255, 255, 1)",
+                    color: C.Colors.WHITE,
                     opacity: 1,
                     duration: 0.125,
                     ease: "back"
                 }, 0.5);
             }
+            /*~ @@DOUBLE-BLANK@@ ~*/
             if (tooltip) {
                 tl.fromTo(tooltip, {
                     filter: "blur(50px)",
@@ -138,6 +641,7 @@ const gsapEffects = {
                     ease: "power2"
                 }, 1);
             }
+            /*~ @@DOUBLE-BLANK@@ ~*/
             return tl;
         },
         defaults: {
@@ -146,6 +650,10 @@ const gsapEffects = {
         }
     }
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ * Registers relevant GSAP plugins and effects.
+ */
 export function Initialize() {
     if (gsapPlugins.length) {
         U.gsap.registerPlugin(...gsapPlugins);
@@ -154,6 +662,11 @@ export function Initialize() {
         U.gsap.registerEffect(Object.assign(effect, { name }));
     });
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ * Applies listeners to '.tooltip-trigger' elements in the document.
+ * @param {JQuery<HTMLElement>} html The document to be searched.
+ */
 export function ApplyTooltipListeners(html) {
     html.find(".tooltip-trigger").each((_, el) => {
         const tooltipElem = $(el).find(".tooltip")[0] ?? $(el).next(".tooltip")[0];
@@ -178,118 +691,146 @@ export function ApplyTooltipListeners(html) {
         });
     });
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ * Applies listeners to .consequence-display-container and children found in document.
+ * @param {JQuery<HTMLElement>} html The document to be searched.
+ */
 export function ApplyConsequenceListeners(html) {
+    /**
+     * TIMELINES
+     * .comp.consequence-display-container:mouseenter
+     *   = fade in grey interaction buttons
+     *   ...:mouseleave = reverse
+     *
+     * .consequence-accept-button-container:mouseenter
+     *   = turn type line white, text shadow
+     *     slide out .consequence-accept-button-bg from left
+     *     turn .consequence-accept-button i black, and scale
+     *     turn .consequence-accept-button-label black, add letter spacing, bold
+     *   ...:mouseleave = reverse
+     *
+     * .consequence-resist-button-container:mouseenter
+     *   = slide in .consequence-type-bg.base-consequence to left
+     *     fade out all .base-consequence:not(.consequence-type-bg)
+     *     slide out .consequence-type.resist-consequence from left
+     *     slide out .consequence-resist-button-bg from right
+     *     slide out .consequence-footer-bg.resist-consequence from left
+     *     slide out .consequence-resist-attribute from left
+     *     slide out .consequence-name.resist-consequence from left
+     *     fade in .consequence-icon-circle.resist-consequence
+     *   ...:mouseleave = reverse
+     *   --> IF resistedTo.type === "None", blurRemove the base_consequence name and type instead of sliding them in,
+     *                                       and don't slide the resistance ones out at all.
+     * */
+    /*~ @@DOUBLE-BLANK@@ ~*/
     html
         .find(".comp.consequence-display-container")
         .each((_i, csqContainer) => {
-        const resistButton = $(csqContainer).find(".consequence-resist-button-container")[0];
-        const acceptButton = $(csqContainer).find(".consequence-accept-button-container")[0];
-        const specialArmorButton = $(csqContainer).find(".consequence-special-armor-button-container")[0];
-        const baseElems = Array.from($(csqContainer).find(".base-consequence"));
-        const resistElems = Array.from($(csqContainer).find(".resist-consequence"));
-        const specialArmorElems = Array.from($(csqContainer).find(".special-armor-consequence"));
-        if (resistButton) {
-            $(resistButton)
-                .on({
-                mouseenter: function () {
-                    $(resistButton).css("z-index", 10);
-                    U.gsap.to(resistButton, {
-                        scale: 1.25,
-                        filter: "brightness(1.25)",
-                        duration: 0.25,
-                        ease: "sine.out"
-                    });
-                    U.gsap.to(acceptButton, {
-                        scale: 0.8,
-                        filter: "greyscale(1)",
-                        duration: 0.5,
-                        ease: "sine.inOut"
-                    });
-                    U.gsap.to(specialArmorButton, {
-                        scale: 0.8,
-                        filter: "greyscale(1)",
-                        duration: 0.5,
-                        ease: "sine.inOut"
-                    });
-                    U.gsap.to(baseElems, {
-                        opacity: 0,
-                        duration: 0.5,
-                        ease: "sine.out"
-                    });
-                    U.gsap.to(resistElems, {
-                        opacity: 1,
-                        duration: 0.5,
-                        ease: "sine.out"
-                    });
-                },
-                mouseleave: function () {
-                    U.gsap.to(resistButton, {
-                        scale: 1,
-                        filter: "brightness(1)",
-                        duration: 0.25,
-                        ease: "sine.out"
-                    }).then(() => {
-                        $(resistButton).css("z-index", "");
-                    });
-                    U.gsap.to(acceptButton, {
-                        scale: 1,
-                        filter: "",
-                        duration: 0.5,
-                        ease: "sine.inOut"
-                    });
-                    U.gsap.to(specialArmorButton, {
-                        scale: 1,
-                        filter: "",
-                        duration: 0.5,
-                        ease: "sine.inOut"
-                    });
-                    U.gsap.to(baseElems, {
-                        opacity: 1,
-                        duration: 0.5,
-                        ease: "sine.out"
-                    });
-                    U.gsap.to(resistElems, {
-                        opacity: 0,
-                        duration: 0.5,
-                        ease: "sine.out"
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        const iconContainer$ = $(csqContainer).find(".consequence-icon-container");
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        const acceptInteractionPad$ = $(csqContainer).find(".accept-consequence-pad");
+        const resistInteractionPad$ = $(csqContainer).find(".resist-consequence-pad");
+        const specialArmorInteractionPad$ = $(csqContainer).find(".special-armor-consequence-pad");
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        $(csqContainer).data("hoverTimeline", U.gsap.effects.csqEnter(csqContainer));
+        $(csqContainer).on({
+            mouseenter: function () {
+                $(csqContainer).css("z-index", 10);
+                $(csqContainer).data("hoverTimeline").play();
+            },
+            mouseleave: function () {
+                if (!(iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) || iconContainer$.data("isTogglingOff")) {
+                    $(csqContainer).data("hoverTimeline").reverse().then(() => {
+                        $(csqContainer).css("z-index", "");
                     });
                 }
-            });
-        }
-        if (acceptButton) {
-            $(acceptButton)
-                .on({
-                mouseenter: function () {
-                    $(acceptButton).css("z-index", 10);
-                    U.gsap.to(acceptButton, {
-                        scale: 1.25,
-                        filter: "brightness(1.25)",
-                        duration: 0.25,
-                        ease: "sine.out"
-                    });
-                    U.gsap.to(baseElems, {
-                        filter: "brightness(1.25)",
-                        duration: 0.5,
-                        ease: "sine.out"
-                    });
-                },
-                mouseleave: function () {
-                    U.gsap.to(acceptButton, {
-                        scale: 1,
-                        filter: "brightness(1)",
-                        duration: 0.25,
-                        ease: "sine.out"
-                    }).then(() => {
-                        $(acceptButton).css("z-index", "");
-                    });
-                    U.gsap.to(baseElems, {
-                        filter: "brightness(1)",
-                        duration: 0.5,
-                        ease: "sine.out"
+            }
+        });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        iconContainer$.data("clickTimeline", U.gsap.effects.csqClickIcon(iconContainer$[0]));
+        iconContainer$.on({
+            click: function () {
+                if (iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) {
+                    iconContainer$.data("isTogglingOn", false);
+                    iconContainer$.data("isTogglingOff", true);
+                    iconContainer$.data("clickTimeline").reverse().then(() => {
+                        iconContainer$.data("isTogglingOff", false);
+                        iconContainer$.data("isToggled", false);
                     });
                 }
-            });
-        }
+                else {
+                    iconContainer$.data("isTogglingOn", true);
+                    iconContainer$.data("isTogglingOff", false);
+                    /*~ @@DOUBLE-BLANK@@ ~*/
+                    // Find any siblings with toggled-on iconContainers, and toggle them off
+                    Array.from($(csqContainer).siblings(".consequence-display-container"))
+                        .forEach((containerElem) => {
+                        const iContainer$ = $(containerElem).find(".consequence-icon-container");
+                        if (iContainer$?.data("isToggled") || iContainer$?.data("isTogglingOn")) {
+                            iContainer$.data("isTogglingOn", false);
+                            iContainer$.data("isTogglingOff", true);
+                            iContainer$.data("clickTimeline").reverse().then(() => {
+                                iContainer$.data("isTogglingOff", false);
+                                iContainer$.data("isToggled", false);
+                                $(containerElem).data("hoverTimeline").reverse().then(() => {
+                                    $(containerElem).css("z-index", "");
+                                });
+                            });
+                        }
+                    });
+                    iconContainer$.data("clickTimeline").play().then(() => {
+                        iconContainer$.data("isTogglingOn", false);
+                        iconContainer$.data("isToggled", true);
+                    });
+                }
+            }
+        });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        acceptInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterAccept(csqContainer));
+        acceptInteractionPad$.on({
+            mouseenter: function () {
+                if (iconContainer$.data("isToggled")) {
+                    acceptInteractionPad$.data("hoverTimeline").play();
+                }
+            },
+            mouseleave: function () {
+                acceptInteractionPad$.data("hoverTimeline").reverse();
+            }
+        });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        resistInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterResist(csqContainer));
+        resistInteractionPad$.on({
+            mouseenter: function () {
+                if (iconContainer$.data("isToggled")) {
+                    resistInteractionPad$.data("hoverTimeline").play();
+                }
+            },
+            mouseleave: function () {
+                if (iconContainer$.data("isToggled")) {
+                    resistInteractionPad$.data("hoverTimeline").reverse();
+                }
+            }
+        });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        specialArmorInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSpecialArmor(csqContainer));
+        specialArmorInteractionPad$.on({
+            mouseenter: function () {
+                if (iconContainer$.data("isToggled")) {
+                    specialArmorInteractionPad$.data("hoverTimeline").play();
+                }
+            },
+            mouseleave: function () {
+                if (iconContainer$.data("isToggled")) {
+                    specialArmorInteractionPad$.data("hoverTimeline").reverse();
+                }
+            }
+        });
+        /*~ @@DOUBLE-BLANK@@ ~*/
     });
+    /*~ @@DOUBLE-BLANK@@ ~*/
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default U.gsap;
+/*~ @@DOUBLE-BLANK@@ ~*/ 

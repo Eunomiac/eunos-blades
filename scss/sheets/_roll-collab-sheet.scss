@@ -620,9 +620,9 @@
         }
 
         &.position-controlled {
-          --final-block-text-color: var(--blades-cyan-bright);
-          --final-block-background-color: var(--blades-cyan-dark-fade);
-          --final-block-border-color: var(--blades-cyan);
+          --final-block-text-color: var(--blades-blue-bright);
+          --final-block-background-color: var(--blades-blue-dark-fade);
+          --final-block-border-color: var(--blades-blue);
         }
       }
 
@@ -640,9 +640,9 @@
         }
 
         &.effect-great {
-          --final-block-text-color: var(--blades-cyan-bright);
-          --final-block-background-color: var(--blades-cyan-dark-fade);
-          --final-block-border-color: var(--blades-cyan);
+          --final-block-text-color: var(--blades-blue-bright);
+          --final-block-background-color: var(--blades-blue-dark-fade);
+          --final-block-border-color: var(--blades-blue);
         }
 
         &.effect-extreme {
@@ -815,8 +815,8 @@
 
                 &.gm-control-effect-great,
                 &.gm-control-position-controlled {
-                  --gm-control-border: var(--blades-cyan-bright);
-                  --gm-control-background: var(--blades-cyan-dark);
+                  --gm-control-border: var(--blades-blue-bright);
+                  --gm-control-background: var(--blades-blue-dark);
                 }
 
                 &.gm-control-effect-extreme {
@@ -1079,10 +1079,10 @@
             }
 
             &.roll-type-fortune {
-              --roll-type-header-color: var(--blades-cyan-bright);
-              --roll-type-header-bg-color: var(--blades-cyan-dark);
-              --roll-type-header-underline-color: var(--blades-cyan-bright);
-              --roll-type-header-shadow-color: var(--blades-cyan-dark);
+              --roll-type-header-color: var(--blades-blue-bright);
+              --roll-type-header-bg-color: var(--blades-blue-dark);
+              --roll-type-header-underline-color: var(--blades-blue-bright);
+              --roll-type-header-shadow-color: var(--blades-blue-dark);
             }
 
             .roll-type-header {
@@ -1779,7 +1779,7 @@
               }
 
               .cyan-bright, .cyan-bright * {
-                color: var(--blades-cyan-bright) !important;
+                color: var(--blades-blue-bright) !important;
               }
 
               .tooltip.tooltip-roll-stress {

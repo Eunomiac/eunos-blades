@@ -1,40 +1,35 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
 import U from "./utilities.js";
 import C from "./constants.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
 const LOGGERCONFIG = {
     fullName: "eLogger",
     aliases: ["dbLog"],
     stackTraceExclusions: {
-        handlebars: [/scripts\/handlebars/]
+        handlebars: [/scripts\/handlebars/] // From internal Handlebars module
     }
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 const STYLES = {
     base: {
         background: C.Colors.BLACK,
-        color: C.Colors.bGOLD,
+        color: C.Colors.dGOLD,
         "font-family": "Pragmata Pro",
         padding: "0 25px",
         "margin-right": "25px"
     },
     log0: {
-        background: C.Colors.bGOLD,
+        background: C.Colors.dGOLD,
         color: C.Colors.dBLACK,
         "font-size": "16px"
     },
     log1: {
         background: C.Colors.dBLACK,
-        color: C.Colors.gGOLD,
+        color: C.Colors.bGOLD,
         "font-size": "16px"
     },
     log2: {
         background: C.Colors.dBLACK,
-        color: C.Colors.bGOLD,
+        color: C.Colors.dGOLD,
         "font-size": "16px"
     },
     log3: {
@@ -49,15 +44,15 @@ const STYLES = {
         "font-size": "10px"
     },
     display: {
-        color: C.Colors.gGOLD,
+        color: C.Colors.bGOLD,
         "font-family": "Kirsty Rg",
         "font-size": "16px",
         "margin-left": "-100px",
         padding: "0 100px"
     },
     error: {
-        color: C.Colors.gRED,
-        background: C.Colors.dRED,
+        color: C.Colors.bRED,
+        background: C.Colors.ddRED,
         "font-weight": 500
     },
     handlebars: {
@@ -74,11 +69,13 @@ const STYLES = {
         "font-family": "Pragmata Pro"
     }
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 const eLogger = (type = "base", ...content) => {
     if (!(type === "error" || CONFIG.debug.logging)) {
         return;
     }
     const lastElem = U.getLast(content);
+    /*~ @@DOUBLE-BLANK@@ ~*/
     let dbLevel = typeof lastElem === "number" && [0, 1, 2, 3, 4, 5].includes(lastElem)
         ? content.pop()
         : 3;
@@ -87,7 +84,9 @@ const eLogger = (type = "base", ...content) => {
         key = content.shift();
         type = `log${dbLevel}`;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     const [message, ...data] = content;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     if (key) {
         const blacklist = (U.getSetting("blacklist") ?? "").split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
         const whitelist = (U.getSetting("whitelist") ?? "").split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
@@ -113,6 +112,7 @@ const eLogger = (type = "base", ...content) => {
         ...STYLES.base,
         ...STYLES[type] ?? {}
     }).map(([prop, val]) => `${prop}: ${val};`).join(" ");
+    /*~ @@DOUBLE-BLANK@@ ~*/
     let logFunc;
     if (stackTrace) {
         logFunc = console.groupCollapsed;
@@ -123,6 +123,7 @@ const eLogger = (type = "base", ...content) => {
     else {
         logFunc = console.group;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     if (data.length === 0) {
         if (typeof message === "string") {
             logFunc(`%c${message}`, styleLine);
@@ -143,12 +144,17 @@ const eLogger = (type = "base", ...content) => {
         });
     }
     if (stackTrace) {
-        console.group("%cSTACK TRACE", `color: ${C.Colors.bGOLD}; font-family: "Pragmata Pro"; font-size: 12px; background: ${C.Colors.BLACK}; font-weight: bold; padding: 0 10px;`);
+        console.group("%cSTACK TRACE", `color: ${C.Colors.dGOLD}; font-family: "Pragmata Pro"; font-size: 12px; background: ${C.Colors.BLACK}; font-weight: bold; padding: 0 10px;`);
         console.log(`%c${stackTrace}`, Object.entries(STYLES.stack).map(([prop, val]) => `${prop}: ${val};`).join(" "));
         console.groupEnd();
     }
     console.groupEnd();
-        function getStackTrace(regExpFilters = []) {
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    /**
+     *
+     * @param regExpFilters
+     */
+    function getStackTrace(regExpFilters = []) {
         regExpFilters.push(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${LOGGERCONFIG.aliases.map(String).join("|")}|Object\\.(log|display|hbsLog|error))`), /^Error/);
         return ((new Error()).stack ?? "")
             .split(/\n/)
@@ -176,4 +182,6 @@ const logger = {
     error: (...content) => eLogger("error", ...content),
     hbsLog: (...content) => eLogger("handlebars", ...content)
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default logger;
+/*~ @@DOUBLE-BLANK@@ ~*/ 

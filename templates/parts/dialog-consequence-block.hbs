@@ -48,6 +48,14 @@
             }}
             {{!-- Name --}}
             <input class="shadowed consequence-name" type="text" value="{{cData.name}}" data-action="gm-update-dialog" data-flag-target="rollCollab.consequenceData.{{rollPosition}}.{{rollResult}}.{{cIndex}}.name" />
+            {{!-- Armor Toggles --}}
+            {{#if cData.canArmorA}}
+              {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
+                isToggled=cData.canArmorB
+                activeClass="fa-sharp fa-solid fa-shield"
+                inactiveClass="fa-sharp fa-solid fa-shield-halved"
+                targetFlagKey=
+              }}
           </div>
           {{!-- AI Options --}}
           <div class="flex-vertical consequence-resist-options-container">

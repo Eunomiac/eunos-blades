@@ -239,8 +239,6 @@
         {{#if consequenceData}}
         {{#with (lookup consequenceData rollPositionFinal) as |csqData|}}
         <h3 class="gold-bright">On Partial Success:</h3>
-        <br />
-        <br />
         <div class="consequence-container flex-vertical full-width">
         {{#each csqData.partial as |cData cIndex|}}
           {{eLog "Partial cData" cData}}
@@ -250,11 +248,7 @@
           {{/if}}
         {{/each}}
         </div>
-        <br />
-        <br />
         <h3 class="red-bright">On Failure:</h3>
-        <br />
-        <br />
         <div class="consequence-container flex-vertical full-width">
         {{#each csqData.fail as |cData cIndex|}}
           {{#if cData.resistedTo}}
@@ -263,8 +257,6 @@
           {{/if}}
         {{/each}}
         </div>
-        <br />
-        <br />
         {{/with}}
         {{/if}}
         {{> "systems/eunos-blades/templates/components/button-icon.hbs"
@@ -323,10 +315,9 @@
       {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
     </div>
     <div class="roll-odds-label-container">
-      <div class="input-target-cycler roll-phase-cycler" data-action="cycle-target" data-target="flags.eunos-blades.rollCollab.rollPhase" data-val-0="Collaboration" data-val-1="AwaitingResult" data-cur-val="{{rollPhase}}">
+      <div class="input-target-cycler roll-phase-cycler" data-action="gm-cycle-target" data-flag-target="rollPhase" data-vals="Collaboration|AwaitingResult" data-cur-val="{{rollPhase}}">
         {{#if (test rollPhase "==" "Collaboration")}}
           <i class="fa-duotone fa-messages"></i>
-          <span class=""
         {{else if (test rollPhase "==" "AwaitingResult")}}
           <i class="fa-duotone fa-dice"></i>
         {{/if}}

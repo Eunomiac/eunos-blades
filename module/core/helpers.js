@@ -1,15 +1,19 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
+// #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import U from "./utilities.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
 import { SVGDATA } from "./constants.js";
-
+// #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ░░░░░░░[Templates]░░░░ Preload Partials, Components & Overlay Templates ░░░░░░░ ~
+/**
+ * Define a set of template paths to pre-load
+ * Pre-loaded templates are compiled and cached for fast access when rendering
+ */
 export async function preloadHandlebarsTemplates() {
+    // Define template paths to load
     const templatePaths = [
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // General Components
         "systems/eunos-blades/templates/components/toggle-icon.hbs",
         "systems/eunos-blades/templates/components/button-icon.hbs",
         "systems/eunos-blades/templates/components/dotline.hbs",
@@ -22,18 +26,26 @@ export async function preloadHandlebarsTemplates() {
         "systems/eunos-blades/templates/components/roll-collab-opposition.hbs",
         "systems/eunos-blades/templates/components/slide-out-controls.hbs",
         "systems/eunos-blades/templates/components/consequence.hbs",
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Partials
         "systems/eunos-blades/templates/parts/tier-block.hbs",
         "systems/eunos-blades/templates/parts/turf-list.hbs",
         "systems/eunos-blades/templates/parts/cohort-block.hbs",
         "systems/eunos-blades/templates/parts/roll-opposition-creator.hbs",
         "systems/eunos-blades/templates/parts/active-effects.hbs",
         "systems/eunos-blades/templates/parts/gm-pc-summary.hbs",
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Overlays
         "systems/eunos-blades/templates/overlays/clock-overlay.hbs",
         "systems/eunos-blades/templates/overlays/clock-key.hbs"
     ];
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // Load the template parts
     return loadTemplates(templatePaths);
 }
-
+// #endregion ░░░░[Preload Templates]░░░░
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ████████ Handlebars: Handlebar Helpers Definitions ████████ ~
 const handlebarHelpers = {
     randString(param1 = 10) {
         return U.randString(param1);
@@ -152,6 +164,8 @@ const handlebarHelpers = {
         }
         return param ? 1 : 0;
     },
+    // Concat helper
+    // Usage: (concat 'first 'second')
     concat(...args) {
         let outStr = "";
         for (const arg of args) {
@@ -161,6 +175,7 @@ const handlebarHelpers = {
         }
         return outStr;
     },
+    // For loop: {{#for [from = 0, to, stepSize = 1]}}<html content, this = index>{{/for}}
     for: (...args) => {
         const options = args.pop();
         let [from, to, stepSize] = args;
@@ -203,7 +218,9 @@ const handlebarHelpers = {
         }
         eLog.hbsLog(...args, dbLevel);
     },
+    // Does the name of this turf block represent a standard 'Turf' claim?
     isTurfBlock: (name) => U.fuzzyMatch(name, "Turf"),
+    // Which other connection does this connector overlap with?
     getConnectorPartner: (index, direction) => {
         index = parseInt(`${index}`, 10);
         const partners = {
@@ -230,6 +247,7 @@ const handlebarHelpers = {
         }
         return null;
     },
+    // Is the value Turf side.
     isTurfOnEdge: (index, direction) => {
         index = parseInt(`${index}`, 10);
         const edges = {
@@ -254,9 +272,11 @@ const handlebarHelpers = {
         }
         return edges[index].includes(direction);
     },
+    // Multiboxes
     multiboxes(selected, options) {
         let html = options.fn(this);
         selected = [selected].flat(1);
+        /*~ @@DOUBLE-BLANK@@ ~*/
         selected.forEach((selectedVal) => {
             if (selectedVal !== false) {
                 const escapedValue = RegExp.escape(Handlebars.escapeExpression(String(selectedVal)));
@@ -264,27 +284,40 @@ const handlebarHelpers = {
                 html = html.replace(rgx, "$& checked=\"checked\"");
             }
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         return html;
     },
     repturf: (turfsAmount, options) => {
         let html = options.fn(this);
         let turfsAmountInt = parseInt(turfsAmount, 10);
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Can't be more than 6.
         if (turfsAmountInt > 6) {
             turfsAmountInt = 6;
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         for (let i = 13 - turfsAmountInt; i <= 12; i++) {
             const rgx = new RegExp(` value="${i}"`);
             html = html.replace(rgx, "$& disabled=\"disabled\"");
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         return html;
     }
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 handlebarHelpers.eLog1 = function (...args) { handlebarHelpers.eLog(...[1, ...args.slice(0, 7)]); };
 handlebarHelpers.eLog2 = function (...args) { handlebarHelpers.eLog(...[2, ...args.slice(0, 7)]); };
 handlebarHelpers.eLog3 = function (...args) { handlebarHelpers.eLog(...[3, ...args.slice(0, 7)]); };
 handlebarHelpers.eLog4 = function (...args) { handlebarHelpers.eLog(...[4, ...args.slice(0, 7)]); };
 handlebarHelpers.eLog5 = function (...args) { handlebarHelpers.eLog(...[5, ...args.slice(0, 7)]); };
+/*~ @@DOUBLE-BLANK@@ ~*/
 Object.assign(handlebarHelpers);
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ *
+ */
 export function registerHandlebarHelpers() {
     Object.entries(handlebarHelpers).forEach(([name, func]) => Handlebars.registerHelper(name, func));
 }
+// #endregion ▄▄▄▄▄ Handlebars ▄▄▄▄▄
+/*~ @@DOUBLE-BLANK@@ ~*/ 

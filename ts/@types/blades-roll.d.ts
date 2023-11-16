@@ -20,6 +20,7 @@ declare global {
       type?: ConsequenceType,
       typeDisplay?: string,
       icon?: string,
+      footerMsg?: string,
       isSelected: boolean // Whether GM has selected this as the resisted consequence
     }
 
@@ -35,6 +36,18 @@ declare global {
         ConsequenceResistOption // ai
       >,
       resistedTo?: ConsequenceResistOption|false,
+      canArmorA?: boolean,
+      armorToAOptions?: Record<
+        string,  // stringified index
+        ConsequenceResistOption // ai
+      >,
+      armorToA?: ConsequenceResistOption|false,
+      canArmorB?: boolean,
+      armorToBOptions?: Record<
+        string,  // stringified index
+        ConsequenceResistOption // ai
+      >,
+      armorToB?: ConsequenceResistOption|false,
       specialArmorTo?: ConsequenceResistOption
     }
 
@@ -209,7 +222,8 @@ declare global {
       |BladesActorOfType<BladesActorType.crew>
       |BladesItemOfType<BladesItemType.cohort_gang>
       |BladesItemOfType<BladesItemType.cohort_expert>
-      |BladesItemOfType<BladesItemType.gm_tracker>;
+      |BladesItemOfType<BladesItemType.gm_tracker>
+      |BladesItemOfType<BladesItemType.score>;
 
     export interface PrimaryDocData {
       rollPrimaryID?: string,

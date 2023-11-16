@@ -1,27 +1,29 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
 import C, { BladesActorType, BladesItemType, Tag, Factor } from "./core/constants.js";
 import U from "./core/utilities.js";
 import { BladesActor } from "./documents/BladesActorProxy.js";
 import { BladesRollMod } from "./BladesRoll.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesItem extends Item {
-
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region Static Overrides: Create ~
     static async create(data, options = {}) {
         if (Array.isArray(data)) {
             data = data[0];
         }
         data.system = data.system ?? {};
+        /*~ @@DOUBLE-BLANK@@ ~*/
         eLog.checkLog2("item", "BladesItem.create(data,options)", { data, options });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // ~ Create world_name
         data.system.world_name = data.system.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "").trim().replace(/ /g, "_");
+        /*~ @@DOUBLE-BLANK@@ ~*/
         return super.create(data, options);
     }
-
+    // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region BladesDocument Implementation
     static get All() { return game.items; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static Get(itemRef) {
         if (itemRef instanceof BladesItem) {
             return itemRef;
@@ -32,6 +34,7 @@ class BladesItem extends Item {
         return BladesItem.All.find((a) => a.system.world_name === itemRef)
             || BladesItem.All.find((a) => a.name === itemRef);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static GetTypeWithTags(docType, ...tags) {
         if (Array.isArray(docType)) {
             return docType
@@ -41,14 +44,18 @@ class BladesItem extends Item {
         return BladesItem.All.filter((item) => item.type === docType)
             .filter((item) => item.hasTag(...tags));
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static IsType(doc, ...types) {
         const typeSet = new Set(types);
         return doc instanceof BladesItem && typeSet.has(doc.type);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get tags() { return this.system.tags ?? []; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     hasTag(...tags) {
         return tags.every((tag) => this.tags.includes(tag));
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async addTag(...tags) {
         const curTags = this.tags;
         tags.forEach((tag) => {
@@ -59,10 +66,12 @@ class BladesItem extends Item {
         });
         await this.update({ "system.tags": curTags });
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async remTag(...tags) {
         const curTags = this.tags.filter((tag) => !tags.includes(tag));
         await this.update({ "system.tags": curTags });
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get tooltip() {
         const tooltipText = [
             this.system.concept,
@@ -74,7 +83,9 @@ class BladesItem extends Item {
         }
         return undefined;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     dialogCSSClasses = "";
+    /*~ @@DOUBLE-BLANK@@ ~*/
     getFactorTotal(factor) {
         switch (factor) {
             case Factor.tier: {
@@ -128,17 +139,23 @@ class BladesItem extends Item {
             default: return 0;
         }
     }
-    
+    // #endregion
+    // #region BladesItemDocument Implementation
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async archive() {
         await this.addTag(Tag.System.Archived);
         return this;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async unarchive() {
         await this.remTag(Tag.System.Archived);
         return this;
     }
-    
-    
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region BladesRoll Implementation
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollFactors() {
         const factorsMap = {
             [BladesItemType.cohort_gang]: [Factor.quality, Factor.scale],
@@ -151,7 +168,9 @@ class BladesItem extends Item {
         if (!factorsMap[this.type]) {
             return {};
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const factors = factorsMap[this.type];
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const factorData = {};
         (factors ?? []).forEach((factor, i) => {
             const factorTotal = this.getFactorTotal(factor);
@@ -168,34 +187,63 @@ class BladesItem extends Item {
                 cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`
             };
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         return factorData;
     }
-
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region BladesRoll.PrimaryDoc Implementation
     get rollPrimaryID() { return this.id; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollPrimaryDoc() { return this; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollPrimaryName() { return this.name; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollPrimaryType() { return this.type; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollPrimaryImg() { return this.img; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollModsData() {
-        
+        // Const rollModData = BladesRollMod.ParseDocRollMods(this);
+        // Add roll mods from COHORT harm
+        /*~ @@DOUBLE-BLANK@@ ~*/
         return BladesRollMod.ParseDocRollMods(this);
     }
-    
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region BladesRoll.OppositionDoc Implementation
     get rollOppID() { return this.id; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollOppDoc() { return this; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollOppImg() { return this.img; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollOppName() { return this.name; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollOppSubName() { return ""; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollOppType() { return this.type; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollOppModsData() { return []; }
-
+    // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region BladesRoll.ParticipantDoc Implementation
     get rollParticipantID() { return this.id; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollParticipantDoc() { return this; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollParticipantIcon() { return this.img; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollParticipantName() { return this.name; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollParticipantType() { return this.type; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollParticipantModsData() { return []; }
-    
+    // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region PREPARING DERIVED DATA
     prepareDerivedData() {
         super.prepareDerivedData();
         if (BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
@@ -211,11 +259,14 @@ class BladesItem extends Item {
             this._preparePlaybookData(this.system);
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _prepareCohortData(system) {
         if (!BladesItem.IsType(this, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
             return;
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         system.tier.name = "Quality";
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const subtypes = U.unique(Object.values(system.subtypes)
             .map((subtype) => subtype.trim())
             .filter((subtype) => /[A-Za-z]/.test(subtype)));
@@ -227,6 +278,7 @@ class BladesItem extends Item {
         ]
             .map((subtype) => subtype.trim())
             .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
+        /*~ @@DOUBLE-BLANK@@ ~*/
         system.subtypes = Object.fromEntries(subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
         system.elite_subtypes = Object.fromEntries(eliteSubtypes.map((subtype, i) => [`${i + 1}`, subtype]));
         system.edges = Object.fromEntries(Object.values(system.edges ?? [])
@@ -235,7 +287,9 @@ class BladesItem extends Item {
         system.flaws = Object.fromEntries(Object.values(system.flaws ?? [])
             .filter((flaw) => /[A-Za-z]/.test(flaw))
             .map((flaw, i) => [`${i + 1}`, flaw.trim()]));
+        /*~ @@DOUBLE-BLANK@@ ~*/
         system.quality = this.getFactorTotal(Factor.quality);
+        /*~ @@DOUBLE-BLANK@@ ~*/
         if (BladesItem.IsType(this, BladesItemType.cohort_gang)) {
             if ([...subtypes, ...eliteSubtypes].includes(Tag.GangType.Vehicle)) {
                 system.scale = this.getFactorTotal(Factor.scale);
@@ -256,6 +310,7 @@ class BladesItem extends Item {
             system.scaleExample = [...subtypes, ...eliteSubtypes].includes("Pet") ? "(1 animal)" : "(1 person)";
             system.subtitle = "An Expert";
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         if (subtypes.length + eliteSubtypes.length > 0) {
             if ([...subtypes, ...eliteSubtypes].includes(Tag.GangType.Vehicle)) {
                 system.subtitle = C.VehicleDescriptors[Math.min(6, this.getFactorTotal(Factor.tier))];
@@ -268,12 +323,14 @@ class BladesItem extends Item {
             }
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _prepareGearData(system) {
         if (!BladesItem.IsType(this, BladesItemType.gear)) {
             return;
         }
         system.tier.name = "Quality";
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _preparePlaybookData(system) {
         if (!BladesItem.IsType(this, BladesItemType.playbook, BladesItemType.crew_playbook)) {
             return;
@@ -282,12 +339,16 @@ class BladesItem extends Item {
         [...Object.values(system.experience_clues).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
         system.experience_clues = expClueData;
         eLog.checkLog3("experienceClues", { expClueData });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         if (BladesItem.IsType(this, BladesItemType.playbook)) {
             const gatherInfoData = {};
             [...Object.values(system.gather_info_questions).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
             system.gather_info_questions = gatherInfoData;
             eLog.checkLog3("gatherInfoQuestions", { gatherInfoData });
+            /*~ @@DOUBLE-BLANK@@ ~*/
         }
     }
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesItem;
+/*~ @@DOUBLE-BLANK@@ ~*/ 

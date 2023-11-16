@@ -1,24 +1,25 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
 import C, { AttributeTrait, Harm, BladesActorType, BladesItemType, Tag, RollModSection, RollModStatus } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import { BladesActor } from "../BladesActorProxy.js";
 import { BladesItem } from "../BladesItemProxy.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesPC extends BladesActor {
-
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region Static Overrides: Create ~
     static IsType(doc) {
         return super.IsType(doc, BladesActorType.pc);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static async create(data, options = {}) {
         data.token = data.token || {};
         data.system = data.system ?? {};
+        /*~ @@DOUBLE-BLANK@@ ~*/
         eLog.checkLog2("actor", "BladesPC.create(data,options)", { data, options });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // ~ Set the Token to sync with charsheet.
         data.token.actorLink = true;
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // ~ Initialize generic experience clues.
         data.system.experience = {
             playbook: { value: 0, max: 8 },
             insight: { value: 0, max: 6 },
@@ -29,10 +30,13 @@ class BladesPC extends BladesActor {
         };
         return super.create(data, options);
     }
-
+    // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region BladesPrimaryActor Implementation ~
     get primaryUser() {
         return game.users?.find((user) => user.character?.id === this?.id) || null;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async clearLoadout() {
         await this.update({ "system.loadout.selected": "" });
         this.updateEmbeddedDocuments("Item", [
@@ -53,6 +57,8 @@ class BladesPC extends BladesActor {
             }))
         ]);
     }
+    // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
     getSubActor(actorRef) {
         const actor = super.getSubActor(actorRef);
         if (!actor) {
@@ -63,6 +69,7 @@ class BladesPC extends BladesActor {
         }
         return actor;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get armorStatus() {
         const armorData = {};
         if (this.system.armor.active.special) {
@@ -95,17 +102,23 @@ class BladesPC extends BladesActor {
         }
         return armorData;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region BladesScoundrel Implementation ~
+    /*~ @@DOUBLE-BLANK@@ ~*/
     isMember(crew) { return this.crew?.id === crew.id; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get vice() {
         if (this.type !== BladesActorType.pc) {
             return undefined;
         }
         return this.activeSubItems.find((item) => item.type === BladesItemType.vice);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get crew() {
         return this.activeSubActors
             .find((subActor) => BladesActor.IsType(subActor, BladesActorType.crew));
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get abilities() {
         if (!this.playbook) {
             return [];
@@ -113,13 +126,16 @@ class BladesPC extends BladesActor {
         return this.activeSubItems
             .filter((item) => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get playbookName() {
         return this.playbook?.name;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get playbook() {
         return this.activeSubItems
             .find((item) => item.type === BladesItemType.playbook);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get attributes() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return undefined;
@@ -136,6 +152,7 @@ class BladesPC extends BladesActor {
                 + this.system.resistance_bonus.resolve
         };
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get actions() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return undefined;
@@ -146,6 +163,7 @@ class BladesPC extends BladesActor {
             ...this.system.attributes.resolve
         }, ({ value, max }) => U.gsap.utils.clamp(0, max, value));
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollable() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return undefined;
@@ -155,28 +173,35 @@ class BladesPC extends BladesActor {
             ...this.actions
         };
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get trauma() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return 0;
         }
         return Object.keys(this.system.trauma.checked)
             .filter((traumaName) => 
+        // @ts-ignore Compiler linter mismatch.
         this.system.trauma.active[traumaName] && this.system.trauma.checked[traumaName])
             .length;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get traumaList() {
+        // @ts-ignore Compiler linter mismatch.
         return BladesActor.IsType(this, BladesActorType.pc)
             ? Object.keys(this.system.trauma.active).filter((key) => this.system.trauma.active[key])
             : [];
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get activeTraumaConditions() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return {};
         }
         return U.objFilter(this.system.trauma.checked, 
+        // @ts-ignore Compiler linter mismatch.
         (_v, traumaName) => Boolean(traumaName in this.system.trauma.active
             && this.system.trauma.active[traumaName]));
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get currentLoad() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return 0;
@@ -184,6 +209,7 @@ class BladesPC extends BladesActor {
         const activeLoadItems = this.activeSubItems.filter((item) => item.type === BladesItemType.gear);
         return U.gsap.utils.clamp(0, 10, activeLoadItems.reduce((tot, i) => tot + U.pInt(i.system.load), 0));
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get remainingLoad() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return 0;
@@ -195,15 +221,21 @@ class BladesPC extends BladesActor {
             .toLowerCase()];
         return Math.max(0, maxLoad - this.currentLoad);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async addStash(amount) {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return;
         }
         await this.update({ "system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max) });
     }
-
+    // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region BladesRoll.PrimaryDoc Implementation
     get rollModsData() {
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const rollModsData = super.rollModsData;
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Add roll mods from harm
         [
             [/1d/, RollModSection.roll],
             [/Less Effect/, RollModSection.effect]
@@ -250,17 +282,28 @@ class BladesPC extends BladesActor {
                 ].join("")
             });
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         return rollModsData;
     }
-    
-    
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region BladesRoll.ParticipantDoc Implementation
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollParticipantID() { return this.id; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollParticipantDoc() { return this; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollParticipantIcon() { return this.playbook?.img ?? this.img; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollParticipantName() { return this.name ?? ""; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollParticipantType() { return this.type; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollParticipantModsData() { return []; }
-    
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollTraitPCTooltipActions() {
         const tooltipStrings = ["<table><tbody>"];
         const actionRatings = this.actions;
@@ -278,6 +321,7 @@ class BladesPC extends BladesActor {
         tooltipStrings.push("</tbody></table>");
         return tooltipStrings.join("");
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollTraitPCTooltipAttributes() {
         const tooltipStrings = ["<table><tbody>"];
         const attributeRatings = this.attributes;
@@ -294,4 +338,6 @@ class BladesPC extends BladesActor {
         return tooltipStrings.join("");
     }
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesPC;
+/*~ @@DOUBLE-BLANK@@ ~*/ 

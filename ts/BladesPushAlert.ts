@@ -1,4 +1,5 @@
 import U from "./core/utilities";
+import C from "./core/constants";
 
 export default class BladesPushAlert {
 
@@ -75,8 +76,8 @@ export default class BladesPushAlert {
     U.gsap.from(
       pushElem$[0],
       {
-        background: "rgb(255, 231, 92)",
-        borderColor: "rgb(255, 255, 255)",
+        background: C.Colors.bGOLD,
+        borderColor: C.Colors.WHITE,
         duration: 10,
         ease: "power2"
       }

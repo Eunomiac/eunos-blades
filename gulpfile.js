@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 /* eslint-disable @typescript-eslint/no-var-requires,  */
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 const argv = require("yargs").argv;
@@ -80,15 +81,15 @@ const ANSICOLORS = {
   invert: "\u001b[7m"
 };
 const STREAMSTYLES = {
-  gulp: ["grey", "█", "(gulp)"],
-  initWhiteSpace: ["bred", "█", "(staging)"],
-  tsInit: ["blue", "░", " TS "],
-  jsFull: ["bmagenta", "█", " JS "],
-  jsMin: ["magenta", "░", " js "],
-  cssFull: ["byellow", "█", " SCSS "],
-  cssMin: ["yellow", "░", " scss "],
-  hbs: ["bblue", "█", " HBS "],
-  toDest: ["bgreen", "█", " ASSETS "]
+  gulp: ["grey", "-", "(gulp)"],
+  initWhiteSpace: ["bred", "=", "(staging)"],
+  tsInit: ["blue", "T", " TS "],
+  jsFull: ["bmagenta", "J", " JS "],
+  jsMin: ["magenta", "J", " js "],
+  cssFull: ["byellow", "C", " SCSS "],
+  cssMin: ["yellow", "C", " scss "],
+  hbs: ["bblue", "<", " HBS "],
+  toDest: ["bgreen", "$", " ASSETS "]
 };
 const ansi = (str, {fg, bg, style} = {}) => {
   fg = ANSICOLORS[fg ?? "white"];
@@ -99,7 +100,7 @@ const ansi = (str, {fg, bg, style} = {}) => {
 const toBright = (color) => (`b${color}` in ANSICOLORS ? `b${color}` : color);
 const toDim = (color) => (color.slice(1) in ANSICOLORS ? color.slice(1) : color);
 const logParts = {
-  tag: (tag = "gulp", color = "white", padChar = "█") => ansi(`▌${centerString(tag, 10, padChar)}▐`, {fg: color}),
+  tag: (tag = "gulp", color = "white", padChar = " ") => ansi(` ${centerString(tag, 10, padChar)} `, {fg: color}),
   error: (tag, message) => [ansi(`[ERROR: ${tag}]`, {fg: "white", bg: "red", style: "bold"}), ansi(message, {fg: "red"})].join(" "),
   finish: function(title, source, destination) {
     title ??= "gulp";
@@ -226,7 +227,22 @@ const BANNERTEMPLATE = {
 
 let BUILDFILES = {};
 
-if (ISCOMPILINGCODE) {
+if (ISRAPIDGULPING) {
+  BUILDFILES = {
+    ts: {
+      "./module/": ["ts/**/*.*"]
+    },
+    css: {
+      "./css/": ["scss/**/*.scss"]
+    },
+    hbs: {
+      "./templates/": ["DISABLE"]
+    },
+    quickAssets: {
+      "./css/": ["scss/**/*.css"]
+    }
+  };
+} else if (ISCOMPILINGCODE) {
   BUILDFILES = {
     ts: {
       "./module_staging_1/": ["ts/**/*.*"]
@@ -301,12 +317,14 @@ const REGEXPPATTERNS = {
   init: new Map([
     [/^\s+$/gm, "/*~ @@DOUBLE-BLANK@@ ~*/"] // Replace double-blank lines with token for later retrieval
   ]),
-  ts: new Map([[/from "gsap\/all"/gu, 'from "/scripts/greensock/esm/all.js"']]),
+  ts: new Map([
+    [/from "gsap\/all"/gu, 'from "/scripts/greensock/esm/all.js"'],
+    [/from ['"](.+?)(\.ts|\.js)?['"]/g, "from \"$1.js\""] // Fix imports to include .js suffix
+  ]),
   js: new Map([
     ISDEPLOYING || ISBUILDINGDIST
       ? [/(\r\n)?\s*?(\/\*DEVCODE\*\/.*?\/\*!DEVCODE\*\/)\s*?(\r\n)?/gms, ""]
       : [/`/, "`"], // Strip developer code
-    [/from ['"](.+?)(\.ts|\.js)?['"]/g, "from \"$1.js\""], // Fix imports to include .js suffix
     [
       (/\/\*~\s*\*{4}▌.*?▐\*{4}\s*\*\//s, padHeaderLines)
     ], // Pad header lines to same length
@@ -376,7 +394,7 @@ const PIPES = {
 // #endregion ___ PIPES ___
 
 const PLUMBING = {
-  analyzeJS: async function(done) {
+  analyzeJS: async function analyzeJS(done) {
     if (!ISANALYZING) { return done(); }
     try {
       const analysisData = analyzeProject("./");
@@ -421,16 +439,19 @@ const PLUMBING = {
     }
     return done();
   },
-  initDest: async function(done, destGlobs = ["./dist/", "./module/", "./module_staging_1", "./module_staging_2", "./css/"]) {
+  initDest: async function initDest(done, destGlobs = ["./dist/", "./module/", "./module_staging_1", "./module_staging_2", "./css/"]) {
     destGlobs.forEach((d) => { try { fs.rmSync(d); } catch{ } });
     return done();
   },
-  watch: function() {
+  watch: function watchFunc() {
+    console.log("\n\n==== BUILDFILES ====\n\n");
+    console.log(JSON.stringify(BUILDFILES, null, 2));
+    console.log("\n\n--------------------\n\n");
     for (const [type, globs] of Object.entries(BUILDFILES)) {
       Object.values(globs ?? {}).forEach((glob) => watch(glob, BUILDFUNCS[type]));
     }
   },
-  tsInit: (source, destination) => function() {
+  tsInit: (source, destination) => function tsInit() {
     const tsStream = src(source, {allowEmpty: true})
       // .pipe(sourcemaps.init())
       .pipe(PIPES.openPipe("tsInit")())
@@ -448,18 +469,18 @@ const PLUMBING = {
     }
     return tsStream
       .pipe(PIPES.replacer("ts")())
-      .pipe(PIPES.replacer("js")())
+      // .pipe(PIPES.replacer("js")())
       // .pipe(sourcemaps.write("."))
       .pipe(PIPES.closePipe("tsInit", source, destination));
   },
-  jsFull: (source, destination) => function() {
+  jsFull: (source, destination) => function jsFull() {
     return src(source, {allowEmpty: true})
       .pipe(PIPES.openPipe("jsFull")())
       .pipe(header(BANNERS.js.full, {package: packageJSON}))
       .pipe(PIPES.replacer("js")())
       .pipe(PIPES.closePipe("jsFull", source, destination));
   },
-  jsMin: (source, destination) => function() {
+  jsMin: (source, destination) => function jsMin() {
     return src(source, {allowEmpty: true})
       .pipe(PIPES.openPipe("jsMin")())
       .pipe(header(BANNERS.js.min, {package: packageJSON}))
@@ -468,7 +489,7 @@ const PLUMBING = {
       .pipe(PIPES.terser()())
       .pipe(PIPES.closePipe("jsMin", source, destination));
   },
-  cssFull: (source, destination) => function() {
+  cssFull: (source, destination) => function cssFull() {
     if (ISRAPIDGULPING) {
       return src(source, {allowEmpty: true})
         .pipe(PIPES.openPipe("cssFull")())
@@ -485,7 +506,7 @@ const PLUMBING = {
         .pipe(PIPES.closePipe("cssFull", source, destination));
     }
   },
-  cssMin: (source, destination) => function() {
+  cssMin: (source, destination) => function cssMin() {
     return src(source, {allowEmpty: true})
       .pipe(PIPES.openPipe("cssMin")())
       .pipe(sasser({outputStyle: "compressed"}))
@@ -497,12 +518,12 @@ const PLUMBING = {
       .pipe(renamer({suffix: ".min"}))
       .pipe(PIPES.closePipe("cssMin", source, destination));
   },
-  hbs: (source, destination) => function() {
+  hbs: (source, destination) => function hbs() {
     return src(source, {allowEmpty: true})
       .pipe(PIPES.openPipe("hbs")())
       .pipe(PIPES.closePipe("hbs", source, destination));
   },
-  toDest: (source, destination) => function() {
+  toDest: (source, destination) => function toDest() {
     return src(source, {allowEmpty: true})
       .pipe(PIPES.openPipe("toDest")())
       .pipe(PIPES.closePipe("toDest", source, destination));
@@ -536,34 +557,36 @@ if (ISCOMPILINGCODE) {
     })(BUILDFILES.ts));
   // );
 
-  const jsBuildFuncs = [
-    parallel(...((buildFiles) => {
-      const funcs = [];
-      for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
-        sourceGlobs.forEach((sourceGlob) => {
-          funcs.push(PLUMBING.jsFull(sourceGlob, destGlob));
-        });
-      }
-      return funcs;
-    })(BUILDFILES.js))
-  ];
+  if (!ISRAPIDGULPING) {
+    const jsBuildFuncs = [
+      parallel(...((buildFiles) => {
+        const funcs = [];
+        for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
+          sourceGlobs.forEach((sourceGlob) => {
+            funcs.push(PLUMBING.jsFull(sourceGlob, destGlob));
+          });
+        }
+        return funcs;
+      })(BUILDFILES.js))
+    ];
 
-  if (ISMINIFYINGJS) {
-    jsBuildFuncs.push(parallel(...((buildFiles) => {
-      const funcs = [];
-      for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
-        sourceGlobs.forEach((sourceGlob) => {
-          funcs.push(PLUMBING.jsMin(sourceGlob, destGlob));
-        });
-      }
-      return funcs;
-    })(BUILDFILES.js_2)));
+    if (ISMINIFYINGJS) {
+      jsBuildFuncs.push(parallel(...((buildFiles) => {
+        const funcs = [];
+        for (const [destGlob, sourceGlobs] of Object.entries(buildFiles)) {
+          sourceGlobs.forEach((sourceGlob) => {
+            funcs.push(PLUMBING.jsMin(sourceGlob, destGlob));
+          });
+        }
+        return funcs;
+      })(BUILDFILES.js_2)));
+    }
+
+    BUILDFUNCS.js = series(
+      ...jsBuildFuncs,
+      PLUMBING.analyzeJS
+    );
   }
-
-  BUILDFUNCS.js = series(
-    ...jsBuildFuncs,
-    PLUMBING.analyzeJS
-  );
 }
 // #endregion ▄▄▄▄▄ JS ▄▄▄▄▄
 
@@ -617,8 +640,12 @@ if (ISCOMPILINGCODE) {
     return funcs;
   };
 
-  BUILDFUNCS.quickAssets = parallel(...assetPipe(BUILDFILES.quickAssets));
-  BUILDFUNCS.slowAssets = parallel(...assetPipe(BUILDFILES.slowAssets));
+  if (BUILDFILES.quickAssets) {
+    BUILDFUNCS.quickAssets = parallel(...assetPipe(BUILDFILES.quickAssets));
+  }
+  if (BUILDFILES.slowAssets) {
+    BUILDFUNCS.slowAssets = parallel(...assetPipe(BUILDFILES.slowAssets));
+  }
 }
 // #endregion ▄▄▄▄▄ ASSETS ▄▄▄▄▄
 
@@ -633,7 +660,6 @@ const parallelFuncs = [
   ...Object.values(parallelBuildFuncs)
 ].filter((pFunc) => pFunc !== undefined);
 // Const parallelFuncs = parallelBuildFuncs((pFunc) => pFunc !== undefined);
-
 
 exports.default = series(
   PLUMBING.initDest,

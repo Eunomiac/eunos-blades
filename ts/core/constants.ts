@@ -504,30 +504,50 @@ const C = {
     [ConsequenceType.ResolveHarm4]: "spikes|eyeball|iris",
     [ConsequenceType.None]: ""
   },
+  RollResultDescriptions: {
+    [Position.controlled]: {
+      [RollResult.critical]: "You critically succeed from a controlled position!",
+      [RollResult.success]: "You fully succeed from a controlled position!",
+      [RollResult.partial]: "You partially succeed from a controlled position!",
+      [RollResult.fail]: "You fail from a controlled position!"
+    },
+    [Position.risky]: {
+      [RollResult.critical]: "You critically succeed from a risky position!",
+      [RollResult.success]: "You fully succeed from a risky position!",
+      [RollResult.partial]: "You partially succeed from a risky position!",
+      [RollResult.fail]: "You fail from a risky position!"
+    },
+    [Position.desperate]: {
+      [RollResult.critical]: "You critically succeed from a desperate position!",
+      [RollResult.success]: "You fully succeed from a desperate position!",
+      [RollResult.partial]: "You partially succeed from a desperate position!",
+      [RollResult.fail]: "You fail from a desperate position!"
+    }
+  },
   //
   Colors: {
     bWHITE: "rgba(255, 255, 255, 1)",
     WHITE: "rgba(200, 200, 200, 1)",
     bGREY: "rgba(170, 170, 170, 1)",
-    GREY: "rgba(128, 128, 128, 1)",
-    dGREY: "rgba(78, 78, 78, 1)",
-    BLACK: "rgba(16, 16, 16, 1)",
+    GREY: "rgba(119, 119, 119, 1)",
+    dGREY: "rgba(68, 68, 68, 1)",
+    BLACK: "rgba(32, 32, 32, 1)",
     dBLACK: "rgba(0, 0, 0, 1)",
 
-    gGOLD: "rgba(255, 254, 200, 1)",
-    bGOLD: "rgba(171, 146, 84, 1)",
-    GOLD: "rgba(253, 212, 112, 1)",
-    dGOLD: "rgba(65, 61, 46, 1)",
+    bGOLD: "rgba(255,216, 44, 1)",
+    GOLD: "rgba(215,175,  0, 1)",
+    dGOLD: "rgba(165,134,  0, 1)",
+    ddGOLD: "rgba(103, 83,  0, 1)",
 
-    RED: "rgba(155, 32, 32, 1)",
-    dRED: "rgba(70, 14, 14, 1)",
-    bRED: "rgba(240, 50, 50, 1)",
-    gRED: "rgba(255, 0, 0, 1)",
+    bRED: "rgba(255, 0, 0, 1)",
+    RED: "rgba(200, 0, 0, 1)",
+    dRED: "rgba(150,  0,  0, 1)",
+    ddRED: "rgba(50,  0,  0, 1)",
 
-    BLUE: "rgba(43, 85, 139, 1)",
-    dBLUE: "rgba(17, 33, 54, 1)",
-    bBLUE: "rgba(69, 137, 224, 1)",
-    gBLUE: "rgba(128, 185, 255, 1)"
+    bBLUE: "rgba(   0,224,224, 1)",
+    BLUE: "rgba(52,213,213, 1)",
+    dBLUE: "rgba(0,118,118, 1)",
+    ddBLUE: "rgba(0, 77, 77, 1)"
   },
   Loadout: {
     selections: [

@@ -1,16 +1,12 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
+/*~ @@DOUBLE-BLANK@@ ~*/
 import C, { BladesActorType, BladesItemType, AttributeTrait, Tag, BladesPhase } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesActorSheet from "./BladesActorSheet.js";
 import { BladesActor } from "../../documents/BladesActorProxy.js";
 import BladesGMTrackerSheet from "../item/BladesGMTrackerSheet.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesPCSheet extends BladesActorSheet {
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "actor", "pc"],
@@ -20,15 +16,19 @@ class BladesPCSheet extends BladesActorSheet {
             tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "abilities" }]
         });
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static Initialize() {
         Actors.registerSheet("blades", BladesPCSheet, { types: ["pc"], makeDefault: true });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         Hooks.on("dropActorSheetData", async (parentActor, _, { uuid }) => {
             const doc = await fromUuid(uuid);
             if (doc instanceof BladesActor) {
                 if (parentActor.type === BladesActorType.crew && doc.type === BladesActorType.pc) {
+                    // Dropping a PC onto a Crew Sheet: Add Crew to PC
                     doc.addSubActor(parentActor);
                 }
                 else if (parentActor.type === BladesActorType.pc && doc.type === BladesActorType.crew) {
+                    // Dropping a Crew onto a PC Sheet: Add
                     parentActor.addSubActor(doc);
                 }
             }
@@ -38,14 +38,20 @@ class BladesPCSheet extends BladesActorSheet {
             "systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
         ]);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     getData() {
         const context = super.getData();
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const { activeSubItems, activeSubActors } = this.actor;
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const sheetData = {};
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // ~ Assemble embedded actors and items
         sheetData.preparedItems = Object.assign(context.preparedItems ?? {}, {
             abilities: activeSubItems
                 .filter((item) => item.type === BladesItemType.ability)
                 .map((item) => {
+                // ~ Assign dotlines to abilities with usage data
                 if (item.system.uses_per_score.max) {
                     Object.assign(item, {
                         inRuleDotline: {
@@ -67,6 +73,7 @@ class BladesPCSheet extends BladesActorSheet {
             loadout: activeSubItems
                 .filter((item) => item.type === BladesItemType.gear)
                 .map((item) => {
+                // Assign load and usage data to gear
                 if (item.system.load) {
                     Object.assign(item, {
                         numberCircle: item.system.load,
@@ -90,6 +97,7 @@ class BladesPCSheet extends BladesActorSheet {
             }),
             playbook: this.actor.playbook
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.preparedActors = {
             crew: activeSubActors
                 .find((actor) => actor.type === BladesActorType.crew),
@@ -98,8 +106,10 @@ class BladesPCSheet extends BladesActorSheet {
             acquaintances: activeSubActors
                 .filter((actor) => actor.hasTag(Tag.NPC.Acquaintance))
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.hasVicePurveyor = Boolean(this.actor.playbook?.hasTag(Tag.Gear.Advanced) === false
             && activeSubItems.find((item) => item.type === BladesItemType.vice));
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.healing_clock = {
             display: "Healing",
             target: "system.healing.value",
@@ -110,6 +120,7 @@ class BladesPCSheet extends BladesActorSheet {
             ...this.actor.system.healing,
             id: randomID()
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.stashData = {
             label: "Stash:",
             dotline: {
@@ -124,6 +135,7 @@ class BladesPCSheet extends BladesActorSheet {
                 altIconStep: 10
             }
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.stressData = {
             label: this.actor.system.stress.name,
             dotline: {
@@ -135,6 +147,7 @@ class BladesPCSheet extends BladesActorSheet {
                 svgEmpty: "full|half|frame"
             }
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         if (BladesActor.IsType(this.actor, BladesActorType.pc)) {
             sheetData.traumaData = {
                 label: this.actor.system.trauma.name,
@@ -176,6 +189,7 @@ class BladesPCSheet extends BladesActorSheet {
                 }
             };
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.abilityData = {
             dotline: {
                 dotlineClass: "dotline-right dotline-glow",
@@ -188,18 +202,21 @@ class BladesPCSheet extends BladesActorSheet {
                 iconFull: "dot-full.svg"
             }
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.loadData = {
             curLoad: this.actor.currentLoad,
             selLoadCount: this.actor.system.loadout.levels[U.lCase(this.actor.system.loadout.selected)],
             options: C.Loadout.selections,
             selected: this.actor.system.loadout.selected ?? ""
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.armor = Object.fromEntries(Object.entries(this.actor.system.armor.active)
             .filter(([, isActive]) => isActive)
             .map(([armor]) => [
             armor,
             this.actor.system.armor.checked[armor]
         ]));
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.attributeData = {};
         const attrEntries = Object.entries(this.actor.system.attributes);
         for (const [attribute, attrData] of attrEntries) {
@@ -218,27 +235,35 @@ class BladesPCSheet extends BladesActorSheet {
                 };
             }
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.gatherInfoTooltip = (new Handlebars.SafeString([
             "<h2>Gathering Information: Questions to Consider</h2>",
             "<ul>",
             ...Object.values(this.actor.system.gather_info ?? []).map((line) => `<li>${line}</li>`) ?? [],
             "</ul>"
         ].join(""))).toString();
+        /*~ @@DOUBLE-BLANK@@ ~*/
         eLog.checkLog("Attribute", "[BladesPCSheet] attributeData", { attributeData: sheetData.attributeData });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         eLog.checkLog("actor", "[BladesPCSheet] getData()", { ...context, ...sheetData });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         return { ...context, ...sheetData };
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get activeArmor() {
         return Object.keys(U.objFilter(this.actor.system.armor.active, (val) => val === true));
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get checkedArmor() {
         return Object.keys(U.objFilter(this.actor.system.armor.checked, (val, key) => val === true
             && this.actor.system.armor.active[key] === true));
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get uncheckedArmor() {
         return Object.keys(U.objFilter(this.actor.system.armor.active, (val, key) => val === true
             && this.actor.system.armor.checked[key] === false));
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _getHoverArmor() {
         if (!this.activeArmor.length) {
             return false;
@@ -251,6 +276,7 @@ class BladesPCSheet extends BladesActorSheet {
         }
         return "special";
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _getClickArmor() {
         if (!this.uncheckedArmor.length) {
             return false;
@@ -263,6 +289,7 @@ class BladesPCSheet extends BladesActorSheet {
         }
         return "special";
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _getContextMenuArmor() {
         if (!this.checkedArmor.length) {
             return false;
@@ -275,6 +302,7 @@ class BladesPCSheet extends BladesActorSheet {
         }
         return "special";
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async _onAdvanceClick(event) {
         event.preventDefault();
         super._onAdvanceClick(event);
@@ -283,12 +311,19 @@ class BladesPCSheet extends BladesActorSheet {
             await this.actor.advanceAttribute(action);
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     activateListeners(html) {
+        /*~ @@DOUBLE-BLANK@@ ~*/
         super.activateListeners(html);
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // ~ Everything below here is only needed if the sheet is editable
         if (!this.options.editable) {
             return;
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const self = this;
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // ~ Armor Control
         html.find(".main-armor-control").on({
             click() {
                 const targetArmor = self._getClickArmor();
@@ -346,6 +381,9 @@ class BladesPCSheet extends BladesActorSheet {
                 $(this).siblings(".svg-armor.armor-special").removeClass("hover-over");
             }
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
     }
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesPCSheet;
+/*~ @@DOUBLE-BLANK@@ ~*/ 

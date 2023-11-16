@@ -1,14 +1,10 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
+/*~ @@DOUBLE-BLANK@@ ~*/
 import BladesActor from "../../BladesActor.js";
 import BladesActorSheet from "./BladesActorSheet.js";
 import { BladesActorType } from "../../core/constants.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesFactionSheet extends BladesActorSheet {
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "actor", "faction"],
@@ -18,11 +14,13 @@ class BladesFactionSheet extends BladesActorSheet {
             tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "overview" }]
         });
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     getData() {
         const context = super.getData();
         if (!BladesActor.IsType(this.actor, BladesActorType.faction)) {
             return context;
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const sheetData = {
             tierData: {
                 "class": "comp-tier comp-vertical comp-teeth",
@@ -37,15 +35,18 @@ class BladesFactionSheet extends BladesActorSheet {
                 }
             }
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         return {
             ...context,
             ...sheetData
         };
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async _onClockAddClick(event) {
         event.preventDefault();
         this.actor.addClock();
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async _onClockDeleteClick(event) {
         event.preventDefault();
         const clockID = $(event.currentTarget).data("clockId");
@@ -54,11 +55,16 @@ class BladesFactionSheet extends BladesActorSheet {
         }
         this.actor.deleteClock(clockID);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     activateListeners(html) {
         super.activateListeners(html);
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) {
             return;
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Update Inventory Item
         html.find(".item-body").on("click", (event) => {
             const element = $(event.currentTarget).parents(".item");
             const item = this.actor.items.get(element.data("itemId"));
@@ -70,6 +76,8 @@ class BladesFactionSheet extends BladesActorSheet {
         html
             .find(".comp-control.comp-delete-clock")
             .on("click", this._onClockDeleteClick.bind(this));
+        /*~ @@DOUBLE-BLANK@@ ~*/
     }
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesFactionSheet;

@@ -1,13 +1,8 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
 import BladesActorSheet from "./BladesActorSheet.js";
 import { BladesItemType } from "../../core/constants.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesCrewSheet extends BladesActorSheet {
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "actor", "crew"],
@@ -17,12 +12,16 @@ class BladesCrewSheet extends BladesActorSheet {
             tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "claims" }]
         });
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     getData() {
         const context = super.getData();
+        /*~ @@DOUBLE-BLANK@@ ~*/
         eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", { ...context });
         const { activeSubItems } = this.actor;
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const sheetData = {};
-
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        //~ Assemble embedded actors and items
         sheetData.preparedItems = Object.assign(context.preparedItems ?? {}, {
             abilities: activeSubItems.filter((item) => item.type === BladesItemType.crew_ability),
             playbook: this.actor.playbook,
@@ -30,10 +29,12 @@ class BladesCrewSheet extends BladesActorSheet {
             upgrades: activeSubItems.filter((item) => item.type === BladesItemType.crew_upgrade),
             preferredOp: activeSubItems.find((item) => item.type === BladesItemType.preferred_op)
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.preparedActors = {
             members: this.actor.members,
             contacts: this.actor.contacts
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.tierData = {
             label: "Tier",
             dotline: {
@@ -45,6 +46,7 @@ class BladesCrewSheet extends BladesActorSheet {
                 iconFullHover: "dot-full-hover.svg"
             }
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.upgradeData = {
             dotline: {
                 dotlineClass: "dotline-right",
@@ -57,6 +59,7 @@ class BladesCrewSheet extends BladesActorSheet {
                 iconFull: "dot-full.svg"
             }
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.abilityData = {
             dotline: {
                 dotlineClass: "dotline-right",
@@ -69,6 +72,7 @@ class BladesCrewSheet extends BladesActorSheet {
                 iconFull: "dot-full.svg"
             }
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.cohortData = {
             dotline: {
                 dotlineClass: "dotline-right",
@@ -81,6 +85,7 @@ class BladesCrewSheet extends BladesActorSheet {
                 iconFull: "dot-full.svg"
             }
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.repData = {
             label: "Rep",
             dotlines: [
@@ -108,6 +113,7 @@ class BladesCrewSheet extends BladesActorSheet {
                 }
             ]
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.heatData = {
             label: "Heat",
             dotline: {
@@ -118,6 +124,7 @@ class BladesCrewSheet extends BladesActorSheet {
                 svgEmpty: "full|half|frame"
             }
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         sheetData.wantedData = {
             label: "Wanted",
             dotline: {
@@ -128,23 +135,34 @@ class BladesCrewSheet extends BladesActorSheet {
                 svgEmpty: "frame"
             }
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
         eLog.checkLog("actor", "[BladesCrewSheet] return getData()", { ...context, ...sheetData });
         return { ...context, ...sheetData };
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     activateListeners(html) {
         super.activateListeners(html);
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) {
             return;
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Update Inventory Item
         html.find(".item-sheet-open").on("click", (event) => {
             const element = $(event.currentTarget).parents(".item");
             const item = this.actor.items.get(element.data("itemId"));
             item?.sheet?.render(true);
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Toggle Hold
         html.find(".hold-toggle").on("click", () => {
             this.actor.update({ "system.hold": this.actor.system.hold === "weak" ? "strong" : "weak" });
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Toggle Turf
         html.find(".turf-select").on("click", async (event) => {
+            /*~ @@DOUBLE-BLANK@@ ~*/
             const turf_id = $(event.currentTarget).data("turfId");
             const turf_current_status = $(event.currentTarget).data("turfStatus");
             this.actor.playbook?.update({ ["system.turfs." + turf_id + ".value"]: !turf_current_status })
@@ -152,4 +170,5 @@ class BladesCrewSheet extends BladesActorSheet {
         });
     }
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesCrewSheet;

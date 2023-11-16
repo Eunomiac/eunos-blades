@@ -5,6 +5,7 @@ import {BladesActor, BladesPC, BladesCrew} from "./documents/BladesActorProxy";
 import {BladesItem, BladesGMTracker} from "./documents/BladesItemProxy";
 import {ApplyTooltipListeners, ApplyConsequenceListeners} from "./core/gsap";
 import BladesDialog from "./BladesDialog";
+import BladesChat from "./BladesChat";
 // #endregion
 // #region Types & Type Checking ~
 
@@ -3139,60 +3140,7 @@ class BladesRoll extends DocumentSheet {
   }
 
   async outputRollToChat() {
-    const speaker = ChatMessage.getSpeaker();
-
-    // Const renderedHTML = await this.getChatHTML();
-    let renderedHTML = "";
-    this.rollPhase = RollPhase.AwaitingChatInput;
-
-    switch (this.rollType) {
-      case RollType.Action: {
-        renderedHTML =
-
-
-        await renderTemplate("systems/eunos-blades/templates/chat/action-roll.hbs", {
-          sourceName: this.rollPrimary.rollPrimaryName,
-          oppName: this.rollOpposition?.rollOppName,
-          type: U.lCase(this.rollType),
-          subType: U.lCase(this.rollSubType),
-          downtimeAction: U.lCase(this.rollDowntimeAction),
-          position: this.finalPosition,
-          effect: this.finalEffect,
-          result: this.rollResult,
-          trait_label: typeof this.rollTrait === "number" ? `${this.rollTrait} Dice` : U.tCase(this.rollTrait),
-          dieVals: this.dieValsHTML
-        });
-        break;
-      }
-      case RollType.Resistance: {
-        renderedHTML = await renderTemplate("systems/eunos-blades/templates/chat/resistance-roll.hbs", {
-          dieVals: this.dieValsHTML,
-          result: this.rollResult,
-          trait_label: typeof this.rollTrait === "number" ? `${this.rollTrait} Dice` : U.tCase(this.rollTrait),
-          stress: this.resistanceStressCost
-        });
-
-        break;
-      }
-      case RollType.Fortune: {
-
-        break;
-      }
-      case RollType.IndulgeVice: {
-
-        break;
-      }
-      default: throw new Error(`Unrecognized RollType: ${this.rollType}`);
-    }
-
-    const messageData = {
-      speaker,
-      content: renderedHTML,
-      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      roll: this.roll
-    };
-
-    CONFIG.ChatMessage.documentClass.create(messageData, {});
+    BladesChat.ConstructRollOutput(this);
   }
 
   async resolveRoll() {
@@ -3258,6 +3206,29 @@ class BladesRoll extends DocumentSheet {
     const value = elem$.data("value");
 
     await this.document.setFlag(C.SYSTEM_ID, target, value).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.rollID));
+  }
+
+  async _gmControlCycleTarget(event: ClickEvent) {
+    event.preventDefault();
+    if (!game.user.isGM) { return; }
+    const elem$ = $(event.currentTarget);
+    const flagTarget = elem$.data("flagTarget");
+    const curVal = elem$.data("curVal");
+    const cycleVals = elem$.data("vals")?.split(/\|/);
+    if (!cycleVals) {
+      throw new Error(`Unable to parse cycle values from data-vals = ${elem$.data("vals")}`);
+    }
+    const curValIndex = cycleVals.indexOf(curVal);
+    if (curValIndex === -1) {
+      throw new Error(`Unable to find current value '${curVal}' in cycle values '${elem$.data("vals")}'`);
+    }
+    let newValIndex = curValIndex + 1;
+    if (newValIndex >= cycleVals.length) {
+      newValIndex = 0;
+    }
+    const newVal = cycleVals[newValIndex];
+    eLog.checkLog3("gmControlCycleTarget", "gmControlCycleTarget", {flagTarget, curVal, cycleVals, curValIndex, newValIndex, newVal});
+    await this.setFlagVal(flagTarget, newVal);
   }
 
   /**
@@ -3486,6 +3457,13 @@ class BladesRoll extends DocumentSheet {
     html.find("[data-action=\"gm-set-target\"]").on({
       click: this._gmControlSetTargetToValue.bind(this),
       contextmenu: this._gmControlResetTarget.bind(this)
+    });
+    /**
+     * Handles setting values via GM number line (e.g. roll factor boosts/modifications).
+     * Handles resetting value associated with GM number line on a right-click.
+     */
+    html.find("[data-action=\"gm-cycle-target\"]").on({
+      click: this._gmControlCycleTarget.bind(this)
     });
     /**
      * Handles setting of Factor toggles: isActive, isPrimary, highFavorsPC, isDominant

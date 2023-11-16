@@ -7,22 +7,31 @@
       data-resist-name="{{resistedTo.name}}"
       data-resist-type="{{resistedTo.type}}" >
 
+  <div class="consequence-interaction-pad accept-consequence-pad"></div>
+  <div class="consequence-interaction-pad resist-consequence-pad"></div>
+  {{#if specialArmorTo}}
+    <div class="consequence-interaction-pad special-armor-consequence-pad"></div>
+  {{/if}}
+
   <div class="consequence-icon-container">
 
     <div class="consequence-icon-circle base-consequence">
       {{{compileSvg type icon}}}
     </div>
-    <div class="consequence-icon-circle resist-consequence start-invisible">
+    <div class="consequence-icon-circle accept-consequence">
+      {{{compileSvg type icon}}}
+    </div>
+    <div class="consequence-icon-circle resist-consequence">
       {{{compileSvg resistedTo.type resistedTo.icon}}}
     </div>
     {{#if specialArmorTo}}
-    <div class="consequence-icon-circle special-armor-consequence start-invisible">
+    <div class="consequence-icon-circle special-armor-consequence">
       {{{compileSvg specialArmorTo.type specialArmorTo.icon}}}
     </div>
     {{/if}}
 
-    <div class="consequence-button-container consequence-resist-button-container resist-consequence @@start-invisible">
-      <div class="consequence-button-bg consequence-resist-button-bg start-invisible"></div>
+    <div class="consequence-button-container consequence-resist-button-container resist-consequence">
+      <div class="consequence-button-bg consequence-resist-button-bg"></div>
       <label class="consequence-button-label consequence-resist-button-label">RESIST</label>
       {{> "systems/eunos-blades/templates/components/button-icon.hbs"
         blockClass="consequence-resist-button"
@@ -30,18 +39,18 @@
         action="resist-consequence"
       }}
     </div>
-    <div class="consequence-button-container consequence-accept-button-container base-consequence @@start-invisible">
-      <div class="consequence-button-bg consequence-accept-button-bg start-invisible"></div>
+    <div class="consequence-button-container consequence-accept-button-container accept-consequence">
+      <div class="consequence-button-bg consequence-accept-button-bg"></div>
       {{> "systems/eunos-blades/templates/components/button-icon.hbs"
         blockClass="consequence-accept-button"
-        buttonClass="fa-regular fa-square-check"
+        buttonClass="fa-solid fa-square-check"
         action="accept-consequence"
       }}
       <label class="consequence-button-label consequence-accept-button-label">ACCEPT</label>
     </div>
     {{#if specialArmorTo}}
-    <div class="consequence-button-container consequence-special-armor-button-container special-armor-consequence start-invisible">
-      <div class="consequence-button-bg consequence-special-armor-button-bg start-invisible"></div>
+    <div class="consequence-button-container consequence-special-armor-button-container special-armor-consequence">
+      <div class="consequence-button-bg consequence-special-armor-button-bg"></div>
       <label class="consequence-button-label consequence-special-armor-button-label">SPECIAL</label>
       {{> "systems/eunos-blades/templates/components/button-icon.hbs"
         blockClass="consequence-special-armor-button"
@@ -55,16 +64,18 @@
 
   <div class="consequence-type-container">
 
-    <div class="consequence-type-bg base-consequence"></div>
     <label class="consequence-type base-consequence">{{typeDisplay}}</label>
 
+    <div class="consequence-type-bg accept-consequence"></div>
+    <label class="consequence-type accept-consequence">{{typeDisplay}}</label>
+
     {{#unless (test resistedTo.type "==" "None")}}
-    <label class="consequence-type resist-consequence start-invisible">{{resistedTo.typeDisplay}}</label>
+    <label class="consequence-type resist-consequence">{{resistedTo.typeDisplay}}</label>
     {{/unless}}
 
     {{#if specialArmorTo}}
     {{#unless (test specialArmorTo.type "==" "None")}}
-    <label class="consequence-type special-armor-consequence start-invisible">{{specialArmorTo.typeDisplay}}</label>
+    <label class="consequence-type special-armor-consequence">{{specialArmorTo.typeDisplay}}</label>
     {{/unless}}
     {{/if}}
 
@@ -73,26 +84,27 @@
   <div class="consequence-name-container">
 
     <label class="consequence-name base-consequence">{{name}}</label>
+    <label class="consequence-name accept-consequence">{{name}}</label>
 
     {{#if (test resistedTo.type "==" "None")}}
-    <label class="consequence-name resist-consequence fully-negated start-invisible">(Fully Negated!)</label>
+    <label class="consequence-name resist-consequence fully-negated">(Fully Negated!)</label>
     {{else}}
-    <label class="consequence-name resist-consequence start-invisible">{{resistedTo.name}}</label>
+    <label class="consequence-name resist-consequence">{{resistedTo.name}}</label>
     {{/if}}
 
     {{#if specialArmorTo}}
     {{#if (test specialArmorTo.type "==" "None")}}
-    <label class="consequence-name special-armor-consequence fully-negated start-invisible">(Fully Negated!)</label>
+    <label class="consequence-name special-armor-consequence fully-negated">(Fully Negated!)</label>
     {{else}}
-    <label class="consequence-name special-armor-consequence start-invisible">{{specialArmorTo.name}}</label>
+    <label class="consequence-name special-armor-consequence">{{specialArmorTo.name}}</label>
     {{/if}}
     {{/if}}
 
   </div>
 
   <div class="consequence-footer-container">
-    <div class="consequence-footer-bg resist-consequence start-invisible"></div>
-    <label class="consequence-resist-attribute flex-horizontal resist-consequence start-invisible">
+    <div class="consequence-footer-bg resist-consequence"></div>
+    <label class="consequence-footer-message consequence-resist-attribute flex-horizontal resist-consequence">
       {{case "upper" attribute}}
       <div class="dotline locked">
       {{#for 1 attributeVal}}
@@ -102,7 +114,10 @@
     </label>
 
     {{#if specialArmorTo}}
-    <div class="consequence-footer-bg special-armor-consequence start-invisible"></div>
+    {{#if specialArmorTo.footerMsg}}
+    <div class="consequence-footer-bg special-armor-consequence"></div>
+    <label class="consequence-footer-message consequence-special-armor-message special-armor-consequence">{{specialArmorTo.footerMsg}}</label>
+    {{/if}}
     {{/if}}
   </div>
 

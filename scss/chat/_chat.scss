@@ -1,51 +1,142 @@
 .chat-message {
 
   background: var(--blades-black);
-  // .message-header {
+  .message-header {
+    position: relative;
+    z-index: 1;
 
-  // }
+    .message-sender {
+      color: var(--blades-grey);
+    }
+  }
 
   .message-content {
 
-    .dice-roll-strip {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      height: 30px;
+    .chat-message-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
       width: 100%;
-      align-items: stretch;
-      justify-content: space-evenly;
+      z-index: 0;
 
-      .blades-die {
-        display: block;
-        height: 30px;
+      &.roll-position-risky {
+        background-image: url("../assets/animations/chat/roll-position-risky.webp");
+        background-size: cover;
+      }
+    }
 
-        img {
-          height: 30px;
-          width: 30px;
+    .blades-roll {
+      position: relative;
+      z-index: 2;
+
+      .chat-header {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+        color: var(--blades-grey);
+      }
+
+      h1.chat-header {
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        background: transparent;
+        box-shadow: none;
+        font-size: 32px;
+        color: var(--blades-gold);
+      }
+
+      .roll-states {
+        justify-content: space-between;
+        padding: 0 20px;
+
+        .roll-state-container {
+          flex-basis: 30%;
+          flex-grow: 0;
+          flex-shrink: 0;
+        }
+
+        h4.roll-state-label {
+          font-family: var(--font-primary);
+          // border-bottom: 1px solid white;
+          font-size: 12px;
           display: block;
+          width: 100%;
+          text-align: center;
+          white-space: nowrap;
+          color: var(--blades-grey);
+          margin-top: -4px;
         }
 
-        &.blades-die-critical {
-          outline: 2px solid var(--blades-gold-bright);
-
-        }
-        &.blades-die-success {
-          outline: 2px solid var(--blades-white-bright);
-        }
-        // &.blades-die-partial {
-
-        // }
-        // &.blades-die-fail {
-
-        // }
-        &.blades-die-ghost {
-          img { opacity: 0.5 }
-        }
-        &.blades-die-resistance {
-          outline: 2px solid var(--blades-cyan-bright);
+        h3.roll-state {
+          white-space: nowrap;
         }
       }
+
+      h2.chat-header.roll-position {
+        text-align: right;
+        font-family: var(--font-primary);
+
+        .position-text {
+          margin: 0 15px;
+          transform-origin: 50% 50%;
+          scale: 1.5;
+          display: inline-block;
+          font-family: var(--font-emphasis);
+
+          &.position-text-controlled {}
+          &.position-text-risky {}
+          &.position-text-desperate { }
+        }
+      }
+
+      .dice-roll-strip {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        height: 30px;
+        width: 100%;
+        align-items: stretch;
+        justify-content: center;
+        gap: 10px;
+        margin: 10px 0;
+
+        .blades-die {
+          display: block;
+          height: 30px;
+
+          img {
+            height: 30px;
+            width: 30px;
+            display: block;
+          }
+
+          &.blades-die-critical {
+            outline: 2px solid var(--blades-gold-bright);
+
+          }
+          &.blades-die-success {
+            outline: 2px solid var(--blades-white-bright);
+          }
+          // &.blades-die-partial {
+
+          // }
+          // &.blades-die-fail {
+
+          // }
+          &.blades-die-ghost {
+            img { opacity: 0.5 }
+          }
+          &.blades-die-resistance {
+            outline: 2px solid var(--blades-blue-bright);
+          }
+        }
+      }
+    }
+
+    .dice-roll-strip {
     }
 
     .chat-label, .chat-trait-label {

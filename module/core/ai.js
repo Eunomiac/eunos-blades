@@ -1,13 +1,11 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
+// Import axios from "axios.js";
 import C from "./constants.js";
 import U from "./utilities.js";
+/**
+ * AI class for querying OpenAI API
+ */
 class BladesAI {
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static async GetModels() {
         const apiKey = U.getSetting("openAPIKey");
         if (!apiKey) {
@@ -19,21 +17,41 @@ class BladesAI {
                 Authorization: `Bearer ${apiKey}`
             }
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Send a POST request to the OpenAI API
         const response = await fetch("https://api.openai.com/v1/models", fetchRequest);
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Check if the response status is not 200 (OK)
         if (!response.ok) {
+            // Throw an error with the status code
             throw new Error(`OpenAI API request failed with status ${response.status}`);
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Parse the response body as JSON
         const data = await response.json();
+        /*~ @@DOUBLE-BLANK@@ ~*/
         eLog.checkLog3("BladesAI", "Available Models", { response: data });
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     apiKey;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     model;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     temperature = 0.5;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     frequency_penalty = 0.8;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     presence_penalty = 0.8;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     systemMessage;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     examplePrompts;
-        constructor(config) {
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    /**
+     * AI class constructor
+     * @param {BladesAI.Config} [config] Configuration settings for the API
+     */
+    constructor(config) {
         const apiKey = U.getSetting("openAPIKey");
         if (!apiKey) {
             throw new Error("You must configure your OpenAI API Key in Settings to use AI features.");
@@ -50,7 +68,9 @@ class BladesAI {
         this.frequency_penalty = config.frequency_penalty ?? this.frequency_penalty;
         this.presence_penalty = config.presence_penalty ?? this.presence_penalty;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _initialMessages = [];
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get initialMessages() {
         if (this._initialMessages.length === 0) {
             this._initialMessages.push({
@@ -70,15 +90,30 @@ class BladesAI {
         }
         return this._initialMessages;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     prompts = {};
+    /*~ @@DOUBLE-BLANK@@ ~*/
     responses = {};
+    /*~ @@DOUBLE-BLANK@@ ~*/
     getResponse(queryID) {
         return this.responses[queryID] ?? null;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     hasQueried(queryID) {
         return this.prompts[queryID] !== undefined;
     }
-        async query(queryID, prompt, modelMod, extendedContext = false) {
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    /**
+     * Query OpenAI API
+     * @param {string} queryID A label for later retrieval of the query data
+     * @param {string} prompt The prompt to send to the API
+     * @param {number} [modelMod] Optional modifier to the base model level.
+     *                            If provided, the final model quality will be adjusted by this number.
+     * @param {boolean} [extendedContext=false] Optional flag to indicate whether to use extended context models.
+     *                            If true, extended context models are used; otherwise, base context models are used.
+     * @returns {Promise<Response>} The API response
+     */
+    async query(queryID, prompt, modelMod, extendedContext = false) {
         if (!prompt) {
             return;
         }
@@ -89,6 +124,7 @@ class BladesAI {
         const model = extendedContext
             ? C.AI_MODELS.extendedContext[modelNum]
             : C.AI_MODELS.baseContext[modelNum];
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const fetchRequest = {
             method: "POST",
             headers: {
@@ -109,19 +145,72 @@ class BladesAI {
                 ]
             })
         };
-        
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // EeLog.checkLog3("BladesAI", "Fetch Request", fetchRequest);
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Send a POST request to the OpenAI API
         const response = await fetch("https://api.openai.com/v1/chat/completions", fetchRequest);
+        // {
+        //   method: "POST",
+        //   headers: {
+        //     // The content type of the request
+        //     "Content-Type": "application/json",
+        //     // The authorization header with the API key
+        //     Authorization: `Bearer ${this.apiKey}`
+        //   },
+        //   body: JSON.stringify({
+        //     model,
+        //     messages: [
+        //       ...this.initialMessages,
+        //       {
+        //         role: "user",
+        //         content: prompt
+        //       }
+        //     ],
+        //     // Maximum number of tokens in the output. Min: 1, Max: 4096
+        //     // max_tokens: 60,
+        //     // Controls randomness. Higher values mean the model will take more risks.
+        //     temperature: 0.5, // 0 to 2.0
+        //     /* The 'top_p' parameter is an alternative to 'temperature' for controlling the randomness of
+        //       the AI's responses. It represents the cumulative probability and its value ranges from 0 to 1.
+        //       A lower value makes the AI's responses more deterministic, while a higher value makes them
+        //       more diverse and unpredictable. */
+        //     // top_p: 1, // 0 to 1
+        //     /* The 'frequency_penalty' parameter is used to penalize new tokens based on their frequency in
+        //       the training set. Its value ranges from 0 to 1. A higher value means the AI is less likely to
+        //       use common phrases from its training set, leading to more unique responses. A lower value
+        //       means the AI is more likely to use common phrases, leading to more predictable responses. */
+        //     frequency_penalty: 0.8, // -2.0 to 2.0
+        //     /* The 'presence_penalty' parameter is used to penalize tokens (words or phrases) that are out
+        //       of context. Its value ranges from 0 to 1. A higher value means the AI is less likely to
+        //       include out-of-context tokens in its responses, leading to more coherent and contextually
+        //       appropriate responses. A lower value means the AI is more likely to include out-of-context
+        //       tokens, which can lead to more creative but potentially less coherent responses. */
+        //     presence_penalty: 0.8 // -2.0 to 2.0
+        //   })
+        // }
+        // );
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Check if the response status is not 200 (OK)
         if (!response.ok) {
             console.log("Failed AI Request:", JSON.parse(fetchRequest.body));
+            // Throw an error with the status code
             throw new Error(`OpenAI API request failed with status ${response.status}`);
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Parse the response body as JSON
         const data = await response.json();
+        /*~ @@DOUBLE-BLANK@@ ~*/
         fetchRequest.body = JSON.parse(fetchRequest.body);
+        /*~ @@DOUBLE-BLANK@@ ~*/
         eLog.checkLog3("BladesAI", "AI Query", { prompt: fetchRequest, response: data });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         this.responses[queryID] = data.choices[0].message.content;
+        /*~ @@DOUBLE-BLANK@@ ~*/
         return this.responses[queryID];
     }
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 export const AGENTS = {
     GeneralContentGenerator: {
         systemMessage: "You will act as a creative content generator for a game of Blades In The Dark set in the city of Duskvol. You will be prompted with some element of the game world (a location, a character, an event, a faction, a dilemma) in the form of a JSON object. Your job is to analyze the JSON object and replace any values that equal \"<GEN>\" with original content of your own creation. Original content must meet these requirements:  (A) it should align with and be consistent with the provided contextual information, as well as your broader understanding of the game's themes. (B) It should be presented in a format that matches (in length and in style) other entries for that particular value, examples of which will also be provided. (C) It should be creative, interesting, and daring: Be bold with your creativity. Specific context for this prompt is as follows:",
@@ -142,7 +231,13 @@ export const AGENTS = {
                 human: "Setarra, a Demon. Patient, Defiant, Ruthless, Cold",
                 ai: "[5 KEYWORDS]shadowy|sinister|unfathomable|enigmatic|tempting|[5 PHRASES]whispers that crawl under your skin|always watching, always plotting|in tones of silk and venom|intoxicating presence that draws you closer, despite your instincts urging you to run|eyes like black holes, swallowing all light around them|[3 QUIRKS/MOTIFFS]a disorienting mist clings to her form, obscuring her true shape|casually discusses the devastating acts of capricious revenge she has taken on those who crossed her|never forgets a slight or betrayal, no matter how small or insignificant it may seem at the time|[3 PLOT HOOKS]seeks revenge against Alistair for meddling in her affairs years ago|makes Ollie an offer he can't refuse: unlimited access to forbidden alchemical knowledge in exchange for a single favor, to be called in at some future time|tempts Spencer with forbidden knowledge about demons, promising answers to all their questions if they perform a dangerous ritual"
             }
-                    ]
+            /*
+            "brutish,merciless,terrifying,savage,loyal,
+            bloody tools,hulking figures,blood-soaked alleys,grimy aprons,grisly displays,
+            never clean their tools,relishes the terror they inspire,occasional laughter among them,
+            recruiting a PC to perform a job for them from prison,
+            the gang blames one of the PCs for Tarvul's imprisonment and they're out for revenge" */
+        ]
     },
     ConsequenceAdjuster: {
         systemMessage: "You will act as a \"Setback Adjuster\" for a game of Blades In The Dark.  You will be prompted with a short phrase describing an injury, lasting consequence or other setback. Your job is to respond with a pipe-delimited list of three possible alternative consequences that are less severe by one level, using the following scale as a rough guide: Level 1 = Lesser (e.g. 'Battered', 'Drained', 'Distracted', 'Scared', 'Confused'), Level 2 = Moderate (e.g. 'Exhausted', 'Deep Cut to Arm', 'Concussion', 'Panicked', 'Seduced'), Level 3 = Severe (e.g. 'Impaled', 'Broken Leg', 'Shot In Chest', 'Badly Burned', 'Terrified'), Level 4 = Fatal or Ruinous (e.g. 'Impaled Through Heart', 'Electrocuted', 'Headquarters Burned to the Ground'). So, if you determine that the consequence described in the prompt is severity level 3, you should respond with three narratively similar consequences that are severity level 2.  Your three suggestions should be different from each other, but they should all logically follow from the initial harm described: You should not introduce new facts or make assumptions that are not indicated in the initial prompt. The consequences you suggest should always describe a NEGATIVE setback or complication, just one that is less severe than the one described in the prompt.",
@@ -155,4 +250,6 @@ export const AGENTS = {
         ]
     }
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesAI;
+/*~ @@DOUBLE-BLANK@@ ~*/ 

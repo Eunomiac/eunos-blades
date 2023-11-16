@@ -1,14 +1,9 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
 import BladesActor from "./BladesActor.js";
 import U from "./core/utilities.js";
 import { Tag, BladesPhase, BladesActorType } from "./core/constants.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
 const FUNCQUEUE = {};
+// {type: "ability", name: "rX:/^(?!Ghost)/"}
 const CUSTOMFUNCS = {
     addItem: async (actor, funcData, _, isReversing = false) => {
         eLog.checkLog("activeEffects", "addItem", { actor, funcData, isReversing });
@@ -47,6 +42,7 @@ const CUSTOMFUNCS = {
     APPLYTOMEMBERS: async () => new Promise(() => undefined),
     APPLYTOCOHORTS: async () => new Promise(() => undefined),
     remItem: async (actor, funcData, _, isReversing = false) => {
+        /*~ @@DOUBLE-BLANK@@ ~*/
         function testString(targetString, testDef) {
             if (testDef.startsWith("rX")) {
                 const pat = new RegExp(testDef.replace(/^rX:\/(.*?)\//, "$1"));
@@ -54,6 +50,7 @@ const CUSTOMFUNCS = {
             }
             return targetString === testDef;
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
         if (funcData.startsWith("{")) {
             if (isReversing) {
                 console.error("Cannot reverse a 'remItem' custom effect that was defined with a JSON object.");
@@ -95,6 +92,7 @@ const CUSTOMFUNCS = {
         return undefined;
     }
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 var EffectMode;
 (function (EffectMode) {
     EffectMode[EffectMode["Custom"] = 0] = "Custom";
@@ -104,20 +102,29 @@ var EffectMode;
     EffectMode[EffectMode["Upgrade"] = 4] = "Upgrade";
     EffectMode[EffectMode["Override"] = 5] = "Override";
 })(EffectMode || (EffectMode = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesActiveEffect extends ActiveEffect {
     static Initialize() {
         CONFIG.ActiveEffect.documentClass = BladesActiveEffect;
+        /*~ @@DOUBLE-BLANK@@ ~*/
         Hooks.on("preCreateActiveEffect", async (effect) => {
+            /*~ @@DOUBLE-BLANK@@ ~*/
             eLog.checkLog3("effect", "PRECREATE ActiveEffect", { effect, parent: effect.parent?.name });
+            /*~ @@DOUBLE-BLANK@@ ~*/
             if (!(effect.parent instanceof BladesActor)) {
                 return;
             }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Does this effect have an "APPLYTOMEMBERS" or "APPLYTOCOHORTS" CUSTOM effect?
             if (effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
+                /*~ @@DOUBLE-BLANK@@ ~*/
                 if (BladesActor.IsType(effect.parent, BladesActorType.pc) && BladesActor.IsType(effect.parent.crew, BladesActorType.crew)) {
                     const otherMembers = effect.parent.crew.members.filter((member) => member.id !== effect.parent?.id);
                     if (otherMembers.length > 0) {
+                        // If PC & APPLYTOMEMBERS   --> Create effect on members MINUS the 'APPLYTOMEMBERS' key, leave PC's effect unchanged.
                         effect.changes = effect.changes.filter((change) => change.key !== "APPLYTOMEMBERS");
                         await Promise.all(otherMembers.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect.toJSON()])));
+                        // Set flag with effect's data on member, so future members can have effect applied to them.
                         await effect.parent.setFlag("eunos-blades", `memberEffects.${effect.id}`, {
                             appliedTo: otherMembers.map((member) => member.id),
                             effect: effect.toJSON()
@@ -130,28 +137,37 @@ class BladesActiveEffect extends ActiveEffect {
                         return;
                     }
                     if (effect.parent.members.length > 0) {
+                        // If Crew & APPLYTOMEMBERS --> Create effect on members MINUS the 'APPLYTOMEMBERS' key
                         await Promise.all(effect.parent.members.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect.toJSON()])));
                     }
+                    // Set flag with effect's data on crew, so future members can have effect applied to them.
                     await effect.parent.setFlag("eunos-blades", `memberEffects.${effect.id}`, {
                         appliedTo: effect.parent.members.map((member) => member.id),
                         effect
                     });
+                    // Update effect on crew-parent to only include 'APPLYTOMEMBERS' change
                     await effect.updateSource({ changes: [changeKey] });
                 }
             }
             else if (effect.changes.some((change) => change.key === "APPLYTOCOHORTS")
                 && (BladesActor.IsType(effect.parent, BladesActorType.pc) || BladesActor.IsType(effect.parent, BladesActorType.crew))) {
                 if (effect.parent.cohorts.length > 0) {
+                    // If APPLYTOCOHORTS   --> Create effect on cohorts
                     await Promise.all(effect.parent.cohorts.map(async (cohort) => cohort.createEmbeddedDocuments("ActiveEffect", [effect.toJSON()])));
                 }
+                // Set flag with effect's data on parent, so future cohorts can have effect applied to them.
                 await effect.parent.setFlag("eunos-blades", `cohortEffects.${effect.id}`, {
                     appliedTo: effect.parent.cohorts.map((cohort) => cohort.id),
                     effect
                 });
+                // Update effect on parent to only include 'APPLYTOCOHORTS' change
                 await effect.updateSource({ changes: effect.changes.filter((change) => change.key === "APPLYTOCOHORTS") });
             }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Partition effect.changes into permanent and non-permanent changes:
             const [permChanges, changes] = U.partition(effect.changes, (change) => change.key.startsWith("perm"));
             await effect.updateSource({ changes });
+            /*~ @@DOUBLE-BLANK@@ ~*/
             for (const permChange of permChanges) {
                 const { key, value } = permChange;
                 const permFuncName = key.replace(/^perm/, "");
@@ -170,10 +186,13 @@ class BladesActiveEffect extends ActiveEffect {
                 }
             }
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         Hooks.on("applyActiveEffect", (actor, changeData) => {
+            /*~ @@DOUBLE-BLANK@@ ~*/
             if (!(actor instanceof BladesActor)) {
                 return;
             }
+            /*~ @@DOUBLE-BLANK@@ ~*/
             if (changeData.key in CUSTOMFUNCS) {
                 const funcData = {
                     funcName: changeData.key,
@@ -184,6 +203,7 @@ class BladesActiveEffect extends ActiveEffect {
                 BladesActiveEffect.ThrottleCustomFunc(actor, funcData);
             }
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         Hooks.on("updateActiveEffect", (effect, { disabled }) => {
             if (!(effect.parent instanceof BladesActor)) {
                 return;
@@ -199,41 +219,51 @@ class BladesActiveEffect extends ActiveEffect {
                 BladesActiveEffect.ThrottleCustomFunc(effect.parent, funcData);
             });
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         Hooks.on("deleteActiveEffect", async (effect) => {
             if (!(effect.parent instanceof BladesActor)) {
                 return;
             }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Does this effect have an "APPLYTOMEMBERS" or "APPLYTOCOHORTS" CUSTOM effect?
             if (effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
                 if (BladesActor.IsType(effect.parent, BladesActorType.pc) && BladesActor.IsType(effect.parent.crew, BladesActorType.crew)) {
                     const otherMembers = effect.parent.crew.members.filter((member) => member.id !== effect.parent?.id);
                     if (otherMembers.length > 0) {
+                        // If PC & APPLYTOMEMBERS   --> Delete effect on all other members.
                         await Promise.all(otherMembers
                             .map(async (member) => Promise.all(member.effects
                             .filter((e) => e.name === effect.name)
                             .map(async (e) => e.delete()))));
                     }
+                    // Clear flag from parent
                     await effect.parent.unsetFlag("eunos-blades", `memberEffects.${effect.id}`);
                 }
                 else if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
                     if (effect.parent.members.length > 0) {
+                        // If CREW & APPLYTOMEMBERS   --> Delete effect on all other members.
                         await Promise.all(effect.parent.members
                             .map(async (member) => Promise.all(member.effects
                             .filter((e) => e.name === effect.name)
                             .map(async (e) => e.delete()))));
                     }
+                    // Clear flag from parent
                     await effect.parent.unsetFlag("eunos-blades", `memberEffects.${effect.id}`);
                 }
             }
             else if (effect.changes.some((change) => change.key === "APPLYTOCOHORTS")
                 && (BladesActor.IsType(effect.parent, BladesActorType.pc, BladesActorType.crew))) {
                 if (effect.parent.cohorts.length > 0) {
+                    // If APPLYTOCOHORTS   --> Delete effect on cohorts.
                     await Promise.all(effect.parent.cohorts
                         .map(async (cohort) => Promise.all(cohort.effects
                         .filter((e) => e.name === effect.name)
                         .map(async (e) => e.delete()))));
                 }
+                // Clear flag from parent
                 await effect.parent.unsetFlag("eunos-blades", `cohortEffects.${effect.id}`);
             }
+            /*~ @@DOUBLE-BLANK@@ ~*/
             const customEffects = effect.changes.filter((changes) => changes.mode === 0);
             customEffects.forEach(({ key, value }) => {
                 const funcData = {
@@ -246,17 +276,21 @@ class BladesActiveEffect extends ActiveEffect {
             });
         });
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static async AddActiveEffect(doc, name, eChanges, icon = "systems/eunos-blades/assets/icons/effect-icons/default.png") {
         const changes = [eChanges].flat();
         await doc.createEmbeddedDocuments("ActiveEffect", [{ name, icon, changes }]);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static ThrottleCustomFunc(actor, data) {
         const { funcName, funcData, isReversing, effect } = data;
         if (!actor.id) {
             return;
         }
         eLog.display(`Throttling Func: ${funcName}(${funcData}, ${isReversing})`);
+        // Is there a currently-running function for this actor?
         if (actor.id && actor.id in FUNCQUEUE) {
+            // Is this a duplicate of a function already queued?
             const matchingQueue = FUNCQUEUE[actor.id].queue.find((fData) => JSON.stringify(fData) === JSON.stringify(data));
             eLog.checkLog("activeEffects", "... Checking Queue", { data, FUNCQUEUE: FUNCQUEUE[actor.id], matchingQueue });
             if (matchingQueue) {
@@ -266,12 +300,14 @@ class BladesActiveEffect extends ActiveEffect {
             FUNCQUEUE[actor.id].queue.push(data);
             return;
         }
+        // If not, create FUNCQUEUE entry and run first function.
         eLog.display("... Creating New FUNCQUEUE, RUNNING:");
         FUNCQUEUE[actor.id] = {
             curFunc: BladesActiveEffect.RunCustomFunc(actor, CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing)),
             queue: []
         };
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static async RunCustomFunc(actor, funcPromise) {
         if (!actor.id) {
             return;
@@ -295,7 +331,12 @@ class BladesActiveEffect extends ActiveEffect {
             delete FUNCQUEUE[actor.id];
         }
     }
-        static onManageActiveEffect(event, owner) {
+    /**
+     * Manage Active Effect instances through the Actor Sheet via effect control buttons.
+     * @param {MouseEvent} event      The left-click event on the effect control
+     * @param {Actor|Item} owner      The owning entity which manages this effect
+     */
+    static onManageActiveEffect(event, owner) {
         event.preventDefault();
         const a = event.currentTarget;
         if (a.dataset.action === "create") {
@@ -324,6 +365,7 @@ class BladesActiveEffect extends ActiveEffect {
             default: return null;
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async _preCreate(data, options, user) {
         eLog.checkLog3("effect", "ActiveEffect._preCreate()", { data, options, user });
         await super._preCreate(data, options, user);
@@ -332,7 +374,9 @@ class BladesActiveEffect extends ActiveEffect {
         eLog.checkLog3("effect", "ActiveEffect._onDelete()", { options, userID });
         super._onDelete(options, userID);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get isSuppressed() {
+        // Get source item from "origin.js" field -- of form 'Actor.<id>.Item.<id>'
         if (!/Actor.*Item/.test(this.origin)) {
             return super.isSuppressed;
         }
@@ -342,4 +386,5 @@ class BladesActiveEffect extends ActiveEffect {
         return super.isSuppressed || item?.hasTag(Tag.System.Archived);
     }
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesActiveEffect;

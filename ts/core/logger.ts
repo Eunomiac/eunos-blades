@@ -13,24 +13,24 @@ const LOGGERCONFIG = {
 const STYLES = {
   base: {
     background: C.Colors.BLACK,
-    color: C.Colors.bGOLD,
+    color: C.Colors.dGOLD,
     "font-family": "Pragmata Pro",
     padding: "0 25px",
     "margin-right": "25px"
   },
   log0: {
-    background: C.Colors.bGOLD,
+    background: C.Colors.dGOLD,
     color: C.Colors.dBLACK,
     "font-size": "16px"
   },
   log1: {
     background: C.Colors.dBLACK,
-    color: C.Colors.gGOLD,
+    color: C.Colors.bGOLD,
     "font-size": "16px"
   },
   log2: {
     background: C.Colors.dBLACK,
-    color: C.Colors.bGOLD,
+    color: C.Colors.dGOLD,
     "font-size": "16px"
   },
   log3: {
@@ -45,15 +45,15 @@ const STYLES = {
     "font-size": "10px"
   },
   display: {
-    color: C.Colors.gGOLD,
+    color: C.Colors.bGOLD,
     "font-family": "Kirsty Rg",
     "font-size": "16px",
     "margin-left": "-100px",
     padding: "0 100px"
   },
   error: {
-    color: C.Colors.gRED,
-    background: C.Colors.dRED,
+    color: C.Colors.bRED,
+    background: C.Colors.ddRED,
     "font-weight": 500
   },
   handlebars: {
@@ -136,7 +136,7 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
     });
   }
   if (stackTrace) {
-    console.group("%cSTACK TRACE", `color: ${C.Colors.bGOLD}; font-family: "Pragmata Pro"; font-size: 12px; background: ${C.Colors.BLACK}; font-weight: bold; padding: 0 10px;`);
+    console.group("%cSTACK TRACE", `color: ${C.Colors.dGOLD}; font-family: "Pragmata Pro"; font-size: 12px; background: ${C.Colors.BLACK}; font-weight: bold; padding: 0 10px;`);
     console.log(`%c${stackTrace}`, Object.entries(STYLES.stack).map(([prop, val]) => `${prop}: ${val};`).join(" "));
     console.groupEnd();
   }

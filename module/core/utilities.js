@@ -1,18 +1,22 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
+// #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import C from "./constants.js";
+// eslint-disable-next-line import/no-unresolved
 import { gsap } from "/scripts/greensock/esm/all.js";
+// #endregion ▮▮▮▮ IMPORTS ▮▮▮▮
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ▮▮▮▮▮▮▮ [HELPERS] Internal Functions, Data & References Used by Utility Functions ▮▮▮▮▮▮▮ ~
+/*~ @@DOUBLE-BLANK@@ ~*/
+// _noCapWords -- Patterns matching words that should NOT be capitalized when converting to TITLE case.
 const _noCapWords = "a|above|after|an|and|at|below|but|by|down|for|for|from|in|nor|of|off|on|onto|or|out|so|the|to|under|up|with|yet"
     .split("|")
     .map((word) => new RegExp(`\\b${word}\\b`, "gui"));
+/*~ @@DOUBLE-BLANK@@ ~*/
+// _capWords -- Patterns matching words that should ALWAYS be capitalized when converting to SENTENCE case.
 const _capWords = [
     "I", /[^a-z]{3,}|[.0-9]/gu
 ].map((word) => (/RegExp/.test(Object.prototype.toString.call(word)) ? word : new RegExp(`\\b${word}\\b`, "gui")));
+/*~ @@DOUBLE-BLANK@@ ~*/
+// _loremIpsumText -- Boilerplate lorem ipsum
 const _loremIpsumText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies
 nibh sed massa euismod lacinia. Aliquam nec est ac nunc ultricies scelerisque porta vulputate odio.
 Integer gravida mattis odio, semper volutpat tellus. Ut elit leo, auctor eget fermentum hendrerit,
@@ -27,6 +31,8 @@ sollicitudin interdum. Sed id lacus porttitor nisi vestibulum tincidunt. Nulla f
 feugiat finibus magna in pretium. Proin consectetur lectus nisi, non commodo lectus tempor et. Cras
 viverra, mi in consequat aliquet, justo mauris fringilla tellus, at accumsan magna metus in eros. Sed
 vehicula, diam ut sagittis semper, purus massa mattis dolor, in posuere.`;
+/*~ @@DOUBLE-BLANK@@ ~*/
+// _randomWords -- A collection of random words for various debugging purposes.
 const _randomWords = `
 aboveboard|account|achiever|acoustics|act|action|activity|actor|addition|adjustment|advertisement|advice|afterglow|afterimage|afterlife|aftermath|afternoon|afterthought|agreement
 air|aircraft|airfield|airlift|airline|airmen|airplane|airport|airtime|alarm|allover|allspice|alongside|also|amount|amusement|anger|angle|animal|another|ants|anyhow|anymore
@@ -130,8 +136,16 @@ const _romanNumerals = {
     ]
 };
 const UUIDLOG = [];
-
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #endregion ▮▮▮▮[HELPERS]▮▮▮▮
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ████████ GETTERS: Basic Data Lookup & Retrieval ████████ ~
+// @ts-expect-error Leauge of foundry developers is wrong about user not being on game.
 const GMID = () => game?.user?.find((user) => user.isGM)?.id ?? false;
+// #endregion ▄▄▄▄▄ GETTERS ▄▄▄▄▄
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████ ~
+/*~ @@DOUBLE-BLANK@@ ~*/
 const isNumber = (ref) => typeof ref === "number" && !isNaN(ref);
 const isNumberString = (ref) => typeof ref === "string"
     && !isNaN(parseFloat(ref))
@@ -156,57 +170,98 @@ const isEmpty = (ref) => Object.keys(ref).length === 0;
 const hasItems = (ref) => !isEmpty(ref);
 const isInstance = (classRef, ref) => ref instanceof classRef;
 const isNullish = (ref) => isUndefined(ref) || ref === null;
+/**
+ * Asserts that a given value is of a specified type.
+ * Throws an error if the value is not of the expected type.
+ *
+ * @template T The expected type of the value.
+ * @param {unknown} val The value to check.
+ * @param {(new(...args: unknown[]) => T) | string} type The expected type of the value.
+ * @throws {Error} If the value is not of the expected type.
+ */
 function assertNonNullType(val, type) {
     let valStr;
+    // Attempt to convert the value to a string for error messaging.
     try {
         valStr = JSON.stringify(val);
     }
     catch {
         valStr = String(val);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // Check if the value is undefined
     if (val === undefined) {
         throw new Error(`Value ${valStr} is undefined!`);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If the type is a string, compare the typeof the value to the type string.
     if (typeof type === "string") {
+        // eslint-disable-next-line valid-typeof
         if (typeof val !== type) {
             throw new Error(`Value ${valStr} is not a ${type}!`);
         }
     }
     else if (!(val instanceof type)) {
+        // If the type is a function (constructor), check if the value is an instance of the type.
         throw new Error(`Value ${valStr} is not a ${type.name}!`);
     }
 }
+/**
+ * Checks if two values are "fuzzy" equal, simulating the behavior of the "==" operator.
+ * This function does not use the "==" operator directly to comply with linting rules.
+ *
+ * @param {unknown} val1 The first value to compare.
+ * @param {unknown} val2 The second value to compare.
+ * @returns {boolean} True if the values are "fuzzy" equal, false otherwise.
+ */
 const areFuzzyEqual = (val1, val2) => {
+    // If both values are null or undefined, they are considered equal
     if ([null, undefined].includes(val1)
         && [null, undefined].includes(val2)) {
         return true;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If only one of the values is null or undefined, they are not equal
     if ([null, undefined].includes(val1)
         || [null, undefined].includes(val2)) {
         return false;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If both values are numbers, they are considered equal if they are numerically equal
     if (typeof val1 === "number" && typeof val2 === "number") {
         return val1 === val2;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If both values are booleans, they are considered equal if they are both true or both false
     if (typeof val1 === "boolean" && typeof val2 === "boolean") {
         return val1 === val2;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If both values are strings, they are considered equal if they are identical
     if (typeof val1 === "string" && typeof val2 === "string") {
         return val1 === val2;
     }
-
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If one value is a number and the other is a string, they are considered
+    //                         equal if the string can be converted to the number
     if (typeof val1 === "number" && typeof val2 === "string") {
         return val1 === Number(val2);
     }
     if (typeof val1 === "string" && typeof val2 === "number") {
         return Number(val1) === val2;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If one value is a boolean and the other is a non-null object, they are not equal
     if (typeof val1 === "boolean" && typeof val2 === "object") {
         return false;
     }
     if (typeof val1 === "object" && typeof val2 === "boolean") {
         return false;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If one value is a boolean and the other is a string, they are considered equal ID:
+    //      ... the boolean is true and the string is not empty, or
+    //      ... the boolean is false and the string is empty
     if (typeof val1 === "boolean"
         && typeof val2 === "string") {
         return (val1 && val2 !== "") || (!val1 && val2 === "");
@@ -215,17 +270,24 @@ const areFuzzyEqual = (val1, val2) => {
         && typeof val2 === "boolean") {
         return (val2 && val1 !== "") || (!val2 && val1 === "");
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If one value is a number or a string and the other is an object, they are not equal
     if ((typeof val1 === "number" || typeof val1 === "string") && typeof val2 === "object") {
         return false;
     }
     if (typeof val1 === "object" && (typeof val2 === "number" || typeof val2 === "string")) {
         return false;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If both values are objects, they are considered equal if they are identical
     if (typeof val1 === "object" && typeof val2 === "object") {
         return val1 === val2;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If none of the above conditions are met, the values are not equal
     return false;
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 const areEqual = (...refs) => {
     do {
         const ref = refs.pop();
@@ -267,9 +329,14 @@ const getKey = (key, obj) => {
     }
     return null;
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 const FILTERS = {
     IsInstance: ((classRef) => ((item) => typeof classRef === "function" && item instanceof classRef))
 };
+// #endregion ▄▄▄▄▄ TYPES ▄▄▄▄▄
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ████████ STRINGS: String Parsing, Manipulation, Conversion, Regular Expressions ████████
+// #region ░░░░░░░[Case Conversion]░░░░ Upper, Lower, Sentence & Title Case ░░░░░░░ ~
 const uCase = (str) => String(str).toUpperCase();
 const lCase = (str) => String(str).toLowerCase();
 const sCase = (str) => {
@@ -283,12 +350,17 @@ const sCase = (str) => {
 const tCase = (str) => String(str).split(/\s/)
     .map((word, i) => (i && testRegExp(word, _noCapWords) ? lCase(word) : sCase(word)))
     .join(" ").trim();
+// #endregion ░░░░[Case Conversion]░░░░
+// #region ░░░░░░░[RegExp]░░░░ Regular Expressions ░░░░░░░ ~
 const testRegExp = (str, patterns = [], flags = "gui", isTestingAll = false) => patterns
     .map((pattern) => (pattern instanceof RegExp
     ? pattern
     : new RegExp(`\\b${pattern}\\b`, flags)))[isTestingAll ? "every" : "some"]((pattern) => pattern.test(`${str}`));
 const regExtract = (ref, pattern, flags) => {
-        const splitFlags = [];
+    /* Wrapper around String.match() that removes the need to worry about match()'s different handling of the 'g' flag.
+        - IF your pattern contains unescaped parentheses -> Returns Array of all matching groups.
+        - OTHERWISE -> Returns string that matches the provided pattern. */
+    const splitFlags = [];
     [...(flags ?? "").replace(/g/g, ""), "u"].forEach((flag) => {
         if (flag && !splitFlags.includes(flag)) {
             splitFlags.push(flag);
@@ -303,7 +375,10 @@ const regExtract = (ref, pattern, flags) => {
     const matches = `${ref}`.match(pattern) || [];
     return isGrouping ? Array.from(matches) : matches.pop();
 };
-
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #endregion ░░░░[RegExp]░░░░
+// #region ░░░░░░░[Formatting]░░░░ Hyphenation, Pluralization, "a"/"an" Fixing ░░░░░░░ ~
+// const hyphenate = (str: unknown) => (/^<|\u00AD|\u200B/.test(`${str}`) ? `${str}` : _hyph(`${str}`));
 const unhyphenate = (str) => `${str}`.replace(/[\u00AD\u200B]/gu, "");
 const parseArticles = (str) => `${str}`.replace(/\b([aA])\s([aeiouAEIOU])/gu, "$1n $2");
 const pluralize = (singular, num = 2, plural) => {
@@ -339,6 +414,7 @@ const pad = (text, minLength, delim = " ") => {
     return str;
 };
 const toKey = (text) => (text ?? "").toLowerCase().replace(/ /g, "-").replace(/default/, "DEFAULT");
+// #region ========== Numbers: Formatting Numbers Into Strings =========== ~
 const signNum = (num, delim = "", zeroSign = "+") => {
     let sign;
     const parsedNum = pFloat(num);
@@ -370,6 +446,8 @@ const padNum = (num, numDecDigits, includePlus = false) => {
     return `${prefix}${leftDigits}.${"0".repeat(numDecDigits)}`;
 };
 const stringifyNum = (num) => {
+    // Can take string representations of numbers, either in standard or scientific/engineering notation.
+    // Returns a string representation of the number in standard notation.
     if (pFloat(num) === 0) {
         return "0";
     }
@@ -409,6 +487,7 @@ const stringifyNum = (num) => {
     return `${num}`;
 };
 const verbalizeNum = (num) => {
+    // Converts a float with absolute magnitude <= 9.99e303 into words.
     num = stringifyNum(num);
     const getTier = (trioNum) => {
         if (trioNum < _numberWords.tiers.length) {
@@ -508,7 +587,9 @@ const romanizeNum = (num, isUsingGroupedChars = true) => {
         ? romanNum.replace(/ⅩⅠ/gu, "Ⅺ").replace(/ⅩⅡ/gu, "Ⅻ")
         : romanNum;
 };
-
+// #endregion _______ Numbers _______
+// #endregion ░░░░[Formatting]░░░░
+// #region ░░░░░░░[Content]░░░░ Lorem Ipsum, Random Content Generation, Randum UUID ░░░░░░░ ~
 const loremIpsum = (numWords = 200) => {
     const lrWordList = _loremIpsumText.split(/\n?\s+/g);
     const words = [...lrWordList[randNum(0, lrWordList.length - 1)]];
@@ -530,11 +611,18 @@ const getUID = (id) => {
     Object.assign(globalThis, { UUIDLOG });
     return uuid;
 };
+// #endregion ░░░░[Content]░░░░
+// #endregion ▄▄▄▄▄ STRINGS ▄▄▄▄▄
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ████████ SEARCHING: Searching Various Data Types w/ Fuzzy Matching ████████ ~
 const fuzzyMatch = (val1, val2) => {
     const [str1, str2] = [val1, val2].map((val) => lCase(String(val).replace(/[^a-zA-Z0-9.+-]/g, "").trim()));
     return str1.length > 0 && str1 === str2;
 };
 const isIn = (needle, haystack = [], fuzziness = 0) => {
+    // Looks for needle in haystack using fuzzy matching, then returns value as it appears in haystack.
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // STEP ONE: POPULATE SEARCH TESTS ACCORDING TO FUZZINESS SETTING
     const SearchTests = [
         (ndl, item) => new RegExp(`^${ndl}$`, "gu").test(`${item}`),
         (ndl, item) => new RegExp(`^${ndl}$`, "gui").test(`${item}`)
@@ -551,10 +639,12 @@ const isIn = (needle, haystack = [], fuzziness = 0) => {
             SearchTests.push(...fuzzyTests
                 .map((func) => (ndl, item) => func(`${ndl}`.replace(/\W/g, ""), `${item}`.replace(/\W/gu, ""))));
             if (fuzziness >= 3) {
-                SearchTests.push(() => false);
+                SearchTests.push(() => false); // Have to implement Fuse matching
             }
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // STEP TWO: PARSE NEEDLE & CONSTRUCT SEARCHABLE HAYSTACK.
     const searchNeedle = `${needle}`;
     const searchStack = (() => {
         if (isArray(haystack)) {
@@ -573,6 +663,8 @@ const isIn = (needle, haystack = [], fuzziness = 0) => {
     if (!isArray(searchStack)) {
         return false;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // STEP THREE: SEARCH HAY FOR NEEDLE USING PROGRESSIVELY MORE FUZZY SEARCH TESTS
     let matchIndex = -1;
     while (!isPosInt(matchIndex)) {
         const testFunc = SearchTests.shift();
@@ -587,7 +679,9 @@ const isIn = (needle, haystack = [], fuzziness = 0) => {
     return false;
 };
 const isInExact = (needle, haystack) => isIn(needle, haystack, 0);
-
+// #endregion ▄▄▄▄▄ SEARCHING ▄▄▄▄▄
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ████████ NUMBERS: Number Casting, Mathematics, Conversion ████████ ~
 const randNum = (min, max, snap = 0) => gsap.utils.random(min, max, snap);
 const randInt = (min, max) => randNum(min, max, 1);
 const coinFlip = () => randNum(0, 1, 1) === 1;
@@ -597,6 +691,7 @@ const cycleAngle = (angle, range = [0, 360]) => cycleNum(angle, range);
 const roundNum = (num, sigDigits = 0) => (sigDigits === 0 ? pInt(num) : pFloat(num, sigDigits));
 const sum = (...nums) => Object.values(nums.flat()).reduce((num, tot) => tot + num, 0);
 const average = (...nums) => sum(...nums) / nums.flat().length;
+// #region ░░░░░░░[Positioning]░░░░ Relationships On 2D Cartesian Plane ░░░░░░░ ~
 const getDistance = ({ x: x1, y: y1 }, { x: x2, y: y2 }) => (((x1 - x2) ** 2) + ((y1 - y2) ** 2)) ** 0.5;
 const getAngle = ({ x: x1, y: y1 }, { x: x2, y: y2 }, { x: xO, y: yO } = { x: 0, y: 0 }, range = [0, 360]) => {
     x1 -= xO;
@@ -606,6 +701,10 @@ const getAngle = ({ x: x1, y: y1 }, { x: x2, y: y2 }, { x: xO, y: yO } = { x: 0,
     return cycleAngle(radToDeg(Math.atan2(y2 - y1, x2 - x1)), range);
 };
 const getAngleDelta = (angleStart, angleEnd, range = [0, 360]) => cycleAngle(angleEnd - angleStart, range);
+// #endregion ░░░░[Positioning]░░░░
+// #endregion ▄▄▄▄▄ NUMBERS ▄▄▄▄▄
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ████████ ARRAYS: Array Manipulation ████████ ~
 const randElem = (array) => gsap.utils.random(array);
 const randIndex = (array) => randInt(0, array.length - 1);
 const makeIntRange = (min, max) => {
@@ -616,6 +715,8 @@ const makeIntRange = (min, max) => {
     return intRange;
 };
 const makeCycler = (array, index = 0) => {
+    // Given an array and a starting index, returns a generator function that can be used
+    // to iterate over the array indefinitely, or wrap out-of-bounds index values
     const wrapper = gsap.utils.wrap(array);
     index--;
     return (function* () {
@@ -625,10 +726,18 @@ const makeCycler = (array, index = 0) => {
         }
     })();
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ * Returns the last element of an array, or the last value of an object literal.
+ *
+ * @param {Index<Type>} array An array or object literal
+ * @returns {Type|undefined} The last element, or undefined if empty.
+ */
 function getLast(array) {
     array = Object.values(array);
     return array.length === 0 ? undefined : array[array.length - 1];
 }
+// Const getLast = <Type>(array: Type[]): typeof array extends [] ? undefined : Type => ;
 const unique = (array) => {
     const returnArray = [];
     array.forEach((item) => { if (!returnArray.includes(item)) {
@@ -662,20 +771,41 @@ const sample = (array, numElems = 1, isUniqueOnly = true, uniqueTestFunc = (e, a
     return elems;
 };
 const removeFirst = (array, element) => array.splice(array.findIndex((v) => v === element));
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ * This function removes and returns the first element in an array that equals the provided value
+ *   or satisfies the provided testing function.
+ * If no elements satisfy the testing function, the function will return undefined.
+ *
+ * @param {T[]} array The array to be searched.
+ * @param {(T|((_v: T, _i?: number, _a?: T[]) => boolean))} checkFunc The testing function or value to be searched for.
+ * @returns {T | undefined} The first element in the array that passes the test.
+ *                          If no elements pass the test, return undefined.
+ */
 function pullElement(array, checkFunc) {
+    // Define the test function
     let testFunction;
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If checkFunc is not a function, create a function that checks for equality with checkFunc
     if (typeof checkFunc !== "function") {
         testFunction = (_v) => _v === checkFunc;
     }
     else {
         testFunction = checkFunc;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // Find the index of the first element that passes the test
     const index = array.findIndex((v, i, a) => testFunction(v, i, a));
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If no element passes the test, return undefined
     if (index === -1) {
         return undefined;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // Remove the element from the array and return it
     return array.splice(index, 1).pop();
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 const pullIndex = (array, index) => pullElement(array, (_, i) => i === index);
 const subGroup = (array, groupSize) => {
     const subArrays = [];
@@ -692,15 +822,26 @@ const subGroup = (array, groupSize) => {
 const shuffle = (array) => {
     let currentIndex = array.length;
     let randomIndex;
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // While there remain elements to shuffle.
     while (currentIndex !== 0) {
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Pick a remaining element.
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // And swap it with the current element.
         [array[currentIndex], array[randomIndex]] = [
             array[randomIndex], array[currentIndex]
         ];
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     return array;
 };
+// #endregion ▄▄▄▄▄ ARRAYS ▄▄▄▄▄
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████ ~
+/*~ @@DOUBLE-BLANK@@ ~*/
 const checkVal = ({ k, v }, checkTest) => {
     if (typeof checkTest === "function") {
         if (isDefined(v)) {
@@ -713,6 +854,12 @@ const checkVal = ({ k, v }, checkTest) => {
     }
     return (new RegExp(checkTest)).test(`${v}`);
 };
+/**
+ * Given an array or list and a search function, will remove the first matching element and return it.
+ * @param {Index<unknown>} obj The array or list to be searched.
+ * @param {testFunc<keyFunc | valFunc> | number | string} checkTest The search function.
+ * @returns {unknown | false} - The removed element or false if no element was found.
+ */
 const remove = (obj, checkTest) => {
     if (isArray(obj)) {
         const index = obj.findIndex((v) => checkVal({ v }, checkTest));
@@ -728,6 +875,13 @@ const remove = (obj, checkTest) => {
     }
     return false;
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ * Removes an element from an array at a given index and returns it.
+ * @param {unknown[]} array The array to remove the element from.
+ * @param {number} index The index of the element to remove.
+ * @returns {unknown} - The removed element.
+ */
 const removeElementFromArray = (array, index) => {
     let remVal;
     for (let i = 0; i <= array.length; i++) {
@@ -740,12 +894,21 @@ const removeElementFromArray = (array, index) => {
     }
     return remVal;
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ * Removes an element from a list at a given key and returns it.
+ * @param {List<unknown>} list The list to remove the element from.
+ * @param {string} key The key of the element to remove.
+ * @returns {unknown} - The removed element.
+ */
 const removeElementFromList = (list, key) => {
     const remVal = list[key];
     delete list[key];
     return remVal;
 };
 const replace = (obj, checkTest, repVal) => {
+    // As remove, except instead replaces the element with the provided value.
+    // Returns true/false to indicate whether the replace action succeeded.
     let repKey;
     if (isList(obj)) {
         [repKey] = Object.entries(obj).find((v) => checkVal({ v }, checkTest)) || [false];
@@ -763,13 +926,24 @@ const replace = (obj, checkTest, repVal) => {
         repKey = `${repKey}`;
     }
     if (typeof repVal === "function") {
+        // @ts-expect-error Need to figure out how to properly define testFunc<keyFunc | valFunc> (keyFunc/valFunc types?)
         obj[repKey] = repVal(obj[repKey], repKey);
     }
     else {
+        // @ts-expect-error Need to figure out how to properly define testFunc<keyFunc | valFunc> (keyFunc/valFunc types?)
         obj[repKey] = repVal;
     }
     return true;
 };
+/**
+ * Cleans an object or value by removing specified values recursively.
+ *
+ * @template T - The type of the input object or value.
+ * @param {T} data The object or value to be cleaned.
+ * @param {Array<any>} [remVals] An array of values to be removed during the cleaning process.
+ * @returns {T | Partial<T> | "KILL"} - The cleaned version of the input object or value.
+ *                                      If marked for removal, returns "KILL".
+ */
 const objClean = (data, remVals = [undefined, null, "", {}, []]) => {
     const remStrings = remVals.map((rVal) => JSON.stringify(rVal));
     if (remStrings.includes(JSON.stringify(data)) || remVals.includes(data)) {
@@ -788,6 +962,12 @@ const objClean = (data, remVals = [undefined, null, "", {}, []]) => {
     }
     return data;
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ *
+ * @param items
+ * @param key
+ */
 export function toDict(items, key) {
     const dict = {};
     const mappedItems = items
@@ -807,8 +987,15 @@ export function toDict(items, key) {
         }
         dict[newKey] = iData;
     });
+    // @ts-expect-error Oh it definitely does.
     return dict;
-        function indexString(str) {
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    /**
+     * Given a string that could have an index suffix, returns the string with
+     *  the suffix incremented by one, or set to one if no suffix exists.
+     * @param {string} str
+     */
+    function indexString(str) {
         if (/_\d+$/.test(str)) {
             const [curIndex, ...subStr] = [...str.split(/_/)].reverse();
             return [
@@ -819,14 +1006,24 @@ export function toDict(items, key) {
         return `${str}_1`;
     }
 }
+// Given an object and a predicate function, returns array of two objects:
+//   one with entries that pass, one with entries that fail.
 const partition = (obj, predicate = () => true) => [
     objFilter(obj, predicate),
     objFilter(obj, (v, k) => !predicate(v, k))
 ];
+/**
+ *  An object-equivalent Array.map() function, which accepts mapping functions to transform both keys and values.
+ *  If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
+ * @param {Index<unknown>} obj
+ * @param {mapFunc<keyFunc|valFunc>|false} keyFunc
+ * @param {mapFunc<valFunc>} [valFunc]
+ */
 function objMap(obj, keyFunc, valFunc) {
     //
     let valFuncTyped = valFunc;
     let keyFuncTyped = keyFunc;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     if (!valFuncTyped) {
         valFuncTyped = keyFunc;
         keyFuncTyped = false;
@@ -834,34 +1031,65 @@ function objMap(obj, keyFunc, valFunc) {
     if (!keyFuncTyped) {
         keyFuncTyped = ((k) => k);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     if (isArray(obj)) {
         return obj.map(valFuncTyped);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     return Object.fromEntries(Object.entries(obj).map(([key, val]) => {
         assertNonNullType(valFuncTyped, "function");
         return [keyFuncTyped(key, val), valFuncTyped(val, key)];
     }));
 }
 const objSize = (obj) => Object.values(obj).filter((val) => val !== undefined && val !== null).length;
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ * This function is an object-equivalent of Array.findIndex() function.
+ * It accepts check functions for both keys and/or values.
+ * If only one function is provided, it's assumed to be searching via values and will receive (v, k) args.
+ *
+ * @param {Type} obj The object to be searched.
+ * @param {testFunc<keyFunc> | testFunc<valFunc> | false} keyFunc The testing function for keys.
+ * @param {testFunc<valFunc>} valFunc The testing function for values.
+ * @returns {KeyOf<Type> | false} The key of the first entry that passes the test.
+ *                                If no entries pass the test, return false.
+ */
 function objFindKey(obj, keyFunc, valFunc) {
+    // If valFunc is not provided, assume keyFunc is meant to be valFunc
     if (!valFunc) {
         valFunc = keyFunc;
         keyFunc = false;
     }
+    // If keyFunc is not provided, create a function that returns the key
     if (!keyFunc) {
         keyFunc = ((k) => k);
     }
+    // If obj is an array, find the index of the first element that passes the test
     if (isArray(obj)) {
         return obj.findIndex(valFunc);
     }
+    // Define the testing functions for keys and values
     const kFunc = keyFunc || (() => true);
     const vFunc = valFunc || (() => true);
+    // Find the first entry that passes the test
     const validEntry = Object.entries(obj).find(([k, v]) => kFunc(k, v) && vFunc(v, k));
+    // If an entry passes the test, return its key
     if (validEntry) {
         return validEntry[0];
     }
+    // If no entries pass the test, return false
     return false;
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ * An object-equivalent Array.filter() function, which accepts filter functions for both keys and/or values.
+ * If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
+ *
+ * @param {Type} obj The object to be searched.
+ * @param {testFunc<keyFunc> | testFunc<valFunc> | false} keyFunc The testing function for keys.
+ * @param {testFunc<valFunc>} [valFunc] The testing function for values.
+ * @returns {Type} The filtered object.
+ */
 const objFilter = (obj, keyFunc, valFunc) => {
     //
     if (!valFunc) {
@@ -880,6 +1108,7 @@ const objFilter = (obj, keyFunc, valFunc) => {
         .filter(([key, val]) => kFunc(key, val) && vFunc(val, key)));
 };
 const objForEach = (obj, func) => {
+    // An object-equivalent Array.forEach() function, which accepts one function(val, key) to perform for each member.
     if (isArray(obj)) {
         obj.forEach(func);
     }
@@ -887,7 +1116,9 @@ const objForEach = (obj, func) => {
         Object.entries(obj).forEach(([key, val]) => func(val, key));
     }
 };
+// Prunes an object of given set of values, [undefined, null] default
 const objCompact = (obj, removeWhiteList = [undefined, null]) => objFilter(obj, (val) => !removeWhiteList.includes(val));
+/*~ @@DOUBLE-BLANK@@ ~*/
 const objClone = (obj, isStrictlySafe = false) => {
     const cloneArray = (arr) => [...arr];
     const cloneObject = (o) => ({ ...o });
@@ -907,44 +1138,83 @@ const objClone = (obj, isStrictlySafe = false) => {
     }
     return obj;
 };
+/**
+ * Returns a deep merge of source into target. Does not mutate target unless isMutatingOk = true.
+ * @param {Tx} target The target object to be merged.
+ * @param {Ty} source The source object to be merged.
+ * @param {object} options An object containing various options for the merge operation.
+ * @param {boolean} options.isMutatingOk
+ * @param {boolean} options.isStrictlySafe
+ * @param {boolean} options.isConcatenatingArrays
+ * @param {boolean} options.isReplacingArrays
+ * @returns {Tx & Ty} - The merged object.
+ */
 function objMerge(target, source, { isMutatingOk = false, isStrictlySafe = false, isConcatenatingArrays = true, isReplacingArrays = false } = {}) {
+    // Clone the target if mutation is not allowed
     target = isMutatingOk ? target : objClone(target, isStrictlySafe);
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If source is an instance of Application or target is undefined, return source
     if (source instanceof Application || isUndefined(target)) {
         return source;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If source is undefined, return target
     if (isUndefined(source)) {
         return target;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If source is not an index, return target
     if (!isIndex(source)) {
         return target;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // Iterate over each entry in the source object
     for (const [key, val] of Object.entries(source)) {
         const targetVal = target[key];
-
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // If replacing arrays is enabled and both target and source values are
+        // arrays, replace target value with source value
         if (isReplacingArrays && isArray(targetVal) && isArray(val)) {
             target[key] = val;
         }
         else if (isConcatenatingArrays && isArray(targetVal) && isArray(val)) {
-
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // If concatenating arrays is enabled and both target and source values
+            // are arrays, concatenate source value to target value
             target[key].push(...val);
         }
         else if (val !== null && typeof val === "object") {
+            // If source value is an object and not null, merge it into target value
             if (isUndefined(targetVal) && !(val instanceof Application)) {
                 target[key] = new (Object.getPrototypeOf(val).constructor)();
             }
             target[key] = objMerge(target[key], val, { isMutatingOk: true, isStrictlySafe });
         }
         else {
+            // For all other cases, assign source value to target
             target[key] = val;
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // Return the merged target
     return target;
 }
+/**
+ * Deep-compares two objects and returns an object containing only the keys and values
+ * in the second object that differ from the first.
+ * If the second object is missing a key or value contained in the first, it sets the
+ * value in the returned object to null, and prefixes the key with "-=".
+ * @param {Tx} obj1 The first object to be compared.
+ * @param {Ty} obj2 The second object to be compared.
+ * @returns {Record<string, unknown>} - An object containing the differences between the two input objects.
+ */
 function objDiff(obj1, obj2) {
     const diff = {};
     const bothObj1AndObj2Keys = Object.keys(obj2).filter((key) => Object.hasOwn(obj2, key) && Object.hasOwn(obj1, key));
     const onlyObj2Keys = Object.keys(obj2).filter((key) => Object.hasOwn(obj2, key) && !Object.hasOwn(obj1, key));
+    /*~ @@DOUBLE-BLANK@@ ~*/
     for (const key of bothObj1AndObj2Keys) {
+        // If both values are non-array objects, recursively compare them
         if (typeof obj1[key] === "object" && typeof obj2[key] === "object" && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key])) {
             const nestedDiff = objDiff(obj1[key], obj2[key]);
             if (Object.keys(nestedDiff).length > 0) {
@@ -955,18 +1225,23 @@ function objDiff(obj1, obj2) {
             const array1 = obj1[key];
             const array2 = obj2[key];
             if (array1.toString() !== array2.toString()) {
+                // If both values are arrays and they are not equal, add the second array to the diff
                 diff[key] = obj2[key];
             }
         }
         else if (obj1[key] !== obj2[key]) {
+            // If the values are not equal, add the second value to the diff
             diff[key] = obj2[key];
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     for (const key of onlyObj2Keys) {
+        // If the second object has a key that the first does not, add it to the diff with a "-=" prefix
         diff[`-=${key}`] = obj2[key];
     }
     return diff;
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 const objExpand = (obj) => {
     const expObj = {};
     for (const [key, val] of Object.entries(obj)) {
@@ -978,7 +1253,12 @@ const objExpand = (obj) => {
             setProperty(expObj, key, val);
         }
     }
-        function arrayify(o) {
+    // Iterate through expanded Object, converting object literals to arrays where it makes sense
+    /**
+     *
+     * @param o
+     */
+    function arrayify(o) {
         if (isList(o)) {
             if (/^\d+$/.test(Object.keys(o).join(""))) {
                 return Object.values(o).map(arrayify);
@@ -990,6 +1270,7 @@ const objExpand = (obj) => {
         }
         return o;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     return arrayify(expObj);
 };
 const objFlatten = (obj) => {
@@ -1006,23 +1287,44 @@ const objFlatten = (obj) => {
     }
     return flatObj;
 };
+/**
+ *
+ * @param obj
+ */
 function objNullify(obj) {
+    // Check if the input is an object or an array
     if (!isIndex(obj)) {
         return obj;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If the input is an array, nullify all its elements
     if (Array.isArray(obj)) {
         obj.forEach((_, i) => {
             obj[i] = null;
         });
         return obj;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If the input is an object, nullify all its properties
     Object.keys(obj).forEach((objKey) => {
         obj[objKey] = null;
     });
+    /*~ @@DOUBLE-BLANK@@ ~*/
     return obj;
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ * This function freezes the properties of an object based on a provided schema or keys.
+ * If a property is missing, it throws an error.
+ * @param {Partial<T>} data The object whose properties are to be frozen.
+ * @param {...Array<keyof T> | [T]} keysOrSchema The keys or schema to freeze the properties.
+ * @returns {T} - The object with frozen properties.
+ * @throws {Error} - Throws an error if a property is missing.
+ */
 function objFreezeProps(data, ...keysOrSchema) {
     const firstArg = keysOrSchema[0];
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // If the first argument is an object and not an array, treat it as a schema
     if (firstArg instanceof Object && !Array.isArray(firstArg)) {
         const schema = firstArg;
         for (const key in schema) {
@@ -1032,15 +1334,20 @@ function objFreezeProps(data, ...keysOrSchema) {
         }
     }
     else {
+        // If the first argument is not an object or is an array, treat it as an array of keys
         for (const key of keysOrSchema) {
             if (data[key] === undefined) {
                 throw new Error(`Missing value for ${String(key)}`);
             }
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // Return the data as type T
     return data;
 }
-
+// #endregion ▄▄▄▄▄ OBJECTS ▄▄▄▄▄
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████ ~
 const getDynamicFunc = (funcName, func, context) => {
     if (typeof func === "function") {
         const dFunc = { [funcName](...args) { return func(...args); } }[funcName];
@@ -1048,14 +1355,25 @@ const getDynamicFunc = (funcName, func, context) => {
     }
     return false;
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 const withLog = (fn) => {
     return (...args) => {
         console.log(`calling ${fn.name}`);
         return fn(...args);
     };
 };
-
+// #endregion ▄▄▄▄▄ FUNCTIONS ▄▄▄▄▄
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████ ~
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ░░░░░░░[GreenSock]░░░░ Wrappers for GreenSock Functions ░░░░░░░ ~
 const set = (targets, vars) => gsap.set(targets, vars);
+/**
+ *
+ * @param target
+ * @param property
+ * @param unit
+ */
 function get(target, property, unit) {
     if (unit) {
         const propVal = regExtract(gsap.getProperty(target, property, unit), /[\d.]+/);
@@ -1066,8 +1384,11 @@ function get(target, property, unit) {
     }
     return gsap.getProperty(target, property);
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 const getGSAngleDelta = (startAngle, endAngle) => signNum(roundNum(getAngleDelta(startAngle, endAngle), 2)).replace(/^(.)/, "$1=");
-
+// #endregion ░░░░[GreenSock]░░░░
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ░░░░░░░[SVG]░░░░ SVG Generation & Manipulation ░░░░░░░ ~
 const getRawCirclePath = (r, { x: xO, y: yO } = { x: 0, y: 0 }) => {
     [r, xO, yO] = [r, xO, yO].map((val) => roundNum(val, 2));
     const [b1, b2] = [0.4475 * r, (1 - 0.4475) * r];
@@ -1092,7 +1413,9 @@ const drawCirclePath = (radius, origin) => {
     path.push("z");
     return path.join(" ");
 };
-
+// #endregion ░░░░[SVG]░░░░
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ░░░░░░░[Colors]░░░░ Color Manipulation ░░░░░░░ ~
 const getColorVals = (red, green, blue, alpha) => {
     if (isRGBColor(red)) {
         [red, green, blue, alpha] = red
@@ -1130,7 +1453,11 @@ const getRGBString = (red, green, blue, alpha) => {
     return null;
 };
 const getHEXString = (red, green, blue) => {
-        function componentToHex(c) {
+    /**
+     *
+     * @param c
+     */
+    function componentToHex(c) {
         const hex = c.toString(16);
         return hex.length === 1 ? `0${hex}` : hex;
     }
@@ -1154,19 +1481,26 @@ const getContrastingColor = (...colorVals) => {
     return null;
 };
 const getRandomColor = () => getRGBString(gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1));
-
+// #endregion ░░░░[Colors]░░░░
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ░░░░░░░[DOM]░░░░ DOM Manipulation ░░░░░░░ ~
 const getSiblings = (elem) => {
     const siblings = [];
+    // If no parent, return no sibling
     if (!elem.parentNode) {
         return siblings;
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     Array.from(elem.parentNode.children).forEach((sibling) => {
         if (sibling !== elem) {
             siblings.push(sibling);
         }
     });
+    /*~ @@DOUBLE-BLANK@@ ~*/
     return siblings;
 };
+// #endregion ░░░░[DOM]░░░░
+/*~ @@DOUBLE-BLANK@@ ~*/
 const escapeHTML = (str) => (typeof str === "string"
     ? str
         .replace(/&/g, "&amp;")
@@ -1175,10 +1509,15 @@ const escapeHTML = (str) => (typeof str === "string"
         .replace(/"/g, "&quot;")
         .replace(/[`']/g, "&#039;")
     : str);
-
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #endregion ▄▄▄▄▄ HTML ▄▄▄▄▄
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████ ~
 const sleep = (duration) => new Promise((resolve) => {
     setTimeout(resolve, duration >= 100 ? duration : duration * 1000);
 });
+// #endregion ▄▄▄▄▄ ASYNC ▄▄▄▄▄
+/*~ @@DOUBLE-BLANK@@ ~*/
 const EventHandlers = {
     onTextInputBlur: async (inst, event) => {
         const elem = event.target;
@@ -1204,6 +1543,7 @@ const EventHandlers = {
     onSelectChange: async (inst, event) => {
         const elem = event.currentTarget;
         const { action, dtype, target, flagTarget } = elem.dataset;
+        /*~ @@DOUBLE-BLANK@@ ~*/
         if (!action) {
             throw new Error("Select elements require a data-action attribute.");
         }
@@ -1246,13 +1586,17 @@ const EventHandlers = {
         }
     }
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #region ████████ FOUNDRY: Requires Configuration of System ID in constants.ts ████████ ~
+/*~ @@DOUBLE-BLANK@@ ~*/
 const isDocID = (docRef, isUUIDok = true) => {
     return typeof docRef === "string" && (isUUIDok
         ? /^(.*\.)?[A-Za-z0-9]{16}$/.test(docRef)
         : /^[A-Za-z0-9]{16}$/.test(docRef));
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 const loc = (locRef, formatDict = {}) => {
-    if (/[a-z]/.test(locRef)) {
+    if (/[a-z]/.test(locRef)) { // Reference contains lower-case characters: add system ID namespacing to dot notation
         locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}.)*`), `${C.SYSTEM_ID}.`);
     }
     if (typeof game.i18n.localize(locRef) === "string") {
@@ -1263,13 +1607,29 @@ const loc = (locRef, formatDict = {}) => {
     }
     return locRef;
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 const getSetting = (setting) => game.settings.get(C.SYSTEM_ID, setting);
+/**
+ *
+ * @param subFolder
+ * @param fileName
+ */
 function getTemplatePath(subFolder, fileName) {
     if (typeof fileName === "string") {
         return `${C.TEMPLATE_ROOT}/${subFolder}/${fileName.replace(/\..*$/, "")}.hbs`;
     }
     return fileName.map((fName) => getTemplatePath(subFolder, fName));
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
+// DisplayImageSelector: Displays a file selector in tiles mode at the indicated path root.
+/**
+ *
+ * @param callback
+ * @param pathRoot
+ * @param position
+ * @param position.top
+ * @param position.left
+ */
 function displayImageSelector(callback, pathRoot = `systems/${C.SYSTEM_ID}/assets`, position = { top: 200, left: 200 }) {
     const fp = new FilePicker({
         type: "image",
@@ -1281,8 +1641,14 @@ function displayImageSelector(callback, pathRoot = `systems/${C.SYSTEM_ID}/asset
     });
     return fp.browse(pathRoot);
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
+// #endregion ▄▄▄▄▄ FOUNDRY ▄▄▄▄▄
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default {
+    // ████████ GETTERS: Basic Data Lookup & Retrieval ████████
     GMID, getUID,
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████
     isNumber, isNumberString, isBooleanString, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
     isHTMLCode, isRGBColor, isHexColor,
     isUndefined, isDefined, isEmpty, hasItems, isInstance, isNullish,
@@ -1290,41 +1656,73 @@ export default {
     pFloat, pInt, radToDeg, degToRad,
     getKey,
     assertNonNullType,
+    /*~ @@DOUBLE-BLANK@@ ~*/
     FILTERS,
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // ████████ REGEXP: Regular Expressions, Replacing, Matching ████████
     testRegExp,
     regExtract,
-
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // ████████ STRINGS: String Parsing, Manipulation, Conversion ████████
+    // ░░░░░░░ Case Conversion ░░░░░░░
     uCase, lCase, sCase, tCase,
-    unhyphenate, pluralize, oxfordize, ellipsize, pad,
+    // ░░░░░░░ Formatting ░░░░░░░
+    /* hyphenate, */ unhyphenate, pluralize, oxfordize, ellipsize, pad,
     toKey,
     parseArticles,
     signNum, padNum, stringifyNum, verbalizeNum, ordinalizeNum, romanizeNum,
+    // ░░░░░░░ Content ░░░░░░░
     loremIpsum, randString, randWord,
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // ████████ SEARCHING: Searching Various Data Types w/ Fuzzy Matching ████████
     fuzzyMatch, isIn, isInExact,
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // ████████ NUMBERS: Number Casting, Mathematics, Conversion ████████
     randNum, randInt,
     coinFlip,
     cycleNum, cycleAngle, roundNum, clampNum,
     sum, average,
+    // ░░░░░░░ Positioning ░░░░░░░
     getDistance,
     getAngle, getAngleDelta,
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // ████████ ARRAYS: Array Manipulation ████████
     randElem, randIndex,
     makeIntRange,
     makeCycler,
     unique, group, sample,
     getLast, removeFirst, pullElement, pullIndex,
     subGroup, shuffle,
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████
     remove, replace, partition,
     objClean, objSize, objMap, objFindKey, objFilter, objForEach, objCompact,
     objClone, objMerge, objDiff, objExpand, objFlatten, objNullify,
     objFreezeProps,
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████
     getDynamicFunc, withLog,
-
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
+    // ░░░░░░░ GreenSock ░░░░░░░
     gsap, get, set, getGSAngleDelta,
+    /*~ @@DOUBLE-BLANK@@ ~*/
     getRawCirclePath, drawCirclePath,
+    /*~ @@DOUBLE-BLANK@@ ~*/
     getColorVals, getRGBString, getHEXString, getContrastingColor, getRandomColor,
+    /*~ @@DOUBLE-BLANK@@ ~*/
     getSiblings,
+    /*~ @@DOUBLE-BLANK@@ ~*/
     escapeHTML,
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████
     sleep,
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // EVENT HANDLERS
     EventHandlers,
+    // ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
     isDocID, loc, getSetting, getTemplatePath, displayImageSelector
+    /*~ @@DOUBLE-BLANK@@ ~*/
 };
+// #endregion ▄▄▄▄▄ EXPORTS ▄▄▄▄▄
+/*~ @@DOUBLE-BLANK@@ ~*/ 

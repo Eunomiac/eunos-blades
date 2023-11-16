@@ -89,6 +89,7 @@
 
       #chat {
         @import "./core/reset";
+        @import './core/globals';
 
         &,
         * {

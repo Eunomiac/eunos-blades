@@ -1,10 +1,4 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
+/* eslint-disable no-shadow */
 export var BladesPermissions;
 (function (BladesPermissions) {
     BladesPermissions[BladesPermissions["NONE"] = CONST.DOCUMENT_PERMISSION_LEVELS.NONE] = "NONE";
@@ -12,6 +6,7 @@ export var BladesPermissions;
     BladesPermissions[BladesPermissions["FULL"] = CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER] = "FULL";
     BladesPermissions[BladesPermissions["OWNER"] = CONST.DOCUMENT_PERMISSION_LEVELS.OWNER] = "OWNER";
 })(BladesPermissions || (BladesPermissions = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var BladesActorType;
 (function (BladesActorType) {
     BladesActorType["pc"] = "pc";
@@ -19,6 +14,7 @@ export var BladesActorType;
     BladesActorType["crew"] = "crew";
     BladesActorType["faction"] = "faction";
 })(BladesActorType || (BladesActorType = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var BladesItemType;
 (function (BladesItemType) {
     BladesItemType["ability"] = "ability";
@@ -44,6 +40,7 @@ export var BladesItemType;
     BladesItemType["location"] = "location";
     BladesItemType["score"] = "score";
 })(BladesItemType || (BladesItemType = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var PrereqType;
 (function (PrereqType) {
     PrereqType["HasActiveItem"] = "HasActiveItem";
@@ -51,12 +48,14 @@ export var PrereqType;
     PrereqType["AdvancedPlaybook"] = "AdvancedPlaybook";
     PrereqType["HasAllTags"] = "HasAllTags";
     PrereqType["HasAnyTag"] = "HasAnyTag";
+    /*~ @@DOUBLE-BLANK@@ ~*/
     PrereqType["Not_HasActiveItem"] = "Not_HasActiveItem";
     PrereqType["Not_HasActiveItemsByTag"] = "Not_HasActiveItemsByTag";
     PrereqType["Not_AdvancedPlaybook"] = "Not_AdvancedPlaybook";
     PrereqType["Not_HasAllTags"] = "Not_HasAllTags";
     PrereqType["Not_HasAnyTag"] = "Not_HasAnyTag";
 })(PrereqType || (PrereqType = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var District;
 (function (District) {
     District["Barrowcleft"] = "Barrowcleft";
@@ -102,6 +101,7 @@ export var OtherDistrict;
     OtherDistrict["Old North Port"] = "Old North Port";
     OtherDistrict["Deathlands"] = "Deathlands";
 })(OtherDistrict || (OtherDistrict = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var AttributeTrait;
 (function (AttributeTrait) {
     AttributeTrait["insight"] = "insight";
@@ -144,6 +144,7 @@ export var ActionTrait;
     ActionTrait["consort"] = "consort";
     ActionTrait["sway"] = "sway";
 })(ActionTrait || (ActionTrait = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var DowntimeAction;
 (function (DowntimeAction) {
     DowntimeAction["AcquireAsset"] = "AcquireAsset";
@@ -153,6 +154,7 @@ export var DowntimeAction;
     DowntimeAction["ReduceHeat"] = "ReduceHeat";
     DowntimeAction["Train"] = "Train";
 })(DowntimeAction || (DowntimeAction = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollPermissions;
 (function (RollPermissions) {
     RollPermissions["Primary"] = "Primary";
@@ -160,6 +162,7 @@ export var RollPermissions;
     RollPermissions["GM"] = "GM";
     RollPermissions["Participant"] = "Participant";
 })(RollPermissions || (RollPermissions = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollType;
 (function (RollType) {
     RollType["Action"] = "Action";
@@ -167,6 +170,7 @@ export var RollType;
     RollType["Fortune"] = "Fortune";
     RollType["IndulgeVice"] = "IndulgeVice";
 })(RollType || (RollType = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollSubType;
 (function (RollSubType) {
     RollSubType["Incarceration"] = "Incarceration";
@@ -175,6 +179,7 @@ export var RollSubType;
     RollSubType["GroupLead"] = "GroupLead";
     RollSubType["GroupParticipant"] = "GroupParticipant";
 })(RollSubType || (RollSubType = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var ConsequenceType;
 (function (ConsequenceType) {
     ConsequenceType["ReducedEffect"] = "ReducedEffect";
@@ -197,6 +202,7 @@ export var ConsequenceType;
     ConsequenceType["ResolveHarm4"] = "ResolveHarm4";
     ConsequenceType["None"] = "None";
 })(ConsequenceType || (ConsequenceType = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollModStatus;
 (function (RollModStatus) {
     RollModStatus["Hidden"] = "Hidden";
@@ -206,6 +212,7 @@ export var RollModStatus;
     RollModStatus["ForcedOn"] = "ForcedOn";
     RollModStatus["Dominant"] = "Dominant";
 })(RollModStatus || (RollModStatus = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollModSection;
 (function (RollModSection) {
     RollModSection["roll"] = "roll";
@@ -235,6 +242,7 @@ export var Factor;
     Factor["scale"] = "scale";
     Factor["magnitude"] = "magnitude";
 })(Factor || (Factor = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollResult;
 (function (RollResult) {
     RollResult["critical"] = "critical";
@@ -242,14 +250,24 @@ export var RollResult;
     RollResult["partial"] = "partial";
     RollResult["fail"] = "fail";
 })(RollResult || (RollResult = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollPhase;
 (function (RollPhase) {
+    // Collaboration: Before GM toggles "Roll" button for player to click.
     RollPhase["Collaboration"] = "Collaboration";
+    // AwaitingRoll: Waiting for player to click "ROLL"
     RollPhase["AwaitingRoll"] = "AwaitingRoll";
+    // ApplyingConsequences: Waiting for GM to select consequence(s), AI to
+    //                       respond with resistance options, and GM to select
+    //                       resistance options.
     RollPhase["ApplyingConsequences"] = "ApplyingConsequences";
+    // AwaitingChatInput: Consequences and player options output to chat;
+    //                    awaiting player choice there
     RollPhase["AwaitingChatInput"] = "AwaitingChatInput";
+    // Complete: Roll finished (but may trigger another roll, e.g. resistance)
     RollPhase["Complete"] = "Complete";
 })(RollPhase || (RollPhase = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var Harm;
 (function (Harm) {
     Harm["Weakened"] = "Weakened";
@@ -257,6 +275,7 @@ export var Harm;
     Harm["Broken"] = "Broken";
     Harm["Dead"] = "Dead";
 })(Harm || (Harm = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var Vice;
 (function (Vice) {
     Vice["Faith"] = "Faith";
@@ -272,6 +291,7 @@ export var Vice;
     Vice["Electroplasmic_Power"] = "Electroplasmic_Power";
     Vice["Servitude"] = "Servitude";
 })(Vice || (Vice = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var Playbook;
 (function (Playbook) {
     Playbook["Cutter"] = "Cutter";
@@ -292,6 +312,7 @@ export var Playbook;
     Playbook["Smugglers"] = "Smugglers";
     Playbook["Vigilantes"] = "Vigilantes";
 })(Playbook || (Playbook = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var AdvancementPoint;
 (function (AdvancementPoint) {
     AdvancementPoint["UpgradeOrAbility"] = "UpgradeOrAbility";
@@ -316,6 +337,7 @@ export var AdvancementPoint;
     AdvancementPoint["consort"] = "consort";
     AdvancementPoint["sway"] = "sway";
 })(AdvancementPoint || (AdvancementPoint = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 export var BladesPhase;
 (function (BladesPhase) {
     BladesPhase["CharGen"] = "CharGen";
@@ -325,6 +347,7 @@ export var BladesPhase;
 })(BladesPhase || (BladesPhase = {}));
 export var Tag;
 (function (Tag) {
+    /*~ @@DOUBLE-BLANK@@ ~*/
     let System;
     (function (System) {
         System["Archived"] = "Archived";
@@ -354,7 +377,7 @@ export var Tag;
         Invention["SparkCraft"] = "SparkCraft";
         Invention["Alchemical"] = "Alchemical";
         Invention["Mundane"] = "Mundane";
-        Invention["Ritual"] = "Ritual";
+        Invention["Ritual"] = "Ritual"; // Rituals
     })(Invention = Tag.Invention || (Tag.Invention = {}));
     let GearCategory;
     (function (GearCategory) {
@@ -380,6 +403,7 @@ export var Tag;
         GangType["Vehicle"] = "Vehicle";
     })(GangType = Tag.GangType || (Tag.GangType = {}));
 })(Tag || (Tag = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 const C = {
     SYSTEM_ID: "eunos-blades",
     SYSTEM_NAME: "Euno's Blades",
@@ -517,27 +541,50 @@ const C = {
         [ConsequenceType.ResolveHarm4]: "spikes|eyeball|iris",
         [ConsequenceType.None]: ""
     },
+    RollResultDescriptions: {
+        [Position.controlled]: {
+            [RollResult.critical]: "You critically succeed from a controlled position!",
+            [RollResult.success]: "You fully succeed from a controlled position!",
+            [RollResult.partial]: "You partially succeed from a controlled position!",
+            [RollResult.fail]: "You fail from a controlled position!"
+        },
+        [Position.risky]: {
+            [RollResult.critical]: "You critically succeed from a risky position!",
+            [RollResult.success]: "You fully succeed from a risky position!",
+            [RollResult.partial]: "You partially succeed from a risky position!",
+            [RollResult.fail]: "You fail from a risky position!"
+        },
+        [Position.desperate]: {
+            [RollResult.critical]: "You critically succeed from a desperate position!",
+            [RollResult.success]: "You fully succeed from a desperate position!",
+            [RollResult.partial]: "You partially succeed from a desperate position!",
+            [RollResult.fail]: "You fail from a desperate position!"
+        },
+    },
     //
     Colors: {
         bWHITE: "rgba(255, 255, 255, 1)",
         WHITE: "rgba(200, 200, 200, 1)",
         bGREY: "rgba(170, 170, 170, 1)",
-        GREY: "rgba(128, 128, 128, 1)",
-        dGREY: "rgba(78, 78, 78, 1)",
-        BLACK: "rgba(16, 16, 16, 1)",
+        GREY: "rgba(119, 119, 119, 1)",
+        dGREY: "rgba(68, 68, 68, 1)",
+        BLACK: "rgba(32, 32, 32, 1)",
         dBLACK: "rgba(0, 0, 0, 1)",
-        gGOLD: "rgba(255, 254, 200, 1)",
-        bGOLD: "rgba(171, 146, 84, 1)",
-        GOLD: "rgba(253, 212, 112, 1)",
-        dGOLD: "rgba(65, 61, 46, 1)",
-        RED: "rgba(155, 32, 32, 1)",
-        dRED: "rgba(70, 14, 14, 1)",
-        bRED: "rgba(240, 50, 50, 1)",
-        gRED: "rgba(255, 0, 0, 1)",
-        BLUE: "rgba(43, 85, 139, 1)",
-        dBLUE: "rgba(17, 33, 54, 1)",
-        bBLUE: "rgba(69, 137, 224, 1)",
-        gBLUE: "rgba(128, 185, 255, 1)"
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        bGOLD: "rgba(255,216, 44, 1)",
+        GOLD: "rgba(215,175,  0, 1)",
+        dGOLD: "rgba(165,134,  0, 1)",
+        ddGOLD: "rgba(103, 83,  0, 1)",
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        bRED: "rgba(255, 0, 0, 1)",
+        RED: "rgba(200, 0, 0, 1)",
+        dRED: "rgba(150,  0,  0, 1)",
+        ddRED: "rgba(50,  0,  0, 1)",
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        bBLUE: "rgba(   0,224,224, 1)",
+        BLUE: "rgba(52,213,213, 1)",
+        dBLUE: "rgba(0,118,118, 1)",
+        ddBLUE: "rgba(0, 77, 77, 1)"
     },
     Loadout: {
         selections: [
@@ -863,6 +910,7 @@ const C = {
         Hound: {
             "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/hound-trans.svg",
             "system.tagline": "A Deadly Sharpshooter & Tracker",
+            // "system.acquaintances_name": "Deadly Friends & Rivals",
             "system.friends_name": "Deadly Friends",
             "system.rivals_name": "Deadlier Rivals",
             "system.starting_stats.chargen": {
@@ -889,6 +937,7 @@ const C = {
         Leech: {
             "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/leech-trans.svg",
             "system.tagline": "A Saboteur & Technician",
+            // "system.acquaintances_name": "Clever Friends & Rivals",
             "system.friends_name": "Clever Friends",
             "system.rivals_name": "Cleverer Rivals",
             "system.starting_stats.chargen": {
@@ -915,6 +964,7 @@ const C = {
         Lurk: {
             "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/lurk-trans.svg",
             "system.tagline": "A Stealthy Infiltrator & Burglar",
+            // "system.acquaintances_name": "Shady Friends & Rivals",
             "system.friends_name": "Shady Friends",
             "system.rivals_name": "Shadier Rivals",
             "system.starting_stats.chargen": {
@@ -941,6 +991,7 @@ const C = {
         Slide: {
             "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/slide-trans.svg",
             "system.tagline": "A Subtle Manipulator & Spy",
+            // "system.acquaintances_name": "Sly Friends & Rivals",
             "system.friends_name": "Sly Friends",
             "system.rivals_name": "Slyer Rivals",
             "system.starting_stats.chargen": {
@@ -967,6 +1018,7 @@ const C = {
         Spider: {
             "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/spider-trans.svg",
             "system.tagline": "A Devious Mastermind",
+            // "system.acquaintances_name": "Shrewd Friends & Rivals",
             "system.friends_name": "Shrewd Friends",
             "system.rivals_name": "Very Shrewd Rivals",
             "system.starting_stats.chargen": {
@@ -993,6 +1045,7 @@ const C = {
         Whisper: {
             "system.bgImg": "systems/eunos-blades/assets/icons/class-icons/whisper-trans.svg",
             "system.tagline": "An Arcane Adept & Channeler",
+            // "system.acquaintances_name": "Strange Friends & Rivals",
             "system.friends_name": "Strange Friends",
             "system.rivals_name": "Stranger Rivals",
             "system.starting_stats.chargen": {
@@ -1160,6 +1213,7 @@ const C = {
         Vice.Electroplasmic_Power
     ]
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 export const Randomizers = {
     NPC: {
         heritage: [
@@ -4309,6 +4363,7 @@ export const Randomizers = {
         ]
     }
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 export const SVGDATA = {
     overlayScale: 0.25,
     keys: {
@@ -4397,6 +4452,7 @@ export const SVGDATA = {
             12: "M300.014,26.771C270.593,9.748,236.436,0,200,0v200L300.014,26.771z"
         },
         glows: {
+        /*~ @@DOUBLE-BLANK@@ ~*/
         }
     },
     teeth: {
@@ -4629,4 +4685,6 @@ export const SVGDATA = {
         }
     }
 };
+/*~ @@DOUBLE-BLANK@@ ~*/
 export default C;
+/*~ @@DOUBLE-BLANK@@ ~*/ 

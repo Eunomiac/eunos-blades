@@ -1,23 +1,23 @@
-/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
-|*     ▌█░░░░░░░░░ Euno's Blades in the Dark for Foundry VTT ░░░░░░░░░░░█▐     *|
-|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
-|*     ▌█  License █ v0.1.0 ██▐     *|
-|*     ▌████░░░░  ░░░░█████▐     *|
-\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
-
 import U from "../../core/utilities.js";
 import { BladesActorType, BladesPhase, Tag, Randomizers } from "../../core/constants.js";
 import BladesItemSheet from "./BladesItemSheet.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
 import { BladesActor } from "../../documents/BladesActorProxy.js";
 import { BladesScore } from "../../documents/BladesItemProxy.js";
 import BladesRoll, { BladesRollOpposition } from "../../BladesRoll.js";
+/*~ @@DOUBLE-BLANK@@ ~*/
+/* #region BladesTipGenerator */
+/*~ @@DOUBLE-BLANK@@ ~*/
+// eslint-disable-next-line no-shadow
 export var BladesTipContext;
 (function (BladesTipContext) {
     BladesTipContext["DiceRoll"] = "DiceRoll";
     BladesTipContext["Combat"] = "Combat";
     BladesTipContext["General"] = "General";
 })(BladesTipContext || (BladesTipContext = {}));
+/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesTipGenerator {
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static get Tips() {
         return {
             [BladesTipContext.DiceRoll]: [],
@@ -34,15 +34,21 @@ class BladesTipGenerator {
                 "Rolling the dice always means SOMETHING happens.",
                 "Jump straight to the action; don't waste time on establishing scenes or filler.",
                 "Invoke elements of characters' backstories or beliefs to make any scene more personal."
+                /*~ @@DOUBLE-BLANK@@ ~*/
             ]
         };
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     tipContext;
+    /*~ @@DOUBLE-BLANK@@ ~*/
     constructor(tipContext) {
         this.tipContext = tipContext;
     }
 }
+/* #endregion */
+/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesScoreSheet extends BladesItemSheet {
+    /*~ @@DOUBLE-BLANK@@ ~*/
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "item", "score-sheet"],
@@ -52,7 +58,9 @@ class BladesScoreSheet extends BladesItemSheet {
             height: 970
         });
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async generateRandomizerData(category) {
+        // Generate full set of random data.
         const randomData = {
             Bargains: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Bargains
                 .filter((bData) => !Object.values(this.document.system.randomizers.Bargains)
@@ -92,6 +100,8 @@ class BladesScoreSheet extends BladesItemSheet {
                 return [k, v];
             }))
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // If category specified, replace all other categories with stored data
         if (category) {
             Object.keys(randomData)
                 .filter((cat) => cat !== category)
@@ -100,12 +110,16 @@ class BladesScoreSheet extends BladesItemSheet {
                 randomData[_cat] = this.document.system.randomizers[_cat];
             });
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Combine locked data stored in system with randomly-generated data
         const finalRandomData = {
             Bargains: {},
             Obstacles: {},
             NPCs: {},
             Scores: {}
         };
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Iterate through all randomizer categories. If system entry isLocked, use that, or use newly-generated data
         Object.keys(randomData).forEach((cat) => {
             const _cat = cat;
             Object.keys(randomData[_cat]).forEach((index) => {
@@ -117,11 +131,17 @@ class BladesScoreSheet extends BladesItemSheet {
                 }
             });
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Overwrite stored data with newly generated & merged randomizer data
         await this.document.update({ "system.randomizers": finalRandomData });
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     getData() {
         const context = super.getData();
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const sheetData = {};
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Get player characters, assign simplified actionData that I probably should have coded them with from the start
         sheetData.playerCharacters = BladesActor.GetTypeWithTags(BladesActorType.pc, Tag.PC.ActivePC)
             .map((pc) => {
             return Object.assign(pc, {
@@ -140,6 +160,8 @@ class BladesScoreSheet extends BladesItemSheet {
                 }))
             });
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Prune system data for blank/empty opposition entries
         const validOppositions = {};
         for (const [id, data] of Object.entries(context.system.oppositions)) {
             if (!data.rollOppName && !data.rollOppSubName) {
@@ -148,11 +170,13 @@ class BladesScoreSheet extends BladesItemSheet {
             validOppositions[id] = data;
         }
         context.system.oppositions = validOppositions;
+        /*~ @@DOUBLE-BLANK@@ ~*/
         return {
             ...context,
             ...sheetData
         };
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _toggleRandomizerLock(event) {
         const elem$ = $(event.currentTarget);
         const elemCat = elem$.data("category");
@@ -162,18 +186,22 @@ class BladesScoreSheet extends BladesItemSheet {
             this.document.update({ [`system.randomizers.${elemCat}.${elemIndex}.isLocked`]: false });
         }
         else {
+            /*~ @@DOUBLE-BLANK@@ ~*/
             this.document.update({ [`system.randomizers.${elemCat}.${elemIndex}.isLocked`]: true });
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _selectImage(event) {
         const elem$ = $(event.currentTarget);
         const imageNum = elem$.data("imgNum");
         this.document.update({ "system.imageSelected": imageNum });
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _deselectOrDeleteImage(event) {
         const elem$ = $(event.currentTarget);
         const imageNum = elem$.data("imgNum");
         if (this.document.system.imageSelected === imageNum) {
+            /*~ @@DOUBLE-BLANK@@ ~*/
             this.document.update({ "system.-=imageSelected": null });
             return;
         }
@@ -183,12 +211,14 @@ class BladesScoreSheet extends BladesItemSheet {
                 .filter((_, i) => U.pInt(imageNum) !== i)))
         }));
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _addImage() {
         U.displayImageSelector((path) => {
             const imgIndex = U.objSize(this.document.system.images);
             return this.document.update({ [`system.images.${imgIndex}`]: path });
         }, "systems/eunos-blades/assets", this.position);
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _selectRollOpposition(event) {
         eLog.checkLog3("Select Roll Opposition", { event });
         const elem$ = $(event.currentTarget);
@@ -198,6 +228,7 @@ class BladesScoreSheet extends BladesItemSheet {
             BladesRoll.Active.rollOpposition = new BladesRollOpposition(BladesRoll.Active, this.document.system.oppositions[oppId]);
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     _triggerRandomize(event) {
         const elem$ = $(event.currentTarget);
         const category = elem$.data("category");
@@ -208,6 +239,7 @@ class BladesScoreSheet extends BladesItemSheet {
             this.generateRandomizerData();
         }
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async _updateGMNotesOnPC(event) {
         const elem$ = $(event.currentTarget);
         const actor = BladesActor.Get(elem$.data("id"));
@@ -219,8 +251,10 @@ class BladesScoreSheet extends BladesItemSheet {
         await actor.update({ "system.gm_notes": updateText });
         eLog.checkLog3("scoreSheet", "Updated!", { gm_notes: actor.system.gm_notes });
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     activateListeners(html) {
         super.activateListeners(html);
+        /*~ @@DOUBLE-BLANK@@ ~*/
         html.find("[data-action='select-image']").on({
             click: this._selectImage.bind(this),
             contextmenu: this._deselectOrDeleteImage.bind(this)
@@ -237,22 +271,28 @@ class BladesScoreSheet extends BladesItemSheet {
         html.find("[data-action='randomize'").on({
             click: this._triggerRandomize.bind(this)
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         html.find("textarea.pc-summary-notes-body").on({
             change: this._updateGMNotesOnPC.bind(this)
         });
     }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     async _onSubmit(event, params = {}) {
         eLog.checkLog3("scoreSheet", "_onSubmit()", { event, params, elemText: event.currentTarget.innerHTML });
         let isForcingRender = true;
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const prevPhase = this.item.system.phase;
         const submitData = await super._onSubmit(event, params);
+        /*~ @@DOUBLE-BLANK@@ ~*/
         const newPhase = this.item.system.phase;
         if (prevPhase !== newPhase) {
             switch (prevPhase) {
                 case BladesPhase.CharGen: {
+                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
                 case BladesPhase.Freeplay: {
+                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
                 case BladesPhase.Score: {
@@ -262,22 +302,29 @@ class BladesScoreSheet extends BladesItemSheet {
                     break;
                 }
                 case BladesPhase.Downtime: {
+                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
+                // No default
             }
             switch (newPhase) {
                 case BladesPhase.CharGen: {
+                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
                 case BladesPhase.Freeplay: {
+                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
                 case BladesPhase.Score: {
+                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
                 case BladesPhase.Downtime: {
+                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
+                // No default
             }
         }
         if (isForcingRender) {
@@ -287,5 +334,7 @@ class BladesScoreSheet extends BladesItemSheet {
         return submitData;
     }
 }
+/*~ @@DOUBLE-BLANK@@ ~*/
 export { BladesTipGenerator };
 export default BladesScoreSheet;
+/*~ @@DOUBLE-BLANK@@ ~*/ 

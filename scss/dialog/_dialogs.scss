@@ -84,7 +84,7 @@
 
           .comp.fine-quality {
             .comp-body {
-              .comp-title { color: var(--blades-cyan) }
+              .comp-title { color: var(--blades-blue) }
             }
           }
 
@@ -185,7 +185,7 @@
       width: 600px;
       background: var(--section-bg-color);
 
-      &.consequence-section-controlled { --section-bg-color: var(--blades-cyan-dark-fade) }
+      &.consequence-section-controlled { --section-bg-color: var(--blades-blue-dark-fade) }
       &.consequence-section-risky { --section-bg-color: transparent }
       &.consequence-section-desperate { --section-bg-color: var(--blades-red-dark-fade-strong) }
 
@@ -201,7 +201,7 @@
         text-shadow: none;
         box-shadow: none;
 
-        &.consequence-header-controlled { --h1-color: var(--blades-cyan) }
+        &.consequence-header-controlled { --h1-color: var(--blades-blue) }
         &.consequence-header-risky { --h1-color: var(--blades-grey-bright) }
         &.consequence-header-desperate { --h1-color: var(--blades-red) }
       }
