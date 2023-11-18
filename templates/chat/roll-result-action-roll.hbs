@@ -1,3 +1,5 @@
+{{log ">> THIS >>" this}}
+
 <div class="chat-message-bg roll-position-{{finalPosition}}"></div>
 
 <div class="blades-roll roll-type-{{case "lower" rollType}} roll-position-{{finalPosition}} roll-effect-{{finalEffect}} roll-result-{{rollResult}}">
@@ -15,33 +17,47 @@
   </h3>
   {{/if}}
 
-  {{!-- Position & Effect --}}
-  <div class="roll-states flex-horizontal full-width">
+  {{!-- Dice Rolls --}}
+  <div class="dice-roll-strip">{{{dieValsHTML}}}</div>
+
+  {{!-- Position / Result / Effect --}}
+  <div class="roll-outcome-container roll-result-{{rollResult}} flex-horizontal full-width">
+
+    {{!-- Position --}}
     <div class="roll-state-container flex-vertical">
       <h3 class="roll-state roll-state-position roll-state-position-{{finalPosition}}">{{case "title" finalPosition}}</h3>
       <h4 class="roll-state-label">Position</h4>
     </div>
+
+    {{!-- Result --}}
+    <div class="roll-result-container roll-result-{{rollResult}} flex-vertical">
+      {{#if (test rollResult "==" "critical")}}
+      <h2 class="roll-result-label roll-result-top-label">Critical</h2>
+      <h3 class="roll-result-label roll-result-bottom-label">Success!</h3>
+      {{else if (test rollResult "==" "success")}}
+      <h2 class="roll-result-label roll-result-main-label">Success!</h2>
+      {{else if (test rollResult "==" "partial")}}
+      <h2 class="roll-result-label roll-result-top-label">Success</h2>
+      <h3 class="roll-result-label roll-result-bottom-label">with Consequences:</h3>
+      {{else if (test rollResult "==" "fail")}}
+      <h2 class="roll-result-label roll-result-main-label">Fail</h2>
+      {{/if}}
+    </div>
+
+    {{!-- Effect --}}
     <div class="roll-state-container flex-vertical">
       <h3 class="roll-state roll-state-effect roll-state-effect-{{finalEffect}}">{{case "title" finalEffect}}</h3>
       <h4 class="roll-state-label">Effect</h4>
     </div>
+
   </div>
-
-  {{!-- Dice Rolls --}}
-  <div class="dice-roll-strip">{{{dieValsHTML}}}</div>
-
-  {{!-- Roll Result --}}
-  <h2 class="roll-result roll-result-{{rollResult}}">{{case "upper" rollResult}}</h2>
-
-  {{!-- Roll Result Description --}}
-  <p class="roll-result-description roll-result-{{rollResult}}">{{rollResultDescription}}</p>
 
   {{!-- Consequences --}}
   {{#if (test rollResult "==" "partial")}}
   <div class="consequence-container flex-vertical full-width">
-  {{log "ConsequenceContainer" this}}
-  {{#with (lookup flagData.consequenceData finalPosition) as |csqData|}}
+  {{#with (lookup rollFlags.consequenceData finalPosition) as |csqData|}}
   {{#each csqData.partial as |cData cIndex|}}
+    {{eLog "ConsequenceContainer" cIndex csqData cData}}
     {{#if cData.resistedTo}}
     {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
       isResistanceVisible=true }}
@@ -52,7 +68,7 @@
   {{/if}}
   {{#if (test rollResult "==" "fail")}}
   <div class="consequence-container flex-vertical full-width">
-  {{#with (lookup flagData.consequenceData finalPosition) as |csqData|}}
+  {{#with (lookup rollFlags.consequenceData finalPosition) as |csqData|}}
   {{#each csqData.fail as |cData cIndex|}}
     {{#if cData.resistedTo}}
     {{> "systems/eunos-blades/templates/components/consequence.hbs" cData

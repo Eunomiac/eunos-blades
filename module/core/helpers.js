@@ -1,7 +1,5 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import U from "./utilities.js";
-/*~ @@DOUBLE-BLANK@@ ~*/
-import { SVGDATA } from "./constants.js";
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 /*~ @@DOUBLE-BLANK@@ ~*/
 // #region ░░░░░░░[Templates]░░░░ Preload Partials, Components & Overlay Templates ░░░░░░░ ~
@@ -196,19 +194,7 @@ const handlebarHelpers = {
     },
     compileSvg(...args) {
         const [svgDotKey, svgPaths] = args;
-        const svgData = getProperty(SVGDATA, svgDotKey);
-        eLog.checkLog3("compileSvg", { svgDotKey, svgPaths, svgData });
-        if (!svgData) {
-            return "";
-        }
-        const { viewBox, paths, classes } = svgData;
-        return [
-            `<svg viewBox="${viewBox}">`,
-            ...svgPaths
-                .split("|")
-                .map((path) => `<path class="${path} ${classes?.[path] ?? ""}" d="${paths[path] ?? ""}" />`),
-            "</svg>"
-        ].join("\n");
+        return U.getSvgCode(svgDotKey, svgPaths);
     },
     eLog(...args) {
         args.pop();

@@ -190,7 +190,7 @@
 
             .roll-mod-text {
               font-size: 10px;
-              font-family: Oswald, sans-serif;
+              font-family: var(--font-emphasis-narrow);
               text-transform: uppercase;
               margin: 0 10px 0 0;
               color: var(--blades-white);
@@ -236,8 +236,8 @@
     .roll-mod-container {
 
       --roll-mod-size: 30px;
-      --label-font: Kirsty;
-      --sidestring-font: Oswald;
+      --label-font: var(--font-emphasis);
+      --sidestring-font: var(--font-emphasis-narrow);
 
       --glow-animation: anim-glow-gold;
       --roll-mod-bright-color: var(--blades-gold-bright);
@@ -256,7 +256,7 @@
 
         .roll-mod-label {
           .roll-mod-text:last-of-type {
-            --label-font: Oswald;
+            --label-font: var(--font-emphasis-narrow);
             font-weight: bold;
           }
         }
@@ -526,14 +526,13 @@
           display: block;
           // text-align: center;
           font-family: var(--label-font);
-          // font-family: "Oswald";
           // font-variant: small-caps;
           margin-left: 15px;
           line-height: var(--roll-mod-size);
           // margin-top: 2px;
 
           &.roll-mod-sidestring {
-            font-family: Oswald, sans-serif;
+            font-family: var(--font-emphasis-narrow);
             margin-left: 5px;
             text-transform: uppercase;
             font-size: 14px;
@@ -1486,7 +1485,7 @@
                   .roll-num-container.factor-spacer {
                     height: var(--spread-size, 30px);
                     width: var(--spread-size, 30px);
-                    font-family: Oswald, sans-serif;
+                    font-family: var(--font-emphasis-narrow);
                     font-size: 10px;
                     line-height: calc(var(--spread-size, 30px) - 2px);
                     border: 1px var(--roll-factor-inactive-border-style, solid) var(--roll-factor-inactive-border);
@@ -1803,7 +1802,7 @@
 
           .num-spread-label {
             position: absolute;
-            font-family: Oswald, sans-serif;
+            font-family: var(--font-emphasis-narrow);
             font-size: 10px;
             // transform: -50% 0%;
             left: 0%;

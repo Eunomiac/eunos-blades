@@ -76,27 +76,6 @@ class GlobalGetter {
               attribute: AttributeTrait.prowess,
               attributeVal: 3,
               name: "Broken Leg",
-              resistOptions: {
-                0: {
-                  name: "Sprained Ankle",
-                  isSelected: true,
-                  type: ConsequenceType.ProwessHarm1,
-                  icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1],
-                  typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm1]
-                },
-                1: {
-                  name: "Bruised Leg",
-                  isSelected: false,
-                  type: ConsequenceType.ProwessHarm1,
-                  icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1]
-                },
-                2: {
-                  name: "Fractured Foot",
-                  isSelected: false,
-                  type: ConsequenceType.ProwessHarm1,
-                  icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1]
-                }
-              },
               resistedTo: {
                 name: "Sprained Ankle",
                 isSelected: true,
@@ -120,56 +99,24 @@ class GlobalGetter {
               attribute: AttributeTrait.insight,
               attributeVal: 4,
               name: "You Lose Your Footing",
-              /* "resistOptions": {
-                  "0": {
-                      "name": "Stumble",
-                      "isSelected": false
-                  },
-                  "1": {
-                      "name": "Trip",
-                      "isSelected": false
-                  },
-                  "2": {
-                      "name": "",
-                      "type": "None",
-                      "isSelected": true
-                  }
-              }, */
               resistedTo: {
                 name: "",
                 type: ConsequenceType.None,
                 isSelected: true
               },
-              icon: "main",
+              icon: C.ConsequenceIcons[ConsequenceType.ReducedEffect],
               typeDisplay: "Reduced Effect"
             },
             2: {
               type: ConsequenceType.ResolveHarm1,
               attribute: AttributeTrait.resolve,
               name: "Traumatic Flashbacks",
-              resistOptions: {
-                0: {
-                  name: "",
-                  type: ConsequenceType.None,
-                  isSelected: true
-                },
-                1: {
-                  name: "",
-                  type: ConsequenceType.None,
-                  isSelected: false
-                },
-                2: {
-                  name: "",
-                  type: ConsequenceType.None,
-                  isSelected: false
-                }
-              },
               resistedTo: {
                 name: "",
                 type: ConsequenceType.None,
                 isSelected: true
               },
-              icon: "spikes|eyeball|iris",
+              icon: C.ConsequenceIcons[ConsequenceType.ResolveHarm1],
               typeDisplay: "Level 1 Harm (Lesser)",
               attributeVal: 4
             }
@@ -180,96 +127,39 @@ class GlobalGetter {
               attribute: AttributeTrait.resolve,
               attributeVal: 4,
               name: "Time To Regroup",
-              resistOptions: {
-                0: {
-                  name: "Time to Rest and Recuperate",
-                  isSelected: false
-                },
-                1: {
-                  name: "Time to Reflect and Reevaluate",
-                  isSelected: false
-                },
-                2: {
-                  name: "Time to Reorganize and Strategize",
-                  isSelected: false
-                }
-              },
               resistedTo: {
                 name: "",
                 type: ConsequenceType.None,
                 isSelected: true
               },
-              icon: "horizon|boot|ice",
+              icon: C.ConsequenceIcons[ConsequenceType.WorsePosition],
               typeDisplay: "Worse Position"
             },
             1: {
               type: ConsequenceType.ComplicationMajor,
               attribute: AttributeTrait.prowess,
               name: "Your pick snaps off inside the lock.",
-              resistOptions: {
-                0: {
-                  name: "Lock remains intact but jammed",
-                  isSelected: false,
-                  type: ConsequenceType.ComplicationMinor,
-                  icon: "main"
-                },
-                1: {
-                  name: "Pick breaks, but lock is still pickable",
-                  isSelected: true,
-                  type: ConsequenceType.ComplicationMinor,
-                  icon: "main",
-                  typeDisplay: "Minor Complication"
-                },
-                2: {
-                  name: "You manage to extract the broken pick from the lock.",
-                  isSelected: false,
-                  type: ConsequenceType.ComplicationMinor,
-                  icon: "main"
-                }
-              },
               resistedTo: {
                 name: "Pick breaks, but lock is still pickable",
                 isSelected: true,
                 type: ConsequenceType.ComplicationMinor,
-                icon: "main",
+                icon: C.ConsequenceIcons[ConsequenceType.ComplicationMinor],
                 typeDisplay: "Minor Complication"
               },
               attributeVal: 3,
-              icon: "main",
+              icon: C.ConsequenceIcons[ConsequenceType.ComplicationMajor],
               typeDisplay: "Major Complication"
             },
             2: {
               type: ConsequenceType.InsightHarm2,
               attribute: AttributeTrait.insight,
               name: "Completely Misled",
-              resistOptions: {
-                0: {
-                  name: "Partially Misinformed",
-                  isSelected: false,
-                  type: ConsequenceType.InsightHarm1,
-                  icon: "eye|iris",
-                  typeDisplay: "Level 1 Harm (Lesser)"
-                },
-                1: {
-                  name: "Confused by Deception",
-                  isSelected: true,
-                  type: ConsequenceType.InsightHarm1,
-                  icon: "eye|iris",
-                  typeDisplay: "Level 1 Harm (Lesser)"
-                },
-                2: {
-                  name: "Given Partially Incorrect Information",
-                  isSelected: false,
-                  type: ConsequenceType.InsightHarm1,
-                  icon: "eye|iris"
-                }
-              },
               resistedTo: {
                 name: "Confused by Deception",
                 isSelected: true,
                 type: ConsequenceType.InsightHarm1,
                 typeDisplay: "Level 1 Harm (Lesser)",
-                icon: "eye|iris"
+                icon: C.ConsequenceIcons[ConsequenceType.InsightHarm1]
               },
               specialArmorTo: {
                 name: "Sprained Ankle",
@@ -279,7 +169,7 @@ class GlobalGetter {
                 icon: C.ConsequenceIcons[ConsequenceType.InsightHarm1],
                 typeDisplay: "Level 1 Harm (Lesser)"
               },
-              icon: "eye|iris",
+              icon: C.ConsequenceIcons[ConsequenceType.InsightHarm2],
               typeDisplay: "Level 2 Harm (Moderate)",
               attributeVal: 4
             }
@@ -403,6 +293,7 @@ Hooks.once("init", async () => {
     BladesClockKeeperSheet.Initialize(),
     BladesPushAlert.Initialize(),
     BladesRoll.Initialize(),
+    BladesChat.Initialize(),
     preloadHandlebarsTemplates()
   ]);
 

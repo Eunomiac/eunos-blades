@@ -227,26 +227,28 @@ html, :root {
   --blades-color-negative: var(--blades-red-bright);
   --blades-color-positive: var(--blades-gold-bright);
   --font-primary: "Minion Pro", serif;
+  --font-primary: "Beaufort", serif;
   --font-primary-smallcaps: var(--font-primary);
-  --font-primary-small: "Minion Pro Caption";
-  --font-primary-narrow: "Minion Pro Cond";
-  --font-primary-small-narrow: "Minion Pro Caption Cond";
-  --font-primary-alt: "Historical FellType";
-  --font-primary-alt-smallcaps: "Historical FellType SC";
-  --font-emphasis: "Kirsty";
-  --font-emphasis-smallcaps: var(--font-emphasis);
-  --font-emphasis-alt: "Ravenscroft";
-  --font-emphasis-alt-smallcaps: var(--font-emphasis-alt);
-  --font-emphasis-narrow: "Fjalla One";
+  --font-primary-small: "Minion Pro Caption", serif;
+  --font-primary-narrow: "Minion Pro Cond", serif;
+  --font-primary-small-narrow: "Minion Pro Caption Cond", serif;
+  --font-primary-alt: "Historical FellType", serif;
+  --font-primary-alt-smallcaps: "Historical FellType SC", serif;
+  --font-emphasis: "Kirsty", serif;
+  --font-emphasis-smallcaps: "Kirsty", serif;
+  --font-emphasis-alt: "Ravenscroft", serif;
+  --font-emphasis-alt-smallcaps: var(--font-emphasis-alt), serif;
+  --font-emphasis-narrow: "Oswald", sans-serif;
+  --font-emphasis-narrower: "Fjalla One", sans-serif;
   --font-mono: "Pragmata", monospace;
   --font-mono-smallcaps: var(--font-mono);
-  --font-decorative: "UglyQua";
-  --font-decorative-alt: "IM FELL Double Pica";
-  --font-decorative-alt-smallcaps: "IM FELL Double Pica SC";
-  --font-handwritten: "PWSignaturetwo";
-  --font-awesome: "Font Awesome 6 Pro";
-  --font-awesome-alt: "Font Awesome 6 Brands";
-  --font-awesome-duotone: "Font Awesome 6 Duotone";
+  --font-decorative: "UglyQua", serif;
+  --font-decorative-alt: "IM FELL Double Pica", serif;
+  --font-decorative-alt-smallcaps: "IM FELL Double Pica SC", serif;
+  --font-handwritten: "PWSignaturetwo", serif;
+  --font-awesome: "Font Awesome 6 Pro", sans-serif;
+  --font-awesome-alt: "Font Awesome 6 Brands", sans-serif;
+  --font-awesome-duotone: "Font Awesome 6 Duotone", sans-serif;
   --line-height-expanded: 1.4;
   --line-height-primary: 1.2;
   --line-height-compact: 1;
@@ -720,7 +722,7 @@ html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label, :
   font-weight: bold;
 }
 html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-  font-family: "Minion Pro Caption Cond", serif;
+  font-family: var(--font-primary-small-narrow);
   hyphens: auto;
   text-align: justify;
   padding: 0 toRem(5px) 0 0;
@@ -1064,7 +1066,7 @@ html .comp.controls-container .controls-panel.active .controls-list li:hover > a
 }
 html .comp.consequence-display-container, :root .comp.consequence-display-container {
   --container-height: 40px;
-  --container-left-shift: 70px;
+  --container-left-shift: 40px;
   --csq-icon-bg-color: var(--blades-black-dark);
   --csq-type-bg: var(--csq-icon-dark);
   --csq-button-size-mult: 0.33;
@@ -1143,6 +1145,17 @@ html .comp.consequence-display-container .special-armor-consequence, :root .comp
   --csq-type-color: var(--blades-blue-dark);
   --csq-name-color: var(--blades-blue-bright);
 }
+html .comp.consequence-display-container .consequence-bg-image, :root .comp.consequence-display-container .consequence-bg-image {
+  position: absolute;
+  height: 500%;
+  top: 80%;
+  transform: translate(-100%, -50%);
+  transform-origin: 0% 50%;
+  width: 808.2px;
+  min-width: 808.2px;
+  z-index: -1;
+  left: -10px;
+}
 html .comp.consequence-display-container .consequence-interaction-pad, :root .comp.consequence-display-container .consequence-interaction-pad {
   display: none;
   display: block;
@@ -1167,8 +1180,8 @@ html .comp.consequence-display-container .consequence-interaction-pad.special-ar
 }
 html .comp.consequence-display-container .consequence-icon-container, :root .comp.consequence-display-container .consequence-icon-container {
   position: relative;
-  height: calc(var(--container-height) * 0.75);
-  max-width: calc(var(--container-height) * 0.75);
+  height: var(--container-height);
+  max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
   z-index: 1;
@@ -1180,21 +1193,22 @@ html .comp.consequence-display-container .consequence-icon-container:hover, :roo
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle {
   position: absolute;
-  translate: -50% -50%;
   transform-origin: 100% 0%;
-  top: calc(var(--container-height) * 0.5);
-  left: calc(var(--container-height) * 0.5);
   border-radius: 50%;
   height: var(--container-height);
   width: var(--container-height);
   outline: 1px solid var(--csq-icon-med);
   background: var(--csq-icon-bg-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
   z-index: 1;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
   height: 80%;
   width: 80%;
   display: block;
@@ -1218,7 +1232,7 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   transform-origin: 50% 50%;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence {
-  scale: 0.75;
+  transform: scale(0.75);
   animation: icon-glow 2s ease infinite;
   pointer-events: auto;
 }
@@ -1241,7 +1255,7 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  bottom: -10px;
+  bottom: 0px;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg {
   position: absolute;
@@ -1256,10 +1270,13 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
   transform-origin: 100% 50%;
 }
+html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
+  width: calc(100% + 32px);
+}
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label {
   position: relative;
   z-index: 1;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 10px;
   line-height: 14px;
   color: var(--blades-grey);
@@ -1289,7 +1306,7 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   transform: skewX(45deg);
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container {
-  left: 140%;
+  left: 105%;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container .consequence-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container .consequence-button-bg {
   right: -7px;
@@ -1322,7 +1339,7 @@ html .comp.consequence-display-container .consequence-type-container .consequenc
   top: 0;
   transform-origin: 0% 50%;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-transform: uppercase;
   text-align: right;
   font-size: 10px;
@@ -1344,11 +1361,12 @@ html .comp.consequence-display-container .consequence-name-container .consequenc
   padding: 0 5px 0 35px;
   font-size: 14px;
   line-height: 17px;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   font-variant: small-caps;
   transform-origin: 0% 50%;
   color: var(--csq-icon-bright);
   font-style: italic;
+  white-space: nowrap;
 }
 html .comp.consequence-display-container .consequence-name-container .consequence-name.resist-consequence, :root .comp.consequence-display-container .consequence-name-container .consequence-name.resist-consequence {
   text-shadow: none;
@@ -1381,7 +1399,7 @@ html .comp.consequence-display-container .consequence-footer-container .conseque
 html .comp.consequence-display-container .consequence-footer-container .consequence-footer-message, :root .comp.consequence-display-container .consequence-footer-container .consequence-footer-message {
   position: absolute;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-weight: bold;
   color: var(--blades-black-dark);
   font-size: 10px;
@@ -1413,11 +1431,11 @@ html .comp.consequence-display-container .roll-consequence-row .roll-consequence
   filter: brightness(1.5) drop-shadow(0 0 4px black);
 }
 html .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select, :root .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 150px;
 }
 html .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select, :root .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 95px;
 }
 html .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .consequence-name, :root .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .consequence-name {
@@ -1443,7 +1461,7 @@ html .comp.consequence-display-container .roll-consequence-row .consequence-resi
   font-size: 10px;
   line-height: 10px;
   max-height: 14px;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
 }
 html .comp.consequence-display-container .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .consequence-name, :root .comp.consequence-display-container .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .consequence-name {
   flex-grow: 1;
@@ -1592,7 +1610,7 @@ html .dotline .advance-button, :root .dotline .advance-button {
   position: absolute;
   cursor: pointer;
   pointer-events: auto;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-align: center;
   font-size: 16px;
   font-weight: bold;
@@ -1935,7 +1953,7 @@ html .window-header .close i, :root .window-header .close i {
   font-size: 1.25rem;
   line-height: 1;
   margin-top: -0.0625rem;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   transform-origin: center center;
   transform: scaleY(0.75);
 }
@@ -2337,7 +2355,7 @@ html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label, :
   font-weight: bold;
 }
 html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-  font-family: "Minion Pro Caption Cond", serif;
+  font-family: var(--font-primary-small-narrow);
   hyphens: auto;
   text-align: justify;
   padding: 0 0.3125rem 0 0;
@@ -2681,7 +2699,7 @@ html .comp.controls-container .controls-panel.active .controls-list li:hover > a
 }
 html .comp.consequence-display-container, :root .comp.consequence-display-container {
   --container-height: 40px;
-  --container-left-shift: 70px;
+  --container-left-shift: 40px;
   --csq-icon-bg-color: var(--blades-black-dark);
   --csq-type-bg: var(--csq-icon-dark);
   --csq-button-size-mult: 0.33;
@@ -2760,6 +2778,17 @@ html .comp.consequence-display-container .special-armor-consequence, :root .comp
   --csq-type-color: var(--blades-blue-dark);
   --csq-name-color: var(--blades-blue-bright);
 }
+html .comp.consequence-display-container .consequence-bg-image, :root .comp.consequence-display-container .consequence-bg-image {
+  position: absolute;
+  height: 500%;
+  top: 80%;
+  transform: translate(-100%, -50%);
+  transform-origin: 0% 50%;
+  width: 808.2px;
+  min-width: 808.2px;
+  z-index: -1;
+  left: -10px;
+}
 html .comp.consequence-display-container .consequence-interaction-pad, :root .comp.consequence-display-container .consequence-interaction-pad {
   display: none;
   display: block;
@@ -2784,8 +2813,8 @@ html .comp.consequence-display-container .consequence-interaction-pad.special-ar
 }
 html .comp.consequence-display-container .consequence-icon-container, :root .comp.consequence-display-container .consequence-icon-container {
   position: relative;
-  height: calc(var(--container-height) * 0.75);
-  max-width: calc(var(--container-height) * 0.75);
+  height: var(--container-height);
+  max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
   z-index: 1;
@@ -2797,21 +2826,22 @@ html .comp.consequence-display-container .consequence-icon-container:hover, :roo
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle {
   position: absolute;
-  translate: -50% -50%;
   transform-origin: 100% 0%;
-  top: calc(var(--container-height) * 0.5);
-  left: calc(var(--container-height) * 0.5);
   border-radius: 50%;
   height: var(--container-height);
   width: var(--container-height);
   outline: 1px solid var(--csq-icon-med);
   background: var(--csq-icon-bg-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
   z-index: 1;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
   height: 80%;
   width: 80%;
   display: block;
@@ -2835,7 +2865,7 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   transform-origin: 50% 50%;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence {
-  scale: 0.75;
+  transform: scale(0.75);
   animation: icon-glow 2s ease infinite;
   pointer-events: auto;
 }
@@ -2858,7 +2888,7 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  bottom: -10px;
+  bottom: 0px;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg {
   position: absolute;
@@ -2873,10 +2903,13 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
   transform-origin: 100% 50%;
 }
+html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
+  width: calc(100% + 32px);
+}
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label {
   position: relative;
   z-index: 1;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 10px;
   line-height: 14px;
   color: var(--blades-grey);
@@ -2906,7 +2939,7 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   transform: skewX(45deg);
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container {
-  left: 140%;
+  left: 105%;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container .consequence-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container .consequence-button-bg {
   right: -7px;
@@ -2939,7 +2972,7 @@ html .comp.consequence-display-container .consequence-type-container .consequenc
   top: 0;
   transform-origin: 0% 50%;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-transform: uppercase;
   text-align: right;
   font-size: 10px;
@@ -2961,11 +2994,12 @@ html .comp.consequence-display-container .consequence-name-container .consequenc
   padding: 0 5px 0 35px;
   font-size: 14px;
   line-height: 17px;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   font-variant: small-caps;
   transform-origin: 0% 50%;
   color: var(--csq-icon-bright);
   font-style: italic;
+  white-space: nowrap;
 }
 html .comp.consequence-display-container .consequence-name-container .consequence-name.resist-consequence, :root .comp.consequence-display-container .consequence-name-container .consequence-name.resist-consequence {
   text-shadow: none;
@@ -2998,7 +3032,7 @@ html .comp.consequence-display-container .consequence-footer-container .conseque
 html .comp.consequence-display-container .consequence-footer-container .consequence-footer-message, :root .comp.consequence-display-container .consequence-footer-container .consequence-footer-message {
   position: absolute;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-weight: bold;
   color: var(--blades-black-dark);
   font-size: 10px;
@@ -3030,11 +3064,11 @@ html .comp.consequence-display-container .roll-consequence-row .roll-consequence
   filter: brightness(1.5) drop-shadow(0 0 4px black);
 }
 html .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select, :root .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 150px;
 }
 html .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select, :root .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 95px;
 }
 html .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .consequence-name, :root .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .consequence-name {
@@ -3060,7 +3094,7 @@ html .comp.consequence-display-container .roll-consequence-row .consequence-resi
   font-size: 10px;
   line-height: 10px;
   max-height: 14px;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
 }
 html .comp.consequence-display-container .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .consequence-name, :root .comp.consequence-display-container .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .consequence-name {
   flex-grow: 1;
@@ -3209,7 +3243,7 @@ html .dotline .advance-button, :root .dotline .advance-button {
   position: absolute;
   cursor: pointer;
   pointer-events: auto;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-align: center;
   font-size: 16px;
   font-weight: bold;
@@ -3479,7 +3513,7 @@ html .number-circle, :root .number-circle {
   height: var(--nc-size);
   width: var(--nc-size);
   font-weight: bold;
-  font-family: "Minion Pro Caption Cond", serif;
+  font-family: var(--font-primary-small-narrow);
   font-size: var(--nc-font-size);
   text-align: center;
   border-radius: var(--nc-border-radius);
@@ -3771,7 +3805,7 @@ html .player-character-summary-panel .pc-summary section.pc-summary-header .pc-s
 html .player-character-summary-panel .pc-summary section.pc-summary-header .pc-summary-heritage, :root .player-character-summary-panel .pc-summary section.pc-summary-header .pc-summary-heritage {
   grid-area: heritage;
   font-size: 10px;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-transform: uppercase;
   line-height: 20px;
   text-align: right;
@@ -3798,13 +3832,13 @@ html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-
   margin-top: 5px;
 }
 html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute label, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute label {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.75rem;
   line-height: 0.75rem;
   color: var(--blades-white);
 }
 html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute span, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute span {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.75rem;
   line-height: 0.75rem;
   color: var(--blades-white-bright);
@@ -3819,7 +3853,7 @@ html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-
   flex-direction: row;
 }
 html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action label, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action label {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.625rem;
   line-height: 0.625rem;
   color: var(--blades-grey-bright);
@@ -3827,7 +3861,7 @@ html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-
   text-align: right;
 }
 html .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action span, :root .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action span {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.625rem;
   line-height: 0.625rem;
   color: var(--blades-white-bright);
@@ -3928,7 +3962,7 @@ html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-
 html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma {
   color: var(--blades-red-bright);
   font-weight: bold;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   font-size: 12px;
   text-transform: uppercase;
   text-align: center;
@@ -4167,7 +4201,7 @@ html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item:n
   box-shadow: none;
 }
 html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item *:not(i), :root .randomizer-panel .randomizer-container .randomizer-list .randomizer-item *:not(i) {
-  font-family: "Minion Pro Cond", serif;
+  font-family: var(--font-primary-narrow);
 }
 html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item textarea, :root .randomizer-panel .randomizer-container .randomizer-list .randomizer-item textarea {
   resize: none;

@@ -119,7 +119,7 @@
     height: var(--nc-size);
     width: var(--nc-size);
     font-weight: bold;
-    font-family: "Minion Pro Caption Cond", serif;
+    font-family: var(--font-primary-small-narrow);
     font-size: var(--nc-font-size);
     text-align: center;
     border-radius: var(--nc-border-radius);
@@ -447,7 +447,7 @@
         .pc-summary-heritage {
           grid-area: heritage;
           font-size: 10px;
-          font-family: Oswald, sans-serif;
+          font-family: var(--font-emphasis-narrow);
           text-transform: uppercase;
           line-height: 20px;
           text-align: right;
@@ -475,13 +475,13 @@
             margin-top: 5px;
           }
           label {
-            font-family: Oswald, sans-serif;
+            font-family: var(--font-emphasis-narrow);
             font-size: toRem(12px);
             line-height: toRem(12px);
             color: var(--blades-white);
           }
           span {
-            font-family: Oswald, sans-serif;
+            font-family: var(--font-emphasis-narrow);
             font-size: toRem(12px);
             line-height: toRem(12px);
             color: var(--blades-white-bright);
@@ -497,7 +497,7 @@
           display: flex;
           flex-direction: row;
           label {
-            font-family: Oswald, sans-serif;
+            font-family: var(--font-emphasis-narrow);
             font-size: toRem(10px);
             line-height: toRem(10px);
             color: var(--blades-grey-bright);
@@ -505,7 +505,7 @@
             text-align: right;
           }
           span {
-            font-family: Oswald, sans-serif;
+            font-family: var(--font-emphasis-narrow);
             font-size: toRem(10px);
             line-height: toRem(10px);
             color: var(--blades-white-bright);
@@ -619,7 +619,7 @@
           .pc-summary-trauma {
             color: var(--blades-red-bright);
             font-weight: bold;
-            font-family: Kirsty, serif;
+            font-family: var(--font-emphasis), serif;
             font-size: 12px;
             text-transform: uppercase;
             text-align: center;
@@ -902,7 +902,7 @@
             }
           }
 
-          *:not(i) { font-family: "Minion Pro Cond", serif }
+          *:not(i) { font-family: var(--font-primary-narrow) }
 
           textarea {
             resize: none;

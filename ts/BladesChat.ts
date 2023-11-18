@@ -11,7 +11,7 @@ import {ApplyTooltipListeners, ApplyConsequenceListeners} from "./core/gsap";
 import BladesDialog from "./BladesDialog"; */
 
 import U from "./core/utilities";
-import C, {BladesActorType, BladesItemType, RollType} from "./core/constants";
+import C, {BladesActorType, BladesItemType, RollType, RollResult} from "./core/constants";
 import {BladesPC, BladesCrew} from "./documents/BladesActorProxy";
 import {BladesItem} from "./documents/BladesItemProxy";
 import {ApplyTooltipListeners, ApplyConsequenceListeners} from "./core/gsap";
@@ -66,7 +66,12 @@ class BladesChat extends ChatMessage {
 
     const template = `systems/eunos-blades/templates/chat/roll-result-${U.lCase(rollInst.rollType)}-roll.hbs`;
 
-    const templateData: BladesRoll & {rollResultDescription?: string} = rollInst;
+    const templateData: BladesRoll & {
+      rollResultDescription?: string, rollFlags?: BladesRoll.FlagData} = rollInst;
+    templateData.rollFlags = {...rollInst.flagData};
+
+    eLog.checkLog3("bladesRoll", "ConstructRollOutput Data", {rollInst, templateData});
+
     if (rollInst.rollResult) {
       templateData.rollResultDescription = C.RollResultDescriptions[rollInst.finalPosition][rollInst.rollResult];
     }

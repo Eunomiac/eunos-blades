@@ -613,6 +613,66 @@ template {
   src: url("../assets/fonts/UglyQua/UglyQua i.ttf") format("truetype");
   font-style: italic;
 }
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort B.otf") format("opentype");
+  font-style: normal;
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort Bi.otf") format("opentype");
+  font-style: italic;
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort S.otf") format("opentype");
+  font-style: normal;
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort Si.otf") format("opentype");
+  font-style: italic;
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort M.otf") format("opentype");
+  font-style: normal;
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort Mi.otf") format("opentype");
+  font-style: italic;
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort L.otf") format("opentype");
+  font-style: normal;
+  font-weight: light;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort Li.otf") format("opentype");
+  font-style: italic;
+  font-weight: light;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort.otf") format("opentype");
+  font-style: normal;
+  font-weight: normal;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort i.otf") format("opentype");
+  font-style: italic;
+  font-weight: normal;
+}
 :root,
 * {
   scrollbar-color: var(--blades-white) var(--blades-black);
@@ -861,26 +921,28 @@ template {
   --blades-color-negative: var(--blades-red-bright);
   --blades-color-positive: var(--blades-gold-bright);
   --font-primary: "Minion Pro", serif;
+  --font-primary: "Beaufort", serif;
   --font-primary-smallcaps: var(--font-primary);
-  --font-primary-small: "Minion Pro Caption";
-  --font-primary-narrow: "Minion Pro Cond";
-  --font-primary-small-narrow: "Minion Pro Caption Cond";
-  --font-primary-alt: "Historical FellType";
-  --font-primary-alt-smallcaps: "Historical FellType SC";
-  --font-emphasis: "Kirsty";
-  --font-emphasis-smallcaps: var(--font-emphasis);
-  --font-emphasis-alt: "Ravenscroft";
-  --font-emphasis-alt-smallcaps: var(--font-emphasis-alt);
-  --font-emphasis-narrow: "Fjalla One";
+  --font-primary-small: "Minion Pro Caption", serif;
+  --font-primary-narrow: "Minion Pro Cond", serif;
+  --font-primary-small-narrow: "Minion Pro Caption Cond", serif;
+  --font-primary-alt: "Historical FellType", serif;
+  --font-primary-alt-smallcaps: "Historical FellType SC", serif;
+  --font-emphasis: "Kirsty", serif;
+  --font-emphasis-smallcaps: "Kirsty", serif;
+  --font-emphasis-alt: "Ravenscroft", serif;
+  --font-emphasis-alt-smallcaps: var(--font-emphasis-alt), serif;
+  --font-emphasis-narrow: "Oswald", sans-serif;
+  --font-emphasis-narrower: "Fjalla One", sans-serif;
   --font-mono: "Pragmata", monospace;
   --font-mono-smallcaps: var(--font-mono);
-  --font-decorative: "UglyQua";
-  --font-decorative-alt: "IM FELL Double Pica";
-  --font-decorative-alt-smallcaps: "IM FELL Double Pica SC";
-  --font-handwritten: "PWSignaturetwo";
-  --font-awesome: "Font Awesome 6 Pro";
-  --font-awesome-alt: "Font Awesome 6 Brands";
-  --font-awesome-duotone: "Font Awesome 6 Duotone";
+  --font-decorative: "UglyQua", serif;
+  --font-decorative-alt: "IM FELL Double Pica", serif;
+  --font-decorative-alt-smallcaps: "IM FELL Double Pica SC", serif;
+  --font-handwritten: "PWSignaturetwo", serif;
+  --font-awesome: "Font Awesome 6 Pro", sans-serif;
+  --font-awesome-alt: "Font Awesome 6 Brands", sans-serif;
+  --font-awesome-duotone: "Font Awesome 6 Duotone", sans-serif;
   --line-height-expanded: 1.4;
   --line-height-primary: 1.2;
   --line-height-compact: 1;
@@ -1441,7 +1503,7 @@ template {
 }
 :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text,
 :root * .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-  font-family: "Minion Pro Caption Cond", serif;
+  font-family: var(--font-primary-small-narrow);
   hyphens: auto;
   text-align: justify;
   padding: 0 0.3125rem 0 0;
@@ -1861,7 +1923,7 @@ template {
 :root .comp.consequence-display-container,
 :root * .comp.consequence-display-container {
   --container-height: 40px;
-  --container-left-shift: 70px;
+  --container-left-shift: 40px;
   --csq-icon-bg-color: var(--blades-black-dark);
   --csq-type-bg: var(--csq-icon-dark);
   --csq-button-size-mult: 0.33;
@@ -1944,6 +2006,18 @@ template {
   --csq-type-color: var(--blades-blue-dark);
   --csq-name-color: var(--blades-blue-bright);
 }
+:root .comp.consequence-display-container .consequence-bg-image,
+:root * .comp.consequence-display-container .consequence-bg-image {
+  position: absolute;
+  height: 500%;
+  top: 80%;
+  transform: translate(-100%, -50%);
+  transform-origin: 0% 50%;
+  width: 808.2px;
+  min-width: 808.2px;
+  z-index: -1;
+  left: -10px;
+}
 :root .comp.consequence-display-container .consequence-interaction-pad,
 :root * .comp.consequence-display-container .consequence-interaction-pad {
   display: none;
@@ -1974,8 +2048,8 @@ template {
 :root .comp.consequence-display-container .consequence-icon-container,
 :root * .comp.consequence-display-container .consequence-icon-container {
   position: relative;
-  height: calc(var(--container-height) * 0.75);
-  max-width: calc(var(--container-height) * 0.75);
+  height: var(--container-height);
+  max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
   z-index: 1;
@@ -1989,22 +2063,23 @@ template {
 :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle,
 :root * .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle {
   position: absolute;
-  translate: -50% -50%;
   transform-origin: 100% 0%;
-  top: calc(var(--container-height) * 0.5);
-  left: calc(var(--container-height) * 0.5);
   border-radius: 50%;
   height: var(--container-height);
   width: var(--container-height);
   outline: 1px solid var(--csq-icon-med);
   background: var(--csq-icon-bg-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
   z-index: 1;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
 }
 :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg,
 :root * .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
   height: 80%;
   width: 80%;
   display: block;
@@ -2035,7 +2110,7 @@ template {
 }
 :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence,
 :root * .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence {
-  scale: 0.75;
+  transform: scale(0.75);
   animation: icon-glow 2s ease infinite;
   pointer-events: auto;
 }
@@ -2064,7 +2139,7 @@ template {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  bottom: -10px;
+  bottom: 0px;
 }
 :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg,
 :root * .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg {
@@ -2082,11 +2157,15 @@ template {
 :root * .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
   transform-origin: 100% 50%;
 }
+:root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg,
+:root * .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
+  width: calc(100% + 32px);
+}
 :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label,
 :root * .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label {
   position: relative;
   z-index: 1;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 10px;
   line-height: 14px;
   color: var(--blades-grey);
@@ -2121,7 +2200,7 @@ template {
 }
 :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container,
 :root * .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container {
-  left: 140%;
+  left: 105%;
 }
 :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container .consequence-button-bg,
 :root * .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container .consequence-button-bg {
@@ -2159,7 +2238,7 @@ template {
   top: 0;
   transform-origin: 0% 50%;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-transform: uppercase;
   text-align: right;
   font-size: 10px;
@@ -2183,11 +2262,12 @@ template {
   padding: 0 5px 0 35px;
   font-size: 14px;
   line-height: 17px;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   font-variant: small-caps;
   transform-origin: 0% 50%;
   color: var(--csq-icon-bright);
   font-style: italic;
+  white-space: nowrap;
 }
 :root .comp.consequence-display-container .consequence-name-container .consequence-name.resist-consequence,
 :root * .comp.consequence-display-container .consequence-name-container .consequence-name.resist-consequence {
@@ -2226,7 +2306,7 @@ template {
 :root * .comp.consequence-display-container .consequence-footer-container .consequence-footer-message {
   position: absolute;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-weight: bold;
   color: var(--blades-black-dark);
   font-size: 10px;
@@ -2263,12 +2343,12 @@ template {
 }
 :root .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select,
 :root * .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 150px;
 }
 :root .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select,
 :root * .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 95px;
 }
 :root .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .consequence-name,
@@ -2299,7 +2379,7 @@ template {
   font-size: 10px;
   line-height: 10px;
   max-height: 14px;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
 }
 :root .comp.consequence-display-container .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .consequence-name,
 :root * .comp.consequence-display-container .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .consequence-name {
@@ -2486,7 +2566,7 @@ template {
   position: absolute;
   cursor: pointer;
   pointer-events: auto;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-align: center;
   font-size: 16px;
   font-weight: bold;
@@ -2665,7 +2745,7 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #pause figcaption {
   text-shadow: 1px 1px 3px #000, 1px 1px 3px #000, 1px 1px 3px #000, 0px 0px 5px #000;
-  font-family: Kirsty, serif !important;
+  font-family: var(--font-emphasis), serif !important;
   line-height: 2rem;
   padding: 0 25%;
 }
@@ -2840,7 +2920,7 @@ template {
   font-size: 1.25rem;
   line-height: 1;
   margin-top: -0.0625rem;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   transform-origin: center center;
   transform: scaleY(0.75);
 }
@@ -3242,7 +3322,7 @@ template {
   font-weight: bold;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-  font-family: "Minion Pro Caption Cond", serif;
+  font-family: var(--font-primary-small-narrow);
   hyphens: auto;
   text-align: justify;
   padding: 0 0.3125rem 0 0;
@@ -3586,7 +3666,7 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container {
   --container-height: 40px;
-  --container-left-shift: 70px;
+  --container-left-shift: 40px;
   --csq-icon-bg-color: var(--blades-black-dark);
   --csq-type-bg: var(--csq-icon-dark);
   --csq-button-size-mult: 0.33;
@@ -3665,6 +3745,17 @@ template {
   --csq-type-color: var(--blades-blue-dark);
   --csq-name-color: var(--blades-blue-bright);
 }
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-bg-image {
+  position: absolute;
+  height: 500%;
+  top: 80%;
+  transform: translate(-100%, -50%);
+  transform-origin: 0% 50%;
+  width: 808.2px;
+  min-width: 808.2px;
+  z-index: -1;
+  left: -10px;
+}
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-interaction-pad {
   display: none;
   display: block;
@@ -3689,8 +3780,8 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container {
   position: relative;
-  height: calc(var(--container-height) * 0.75);
-  max-width: calc(var(--container-height) * 0.75);
+  height: var(--container-height);
+  max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
   z-index: 1;
@@ -3702,21 +3793,22 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle {
   position: absolute;
-  translate: -50% -50%;
   transform-origin: 100% 0%;
-  top: calc(var(--container-height) * 0.5);
-  left: calc(var(--container-height) * 0.5);
   border-radius: 50%;
   height: var(--container-height);
   width: var(--container-height);
   outline: 1px solid var(--csq-icon-med);
   background: var(--csq-icon-bg-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
   z-index: 1;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
   height: 80%;
   width: 80%;
   display: block;
@@ -3740,7 +3832,7 @@ template {
   transform-origin: 50% 50%;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence {
-  scale: 0.75;
+  transform: scale(0.75);
   animation: icon-glow 2s ease infinite;
   pointer-events: auto;
 }
@@ -3763,7 +3855,7 @@ template {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  bottom: -10px;
+  bottom: 0px;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg {
   position: absolute;
@@ -3778,10 +3870,13 @@ template {
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
   transform-origin: 100% 50%;
 }
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
+  width: calc(100% + 32px);
+}
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label {
   position: relative;
   z-index: 1;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 10px;
   line-height: 14px;
   color: var(--blades-grey);
@@ -3811,7 +3906,7 @@ template {
   transform: skewX(45deg);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container {
-  left: 140%;
+  left: 105%;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container .consequence-button-bg {
   right: -7px;
@@ -3844,7 +3939,7 @@ template {
   top: 0;
   transform-origin: 0% 50%;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-transform: uppercase;
   text-align: right;
   font-size: 10px;
@@ -3866,11 +3961,12 @@ template {
   padding: 0 5px 0 35px;
   font-size: 14px;
   line-height: 17px;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   font-variant: small-caps;
   transform-origin: 0% 50%;
   color: var(--csq-icon-bright);
   font-style: italic;
+  white-space: nowrap;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-name-container .consequence-name.resist-consequence {
   text-shadow: none;
@@ -3903,7 +3999,7 @@ template {
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-footer-container .consequence-footer-message {
   position: absolute;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-weight: bold;
   color: var(--blades-black-dark);
   font-size: 10px;
@@ -3935,11 +4031,11 @@ template {
   filter: brightness(1.5) drop-shadow(0 0 4px black);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 150px;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 95px;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .consequence-name {
@@ -3964,7 +4060,7 @@ template {
   font-size: 10px;
   line-height: 10px;
   max-height: 14px;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .consequence-name {
   flex-grow: 1;
@@ -4113,7 +4209,7 @@ template {
   position: absolute;
   cursor: pointer;
   pointer-events: auto;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-align: center;
   font-size: 16px;
   font-weight: bold;
@@ -4401,7 +4497,7 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key:not(.active-key) .key-label {
   color: var(--blades-white);
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 2.5rem;
   top: unset;
   width: 200px;
@@ -4427,7 +4523,7 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-label-container .clock-label .short-label {
   font-size: 2.5rem;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-shadow: 0 0 15px var(--blades-black-dark), 0 0 15px var(--blades-black-dark), 0 0 15px var(--blades-black-dark), 0 0 15px var(--blades-black-dark);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-label-container .clock-label.clock-active .short-label {
@@ -4938,7 +5034,6 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #sidebar {
   overflow: visible;
-  --font-primary: "Minion Pro", serif;
 }
 :root body.vtt.game.system-eunos-blades #sidebar #blades-push-notifications {
   height: auto;
@@ -4983,7 +5078,7 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #sidebar #blades-push-notifications .push-notice .header {
   width: 100%;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-weight: bold;
   color: var(--blades-black-dark);
   text-align: left;
@@ -5354,7 +5449,7 @@ template {
   font-size: 1.25rem;
   line-height: 1;
   margin-top: -0.0625rem;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   transform-origin: center center;
   transform: scaleY(0.75);
 }
@@ -6140,7 +6235,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text,
 :root body.vtt.game.system-eunos-blades #hotbar .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text,
 :root body.vtt.game.system-eunos-blades #players .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-  font-family: "Minion Pro Caption Cond", serif;
+  font-family: var(--font-primary-small-narrow);
   hyphens: auto;
   text-align: justify;
   padding: 0 0.3125rem 0 0;
@@ -6788,7 +6883,7 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container {
   --container-height: 40px;
-  --container-left-shift: 70px;
+  --container-left-shift: 40px;
   --csq-icon-bg-color: var(--blades-black-dark);
   --csq-type-bg: var(--csq-icon-dark);
   --csq-button-size-mult: 0.33;
@@ -6883,6 +6978,21 @@ template {
   --csq-type-color: var(--blades-blue-dark);
   --csq-name-color: var(--blades-blue-bright);
 }
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .consequence-bg-image,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container .consequence-bg-image,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container .consequence-bg-image,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container .consequence-bg-image,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .consequence-bg-image {
+  position: absolute;
+  height: 500%;
+  top: 80%;
+  transform: translate(-100%, -50%);
+  transform-origin: 0% 50%;
+  width: 808.2px;
+  min-width: 808.2px;
+  z-index: -1;
+  left: -10px;
+}
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .consequence-interaction-pad,
 :root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container .consequence-interaction-pad,
 :root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container .consequence-interaction-pad,
@@ -6931,8 +7041,8 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container .consequence-icon-container,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .consequence-icon-container {
   position: relative;
-  height: calc(var(--container-height) * 0.75);
-  max-width: calc(var(--container-height) * 0.75);
+  height: var(--container-height);
+  max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
   z-index: 1;
@@ -6952,25 +7062,26 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle {
   position: absolute;
-  translate: -50% -50%;
   transform-origin: 100% 0%;
-  top: calc(var(--container-height) * 0.5);
-  left: calc(var(--container-height) * 0.5);
   border-radius: 50%;
   height: var(--container-height);
   width: var(--container-height);
   outline: 1px solid var(--csq-icon-med);
   background: var(--csq-icon-bg-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
   z-index: 1;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg,
 :root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg,
 :root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg,
 :root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
   height: 80%;
   width: 80%;
   display: block;
@@ -7022,7 +7133,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence,
 :root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence {
-  scale: 0.75;
+  transform: scale(0.75);
   animation: icon-glow 2s ease infinite;
   pointer-events: auto;
 }
@@ -7069,7 +7180,7 @@ template {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  bottom: -10px;
+  bottom: 0px;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg,
 :root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg,
@@ -7096,6 +7207,13 @@ template {
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
   transform-origin: 100% 50%;
 }
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
+  width: calc(100% + 32px);
+}
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label,
 :root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label,
 :root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label,
@@ -7103,7 +7221,7 @@ template {
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label {
   position: relative;
   z-index: 1;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 10px;
   line-height: 14px;
   color: var(--blades-grey);
@@ -7153,7 +7271,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container,
 :root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container {
-  left: 140%;
+  left: 105%;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container .consequence-button-bg,
 :root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container .consequence-button-bg,
@@ -7206,7 +7324,7 @@ template {
   top: 0;
   transform-origin: 0% 50%;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-transform: uppercase;
   text-align: right;
   font-size: 10px;
@@ -7236,11 +7354,12 @@ template {
   padding: 0 5px 0 35px;
   font-size: 14px;
   line-height: 17px;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   font-variant: small-caps;
   transform-origin: 0% 50%;
   color: var(--csq-icon-bright);
   font-style: italic;
+  white-space: nowrap;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .consequence-name-container .consequence-name.resist-consequence,
 :root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container .consequence-name-container .consequence-name.resist-consequence,
@@ -7297,7 +7416,7 @@ template {
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .consequence-footer-container .consequence-footer-message {
   position: absolute;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-weight: bold;
   color: var(--blades-black-dark);
   font-size: 10px;
@@ -7349,7 +7468,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select,
 :root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 150px;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select,
@@ -7357,7 +7476,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select,
 :root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 95px;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .consequence-name,
@@ -7406,7 +7525,7 @@ template {
   font-size: 10px;
   line-height: 10px;
   max-height: 14px;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .consequence-name,
 :root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .consequence-name,
@@ -7707,7 +7826,7 @@ template {
   position: absolute;
   cursor: pointer;
   pointer-events: auto;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-align: center;
   font-size: 16px;
   font-weight: bold;
@@ -8286,7 +8405,7 @@ template {
   font-size: 1.25rem;
   line-height: 1;
   margin-top: -0.0625rem;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   transform-origin: center center;
   transform: scaleY(0.75);
 }
@@ -9072,7 +9191,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation #chat .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-  font-family: "Minion Pro Caption Cond", serif;
+  font-family: var(--font-primary-small-narrow);
   hyphens: auto;
   text-align: justify;
   padding: 0 0.3125rem 0 0;
@@ -9720,7 +9839,7 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container {
   --container-height: 40px;
-  --container-left-shift: 70px;
+  --container-left-shift: 40px;
   --csq-icon-bg-color: var(--blades-black-dark);
   --csq-type-bg: var(--csq-icon-dark);
   --csq-button-size-mult: 0.33;
@@ -9815,6 +9934,21 @@ template {
   --csq-type-color: var(--blades-blue-dark);
   --csq-name-color: var(--blades-blue-bright);
 }
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .consequence-bg-image,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container .consequence-bg-image,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container .consequence-bg-image,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container .consequence-bg-image,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .consequence-bg-image {
+  position: absolute;
+  height: 500%;
+  top: 80%;
+  transform: translate(-100%, -50%);
+  transform-origin: 0% 50%;
+  width: 808.2px;
+  min-width: 808.2px;
+  z-index: -1;
+  left: -10px;
+}
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .consequence-interaction-pad,
 :root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container .consequence-interaction-pad,
 :root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container .consequence-interaction-pad,
@@ -9863,8 +9997,8 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container .consequence-icon-container,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .consequence-icon-container {
   position: relative;
-  height: calc(var(--container-height) * 0.75);
-  max-width: calc(var(--container-height) * 0.75);
+  height: var(--container-height);
+  max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
   z-index: 1;
@@ -9884,25 +10018,26 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle {
   position: absolute;
-  translate: -50% -50%;
   transform-origin: 100% 0%;
-  top: calc(var(--container-height) * 0.5);
-  left: calc(var(--container-height) * 0.5);
   border-radius: 50%;
   height: var(--container-height);
   width: var(--container-height);
   outline: 1px solid var(--csq-icon-med);
   background: var(--csq-icon-bg-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
   z-index: 1;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg,
 :root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg,
 :root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
   height: 80%;
   width: 80%;
   display: block;
@@ -9954,7 +10089,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence {
-  scale: 0.75;
+  transform: scale(0.75);
   animation: icon-glow 2s ease infinite;
   pointer-events: auto;
 }
@@ -10001,7 +10136,7 @@ template {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  bottom: -10px;
+  bottom: 0px;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg,
 :root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg,
@@ -10028,6 +10163,13 @@ template {
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
   transform-origin: 100% 50%;
 }
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
+  width: calc(100% + 32px);
+}
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label,
 :root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label,
 :root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label,
@@ -10035,7 +10177,7 @@ template {
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label {
   position: relative;
   z-index: 1;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 10px;
   line-height: 14px;
   color: var(--blades-grey);
@@ -10085,7 +10227,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container {
-  left: 140%;
+  left: 105%;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container .consequence-button-bg,
 :root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container .consequence-button-bg,
@@ -10138,7 +10280,7 @@ template {
   top: 0;
   transform-origin: 0% 50%;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-transform: uppercase;
   text-align: right;
   font-size: 10px;
@@ -10168,11 +10310,12 @@ template {
   padding: 0 5px 0 35px;
   font-size: 14px;
   line-height: 17px;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   font-variant: small-caps;
   transform-origin: 0% 50%;
   color: var(--csq-icon-bright);
   font-style: italic;
+  white-space: nowrap;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .consequence-name-container .consequence-name.resist-consequence,
 :root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container .consequence-name-container .consequence-name.resist-consequence,
@@ -10229,7 +10372,7 @@ template {
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .consequence-footer-container .consequence-footer-message {
   position: absolute;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-weight: bold;
   color: var(--blades-black-dark);
   font-size: 10px;
@@ -10281,7 +10424,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 150px;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select,
@@ -10289,7 +10432,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 95px;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .consequence-name,
@@ -10338,7 +10481,7 @@ template {
   font-size: 10px;
   line-height: 10px;
   max-height: 14px;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .consequence-name,
 :root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .consequence-name,
@@ -10639,7 +10782,7 @@ template {
   position: absolute;
   cursor: pointer;
   pointer-events: auto;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-align: center;
   font-size: 16px;
   font-weight: bold;
@@ -11039,7 +11182,7 @@ template {
   height: var(--nc-size);
   width: var(--nc-size);
   font-weight: bold;
-  font-family: "Minion Pro Caption Cond", serif;
+  font-family: var(--font-primary-small-narrow);
   font-size: var(--nc-font-size);
   text-align: center;
   border-radius: var(--nc-border-radius);
@@ -11579,7 +11722,7 @@ template {
 :root body.vtt.game.system-eunos-blades #players #chat .player-character-summary-panel .pc-summary section.pc-summary-header .pc-summary-heritage {
   grid-area: heritage;
   font-size: 10px;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-transform: uppercase;
   line-height: 20px;
   text-align: right;
@@ -11622,7 +11765,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation #chat .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute label,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute label,
 :root body.vtt.game.system-eunos-blades #players #chat .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute label {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.75rem;
   line-height: 0.75rem;
   color: var(--blades-white);
@@ -11632,7 +11775,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation #chat .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute span,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute span,
 :root body.vtt.game.system-eunos-blades #players #chat .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute span {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.75rem;
   line-height: 0.75rem;
   color: var(--blades-white-bright);
@@ -11655,7 +11798,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation #chat .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action label,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action label,
 :root body.vtt.game.system-eunos-blades #players #chat .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action label {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.625rem;
   line-height: 0.625rem;
   color: var(--blades-grey-bright);
@@ -11667,7 +11810,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation #chat .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action span,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action span,
 :root body.vtt.game.system-eunos-blades #players #chat .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action span {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.625rem;
   line-height: 0.625rem;
   color: var(--blades-white-bright);
@@ -11836,7 +11979,7 @@ template {
 :root body.vtt.game.system-eunos-blades #players #chat .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma {
   color: var(--blades-red-bright);
   font-weight: bold;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   font-size: 12px;
   text-transform: uppercase;
   text-align: center;
@@ -12228,7 +12371,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation #chat .randomizer-panel .randomizer-container .randomizer-list .randomizer-item *:not(i),
 :root body.vtt.game.system-eunos-blades #hotbar #chat .randomizer-panel .randomizer-container .randomizer-list .randomizer-item *:not(i),
 :root body.vtt.game.system-eunos-blades #players #chat .randomizer-panel .randomizer-container .randomizer-list .randomizer-item *:not(i) {
-  font-family: "Minion Pro Cond", serif;
+  font-family: var(--font-primary-narrow);
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .randomizer-panel .randomizer-container .randomizer-list .randomizer-item textarea,
 :root body.vtt.game.system-eunos-blades #controls #chat .randomizer-panel .randomizer-container .randomizer-list .randomizer-item textarea,
@@ -12292,8 +12435,7 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat *,
 :root body.vtt.game.system-eunos-blades #players #chat,
 :root body.vtt.game.system-eunos-blades #players #chat * {
-  --font-primary: "Minion Pro";
-  --font-heading: "Kirsty";
+  --font-heading: var(--font-emphasis);
   --font-weight-heading: normal;
   --text-shadow-heading: none;
   --line-height-heading: 1.2;
@@ -12303,7 +12445,27 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation #chat .chat-message,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message {
-  background: var(--blades-black);
+  --bg-controlled: var(--blades-grey-bright);
+  --bg-risky: var(--blades-black-dark);
+  --bg-desperate: var(--blades-red-darkest);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message:last-child,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message:last-child,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message:last-child,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message:last-child,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message:last-child {
+  --bg-controlled: url("../assets/animations/chat/roll-position-controlled.webp");
+  --bg-risky: url("../assets/animations/chat/roll-position-risky.webp");
+  --bg-desperate: url("../assets/animations/chat/roll-position-desperate.webp");
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message {
+  background: var(--blades-black-dark);
+  overflow: hidden;
+  position: relative;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-header,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-header,
@@ -12337,7 +12499,7 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .chat-message-bg.roll-position-risky,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .chat-message-bg.roll-position-risky,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .chat-message-bg.roll-position-risky {
-  background-image: url("../assets/animations/chat/roll-position-risky.webp");
+  background: var(--bg-risky);
   background-size: cover;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll,
@@ -12372,28 +12534,63 @@ template {
   font-size: 32px;
   color: var(--blades-gold);
 }
-:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-states,
-:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-states,
-:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-states,
-:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-states,
-:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-states {
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container {
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 10px;
+  align-items: center;
+  margin: 5px 0 10px 0;
+  background: var(--background-color);
 }
-:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-states .roll-state-container,
-:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-states .roll-state-container,
-:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-states .roll-state-container,
-:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-states .roll-state-container,
-:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-states .roll-state-container {
-  flex-basis: 30%;
-  flex-grow: 0;
-  flex-shrink: 0;
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical {
+  --background-color: var(--blades-gold-bright);
+  --label-color: var(--blades-black);
 }
-:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-states h4.roll-state-label,
-:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-states h4.roll-state-label,
-:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-states h4.roll-state-label,
-:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-states h4.roll-state-label,
-:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-states h4.roll-state-label {
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-success,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-success,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-success,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-success,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-success {
+  --background-color: var(--blades-white-bright);
+  --label-color: var(--blades-black);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial {
+  --background-color: var(--blades-black);
+  --label-color: var(--blades-white);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail {
+  --background-color: var(--blades-red-darkest);
+  --label-color: var(--blades-red-bright);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container {
+  flex-basis: 10%;
+  flex-grow: 0.3;
+  flex-shrink: 1;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label {
   font-family: var(--font-primary);
   font-size: 12px;
   display: block;
@@ -12402,32 +12599,43 @@ template {
   white-space: nowrap;
   color: var(--blades-grey);
   margin-top: -4px;
+  text-shadow: var(--text-shadow-dark);
 }
-:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-states h3.roll-state,
-:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-states h3.roll-state,
-:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-states h3.roll-state,
-:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-states h3.roll-state,
-:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-states h3.roll-state {
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h3.roll-state,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h3.roll-state,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h3.roll-state,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h3.roll-state,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h3.roll-state {
   white-space: nowrap;
+  text-shadow: var(--text-shadow-dark);
 }
-:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll h2.chat-header.roll-position,
-:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll h2.chat-header.roll-position,
-:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll h2.chat-header.roll-position,
-:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll h2.chat-header.roll-position,
-:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll h2.chat-header.roll-position {
-  text-align: right;
-  font-family: var(--font-primary);
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label {
+  background: none;
+  box-shadow: none;
+  color: var(--label-color);
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
 }
-:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll h2.chat-header.roll-position .position-text,
-:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll h2.chat-header.roll-position .position-text,
-:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll h2.chat-header.roll-position .position-text,
-:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll h2.chat-header.roll-position .position-text,
-:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll h2.chat-header.roll-position .position-text {
-  margin: 0 15px;
-  transform-origin: 50% 50%;
-  scale: 1.5;
-  display: inline-block;
-  font-family: var(--font-emphasis);
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label.roll-result-top-label,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label.roll-result-top-label,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label.roll-result-top-label,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label.roll-result-top-label,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label.roll-result-top-label {
+  font-size: 26px;
+  line-height: 26px;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label.roll-result-bottom-label,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label.roll-result-bottom-label,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label.roll-result-bottom-label,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label.roll-result-bottom-label,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label.roll-result-bottom-label {
+  font-size: 14px;
+  font-family: var(--font-emphasis-narrow);
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .dice-roll-strip,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .dice-roll-strip,
@@ -12442,7 +12650,7 @@ template {
   align-items: stretch;
   justify-content: center;
   gap: 10px;
-  margin: 10px 0;
+  margin: 5px 0;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die,
@@ -12765,7 +12973,7 @@ template {
   font-size: 1.25rem;
   line-height: 1;
   margin-top: -0.0625rem;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   transform-origin: center center;
   transform: scaleY(0.75);
 }
@@ -13167,7 +13375,7 @@ template {
   font-weight: bold;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
-  font-family: "Minion Pro Caption Cond", serif;
+  font-family: var(--font-primary-small-narrow);
   hyphens: auto;
   text-align: justify;
   padding: 0 0.3125rem 0 0;
@@ -13511,7 +13719,7 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container {
   --container-height: 40px;
-  --container-left-shift: 70px;
+  --container-left-shift: 40px;
   --csq-icon-bg-color: var(--blades-black-dark);
   --csq-type-bg: var(--csq-icon-dark);
   --csq-button-size-mult: 0.33;
@@ -13590,6 +13798,17 @@ template {
   --csq-type-color: var(--blades-blue-dark);
   --csq-name-color: var(--blades-blue-bright);
 }
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-bg-image {
+  position: absolute;
+  height: 500%;
+  top: 80%;
+  transform: translate(-100%, -50%);
+  transform-origin: 0% 50%;
+  width: 808.2px;
+  min-width: 808.2px;
+  z-index: -1;
+  left: -10px;
+}
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-interaction-pad {
   display: none;
   display: block;
@@ -13614,8 +13833,8 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container {
   position: relative;
-  height: calc(var(--container-height) * 0.75);
-  max-width: calc(var(--container-height) * 0.75);
+  height: var(--container-height);
+  max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
   z-index: 1;
@@ -13627,21 +13846,22 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle {
   position: absolute;
-  translate: -50% -50%;
   transform-origin: 100% 0%;
-  top: calc(var(--container-height) * 0.5);
-  left: calc(var(--container-height) * 0.5);
   border-radius: 50%;
   height: var(--container-height);
   width: var(--container-height);
   outline: 1px solid var(--csq-icon-med);
   background: var(--csq-icon-bg-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
   z-index: 1;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle svg {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
   height: 80%;
   width: 80%;
   display: block;
@@ -13665,7 +13885,7 @@ template {
   transform-origin: 50% 50%;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence {
-  scale: 0.75;
+  transform: scale(0.75);
   animation: icon-glow 2s ease infinite;
   pointer-events: auto;
 }
@@ -13688,7 +13908,7 @@ template {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  bottom: -10px;
+  bottom: 0px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg {
   position: absolute;
@@ -13703,10 +13923,13 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
   transform-origin: 100% 50%;
 }
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
+  width: calc(100% + 32px);
+}
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label {
   position: relative;
   z-index: 1;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 10px;
   line-height: 14px;
   color: var(--blades-grey);
@@ -13736,7 +13959,7 @@ template {
   transform: skewX(45deg);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container {
-  left: 140%;
+  left: 105%;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-accept-button-container .consequence-button-bg {
   right: -7px;
@@ -13769,7 +13992,7 @@ template {
   top: 0;
   transform-origin: 0% 50%;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-transform: uppercase;
   text-align: right;
   font-size: 10px;
@@ -13791,11 +14014,12 @@ template {
   padding: 0 5px 0 35px;
   font-size: 14px;
   line-height: 17px;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   font-variant: small-caps;
   transform-origin: 0% 50%;
   color: var(--csq-icon-bright);
   font-style: italic;
+  white-space: nowrap;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-name-container .consequence-name.resist-consequence {
   text-shadow: none;
@@ -13828,7 +14052,7 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-footer-container .consequence-footer-message {
   position: absolute;
   white-space: nowrap;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-weight: bold;
   color: var(--blades-black-dark);
   font-size: 10px;
@@ -13860,11 +14084,11 @@ template {
   filter: brightness(1.5) drop-shadow(0 0 4px black);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-type-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 150px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .roll-consequence-attribute-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   flex-basis: 95px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .roll-consequence-row .roll-consequence-entry-row .consequence-name {
@@ -13889,7 +14113,7 @@ template {
   font-size: 10px;
   line-height: 10px;
   max-height: 14px;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .roll-consequence-row .consequence-resist-options-container .consequence-resist-option .consequence-name {
   flex-grow: 1;
@@ -14038,7 +14262,7 @@ template {
   position: absolute;
   cursor: pointer;
   pointer-events: auto;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-align: center;
   font-size: 16px;
   font-weight: bold;
@@ -14298,7 +14522,7 @@ template {
   height: var(--nc-size);
   width: var(--nc-size);
   font-weight: bold;
-  font-family: "Minion Pro Caption Cond", serif;
+  font-family: var(--font-primary-small-narrow);
   font-size: var(--nc-font-size);
   text-align: center;
   border-radius: var(--nc-border-radius);
@@ -14590,7 +14814,7 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-header .pc-summary-heritage {
   grid-area: heritage;
   font-size: 10px;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-transform: uppercase;
   line-height: 20px;
   text-align: right;
@@ -14617,13 +14841,13 @@ template {
   margin-top: 5px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute label {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.75rem;
   line-height: 0.75rem;
   color: var(--blades-white);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute span {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.75rem;
   line-height: 0.75rem;
   color: var(--blades-white-bright);
@@ -14638,7 +14862,7 @@ template {
   flex-direction: row;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action label {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.625rem;
   line-height: 0.625rem;
   color: var(--blades-grey-bright);
@@ -14646,7 +14870,7 @@ template {
   text-align: right;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action span {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.625rem;
   line-height: 0.625rem;
   color: var(--blades-white-bright);
@@ -14747,7 +14971,7 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma {
   color: var(--blades-red-bright);
   font-weight: bold;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   font-size: 12px;
   text-transform: uppercase;
   text-align: center;
@@ -14983,7 +15207,7 @@ template {
   box-shadow: none;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .randomizer-panel .randomizer-container .randomizer-list .randomizer-item *:not(i) {
-  font-family: "Minion Pro Cond", serif;
+  font-family: var(--font-primary-narrow);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .randomizer-panel .randomizer-container .randomizer-list .randomizer-item textarea {
   resize: none;
@@ -16219,7 +16443,7 @@ template {
   height: var(--nc-size);
   width: var(--nc-size);
   font-weight: bold;
-  font-family: "Minion Pro Caption Cond", serif;
+  font-family: var(--font-primary-small-narrow);
   font-size: var(--nc-font-size);
   text-align: center;
   border-radius: var(--nc-border-radius);
@@ -16511,7 +16735,7 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-header .pc-summary-heritage {
   grid-area: heritage;
   font-size: 10px;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-transform: uppercase;
   line-height: 20px;
   text-align: right;
@@ -16538,13 +16762,13 @@ template {
   margin-top: 5px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute label {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.75rem;
   line-height: 0.75rem;
   color: var(--blades-white);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-attribute span {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.75rem;
   line-height: 0.75rem;
   color: var(--blades-white-bright);
@@ -16559,7 +16783,7 @@ template {
   flex-direction: row;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action label {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.625rem;
   line-height: 0.625rem;
   color: var(--blades-grey-bright);
@@ -16567,7 +16791,7 @@ template {
   text-align: right;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-actions .pc-summary-action span {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 0.625rem;
   line-height: 0.625rem;
   color: var(--blades-white-bright);
@@ -16668,7 +16892,7 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-trauma-container .pc-summary-trauma {
   color: var(--blades-red-bright);
   font-weight: bold;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   font-size: 12px;
   text-transform: uppercase;
   text-align: center;
@@ -16904,7 +17128,7 @@ template {
   box-shadow: none;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .randomizer-panel .randomizer-container .randomizer-list .randomizer-item *:not(i) {
-  font-family: "Minion Pro Cond", serif;
+  font-family: var(--font-primary-narrow);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .randomizer-panel .randomizer-container .randomizer-list .randomizer-item textarea {
   resize: none;
@@ -16974,7 +17198,7 @@ template {
   width: 100%;
   background-color: rgb(255, 255, 0);
   font-weight: bold;
-  font-family: Kirsty, serif;
+  font-family: var(--font-emphasis), serif;
   text-align: center;
   font-size: 0.875rem;
   color: var(--blades-black);
@@ -18107,7 +18331,7 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.npc .window-content form .comp-randomizer-field .randomizer-input {
   background: var(--blades-grey);
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-indent: 5px;
   line-height: 2rem;
 }
@@ -18318,7 +18542,7 @@ template {
   border-radius: 0px;
   box-shadow: none;
   /* Font & Text */
-  font-family: var(--font-emphasis-narrow);
+  font-family: var(--font-emphasis-narrower);
   font-size: var(--name-size);
   font-weight: bold;
   text-align: center;
@@ -18423,7 +18647,7 @@ template {
   color: var(--blades-white);
   border-radius: 7px;
   outline: 1px outset var(--blades-white);
-  font-family: var(--font-emphasis-narrow);
+  font-family: var(--font-emphasis-narrower);
   font-size: 0.875rem;
   line-height: 1.25rem;
   text-align: center;
@@ -18929,7 +19153,7 @@ template {
   border-radius: 0px;
   box-shadow: none;
   /* Font & Text */
-  font-family: var(--font-emphasis-narrow);
+  font-family: var(--font-emphasis-narrower);
   font-size: var(--name-size);
   font-weight: bold;
   text-align: center;
@@ -19034,7 +19258,7 @@ template {
   color: var(--blades-white);
   border-radius: 7px;
   outline: 1px outset var(--blades-white);
-  font-family: var(--font-emphasis-narrow);
+  font-family: var(--font-emphasis-narrower);
   font-size: 0.875rem;
   line-height: 1.25rem;
   text-align: center;
@@ -19127,7 +19351,7 @@ template {
   line-height: 20px;
   font-style: italic;
   font-size: 0.875rem;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-align: center;
   white-space: nowrap;
   width: 100%;
@@ -19414,7 +19638,7 @@ template {
   position: unset;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .blades-select {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.active-effect-sheet {
   min-width: 600px;
@@ -19604,7 +19828,7 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .roll-sheet-sub-block.roll-effects-block.inactive-mod-block .roll-mod-container .roll-mod-label .roll-mod-text {
   font-size: 10px;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   text-transform: uppercase;
   margin: 0 10px 0 0;
   color: var(--blades-white);
@@ -19631,8 +19855,8 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .roll-sheet-sub-block .roll-mod-container {
   --roll-mod-size: 30px;
-  --label-font: Kirsty;
-  --sidestring-font: Oswald;
+  --label-font: var(--font-emphasis);
+  --sidestring-font: var(--font-emphasis-narrow);
   --glow-animation: anim-glow-gold;
   --roll-mod-bright-color: var(--blades-gold-bright);
   --roll-mod-med-color: var(--blades-gold);
@@ -19651,7 +19875,7 @@ template {
   --roll-mod-dark-color: var(--blades-red-darkest);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .roll-sheet-sub-block .roll-mod-container.roll-mod-ability .roll-mod-label .roll-mod-text:last-of-type, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .roll-sheet-sub-block .roll-mod-container.roll-mod-harm .roll-mod-label .roll-mod-text:last-of-type {
-  --label-font: Oswald;
+  --label-font: var(--font-emphasis-narrow);
   font-weight: bold;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .roll-sheet-sub-block .roll-mod-container.status-hidden {
@@ -19859,7 +20083,7 @@ template {
   line-height: var(--roll-mod-size);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .roll-sheet-sub-block .roll-mod-container .roll-mod-label .roll-mod-text.roll-mod-sidestring {
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   margin-left: 5px;
   text-transform: uppercase;
   font-size: 14px;
@@ -20590,7 +20814,7 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .full-root .full-root-container.split-root-right section.sheet-main.factor-controls .factor-control-row .roll-num-container.factor-spacer {
   height: var(--spread-size, 30px);
   width: var(--spread-size, 30px);
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 10px;
   line-height: calc(var(--spread-size, 30px) - 2px);
   border: 1px var(--roll-factor-inactive-border-style, solid) var(--roll-factor-inactive-border);
@@ -20970,7 +21194,7 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-num-container .num-spread-label {
   position: absolute;
-  font-family: Oswald, sans-serif;
+  font-family: var(--font-emphasis-narrow);
   font-size: 10px;
   left: 0%;
   top: calc(100% + 1px);

@@ -1,5 +1,5 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import C from "./constants.js";
+import C, { SVGDATA } from "./constants.js";
 // eslint-disable-next-line import/no-unresolved
 import { gsap } from "/scripts/greensock/esm/all.js";
 // #endregion ▮▮▮▮ IMPORTS ▮▮▮▮
@@ -963,55 +963,43 @@ const objClean = (data, remVals = [undefined, null, "", {}, []]) => {
     return data;
 };
 /*~ @@DOUBLE-BLANK@@ ~*/
-/**
- *
- * @param items
- * @param key
- */
-export function toDict(items, key) {
-    const dict = {};
-    const mappedItems = items
-        .map((data) => {
-        let { iData } = data;
-        if (!iData) {
-            iData = data;
-        }
-        const prefix = iData.linkName || iData.sourceItem?.name ? `>${iData.type.charAt(0)}>` : "";
-        const newKey = `${prefix}${iData[key]}`;
-        return [newKey, iData];
-    })
-        .sort(([a], [b]) => a.localeCompare(b));
-    mappedItems.forEach(([newKey, iData]) => {
-        if (newKey in dict) {
-            newKey = indexString(newKey);
-        }
-        dict[newKey] = iData;
-    });
-    // @ts-expect-error Oh it definitely does.
-    return dict;
-    /*~ @@DOUBLE-BLANK@@ ~*/
-    /**
-     * Given a string that could have an index suffix, returns the string with
-     *  the suffix incremented by one, or set to one if no suffix exists.
-     * @param {string} str
-     */
-    function indexString(str) {
-        if (/_\d+$/.test(str)) {
-            const [curIndex, ...subStr] = [...str.split(/_/)].reverse();
-            return [
-                ...[...subStr].reverse(),
-                parseInt(curIndex, 10) + 1
-            ].join("_");
-        }
-        return `${str}_1`;
-    }
-}
 // Given an object and a predicate function, returns array of two objects:
 //   one with entries that pass, one with entries that fail.
 const partition = (obj, predicate = () => true) => [
     objFilter(obj, predicate),
     objFilter(obj, (v, k) => !predicate(v, k))
 ];
+/*~ @@DOUBLE-BLANK@@ ~*/
+/**
+ * Zips two arrays into an object.
+ *
+ * @template T - The type of the keys.
+ * @template U - The type of the values.
+ * @param {T[]} keys - The array of keys.
+ * @param {U[]} values - The array of values.
+ * @returns {Record<T, U>} - The resulting object.
+ * @throws {Error} - Throws an error if the arrays are not of equal length, if the keys are not unique, or if the keys are not of a type that can be used as object keys.
+ */
+const zip = (keys, values) => {
+    // Check that the arrays are of equal length
+    if (keys.length !== values.length) {
+        throw new Error("The arrays must be of equal length.");
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // Check that the keys are unique
+    if (new Set(keys).size !== keys.length) {
+        throw new Error("The keys must be unique.");
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // Zip the arrays into an object
+    const result = {};
+    keys.forEach((key, i) => {
+        result[key] = values[i];
+    });
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    return result;
+};
+/*~ @@DOUBLE-BLANK@@ ~*/
 /**
  *  An object-equivalent Array.map() function, which accepts mapping functions to transform both keys and values.
  *  If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
@@ -1366,6 +1354,48 @@ const withLog = (fn) => {
 /*~ @@DOUBLE-BLANK@@ ~*/
 // #region ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████ ~
 /*~ @@DOUBLE-BLANK@@ ~*/
+const getSvgCode = (svgDotKey, svgPathKeys) => {
+    const svgData = getProperty(SVGDATA, svgDotKey);
+    // eLog.checkLog3("compileSvg", {svgDotKey, svgPaths, svgData});
+    if (!svgData) {
+        return "";
+    }
+    const { viewBox, paths, classes } = svgData;
+    svgPathKeys ??= Object.keys(paths).join("|");
+    if (typeof svgPathKeys === "string") {
+        svgPathKeys = svgPathKeys.split("|");
+    }
+    return [
+        `<svg viewBox="${viewBox}">`,
+        ...svgPathKeys
+            .map((path) => `<path class="${path} ${classes?.[path] ?? ""}" d="${paths[path] ?? ""}" />`),
+        "</svg>"
+    ].join("\n");
+};
+/*~ @@DOUBLE-BLANK@@ ~*/
+const getSvgPaths = (svgDotKey, svgPathKeys) => {
+    const svgData = getProperty(SVGDATA, svgDotKey);
+    if (!svgData) {
+        return {};
+    }
+    const { paths, classes } = svgData;
+    svgPathKeys ??= Object.keys(paths);
+    if (typeof svgPathKeys === "string") {
+        svgPathKeys = svgPathKeys.split("|");
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    const returnData = {};
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    for (const pathKey of svgPathKeys) {
+        returnData[pathKey] = {
+            class: classes?.[pathKey] ?? "",
+            d: paths[pathKey] ?? ""
+        };
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    return returnData;
+};
+/*~ @@DOUBLE-BLANK@@ ~*/
 // #region ░░░░░░░[GreenSock]░░░░ Wrappers for GreenSock Functions ░░░░░░░ ~
 const set = (targets, vars) => gsap.set(targets, vars);
 /**
@@ -1386,6 +1416,20 @@ function get(target, property, unit) {
 }
 /*~ @@DOUBLE-BLANK@@ ~*/
 const getGSAngleDelta = (startAngle, endAngle) => signNum(roundNum(getAngleDelta(startAngle, endAngle), 2)).replace(/^(.)/, "$1=");
+/*~ @@DOUBLE-BLANK@@ ~*/
+// const Animate = {
+//   Timeline: {
+//     to: (tl: gsap.core.Timeline, targets: gsap.TweenTarget[], vars: gsap.TweenVars, position: any) => {
+//       if (targets.length === 0) {
+/*~ @@DOUBLE-BLANK@@ ~*/
+//       }
+//     }
+//   } (tl: gsap.core.Timeline, )
+// }
+/*~ @@DOUBLE-BLANK@@ ~*/
+// const to = (targets: gsap.TweenTarget[], vars: gsap.TweenVars): gsap.core.Tween => {
+//   gsap.
+// }
 // #endregion ░░░░[GreenSock]░░░░
 /*~ @@DOUBLE-BLANK@@ ~*/
 // #region ░░░░░░░[SVG]░░░░ SVG Generation & Manipulation ░░░░░░░ ~
@@ -1453,10 +1497,7 @@ const getRGBString = (red, green, blue, alpha) => {
     return null;
 };
 const getHEXString = (red, green, blue) => {
-    /**
-     *
-     * @param c
-     */
+    /*~ @@DOUBLE-BLANK@@ ~*/
     function componentToHex(c) {
         const hex = c.toString(16);
         return hex.length === 1 ? `0${hex}` : hex;
@@ -1695,7 +1736,7 @@ export default {
     subGroup, shuffle,
     /*~ @@DOUBLE-BLANK@@ ~*/
     // ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████
-    remove, replace, partition,
+    remove, replace, partition, zip,
     objClean, objSize, objMap, objFindKey, objFilter, objForEach, objCompact,
     objClone, objMerge, objDiff, objExpand, objFlatten, objNullify,
     objFreezeProps,
@@ -1704,6 +1745,8 @@ export default {
     getDynamicFunc, withLog,
     /*~ @@DOUBLE-BLANK@@ ~*/
     // ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
+    getSvgCode, getSvgPaths,
+    /*~ @@DOUBLE-BLANK@@ ~*/
     // ░░░░░░░ GreenSock ░░░░░░░
     gsap, get, set, getGSAngleDelta,
     /*~ @@DOUBLE-BLANK@@ ~*/
@@ -1720,6 +1763,7 @@ export default {
     /*~ @@DOUBLE-BLANK@@ ~*/
     // EVENT HANDLERS
     EventHandlers,
+    /*~ @@DOUBLE-BLANK@@ ~*/
     // ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
     isDocID, loc, getSetting, getTemplatePath, displayImageSelector
     /*~ @@DOUBLE-BLANK@@ ~*/

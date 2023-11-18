@@ -67,6 +67,10 @@ class BladesChat extends ChatMessage {
         const template = `systems/eunos-blades/templates/chat/roll-result-${U.lCase(rollInst.rollType)}-roll.hbs`;
         /*~ @@DOUBLE-BLANK@@ ~*/
         const templateData = rollInst;
+        templateData.rollFlags = { ...rollInst.flagData };
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        eLog.checkLog3("bladesRoll", "ConstructRollOutput Data", { rollInst, templateData });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         if (rollInst.rollResult) {
             templateData.rollResultDescription = C.RollResultDescriptions[rollInst.finalPosition][rollInst.rollResult];
         }

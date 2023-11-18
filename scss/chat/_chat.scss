@@ -1,6 +1,22 @@
 .chat-message {
+  --bg-controlled: var(--blades-grey-bright);
+  --bg-risky: var(--blades-black-dark);
+  --bg-desperate: var(--blades-red-darkest);
+}
 
-  background: var(--blades-black);
+.chat-message:last-child {
+  --bg-controlled: url("../assets/animations/chat/roll-position-controlled.webp");
+  --bg-risky: url("../assets/animations/chat/roll-position-risky.webp");
+  --bg-desperate: url("../assets/animations/chat/roll-position-desperate.webp");
+}
+
+
+.chat-message {
+  background: var(--blades-black-dark);
+  overflow: hidden;
+  position: relative;
+
+
   .message-header {
     position: relative;
     z-index: 1;
@@ -21,7 +37,7 @@
       z-index: 0;
 
       &.roll-position-risky {
-        background-image: url("../assets/animations/chat/roll-position-risky.webp");
+        background: var(--bg-risky);
         background-size: cover;
       }
     }
@@ -48,49 +64,98 @@
         color: var(--blades-gold);
       }
 
-      .roll-states {
+      .roll-outcome-container {
         justify-content: space-between;
-        padding: 0 20px;
+        padding: 0 10px;
+        align-items: center;
+        margin: 5px 0 10px 0;
+
+        &.roll-result-critical {
+          --background-color: var(--blades-gold-bright);
+          --label-color: var(--blades-black);
+        }
+        &.roll-result-success {
+          --background-color: var(--blades-white-bright);
+          --label-color: var(--blades-black);
+        }
+        &.roll-result-partial {
+          --background-color: var(--blades-black);
+          --label-color: var(--blades-white);
+        }
+        &.roll-result-fail {
+          --background-color: var(--blades-red-darkest);
+          --label-color: var(--blades-red-bright);
+        }
+
+        background: var(--background-color);
 
         .roll-state-container {
-          flex-basis: 30%;
-          flex-grow: 0;
-          flex-shrink: 0;
+          flex-basis: 10%;
+          flex-grow: 0.3;
+          flex-shrink: 1;
+
+          h4.roll-state-label {
+            font-family: var(--font-primary);
+            // border-bottom: 1px solid white;
+            font-size: 12px;
+            display: block;
+            width: 100%;
+            text-align: center;
+            white-space: nowrap;
+            color: var(--blades-grey);
+            margin-top: -4px;
+            text-shadow: var(--text-shadow-dark);
+          }
+
+          h3.roll-state {
+            white-space: nowrap;
+            text-shadow: var(--text-shadow-dark);
+          }
         }
 
-        h4.roll-state-label {
-          font-family: var(--font-primary);
-          // border-bottom: 1px solid white;
-          font-size: 12px;
-          display: block;
-          width: 100%;
-          text-align: center;
-          white-space: nowrap;
-          color: var(--blades-grey);
-          margin-top: -4px;
+        .roll-result-container {
+          .roll-result-label {
+            background: none;
+            box-shadow: none;
+            color: var(--label-color);
+            white-space: nowrap;
+            margin: 0;
+            padding: 0;
+
+            &.roll-result-top-label {
+              font-size: 26px;
+              line-height: 26px;
+            }
+            &.roll-result-bottom-label {
+              font-size: 14px;
+              font-family: var(--font-emphasis-narrow);
+
+            }
+            &.roll-result-main-label {
+
+            }
+          }
         }
 
-        h3.roll-state {
-          white-space: nowrap;
-        }
+
       }
 
-      h2.chat-header.roll-position {
-        text-align: right;
-        font-family: var(--font-primary);
+      // h2.chat-header.roll-position {
+      //   text-align: right;
+      //   font-family: var(--font-primary);
 
-        .position-text {
-          margin: 0 15px;
-          transform-origin: 50% 50%;
-          scale: 1.5;
-          display: inline-block;
-          font-family: var(--font-emphasis);
+      //   .position-text {
+      //     margin: 0 15px;
+      //     transform-origin: 50% 50%;
+      //     scale: 1.5;
+      //     display: inline-block;
+      //     font-family: var(--font-emphasis);
 
-          &.position-text-controlled {}
-          &.position-text-risky {}
-          &.position-text-desperate { }
-        }
-      }
+      //     &.position-text-controlled {}
+      //     &.position-text-risky {}
+      //     &.position-text-desperate { }
+      //   }
+      // }
 
       .dice-roll-strip {
         display: flex;
@@ -101,7 +166,7 @@
         align-items: stretch;
         justify-content: center;
         gap: 10px;
-        margin: 10px 0;
+        margin: 5px 0;
 
         .blades-die {
           display: block;

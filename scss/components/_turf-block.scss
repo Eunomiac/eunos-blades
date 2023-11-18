@@ -113,7 +113,7 @@
         box-shadow: none;
 
         /* Font & Text */
-        font-family: var(--font-emphasis-narrow);
+        font-family: var(--font-emphasis-narrower);
         font-size: var(--name-size);
         font-weight: bold;
         text-align: center;
@@ -252,7 +252,7 @@
           border-radius: 7px;
           outline: 1px outset var(--blades-white);
 
-          font-family: var(--font-emphasis-narrow);
+          font-family: var(--font-emphasis-narrower);
           font-size: toRem(14px);
           line-height: toRem(20px);
           text-align: center;

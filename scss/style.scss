@@ -52,7 +52,7 @@
 
       figcaption {
         text-shadow: 1px 1px 3px #000, 1px 1px 3px #000, 1px 1px 3px #000, 0px 0px 5px #000;
-        font-family: Kirsty, serif !important;
+        font-family: var(--font-emphasis), serif !important;
         line-height: 2rem;
         padding: 0 25%;
       }
@@ -93,8 +93,7 @@
 
         &,
         * {
-          --font-primary: "Minion Pro";
-          --font-heading: "Kirsty";
+          --font-heading: var(--font-emphasis);
           --font-weight-heading: normal;
           --text-shadow-heading: none;
           --line-height-heading: 1.2;

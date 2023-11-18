@@ -300,3 +300,63 @@
   src: url("../assets/fonts/UglyQua/UglyQua i.ttf") format("truetype");
   font-style: italic;
 }
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort B.otf") format("opentype");
+  font-style: normal;
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort Bi.otf") format("opentype");
+  font-style: italic;
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort S.otf") format("opentype");
+  font-style: normal;
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort Si.otf") format("opentype");
+  font-style: italic;
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort M.otf") format("opentype");
+  font-style: normal;
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort Mi.otf") format("opentype");
+  font-style: italic;
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort L.otf") format("opentype");
+  font-style: normal;
+  font-weight: light;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort Li.otf") format("opentype");
+  font-style: italic;
+  font-weight: light;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort.otf") format("opentype");
+  font-style: normal;
+  font-weight: normal;
+}
+@font-face {
+  font-family: "Beaufort";
+  src: url("../assets/fonts/Beaufort/Beaufort i.otf") format("opentype");
+  font-style: italic;
+  font-weight: normal;
+}

@@ -286,32 +286,34 @@ $isCompactLayout: true;
 
   // #region ░░░░░░░[Style Components]░░░░: Defining Components; Do Not USE Outside of Vars.scss ░░░░░░░
   --font-primary: "Minion Pro", serif; // "Signika", sans-serif;
+  --font-primary: "Beaufort", serif;
   --font-primary-smallcaps: var(--font-primary);
-  --font-primary-small: "Minion Pro Caption";
-  --font-primary-narrow: "Minion Pro Cond";
-  --font-primary-small-narrow: "Minion Pro Caption Cond";
+  --font-primary-small: "Minion Pro Caption", serif;
+  --font-primary-narrow: "Minion Pro Cond", serif;
+  --font-primary-small-narrow: "Minion Pro Caption Cond", serif;
 
-  --font-primary-alt: "Historical FellType";
-  --font-primary-alt-smallcaps: "Historical FellType SC";
+  --font-primary-alt: "Historical FellType", serif;
+  --font-primary-alt-smallcaps: "Historical FellType SC", serif;
 
-  --font-emphasis: "Kirsty";
-  --font-emphasis-smallcaps: var(--font-emphasis);
-  --font-emphasis-alt: "Ravenscroft";
-  --font-emphasis-alt-smallcaps: var(--font-emphasis-alt);
-  --font-emphasis-narrow: "Fjalla One";
+  --font-emphasis: "Kirsty", serif;
+  --font-emphasis-smallcaps: "Kirsty", serif;
+  --font-emphasis-alt: "Ravenscroft", serif;
+  --font-emphasis-alt-smallcaps: var(--font-emphasis-alt), serif;
+  --font-emphasis-narrow: "Oswald", sans-serif;
+  --font-emphasis-narrower: "Fjalla One", sans-serif;
 
   --font-mono: "Pragmata", monospace; // monospace;
   --font-mono-smallcaps: var(--font-mono);
 
-  --font-decorative: "UglyQua";
-  --font-decorative-alt: "IM FELL Double Pica";
-  --font-decorative-alt-smallcaps: "IM FELL Double Pica SC";
+  --font-decorative: "UglyQua", serif;
+  --font-decorative-alt: "IM FELL Double Pica", serif;
+  --font-decorative-alt-smallcaps: "IM FELL Double Pica SC", serif;
 
-  --font-handwritten: "PWSignaturetwo";
+  --font-handwritten: "PWSignaturetwo", serif;
 
-  --font-awesome: "Font Awesome 6 Pro";
-  --font-awesome-alt: "Font Awesome 6 Brands";
-  --font-awesome-duotone: "Font Awesome 6 Duotone";
+  --font-awesome: "Font Awesome 6 Pro", sans-serif;
+  --font-awesome-alt: "Font Awesome 6 Brands", sans-serif;
+  --font-awesome-duotone: "Font Awesome 6 Duotone", sans-serif;
 
   --line-height-expanded: 1.4;
   --line-height-primary: 1.2;

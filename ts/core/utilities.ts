@@ -1,5 +1,5 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import C from "./constants";
+import C, {SVGDATA, HbsSvgData} from "./constants";
 // eslint-disable-next-line import/no-unresolved
 import {gsap} from "gsap/all";
 // #endregion ▮▮▮▮ IMPORTS ▮▮▮▮
@@ -925,58 +925,43 @@ const objClean = <T>(data: T, remVals: UncleanValues[] = [undefined, null, "", {
   return data;
 };
 
-
-/**
- *
- * @param items
- * @param key
- */
-export function toDict<
-  T extends List,
-  K extends string & KeyOf<T>,
-  V extends ValOf<T>
->(items: T[], key: K): V extends key ? Record<V, T> : never {
-  const dict = {} as Record<V, T>;
-  const mappedItems = items
-    .map((data) => {
-      let {iData} = data;
-      if (!iData) {iData = data;}
-      const prefix = iData.linkName || iData.sourceItem?.name ? `>${iData.type.charAt(0)}>` : "";
-      const newKey = `${prefix}${iData[key]}`;
-      return [newKey, iData];
-    })
-    .sort(([a], [b]) => a.localeCompare(b)) as Array<[string, T]>;
-  mappedItems.forEach(([newKey, iData]: [string, T]) => {
-    if (newKey in dict) {
-      newKey = indexString(newKey) as V;
-    }
-    dict[newKey as KeyOf<typeof dict>] = iData;
-  });
-  // @ts-expect-error Oh it definitely does.
-  return dict;
-
-  /**
-   * Given a string that could have an index suffix, returns the string with
-   *  the suffix incremented by one, or set to one if no suffix exists.
-   * @param {string} str
-   */
-  function indexString(str: string) {
-    if (/_\d+$/.test(str)) {
-      const [curIndex, ...subStr] = [...str.split(/_/)].reverse();
-      return [
-        ...[...subStr].reverse(),
-        parseInt(curIndex, 10) + 1
-      ].join("_");
-    }
-    return `${str}_1`;
-  }
-}
 // Given an object and a predicate function, returns array of two objects:
 //   one with entries that pass, one with entries that fail.
 const partition = <Type>(obj: Type[], predicate: testFunc<valFunc> = () => true): [Type[], Type[]] => [
   objFilter(obj, predicate),
   objFilter(obj, (v: unknown, k: string | number | undefined) => !predicate(v, k))
 ];
+
+/**
+ * Zips two arrays into an object.
+ *
+ * @template T - The type of the keys.
+ * @template U - The type of the values.
+ * @param {T[]} keys - The array of keys.
+ * @param {U[]} values - The array of values.
+ * @returns {Record<T, U>} - The resulting object.
+ * @throws {Error} - Throws an error if the arrays are not of equal length, if the keys are not unique, or if the keys are not of a type that can be used as object keys.
+ */
+const zip = <T extends string | number | symbol, U>(keys: T[], values: U[]): Record<T, U> => {
+  // Check that the arrays are of equal length
+  if (keys.length !== values.length) {
+    throw new Error("The arrays must be of equal length.");
+  }
+
+  // Check that the keys are unique
+  if (new Set(keys).size !== keys.length) {
+    throw new Error("The keys must be unique.");
+  }
+
+  // Zip the arrays into an object
+  const result = {} as Record<T, U>;
+  keys.forEach((key, i) => {
+    result[key] = values[i];
+  });
+
+  return result;
+};
+
 /**
  *  An object-equivalent Array.map() function, which accepts mapping functions to transform both keys and values.
  *  If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
@@ -1350,6 +1335,44 @@ const withLog = (fn: (...args: unknown[]) => unknown) => {
 
 // #region ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████ ~
 
+const getSvgCode = (svgDotKey: string, svgPathKeys?: string|string[]) => {
+  const svgData = getProperty(SVGDATA, svgDotKey) as HbsSvgData|undefined;
+  // eLog.checkLog3("compileSvg", {svgDotKey, svgPaths, svgData});
+  if (!svgData) { return ""; }
+  const {viewBox, paths, classes} = svgData;
+  svgPathKeys ??= Object.keys(paths).join("|");
+  if (typeof svgPathKeys === "string") {
+    svgPathKeys = svgPathKeys.split("|");
+  }
+  return [
+    `<svg viewBox="${viewBox}">`,
+    ...svgPathKeys
+      .map((path) => `<path class="${path} ${classes?.[path] ?? ""}" d="${paths[path] ?? ""}" />`),
+    "</svg>"
+  ].join("\n");
+};
+
+const getSvgPaths = (svgDotKey: string, svgPathKeys?: string|string[]): Record<string, {class: string, d: string}> => {
+  const svgData = getProperty(SVGDATA, svgDotKey) as HbsSvgData|undefined;
+  if (!svgData) { return {}; }
+  const {paths, classes} = svgData;
+  svgPathKeys ??= Object.keys(paths);
+  if (typeof svgPathKeys === "string") {
+    svgPathKeys = svgPathKeys.split("|");
+  }
+
+  const returnData: Record<string, {class: string, d: string}> = {};
+
+  for (const pathKey of svgPathKeys) {
+    returnData[pathKey] = {
+      class: classes?.[pathKey] ?? "",
+      d: paths[pathKey] ?? ""
+    };
+  }
+
+  return returnData;
+};
+
 // #region ░░░░░░░[GreenSock]░░░░ Wrappers for GreenSock Functions ░░░░░░░ ~
 const set = (targets: gsap.TweenTarget, vars: gsap.TweenVars): gsap.core.Tween => gsap.set(targets, vars);
 function get(target: gsap.TweenTarget, property: keyof gsap.CSSProperties & string, unit: string): number;
@@ -1372,6 +1395,20 @@ function get(target: gsap.TweenTarget, property: keyof gsap.CSSProperties & stri
 }
 
 const getGSAngleDelta = (startAngle: number, endAngle: number) => signNum(roundNum(getAngleDelta(startAngle, endAngle), 2)).replace(/^(.)/, "$1=");
+
+// const Animate = {
+//   Timeline: {
+//     to: (tl: gsap.core.Timeline, targets: gsap.TweenTarget[], vars: gsap.TweenVars, position: any) => {
+//       if (targets.length === 0) {
+
+//       }
+//     }
+//   } (tl: gsap.core.Timeline, )
+// }
+
+// const to = (targets: gsap.TweenTarget[], vars: gsap.TweenVars): gsap.core.Tween => {
+//   gsap.
+// }
 // #endregion ░░░░[GreenSock]░░░░
 
 // #region ░░░░░░░[SVG]░░░░ SVG Generation & Manipulation ░░░░░░░ ~
@@ -1442,10 +1479,7 @@ const getRGBString = (red: string | number, green?: number, blue?: number, alpha
   return null;
 };
 const getHEXString = (red: string | number, green?: number, blue?: number): HEXColor | null => {
-  /**
-   *
-   * @param c
-   */
+
   function componentToHex(c: string | number): string {
     const hex = c.toString(16);
     return hex.length === 1 ? `0${hex}` : hex;
@@ -1683,7 +1717,7 @@ export default {
   subGroup, shuffle,
 
   // ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████
-  remove, replace, partition,
+  remove, replace, partition, zip,
   objClean, objSize, objMap, objFindKey, objFilter, objForEach, objCompact,
   objClone, objMerge, objDiff, objExpand, objFlatten, objNullify,
   objFreezeProps,
@@ -1692,8 +1726,10 @@ export default {
   getDynamicFunc, withLog,
 
   // ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
+  getSvgCode, getSvgPaths,
+
   // ░░░░░░░ GreenSock ░░░░░░░
-  gsap, get, set, getGSAngleDelta,
+  gsap, get, set, getGSAngleDelta, /* to, from, fromTo, */
 
   getRawCirclePath, drawCirclePath,
 
@@ -1708,6 +1744,7 @@ export default {
 
   // EVENT HANDLERS
   EventHandlers,
+
   // ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
   isDocID, loc, getSetting, getTemplatePath, displayImageSelector
 

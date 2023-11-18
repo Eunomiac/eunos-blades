@@ -172,7 +172,7 @@
             line-height: 1;
             margin-top: toRem(-1px);
 
-            font-family: Kirsty, serif;
+            font-family: var(--font-emphasis), serif;
             transform-origin: center center;
             transform: scaleY(0.75);
             &::before {

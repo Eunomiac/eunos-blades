@@ -1,8 +1,6 @@
 & {
   overflow: visible;
 
-  --font-primary: "Minion Pro", serif;
-
   #blades-push-notifications {
     height: auto;
     width: 300px;
@@ -47,7 +45,7 @@
 
       .header {
         width: 100%;
-        font-family: Oswald, sans-serif;
+        font-family: var(--font-emphasis-narrow);
         font-weight: bold;
         color: var(--blades-black-dark);
         text-align: left;

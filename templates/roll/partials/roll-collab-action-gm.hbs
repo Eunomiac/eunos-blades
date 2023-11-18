@@ -241,7 +241,6 @@
         <h3 class="gold-bright">On Partial Success:</h3>
         <div class="consequence-container flex-vertical full-width">
         {{#each csqData.partial as |cData cIndex|}}
-          {{eLog "Partial cData" cData}}
           {{#if cData.resistedTo}}
           {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
             isResistanceVisible=true }}

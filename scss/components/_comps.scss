@@ -446,7 +446,7 @@
       }
 
       .comp-body-text {
-        font-family: "Minion Pro Caption Cond", serif;
+        font-family: var(--font-primary-small-narrow);
         hyphens: auto;
         text-align: justify;
         padding: 0 toRem(5px) 0 0;
@@ -833,7 +833,7 @@
 // }
 .comp.consequence-display-container {
   --container-height: 40px;
-  --container-left-shift: 70px;
+  --container-left-shift: 40px;
 
   --csq-icon-bg-color: var(--blades-black-dark);
   --csq-type-bg: var(--csq-icon-dark);
@@ -924,6 +924,19 @@
     --csq-name-color: var(--blades-blue-bright);
   }
 
+  .consequence-bg-image {
+    // background: rgba(0, 255, 255, 0.25);
+    position: absolute;
+    height: 500%;
+    top: 80%;
+    transform: translate(-100%, -50%);
+    transform-origin: 0% 50%;
+    width: calc(200px * 4.041);
+    min-width: calc(200px * 4.041);
+    z-index: -1;
+    left: -10px;
+  }
+
   .consequence-interaction-pad {
     display: none;
     display: block;
@@ -953,8 +966,9 @@
 
   .consequence-icon-container {
     position: relative;
-    height: calc(var(--container-height) * 0.75);
-    max-width: calc(var(--container-height) * 0.75);
+
+    height: var(--container-height); // calc(var(--container-height) * 0.75);
+    max-width: var(--container-height); // calc(var(--container-height) * 0.75);
     background: transparent;
     left: var(--container-left-shift);
     z-index: 1;
@@ -967,21 +981,29 @@
 
     .consequence-icon-circle {
       position: absolute;
-      translate: -50% -50%;
+      // transform: translate(-50%, -50%);
+      // translate: -50% -50%;
       transform-origin: 100% 0%;
-      top: calc(var(--container-height) * 0.5);
-      left: calc(var(--container-height) * 0.5);
+      // top: calc(var(--container-height) * 0.5);
+      // left: calc(var(--container-height) * 0.5);
       border-radius: 50%;
       height: var(--container-height);
       width: var(--container-height);
       outline: 1px solid var(--csq-icon-med);
       background: var(--csq-icon-bg-color);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      // display: flex;
+      // justify-content: center;
+      // align-items: center;
       z-index: 1;
+      top: 0px;
+      left: 0px;
+      overflow: hidden;
 
       svg {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        left: 50%;
         height: 80%;
         width: 80%;
         display: block;
@@ -997,7 +1019,7 @@
       }
 
       &.base-consequence {
-        scale: 0.75;
+        transform: scale(0.75);
         animation: icon-glow 2s ease infinite;
         pointer-events: auto;
 
@@ -1026,7 +1048,7 @@
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
-      bottom: -10px;
+      bottom: 0px;
 
       .consequence-button-bg {
         position: absolute;
@@ -1042,12 +1064,16 @@
         &.consequence-special-armor-button-bg {
           transform-origin: 100% 50%;
         }
+
+        &.consequence-special-armor-button-bg {
+          width: calc(100% + 32px)
+        }
       }
 
       .consequence-button-label {
         position: relative;
         z-index: 1;
-        font-family: Oswald, sans-serif;
+        font-family: var(--font-emphasis-narrow);
         font-size: 10px;
         line-height: 14px;
         color: var(--blades-grey);
@@ -1086,7 +1112,7 @@
         }
       }
       &.consequence-accept-button-container {
-        left: 140%;
+        left: 105%;
 
         .consequence-button-bg {
           right: -7px;
@@ -1125,7 +1151,7 @@
       // left: calc(var(--container-height) + var(--container-left-shift) - 75px);
       transform-origin: 0% 50%;
       white-space: nowrap;
-      font-family: Oswald, sans-serif;
+      font-family: var(--font-emphasis-narrow);
       text-transform: uppercase;
       text-align: right;
       font-size: 10px;
@@ -1149,12 +1175,13 @@
       padding: 0 5px 0 35px;
       font-size: 14px;
       line-height: 17px;
-      font-family: Kirsty, serif;
+      font-family: var(--font-emphasis), serif;
       font-variant: small-caps;
       transform-origin: 0% 50%;
       // text-shadow: var(--text-shadow-dark);
       color: var(--csq-icon-bright);
       font-style: italic;
+      white-space: nowrap;
 
       &.resist-consequence {
         // color: var(--blades-black-dark);
@@ -1194,7 +1221,7 @@
     .consequence-footer-message {
       position: absolute;
       white-space: nowrap;
-      font-family: Oswald, sans-serif;
+      font-family: var(--font-emphasis-narrow);
       font-weight: bold;
       color: var(--blades-black-dark);
       font-size: 10px;
@@ -1231,12 +1258,12 @@
         filter: brightness(1.5) drop-shadow(0 0 4px black);
       }
       .roll-consequence-type-select {
-        font-family: Oswald, sans-serif;
+        font-family: var(--font-emphasis-narrow);
         flex-basis: 150px;
 
       }
       .roll-consequence-attribute-select {
-        font-family: Oswald, sans-serif;
+        font-family: var(--font-emphasis-narrow);
         flex-basis: 95px;
       }
       .consequence-name {
@@ -1263,7 +1290,7 @@
           font-size: 10px;
           line-height: 10px;
           max-height: 14px;
-          font-family: Oswald, sans-serif;
+          font-family: var(--font-emphasis-narrow);
         }
 
         .consequence-name {

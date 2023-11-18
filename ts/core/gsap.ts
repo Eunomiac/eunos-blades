@@ -27,51 +27,59 @@ const gsapEffects: Record<string, gsapEffect> = {
       const csqBaseElems = csqRoot(".base-consequence:not(.consequence-icon-circle)");
       const csqAcceptElems = csqRoot(".accept-consequence:not(.consequence-icon-circle):not(.consequence-button-container)");
 
-      const tl = U.gsap.timeline({paused: true});
+      const tl = U.gsap.timeline({paused: true, defaults: { overwrite: "auto" }});
 
       // Fade out base-consequence components
-      tl.fromTo(csqBaseElems, {
-        opacity: 1
-      }, {
-        opacity: 0,
-        duration: config.duration / 3,
-        ease: "none"
-      }, 0);
+      if (csqBaseElems.length > 0) {
+        tl.fromTo(csqBaseElems, {
+          opacity: 1
+        }, {
+          opacity: 0,
+          duration: config.duration / 3,
+          ease: "none"
+        }, 0);
+      }
 
       // Fade in accept-consequence components
-      tl.fromTo(csqAcceptElems, {
-        opacity: 0
-      }, {
-        opacity: 1,
-        duration: config.duration / 3,
-        ease: "none"
-      }, 0);
+      if (csqAcceptElems.length > 0) {
+        tl.fromTo(csqAcceptElems, {
+          opacity: 0
+        }, {
+          opacity: 1,
+          duration: config.duration / 3,
+          ease: "none"
+        }, 0);
+      }
 
       // Brighten the entire container slightly
-      tl.fromTo(csqContainer, {
-        filter: "brightness(1)"
-      }, {
-        filter: `brightness(${config.brightness})`,
-        duration: config.duration / 3,
-        ease: "none"
-      }, 0);
+      if (csqContainer) {
+        tl.fromTo(csqContainer, {
+          filter: "brightness(1)"
+        }, {
+          filter: `brightness(${config.brightness})`,
+          duration: config.duration / 3,
+          ease: "none"
+        }, 0);
+      }
 
       // Enlarge the icon circle, add stroke
-      tl.fromTo(csqIconCircle, {
-        xPercent: -50,
-        yPercent: -50,
-        scale: 0.75,
-        outlineColor: C.Colors.dBLACK,
-        outlineWidth: 0
-      }, {
-        xPercent: -50,
-        yPercent: -50,
-        scale: 0.85,
-        outlineColor: C.Colors.GREY,
-        outlineWidth: 1,
-        duration: 0.55,
-        ease: "sine.out"
-      }, 0);
+      if (csqIconCircle.length > 0) {
+        tl.fromTo(csqIconCircle, {
+          // xPercent: -50,
+          // yPercent: -50,
+          scale: 0.75,
+          outlineColor: C.Colors.dBLACK,
+          outlineWidth: 0
+        }, {
+          // xPercent: -50,
+          // yPercent: -50,
+          scale: 0.85,
+          outlineColor: C.Colors.GREY,
+          outlineWidth: 1,
+          duration: 0.55,
+          ease: "sine.out"
+        }, 0);
+      }
 
       return tl;
     },
@@ -87,68 +95,90 @@ const gsapEffects: Record<string, gsapEffect> = {
   csqClickIcon: {
     effect: (csqIconContainer: HTMLElement, config) => {
       const csqRoot = U.gsap.utils.selector(csqIconContainer);
+      const csqBackgroundImg = U.gsap.utils.selector($(csqIconContainer).parent())(".consequence-bg-image");
       const csqInteractionPads = csqRoot(".consequence-interaction-pad");
       const csqIconCircleBase = csqRoot(".consequence-icon-circle.base-consequence");
       const csqIconCircleAccept = csqRoot(".consequence-icon-circle.accept-consequence");
       const csqButtonContainers = csqRoot(".consequence-button-container");
 
-      const tl = U.gsap.timeline({paused: true});
+      const tl = U.gsap.timeline({paused: true, defaults: { overwrite: "auto" }});
 
       // Initialize interaction pads to display: none
       if (csqInteractionPads.length) {
         tl.set(csqInteractionPads, {display: "none"});
       }
 
+      // Slide out the background
+      if (csqBackgroundImg.length) {
+        tl.fromTo(csqBackgroundImg, {
+          xPercent: -100,
+          yPercent: -50
+        }, {
+          xPercent: -60,
+          yPercent: -50,
+          duration: 0.5,
+          ease: "back"
+        }, 0);
+      }
+
       // Fade out the base consequence icon circle
-      tl.fromTo(csqIconCircleBase, {
-        opacity: 1
-      }, {
-        opacity: 0,
-        duration: 0.25,
-        ease: "none"
-      }, 0);
+      if (csqIconCircleBase.length > 0) {
+        tl.fromTo(csqIconCircleBase, {
+          opacity: 1
+        }, {
+          opacity: 0,
+          duration: 0.25,
+          ease: "none"
+        }, 0);
+      }
 
       // Fade in the accept consequence icon circle, enlarging the stroke
-      tl.fromTo(csqIconCircleAccept, {
-        opacity: 0,
-        xPercent: -50,
-        yPercent: -50,
-        scale: 0.85
-      }, {
-        opacity: 1,
-        xPercent: -50,
-        yPercent: -50,
-        duration: 0.15,
-        ease: "sine"
-      }, 0);
+      if (csqIconCircleAccept.length > 0) {
+        tl.fromTo(csqIconCircleAccept, {
+          opacity: 0,
+          // xPercent: -50,
+          // yPercent: -50,
+          scale: 0.85
+        }, {
+          opacity: 1,
+          // xPercent: -50,
+          // yPercent: -50,
+          duration: 0.15,
+          ease: "sine"
+        }, 0);
+      }
 
-      tl.fromTo(csqIconCircleAccept, {
-        outlineWidth: 1,
-        xPercent: -50,
-        yPercent: -50,
-        scale: 0.85
-      }, {
-        scale: 1,
-        xPercent: -50,
-        yPercent: -50,
-        outlineWidth: 2,
-        duration: 0.25,
-        ease: "sine"
-      }, 0.175);
+      if (csqIconCircleAccept.length > 0) {
+        tl.fromTo(csqIconCircleAccept, {
+          outlineWidth: 1,
+          // xPercent: -50,
+          // yPercent: -50,
+          scale: 0.85
+        }, {
+          scale: 1,
+          // xPercent: -50,
+          // yPercent: -50,
+          outlineWidth: 2,
+          duration: 0.25,
+          ease: "sine"
+        }, 0.175);
+      }
 
       // Scale and fade in the button containers
-      tl.fromTo(csqButtonContainers, {
-        scale: config.scale,
-        opacity: 0,
-        filter: "blur(25px)"
-      }, {
-        scale: 1,
-        opacity: 1,
-        filter: "blur(0px)",
-        stagger: config.stagger,
-        duration: config.duration,
-        ease: `${config.ease}.inOut(${config.easeStrength})`
-      }, 0);
+      if (csqButtonContainers.length > 0) {
+        tl.fromTo(csqButtonContainers, {
+          scale: config.scale,
+          opacity: 0,
+          filter: "blur(25px)"
+        }, {
+          scale: 1,
+          opacity: 1,
+          filter: "blur(0px)",
+          stagger: config.stagger,
+          duration: config.duration,
+          ease: `${config.ease}.inOut(${config.easeStrength})`
+        }, 0);
+      }
 
       // Finally, toggle on interaction pads
       if (csqInteractionPads.length) {
@@ -176,75 +206,85 @@ const gsapEffects: Record<string, gsapEffect> = {
       const buttonIcon = buttonRoot(".button-icon i");
       const buttonLabel = buttonRoot(".consequence-button-label");
 
-      const tl = U.gsap.timeline({paused: true});
+      const tl = U.gsap.timeline({paused: true, defaults: { overwrite: "auto" }});
 
       // Turn type line white
-      tl.fromTo(typeLine,
-        {
-          color: C.Colors.RED
-        },
-        {
-          color: C.Colors.WHITE,
-          duration: 0.5,
-          ease: "sine.inOut"
-        }, 0);
+      if (typeLine.length > 0) {
+        tl.fromTo(typeLine,
+          {
+            color: C.Colors.RED
+          },
+          {
+            color: C.Colors.WHITE,
+            duration: 0.5,
+            ease: "sine.inOut"
+          }, 0);
+      }
 
       // Slide type line background out from under icon
-      tl.fromTo(typeLineBg, {
-        x: 5,
-        scaleX: 0,
-        color: C.Colors.RED,
-        skewX: 0
-      }, {
-        scaleX: 1,
-        skewX: -45,
-        color: C.Colors.RED,
-        duration: 0.5,
-        ease: "back.out"
-      }, 0);
+      if (typeLineBg.length > 0) {
+        tl.fromTo(typeLineBg, {
+          x: 5,
+          scaleX: 0,
+          color: C.Colors.RED,
+          skewX: 0
+        }, {
+          scaleX: 1,
+          skewX: -45,
+          color: C.Colors.RED,
+          duration: 0.5,
+          ease: "back.out"
+        }, 0);
+      }
 
       // Slide accept button background out from under icon
-      tl.fromTo(buttonBg, {
-        scaleX: 0,
-        color: C.Colors.RED,
-        skewX: 0
-      }, {
-        x: 0,
-        scaleX: 1,
-        skewX: -45,
-        color: C.Colors.RED,
-        duration: 0.25,
-        ease: "back.out"
-      }, 0);
+      if (buttonBg.length > 0) {
+        tl.fromTo(buttonBg, {
+          scaleX: 0,
+          color: C.Colors.RED,
+          skewX: 0
+        }, {
+          x: 0,
+          scaleX: 1,
+          skewX: -45,
+          color: C.Colors.RED,
+          duration: 0.25,
+          ease: "back.out"
+        }, 0);
+      }
 
       // Turn button icon black and scale
-      tl.fromTo(buttonIcon,
-        {
-          color: C.Colors.GREY,
-          opacity: 0.75,
-          scale: 1
-        },
-        {
-          color: C.Colors.dBLACK,
-          scale: 1.25,
-          opacity: 1,
-          duration: 0.5,
-          ease: "sine"
-        }, 0);
+      if (buttonIcon.length > 0) {
+        tl.fromTo(buttonIcon,
+          {
+            color: C.Colors.GREY,
+            opacity: 0.75,
+            scale: 1
+          },
+          {
+            color: C.Colors.dBLACK,
+            scale: 1.25,
+            opacity: 1,
+            duration: 0.5,
+            ease: "sine"
+          }, 0);
+      }
 
       // Turn button label black, add letter-spacing, bold
-      tl.fromTo(buttonLabel,
-        {
-          color: C.Colors.GREY,
-          fontWeight: 400,
-          scale: 1
-        },
-        {
-          color: C.Colors.dBLACK,
-          fontWeight: 800,
-          duration: 0.75,
-          ease: "sine"
-        }, 0);
+      if (buttonLabel.length > 0) {
+        tl.fromTo(buttonLabel,
+          {
+            color: C.Colors.GREY,
+            fontWeight: 400,
+            scale: 1
+          },
+          {
+            color: C.Colors.dBLACK,
+            fontWeight: 800,
+            duration: 0.75,
+            ease: "sine"
+          }, 0);
+      }
 
       return tl;
     },
@@ -270,17 +310,19 @@ const gsapEffects: Record<string, gsapEffect> = {
       const buttonIcon = buttonRoot(".button-icon i");
       const buttonLabel = buttonRoot(".consequence-button-label");
 
-      const tl = U.gsap.timeline({paused: true});
+      const tl = U.gsap.timeline({paused: true, defaults: { overwrite: "auto" }});
 
       // Fade out all accept elems and special armor elems
-      tl.to([...acceptElems, ...specialArmorElems], {
-        opacity: 0,
-        duration: 0.25,
-        ease: "sine.out"
-      });
+      if ([...acceptElems, ...specialArmorElems].length > 0) {
+        tl.to([...acceptElems, ...specialArmorElems], {
+          opacity: 0,
+          duration: 0.25,
+          ease: "sine.out"
+        });
+      }
 
-      if (typeLine.length) {
-        // Slide out .consequence-type.resist-consequence from left
+      // Slide out .consequence-type.resist-consequence from left
+      if (typeLine.length > 0) {
         tl.fromTo(typeLine, {
           x: -15,
           scaleX: 0,
@@ -297,90 +339,104 @@ const gsapEffects: Record<string, gsapEffect> = {
       }
 
       // Slide out .consequence-resist-button-bg from right
-      tl.fromTo(buttonBg, {
-        scaleX: 0,
-        skewX: 0,
-        opacity: 1
-      }, {
-        scaleX: 1,
-        skewX: -45,
-        opacity: 1,
-        duration: 0.5,
-        ease: "back.inOut"
-      }, 0);
-
-      // Slide out .consequence-footer-bg.resist-consequence from left
-      tl.fromTo(footerBg, {
-        scaleX: 0,
-        skewX: 0,
-        opacity: 1
-      }, {
-        scaleX: 1,
-        skewX: -45,
-        opacity: 1,
-        duration: 0.5,
-        ease: "back.inOut"
-      }, 0);
-
-      // Slide out .consequence-resist-attribute from left
-      tl.fromTo(attrElem, {
-        scaleX: 0,
-        opacity: 1
-      }, {
-        scaleX: 1,
-        opacity: 1,
-        duration: 0.5,
-        ease: "back.inOut"
-      }, 0);
-
-      // Slide out .consequence-name.resist-consequence from left
-      tl.fromTo(resistCsqName, {
-        scaleX: 0,
-        opacity: 1
-      }, {
-        scaleX: 1,
-        opacity: 1,
-        duration: 0.5,
-        ease: "back.inOut"
-      }, 0);
-
-      // Fade in .consequence-icon-circle.resist-consequence
-      tl.fromTo(iconCircle, {
-        opacity: 0
-      }, {
-        opacity: 1,
-        duration: 0.5,
-        ease: "back.out"
-      }, 0);
-
-      // Turn button icon black and scale
-      tl.fromTo(buttonIcon,
-        {
-          color: C.Colors.GREY,
-          opacity: 0.75,
-          scale: 1
-        },
-        {
-          color: C.Colors.dBLACK,
-          scale: 1.25,
+      if (buttonBg.length > 0) {
+        tl.fromTo(buttonBg, {
+          scaleX: 0,
+          skewX: 0,
+          opacity: 1
+        }, {
+          scaleX: 1,
+          skewX: -45,
           opacity: 1,
           duration: 0.5,
-          ease: "sine"
+          ease: "back.inOut"
         }, 0);
+      }
+
+      // Slide out .consequence-footer-bg.resist-consequence from left
+      if (footerBg.length > 0) {
+        tl.fromTo(footerBg, {
+          scaleX: 0,
+          skewX: 0,
+          opacity: 1
+        }, {
+          scaleX: 1,
+          skewX: -45,
+          opacity: 1,
+          duration: 0.5,
+          ease: "back.inOut"
+        }, 0);
+      }
+
+      // Slide out .consequence-resist-attribute from left
+      if (attrElem.length > 0) {
+        tl.fromTo(attrElem, {
+          scaleX: 0,
+          opacity: 1
+        }, {
+          scaleX: 1,
+          opacity: 1,
+          duration: 0.5,
+          ease: "back.inOut"
+        }, 0);
+      }
+
+      // Slide out .consequence-name.resist-consequence from left
+      if (resistCsqName.length > 0) {
+        tl.fromTo(resistCsqName, {
+          scaleX: 0,
+          opacity: 1
+        }, {
+          scaleX: 1,
+          opacity: 1,
+          duration: 0.5,
+          ease: "back.inOut"
+        }, 0);
+      }
+
+      // Fade in .consequence-icon-circle.resist-consequence
+      if (iconCircle.length > 0) {
+        tl.fromTo(iconCircle, {
+          opacity: 0
+        }, {
+          opacity: 1,
+          duration: 0.5,
+          ease: "back.out"
+        }, 0);
+      }
+
+      // Turn button icon black and scale
+      if (buttonIcon.length > 0) {
+        tl.fromTo(buttonIcon,
+          {
+            color: C.Colors.GREY,
+            opacity: 0.75,
+            scale: 1
+          },
+          {
+            color: C.Colors.dBLACK,
+            scale: 1.25,
+            opacity: 1,
+            duration: 0.5,
+            ease: "sine"
+          }, 0);
+      }
 
       // Turn button label black, bold
-      tl.fromTo(buttonLabel,
-        {
-          color: C.Colors.GREY,
-          fontWeight: 400,
-          scale: 1
-        },
-        {
-          color: C.Colors.dBLACK,
-          fontWeight: 800,
-          duration: 0.75,
-          ease: "sine"
-        }, 0);
+      if (buttonLabel.length > 0) {
+        tl.fromTo(buttonLabel,
+          {
+            color: C.Colors.GREY,
+            fontWeight: 400,
+            scale: 1
+          },
+          {
+            color: C.Colors.dBLACK,
+            fontWeight: 800,
+            duration: 0.75,
+            ease: "sine"
+          }, 0);
+      }
 
       return tl;
     },
@@ -400,23 +456,20 @@ const gsapEffects: Record<string, gsapEffect> = {
       const specialArmorCsqName = csqRoot(".consequence-name.special-armor-consequence");
       const iconCircle = csqRoot(".consequence-icon-circle.special-armor-consequence");
 
-      const buttonRoot = U.gsap.utils.selector(csqRoot(".consequence-button-container.consequence-special-armor-button-container"));
 
-      const buttonBg = buttonRoot(".consequence-button-bg");
-      const buttonIcon = buttonRoot(".button-icon i");
-      const buttonLabel = buttonRoot(".consequence-button-label");
-
-      const tl = U.gsap.timeline({paused: true});
+      const tl = U.gsap.timeline({paused: true, defaults: { overwrite: "auto" }});
 
       // Fade out all accept elems and resist elems
-      tl.to([...acceptElems, ...resistElems], {
-        opacity: 0,
-        duration: 0.25,
-        ease: "sine.out"
-      });
+      if ([...acceptElems, ...resistElems].length > 0) {
+        tl.to([...acceptElems, ...resistElems], {
+          opacity: 0,
+          duration: 0.25,
+          ease: "sine.out"
+        });
+      }
 
-      if (typeLine) {
-        // Slide out .consequence-type.special-armor-consequence from left
+      // Slide out .consequence-type.special-armor-consequence from left
+      if (typeLine.length > 0) {
         tl.fromTo(typeLine, {
           x: -15,
           scaleX: 0,
@@ -432,21 +485,8 @@ const gsapEffects: Record<string, gsapEffect> = {
         }, 0);
       }
 
-      // Slide out .consequence-special-armor-button-bg from right
-      tl.fromTo(buttonBg, {
-        scaleX: 0,
-        skewX: 0,
-        opacity: 1
-      }, {
-        scaleX: 1,
-        skewX: -45,
-        opacity: 1,
-        duration: 0.5,
-        ease: "back.inOut"
-      }, 0);
-
-      if (footerBg) {
-        // Slide out .consequence-footer-bg.special-armor-consequence from left
+      // Slide out .consequence-footer-bg.special-armor-consequence from left
+      if (footerBg.length > 0) {
         tl.fromTo(footerBg, {
           scaleX: 0,
           skewX: 0,
@@ -461,7 +501,7 @@ const gsapEffects: Record<string, gsapEffect> = {
       }
 
       // Slide out .consequence-special-armor-message from left
-      if (footerMsg) {
+      if (footerMsg.length > 0) {
         tl.fromTo(footerMsg, {
           scaleX: 0,
           opacity: 1
@@ -474,7 +514,7 @@ const gsapEffects: Record<string, gsapEffect> = {
       }
 
       // Slide out .consequence-name.special-armor-consequence from left
-      if (specialArmorCsqName) {
+      if (specialArmorCsqName.length > 0) {
         tl.fromTo(specialArmorCsqName, {
           scaleX: 0,
           opacity: 1
@@ -487,42 +527,73 @@ const gsapEffects: Record<string, gsapEffect> = {
       }
 
       // Fade in .consequence-icon-circle.special-armor-consequence
-      tl.fromTo(iconCircle, {
-        opacity: 0
-      }, {
-        opacity: 1,
-        duration: 0.5,
-        ease: "back.out"
-      }, 0);
-
-      // Turn button icon black and scale
-      tl.fromTo(buttonIcon,
-        {
-          color: C.Colors.GREY,
-          opacity: 0.75,
-          scale: 1
-        },
-        {
-          color: C.Colors.dBLACK,
-          scale: 1.25,
+      if (iconCircle.length > 0) {
+        tl.fromTo(iconCircle, {
+          opacity: 0
+        }, {
           opacity: 1,
           duration: 0.5,
-          ease: "sine"
+          ease: "back.out"
         }, 0);
+      }
 
-      // Turn button label black, bold
-      tl.fromTo(buttonLabel,
-        {
-          color: C.Colors.GREY,
-          fontWeight: 400,
-          scale: 1
-        },
-        {
-          color: C.Colors.dBLACK,
-          fontWeight: 800,
-          duration: 0.75,
-          ease: "sine"
-        }, 0);
+
+      if (csqRoot(".consequence-button-container.consequence-special-armor-button-container").length > 0) {
+        const buttonRoot = U.gsap.utils.selector(csqRoot(".consequence-button-container.consequence-special-armor-button-container"));
+        const [buttonBg, buttonIcon, buttonLabel] = [
+          buttonRoot(".consequence-button-bg"),
+          buttonRoot(".button-icon i"),
+          buttonRoot(".consequence-button-label")
+        ];
+
+        // Slide out .consequence-special-armor-button-bg from right
+        if (buttonBg.length > 0) {
+          tl.fromTo(buttonBg, {
+            scaleX: 0,
+            skewX: 0,
+            opacity: 1
+          }, {
+            scaleX: 1,
+            skewX: -45,
+            opacity: 1,
+            duration: 0.5,
+            ease: "back.inOut"
+          }, 0);
+        }
+
+        // Turn button icon black and scale
+        if (buttonIcon.length > 0) {
+          tl.fromTo(buttonIcon,
+            {
+              color: C.Colors.GREY,
+              opacity: 0.75,
+              scale: 1
+            },
+            {
+              color: C.Colors.dBLACK,
+              scale: 1.25,
+              opacity: 1,
+              duration: 0.5,
+              ease: "sine"
+            }, 0);
+        }
+
+        // Turn button label black, bold
+        if (buttonLabel.length > 0) {
+          tl.fromTo(buttonLabel,
+            {
+              color: C.Colors.GREY,
+              fontWeight: 400,
+              scale: 1
+            },
+            {
+              color: C.Colors.dBLACK,
+              fontWeight: 800,
+              duration: 0.75,
+              ease: "sine"
+            }, 0);
+        }
+      }
 
       return tl;
     },
@@ -655,7 +726,7 @@ const gsapEffects: Record<string, gsapEffect> = {
   },
   hoverTooltip: {
     effect: (tooltip, config) => {
-      const tl = U.gsap.timeline({paused: true});
+      const tl = U.gsap.timeline({paused: true, defaults: { overwrite: "auto" }});
       if (!tooltip) { return tl; }
       // Tooltip = $(tooltip);
 

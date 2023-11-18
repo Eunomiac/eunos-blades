@@ -7,26 +7,33 @@
       data-resist-name="{{resistedTo.name}}"
       data-resist-type="{{resistedTo.type}}" >
 
+  {{#unless isMinimal}}
+  <img class="consequence-bg-image" src="systems/eunos-blades/assets/chat/csq-strip-long.png" />
+  {{/unless}}
+
   <div class="consequence-interaction-pad accept-consequence-pad"></div>
   <div class="consequence-interaction-pad resist-consequence-pad"></div>
   {{#if specialArmorTo}}
     <div class="consequence-interaction-pad special-armor-consequence-pad"></div>
   {{/if}}
-
   <div class="consequence-icon-container">
-
     <div class="consequence-icon-circle base-consequence">
-      {{{compileSvg type icon}}}
+      {{eLog "ICON DATA" icon}}
+      <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/base-{{icon}}.svg" />
     </div>
     <div class="consequence-icon-circle accept-consequence">
-      {{{compileSvg type icon}}}
+      <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/accept-{{icon}}.svg" />
     </div>
     <div class="consequence-icon-circle resist-consequence">
-      {{{compileSvg resistedTo.type resistedTo.icon}}}
+      {{#if resistedTo.icon}}
+      <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/resist-{{resistedTo.icon}}.svg" />
+      {{/if}}
     </div>
     {{#if specialArmorTo}}
     <div class="consequence-icon-circle special-armor-consequence">
-      {{{compileSvg specialArmorTo.type specialArmorTo.icon}}}
+      {{#if specialArmorTo.icon}}
+      <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/special-{{specialArmorTo.icon}}.svg" />
+      {{/if}}
     </div>
     {{/if}}
 

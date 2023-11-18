@@ -521,24 +521,24 @@ const C = {
         [ConsequenceType.None]: "None"
     },
     ConsequenceIcons: {
-        [ConsequenceType.ReducedEffect]: "main",
-        [ConsequenceType.ComplicationMinor]: "main",
-        [ConsequenceType.ComplicationMajor]: "main",
-        [ConsequenceType.ComplicationSerious]: "main",
-        [ConsequenceType.LostOpportunity]: "main",
-        [ConsequenceType.WorsePosition]: "horizon|boot|ice",
-        [ConsequenceType.InsightHarm1]: "eye|iris",
-        [ConsequenceType.InsightHarm2]: "eye|iris",
-        [ConsequenceType.InsightHarm3]: "eye|iris",
-        [ConsequenceType.InsightHarm4]: "eye|iris",
-        [ConsequenceType.ProwessHarm1]: "scar",
-        [ConsequenceType.ProwessHarm2]: "scarTissue",
-        [ConsequenceType.ProwessHarm3]: "scar|scarTissue",
-        [ConsequenceType.ProwessHarm4]: "scar|scarTissue|welts",
-        [ConsequenceType.ResolveHarm1]: "spikes|eyeball|iris",
-        [ConsequenceType.ResolveHarm2]: "spikes|eyeball|iris",
-        [ConsequenceType.ResolveHarm3]: "spikes|eyeball|iris",
-        [ConsequenceType.ResolveHarm4]: "spikes|eyeball|iris",
+        [ConsequenceType.ReducedEffect]: "reduced-effect",
+        [ConsequenceType.ComplicationMinor]: "complication-minor",
+        [ConsequenceType.ComplicationMajor]: "complication-major",
+        [ConsequenceType.ComplicationSerious]: "complication-serious",
+        [ConsequenceType.LostOpportunity]: "lost-opportunity",
+        [ConsequenceType.WorsePosition]: "worse-position",
+        [ConsequenceType.InsightHarm1]: "harm-insight-1",
+        [ConsequenceType.InsightHarm2]: "harm-insight-2",
+        [ConsequenceType.InsightHarm3]: "harm-insight-3",
+        [ConsequenceType.InsightHarm4]: "harm-insight-4",
+        [ConsequenceType.ProwessHarm1]: "harm-prowess-1",
+        [ConsequenceType.ProwessHarm2]: "harm-prowess-2",
+        [ConsequenceType.ProwessHarm3]: "harm-prowess-3",
+        [ConsequenceType.ProwessHarm4]: "harm-prowess-4",
+        [ConsequenceType.ResolveHarm1]: "harm-resolve-1",
+        [ConsequenceType.ResolveHarm2]: "harm-resolve-2",
+        [ConsequenceType.ResolveHarm3]: "harm-resolve-3",
+        [ConsequenceType.ResolveHarm4]: "harm-resolve-4",
         [ConsequenceType.None]: ""
     },
     RollResultDescriptions: {
@@ -559,7 +559,7 @@ const C = {
             [RollResult.success]: "You fully succeed from a desperate position!",
             [RollResult.partial]: "You partially succeed from a desperate position!",
             [RollResult.fail]: "You fail from a desperate position!"
-        },
+        }
     },
     //
     Colors: {
