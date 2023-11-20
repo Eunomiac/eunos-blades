@@ -1,7 +1,7 @@
 // #region IMPORTS~
 /*~ @@DOUBLE-BLANK@@ ~*/
 import U from "../../core/utilities.js";
-import G, { ApplyTooltipListeners } from "../../core/gsap.js";
+import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
 import C, { BladesActorType, BladesItemType, AttributeTrait, ActionTrait, Factor, RollType } from "../../core/constants.js";
 import Tags from "../../core/tags.js";
 import BladesActor from "../../BladesActor.js";
@@ -166,7 +166,7 @@ class BladesActorSheet extends ActorSheet {
         }
         /*~ @@DOUBLE-BLANK@@ ~*/
         // ~ Tooltips
-        ApplyTooltipListeners(html);
+        ApplyTooltipAnimations(html);
         /*~ @@DOUBLE-BLANK@@ ~*/
         Tags.InitListeners(html, this.actor);
         /*~ @@DOUBLE-BLANK@@ ~*/

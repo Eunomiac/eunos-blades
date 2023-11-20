@@ -89,8 +89,8 @@ export default class BladesPushAlert {
       .then(() => $(pushElem).remove());
   }
 
-  pushToAll(...args: [string, string, string|undefined]) {
-    socketlib.system.executeForEveryone("pushNotice", "", ...args);
+  pushToAll(charName: string, titleText: string|null, bodyText: string|null, blockClass?: string) {
+    socketlib.system.executeForEveryone("pushNotice", blockClass ?? "", charName, titleText, bodyText);
   }
 
   pushToSome(...args: [string, string, string|undefined, User[]]) {

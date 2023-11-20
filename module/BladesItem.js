@@ -2,6 +2,7 @@ import C, { BladesActorType, BladesItemType, Tag, Factor } from "./core/constant
 import U from "./core/utilities.js";
 import { BladesActor } from "./documents/BladesActorProxy.js";
 import { BladesRollMod } from "./BladesRoll.js";
+import BladesPushAlert from "./BladesPushAlert.js";
 /*~ @@DOUBLE-BLANK@@ ~*/
 class BladesItem extends Item {
     /*~ @@DOUBLE-BLANK@@ ~*/
@@ -207,6 +208,34 @@ class BladesItem extends Item {
         // Add roll mods from COHORT harm
         /*~ @@DOUBLE-BLANK@@ ~*/
         return BladesRollMod.ParseDocRollMods(this);
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async applyHarm(amount, _name) {
+        if (BladesItem.IsType(this, BladesItemType.cohort_expert, BladesItemType.cohort_gang)) {
+            const curHarm = this.system.harm.value;
+            let newHarm;
+            if (amount > curHarm) {
+                newHarm = amount;
+            }
+            else {
+                newHarm = curHarm + 1;
+            }
+            const harmVerb = ["is Weakened", "is Impaired", "has been Broken", "has been Killed!"];
+            const harmEffect = [
+                "They act with Reduced Effect.",
+                "They act with Reduced Effect and suffer -1d to all rolls.",
+                "They cannot do anything until they recover.",
+                "You may replace them during Downtime."
+            ];
+            await this.update({ "system.harm": amount });
+            BladesPushAlert.Get().pushToAll("GM", `${this.name} ${harmVerb[newHarm - 1]}`, harmEffect[newHarm - 1], "harm-alert");
+        }
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async applyWorsePosition() {
+        if (BladesItem.IsType(this, BladesItemType.cohort_expert, BladesItemType.cohort_gang)) {
+            this.setFlag("eunos-blades", "isWorsePosition", true);
+        }
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
     // #endregion

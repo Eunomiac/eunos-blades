@@ -2,85 +2,83 @@
   <div class="roll-type-header">{{rollType}} Roll</div>
 </section>
 
-<section class="sheet-header flex-horizontal">
-  <span class="shadowed source-name source-name-type-pc">{{rollPrimary.rollPrimaryName}}</span>
-  <span class="shadowed vs">vs.</span>
-  <div class="consequence-box consequence-strong">
-    {{#with resistanceData.consequence as |cData|}}
-      {{!-- Icon --}}
-      {{{compileSvg cData.type cData.icon}}}
-      {{!-- Type --}}
-      <label class="consequence-type-label">{{calc cData.typeDisplay "??" cData.type}}</label>
-      {{!-- Name --}}
-      <label class="consequence-name">{{cData.name}}</label>
-    {{/with}}
-  </div>
-</section>
+<div class="sheet-inner-root">
+  <section class="sheet-header flex-horizontal">
+    <span class="shadowed source-name source-name-type-pc">{{rollPrimary.rollPrimaryName}}</span>
+    <span class="shadowed vs">Resists:</span>
+  </section>
 
 
-<div class="split-root flex-horizontal">
-  <div class="roll-sheet-float-block roll-source-bg-img">
-    <img src="{{rollPrimary.rollPrimaryImg}}" />
-  </div>
-  <div class="roll-sheet-float-block roll-source-bg-overlay"> </div>
-  <div class="split-root-left">
-    <section class="sheet-main flex-vertical">
-      <div class="roll-sheet-block rolling-block flex-vertical">
-        <div class="roll-sheet-sub-block roll-header-block flex-horizontal">
-          <label class="filled-label">Rolling:</label>
-          <span
-            class="shadowed roll-readonly {{~#if rollTraitData.pcTooltip}} tooltip-trigger{{/if}}">{{rollTraitData.name}}</span>
-          {{#if rollTraitData.pcTooltip}}
-          <span class="tooltip tooltip-roll-trait tooltip-roll-trait-pc">{{{rollTraitData.pcTooltip}}}</span>
+  <div class="split-root flex-horizontal">
+    <div class="roll-sheet-float-block roll-source-bg-img">
+      <img src="{{rollPrimary.rollPrimaryImg}}" />
+    </div>
+    <div class="roll-sheet-float-block roll-source-bg-overlay"> </div>
+    <div class="split-root-left">
+      <section class="sheet-main flex-vertical">
+        <div class="roll-sheet-block rolling-block flex-vertical">
+          <div class="roll-sheet-sub-block roll-header-block flex-horizontal">
+            <label class="filled-label">Rolling:</label>
+            <span
+              class="shadowed roll-readonly {{~#if rollTraitData.pcTooltip}} tooltip-trigger{{/if}}">{{rollTraitData.name}}</span>
+            {{#if rollTraitData.pcTooltip}}
+            <span class="tooltip tooltip-roll-trait tooltip-roll-trait-pc">{{{rollTraitData.pcTooltip}}}</span>
+            {{/if}}
+            <div class="roll-dotline-block">
+              {{> "systems/eunos-blades/templates/components/dotline.hbs"
+              data=rollTraitData
+              isLocked=true
+              iconFull="dot-full.svg"
+              }}
+            </div>
+          </div>
+          <div class="roll-sheet-sub-block roll-effects-block flex-horizontal">
+            {{#each posRollMods.roll }}
+            {{#unless (test isInInactiveBlock "||" (test "!" isVisible))}}
+            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+            {{/unless}}
+            {{/each}}
+            <span class="roll-mod-block-spacer mid-spacer"></span>
+            {{#each negRollMods.roll }}
+            {{#unless (test isInInactiveBlock "||" (test "!" isVisible))}}
+            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+            {{/unless}}
+            {{/each}}
+          </div>
+          {{#if hasInactiveConditionals.roll}}
+          <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
+            {{#each posRollMods.roll }}
+            {{#if (test isInInactiveBlock "&&" isVisible)}}
+            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+            {{/if}}
+            {{/each}}
+            {{#each negRollMods.roll }}
+            {{#if (test isInInactiveBlock "&&" isVisible)}}
+            {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
+            {{/if}}
+            {{/each}}
+          </div>
           {{/if}}
-          <div class="roll-dotline-block">
-            {{> "systems/eunos-blades/templates/components/dotline.hbs"
-            data=rollTraitData
-            isLocked=true
-            iconFull="dot-full.svg"
-            }}
+          <div class="roll-sheet-float-block rolling-dice-total-block">
+            <span class="dice-total shadowed">{{diceTotal}}</span>
+            <span class="d-symbol shadowed">d</span>
           </div>
         </div>
-        <div class="roll-sheet-sub-block roll-effects-block flex-horizontal">
-          {{#each posRollMods.roll }}
-          {{#unless (test isInInactiveBlock "||" (test "!" isVisible))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
-          {{/unless}}
-          {{/each}}
-          <span class="roll-mod-block-spacer mid-spacer"></span>
-          {{#each negRollMods.roll }}
-          {{#unless (test isInInactiveBlock "||" (test "!" isVisible))}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
-          {{/unless}}
-          {{/each}}
+      </section>
+    </div>
+    <div class="split-root-right">
+      <section class="sheet-main flex-vertical">
+        <div class="consequence-box consequence-top">
+          {{#with resistanceData.consequence as |cData|}}
+            {{!-- Icon --}}
+            <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/accept-{{icon}}.svg" />
+            {{!-- Type --}}
+            <label class="consequence-type-label">{{test cData.typeDisplay "??" cData.type}}</label>
+            {{!-- Name --}}
+            <label class="consequence-name">{{cData.name}}</label>
+          {{/with}}
         </div>
-        {{#if hasInactiveConditionals.roll}}
-        <div class="roll-sheet-sub-block roll-effects-block inactive-mod-block flex-horizontal">
-          {{#each posRollMods.roll }}
-          {{#if (test isInInactiveBlock "&&" isVisible)}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
-          {{/if}}
-          {{/each}}
-          {{#each negRollMods.roll }}
-          {{#if (test isInInactiveBlock "&&" isVisible)}}
-          {{> "systems/eunos-blades/templates/components/roll-collab-mod.hbs" }}
-          {{/if}}
-          {{/each}}
-        </div>
-        {{/if}}
-        <div class="roll-sheet-float-block rolling-dice-total-block">
-          <span class="dice-total shadowed">{{diceTotal}}</span>
-          <span class="d-symbol shadowed">d</span>
-        </div>
-      </div>
-    </section>
-  </div>
-  <div class="roll-sheet-float-block roll-opp-bg-overlay"> </div>
-  <div class="split-root-right">
-    <section class="sheet-main flex-vertical">
-      <div class="roll-sheet-block consequence-block flex-vertical">
-
-        <svg width="30" height="30" style="display: block; margin: auto;">
+        <svg class="consequence-triangle" width="30" height="30" style="display: block; margin: auto;">
           <defs>
             <linearGradient id="gradient-fill" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" style="stop-color: var(--blades-black);" />
@@ -93,23 +91,23 @@
           </defs>
           <polygon points="0,0 30,0 15,30" fill="url(#gradient-fill)" stroke="url(#gradient-stroke)" stroke-width="1" />
         </svg>
-        {{#if resistanceData.consequence.resistedTo}}
-        {{#with resistanceData.consequence.resistedTo as |rData|}}
-          {{!-- Icon --}}
-          {{{compileSvg rData.type rData.icon}}}
-          {{!-- Type --}}
-          <label class="consequence-type-label">{{calc rData.typeDisplay "??" rData.type}}</label>
-          {{!-- Name --}}
-          <label class="consequence-name">{{rData.name}}</label>
-        {{/with}}
-        {{else}}
-        <div class="consequence-box consequence-white">
-          <label class="consequence-name full-width">Fully Resisted</label>
+        <div class="consequence-box consequence-bottom">
+          {{#if (test resistanceData.consequence.resistTo.name "==" "None")}}
+          <label class="consequence-name">Fully Resisted</label>
+          {{else}}
+          {{#with resistanceData.consequence.resistTo as |rData|}}
+            {{!-- Icon --}}
+            <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/resist-{{rData.icon}}.svg" />
+            {{!-- Type --}}
+            <label class="consequence-type-label">{{test rData.typeDisplay "??" rData.type}}</label>
+            {{!-- Name --}}
+            <label class="consequence-name">{{rData.name}}</label>
+          {{/with}}
+          {{/if}}
         </div>
-        {{/if}}
-      </div>
-    </section>
+      </section>
 
+    </div>
   </div>
 </div>
 
@@ -157,7 +155,7 @@
     <div class="roll-odds-label-container">
       <div class="roll-odds-label-text">Waiting For GM ...</div>
     </div>
-    {{else if (test rollPhase "==" "AwaitingResult")}}
+    {{else if (test rollPhase "==" "AwaitingRoll")}}
     <button class="roll-button" data-action="roll" data-roll-id="{{rollID}}">ROLL</button>
     {{/if}}
   </div>

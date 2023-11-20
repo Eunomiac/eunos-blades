@@ -657,17 +657,17 @@
             }
             > i { line-height: 15px }
 
-            &.pc-harm-heavy {
+            &.pc-harm-severe {
               color: var(--blades-white-bright);
               background: var(--blades-red-dark);
               font-weight: bold;
             }
-            &.pc-harm-medium {
+            &.pc-harm-moderate {
               color: var(--blades-red-bright);
               background: var(--blades-red-dark-fade);
               font-weight: bold;
             }
-            &.pc-harm-light {
+            &.pc-harm-lesser {
               color: var(--blades-red-bright);
               background: var(--blades-red-dark-fade-strong);
             }

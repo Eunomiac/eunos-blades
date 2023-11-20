@@ -1,22 +1,9 @@
-import { ApplyTooltipListeners } from "./core/gsap.js";
+import { ApplyTooltipAnimations } from "./core/gsap.js";
 import U from "./core/utilities.js";
 import { BladesActor, BladesPC } from "./documents/BladesActorProxy.js";
 import BladesRoll from "./BladesRoll.js";
-import C, { RollResult, AttributeTrait, Position } from "./core/constants.js";
+import C, { RollResult, ConsequenceType, AttributeTrait, Position } from "./core/constants.js";
 import BladesAI, { AGENTS } from "./core/ai.js";
-/*~ @@DOUBLE-BLANK@@ ~*/
-const baseCsqData = {
-    [RollResult.partial]: {
-        0: { name: "", type: "", attribute: "" },
-        1: { name: "", type: "", attribute: "" },
-        2: { name: "", type: "", attribute: "" }
-    },
-    [RollResult.fail]: {
-        0: { name: "", type: "", attribute: "" },
-        1: { name: "", type: "", attribute: "" },
-        2: { name: "", type: "", attribute: "" }
-    }
-};
 /*~ @@DOUBLE-BLANK@@ ~*/
 // eslint-disable-next-line no-shadow
 export var SelectionCategory;
@@ -147,11 +134,7 @@ class BladesDialog extends Dialog {
     /*~ @@DOUBLE-BLANK@@ ~*/
     docType;
     /*~ @@DOUBLE-BLANK@@ ~*/
-    csqData = {
-        [Position.controlled]: { ...baseCsqData },
-        [Position.risky]: { ...baseCsqData },
-        [Position.desperate]: { ...baseCsqData }
-    };
+    csqData;
     /*~ @@DOUBLE-BLANK@@ ~*/
     constructor(data, options) {
         super(data, options);
@@ -165,7 +148,7 @@ class BladesDialog extends Dialog {
                 this.constructSelectionData(data /* , options */);
                 return;
             case BladesDialogType.Consequence:
-                this.constructConsequenceData(data /* , options */);
+                this.csqData = this.constructConsequenceData(data /* , options */);
                 return;
             default: throw new Error(`Unrecognized type for BladesDialog constructor: '${this.dialogType}'`);
         }
@@ -198,11 +181,37 @@ class BladesDialog extends Dialog {
     /*~ @@DOUBLE-BLANK@@ ~*/
     constructConsequenceData(data /* , options?: Partial<BladesDialog.Options> */) {
         eLog.checkLog3("dialog", "constructConsequenceData", { incoming: data });
-        if (this.parent instanceof BladesRoll) {
-            /*~ @@DOUBLE-BLANK@@ ~*/
-            this.csqData = U.objMerge(this.csqData, this.parent.getFlagVal("consequenceData") ?? {});
-            this._consequenceAI = new BladesAI(AGENTS.ConsequenceAdjuster);
+        if (!(this.parent instanceof BladesRoll)) {
+            throw new Error("Cannot call 'constructConsequenceData' without a rollInst parent!");
         }
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Get existing consequence data, if any, on roll instance
+        const rollCsqData = this.parent.getFlagVal("consequenceData");
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Extend consequence data by applying new blank consequence instances,
+        //   so at least three csq entries are available for each position/result combination
+        Object.values(Position).forEach((rollPos) => {
+            rollCsqData[rollPos] ??= {
+                [RollResult.partial]: {},
+                [RollResult.fail]: {}
+            };
+            [RollResult.partial, RollResult.fail].forEach((rollResult) => {
+                rollCsqData[rollPos][rollResult] ??= {};
+                while (Object.values(rollCsqData[rollPos][rollResult]).length < 3) {
+                    const blankCsqData = {
+                        id: randomID(),
+                        name: "",
+                        type: "",
+                        attribute: ""
+                    };
+                    rollCsqData[rollPos][rollResult][blankCsqData.id] = blankCsqData;
+                }
+            });
+        });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        this._consequenceAI = new BladesAI(AGENTS.ConsequenceAdjuster);
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        return rollCsqData;
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
     getData() {
@@ -256,60 +265,106 @@ class BladesDialog extends Dialog {
         return {};
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
+    updateConsequenceData(html, cData) {
+        const csqElem$ = html.find(`.roll-consequence-row[data-csq-id='${cData.id}']`); // flag-target="rollCollab.consequenceData.${rollPos}.${rollResult}.${i}.attribute"]`)
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Update Type
+        const type$ = csqElem$.find(".roll-consequence-type-select");
+        const typeVal = type$.val();
+        if (typeVal && typeVal in ConsequenceType) {
+            cData.type = typeVal;
+            cData.icon = C.ConsequenceIcons[cData.type];
+            cData.typeDisplay = C.ConsequenceDisplay[cData.type];
+        }
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Update Resistance Attribute
+        if (/Resolve/.exec(cData.type)) {
+            cData.attribute = AttributeTrait.resolve;
+        }
+        else if (/Insight/.exec(cData.type)) {
+            cData.attribute = AttributeTrait.insight;
+        }
+        else if (/Prowess/.exec(cData.type)) {
+            cData.attribute = AttributeTrait.prowess;
+        }
+        else {
+            const attribute$ = csqElem$.find(".roll-consequence-attribute-select");
+            const attrVal = attribute$.val();
+            if (attrVal && attrVal in AttributeTrait) {
+                cData.attribute = attrVal;
+                if (this.parent.rollPrimaryDoc instanceof BladesPC) {
+                    cData.attributeVal = this.parent.rollPrimaryDoc.attributes[cData.attribute];
+                }
+                else if (this.parent.rollPrimaryDoc?.parent instanceof BladesPC) {
+                    cData.attributeVal = this.parent.rollPrimaryDoc.parent.attributes[cData.attribute];
+                }
+                else {
+                    eLog.error(`Unable to get attribute from rollPrimaryDoc '${this.parent.rollPrimaryDoc?.name}' of type '${this.parent.rollPrimaryDoc?.rollPrimaryType}' (may need to log via flags if either of the previous show 'undefined'.`);
+                }
+            }
+        }
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Update Name
+        const name$ = csqElem$.find(".consequence-name");
+        const nameVal = name$.val();
+        cData.name = nameVal ?? "";
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Update Resistance Options
+        const resistOptions = cData.resistOptions ?? {};
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Clear 'resistTo' (will be redetermined below)
+        delete cData.resistTo;
+        html.find(".consequence-resist-option").each((_, elem) => {
+            const resCsqID = $(elem).data("csq-id");
+            resistOptions[resCsqID] ??= { id: resCsqID, name: "", type: undefined, isSelected: false };
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Update Resistance Option Type
+            const resType$ = $(elem).find(".roll-consequence-type-select");
+            const resTypeVal = resType$.val();
+            if (resTypeVal && resTypeVal in ConsequenceType) {
+                resistOptions[resCsqID].type = resTypeVal;
+                resistOptions[resCsqID].icon = C.ConsequenceIcons[resistOptions[resCsqID].type];
+                resistOptions[resCsqID].typeDisplay = C.ConsequenceDisplay[resistOptions[resCsqID].type];
+            }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Update Resistance Option Name
+            const resName$ = $(elem).find(".consequence-name");
+            const resNameVal = resName$.val();
+            resistOptions[resCsqID].name = resNameVal ?? "";
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // If this is selected, update 'resistTo' data as well
+            if (resistOptions[resCsqID].isSelected) {
+                cData.resistTo = resistOptions[resCsqID];
+            }
+        });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        cData.resistOptions = resistOptions;
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        return cData;
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     updateConsequenceDialog(html, isRendering = true) {
         if (!(this.parent instanceof BladesRoll)) {
             return;
         }
+        if (!this.csqData) {
+            return;
+        }
+        const { csqData } = this;
         const { rollPrimaryDoc } = this.parent;
         if (!(rollPrimaryDoc instanceof BladesPC)) {
             return;
         }
         /*~ @@DOUBLE-BLANK@@ ~*/
-        [Position.controlled, Position.risky, Position.desperate].forEach((rollPos) => {
-            const posCsqData = {};
-            [RollResult.partial, RollResult.fail].forEach((rollResult) => {
-                posCsqData[rollResult] = {};
-                for (let i = 0; i < 3; i++) {
-                    const attribute = html.find(`[data-flag-target="rollCollab.consequenceData.${rollPos}.${rollResult}.${i}.attribute"]`)[0].value;
-                    const attributeVal = rollPrimaryDoc.attributes[attribute];
-                    const thisCsqData = {
-                        type: html.find(`[data-flag-target="rollCollab.consequenceData.${rollPos}.${rollResult}.${i}.type"]`)[0].value,
-                        attribute,
-                        attributeVal,
-                        name: html.find(`[data-flag-target="rollCollab.consequenceData.${rollPos}.${rollResult}.${i}.name"]`)[0].value,
-                        resistOptions: this.csqData[rollPos][rollResult][i]
-                            .resistOptions ?? {},
-                        resistedTo: this.csqData[rollPos][rollResult][i].resistedTo ?? false
-                    };
-                    if (thisCsqData.type) {
-                        thisCsqData.icon = C.ConsequenceIcons[thisCsqData.type];
-                        thisCsqData.typeDisplay = C.ConsequenceDisplay[thisCsqData.type];
-                    }
-                    const resistOptionElems = Array.from(html.find(`input[type="text"][data-flag-target="rollCollab.consequenceData.${rollPos}.${rollResult}.${i}.resistOptions`));
-                    eLog.checkLog3("dialog", "...resistOptionElems", { html, resistOptionElems, thisCsqData });
-                    if (resistOptionElems.length > 0) {
-                        thisCsqData.resistedTo = false;
-                        for (let j = 0; j < resistOptionElems.length; j++) {
-                            thisCsqData.resistOptions ??= {};
-                            thisCsqData.resistOptions[j] = {
-                                name: resistOptionElems[i].value,
-                                type: html.find(`[data-flag-target="rollCollab.consequenceData.${rollPos}.${rollResult}.${i}.resistOptions.${j}.type"]`)[0].value,
-                                isSelected: html.find(`[data-flag-target="rollCollab.consequenceData.${rollPos}.${rollResult}.${i}.resistOptions.${j}.isSelected"]`)[0].checked
-                            };
-                            if (thisCsqData.resistOptions[j].isSelected) {
-                                thisCsqData.resistedTo = thisCsqData.resistOptions[j];
-                                if (thisCsqData.resistedTo.type) {
-                                    thisCsqData.resistedTo.icon = C.ConsequenceIcons[thisCsqData.resistedTo.type];
-                                    thisCsqData.resistedTo.typeDisplay = C.ConsequenceDisplay[thisCsqData.resistedTo.type];
-                                }
-                            }
-                        }
-                    }
-                    posCsqData[rollResult][i] = thisCsqData;
-                }
+        Object.keys(csqData).forEach((rollPos) => {
+            const positionCsqData = csqData[rollPos];
+            Object.keys(csqData[rollPos]).forEach((rollResult) => {
+                positionCsqData[rollResult] = U.objMap(positionCsqData[rollResult], (cData) => this.updateConsequenceData(html, cData));
             });
-            this.csqData[rollPos] = posCsqData;
+            csqData[rollPos] = positionCsqData;
         });
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        this.csqData = csqData;
         eLog.checkLog3("dialog", "updateConsequenceDialog() this.csqData", this.csqData);
         if (isRendering) {
             this.render();
@@ -326,6 +381,9 @@ class BladesDialog extends Dialog {
     _consequenceAI;
     /*~ @@DOUBLE-BLANK@@ ~*/
     async queryAI(event) {
+        if (!this.csqData) {
+            return;
+        }
         // If the AI generator has not been initialized, do so.
         if (!this._consequenceAI) {
             this._consequenceAI = new BladesAI(AGENTS.ConsequenceAdjuster);
@@ -334,12 +392,12 @@ class BladesDialog extends Dialog {
         // Get the name of the consequence.
         const dataAction = event.currentTarget.dataset.action;
         if (dataAction && dataAction.startsWith("ai-query")) {
-            const [rollPosition, rollResult, csqIndex] = dataAction.split(/-/).slice(2);
-            const csqName = this.csqData[rollPosition][rollResult][csqIndex]?.name;
+            const [rollPosition, rollResult, csqID] = dataAction.split(/-/).slice(2);
+            const csqName = this.csqData[rollPosition][rollResult][csqID]?.name;
             if (csqName) {
                 const response = await this._consequenceAI?.query(csqName, csqName);
                 if (response) {
-                    this.addResistanceOptions(rollPosition, rollResult, csqIndex, response.split("|"));
+                    this.refreshResistanceOptions(rollPosition, rollResult, csqID, response.split("|"));
                 }
             }
         }
@@ -351,8 +409,11 @@ class BladesDialog extends Dialog {
         }
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
-    async addResistanceOptions(rollPosition, rollResult, cIndex, rOptions) {
-        const cData = this.csqData[rollPosition][rollResult][cIndex];
+    async refreshResistanceOptions(rollPosition, rollResult, cID, rOptions) {
+        if (!this.csqData) {
+            return;
+        }
+        const cData = this.csqData[rollPosition][rollResult][cID];
         if (!cData) {
             return;
         }
@@ -360,21 +421,27 @@ class BladesDialog extends Dialog {
         const rType = C.ResistedConsequenceTypes[cType] ?? undefined;
         const resistOptions = {};
         for (let i = 0; i < rOptions.length; i++) {
-            resistOptions[i] = {
+            const rID = randomID();
+            resistOptions[rID] = {
+                id: rID,
                 name: rOptions[i],
                 isSelected: false
             };
             if (rType) {
-                resistOptions[i].type = rType;
-                resistOptions[i].icon = C.ConsequenceIcons[rType];
+                resistOptions[rID].type = rType;
+                resistOptions[rID].typeDisplay = C.ConsequenceDisplay[rType];
+                resistOptions[rID].icon = C.ConsequenceIcons[rType];
             }
         }
-        this.csqData[rollPosition][rollResult][cIndex].resistOptions = resistOptions;
+        this.csqData[rollPosition][rollResult][cID].resistOptions = resistOptions;
         eLog.checkLog3("dialog", "addResistanceOptions() this.csqData", this.csqData);
         this.render();
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
     async selectResistOption(event) {
+        if (!this.csqData) {
+            return;
+        }
         eLog.checkLog3("dialog", "Clicked Resistance Option", event);
         const dataAction = event.currentTarget.dataset.action;
         if (dataAction && dataAction.startsWith("gm-select-toggle")) {
@@ -396,16 +463,12 @@ class BladesDialog extends Dialog {
                     cData.resistOptions[key].isSelected = false;
                 });
                 /*~ @@DOUBLE-BLANK@@ ~*/
-                // ... and set 'resistedTo' to this consequence.
-                cData.resistedTo = cData.resistOptions[resIndex];
-                if (cData.resistedTo.type) {
-                    cData.resistedTo.icon = C.ConsequenceIcons[cData.resistedTo.type];
-                    cData.resistedTo.typeDisplay = C.ConsequenceDisplay[cData.resistedTo.type];
-                }
+                // ... and set 'resistTo' to this consequence.
+                cData.resistTo = cData.resistOptions[resIndex];
             }
             else {
-                // Otherwise, set 'resistedTo' to false.
-                cData.resistedTo = false;
+                // Otherwise, set 'resistTo' to false.
+                cData.resistTo = false;
             }
             /*~ @@DOUBLE-BLANK@@ ~*/
             // Assign new cData instance.
@@ -418,7 +481,7 @@ class BladesDialog extends Dialog {
         super.activateListeners(html);
         /*~ @@DOUBLE-BLANK@@ ~*/
         // ~ Tooltips
-        ApplyTooltipListeners(html);
+        ApplyTooltipAnimations(html);
         /*~ @@DOUBLE-BLANK@@ ~*/
         switch (this.dialogType) {
             case BladesDialogType.Selection:
@@ -464,7 +527,7 @@ class BladesDialog extends Dialog {
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
     activateConsequenceListeners(html) {
-        html.find("input").on({ blur: () => this.updateConsequenceDialog(html) });
+        html.find("input").on({ change: () => this.updateConsequenceDialog(html) });
         html.find("select").on({ change: () => this.updateConsequenceDialog(html) });
         html.find('[data-action^="ai-query"]').on({ click: (event) => this.queryAI(event) });
         html.find('[data-action^="gm-select-toggle"]').on({ click: (event) => this.selectResistOption(event) });

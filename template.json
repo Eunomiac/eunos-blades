@@ -124,17 +124,17 @@
 				}
 			},
 			"harm": {
-				"light": {
+				"lesser": {
 					"one": "",
 					"two": "",
 					"effect": "Less Effect"
 				},
-				"medium": {
+				"moderate": {
 					"one": "",
 					"two": "",
 					"effect": "-1d"
 				},
-				"heavy": {
+				"severe": {
 					"one": "",
 					"effect": "Need Help"
 				}

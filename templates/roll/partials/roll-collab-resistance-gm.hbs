@@ -10,7 +10,7 @@
       {{!-- Icon --}}
       {{{compileSvg cData.type cData.icon}}}
       {{!-- Type --}}
-      <label class="consequence-type-label">{{calc cData.typeDisplay "??" cData.type}}</label>
+      <label class="consequence-type-label">{{test cData.typeDisplay "??" cData.type}}</label>
       {{!-- Name --}}
       <label class="consequence-name">{{cData.name}}</label>
     {{/with}}
@@ -91,12 +91,12 @@
           </defs>
           <polygon points="0,0 30,0 15,30" fill="url(#gradient-fill)" stroke="url(#gradient-stroke)" stroke-width="1" />
         </svg>
-        {{#if resistanceData.consequence.resistedTo}}
-        {{#with resistanceData.consequence.resistedTo as |rData|}}
+        {{#if resistanceData.consequence.resistTo}}
+        {{#with resistanceData.consequence.resistTo as |rData|}}
           {{!-- Icon --}}
           {{{compileSvg rData.type rData.icon}}}
           {{!-- Type --}}
-          <label class="consequence-type-label">{{calc rData.typeDisplay "??" rData.type}}</label>
+          <label class="consequence-type-label">{{test rData.typeDisplay "??" rData.type}}</label>
           {{!-- Name --}}
           <label class="consequence-name">{{rData.name}}</label>
         {{/with}}
@@ -152,18 +152,18 @@
     </div>
 
     <div class="roll-odds-label-container">
-      <div class="input-target-cycler roll-phase-cycler" data-action="gm-cycle-target" data-target="flags.eunos-blades.rollCollab.rollPhase" data-val-0="Collaboration" data-val-1="AwaitingResult" data-cur-val="{{rollPhase}}">
+      <div class="input-target-cycler roll-phase-cycler" data-action="gm-cycle-target" data-flag-target="rollPhase" data-vals="Collaboration|AwaitingRoll" data-cur-val="{{rollPhase}}">
         {{#if (test rollPhase "==" "Collaboration")}}
           <i class="fa-duotone fa-messages"></i>
           <span class=""
-        {{else if (test rollPhase "==" "AwaitingResult")}}
+        {{else if (test rollPhase "==" "AwaitingRoll")}}
           <i class="fa-duotone fa-dice"></i>
         {{/if}}
       </div>
       <div class="roll-odds-label-text">
         {{#if (test rollPhase "==" "Collaboration")}}
           Click to Enable Roll
-        {{else if (test rollPhase "==" "AwaitingResult")}}
+        {{else if (test rollPhase "==" "AwaitingRoll")}}
           Waiting for Roll
         {{/if}}
       </div>

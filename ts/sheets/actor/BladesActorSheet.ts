@@ -1,7 +1,7 @@
 // #region IMPORTS~
 
 import U from "../../core/utilities";
-import G, {ApplyTooltipListeners} from "../../core/gsap";
+import G, {ApplyTooltipAnimations} from "../../core/gsap";
 import C, {BladesActorType, BladesItemType, AttributeTrait, Tag, ActionTrait, Factor, RollType} from "../../core/constants";
 import Tags from "../../core/tags";
 import BladesActor from "../../BladesActor";
@@ -191,7 +191,7 @@ class BladesActorSheet extends ActorSheet {
     }
 
     // ~ Tooltips
-    ApplyTooltipListeners(html);
+    ApplyTooltipAnimations(html);
 
     Tags.InitListeners(html, this.actor);
 

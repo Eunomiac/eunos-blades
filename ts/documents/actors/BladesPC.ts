@@ -3,6 +3,7 @@ import U from "../../core/utilities";
 import {BladesActor, BladesCrew} from "../BladesActorProxy";
 import {BladesItem} from "../BladesItemProxy";
 import BladesRoll from "../../BladesRoll";
+import BladesPushAlert from "../../BladesPushAlert";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 
@@ -155,7 +156,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   get actions(): Record<ActionTrait, number> {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never; }
-    return U.objMap({
+    return U.objMap<Record<ActionTrait, number>>({
       ...this.system.attributes.insight,
       ...this.system.attributes.prowess,
       ...this.system.attributes.resolve
@@ -274,6 +275,45 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     }
 
     return rollModsData;
+  }
+
+  async applyHarm(num: 1|2|3|4, name: string) {
+    if (num === 4) {
+      BladesPushAlert.Get().pushToAll("GM",
+        `${this.name} Suffers FATAL Harm: ${name}`,
+        `${this.name}, will you continue as a Ghost, or create a new character?`,
+        "harm-alert fatal-harm-alert"
+      );
+      return;
+    }
+
+    // Construct sequence of harm keys to check, starting with given harm level.
+    const harmSequence = ([
+      [["lesser", "one"], ["lesser", "two"]],
+      [["moderate", "one"], ["moderate", "two"]],
+      [["severe", "one"]]
+    ] as const).slice(num - 1).flat(1);
+
+    while (harmSequence.length) {
+      const theseHarmKeys = harmSequence.shift();
+      if (!theseHarmKeys) { break; }
+      const [thisHarmLevel, thisHarmKey] = theseHarmKeys;
+      const thisHarmVal = this.system.harm[thisHarmLevel][thisHarmKey];
+      if (!thisHarmVal) {
+        await this.update({[`system.harm.${thisHarmLevel}.${thisHarmKey}`]: name});
+        BladesPushAlert.Get().pushToAll("GM", `${this.name} Suffers ${U.tCase(thisHarmLevel)} Harm: ${name}`, null, "harm-alert");
+        return;
+      }
+    }
+    BladesPushAlert.Get().pushToAll("GM",
+      `${this.name} Suffers a Catastrophic, Permanent Injury!`,
+      `${this.name}, you're out of the action - either left for dead, or otherwise dropped from the action. You can choose to return at the beginning of the next Phase with a permanent injury, or die.`,
+      "harm-alert fatal-harm-alert"
+    );
+  }
+
+  async applyWorsePosition() {
+    this.setFlag("eunos-blades", "isWorsePosition", true);
   }
 
   // #endregion

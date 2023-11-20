@@ -32,6 +32,7 @@ declare global {
     actors: Collection<BladesActor>,
     user: User,
     users: Collection<User>,
+    messages: Collection<ChatMessage>,
     scenes: Scenes,
     model: {
       Actor: Record<BladesActorType, BladesActorSystem>,

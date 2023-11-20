@@ -969,11 +969,11 @@ const zip = <T extends string | number | symbol, U>(keys: T[], values: U[]): Rec
  * @param {mapFunc<keyFunc|valFunc>|false} keyFunc
  * @param {mapFunc<valFunc>} [valFunc]
  */
-function objMap(
+function objMap<T extends Record<PropertyKey, unknown>|unknown[]>(
   obj: Index<unknown>,
   keyFunc: mapFunc<keyFunc> | mapFunc<valFunc> | false,
   valFunc?: mapFunc<valFunc>
-): Index<unknown> {
+): T {
   //
   let valFuncTyped: mapFunc<valFunc> | undefined = valFunc;
   let keyFuncTyped: mapFunc<keyFunc> | false = keyFunc;
@@ -986,7 +986,7 @@ function objMap(
     keyFuncTyped = ((k: unknown) => k) as mapFunc<keyFunc>;
   }
 
-  if (isArray(obj)) {return obj.map(valFuncTyped);}
+  if (isArray(obj)) {return obj.map(valFuncTyped) as T;}
 
   return Object.fromEntries(Object.entries(obj).map(([key, val]) => {
     assertNonNullType(valFuncTyped, "function");

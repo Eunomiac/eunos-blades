@@ -15,9 +15,7 @@ class BladesNPCSheet extends BladesActorSheet {
   }
 
   override getData() {
-    const context = super.getData() as ReturnType<BladesActorSheet["getData"]> & {
-      [key: string]: any
-    };
+    const context = super.getData() as ReturnType<BladesActorSheet["getData"]> & Record<string, unknown>;
 
     context.isSubActor = context.actor.isSubActor;
     context.parentActor = context.actor.parentActor;
@@ -48,10 +46,10 @@ class BladesNPCSheet extends BladesActorSheet {
       trait3: {size: "half", label: null}
     };
     for (const cat of ["persona", "random", "secret"]) {
-      for (const [key] of Object.entries(context[cat])) {
+      for (const [key] of Object.entries(context[cat] as Record<string, Record<string, unknown>>)) {
         if (key in rStatus) {
           Object.assign(
-            context[cat][key],
+            (context[cat] as Record<string, Record<string, unknown>>)[key],
             rStatus[key]
           );
         }
@@ -67,7 +65,7 @@ class BladesNPCSheet extends BladesActorSheet {
     super.activateListeners(html);
 
     // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) {return}
+    if (!this.options.editable) {return;}
 
     html.find(".gm-alert-header").on("click", async (event) => {
       event.preventDefault();
@@ -75,16 +73,16 @@ class BladesNPCSheet extends BladesActorSheet {
       this.actor.clearParentActor();
     });
 
-    //~ Configure Tagify input elements
-    // const inputElement = document.querySelector('input[name="system.harm.heavy.one"]');
+    // ~ Configure Tagify input elements
+    // const inputElement = document.querySelector('input[name="system.harm.severe.one"]');
     // if (inputElement instanceof HTMLInputElement) { new Tagify(inputElement, {}) } else { console.log("Not an HTMLInputElement")}
 
-    //~ Enable Randomize Button for NPCs
-    html.find("[data-action=\"randomize\"").on("click", (event) => {
+    // ~ Enable Randomize Button for NPCs
+    html.find("[data-action=\"randomize\"").on("click", () => {
       this.actor.updateRandomizers();
     });
 
-    //~ Enable status toggles for NPC subactors
+    // ~ Enable status toggles for NPC subactors
     html.find(".comp-status-toggle")
       .on("click", () => {
         const {tags} = this.actor;

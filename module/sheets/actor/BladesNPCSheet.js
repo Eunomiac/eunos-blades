@@ -72,16 +72,16 @@ class BladesNPCSheet extends BladesActorSheet {
             this.actor.clearParentActor();
         });
         /*~ @@DOUBLE-BLANK@@ ~*/
-        //~ Configure Tagify input elements
-        // const inputElement = document.querySelector('input[name="system.harm.heavy.one"]');
+        // ~ Configure Tagify input elements
+        // const inputElement = document.querySelector('input[name="system.harm.severe.one"]');
         // if (inputElement instanceof HTMLInputElement) { new Tagify(inputElement, {}) } else { console.log("Not an HTMLInputElement")}
         /*~ @@DOUBLE-BLANK@@ ~*/
-        //~ Enable Randomize Button for NPCs
-        html.find("[data-action=\"randomize\"").on("click", (event) => {
+        // ~ Enable Randomize Button for NPCs
+        html.find("[data-action=\"randomize\"").on("click", () => {
             this.actor.updateRandomizers();
         });
         /*~ @@DOUBLE-BLANK@@ ~*/
-        //~ Enable status toggles for NPC subactors
+        // ~ Enable status toggles for NPC subactors
         html.find(".comp-status-toggle")
             .on("click", () => {
             const { tags } = this.actor;
@@ -110,3 +110,4 @@ class BladesNPCSheet extends BladesActorSheet {
 }
 /*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesNPCSheet;
+/*~ @@DOUBLE-BLANK@@ ~*/ 

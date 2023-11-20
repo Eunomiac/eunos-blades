@@ -840,47 +840,21 @@
 
   --csq-button-size-mult: 0.33;
 
-  @keyframes anim-glow {
-    0% {
-      box-shadow: 0 0 0px var(--blades-red-bright);
-      background-color: var(--blades-red-darkest);
-    }
-
-    10% {
-      background-color: var(--blades-red-bright)
-    }
-
-    100% {
-      box-shadow: 0 0 10px 10px transparent;
-      background-color: var(--blades-red-darkest);
-    }
-  }
-
   @keyframes icon-glow {
     0% {
-      filter: brightness(1);
+      filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px rgb(115, 255, 213));
     }
     10% {
-      filter: brightness(1);
+      filter: brightness(1.25) blur(0px) drop-shadow(0px 0px 12px rgb(115, 255, 213));
     }
     100% {
-      filter: brightness(1);
+      filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px rgb(115, 255, 213));
     }
   }
 
-  @keyframes icon-red-pulse {
-    0% {
-      scale: 1;
-      fill: var(--blades-grey);
-    }
-    10% {
-      scale: 1.1;
-      fill: var(--blades-red-bright);
-    }
-    100% {
-      scale: 1;
-      fill: var(--blades-grey);
-    }
+  &.dead-roll, .dead-roll * {
+    animation: none;
+    pointer-events: none;
   }
 
   position: relative;
@@ -888,6 +862,17 @@
   height: var(--container-height);
   max-height: var(--container-height);
   min-height: var(--container-height);
+
+  &.consequence-accepted, &.consequence-accepted * {
+    --container-left-shift: 0px;
+    --csq-type-color: var(--blades-red) !important;
+    --csq-icon-bright: var(--blades-red) !important;
+    animation: none !important;
+    pointer-events: none !important;
+    outline: none !important;
+    text-shadow: var(--text-shadow-dark) !important;
+  }
+
 
   .base-consequence {
     --csq-icon-dark: var(--blades-black);
@@ -898,12 +883,15 @@
   }
 
   .accept-consequence {
-    opacity: 0;
     --csq-icon-dark: var(--blades-red-dark);
     --csq-icon-med: var(--blades-red);
     --csq-icon-bright: var(--blades-red-bright);
     --csq-type-color: var(--blades-black-dark);
     --csq-name-color: var(--blades-red);
+  }
+
+  .accept-consequence {
+    opacity: 0;
   }
 
   .resist-consequence {
@@ -1023,8 +1011,8 @@
         animation: icon-glow 2s ease infinite;
         pointer-events: auto;
 
-        svg path {
-          animation: icon-red-pulse 2s ease infinite;
+        img {
+          animation: icon-glow 2s ease infinite;
         }
 
         &:hover {

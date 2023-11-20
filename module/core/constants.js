@@ -257,14 +257,12 @@ export var RollPhase;
     RollPhase["Collaboration"] = "Collaboration";
     // AwaitingRoll: Waiting for player to click "ROLL"
     RollPhase["AwaitingRoll"] = "AwaitingRoll";
-    // ApplyingConsequences: Waiting for GM to select consequence(s), AI to
-    //                       respond with resistance options, and GM to select
-    //                       resistance options.
-    RollPhase["ApplyingConsequences"] = "ApplyingConsequences";
-    // AwaitingChatInput: Consequences and player options output to chat;
-    //                    awaiting player choice there
-    RollPhase["AwaitingChatInput"] = "AwaitingChatInput";
-    // Complete: Roll finished (but may trigger another roll, e.g. resistance)
+    // AwaitingConsequences: Waiting for player to resist or accept consequences
+    //                        in chat. Only moves to 'Complete' when all consequences
+    //                        have been accepted or negated. (Resisted consequences
+    //                        must still be accepted, since player could elect to use armor.)
+    RollPhase["AwaitingConsequences"] = "AwaitingConsequences";
+    // Complete: Roll finished.
     RollPhase["Complete"] = "Complete";
 })(RollPhase || (RollPhase = {}));
 /*~ @@DOUBLE-BLANK@@ ~*/

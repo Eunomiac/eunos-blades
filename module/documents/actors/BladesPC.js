@@ -2,6 +2,7 @@ import C, { AttributeTrait, Harm, BladesActorType, BladesItemType, Tag, RollModS
 import U from "../../core/utilities.js";
 import { BladesActor } from "../BladesActorProxy.js";
 import { BladesItem } from "../BladesItemProxy.js";
+import BladesPushAlert from "../../BladesPushAlert.js";
 /*~ @@DOUBLE-BLANK@@ ~*/
 class BladesPC extends BladesActor {
     /*~ @@DOUBLE-BLANK@@ ~*/
@@ -284,6 +285,39 @@ class BladesPC extends BladesActor {
         }
         /*~ @@DOUBLE-BLANK@@ ~*/
         return rollModsData;
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async applyHarm(num, name) {
+        if (num === 4) {
+            BladesPushAlert.Get().pushToAll("GM", `${this.name} Suffers FATAL Harm: ${name}`, `${this.name}, will you continue as a Ghost, or create a new character?`, "harm-alert fatal-harm-alert");
+            return;
+        }
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // Construct sequence of harm keys to check, starting with given harm level.
+        const harmSequence = [
+            [["lesser", "one"], ["lesser", "two"]],
+            [["moderate", "one"], ["moderate", "two"]],
+            [["severe", "one"]]
+        ].slice(num - 1).flat(1);
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        while (harmSequence.length) {
+            const theseHarmKeys = harmSequence.shift();
+            if (!theseHarmKeys) {
+                break;
+            }
+            const [thisHarmLevel, thisHarmKey] = theseHarmKeys;
+            const thisHarmVal = this.system.harm[thisHarmLevel][thisHarmKey];
+            if (!thisHarmVal) {
+                await this.update({ [`system.harm.${thisHarmLevel}.${thisHarmKey}`]: name });
+                BladesPushAlert.Get().pushToAll("GM", `${this.name} Suffers ${U.tCase(thisHarmLevel)} Harm: ${name}`, null, "harm-alert");
+                return;
+            }
+        }
+        BladesPushAlert.Get().pushToAll("GM", `${this.name} Suffers a Catastrophic, Permanent Injury!`, `${this.name}, you're out of the action - either left for dead, or otherwise dropped from the action. You can choose to return at the beginning of the next Phase with a permanent injury, or die.`, "harm-alert fatal-harm-alert");
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async applyWorsePosition() {
+        this.setFlag("eunos-blades", "isWorsePosition", true);
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
     // #endregion

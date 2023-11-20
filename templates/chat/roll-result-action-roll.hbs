@@ -1,8 +1,16 @@
-{{log ">> THIS >>" this}}
+
+{{eLog "CHAT MESSAGE CONTEXT" this}}
 
 <div class="chat-message-bg roll-position-{{finalPosition}}"></div>
 
-<div class="blades-roll roll-type-{{case "lower" rollType}} roll-position-{{finalPosition}} roll-effect-{{finalEffect}} roll-result-{{rollResult}}">
+<div class="blades-roll roll-type-{{case "lower" rollType}} roll-position-{{finalPosition}} roll-effect-{{finalEffect}} roll-result-{{rollResult}}"
+  data-chat-id="{{chatMessage.id}}"
+  data-roll-id="{{rollID}}"
+  data-user-id="{{flagData.rollUserID}}"
+  data-position="{{finalPosition}}"
+  data-effect="{{finalEffect}}"
+  data-result="{{rollResult}}"
+  data-roll-phase="{{flagData.rollPhase}}">
 
   {{!-- Roll Trait  --}}
   <h1 class="chat-header roll-trait">
@@ -55,12 +63,16 @@
   {{!-- Consequences --}}
   {{#if (test rollResult "==" "partial")}}
   <div class="consequence-container flex-vertical full-width">
-  {{#with (lookup rollFlags.consequenceData finalPosition) as |csqData|}}
+    {{eLog "Consequence Context > flagData" flagData}}
+    {{eLog "Consequence Context > flagData > consequenceData" flagData.consequenceData}}
+    {{eLog "Consequence Context > finalPosition" finalPosition}}
+    {{eLog "Consequence Context > flagData > consequenceData > finalPosition" (lookup flagData.consequenceData finalPosition)}}
+  {{#with (lookup flagData.consequenceData finalPosition) as |csqData|}}
   {{#each csqData.partial as |cData cIndex|}}
     {{eLog "ConsequenceContainer" cIndex csqData cData}}
-    {{#if cData.resistedTo}}
+    {{#if cData.resistTo}}
     {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
-      isResistanceVisible=true }}
+      flagData=../../flagData }}
     {{/if}}
   {{/each}}
   {{/with}}
@@ -68,11 +80,15 @@
   {{/if}}
   {{#if (test rollResult "==" "fail")}}
   <div class="consequence-container flex-vertical full-width">
-  {{#with (lookup rollFlags.consequenceData finalPosition) as |csqData|}}
+    {{eLog "Consequence Context > flagData" flagData}}
+    {{eLog "Consequence Context > flagData > consequenceData" flagData.consequenceData}}
+    {{eLog "Consequence Context > finalPosition" finalPosition}}
+    {{eLog "Consequence Context > flagData > consequenceData > finalPosition" (lookup flagData.consequenceData finalPosition)}}
+  {{#with (lookup flagData.consequenceData finalPosition) as |csqData|}}
   {{#each csqData.fail as |cData cIndex|}}
-    {{#if cData.resistedTo}}
+    {{#if cData.resistTo}}
     {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
-      isResistanceVisible=true }}
+      flagData=../../flagData }}
     {{/if}}
   {{/each}}
   {{/with}}

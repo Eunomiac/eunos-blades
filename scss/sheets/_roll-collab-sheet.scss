@@ -1872,5 +1872,149 @@
         }
       }
     }
+
+    form.roll-type-resistance {
+      --root-height: 200px;
+      --icon-size: 150px;
+
+      .sheet-root {
+
+        .sheet-inner-root {
+          // border-radius: 30px;
+          // overflow: hidden;
+          // position: relative;
+
+          .sheet-header.flex-horizontal {
+            position: relative;
+            overflow: visible;
+            justify-content: center;
+            // padding-right: 0;
+            z-index: 4;
+            gap: 10px;
+
+            .source-name.shadowed {
+              flex-basis: unset;
+              flex-grow: 0;
+            }
+            .shadowed.vs {
+              text-transform: none;
+              text-align: right;
+            }
+
+          }
+
+          .split-root.flex-horizontal {
+            height: var(--root-height);
+
+            .split-root-left {
+              flex-basis: 55%;
+
+              .sheet-main {
+
+                .roll-sheet-float-block.rolling-dice-total-block {
+                  position: absolute;
+                  right: -25px;
+                  top: calc(var(--root-height) * 0.2);
+                }
+              }
+            }
+
+            .split-root-right {
+              flex-basis: 45%;
+              --header-height: 32px;
+              position: relative;
+              top: calc(-1 * (var(--header-height) + var(--roll-spacing)));
+              left: var(--roll-spacing);
+              height: calc(var(--root-height) + var(--header-height) + var(--roll-spacing));
+              flex-shrink: 0;
+              border-top-right-radius: 30px;
+              overflow: hidden;
+
+              .sheet-main {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding-right: 5px;
+
+              }
+
+              .consequence-box {
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                justify-content: flex-end;
+                align-items: flex-end;
+                left: 0;
+                width: 100%;
+
+                .consequence-icon-img {
+                  position: absolute;
+                  height: var(--icon-size);
+                  width: var(--icon-size);
+                  background: transparent;
+                  border-radius: calc(0.5 * var(--icon-size));
+                  filter: blur(5px);
+                  z-index: -1;
+                }
+
+                .consequence-name {
+                  // font-family: var(--font-emphasis-narrow);
+                  font-size: 18px;
+                  // margin-top: 10px;
+                  text-align: right;
+                }
+                .consequence-type-label {
+                  font-size: 24px;
+                  color: var(--blades-red-bright);
+                  font-family: var(--font-emphasis-narrow);
+                  white-space: nowrap;
+                  text-align: right;
+                  text-transform: uppercase;
+                  text-shadow: var(--text-shadow-dark-strong);
+                }
+
+                &.consequence-top {
+                  top: 25px;
+
+                  .consequence-icon-img {
+                    top: calc(-0.25 * var(--icon-size));
+                    // left: 0; // calc(1 * var(--icon-size));
+                    right: calc(-0.25 * var(--icon-size));
+                  }
+                }
+
+                &.consequence-bottom {
+                  top: unset;
+                  bottom: 0;
+
+                  .consequence-icon-img {
+                    top: unset;
+                    bottom: calc(-0.25 * var(--icon-size));
+                    left: unset;
+                    right: calc(-0.25 * var(--icon-size));
+                  }
+
+                  .consequence-type-label {
+                    color: var(--blades-gold-bright);
+                  }
+                }
+              }
+
+              .consequence-triangle {
+                position: absolute;
+                top: 50%;
+                right: 10px;
+              }
+            }
+
+          }
+        }
+
+        .sheet-footer {
+
+        }
+      }
+    }
   }
 }

@@ -17,25 +17,41 @@ declare global {
 
     export type ConsequenceResistOption = {
       name: string,
+      id: string,
       type?: ConsequenceType,
       typeDisplay?: string,
       icon?: string,
       footerMsg?: string,
+      isAccepted?: boolean,
       isSelected: boolean // Whether GM has selected this as the resisted consequence
+    }
+
+    export type AcceptedConsequenceData = {
+      id: string,
+      name: string,
+      type: ConsequenceType,
+      typeDisplay: string,
+      icon: string,
+      isAccepted: true,
+      stressCost?: number, // if Resisted
+      armorCost?: boolean, // if Armor used
+      specArmorCost?: boolean // if Special Armor used
     }
 
     export interface ConsequenceData {
       name: string,
+      id: string,
       type: ConsequenceType|"",
       typeDisplay?: string,
       icon?: string,
       attribute: AttributeTrait|"",
       attributeVal?: number,
+      isAccepted?: boolean,
       resistOptions?: Record<
         string,  // stringified index
         ConsequenceResistOption // ai
       >,
-      resistedTo?: ConsequenceResistOption|false,
+      resistTo?: ConsequenceResistOption|false,
       canArmorA?: boolean,
       armorToAOptions?: Record<
         string,  // stringified index
@@ -53,7 +69,8 @@ declare global {
 
     export interface ResistanceRollConsequenceData extends FreezeProps<Omit<ConsequenceData, "resistOptions">> {
       attribute: AttributeTrait,
-      resistedTo: FreezeProps<Omit<ConsequenceResistOption, "isSelected">>
+      attributeVal: number,
+      resistTo: FreezeProps<Omit<ConsequenceResistOption, "isSelected">>
     }
 
     export type CostData = {
@@ -77,6 +94,11 @@ declare global {
       rollParticipantData?: RollParticipantData,
 
       participantRollTo?: string,
+      resistanceRollTo?: {
+        rollID: string,
+        userID: string,
+        consequenceID: string
+      },
       consequenceData?: Partial<Record<
         Position,
         Partial<Record<
@@ -234,6 +256,9 @@ declare global {
 
       rollModsData: RollModData[],
       rollFactors: Partial<Record<Factor,FactorData>>
+
+      applyHarm?(amount: num, name: num)
+      applyWorsePosition?()
     }
 
 

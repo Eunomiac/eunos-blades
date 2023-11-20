@@ -276,6 +276,12 @@ $isCompactLayout: true;
   --color-text-dark-primary: var(--blades-white-nums);
   --color-bg-option: var(--blades-black-nums);
   // #endregion ░░░░[Numerically-Defined Colors (for Emu Stylesheet)]░░░░
+
+
+  --color-background-lightest: var(--blades-black-nums);
+  --color-background-light: var(--blades-black-dark-nums);
+
+
 // #endregion ▄▄▄▄▄ Colors ▄▄▄▄▄
 
 // #region 🟩🟩🟩 STYLES 🟩🟩🟩
@@ -286,11 +292,16 @@ $isCompactLayout: true;
 
   // #region ░░░░░░░[Style Components]░░░░: Defining Components; Do Not USE Outside of Vars.scss ░░░░░░░
   --font-primary: "Minion Pro", serif; // "Signika", sans-serif;
-  --font-primary: "Beaufort", serif;
   --font-primary-smallcaps: var(--font-primary);
   --font-primary-small: "Minion Pro Caption", serif;
   --font-primary-narrow: "Minion Pro Cond", serif;
   --font-primary-small-narrow: "Minion Pro Caption Cond", serif;
+
+  --font-primary: "Beaufort", serif;
+  --font-primary-smallcaps: var(--font-primary);
+  --font-primary-small: var(--font-primary);
+  --font-primary-narrow: var(--font-primary);
+  --font-primary-small-narrow: var(--font-primary);
 
   --font-primary-alt: "Historical FellType", serif;
   --font-primary-alt-smallcaps: "Historical FellType SC", serif;

@@ -224,14 +224,20 @@ html, :root {
   --color-shadow-primary: var(--blades-white-bright-nums);
   --color-text-dark-primary: var(--blades-white-nums);
   --color-bg-option: var(--blades-black-nums);
+  --color-background-lightest: var(--blades-black-nums);
+  --color-background-light: var(--blades-black-dark-nums);
   --blades-color-negative: var(--blades-red-bright);
   --blades-color-positive: var(--blades-gold-bright);
   --font-primary: "Minion Pro", serif;
-  --font-primary: "Beaufort", serif;
   --font-primary-smallcaps: var(--font-primary);
   --font-primary-small: "Minion Pro Caption", serif;
   --font-primary-narrow: "Minion Pro Cond", serif;
   --font-primary-small-narrow: "Minion Pro Caption Cond", serif;
+  --font-primary: "Beaufort", serif;
+  --font-primary-smallcaps: var(--font-primary);
+  --font-primary-small: var(--font-primary);
+  --font-primary-narrow: var(--font-primary);
+  --font-primary-small-narrow: var(--font-primary);
   --font-primary-alt: "Historical FellType", serif;
   --font-primary-alt-smallcaps: "Historical FellType SC", serif;
   --font-emphasis: "Kirsty", serif;
@@ -1076,43 +1082,29 @@ html .comp.consequence-display-container, :root .comp.consequence-display-contai
   max-height: var(--container-height);
   min-height: var(--container-height);
 }
-@keyframes anim-glow {
-  0% {
-    box-shadow: 0 0 0px var(--blades-red-bright);
-    background-color: var(--blades-red-darkest);
-  }
-  10% {
-    background-color: var(--blades-red-bright);
-  }
-  100% {
-    box-shadow: 0 0 10px 10px transparent;
-    background-color: var(--blades-red-darkest);
-  }
-}
 @keyframes icon-glow {
   0% {
-    filter: brightness(1);
+    filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px rgb(115, 255, 213));
   }
   10% {
-    filter: brightness(1);
+    filter: brightness(1.25) blur(0px) drop-shadow(0px 0px 12px rgb(115, 255, 213));
   }
   100% {
-    filter: brightness(1);
+    filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px rgb(115, 255, 213));
   }
 }
-@keyframes icon-red-pulse {
-  0% {
-    scale: 1;
-    fill: var(--blades-grey);
-  }
-  10% {
-    scale: 1.1;
-    fill: var(--blades-red-bright);
-  }
-  100% {
-    scale: 1;
-    fill: var(--blades-grey);
-  }
+html .comp.consequence-display-container.dead-roll, html .comp.consequence-display-container .dead-roll *, :root .comp.consequence-display-container.dead-roll, :root .comp.consequence-display-container .dead-roll * {
+  animation: none;
+  pointer-events: none;
+}
+html .comp.consequence-display-container.consequence-accepted, html .comp.consequence-display-container.consequence-accepted *, :root .comp.consequence-display-container.consequence-accepted, :root .comp.consequence-display-container.consequence-accepted * {
+  --container-left-shift: 0px;
+  --csq-type-color: var(--blades-red) !important;
+  --csq-icon-bright: var(--blades-red) !important;
+  animation: none !important;
+  pointer-events: none !important;
+  outline: none !important;
+  text-shadow: var(--text-shadow-dark) !important;
 }
 html .comp.consequence-display-container .base-consequence, :root .comp.consequence-display-container .base-consequence {
   --csq-icon-dark: var(--blades-black);
@@ -1122,12 +1114,14 @@ html .comp.consequence-display-container .base-consequence, :root .comp.conseque
   --csq-name-color: var(--blades-white);
 }
 html .comp.consequence-display-container .accept-consequence, :root .comp.consequence-display-container .accept-consequence {
-  opacity: 0;
   --csq-icon-dark: var(--blades-red-dark);
   --csq-icon-med: var(--blades-red);
   --csq-icon-bright: var(--blades-red-bright);
   --csq-type-color: var(--blades-black-dark);
   --csq-name-color: var(--blades-red);
+}
+html .comp.consequence-display-container .accept-consequence, :root .comp.consequence-display-container .accept-consequence {
+  opacity: 0;
 }
 html .comp.consequence-display-container .resist-consequence, :root .comp.consequence-display-container .resist-consequence {
   opacity: 0;
@@ -1236,8 +1230,8 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   animation: icon-glow 2s ease infinite;
   pointer-events: auto;
 }
-html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence svg path, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence svg path {
-  animation: icon-red-pulse 2s ease infinite;
+html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence img, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence img {
+  animation: icon-glow 2s ease infinite;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence:hover, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence:hover {
   filter: brightness(2) !important;
@@ -2709,43 +2703,29 @@ html .comp.consequence-display-container, :root .comp.consequence-display-contai
   max-height: var(--container-height);
   min-height: var(--container-height);
 }
-@keyframes anim-glow {
-  0% {
-    box-shadow: 0 0 0px var(--blades-red-bright);
-    background-color: var(--blades-red-darkest);
-  }
-  10% {
-    background-color: var(--blades-red-bright);
-  }
-  100% {
-    box-shadow: 0 0 10px 10px transparent;
-    background-color: var(--blades-red-darkest);
-  }
-}
 @keyframes icon-glow {
   0% {
-    filter: brightness(1);
+    filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px rgb(115, 255, 213));
   }
   10% {
-    filter: brightness(1);
+    filter: brightness(1.25) blur(0px) drop-shadow(0px 0px 12px rgb(115, 255, 213));
   }
   100% {
-    filter: brightness(1);
+    filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px rgb(115, 255, 213));
   }
 }
-@keyframes icon-red-pulse {
-  0% {
-    scale: 1;
-    fill: var(--blades-grey);
-  }
-  10% {
-    scale: 1.1;
-    fill: var(--blades-red-bright);
-  }
-  100% {
-    scale: 1;
-    fill: var(--blades-grey);
-  }
+html .comp.consequence-display-container.dead-roll, html .comp.consequence-display-container .dead-roll *, :root .comp.consequence-display-container.dead-roll, :root .comp.consequence-display-container .dead-roll * {
+  animation: none;
+  pointer-events: none;
+}
+html .comp.consequence-display-container.consequence-accepted, html .comp.consequence-display-container.consequence-accepted *, :root .comp.consequence-display-container.consequence-accepted, :root .comp.consequence-display-container.consequence-accepted * {
+  --container-left-shift: 0px;
+  --csq-type-color: var(--blades-red) !important;
+  --csq-icon-bright: var(--blades-red) !important;
+  animation: none !important;
+  pointer-events: none !important;
+  outline: none !important;
+  text-shadow: var(--text-shadow-dark) !important;
 }
 html .comp.consequence-display-container .base-consequence, :root .comp.consequence-display-container .base-consequence {
   --csq-icon-dark: var(--blades-black);
@@ -2755,12 +2735,14 @@ html .comp.consequence-display-container .base-consequence, :root .comp.conseque
   --csq-name-color: var(--blades-white);
 }
 html .comp.consequence-display-container .accept-consequence, :root .comp.consequence-display-container .accept-consequence {
-  opacity: 0;
   --csq-icon-dark: var(--blades-red-dark);
   --csq-icon-med: var(--blades-red);
   --csq-icon-bright: var(--blades-red-bright);
   --csq-type-color: var(--blades-black-dark);
   --csq-name-color: var(--blades-red);
+}
+html .comp.consequence-display-container .accept-consequence, :root .comp.consequence-display-container .accept-consequence {
+  opacity: 0;
 }
 html .comp.consequence-display-container .resist-consequence, :root .comp.consequence-display-container .resist-consequence {
   opacity: 0;
@@ -2869,8 +2851,8 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   animation: icon-glow 2s ease infinite;
   pointer-events: auto;
 }
-html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence svg path, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence svg path {
-  animation: icon-red-pulse 2s ease infinite;
+html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence img, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence img {
+  animation: icon-glow 2s ease infinite;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence:hover, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence:hover {
   filter: brightness(2) !important;
@@ -4000,17 +3982,17 @@ html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-
 html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > i, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm > i {
   line-height: 15px;
 }
-html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-heavy, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-heavy {
+html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-severe, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-severe {
   color: var(--blades-white-bright);
   background: var(--blades-red-dark);
   font-weight: bold;
 }
-html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-medium, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-medium {
+html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-moderate, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-moderate {
   color: var(--blades-red-bright);
   background: var(--blades-red-dark-fade);
   font-weight: bold;
 }
-html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-light, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-light {
+html .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-lesser, :root .player-character-summary-panel .pc-summary section.pc-summary-maluses .pc-summary-harm-container .pc-summary-harm.pc-harm-lesser {
   color: var(--blades-red-bright);
   background: var(--blades-red-dark-fade-strong);
 }

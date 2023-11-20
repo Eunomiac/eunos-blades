@@ -3,7 +3,7 @@ import U from "./core/utilities.js";
 import C, { BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag } from "./core/constants.js";
 import { BladesActor, BladesPC, BladesCrew } from "./documents/BladesActorProxy.js";
 import { BladesItem, BladesGMTracker } from "./documents/BladesItemProxy.js";
-import { ApplyTooltipListeners, ApplyConsequenceListeners } from "./core/gsap.js";
+import { ApplyTooltipAnimations, ApplyConsequenceAnimations } from "./core/gsap.js";
 import BladesDialog from "./BladesDialog.js";
 import BladesChat from "./BladesChat.js";
 // #endregion
@@ -58,20 +58,24 @@ function isModStatus(str) {
  * Checks if the given value is valid consequence data for a Resistance Roll.
  * @param {unknown} val The value to check.
  * @param {boolean} [isCheckingResistedTo=false] If the check is being recursively
- *                         applied to the 'resistedTo' value.
+ *                         applied to the 'resistTo' value.
  * @returns {boolean} True if the val is valid BladesRoll.ResistanceRollConsequenceData, false otherwise.
  */
 function isValidConsequenceData(val, isCheckingResistedTo = false) {
     if (!U.isList(val)) {
         return false;
     }
+    if (typeof val.type !== "string" || !(val.type in ConsequenceType)) {
+        return false;
+    }
+    if (val.type === ConsequenceType.None) {
+        return true;
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     if (typeof val.name !== "string") {
         return false;
     }
     if (typeof val.icon !== "string") {
-        return false;
-    }
-    if (typeof val.type !== "string" || !(val.type in ConsequenceType)) {
         return false;
     }
     if (typeof val.typeDisplay !== "string") {
@@ -85,7 +89,7 @@ function isValidConsequenceData(val, isCheckingResistedTo = false) {
     if (typeof val.attribute !== "string" || !(val.attribute in AttributeTrait)) {
         return false;
     }
-    if (!isValidConsequenceData(val.resistedTo, true)) {
+    if (!isValidConsequenceData(val.resistTo, true)) {
         return false;
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
@@ -125,7 +129,42 @@ function isParticipantSubSection(subSection) {
  * @returns {BladesRoll.ConfigFlags} - The pruned configuration object.
  */
 function pruneConfig(cfg) {
-    return expandObject(U.objFilter(flattenObject(cfg), (v) => !(v instanceof BladesActor) && !(v instanceof BladesItem)));
+    if (cfg.rollPrimaryData instanceof BladesRollPrimary) {
+        cfg.rollPrimaryData = cfg.rollPrimaryData.flagData;
+    }
+    if (cfg.rollOppData instanceof BladesRollOpposition) {
+        cfg.rollOppData = cfg.rollOppData.flagData;
+    }
+    if (cfg.rollParticipantData) {
+        if (cfg.rollParticipantData[RollModSection.roll]) {
+            Object.keys(cfg.rollParticipantData[RollModSection.roll]).forEach((key) => {
+                const thisParticipant = cfg.rollParticipantData?.[RollModSection.roll]?.[key];
+                if (thisParticipant instanceof BladesRollParticipant) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    cfg.rollParticipantData[RollModSection.roll][key] = thisParticipant.flagData;
+                }
+            });
+        }
+        if (cfg.rollParticipantData[RollModSection.position]) {
+            Object.keys(cfg.rollParticipantData[RollModSection.position]).forEach((key) => {
+                const thisParticipant = cfg.rollParticipantData?.[RollModSection.position]?.[key];
+                if (thisParticipant instanceof BladesRollParticipant) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    cfg.rollParticipantData[RollModSection.position][key] = thisParticipant.flagData;
+                }
+            });
+        }
+        if (cfg.rollParticipantData[RollModSection.effect]) {
+            Object.keys(cfg.rollParticipantData[RollModSection.effect]).forEach((key) => {
+                const thisParticipant = cfg.rollParticipantData?.[RollModSection.effect]?.[key];
+                if (thisParticipant instanceof BladesRollParticipant) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    cfg.rollParticipantData[RollModSection.effect][key] = thisParticipant.flagData;
+                }
+            });
+        }
+    }
+    return JSON.parse(JSON.stringify(cfg));
 }
 // #endregion
 /*~ @@DOUBLE-BLANK@@ ~*/
@@ -589,7 +628,7 @@ class BladesRollMod {
                 //       .find(({type}) => (harmLevels.pop() ?? []).includes(type as ConsequenceType));
                 //   }
                 //   if (harmConsequence) {
-                //     harmConsequence.resistedTo = {
+                //     harmConsequence.resistTo = {
                 //       name: [
                 //         ConsequenceType.InsightHarm1,
                 //         ConsequenceType.ProwessHarm1,
@@ -838,6 +877,17 @@ class BladesRollPrimary {
         return this._rollPrimaryDoc;
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
+    get flagData() {
+        return {
+            rollPrimaryID: this.rollPrimaryID,
+            rollPrimaryName: this.rollPrimaryName,
+            rollPrimaryType: this.rollPrimaryType,
+            rollPrimaryImg: this.rollPrimaryImg,
+            rollModsData: this.rollModsData,
+            rollFactors: this.rollFactors
+        };
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     rollPrimaryName;
     /*~ @@DOUBLE-BLANK@@ ~*/
     rollPrimaryType;
@@ -851,6 +901,25 @@ class BladesRollPrimary {
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
     rollFactors;
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get isWorsePosition() {
+        if (this.rollPrimaryDoc) {
+            return this.rollPrimaryDoc.getFlag("eunos-blades", "isWorsePosition") === true;
+        }
+        return false;
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async applyHarm(amount, name) {
+        if (this.rollPrimaryDoc) {
+            return this.rollPrimaryDoc.applyHarm(amount, name);
+        }
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async applyWorsePosition() {
+        if (this.rollPrimaryDoc) {
+            return this.rollPrimaryDoc.applyWorsePosition();
+        }
+    }
     /*~ @@DOUBLE-BLANK@@ ~*/
     // #region Constructor ~
     constructor(rollInstance, { rollPrimaryID, rollPrimaryName, rollPrimaryType, rollPrimaryImg, rollModsData, rollFactors }) {
@@ -1469,6 +1538,7 @@ class BladesRoll extends DocumentSheet {
     static async ConstructRollCollab({ userID, rollID, rollPermission }) {
         const rollInst = new BladesRoll(userID, rollID, rollPermission);
         eLog.checkLog3("rollCollab", "ConstructRollCollab()", { params: { userID, rollID, rollPermission }, rollInst });
+        BladesRoll._Active = rollInst;
         await rollInst._render(true);
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
@@ -1480,7 +1550,7 @@ class BladesRoll extends DocumentSheet {
     static async CloseRollCollab(rollID) {
         eLog.checkLog3("rollCollab", "CloseRollCollab()", { rollID });
         await BladesRoll.Current[rollID]?.close({ rollID });
-        delete BladesRoll.Current[rollID];
+        // delete BladesRoll.Current[rollID];
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
     static GetUserPermissions(config) {
@@ -1636,8 +1706,11 @@ class BladesRoll extends DocumentSheet {
         // Set rollTrait
         config.rollTrait = config.resistanceData.consequence.attribute;
         /*~ @@DOUBLE-BLANK@@ ~*/
+        eLog.checkLog3("bladesRoll", "BladesRoll.PrepareResistanceRoll() [1]", { rollID, config });
+        /*~ @@DOUBLE-BLANK@@ ~*/
         // Retrieve the roll users
         const userIDs = BladesRoll.GetUserPermissions(config);
+        eLog.checkLog3("bladesRoll", "BladesRoll.PrepareResistanceRoll() [2]", { userIDs });
         /*~ @@DOUBLE-BLANK@@ ~*/
         // Prepare roll user flag data
         const userFlagData = {};
@@ -1647,6 +1720,7 @@ class BladesRoll extends DocumentSheet {
                 userFlagData[id] = rollPermission;
             }
         });
+        eLog.checkLog3("bladesRoll", "BladesRoll.PrepareResistanceRoll() [3]", { userFlagData });
         /*~ @@DOUBLE-BLANK@@ ~*/
         // Prepare the flag data.
         const flagUpdateData = {
@@ -1655,6 +1729,7 @@ class BladesRoll extends DocumentSheet {
             userPermissions: userFlagData,
             rollID
         };
+        eLog.checkLog3("bladesRoll", "BladesRoll.PrepareResistanceRoll() [4]", { flagUpdateData });
         /*~ @@DOUBLE-BLANK@@ ~*/
         // Return flagData and roll users
         return {
@@ -1759,16 +1834,21 @@ class BladesRoll extends DocumentSheet {
         if (!rollUser?.id) {
             throw new Error("[BladesRoll.NewRoll()] You must provide a valid rollUserID in the config object.");
         }
+        eLog.checkLog3("bladesRoll", "BladesRoll.NewRoll() [1]", { config, rollUser });
         /*~ @@DOUBLE-BLANK@@ ~*/
-        // If roll flag data is already on user, throw an error.
+        // If roll flag data is already on user.
         const flagData = rollUser.getFlag("eunos-blades", "rollCollab");
         if (flagData) {
             const { rollID } = flagData;
-            if (BladesRoll.Current[rollID]) {
+            // If user is documenting a roll with a dialog window open, disallow starting a new roll.
+            if ($(document).find(`.roll-collab-sheet .sheet-topper[data-roll-id='${rollID}']`)[0]) {
                 throw new Error(`[BladesRoll.NewRoll()] User ${rollUser.name} already documenting live roll with ID '${rollID}'`);
             }
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            // Otherwise, archive the existing roll and prepare for a new one by clearing the main rollCollab flag.
             await rollUser.setFlag("eunos-blades", `rollCollabArchive.${rollID}`, flagData);
             await rollUser.unsetFlag("eunos-blades", "rollCollab");
+            eLog.checkLog3("bladesRoll", "BladesRoll.NewRoll() [2]", { userFlags: rollUser.flags });
         }
         /*~ @@DOUBLE-BLANK@@ ~*/
         // If no rollPrimaryData is provided, attempt to derive it from the rest of the config object
@@ -1784,7 +1864,9 @@ class BladesRoll extends DocumentSheet {
                     rollPrimaryType: rollPrimarySourceData.rollPrimaryType,
                     rollPrimaryImg: rollPrimarySourceData.rollPrimaryImg,
                     rollModsData: rollPrimarySourceData.rollModsData,
-                    rollFactors: rollPrimarySourceData.rollFactors
+                    rollFactors: rollPrimarySourceData.rollFactors,
+                    applyHarm: rollPrimarySourceData.applyHarm,
+                    applyWorsePosition: rollPrimarySourceData.applyWorsePosition
                 };
             }
         }
@@ -1809,11 +1891,13 @@ class BladesRoll extends DocumentSheet {
                 break;
             }
             case RollType.Resistance: {
+                eLog.checkLog3("bladesRoll", "BladesRoll.NewRoll() [3]");
                 ({ userIDs, flagUpdateData } = await BladesRoll.PrepareResistanceRoll(rID, {
                     ...config,
                     rollUserID: rollUser.id,
                     rollPrimaryData
                 }));
+                eLog.checkLog3("bladesRoll", "BladesRoll.NewRoll() [4] -> Resistance Roll Prepared", { userIDs, flagUpdateData });
                 break;
             }
             case RollType.Fortune: {
@@ -1847,6 +1931,32 @@ class BladesRoll extends DocumentSheet {
         socketlib.system.executeForUsers("constructRollCollab", userIDs[RollPermissions.Participant], { userID: rollUser.id, rollID: rID, rollPermission: RollPermissions.Participant });
     }
     // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    static ApplyChatListeners(html) {
+        const html$ = $(html);
+        const roll$ = html$.find(".blades-roll");
+        if (!roll$[0]) {
+            return;
+        }
+        const rollPhase = roll$.data("rollPhase");
+        eLog.checkLog3("rollCollab", "ApplyChatListeners", { html, roll$, rollPhase });
+        if (rollPhase !== RollPhase.AwaitingConsequences) {
+            return;
+        }
+        const rollId = roll$.data("rollId");
+        if (!rollId) {
+            throw new Error("No roll ID found in chat message.");
+        }
+        const rollInst = BladesRoll.Current[rollId];
+        if (!rollInst) {
+            html$.addClass("dead-roll");
+            return;
+        }
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        html$.find("[data-action*='-consequence']").on({
+            click: rollInst._handleConsequenceClick.bind(rollInst)
+        });
+    }
     /*~ @@DOUBLE-BLANK@@ ~*/
     // #region Constructor ~
     rollID;
@@ -1888,10 +1998,6 @@ class BladesRoll extends DocumentSheet {
         BladesRoll.Current[this.rollID] = this;
     }
     // #endregion
-    /*~ @@DOUBLE-BLANK@@ ~*/
-    async setRollSubType(subType) {
-        await this.setFlagVal("rollSubType", subType);
-    }
     /*~ @@DOUBLE-BLANK@@ ~*/
     async addRollParticipant(participantRef, rollSection, rollSubSection) {
         /*~ @@DOUBLE-BLANK@@ ~*/
@@ -2034,6 +2140,18 @@ class BladesRoll extends DocumentSheet {
     /*~ @@DOUBLE-BLANK@@ ~*/
     get rollSubType() { return this.flagData.rollSubType; }
     /*~ @@DOUBLE-BLANK@@ ~*/
+    set rollSubType(val) {
+        this.setFlagVal("rollSubType", val);
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get rollPhase() {
+        return this.getFlagVal("rollPhase") ?? RollPhase.Collaboration;
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async setRollPhase(rollPhase) {
+        await this.setFlagVal("rollPhase", rollPhase);
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollDowntimeAction() { return this.flagData.rollDowntimeAction; }
     /*~ @@DOUBLE-BLANK@@ ~*/
     get rollTrait() { return this.flagData.rollTrait; }
@@ -2169,10 +2287,6 @@ class BladesRoll extends DocumentSheet {
     // Get rollConsequence() --> For resistance rolls.
     get rollConsequence() {
         return this.getFlagVal("resistanceData.consequence");
-    }
-    /*~ @@DOUBLE-BLANK@@ ~*/
-    async applyConsequencesFromDialog(_html) {
-        /* Convert values of dialog input fields to flag data */
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
     // #endregion
@@ -2614,6 +2728,127 @@ class BladesRoll extends DocumentSheet {
     /*~ @@DOUBLE-BLANK@@ ~*/
     // #endregion
     /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region CONSEQUENCES: Getting, Accepting, Resisting
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get _csqData() {
+        const csqData = this.flagData.consequenceData?.[this.finalPosition]?.[this.rollResult];
+        if (csqData) {
+            return Object.values(csqData);
+        }
+        return [];
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    getConsequenceByID(csqID) {
+        return this._csqData.find((cData) => cData.id === csqID) ?? false;
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get acceptedConsequences() {
+        if ([RollPhase.AwaitingConsequences, RollPhase.Complete].includes(this.rollPhase)) {
+            return this._csqData.filter((cData) => cData.isAccepted === true);
+        }
+        return [];
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get unacceptedConsequences() {
+        if (this.rollPhase === RollPhase.AwaitingConsequences) {
+            return this._csqData.filter((cData) => cData.isAccepted !== true);
+        }
+        return [];
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async applyConsequence(csqData) {
+        // If HARM -> Apply harm to actor.
+        if (/Harm/.exec(csqData.type)) {
+            await this.rollPrimary.applyHarm(U.pInt(csqData.type.substring(csqData.type.length - 1)), csqData.name);
+        }
+        else if (csqData.type === ConsequenceType.WorsePosition) {
+            await this.rollPrimary.applyWorsePosition();
+        }
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // If COMPLICATION -> ???
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // If REDUCED EFFECT -> Edit effect on roll instance to one lower
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // If WORSE POSITION -> Add flag to user to be checked on next Action roll, then cleared
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // If LOST OPPORTUNITY -> No change
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        // ... then rerender chat message with updated consequences
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async acceptConsequence(csqID) {
+        const csqData = this.getConsequenceByID(csqID);
+        eLog.checkLog3("rollCollab", `Accepting Consequence id ${csqID}`, csqData);
+        if (!csqData) {
+            return;
+        }
+        const acceptedCsqData = {
+            ...csqData,
+            isAccepted: true,
+            type: csqData.type,
+            typeDisplay: C.ConsequenceDisplay[csqData.type],
+            icon: C.ConsequenceIcons[csqData.type]
+        };
+        await this.updateConsequence(acceptedCsqData);
+        await this.applyConsequence(acceptedCsqData);
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async updateConsequence(cData) {
+        const { finalPosition, rollResult } = this;
+        if (typeof rollResult === "string" && rollResult in RollResult) {
+            await this.setFlagVal(`consequenceData.${finalPosition}.${rollResult}.${cData.id}`, null);
+            await this.setFlagVal(`consequenceData.${finalPosition}.${rollResult}.${cData.id}`, cData);
+            await this.chatMessage?.reRender(await this.getResultHTML());
+        }
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async resistConsequence(csqID) {
+        eLog.checkLog3("rollCollab", `Resisting Consequence id ${csqID}`);
+        const csq = this.getConsequenceByID(csqID);
+        if (!csq) {
+            throw new Error(`No consequence with id '${csqID}' found.`);
+        }
+        if (!(csq.attribute in AttributeTrait)) {
+            throw new Error("blah");
+        }
+        if (!csq.resistTo) {
+            throw new Error("blach");
+        }
+        if (typeof csq.attributeVal !== "number") {
+            throw new Error("blah");
+        }
+        const resistConfig = {
+            rollType: RollType.Resistance,
+            rollUserID: this.flagData.rollUserID,
+            rollPrimaryData: this.rollPrimary,
+            resistanceData: {
+                consequence: {
+                    id: csq.id,
+                    name: csq.name,
+                    type: csq.type,
+                    icon: csq.icon,
+                    typeDisplay: csq.typeDisplay,
+                    attribute: csq.attribute,
+                    attributeVal: csq.attributeVal,
+                    resistTo: csq.resistTo
+                }
+            }
+        };
+        BladesRoll.NewRoll(resistConfig);
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async resistArmorConsequence(csqID) {
+        eLog.checkLog3("rollCollab", `Armoring Consequence id ${csqID}`);
+        /* ... */
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async resistSpecialArmorConsequence(csqID) {
+        eLog.checkLog3("rollCollab", `SpecArmoring Consequence id ${csqID}`);
+        /* ... */
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
     // #region *** GETDATA *** ~
     /*~ @@DOUBLE-BLANK@@ ~*/
     /**
@@ -2640,6 +2875,33 @@ class BladesRoll extends DocumentSheet {
             ...BladesRoll.DefaultRollMods,
             ...this.rollPrimary.rollModsData
         ];
+        if (this.rollType === RollType.Action && this.rollPrimary.isWorsePosition) {
+            defaultMods.push({
+                id: "WorsePosition-negative-position",
+                name: "Worse Position",
+                section: RollModSection.position,
+                base_status: RollModStatus.ForcedOn,
+                posNeg: "negative",
+                modType: "general",
+                value: 1,
+                effectKeys: [],
+                tooltip: "<h1>Worse Position</h1><p>A <strong class='red-bright'>Consequence</strong> on a previous roll has worsened your <strong>Position</strong>.</p>"
+            });
+        }
+        if (this.rollType === RollType.Action
+            && this.acceptedConsequences.some((csq) => csq.type === ConsequenceType.ReducedEffect)) {
+            defaultMods.push({
+                id: "ReducedEffect-negative-effect",
+                name: "Reduced Effect",
+                section: RollModSection.effect,
+                base_status: RollModStatus.ForcedOn,
+                posNeg: "negative",
+                modType: "general",
+                value: 1,
+                effectKeys: [],
+                tooltip: "<h1>Reduced Effect</h1><p>A <strong class='red-bright'>Consequence</strong> has worsened your <strong>Effect</strong>.</p>"
+            });
+        }
         if (this.rollOpposition?.rollOppModsData) {
             return [
                 ...defaultMods,
@@ -3019,7 +3281,7 @@ class BladesRoll extends DocumentSheet {
     }
     // #endregion
     /*~ @@DOUBLE-BLANK@@ ~*/
-    // #region *** EVALUATING & DISPLAYING ROLL TO CHAT *** ~
+    // #region *** EVALUATING ROLL *** ~
     /*~ @@DOUBLE-BLANK@@ ~*/
     // #region DICE ~
     _dieVals;
@@ -3030,6 +3292,11 @@ class BladesRoll extends DocumentSheet {
             .sort()
             .reverse();
         return this._dieVals;
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // Accounts for rolling zero dice by removing highest.
+    get finalDieVals() {
+        return this.isRollingZero ? this.dieVals.slice(1) : this.dieVals;
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
     getDieClass(val, i) {
@@ -3073,60 +3340,162 @@ class BladesRoll extends DocumentSheet {
     }
     // #endregion
     /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region RESULT GETTERS ~
+    get isCritical() {
+        return this.finalDieVals.filter((val) => val === 6).length >= 2;
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get isSuccess() {
+        return Boolean(!this.isCritical && this.finalDieVals.find((val) => val === 6));
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get isPartial() {
+        return Boolean(!this.isCritical && !this.isSuccess && this.finalDieVals.find((val) => val && val >= 4));
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get isFail() {
+        return !this.isCritical && !this.isSuccess && !this.isPartial;
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get highestDieVal() {
+        return this.finalDieVals[0];
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
     get rollResult() {
         /*~ @@DOUBLE-BLANK@@ ~*/
         if ([RollPhase.Collaboration, RollPhase.AwaitingRoll].includes(this.rollPhase)) {
             return false;
         }
         /*~ @@DOUBLE-BLANK@@ ~*/
-        // If rollingZero, remove highest die.
-        const dieVals = this.isRollingZero
-            ? [[...this.dieVals].pop()]
-            : this.dieVals;
-        /*~ @@DOUBLE-BLANK@@ ~*/
-        // Is this a critical success?
-        if (dieVals.filter((val) => val === 6).length >= 2) {
-            return RollResult.critical;
+        switch (this.rollType) {
+            case RollType.Action:
+            case RollType.Fortune: {
+                if (this.isCritical) {
+                    return RollResult.critical;
+                }
+                if (this.isSuccess) {
+                    return RollResult.success;
+                }
+                if (this.isPartial) {
+                    return RollResult.partial;
+                }
+                return RollResult.fail;
+            }
+            case RollType.Resistance: { // Return stress cost of resisting
+                if (this.isCritical) {
+                    return -1;
+                }
+                return 6 - this.highestDieVal;
+            }
+            case RollType.IndulgeVice: { // Return stress cleared from indulging
+                return this.highestDieVal;
+            }
         }
         /*~ @@DOUBLE-BLANK@@ ~*/
-        // A full success?
-        if (dieVals.find((val) => val === 6)) {
-            return RollResult.success;
-        }
-        /*~ @@DOUBLE-BLANK@@ ~*/
-        // A partial?
-        if (dieVals.find((val) => val && val >= 4)) {
-            return RollResult.partial;
-        }
-        /*~ @@DOUBLE-BLANK@@ ~*/
-        return RollResult.fail;
-        /*~ @@DOUBLE-BLANK@@ ~*/
+        return false;
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
-    get rollPhase() {
-        return this.getFlagVal("rollPhase") ?? RollPhase.Collaboration;
-    }
-    /*~ @@DOUBLE-BLANK@@ ~*/
-    set rollPhase(phase) {
-        this.setFlagVal("rollPhase", phase);
-    }
-    /*~ @@DOUBLE-BLANK@@ ~*/
-    async outputRollToChat() {
-        BladesChat.ConstructRollOutput(this);
-    }
+    // #endregion
     /*~ @@DOUBLE-BLANK@@ ~*/
     async resolveRoll() {
         await this.roll.evaluate({ async: true });
+        await this.setRollPhase(RollPhase.AwaitingConsequences);
+        switch (this.rollType) {
+            case RollType.Action: {
+                if (this.isApplyingConsequences) {
+                    await this.setRollPhase(RollPhase.AwaitingConsequences);
+                }
+                else {
+                    await this.setRollPhase(RollPhase.Complete);
+                }
+                await this.outputRollToChat();
+                if (this.rollPrimary.rollPrimaryDoc) {
+                    this.rollPrimary.rollPrimaryDoc.unsetFlag("eunos-blades", "isWorsePosition");
+                }
+                this.close();
+                break;
+            }
+            case RollType.Resistance: {
+                await this.setRollPhase(RollPhase.Complete);
+                await this.outputRollToChat();
+                this.close();
+                break;
+            }
+        }
         if (this.isApplyingConsequences) {
-            this.rollPhase = RollPhase.ApplyingConsequences;
+            await this.setRollPhase(RollPhase.AwaitingConsequences);
         }
         eLog.checkLog3("rollCollab", "[resolveRoll()] After Evaluation, Before Chat", { roll: this, dieVals: this.dieVals });
-        await this.outputRollToChat();
-        this.close();
+    }
+    // #endregion
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    // #region *** INTERFACING WITH BLADESCHAT ***
+    getSpeaker(chatSpeaker) {
+        // Compare against rollPrimary and modify accordingly.
+        const { rollPrimaryID, rollPrimaryName, rollPrimaryType, rollPrimaryDoc } = this.rollPrimary;
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        chatSpeaker.alias = rollPrimaryName;
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        if ([BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(rollPrimaryType)) {
+            chatSpeaker.actor = rollPrimaryDoc?.parent?.id ?? chatSpeaker.actor;
+            if (rollPrimaryDoc?.parent instanceof BladesPC) {
+                chatSpeaker.alias = `${chatSpeaker.alias} (${rollPrimaryDoc.parent.name})`;
+            }
+        }
+        else if ([BladesItemType.gm_tracker, BladesItemType.score].includes(rollPrimaryType)) {
+            chatSpeaker.actor = null;
+            chatSpeaker.alias = "The Gamemaster";
+        }
+        else if (rollPrimaryID) {
+            chatSpeaker.actor = rollPrimaryID;
+        }
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        chatSpeaker.alias = `${chatSpeaker.alias} Rolls ...`;
+        /*~ @@DOUBLE-BLANK@@ ~*/
+        return chatSpeaker;
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async getResultHTML() {
+        return await renderTemplate(`systems/eunos-blades/templates/chat/roll-result-${U.lCase(this.rollType)}-roll.hbs`, this);
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    _chatMessageID;
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    _chatMessageTemp;
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get chatMessage() {
+        if (!this._chatMessageID) {
+            return undefined;
+        }
+        return this._chatMessageTemp;
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    set chatMessage(val) {
+        if (val && val.id) {
+            this._chatMessageID = val.id;
+            this._chatMessageTemp = val;
+        }
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async outputRollToChat() {
+        const chatMessage = await BladesChat.ConstructRollOutput(this);
+        this.chatMessage = chatMessage;
     }
     // #endregion
     /*~ @@DOUBLE-BLANK@@ ~*/
     // #region LISTENER FUNCTIONS ~
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    _handleConsequenceClick(event) {
+        const clickTarget$ = $(event.currentTarget);
+        const csqParent$ = clickTarget$.closest(".comp.consequence-display-container");
+        const csqID = csqParent$.data("csq-id");
+        switch (clickTarget$.data("action")) {
+            case "accept-consequence": return this.acceptConsequence(csqID);
+            case "resist-consequence": return this.resistConsequence(csqID);
+            case "armor-consequence": return this.resistArmorConsequence(csqID);
+            case "special-armor-consequence": return this.resistSpecialArmorConsequence(csqID);
+        }
+        return undefined;
+    }
     /*~ @@DOUBLE-BLANK@@ ~*/
     _toggleRollModClick(event) {
         event.preventDefault();
@@ -3383,8 +3752,8 @@ class BladesRoll extends DocumentSheet {
     // #region ACTIVATE LISTENERS ~
     activateListeners(html) {
         super.activateListeners(html);
-        ApplyTooltipListeners(html);
-        ApplyConsequenceListeners(html);
+        ApplyTooltipAnimations(html);
+        ApplyConsequenceAnimations(html);
         /*~ @@DOUBLE-BLANK@@ ~*/
         // User-Toggleable Roll Mods
         html.find(".roll-mod[data-action='toggle']").on({
@@ -3516,7 +3885,7 @@ class BladesRoll extends DocumentSheet {
         if (options.rollID) {
             return super.close({});
         }
-        await this.document.setFlag(C.SYSTEM_ID, "rollCollab", null);
+        // await this.document.setFlag(C.SYSTEM_ID, "rollCollab", null);
         socketlib.system.executeForEveryone("closeRollCollab", this.rollID);
         return undefined;
     }

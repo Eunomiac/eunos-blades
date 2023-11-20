@@ -41,6 +41,15 @@ class BladesCrew extends BladesActor {
     get rollParticipantType() { return this.type; }
     /*~ @@DOUBLE-BLANK@@ ~*/
     get rollParticipantModsData() { return []; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async applyHarm(_amount, _name) {
+        console.error("Attempt to apply harm directly to a Crew document.");
+    }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    async applyWorsePosition() {
+        console.error("Attempt to apply worse position directly to a Crew document.");
+        /*~ @@DOUBLE-BLANK@@ ~*/
+    }
     // #endregion
     /*~ @@DOUBLE-BLANK@@ ~*/
     // #endregion

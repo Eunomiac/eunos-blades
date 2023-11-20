@@ -83,8 +83,8 @@ export default class BladesPushAlert {
             .then(() => $(pushElem).remove());
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
-    pushToAll(...args) {
-        socketlib.system.executeForEveryone("pushNotice", "", ...args);
+    pushToAll(charName, titleText, bodyText, blockClass) {
+        socketlib.system.executeForEveryone("pushNotice", blockClass ?? "", charName, titleText, bodyText);
     }
     /*~ @@DOUBLE-BLANK@@ ~*/
     pushToSome(...args) {

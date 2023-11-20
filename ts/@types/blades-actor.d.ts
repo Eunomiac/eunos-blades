@@ -80,9 +80,9 @@ declare global {
         levels: Record<"light" | "normal" | "heavy" | "encumbered", number>
       },
       harm: {
-        light: Record<"one" | "two" | "effect", string>,
-        medium: Record<"one" | "two" | "effect", string>,
-        heavy: Partial<Record<"one" | "two" | "effect", string>> & Record<"one"|"effect", string>
+        lesser: Record<"one" | "two" | "effect", string>,
+        moderate: Record<"one" | "two" | "effect", string>,
+        severe: Partial<Record<"one" | "two" | "effect", string>> & Record<"one"|"effect", string>
       },
       armor: {
         active: Record<"light" | "heavy" | "special", boolean>,

@@ -149,9 +149,9 @@
           <tr>
             <td class="harm-level">3</td>
             <td class="harm-input" colspan="2">
-              <input type="text" name="system.harm.heavy.one" value="{{system.harm.heavy.one}}">
+              <input type="text" name="system.harm.severe.one" value="{{system.harm.severe.one}}">
             </td>
-            <td class="harm-effect">{{{system.harm.heavy.effect}}}</td>
+            <td class="harm-effect">{{{system.harm.severe.effect}}}</td>
             <td class="healing-clock clock-container" rowspan="3">
               {{#if preparedItems.playbook}}
               {{> "systems/eunos-blades/templates/components/clock.hbs" healing_clock }}
@@ -165,22 +165,22 @@
           <tr>
             <td class="harm-level">2</td>
             <td class="harm-input">
-              <input type="text" name="system.harm.medium.one" value="{{system.harm.medium.one}}">
+              <input type="text" name="system.harm.moderate.one" value="{{system.harm.moderate.one}}">
             </td>
             <td class="harm-input">
-              <input type="text" name="system.harm.medium.two" value="{{system.harm.medium.two}}">
+              <input type="text" name="system.harm.moderate.two" value="{{system.harm.moderate.two}}">
             </td>
-            <td class="harm-effect">{{{system.harm.medium.effect}}}</td>
+            <td class="harm-effect">{{{system.harm.moderate.effect}}}</td>
           </tr>
           <tr>
             <td class="harm-level">1</td>
             <td class="harm-input">
-              <input type="text" name="system.harm.light.one" value="{{system.harm.light.one}}">
+              <input type="text" name="system.harm.lesser.one" value="{{system.harm.lesser.one}}">
             </td>
             <td class="harm-input">
-              <input type="text" name="system.harm.light.two" value="{{system.harm.light.two}}">
+              <input type="text" name="system.harm.lesser.two" value="{{system.harm.lesser.two}}">
             </td>
-            <td class="harm-effect">{{{system.harm.light.effect}}}</td>
+            <td class="harm-effect">{{{system.harm.lesser.effect}}}</td>
           </tr>
         </tbody>
       </table>

@@ -736,7 +736,7 @@ export function Initialize() {
  * Applies listeners to '.tooltip-trigger' elements in the document.
  * @param {JQuery<HTMLElement>} html The document to be searched.
  */
-export function ApplyTooltipListeners(html) {
+export function ApplyTooltipAnimations(html) {
     html.find(".tooltip-trigger").each((_, el) => {
         const tooltipElem = $(el).find(".tooltip")[0] ?? $(el).next(".tooltip")[0];
         if (!tooltipElem) {
@@ -765,7 +765,7 @@ export function ApplyTooltipListeners(html) {
  * Applies listeners to .consequence-display-container and children found in document.
  * @param {JQuery<HTMLElement>} html The document to be searched.
  */
-export function ApplyConsequenceListeners(html) {
+export function ApplyConsequenceAnimations(html) {
     /**
      * TIMELINES
      * .comp.consequence-display-container:mouseenter
@@ -789,7 +789,7 @@ export function ApplyConsequenceListeners(html) {
      *     slide out .consequence-name.resist-consequence from left
      *     fade in .consequence-icon-circle.resist-consequence
      *   ...:mouseleave = reverse
-     *   --> IF resistedTo.type === "None", blurRemove the base_consequence name and type instead of sliding them in,
+     *   --> IF resistTo.type === "None", blurRemove the base_consequence name and type instead of sliding them in,
      *                                       and don't slide the resistance ones out at all.
      * */
     /*~ @@DOUBLE-BLANK@@ ~*/
@@ -797,105 +797,109 @@ export function ApplyConsequenceListeners(html) {
         .find(".comp.consequence-display-container")
         .each((_i, csqContainer) => {
         /*~ @@DOUBLE-BLANK@@ ~*/
-        const iconContainer$ = $(csqContainer).find(".consequence-icon-container");
-        /*~ @@DOUBLE-BLANK@@ ~*/
-        const acceptInteractionPad$ = $(csqContainer).find(".accept-consequence-pad");
-        const resistInteractionPad$ = $(csqContainer).find(".resist-consequence-pad");
-        const specialArmorInteractionPad$ = $(csqContainer).find(".special-armor-consequence-pad");
-        /*~ @@DOUBLE-BLANK@@ ~*/
-        $(csqContainer).data("hoverTimeline", U.gsap.effects.csqEnter(csqContainer));
-        $(csqContainer).on({
-            mouseenter: function () {
-                $(csqContainer).css("z-index", 10);
-                $(csqContainer).data("hoverTimeline").play();
-            },
-            mouseleave: function () {
-                if (!(iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) || iconContainer$.data("isTogglingOff")) {
-                    $(csqContainer).data("hoverTimeline").reverse().then(() => {
-                        $(csqContainer).css("z-index", "");
-                    });
+        if (!$(csqContainer).hasClass("consequence-accepted")) {
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const iconContainer$ = $(csqContainer).find(".consequence-icon-container");
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            const acceptInteractionPad$ = $(csqContainer).find(".accept-consequence-pad");
+            const resistInteractionPad$ = $(csqContainer).find(".resist-consequence-pad");
+            const specialArmorInteractionPad$ = $(csqContainer).find(".special-armor-consequence-pad");
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            $(csqContainer).data("hoverTimeline", U.gsap.effects.csqEnter(csqContainer));
+            $(csqContainer).on({
+                mouseenter: function () {
+                    $(csqContainer).css("z-index", 10);
+                    $(csqContainer).data("hoverTimeline").play();
+                },
+                mouseleave: function () {
+                    if (!(iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) || iconContainer$.data("isTogglingOff")) {
+                        $(csqContainer).data("hoverTimeline").reverse().then(() => {
+                            $(csqContainer).css("z-index", "");
+                        });
+                    }
                 }
-            }
-        });
-        /*~ @@DOUBLE-BLANK@@ ~*/
-        iconContainer$.data("clickTimeline", U.gsap.effects.csqClickIcon(iconContainer$[0]));
-        iconContainer$.on({
-            click: function () {
-                if (iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) {
-                    iconContainer$.data("isTogglingOn", false);
-                    iconContainer$.data("isTogglingOff", true);
-                    iconContainer$.data("clickTimeline").reverse().then(() => {
-                        iconContainer$.data("isTogglingOff", false);
-                        iconContainer$.data("isToggled", false);
-                    });
-                }
-                else {
-                    iconContainer$.data("isTogglingOn", true);
-                    iconContainer$.data("isTogglingOff", false);
-                    /*~ @@DOUBLE-BLANK@@ ~*/
-                    // Find any siblings with toggled-on iconContainers, and toggle them off
-                    Array.from($(csqContainer).siblings(".consequence-display-container"))
-                        .forEach((containerElem) => {
-                        const iContainer$ = $(containerElem).find(".consequence-icon-container");
-                        if (iContainer$?.data("isToggled") || iContainer$?.data("isTogglingOn")) {
-                            iContainer$.data("isTogglingOn", false);
-                            iContainer$.data("isTogglingOff", true);
-                            iContainer$.data("clickTimeline").reverse().then(() => {
-                                iContainer$.data("isTogglingOff", false);
-                                iContainer$.data("isToggled", false);
-                                $(containerElem).data("hoverTimeline").reverse().then(() => {
-                                    $(containerElem).css("z-index", "");
-                                });
-                            });
-                        }
-                    });
-                    iconContainer$.data("clickTimeline").play().then(() => {
+            });
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            iconContainer$.data("clickTimeline", U.gsap.effects.csqClickIcon(iconContainer$[0]));
+            iconContainer$.on({
+                click: function () {
+                    if (iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) {
                         iconContainer$.data("isTogglingOn", false);
-                        iconContainer$.data("isToggled", true);
-                    });
+                        iconContainer$.data("isTogglingOff", true);
+                        iconContainer$.data("clickTimeline").reverse().then(() => {
+                            iconContainer$.data("isTogglingOff", false);
+                            iconContainer$.data("isToggled", false);
+                        });
+                    }
+                    else {
+                        iconContainer$.data("isTogglingOn", true);
+                        iconContainer$.data("isTogglingOff", false);
+                        /*~ @@DOUBLE-BLANK@@ ~*/
+                        // Find any siblings with toggled-on iconContainers, and toggle them off
+                        Array.from($(csqContainer).siblings(".consequence-display-container"))
+                            .forEach((containerElem) => {
+                            const iContainer$ = $(containerElem).find(".consequence-icon-container");
+                            if (iContainer$?.data("isToggled") || iContainer$?.data("isTogglingOn")) {
+                                iContainer$.data("isTogglingOn", false);
+                                iContainer$.data("isTogglingOff", true);
+                                iContainer$.data("clickTimeline").reverse().then(() => {
+                                    iContainer$.data("isTogglingOff", false);
+                                    iContainer$.data("isToggled", false);
+                                    $(containerElem).data("hoverTimeline").reverse().then(() => {
+                                        $(containerElem).css("z-index", "");
+                                    });
+                                });
+                            }
+                        });
+                        iconContainer$.data("clickTimeline").play().then(() => {
+                            iconContainer$.data("isTogglingOn", false);
+                            iconContainer$.data("isToggled", true);
+                        });
+                    }
                 }
-            }
-        });
-        /*~ @@DOUBLE-BLANK@@ ~*/
-        acceptInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterAccept(csqContainer));
-        acceptInteractionPad$.on({
-            mouseenter: function () {
-                if (iconContainer$.data("isToggled")) {
-                    acceptInteractionPad$.data("hoverTimeline").play();
+            });
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            acceptInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterAccept(csqContainer));
+            acceptInteractionPad$.on({
+                mouseenter: function () {
+                    if (iconContainer$.data("isToggled")) {
+                        acceptInteractionPad$.data("hoverTimeline").play();
+                    }
+                },
+                mouseleave: function () {
+                    acceptInteractionPad$.data("hoverTimeline").reverse();
                 }
-            },
-            mouseleave: function () {
-                acceptInteractionPad$.data("hoverTimeline").reverse();
-            }
-        });
-        /*~ @@DOUBLE-BLANK@@ ~*/
-        resistInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterResist(csqContainer));
-        resistInteractionPad$.on({
-            mouseenter: function () {
-                if (iconContainer$.data("isToggled")) {
-                    resistInteractionPad$.data("hoverTimeline").play();
+            });
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            resistInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterResist(csqContainer));
+            resistInteractionPad$.on({
+                mouseenter: function () {
+                    if (iconContainer$.data("isToggled")) {
+                        resistInteractionPad$.data("hoverTimeline").play();
+                    }
+                },
+                mouseleave: function () {
+                    if (iconContainer$.data("isToggled")) {
+                        resistInteractionPad$.data("hoverTimeline").reverse();
+                    }
                 }
-            },
-            mouseleave: function () {
-                if (iconContainer$.data("isToggled")) {
-                    resistInteractionPad$.data("hoverTimeline").reverse();
+            });
+            /*~ @@DOUBLE-BLANK@@ ~*/
+            specialArmorInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSpecialArmor(csqContainer));
+            specialArmorInteractionPad$.on({
+                mouseenter: function () {
+                    if (iconContainer$.data("isToggled")) {
+                        specialArmorInteractionPad$.data("hoverTimeline").play();
+                    }
+                },
+                mouseleave: function () {
+                    if (iconContainer$.data("isToggled")) {
+                        specialArmorInteractionPad$.data("hoverTimeline").reverse();
+                    }
                 }
-            }
-        });
-        /*~ @@DOUBLE-BLANK@@ ~*/
-        specialArmorInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSpecialArmor(csqContainer));
-        specialArmorInteractionPad$.on({
-            mouseenter: function () {
-                if (iconContainer$.data("isToggled")) {
-                    specialArmorInteractionPad$.data("hoverTimeline").play();
-                }
-            },
-            mouseleave: function () {
-                if (iconContainer$.data("isToggled")) {
-                    specialArmorInteractionPad$.data("hoverTimeline").reverse();
-                }
-            }
-        });
+            });
+            /*~ @@DOUBLE-BLANK@@ ~*/
+        }
         /*~ @@DOUBLE-BLANK@@ ~*/
     });
     /*~ @@DOUBLE-BLANK@@ ~*/

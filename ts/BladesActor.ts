@@ -822,15 +822,15 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew) || !this.playbook) { return; }
     await this.update({"system.experience.playbook.value": 0});
     if (BladesActor.IsType(this, BladesActorType.pc)) {
-      BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`);
+      BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`, "advancement-alert");
       this.grantAdvancementPoints(AdvancementPoint.Ability);
       return;
     }
     if (BladesActor.IsType(this, BladesActorType.crew)) {
-      BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.");
+      BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.", "advancement-alert");
       this.members.forEach((member) => {
         const coinGained = this.system.tier.value + 2;
-        BladesPushAlert.Get().pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, undefined);
+        BladesPushAlert.Get().pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, null, "stash-gain-alert");
         member.addStash(coinGained);
       });
       this.grantAdvancementPoints(AdvancementPoint.UpgradeOrAbility, 2);
@@ -840,7 +840,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   async advanceAttribute(attribute: AttributeTrait) {
     await this.update({[`system.experience.${attribute}.value`]: 0});
     const actions = C.Action[attribute].map((action) => `<strong>${U.tCase(action)}</strong>`);
-    BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`);
+    BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`, "advancement-alert");
   }
 
 
@@ -1284,6 +1284,7 @@ declare interface BladesActor {
   get img(): string;
   get type(): BladesActorType;
   get items(): EmbeddedCollection<typeof BladesItem, ActorData>;
+  get flags(): Record<string, unknown>;
   system: BladesActorSystem,
   getRollData(): BladesActorRollData;
   parent: TokenDocument | null;

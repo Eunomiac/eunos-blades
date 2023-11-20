@@ -1,6 +1,6 @@
 import C, { BladesItemType, BladesPhase, Factor } from "../../core/constants.js";
 import U from "../../core/utilities.js";
-import G, { ApplyTooltipListeners } from "../../core/gsap.js";
+import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
 import BladesItem from "../../BladesItem.js";
 import BladesActiveEffect from "../../BladesActiveEffect.js";
 /*~ @@DOUBLE-BLANK@@ ~*/
@@ -326,7 +326,7 @@ class BladesItemSheet extends ItemSheet {
         const self = this;
         /*~ @@DOUBLE-BLANK@@ ~*/
         Tags.InitListeners(html, this.item);
-        ApplyTooltipListeners(html);
+        ApplyTooltipAnimations(html);
         /*~ @@DOUBLE-BLANK@@ ~*/
         // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) {

@@ -37,11 +37,19 @@ let socket; // ~ SocketLib interface
 class GlobalGetter {
     get roll() { return BladesRoll.Active; }
     /*~ @@DOUBLE-BLANK@@ ~*/
-    get user() { return this.roll?.document; }
+    get user() { return game.users.getName("Alistair"); }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get actor() { return game.actors.getName("Alistair"); }
     /*~ @@DOUBLE-BLANK@@ ~*/
     get rollFlags() { return this.roll?.flagData; }
     /*~ @@DOUBLE-BLANK@@ ~*/
-    get userFlags() { return this.user?.flags?.["eunos-blades"]?.rollCollab; }
+    get userFlags() { return this.user?.flags?.["eunos-blades"]; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get actorFlags() { return this.actor?.flags?.["eunos-blades"]; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get rollUser() { return this.roll?.document; }
+    /*~ @@DOUBLE-BLANK@@ ~*/
+    get rollUserFlags() { return this.rollUser?.flags?.["eunos-blades"]; }
     /*~ @@DOUBLE-BLANK@@ ~*/
     get rollPrimary() { return this.roll?.rollPrimary; }
     /*~ @@DOUBLE-BLANK@@ ~*/
@@ -53,6 +61,7 @@ class GlobalGetter {
     /*~ @@DOUBLE-BLANK@@ ~*/
     newActionRoll() {
         const pc = game.actors.getName("Alistair");
+        const idList = [...new Array(15)].map(() => randomID());
         if (!pc) {
             return;
         }
@@ -67,17 +76,21 @@ class GlobalGetter {
                 rollPrimaryType: pc.type,
                 rollPrimaryImg: pc.img,
                 rollModsData: pc.rollModsData,
-                rollFactors: pc.rollFactors
+                rollFactors: pc.rollFactors,
+                applyHarm: pc.applyHarm,
+                applyWorsePosition: pc.applyWorsePosition
             },
             consequenceData: {
                 [Position.risky]: {
                     [RollResult.partial]: {
-                        0: {
+                        [idList[0]]: {
+                            id: idList[0],
                             type: ConsequenceType.ProwessHarm2,
                             attribute: AttributeTrait.prowess,
                             attributeVal: 3,
                             name: "Broken Leg",
-                            resistedTo: {
+                            resistTo: {
+                                id: idList[1],
                                 name: "Sprained Ankle",
                                 isSelected: true,
                                 type: ConsequenceType.ProwessHarm1,
@@ -85,6 +98,7 @@ class GlobalGetter {
                                 icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm1]
                             },
                             specialArmorTo: {
+                                id: idList[2],
                                 name: "Sprained Ankle",
                                 isSelected: true,
                                 type: ConsequenceType.None,
@@ -95,12 +109,14 @@ class GlobalGetter {
                             icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm2],
                             typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm2]
                         },
-                        1: {
+                        [idList[3]]: {
+                            id: idList[3],
                             type: ConsequenceType.ReducedEffect,
                             attribute: AttributeTrait.insight,
                             attributeVal: 4,
                             name: "You Lose Your Footing",
-                            resistedTo: {
+                            resistTo: {
+                                id: idList[4],
                                 name: "",
                                 type: ConsequenceType.None,
                                 isSelected: true
@@ -108,11 +124,13 @@ class GlobalGetter {
                             icon: C.ConsequenceIcons[ConsequenceType.ReducedEffect],
                             typeDisplay: "Reduced Effect"
                         },
-                        2: {
+                        [idList[5]]: {
+                            id: idList[5],
                             type: ConsequenceType.ResolveHarm1,
                             attribute: AttributeTrait.resolve,
                             name: "Traumatic Flashbacks",
-                            resistedTo: {
+                            resistTo: {
+                                id: idList[6],
                                 name: "",
                                 type: ConsequenceType.None,
                                 isSelected: true
@@ -123,12 +141,14 @@ class GlobalGetter {
                         }
                     },
                     [RollResult.fail]: {
-                        0: {
+                        [idList[7]]: {
+                            id: idList[7],
                             type: ConsequenceType.WorsePosition,
                             attribute: AttributeTrait.resolve,
                             attributeVal: 4,
                             name: "Time To Regroup",
-                            resistedTo: {
+                            resistTo: {
+                                id: idList[8],
                                 name: "",
                                 type: ConsequenceType.None,
                                 isSelected: true
@@ -136,11 +156,13 @@ class GlobalGetter {
                             icon: C.ConsequenceIcons[ConsequenceType.WorsePosition],
                             typeDisplay: "Worse Position"
                         },
-                        1: {
+                        [idList[9]]: {
+                            id: idList[9],
                             type: ConsequenceType.ComplicationMajor,
                             attribute: AttributeTrait.prowess,
                             name: "Your pick snaps off inside the lock.",
-                            resistedTo: {
+                            resistTo: {
+                                id: idList[10],
                                 name: "Pick breaks, but lock is still pickable",
                                 isSelected: true,
                                 type: ConsequenceType.ComplicationMinor,
@@ -151,11 +173,13 @@ class GlobalGetter {
                             icon: C.ConsequenceIcons[ConsequenceType.ComplicationMajor],
                             typeDisplay: "Major Complication"
                         },
-                        2: {
+                        [idList[11]]: {
+                            id: idList[11],
                             type: ConsequenceType.InsightHarm2,
                             attribute: AttributeTrait.insight,
                             name: "Completely Misled",
-                            resistedTo: {
+                            resistTo: {
+                                id: idList[12],
                                 name: "Confused by Deception",
                                 isSelected: true,
                                 type: ConsequenceType.InsightHarm1,
@@ -163,6 +187,7 @@ class GlobalGetter {
                                 icon: C.ConsequenceIcons[ConsequenceType.InsightHarm1]
                             },
                             specialArmorTo: {
+                                id: idList[13],
                                 name: "Sprained Ankle",
                                 isSelected: true,
                                 type: ConsequenceType.InsightHarm1,
@@ -196,16 +221,21 @@ class GlobalGetter {
                 rollPrimaryType: pc.type,
                 rollPrimaryImg: pc.img,
                 rollModsData: pc.rollModsData,
-                rollFactors: pc.rollFactors
+                rollFactors: pc.rollFactors,
+                applyHarm: pc.applyHarm,
+                applyWorsePosition: pc.applyWorsePosition
             },
             resistanceData: {
                 consequence: {
+                    id: randomID(),
                     name: "Shattered Knee",
                     icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm3],
                     type: ConsequenceType.ProwessHarm3,
                     typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm3],
                     attribute: AttributeTrait.prowess,
-                    resistedTo: {
+                    attributeVal: 3,
+                    resistTo: {
+                        id: randomID(),
                         name: "Twisted Knee",
                         icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm2],
                         type: ConsequenceType.ProwessHarm2,

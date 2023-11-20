@@ -241,7 +241,7 @@
         <h3 class="gold-bright">On Partial Success:</h3>
         <div class="consequence-container flex-vertical full-width">
         {{#each csqData.partial as |cData cIndex|}}
-          {{#if cData.resistedTo}}
+          {{#if cData.resistTo}}
           {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
             isResistanceVisible=true }}
           {{/if}}
@@ -250,7 +250,7 @@
         <h3 class="red-bright">On Failure:</h3>
         <div class="consequence-container flex-vertical full-width">
         {{#each csqData.fail as |cData cIndex|}}
-          {{#if cData.resistedTo}}
+          {{#if cData.resistTo}}
           {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
             isResistanceVisible=true }}
           {{/if}}
@@ -314,17 +314,17 @@
       {{{oddsHTMLStart}}}{{{oddsHTMLStop}}}
     </div>
     <div class="roll-odds-label-container">
-      <div class="input-target-cycler roll-phase-cycler" data-action="gm-cycle-target" data-flag-target="rollPhase" data-vals="Collaboration|AwaitingResult" data-cur-val="{{rollPhase}}">
+      <div class="input-target-cycler roll-phase-cycler" data-action="gm-cycle-target" data-flag-target="rollPhase" data-vals="Collaboration|AwaitingRoll" data-cur-val="{{rollPhase}}">
         {{#if (test rollPhase "==" "Collaboration")}}
           <i class="fa-duotone fa-messages"></i>
-        {{else if (test rollPhase "==" "AwaitingResult")}}
+        {{else if (test rollPhase "==" "AwaitingRoll")}}
           <i class="fa-duotone fa-dice"></i>
         {{/if}}
       </div>
       <div class="roll-odds-label-text">
         {{#if (test rollPhase "==" "Collaboration")}}
           Click to Enable Roll
-        {{else if (test rollPhase "==" "AwaitingResult")}}
+        {{else if (test rollPhase "==" "AwaitingRoll")}}
           Waiting for Roll
         {{/if}}
       </div>
