@@ -1897,26 +1897,6 @@ class BladesRoll extends DocumentSheet {
   }
   // #endregion
 
-  static ApplyChatListeners(html: JQuery<HTMLElement> | HTMLElement) {
-    const html$ = $(html);
-    const roll$ = html$.find(".blades-roll");
-    if (!roll$[0]) {return;}
-    const rollPhase = roll$.data("rollPhase") as RollPhase;
-    eLog.checkLog3("rollCollab", "ApplyChatListeners", {html, roll$, rollPhase});
-    if (rollPhase !== RollPhase.AwaitingConsequences) {return;}
-    const rollId = roll$.data("rollId");
-    if (!rollId) {throw new Error("No roll ID found in chat message.");}
-    const rollInst = BladesRoll.Current[rollId];
-    if (!rollInst) {
-      html$.addClass("dead-roll");
-      return;
-    }
-
-    html$.find("[data-action*='-consequence']").on({
-      click: rollInst._handleConsequenceClick.bind(rollInst)
-    });
-  }
-
   // #region Constructor ~
   rollID: string;
 
@@ -3226,11 +3206,11 @@ class BladesRoll extends DocumentSheet {
   _dieVals?: number[];
 
   get dieVals(): number[] {
-    this._dieVals ??= (this.roll.terms as DiceTerm[])[0].results
+    return (this.roll.terms as DiceTerm[])[0].results
       .map((result) => result.result)
       .sort()
       .reverse();
-    return this._dieVals;
+    // return this._dieVals;
   }
 
   // Accounts for rolling zero dice by removing highest.
@@ -3262,8 +3242,10 @@ class BladesRoll extends DocumentSheet {
 
 
     if (this.rollType === RollType.Resistance) {
+      const numHighlightedDice = this.rollResult === RollResult.critical ? 2 : 1;
+      const highlightClass = this.rollResult === RollResult.critical ? "blades-die-critical" : "blades-die-resistance";
       return [
-        ...dieVals.map((val, i) => `<span class='blades-die ${i === 0 ? "blades-die-resistance" : "blades-die-fail"} blades-die-${val}'><img src='systems/eunos-blades/assets/dice/faces/${val}.webp' /></span>`),
+        ...dieVals.map((val, i) => `<span class='blades-die ${i === (numHighlightedDice - 1) ? highlightClass : "blades-die-fail"} blades-die-${val}'><img src='systems/eunos-blades/assets/dice/faces/${val}.webp' /></span>`),
         ghostNum ? `<span class='blades-die blades-die-ghost blades-die-${ghostNum}'><img src='systems/eunos-blades/assets/dice/faces/${ghostNum}.webp' /></span>` : null
       ]
         .filter((val): val is string => typeof val === "string")
@@ -3382,10 +3364,15 @@ class BladesRoll extends DocumentSheet {
     return chatSpeaker;
   }
 
-  async getResultHTML() {
+  async getResultHTML(chatMsgID: string) {
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const templateData: BladesRoll & {chatMsgID?: string} = this;
+    templateData.chatMsgID = chatMsgID;
+
     return await renderTemplate(
       `systems/eunos-blades/templates/chat/roll-result-${U.lCase(this.rollType)}-roll.hbs`,
-      this
+      templateData
     );
   }
 

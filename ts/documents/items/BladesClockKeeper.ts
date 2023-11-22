@@ -10,6 +10,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
 
   // #region CLOCKS OVERLAY
   _overlayElement?: HTMLElement;
+
   get overlayElement() {
     this._overlayElement ??= $("#clocks-overlay")[0];
     if (!this._overlayElement) {
@@ -20,8 +21,8 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
   }
 
   async renderOverlay() {
-    if (!game.scenes?.current) { return }
-    if (!game.eunoblades.ClockKeeper) { return }
+    if (!game.scenes?.current) { return; }
+    if (!game.eunoblades.ClockKeeper) { return; }
     if (!game.eunoblades.ClockKeeper.overlayElement) {
       eLog.error("clocksOverlay", "[ClocksOverlay] Cannot locate overlay element.");
       return;
@@ -34,19 +35,20 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
     });
     game.eunoblades.ClockKeeper.activateOverlayListeners();
   }
+
   async activateOverlayListeners() {
-    if (!game?.user?.isGM) { return }
+    if (!game?.user?.isGM) { return; }
     $("#clocks-overlay").find(".clock-frame").on("wheel", async (event) => {
-      if (!event.currentTarget) { return }
-      if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return }
-      if (!(event.originalEvent instanceof WheelEvent)) { return }
+      if (!event.currentTarget) { return; }
+      if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return; }
+      if (!(event.originalEvent instanceof WheelEvent)) { return; }
 
       event.preventDefault();
 
       const clock$ = $(event.currentTarget).closest(".clock");
       const [key] = clock$.closest(".clock-key");
 
-      if (!(key instanceof HTMLElement)) { return }
+      if (!(key instanceof HTMLElement)) { return; }
 
       const keyID = key.id;
       const clockNum = clock$.data("index");
@@ -56,7 +58,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
 
       const newClockVal = U.gsap.utils.clamp(0, max, curClockVal + delta);
 
-      if (curClockVal === newClockVal) { return }
+      if (curClockVal === newClockVal) { return; }
 
       await game.eunoblades.ClockKeeper.update({
         [`system.clock_keys.${keyID}.clocks.${clockNum}.value`]: `${newClockVal}`
@@ -65,8 +67,8 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
 
     $("#clocks-overlay").find(".key-label").on({
       click: async (event) => {
-        if (!event.currentTarget) { return }
-        if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return }
+        if (!event.currentTarget) { return; }
+        if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return; }
 
         event.preventDefault();
 
@@ -79,14 +81,14 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
 
       },
       contextmenu: () => {
-        if (!game.user.isGM) { return }
+        if (!game.user.isGM) { return; }
         game.eunoblades.ClockKeeper?.sheet?.render(true);
       }
     });
   }
 
   async addClockKey(): Promise<BladesItemOfType<BladesItemType.clock_keeper>|undefined> {
-    if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return undefined }
+    if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return undefined; }
     const keyID = randomID();
     return game.eunoblades.ClockKeeper.update({[`system.clock_keys.${keyID}`]: {
       id: keyID,
@@ -111,18 +113,18 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
   }
 
   async deleteClockKey(keyID: string): Promise<BladesItemOfType<BladesItemType.clock_keeper>|undefined> {
-    if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return undefined }
+    if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return undefined; }
     return game.eunoblades.ClockKeeper.update({[`system.clock_keys.-=${keyID}`]: null});
   }
 
   async setKeySize(keyID: string, keySize = 1): Promise<BladesItemOfType<BladesItemType.clock_keeper>|undefined> {
-    if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return undefined }
+    if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return undefined; }
     keySize = parseInt(`${keySize}`, 10);
     const updateData: Record<string, unknown> = {
       [`system.clock_keys.${keyID}.numClocks`]: keySize
     };
     const clockKey = game.eunoblades.ClockKeeper.system.clock_keys[keyID];
-    if (!clockKey) { return game.eunoblades.ClockKeeper }
+    if (!clockKey) { return game.eunoblades.ClockKeeper; }
     const currentSize = Object.values(clockKey.clocks).length;
     if (currentSize < keySize) {
       for (let i = (currentSize + 1); i <= keySize; i++) {
@@ -156,7 +158,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
     this.system.clock_keys = Object.fromEntries(Object.entries(this.system.clock_keys ?? {})
       .filter(([_, keyData]) => keyData?.id)
       .map(([keyID, keyData]) => {
-        if (keyData === null) { return [keyID, null] }
+        if (keyData === null) { return [keyID, null]; }
         keyData.clocks = Object.fromEntries(Object.entries(keyData.clocks ?? {})
           .filter(([_, clockData]) => Boolean(clockData)));
         return [keyID, keyData];

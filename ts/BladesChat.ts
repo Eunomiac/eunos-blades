@@ -2,6 +2,7 @@
 import {ApplyTooltipAnimations, ApplyConsequenceAnimations} from "./core/gsap";
 
 import BladesRoll from "./BladesRoll";
+import BladesConsequence from "./sheets/roll/BladesConsequence";
 // #endregion
 
 class BladesChat extends ChatMessage {
@@ -10,7 +11,7 @@ class BladesChat extends ChatMessage {
     Hooks.on("renderChatMessage", (_msg: ChatMessage, html: JQuery<HTMLElement>) => {
       ApplyTooltipAnimations(html);
       ApplyConsequenceAnimations(html);
-      BladesRoll.ApplyChatListeners(html);
+      BladesConsequence.ApplyChatListeners(html);
     });
     return loadTemplates([
       "systems/eunos-blades/templates/chat/roll-result-action-roll.hbs",
@@ -24,10 +25,11 @@ class BladesChat extends ChatMessage {
 
     const messageData = {
       speaker: rollInst.getSpeaker(BladesChat.getSpeaker()),
-      content: await rollInst.getResultHTML()
+      content: await rollInst.getResultHTML("")
     };
 
     const chatMessage = await BladesChat.create(messageData, {}) as BladesChat;
+    await chatMessage.update({content: await rollInst.getResultHTML(chatMessage.id as string)});
     chatMessage.rollInst = rollInst;
     return chatMessage;
   }

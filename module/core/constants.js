@@ -6,7 +6,6 @@ export var BladesPermissions;
     BladesPermissions[BladesPermissions["FULL"] = CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER] = "FULL";
     BladesPermissions[BladesPermissions["OWNER"] = CONST.DOCUMENT_PERMISSION_LEVELS.OWNER] = "OWNER";
 })(BladesPermissions || (BladesPermissions = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var BladesActorType;
 (function (BladesActorType) {
     BladesActorType["pc"] = "pc";
@@ -14,7 +13,6 @@ export var BladesActorType;
     BladesActorType["crew"] = "crew";
     BladesActorType["faction"] = "faction";
 })(BladesActorType || (BladesActorType = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var BladesItemType;
 (function (BladesItemType) {
     BladesItemType["ability"] = "ability";
@@ -40,7 +38,6 @@ export var BladesItemType;
     BladesItemType["location"] = "location";
     BladesItemType["score"] = "score";
 })(BladesItemType || (BladesItemType = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var PrereqType;
 (function (PrereqType) {
     PrereqType["HasActiveItem"] = "HasActiveItem";
@@ -48,14 +45,12 @@ export var PrereqType;
     PrereqType["AdvancedPlaybook"] = "AdvancedPlaybook";
     PrereqType["HasAllTags"] = "HasAllTags";
     PrereqType["HasAnyTag"] = "HasAnyTag";
-    /*~ @@DOUBLE-BLANK@@ ~*/
     PrereqType["Not_HasActiveItem"] = "Not_HasActiveItem";
     PrereqType["Not_HasActiveItemsByTag"] = "Not_HasActiveItemsByTag";
     PrereqType["Not_AdvancedPlaybook"] = "Not_AdvancedPlaybook";
     PrereqType["Not_HasAllTags"] = "Not_HasAllTags";
     PrereqType["Not_HasAnyTag"] = "Not_HasAnyTag";
 })(PrereqType || (PrereqType = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var District;
 (function (District) {
     District["Barrowcleft"] = "Barrowcleft";
@@ -101,7 +96,6 @@ export var OtherDistrict;
     OtherDistrict["Old North Port"] = "Old North Port";
     OtherDistrict["Deathlands"] = "Deathlands";
 })(OtherDistrict || (OtherDistrict = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var AttributeTrait;
 (function (AttributeTrait) {
     AttributeTrait["insight"] = "insight";
@@ -144,7 +138,6 @@ export var ActionTrait;
     ActionTrait["consort"] = "consort";
     ActionTrait["sway"] = "sway";
 })(ActionTrait || (ActionTrait = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var DowntimeAction;
 (function (DowntimeAction) {
     DowntimeAction["AcquireAsset"] = "AcquireAsset";
@@ -154,7 +147,6 @@ export var DowntimeAction;
     DowntimeAction["ReduceHeat"] = "ReduceHeat";
     DowntimeAction["Train"] = "Train";
 })(DowntimeAction || (DowntimeAction = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollPermissions;
 (function (RollPermissions) {
     RollPermissions["Primary"] = "Primary";
@@ -162,7 +154,6 @@ export var RollPermissions;
     RollPermissions["GM"] = "GM";
     RollPermissions["Participant"] = "Participant";
 })(RollPermissions || (RollPermissions = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollType;
 (function (RollType) {
     RollType["Action"] = "Action";
@@ -170,7 +161,6 @@ export var RollType;
     RollType["Fortune"] = "Fortune";
     RollType["IndulgeVice"] = "IndulgeVice";
 })(RollType || (RollType = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollSubType;
 (function (RollSubType) {
     RollSubType["Incarceration"] = "Incarceration";
@@ -179,7 +169,6 @@ export var RollSubType;
     RollSubType["GroupLead"] = "GroupLead";
     RollSubType["GroupParticipant"] = "GroupParticipant";
 })(RollSubType || (RollSubType = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var ConsequenceType;
 (function (ConsequenceType) {
     ConsequenceType["ReducedEffect"] = "ReducedEffect";
@@ -202,7 +191,6 @@ export var ConsequenceType;
     ConsequenceType["ResolveHarm4"] = "ResolveHarm4";
     ConsequenceType["None"] = "None";
 })(ConsequenceType || (ConsequenceType = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollModStatus;
 (function (RollModStatus) {
     RollModStatus["Hidden"] = "Hidden";
@@ -212,7 +200,6 @@ export var RollModStatus;
     RollModStatus["ForcedOn"] = "ForcedOn";
     RollModStatus["Dominant"] = "Dominant";
 })(RollModStatus || (RollModStatus = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollModSection;
 (function (RollModSection) {
     RollModSection["roll"] = "roll";
@@ -242,7 +229,6 @@ export var Factor;
     Factor["scale"] = "scale";
     Factor["magnitude"] = "magnitude";
 })(Factor || (Factor = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollResult;
 (function (RollResult) {
     RollResult["critical"] = "critical";
@@ -250,7 +236,6 @@ export var RollResult;
     RollResult["partial"] = "partial";
     RollResult["fail"] = "fail";
 })(RollResult || (RollResult = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var RollPhase;
 (function (RollPhase) {
     // Collaboration: Before GM toggles "Roll" button for player to click.
@@ -265,7 +250,6 @@ export var RollPhase;
     // Complete: Roll finished.
     RollPhase["Complete"] = "Complete";
 })(RollPhase || (RollPhase = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var Harm;
 (function (Harm) {
     Harm["Weakened"] = "Weakened";
@@ -273,7 +257,6 @@ export var Harm;
     Harm["Broken"] = "Broken";
     Harm["Dead"] = "Dead";
 })(Harm || (Harm = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var Vice;
 (function (Vice) {
     Vice["Faith"] = "Faith";
@@ -289,7 +272,6 @@ export var Vice;
     Vice["Electroplasmic_Power"] = "Electroplasmic_Power";
     Vice["Servitude"] = "Servitude";
 })(Vice || (Vice = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var Playbook;
 (function (Playbook) {
     Playbook["Cutter"] = "Cutter";
@@ -310,7 +292,6 @@ export var Playbook;
     Playbook["Smugglers"] = "Smugglers";
     Playbook["Vigilantes"] = "Vigilantes";
 })(Playbook || (Playbook = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var AdvancementPoint;
 (function (AdvancementPoint) {
     AdvancementPoint["UpgradeOrAbility"] = "UpgradeOrAbility";
@@ -335,7 +316,6 @@ export var AdvancementPoint;
     AdvancementPoint["consort"] = "consort";
     AdvancementPoint["sway"] = "sway";
 })(AdvancementPoint || (AdvancementPoint = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 export var BladesPhase;
 (function (BladesPhase) {
     BladesPhase["CharGen"] = "CharGen";
@@ -345,7 +325,6 @@ export var BladesPhase;
 })(BladesPhase || (BladesPhase = {}));
 export var Tag;
 (function (Tag) {
-    /*~ @@DOUBLE-BLANK@@ ~*/
     let System;
     (function (System) {
         System["Archived"] = "Archived";
@@ -401,7 +380,6 @@ export var Tag;
         GangType["Vehicle"] = "Vehicle";
     })(GangType = Tag.GangType || (Tag.GangType = {}));
 })(Tag || (Tag = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 const C = {
     SYSTEM_ID: "eunos-blades",
     SYSTEM_NAME: "Euno's Blades",
@@ -568,17 +546,14 @@ const C = {
         dGREY: "rgba(68, 68, 68, 1)",
         BLACK: "rgba(32, 32, 32, 1)",
         dBLACK: "rgba(0, 0, 0, 1)",
-        /*~ @@DOUBLE-BLANK@@ ~*/
         bGOLD: "rgba(255,216, 44, 1)",
         GOLD: "rgba(215,175,  0, 1)",
         dGOLD: "rgba(165,134,  0, 1)",
         ddGOLD: "rgba(103, 83,  0, 1)",
-        /*~ @@DOUBLE-BLANK@@ ~*/
         bRED: "rgba(255, 0, 0, 1)",
         RED: "rgba(200, 0, 0, 1)",
         dRED: "rgba(150,  0,  0, 1)",
         ddRED: "rgba(50,  0,  0, 1)",
-        /*~ @@DOUBLE-BLANK@@ ~*/
         bBLUE: "rgba(   0,224,224, 1)",
         BLUE: "rgba(52,213,213, 1)",
         dBLUE: "rgba(0,118,118, 1)",
@@ -1211,7 +1186,6 @@ const C = {
         Vice.Electroplasmic_Power
     ]
 };
-/*~ @@DOUBLE-BLANK@@ ~*/
 export const Randomizers = {
     NPC: {
         heritage: [
@@ -4361,7 +4335,6 @@ export const Randomizers = {
         ]
     }
 };
-/*~ @@DOUBLE-BLANK@@ ~*/
 export const SVGDATA = {
     overlayScale: 0.25,
     keys: {
@@ -4449,9 +4422,7 @@ export const SVGDATA = {
             10: "M317.557,38.197C284.557,14.18,243.938,0,200,0v200L317.557,38.197z",
             12: "M300.014,26.771C270.593,9.748,236.436,0,200,0v200L300.014,26.771z"
         },
-        glows: {
-        /*~ @@DOUBLE-BLANK@@ ~*/
-        }
+        glows: {}
     },
     teeth: {
         tall: {
@@ -4683,6 +4654,4 @@ export const SVGDATA = {
         }
     }
 };
-/*~ @@DOUBLE-BLANK@@ ~*/
 export default C;
-/*~ @@DOUBLE-BLANK@@ ~*/ 

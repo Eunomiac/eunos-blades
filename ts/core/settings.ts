@@ -182,4 +182,23 @@ export function initCanvasStyles() {
   });
 }
 
+export function initDOMStyles() {
+  // Create a full-screen background gradient that resembles the gradient described in CONFIG-canvasTextStyles
+  // This will serve as a fallback background when the canvas has been disabled or is not available
+  $("body.vtt.game.system-eunos-blades")
+    .append(`<div id="backsplash" style="height: 100%; width: 100%; position: absolute; z-index: -1; background: linear-gradient(35deg, ${C.Colors.GREY}, ${C.Colors.BLACK});"></div>`);
+
+  // Append lightning-barrier background to #sidebar
+  $("#interface")
+    .append(`<div class="lightning-border-container">
+      <img class="border-lightning right-lightning right-lightning-a" src="systems/eunos-blades/assets/animations/chat/energy-beam.webp" />
+      <img class="border-lightning right-lightning right-lightning-b" src="systems/eunos-blades/assets/animations/chat/lightning-ray.webp" />
+      <img class="border-lightning right-lightning right-lightning-c" src="systems/eunos-blades/assets/animations/chat/lightning-ray.webp" />
+      <img class="border-lightning left-lightning left-lightning-a" src="systems/eunos-blades/assets/animations/chat/energy-beam.webp" />
+      <img class="border-lightning left-lightning left-lightning-b" src="systems/eunos-blades/assets/animations/chat/lightning-ray.webp" />
+      <img class="border-lightning left-lightning left-lightning-c" src="systems/eunos-blades/assets/animations/chat/lightning-ray.webp" />
+    </div>`);
+
+}
+
 export default registerSettings;

@@ -239,6 +239,13 @@ declare global {
       participantRollTraits?: RollTrait[]
     }
 
+    export type PrimaryDocType = BladesActorType.pc
+    |BladesActorType.crew
+    |BladesItemType.cohort_gang
+    |BladesItemType.cohort_expert
+    |BladesItemType.gm_tracker
+    |BladesItemType.score;
+
     export type PrimaryDoc =
        BladesActorOfType<BladesActorType.pc>
       |BladesActorOfType<BladesActorType.crew>

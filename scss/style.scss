@@ -64,7 +64,17 @@
       @import './components/clocks-overlay';
     }
 
-    #sidebar { @import "./components/push-notifications" }
+    #sidebar {
+      border: none;
+      background: transparent;
+      top: 0px;
+      bottom: 0px;
+      height: 100%;
+
+      #sidebar-tabs { background: var(--blades-black-dark); }
+
+      @import "./components/push-notifications";
+    }
 
     #interface,
     #controls,
@@ -88,6 +98,8 @@
       }
 
       #chat {
+        // background: rgba(255, 180, 0, 0.25) !important;
+
         @import "./core/reset";
         @import './core/globals';
 
@@ -102,6 +114,10 @@
         @import './chat/chat';
       }
 
+    }
+
+    #interface {
+      @import "./components/lightning-border-overlay";
     }
 
     #controls,

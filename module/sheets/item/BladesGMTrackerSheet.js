@@ -1,11 +1,9 @@
-/*~ @@DOUBLE-BLANK@@ ~*/
 import { BladesActorType, BladesItemType, BladesPhase } from "../../core/constants.js";
 import BladesItemSheet from "./BladesItemSheet.js";
 import BladesItem from "../../BladesItem.js";
 import BladesGMTracker from "../../documents/items/BladesGMTracker.js";
 import BladesActor from "../../BladesActor.js";
 import BladesPC from "../../documents/actors/BladesPC.js";
-/*~ @@DOUBLE-BLANK@@ ~*/
 // eslint-disable-next-line no-shadow
 export var BladesTipContext;
 (function (BladesTipContext) {
@@ -13,18 +11,14 @@ export var BladesTipContext;
     BladesTipContext["Combat"] = "Combat";
     BladesTipContext["General"] = "General";
 })(BladesTipContext || (BladesTipContext = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesTipGenerator {
-    /*~ @@DOUBLE-BLANK@@ ~*/
     static Test(pcActor) {
         if (BladesActor.IsType(pcActor, BladesActorType.pc)) {
             return pcActor;
         }
         return undefined;
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     testActor = new BladesPC({ name: "blah", type: "pc" });
-    /*~ @@DOUBLE-BLANK@@ ~*/
     static get Tips() {
         return {
             [BladesTipContext.DiceRoll]: [],
@@ -41,22 +35,16 @@ class BladesTipGenerator {
                 "Rolling the dice always means SOMETHING happens.",
                 "Jump straight to the action; don't waste time on establishing scenes or filler.",
                 "Invoke elements of characters' backstories or beliefs to make any scene more personal."
-                /*~ @@DOUBLE-BLANK@@ ~*/
             ]
         };
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     tipContext;
-    /*~ @@DOUBLE-BLANK@@ ~*/
     constructor(tipContext) {
         this.tipContext = tipContext;
     }
 }
-/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesGMTrackerSheet extends BladesItemSheet {
-    /*~ @@DOUBLE-BLANK@@ ~*/
     static Get() { return game.eunoblades.Tracker; }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "item", "gm-tracker"],
@@ -65,7 +53,6 @@ class BladesGMTrackerSheet extends BladesItemSheet {
             height: 970
         });
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     static async Initialize() {
         game.eunoblades ??= {};
         Items.registerSheet("blades", BladesGMTrackerSheet, { types: ["gm_tracker"], makeDefault: true });
@@ -85,12 +72,9 @@ class BladesGMTrackerSheet extends BladesItemSheet {
             "systems/eunos-blades/templates/items/gm_tracker-sheet.hbs"
         ]);
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     async activateListeners(html) {
         super.activateListeners(html);
-        /*~ @@DOUBLE-BLANK@@ ~*/
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     async _onSubmit(event, params = {}) {
         const prevPhase = this.item.system.phase;
         const submitData = await super._onSubmit(event, params);
@@ -99,11 +83,9 @@ class BladesGMTrackerSheet extends BladesItemSheet {
         if (prevPhase !== newPhase) {
             switch (prevPhase) {
                 case BladesPhase.CharGen: {
-                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
                 case BladesPhase.Freeplay: {
-                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
                 case BladesPhase.Score: {
@@ -113,26 +95,21 @@ class BladesGMTrackerSheet extends BladesItemSheet {
                     break;
                 }
                 case BladesPhase.Downtime: {
-                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
                 default: break;
             }
             switch (newPhase) {
                 case BladesPhase.CharGen: {
-                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
                 case BladesPhase.Freeplay: {
-                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
                 case BladesPhase.Score: {
-                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
                 case BladesPhase.Downtime: {
-                    /*~ @@DOUBLE-BLANK@@ ~*/
                     break;
                 }
                 default: break;
@@ -145,7 +122,5 @@ class BladesGMTrackerSheet extends BladesItemSheet {
         return submitData;
     }
 }
-/*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesGMTrackerSheet;
 export { BladesTipGenerator };
-/*~ @@DOUBLE-BLANK@@ ~*/ 

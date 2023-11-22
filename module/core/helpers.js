@@ -1,7 +1,6 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import U from "./utilities.js";
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
-/*~ @@DOUBLE-BLANK@@ ~*/
 // #region ░░░░░░░[Templates]░░░░ Preload Partials, Components & Overlay Templates ░░░░░░░ ~
 /**
  * Define a set of template paths to pre-load
@@ -10,7 +9,6 @@ import U from "./utilities.js";
 export async function preloadHandlebarsTemplates() {
     // Define template paths to load
     const templatePaths = [
-        /*~ @@DOUBLE-BLANK@@ ~*/
         // General Components
         "systems/eunos-blades/templates/components/toggle-icon.hbs",
         "systems/eunos-blades/templates/components/button-icon.hbs",
@@ -24,7 +22,7 @@ export async function preloadHandlebarsTemplates() {
         "systems/eunos-blades/templates/components/roll-collab-opposition.hbs",
         "systems/eunos-blades/templates/components/slide-out-controls.hbs",
         "systems/eunos-blades/templates/components/consequence.hbs",
-        /*~ @@DOUBLE-BLANK@@ ~*/
+        "systems/eunos-blades/templates/components/consequence-accepted.hbs",
         // Partials
         "systems/eunos-blades/templates/parts/tier-block.hbs",
         "systems/eunos-blades/templates/parts/turf-list.hbs",
@@ -32,17 +30,14 @@ export async function preloadHandlebarsTemplates() {
         "systems/eunos-blades/templates/parts/roll-opposition-creator.hbs",
         "systems/eunos-blades/templates/parts/active-effects.hbs",
         "systems/eunos-blades/templates/parts/gm-pc-summary.hbs",
-        /*~ @@DOUBLE-BLANK@@ ~*/
         // Overlays
         "systems/eunos-blades/templates/overlays/clock-overlay.hbs",
         "systems/eunos-blades/templates/overlays/clock-key.hbs"
     ];
-    /*~ @@DOUBLE-BLANK@@ ~*/
     // Load the template parts
     return loadTemplates(templatePaths);
 }
 // #endregion ░░░░[Preload Templates]░░░░
-/*~ @@DOUBLE-BLANK@@ ~*/
 // #region ████████ Handlebars: Handlebar Helpers Definitions ████████ ~
 const handlebarHelpers = {
     randString(param1 = 10) {
@@ -262,7 +257,6 @@ const handlebarHelpers = {
     multiboxes(selected, options) {
         let html = options.fn(this);
         selected = [selected].flat(1);
-        /*~ @@DOUBLE-BLANK@@ ~*/
         selected.forEach((selectedVal) => {
             if (selectedVal !== false) {
                 const escapedValue = RegExp.escape(Handlebars.escapeExpression(String(selectedVal)));
@@ -270,35 +264,28 @@ const handlebarHelpers = {
                 html = html.replace(rgx, "$& checked=\"checked\"");
             }
         });
-        /*~ @@DOUBLE-BLANK@@ ~*/
         return html;
     },
     repturf: (turfsAmount, options) => {
         let html = options.fn(this);
         let turfsAmountInt = parseInt(turfsAmount, 10);
-        /*~ @@DOUBLE-BLANK@@ ~*/
         // Can't be more than 6.
         if (turfsAmountInt > 6) {
             turfsAmountInt = 6;
         }
-        /*~ @@DOUBLE-BLANK@@ ~*/
         for (let i = 13 - turfsAmountInt; i <= 12; i++) {
             const rgx = new RegExp(` value="${i}"`);
             html = html.replace(rgx, "$& disabled=\"disabled\"");
         }
-        /*~ @@DOUBLE-BLANK@@ ~*/
         return html;
     }
 };
-/*~ @@DOUBLE-BLANK@@ ~*/
 handlebarHelpers.eLog1 = function (...args) { handlebarHelpers.eLog(...[1, ...args.slice(0, 7)]); };
 handlebarHelpers.eLog2 = function (...args) { handlebarHelpers.eLog(...[2, ...args.slice(0, 7)]); };
 handlebarHelpers.eLog3 = function (...args) { handlebarHelpers.eLog(...[3, ...args.slice(0, 7)]); };
 handlebarHelpers.eLog4 = function (...args) { handlebarHelpers.eLog(...[4, ...args.slice(0, 7)]); };
 handlebarHelpers.eLog5 = function (...args) { handlebarHelpers.eLog(...[5, ...args.slice(0, 7)]); };
-/*~ @@DOUBLE-BLANK@@ ~*/
 Object.assign(handlebarHelpers);
-/*~ @@DOUBLE-BLANK@@ ~*/
 /**
  *
  */
@@ -306,4 +293,3 @@ export function registerHandlebarHelpers() {
     Object.entries(handlebarHelpers).forEach(([name, func]) => Handlebars.registerHelper(name, func));
 }
 // #endregion ▄▄▄▄▄ Handlebars ▄▄▄▄▄
-/*~ @@DOUBLE-BLANK@@ ~*/ 

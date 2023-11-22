@@ -5,17 +5,14 @@ import BladesLocation from "./items/BladesLocation.js";
 import BladesClockKeeper from "./items/BladesClockKeeper.js";
 import BladesGMTracker from "./items/BladesGMTracker.js";
 import BladesScore from "./items/BladesScore.js";
-/*~ @@DOUBLE-BLANK@@ ~*/
 const ItemsMap = {
     [BladesItemType.clock_keeper]: BladesClockKeeper,
     [BladesItemType.gm_tracker]: BladesGMTracker,
     [BladesItemType.location]: BladesLocation,
     [BladesItemType.score]: BladesScore
 };
-/*~ @@DOUBLE-BLANK@@ ~*/
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const BladesItemProxy = new Proxy(function () { }, {
-    /*~ @@DOUBLE-BLANK@@ ~*/
     construct(_, args) {
         const [{ type }] = args;
         if (!type) {
@@ -27,7 +24,6 @@ const BladesItemProxy = new Proxy(function () { }, {
         }
         return new MappedConstructor(...args);
     },
-    /*~ @@DOUBLE-BLANK@@ ~*/
     get(_, prop) {
         switch (prop) {
             case "create":
@@ -36,7 +32,6 @@ const BladesItemProxy = new Proxy(function () { }, {
                     if (U.isArray(data)) {
                         return data.map((i) => CONFIG.Item.documentClass.create(i, options));
                     }
-                    /*~ @@DOUBLE-BLANK@@ ~*/
                     const MappedConstructor = ItemsMap[data.type];
                     if (!MappedConstructor) {
                         return BladesItem.create(data, options);
@@ -51,8 +46,6 @@ const BladesItemProxy = new Proxy(function () { }, {
                 return BladesItem[prop];
         }
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
 });
-/*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesItemProxy;
 export { BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore };

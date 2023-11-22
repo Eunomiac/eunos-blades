@@ -24,7 +24,7 @@ export async function preloadHandlebarsTemplates() {
     "systems/eunos-blades/templates/components/roll-collab-opposition.hbs",
     "systems/eunos-blades/templates/components/slide-out-controls.hbs",
     "systems/eunos-blades/templates/components/consequence.hbs",
-
+    "systems/eunos-blades/templates/components/consequence-accepted.hbs",
     // Partials
     "systems/eunos-blades/templates/parts/tier-block.hbs",
     "systems/eunos-blades/templates/parts/turf-list.hbs",

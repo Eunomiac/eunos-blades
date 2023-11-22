@@ -2,7 +2,8 @@
   // min-width: 500px;
   max-width: 900px;
   // min-height: 300px;
-  // max-height: 500px;
+  max-height: 900px;
+  overflow: scroll;
 
   height: auto !important;
   width: auto !important;
@@ -232,7 +233,7 @@
         }
 
 
-        .button-icon { position: unset }
+        .button-icon, .toggle-icon { position: unset }
 
         .blades-select { font-family: var(--font-emphasis-narrow) }
       }

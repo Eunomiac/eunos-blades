@@ -1,16 +1,29 @@
+{{eLog "CHAT ACTION ROLL RESULT CONTEXT" this}}
 
-{{eLog "CHAT MESSAGE CONTEXT" this}}
 
-<div class="chat-message-bg roll-position-{{finalPosition}}"></div>
 
 <div class="blades-roll roll-type-{{case "lower" rollType}} roll-position-{{finalPosition}} roll-effect-{{finalEffect}} roll-result-{{rollResult}}"
-  data-chat-id="{{chatMessage.id}}"
+  data-chat-id="{{chatMsgID}}"
   data-roll-id="{{rollID}}"
   data-user-id="{{flagData.rollUserID}}"
+  data-primary-id="{{flagData.rollPrimaryData.rollPrimaryID}}"
+  data-primary-type="{{flagData.rollPrimaryData.rollPrimaryType}}"
   data-position="{{finalPosition}}"
   data-effect="{{finalEffect}}"
   data-result="{{rollResult}}"
   data-roll-phase="{{flagData.rollPhase}}">
+
+  {{!-- Roll Primary Portrait --}}
+  <div class="chat-message-speaker-portrait-wrapper">
+  <div class="chat-message-speaker-portrait">
+    <img class="portrait-image" src="{{rollPrimary.rollPrimaryImg}}" />
+    <div class="chat-message-speaker-portrait-overlay"></div>
+  </div>
+  </div>
+
+  {{!-- Floating Backgrounds --}}
+  <div class="chat-message-bg roll-position-{{finalPosition}}"></div>
+  <div class="chat-result-bg roll-position-{{finalPosition}} roll-result-{{rollResult}}"></div>
 
   {{!-- Roll Trait  --}}
   <h1 class="chat-header roll-trait">
@@ -63,10 +76,6 @@
   {{!-- Consequences --}}
   {{#if (test rollResult "==" "partial")}}
   <div class="consequence-container flex-vertical full-width">
-    {{eLog "Consequence Context > flagData" flagData}}
-    {{eLog "Consequence Context > flagData > consequenceData" flagData.consequenceData}}
-    {{eLog "Consequence Context > finalPosition" finalPosition}}
-    {{eLog "Consequence Context > flagData > consequenceData > finalPosition" (lookup flagData.consequenceData finalPosition)}}
   {{#with (lookup flagData.consequenceData finalPosition) as |csqData|}}
   {{#each csqData.partial as |cData cIndex|}}
     {{eLog "ConsequenceContainer" cIndex csqData cData}}
@@ -80,10 +89,6 @@
   {{/if}}
   {{#if (test rollResult "==" "fail")}}
   <div class="consequence-container flex-vertical full-width">
-    {{eLog "Consequence Context > flagData" flagData}}
-    {{eLog "Consequence Context > flagData > consequenceData" flagData.consequenceData}}
-    {{eLog "Consequence Context > finalPosition" finalPosition}}
-    {{eLog "Consequence Context > flagData > consequenceData > finalPosition" (lookup flagData.consequenceData finalPosition)}}
   {{#with (lookup flagData.consequenceData finalPosition) as |csqData|}}
   {{#each csqData.fail as |cData cIndex|}}
     {{#if cData.resistTo}}

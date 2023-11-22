@@ -315,7 +315,7 @@ const REGEXPPATTERNS = {
                       reverse, for end-of-lines: \s*?(\r\n)?
   */
   init: new Map([
-    [/^\s+$/gm, "/*~ @@DOUBLE-BLANK@@ ~*/"] // Replace double-blank lines with token for later retrieval
+    [/^XXX/g, ""] // [/^\s+$/gm, "/*~ @@DOUBLE-BLANK@@ ~*/"] // Replace double-blank lines with token for later retrieval
   ]),
   ts: new Map([
     [/from "gsap\/all"/gu, 'from "/scripts/greensock/esm/all.js"'],
@@ -336,11 +336,11 @@ const REGEXPPATTERNS = {
     [/#(region.*?)[ \t]*~$/gim, "#$1"], // Strip '~' from end-of-lines (used for automatic region folding)
     [/#reg.*? /gs, ""], // Convert region headers to standard headers
     [/((\r?\n)[ \t]*(?:\r?\n))+/g, "\r\n"], // Strip excess blank lines
-    [
-      /([ \t]*\r?\n\/\*~? @@DOUBLE-BLANK@@ ~\*\/)+/g,
-      "\r\n/*~ @@DOUBLE-BLANK@@ ~*/"
-    ], // Collapse multiple double-blank lines
-    [/\/\*~? @@DOUBLE-BLANK@@ ~\*\//g, ""], // Restore double-blank lines
+    // [
+    //   /([ \t]*\r?\n\/\*~? @@DOUBLE-BLANK@@ ~\*\/)+/g,
+    //   "\r\n/*~ @@DOUBLE-BLANK@@ ~*/"
+    // ], // Collapse multiple double-blank lines
+    // [/\/\*~? @@DOUBLE-BLANK@@ ~\*\//g, ""], // Restore double-blank lines
     [/([ \t]*\r?\n)*$/, ""], // Strip whitespace from end of files
     [/^([ \t]*\r?\n)*/, ""] // Strip whitespace from start of files
   ])

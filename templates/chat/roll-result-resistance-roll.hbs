@@ -1,26 +1,39 @@
-<div class="dice-tooltip blades-die-tooltip">
-  {{#if attribute_label}}<div class="chat-label label-stripe-chat">{{localize attribute_label}}</div>{{/if}}
+{{eLog "RESISTANCE ROLL CHAT CONTEXT" this}}
 
-  {{#if (eq roll_status "critical-success")}}
-  <div class="die {{roll_status}}">{{localize "BITD.RollCriticalSuccess"}}</div>
-  <div class="description">
-    <p>{{{localize "BITD.RollResistanceCritical"}}}</p>
+<div class="blades-roll roll-type-{{case "lower" rollType}}">
+
+  <div class="chat-message-bg"></div>
+
+  <div class="resistance-roll-one-line flex-horizontal full-width">
+    {{!-- Resistance Lead-in --}}
+    <div class="resistance-roll-intro">Resisted</div>
+    {{!-- Consequence Icon --}}
+    <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/base-{{flagData.resistanceData.consequence.icon}}.svg" />
+
+    {{!-- Vertical Container --}}
+    <div class="resistance-roll-vertical-right flex-vertical full-width">
+
+      {{!-- Attribute & Dice Line --}}
+      <div class="resistance-roll-attr-dice flex-horizontal full-width">
+        <span class="trait-label">{{case "upper" rollTrait}}: </span>
+        <div class="dice-roll-strip">{{{dieValsHTML}}}</div>
+      </div>
+
+      {{!-- Stress Loss --}}
+      {{#if isSuccess}}
+      <div class="resistance-cost-row cost-zero">
+        <h3>Zero Stress!</h3>
+      </div>
+      {{else if isCritical}}
+      <div class="resistance-cost-row cost-bonus">
+        <h3>Critical! Recover 1 Stress</h4>
+      </div>
+      {{else}}
+      <div class="resistance-cost-row cost-stress">
+        <h3>Lose {{resistanceStressCost}} Stress</h3>
+      </div>
+      {{/if}}
+
+    </div>
   </div>
-  {{else}}
-  <div class="die success">{{localize "BITD.RollSuccess"}}</div>
-  <div class="description"><p>{{{localize "BITD.RollResistance" stress=stress}}}</p></div>
-  {{/if}}
-  {{#if note}}
-    <em>{{note}}</em>
-  {{/if}}
-
-  <ol class="dice-rolls">
-    {{#each this.rolls}}
-    {{#if this.result}}
-    <li class="roll die d6">{{{this.result}}}</li>
-    {{else}}
-    <li class="roll die d6">{{{this.roll}}}</li>
-    {{/if}}
-    {{/each}}
-  </ol>
 </div>

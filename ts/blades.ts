@@ -1,6 +1,6 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import C, {ActionTrait, AttributeTrait, RollType, ConsequenceType, Position, RollResult} from "./core/constants";
-import registerSettings, {initTinyMCEStyles, initCanvasStyles} from "./core/settings";
+import registerSettings, {initTinyMCEStyles, initCanvasStyles, initDOMStyles} from "./core/settings";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers";
 import BladesPushAlert from "./BladesPushAlert";
 import BladesChat from "./BladesChat";
@@ -331,6 +331,7 @@ Hooks.once("init", async () => {
 });
 
 Hooks.once("ready", () => {
+  initDOMStyles();
   initCanvasStyles();
   initTinyMCEStyles();
 });

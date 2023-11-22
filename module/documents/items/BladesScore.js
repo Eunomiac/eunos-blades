@@ -3,9 +3,7 @@ import { BladesActorType, BladesItemType, Factor } from "../../core/constants.js
 import U from "../../core/utilities.js";
 import BladesActor from "../../BladesActor.js";
 import BladesScoreSheet from "../../sheets/item/BladesScoreSheet.js";
-/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesScore extends BladesItem {
-    /*~ @@DOUBLE-BLANK@@ ~*/
     // #region INITIALIZATION ~
     static async Initialize() {
         game.eunoblades ??= {};
@@ -14,7 +12,6 @@ class BladesScore extends BladesItem {
         return loadTemplates(["systems/eunos-blades/templates/items/score-sheet.hbs"]);
     }
     // #endregion
-    /*~ @@DOUBLE-BLANK@@ ~*/
     static get Active() {
         return BladesItem.GetTypeWithTags(BladesItemType.score).find((score) => score.system.isActive);
     }
@@ -27,10 +24,8 @@ class BladesScore extends BladesItem {
             }
         });
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     // #region BladesRoll.OppositionDocData Implementation
     get rollFactors() {
-        /*~ @@DOUBLE-BLANK@@ ~*/
         const tierTotal = this.getFactorTotal(Factor.tier);
         return {
             [Factor.tier]: {
@@ -58,12 +53,10 @@ class BladesScore extends BladesItem {
         }
     }
     // #endregion
-    /*~ @@DOUBLE-BLANK@@ ~*/
     // #region OVERRIDES: _onUpdate
     async _onUpdate(changed, options, userId) {
         super._onUpdate(changed, options, userId);
         BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
     }
 }
-/*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesScore;

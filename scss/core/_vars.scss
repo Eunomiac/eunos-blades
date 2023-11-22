@@ -336,6 +336,9 @@ $isCompactLayout: true;
     1px 1px 2px var(--blades-black-dark),
     1px 1px 2px var(--blades-black-dark),
     1px 1px 2px var(--blades-black-dark);
+  --text-shadow-emboss:
+    -1px -1px 1px var(--blades-white),
+    1px 1px 1px var(--blades-black-dark);
   --box-shadow-dark: inset 0 0 0.3rem var(--blades-black-dark-fade);
   --box-shadow-dark-strong: inset 0 0 0.5rem var(--blades-black-dark);
   // #endregion ░░░░[Style Components]░░░░

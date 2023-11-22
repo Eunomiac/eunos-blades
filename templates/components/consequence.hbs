@@ -1,4 +1,4 @@
-{{eLog "Consequence Context" this}}
+{{!-- {{eLog "Consequence Context" this}} --}}
 
 <div class="comp consequence-display-container full-width {{~#if isAccepted}}consequence-accepted{{/if}}"
       data-user-id="{{flagData.rollUserID}}"
@@ -7,8 +7,13 @@
       data-csq-name="{{name}}"
       data-csq-type="{{type}}"
       data-resist-attribute="{{attribute}}"
+      data-resist-attribute-val="{{attributeVal}}"
       data-resist-name="{{resistTo.name}}"
-      data-resist-type="{{resistTo.type}}" >
+      data-resist-type="{{resistTo.type}}"
+      data-armor-name="{{armorTo.name}}"
+      data-armor-type="{{armorTo.type}}"
+      data-special-armor-name="{{specialTo.name}}"
+      data-special-armor-type="{{specialTo.type}}" >
 
   {{#unless isAccepted}}
     <img class="consequence-bg-image" src="systems/eunos-blades/assets/chat/csq-strip-long.png" />
@@ -26,7 +31,7 @@
 
   <div class="consequence-icon-container">
     <div class="consequence-icon-circle base-consequence">
-      <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/{{#if isAccepted}}accept{{else}}base{{/if}}-{{icon}}.svg" />
+      <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/base-{{icon}}.svg" />
     </div>
 
     {{#unless isAccepted}}
@@ -35,20 +40,26 @@
       </div>
       <div class="consequence-icon-circle resist-consequence">
         {{#if resistTo.icon}}
+        {{#unless (test resistTo.type "==" "None")}}
         <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/resist-{{resistTo.icon}}.svg" />
+        {{/unless}}
         {{/if}}
       </div>
       {{#if armorTo}}
       <div class="consequence-icon-circle armor-consequence">
         {{#if armorTo.icon}}
+        {{#unless (test armorTo.type "==" "None")}}
         <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/base-{{armorTo.icon}}.svg" />
+        {{/unless}}
         {{/if}}
       </div>
       {{/if}}
       {{#if specialArmorTo}}
       <div class="consequence-icon-circle special-armor-consequence">
         {{#if specialArmorTo.icon}}
+        {{#unless (test specialArmorTo.type "==" "None")}}
         <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/special-{{specialArmorTo.icon}}.svg" />
+        {{/unless}}
         {{/if}}
       </div>
       {{/if}}

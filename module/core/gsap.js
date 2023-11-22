@@ -2,11 +2,9 @@ import U from "./utilities.js";
 import C from "./constants.js";
 // eslint-disable-next-line import/no-unresolved
 import { TextPlugin } from "/scripts/greensock/esm/all.js";
-/*~ @@DOUBLE-BLANK@@ ~*/
 const gsapPlugins = [
     TextPlugin
 ];
-/*~ @@DOUBLE-BLANK@@ ~*/
 const gsapEffects = {
     csqEnter: {
         effect: (csqContainer, config) => {
@@ -15,9 +13,7 @@ const gsapEffects = {
             const csqIconCircle = csqRoot(".consequence-icon-circle.base-consequence");
             const csqBaseElems = csqRoot(".base-consequence:not(.consequence-icon-circle)");
             const csqAcceptElems = csqRoot(".accept-consequence:not(.consequence-icon-circle):not(.consequence-button-container)");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const tl = U.gsap.timeline({ paused: true, defaults: { overwrite: "auto" } });
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Fade out base-consequence components
             if (csqBaseElems.length > 0) {
                 tl.fromTo(csqBaseElems, {
@@ -28,7 +24,6 @@ const gsapEffects = {
                     ease: "none"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Fade in accept-consequence components
             if (csqAcceptElems.length > 0) {
                 tl.fromTo(csqAcceptElems, {
@@ -39,7 +34,6 @@ const gsapEffects = {
                     ease: "none"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Brighten the entire container slightly
             if (csqContainer) {
                 tl.fromTo(csqContainer, {
@@ -50,7 +44,6 @@ const gsapEffects = {
                     ease: "none"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Enlarge the icon circle, add stroke
             if (csqIconCircle.length > 0) {
                 tl.fromTo(csqIconCircle, {
@@ -69,7 +62,6 @@ const gsapEffects = {
                     ease: "sine.out"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             return tl;
         },
         defaults: {
@@ -89,18 +81,15 @@ const gsapEffects = {
             const csqIconCircleBase = csqRoot(".consequence-icon-circle.base-consequence");
             const csqIconCircleAccept = csqRoot(".consequence-icon-circle.accept-consequence");
             const csqButtonContainers = csqRoot(".consequence-button-container");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const tl = U.gsap.timeline({ paused: true, defaults: { overwrite: "auto" } });
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Initialize interaction pads to display: none
             if (csqInteractionPads.length) {
                 tl.set(csqInteractionPads, { display: "none" });
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Slide out the background
             if (csqBackgroundImg.length) {
                 tl.fromTo(csqBackgroundImg, {
-                    xPercent: -100,
+                    xPercent: 110,
                     yPercent: -50
                 }, {
                     xPercent: -60,
@@ -109,7 +98,6 @@ const gsapEffects = {
                     ease: "back"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Fade out the base consequence icon circle
             if (csqIconCircleBase.length > 0) {
                 tl.fromTo(csqIconCircleBase, {
@@ -120,7 +108,6 @@ const gsapEffects = {
                     ease: "none"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Fade in the accept consequence icon circle, enlarging the stroke
             if (csqIconCircleAccept.length > 0) {
                 tl.fromTo(csqIconCircleAccept, {
@@ -136,7 +123,6 @@ const gsapEffects = {
                     ease: "sine"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             if (csqIconCircleAccept.length > 0) {
                 tl.fromTo(csqIconCircleAccept, {
                     outlineWidth: 1,
@@ -152,7 +138,6 @@ const gsapEffects = {
                     ease: "sine"
                 }, 0.175);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Scale and fade in the button containers
             if (csqButtonContainers.length > 0) {
                 tl.fromTo(csqButtonContainers, {
@@ -168,12 +153,10 @@ const gsapEffects = {
                     ease: `${config.ease}.inOut(${config.easeStrength})`
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Finally, toggle on interaction pads
             if (csqInteractionPads.length) {
                 tl.set(csqInteractionPads, { display: "block" });
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             return tl;
         },
         defaults: {
@@ -190,13 +173,10 @@ const gsapEffects = {
             const typeLine = csqRoot(".consequence-type-container .consequence-type.accept-consequence");
             const typeLineBg = csqRoot(".consequence-type-container .consequence-type-bg.accept-consequence");
             const buttonRoot = U.gsap.utils.selector(csqRoot(".consequence-button-container.consequence-accept-button-container"));
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const buttonBg = buttonRoot(".consequence-button-bg");
             const buttonIcon = buttonRoot(".button-icon i");
             const buttonLabel = buttonRoot(".consequence-button-label");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const tl = U.gsap.timeline({ paused: true, defaults: { overwrite: "auto" } });
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Turn type line white
             if (typeLine.length > 0) {
                 tl.fromTo(typeLine, {
@@ -207,7 +187,6 @@ const gsapEffects = {
                     ease: "sine.inOut"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Slide type line background out from under icon
             if (typeLineBg.length > 0) {
                 tl.fromTo(typeLineBg, {
@@ -223,7 +202,6 @@ const gsapEffects = {
                     ease: "back.out"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Slide accept button background out from under icon
             if (buttonBg.length > 0) {
                 tl.fromTo(buttonBg, {
@@ -239,7 +217,6 @@ const gsapEffects = {
                     ease: "back.out"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Turn button icon black and scale
             if (buttonIcon.length > 0) {
                 tl.fromTo(buttonIcon, {
@@ -254,7 +231,6 @@ const gsapEffects = {
                     ease: "sine"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Turn button label black, add letter-spacing, bold
             if (buttonLabel.length > 0) {
                 tl.fromTo(buttonLabel, {
@@ -268,7 +244,6 @@ const gsapEffects = {
                     ease: "sine"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             return tl;
         },
         defaults: {}
@@ -276,25 +251,19 @@ const gsapEffects = {
     csqEnterResist: {
         effect: (csqContainer) => {
             const csqRoot = U.gsap.utils.selector(csqContainer);
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const typeLine = csqRoot(".consequence-type-container .consequence-type.resist-consequence");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const acceptElems = csqRoot(".accept-consequence");
             const specialArmorElems = csqRoot(".special-armor-consequence");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const footerBg = csqRoot(".consequence-footer-container .consequence-footer-bg.resist-consequence");
             const attrElem = csqRoot(".consequence-footer-container .consequence-resist-attribute");
             const resistCsqName = csqRoot(".consequence-name.resist-consequence");
             const iconCircle = csqRoot(".consequence-icon-circle.resist-consequence");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const buttonRoot = U.gsap.utils.selector(csqRoot(".consequence-button-container.consequence-resist-button-container"));
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const buttonBg = buttonRoot(".consequence-button-bg");
+            eLog.checkLog3("gsap", "Resist Button BG", buttonBg);
             const buttonIcon = buttonRoot(".button-icon i");
             const buttonLabel = buttonRoot(".consequence-button-label");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const tl = U.gsap.timeline({ paused: true, defaults: { overwrite: "auto" } });
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Fade out all accept elems and special armor elems
             if ([...acceptElems, ...specialArmorElems].length > 0) {
                 tl.to([...acceptElems, ...specialArmorElems], {
@@ -303,7 +272,6 @@ const gsapEffects = {
                     ease: "sine.out"
                 });
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Slide out .consequence-type.resist-consequence from left
             if (typeLine.length > 0) {
                 tl.fromTo(typeLine, {
@@ -320,7 +288,6 @@ const gsapEffects = {
                     ease: "back.out"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Slide out .consequence-resist-button-bg from right
             if (buttonBg.length > 0) {
                 tl.fromTo(buttonBg, {
@@ -335,7 +302,6 @@ const gsapEffects = {
                     ease: "back.inOut"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Slide out .consequence-footer-bg.resist-consequence from left
             if (footerBg.length > 0) {
                 tl.fromTo(footerBg, {
@@ -350,7 +316,6 @@ const gsapEffects = {
                     ease: "back.inOut"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Slide out .consequence-resist-attribute from left
             if (attrElem.length > 0) {
                 tl.fromTo(attrElem, {
@@ -363,7 +328,6 @@ const gsapEffects = {
                     ease: "back.inOut"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Slide out .consequence-name.resist-consequence from left
             if (resistCsqName.length > 0) {
                 tl.fromTo(resistCsqName, {
@@ -376,7 +340,6 @@ const gsapEffects = {
                     ease: "back.inOut"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Fade in .consequence-icon-circle.resist-consequence
             if (iconCircle.length > 0) {
                 tl.fromTo(iconCircle, {
@@ -387,7 +350,6 @@ const gsapEffects = {
                     ease: "back.out"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Turn button icon black and scale
             if (buttonIcon.length > 0) {
                 tl.fromTo(buttonIcon, {
@@ -402,7 +364,6 @@ const gsapEffects = {
                     ease: "sine"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Turn button label black, bold
             if (buttonLabel.length > 0) {
                 tl.fromTo(buttonLabel, {
@@ -416,7 +377,6 @@ const gsapEffects = {
                     ease: "sine"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             return tl;
         },
         defaults: {}
@@ -424,19 +384,14 @@ const gsapEffects = {
     csqEnterSpecialArmor: {
         effect: (csqContainer) => {
             const csqRoot = U.gsap.utils.selector(csqContainer);
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const typeLine = csqRoot(".consequence-type-container .consequence-type.special-armor-consequence");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const acceptElems = csqRoot(".accept-consequence");
             const resistElems = csqRoot(".resist-consequence");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const footerBg = csqRoot(".consequence-footer-container .consequence-footer-bg.special-armor-consequence");
             const footerMsg = csqRoot(".consequence-footer-container .consequence-special-armor-message");
             const specialArmorCsqName = csqRoot(".consequence-name.special-armor-consequence");
             const iconCircle = csqRoot(".consequence-icon-circle.special-armor-consequence");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const tl = U.gsap.timeline({ paused: true, defaults: { overwrite: "auto" } });
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Fade out all accept elems and resist elems
             if ([...acceptElems, ...resistElems].length > 0) {
                 tl.to([...acceptElems, ...resistElems], {
@@ -445,7 +400,6 @@ const gsapEffects = {
                     ease: "sine.out"
                 });
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Slide out .consequence-type.special-armor-consequence from left
             if (typeLine.length > 0) {
                 tl.fromTo(typeLine, {
@@ -462,7 +416,6 @@ const gsapEffects = {
                     ease: "back.out"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Slide out .consequence-footer-bg.special-armor-consequence from left
             if (footerBg.length > 0) {
                 tl.fromTo(footerBg, {
@@ -477,7 +430,6 @@ const gsapEffects = {
                     ease: "back.inOut"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Slide out .consequence-special-armor-message from left
             if (footerMsg.length > 0) {
                 tl.fromTo(footerMsg, {
@@ -490,7 +442,6 @@ const gsapEffects = {
                     ease: "back.inOut"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Slide out .consequence-name.special-armor-consequence from left
             if (specialArmorCsqName.length > 0) {
                 tl.fromTo(specialArmorCsqName, {
@@ -503,7 +454,6 @@ const gsapEffects = {
                     ease: "back.inOut"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Fade in .consequence-icon-circle.special-armor-consequence
             if (iconCircle.length > 0) {
                 tl.fromTo(iconCircle, {
@@ -514,7 +464,6 @@ const gsapEffects = {
                     ease: "back.out"
                 }, 0);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             if (csqRoot(".consequence-button-container.consequence-special-armor-button-container").length > 0) {
                 const buttonRoot = U.gsap.utils.selector(csqRoot(".consequence-button-container.consequence-special-armor-button-container"));
                 const [buttonBg, buttonIcon, buttonLabel] = [
@@ -522,7 +471,6 @@ const gsapEffects = {
                     buttonRoot(".button-icon i"),
                     buttonRoot(".consequence-button-label")
                 ];
-                /*~ @@DOUBLE-BLANK@@ ~*/
                 // Slide out .consequence-special-armor-button-bg from right
                 if (buttonBg.length > 0) {
                     tl.fromTo(buttonBg, {
@@ -537,7 +485,6 @@ const gsapEffects = {
                         ease: "back.inOut"
                     }, 0);
                 }
-                /*~ @@DOUBLE-BLANK@@ ~*/
                 // Turn button icon black and scale
                 if (buttonIcon.length > 0) {
                     tl.fromTo(buttonIcon, {
@@ -552,7 +499,6 @@ const gsapEffects = {
                         ease: "sine"
                     }, 0);
                 }
-                /*~ @@DOUBLE-BLANK@@ ~*/
                 // Turn button label black, bold
                 if (buttonLabel.length > 0) {
                     tl.fromTo(buttonLabel, {
@@ -567,7 +513,6 @@ const gsapEffects = {
                     }, 0);
                 }
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             return tl;
         },
         defaults: {}
@@ -667,7 +612,6 @@ const gsapEffects = {
             // Stagger in timeline
             // Pulse in size and color
             // Shimmer as they shrink back ?
-            /*~ @@DOUBLE-BLANK@@ ~*/
             return U.gsap.effects.throb(targets, { stagger: {
                     amount: 0.25,
                     from: "start",
@@ -684,7 +628,6 @@ const gsapEffects = {
                 return tl;
             }
             // Tooltip = $(tooltip);
-            /*~ @@DOUBLE-BLANK@@ ~*/
             if (config.scalingElems.length > 0) {
                 tl.to(config.scalingElems, {
                     scale: "+=0.2",
@@ -695,7 +638,6 @@ const gsapEffects = {
                     ease: "back"
                 }, 0.5);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             if (tooltip) {
                 tl.fromTo(tooltip, {
                     filter: "blur(50px)",
@@ -710,7 +652,6 @@ const gsapEffects = {
                     ease: "power2"
                 }, 1);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             return tl;
         },
         defaults: {
@@ -719,7 +660,6 @@ const gsapEffects = {
         }
     }
 };
-/*~ @@DOUBLE-BLANK@@ ~*/
 /**
  * Registers relevant GSAP plugins and effects.
  */
@@ -731,7 +671,6 @@ export function Initialize() {
         U.gsap.registerEffect(Object.assign(effect, { name }));
     });
 }
-/*~ @@DOUBLE-BLANK@@ ~*/
 /**
  * Applies listeners to '.tooltip-trigger' elements in the document.
  * @param {JQuery<HTMLElement>} html The document to be searched.
@@ -760,7 +699,6 @@ export function ApplyTooltipAnimations(html) {
         });
     });
 }
-/*~ @@DOUBLE-BLANK@@ ~*/
 /**
  * Applies listeners to .consequence-display-container and children found in document.
  * @param {JQuery<HTMLElement>} html The document to be searched.
@@ -792,19 +730,14 @@ export function ApplyConsequenceAnimations(html) {
      *   --> IF resistTo.type === "None", blurRemove the base_consequence name and type instead of sliding them in,
      *                                       and don't slide the resistance ones out at all.
      * */
-    /*~ @@DOUBLE-BLANK@@ ~*/
     html
         .find(".comp.consequence-display-container")
         .each((_i, csqContainer) => {
-        /*~ @@DOUBLE-BLANK@@ ~*/
         if (!$(csqContainer).hasClass("consequence-accepted")) {
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const iconContainer$ = $(csqContainer).find(".consequence-icon-container");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const acceptInteractionPad$ = $(csqContainer).find(".accept-consequence-pad");
             const resistInteractionPad$ = $(csqContainer).find(".resist-consequence-pad");
             const specialArmorInteractionPad$ = $(csqContainer).find(".special-armor-consequence-pad");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             $(csqContainer).data("hoverTimeline", U.gsap.effects.csqEnter(csqContainer));
             $(csqContainer).on({
                 mouseenter: function () {
@@ -819,7 +752,6 @@ export function ApplyConsequenceAnimations(html) {
                     }
                 }
             });
-            /*~ @@DOUBLE-BLANK@@ ~*/
             iconContainer$.data("clickTimeline", U.gsap.effects.csqClickIcon(iconContainer$[0]));
             iconContainer$.on({
                 click: function () {
@@ -834,7 +766,6 @@ export function ApplyConsequenceAnimations(html) {
                     else {
                         iconContainer$.data("isTogglingOn", true);
                         iconContainer$.data("isTogglingOff", false);
-                        /*~ @@DOUBLE-BLANK@@ ~*/
                         // Find any siblings with toggled-on iconContainers, and toggle them off
                         Array.from($(csqContainer).siblings(".consequence-display-container"))
                             .forEach((containerElem) => {
@@ -858,7 +789,6 @@ export function ApplyConsequenceAnimations(html) {
                     }
                 }
             });
-            /*~ @@DOUBLE-BLANK@@ ~*/
             acceptInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterAccept(csqContainer));
             acceptInteractionPad$.on({
                 mouseenter: function () {
@@ -870,7 +800,6 @@ export function ApplyConsequenceAnimations(html) {
                     acceptInteractionPad$.data("hoverTimeline").reverse();
                 }
             });
-            /*~ @@DOUBLE-BLANK@@ ~*/
             resistInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterResist(csqContainer));
             resistInteractionPad$.on({
                 mouseenter: function () {
@@ -884,7 +813,6 @@ export function ApplyConsequenceAnimations(html) {
                     }
                 }
             });
-            /*~ @@DOUBLE-BLANK@@ ~*/
             specialArmorInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSpecialArmor(csqContainer));
             specialArmorInteractionPad$.on({
                 mouseenter: function () {
@@ -898,12 +826,7 @@ export function ApplyConsequenceAnimations(html) {
                     }
                 }
             });
-            /*~ @@DOUBLE-BLANK@@ ~*/
         }
-        /*~ @@DOUBLE-BLANK@@ ~*/
     });
-    /*~ @@DOUBLE-BLANK@@ ~*/
 }
-/*~ @@DOUBLE-BLANK@@ ~*/
 export default U.gsap;
-/*~ @@DOUBLE-BLANK@@ ~*/ 

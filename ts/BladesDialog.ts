@@ -187,7 +187,7 @@ class BladesDialog extends Dialog {
   }
 
   constructConsequenceData(data: BladesDialog.Data/* , options?: Partial<BladesDialog.Options> */) {
-    eLog.checkLog3("dialog", "constructConsequenceData", {incoming: data});
+    eLog.checkLog3("dialog", "constructConsequenceData", {incoming: {...data}});
     if (!(this.parent instanceof BladesRoll)) { throw new Error("Cannot call 'constructConsequenceData' without a rollInst parent!"); }
 
     // Get existing consequence data, if any, on roll instance
@@ -200,7 +200,7 @@ class BladesDialog extends Dialog {
         BladesRoll.ConsequenceData
         >
       >
-    >;
+    > ?? {};
 
     // Extend consequence data by applying new blank consequence instances,
     //   so at least three csq entries are available for each position/result combination
@@ -248,8 +248,8 @@ class BladesDialog extends Dialog {
   }
 
   prepareConsequenceData(data: BladesDialog.Data) {
-    eLog.checkLog3("dialog", "prepareConsequenceData this.csqData", this.csqData);
-    eLog.checkLog3("dialog", "prepareConsequenceData", {incoming: data});
+    eLog.checkLog3("dialog", "prepareConsequenceData this.csqData", {...this.csqData});
+    eLog.checkLog3("dialog", "prepareConsequenceData", {incoming: {...data}});
     data.consequenceData = this.csqData;
     data.consequenceTypeOptions = this.consequenceTypeOptions;
     data.consequenceTypeOptionsAll = Object.keys(C.ConsequenceDisplay)
@@ -259,7 +259,7 @@ class BladesDialog extends Dialog {
       {value: AttributeTrait.prowess, display: "Prowess"},
       {value: AttributeTrait.resolve, display: "Resolve"}
     ];
-    eLog.checkLog3("dialog", "prepareConsequenceData", {outgoing: data});
+    eLog.checkLog3("dialog", "prepareConsequenceData", {outgoing: {...data}});
     return data;
   }
 
@@ -389,7 +389,7 @@ class BladesDialog extends Dialog {
     });
 
     this.csqData = csqData;
-    eLog.checkLog3("dialog", "updateConsequenceDialog() this.csqData", this.csqData);
+    eLog.checkLog3("dialog", "updateConsequenceDialog() this.csqData", {...this.csqData});
     if (isRendering) {
       this.render();
     }
@@ -398,7 +398,7 @@ class BladesDialog extends Dialog {
   async writeToRollInstance(html: JQuery<HTMLElement>) {
     if (this.parent instanceof BladesRoll) {
       this.updateConsequenceDialog(html, false);
-      await this.parent.setFlagVal("consequenceData", this.csqData);
+      await this.parent.setFlagVal("consequenceData", {...this.csqData});
     }
   }
 
@@ -453,7 +453,7 @@ class BladesDialog extends Dialog {
       }
     }
     this.csqData[rollPosition][rollResult as RollResult.partial|RollResult.fail][cID].resistOptions = resistOptions;
-    eLog.checkLog3("dialog", "addResistanceOptions() this.csqData", this.csqData);
+    eLog.checkLog3("dialog", "addResistanceOptions() this.csqData", {...this.csqData});
     this.render();
   }
 

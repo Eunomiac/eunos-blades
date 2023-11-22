@@ -111,7 +111,7 @@ const gsapEffects: Record<string, gsapEffect> = {
       // Slide out the background
       if (csqBackgroundImg.length) {
         tl.fromTo(csqBackgroundImg, {
-          xPercent: -100,
+          xPercent: 110,
           yPercent: -50
         }, {
           xPercent: -60,
@@ -307,6 +307,7 @@ const gsapEffects: Record<string, gsapEffect> = {
       const buttonRoot = U.gsap.utils.selector(csqRoot(".consequence-button-container.consequence-resist-button-container"));
 
       const buttonBg = buttonRoot(".consequence-button-bg");
+      eLog.checkLog3("gsap", "Resist Button BG", buttonBg);
       const buttonIcon = buttonRoot(".button-icon i");
       const buttonLabel = buttonRoot(".consequence-button-label");
 

@@ -1,7 +1,6 @@
 import BladesActor from "./BladesActor.js";
 import U from "./core/utilities.js";
 import { Tag, BladesPhase, BladesActorType } from "./core/constants.js";
-/*~ @@DOUBLE-BLANK@@ ~*/
 const FUNCQUEUE = {};
 // {type: "ability", name: "rX:/^(?!Ghost)/"}
 const CUSTOMFUNCS = {
@@ -42,7 +41,6 @@ const CUSTOMFUNCS = {
     APPLYTOMEMBERS: async () => new Promise(() => undefined),
     APPLYTOCOHORTS: async () => new Promise(() => undefined),
     remItem: async (actor, funcData, _, isReversing = false) => {
-        /*~ @@DOUBLE-BLANK@@ ~*/
         function testString(targetString, testDef) {
             if (testDef.startsWith("rX")) {
                 const pat = new RegExp(testDef.replace(/^rX:\/(.*?)\//, "$1"));
@@ -50,7 +48,6 @@ const CUSTOMFUNCS = {
             }
             return targetString === testDef;
         }
-        /*~ @@DOUBLE-BLANK@@ ~*/
         if (funcData.startsWith("{")) {
             if (isReversing) {
                 console.error("Cannot reverse a 'remItem' custom effect that was defined with a JSON object.");
@@ -92,7 +89,6 @@ const CUSTOMFUNCS = {
         return undefined;
     }
 };
-/*~ @@DOUBLE-BLANK@@ ~*/
 var EffectMode;
 (function (EffectMode) {
     EffectMode[EffectMode["Custom"] = 0] = "Custom";
@@ -102,22 +98,16 @@ var EffectMode;
     EffectMode[EffectMode["Upgrade"] = 4] = "Upgrade";
     EffectMode[EffectMode["Override"] = 5] = "Override";
 })(EffectMode || (EffectMode = {}));
-/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesActiveEffect extends ActiveEffect {
     static Initialize() {
         CONFIG.ActiveEffect.documentClass = BladesActiveEffect;
-        /*~ @@DOUBLE-BLANK@@ ~*/
         Hooks.on("preCreateActiveEffect", async (effect) => {
-            /*~ @@DOUBLE-BLANK@@ ~*/
             eLog.checkLog3("effect", "PRECREATE ActiveEffect", { effect, parent: effect.parent?.name });
-            /*~ @@DOUBLE-BLANK@@ ~*/
             if (!(effect.parent instanceof BladesActor)) {
                 return;
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Does this effect have an "APPLYTOMEMBERS" or "APPLYTOCOHORTS" CUSTOM effect?
             if (effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
-                /*~ @@DOUBLE-BLANK@@ ~*/
                 if (BladesActor.IsType(effect.parent, BladesActorType.pc) && BladesActor.IsType(effect.parent.crew, BladesActorType.crew)) {
                     const otherMembers = effect.parent.crew.members.filter((member) => member.id !== effect.parent?.id);
                     if (otherMembers.length > 0) {
@@ -163,11 +153,9 @@ class BladesActiveEffect extends ActiveEffect {
                 // Update effect on parent to only include 'APPLYTOCOHORTS' change
                 await effect.updateSource({ changes: effect.changes.filter((change) => change.key === "APPLYTOCOHORTS") });
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Partition effect.changes into permanent and non-permanent changes:
             const [permChanges, changes] = U.partition(effect.changes, (change) => change.key.startsWith("perm"));
             await effect.updateSource({ changes });
-            /*~ @@DOUBLE-BLANK@@ ~*/
             for (const permChange of permChanges) {
                 const { key, value } = permChange;
                 const permFuncName = key.replace(/^perm/, "");
@@ -186,13 +174,10 @@ class BladesActiveEffect extends ActiveEffect {
                 }
             }
         });
-        /*~ @@DOUBLE-BLANK@@ ~*/
         Hooks.on("applyActiveEffect", (actor, changeData) => {
-            /*~ @@DOUBLE-BLANK@@ ~*/
             if (!(actor instanceof BladesActor)) {
                 return;
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             if (changeData.key in CUSTOMFUNCS) {
                 const funcData = {
                     funcName: changeData.key,
@@ -203,7 +188,6 @@ class BladesActiveEffect extends ActiveEffect {
                 BladesActiveEffect.ThrottleCustomFunc(actor, funcData);
             }
         });
-        /*~ @@DOUBLE-BLANK@@ ~*/
         Hooks.on("updateActiveEffect", (effect, { disabled }) => {
             if (!(effect.parent instanceof BladesActor)) {
                 return;
@@ -219,12 +203,10 @@ class BladesActiveEffect extends ActiveEffect {
                 BladesActiveEffect.ThrottleCustomFunc(effect.parent, funcData);
             });
         });
-        /*~ @@DOUBLE-BLANK@@ ~*/
         Hooks.on("deleteActiveEffect", async (effect) => {
             if (!(effect.parent instanceof BladesActor)) {
                 return;
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             // Does this effect have an "APPLYTOMEMBERS" or "APPLYTOCOHORTS" CUSTOM effect?
             if (effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
                 if (BladesActor.IsType(effect.parent, BladesActorType.pc) && BladesActor.IsType(effect.parent.crew, BladesActorType.crew)) {
@@ -263,7 +245,6 @@ class BladesActiveEffect extends ActiveEffect {
                 // Clear flag from parent
                 await effect.parent.unsetFlag("eunos-blades", `cohortEffects.${effect.id}`);
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const customEffects = effect.changes.filter((changes) => changes.mode === 0);
             customEffects.forEach(({ key, value }) => {
                 const funcData = {
@@ -276,12 +257,10 @@ class BladesActiveEffect extends ActiveEffect {
             });
         });
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     static async AddActiveEffect(doc, name, eChanges, icon = "systems/eunos-blades/assets/icons/effect-icons/default.png") {
         const changes = [eChanges].flat();
         await doc.createEmbeddedDocuments("ActiveEffect", [{ name, icon, changes }]);
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     static ThrottleCustomFunc(actor, data) {
         const { funcName, funcData, isReversing, effect } = data;
         if (!actor.id) {
@@ -307,7 +286,6 @@ class BladesActiveEffect extends ActiveEffect {
             queue: []
         };
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     static async RunCustomFunc(actor, funcPromise) {
         if (!actor.id) {
             return;
@@ -365,7 +343,6 @@ class BladesActiveEffect extends ActiveEffect {
             default: return null;
         }
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     async _preCreate(data, options, user) {
         eLog.checkLog3("effect", "ActiveEffect._preCreate()", { data, options, user });
         await super._preCreate(data, options, user);
@@ -374,7 +351,6 @@ class BladesActiveEffect extends ActiveEffect {
         eLog.checkLog3("effect", "ActiveEffect._onDelete()", { options, userID });
         super._onDelete(options, userID);
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     get isSuppressed() {
         // Get source item from "origin.js" field -- of form 'Actor.<id>.Item.<id>'
         if (!/Actor.*Item/.test(this.origin)) {
@@ -386,5 +362,4 @@ class BladesActiveEffect extends ActiveEffect {
         return super.isSuppressed || item?.hasTag(Tag.System.Archived);
     }
 }
-/*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesActiveEffect;

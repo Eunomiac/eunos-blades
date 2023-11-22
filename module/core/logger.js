@@ -1,6 +1,5 @@
 import U from "./utilities.js";
 import C from "./constants.js";
-/*~ @@DOUBLE-BLANK@@ ~*/
 const LOGGERCONFIG = {
     fullName: "eLogger",
     aliases: ["dbLog"],
@@ -8,7 +7,6 @@ const LOGGERCONFIG = {
         handlebars: [/scripts\/handlebars/] // From internal Handlebars module
     }
 };
-/*~ @@DOUBLE-BLANK@@ ~*/
 const STYLES = {
     base: {
         background: C.Colors.BLACK,
@@ -69,13 +67,11 @@ const STYLES = {
         "font-family": "Pragmata Pro"
     }
 };
-/*~ @@DOUBLE-BLANK@@ ~*/
 const eLogger = (type = "base", ...content) => {
     if (!(type === "error" || CONFIG.debug.logging)) {
         return;
     }
     const lastElem = U.getLast(content);
-    /*~ @@DOUBLE-BLANK@@ ~*/
     let dbLevel = typeof lastElem === "number" && [0, 1, 2, 3, 4, 5].includes(lastElem)
         ? content.pop()
         : 3;
@@ -84,9 +80,7 @@ const eLogger = (type = "base", ...content) => {
         key = content.shift();
         type = `log${dbLevel}`;
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     const [message, ...data] = content;
-    /*~ @@DOUBLE-BLANK@@ ~*/
     if (key) {
         const blacklist = (U.getSetting("blacklist") ?? "").split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
         const whitelist = (U.getSetting("whitelist") ?? "").split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
@@ -112,7 +106,6 @@ const eLogger = (type = "base", ...content) => {
         ...STYLES.base,
         ...STYLES[type] ?? {}
     }).map(([prop, val]) => `${prop}: ${val};`).join(" ");
-    /*~ @@DOUBLE-BLANK@@ ~*/
     let logFunc;
     if (stackTrace) {
         logFunc = console.groupCollapsed;
@@ -123,7 +116,6 @@ const eLogger = (type = "base", ...content) => {
     else {
         logFunc = console.group;
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     if (data.length === 0) {
         if (typeof message === "string") {
             logFunc(`%c${message}`, styleLine);
@@ -149,7 +141,6 @@ const eLogger = (type = "base", ...content) => {
         console.groupEnd();
     }
     console.groupEnd();
-    /*~ @@DOUBLE-BLANK@@ ~*/
     /**
      *
      * @param regExpFilters
@@ -182,6 +173,4 @@ const logger = {
     error: (...content) => eLogger("error", ...content),
     hbsLog: (...content) => eLogger("handlebars", ...content)
 };
-/*~ @@DOUBLE-BLANK@@ ~*/
 export default logger;
-/*~ @@DOUBLE-BLANK@@ ~*/ 

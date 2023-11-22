@@ -17,13 +17,16 @@ declare global {
       export interface Base {
         id: string,
         name: string,
-        type: ConsequenceType
+        type: ConsequenceType,
+        isAccepted?: boolean
       }
 
       export interface Main extends Base {
         chatID: string,
         userID: string,
         rollID: string,
+        primaryID: string,
+        primaryType: BladesRoll.PrimaryDocType,
         position: Position,
         effect: Effect,
         result: RollResult.partial|RollResult.fail
@@ -41,7 +44,14 @@ declare global {
       export interface Accepted extends Main {
         isAccepted: true
       }
+    }
 
+    export namespace ParsedData {
+
+      export interface Main extends Data.Main {
+        typeDisplay: string,
+        icon: string
+      }
     }
   }
 }

@@ -833,7 +833,7 @@
 // }
 .comp.consequence-display-container {
   --container-height: 40px;
-  --container-left-shift: 40px;
+  --container-left-shift: 0px;
 
   --csq-icon-bg-color: var(--blades-black-dark);
   --csq-type-bg: var(--csq-icon-dark);
@@ -842,13 +842,13 @@
 
   @keyframes icon-glow {
     0% {
-      filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px rgb(115, 255, 213));
+      filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px var(--blades-red));
     }
     10% {
-      filter: brightness(1.25) blur(0px) drop-shadow(0px 0px 12px rgb(115, 255, 213));
+      filter: brightness(1.25) blur(0px) drop-shadow(0px 0px 12px var(--blades-red));
     }
     100% {
-      filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px rgb(115, 255, 213));
+      filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px var(--blades-red));
     }
   }
 
@@ -865,12 +865,16 @@
 
   &.consequence-accepted, &.consequence-accepted * {
     --container-left-shift: 0px;
-    --csq-type-color: var(--blades-red) !important;
-    --csq-icon-bright: var(--blades-red) !important;
+    --csq-type-color: var(--blades-grey-bright) !important;
+    --csq-icon-bright: var(--blades-grey-bright) !important;
     animation: none !important;
     pointer-events: none !important;
     outline: none !important;
     text-shadow: var(--text-shadow-dark) !important;
+
+    .consequence-icon-container {
+      top: -3px !important;
+    }
   }
 
 
@@ -917,7 +921,7 @@
     position: absolute;
     height: 500%;
     top: 80%;
-    transform: translate(-100%, -50%);
+    transform: translate(-110%, -50%);
     transform-origin: 0% 50%;
     width: calc(200px * 4.041);
     min-width: calc(200px * 4.041);
@@ -941,14 +945,19 @@
       width: calc(100% - var(--pad-left-shift));
     }
 
-    &.resist-consequence-pad, &.special-armor-consequence-pad {
-      left: 0;
-      width: calc(var(--container-left-shift) - (var(--container-height) * 0));
+    &.resist-consequence-pad, &.special-armor-consequence-pad, &.armor-consequence-pad {
+      left: -200px;
+      width: calc(200px + var(--container-left-shift) - (var(--container-height) * 0));
     }
 
     &.special-armor-consequence-pad {
-      height: 40%;
+      height: 50%;
       z-index: 3;
+    }
+
+    &.armor-consequence-pad {
+      height: 25%;
+      z-index: 4;
     }
   }
 

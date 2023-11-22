@@ -3,11 +3,8 @@ import U from "../../core/utilities.js";
 import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
 import BladesItem from "../../BladesItem.js";
 import BladesActiveEffect from "../../BladesActiveEffect.js";
-/*~ @@DOUBLE-BLANK@@ ~*/
 import Tags from "../../core/tags.js";
-/*~ @@DOUBLE-BLANK@@ ~*/
 class BladesItemSheet extends ItemSheet {
-    /*~ @@DOUBLE-BLANK@@ ~*/
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "item"],
@@ -16,19 +13,14 @@ class BladesItemSheet extends ItemSheet {
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }]
         });
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     /* -------------------------------------------- */
-    /*~ @@DOUBLE-BLANK@@ ~*/
     // constructor(item: BladesItem, options: Partial<ItemSheet.Options> = {}) {
     //   options.classes = [...options.classes ?? [], "eunos-blades", "sheet", "item", item.type];
     //   super(item, options);
     // }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     // override async getData() {
-    /*~ @@DOUBLE-BLANK@@ ~*/
     getData() {
         const context = super.getData();
-        /*~ @@DOUBLE-BLANK@@ ~*/
         const sheetData = {
             cssClass: this.item.type,
             editable: this.options.editable,
@@ -39,10 +31,8 @@ class BladesItemSheet extends ItemSheet {
             tierTotal: this.item.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(this.item.getFactorTotal(Factor.tier)) : "0",
             activeEffects: Array.from(this.item.effects)
         };
-        /*~ @@DOUBLE-BLANK@@ ~*/
         return this._getTypedItemData[this.item.type]({ ...context, ...sheetData });
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     _getTypedItemData = {
         [BladesItemType.ability]: (context) => {
             if (!BladesItem.IsType(this.item, BladesItemType.ability)) {
@@ -96,14 +86,12 @@ class BladesItemSheet extends ItemSheet {
                     }
                 }
             };
-            /*~ @@DOUBLE-BLANK@@ ~*/
             sheetData.edgeData = Object.fromEntries(Object.values(context.system.edges ?? [])
                 .filter((edge) => /[A-Za-z]/.test(edge))
                 .map((edge) => [edge.trim(), C.EdgeTooltips[edge]]));
             sheetData.flawData = Object.fromEntries(Object.values(context.system.flaws ?? [])
                 .filter((flaw) => /[A-Za-z]/.test(flaw))
                 .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw]]));
-            /*~ @@DOUBLE-BLANK@@ ~*/
             return {
                 ...context,
                 ...sheetData
@@ -204,7 +192,6 @@ class BladesItemSheet extends ItemSheet {
                     }
                 }
             };
-            /*~ @@DOUBLE-BLANK@@ ~*/
             return {
                 ...context,
                 ...sheetData
@@ -305,7 +292,6 @@ class BladesItemSheet extends ItemSheet {
             return context;
         }
     };
-    /*~ @@DOUBLE-BLANK@@ ~*/
     get template() {
         const pathComps = [
             "systems/eunos-blades/templates/items"
@@ -318,32 +304,24 @@ class BladesItemSheet extends ItemSheet {
         }
         return pathComps.join("/");
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     /* -------------------------------------------- */
-    /*~ @@DOUBLE-BLANK@@ ~*/
     activateListeners(html) {
         super.activateListeners(html);
         const self = this;
-        /*~ @@DOUBLE-BLANK@@ ~*/
         Tags.InitListeners(html, this.item);
         ApplyTooltipAnimations(html);
-        /*~ @@DOUBLE-BLANK@@ ~*/
         // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) {
             return;
         }
-        /*~ @@DOUBLE-BLANK@@ ~*/
         // Add dotline functionality
         html.find(".dotline").each((__, elem) => {
             if ($(elem).hasClass("locked")) {
                 return;
             }
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const targetDoc = this.item;
             const targetField = $(elem).data("target");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const comp$ = $(elem).closest("comp");
-            /*~ @@DOUBLE-BLANK@@ ~*/
             const curValue = U.pInt($(elem).data("value"));
             $(elem)
                 .find(".dot")
@@ -372,7 +350,6 @@ class BladesItemSheet extends ItemSheet {
                 });
             });
         });
-        /*~ @@DOUBLE-BLANK@@ ~*/
         // Harm Bar Functionality for Cohorts
         if (BladesItem.IsType(this.item, BladesItemType.cohort_expert, BladesItemType.cohort_gang)) {
             html.find("[data-harm-click]").on({
@@ -392,12 +369,10 @@ class BladesItemSheet extends ItemSheet {
                 }
             });
         }
-        /*~ @@DOUBLE-BLANK@@ ~*/
         // This is a workaround until is being fixed in FoundryVTT.
         if (this.options.submitOnChange) {
             html.on("change", "textarea", this._onChangeInput.bind(this)); // Use delegated listener on the form
         }
-        /*~ @@DOUBLE-BLANK@@ ~*/
         html.find(".effect-control").on("click", (ev) => {
             if (self.item.isOwned) {
                 ui.notifications?.warn(game.i18n.localize("BITD.EffectWarning"));
@@ -405,10 +380,8 @@ class BladesItemSheet extends ItemSheet {
             }
             BladesActiveEffect.onManageActiveEffect(ev, self.item);
         });
-        /*~ @@DOUBLE-BLANK@@ ~*/
         html.find("[data-action=\"toggle-turf-connection\"").on("click", this.toggleTurfConnection.bind(this));
     }
-    /*~ @@DOUBLE-BLANK@@ ~*/
     toggleTurfConnection(event) {
         const button$ = $(event.currentTarget);
         const connector$ = button$.parent();
@@ -429,6 +402,4 @@ class BladesItemSheet extends ItemSheet {
         this.item.update(updateData);
     }
 }
-/*~ @@DOUBLE-BLANK@@ ~*/
 export default BladesItemSheet;
-/*~ @@DOUBLE-BLANK@@ ~*/ 

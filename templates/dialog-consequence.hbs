@@ -2,23 +2,24 @@
 <div class="{{cssClass}} dialog-content dialog-consequence">
   <section class="tab-content flex-vertical">
     {{> "systems/eunos-blades/templates/parts/dialog-consequence-block.hbs"
+
       rollPosition="controlled"
-      consequenceData=consequenceData
-      consequenceTypeOptions=consequenceTypeOptions
+      consequenceData=consequenceData.controlled
+      consequenceTypeOptions=consequenceTypeOptions.controlled
       consequenceTypeOptionsAll=consequenceTypeOptionsAll
       consequenceAttributeOptions=consequenceAttributeOptions
     }}
     {{> "systems/eunos-blades/templates/parts/dialog-consequence-block.hbs"
       rollPosition="risky"
-      consequenceData=consequenceData
-      consequenceTypeOptions=consequenceTypeOptions
+      consequenceData=consequenceData.risky
+      consequenceTypeOptions=consequenceTypeOptions.risky
       consequenceTypeOptionsAll=consequenceTypeOptionsAll
       consequenceAttributeOptions=consequenceAttributeOptions
     }}
     {{> "systems/eunos-blades/templates/parts/dialog-consequence-block.hbs"
       rollPosition="desperate"
-      consequenceData=consequenceData
-      consequenceTypeOptions=consequenceTypeOptions
+      consequenceData=consequenceData.desperate
+      consequenceTypeOptions=consequenceTypeOptions.desperatec
       consequenceTypeOptionsAll=consequenceTypeOptionsAll
       consequenceAttributeOptions=consequenceAttributeOptions
     }}
