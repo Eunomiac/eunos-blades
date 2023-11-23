@@ -16,7 +16,7 @@ import BladesNPCSheet from "./sheets/actor/BladesNPCSheet.js";
 import BladesFactionSheet from "./sheets/actor/BladesFactionSheet.js";
 import BladesRoll, { BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant } from "./BladesRoll.js";
 import BladesDialog from "./BladesDialog.js";
-import BladesAI, { AGENTS } from "./core/ai.js";
+import BladesAI, { AGENTS, AIAssistant } from "./core/ai.js";
 import BladesActiveEffect from "./BladesActiveEffect.js";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet.js";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet.js";
@@ -265,6 +265,7 @@ class GlobalGetter {
     BladesClockKeeperSheet,
     BladesGMTrackerSheet,
     BladesAI,
+    AIAssistant,
     AGENTS
 }); /* !DEVCODE*/
 // #endregion Globals

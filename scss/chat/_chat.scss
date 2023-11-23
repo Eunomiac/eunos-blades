@@ -33,7 +33,7 @@
 
 .chat-message {
   --chat-header-height: 20px;
-  --chat-vertical-gap: 50px;
+  --chat-vertical-gap: 15px;
   --resistance-right-shift: 60px;
 
   --speaker-portrait-height: 100px;
@@ -46,6 +46,15 @@
   --bg-success: transparent;
   --bg-partial: transparent;
   --bg-fail: transparent;
+
+  --dice-strip-bg: var(--blades-black);
+  --top-die-animation: none;
+  --ghost-die-animation: none;
+
+  filter: blur(0.5px) drop-shadow(5px 5px 5px black) grayscale(1) brightness(0.7);
+  // opacity: 0.9;
+  background: var(--blades-black);
+  border: 2px ouset var(--blades-white);
 }
 
 .chat-message:last-child {
@@ -58,14 +67,23 @@
   // --bg-partial: transparent;
   --bg-fail: url("../assets/animations/chat/fail-bg.webp");
 
+  --dice-strip-bg: url("../assets/animations/chat/lightning-ray.webp") no-repeat center / 100% auto;
+
+  --top-die-animation: die-pulse 5s ease infinite;
+  --ghost-die-animation: die-ghost 4s ease infinite;
+
   margin-bottom: 0px;
+  opacity: 1;
+  filter: drop-shadow(5px 5px 5px black);
+  background: transparent;
+  outline: none;
 }
 
 
 .chat-message {
-  background: transparent;
+  // background: transparent;
   overflow: visible;
-  border: none;
+  // border: none;
   padding: 0;
   margin: var(--chat-vertical-gap) 0px;
 
@@ -174,8 +192,17 @@
       position: relative;
       z-index: 2;
 
+      &.roll-position-risky {
+          .chat-header,
+          .consequence-container {
+            background: var(--bg-risky);
+            background-size: cover;
+          }
+        }
+
       .chat-message-bg {
         position: absolute;
+        display: none;
         top: -5px;
         left: 0;
         height: calc(100% + 5px);
@@ -183,13 +210,10 @@
         z-index: -1;
         border-bottom-left-radius: 30px;
 
-        &.roll-position-risky {
-          background: var(--bg-risky);
-          background-size: cover;
-        }
       }
 
       .chat-result-bg {
+        // display: none;
         position: absolute;
         top: unset;
         left: 0;
@@ -209,6 +233,7 @@
         background: transparent;
         box-shadow: none;
         color: var(--blades-grey);
+        z-index: -1;
       }
 
       h1.chat-header {
@@ -220,26 +245,64 @@
         font-size: 32px;
         line-height: 32px;
         color: var(--blades-gold-bright);
+
       }
 
       .dice-roll-strip {
+        position: relative;
         --die-size: 30px;
+        z-index: -1;
+
+        @keyframes die-pulse {
+          0% {
+            scale: 1;
+          }
+          50% {
+            scale: 1.25;
+          }
+          100% {
+            scale: 1;
+          }
+        }
+
+        @keyframes die-ghost {
+          8% { opacity: 0.25; }
+          10% { opacity: 0.6; }
+          12% { opacity: 0.25; }
+
+          33% { opacity: 0.1; }
+          35% { opacity: 0.6; }
+          37% { opacity: 0.1; }
+
+          62% { opacity: 0.5; }
+          64% { opacity: 0.6; }
+          66% { opacity: 0.1; }
+
+          95% { opacity: 0.1; }
+          97% { opacity: 0.6; }
+          99% { opacity: 0.1; }
+        }
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
         height: calc(var(--die-size) + 2 * 4px);
+        height: calc(var(--die-size) * 2);
         width: 150%;
-        margin-left: 25%;
+        // margin-left: 25%;
         align-items: stretch;
         justify-content: center;
         gap: calc(var(--die-size) * 0.3);
-        margin: 5px 0;
+        margin: 5px 0px calc(var(--die-size) * -1 - 6px + 5px) 0px;
         padding: 4px 50% 4px 0;
-        background: var(--blades-grey-dark);
-        box-shadow: inset 0px 0px 10px 5px var(--blades-black-dark);
+        // background: var(--blades-grey-dark);
+        background: var(--dice-strip-bg);
+        background-position-y: 150%;
+        // box-shadow: inset 0px 0px 10px 5px var(--blades-black-dark);
 
         .blades-die {
           display: block;
+          position: relative;
+          z-index: 5;
           height: var(--die-size);
           transform-origin: 50% 50%;
           overflow: hidden;
@@ -253,23 +316,27 @@
 
           &.blades-die-critical {
             box-shadow: 0px 0px 5px 3px var(--blades-gold-bright);
-            scale: 1.25;
+            animation: var(--top-die-animation);
             z-index: 1;
           }
           &.blades-die-critical:first-child + .blades-die-critical {
             // margin-left: calc(-0.05 * var(--die-size));
             margin-left: 3px;
             box-shadow: 0px 0px 5px 3px var(--blades-gold-bright);
+            // Add a delay to the animation to create a staggered effect
+            animation: var(--top-die-animation);
+            animation-delay: 0.15s;
             // z-index: 0;
             // scale: 1.35;
           }
-          &.blades-die-success {
+          &.blades-die-success:first-child {
             filter: drop-shadow(0px 0px calc(var(--die-size) * 0.1) var(--blades-white-bright));
-            scale: 1.25;
+            animation: var(--top-die-animation);
           }
 
           &.blades-die-partial:first-child {
             box-shadow: 0px 0px 5px var(--blades-white);
+            animation: var(--top-die-animation);
           }
           &.blades-die-ghost {
             // opacity: 0.25;
@@ -279,6 +346,7 @@
             rotate: 10deg;
             opacity: 0.8;
             filter: brightness(0.35);
+            animation: var(--ghost-die-animation);
 
             img {
               filter: blur(2px) sepia(1) saturate(2) hue-rotate(319deg);
@@ -288,66 +356,227 @@
             filter: drop-shadow(0px 0px calc(var(--die-size) * 0.1) var(--blades-blue-bright));
             scale: 1.25;
           }
+
+
+          &:nth-child(6) { margin-right: -50px; }
         }
       }
 
       .roll-outcome-container {
         justify-content: space-between;
-        padding: 0 10px;
+        // padding: 0 10px;
         align-items: center;
-        margin: 5px 0 0 0;
+        // margin: var(--result-spread) 0 0 0;
+        margin: 0;
+        // top: 45px;
+        margin-top: 15px;
+        z-index: -1;
+        position: relative;
+        height: var(--result-height);
+
+        --result-height: 50px;
+        --result-spread: 5px;
+
+        --side-height: calc(var(--result-height) + 2 * var(--result-spread));
+        --side-vertical-shift: calc(-1 * var(--result-spread));
+        --side-width-percent: 30%;
 
         &.roll-result-critical {
-          --background-color: var(--blades-gold-bright);
-          --label-color: var(--blades-black);
+          --result-bg-color: var(--blades-gold-bright);
+          --result-color-main: var(--blades-black);
+          --result-x-scale: 0.8;
+
+          .roll-result-container.roll-result-critical h3.roll-result-label.roll-result-bottom-label {
+            transform-origin: 50% 50%;
+            scale: 1.25 1;
+          }
+
+          --side-bg-color: var(--blades-gold);
+          --side-color-main: var(--blades-white-bright);
+          --side-color-secondary: var(--blades-grey-dark);
+          --side-shadow-color: var(--blades-black-dark);
         }
         &.roll-result-success {
-          --background-color: var(--blades-white-bright);
-          --label-color: var(--blades-black);
+          --result-bg-color: var(--blades-white-bright);
+          --result-color-main: var(--blades-black);
+          --result-x-scale: 0.7;
+
+          --side-bg-color: var(--blades-white);
+          --side-color-main: var(--blades-gold-bright);
+          --side-color-secondary: var(--blades-grey-dark);
+          --side-shadow-color: var(--blades-black-dark);
         }
         &.roll-result-partial {
-          --background-color: var(--blades-black);
-          --label-color: var(--blades-white);
+          --result-bg-color: var(--blades-grey-dark);
+          --result-color-main: var(--blades-white);
+          --result-x-scale: 0.75;
+
+          .roll-result-container.roll-result-partial h2.roll-result-label.roll-result-top-label {
+            margin-left: 15px;
+          }
+
+          .roll-result-container.roll-result-partial h3.roll-result-label.roll-result-bottom-label {
+            margin-left: -15px;
+          }
+
+          --side-bg-color: var(--blades-black);
+          --side-color-main: var(--blades-white-bright);
+          --side-color-secondary: var(--blades-grey);
+          --side-shadow-color: var(--blades-black-dark);
         }
         &.roll-result-fail {
-          --background-color: var(--blades-red-darkest);
-          --label-color: var(--blades-red-bright);
+          --result-bg-color: var(--blades-red-black);
+          --result-color-main: var(--blades-red-bright);
+          --result-x-scale: 1.25;
+
+          .roll-result-container.roll-result-fail h2.roll-result-label.roll-result-main-label {
+            margin-left: -170px;
+          }
+
+          --side-bg-color: var(--blades-red-darkest);
+          --side-color-main: var(--blades-white-bright);
+          --side-color-secondary: var(--blades-grey);
+          --side-shadow-color: var(--blades-black-dark);
         }
 
-        background: var(--background-color);
+
+        &.roll-position-controlled {
+          --side-left-x-scale: 0.7;
+        }
+
+        &.roll-position-risky {
+          --side-left-x-scale: 1;
+        }
+
+        &.roll-position-desperate {
+          --side-left-x-scale: 0.8;
+        }
+
+        &.roll-effect-zero {
+          --side-right-x-scale: 1;
+        }
+
+        &.roll-effect-limited {
+          --side-right-x-scale: 0.9;
+        }
+
+        &.roll-effect-standard {
+          --side-right-x-scale: 0.9;
+        }
+
+        &.roll-effect-great {
+          --side-right-x-scale: 1;
+        }
+
+        &.roll-effect-extreme {
+          --side-right-x-scale: 0.9;
+        }
+
+        background: var(--result-bg-color);
+
+        .roll-state-background-container  {
+          position: absolute;
+          width: calc(100% + 20px);
+          left: -10px;
+          height: var(--side-height);
+          overflow: hidden;
+          top: var(--side-vertical-shift);
+
+          .roll-state-background {
+            position: absolute;
+            height: 100%;
+            width: calc(var(--side-width-percent) + 100px);
+            top: 0px;
+            background: var(--side-bg-color);
+            transform: skewX(-25deg);
+
+            &.roll-position-background {
+              // box-shadow: 0px 0px 5px 0px var(--side-shadow-color);
+              filter: drop-shadow(0px 0px 5px var(--side-shadow-color));
+              left: -100px;
+            }
+            &.roll-effect-background {
+              // box-shadow: 0px 0px 5px 0px var(--side-shadow-color);
+              filter: drop-shadow(0px 0px 5px var(--side-shadow-color));
+              right: -100px;
+            }
+          }
+        }
 
         .roll-state-container {
-          flex-basis: 10%;
-          flex-grow: 0.3;
-          flex-shrink: 1;
+          position: relative;
+          height: var(--side-height);
+          width: var(--side-width-percent);
+          padding: 4px;
+          gap: 0;
+
+          &.roll-state-container-left {
+            h4.roll-state-label {
+              position: absolute;
+              left: 30px;
+            }
+            h3.roll-state {
+              position: absolute;
+              top: 5px;
+              left: -5px;
+              scale: var(--side-left-x-scale) 1;
+            }
+          }
+
+          &.roll-state-container-right {
+            h4.roll-state-label {
+              position: absolute;
+              right: 45px;
+            }
+            h3.roll-state {
+              position: absolute;
+              bottom: 5px;
+              right: 5px;
+              text-align: right;
+              transform-origin: 100% 100%;
+              scale: var(--side-right-x-scale) 1;
+            }
+          }
 
           h4.roll-state-label {
-            font-family: var(--font-primary);
-            // border-bottom: 1px solid white;
+            font-family: var(--font-emphasis-narrow);
             font-size: 12px;
+            line-height: 12px;
             display: block;
-            width: 100%;
+            transform: translate(0%, -50%);
+            top: 50%;
             text-align: center;
             white-space: nowrap;
-            color: var(--blades-grey);
-            margin-top: -4px;
-            text-shadow: var(--text-shadow-dark);
+            color: var(--side-color-secondary);
+
+            strong { color: var(--side-color-secondary) !important; font-weight: 900 !important; }
           }
 
           h3.roll-state {
             white-space: nowrap;
-            text-shadow: var(--text-shadow-dark);
+            font-size: 18px;
+            line-height: 18px;
+            transform-origin: 0% 0%;
+            text-shadow: var(--text-shadow-dark-strong);
+            color: var(--side-color-main);
           }
         }
 
+
         .roll-result-container {
+          width: calc(100% - 2 * var(--side-width-percent));
+          flex-basis: calc(100% - 2 * var(--side-width-percent));
+          flex-grow: 0;
+          flex-shrink: 0;
           .roll-result-label {
             background: none;
             box-shadow: none;
-            color: var(--label-color);
+            color: var(--result-color-main);
             white-space: nowrap;
             margin: 0;
             padding: 0;
+            transform-origin: 50% 50%;
+            scale: var(--result-x-scale) 1;
 
             &.roll-result-top-label {
               font-size: 26px;
@@ -363,7 +592,6 @@
               font-size: 32px;
               line-height: 32px;
               transform-origin: 50% 50%;
-              scale: 0.8 1;
             }
           }
         }
@@ -372,7 +600,10 @@
       }
 
       .consequence-container {
-        margin-top: 10px;
+        padding-top: 10px;
+        border-bottom-left-radius: 25px;
+        z-index: -3;
+        position: relative;
       }
 
 
@@ -478,6 +709,10 @@
                     opacity: 0.5;
                     filter: blur(1px);
                   }
+                }
+
+                .blades-die + .blades-die + .blades-die + .blades-die + .blades-die ~ .blades-die:last-child {
+                  margin-right: -50px;
                 }
               }
             }

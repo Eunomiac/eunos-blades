@@ -15,6 +15,7 @@
       data-special-armor-name="{{specialTo.name}}"
       data-special-armor-type="{{specialTo.type}}" >
 
+  {{!-- Interaction Pads --}}
   {{#unless isAccepted}}
     <img class="consequence-bg-image" src="systems/eunos-blades/assets/chat/csq-strip-long.png" />
 
@@ -28,7 +29,7 @@
     {{/if}}
   {{/unless}}
 
-
+  {{!-- Icon --}}
   <div class="consequence-icon-container">
     <div class="consequence-icon-circle base-consequence">
       <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/base-{{icon}}.svg" />
@@ -108,6 +109,18 @@
 
   </div>
 
+  {{!-- Element Blockers --}}
+  {{#unless isAccepted}}
+  <div class="consequence-blocker resist-consequence"></div>
+  {{#if armorTo}}
+  <div class="consequence-blocker armor-consequence"></div>
+  {{/if}}
+  {{#if specialArmorTo}}
+  <div class="consequence-blocker special-armor-consequence"></div>
+  {{/if}}
+  {{/unless}}
+
+  {{!-- Type Surtitle --}}
   <div class="consequence-type-container">
 
     <label class="consequence-type base-consequence">{{typeDisplay}}</label>
@@ -135,6 +148,7 @@
 
   </div>
 
+  {{!-- Name Main Title --}}
   <div class="consequence-name-container">
 
     <label class="consequence-name base-consequence">{{name}}</label>
@@ -167,6 +181,7 @@
 
   </div>
 
+  {{!-- Footer --}}
   {{#unless isAccepted}}
   <div class="consequence-footer-container">
     <div class="consequence-footer-bg resist-consequence"></div>

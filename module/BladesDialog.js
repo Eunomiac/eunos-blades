@@ -4,7 +4,6 @@ import { BladesActor, BladesPC } from "./documents/BladesActorProxy.js";
 import BladesRoll from "./BladesRoll.js";
 import C, { RollResult, ConsequenceType, AttributeTrait, Position } from "./core/constants.js";
 import BladesAI, { AGENTS } from "./core/ai.js";
-// eslint-disable-next-line no-shadow
 export var SelectionCategory;
 (function (SelectionCategory) {
     SelectionCategory["Heritage"] = "Heritage";
@@ -29,7 +28,6 @@ export var SelectionCategory;
     SelectionCategory["Member"] = "Member";
     SelectionCategory["Contact"] = "Contact";
 })(SelectionCategory || (SelectionCategory = {}));
-// eslint-disable-next-line no-shadow
 export var BladesDialogType;
 (function (BladesDialogType) {
     BladesDialogType["Selection"] = "Selection";
@@ -271,7 +269,7 @@ class BladesDialog extends Dialog {
         const resistOptions = cData.resistOptions ?? {};
         // Clear 'resistTo' (will be redetermined below)
         delete cData.resistTo;
-        html.find(".consequence-resist-option").each((_, elem) => {
+        csqElem$.find(".consequence-resist-option").each((_, elem) => {
             const resCsqID = $(elem).data("csq-id");
             resistOptions[resCsqID] ??= { id: resCsqID, name: "", type: undefined, isSelected: false };
             // Update Resistance Option Type
@@ -301,6 +299,7 @@ class BladesDialog extends Dialog {
         if (!this.csqData) {
             return;
         }
+        eLog.checkLog3("dialog", "updateConsequenceDialog() this.csqData INCOMING", { ...this.csqData });
         const { csqData } = this;
         const { rollPrimaryDoc } = this.parent;
         if (!(rollPrimaryDoc instanceof BladesPC)) {
@@ -314,7 +313,7 @@ class BladesDialog extends Dialog {
             csqData[rollPos] = positionCsqData;
         });
         this.csqData = csqData;
-        eLog.checkLog3("dialog", "updateConsequenceDialog() this.csqData", { ...this.csqData });
+        eLog.checkLog3("dialog", "updateConsequenceDialog() this.csqData OUTGOING", { ...this.csqData });
         if (isRendering) {
             this.render();
         }

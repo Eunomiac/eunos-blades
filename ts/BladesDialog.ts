@@ -6,7 +6,6 @@ import BladesRoll from "./BladesRoll";
 import C, {RollResult, ConsequenceType, AttributeTrait, Position} from "./core/constants";
 import BladesAI, {AGENTS} from "./core/ai";
 
-// eslint-disable-next-line no-shadow
 export enum SelectionCategory {
   Heritage = "Heritage",
   Background = "Background",
@@ -31,7 +30,6 @@ export enum SelectionCategory {
   Contact = "Contact"
 }
 
-// eslint-disable-next-line no-shadow
 export enum BladesDialogType {
   Selection = "Selection",
   Consequence = "Consequence"
@@ -341,7 +339,7 @@ class BladesDialog extends Dialog {
 
     // Clear 'resistTo' (will be redetermined below)
     delete cData.resistTo;
-    html.find(".consequence-resist-option").each((_, elem) => {
+    csqElem$.find(".consequence-resist-option").each((_, elem) => {
       const resCsqID = $(elem).data("csq-id");
       resistOptions[resCsqID] ??= {id: resCsqID, name: "", type: undefined, isSelected: false};
 
@@ -373,6 +371,7 @@ class BladesDialog extends Dialog {
   updateConsequenceDialog(html: JQuery<HTMLElement|HTMLInputElement>, isRendering = true) {
     if (!(this.parent instanceof BladesRoll)) { return; }
     if (!this.csqData) { return; }
+    eLog.checkLog3("dialog", "updateConsequenceDialog() this.csqData INCOMING", {...this.csqData});
     const {csqData} = this;
     const {rollPrimaryDoc} = this.parent;
     if (!(rollPrimaryDoc instanceof BladesPC)) { return; }
@@ -389,7 +388,7 @@ class BladesDialog extends Dialog {
     });
 
     this.csqData = csqData;
-    eLog.checkLog3("dialog", "updateConsequenceDialog() this.csqData", {...this.csqData});
+    eLog.checkLog3("dialog", "updateConsequenceDialog() this.csqData OUTGOING", {...this.csqData});
     if (isRendering) {
       this.render();
     }

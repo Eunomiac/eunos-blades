@@ -117,6 +117,7 @@ html, :root {
   --blades-red-nums: 200, 0, 0;
   --blades-red-dark-nums: 150, 0, 0;
   --blades-red-darkest-nums: 50, 0, 0;
+  --blades-red-black-nums: 25, 0, 0;
   --blades-green-bright-nums: 20, 220, 60;
   --blades-green-nums: 0, 204, 0;
   --blades-green-dark-nums: 0, 122, 0;
@@ -182,6 +183,7 @@ html, :root {
   --blades-red: rgba(var(--blades-red-nums), 1);
   --blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
   --blades-red-darkest: rgba(var(--blades-red-darkest-nums), 1);
+  --blades-red-black: rgba(var(--blades-red-black-nums), 1);
   --blades-green-bright: rgba(var(--blades-green-bright-nums), 1);
   --blades-green: rgba(var(--blades-green-nums), 1);
   --blades-green-dark: rgba(var(--blades-green-dark-nums), 1);
@@ -1188,8 +1190,8 @@ html .comp.consequence-display-container .consequence-icon-container, :root .com
   max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
-  z-index: 1;
   pointer-events: auto;
+  z-index: 2;
   transition: 0.2s;
 }
 html .comp.consequence-display-container .consequence-icon-container:hover, :root .comp.consequence-display-container .consequence-icon-container:hover {
@@ -1259,6 +1261,7 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  pointer-events: none !important;
   bottom: 0px;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg {
@@ -1286,12 +1289,14 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   color: var(--blades-grey);
   font-weight: 800;
   text-shadow: 0px 0px 1px var(--blades-black-dark);
+  pointer-events: none !important;
   letter-spacing: 1;
   text-transform: uppercase;
   white-space: nowrap;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .button-icon, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .button-icon {
   position: unset;
+  pointer-events: none !important;
   height: 14px;
   width: 14px;
 }
@@ -1319,6 +1324,18 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-armor-button-container, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-armor-button-container {
   right: 100%;
   bottom: 12px;
+}
+html .comp.consequence-display-container .consequence-blocker, :root .comp.consequence-display-container .consequence-blocker {
+  height: 100%;
+  background: var(--blades-black-dark);
+  transform-origin: 0% 50%;
+  opacity: 0;
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  left: calc(0.5 * var(--container-height) + 5px);
 }
 html .comp.consequence-display-container .consequence-type-container, :root .comp.consequence-display-container .consequence-type-container {
   position: absolute;
@@ -2816,8 +2833,8 @@ html .comp.consequence-display-container .consequence-icon-container, :root .com
   max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
-  z-index: 1;
   pointer-events: auto;
+  z-index: 2;
   transition: 0.2s;
 }
 html .comp.consequence-display-container .consequence-icon-container:hover, :root .comp.consequence-display-container .consequence-icon-container:hover {
@@ -2887,6 +2904,7 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  pointer-events: none !important;
   bottom: 0px;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg {
@@ -2914,12 +2932,14 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   color: var(--blades-grey);
   font-weight: 800;
   text-shadow: 0px 0px 1px var(--blades-black-dark);
+  pointer-events: none !important;
   letter-spacing: 1;
   text-transform: uppercase;
   white-space: nowrap;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .button-icon, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .button-icon {
   position: unset;
+  pointer-events: none !important;
   height: 14px;
   width: 14px;
 }
@@ -2947,6 +2967,18 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-armor-button-container, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-armor-button-container {
   right: 100%;
   bottom: 12px;
+}
+html .comp.consequence-display-container .consequence-blocker, :root .comp.consequence-display-container .consequence-blocker {
+  height: 100%;
+  background: var(--blades-black-dark);
+  transform-origin: 0% 50%;
+  opacity: 0;
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  left: calc(0.5 * var(--container-height) + 5px);
 }
 html .comp.consequence-display-container .consequence-type-container, :root .comp.consequence-display-container .consequence-type-container {
   position: absolute;

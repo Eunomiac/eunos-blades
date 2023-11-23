@@ -20,7 +20,7 @@ import BladesFactionSheet from "./sheets/actor/BladesFactionSheet";
 import BladesRoll, {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "./BladesRoll";
 
 import BladesDialog from "./BladesDialog";
-import BladesAI, {AGENTS} from "./core/ai";
+import BladesAI, {AGENTS, AIAssistant} from "./core/ai";
 import BladesActiveEffect from "./BladesActiveEffect";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet";
@@ -286,6 +286,7 @@ class GlobalGetter {
     BladesClockKeeperSheet,
     BladesGMTrackerSheet,
     BladesAI,
+    AIAssistant,
     AGENTS
   }
 );/* !DEVCODE*/

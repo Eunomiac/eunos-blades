@@ -1,6 +1,93 @@
-// Import axios from "axios";
 import C from "./constants";
 import U from "./utilities";
+import type {Assistant} from "../../node_modules/openai/resources/beta/assistants/index";
+
+export enum OpenAITool {
+  "code_interpreter" = "code_interpreter",
+  "retrieval" = "retrieval",
+  "function" = "function"
+}
+
+export enum OpenAIModel {
+    "ada" = "ada",
+    "ada-code-search-code" = "ada-code-search-code",
+    "ada-code-search-text" = "ada-code-search-text",
+    "ada-search-document" = "ada-search-document",
+    "ada-search-query" = "ada-search-query",
+    "ada-similarity" = "ada-similarity",
+    "babbage" = "babbage",
+    "babbage-002" = "babbage-002",
+    "babbage-code-search-code" = "babbage-code-search-code",
+    "babbage-code-search-text" = "babbage-code-search-text",
+    "babbage-search-document" = "babbage-search-document",
+    "babbage-search-query" = "babbage-search-query",
+    "babbage-similarity" = "babbage-similarity",
+    "canary-tts" = "canary-tts",
+    "canary-whisper" = "canary-whisper",
+    "code-davinci-edit-001" = "code-davinci-edit-001",
+    "code-search-ada-code-001" = "code-search-ada-code-001",
+    "code-search-ada-text-001" = "code-search-ada-text-001",
+    "code-search-babbage-code-001" = "code-search-babbage-code-001",
+    "code-search-babbage-text-001" = "code-search-babbage-text-001",
+    "curie" = "curie",
+    "curie-instruct-beta" = "curie-instruct-beta",
+    "curie-search-document" = "curie-search-document",
+    "curie-search-query" = "curie-search-query",
+    "curie-similarity" = "curie-similarity",
+    "dall-e-2" = "dall-e-2",
+    "davinci" = "davinci",
+    "davinci-002" = "davinci-002",
+    "davinci-instruct-beta" = "davinci-instruct-beta",
+    "davinci-search-document" = "davinci-search-document",
+    "davinci-search-query" = "davinci-search-query",
+    "davinci-similarity" = "davinci-similarity",
+    "gpt-3.5-turbo" = "gpt-3.5-turbo",
+    "gpt-3.5-turbo-0301" = "gpt-3.5-turbo-0301",
+    "gpt-3.5-turbo-0613" = "gpt-3.5-turbo-0613",
+    "gpt-3.5-turbo-1106" = "gpt-3.5-turbo-1106",
+    "gpt-3.5-turbo-16k" = "gpt-3.5-turbo-16k",
+    "gpt-3.5-turbo-16k-0613" = "gpt-3.5-turbo-16k-0613",
+    "gpt-3.5-turbo-instruct" = "gpt-3.5-turbo-instruct",
+    "gpt-3.5-turbo-instruct-0914" = "gpt-3.5-turbo-instruct-0914",
+    "gpt-4" = "gpt-4",
+    "gpt-4-0314" = "gpt-4-0314",
+    "gpt-4-0613" = "gpt-4-0613",
+    "gpt-4-1106-preview" = "gpt-4-1106-preview",
+    "gpt-4-vision-preview" = "gpt-4-vision-preview",
+    "text-ada-001" = "text-ada-001",
+    "text-babbage-001" = "text-babbage-001",
+    "text-curie-001" = "text-curie-001",
+    "text-davinci-001" = "text-davinci-001",
+    "text-davinci-002" = "text-davinci-002",
+    "text-davinci-003" = "text-davinci-003",
+    "text-davinci-edit-001" = "text-davinci-edit-001",
+    "text-embedding-ada-002" = "text-embedding-ada-002",
+    "text-search-ada-doc-001" = "text-search-ada-doc-001",
+    "text-search-ada-query-001" = "text-search-ada-query-001",
+    "text-search-babbage-doc-001" = "text-search-babbage-doc-001",
+    "text-search-babbage-query-001" = "text-search-babbage-query-001",
+    "text-search-curie-doc-001" = "text-search-curie-doc-001",
+    "text-search-curie-query-001" = "text-search-curie-query-001",
+    "text-search-davinci-doc-001" = "text-search-davinci-doc-001",
+    "text-search-davinci-query-001" = "text-search-davinci-query-001",
+    "text-similarity-ada-001" = "text-similarity-ada-001",
+    "text-similarity-babbage-001" = "text-similarity-babbage-001",
+    "text-similarity-curie-001" = "text-similarity-curie-001",
+    "text-similarity-davinci-001" = "text-similarity-davinci-001",
+    "tts-1" = "tts-1",
+    "tts-1-1106" = "tts-1-1106",
+    "tts-1-hd" = "tts-1-hd",
+    "tts-1-hd-1106" = "tts-1-hd-1106",
+    "whisper-1" = "whisper-1"
+}
+
+namespace AIAssistant {
+
+  export interface Data {
+
+  }
+}
+
 
 namespace BladesAI {
   export interface Config {
@@ -11,12 +98,167 @@ namespace BladesAI {
     presence_penalty?: number
   }
 }
+
+class AIAssistant {
+
+  #apiKey: string;
+  #id: string;
+  #name: string;
+  get name() { return this.#name; }
+  #instructions: string;
+  #tools: Array<Assistant.Retrieval | Assistant.Function>;
+  #model: OpenAIModel;
+  #fileIDs: string[];
+  #metadata: Record<string, string>;
+
+  // #api?: OpenAI;
+  // get api() { return (this.#api ??= new OpenAI()); }
+
+  constructor(id: string)
+  constructor(
+    nameOrID: string,
+    instructions?: string,
+    model: OpenAIModel = OpenAIModel["gpt-4-1106-preview"],
+    {isUsingRetrieval, functionTools, file_ids, metadata}: {
+      isUsingRetrieval?: boolean,
+      functionTools?: Assistant.Function[],
+      file_ids?: string[],
+      metadata?: Record<string, string>
+    } = {}
+  ) {
+
+    // Initialize private properties so TypeScript doesn't yell at me.
+    this.#id = "";
+    this.#name = "";
+    this.#instructions = instructions ?? "";
+    this.#tools = [];
+    this.#model = model;
+    this.#fileIDs = file_ids ?? [];
+    this.#metadata = metadata ?? {};
+
+    // Retrieve API key
+    const apiKey = U.getSetting("openAPIKey") as string|undefined;
+    if (!apiKey) { throw new Error("API Key required in Settings to use AI features."); }
+    this.#apiKey = apiKey;
+
+    // If instructions sent, we're creating a new Assistant.
+    if (instructions) {
+      this.#name = nameOrID;
+      if (isUsingRetrieval) {
+        this.#tools.push({type: "retrieval"});
+      }
+      if (functionTools && functionTools.length) {
+        this.#tools.push(...functionTools);
+      }
+      this.createAssistant();
+    } else {
+      // Otherwise, assume an ID was passed, and fetch the existing assistant.
+      this.#id = nameOrID;
+      this.retrieveAssistant();
+    }
+  }
+
+  async createAssistant() {
+    // curl https://api.openai.com/v1/assistants \
+    // -H "Content-Type: application/json" \
+    // -H "Authorization: Bearer $OPENAI_API_KEY" \
+    // -H "OpenAI-Beta: assistants=v1" \
+    // -d '{
+    //   "instructions": "You are an HR bot, and you have access to files to answer employee questions about company policies.",
+    //   "tools": [{"type": "retrieval"}],
+    //   "model": "gpt-4",
+    //   "file_ids": ["file-abc123"]
+    // }'
+
+    const fetchRequest = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.#apiKey}`,
+        "OpenAI-Beta": "assistants=v1"
+      },
+      body: JSON.stringify({
+        name: this.#name,
+        instructions: this.#instructions,
+        tools: this.#tools,
+        model: this.#model,
+        file_ids: this.#fileIDs
+      })
+    };
+
+    eLog.checkLog3("BladesAssistant", "Fetch Request", fetchRequest);
+
+    // Send a POST request to the OpenAI API
+    const response = await fetch(
+      "https://api.openai.com/v1/assistants",
+      fetchRequest
+    );
+
+    // Check if the response status is not 200 (OK)
+    if (!response.ok) {
+      console.log("Failed AI Request:", JSON.parse(fetchRequest.body));
+      // Throw an error with the status code
+      throw new Error(`OpenAI API request failed with status ${response.status}`);
+    }
+
+    // Parse the response body as JSON
+    const data = await response.json();
+
+    fetchRequest.body = JSON.parse(fetchRequest.body);
+
+    eLog.checkLog3("BladesAI", "AI Query", {prompt: fetchRequest, response: data});
+
+    this.#id = data.id;
+  }
+
+  async retrieveAssistant() {
+    //   curl https://api.openai.com/v1/assistants/asst_abc123 \
+    // -H "Content-Type: application/json" \
+    // -H "Authorization: Bearer $OPENAI_API_KEY" \
+    // -H "OpenAI-Beta: assistants=v1"
+
+    const fetchRequest = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.#apiKey}`,
+        "OpenAI-Beta": "assistants=v1"
+      }
+    };
+
+    // Send a POST request to the OpenAI API
+    const response = await fetch(
+      `https://api.openai.com/v1/assistants/${this.#id}`,
+      fetchRequest
+    );
+
+    // Check if the response status is not 200 (OK)
+    if (!response.ok) {
+      // Throw an error with the status code
+      throw new Error(`OpenAI API request failed with status ${response.status}`);
+    }
+
+    // Parse the response body as JSON
+    const data = await response.json();
+
+    eLog.checkLog3("BladesAI", "AI Query", {prompt: fetchRequest, response: data});
+
+    this.#name = data.name;
+    this.#instructions = data.instructions;
+    this.#tools = data.tools;
+    this.#model = data.model;
+    this.#fileIDs = data.file_ids;
+    this.#metadata = data.metadata;
+  }
+}
+
+
 /**
  * AI class for querying OpenAI API
  */
 class BladesAI {
 
-  static async GetModels() {
+  static async GetModels(isVerbose = false) {
     const apiKey = U.getSetting("openAPIKey") as string|undefined;
     if (!apiKey) {
       throw new Error("You must configure your OpenAI API Key in Settings to use AI features.");
@@ -42,8 +284,13 @@ class BladesAI {
 
     // Parse the response body as JSON
     const data = await response.json();
+    // const modelKeys = data.map(({id}: {id: string}) => id);
+    // const modelData = data.map(({id: _id, ...mData}: Record<string, string>) => mData);
+    const dataList = Object.fromEntries(data.map(({id, ...mData}: Record<string, string>) => [id, mData]));
 
-    eLog.checkLog3("BladesAI", "Available Models", {response: data});
+    if (isVerbose) {
+      eLog.checkLog3("BladesAI", "Available Models", {dataList});
+    }
   }
 
   private apiKey: string;
@@ -81,6 +328,7 @@ class BladesAI {
     this.frequency_penalty = config.frequency_penalty ?? this.frequency_penalty;
     this.presence_penalty = config.presence_penalty ?? this.presence_penalty;
   }
+
 
   private _initialMessages: Array<Record<"role"|"content", string>> = [];
 
@@ -270,3 +518,5 @@ export const AGENTS: Record<
 };
 
 export default BladesAI;
+
+export {AIAssistant};

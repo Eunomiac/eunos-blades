@@ -78,7 +78,7 @@ const gsapEffects = {
             const csqRoot = U.gsap.utils.selector(csqIconContainer);
             const csqBackgroundImg = U.gsap.utils.selector($(csqIconContainer).parent())(".consequence-bg-image");
             const csqInteractionPads = csqRoot(".consequence-interaction-pad");
-            const csqIconCircleBase = csqRoot(".consequence-icon-circle.base-consequence");
+            // const csqIconCircleBase = csqRoot(".consequence-icon-circle.base-consequence");
             const csqIconCircleAccept = csqRoot(".consequence-icon-circle.accept-consequence");
             const csqButtonContainers = csqRoot(".consequence-button-container");
             const tl = U.gsap.timeline({ paused: true, defaults: { overwrite: "auto" } });
@@ -96,16 +96,6 @@ const gsapEffects = {
                     yPercent: -50,
                     duration: 0.5,
                     ease: "back"
-                }, 0);
-            }
-            // Fade out the base consequence icon circle
-            if (csqIconCircleBase.length > 0) {
-                tl.fromTo(csqIconCircleBase, {
-                    opacity: 1
-                }, {
-                    opacity: 0,
-                    duration: 0.25,
-                    ease: "none"
                 }, 0);
             }
             // Fade in the accept consequence icon circle, enlarging the stroke
@@ -252,8 +242,9 @@ const gsapEffects = {
         effect: (csqContainer) => {
             const csqRoot = U.gsap.utils.selector(csqContainer);
             const typeLine = csqRoot(".consequence-type-container .consequence-type.resist-consequence");
-            const acceptElems = csqRoot(".accept-consequence");
-            const specialArmorElems = csqRoot(".special-armor-consequence");
+            // const acceptElems = csqRoot(".accept-consequence");
+            // const specialArmorElems = csqRoot(".special-armor-consequence");
+            const blockedElem = csqRoot(".consequence-blocker.resist-consequence");
             const footerBg = csqRoot(".consequence-footer-container .consequence-footer-bg.resist-consequence");
             const attrElem = csqRoot(".consequence-footer-container .consequence-resist-attribute");
             const resistCsqName = csqRoot(".consequence-name.resist-consequence");
@@ -264,13 +255,23 @@ const gsapEffects = {
             const buttonIcon = buttonRoot(".button-icon i");
             const buttonLabel = buttonRoot(".consequence-button-label");
             const tl = U.gsap.timeline({ paused: true, defaults: { overwrite: "auto" } });
-            // Fade out all accept elems and special armor elems
-            if ([...acceptElems, ...specialArmorElems].length > 0) {
-                tl.to([...acceptElems, ...specialArmorElems], {
-                    opacity: 0,
+            // // Fade out all accept elems and special armor elems
+            // if ([...acceptElems, ...specialArmorElems].length > 0) {
+            //   tl.to([...acceptElems, ...specialArmorElems], {
+            //     opacity: 0,
+            //     duration: 0.25,
+            //     ease: "sine.out"
+            //   });
+            // }
+            // Quickly fade-in the right side blocker
+            if (blockedElem.length > 0) {
+                tl.fromTo(blockedElem, {
+                    opacity: 0
+                }, {
+                    opacity: 1,
                     duration: 0.25,
-                    ease: "sine.out"
-                });
+                    ease: "sine"
+                }, 0);
             }
             // Slide out .consequence-type.resist-consequence from left
             if (typeLine.length > 0) {
@@ -385,20 +386,30 @@ const gsapEffects = {
         effect: (csqContainer) => {
             const csqRoot = U.gsap.utils.selector(csqContainer);
             const typeLine = csqRoot(".consequence-type-container .consequence-type.special-armor-consequence");
-            const acceptElems = csqRoot(".accept-consequence");
-            const resistElems = csqRoot(".resist-consequence");
+            // const acceptElems = csqRoot(".accept-consequence");
+            // const resistElems = csqRoot(".resist-consequence");
             const footerBg = csqRoot(".consequence-footer-container .consequence-footer-bg.special-armor-consequence");
             const footerMsg = csqRoot(".consequence-footer-container .consequence-special-armor-message");
             const specialArmorCsqName = csqRoot(".consequence-name.special-armor-consequence");
             const iconCircle = csqRoot(".consequence-icon-circle.special-armor-consequence");
+            const blockedElem = csqRoot(".consequence-blocker.special-armor-consequence");
             const tl = U.gsap.timeline({ paused: true, defaults: { overwrite: "auto" } });
-            // Fade out all accept elems and resist elems
-            if ([...acceptElems, ...resistElems].length > 0) {
-                tl.to([...acceptElems, ...resistElems], {
-                    opacity: 0,
+            // // Fade out all accept elems and resist elems
+            // if ([...acceptElems, ...resistElems].length > 0) {
+            //   tl.to([...acceptElems, ...resistElems], {
+            //     opacity: 0,
+            //     duration: 0.25,
+            //     ease: "sine.out"
+            //   });
+            // }
+            if (blockedElem.length > 0) {
+                tl.fromTo(blockedElem, {
+                    opacity: 0
+                }, {
+                    opacity: 1,
                     duration: 0.25,
-                    ease: "sine.out"
-                });
+                    ease: "sine"
+                }, 0);
             }
             // Slide out .consequence-type.special-armor-consequence from left
             if (typeLine.length > 0) {

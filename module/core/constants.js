@@ -1,4 +1,3 @@
-/* eslint-disable no-shadow */
 export var BladesPermissions;
 (function (BladesPermissions) {
     BladesPermissions[BladesPermissions["NONE"] = CONST.DOCUMENT_PERMISSION_LEVELS.NONE] = "NONE";
@@ -396,6 +395,9 @@ const C = {
             "gpt-3.5-turbo-16k",
             "gpt-4-32k"
         ]
+    },
+    AI_FILE_IDS: {
+        BladesPDF: "file-n72HTTNwt051piPbswQ8isUa"
     },
     Consequences: {
         [Position.controlled]: {

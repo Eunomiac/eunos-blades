@@ -152,6 +152,7 @@ $isCompactLayout: true;
   --blades-red-nums: 200, 0, 0; // 255,  0,  0;
   --blades-red-dark-nums: 150,  0,  0;
   --blades-red-darkest-nums: 50,  0,  0;
+  --blades-red-black-nums: 25,  0,  0;
 
   --blades-green-bright-nums: 20, 220, 60;
   --blades-green-nums: 0, 204, 0;
@@ -226,6 +227,7 @@ $isCompactLayout: true;
   --blades-red: rgba(var(--blades-red-nums), 1);
   --blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
   --blades-red-darkest: rgba(var(--blades-red-darkest-nums), 1);
+  --blades-red-black: rgba(var(--blades-red-black-nums), 1);
 
   --blades-green-bright: rgba(var(--blades-green-bright-nums), 1);
   --blades-green: rgba(var(--blades-green-nums), 1);

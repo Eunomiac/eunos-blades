@@ -5,6 +5,7 @@
   <div class="chat-message-bg"></div>
 
   <div class="resistance-roll-one-line flex-horizontal full-width">
+
     {{!-- Resistance Lead-in --}}
     <div class="resistance-roll-intro">Resisted</div>
     {{!-- Consequence Icon --}}
@@ -22,15 +23,15 @@
       {{!-- Stress Loss --}}
       {{#if isSuccess}}
       <div class="resistance-cost-row cost-zero">
-        <h3>Zero Stress!</h3>
+        <h3><em>(No Stress Cost)</em></h3>
       </div>
       {{else if isCritical}}
       <div class="resistance-cost-row cost-bonus">
-        <h3>Critical! Recover 1 Stress</h4>
+        <h3>{{flagData.rollPrimaryData.rollPrimaryName}} <em>Recovers</em> 1 Stress</h4>
       </div>
       {{else}}
       <div class="resistance-cost-row cost-stress">
-        <h3>Lose {{resistanceStressCost}} Stress</h3>
+        <h3>{{flagData.rollPrimaryData.rollPrimaryName}} Loses {{resistanceStressCost}} Stress</h3>
       </div>
       {{/if}}
 

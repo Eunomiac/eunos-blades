@@ -811,6 +811,7 @@ template {
   --blades-red-nums: 200, 0, 0;
   --blades-red-dark-nums: 150, 0, 0;
   --blades-red-darkest-nums: 50, 0, 0;
+  --blades-red-black-nums: 25, 0, 0;
   --blades-green-bright-nums: 20, 220, 60;
   --blades-green-nums: 0, 204, 0;
   --blades-green-dark-nums: 0, 122, 0;
@@ -876,6 +877,7 @@ template {
   --blades-red: rgba(var(--blades-red-nums), 1);
   --blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
   --blades-red-darkest: rgba(var(--blades-red-darkest-nums), 1);
+  --blades-red-black: rgba(var(--blades-red-black-nums), 1);
   --blades-green-bright: rgba(var(--blades-green-bright-nums), 1);
   --blades-green: rgba(var(--blades-green-nums), 1);
   --blades-green-dark: rgba(var(--blades-green-dark-nums), 1);
@@ -2065,8 +2067,8 @@ template {
   max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
-  z-index: 1;
   pointer-events: auto;
+  z-index: 2;
   transition: 0.2s;
 }
 :root .comp.consequence-display-container .consequence-icon-container:hover,
@@ -2152,6 +2154,7 @@ template {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  pointer-events: none !important;
   bottom: 0px;
 }
 :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg,
@@ -2184,6 +2187,7 @@ template {
   color: var(--blades-grey);
   font-weight: 800;
   text-shadow: 0px 0px 1px var(--blades-black-dark);
+  pointer-events: none !important;
   letter-spacing: 1;
   text-transform: uppercase;
   white-space: nowrap;
@@ -2191,6 +2195,7 @@ template {
 :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .button-icon,
 :root * .comp.consequence-display-container .consequence-icon-container .consequence-button-container .button-icon {
   position: unset;
+  pointer-events: none !important;
   height: 14px;
   width: 14px;
 }
@@ -2224,6 +2229,19 @@ template {
 :root * .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-armor-button-container {
   right: 100%;
   bottom: 12px;
+}
+:root .comp.consequence-display-container .consequence-blocker,
+:root * .comp.consequence-display-container .consequence-blocker {
+  height: 100%;
+  background: var(--blades-black-dark);
+  transform-origin: 0% 50%;
+  opacity: 0;
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  left: calc(0.5 * var(--container-height) + 5px);
 }
 :root .comp.consequence-display-container .consequence-type-container,
 :root * .comp.consequence-display-container .consequence-type-container {
@@ -3792,8 +3810,8 @@ template {
   max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
-  z-index: 1;
   pointer-events: auto;
+  z-index: 2;
   transition: 0.2s;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container:hover {
@@ -3863,6 +3881,7 @@ template {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  pointer-events: none !important;
   bottom: 0px;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg {
@@ -3890,12 +3909,14 @@ template {
   color: var(--blades-grey);
   font-weight: 800;
   text-shadow: 0px 0px 1px var(--blades-black-dark);
+  pointer-events: none !important;
   letter-spacing: 1;
   text-transform: uppercase;
   white-space: nowrap;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container .consequence-button-container .button-icon {
   position: unset;
+  pointer-events: none !important;
   height: 14px;
   width: 14px;
 }
@@ -3923,6 +3944,18 @@ template {
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-armor-button-container {
   right: 100%;
   bottom: 12px;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-blocker {
+  height: 100%;
+  background: var(--blades-black-dark);
+  transform-origin: 0% 50%;
+  opacity: 0;
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  left: calc(0.5 * var(--container-height) + 5px);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container .consequence-type-container {
   position: absolute;
@@ -7094,8 +7127,8 @@ template {
   max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
-  z-index: 1;
   pointer-events: auto;
+  z-index: 2;
   transition: 0.2s;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .consequence-icon-container:hover,
@@ -7229,6 +7262,7 @@ template {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  pointer-events: none !important;
   bottom: 0px;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg,
@@ -7276,6 +7310,7 @@ template {
   color: var(--blades-grey);
   font-weight: 800;
   text-shadow: 0px 0px 1px var(--blades-black-dark);
+  pointer-events: none !important;
   letter-spacing: 1;
   text-transform: uppercase;
   white-space: nowrap;
@@ -7286,6 +7321,7 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container .consequence-icon-container .consequence-button-container .button-icon,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .consequence-icon-container .consequence-button-container .button-icon {
   position: unset;
+  pointer-events: none !important;
   height: 14px;
   width: 14px;
 }
@@ -7337,6 +7373,22 @@ template {
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-armor-button-container {
   right: 100%;
   bottom: 12px;
+}
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .consequence-blocker,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container .consequence-blocker,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container .consequence-blocker,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container .consequence-blocker,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container .consequence-blocker {
+  height: 100%;
+  background: var(--blades-black-dark);
+  transform-origin: 0% 50%;
+  opacity: 0;
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  left: calc(0.5 * var(--container-height) + 5px);
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container .consequence-type-container,
 :root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container .consequence-type-container,
@@ -10081,8 +10133,8 @@ template {
   max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
-  z-index: 1;
   pointer-events: auto;
+  z-index: 2;
   transition: 0.2s;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .consequence-icon-container:hover,
@@ -10216,6 +10268,7 @@ template {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  pointer-events: none !important;
   bottom: 0px;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg,
@@ -10263,6 +10316,7 @@ template {
   color: var(--blades-grey);
   font-weight: 800;
   text-shadow: 0px 0px 1px var(--blades-black-dark);
+  pointer-events: none !important;
   letter-spacing: 1;
   text-transform: uppercase;
   white-space: nowrap;
@@ -10273,6 +10327,7 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .button-icon,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container .button-icon {
   position: unset;
+  pointer-events: none !important;
   height: 14px;
   width: 14px;
 }
@@ -10324,6 +10379,22 @@ template {
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-armor-button-container {
   right: 100%;
   bottom: 12px;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .consequence-blocker,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container .consequence-blocker,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container .consequence-blocker,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container .consequence-blocker,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container .consequence-blocker {
+  height: 100%;
+  background: var(--blades-black-dark);
+  transform-origin: 0% 50%;
+  opacity: 0;
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  left: calc(0.5 * var(--container-height) + 5px);
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container .consequence-type-container,
 :root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container .consequence-type-container,
@@ -12575,7 +12646,7 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message {
   --chat-header-height: 20px;
-  --chat-vertical-gap: 50px;
+  --chat-vertical-gap: 15px;
   --resistance-right-shift: 60px;
   --speaker-portrait-height: 100px;
   --bg-controlled: var(--blades-grey-bright);
@@ -12585,6 +12656,12 @@ template {
   --bg-success: transparent;
   --bg-partial: transparent;
   --bg-fail: transparent;
+  --dice-strip-bg: var(--blades-black);
+  --top-die-animation: none;
+  --ghost-die-animation: none;
+  filter: blur(0.5px) drop-shadow(5px 5px 5px black) grayscale(1) brightness(0.7);
+  background: var(--blades-black);
+  border: 2px ouset var(--blades-white);
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message:last-child,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message:last-child,
@@ -12595,16 +12672,21 @@ template {
   --bg-risky: url("../assets/animations/chat/roll-position-risky.webp");
   --bg-desperate: url("../assets/animations/chat/roll-position-desperate.webp");
   --bg-fail: url("../assets/animations/chat/fail-bg.webp");
+  --dice-strip-bg: url("../assets/animations/chat/lightning-ray.webp") no-repeat center / 100% auto;
+  --top-die-animation: die-pulse 5s ease infinite;
+  --ghost-die-animation: die-ghost 4s ease infinite;
   margin-bottom: 0px;
+  opacity: 1;
+  filter: drop-shadow(5px 5px 5px black);
+  background: transparent;
+  outline: none;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message,
 :root body.vtt.game.system-eunos-blades #navigation #chat .chat-message,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message {
-  background: transparent;
   overflow: visible;
-  border: none;
   padding: 0;
   margin: var(--chat-vertical-gap) 0px;
   position: relative;
@@ -12715,26 +12797,32 @@ template {
   position: relative;
   z-index: 2;
 }
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll.roll-position-risky .chat-header,
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll.roll-position-risky .consequence-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll.roll-position-risky .chat-header,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll.roll-position-risky .consequence-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll.roll-position-risky .chat-header,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll.roll-position-risky .consequence-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll.roll-position-risky .chat-header,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll.roll-position-risky .consequence-container,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll.roll-position-risky .chat-header,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll.roll-position-risky .consequence-container {
+  background: var(--bg-risky);
+  background-size: cover;
+}
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .chat-message-bg,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .chat-message-bg,
 :root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .chat-message-bg,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .chat-message-bg,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .chat-message-bg {
   position: absolute;
+  display: none;
   top: -5px;
   left: 0;
   height: calc(100% + 5px);
   width: 100%;
   z-index: -1;
   border-bottom-left-radius: 30px;
-}
-:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .chat-message-bg.roll-position-risky,
-:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .chat-message-bg.roll-position-risky,
-:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .chat-message-bg.roll-position-risky,
-:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .chat-message-bg.roll-position-risky,
-:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .chat-message-bg.roll-position-risky {
-  background: var(--bg-risky);
-  background-size: cover;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .chat-result-bg,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .chat-result-bg,
@@ -12766,6 +12854,7 @@ template {
   background: transparent;
   box-shadow: none;
   color: var(--blades-grey);
+  z-index: -1;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll h1.chat-header,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll h1.chat-header,
@@ -12786,20 +12875,71 @@ template {
 :root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .dice-roll-strip,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .dice-roll-strip,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .dice-roll-strip {
+  position: relative;
   --die-size: 30px;
+  z-index: -1;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   height: calc(var(--die-size) + 8px);
+  height: calc(var(--die-size) * 2);
   width: 150%;
-  margin-left: 25%;
   align-items: stretch;
   justify-content: center;
   gap: calc(var(--die-size) * 0.3);
-  margin: 5px 0;
+  margin: 5px 0px calc(var(--die-size) * -1 - 6px + 5px) 0px;
   padding: 4px 50% 4px 0;
-  background: var(--blades-grey-dark);
-  box-shadow: inset 0px 0px 10px 5px var(--blades-black-dark);
+  background: var(--dice-strip-bg);
+  background-position-y: 150%;
+}
+@keyframes die-pulse {
+  0% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.25;
+  }
+  100% {
+    scale: 1;
+  }
+}
+@keyframes die-ghost {
+  8% {
+    opacity: 0.25;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  12% {
+    opacity: 0.25;
+  }
+  33% {
+    opacity: 0.1;
+  }
+  35% {
+    opacity: 0.6;
+  }
+  37% {
+    opacity: 0.1;
+  }
+  62% {
+    opacity: 0.5;
+  }
+  64% {
+    opacity: 0.6;
+  }
+  66% {
+    opacity: 0.1;
+  }
+  95% {
+    opacity: 0.1;
+  }
+  97% {
+    opacity: 0.6;
+  }
+  99% {
+    opacity: 0.1;
+  }
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die,
@@ -12807,6 +12947,8 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die {
   display: block;
+  position: relative;
+  z-index: 5;
   height: var(--die-size);
   transform-origin: 50% 50%;
   overflow: hidden;
@@ -12827,7 +12969,7 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-critical,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-critical {
   box-shadow: 0px 0px 5px 3px var(--blades-gold-bright);
-  scale: 1.25;
+  animation: var(--top-die-animation);
   z-index: 1;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-critical:first-child + .blades-die-critical,
@@ -12837,14 +12979,16 @@ template {
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-critical:first-child + .blades-die-critical {
   margin-left: 3px;
   box-shadow: 0px 0px 5px 3px var(--blades-gold-bright);
+  animation: var(--top-die-animation);
+  animation-delay: 0.15s;
 }
-:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-success,
-:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-success,
-:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-success,
-:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-success,
-:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-success {
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-success:first-child,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-success:first-child,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-success:first-child,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-success:first-child,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-success:first-child {
   filter: drop-shadow(0px 0px calc(var(--die-size) * 0.1) var(--blades-white-bright));
-  scale: 1.25;
+  animation: var(--top-die-animation);
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-partial:first-child,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-partial:first-child,
@@ -12852,6 +12996,7 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-partial:first-child,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-partial:first-child {
   box-shadow: 0px 0px 5px var(--blades-white);
+  animation: var(--top-die-animation);
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-ghost,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-ghost,
@@ -12862,6 +13007,7 @@ template {
   rotate: 10deg;
   opacity: 0.8;
   filter: brightness(0.35);
+  animation: var(--ghost-die-animation);
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-ghost img,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die.blades-die-ghost img,
@@ -12878,72 +13024,280 @@ template {
   filter: drop-shadow(0px 0px calc(var(--die-size) * 0.1) var(--blades-blue-bright));
   scale: 1.25;
 }
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die:nth-child(6),
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die:nth-child(6),
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die:nth-child(6),
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die:nth-child(6),
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .dice-roll-strip .blades-die:nth-child(6) {
+  margin-right: -50px;
+}
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container,
 :root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container {
   justify-content: space-between;
-  padding: 0 10px;
   align-items: center;
-  margin: 5px 0 0 0;
-  background: var(--background-color);
+  margin: 0;
+  margin-top: 15px;
+  z-index: -1;
+  position: relative;
+  height: var(--result-height);
+  --result-height: 50px;
+  --result-spread: 5px;
+  --side-height: calc(var(--result-height) + 2 * var(--result-spread));
+  --side-vertical-shift: calc(-1 * var(--result-spread));
+  --side-width-percent: 30%;
+  background: var(--result-bg-color);
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical,
 :root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical {
-  --background-color: var(--blades-gold-bright);
-  --label-color: var(--blades-black);
+  --result-bg-color: var(--blades-gold-bright);
+  --result-color-main: var(--blades-black);
+  --result-x-scale: 0.8;
+  --side-bg-color: var(--blades-gold);
+  --side-color-main: var(--blades-white-bright);
+  --side-color-secondary: var(--blades-grey-dark);
+  --side-shadow-color: var(--blades-black-dark);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical .roll-result-container.roll-result-critical h3.roll-result-label.roll-result-bottom-label,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical .roll-result-container.roll-result-critical h3.roll-result-label.roll-result-bottom-label,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical .roll-result-container.roll-result-critical h3.roll-result-label.roll-result-bottom-label,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical .roll-result-container.roll-result-critical h3.roll-result-label.roll-result-bottom-label,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-critical .roll-result-container.roll-result-critical h3.roll-result-label.roll-result-bottom-label {
+  transform-origin: 50% 50%;
+  scale: 1.25 1;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-success,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-success,
 :root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-success,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-success,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-success {
-  --background-color: var(--blades-white-bright);
-  --label-color: var(--blades-black);
+  --result-bg-color: var(--blades-white-bright);
+  --result-color-main: var(--blades-black);
+  --result-x-scale: 0.7;
+  --side-bg-color: var(--blades-white);
+  --side-color-main: var(--blades-gold-bright);
+  --side-color-secondary: var(--blades-grey-dark);
+  --side-shadow-color: var(--blades-black-dark);
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial,
 :root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial {
-  --background-color: var(--blades-black);
-  --label-color: var(--blades-white);
+  --result-bg-color: var(--blades-grey-dark);
+  --result-color-main: var(--blades-white);
+  --result-x-scale: 0.75;
+  --side-bg-color: var(--blades-black);
+  --side-color-main: var(--blades-white-bright);
+  --side-color-secondary: var(--blades-grey);
+  --side-shadow-color: var(--blades-black-dark);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial .roll-result-container.roll-result-partial h2.roll-result-label.roll-result-top-label,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial .roll-result-container.roll-result-partial h2.roll-result-label.roll-result-top-label,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial .roll-result-container.roll-result-partial h2.roll-result-label.roll-result-top-label,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial .roll-result-container.roll-result-partial h2.roll-result-label.roll-result-top-label,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial .roll-result-container.roll-result-partial h2.roll-result-label.roll-result-top-label {
+  margin-left: 15px;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial .roll-result-container.roll-result-partial h3.roll-result-label.roll-result-bottom-label,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial .roll-result-container.roll-result-partial h3.roll-result-label.roll-result-bottom-label,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial .roll-result-container.roll-result-partial h3.roll-result-label.roll-result-bottom-label,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial .roll-result-container.roll-result-partial h3.roll-result-label.roll-result-bottom-label,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-partial .roll-result-container.roll-result-partial h3.roll-result-label.roll-result-bottom-label {
+  margin-left: -15px;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail,
 :root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail {
-  --background-color: var(--blades-red-darkest);
-  --label-color: var(--blades-red-bright);
+  --result-bg-color: var(--blades-red-black);
+  --result-color-main: var(--blades-red-bright);
+  --result-x-scale: 1.25;
+  --side-bg-color: var(--blades-red-darkest);
+  --side-color-main: var(--blades-white-bright);
+  --side-color-secondary: var(--blades-grey);
+  --side-shadow-color: var(--blades-black-dark);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail .roll-result-container.roll-result-fail h2.roll-result-label.roll-result-main-label,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail .roll-result-container.roll-result-fail h2.roll-result-label.roll-result-main-label,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail .roll-result-container.roll-result-fail h2.roll-result-label.roll-result-main-label,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail .roll-result-container.roll-result-fail h2.roll-result-label.roll-result-main-label,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-result-fail .roll-result-container.roll-result-fail h2.roll-result-label.roll-result-main-label {
+  margin-left: -170px;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-controlled,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-controlled,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-controlled,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-controlled,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-controlled {
+  --side-left-x-scale: 0.7;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-risky,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-risky,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-risky,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-risky,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-risky {
+  --side-left-x-scale: 1;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-desperate,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-desperate,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-desperate,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-desperate,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-position-desperate {
+  --side-left-x-scale: 0.8;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-zero,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-zero,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-zero,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-zero,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-zero {
+  --side-right-x-scale: 1;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-limited,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-limited,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-limited,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-limited,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-limited {
+  --side-right-x-scale: 0.9;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-standard,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-standard,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-standard,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-standard,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-standard {
+  --side-right-x-scale: 0.9;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-great,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-great,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-great,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-great,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-great {
+  --side-right-x-scale: 1;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-extreme,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-extreme,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-extreme,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-extreme,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container.roll-effect-extreme {
+  --side-right-x-scale: 0.9;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container {
+  position: absolute;
+  width: calc(100% + 20px);
+  left: -10px;
+  height: var(--side-height);
+  overflow: hidden;
+  top: var(--side-vertical-shift);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background {
+  position: absolute;
+  height: 100%;
+  width: calc(var(--side-width-percent) + 100px);
+  top: 0px;
+  background: var(--side-bg-color);
+  transform: skewX(-25deg);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background.roll-position-background,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background.roll-position-background,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background.roll-position-background,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background.roll-position-background,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background.roll-position-background {
+  filter: drop-shadow(0px 0px 5px var(--side-shadow-color));
+  left: -100px;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background.roll-effect-background,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background.roll-effect-background,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background.roll-effect-background,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background.roll-effect-background,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-background-container .roll-state-background.roll-effect-background {
+  filter: drop-shadow(0px 0px 5px var(--side-shadow-color));
+  right: -100px;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container,
 :root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container {
-  flex-basis: 10%;
-  flex-grow: 0.3;
-  flex-shrink: 1;
+  position: relative;
+  height: var(--side-height);
+  width: var(--side-width-percent);
+  padding: 4px;
+  gap: 0;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-left h4.roll-state-label,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-left h4.roll-state-label,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-left h4.roll-state-label,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-left h4.roll-state-label,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-left h4.roll-state-label {
+  position: absolute;
+  left: 30px;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-left h3.roll-state,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-left h3.roll-state,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-left h3.roll-state,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-left h3.roll-state,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-left h3.roll-state {
+  position: absolute;
+  top: 5px;
+  left: -5px;
+  scale: var(--side-left-x-scale) 1;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-right h4.roll-state-label,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-right h4.roll-state-label,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-right h4.roll-state-label,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-right h4.roll-state-label,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-right h4.roll-state-label {
+  position: absolute;
+  right: 45px;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-right h3.roll-state,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-right h3.roll-state,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-right h3.roll-state,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-right h3.roll-state,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container.roll-state-container-right h3.roll-state {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  text-align: right;
+  transform-origin: 100% 100%;
+  scale: var(--side-right-x-scale) 1;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label,
 :root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label {
-  font-family: var(--font-primary);
+  font-family: var(--font-emphasis-narrow);
   font-size: 12px;
+  line-height: 12px;
   display: block;
-  width: 100%;
+  transform: translate(0%, -50%);
+  top: 50%;
   text-align: center;
   white-space: nowrap;
-  color: var(--blades-grey);
-  margin-top: -4px;
-  text-shadow: var(--text-shadow-dark);
+  color: var(--side-color-secondary);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label strong,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label strong,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label strong,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label strong,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h4.roll-state-label strong {
+  color: var(--side-color-secondary) !important;
+  font-weight: 900 !important;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h3.roll-state,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h3.roll-state,
@@ -12951,7 +13305,21 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h3.roll-state,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-state-container h3.roll-state {
   white-space: nowrap;
-  text-shadow: var(--text-shadow-dark);
+  font-size: 18px;
+  line-height: 18px;
+  transform-origin: 0% 0%;
+  text-shadow: var(--text-shadow-dark-strong);
+  color: var(--side-color-main);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container {
+  width: calc(100% - 2 * var(--side-width-percent));
+  flex-basis: calc(100% - 2 * var(--side-width-percent));
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label,
@@ -12960,10 +13328,12 @@ template {
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label {
   background: none;
   box-shadow: none;
-  color: var(--label-color);
+  color: var(--result-color-main);
   white-space: nowrap;
   margin: 0;
   padding: 0;
+  transform-origin: 50% 50%;
+  scale: var(--result-x-scale) 1;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label.roll-result-top-label,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .roll-outcome-container .roll-result-container .roll-result-label.roll-result-top-label,
@@ -12990,14 +13360,16 @@ template {
   font-size: 32px;
   line-height: 32px;
   transform-origin: 50% 50%;
-  scale: 0.8 1;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll .consequence-container,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll .consequence-container,
 :root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll .consequence-container,
 :root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll .consequence-container,
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll .consequence-container {
-  margin-top: 10px;
+  padding-top: 10px;
+  border-bottom-left-radius: 25px;
+  z-index: -3;
+  position: relative;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll.roll-type-resistance,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll.roll-type-resistance,
@@ -13138,6 +13510,13 @@ template {
 :root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll.roll-type-resistance .resistance-roll-one-line .resistance-roll-vertical-right .resistance-roll-attr-dice .dice-roll-strip .blades-die:not(.blades-die-resistance) {
   opacity: 0.5;
   filter: blur(1px);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll.roll-type-resistance .resistance-roll-one-line .resistance-roll-vertical-right .resistance-roll-attr-dice .dice-roll-strip .blades-die + .blades-die + .blades-die + .blades-die + .blades-die ~ .blades-die:last-child,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll.roll-type-resistance .resistance-roll-one-line .resistance-roll-vertical-right .resistance-roll-attr-dice .dice-roll-strip .blades-die + .blades-die + .blades-die + .blades-die + .blades-die ~ .blades-die:last-child,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message .message-content .blades-roll.roll-type-resistance .resistance-roll-one-line .resistance-roll-vertical-right .resistance-roll-attr-dice .dice-roll-strip .blades-die + .blades-die + .blades-die + .blades-die + .blades-die ~ .blades-die:last-child,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message .message-content .blades-roll.roll-type-resistance .resistance-roll-one-line .resistance-roll-vertical-right .resistance-roll-attr-dice .dice-roll-strip .blades-die + .blades-die + .blades-die + .blades-die + .blades-die ~ .blades-die:last-child,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message .message-content .blades-roll.roll-type-resistance .resistance-roll-one-line .resistance-roll-vertical-right .resistance-roll-attr-dice .dice-roll-strip .blades-die + .blades-die + .blades-die + .blades-die + .blades-die ~ .blades-die:last-child {
+  margin-right: -50px;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message .message-content .blades-roll.roll-type-resistance .resistance-roll-one-line .resistance-roll-vertical-right .resistance-cost-row h3,
 :root body.vtt.game.system-eunos-blades #controls #chat .chat-message .message-content .blades-roll.roll-type-resistance .resistance-roll-one-line .resistance-roll-vertical-right .resistance-cost-row h3,
@@ -14301,8 +14680,8 @@ template {
   max-width: var(--container-height);
   background: transparent;
   left: var(--container-left-shift);
-  z-index: 1;
   pointer-events: auto;
+  z-index: 2;
   transition: 0.2s;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container:hover {
@@ -14372,6 +14751,7 @@ template {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  pointer-events: none !important;
   bottom: 0px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg {
@@ -14399,12 +14779,14 @@ template {
   color: var(--blades-grey);
   font-weight: 800;
   text-shadow: 0px 0px 1px var(--blades-black-dark);
+  pointer-events: none !important;
   letter-spacing: 1;
   text-transform: uppercase;
   white-space: nowrap;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container .consequence-button-container .button-icon {
   position: unset;
+  pointer-events: none !important;
   height: 14px;
   width: 14px;
 }
@@ -14432,6 +14814,18 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-armor-button-container {
   right: 100%;
   bottom: 12px;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-blocker {
+  height: 100%;
+  background: var(--blades-black-dark);
+  transform-origin: 0% 50%;
+  opacity: 0;
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  left: calc(0.5 * var(--container-height) + 5px);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container .consequence-type-container {
   position: absolute;
@@ -20085,14 +20479,20 @@ template {
   background: transparent;
   box-shadow: none;
 }
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row {
+  gap: 3px;
+}
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .comp.consequence-display-container {
   display: flex;
   flex-wrap: nowrap;
   --container-height: 25px;
+  gap: 3px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .comp.consequence-display-container .consequence-icon-container {
   left: 0;
   top: 0;
+  min-width: var(--container-height);
+  margin: 0px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle {
   outline: none;
@@ -20100,11 +20500,32 @@ template {
   height: 25px;
   width: 25px;
 }
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row input.consequence-name {
+  box-shadow: var(--box-shadow-input);
+  background: var(--background-input);
+  font-family: var(--font-emphasis-narrow);
+  margin-right: 5px;
+  flex-grow: 2;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .roll-consequence-type-select {
+  min-width: 130px;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .roll-consequence-attribute-select {
+  min-width: 75px;
+}
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .button-icon, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .toggle-icon {
   position: unset;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .blades-select {
   font-family: var(--font-emphasis-narrow);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .consequence-resist-options-container {
+  align-items: flex-end;
+  gap: 3px;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.dialog .window-content .consequence-section .roll-consequence-row .consequence-resist-options-container .consequence-resist-option {
+  gap: 3px;
+  width: 85%;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.active-effect-sheet {
   min-width: 600px;

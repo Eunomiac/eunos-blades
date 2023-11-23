@@ -64,6 +64,8 @@
 	"dependencies": {
 		"@types/yaireo__tagify": "^4.17.0",
 		"axios": "^1.5.1",
+		"form-data": "^4.0.0",
+		"openai": "^4.20.0",
 		"tinymce": "^6.2.0",
 		"yargs": "^17.7.2"
 	},

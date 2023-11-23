@@ -214,14 +214,18 @@
         box-shadow: none;
       }
       .roll-consequence-row {
+        gap: 3px;
         .comp.consequence-display-container {
           display: flex;
           flex-wrap: nowrap;
           --container-height: 25px;
+          gap: 3px;
 
           .consequence-icon-container {
             left: 0;
             top: 0;
+            min-width: var(--container-height);
+            margin: 0px;
 
             .consequence-icon-circle {
               outline: none;
@@ -233,9 +237,34 @@
         }
 
 
+
+        input.consequence-name {
+          box-shadow: var(--box-shadow-input);
+          background: var(--background-input);
+          font-family: var(--font-emphasis-narrow);
+          margin-right: 5px;
+          flex-grow: 2;
+        }
+
+        .roll-consequence-type-select {
+          min-width: 130px;
+        }
+        .roll-consequence-attribute-select {
+          min-width: 75px;
+        }
         .button-icon, .toggle-icon { position: unset }
 
         .blades-select { font-family: var(--font-emphasis-narrow) }
+
+        .consequence-resist-options-container {
+          align-items: flex-end;
+          gap: 3px;
+
+          .consequence-resist-option {
+            gap: 3px;
+            width: 85%;
+          }
+        }
       }
 
     }
