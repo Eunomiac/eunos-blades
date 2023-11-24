@@ -171,6 +171,14 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     };
   }
 
+  get stress(): number {
+    return this.system.stress.value;
+  }
+
+  get stressMax(): number {
+    return this.system.stress.max;
+  }
+
   get trauma(): number {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0; }
     return Object.keys(this.system.trauma.checked)
@@ -333,6 +341,23 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   get rollParticipantModsData(): BladesRoll.RollModData[] { return []; }
 
   // #endregion
+
+  async adjustStress(deltaStress: number) {
+    const newStress = Math.min(this.stressMax, Math.max(0, this.stress + deltaStress));
+
+    if (newStress === this.stressMax) {
+      /* PUSH NOTICE: Player must select Trauma & is removed from Score. */
+    }
+
+    await this.update({"system.stress.value": newStress});
+  }
+
+  async spendSpecialArmor() {
+    if (this.system.armor.active.special && !this.system.armor.checked.special) {
+      await this.update({"system.armor.checked.special": true});
+      /* PUSH NOTICE: Spent Special Armor */
+    }
+  }
 
   get rollTraitPCTooltipActions(): string {
     const tooltipStrings: string[] = ["<table><tbody>"];

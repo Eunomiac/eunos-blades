@@ -21,12 +21,11 @@ import type {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt
 // Also check out Discord thread: https://discord.com/channels/325094888133885952/1152316839163068527
 
 
-// eslint-disable-next-line no-shadow
 enum BladesActorUniqueTags {
   CharacterCrew = Tag.PC.CharacterCrew,
   VicePurveyor = Tag.NPC.VicePurveyor
 }
-// eslint-disable-next-line no-shadow
+
 enum BladesItemUniqueTypes {
   background = BladesItemType.background,
   vice = BladesItemType.vice,

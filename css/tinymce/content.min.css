@@ -1087,6 +1087,24 @@ html .comp.consequence-display-container, :root .comp.consequence-display-contai
   max-height: var(--container-height);
   min-height: var(--container-height);
 }
+html .comp.consequence-display-container:nth-child(1), :root .comp.consequence-display-container:nth-child(1) {
+  --csq-animation-delay: 0.5s ;
+}
+html .comp.consequence-display-container:nth-child(2), :root .comp.consequence-display-container:nth-child(2) {
+  --csq-animation-delay: 1.25s ;
+}
+html .comp.consequence-display-container:nth-child(3), :root .comp.consequence-display-container:nth-child(3) {
+  --csq-animation-delay: 2s ;
+}
+html .comp.consequence-display-container:nth-child(1), :root .comp.consequence-display-container:nth-child(1) {
+  --csq-animation-delay: 0.25s ;
+}
+html .comp.consequence-display-container:nth-child(2), :root .comp.consequence-display-container:nth-child(2) {
+  --csq-animation-delay: 0.5s ;
+}
+html .comp.consequence-display-container:nth-child(3), :root .comp.consequence-display-container:nth-child(3) {
+  --csq-animation-delay: 0.75s ;
+}
 @keyframes icon-glow {
   0% {
     filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px var(--blades-red));
@@ -1098,9 +1116,11 @@ html .comp.consequence-display-container, :root .comp.consequence-display-contai
     filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px var(--blades-red));
   }
 }
-html .comp.consequence-display-container.dead-roll, html .comp.consequence-display-container .dead-roll *, :root .comp.consequence-display-container.dead-roll, :root .comp.consequence-display-container .dead-roll * {
-  animation: none;
-  pointer-events: none;
+html .comp.consequence-display-container:hover .consequence-icon-circle, :root .comp.consequence-display-container:hover .consequence-icon-circle {
+  animation: none !important;
+}
+html .comp.consequence-display-container:hover .consequence-icon-circle img, :root .comp.consequence-display-container:hover .consequence-icon-circle img {
+  animation: none !important;
 }
 html .comp.consequence-display-container.consequence-accepted, html .comp.consequence-display-container.consequence-accepted *, :root .comp.consequence-display-container.consequence-accepted, :root .comp.consequence-display-container.consequence-accepted * {
   --container-left-shift: 0px;
@@ -1128,19 +1148,21 @@ html .comp.consequence-display-container .accept-consequence, :root .comp.conseq
   --csq-type-color: var(--blades-black-dark);
   --csq-name-color: var(--blades-red);
 }
-html .comp.consequence-display-container .accept-consequence, :root .comp.consequence-display-container .accept-consequence {
-  opacity: 0;
-}
 html .comp.consequence-display-container .resist-consequence, :root .comp.consequence-display-container .resist-consequence {
-  opacity: 0;
   --csq-icon-dark: var(--blades-gold-dark);
   --csq-icon-med: var(--blades-gold);
   --csq-icon-bright: var(--blades-gold-bright);
   --csq-type-color: var(--blades-gold-dark);
   --csq-name-color: var(--blades-gold-bright);
 }
-html .comp.consequence-display-container .special-armor-consequence, :root .comp.consequence-display-container .special-armor-consequence {
-  opacity: 0;
+html .comp.consequence-display-container .armor-consequence, :root .comp.consequence-display-container .armor-consequence {
+  --csq-icon-dark: var(--blades-grey-dark);
+  --csq-icon-med: var(--blades-grey-bright);
+  --csq-icon-bright: var(--blades-white-bright);
+  --csq-type-color: var(--blades-grey-bright);
+  --csq-name-color: var(--blades-white-bright);
+}
+html .comp.consequence-display-container .special-consequence, :root .comp.consequence-display-container .special-consequence {
   --csq-icon-dark: var(--blades-blue-dark);
   --csq-icon-med: var(--blades-blue);
   --csq-icon-bright: var(--blades-blue-bright);
@@ -1159,24 +1181,54 @@ html .comp.consequence-display-container .consequence-bg-image, :root .comp.cons
   left: -10px;
 }
 html .comp.consequence-display-container .consequence-interaction-pad, :root .comp.consequence-display-container .consequence-interaction-pad {
-  display: none;
-  display: block;
-  position: absolute;
   z-index: 2;
-  pointer-events: auto;
+  pointer-events: none;
   height: 100%;
   top: 0;
 }
-html .comp.consequence-display-container .consequence-interaction-pad.accept-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.accept-consequence-pad {
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-right, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-right {
+  position: absolute;
+  pointer-events: none;
   --pad-left-shift: calc(var(--container-left-shift) + (var(--container-height)));
   left: var(--pad-left-shift);
   width: calc(100% - var(--pad-left-shift));
 }
-html .comp.consequence-display-container .consequence-interaction-pad.resist-consequence-pad, html .comp.consequence-display-container .consequence-interaction-pad.special-armor-consequence-pad, html .comp.consequence-display-container .consequence-interaction-pad.armor-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.resist-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.special-armor-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.armor-consequence-pad {
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left {
+  position: absolute;
+  pointer-events: none;
+  left: -190px;
+  width: calc(200px + var(--container-left-shift) - var(--container-height) * 0);
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: stretch;
+  align-items: stretch;
+}
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad {
+  flex-grow: 1;
+  pointer-events: none;
+}
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad.interaction-pad-left-resist, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad.interaction-pad-left-resist {
+  flex-basis: 50%;
+  flex-shrink: 0.6;
+}
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad.interaction-pad-left-armor, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad.interaction-pad-left-armor {
+  flex-basis: 50%;
+  flex-shrink: 1;
+}
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad.interaction-pad-left-special, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad.interaction-pad-left-special {
+  flex-basis: 50%;
+  flex-shrink: 1;
+}
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left .interaction-pad-left-resist, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left .interaction-pad-left-resist {
+  flex-basis: 50%;
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+html .comp.consequence-display-container .consequence-interaction-pad.resist-consequence-pad, html .comp.consequence-display-container .consequence-interaction-pad.special-consequence-pad, html .comp.consequence-display-container .consequence-interaction-pad.armor-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.resist-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.special-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.armor-consequence-pad {
   left: -200px;
   width: calc(200px + var(--container-left-shift) - var(--container-height) * 0);
 }
-html .comp.consequence-display-container .consequence-interaction-pad.special-armor-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.special-armor-consequence-pad {
+html .comp.consequence-display-container .consequence-interaction-pad.special-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.special-consequence-pad {
   height: 50%;
   z-index: 3;
 }
@@ -1193,9 +1245,6 @@ html .comp.consequence-display-container .consequence-icon-container, :root .com
   pointer-events: auto;
   z-index: 2;
   transition: 0.2s;
-}
-html .comp.consequence-display-container .consequence-icon-container:hover, :root .comp.consequence-display-container .consequence-icon-container:hover {
-  filter: brightness(2);
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle {
   position: absolute;
@@ -1239,17 +1288,15 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence {
   transform: scale(0.75);
-  animation: icon-glow 2s ease infinite;
+  animation: icon-glow 2.25s ease infinite;
+  animation-delay: var(--csq-animation-delay);
   pointer-events: auto;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence img, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence img {
-  animation: icon-glow 2s ease infinite;
+  animation: icon-glow 2.25s ease infinite;
+  animation-delay: var(--csq-animation-delay);
 }
-html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence:hover, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence:hover {
-  filter: brightness(2) !important;
-  animation: none;
-}
-html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.resist-consequence, html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.special-armor-consequence, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.resist-consequence, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.special-armor-consequence {
+html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.resist-consequence, html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.special-consequence, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.resist-consequence, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.special-consequence {
   outline-width: 2px;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle .consequence-icon, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle .consequence-icon {
@@ -1274,11 +1321,12 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   background: var(--csq-icon-bright);
   display: block;
 }
-html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
+html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-button-bg {
   transform-origin: 100% 50%;
 }
-html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
-  width: calc(100% + 32px);
+html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-button-bg {
+  width: calc(100% + 40px);
+  margin-left: -10px;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label {
   position: relative;
@@ -1321,21 +1369,9 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   right: -7px;
   transform: skewX(-45deg);
 }
-html .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-armor-button-container, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-armor-button-container {
+html .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-button-container, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-button-container {
   right: 100%;
   bottom: 12px;
-}
-html .comp.consequence-display-container .consequence-blocker, :root .comp.consequence-display-container .consequence-blocker {
-  height: 100%;
-  background: var(--blades-black-dark);
-  transform-origin: 0% 50%;
-  opacity: 0;
-  position: absolute;
-  z-index: 10;
-  top: 0;
-  width: 100%;
-  z-index: 1;
-  left: calc(0.5 * var(--container-height) + 5px);
 }
 html .comp.consequence-display-container .consequence-type-container, :root .comp.consequence-display-container .consequence-type-container {
   position: absolute;
@@ -1348,6 +1384,7 @@ html .comp.consequence-display-container .consequence-type-container, :root .com
 html .comp.consequence-display-container .consequence-type-container .consequence-type-bg, :root .comp.consequence-display-container .consequence-type-container .consequence-type-bg {
   position: absolute;
   top: 0;
+  z-index: -1;
   left: -20px;
   height: 100%;
   width: 170px;
@@ -1414,7 +1451,7 @@ html .comp.consequence-display-container .consequence-footer-container .conseque
 html .comp.consequence-display-container .consequence-footer-container .consequence-footer-bg.resist-consequence, :root .comp.consequence-display-container .consequence-footer-container .consequence-footer-bg.resist-consequence {
   width: 120px;
 }
-html .comp.consequence-display-container .consequence-footer-container .consequence-footer-bg.special-armor-consequence, :root .comp.consequence-display-container .consequence-footer-container .consequence-footer-bg.special-armor-consequence {
+html .comp.consequence-display-container .consequence-footer-container .consequence-footer-bg.special-consequence, :root .comp.consequence-display-container .consequence-footer-container .consequence-footer-bg.special-consequence {
   width: 250px;
 }
 html .comp.consequence-display-container .consequence-footer-container .consequence-footer-message, :root .comp.consequence-display-container .consequence-footer-container .consequence-footer-message {
@@ -2730,6 +2767,24 @@ html .comp.consequence-display-container, :root .comp.consequence-display-contai
   max-height: var(--container-height);
   min-height: var(--container-height);
 }
+html .comp.consequence-display-container:nth-child(1), :root .comp.consequence-display-container:nth-child(1) {
+  --csq-animation-delay: 0.5s ;
+}
+html .comp.consequence-display-container:nth-child(2), :root .comp.consequence-display-container:nth-child(2) {
+  --csq-animation-delay: 1.25s ;
+}
+html .comp.consequence-display-container:nth-child(3), :root .comp.consequence-display-container:nth-child(3) {
+  --csq-animation-delay: 2s ;
+}
+html .comp.consequence-display-container:nth-child(1), :root .comp.consequence-display-container:nth-child(1) {
+  --csq-animation-delay: 0.25s ;
+}
+html .comp.consequence-display-container:nth-child(2), :root .comp.consequence-display-container:nth-child(2) {
+  --csq-animation-delay: 0.5s ;
+}
+html .comp.consequence-display-container:nth-child(3), :root .comp.consequence-display-container:nth-child(3) {
+  --csq-animation-delay: 0.75s ;
+}
 @keyframes icon-glow {
   0% {
     filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px var(--blades-red));
@@ -2741,9 +2796,11 @@ html .comp.consequence-display-container, :root .comp.consequence-display-contai
     filter: brightness(1) blur(1px) drop-shadow(0px 0px 0px var(--blades-red));
   }
 }
-html .comp.consequence-display-container.dead-roll, html .comp.consequence-display-container .dead-roll *, :root .comp.consequence-display-container.dead-roll, :root .comp.consequence-display-container .dead-roll * {
-  animation: none;
-  pointer-events: none;
+html .comp.consequence-display-container:hover .consequence-icon-circle, :root .comp.consequence-display-container:hover .consequence-icon-circle {
+  animation: none !important;
+}
+html .comp.consequence-display-container:hover .consequence-icon-circle img, :root .comp.consequence-display-container:hover .consequence-icon-circle img {
+  animation: none !important;
 }
 html .comp.consequence-display-container.consequence-accepted, html .comp.consequence-display-container.consequence-accepted *, :root .comp.consequence-display-container.consequence-accepted, :root .comp.consequence-display-container.consequence-accepted * {
   --container-left-shift: 0px;
@@ -2771,19 +2828,21 @@ html .comp.consequence-display-container .accept-consequence, :root .comp.conseq
   --csq-type-color: var(--blades-black-dark);
   --csq-name-color: var(--blades-red);
 }
-html .comp.consequence-display-container .accept-consequence, :root .comp.consequence-display-container .accept-consequence {
-  opacity: 0;
-}
 html .comp.consequence-display-container .resist-consequence, :root .comp.consequence-display-container .resist-consequence {
-  opacity: 0;
   --csq-icon-dark: var(--blades-gold-dark);
   --csq-icon-med: var(--blades-gold);
   --csq-icon-bright: var(--blades-gold-bright);
   --csq-type-color: var(--blades-gold-dark);
   --csq-name-color: var(--blades-gold-bright);
 }
-html .comp.consequence-display-container .special-armor-consequence, :root .comp.consequence-display-container .special-armor-consequence {
-  opacity: 0;
+html .comp.consequence-display-container .armor-consequence, :root .comp.consequence-display-container .armor-consequence {
+  --csq-icon-dark: var(--blades-grey-dark);
+  --csq-icon-med: var(--blades-grey-bright);
+  --csq-icon-bright: var(--blades-white-bright);
+  --csq-type-color: var(--blades-grey-bright);
+  --csq-name-color: var(--blades-white-bright);
+}
+html .comp.consequence-display-container .special-consequence, :root .comp.consequence-display-container .special-consequence {
   --csq-icon-dark: var(--blades-blue-dark);
   --csq-icon-med: var(--blades-blue);
   --csq-icon-bright: var(--blades-blue-bright);
@@ -2802,24 +2861,54 @@ html .comp.consequence-display-container .consequence-bg-image, :root .comp.cons
   left: -10px;
 }
 html .comp.consequence-display-container .consequence-interaction-pad, :root .comp.consequence-display-container .consequence-interaction-pad {
-  display: none;
-  display: block;
-  position: absolute;
   z-index: 2;
-  pointer-events: auto;
+  pointer-events: none;
   height: 100%;
   top: 0;
 }
-html .comp.consequence-display-container .consequence-interaction-pad.accept-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.accept-consequence-pad {
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-right, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-right {
+  position: absolute;
+  pointer-events: none;
   --pad-left-shift: calc(var(--container-left-shift) + (var(--container-height)));
   left: var(--pad-left-shift);
   width: calc(100% - var(--pad-left-shift));
 }
-html .comp.consequence-display-container .consequence-interaction-pad.resist-consequence-pad, html .comp.consequence-display-container .consequence-interaction-pad.special-armor-consequence-pad, html .comp.consequence-display-container .consequence-interaction-pad.armor-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.resist-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.special-armor-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.armor-consequence-pad {
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left {
+  position: absolute;
+  pointer-events: none;
+  left: -190px;
+  width: calc(200px + var(--container-left-shift) - var(--container-height) * 0);
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: stretch;
+  align-items: stretch;
+}
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad {
+  flex-grow: 1;
+  pointer-events: none;
+}
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad.interaction-pad-left-resist, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad.interaction-pad-left-resist {
+  flex-basis: 50%;
+  flex-shrink: 0.6;
+}
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad.interaction-pad-left-armor, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad.interaction-pad-left-armor {
+  flex-basis: 50%;
+  flex-shrink: 1;
+}
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad.interaction-pad-left-special, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left > .consequence-interaction-pad.interaction-pad-left-special {
+  flex-basis: 50%;
+  flex-shrink: 1;
+}
+html .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left .interaction-pad-left-resist, :root .comp.consequence-display-container .consequence-interaction-pad.interaction-pad-left .interaction-pad-left-resist {
+  flex-basis: 50%;
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+html .comp.consequence-display-container .consequence-interaction-pad.resist-consequence-pad, html .comp.consequence-display-container .consequence-interaction-pad.special-consequence-pad, html .comp.consequence-display-container .consequence-interaction-pad.armor-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.resist-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.special-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.armor-consequence-pad {
   left: -200px;
   width: calc(200px + var(--container-left-shift) - var(--container-height) * 0);
 }
-html .comp.consequence-display-container .consequence-interaction-pad.special-armor-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.special-armor-consequence-pad {
+html .comp.consequence-display-container .consequence-interaction-pad.special-consequence-pad, :root .comp.consequence-display-container .consequence-interaction-pad.special-consequence-pad {
   height: 50%;
   z-index: 3;
 }
@@ -2836,9 +2925,6 @@ html .comp.consequence-display-container .consequence-icon-container, :root .com
   pointer-events: auto;
   z-index: 2;
   transition: 0.2s;
-}
-html .comp.consequence-display-container .consequence-icon-container:hover, :root .comp.consequence-display-container .consequence-icon-container:hover {
-  filter: brightness(2);
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle {
   position: absolute;
@@ -2882,17 +2968,15 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence {
   transform: scale(0.75);
-  animation: icon-glow 2s ease infinite;
+  animation: icon-glow 2.25s ease infinite;
+  animation-delay: var(--csq-animation-delay);
   pointer-events: auto;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence img, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence img {
-  animation: icon-glow 2s ease infinite;
+  animation: icon-glow 2.25s ease infinite;
+  animation-delay: var(--csq-animation-delay);
 }
-html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence:hover, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.base-consequence:hover {
-  filter: brightness(2) !important;
-  animation: none;
-}
-html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.resist-consequence, html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.special-armor-consequence, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.resist-consequence, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.special-armor-consequence {
+html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.resist-consequence, html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.special-consequence, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.resist-consequence, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle.special-consequence {
   outline-width: 2px;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle .consequence-icon, :root .comp.consequence-display-container .consequence-icon-container .consequence-icon-circle .consequence-icon {
@@ -2917,11 +3001,12 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   background: var(--csq-icon-bright);
   display: block;
 }
-html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
+html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-resist-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-button-bg {
   transform-origin: 100% 50%;
 }
-html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-armor-button-bg {
-  width: calc(100% + 32px);
+html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-button-bg, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-bg.consequence-special-button-bg {
+  width: calc(100% + 40px);
+  margin-left: -10px;
 }
 html .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container .consequence-button-label {
   position: relative;
@@ -2964,21 +3049,9 @@ html .comp.consequence-display-container .consequence-icon-container .consequenc
   right: -7px;
   transform: skewX(-45deg);
 }
-html .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-armor-button-container, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-armor-button-container {
+html .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-button-container, :root .comp.consequence-display-container .consequence-icon-container .consequence-button-container.consequence-special-button-container {
   right: 100%;
   bottom: 12px;
-}
-html .comp.consequence-display-container .consequence-blocker, :root .comp.consequence-display-container .consequence-blocker {
-  height: 100%;
-  background: var(--blades-black-dark);
-  transform-origin: 0% 50%;
-  opacity: 0;
-  position: absolute;
-  z-index: 10;
-  top: 0;
-  width: 100%;
-  z-index: 1;
-  left: calc(0.5 * var(--container-height) + 5px);
 }
 html .comp.consequence-display-container .consequence-type-container, :root .comp.consequence-display-container .consequence-type-container {
   position: absolute;
@@ -2991,6 +3064,7 @@ html .comp.consequence-display-container .consequence-type-container, :root .com
 html .comp.consequence-display-container .consequence-type-container .consequence-type-bg, :root .comp.consequence-display-container .consequence-type-container .consequence-type-bg {
   position: absolute;
   top: 0;
+  z-index: -1;
   left: -20px;
   height: 100%;
   width: 170px;
@@ -3057,7 +3131,7 @@ html .comp.consequence-display-container .consequence-footer-container .conseque
 html .comp.consequence-display-container .consequence-footer-container .consequence-footer-bg.resist-consequence, :root .comp.consequence-display-container .consequence-footer-container .consequence-footer-bg.resist-consequence {
   width: 120px;
 }
-html .comp.consequence-display-container .consequence-footer-container .consequence-footer-bg.special-armor-consequence, :root .comp.consequence-display-container .consequence-footer-container .consequence-footer-bg.special-armor-consequence {
+html .comp.consequence-display-container .consequence-footer-container .consequence-footer-bg.special-consequence, :root .comp.consequence-display-container .consequence-footer-container .consequence-footer-bg.special-consequence {
   width: 250px;
 }
 html .comp.consequence-display-container .consequence-footer-container .consequence-footer-message, :root .comp.consequence-display-container .consequence-footer-container .consequence-footer-message {

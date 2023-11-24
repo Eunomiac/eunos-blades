@@ -47,6 +47,7 @@ class BladesChat extends ChatMessage {
 
 
 interface BladesChat {
+  content?: string;
 
 }
 

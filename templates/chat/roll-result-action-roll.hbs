@@ -27,7 +27,8 @@
 
   {{!-- Roll Trait  --}}
   <h1 class="chat-header roll-trait">
-    <span class="trait-label">{{case "upper" rollTrait}}</span>
+    <span class="trait-label trait-verb">{{case "title" rollTraitVerb}}</span>
+    <span class="trait-label trait-past-verb">{{case "title" rollTraitPastVerb}}</span>
   </h1>
 
   {{!-- Opposition --}}
@@ -91,7 +92,8 @@
     {{eLog "ConsequenceContainer" cIndex csqData cData}}
     {{#if cData.resistTo}}
     {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
-      flagData=../../flagData }}
+      flagData=../../flagData
+      chatID=../../chatMsgID }}
     {{/if}}
   {{/each}}
   {{/with}}

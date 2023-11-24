@@ -8,13 +8,11 @@ import { SelectionCategory } from "./BladesDialog.js";
 // #endregion
 // Blades Theme Song: "Bangkok" from The Gray Man soundtrack: https://www.youtube.com/watch?v=cjjImvMqYlo&list=OLAK5uy_k9cZDd1Fbpd25jfDtte5A6HyauD2-cwgk&index=2
 // Also check out Discord thread: https://discord.com/channels/325094888133885952/1152316839163068527
-// eslint-disable-next-line no-shadow
 var BladesActorUniqueTags;
 (function (BladesActorUniqueTags) {
     BladesActorUniqueTags["CharacterCrew"] = "CharacterCrew";
     BladesActorUniqueTags["VicePurveyor"] = "VicePurveyor";
 })(BladesActorUniqueTags || (BladesActorUniqueTags = {}));
-// eslint-disable-next-line no-shadow
 var BladesItemUniqueTypes;
 (function (BladesItemUniqueTypes) {
     BladesItemUniqueTypes["background"] = "background";

@@ -18,6 +18,7 @@ declare global {
     export type ConsequenceResistOption = {
       name: string,
       id: string,
+      chatID?: string,
       type?: ConsequenceType,
       typeDisplay?: string,
       icon?: string,

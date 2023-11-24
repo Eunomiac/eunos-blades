@@ -1860,6 +1860,24 @@ class BladesRoll extends DocumentSheet {
     }
     get rollDowntimeAction() { return this.flagData.rollDowntimeAction; }
     get rollTrait() { return this.flagData.rollTrait; }
+    get rollTraitVerb() {
+        if (!this.rollTrait) {
+            return undefined;
+        }
+        if (!(this.rollTrait in C.ActionVerbs)) {
+            return undefined;
+        }
+        return C.ActionVerbs[this.rollTrait];
+    }
+    get rollTraitPastVerb() {
+        if (!this.rollTrait) {
+            return undefined;
+        }
+        if (!(this.rollTrait in C.ActionPastVerbs)) {
+            return undefined;
+        }
+        return C.ActionPastVerbs[this.rollTrait];
+    }
     _rollTraitValOverride;
     get rollTraitValOverride() { return this._rollTraitValOverride; }
     set rollTraitValOverride(val) { this._rollTraitValOverride = val; }
@@ -2867,6 +2885,7 @@ class BladesRoll extends DocumentSheet {
     }
     // #endregion
     async resolveRoll() {
+        this.close();
         await this.roll.evaluate({ async: true });
         await this.setRollPhase(RollPhase.AwaitingConsequences);
         switch (this.rollType) {
@@ -2877,17 +2896,38 @@ class BladesRoll extends DocumentSheet {
                 else {
                     await this.setRollPhase(RollPhase.Complete);
                 }
+                // Apply Stress & Special Armor Costs
+                if (BladesPC.IsType(this.rollPrimaryDoc)) {
+                    const rollCostData = this.getRollCosts();
+                    const stressCost = this.getTotalStressCost(this.getStressCosts(rollCostData));
+                    if (stressCost !== 0) {
+                        this.rollPrimaryDoc.adjustStress(stressCost);
+                    }
+                    if (this.getSpecArmorCost(rollCostData)) {
+                        this.rollPrimaryDoc.spendSpecialArmor();
+                    }
+                }
+                // const rollCosts = get.roll.getTotalStressCost(get.roll.getStressCosts(get.roll.getRollCosts()))
                 await this.outputRollToChat();
                 if (this.rollPrimary.rollPrimaryDoc) {
                     this.rollPrimary.rollPrimaryDoc.unsetFlag("eunos-blades", "isWorsePosition");
                 }
-                this.close();
                 break;
             }
             case RollType.Resistance: {
                 await this.setRollPhase(RollPhase.Complete);
+                const { id: csqID } = this.rollConsequence ?? {};
+                const { chatID } = this.rollConsequence?.resistTo ?? {};
+                if (csqID && chatID) {
+                    const resistedCsq = await BladesConsequence.GetFromID(chatID, csqID);
+                    if (resistedCsq) {
+                        await resistedCsq.applyResistedConsequence();
+                    }
+                }
+                if (BladesPC.IsType(this.rollPrimaryDoc)) {
+                    this.rollPrimaryDoc.adjustStress(this.resistanceStressCost);
+                }
                 await this.outputRollToChat();
-                this.close();
                 break;
             }
         }
@@ -2915,7 +2955,7 @@ class BladesRoll extends DocumentSheet {
         else if (rollPrimaryID) {
             chatSpeaker.actor = rollPrimaryID;
         }
-        chatSpeaker.alias = `${chatSpeaker.alias} Rolls ...`;
+        // chatSpeaker.alias = `${chatSpeaker.alias} Rolls ...`;
         return chatSpeaker;
     }
     async getResultHTML(chatMsgID) {
@@ -2963,7 +3003,7 @@ class BladesRoll extends DocumentSheet {
             case "accept-consequence": return thisCsq.acceptConsequence();
             case "resist-consequence": return thisCsq.resistConsequence();
             case "armor-consequence": return thisCsq.resistArmorConsequence();
-            case "special-armor-consequence": return thisCsq.resistSpecialArmorConsequence();
+            case "special-consequence": return thisCsq.resistSpecialArmorConsequence();
         }
         return undefined;
     }

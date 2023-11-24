@@ -1,8 +1,11 @@
-/* eslint-disable lines-between-class-members, no-dupe-class-members */
+/* no-dupe-class-members */
 import C, { BladesActorType, AttributeTrait, ConsequenceType, RollResult, RollType, Position, Effect, RollPhase } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesRoll, { BladesRollPrimary } from "../../BladesRoll.js";
 class BladesConsequence {
+    static GetActiveRollChatID() {
+        return Array.from(game.messages).filter((msg) => $(msg.content ?? "").data("chat-id")).pop()?.id ?? undefined;
+    }
     static ApplyChatListeners(html) {
         const html$ = $(html);
         const roll$ = html$.find(".blades-roll");
@@ -21,6 +24,14 @@ class BladesConsequence {
         }
         else if (roll$.hasClass("roll-type-indulgevice")) {
             roll$.closest(".chat-message").addClass("indulgevice-roll");
+        }
+        // If this message is the last one, add 'active-chat-roll' class and remove it from all others
+        if (BladesConsequence.GetActiveRollChatID() === roll$.data("chatId")) {
+            $(document).find(".chat-message").removeClass("active-chat-roll");
+            roll$.closest(".chat-message").addClass("active-chat-roll");
+        }
+        else {
+            roll$.closest(".chat-message").removeClass("active-chat-roll");
         }
         const rollPhase = roll$.data("rollPhase");
         eLog.checkLog3("rollCollab", "ApplyChatListeners", { html, roll$, rollPhase });
@@ -45,13 +56,23 @@ class BladesConsequence {
                         await csq.resistArmorConsequence();
                         break;
                     }
-                    case "special-armor-consequence": {
+                    case "special-consequence": {
                         await csq.resistSpecialArmorConsequence();
                         break;
                     }
                 }
             }
         });
+    }
+    static async GetFromID(msgID, csqID) {
+        const chatMessage = game.messages.get(msgID);
+        if (chatMessage) {
+            if (csqID) {
+                return BladesConsequence.GetFromChatMessage(chatMessage, csqID);
+            }
+            return BladesConsequence.GetFromChatMessage(chatMessage);
+        }
+        return undefined;
     }
     static GetFromCsqElem(csqElem) {
         csqElem = $(csqElem);
@@ -123,7 +144,7 @@ class BladesConsequence {
             ...getBaseData(csq$),
             ...getResistableData(csq$, "resist-consequence"),
             ...getResistableData(csq$, "armor-consequence"),
-            ...getResistableData(csq$, "special-armor-consequence"),
+            ...getResistableData(csq$, "special-consequence"),
             isAccepted: csq$.hasClass("consequence-accepted")
         });
     }
@@ -266,11 +287,11 @@ class BladesConsequence {
             if (!resistTo.id) {
                 throw new Error("[new BladesConsequence] Missing 'resistTo.id' in constructor data object.");
             }
-            if (!resistTo.name) {
-                throw new Error("[new BladesConsequence] Missing 'resistTo.name' in constructor data object.");
-            }
             if (!resistTo.type) {
                 throw new Error("[new BladesConsequence] Missing 'resistTo.type' in constructor data object.");
+            }
+            if (!resistTo.name && resistTo.type !== ConsequenceType.None) {
+                throw new Error("[new BladesConsequence] Missing 'resistTo.name' in constructor data object.");
             }
             this._resistTo = new BladesConsequence(resistTo);
         }
@@ -278,11 +299,11 @@ class BladesConsequence {
             if (!armorTo.id) {
                 throw new Error("[new BladesConsequence] Missing 'armorTo.id' in constructor data object.");
             }
-            if (!armorTo.name) {
-                throw new Error("[new BladesConsequence] Missing 'armorTo.name' in constructor data object.");
-            }
             if (!armorTo.type) {
                 throw new Error("[new BladesConsequence] Missing 'armorTo.type' in constructor data object.");
+            }
+            if (!armorTo.name && armorTo.type !== ConsequenceType.None) {
+                throw new Error("[new BladesConsequence] Missing 'armorTo.name' in constructor data object.");
             }
             this._armorTo = new BladesConsequence(armorTo);
         }
@@ -290,11 +311,11 @@ class BladesConsequence {
             if (!specialTo.id) {
                 throw new Error("[new BladesConsequence] Missing 'specialTo.id' in constructor data object.");
             }
-            if (!specialTo.name) {
-                throw new Error("[new BladesConsequence] Missing 'specialTo.name' in constructor data object.");
-            }
             if (!specialTo.type) {
                 throw new Error("[new BladesConsequence] Missing 'specialTo.type' in constructor data object.");
+            }
+            if (!specialTo.name && specialTo.type !== ConsequenceType.None) {
+                throw new Error("[new BladesConsequence] Missing 'specialTo.name' in constructor data object.");
             }
             this._specialTo = new BladesConsequence(specialTo);
         }
@@ -342,7 +363,7 @@ class BladesConsequence {
                 name = this._armorTo.name;
                 break;
             }
-            case "specialArmor": {
+            case "special": {
                 if (!this._specialTo) {
                     throw new Error(`Cannot transform csq id '${this.id}' into "special" consequence: no specialTo data found.`);
                 }
@@ -408,7 +429,7 @@ class BladesConsequence {
         .accept-consequence,
         .resist-consequence,
         .armor-consequence,
-        .special-armor-consequence,
+        .special-consequence,
         .consequence-footer-container
       `);
         eLog.checkLog2("csqAccept", "Code Stripped Message Code", { message$, message: message$[0], outerHTML: message$[0].outerHTML });
@@ -446,10 +467,12 @@ class BladesConsequence {
             }
         };
         BladesRoll.NewRoll(resistConfig);
-        // The resistance roll and resolution will handle the stress cost of resisting: Resistance is always successful,
-        //  so can edit chat message to resisted consequence immediately, and apply effects to rollPrimary.
-        await this._resistTo.applyConsequenceToPrimary();
-        await this.transformToConsequence("resist");
+    }
+    async applyResistedConsequence() {
+        if (this._resistTo) {
+            await this._resistTo.applyConsequenceToPrimary();
+            await this.transformToConsequence("resist");
+        }
     }
     async resistArmorConsequence() {
         /* ... */

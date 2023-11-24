@@ -4,6 +4,7 @@ import BladesActor from "../BladesActor";
 import BladesClockKeeper from "../documents/items/BladesClockKeeper";
 import BladesGMTracker from "../documents/items/BladesGMTracker";
 import BladesPushAlert from "../BladesPushAlert";
+import BladesChat from "../BladesChat";
 import C from "../core/constants";
 import type gsap from "/scripts/greensock/esm/all";
 
@@ -37,7 +38,7 @@ declare global {
     actors: Collection<BladesActor>,
     user: User,
     users: Collection<User>,
-    messages: Collection<ChatMessage>,
+    messages: Collection<BladesChat>,
     scenes: Scenes,
     model: {
       Actor: Record<BladesActorType, BladesActorSystem>,

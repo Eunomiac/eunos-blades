@@ -10,7 +10,7 @@ declare global {
 
   namespace BladesConsequence {
 
-    export type ResistanceType = "resist"|"armor"|"specialArmor";
+    export type ResistanceType = "resist"|"armor"|"special";
 
     export namespace Data {
 

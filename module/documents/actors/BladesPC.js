@@ -154,6 +154,12 @@ class BladesPC extends BladesActor {
             ...this.actions
         };
     }
+    get stress() {
+        return this.system.stress.value;
+    }
+    get stressMax() {
+        return this.system.stress.max;
+    }
     get trauma() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {
             return 0;
@@ -294,6 +300,19 @@ class BladesPC extends BladesActor {
     get rollParticipantType() { return this.type; }
     get rollParticipantModsData() { return []; }
     // #endregion
+    async adjustStress(deltaStress) {
+        const newStress = Math.min(this.stressMax, Math.max(0, this.stress + deltaStress));
+        if (newStress === this.stressMax) {
+            /* PUSH NOTICE: Player must select Trauma & is removed from Score. */
+        }
+        await this.update({ "system.stress.value": newStress });
+    }
+    async spendSpecialArmor() {
+        if (this.system.armor.active.special && !this.system.armor.checked.special) {
+            await this.update({ "system.armor.checked.special": true });
+            /* PUSH NOTICE: Spent Special Armor */
+        }
+    }
     get rollTraitPCTooltipActions() {
         const tooltipStrings = ["<table><tbody>"];
         const actionRatings = this.actions;

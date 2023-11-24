@@ -186,12 +186,13 @@ export function initDOMStyles() {
     // Append lightning-barrier background to #sidebar
     $("#interface")
         .append(`<div class="lightning-border-container">
+    </div>`); /*
       <img class="border-lightning right-lightning right-lightning-a" src="systems/eunos-blades/assets/animations/chat/energy-beam.webp" />
       <img class="border-lightning right-lightning right-lightning-b" src="systems/eunos-blades/assets/animations/chat/lightning-ray.webp" />
       <img class="border-lightning right-lightning right-lightning-c" src="systems/eunos-blades/assets/animations/chat/lightning-ray.webp" />
       <img class="border-lightning left-lightning left-lightning-a" src="systems/eunos-blades/assets/animations/chat/energy-beam.webp" />
       <img class="border-lightning left-lightning left-lightning-b" src="systems/eunos-blades/assets/animations/chat/lightning-ray.webp" />
       <img class="border-lightning left-lightning left-lightning-c" src="systems/eunos-blades/assets/animations/chat/lightning-ray.webp" />
-    </div>`);
+    </div>`); */
 }
 export default registerSettings;

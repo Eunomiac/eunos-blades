@@ -609,6 +609,34 @@ const C = {
     [ActionTrait.consort]: "<p>When you <strong>Consort</strong>, you socialize with friends and contacts.</p><ul><li>You might gain access to resources, information, people, or places.</li><li>You might make a good impression or win someone over with charm and style.</li><li>You might make new friends or connect with your heritage or background.</li></ul><ul><li>You could try to direct allies with social pressure <em>(but <strong>Commanding</strong> might be better)</em>.</li></ul><hr><ul><li>Who do you consort with?</li><li>Where do you meet?</li><li>What do you talk about?</li><li>What do you hope to achieve?</li></ul>",
     [ActionTrait.sway]: "<p>When you <strong>Sway</strong>, you influence someone with guile, charm, or argument.</p><ul><li>You might lie convincingly.</li><li>You might persuade someone to do what you want.</li><li>You might argue a case that leaves no clear rebuttal.</li></ul><ul><li>You could try to trick people into affection or obedience <em>(but <strong>Consorting</strong> or <strong>Commanding</strong> might be better)</em>.</li></ul><hr><ul><li>Who do you sway?</li><li>What kind of leverage do you have here?</li><li>What do you hope they'll do?</li></ul>"
   },
+  ActionVerbs: {
+    [ActionTrait.hunt]: "hunts",
+    [ActionTrait.study]: "studies",
+    [ActionTrait.survey]: "surveys",
+    [ActionTrait.tinker]: "tinkers",
+    [ActionTrait.finesse]: "finesses",
+    [ActionTrait.prowl]: "prowls",
+    [ActionTrait.skirmish]: "skirmishes",
+    [ActionTrait.wreck]: "wrecks",
+    [ActionTrait.attune]: "attunes",
+    [ActionTrait.command]: "commands",
+    [ActionTrait.consort]: "consorts",
+    [ActionTrait.sway]: "sways"
+  },
+  ActionPastVerbs: {
+    [ActionTrait.hunt]: "hunted",
+    [ActionTrait.study]: "studied",
+    [ActionTrait.survey]: "surveyed",
+    [ActionTrait.tinker]: "tinkered",
+    [ActionTrait.finesse]: "finessed",
+    [ActionTrait.prowl]: "prowled",
+    [ActionTrait.skirmish]: "skirmished",
+    [ActionTrait.wreck]: "wrecked",
+    [ActionTrait.attune]: "attuned",
+    [ActionTrait.command]: "commanded",
+    [ActionTrait.consort]: "consorted",
+    [ActionTrait.sway]: "swayed"
+  },
   TraumaTooltips: {
     Cold: "You're not moved by emotional appeals or social bonds.",
     Haunted: "You're often lost in reverie, reliving past horrors, seeing things.",

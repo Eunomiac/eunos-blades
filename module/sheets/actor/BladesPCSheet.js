@@ -320,7 +320,7 @@ class BladesPCSheet extends BladesActorSheet {
                 $(this).siblings(`.svg-armor.armor-${targetArmor}`).removeClass("hover-over");
             }
         });
-        html.find(".special-armor-control").on({
+        html.find(".special-control").on({
             click() {
                 if (!self.activeArmor.includes("special")) {
                     return;
