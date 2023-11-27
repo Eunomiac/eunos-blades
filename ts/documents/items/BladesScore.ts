@@ -54,7 +54,7 @@ class BladesScore extends BladesItem implements BladesItemSubClass.Score,
       }
     };
   }
-  override get rollOppImg() { return this.img ?? "" }
+  override get rollOppImg() { return this.img ?? ""; }
   override getFactorTotal(factor: Factor): number {
     switch (factor) {
       case Factor.tier: return this.system.tier.value;

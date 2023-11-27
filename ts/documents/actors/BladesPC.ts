@@ -60,6 +60,11 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   }
   // #endregion
 
+  constructor(data: ActorDataConstructorData) {
+    super(data);
+    eLog.checkLog3("pcConstructor", "new BladesPC()", {data});
+  }
+
   // #region BladesPrimaryActor Implementation ~
   get primaryUser(): User | null {
     return game.users?.find((user) => user.character?.id === this?.id) || null;

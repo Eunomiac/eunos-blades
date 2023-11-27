@@ -62,6 +62,12 @@ declare global {
     export interface canRoll {
       roll_mods: string[]
     }
+
+    export interface targetLink {
+      targetID?: string,
+      targetKey?: string,
+      targetFlagKey?: string
+    }
   }
 
   // Compiled "system" Schemas for BladesItem Types
@@ -72,6 +78,16 @@ declare global {
       BladesItemSchemaTemplate.limitUses { }
 
     export interface Background extends BladesItemSchemaTemplate.Default { }
+
+    export interface Clock extends BladesItemSchemaTemplate.Default,
+      BladesItemSchemaTemplate.targetLink,
+      ValueMax {
+      color: string,
+      isActive: boolean,
+      isNameVisible: boolean,
+      isVisible: boolean,
+      display: Record<string, string> // id: positioning/placement/layout instructions
+    }
 
     export interface Clock_Keeper extends BladesItemSchemaTemplate.Default {
       scenes: Array<{ id: string, name: string }>,
@@ -193,6 +209,7 @@ declare global {
   interface BladesItemSystem extends BladesItemSchemaTemplate.Default,
     Partial<BladesItemSchema.Ability>,
     Partial<BladesItemSchema.Background>,
+    Partial<BladesItemSchema.Clock>,
     Partial<BladesItemSchema.Clock_Keeper>,
     Partial<BladesItemSchema.Cohort_Gang>,
     Partial<BladesItemSchema.Cohort_Expert>,
@@ -221,6 +238,7 @@ declare global {
   type ExtractBladesItemSystem<T extends BladesItemType | "ANY" = "ANY"> = {
     [BladesItemType.ability]: BladesItemSchema.Ability,
     [BladesItemType.background]: BladesItemSchema.Background,
+    [BladesItemType.clock]: BladesItemSchema.Clock,
     [BladesItemType.clock_keeper]: BladesItemSchema.Clock_Keeper,
     [BladesItemType.cohort_gang]: BladesItemSchema.Cohort_Gang,
     [BladesItemType.cohort_expert]: BladesItemSchema.Cohort_Expert,
@@ -260,6 +278,7 @@ declare global {
 
     export interface Ability extends BladesItemComponent.Default {}
     export interface Background extends BladesItemComponent.Default {}
+    export interface Clock extends BladesItemComponent.Default { }
     export interface Clock_Keeper extends BladesItemComponent.Default {}
     export interface Cohort_Gang extends BladesItemComponent.Default {}
     export interface Cohort_Expert extends BladesItemComponent.Default {}

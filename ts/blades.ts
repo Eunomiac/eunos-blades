@@ -9,8 +9,21 @@ import logger from "./core/logger";
 import G, {Initialize as GsapInitialize} from "./core/gsap";
 
 
-import BladesActorProxy, {BladesActor, BladesPC, BladesCrew, BladesNPC, BladesFaction} from "./documents/BladesActorProxy";
-import BladesItemProxy, {BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore} from "./documents/BladesItemProxy";
+import BladesActorProxy, {
+  BladesActor,
+  BladesPC,
+  BladesCrew,
+  BladesNPC,
+  BladesFaction
+} from "./documents/BladesActorProxy";
+import BladesItemProxy, {
+  BladesItem,
+  BladesClock,
+  BladesClockKeeper,
+  BladesGMTracker,
+  BladesLocation,
+  BladesScore
+} from "./documents/BladesItemProxy";
 
 import BladesItemSheet from "./sheets/item/BladesItemSheet";
 import BladesPCSheet from "./sheets/actor/BladesPCSheet";
@@ -24,7 +37,7 @@ import BladesAI, {AGENTS, AIAssistant} from "./core/ai";
 import BladesActiveEffect from "./BladesActiveEffect";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet";
-import {updateClaims, updateContacts, updateOps, updateFactions, updateDescriptions, updateRollMods} from "./data-import/data-import";
+// import {updateClaims, updateContacts, updateOps, updateFactions, updateDescriptions, updateRollMods} from "./data-import/data-import";
 
 CONFIG.debug.logging = false;
 /* DEVCODE*/CONFIG.debug.logging = true;
@@ -252,12 +265,12 @@ class GlobalGetter {
   globalThis,
   {
     get: new GlobalGetter(),
-    updateClaims,
-    updateContacts,
-    updateOps,
-    updateFactions,
-    updateDescriptions,
-    updateRollMods,
+    // updateClaims,
+    // updateContacts,
+    // updateOps,
+    // updateFactions,
+    // updateDescriptions,
+    // updateRollMods,
     BladesActor,
     BladesPC,
     BladesCrew,
@@ -279,6 +292,7 @@ class GlobalGetter {
     U,
     C,
     BladesItem,
+    BladesClock,
     BladesClockKeeper,
     BladesGMTracker,
     BladesLocation,

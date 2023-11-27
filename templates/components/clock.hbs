@@ -1,4 +1,6 @@
-<div class="clock {{~#if isActive}} clock-active{{/if}}" {{~#if target}} data-target="{{target}}"{{/if}} {{~#if clockNum}} data-index="{{clockNum}}"{{/if}} data-size="{{max}}" data-value="{{value}}">
+{{eLog "Clock Context" this}}
+
+<div class="clock {{~#if isActive}} clock-active{{/if}}" data-id="{{id}}" {{~#if targetKey}} data-target="{{targetKey}}"{{/if}}{{#if targetFlagKey}} data-flag-target="{{targetFlagKey}}"{{/if}} {{~#if clockNum}} data-index="{{clockNum}}"{{/if}} data-size="{{max}}" data-value="{{value}}">
   {{#if isVisible}}
   <div class="clock-interior" style="clip-path: url(#{{value}}-of-{{max}}); {{~#if (test value "==" 0)}} opacity: 0;{{/if}}">
     <svg viewBox="0 0 400 400">

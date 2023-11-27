@@ -18,6 +18,7 @@ declare global {
 
     export interface Ability {}
     export interface Background {}
+    export interface Clock {}
     export interface Clock_Keeper {
       phases: BladesPhase[]
     }
@@ -60,6 +61,7 @@ declare global {
   interface BladesItemSheetData extends BladesBaseItemSheetContext,
                                       Partial<BladesItemSheetTypedData.Ability>,
                                       Partial<BladesItemSheetTypedData.Background>,
+                                      Partial<BladesItemSheetTypedData.Clock>,
                                       Partial<BladesItemSheetTypedData.Clock_Keeper>,
                                       Partial<BladesItemSheetTypedData.Cohort_Gang>,
                                       Partial<BladesItemSheetTypedData.Cohort_Expert>,
@@ -85,6 +87,7 @@ declare global {
   type BladesItemDataOfType<T extends BladesItemType> = {
     [BladesItemType.ability]: BladesItemSheetTypedData.Ability,
     [BladesItemType.background]: BladesItemSheetTypedData.Background,
+    [BladesItemType.clock]: BladesItemSheetTypedData.Clock,
     [BladesItemType.clock_keeper]: BladesItemSheetTypedData.Clock_Keeper,
     [BladesItemType.cohort_gang]: BladesItemSheetTypedData.Cohort_Gang,
     [BladesItemType.cohort_expert]: BladesItemSheetTypedData.Cohort_Expert,

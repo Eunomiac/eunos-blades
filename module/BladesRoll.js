@@ -977,21 +977,8 @@ class BladesRollOpposition {
     rollOppImg;
     rollOppModsData;
     rollFactors;
-    _clockData;
-    get clockData() { return this._clockData ?? {}; }
-    set clockData(val) {
-        val.id ??= randomID();
-        val.display ??= "";
-        val.value ??= 0;
-        val.max ??= 8;
-        val.color ??= "white";
-        val.isActive = true;
-        val.isNameVisible = false;
-        val.isVisible = true;
-        this._clockData = val;
-    }
     // #region Constructor ~
-    constructor(rollInstance, { rollOppID, rollOppDoc, rollOppName, rollOppSubName, rollOppType, rollOppImg, rollOppModsData, rollFactors, rollOppClock } = {}) {
+    constructor(rollInstance, { rollOppID, rollOppDoc, rollOppName, rollOppSubName, rollOppType, rollOppImg, rollOppModsData, rollFactors } = {}) {
         this.rollInstance = rollInstance;
         // Attempt to fetch an associated BladesActor or BladesItem document
         const doc = BladesRollOpposition.GetDoc(rollOppDoc ?? rollOppID ?? rollOppName);
@@ -1030,9 +1017,6 @@ class BladesRollOpposition {
         this.rollOppImg = rollOppImg ?? "";
         this.rollOppModsData = rollOppModsData ?? [];
         this.rollFactors = rollFactors;
-        if (rollOppClock) {
-            this.clockData = rollOppClock;
-        }
     }
     // #endregion
     get flagParams() {
@@ -1046,8 +1030,7 @@ class BladesRollOpposition {
             rollOppType: this.rollOppType,
             rollOppImg: this.rollOppImg,
             rollOppModsData: this.rollOppModsData,
-            rollFactors: this.rollFactors,
-            rollOppClock: this.clockData
+            rollFactors: this.rollFactors
         };
     }
     async updateRollFlags() {
@@ -2792,7 +2775,6 @@ class BladesRoll extends DocumentSheet {
             ...rollResultData,
             ...GMBoostsData,
             ...positionEffectTradeData,
-            // ...downtimeData,
             userPermission,
             gamePhase: game.eunoblades.Tracker?.phase || BladesPhase.Freeplay
         };

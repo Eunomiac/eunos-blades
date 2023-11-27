@@ -16,6 +16,7 @@ export var BladesItemType;
 (function (BladesItemType) {
     BladesItemType["ability"] = "ability";
     BladesItemType["background"] = "background";
+    BladesItemType["clock"] = "clock";
     BladesItemType["clock_keeper"] = "clock_keeper";
     BladesItemType["cohort_gang"] = "cohort_gang";
     BladesItemType["cohort_expert"] = "cohort_expert";

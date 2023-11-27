@@ -3,6 +3,7 @@ import C, {BladesActorType, BladesItemType, AttributeTrait, Tag, ActionTrait, Bl
 import U from "../../core/utilities";
 import BladesActorSheet from "./BladesActorSheet";
 import {BladesActor, BladesPC} from "../../documents/BladesActorProxy";
+import {BladesClock} from "../../documents/BladesItemProxy";
 import BladesGMTrackerSheet from "../item/BladesGMTrackerSheet";
 
 class BladesPCSheet extends BladesActorSheet {
@@ -112,16 +113,19 @@ class BladesPCSheet extends BladesActorSheet {
     sheetData.hasVicePurveyor = Boolean(this.actor.playbook?.hasTag(Tag.Gear.Advanced) === false
                                         && activeSubItems.find((item) => item.type === BladesItemType.vice));
 
-    sheetData.healing_clock = {
-      display: "Healing",
-      target: "system.healing.value",
-      color: "white",
-      isVisible: true,
-      isNameVisible: false,
-      isActive: false,
-      ...this.actor.system.healing,
-      id: randomID()
-    } as BladesClockData;
+    sheetData.healing_clock = new BladesClock({
+      name: "Healing",
+      type: BladesItemType.clock,
+      data: {
+        targetID: this.actor.id,
+        targetKey: "system.healing.value",
+        color: "white",
+        isVisible: "true",
+        isNameVisible: false,
+        isActive: false,
+        ...this.actor.system.healing
+      }
+    });
 
     sheetData.stashData = {
       label: "Stash:",

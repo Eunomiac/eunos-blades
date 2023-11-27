@@ -54,6 +54,16 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
+        [BladesItemType.clock]: (context) => {
+            if (!BladesItem.IsType(this.item, BladesItemType.clock)) {
+                return undefined;
+            }
+            const sheetData = {};
+            return {
+                ...context,
+                ...sheetData
+            };
+        },
         [BladesItemType.clock_keeper]: (context) => {
             if (!BladesItem.IsType(this.item, BladesItemType.clock_keeper)) {
                 return undefined;

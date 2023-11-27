@@ -2,6 +2,7 @@ import C, { BladesActorType, BladesItemType, AttributeTrait, Tag, BladesPhase } 
 import U from "../../core/utilities.js";
 import BladesActorSheet from "./BladesActorSheet.js";
 import { BladesActor } from "../../documents/BladesActorProxy.js";
+import { BladesClock } from "../../documents/BladesItemProxy.js";
 import BladesGMTrackerSheet from "../item/BladesGMTrackerSheet.js";
 class BladesPCSheet extends BladesActorSheet {
     static get defaultOptions() {
@@ -98,16 +99,19 @@ class BladesPCSheet extends BladesActorSheet {
         };
         sheetData.hasVicePurveyor = Boolean(this.actor.playbook?.hasTag(Tag.Gear.Advanced) === false
             && activeSubItems.find((item) => item.type === BladesItemType.vice));
-        sheetData.healing_clock = {
-            display: "Healing",
-            target: "system.healing.value",
-            color: "white",
-            isVisible: true,
-            isNameVisible: false,
-            isActive: false,
-            ...this.actor.system.healing,
-            id: randomID()
-        };
+        sheetData.healing_clock = new BladesClock({
+            name: "Healing",
+            type: BladesItemType.clock,
+            data: {
+                targetID: this.actor.id,
+                targetKey: "system.healing.value",
+                color: "white",
+                isVisible: "true",
+                isNameVisible: false,
+                isActive: false,
+                ...this.actor.system.healing
+            }
+        });
         sheetData.stashData = {
             label: "Stash:",
             dotline: {

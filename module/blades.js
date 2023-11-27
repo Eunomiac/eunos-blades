@@ -8,7 +8,7 @@ import U from "./core/utilities.js";
 import logger from "./core/logger.js";
 import G, { Initialize as GsapInitialize } from "./core/gsap.js";
 import BladesActorProxy, { BladesActor, BladesPC, BladesCrew, BladesNPC, BladesFaction } from "./documents/BladesActorProxy.js";
-import BladesItemProxy, { BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore } from "./documents/BladesItemProxy.js";
+import BladesItemProxy, { BladesItem, BladesClock, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore } from "./documents/BladesItemProxy.js";
 import BladesItemSheet from "./sheets/item/BladesItemSheet.js";
 import BladesPCSheet from "./sheets/actor/BladesPCSheet.js";
 import BladesCrewSheet from "./sheets/actor/BladesCrewSheet.js";
@@ -20,7 +20,7 @@ import BladesAI, { AGENTS, AIAssistant } from "./core/ai.js";
 import BladesActiveEffect from "./BladesActiveEffect.js";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet.js";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet.js";
-import { updateClaims, updateContacts, updateOps, updateFactions, updateDescriptions, updateRollMods } from "./data-import/data-import.js";
+// import {updateClaims, updateContacts, updateOps, updateFactions, updateDescriptions, updateRollMods} from "./data-import/data-import.js";
 CONFIG.debug.logging = false;
 /* DEVCODE*/ CONFIG.debug.logging = true;
 Object.assign(globalThis, { eLog: logger });
@@ -231,12 +231,12 @@ class GlobalGetter {
 // #region Globals: Exposing Functionality to Global Scope ~
 /* DEVCODE*/ Object.assign(globalThis, {
     get: new GlobalGetter(),
-    updateClaims,
-    updateContacts,
-    updateOps,
-    updateFactions,
-    updateDescriptions,
-    updateRollMods,
+    // updateClaims,
+    // updateContacts,
+    // updateOps,
+    // updateFactions,
+    // updateDescriptions,
+    // updateRollMods,
     BladesActor,
     BladesPC,
     BladesCrew,
@@ -258,6 +258,7 @@ class GlobalGetter {
     U,
     C,
     BladesItem,
+    BladesClock,
     BladesClockKeeper,
     BladesGMTracker,
     BladesLocation,

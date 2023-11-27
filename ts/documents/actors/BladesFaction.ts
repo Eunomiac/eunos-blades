@@ -25,18 +25,18 @@ class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
 
   // #endregion
 
-  async addClock(clockData: Partial<BladesClockData> = {}) {
-    clockData.id ??= clockData.id ?? randomID();
+  async addClock(clockData: Partial<BladesItemSchema.Clock> = {}) {
+    const clockID = randomID();
     clockData.color ??= "white";
-    clockData.display ??= "";
     clockData.isVisible ??= false;
     clockData.isNameVisible ??= false;
     clockData.isActive ??= false;
-    clockData.max ??= 4;
-    clockData.target ??= `system.clocks.${clockData.id}.value`;
     clockData.value ??= 0;
+    clockData.max ??= 4;
+    clockData.targetID = this.id;
+    clockData.targetKey = `system.clocks.${clockID}.value`;
 
-    return this.update({[`system.clocks.${clockData.id}`]: clockData});
+    return this.update({[`system.clocks.${clockID}`]: {id: clockID, ...clockData}});
   }
 
   async deleteClock(clockID: string) {

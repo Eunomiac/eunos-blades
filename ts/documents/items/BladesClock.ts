@@ -4,7 +4,8 @@ import U from "../../core/utilities";
 import BladesActor from "../../BladesActor";
 import BladesRoll from "../../BladesRoll";
 
-class BladesLocation extends BladesItem implements BladesRoll.OppositionDocData {
+class BladesClock extends BladesItem implements BladesItemSubClass.Clock,
+  BladesRoll.OppositionDocData {
 
 
   override get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
@@ -36,13 +37,12 @@ class BladesLocation extends BladesItem implements BladesRoll.OppositionDocData 
     switch (factor) {
       case Factor.tier: return this.system.tier.value;
       case Factor.quality: return this.getFactorTotal(Factor.tier);
-      case Factor.scale: return this.system.scale;
       // no default
     }
     return 0;
   }
 
-  override get rollOppImg() { return this.img ?? ""; }
+  override get rollOppImg() { return ""; }
 
   // #region OVERRIDES: _onUpdate
   override async _onUpdate(changed: any, options: any, userId: string) {
@@ -52,9 +52,9 @@ class BladesLocation extends BladesItem implements BladesRoll.OppositionDocData 
   // #endregion
 }
 
-declare interface BladesLocation {
-  type: BladesItemType.location,
-  system: BladesItemSchema.Location
+declare interface BladesClock {
+  type: BladesItemType.clock,
+  system: BladesItemSchema.Clock
 }
 
-export default BladesLocation;
+export default BladesClock;

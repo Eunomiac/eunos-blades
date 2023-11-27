@@ -364,6 +364,7 @@
 		"types": [
 			"ability",
 			"background",
+      "clock",
 			"clock_keeper",
 			"cohort_gang",
 			"cohort_expert",
@@ -445,7 +446,12 @@
 			},
 			"canRoll": {
 				"roll_mods": []
-			}
+			},
+      "targetLink": {
+        "targetID": "",
+        "targetKey": "",
+        "targetFlagKey": ""
+      }
 		},
 		"ability": {
 			"templates": [
@@ -459,6 +465,19 @@
 				"default"
 			]
 		},
+    "clock": {
+      "templates": [
+        "default",
+        "targetLink"
+      ],
+      "value": 0,
+      "max": 8,
+      "color": "white",
+      "isActive": false,
+      "isNameVisible": true,
+      "isVisible": false,
+      "display": {}
+    },
 		"clock_keeper": {
 			"templates": [
 				"default"

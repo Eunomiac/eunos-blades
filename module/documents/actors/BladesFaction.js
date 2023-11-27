@@ -12,16 +12,16 @@ class BladesFaction extends BladesActor {
     // #endregion
     // #endregion
     async addClock(clockData = {}) {
-        clockData.id ??= clockData.id ?? randomID();
+        const clockID = randomID();
         clockData.color ??= "white";
-        clockData.display ??= "";
         clockData.isVisible ??= false;
         clockData.isNameVisible ??= false;
         clockData.isActive ??= false;
-        clockData.max ??= 4;
-        clockData.target ??= `system.clocks.${clockData.id}.value`;
         clockData.value ??= 0;
-        return this.update({ [`system.clocks.${clockData.id}`]: clockData });
+        clockData.max ??= 4;
+        clockData.targetID = this.id;
+        clockData.targetKey = `system.clocks.${clockID}.value`;
+        return this.update({ [`system.clocks.${clockID}`]: { id: clockID, ...clockData } });
     }
     async deleteClock(clockID) {
         return this.update({ [`system.clocks.-=${clockID}`]: null });

@@ -15,6 +15,7 @@ export enum BladesActorType {
 export enum BladesItemType {
   ability = "ability",
   background = "background",
+  clock = "clock",
   clock_keeper = "clock_keeper",
   cohort_gang = "cohort_gang",
   cohort_expert = "cohort_expert",

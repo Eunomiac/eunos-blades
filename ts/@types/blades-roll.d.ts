@@ -287,6 +287,7 @@ declare global {
     export type OppositionDocType =
        BladesActorType.npc
       |BladesActorType.faction
+      |BladesItemType.clock
       |BladesItemType.cohort_gang
       |BladesItemType.cohort_expert
       |BladesItemType.gm_tracker
@@ -294,12 +295,12 @@ declare global {
       |BladesItemType.location
       |BladesItemType.project
       |BladesItemType.design
-      |BladesItemType.ritual
-      |"clock";
+      |BladesItemType.ritual;
 
     export type OppositionDoc =
        BladesActorOfType<BladesActorType.npc>
       |BladesActorOfType<BladesActorType.faction>
+      |BladesItemOfType<BladesItemType.clock>
       |BladesItemOfType<BladesItemType.cohort_gang>
       |BladesItemOfType<BladesItemType.cohort_expert>
       |BladesItemOfType<BladesItemType.gm_tracker>

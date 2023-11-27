@@ -43,6 +43,10 @@ class BladesPC extends BladesActor {
         return super.create(data, options);
     }
     // #endregion
+    constructor(data) {
+        super(data);
+        eLog.checkLog3("pcConstructor", "new BladesPC()", { data });
+    }
     // #region BladesPrimaryActor Implementation ~
     get primaryUser() {
         return game.users?.find((user) => user.character?.id === this?.id) || null;

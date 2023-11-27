@@ -250,7 +250,7 @@
   <div class="roll-sheet-float-block roll-opp-bg-img">
     {{#if rollOpposition}}
       {{#if (test rollOpposition.rollOppType "==" "clock")}}
-      {{> "systems/eunos-blades/templates/components/clock.hbs" rollOpposition.clockData}}
+      {{> "systems/eunos-blades/templates/components/clock.hbs" rollOpposition.rollOppDoc.system}}
       {{else}}
       <img src="{{rollOpposition.rollOppImg}}" />
       {{/if}}
@@ -261,7 +261,9 @@
   {{/unless}}
   <div class="split-root-right">
     <section class="sheet-main tab-content roll-opp-block nav-group flex-vertical">
-      {{> "systems/eunos-blades/templates/components/roll-collab-opposition.hbs" rollOpposition=rollOpposition factorData=rollFactors.opposition}}
+      {{> "systems/eunos-blades/templates/components/roll-collab-opposition.hbs"
+      rollOpposition=rollOpposition
+      factorData=rollFactors.opposition }}
     </section>
   </div>
 </div>

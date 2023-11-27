@@ -1028,23 +1028,6 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
 
   rollFactors: Partial<Record<Factor, BladesRoll.FactorData>>;
 
-  _clockData?: BladesClockData;
-
-  get clockData() { return this._clockData ?? {}; }
-
-  set clockData(val: Partial<BladesClockData>) {
-    val.id ??= randomID();
-    val.display ??= "";
-    val.value ??= 0;
-    val.max ??= 8;
-    val.color ??= "white";
-    val.isActive = true;
-    val.isNameVisible = false;
-    val.isVisible = true;
-
-    this._clockData = val as BladesClockData;
-  }
-
   // #region Constructor ~
   constructor(rollInstance: BladesRoll,
     {
@@ -1055,8 +1038,7 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
       rollOppType,
       rollOppImg,
       rollOppModsData,
-      rollFactors,
-      rollOppClock
+      rollFactors
     }: Partial<BladesRoll.OppositionDocData> = {}) {
 
     this.rollInstance = rollInstance;
@@ -1095,9 +1077,6 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
     this.rollOppImg = rollOppImg ?? "";
     this.rollOppModsData = rollOppModsData ?? [];
     this.rollFactors = rollFactors;
-    if (rollOppClock) {
-      this.clockData = rollOppClock;
-    }
   }
   // #endregion
 
@@ -1114,8 +1093,7 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
       rollOppImg: this.rollOppImg,
 
       rollOppModsData: this.rollOppModsData,
-      rollFactors: this.rollFactors,
-      rollOppClock: this.clockData
+      rollFactors: this.rollFactors
     };
   }
 
@@ -3190,7 +3168,6 @@ class BladesRoll extends DocumentSheet {
       ...rollResultData,
       ...GMBoostsData,
       ...positionEffectTradeData,
-      // ...downtimeData,
       userPermission,
       gamePhase: game.eunoblades.Tracker?.phase || BladesPhase.Freeplay
     };
