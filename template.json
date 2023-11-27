@@ -45,7 +45,12 @@
 					"Ability": 0,
 					"Cohort": 0,
 					"CohortType": 0
-				}
+				},
+        "downtime_actions": {
+          "value": 0,
+          "max": 2
+        },
+        "downtime_action_bonus": 0
 			},
 			"hold": {
 				"hold": "strong"
@@ -420,6 +425,10 @@
 					"value": 0,
 					"max": 4
 				},
+        "armor": {
+          "value": 0,
+          "max": 0
+        },
 				"scale_bonus": 0,
 				"quality_bonus": 0
 			},

@@ -23,11 +23,11 @@
   <div class="consequence-interaction-pad interaction-pad-right" data-action="accept-consequence"></div>
   <div class="consequence-interaction-pad interaction-pad-left">
     <div class="consequence-interaction-pad interaction-pad-left-resist" data-action="resist-consequence"></div>
-    {{#if armorTo}}
-      <div class="consequence-interaction-pad interaction-pad-left-armor" data-action="armor-consequence"></div>
-    {{/if}}
     {{#if specialArmorTo}}
       <div class="consequence-interaction-pad interaction-pad-left-special" data-action="special-consequence"></div>
+    {{/if}}
+    {{#if armorTo}}
+      <div class="consequence-interaction-pad interaction-pad-left-armor" data-action="armor-consequence"></div>
     {{/if}}
   </div>
 
@@ -174,5 +174,7 @@
     {{/if}}{{/if}}
 
   </div>
+
+
 
 </div>

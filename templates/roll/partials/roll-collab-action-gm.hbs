@@ -242,7 +242,7 @@
         <div class="consequence-container flex-vertical full-width">
         {{#each csqData.partial as |cData cIndex|}}
           {{#if cData.resistTo}}
-          {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
+          {{> "systems/eunos-blades/templates/components/consequence-accepted.hbs" cData
             isResistanceVisible=true }}
           {{/if}}
         {{/each}}
@@ -251,7 +251,7 @@
         <div class="consequence-container flex-vertical full-width">
         {{#each csqData.fail as |cData cIndex|}}
           {{#if cData.resistTo}}
-          {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
+          {{> "systems/eunos-blades/templates/components/consequence-accepted.hbs" cData
             isResistanceVisible=true }}
           {{/if}}
         {{/each}}

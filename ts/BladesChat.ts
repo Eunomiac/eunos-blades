@@ -12,6 +12,7 @@ class BladesChat extends ChatMessage {
       ApplyTooltipAnimations(html);
       ApplyConsequenceAnimations(html);
       BladesConsequence.ApplyChatListeners(html);
+      setTimeout(() => { html.addClass("display-ok"); }, 2000);
     });
     return loadTemplates([
       "systems/eunos-blades/templates/chat/roll-result-action-roll.hbs",

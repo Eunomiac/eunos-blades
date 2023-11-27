@@ -1,4 +1,4 @@
-import {BladesActorType, BladesItemType, RollType, RollSubType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollPhase, RollResult} from "../core/constants";
+import {BladesActorType, BladesItemType, BladesPhase, RollType, RollSubType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollPhase, RollResult} from "../core/constants";
 import BladesActor from "../BladesActor";
 import BladesItem from "../BladesItem";
 import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../BladesRoll";
@@ -24,7 +24,8 @@ declare global {
       icon?: string,
       footerMsg?: string,
       isAccepted?: boolean,
-      isSelected: boolean // Whether GM has selected this as the resisted consequence
+      isSelected: boolean, // Whether GM has selected this as the resisted consequence
+      isVisible?: boolean // Set to false when a different option is chosen, to hide
     }
 
     export type AcceptedConsequenceData = {
@@ -52,20 +53,16 @@ declare global {
         string,  // stringified index
         ConsequenceResistOption // ai
       >,
+      resistNegates?: boolean,
       resistTo?: ConsequenceResistOption|false,
-      canArmorA?: boolean,
-      armorToAOptions?: Record<
-        string,  // stringified index
-        ConsequenceResistOption // ai
-      >,
-      armorToA?: ConsequenceResistOption|false,
-      canArmorB?: boolean,
-      armorToBOptions?: Record<
-        string,  // stringified index
-        ConsequenceResistOption // ai
-      >,
-      armorToB?: ConsequenceResistOption|false,
-      specialArmorTo?: ConsequenceResistOption
+      isDisplayingArmorToggle?: boolean,
+      canArmor?: boolean,
+      armorNegates?: boolean,
+      armorTo?: ConsequenceResistOption|false,
+      isDisplayingSpecialArmorToggle?: boolean,
+      canSpecialArmor?: boolean,
+      specialArmorNegates?: boolean,
+      specialArmorTo?: ConsequenceResistOption|false
     }
 
     export interface ResistanceRollConsequenceData extends FreezeProps<Omit<ConsequenceData, "resistOptions">> {
@@ -186,13 +183,18 @@ declare global {
       oddsHTMLStop: string,
       costData?: Record<"footerLabel"|"tooltip",string>,
 
-      userPermission: RollPermissions
+      userPermission: RollPermissions,
+      gamePhase: BladesPhase,
+      canDoDowntimeActions?: boolean,
+      downtimeActionsRemaining?: number,
+      downtimeActionOptions?: Array<BladesSelectOption<string, DowntimeAction>>,
+      projectSelectOptions?: Array<BladesSelectOption<string, string>>
     }
 
     export type PartialSheetData = Partial<SheetData> & FlagData;
 
     export type AnyRollType = RollType|RollSubType|DowntimeAction;
-    export type RollTrait = ActionTrait|AttributeTrait|Factor|number;
+    export type RollTrait = ActionTrait|AttributeTrait|Factor|number|""|"Heat"|"Coin"|"Lifestyle";
 
     export type FactorToggle = "isActive"|"isPrimary"|"isDominant"|"highFavorsPC";
 
@@ -240,7 +242,8 @@ declare global {
       participantRollTraits?: RollTrait[]
     }
 
-    export type PrimaryDocType = BladesActorType.pc
+    export type PrimaryDocType =
+     BladesActorType.pc
     |BladesActorType.crew
     |BladesItemType.cohort_gang
     |BladesItemType.cohort_expert
@@ -259,7 +262,7 @@ declare global {
       rollPrimaryID?: string,
       rollPrimaryDoc?: PrimaryDoc,
       rollPrimaryName: string,
-      rollPrimaryType: string,
+      rollPrimaryType: PrimaryDocType,
       rollPrimaryImg: string,
 
       rollModsData: RollModData[],
@@ -267,6 +270,8 @@ declare global {
 
       applyHarm?(amount: num, name: num)
       applyWorsePosition?()
+      spendArmor?()
+      spendSpecialArmor?()
     }
 
 
@@ -279,6 +284,18 @@ declare global {
     // [BladesItemType.location]: BladesItemSchema.Location,
     // [BladesItemType.score]: BladesItemSchema.Score,
 
+    export type OppositionDocType =
+       BladesActorType.npc
+      |BladesActorType.faction
+      |BladesItemType.cohort_gang
+      |BladesItemType.cohort_expert
+      |BladesItemType.gm_tracker
+      |BladesItemType.score
+      |BladesItemType.location
+      |BladesItemType.project
+      |BladesItemType.design
+      |BladesItemType.ritual
+      |"clock";
 
     export type OppositionDoc =
        BladesActorOfType<BladesActorType.npc>
@@ -286,6 +303,8 @@ declare global {
       |BladesItemOfType<BladesItemType.cohort_gang>
       |BladesItemOfType<BladesItemType.cohort_expert>
       |BladesItemOfType<BladesItemType.gm_tracker>
+      |BladesItemOfType<BladesItemType.score>
+      |BladesItemOfType<BladesItemType.location>
       |BladesItemOfType<BladesItemType.project>
       |BladesItemOfType<BladesItemType.design>
       |BladesItemOfType<BladesItemType.ritual>;
@@ -294,13 +313,23 @@ declare global {
       rollOppID?: string,
       rollOppDoc?: OppositionDoc,
       rollOppName: string,
-      rollOppType: string,
+      rollOppType: OppositionDocType,
       rollOppImg: string,
       rollOppSubName?: string,
 
       rollOppModsData?: RollModData[],
-      rollFactors: Partial<Record<Factor,FactorData>>
+      rollFactors: Partial<Record<Factor,FactorData>>,
+
+      rollOppClock?: Partial<BladesClockData>
     }
+
+    export type ParticipantDocType =
+       BladesActorType.pc
+      |BladesActorType.crew
+      |BladesActorType.npc
+      |BladesItemType.cohort_gang
+      |BladesItemType.cohort_expert
+      |BladesItemType.gm_tracker
 
     export type ParticipantDoc =
       BladesActorOfType<BladesActorType.pc>
@@ -314,7 +343,7 @@ declare global {
       rollParticipantID?: string,
       rollParticipantDoc?: ParticipantDoc,
       rollParticipantName: string,
-      rollParticipantType: string,
+      rollParticipantType: ParticipantDocType,
       rollParticipantIcon: string,
 
       rollParticipantModsData?: RollModData[],                                   // As applied to MAIN roll when this participant involved

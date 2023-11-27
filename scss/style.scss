@@ -103,6 +103,7 @@
         @import "./core/reset";
         @import './core/globals';
 
+        #chat-controls, #chat-form { display: none }
         &,
         * {
           --font-heading: var(--font-emphasis);

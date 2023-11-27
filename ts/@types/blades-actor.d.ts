@@ -44,8 +44,10 @@ declare global {
       experience: {
         playbook: ValueMax,
         clues: string[]
-      }
-      advancement_points: Record<string,number>
+      },
+      advancement_points: Record<string,number>,
+      downtime_actions: ValueMax,
+      downtime_action_bonus: number
     }
 
     export interface hold {

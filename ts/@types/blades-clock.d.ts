@@ -11,6 +11,7 @@
     isVisible: boolean,
     scene?: string,
     target?: string,
+    flagTarget?: string,
     gm_notes?: string
   }
 

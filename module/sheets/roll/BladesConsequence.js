@@ -3,6 +3,15 @@ import C, { BladesActorType, AttributeTrait, ConsequenceType, RollResult, RollTy
 import U from "../../core/utilities.js";
 import BladesRoll, { BladesRollPrimary } from "../../BladesRoll.js";
 class BladesConsequence {
+    static get None() {
+        return {
+            id: randomID(),
+            name: "",
+            type: ConsequenceType.None,
+            isSelected: true,
+            isVisible: true
+        };
+    }
     static GetActiveRollChatID() {
         return Array.from(game.messages).filter((msg) => $(msg.content ?? "").data("chat-id")).pop()?.id ?? undefined;
     }
@@ -25,6 +34,14 @@ class BladesConsequence {
         else if (roll$.hasClass("roll-type-indulgevice")) {
             roll$.closest(".chat-message").addClass("indulgevice-roll");
         }
+        // If this message is an action roll result AND there are unresolved consequences, add 'unresolved-action-roll' class.
+        if (roll$.hasClass("roll-type-action")
+            && Array.from(roll$.find(".comp.consequence-display-container:not(.consequence-accepted)")).length >= 1) {
+            roll$.closest(".chat-message").addClass("unresolved-action-roll");
+        }
+        else {
+            roll$.closest(".chat-message").removeClass("unresolved-action-roll");
+        }
         // If this message is the last one, add 'active-chat-roll' class and remove it from all others
         if (BladesConsequence.GetActiveRollChatID() === roll$.data("chatId")) {
             $(document).find(".chat-message").removeClass("active-chat-roll");
@@ -34,7 +51,7 @@ class BladesConsequence {
             roll$.closest(".chat-message").removeClass("active-chat-roll");
         }
         const rollPhase = roll$.data("rollPhase");
-        eLog.checkLog3("rollCollab", "ApplyChatListeners", { html, roll$, rollPhase });
+        // eLog.checkLog3("rollCollab", "ApplyChatListeners", {html, roll$, rollPhase});
         if (rollPhase !== RollPhase.AwaitingConsequences) {
             return;
         }
@@ -151,7 +168,7 @@ class BladesConsequence {
     static async GetFromChatMessage(message, csqID) {
         const html$ = $(await message.getHTML());
         const bCsqs = [];
-        html$.find(".blades-roll .consequence-container .comp.consequence-display-container").each((_, elem) => {
+        html$.find(".blades-roll .consequence-container .comp.consequence-display-container:not(.consequence-accepted)").each((_, elem) => {
             bCsqs.push(BladesConsequence.GetFromCsqElem(elem));
         });
         if (csqID) {
@@ -269,7 +286,7 @@ class BladesConsequence {
         this._name = name;
         this._primaryID = primaryID;
         this._primaryType = primaryType;
-        this._primaryDoc = primaryDoc;
+        this._primaryDoc = new BladesRollPrimary(undefined, primaryDoc);
         this._type = type;
         this._position = position;
         this._effect = effect;
@@ -436,11 +453,7 @@ class BladesConsequence {
         this._isAccepted = true;
         await this._chatMessage.update({ content: message$[0].outerHTML });
     }
-    async resistConsequence() {
-        eLog.checkLog3("rollCollab", `Resisting Consequence id ${this._id}`);
-        if (!this._resistTo || !this.resistToData) {
-            throw new Error(`Cannot find resistTo for resistance roll for csq id '${this._id}' in message '${this._chatMessage.id}'`);
-        }
+    get rollFlagData() {
         // Get rollPrimaryData from archived roll flags on user document.
         let rollFlagData = this._user.getFlag(C.SYSTEM_ID, "rollCollab");
         if (rollFlagData.rollID !== this._rollID) {
@@ -449,6 +462,15 @@ class BladesConsequence {
         if (!rollFlagData) {
             throw new Error(`Unable to locate flag data for roll id '${this._rollID}'`);
         }
+        return rollFlagData;
+    }
+    async resistConsequence() {
+        eLog.checkLog3("rollCollab", `Resisting Consequence id ${this._id}`);
+        if (!this._resistTo || !this.resistToData) {
+            throw new Error(`Cannot find resistTo for resistance roll for csq id '${this._id}' in message '${this._chatMessage.id}'`);
+        }
+        // Get rollPrimaryData from archived roll flags on user document.
+        const rollFlagData = this.rollFlagData;
         const resistConfig = {
             rollType: RollType.Resistance,
             rollUserID: this._user.id,
@@ -468,17 +490,24 @@ class BladesConsequence {
         };
         BladesRoll.NewRoll(resistConfig);
     }
-    async applyResistedConsequence() {
-        if (this._resistTo) {
-            await this._resistTo.applyConsequenceToPrimary();
-            await this.transformToConsequence("resist");
+    async applyResistedConsequence(resistType) {
+        const rCsq = {
+            resist: this._resistTo,
+            armor: this._armorTo,
+            special: this._specialTo
+        }[resistType];
+        if (rCsq) {
+            await rCsq.applyConsequenceToPrimary();
         }
+        await this.transformToConsequence(resistType);
     }
     async resistArmorConsequence() {
-        /* ... */
+        this._primaryDoc.spendArmor();
+        this.applyResistedConsequence("armor");
     }
     async resistSpecialArmorConsequence() {
-        /* ... */
+        await this._primaryDoc.spendSpecialArmor();
+        this.applyResistedConsequence("special");
     }
 }
 export default BladesConsequence;

@@ -8,7 +8,7 @@ declare global {
   namespace BladesDialog {
     interface Options extends DialogOptions {}
     interface Data extends Dialog.Data {
-      parent: BladesActor|BladesRoll;
+      parent: BladesActor|BladesItem|BladesRoll;
       dialogType?: BladesDialogType;
       docType?: "Actor"|"Item";
       tabs?: Record<string, BladesActor[] | BladesItem[]>;
@@ -31,7 +31,10 @@ declare global {
         >
       >,
       consequenceTypeOptionsAll?: Array<BladesSelectOption<string, ConsequenceType>>,
-      consequenceAttributeOptions?: Array<BladesSelectOption<string, AttributeTrait>>
+      consequenceAttributeOptions?: Array<BladesSelectOption<string, AttributeTrait>>,
+      prompt?: string,
+      target?: string,
+      flagTarget?: string
     }
   }
 }

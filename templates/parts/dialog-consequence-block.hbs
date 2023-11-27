@@ -38,38 +38,48 @@
               selected=cData.attribute
               options=../consequenceAttributeOptions
             }}
+            {{!-- Blank Options Trigger --}}
+            {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+              blockClass="blank-option-button"
+              buttonClass="fa-duotone fa-credit-card-blank"
+              action=(concat "blank-option-" ../rollPosition "-" ../rollResult "-" cID)
+            }}
             {{!-- AI Trigger --}}
+            {{#unless cData.resistNegates}}
             {{> "systems/eunos-blades/templates/components/button-icon.hbs"
               blockClass="ai-query-button"
               buttonClass="fa-solid fa-brain-circuit"
               tooltip="<b>Query AI</b><br>Query OpenAI for suggestions on resisted versions of this consequence."
               action=(concat "ai-query-" ../rollPosition "-" ../rollResult "-" cID)
             }}
-            {{!-- Armor Toggles --}}
-            {{#if (test cData.attribute "==" "prowess")}}
+            {{/unless}}
+            {{!-- Armor Toggle --}}
+            {{#if cData.isDisplayingArmorToggle}}
               {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
-                isToggled=cData.canArmorA
-                blockClass="armor-toggle armor-toggle-a"
-                targetFlagKey=(concat "rollCollab.consequenceData." ../rollPosition "." ../rollResult "." cID ".canArmorA")
+                isToggled=cData.canArmor
+                blockClass="armor-toggle"
+                dataAction=(concat "toggle-armor-" ../rollPosition "-" ../rollResult "-" cID)
                 activeClass="fa-sharp fa-solid fa-shield"
                 inactiveClass="fa-sharp fa-regular fa-shield"
               }}
-              {{#if cData.canArmorA}}
-                {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
-                  isToggled=cData.canArmorB
-                  blockClass="armor-toggle armor-toggle-b"
-                  targetFlagKey=(concat "rollCollab.consequenceData." ../rollPosition "." ../rollResult "." cID ".canArmorB")
-                  activeClass="fa-sharp fa-solid fa-shield"
-                  inactiveClass="fa-sharp fa-regular fa-shield"
-                }}
-              {{/if}}
             {{/if}}
+            {{!-- Special Armor Toggle --}}
+            {{#if cData.isDisplayingSpecialArmorToggle}}
+              {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
+                isToggled=cData.canSpecialArmor
+                blockClass="special-armor-toggle"
+                dataAction=(concat "toggle-special-" ../rollPosition "-" ../rollResult "-" cID)
+                activeClass="fa-sharp fa-duotone fa-shield-quartered"
+                inactiveClass="fa-sharp fa-regular fa-shield-quartered"
+              }}
+            {{/if}}<i class=""></i>
             {{!-- Name --}}
             <input class="shadowed consequence-name" type="text" value="{{cData.name}}" data-action="gm-update-dialog" data-flag-target="rollCollab.consequenceData.{{../rollPosition}}.{{../rollResult}}.{{cID}}.name" />
           </div>
           {{!-- AI Options --}}
           <div class="flex-vertical consequence-resist-options-container full-width">
             {{#each cData.resistOptions as |rData rID|}}
+            {{#unless (test rData.isVisible "==" false)}}
             <div class="flex-horizontal consequence-resist-option" data-csq-id="{{rID}}">
               {{!-- Select Resist Option --}}
               {{#if rData.isSelected}}
@@ -97,8 +107,13 @@
                 selected=rData.type
                 options=../../consequenceTypeOptionsAll }}
               {{!-- Name --}}
+              {{#if (test rData.type "==" "None")}}
+              <input class="shadowed consequence-name consequence-name-none" type="text" value="" readonly />
+              {{else}}
               <input class="shadowed consequence-name" type="text" value="{{rData.name}}" data-action="gm-update-dialog" data-flag-target="rollCollab.consequenceData.{{../../rollPosition}}.{{../../rollResult}}.{{cID}}.resistOptions.{{rID}}.name" />
+              {{/if}}
             </div>
+            {{/unless}}
             {{/each}}
           </div>
         </div>

@@ -16,6 +16,23 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     return super.IsType(doc, BladesActorType.pc);
   }
 
+  static GetFromUser(userRef: unknown): BladesPC|undefined {
+    let user: User|undefined;
+    if (typeof userRef === "string") {
+      user = game.users.get(userRef) ?? game.users.getName(userRef);
+    } else if (userRef instanceof User) {
+      user = userRef;
+    }
+    if (!user) { throw new Error(`Unable to find user '${userRef}'`); }
+
+    const actor = game.actors.get(user.character?.id ?? "");
+    if (BladesPC.IsType(actor)) {
+      return actor;
+    }
+
+    return undefined;
+  }
+
   static override async create(
     data: ActorDataConstructorData & {
       system?: Partial<BladesActorSchema.Scoundrel>
@@ -226,6 +243,12 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   async addStash(amount: number): Promise<void> {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return; }
     await this.update({"system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max)});
+  }
+
+  get remainingDowntimeActions(): number {
+    if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0; }
+    return this.system.downtime_actions.max + this.system.downtime_action_bonus - this.system.downtime_actions.value;
+
   }
   // #endregion
 

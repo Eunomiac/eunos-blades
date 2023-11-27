@@ -8,6 +8,23 @@ class BladesPC extends BladesActor {
     static IsType(doc) {
         return super.IsType(doc, BladesActorType.pc);
     }
+    static GetFromUser(userRef) {
+        let user;
+        if (typeof userRef === "string") {
+            user = game.users.get(userRef) ?? game.users.getName(userRef);
+        }
+        else if (userRef instanceof User) {
+            user = userRef;
+        }
+        if (!user) {
+            throw new Error(`Unable to find user '${userRef}'`);
+        }
+        const actor = game.actors.get(user.character?.id ?? "");
+        if (BladesPC.IsType(actor)) {
+            return actor;
+        }
+        return undefined;
+    }
     static async create(data, options = {}) {
         data.token = data.token || {};
         data.system = data.system ?? {};
@@ -208,6 +225,12 @@ class BladesPC extends BladesActor {
             return;
         }
         await this.update({ "system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max) });
+    }
+    get remainingDowntimeActions() {
+        if (!BladesActor.IsType(this, BladesActorType.pc)) {
+            return 0;
+        }
+        return this.system.downtime_actions.max + this.system.downtime_action_bonus - this.system.downtime_actions.value;
     }
     // #endregion
     // #region BladesRoll.PrimaryDoc Implementation

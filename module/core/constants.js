@@ -399,6 +399,14 @@ const C = {
     AI_FILE_IDS: {
         BladesPDF: "file-n72HTTNwt051piPbswQ8isUa"
     },
+    DowntimeActionDisplay: {
+        [DowntimeAction.AcquireAsset]: "Acquire an Asset",
+        [DowntimeAction.IndulgeVice]: "Indulge Your Vice",
+        [DowntimeAction.LongTermProject]: "Work on a Project",
+        [DowntimeAction.Recover]: "Heal",
+        [DowntimeAction.ReduceHeat]: "Reduce the Crew's Heat",
+        [DowntimeAction.Train]: "Train"
+    },
     Consequences: {
         [Position.controlled]: {
             [RollResult.partial]: [

@@ -1,9 +1,9 @@
 // #region IMPORTS~
 import U from "../../core/utilities.js";
 import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
-import C, { BladesActorType, BladesItemType, AttributeTrait, ActionTrait, Factor, RollType } from "../../core/constants.js";
+import C, { BladesActorType, BladesItemType, DowntimeAction, AttributeTrait, ActionTrait, Factor, RollType } from "../../core/constants.js";
 import Tags from "../../core/tags.js";
-import BladesActor from "../../BladesActor.js";
+import { BladesActor, BladesPC } from "../../documents/BladesActorProxy.js";
 import BladesItem from "../../BladesItem.js";
 import BladesDialog from "../../BladesDialog.js";
 import BladesActiveEffect from "../../BladesActiveEffect.js";
@@ -352,7 +352,7 @@ class BladesActorSheet extends ActorSheet {
         if (!doc) {
             return;
         }
-        await G.effects.blurRemove(elem$).then(async () => {
+        await G.effects.blurOut(elem$).then(async () => {
             if (doc instanceof BladesItem) {
                 await this.actor.remSubItem(doc);
             }
@@ -367,7 +367,7 @@ class BladesActorSheet extends ActorSheet {
         if (!doc) {
             return;
         }
-        await G.effects.blurRemove(elem$).then(async () => await doc.delete());
+        await G.effects.blurOut(elem$).then(async () => await doc.delete());
     }
     async _onItemToggleClick(event) {
         event.preventDefault();
@@ -418,6 +418,77 @@ class BladesActorSheet extends ActorSheet {
             }
         }
         await BladesRoll.NewRoll(rollData);
+    }
+    async _onDowntimeActionClick(event) {
+        const elem$ = $(event.currentTarget);
+        // Check whether character has downtime actions remaining.
+        //    If not, prompt for whether spending Coin or Rep for extra
+        //    If so, increase character's downtime count by one
+        const downtimeAction = elem$.data("downtimeAction");
+        const rollConfig = {
+            rollType: RollType.Action,
+            rollDowntimeAction: downtimeAction
+        };
+        // Determine Trait from action type
+        switch (downtimeAction) {
+            case DowntimeAction.AcquireAsset: {
+                rollConfig.rollTrait = Factor.tier;
+                break;
+            }
+            case DowntimeAction.IndulgeVice: {
+                if (!BladesPC.IsType(this.actor)) {
+                    return;
+                }
+                rollConfig.rollType = RollType.IndulgeVice;
+                rollConfig.rollTrait = Object.values(AttributeTrait)
+                    .reduce((minAttr, curAttr) => this.actor.attributes[curAttr]
+                    < this.actor.attributes[minAttr]
+                    ? curAttr
+                    : minAttr, AttributeTrait.insight);
+                // GM needs to be able to set the desired asset as the rollOpposition, so can set minimum quality
+                break;
+            }
+            case DowntimeAction.LongTermProject: {
+                rollConfig.rollTrait = "";
+                // BladesRoll can search actor subitems for project/rituals and set up their clocks as the 'opposition'
+                break;
+            }
+            case DowntimeAction.Recover: {
+                // If clicked on by player from an NPC sheet -> rollPrimary is the NPC, trait is quality
+                // Otherwise -> Search 'ActivePC' characters for 'Physicker' Ability; if more than one will have to prompt user
+                //  ... OR ...
+                // ActiveEffect added to any BladesActor that can heal, along with reference to the trait they roll.
+                rollConfig.rollTrait = ActionTrait.tinker || Factor.quality;
+                break;
+            }
+            case DowntimeAction.ReduceHeat: {
+                rollConfig.rollTrait = "";
+                break;
+            }
+            case DowntimeAction.Train: {
+                // Element will have target: Attribute or Playbook.
+                // Will have to check for crew upgrades that increase XP gained.
+                // If too much XP gained, will have to store excess so it can roll over after the player advances.
+                // Then, because this doesn't take a roll, we just return.
+                return;
+            }
+        }
+        // ... Pretty much everything else should be done over in BladesRoll.
+        BladesRoll.NewRoll(rollConfig);
+    }
+    async _onGatherInfoClick(event) {
+        const elem$ = $(event.currentTarget);
+        if (elem$.data("isFortuneRoll")) {
+            BladesRoll.NewRoll({
+                rollType: RollType.Fortune
+            });
+        }
+        else {
+            BladesRoll.NewRoll({
+                rollType: RollType.Action,
+                rollTrait: ""
+            });
+        }
     }
     // #endregion
     // #region Active Effect Handlers

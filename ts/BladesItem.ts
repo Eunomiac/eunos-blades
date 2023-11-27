@@ -209,7 +209,16 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   get rollPrimaryName() { return this.name; }
 
-  get rollPrimaryType() { return this.type; }
+  get rollPrimaryType() {
+    if (![
+      BladesItemType.cohort_gang,
+      BladesItemType.cohort_expert,
+      BladesItemType.gm_tracker,
+      BladesItemType.score
+    ].includes(this.type)) {
+      throw new Error(`BladesItem of type '${this.type}' ("${this.name}") cannot be RollPrimary.`);
+    }
+    return this.type as BladesRoll.PrimaryDocType; }
 
   get rollPrimaryImg() { return this.img; }
 
@@ -260,7 +269,20 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   get rollOppSubName() { return ""; }
 
-  get rollOppType() { return this.type; }
+  get rollOppType() {
+    if (![
+      BladesItemType.cohort_gang,
+      BladesItemType.cohort_expert,
+      BladesItemType.gm_tracker,
+      BladesItemType.score,
+      BladesItemType.location,
+      BladesItemType.project,
+      BladesItemType.design,
+      BladesItemType.ritual
+    ].includes(this.type)) {
+      throw new Error(`BladesItem of type '${this.type}' ("${this.name}") cannot be RollOpposition.`);
+    }
+    return this.type as BladesRoll.OppositionDocType; }
 
   get rollOppModsData(): BladesRoll.RollModData[] { return []; }
   // #endregion
@@ -274,7 +296,15 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   get rollParticipantName() { return this.name; }
 
-  get rollParticipantType() { return this.type; }
+  get rollParticipantType() {
+    if (![
+      BladesItemType.cohort_gang,
+      BladesItemType.cohort_expert,
+      BladesItemType.gm_tracker
+    ].includes(this.type)) {
+      throw new Error(`BladesItem of type '${this.type}' ("${this.name}") cannot be RollParticipant.`);
+    }
+    return this.type as BladesRoll.ParticipantDocType; }
 
   get rollParticipantModsData(): BladesRoll.RollModData[] { return []; }
   // #endregion
@@ -368,13 +398,13 @@ class BladesItem extends Item implements BladesDocument<Item>,
     const expClueData: Record<string, string> = {};
     [...Object.values(system.experience_clues).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
     system.experience_clues = expClueData;
-    eLog.checkLog3("experienceClues", {expClueData});
+    // eLog.checkLog3("experienceClues", {expClueData})
 
     if (BladesItem.IsType(this, BladesItemType.playbook)) {
       const gatherInfoData: Record<string, string> = {};
       [...Object.values(system.gather_info_questions).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
       system.gather_info_questions = gatherInfoData;
-      eLog.checkLog3("gatherInfoQuestions", {gatherInfoData});
+      // eLog.checkLog3("gatherInfoQuestions", {gatherInfoData});
 
     }
   }

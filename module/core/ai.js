@@ -413,7 +413,7 @@ export const AGENTS = {
             { human: "Soul Destroyed", ai: "Fully Corrupted|Lost In Darkness|Spirit Broken" },
             { human: "Humiliated", ai: "Embarrassed|Momentarily Off-Balance|Enraged" },
             { human: "She Escapes!", ai: "She Spots a Means of Escape|She Puts More Distance Between You|She Stops to Gloat" },
-            { human: "The fire spreads to the hostages.", ai: "The fire approaches the hostages|The hostages must be evacuated|The fire billows choking black smoke." }
+            { human: "The fire spreads to the hostages.", ai: "The fire approaches the hostages.|The hostages must be evacuated.|The fire billows choking black smoke." }
         ]
     }
 };

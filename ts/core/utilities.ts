@@ -1048,7 +1048,8 @@ function objFindKey<Type extends Index<unknown>>(
 const objFilter = <Type extends Index<unknown>>(
   obj: Type,
   keyFunc: testFunc<keyFunc> | testFunc<valFunc> | false,
-  valFunc?: testFunc<valFunc>
+  valFunc?: testFunc<valFunc>,
+  isMutating = false
 ): Type => {
   //
   if (!valFunc) {
@@ -1058,9 +1059,25 @@ const objFilter = <Type extends Index<unknown>>(
   if (!keyFunc) {
     keyFunc = ((k: unknown) => k) as testFunc<keyFunc>;
   }
-  if (isArray(obj)) {return obj.filter(valFunc) as Type;}
+  if (isArray(obj)) {
+    const keptValues = obj.filter(valFunc);
+    if (isMutating) {
+      obj.splice(0, obj.length, ...keptValues);
+      return obj;
+    }
+    return keptValues as Type;
+  }
+
   const kFunc = keyFunc || (() => true);
   const vFunc = valFunc || (() => true);
+  if (isMutating) {
+    const entriesToRemove = Object.entries(obj)
+      .filter(([key, val]: [string, unknown]) => !(kFunc(key, val) && vFunc(val, key)));
+    for (const [key] of entriesToRemove) {
+      delete obj[key];
+    }
+    return obj;
+  }
   return Object.fromEntries(
     Object.entries(obj)
       .filter(([key, val]: [string, unknown]) => kFunc(key, val) && vFunc(val, key))
@@ -1077,8 +1094,9 @@ const objForEach = (obj: Index<unknown>, func: valFunc): void => {
 // Prunes an object of given set of values, [undefined, null] default
 const objCompact = <Type extends (Index<unknown>)>(
   obj: Type,
-  removeWhiteList: unknown[] = [undefined, null]
-): Type => objFilter(obj, (val: unknown) => !removeWhiteList.includes(val));
+  removeWhiteList: unknown[] = [undefined, null],
+  isMutating = false
+): Type => objFilter(obj, (val: unknown) => !removeWhiteList.includes(val), undefined, isMutating);
 
 const objClone = <T>(obj: T, isStrictlySafe = false): T => {
   const cloneArray = <aT extends unknown[]>(arr: aT): aT => [...arr] as aT;

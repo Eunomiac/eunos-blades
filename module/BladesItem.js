@@ -171,7 +171,17 @@ class BladesItem extends Item {
     get rollPrimaryID() { return this.id; }
     get rollPrimaryDoc() { return this; }
     get rollPrimaryName() { return this.name; }
-    get rollPrimaryType() { return this.type; }
+    get rollPrimaryType() {
+        if (![
+            BladesItemType.cohort_gang,
+            BladesItemType.cohort_expert,
+            BladesItemType.gm_tracker,
+            BladesItemType.score
+        ].includes(this.type)) {
+            throw new Error(`BladesItem of type '${this.type}' ("${this.name}") cannot be RollPrimary.`);
+        }
+        return this.type;
+    }
     get rollPrimaryImg() { return this.img; }
     get rollModsData() {
         // Const rollModData = BladesRollMod.ParseDocRollMods(this);
@@ -211,7 +221,21 @@ class BladesItem extends Item {
     get rollOppImg() { return this.img; }
     get rollOppName() { return this.name; }
     get rollOppSubName() { return ""; }
-    get rollOppType() { return this.type; }
+    get rollOppType() {
+        if (![
+            BladesItemType.cohort_gang,
+            BladesItemType.cohort_expert,
+            BladesItemType.gm_tracker,
+            BladesItemType.score,
+            BladesItemType.location,
+            BladesItemType.project,
+            BladesItemType.design,
+            BladesItemType.ritual
+        ].includes(this.type)) {
+            throw new Error(`BladesItem of type '${this.type}' ("${this.name}") cannot be RollOpposition.`);
+        }
+        return this.type;
+    }
     get rollOppModsData() { return []; }
     // #endregion
     // #region BladesRoll.ParticipantDoc Implementation
@@ -219,7 +243,16 @@ class BladesItem extends Item {
     get rollParticipantDoc() { return this; }
     get rollParticipantIcon() { return this.img; }
     get rollParticipantName() { return this.name; }
-    get rollParticipantType() { return this.type; }
+    get rollParticipantType() {
+        if (![
+            BladesItemType.cohort_gang,
+            BladesItemType.cohort_expert,
+            BladesItemType.gm_tracker
+        ].includes(this.type)) {
+            throw new Error(`BladesItem of type '${this.type}' ("${this.name}") cannot be RollParticipant.`);
+        }
+        return this.type;
+    }
     get rollParticipantModsData() { return []; }
     // #endregion
     // #endregion
@@ -309,12 +342,12 @@ class BladesItem extends Item {
         const expClueData = {};
         [...Object.values(system.experience_clues).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
         system.experience_clues = expClueData;
-        eLog.checkLog3("experienceClues", { expClueData });
+        // eLog.checkLog3("experienceClues", {expClueData})
         if (BladesItem.IsType(this, BladesItemType.playbook)) {
             const gatherInfoData = {};
             [...Object.values(system.gather_info_questions).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
             system.gather_info_questions = gatherInfoData;
-            eLog.checkLog3("gatherInfoQuestions", { gatherInfoData });
+            // eLog.checkLog3("gatherInfoQuestions", {gatherInfoData});
         }
     }
 }

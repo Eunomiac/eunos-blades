@@ -39,6 +39,7 @@ declare global {
       edges: Record<string, string>,
       flaws: Record<string, string>,
       harm: ValueMax,
+      armor: ValueMax,
       scale_bonus: number,
       quality_bonus: number,
 

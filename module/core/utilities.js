@@ -1021,7 +1021,7 @@ function objFindKey(obj, keyFunc, valFunc) {
  * @param {testFunc<valFunc>} [valFunc] The testing function for values.
  * @returns {Type} The filtered object.
  */
-const objFilter = (obj, keyFunc, valFunc) => {
+const objFilter = (obj, keyFunc, valFunc, isMutating = false) => {
     //
     if (!valFunc) {
         valFunc = keyFunc;
@@ -1031,10 +1031,23 @@ const objFilter = (obj, keyFunc, valFunc) => {
         keyFunc = ((k) => k);
     }
     if (isArray(obj)) {
-        return obj.filter(valFunc);
+        const keptValues = obj.filter(valFunc);
+        if (isMutating) {
+            obj.splice(0, obj.length, ...keptValues);
+            return obj;
+        }
+        return keptValues;
     }
     const kFunc = keyFunc || (() => true);
     const vFunc = valFunc || (() => true);
+    if (isMutating) {
+        const entriesToRemove = Object.entries(obj)
+            .filter(([key, val]) => !(kFunc(key, val) && vFunc(val, key)));
+        for (const [key] of entriesToRemove) {
+            delete obj[key];
+        }
+        return obj;
+    }
     return Object.fromEntries(Object.entries(obj)
         .filter(([key, val]) => kFunc(key, val) && vFunc(val, key)));
 };
@@ -1048,7 +1061,7 @@ const objForEach = (obj, func) => {
     }
 };
 // Prunes an object of given set of values, [undefined, null] default
-const objCompact = (obj, removeWhiteList = [undefined, null]) => objFilter(obj, (val) => !removeWhiteList.includes(val));
+const objCompact = (obj, removeWhiteList = [undefined, null], isMutating = false) => objFilter(obj, (val) => !removeWhiteList.includes(val), undefined, isMutating);
 const objClone = (obj, isStrictlySafe = false) => {
     const cloneArray = (arr) => [...arr];
     const cloneObject = (o) => ({ ...o });

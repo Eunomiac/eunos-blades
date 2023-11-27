@@ -17,7 +17,7 @@
 
 
   .flexrow.jump-to-bottom {
-    bottom: 154px;
+    bottom: 25px;
     z-index: 5;
   }
 
@@ -29,7 +29,7 @@
     z-index: 1;
   }
 }
-
+.chat-message:not(.display-ok) { opacity: 0 !important; }
 
 .chat-message[class*=-roll] {
   --font-primary: Beaufort !important;
@@ -58,7 +58,12 @@
   background: transparent;
   border: 2px ouset var(--blades-white);
 
-  &:not(.active-chat-roll) {
+
+
+  &:not(.unresolved-action-roll) {
+    .blades-roll > *:not(.chat-message-speaker-portrait-wrapper) {
+      filter: sepia(1) grayscale(0.5) brightness(0.6);
+    }
     .trait-label.trait-verb { display: none; }
     .consequence-icon-container {
       .consequence-icon-circle.base-consequence {
@@ -66,10 +71,33 @@
         img { animation: none !important; }
       }
     }
+    .chat-message-speaker-portrait-wrapper {
+      $border-color-bright: #9b9b9b; // #aa5a29;
+      $border-color-med: #565656; // #5a2f17;
+      $border-color-dark: #383838; // #531c06;
+      $border-color-darkest: #232323; // #3b1201; // 46381f 6b5630 9e7f46
+
+      --border-gradient: linear-gradient(-72deg,
+        #{$border-color-med},
+        #{$border-color-bright} 16%,
+        #{$border-color-med} 21%,
+        #{$border-color-bright} 24%,
+        #{$border-color-dark} 27%,
+        #{$border-color-med} 36%,
+        #{$border-color-bright} 45%,
+        #{$border-color-bright} 60%,
+        #{$border-color-med} 72%,
+        #{$border-color-bright} 80%,
+        #{$border-color-med} 84%,
+        #{$border-color-darkest});
+
+      transform-origin: 50% 0%;
+      scale: 0.6 0.75;
+    }
   }
 }
 
-.chat-message[class*=-roll].active-chat-roll {
+.chat-message[class*=-roll].unresolved-action-roll {
   --bg-controlled: url("../assets/animations/chat/roll-position-controlled.webp");
   --bg-risky: url("../assets/animations/chat/roll-position-risky.webp");
   --bg-desperate: url("../assets/animations/chat/roll-position-desperate.webp");
@@ -150,7 +178,7 @@
     $border-color-dark: #46381f; // #531c06;
     $border-color-darkest: #2c2315; // #3b1201; // 46381f 6b5630 9e7f46
 
-    $border-gradient: linear-gradient(-72deg,
+    --border-gradient: linear-gradient(-72deg,
       #{$border-color-med},
       #{$border-color-bright} 16%,
       #{$border-color-med} 21%,
@@ -175,7 +203,7 @@
     scale: 0.8 1;
     transform-origin: 50% 50%;
 
-    background: $border-gradient;
+    background: var(--border-gradient);
     background-repeat: no-repeat;
     outline: 3px solid black;
     box-shadow: 0 0 5px 5px black;
@@ -223,7 +251,7 @@
   &.action-roll + .chat-message.resistance-roll {
     margin-top: calc(-1 * var(--chat-vertical-gap));
   }
-  &.action-roll.active-chat-roll + .chat-message.resistance-roll {
+  &.action-roll.unresolved-action-roll + .chat-message.resistance-roll {
     margin-top: 0;
   }
 
@@ -578,37 +606,6 @@
           padding: 4px;
           gap: 0;
 
-          &.roll-state-container-left {
-            h4.roll-state-label {
-              position: absolute;
-              left: 30px;
-            }
-            h3.roll-state {
-              position: absolute;
-              top: 5px;
-              right: 5px;
-              scale: var(--side-left-x-scale) 1;
-            }
-          }
-
-          &.roll-state-container-right {
-            h4.roll-state-label {
-              position: absolute;
-              text-align: left;
-              left: 10px;
-              width: 100%;
-            }
-            h3.roll-state {
-              width: 100%;
-              position: absolute;
-              bottom: 5px;
-              left: 5px;
-              text-align: left;
-              // transform-origin: 100% 100%;
-              scale: var(--side-right-x-scale) 1;
-            }
-          }
-
           h4.roll-state-label {
             font-family: var(--font-emphasis-narrow);
             font-size: 12px;
@@ -627,9 +624,41 @@
             white-space: nowrap;
             font-size: 18px;
             line-height: 18px;
-            transform-origin: 0% 0%;
             text-shadow: var(--text-shadow-dark-strong);
             color: var(--side-color-main);
+          }
+
+          &.roll-state-container-left {
+            h4.roll-state-label {
+              position: absolute;
+              left: 30px;
+            }
+            h3.roll-state {
+              position: absolute;
+              transform-origin: 100% 0%;
+              top: 5px;
+              right: 5px;
+              scale: var(--side-left-x-scale) 1;
+            }
+          }
+
+          &.roll-state-container-right {
+            h4.roll-state-label {
+              position: absolute;
+              text-align: left;
+              left: 10px;
+              width: 100%;
+            }
+            h3.roll-state {
+              width: 100%;
+              position: absolute;
+              transform-origin: 0% 0%;
+              bottom: 5px;
+              left: 5px;
+              text-align: left;
+              // transform-origin: 100% 100%;
+              scale: var(--side-right-x-scale) 1;
+            }
           }
         }
 

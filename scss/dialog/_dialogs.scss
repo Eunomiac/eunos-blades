@@ -244,6 +244,12 @@
           font-family: var(--font-emphasis-narrow);
           margin-right: 5px;
           flex-grow: 2;
+
+          &.consequence-name-none {
+            box-shadow: none;
+            background: none;
+            cursor: default;
+          }
         }
 
         .roll-consequence-type-select {

@@ -837,7 +837,12 @@ class BladesActor extends Actor {
     get rollPrimaryID() { return this.id; }
     get rollPrimaryDoc() { return this; }
     get rollPrimaryName() { return this.name; }
-    get rollPrimaryType() { return this.type; }
+    get rollPrimaryType() {
+        if (![BladesActorType.pc, BladesActorType.crew].includes(this.type)) {
+            throw new Error(`BladesActor of type '${this.type}' ("${this.name}") cannot be RollPrimary.`);
+        }
+        return this.type;
+    }
     get rollPrimaryImg() { return this.img; }
     // #region BladesCrew Implementation ~
     get members() {

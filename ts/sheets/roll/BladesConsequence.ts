@@ -6,6 +6,16 @@ import BladesRoll, {BladesRollPrimary} from "../../BladesRoll";
 
 class BladesConsequence {
 
+  static get None() {
+    return {
+      id: randomID(),
+      name: "",
+      type: ConsequenceType.None,
+      isSelected: true,
+      isVisible: true
+    };
+  }
+
   static GetActiveRollChatID(): string | undefined {
     return Array.from(game.messages).filter((msg) => $(msg.content ?? "").data("chat-id")).pop()?.id ?? undefined;
   }
@@ -26,6 +36,16 @@ class BladesConsequence {
       roll$.closest(".chat-message").addClass("indulgevice-roll");
     }
 
+    // If this message is an action roll result AND there are unresolved consequences, add 'unresolved-action-roll' class.
+    if (
+      roll$.hasClass("roll-type-action")
+      && Array.from(roll$.find(".comp.consequence-display-container:not(.consequence-accepted)")).length >= 1
+    ) {
+      roll$.closest(".chat-message").addClass("unresolved-action-roll");
+    } else {
+      roll$.closest(".chat-message").removeClass("unresolved-action-roll");
+    }
+
     // If this message is the last one, add 'active-chat-roll' class and remove it from all others
     if (BladesConsequence.GetActiveRollChatID() === roll$.data("chatId")) {
       $(document).find(".chat-message").removeClass("active-chat-roll");
@@ -35,7 +55,7 @@ class BladesConsequence {
     }
 
     const rollPhase = roll$.data("rollPhase") as RollPhase;
-    eLog.checkLog3("rollCollab", "ApplyChatListeners", {html, roll$, rollPhase});
+    // eLog.checkLog3("rollCollab", "ApplyChatListeners", {html, roll$, rollPhase});
     if (rollPhase !== RollPhase.AwaitingConsequences) {return;}
 
     html$.find("[data-action*='-consequence']").on({
@@ -178,7 +198,7 @@ class BladesConsequence {
     const html$ = $(await message.getHTML());
     const bCsqs: BladesConsequence[] = [];
 
-    html$.find(".blades-roll .consequence-container .comp.consequence-display-container").each((_, elem) => {
+    html$.find(".blades-roll .consequence-container .comp.consequence-display-container:not(.consequence-accepted)").each((_, elem) => {
       bCsqs.push(BladesConsequence.GetFromCsqElem(elem));
     });
 
@@ -199,7 +219,7 @@ class BladesConsequence {
 
   _primaryType: BladesRoll.PrimaryDocType;
 
-  _primaryDoc: BladesRoll.PrimaryDoc;
+  _primaryDoc: BladesRollPrimary;
 
   _chatMessage: ChatMessage;
 
@@ -316,7 +336,7 @@ class BladesConsequence {
     this._name = name;
     this._primaryID = primaryID;
     this._primaryType = primaryType;
-    this._primaryDoc = primaryDoc;
+    this._primaryDoc = new BladesRollPrimary(undefined, primaryDoc);
     this._type = type as ConsequenceType;
     this._position = position as Position;
     this._effect = effect as Effect;
@@ -473,17 +493,23 @@ class BladesConsequence {
     await this._chatMessage.update({content: message$[0].outerHTML});
   }
 
-  async resistConsequence() {
-    eLog.checkLog3("rollCollab", `Resisting Consequence id ${this._id}`);
-
-    if (!this._resistTo || !this.resistToData) { throw new Error(`Cannot find resistTo for resistance roll for csq id '${this._id}' in message '${this._chatMessage.id}'`); }
-
+  get rollFlagData(): BladesRoll.FlagData {
     // Get rollPrimaryData from archived roll flags on user document.
     let rollFlagData = this._user.getFlag(C.SYSTEM_ID, "rollCollab") as BladesRoll.FlagData;
     if (rollFlagData.rollID !== this._rollID) {
       rollFlagData = this._user.getFlag(C.SYSTEM_ID, `rollCollabArchive.${this._rollID}`) as BladesRoll.FlagData;
     }
     if (!rollFlagData) { throw new Error(`Unable to locate flag data for roll id '${this._rollID}'`); }
+    return rollFlagData;
+  }
+
+  async resistConsequence() {
+    eLog.checkLog3("rollCollab", `Resisting Consequence id ${this._id}`);
+
+    if (!this._resistTo || !this.resistToData) { throw new Error(`Cannot find resistTo for resistance roll for csq id '${this._id}' in message '${this._chatMessage.id}'`); }
+
+    // Get rollPrimaryData from archived roll flags on user document.
+    const rollFlagData = this.rollFlagData;
 
     const resistConfig = {
       rollType: RollType.Resistance,
@@ -505,19 +531,26 @@ class BladesConsequence {
     BladesRoll.NewRoll(resistConfig);
   }
 
-  async applyResistedConsequence() {
-    if (this._resistTo) {
-      await this._resistTo.applyConsequenceToPrimary();
-      await this.transformToConsequence("resist");
+  async applyResistedConsequence(resistType: "resist"|"armor"|"special") {
+    const rCsq = {
+      resist: this._resistTo,
+      armor: this._armorTo,
+      special: this._specialTo
+    }[resistType];
+    if (rCsq) {
+      await rCsq.applyConsequenceToPrimary();
     }
+    await this.transformToConsequence(resistType);
   }
 
   async resistArmorConsequence() {
-    /* ... */
+    this._primaryDoc.spendArmor();
+    this.applyResistedConsequence("armor");
   }
 
   async resistSpecialArmorConsequence() {
-    /* ... */
+    await this._primaryDoc.spendSpecialArmor();
+    this.applyResistedConsequence("special");
   }
 
 }
