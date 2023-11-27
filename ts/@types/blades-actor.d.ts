@@ -170,12 +170,12 @@ declare global {
     DeepPartial<BladesActorSchema.Faction> { }
 
   // Distinguishing schema types for BladesActor subtypes
-  type BladesActorOfType<T extends BladesActorType> = (
-    T extends BladesActorType.pc ? BladesPC
-    : T extends BladesActorType.npc ? BladesNPC
-    : T extends BladesActorType.crew ? BladesCrew
-    : T extends BladesActorType.faction ? BladesFaction : never
-  ) & {
+  type BladesActorOfType<T extends BladesActorType> =
+  T extends BladesActorType.pc ? BladesPC & { system: ExtractBladesActorSystem<T> } :
+  T extends BladesActorType.npc ? BladesNPC & { system: ExtractBladesActorSystem<T> } :
+  T extends BladesActorType.crew ? BladesCrew & { system: ExtractBladesActorSystem<T> } :
+  T extends BladesActorType.faction ? BladesFaction & { system: ExtractBladesActorSystem<T> } :
+  never & {
     system: ExtractBladesActorSystem<T>
   };
 
@@ -299,14 +299,12 @@ declare global {
     }
 
     export interface NPC extends BladesActorComponent.Default,
-                                 BladesActorComponent.SubItemControl,
                                  BladesActorComponent.CanSubActor { }
 
 
 
     export interface Faction extends BladesActorComponent.Default,
                                      BladesActorComponent.SubActorControl,
-                                     BladesActorComponent.SubItemControl,
                                      BladesActorComponent.CanSubActor { }
 
   }

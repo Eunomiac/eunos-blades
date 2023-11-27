@@ -20,7 +20,6 @@ import BladesAI, { AGENTS, AIAssistant } from "./core/ai.js";
 import BladesActiveEffect from "./BladesActiveEffect.js";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet.js";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet.js";
-// import {updateClaims, updateContacts, updateOps, updateFactions, updateDescriptions, updateRollMods} from "./data-import/data-import.js";
 CONFIG.debug.logging = false;
 /* DEVCODE*/ CONFIG.debug.logging = true;
 Object.assign(globalThis, { eLog: logger });
@@ -42,7 +41,7 @@ class GlobalGetter {
     get sheetData() { return this.roll?.getData(); }
     newActionRoll() {
         const pc = game.actors.getName("Alistair");
-        const idList = [...new Array(15)].map(() => randomID());
+        const idList = Array.from({ length: 15 }).map(() => randomID());
         if (!pc) {
             return;
         }

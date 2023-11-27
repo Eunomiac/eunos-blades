@@ -1,6 +1,6 @@
-import C, {BladesActorType, BladesItemType, Tag, Factor} from "./core/constants";
+import C, {BladesItemType, Tag, Factor} from "./core/constants";
 import U from "./core/utilities";
-import {BladesActor} from "./documents/BladesActorProxy";
+import {BladesActor, BladesCrew, BladesPC} from "./documents/BladesActorProxy";
 import {BladesRollMod} from "./BladesRoll";
 import BladesPushAlert from "./BladesPushAlert";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
@@ -122,15 +122,12 @@ class BladesItem extends Item implements BladesDocument<Item>,
           return this.getFactorTotal(Factor.tier) + (this.system.quality_bonus ?? 0) + 1;
         }
         if (BladesItem.IsType(this, BladesItemType.gear)) {
-          return this.getFactorTotal(Factor.tier)
-            + (this.hasTag("Fine") ? 1 : 0)
-            + (this.parent?.getTaggedItemBonuses(this.tags) ?? 0)
-            + (
-              BladesActor.IsType(this.parent, BladesActorType.pc)
-                && BladesActor.IsType(this.parent.crew, BladesActorType.crew)
-                ? this.parent.crew.getTaggedItemBonuses(this.tags)
-                : 0
-            );
+          let thisQuality = this.getFactorTotal(Factor.tier)
+            + (this.hasTag("Fine") ? 1 : 0);
+          if (BladesPC.IsType(this.parent)) {
+            thisQuality += this.parent.getTaggedItemBonuses(this.tags);
+          }
+          return thisQuality;
         }
         if (BladesItem.IsType(this, BladesItemType.design)) { return this.system.min_quality; }
         return this.getFactorTotal(Factor.tier);
@@ -338,17 +335,25 @@ class BladesItem extends Item implements BladesDocument<Item>,
     const subtypes = U.unique(Object.values(system.subtypes)
       .map((subtype) => subtype.trim())
       .filter((subtype) => /[A-Za-z]/.test(subtype)));
-    const eliteSubtypes = U.unique([
-      ...Object.values(system.elite_subtypes),
-      ...(this.parent?.upgrades ?? [])
+
+    const eliteSubtypes = [
+      ...Object.values(system.elite_subtypes)
+    ];
+    if (BladesCrew.IsType(this.parent)) {
+      eliteSubtypes.push(...this.parent.upgrades
         .filter((upgrade) => (upgrade.name ?? "").startsWith("Elite"))
         .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
-    ]
-      .map((subtype) => subtype.trim())
-      .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
+      );
+    }
 
     system.subtypes = Object.fromEntries(subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
-    system.elite_subtypes = Object.fromEntries(eliteSubtypes.map((subtype, i) => [`${i + 1}`, subtype]));
+    system.elite_subtypes = Object.fromEntries(
+      U.unique(eliteSubtypes
+        .map((subtype) => subtype.trim())
+        .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype))
+      )
+        .map((subtype, i) => [`${i + 1}`, subtype])
+    );
     system.edges = Object.fromEntries(Object.values(system.edges ?? [])
       .filter((edge) => /[A-Za-z]/.test(edge))
       .map((edge, i) => [`${i + 1}`, edge.trim()]));

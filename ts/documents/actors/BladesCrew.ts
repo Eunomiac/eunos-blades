@@ -1,8 +1,9 @@
 
-import {BladesActorType, Playbook, BladesItemType} from "../../core/constants";
-import {BladesActor, BladesPC} from "../BladesActorProxy";
+import {BladesActorType, Playbook, BladesItemType, Tag} from "../../core/constants";
+import {BladesActor, BladesPC, BladesNPC, BladesFaction} from "../BladesActorProxy";
 import {BladesItem} from "../BladesItemProxy";
 import BladesRoll from "../../BladesRoll";
+import {SelectionCategory} from "../../BladesDialog";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
@@ -63,6 +64,79 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
   }
   // #endregion
 
+  // #region BladesCrew Implementation
+
+  getDialogItems(category: SelectionCategory): Record<string, BladesItem[]> {
+    const dialogData: Record<string, BladesItem[]> = {};
+    const {playbookName} = this;
+
+    if (category === SelectionCategory.Playbook) {
+      dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_playbook));
+    } else if (category === SelectionCategory.Reputation) {
+      dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_reputation));
+    } else if (category === SelectionCategory.Preferred_Op && playbookName !== null) {
+      dialogData.Main = this._processEmbeddedItemMatches(
+        BladesItem.GetTypeWithTags(BladesItemType.preferred_op, playbookName)
+      );
+    } else if (category === SelectionCategory.Ability) {
+      dialogData.Main = this._processEmbeddedItemMatches(
+        BladesItem.GetTypeWithTags(BladesItemType.crew_ability, this.playbookName)
+      );
+    } else if (category === SelectionCategory.Upgrade && playbookName !== null) {
+      dialogData[playbookName] = this._processEmbeddedItemMatches(
+        BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, playbookName)
+      );
+      dialogData.General = this._processEmbeddedItemMatches(
+        BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, Tag.Gear.General)
+      );
+    }
+
+    return dialogData;
+  }
+
+  get members(): BladesPC[] {
+    if (!BladesActor.IsType(this, BladesActorType.crew)) { return []; }
+    const self = this as BladesCrew;
+    return BladesActor.GetTypeWithTags(BladesActorType.pc).filter((actor): actor is BladesPC => actor.isMember(self));
+  }
+
+  get contacts(): Array<BladesNPC|BladesFaction> {
+    if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) { return []; }
+    const self: BladesCrew = this as BladesCrew;
+    return this.activeSubActors.filter((actor): actor is BladesNPC|BladesFaction => actor.hasTag(self.playbookName));
+  }
+
+  get claims(): Record<number, BladesClaimData> {
+    if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) { return {}; }
+    return this.playbook.system.turfs;
+  }
+
+  get turfCount(): number {
+    if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) { return 0; }
+    return Object.values(this.playbook.system.turfs)
+      .filter((claim) => claim.isTurf && claim.value).length;
+  }
+
+  get upgrades(): Array<BladesItemOfType<BladesItemType.crew_upgrade>> {
+    if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) { return []; }
+    return this.activeSubItems
+      .filter((item): item is BladesItemOfType<BladesItemType.crew_upgrade> =>
+        item.type === BladesItemType.crew_upgrade);
+  }
+
+  get cohorts(): Array<BladesItemOfType<BladesItemType.cohort_gang|BladesItemType.cohort_expert>> {
+    return this.activeSubItems
+      .filter((item): item is BladesItemOfType<BladesItemType.cohort_gang|BladesItemType.cohort_expert> =>
+        [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type));
+  }
+
+  getTaggedItemBonuses(tags: BladesTag[]): number {
+    // Given a list of item tags, will return the total bonuses to that item
+    // Won't return a number, but an object literal that includes things like extra load space or concealability
+    // Check ACTIVE EFFECTS supplied by upgrade/ability against submitted tags?
+    return tags.length; // Placeholder to avoid linter error
+  }
+  // #endregion
 
   // #region BladesRoll Implementation
 

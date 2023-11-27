@@ -1,6 +1,6 @@
-import C, { BladesActorType, BladesItemType, Tag, Factor } from "./core/constants.js";
+import C, { BladesItemType, Tag, Factor } from "./core/constants.js";
 import U from "./core/utilities.js";
-import { BladesActor } from "./documents/BladesActorProxy.js";
+import { BladesCrew, BladesPC } from "./documents/BladesActorProxy.js";
 import { BladesRollMod } from "./BladesRoll.js";
 import BladesPushAlert from "./BladesPushAlert.js";
 class BladesItem extends Item {
@@ -93,13 +93,12 @@ class BladesItem extends Item {
                     return this.getFactorTotal(Factor.tier) + (this.system.quality_bonus ?? 0) + 1;
                 }
                 if (BladesItem.IsType(this, BladesItemType.gear)) {
-                    return this.getFactorTotal(Factor.tier)
-                        + (this.hasTag("Fine") ? 1 : 0)
-                        + (this.parent?.getTaggedItemBonuses(this.tags) ?? 0)
-                        + (BladesActor.IsType(this.parent, BladesActorType.pc)
-                            && BladesActor.IsType(this.parent.crew, BladesActorType.crew)
-                            ? this.parent.crew.getTaggedItemBonuses(this.tags)
-                            : 0);
+                    let thisQuality = this.getFactorTotal(Factor.tier)
+                        + (this.hasTag("Fine") ? 1 : 0);
+                    if (BladesPC.IsType(this.parent)) {
+                        thisQuality += this.parent.getTaggedItemBonuses(this.tags);
+                    }
+                    return thisQuality;
                 }
                 if (BladesItem.IsType(this, BladesItemType.design)) {
                     return this.system.min_quality;
@@ -280,16 +279,19 @@ class BladesItem extends Item {
         const subtypes = U.unique(Object.values(system.subtypes)
             .map((subtype) => subtype.trim())
             .filter((subtype) => /[A-Za-z]/.test(subtype)));
-        const eliteSubtypes = U.unique([
-            ...Object.values(system.elite_subtypes),
-            ...(this.parent?.upgrades ?? [])
+        const eliteSubtypes = [
+            ...Object.values(system.elite_subtypes)
+        ];
+        if (BladesCrew.IsType(this.parent)) {
+            eliteSubtypes.push(...this.parent.upgrades
                 .filter((upgrade) => (upgrade.name ?? "").startsWith("Elite"))
-                .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
-        ]
-            .map((subtype) => subtype.trim())
-            .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)));
+                .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, "")));
+        }
         system.subtypes = Object.fromEntries(subtypes.map((subtype, i) => [`${i + 1}`, subtype]));
-        system.elite_subtypes = Object.fromEntries(eliteSubtypes.map((subtype, i) => [`${i + 1}`, subtype]));
+        system.elite_subtypes = Object.fromEntries(U.unique(eliteSubtypes
+            .map((subtype) => subtype.trim())
+            .filter((subtype) => /[A-Za-z]/.test(subtype) && subtypes.includes(subtype)))
+            .map((subtype, i) => [`${i + 1}`, subtype]));
         system.edges = Object.fromEntries(Object.values(system.edges ?? [])
             .filter((edge) => /[A-Za-z]/.test(edge))
             .map((edge, i) => [`${i + 1}`, edge.trim()]));
@@ -349,6 +351,11 @@ class BladesItem extends Item {
             system.gather_info_questions = gatherInfoData;
             // eLog.checkLog3("gatherInfoQuestions", {gatherInfoData});
         }
+    }
+    // #endregion
+    // Unlock lower-level update method for subclasses
+    async callOnUpdate(...args) {
+        await this._onUpdate(...args);
     }
 }
 export default BladesItem;

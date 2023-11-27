@@ -51,7 +51,6 @@ class BladesConsequence {
             roll$.closest(".chat-message").removeClass("active-chat-roll");
         }
         const rollPhase = roll$.data("rollPhase");
-        // eLog.checkLog3("rollCollab", "ApplyChatListeners", {html, roll$, rollPhase});
         if (rollPhase !== RollPhase.AwaitingConsequences) {
             return;
         }
@@ -77,6 +76,7 @@ class BladesConsequence {
                         await csq.resistSpecialArmorConsequence();
                         break;
                     }
+                    default:
                 }
             }
         });

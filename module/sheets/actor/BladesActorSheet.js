@@ -3,7 +3,7 @@ import U from "../../core/utilities.js";
 import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
 import C, { BladesActorType, BladesItemType, DowntimeAction, AttributeTrait, ActionTrait, Factor, RollType } from "../../core/constants.js";
 import Tags from "../../core/tags.js";
-import { BladesActor, BladesPC } from "../../documents/BladesActorProxy.js";
+import { BladesActor, BladesPC, BladesCrew } from "../../documents/BladesActorProxy.js";
 import BladesItem from "../../BladesItem.js";
 import BladesDialog from "../../BladesDialog.js";
 import BladesActiveEffect from "../../BladesActiveEffect.js";
@@ -34,27 +34,32 @@ class BladesActorSheet extends ActorSheet {
                 || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER),
             hasLimitedVision: game.user.isGM
                 || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED),
-            hasControl: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER),
+            hasControl: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
+        };
+        if (BladesPC.IsType(this.actor) || BladesCrew.IsType(this.actor)) {
             // Prepare items for display on the actor sheet.
-            preparedItems: {
+            sheetData.preparedItems = {
+                abilities: [],
+                loadout: [],
                 cohorts: {
-                    gang: this.actor.activeSubItems
+                    gang: this.actor.cohorts
                         .filter((item) => item.type === BladesItemType.cohort_gang)
                         .map((item) => {
                         // Prepare gang cohort items.
                         const subtypes = U.unique(Object.values(item.system.subtypes)
                             .map((subtype) => subtype.trim())
                             .filter((subtype) => /[A-Za-z]/.test(subtype)));
-                        const eliteSubtypes = U.unique([
-                            ...Object.values(item.system.elite_subtypes),
-                            ...(item.parent?.upgrades ?? [])
-                                .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
-                        ]
-                            .map((subtype) => subtype.trim())
-                            .filter((subtype) => /[A-Za-z]/
-                            .test(subtype) && subtypes.includes(subtype)));
+                        const eliteSubtypes = [
+                            ...Object.values(item.system.elite_subtypes)
+                        ];
+                        if (BladesCrew.IsType(item.parent)) {
+                            eliteSubtypes.push(...(item.parent.upgrades ?? [])
+                                .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, "")));
+                        }
                         // Prepare images for gang cohort items.
-                        const imgTypes = [...eliteSubtypes];
+                        const imgTypes = [...U.unique(eliteSubtypes.map((subtype) => subtype.trim())
+                                .filter((subtype) => /[A-Za-z]/
+                                .test(subtype) && subtypes.includes(subtype)))];
                         if (imgTypes.length < 2) {
                             imgTypes.push(...subtypes.filter((subtype) => !imgTypes.includes(subtype)));
                         }
@@ -100,8 +105,8 @@ class BladesActorSheet extends ActorSheet {
                         return item;
                     })
                 }
-            }
-        };
+            };
+        }
         // Prepare additional data for PC and Crew actors.
         if (BladesActor.IsType(this.actor, BladesActorType.pc) || BladesActor.IsType(this.actor, BladesActorType.crew)) {
             sheetData.playbookData = {
@@ -275,7 +280,7 @@ class BladesActorSheet extends ActorSheet {
         const target = clock$.data("target");
         const curValue = U.pInt(clock$.data("value"));
         const maxValue = U.pInt(clock$.data("size"));
-        await G.effects.pulseClockWedges(clock$.find("wedges")).then(async () => await this.actor.update({
+        await G.effects.pulseClockWedges(clock$.find("wedges")).then(async () => this.actor.update({
             [target]: G.utils.wrap(0, maxValue + 1, curValue + 1)
         }));
     }
@@ -287,7 +292,7 @@ class BladesActorSheet extends ActorSheet {
         }
         const target = clock$.data("target");
         const curValue = U.pInt(clock$.data("value"));
-        await G.effects.reversePulseClockWedges(clock$.find("wedges")).then(async () => await this.actor.update({
+        await G.effects.reversePulseClockWedges(clock$.find("wedges")).then(async () => this.actor.update({
             [target]: Math.max(0, curValue - 1)
         }));
     }
@@ -309,7 +314,7 @@ class BladesActorSheet extends ActorSheet {
                 Item: this.actor.getSubItem(compData.docID)
             }[compData.docType];
         }
-        if (compData.docCat && compData.docType) {
+        if (compData.docCat && compData.docType && (BladesPC.IsType(this.actor) || BladesCrew.IsType(this.actor))) {
             compData.dialogDocs = {
                 Actor: this.actor.getDialogActors(compData.docCat),
                 Item: this.actor.getDialogItems(compData.docCat)

@@ -4,7 +4,7 @@ import U from "../../core/utilities";
 import G, {ApplyTooltipAnimations} from "../../core/gsap";
 import C, {BladesActorType, BladesItemType, DowntimeAction, AttributeTrait, Tag, ActionTrait, Factor, RollType} from "../../core/constants";
 import Tags from "../../core/tags";
-import {BladesActor, BladesPC} from "../../documents/BladesActorProxy";
+import {BladesActor, BladesPC, BladesCrew} from "../../documents/BladesActorProxy";
 import BladesItem from "../../BladesItem";
 import BladesDialog, {SelectionCategory} from "../../BladesDialog";
 import BladesActiveEffect from "../../BladesActiveEffect";
@@ -38,12 +38,7 @@ class BladesActorSheet extends ActorSheet {
     const context = super.getData();
 
     // Prepare additional data specific to this actor's sheet.
-    const sheetData: FullPartial<BladesActorSheetData
-    & BladesActorDataOfType<BladesActorType.pc>
-    & BladesActorDataOfType<BladesActorType.crew>
-    & BladesActorDataOfType<BladesActorType.npc>
-    & BladesActorDataOfType<BladesActorType.faction>
-    > = {
+    const sheetData: DeepPartial<BladesActorSheetData> = {
       // Basic actor data.
       cssClass: this.actor.type,
       editable: this.options.editable,
@@ -57,32 +52,37 @@ class BladesActorSheet extends ActorSheet {
         || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER),
       hasLimitedVision: game.user.isGM
         || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED),
-      hasControl: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER),
+      hasControl: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
+    };
 
+    if (BladesPC.IsType(this.actor) || BladesCrew.IsType(this.actor)) {
       // Prepare items for display on the actor sheet.
-      preparedItems: {
+      sheetData.preparedItems = {
+        abilities: [],
+        loadout: [],
         cohorts: {
-          gang: this.actor.activeSubItems
-            .filter((item): item is BladesItemOfType<BladesItemType.cohort_gang> =>
-              item.type === BladesItemType.cohort_gang)
+          gang: this.actor.cohorts
+            .filter((item) => item.type === BladesItemType.cohort_gang)
             .map((item) => {
               // Prepare gang cohort items.
               const subtypes = U.unique(Object.values(item.system.subtypes)
                 .map((subtype) => subtype.trim())
                 .filter((subtype) => /[A-Za-z]/.test(subtype))) as Tag.GangType[];
-              const eliteSubtypes = U.unique([
-                ...Object.values(item.system.elite_subtypes),
-                ...(item.parent?.upgrades ?? [])
-                  .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, ""))
-              ]
-                .map((subtype) => subtype.trim())
-                .filter((subtype) => /[A-Za-z]/
-                  .test(subtype) && subtypes.includes(subtype as Tag.GangType)
-                )
-              ) as Tag.GangType[];
+              const eliteSubtypes = [
+                ...Object.values(item.system.elite_subtypes)
+              ];
+              if (BladesCrew.IsType(item.parent)) {
+                eliteSubtypes.push(...(item.parent.upgrades ?? [])
+                  .map((upgrade) => (upgrade.name ?? "").trim().replace(/^Elite /, "")));
+              }
 
               // Prepare images for gang cohort items.
-              const imgTypes = [...eliteSubtypes];
+              const imgTypes = [...U.unique(
+                eliteSubtypes.map((subtype) => subtype.trim())
+                  .filter((subtype) => /[A-Za-z]/
+                    .test(subtype) && subtypes.includes(subtype as Tag.GangType)
+                  )
+              )];
               if (imgTypes.length < 2) {
                 imgTypes.push(...subtypes.filter((subtype) => !imgTypes.includes(subtype)));
               }
@@ -135,8 +135,8 @@ class BladesActorSheet extends ActorSheet {
               return item;
             })
         }
-      }
-    };
+      };
+    }
 
     // Prepare additional data for PC and Crew actors.
     if (BladesActor.IsType(this.actor, BladesActorType.pc) || BladesActor.IsType(this.actor, BladesActorType.crew)) {
@@ -371,7 +371,7 @@ class BladesActorSheet extends ActorSheet {
         Item: this.actor.getSubItem(compData.docID)
       }[compData.docType];
     }
-    if (compData.docCat && compData.docType) {
+    if (compData.docCat && compData.docType && (BladesPC.IsType(this.actor) || BladesCrew.IsType(this.actor))) {
       compData.dialogDocs = {
         Actor: this.actor.getDialogActors(compData.docCat),
         Item: this.actor.getDialogItems(compData.docCat)

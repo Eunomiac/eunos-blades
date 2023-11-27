@@ -12,8 +12,8 @@ class BladesGMTracker extends BladesItem {
         this.system.phases = Object.values(BladesPhase);
     }
     // #region OVERRIDES: prepareDerivedData, _onUpdate
-    async _onUpdate(changed, options, userId) {
-        await super._onUpdate(changed, options, userId);
+    async _onUpdate(...args) {
+        await super.callOnUpdate(...args);
         BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
     }
 }

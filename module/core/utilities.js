@@ -1,3 +1,4 @@
+// /// <reference types="gsap" />
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import C, { SVGDATA } from "./constants.js";
 // eslint-disable-next-line import/no-unresolved

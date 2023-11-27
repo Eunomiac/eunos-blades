@@ -37,6 +37,10 @@ declare global {
           numberCircleClass?: string,
           inRuleDotline?: BladesDotlineData
         }>,
+        cohorts: {
+          gang: BladesItemOfType<BladesItemType.cohort_gang>[],
+          expert: BladesItemOfType<BladesItemType.cohort_expert>[]
+        },
         playbook?: BladesItemOfType<BladesItemType.playbook>
       },
 

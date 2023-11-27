@@ -473,108 +473,6 @@ class BladesActor extends Actor {
             return 0;
         });
     }
-    getDialogItems(category) {
-        const dialogData = {};
-        const isPC = BladesActor.IsType(this, BladesActorType.pc);
-        const isCrew = BladesActor.IsType(this, BladesActorType.crew);
-        if (!BladesActor.IsType(this, BladesActorType.pc)
-            && !BladesActor.IsType(this, BladesActorType.crew)) {
-            return false;
-        }
-        const { playbookName } = this;
-        if (category === SelectionCategory.Heritage && isPC) {
-            dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.heritage));
-        }
-        else if (category === SelectionCategory.Background && isPC) {
-            dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.background));
-        }
-        else if (category === SelectionCategory.Vice && isPC && playbookName !== null) {
-            dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.vice, playbookName));
-        }
-        else if (category === SelectionCategory.Playbook) {
-            if (this.type === BladesActorType.pc) {
-                dialogData.Basic = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook)
-                    .filter((item) => !item.hasTag(Tag.Gear.Advanced)));
-                dialogData.Advanced = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Gear.Advanced));
-            }
-            else if (this.type === BladesActorType.crew) {
-                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_playbook));
-            }
-        }
-        else if (category === SelectionCategory.Reputation && isCrew) {
-            dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_reputation));
-        }
-        else if (category === SelectionCategory.Preferred_Op && isCrew && playbookName !== null) {
-            dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.preferred_op, playbookName));
-        }
-        else if (category === SelectionCategory.Gear && BladesActor.IsType(this, BladesActorType.pc)) {
-            const self = this;
-            if (playbookName === null) {
-                return false;
-            }
-            const gearItems = this._processEmbeddedItemMatches([
-                ...BladesItem.GetTypeWithTags(BladesItemType.gear, playbookName),
-                ...BladesItem.GetTypeWithTags(BladesItemType.gear, Tag.Gear.General)
-            ])
-                .filter((item) => self.remainingLoad >= item.system.load);
-            // Two tabs, one for playbook and the other for general items
-            dialogData[playbookName] = gearItems.filter((item) => item.hasTag(playbookName));
-            dialogData.General = gearItems
-                .filter((item) => item.hasTag(Tag.Gear.General))
-                // Remove featured class from General items
-                .map((item) => {
-                if (item.dialogCSSClasses) {
-                    item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
-                }
-                return item;
-            })
-                // Re-sort by world_name
-                .sort((a, b) => {
-                if (a.system.world_name > b.system.world_name) {
-                    return 1;
-                }
-                if (a.system.world_name < b.system.world_name) {
-                    return -1;
-                }
-                return 0;
-            });
-        }
-        else if (category === SelectionCategory.Ability) {
-            if (isPC) {
-                if (playbookName === null) {
-                    return false;
-                }
-                dialogData[playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability, playbookName));
-                dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability))
-                    .filter((item) => !item.hasTag(playbookName))
-                    // Remove featured class from Veteran items
-                    .map((item) => {
-                    if (item.dialogCSSClasses) {
-                        item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
-                    }
-                    return item;
-                })
-                    // Re-sort by world_name
-                    .sort((a, b) => {
-                    if (a.system.world_name > b.system.world_name) {
-                        return 1;
-                    }
-                    if (a.system.world_name < b.system.world_name) {
-                        return -1;
-                    }
-                    return 0;
-                });
-            }
-            else if (isCrew) {
-                dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_ability, playbookName));
-            }
-        }
-        else if (category === SelectionCategory.Upgrade && isCrew && playbookName !== null) {
-            dialogData[playbookName] = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, playbookName));
-            dialogData.General = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, Tag.Gear.General));
-        }
-        return dialogData;
-    }
     getSubItem(itemRef, activeOnly = false) {
         const activeCheck = (i) => !activeOnly || !i.hasTag(Tag.System.Archived);
         if (typeof itemRef === "string" && this.items.get(itemRef)) {
@@ -845,48 +743,6 @@ class BladesActor extends Actor {
     }
     get rollPrimaryImg() { return this.img; }
     // #region BladesCrew Implementation ~
-    get members() {
-        if (!BladesActor.IsType(this, BladesActorType.crew)) {
-            return [];
-        }
-        const self = this;
-        return BladesActor.GetTypeWithTags(BladesActorType.pc).filter((actor) => actor.isMember(self));
-    }
-    get contacts() {
-        if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) {
-            return [];
-        }
-        const self = this;
-        return this.activeSubActors.filter((actor) => actor.hasTag(self.playbookName));
-    }
-    get claims() {
-        if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) {
-            return {};
-        }
-        return this.playbook.system.turfs;
-    }
-    get turfCount() {
-        if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) {
-            return 0;
-        }
-        return Object.values(this.playbook.system.turfs)
-            .filter((claim) => claim.isTurf && claim.value).length;
-    }
-    get upgrades() {
-        if (!BladesActor.IsType(this, BladesActorType.crew) || !this.playbook) {
-            return [];
-        }
-        return this.activeSubItems
-            .filter((item) => item.type === BladesItemType.crew_upgrade);
-    }
-    get cohorts() {
-        return this.activeSubItems
-            .filter((item) => [BladesItemType.cohort_gang, BladesItemType.cohort_expert].includes(item.type));
-    }
-    getTaggedItemBonuses(tags) {
-        // Check ACTIVE EFFECTS supplied by upgrade/ability against submitted tags?
-        return tags.length; // Placeholder to avoid linter error
-    }
     // #endregion
     // #region PREPARING DERIVED DATA
     prepareDerivedData() {
@@ -1162,6 +1018,11 @@ class BladesActor extends Actor {
             }
         });
         this.update(updateData);
+    }
+    // #endregion NPC Randomizers
+    // Unlock lower-level update method for subclasses
+    async callOnUpdate(...args) {
+        await this._onUpdate(...args);
     }
 }
 export default BladesActor;

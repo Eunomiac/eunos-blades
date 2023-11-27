@@ -38,8 +38,8 @@ class BladesClock extends BladesItem {
     }
     get rollOppImg() { return ""; }
     // #region OVERRIDES: _onUpdate
-    async _onUpdate(changed, options, userId) {
-        await super._onUpdate(changed, options, userId);
+    async _onUpdate(...args) {
+        await super.callOnUpdate(...args);
         BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
     }
 }

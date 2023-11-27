@@ -129,7 +129,6 @@ function pruneConfig(cfg) {
             Object.keys(cfg.rollParticipantData[RollModSection.roll]).forEach((key) => {
                 const thisParticipant = cfg.rollParticipantData?.[RollModSection.roll]?.[key];
                 if (thisParticipant instanceof BladesRollParticipant) {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     cfg.rollParticipantData[RollModSection.roll][key] = thisParticipant.flagData;
                 }
             });

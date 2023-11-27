@@ -4,6 +4,7 @@ import {BladesActor, BladesCrew} from "../BladesActorProxy";
 import {BladesItem} from "../BladesItemProxy";
 import BladesRoll from "../../BladesRoll";
 import BladesPushAlert from "../../BladesPushAlert";
+import {SelectionCategory} from "../../BladesDialog";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 type harmLevel = 1|2|3|4;
@@ -158,6 +159,13 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       .filter((item) => [BladesItemType.ability, BladesItemType.crew_ability].includes(item.type));
   }
 
+  get cohorts(): Array<BladesItemOfType<BladesItemType.cohort_gang|BladesItemType.cohort_expert>> {
+    return this.activeSubItems
+      .filter((item) =>
+        BladesItem.IsType(item, BladesItemType.cohort_gang, BladesItemType.cohort_expert)
+      ) as Array<BladesItemOfType<BladesItemType.cohort_gang|BladesItemType.cohort_expert>>;
+  }
+
   get playbookName() {
     return this.playbook?.name as (BladesTag & Playbook) | undefined;
   }
@@ -260,6 +268,91 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return 0; }
     return this.system.downtime_actions.max + this.system.downtime_action_bonus - this.system.downtime_actions.value;
 
+  }
+
+  protected _processAbilityDialogItems(dialogData: Record<string, BladesItem[]>): void {
+    if (!this.playbookName) { return; }
+
+    dialogData[this.playbookName] = this._processEmbeddedItemMatches(
+      BladesItem.GetTypeWithTags(BladesItemType.ability, this.playbookName)
+    );
+    dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability))
+      .filter((item) => !item.hasTag(this.playbookName))
+    // Remove featured class from Veteran items
+      .map((item) => {
+        if (item.dialogCSSClasses) {
+          item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
+        }
+        return item;
+      })
+    // Re-sort by world_name
+      .sort((a, b) => {
+        if (a.system.world_name > b.system.world_name) { return 1; }
+        if (a.system.world_name < b.system.world_name) { return -1; }
+        return 0;
+      });
+  }
+
+  private processGearDialogItems(dialogData: Record<string, BladesItem[]>): void {
+    if (this.playbookName === null) { return; }
+    const gearItems = this._processEmbeddedItemMatches([
+      ...BladesItem.GetTypeWithTags(BladesItemType.gear, this.playbookName),
+      ...BladesItem.GetTypeWithTags(BladesItemType.gear, Tag.Gear.General)
+    ])
+      .filter((item) => this.remainingLoad >= item.system.load);
+
+    // Two tabs, one for playbook and the other for general items
+    dialogData[this.playbookName] = gearItems.filter((item) => item.hasTag(this.playbookName));
+    dialogData.General = gearItems
+      .filter((item) => item.hasTag(Tag.Gear.General))
+    // Remove featured class from General items
+      .map((item) => {
+        if (item.dialogCSSClasses) {
+          item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
+        }
+        return item;
+      })
+    // Re-sort by world_name
+      .sort((a, b) => {
+        if (a.system.world_name > b.system.world_name) { return 1; }
+        if (a.system.world_name < b.system.world_name) { return -1; }
+        return 0;
+      });
+  }
+
+  getDialogItems(category: SelectionCategory): Record<string, BladesItem[]> {
+    const dialogData: Record<string, BladesItem[]> = {};
+    const {playbookName} = this;
+
+    if (category === SelectionCategory.Heritage) {
+      dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.heritage));
+    } else if (category === SelectionCategory.Background) {
+      dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.background));
+    } else if (category === SelectionCategory.Vice && playbookName !== null) {
+      dialogData.Main = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.vice, playbookName));
+    } else if (category === SelectionCategory.Playbook) {
+      dialogData.Basic = this._processEmbeddedItemMatches(
+        BladesItem.GetTypeWithTags(BladesItemType.playbook)
+          .filter((item) => !item.hasTag(Tag.Gear.Advanced))
+      );
+      dialogData.Advanced = this._processEmbeddedItemMatches(
+        BladesItem.GetTypeWithTags(BladesItemType.playbook, Tag.Gear.Advanced)
+      );
+    } else if (category === SelectionCategory.Gear) {
+      this.processGearDialogItems(dialogData);
+    } else if (category === SelectionCategory.Ability) {
+      this._processAbilityDialogItems(dialogData);
+    }
+
+    return dialogData;
+  }
+
+  getTaggedItemBonuses(tags: BladesTag[]): number {
+    // Given a list of item tags, will return the total bonuses to that item
+    // Won't return a number, but an object literal that includes things like extra load space or concealability
+    // Check ACTIVE EFFECTS supplied by ability against submitted tags?
+    // Should INCLUDE bonuses from crew.
+    return tags.length; // Placeholder to avoid linter error
   }
   // #endregion
 
