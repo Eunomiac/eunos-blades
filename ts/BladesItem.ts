@@ -8,6 +8,7 @@ import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundr
 class BladesItem extends Item implements BladesDocument<Item>,
                                           BladesItemSubClass.Ability,
                                           BladesItemSubClass.Background,
+                                          BladesItemSubClass.Clock,
                                           BladesItemSubClass.Cohort_Gang,
                                           BladesItemSubClass.Cohort_Expert,
                                           BladesItemSubClass.Crew_Ability,
@@ -409,6 +410,11 @@ class BladesItem extends Item implements BladesDocument<Item>,
     }
   }
   // #endregion
+
+  // Unlock lower-level update method for subclasses
+  public async callOnUpdate(...args: Parameters<typeof BladesItem.prototype._onUpdate>) {
+    await this._onUpdate(...args);
+  }
 }
 
 declare interface BladesItem {

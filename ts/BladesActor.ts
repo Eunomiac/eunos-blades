@@ -500,6 +500,67 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       });
   }
 
+
+  private processGearDialogItems(dialogData: Record<string, BladesItem[]>): void {
+    if (!BladesActor.IsType(this, BladesActorType.pc)) {
+      throw new Error(`[BladesActor.processGearDialogItems] Can't fetch gear of type = '${this.type}'`);
+    }
+    if (this.playbookName === null) { return; }
+    // const self = this;
+    const gearItems = this._processEmbeddedItemMatches([
+      ...BladesItem.GetTypeWithTags(BladesItemType.gear, this.playbookName),
+      ...BladesItem.GetTypeWithTags(BladesItemType.gear, Tag.Gear.General)
+    ])
+      .filter((item) => (this as BladesPC).remainingLoad >= item.system.load);
+
+    // Two tabs, one for playbook and the other for general items
+    dialogData[(this as BladesPC).playbookName] = gearItems.filter((item) => item.hasTag(this.playbookName));
+    dialogData.General = gearItems
+      .filter((item) => item.hasTag(Tag.Gear.General))
+    // Remove featured class from General items
+      .map((item) => {
+        if (item.dialogCSSClasses) {
+          item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
+        }
+        return item;
+      })
+    // Re-sort by world_name
+      .sort((a, b) => {
+        if (a.system.world_name > b.system.world_name) { return 1; }
+        if (a.system.world_name < b.system.world_name) { return -1; }
+        return 0;
+      });
+  }
+
+  private processAbilityDialogItems(dialogData: Record<string, BladesItem[]>): void {
+    if (BladesPC.IsType(this)) {
+      if (!this.playbookName) { return; }
+
+      dialogData[this.playbookName] = this._processEmbeddedItemMatches(
+        BladesItem.GetTypeWithTags(BladesItemType.ability, this.playbookName)
+      );
+      dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability))
+        .filter((item) => !item.hasTag((this as BladesPC).playbookName))
+      // Remove featured class from Veteran items
+        .map((item) => {
+          if (item.dialogCSSClasses) {
+            item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
+          }
+          return item;
+        })
+      // Re-sort by world_name
+        .sort((a, b) => {
+          if (a.system.world_name > b.system.world_name) { return 1; }
+          if (a.system.world_name < b.system.world_name) { return -1; }
+          return 0;
+        });
+    } else if (BladesCrew.IsType(this)) {
+      dialogData.Main = this._processEmbeddedItemMatches(
+        BladesItem.GetTypeWithTags(BladesItemType.crew_ability, this.playbookName)
+      );
+    }
+  }
+
   getDialogItems(category: SelectionCategory): Record<string, BladesItem[]> | false {
     const dialogData: Record<string, BladesItem[]> = {};
     const isPC = BladesActor.IsType(this, BladesActorType.pc);
@@ -533,57 +594,9 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
         BladesItem.GetTypeWithTags(BladesItemType.preferred_op, playbookName)
       );
     } else if (category === SelectionCategory.Gear && BladesActor.IsType(this, BladesActorType.pc)) {
-      const self = this;
-      if (playbookName === null) { return false; }
-      const gearItems = this._processEmbeddedItemMatches([
-        ...BladesItem.GetTypeWithTags(BladesItemType.gear, playbookName),
-        ...BladesItem.GetTypeWithTags(BladesItemType.gear, Tag.Gear.General)
-      ])
-        .filter((item) => self.remainingLoad >= item.system.load);
-
-      // Two tabs, one for playbook and the other for general items
-      dialogData[playbookName] = gearItems.filter((item) => item.hasTag(playbookName));
-      dialogData.General = gearItems
-        .filter((item) => item.hasTag(Tag.Gear.General))
-      // Remove featured class from General items
-        .map((item) => {
-          if (item.dialogCSSClasses) {
-            item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
-          }
-          return item;
-        })
-      // Re-sort by world_name
-        .sort((a, b) => {
-          if (a.system.world_name > b.system.world_name) { return 1; }
-          if (a.system.world_name < b.system.world_name) { return -1; }
-          return 0;
-        });
+      this.processGearDialogItems(dialogData);
     } else if (category === SelectionCategory.Ability) {
-      if (isPC) {
-        if (playbookName === null) { return false; }
-        dialogData[playbookName] = this._processEmbeddedItemMatches(
-          BladesItem.GetTypeWithTags(BladesItemType.ability, playbookName)
-        );
-        dialogData.Veteran = this._processEmbeddedItemMatches(BladesItem.GetTypeWithTags(BladesItemType.ability))
-          .filter((item) => !item.hasTag(playbookName))
-        // Remove featured class from Veteran items
-          .map((item) => {
-            if (item.dialogCSSClasses) {
-              item.dialogCSSClasses = item.dialogCSSClasses.replace(/featured-item\s?/g, "");
-            }
-            return item;
-          })
-        // Re-sort by world_name
-          .sort((a, b) => {
-            if (a.system.world_name > b.system.world_name) { return 1; }
-            if (a.system.world_name < b.system.world_name) { return -1; }
-            return 0;
-          });
-      } else if (isCrew) {
-        dialogData.Main = this._processEmbeddedItemMatches(
-          BladesItem.GetTypeWithTags(BladesItemType.crew_ability, playbookName)
-        );
-      }
+      this.processAbilityDialogItems(dialogData);
     } else if (category === SelectionCategory.Upgrade && isCrew && playbookName !== null) {
       dialogData[playbookName] = this._processEmbeddedItemMatches(
         BladesItem.GetTypeWithTags(BladesItemType.crew_upgrade, playbookName)
@@ -1279,6 +1292,10 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   }
   // #endregion NPC Randomizers
 
+  // Unlock lower-level update method for subclasses
+  public async callOnUpdate(...args: Parameters<typeof BladesActor.prototype._onUpdate>) {
+    await this._onUpdate(...args);
+  }
 }
 
 declare interface BladesActor {

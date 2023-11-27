@@ -1,5 +1,5 @@
 import BladesItem from "../../BladesItem";
-import {BladesActorType, BladesItemType, Factor} from "../../core/constants";
+import {BladesActorType, BladesItemType, ClockColor, Factor} from "../../core/constants";
 import U from "../../core/utilities";
 import BladesActor from "../../BladesActor";
 import BladesRoll from "../../BladesRoll";
@@ -7,14 +7,19 @@ import BladesRoll from "../../BladesRoll";
 class BladesClock extends BladesItem implements BladesItemSubClass.Clock,
   BladesRoll.OppositionDocData {
 
+  get value() { return this.system.value; }
+
+  get max() { return this.system.max; }
+
+  get color() { return this.system.color as ClockColor|""|undefined; }
+
 
   override get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
 
     const factorData: Partial<Record<Factor, BladesRoll.FactorData>> = {};
     [
       Factor.tier,
-      Factor.quality,
-      Factor.scale
+      Factor.quality
     ].forEach((factor, i) => {
       const factorTotal = this.getFactorTotal(factor);
       factorData[factor] = {
@@ -45,8 +50,8 @@ class BladesClock extends BladesItem implements BladesItemSubClass.Clock,
   override get rollOppImg() { return ""; }
 
   // #region OVERRIDES: _onUpdate
-  override async _onUpdate(changed: any, options: any, userId: string) {
-    await super._onUpdate(changed, options, userId);
+  override async _onUpdate(...args: Parameters<typeof BladesItem.prototype.callOnUpdate>) {
+    await super.callOnUpdate(...args);
     BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
   }
   // #endregion

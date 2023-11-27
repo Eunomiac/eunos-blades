@@ -2,9 +2,9 @@
 
 import U from "../../core/utilities";
 import G, {ApplyTooltipAnimations} from "../../core/gsap";
-import C, {BladesActorType, BladesItemType, DowntimeAction, AttributeTrait, Tag, ActionTrait, Factor, RollType, RollSubType} from "../../core/constants";
+import C, {BladesActorType, BladesItemType, DowntimeAction, AttributeTrait, Tag, ActionTrait, Factor, RollType} from "../../core/constants";
 import Tags from "../../core/tags";
-import {BladesActor, BladesPC, BladesCrew} from "../../documents/BladesActorProxy";
+import {BladesActor, BladesPC} from "../../documents/BladesActorProxy";
 import BladesItem from "../../BladesItem";
 import BladesDialog, {SelectionCategory} from "../../BladesDialog";
 import BladesActiveEffect from "../../BladesActiveEffect";
@@ -332,7 +332,7 @@ class BladesActorSheet extends ActorSheet {
     const maxValue = U.pInt(clock$.data("size"));
 
     await G.effects.pulseClockWedges(clock$.find("wedges")).then(async () =>
-      await this.actor.update({
+      this.actor.update({
         [target]: G.utils.wrap(0, maxValue + 1, curValue + 1)
       }));
   }
@@ -347,7 +347,7 @@ class BladesActorSheet extends ActorSheet {
     const curValue = U.pInt(clock$.data("value"));
 
     await G.effects.reversePulseClockWedges(clock$.find("wedges")).then(async () =>
-      await this.actor.update({
+      this.actor.update({
         [target]: Math.max(0, curValue - 1)
       }));
   }

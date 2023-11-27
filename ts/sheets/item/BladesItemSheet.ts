@@ -305,17 +305,7 @@ class BladesItemSheet extends ItemSheet {
 
   /* -------------------------------------------- */
 
-  override activateListeners(html: JQuery<HTMLElement>) {
-    super.activateListeners(html);
-    const self = this;
-
-    Tags.InitListeners(html, this.item);
-    ApplyTooltipAnimations(html);
-
-    // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) {return;}
-
-    // Add dotline functionality
+  private addDotlineListeners(html: JQuery<HTMLElement>) {
     html.find(".dotline").each((__, elem) => {
       if ($(elem).hasClass("locked")) { return; }
 
@@ -353,6 +343,19 @@ class BladesItemSheet extends ItemSheet {
           });
         });
     });
+  }
+  override activateListeners(html: JQuery<HTMLElement>) {
+    super.activateListeners(html);
+    const self = this;
+
+    Tags.InitListeners(html, this.item);
+    ApplyTooltipAnimations(html);
+
+    // Everything below here is only needed if the sheet is editable
+    if (!this.options.editable) {return;}
+
+    // Add dotline functionality
+    this.addDotlineListeners(html);
 
     // Harm Bar Functionality for Cohorts
     if (BladesItem.IsType(this.item, BladesItemType.cohort_expert, BladesItemType.cohort_gang)) {

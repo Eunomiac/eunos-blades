@@ -1,3 +1,5 @@
+// /// <reference types="gsap" />
+
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import C, {SVGDATA, HbsSvgData} from "./constants";
 // eslint-disable-next-line import/no-unresolved

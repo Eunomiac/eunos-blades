@@ -52,6 +52,13 @@ export enum PrereqType {
   Not_HasAnyTag = "Not_HasAnyTag"
 }
 
+export enum ClockColor {
+  yellow = "yellow",
+  red = "red",
+  white = "white",
+  cyan = "cyan"
+}
+
 export enum District {
   Barrowcleft = "Barrowcleft",
   Brightstone = "Brightstone",

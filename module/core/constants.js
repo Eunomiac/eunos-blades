@@ -51,6 +51,13 @@ export var PrereqType;
     PrereqType["Not_HasAllTags"] = "Not_HasAllTags";
     PrereqType["Not_HasAnyTag"] = "Not_HasAnyTag";
 })(PrereqType || (PrereqType = {}));
+export var ClockColor;
+(function (ClockColor) {
+    ClockColor["yellow"] = "yellow";
+    ClockColor["red"] = "red";
+    ClockColor["white"] = "white";
+    ClockColor["cyan"] = "cyan";
+})(ClockColor || (ClockColor = {}));
 export var District;
 (function (District) {
     District["Barrowcleft"] = "Barrowcleft";

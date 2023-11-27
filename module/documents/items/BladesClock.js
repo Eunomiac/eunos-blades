@@ -3,12 +3,14 @@ import { BladesActorType, Factor } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesActor from "../../BladesActor.js";
 class BladesClock extends BladesItem {
+    get value() { return this.system.value; }
+    get max() { return this.system.max; }
+    get color() { return this.system.color; }
     get rollFactors() {
         const factorData = {};
         [
             Factor.tier,
-            Factor.quality,
-            Factor.scale
+            Factor.quality
         ].forEach((factor, i) => {
             const factorTotal = this.getFactorTotal(factor);
             factorData[factor] = {

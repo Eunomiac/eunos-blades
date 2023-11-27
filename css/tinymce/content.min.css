@@ -364,15 +364,6 @@ html .comp .comp-control, html .comp .comp-title, html .comp .portrait-block.com
   pointer-events: auto;
   cursor: pointer;
 }
-html .comp .comp-label:hover, html .comp .comp-title:hover, :root .comp .comp-label:hover, :root .comp .comp-title:hover {
-  z-index: zLevel(3) !important;
-}
-html .comp .comp-label:hover.comp-label a, html .comp .comp-title:hover.comp-label a, :root .comp .comp-label:hover.comp-label a, :root .comp .comp-title:hover.comp-label a {
-  color: var(--blades-gold-bright);
-}
-html .comp .comp-label:hover.comp-title, html .comp .comp-title:hover.comp-title, :root .comp .comp-label:hover.comp-title, :root .comp .comp-title:hover.comp-title {
-  color: var(--blades-white-bright);
-}
 html .comp .comp-label, :root .comp .comp-label {
   color: var(--blades-white-bright);
   font-size: toRem(12px);
@@ -401,6 +392,15 @@ html .comp .comp-label.comp-prompt .main-title, :root .comp .comp-label.comp-pro
   display: block;
   color: var(--blades-white);
   text-align: center;
+}
+html .comp .comp-label:hover, html .comp .comp-title:hover, :root .comp .comp-label:hover, :root .comp .comp-title:hover {
+  z-index: zLevel(3) !important;
+}
+html .comp .comp-label:hover.comp-label a, html .comp .comp-title:hover.comp-label a, :root .comp .comp-label:hover.comp-label a, :root .comp .comp-title:hover.comp-label a {
+  color: var(--blades-gold-bright);
+}
+html .comp .comp-label:hover.comp-title, html .comp .comp-title:hover.comp-title, :root .comp .comp-label:hover.comp-title, :root .comp .comp-title:hover.comp-title {
+  color: var(--blades-white-bright);
 }
 html .comp .comp-control, :root .comp .comp-control {
   z-index: zLevel(3);
@@ -570,6 +570,43 @@ html .comp.comp-vertical .comp-body > img, :root .comp.comp-vertical .comp-body 
 html .comp.comp-vertical .comp-body .comp-body-text, :root .comp.comp-vertical .comp-body .comp-body-text {
   display: none;
 }
+html .comp.comp-vertical.comp-playbook, :root .comp.comp-vertical.comp-playbook {
+  --comp-img-scaleX: -2;
+  --comp-img-scaleY: 2;
+  --comp-name-size: toRem(42px);
+  position: relative;
+  top: toRem(20px);
+  margin-bottom: toRem(-68px);
+  z-index: zLevel(-2);
+}
+html .comp.comp-vertical.comp-playbook .comp-button.comp-delete, :root .comp.comp-vertical.comp-playbook .comp-button.comp-delete {
+  left: unset;
+  right: toRem(5px);
+  top: -10px;
+}
+html .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add, :root .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add {
+  display: none;
+}
+html .comp.comp-vertical.comp-playbook .comp-body img, :root .comp.comp-vertical.comp-playbook .comp-body img {
+  height: toRem(120px);
+  width: auto;
+  opacity: 1;
+  filter: blur(1px);
+  position: absolute;
+}
+html .comp.comp-vertical.comp-playbook .comp-body .comp-title, :root .comp.comp-vertical.comp-playbook .comp-body .comp-title {
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-emphasis-alt);
+  color: var(--blades-white-bright);
+  text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
+  font-size: toRem(70px);
+  text-transform: lowercase;
+  text-align: right;
+  padding-right: toRem(4px);
+  margin-bottom: toRem(45px);
+  margin-top: toRem(15px);
+}
 html .comp.comp-vertical.portrait-block, :root .comp.comp-vertical.portrait-block {
   height: 80px;
   flex-basis: toRem(80px);
@@ -610,78 +647,41 @@ html .comp.comp-vertical.portrait-block .comp-body .comp-img, :root .comp.comp-v
   position: absolute;
   top: -5px;
 }
-html .comp.comp-vertical.comp-playbook, :root .comp.comp-vertical.comp-playbook {
-  --comp-img-scaleX: -2;
-  --comp-img-scaleY: 2;
-  --comp-name-size: toRem(42px);
-  position: relative;
-  top: toRem(20px);
-  margin-bottom: toRem(-68px);
-  z-index: zLevel(-2);
-}
-html .comp.comp-vertical.comp-playbook .comp-button.comp-delete, :root .comp.comp-vertical.comp-playbook .comp-button.comp-delete {
-  left: unset;
-  right: toRem(5px);
-  top: -10px;
-}
-html .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add, :root .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add {
-  display: none;
-}
-html .comp.comp-vertical.comp-playbook .comp-body img, :root .comp.comp-vertical.comp-playbook .comp-body img {
-  height: toRem(120px);
-  width: auto;
-  opacity: 1;
-  filter: blur(1px);
-  position: absolute;
-}
-html .comp.comp-vertical.comp-playbook .comp-body .comp-title, :root .comp.comp-vertical.comp-playbook .comp-body .comp-title {
-  width: 100%;
-  height: 100%;
-  font-family: var(--font-emphasis-alt);
-  color: var(--blades-white-bright);
-  text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
-  font-size: toRem(70px);
-  text-transform: lowercase;
-  text-align: right;
-  padding-right: toRem(4px);
-  margin-bottom: toRem(45px);
-  margin-top: toRem(15px);
-}
-html .comp.comp-horizontal, :root .comp.comp-horizontal {
+html .comp.comp-horizontal:not(.comp-vertical), :root .comp.comp-horizontal:not(.comp-vertical) {
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
 }
-html .comp.comp-horizontal .comp-button.comp-delete, :root .comp.comp-horizontal .comp-button.comp-delete {
+html .comp.comp-horizontal:not(.comp-vertical) .comp-button.comp-delete, :root .comp.comp-horizontal:not(.comp-vertical) .comp-button.comp-delete {
   left: toRem(5px);
   top: unset;
   bottom: 0;
 }
-html .comp.comp-horizontal > .comp-label, :root .comp.comp-horizontal > .comp-label {
+html .comp.comp-horizontal:not(.comp-vertical) > .comp-label, :root .comp.comp-horizontal:not(.comp-vertical) > .comp-label {
   text-align: right;
   font-size: toRem(14px);
   line-height: toRem(18px);
   margin: 0;
 }
-html .comp.comp-horizontal > .comp-label.comp-input-label, :root .comp.comp-horizontal > .comp-label.comp-input-label {
+html .comp.comp-horizontal:not(.comp-vertical) > .comp-label.comp-input-label, :root .comp.comp-horizontal:not(.comp-vertical) > .comp-label.comp-input-label {
   line-height: toRem(26px);
   margin: 0 5px 0 10px;
 }
-html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
+html .comp.comp-horizontal:not(.comp-vertical) .comp-body, :root .comp.comp-horizontal:not(.comp-vertical) .comp-body {
   justify-content: flex-start;
   align-items: flex-start;
 }
-html .comp.comp-horizontal.comp-desc-trait, :root .comp.comp-horizontal.comp-desc-trait {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait {
   align-items: flex-start;
   padding: toRem(5px) 0;
 }
-html .comp.comp-horizontal.comp-desc-trait:first-of-type, :root .comp.comp-horizontal.comp-desc-trait:first-of-type {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait:first-of-type, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait:first-of-type {
   margin-top: toRem(-5px);
 }
-html .comp.comp-horizontal.comp-desc-trait:not(:first-of-type), :root .comp.comp-horizontal.comp-desc-trait:not(:first-of-type) {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait:not(:first-of-type), :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait:not(:first-of-type) {
   border-top: 1px solid var(--blades-white);
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-label, :root .comp.comp-horizontal.comp-desc-trait .comp-label {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-label, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-label {
   min-width: 20px;
   max-width: 20px;
   min-height: 20px;
@@ -691,10 +691,10 @@ html .comp.comp-horizontal.comp-desc-trait .comp-label, :root .comp.comp-horizon
   margin-right: -20px;
   z-index: 15;
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body, :root .comp.comp-horizontal.comp-desc-trait .comp-body {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body {
   min-height: toRem(50px);
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-img, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-img {
   position: absolute;
   height: 50px;
   transform: translate(-50%, -50%);
@@ -703,7 +703,7 @@ html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img, :root .comp.com
   filter: blur(1px);
   opacity: 0.5;
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-title, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-title {
   position: relative;
   width: toRem(100px);
   flex-shrink: 0;
@@ -722,17 +722,17 @@ html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title, :root .comp.c
   z-index: 1;
   line-height: var(--line-height-default);
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .dotline, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .dotline {
   position: relative;
   transform: translate(-50%, 0);
   left: 50%;
   bottom: 0;
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .dotline .dotline-label, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .dotline .dotline-label {
   margin-right: 5px;
   font-weight: bold;
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-body-text {
   font-family: var(--font-primary-small-narrow);
   hyphens: auto;
   text-align: justify;
@@ -740,7 +740,7 @@ html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .co
   line-height: var(--line-height-compact);
   flex-grow: 1;
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type), :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type) {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type), :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type) {
   margin-bottom: 6px;
 }
 html .comp.comp-teeth.comp-horizontal .dotline, :root .comp.comp-teeth.comp-horizontal .dotline {
@@ -1086,15 +1086,6 @@ html .comp.consequence-display-container, :root .comp.consequence-display-contai
   height: var(--container-height);
   max-height: var(--container-height);
   min-height: var(--container-height);
-}
-html .comp.consequence-display-container:nth-child(1), :root .comp.consequence-display-container:nth-child(1) {
-  --csq-animation-delay: 0.5s ;
-}
-html .comp.consequence-display-container:nth-child(2), :root .comp.consequence-display-container:nth-child(2) {
-  --csq-animation-delay: 1.25s ;
-}
-html .comp.consequence-display-container:nth-child(3), :root .comp.consequence-display-container:nth-child(3) {
-  --csq-animation-delay: 2s ;
 }
 html .comp.consequence-display-container:nth-child(1), :root .comp.consequence-display-container:nth-child(1) {
   --csq-animation-delay: 0.25s ;
@@ -2048,15 +2039,6 @@ html .comp .comp-control, html .comp .comp-title, html .comp .portrait-block.com
   pointer-events: auto;
   cursor: pointer;
 }
-html .comp .comp-label:hover, html .comp .comp-title:hover, :root .comp .comp-label:hover, :root .comp .comp-title:hover {
-  z-index: 5 !important;
-}
-html .comp .comp-label:hover.comp-label a, html .comp .comp-title:hover.comp-label a, :root .comp .comp-label:hover.comp-label a, :root .comp .comp-title:hover.comp-label a {
-  color: var(--blades-gold-bright);
-}
-html .comp .comp-label:hover.comp-title, html .comp .comp-title:hover.comp-title, :root .comp .comp-label:hover.comp-title, :root .comp .comp-title:hover.comp-title {
-  color: var(--blades-white-bright);
-}
 html .comp .comp-label, :root .comp .comp-label {
   color: var(--blades-white-bright);
   font-size: 0.75rem;
@@ -2085,6 +2067,15 @@ html .comp .comp-label.comp-prompt .main-title, :root .comp .comp-label.comp-pro
   display: block;
   color: var(--blades-white);
   text-align: center;
+}
+html .comp .comp-label:hover, html .comp .comp-title:hover, :root .comp .comp-label:hover, :root .comp .comp-title:hover {
+  z-index: 5 !important;
+}
+html .comp .comp-label:hover.comp-label a, html .comp .comp-title:hover.comp-label a, :root .comp .comp-label:hover.comp-label a, :root .comp .comp-title:hover.comp-label a {
+  color: var(--blades-gold-bright);
+}
+html .comp .comp-label:hover.comp-title, html .comp .comp-title:hover.comp-title, :root .comp .comp-label:hover.comp-title, :root .comp .comp-title:hover.comp-title {
+  color: var(--blades-white-bright);
 }
 html .comp .comp-control, :root .comp .comp-control {
   z-index: 5;
@@ -2254,6 +2245,43 @@ html .comp.comp-vertical .comp-body > img, :root .comp.comp-vertical .comp-body 
 html .comp.comp-vertical .comp-body .comp-body-text, :root .comp.comp-vertical .comp-body .comp-body-text {
   display: none;
 }
+html .comp.comp-vertical.comp-playbook, :root .comp.comp-vertical.comp-playbook {
+  --comp-img-scaleX: -2;
+  --comp-img-scaleY: 2;
+  --comp-name-size: 2.625rem;
+  position: relative;
+  top: 1.25rem;
+  margin-bottom: -4.25rem;
+  z-index: 0;
+}
+html .comp.comp-vertical.comp-playbook .comp-button.comp-delete, :root .comp.comp-vertical.comp-playbook .comp-button.comp-delete {
+  left: unset;
+  right: 0.3125rem;
+  top: -10px;
+}
+html .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add, :root .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add {
+  display: none;
+}
+html .comp.comp-vertical.comp-playbook .comp-body img, :root .comp.comp-vertical.comp-playbook .comp-body img {
+  height: 7.5rem;
+  width: auto;
+  opacity: 1;
+  filter: blur(1px);
+  position: absolute;
+}
+html .comp.comp-vertical.comp-playbook .comp-body .comp-title, :root .comp.comp-vertical.comp-playbook .comp-body .comp-title {
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-emphasis-alt);
+  color: var(--blades-white-bright);
+  text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
+  font-size: 4.375rem;
+  text-transform: lowercase;
+  text-align: right;
+  padding-right: 0.25rem;
+  margin-bottom: 2.8125rem;
+  margin-top: 0.9375rem;
+}
 html .comp.comp-vertical.portrait-block, :root .comp.comp-vertical.portrait-block {
   height: 80px;
   flex-basis: 5rem;
@@ -2294,78 +2322,41 @@ html .comp.comp-vertical.portrait-block .comp-body .comp-img, :root .comp.comp-v
   position: absolute;
   top: -5px;
 }
-html .comp.comp-vertical.comp-playbook, :root .comp.comp-vertical.comp-playbook {
-  --comp-img-scaleX: -2;
-  --comp-img-scaleY: 2;
-  --comp-name-size: 2.625rem;
-  position: relative;
-  top: 1.25rem;
-  margin-bottom: -4.25rem;
-  z-index: 0;
-}
-html .comp.comp-vertical.comp-playbook .comp-button.comp-delete, :root .comp.comp-vertical.comp-playbook .comp-button.comp-delete {
-  left: unset;
-  right: 0.3125rem;
-  top: -10px;
-}
-html .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add, :root .comp.comp-vertical.comp-playbook .comp-label:not(.comp-prompt) .comp-control.comp-add {
-  display: none;
-}
-html .comp.comp-vertical.comp-playbook .comp-body img, :root .comp.comp-vertical.comp-playbook .comp-body img {
-  height: 7.5rem;
-  width: auto;
-  opacity: 1;
-  filter: blur(1px);
-  position: absolute;
-}
-html .comp.comp-vertical.comp-playbook .comp-body .comp-title, :root .comp.comp-vertical.comp-playbook .comp-body .comp-title {
-  width: 100%;
-  height: 100%;
-  font-family: var(--font-emphasis-alt);
-  color: var(--blades-white-bright);
-  text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
-  font-size: 4.375rem;
-  text-transform: lowercase;
-  text-align: right;
-  padding-right: 0.25rem;
-  margin-bottom: 2.8125rem;
-  margin-top: 0.9375rem;
-}
-html .comp.comp-horizontal, :root .comp.comp-horizontal {
+html .comp.comp-horizontal:not(.comp-vertical), :root .comp.comp-horizontal:not(.comp-vertical) {
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
 }
-html .comp.comp-horizontal .comp-button.comp-delete, :root .comp.comp-horizontal .comp-button.comp-delete {
+html .comp.comp-horizontal:not(.comp-vertical) .comp-button.comp-delete, :root .comp.comp-horizontal:not(.comp-vertical) .comp-button.comp-delete {
   left: 0.3125rem;
   top: unset;
   bottom: 0;
 }
-html .comp.comp-horizontal > .comp-label, :root .comp.comp-horizontal > .comp-label {
+html .comp.comp-horizontal:not(.comp-vertical) > .comp-label, :root .comp.comp-horizontal:not(.comp-vertical) > .comp-label {
   text-align: right;
   font-size: 0.875rem;
   line-height: 1.125rem;
   margin: 0;
 }
-html .comp.comp-horizontal > .comp-label.comp-input-label, :root .comp.comp-horizontal > .comp-label.comp-input-label {
+html .comp.comp-horizontal:not(.comp-vertical) > .comp-label.comp-input-label, :root .comp.comp-horizontal:not(.comp-vertical) > .comp-label.comp-input-label {
   line-height: 1.625rem;
   margin: 0 5px 0 10px;
 }
-html .comp.comp-horizontal .comp-body, :root .comp.comp-horizontal .comp-body {
+html .comp.comp-horizontal:not(.comp-vertical) .comp-body, :root .comp.comp-horizontal:not(.comp-vertical) .comp-body {
   justify-content: flex-start;
   align-items: flex-start;
 }
-html .comp.comp-horizontal.comp-desc-trait, :root .comp.comp-horizontal.comp-desc-trait {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait {
   align-items: flex-start;
   padding: 0.3125rem 0;
 }
-html .comp.comp-horizontal.comp-desc-trait:first-of-type, :root .comp.comp-horizontal.comp-desc-trait:first-of-type {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait:first-of-type, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait:first-of-type {
   margin-top: -0.3125rem;
 }
-html .comp.comp-horizontal.comp-desc-trait:not(:first-of-type), :root .comp.comp-horizontal.comp-desc-trait:not(:first-of-type) {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait:not(:first-of-type), :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait:not(:first-of-type) {
   border-top: 1px solid var(--blades-white);
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-label, :root .comp.comp-horizontal.comp-desc-trait .comp-label {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-label, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-label {
   min-width: 20px;
   max-width: 20px;
   min-height: 20px;
@@ -2375,10 +2366,10 @@ html .comp.comp-horizontal.comp-desc-trait .comp-label, :root .comp.comp-horizon
   margin-right: -20px;
   z-index: 15;
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body, :root .comp.comp-horizontal.comp-desc-trait .comp-body {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body {
   min-height: 3.125rem;
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-img, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-img {
   position: absolute;
   height: 50px;
   transform: translate(-50%, -50%);
@@ -2387,7 +2378,7 @@ html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-img, :root .comp.com
   filter: blur(1px);
   opacity: 0.5;
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-title, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-title {
   position: relative;
   width: 6.25rem;
   flex-shrink: 0;
@@ -2406,17 +2397,17 @@ html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-title, :root .comp.c
   z-index: 1;
   line-height: var(--line-height-default);
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .dotline, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .dotline {
   position: relative;
   transform: translate(-50%, 0);
   left: 50%;
   bottom: 0;
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label, :root .comp.comp-horizontal.comp-desc-trait .comp-body .dotline .dotline-label {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .dotline .dotline-label, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .dotline .dotline-label {
   margin-right: 5px;
   font-weight: bold;
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-body-text, :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-body-text {
   font-family: var(--font-primary-small-narrow);
   hyphens: auto;
   text-align: justify;
@@ -2424,7 +2415,7 @@ html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text, :root .co
   line-height: var(--line-height-compact);
   flex-grow: 1;
 }
-html .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type), :root .comp.comp-horizontal.comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type) {
+html .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type), :root .comp.comp-horizontal:not(.comp-vertical).comp-desc-trait .comp-body .comp-body-text p:not(:last-of-type) {
   margin-bottom: 6px;
 }
 html .comp.comp-teeth.comp-horizontal .dotline, :root .comp.comp-teeth.comp-horizontal .dotline {
@@ -2770,15 +2761,6 @@ html .comp.consequence-display-container, :root .comp.consequence-display-contai
   height: var(--container-height);
   max-height: var(--container-height);
   min-height: var(--container-height);
-}
-html .comp.consequence-display-container:nth-child(1), :root .comp.consequence-display-container:nth-child(1) {
-  --csq-animation-delay: 0.5s ;
-}
-html .comp.consequence-display-container:nth-child(2), :root .comp.consequence-display-container:nth-child(2) {
-  --csq-animation-delay: 1.25s ;
-}
-html .comp.consequence-display-container:nth-child(3), :root .comp.consequence-display-container:nth-child(3) {
-  --csq-animation-delay: 2s ;
 }
 html .comp.consequence-display-container:nth-child(1), :root .comp.consequence-display-container:nth-child(1) {
   --csq-animation-delay: 0.25s ;

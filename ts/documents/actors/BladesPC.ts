@@ -6,6 +6,7 @@ import BladesRoll from "../../BladesRoll";
 import BladesPushAlert from "../../BladesPushAlert";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
+type harmLevel = 1|2|3|4;
 
 class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
                                               BladesRoll.PrimaryDocData,
@@ -16,13 +17,18 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     return super.IsType(doc, BladesActorType.pc);
   }
 
-  static GetFromUser(userRef: unknown): BladesPC|undefined {
+  static GetUser(userRef: unknown): User|undefined {
     let user: User|undefined;
     if (typeof userRef === "string") {
       user = game.users.get(userRef) ?? game.users.getName(userRef);
     } else if (userRef instanceof User) {
       user = userRef;
     }
+    return user;
+  }
+
+  static GetFromUser(userRef: unknown): BladesPC|undefined {
+    const user = BladesPC.GetUser(userRef);
     if (!user) { throw new Error(`Unable to find user '${userRef}'`); }
 
     const actor = game.actors.get(user.character?.id ?? "");
@@ -313,7 +319,8 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     return rollModsData;
   }
 
-  async applyHarm(num: 1|2|3|4, name: string) {
+
+  async applyHarm(num: harmLevel, name: string) {
     if (num === 4) {
       BladesPushAlert.Get().pushToAll("GM",
         `${this.name} Suffers FATAL Harm: ${name}`,

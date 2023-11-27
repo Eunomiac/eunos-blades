@@ -55,7 +55,6 @@ class BladesConsequence {
     }
 
     const rollPhase = roll$.data("rollPhase") as RollPhase;
-    // eLog.checkLog3("rollCollab", "ApplyChatListeners", {html, roll$, rollPhase});
     if (rollPhase !== RollPhase.AwaitingConsequences) {return;}
 
     html$.find("[data-action*='-consequence']").on({
@@ -80,6 +79,7 @@ class BladesConsequence {
             await csq.resistSpecialArmorConsequence();
             break;
           }
+          default:
         }
       }
     });

@@ -12,13 +12,6 @@
 
   .comp-control, .comp-title, .portrait-block.comp-body { transition: 0.25s; pointer-events: auto; cursor: pointer }
 
-  .comp-label:hover, .comp-title:hover {
-    z-index: zLevel(+3) !important;
-
-    &.comp-label a {color: var(--blades-gold-bright)}
-    &.comp-title {color: var(--blades-white-bright)}
-  }
-
   .comp-label {
     color: var(--blades-white-bright);
     font-size: toRem(12px);
@@ -56,6 +49,12 @@
 
   }
 
+  .comp-label:hover, .comp-title:hover {
+    z-index: zLevel(+3) !important;
+
+    &.comp-label a {color: var(--blades-gold-bright)}
+    &.comp-title {color: var(--blades-white-bright)}
+  }
 
   .comp-control {
     z-index: zLevel(+3);
@@ -271,6 +270,43 @@
     .comp-body-text { display: none }
   }
 
+  &.comp-playbook {
+    --comp-img-scaleX: -2;
+    --comp-img-scaleY: 2;
+    --comp-name-size: #{toRem(42px)};
+    position: relative;
+    top: toRem(20px);
+    margin-bottom: toRem(-68px);
+    z-index: zLevel(-2);
+
+    .comp-button.comp-delete { left: unset; right: toRem(5px); top: -10px; }
+
+    .comp-label:not(.comp-prompt) .comp-control.comp-add { display: none }
+
+    .comp-body {
+      img {
+        height: toRem(120px);
+        width: auto;
+        opacity: 1;
+        filter: blur(1px);
+        position: absolute;
+      }
+      .comp-title {
+        width: 100%;
+        height: 100%;
+        font-family: var(--font-emphasis-alt);
+        color: var(--blades-white-bright);
+        text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
+        font-size: toRem(70px);
+        text-transform: lowercase;
+        text-align: right;
+        padding-right: toRem(4px);
+        margin-bottom: toRem(45px);
+        margin-top: toRem(15px);
+      }
+    }
+  }
+
   &.portrait-block {
     height: 80px;
     flex-basis: toRem(80px);
@@ -314,47 +350,9 @@
       }
     }
   }
-
-  &.comp-playbook {
-    --comp-img-scaleX: -2;
-    --comp-img-scaleY: 2;
-    --comp-name-size: #{toRem(42px)};
-    position: relative;
-    top: toRem(20px);
-    margin-bottom: toRem(-68px);
-    z-index: zLevel(-2);
-
-    .comp-button.comp-delete { left: unset; right: toRem(5px); top: -10px; }
-
-    .comp-label:not(.comp-prompt) .comp-control.comp-add { display: none }
-
-    .comp-body {
-      img {
-        height: toRem(120px);
-        width: auto;
-        opacity: 1;
-        filter: blur(1px);
-        position: absolute;
-      }
-      .comp-title {
-        width: 100%;
-        height: 100%;
-        font-family: var(--font-emphasis-alt);
-        color: var(--blades-white-bright);
-        text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
-        font-size: toRem(70px);
-        text-transform: lowercase;
-        text-align: right;
-        padding-right: toRem(4px);
-        margin-bottom: toRem(45px);
-        margin-top: toRem(15px);
-      }
-    }
-  }
-
 }
 
-.comp.comp-horizontal {
+.comp.comp-horizontal:not(.comp-vertical) {
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
@@ -833,10 +831,6 @@
   --csq-type-bg: var(--csq-icon-dark);
 
   --csq-button-size-mult: 0.33;
-
-  &:nth-child(1) { --csq-animation-delay: 0.5s }
-  &:nth-child(2) { --csq-animation-delay: 1.25s }
-  &:nth-child(3) { --csq-animation-delay: 2s }
 
   &:nth-child(1) { --csq-animation-delay: 0.25s }
   &:nth-child(2) { --csq-animation-delay: 0.5s }

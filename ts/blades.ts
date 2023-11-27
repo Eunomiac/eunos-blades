@@ -37,7 +37,6 @@ import BladesAI, {AGENTS, AIAssistant} from "./core/ai";
 import BladesActiveEffect from "./BladesActiveEffect";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet";
-// import {updateClaims, updateContacts, updateOps, updateFactions, updateDescriptions, updateRollMods} from "./data-import/data-import";
 
 CONFIG.debug.logging = false;
 /* DEVCODE*/CONFIG.debug.logging = true;
@@ -75,7 +74,7 @@ class GlobalGetter {
 
   newActionRoll() {
     const pc = game.actors.getName("Alistair") as BladesPC|undefined;
-    const idList = [...new Array(15)].map(() => randomID());
+    const idList = Array.from({length: 15}).map(() => randomID());
     if (!pc) {return; }
     const conf = {
       rollType: RollType.Action,

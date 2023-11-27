@@ -16,8 +16,8 @@ class BladesGMTracker extends BladesItem implements BladesItemSubClass.Gm_Tracke
   }
 
   // #region OVERRIDES: prepareDerivedData, _onUpdate
-  override async _onUpdate(changed: any, options: any, userId: string) {
-    await super._onUpdate(changed, options, userId);
+  override async _onUpdate(...args: Parameters<typeof BladesActor.prototype.callOnUpdate>) {
+    await super.callOnUpdate(...args);
     BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
   }
   // #endregion

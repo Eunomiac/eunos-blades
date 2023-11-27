@@ -1,6 +1,7 @@
-import BladesItem from "../../BladesItem";
+
 import {BladesActorType, Playbook, BladesItemType} from "../../core/constants";
-import BladesActor from "../../BladesActor";
+import {BladesActor, BladesPC} from "../BladesActorProxy";
+import {BladesItem} from "../BladesItemProxy";
 import BladesRoll from "../../BladesRoll";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
@@ -9,6 +10,32 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
   BladesRoll.ParticipantDocData {
 
   // #region Static Overrides: Create ~
+  static override IsType<T extends BladesActorType = BladesActorType.crew>(doc: unknown): doc is BladesActorOfType<T> {
+    return super.IsType(doc, BladesActorType.crew);
+  }
+
+  static GetFromUser(userRef: unknown): BladesCrew|undefined {
+    const actor = BladesPC.GetFromUser(userRef);
+    if (!actor) { return undefined; }
+    return actor.crew;
+  }
+
+  static GetFromPC(pcRef: unknown): BladesCrew|undefined {
+    let actor: unknown;
+    if (typeof pcRef === "string") {
+      actor = game.actors.get(pcRef) ?? game.actors.getName(pcRef);
+    } else if (pcRef instanceof BladesPC) {
+      actor = pcRef;
+    } else {
+      actor ??= BladesPC.GetFromUser(pcRef);
+    }
+
+    if (!BladesPC.IsType(actor)) { throw new Error(`Unable to find BladesPC from '${pcRef}'`); }
+
+    return actor.crew;
+  }
+
+
   static override async create(
     data: ActorDataConstructorData & {system?: Partial<BladesActorSchema.Crew>},
     options = {}

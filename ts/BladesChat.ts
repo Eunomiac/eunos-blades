@@ -35,6 +35,7 @@ class BladesChat extends ChatMessage {
     return chatMessage;
   }
 
+
   _rollInst?: BladesRoll;
 
   get rollInst(): BladesRoll|undefined { return this._rollInst; }

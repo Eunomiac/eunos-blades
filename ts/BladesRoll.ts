@@ -125,8 +125,7 @@ function pruneConfig(cfg: BladesRoll.Config & Record<string, unknown>): BladesRo
       Object.keys(cfg.rollParticipantData[RollModSection.roll]).forEach((key) => {
         const thisParticipant = cfg.rollParticipantData?.[RollModSection.roll]?.[key as Exclude<BladesRoll.RollParticipantSubSection, "Setup">];
         if (thisParticipant instanceof BladesRollParticipant) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          cfg.rollParticipantData![RollModSection.roll]![key as Exclude<BladesRoll.RollParticipantSubSection, "Setup">] = thisParticipant.flagData;
+          ((cfg.rollParticipantData as NonNullable<BladesRoll.Config["rollParticipantData"]>)[RollModSection.roll] as Record<string, BladesRoll.ParticipantDocData & BladesRoll.ParticipantSectionData>)[key as Exclude<BladesRoll.RollParticipantSubSection, "Setup">] = thisParticipant.flagData;
         }
       });
     }
