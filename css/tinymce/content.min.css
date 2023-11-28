@@ -1125,6 +1125,51 @@ html .comp.consequence-display-container.consequence-accepted, html .comp.conseq
 html .comp.consequence-display-container.consequence-accepted .consequence-icon-container, html .comp.consequence-display-container.consequence-accepted * .consequence-icon-container, :root .comp.consequence-display-container.consequence-accepted .consequence-icon-container, :root .comp.consequence-display-container.consequence-accepted * .consequence-icon-container {
   top: -3px !important;
 }
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted {
+  min-height: 60px;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted {
+  position: absolute;
+  width: 100%;
+  top: 11px;
+  left: 20px;
+  outline: 1px solid magenta !important;
+  z-index: 3;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .sub-consequence-resisted-roll-result .resistance-roll-intro, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .sub-consequence-resisted-roll-result .resistance-roll-intro {
+  display: none;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .consequence-icon-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .consequence-icon-container {
+  display: none;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .consequence-type-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .consequence-type-container {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .special-resist-overlay, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .special-resist-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .special-resist-overlay .special-resist-overlay-img, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .special-resist-overlay .special-resist-overlay-img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted ~ .consequence-icon-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted ~ .consequence-icon-container {
+  transform: translate(-20px, 0px);
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted ~ .consequence-type-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted ~ .consequence-type-container {
+  transform: translate(-20px, 0px);
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted ~ .consequence-name-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted ~ .consequence-name-container {
+  opacity: 0;
+}
 html .comp.consequence-display-container .base-consequence, :root .comp.consequence-display-container .base-consequence {
   --csq-icon-dark: var(--blades-black);
   --csq-icon-med: var(--blades-grey);
@@ -2799,6 +2844,51 @@ html .comp.consequence-display-container.consequence-accepted, html .comp.conseq
 }
 html .comp.consequence-display-container.consequence-accepted .consequence-icon-container, html .comp.consequence-display-container.consequence-accepted * .consequence-icon-container, :root .comp.consequence-display-container.consequence-accepted .consequence-icon-container, :root .comp.consequence-display-container.consequence-accepted * .consequence-icon-container {
   top: -3px !important;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted {
+  min-height: 60px;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted {
+  position: absolute;
+  width: 100%;
+  top: 11px;
+  left: 20px;
+  outline: 1px solid magenta !important;
+  z-index: 3;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .sub-consequence-resisted-roll-result .resistance-roll-intro, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .sub-consequence-resisted-roll-result .resistance-roll-intro {
+  display: none;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .consequence-icon-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .consequence-icon-container {
+  display: none;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .consequence-type-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .consequence-type-container {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .special-resist-overlay, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .special-resist-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .special-resist-overlay .special-resist-overlay-img, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .special-resist-overlay .special-resist-overlay-img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted ~ .consequence-icon-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted ~ .consequence-icon-container {
+  transform: translate(-20px, 0px);
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted ~ .consequence-type-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted ~ .consequence-type-container {
+  transform: translate(-20px, 0px);
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted ~ .consequence-name-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted ~ .consequence-name-container {
+  opacity: 0;
 }
 html .comp.consequence-display-container .base-consequence, :root .comp.consequence-display-container .base-consequence {
   --csq-icon-dark: var(--blades-black);

@@ -9,7 +9,11 @@
     {{!-- Resistance Lead-in --}}
     <div class="resistance-roll-intro">Resisted</div>
     {{!-- Consequence Icon --}}
+    {{#if icon}}
+    <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/resist-{{icon}}.svg" />
+    {{else}}
     <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/base-{{flagData.resistanceData.consequence.icon}}.svg" />
+    {{/if}}
 
     {{!-- Vertical Container --}}
     <div class="resistance-roll-vertical-right flex-vertical full-width">

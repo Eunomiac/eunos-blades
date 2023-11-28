@@ -171,6 +171,18 @@ export enum RollSubType {
   GroupParticipant = "GroupParticipant"
 }
 
+export enum RollModType {
+  general = "general",
+  harm = "harm",
+  teamwork = "teamwork",
+  ability = "ability",
+  gear = "gear",
+  crew_ability = "crew_ability",
+  crew_upgrade = "crew_upgrade",
+  advantage = "advantage",
+  disadvantage = "disadvantage"
+}
+
 export enum ConsequenceType {
   ReducedEffect = "ReducedEffect",
   ComplicationMinor = "ComplicationMinor",

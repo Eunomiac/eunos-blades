@@ -1,6 +1,6 @@
 // #region IMPORTS ~
 import U from "./core/utilities.js";
-import C, { BladesActorType, BladesItemType, BladesPhase, RollPermissions, RollType, RollSubType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag } from "./core/constants.js";
+import C, { BladesActorType, BladesItemType, BladesPhase, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag } from "./core/constants.js";
 import { BladesActor, BladesPC, BladesCrew } from "./documents/BladesActorProxy.js";
 import { BladesItem, BladesGMTracker } from "./documents/BladesItemProxy.js";
 import { ApplyTooltipAnimations, ApplyConsequenceAnimations } from "./core/gsap.js";
@@ -182,7 +182,7 @@ class BladesRollMod {
                 name: nameVal,
                 section: catVal,
                 base_status: RollModStatus.ToggledOff,
-                modType: "general",
+                modType: RollModType.general,
                 value: 1,
                 posNeg: posNegVal,
                 tooltip: ""
@@ -314,10 +314,10 @@ class BladesRollMod {
     get isInInactiveBlock() {
         if (game.user.isGM) {
             return [RollModStatus.Hidden, RollModStatus.ForcedOff, RollModStatus.ToggledOff].includes(this.status)
-                && (this.isConditional || [BladesItemType.ability].includes(this.modType));
+                && (this.isConditional || this.modType === RollModType.ability);
         }
         return [RollModStatus.ForcedOff, RollModStatus.ToggledOff].includes(this.status)
-            && (this.isConditional || [BladesItemType.ability].includes(this.modType));
+            && (this.isConditional || this.modType === RollModType.ability);
     }
     get isPush() {
         return Boolean(U.lCase(this.name) === "push"
@@ -355,16 +355,18 @@ class BladesRollMod {
         }
     }
     /**
-     * Sets the conditional status of the roll instance.
+     * Sets the conditional status of the roll mod instance.
      * @returns {boolean} - Returns false if the status is ForcedOn or ToggledOff, true if the status is Hidden.
      */
     setConditionalStatus() {
-        // If the roll instance is not conditional, return false
+        // If the roll mod instance is not conditional, return false
         if (!this.isConditional) {
             return false;
         }
         // If any auto-Traits/Types apply, set status to ForcedOn and return false
         const autoTypesOrTraitsApply = this.autoRollTypes.includes(this.rollInstance.rollType)
+            || (this.rollInstance.rollSubType && this.autoRollTypes.includes(this.rollInstance.rollSubType))
+            || (this.rollInstance.rollDowntimeAction && this.autoRollTypes.includes(this.rollInstance.rollDowntimeAction))
             || (!this.rollInstance.rollTrait || this.autoRollTraits.includes(this.rollInstance.rollTrait));
         if (autoTypesOrTraitsApply) {
             this.heldStatus = RollModStatus.ForcedOn;
@@ -397,8 +399,13 @@ class BladesRollMod {
      * @returns {boolean} - Returns true if any types or traits apply, false otherwise.
      */
     checkTypesOrTraits(types, traits) {
+        if ([...types, ...traits].length === 0) {
+            return false;
+        }
         const typesApply = Boolean((!this.rollInstance.isParticipantRoll && types.length === 0)
-            || types.includes(this.rollInstance.rollType));
+            || types.includes(this.rollInstance.rollType)
+            || (this.rollInstance.rollSubType && types.includes(this.rollInstance.rollSubType))
+            || (this.rollInstance.rollDowntimeAction && types.includes(this.rollInstance.rollDowntimeAction)));
         const traitsApply = Boolean((!this.rollInstance.isParticipantRoll && traits.length === 0)
             || (this.rollInstance.rollTrait && traits.includes(this.rollInstance.rollTrait)));
         return typesApply && traitsApply;
@@ -611,7 +618,7 @@ class BladesRollMod {
         });
     }
     get selectOptions() {
-        if (this.modType !== "teamwork") {
+        if (this.modType !== RollModType.teamwork) {
             return null;
         }
         if (this.name === "Assist" || this.name === "Setup") {
@@ -623,7 +630,7 @@ class BladesRollMod {
         return null;
     }
     get selectedParticipant() {
-        if (this.modType !== "teamwork") {
+        if (this.modType !== RollModType.teamwork) {
             return null;
         }
         return this.rollInstance.getRollParticipant(this.section, this.name);
@@ -735,9 +742,12 @@ class BladesRollMod {
         this.conditionalRollTypes = modData.conditionalRollTypes ?? [];
         this.autoRollTypes = modData.autoRollTypes ?? [];
         this.participantRollTypes = modData.participantRollTypes ?? [];
-        this.conditionalRollTraits = modData.conditionalRollTraits ?? [];
-        this.autoRollTraits = modData.autoRollTraits ?? [];
-        this.participantRollTraits = modData.participantRollTraits ?? [];
+        this.conditionalRollTraits = (modData.conditionalRollTraits ?? [])
+            .map((trait) => U.lCase(trait));
+        this.autoRollTraits = (modData.autoRollTraits ?? [])
+            .map((trait) => U.lCase(trait));
+        this.participantRollTraits = (modData.participantRollTraits ?? [])
+            .map((trait) => U.lCase(trait));
         this.section = modData.section;
     }
 }
@@ -1189,6 +1199,19 @@ class BladesRollParticipant {
     }
 }
 class BladesRoll extends DocumentSheet {
+    static _Debug = {
+        modWatch: false
+    };
+    static Debug = {
+        watchRollMod(name) {
+            if (typeof name === "string") {
+                BladesRoll._Debug.modWatch = new RegExp(name, "g");
+            }
+            else {
+                BladesRoll._Debug.modWatch = false;
+            }
+        }
+    };
     // #region STATIC METHODS: INITIALIZATION & DEFAULTS ~
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -1234,7 +1257,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.roll,
                 base_status: RollModStatus.ToggledOff,
                 posNeg: "positive",
-                modType: "general",
+                modType: RollModType.general,
                 value: 1,
                 effectKeys: ["ForceOff-Bargain", "Cost-Stress2"],
                 tooltip: "<h1>Push for +1d</h1><p>For <strong class='red-bright'>2 Stress</strong>, add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also accept a <strong class='red-bright'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
@@ -1245,7 +1268,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.roll,
                 base_status: RollModStatus.Hidden,
                 posNeg: "positive",
-                modType: "general",
+                modType: RollModType.general,
                 value: 1,
                 effectKeys: [],
                 tooltip: "<h1 class='red-bright'>Devil's Bargain</h1><p>The GM has offered you a <strong class='red-bright'>Devil's Bargain</strong>.</p><p><strong class='red-bright'>Accept the terms</strong> to add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also <strong>Push for +1d</strong> to increase your dice pool: It's one or the other.)</em></p>"
@@ -1256,7 +1279,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.roll,
                 base_status: RollModStatus.Hidden,
                 posNeg: "positive",
-                modType: "teamwork",
+                modType: RollModType.teamwork,
                 value: 1,
                 tooltip: "<h1 class='gold-bright'>%DOC_NAME% Assists</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> is <strong>Assisting</strong> your efforts, adding <strong class='gold-bright'>1 die</strong> to your pool.</p>"
             },
@@ -1266,7 +1289,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.position,
                 base_status: RollModStatus.Hidden,
                 posNeg: "positive",
-                modType: "teamwork",
+                modType: RollModType.teamwork,
                 value: 1,
                 tooltip: "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Position</strong> by one level.</p>"
             },
@@ -1276,7 +1299,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.effect,
                 base_status: RollModStatus.ToggledOff,
                 posNeg: "positive",
-                modType: "general",
+                modType: RollModType.general,
                 value: 1,
                 effectKeys: ["Cost-Stress2"],
                 tooltip: "<h1>Push for Effect</h1><p>For <strong class='red-bright'>2 Stress</strong>, increase your <strong class='gold-bright'>Effect</strong> by one level.</p>"
@@ -1287,7 +1310,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.effect,
                 base_status: RollModStatus.Hidden,
                 posNeg: "positive",
-                modType: "teamwork",
+                modType: RollModType.teamwork,
                 value: 1,
                 tooltip: "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
             },
@@ -1297,7 +1320,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.effect,
                 base_status: RollModStatus.Hidden,
                 posNeg: "positive",
-                modType: "general",
+                modType: RollModType.general,
                 value: 1,
                 tooltip: "<h1>Potency</h1><p>By circumstance or advantage, you have <strong>Potency</strong> in this action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
             },
@@ -1307,7 +1330,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.effect,
                 base_status: RollModStatus.Hidden,
                 posNeg: "negative",
-                modType: "general",
+                modType: RollModType.general,
                 value: 1,
                 tooltip: "<h1 class='red-bright'>Potency</h1><p>By circumstance or advantage, <strong class='red-bright'>@OPPOSITION_NAME@</strong> has <strong>Potency</strong> against you, reducing your <strong class='red-bright'>Effect</strong> by one level."
             }
@@ -2189,17 +2212,58 @@ class BladesRoll extends DocumentSheet {
         this.rollFactorPenaltiesNegated = {};
         this.tempGMBoosts = {};
         this.rollMods = modsData.map((modData) => new BladesRollMod(modData, this));
+        // ESLINT DISABLE: Dev Code.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const initReport = {};
+        let initReportCount = 0;
+        const watchMod = (label) => {
+            if (BladesRoll._Debug.modWatch === false) {
+                return;
+            }
+            const reportLabel = `(${initReportCount}) == ${label}`;
+            const rollMod = this.rollMods
+                .find((mod) => BladesRoll._Debug.modWatch && BladesRoll._Debug.modWatch.exec(mod.name));
+            if (rollMod) {
+                initReport[`${reportLabel} : ${rollMod.status}`] = {
+                    inst: rollMod,
+                    data: { ...rollMod.data },
+                    sourceName: rollMod.sourceName,
+                    status: {
+                        ALL: rollMod.status,
+                        base: rollMod.baseStatus,
+                        held: rollMod.heldStatus,
+                        user: rollMod.userStatus
+                    },
+                    is: {
+                        active: rollMod.isActive,
+                        visible: rollMod.isVisible,
+                        conditional: rollMod.isConditional,
+                        inInactiveBlock: rollMod.isInInactiveBlock,
+                        isPush: rollMod.isPush,
+                        isBasicPush: rollMod.isBasicPush
+                    },
+                    flags: { ...rollMod.flagParams }
+                };
+            }
+            else {
+                initReport[reportLabel] = "MOD NOT FOUND";
+            }
+            initReportCount++;
+        };
+        watchMod("INITIAL");
         /* *** PASS ZERO: ROLLTYPE VALIDATION PASS *** */
         this.rollMods = this.rollMods.filter((rollMod) => rollMod.isValidForRollType());
+        watchMod("ROLLTYPE VALIDATION");
         /* *** PASS ONE: DISABLE PASS *** */
-        this.rollMods
-            // ... Conditional Status Pass
-            .filter((rollMod) => !rollMod.setConditionalStatus())
-            // ... AutoReveal/AutoEnable Pass
-            .filter((rollMod) => !rollMod.setAutoStatus())
-            // ... Payable Pass
-            .forEach((rollMod) => { rollMod.setPayableStatus(); });
+        // ... Conditional Status Pass
+        const conditionalDisablePass = this.rollMods.filter((rollMod) => !rollMod.setConditionalStatus());
+        watchMod("DISABLE - CONDITIONAL");
+        // ... AutoReveal/AutoEnable Pass
+        const autoRevealDisablePass = conditionalDisablePass.filter((rollMod) => !rollMod.setAutoStatus());
+        watchMod("DISABLE - AUTO-REVEAL/ENABLE");
+        // ... Payable Pass
+        autoRevealDisablePass.forEach((rollMod) => { rollMod.setPayableStatus(); });
+        watchMod("DISABLE - PAYABLE");
         /* *** PASS TWO: FORCE-ON PASS *** */
         const parseForceOnKeys = (mod) => {
             const holdKeys = mod.effectKeys.filter((key) => key.startsWith("ForceOn"));
@@ -2242,6 +2306,7 @@ class BladesRoll extends DocumentSheet {
             }
         };
         this.getActiveRollMods().forEach((rollMod) => parseForceOnKeys(rollMod));
+        watchMod("FORCE-ON PASS");
         /* *** PASS THREE: PUSH-CHECK PASS *** */
         // IF ROLL FORCED ...
         if (this.isForcePushed()) {
@@ -2249,6 +2314,7 @@ class BladesRoll extends DocumentSheet {
             this.getInactivePushMods()
                 .filter((mod) => !mod.isBasicPush)
                 .forEach((mod) => { mod.heldStatus = RollModStatus.ForcedOff; });
+            watchMod("PUSH-CHECK: FORCE-OFF IS-PUSH");
         }
         // ... BY CATEGORY ...
         [RollModSection.roll, RollModSection.effect].forEach((cat) => {
@@ -2260,17 +2326,20 @@ class BladesRoll extends DocumentSheet {
                         bargainMod.heldStatus = RollModStatus.ForcedOff;
                     }
                 }
+                watchMod("PUSH-CHECK: FORCE OFF BARGAIN");
             }
             else {
                 // Otherwise, hide all Is-Push mods
                 this.getInactivePushMods(cat)
                     .filter((mod) => !mod.isBasicPush)
                     .forEach((mod) => { mod.heldStatus = RollModStatus.Hidden; });
+                watchMod("PUSH-CHECK: HIDE IS-PUSH");
             }
         });
         /* *** PASS FOUR: Relevancy Pass *** */
         this.getVisibleRollMods()
             .forEach((mod) => { mod.setRelevancyStatus(); });
+        watchMod("RELEVANCY PASS");
         /* *** PASS FIVE: Overpayment Pass *** */
         // ... If 'Cost-SpecialArmor' active, ForceOff other visible Cost-SpecialArmor mods
         const activeArmorCostMod = this.getActiveRollMods().find((mod) => mod.effectKeys.includes("Cost-SpecialArmor"));
@@ -2278,6 +2347,7 @@ class BladesRoll extends DocumentSheet {
             this.getVisibleRollMods()
                 .filter((mod) => !mod.isActive && mod.effectKeys.includes("Cost-SpecialArmor"))
                 .forEach((mod) => { mod.heldStatus = RollModStatus.ForcedOff; });
+            watchMod("OVERPAYMENT PASS");
         }
         eLog.checkLog2("rollMods", "*** initRollMods() PASS ***", initReport);
     }
@@ -2493,7 +2563,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.roll,
                 base_status: RollModStatus.ToggledOff,
                 posNeg: "positive",
-                modType: "general",
+                modType: RollModType.general,
                 value: 1,
                 effectKeys: [],
                 tooltip: "<h1></h1><p></p>"
@@ -2504,7 +2574,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.roll,
                 base_status: RollModStatus.ToggledOff,
                 posNeg: "negative",
-                modType: "general",
+                modType: RollModType.general,
                 value: 1,
                 effectKeys: [],
                 tooltip: "<h1></h1><p></p>"
@@ -2515,7 +2585,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.roll,
                 base_status: RollModStatus.ToggledOff,
                 posNeg: "positive",
-                modType: "general",
+                modType: RollModType.general,
                 value: 1,
                 effectKeys: [],
                 tooltip: "<h1></h1><p></p>"
@@ -2526,7 +2596,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.roll,
                 base_status: RollModStatus.ToggledOff,
                 posNeg: "negative",
-                modType: "general",
+                modType: RollModType.general,
                 value: 1,
                 effectKeys: [],
                 tooltip: "<h1></h1><p></p>"
@@ -2537,7 +2607,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.position,
                 base_status: RollModStatus.ToggledOff,
                 posNeg: "positive",
-                modType: "general",
+                modType: RollModType.general,
                 value: 1,
                 effectKeys: [],
                 tooltip: "<h1>Help From a Friend</h1><p>Add <strong>+1d</strong> if you enlist the help of a friend or contact.</p>"
@@ -2548,7 +2618,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.roll,
                 base_status: RollModStatus.ToggledOff,
                 posNeg: "negative",
-                modType: "general",
+                modType: RollModType.general,
                 value: 1,
                 effectKeys: [],
                 tooltip: "<h1></h1><p></p>"
@@ -2564,7 +2634,7 @@ class BladesRoll extends DocumentSheet {
             section: RollModSection.position,
             base_status: RollModStatus.ToggledOff,
             posNeg: "positive",
-            modType: "general",
+            modType: RollModType.general,
             value: 1,
             effectKeys: [],
             tooltip: "<h1>Help From a Friend</h1><p>Add <strong>+1d</strong> if you enlist the help of a friend or contact.</p>"
@@ -2576,7 +2646,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.after,
                 base_status: RollModStatus.ForcedOn,
                 posNeg: "positive",
-                modType: "general",
+                modType: RollModType.general,
                 value: 0,
                 effectKeys: [],
                 tooltip: "<h1>Buying Result Level</h1><p>After your roll, you can <strong>increase the result level</strong> by one for each <strong class=\"gold-bright\">Coin</strong> you spend.</p>"
@@ -2590,7 +2660,7 @@ class BladesRoll extends DocumentSheet {
                     section: RollModSection.roll,
                     base_status: RollModStatus.ToggledOff,
                     posNeg: "positive",
-                    modType: "general",
+                    modType: RollModType.general,
                     value: 1,
                     effectKeys: [],
                     tooltip: "<h1>Repeat Purchase Bonus</h1><p>Add <strong>+1d</strong> if you have previously acquired this asset or service with a <strong>Acquire Asset</strong> Downtime activity.</p>"
@@ -2601,7 +2671,7 @@ class BladesRoll extends DocumentSheet {
                     section: RollModSection.after,
                     base_status: RollModStatus.Hidden,
                     posNeg: "negative",
-                    modType: "general",
+                    modType: RollModType.general,
                     value: 0,
                     effectKeys: ["Cost-Heat2"],
                     tooltip: "<h1>Restricted</h1><p>Whether contraband goods or dangerous materials, this <strong>Acquire Asset</strong> Downtime activity will add <strong class=\"red-bright\">+2 Heat</strong> to your crew.</p>"
@@ -2617,7 +2687,7 @@ class BladesRoll extends DocumentSheet {
           section: RollModSection,
           base_status: RollModStatus,
           posNeg: "",
-          modType: "general",
+          modType: RollModType.general,
           value: 1,
           effectKeys: [],
           tooltip: "<h1></h1><p></p>"
@@ -2645,7 +2715,7 @@ class BladesRoll extends DocumentSheet {
                     section: RollModSection.position,
                     base_status: RollModStatus.ForcedOn,
                     posNeg: "negative",
-                    modType: "general",
+                    modType: RollModType.general,
                     value: 1,
                     effectKeys: [],
                     tooltip: "<h1>Worse Position</h1><p>A <strong class='red-bright'>Consequence</strong> on a previous roll has worsened your <strong>Position</strong>.</p>"
@@ -2667,7 +2737,7 @@ class BladesRoll extends DocumentSheet {
                 section: RollModSection.effect,
                 base_status: RollModStatus.ForcedOn,
                 posNeg: "negative",
-                modType: "general",
+                modType: RollModType.general,
                 value: 1,
                 effectKeys: [],
                 tooltip: "<h1>Reduced Effect</h1><p>A <strong class='red-bright'>Consequence</strong> has worsened your <strong>Effect</strong>.</p>"
@@ -3199,14 +3269,14 @@ class BladesRoll extends DocumentSheet {
                 const { chatID } = this.rollConsequence?.resistTo ?? {};
                 if (csqID && chatID) {
                     const resistedCsq = await BladesConsequence.GetFromID(chatID, csqID);
-                    if (resistedCsq) {
-                        await resistedCsq.applyResistedConsequence("resist");
+                    if (resistedCsq && this.rollConsequence?.resistTo) {
+                        await resistedCsq.applyResistedConsequence("resist", await this.getResultHTML(chatID, { icon: this.rollConsequence.resistTo.icon ?? "" }));
                     }
                 }
                 if (BladesPC.IsType(this.rollPrimaryDoc)) {
                     this.rollPrimaryDoc.adjustStress(this.resistanceStressCost);
                 }
-                await this.outputRollToChat();
+                // await this.outputRollToChat();
                 break;
             }
         }
@@ -3237,11 +3307,9 @@ class BladesRoll extends DocumentSheet {
         // chatSpeaker.alias = `${chatSpeaker.alias} Rolls ...`;
         return chatSpeaker;
     }
-    async getResultHTML(chatMsgID) {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const templateData = this;
-        templateData.chatMsgID = chatMsgID;
-        return await renderTemplate(`systems/eunos-blades/templates/chat/roll-result-${U.lCase(this.rollType)}-roll.hbs`, templateData);
+    async getResultHTML(chatMsgID, context = {}) {
+        context = Object.assign(this, context, { chatMsgID });
+        return await renderTemplate(`systems/eunos-blades/templates/chat/roll-result-${U.lCase(this.rollType)}-roll.hbs`, context);
     }
     _chatMessageID;
     _chatMessageTemp;

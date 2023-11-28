@@ -1,4 +1,4 @@
-import C, { AttributeTrait, Harm, BladesActorType, BladesItemType, Tag, RollModSection, RollModStatus } from "../../core/constants.js";
+import C, { AttributeTrait, Harm, BladesActorType, BladesItemType, Tag, RollModType, RollModSection, RollModStatus } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import { BladesActor } from "../BladesActorProxy.js";
 import { BladesItem } from "../BladesItemProxy.js";
@@ -352,7 +352,7 @@ class BladesPC extends BladesActor {
                     section: effectCat,
                     posNeg: "negative",
                     base_status: RollModStatus.ToggledOn,
-                    modType: "harm",
+                    modType: RollModType.harm,
                     value: 1,
                     tooltip: [
                         `<h1 class='sur-title'>${effectCat === RollModSection.roll ? Harm.Impaired : Harm.Weakened} (Harm)</h1>`,
@@ -374,7 +374,7 @@ class BladesPC extends BladesActor {
                 section: RollModSection.roll,
                 posNeg: "negative",
                 base_status: RollModStatus.ToggledOn,
-                modType: "harm",
+                modType: RollModType.harm,
                 value: 0,
                 effectKeys: ["Cost-Stress2"],
                 tooltip: [

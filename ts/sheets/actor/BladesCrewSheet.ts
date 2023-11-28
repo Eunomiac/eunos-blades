@@ -24,7 +24,7 @@ class BladesCrewSheet extends BladesActorSheet {
 
     const sheetData: Partial<BladesActorDataOfType<BladesActorType.crew>> = {};
 
-    //~ Assemble embedded actors and items
+    // ~ Assemble embedded actors and items
     sheetData.preparedItems = Object.assign(
       context.preparedItems ?? {},
       {
@@ -150,7 +150,7 @@ class BladesCrewSheet extends BladesActorSheet {
     super.activateListeners(html);
 
     // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) {return}
+    if (!this.options.editable) {return;}
 
     // Update Inventory Item
     html.find(".item-sheet-open").on("click", (event) => {
@@ -170,7 +170,7 @@ class BladesCrewSheet extends BladesActorSheet {
 
       const turf_id = $(event.currentTarget).data("turfId");
       const turf_current_status = $(event.currentTarget).data("turfStatus");
-      this.actor.playbook?.update({["system.turfs." + turf_id + ".value"]: !turf_current_status})
+      this.actor.playbook?.update({[`system.turfs.${turf_id}.value`]: !turf_current_status})
         .then(() => this.render(false));
     });
   }

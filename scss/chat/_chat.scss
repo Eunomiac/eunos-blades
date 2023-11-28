@@ -12,6 +12,10 @@
     width: 125%;
     margin-left: -25%;
     padding-left: 25%;
+
+    &, * {
+      --font-primary: "Beaufort",
+    }
   }
 
   .flexrow.jump-to-bottom {
@@ -27,30 +31,37 @@
     z-index: 1;
   }
 }
+
 .chat-message:not(.display-ok) { opacity: 0 !important; }
 
-.chat-message[class*=-roll] {
-  // --font-primary: Beaufort, serif !important;
 
-  --chat-header-height: 15px;
-  --chat-vertical-gap: 15px;
-  --resistance-right-shift: 60px;
 
-  --speaker-portrait-height: 100px;
+.chat-message[class*="-roll"] {
 
-  --bg-controlled: var(--blades-grey-bright);
-  --bg-risky: var(--blades-black-dark);
-  --bg-desperate: var(--blades-red-darkest);
+  &, * {
+    // --font-primary: Beaufort, serif !important;
 
-  --bg-critical: transparent;
-  --bg-success: transparent;
-  --bg-partial: transparent;
-  --bg-fail: transparent;
+    --chat-header-height: 15px;
+    --chat-vertical-gap: 15px;
+    --resistance-right-shift: 60px;
 
-  --dice-strip-bg: var(--blades-black-dark);
-  --top-die-animation: none;
-  --ghost-die-animation: none;
-  --ghost-die-filter: blur(1px) sepia(1) saturate(2) hue-rotate(319deg) brightness(0.35);
+    --speaker-portrait-height: 100px;
+
+    --bg-controlled: var(--blades-grey-bright);
+    --bg-risky: var(--blades-black-dark);
+    --bg-desperate: var(--blades-red-darkest);
+
+    --bg-critical: transparent;
+    --bg-success: transparent;
+    --bg-partial: transparent;
+    --bg-fail: transparent;
+
+    --dice-strip-bg: var(--blades-black-dark);
+    --top-die-animation: none;
+    --ghost-die-animation: die-ghost 2s ease infinite;
+    // --ghost-die-filter: blur(1px) sepia(1) saturate(2) hue-rotate(319deg) brightness(0.35);
+    --ghost-die-filter: none;
+  }
 
   background: var(--blades-black-dark);
   background: transparent;
@@ -315,6 +326,7 @@
           transform-origin: 50% 50%;
           overflow: hidden;
           border-radius: calc(0.2 * var(--die-size));
+          scale: 1.25;
 
           img {
             height: var(--die-size);
@@ -323,14 +335,14 @@
           }
 
           &.blades-die-critical {
-            box-shadow: 0px 0px 5px 3px var(--blades-gold-bright);
+            // box-shadow: 0px 0px 5px 3px var(--blades-gold-bright);
             animation: var(--top-die-animation);
             z-index: 1;
           }
           &.blades-die-critical:first-child + .blades-die-critical {
             // margin-left: calc(-0.05 * var(--die-size));
             margin-left: 3px;
-            box-shadow: 0px 0px 5px 3px var(--blades-gold-bright);
+            // box-shadow: 0px 0px 5px 3px var(--blades-gold-bright);
             // Add a delay to the animation to create a staggered effect
             animation: var(--top-die-animation);
             animation-delay: 0.15s;
@@ -338,18 +350,18 @@
             // scale: 1.35;
           }
           &.blades-die-success:first-child {
-            filter: drop-shadow(0px 0px calc(var(--die-size) * 0.1) var(--blades-white-bright));
+            // filter: drop-shadow(0px 0px calc(var(--die-size) * 0.1) var(--blades-white-bright));
             animation: var(--top-die-animation);
           }
 
           &.blades-die-partial:first-child {
-            box-shadow: 0px 0px 5px var(--blades-white);
+            // box-shadow: 0px 0px 5px var(--blades-white);
             animation: var(--top-die-animation);
           }
           &.blades-die-ghost {
-            box-shadow: 0px 0px 5px 1px var(--blades-red);
-            scale: 0.8;
-            opacity: 0.8;
+            // box-shadow: 0px 0px 5px 1px var(--blades-red);
+            scale: 1;
+            opacity: 1;
             rotate: 10deg;
             animation: var(--ghost-die-animation);
 
@@ -614,6 +626,156 @@
         z-index: -3;
         position: relative;
       }
+      &.roll-type-resistance {
+        width: calc(100% - var(--resistance-right-shift));
+        left: var(--resistance-right-shift);
+        top: 0;
+
+        .chat-message-bg {
+          display: block;
+          background: var(--blades-grey);
+          top: 0; // calc(-1 * (var(--chat-header-height) + var(--chat-vertical-gap)));
+          height: 100%; // calc(100% + var(--chat-header-height) + var(--chat-vertical-gap));
+          left: -15px;
+          border-top-left-radius: 16px;
+          border-bottom-left-radius: 16px;
+          width: calc(100% + var(--resistance-right-shift));
+        }
+
+        .resistance-roll-one-line {
+          position: relative;
+          justify-content: stretch;
+
+          .resistance-roll-intro {
+            color: var(--blades-gold-bright);
+            // transform: translate(-50%, -50%);
+            // top: 50%;
+            z-index: 3;
+            // left: calc(-1 * var(--resistance-right-shift));
+            position: absolute;
+            rotate: -45deg;
+            transform-origin: 50% 50%;
+            transform: translate(0%, 0%);
+            left: calc(-1 * var(--resistance-right-shift) - 0px);
+            // left: -19px;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 10px;
+            text-shadow: var(--text-shadow-dark-strong);
+            top: 7px;
+          }
+
+          .consequence-icon-img {
+            height: 32px;
+            border-radius: 16px;
+            background: var(--blades-black);
+            position: absolute;
+            // left: calc(-1 * var(--resistance-right-shift) + 10px);
+            left: -10px;
+          }
+
+          .resistance-roll-vertical-right {
+            align-items: space-evenly;
+
+            .resistance-roll-attr-dice {
+              height: 24px;
+              justify-content: flex-start;
+              align-items: center;
+              padding: 0 10px 0 30px;
+
+              .trait-intro {
+                display: none;
+                color: var(--blades-black);
+                margin-right: 5px;
+                line-height: 24px;
+                font-size: 10px;
+                font-weight: bold;
+                margin-top: 3px;
+                text-transform: uppercase;
+              }
+
+              .trait-label {
+                font-family: var(--font-emphasis);
+                color: var(--blades-gold-bright);
+                line-height: 24px;
+                // margin-top: 3px;
+                text-shadow: var(--text-shadow-emboss);
+
+              }
+
+              .dice-roll-strip {
+                height: 24px;
+                width: fit-content;
+                padding: 4px 0px;
+                gap: 3px;
+                margin: 0 0 0 5px;
+                background: transparent;
+                box-shadow: none;
+
+
+                .blades-die {
+                  height: 16px;
+                  border-radius: 3px;
+                  // scale: 1;
+                  // filter: none;
+                  // box-shadow: none;
+                  // outline: none;
+                  // border: none;
+                  // background: transparent;
+
+                  img { height: 16px; width: 16px; filter: none; }
+
+                  &:not(.blades-die-resistance) {
+                    opacity: 0.5;
+                    filter: blur(1px);
+                  }
+                }
+
+                .blades-die + .blades-die + .blades-die + .blades-die + .blades-die ~ .blades-die:last-child {
+                  margin-right: -50px;
+                }
+              }
+            }
+
+            .resistance-cost-row {
+              h3 {
+                font-size: 12px;
+                text-shadow: var(--text-shadow-dark-strong);
+              }
+
+              &.cost-bonus {
+                h3 {
+                  color: var(--blades-gold-bright);
+                }
+              }
+              &.cost-stress {
+                h3 {
+                  color: var(--blades-red-bright);
+                }
+              }
+            }
+          }
+        }
+
+        .chat-header.roll-trait {
+          font-size: 14px;
+          color: var(--blades-black);
+
+        }
+
+        .consequence-container.consequence-original {
+
+          .comp.consequence-display-container {
+
+            .consequence-type-container { display: none }
+            .consequence-name-container { display: none }
+
+          }
+
+        }
+        .consequence-container.consequence-resisted { display: none }
+      }
+
     }
   }
 
@@ -622,15 +784,22 @@
   }
 
   &:not(.unresolved-action-roll) .message-content .blades-roll {
-
-    .trait-label.trait-verb { display: none; }
-
     .consequence-icon-container {
       .consequence-icon-circle.base-consequence {
         animation: none !important;
         img { animation: none !important; }
       }
     }
+  }
+
+  &.active-chat-roll .message-content .blades-roll {
+    .trait-label.trait-past-verb { display: none !important; }
+  }
+
+  &:not(.unresolved-action-roll):not(.active-chat-roll) .message-content .blades-roll {
+
+    .trait-label.trait-verb { display: none; }
+
 
     .blades-roll > *:not(.chat-message-speaker-portrait-wrapper) {
       filter: sepia(1) grayscale(0.5) brightness(0.6);
@@ -661,7 +830,7 @@
     }
   }
 
-  &.roll-position-risky .msg-content .blades-roll {
+  .roll-position-risky {
     .chat-header,
     .consequence-container {
       background: var(--bg-risky);
@@ -669,7 +838,39 @@
     }
   }
 
-  &.unresolved-action-roll .msg-content .blades-roll {
+  &.unresolved-action-roll .message-content .blades-roll {
+
+
+    margin-bottom: 0px;
+    opacity: 1;
+    filter: drop-shadow(5px 5px 5px black);
+    background: transparent;
+    outline: none;
+
+    .trait-label.trait-past-verb { display: none !important; }
+
+    .dice-roll-strip { margin-top: 5px; }
+  }
+
+
+
+  // &.resistance-roll {
+  //   margin: 0;
+  //   .message-header { display: none; }
+  // }
+  // &.action-roll + .chat-message.resistance-roll {
+  //   margin-top: calc(-1 * var(--chat-vertical-gap));
+  // }
+  // &.action-roll.unresolved-action-roll + .chat-message.resistance-roll {
+  //   margin-top: 0;
+  // }
+
+}
+
+
+.chat-message.unresolved-action-roll {
+
+  &, * {
     --bg-controlled: url("../assets/animations/chat/roll-position-controlled.webp");
     --bg-risky: url("../assets/animations/chat/roll-position-risky.webp");
     --bg-desperate: url("../assets/animations/chat/roll-position-desperate.webp");
@@ -684,177 +885,5 @@
     --top-die-animation: die-pulse 5s ease infinite;
     --ghost-die-animation: die-ghost 4s ease infinite;
     --ghost-die-filter: sepia(1) saturate(2) hue-rotate(319deg);
-
-    margin-bottom: 0px;
-    opacity: 1;
-    filter: drop-shadow(5px 5px 5px black);
-    background: transparent;
-    outline: none;
-
-    .trait-label.trait-past-verb { display: none; }
-
-    .dice-roll-strip { margin-top: 5px; }
   }
-
-  &.roll-type-resistance .msg-content .blades-roll {
-    width: calc(100% - var(--resistance-right-shift));
-    left: var(--resistance-right-shift);
-    top: 0;
-
-    .chat-message-bg {
-      display: block;
-      background: var(--blades-grey);
-      top: 0; // calc(-1 * (var(--chat-header-height) + var(--chat-vertical-gap)));
-      height: 100%; // calc(100% + var(--chat-header-height) + var(--chat-vertical-gap));
-      left: -15px;
-      border-top-left-radius: 16px;
-      border-bottom-left-radius: 16px;
-      width: calc(100% + var(--resistance-right-shift));
-    }
-
-    .resistance-roll-one-line {
-      position: relative;
-      justify-content: stretch;
-
-      .resistance-roll-intro {
-        color: var(--blades-gold-bright);
-        // transform: translate(-50%, -50%);
-        // top: 50%;
-        z-index: 3;
-        // left: calc(-1 * var(--resistance-right-shift));
-        position: absolute;
-        rotate: -45deg;
-        transform-origin: 50% 50%;
-        transform: translate(0%, 0%);
-        left: calc(-1 * var(--resistance-right-shift) - 0px);
-        // left: -19px;
-        text-transform: uppercase;
-        font-weight: bold;
-        font-size: 10px;
-        text-shadow: var(--text-shadow-dark-strong);
-        top: 7px;
-      }
-
-      .consequence-icon-img {
-        height: 32px;
-        border-radius: 16px;
-        background: var(--blades-black);
-        position: absolute;
-        // left: calc(-1 * var(--resistance-right-shift) + 10px);
-        left: -10px;
-      }
-
-      .resistance-roll-vertical-right {
-        align-items: space-evenly;
-
-        .resistance-roll-attr-dice {
-          height: 24px;
-          justify-content: flex-start;
-          align-items: center;
-          padding: 0 10px 0 30px;
-
-          .trait-intro {
-            display: none;
-            color: var(--blades-black);
-            margin-right: 5px;
-            line-height: 24px;
-            font-size: 10px;
-            font-weight: bold;
-            margin-top: 3px;
-            text-transform: uppercase;
-          }
-
-          .trait-label {
-            font-family: var(--font-emphasis);
-            color: var(--blades-gold-bright);
-            line-height: 24px;
-            // margin-top: 3px;
-            text-shadow: var(--text-shadow-emboss);
-
-          }
-
-          .dice-roll-strip {
-            height: 24px;
-            width: fit-content;
-            padding: 4px 0px;
-            gap: 3px;
-            margin: 0 0 0 5px;
-            background: transparent;
-            box-shadow: none;
-
-
-            .blades-die {
-              height: 16px;
-              border-radius: 3px;
-              // scale: 1;
-              // filter: none;
-              // box-shadow: none;
-              // outline: none;
-              // border: none;
-              // background: transparent;
-
-              img { height: 16px; width: 16px; filter: none; }
-
-              &:not(.blades-die-resistance) {
-                opacity: 0.5;
-                filter: blur(1px);
-              }
-            }
-
-            .blades-die + .blades-die + .blades-die + .blades-die + .blades-die ~ .blades-die:last-child {
-              margin-right: -50px;
-            }
-          }
-        }
-
-        .resistance-cost-row {
-          h3 {
-            font-size: 12px;
-            text-shadow: var(--text-shadow-dark-strong);
-          }
-
-          &.cost-bonus {
-            h3 {
-              color: var(--blades-gold-bright);
-            }
-          }
-          &.cost-stress {
-            h3 {
-              color: var(--blades-red-bright);
-            }
-          }
-        }
-      }
-    }
-
-    .chat-header.roll-trait {
-      font-size: 14px;
-      color: var(--blades-black);
-
-    }
-
-    .consequence-container.consequence-original {
-
-      .comp.consequence-display-container {
-
-        .consequence-type-container { display: none }
-        .consequence-name-container { display: none }
-
-      }
-
-    }
-    .consequence-container.consequence-resisted { display: none }
-  }
-
-  &.resistance-roll {
-    margin: 0;
-    .message-header { display: none; }
-  }
-  &.action-roll + .chat-message.resistance-roll {
-    margin-top: calc(-1 * var(--chat-vertical-gap));
-  }
-  &.action-roll.unresolved-action-roll + .chat-message.resistance-roll {
-    margin-top: 0;
-  }
-
 }

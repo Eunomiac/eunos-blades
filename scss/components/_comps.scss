@@ -875,6 +875,122 @@
     }
   }
 
+  &.consequence-accepted.consequence-resisted {
+    min-height: 60px;
+  }
+
+  &.consequence-accepted.consequence-resisted {
+
+    .sub-consequence-resisted {
+      position:  absolute;
+      width: 100%;
+      top: 11px;
+      left: 20px;
+      outline: 1px solid magenta !important;
+      z-index: 3;
+
+
+      .sub-consequence-resisted-roll-result {
+
+      //   .blades-roll.roll-type-resistance {
+      //     left: -10px;
+      //     z-index: 3;
+      //     width: calc(100% + 10px);
+
+      //     .chat-message-bg { background: transparent; }
+
+      //     .resistance-roll-one-line {
+
+            .resistance-roll-intro { display: none; }
+
+      //       .consequence-icon-img {
+      //         left: 0;
+      //         outline: 1px solid var(--blades-gold-bright);
+      //       }
+
+      //       .resistance-roll-vertical-right {
+      //         .resistance-roll-attr-dice {
+      //           width: 100%;
+      //           .trait-label {
+      //             position: absolute;
+      //             left: unset;
+      //             right: 30px;
+      //             top: -20px;
+      //           }
+      //           .dice-roll-strip {
+      //             position: absolute;
+      //             left: unset;
+      //             right: 30px;
+      //           }
+      //         }
+      //       }
+
+      //     }
+      //   }
+      }
+
+      .consequence-icon-container {
+        display: none;
+      }
+
+      .consequence-type-container {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        // text-align: right;
+
+        .consequence-type {
+          // left: unset;
+          // right: 22px;
+        }
+      }
+
+      .consequence-name-container {
+
+        .consequence-name {
+
+        }
+      }
+
+
+      .special-resist-overlay {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+
+        .special-resist-overlay-label {
+
+        }
+        .special-resist-overlay-sub-label {
+
+        }
+        .special-resist-overlay-img {
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+
+        }
+      }
+
+      ~ .consequence-icon-container {
+        transform: translate(-20px, 0px);
+      }
+
+      ~ .consequence-type-container {
+        transform: translate(-20px, 0px);
+      }
+
+      ~ .consequence-name-container {
+        opacity: 0;
+
+      }
+    }
+  }
+
 
   .base-consequence {
     --csq-icon-dark: var(--blades-black);

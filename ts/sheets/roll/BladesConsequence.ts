@@ -387,68 +387,83 @@ class BladesConsequence {
     // If LOST OPPORTUNITY -> No change to rollPrimary.
   }
 
-  async transformToConsequence(typeRef: BladesConsequence.ResistanceType) {
-    const message$ = $(await this._chatMessage.getHTML()).find(".blades-roll");
+  async transformToConsequence(typeRef: BladesConsequence.ResistanceType, rollHTML?: string) {
 
-    let icon: string|undefined = undefined;
-    let typeDisplay = "";
-    let name = "";
+    const transformRecord: Record<string, string> = {};
 
-    switch (typeRef) {
-      case "resist": {
-        if (!this._resistTo) { throw new Error(`Cannot transform csq id '${this.id}' into "resist" consequence: no resistTo data found.`); }
-        if (this._resistTo.type === ConsequenceType.None) { break; }
-        icon = this._resistTo.icon;
-        typeDisplay = this._resistTo.typeDisplay;
-        name = this._resistTo.name;
-        break;
-      }
-      case "armor": {
-        if (!this._armorTo) { throw new Error(`Cannot transform csq id '${this.id}' into "armor" consequence: no armorTo data found.`); }
-        if (this._armorTo.type === ConsequenceType.None) { break; }
-        icon = this._armorTo.icon;
-        typeDisplay = this._armorTo.typeDisplay;
-        name = this._armorTo.name;
-        break;
-      }
-      case "special": {
-        if (!this._specialTo) { throw new Error(`Cannot transform csq id '${this.id}' into "special" consequence: no specialTo data found.`); }
-        if (this._specialTo.type === ConsequenceType.None) { break; }
-        icon = this._specialTo.icon;
-        typeDisplay = this._specialTo.typeDisplay;
-        name = this._specialTo.name;
-        break;
-      }
+    // Prepare template context for accepted (original) consequence.
+    const csqTemplateData: BladesConsequence & {blockClass?: string} = this;
+    csqTemplateData.blockClass = "consequence-resisted";
+
+    // Create HTML for accepted version of this consequence
+    let csqAcceptedHTML = await renderTemplate(
+      "systems/eunos-blades/templates/components/consequence-accepted.hbs",
+      Object.assign(this, {blockClass: "consequence-resisted"})
+    );
+
+    transformRecord["1) csqAcceptedHTML"] = csqAcceptedHTML;
+
+    // Get the resisted consequence data according to typeRef
+    const rCsq = {
+      resist: this._resistTo,
+      armor: this._armorTo,
+      special: this._specialTo
+    }[typeRef];
+    if (!rCsq) { return; }
+
+
+    // Get HTML for the consequence it resisted to
+    let csqResistedHTML = await renderTemplate(
+      "systems/eunos-blades/templates/components/consequence-accepted.hbs",
+      rCsq
+    );
+
+    transformRecord["2) csqResistedHTML"] = csqResistedHTML;
+
+    // Add a class
+    csqResistedHTML = $(csqResistedHTML)
+      .addClass("sub-consequence-resisted")[0].outerHTML;
+    transformRecord["2.1) csqResistedHTML + class"] = csqResistedHTML;
+
+    // If roll HTML provided, prepend that to resisted consequence
+    if (rollHTML) {
+      csqResistedHTML = $(csqResistedHTML).prepend($(`<div class="sub-consequence-resisted-roll-result">
+        ${rollHTML}
+      </div>`))[0].outerHTML;
+      transformRecord["2.2) csqResistedHTML + rollHTML"] = csqResistedHTML;
     }
 
-    eLog.checkLog2("csqTransform", "Initial Message Code", {message$, message: message$[0]});
+    // If "special" or "armor", add the roll overlay
+    if (["armor", "special"].includes(typeRef)) {
+      csqResistedHTML = $(csqResistedHTML).prepend($(`
+      <div class="${typeRef}-resist-overlay">
+        <label class="${typeRef}-resist-overlay-label">Resisted</label>
+        <label class="${typeRef}-resist-overlay-sub-label">(${U.tCase(typeRef)})</label>
+        <img class="${typeRef}-resist-overlay-img" src="systems/eunos-blades/assets/icons/misc-icons/${typeRef}-resist.svg" />
+      </div>`))[0].outerHTML;
+      transformRecord["2.3) csqResistedHTML + overlay"] = csqResistedHTML;
+    }
 
-    // Locate consequence HTML
+    // Prepend the resisted consequence HTML to the accepted consequence HTML
+    csqAcceptedHTML = $(csqAcceptedHTML).prepend($(csqResistedHTML))[0].outerHTML;
+
+    transformRecord["3) csqAcceptedHTML + csqResistedHTML"] = csqAcceptedHTML;
+
+    // Get message HTML
+    const message$ = $(await this._chatMessage.getHTML());
+
+    transformRecord["4) message$ before Replace"] = message$[0].outerHTML;
+
+    // Replace consequence with new data
     message$.find(`.comp.consequence-display-container[data-csq-id='${this._id}']`)
-      // Replace with compiled consequence-accepted template, unless type is None, in which case erase it
-      .replaceWith(icon === undefined ? "" : `
-      <div class="comp consequence-display-container full-width consequence-accepted" />
+      .replaceWith(csqAcceptedHTML);
 
-      <div class="consequence-icon-container">
-        <div class="consequence-icon-circle base-consequence">
-          <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/base-${icon}.svg" />
-        </div>
-      </div>
+    transformRecord["4.5) message$ after Replace"] = message$[0].outerHTML;
+    transformRecord["5) message$.find(.blades-roll) = CONTENT"] = message$.find(".blades-roll")[0].outerHTML;
 
-      <div class="consequence-type-container">
-        <label class="consequence-type base-consequence">${typeDisplay}</label>
-      </div>
+    await this._chatMessage.update({content: message$.find(".blades-roll")[0].outerHTML});
 
-      <div class="consequence-name-container">
-        <label class="consequence-name base-consequence">${name}</label>
-      </div>
-
-    </div>
-    `);
-
-    eLog.checkLog2("csqTransform", "Modified Message Code", {message$, message: message$[0], outerHTML: message$[0].outerHTML});
-
-    await this._chatMessage.update({content: message$[0].outerHTML});
+    eLog.checkLog2("transformConsequence", "Transform Record", transformRecord);
   }
 
   async acceptConsequence() {
@@ -531,7 +546,7 @@ class BladesConsequence {
     BladesRoll.NewRoll(resistConfig);
   }
 
-  async applyResistedConsequence(resistType: "resist"|"armor"|"special") {
+  async applyResistedConsequence(resistType: "resist"|"armor"|"special", rollHTML: string) {
     const rCsq = {
       resist: this._resistTo,
       armor: this._armorTo,
@@ -540,19 +555,34 @@ class BladesConsequence {
     if (rCsq) {
       await rCsq.applyConsequenceToPrimary();
     }
-    await this.transformToConsequence(resistType);
+    await this.transformToConsequence(resistType, rollHTML);
   }
 
   async resistArmorConsequence() {
-    this._primaryDoc.spendArmor();
-    this.applyResistedConsequence("armor");
+    if (this._armorTo) {
+      this._primaryDoc.spendArmor();
+      this.applyResistedConsequence("armor", await renderTemplate(
+        "systems/eunos-blades/templates/components/consequence-accepted.hbs",
+        Object.assign(
+          this._armorTo,
+          {isArmorResist: true}
+        )
+      ));
+    }
   }
 
   async resistSpecialArmorConsequence() {
-    await this._primaryDoc.spendSpecialArmor();
-    this.applyResistedConsequence("special");
+    if (this._specialTo) {
+      this._primaryDoc.spendSpecialArmor();
+      this.applyResistedConsequence("special", await renderTemplate(
+        "systems/eunos-blades/templates/components/consequence-accepted.hbs",
+        Object.assign(
+          this._specialTo,
+          {isSpecialArmorResist: true}
+        )
+      ));
+    }
   }
-
 }
 
 interface BladesConsequence {

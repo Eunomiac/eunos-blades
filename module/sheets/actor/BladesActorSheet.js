@@ -357,7 +357,7 @@ class BladesActorSheet extends ActorSheet {
         if (!doc) {
             return;
         }
-        await G.effects.blurOut(elem$).then(async () => {
+        await G.effects.blurRemove(elem$).then(async () => {
             if (doc instanceof BladesItem) {
                 await this.actor.remSubItem(doc);
             }
@@ -372,7 +372,7 @@ class BladesActorSheet extends ActorSheet {
         if (!doc) {
             return;
         }
-        await G.effects.blurOut(elem$).then(async () => await doc.delete());
+        await G.effects.blurRemove(elem$).then(async () => await doc.delete());
     }
     async _onItemToggleClick(event) {
         event.preventDefault();

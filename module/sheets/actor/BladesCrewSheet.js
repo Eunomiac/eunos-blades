@@ -15,7 +15,7 @@ class BladesCrewSheet extends BladesActorSheet {
         eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", { ...context });
         const { activeSubItems } = this.actor;
         const sheetData = {};
-        //~ Assemble embedded actors and items
+        // ~ Assemble embedded actors and items
         sheetData.preparedItems = Object.assign(context.preparedItems ?? {}, {
             abilities: activeSubItems.filter((item) => item.type === BladesItemType.crew_ability),
             playbook: this.actor.playbook,
@@ -144,7 +144,7 @@ class BladesCrewSheet extends BladesActorSheet {
         html.find(".turf-select").on("click", async (event) => {
             const turf_id = $(event.currentTarget).data("turfId");
             const turf_current_status = $(event.currentTarget).data("turfStatus");
-            this.actor.playbook?.update({ ["system.turfs." + turf_id + ".value"]: !turf_current_status })
+            this.actor.playbook?.update({ [`system.turfs.${turf_id}.value`]: !turf_current_status })
                 .then(() => this.render(false));
         });
     }

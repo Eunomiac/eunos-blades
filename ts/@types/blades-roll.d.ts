@@ -1,4 +1,4 @@
-import {BladesActorType, BladesItemType, BladesPhase, RollType, RollSubType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollPhase, RollResult} from "../core/constants";
+import {BladesActorType, BladesItemType, BladesPhase, RollType, RollSubType, RollModType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollPhase, RollResult} from "../core/constants";
 import BladesActor from "../BladesActor";
 import BladesItem from "../BladesItem";
 import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../BladesRoll";
@@ -77,8 +77,6 @@ declare global {
       costType: string,
       costAmount: number
     }
-
-    export type ModType = BladesItemType | "general" | "harm" | "teamwork";
 
     export interface Config {
       rollType: RollType,
@@ -194,7 +192,7 @@ declare global {
     export type PartialSheetData = Partial<SheetData> & FlagData;
 
     export type AnyRollType = RollType|RollSubType|DowntimeAction;
-    export type RollTrait = ActionTrait|AttributeTrait|Factor|number|""|"Heat"|"Coin"|"Lifestyle";
+    export type RollTrait = ActionTrait|AttributeTrait|Factor|number|""|"heat"|"coin"|"lifestyle";
 
     export type FactorToggle = "isActive"|"isPrimary"|"isDominant"|"highFavorsPC";
 
@@ -216,7 +214,7 @@ declare global {
     type RollModData = {
       id: string,
       name: string,
-      modType: BladesItemType|"general"|"harm"|"teamwork",
+      modType: RollModType,
       source_name?: string,
       section: RollModSection,
       posNeg: "positive"|"negative",

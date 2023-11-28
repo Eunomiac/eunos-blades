@@ -1,4 +1,4 @@
-import C, {Playbook, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModSection, RollModStatus} from "../../core/constants";
+import C, {Playbook, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModType, RollModSection, RollModStatus} from "../../core/constants";
 import U from "../../core/utilities";
 import {BladesActor, BladesCrew} from "../BladesActorProxy";
 import {BladesItem} from "../BladesItemProxy";
@@ -376,7 +376,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
           section: effectCat,
           posNeg: "negative",
           base_status: RollModStatus.ToggledOn,
-          modType: "harm",
+          modType: RollModType.harm,
           value: 1,
           tooltip: [
             `<h1 class='sur-title'>${effectCat === RollModSection.roll ? Harm.Impaired : Harm.Weakened} (Harm)</h1>`,
@@ -398,7 +398,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
         section: RollModSection.roll,
         posNeg: "negative",
         base_status: RollModStatus.ToggledOn,
-        modType: "harm",
+        modType: RollModType.harm,
         value: 0,
         effectKeys: ["Cost-Stress2"],
         tooltip: [

@@ -176,6 +176,16 @@ export var RollSubType;
     RollSubType["GroupLead"] = "GroupLead";
     RollSubType["GroupParticipant"] = "GroupParticipant";
 })(RollSubType || (RollSubType = {}));
+export var RollModType;
+(function (RollModType) {
+    RollModType["general"] = "general";
+    RollModType["harm"] = "harm";
+    RollModType["teamwork"] = "teamwork";
+    RollModType["ability"] = "ability";
+    RollModType["gear"] = "gear";
+    RollModType["advantage"] = "advantage";
+    RollModType["disadvantage"] = "disadvantage";
+})(RollModType || (RollModType = {}));
 export var ConsequenceType;
 (function (ConsequenceType) {
     ConsequenceType["ReducedEffect"] = "ReducedEffect";
