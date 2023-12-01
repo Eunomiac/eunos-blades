@@ -112,6 +112,7 @@ declare global {
 
     export interface FlagData extends ConfigFlags {
       rollID: string;
+      rollPrompt?: string;
 
       rollModsData: Record<string,RollModStatus>;
 
@@ -126,6 +127,7 @@ declare global {
 
       GMBoosts: Partial<Record<"Dice"|Factor|"Result",number>>,
       GMOppBoosts: Partial<Record<Factor,number>>,
+      GMOverrides: Record<string,string>,
       rollFactorToggles: Record<
         "source"|"opposition",
         Partial<Record<Factor, FactorFlagData>>
@@ -243,6 +245,7 @@ declare global {
     export type PrimaryDocType =
      BladesActorType.pc
     |BladesActorType.crew
+    |BladesActorType.npc
     |BladesItemType.cohort_gang
     |BladesItemType.cohort_expert
     |BladesItemType.gm_tracker

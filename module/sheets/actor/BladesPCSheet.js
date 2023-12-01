@@ -1,4 +1,4 @@
-import C, { BladesActorType, BladesItemType, AttributeTrait, Tag, BladesPhase } from "../../core/constants.js";
+import C, { BladesActorType, BladesItemType, AttributeTrait, Tag, DowntimeAction, BladesPhase } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesActorSheet from "./BladesActorSheet.js";
 import { BladesActor } from "../../documents/BladesActorProxy.js";
@@ -220,8 +220,98 @@ class BladesPCSheet extends BladesActorSheet {
                 };
             }
         }
+        if (game.eunoblades.Tracker?.phase === BladesPhase.Downtime) {
+            const actionsList = {
+                [DowntimeAction.AcquireAsset]: "Acquire Asset",
+                [DowntimeAction.IndulgeVice]: "Indulge Vice",
+                [DowntimeAction.LongTermProject]: "Project",
+                [DowntimeAction.Recover]: "Recover",
+                [DowntimeAction.ReduceHeat]: "Reduce Heat",
+                [DowntimeAction.Train]: "Train"
+            };
+            const actionsTooltips = {
+                [DowntimeAction.AcquireAsset]: `<h1>Acquire an Asset</h1>
+        <p>Roll your <strong class='gold-bright'>Tier</strong> to acquire temporary use of an asset or service.</p>
+        <p>The <strong>Quality</strong> of the acquired asset depends on the result of your roll:</p>
+        <ul>
+        <li><strong class='gold-bright'>Critical Success</strong> &mdash; <strong class='gold-bright'>Tier</strong> <strong>+ 2</strong></li>
+        <li><strong>Success</strong> &mdash; <strong class='gold-bright'>Tier</strong> <strong>+ 2</strong></li>
+        <li><b>Partial Success</b> &mdash; <strong class='gold-bright'>Tier</strong></li>
+        <li><strong class='red-bright'>Fail</strong> &mdash; <strong class='gold-bright'>Tier</strong> <strong>− 1</strong></li>
+        </ul>`,
+                [DowntimeAction.IndulgeVice]: `<h1>Indulge Your Vice</h1>
+        <p>Roll your <strong class='red-bright'>lowest</strong> <strong>Attribute</strong>. Clear <strong>Stress</strong> equal to the <strong>highest</strong> die result.</p>
+        <p><strong class="red-bright">Warning:</strong> If you clear more <strong>Stress</strong> than you have, you will <strong class="red-bright">overindulge</strong>.</p>`,
+                [DowntimeAction.LongTermProject]: `<h1>Work on a Long-Term Project</h1>
+        <p>Work to <strong>advance the clock</strong> of one of your existing <strong>Long-Term Projects</strong>, or begin a new one.</p>
+        <p>Roll the <strong>Action</strong> most appropriate to the work you are doing. The results of your roll determine how far you will <strong>advance the clock</strong>:</p>
+        <ul>
+        <li><strong class='gold-bright'>Critical Success</strong> &mdash; <strong class='gold-bright'>Five</strong> Segments</li>
+        <li><strong>Success</strong> &mdash;  <strong>Three</strong> Segments</li>
+        <li><b>Partial Success</b> &mdash; <b>Two</b> Segments</li>
+        <li><strong class='red-bright'>Fail</strong> &mdash; <strong class='red-bright'>One</strong> Segment</li>
+        </ul>`,
+                [DowntimeAction.Recover]: `<h1>Recover from Harm</h1>
+        <p>Make a <strong>healing treatment roll</strong> using the appropriate trait of the character healing you:</p>
+        <ul>
+        <li><strong>A PC with 'Physicker'</strong> &mdash; <strong>Tinker</strong>. <em>(You can heal yourself this way, but suffer <strong class="red-bright">2 Stress</strong> for doing so.)</em></li>
+        <li><strong>An NPC</strong> &mdash; <strong>Quality</strong></li>
+        </ul>
+        <p>The results of your roll determine how far you will <strong>Advance your healing clock</strong>:</p>
+        <ul>
+        <li><strong class='gold-bright'>Critical Success</strong> &mdash; <strong class='gold-bright'>Five</strong> Segments</li>
+        <li><strong>Success</strong> &mdash;  <strong>Three</strong> Segments</li>
+        <li><b>Partial Success</b> &mdash; <b>Two</b> Segments</li>
+        <li><strong class='red-bright'>Fail</strong> &mdash; <strong class='red-bright'>One</strong> Segment</li>
+        </ul>
+        <p>When your <strong>healing clock</strong> is filled, reduce each Harm by one level of severity.</p>`,
+                [DowntimeAction.ReduceHeat]: `<h1>Reduce Heat</h1>
+        <p>Work to <strong>reduce the Heat</strong> on your Crew.</p>
+        <p>Roll the <strong>Action</strong> most appropriate to the measures you are taking. The results of your roll determine how much <strong class="red-bright">Heat</strong> you clear:</p>
+        <ul>
+        <li><strong class='gold-bright'>Critical Success</strong> &mdash; <strong class='gold-bright'>Five</strong> Heat</li>
+        <li><strong>Success</strong> &mdash;  <strong>Three</strong> Heat</li>
+        <li><b>Partial Success</b> &mdash; <b>Two</b> Heat</li>
+        <li><strong class='red-bright'>Fail</strong> &mdash; <strong class='red-bright'>One</strong> Heat</li>
+        </ul>`,
+                [DowntimeAction.Train]: `<h1>Train</h1>
+        <p>Select an <strong>Experience Track</strong> <em>(i.e. Insight, Prowess, Resolve, or your Playbook)</em>. Gain <strong>1 XP</strong> in that track, or <strong>2 XP</strong> if your Crew has the corresponding <strong>Training Upgrade</strong>.</p>`
+            };
+            const actionsRemaining = this.actor.system.downtime_actions.max
+                + this.actor.system.downtime_action_bonus
+                - this.actor.system.downtime_actions.value
+                - (this.actor.isAtWar ? 1 : 0);
+            const canPayCoin = Boolean(this.actor.system.coins.value >= 1
+                || this.actor.system.stash.value >= 2);
+            const canPayRep = Boolean(this.actor.crew
+                && this.actor.crew.system.rep.value >= 1);
+            const isDisplayingCosts = actionsRemaining <= 0;
+            const isDisplayingActions = actionsRemaining > 0
+                || (canPayCoin && this.actor.system.downtime_action_selected_cost === "Coin")
+                || (canPayRep && this.actor.system.downtime_action_selected_cost === "Rep");
+            sheetData.downtimeData = {
+                actionsList,
+                actionsTooltips,
+                actionsRemaining,
+                canPayCoin,
+                canPayRep,
+                isDisplayingCosts,
+                isDisplayingActions,
+                dotline: {
+                    dotlineClass: "dotline-right dotline-glow",
+                    data: {
+                        value: actionsRemaining,
+                        max: actionsRemaining
+                    },
+                    dotlineLabel: "Actions Remaining",
+                    isLocked: true,
+                    iconFull: "dot-full.svg"
+                }
+            };
+        }
         sheetData.gatherInfoTooltip = (new Handlebars.SafeString([
-            "<h2>Gathering Information: Questions to Consider</h2>",
+            "<h1>Gathering Information</h1>",
+            "<h2>Questions to Consider</h2>",
             "<ul>",
             ...Object.values(this.actor.system.gather_info ?? []).map((line) => `<li>${line}</li>`) ?? [],
             "</ul>"

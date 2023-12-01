@@ -17,11 +17,15 @@ class BladesCrewSheet extends BladesActorSheet {
         const sheetData = {};
         // ~ Assemble embedded actors and items
         sheetData.preparedItems = Object.assign(context.preparedItems ?? {}, {
-            abilities: activeSubItems.filter((item) => item.type === BladesItemType.crew_ability),
+            abilities: activeSubItems
+                .filter((item) => item.type === BladesItemType.crew_ability),
             playbook: this.actor.playbook,
-            reputation: activeSubItems.find((item) => item.type === BladesItemType.crew_reputation),
-            upgrades: activeSubItems.filter((item) => item.type === BladesItemType.crew_upgrade),
-            preferredOp: activeSubItems.find((item) => item.type === BladesItemType.preferred_op)
+            reputation: activeSubItems
+                .find((item) => item.type === BladesItemType.crew_reputation),
+            upgrades: activeSubItems
+                .filter((item) => item.type === BladesItemType.crew_upgrade),
+            preferredOp: activeSubItems
+                .find((item) => item.type === BladesItemType.preferred_op)
         });
         sheetData.preparedActors = {
             members: this.actor.members,

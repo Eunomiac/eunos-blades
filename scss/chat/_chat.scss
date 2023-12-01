@@ -32,9 +32,7 @@
   }
 }
 
-.chat-message:not(.display-ok) { opacity: 0 !important; }
-
-
+.chat-message:not(.display-ok) { visibility: hidden; }
 
 .chat-message[class*="-roll"] {
 
@@ -783,13 +781,9 @@
     z-index: 3;
   }
 
-  &:not(.unresolved-action-roll) .message-content .blades-roll {
-    .consequence-icon-container {
-      .consequence-icon-circle.base-consequence {
-        animation: none !important;
-        img { animation: none !important; }
-      }
-    }
+  &:not(.unresolved-action-roll)  .consequence-icon-circle.base-consequence {
+    animation: none !important;
+    img { animation: none !important; }
   }
 
   &.active-chat-roll .message-content .blades-roll {
@@ -866,7 +860,6 @@
   // }
 
 }
-
 
 .chat-message.unresolved-action-roll {
 

@@ -124,6 +124,9 @@ const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
       default: return str;
     }
   },
+  romanize(val: number): string {
+    return U.romanizeNum(U.pInt(val));
+  },
   count(param: unknown): number {
     if (Array.isArray(param) || U.isList(param)) {
       return Object.values(param).filter((val: unknown) => val !== null && val !== undefined).length;

@@ -1,0 +1,102 @@
+{{eLog "CHAT DOWNTIME ACTION ROLL RESULT CONTEXT" this}}
+
+<div class="blades-roll roll-type-{{case "lower" rollType}} roll-result-{{rollResult}} roll-downtime-action-{{case "lower" rollDowntimeAction}}"
+  data-chat-id="{{chatMsgID}}"
+  data-roll-id="{{rollID}}"
+  data-user-id="{{flagData.rollUserID}}"
+  data-primary-id="{{flagData.rollPrimaryData.rollPrimaryID}}"
+  data-primary-type="{{flagData.rollPrimaryData.rollPrimaryType}}"
+  data-result="{{rollResult}}"
+  data-downtime-action="{{case "lower" rollDowntimeAction}}"
+  data-roll-phase="{{flagData.rollPhase}}">
+
+  {{!-- Roll Primary Portrait --}}
+  <div class="chat-message-speaker-portrait-wrapper">
+  <div class="chat-message-speaker-portrait">
+    <img class="portrait-image" src="{{rollPrimary.rollPrimaryImg}}" />
+    <div class="chat-message-speaker-portrait-overlay"></div>
+  </div>
+  </div>
+
+  {{!-- Floating Backgrounds --}}
+  <div class="chat-message-bg roll-position-{{finalPosition}}"></div>
+  <div class="chat-result-bg roll-position-{{finalPosition}} roll-result-{{rollResult}}"></div>
+
+  {{!-- Roll Trait  --}}
+  <h1 class="chat-header roll-trait">
+    <span class="trait-label trait-verb">{{case "title" rollTraitVerb}}</span>
+    <span class="trait-label trait-past-verb">{{case "title" rollTraitPastVerb}}</span>
+  </h1>
+
+  {{!-- Opposition --}}
+  {{#if rollOpposition}}
+  <h3 class="chat-header roll-opposition">
+    <span class="vs">vs.</span>
+    <span class="opp-name">{{case "title" rollOpposition.rollOppName}}</span>
+  </h3>
+  {{/if}}
+
+  {{!-- Dice Rolls --}}
+  <div class="dice-roll-strip">{{{dieValsHTML}}}</div>
+
+  {{!-- Result --}}
+  <div class="roll-outcome-container roll-result-{{rollResult}} roll-position-{{finalPosition}} roll-effect-{{finalEffect}} flex-horizontal full-width">
+
+    {{!-- Background --}}
+    <div class="roll-state-background-container"></div>
+
+    {{!-- Result --}}
+    <div class="roll-result-container roll-result-{{rollResult}} flex-vertical">
+      {{#if (test rollResult "==" "critical")}}
+      <h2 class="roll-result-label roll-result-top-label">Critical</h2>
+      <h3 class="roll-result-label roll-result-bottom-label">Success!</h3>
+      {{else if (test rollResult "==" "success")}}
+      <h2 class="roll-result-label roll-result-main-label">Success!</h2>
+      {{else if (test rollResult "==" "partial")}}
+      <h2 class="roll-result-label roll-result-top-label">Partial</h2>
+      <h3 class="roll-result-label roll-result-bottom-label">Success</h3>
+      {{else if (test rollResult "==" "fail")}}
+      <h2 class="roll-result-label roll-result-top-label">Minimal</h2>
+      <h3 class="roll-result-label roll-result-bottom-label">Success</h3>
+      {{/if}}
+    </div>
+
+  </div>
+
+  {{#if (test rollDowntimeAction "==" "AcquireAsset")}}
+  <div class="roll-result-details-container roll-result-details-{{rollResult}} flex-vertical">
+    <h3 class="roll-result-label roll-result-top-label">Asset Quality</h3>
+    {{#if (test rollResult "==" "critical")}}
+    <h2 class="roll-result-label roll-result-bottom-label">{{romanize (calc rollFactors.tier "+" 2)}}</h2>
+    </div>
+    {{#if (test (calc rollFactors.tier "+" 2) "<" rollOppData.rollFactors.quality)}}
+    <div class="roll-result-quality-shortfall-container">
+      Minimum Quality: {{romanize rollOppData.rollFactors.quality}}
+    {{else if (test rollResult "==" "success")}}
+    <h2 class="roll-result-label roll-result-bottom-label">{{romanize (calc rollFactors.tier "+" 1)}}</h2>
+    </div>
+    {{#if (test (calc rollFactors.tier "+" 1) "<" rollOppData.rollFactors.quality)}}
+    <div class="roll-result-quality-shortfall-container">
+      Minimum Quality: {{romanize rollOppData.rollFactors.quality}}
+    {{else if (test rollResult "==" "partial")}}
+    <h2 class="roll-result-label roll-result-bottom-label">{{romanize rollFactors.tier}}</h2>
+    </div>
+    {{#if (test rollFactors.tier "<" rollOppData.rollFactors.quality)}}
+    <div class="roll-result-quality-shortfall-container">
+      Minimum Quality: {{romanize rollOppData.rollFactors.quality}}
+    {{else if (test rollResult "==" "fail")}}
+    <h2 class="roll-result-label roll-result-bottom-label">{{romanize (calc (calc rollFactors.tier "-" 1) "max" 0)}}</h2>
+    </div>
+    {{#if (test (calc (calc rollFactors.tier "-" 1) "max" 0) "<d" rollOppData.rollFactors.quality)}}
+    <div class="roll-result-quality-shortfall-container">
+      Minimum Quality: {{romanize rollOppData.rollFactors.quality}}
+    {{/if}}
+  </div>
+  {{else}}
+
+
+
+
+
+  {{/if}}
+</div>

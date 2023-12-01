@@ -3,7 +3,8 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import C, {SVGDATA, HbsSvgData} from "./constants";
 // eslint-disable-next-line import/no-unresolved
-import {gsap} from "gsap/all";
+import {gsap, MotionPathPlugin} from "gsap/all";
+gsap.registerPlugin(MotionPathPlugin);
 // #endregion ▮▮▮▮ IMPORTS ▮▮▮▮
 
 // #region ▮▮▮▮▮▮▮ [HELPERS] Internal Functions, Data & References Used by Utility Functions ▮▮▮▮▮▮▮ ~
@@ -1355,6 +1356,27 @@ const withLog = (fn: (...args: unknown[]) => unknown) => {
 
 // #region ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████ ~
 
+const changeContainer = (elem: HTMLElement, container: HTMLElement) => {
+  // Get the element's current container, which defines its current coordinate space.
+  const curContainer = $(elem).parent()[0];
+  // Get the element's current position in its current coordinate space.
+  const curPosition: gsap.Point2D = {
+    x: gsap.getProperty(elem, "x") as number,
+    y: gsap.getProperty(elem, "y") as number
+  };
+  // Convert the element's position in its current space, to the equivalent position in the target space.
+  const relPos = MotionPathPlugin.convertCoordinates(
+    curContainer,
+    container,
+    curPosition
+  );
+  eLog.checkLog3("changeContainer", "Target Element", {elem, container, curContainer, curPosition, relPos});
+  // Append the element to the new container, and set its new position
+  $(elem).appendTo($(container));
+  gsap.set(elem, relPos);
+};
+
+
 const getSvgCode = (svgDotKey: string, svgPathKeys?: string|string[]) => {
   const svgData = getProperty(SVGDATA, svgDotKey) as HbsSvgData|undefined;
   // eLog.checkLog3("compileSvg", {svgDotKey, svgPaths, svgData});
@@ -1747,6 +1769,7 @@ export default {
 
   // ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
   getSvgCode, getSvgPaths,
+  changeContainer,
 
   // ░░░░░░░ GreenSock ░░░░░░░
   gsap, get, set, getGSAngleDelta, /* to, from, fromTo, */

@@ -11,6 +11,7 @@ declare global {
     system: BladesActorSystem,
     tierTotal: string,
     activeEffects: BladesActiveEffect[],
+    gamePhase: BladesPhase,
 
     rollData: BladesActorRollData,
     hasFullVision: boolean,
@@ -71,7 +72,18 @@ declare global {
         options: BladesSelectOption<string>[],
         selected: string
       },
-      armor: Record<string,boolean>
+      armor: Record<string,boolean>,
+
+      downtimeData?: {
+        actionsList: Record<DowntimeAction, string>,
+        actionsTooltips: Record<DowntimeAction, string>
+        actionsRemaining: number,
+        canPayCoin: boolean,
+        canPayRep: boolean,
+        isDisplayingCosts: boolean,
+        isDisplayingActions: boolean,
+        dotline: BladesDotlineData
+      }
     }
 
     export interface Crew {

@@ -47,11 +47,13 @@ declare global {
       },
       advancement_points: Record<string,number>,
       downtime_actions: ValueMax,
-      downtime_action_bonus: number
+      downtime_action_bonus: number,
+      downtime_action_selected_cost: "Rep"|"Coin"
     }
 
-    export interface hold {
-      hold: "strong" | "weak"
+    export interface warfare {
+      hold: "strong" | "weak",
+      at_war_with: Record<string, boolean> // <actorID, boolean>
     }
 
     export interface canRoll {
@@ -105,7 +107,7 @@ declare global {
 
     export interface Crew extends BladesActorSchemaTemplate.Default,
       BladesActorSchemaTemplate.pcChar,
-      BladesActorSchemaTemplate.hold,
+      BladesActorSchemaTemplate.warfare,
       BladesItemSchemaTemplate.canRoll {
       rep: ValueMax,
       deity: string,
@@ -159,7 +161,7 @@ declare global {
 
     export interface Faction extends BladesActorSchemaTemplate.Default,
       BladesActorSchemaTemplate.gmChar,
-      BladesActorSchemaTemplate.hold { }
+      BladesActorSchemaTemplate.warfare { }
   }
 
   // Merged Actor Subtype Schemas into Master BladesActor System Schema

@@ -2,6 +2,7 @@
 import U from "./core/utilities";
 import C, {BladesActorType, Tag, Playbook, BladesItemType, AttributeTrait, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor, Vice} from "./core/constants";
 
+import {BladesPC, BladesNPC} from "./documents/BladesActorProxy";
 import {BladesItem} from "./documents/BladesItemProxy";
 
 import {BladesRollMod} from "./BladesRoll";
@@ -747,7 +748,13 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`, "advancement-alert");
   }
 
-
+  get isAtWar(): boolean {
+    if (BladesNPC.IsType(this)) { return false; }
+    if (BladesPC.IsType(this)) { return this.crew?.isAtWar ?? false; }
+    return Object.values(this.system.at_war_with ?? {})
+      .filter((val) => val === true)
+      .length > 0;
+  }
   // #endregion
   // #region BladesSubActor Implementation ~
 

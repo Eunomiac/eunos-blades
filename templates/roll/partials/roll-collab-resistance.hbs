@@ -20,10 +20,10 @@
           <div class="roll-sheet-sub-block roll-header-block flex-horizontal">
             <label class="filled-label">Rolling:</label>
             <span
-              class="shadowed roll-readonly {{~#if rollTraitData.pcTooltip}} tooltip-trigger{{/if}}">{{rollTraitData.name}}</span>
+              class="shadowed roll-readonly {{~#if rollTraitData.pcTooltip}} tooltip-trigger{{/if}}">{{rollTraitData.name}}
             {{#if rollTraitData.pcTooltip}}
             <span class="tooltip tooltip-roll-trait tooltip-roll-trait-pc">{{{rollTraitData.pcTooltip}}}</span>
-            {{/if}}
+            {{/if}}</span>
             <div class="roll-dotline-block">
               {{> "systems/eunos-blades/templates/components/dotline.hbs"
               data=rollTraitData

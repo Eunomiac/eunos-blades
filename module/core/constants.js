@@ -183,6 +183,8 @@ export var RollModType;
     RollModType["teamwork"] = "teamwork";
     RollModType["ability"] = "ability";
     RollModType["gear"] = "gear";
+    RollModType["crew_ability"] = "crew_ability";
+    RollModType["crew_upgrade"] = "crew_upgrade";
     RollModType["advantage"] = "advantage";
     RollModType["disadvantage"] = "disadvantage";
 })(RollModType || (RollModType = {}));

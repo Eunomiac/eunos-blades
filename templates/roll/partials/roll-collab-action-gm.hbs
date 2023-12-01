@@ -63,8 +63,10 @@
       <div class="roll-sheet-block rolling-block flex-vertical">
         <div class="roll-sheet-sub-block roll-header-block flex-horizontal">
           <label class="filled-label">Rolling:</label>
-          <span class="shadowed roll-readonly tooltip-trigger">{{rollTraitData.name}}</span>
-          <span class="tooltip tooltip-roll-trait tooltip-roll-trait-gm">{{{rollTraitData.gmTooltip}}}</span>
+          <span class="shadowed roll-readonly tooltip-trigger">
+            {{rollTraitData.name}}
+            <span class="tooltip tooltip-roll-trait tooltip-roll-trait-gm">{{{rollTraitData.gmTooltip}}}</span>
+          </span>
           <div class="roll-dotline-block">
           {{> "systems/eunos-blades/templates/components/dotline.hbs"
           data=rollTraitData

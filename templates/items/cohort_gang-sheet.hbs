@@ -37,15 +37,19 @@
     {{#if isGM}}
     <section class="cohort-edges full-width flex-horizontal">
       {{#each edgeData as |edgeTooltip edgeName|}}
-      <input class="shadowed cohort-edge-input tooltip-trigger" type="text" value="{{edgeName}}" name="system.edges.{{calc @index "+" 1}}" />
+      <div class="tooltip-container cohort-edge-tooltip-container tooltip-trigger">
+      <input class="shadowed cohort-edge-input" type="text" value="{{edgeName}}" name="system.edges.{{calc @index "+" 1}}" />
       <div class="tooltip edge-tooltip">{{{edgeTooltip}}}</div>
+      </div>
       {{/each}}
       <input class="shadowed cohort-edge-input" type="text" value="" name="system.edges.{{calc (count system.edges) "+" 1}}" />
     </section>
     <section class="cohort-flaws full-width flex-horizontal">
       {{#each flawData as |flawTooltip flawName|}}
-      <input class="shadowed cohort-flaw-input tooltip-trigger" type="text" value="{{flawName}}" name="system.flaws.{{calc @index "+" 1}}" />
+      <div class="tooltip-container cohort-edge-tooltip-container tooltip-trigger">
+      <input class="shadowed cohort-flaw-input" type="text" value="{{flawName}}" name="system.flaws.{{calc @index "+" 1}}" />
       <div class="tooltip flaw-tooltip">{{{flawTooltip}}}</div>
+      </div>
       {{/each}}
       <input class="shadowed cohort-flaw-input" type="text" value="" name="system.flaws.{{calc (count system.flaws) "+" 1}}" />
     </section>

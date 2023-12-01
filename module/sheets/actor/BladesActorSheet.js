@@ -1,7 +1,7 @@
 // #region IMPORTS~
 import U from "../../core/utilities.js";
 import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
-import C, { BladesActorType, BladesItemType, DowntimeAction, AttributeTrait, ActionTrait, Factor, RollType } from "../../core/constants.js";
+import C, { BladesActorType, BladesPhase, BladesItemType, DowntimeAction, AttributeTrait, ActionTrait, Factor, RollType } from "../../core/constants.js";
 import Tags from "../../core/tags.js";
 import { BladesActor, BladesPC, BladesCrew } from "../../documents/BladesActorProxy.js";
 import BladesItem from "../../BladesItem.js";
@@ -27,6 +27,7 @@ class BladesActorSheet extends ActorSheet {
             isGM: game.eunoblades.Tracker?.system.is_spoofing_player ? false : game.user.isGM,
             actor: this.actor,
             system: this.actor.system,
+            gamePhase: game.eunoblades.Tracker?.phase || BladesPhase.Freeplay,
             tierTotal: this.actor.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(this.actor.getFactorTotal(Factor.tier)) : "0",
             rollData: this.actor.getRollData(),
             activeEffects: Array.from(this.actor.effects),

@@ -50,10 +50,12 @@
           "value": 0,
           "max": 2
         },
-        "downtime_action_bonus": 0
+        "downtime_action_bonus": 0,
+        "downtime_action_selected_cost": ""
 			},
-			"hold": {
-				"hold": "strong"
+			"warfare": {
+				"hold": "strong",
+        "at_war_with": {}
 			},
 			"canRoll": {
 				"roll_mods": []
@@ -223,7 +225,7 @@
 			"templates": [
 				"default",
 				"pcChar",
-				"hold",
+				"warfare",
 				"canRoll"
 			],
 			"coins": {
@@ -356,7 +358,7 @@
 			"templates": [
 				"default",
 				"gmChar",
-				"hold"
+				"warfare"
 			]
 		}
 	},

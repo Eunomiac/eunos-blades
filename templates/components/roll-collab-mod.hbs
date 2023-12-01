@@ -33,19 +33,19 @@
       <line class="shadow-stroke brightest-stroke" x1="4" y1="50" x2="14" y2="14" />
       <line class="shadow-stroke bright-stroke" x1="4" y1="50" x2="14" y2="87" />
     </svg>
-    <span class="roll-mod-text">{{name}}{{#if (test sideString "||" (test modType "==" "teamwork"))}}:{{/if}}</span>
+    <span class="roll-mod-text">
+      {{name}}{{~#if (test sideString "||" (test modType "==" "teamwork"))}}:{{/if}}
+    </span>
     {{#if (test sideString "||" (test modType "==" "teamwork"))}}
     <span class="roll-mod-text roll-mod-sidestring">{{{sideString}}}&nbsp;</span>
     {{/if}}
 
 {{#if isGM}}
   {{#if (test modType "==" "teamwork")}}
-    <div class="roll-select-container {{~#if tooltip}} tooltip-trigger{{/if}}">
+    <div class="roll-select-container">
       {{#if label}}
       <label class="select-label">{{label}}</label>
       {{/if}}
-      {{eLog "THIS" this}}
-      {{eLog "Select Options" selectOptions}}
       <div class="roll-select">
         {{> "systems/eunos-blades/templates/components/select.hbs"
         cssClass="shadowed roll-sheet-select roll-sheet-select-doc"
@@ -66,6 +66,6 @@
 {{/if}}
 
 {{#if tooltip}}
-  <div class="tooltip tooltip-small tooltip-left tooltip-roll-mod">{{{tooltip}}}</div>
+  <div class="tooltip tooltip-small tooltip-left tooltip-wide tooltip-roll-mod">{{{tooltip}}}</div>
 {{/if}}
 </span>

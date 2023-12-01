@@ -38,10 +38,63 @@
 
         section.sheet-mid-bar {
 
+
+          @keyframes action-bar-shimmer {
+            0% {
+              background-position-x: 0;
+            }
+            100% {
+              background-position-x: 800px;
+            }
+          }
+
+          &.section-downtime-actions {
+            pointer-events: auto;
+            justify-content: flex-start;
+            background: linear-gradient(to right,
+              var(--blades-gold-dark),
+              var(--blades-gold),
+              var(--blades-gold-dark) 800px);
+
+            &:hover {
+              animation: action-bar-shimmer 5s ease infinite;
+            }
+
+            .comp.tab-label {
+              margin-bottom: 0;
+              background: var(--blades-gold-bright);
+              box-shadow: 0px 0px 3px var(--blades-black);
+
+              .tab-title, .dotline-label {
+                font-size: 18px;
+                color: var(--blades-black);
+              }
+            }
+
+            .downtime-action-selection {
+              height: 36px;
+              gap: 20px;
+              padding: 0 20px;
+
+              .downtime-action-button {
+                flex-basis: 16%;
+                position: relative;
+                text-align: center;
+                font-family: var(--font-emphasis-narrow);
+                color: var(--blades-black-dark);
+                outline: 2px solid var(--blades-white);
+                border-radius: 8px;
+                box-shadow: 3px 3px 8px 1px var(--blades-black);
+                background: var(--blades-gold-bright);
+              }
+            }
+          }
+
           .comp-stress {
             .dotline {
               --fill-color-full: var(--blades-red-dark);
               --half-color-full: var(--blades-red-bright);
+              margin-top: -2px;
 
               &.narrow-stress .dot { margin-right: 1px }
             }
@@ -399,9 +452,9 @@
                   height: 100%;
                 }
               }
-              .tooltip {
-                left: -550px;
-              }
+              // .tooltip {
+              //   left: -550px;
+              // }
             }
           }
         }

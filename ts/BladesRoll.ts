@@ -1005,7 +1005,7 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
   }
   // #endregion
 
-  rollInstance: BladesRoll;
+  rollInstance?: BladesRoll|undefined;
 
   _rollOppID: string | undefined;
 
@@ -1036,7 +1036,7 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
   rollFactors: Partial<Record<Factor, BladesRoll.FactorData>>;
 
   // #region Constructor ~
-  constructor(rollInstance: BladesRoll,
+  constructor(rollInstance?: BladesRoll,
     {
       rollOppID,
       rollOppDoc,
@@ -1105,11 +1105,13 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
   }
 
   async updateRollFlags() {
+    if (!this.rollInstance) { return; }
     await this.rollInstance.document.setFlag(...this.flagParams, this.flagData);
     socketlib.system.executeForEveryone("renderRollCollab", this.rollInstance.rollID);
   }
 
   refresh() {
+    if (!this.rollInstance) { return; }
     const rollOppFlags = this.rollInstance.flagData.rollOppData;
     if (rollOppFlags) {
       this.rollOppID = rollOppFlags.rollOppID;
@@ -1341,12 +1343,10 @@ class BladesRoll extends DocumentSheet {
       "systems/eunos-blades/templates/roll/partials/roll-collab-action-gm.hbs",
       "systems/eunos-blades/templates/roll/partials/roll-collab-resistance.hbs",
       "systems/eunos-blades/templates/roll/partials/roll-collab-resistance-gm.hbs",
-      "systems/eunos-blades/templates/roll/partials/roll-collab-downtime.hbs",
-      "systems/eunos-blades/templates/roll/partials/roll-collab-downtime-gm.hbs",
       "systems/eunos-blades/templates/roll/partials/roll-collab-fortune.hbs",
       "systems/eunos-blades/templates/roll/partials/roll-collab-fortune-gm.hbs",
-      "systems/eunos-blades/templates/roll/partials/roll-collab-incarceration.hbs",
-      "systems/eunos-blades/templates/roll/partials/roll-collab-incarceration-gm.hbs"
+      "systems/eunos-blades/templates/roll/partials/roll-collab-indulgevice.hbs",
+      "systems/eunos-blades/templates/roll/partials/roll-collab-indulgevice-gm.hbs"
     ]);
   }
 
@@ -1463,6 +1463,7 @@ class BladesRoll extends DocumentSheet {
         [Factor.scale]: 0,
         [Factor.magnitude]: 0
       },
+      GMOverrides: {},
       rollFactorToggles: {
         source: {
           [Factor.tier]: {
@@ -1798,18 +1799,6 @@ class BladesRoll extends DocumentSheet {
 
   static async PrepareIndulgeViceRoll(rollID: string, config: BladesRoll.Config) {
 
-    // If primary doc is given, derive rollTrait from that (i.e. lowest Attribute)
-    const {rollPrimaryDoc} = config.rollPrimaryData;
-    if (BladesPC.IsType(rollPrimaryDoc)) {
-      const minAttrVal = Math.min(...Object.values(rollPrimaryDoc.attributes));
-      config.rollTrait = U.sample(
-        Object.values(AttributeTrait).filter((attr) => rollPrimaryDoc.attributes[attr] === minAttrVal)
-      )[0];
-    }
-    if (!(U.isInt(config.rollTrait) || U.lCase(config.rollTrait) in AttributeTrait)) {
-      throw new Error(`[PrepareIndulgeViceRoll()] Bad RollTrait for Indulge Vice Roll: ${config.rollTrait}`);
-    }
-
     // Set other known config values
     config.rollDowntimeAction = DowntimeAction.IndulgeVice;
 
@@ -1876,11 +1865,11 @@ class BladesRoll extends DocumentSheet {
       eLog.checkLog3("bladesRoll", "BladesRoll.NewRoll() [2]", {userFlags: rollUser.flags});
     }
 
-    // If no rollPrimaryData is provided, attempt to derive it from the rest of the config object
     let {rollPrimaryData} = config;
+
     if (!BladesRollPrimary.IsValidData(rollPrimaryData)) {
+      // If no rollPrimaryData is provided, attempt to derive it from user data
       let rollPrimarySourceData: BladesRoll.PrimaryDocData;
-      // If the user is a player with a BladesPC character, assume that is rollPrimary.
       if (BladesPC.IsType(rollUser.character)) {
         rollPrimarySourceData = rollUser.character;
         rollPrimaryData = {
@@ -1899,6 +1888,10 @@ class BladesRoll extends DocumentSheet {
       throw new Error("[BladesRoll.NewRoll()] A valid source of PrimaryDocData must be provided to construct a roll.");
     }
 
+    // Get the rollPrimary document, if an ID is provided.
+    const rollPrimary = new BladesRollPrimary(undefined, rollPrimaryData);
+    const {rollPrimaryDoc} = rollPrimary;
+
     // Create a random ID for storing the roll instance
     const rID = randomID();
 
@@ -1906,51 +1899,113 @@ class BladesRoll extends DocumentSheet {
     let userIDs: Record<RollPermissions, string[]>;
     let flagUpdateData: BladesRoll.FlagData;
 
+    // Construct Config object
+    const configData: BladesRoll.Config = {
+      ...config,
+      rollUserID: rollUser.id,
+      rollPrimaryData
+    };
+
+    // Modify Config object depending on subtype and downtime action where necessary.
+    switch (configData.rollSubType) {
+      case RollSubType.Engagement:
+      case RollSubType.Incarceration: {
+        configData.rollType = RollType.Fortune;
+        break;
+      }
+      default: break;
+    }
+
+    switch (configData.rollDowntimeAction) { // Can be done outside of Downtime during Flashbacks!
+      case DowntimeAction.AcquireAsset: {
+        configData.rollType = RollType.Action;
+        configData.rollTrait = Factor.tier;
+        break;
+      }
+      case DowntimeAction.IndulgeVice: {
+        configData.rollType = RollType.IndulgeVice;
+        if (!BladesPC.IsType(rollPrimaryDoc)) {
+          throw new Error("Only a PC character can roll to Indulge Vice.");
+        }
+        const minAttrVal = Math.min(...Object.values(rollPrimaryDoc.attributes));
+        configData.rollTrait = U.sample(
+          Object.values(AttributeTrait).filter((attr) => rollPrimaryDoc.attributes[attr] === minAttrVal)
+        )[0];
+        break;
+      }
+      case DowntimeAction.LongTermProject: {
+        configData.rollType = RollType.Action;
+        // Validate that rollOppData points to a project item
+        if (!BladesRollOpposition.IsValidData(configData.rollOppData)) {
+          throw new Error("No rollOppData provided for LongTermProject roll.");
+        }
+        const rollOpp = new BladesRollOpposition(undefined, configData.rollOppData);
+        if (![
+          BladesItemType.clock,
+          BladesItemType.project,
+          BladesItemType.design
+        ].includes(rollOpp.rollOppType as BladesItemType)) {
+          throw new Error("rollOppType must be 'clock', 'project' or 'design' for LongTermProject roll.");
+        }
+        break;
+      }
+      case DowntimeAction.Recover: {
+        configData.rollType = RollType.Action;
+        // Validate that rollPrimary is an NPC or a PC with Physiker.
+        if (BladesPC.IsType(rollPrimaryDoc)) {
+          if (!rollPrimaryDoc.abilities.find((ability) => ability.name === "Physiker")) {
+            throw new Error("A PC rollPrimary on a Recovery roll must have the Physiker ability.");
+          }
+          configData.rollTrait = ActionTrait.tinker;
+        } else if (rollPrimary.rollPrimaryType === BladesActorType.npc) {
+          configData.rollTrait = Factor.quality;
+        } else {
+          throw new Error("Only a PC with Physiker or an NPC can be rollPrimary on a Recover roll.");
+        }
+        break;
+      }
+      case DowntimeAction.ReduceHeat: {
+        configData.rollType = RollType.Action;
+        // rollPrimary must be a cohort with a parent PC or Crew,
+        // and PC must be member of a crew
+        // and Crew must not have zero Heat.
+        let parentCrew: BladesCrew|undefined = undefined;
+        if (rollPrimaryDoc) {
+          const {parent} = rollPrimaryDoc;
+          if (BladesCrew.IsType(parent)) {
+            parentCrew = parent;
+          } else if (BladesPC.IsType(parent) && BladesCrew.IsType(parent.crew)) {
+            parentCrew = parent.crew;
+          }
+        }
+
+        if (!BladesCrew.IsType(parentCrew)) {
+          throw new Error(`Could not find crew for rollPrimary ${rollPrimary.rollPrimaryName}`);
+        }
+        if (parentCrew.system.heat.value === 0) {
+          throw new Error("Attempt to Reduce Heat for a Crew with no Heat.");
+        }
+        break;
+      }
+      case undefined: break;
+      default: throw new Error(`Unrecognized Roll Downtime Action: ${configData.rollDowntimeAction}`);
+    }
+
     switch (config.rollType) {
       case RollType.Action: {
-        ({userIDs, flagUpdateData} = await BladesRoll.PrepareActionRoll(
-          rID,
-          {
-            ...config,
-            rollUserID: rollUser.id,
-            rollPrimaryData
-          }
-        ));
+        ({userIDs, flagUpdateData} = await BladesRoll.PrepareActionRoll(rID, configData));
         break;
       }
       case RollType.Resistance: {
-        eLog.checkLog3("bladesRoll", "BladesRoll.NewRoll() [3]");
-        ({userIDs, flagUpdateData} = await BladesRoll.PrepareResistanceRoll(
-          rID,
-          {
-            ...config,
-            rollUserID: rollUser.id,
-            rollPrimaryData
-          }
-        ));
-        eLog.checkLog3("bladesRoll", "BladesRoll.NewRoll() [4] -> Resistance Roll Prepared", {userIDs, flagUpdateData});
+        ({userIDs, flagUpdateData} = await BladesRoll.PrepareResistanceRoll(rID, configData));
         break;
       }
       case RollType.Fortune: {
-        ({userIDs, flagUpdateData} = await BladesRoll.PrepareFortuneRoll(
-          rID,
-          {
-            ...config,
-            rollUserID: rollUser.id,
-            rollPrimaryData
-          }
-        ));
+        ({userIDs, flagUpdateData} = await BladesRoll.PrepareFortuneRoll(rID, configData));
         break;
       }
       case RollType.IndulgeVice: {
-        ({userIDs, flagUpdateData} = await BladesRoll.PrepareIndulgeViceRoll(
-          rID,
-          {
-            ...config,
-            rollUserID: rollUser.id,
-            rollPrimaryData
-          }
-        ));
+        ({userIDs, flagUpdateData} = await BladesRoll.PrepareIndulgeViceRoll(rID, configData));
         break;
       }
     }
@@ -3772,8 +3827,18 @@ class BladesRoll extends DocumentSheet {
       {chatMsgID}
     );
 
+    const templateParts: string[] = [
+      "systems/eunos-blades/templates/chat/roll-result-",
+      U.lCase(this.rollType),
+      "-"
+    ];
+    if (this.rollDowntimeAction) {
+      templateParts.push(U.lCase(this.rollDowntimeAction), "-")
+    }
+    templateParts.push("roll.hbs");
+
     return await renderTemplate(
-      `systems/eunos-blades/templates/chat/roll-result-${U.lCase(this.rollType)}-roll.hbs`,
+      templateParts.join(""),
       context
     );
   }
@@ -4024,6 +4089,25 @@ class BladesRoll extends DocumentSheet {
     socketlib.system.executeForEveryone("renderRollCollab", this.rollID);
   }
 
+  async _onGMPopupClick(event: ClickEvent) {
+
+    /**
+     * <element
+     *  data-action="gm-text-popup"
+     *  data-prompt="Enter text for Major Advantage."
+     *  data-flag-target="rollCollab.advantages.{{calc (count flagData.advantages) '+' 1)}}
+     * >
+     *
+     * */
+    const elem$ = $(event.currentTarget);
+    const prompt = elem$.data("prompt");
+    const flagTarget = elem$.data("flagTarget");
+
+    if (prompt && flagTarget) {
+      BladesDialog.DisplaySimpleInputDialog(this, prompt, undefined, flagTarget);
+    }
+  }
+
   // Async _gmControlSelect(event: SelectChangeEvent) {
   //   event.preventDefault();
   //   const elem$ = $(event.currentTarget);
@@ -4145,13 +4229,12 @@ class BladesRoll extends DocumentSheet {
 
     html
       .find("[data-action=\"gm-edit-consequences\"]")
-      // .on({click: () => BladesDialog.DisplayRollConsequenceDialog(this)});
-      .on({click: () => BladesDialog.DisplaySimpleInputDialog(
-        this,
-        "What consequence would you add?",
-        undefined,
-        "rollCollab.inputDialogTest"
-      )});
+      .on({click: () => BladesDialog.DisplayRollConsequenceDialog(this)});
+
+    html
+      .find("[data-action=\"gm-text-popup\"]")
+      .on({click: this._onGMPopupClick.bind(this)});
+
 
     html
       .find("[data-action='gm-text-input']")

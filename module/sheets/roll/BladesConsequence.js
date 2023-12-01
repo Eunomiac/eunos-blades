@@ -369,28 +369,54 @@ class BladesConsequence {
         }
         // Get HTML for the consequence it resisted to
         let csqResistedHTML = await renderTemplate("systems/eunos-blades/templates/components/consequence-accepted.hbs", rCsq);
-        transformRecord["2) csqResistedHTML"] = csqResistedHTML;
-        // Add a class
+        // Add a class, identifying this ".comp.comp-consequence-display-container" as a 'sub-consequence' that resulted from resisting a worse consequence
         csqResistedHTML = $(csqResistedHTML)
             .addClass("sub-consequence-resisted")[0].outerHTML;
-        transformRecord["2.1) csqResistedHTML + class"] = csqResistedHTML;
-        // If roll HTML provided, prepend that to resisted consequence
+        transformRecord["2) csqResistedHTML"] = csqResistedHTML;
+        // If roll HTML provided, extract attribute, icon, dice roll strip and stress cost message, and prepend them to sub-consequence container
+        /**
+         *     <div class="blades-roll roll-type-resistance">
+                <div class="chat-message-bg"></div>
+                <div class="resistance-roll-one-line flex-horizontal full-width">
+                  <img class="consequence-icon-img"
+                    src="systems/eunos-blades/assets/icons/consequence-icons/base-worse-position.svg">
+                  <div class="resistance-roll-vertical-right flex-vertical full-width">
+                    <div class="resistance-roll-attr-dice flex-horizontal full-width">
+                      <span class="trait-label">RESOLVE: </span>
+                      <div class="dice-roll-strip"><span class="blades-die blades-die-critical blades-die-6"><img
+                            src="systems/eunos-blades/assets/dice/image/grad-6-crit.webp"></span><span
+                          class="blades-die blades-die-critical blades-die-6"><img
+                            src="systems/eunos-blades/assets/dice/image/grad-6-crit.webp"></span><span
+                          class="blades-die blades-die-fail blades-die-2"><img
+                            src="systems/eunos-blades/assets/dice/image/grad-2.webp"></span><span
+                          class="blades-die blades-die-fail blades-die-1"><img
+                            src="systems/eunos-blades/assets/dice/image/grad-1.webp"></span><span
+                          class="blades-die blades-die-fail blades-die-1"><img
+                            src="systems/eunos-blades/assets/dice/image/grad-1.webp"></span></div>
+                    </div>
+                    <div class="resistance-cost-row cost-bonus">
+                      <h3>Alistair <em>Recovers</em> 1 Stress</h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+         */
         if (rollHTML) {
-            csqResistedHTML = $(csqResistedHTML).prepend($(`<div class="sub-consequence-resisted-roll-result">
-        ${rollHTML}
-      </div>`))[0].outerHTML;
+            const rollHTML$ = $(rollHTML);
+            const rollDetailContainer$ = $("<div class='roll-detail-container flex-horizontal full-width'></div>").appendTo($(csqResistedHTML));
+            // rollHTML$.find(".consequence-icon-img").addClass("csq-resisted").appendTo(csqHTML$);
+            rollHTML$.find(".trait-label").addClass("csq-resisted").appendTo(rollDetailContainer$);
+            rollHTML$.find(".dice-roll-strip").addClass("csq-resisted").appendTo(rollDetailContainer$);
+            rollHTML$.find(".resistance-cost-row").addClass("csq-resisted").appendTo(rollDetailContainer$);
+            csqResistedHTML = rollDetailContainer$.parent()[0].outerHTML;
             transformRecord["2.2) csqResistedHTML + rollHTML"] = csqResistedHTML;
         }
-        // If "special" or "armor", add the roll overlay
-        if (["armor", "special"].includes(typeRef)) {
-            csqResistedHTML = $(csqResistedHTML).prepend($(`
-      <div class="${typeRef}-resist-overlay">
-        <label class="${typeRef}-resist-overlay-label">Resisted</label>
-        <label class="${typeRef}-resist-overlay-sub-label">(${U.tCase(typeRef)})</label>
-        <img class="${typeRef}-resist-overlay-img" src="systems/eunos-blades/assets/icons/misc-icons/${typeRef}-resist.svg" />
-      </div>`))[0].outerHTML;
-            transformRecord["2.3) csqResistedHTML + overlay"] = csqResistedHTML;
-        }
+        // Add the roll overlay
+        csqResistedHTML = $(csqResistedHTML).prepend($(`
+    <div class="resist-overlay ${typeRef}-resist-overlay">
+      <img class="resist-overlay-img ${typeRef}-resist-overlay-img" src="systems/eunos-blades/assets/icons/misc-icons/${typeRef}-resist.svg" />
+    </div>`))[0].outerHTML;
+        transformRecord["2.3) csqResistedHTML + overlay"] = csqResistedHTML;
         // Prepend the resisted consequence HTML to the accepted consequence HTML
         csqAcceptedHTML = $(csqAcceptedHTML).prepend($(csqResistedHTML))[0].outerHTML;
         transformRecord["3) csqAcceptedHTML + csqResistedHTML"] = csqAcceptedHTML;

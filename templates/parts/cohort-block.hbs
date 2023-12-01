@@ -135,16 +135,16 @@
     {{#each system.edgeData as |edgeTooltip edgeName|}}
     <div class="edge-container tooltip-trigger">
       <label class="edge-name tooltip-scaling-elem shadowed">{{edgeName}}</label>
+      <div class="tooltip tooltip-small tooltip-edge">{{{edgeTooltip}}}</div>
     </div>
-    <div class="tooltip tooltip-small tooltip-edge">{{{edgeTooltip}}}</div>
     {{/each}}
     {{/if}}
     {{#if system.flawData}}
     {{#each system.flawData as |flawTooltip flawName|}}
     <div class="flaw-container tooltip-trigger">
       <label class="flaw-name tooltip-scaling-elem shadowed">{{flawName}}</label>
+      <div class="tooltip tooltip-small tooltip-flaw">{{{flawTooltip}}}</div>
     </div>
-    <div class="tooltip tooltip-small tooltip-flaw">{{{flawTooltip}}}</div>
     {{/each}}
     {{/if}}
   </div>

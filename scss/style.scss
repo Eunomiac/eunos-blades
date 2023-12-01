@@ -44,6 +44,18 @@
       display: none !important;
     }
 
+    #eunos-blades-tooltips {
+      @import "./core/globals";
+      display: block;
+      pointer-events: none;
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0px;
+      left: 0px;
+      z-index: 150;
+    }
+
     #pause {
       img.fa-spin {
         top: unset;
@@ -103,7 +115,15 @@
         @import "./core/reset";
         @import './core/globals';
 
-        #chat-controls, #chat-form { display: none }
+        #chat-form { display: none }
+        #chat-controls {
+          opacity: 0 !important;
+          transition: 0.5s;
+
+          &:hover {
+            opacity: 1 !important;
+          }
+        }
         &,
         * {
           --font-heading: var(--font-emphasis);

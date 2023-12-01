@@ -1,10 +1,12 @@
 import U from "./utilities";
 import C from "./constants";
 // eslint-disable-next-line import/no-unresolved
-import {TextPlugin} from "gsap/all";
+import {TextPlugin, Flip, MotionPathPlugin} from "gsap/all";
 
 const gsapPlugins: gsap.RegisterablePlugins[] = [
-  TextPlugin
+  TextPlugin,
+  Flip,
+  MotionPathPlugin
 ];
 
 type gsapConfig = gsap.TweenVars & {
@@ -621,50 +623,60 @@ const gsapEffects: Record<string, gsapEffect> = {
   },
   hoverTooltip: {
     effect: (tooltip, config) => {
-      const tl = U.gsap.timeline({paused: true, defaults: { }});
-      if (!tooltip) { return tl; }
-      // Tooltip = $(tooltip);
-
-      if (config.scalingElems.length > 0) {
-        tl.to(
-          config.scalingElems,
-          {
-            scale: "+=0.2",
-            filter: "none",
-            color: C.Colors.WHITE,
-            opacity: 1,
-            duration: 0.125,
-            ease: "back"
-          },
-          0.5
-        );
-      }
+      const tooltipElem = $(tooltip)[0];
+      const tooltipContainer = $(tooltip).parent()[0];
+      const overlayContainer = $("#eunos-blades-tooltips")[0];
+      const tl = U.gsap.timeline({
+        paused: true,
+        onStart() {
+          U.changeContainer(tooltipElem, overlayContainer);
+        },
+        onReverseComplete() {
+          U.changeContainer(tooltipElem, tooltipContainer);
+        }
+      });
 
       if (tooltip) {
         tl.fromTo(
-          tooltip,
+          tooltipElem,
           {
-            filter: "blur(50px)",
-            opacity: 0,
-            scale: 2 * config.tooltipScale
+            filter: "blur(15px)",
+            autoAlpha: 0,
+            xPercent: 50,
+            yPercent: -100,
+            scale: 1.5
           },
           {
-            filter: "none",
-            opacity: 1,
-            scale: config.tooltipScale,
-            x: config.xMotion,
+            filter: "blur(0px)",
+            autoAlpha: 1,
+            scale: 1,
+            xPercent: -50,
+            yPercent: -100,
             duration: 0.25,
-            ease: "power2"
+            ease: "back.out"
           },
-          1
+          0
         );
       }
+      // if (config.scalingElems.length > 0) {
+      //   tl.to(
+      //     config.scalingElems,
+      //     {
+      //       scale: "+=0.2",
+      //       filter: "none",
+      //       color: C.Colors.WHITE,
+      //       opacity: 1,
+      //       duration: 0.125,
+      //       ease: "back"
+      //     },
+      //     0
+      //   );
+      // }
 
       return tl;
     },
     defaults: {
-      xMotion: "+=200",
-      tooltipScale: 1.25
+      tooltipScale: 0.75
     }
   }
 };
@@ -686,9 +698,21 @@ export function Initialize() {
  * @param {JQuery<HTMLElement>} html The document to be searched.
  */
 export function ApplyTooltipAnimations(html: JQuery<HTMLElement>) {
+  // Check for existence of #eunos-blades-tooltips overlay: If not present, create it.
+  if (!$("#eunos-blades-tooltips")[0]) {
+    $("<div id='eunos-blades-tooltips'></div>").appendTo("body");
+  }
+
   html.find(".tooltip-trigger").each((_, el) => {
     const tooltipElem = $(el).find(".tooltip")[0] ?? $(el).next(".tooltip")[0];
     if (!tooltipElem) { return; }
+
+    // Find the tooltip's parent container. If its position isn't relative or absolute, set it to relative.
+    const tooltipContainer = $(tooltipElem).parent()[0];
+    if ($(tooltipContainer).css("position") !== "relative" && $(tooltipContainer).css("position") !== "absolute") {
+      $(tooltipContainer).css("position", "relative");
+    }
+
     $(el).data("hoverTimeline", U.gsap.effects.hoverTooltip(
       tooltipElem,
       {
@@ -699,13 +723,10 @@ export function ApplyTooltipAnimations(html: JQuery<HTMLElement>) {
     ));
     $(el).on({
       mouseenter: function() {
-        $(el).css("z-index", 10);
         $(el).data("hoverTimeline").play();
       },
       mouseleave: function() {
-        $(el).data("hoverTimeline").reverse().then(() => {
-          $(el).css("z-index", "");
-        });
+        $(el).data("hoverTimeline").reverse();
       }
     });
   });

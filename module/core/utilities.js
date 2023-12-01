@@ -2,7 +2,8 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import C, { SVGDATA } from "./constants.js";
 // eslint-disable-next-line import/no-unresolved
-import { gsap } from "/scripts/greensock/esm/all.js";
+import { gsap, MotionPathPlugin } from "/scripts/greensock/esm/all.js";
+gsap.registerPlugin(MotionPathPlugin);
 // #endregion ▮▮▮▮ IMPORTS ▮▮▮▮
 // #region ▮▮▮▮▮▮▮ [HELPERS] Internal Functions, Data & References Used by Utility Functions ▮▮▮▮▮▮▮ ~
 // _noCapWords -- Patterns matching words that should NOT be capitalized when converting to TITLE case.
@@ -1289,6 +1290,21 @@ const withLog = (fn) => {
 };
 // #endregion ▄▄▄▄▄ FUNCTIONS ▄▄▄▄▄
 // #region ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████ ~
+const changeContainer = (elem, container) => {
+    // Get the element's current container, which defines its current coordinate space.
+    const curContainer = $(elem).parent()[0];
+    // Get the element's current position in its current coordinate space.
+    const curPosition = {
+        x: gsap.getProperty(elem, "x"),
+        y: gsap.getProperty(elem, "y")
+    };
+    // Convert the element's position in its current space, to the equivalent position in the target space.
+    const relPos = MotionPathPlugin.convertCoordinates(curContainer, container, curPosition);
+    eLog.checkLog3("changeContainer", "Target Element", { elem, container, curContainer, curPosition, relPos });
+    // Append the element to the new container, and set its new position
+    $(elem).appendTo($(container));
+    gsap.set(elem, relPos);
+};
 const getSvgCode = (svgDotKey, svgPathKeys) => {
     const svgData = getProperty(SVGDATA, svgDotKey);
     // eLog.checkLog3("compileSvg", {svgDotKey, svgPaths, svgData});
@@ -1644,6 +1660,7 @@ export default {
     getDynamicFunc, withLog,
     // ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
     getSvgCode, getSvgPaths,
+    changeContainer,
     // ░░░░░░░ GreenSock ░░░░░░░
     gsap, get, set, getGSAngleDelta,
     getRawCirclePath, drawCirclePath,

@@ -6,12 +6,14 @@
     <span class="pc-summary-name shadowed">{{actor.name}}</span>
 
     <span class="pc-summary-heritage shadowed">{{actor.itemTypes.heritage.0.name}}</span>
-    <img class="pc-summary-background-img tooltip-trigger" src="{{actor.itemTypes.background.0.img}}" />
-
-    <div class="tooltip tooltip-pc-summary-background">{{actor.itemTypes.background.0.name}}</div>
-    <img class="pc-summary-vice-img tooltip-trigger" src="{{actor.itemTypes.vice.0.img}}" />
-
-    <div class="tooltip tooltip-pc-summary-vice">{{actor.itemTypes.vice.0.name}}</div>
+    <div class="tooltip-container pc-summary-tooltip-container tooltip-trigger">
+      <img class="pc-summary-background-img" src="{{actor.itemTypes.background.0.img}}" />
+      <div class="tooltip tooltip-pc-summary-background">{{actor.itemTypes.background.0.name}}</div>
+    </div>
+    <div class="tooltip-container pc-summary-tooltip-container tooltip-trigger">
+      <img class="pc-summary-vice-img tooltip-trigger" src="{{actor.itemTypes.vice.0.img}}" />
+      <div class="tooltip tooltip-pc-summary-vice">{{actor.itemTypes.vice.0.name}}</div>
+    </div>
     <img class="pc-summary-playbook-img" src="{{actor.playbook.img}}" />
   </section>
 
@@ -72,8 +74,8 @@
         <img class="pc-summary-asset-img" src="{{img}}" />
         <label class="pc-summary-asset-name shadowed {{~#if (test tags "includes" "Fine" )}}
           cyan-bright{{/if}}">{{name}}</label>
+        <div class="pc-summary-asset-tooltip tooltip">{{{tooltip}}}</div>
       </div>
-      <div class="pc-summary-asset-tooltip tooltip">{{{tooltip}}}</div>
       {{/unless}}
       {{/each}}
     </div>
@@ -82,6 +84,7 @@
       <div class="pc-summary-asset pc-summary-ability tooltip-trigger">
         <img class="pc-summary-asset-img" src="{{img}}" />
         <label class="pc-summary-asset-name shadowed">{{name}}</label>
+        <div class="pc-summary-asset-tooltip tooltip">{{{tooltip}}}</div>
       </div>
       <div class="pc-summary-asset-tooltip tooltip">{{{tooltip}}}</div>
       {{/each}}

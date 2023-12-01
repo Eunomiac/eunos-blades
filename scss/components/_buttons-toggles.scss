@@ -23,29 +23,6 @@
     }
   }
 
-  // .tooltip {
-  //   display: none;
-  //   pointer-events: none;
-  //   position: absolute;
-  //   bottom: 15px;
-  //   left: 15px;
-  //   background: var(--blades-black);
-  //   color: var(--blades-white);
-  //   font-size: 10px;
-  //   line-height: 12px;
-  //   padding: 5px;
-  //   border-radius: 10px;
-  //   border: 1px solid var(--blades-white-bright);
-  //   text-align: center;
-  //   white-space: nowrap;
-
-  //   b {
-  //       color: var(--blades-white-bright);
-  //       font-size: 12px;
-  //       font-family: var(--font-emphasis);
-  //       text-transform: uppercase;
-  //   }
-  // }
   .hidden-toggle {
     margin: 0;
     border: none;
@@ -56,10 +33,5 @@
     &[type="checkbox"]:checked + .toggle-on + .toggle-off { display: none }
     &[type="checkbox"]:not(:checked) + .toggle-on { display: none }
   }
-
-  // &.tooltip-left .tooltip {
-  //   left: unset;
-  //   right: 15px;
-  // }
 
 }

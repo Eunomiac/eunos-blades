@@ -644,6 +644,10 @@ class BladesDialog extends Dialog {
             self.close();
         });
     }
+    async close() {
+        $("#eunos-blades-tooltips > *").remove();
+        super.close();
+    }
     activateConsequenceListeners(html) {
         html.find("input").on({ change: () => this.updateConsequenceDialog(html) });
         html.find("select").on({ change: () => this.updateConsequenceDialog(html) });

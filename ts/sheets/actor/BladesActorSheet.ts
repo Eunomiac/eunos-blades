@@ -2,7 +2,7 @@
 
 import U from "../../core/utilities";
 import G, {ApplyTooltipAnimations} from "../../core/gsap";
-import C, {BladesActorType, BladesItemType, DowntimeAction, AttributeTrait, Tag, ActionTrait, Factor, RollType} from "../../core/constants";
+import C, {BladesActorType, BladesPhase, BladesItemType, DowntimeAction, AttributeTrait, Tag, ActionTrait, Factor, RollType} from "../../core/constants";
 import Tags from "../../core/tags";
 import {BladesActor, BladesPC, BladesCrew} from "../../documents/BladesActorProxy";
 import BladesItem from "../../BladesItem";
@@ -45,6 +45,7 @@ class BladesActorSheet extends ActorSheet {
       isGM: game.eunoblades.Tracker?.system.is_spoofing_player ? false : game.user.isGM,
       actor: this.actor,
       system: this.actor.system,
+      gamePhase: game.eunoblades.Tracker?.phase || BladesPhase.Freeplay,
       tierTotal: this.actor.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(this.actor.getFactorTotal(Factor.tier)) : "0",
       rollData: this.actor.getRollData(),
       activeEffects: Array.from(this.actor.effects) as BladesActiveEffect[],

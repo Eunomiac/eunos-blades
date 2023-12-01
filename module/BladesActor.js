@@ -1,6 +1,7 @@
 // #region Imports ~
 import U from "./core/utilities.js";
 import C, { BladesActorType, Tag, Playbook, BladesItemType, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor } from "./core/constants.js";
+import { BladesPC, BladesNPC } from "./documents/BladesActorProxy.js";
 import { BladesItem } from "./documents/BladesItemProxy.js";
 import { BladesRollMod } from "./BladesRoll.js";
 import BladesPushAlert from "./BladesPushAlert.js";
@@ -694,6 +695,17 @@ class BladesActor extends Actor {
         await this.update({ [`system.experience.${attribute}.value`]: 0 });
         const actions = C.Action[attribute].map((action) => `<strong>${U.tCase(action)}</strong>`);
         BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`, "advancement-alert");
+    }
+    get isAtWar() {
+        if (BladesNPC.IsType(this)) {
+            return false;
+        }
+        if (BladesPC.IsType(this)) {
+            return this.crew?.isAtWar ?? false;
+        }
+        return Object.values(this.system.at_war_with ?? {})
+            .filter((val) => val === true)
+            .length > 0;
     }
     // #endregion
     // #region BladesSubActor Implementation ~

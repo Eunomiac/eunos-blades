@@ -107,7 +107,7 @@
         .dotline {
 
           // margin-top: -2px;
-          .dot.full-dot .img-main {
+          .dot.full-dot {
             filter: brightness(1.5) drop-shadow(0 0 2px var(--blades-black-dark));
             // filter: brightness(1.5) invert(1);
           }
@@ -698,6 +698,14 @@
 
   &.gm-roll-collab {
 
+    .gm-input-popup-icon {
+      min-width: 25px !important;
+      min-height: 25px !important;
+      border-radius: 5px !important;
+      pointer-events: auto !important;
+      background: rgba(0, 255, 0, 0.5);
+    }
+
     .window-content form {
 
       &.roll-type-action {
@@ -1043,6 +1051,46 @@
             }
           }
         }
+      }
+
+      &.roll-type-fortune {
+        .sheet-root {
+
+          .sheet-header {
+            padding: 0;
+            align-items: center;
+            height: auto;
+            max-height: unset;
+            border: none;
+
+            .roll-prompt.shadowed {
+              height: auto;
+              max-height: unset;
+              max-width: 80%;
+              white-space: wrap;
+              font-family: var(--font-primary);
+              text-align: center;
+              font-size: 20px;
+              line-height: 20px;
+              margin: 10px 0px 5px 0px;
+              text-transform: none;
+              font-style: italic;
+              overflow: visible;
+            }
+          }
+
+          .sheet-main, .sheet-main > * {
+            border: none;
+          }
+
+        .shadowed.source-name { white-space: nowrap; }
+
+
+        .dotline .dot.full-dot {
+          border-radius: 7px;
+          background: var(--blades-white);
+        }
+      }
       }
 
       .sheet-root {
@@ -1791,13 +1839,13 @@
                 color: var(--blades-blue-bright) !important;
               }
 
-              .tooltip.tooltip-roll-stress {
-                font-family: var(--font-default);
+              // .tooltip.tooltip-roll-stress {
+              //   font-family: var(--font-default);
 
-                >ul>li>.shadowed.red-bright {
-                  font-family: var(--font-emphasis)
-                }
-              }
+              //   >ul>li>.shadowed.red-bright {
+              //     font-family: var(--font-emphasis)
+              //   }
+              // }
             }
           }
 

@@ -148,6 +148,9 @@ const handlebarHelpers = {
             default: return str;
         }
     },
+    romanize(val) {
+        return U.romanizeNum(U.pInt(val));
+    },
     count(param) {
         if (Array.isArray(param) || U.isList(param)) {
             return Object.values(param).filter((val) => val !== null && val !== undefined).length;
