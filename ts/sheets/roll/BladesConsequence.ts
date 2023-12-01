@@ -391,10 +391,6 @@ class BladesConsequence {
 
     const transformRecord: Record<string, string> = {};
 
-    // Prepare template context for accepted (original) consequence.
-    const csqTemplateData: BladesConsequence & {blockClass?: string} = this;
-    csqTemplateData.blockClass = "consequence-resisted";
-
     // Create HTML for accepted version of this consequence
     let csqAcceptedHTML = await renderTemplate(
       "systems/eunos-blades/templates/components/consequence-accepted.hbs",
@@ -422,7 +418,7 @@ class BladesConsequence {
     // Add a class, identifying this ".comp.comp-consequence-display-container" as a 'sub-consequence' that resulted from resisting a worse consequence
     csqResistedHTML = $(csqResistedHTML)
       .addClass("sub-consequence-resisted")[0].outerHTML;
-      transformRecord["2) csqResistedHTML"] = csqResistedHTML;
+    transformRecord["2) csqResistedHTML"] = csqResistedHTML;
 
     // If roll HTML provided, extract attribute, icon, dice roll strip and stress cost message, and prepend them to sub-consequence container
 

@@ -463,7 +463,20 @@ class GlobalGetter {
             }
           }
         }
-      }) as Partial<Record<Position, Partial<Record<RollResult.partial | RollResult.fail, Record<string, BladesRoll.ConsequenceData>>>>>
+      }) as Partial<
+        Record<
+          Position,
+          Partial<
+            Record<
+              RollResult.partial | RollResult.fail,
+              Record<
+                string,
+                BladesRoll.ConsequenceData
+              >
+            >
+          >
+        >
+      >
     };
     BladesRoll.NewRoll(conf);
   }

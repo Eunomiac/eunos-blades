@@ -3833,7 +3833,7 @@ class BladesRoll extends DocumentSheet {
       "-"
     ];
     if (this.rollDowntimeAction) {
-      templateParts.push(U.lCase(this.rollDowntimeAction), "-")
+      templateParts.push(U.lCase(this.rollDowntimeAction), "-");
     }
     templateParts.push("roll.hbs");
 
