@@ -1,32 +1,61 @@
-{{eLog "Clock Context" this}}
+<div class="clock-container">
+  <div class="clock"
+    data-id="{{id}}"
+    data-name="{{name}}"
+    data-index="{{index}}"
+    data-color="{{color}}"
+    data-max="{{max}}"
+    data-value="{{value}}"
+    data-is-active="{{isActive}}"
+    data-is-visible="{{isVisible}}"
+    {{~#if targetID}} data-target-id="{{targetID}}"{{/if}}
+    {{~#if targetKey}} data-target-key="{{targetKey}}"{{/if}}
+    {{~#if targetFlagKey}} data-target-flag-key="{{targetFlagKey}}"{{/if}}
+    data-is-highlighted="{{isHighlighted}}"
+    data-is-name-visible="{{isNameVisible}}" >
 
-<div class="clock {{~#if isActive}} clock-active{{/if}}" data-id="{{id}}" {{~#if targetKey}} data-target="{{targetKey}}"{{/if}}{{#if targetFlagKey}} data-flag-target="{{targetFlagKey}}"{{/if}} {{~#if clockNum}} data-index="{{clockNum}}"{{/if}} data-size="{{max}}" data-value="{{value}}">
-  {{#if isVisible}}
-  <div class="clock-interior" style="clip-path: url(#{{value}}-of-{{max}}); {{~#if (test value "==" 0)}} opacity: 0;{{/if}}">
-    <svg viewBox="0 0 400 400">
-      <circle cx="200" cy="200" r="200" />
+    <!-- Frame -->
+    {{#unless (test value "==" max)}}
+    <svg class="clock-frame" viewBox="0 0 400 400">
+      <defs>
+      <clipPath id="insideCircleOnly">
+        <circle cx="200" cy="200" r="200" />
+      </clipPath>
+    </defs>
+      <circle class="clock-bg" cx="200" cy="200" r="200" fill="transparent" stroke="black" stroke-width="20" clip-path="url(#insideCircleOnly)" />
+      <g class="segmented" data-size="{{max}}">
+        {{#for 1 max}}
+          <line x1="200" y1="200" x2="200" y2="0" transform="rotate({{calc (calc 360 "/" ../max) "*" this}} 200 200)" stroke="black" stroke-width="10" />
+        {{/for}}
+      </g>
     </svg>
-    {{#if color}}
-    <img class="clock-interior-img" src="systems/eunos-blades/assets/clocks/clock-glow-{{color}}.webp" style="{{#if (test value "==" 0)}}opacity: 0;{{/if}}" />
+    {{/unless}}
+
+    <!-- Fill -->
+    {{#unless (test value "==" 0)}}
+    <div class="clock-fill">
+
+      {{#if (test "#" "in" color)}} {{!-- If color is a hex value: Render SVG circle filled with that color. --}}
+        <svg viewBox="0 0 400 400">
+          <circle cx="200" cy="200" r="200" fill="{{color}}" />
+        </svg>
+      {{else}} {{!-- Otherwise, assume color is a valid path to an image and render that instead  --}}
+        <img class="clock-fill-img" src="systems/eunos-blades/assets/clocks/clock-fill-{{color}}.webp" />
+      {{/if}}
+    </div>
+    {{/unless}}
+
+    <!-- Glow -->
+    {{#if isHighlighted}}
+    {{#unless (test "#" "in" color)}} {{!-- Don't render the glow if 'color' is a hex value --}}
+    <div class="clock-glow clock-glow-{{color}}"></div>
+    {{/unless}}
     {{/if}}
+
+    <!-- Label -->
+    {{#if isNameVisible}}
+    <label class="clock-label">{{name}}</label>
+    {{/if}}
+
   </div>
-  <div class="tooltip-container clock-tooltip-container {{~#if tooltip}} tooltip-trigger{{/if}}">
-  <svg class="clock-frame" viewBox="0 0 400 400">
-    <g class="segmented" data-size="{{max}}">
-      {{#for 1 max}}
-        <use href="#{{../max}}-segment" />
-      {{/for}}
-    </g>
-  </svg>
-  {{#if tooltip}}<div class="tooltip">{{{tooltip}}}</div>{{/if}}
-  </div>
-  {{/if}}
-  <svg class="clock-frame clock-bg {{~#unless isVisible}} hidden-clock{{/unless}}" viewBox="0 0 400 400">
-    <circle class="clock-bg" cx="200" cy="200" r="200" />
-  </svg>
-    {{#if isVisible}}
-  {{#unless (test value "==" 0)}}
-  <div class="clock-glow" style="{{#unless (test value "==" max)}}clip-path: url(#{{value}}-of-{{max}});{{/unless}}"></div>
-  {{/unless}}
-  {{/if}}
 </div>

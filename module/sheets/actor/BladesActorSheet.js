@@ -1,10 +1,11 @@
 // #region IMPORTS~
 import U from "../../core/utilities.js";
 import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
-import C, { BladesActorType, BladesPhase, BladesItemType, DowntimeAction, AttributeTrait, ActionTrait, Factor, RollType } from "../../core/constants.js";
+import C, { BladesActorType, BladesPhase, BladesItemType, DowntimeAction, AttributeTrait, Tag, ActionTrait, Factor, RollType } from "../../core/constants.js";
 import Tags from "../../core/tags.js";
 import { BladesActor, BladesPC, BladesCrew } from "../../documents/BladesActorProxy.js";
-import BladesItem from "../../BladesItem.js";
+import { BladesItem, BladesProject } from "../../documents/BladesItemProxy.js";
+import BladesClock from "../../documents/items/BladesClock.js";
 import BladesDialog from "../../BladesDialog.js";
 import BladesActiveEffect from "../../BladesActiveEffect.js";
 import BladesRoll, { BladesRollPrimary, BladesRollOpposition } from "../../BladesRoll.js";
@@ -156,6 +157,7 @@ class BladesActorSheet extends ActorSheet {
         }
         // ~ Tooltips
         ApplyTooltipAnimations(html);
+        BladesClock.ApplyClockListeners(html);
         Tags.InitListeners(html, this.actor);
         // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) {
@@ -209,13 +211,6 @@ class BladesActorSheet extends ActorSheet {
                 });
             });
         });
-        // Clock Functionality
-        html
-            .find(".clock-container")
-            .on({ click: this._onClockLeftClick.bind(this) });
-        html
-            .find(".clock-container")
-            .on({ contextmenu: this._onClockRightClick.bind(this) });
         // Component Functionality: Open, Add (via SelectorDialog), Archive, Delete, Toggle, Select
         html
             .find("[data-comp-id]")
@@ -240,6 +235,9 @@ class BladesActorSheet extends ActorSheet {
       `)
             .on({ change: this._onSelectChange.bind(this) });
         html
+            .find("[data-action='toggle-value'")
+            .on({ click: this._onToggleValueClick.bind(this) });
+        html
             .find(".advance-button")
             .on({ click: this._onAdvanceClick.bind(this) });
         // Active Effects Functionality
@@ -250,6 +248,10 @@ class BladesActorSheet extends ActorSheet {
         html
             .find("[data-roll-trait]")
             .on({ click: this._onRollTraitClick.bind(this) });
+        // Downtime Actions
+        html
+            .find("[data-action*='downtime-action-']")
+            .on({ click: this._onDowntimeActionClick.bind(this) });
         // This is a workaround until is being fixed in FoundryVTT.
         if (this.options.submitOnChange) {
             html.on("change", "textarea", this._onChangeInput.bind(this)); // Use delegated listener on the form
@@ -271,33 +273,6 @@ class BladesActorSheet extends ActorSheet {
         }
         return super.close(options);
     }
-    // #region Clock Handlers ~
-    async _onClockLeftClick(event) {
-        event.preventDefault();
-        const clock$ = $(event.currentTarget).find(".clock[data-target]");
-        if (!clock$[0]) {
-            return;
-        }
-        const target = clock$.data("target");
-        const curValue = U.pInt(clock$.data("value"));
-        const maxValue = U.pInt(clock$.data("size"));
-        await G.effects.pulseClockWedges(clock$.find("wedges")).then(async () => this.actor.update({
-            [target]: G.utils.wrap(0, maxValue + 1, curValue + 1)
-        }));
-    }
-    async _onClockRightClick(event) {
-        event.preventDefault();
-        const clock$ = $(event.currentTarget).find(".clock[data-target]");
-        if (!clock$[0]) {
-            return;
-        }
-        const target = clock$.data("target");
-        const curValue = U.pInt(clock$.data("value"));
-        await G.effects.reversePulseClockWedges(clock$.find("wedges")).then(async () => this.actor.update({
-            [target]: Math.max(0, curValue - 1)
-        }));
-    }
-    // #endregion
     // #region Component Handlers
     _getCompData(event) {
         const elem$ = $(event.currentTarget).closest(".comp");
@@ -386,6 +361,19 @@ class BladesActorSheet extends ActorSheet {
         event.preventDefault();
         await U.EventHandlers.onSelectChange(this, event);
     }
+    async _onToggleValueClick(event) {
+        event.preventDefault();
+        const elem$ = $(event.currentTarget);
+        const targetKey = elem$.data("target");
+        const toggleOnVal = elem$.data("toggleOnVal") || "";
+        const toggleOffVal = elem$.data("toggleOffVal") || "";
+        if (getProperty(this.actor, targetKey) === toggleOnVal) {
+            await this.actor.update({ [targetKey]: toggleOffVal });
+        }
+        else {
+            await this.actor.update({ [targetKey]: toggleOnVal });
+        }
+    }
     async _onAdvanceClick(event) {
         event.preventDefault();
         if ($(event.currentTarget).data("action") === "advance-playbook") {
@@ -425,62 +413,111 @@ class BladesActorSheet extends ActorSheet {
         }
         await BladesRoll.NewRoll(rollData);
     }
+    // Returns TRUE if can proceed, FALSE if action should stop (i.e. panel revealed for another user click)
+    async _validateOrRevealSubData(downtimeAction, actionSubData) {
+        switch (downtimeAction) {
+            case DowntimeAction.LongTermProject: {
+                // actionSubData must be "NewProject" or an id string to a project owned by this actor.
+                if (actionSubData === "NewProject") {
+                    // Create new blank project owned by this.actor and render it for actor to edit.
+                    return false;
+                }
+                const projectItem = game.items.get(actionSubData ?? "");
+                if (BladesProject.IsType(projectItem)) {
+                    return true;
+                }
+                // actionSubData isn't provided, which means this was the basic "Project" action button and sub-buttons must be revealed.
+                // Record Flip state of Downtime mid-bar
+                // Construct sub-button container, append it to Downtime mid-bar
+                // Construct "NewProject" button, append it to sub-button container
+                // Construct buttons for each owned project, append to sub-button container
+                // Run Flip.from animation
+                return false;
+            }
+            case DowntimeAction.Recover: {
+                // actionSubData must be a valid actor ID, who will become rollPrimary.
+                const healerActor = game.actors.get(actionSubData ?? "");
+                if (healerActor instanceof BladesActor && healerActor.hasTag(Tag.NPC.CanHeal)) {
+                    return true;
+                }
+                // actionSubData isn't provided, which means this was the basic "Recover" action button and sub-buttons must be revealed.
+                // Record Flip state of Downtime mid-bar
+                // Construct sub-button container, append it to Downtime mid-bar
+                // Compile list of PC characters with CanHeal tag.
+                // Compile list of _visible_ NPC characters with CanHeal tag.
+                // Append buttons to sub-button container
+                // Run Flip.from animation
+                return false;
+            }
+            case DowntimeAction.Train: {
+                // actionSubData must be of form 'playbook:2'
+                return Boolean(/^[a-z]+:\d$/.exec(actionSubData ?? ""));
+            }
+            // Other actions do not need subData validation and can always proceed:
+            default: return true;
+        }
+    }
     async _onDowntimeActionClick(event) {
         const elem$ = $(event.currentTarget);
-        // Check whether character has downtime actions remaining.
-        //    If not, prompt for whether spending Coin or Rep for extra
-        //    If so, increase character's downtime count by one
-        const downtimeAction = elem$.data("downtimeAction");
-        const rollConfig = {
-            rollType: RollType.Action,
+        // Extract the downtimeAction -- the substring of elem$.data("action") following the last hyphen (-)
+        const downtimeAction = elem$.data("action").substring(elem$.data("action").lastIndexOf("-") + 1);
+        // Extract the subData attribute
+        const actionSubData = elem$.data("actionSubData");
+        // Validate subData: If invalid, subData buttons will be revealed -- return and wait for one to be clicked.
+        if (!(await this._validateOrRevealSubData(downtimeAction, actionSubData))) {
+            $("#eunos-blades-tooltips").children(".tooltip").remove();
+            await this.actor.update({ "system.downtime_actions_open_submenu": downtimeAction });
+            $("#eunos-blades-tooltips").children(".tooltip").remove();
+            return;
+        }
+        const config = {
             rollDowntimeAction: downtimeAction
         };
-        // Determine Trait from action type
+        // Set necessary fields on roll construction config object, depending on downtime action
         switch (downtimeAction) {
-            case DowntimeAction.AcquireAsset: {
-                rollConfig.rollTrait = Factor.tier;
-                break;
-            }
-            case DowntimeAction.IndulgeVice: {
-                if (!BladesPC.IsType(this.actor)) {
-                    return;
-                }
-                rollConfig.rollType = RollType.IndulgeVice;
-                rollConfig.rollTrait = Object.values(AttributeTrait)
-                    .reduce((minAttr, curAttr) => this.actor.attributes[curAttr]
-                    < this.actor.attributes[minAttr]
-                    ? curAttr
-                    : minAttr, AttributeTrait.insight);
-                // GM needs to be able to set the desired asset as the rollOpposition, so can set minimum quality
-                break;
-            }
-            case DowntimeAction.LongTermProject: {
-                rollConfig.rollTrait = "";
-                // BladesRoll can search actor subitems for project/rituals and set up their clocks as the 'opposition'
+            case DowntimeAction.AcquireAsset:
+            case DowntimeAction.LongTermProject:
+            case DowntimeAction.ReduceHeat: {
+                config.rollType = RollType.Action;
                 break;
             }
             case DowntimeAction.Recover: {
-                // If clicked on by player from an NPC sheet -> rollPrimary is the NPC, trait is quality
-                // Otherwise -> Search 'ActivePC' characters for 'Physicker' Ability; if more than one will have to prompt user
-                //  ... OR ...
-                // ActiveEffect added to any BladesActor that can heal, along with reference to the trait they roll.
-                rollConfig.rollTrait = ActionTrait.tinker || Factor.quality;
+                config.rollType = RollType.Action;
+                if (BladesPC.IsType(this.actor)) {
+                    config.rollOppData = this.actor.healingClock;
+                }
+                // rollOpposition = user character's healing clock
+                // rollPrimary = this.actor is NPC?
                 break;
             }
-            case DowntimeAction.ReduceHeat: {
-                rollConfig.rollTrait = "";
+            case DowntimeAction.IndulgeVice: {
+                config.rollType = RollType.IndulgeVice;
                 break;
             }
             case DowntimeAction.Train: {
-                // Element will have target: Attribute or Playbook.
-                // Will have to check for crew upgrades that increase XP gained.
-                // If too much XP gained, will have to store excess so it can roll over after the player advances.
-                // Then, because this doesn't take a roll, we just return.
-                return;
+                const [attr, value] = actionSubData.split(/:/);
+                if (attr === "playbook") {
+                    this.actor.update({ [`system.experience.${attr}.value`]: U.pInt((this.actor.system.experience?.playbook?.value ?? 0)) + U.pInt(value) });
+                }
+                else if (BladesPC.IsType(this.actor)) {
+                    this.actor.update({ [`system.experience.${attr}.value`]: U.pInt(this.actor.system.experience[attr].value) + U.pInt(value) });
+                }
+                // Increase track XP: If above max, set rollover value
+                break;
+            }
+            default: {
+                // This is for custom downtime actions added by, e.g., ActiveEffects.
+                break;
             }
         }
-        // ... Pretty much everything else should be done over in BladesRoll.
-        BladesRoll.NewRoll(rollConfig);
+        // Clear any open submenus, and add one to downtime actions used.
+        await this.actor.update({
+            "system.downtime_actions_open_submenu": "",
+            "system.downtime_actions.value": (this.actor.system.downtime_actions?.value ?? 0) + 1
+        });
+        if ("rollType" in config) {
+            BladesRoll.NewRoll(config);
+        }
     }
     async _onGatherInfoClick(event) {
         const elem$ = $(event.currentTarget);

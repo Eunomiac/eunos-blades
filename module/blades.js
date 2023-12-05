@@ -8,7 +8,7 @@ import U from "./core/utilities.js";
 import logger from "./core/logger.js";
 import G, { Initialize as GsapInitialize } from "./core/gsap.js";
 import BladesActorProxy, { BladesActor, BladesPC, BladesCrew, BladesNPC, BladesFaction } from "./documents/BladesActorProxy.js";
-import BladesItemProxy, { BladesItem, BladesClock, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore } from "./documents/BladesItemProxy.js";
+import BladesItemProxy, { BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore, BladesProject } from "./documents/BladesItemProxy.js";
 import BladesItemSheet from "./sheets/item/BladesItemSheet.js";
 import BladesPCSheet from "./sheets/actor/BladesPCSheet.js";
 import BladesCrewSheet from "./sheets/actor/BladesCrewSheet.js";
@@ -507,7 +507,6 @@ class GlobalGetter {
     U,
     C,
     BladesItem,
-    BladesClock,
     BladesClockKeeper,
     BladesGMTracker,
     BladesLocation,
@@ -546,6 +545,7 @@ Hooks.once("init", async () => {
         BladesClockKeeperSheet.Initialize(),
         BladesPushAlert.Initialize(),
         BladesRoll.Initialize(),
+        BladesProject.Initialize(),
         BladesChat.Initialize(),
         preloadHandlebarsTemplates()
     ]);

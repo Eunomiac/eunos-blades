@@ -1118,7 +1118,7 @@ html .comp.consequence-display-container.consequence-accepted, html .comp.conseq
   --csq-type-color: var(--blades-grey-bright) !important;
   --csq-icon-bright: var(--blades-grey-bright) !important;
   animation: none !important;
-  pointer-events: none !important;
+  pointer-events: none;
   text-shadow: var(--text-shadow-dark) !important;
 }
 html .comp.consequence-display-container.consequence-accepted .consequence-icon-container .consequence-icon-circle.base-consequence, html .comp.consequence-display-container.consequence-accepted * .consequence-icon-container .consequence-icon-circle.base-consequence, :root .comp.consequence-display-container.consequence-accepted .consequence-icon-container .consequence-icon-circle.base-consequence, :root .comp.consequence-display-container.consequence-accepted * .consequence-icon-container .consequence-icon-circle.base-consequence {
@@ -1126,6 +1126,10 @@ html .comp.consequence-display-container.consequence-accepted .consequence-icon-
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted {
   pointer-events: auto !important;
+  transition: 0.5s;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted *, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted * {
+  transition: 0.5s;
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-icon-container,
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-type-container,
@@ -1143,12 +1147,62 @@ html .comp.consequence-display-container.consequence-accepted.consequence-resist
   padding: 0;
   left: calc(var(--container-height) + 10px);
 }
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container {
+  opacity: 1;
+  transform: translate(0px, 0px);
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(-50px, 0px);
+  opacity: 0;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container {
+  opacity: 0;
+  transform: translate(-50px, 0px);
+}
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container,
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container,
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container,
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container,
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(0px, 0px);
   opacity: 1;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type {
+  color: var(--blades-red-bright);
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  padding: 0px 2px;
+  overflow: hidden;
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted > .consequence-name-container .consequence-name.base-consequence, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted > .consequence-name-container .consequence-name.base-consequence {
   padding: 0;
@@ -1168,7 +1222,6 @@ html .comp.consequence-display-container.consequence-accepted.consequence-resist
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .resist-overlay, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .resist-overlay {
   position: absolute;
-  left: unset;
   top: 0;
   left: -30px;
   height: 100%;
@@ -1215,6 +1268,7 @@ html .comp.consequence-display-container.consequence-accepted.consequence-resist
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container {
   position: absolute;
+  pointer-events: auto;
   width: fit-content;
   top: 50%;
   right: 0px;
@@ -1234,6 +1288,8 @@ html .comp.consequence-display-container.consequence-accepted.consequence-resist
   text-transform: uppercase;
   color: var(--bright-color);
   vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap;
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted {
   background: var(--bright-color);
@@ -1244,6 +1300,8 @@ html .comp.consequence-display-container.consequence-accepted.consequence-resist
   height: calc(var(--die-size) + 4px);
   padding: 2px 4px;
   border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die {
   flex-shrink: 0;
@@ -1251,12 +1309,6 @@ html .comp.consequence-display-container.consequence-accepted.consequence-resist
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die-resistance, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die-resistance {
   scale: 2;
   margin-right: 3px;
-}
-html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted {
-  display: none;
-}
-html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted {
-  display: none;
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .resistance-cost-row.csq-resisted h3, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .resistance-cost-row.csq-resisted h3 {
   font-size: 10px;
@@ -2956,7 +3008,7 @@ html .comp.consequence-display-container.consequence-accepted, html .comp.conseq
   --csq-type-color: var(--blades-grey-bright) !important;
   --csq-icon-bright: var(--blades-grey-bright) !important;
   animation: none !important;
-  pointer-events: none !important;
+  pointer-events: none;
   text-shadow: var(--text-shadow-dark) !important;
 }
 html .comp.consequence-display-container.consequence-accepted .consequence-icon-container .consequence-icon-circle.base-consequence, html .comp.consequence-display-container.consequence-accepted * .consequence-icon-container .consequence-icon-circle.base-consequence, :root .comp.consequence-display-container.consequence-accepted .consequence-icon-container .consequence-icon-circle.base-consequence, :root .comp.consequence-display-container.consequence-accepted * .consequence-icon-container .consequence-icon-circle.base-consequence {
@@ -2964,6 +3016,10 @@ html .comp.consequence-display-container.consequence-accepted .consequence-icon-
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted {
   pointer-events: auto !important;
+  transition: 0.5s;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted *, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted * {
+  transition: 0.5s;
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-icon-container,
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-type-container,
@@ -2981,12 +3037,62 @@ html .comp.consequence-display-container.consequence-accepted.consequence-resist
   padding: 0;
   left: calc(var(--container-height) + 10px);
 }
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container {
+  opacity: 1;
+  transform: translate(0px, 0px);
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(-50px, 0px);
+  opacity: 0;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container {
+  opacity: 0;
+  transform: translate(-50px, 0px);
+}
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container,
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container,
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container,
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container,
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(0px, 0px);
   opacity: 1;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type {
+  color: var(--blades-red-bright);
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+html .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  padding: 0px 2px;
+  overflow: hidden;
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted > .consequence-name-container .consequence-name.base-consequence, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted > .consequence-name-container .consequence-name.base-consequence {
   padding: 0;
@@ -3006,7 +3112,6 @@ html .comp.consequence-display-container.consequence-accepted.consequence-resist
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .resist-overlay, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .resist-overlay {
   position: absolute;
-  left: unset;
   top: 0;
   left: -30px;
   height: 100%;
@@ -3053,6 +3158,7 @@ html .comp.consequence-display-container.consequence-accepted.consequence-resist
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container {
   position: absolute;
+  pointer-events: auto;
   width: fit-content;
   top: 50%;
   right: 0px;
@@ -3072,6 +3178,8 @@ html .comp.consequence-display-container.consequence-accepted.consequence-resist
   text-transform: uppercase;
   color: var(--bright-color);
   vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap;
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted {
   background: var(--bright-color);
@@ -3082,6 +3190,8 @@ html .comp.consequence-display-container.consequence-accepted.consequence-resist
   height: calc(var(--die-size) + 4px);
   padding: 2px 4px;
   border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die {
   flex-shrink: 0;
@@ -3089,12 +3199,6 @@ html .comp.consequence-display-container.consequence-accepted.consequence-resist
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die-resistance, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die-resistance {
   scale: 2;
   margin-right: 3px;
-}
-html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted {
-  display: none;
-}
-html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted {
-  display: none;
 }
 html .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .resistance-cost-row.csq-resisted h3, :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .resistance-cost-row.csq-resisted h3 {
   font-size: 10px;
@@ -4063,7 +4167,6 @@ html .tooltip > h1, :root .tooltip > h1 {
   margin: 0;
   border-bottom: 2px solid var(--blades-white);
   white-space: nowrap;
-  font-family: var(--font-emphasis);
   text-transform: none;
 }
 html .tooltip > h1:last-of-type, :root .tooltip > h1:last-of-type {

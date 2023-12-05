@@ -8,9 +8,9 @@ class BladesLocation extends BladesItem implements BladesItemSubClass.Location,
                                                     BladesRoll.OppositionDocData {
 
 
-  override get rollFactors(): Partial<Record<Factor,BladesRoll.FactorData>> {
+  override get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
 
-    const factorData: Partial<Record<Factor,BladesRoll.FactorData>> = {};
+    const factorData: Partial<Record<Factor, BladesRoll.FactorData>> = {};
     [
       Factor.tier,
       Factor.quality,
@@ -43,7 +43,7 @@ class BladesLocation extends BladesItem implements BladesItemSubClass.Location,
     return 0;
   }
 
-  override get rollOppImg() { return this.img ?? "" }
+  override get rollOppImg() { return this.img ?? ""; }
 
   // #region OVERRIDES: _onUpdate
   override async _onUpdate(changed: any, options: any, userId: string) {

@@ -235,26 +235,26 @@
 
       @import "../components/clocks";
 
-      .clock {
-        top: 50%;
-        left: 50%;
+      // .clock {
+      //   top: 50%;
+      //   left: 50%;
 
-        * { position: absolute }
+      //   * { position: absolute }
 
-        .clock-interior {
-          circle { fill: var(--blades-black-fade-strong) }
+      //   .clock-interior {
+      //     circle { fill: var(--blades-black-fade-strong) }
 
-          .clock-interior-img {
-            pointer-events: auto;
-          }
-        }
+      //     .clock-interior-img {
+      //       pointer-events: auto;
+      //     }
+      //   }
 
-        .clock-frame {
-          stroke-width: 15px;
-          stroke: var(--blades-black-dark-fade);
-          overflow: visible;
-        }
-      }
+      //   .clock-frame {
+      //     stroke-width: 15px;
+      //     stroke: var(--blades-black-dark-fade);
+      //     overflow: visible;
+      //   }
+      // }
     }
   }
 

@@ -31,6 +31,18 @@ declare global {
   // Represents a string-like value
   type StringLike = string | number | boolean | null | undefined;
 
+  // Represents a number represented as a string
+  type NumString = string;
+
+  // Represents an object with number-strings as keys
+  type StringArray<T> = Record<NumString,T>;
+
+  // Represents "true" or "false" as a string
+  type BoolString = string;
+
+  // Represents a document id as a string
+  type IDString = string;
+
   // Represents falsy values and empty objects to be pruned when cleaning list of values
   type UncleanValues = false | null | undefined | "" | 0 | Record<string, never> | never[];
 

@@ -7,15 +7,25 @@
       activeTooltip="<b>Clock is Visible.</b><br>Click to hide."
       inactiveClass="fas fa-eye-slash"
       inactiveTooltip="<b>Clock is Hidden.</b><br>Click to display."
-      targetKey=(concat "system.clock_keys." keyID ".clocks." clockNum ".isVisible") }}
+      targetKey=(concat targetKeyPrefix ".isVisible") }}
+
     {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
       cssClass="clock-toggle"
       isToggled=clockData.isActive
       activeClass="fas fa-bell"
-      activeTooltip="<b>Clock is Focused.</b><br>Click to mute."
+      activeTooltip="<b>Clock is Active.</b><br>Click to deactivate."
       inactiveClass="fas fa-bell-slash"
-      inactiveTooltip="<b>Clock is Muted.</b><br>Click to focus."
-      targetKey=(concat "system.clock_keys." keyID ".clocks." clockNum ".isActive") }}
+      inactiveTooltip="<b>Clock is Inactive.</b><br>Click to activate."
+      targetKey=(concat targetKeyPrefix ".isActive") }}
+
+    {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
+      cssClass="clock-toggle"
+      isToggled=clockData.isHighlighted
+      activeClass="fas fa-circle"
+      activeTooltip="<b>Clock is Highlighted.</b><br>Click to fade."
+      inactiveClass="fas fa-circle-slash"
+      inactiveTooltip="<b>Clock is Not Highlighted.</b><br>Click to highlight."
+      targetKey=(concat targetKeyPrefix ".isHighlighted") }}
 
     {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
       cssClass="clock-toggle"
@@ -24,14 +34,14 @@
       activeTooltip="<b>Name is Visible.</b><br>Click to hide."
       inactiveClass="fas fa-comment-slash"
       inactiveTooltip="<b>Name is Hidden.</b><br>Click to display."
-      targetKey=(concat "system.clock_keys." keyID ".clocks." clockNum ".isNameVisible") }}
+      targetKey=(concat targetKeyPrefix ".isNameVisible") }}
   </td>
   <td>
-    <input type="text" class="clock-input clock-input-display" {{~#if clockData.color}} style="color: {{clockData.color}}"{{/if}} name="system.clock_keys.{{keyID}}.clocks.{{clockNum}}.display" value="{{#if clockData}}{{clockData.display}}{{/if}}">
+    <input type="text" class="clock-input clock-input-display" {{~#if clockData.color}} style="color: {{clockData.color}}"{{/if}} name="{{targetKeyPrefix}}.name" value="{{#if clockData}}{{clockData.name}}{{/if}}">
   </td>
   {{#if clockData}}
   <td>
-    <select data-dtype="number" name="system.clock_keys.{{keyID}}.clocks.{{clockNum}}.max">
+    <select data-dtype="number" name="{{targetKeyPrefix}}.max">
       {{#select clockData.max}}
       <option value="2">2</option>
       <option value="3">3</option>
@@ -43,7 +53,7 @@
       <option value="12">12</option>
       {{/select}}
     </select>
-    <select data-dtype="string" name="system.clock_keys.{{keyID}}.clocks.{{clockNum}}.color" data-color="{{clockData.color}}">
+    <select data-dtype="string" name="{{targetKeyPrefix}}.color" data-color="{{clockData.color}}">
       {{#select clockData.color}}
       <option data-color="yellow" value="yellow" style="background: yellow !important">📀</option>
       <option data-color="red" value="red" style="background: red !important">🔴</option>
@@ -53,7 +63,7 @@
     </select>
   </td>
   <td>
-    <select data-dtype="number" name="system.clock_keys.{{keyID}}.clocks.{{clockNum}}.value">
+    <select data-dtype="number" name="{{targetKeyPrefix}}.value">
       {{#select clockData.value}}
       {{#for 0 clockData.max}}
         <option value="{{this}}">{{this}}</option>
@@ -62,4 +72,9 @@
     </select>
   </td>
   {{/if}}
+</tr>
+<tr class="clock-row gm-notes-row">
+  <td colspan="4">
+    <textarea name="{{targetKeyPrefix}}.gm_notes" class="full-width clock-gm-notes">{{gm_notes}}</textarea>
+  </td>
 </tr>

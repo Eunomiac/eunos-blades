@@ -108,6 +108,7 @@
 
     {{!-- Downtime Actions --}}
     {{#if (test gamePhase "==" "Downtime")}}
+    {{eLog "DOWNTIME DATA" downtimeData}}
     <section class="sheet-mid-bar flex-vertical full-width section-downtime-actions">
       <label class="comp tab-label flex-horizontal full-width">
         <span class="tab-title">Downtime Actions</span>
@@ -115,8 +116,10 @@
         {{!-- Remaining Actions, if Any --}}
         {{#if (test downtimeData.actionsRemaining ">" 0)}}
           {{> "systems/eunos-blades/templates/components/dotline.hbs" downtimeData.dotline }}
-        {{else if isDisplayingCosts}}
+        {{else if (test downtimeData.isDisplayingCosts "&&" (test downtimeData.canPayCoin "||" downtimeData.canPayRep))}}
           <div class="downtime-cost-selection flex-horizontal">
+            <label class="dotline-label">Buy More:</label>
+            {{#if downtimeData.canPayCoin}}
             <div class="downtime-cost-button cost-button-coin {{~#if (test system.downtime_action_selected_cost "==" "Coin")}} cost-selected{{/if}}"
               data-action="toggle-value"
               data-target="system.downtime_action_selected_cost"
@@ -124,13 +127,16 @@
               data-toggle-off-val="">
               Pay 1 Coin
             </div>
+            {{/if}}
+            {{#if downtimeData.canPayRep}}
             <div class="downtime-cost-button cost-button-rep {{~#if (test system.downtime_action_selected_cost "==" "Rep")}} cost-selected{{/if}}"
               data-action="toggle-value"
               data-target="system.downtime_action_selected_cost"
               data-toggle-on-val="Rep"
               data-toggle-off-val="">
-              Pay 1 Coin
+              Pay 1 Rep
             </div>
+            {{/if}}
           </div>
         {{/if}}
       </label>
@@ -148,6 +154,17 @@
           </div>
           {{/each}}
         </div>
+        {{#if downtimeData.actionsSubmenuData}}
+        <div class="downtime-action-selection downtime-sub-action-selection flex-horizontal full-width">
+          {{#each downtimeData.actionsSubmenuData}}
+          <div class="downtime-action-button"
+            data-action="downtime-action-{{../system.downtime_actions_open_submenu}}"
+            data-action-sub-data="{{actionSubData}}">
+            <span class="downtime-action-display">{{display}}</span>
+          </div>
+          {{/each}}
+        </div>
+        {{/if}}
         {{/if}}
     </section>
 
@@ -193,15 +210,15 @@
           </th>
         </thead>
         <tbody>
-          <tr>
+          <tr {{~#if (test actor.harmLevel ">=" 3)}} class="red-harm-highlight-3"{{/if}}>
             <td class="harm-level">3</td>
             <td class="harm-input" colspan="2">
               <input type="text" name="system.harm.severe.one" value="{{system.harm.severe.one}}">
             </td>
             <td class="harm-effect">{{{system.harm.severe.effect}}}</td>
-            <td class="healing-clock clock-container" rowspan="3">
-              {{#if preparedItems.playbook}}
-              {{> "systems/eunos-blades/templates/components/clock.hbs" healing_clock.system }}
+            <td class="healing-clock" rowspan="3">
+              {{#if healing_clock}}
+              {{> "systems/eunos-blades/templates/components/clock.hbs" healing_clock }}
               {{/if}}
             </td>
             <td class="armor-uses" rowspan="3">
@@ -209,7 +226,7 @@
               data=armor}}
             </td>
           </tr>
-          <tr>
+          <tr {{~#if (test actor.harmLevel ">=" 2)}} class="red-harm-highlight-2"{{/if}}>
             <td class="harm-level">2</td>
             <td class="harm-input">
               <input type="text" name="system.harm.moderate.one" value="{{system.harm.moderate.one}}">

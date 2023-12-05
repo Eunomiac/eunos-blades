@@ -5,7 +5,6 @@ import { BladesActor } from "../../documents/BladesActorProxy.js";
 import { BladesScore } from "../../documents/BladesItemProxy.js";
 import BladesRoll, { BladesRollOpposition } from "../../BladesRoll.js";
 /* #region BladesTipGenerator */
-// eslint-disable-next-line no-shadow
 export var BladesTipContext;
 (function (BladesTipContext) {
     BladesTipContext["DiceRoll"] = "DiceRoll";
@@ -245,7 +244,7 @@ class BladesScoreSheet extends BladesItemSheet {
         });
     }
     async _onSubmit(event, params = {}) {
-        eLog.checkLog3("scoreSheet", "_onSubmit()", { event, params, elemText: event.currentTarget.innerHTML });
+        // eLog.checkLog3("scoreSheet", "_onSubmit()", {event, params, elemText: event.currentTarget.innerHTML});
         let isForcingRender = true;
         const prevPhase = this.item.system.phase;
         const submitData = await super._onSubmit(event, params);

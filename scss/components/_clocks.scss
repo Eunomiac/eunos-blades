@@ -1,103 +1,358 @@
+@use "sass:math";
+
+@function calculate-angle($val, $max) {
+  // Calculate the angle-size of each segment
+  $segment-size: 360 / $max;
+  // Calculate the total angle between the origin line pointing upwards, including $val segments
+  $angle: $val * $segment-size;
+  @debug "caclulate-angle(#{$val}, #{$max}) = #{$angle}.";
+  @return $angle;
+}
+
+@function calculate-intersection($angle) {
+  // Square properties
+  $size: 100%;
+  $radius: 0.5 * $size;
+
+  // Convert angle to radians
+  $angle-rad: $angle * 3.1415 / 180;
+
+  // Initialize x and y
+  $x: 0;
+  $y: 0;
+
+  // Calculate intersection point
+  @if $angle > 315 or $angle <= 45 {
+    // Top side
+    $x: $radius + $radius * math.sin($angle-rad);
+    $y: 0;
+  } @else if $angle > 45 and $angle <= 135 {
+    // Right side
+    $x: $size;
+    $y: 100% - ($radius + $radius * math.cos($angle-rad));
+  } @else if $angle > 135 and $angle <= 225 {
+    // Bottom side
+    $x: $radius - $radius * math.sin($angle-rad);
+    $y: $size;
+  } @else if $angle > 225 and $angle <= 315 {
+    // Left side
+    $x: 0;
+    $y: 100% - ($radius - $radius * math.cos($angle-rad));
+  }
+
+  @debug "For a square of $size: #{$size}, the intersection of $angle:#{$angle} is {x:#{$x}, y:#{$y}}.";
+
+  // Return the intersection point
+  @return ($x $y);
+}
+
+@function calculate-polygon($val, $max) {
+  $size: 100%;
+  // Define the square's center
+  $center: 50%;
+
+  // Define the initial polygon points
+  $polygon: ($center $center), ($center 0);
+
+  // Get the angle of intersection
+  $angle: calculate-angle($val, $max);
+
+  // Corner Check 1: The polygon includes the top-right corner
+  @if $angle >= 45 {
+    $polygon: append($polygon, ($size 0));
+  }
+  // Corner Check 2: The polygon includes the bottom-right corner
+  @if $angle >= 135 {
+    $polygon: append($polygon, ($size $size));
+  }
+  // Corner Check 3: The polygon includes the bottom-left corner
+  @if $angle >= 225 {
+    $polygon: append($polygon, (0 $size));
+  }
+  // Corner Check 4: The polygon includes the top-left corner
+  @if $angle >= 315 {
+    $polygon: append($polygon, (0 0));
+  }
+
+  // Add the intersection point
+  $polygon: append($polygon, calculate-intersection($angle));
+
+  // Return to the center
+  $polygon: append($polygon, ($center $center));
+
+  // Return the polygon points
+  @return $polygon;
+}
+
+@mixin generate-clock-clip($val, $max, $size) {
+  &[data-value="#{$val}"][data-max="#{$max}"] > *:not(.clock-frame) {
+    clip-path: polygon(#{calculate-polygon($val, $max)});
+    // Begin clip path at center, move up to "noon".
+    // $clip-path: "polygon(50% 50%, 50% 0%";
+
+    // @if $val >= 1 * math.div($max, 8) {
+    //   // If $val as reached the top right corner (1/8th of the clock), add that corner.
+    //   $clip-path: $clip-path + ", 100% 0%";
+    // }
+
+    // @if $val > 3 * math.div($max, 8) {
+    //   // If $val is farther along than the bottom right corner (3/8th of the clock), add that corner.
+    //   $clip-path: $clip-path + ", 100% 100%";
+    // }
+
+    // @if $val > 5 * math.div($max, 8) {
+    //   // If $val is farther along than the bottom left corner (5/8th of the clock), add that corner.
+    //   $clip-path: $clip-path + ", 0% 100%";
+    // }
+
+    // @if $val > 7 * math.div($max, 8) {
+    //   // If $val is farther along than the top left corner (7/8th of the clock), add that corner.
+    //   $clip-path: $clip-path + ", 0% 0%";
+    // }
+
+    // // Determine the position on the square perimeter that corresponds to the desired angle.
+    // @if $val * $angle <= 90deg {
+    //   $clip-path: $clip-path + ", calc(50% + 50% * tan(#{$val * $angle})) 0%";
+    // } @else if $val * $angle <= 180deg {
+    //   $clip-path: $clip-path + ", 100% calc(50% + 50% * tan(#{$val * $angle - 90deg}))";
+    // } @else if $val * $angle <= 270deg {
+    //   $clip-path: $clip-path + ", calc(50% - 50% * tan(#{$val * $angle - 180deg})) 100%";
+    // } @else {
+    //   $clip-path: $clip-path + ", 0% calc(50% - 50% * tan(#{$val * $angle - 270deg}))";
+    // }
+
+    // // Complete the polygon by returning to the center.
+    // $clip-path: $clip-path + ", 50% 50%)";
+    // clip-path: unquote($clip-path);
+  }
+}
+
+:root {
+  // Default values that can be overriden via more-specific selectors:
+  --clock-size: 200px; // Size of the clock in pixels.
+  --clock-glow-mult: 3; // Multiplier to determine size of clock-glow.
+  --clock-glow-shift: -10%; // Percent vertical shift to account for offset animation
+}
+
 .clock {
+  pointer-events: auto !important;
+}
 
-  svg, svg defs {
-    * { transform-origin: 50% 50% }
 
-    .segmented {
-      --rotation-step-size: calc(360deg / var(--rotation-steps));
-      --segment-scale: 1;
-    }
-    clipPath.segmented { --segment-scale: 2 }
 
-    @each $clockSize in (1, 2, 3, 4, 5, 6, 8, 10, 12) {
-      .segmented[data-size="#{$clockSize}"] { --rotation-steps: #{$clockSize} }
-    }
+// .OLD-CSS {
+  & {
+    /* CLOCK KEYS */
 
-    .segmented > use {
-      transform: scale(var(--segment-scale)) rotate(var(--segment-rotation));
+    // .clock-key {
+    //   position: relative;
+    //   margin: 0 20px;
+    //   height: var(--key-height);
+    //   width: var(--key-width);
 
-      @for $i from 1 through 12 {
-        &:nth-child(#{$i}) { --segment-rotation: calc(#{$i - 1} * var(--rotation-step-size)) }
+    //   & > * { position: absolute }
+
+    //   .key-label {
+    //     font-family: var(--font-decorative);
+    //     font-size: toRem(64px);
+    //     top: unset;
+    //     z-index: 20;
+    //     width: 100%;
+    //     pointer-events: all;
+    //     color: var(--blades-white-bright);
+    //     text-shadow:
+    //       0 0 15px var(--blades-black-dark),
+    //       0 0 15px var(--blades-black-dark),
+    //       0 0 15px var(--blades-black-dark),
+    //       0 0 15px var(--blades-black-dark);
+    //     // white-space: nowrap;
+    //     // rotate: -30deg;
+    //     left: 0;
+
+    //     &:hover {
+    //       color: var(--blades-gold-bright) !important;
+    //     }
+    //   }
+
+    //   &:not(.active-key) {
+    //     .key-label {
+    //       color: var(--blades-white);
+    //       font-family: var(--font-emphasis-narrow);
+    //       font-size: toRem(40px);
+    //       top: unset;
+    //       width: 200px;
+    //       rotate: 30deg;
+    //       text-align: left;
+    //       white-space: nowrap;
+    //     }
+    //     .clock-label-container { display: none }
+    //     .clock-image-container {
+    //       // .key-image { filter: drop-shadow(30px 30px 10px var(--blades-black-dark)) sepia(2) hue-rotate(130deg)  }
+    //     } .clock { display: none }
+    //   }
+
+    //   .clock-label-container {
+    //     height: var(--key-height);
+    //     width: calc(1.5 * var(--key-width));
+    //     left: calc(-0.25 * var(--key-width));
+    //     pointer-events: none;
+    //     z-index: 5;
+
+    //     .clock-label {
+    //       position: absolute;
+    //       // width: 100%;
+    //       .short-label {
+    //         font-size: toRem(40px);
+    //         font-family: var(--font-emphasis-narrow);
+    //         text-shadow:
+    //           0 0 15px var(--blades-black-dark),
+    //           0 0 15px var(--blades-black-dark),
+    //           0 0 15px var(--blades-black-dark),
+    //           0 0 15px var(--blades-black-dark);
+    //       }
+    //       &.clock-active .short-label {
+    //         color: var(--blades-white-bright);
+    //       }
+    //     }
+    //   }
+
+    //   .clock-image-container {
+    //     height: var(--key-height);
+    //     width: var(--key-width);
+
+    //     .key-image {
+    //       height: var(--key-height);
+    //       width: var(--key-width);
+    //       z-index: 1;
+    //       overflow: visible;
+    //       filter:
+    //         drop-shadow(0px 0px 10px var(--blades-white-bright))
+    //         drop-shadow(30px 30px 10px var(--blades-black-dark))
+    //         brightness(0.5);
+
+
+    //       .key-bg {
+    //         fill: var(--blades-black);
+    //       }
+
+    //       .metallic-overlay {
+    //         height: var(--key-height);
+    //         width: var(--key-width);
+    //         filter: url(#metallicFilter) blur(1px);
+    //         fill: var(--blades-grey-dark);
+    //       }
+    //     }
+    //   }
+
+    //   @each $key, $clocks in $clock-positions {
+    //     &[data-size="#{$key}"] {
+    //       --key-height: #{map-get(map-get($key-sizes, $key), "height")};
+    //       --key-width: #{map-get(map-get($key-sizes, $key), "width")};
+    //       .key-label {
+    //         top: map-get(map-get($key-sizes, $key), "labelTop");
+    //       }
+    //       @each $clock, $pos in $clocks {
+    //         .clock:nth-of-type(#{$clock}) {
+    //           left: map-get($pos, "x");
+    //           top: map-get($pos, "y");
+    //         }
+    //       }
+
+    //       &:not(.active-key) {
+    //         --key-width: 170px;
+    //         top: map-get(map-get($key-sizes, $key), "inactiveKeyTop");
+    //         .key-label {
+    //           left: map-get(map-get($key-sizes, $key), "inactiveLabelLeft");
+    //           top: unset !important;
+    //           bottom: #{map-get(map-get($key-sizes, $key), "inactiveLabelBottom")} !important;
+    //         }
+    //       }
+    //     }
+    //   }
+
+    //   @each $key, $labels in $label-positions {
+    //     &[data-size="#{$key}"] {
+    //       @each $label, $pos in $labels {
+    //         .clock-label[data-clock-num="#{$label}"] {
+    //           left: map-get($pos, "x");
+    //           top: map-get($pos, "y");
+    //           text-align: map-get($pos, "align");
+    //           width: map-get($pos, "width");
+    //         }
+    //       }
+    //     }
+    //   }
+
+    //   &:nth-child(2n+1) { top: var(--alternating-top-shift) }
+    // }
+
+    /* CLOCKS */
+    &.clock-container,
+    .clock-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+
+      .clock {
+        position: relative;
+        overflow: visible;
+        pointer-events: all;
+
+        &,
+        & * {
+          height: var(--clock-size);
+          width: var(--clock-size);
+        }
+
+        .clock-frame,
+        .clock-fill,
+        .clock-glow {
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          height: 100%;
+          width: 100%;
+        }
+
+        .clock-frame { z-index: 3; }
+        .clock-fill { z-index: 2; }
+        .clock-glow { z-index: 4; }
+
+        .clock-glow {
+          transform-origin: 50% 50%;
+          scale: var(--clock-glow-mult, 3);
+          // top: ;
+          // top: var(--clock-glow-shift);
+          // translate: 0 var(--clock-glow-correction);
+
+          // background: url("systems/eunos-blades/assets/animations/clock-flare.webp");
+          background-repeat: no-repeat;
+          background-position: center calc(50% - var(--clock-glow-shift, 7%));
+          background-size: cover;
+
+          &.clock-glow-white {
+            background-image: url("../assets/animations/clock-flare-white.webp");
+          }
+          &.clock-glow-red {
+            background-image: url("../assets/animations/clock-flare-red.webp");
+          }
+          &.clock-glow-yellow {
+            background-image: url("../assets/animations/clock-flare-yellow.webp");
+          }
+          &.clock-glow-blue {
+            background-image: url("../assets/animations/clock-flare-blue.webp");
+          }
+        }
+
+        // Generate clip-paths for all possible combinations of val and max
+        @for $max from 2 through 12 {
+          @for $val from 1 through $max {
+            @include generate-clock-clip($val, $max, 400px);
+          }
+        }
       }
     }
-  }
-
-  height: var(--clock-glow-size);
-  width: var(--clock-glow-size);
-  transform: translate(-50%, -50%);
-  position: relative;
-  z-index: 2;
-
-  .clock-frame {
-    height: var(--clock-frame-size);
-    width: var(--clock-frame-size);
-    transform: translate(-50%, -50%) translate(calc(var(--clock-glow-size) / 2), calc(var(--clock-glow-size) / 2));
-    fill: transparent;
-    stroke: var(--blades-black);
-    stroke-width: 10px;
-    z-index: 2;
-    pointer-events: auto;
-    overflow: visible;
-    filter: drop-shadow(0 0 5px var(--blades-black-dark));
-
-    g {
-      transform: scale(0.99);
-      transform-origin: 50% 50%;
-    }
-    &.clock-bg {
-      z-index: 1;
-      circle { fill: var(--blades-grey-dark) }
-      &.hidden-clock {
-        circle { fill: var(--blades-black-dark) }
-      }
-    }
-  }
-
-  .clock-interior {
-    position: absolute;
-    z-index: 2;
-    height: 400px;
-    width: 400px;
-    transform: translate(-50%, -50%) translate(calc(50% + var(--clock-glow-correction)), calc(50% + var(--clock-glow-correction)));
-    svg {
-      height: var(--clock-frame-size);
-      width: var(--clock-frame-size);
-      transform: translate(-50%, -50%);
-      top: 50%;
-      left: 50%;
-
-      circle {
-        height: var(--clock-frame-size);
-        width: var(--clock-frame-size);
-        fill: var(--blades-white-bright);
-        // transform: translate(-50%, -50%);
-        // top: 50%;
-        // left: 50%;
-      }
-    }
-    .clock-interior-img {
-      height: var(--clock-frame-size);
-      width: var(--clock-frame-size);
-      transform: translate(-50%, -50%);
-      top: 50%;
-      left: 50%;
-    }
-  }
-
-  &.clock-active {
-    .clock-glow {
-      position: absolute;
-      z-index: 0;
-      top: var(--clock-glow-correction);
-      left: var(--clock-glow-correction);
-      height: 400px;
-      width: 400px;
-      background: url("../assets/animations/clock-flare.webp") 50%/contain no-repeat border-box border-box;
-      background-position-y: 5px;
-    }
-  }
-
-  @each $clockSize in (1, 2, 3, 4, 5, 6, 8, 10, 12) {
-    .segmented[data-size="#{$clockSize}"] { --rotation-steps: #{$clockSize} }
-  }
+  // }
 }

@@ -2,6 +2,7 @@ import {BladesActorType, BladesItemType, BladesPhase, RollType, RollSubType, Rol
 import BladesActor from "../BladesActor";
 import BladesItem from "../BladesItem";
 import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../BladesRoll";
+import BladesClock, {BladesClockKey} from "../documents/items/BladesClock";
 
 declare global {
 
@@ -288,7 +289,6 @@ declare global {
     export type OppositionDocType =
        BladesActorType.npc
       |BladesActorType.faction
-      |BladesItemType.clock
       |BladesItemType.cohort_gang
       |BladesItemType.cohort_expert
       |BladesItemType.gm_tracker
@@ -296,12 +296,13 @@ declare global {
       |BladesItemType.location
       |BladesItemType.project
       |BladesItemType.design
-      |BladesItemType.ritual;
+      |BladesItemType.ritual
+      |"clock"
+      |"clock_key";
 
     export type OppositionDoc =
        BladesActorOfType<BladesActorType.npc>
       |BladesActorOfType<BladesActorType.faction>
-      |BladesItemOfType<BladesItemType.clock>
       |BladesItemOfType<BladesItemType.cohort_gang>
       |BladesItemOfType<BladesItemType.cohort_expert>
       |BladesItemOfType<BladesItemType.gm_tracker>
@@ -309,7 +310,9 @@ declare global {
       |BladesItemOfType<BladesItemType.location>
       |BladesItemOfType<BladesItemType.project>
       |BladesItemOfType<BladesItemType.design>
-      |BladesItemOfType<BladesItemType.ritual>;
+      |BladesItemOfType<BladesItemType.ritual>
+      |BladesClock
+      |BladesClockKey;
 
     export interface OppositionDocData {
       rollOppID?: string,

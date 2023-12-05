@@ -31,7 +31,7 @@ class BladesActor extends Actor {
         data.system = data.system ?? {};
         // ~ Create world_name
         data.system.world_name = data.system.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "").trim().replace(/ /g, "_");
-        return super.create(data, options);
+        return await super.create(data, options);
     }
     // #endregion
     // #region BladesDocument Implementation ~
@@ -234,8 +234,8 @@ class BladesActor extends Actor {
         if (!BladesActor.IsType(actor, BladesActorType.npc, BladesActorType.faction)) {
             return actor;
         }
-        const subActorData = this.system.subactors[actor.id] ?? {};
-        Object.assign(actor.system, mergeObject(actor.system, subActorData));
+        const subActorData = (this.system.subactors[actor.id] ?? {});
+        Object.assign(actor.system, subActorData);
         actor.parentActor = this;
         return actor;
     }

@@ -51,7 +51,8 @@
           "max": 2
         },
         "downtime_action_bonus": 0,
-        "downtime_action_selected_cost": ""
+        "downtime_action_selected_cost": "",
+        "downtime_actions_open_submenu": ""
 			},
 			"warfare": {
 				"hold": "strong",
@@ -80,10 +81,7 @@
 				"active": {},
 				"checked": {}
 			},
-			"healing": {
-				"value": 0,
-				"max": 4
-			},
+			"healing": {},
 			"stash": {
 				"value": 0,
 				"max": 40
@@ -162,55 +160,55 @@
 				"insight": {
 					"hunt": {
 						"value": 0,
-						"max": 3
+						"max": 2
 					},
 					"study": {
 						"value": 0,
-						"max": 3
+						"max": 2
 					},
 					"survey": {
 						"value": 0,
-						"max": 3
+						"max": 2
 					},
 					"tinker": {
 						"value": 0,
-						"max": 3
+						"max": 2
 					}
 				},
 				"prowess": {
 					"finesse": {
 						"value": 0,
-						"max": 3
+						"max": 2
 					},
 					"prowl": {
 						"value": 0,
-						"max": 3
+						"max": 2
 					},
 					"skirmish": {
 						"value": 0,
-						"max": 3
+						"max": 2
 					},
 					"wreck": {
 						"value": 0,
-						"max": 3
+						"max": 2
 					}
 				},
 				"resolve": {
 					"attune": {
 						"value": 0,
-						"max": 3
+						"max": 2
 					},
 					"command": {
 						"value": 0,
-						"max": 3
+						"max": 2
 					},
 					"consort": {
 						"value": 0,
-						"max": 3
+						"max": 2
 					},
 					"sway": {
 						"value": 0,
-						"max": 3
+						"max": 2
 					}
 				}
 			},
@@ -218,8 +216,7 @@
 				"insight": 0,
 				"prowess": 0,
 				"resolve": 0
-			},
-			"conditional_bonus": {}
+			}
 		},
 		"crew": {
 			"templates": [
@@ -366,7 +363,6 @@
 		"types": [
 			"ability",
 			"background",
-      "clock",
 			"clock_keeper",
 			"cohort_gang",
 			"cohort_expert",
@@ -407,7 +403,7 @@
 				"district": ""
 			},
 			"clocks": {
-				"clocks": {}
+				"clocksData": {}
 			},
 			"buyable": {
 				"price": 1
@@ -467,26 +463,10 @@
 				"default"
 			]
 		},
-    "clock": {
-      "templates": [
-        "default",
-        "targetLink"
-      ],
-      "value": 0,
-      "max": 8,
-      "color": "white",
-      "isActive": false,
-      "isNameVisible": true,
-      "isVisible": false,
-      "display": {}
-    },
 		"clock_keeper": {
-			"templates": [
-				"default"
-			],
-			"scenes": [],
-			"targetScene": null,
-			"clock_keys": {}
+			"templates": ["default", "clocks"],
+			"scenes": {},
+			"targetScene": null
 		},
 		"cohort_gang": {
 			"templates": [

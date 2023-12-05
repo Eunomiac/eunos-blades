@@ -1,10 +1,8 @@
 
 import BladesItemSheet from "./BladesItemSheet";
 import BladesClockKeeper from "../../documents/items/BladesClockKeeper";
-
-type BladesClockKeeperSheetData = Partial<BladesItemSheetData> & {
-  clock_keys: Record<string, BladesMultiClockData>
-};
+import U from "../../core/utilities";
+import {BladesItemType} from "../../core/constants";
 
 class BladesClockKeeperSheet extends BladesItemSheet {
 
@@ -60,9 +58,8 @@ class BladesClockKeeperSheet extends BladesItemSheet {
   override getData() {
     const context = super.getData();
 
-    const sheetData: BladesClockKeeperSheetData = {
-      clock_keys: Object.fromEntries((Object.entries(context.system.clock_keys ?? {})
-        .filter(([keyID, keyData]) => Boolean(keyData && keyData.scene === context.system.targetScene)))) as Record<string, BladesMultiClockData>
+    const sheetData: BladesItemDataOfType<BladesItemType.clock_keeper> = {
+      sceneOptions: Array.from(game.scenes)
     };
 
     return {...context, ...sheetData} as BladesItemSheetData;
@@ -92,12 +89,32 @@ class BladesClockKeeperSheet extends BladesItemSheet {
   override async activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
 
-    // @ts-expect-error Fuck.
-    html.find("[data-action=\"add-key\"").on("click", this.addKey.bind(this));
-    // @ts-expect-error Fuck.
-    html.find("[data-action=\"delete-key\"").on("click", this.deleteKey.bind(this));
-    // @ts-expect-error Fuck.
-    html.find(".key-clock-counter").on("change", this.setKeySize.bind(this));
+    const self = this;
+
+    html.find("[data-action=\"add-key\"]").on({
+      click(event: ClickEvent) {
+        event.preventDefault();
+        self.item.addClockKey();
+      }
+    });
+
+    html.find("[data-action=\"delete-key\"]").on({
+      click(event: ClickEvent) {
+        event.preventDefault();
+        self.item.deleteClockKey($(event.currentTarget).data("id"));
+      }
+    });
+
+    html.find(".key-clock-counter").on({
+      change(event) {
+        event.preventDefault();
+        const keyID = $(event.currentTarget).data("id");
+        if (keyID) {
+          self.item.setKeySize(keyID, U.pInt($(event.target).val()));
+        }
+
+      }
+    });
   }
 }
 

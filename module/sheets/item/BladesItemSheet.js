@@ -2,6 +2,7 @@ import C, { BladesItemType, BladesPhase, Factor } from "../../core/constants.js"
 import U from "../../core/utilities.js";
 import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
 import BladesItem from "../../BladesItem.js";
+import { BladesProject } from "../../documents/BladesItemProxy.js";
 import BladesActiveEffect from "../../BladesActiveEffect.js";
 import Tags from "../../core/tags.js";
 class BladesItemSheet extends ItemSheet {
@@ -46,16 +47,6 @@ class BladesItemSheet extends ItemSheet {
         },
         [BladesItemType.background]: (context) => {
             if (!BladesItem.IsType(this.item, BladesItemType.background)) {
-                return undefined;
-            }
-            const sheetData = {};
-            return {
-                ...context,
-                ...sheetData
-            };
-        },
-        [BladesItemType.clock]: (context) => {
-            if (!BladesItem.IsType(this.item, BladesItemType.clock)) {
                 return undefined;
             }
             const sheetData = {};
@@ -167,7 +158,10 @@ class BladesItemSheet extends ItemSheet {
             if (!BladesItem.IsType(this.item, BladesItemType.gm_tracker)) {
                 return undefined;
             }
-            const sheetData = {};
+            const sheetData = {
+                phase: this.item.system.phase,
+                phases: Object.values(BladesPhase)
+            };
             return {
                 ...context,
                 ...sheetData
@@ -256,10 +250,12 @@ class BladesItemSheet extends ItemSheet {
             };
         },
         [BladesItemType.project]: (context) => {
-            if (!BladesItem.IsType(this.item, BladesItemType.project)) {
+            if (!BladesProject.IsType(this.item)) {
                 return undefined;
             }
-            const sheetData = {};
+            const sheetData = {
+                clockKey: this.item.currentClock
+            };
             return {
                 ...context,
                 ...sheetData

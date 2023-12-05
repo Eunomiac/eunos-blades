@@ -1,9 +1,10 @@
-import C, {Playbook, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModType, RollModSection, RollModStatus} from "../../core/constants";
+import C, {Playbook, ClockColor, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModType, RollModSection, RollModStatus} from "../../core/constants";
 import U from "../../core/utilities";
 import {BladesActor, BladesCrew} from "../BladesActorProxy";
 import {BladesItem} from "../BladesItemProxy";
 import BladesRoll from "../../BladesRoll";
 import BladesPushAlert from "../../BladesPushAlert";
+import BladesClock from "../items/BladesClock";
 import {SelectionCategory} from "../../BladesDialog";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
@@ -63,7 +64,21 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       clues: [],
       ...data.system.experience ?? {}
     };
-    return super.create(data, options);
+
+    const pc = (await super.create(data, options)) as BladesPC;
+    await BladesClock.Create({
+      id: randomID(),
+      name: "",
+      target: pc,
+      targetKey: "system.healing",
+      color: ClockColor.white,
+      value: 0,
+      max: 4,
+      isVisible: true,
+      isNameVisible: false,
+      isActive: true
+    });
+    return pc as unknown as Promise<StoredDocument<Actor> | undefined>;
   }
   // #endregion
 
@@ -213,6 +228,20 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   get stressMax(): number {
     return this.system.stress.max;
+  }
+
+  get healingClock(): BladesClock|undefined {
+    if (Object.values(this.system.healing).length > 0) {
+      return new BladesClock(Object.values(this.system.healing)[0]);
+    }
+    return undefined;
+  }
+
+  get harmLevel(): number {
+    if (this.system.harm.severe.one.length > 1) { return 3; }
+    if ((this.system.harm.moderate.one.length + this.system.harm.moderate.two.length) > 0) { return 2; }
+    if ((this.system.harm.lesser.one.length + this.system.harm.lesser.two.length) > 0) { return 1; }
+    return 0;
   }
 
   get trauma(): number {

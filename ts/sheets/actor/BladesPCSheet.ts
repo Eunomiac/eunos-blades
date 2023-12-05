@@ -2,8 +2,7 @@
 import C, {BladesActorType, BladesItemType, AttributeTrait, Tag, ActionTrait, DowntimeAction, BladesPhase} from "../../core/constants";
 import U from "../../core/utilities";
 import BladesActorSheet from "./BladesActorSheet";
-import {BladesActor, BladesPC} from "../../documents/BladesActorProxy";
-import {BladesClock} from "../../documents/BladesItemProxy";
+import {BladesActor, BladesPC, BladesNPC} from "../../documents/BladesActorProxy";
 import BladesGMTrackerSheet from "../item/BladesGMTrackerSheet";
 
 class BladesPCSheet extends BladesActorSheet {
@@ -33,10 +32,6 @@ class BladesPCSheet extends BladesActorSheet {
         }
       }
     });
-    return loadTemplates([
-      "systems/eunos-blades/templates/items/clock_keeper-sheet.hbs",
-      "systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
-    ]);
   }
 
   override getData() {
@@ -113,19 +108,7 @@ class BladesPCSheet extends BladesActorSheet {
     sheetData.hasVicePurveyor = Boolean(this.actor.playbook?.hasTag(Tag.Gear.Advanced) === false
                                         && activeSubItems.find((item) => item.type === BladesItemType.vice));
 
-    sheetData.healing_clock = new BladesClock({
-      name: "Healing",
-      type: BladesItemType.clock,
-      data: {
-        targetID: this.actor.id,
-        targetKey: "system.healing.value",
-        color: "white",
-        isVisible: "true",
-        isNameVisible: false,
-        isActive: false,
-        ...this.actor.system.healing
-      }
-    });
+    sheetData.healing_clock = this.actor.healingClock;
 
     sheetData.stashData = {
       label: "Stash:",
@@ -250,7 +233,7 @@ class BladesPCSheet extends BladesActorSheet {
     }
 
     if (game.eunoblades.Tracker?.phase === BladesPhase.Downtime) {
-      const actionsList = {
+      const actionsList: Partial<Record<DowntimeAction, string>> = {
         [DowntimeAction.AcquireAsset]: "Acquire Asset",
         [DowntimeAction.IndulgeVice]: "Indulge Vice",
         [DowntimeAction.LongTermProject]: "Project",
@@ -258,6 +241,89 @@ class BladesPCSheet extends BladesActorSheet {
         [DowntimeAction.ReduceHeat]: "Reduce Heat",
         [DowntimeAction.Train]: "Train"
       };
+
+      // Get PCs, NPCs capable of rolling for the Recover action
+      const healCapableDocs = [
+        ...BladesActor.GetTypeWithTags(BladesActorType.pc, Tag.PC.CanHeal),
+        ...BladesActor.GetTypeWithTags(BladesActorType.npc, Tag.NPC.CanHeal)
+        /* ALSO NEED TO INCLUDE EXPERT COHORTS WITH CANHEAL TAG */
+      ];
+
+      // delete any Actions that aren't applicable
+      if (this.actor.stress === 0) {
+        delete actionsList[DowntimeAction.IndulgeVice];
+      }
+      if (this.actor.harmLevel === 0 || healCapableDocs.length === 0) {
+        delete actionsList[DowntimeAction.Recover];
+      }
+      if (!this.actor.crew || this.actor.crew.system.heat.value === 0) {
+        delete actionsList[DowntimeAction.ReduceHeat];
+      }
+
+      let actionsSubmenuData: Array<{
+        actionSubData: string,
+        display: string
+      }>|undefined = undefined;
+      switch (this.actor.system.downtime_actions_open_submenu) {
+        case DowntimeAction.LongTermProject: {
+          actionsSubmenuData = [
+            {
+              actionSubData: "NewProject",
+              display: "New Project"
+            }
+          ];
+          // ... and add one for each Project on the PC.
+          break;
+        }
+        case DowntimeAction.Recover: {
+          actionsSubmenuData = [];
+          healCapableDocs.forEach((hDoc) => {
+            if (hDoc.id === this.actor.id) {
+              actionsSubmenuData?.unshift({
+                actionSubData: this.actor.id,
+                display: "Heal Self"
+              });
+            } else if (BladesPC.IsType(hDoc)) {
+              actionsSubmenuData?.push({
+                actionSubData: hDoc.id,
+                display: U.uCase(hDoc.name)
+              });
+            } else if (BladesNPC.IsType(hDoc)) {
+              actionsSubmenuData?.push({
+                actionSubData: hDoc.id,
+                display: hDoc.name
+              });
+            } /* NEED CHECK FOR COHORT HEALERS TOO */
+          });
+          break;
+        }
+        case DowntimeAction.Train: {
+          const crewTrainingUpgrades = (this.actor.crew?.upgrades
+            .filter((upgrade) => /^Training_/.exec(upgrade.system.world_name))
+            .map((upgrade) => U.lCase(upgrade.system.world_name.split(/_/)[1])) ?? []) as Array<AttributeTrait|"playbook">;
+          actionsSubmenuData = [
+            {
+              actionSubData: `playbook:${crewTrainingUpgrades.includes("playbook") ? 2 : 1}`,
+              display: `${crewTrainingUpgrades.includes("playbook") ? 2 : 1} Playbook XP`
+            },
+            {
+              actionSubData: `insight:${crewTrainingUpgrades.includes(AttributeTrait.insight) ? 2 : 1}`,
+              display: `${crewTrainingUpgrades.includes(AttributeTrait.insight) ? 2 : 1} Insight XP`
+            },
+            {
+              actionSubData: `prowess:${crewTrainingUpgrades.includes(AttributeTrait.prowess) ? 2 : 1}`,
+              display: `${crewTrainingUpgrades.includes(AttributeTrait.prowess) ? 2 : 1} Prowess XP`
+            },
+            {
+              actionSubData: `resolve:${crewTrainingUpgrades.includes(AttributeTrait.resolve) ? 2 : 1}`,
+              display: `${crewTrainingUpgrades.includes(AttributeTrait.resolve) ? 2 : 1} Resolve XP`
+            }
+          ];
+          break;
+        }
+
+      }
+
       const actionsTooltips = {
         [DowntimeAction.AcquireAsset]: `<h1>Acquire an Asset</h1>
         <p>Roll your <strong class='gold-bright'>Tier</strong> to acquire temporary use of an asset or service.</p>
@@ -331,6 +397,7 @@ class BladesPCSheet extends BladesActorSheet {
         actionsList,
         actionsTooltips,
         actionsRemaining,
+        actionsSubmenuData,
         canPayCoin,
         canPayRep,
         isDisplayingCosts,

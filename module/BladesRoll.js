@@ -5,6 +5,7 @@ import { BladesActor, BladesPC, BladesCrew } from "./documents/BladesActorProxy.
 import { BladesItem, BladesGMTracker } from "./documents/BladesItemProxy.js";
 import { ApplyTooltipAnimations, ApplyConsequenceAnimations } from "./core/gsap.js";
 import BladesConsequence from "./sheets/roll/BladesConsequence.js";
+import BladesClock, { BladesClockKey } from "./documents/items/BladesClock.js";
 import BladesDialog from "./BladesDialog.js";
 import BladesChat from "./BladesChat.js";
 // #endregion
@@ -991,7 +992,7 @@ class BladesRollOpposition {
         this.rollInstance = rollInstance;
         // Attempt to fetch an associated BladesActor or BladesItem document
         const doc = BladesRollOpposition.GetDoc(rollOppDoc ?? rollOppID ?? rollOppName);
-        if (doc) {
+        if (doc && !(doc instanceof BladesClock) && !(doc instanceof BladesClockKey)) {
             // Derive settings from valid Actor/Item document, unless explicitly set in constructor.
             rollOppID = doc.rollOppID;
             rollOppDoc = doc;
@@ -1764,11 +1765,10 @@ class BladesRoll extends DocumentSheet {
                 }
                 const rollOpp = new BladesRollOpposition(undefined, configData.rollOppData);
                 if (![
-                    BladesItemType.clock,
                     BladesItemType.project,
                     BladesItemType.design
                 ].includes(rollOpp.rollOppType)) {
-                    throw new Error("rollOppType must be 'clock', 'project' or 'design' for LongTermProject roll.");
+                    throw new Error("rollOppType must be 'project' or 'design' for LongTermProject roll.");
                 }
                 break;
             }

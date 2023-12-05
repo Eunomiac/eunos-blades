@@ -52,7 +52,7 @@ declare global {
       },
 
       hasVicePurveyor: boolean,
-      healing_clock: BladesClockData,
+      healing_clock: BladesClock,
 
       stashData: BladesCompData,
       stressData: BladesCompData,
@@ -78,6 +78,10 @@ declare global {
         actionsList: Record<DowntimeAction, string>,
         actionsTooltips: Record<DowntimeAction, string>
         actionsRemaining: number,
+        actionsSubmenuData: Array<{
+          actionSubData: string,
+          display: string
+        }>|undefined,
         canPayCoin: boolean,
         canPayRep: boolean,
         isDisplayingCosts: boolean,
@@ -116,7 +120,8 @@ declare global {
     export interface NPC { }
 
     export interface Faction {
-      tierData: BladesCompData
+      tierData: BladesCompData,
+      clocks: Record<IDString, BladesClock>
     }
   }
 

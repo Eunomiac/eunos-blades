@@ -51,9 +51,10 @@
           &.section-downtime-actions {
             pointer-events: auto;
             justify-content: flex-start;
+            height: auto;
             background: linear-gradient(to right,
               var(--blades-gold-dark),
-              var(--blades-gold),
+              var(--blades-gold-bright),
               var(--blades-gold-dark) 800px);
 
             &:hover {
@@ -72,9 +73,9 @@
             }
 
             .downtime-action-selection {
-              height: 36px;
+              height: auto;
               gap: 20px;
-              padding: 0 20px;
+              padding: 5px 20px;
 
               .downtime-action-button {
                 flex-basis: 16%;
@@ -86,6 +87,36 @@
                 border-radius: 8px;
                 box-shadow: 3px 3px 8px 1px var(--blades-black);
                 background: var(--blades-gold-bright);
+              }
+
+              &.downtime-sub-action-selection {
+                background: var(--blades-gold-darkest);
+                justify-content: center;
+
+              }
+            }
+
+            .downtime-cost-selection {
+              position: absolute;
+              right: 5px;
+              gap: 5px;
+
+              .downtime-cost-button {
+                text-align: center;
+                font-weight: bold;
+                color: var(--blades-grey);
+                border-radius: 8px;
+                border: 2px outset var(--blades-gold);
+                padding: 0px 5px;
+                background: var(--blades-gold-dark);
+
+                &.cost-selected {
+                  color: var(--cost-selected-color, var(--blades-black-dark));
+                  border-style: inset;
+                  border-color: var(--blades-gold-bright);
+                  background: var(--blades-white-bright);
+                  // text-shadow: var(--text-shadow-dark);
+                }
               }
             }
           }
@@ -123,7 +154,14 @@
                 height: toRem(35px);
 
                 &:nth-child(2n) {
-                  background: var(--blades-black-fade);
+                  filter: brightness(0.8);
+                }
+
+                >[class*="harm-"] {
+                  background: var(--row-bg-color, transparent);
+                  &[class*="red-harm-"] {
+                    font-weight: bold !important;
+                  }
                 }
 
                 .harm-level {
@@ -150,17 +188,23 @@
                   font-size: toRem(16px);
                 }
 
+                &.red-harm-highlight-3 { --row-bg-color: var(--blades-red-bright); }
+                &.red-harm-highlight-2 { --row-bg-color: var(--blades-red); }
+                &.red-harm-highlight-1 { --row-bg-color: var(--blades-red-dark); }
+
                 .healing-clock {
                   padding: 0 toRem(10px);
                   width: 120px;
 
-                  &, * {
-                  --clock-frame-size: 80px;
-                  --clock-glow-size: calc(var(--clock-frame-size) * 3);
-                  --clock-glow-correction: -80px;
-                  }
+                  --clock-size: 80px;
 
-                  .clock { position: absolute }
+                  // &, * {
+                  // --clock-frame-size: 80px;
+                  // --clock-glow-size: calc(var(--clock-frame-size) * 3);
+                  // --clock-glow-correction: -80px;
+                  // }
+
+                  // .clock { position: absolute }
                 }
 
                 .armor-uses {

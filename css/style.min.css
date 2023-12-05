@@ -1982,7 +1982,7 @@ template {
   --csq-type-color: var(--blades-grey-bright) !important;
   --csq-icon-bright: var(--blades-grey-bright) !important;
   animation: none !important;
-  pointer-events: none !important;
+  pointer-events: none;
   text-shadow: var(--text-shadow-dark) !important;
 }
 :root .comp.consequence-display-container.consequence-accepted .consequence-icon-container .consequence-icon-circle.base-consequence, :root .comp.consequence-display-container.consequence-accepted * .consequence-icon-container .consequence-icon-circle.base-consequence,
@@ -1993,6 +1993,11 @@ template {
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted,
 :root * .comp.consequence-display-container.consequence-accepted.consequence-resisted {
   pointer-events: auto !important;
+  transition: 0.5s;
+}
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted *,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted * {
+  transition: 0.5s;
 }
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-icon-container,
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-type-container,
@@ -2013,13 +2018,69 @@ template {
   padding: 0;
   left: calc(var(--container-height) + 10px);
 }
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container {
+  opacity: 1;
+  transform: translate(0px, 0px);
+}
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(-50px, 0px);
+  opacity: 0;
+}
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container {
+  opacity: 0;
+  transform: translate(-50px, 0px);
+}
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container,
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container,
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container,
 :root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container,
 :root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container,
 :root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(0px, 0px);
   opacity: 1;
+}
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type {
+  color: var(--blades-red-bright);
+}
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+:root .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted,
+:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  padding: 0px 2px;
+  overflow: hidden;
 }
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted > .consequence-name-container .consequence-name.base-consequence,
 :root * .comp.consequence-display-container.consequence-accepted.consequence-resisted > .consequence-name-container .consequence-name.base-consequence {
@@ -2043,7 +2104,6 @@ template {
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .resist-overlay,
 :root * .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .resist-overlay {
   position: absolute;
-  left: unset;
   top: 0;
   left: -30px;
   height: 100%;
@@ -2101,6 +2161,7 @@ template {
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container,
 :root * .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container {
   position: absolute;
+  pointer-events: auto;
   width: fit-content;
   top: 50%;
   right: 0px;
@@ -2121,6 +2182,8 @@ template {
   text-transform: uppercase;
   color: var(--bright-color);
   vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap;
 }
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted,
 :root * .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted {
@@ -2132,6 +2195,8 @@ template {
   height: calc(var(--die-size) + 4px);
   padding: 2px 4px;
   border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die,
 :root * .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die {
@@ -2141,14 +2206,6 @@ template {
 :root * .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die-resistance {
   scale: 2;
   margin-right: 3px;
-}
-:root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted,
-:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted {
-  display: none;
-}
-:root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted,
-:root * .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted {
-  display: none;
 }
 :root .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .resistance-cost-row.csq-resisted h3,
 :root * .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .resistance-cost-row.csq-resisted h3 {
@@ -3246,7 +3303,6 @@ template {
   margin: 0;
   border-bottom: 2px solid var(--blades-white);
   white-space: nowrap;
-  font-family: var(--font-emphasis);
   text-transform: none;
 }
 :root body.vtt.game.system-eunos-blades #eunos-blades-tooltips .tooltip > h1:last-of-type {
@@ -4729,7 +4785,7 @@ template {
   --csq-type-color: var(--blades-grey-bright) !important;
   --csq-icon-bright: var(--blades-grey-bright) !important;
   animation: none !important;
-  pointer-events: none !important;
+  pointer-events: none;
   text-shadow: var(--text-shadow-dark) !important;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted .consequence-icon-container .consequence-icon-circle.base-consequence, :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted * .consequence-icon-container .consequence-icon-circle.base-consequence {
@@ -4737,6 +4793,10 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted {
   pointer-events: auto !important;
+  transition: 0.5s;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted * {
+  transition: 0.5s;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-icon-container,
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-type-container,
@@ -4752,10 +4812,49 @@ template {
   padding: 0;
   left: calc(var(--container-height) + 10px);
 }
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container {
+  opacity: 1;
+  transform: translate(0px, 0px);
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(-50px, 0px);
+  opacity: 0;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container {
+  opacity: 0;
+  transform: translate(-50px, 0px);
+}
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container,
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container,
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(0px, 0px);
   opacity: 1;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type {
+  color: var(--blades-red-bright);
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  padding: 0px 2px;
+  overflow: hidden;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted > .consequence-name-container .consequence-name.base-consequence {
   padding: 0;
@@ -4775,7 +4874,6 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .resist-overlay {
   position: absolute;
-  left: unset;
   top: 0;
   left: -30px;
   height: 100%;
@@ -4821,6 +4919,7 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container {
   position: absolute;
+  pointer-events: auto;
   width: fit-content;
   top: 50%;
   right: 0px;
@@ -4840,6 +4939,8 @@ template {
   text-transform: uppercase;
   color: var(--bright-color);
   vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted {
   background: var(--bright-color);
@@ -4850,6 +4951,8 @@ template {
   height: calc(var(--die-size) + 4px);
   padding: 2px 4px;
   border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die {
   flex-shrink: 0;
@@ -4857,12 +4960,6 @@ template {
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die-resistance {
   scale: 2;
   margin-right: 3px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted {
-  display: none;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted {
-  display: none;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .resistance-cost-row.csq-resisted h3 {
   font-size: 10px;
@@ -5614,645 +5711,6 @@ template {
   --clock-frame-size: 108px;
   --clock-glow-size: calc(var(--clock-frame-size) * 3);
   --clock-glow-correction: -37px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg *, :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs * {
-  transform-origin: 50% 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented, :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented {
-  --rotation-step-size: calc(360deg / var(--rotation-steps));
-  --segment-scale: 1;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg clipPath.segmented, :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs clipPath.segmented {
-  --segment-scale: 2 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented[data-size="1"], :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented[data-size="1"] {
-  --rotation-steps: 1 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented[data-size="2"], :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented[data-size="2"] {
-  --rotation-steps: 2 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented[data-size="3"], :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented[data-size="3"] {
-  --rotation-steps: 3 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented[data-size="4"], :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented[data-size="4"] {
-  --rotation-steps: 4 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented[data-size="5"], :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented[data-size="5"] {
-  --rotation-steps: 5 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented[data-size="6"], :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented[data-size="6"] {
-  --rotation-steps: 6 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented[data-size="8"], :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented[data-size="8"] {
-  --rotation-steps: 8 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented[data-size="10"], :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented[data-size="10"] {
-  --rotation-steps: 10 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented[data-size="12"], :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented[data-size="12"] {
-  --rotation-steps: 12 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented > use, :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented > use {
-  transform: scale(var(--segment-scale)) rotate(var(--segment-rotation));
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented > use:nth-child(1), :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented > use:nth-child(1) {
-  --segment-rotation: calc(0 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented > use:nth-child(2), :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented > use:nth-child(2) {
-  --segment-rotation: calc(1 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented > use:nth-child(3), :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented > use:nth-child(3) {
-  --segment-rotation: calc(2 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented > use:nth-child(4), :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented > use:nth-child(4) {
-  --segment-rotation: calc(3 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented > use:nth-child(5), :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented > use:nth-child(5) {
-  --segment-rotation: calc(4 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented > use:nth-child(6), :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented > use:nth-child(6) {
-  --segment-rotation: calc(5 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented > use:nth-child(7), :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented > use:nth-child(7) {
-  --segment-rotation: calc(6 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented > use:nth-child(8), :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented > use:nth-child(8) {
-  --segment-rotation: calc(7 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented > use:nth-child(9), :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented > use:nth-child(9) {
-  --segment-rotation: calc(8 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented > use:nth-child(10), :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented > use:nth-child(10) {
-  --segment-rotation: calc(9 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented > use:nth-child(11), :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented > use:nth-child(11) {
-  --segment-rotation: calc(10 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg .segmented > use:nth-child(12), :root body.vtt.game.system-eunos-blades #clocks-overlay svg defs .segmented > use:nth-child(12) {
-  --segment-rotation: calc(11 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay svg, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock, :root body.vtt.game.system-eunos-blades #clocks-overlay img {
-  position: absolute;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key {
-  position: relative;
-  margin: 0 20px;
-  height: var(--key-height);
-  width: var(--key-width);
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key > * {
-  position: absolute;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .key-label {
-  font-family: var(--font-decorative);
-  font-size: 4rem;
-  top: unset;
-  z-index: 20;
-  width: 100%;
-  pointer-events: all;
-  color: var(--blades-white-bright);
-  text-shadow: 0 0 15px var(--blades-black-dark), 0 0 15px var(--blades-black-dark), 0 0 15px var(--blades-black-dark), 0 0 15px var(--blades-black-dark);
-  left: 0;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .key-label:hover {
-  color: var(--blades-gold-bright) !important;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key:not(.active-key) .key-label {
-  color: var(--blades-white);
-  font-family: var(--font-emphasis-narrow);
-  font-size: 2.5rem;
-  top: unset;
-  width: 200px;
-  rotate: 30deg;
-  text-align: left;
-  white-space: nowrap;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key:not(.active-key) .clock-label-container {
-  display: none;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key:not(.active-key) .clock {
-  display: none;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-label-container {
-  height: var(--key-height);
-  width: calc(1.5 * var(--key-width));
-  left: calc(-0.25 * var(--key-width));
-  pointer-events: none;
-  z-index: 5;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-label-container .clock-label {
-  position: absolute;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-label-container .clock-label .short-label {
-  font-size: 2.5rem;
-  font-family: var(--font-emphasis-narrow);
-  text-shadow: 0 0 15px var(--blades-black-dark), 0 0 15px var(--blades-black-dark), 0 0 15px var(--blades-black-dark), 0 0 15px var(--blades-black-dark);
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-label-container .clock-label.clock-active .short-label {
-  color: var(--blades-white-bright);
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container {
-  height: var(--key-height);
-  width: var(--key-width);
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .key-image {
-  height: var(--key-height);
-  width: var(--key-width);
-  z-index: 1;
-  overflow: visible;
-  filter: drop-shadow(0px 0px 10px var(--blades-white-bright)) drop-shadow(30px 30px 10px var(--blades-black-dark)) brightness(0.5);
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .key-image .key-bg {
-  fill: var(--blades-black);
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .key-image .metallic-overlay {
-  height: var(--key-height);
-  width: var(--key-width);
-  filter: url(#metallicFilter) blur(1px);
-  fill: var(--blades-grey-dark);
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock {
-  height: var(--clock-glow-size);
-  width: var(--clock-glow-size);
-  transform: translate(-50%, -50%);
-  position: relative;
-  z-index: 2;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg *, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs * {
-  transform-origin: 50% 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented {
-  --rotation-step-size: calc(360deg / var(--rotation-steps));
-  --segment-scale: 1;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg clipPath.segmented, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs clipPath.segmented {
-  --segment-scale: 2 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented[data-size="1"], :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented[data-size="1"] {
-  --rotation-steps: 1 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented[data-size="2"], :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented[data-size="2"] {
-  --rotation-steps: 2 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented[data-size="3"], :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented[data-size="3"] {
-  --rotation-steps: 3 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented[data-size="4"], :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented[data-size="4"] {
-  --rotation-steps: 4 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented[data-size="5"], :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented[data-size="5"] {
-  --rotation-steps: 5 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented[data-size="6"], :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented[data-size="6"] {
-  --rotation-steps: 6 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented[data-size="8"], :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented[data-size="8"] {
-  --rotation-steps: 8 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented[data-size="10"], :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented[data-size="10"] {
-  --rotation-steps: 10 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented[data-size="12"], :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented[data-size="12"] {
-  --rotation-steps: 12 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented > use, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented > use {
-  transform: scale(var(--segment-scale)) rotate(var(--segment-rotation));
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented > use:nth-child(1), :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented > use:nth-child(1) {
-  --segment-rotation: calc(0 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented > use:nth-child(2), :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented > use:nth-child(2) {
-  --segment-rotation: calc(1 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented > use:nth-child(3), :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented > use:nth-child(3) {
-  --segment-rotation: calc(2 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented > use:nth-child(4), :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented > use:nth-child(4) {
-  --segment-rotation: calc(3 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented > use:nth-child(5), :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented > use:nth-child(5) {
-  --segment-rotation: calc(4 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented > use:nth-child(6), :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented > use:nth-child(6) {
-  --segment-rotation: calc(5 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented > use:nth-child(7), :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented > use:nth-child(7) {
-  --segment-rotation: calc(6 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented > use:nth-child(8), :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented > use:nth-child(8) {
-  --segment-rotation: calc(7 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented > use:nth-child(9), :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented > use:nth-child(9) {
-  --segment-rotation: calc(8 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented > use:nth-child(10), :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented > use:nth-child(10) {
-  --segment-rotation: calc(9 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented > use:nth-child(11), :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented > use:nth-child(11) {
-  --segment-rotation: calc(10 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg .segmented > use:nth-child(12), :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock svg defs .segmented > use:nth-child(12) {
-  --segment-rotation: calc(11 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .clock-frame {
-  height: var(--clock-frame-size);
-  width: var(--clock-frame-size);
-  transform: translate(-50%, -50%) translate(calc(var(--clock-glow-size) / 2), calc(var(--clock-glow-size) / 2));
-  fill: transparent;
-  stroke: var(--blades-black);
-  stroke-width: 10px;
-  z-index: 2;
-  pointer-events: auto;
-  overflow: visible;
-  filter: drop-shadow(0 0 5px var(--blades-black-dark));
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .clock-frame g {
-  transform: scale(0.99);
-  transform-origin: 50% 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .clock-frame.clock-bg {
-  z-index: 1;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .clock-frame.clock-bg circle {
-  fill: var(--blades-grey-dark);
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .clock-frame.clock-bg.hidden-clock circle {
-  fill: var(--blades-black-dark);
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .clock-interior {
-  position: absolute;
-  z-index: 2;
-  height: 400px;
-  width: 400px;
-  transform: translate(-50%, -50%) translate(calc(50% + var(--clock-glow-correction)), calc(50% + var(--clock-glow-correction)));
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .clock-interior svg {
-  height: var(--clock-frame-size);
-  width: var(--clock-frame-size);
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .clock-interior svg circle {
-  height: var(--clock-frame-size);
-  width: var(--clock-frame-size);
-  fill: var(--blades-white-bright);
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .clock-interior .clock-interior-img {
-  height: var(--clock-frame-size);
-  width: var(--clock-frame-size);
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock.clock-active .clock-glow {
-  position: absolute;
-  z-index: 0;
-  top: var(--clock-glow-correction);
-  left: var(--clock-glow-correction);
-  height: 400px;
-  width: 400px;
-  background: url("../assets/animations/clock-flare.webp") 50%/contain no-repeat border-box border-box;
-  background-position-y: 5px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .segmented[data-size="1"] {
-  --rotation-steps: 1 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .segmented[data-size="2"] {
-  --rotation-steps: 2 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .segmented[data-size="3"] {
-  --rotation-steps: 3 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .segmented[data-size="4"] {
-  --rotation-steps: 4 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .segmented[data-size="5"] {
-  --rotation-steps: 5 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .segmented[data-size="6"] {
-  --rotation-steps: 6 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .segmented[data-size="8"] {
-  --rotation-steps: 8 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .segmented[data-size="10"] {
-  --rotation-steps: 10 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock .segmented[data-size="12"] {
-  --rotation-steps: 12 ;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key .clock-image-container .clock {
-  position: absolute !important;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="1"] {
-  --key-height: 455px;
-  --key-width: 202px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="1"] .key-label {
-  top: 150px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="1"] .clock:nth-of-type(1) {
-  left: 101px;
-  top: 99px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="1"]:not(.active-key) {
-  --key-width: 170px;
-  top: -350px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="1"]:not(.active-key) .key-label {
-  left: -40px;
-  top: unset !important;
-  bottom: 50px !important;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="2"] {
-  --key-height: 624.438px;
-  --key-width: 202px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="2"] .key-label {
-  top: 400px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="2"] .clock:nth-of-type(1) {
-  left: 101px;
-  top: 99px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="2"] .clock:nth-of-type(2) {
-  left: 101px;
-  top: 279px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="2"]:not(.active-key) {
-  --key-width: 170px;
-  top: -520px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="2"]:not(.active-key) .key-label {
-  left: -40px;
-  top: unset !important;
-  bottom: 50px !important;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="3"] {
-  --key-height: 915px;
-  --key-width: 280px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="3"] .key-label {
-  top: 600px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="3"] .clock:nth-of-type(1) {
-  left: 140px;
-  top: 99px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="3"] .clock:nth-of-type(2) {
-  left: 74px;
-  top: 211px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="3"] .clock:nth-of-type(3) {
-  left: 206px;
-  top: 211px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="3"]:not(.active-key) {
-  --key-width: 170px;
-  top: -815px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="3"]:not(.active-key) .key-label {
-  left: -10px;
-  top: unset !important;
-  bottom: 50px !important;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="4"] {
-  --key-height: 1140px;
-  --key-width: 376px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="4"] .key-label {
-  top: 700px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="4"] .clock:nth-of-type(1) {
-  left: 188px;
-  top: 99px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="4"] .clock:nth-of-type(2) {
-  left: 101px;
-  top: 185px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="4"] .clock:nth-of-type(3) {
-  left: 275px;
-  top: 185px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="4"] .clock:nth-of-type(4) {
-  left: 188px;
-  top: 273px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="4"]:not(.active-key) {
-  --key-width: 170px;
-  top: -925px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="4"]:not(.active-key) .key-label {
-  left: 40px;
-  top: unset !important;
-  bottom: 150px !important;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"] {
-  --key-height: 1140px;
-  --key-width: 376px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"] .key-label {
-  top: 800px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"] .clock:nth-of-type(1) {
-  left: 188px;
-  top: 99px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"] .clock:nth-of-type(2) {
-  left: 101px;
-  top: 185px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"] .clock:nth-of-type(3) {
-  left: 275px;
-  top: 185px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"] .clock:nth-of-type(4) {
-  left: 188px;
-  top: 273px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"] .clock:nth-of-type(5) {
-  left: 188px;
-  top: 452px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"]:not(.active-key) {
-  --key-width: 170px;
-  top: -1025px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"]:not(.active-key) .key-label {
-  left: 40px;
-  top: unset !important;
-  bottom: 50px !important;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] {
-  --key-height: 1150px;
-  --key-width: 376px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] .key-label {
-  top: 900px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] .clock:nth-of-type(1) {
-  left: 188px;
-  top: 99px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] .clock:nth-of-type(2) {
-  left: 101px;
-  top: 185px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] .clock:nth-of-type(3) {
-  left: 275px;
-  top: 185px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] .clock:nth-of-type(4) {
-  left: 188px;
-  top: 273px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] .clock:nth-of-type(5) {
-  left: 188px;
-  top: 452px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] .clock:nth-of-type(6) {
-  left: 188px;
-  top: 683px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"]:not(.active-key) {
-  --key-width: 170px;
-  top: -1025px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"]:not(.active-key) .key-label {
-  left: 40px;
-  top: unset !important;
-  bottom: 50px !important;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="1"] .clock-label[data-clock-num="1"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="2"] .clock-label[data-clock-num="1"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="2"] .clock-label[data-clock-num="2"] {
-  left: 0;
-  top: 325px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="3"] .clock-label[data-clock-num="1"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="3"] .clock-label[data-clock-num="2"] {
-  left: -20px;
-  top: 110px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="3"] .clock-label[data-clock-num="3"] {
-  left: 220px;
-  top: 265px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="4"] .clock-label[data-clock-num="1"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="4"] .clock-label[data-clock-num="2"] {
-  left: -60px;
-  top: 80px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="4"] .clock-label[data-clock-num="3"] {
-  left: 340px;
-  top: 230px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="4"] .clock-label[data-clock-num="4"] {
-  left: 0;
-  top: 320px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"] .clock-label[data-clock-num="1"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"] .clock-label[data-clock-num="2"] {
-  left: -60px;
-  top: 80px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"] .clock-label[data-clock-num="3"] {
-  left: 340px;
-  top: 230px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"] .clock-label[data-clock-num="4"] {
-  left: 0;
-  top: 320px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="5"] .clock-label[data-clock-num="5"] {
-  left: 0;
-  top: 500px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] .clock-label[data-clock-num="1"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] .clock-label[data-clock-num="2"] {
-  left: -60px;
-  top: 80px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] .clock-label[data-clock-num="3"] {
-  left: 340px;
-  top: 230px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] .clock-label[data-clock-num="4"] {
-  left: 0;
-  top: 320px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] .clock-label[data-clock-num="5"] {
-  left: 0;
-  top: 500px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-size="6"] .clock-label[data-clock-num="6"] {
-  left: 0;
-  top: 730px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key:nth-child(2n+1) {
-  top: var(--alternating-top-shift);
 }
 :root body.vtt.game.system-eunos-blades #sidebar {
   border: none;
@@ -8184,7 +7642,7 @@ template {
   --csq-type-color: var(--blades-grey-bright) !important;
   --csq-icon-bright: var(--blades-grey-bright) !important;
   animation: none !important;
-  pointer-events: none !important;
+  pointer-events: none;
   text-shadow: var(--text-shadow-dark) !important;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted .consequence-icon-container .consequence-icon-circle.base-consequence, :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted * .consequence-icon-container .consequence-icon-circle.base-consequence,
@@ -8204,6 +7662,14 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted {
   pointer-events: auto !important;
+  transition: 0.5s;
+}
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted *,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted *,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted *,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted *,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted * {
+  transition: 0.5s;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-icon-container,
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-type-container,
@@ -8239,6 +7705,60 @@ template {
   padding: 0;
   left: calc(var(--container-height) + 10px);
 }
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container {
+  opacity: 1;
+  transform: translate(0px, 0px);
+}
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(-50px, 0px);
+  opacity: 0;
+}
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container {
+  opacity: 0;
+  transform: translate(-50px, 0px);
+}
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container,
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container,
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container,
@@ -8254,7 +7774,60 @@ template {
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(0px, 0px);
   opacity: 1;
+}
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type {
+  color: var(--blades-red-bright);
+}
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted,
+:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted,
+:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted,
+:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted,
+:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  padding: 0px 2px;
+  overflow: hidden;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted > .consequence-name-container .consequence-name.base-consequence,
 :root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted > .consequence-name-container .consequence-name.base-consequence,
@@ -8290,7 +7863,6 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .resist-overlay,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .resist-overlay {
   position: absolute;
-  left: unset;
   top: 0;
   left: -30px;
   height: 100%;
@@ -8384,6 +7956,7 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container,
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container {
   position: absolute;
+  pointer-events: auto;
   width: fit-content;
   top: 50%;
   right: 0px;
@@ -8407,6 +7980,8 @@ template {
   text-transform: uppercase;
   color: var(--bright-color);
   vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted,
 :root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted,
@@ -8421,6 +7996,8 @@ template {
   height: calc(var(--die-size) + 4px);
   padding: 2px 4px;
   border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die,
 :root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die,
@@ -8436,20 +8013,6 @@ template {
 :root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die-resistance {
   scale: 2;
   margin-right: 3px;
-}
-:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted,
-:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted,
-:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted,
-:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted,
-:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted {
-  display: none;
-}
-:root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted,
-:root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted,
-:root body.vtt.game.system-eunos-blades #navigation .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted,
-:root body.vtt.game.system-eunos-blades #hotbar .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted,
-:root body.vtt.game.system-eunos-blades #players .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted {
-  display: none;
 }
 :root body.vtt.game.system-eunos-blades #interface .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .resistance-cost-row.csq-resisted h3,
 :root body.vtt.game.system-eunos-blades #controls .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .resistance-cost-row.csq-resisted h3,
@@ -11564,7 +11127,7 @@ template {
   --csq-type-color: var(--blades-grey-bright) !important;
   --csq-icon-bright: var(--blades-grey-bright) !important;
   animation: none !important;
-  pointer-events: none !important;
+  pointer-events: none;
   text-shadow: var(--text-shadow-dark) !important;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted .consequence-icon-container .consequence-icon-circle.base-consequence, :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted * .consequence-icon-container .consequence-icon-circle.base-consequence,
@@ -11584,6 +11147,14 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted {
   pointer-events: auto !important;
+  transition: 0.5s;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted *,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted *,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted *,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted *,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted * {
+  transition: 0.5s;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-icon-container,
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-type-container,
@@ -11619,6 +11190,60 @@ template {
   padding: 0;
   left: calc(var(--container-height) + 10px);
 }
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container {
+  opacity: 1;
+  transform: translate(0px, 0px);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(-50px, 0px);
+  opacity: 0;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container {
+  opacity: 0;
+  transform: translate(-50px, 0px);
+}
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container,
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container,
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container,
@@ -11634,7 +11259,60 @@ template {
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(0px, 0px);
   opacity: 1;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type {
+  color: var(--blades-red-bright);
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted,
+:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted,
+:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted,
+:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  padding: 0px 2px;
+  overflow: hidden;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .consequence-name-container .consequence-name.base-consequence,
 :root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted > .consequence-name-container .consequence-name.base-consequence,
@@ -11670,7 +11348,6 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .resist-overlay,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .resist-overlay {
   position: absolute;
-  left: unset;
   top: 0;
   left: -30px;
   height: 100%;
@@ -11764,6 +11441,7 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container,
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container {
   position: absolute;
+  pointer-events: auto;
   width: fit-content;
   top: 50%;
   right: 0px;
@@ -11787,6 +11465,8 @@ template {
   text-transform: uppercase;
   color: var(--bright-color);
   vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted,
 :root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted,
@@ -11801,6 +11481,8 @@ template {
   height: calc(var(--die-size) + 4px);
   padding: 2px 4px;
   border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die,
 :root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die,
@@ -11816,20 +11498,6 @@ template {
 :root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die-resistance {
   scale: 2;
   margin-right: 3px;
-}
-:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted,
-:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted,
-:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted,
-:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted,
-:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted {
-  display: none;
-}
-:root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted,
-:root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted,
-:root body.vtt.game.system-eunos-blades #navigation #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted,
-:root body.vtt.game.system-eunos-blades #hotbar #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted,
-:root body.vtt.game.system-eunos-blades #players #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted {
-  display: none;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .resistance-cost-row.csq-resisted h3,
 :root body.vtt.game.system-eunos-blades #controls #chat .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .resistance-cost-row.csq-resisted h3,
@@ -13499,7 +13167,6 @@ template {
   margin: 0;
   border-bottom: 2px solid var(--blades-white);
   white-space: nowrap;
-  font-family: var(--font-emphasis);
   text-transform: none;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .tooltip > h1:last-of-type,
@@ -16582,7 +16249,7 @@ template {
   --csq-type-color: var(--blades-grey-bright) !important;
   --csq-icon-bright: var(--blades-grey-bright) !important;
   animation: none !important;
-  pointer-events: none !important;
+  pointer-events: none;
   text-shadow: var(--text-shadow-dark) !important;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted .consequence-icon-container .consequence-icon-circle.base-consequence, :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted * .consequence-icon-container .consequence-icon-circle.base-consequence {
@@ -16590,6 +16257,10 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted {
   pointer-events: auto !important;
+  transition: 0.5s;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted * {
+  transition: 0.5s;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-icon-container,
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted ~ .consequence-type-container,
@@ -16605,10 +16276,49 @@ template {
   padding: 0;
   left: calc(var(--container-height) + 10px);
 }
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted .consequence-name-container {
+  opacity: 1;
+  transform: translate(0px, 0px);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-type-container,
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:not(:hover) > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(-50px, 0px);
+  opacity: 0;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-icon-container,
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-type-container,
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted .consequence-name-container {
+  opacity: 0;
+  transform: translate(-50px, 0px);
+}
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container,
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container,
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container {
+  transform: translate(0px, 0px);
   opacity: 1;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-name,
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-icon-container .consequence-type,
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-name,
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-type-container .consequence-type,
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-name,
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted:hover > .sub-consequence-resisted ~ .consequence-name-container .consequence-type {
+  color: var(--blades-red-bright);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .trait-label.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted > .sub-consequence-resisted .roll-detail-container:not(:hover) .dice-roll-strip.csq-resisted {
+  opacity: 0;
+  width: 0px;
+  padding: 0px 2px;
+  overflow: hidden;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted > .consequence-name-container .consequence-name.base-consequence {
   padding: 0;
@@ -16628,7 +16338,6 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .resist-overlay {
   position: absolute;
-  left: unset;
   top: 0;
   left: -30px;
   height: 100%;
@@ -16674,6 +16383,7 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container {
   position: absolute;
+  pointer-events: auto;
   width: fit-content;
   top: 50%;
   right: 0px;
@@ -16693,6 +16403,8 @@ template {
   text-transform: uppercase;
   color: var(--bright-color);
   vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted {
   background: var(--bright-color);
@@ -16703,6 +16415,8 @@ template {
   height: calc(var(--die-size) + 4px);
   padding: 2px 4px;
   border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die {
   flex-shrink: 0;
@@ -16710,12 +16424,6 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .dice-roll-strip.csq-resisted .blades-die-resistance {
   scale: 2;
   margin-right: 3px;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .trait-label.csq-resisted {
-  display: none;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container:not(.popped-out) .dice-roll-strip.csq-resisted {
-  display: none;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .comp.consequence-display-container.consequence-accepted.consequence-resisted .sub-consequence-resisted .roll-detail-container .resistance-cost-row.csq-resisted h3 {
   font-size: 10px;
@@ -17673,7 +17381,6 @@ template {
   margin: 0;
   border-bottom: 2px solid var(--blades-white);
   white-space: nowrap;
-  font-family: var(--font-emphasis);
   text-transform: none;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .tooltip > h1:last-of-type {
@@ -19520,7 +19227,6 @@ template {
   margin: 0;
   border-bottom: 2px solid var(--blades-white);
   white-space: nowrap;
-  font-family: var(--font-emphasis);
   text-transform: none;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip > h1:last-of-type {
@@ -20425,194 +20131,393 @@ template {
   position: relative;
   pointer-events: none;
 }
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container :root {
+  --clock-size: 200px;
+  --clock-glow-mult: 3;
+  --clock-glow-shift: -10%;
+}
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock {
-  height: var(--clock-glow-size);
-  width: var(--clock-glow-size);
-  transform: translate(-50%, -50%);
+  pointer-events: auto !important;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container {
+  /* CLOCK KEYS */
+  /* CLOCKS */
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container {
   position: relative;
-  z-index: 2;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg *, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs * {
-  transform-origin: 50% 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented {
-  --rotation-step-size: calc(360deg / var(--rotation-steps));
-  --segment-scale: 1;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg clipPath.segmented, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs clipPath.segmented {
-  --segment-scale: 2 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented[data-size="1"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented[data-size="1"] {
-  --rotation-steps: 1 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented[data-size="2"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented[data-size="2"] {
-  --rotation-steps: 2 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented[data-size="3"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented[data-size="3"] {
-  --rotation-steps: 3 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented[data-size="4"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented[data-size="4"] {
-  --rotation-steps: 4 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented[data-size="5"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented[data-size="5"] {
-  --rotation-steps: 5 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented[data-size="6"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented[data-size="6"] {
-  --rotation-steps: 6 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented[data-size="8"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented[data-size="8"] {
-  --rotation-steps: 8 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented[data-size="10"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented[data-size="10"] {
-  --rotation-steps: 10 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented[data-size="12"], :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented[data-size="12"] {
-  --rotation-steps: 12 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented > use, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented > use {
-  transform: scale(var(--segment-scale)) rotate(var(--segment-rotation));
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented > use:nth-child(1), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented > use:nth-child(1) {
-  --segment-rotation: calc(0 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented > use:nth-child(2), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented > use:nth-child(2) {
-  --segment-rotation: calc(1 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented > use:nth-child(3), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented > use:nth-child(3) {
-  --segment-rotation: calc(2 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented > use:nth-child(4), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented > use:nth-child(4) {
-  --segment-rotation: calc(3 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented > use:nth-child(5), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented > use:nth-child(5) {
-  --segment-rotation: calc(4 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented > use:nth-child(6), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented > use:nth-child(6) {
-  --segment-rotation: calc(5 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented > use:nth-child(7), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented > use:nth-child(7) {
-  --segment-rotation: calc(6 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented > use:nth-child(8), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented > use:nth-child(8) {
-  --segment-rotation: calc(7 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented > use:nth-child(9), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented > use:nth-child(9) {
-  --segment-rotation: calc(8 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented > use:nth-child(10), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented > use:nth-child(10) {
-  --segment-rotation: calc(9 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented > use:nth-child(11), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented > use:nth-child(11) {
-  --segment-rotation: calc(10 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg .segmented > use:nth-child(12), :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock svg defs .segmented > use:nth-child(12) {
-  --segment-rotation: calc(11 * var(--rotation-step-size)) ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .clock-frame {
-  height: var(--clock-frame-size);
-  width: var(--clock-frame-size);
-  transform: translate(-50%, -50%) translate(calc(var(--clock-glow-size) / 2), calc(var(--clock-glow-size) / 2));
-  fill: transparent;
-  stroke: var(--blades-black);
-  stroke-width: 10px;
-  z-index: 2;
-  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: visible;
-  filter: drop-shadow(0 0 5px var(--blades-black-dark));
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .clock-frame g {
-  transform: scale(0.99);
-  transform-origin: 50% 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .clock-frame.clock-bg {
-  z-index: 1;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .clock-frame.clock-bg circle {
-  fill: var(--blades-grey-dark);
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .clock-frame.clock-bg.hidden-clock circle {
-  fill: var(--blades-black-dark);
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .clock-interior {
-  position: absolute;
-  z-index: 2;
-  height: 400px;
-  width: 400px;
-  transform: translate(-50%, -50%) translate(calc(50% + var(--clock-glow-correction)), calc(50% + var(--clock-glow-correction)));
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .clock-interior svg {
-  height: var(--clock-frame-size);
-  width: var(--clock-frame-size);
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .clock-interior svg circle {
-  height: var(--clock-frame-size);
-  width: var(--clock-frame-size);
-  fill: var(--blades-white-bright);
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .clock-interior .clock-interior-img {
-  height: var(--clock-frame-size);
-  width: var(--clock-frame-size);
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock.clock-active .clock-glow {
-  position: absolute;
-  z-index: 0;
-  top: var(--clock-glow-correction);
-  left: var(--clock-glow-correction);
-  height: 400px;
-  width: 400px;
-  background: url("../assets/animations/clock-flare.webp") 50%/contain no-repeat border-box border-box;
-  background-position-y: 5px;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .segmented[data-size="1"] {
-  --rotation-steps: 1 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .segmented[data-size="2"] {
-  --rotation-steps: 2 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .segmented[data-size="3"] {
-  --rotation-steps: 3 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .segmented[data-size="4"] {
-  --rotation-steps: 4 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .segmented[data-size="5"] {
-  --rotation-steps: 5 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .segmented[data-size="6"] {
-  --rotation-steps: 6 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .segmented[data-size="8"] {
-  --rotation-steps: 8 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .segmented[data-size="10"] {
-  --rotation-steps: 10 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .segmented[data-size="12"] {
-  --rotation-steps: 12 ;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock {
-  top: 50%;
-  left: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock * {
-  position: absolute;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .clock-interior circle {
-  fill: var(--blades-black-fade-strong);
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .clock-interior .clock-interior-img {
-  pointer-events: auto;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock .clock-frame {
-  stroke-width: 15px;
-  stroke: var(--blades-black-dark-fade);
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock {
+  position: relative;
   overflow: visible;
+  pointer-events: all;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock *,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock * {
+  height: var(--clock-size);
+  width: var(--clock-size);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock .clock-frame,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock .clock-fill,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock .clock-glow,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock .clock-frame,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock .clock-fill,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock .clock-glow {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock .clock-frame,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock .clock-frame {
+  z-index: 3;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock .clock-fill,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock .clock-fill {
+  z-index: 2;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock .clock-glow,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock .clock-glow {
+  z-index: 4;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock .clock-glow,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock .clock-glow {
+  transform-origin: 50% 50%;
+  scale: var(--clock-glow-mult, 3);
+  background-repeat: no-repeat;
+  background-position: center calc(50% - var(--clock-glow-shift, 7%));
+  background-size: cover;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock .clock-glow.clock-glow-white,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock .clock-glow.clock-glow-white {
+  background-image: url("../assets/animations/clock-flare-white.webp");
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock .clock-glow.clock-glow-red,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock .clock-glow.clock-glow-red {
+  background-image: url("../assets/animations/clock-flare-red.webp");
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock .clock-glow.clock-glow-yellow,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock .clock-glow.clock-glow-yellow {
+  background-image: url("../assets/animations/clock-flare-yellow.webp");
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock .clock-glow.clock-glow-blue,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock .clock-glow.clock-glow-blue {
+  background-image: url("../assets/animations/clock-flare-blue.webp");
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="1"][data-max="2"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="1"][data-max="2"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 49.9953673205% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="2"][data-max="2"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="2"][data-max="2"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="1"][data-max="3"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="1"][data-max="3"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 74.9973252736%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="2"][data-max="3"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="2"][data-max="3"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 24.9946508333%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="3"][data-max="3"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="3"][data-max="3"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="1"][data-max="4"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="1"][data-max="4"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 49.9976836603%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="2"][data-max="4"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="2"][data-max="4"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 49.9953673205% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="3"][data-max="4"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="3"][data-max="4"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 49.9930509808%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="4"][data-max="4"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="4"][data-max="4"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="1"][data-max="5"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="1"][data-max="5"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 34.5473879159%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="2"][data-max="5"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="2"][data-max="5"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 20.607739133% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="3"][data-max="5"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="3"][data-max="5"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 79.3847649333% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="4"][data-max="5"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="4"][data-max="5"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 65.443800045%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="5"][data-max="5"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="5"][data-max="5"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="1"][data-max="6"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="1"][data-max="6"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 24.9986626725%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="2"][data-max="6"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="2"][data-max="6"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 74.9973252736%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="3"][data-max="6"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="3"][data-max="6"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 49.9953673205% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="4"][data-max="6"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="4"][data-max="6"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 24.9946508333%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="5"][data-max="6"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="5"][data-max="6"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 74.9933130051%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="6"][data-max="6"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="6"][data-max="6"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="1"][data-max="7"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="1"][data-max="7"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 18.8244750681%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="2"][data-max="7"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="2"][data-max="7"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 61.1234658088%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="3"][data-max="7"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="3"][data-max="7"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 28.302235484% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="4"][data-max="7"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="4"][data-max="7"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 71.6894166628% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="5"][data-max="7"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="5"][data-max="7"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 38.867501216%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="6"][data-max="7"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="6"][data-max="7"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 81.1682806003%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="7"][data-max="7"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="7"][data-max="7"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="1"][data-max="8"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="1"][data-max="8"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 85.3545201001% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="2"][data-max="8"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="2"][data-max="8"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 49.9976836603%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="3"][data-max="8"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="3"][data-max="8"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 100% 85.3528821247%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="4"][data-max="8"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="4"][data-max="8"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 49.9953673205% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="5"][data-max="8"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="5"][data-max="8"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 85.3512440734% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="6"][data-max="8"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="6"][data-max="8"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 49.9930509808%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="7"][data-max="8"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="7"][data-max="8"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 0 85.3496059462%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="8"][data-max="8"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="8"][data-max="8"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="1"][data-max="9"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="1"][data-max="9"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 82.1385918468% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="2"][data-max="9"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="2"][data-max="9"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 41.3155634357%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="3"][data-max="9"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="3"][data-max="9"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 74.9973252736%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="4"][data-max="9"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="4"][data-max="9"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 32.8951232964% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="5"][data-max="9"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="5"][data-max="9"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 67.0961700815% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="6"][data-max="9"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="6"][data-max="9"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 24.9946508333%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="7"][data-max="9"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="7"][data-max="9"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 58.6753118841%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="8"][data-max="9"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="8"][data-max="9"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 17.8543109057% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="9"][data-max="9"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="9"][data-max="9"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="1"][data-max="10"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="1"][data-max="10"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 79.3885130263% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="2"][data-max="10"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="2"][data-max="10"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 34.5473879159%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="3"][data-max="10"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="3"][data-max="10"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 65.4482061309%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="4"][data-max="10"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="4"][data-max="10"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 20.607739133% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="5"][data-max="10"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="5"][data-max="10"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 49.9953673205% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="6"][data-max="10"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="6"][data-max="10"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 79.3847649333% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="7"][data-max="10"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="7"][data-max="10"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 34.5429820952%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="8"][data-max="10"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="8"][data-max="10"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 65.443800045%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="9"][data-max="10"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="9"][data-max="10"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 20.6039915445% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="10"][data-max="10"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="10"][data-max="10"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="1"][data-max="11"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="1"][data-max="11"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 77.0313322766% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="2"][data-max="11"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="2"][data-max="11"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 29.2277169859%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="3"][data-max="11"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="3"][data-max="11"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 57.1132407089%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="4"][data-max="11"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="4"][data-max="11"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 82.7404903353%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="5"][data-max="11"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="5"][data-max="11"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 35.9093312775% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="6"][data-max="11"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="6"][data-max="11"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 64.0817786537% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="7"][data-max="11"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="7"][data-max="11"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 17.252507527%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="8"][data-max="11"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="8"][data-max="11"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 42.8775882957%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="9"][data-max="11"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="9"][data-max="11"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 70.7638547202%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="10"][data-max="11"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="10"][data-max="11"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 22.9608735872% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="11"][data-max="11"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="11"][data-max="11"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="1"][data-max="12"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="1"][data-max="12"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 74.9993313273% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="2"][data-max="12"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="2"][data-max="12"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 24.9986626725%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="3"][data-max="12"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="3"][data-max="12"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 49.9976836603%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="4"][data-max="12"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="4"][data-max="12"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 74.9973252736%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="5"][data-max="12"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="5"][data-max="12"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 24.9966567261% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="6"][data-max="12"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="6"][data-max="12"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 49.9953673205% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="7"][data-max="12"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="7"][data-max="12"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 74.9953191661% 100%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="8"][data-max="12"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="8"][data-max="12"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 24.9946508333%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="9"][data-max="12"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="9"][data-max="12"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 49.9930509808%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="10"][data-max="12"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="10"][data-max="12"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 74.9933130051%, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="11"][data-max="12"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="11"][data-max="12"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 24.9926449941% 0, 50% 50%);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container.clock-container .clock[data-value="12"][data-max="12"] > *:not(.clock-frame),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-container .clock-container .clock[data-value="12"][data-max="12"] > *:not(.clock-frame) {
+  clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-resizable-handle {
   opacity: 0;
@@ -20677,7 +20582,8 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar.section-downtime-actions {
   pointer-events: auto;
   justify-content: flex-start;
-  background: linear-gradient(to right, var(--blades-gold-dark), var(--blades-gold), var(--blades-gold-dark) 800px);
+  height: auto;
+  background: linear-gradient(to right, var(--blades-gold-dark), var(--blades-gold-bright), var(--blades-gold-dark) 800px);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar.section-downtime-actions:hover {
   animation: action-bar-shimmer 5s ease infinite;
@@ -20692,9 +20598,9 @@ template {
   color: var(--blades-black);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar.section-downtime-actions .downtime-action-selection {
-  height: 36px;
+  height: auto;
   gap: 20px;
-  padding: 0 20px;
+  padding: 5px 20px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar.section-downtime-actions .downtime-action-selection .downtime-action-button {
   flex-basis: 16%;
@@ -20706,6 +20612,30 @@ template {
   border-radius: 8px;
   box-shadow: 3px 3px 8px 1px var(--blades-black);
   background: var(--blades-gold-bright);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar.section-downtime-actions .downtime-action-selection.downtime-sub-action-selection {
+  background: var(--blades-gold-darkest);
+  justify-content: center;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar.section-downtime-actions .downtime-cost-selection {
+  position: absolute;
+  right: 5px;
+  gap: 5px;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar.section-downtime-actions .downtime-cost-selection .downtime-cost-button {
+  text-align: center;
+  font-weight: bold;
+  color: var(--blades-grey);
+  border-radius: 8px;
+  border: 2px outset var(--blades-gold);
+  padding: 0px 5px;
+  background: var(--blades-gold-dark);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar.section-downtime-actions .downtime-cost-selection .downtime-cost-button.cost-selected {
+  color: var(--cost-selected-color, var(--blades-black-dark));
+  border-style: inset;
+  border-color: var(--blades-gold-bright);
+  background: var(--blades-white-bright);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.sheet-mid-bar .comp-stress .dotline {
   --fill-color-full: var(--blades-red-dark);
@@ -20734,7 +20664,13 @@ template {
   height: 2.1875rem;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr:nth-child(2n) {
-  background: var(--blades-black-fade);
+  filter: brightness(0.8);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr > [class*=harm-] {
+  background: var(--row-bg-color, transparent);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr > [class*=harm-][class*=red-harm-] {
+  font-weight: bold !important;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .harm-level {
   width: 2.1875rem;
@@ -20755,17 +20691,19 @@ template {
   text-align: center;
   font-size: 1rem;
 }
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr.red-harm-highlight-3 {
+  --row-bg-color: var(--blades-red-bright);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr.red-harm-highlight-2 {
+  --row-bg-color: var(--blades-red);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr.red-harm-highlight-1 {
+  --row-bg-color: var(--blades-red-dark);
+}
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock {
   padding: 0 0.625rem;
   width: 120px;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock * {
-  --clock-frame-size: 80px;
-  --clock-glow-size: calc(var(--clock-frame-size) * 3);
-  --clock-glow-correction: -80px;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock .clock {
-  position: absolute;
+  --clock-size: 80px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .armor-uses {
   padding: 0 0.625rem;

@@ -31,7 +31,7 @@ declare global {
 
     export interface gmChar {
       concept: string,
-      clocks: Record<string, BladesClockData>,
+      clocks: Record<IDString, BladesClockData>,
       district: District,
       assets: string,
       situation: string,
@@ -48,7 +48,8 @@ declare global {
       advancement_points: Record<string,number>,
       downtime_actions: ValueMax,
       downtime_action_bonus: number,
-      downtime_action_selected_cost: "Rep"|"Coin"
+      downtime_action_selected_cost: "Rep"|"Coin",
+      downtime_actions_open_submenu: DowntimeAction
     }
 
     export interface warfare {
@@ -76,7 +77,7 @@ declare global {
         active: Record<string, boolean>,
         checked: Record<string, boolean>
       },
-      healing: ValueMax,
+      healing: Record<IDString, BladesClockData>,
       stash: ValueMax,
 
       loadout: {
@@ -94,8 +95,7 @@ declare global {
       },
 
       attributes: Record<AttributeTrait, Record<ActionTrait, ValueMax>>,
-      resistance_bonus: Record<AttributeTrait, number>,
-      conditional_bonus: Record<RollableStat, string>
+      resistance_bonus: Record<AttributeTrait, number>
 
       experience: BladesActorSchemaTemplate.pcChar["experience"] & {
         [AttributeTrait.insight]: ValueMax,

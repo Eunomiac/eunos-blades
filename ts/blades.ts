@@ -18,11 +18,11 @@ import BladesActorProxy, {
 } from "./documents/BladesActorProxy";
 import BladesItemProxy, {
   BladesItem,
-  BladesClock,
   BladesClockKeeper,
   BladesGMTracker,
   BladesLocation,
-  BladesScore
+  BladesScore,
+  BladesProject
 } from "./documents/BladesItemProxy";
 
 import BladesItemSheet from "./sheets/item/BladesItemSheet";
@@ -555,7 +555,6 @@ class GlobalGetter {
     U,
     C,
     BladesItem,
-    BladesClock,
     BladesClockKeeper,
     BladesGMTracker,
     BladesLocation,
@@ -601,6 +600,7 @@ Hooks.once("init", async () => {
     BladesClockKeeperSheet.Initialize(),
     BladesPushAlert.Initialize(),
     BladesRoll.Initialize(),
+    BladesProject.Initialize(),
     BladesChat.Initialize(),
     preloadHandlebarsTemplates()
   ]);

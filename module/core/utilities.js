@@ -140,7 +140,7 @@ const GMID = () => game?.user?.find((user) => user.isGM)?.id ?? false;
 // #endregion ▄▄▄▄▄ GETTERS ▄▄▄▄▄
 // #region ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████ ~
 const isNumber = (ref) => typeof ref === "number" && !isNaN(ref);
-const isNumberString = (ref) => typeof ref === "string"
+const isNumString = (ref) => typeof ref === "string"
     && !isNaN(parseFloat(ref))
     && isFinite(parseFloat(ref));
 const isBooleanString = (ref) => typeof ref === "string"
@@ -1097,8 +1097,8 @@ const objClone = (obj, isStrictlySafe = false) => {
 function objMerge(target, source, { isMutatingOk = false, isStrictlySafe = false, isConcatenatingArrays = true, isReplacingArrays = false } = {}) {
     // Clone the target if mutation is not allowed
     target = isMutatingOk ? target : objClone(target, isStrictlySafe);
-    // If source is an instance of Application or target is undefined, return source
-    if (source instanceof Application || isUndefined(target)) {
+    // If source is an instance of  or target is undefined, return source
+    if ((source && typeof source === "object" && "id" in source && isDocID(source.id)) || isUndefined(target)) {
         return source;
     }
     // If source is undefined, return target
@@ -1535,7 +1535,7 @@ const EventHandlers = {
                 value = `${elem.value}`;
                 break;
             default: {
-                if (isNumberString(value)) {
+                if (isNumString(value)) {
                     throw new Error("You must set 'data-dtype=\"Number\"' for <select> elements with number values.");
                 }
                 if (isBooleanString(value)) {
@@ -1613,7 +1613,7 @@ export default {
     // ████████ GETTERS: Basic Data Lookup & Retrieval ████████
     GMID, getUID,
     // ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████
-    isNumber, isNumberString, isBooleanString, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
+    isNumber, isNumString, isBooleanString, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
     isHTMLCode, isRGBColor, isHexColor,
     isUndefined, isDefined, isEmpty, hasItems, isInstance, isNullish,
     areEqual, areFuzzyEqual,

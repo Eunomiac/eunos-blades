@@ -18,17 +18,18 @@ class BladesFactionSheet extends BladesActorSheet {
         }
         const sheetData = {
             tierData: {
-                "class": "comp-tier comp-vertical comp-teeth",
-                "label": "Tier",
-                "labelClass": "filled-label full-width",
-                "dotline": {
+                class: "comp-tier comp-vertical comp-teeth",
+                label: "Tier",
+                labelClass: "filled-label full-width",
+                dotline: {
                     data: this.actor.system.tier,
                     target: "system.tier.value",
                     svgKey: "teeth.tall",
                     svgFull: "full|half|frame",
                     svgEmpty: "full|half|frame"
                 }
-            }
+            },
+            clocks: this.actor.getClocks()
         };
         return {
             ...context,

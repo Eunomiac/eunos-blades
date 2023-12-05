@@ -9,7 +9,6 @@ import BladesRoll, {BladesRollOpposition} from "../../BladesRoll";
 
 /* #region BladesTipGenerator */
 
-// eslint-disable-next-line no-shadow
 export enum BladesTipContext {
   DiceRoll = "DiceRoll",
   Combat = "Combat",
@@ -289,7 +288,7 @@ class BladesScoreSheet extends BladesItemSheet {
   }
 
   override async _onSubmit(event: OnSubmitEvent, params: List<unknown> = {}) {
-    eLog.checkLog3("scoreSheet", "_onSubmit()", {event, params, elemText: event.currentTarget.innerHTML});
+    // eLog.checkLog3("scoreSheet", "_onSubmit()", {event, params, elemText: event.currentTarget.innerHTML});
     let isForcingRender = true;
 
 

@@ -1,6 +1,6 @@
 // #region Imports ~
 import U from "./core/utilities";
-import C, {BladesActorType, Tag, Playbook, BladesItemType, AttributeTrait, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor, Vice} from "./core/constants";
+import C, {BladesActorType, Tag, Playbook, ClockColor, BladesItemType, AttributeTrait, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor, Vice} from "./core/constants";
 
 import {BladesPC, BladesNPC} from "./documents/BladesActorProxy";
 import {BladesItem} from "./documents/BladesItemProxy";
@@ -8,6 +8,7 @@ import {BladesItem} from "./documents/BladesItemProxy";
 import {BladesRollMod} from "./BladesRoll";
 import BladesPushAlert from "./BladesPushAlert";
 import {SelectionCategory} from "./BladesDialog";
+import BladesClock from "./documents/items/BladesClock";
 
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
@@ -46,7 +47,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     // ~ Create world_name
     data.system.world_name = data.system.world_name ?? data.name.replace(/[^A-Za-z_0-9 ]/g, "").trim().replace(/ /g, "_");
 
-    return super.create(data, options);
+    return await super.create(data, options);
   }
   // #endregion
 
@@ -253,10 +254,10 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     const actor = BladesActor.Get(actorRef);
     if (!actor?.id) { return undefined; }
     if (!BladesActor.IsType(actor, BladesActorType.npc, BladesActorType.faction)) { return actor; }
-    const subActorData = this.system.subactors[actor.id] ?? {};
+    const subActorData = (this.system.subactors[actor.id] ?? {}) as SubActorData;
     Object.assign(
       actor.system,
-      mergeObject(actor.system, subActorData)
+      subActorData
     );
     actor.parentActor = this;
     return actor;
@@ -862,6 +863,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   // #endregion
 
   // #region OVERRIDES: _onCreateDescendantDocuments, update ~
+
   // @ts-expect-error New method not defined in @league VTT types.
   override async _onCreateDescendantDocuments(parent: BladesActor, collection: "items"|"effects", docs: BladesItem[]|BladesActiveEffect[], data: BladesItem[]|BladesActiveEffect[], options: Record<string, boolean>, userId: string) {
     await Promise.all(docs.map(async (doc) => {

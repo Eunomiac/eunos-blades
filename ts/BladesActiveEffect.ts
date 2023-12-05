@@ -24,7 +24,7 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, effect?
   },
   addIfChargen: async (actor, funcData, _, isReversing = false) => {
     eLog.checkLog("activeEffects", "addIfChargen", {actor, funcData, isReversing});
-    if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return }
+    if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return; }
     const [target, qty] = funcData.split(/:/);
     if (isReversing) {
       await actor.update({[target]: U.pInt(getProperty(actor, target)) - U.pInt(qty)});
@@ -34,7 +34,7 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, effect?
   },
   upgradeIfChargen: async (actor, funcData, _, isReversing = false) => {
     eLog.checkLog("activeEffects", "upgradeIfChargen", {actor, funcData, isReversing});
-    if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return }
+    if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return; }
     const [target, qty] = funcData.split(/:/);
     if (getProperty(actor, target) < U.pInt(qty)) {
       await actor.update({[target]: U.pInt(qty)});
@@ -59,13 +59,13 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, effect?
       }
       const {type, tags, name} = JSON.parse(funcData);
       let activeSubItems = actor.activeSubItems;
-      if (activeSubItems.length === 0) { return undefined }
-      if (name) { activeSubItems = activeSubItems.filter((item) => testString(item.name, name)) }
-      if (activeSubItems.length === 0) { return undefined }
-      if (type) { activeSubItems = activeSubItems.filter((item) => testString(item.type, type)) }
-      if (activeSubItems.length === 0) { return undefined }
-      if (tags) { activeSubItems = activeSubItems.filter((item) => item.hasTag(...tags)) }
-      if (activeSubItems.length === 0) { return undefined }
+      if (activeSubItems.length === 0) { return undefined; }
+      if (name) { activeSubItems = activeSubItems.filter((item) => testString(item.name, name)); }
+      if (activeSubItems.length === 0) { return undefined; }
+      if (type) { activeSubItems = activeSubItems.filter((item) => testString(item.type, type)); }
+      if (activeSubItems.length === 0) { return undefined; }
+      if (tags) { activeSubItems = activeSubItems.filter((item) => item.hasTag(...tags)); }
+      if (activeSubItems.length === 0) { return undefined; }
       eLog.checkLog("activeEffects", "remItem - JSON OBJECT", {actor, funcData: JSON.parse(funcData), isReversing, activeSubItems});
       activeSubItems.forEach((item) => actor.remSubItem(item));
     }
@@ -112,7 +112,7 @@ class BladesActiveEffect extends ActiveEffect {
 
       eLog.checkLog3("effect", "PRECREATE ActiveEffect", {effect, parent: effect.parent?.name});
 
-      if (!(effect.parent instanceof BladesActor)) { return }
+      if (!(effect.parent instanceof BladesActor)) { return; }
 
       // Does this effect have an "APPLYTOMEMBERS" or "APPLYTOCOHORTS" CUSTOM effect?
       if (effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
@@ -131,7 +131,7 @@ class BladesActiveEffect extends ActiveEffect {
           }
         } else if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
           const changeKey = U.pullElement(effect.changes, (change) => change.key === "APPLYTOMEMBERS");
-          if (!changeKey) { return }
+          if (!changeKey) { return; }
           if (effect.parent.members.length > 0) {
             // If Crew & APPLYTOMEMBERS --> Create effect on members MINUS the 'APPLYTOMEMBERS' key
             await Promise.all(effect.parent.members.map(async (member) => member.createEmbeddedDocuments("ActiveEffect", [effect.toJSON()])));
@@ -183,7 +183,7 @@ class BladesActiveEffect extends ActiveEffect {
 
     Hooks.on("applyActiveEffect", (actor: BladesActor, changeData: EffectChangeData & {effect: BladesActiveEffect}) => {
 
-      if (!(actor instanceof BladesActor)) { return }
+      if (!(actor instanceof BladesActor)) { return; }
 
       if (changeData.key in CUSTOMFUNCS) {
         const funcData: BladesCustomFuncData = {
@@ -197,7 +197,7 @@ class BladesActiveEffect extends ActiveEffect {
     });
 
     Hooks.on("updateActiveEffect", (effect: BladesActiveEffect, {disabled}: {disabled: boolean}) => {
-      if (!(effect.parent instanceof BladesActor)) { return }
+      if (!(effect.parent instanceof BladesActor)) { return; }
       const customEffects = effect.changes.filter((changes: EffectChangeData) => changes.mode === 0);
       customEffects.forEach(({key, value}) => {
         const funcData: BladesCustomFuncData = {
@@ -211,7 +211,7 @@ class BladesActiveEffect extends ActiveEffect {
     });
 
     Hooks.on("deleteActiveEffect", async (effect: BladesActiveEffect) => {
-      if (!(effect.parent instanceof BladesActor)) { return }
+      if (!(effect.parent instanceof BladesActor)) { return; }
 
       // Does this effect have an "APPLYTOMEMBERS" or "APPLYTOCOHORTS" CUSTOM effect?
       if (effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
@@ -270,7 +270,7 @@ class BladesActiveEffect extends ActiveEffect {
 
   static ThrottleCustomFunc(actor: BladesActor, data: BladesCustomFuncData) {
     const {funcName, funcData, isReversing, effect} = data;
-    if (!actor.id) { return }
+    if (!actor.id) { return; }
     eLog.display(`Throttling Func: ${funcName}(${funcData}, ${isReversing})`);
     // Is there a currently-running function for this actor?
     if (actor.id && actor.id in FUNCQUEUE) {
@@ -293,14 +293,14 @@ class BladesActiveEffect extends ActiveEffect {
   }
 
   static async RunCustomFunc(actor: BladesActor, funcPromise: Promise<void>): Promise<void> {
-    if (!actor.id) { return }
+    if (!actor.id) { return; }
     eLog.checkLog("activeEffects", "... Running Func ...");
     await funcPromise;
     eLog.checkLog("activeEffects", "... Function Complete!");
     if (FUNCQUEUE[actor.id].queue.length) {
       const {funcName, funcData, isReversing, effect} = FUNCQUEUE[actor.id].queue.shift() ?? {};
-      if (!funcName || !(funcName in CUSTOMFUNCS)) { return }
-      if (!funcData) { return }
+      if (!funcName || !(funcName in CUSTOMFUNCS)) { return; }
+      if (!funcData) { return; }
       eLog.display(`Progressing Queue: ${funcName}(${funcData}, ${isReversing}) -- ${FUNCQUEUE[actor.id].queue.length} remaining funcs.`);
       FUNCQUEUE[actor.id].curFunc = BladesActiveEffect.RunCustomFunc(actor, CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing));
     } else {
@@ -324,9 +324,9 @@ class BladesActiveEffect extends ActiveEffect {
       }]);
     }
     const selector = a.closest("tr");
-    if (selector === null) { return null }
+    if (selector === null) { return null; }
     const effect = selector.dataset.effectId ? owner.effects.get(selector.dataset.effectId) as BladesActiveEffect : null;
-    if (!effect) { return null }
+    if (!effect) { return null; }
     switch ( a.dataset.action ) {
       case "edit":
         return effect.sheet?.render(true);
@@ -350,7 +350,7 @@ class BladesActiveEffect extends ActiveEffect {
 
   override get isSuppressed() {
     // Get source item from 'origin' field -- of form 'Actor.<id>.Item.<id>'
-    if (!/Actor.*Item/.test(this.origin)) { return super.isSuppressed }
+    if (!/Actor.*Item/.test(this.origin)) { return super.isSuppressed; }
     const [actorID, itemID] = this.origin.replace(/Actor\.|Item\./g, "").split(".");
     const actor = game.actors.get(actorID) as BladesActor;
     const item = actor.items.get(itemID) as BladesItem;

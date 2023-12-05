@@ -86,14 +86,19 @@
           <span class="tab-title">Clocks</span>
         </label>
 
-        {{#each system.clocks}}
+        {{#each clocks}}
         <div class="clock-row">
           <div class="clock-container">
-            {{> "systems/eunos-blades/templates/components/clock.hbs" system }}
+            {{> "systems/eunos-blades/templates/components/clock.hbs" }}
+            {{#if ../isGM}}
+            {{> "systems/eunos-blades/templates/parts/clock-sheet-row.hbs" this
+              targetKeyPrefix=(concat "system.clocks." id)
+            }}
+            {{/if}}
           </div>
           <div class="flex-vertical full-width">
               <div class="flex-horizontal full-width">
-                <input type="text" name="system.clocks.{{id}}.display" class="clock-label shadowed" value="{{display}}" />
+                <input type="text" name="system.clocks.{{id}}.name" class="clock-label shadowed" value="{{name}}" />
                 {{#if ../isGM}}
                 <input type="number" name="system.clocks.{{id}}.max" class="clock-size-input shadowed" value="{{max}}" />
                 <input type="text" name="system.clocks.{{id}}.color" class="clock-color-input shadowed" value="{{color}}" />
@@ -103,7 +108,7 @@
                 {{/if}}
               </div>
             {{#if ../isGM}}
-            <textarea name="system.clocks.{{id}}.gm_notes" class="full-width clock-gm-notes">{{gm_notes}}</textarea>
+
             {{/if}}
           </div>
         </div>

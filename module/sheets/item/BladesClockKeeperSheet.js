@@ -1,5 +1,6 @@
 import BladesItemSheet from "./BladesItemSheet.js";
 import BladesClockKeeper from "../../documents/items/BladesClockKeeper.js";
+import U from "../../core/utilities.js";
 class BladesClockKeeperSheet extends BladesItemSheet {
     static Get() { return game.eunoblades.ClockKeeper; }
     static get defaultOptions() {
@@ -47,8 +48,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     getData() {
         const context = super.getData();
         const sheetData = {
-            clock_keys: Object.fromEntries((Object.entries(context.system.clock_keys ?? {})
-                .filter(([keyID, keyData]) => Boolean(keyData && keyData.scene === context.system.targetScene))))
+            sceneOptions: Array.from(game.scenes)
         };
         return { ...context, ...sheetData };
     }
@@ -72,12 +72,28 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     }
     async activateListeners(html) {
         super.activateListeners(html);
-        // @ts-expect-error Fuck.
-        html.find("[data-action=\"add-key\"").on("click", this.addKey.bind(this));
-        // @ts-expect-error Fuck.
-        html.find("[data-action=\"delete-key\"").on("click", this.deleteKey.bind(this));
-        // @ts-expect-error Fuck.
-        html.find(".key-clock-counter").on("change", this.setKeySize.bind(this));
+        const self = this;
+        html.find("[data-action=\"add-key\"]").on({
+            click(event) {
+                event.preventDefault();
+                self.item.addClockKey();
+            }
+        });
+        html.find("[data-action=\"delete-key\"]").on({
+            click(event) {
+                event.preventDefault();
+                self.item.deleteClockKey($(event.currentTarget).data("id"));
+            }
+        });
+        html.find(".key-clock-counter").on({
+            change(event) {
+                event.preventDefault();
+                const keyID = $(event.currentTarget).data("id");
+                if (keyID) {
+                    self.item.setKeySize(keyID, U.pInt($(event.target).val()));
+                }
+            }
+        });
     }
 }
 export default BladesClockKeeperSheet;

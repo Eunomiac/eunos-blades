@@ -3,6 +3,7 @@ import U from "../../core/utilities";
 import G, {ApplyTooltipAnimations} from "../../core/gsap";
 import BladesActor from "../../BladesActor";
 import BladesItem from "../../BladesItem";
+import {BladesProject} from "../../documents/BladesItemProxy";
 import BladesActiveEffect from "../../BladesActiveEffect";
 
 import Tags from "../../core/tags";
@@ -46,7 +47,7 @@ class BladesItemSheet extends ItemSheet {
 
   _getTypedItemData: Record<BladesItemType, (context: BladesItemSheetData) => BladesItemSheetData> = {
     [BladesItemType.ability]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.ability)) { return undefined as never; }
+      if (!BladesItem.IsType(this.item, BladesItemType.ability)) {return undefined as never;}
       const sheetData: BladesItemDataOfType<BladesItemType.ability> = {};
       return {
         ...context,
@@ -54,25 +55,15 @@ class BladesItemSheet extends ItemSheet {
       };
     },
     [BladesItemType.background]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.background)) { return undefined as never; }
-      const sheetData: BladesItemDataOfType<BladesItemType.background> = {
-      };
-      return {
-        ...context,
-        ...sheetData
-      };
-    },
-    [BladesItemType.clock]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.clock)) { return undefined as never; }
-      const sheetData: BladesItemDataOfType<BladesItemType.clock> = {
-      };
+      if (!BladesItem.IsType(this.item, BladesItemType.background)) {return undefined as never;}
+      const sheetData: BladesItemDataOfType<BladesItemType.background> = {};
       return {
         ...context,
         ...sheetData
       };
     },
     [BladesItemType.clock_keeper]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.clock_keeper)) { return undefined as never; }
+      if (!BladesItem.IsType(this.item, BladesItemType.clock_keeper)) {return undefined as never;}
       const sheetData: BladesItemDataOfType<BladesItemType.ability> = {
         phases: Object.values(BladesPhase)
       };
@@ -116,58 +107,55 @@ class BladesItemSheet extends ItemSheet {
     },
     [BladesItemType.cohort_expert]: (context) => this._getTypedItemData[BladesItemType.cohort_gang](context),
     [BladesItemType.crew_ability]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.crew_ability)) { return undefined as never; }
-      const sheetData: BladesItemDataOfType<BladesItemType.crew_ability> = {
-      };
+      if (!BladesItem.IsType(this.item, BladesItemType.crew_ability)) {return undefined as never;}
+      const sheetData: BladesItemDataOfType<BladesItemType.crew_ability> = {};
       return {
         ...context,
         ...sheetData
       };
     },
     [BladesItemType.crew_reputation]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.crew_reputation)) { return undefined as never; }
-      const sheetData: BladesItemDataOfType<BladesItemType.crew_reputation> = {
-      };
+      if (!BladesItem.IsType(this.item, BladesItemType.crew_reputation)) {return undefined as never;}
+      const sheetData: BladesItemDataOfType<BladesItemType.crew_reputation> = {};
       return {
         ...context,
         ...sheetData
       };
     },
     [BladesItemType.crew_playbook]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.crew_playbook)) { return undefined as never; }
+      if (!BladesItem.IsType(this.item, BladesItemType.crew_playbook)) {return undefined as never;}
       if (context.isGM) {
         const expClueData: Record<string, string> = {};
-        [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
+        [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => {expClueData[(i + 1).toString()] = clue;});
         context.system.experience_clues = expClueData;
       }
-      const sheetData: BladesItemDataOfType<BladesItemType.crew_playbook> = {
-      };
+      const sheetData: BladesItemDataOfType<BladesItemType.crew_playbook> = {};
       return {
         ...context,
         ...sheetData
       };
     },
     [BladesItemType.crew_upgrade]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.crew_upgrade)) { return undefined as never; }
-      const sheetData: BladesItemDataOfType<BladesItemType.crew_upgrade> = {
-      };
+      if (!BladesItem.IsType(this.item, BladesItemType.crew_upgrade)) {return undefined as never;}
+      const sheetData: BladesItemDataOfType<BladesItemType.crew_upgrade> = {};
       return {
         ...context,
         ...sheetData
       };
     },
     [BladesItemType.feature]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.feature)) { return undefined as never; }
-      const sheetData: BladesItemDataOfType<BladesItemType.feature> = {
-      };
+      if (!BladesItem.IsType(this.item, BladesItemType.feature)) {return undefined as never;}
+      const sheetData: BladesItemDataOfType<BladesItemType.feature> = {};
       return {
         ...context,
         ...sheetData
       };
     },
     [BladesItemType.gm_tracker]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.gm_tracker)) { return undefined as never; }
+      if (!BladesItem.IsType(this.item, BladesItemType.gm_tracker)) {return undefined as never;}
       const sheetData: BladesItemDataOfType<BladesItemType.gm_tracker> = {
+        phase: this.item.system.phase as BladesPhase,
+        phases: Object.values(BladesPhase)
       };
       return {
         ...context,
@@ -175,16 +163,15 @@ class BladesItemSheet extends ItemSheet {
       };
     },
     [BladesItemType.heritage]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.heritage)) { return undefined as never; }
-      const sheetData: BladesItemDataOfType<BladesItemType.heritage> = {
-      };
+      if (!BladesItem.IsType(this.item, BladesItemType.heritage)) {return undefined as never;}
+      const sheetData: BladesItemDataOfType<BladesItemType.heritage> = {};
       return {
         ...context,
         ...sheetData
       };
     },
     [BladesItemType.gear]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.gear)) { return undefined as never; }
+      if (!BladesItem.IsType(this.item, BladesItemType.gear)) {return undefined as never;}
       const sheetData: BladesItemDataOfType<BladesItemType.gear> = {
         tierData: {
           class: "comp-tier comp-vertical comp-teeth",
@@ -207,13 +194,13 @@ class BladesItemSheet extends ItemSheet {
       };
     },
     [BladesItemType.playbook]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.playbook)) { return undefined as never; }
+      if (!BladesItem.IsType(this.item, BladesItemType.playbook)) {return undefined as never;}
       if (context.isGM) {
         const expClueData: Record<string, string> = {};
-        [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => { expClueData[(i + 1).toString()] = clue; });
+        [...Object.values(context.system.experience_clues ?? []).filter((clue) => /[A-Za-z]/.test(clue)), " "].forEach((clue, i) => {expClueData[(i + 1).toString()] = clue;});
         context.system.experience_clues = expClueData;
         const gatherInfoData: Record<string, string> = {};
-        [...Object.values(context.system.gather_info_questions ?? []).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => { gatherInfoData[(i + 1).toString()] = question; });
+        [...Object.values(context.system.gather_info_questions ?? []).filter((question) => /[A-Za-z]/.test(question)), " "].forEach((question, i) => {gatherInfoData[(i + 1).toString()] = question;});
         context.system.gather_info_questions = gatherInfoData;
       }
       const sheetData: BladesItemDataOfType<BladesItemType.playbook> = {};
@@ -223,35 +210,33 @@ class BladesItemSheet extends ItemSheet {
       };
     },
     [BladesItemType.preferred_op]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.preferred_op)) { return undefined as never; }
-      const sheetData: BladesItemDataOfType<BladesItemType.preferred_op> = {
-      };
+      if (!BladesItem.IsType(this.item, BladesItemType.preferred_op)) {return undefined as never;}
+      const sheetData: BladesItemDataOfType<BladesItemType.preferred_op> = {};
       return {
         ...context,
         ...sheetData
       };
     },
     [BladesItemType.stricture]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.stricture)) { return undefined as never; }
-      const sheetData: BladesItemDataOfType<BladesItemType.stricture> = {
-      };
+      if (!BladesItem.IsType(this.item, BladesItemType.stricture)) {return undefined as never;}
+      const sheetData: BladesItemDataOfType<BladesItemType.stricture> = {};
       return {
         ...context,
         ...sheetData
       };
     },
     [BladesItemType.vice]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.vice)) { return undefined as never; }
-      const sheetData: BladesItemDataOfType<BladesItemType.vice> = {
-      };
+      if (!BladesItem.IsType(this.item, BladesItemType.vice)) {return undefined as never;}
+      const sheetData: BladesItemDataOfType<BladesItemType.vice> = {};
       return {
         ...context,
         ...sheetData
       };
     },
     [BladesItemType.project]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.project)) { return undefined as never; }
+      if (!BladesProject.IsType(this.item)) {return undefined as never;}
       const sheetData: BladesItemDataOfType<BladesItemType.project> = {
+        clockKey: (this.item as BladesProject).currentClock
       };
       return {
         ...context,
@@ -259,34 +244,31 @@ class BladesItemSheet extends ItemSheet {
       };
     },
     [BladesItemType.ritual]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.ritual)) { return undefined as never; }
-      const sheetData: BladesItemDataOfType<BladesItemType.ritual> = {
-      };
+      if (!BladesItem.IsType(this.item, BladesItemType.ritual)) {return undefined as never;}
+      const sheetData: BladesItemDataOfType<BladesItemType.ritual> = {};
       return {
         ...context,
         ...sheetData
       };
     },
     [BladesItemType.design]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.design)) { return undefined as never; }
-      const sheetData: BladesItemDataOfType<BladesItemType.design> = {
-      };
+      if (!BladesItem.IsType(this.item, BladesItemType.design)) {return undefined as never;}
+      const sheetData: BladesItemDataOfType<BladesItemType.design> = {};
       return {
         ...context,
         ...sheetData
       };
     },
     [BladesItemType.location]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.location)) { return undefined as never; }
-      const sheetData: BladesItemDataOfType<BladesItemType.location> = {
-      };
+      if (!BladesItem.IsType(this.item, BladesItemType.location)) {return undefined as never;}
+      const sheetData: BladesItemDataOfType<BladesItemType.location> = {};
       return {
         ...context,
         ...sheetData
       };
     },
     [BladesItemType.score]: (context) => {
-      if (!BladesItem.IsType(this.item, BladesItemType.score)) { return undefined as never; }
+      if (!BladesItem.IsType(this.item, BladesItemType.score)) {return undefined as never;}
       return context;
     }
   };

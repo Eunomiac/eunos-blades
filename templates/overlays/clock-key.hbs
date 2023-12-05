@@ -1,27 +1,18 @@
-{{eLog "CLOCK KEY" this}}
+<div class="clock-key-container">
 {{#if isVisible}}
-  <div id="{{id}}" class="clock-key {{~#if isActive}} active-key{{/if}}" data-size="{{count clocks}}">
+  <div id="{{id}}" class="clock-key {{~#if isActive}} active-key{{/if}}" data-size="{{size}}">
     {{#if isNameVisible}}
-    <label class="key-label" data-key-id="{{id}}">{{display}}</label>
+    <label class="key-label" data-key-id="{{id}}">{{name}}</label>
     {{/if}}
-    <div class="clock-label-container">
-      {{#each clocks as |clockData clockNum|}}
-      {{#if clockData.isNameVisible}}
-        <label class="clock-label {{~#if clockData.isActive}} clock-active{{/if}}" data-clock-num="{{clockNum}}">
-          <span class="short-label">{{clockData.display}}</span>
-        </label>
-      {{/if}}
-      {{/each}}
-    </div>
-    <div class="clock-image-container">
+    <div class="key-image-container">
       <svg class="key-image">
-        <use href="#{{count clocks}}-key" class="key-bg" />
-        <rect class="metallic-overlay" x="0" y="0" clip-path="url(#{{count clocks}}-key-clip" />
+        <use href="#{{size}}-key" class="key-bg" />
+        <rect class="metallic-overlay" x="0" y="0" clip-path="url(#{{size}}-key-clip" />
       </svg>
-      {{#each clocks as |clockData clockNum|}}
-        {{> "systems/eunos-blades/templates/components/clock.hbs" clockData
-          clockNum=clockNum}}
+      {{#each clocksData }}
+        {{> "systems/eunos-blades/templates/components/clock.hbs" }}
       {{/each}}
     </div>
   </div>
 {{/if}}
+</div>

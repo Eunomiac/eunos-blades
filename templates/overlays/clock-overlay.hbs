@@ -1,24 +1,10 @@
 <svg class="svg-defs" viewBox="0 0 400 400">
   <defs>
-    {{#each svgData.clocks.segments as |path size|}}
-    <path id="{{size}}-segment" class="clock-segment" d="{{path}}"/>
-    {{/each}}
-
     {{#each svgData.keys.list as |keyData size|}}
     <path id="{{size}}-key" d="{{keyData.path}}" />
     <clipPath id="{{size}}-key-clip">
       <use href="#{{size}}-key" />
     </clipPath>
-    {{/each}}
-
-    {{#each clockSizes as |clockSize|}}
-      {{#for 1 clockSize}}
-        <clipPath id="{{this}}-of-{{clockSize}}" class="segmented" data-size="{{clockSize}}">
-          {{#for 1 this}}
-            <use href="#{{clockSize}}-segment" />
-          {{/for}}
-        </clipPath>
-      {{/for}}
     {{/each}}
 
     <filter id="metallicFilter">

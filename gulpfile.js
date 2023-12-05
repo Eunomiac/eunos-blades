@@ -227,53 +227,71 @@ const BANNERTEMPLATE = {
 
 let BUILDFILES = {};
 
-if (ISRAPIDGULPING) {
-  BUILDFILES = {
-    ts: {
-      "./module/": ["ts/**/*.*"]
-    },
-    css: {
-      "./css/": ["scss/**/*.scss"]
-    },
-    hbs: {
-      "./templates/": ["DISABLE"]
-    },
-    quickAssets: {
-      "./css/": ["scss/**/*.css"]
-    }
-  };
-} else if (ISCOMPILINGCODE) {
-  BUILDFILES = {
-    ts: {
-      "./module_staging_1/": ["ts/**/*.*"]
-    },
-    css: {
-      "./css/": ["scss/**/*.scss"]
-    },
-    hbs: {
-      "./templates/": ["DISABLE"]
-    },
-    quickAssets: {
-      "./assets/": ["DISABLE"],
-      "./css/": ["scss/**/*.css"],
-      "./module/": ["module_staging_1/**/*.map"]
-    },
-    slowAssets: {
-      "./assets/": ["DISABLE"]
-    }
-  };
-
-  if (ISMINIFYINGJS) {
-    BUILDFILES.js = {
-      "./module_staging_2/": ["module_staging_1/**/*.js"]
-    };
-    BUILDFILES.js_2 = {
-      "./module/": ["module_staging_1/**/*.js"]
+if (ISCOMPILINGCODE) {
+  if (ISRAPIDGULPING) {
+    BUILDFILES = {
+      ts: {
+        "./module/": ["ts/**/*.*"]
+      },
+      css: {
+        "./css/": ["scss/**/*.scss"]
+      },
+      hbs: {
+        "./templates/": ["DISABLE"]
+      },
+      quickAssets: {
+        "./css/": ["scss/**/*.css"]
+      }
     };
   } else {
-    BUILDFILES.js = {
-      "./module/": ["module_staging_1/**/*.js"]
+    BUILDFILES = {
+      ts: {
+        "./module_staging_1/": ["ts/**/*.*"]
+      },
+      css: {
+        "./css/": ["scss/**/*.scss"]
+      },
+      hbs: {
+        "./templates/": ["DISABLE"]
+      },
+      quickAssets: {
+        "./assets/": ["DISABLE"],
+        "./css/": ["scss/**/*.css"],
+        "./module/": ["module_staging_1/**/*.map"]
+      },
+      slowAssets: {
+        "./assets/": ["DISABLE"]
+      }
     };
+
+    if (ISMINIFYINGJS) {
+      BUILDFILES.js = {
+        "./module_staging_2/": ["module_staging_1/**/*.js"]
+      };
+      BUILDFILES.js_2 = {
+        "./module/": ["module_staging_1/**/*.js"]
+      };
+    } else {
+      BUILDFILES.js = {
+        "./module/": ["module_staging_1/**/*.js"]
+      };
+    }
+  }
+
+  if (ISBUILDINGDIST) {
+    BUILDFILES.js ??= {};
+    BUILDFILES.js[`${DISTROOT}/module/`] = ["module/**/*.js"];
+    BUILDFILES.css ??= {};
+    BUILDFILES.css[`${DISTROOT}/css/`] = ["scss/**/*.scss"];
+    BUILDFILES.hbs ??= {};
+    BUILDFILES.hbs[`${DISTROOT}/templates/`] = ["templates/**/*.hbs", "templates/**/*.html"];
+    BUILDFILES.quickAssets ??= {};
+    BUILDFILES.quickAssets[`${DISTROOT}/`] = ["system.json", "template.json", /* "LICENSE.txt", */ "package.json"];
+    BUILDFILES.quickAssets[`${DISTROOT}/css/`] = ["scss/**/*.css"];
+    BUILDFILES.slowAssets ??= {};
+    BUILDFILES.slowAssets[`${DISTROOT}/assets/`] = ["assets/**/*.*"];
+    BUILDFILES.slowAssets[`${DISTROOT}/packs/`] = ["packs/**/*.*"];
+    BUILDFILES.slowAssets[`${DISTROOT}/lang/`] = ["lang/**/*.*"];
   }
 }
 
@@ -282,21 +300,6 @@ if (ISCOMPILINGIDESCSS) {
   BUILDFILES.css[CUSTOMCSS_DEST] = [`${CUSTOMCSS_SOURCE}*.scss`];
 }
 
-if (ISBUILDINGDIST) {
-  BUILDFILES.js ??= {};
-  BUILDFILES.js[`${DISTROOT}/module/`] = ["module/**/*.js"];
-  BUILDFILES.css ??= {};
-  BUILDFILES.css[`${DISTROOT}/css/`] = ["scss/**/*.scss"];
-  BUILDFILES.hbs ??= {};
-  BUILDFILES.hbs[`${DISTROOT}/templates/`] = ["templates/**/*.hbs", "templates/**/*.html"];
-  BUILDFILES.quickAssets ??= {};
-  BUILDFILES.quickAssets[`${DISTROOT}/`] = ["system.json", "template.json", /* "LICENSE.txt", */ "package.json"];
-  BUILDFILES.quickAssets[`${DISTROOT}/css/`] = ["scss/**/*.css"];
-  BUILDFILES.slowAssets ??= {};
-  BUILDFILES.slowAssets[`${DISTROOT}/assets/`] = ["assets/**/*.*"];
-  BUILDFILES.slowAssets[`${DISTROOT}/packs/`] = ["packs/**/*.*"];
-  BUILDFILES.slowAssets[`${DISTROOT}/lang/`] = ["lang/**/*.*"];
-}
 // #endregion ░░░░[BUILD FILES]░░░░
 // #region ░░░░░░░[REGEXP PATTERNS]░░░░░░░ ~
 const REGEXPPATTERNS = {

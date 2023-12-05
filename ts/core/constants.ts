@@ -15,7 +15,6 @@ export enum BladesActorType {
 export enum BladesItemType {
   ability = "ability",
   background = "background",
-  clock = "clock",
   clock_keeper = "clock_keeper",
   cohort_gang = "cohort_gang",
   cohort_expert = "cohort_expert",
@@ -353,7 +352,8 @@ export namespace Tag {
     ActivePC = "ActivePC",
     Small = "Small",
     Medium = "Medium",
-    Large = "Large"
+    Large = "Large",
+    CanHeal = "CanHeal"
   }
   export enum Invention {
     Arcane = "Arcane", // Arcane Designs
@@ -373,6 +373,7 @@ export namespace Tag {
   export enum NPC {
     Acquaintance = "Acquaintance",
     VicePurveyor = "VicePurveyor",
+    CanHeal = "CanHeal"
   }
   export enum GangType {
     Thugs = "Thugs",
@@ -4459,26 +4460,6 @@ export const SVGDATA = {
           6: {x: 188, y: 683}
         }
       }
-    }
-  },
-  clocks: {
-    size: 108,
-    glowScale: 3,
-    height: 400,
-    width: 400,
-    segments: {
-      2: "M400,200c0,110.46-89.54,200-200,200V0C310.46,0,400,89.54,400,200z",
-      3: "M200,0v200l173.229,100.014C390.252,270.593,400,236.436,400,200C400,89.543,310.457,0,200,0z",
-      4: "M200,0v200h200C400,89.543,310.457,0,200,0z",
-      5: "M390.248,138.185C364.207,57.985,288.881,0,200,0v200L390.248,138.185z",
-      6: "M373.229,99.986C338.646,40.215,274.021,0,200,0v200L373.229,99.986z",
-      8: "M341.421,58.579C305.229,22.386,255.229,0,200,0v200L341.421,58.579z",
-      10: "M317.557,38.197C284.557,14.18,243.938,0,200,0v200L317.557,38.197z",
-      12: "M300.014,26.771C270.593,9.748,236.436,0,200,0v200L300.014,26.771z"
-    },
-    glows: {
-
-
     }
   },
   teeth: {

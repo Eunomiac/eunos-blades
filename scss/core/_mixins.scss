@@ -107,3 +107,46 @@
     }
   }
 }
+@mixin generate-clock-clip($val, $max) {
+  $angle: 360deg / $max;
+
+  &[data-value='#{$val}'][data-max='#{$max}'] > *:not(.clock-frame) {
+    // Begin clip path at center, move up to "noon".
+    $clip-path: "polygon(50% 50%, 50% 0%";
+
+    @if $val >= 1 * ($max / 8) {
+      // If $val as reached the top right corner (1/8th of the clock), add that corner.
+      $clip-path: $clip-path + ", 100% 0%";
+    }
+
+    @if $val > 3 * ($max / 8) {
+      // If $val is farther along than the bottom right corner (3/8th of the clock), add that corner.
+      $clip-path: $clip-path + ", 100% 100%";
+    }
+
+    @if $val > 5 * ($max / 8) {
+      // If $val is farther along than the bottom left corner (5/8th of the clock), add that corner.
+      $clip-path: $clip-path + ", 0% 100%";
+    }
+
+    @if $val > 7 * ($max / 8) {
+      // If $val is farther along than the top left corner (7/8th of the clock), add that corner.
+      $clip-path: $clip-path + ", 0% 0%";
+    }
+
+    // Determine the position on the square perimeter that corresponds to the desired angle.
+    @if $val * $angle <= 90deg {
+      $clip-path: $clip-path + ", calc(50% + 50% * tan(#{$val * $angle})) 0%";
+    } @else if $val * $angle <= 180deg {
+      $clip-path: $clip-path + ", 100% calc(50% + 50% * tan(#{$val * $angle - 90deg}))";
+    } @else if $val * $angle <= 270deg {
+      $clip-path: $clip-path + ", calc(50% - 50% * tan(#{$val * $angle - 180deg})) 100%";
+    } @else {
+      $clip-path: $clip-path + ", 0% calc(50% - 50% * tan(#{$val * $angle - 270deg}))";
+    }
+
+    // Complete the polygon by returning to the center.
+    $clip-path: $clip-path + ", 50% 50%)";
+    clip-path: unquote($clip-path);
+  }
+}

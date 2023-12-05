@@ -1,8 +1,9 @@
-import C, { AttributeTrait, Harm, BladesActorType, BladesItemType, Tag, RollModType, RollModSection, RollModStatus } from "../../core/constants.js";
+import C, { ClockColor, AttributeTrait, Harm, BladesActorType, BladesItemType, Tag, RollModType, RollModSection, RollModStatus } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import { BladesActor } from "../BladesActorProxy.js";
 import { BladesItem } from "../BladesItemProxy.js";
 import BladesPushAlert from "../../BladesPushAlert.js";
+import BladesClock from "../items/BladesClock.js";
 import { SelectionCategory } from "../../BladesDialog.js";
 class BladesPC extends BladesActor {
     // #region Static Overrides: Create ~
@@ -45,7 +46,20 @@ class BladesPC extends BladesActor {
             clues: [],
             ...data.system.experience ?? {}
         };
-        return super.create(data, options);
+        const pc = (await super.create(data, options));
+        await BladesClock.Create({
+            id: randomID(),
+            name: "",
+            target: pc,
+            targetKey: "system.healing",
+            color: ClockColor.white,
+            value: 0,
+            max: 4,
+            isVisible: true,
+            isNameVisible: false,
+            isActive: true
+        });
+        return pc;
     }
     // #endregion
     constructor(data) {
@@ -189,6 +203,24 @@ class BladesPC extends BladesActor {
     }
     get stressMax() {
         return this.system.stress.max;
+    }
+    get healingClock() {
+        if (Object.values(this.system.healing).length > 0) {
+            return new BladesClock(Object.values(this.system.healing)[0]);
+        }
+        return undefined;
+    }
+    get harmLevel() {
+        if (this.system.harm.severe.one.length > 1) {
+            return 3;
+        }
+        if ((this.system.harm.moderate.one.length + this.system.harm.moderate.two.length) > 0) {
+            return 2;
+        }
+        if ((this.system.harm.lesser.one.length + this.system.harm.lesser.two.length) > 0) {
+            return 1;
+        }
+        return 0;
     }
     get trauma() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {

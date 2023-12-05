@@ -352,9 +352,6 @@ class BladesConsequence {
     }
     async transformToConsequence(typeRef, rollHTML) {
         const transformRecord = {};
-        // Prepare template context for accepted (original) consequence.
-        const csqTemplateData = this;
-        csqTemplateData.blockClass = "consequence-resisted";
         // Create HTML for accepted version of this consequence
         let csqAcceptedHTML = await renderTemplate("systems/eunos-blades/templates/components/consequence-accepted.hbs", Object.assign(this, { blockClass: "consequence-resisted" }));
         transformRecord["1) csqAcceptedHTML"] = csqAcceptedHTML;

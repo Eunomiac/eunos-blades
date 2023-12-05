@@ -18,21 +18,22 @@ class BladesFactionSheet extends BladesActorSheet {
 
   override getData() {
     const context = super.getData();
-    if (!BladesActor.IsType(this.actor, BladesActorType.faction)) { return context }
+    if (!BladesActor.IsType(this.actor, BladesActorType.faction)) { return context; }
 
     const sheetData: Partial<BladesActorSchema.Faction> & BladesActorDataOfType<BladesActorType.faction> = {
       tierData: {
-        "class": "comp-tier comp-vertical comp-teeth",
-        "label": "Tier",
-        "labelClass": "filled-label full-width",
-        "dotline": {
+        class: "comp-tier comp-vertical comp-teeth",
+        label: "Tier",
+        labelClass: "filled-label full-width",
+        dotline: {
           data: this.actor.system.tier,
           target: "system.tier.value",
           svgKey: "teeth.tall",
           svgFull: "full|half|frame",
           svgEmpty: "full|half|frame"
         }
-      }
+      },
+      clocks: this.actor.getClocks()
     };
 
     return {
@@ -49,7 +50,7 @@ class BladesFactionSheet extends BladesActorSheet {
   async _onClockDeleteClick(event: ClickEvent) {
     event.preventDefault();
     const clockID = $(event.currentTarget).data("clockId");
-    if (!clockID) { return }
+    if (!clockID) { return; }
     this.actor.deleteClock(clockID);
   }
 
@@ -57,7 +58,7 @@ class BladesFactionSheet extends BladesActorSheet {
     super.activateListeners(html);
 
     // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) {return}
+    if (!this.options.editable) {return;}
 
     // Update Inventory Item
     html.find(".item-body").on("click", (event) => {

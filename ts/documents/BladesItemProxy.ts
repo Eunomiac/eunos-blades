@@ -2,17 +2,17 @@ import U from "../core/utilities";
 import {BladesItemType} from "../core/constants";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import BladesItem from "../BladesItem";
-import BladesClock from "./items/BladesClock";
+import BladesProject from "./items/BladesProject";
 import BladesLocation from "./items/BladesLocation";
 import BladesClockKeeper from "./items/BladesClockKeeper";
 import BladesGMTracker from "./items/BladesGMTracker";
 import BladesScore from "./items/BladesScore";
 
 const ItemsMap: Partial<Record<BladesItemType, typeof BladesItem>> = {
-  [BladesItemType.clock]: BladesClock,
   [BladesItemType.clock_keeper]: BladesClockKeeper,
   [BladesItemType.gm_tracker]: BladesGMTracker,
   [BladesItemType.location]: BladesLocation,
+  [BladesItemType.project]: BladesProject,
   [BladesItemType.score]: BladesScore
 };
 
@@ -60,4 +60,4 @@ const BladesItemProxy = new Proxy(function() {}, {
 });
 
 export default BladesItemProxy;
-export {BladesItem, BladesClock, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore};
+export {BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesProject, BladesScore};

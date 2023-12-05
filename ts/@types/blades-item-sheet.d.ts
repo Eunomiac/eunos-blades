@@ -18,9 +18,8 @@ declare global {
 
     export interface Ability {}
     export interface Background {}
-    export interface Clock {}
     export interface Clock_Keeper {
-      phases: BladesPhase[]
+      sceneOptions: Scene[]
     }
     export interface Cohort_Gang {
       subtitle: string,
@@ -38,7 +37,10 @@ declare global {
     export interface Crew_Playbook {}
     export interface Crew_Upgrade {}
     export interface Feature {}
-    export interface Gm_Tracker {}
+    export interface Gm_Tracker {
+      phase: BladesPhase,
+      phases: BladesPhase[]
+    }
     export interface Heritage {}
     export interface Gear {
       tierData: BladesCompData
@@ -47,13 +49,17 @@ declare global {
     export interface Preferred_Op {}
     export interface Stricture {}
     export interface Vice {}
-    export interface Project {}
+    export interface Project {
+      clockKey: BladesClockKey
+    }
     export interface Ritual {}
     export interface Design {}
     export interface Location {}
     export interface Score {
       playerCharacters: Array<BladesActorOfType<BladesActorType.pc>>,
-      randomizerData: Record<RandomCat, Record<string, Record<string, any>>>
+      randomizerData: Record<RandomCat, Record<string, Record<string, any>>>,
+      clocks: Record<IDString, BladesClock>,
+      clockKeys: Record<IDString, BladesClockKey>
     }
   }
 
@@ -61,7 +67,6 @@ declare global {
   interface BladesItemSheetData extends BladesBaseItemSheetContext,
                                       Partial<BladesItemSheetTypedData.Ability>,
                                       Partial<BladesItemSheetTypedData.Background>,
-                                      Partial<BladesItemSheetTypedData.Clock>,
                                       Partial<BladesItemSheetTypedData.Clock_Keeper>,
                                       Partial<BladesItemSheetTypedData.Cohort_Gang>,
                                       Partial<BladesItemSheetTypedData.Cohort_Expert>,
@@ -87,7 +92,6 @@ declare global {
   type BladesItemDataOfType<T extends BladesItemType> = {
     [BladesItemType.ability]: BladesItemSheetTypedData.Ability,
     [BladesItemType.background]: BladesItemSheetTypedData.Background,
-    [BladesItemType.clock]: BladesItemSheetTypedData.Clock,
     [BladesItemType.clock_keeper]: BladesItemSheetTypedData.Clock_Keeper,
     [BladesItemType.cohort_gang]: BladesItemSheetTypedData.Cohort_Gang,
     [BladesItemType.cohort_expert]: BladesItemSheetTypedData.Cohort_Expert,

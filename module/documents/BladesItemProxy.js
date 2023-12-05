@@ -1,16 +1,16 @@
 import U from "../core/utilities.js";
 import { BladesItemType } from "../core/constants.js";
 import BladesItem from "../BladesItem.js";
-import BladesClock from "./items/BladesClock.js";
+import BladesProject from "./items/BladesProject.js";
 import BladesLocation from "./items/BladesLocation.js";
 import BladesClockKeeper from "./items/BladesClockKeeper.js";
 import BladesGMTracker from "./items/BladesGMTracker.js";
 import BladesScore from "./items/BladesScore.js";
 const ItemsMap = {
-    [BladesItemType.clock]: BladesClock,
     [BladesItemType.clock_keeper]: BladesClockKeeper,
     [BladesItemType.gm_tracker]: BladesGMTracker,
     [BladesItemType.location]: BladesLocation,
+    [BladesItemType.project]: BladesProject,
     [BladesItemType.score]: BladesScore
 };
 // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -50,4 +50,4 @@ const BladesItemProxy = new Proxy(function () { }, {
     }
 });
 export default BladesItemProxy;
-export { BladesItem, BladesClock, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore };
+export { BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesProject, BladesScore };
