@@ -336,6 +336,7 @@ class BladesConsequence {
             }
             this._specialTo = new BladesConsequence(specialTo);
         }
+        game.eunoblades.Consequences.set(this.id, this);
     }
     async applyConsequenceToPrimary() {
         // If HARM -> Apply harm to actor.

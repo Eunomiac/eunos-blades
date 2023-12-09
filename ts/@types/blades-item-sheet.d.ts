@@ -19,7 +19,8 @@ declare global {
     export interface Ability {}
     export interface Background {}
     export interface Clock_Keeper {
-      sceneOptions: Scene[]
+      sceneOptions: Scene[],
+      sceneKeys: Collection<BladesClockKey>
     }
     export interface Cohort_Gang {
       subtitle: string,
@@ -49,9 +50,7 @@ declare global {
     export interface Preferred_Op {}
     export interface Stricture {}
     export interface Vice {}
-    export interface Project {
-      clockKey: BladesClockKey
-    }
+    export interface Project {}
     export interface Ritual {}
     export interface Design {}
     export interface Location {}

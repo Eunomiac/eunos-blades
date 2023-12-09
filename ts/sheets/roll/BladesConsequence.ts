@@ -368,6 +368,8 @@ class BladesConsequence {
       if (!specialTo.name && specialTo.type !== ConsequenceType.None) { throw new Error("[new BladesConsequence] Missing 'specialTo.name' in constructor data object."); }
       this._specialTo = new BladesConsequence(specialTo);
     }
+
+    game.eunoblades.Consequences.set(this.id, this);
   }
 
   async applyConsequenceToPrimary() {

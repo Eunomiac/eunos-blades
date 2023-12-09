@@ -22,6 +22,7 @@
   $y: 0;
 
   // Calculate intersection point
+
   @if $angle > 315 or $angle <= 45 {
     // Top side
     $x: $radius + $radius * math.sin($angle-rad);
@@ -32,12 +33,13 @@
     $y: 100% - ($radius + $radius * math.cos($angle-rad));
   } @else if $angle > 135 and $angle <= 225 {
     // Bottom side
-    $x: $radius - $radius * math.sin($angle-rad);
+    $x: 100% - ($radius - $radius * math.sin($angle-rad));
+    // $x: $radius - $radius * math.cos($angle-rad);
     $y: $size;
   } @else if $angle > 225 and $angle <= 315 {
     // Left side
     $x: 0;
-    $y: 100% - ($radius - $radius * math.cos($angle-rad));
+    $y: $radius - $radius * math.cos($angle-rad);
   }
 
   @debug "For a square of $size: #{$size}, the intersection of $angle:#{$angle} is {x:#{$x}, y:#{$y}}.";
@@ -85,7 +87,8 @@
 }
 
 @mixin generate-clock-clip($val, $max, $size) {
-  &[data-value="#{$val}"][data-max="#{$max}"] > *:not(.clock-frame) {
+  &[data-value="#{$val}"][data-max="#{$max}"] .clock-glow,
+  &[data-value="#{$val}"][data-max="#{$max}"] .clock-fill {
     clip-path: polygon(#{calculate-polygon($val, $max)});
     // Begin clip path at center, move up to "noon".
     // $clip-path: "polygon(50% 50%, 50% 0%";
@@ -127,232 +130,379 @@
   }
 }
 
-:root {
-  // Default values that can be overriden via more-specific selectors:
-  --clock-size: 200px; // Size of the clock in pixels.
-  --clock-glow-mult: 3; // Multiplier to determine size of clock-glow.
-  --clock-glow-shift: -10%; // Percent vertical shift to account for offset animation
-}
+& {
 
-.clock {
-  pointer-events: auto !important;
-}
+  $key-sizes: (
+    1: (height: 455px, width: 202px, clocksCenterX: 101px, clocksCenterY: 99px, labelTop: 150px, inactiveKeyTop: -350px, inactiveLabelLeft: -40px, inactiveLabelBottom: 50px),
+    2: (height: 624.438px, width: 202px, clocksCenterX: 101px, clocksCenterY: 189px, labelTop: 400px, inactiveKeyTop: -520px, inactiveLabelLeft: -40px, inactiveLabelBottom: 50px),
+    3: (height: 915px, width: 280px, clocksCenterX: 140px, clocksCenterY: 169px, labelTop: 600px, inactiveKeyTop: -815px, inactiveLabelLeft: -10px, inactiveLabelBottom: 50px),
+    4: (height: 1140px, width: 376px, clocksCenterX: 188px, clocksCenterY: 185px, labelTop: 700px, inactiveKeyTop: -925px, inactiveLabelLeft: 40px, inactiveLabelBottom: 150px),
+    5: (height: 1140px, width: 376px, clocksCenterX: 188px, clocksCenterY: 185px, labelTop: 800px, inactiveKeyTop: -1025px, inactiveLabelLeft: 40px, inactiveLabelBottom: 50px),
+    6: (height: 1150px, width: 376px, clocksCenterX: 188px, clocksCenterY: 185px, labelTop: 900px, inactiveKeyTop: -1025px, inactiveLabelLeft: 40px, inactiveLabelBottom: 50px)
+  );
+  $clock-positions: (
+    1: (
+      0: (x: 101px, y: 99px)
+    ),
+    2: (
+      0: (x: 101px, y: 99px),
+      1: (x: 101px, y: 279px)
+    ),
+    3: (
+      0: (x: 140px, y: 99px),
+      1: (x: 74px, y: 211px),
+      2: (x: 206px, y: 211px)
+    ),
+    4: (
+      0: (x: 188px, y: 99px),
+      1: (x: 101px, y: 185px),
+      2: (x: 275px, y: 185px),
+      3: (x: 188px, y: 273px)
+    ),
+    5: (
+      0: (x: 188px, y: 99px),
+      1: (x: 101px, y: 185px),
+      2: (x: 275px, y: 185px),
+      3: (x: 188px, y: 273px),
+      4: (x: 188px, y: 452px)
+    ),
+    6: (
+      0: (x: 188px, y: 99px),
+      1: (x: 101px, y: 185px),
+      2: (x: 275px, y: 185px),
+      3: (x: 188px, y: 273px),
+      4: (x: 188px, y: 452px),
+      5: (x: 188px, y: 683px)
+    )
+  );
 
+  $label-positions: (
+    1: (
+      0: (x: 0, y: 0px, align: center, width: 100%),
+    ),
+    2: (
+      0: (x: 0, y: 0px, align: center, width: 100%),
+      1: (x: 0, y: 325px, align: center, width: 100%),
+    ),
+    3: (
+      0: (x: 0, y: 0px, align: center, width: 100%),
+      1: (x: -20px, y: 110px, align: right, width: 50%),
+      2: (x: 220px, y: 265px, align: left, width: 50%),
+    ),
+    4: (
+      0: (x: 0, y: 0px, align: center, width: 100%),
+      1: (x: -60px, y: 80px, align: right, width: 50%),
+      2: (x: 340px, y: 230px, align: left, width: 50%),
+      3: (x: 0, y: 320px, align: center, width: 100%)
+    ),
+    5: (
+      0: (x: 0, y: 0px, align: center, width: 100%),
+      1: (x: -60px, y: 80px, align: right, width: 50%),
+      2: (x: 340px, y: 230px, align: left, width: 50%),
+      3: (x: 0, y: 320px, align: center, width: 100%),
+      4: (x: 0, y: 500px, align: center, width: 100%),
+    ),
+    6: (
+      0: (x: 0, y: 0px, align: center, width: 100%),
+      1: (x: -60px, y: 80px, align: right, width: 50%),
+      2: (x: 340px, y: 230px, align: left, width: 50%),
+      3: (x: 0, y: 320px, align: center, width: 100%),
+      4: (x: 0, y: 500px, align: center, width: 100%),
+      5: (x: 0, y: 730px, align: center, width: 100%),
+    )
+  );
 
+  .clock-key-container {
+    position: relative;
 
-// .OLD-CSS {
-  & {
-    /* CLOCK KEYS */
+    // background: rgba(255, 0, 255, 0.25);
+    // outline: 2px dotted rgb(255, 0, 255);
 
-    // .clock-key {
-    //   position: relative;
-    //   margin: 0 20px;
-    //   height: var(--key-height);
-    //   width: var(--key-width);
+    @each $key, $clocks in $clock-positions {
+      &[data-size="#{$key}"] {
+        --key-height: #{map-get(map-get($key-sizes, $key), "height")};
+        --key-width: #{map-get(map-get($key-sizes, $key), "width")};
 
-    //   & > * { position: absolute }
+        .clock-key .key-image-container {
 
-    //   .key-label {
-    //     font-family: var(--font-decorative);
-    //     font-size: toRem(64px);
-    //     top: unset;
-    //     z-index: 20;
-    //     width: 100%;
-    //     pointer-events: all;
-    //     color: var(--blades-white-bright);
-    //     text-shadow:
-    //       0 0 15px var(--blades-black-dark),
-    //       0 0 15px var(--blades-black-dark),
-    //       0 0 15px var(--blades-black-dark),
-    //       0 0 15px var(--blades-black-dark);
-    //     // white-space: nowrap;
-    //     // rotate: -30deg;
-    //     left: 0;
-
-    //     &:hover {
-    //       color: var(--blades-gold-bright) !important;
-    //     }
-    //   }
-
-    //   &:not(.active-key) {
-    //     .key-label {
-    //       color: var(--blades-white);
-    //       font-family: var(--font-emphasis-narrow);
-    //       font-size: toRem(40px);
-    //       top: unset;
-    //       width: 200px;
-    //       rotate: 30deg;
-    //       text-align: left;
-    //       white-space: nowrap;
-    //     }
-    //     .clock-label-container { display: none }
-    //     .clock-image-container {
-    //       // .key-image { filter: drop-shadow(30px 30px 10px var(--blades-black-dark)) sepia(2) hue-rotate(130deg)  }
-    //     } .clock { display: none }
-    //   }
-
-    //   .clock-label-container {
-    //     height: var(--key-height);
-    //     width: calc(1.5 * var(--key-width));
-    //     left: calc(-0.25 * var(--key-width));
-    //     pointer-events: none;
-    //     z-index: 5;
-
-    //     .clock-label {
-    //       position: absolute;
-    //       // width: 100%;
-    //       .short-label {
-    //         font-size: toRem(40px);
-    //         font-family: var(--font-emphasis-narrow);
-    //         text-shadow:
-    //           0 0 15px var(--blades-black-dark),
-    //           0 0 15px var(--blades-black-dark),
-    //           0 0 15px var(--blades-black-dark),
-    //           0 0 15px var(--blades-black-dark);
-    //       }
-    //       &.clock-active .short-label {
-    //         color: var(--blades-white-bright);
-    //       }
-    //     }
-    //   }
-
-    //   .clock-image-container {
-    //     height: var(--key-height);
-    //     width: var(--key-width);
-
-    //     .key-image {
-    //       height: var(--key-height);
-    //       width: var(--key-width);
-    //       z-index: 1;
-    //       overflow: visible;
-    //       filter:
-    //         drop-shadow(0px 0px 10px var(--blades-white-bright))
-    //         drop-shadow(30px 30px 10px var(--blades-black-dark))
-    //         brightness(0.5);
-
-
-    //       .key-bg {
-    //         fill: var(--blades-black);
-    //       }
-
-    //       .metallic-overlay {
-    //         height: var(--key-height);
-    //         width: var(--key-width);
-    //         filter: url(#metallicFilter) blur(1px);
-    //         fill: var(--blades-grey-dark);
-    //       }
-    //     }
-    //   }
-
-    //   @each $key, $clocks in $clock-positions {
-    //     &[data-size="#{$key}"] {
-    //       --key-height: #{map-get(map-get($key-sizes, $key), "height")};
-    //       --key-width: #{map-get(map-get($key-sizes, $key), "width")};
-    //       .key-label {
-    //         top: map-get(map-get($key-sizes, $key), "labelTop");
-    //       }
-    //       @each $clock, $pos in $clocks {
-    //         .clock:nth-of-type(#{$clock}) {
-    //           left: map-get($pos, "x");
-    //           top: map-get($pos, "y");
-    //         }
-    //       }
-
-    //       &:not(.active-key) {
-    //         --key-width: 170px;
-    //         top: map-get(map-get($key-sizes, $key), "inactiveKeyTop");
-    //         .key-label {
-    //           left: map-get(map-get($key-sizes, $key), "inactiveLabelLeft");
-    //           top: unset !important;
-    //           bottom: #{map-get(map-get($key-sizes, $key), "inactiveLabelBottom")} !important;
-    //         }
-    //       }
-    //     }
-    //   }
-
-    //   @each $key, $labels in $label-positions {
-    //     &[data-size="#{$key}"] {
-    //       @each $label, $pos in $labels {
-    //         .clock-label[data-clock-num="#{$label}"] {
-    //           left: map-get($pos, "x");
-    //           top: map-get($pos, "y");
-    //           text-align: map-get($pos, "align");
-    //           width: map-get($pos, "width");
-    //         }
-    //       }
-    //     }
-    //   }
-
-    //   &:nth-child(2n+1) { top: var(--alternating-top-shift) }
-    // }
-
-    /* CLOCKS */
-    &.clock-container,
-    .clock-container {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: visible;
-
-      .clock {
-        position: relative;
-        overflow: visible;
-        pointer-events: all;
-
-        &,
-        & * {
-          height: var(--clock-size);
-          width: var(--clock-size);
-        }
-
-        .clock-frame,
-        .clock-fill,
-        .clock-glow {
-          position: absolute;
-          top: 0px;
-          left: 0px;
-          height: 100%;
-          width: 100%;
-        }
-
-        .clock-frame { z-index: 3; }
-        .clock-fill { z-index: 2; }
-        .clock-glow { z-index: 4; }
-
-        .clock-glow {
-          transform-origin: 50% 50%;
-          scale: var(--clock-glow-mult, 3);
-          // top: ;
-          // top: var(--clock-glow-shift);
-          // translate: 0 var(--clock-glow-correction);
-
-          // background: url("systems/eunos-blades/assets/animations/clock-flare.webp");
-          background-repeat: no-repeat;
-          background-position: center calc(50% - var(--clock-glow-shift, 7%));
-          background-size: cover;
-
-          &.clock-glow-white {
-            background-image: url("../assets/animations/clock-flare-white.webp");
+          .key-label {
+            top: map-get(map-get($key-sizes, $key), "labelTop");
           }
-          &.clock-glow-red {
-            background-image: url("../assets/animations/clock-flare-red.webp");
-          }
-          &.clock-glow-yellow {
-            background-image: url("../assets/animations/clock-flare-yellow.webp");
-          }
-          &.clock-glow-blue {
-            background-image: url("../assets/animations/clock-flare-blue.webp");
+          @each $clock, $pos in $clocks {
+            &[data-active-clock-slot="#{$clock}"] {
+              // transform-origin: #{map-get($pos, "x")} #{map-get($pos, "y")};
+            }
+            .clock-container:nth-of-type(#{$clock + 1}) {
+              left: map-get($pos, "x");
+              top: map-get($pos, "y");
+            }
           }
         }
 
-        // Generate clip-paths for all possible combinations of val and max
-        @for $max from 2 through 12 {
-          @for $val from 1 through $max {
-            @include generate-clock-clip($val, $max, 400px);
+        // &:not(.active-key) {
+        //   --key-width: 170px;
+        //   top: map-get(map-get($key-sizes, $key), "inactiveKeyTop");
+        //   .key-label {
+        //     left: map-get(map-get($key-sizes, $key), "inactiveLabelLeft");
+        //     top: unset !important;
+        //     bottom: #{map-get(map-get($key-sizes, $key), "inactiveLabelBottom")} !important;
+        //   }
+        // }
+      }
+    }
+
+    @each $key, $labels in $label-positions {
+      &[data-size="#{$key}"] {
+
+        .clock-key {
+          @each $label, $pos in $labels {
+            .clock-label[data-clock-num="#{$label}"] {
+              left: map-get($pos, "x");
+              top: map-get($pos, "y");
+              text-align: map-get($pos, "align");
+              width: map-get($pos, "width");
+            }
           }
         }
       }
     }
+
+    .clock-key {
+      visibility: hidden;
+
+      position: absolute;
+      display: block;
+      height: 100px;
+      width: 100px;
+
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+
+      // background: rgba(0, 255, 255, 0.25);
+      // outline: 2px dotted rgb(0, 255, 255);
+
+      & > * { position: absolute }
+
+      .key-label {
+        font-family: var(--font-decorative);
+        font-size: toRem(64px);
+        top: unset;
+        z-index: 20;
+        width: 100%;
+        pointer-events: all;
+        color: var(--blades-white-bright);
+        text-shadow:
+          0 0 15px var(--blades-black-dark),
+          0 0 15px var(--blades-black-dark),
+          0 0 15px var(--blades-black-dark),
+          0 0 15px var(--blades-black-dark);
+        // white-space: nowrap;
+        // rotate: -30deg;
+        left: 0;
+        position: absolute;
+
+        &:hover {
+          color: var(--blades-gold-bright) !important;
+        }
+      }
+
+      .key-image-container {
+        height: var(--key-height);
+        width: var(--key-width);
+
+        .key-image {
+          height: var(--key-height);
+          width: var(--key-width);
+          z-index: 1;
+          overflow: visible;
+          filter:
+            drop-shadow(0px 0px 10px var(--blades-white-bright))
+            drop-shadow(30px 30px 10px var(--blades-black-dark))
+            brightness(0.5);
+
+
+          .key-bg {
+            fill: var(--blades-black);
+          }
+
+          .metallic-overlay {
+            height: var(--key-height);
+            width: var(--key-width);
+            filter: url(#metallicFilter) blur(1px);
+            fill: var(--blades-grey-dark);
+          }
+        }
+      }
+    }
+  }
+
+  /* CLOCKS */
+  .clock-container {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    height: var(--clock-size, 110px);
+    width: var(--clock-size, 110px);
+    transform: translate(-50%, -50%) !important;
+
+    .clock {
+      position: relative;
+      overflow: visible;
+      pointer-events: all !important;
+
+      &,
+      & * {
+        height: var(--clock-size, 110px);
+        width: var(--clock-size, 110px);
+        pointer-events: none;
+      }
+
+      .clock-frame,
+      .clock-fill,
+      .clock-glow {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 100%;
+        width: 100%;
+      }
+
+      .clock-frame { z-index: 3; }
+      .clock-fill { z-index: 2; }
+      .clock-glow { z-index: 4; }
+
+      .clock-glow {
+        transform-origin: 50% 50%;
+        scale: var(--clock-glow-mult, 3);
+        // top: ;
+        // top: var(--clock-glow-shift);
+        // translate: 0 var(--clock-glow-correction);
+
+        // background: url("systems/eunos-blades/assets/animations/clock-flare.webp");
+        background-repeat: no-repeat;
+        background-position: center calc(50% - var(--clock-glow-shift, 7%));
+        background-size: cover;
+
+        &.clock-glow-white {
+          background-image: url("../assets/animations/clock-flare-white.webp");
+        }
+        &.clock-glow-red {
+          background-image: url("../assets/animations/clock-flare-red.webp");
+        }
+        &.clock-glow-yellow {
+          background-image: url("../assets/animations/clock-flare-yellow.webp");
+        }
+        &.clock-glow-blue {
+          background-image: url("../assets/animations/clock-flare-blue.webp");
+        }
+      }
+
+      // Generate clip-paths for all possible combinations of val and max
+      @for $max from 2 through 12 {
+        @for $val from 1 through $max {
+          @include generate-clock-clip($val, $max, 400px);
+        }
+      }
+
+      .clock-controls {
+        --row-height: 25px;
+        --row-gap: 2px;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        gap: var(--row-gap);
+        z-index: 50;
+        border-radius: 5px;
+        height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
+        transform: translate(-50%, -50%);
+        top: 50%;
+        left: 50%;
+
+        &:not(.controls-hidden) {
+          background: var(--blades-black-fade);
+        }
+
+        .clock-controls-row {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-evenly;
+          align-items: center;
+          height: var(--row-height);
+          max-height: var(--row-height);
+
+          * {
+            // pointer-events: all !important;
+            height: var(--row-height);
+            max-height: var(--row-height);
+            width: unset;
+            position: static;
+          }
+
+          .toggle-icon {
+            position: relative;
+            height: var(--row-height);
+            width: var(--row-height);
+            .hidden-toggle {
+              position: absolute;
+              pointer-events: all !important;
+            }
+
+
+            i { width: var(--row-height); }
+
+            .tooltip { position: absolute; }
+          }
+
+          &.toggle-controls-row {
+            position: absolute;
+            top: calc(-1 * var(--row-height));
+          }
+
+          &.name-row {
+            width: 100%;
+
+            > .clock-controls-name {
+              height: var(--row-height);
+              max-height: var(--row-height);
+              width: 100%;
+              pointer-events: all !important;
+            }
+          }
+
+          &.select-row {
+            justify-content: stretch;
+
+            select {
+              flex-grow: 1;
+              line-height: var(--row-height);
+              appearance: none; /* Remove default select dropdown arrow */
+              -webkit-appearance: none; /* Remove default select dropdown arrow for Chrome and Safari */
+              -moz-appearance: none; /* Remove default select dropdown arrow for Firefox */
+              background: transparent; /* Make the select element transparent to hide the arrow */
+              pointer-events: all; }
+
+          }
+
+          &.button-row {
+            .toggle-icon {
+              // width: auto;
+
+              i { width: var(--row-height); }
+
+              .tooltip { position: absolute; }
+            }
+          }
+        }
+      }
+    }
+  }
+
   // }
 }

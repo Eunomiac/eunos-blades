@@ -3,7 +3,7 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import C, {SVGDATA, HbsSvgData} from "./constants";
 // eslint-disable-next-line import/no-unresolved
-import {gsap, MotionPathPlugin} from "gsap/all";
+import {gsap, TextPlugin, Flip, MotionPathPlugin} from "gsap/all";
 gsap.registerPlugin(MotionPathPlugin);
 // #endregion ▮▮▮▮ IMPORTS ▮▮▮▮
 
@@ -1773,6 +1773,8 @@ export default {
 
   // ░░░░░░░ GreenSock ░░░░░░░
   gsap, get, set, getGSAngleDelta, /* to, from, fromTo, */
+
+  TextPlugin, Flip, MotionPathPlugin,
 
   getRawCirclePath, drawCirclePath,
 

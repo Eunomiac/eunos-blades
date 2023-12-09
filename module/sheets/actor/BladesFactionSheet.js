@@ -29,7 +29,7 @@ class BladesFactionSheet extends BladesActorSheet {
                     svgEmpty: "full|half|frame"
                 }
             },
-            clocks: this.actor.getClocks()
+            clocks: this.actor.clocks
         };
         return {
             ...context,

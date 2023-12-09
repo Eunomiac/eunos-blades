@@ -1,29 +1,32 @@
-import {ClockColor, Factor} from "../../core/constants";
+import C, {ClockColor, ClockKeyDisplayMode, Factor} from "../../core/constants";
 import U from "../../core/utilities";
 import {BladesItem} from "../BladesItemProxy";
 import BladesRoll from "../../BladesRoll";
 
 type BladesTargetLinkConfig = {
-  id: IDString,
-  target: string|BladesDoc,
+  target: string | BladesDoc,
+  id?: IDString,
   targetKey?: string,
   targetFlagKey?: string
 }
 
 class BladesTargetLink {
 
-  protected static validateConfig<T extends BladesTargetLinkConfig = BladesTargetLinkConfig>(ref: unknown): ref is T {
+  protected static validateConfig<T extends BladesTargetLinkConfig = BladesTargetLinkConfig>(ref: unknown):
+    ref is T & {id: IDString} {
     // Check if 'ref' is a simple object literal
-    if (!U.isSimpleObj(ref)) { return false; }
+    if (!U.isSimpleObj(ref)) {return false;}
     // Confirm a target key or flag key has been provided.
-    if (!ref.targetKey && !ref.targetFlagKey) { return false; }
+    if (!ref.targetKey && !ref.targetFlagKey) {return false;}
     // Confirm a target has been provided, and that it can be resolved to a Document entity.
-    if (!ref.target) { return false; }
+    if (!ref.target) {return false;}
     if (U.isDocID(ref.target)) {
       // Convert string id of target to target Document
       ref.target = game.actors.get(ref.target) ?? game.items.get(ref.target);
     }
-    if (!(ref.target instanceof Actor || ref.target instanceof Item)) { return false; }
+    if (!(ref.target instanceof Actor || ref.target instanceof Item)) {return false;}
+    // Create a random ID if one not provided.
+    if (!ref.id) {ref.id = randomID();}
     return true;
   }
 
@@ -31,19 +34,19 @@ class BladesTargetLink {
 
   _targetID: string;
 
-  get targetID() { return this._targetID; }
+  get targetID() {return this._targetID;}
 
   _target: BladesDoc;
 
-  get target(): BladesDoc { return this._target; }
+  get target(): BladesDoc {return this._target;}
 
   _targetKey = "system";
 
-  get targetKey(): string { return this._targetKey; }
+  get targetKey(): string {return this._targetKey;}
 
   _targetFlagKey?: string;
 
-  get targetFlagKey(): string|undefined { return this._targetFlagKey; }
+  get targetFlagKey(): string | undefined {return this._targetFlagKey;}
 
   constructor(config: BladesTargetLinkConfig) {
     if (!BladesTargetLink.validateConfig(config)) {
@@ -63,12 +66,12 @@ class BladesTargetLink {
     if (this.targetFlagKey) {
       return this.target.getFlag("eunos-blades", `${this.targetFlagKey}.${this._id}`);
     }
-    return getProperty(this.target, `${this.targetKey}.${this._id}`);
+    return getProperty(this.target, `${this.targetKey}.${this._id}`) ?? {};
   }
 
-  get id() { return this._id; }
+  get id() {return this._id;}
 
-  get name(): string { return this.getSystemData().name; }
+  get name(): string {return this.getSystemData().name;}
 
   protected async updateTarget(prop: string, val: unknown) {
     if (this.targetFlagKey) {
@@ -97,22 +100,20 @@ class BladesTargetLink {
   }
 }
 
-
 export type BladesClockKeyConfig = Partial<BladesClockKeySystemData> & BladesTargetLinkConfig;
 
 class BladesClockKey extends BladesTargetLink implements BladesClockKeyData,
   BladesRoll.OppositionDocData {
 
-  static get DefaultSchema(): Omit<BladesClockKeySystemData, "target"> {
+  // #region STATIC METHODS ~
+  static get DefaultSchema(): Omit<BladesClockKeySystemData, "target" | "id"> {
     return {
-      id: randomID(),
       name: "",
 
-      size: 1,
-
-      isVisible: false,
+      isVisible: true,
       isActive: false,
       isNameVisible: false,
+      isShowingControls: game.user.isGM,
 
       clocksData: {}
     };
@@ -123,30 +124,19 @@ class BladesClockKey extends BladesTargetLink implements BladesClockKeyData,
     const keyData: BladesClockKeySystemData = {
       ...this.DefaultSchema,
       ...clockKeyConfig
-    };
+    } as BladesClockKeySystemData;
 
     if (keyData.target instanceof Actor || keyData.target instanceof Item) {
       keyData.target = keyData.target.id;
     }
 
-    const clockID = randomID();
-
-    const clockTargetLinkData: BladesTargetLinkConfig = {
-      id: clockID,
-      target: keyData.target as string,
-      targetKey: keyData.targetKey ? `${keyData.targetKey}.${keyData.id}.clocksData` : undefined,
-      targetFlagKey: keyData.targetFlagKey ? `${keyData.targetKey}.${keyData.id}.clocksData` : undefined
-    };
-
-    keyData.clocksData[clockID] = {
-      ...BladesClock.DefaultSchema,
-      ...(clockTargetLinkData as BladesTargetLinkConfig & {target: string})
-    };
-
     return keyData;
   }
 
-  static async Create(clockKeyConfig: BladesClockKeyConfig): Promise<BladesClockKey> {
+  static async Create(
+    clockKeyConfig: BladesClockKeyConfig,
+    clockConfig: Partial<BladesClockData> = {}
+  ): Promise<BladesClockKey> {
     if (!this.validateConfig<BladesClockKeyConfig>(clockKeyConfig)) {
       eLog.error("[BladesClockKey.Create()] Invalid Config", clockKeyConfig);
       throw new Error("See log.");
@@ -160,22 +150,44 @@ class BladesClockKey extends BladesTargetLink implements BladesClockKeyData,
     // Wait for clockKey data to be written to target
     await clockKey.initialize();
 
+    // If key created without clock data, initialize with a single clock
+    if (clockKey.size === 0) {
+      await clockKey.addClock(clockConfig);
+    }
+
     return clockKey;
   }
+  // #endregion
 
-  get isVisible(): boolean { return this.getSystemData().isVisible; }
+  // #region GETTERS & SETTERS ~
+  get clocksData(): Record<IDString, BladesClockData> {return this.getSystemData().clocksData ?? {};}
 
-  get isActive(): boolean { return this.getSystemData().isActive; }
+  get clocks(): Collection<BladesClock> {
+    return new Collection(
+      Object.entries(this.clocksData ?? {})
+        .sort((a, b) => a[1].index - b[1].index)
+        .map(([id, data]) => [
+          id,
+          game.eunoblades.Clocks.get(id) ?? new BladesClock(data)
+        ])
+    );
+  }
 
-  get isNameVisible(): boolean { return this.getSystemData().isNameVisible; }
+  get isGM(): boolean {return game.user.isGM;}
 
-  get size(): 1|2|3|4|5|6 { return this.getSystemData().size; }
+  get isVisible(): boolean {return this.getSystemData().isVisible;}
 
-  get clocksData(): Record<IDString, BladesClockData> { return this.getSystemData().clocksData; }
+  get sceneID(): IDString | undefined {return this.getSystemData().sceneID;}
 
-  get rollOppName() { return this.name; }
+  get isActive(): boolean {return this.getSystemData().isActive;}
 
-  get rollOppType(): "clock_key" { return "clock_key"; }
+  get isNameVisible(): boolean {return this.getSystemData().isNameVisible;}
+
+  get size(): 0 | 1 | 2 | 3 | 4 | 5 | 6 {return this.clocks.size as 0 | 1 | 2 | 3 | 4 | 5 | 6;}
+
+  get rollOppName() {return this.name;}
+
+  get rollOppType(): "clock_key" {return "clock_key";}
 
   get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
 
@@ -210,12 +222,22 @@ class BladesClockKey extends BladesTargetLink implements BladesClockKeyData,
     return 0;
   }
 
-  get rollOppImg() { return ""; }
+  get rollOppImg() {return "";}
 
-  async initialize(): Promise<void> {
-    return this.updateTargetData(this._initData);
+  get isComplete(): boolean {
+    return Array.from(this.clocks).every((clock) => clock.isComplete);
   }
 
+  get currentClockIndex(): 0 | 1 | 2 | 3 | 4 | 5 {
+    return (this.currentClock?.index ?? 0) as 0 | 1 | 2 | 3 | 4 | 5;
+  }
+
+  get currentClock(): BladesClock | undefined {
+    return this.clocks.find((clock) => !clock.isComplete);
+  }
+  // #endregion
+
+  // #region ~~~ CONSTRUCTOR & INITIALIZATION ~~~
   _initData: BladesClockKeyData;
 
   constructor(data: BladesClockKeyConfig) {
@@ -223,58 +245,23 @@ class BladesClockKey extends BladesTargetLink implements BladesClockKeyData,
       eLog.error("[BladesClockKey Constructor] Invalid Config", data);
       throw new Error("See log.");
     }
-    eLog.checkLog3("[BladesClockKey Constructor] Invalid Config", data);
-    data.id ??= randomID();
+    eLog.checkLog3("[BladesClockKey Constructor] Valid Config", data);
+
     super(data);
 
+    data.id = this.id;
+
     this._initData = BladesClockKey.applyConfigDefaults(data);
+
+    game.eunoblades.ClockKeys.set(this.id, this);
   }
 
-  get currentClockIndex(): number|undefined {
-    return this.clocks.find((clock) => clock.value < clock.max)?.index;
+  async initialize(): Promise<void> {
+    await this.updateTargetData(this._initData);
   }
+  // #endregion
 
-  get isComplete(): boolean {
-    return this.clocks.every((clock) => clock.isComplete);
-  }
-
-  _clocks: Record<IDString, BladesClock> = {};
-
-  get clocks(): BladesClock[] {
-    return Object.keys(this.clocksData)
-      .map((index: IDString) => this.getClock(index) as BladesClock)
-      .sort((a, b) => a.index - b.index);
-  }
-
-  get nextOpenSlot(): 0|1|2|3|4|5|undefined {
-    if (this.clocks.length >= 6) { return undefined; }
-    return this.clocks.length as 0|1|2|3|4|5;
-  }
-
-  getClock(clockID: IDString): BladesClock|undefined
-  getClock(index?: number): BladesClock|undefined
-  getClock(index: IDString|number = 0): BladesClock|undefined {
-    if (typeof index === "string" && index in this.clocksData) {
-      return (this._clocks[index] ??= new BladesClock(this.clocksData[index]));
-    }
-    const clockData = Object.values(this.clocksData).find((cData) => cData.index === U.pInt(index));
-    if (!clockData) { return undefined; }
-
-    // Convert BladesClockData to BladesClockConfig
-    const clockConfig: BladesClockConfig = {
-      ...clockData,
-      target: typeof clockData.target === "string" ? clockData.target : clockData.target.id,
-      targetKey: clockData.targetKey,
-      targetFlagKey: clockData.targetFlagKey
-    };
-
-    return (this._clocks[clockData.id] ??= new BladesClock(clockConfig));
-  }
-
-  getCurrentClock(): BladesClock|undefined {
-    return this.isComplete ? undefined : this.getClock(this.currentClockIndex);
-  }
-
+  // #region HTML INTERACTION ~
   async getHTML(): Promise<string> {
     return await renderTemplate(
       "systems/eunos-blades/templates/overlays/clock-key.hbs",
@@ -282,57 +269,269 @@ class BladesClockKey extends BladesTargetLink implements BladesClockKeyData,
     );
   }
 
+  get elem(): HTMLElement | undefined {
+    return $(`#${this.id}`)[0];
+  }
+
+  get isShowingControls(): boolean {
+    return this.getSystemData().isShowingControls;
+  }
+  set isShowingControls(val: boolean) {
+    this.updateTarget("isShowingControls", val);
+  }
+
   async toggleActive(): Promise<void> {
     return await this.updateTarget("isActive", !this.isActive);
   }
 
-  async addClock(): Promise<BladesClock> {
-    if (this.clocks.length === this.size) {
-      if (this.size >= 6) { throw new Error("[BladesClockKey.addClock()] Cannot add more than six clocks to a key!"); }
-      await this.setKeySize(this.size + 1 as 1|2|3|4|5|6);
+  get elements() {
+    const elemData: Record<string, HTMLElement> = {};
+    if (!this.elem) {return elemData;}
+
+    elemData.key = this.elem;
+    elemData.keyContainer = $(this.elem).closest(".clock-key-container")[0];
+
+    for (const clock of Array.from(this.clocks)) {
+      if (!clock.elem) { return elemData; }
+      const {index, elem} = clock;
+      elemData[`clock ${index}`] = elem;
+      elemData[`clock ${index} Container`] = $(elem).closest(".clock-container")[0];
     }
-    const id = randomID();
-    return await BladesClock.Create({
-      id,
-      target: this.target,
-      targetKey: this.targetKey ? `${this.targetKey}.${this.id}.clocksData` : undefined,
-      targetFlagKey: this._targetFlagKey ? `${this.targetFlagKey}.${this.id}.clocksData` : undefined,
-      index: this.nextOpenSlot
+
+    return elemData;
+  }
+
+  // Initializes clock key with proper position and scale before displaying via autoAlpha
+  async initClockKeyElem(displayMode: ClockKeyDisplayMode | number = ClockKeyDisplayMode.full): Promise<void> {
+    if (!this.elem) {
+      return new Promise((resolve) => {
+        setTimeout(async () => resolve(await this.initClockKeyElem(displayMode)), 1000);
+      });
+    }
+    const {elem} = this;
+
+    const {keyTweenVars, keyContTweenVars} = this.getDisplayMode(displayMode);
+    const keyImgContainer = $(this.elem).find(".key-image-container")[0];
+
+    return new Promise((resolve) => {
+      U.gsap.timeline()
+        .set(keyImgContainer, keyContTweenVars)
+        .set(elem, keyTweenVars)
+        .to(
+          elem,
+          {
+            autoAlpha: 1,
+            duration: 0.5
+          }
+        ).then(() => {resolve(); });
     });
   }
 
-  async deleteClock(clockID: IDString): Promise<void>
-  async deleteClock(index: number): Promise<void>
-  async deleteClock(index: IDString | number): Promise<void> {
-    if (typeof index === "string") {
-      return await this.getClock(index)?.delete();
-    } else if (typeof index === "number") {
-      return await this.getClock(index)?.delete();
+  // Given a display mode ("full", "clocks", or a clock index number), will return a GSAP effects
+  //  config object to be plugged into any of the 'clockKey' effects.
+  // Can optionally provide config values to be included in a second parameter.
+  getDisplayMode(
+    displayMode: ClockKeyDisplayMode | number,
+    configOptions: Partial<gsap.TweenVars> = {}
+  ): gsap.TweenVars {
+    if (!this.elem) {return configOptions;}
+
+    configOptions.duration ??= 1;
+    configOptions.ease ??= "power2";
+    configOptions.autoAlpha ??= 1;
+
+    const keyTweenVars: gsap.TweenVars = {...configOptions};
+    const keyContTweenVars: gsap.TweenVars = {...configOptions};
+
+    // Get key data
+    const keyPosData = C.ClockKeyPositions[this.size];
+
+    // Get position and area dimensions of clock key area focused on by displayMode
+    let focusArea: {width: number, height: number};
+    let focusPos: gsap.Point2D;
+    switch (displayMode) {
+      case ClockKeyDisplayMode.full: {
+        focusPos = keyPosData.keyCenter;
+        focusArea = keyPosData.keyDimensions;
+        break;
+      }
+      case ClockKeyDisplayMode.clocks: {
+        focusPos = keyPosData.clocksCenter;
+        focusArea = keyPosData.clocksCenterDimensions;
+        break;
+      }
+      case ClockKeyDisplayMode.currentClock: {
+        displayMode = this.currentClockIndex;
+      }
+      // falls through
+      default: {
+        if (typeof displayMode === "number") {
+          if (displayMode in keyPosData.clocks) {
+            focusPos = keyPosData.clocks[displayMode as KeyOf<typeof keyPosData["clocks"]>];
+            focusArea = {width: 110, height: 110};
+            break;
+          }
+        }
+        throw new Error(`[BladesClockKey.getDisplayMode] Error display key '${this.id}' in mode '${displayMode}'.`);
+      }
     }
+
+    // Get height and width of clock key container
+    const keyContainer = $(this.elem).closest(".clock-key-container")[0];
+    const keyContainerDimensions = {
+      width: U.gsap.getProperty(keyContainer, "width") as number,
+      height: U.gsap.getProperty(keyContainer, "height") as number
+    };
+
+    // Determine scale factor necessary to fit focusArea inside keyContainer
+    keyTweenVars.scale = Math.min(
+      keyContainerDimensions.height / focusArea.height,
+      keyContainerDimensions.width / focusArea.width
+    );
+
+    // Determine top and left values for key-image-container, accounting for x/yPercent -50
+    keyContTweenVars.top = (0.5 * 100) - focusPos.y;
+    keyContTweenVars.left = (0.5 * 100) - focusPos.x;
+
+    // Set transfer origin of key-image-container to same position, for further animation
+    keyContTweenVars.transformOrigin = `${focusPos.x}px ${focusPos.y}px`;
+
+    return {keyTweenVars, keyContTweenVars};
   }
 
-  async setKeySize(clockCount: 1|2|3|4|5|6): Promise<void> {
-    const updateData: {size: 1|2|3|4|5|6, clocksData: Record<IDString, BladesClockData|null>} = {
-      size: clockCount,
-      clocksData: {}
-    };
-    while (clockCount > this.size) {
-      const newClock = new BladesClock({
-        id: randomID(),
-        target: this.target,
-        targetKey: this.targetKey ? `${this.targetKey}.${this.id}.clocksData` : undefined,
-        targetFlagKey: this.targetFlagKey ? `${this.targetFlagKey}.${this.id}.clocksData` : undefined
+  async switchToMode(
+    displayMode: ClockKeyDisplayMode | number,
+    configOptions: Partial<gsap.TweenVars> = {}
+  ): Promise<void> {
+    if (!this.elem) {
+      return new Promise((resolve) => {
+        setTimeout(async () => resolve(await this.switchToMode(displayMode, configOptions)), 1000);
       });
-      updateData.clocksData[newClock.id] = newClock;
-      clockCount--;
     }
-    const clockIDs = Object.keys(this.clocksData);
-    while (clockIDs.length > clockCount) {
-      const thisID = clockIDs.pop();
-      updateData.clocksData[`-=${thisID}`] = null;
-    }
-    this._clocks = {};
+
+    const {elem} = this;
+
+    const {keyTweenVars, keyContTweenVars} = this.getDisplayMode(displayMode, configOptions);
+
+    const keyImgContainer = $(this.elem).find(".key-image-container")[0];
+
+    return new Promise((resolve) => {
+      U.gsap.timeline({
+        onComplete() { resolve(); }
+      })
+        .to(elem, keyTweenVars, 0)
+        .to(keyImgContainer, keyContTweenVars, 0);
+    });
   }
+  // #endregion
+
+  // #region Adding & Removing Clocks ~
+  async addClock(clockData: Partial<BladesClockData> = {}): Promise<BladesClock> {
+    return await BladesClock.Create({
+      target: this.target,
+      targetKey: this.targetKey ? `${this.targetKey}.${this.id}.clocksData` : undefined,
+      targetFlagKey: this._targetFlagKey ? `${this.targetFlagKey}.${this.id}.clocksData` : undefined,
+      index: this.clocks.size,
+      ...clockData
+    });
+  }
+
+  async deleteClock(clockID?: IDString) {
+    if (this.size <= 1) {throw new Error("[BladesClockKey.deleteClock()] Cannot reduce number of clocks below 1!");}
+    clockID ??= Array.from(this.clocks).pop()?.id;
+    await game.eunoblades.Clocks.get(clockID ?? "")?.delete();
+  }
+  // #endregion
+
+
+  /*
+  animateProjectKey(): gsap.core.Timeline|undefined {
+    const keyID = this.clockKey?.id;
+    if (!keyID) { return undefined; }
+    const keyElem = $(`#${keyID}`)[0];
+
+    const keyContainerElem = $(keyElem).closest(".clock-key-container")[0];
+
+    const curClockID = this.currentClock?.id;
+    if (!curClockID) { return undefined; }
+    const clockElem = $(`.clock[data-id="${curClockID}"]`)[0];
+
+    const clockContainerElem = $(clockElem).closest(".clock-container")[0];
+
+    const sheetRootElem = $(keyElem).closest(".sheet-root")[0];
+
+    // Find current position of active clock element in .sheet-root space:
+    const cPosInRoot = U.MotionPathPlugin.convertCoordinates(
+      keyElem,
+      sheetRootElem,
+      {
+        x: U.gsap.getProperty(clockElem, "top") as number,
+        y: U.gsap.getProperty(clockElem, "left") as number
+      });
+
+    // Find current position of active clock container element in .sheet-root space:
+    const cContPosInRoot = U.MotionPathPlugin.convertCoordinates(
+      keyElem,
+      sheetRootElem,
+      {
+        x: U.gsap.getProperty(clockContainerElem, "top") as number,
+        y: U.gsap.getProperty(clockContainerElem, "left") as number
+      });
+
+    // Target position for active clock in .sheet-root space:
+    //    top: 33%
+    //    left: 100% - 0.5 * key container width
+    const targetCContPosInRoot: gsap.Point2D = {
+      x: (U.gsap.getProperty(sheetRootElem, "width") as number)
+        - (0.75 * (U.gsap.getProperty(keyContainerElem, "width") as number)),
+      y: 0.5 * (U.gsap.getProperty(sheetRootElem, "height") as number)
+    };
+
+    // Find delta from current position to target position, for entire key to traverse:
+    const keyDeltaX = targetCContPosInRoot.x - cContPosInRoot.x;
+    const keyDeltaY = targetCContPosInRoot.y - cContPosInRoot.y;
+
+    eLog.checkLog3("animateProjectKey", "[AnimateProjectKey] Positions & Elements", {
+      elements: {
+        sheetRootElem,
+        keyElem,
+        clockElem,
+        keyContainerElem,
+        clockContainerElem
+      },
+      positions: {
+        "1) clockContainer in Root": cContPosInRoot,
+        "1.5) clock in Root": cPosInRoot,
+        "2) target Pos in Root": targetCContPosInRoot,
+        "3) deltas": {x: keyDeltaX, y: keyDeltaY}
+      }
+    });
+
+    // Construct timeline:
+    const tl = U.gsap.timeline({
+      repeat: -1,
+      yoyo: true,
+      delay: 10
+    })
+      // Add scaling timeline:
+      .fromTo(keyElem, {scale: 0.95}, {scale: 2, duration: 20, ease: "sine.inOut"}, 0)
+      // Initialize gentle rotation:
+      .fromTo(keyElem, {rotateX: 0, rotateY: 0, rotateZ: 0}, {rotateX: 5, rotateY: 5, rotateZ: 5, duration: 5, ease: "sine.inOut"}, 0)
+      // Continue rotation:
+      .to(keyElem, {rotateX: -5, rotateY: -5, rotateZ: -5, duration: 5, repeat: 8, yoyo: true, ease: "sine.inOut"}, 5)
+      // Add positioning timeline:
+      .to(keyElem, {x: `+=${keyDeltaX}`, y: `+=${keyDeltaY}`, duration: 20, ease: "sine.inOut"}, 0);
+
+    // Seek timeline to midway point
+    tl.seek(20);
+    // Play timeline
+    tl.play();
+
+    // Return timeline;
+    return tl;
+  }
+  */
+
 }
 
 export type BladesClockConfig = Partial<BladesClockData> & BladesTargetLinkConfig;
@@ -340,9 +539,9 @@ export type BladesClockConfig = Partial<BladesClockData> & BladesTargetLinkConfi
 class BladesClock extends BladesTargetLink implements BladesClockData,
   BladesRoll.OppositionDocData {
 
-  static get DefaultSchema(): Omit<BladesClockData, "target"> {
+  // #region STATIC METHODS ~
+  static get DefaultSchema(): Omit<BladesClockData, "target" | "id"> {
     return {
-      id: randomID(),
       name: "",
       index: 0,
 
@@ -350,10 +549,11 @@ class BladesClock extends BladesTargetLink implements BladesClockData,
       max: 8,
       color: ClockColor.white,
 
-      isVisible: false,
+      isVisible: true,
+      isNameVisible: true,
+      isHighlighted: false,
       isActive: true,
-      isNameVisible: false,
-      isHighlighted: false
+      isShowingControls: game.user.isGM
     };
   }
 
@@ -365,7 +565,7 @@ class BladesClock extends BladesTargetLink implements BladesClockData,
     const clockData: BladesClockSystemData = {
       ...this.DefaultSchema,
       ...(clockConfig as BladesClockConfig & {target: string})
-    };
+    } as BladesClockSystemData;
 
     return clockData;
   }
@@ -381,48 +581,15 @@ class BladesClock extends BladesTargetLink implements BladesClockData,
     // BladesClock constructor will apply defaults for missing values.
     const clock = new BladesClock(clockConfig);
 
-    // Wait for clockKey data to be written to target
+    // Wait for clock data to be written to target
     await clock.initialize();
 
     return clock;
   }
 
-  static ApplyClockListeners(html: JQuery<HTMLElement>) {
-    eLog.checkLog3("ApplyListeners", "ApplyClockListeners", {html, find: html.find(".clock")});
-    if (game.user.isGM) {
-      html.find(".clock")
-        .each((_, clockElem) => {
-          const clock = new BladesClock(clockElem);
-          if (clock) {
-            $(clockElem).on({
-              click: () => clock.isActive = !clock.isActive,
-              contextmenu: () => clock.isVisible = !clock.isVisible,
-              wheel: (event) => {
-                if (!(event.originalEvent instanceof WheelEvent)) { return; }
-                event.preventDefault();
-                if (event.originalEvent.deltaY < 0) {
-                  clock.fillSegments(clockElem, 1);
-                } else {
-                  clock.clearSegments(clockElem, 1);
-                }
-              }
-            });
-          }
-        });
-    } else {
-      html.find(".clock")
-        .each((_, clockElem) => {
-          const clock = new BladesClock(clockElem);
-          if (clock && clock.canEdit) {
-            $(clockElem).on({
-              click: () => clock.fillSegments(clockElem, 1),
-              contextmenu: () => clock.clearSegments(clockElem, 1)
-            });
-          }
-        });
-    }
-  }
+  // #endregion
 
+  // #region GETTERS & SETTERS ~
   get canEdit(): boolean {
     // return true if user has edit permissions on parent document, and clock is
     // visible and active.
@@ -430,46 +597,84 @@ class BladesClock extends BladesTargetLink implements BladesClockData,
     return this.isVisible && this.isActive;
   }
 
+  get isGM(): boolean {return game.user.isGM;}
 
-  get value(): number { return this.getSystemData().value ?? 0; }
-  set value(val: number) { this.updateTarget("value", val); }
+  get value(): number {return this.getSystemData().value ?? 0;}
+  set value(val: number) {this.updateTarget("value", val);}
 
-  get max(): number { return this.getSystemData().max ?? 0; }
-  set max(val: number) { this.updateTarget("max", val); }
+  get max(): number {return this.getSystemData().max ?? 0;}
+  set max(val: number) {this.updateTarget("max", val);}
 
-  get color(): ClockColor { return this.getSystemData().color as ClockColor ?? ClockColor.white; }
-  set color(val: ClockColor) { this.updateTarget("color", val); }
+  get color(): ClockColor {return this.getSystemData().color as ClockColor ?? ClockColor.white;}
+  set color(val: ClockColor) {this.updateTarget("color", val);}
 
-  get isActive(): boolean { return this.getSystemData().isActive ?? false; }
-  set isActive(val: boolean) { this.updateTarget("isActive", val); }
+  get isActive(): boolean {return this.getSystemData().isActive ?? false;}
+  set isActive(val: boolean) {this.updateTarget("isActive", val);}
 
-  get isNameVisible(): boolean { return this.getSystemData().isNameVisible ?? false; }
-  set isNameVisible(val: boolean) { this.updateTarget("isNameVisible", val); }
+  get isShowingControls(): boolean {return this.getSystemData().isShowingControls;}
+  set isShowingControls(val: boolean) {this.updateTarget("isShowingControls", val);}
 
-  get isVisible(): boolean { return this.getSystemData().isVisible ?? false; }
-  set isVisible(val: boolean) { this.updateTarget("isVisible", val); }
 
-  get isHighlighted(): boolean { return this.getSystemData().isHighlighted ?? false; }
-  set isHighlighted(val: boolean) { this.updateTarget("isHighlighted", val); }
+  get isNameVisible(): boolean {return this.getSystemData().isNameVisible ?? false;}
+  set isNameVisible(val: boolean) {this.updateTarget("isNameVisible", val);}
 
-  get index(): number { return this.getSystemData().index ?? 0; }
-  set index(val: number) { this.updateTarget("index", val); }
+  get isVisible(): boolean {return this.getSystemData().isVisible ?? false;}
+  set isVisible(val: boolean) {this.updateTarget("isVisible", val);}
 
-  get display(): Record<string, string> { return this.getSystemData().display ?? {}; }
-  set display(val: Record<string, string>) { this.updateTarget("display", val); }
+  get isHighlighted(): boolean {return this.getSystemData().isHighlighted ?? false;}
+  set isHighlighted(val: boolean) {this.updateTarget("isHighlighted", val);}
 
-  get tooltip(): string|undefined { return this.getSystemData().tooltip; }
-  set tooltip(val: string|undefined) { this.updateTarget("tooltip", val); }
+  get index(): number {return this.getSystemData().index ?? 0;}
+  set index(val: number) {this.updateTarget("index", val);}
 
-  get isEmpty() { return this.value === 0; }
+  get display(): Record<string, string> {return this.getSystemData().display ?? {};}
+  set display(val: Record<string, string>) {this.updateTarget("display", val);}
 
-  get isComplete(): boolean { return this.value >= this.max; }
+  get tooltip(): string | undefined {return this.getSystemData().tooltip;}
+  set tooltip(val: string | undefined) {this.updateTarget("tooltip", val);}
 
-  get rollOppClock() { return this; }
+  get sceneID(): IDString | undefined {return this.getSystemData().sceneID;}
+  set sceneID(val: IDString | undefined) {this.updateTarget("sceneID", val);}
 
-  get rollOppName() { return this.name; }
+  get isEmpty() {return this.value === 0;}
 
-  get rollOppType(): "clock" { return "clock"; }
+  get isComplete(): boolean {return this.value >= this.max;}
+
+  get rollOppClock() {return this;}
+
+  get rollOppName() {return this.name;}
+
+  get rollOppType(): "clock" {return "clock";}
+
+  get colorSelectOptions(): Array<BladesSelectOption<string, ClockColor>> {
+    return [
+      {value: ClockColor.white, display: "🔘"},
+      {value: ClockColor.yellow, display: "📀"},
+      {value: ClockColor.cyan, display: "🔵"},
+      {value: ClockColor.red, display: "🔴"}
+    ];
+  }
+
+  get maxSelectOptions(): Array<BladesSelectOption<number, number>> {
+    return [
+      {value: 2, display: 2},
+      {value: 3, display: 3},
+      {value: 4, display: 4},
+      {value: 5, display: 5},
+      {value: 6, display: 6},
+      {value: 8, display: 8},
+      {value: 10, display: 10},
+      {value: 12, display: 12}
+    ];
+  }
+
+  get valueSelectOptions(): Array<BladesSelectOption<number, number>> {
+    const returnVals: Array<BladesSelectOption<number, number>> = [];
+    for (let i = 0; i <= this.max; i++) {
+      returnVals.push({value: i, display: i});
+    }
+    return returnVals;
+  }
 
   get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
 
@@ -504,19 +709,19 @@ class BladesClock extends BladesTargetLink implements BladesClockData,
     return 0;
   }
 
-  get rollOppImg() { return ""; }
+  get rollOppImg() {return "";}
+  // #endregion
 
-  async initialize(): Promise<void> {
-    return this.updateTargetData(this._initData);
-  }
+
+  // #region ~~ CONSTRUCTOR ~~
 
   _initData: BladesClockData;
 
-  constructor(data: HTMLElement|JQuery<HTMLElement>)
+  constructor(data: HTMLElement | JQuery<HTMLElement>)
   constructor(data: BladesClockConfig)
-  constructor(data: HTMLElement|JQuery<HTMLElement>|BladesClockConfig) {
+  constructor(data: HTMLElement | JQuery<HTMLElement> | BladesClockConfig) {
 
-    function isHTML(testData: unknown): testData is HTMLElement|JQuery<HTMLElement> {
+    function isHTML(testData: unknown): testData is HTMLElement | JQuery<HTMLElement> {
       return testData instanceof HTMLElement || testData instanceof jQuery;
     }
 
@@ -535,7 +740,7 @@ class BladesClock extends BladesTargetLink implements BladesClockData,
     } else {
       const dataAsConfig = data as BladesClockConfig;
       targetLinkData = {
-        id: data.id ?? randomID(),
+        id: data.id,
         target: typeof dataAsConfig.target === "string" ? dataAsConfig.target : dataAsConfig.target.id,
         targetFlagKey: dataAsConfig.targetFlagKey || undefined,
         targetKey: dataAsConfig.targetKey || undefined
@@ -548,9 +753,22 @@ class BladesClock extends BladesTargetLink implements BladesClockData,
 
     super(targetLinkData);
 
+    configData.id = this.id;
+
     this._initData = BladesClock.applyConfigDefaults(configData);
+
+    game.eunoblades.Clocks.set(this.id, this);
   }
 
+  async initialize(): Promise<void> {
+    return this.updateTargetData(this._initData);
+  }
+  // #endregion
+
+  // #region HTML INTERACTION ~
+  get elem(): HTMLElement | undefined {
+    return $(`[data-id="${this.id}"`)[0];
+  }
 
   async getHTML(): Promise<string> {
     return await renderTemplate(
@@ -559,146 +777,120 @@ class BladesClock extends BladesTargetLink implements BladesClockData,
     );
   }
 
-  getActiveSide(segmentDelta: number): "left"|"right" {
-    // Returns which hemisphere of the clock will show the final change if segmentDelta segments are added/removed.
+  // Returns which hemisphere of the clock will show the final change if segmentDelta segments are added/removed.
+  getActiveSide(segmentDelta: number): "left" | "right" {
     const finalClockValue = Math.min(this.max, Math.max(0, this.value + segmentDelta));
     const halfClockValue = this.max / 2;
-    if (finalClockValue > halfClockValue) { return "left"; }
+    if (finalClockValue > halfClockValue) {return "left";}
+
+    gsap.registerEffect({
+    });
     return "right";
   }
-
-  private getInteriorStyleString(segmentCount?: number): string {
-    segmentCount ??= this.value;
-    return `clip-path: url('#${segmentCount}-of-${this.max}');`;
-  }
-
-  private getNextInteriorStyleString(segmentCount?: number): string|false {
-    segmentCount ??= this.value;
-    if (segmentCount + 1 > this.max) { return false; }
-    return this.getInteriorStyleString(segmentCount + 1);
-  }
-
-  private getLastInteriorStyleString(segmentCount?: number): string|false {
-    segmentCount ??= this.value;
-    if (segmentCount - 1 < 0) { return false; }
-    return this.getInteriorStyleString(segmentCount - 1);
-  }
-
-  private _blurInSegment(clockElem: HTMLElement, startSegment?: number): gsap.core.Timeline|false {
-    startSegment ??= this.value;
-
-    // Get next clip-path string
-    const nextInteriorStyleString = this.getNextInteriorStyleString(startSegment);
-    if (!nextInteriorStyleString) { return false; }
-
-    const interiorElem = $(clockElem).find(".clock-interior")[0];
-
-    // Return a timeline that changes style at start, then pulses
-    return U.gsap.timeline({
-      onStart() {
-        $(interiorElem).attr("style", nextInteriorStyleString);
-      }
-    }).from(interiorElem, {
-      scale: 1.25,
-      opacity: 0,
-      filter: "blur(4px)",
-      duration: 0.5,
-      ease: "power1.inOut"
-    }).to(interiorElem, {
-      filter: "brightness(2)",
-      scale: 1.1,
-      repeat: 1,
-      yoyo: true,
-      duration: 0.25,
-      ease: "none"
-    });
-  }
-
-  private _blurOutSegment(clockElem: HTMLElement, startSegment?: number): gsap.core.Timeline|false {
-    startSegment ??= this.value;
-
-    // Get previous clip-path string
-    const prevInteriorStyleString = this.getLastInteriorStyleString(startSegment);
-    if (!prevInteriorStyleString) { return false; }
-
-    const interiorElem = $(clockElem).find(".clock-interior")[0];
-
-    // Return a timeline that pulses, then changes style
-    return U.gsap.timeline({
-      onComplete() {
-        $(interiorElem).attr("style", prevInteriorStyleString);
-      }
-    }).to(interiorElem, {
-      filter: "brightness(2)",
-      scale: 1.1,
-      repeat: 1,
-      yoyo: true,
-      duration: 0.25,
-      ease: "none"
-    });
-  }
-
-  async fillSegments(clockElem: HTMLElement, count: number): Promise<boolean> {
-    // Returns TRUE if clock is complete after segments added.
-    const isClockFull = this.value + count >= this.max;
-    count = Math.min(this.value + count, this.max) - this.value;
-    if (count === 0) { return isClockFull; }
-
-    const firstSegment = this.value + 1;
-    const lastSegment = this.value + count;
-
-    // Construct timeline of sequential segment additions
-    const tl = U.gsap.timeline({paused: true});
-
-    for (let i = firstSegment; i <= lastSegment; i++) {
-      const blurTL = this._blurInSegment(clockElem, i);
-      if (!blurTL) { break; }
-      tl.add(blurTL);
-    }
-
-    return new Promise((resolve) => {
-      tl.eventCallback("onComplete", () => {
-        this.updateTarget("value", lastSegment)
-          .then(() => resolve(isClockFull));
-      });
-      tl.play();
-    });
-  }
-
-  async clearSegments(clockElem: HTMLElement, count: number): Promise<boolean> {
-    // Returns TRUE if clock is EMPTY after segments added.
-    const isClockEmpty = this.value >= count;
-    count = Math.min(this.value, count);
-    if (count === 0) { return isClockEmpty; }
-
-    const firstSegment = this.value - 1;
-    const lastSegment = this.value - count;
-
-    // Construct timeline of sequential segment additions
-    const tl = U.gsap.timeline({paused: true});
-
-    for (let i = firstSegment; i >= lastSegment; i--) {
-      const blurTL = this._blurOutSegment(clockElem, i);
-      if (!blurTL) { break; }
-      tl.add(blurTL);
-    }
-
-    return new Promise((resolve) => {
-      tl.eventCallback("onComplete", () => {
-        this.updateTarget("value", lastSegment)
-          .then(() => resolve(isClockEmpty));
-      });
-      tl.play();
-    });
-  }
-
-  // #region OVERRIDES: _onUpdate
-  // override async _onUpdate(...args: Parameters<typeof BladesItem.prototype.callOnUpdate>) {
-  //   await super.callOnUpdate(...args);
-  //   BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
-  // }
   // #endregion
+
+
+  // #region Adding/Removing Clock Segments
+  // Returns number of segments beyond max (or 0, if max not met)
+  async fillSegments(count: number): Promise<number> {
+    // Amount added beyond max:
+    const clockOverflow = Math.max(0, this.value + count - this.max);
+    // Clamp count to max:
+    count = Math.min(this.value + count, this.max) - this.value;
+
+    if (count === 0) {return clockOverflow;}
+
+    await this.updateTarget("value", this.value + count);
+
+    return clockOverflow;
+  }
+  // Returns (positive) number of segments removed
+  // in excess of the number of segments in the clock
+  async clearSegments(count: number): Promise<number> {
+    // Amount removed beyond 0:
+    const clockOverflow = Math.max(0, count - this.value);
+
+    // Clamp count to min:
+    count = Math.min(this.value, count);
+
+    if (count === 0) {return clockOverflow;}
+
+    await this.updateTarget("value", this.value - count);
+
+    return clockOverflow;
+  }
+  // #endregion
+
 }
+
+export const ApplyClockListeners = async (html: JQuery<HTMLElement>) => {
+  eLog.checkLog3("ApplyListeners", "ApplyClockListeners", {html, find: html.find(".clock")});
+  // Step One: Find any clock keys and initialize them
+  await Promise.all(Array.from(html.find(".clock-key"))
+    .map(async (keyElem) => {
+      const key = game.eunoblades.ClockKeys.get(keyElem.id);
+      if (key) {
+        return await key.initClockKeyElem();
+      }
+      return undefined;
+    }));
+
+  // Add listeners to controls and to clock
+  if (game.user.isGM) {
+    html.find(".clock")
+      .each((_, clockElem) => {
+        const clock = game.eunoblades.Clocks.get(clockElem.id) ?? new BladesClock(clockElem);
+        if (clock) {
+          $(clockElem).find("clock-toggle").on({
+            change: (event) => {
+              event.preventDefault();
+              const {target} = clock;
+              const targetKey = $(event.currentTarget).data("targetKey");
+              eLog.checkLog3("clockControls", "Clock-Toggle Event", {event, target, targetKey, curVal: getProperty(target, targetKey)});
+              target.update({[targetKey]: !getProperty(target, targetKey)});
+            }
+          });
+          if ($(clockElem).data("isShowingControls")) {
+            $(clockElem).find("clock-select").on({
+              change: (event) => {
+                event.preventDefault();
+                const {target} = clock;
+                const targetKey = $(event.currentTarget).data("targetKey");
+                const selected = $(event.currentTarget).val();
+                eLog.checkLog3("clockControls", "Clock-Select Event", {event, target, targetKey, selected});
+                target.update({[targetKey]: selected});
+              }
+            });
+          } else {
+            $(clockElem).on({
+              click: () => clock.isActive = !clock.isActive,
+              contextmenu: () => clock.isVisible = !clock.isVisible,
+              wheel: (event) => {
+                if (!(event.originalEvent instanceof WheelEvent)) {return;}
+                event.preventDefault();
+                if (event.originalEvent.deltaY < 0) {
+                  clock.fillSegments(1);
+                } else {
+                  clock.clearSegments(1);
+                }
+              }
+            });
+          }
+        }
+      });
+  } else {
+    html.find(".clock:not([data-is-showing-controls='true']")
+      .each((_, clockElem) => {
+        const clock = new BladesClock(clockElem);
+        if (clock && clock.canEdit) {
+          $(clockElem).on({
+            click: () => clock.fillSegments(1),
+            contextmenu: () => clock.clearSegments(1)
+          });
+        }
+      });
+  }
+};
 
 export default BladesClock;
 

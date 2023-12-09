@@ -26,8 +26,8 @@
 
 {{eLog "CLOCK OVERLAY" this}}
 
-{{#each clock_keys}}
-  {{#if (eq ../currentScene scene)}}
-    {{> "systems/eunos-blades/templates/overlays/clock-key.hbs" this keyNum=@index}}
+{{#each clockKeys}}
+  {{#if (eq ../currentScene sceneID)}}
+    {{> "systems/eunos-blades/templates/overlays/clock-key.hbs" this}}
   {{/if}}
 {{/each}}

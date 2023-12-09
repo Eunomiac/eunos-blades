@@ -9,7 +9,6 @@ export default class BladesPushAlert {
     }
     static isInitialized = false;
     static Initialize() {
-        game.eunoblades ??= {};
         Hooks.once("ready", async () => {
             let pushController = game.eunoblades.PushController;
             if (!(pushController instanceof BladesPushAlert)) {

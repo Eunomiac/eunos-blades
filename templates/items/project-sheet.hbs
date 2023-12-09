@@ -8,80 +8,61 @@
   {{!-- Sheet Container --}}
   <div class="sheet-root">
 
+    {{!-- <span id="marker-1" style="display: block; position: absolute; left: 0; top: 0; height: 10px; width: 10px; border-radius: 5px; background: magenta; z-index: 50; pointer-events: none; transform: translate(-50%, -50%)"></span>
+    <span id="marker-2" style="display: block; position: absolute; left: 50%; top: 50%; height: 10px; width: 10px; border-radius: 5px; background: yellow; z-index: 50; pointer-events: none; transform: translate(-50%, -50%)"></span>
+    <span id="marker-3" style="display: block; position: absolute; left: 100%; top: 100%; height: 10px; width: 10px; border-radius: 5px; background: cyan; z-index: 50; pointer-events: none; transform: translate(-50%, -50%)"></span>
+
+    <span id="marker-4" style="display: block; position: absolute; left: 481.5px; top: 105.88px; height: 10px; width: 10px; border-radius: 5px; background: blue; z-index: 50; pointer-events: none; transform: translate(-50%, -50%)"></span>
+    <span id="marker-5" style="display: block; position: absolute; left: 437.5px; top: 105.5px; height: 10px; width: 10px; border-radius: 5px; background: lime; z-index: 50; pointer-events: none; transform: translate(-50%, -50%)"></span> --}}
+
     {{!-- Header --}}
     <section class="sheet-top">
-      <img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
       <input class="sheet-title shadowed" type="text" name="name" value="{{item.name}}">
     </section>
 
     {{!-- Clock Key --}}
-    {{#each system.clocksData.keys}}
-    {{> "systems/eunos-blades/templates/overlays/clock-key.hbs" }}
-    {{/each}}
+
 
     {{!-- Body --}}
-    <section class="tab-content flex-vertical">
-      {{#if (test isGM "||" isEmbeddedItem)}}
-      <label class="tab-label">
-        <span class="tab-title">Description</span>
-      </label>
-      {{editor system.description target="system.description" button=true owner=owner editable=editable}}
-      {{/if}}
+    <div class="split-panel full-width flex-horizontal">
 
-      {{#if (test isGM "||" system.uses_per_score)}}
-      <div class="flex-horizontal full-width">
-        {{#if (test isGM "||" (test system.price "&&" (test system.price ">" 1)))}}
-        <div class="comp comp-horizontal">
-          <label class="comp-label comp-input-label">Cost: </label>
-          <input class="comp-number-input shadowed" data-dtype="Number" type="number" name="system.price" value="{{system.price}}">
-        </div>
+      <section class="tab-content flex-vertical project-panel-left">
+        {{#if (test isGM "||" isEmbeddedItem)}}
+        <label class="tab-label">
+          <span class="tab-title">Description</span>
+        </label>
+        {{editor system.description target="system.description" button=true owner=owner editable=editable}}
         {{/if}}
-        {{#if (test isGM "||" system.uses_per_score.max)}}
-        <div class="comp comp-horizontal">
-          <label class="comp-label comp-input-label">Uses: </label>
-          <input class="comp-number-input shadowed" data-dtype="Number" type="number" name="system.uses_per_score.max"
-            value="{{system.uses_per_score.max}}">
-        </div>
+
+        {{#if (test isGM "||" system.rules)}}
+        <label class="tab-label">
+          <span class="tab-title">Rules</span>
+        </label>
+        {{editor system.rules target="system.rules" button=true owner=owner editable=isGM}}
         {{/if}}
-        {{#if (test isGM "||" system.max_per_score)}}
-        <div class="comp comp-horizontal">
-          <label class="comp-label comp-input-label">Max per Score: </label>
-          <input class="comp-number-input shadowed" data-dtype="Number" type="number" name="system.max_per_score"
-            value="{{system.max_per_score}}">
-        </div>
+
+        {{#if (test isGM "||" system.notes)}}
+        <label class="tab-label">
+          <span class="tab-title">Notes</span>
+        </label>
+        {{editor system.notes target="system.notes" button=true owner=owner editable=isGM}}
         {{/if}}
-      </div>
-      {{/if}}
 
-      <label class="tab-label">
-        <span class="tab-title">Rules</span>
-      </label>
-      {{editor system.rules target="system.rules" button=true owner=owner editable=isGM}}
+        {{#if isGM}}
+        <label class="tab-label">
+          <span class="tab-title">GM Notes</span>
+        </label>
+        {{editor system.gm_notes target="system.gm_notes" button=true owner=owner editable=isGM}}
+        {{/if}}
+      </section>
 
-      {{#if (test isGM "||" system.notes)}}
-      <label class="tab-label">
-        <span class="tab-title">Notes</span>
-      </label>
-      {{editor system.notes target="system.notes" button=true owner=owner editable=isGM}}
-      {{/if}}
+      {{eLog "Project Sheet Context" this}}
 
-      {{#if isGM}}
-      <label class="tab-label">
-        <span class="tab-title">GM Notes</span>
-      </label>
-      {{editor system.gm_notes target="system.gm_notes" button=true owner=owner editable=isGM}}
-      {{/if}}
 
-      {{#if isGM}}
-      <label class="comp tab-label">
-        <a class="comp-control comp-button comp-add effect-control" data-action="create" title="Create Effect">
-          <i class="fas fa-plus-square"></i>
-        </a>
-        <span class="tab-title">Active Effects</span>
-      </label>
-      {{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
-      {{/if}}
+      <section class="clock-key-panel flex-horizontal project-panel-right">
+      {{> "systems/eunos-blades/templates/overlays/clock-key.hbs" item.clockKey}}
     </section>
-    <section class="sheet-footer-small"></section>
+
+    {{!-- <section class="sheet-footer-small"></section> --}}
   </div>
 </form>

@@ -87,31 +87,7 @@
         </label>
 
         {{#each clocks}}
-        <div class="clock-row">
-          <div class="clock-container">
-            {{> "systems/eunos-blades/templates/components/clock.hbs" }}
-            {{#if ../isGM}}
-            {{> "systems/eunos-blades/templates/parts/clock-sheet-row.hbs" this
-              targetKeyPrefix=(concat "system.clocks." id)
-            }}
-            {{/if}}
-          </div>
-          <div class="flex-vertical full-width">
-              <div class="flex-horizontal full-width">
-                <input type="text" name="system.clocks.{{id}}.name" class="clock-label shadowed" value="{{name}}" />
-                {{#if ../isGM}}
-                <input type="number" name="system.clocks.{{id}}.max" class="clock-size-input shadowed" value="{{max}}" />
-                <input type="text" name="system.clocks.{{id}}.color" class="clock-color-input shadowed" value="{{color}}" />
-                <a class="comp-button comp-control comp-delete-clock" data-clock-id="{{id}}">
-                  <i class="fas fa-trash"></i>
-                </a>
-                {{/if}}
-              </div>
-            {{#if ../isGM}}
-
-            {{/if}}
-          </div>
-        </div>
+        {{> "systems/eunos-blades/templates/components/clock.hbs" this isShowingControls=../isGM isGM=../isGM }}
         {{/each}}
       </div>
 

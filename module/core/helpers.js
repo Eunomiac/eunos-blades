@@ -171,6 +171,11 @@ const handlebarHelpers = {
         }
         return outStr;
     },
+    // Merge helper - To merge additional properties into a template's context
+    merge(context, ...args) {
+        args.pop();
+        return args.reduce((acc, val) => Object.assign(acc, val), context);
+    },
     // For loop: {{#for [from = 0, to, stepSize = 1]}}<html content, this = index>{{/for}}
     for: (...args) => {
         const options = args.pop();

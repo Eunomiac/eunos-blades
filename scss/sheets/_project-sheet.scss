@@ -1,0 +1,44 @@
+
+
+.sheet-root {
+  overflow: hidden;
+  .sheet-top {
+    .sheet-title {
+
+    }
+  }
+
+  .split-panel {
+    justify-content: stretch;
+    align-items: stretch;
+
+    .project-panel-left {
+      max-width: 75%;
+      min-width: 75%;
+      flex-grow: 0;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .project-panel-right {
+      max-width: 25%;
+      min-width: 25%;
+      flex-grow: 0;
+      flex-shrink: 0;
+      overflow: visible;
+      position: absolute;
+      z-index: 1;
+      top: 0px;
+      right: 0px;
+      height: 100%;
+
+      .clock-key-container {
+        position: relative;
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+  }
+}

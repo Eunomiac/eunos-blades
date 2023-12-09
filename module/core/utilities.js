@@ -2,7 +2,7 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import C, { SVGDATA } from "./constants.js";
 // eslint-disable-next-line import/no-unresolved
-import { gsap, MotionPathPlugin } from "/scripts/greensock/esm/all.js";
+import { gsap, TextPlugin, Flip, MotionPathPlugin } from "/scripts/greensock/esm/all.js";
 gsap.registerPlugin(MotionPathPlugin);
 // #endregion ▮▮▮▮ IMPORTS ▮▮▮▮
 // #region ▮▮▮▮▮▮▮ [HELPERS] Internal Functions, Data & References Used by Utility Functions ▮▮▮▮▮▮▮ ~
@@ -1663,6 +1663,7 @@ export default {
     changeContainer,
     // ░░░░░░░ GreenSock ░░░░░░░
     gsap, get, set, getGSAngleDelta,
+    TextPlugin, Flip, MotionPathPlugin,
     getRawCirclePath, drawCirclePath,
     getColorVals, getRGBString, getHEXString, getContrastingColor, getRandomColor,
     getSiblings,

@@ -73,7 +73,10 @@
     #clocks-overlay {
       margin-top: toRem(4px);
       @import "./core/reset";
+      @import "./core/globals";
       @import './components/clocks-overlay';
+
+      .clock { }
     }
 
     #sidebar {
@@ -167,6 +170,8 @@
 
       // > TAGIFY CUSTOM CONFIG
       @import './tagify-custom';
+
+      @import './components/clocks';
 
 
 
@@ -276,6 +281,10 @@
             }
             &.cohort_gang, &.cohort_expert {
               @import './sheets/cohort-sheet'
+            }
+
+            &.project {
+              @import './sheets/project-sheet'
             }
           }
 

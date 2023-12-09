@@ -1,6 +1,8 @@
-<div class="clock-key-container">
-{{#if isVisible}}
-  <div id="{{id}}" class="clock-key {{~#if isActive}} active-key{{/if}}" data-size="{{size}}">
+{{eLog "Clock Key Context" this}}
+
+<div class="clock-key-container" data-size="{{size}}">
+{{#if (test isVisible "||" isGM)}}
+  <div id="{{id}}" class="clock-key {{~#if isActive}} active-key{{/if}}" data-id="{{id}}" data-size="{{size}}" data-active-clock-slot="{{currentClockIndex}}">
     {{#if isNameVisible}}
     <label class="key-label" data-key-id="{{id}}">{{name}}</label>
     {{/if}}
@@ -9,7 +11,7 @@
         <use href="#{{size}}-key" class="key-bg" />
         <rect class="metallic-overlay" x="0" y="0" clip-path="url(#{{size}}-key-clip" />
       </svg>
-      {{#each clocksData }}
+      {{#each clocks }}
         {{> "systems/eunos-blades/templates/components/clock.hbs" }}
       {{/each}}
     </div>

@@ -121,7 +121,7 @@ declare global {
 
     export interface Faction {
       tierData: BladesCompData,
-      clocks: Record<IDString, BladesClock>
+      clocks: Collection<BladesClock>
     }
   }
 

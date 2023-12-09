@@ -400,6 +400,12 @@ export var Tag;
         GangType["Vehicle"] = "Vehicle";
     })(GangType = Tag.GangType || (Tag.GangType = {}));
 })(Tag || (Tag = {}));
+export var ClockKeyDisplayMode;
+(function (ClockKeyDisplayMode) {
+    ClockKeyDisplayMode["full"] = "full";
+    ClockKeyDisplayMode["clocks"] = "clocks";
+    ClockKeyDisplayMode["currentClock"] = "currentClock";
+})(ClockKeyDisplayMode || (ClockKeyDisplayMode = {}));
 const C = {
     SYSTEM_ID: "eunos-blades",
     SYSTEM_NAME: "Euno's Blades",
@@ -589,6 +595,84 @@ const C = {
         BLUE: "rgba(52,213,213, 1)",
         dBLUE: "rgba(0,118,118, 1)",
         ddBLUE: "rgba(0, 77, 77, 1)"
+    },
+    ClockKeyPositions: {
+        0: {
+            keyDimensions: { width: 0, height: 0 },
+            keyCenter: { x: 0, y: 0 },
+            clocksCenter: { x: 0, y: 0 },
+            clocksCenterDimensions: { width: 0, height: 0 },
+            clocks: {}
+        },
+        1: {
+            keyDimensions: { width: 202, height: 455 },
+            keyCenter: { x: 101, y: 227 },
+            clocksCenter: { x: 101, y: 99 },
+            clocksCenterDimensions: { width: 110, height: 110 },
+            clocks: {
+                0: { x: 101, y: 99 }
+            }
+        },
+        2: {
+            keyDimensions: { width: 202, height: 625 },
+            keyCenter: { x: 101, y: 312 },
+            clocksCenter: { x: 101, y: 189 },
+            clocksCenterDimensions: { width: 110, height: 290 },
+            clocks: {
+                0: { x: 101, y: 99 },
+                1: { x: 101, y: 279 }
+            }
+        },
+        3: {
+            keyDimensions: { width: 280, height: 915 },
+            keyCenter: { x: 140, y: 457 },
+            clocksCenter: { x: 140, y: 169 },
+            clocksCenterDimensions: { width: 242, height: 222 },
+            clocks: {
+                0: { x: 140, y: 99 },
+                1: { x: 74, y: 211 },
+                2: { x: 206, y: 211 }
+            }
+        },
+        4: {
+            keyDimensions: { width: 376, height: 1140 },
+            keyCenter: { x: 188, y: 570 },
+            clocksCenter: { x: 188, y: 185 },
+            clocksCenterDimensions: { width: 284, height: 284 },
+            clocks: {
+                0: { x: 188, y: 99 },
+                1: { x: 101, y: 185 },
+                2: { x: 275, y: 185 },
+                3: { x: 188, y: 273 }
+            }
+        },
+        5: {
+            keyDimensions: { width: 376, height: 1140 },
+            keyCenter: { x: 188, y: 570 },
+            clocksCenter: { x: 188, y: 185 },
+            clocksCenterDimensions: { width: 284, height: 284 },
+            clocks: {
+                0: { x: 188, y: 99 },
+                1: { x: 101, y: 185 },
+                2: { x: 275, y: 185 },
+                3: { x: 188, y: 273 },
+                4: { x: 188, y: 452 }
+            }
+        },
+        6: {
+            keyDimensions: { width: 376, height: 1140 },
+            keyCenter: { x: 188, y: 570 },
+            clocksCenter: { x: 188, y: 185 },
+            clocksCenterDimensions: { width: 284, height: 284 },
+            clocks: {
+                0: { x: 188, y: 99 },
+                1: { x: 101, y: 185 },
+                2: { x: 275, y: 185 },
+                3: { x: 188, y: 273 },
+                4: { x: 188, y: 452 },
+                5: { x: 188, y: 683 }
+            }
+        }
     },
     Loadout: {
         selections: [

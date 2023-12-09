@@ -82,7 +82,7 @@ declare global {
       BladesItemSchemaTemplate.clocks {
       scenes: Record<IDString, {
         name: string,
-        clockIDs: IDString[]
+        keyIDs: IDString[]
       }>,
       targetScene: IDString | null
     }

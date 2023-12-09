@@ -5,7 +5,7 @@ import C, { BladesActorType, BladesPhase, BladesItemType, DowntimeAction, Attrib
 import Tags from "../../core/tags.js";
 import { BladesActor, BladesPC, BladesCrew } from "../../documents/BladesActorProxy.js";
 import { BladesItem, BladesProject } from "../../documents/BladesItemProxy.js";
-import BladesClock from "../../documents/items/BladesClock.js";
+import { ApplyClockListeners } from "../../documents/items/BladesClock.js";
 import BladesDialog from "../../BladesDialog.js";
 import BladesActiveEffect from "../../BladesActiveEffect.js";
 import BladesRoll, { BladesRollPrimary, BladesRollOpposition } from "../../BladesRoll.js";
@@ -157,7 +157,7 @@ class BladesActorSheet extends ActorSheet {
         }
         // ~ Tooltips
         ApplyTooltipAnimations(html);
-        BladesClock.ApplyClockListeners(html);
+        ApplyClockListeners(html);
         Tags.InitListeners(html, this.actor);
         // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) {

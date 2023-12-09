@@ -48,7 +48,6 @@ class BladesPC extends BladesActor {
         };
         const pc = (await super.create(data, options));
         await BladesClock.Create({
-            id: randomID(),
             name: "",
             target: pc,
             targetKey: "system.healing",
@@ -57,7 +56,7 @@ class BladesPC extends BladesActor {
             max: 4,
             isVisible: true,
             isNameVisible: false,
-            isActive: true
+            isShowingControls: false
         });
         return pc;
     }

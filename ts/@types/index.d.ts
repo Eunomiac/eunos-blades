@@ -1,8 +1,11 @@
 
-import BladesItem from "../BladesItem";
+// import BladesItem from "../BladesItem";
 import BladesActor from "../BladesActor";
-import BladesClockKeeper from "../documents/items/BladesClockKeeper";
-import BladesGMTracker from "../documents/items/BladesGMTracker";
+// import BladesClockKeeper from "../documents/items/BladesClockKeeper";
+import {BladesItem, BladesClockKeeper, BladesGMTracker} from "../documents/BladesItemProxy";
+import BladesConsequence from "../sheets/roll/BladesConsequence";
+// import BladesGMTracker from "../documents/items/BladesGMTracker";
+import BladesClock, {BladesClockKey} from "../documents/items/BladesClock";
 import BladesPushAlert from "../BladesPushAlert";
 import BladesChat from "../BladesChat";
 import C from "../core/constants";
@@ -47,7 +50,10 @@ declare global {
     eunoblades: {
       ClockKeeper?: BladesClockKeeper,
       Tracker?: BladesGMTracker,
-      PushController?: BladesPushAlert
+      PushController?: BladesPushAlert,
+      Clocks: Collection<BladesClock>,
+      ClockKeys: Collection<BladesClockKey>,
+      Consequences: Collection<BladesConsequence>
     }
   }
   declare interface User {

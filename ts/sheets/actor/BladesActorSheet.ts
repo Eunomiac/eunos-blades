@@ -6,7 +6,7 @@ import C, {BladesActorType, BladesPhase, BladesItemType, DowntimeAction, Attribu
 import Tags from "../../core/tags";
 import {BladesActor, BladesPC, BladesCrew} from "../../documents/BladesActorProxy";
 import {BladesItem, BladesProject} from "../../documents/BladesItemProxy";
-import BladesClock from "../../documents/items/BladesClock";
+import BladesClock, {ApplyClockListeners} from "../../documents/items/BladesClock";
 import BladesDialog, {SelectionCategory} from "../../BladesDialog";
 import BladesActiveEffect from "../../BladesActiveEffect";
 import BladesRoll, {BladesRollPrimary, BladesRollOpposition} from "../../BladesRoll";
@@ -194,7 +194,7 @@ class BladesActorSheet extends ActorSheet {
 
     // ~ Tooltips
     ApplyTooltipAnimations(html);
-    BladesClock.ApplyClockListeners(html);
+    ApplyClockListeners(html);
     Tags.InitListeners(html, this.actor);
 
     // Everything below here is only needed if the sheet is editable

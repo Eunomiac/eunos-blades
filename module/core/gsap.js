@@ -590,6 +590,11 @@ const gsapEffects = {
 export function Initialize() {
     if (gsapPlugins.length) {
         U.gsap.registerPlugin(...gsapPlugins);
+        Object.assign(globalThis, {
+            TextPlugin,
+            Flip,
+            MotionPathPlugin
+        });
     }
     Object.entries(gsapEffects).forEach(([name, effect]) => {
         U.gsap.registerEffect(Object.assign(effect, { name }));
@@ -790,4 +795,5 @@ export function ApplyConsequenceAnimations(html) {
         }
     });
 }
+export { TextPlugin, Flip, MotionPathPlugin };
 export default U.gsap;

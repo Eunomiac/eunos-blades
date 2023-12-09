@@ -6,7 +6,6 @@ import BladesScoreSheet from "../../sheets/item/BladesScoreSheet.js";
 class BladesScore extends BladesItem {
     // #region INITIALIZATION ~
     static async Initialize() {
-        game.eunoblades ??= {};
         Object.assign(globalThis, { BladesScore, BladesScoreSheet });
         Items.registerSheet("blades", BladesScoreSheet, { types: ["score"], makeDefault: true });
         return loadTemplates(["systems/eunos-blades/templates/items/score-sheet.hbs"]);

@@ -4,6 +4,7 @@ import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
 import BladesItem from "../../BladesItem.js";
 import { BladesProject } from "../../documents/BladesItemProxy.js";
 import BladesActiveEffect from "../../BladesActiveEffect.js";
+import { ApplyClockListeners } from "../../documents/items/BladesClock.js";
 import Tags from "../../core/tags.js";
 class BladesItemSheet extends ItemSheet {
     static get defaultOptions() {
@@ -250,12 +251,13 @@ class BladesItemSheet extends ItemSheet {
             };
         },
         [BladesItemType.project]: (context) => {
-            if (!BladesProject.IsType(this.item)) {
+            if (!(this.item instanceof BladesProject)) {
                 return undefined;
             }
-            const sheetData = {
-                clockKey: this.item.currentClock
-            };
+            if (this.item.clockKey) {
+                this.item.clockKey.isShowingControls = game.user.isGM;
+            }
+            const sheetData = {};
             return {
                 ...context,
                 ...sheetData
@@ -353,6 +355,7 @@ class BladesItemSheet extends ItemSheet {
         const self = this;
         Tags.InitListeners(html, this.item);
         ApplyTooltipAnimations(html);
+        ApplyClockListeners(html);
         // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) {
             return;

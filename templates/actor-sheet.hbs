@@ -218,7 +218,7 @@
             <td class="harm-effect">{{{system.harm.severe.effect}}}</td>
             <td class="healing-clock" rowspan="3">
               {{#if healing_clock}}
-              {{> "systems/eunos-blades/templates/components/clock.hbs" healing_clock }}
+              {{> "systems/eunos-blades/templates/components/clock.hbs" healing_clock isShowingControls=false isGM=isGM}}
               {{/if}}
             </td>
             <td class="armor-uses" rowspan="3">

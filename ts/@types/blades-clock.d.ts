@@ -8,7 +8,6 @@
 interface BladesClockKeyData {
   id: IDString,
   name: string,
-  size: 1|2|3|4|5|6,
 
   isVisible: boolean,
   isActive: boolean,
@@ -18,7 +17,10 @@ interface BladesClockKeyData {
   targetKey?: string,
   targetFlagKey?: string
 
-  clocksData: Record<IDString, BladesClockData>
+  clocksData: Record<IDString, BladesClockData>,
+
+  isShowingControls?: boolean,
+  sceneID?: IDString
 }
 
 interface BladesClockData extends NamedValueMax {
@@ -40,7 +42,10 @@ interface BladesClockData extends NamedValueMax {
   targetFlagKey?: string
 
   tooltip?: string,
-  gm_notes?: string
+  gm_notes?: string,
+
+  isShowingControls?: boolean,
+  sceneID?: IDString // Regardless of where stored, will be displayed within a 1-key in the scene overlay
 }
 
 type BladesClockSystemData = BladesClockData & {target: string};

@@ -1,8 +1,8 @@
 import {SVGDATA, BladesActorType, BladesItemType} from "../../core/constants";
-import U from "../../core/utilities";
+// import U from "../../core/utilities";
 import BladesActor from "../../BladesActor";
 import {BladesItem} from "../BladesItemProxy";
-import BladesClock, {BladesClockKey} from "./BladesClock";
+import BladesClock, {BladesClockKey, ApplyClockListeners} from "./BladesClock";
 import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
 import type {ItemDataBaseProperties} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
@@ -28,17 +28,24 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
       eLog.error("clocksOverlay", "[ClocksOverlay] Cannot locate overlay element.");
       return;
     }
-    game.eunoblades.ClockKeeper.overlayElement.innerHTML = (await getTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs"))({
-      ...game.eunoblades.ClockKeeper.system,
-      currentScene: game.scenes?.current.id,
-      svgData: SVGDATA
-    });
+    game.eunoblades.ClockKeeper.overlayElement.innerHTML = await renderTemplate(
+      "systems/eunos-blades/templates/overlays/clock-overlay.hbs",
+      game.eunoblades.ClockKeeper
+    );
     game.eunoblades.ClockKeeper.activateOverlayListeners();
   }
 
+  get clockKeys() { return this.getSceneKeys(); }
+
+  get currentScene(): string|undefined { return game.scenes?.current?.id; }
+
+  get svgData() { return SVGDATA; }
+
   async activateOverlayListeners() {
     if (!game?.user?.isGM) { return; }
-    BladesClock.ApplyClockListeners($("#clocks-overlay"));
+    const _temp = this.keys;
+    eLog.checkLog3("clocksOverlay", "[activateOverlayListeners] Keys", this.keys);
+    ApplyClockListeners($("#clocks-overlay"));
     $("#clocks-overlay").find(".key-label").on({
       click: async (event) => {
         if (!event.currentTarget) { return; }
@@ -46,7 +53,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
 
         event.preventDefault();
 
-        const clockKey = this.getClockKey($(event.currentTarget).data("keyId"));
+        const clockKey = game.eunoblades.ClockKeys.get($(event.currentTarget).data("keyId"));
         if (clockKey) {
           await clockKey.toggleActive();
         }
@@ -65,49 +72,73 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
     return game.scenes.current.id;
   }
 
-  get targetSceneID(): IDString | null { return this.system.targetScene; }
+  get targetSceneID(): IDString { return this.system.targetScene ?? this.currentSceneID; }
 
-  _clocksData: {
-    keys: Record<IDString, BladesClockKey>,
-    clocks: Record<IDString, BladesClock>
-  } = {keys: {}, clocks: {}};
-
-  getClockKey(keyID: IDString): BladesClockKey|undefined {
-    if (!this._clocksData.keys[keyID]) {
-      if (!this.system.clocksData.keys?.[keyID]) { return undefined; }
-      this._clocksData.keys[keyID] = new BladesClockKey(
-        this.system.clocksData.keys[keyID] as BladesClockKeySystemData
-      );
-    }
-    return this._clocksData.keys[keyID];
+  get keys(): Collection<BladesClockKey> {
+    return new Collection(
+      Object.entries(this.system.clocksData.keys ?? {})
+        .map(([id, data]) => [
+          id,
+          game.eunoblades.ClockKeys.get(id) ?? new BladesClockKey(data as BladesClockKeySystemData)
+        ])
+    );
   }
 
-  async addClockKey(): Promise<BladesClockKey|undefined> {
-    if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return undefined; }
-    if (!this.targetSceneID) { return undefined; }
-    const clockKey = await BladesClockKey.Create({
-      id: randomID(),
+  get clocks(): Collection<BladesClock> {
+    return new Collection(
+      Object.entries(this.system.clocksData.clocks ?? {})
+        .sort((a, b) => a[1].index - b[1].index)
+        .map(([id, data]) => [
+          id,
+          game.eunoblades.Clocks.get(id) ?? new BladesClock(data)
+        ])
+    );
+  }
+
+  getSceneClocks(sceneID?: IDString): Collection<BladesClock> {
+    sceneID ??= this.targetSceneID;
+
+    return new Collection(this.clocks
+      .filter((clock) => clock.sceneID === sceneID)
+      .map((clock) => [clock.id, clock]));
+  }
+
+  getSceneKeys(sceneID?: IDString): Collection<BladesClockKey> {
+    sceneID ??= this.targetSceneID;
+
+    return new Collection(this.keys
+      .filter((clockKey) => clockKey.sceneID === sceneID)
+      .map((clockKey) => [clockKey.id, clockKey]));
+  }
+
+  addClockKey(
+    clockKeyConfig: Partial<BladesClockKeySystemData> = {},
+    clocksData: Partial<BladesClockSystemData> = {}
+  ): Promise<BladesClockKey|undefined>|undefined {
+    if (!(game.eunoblades.ClockKeeper instanceof BladesClockKeeper)) { return undefined; }
+    if (!this.targetSceneID && !clockKeyConfig.sceneID) { return undefined; }
+    return BladesClockKey.Create({
+      sceneID: this.targetSceneID,
       target: this,
-      targetKey: "system.clocksData.keys"
-    });
-    const sceneClockIDs = this.system.scenes?.[this.targetSceneID]?.clockIDs ?? [];
-    sceneClockIDs.push(clockKey.id);
-    await this.update({[`system.scenes.${this.targetSceneID}.clockIDs`]: sceneClockIDs});
-    this._clocksData.keys[clockKey.id] = clockKey;
-    return clockKey;
+      targetKey: "system.clocksData.keys",
+      ...clockKeyConfig
+    }, clocksData);
   }
 
   async deleteClockKey(keyID: string): Promise<void> {
-    if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) { return undefined; }
-    await this.getClockKey(keyID)?.delete();
+    await game.eunoblades.ClockKeys.get(keyID)?.delete();
   }
 
-  async setKeySize(keyID: string, keySize = 1): Promise<void> {
-    keySize = U.pInt(keySize);
-    if (keySize < 1 || keySize > 6) {
-      throw new Error("[BladesClockKey.setKeySize] Key sizes must be between 1 and 6.");
-    }
-    this.getClockKey(keyID)?.setKeySize(keySize as 1|2|3|4|5|6);
+  async addClockToKey(keyID: IDString, clockData?: Partial<BladesClockData>): Promise<void> {
+    const key = await game.eunoblades.ClockKeys.get(keyID);
+    if (!key) { return; }
+    await key.addClock(clockData);
+  }
+
+  async deleteClockFromKey(keyID: IDString, clockID: IDString): Promise<void> {
+    const key = await game.eunoblades.ClockKeys.get(keyID);
+    if (!key) { return; }
+    await key.deleteClock(clockID);
   }
   // #endregion
 
@@ -123,7 +154,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
     userId: string
   ) {
     super._onUpdate(changed, options, userId);
-    BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
+    // BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
     socketlib.system.executeForEveryone("renderOverlay");
   }
   // #endregion

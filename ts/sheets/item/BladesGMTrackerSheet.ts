@@ -7,7 +7,6 @@ import BladesActor from "../../BladesActor";
 import BladesPC from "../../documents/actors/BladesPC";
 
 
-// eslint-disable-next-line no-shadow
 export enum BladesTipContext {
   DiceRoll = "DiceRoll",
   Combat = "Combat",
@@ -73,7 +72,6 @@ class BladesGMTrackerSheet extends BladesItemSheet {
   }
 
   static async Initialize() {
-    game.eunoblades ??= {};
     Items.registerSheet("blades", BladesGMTrackerSheet, {types: ["gm_tracker"], makeDefault: true});
     Hooks.once("ready", async () => {
       let tracker: BladesGMTracker|undefined = game.items

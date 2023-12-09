@@ -12,34 +12,27 @@ class BladesFaction extends BladesActor {
     get rollOppModsData() { return []; }
     // #endregion
     // #endregion
-    _clocks = {};
-    getClocks(isRefreshing = false) {
-        const clockIDs = Object.keys(this.system.clocks);
-        if (clockIDs.length === 0) {
-            return {};
-        }
-        for (const clockID of clockIDs) {
-            if (isRefreshing || !(clockID in this._clocks)) {
-                this._clocks[clockID] = new BladesClock(this.system.clocks[clockID]);
-            }
-        }
-        return this._clocks;
-    }
-    getClock(clockID) {
-        return this.getClocks()[clockID];
+    // _clocks: Collection<BladesClock> = new Collection();
+    // get clocks(): Collection<BladesClock> = {
+    //   return new Collection()
+    // }
+    get clocks() {
+        return new Collection(Object.entries(this.system.clocks ?? {})
+            .sort((a, b) => a[1].index - b[1].index)
+            .map(([id, data]) => [
+            id,
+            game.eunoblades.Clocks.get(id) ?? new BladesClock(data)
+        ]));
     }
     async addClock() {
-        const numClocks = Object.values(this.getClocks()).length;
         return await BladesClock.Create({
-            id: randomID(),
             target: this,
             targetKey: "system.clocks",
-            index: numClocks
+            index: this.clocks.size
         });
     }
     async deleteClock(clockID) {
-        await this.getClock(clockID)?.delete();
-        delete this._clocks[clockID];
+        await game.eunoblades.Clocks.get(clockID)?.delete();
     }
 }
 export default BladesFaction;

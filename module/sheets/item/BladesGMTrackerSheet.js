@@ -4,7 +4,6 @@ import BladesItem from "../../BladesItem.js";
 import BladesGMTracker from "../../documents/items/BladesGMTracker.js";
 import BladesActor from "../../BladesActor.js";
 import BladesPC from "../../documents/actors/BladesPC.js";
-// eslint-disable-next-line no-shadow
 export var BladesTipContext;
 (function (BladesTipContext) {
     BladesTipContext["DiceRoll"] = "DiceRoll";
@@ -54,7 +53,6 @@ class BladesGMTrackerSheet extends BladesItemSheet {
         });
     }
     static async Initialize() {
-        game.eunoblades ??= {};
         Items.registerSheet("blades", BladesGMTrackerSheet, { types: ["gm_tracker"], makeDefault: true });
         Hooks.once("ready", async () => {
             let tracker = game.items

@@ -83,7 +83,7 @@ $label-positions: (
   &, & * {
   --top-shift: 50px;
   --left-shift: 75px;
-  --key-scale: 0.33;
+  --key-scale: 0.6;
   --alternating-top-shift: 120px;
   --clock-frame-size: 108px;
   --clock-glow-size: calc(var(--clock-frame-size) * 3);
@@ -96,15 +96,32 @@ $label-positions: (
   justify-content: flex-start;
   align-items: flex-start;
 
-  transform-origin: 0 0;
-  transform: scale(var(--key-scale));
+  // transform-origin: 0 0;
+  // transform: scale(var(--key-scale));
 
   position: absolute !important;
-  width: calc((100% / var(--key-scale)) - var(--left-shift));
-  height: calc((100% / var(--key-scale)) - var(--top-shift));
-  top: var(--top-shift);
-  left: var(--left-shift);
+  // width: calc((100% / var(--key-scale)) - var(--left-shift));
+  // height: calc((100% / var(--key-scale)) - var(--top-shift));
+  width: 100%;
+  height: 100%;
+  // top: var(--top-shift);
+  // left: var(--left-shift);
+  top: 0;
+  left: 0;
   pointer-events: none;
   z-index: 50;
+
+  .svg-defs { position: absolute; }
+
+  .clock-key:nth-child(2n+1) { top: var(--alternating-top-shift) }
+
+  @import './clocks';
+
+  .clock-key-container {
+    height: 300px;
+    width: calc(0.6 * var(--key-width));
+
+    // --clock-size: 110px;
+  }
 
 }

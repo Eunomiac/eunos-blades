@@ -1,5 +1,20 @@
 <tr class="clock-row">
   <td>
+    {{#if keyID}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      buttonClass="fas fa-trash"
+      tooltip="<b>Delete Clock</b>"
+      action="delete-clock"
+      targetId=(concat keyID "-" id)
+    }}
+    {{else}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      buttonClass="fas fa-trash"
+      tooltip="<b>Delete Clock</b>"
+      action="delete-clock"
+      targetId=id
+    }}
+    {{/if}}
     {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
       cssClass="clock-toggle"
       isToggled=clockData.isVisible

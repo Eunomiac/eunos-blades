@@ -67,7 +67,6 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
     const pc = (await super.create(data, options)) as BladesPC;
     await BladesClock.Create({
-      id: randomID(),
       name: "",
       target: pc,
       targetKey: "system.healing",
@@ -76,7 +75,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       max: 4,
       isVisible: true,
       isNameVisible: false,
-      isActive: true
+      isShowingControls: false
     });
     return pc as unknown as Promise<StoredDocument<Actor> | undefined>;
   }

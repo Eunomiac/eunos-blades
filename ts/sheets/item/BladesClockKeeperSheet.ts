@@ -1,7 +1,7 @@
 
 import BladesItemSheet from "./BladesItemSheet";
 import BladesClockKeeper from "../../documents/items/BladesClockKeeper";
-import U from "../../core/utilities";
+// import U from "../../core/utilities";
 import {BladesItemType} from "../../core/constants";
 
 class BladesClockKeeperSheet extends BladesItemSheet {
@@ -18,7 +18,6 @@ class BladesClockKeeperSheet extends BladesItemSheet {
   }
 
   static async Initialize() {
-    game.eunoblades ??= {};
     Items.registerSheet("blades", BladesClockKeeperSheet, {types: ["clock_keeper"], makeDefault: true});
     Hooks.once("ready", async () => {
       let clockKeeper: BladesClockKeeper|undefined = game.items.find((item): item is BladesClockKeeper => item.type === "clock_keeper");
@@ -59,7 +58,8 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     const context = super.getData();
 
     const sheetData: BladesItemDataOfType<BladesItemType.clock_keeper> = {
-      sceneOptions: Array.from(game.scenes)
+      sceneOptions: Array.from(game.scenes),
+      sceneKeys: this.item.getSceneKeys()
     };
 
     return {...context, ...sheetData} as BladesItemSheetData;
@@ -75,14 +75,6 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     const keyID = (event.currentTarget as HTMLElement).dataset.id;
     if (keyID) {
       this.item.deleteClockKey(keyID);
-    }
-  }
-
-  setKeySize(event: InputEvent) {
-    event.preventDefault();
-    const keyID = (event.target as HTMLInputElement).dataset.id;
-    if (keyID) {
-      this.item.setKeySize(keyID, parseInt((event.target as HTMLInputElement).value, 10));
     }
   }
 
@@ -105,14 +97,18 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       }
     });
 
-    html.find(".key-clock-counter").on({
-      change(event) {
+    html.find("[data-action=\"add-clock\"]").on({
+      click(event: ClickEvent) {
         event.preventDefault();
-        const keyID = $(event.currentTarget).data("id");
-        if (keyID) {
-          self.item.setKeySize(keyID, U.pInt($(event.target).val()));
-        }
+        self.item.addClockToKey($(event.currentTarget).data("id"));
+      }
+    });
 
+    html.find("[data-action=\"delete-clock\"]").on({
+      click(event: ClickEvent) {
+        event.preventDefault();
+        const [keyID, id] = $(event.currentTarget).data("id").split(/-/);
+        self.item.deleteClockFromKey(keyID, id);
       }
     });
   }

@@ -26,36 +26,34 @@ class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
 
   // #endregion
 
-  _clocks: Record<IDString, BladesClock> = {};
-  getClocks(isRefreshing = false): Record<IDString, BladesClock> {
-    const clockIDs = Object.keys(this.system.clocks);
-    if (clockIDs.length === 0) { return {}; }
-    for (const clockID of clockIDs) {
-      if (isRefreshing || !(clockID in this._clocks)) {
-        this._clocks[clockID] = new BladesClock(this.system.clocks[clockID]);
-      }
-    }
-    return this._clocks;
-  }
+  // _clocks: Collection<BladesClock> = new Collection();
 
-  getClock(clockID: IDString): BladesClock|undefined {
-    return this.getClocks()[clockID];
+  // get clocks(): Collection<BladesClock> = {
+  //   return new Collection()
+  // }
+
+
+  get clocks(): Collection<BladesClock> {
+    return new Collection(
+      Object.entries(this.system.clocks ?? {})
+        .sort((a, b) => a[1].index - b[1].index)
+        .map(([id, data]) => [
+          id,
+          game.eunoblades.Clocks.get(id) ?? new BladesClock(data)
+        ])
+    );
   }
 
   async addClock(): Promise<BladesClock> {
-    const numClocks = Object.values(this.getClocks()).length;
-
     return await BladesClock.Create({
-      id: randomID(),
       target: this,
       targetKey: "system.clocks",
-      index: numClocks
+      index: this.clocks.size
     });
   }
 
   async deleteClock(clockID: IDString) {
-    await this.getClock(clockID)?.delete();
-    delete this._clocks[clockID];
+    await game.eunoblades.Clocks.get(clockID)?.delete();
   }
 }
 

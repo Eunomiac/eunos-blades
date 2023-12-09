@@ -1,8 +1,12 @@
-<span class="toggle-icon {{blockClass}} {{~#if isToggled}} toggled{{/if}}">
+<span class="toggle-icon {{cssClass}} {{~#if isToggled}} toggled{{/if}}">
   {{#if targetKey}}
-    <input data-dtype="Boolean" type="checkbox" class="hidden-toggle" name="{{targetKey}}" {{checked isToggled}} />
+    <input
+      data-dtype="Boolean"
+      type="checkbox"
+      class="hidden-toggle"
+      {{~#if targetID}} data-target-id="{{targetID}}" data-target-key="{{targetKey}}"{{else}} name="{{targetKey}}"{{/if}} {{checked isToggled}} />
   {{else if targetFlagKey}}
-    <input data-dtype="Boolean" type="checkbox" class="hidden-toggle" data-action="{{#if dataAction}}{{dataAction}}{{else}}gm-toggle{{/if}}" data-flag-target="{{targetFlagKey}}" {{checked isToggled}} />
+    <input data-dtype="Boolean" type="checkbox" class="hidden-toggle" data-action="{{#if dataAction}}{{dataAction}}{{else}}gm-toggle{{/if}}" {{~#if targetID}} data-target-id="{{targetID}}"{{/if}} data-flag-target="{{targetFlagKey}}" {{checked isToggled}} />
   {{else if dataAction}}
     <a class="button-icon" data-action="{{dataAction}}">
   {{/if}}
