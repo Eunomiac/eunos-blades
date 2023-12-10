@@ -2,14 +2,14 @@
   <td>
     {{#if keyID}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"
-      buttonClass="fas fa-trash"
+      buttonClass="fa-solid fa-trash"
       tooltip="<b>Delete Clock</b>"
       action="delete-clock"
       targetId=(concat keyID "-" id)
     }}
     {{else}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"
-      buttonClass="fas fa-trash"
+      buttonClass="fa-solid fa-trash"
       tooltip="<b>Delete Clock</b>"
       action="delete-clock"
       targetId=id
@@ -18,36 +18,36 @@
     {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
       cssClass="clock-toggle"
       isToggled=clockData.isVisible
-      activeClass="fas fa-eye"
+      activeClass="fa-solid fa-eye"
       activeTooltip="<b>Clock is Visible.</b><br>Click to hide."
-      inactiveClass="fas fa-eye-slash"
+      inactiveClass="fa-thin fa-eye"
       inactiveTooltip="<b>Clock is Hidden.</b><br>Click to display."
       targetKey=(concat targetKeyPrefix ".isVisible") }}
 
     {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
       cssClass="clock-toggle"
       isToggled=clockData.isActive
-      activeClass="fas fa-bell"
+      activeClass="fa-solid fa-bell"
       activeTooltip="<b>Clock is Active.</b><br>Click to deactivate."
-      inactiveClass="fas fa-bell-slash"
+      inactiveClass="fa-regular fa-bell-slash"
       inactiveTooltip="<b>Clock is Inactive.</b><br>Click to activate."
       targetKey=(concat targetKeyPrefix ".isActive") }}
 
     {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
       cssClass="clock-toggle"
       isToggled=clockData.isHighlighted
-      activeClass="fas fa-circle"
+      activeClass="fa-solid fa-lightbulb-on"
       activeTooltip="<b>Clock is Highlighted.</b><br>Click to fade."
-      inactiveClass="fas fa-circle-slash"
+      inactiveClass="fa-light fa-lightbulb-slash"
       inactiveTooltip="<b>Clock is Not Highlighted.</b><br>Click to highlight."
       targetKey=(concat targetKeyPrefix ".isHighlighted") }}
 
     {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
       cssClass="clock-toggle"
       isToggled=clockData.isNameVisible
-      activeClass="fas fa-comment"
+      activeClass="fa-solid fa-tag"
       activeTooltip="<b>Name is Visible.</b><br>Click to hide."
-      inactiveClass="fas fa-comment-slash"
+      inactiveClass="fa-thin fa-tag"
       inactiveTooltip="<b>Name is Hidden.</b><br>Click to display."
       targetKey=(concat targetKeyPrefix ".isNameVisible") }}
   </td>

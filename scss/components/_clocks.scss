@@ -133,12 +133,12 @@
 & {
 
   $key-sizes: (
-    1: (height: 455px, width: 202px, clocksCenterX: 101px, clocksCenterY: 99px, labelTop: 150px, inactiveKeyTop: -350px, inactiveLabelLeft: -40px, inactiveLabelBottom: 50px),
-    2: (height: 624.438px, width: 202px, clocksCenterX: 101px, clocksCenterY: 189px, labelTop: 400px, inactiveKeyTop: -520px, inactiveLabelLeft: -40px, inactiveLabelBottom: 50px),
-    3: (height: 915px, width: 280px, clocksCenterX: 140px, clocksCenterY: 169px, labelTop: 600px, inactiveKeyTop: -815px, inactiveLabelLeft: -10px, inactiveLabelBottom: 50px),
-    4: (height: 1140px, width: 376px, clocksCenterX: 188px, clocksCenterY: 185px, labelTop: 700px, inactiveKeyTop: -925px, inactiveLabelLeft: 40px, inactiveLabelBottom: 150px),
-    5: (height: 1140px, width: 376px, clocksCenterX: 188px, clocksCenterY: 185px, labelTop: 800px, inactiveKeyTop: -1025px, inactiveLabelLeft: 40px, inactiveLabelBottom: 50px),
-    6: (height: 1150px, width: 376px, clocksCenterX: 188px, clocksCenterY: 185px, labelTop: 900px, inactiveKeyTop: -1025px, inactiveLabelLeft: 40px, inactiveLabelBottom: 50px)
+    1: (height: 455px, width: 202px, clocksCenterX: 101px, clocksCenterY: 99px, labelTop: 0px, inactiveKeyTop: -350px, inactiveLabelLeft: -40px, inactiveLabelBottom: 50px),
+    2: (height: 624.438px, width: 202px, clocksCenterX: 101px, clocksCenterY: 189px, labelTop: 100px, inactiveKeyTop: -520px, inactiveLabelLeft: -40px, inactiveLabelBottom: 50px),
+    3: (height: 915px, width: 280px, clocksCenterX: 140px, clocksCenterY: 169px, labelTop: 0px, inactiveKeyTop: -815px, inactiveLabelLeft: -10px, inactiveLabelBottom: 50px),
+    4: (height: 1140px, width: 376px, clocksCenterX: 188px, clocksCenterY: 185px, labelTop: -100px, inactiveKeyTop: -925px, inactiveLabelLeft: 40px, inactiveLabelBottom: 150px),
+    5: (height: 1140px, width: 376px, clocksCenterX: 188px, clocksCenterY: 185px, labelTop: 0px, inactiveKeyTop: -1025px, inactiveLabelLeft: 40px, inactiveLabelBottom: 50px),
+    6: (height: 1150px, width: 376px, clocksCenterX: 188px, clocksCenterY: 185px, labelTop: 250px, inactiveKeyTop: -1025px, inactiveLabelLeft: 40px, inactiveLabelBottom: 50px)
   );
   $clock-positions: (
     1: (
@@ -214,6 +214,10 @@
 
   .clock-key-container {
     position: relative;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+
+    * { perspective: 1000px; transform-style: preserve-3d; }
 
     // background: rgba(255, 0, 255, 0.25);
     // outline: 2px dotted rgb(255, 0, 255);
@@ -223,44 +227,18 @@
         --key-height: #{map-get(map-get($key-sizes, $key), "height")};
         --key-width: #{map-get(map-get($key-sizes, $key), "width")};
 
-        .clock-key .key-image-container {
+        .clock-key {
 
           .key-label {
             top: map-get(map-get($key-sizes, $key), "labelTop");
           }
-          @each $clock, $pos in $clocks {
-            &[data-active-clock-slot="#{$clock}"] {
-              // transform-origin: #{map-get($pos, "x")} #{map-get($pos, "y")};
-            }
-            .clock-container:nth-of-type(#{$clock + 1}) {
-              left: map-get($pos, "x");
-              top: map-get($pos, "y");
-            }
-          }
-        }
 
-        // &:not(.active-key) {
-        //   --key-width: 170px;
-        //   top: map-get(map-get($key-sizes, $key), "inactiveKeyTop");
-        //   .key-label {
-        //     left: map-get(map-get($key-sizes, $key), "inactiveLabelLeft");
-        //     top: unset !important;
-        //     bottom: #{map-get(map-get($key-sizes, $key), "inactiveLabelBottom")} !important;
-        //   }
-        // }
-      }
-    }
-
-    @each $key, $labels in $label-positions {
-      &[data-size="#{$key}"] {
-
-        .clock-key {
-          @each $label, $pos in $labels {
-            .clock-label[data-clock-num="#{$label}"] {
-              left: map-get($pos, "x");
-              top: map-get($pos, "y");
-              text-align: map-get($pos, "align");
-              width: map-get($pos, "width");
+          .key-image-container {
+            @each $clock, $pos in $clocks {
+              .clock-container:nth-of-type(#{$clock + 1}) {
+                left: map-get($pos, "x");
+                top: map-get($pos, "y");
+              }
             }
           }
         }
@@ -372,6 +350,22 @@
         width: 100%;
       }
 
+      .clock-label {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        left: 50%;
+        z-index: 5;
+        font-size: 24px;
+        font-family: var(--font-emphasis-narrow);
+        font-weight: bold;
+        color: var(--blades-white-bright);
+        text-shadow: var(--text-shadow-dark-strong);
+        text-align: center;
+        white-space: nowrap;
+
+      }
+
       .clock-frame { z-index: 3; }
       .clock-fill { z-index: 2; }
       .clock-glow { z-index: 4; }
@@ -409,100 +403,119 @@
         }
       }
 
-      .clock-controls {
-        --row-height: 25px;
-        --row-gap: 2px;
+    }
+  }
+
+  /* CONTROLS */
+  .clock-key-controls,
+  .clock-controls {
+    --row-height: 25px;
+    --row-gap: 2px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--row-gap);
+    z-index: 50;
+    border-radius: 5px;
+    height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
+    width: 100%;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+
+    &.clock-key-controls {
+      position: absolute;
+      top: 80%;
+      left: 50%;
+      width: 80%;
+      transform: translate(-50%, 0%);
+      height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
+    }
+
+    .clock-button { pointer-events: all;}
+
+    i {
+      opacity: 1;
+      // color: var(--blades-gold-bright);
+      text-shadow: var(--text-shadow-dark-strong);
+      pointer-events: none;
+    }
+
+    select, input {
+      pointer-events: all;
+    }
+
+    select {
+      width: auto;
+      flex-basis: auto;
+      max-width: 75%;
+      flex-grow: 1;
+      flex-shrink: 1;
+      line-height: var(--row-height);
+      appearance: none; /* Remove default select dropdown arrow */
+      -webkit-appearance: none; /* Remove default select dropdown arrow for Chrome and Safari */
+      -moz-appearance: none; /* Remove default select dropdown arrow for Firefox */
+      background: transparent; /* Make the select element transparent to hide the arrow */
+    }
+
+    &:not(.controls-hidden) {
+      background: var(--blades-black-fade);
+    }
+
+    .clock-controls-row, .clock-key-controls-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      align-items: center;
+      height: var(--row-height);
+      max-height: var(--row-height);
+      width: 100%;
+
+      * {
+        // pointer-events: all !important;
+        height: var(--row-height);
+        max-height: var(--row-height);
+        width: unset;
+        position: static;
+      }
+
+      &.toggle-controls-row {
         position: absolute;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        gap: var(--row-gap);
-        z-index: 50;
-        border-radius: 5px;
-        height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
-        transform: translate(-50%, -50%);
-        top: 50%;
-        left: 50%;
+        top: calc(-1 * var(--row-height));
 
-        &:not(.controls-hidden) {
-          background: var(--blades-black-fade);
+        &.clock-key-controls-row {
+          bottom: calc(-2 * var(--row-height));
+          top: unset;
         }
+      }
 
-        .clock-controls-row {
-          display: flex;
-          flex-direction: row;
-          justify-content: space-evenly;
-          align-items: center;
+      &.name-row {
+        width: 100%;
+
+        > .clock-controls-name {
           height: var(--row-height);
           max-height: var(--row-height);
+          width: 100%;
+          pointer-events: all !important;
+        }
+      }
 
-          * {
-            // pointer-events: all !important;
-            height: var(--row-height);
-            max-height: var(--row-height);
-            width: unset;
-            position: static;
-          }
+      &.select-row {
+        justify-content: stretch;
+      }
 
-          .toggle-icon {
-            position: relative;
-            height: var(--row-height);
-            width: var(--row-height);
-            .hidden-toggle {
-              position: absolute;
-              pointer-events: all !important;
-            }
+      &.button-row {
+        .toggle-icon {
+          // width: auto;
 
+          i { width: var(--row-height); }
 
-            i { width: var(--row-height); }
-
-            .tooltip { position: absolute; }
-          }
-
-          &.toggle-controls-row {
-            position: absolute;
-            top: calc(-1 * var(--row-height));
-          }
-
-          &.name-row {
-            width: 100%;
-
-            > .clock-controls-name {
-              height: var(--row-height);
-              max-height: var(--row-height);
-              width: 100%;
-              pointer-events: all !important;
-            }
-          }
-
-          &.select-row {
-            justify-content: stretch;
-
-            select {
-              flex-grow: 1;
-              line-height: var(--row-height);
-              appearance: none; /* Remove default select dropdown arrow */
-              -webkit-appearance: none; /* Remove default select dropdown arrow for Chrome and Safari */
-              -moz-appearance: none; /* Remove default select dropdown arrow for Firefox */
-              background: transparent; /* Make the select element transparent to hide the arrow */
-              pointer-events: all; }
-
-          }
-
-          &.button-row {
-            .toggle-icon {
-              // width: auto;
-
-              i { width: var(--row-height); }
-
-              .tooltip { position: absolute; }
-            }
-          }
+          .tooltip { position: absolute; }
         }
       }
     }
   }
 
-  // }
 }

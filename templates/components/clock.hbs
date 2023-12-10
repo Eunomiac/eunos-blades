@@ -1,6 +1,7 @@
-{{eLog "Clock Context" this}}
+{{!-- {{eLog "Clock Context" this}} --}}
 
 <div class="clock-container">
+
   <div id="{{id}}" class="clock"
     data-id="{{id}}"
     data-name="{{name}}"
@@ -12,15 +13,18 @@
     data-is-visible="{{isVisible}}"
     {{~#if targetID}} data-target-id="{{targetID}}"{{/if}}
     {{~#if targetKey}} data-target-key="{{targetKey}}"{{/if}}
-    {{~#if targetFlagKey}} data-target-flag-key="{{targetFlagKey}}"{{/if}}
     data-is-highlighted="{{isHighlighted}}"
     data-is-name-visible="{{isNameVisible}}"
     data-is-showing-controls="{{isShowingControls}}">
+
+    <!-- Background -->
+    <image class="clock-bg" src="systems/eunos-blades/assets/clocks/clock-bg.webp" />
 
     {{!-- {{#if (test isVisible "||" isGM)}} --}}
 
     <!-- Frame -->
     {{#unless (test value "==" max)}}
+    {{#if isNameVisible}}
     <svg class="clock-frame" viewBox="0 0 400 400">
       <defs>
       <clipPath id="insideCircleOnly">
@@ -34,6 +38,9 @@
         {{/for}}
       </g>
     </svg>
+    {{else}}
+    <image class="clock-frame" src="systems/eunos-blades/assets/clocks/clock-{{max}}-frame.webp" />
+    {{/if}}
     {{/unless}}
 
     <!-- Fill -->
@@ -62,6 +69,12 @@
     <label class="clock-label">{{name}}</label>
     {{/if}}
 
+
+
+    {{!-- {{/if}} --}}
+
+  </div>
+
     {{!-- Controls:
 
       Name: Input<text>
@@ -72,164 +85,99 @@
       IsNameVisible: Toggle
 
     --}}
-    {{#if isGM}}
-    <div class="clock-controls {{~#unless isShowingControls}} controls-hidden{{/unless}}">
+
+  {{#if isGM}}
+  {{#if targetFlagKey}}(FLAG KEY NOT CONFIGURED){{else}}
+    <div class="clock-controls" data-clock="{{id}}">
+
+      {{!-- Control Row: Open Controls Panel --}}
       <div class="clock-controls-row toggle-controls-row">
-        {{#if targetFlagKey}}
-        {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
-          cssClass="clock-toggle"
-          isToggled=isShowingControls
-          activeClass="fas fa-eye"
-          activeTooltip="<b>Controls are Visible.</b><br>Click to hide."
-          inactiveClass="fas fa-eye-slash"
-          inactiveTooltip="<b>Controls are Hidden.</b><br>Click to display."
-          targetID=targetID
-          dataAction="clock-toggle"
-          targetFlagKey=(concat targetFlagKey "." id ".isShowingControls") }}
-        {{else}}
-        {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
-          cssClass="clock-toggle"
-          isToggled=isShowingControls
-          activeClass="fas fa-eye"
-          activeTooltip="<b>Controls are Visible.</b><br>Click to hide."
-          inactiveClass="fas fa-eye-slash"
-          inactiveTooltip="<b>Controls are Hidden.</b><br>Click to display."
-          targetID=targetID
-          dataAction="clock-toggle"
-          targetKey=(concat targetKey "." id ".isShowingControls") }}
-        {{/if}}
+
+        {{!-- Toggle: isShowingControls --}}
+        <div class="clock-button" data-action="clock-toggle" data-prop="isShowingControls" >
+            <i class="fa-{{#if isShowingControls}}duotone{{else}}solid{{/if}} fa-gear"></i>
+        </div>
+
       </div>
-      {{#if isShowingControls}}
+
+    {{!-- CONTROLS PANEL --}}
+    {{#if isShowingControls}}
+
+      {{!-- Control Row: Name --}}
       <div class="clock-controls-row name-row">
-        <input type="text" class="clock-controls-name" {{~#if targetFlagKey}} data-target-flag-key="{{targetFlagKey}}.{{id}}.name"{{else}} name="{{targetKey}}.{{id}}.name"{{/if}} value="{{name}}" />
+
+        {{!-- Text Input: Clock Name --}}
+        <input type="text" class="clock-controls-name" data-prop="name" value="{{name}}" />
+
       </div>
+
+      {{!-- Control Row: Select --}}
       <div class="clock-controls-row select-row">
-        {{#if targetFlagKey}}
-        {{> "systems/eunos-blades/templates/components/select.hbs"
-          cssClass="clock-select clock-color-select"
-          dataAction="gm-select"
-          dataFlagTarget=(concat targetFlagKey "." id ".color")
-          dataDType="String"
-          targetID=targetID
-          selected=color
-          options=colorSelectOptions
-        }}
-        {{> "systems/eunos-blades/templates/components/select.hbs"
-          cssClass="clock-select clock-value-select"
-          dataAction="gm-select"
-          dataFlagTarget=(concat targetFlagKey "." id ".value")
-          dataDType="String"
-          targetID=targetID
-          selected=value
-          options=valueSelectOptions
-        }}
-        {{> "systems/eunos-blades/templates/components/select.hbs"
-          cssClass="clock-select clock-max-select"
-          dataAction="gm-select"
-          dataFlagTarget=(concat targetFlagKey "." id ".max")
-          dataDType="String"
-          targetID=targetID
-          selected=max
-          options=maxSelectOptions
-        }}
-        {{else}}
-        {{> "systems/eunos-blades/templates/components/select.hbs"
-          cssClass="clock-select clock-color-select"
-          dataAction="gm-select"
-          dataTarget=(concat targetKey "." id ".color")
-          dataDType="String"
-          targetID=targetID
-          selected=color
-          options=colorSelectOptions
-        }}
-        {{> "systems/eunos-blades/templates/components/select.hbs"
-          cssClass="clock-select clock-value-select"
-          dataAction="gm-select"
-          dataTarget=(concat targetKey "." id ".value")
-          dataDType="String"
-          targetID=targetID
-          selected=value
-          options=valueSelectOptions
-        }}
-        {{> "systems/eunos-blades/templates/components/select.hbs"
-          cssClass="clock-select clock-max-select"
-          dataAction="gm-select"
-          dataTarget=(concat targetKey "." id ".max")
-          dataDType="String"
-          targetID=targetID
-          selected=max
-          options=maxSelectOptions
-        }}
-        {{/if}}
+
+        {{!-- Select: Color --}}
+        <select class="blades-select clock-select clock-color-select" data-prop="color">
+          {{#select color}}
+          <option value="" hidden disabled selected></option>
+          {{#each colorSelectOptions}}
+          <option value="{{value}}">{{display}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+
+        {{!-- Select: Value --}}
+        <select class="blades-select clock-select clock-value-select" data-prop="value">
+          {{#select value}}
+          <option value="" hidden disabled selected></option>
+          {{#each valueSelectOptions}}
+          <option value="{{value}}">{{display}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+
+        {{!-- Select: Max --}}
+        <select class="blades-select clock-select clock-max-select" data-prop="max">
+          {{#select max}}
+          <option value="" hidden disabled selected></option>
+          {{#each maxSelectOptions}}
+          <option value="{{value}}">{{display}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+
       </div>
+
+      {{!-- Control Row: Clock Toggles --}}
       <div class="clock-controls-row button-row">
-        {{#if targetFlagKey}}
-        {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
-          cssClass="clock-toggle"
-          isToggled=isVisible
-          activeClass="fas fa-eye"
-          targetID=targetID
-          activeTooltip="<b>Clock is Visible.</b><br>Click to hide."
-          inactiveClass="fas fa-eye-slash"
-          inactiveTooltip="<b>Clock is Hidden.</b><br>Click to display."
-          targetFlagKey=(concat targetFlagKey "." id ".isVisible") }}
 
-        {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
-          cssClass="clock-toggle"
-          isToggled=isHighlighted
-          activeClass="fas fa-circle"
-          targetID=targetID
-          activeTooltip="<b>Clock is Highlighted.</b><br>Click to fade."
-          inactiveClass="fas fa-circle-slash"
-          inactiveTooltip="<b>Clock is Not Highlighted.</b><br>Click to highlight."
-          targetFlagKey=(concat targetFlagKey "." id ".isHighlighted") }}
+        {{!-- Toggle: isVisible --}}
+        <div class="clock-button" data-action="clock-toggle" data-prop="isVisible" >
+            <i class="fa-{{#if isVisible}}solid{{else}}thin{{/if}} fa-eye"></i>
+        </div>
 
-        {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
-          cssClass="clock-toggle"
-          isToggled=isNameVisible
-          activeClass="fas fa-comment"
-          targetID=targetID
-          activeTooltip="<b>Name is Visible.</b><br>Click to hide."
-          inactiveClass="fas fa-comment-slash"
-          inactiveTooltip="<b>Name is Hidden.</b><br>Click to display."
-          targetFlagKey=(concat targetFlagKey "." id ".isNameVisible") }}
-        {{else}}
-        {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
-          cssClass="clock-toggle"
-          isToggled=isVisible
-          activeClass="fas fa-eye"
-          targetID=targetID
-          activeTooltip="<b>Clock is Visible.</b><br>Click to hide."
-          inactiveClass="fas fa-eye-slash"
-          inactiveTooltip="<b>Clock is Hidden.</b><br>Click to display."
-          targetKey=(concat targetKey "." id ".isVisible") }}
+        {{!-- Toggle: isHighlighted --}}
+        <div class="clock-button" data-action="clock-toggle" data-prop="isHighlighted" >
+            <i class="fa-{{#if isHighlighted}}solid fa-lightbulb-on{{else}}thin fa-lightbulb{{/if}}"></i>
+        </div>
 
-        {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
-          cssClass="clock-toggle"
-          isToggled=isHighlighted
-          activeClass="fas fa-circle"
-          targetID=targetID
-          activeTooltip="<b>Clock is Highlighted.</b><br>Click to fade."
-          inactiveClass="fas fa-circle-slash"
-          inactiveTooltip="<b>Clock is Not Highlighted.</b><br>Click to highlight."
-          targetKey=(concat targetKey "." id ".isHighlighted") }}
+        {{!-- Toggle: isNameVisible --}}
+        <div class="clock-button" data-action="clock-toggle" data-prop="isNameVisible" >
+            <i class="fa-{{#if isNameVisible}}solid{{else}}thin{{/if}} fa-tag"></i>
+        </div>
 
-        {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
-          cssClass="clock-toggle"
-          isToggled=isNameVisible
-          activeClass="fas fa-comment"
-          targetID=targetID
-          activeTooltip="<b>Name is Visible.</b><br>Click to hide."
-          inactiveClass="fas fa-comment-slash"
-          inactiveTooltip="<b>Name is Hidden.</b><br>Click to display."
-          targetKey=(concat targetKey "." id ".isNameVisible") }}
-        {{/if}}
       </div>
-      {{/if}}
-    </div>
+
+      {{!-- Control Row: Delete Key --}}
+      <div class="clock-controls-row button-row">
+
+        {{!-- Button: Delete Key --}}
+        <div class="clock-button" data-action="delete-clock" >
+          <i class="fa-regular fa-octagon-xmark"></i>
+        </div>
+
+      </div>
     {{/if}}
 
-    {{!-- {{/if}} --}}
-
-  </div>
+    </div>
+  {{/if}}
+  {{/if}}
 </div>

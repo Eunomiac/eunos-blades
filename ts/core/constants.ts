@@ -388,8 +388,17 @@ export namespace Tag {
 export enum ClockKeyDisplayMode {
   full = "full",
   clocks = "clocks",
-  currentClock = "currentClock"
+  currentClock = "currentClock",
+  presentCurrentClock = "presentCurrentClock",
+  present0 = "present0",
+  present1 = "present1",
+  present2 = "present2",
+  present3 = "present3",
+  present4 = "present4",
+  present5 = "present5",
+  present6 = "present6"
 }
+
 const C = {
   SYSTEM_ID: "eunos-blades",
   SYSTEM_NAME: "Euno's Blades",

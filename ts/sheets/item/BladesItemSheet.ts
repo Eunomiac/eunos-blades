@@ -236,9 +236,9 @@ class BladesItemSheet extends ItemSheet {
     },
     [BladesItemType.project]: (context) => {
       if (!(this.item instanceof BladesProject)) {return undefined as never;}
-      if (this.item.clockKey) {
-        this.item.clockKey.isShowingControls = game.user.isGM;
-      }
+      // if (this.item.clockKey) {
+      //   this.item.clockKey.isShowingControls = game.user.isGM;
+      // }
       const sheetData: BladesItemDataOfType<BladesItemType.project> = {};
       return {
         ...context,

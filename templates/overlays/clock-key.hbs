@@ -1,8 +1,13 @@
 {{eLog "Clock Key Context" this}}
 
 <div class="clock-key-container" data-size="{{size}}">
+
 {{#if (test isVisible "||" isGM)}}
-  <div id="{{id}}" class="clock-key {{~#if isActive}} active-key{{/if}}" data-id="{{id}}" data-size="{{size}}" data-active-clock-slot="{{currentClockIndex}}">
+  <div id="{{id}}" class="clock-key {{~#if isActive}} active-key{{/if}}"
+    data-id="{{id}}"
+    data-size="{{size}}"
+    data-active-clock-slot="{{currentClockIndex}}"
+  >
     {{#if isNameVisible}}
     <label class="key-label" data-key-id="{{id}}">{{name}}</label>
     {{/if}}
@@ -16,5 +21,91 @@
       {{/each}}
     </div>
   </div>
+
+  {{!-- Controls:
+
+    isShowingControls: toggle
+
+    Name: Input<text>
+    AddClock: Button
+    RemoveClock: Button
+    IsVisible: Toggle
+    IsHighlighted: Toggle
+    IsNameVisible: Toggle
+
+  --}}
+  {{#if isGM}}
+  {{#if targetFlagKey}}(FLAG KEY NOT CONFIGURED){{else}}
+    <div class="clock-key-controls" data-clock-key="{{id}}">
+
+      {{!-- Control Row: Open Controls Panel --}}
+      <div class="clock-key-controls-row toggle-controls-row">
+
+        {{!-- Toggle: isShowingControls --}}
+        <div class="clock-button clock-key-button" data-action="key-toggle" data-prop="isShowingControls" >
+            <i class="fa-{{#if isShowingControls}}duotone{{else}}solid{{/if}} fa-gear"></i>
+        </div>
+
+      </div>
+
+    {{!-- CONTROLS PANEL --}}
+    {{#if isShowingControls}}
+      {{!-- Control Row: Name --}}
+      <div class="clock-key-controls-row name-row">
+
+        {{!-- Text Input: Key Name --}}
+        <input type="text" class="clock-key-controls-name" data-prop="name" value="{{name}}" />
+
+      </div>
+
+      {{!-- Control Row: Display Mode, Add Clock --}}
+      <div class="clock-key-controls-row button-row">
+
+        {{!-- Button: Add Clock --}}
+        <div class="clock-button clock-key-button" data-action="add-clock" >
+          <i class="fa-solid fa-octagon-plus"></i>
+        </div>
+
+        {{!-- Select: Display Mode --}}
+        <select class="blades-select key-select key-display-mode-select" data-prop="displayMode">
+          {{#select setDisplayMode}}
+          <option value="" hidden disabled selected></option>
+          {{#each displaySelectOptions}}
+          <option value="{{value}}">{{display}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+
+      </div>
+
+      {{!-- Control Row: Key Toggles --}}
+      <div class="clock-key-controls-row button-row">
+
+        {{!-- Toggle: isVisible --}}
+        <div class="clock-button clock-key-button" data-action="key-toggle" data-prop="isVisible" >
+            <i class="fa-{{#if isVisible}}solid{{else}}thin{{/if}} fa-eye"></i>
+        </div>
+
+        {{!-- Toggle: isNameVisible --}}
+        <div class="clock-button clock-key-button" data-action="key-toggle" data-prop="isNameVisible" >
+            <i class="fa-{{#if isNameVisible}}solid{{else}}thin{{/if}} fa-tag"></i>
+        </div>
+
+      </div>
+
+      {{!-- Control Row: Delete Key --}}
+      <div class="clock-key-controls-row button-row">
+
+        {{!-- Button: Delete Key --}}
+        <div class="clock-button clock-key-button" data-action="delete-key" >
+          <i class="fa-regular fa-octagon-xmark"></i>
+        </div>
+
+      </div>
+    {{/if}}
+
+    </div>
+  {{/if}}
+  {{/if}}
 {{/if}}
 </div>

@@ -299,6 +299,21 @@ const pInt = (
   ref: unknown,
   isStrict = false
 ): number => (isNaN(pFloat(ref, 0, isStrict)) ? NaN : Math.round(pFloat(ref, 0, isStrict)));
+
+const pBool = (
+  ref: unknown
+): boolean => {
+  if (typeof ref === "boolean") { return ref; }
+  if (([0, null, undefined, ""] as unknown[]).includes(ref)) { return false; }
+  if (typeof ref === "string") {
+    return !["0", "false", "null", "undefined", ""].includes(ref);
+  }
+  if (isArray(ref) && ref.length === 0) { return false; }
+  if (isList(ref) && isEmpty(ref)) { return false; }
+  return true;
+};
+
+
 const radToDeg = (rad: number, isConstrained = true): number => {
   rad = isConstrained ? rad % (2 * Math.PI) : rad;
   rad *= 180 / Math.PI;
@@ -1717,7 +1732,7 @@ export default {
   isHTMLCode, isRGBColor, isHexColor,
   isUndefined, isDefined, isEmpty, hasItems, isInstance, isNullish,
   areEqual, areFuzzyEqual,
-  pFloat, pInt, radToDeg, degToRad,
+  pFloat, pInt, pBool, radToDeg, degToRad,
   getKey,
   assertNonNullType,
 

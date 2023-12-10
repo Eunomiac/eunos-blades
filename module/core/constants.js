@@ -405,6 +405,14 @@ export var ClockKeyDisplayMode;
     ClockKeyDisplayMode["full"] = "full";
     ClockKeyDisplayMode["clocks"] = "clocks";
     ClockKeyDisplayMode["currentClock"] = "currentClock";
+    ClockKeyDisplayMode["presentCurrentClock"] = "presentCurrentClock";
+    ClockKeyDisplayMode["present0"] = "present0";
+    ClockKeyDisplayMode["present1"] = "present1";
+    ClockKeyDisplayMode["present2"] = "present2";
+    ClockKeyDisplayMode["present3"] = "present3";
+    ClockKeyDisplayMode["present4"] = "present4";
+    ClockKeyDisplayMode["present5"] = "present5";
+    ClockKeyDisplayMode["present6"] = "present6";
 })(ClockKeyDisplayMode || (ClockKeyDisplayMode = {}));
 const C = {
     SYSTEM_ID: "eunos-blades",

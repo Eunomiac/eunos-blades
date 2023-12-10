@@ -1,7 +1,7 @@
 <select class="blades-select {{~#if cssClass}} {{cssClass}}{{/if}}"
   data-action="{{dataAction}}" data-dtype="{{dataDType}}"
   {{#if targetID}} data-target-id="{{targetID}}"{{/if}}
-  {{#if dataFlagTarget}}data-flag-target="{{dataFlagTarget}}"{{else}}name="{{dataTarget}}"{{/if}}
+  {{#if dataFlagTarget}}data-flag-target="{{dataFlagTarget}}"{{else}}data-target-key="{{dataTarget}}" name="{{dataTarget}}"{{/if}}
   {{#if dataDocType}}data-doc-type="{{dataDocType}}"{{/if}}>
 
   {{#select selected}}

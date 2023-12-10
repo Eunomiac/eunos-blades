@@ -67,9 +67,9 @@
 
           {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
             isToggled=system.persona.trait1.isLocked
-            activeClass="fas fa-lock"
+            activeClass="fa-solid fa-lock"
             activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
-            inactiveClass="far fa-lock-open-alt"
+            inactiveClass="fa-regular fa-lock-open"
             inactiveTooltip="<b>Randomizing Field</b><br>Click to Freeze"
             targetKey="system.persona.trait1.isLocked"
             targetFlagKey=false
@@ -82,9 +82,9 @@
         <div class="comp comp-randomizer-field field-size-half">
           {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
           isToggled=system.persona.trait2.isLocked
-          activeClass="fas fa-lock"
+          activeClass="fa-solid fa-lock"
           activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
-          inactiveClass="far fa-lock-open-alt"
+          inactiveClass="fa-regular fa-lock-open"
           inactiveTooltip="<b>Randomizing Field</b><br>Click to Freeze"
           targetKey="system.persona.trait2.isLocked" }}
           <input class="shadowed randomizer-input" type="text" name="system.persona.trait2.value" value="{{system.persona.trait2.value}}" placeholder="Trait">
@@ -93,9 +93,9 @@
         <div class="comp comp-randomizer-field field-size-half">
           {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
           isToggled=system.persona.trait3.isLocked
-          activeClass="fas fa-lock"
+          activeClass="fa-solid fa-lock"
           activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
-          inactiveClass="far fa-lock-open-alt"
+          inactiveClass="fa-regular fa-lock-open"
           inactiveTooltip="<b>Randomizing Field</b><br>Click to Freeze"
           targetKey="system.persona.trait3.isLocked" }}
           <input class="shadowed randomizer-input" type="text" name="system.persona.trait3.value" value="{{system.persona.trait3.value}}" placeholder="Trait">
@@ -106,9 +106,9 @@
         <div class="comp comp-randomizer-field field-size-half">
           {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
           isToggled=system.secret.trait.isLocked
-          activeClass="fas fa-lock"
+          activeClass="fa-solid fa-lock"
           activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
-          inactiveClass="far fa-lock-open-alt"
+          inactiveClass="fa-regular fa-lock-open"
           inactiveTooltip="<b>Randomizing Field</b><br>Click to Freeze"
           targetKey="system.secret.trait.isLocked" }}
           <input class="shadowed secret-trait randomizer-input" type="text" name="system.secret.trait.value" value="{{system.secret.trait.value}}" placeholder="Trait">
@@ -168,9 +168,9 @@
           <div class="comp comp-randomizer-field field-size-{{data.size}}">
             {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
             isToggled=data.isLocked
-            activeClass="fas fa-lock"
+            activeClass="fa-solid fa-lock"
             activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
-            inactiveClass="far fa-lock-open-alt"
+            inactiveClass="fa-regular fa-lock-open"
             inactiveTooltip="<b>Randomizing Field</b><br>Click to Freeze"
             targetKey=(concat "system.random." key ".isLocked") }}
             {{#if data.label}}
@@ -186,9 +186,9 @@
           <div class="comp comp-randomizer-field field-size-{{data.size}}">
             {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
             isToggled=data.isLocked
-            activeClass="fas fa-lock"
+            activeClass="fa-solid fa-lock"
             activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
-            inactiveClass="far fa-lock-open-alt"
+            inactiveClass="fa-regular fa-lock-open"
             inactiveTooltip="<b>Randomizing Field</b><br>Click to Freeze"
             targetKey=(concat "system.persona." key ".isLocked") }}
             {{#if data.label}}
@@ -206,9 +206,9 @@
           <div class="comp comp-randomizer-field field-size-{{data.size}}">
             {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
             isToggled=data.isLocked
-            activeClass="fas fa-lock"
+            activeClass="fa-solid fa-lock"
             activeTooltip="<b>Field Frozen</b><br>Click to Randomize"
-            inactiveClass="far fa-lock-open-alt"
+            inactiveClass="fa-regular fa-lock-open"
             inactiveTooltip="<b>Randomizing Field</b><br>Click to Freeze"
             targetKey=(concat "system.secret." key ".isLocked") }}
             {{#if data.label}}

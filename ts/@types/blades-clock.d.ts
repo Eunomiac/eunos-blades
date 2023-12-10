@@ -5,6 +5,8 @@
     }
 */
 
+// import {ClockColor, ClockDisplayMode} from "../core/constants";
+
 interface BladesClockKeyData {
   id: IDString,
   name: string,
@@ -20,6 +22,7 @@ interface BladesClockKeyData {
   clocksData: Record<IDString, BladesClockData>,
 
   isShowingControls?: boolean,
+  displayMode?: ClockKeyDisplayMode|number,
   sceneID?: IDString
 }
 

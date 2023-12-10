@@ -9,7 +9,7 @@
     <div class="tab flex-vertical">
     <div class="label-stripe">
            <p>{{localize "BITD.Factions"}}</p>
-          <p><a class="comp-control comp-add" data-item-type="faction"><i class="fas fa-plus-square"></i></a></p>
+          <p><a class="comp-control comp-add" data-item-type="faction"><i class="fa-sharp fa-solid fa-square-plus"></i></a></p>
         </div>
 
         <div id="faction-list">
@@ -21,7 +21,7 @@
                 <img src="{{faction.img}}" title="{{faction.name}}" width="24" height="24"/>
         <div class="comp-title">{{faction.name}}<br>{{localize "BITD.Tier"}}: {{faction.system.tier}}</div>
         </a>
-        <a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fas fa-trash"></i></a>
+        <a class="comp-control comp-delete" title="{{localize 'BITD.TitleDeleteItem'}}"><i class="fa-solid fa-trash"></i></a>
 
         <div id="faction-status">
         <div id="faction-status-label" style="float:left; width: 10em; text-align: right; padding-right: 10px; color: var(--almost_white);">{{localize "BITD.Status"}}<br><span style="color: var(--{{#if (eq faction.system.status.value 7)}}holoblue{{/if}}{{#if (eq faction.system.status.value 6)}}holobluemed{{/if}}{{#if (eq faction.system.status.value 5)}}holobluelt{{/if}}{{#if (eq faction.system.status.value 4)}}almost_white{{/if}}{{#if (eq faction.system.status.value 3)}}redlt{{/if}}{{#if (eq faction.system.status.value 2)}}redmed{{/if}}{{#if (eq faction.system.status.value 1)}}red{{/if}}{{#if (eq faction.system.status.value 0)}}almost_white{{/if}});">{{#if (eq faction.system.status.value 7)}}{{localize "BITD.Allies"}}{{/if}}{{#if (eq faction.system.status.value 6)}}{{localize "BITD.Friends"}}{{/if}}{{#if (eq faction.system.status.value 5)}}{{localize "BITD.Associates"}}{{/if}}{{#if (eq faction.system.status.value 4)}}{{localize "BITD.Neutral"}}{{/if}}{{#if (eq faction.system.status.value 3)}}{{localize "BITD.Adversaries"}}{{/if}}{{#if (eq faction.system.status.value 2)}}{{localize "BITD.Enemies"}}{{/if}}{{#if (eq faction.system.status.value 1)}}{{localize "BITD.AtWar"}}{{/if}}{{#if (eq faction.system.status.value 0)}}{{localize "BITD.Neutral"}}{{/if}}</span></div>

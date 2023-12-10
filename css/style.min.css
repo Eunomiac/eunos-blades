@@ -6440,15 +6440,15 @@ template {
   position: absolute !important;
   width: 100%;
   height: 100%;
-  top: 0;
-  left: 0;
+  top: var(--top-shift);
+  left: var(--left-shift);
   pointer-events: none;
   z-index: 50;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay, :root body.vtt.game.system-eunos-blades #clocks-overlay * {
   --top-shift: 50px;
   --left-shift: 75px;
-  --key-scale: 0.6;
+  --key-scale: 0.8;
   --alternating-top-shift: 120px;
   --clock-frame-size: 108px;
   --clock-glow-size: calc(var(--clock-frame-size) * 3);
@@ -6457,21 +6457,28 @@ template {
 :root body.vtt.game.system-eunos-blades #clocks-overlay .svg-defs {
   position: absolute;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key:nth-child(2n+1) {
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container:nth-child(2n+1) {
   top: var(--alternating-top-shift);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay {
   /* CLOCKS */
+  /* CONTROLS */
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container {
   position: relative;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container * {
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="1"] {
   --key-height: 455px;
   --key-width: 202px;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="1"] .clock-key .key-image-container .key-label {
-  top: 150px;
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="1"] .clock-key .key-label {
+  top: 0px;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="1"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 101px;
@@ -6481,8 +6488,8 @@ template {
   --key-height: 624.438px;
   --key-width: 202px;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="2"] .clock-key .key-image-container .key-label {
-  top: 400px;
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="2"] .clock-key .key-label {
+  top: 100px;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="2"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 101px;
@@ -6496,8 +6503,8 @@ template {
   --key-height: 915px;
   --key-width: 280px;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="3"] .clock-key .key-image-container .key-label {
-  top: 600px;
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="3"] .clock-key .key-label {
+  top: 0px;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="3"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 140px;
@@ -6515,8 +6522,8 @@ template {
   --key-height: 1140px;
   --key-width: 376px;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="4"] .clock-key .key-image-container .key-label {
-  top: 700px;
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="4"] .clock-key .key-label {
+  top: -100px;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="4"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 188px;
@@ -6538,8 +6545,8 @@ template {
   --key-height: 1140px;
   --key-width: 376px;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="5"] .clock-key .key-image-container .key-label {
-  top: 800px;
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="5"] .clock-key .key-label {
+  top: 0px;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="5"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 188px;
@@ -6565,8 +6572,8 @@ template {
   --key-height: 1150px;
   --key-width: 376px;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="6"] .clock-key .key-image-container .key-label {
-  top: 900px;
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="6"] .clock-key .key-label {
+  top: 250px;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="6"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 188px;
@@ -6591,132 +6598,6 @@ template {
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="6"] .clock-key .key-image-container .clock-container:nth-of-type(6) {
   left: 188px;
   top: 683px;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="1"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="2"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="2"] .clock-key .clock-label[data-clock-num="1"] {
-  left: 0;
-  top: 325px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="3"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="3"] .clock-key .clock-label[data-clock-num="1"] {
-  left: -20px;
-  top: 110px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="3"] .clock-key .clock-label[data-clock-num="2"] {
-  left: 220px;
-  top: 265px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="4"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="4"] .clock-key .clock-label[data-clock-num="1"] {
-  left: -60px;
-  top: 80px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="4"] .clock-key .clock-label[data-clock-num="2"] {
-  left: 340px;
-  top: 230px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="4"] .clock-key .clock-label[data-clock-num="3"] {
-  left: 0;
-  top: 320px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="1"] {
-  left: -60px;
-  top: 80px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="2"] {
-  left: 340px;
-  top: 230px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="3"] {
-  left: 0;
-  top: 320px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="4"] {
-  left: 0;
-  top: 500px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="1"] {
-  left: -60px;
-  top: 80px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="2"] {
-  left: 340px;
-  top: 230px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="3"] {
-  left: 0;
-  top: 320px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="4"] {
-  left: 0;
-  top: 500px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="5"] {
-  left: 0;
-  top: 730px;
-  text-align: center;
-  width: 100%;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container .clock-key {
   visibility: hidden;
@@ -6796,6 +6677,20 @@ template {
   left: 0px;
   height: 100%;
   width: 100%;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  z-index: 5;
+  font-size: 24px;
+  font-family: var(--font-emphasis-narrow);
+  font-weight: bold;
+  color: var(--blades-white-bright);
+  text-shadow: var(--text-shadow-dark-strong);
+  text-align: center;
+  white-space: nowrap;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-frame {
   z-index: 3;
@@ -7056,7 +6951,8 @@ template {
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="12"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="12"][data-max="12"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls {
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls {
   --row-height: 25px;
   --row-gap: 2px;
   position: absolute;
@@ -7068,76 +6964,116 @@ template {
   z-index: 50;
   border-radius: 5px;
   height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
+  width: 100%;
   transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls:not(.controls-hidden) {
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls.clock-key-controls,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls.clock-key-controls {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  width: 80%;
+  transform: translate(-50%, 0%);
+  height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-button,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-button {
+  pointer-events: all;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls i,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls i {
+  opacity: 1;
+  text-shadow: var(--text-shadow-dark-strong);
+  pointer-events: none;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls select, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls input,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls select,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls input {
+  pointer-events: all;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls select,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls select {
+  width: auto;
+  flex-basis: auto;
+  max-width: 75%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  line-height: var(--row-height);
+  appearance: none; /* Remove default select dropdown arrow */
+  -webkit-appearance: none; /* Remove default select dropdown arrow for Chrome and Safari */
+  -moz-appearance: none; /* Remove default select dropdown arrow for Firefox */
+  background: transparent; /* Make the select element transparent to hide the arrow */
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls:not(.controls-hidden),
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls:not(.controls-hidden) {
   background: var(--blades-black-fade);
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls .clock-controls-row {
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-controls-row, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-key-controls-row,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-controls-row,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-key-controls-row {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
   height: var(--row-height);
   max-height: var(--row-height);
+  width: 100%;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls .clock-controls-row * {
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-controls-row *, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-key-controls-row *,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-controls-row *,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-key-controls-row * {
   height: var(--row-height);
   max-height: var(--row-height);
   width: unset;
   position: static;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls .clock-controls-row .toggle-icon {
-  position: relative;
-  height: var(--row-height);
-  width: var(--row-height);
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls .clock-controls-row .toggle-icon .hidden-toggle {
-  position: absolute;
-  pointer-events: all !important;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls .clock-controls-row .toggle-icon i {
-  width: var(--row-height);
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls .clock-controls-row .toggle-icon .tooltip {
-  position: absolute;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls .clock-controls-row.toggle-controls-row {
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-controls-row.toggle-controls-row, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-key-controls-row.toggle-controls-row,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-controls-row.toggle-controls-row,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-key-controls-row.toggle-controls-row {
   position: absolute;
   top: calc(-1 * var(--row-height));
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls .clock-controls-row.name-row {
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-controls-row.toggle-controls-row.clock-key-controls-row, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-key-controls-row.toggle-controls-row.clock-key-controls-row,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-controls-row.toggle-controls-row.clock-key-controls-row,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-key-controls-row.toggle-controls-row.clock-key-controls-row {
+  bottom: calc(-2 * var(--row-height));
+  top: unset;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-controls-row.name-row, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-key-controls-row.name-row,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-controls-row.name-row,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-key-controls-row.name-row {
   width: 100%;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls .clock-controls-row.name-row > .clock-controls-name {
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-controls-row.name-row > .clock-controls-name, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-key-controls-row.name-row > .clock-controls-name,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-controls-row.name-row > .clock-controls-name,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-key-controls-row.name-row > .clock-controls-name {
   height: var(--row-height);
   max-height: var(--row-height);
   width: 100%;
   pointer-events: all !important;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls .clock-controls-row.select-row {
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-controls-row.select-row, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-key-controls-row.select-row,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-controls-row.select-row,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-key-controls-row.select-row {
   justify-content: stretch;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls .clock-controls-row.select-row select {
-  flex-grow: 1;
-  line-height: var(--row-height);
-  appearance: none; /* Remove default select dropdown arrow */
-  -webkit-appearance: none; /* Remove default select dropdown arrow for Chrome and Safari */
-  -moz-appearance: none; /* Remove default select dropdown arrow for Firefox */
-  background: transparent; /* Make the select element transparent to hide the arrow */
-  pointer-events: all;
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls .clock-controls-row.button-row .toggle-icon i {
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-controls-row.button-row .toggle-icon i, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-key-controls-row.button-row .toggle-icon i,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-controls-row.button-row .toggle-icon i,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-key-controls-row.button-row .toggle-icon i {
   width: var(--row-height);
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-controls .clock-controls-row.button-row .toggle-icon .tooltip {
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-controls-row.button-row .toggle-icon .tooltip, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls .clock-key-controls-row.button-row .toggle-icon .tooltip,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-controls-row.button-row .toggle-icon .tooltip,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-controls .clock-key-controls-row.button-row .toggle-icon .tooltip {
   position: absolute;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container {
-  height: 300px;
-  width: calc(0.6 * var(--key-width));
+  height: calc(0.7 * var(--key-height));
+  width: calc(0.7 * var(--key-width));
+  min-width: 200px;
+  margin-right: calc(-0.175 * var(--key-width));
 }
 :root body.vtt.game.system-eunos-blades #sidebar {
   border: none;
@@ -20232,16 +20168,23 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app {
   /* CLOCKS */
+  /* CONTROLS */
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container {
   position: relative;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container * {
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="1"] {
   --key-height: 455px;
   --key-width: 202px;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="1"] .clock-key .key-image-container .key-label {
-  top: 150px;
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="1"] .clock-key .key-label {
+  top: 0px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="1"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 101px;
@@ -20251,8 +20194,8 @@ template {
   --key-height: 624.438px;
   --key-width: 202px;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="2"] .clock-key .key-image-container .key-label {
-  top: 400px;
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="2"] .clock-key .key-label {
+  top: 100px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="2"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 101px;
@@ -20266,8 +20209,8 @@ template {
   --key-height: 915px;
   --key-width: 280px;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="3"] .clock-key .key-image-container .key-label {
-  top: 600px;
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="3"] .clock-key .key-label {
+  top: 0px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="3"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 140px;
@@ -20285,8 +20228,8 @@ template {
   --key-height: 1140px;
   --key-width: 376px;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="4"] .clock-key .key-image-container .key-label {
-  top: 700px;
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="4"] .clock-key .key-label {
+  top: -100px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="4"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 188px;
@@ -20308,8 +20251,8 @@ template {
   --key-height: 1140px;
   --key-width: 376px;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="5"] .clock-key .key-image-container .key-label {
-  top: 800px;
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="5"] .clock-key .key-label {
+  top: 0px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="5"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 188px;
@@ -20335,8 +20278,8 @@ template {
   --key-height: 1150px;
   --key-width: 376px;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="6"] .clock-key .key-image-container .key-label {
-  top: 900px;
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="6"] .clock-key .key-label {
+  top: 250px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="6"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 188px;
@@ -20361,132 +20304,6 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="6"] .clock-key .key-image-container .clock-container:nth-of-type(6) {
   left: 188px;
   top: 683px;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="1"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="2"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="2"] .clock-key .clock-label[data-clock-num="1"] {
-  left: 0;
-  top: 325px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="3"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="3"] .clock-key .clock-label[data-clock-num="1"] {
-  left: -20px;
-  top: 110px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="3"] .clock-key .clock-label[data-clock-num="2"] {
-  left: 220px;
-  top: 265px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="4"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="4"] .clock-key .clock-label[data-clock-num="1"] {
-  left: -60px;
-  top: 80px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="4"] .clock-key .clock-label[data-clock-num="2"] {
-  left: 340px;
-  top: 230px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="4"] .clock-key .clock-label[data-clock-num="3"] {
-  left: 0;
-  top: 320px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="1"] {
-  left: -60px;
-  top: 80px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="2"] {
-  left: 340px;
-  top: 230px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="3"] {
-  left: 0;
-  top: 320px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="4"] {
-  left: 0;
-  top: 500px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="1"] {
-  left: -60px;
-  top: 80px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="2"] {
-  left: 340px;
-  top: 230px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="3"] {
-  left: 0;
-  top: 320px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="4"] {
-  left: 0;
-  top: 500px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="5"] {
-  left: 0;
-  top: 730px;
-  text-align: center;
-  width: 100%;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container .clock-key {
   visibility: hidden;
@@ -20566,6 +20383,20 @@ template {
   left: 0px;
   height: 100%;
   width: 100%;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  z-index: 5;
+  font-size: 24px;
+  font-family: var(--font-emphasis-narrow);
+  font-weight: bold;
+  color: var(--blades-white-bright);
+  text-shadow: var(--text-shadow-dark-strong);
+  text-align: center;
+  white-space: nowrap;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-frame {
   z-index: 3;
@@ -20826,7 +20657,8 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="12"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="12"][data-max="12"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls {
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls {
   --row-height: 25px;
   --row-gap: 2px;
   position: absolute;
@@ -20838,71 +20670,109 @@ template {
   z-index: 50;
   border-radius: 5px;
   height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
+  width: 100%;
   transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls:not(.controls-hidden) {
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls.clock-key-controls,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls.clock-key-controls {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  width: 80%;
+  transform: translate(-50%, 0%);
+  height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-button,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-button {
+  pointer-events: all;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls i,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls i {
+  opacity: 1;
+  text-shadow: var(--text-shadow-dark-strong);
+  pointer-events: none;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls select, :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls input,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls select,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls input {
+  pointer-events: all;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls select,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls select {
+  width: auto;
+  flex-basis: auto;
+  max-width: 75%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  line-height: var(--row-height);
+  appearance: none; /* Remove default select dropdown arrow */
+  -webkit-appearance: none; /* Remove default select dropdown arrow for Chrome and Safari */
+  -moz-appearance: none; /* Remove default select dropdown arrow for Firefox */
+  background: transparent; /* Make the select element transparent to hide the arrow */
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls:not(.controls-hidden),
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls:not(.controls-hidden) {
   background: var(--blades-black-fade);
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls .clock-controls-row {
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-controls-row, :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-key-controls-row,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-controls-row,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-key-controls-row {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
   height: var(--row-height);
   max-height: var(--row-height);
+  width: 100%;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls .clock-controls-row * {
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-controls-row *, :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-key-controls-row *,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-controls-row *,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-key-controls-row * {
   height: var(--row-height);
   max-height: var(--row-height);
   width: unset;
   position: static;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls .clock-controls-row .toggle-icon {
-  position: relative;
-  height: var(--row-height);
-  width: var(--row-height);
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls .clock-controls-row .toggle-icon .hidden-toggle {
-  position: absolute;
-  pointer-events: all !important;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls .clock-controls-row .toggle-icon i {
-  width: var(--row-height);
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls .clock-controls-row .toggle-icon .tooltip {
-  position: absolute;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls .clock-controls-row.toggle-controls-row {
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-controls-row.toggle-controls-row, :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-key-controls-row.toggle-controls-row,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-controls-row.toggle-controls-row,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-key-controls-row.toggle-controls-row {
   position: absolute;
   top: calc(-1 * var(--row-height));
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls .clock-controls-row.name-row {
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-controls-row.toggle-controls-row.clock-key-controls-row, :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-key-controls-row.toggle-controls-row.clock-key-controls-row,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-controls-row.toggle-controls-row.clock-key-controls-row,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-key-controls-row.toggle-controls-row.clock-key-controls-row {
+  bottom: calc(-2 * var(--row-height));
+  top: unset;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-controls-row.name-row, :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-key-controls-row.name-row,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-controls-row.name-row,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-key-controls-row.name-row {
   width: 100%;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls .clock-controls-row.name-row > .clock-controls-name {
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-controls-row.name-row > .clock-controls-name, :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-key-controls-row.name-row > .clock-controls-name,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-controls-row.name-row > .clock-controls-name,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-key-controls-row.name-row > .clock-controls-name {
   height: var(--row-height);
   max-height: var(--row-height);
   width: 100%;
   pointer-events: all !important;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls .clock-controls-row.select-row {
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-controls-row.select-row, :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-key-controls-row.select-row,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-controls-row.select-row,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-key-controls-row.select-row {
   justify-content: stretch;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls .clock-controls-row.select-row select {
-  flex-grow: 1;
-  line-height: var(--row-height);
-  appearance: none; /* Remove default select dropdown arrow */
-  -webkit-appearance: none; /* Remove default select dropdown arrow for Chrome and Safari */
-  -moz-appearance: none; /* Remove default select dropdown arrow for Firefox */
-  background: transparent; /* Make the select element transparent to hide the arrow */
-  pointer-events: all;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls .clock-controls-row.button-row .toggle-icon i {
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-controls-row.button-row .toggle-icon i, :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-key-controls-row.button-row .toggle-icon i,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-controls-row.button-row .toggle-icon i,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-key-controls-row.button-row .toggle-icon i {
   width: var(--row-height);
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-controls .clock-controls-row.button-row .toggle-icon .tooltip {
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-controls-row.button-row .toggle-icon .tooltip, :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls .clock-key-controls-row.button-row .toggle-icon .tooltip,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-controls-row.button-row .toggle-icon .tooltip,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-controls .clock-key-controls-row.button-row .toggle-icon .tooltip {
   position: absolute;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .editor:not(.tinymce) {
@@ -22235,16 +22105,23 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container {
   /* CLOCKS */
+  /* CONTROLS */
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container {
   position: relative;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container * {
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="1"] {
   --key-height: 455px;
   --key-width: 202px;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="1"] .clock-key .key-image-container .key-label {
-  top: 150px;
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="1"] .clock-key .key-label {
+  top: 0px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="1"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 101px;
@@ -22254,8 +22131,8 @@ template {
   --key-height: 624.438px;
   --key-width: 202px;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="2"] .clock-key .key-image-container .key-label {
-  top: 400px;
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="2"] .clock-key .key-label {
+  top: 100px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="2"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 101px;
@@ -22269,8 +22146,8 @@ template {
   --key-height: 915px;
   --key-width: 280px;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="3"] .clock-key .key-image-container .key-label {
-  top: 600px;
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="3"] .clock-key .key-label {
+  top: 0px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="3"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 140px;
@@ -22288,8 +22165,8 @@ template {
   --key-height: 1140px;
   --key-width: 376px;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="4"] .clock-key .key-image-container .key-label {
-  top: 700px;
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="4"] .clock-key .key-label {
+  top: -100px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="4"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 188px;
@@ -22311,8 +22188,8 @@ template {
   --key-height: 1140px;
   --key-width: 376px;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="5"] .clock-key .key-image-container .key-label {
-  top: 800px;
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="5"] .clock-key .key-label {
+  top: 0px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="5"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 188px;
@@ -22338,8 +22215,8 @@ template {
   --key-height: 1150px;
   --key-width: 376px;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="6"] .clock-key .key-image-container .key-label {
-  top: 900px;
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="6"] .clock-key .key-label {
+  top: 250px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="6"] .clock-key .key-image-container .clock-container:nth-of-type(1) {
   left: 188px;
@@ -22364,132 +22241,6 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="6"] .clock-key .key-image-container .clock-container:nth-of-type(6) {
   left: 188px;
   top: 683px;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="1"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="2"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="2"] .clock-key .clock-label[data-clock-num="1"] {
-  left: 0;
-  top: 325px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="3"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="3"] .clock-key .clock-label[data-clock-num="1"] {
-  left: -20px;
-  top: 110px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="3"] .clock-key .clock-label[data-clock-num="2"] {
-  left: 220px;
-  top: 265px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="4"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="4"] .clock-key .clock-label[data-clock-num="1"] {
-  left: -60px;
-  top: 80px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="4"] .clock-key .clock-label[data-clock-num="2"] {
-  left: 340px;
-  top: 230px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="4"] .clock-key .clock-label[data-clock-num="3"] {
-  left: 0;
-  top: 320px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="1"] {
-  left: -60px;
-  top: 80px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="2"] {
-  left: 340px;
-  top: 230px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="3"] {
-  left: 0;
-  top: 320px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="5"] .clock-key .clock-label[data-clock-num="4"] {
-  left: 0;
-  top: 500px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="0"] {
-  left: 0;
-  top: 0px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="1"] {
-  left: -60px;
-  top: 80px;
-  text-align: right;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="2"] {
-  left: 340px;
-  top: 230px;
-  text-align: left;
-  width: 50%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="3"] {
-  left: 0;
-  top: 320px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="4"] {
-  left: 0;
-  top: 500px;
-  text-align: center;
-  width: 100%;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container[data-size="6"] .clock-key .clock-label[data-clock-num="5"] {
-  left: 0;
-  top: 730px;
-  text-align: center;
-  width: 100%;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container .clock-key {
   visibility: hidden;
@@ -22569,6 +22320,20 @@ template {
   left: 0px;
   height: 100%;
   width: 100%;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  z-index: 5;
+  font-size: 24px;
+  font-family: var(--font-emphasis-narrow);
+  font-weight: bold;
+  color: var(--blades-white-bright);
+  text-shadow: var(--text-shadow-dark-strong);
+  text-align: center;
+  white-space: nowrap;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-frame {
   z-index: 3;
@@ -22829,7 +22594,8 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="12"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="12"][data-max="12"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 49.9907346411% 0, 50% 50%);
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls {
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls {
   --row-height: 25px;
   --row-gap: 2px;
   position: absolute;
@@ -22841,71 +22607,109 @@ template {
   z-index: 50;
   border-radius: 5px;
   height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
+  width: 100%;
   transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls:not(.controls-hidden) {
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls.clock-key-controls,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls.clock-key-controls {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  width: 80%;
+  transform: translate(-50%, 0%);
+  height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-button,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-button {
+  pointer-events: all;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls i,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls i {
+  opacity: 1;
+  text-shadow: var(--text-shadow-dark-strong);
+  pointer-events: none;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls select, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls input,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls select,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls input {
+  pointer-events: all;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls select,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls select {
+  width: auto;
+  flex-basis: auto;
+  max-width: 75%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  line-height: var(--row-height);
+  appearance: none; /* Remove default select dropdown arrow */
+  -webkit-appearance: none; /* Remove default select dropdown arrow for Chrome and Safari */
+  -moz-appearance: none; /* Remove default select dropdown arrow for Firefox */
+  background: transparent; /* Make the select element transparent to hide the arrow */
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls:not(.controls-hidden),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls:not(.controls-hidden) {
   background: var(--blades-black-fade);
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls .clock-controls-row {
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-controls-row, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-key-controls-row,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-controls-row,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-key-controls-row {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
   height: var(--row-height);
   max-height: var(--row-height);
+  width: 100%;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls .clock-controls-row * {
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-controls-row *, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-key-controls-row *,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-controls-row *,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-key-controls-row * {
   height: var(--row-height);
   max-height: var(--row-height);
   width: unset;
   position: static;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls .clock-controls-row .toggle-icon {
-  position: relative;
-  height: var(--row-height);
-  width: var(--row-height);
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls .clock-controls-row .toggle-icon .hidden-toggle {
-  position: absolute;
-  pointer-events: all !important;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls .clock-controls-row .toggle-icon i {
-  width: var(--row-height);
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls .clock-controls-row .toggle-icon .tooltip {
-  position: absolute;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls .clock-controls-row.toggle-controls-row {
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-controls-row.toggle-controls-row, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-key-controls-row.toggle-controls-row,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-controls-row.toggle-controls-row,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-key-controls-row.toggle-controls-row {
   position: absolute;
   top: calc(-1 * var(--row-height));
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls .clock-controls-row.name-row {
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-controls-row.toggle-controls-row.clock-key-controls-row, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-key-controls-row.toggle-controls-row.clock-key-controls-row,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-controls-row.toggle-controls-row.clock-key-controls-row,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-key-controls-row.toggle-controls-row.clock-key-controls-row {
+  bottom: calc(-2 * var(--row-height));
+  top: unset;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-controls-row.name-row, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-key-controls-row.name-row,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-controls-row.name-row,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-key-controls-row.name-row {
   width: 100%;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls .clock-controls-row.name-row > .clock-controls-name {
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-controls-row.name-row > .clock-controls-name, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-key-controls-row.name-row > .clock-controls-name,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-controls-row.name-row > .clock-controls-name,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-key-controls-row.name-row > .clock-controls-name {
   height: var(--row-height);
   max-height: var(--row-height);
   width: 100%;
   pointer-events: all !important;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls .clock-controls-row.select-row {
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-controls-row.select-row, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-key-controls-row.select-row,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-controls-row.select-row,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-key-controls-row.select-row {
   justify-content: stretch;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls .clock-controls-row.select-row select {
-  flex-grow: 1;
-  line-height: var(--row-height);
-  appearance: none; /* Remove default select dropdown arrow */
-  -webkit-appearance: none; /* Remove default select dropdown arrow for Chrome and Safari */
-  -moz-appearance: none; /* Remove default select dropdown arrow for Firefox */
-  background: transparent; /* Make the select element transparent to hide the arrow */
-  pointer-events: all;
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls .clock-controls-row.button-row .toggle-icon i {
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-controls-row.button-row .toggle-icon i, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-key-controls-row.button-row .toggle-icon i,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-controls-row.button-row .toggle-icon i,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-key-controls-row.button-row .toggle-icon i {
   width: var(--row-height);
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-controls .clock-controls-row.button-row .toggle-icon .tooltip {
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-controls-row.button-row .toggle-icon .tooltip, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls .clock-key-controls-row.button-row .toggle-icon .tooltip,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-controls-row.button-row .toggle-icon .tooltip,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-controls .clock-key-controls-row.button-row .toggle-icon .tooltip {
   position: absolute;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-resizable-handle {

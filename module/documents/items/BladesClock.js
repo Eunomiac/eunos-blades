@@ -56,6 +56,9 @@ class BladesTargetLink {
     }
     get id() { return this._id; }
     get name() { return this.getSystemData().name; }
+    getTargetProp(prop) {
+        return this.getSystemData()[prop];
+    }
     async updateTarget(prop, val) {
         if (this.targetFlagKey) {
             this.target.setFlag("eunos-blades", `${this.targetFlagKey}.${this._id}.${prop}`, val);
@@ -135,10 +138,19 @@ class BladesClockKey extends BladesTargetLink {
         ]));
     }
     get isGM() { return game.user.isGM; }
-    get isVisible() { return this.getSystemData().isVisible; }
+    get isVisible() { return U.pBool(this.getSystemData().isVisible); }
+    get displayMode() {
+        if (this.isGM && this.isShowingControls) {
+            return ClockKeyDisplayMode.full;
+        }
+        return this.getSystemData().displayMode ?? ClockKeyDisplayMode.full;
+    }
+    get setDisplayMode() {
+        return this.getSystemData().displayMode ?? ClockKeyDisplayMode.full;
+    }
     get sceneID() { return this.getSystemData().sceneID; }
-    get isActive() { return this.getSystemData().isActive; }
-    get isNameVisible() { return this.getSystemData().isNameVisible; }
+    get isActive() { return U.pBool(this.getSystemData().isActive); }
+    get isNameVisible() { return U.pBool(this.getSystemData().isNameVisible); }
     get size() { return this.clocks.size; }
     get rollOppName() { return this.name; }
     get rollOppType() { return "clock_key"; }
@@ -177,10 +189,25 @@ class BladesClockKey extends BladesTargetLink {
         return Array.from(this.clocks).every((clock) => clock.isComplete);
     }
     get currentClockIndex() {
-        return (this.currentClock?.index ?? 0);
+        return U.pInt(this.currentClock?.index);
     }
     get currentClock() {
         return this.clocks.find((clock) => !clock.isComplete);
+    }
+    get displaySelectOptions() {
+        const options = [
+            { value: ClockKeyDisplayMode.full, display: "Full Key" },
+            { value: ClockKeyDisplayMode.clocks, display: "Clocks" },
+            { value: ClockKeyDisplayMode.currentClock, display: "Current Clock" },
+            { value: ClockKeyDisplayMode.presentCurrentClock, display: "Present Current Clock" }
+        ];
+        for (let i = 0; i < this.size; i++) {
+            options.push(...[
+                { value: i, display: `Clock #${i}` },
+                { value: `present${i}`, display: `Present Clock #${i}` }
+            ]);
+        }
+        return options;
     }
     // #endregion
     // #region ~~~ CONSTRUCTOR & INITIALIZATION ~~~
@@ -208,10 +235,10 @@ class BladesClockKey extends BladesTargetLink {
         return $(`#${this.id}`)[0];
     }
     get isShowingControls() {
-        return this.getSystemData().isShowingControls;
+        return U.pBool(this.getSystemData().isShowingControls);
     }
     set isShowingControls(val) {
-        this.updateTarget("isShowingControls", val);
+        this.updateTarget("isShowingControls", U.pBool(val));
     }
     async toggleActive() {
         return await this.updateTarget("isActive", !this.isActive);
@@ -234,7 +261,8 @@ class BladesClockKey extends BladesTargetLink {
         return elemData;
     }
     // Initializes clock key with proper position and scale before displaying via autoAlpha
-    async initClockKeyElem(displayMode = ClockKeyDisplayMode.full) {
+    async initClockKeyElem(displayMode) {
+        displayMode = this.displayMode;
         if (!this.elem) {
             return new Promise((resolve) => {
                 setTimeout(async () => resolve(await this.initClockKeyElem(displayMode)), 1000);
@@ -266,10 +294,26 @@ class BladesClockKey extends BladesTargetLink {
         const keyTweenVars = { ...configOptions };
         const keyContTweenVars = { ...configOptions };
         // Get key data
-        const keyPosData = C.ClockKeyPositions[this.size];
+        const keyPosData = U.objClone(C.ClockKeyPositions[this.size]);
+        // Are we presenting? If so, flag it true and parse displayMode to standard clock reference
+        let isPresenting = false;
+        if (/^present/.exec(`${displayMode}`)) {
+            isPresenting = true;
+            const suffix = `${displayMode}`.substring(7);
+            if (!isNaN(Number(suffix))) {
+                displayMode = U.pInt(suffix);
+            }
+            else {
+                displayMode = ClockKeyDisplayMode.currentClock;
+            }
+        }
+        if (!isNaN(Number(displayMode))) {
+            displayMode = U.pInt(displayMode);
+        }
         // Get position and area dimensions of clock key area focused on by displayMode
         let focusArea;
         let focusPos;
+        const activeClockSide = this.currentClock?.getActiveSide(0);
         switch (displayMode) {
             case ClockKeyDisplayMode.full: {
                 focusPos = keyPosData.keyCenter;
@@ -290,6 +334,17 @@ class BladesClockKey extends BladesTargetLink {
                     if (displayMode in keyPosData.clocks) {
                         focusPos = keyPosData.clocks[displayMode];
                         focusArea = { width: 110, height: 110 };
+                        if (isPresenting) {
+                            focusArea = { width: 55, height: 110 };
+                            if (activeClockSide === "left") {
+                                focusPos.x -= 30;
+                                focusPos.z = -50;
+                            }
+                            else if (activeClockSide === "right") {
+                                focusPos.x += 35;
+                                // focusPos.z = 1350;
+                            }
+                        }
                         break;
                     }
                 }
@@ -309,20 +364,35 @@ class BladesClockKey extends BladesTargetLink {
         keyContTweenVars.left = (0.5 * 100) - focusPos.x;
         // Set transfer origin of key-image-container to same position, for further animation
         keyContTweenVars.transformOrigin = `${focusPos.x}px ${focusPos.y}px`;
+        // Set initial y-rotation to turn clock half towards camera if 'isPresenting'
+        if (isPresenting) {
+            if (activeClockSide === "left") {
+                keyContTweenVars.rotateY = 30;
+            }
+            else if (activeClockSide === "right") {
+                keyContTweenVars.rotateY = -30;
+            }
+        }
         return { keyTweenVars, keyContTweenVars };
     }
-    async switchToMode(displayMode, configOptions = {}) {
-        if (!this.elem) {
+    async switchToMode(displayMode, configOptions = {}, isLocalOnly = false) {
+        const self = this;
+        const { elem } = self;
+        if (!elem) {
             return new Promise((resolve) => {
-                setTimeout(async () => resolve(await this.switchToMode(displayMode, configOptions)), 1000);
+                setTimeout(async () => resolve(await this.switchToMode(displayMode, configOptions, isLocalOnly)), 1000);
             });
         }
-        const { elem } = this;
-        const { keyTweenVars, keyContTweenVars } = this.getDisplayMode(displayMode, configOptions);
-        const keyImgContainer = $(this.elem).find(".key-image-container")[0];
+        const { keyTweenVars, keyContTweenVars } = self.getDisplayMode(displayMode, configOptions);
+        const keyImgContainer = $(elem).find(".key-image-container")[0];
         return new Promise((resolve) => {
             U.gsap.timeline({
-                onComplete() { resolve(); }
+                onComplete() {
+                    if (!isLocalOnly) {
+                        self.updateTarget("displayMode", displayMode)
+                            .then(() => resolve());
+                    }
+                }
             })
                 .to(elem, keyTweenVars, 0)
                 .to(keyImgContainer, keyContTweenVars, 0);
@@ -395,24 +465,24 @@ class BladesClock extends BladesTargetLink {
         return this.isVisible && this.isActive;
     }
     get isGM() { return game.user.isGM; }
-    get value() { return this.getSystemData().value ?? 0; }
-    set value(val) { this.updateTarget("value", val); }
-    get max() { return this.getSystemData().max ?? 0; }
-    set max(val) { this.updateTarget("max", val); }
+    get value() { return U.pInt(this.getSystemData().value); }
+    set value(val) { this.updateTarget("value", U.pInt(val)); }
+    get max() { return U.pInt(this.getSystemData().max); }
+    set max(val) { this.updateTarget("max", U.pInt(val)); }
     get color() { return this.getSystemData().color ?? ClockColor.white; }
     set color(val) { this.updateTarget("color", val); }
-    get isActive() { return this.getSystemData().isActive ?? false; }
-    set isActive(val) { this.updateTarget("isActive", val); }
-    get isShowingControls() { return this.getSystemData().isShowingControls; }
-    set isShowingControls(val) { this.updateTarget("isShowingControls", val); }
-    get isNameVisible() { return this.getSystemData().isNameVisible ?? false; }
-    set isNameVisible(val) { this.updateTarget("isNameVisible", val); }
-    get isVisible() { return this.getSystemData().isVisible ?? false; }
-    set isVisible(val) { this.updateTarget("isVisible", val); }
-    get isHighlighted() { return this.getSystemData().isHighlighted ?? false; }
-    set isHighlighted(val) { this.updateTarget("isHighlighted", val); }
-    get index() { return this.getSystemData().index ?? 0; }
-    set index(val) { this.updateTarget("index", val); }
+    get isActive() { return U.pBool(this.getSystemData().isActive); }
+    set isActive(val) { this.updateTarget("isActive", U.pBool(val)); }
+    get isShowingControls() { return U.pBool(this.getSystemData().isShowingControls); }
+    set isShowingControls(val) { this.updateTarget("isShowingControls", U.pBool(val)); }
+    get isNameVisible() { return U.pBool(this.getSystemData().isNameVisible); }
+    set isNameVisible(val) { this.updateTarget("isNameVisible", U.pBool(val)); }
+    get isVisible() { return U.pBool(this.getSystemData().isVisible); }
+    set isVisible(val) { this.updateTarget("isVisible", U.pBool(val)); }
+    get isHighlighted() { return U.pBool(this.getSystemData().isHighlighted); }
+    set isHighlighted(val) { this.updateTarget("isHighlighted", U.pBool(val)); }
+    get index() { return U.pInt(this.getSystemData().index); }
+    set index(val) { this.updateTarget("index", U.pInt(val)); }
     get display() { return this.getSystemData().display ?? {}; }
     set display(val) { this.updateTarget("display", val); }
     get tooltip() { return this.getSystemData().tooltip; }
@@ -537,7 +607,6 @@ class BladesClock extends BladesTargetLink {
         if (finalClockValue > halfClockValue) {
             return "left";
         }
-        gsap.registerEffect({});
         return "right";
     }
     // #endregion
@@ -579,47 +648,155 @@ export const ApplyClockListeners = async (html) => {
         }
         return undefined;
     }));
-    if (game.user.isGM) {
-        html.find(".clock")
-            .each((_, clockElem) => {
-            const clock = game.eunoblades.Clocks.get(clockElem.id) ?? new BladesClock(clockElem);
-            if (clock) {
-                if ($(clockElem).data("isShowingControls")) {
-                    /* Put Controls Listeners in here -- can't base controls on Form Submit b/c clockoverlay, etc */
+    // Utility functions
+    async function toggleTarget(el, source) {
+        if (!source) {
+            return;
+        }
+        const prop = $(el).data("prop");
+        eLog.checkLog3("clockControls", "Toggle Event", { source, el, prop, curVal: source.getTargetProp(prop) });
+        await source.updateTarget(prop, !source.getTargetProp(prop));
+        if (prop === "isShowingControls") {
+            if (source instanceof BladesClockKey) {
+                const key = source;
+                const { isShowingControls } = key;
+                if (isShowingControls) {
+                    // If controls have been enabled, switch display mode of key to full for user (GM) only.
+                    key.switchToMode(ClockKeyDisplayMode.full, undefined, true);
                 }
                 else {
-                    $(clockElem).on({
-                        click: () => clock.isActive = !clock.isActive,
-                        contextmenu: () => clock.isVisible = !clock.isVisible,
-                        wheel: (event) => {
-                            if (!(event.originalEvent instanceof WheelEvent)) {
-                                return;
-                            }
-                            event.preventDefault();
-                            if (event.originalEvent.deltaY < 0) {
-                                clock.fillSegments(1);
-                            }
-                            else {
-                                clock.clearSegments(1);
-                            }
-                        }
-                    });
+                    // Otherwise, re-initialize key for GM.
+                    key.initClockKeyElem();
                 }
             }
-        });
+        }
     }
-    else {
-        html.find(".clock:not([data-is-showing-controls='true']")
-            .each((_, clockElem) => {
-            const clock = new BladesClock(clockElem);
-            if (clock && clock.canEdit) {
-                $(clockElem).on({
-                    click: () => clock.fillSegments(1),
-                    contextmenu: () => clock.clearSegments(1)
+    async function setTarget(val, el, source) {
+        if (!source) {
+            return;
+        }
+        const prop = $(el).data("prop");
+        eLog.checkLog3("clockControls", "Set Event", { val, source, prop, curVal: source.getTargetProp(prop) });
+        source.updateTarget(prop, val);
+    }
+    // Add listeners to clock keys
+    html.find(".clock-key-container").each((_, keyContainerElem) => {
+        const keyID = $(keyContainerElem).find(".clock-key")[0].id;
+        const key = game.eunoblades.ClockKeys.get(keyID);
+        if (!key) {
+            throw new Error("Too early for key: no KEY!");
+        }
+        const { elem } = key ?? {};
+        if (!elem) {
+            throw new Error("Too early for key: no ELEMENT!");
+        }
+        // Apply listeners to GM control elements
+        if (game.user.isGM) {
+            $(keyContainerElem).find("[data-action='key-toggle']")
+                .on({
+                click: (event) => {
+                    event.preventDefault();
+                    toggleTarget(event.currentTarget, key);
+                }
+            });
+            $(keyContainerElem).find("input.clock-key-controls-name").on({
+                change: (event) => {
+                    event.preventDefault();
+                    setTarget($(event.target).val(), event.target, key);
+                }
+            });
+            $(keyContainerElem).find("select.key-select").on({
+                change: (event) => {
+                    event.preventDefault();
+                    setTarget($(event.target).val(), event.target, key);
+                }
+            });
+            $(keyContainerElem).find("[data-action='add-clock']").on({
+                click: (event) => {
+                    event.preventDefault();
+                    key.addClock();
+                }
+            });
+            $(keyContainerElem).find("[data-action='delete-key']").on({
+                contextmenu: (event) => {
+                    event.preventDefault();
+                    key.delete();
+                }
+            });
+        }
+    });
+    // Add listeners to clocks
+    html.find(".clock-container").each((_, clockContainerElem) => {
+        const clockID = $(clockContainerElem).find(".clock")[0].id;
+        const clock = game.eunoblades.Clocks.get(clockID);
+        if (!clock) {
+            throw new Error("Too early for clock: no CLOCK!");
+        }
+        const { elem } = clock ?? {};
+        if (!elem) {
+            throw new Error("Too early for clock: no ELEMENT!");
+        }
+        // Apply listeners to GM control elements
+        if (game.user.isGM) {
+            if (clock.isShowingControls) {
+                $(clockContainerElem).find("[data-action='clock-toggle']").on({
+                    click: (event) => {
+                        event.preventDefault();
+                        toggleTarget(event.currentTarget, clock);
+                    }
+                });
+                $(clockContainerElem).find("input.clock-controls-name").on({
+                    change: (event) => {
+                        event.preventDefault();
+                        setTarget($(event.target).val(), event.target, clock);
+                    }
+                });
+                $(clockContainerElem).find("select.clock-select").on({
+                    change: (event) => {
+                        event.preventDefault();
+                        setTarget($(event.target).val(), event.target, clock);
+                    }
+                });
+                $(clockContainerElem).find("[data-action='delete-clock']").on({
+                    contextmenu: (event) => {
+                        event.preventDefault();
+                        clock.delete();
+                    }
                 });
             }
-        });
-    }
+            else {
+                $(clockContainerElem).find("[data-action='clock-toggle'][data-prop='isShowingControls']").on({
+                    click: (event) => {
+                        event.preventDefault();
+                        toggleTarget(event.currentTarget, clock);
+                    }
+                });
+                $(clockContainerElem).on({
+                    click: () => { clock.isActive = !clock.isActive; },
+                    contextmenu: () => { clock.isVisible = !clock.isVisible; },
+                    wheel: (event) => {
+                        if (!(event.originalEvent instanceof WheelEvent)) {
+                            return;
+                        }
+                        event.preventDefault();
+                        if (event.originalEvent.deltaY < 0) {
+                            clock.fillSegments(1);
+                        }
+                        else {
+                            clock.clearSegments(1);
+                        }
+                    }
+                });
+            }
+        }
+        else if (clock.canEdit && !clock.isShowingControls) {
+            // Apply listeners for non-GM users
+            $(clockContainerElem).on({
+                click: () => clock.fillSegments(1),
+                contextmenu: () => clock.clearSegments(1)
+            });
+        }
+    });
 };
 export default BladesClock;
 export { BladesClockKey };
