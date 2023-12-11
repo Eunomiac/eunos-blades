@@ -1,12 +1,19 @@
 import U from "./utilities";
 import C from "./constants";
 // eslint-disable-next-line import/no-unresolved
-import {TextPlugin, Flip, MotionPathPlugin} from "gsap/all";
+import {TextPlugin, Flip, Draggable as Dragger, MotionPathPlugin, SplitText, Observer, CustomEase, CustomWiggle, CustomBounce, EasePack} from "gsap/all";
 
 const gsapPlugins: gsap.RegisterablePlugins[] = [
   TextPlugin,
   Flip,
-  MotionPathPlugin
+  MotionPathPlugin,
+  Dragger,
+  SplitText,
+  Observer,
+  CustomEase,
+  CustomWiggle,
+  CustomBounce,
+  EasePack
 ];
 
 type gsapConfig = gsap.TweenVars & {
@@ -21,6 +28,82 @@ type gsapEffect = {
 }
 
 const gsapEffects: Record<string, gsapEffect> = {
+  hoverButton: {
+    effect: (target, config) => {
+      return U.gsap.timeline({paused: true})
+        .to(target, {
+          scale: config.scale,
+          ease: "power2",
+          duration: config.duration
+        })
+        .fromTo(target, {
+          filter: config.brightness ? "brightness(1)" : undefined
+        }, {
+          color: config.color,
+          filter: config.brightness ? `brightness(${config.brightness})` : undefined,
+          duration: config.duration,
+          ease: "sine"
+        }, 0);
+    },
+    defaults: {
+      color: undefined,
+      brightness: 1.5,
+      duration: 0.5,
+      scale: 1.25
+    }
+  },
+  keyUp: {
+    effect: (target, config) => {
+      const finalPos: gsap.TweenVars = {
+        top: 0,
+        left: 0,
+        rotateZ: 90,
+        transformOrigin: "50% 50%",
+        scale: 0.5,
+        opacity: 0
+      };
+
+      /* Also need to reposition label, and probably controls */
+
+      const tl = gsap.timeline();
+
+      tl.to(target, {
+        duration: config.duration,
+        ease: config.ease,
+        y: -500
+      }, 0)
+        .to(target, {
+          duration: config.duration,
+          ease: "power2.in",
+          opacity: 0
+        }, config.duration / 2)
+        .set(target, finalPos)
+        .fromTo(target, {
+          y: 50
+        }, {
+          y: 0,
+          duration: config.duration / 2,
+          ease: "elastic.out(1.2, 0.5)"
+        })
+        .fromTo(target, {
+          opacity: 0,
+          filter: "brightness(2)"
+        }, {
+          opacity: 1,
+          filter: "brightness(1)",
+          duration: config.duration / 2,
+          ease: "power2.in"
+        }, "<");
+
+      return tl;
+    },
+    defaults: {
+      duration: 0.5,
+      ease: "elastic.in(1.2, 0.5)"
+    }
+  },
+
+
   csqEnter: {
     effect: (csqContainer: HTMLElement, config) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
@@ -622,7 +705,7 @@ const gsapEffects: Record<string, gsapEffect> = {
     defaults: { }
   },
   hoverTooltip: {
-    effect: (tooltip, config) => {
+    effect: (tooltip, _config) => {
       const tooltipElem = $(tooltip)[0];
       const tooltipContainer = $(tooltip).parent()[0];
       const overlayContainer = $("#eunos-blades-tooltips")[0];
@@ -686,13 +769,23 @@ const gsapEffects: Record<string, gsapEffect> = {
  */
 export function Initialize() {
   if (gsapPlugins.length) {
+    U.gsap.config({
+      nullTargetWarn: true
+    });
     U.gsap.registerPlugin(...gsapPlugins);
     Object.assign(
       globalThis,
       {
         TextPlugin,
         Flip,
-        MotionPathPlugin
+        MotionPathPlugin,
+        Dragger,
+        SplitText,
+        Observer,
+        CustomEase,
+        CustomWiggle,
+        CustomBounce,
+        EasePack
       }
     );
   }
@@ -918,6 +1011,17 @@ export function ApplyConsequenceAnimations(html: JQuery<HTMLElement>) {
 
 }
 
-export {TextPlugin, Flip, MotionPathPlugin};
+export {
+  TextPlugin,
+  Flip,
+  MotionPathPlugin,
+  Dragger,
+  SplitText,
+  Observer,
+  CustomEase,
+  CustomWiggle,
+  CustomBounce,
+  EasePack
+};
 
 export default U.gsap;

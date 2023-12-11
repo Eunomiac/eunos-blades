@@ -830,6 +830,9 @@ const shuffle = (array: unknown[]) => {
 
   return array;
 };
+const toArray = <T>(target: JQuery|string|Record<string, unknown>|Element|null): T[] => {
+  return gsap.utils.toArray(target) as T[];
+};
 // #endregion ▄▄▄▄▄ ARRAYS ▄▄▄▄▄
 
 // #region ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████ ~
@@ -1772,6 +1775,7 @@ export default {
   unique, group, sample,
   getLast, removeFirst, pullElement, pullIndex,
   subGroup, shuffle,
+  toArray,
 
   // ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████
   remove, replace, partition, zip,

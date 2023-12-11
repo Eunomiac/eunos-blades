@@ -1,3 +1,4 @@
+import U from "../../core/utilities";
 import {SVGDATA, BladesActorType, BladesItemType} from "../../core/constants";
 // import U from "../../core/utilities";
 import BladesActor from "../../BladesActor";
@@ -23,16 +24,23 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
 
   async renderOverlay() {
     if (!game.scenes?.current) { return; }
-    if (!game.eunoblades.ClockKeeper) { return; }
-    if (!game.eunoblades.ClockKeeper.overlayElement) {
+    const {ClockKeeper: keeper} = game.eunoblades;
+    if (!keeper) { return; }
+    const {overlayElement} = keeper;
+    eLog.checkLog3("clocksOverlay", "[ClocksOverlay] RenderOverlay", overlayElement);
+    if (!overlayElement) {
       eLog.error("clocksOverlay", "[ClocksOverlay] Cannot locate overlay element.");
       return;
     }
-    game.eunoblades.ClockKeeper.overlayElement.innerHTML = await renderTemplate(
+
+    // Re-render the overlay element
+    overlayElement.innerHTML = await renderTemplate(
       "systems/eunos-blades/templates/overlays/clock-overlay.hbs",
-      game.eunoblades.ClockKeeper
+      keeper
     );
-    game.eunoblades.ClockKeeper.activateOverlayListeners();
+
+    // Reactivate event listeners
+    keeper.activateOverlayListeners();
   }
 
   get clockKeys() { return this.getSceneKeys(); }
@@ -43,9 +51,9 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
 
   async activateOverlayListeners() {
     if (!game?.user?.isGM) { return; }
-    const _temp = this.keys;
     eLog.checkLog3("clocksOverlay", "[activateOverlayListeners] Keys", this.keys);
-    ApplyClockListeners($("#clocks-overlay"));
+    ApplyClockListeners($("#clocks-overlay"), "ClocksOverlay");
+
     $("#clocks-overlay").find(".key-label").on({
       click: async (event) => {
         if (!event.currentTarget) { return; }
@@ -54,7 +62,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
         event.preventDefault();
 
         const clockKey = game.eunoblades.ClockKeys.get($(event.currentTarget).data("keyId"));
-        if (clockKey) {
+        if (clockKey && clockKey.elem) {
           await clockKey.toggleActive();
         }
       },

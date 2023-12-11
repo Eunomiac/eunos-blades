@@ -1,4 +1,4 @@
-{{!-- {{eLog "Clock Context" this}} --}}
+{{eLog "Clock Context" this}}
 
 <div class="clock-container">
 
@@ -22,25 +22,10 @@
 
     {{!-- {{#if (test isVisible "||" isGM)}} --}}
 
+    {{#if (test isVisible "||" isGM)}}
     <!-- Frame -->
     {{#unless (test value "==" max)}}
-    {{#if isNameVisible}}
-    <svg class="clock-frame" viewBox="0 0 400 400">
-      <defs>
-      <clipPath id="insideCircleOnly">
-        <circle cx="200" cy="200" r="200" />
-      </clipPath>
-    </defs>
-      <circle class="clock-bg" cx="200" cy="200" r="200" fill="transparent" stroke="black" stroke-width="20" clip-path="url(#insideCircleOnly)" />
-      <g class="segmented" data-size="{{max}}">
-        {{#for 1 max}}
-          <line x1="200" y1="200" x2="200" y2="0" transform="rotate({{calc (calc 360 "/" ../max) "*" this}} 200 200)" stroke="black" stroke-width="10" />
-        {{/for}}
-      </g>
-    </svg>
-    {{else}}
     <image class="clock-frame" src="systems/eunos-blades/assets/clocks/clock-{{max}}-frame.webp" />
-    {{/if}}
     {{/unless}}
 
     <!-- Fill -->
@@ -69,6 +54,8 @@
     <label class="clock-label">{{name}}</label>
     {{/if}}
 
+    {{/if}}
+
 
 
     {{!-- {{/if}} --}}
@@ -88,7 +75,7 @@
 
   {{#if isGM}}
   {{#if targetFlagKey}}(FLAG KEY NOT CONFIGURED){{else}}
-    <div class="clock-controls" data-clock="{{id}}">
+    <div class="clock-controls {{~#unless isShowingControls}} controls-hidden{{/unless}}" data-clock="{{id}}">
 
       {{!-- Control Row: Open Controls Panel --}}
       <div class="clock-controls-row toggle-controls-row">

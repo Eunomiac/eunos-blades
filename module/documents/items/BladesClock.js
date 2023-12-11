@@ -70,17 +70,17 @@ class BladesTargetLink {
     async updateTargetData(val) {
         if (this.targetFlagKey) {
             if (val === null) {
-                this.target.unsetFlag("eunos-blades", `${this.targetFlagKey}.${this._id}`);
+                return this.target.unsetFlag("eunos-blades", `${this.targetFlagKey}.${this._id}`);
             }
             else {
-                this.target.setFlag("eunos-blades", `${this.targetFlagKey}.${this._id}`, val);
+                return this.target.setFlag("eunos-blades", `${this.targetFlagKey}.${this._id}`, val);
             }
         }
         else if (val === null) {
-            this.target.update({ [`${this.targetKey}.-=${this._id}`]: null });
+            return this.target.update({ [`${this.targetKey}.-=${this._id}`]: null });
         }
         else {
-            this.target.update({ [`${this.targetKey}.${this._id}`]: val });
+            return this.target.update({ [`${this.targetKey}.${this._id}`]: val });
         }
     }
     async delete() {
@@ -151,7 +151,7 @@ class BladesClockKey extends BladesTargetLink {
     get sceneID() { return this.getSystemData().sceneID; }
     get isActive() { return U.pBool(this.getSystemData().isActive); }
     get isNameVisible() { return U.pBool(this.getSystemData().isNameVisible); }
-    get size() { return this.clocks.size; }
+    get size() { return Object.keys(this.clocksData).length; }
     get rollOppName() { return this.name; }
     get rollOppType() { return "clock_key"; }
     get rollFactors() {
@@ -288,6 +288,9 @@ class BladesClockKey extends BladesTargetLink {
         if (!this.elem) {
             return configOptions;
         }
+        if (!this.isActive) {
+            displayMode = ClockKeyDisplayMode.full;
+        }
         configOptions.duration ??= 1;
         configOptions.ease ??= "power2";
         configOptions.autoAlpha ??= 1;
@@ -357,8 +360,16 @@ class BladesClockKey extends BladesTargetLink {
             width: U.gsap.getProperty(keyContainer, "width"),
             height: U.gsap.getProperty(keyContainer, "height")
         };
+        // If not isActive, adjust 'width' to account for CSS styles
+        if (!this.isActive) {
+            keyContainerDimensions.width *= 2;
+        }
         // Determine scale factor necessary to fit focusArea inside keyContainer
         keyTweenVars.scale = Math.min(keyContainerDimensions.height / focusArea.height, keyContainerDimensions.width / focusArea.width);
+        // If not isActive, adjust 'scale' to account for CSS styles
+        if (!this.isActive) {
+            // keyTweenVars.scale *= 2;
+        }
         // Determine top and left values for key-image-container, accounting for x/yPercent -50
         keyContTweenVars.top = (0.5 * 100) - focusPos.y;
         keyContTweenVars.left = (0.5 * 100) - focusPos.x;
@@ -373,6 +384,7 @@ class BladesClockKey extends BladesTargetLink {
                 keyContTweenVars.rotateY = -30;
             }
         }
+        // If not isActive, adjust 'width' and 'scale' to account for CSS styles
         return { keyTweenVars, keyContTweenVars };
     }
     async switchToMode(displayMode, configOptions = {}, isLocalOnly = false) {
@@ -400,7 +412,29 @@ class BladesClockKey extends BladesTargetLink {
     }
     // #endregion
     // #region Adding & Removing Clocks ~
+    async updateClockIndices() {
+        await this.updateTarget("clocksData", Object.fromEntries(Object.entries(this.clocksData)
+            .map(([id, data], index) => [id, { ...data, index }])));
+        return this.clocks;
+    }
     async addClock(clockData = {}) {
+        await this.updateClockIndices();
+        eLog.checkLog3("bladesClock", "[BladesClockKey.addClock]", {
+            passedData: clockData,
+            derivedData: {
+                target: this.target,
+                targetKey: this.targetKey ? `${this.targetKey}.${this.id}.clocksData` : undefined,
+                targetFlagKey: this._targetFlagKey ? `${this.targetFlagKey}.${this.id}.clocksData` : undefined,
+                index: this.clocks.size
+            },
+            createData: {
+                target: this.target,
+                targetKey: this.targetKey ? `${this.targetKey}.${this.id}.clocksData` : undefined,
+                targetFlagKey: this._targetFlagKey ? `${this.targetFlagKey}.${this.id}.clocksData` : undefined,
+                index: this.clocks.size,
+                ...clockData
+            }
+        });
         return await BladesClock.Create({
             target: this.target,
             targetKey: this.targetKey ? `${this.targetKey}.${this.id}.clocksData` : undefined,
@@ -415,6 +449,7 @@ class BladesClockKey extends BladesTargetLink {
         }
         clockID ??= Array.from(this.clocks).pop()?.id;
         await game.eunoblades.Clocks.get(clockID ?? "")?.delete();
+        await this.updateClockIndices();
     }
 }
 class BladesClock extends BladesTargetLink {
@@ -473,7 +508,19 @@ class BladesClock extends BladesTargetLink {
     set color(val) { this.updateTarget("color", val); }
     get isActive() { return U.pBool(this.getSystemData().isActive); }
     set isActive(val) { this.updateTarget("isActive", U.pBool(val)); }
-    get isShowingControls() { return U.pBool(this.getSystemData().isShowingControls); }
+    get parentKey() {
+        const keyID = this.targetKey.match(/\.keys\.([^.]+)/)?.[1];
+        if (!keyID) {
+            return undefined;
+        }
+        return game.eunoblades.ClockKeys.get(keyID);
+    }
+    get isShowingControls() {
+        if (this.parentKey && !this.parentKey.isShowingControls) {
+            return false;
+        }
+        return U.pBool(this.getSystemData().isShowingControls);
+    }
     set isShowingControls(val) { this.updateTarget("isShowingControls", U.pBool(val)); }
     get isNameVisible() { return U.pBool(this.getSystemData().isNameVisible); }
     set isNameVisible(val) { this.updateTarget("isNameVisible", U.pBool(val)); }
@@ -636,8 +683,12 @@ class BladesClock extends BladesTargetLink {
         await this.updateTarget("value", this.value - count);
         return clockOverflow;
     }
+    async delete() {
+        await super.delete();
+        return this.parentKey?.updateClockIndices();
+    }
 }
-export const ApplyClockListeners = async (html) => {
+export const ApplyClockListeners = async (html, namespace) => {
     eLog.checkLog3("ApplyListeners", "ApplyClockListeners", { html, find: html.find(".clock") });
     // Step One: Find any clock keys and initialize them
     await Promise.all(Array.from(html.find(".clock-key"))
@@ -679,8 +730,8 @@ export const ApplyClockListeners = async (html) => {
         eLog.checkLog3("clockControls", "Set Event", { val, source, prop, curVal: source.getTargetProp(prop) });
         source.updateTarget(prop, val);
     }
-    // Add listeners to clock keys
-    html.find(".clock-key-container").each((_, keyContainerElem) => {
+    // Add listeners and animation timelines to clock keys
+    U.toArray(html.find(".clock-key-container")).forEach((keyContainerElem) => {
         const keyID = $(keyContainerElem).find(".clock-key")[0].id;
         const key = game.eunoblades.ClockKeys.get(keyID);
         if (!key) {
@@ -693,35 +744,49 @@ export const ApplyClockListeners = async (html) => {
         // Apply listeners to GM control elements
         if (game.user.isGM) {
             $(keyContainerElem).find("[data-action='key-toggle']")
+                .each((_, el) => { $(el).data("hoverTimeline", U.gsap.effects.hoverButton(el)); })
+                .off(`.${namespace}`)
                 .on({
-                click: (event) => {
+                [`click.${namespace}`]: (event) => {
                     event.preventDefault();
                     toggleTarget(event.currentTarget, key);
-                }
+                },
+                [`mouseenter.${namespace}`]: (event) => $(event.currentTarget).data("hoverTimeline").play(),
+                [`mouseleave.${namespace}`]: (event) => $(event.currentTarget).data("hoverTimeline").reverse()
             });
-            $(keyContainerElem).find("input.clock-key-controls-name").on({
-                change: (event) => {
+            $(keyContainerElem).find("input.clock-key-controls-name")
+                .on({
+                [`change.${namespace}`]: (event) => {
                     event.preventDefault();
                     setTarget($(event.target).val(), event.target, key);
                 }
             });
-            $(keyContainerElem).find("select.key-select").on({
-                change: (event) => {
+            $(keyContainerElem).find("select.key-select")
+                .on({
+                [`change.${namespace}`]: (event) => {
                     event.preventDefault();
                     setTarget($(event.target).val(), event.target, key);
                 }
             });
-            $(keyContainerElem).find("[data-action='add-clock']").on({
-                click: (event) => {
+            $(keyContainerElem).find("[data-action='add-clock']")
+                .each((_, el) => { $(el).data("hoverTimeline", U.gsap.effects.hoverButton(el)); })
+                .on({
+                [`click.${namespace}`]: (event) => {
                     event.preventDefault();
                     key.addClock();
-                }
+                },
+                [`mouseenter.${namespace}`]: (event) => $(event.currentTarget).data("hoverTimeline").play(),
+                [`mouseleave.${namespace}`]: (event) => $(event.currentTarget).data("hoverTimeline").reverse()
             });
-            $(keyContainerElem).find("[data-action='delete-key']").on({
-                contextmenu: (event) => {
+            $(keyContainerElem).find("[data-action='delete-key']")
+                .each((_, el) => { $(el).data("hoverTimeline", U.gsap.effects.hoverButton(el, { color: "#FF0000" })); })
+                .on({
+                [`contextmenu.${namespace}`]: (event) => {
                     event.preventDefault();
                     key.delete();
-                }
+                },
+                [`mouseenter.${namespace}`]: (event) => $(event.currentTarget).data("hoverTimeline").play(),
+                [`mouseleave.${namespace}`]: (event) => $(event.currentTarget).data("hoverTimeline").reverse()
             });
         }
     });
@@ -739,42 +804,54 @@ export const ApplyClockListeners = async (html) => {
         // Apply listeners to GM control elements
         if (game.user.isGM) {
             if (clock.isShowingControls) {
-                $(clockContainerElem).find("[data-action='clock-toggle']").on({
-                    click: (event) => {
+                $(clockContainerElem).find("[data-action='clock-toggle']")
+                    .each((_, el) => { $(el).data("hoverTimeline", U.gsap.effects.hoverButton(el)); })
+                    .on({
+                    [`click.${namespace}`]: (event) => {
                         event.preventDefault();
                         toggleTarget(event.currentTarget, clock);
-                    }
+                    },
+                    [`mouseenter.${namespace}`]: (event) => $(event.currentTarget).data("hoverTimeline").play(),
+                    [`mouseleave.${namespace}`]: (event) => $(event.currentTarget).data("hoverTimeline").reverse()
                 });
-                $(clockContainerElem).find("input.clock-controls-name").on({
-                    change: (event) => {
+                $(clockContainerElem).find("input.clock-controls-name")
+                    .on({
+                    [`change.${namespace}`]: (event) => {
                         event.preventDefault();
                         setTarget($(event.target).val(), event.target, clock);
                     }
                 });
-                $(clockContainerElem).find("select.clock-select").on({
-                    change: (event) => {
+                $(clockContainerElem).find("select.clock-select")
+                    .on({
+                    [`change.${namespace}`]: (event) => {
                         event.preventDefault();
                         setTarget($(event.target).val(), event.target, clock);
                     }
                 });
-                $(clockContainerElem).find("[data-action='delete-clock']").on({
-                    contextmenu: (event) => {
+                $(clockContainerElem).find("[data-action='delete-clock']")
+                    .each((_, el) => { $(el).data("hoverTimeline", U.gsap.effects.hoverButton(el, { color: "#FF0000" })); })
+                    .on({
+                    [`contextmenu.${namespace}`]: (event) => {
                         event.preventDefault();
                         clock.delete();
-                    }
+                    },
+                    [`mouseenter.${namespace}`]: (event) => $(event.currentTarget).data("hoverTimeline").play(),
+                    [`mouseleave.${namespace}`]: (event) => $(event.currentTarget).data("hoverTimeline").reverse()
                 });
             }
             else {
-                $(clockContainerElem).find("[data-action='clock-toggle'][data-prop='isShowingControls']").on({
-                    click: (event) => {
+                $(clockContainerElem).find("[data-action='clock-toggle'][data-prop='isShowingControls']")
+                    .on({
+                    [`click.${namespace}`]: (event) => {
                         event.preventDefault();
                         toggleTarget(event.currentTarget, clock);
                     }
                 });
-                $(clockContainerElem).on({
-                    click: () => { clock.isActive = !clock.isActive; },
-                    contextmenu: () => { clock.isVisible = !clock.isVisible; },
-                    wheel: (event) => {
+                $(clockContainerElem).find(".clock")
+                    .on({
+                    [`click.${namespace}`]: () => { clock.updateTarget("isShowingControls", true); },
+                    [`contextmenu.${namespace}`]: () => { clock.isVisible = !clock.isVisible; },
+                    [`wheel.${namespace}`]: (event) => {
                         if (!(event.originalEvent instanceof WheelEvent)) {
                             return;
                         }
@@ -791,9 +868,10 @@ export const ApplyClockListeners = async (html) => {
         }
         else if (clock.canEdit && !clock.isShowingControls) {
             // Apply listeners for non-GM users
-            $(clockContainerElem).on({
-                click: () => clock.fillSegments(1),
-                contextmenu: () => clock.clearSegments(1)
+            $(clockContainerElem).find(".clock")
+                .on({
+                [`click.${namespace}`]: () => clock.fillSegments(1),
+                [`contextmenu.${namespace}`]: () => clock.clearSegments(1)
             });
         }
     });

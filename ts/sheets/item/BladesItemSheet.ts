@@ -334,7 +334,7 @@ class BladesItemSheet extends ItemSheet {
 
     Tags.InitListeners(html, this.item);
     ApplyTooltipAnimations(html);
-    ApplyClockListeners(html);
+    ApplyClockListeners(html, `Item-${this.item.id}`);
 
 
     // Everything below here is only needed if the sheet is editable

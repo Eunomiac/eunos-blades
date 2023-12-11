@@ -8,9 +8,10 @@ declare namespace gsap {
 declare class ScrollTrigger {
 
   static readonly version: string;
+  static readonly isTouch: number;
 
-  readonly animation?: gsap.core.Animation | null;
-  readonly callbackAnimation?: gsap.core.Animation | null;
+  readonly animation?: gsap.core.Animation | undefined;
+  readonly callbackAnimation?: gsap.core.Animation | undefined;
   readonly direction: number;
   readonly end: number;
   readonly isActive: boolean;
@@ -163,6 +164,33 @@ declare class ScrollTrigger {
   static getAll(): ScrollTrigger[];
 
   /**
+   * Disables ALL ScrollTrigger functionality.
+   *
+   * ```js
+   * ScrollTrigger.disable();
+   * ```
+   * @static
+   * @param {boolean} reset
+   * @param {boolean} kill
+   * @memberof ScrollTrigger
+   * @link https://greensock.com/docs/v3/Plugins/ScrollTrigger/static.disable()
+   */
+  static disable(reset?: boolean, kill?: boolean): void;
+
+
+  /**
+   * Enables all ScrollTrigger functionality again after ScrollTrigger.disable() was called.
+   *
+   * ```js
+   * ScrollTrigger.enable();
+   * ```
+   * @static
+   * @memberof ScrollTrigger
+   * @link https://greensock.com/docs/v3/Plugins/ScrollTrigger/static.enable()
+   */
+  static enable(): void;
+
+  /**
    * Returns the ScrollTrigger that was assigned the corresponding id.
    *
    * ```js
@@ -175,7 +203,7 @@ declare class ScrollTrigger {
    * @memberof ScrollTrigger
    * @link https://greensock.com/docs/v3/Plugins/ScrollTrigger/static.getById()
    */
-  static getById(id: string): ScrollTrigger;
+  static getById(id: string): ScrollTrigger | undefined;
 
   /**
    * Returns a function to control the scroll position of a particular element
@@ -225,7 +253,21 @@ declare class ScrollTrigger {
   static isScrolling(): boolean;
 
   /**
-   * Set up ScrollTriggers that only apply to certain viewport sizes using media queries.
+   * Kills all ScrollTriggers (except the main ScrollSmoother one, if it exists)
+   *
+   * ```js
+   * ScrollTrigger.killAll();
+   * ```
+   *
+   * @static
+   * @param {boolean} [allowListeners]
+   * @memberof ScrollTrigger
+   * @link https://greensock.com/docs/v3/Plugins/ScrollTrigger/static.killAll()
+   */
+  static killAll(allowListeners?: boolean): void;
+
+  /**
+   * Set up ScrollTriggers that only apply to certain viewport sizes using media queries. Deprecated in favor of gsap.matchMedia() in version 3.11.0+
    *
    * ```js
    * ScrollTrigger.matchMedia({
@@ -234,7 +276,7 @@ declare class ScrollTrigger {
    *   "all": function() { }
    * });
    * ```
-   *
+   * @deprecated
    * @static
    * @param {ScrollTrigger.MatchMediaObject} vars
    * @memberof ScrollTrigger
@@ -257,6 +299,51 @@ declare class ScrollTrigger {
    * @link https://greensock.com/docs/v3/Plugins/ScrollTrigger/static.maxScroll()
    */
   static maxScroll(target: HTMLElement | Window, horizontal?: boolean): number;
+
+  /**
+   * Forces scrolling to be done on the JavaScript thread, ensuring it is synchronized and the address bar doesn't show/hide on [most] mobile devices.
+   *
+   * ```js
+   * ScrollTrigger.normalizeScroll(true);
+   * ```
+   * @static
+   * @param {boolean | ScrollTrigger.NormalizeVars | Observer} enable
+   * @returns {Observer | undefined} a new Observer instance (if true) or undefined (if false)
+   * @memberof ScrollTrigger
+   * @link https://greensock.com/docs/v3/Plugins/ScrollTrigger/static.normalizeScroll()
+   */
+  static normalizeScroll(enable?: boolean | ScrollTrigger.NormalizeVars | Observer): Observer | undefined;
+
+  /**
+   * Returns the Observer instance that is currently normalizing scroll behavior (if one exists).
+   *
+   * ```js
+   * let normalizer = ScrollTrigger.normalizeScroll();
+   * ```
+   * @static
+   * @returns {Observer | undefined} the Observer instance normalizing scroll (if one exists) or undefined (if false)
+   * @memberof ScrollTrigger
+   * @link https://greensock.com/docs/v3/Plugins/ScrollTrigger/static.normalizeScroll()
+   */
+  static normalizeScroll(): Observer | undefined;
+
+  /**
+   * Creates an Observer that senses "scroll-like" behavior like a mouse wheel spin, finger swipe on a touch device, scrollbar drag or even a press/drag of the pointer.
+   *
+   * ```js
+   * ScrollTrigger.observe({
+   *     target: ".box",
+   *     onUp: self => console.log("up", self.deltaY),
+   *     onDown: self => console.log("down", self.deltaY)
+   * });
+   * ```
+   * @static
+   * @param {Observer.ObserverVars} vars
+   * @returns {Observer} a new Observer instance
+   * @memberof ScrollTrigger
+   * @link https://greensock.com/docs/v3/Plugins/ScrollTrigger/static.observe()
+   */
+  static observe(vars:Observer.ObserverVars): Observer;
 
   /**
    * Returns the position of the Element in the viewport as a normalized value (0-1) where 0 is top/left and 1 is bottom/right.
@@ -509,10 +596,10 @@ declare class ScrollTrigger {
    * ```
    *
    * @memberof ScrollTrigger
-   * @returns {ScrollTrigger | null} The next ScrollTrigger (if one exists)
+   * @returns {ScrollTrigger | undefined} The next ScrollTrigger (if one exists)
    * @link https://greensock.com/docs/v3/Plugins/ScrollTrigger/next()
    */
-  next(): ScrollTrigger | null;
+  next(): ScrollTrigger | undefined;
 
   /**
    * Gets the ScrollTrigger instance that's immediately before this one in the refresh order (if any)
@@ -524,7 +611,7 @@ declare class ScrollTrigger {
    * @memberof ScrollTrigger
    * @link https://greensock.com/docs/v3/Plugins/ScrollTrigger/previous()
    */
-  previous(): ScrollTrigger | null;
+  previous(): ScrollTrigger | undefined;
 
   /**
    * Forces the ScrollTrigger instance to re-calculate its start and end values (the scroll positions where it'll be activated).
@@ -596,11 +683,11 @@ declare namespace ScrollTrigger {
   type Callback = (self: ScrollTrigger) => any;
   type BatchCallback = (targets: Element[], triggers: ScrollTrigger[]) => any;
   type NumFunc = () => number;
-  type SnapFunc = (value: number) => number;
+  type SnapFunc = (value: number, self?: ScrollTrigger) => number;
   type SnapDirectionalFunc = (value: number, direction?: number, threshold?: number) => number;
   type GetterSetterNumFunc = (value?: number) => number | void;
   type GetterRectFunc = () => RectObj;
-  type StartEndFunc = () => string | number;
+  type StartEndFunc = (self: ScrollTrigger) => string | number;
   type ScrollFunc = (position: number) => void;
 
   interface MarkersVars {
@@ -647,6 +734,7 @@ declare namespace ScrollTrigger {
     once?: boolean;
     onEnter?: Callback;
     onEnterBack?: Callback;
+    onKill?: Callback;
     onLeave?: Callback;
     onLeaveBack?: Callback;
     onRefresh?: Callback;
@@ -705,8 +793,9 @@ declare namespace ScrollTrigger {
 
   interface ConfigVars {
     limitCallbacks?: boolean;
-    syncInterval?: number; // TODO: Add to docs?
+    syncInterval?: number;
     autoRefreshEvents?: string;
+    ignoreMobileResize?: boolean;
   }
 
   interface ScrollerProxyVars {
@@ -717,8 +806,16 @@ declare namespace ScrollTrigger {
     fixedMarkers?: boolean;
     getBoundingClientRect?: GetterRectFunc;
     pinType?: "fixed" | "transform";
+    content?: gsap.DOMTarget;
   }
+  interface NormalizeVars extends Observer.ObserverVars {
+    momentum?: number | Function;
+    content?: gsap.DOMTarget;
+    allowNestedScroll?: boolean;
+  }
+
 }
+
 
 declare namespace gsap.plugins {
 

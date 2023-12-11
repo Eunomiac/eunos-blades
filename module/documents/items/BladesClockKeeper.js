@@ -16,15 +16,20 @@ class BladesClockKeeper extends BladesItem {
         if (!game.scenes?.current) {
             return;
         }
-        if (!game.eunoblades.ClockKeeper) {
+        const { ClockKeeper: keeper } = game.eunoblades;
+        if (!keeper) {
             return;
         }
-        if (!game.eunoblades.ClockKeeper.overlayElement) {
+        const { overlayElement } = keeper;
+        eLog.checkLog3("clocksOverlay", "[ClocksOverlay] RenderOverlay", overlayElement);
+        if (!overlayElement) {
             eLog.error("clocksOverlay", "[ClocksOverlay] Cannot locate overlay element.");
             return;
         }
-        game.eunoblades.ClockKeeper.overlayElement.innerHTML = await renderTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs", game.eunoblades.ClockKeeper);
-        game.eunoblades.ClockKeeper.activateOverlayListeners();
+        // Re-render the overlay element
+        overlayElement.innerHTML = await renderTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs", keeper);
+        // Reactivate event listeners
+        keeper.activateOverlayListeners();
     }
     get clockKeys() { return this.getSceneKeys(); }
     get currentScene() { return game.scenes?.current?.id; }
@@ -33,9 +38,8 @@ class BladesClockKeeper extends BladesItem {
         if (!game?.user?.isGM) {
             return;
         }
-        const _temp = this.keys;
         eLog.checkLog3("clocksOverlay", "[activateOverlayListeners] Keys", this.keys);
-        ApplyClockListeners($("#clocks-overlay"));
+        ApplyClockListeners($("#clocks-overlay"), "ClocksOverlay");
         $("#clocks-overlay").find(".key-label").on({
             click: async (event) => {
                 if (!event.currentTarget) {
@@ -46,7 +50,7 @@ class BladesClockKeeper extends BladesItem {
                 }
                 event.preventDefault();
                 const clockKey = game.eunoblades.ClockKeys.get($(event.currentTarget).data("keyId"));
-                if (clockKey) {
+                if (clockKey && clockKey.elem) {
                     await clockKey.toggleActive();
                 }
             },

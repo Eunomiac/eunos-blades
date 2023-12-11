@@ -816,6 +816,9 @@ const shuffle = (array) => {
     }
     return array;
 };
+const toArray = (target) => {
+    return gsap.utils.toArray(target);
+};
 // #endregion ▄▄▄▄▄ ARRAYS ▄▄▄▄▄
 // #region ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████ ~
 const checkVal = ({ k, v }, checkTest) => {
@@ -1669,6 +1672,7 @@ export default {
     unique, group, sample,
     getLast, removeFirst, pullElement, pullIndex,
     subGroup, shuffle,
+    toArray,
     // ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████
     remove, replace, partition, zip,
     objClean, objSize, objMap, objFindKey, objFilter, objForEach, objCompact,

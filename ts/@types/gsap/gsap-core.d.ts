@@ -16,13 +16,17 @@ declare namespace gsap {
     | typeof MotionPathHelper
     | typeof SplitText
     | typeof Flip
-    | typeof ScrollTrigger;
+    | typeof ScrollTrigger
+    | typeof Observer
+    | typeof ScrollSmoother;
 
   // querySelector returns type Element | null
-  type DOMTarget = Element | string | null | ArrayLike<Element | string | null>;
+  type DOMTarget = Element | string | null | Window | ArrayLike<Element | string | Window | null>;
   type TweenTarget = string | object | null; 
 
   type Callback = (...args: any[]) => void | null;
+  type ContextSafeFunc = (func: Function) => Function;
+  type ContextFunc = (context: Context, contextSafe?: ContextSafeFunc) => Function | any | void;
   type CallbackType = "onComplete" | "onInterrupt" | "onRepeat" | "onReverseComplete" | "onStart" | "onUpdate";
   type TickerCallback = (time: number, deltaTime: number, frame: number, elapsed: number) => void | null;
 
@@ -36,10 +40,38 @@ declare namespace gsap {
   type StringValue = string | FunctionBasedValue<string>;
   type ElementValue = Element | FunctionBasedValue<Element>;
   type TweenValue = NumberValue | StringValue;
+  type QuickToFunc = {
+    (value: number, start?: number, startIsRelative?: boolean): core.Tween;
+    tween: core.Tween;
+  }
   
   type SVGPathValue = string | SVGPathElement;
   type SVGPathTarget = SVGPathValue | ArrayLike<SVGPathValue>;
   type SVGPrimitive = SVGCircleElement | SVGRectElement | SVGEllipseElement | SVGPolygonElement | SVGPolylineElement | SVGLineElement;
+
+  interface Conditions {
+    [key: string]: boolean;
+  }
+  interface Context {
+    [key: string]: Function | any;
+    selector?: Function;
+    isReverted: boolean;
+    conditions?: Conditions;
+    queries?: object;
+    add(methodName: string, func: Function, scope?: Element | string | object): Function;
+    add(func: Function, scope?: Element | string | object): void;
+    ignore(func: Function): void;
+    kill(revert?: boolean): void;
+    revert(config?: object): void;
+    clear(): void;
+  }
+
+  interface MatchMedia {
+    contexts: Context[];
+    add(conditions: string | object, func: ContextFunc, scope?: Element | string | object): MatchMedia;
+    revert(config?: object): void;
+    kill(revert?: boolean):void;
+  }
 
   interface AnimationVars extends CallbackVars {
     [key: string]: any;
@@ -119,10 +151,10 @@ declare namespace gsap {
   }
 
   interface Ticker {
-    add(callback: TickerCallback): void;
+    add(callback: TickerCallback, once?: boolean, prioritize?: boolean): Callback;
     fps(fps: number): void;
     frame: number;
-    lagSmoothing(threshold: number, adjustedLag?: number): void;
+    lagSmoothing(threshold: number | boolean, adjustedLag?: number): void;
     remove(callback: Callback): void;
     sleep(): void;
     tick(): void;
@@ -138,10 +170,22 @@ declare namespace gsap {
     smoothChildTiming?: boolean;
   }
 
+  type EaseString = "none"
+      | "power1" | "power1.in" | "power1.out" | "power1.inOut"
+      | "power2" | "power2.in" | "power2.out" | "power2.inOut"
+      | "power3" | "power3.in" | "power3.out" | "power3.inOut"
+      | "power4" | "power4.in" | "power4.out" | "power4.inOut"
+      | "back" | "back.in" | "back.out" | "back.inOut"
+      | "bounce" | "bounce.in" | "bounce.out" | "bounce.inOut"
+      | "circ" | "circ.in" | "circ.out" | "circ.inOut"
+      | "elastic" | "elastic.in" | "elastic.out" | "elastic.inOut"
+      | "expo" | "expo.in" | "expo.out" | "expo.inOut"
+      | "sine" | "sine.in" | "sine.out" | "sine.inOut" | ({} & string);
+
   interface TweenVars extends AnimationVars {
     delay?: TweenValue;
     duration?: TweenValue;
-    ease?: string | EaseFunction;
+    ease?: EaseString | EaseFunction;
     endArray?: any[];
     immediateRender?: boolean;    
     lazy?: boolean;
@@ -178,6 +222,26 @@ declare namespace gsap {
    * @link https://greensock.com/docs/v3/GSAP/gsap.config()
    */
   function config(config?: GSAPConfig): GSAPConfig;
+
+  /**
+   * Creates a Context object for recording/reverting any GSAP animations and/or ScrollTriggers that are in the provided function
+   *
+   * ```js
+   * let ctx = gsap.context((self) => {
+   *     gsap.to(".box", {x: 100});
+   * }, myElement);
+   *
+   * // then later
+   * ctx.revert();
+   * ```
+   *
+   * @param {ContextFunc} [func]
+   * @param {Element | string | object} [scope]
+   * @returns {Context} Context object
+   * @memberof gsap
+   * @link https://greensock.com/docs/v3/GSAP/gsap.context()
+   */
+  function context(func?: ContextFunc, scope?: Element | string | object): Context;
 
   /**
    * Gets or sets GSAP's global defaults. These will be inherited by every tween.
@@ -379,18 +443,47 @@ declare namespace gsap {
   function killTweensOf(targets: TweenTarget, properties?: object | string, onlyActive?: boolean): void;
 
   /**
+   * Creates a MatchMedia object for adding functions that run when a media query matches
+   *
+   * ```js
+   * let mm = gsap.matchMedia(myElement);
+   * mm.add("(max-width: 500px)", (context) => {
+   *     gsap.to(".box", {x: 100});
+   * });
+   * ```
+   *
+   * @param {Element | string | object} [scope]
+   * @returns {MatchMedia} MatchMedia object
+   * @memberof gsap
+   * @link https://greensock.com/docs/v3/GSAP/gsap.matchMedia()
+   */
+  function matchMedia(scope?: Element | string | object): MatchMedia;
+
+  /**
+   * Immediately reverts all active/matching MatchMedia objects and then runs any that currently match.
+   *
+   * ```js
+   * gsap.matchMediaRefresh();
+   * ```
+   *
+   * @memberof gsap
+   * @link https://greensock.com/docs/v3/GSAP/gsap.matchMediaRefresh()
+   */
+  function matchMediaRefresh(): void;
+
+  /**
    * Returns the corresponding easing function for the given easing string.
    *
    * ```js
    * let ease = gsap.parseEase("power1");
    * ```
    *
-   * @param {string | EaseFunction} ease
+   * @param {EaseString | EaseFunction} ease
    * @returns {EaseFunction} Ease function
    * @memberof gsap
    * @link https://greensock.com/docs/v3/GSAP/gsap.parseEase()
    */
-  function parseEase(ease: string | EaseFunction): EaseFunction;
+  function parseEase(ease: EaseString | EaseFunction): EaseFunction;
   function parseEase(): EaseMap;
 
   /**
@@ -411,6 +504,25 @@ declare namespace gsap {
    * @link https://greensock.com/docs/v3/GSAP/gsap.quickSetter()
    */
   function quickSetter(targets: TweenTarget, property: string, unit?: string): Function;
+
+  /**
+   * Returns a reusable function that performantly redirects a specific property to a new value, restarting the animation each time you feed in a new number.
+   *
+   * ```js
+   * let xTo = gsap.quickTo("#id", "x", {duration: 0.8, ease: "power3"});
+   *
+   * // later
+   * xTo(100);
+   * ```
+   *
+   * @param {TweenTarget} target
+   * @param {string} property
+   * @param {TweenVars} vars
+   * @returns {QuickToFunc} Setter function
+   * @memberof gsap
+   * @link https://greensock.com/docs/v3/GSAP/gsap.quickTo()
+   */
+  function quickTo(target: TweenTarget, property: string, vars?: TweenVars): QuickToFunc;
 
   /**
    * Register custom easing functions with GSAP, giving it a name so it can be referenced in any tweens.
@@ -466,7 +578,7 @@ declare namespace gsap {
    * @memberof gsap
    * @link https://greensock.com/docs/v3/GSAP/gsap.registerPlugin()
    */
-  function registerPlugin(...args: RegisterablePlugins[]): void;
+  function registerPlugin(...args: object[]): void;
   
   /**
    * Immediately sets properties of the target(s) to the properties specified.

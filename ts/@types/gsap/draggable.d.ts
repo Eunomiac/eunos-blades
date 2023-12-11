@@ -10,6 +10,7 @@ declare class Draggable {
   readonly endX: number;
   readonly endY: number;
   readonly isDragging: boolean;
+  readonly isPressed: boolean;
   readonly isThrowing: boolean;
   readonly lockAxis: boolean;
   readonly maxRotation: number;
@@ -128,12 +129,13 @@ declare class Draggable {
    * ```js
    * draggable.disable();
    * ```
-   * 
+   *
+   * @param {string | object} [type]
    * @returns {Draggable} The Draggable instance
    * @memberof Draggable
    * @link https://greensock.com/docs/v3/Plugins/Draggable/disable()
    */
-  disable(): this;
+  disable(type?: string | object): this;
 
   dispatchEvent(type: Draggable.CallbackType): boolean;
 
@@ -143,12 +145,13 @@ declare class Draggable {
    * ```js
    * draggable.enable();
    * ```
-   * 
+   *
+   * @param {string | object} [type]
    * @returns {Draggable} The Draggable instance
    * @memberof Draggable
    * @link https://greensock.com/docs/v3/Plugins/Draggable/enable()
    */
-  enable(): this;
+  enable(type?: string | object): this;
 
   /**
    * Sets the enabled state of the Draggable.
@@ -246,10 +249,11 @@ declare class Draggable {
    * ```
    *
    * @param {Event} event
+   * @param {boolean} align
    * @memberof Draggable
    * @link https://greensock.com/docs/v3/Plugins/Draggable/startDrag()
    */
-  startDrag(event: Event): void;
+  startDrag(event: Event, align?: boolean): void;
 
   /**
    * Returns the time (in seconds) that has elapsed since the last drag ended.

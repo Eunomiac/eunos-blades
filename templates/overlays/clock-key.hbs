@@ -1,11 +1,12 @@
 {{eLog "Clock Key Context" this}}
 
-<div class="clock-key-container" data-size="{{size}}">
+<div class="clock-key-container {{~#if isActive}} active-key{{/if}}" data-size="{{size}}">
 
 {{#if (test isVisible "||" isGM)}}
-  <div id="{{id}}" class="clock-key {{~#if isActive}} active-key{{/if}}"
+  <div id="{{id}}" class="clock-key"
     data-id="{{id}}"
     data-size="{{size}}"
+    data-is-showing-controls="{{isShowingControls}}"
     data-active-clock-slot="{{currentClockIndex}}"
   >
     {{#if isNameVisible}}
@@ -36,7 +37,7 @@
   --}}
   {{#if isGM}}
   {{#if targetFlagKey}}(FLAG KEY NOT CONFIGURED){{else}}
-    <div class="clock-key-controls" data-clock-key="{{id}}">
+    <div class="clock-key-controls {{~#unless isShowingControls}} controls-hidden{{/unless}}" data-clock-key="{{id}}">
 
       {{!-- Control Row: Open Controls Panel --}}
       <div class="clock-key-controls-row toggle-controls-row">

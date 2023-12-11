@@ -116,15 +116,73 @@ $label-positions: (
   @import './clocks';
 
   .clock-key-container {
-    height: calc(0.7 * var(--key-height));
-    width: calc(0.7 * var(--key-width));
-    min-width: 200px;
-    margin-right: calc(-0.25 * 0.7 * var(--key-width));
+    height: calc(0.5 * var(--key-height));
+    width: calc(0.5 * var(--key-width));
 
-    // background: rgba(255, 255, 0, 0.25);
-    // outline: 2px dotted rgb(255, 255, 0);
+    &.active-key {
+      min-width: 200px;
+      margin-right: calc(-0.25 * 0.7 * var(--key-width));
+      scale: 0.7;
+    }
 
-    // --clock-size: 110px;
+    &:not(.active-key) {
+      // position: absolute;
+      top: calc(-1 * var(--top-shift));
+      top: unset;
+      bottom: 10px;
+      width: calc(0.35 * var(--key-width));
+      margin-right: calc(-0.15 * var(--key-width));
+      transform-origin: 50% 0%;
+      scale: 0.5;
+
+      left: calc(-1 * var(--left-shift));
+      & ~ .clock-key-container:not(.active-key) {
+        // left: 0;
+      }
+
+      &:nth-child(2n+1) { margin-top: 20px }
+
+      &[data-size="1"] { bottom: 150px; }
+      &[data-size="2"] { bottom: 200px; }
+      &[data-size="3"] { bottom: 315px; margin-left: -10px; }
+      &[data-size="4"] { bottom: 350px; margin-left: -25px; }
+      &[data-size="5"] { bottom: 390px; margin-left: -10px; }
+      &[data-size="6"] { bottom: 390px; margin-left: -10px; }
+
+      // &[data-size="1"] { bottom: -230px; }
+      // &[data-size="2"] { bottom: -180px; }
+      // &[data-size="3"] { bottom: -65px; margin-left: -10px; }
+      // &[data-size="4"] { bottom: -30px; margin-left: -25px; }
+      // &[data-size="5"] { bottom: 0; margin-left: -10px; }
+      // &[data-size="6"] { bottom: 0; margin-left: -10px; }
+
+      .clock-key .key-label {
+        font-size: 32px;
+        white-space: nowrap;
+        z-index: 2000;
+        // transform-origin: 50% 50%;
+        // rotate: 25deg;
+      }
+
+      &[data-size="1"] .clock-key .key-label { top: unset; bottom: calc(-0.5 * var(--key-height) + 120px); left: -30px; }
+      &[data-size="2"] .clock-key .key-label { top: unset; bottom: calc(-0.5 * var(--key-height) + 120px); left: -30px; }
+      &[data-size="3"] .clock-key .key-label { top: unset; bottom: calc(-0.5 * var(--key-height) + 120px); left: -80px; }
+      &[data-size="4"] .clock-key .key-label { top: unset; bottom: calc(-0.5 * var(--key-height) + 220px); left: -80px; }
+      &[data-size="5"] .clock-key .key-label { top: unset; bottom: calc(-0.5 * var(--key-height) + 120px); left: -60px; }
+      &[data-size="6"] .clock-key .key-label { top: unset; bottom: calc(-0.5 * var(--key-height) + 120px); left: -60px; }
+
+      .clock-key {
+        // rotate: -25deg !important;
+      }
+    }
+  }
+
+
+
+  .clock-key-container:not(.active-key) {
+
+
+
   }
 
 }

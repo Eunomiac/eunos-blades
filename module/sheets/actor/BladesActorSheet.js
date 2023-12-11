@@ -157,7 +157,7 @@ class BladesActorSheet extends ActorSheet {
         }
         // ~ Tooltips
         ApplyTooltipAnimations(html);
-        ApplyClockListeners(html);
+        ApplyClockListeners(html, `Actor-${this.actor.id}`);
         Tags.InitListeners(html, this.actor);
         // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) {
