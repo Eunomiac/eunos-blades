@@ -6,6 +6,12 @@
       <use href="#{{size}}-key" />
     </clipPath>
     {{/each}}
+    {{#each svgData.oneKeys.list as |path count|}}
+    <path id="{{count}}-one-key" d="{{path}}" />
+    <clipPath id="{{count}}-one-key-clip">
+      <use href="#{{count}}-one-key" />
+    </clipPath>
+    {{/each}}
 
     <filter id="metallicFilter">
       <feTurbulence
@@ -27,7 +33,5 @@
 {{eLog "CLOCK OVERLAY" this}}
 
 {{#each clockKeys}}
-  {{#if (eq ../currentScene sceneID)}}
-    {{> "systems/eunos-blades/templates/overlays/clock-key.hbs" this}}
-  {{/if}}
+  {{> "systems/eunos-blades/templates/overlays/clock-key.hbs"}}
 {{/each}}

@@ -5,10 +5,10 @@ import C, { BladesActorType, BladesPhase, BladesItemType, DowntimeAction, Attrib
 import Tags from "../../core/tags.js";
 import { BladesActor, BladesPC, BladesCrew } from "../../documents/BladesActorProxy.js";
 import { BladesItem, BladesProject } from "../../documents/BladesItemProxy.js";
-import { ApplyClockListeners } from "../../documents/items/BladesClock.js";
-import BladesDialog from "../../BladesDialog.js";
-import BladesActiveEffect from "../../BladesActiveEffect.js";
-import BladesRoll, { BladesRollPrimary, BladesRollOpposition } from "../../BladesRoll.js";
+import { ApplyClockListeners } from "../../classes/BladesClock.js";
+import BladesDialog from "../../classes/BladesDialog.js";
+import BladesActiveEffect from "../../documents/BladesActiveEffect.js";
+import BladesRoll, { BladesRollPrimary, BladesRollOpposition } from "../../classes/BladesRoll.js";
 // #endregion
 class BladesActorSheet extends ActorSheet {
     /**

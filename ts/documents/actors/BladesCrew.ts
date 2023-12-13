@@ -2,8 +2,8 @@
 import {BladesActorType, Playbook, BladesItemType, Tag} from "../../core/constants";
 import {BladesActor, BladesPC, BladesNPC, BladesFaction} from "../BladesActorProxy";
 import {BladesItem} from "../BladesItemProxy";
-import BladesRoll from "../../BladesRoll";
-import {SelectionCategory} from "../../BladesDialog";
+import BladesRoll from "../../classes/BladesRoll";
+import {SelectionCategory} from "../../classes/BladesDialog";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,

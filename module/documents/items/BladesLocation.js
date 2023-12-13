@@ -1,7 +1,6 @@
 import BladesItem from "../../BladesItem.js";
-import { BladesActorType, Factor } from "../../core/constants.js";
+import { Factor } from "../../core/constants.js";
 import U from "../../core/utilities.js";
-import BladesActor from "../../BladesActor.js";
 class BladesLocation extends BladesItem {
     get rollFactors() {
         const factorData = {};
@@ -36,10 +35,5 @@ class BladesLocation extends BladesItem {
         return 0;
     }
     get rollOppImg() { return this.img ?? ""; }
-    // #region OVERRIDES: _onUpdate
-    async _onUpdate(changed, options, userId) {
-        await super._onUpdate(changed, options, userId);
-        BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
-    }
 }
 export default BladesLocation;

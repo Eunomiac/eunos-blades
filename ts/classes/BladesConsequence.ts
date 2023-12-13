@@ -1,10 +1,17 @@
 /* no-dupe-class-members */
 
-import C, {BladesActorType, AttributeTrait, ConsequenceType, RollResult, RollType, Position, Effect, RollPhase} from "../../core/constants";
-import U from "../../core/utilities";
-import BladesRoll, {BladesRollPrimary} from "../../BladesRoll";
+import C, {BladesActorType, AttributeTrait, ConsequenceType, RollResult, RollType, Position, Effect, RollPhase} from "../core/constants";
+import U from "../core/utilities";
+import BladesRoll, {BladesRollPrimary} from "./BladesRoll";
 
 class BladesConsequence {
+
+  static async Initialize() {
+    if (!game.messages) { throw new Error("[BladesConsequence] Messages Not Ready!"); }
+    return Promise.all(game.messages.contents
+      .map(async (msg) => BladesConsequence.GetFromChatMessage(msg))
+    );
+  }
 
   static get None() {
     return {

@@ -1,8 +1,8 @@
 import {BladesItemType, Factor} from "../../core/constants";
 import U from "../../core/utilities";
 import {BladesItem} from "../BladesItemProxy";
-import BladesClock, {BladesClockKey} from "./BladesClock";
-import BladesRoll from "../../BladesRoll";
+import BladesClock, {BladesClockKey} from "../../classes/BladesClock";
+import BladesRoll from "../../classes/BladesRoll";
 
 class BladesProject extends BladesItem implements BladesItemSubClass.Project,
   BladesRoll.OppositionDocData {

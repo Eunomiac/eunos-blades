@@ -1,6 +1,6 @@
 import {BladesActorType} from "../../core/constants";
-import BladesActor from "../../BladesActor";
-import BladesClock from "../items/BladesClock";
+import {BladesActor} from "../BladesActorProxy";
+import {BladesClockKey} from "../../classes/BladesClock";
 
 class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
                                                    BladesRoll.OppositionDocData {
@@ -33,27 +33,25 @@ class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
   // }
 
 
-  get clocks(): Collection<BladesClock> {
+  get clocks(): Collection<BladesClockKey> {
     return new Collection(
-      Object.entries(this.system.clocks ?? {})
-        .sort((a, b) => a[1].index - b[1].index)
+      Object.entries(this.system.clocksData.keys ?? {})
         .map(([id, data]) => [
           id,
-          game.eunoblades.Clocks.get(id) ?? new BladesClock(data)
+          game.eunoblades.ClockKeys.get(id) ?? new BladesClockKey(data)
         ])
     );
   }
 
-  async addClock(): Promise<BladesClock> {
-    return await BladesClock.Create({
+  async addClock(): Promise<BladesClockKey> {
+    return await BladesClockKey.Create({
       target: this,
-      targetKey: "system.clocks",
-      index: this.clocks.size
+      targetKey: "system.clocksData.keys"
     });
   }
 
-  async deleteClock(clockID: IDString) {
-    await game.eunoblades.Clocks.get(clockID)?.delete();
+  async deleteClock(clockKeyID: IDString) {
+    await game.eunoblades.ClockKeys.get(clockKeyID)?.delete();
   }
 }
 

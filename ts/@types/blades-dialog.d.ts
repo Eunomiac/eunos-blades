@@ -1,7 +1,7 @@
 import BladesActor from "../BladesActor";
 import BladesItem from "../BladesItem";
-import {BladesDialogType} from "../BladesDialog";
-import BladesRoll from "../BladesRoll";
+import {BladesDialogType} from "../classes/BladesDialog";
+import BladesRoll from "../classes/BladesRoll";
 import {RollResult, AttributeTrait, Position} from "../core/constants";
 
 declare global {

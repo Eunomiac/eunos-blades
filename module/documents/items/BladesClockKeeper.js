@@ -1,6 +1,6 @@
 import { SVGDATA, BladesItemType } from "../../core/constants.js";
 import { BladesItem } from "../BladesItemProxy.js";
-import BladesClock, { BladesClockKey, ApplyClockListeners } from "./BladesClock.js";
+import BladesClock, { BladesClockKey, ApplyClockListeners } from "../../classes/BladesClock.js";
 class BladesClockKeeper extends BladesItem {
     // #region CLOCKS OVERLAY
     _overlayElement;

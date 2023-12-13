@@ -1,7 +1,7 @@
 import { BladesItemType, Factor } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import { BladesItem } from "../BladesItemProxy.js";
-import { BladesClockKey } from "./BladesClock.js";
+import { BladesClockKey } from "../../classes/BladesClock.js";
 class BladesProject extends BladesItem {
     static Initialize() {
         return loadTemplates([

@@ -3,7 +3,7 @@ import { BladesActorType, BladesPhase, Tag, Randomizers } from "../../core/const
 import BladesItemSheet from "./BladesItemSheet.js";
 import { BladesActor } from "../../documents/BladesActorProxy.js";
 import { BladesScore } from "../../documents/BladesItemProxy.js";
-import BladesRoll, { BladesRollOpposition } from "../../BladesRoll.js";
+import BladesRoll, { BladesRollOpposition } from "../../classes/BladesRoll.js";
 /* #region BladesTipGenerator */
 export var BladesTipContext;
 (function (BladesTipContext) {

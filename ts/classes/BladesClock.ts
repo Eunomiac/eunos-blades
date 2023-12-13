@@ -1,8 +1,9 @@
-import C, {ClockColor, ClockKeyDisplayMode, Factor} from "../../core/constants";
-import {Observer, Dragger} from "../../core/gsap";
-import U from "../../core/utilities";
-import {BladesItem} from "../BladesItemProxy";
-import BladesRoll from "../../BladesRoll";
+import C, {BladesActorType, BladesItemType, ClockColor, ClockKeyDisplayMode, Factor} from "../core/constants";
+import {Observer, Dragger} from "../core/gsap";
+import U from "../core/utilities";
+import {BladesActor} from "../documents/BladesActorProxy";
+import {BladesItem} from "../documents/BladesItemProxy";
+import BladesRoll from "./BladesRoll";
 
 type BladesTargetLinkConfig = {
   target: string | BladesDoc,
@@ -10,6 +11,8 @@ type BladesTargetLinkConfig = {
   targetKey?: string,
   targetFlagKey?: string
 }
+
+type BladesTargetLinkSystemData = BladesTargetLinkConfig & {target: string};
 
 class BladesTargetLink {
 
@@ -105,12 +108,50 @@ class BladesTargetLink {
   }
 }
 
-export type BladesClockKeyConfig = Partial<BladesClockKeySystemData> & BladesTargetLinkConfig;
+export type BladesClockKeyConfig = Partial<BladesClockKeyData> & BladesTargetLinkConfig;
 
 class BladesClockKey extends BladesTargetLink implements BladesClockKeyData,
   BladesRoll.OppositionDocData {
 
   // #region STATIC METHODS ~
+  static Initialize() {
+    game.items?.contents
+      .filter((item) =>
+        BladesItem.IsType(
+          item,
+          BladesItemType.clock_keeper,
+          BladesItemType.project,
+          BladesItemType.cohort_gang,
+          BladesItemType.cohort_expert,
+          BladesItemType.ritual,
+          BladesItemType.design,
+          BladesItemType.location,
+          BladesItemType.score
+        )
+      )
+      .forEach((item) => {
+        Object.values(item.system.clocksData?.keys ?? {})
+          .forEach((keyData) => new BladesClockKey(keyData));
+        Object.values(item.system.clocksData?.clocks ?? {})
+          .forEach((clockData) => new BladesClock(clockData));
+      });
+
+    game.actors?.contents
+      .filter((actor) =>
+        BladesActor.IsType(
+          actor,
+          BladesActorType.pc,
+          BladesActorType.faction
+        )
+      )
+      .forEach((actor) => {
+        Object.values(actor.system.clocksData?.keys ?? {})
+          .forEach((keyData) => new BladesClockKey(keyData));
+        Object.values(actor.system.clocksData?.clocks ?? {})
+          .forEach((clockData) => new BladesClock(clockData));
+      });
+  }
+
   static get DefaultSchema(): Omit<BladesClockKeySystemData, "target" | "id"> {
     return {
       name: "",
@@ -120,22 +161,23 @@ class BladesClockKey extends BladesTargetLink implements BladesClockKeyData,
       isNameVisible: false,
       isShowingControls: game.user.isGM,
 
-      clocksData: {}
+      clocksData: {},
+      oneKeyIndex: U.gsap.utils.random(1, 5, 1) as 1|2|3|4|5
     };
   }
 
   static applyConfigDefaults(clockKeyConfig: BladesClockKeyConfig): BladesClockKeySystemData {
 
-    const keyData: BladesClockKeySystemData = {
+    const keyData = {
       ...this.DefaultSchema,
       ...clockKeyConfig
-    } as BladesClockKeySystemData;
+    } as BladesClockKeyData;
 
     if (keyData.target instanceof Actor || keyData.target instanceof Item) {
       keyData.target = keyData.target.id;
     }
 
-    return keyData;
+    return keyData as BladesClockKeySystemData;
   }
 
   static async Create(
@@ -181,6 +223,8 @@ class BladesClockKey extends BladesTargetLink implements BladesClockKeyData,
   get isGM(): boolean {return game.user.isGM;}
 
   get isVisible(): boolean {return U.pBool(this.getSystemData().isVisible);}
+
+  get oneKeyIndex(): 1|2|3|4|5 { return U.pInt(this.getSystemData().oneKeyIndex) as 1|2|3|4|5; }
 
   get displayMode(): ClockKeyDisplayMode|number {
     if (this.isGM && this.isShowingControls) {
@@ -527,6 +571,7 @@ class BladesClockKey extends BladesTargetLink implements BladesClockKeyData,
 
   async addClock(clockData: Partial<BladesClockData> = {}): Promise<BladesClock> {
     await this.updateClockIndices();
+
     eLog.checkLog3("bladesClock", "[BladesClockKey.addClock]", {
       passedData: clockData,
       derivedData: {

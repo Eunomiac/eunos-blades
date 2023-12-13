@@ -2,7 +2,7 @@ import BladesItem from "../../BladesItem";
 import {BladesActorType, BladesItemType, Factor} from "../../core/constants";
 import U from "../../core/utilities";
 import BladesActor from "../../BladesActor";
-import BladesRoll from "../../BladesRoll";
+import BladesRoll from "../../classes/BladesRoll";
 
 class BladesLocation extends BladesItem implements BladesItemSubClass.Location,
                                                     BladesRoll.OppositionDocData {
@@ -46,10 +46,10 @@ class BladesLocation extends BladesItem implements BladesItemSubClass.Location,
   override get rollOppImg() { return this.img ?? ""; }
 
   // #region OVERRIDES: _onUpdate
-  override async _onUpdate(changed: any, options: any, userId: string) {
-    await super._onUpdate(changed, options, userId);
-    BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
-  }
+  // override async _onUpdate(changed: any, options: any, userId: string) {
+  //   await super._onUpdate(changed, options, userId);
+  //   BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
+  // }
   // #endregion
 }
 

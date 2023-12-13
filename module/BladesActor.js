@@ -3,9 +3,9 @@ import U from "./core/utilities.js";
 import C, { BladesActorType, Tag, Playbook, BladesItemType, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor } from "./core/constants.js";
 import { BladesPC, BladesNPC } from "./documents/BladesActorProxy.js";
 import { BladesItem } from "./documents/BladesItemProxy.js";
-import { BladesRollMod } from "./BladesRoll.js";
-import BladesPushAlert from "./BladesPushAlert.js";
-import { SelectionCategory } from "./BladesDialog.js";
+import { BladesRollMod } from "./classes/BladesRoll.js";
+import BladesPushAlert from "./classes/BladesPushAlert.js";
+import { SelectionCategory } from "./classes/BladesDialog.js";
 // #endregion
 // Blades Theme Song: "Bangkok" from The Gray Man soundtrack: https://www.youtube.com/watch?v=cjjImvMqYlo&list=OLAK5uy_k9cZDd1Fbpd25jfDtte5A6HyauD2-cwgk&index=2
 // Also check out Discord thread: https://discord.com/channels/325094888133885952/1152316839163068527

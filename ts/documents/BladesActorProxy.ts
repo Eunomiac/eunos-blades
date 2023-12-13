@@ -7,7 +7,7 @@ import BladesNPC from "./actors/BladesNPC";
 import BladesFaction from "./actors/BladesFaction";
 import BladesCrew from "./actors/BladesCrew";
 
-const ActorsMap: Partial<Record<BladesActorType,typeof BladesActor>> = {
+const ActorsMap: Partial<Record<BladesActorType, typeof BladesActor>> = {
   [BladesActorType.pc]: BladesPC,
   [BladesActorType.npc]: BladesNPC,
   [BladesActorType.faction]: BladesFaction,
@@ -20,7 +20,7 @@ const BladesActorProxy = new Proxy(function() {}, {
 
   construct(_, args: [ActorDataConstructorData]) {
     const [{type}] = args;
-    if (!type) { throw new Error(`Invalid Actor Type: ${String(type)}`) }
+    if (!type) { throw new Error(`Invalid Actor Type: ${String(type)}`); }
     const MappedConstructor = ActorsMap[type as BladesActorType];
     if (!MappedConstructor) {
       return new BladesActor(...args);

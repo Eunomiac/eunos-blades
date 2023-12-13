@@ -3,7 +3,7 @@ import {SVGDATA, BladesActorType, BladesItemType} from "../../core/constants";
 // import U from "../../core/utilities";
 import BladesActor from "../../BladesActor";
 import {BladesItem} from "../BladesItemProxy";
-import BladesClock, {BladesClockKey, ApplyClockListeners} from "./BladesClock";
+import BladesClock, {BladesClockKey, ApplyClockListeners} from "../../classes/BladesClock";
 import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
 import type {ItemDataBaseProperties} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
@@ -51,6 +51,10 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
 
   async activateOverlayListeners() {
     if (!game?.user?.isGM) { return; }
+
+
+
+
     eLog.checkLog3("clocksOverlay", "[activateOverlayListeners] Keys", this.keys);
     ApplyClockListeners($("#clocks-overlay"), "ClocksOverlay");
 

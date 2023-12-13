@@ -16,18 +16,21 @@ const gsapPlugins: gsap.RegisterablePlugins[] = [
   EasePack
 ];
 
-type gsapConfig = gsap.TweenVars & {
+export type gsapConfig = gsap.TweenVars & {
   duration: number,
   targets: Record<string, JQuery<HTMLElement>|Array<JQuery<HTMLElement>>>
 }
 
-type gsapEffect = {
-  effect: (targets: BladesTweenTarget, config: gsapConfig) => gsap.core.Timeline|gsap.core.Tween,
+export type gsapEffect = {
+  effect: (
+    targets: gsap.TweenTarget,
+    config: gsap.TweenVars & {duration: number}
+  ) => gsap.core.Timeline|gsap.core.Tween,
   defaults: gsap.TweenVars,
   extendTimeline?: boolean
 }
 
-const gsapEffects: Record<string, gsapEffect> = {
+export const gsapEffects: Record<string, gsapEffect> = {
   hoverButton: {
     effect: (target, config) => {
       return U.gsap.timeline({paused: true})
@@ -50,6 +53,26 @@ const gsapEffects: Record<string, gsapEffect> = {
       brightness: 1.5,
       duration: 0.5,
       scale: 1.25
+    }
+  },
+  keyHang: {
+    effect: (target, config) => {
+      return U.gsap.timeline({paused: true})
+        .fromTo(target,
+          {rotateZ: -0.5, transformOrigin: "50% 0px"},
+          {rotateZ: 0.5, duration: 3, ease: "sine.inOut", repeat: -1, yoyo: true},
+          0)
+        .fromTo(target,
+          {y: -15},
+          {y: 15, duration: 6, ease: "sine.inOut", repeat: -1, yoyo: true},
+          0)
+        .fromTo(target,
+          {scale: 0.9, filter: "blur(3px) brightness(0.8)"},
+          {scale: 1.1, filter: "blur(0px) brightness(1.2)", duration: 12, ease: "sine.inOut", repeat: -1, yoyo: true},
+          0);
+    },
+    defaults: {
+
     }
   },
   keyUp: {
@@ -102,10 +125,8 @@ const gsapEffects: Record<string, gsapEffect> = {
       ease: "elastic.in(1.2, 0.5)"
     }
   },
-
-
   csqEnter: {
-    effect: (csqContainer: HTMLElement, config) => {
+    effect: (csqContainer, config) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
       // ELog.checkLog3("gsap", "gsapEffects.consequenceEnter -> THIS", {this: this, csqRoot});
       const csqIconCircle = csqRoot(".consequence-icon-circle.base-consequence");
@@ -204,8 +225,8 @@ const gsapEffects: Record<string, gsapEffect> = {
     }
   },
   csqClickIcon: {
-    effect: (csqIconContainer: HTMLElement, config) => {
-      const csqContainer = $(csqIconContainer).closest(".comp.consequence-display-container");
+    effect: (csqIconContainer, config) => {
+      const csqContainer = $(csqIconContainer as HTMLElement).closest(".comp.consequence-display-container");
       const csqRoot = U.gsap.utils.selector(csqContainer[0]);
       const iconRoot = U.gsap.utils.selector(csqIconContainer);
 
@@ -297,7 +318,7 @@ const gsapEffects: Record<string, gsapEffect> = {
     }
   },
   csqEnterRight: {
-    effect: (csqContainer: HTMLElement) => {
+    effect: (csqContainer) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
       const typeLine = csqRoot(".consequence-type-container .consequence-type.accept-consequence");
       const typeLineBg = csqRoot(".consequence-type-container .consequence-type-bg.accept-consequence");
@@ -392,7 +413,7 @@ const gsapEffects: Record<string, gsapEffect> = {
     defaults: {}
   },
   csqEnterLeft: {
-    effect: (csqContainer: HTMLElement) => {
+    effect: (csqContainer) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
       const typeLine = csqRoot(".consequence-type-container .consequence-type.accept-consequence");
       const nameLine = csqRoot(".consequence-name-container .consequence-name.accept-consequence");
@@ -448,7 +469,7 @@ const gsapEffects: Record<string, gsapEffect> = {
     defaults: {}
   },
   csqEnterSubLeft: {
-    effect: (csqContainer: HTMLElement, config) => {
+    effect: (csqContainer, config) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
 
       const iconCircle = csqRoot(`.consequence-icon-circle.${config.type}-consequence`);
@@ -706,8 +727,8 @@ const gsapEffects: Record<string, gsapEffect> = {
   },
   hoverTooltip: {
     effect: (tooltip, _config) => {
-      const tooltipElem = $(tooltip)[0];
-      const tooltipContainer = $(tooltip).parent()[0];
+      const tooltipElem = $(tooltip as HTMLElement)[0];
+      const tooltipContainer = $(tooltipElem).parent()[0];
       const overlayContainer = $("#eunos-blades-tooltips")[0];
       const tl = U.gsap.timeline({
         paused: true,

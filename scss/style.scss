@@ -70,13 +70,17 @@
       }
     }
 
+    #blades-overlay {
+      @import "./core/reset";
+      @import "./core/globals";
+      @import './overlay/blades-overlay';
+    }
+
     #clocks-overlay {
       margin-top: toRem(4px);
       @import "./core/reset";
       @import "./core/globals";
       @import './components/clocks-overlay';
-
-      .clock { }
     }
 
     #sidebar {

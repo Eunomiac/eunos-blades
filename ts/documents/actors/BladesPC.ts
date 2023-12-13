@@ -2,10 +2,10 @@ import C, {Playbook, ClockColor, AttributeTrait, ActionTrait, Harm, BladesActorT
 import U from "../../core/utilities";
 import {BladesActor, BladesCrew} from "../BladesActorProxy";
 import {BladesItem} from "../BladesItemProxy";
-import BladesRoll from "../../BladesRoll";
-import BladesPushAlert from "../../BladesPushAlert";
-import BladesClock from "../items/BladesClock";
-import {SelectionCategory} from "../../BladesDialog";
+import BladesRoll from "../../classes/BladesRoll";
+import BladesPushAlert from "../../classes/BladesPushAlert";
+import BladesClock from "../../classes/BladesClock";
+import {SelectionCategory} from "../../classes/BladesDialog";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 type harmLevel = 1|2|3|4;
@@ -230,10 +230,8 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   }
 
   get healingClock(): BladesClock|undefined {
-    if (Object.values(this.system.healing).length > 0) {
-      return new BladesClock(Object.values(this.system.healing)[0]);
-    }
-    return undefined;
+    const [clockID] = Object.keys(this.system.clocksData.clocks ?? {});
+    return game.eunoblades.Clocks.get(clockID ?? "");
   }
 
   get harmLevel(): number {

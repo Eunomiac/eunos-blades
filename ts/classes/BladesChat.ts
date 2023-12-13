@@ -1,8 +1,8 @@
 // #region IMPORTS ~
-import {ApplyTooltipAnimations, ApplyConsequenceAnimations} from "./core/gsap";
+import {ApplyTooltipAnimations, ApplyConsequenceAnimations} from "../core/gsap";
 
 import BladesRoll from "./BladesRoll";
-import BladesConsequence from "./sheets/roll/BladesConsequence";
+import BladesConsequence from "./BladesConsequence";
 // #endregion
 
 class BladesChat extends ChatMessage {

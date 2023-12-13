@@ -31,7 +31,6 @@ declare global {
 
     export interface gmChar {
       concept: string,
-      clocks: Record<IDString, BladesClockData>,
       district: District,
       assets: string,
       situation: string,
@@ -60,6 +59,13 @@ declare global {
     export interface canRoll {
       roll_mods: string[]
     }
+
+    export interface clocks {
+      clocksData: {
+        keys?: Record<IDString, BladesClockKeyData>,
+        clocks?: Record<IDString, BladesClockData>
+      }
+    }
   }
 
   // Compiled "system" Schemas for BladesActor Types
@@ -67,6 +73,7 @@ declare global {
 
     export interface Scoundrel extends BladesActorSchemaTemplate.Default,
       BladesActorSchemaTemplate.pcChar,
+      BladesActorSchemaTemplate.clocks,
       BladesItemSchemaTemplate.canRoll {
       acquaintances_name: string,
       vice_name: string,
@@ -77,7 +84,6 @@ declare global {
         active: Record<string, boolean>,
         checked: Record<string, boolean>
       },
-      healing: Record<IDString, BladesClockData>,
       stash: ValueMax,
 
       loadout: {
@@ -161,6 +167,7 @@ declare global {
 
     export interface Faction extends BladesActorSchemaTemplate.Default,
       BladesActorSchemaTemplate.gmChar,
+      BladesActorSchemaTemplate.clocks,
       BladesActorSchemaTemplate.warfare { }
   }
 

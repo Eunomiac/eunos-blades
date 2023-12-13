@@ -1,8 +1,8 @@
 import C, {BladesItemType, Tag, Factor} from "./core/constants";
 import U from "./core/utilities";
 import {BladesActor, BladesCrew, BladesPC} from "./documents/BladesActorProxy";
-import {BladesRollMod} from "./BladesRoll";
-import BladesPushAlert from "./BladesPushAlert";
+import {BladesRollMod} from "./classes/BladesRoll";
+import BladesPushAlert from "./classes/BladesPushAlert";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 class BladesItem extends Item implements BladesDocument<Item>,

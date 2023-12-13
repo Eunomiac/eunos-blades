@@ -2,12 +2,14 @@
 import C, { ActionTrait, ClockColor, AttributeTrait, RollType, ConsequenceType } from "./core/constants.js";
 import registerSettings, { initTinyMCEStyles, initCanvasStyles, initDOMStyles } from "./core/settings.js";
 import { registerHandlebarHelpers, preloadHandlebarsTemplates } from "./core/helpers.js";
-import BladesPushAlert from "./BladesPushAlert.js";
-import BladesChat from "./BladesChat.js";
+import BladesPushAlert from "./classes/BladesPushAlert.js";
+import BladesChat from "./classes/BladesChat.js";
 import U from "./core/utilities.js";
 import logger from "./core/logger.js";
 import G, { Initialize as GsapInitialize } from "./core/gsap.js";
-import BladesClock, { BladesClockKey } from "./documents/items/BladesClock.js";
+import BladesClock, { BladesClockKey } from "./classes/BladesClock.js";
+import BladesDirector from "./classes/BladesDirector.js";
+import BladesConsequence from "./classes/BladesConsequence.js";
 import BladesActorProxy, { BladesActor, BladesPC, BladesCrew, BladesNPC, BladesFaction } from "./documents/BladesActorProxy.js";
 import BladesItemProxy, { BladesItem, BladesClockKeeper, BladesGMTracker, BladesLocation, BladesScore, BladesProject } from "./documents/BladesItemProxy.js";
 import BladesItemSheet from "./sheets/item/BladesItemSheet.js";
@@ -15,10 +17,10 @@ import BladesPCSheet from "./sheets/actor/BladesPCSheet.js";
 import BladesCrewSheet from "./sheets/actor/BladesCrewSheet.js";
 import BladesNPCSheet from "./sheets/actor/BladesNPCSheet.js";
 import BladesFactionSheet from "./sheets/actor/BladesFactionSheet.js";
-import BladesRoll, { BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant } from "./BladesRoll.js";
-import BladesDialog from "./BladesDialog.js";
+import BladesRoll, { BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant } from "./classes/BladesRoll.js";
+import BladesDialog from "./classes/BladesDialog.js";
 import BladesAI, { AGENTS, AIAssistant } from "./core/ai.js";
-import BladesActiveEffect from "./BladesActiveEffect.js";
+import BladesActiveEffect from "./documents/BladesActiveEffect.js";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet.js";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet.js";
 CONFIG.debug.logging = false;
@@ -527,6 +529,7 @@ class GlobalGetter {
     // updateFactions,
     // updateDescriptions,
     // updateRollMods,
+    BladesDirector,
     BladesActor,
     BladesPC,
     BladesCrew,
@@ -546,6 +549,7 @@ class GlobalGetter {
     BladesRollOpposition,
     BladesRollParticipant,
     BladesChat,
+    BladesConsequence,
     G,
     U,
     C,
@@ -586,6 +590,7 @@ Hooks.once("init", async () => {
     Items.registerSheet("blades", BladesItemSheet, { types: C.ItemTypes, makeDefault: true });
     // Initialize subclasses
     await Promise.all([
+        BladesDirector.Initialize(),
         BladesPCSheet.Initialize(),
         BladesActiveEffect.Initialize(),
         BladesGMTrackerSheet.Initialize(),
@@ -604,12 +609,17 @@ Hooks.once("ready", () => {
     initDOMStyles();
     initCanvasStyles();
     initTinyMCEStyles();
+    // Initialize Clocks, ClockKeys & Consequences
+    BladesClockKey.Initialize();
+    BladesConsequence.Initialize();
+    BladesDirector.getInstance().renderOverlay();
 });
 // #endregion ▄▄▄▄▄ SYSTEM INITIALIZATION ▄▄▄▄▄
 // #region ░░░░░░░[SocketLib]░░░░ SocketLib Initialization ░░░░░░░ ~
 Hooks.once("socketlib.ready", () => {
     socket = socketlib.registerSystem("eunos-blades");
     /* DEVCODE*/ Object.assign(globalThis, { socket, socketlib }); /* !DEVCODE*/
+    BladesDirector.InitSockets();
     BladesRoll.InitSockets();
     let clockOverlayUp;
     let pushControllerUp;

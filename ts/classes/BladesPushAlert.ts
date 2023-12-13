@@ -1,5 +1,5 @@
-import U from "./core/utilities";
-import C from "./core/constants";
+import U from "../core/utilities";
+import C from "../core/constants";
 
 export default class BladesPushAlert {
 

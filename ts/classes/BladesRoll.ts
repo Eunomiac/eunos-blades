@@ -1,11 +1,11 @@
 // #region IMPORTS ~
-import U from "./core/utilities";
-import C, {BladesActorType, BladesItemType, BladesPhase, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag} from "./core/constants";
-import {BladesActor, BladesPC, BladesCrew} from "./documents/BladesActorProxy";
-import {BladesItem, BladesGMTracker} from "./documents/BladesItemProxy";
-import {ApplyTooltipAnimations, ApplyConsequenceAnimations} from "./core/gsap";
-import BladesConsequence from "./sheets/roll/BladesConsequence";
-import BladesClock, {BladesClockKey} from "./documents/items/BladesClock";
+import U from "../core/utilities";
+import C, {BladesActorType, BladesItemType, BladesPhase, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag} from "../core/constants";
+import {BladesActor, BladesPC, BladesCrew} from "../documents/BladesActorProxy";
+import {BladesItem, BladesGMTracker} from "../documents/BladesItemProxy";
+import {ApplyTooltipAnimations, ApplyConsequenceAnimations} from "../core/gsap";
+import BladesConsequence from "./BladesConsequence";
+import BladesClock, {BladesClockKey} from "./BladesClock";
 import BladesDialog from "./BladesDialog";
 import BladesChat from "./BladesChat";
 

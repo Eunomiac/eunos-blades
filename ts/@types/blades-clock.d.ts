@@ -23,7 +23,9 @@ interface BladesClockKeyData {
 
   isShowingControls?: boolean,
   displayMode?: ClockKeyDisplayMode|number,
-  sceneID?: IDString
+  sceneID?: IDString,
+  oneKeyIndex: 1|2|3|4|5,
+  overlayPosition?: number // Slot occupied by key when displayed in overlay
 }
 
 interface BladesClockData extends NamedValueMax {
@@ -48,9 +50,9 @@ interface BladesClockData extends NamedValueMax {
   gm_notes?: string,
 
   isShowingControls?: boolean,
-  sceneID?: IDString // Regardless of where stored, will be displayed within a 1-key in the scene overlay
+  sceneID?: IDString, // Regardless of where stored, will be displayed within a 1-key in the scene overlay
 }
 
 type BladesClockSystemData = BladesClockData & {target: string};
 
-type BladesClockKeySystemData = BladesClockKeyData & {clocksData: Record<IDString, BladesClockSystemData> }
+type BladesClockKeySystemData = BladesClockKeyData & {target: string, clocksData: Record<IDString, BladesClockSystemData> }

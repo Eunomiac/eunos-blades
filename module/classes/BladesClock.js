@@ -1,5 +1,7 @@
-import C, { ClockColor, ClockKeyDisplayMode, Factor } from "../../core/constants.js";
-import U from "../../core/utilities.js";
+import C, { BladesActorType, BladesItemType, ClockColor, ClockKeyDisplayMode, Factor } from "../core/constants.js";
+import U from "../core/utilities.js";
+import { BladesActor } from "../documents/BladesActorProxy.js";
+import { BladesItem } from "../documents/BladesItemProxy.js";
 class BladesTargetLink {
     static validateConfig(ref) {
         // Check if 'ref' is a simple object literal
@@ -89,6 +91,24 @@ class BladesTargetLink {
 }
 class BladesClockKey extends BladesTargetLink {
     // #region STATIC METHODS ~
+    static Initialize() {
+        game.items?.contents
+            .filter((item) => BladesItem.IsType(item, BladesItemType.clock_keeper, BladesItemType.project, BladesItemType.cohort_gang, BladesItemType.cohort_expert, BladesItemType.ritual, BladesItemType.design, BladesItemType.location, BladesItemType.score))
+            .forEach((item) => {
+            Object.values(item.system.clocksData?.keys ?? {})
+                .forEach((keyData) => new BladesClockKey(keyData));
+            Object.values(item.system.clocksData?.clocks ?? {})
+                .forEach((clockData) => new BladesClock(clockData));
+        });
+        game.actors?.contents
+            .filter((actor) => BladesActor.IsType(actor, BladesActorType.pc, BladesActorType.faction))
+            .forEach((actor) => {
+            Object.values(actor.system.clocksData?.keys ?? {})
+                .forEach((keyData) => new BladesClockKey(keyData));
+            Object.values(actor.system.clocksData?.clocks ?? {})
+                .forEach((clockData) => new BladesClock(clockData));
+        });
+    }
     static get DefaultSchema() {
         return {
             name: "",
@@ -128,14 +148,6 @@ class BladesClockKey extends BladesTargetLink {
         return clockKey;
     }
     // #endregion
-    // tl.revert(); tl.kill();
-    // var key = Array.from(game.eunoblades.ClockKeeper.keys)[0];
-    // var keyElem = $(key.elem).find(".key-image-container.one-key-image-container")[0];
-    // var tl = U.gsap.timeline({paused: true});
-    // tl.fromTo(keyElem, {rotateZ: -0.5, transformOrigin: "50% 0px"}, {rotateZ: 0.5, duration: 3, ease: "sine.inOut", repeat: -1, yoyo: true}, 0);
-    // tl.to(keyElem, {y: 15, duration: 6, ease: "sine.inOut", repeat: -1, yoyo: true}, 0);
-    // tl.fromTo(keyElem, {scale: 0.9, filter: "blur(3px) brightness(0.8)"}, {scale: 1.1, filter: "blur(0px) brightness(1.2)", duration: 12, ease: "sine.inOut", repeat: -1, yoyo: true}, 0);
-    // tl.play();
     // #region GETTERS & SETTERS ~
     get clocksData() { return this.getSystemData().clocksData ?? {}; }
     get clocks() {

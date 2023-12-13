@@ -4,7 +4,7 @@ import BladesItemSheet from "./BladesItemSheet";
 
 import {BladesActor, BladesPC} from "../../documents/BladesActorProxy";
 import {BladesScore} from "../../documents/BladesItemProxy";
-import BladesRoll, {BladesRollOpposition} from "../../BladesRoll";
+import BladesRoll, {BladesRollOpposition} from "../../classes/BladesRoll";
 
 
 /* #region BladesTipGenerator */

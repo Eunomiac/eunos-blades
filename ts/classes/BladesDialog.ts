@@ -1,11 +1,11 @@
-import {ApplyTooltipAnimations} from "./core/gsap";
-import U from "./core/utilities";
-import {BladesActor, BladesPC} from "./documents/BladesActorProxy";
-import BladesItem from "./BladesItem";
+import {ApplyTooltipAnimations} from "../core/gsap";
+import U from "../core/utilities";
+import {BladesActor, BladesPC} from "../documents/BladesActorProxy";
+import BladesItem from "../BladesItem";
 import BladesRoll from "./BladesRoll";
-import BladesConsequence from "./sheets/roll/BladesConsequence";
-import C, {RollResult, ConsequenceType, AttributeTrait, Position} from "./core/constants";
-import BladesAI, {AGENTS} from "./core/ai";
+import BladesConsequence from "./BladesConsequence";
+import C, {RollResult, ConsequenceType, AttributeTrait, Position} from "../core/constants";
+import BladesAI, {AGENTS} from "../core/ai";
 
 export enum SelectionCategory {
   Heritage = "Heritage",

@@ -2,7 +2,7 @@ import BladesItem from "../../BladesItem";
 import {BladesActorType, BladesItemType, Factor} from "../../core/constants";
 import U from "../../core/utilities";
 import BladesActor from "../../BladesActor";
-import BladesRoll from "../../BladesRoll";
+import BladesRoll from "../../classes/BladesRoll";
 import BladesScoreSheet from "../../sheets/item/BladesScoreSheet";
 
 import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";

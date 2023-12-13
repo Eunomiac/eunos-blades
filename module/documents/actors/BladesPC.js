@@ -2,9 +2,9 @@ import C, { ClockColor, AttributeTrait, Harm, BladesActorType, BladesItemType, T
 import U from "../../core/utilities.js";
 import { BladesActor } from "../BladesActorProxy.js";
 import { BladesItem } from "../BladesItemProxy.js";
-import BladesPushAlert from "../../BladesPushAlert.js";
-import BladesClock from "../items/BladesClock.js";
-import { SelectionCategory } from "../../BladesDialog.js";
+import BladesPushAlert from "../../classes/BladesPushAlert.js";
+import BladesClock from "../../classes/BladesClock.js";
+import { SelectionCategory } from "../../classes/BladesDialog.js";
 class BladesPC extends BladesActor {
     // #region Static Overrides: Create ~
     static IsType(doc) {
@@ -204,10 +204,8 @@ class BladesPC extends BladesActor {
         return this.system.stress.max;
     }
     get healingClock() {
-        if (Object.values(this.system.healing).length > 0) {
-            return new BladesClock(Object.values(this.system.healing)[0]);
-        }
-        return undefined;
+        const [clockID] = Object.keys(this.system.clocksData.clocks ?? {});
+        return game.eunoblades.Clocks.get(clockID ?? "");
     }
     get harmLevel() {
         if (this.system.harm.severe.one.length > 1) {

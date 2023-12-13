@@ -1,8 +1,8 @@
 import C, { BladesItemType, Tag, Factor } from "./core/constants.js";
 import U from "./core/utilities.js";
 import { BladesCrew, BladesPC } from "./documents/BladesActorProxy.js";
-import { BladesRollMod } from "./BladesRoll.js";
-import BladesPushAlert from "./BladesPushAlert.js";
+import { BladesRollMod } from "./classes/BladesRoll.js";
+import BladesPushAlert from "./classes/BladesPushAlert.js";
 class BladesItem extends Item {
     // #region Static Overrides: Create ~
     static async create(data, options = {}) {

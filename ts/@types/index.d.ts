@@ -3,11 +3,11 @@
 import BladesActor from "../BladesActor";
 // import BladesClockKeeper from "../documents/items/BladesClockKeeper";
 import {BladesItem, BladesClockKeeper, BladesGMTracker} from "../documents/BladesItemProxy";
-import BladesConsequence from "../sheets/roll/BladesConsequence";
+import BladesConsequence from "../classes/BladesConsequence";
 // import BladesGMTracker from "../documents/items/BladesGMTracker";
-import BladesClock, {BladesClockKey} from "../documents/items/BladesClock";
-import BladesPushAlert from "../BladesPushAlert";
-import BladesChat from "../BladesChat";
+import BladesClock, {BladesClockKey} from "../classes/BladesClock";
+import BladesPushAlert from "../classes/BladesPushAlert";
+import BladesChat from "../classes/BladesChat";
 import C from "../core/constants";
 import type gsap from "/scripts/greensock/esm/all";
 

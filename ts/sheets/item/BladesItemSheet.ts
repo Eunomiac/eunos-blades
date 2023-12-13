@@ -4,8 +4,8 @@ import G, {ApplyTooltipAnimations} from "../../core/gsap";
 import BladesActor from "../../BladesActor";
 import BladesItem from "../../BladesItem";
 import {BladesProject} from "../../documents/BladesItemProxy";
-import BladesActiveEffect from "../../BladesActiveEffect";
-import {ApplyClockListeners} from "../../documents/items/BladesClock";
+import BladesActiveEffect from "../../documents/BladesActiveEffect";
+import {ApplyClockListeners} from "../../classes/BladesClock";
 
 import Tags from "../../core/tags";
 

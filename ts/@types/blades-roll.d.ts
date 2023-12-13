@@ -1,8 +1,8 @@
 import {BladesActorType, BladesItemType, BladesPhase, RollType, RollSubType, RollModType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollPhase, RollResult} from "../core/constants";
 import BladesActor from "../BladesActor";
 import BladesItem from "../BladesItem";
-import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../BladesRoll";
-import BladesClock, {BladesClockKey} from "../documents/items/BladesClock";
+import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../classes/BladesRoll";
+import BladesClock, {BladesClockKey} from "../classes/BladesClock";
 
 declare global {
 

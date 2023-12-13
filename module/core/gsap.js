@@ -14,7 +14,7 @@ const gsapPlugins = [
     CustomBounce,
     EasePack
 ];
-const gsapEffects = {
+export const gsapEffects = {
     hoverButton: {
         effect: (target, config) => {
             return U.gsap.timeline({ paused: true })
@@ -38,6 +38,15 @@ const gsapEffects = {
             duration: 0.5,
             scale: 1.25
         }
+    },
+    keyHang: {
+        effect: (target, config) => {
+            return U.gsap.timeline({ paused: true })
+                .fromTo(target, { rotateZ: -0.5, transformOrigin: "50% 0px" }, { rotateZ: 0.5, duration: 3, ease: "sine.inOut", repeat: -1, yoyo: true }, 0)
+                .fromTo(target, { y: -15 }, { y: 15, duration: 6, ease: "sine.inOut", repeat: -1, yoyo: true }, 0)
+                .fromTo(target, { scale: 0.9, filter: "blur(3px) brightness(0.8)" }, { scale: 1.1, filter: "blur(0px) brightness(1.2)", duration: 12, ease: "sine.inOut", repeat: -1, yoyo: true }, 0);
+        },
+        defaults: {}
     },
     keyUp: {
         effect: (target, config) => {
@@ -612,7 +621,7 @@ const gsapEffects = {
     hoverTooltip: {
         effect: (tooltip, _config) => {
             const tooltipElem = $(tooltip)[0];
-            const tooltipContainer = $(tooltip).parent()[0];
+            const tooltipContainer = $(tooltipElem).parent()[0];
             const overlayContainer = $("#eunos-blades-tooltips")[0];
             const tl = U.gsap.timeline({
                 paused: true,

@@ -2,12 +2,14 @@
 import C, {ActionTrait, ClockColor, AttributeTrait, RollType, ConsequenceType, Position, RollResult} from "./core/constants";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initDOMStyles} from "./core/settings";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers";
-import BladesPushAlert from "./BladesPushAlert";
-import BladesChat from "./BladesChat";
+import BladesPushAlert from "./classes/BladesPushAlert";
+import BladesChat from "./classes/BladesChat";
 import U from "./core/utilities";
 import logger from "./core/logger";
 import G, {Initialize as GsapInitialize} from "./core/gsap";
-import BladesClock, {BladesClockKey} from "./documents/items/BladesClock";
+import BladesClock, {BladesClockKey} from "./classes/BladesClock";
+import BladesDirector from "./classes/BladesDirector";
+import BladesConsequence from "./classes/BladesConsequence";
 
 
 import BladesActorProxy, {
@@ -31,11 +33,11 @@ import BladesPCSheet from "./sheets/actor/BladesPCSheet";
 import BladesCrewSheet from "./sheets/actor/BladesCrewSheet";
 import BladesNPCSheet from "./sheets/actor/BladesNPCSheet";
 import BladesFactionSheet from "./sheets/actor/BladesFactionSheet";
-import BladesRoll, {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "./BladesRoll";
+import BladesRoll, {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "./classes/BladesRoll";
 
-import BladesDialog from "./BladesDialog";
+import BladesDialog from "./classes/BladesDialog";
 import BladesAI, {AGENTS, AIAssistant} from "./core/ai";
-import BladesActiveEffect from "./BladesActiveEffect";
+import BladesActiveEffect from "./documents/BladesActiveEffect";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet";
 
@@ -575,6 +577,7 @@ class GlobalGetter {
     // updateFactions,
     // updateDescriptions,
     // updateRollMods,
+    BladesDirector,
     BladesActor,
     BladesPC,
     BladesCrew,
@@ -594,6 +597,7 @@ class GlobalGetter {
     BladesRollOpposition,
     BladesRollParticipant,
     BladesChat,
+    BladesConsequence,
     G,
     U,
     C,
@@ -645,6 +649,7 @@ Hooks.once("init", async () => {
 
   // Initialize subclasses
   await Promise.all([
+    BladesDirector.Initialize(),
     BladesPCSheet.Initialize(),
     BladesActiveEffect.Initialize(),
     BladesGMTrackerSheet.Initialize(),
@@ -665,6 +670,12 @@ Hooks.once("ready", () => {
   initDOMStyles();
   initCanvasStyles();
   initTinyMCEStyles();
+
+  // Initialize Clocks, ClockKeys & Consequences
+  BladesClockKey.Initialize();
+  BladesConsequence.Initialize();
+
+  BladesDirector.getInstance().renderOverlay();
 });
 // #endregion ▄▄▄▄▄ SYSTEM INITIALIZATION ▄▄▄▄▄
 
@@ -676,6 +687,7 @@ Hooks.once("socketlib.ready", () => {
     {socket, socketlib}
   );/* !DEVCODE*/
 
+  BladesDirector.InitSockets();
   BladesRoll.InitSockets();
 
   let clockOverlayUp: boolean; let pushControllerUp: boolean;

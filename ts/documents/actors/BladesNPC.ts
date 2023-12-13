@@ -1,6 +1,6 @@
 import {BladesActorType, Factor} from "../../core/constants";
 import BladesActor from "../../BladesActor";
-import BladesRoll from "../../BladesRoll";
+import BladesRoll from "../../classes/BladesRoll";
 
 class BladesNPC extends BladesActor implements BladesActorSubClass.NPC,
                                                BladesRoll.OppositionDocData,

@@ -3,8 +3,8 @@ import U from "../../core/utilities.js";
 import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
 import BladesItem from "../../BladesItem.js";
 import { BladesProject } from "../../documents/BladesItemProxy.js";
-import BladesActiveEffect from "../../BladesActiveEffect.js";
-import { ApplyClockListeners } from "../../documents/items/BladesClock.js";
+import BladesActiveEffect from "../../documents/BladesActiveEffect.js";
+import { ApplyClockListeners } from "../../classes/BladesClock.js";
 import Tags from "../../core/tags.js";
 class BladesItemSheet extends ItemSheet {
     static get defaultOptions() {

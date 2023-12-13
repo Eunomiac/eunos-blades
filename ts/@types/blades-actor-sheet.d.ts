@@ -1,5 +1,5 @@
 import { AttributeTrait, ActionTrait, BladesPhase, BladesActorType, BladesItemType } from '../core/constants';
-import BladesActiveEffect from '../BladesActiveEffect';
+import BladesActiveEffect from '../documents/BladesActiveEffect';
 
 declare global {
 

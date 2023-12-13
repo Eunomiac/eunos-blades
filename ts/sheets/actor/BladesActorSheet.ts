@@ -6,10 +6,10 @@ import C, {BladesActorType, BladesPhase, BladesItemType, DowntimeAction, Attribu
 import Tags from "../../core/tags";
 import {BladesActor, BladesPC, BladesCrew} from "../../documents/BladesActorProxy";
 import {BladesItem, BladesProject} from "../../documents/BladesItemProxy";
-import BladesClock, {ApplyClockListeners} from "../../documents/items/BladesClock";
-import BladesDialog, {SelectionCategory} from "../../BladesDialog";
-import BladesActiveEffect from "../../BladesActiveEffect";
-import BladesRoll, {BladesRollPrimary, BladesRollOpposition} from "../../BladesRoll";
+import BladesClock, {ApplyClockListeners} from "../../classes/BladesClock";
+import BladesDialog, {SelectionCategory} from "../../classes/BladesDialog";
+import BladesActiveEffect from "../../documents/BladesActiveEffect";
+import BladesRoll, {BladesRollPrimary, BladesRollOpposition} from "../../classes/BladesRoll";
 // #endregion
 // #region TYPES: BladesCompData ~
 type BladesCompData = {

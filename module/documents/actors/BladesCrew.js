@@ -1,7 +1,7 @@
 import { BladesActorType, BladesItemType, Tag } from "../../core/constants.js";
 import { BladesActor, BladesPC } from "../BladesActorProxy.js";
 import { BladesItem } from "../BladesItemProxy.js";
-import { SelectionCategory } from "../../BladesDialog.js";
+import { SelectionCategory } from "../../classes/BladesDialog.js";
 class BladesCrew extends BladesActor {
     // #region Static Overrides: Create ~
     static IsType(doc) {

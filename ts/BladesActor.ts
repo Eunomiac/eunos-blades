@@ -1,18 +1,17 @@
 // #region Imports ~
 import U from "./core/utilities";
-import C, {BladesActorType, Tag, Playbook, ClockColor, BladesItemType, AttributeTrait, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor, Vice} from "./core/constants";
+import C, {BladesActorType, Tag, Playbook, BladesItemType, AttributeTrait, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor, Vice} from "./core/constants";
 
 import {BladesPC, BladesNPC} from "./documents/BladesActorProxy";
 import {BladesItem} from "./documents/BladesItemProxy";
 
-import {BladesRollMod} from "./BladesRoll";
-import BladesPushAlert from "./BladesPushAlert";
-import {SelectionCategory} from "./BladesDialog";
-import BladesClock from "./documents/items/BladesClock";
+import {BladesRollMod} from "./classes/BladesRoll";
+import BladesPushAlert from "./classes/BladesPushAlert";
+import {SelectionCategory} from "./classes/BladesDialog";
 
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import type BladesActiveEffect from "./BladesActiveEffect";
+import type BladesActiveEffect from "./documents/BladesActiveEffect";
 import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs";
 // import type {ToObjectFalseType} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
 import type {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/utils/helpers.mjs";

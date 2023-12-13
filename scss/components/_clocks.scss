@@ -246,6 +246,15 @@
       }
     }
 
+    &[data-size="1"] .clock-key .key-image-container.one-key-image-container {
+      --clock-size: 168px;
+
+      .clock-container {
+        top: 108px;
+        left: 110px;
+      }
+    }
+
     .clock-key {
       visibility: hidden;
 

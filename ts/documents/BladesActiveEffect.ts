@@ -1,7 +1,7 @@
-import BladesActor from "./BladesActor";
-import U from "./core/utilities";
-import BladesItem from "./BladesItem";
-import {Tag, BladesPhase, BladesActorType} from "./core/constants";
+import BladesActor from "../BladesActor";
+import U from "../core/utilities";
+import BladesItem from "../BladesItem";
+import {Tag, BladesPhase, BladesActorType} from "../core/constants";
 import type {ActiveEffectDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData";
 import {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 
@@ -10,7 +10,10 @@ const FUNCQUEUE: Record<string, {
   queue: BladesCustomFuncData[]
 }> = {};
 // {type: "ability", name: "rX:/^(?!Ghost)/"}
-const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, effect?: BladesActiveEffect, isReversing?: boolean) => Promise<void>> = {
+const CUSTOMFUNCS: Record<
+  string,
+  (actor: BladesActor, funcData: string, effect?: BladesActiveEffect, isReversing?: boolean) => Promise<void>
+> = {
   addItem: async (actor: BladesActor, funcData: string, _, isReversing = false) => {
     eLog.checkLog("activeEffects", "addItem", {actor, funcData, isReversing});
     if (actor.hasActiveSubItemOf(funcData)) {
@@ -40,8 +43,8 @@ const CUSTOMFUNCS: Record<string, (actor: BladesActor, funcData: string, effect?
       await actor.update({[target]: U.pInt(qty)});
     }
   },
-  APPLYTOMEMBERS: async () => new Promise(() => undefined),
-  APPLYTOCOHORTS: async () => new Promise(() => undefined),
+  APPLYTOMEMBERS: async () => undefined,
+  APPLYTOCOHORTS: async () => undefined,
   remItem: async (actor, funcData, _, isReversing = false) => {
 
     function testString(targetString: string, testDef: string) {
@@ -117,7 +120,10 @@ class BladesActiveEffect extends ActiveEffect {
       // Does this effect have an "APPLYTOMEMBERS" or "APPLYTOCOHORTS" CUSTOM effect?
       if (effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
 
-        if (BladesActor.IsType(effect.parent, BladesActorType.pc) && BladesActor.IsType(effect.parent.crew, BladesActorType.crew)) {
+        if (
+          BladesActor.IsType(effect.parent, BladesActorType.pc)
+          && BladesActor.IsType(effect.parent.crew, BladesActorType.crew)
+        ) {
           const otherMembers = effect.parent.crew.members.filter((member) => member.id !== effect.parent?.id);
           if (otherMembers.length > 0) {
             // If PC & APPLYTOMEMBERS   --> Create effect on members MINUS the 'APPLYTOMEMBERS' key, leave PC's effect unchanged.
@@ -145,7 +151,10 @@ class BladesActiveEffect extends ActiveEffect {
           await effect.updateSource({changes: [changeKey]});
         }
       } else if (effect.changes.some((change) => change.key === "APPLYTOCOHORTS")
-        && (BladesActor.IsType(effect.parent, BladesActorType.pc) || BladesActor.IsType(effect.parent, BladesActorType.crew))) {
+        && (
+          BladesActor.IsType(effect.parent, BladesActorType.pc)
+          || BladesActor.IsType(effect.parent, BladesActorType.crew)
+        )) {
         if (effect.parent.cohorts.length > 0) {
           // If APPLYTOCOHORTS   --> Create effect on cohorts
           await Promise.all(effect.parent.cohorts.map(async (cohort) => cohort.createEmbeddedDocuments("ActiveEffect", [effect.toJSON()])));
@@ -215,7 +224,10 @@ class BladesActiveEffect extends ActiveEffect {
 
       // Does this effect have an "APPLYTOMEMBERS" or "APPLYTOCOHORTS" CUSTOM effect?
       if (effect.changes.some((change) => change.key === "APPLYTOMEMBERS")) {
-        if (BladesActor.IsType(effect.parent, BladesActorType.pc) && BladesActor.IsType(effect.parent.crew, BladesActorType.crew)) {
+        if (
+          BladesActor.IsType(effect.parent, BladesActorType.pc)
+          && BladesActor.IsType(effect.parent.crew, BladesActorType.crew)
+        ) {
           const otherMembers = effect.parent.crew.members.filter((member) => member.id !== effect.parent?.id);
           if (otherMembers.length > 0) {
             // If PC & APPLYTOMEMBERS   --> Delete effect on all other members.
@@ -275,7 +287,8 @@ class BladesActiveEffect extends ActiveEffect {
     // Is there a currently-running function for this actor?
     if (actor.id && actor.id in FUNCQUEUE) {
       // Is this a duplicate of a function already queued?
-      const matchingQueue = FUNCQUEUE[actor.id].queue.find((fData: BladesCustomFuncData) => JSON.stringify(fData) === JSON.stringify(data));
+      const matchingQueue = FUNCQUEUE[actor.id].queue
+        .find((fData: BladesCustomFuncData) => JSON.stringify(fData) === JSON.stringify(data));
       eLog.checkLog("activeEffects", "... Checking Queue", {data, FUNCQUEUE: FUNCQUEUE[actor.id], matchingQueue});
       if (matchingQueue) {
         eLog.error("... Function ALREADY QUEUED, SKIPPING");
@@ -302,7 +315,10 @@ class BladesActiveEffect extends ActiveEffect {
       if (!funcName || !(funcName in CUSTOMFUNCS)) { return; }
       if (!funcData) { return; }
       eLog.display(`Progressing Queue: ${funcName}(${funcData}, ${isReversing}) -- ${FUNCQUEUE[actor.id].queue.length} remaining funcs.`);
-      FUNCQUEUE[actor.id].curFunc = BladesActiveEffect.RunCustomFunc(actor, CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing));
+      FUNCQUEUE[actor.id].curFunc = BladesActiveEffect.RunCustomFunc(
+        actor,
+        CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing)
+      );
     } else {
       eLog.display("Function Queue Complete! Deleting.");
       delete FUNCQUEUE[actor.id];
@@ -325,7 +341,9 @@ class BladesActiveEffect extends ActiveEffect {
     }
     const selector = a.closest("tr");
     if (selector === null) { return null; }
-    const effect = selector.dataset.effectId ? owner.effects.get(selector.dataset.effectId) as BladesActiveEffect : null;
+    const effect = selector.dataset.effectId
+      ? owner.effects.get(selector.dataset.effectId) as BladesActiveEffect
+      : null;
     if (!effect) { return null; }
     switch ( a.dataset.action ) {
       case "edit":
