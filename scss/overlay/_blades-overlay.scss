@@ -6,6 +6,8 @@
   width: 100%;
   pointer-events: none;
   z-index: 50;
+  perspective: 500px;
+  transform-style: preserve-3d;
 
   #testSquare {
     position: absolute;
@@ -16,5 +18,5 @@
     width: 200px;
   }
 
-  // .clock-key-container { visibility: hidden; }
+  .clock-key-container { visibility: hidden; }
 }

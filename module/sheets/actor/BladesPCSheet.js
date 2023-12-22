@@ -2,7 +2,6 @@ import C, { BladesActorType, BladesItemType, AttributeTrait, Tag, DowntimeAction
 import U from "../../core/utilities.js";
 import BladesActorSheet from "./BladesActorSheet.js";
 import { BladesActor, BladesPC, BladesNPC } from "../../documents/BladesActorProxy.js";
-import BladesGMTrackerSheet from "../item/BladesGMTrackerSheet.js";
 class BladesPCSheet extends BladesActorSheet {
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -197,7 +196,7 @@ class BladesPCSheet extends BladesActorSheet {
                 sheetData.attributeData[attribute].actions[action] = {
                     tooltip: C.ActionTooltips[action],
                     value: actionData.value,
-                    max: BladesGMTrackerSheet.Get().phase === BladesPhase.CharGen
+                    max: game.eunoblades.Tracker.phase === BladesPhase.CharGen
                         ? 2
                         : this.actor.system.attributes[attribute][action].max
                 };

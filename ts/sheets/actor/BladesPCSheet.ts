@@ -225,7 +225,7 @@ class BladesPCSheet extends BladesActorSheet {
         sheetData.attributeData[attribute].actions[action] = {
           tooltip: C.ActionTooltips[action],
           value: actionData.value,
-          max: BladesGMTrackerSheet.Get().phase === BladesPhase.CharGen
+          max: game.eunoblades.Tracker.phase === BladesPhase.CharGen
             ? 2
             : this.actor.system.attributes[attribute][action].max
         };

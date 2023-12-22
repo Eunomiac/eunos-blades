@@ -5,7 +5,7 @@
   $segment-size: 360 / $max;
   // Calculate the total angle between the origin line pointing upwards, including $val segments
   $angle: $val * $segment-size;
-  @debug "caclulate-angle(#{$val}, #{$max}) = #{$angle}.";
+  // @debug "caclulate-angle(#{$val}, #{$max}) = #{$angle}.";
   @return $angle;
 }
 
@@ -42,7 +42,7 @@
     $y: $radius - $radius * math.cos($angle-rad);
   }
 
-  @debug "For a square of $size: #{$size}, the intersection of $angle:#{$angle} is {x:#{$x}, y:#{$y}}.";
+  // @debug "For a square of $size: #{$size}, the intersection of $angle:#{$angle} is {x:#{$x}, y:#{$y}}.";
 
   // Return the intersection point
   @return ($x $y);
@@ -214,7 +214,7 @@
 
   /* KEYS */
   .clock-key-container {
-    position: relative;
+    position: absolute;
     perspective: 500px;
     transform-style: preserve-3d;
 

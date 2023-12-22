@@ -1,10 +1,10 @@
 // #region Imports ~
 import U from "./core/utilities.js";
 import C, { BladesActorType, Tag, Playbook, BladesItemType, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor } from "./core/constants.js";
-import { BladesPC, BladesNPC } from "./documents/BladesActorProxy.js";
+import { BladesPC, BladesCrew, BladesNPC } from "./documents/BladesActorProxy.js";
 import { BladesItem } from "./documents/BladesItemProxy.js";
 import { BladesRollMod } from "./classes/BladesRoll.js";
-import BladesPushAlert from "./classes/BladesPushAlert.js";
+import BladesDirector from "./classes/BladesDirector.js";
 import { SelectionCategory } from "./classes/BladesDialog.js";
 // #endregion
 // Blades Theme Song: "Bangkok" from The Gray Man soundtrack: https://www.youtube.com/watch?v=cjjImvMqYlo&list=OLAK5uy_k9cZDd1Fbpd25jfDtte5A6HyauD2-cwgk&index=2
@@ -676,25 +676,53 @@ class BladesActor extends Actor {
             return;
         }
         await this.update({ "system.experience.playbook.value": 0 });
-        if (BladesActor.IsType(this, BladesActorType.pc)) {
-            BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`, "advancement-alert");
+        if (this instanceof BladesPC) {
+            BladesDirector.getInstance().push("ALL", {
+                title: `${this.name} Advances their Playbook!`,
+                message: `${this.name}, select a new Ability on your Character Sheet.`,
+                type: "push",
+                classNames: "advancement-alert"
+            });
             this.grantAdvancementPoints(AdvancementPoint.Ability);
             return;
         }
-        if (BladesActor.IsType(this, BladesActorType.crew)) {
-            BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.", "advancement-alert");
+        if (this instanceof BladesCrew) {
+            BladesDirector.getInstance().push("ALL", {
+                title: "You Advance your Crew Playbook!",
+                message: "Select new Upgrades and/or Abilities on your Crew Sheet.",
+                type: "push",
+                classNames: "advancement-alert crew-advancement-alert"
+            });
+            const coinGained = this.system.tier.value + 2;
             this.members.forEach((member) => {
-                const coinGained = this.system.tier.value + 2;
-                BladesPushAlert.Get().pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, null, "stash-gain-alert");
-                member.addStash(coinGained);
+                if (member.primaryUser?.id) {
+                    BladesDirector.getInstance().push(member.primaryUser?.id, {
+                        title: "Your Stash Increases! <em>(Crew Advancement)</em>",
+                        message: `You gain ${coinGained} Stash from Crew Advancement.`,
+                        type: "push",
+                        classNames: "stash-alert"
+                    });
+                    member.addStash(coinGained);
+                }
             });
             this.grantAdvancementPoints(AdvancementPoint.UpgradeOrAbility, 2);
         }
     }
     async advanceAttribute(attribute) {
+        if (!(this instanceof BladesPC)) {
+            return;
+        }
+        if (!this.primaryUser?.id) {
+            return;
+        }
         await this.update({ [`system.experience.${attribute}.value`]: 0 });
         const actions = C.Action[attribute].map((action) => `<strong>${U.tCase(action)}</strong>`);
-        BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`, "advancement-alert");
+        BladesDirector.getInstance().push(this.primaryUser.id, {
+            title: `${this.name} Advances their ${U.uCase(attribute)}!`,
+            message: `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`,
+            type: "push",
+            classNames: "advancement-alert"
+        });
     }
     get isAtWar() {
         if (BladesNPC.IsType(this)) {

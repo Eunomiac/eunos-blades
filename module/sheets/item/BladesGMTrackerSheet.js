@@ -1,7 +1,5 @@
-import { BladesActorType, BladesItemType, BladesPhase } from "../../core/constants.js";
+import { BladesActorType, BladesPhase } from "../../core/constants.js";
 import BladesItemSheet from "./BladesItemSheet.js";
-import BladesItem from "../../BladesItem.js";
-import BladesGMTracker from "../../documents/items/BladesGMTracker.js";
 import BladesActor from "../../BladesActor.js";
 import BladesPC from "../../documents/actors/BladesPC.js";
 export var BladesTipContext;
@@ -43,7 +41,7 @@ class BladesTipGenerator {
     }
 }
 class BladesGMTrackerSheet extends BladesItemSheet {
-    static Get() { return game.eunoblades.Tracker; }
+    // static Get() { return game.eunoblades.Tracker as BladesGMTracker; }
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["eunos-blades", "sheet", "item", "gm-tracker"],
@@ -54,18 +52,6 @@ class BladesGMTrackerSheet extends BladesItemSheet {
     }
     static async Initialize() {
         Items.registerSheet("blades", BladesGMTrackerSheet, { types: ["gm_tracker"], makeDefault: true });
-        Hooks.once("ready", async () => {
-            let tracker = game.items
-                .find((item) => BladesItem.IsType(item, BladesItemType.gm_tracker));
-            if (!tracker) {
-                tracker = (await BladesGMTracker.create({
-                    name: "GM Tracker",
-                    type: "gm_tracker",
-                    img: "systems/eunos-blades/assets/icons/misc-icons/gm-tracker.svg"
-                }));
-            }
-            game.eunoblades.Tracker = tracker;
-        });
         return loadTemplates([
             "systems/eunos-blades/templates/items/gm_tracker-sheet.hbs"
         ]);

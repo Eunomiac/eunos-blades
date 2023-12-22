@@ -86,7 +86,7 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
     await super._onCreate(...args);
     await BladesClockKey.Create({
       target: this,
-      targetKey: "system.clocksData.keys",
+      targetKey: "system.clocksData.keys" as TargetKey,
       isActive: true,
       isVisible: true
     });

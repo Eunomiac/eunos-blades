@@ -2,7 +2,6 @@
 import C, {ActionTrait, ClockColor, AttributeTrait, RollType, ConsequenceType, Position, RollResult} from "./core/constants";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initDOMStyles} from "./core/settings";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers";
-import BladesPushAlert from "./classes/BladesPushAlert";
 import BladesChat from "./classes/BladesChat";
 import U from "./core/utilities";
 import logger from "./core/logger";
@@ -549,7 +548,7 @@ class GlobalGetter {
       clocksData.push({name, color, value, max});
     }
     const clockKey = await CK.addClockKey({
-      sceneID: game.scenes.current?.id,
+      sceneID: game.scenes.current?.id as IDString,
       name: keyName
     }, clocksData.shift());
     if (!clockKey) { return undefined; }
@@ -590,7 +589,6 @@ class GlobalGetter {
     BladesClockKey,
     BladesNPCSheet,
     BladesActiveEffect,
-    BladesPushAlert,
     BladesRoll,
     BladesRollMod,
     BladesRollPrimary,
@@ -623,8 +621,9 @@ Hooks.once("init", async () => {
   game.eunoblades = {
     Clocks: new Collection(),
     ClockKeys: new Collection(),
-    Consequences: new Collection()
-  };
+    Consequences: new Collection(),
+    Director: BladesDirector.getInstance()
+  } as EunoBlades.Game;
 
   // Register System Settings
   registerSettings();
@@ -647,35 +646,45 @@ Hooks.once("init", async () => {
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("blades", BladesItemSheet, {types: C.ItemTypes, makeDefault: true});
 
-  // Initialize subclasses
+  registerHandlebarHelpers();
+  preloadHandlebarsTemplates();
+
+  // Initialize preliminary classes with templates to load
   await Promise.all([
-    BladesDirector.Initialize(),
     BladesPCSheet.Initialize(),
     BladesActiveEffect.Initialize(),
     BladesGMTrackerSheet.Initialize(),
+    BladesClockKeeperSheet.Initialize(),
     BladesScore.Initialize(),
     BladesDialog.Initialize(),
-    BladesClockKeeperSheet.Initialize(),
-    BladesPushAlert.Initialize(),
     BladesRoll.Initialize(),
     BladesProject.Initialize(),
-    BladesChat.Initialize(),
-    preloadHandlebarsTemplates()
+    BladesChat.Initialize()
   ]);
-
-  registerHandlebarHelpers();
 });
 
-Hooks.once("ready", () => {
+Hooks.once("ready", async () => {
+
+  // Initialize overlays
+  await Promise.all([
+    BladesDirector.Initialize(),
+    BladesGMTracker.Initialize(),
+    BladesClockKeeper.Initialize()
+  ]);
+
+  // Initialize Clocks, ClockKeys & Consequences
+  BladesClockKey.Initialize();
+  await BladesConsequence.Initialize();
+
   initDOMStyles();
   initCanvasStyles();
   initTinyMCEStyles();
 
-  // Initialize Clocks, ClockKeys & Consequences
-  BladesClockKey.Initialize();
-  BladesConsequence.Initialize();
+  await BladesDirector.getInstance().renderOverlay();
 
-  BladesDirector.getInstance().renderOverlay();
+  BladesDirector.InitSockets();
+  BladesRoll.InitSockets();
+  BladesClockKeeper.InitSockets();
 });
 // #endregion ▄▄▄▄▄ SYSTEM INITIALIZATION ▄▄▄▄▄
 
@@ -686,30 +695,6 @@ Hooks.once("socketlib.ready", () => {
     globalThis,
     {socket, socketlib}
   );/* !DEVCODE*/
-
-  BladesDirector.InitSockets();
-  BladesRoll.InitSockets();
-
-  let clockOverlayUp: boolean; let pushControllerUp: boolean;
-
-  /**
-   * Initializes the overlay sockets for the BladesClockKeeperSheet and BladesPushAlert.
-   * It checks every 2 seconds if the overlays are up and running.
-   * If both overlays are up, it stops checking.
-   *
-   * @function
-   * @name InitOverlaySockets
-   * @returns {void}
-   */
-  function InitOverlaySockets(): void {
-    setTimeout(() => {
-      clockOverlayUp = clockOverlayUp || BladesClockKeeperSheet.InitSockets();
-      pushControllerUp = pushControllerUp || BladesPushAlert.InitSockets();
-      if (clockOverlayUp && pushControllerUp) { return; }
-      InitOverlaySockets();
-    }, 2000);
-  }
-  InitOverlaySockets();
 });
 // #endregion ░░░░[SocketLib]░░░░
 

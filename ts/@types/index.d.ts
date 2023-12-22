@@ -35,6 +35,18 @@ declare module 'gsap/all';
 
 declare global {
 
+  declare namespace EunoBlades {
+
+    export interface Game {
+      ClockKeeper: BladesClockKeeper,
+      Director: BladesDirector,
+      Tracker: BladesGMTracker,
+      Clocks: Collection<BladesClock>,
+      ClockKeys: Collection<BladesClockKey>,
+      Consequences: Collection<BladesConsequence>
+    }
+  }
+
   // Foundry Game Document & Lenient Config for 'game' object
   declare interface Game {
     items: Collection<BladesItem>,
@@ -47,14 +59,7 @@ declare global {
       Actor: Record<BladesActorType, BladesActorSystem>,
       Item: Record<BladesItemType, BladesItemSystem>
     },
-    eunoblades: {
-      ClockKeeper?: BladesClockKeeper,
-      Tracker?: BladesGMTracker,
-      PushController?: BladesPushAlert,
-      Clocks: Collection<BladesClock>,
-      ClockKeys: Collection<BladesClockKey>,
-      Consequences: Collection<BladesConsequence>
-    }
+    eunoblades: EunoBlades.Game
   }
   declare interface User {
     _id: string,

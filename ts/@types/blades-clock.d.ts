@@ -15,9 +15,9 @@ interface BladesClockKeyData {
   isActive: boolean,
   isNameVisible: boolean,
 
-  target: string|BladesDoc,
-  targetKey?: string,
-  targetFlagKey?: string
+  target: IDString|UUIDString|BladesDoc,
+  targetKey?: TargetKey,
+  targetFlagKey?: TargetFlagKey
 
   clocksData: Record<IDString, BladesClockData>,
 
@@ -42,9 +42,9 @@ interface BladesClockData extends NamedValueMax {
   isNameVisible: boolean, // whether clock's name is displayed as a <label>
   isHighlighted: boolean, // whether background nova animation is displayed
 
-  target: string|BladesDoc,
-  targetKey?: string,
-  targetFlagKey?: string
+  target: IDString|UUIDString|BladesDoc,
+  targetKey?: TargetKey,
+  targetFlagKey?: TargetFlagKey
 
   tooltip?: string,
   gm_notes?: string,
@@ -53,6 +53,6 @@ interface BladesClockData extends NamedValueMax {
   sceneID?: IDString, // Regardless of where stored, will be displayed within a 1-key in the scene overlay
 }
 
-type BladesClockSystemData = BladesClockData & {target: string};
+type BladesClockSystemData = BladesClockData & {target: UUIDString};
 
-type BladesClockKeySystemData = BladesClockKeyData & {target: string, clocksData: Record<IDString, BladesClockSystemData> }
+type BladesClockKeySystemData = BladesClockKeyData & {target: UUIDString, clocksData: Record<IDString, BladesClockSystemData> }

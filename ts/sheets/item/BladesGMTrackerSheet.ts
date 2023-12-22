@@ -60,7 +60,7 @@ class BladesTipGenerator {
 
 class BladesGMTrackerSheet extends BladesItemSheet {
 
-  static Get() { return game.eunoblades.Tracker as BladesGMTracker; }
+  // static Get() { return game.eunoblades.Tracker as BladesGMTracker; }
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -73,18 +73,6 @@ class BladesGMTrackerSheet extends BladesItemSheet {
 
   static async Initialize() {
     Items.registerSheet("blades", BladesGMTrackerSheet, {types: ["gm_tracker"], makeDefault: true});
-    Hooks.once("ready", async () => {
-      let tracker: BladesGMTracker|undefined = game.items
-        .find((item): item is BladesGMTracker => BladesItem.IsType(item, BladesItemType.gm_tracker));
-      if (!tracker) {
-        tracker = (await BladesGMTracker.create({
-          name: "GM Tracker",
-          type: "gm_tracker",
-          img: "systems/eunos-blades/assets/icons/misc-icons/gm-tracker.svg"
-        })) as BladesGMTracker;
-      }
-      game.eunoblades.Tracker = tracker;
-    });
     return loadTemplates([
       "systems/eunos-blades/templates/items/gm_tracker-sheet.hbs"
     ]);
@@ -92,7 +80,6 @@ class BladesGMTrackerSheet extends BladesItemSheet {
 
   override async activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
-
   }
 
   override async _onSubmit(event: OnSubmitEvent, params: List<unknown> = {}) {

@@ -39,6 +39,30 @@ export const gsapEffects = {
             scale: 1.25
         }
     },
+    keyDrop: {
+        effect: (target, config) => {
+            // Initial CSS should have visibility: hidden - can position key initially before it appears
+            config.left ??= U.gsap.utils.random(100, 1000);
+            config.top ??= U.gsap.utils.random(100, 500);
+            U.gsap.set(target, { left: config.left, top: config.top });
+            return U.gsap.from(target, {
+                autoAlpha: 0,
+                y: `-=${Math.abs(config.yShift)}`,
+                duration: config.duration,
+                ease: config.ease,
+                onComplete() {
+                    U.gsap.effects.keyHang(target).play();
+                }
+            });
+        },
+        defaults: {
+            duration: 0.75,
+            ease: "bounce",
+            yShift: -500,
+            top: undefined,
+            left: undefined
+        }
+    },
     keyHang: {
         effect: (target, config) => {
             return U.gsap.timeline({ paused: true })

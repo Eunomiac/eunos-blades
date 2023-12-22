@@ -10,6 +10,24 @@ import type {DocumentModificationOptions} from "@league-of-foundry-developers/fo
 
 class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_Keeper {
 
+  public static async Initialize() {
+    const clockKeeper: BladesClockKeeper|undefined = game.items.find((item): item is BladesClockKeeper => item.type === "clock_keeper");
+    if (!clockKeeper) {
+      game.eunoblades.ClockKeeper = (await BladesClockKeeper.create({
+        name: "Clock Keeper",
+        type: "clock_keeper",
+        img: "systems/eunos-blades/assets/icons/misc-icons/clock-keeper.svg"
+      })) as BladesClockKeeper;
+    } else {
+      game.eunoblades.ClockKeeper = clockKeeper;
+    }
+    game.eunoblades.ClockKeeper.renderOverlay();
+  }
+
+  static InitSockets() {
+    socketlib.system.register("renderOverlay", game.eunoblades.ClockKeeper.renderOverlay);
+  }
+
   // #region CLOCKS OVERLAY
   _overlayElement?: HTMLElement;
 
@@ -81,7 +99,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
     if (!game.scenes?.current) {
       throw new Error("[BladesClockKeeper.currentScene] Error retrieving 'game.scenes.current'.");
     }
-    return game.scenes.current.id;
+    return game.scenes.current.id as IDString;
   }
 
   get targetSceneID(): IDString { return this.system.targetScene ?? this.currentSceneID; }
@@ -123,18 +141,20 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
       .map((clockKey) => [clockKey.id, clockKey]));
   }
 
-  addClockKey(
+  async addClockKey(
     clockKeyConfig: Partial<BladesClockKeySystemData> = {},
     clocksData: Partial<BladesClockSystemData> = {}
-  ): Promise<BladesClockKey|undefined>|undefined {
+  ): Promise<BladesClockKey|undefined> {
     if (!(game.eunoblades.ClockKeeper instanceof BladesClockKeeper)) { return undefined; }
     if (!this.targetSceneID && !clockKeyConfig.sceneID) { return undefined; }
-    return BladesClockKey.Create({
+    const key = await BladesClockKey.Create({
       sceneID: this.targetSceneID,
       target: this,
-      targetKey: "system.clocksData.keys",
+      targetKey: "system.clocksData.keys" as TargetKey,
       ...clockKeyConfig
     }, clocksData);
+    U.gsap.effects.keyDrop(key.elem);
+    return key;
   }
 
   async deleteClockKey(keyID: string): Promise<void> {
@@ -157,7 +177,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
   // #region OVERRIDES: prepareDerivedData, _onUpdate
   override prepareDerivedData() {
     super.prepareDerivedData();
-    this.system.targetScene ??= game.scenes.current?.id || null;
+    this.system.targetScene ??= game.scenes.current?.id as IDString || null;
   }
 
   override async _onUpdate(
@@ -167,7 +187,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
   ) {
     super._onUpdate(changed, options, userId);
     // BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
-    socketlib.system.executeForEveryone("renderOverlay");
+    // socketlib.system.executeForEveryone("renderOverlay");
   }
   // #endregion
 

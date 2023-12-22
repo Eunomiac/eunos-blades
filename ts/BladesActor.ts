@@ -2,11 +2,11 @@
 import U from "./core/utilities";
 import C, {BladesActorType, Tag, Playbook, BladesItemType, AttributeTrait, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor, Vice} from "./core/constants";
 
-import {BladesPC, BladesNPC} from "./documents/BladesActorProxy";
+import {BladesPC, BladesCrew, BladesFaction, BladesNPC} from "./documents/BladesActorProxy";
 import {BladesItem} from "./documents/BladesItemProxy";
 
 import {BladesRollMod} from "./classes/BladesRoll";
-import BladesPushAlert from "./classes/BladesPushAlert";
+import BladesDirector from "./classes/BladesDirector";
 import {SelectionCategory} from "./classes/BladesDialog";
 
 import type {ActorData, ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
@@ -723,29 +723,66 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
   get canPurchaseCohortType() { return this.availableCohortTypePoints > 0; }
 
+
   async advancePlaybook() {
     if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew) || !this.playbook) { return; }
     await this.update({"system.experience.playbook.value": 0});
-    if (BladesActor.IsType(this, BladesActorType.pc)) {
-      BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, `${this.name}, select a new Ability on your Character Sheet.`, "advancement-alert");
+    if (this instanceof BladesPC) {
+      BladesDirector.getInstance().push(
+        "ALL",
+        {
+          title: `${this.name} Advances their Playbook!`,
+          message: `${this.name}, select a new Ability on your Character Sheet.`,
+          type: "push",
+          classNames: "advancement-alert"
+        }
+      );
       this.grantAdvancementPoints(AdvancementPoint.Ability);
       return;
     }
-    if (BladesActor.IsType(this, BladesActorType.crew)) {
-      BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their Playbook!`, "Select new Upgrades and/or Abilities on your Crew Sheet.", "advancement-alert");
+    if (this instanceof BladesCrew) {
+      BladesDirector.getInstance().push(
+        "ALL",
+        {
+          title: "You Advance your Crew Playbook!",
+          message: "Select new Upgrades and/or Abilities on your Crew Sheet.",
+          type: "push",
+          classNames: "advancement-alert crew-advancement-alert"
+        }
+      );
+      const coinGained = this.system.tier.value + 2;
       this.members.forEach((member) => {
-        const coinGained = this.system.tier.value + 2;
-        BladesPushAlert.Get().pushToAll("GM", `${member.name} Gains ${coinGained} Stash (Crew Advancement)`, null, "stash-gain-alert");
-        member.addStash(coinGained);
+        if (member.primaryUser?.id) {
+          BladesDirector.getInstance().push(
+            member.primaryUser?.id,
+            {
+              title: "Your Stash Increases! <em>(Crew Advancement)</em>",
+              message: `You gain ${coinGained} Stash from Crew Advancement.`,
+              type: "push",
+              classNames: "stash-alert"
+            }
+          );
+          member.addStash(coinGained);
+        }
       });
       this.grantAdvancementPoints(AdvancementPoint.UpgradeOrAbility, 2);
     }
   }
 
   async advanceAttribute(attribute: AttributeTrait) {
+    if (!(this instanceof BladesPC)) { return; }
+    if (!this.primaryUser?.id) { return; }
     await this.update({[`system.experience.${attribute}.value`]: 0});
     const actions = C.Action[attribute].map((action) => `<strong>${U.tCase(action)}</strong>`);
-    BladesPushAlert.Get().pushToAll("GM", `${this.name} Advances their ${U.uCase(attribute)}!`, `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`, "advancement-alert");
+    BladesDirector.getInstance().push(
+      this.primaryUser.id,
+      {
+        title: `${this.name} Advances their ${U.uCase(attribute)}!`,
+        message: `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`,
+        type: "push",
+        classNames: "advancement-alert"
+      }
+    );
   }
 
   get isAtWar(): boolean {
@@ -1159,7 +1196,8 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 }
 
 declare interface BladesActor {
-  get id(): string;
+  get id(): IDString;
+  get uuid(): UUIDString;
   get name(): string;
   get img(): string;
   get type(): BladesActorType;

@@ -1,114 +1,12 @@
 import C, {BladesActorType, BladesItemType, ClockColor, ClockKeyDisplayMode, Factor} from "../core/constants";
 import {Observer, Dragger} from "../core/gsap";
+import BladesTargetLink from "./BladesTargetLink";
 import U from "../core/utilities";
 import {BladesActor} from "../documents/BladesActorProxy";
 import {BladesItem} from "../documents/BladesItemProxy";
 import BladesRoll from "./BladesRoll";
 
-type BladesTargetLinkConfig = {
-  target: string | BladesDoc,
-  id?: IDString,
-  targetKey?: string,
-  targetFlagKey?: string
-}
-
-type BladesTargetLinkSystemData = BladesTargetLinkConfig & {target: string};
-
-class BladesTargetLink {
-
-  protected static validateConfig<T extends BladesTargetLinkConfig = BladesTargetLinkConfig>(ref: unknown):
-    ref is T & {id: IDString} {
-    // Check if 'ref' is a simple object literal
-    if (!U.isSimpleObj(ref)) {return false;}
-    // Confirm a target key or flag key has been provided.
-    if (!ref.targetKey && !ref.targetFlagKey) {return false;}
-    // Confirm a target has been provided, and that it can be resolved to a Document entity.
-    if (!ref.target) {return false;}
-    if (U.isDocID(ref.target)) {
-      // Convert string id of target to target Document
-      ref.target = game.actors.get(ref.target) ?? game.items.get(ref.target);
-    }
-    if (!(ref.target instanceof Actor || ref.target instanceof Item)) {return false;}
-    // Create a random ID if one not provided.
-    if (!ref.id) {ref.id = randomID();}
-    return true;
-  }
-
-  _id: string;
-
-  _targetID: string;
-
-  get targetID() {return this._targetID;}
-
-  _target: BladesDoc;
-
-  get target(): BladesDoc {return this._target;}
-
-  _targetKey = "system";
-
-  get targetKey(): string {return this._targetKey;}
-
-  _targetFlagKey?: string;
-
-  get targetFlagKey(): string | undefined {return this._targetFlagKey;}
-
-  constructor(config: BladesTargetLinkConfig) {
-    if (!BladesTargetLink.validateConfig(config)) {
-      eLog.error("[new BladesTargetLink] Bad Config File.", config);
-      throw new Error("See log.");
-    }
-
-    const {id, target, targetKey, targetFlagKey} = config;
-    this._id = id;
-    this._target = target as BladesDoc;
-    this._targetID = this.target.id;
-    this._targetKey = targetKey ?? "system";
-    this._targetFlagKey = targetFlagKey;
-  }
-
-  getSystemData() {
-    if (this.targetFlagKey) {
-      return this.target.getFlag("eunos-blades", `${this.targetFlagKey}.${this._id}`);
-    }
-    return getProperty(this.target, `${this.targetKey}.${this._id}`) ?? {};
-  }
-
-  get id() {return this._id;}
-
-  get name(): string {return this.getSystemData().name;}
-
-  getTargetProp(prop: string): unknown {
-    return this.getSystemData()[prop];
-  }
-
-  async updateTarget(prop: string, val: unknown) {
-    if (this.targetFlagKey) {
-      (this.target as BladesItem).setFlag("eunos-blades", `${this.targetFlagKey}.${this._id}.${prop}`, val);
-    } else {
-      this.target.update({[`${this.targetKey}.${this._id}.${prop}`]: val});
-    }
-  }
-
-  async updateTargetData(val: unknown) {
-    if (this.targetFlagKey) {
-      if (val === null) {
-        return (this.target as BladesItem).unsetFlag("eunos-blades", `${this.targetFlagKey}.${this._id}`);
-      } else {
-        return (this.target as BladesItem).setFlag("eunos-blades", `${this.targetFlagKey}.${this._id}`, val);
-      }
-    } else if (val === null) {
-      return this.target.update({[`${this.targetKey}.-=${this._id}`]: null});
-    } else {
-      return this.target.update({[`${this.targetKey}.${this._id}`]: val});
-    }
-  }
-
-  async delete(): Promise<unknown> {
-    return this.updateTargetData(null);
-  }
-}
-
-export type BladesClockKeyConfig = Partial<BladesClockKeyData> & BladesTargetLinkConfig;
+export type BladesClockKeyConfig = Partial<BladesClockKeyData> & BladesTargetLink.Config;
 
 class BladesClockKey extends BladesTargetLink implements BladesClockKeyData,
   BladesRoll.OppositionDocData {
@@ -589,8 +487,8 @@ class BladesClockKey extends BladesTargetLink implements BladesClockKeyData,
       }});
     return await BladesClock.Create({
       target: this.target,
-      targetKey: this.targetKey ? `${this.targetKey}.${this.id}.clocksData` : undefined,
-      targetFlagKey: this._targetFlagKey ? `${this.targetFlagKey}.${this.id}.clocksData` : undefined,
+      targetKey: this.targetKey ? `${this.targetKey}.${this.id}.clocksData` as TargetKey : undefined,
+      targetFlagKey: this._targetFlagKey ? `${this.targetFlagKey}.${this.id}.clocksData` as TargetFlagKey : undefined,
       index: this.clocks.size,
       ...clockData
     });
@@ -695,7 +593,7 @@ class BladesClockKey extends BladesTargetLink implements BladesClockKeyData,
 
 }
 
-export type BladesClockConfig = Partial<BladesClockData> & BladesTargetLinkConfig;
+export type BladesClockConfig = Partial<BladesClockData> & BladesTargetLink.Config;
 
 class BladesClock extends BladesTargetLink implements BladesClockData,
   BladesRoll.OppositionDocData {
@@ -895,7 +793,7 @@ class BladesClock extends BladesTargetLink implements BladesClockData,
     }
 
     let configData: BladesClockConfig;
-    let targetLinkData: BladesTargetLinkConfig;
+    let targetLinkData: BladesTargetLink.Config;
 
     if (isHTML(data)) {
       data = $(data);

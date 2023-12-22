@@ -2,7 +2,6 @@
 import C, { ActionTrait, ClockColor, AttributeTrait, RollType, ConsequenceType } from "./core/constants.js";
 import registerSettings, { initTinyMCEStyles, initCanvasStyles, initDOMStyles } from "./core/settings.js";
 import { registerHandlebarHelpers, preloadHandlebarsTemplates } from "./core/helpers.js";
-import BladesPushAlert from "./classes/BladesPushAlert.js";
 import BladesChat from "./classes/BladesChat.js";
 import U from "./core/utilities.js";
 import logger from "./core/logger.js";
@@ -542,7 +541,6 @@ class GlobalGetter {
     BladesClockKey,
     BladesNPCSheet,
     BladesActiveEffect,
-    BladesPushAlert,
     BladesRoll,
     BladesRollMod,
     BladesRollPrimary,
@@ -571,7 +569,8 @@ Hooks.once("init", async () => {
     game.eunoblades = {
         Clocks: new Collection(),
         ClockKeys: new Collection(),
-        Consequences: new Collection()
+        Consequences: new Collection(),
+        Director: BladesDirector.getInstance()
     };
     // Register System Settings
     registerSettings();
@@ -588,61 +587,44 @@ Hooks.once("init", async () => {
     Actors.registerSheet("blades", BladesNPCSheet, { types: ["npc"], makeDefault: true });
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("blades", BladesItemSheet, { types: C.ItemTypes, makeDefault: true });
-    // Initialize subclasses
+    registerHandlebarHelpers();
+    preloadHandlebarsTemplates();
+    // Initialize preliminary classes with templates to load
     await Promise.all([
-        BladesDirector.Initialize(),
         BladesPCSheet.Initialize(),
         BladesActiveEffect.Initialize(),
         BladesGMTrackerSheet.Initialize(),
+        BladesClockKeeperSheet.Initialize(),
         BladesScore.Initialize(),
         BladesDialog.Initialize(),
-        BladesClockKeeperSheet.Initialize(),
-        BladesPushAlert.Initialize(),
         BladesRoll.Initialize(),
         BladesProject.Initialize(),
-        BladesChat.Initialize(),
-        preloadHandlebarsTemplates()
+        BladesChat.Initialize()
     ]);
-    registerHandlebarHelpers();
 });
-Hooks.once("ready", () => {
+Hooks.once("ready", async () => {
+    // Initialize overlays
+    await Promise.all([
+        BladesDirector.Initialize(),
+        BladesGMTracker.Initialize(),
+        BladesClockKeeper.Initialize()
+    ]);
+    // Initialize Clocks, ClockKeys & Consequences
+    BladesClockKey.Initialize();
+    await BladesConsequence.Initialize();
     initDOMStyles();
     initCanvasStyles();
     initTinyMCEStyles();
-    // Initialize Clocks, ClockKeys & Consequences
-    BladesClockKey.Initialize();
-    BladesConsequence.Initialize();
-    BladesDirector.getInstance().renderOverlay();
+    await BladesDirector.getInstance().renderOverlay();
+    BladesDirector.InitSockets();
+    BladesRoll.InitSockets();
+    BladesClockKeeper.InitSockets();
 });
 // #endregion ▄▄▄▄▄ SYSTEM INITIALIZATION ▄▄▄▄▄
 // #region ░░░░░░░[SocketLib]░░░░ SocketLib Initialization ░░░░░░░ ~
 Hooks.once("socketlib.ready", () => {
     socket = socketlib.registerSystem("eunos-blades");
     /* DEVCODE*/ Object.assign(globalThis, { socket, socketlib }); /* !DEVCODE*/
-    BladesDirector.InitSockets();
-    BladesRoll.InitSockets();
-    let clockOverlayUp;
-    let pushControllerUp;
-    /**
-     * Initializes the overlay sockets for the BladesClockKeeperSheet and BladesPushAlert.
-     * It checks every 2 seconds if the overlays are up and running.
-     * If both overlays are up, it stops checking.
-     *
-     * @function
-     * @name InitOverlaySockets
-     * @returns {void}
-     */
-    function InitOverlaySockets() {
-        setTimeout(() => {
-            clockOverlayUp = clockOverlayUp || BladesClockKeeperSheet.InitSockets();
-            pushControllerUp = pushControllerUp || BladesPushAlert.InitSockets();
-            if (clockOverlayUp && pushControllerUp) {
-                return;
-            }
-            InitOverlaySockets();
-        }, 2000);
-    }
-    InitOverlaySockets();
 });
 Hooks.once("diceSoNiceReady", (dice3d) => {
     dice3d.addSystem({ id: "eunos-blades", name: "Euno's Blades" }, "preferred");

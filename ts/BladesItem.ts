@@ -1,8 +1,8 @@
 import C, {BladesItemType, Tag, Factor} from "./core/constants";
 import U from "./core/utilities";
 import {BladesActor, BladesCrew, BladesPC} from "./documents/BladesActorProxy";
+import BladesDirector from "./classes/BladesDirector";
 import {BladesRollMod} from "./classes/BladesRoll";
-import BladesPushAlert from "./classes/BladesPushAlert";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 class BladesItem extends Item implements BladesDocument<Item>,
@@ -242,8 +242,16 @@ class BladesItem extends Item implements BladesDocument<Item>,
         "They cannot do anything until they recover.",
         "You may replace them during Downtime."
       ];
+      BladesDirector.getInstance().push(
+        "ALL",
+        {
+          title: `${this.name} ${harmVerb[newHarm - 1]}`,
+          message: harmEffect[newHarm - 1],
+          type: "push",
+          cssClasses: "harm-alert"
+        }
+      );
       await this.update({"system.harm": amount});
-      BladesPushAlert.Get().pushToAll("GM", `${this.name} ${harmVerb[newHarm - 1]}`, harmEffect[newHarm - 1], "harm-alert");
     }
   }
 
@@ -422,7 +430,8 @@ class BladesItem extends Item implements BladesDocument<Item>,
 }
 
 declare interface BladesItem {
-  get id(): string;
+  get id(): IDString;
+  get uuid(): UUIDString;
   get name(): string;
   get img(): string;
   get type(): BladesItemType,

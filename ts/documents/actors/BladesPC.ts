@@ -3,8 +3,8 @@ import U from "../../core/utilities";
 import {BladesActor, BladesCrew} from "../BladesActorProxy";
 import {BladesItem} from "../BladesItemProxy";
 import BladesRoll from "../../classes/BladesRoll";
-import BladesPushAlert from "../../classes/BladesPushAlert";
 import BladesClock from "../../classes/BladesClock";
+import BladesDirector from "../../classes/BladesDirector";
 import {SelectionCategory} from "../../classes/BladesDialog";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
@@ -69,7 +69,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     await BladesClock.Create({
       name: "",
       target: pc,
-      targetKey: "system.healing",
+      targetKey: "system.healing" as TargetKey,
       color: ClockColor.white,
       value: 0,
       max: 4,
@@ -441,10 +441,14 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   async applyHarm(num: harmLevel, name: string) {
     if (num === 4) {
-      BladesPushAlert.Get().pushToAll("GM",
-        `${this.name} Suffers FATAL Harm: ${name}`,
-        `${this.name}, will you continue as a Ghost, or create a new character?`,
-        "harm-alert fatal-harm-alert"
+      BladesDirector.getInstance().push(
+        "ALL",
+        {
+          title: `${this.name} Suffers <u><strong>FATAL</strong></u> Harm: ${name}`,
+          message: `${this.name}, will you continue as a Ghost, or create a new character?`,
+          type: "push",
+          cssClasses: "harm-alert fatal-harm-alert"
+        }
       );
       return;
     }
@@ -462,15 +466,25 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       const [thisHarmLevel, thisHarmKey] = theseHarmKeys;
       const thisHarmVal = this.system.harm[thisHarmLevel][thisHarmKey];
       if (!thisHarmVal) {
+        BladesDirector.getInstance().push(
+          "ALL",
+          {
+            title: `${this.name} Suffers ${U.tCase(thisHarmLevel)} Harm: ${name}`,
+            type: "push",
+            cssClasses: "harm-alert"
+          });
         await this.update({[`system.harm.${thisHarmLevel}.${thisHarmKey}`]: name});
-        BladesPushAlert.Get().pushToAll("GM", `${this.name} Suffers ${U.tCase(thisHarmLevel)} Harm: ${name}`, null, "harm-alert");
         return;
       }
     }
-    BladesPushAlert.Get().pushToAll("GM",
-      `${this.name} Suffers a Catastrophic, Permanent Injury!`,
-      `${this.name}, you're out of the action - either left for dead, or otherwise dropped from the action. You can choose to return at the beginning of the next Phase with a permanent injury, or die.`,
-      "harm-alert fatal-harm-alert"
+
+    BladesDirector.getInstance().push(
+      "ALL",
+      {
+        title: `${this.name} Suffers a Catastrophic, Permanent Injury!`,
+        message: `${this.name}, you're out of the action - either left for dead, or otherwise dropped from the action. You can choose to return at the beginning of the next Phase with a permanent injury, or die.`,
+        cssClasses: "harm-alert fatal-harm-alert"
+      }
     );
   }
 

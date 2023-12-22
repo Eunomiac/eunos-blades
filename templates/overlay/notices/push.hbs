@@ -1,0 +1,21 @@
+<div id="{{id}}" class="push-notice {{cssClasses}}">
+  {{#if config.title}}<h1 class="title-text">{{config.title}}</h1>{{/if}}
+  {{#if config.}}
+</div>
+
+
+  blockClass: string, charName: string, titleText ?: string, bodyText ?: string) {
+    const pushLines: string[] = [
+      `<div id="#blades-push-${pushID}" class="push-notice${charName === "GM" ? " gm-notice" : ""} ${blockClass}">`
+    ];
+    if (charName !== "GM") {
+      pushLines.push(`    <div class="author">${charName}</div>`);
+    }
+    if (titleText) {
+      pushLines.push(`    <div class="header">${titleText}</div>`);
+    }
+    if (bodyText) {
+      pushLines.push(`    <div class="body${titleText ? "" : " no-border"}">${bodyText}</div>`);
+    }
+    pushLines.push("</div>");
+    const pushElem$ = $(pushLines.join("\n"));

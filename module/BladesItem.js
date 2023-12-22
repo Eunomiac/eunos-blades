@@ -1,8 +1,8 @@
 import C, { BladesItemType, Tag, Factor } from "./core/constants.js";
 import U from "./core/utilities.js";
 import { BladesCrew, BladesPC } from "./documents/BladesActorProxy.js";
+import BladesDirector from "./classes/BladesDirector.js";
 import { BladesRollMod } from "./classes/BladesRoll.js";
-import BladesPushAlert from "./classes/BladesPushAlert.js";
 class BladesItem extends Item {
     // #region Static Overrides: Create ~
     static async create(data, options = {}) {
@@ -204,8 +204,13 @@ class BladesItem extends Item {
                 "They cannot do anything until they recover.",
                 "You may replace them during Downtime."
             ];
+            BladesDirector.getInstance().push("ALL", {
+                title: `${this.name} ${harmVerb[newHarm - 1]}`,
+                message: harmEffect[newHarm - 1],
+                type: "push",
+                cssClasses: "harm-alert"
+            });
             await this.update({ "system.harm": amount });
-            BladesPushAlert.Get().pushToAll("GM", `${this.name} ${harmVerb[newHarm - 1]}`, harmEffect[newHarm - 1], "harm-alert");
         }
     }
     async applyWorsePosition() {

@@ -6436,6 +6436,8 @@ template {
   width: 100%;
   pointer-events: none;
   z-index: 50;
+  perspective: 500px;
+  transform-style: preserve-3d;
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay #testSquare, :root body.vtt.game.system-eunos-blades #blades-overlay .overlay-section #testSquare {
   position: absolute;
@@ -6444,6 +6446,9 @@ template {
   background: blue;
   height: 200px;
   width: 200px;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-key-container, :root body.vtt.game.system-eunos-blades #blades-overlay .overlay-section .clock-key-container {
+  visibility: hidden;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay {
   margin-top: 0.25rem;
@@ -9084,7 +9089,7 @@ template {
   /* CONTROLS */
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container {
-  position: relative;
+  position: absolute;
   perspective: 500px;
   transform-style: preserve-3d;
 }
@@ -22875,7 +22880,7 @@ template {
   /* CONTROLS */
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container {
-  position: relative;
+  position: absolute;
   perspective: 500px;
   transform-style: preserve-3d;
 }
@@ -24824,7 +24829,7 @@ template {
   /* CONTROLS */
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container {
-  position: relative;
+  position: absolute;
   perspective: 500px;
   transform-style: preserve-3d;
 }

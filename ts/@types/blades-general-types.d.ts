@@ -5,7 +5,13 @@ import {gsap} from "gsap/all";
 
 
 declare global {
-  // Type Aliases
+  // #region MISCELLANEOUS TYPE ALIASES (nonfunctional; for clarity) ~
+
+  // Represents a list of a certain type
+  type List<Type = any> = Record<number | string | symbol, Type>
+
+  // Represents an index of a certain type
+  type Index<Type = any> = List<Type> | Type[];
 
   // Represents a string, false, or undefined
   type MaybeStringOrFalse = string | false | undefined;
@@ -35,13 +41,10 @@ declare global {
   type NumString = string;
 
   // Represents an object with number-strings as keys
-  type StringArray<T> = Record<NumString,T>;
+  type StringArray<T> = Record<NumString, T>;
 
   // Represents "true" or "false" as a string
   type BoolString = string;
-
-  // Represents a document id as a string
-  type IDString = string;
 
   // Represents falsy values and empty objects to be pruned when cleaning list of values
   type UncleanValues = false | null | undefined | "" | 0 | Record<string, never> | never[];
@@ -52,10 +55,10 @@ declare global {
     : Capitalize<Lowercase<S>>;
 
   // Represents an allowed gender key
-  type Gender = "M"|"F"|"U"|"X";
+  type Gender = "M" | "F" | "U" | "X";
 
   // Represents an allowed direction
-  type Direction = "top"|"bottom"|"left"|"right";
+  type Direction = "top" | "bottom" | "left" | "right";
 
   // Represents an allowed string case
   type StringCase = "upper" | "lower" | "sentence" | "title";
@@ -69,8 +72,11 @@ declare global {
   // Represents an RGB color as a string
   type RGBColor = string;
 
-  // Represents a jQuery text term
-  type jQueryTextTerm = string | number | boolean | ((this: Element, index: number, text: string) => string | number | boolean);
+  // Represents a key of a certain type
+  type KeyOf<T> = keyof T;
+
+  // Represents a value of a certain type
+  type ValOf<T> = T extends Array<unknown> | ReadonlyArray<unknown> ? T[number] : T[keyof T];
 
   // Represents a function that takes a key and an optional value and returns unknown
   type keyFunc = (key: number | string, val?: any) => unknown;
@@ -87,11 +93,26 @@ declare global {
   // Represents a check test
   type checkTest = ((...args: any[]) => any) | testFunc<keyFunc> | testFunc<valFunc> | RegExp | number | string;
 
-  // Represents a list of a certain type
-  type List<Type = any> = Record<number | string | symbol, Type>
+  // #endregion
 
-  // Represents an index of a certain type
-  type Index<Type = any> = List<Type> | Type[];
+
+  // Represents a document id as a string
+  type IDString = string & { __idStringBrand: never };
+
+  // Represents a UUID string, of the form /^[A-Za-z]+\.[A-Za-z0-9]{16}$/
+  type UUIDString = string & { __uuidStringBrand: never }; // This type is compatible with string, but requires explicit casting, enforcing the UUID pattern.
+
+  // Represents a dotkey
+  type DotKey = string & { __dotKeyBrand: never };
+
+  // Represents a dotkey appropriate for an update() data object
+  type TargetKey = string & DotKey & { __targetKeyBrand: never };
+
+  // Represents a dotkey point to a a flag instead of the document schema
+  type TargetFlagKey = string & DotKey & { __targetFlagKeyBrand: never };
+
+  // Represents a jQuery text term
+  type jQueryTextTerm = string | number | boolean | ((this: Element, index: number, text: string) => string | number | boolean);
 
   // Represents an object with frozen properties
   type FreezeProps<T> = {
@@ -102,12 +123,6 @@ declare global {
   type FullPartial<T> = {
     [P in keyof T]?: T[P] extends object ? FullPartial<T[P]> : T[P];
   };
-
-  // Represents a key of a certain type
-  type KeyOf<T> = keyof T;
-
-  // Represents a value of a certain type
-  type ValOf<T> = T extends Array<unknown> | ReadonlyArray<unknown> ? T[number] : T[keyof T];
 
   // Represents a gsap animation
   type gsapAnim = gsap.core.Tween | gsap.core.Timeline;
@@ -128,8 +143,8 @@ declare global {
   type ItemRef = string | BladesItem;
 
   // Utility Types for Variable Template Values
-  type ValueMax = { max: number, value: number };
-  type NamedValueMax = ValueMax & { name: string };
+  type ValueMax = {max: number, value: number};
+  type NamedValueMax = ValueMax & {name: string};
   type RollableStat = AttributeTrait | ActionTrait;
 
   // Component Types for Sheets
@@ -137,6 +152,7 @@ declare global {
     value: valueType,
     display: displayType
   };
+
   type BladesCompData = {
     class?: string,
     label?: string,
@@ -199,4 +215,7 @@ declare global {
       bottom: boolean
     }
   }
+
+  // Some overrides of League types for greater specificity
+  declare function randomID(length?: number): IDString;
 }

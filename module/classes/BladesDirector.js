@@ -1,7 +1,8 @@
 import U from "../core/utilities.js";
-import { SVGDATA } from "../core/constants.js";
+import { SVGDATA, BladesPhase } from "../core/constants.js";
 import { BladesClockKey } from "./BladesClock.js";
 class BladesDirector {
+    // #region SINGLE INSTANCE FACTORY METHODS
     static instance;
     constructor() {
         // intentionally left blank
@@ -24,9 +25,11 @@ class BladesDirector {
             "systems/eunos-blades/templates/overlay/pc-portrait.hbs",
             "systems/eunos-blades/templates/overlay/cohort-portrait.hbs",
             "systems/eunos-blades/templates/overlay/crew-status-bar.hbs",
-            "systems/eunos-blades/templates/overlay/game-phase-bar.hbs"
+            "systems/eunos-blades/templates/overlay/game-phase-bar.hbs",
+            "systems/eunos-blades/templates/overlay/notices/push.hbs"
         ]);
     }
+    // #endregion
     // #region OVERLAY
     _overlayElement;
     get overlayElement() {
@@ -129,20 +132,6 @@ class BladesDirector {
         }
         socketlib.system.executeForEveryone("$addClockKey", key._initData);
     }
-    async $addClockKey(keyData) {
-        const key = await BladesClockKey.Create(keyData);
-        const keyHTML = await renderTemplate("systems/eunos-blades/templates/overlay/clock-key.hbs", key);
-        const keyElem = $(keyHTML).appendTo(this.clockKeySectionElem)[0];
-        U.gsap.from(keyElem, {
-            scale: 0.5,
-            x: -1500,
-            skewX: 50,
-            filter: "blur(100px)",
-            autoAlpha: 0,
-            ease: "elastic.out(0.4, 0.25)",
-            duration: 6
-        }).then(() => U.gsap.effects.keyHang(keyElem).play());
-    }
     initScorePanelSockets() {
         // tbd...
     }
@@ -166,6 +155,133 @@ class BladesDirector {
     }
     initTransitionSockets() {
         // tbd...
+    }
+    // #endregion
+    // #region CLOCKS & CLOCK KEYS
+    // ## Clock Keys
+    async $addClockKey(keyData) {
+        const key = await BladesClockKey.Create(keyData);
+        const keyHTML = await renderTemplate("systems/eunos-blades/templates/overlay/clock-key.hbs", key);
+        const keyElem = $(keyHTML).appendTo(this.clockKeySectionElem)[0];
+        U.gsap.from(keyElem, {
+            scale: 0.5,
+            x: -1500,
+            skewX: 50,
+            filter: "blur(100px)",
+            autoAlpha: 0,
+            ease: "elastic.out(0.4, 0.25)",
+            duration: 6
+        }).then(() => U.gsap.effects.keyHang(keyElem).play());
+    }
+    // - Set hard-coded locations for up to six keys along the sides
+    // - Drag from here to rolls to display relevant clocks
+    // #endregion
+    // #region SCORE PANEL
+    // ## Score Details
+    // - Small panel overlapping corner of Location
+    // - Engagement roll result
+    // - Plan & Detail
+    // - Target tier
+    // #endregion
+    // #region LOCATIONS
+    // ## Locations
+    // - District wrapper/header
+    // - Faction wrapper/footer
+    // - Location main
+    // - Slide-scroll of sublocations
+    // #endregion
+    // #region NPCs
+    // ## NPCs
+    // - Linked to a location: When location is displayed, so are they.  *(Can be linked to District wrapper, main Location, or sublocations)*
+    // - Portrait images close to the central location display, hover-over popups provide more detailed information from sheet or `BladesScore` instance
+    // #endregion
+    // #region PCs, COHORTs, CREW
+    // ## PCs
+    // - Display panels along bottom
+    // - Signal lights
+    // ## Cohorts
+    // - Smaller panels alongside the PCs
+    // ## Crew
+    // - Limited information displayed, maybe bar beneath PCs showing Heat, Wanted Level…
+    // #endregion
+    // #region NOTIFICATIONS
+    push(targets, config) {
+        const pushID = randomID();
+        if (typeof targets === "string") {
+            if (targets === "ALL") {
+                return socketlib.system.executeForEveryone("$push", pushID, config);
+            }
+            else if (targets === "GM") {
+                return socketlib.system.executeForAllGMs("$push", pushID, config);
+            }
+            else {
+                targets = game.users.filter((user) => user.id === targets
+                    || user.name === targets
+                    || user.character?.id === targets
+                    || user.character?.name === targets).map((user) => user.id);
+            }
+        }
+        if (targets.length > 0) {
+            return socketlib.system.executeForUsers("$push", targets, pushID, config);
+        }
+        return undefined;
+    }
+    async $push(pushID, config) {
+        const pushElem$ = $(await renderTemplate("systems/eunos-blades/templates/overlay/notices/push.hbs", {
+            id: pushID,
+            ...config
+        }))
+            .appendTo($(this.notificationSectionElem))
+            .on("click", (event) => { this.$removePush(event.currentTarget); })
+            .on("contextmenu", (event) => { this.$removeAndClear(event.currentTarget); });
+        U.gsap.fromTo(pushElem$, {
+            x: 200,
+            skewX: 20,
+            autoAlpha: 0,
+            filter: "blur(10px)"
+        }, {
+            x: 0,
+            skewX: 0,
+            autoAlpha: 1,
+            filter: "blur(0px)",
+            duration: 0.5,
+            ease: "back"
+        });
+    }
+    async $removePush(target) {
+        U.gsap.to(target, {
+            x: "+=200",
+            autoAlpha: 0,
+            ease: "power2",
+            duration: 0.5,
+            onComplete: function () {
+                $(target).remove();
+            }
+        });
+    }
+    async $removeAndClear(target) {
+        const targets = $(target).prevAll().get().reverse();
+        targets.unshift(target);
+        U.gsap.to(targets, {
+            x: "+=200",
+            autoAlpha: 0,
+            ease: "power2",
+            duration: 0.5,
+            stagger: {
+                each: 0.5,
+                from: "start",
+                ease: "power1.inOut"
+            },
+            onComplete: function () {
+                targets.forEach((target) => $(target).remove());
+            }
+        });
+    }
+    // #endregion
+    // #region TRANSITIONS
+    // ## Transitions
+    async advanceGamePhase(phase) {
+        const nextPhase = U.gsap.utils.wrap(Object.values(BladesPhase), Object.values(BladesPhase).indexOf(phase ?? game.eunoblades.Tracker?.phase ?? BladesPhase.Freeplay) + 1);
     }
 }
 export default BladesDirector;

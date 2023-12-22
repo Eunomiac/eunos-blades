@@ -1580,10 +1580,42 @@ const EventHandlers = {
     }
 };
 // #region ████████ FOUNDRY: Requires Configuration of System ID in constants.ts ████████ ~
-const isDocID = (docRef, isUUIDok = true) => {
-    return typeof docRef === "string" && (isUUIDok
-        ? /^(.*\.)?[A-Za-z0-9]{16}$/.test(docRef)
-        : /^[A-Za-z0-9]{16}$/.test(docRef));
+const isDocID = (ref) => {
+    return typeof ref === "string" && /^[A-Za-z0-9]{16}$/.test(ref);
+};
+const isDocUUID = (ref) => {
+    if (typeof ref !== "string") {
+        return false;
+    }
+    const [docName, docID] = ref.split(/\./);
+    if (!isDocID(docID)) {
+        return false;
+    }
+    return docName in game.collections;
+};
+const isDotKey = (ref) => {
+    return typeof ref === "string";
+};
+const isTargetKey = (ref) => {
+    if (!isDotKey(ref)) {
+        return false;
+    }
+    if (["name", "img", "id", "_id"].includes(ref)) {
+        return true;
+    }
+    if (ref.startsWith("system")) {
+        return true;
+    }
+    return false;
+};
+const isTargetFlagKey = (ref) => {
+    if (!isDotKey(ref)) {
+        return false;
+    }
+    if (isTargetKey(ref)) {
+        return false;
+    }
+    return true;
 };
 const loc = (locRef, formatDict = {}) => {
     if (/[a-z]/.test(locRef)) { // Reference contains lower-case characters: add system ID namespacing to dot notation
@@ -1695,6 +1727,7 @@ export default {
     // EVENT HANDLERS
     EventHandlers,
     // ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
-    isDocID, loc, getSetting, getTemplatePath, displayImageSelector
+    isDocID, isDocUUID, isDotKey, isTargetKey, isTargetFlagKey,
+    loc, getSetting, getTemplatePath, displayImageSelector
 };
 // #endregion ▄▄▄▄▄ EXPORTS ▄▄▄▄▄

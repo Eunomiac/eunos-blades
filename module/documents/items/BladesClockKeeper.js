@@ -1,7 +1,25 @@
+import U from "../../core/utilities.js";
 import { SVGDATA, BladesItemType } from "../../core/constants.js";
 import { BladesItem } from "../BladesItemProxy.js";
 import BladesClock, { BladesClockKey, ApplyClockListeners } from "../../classes/BladesClock.js";
 class BladesClockKeeper extends BladesItem {
+    static async Initialize() {
+        const clockKeeper = game.items.find((item) => item.type === "clock_keeper");
+        if (!clockKeeper) {
+            game.eunoblades.ClockKeeper = (await BladesClockKeeper.create({
+                name: "Clock Keeper",
+                type: "clock_keeper",
+                img: "systems/eunos-blades/assets/icons/misc-icons/clock-keeper.svg"
+            }));
+        }
+        else {
+            game.eunoblades.ClockKeeper = clockKeeper;
+        }
+        game.eunoblades.ClockKeeper.renderOverlay();
+    }
+    static InitSockets() {
+        socketlib.system.register("renderOverlay", game.eunoblades.ClockKeeper.renderOverlay);
+    }
     // #region CLOCKS OVERLAY
     _overlayElement;
     get overlayElement() {
@@ -96,19 +114,21 @@ class BladesClockKeeper extends BladesItem {
             .filter((clockKey) => clockKey.sceneID === sceneID)
             .map((clockKey) => [clockKey.id, clockKey]));
     }
-    addClockKey(clockKeyConfig = {}, clocksData = {}) {
+    async addClockKey(clockKeyConfig = {}, clocksData = {}) {
         if (!(game.eunoblades.ClockKeeper instanceof BladesClockKeeper)) {
             return undefined;
         }
         if (!this.targetSceneID && !clockKeyConfig.sceneID) {
             return undefined;
         }
-        return BladesClockKey.Create({
+        const key = await BladesClockKey.Create({
             sceneID: this.targetSceneID,
             target: this,
             targetKey: "system.clocksData.keys",
             ...clockKeyConfig
         }, clocksData);
+        U.gsap.effects.keyDrop(key.elem);
+        return key;
     }
     async deleteClockKey(keyID) {
         await game.eunoblades.ClockKeys.get(keyID)?.delete();
@@ -136,7 +156,7 @@ class BladesClockKeeper extends BladesItem {
     async _onUpdate(changed, options, userId) {
         super._onUpdate(changed, options, userId);
         // BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
-        socketlib.system.executeForEveryone("renderOverlay");
+        // socketlib.system.executeForEveryone("renderOverlay");
     }
 }
 export default BladesClockKeeper;
