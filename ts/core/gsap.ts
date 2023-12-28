@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "./utilities";
 import C from "./constants";
 // eslint-disable-next-line import/no-unresolved
@@ -81,22 +82,48 @@ export const gsapEffects: Record<string, gsapEffect> = {
   },
   keyHang: {
     effect: (target, config) => {
-      return U.gsap.timeline({paused: true})
-        .fromTo(target,
-          {rotateZ: -0.5, transformOrigin: "50% 0px"},
-          {rotateZ: 0.5, duration: 3, ease: "sine.inOut", repeat: -1, yoyo: true},
-          0)
-        .fromTo(target,
-          {y: -15},
-          {y: 15, duration: 6, ease: "sine.inOut", repeat: -1, yoyo: true},
-          0)
-        .fromTo(target,
-          {scale: 0.9, filter: "blur(3px) brightness(0.8)"},
-          {scale: 1.1, filter: "blur(0px) brightness(1.2)", duration: 12, ease: "sine.inOut", repeat: -1, yoyo: true},
-          0);
+      return U.gsap.timeline({paused: true}
+      ).fromTo(target,
+        {
+          rotateZ: -0.5 * config.swingAngle,
+          transformOrigin: "50% 0px"
+        },
+        {
+          id: "keyHang_swing",
+          rotateZ: 0.5 * config.swingAngle,
+          duration: 0.25 * config.duration,
+          ease: config.ease,
+          repeat: -1,
+          yoyo: true
+        },
+        0
+      ).fromTo(target,
+        {
+          y: -0.5 * config.yRange,
+          scale: 1 - (0.5 * config.scaleRange),
+          filter: `blur(${config.blur}px) brightness(${1 - (0.5 * config.brightnessRange)})`
+        },
+        {
+          id: "keyHang_idle",
+          y: 0.5 * config.yRange,
+          scale: 1 + (0.5 * config.scaleRange),
+          filter: `blur(0px) brightness(${1 + (0.5 * config.brightnessRange)})`,
+          duration: 0.5 * config.duration,
+          ease: config.ease,
+          repeat: -1,
+          yoyo: true
+        },
+        0
+      );
     },
     defaults: {
-
+      swingAngle: 1,
+      ease: "sine.inOut",
+      yRange: 30,
+      scaleRange: 0.2,
+      blur: 3,
+      brightnessRange: 0.4,
+      duration: 12
     }
   },
   keyUp: {

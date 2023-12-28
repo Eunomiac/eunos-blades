@@ -62,8 +62,8 @@ declare global {
 
     export interface clocks {
       clocksData: {
-        keys?: Record<IDString, BladesClockKeyData>,
-        clocks?: Record<IDString, BladesClockData>
+        keys?: Record<IDString, BladesClockKey.Data>,
+        clocks?: Record<IDString, BladesClock.Data>
       }
     }
   }
@@ -131,7 +131,7 @@ declare global {
         // subactors: Record<string, SubActorData>,
         // subtitle: string
       // concept: string,
-      // clocks: Record<string, BladesClockData>,
+      // clocks: Record<string, BladesClock.Data>,
       // district: District,
       // assets: string,
       // situation: string,

@@ -2,47 +2,47 @@
 
 @function calculate-angle($val, $max) {
   // Calculate the angle-size of each segment
-  $segment-size: 360 / $max;
+  $segment-size: math.div(360, $max);
   // Calculate the total angle between the origin line pointing upwards, including $val segments
   $angle: $val * $segment-size;
   // @debug "caclulate-angle(#{$val}, #{$max}) = #{$angle}.";
   @return $angle;
 }
 
+
 @function calculate-intersection($angle) {
   // Square properties
   $size: 100%;
-  $radius: 0.5 * $size;
 
-  // Convert angle to radians
-  $angle-rad: $angle * 3.1415 / 180;
+  // Calculate relative angle in terms of single side, 45deg - 135deg
+  $angle-rel: (($angle - 45) % 90) + 45;
+
+  // Convert angle to radians and subtract from 90 degrees
+  $angle-rad: math.div((90 - $angle-rel) * 3.1415, 180);
+
+  // Determine percentage along that side
+  $side-percent: 0.5 * (1 - math.tan($angle-rad));
 
   // Initialize x and y
   $x: 0;
   $y: 0;
 
-  // Calculate intersection point
-
-  @if $angle > 315 or $angle <= 45 {
-    // Top side
-    $x: $radius + $radius * math.sin($angle-rad);
-    $y: 0;
-  } @else if $angle > 45 and $angle <= 135 {
-    // Right side
+  // Depending on side of square, apply $side-percent to $x and $y coords.
+  @if $angle > 45 and $angle <= 135 {
     $x: $size;
-    $y: 100% - ($radius + $radius * math.cos($angle-rad));
+    $y: $size * $side-percent;
   } @else if $angle > 135 and $angle <= 225 {
-    // Bottom side
-    $x: 100% - ($radius - $radius * math.sin($angle-rad));
-    // $x: $radius - $radius * math.cos($angle-rad);
+    $x: $size * (1 - $side-percent);
     $y: $size;
   } @else if $angle > 225 and $angle <= 315 {
-    // Left side
     $x: 0;
-    $y: $radius - $radius * math.cos($angle-rad);
+    $y: $size * (1 - $side-percent);
+  } @else {
+    $x: $size * $side-percent;
+    $y: 0;
   }
 
-  // @debug "For a square of $size: #{$size}, the intersection of $angle:#{$angle} is {x:#{$x}, y:#{$y}}.";
+  // @debug "At #{math.round($angle)}deg: {x: #{math.round($x)}, y: #{math.round($y)}}.";
 
   // Return the intersection point
   @return ($x $y);

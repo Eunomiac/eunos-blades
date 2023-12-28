@@ -23,10 +23,10 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
     const {keys} = this.system.clocksData ?? {};
     if (keys) {
       const keyData = Object.values(keys)[0];
-      this._clockKey = new BladesClockKey(...[{
+      this._clockKey = new BladesClockKey({
         ...keyData,
-        target: this
-      }] as ConstructorParameters<typeof BladesClockKey>);
+        targetID: this.uuid
+      });
       return this._clockKey;
     }
     return undefined;
@@ -40,7 +40,7 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
     return this.clockKey?.isComplete;
   }
 
-  get rollOppClock() { return this.currentClock; }
+  get rollOppClock() { return this.currentClock?.data; }
 
   async advanceClock(segments = 1) {
     if (!this.currentClock) { return undefined; }

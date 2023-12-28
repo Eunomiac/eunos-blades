@@ -1,58 +1,66 @@
-/*
-    export interface Clock_Keeper {
-      scenes: Record<IDString, Record<NumString, BladesClockKeyData>>,
-      targetScene: string | null
+import { ClockColor } from "../core/constants";
+import { BladesClockKey } from "../classes/BladesClockKey";
+
+declare global {
+
+  namespace BladesClockKey {
+
+    export type Schema = {
+      name: string,
+
+      isVisible: boolean,
+      isActive: boolean,
+      isNameVisible: boolean,
+      isShowingControls: boolean,
+
+      clocksData: Record<IDString, BladesClock.Data>,
+
+      displayMode: ClockKeyDisplayMode|number,
+      oneKeyIndex: 1|2|3|4|5
+
+      sceneID: IDString|false, // Regardless of where stored, will be displayed within a 1-key in the scene overlay
+      overlayPosition?: gsap.Point2D // Where in overlay key-container is positioned, if in overlay
+      tier?: ValueMax
     }
-*/
 
-// import {ClockColor, ClockDisplayMode} from "../core/constants";
+    export type Config = BladesTargetLink.Config & Partial<Schema>;
 
-interface BladesClockKeyData {
-  id: IDString,
-  name: string,
+    export type Data = BladesTargetLink.Data & Schema;
 
-  isVisible: boolean,
-  isActive: boolean,
-  isNameVisible: boolean,
+    export interface Subclass extends BladesTargetLink.Subclass<Schema> {
+      clocks: Collection<BladesClock>
+    }
+  }
 
-  target: IDString|UUIDString|BladesDoc,
-  targetKey?: TargetKey,
-  targetFlagKey?: TargetFlagKey
+  namespace BladesClock {
 
-  clocksData: Record<IDString, BladesClockData>,
+    export type Schema = NamedValueMax & {
+      color: ClockColor,
 
-  isShowingControls?: boolean,
-  displayMode?: ClockKeyDisplayMode|number,
-  sceneID?: IDString,
-  oneKeyIndex: 1|2|3|4|5,
-  overlayPosition?: number // Slot occupied by key when displayed in overlay
+      isVisible: boolean, // whether clock is visible at all
+      isActive: boolean, //  true: This is the clock targeted by any rolls.
+                         // false: Clock is complete or waiting on a preceding clock to finish.
+      isNameVisible: boolean, // whether clock's name is displayed as a <label>
+      isHighlighted: boolean, // whether background nova animation is displayed
+      isShowingControls: boolean,
+
+      sceneID: IDString|false, // Regardless of where stored, will be displayed within a 1-key in the scene overlay
+
+      parentKeyID: IDString, // Must be associated with a clock key (size 1, by default); key can display clock on its own
+      index: 0|1|2|3|4|5, // Location within clock key, starting at 0
+
+      tooltip?: string,
+      gm_notes?: string,
+      tier?: ValueMax
+    }
+
+    export type Config = BladesTargetLink.Config & Partial<Schema>
+      & Required<Pick<Schema, "parentKeyID">>;
+
+    export type Data = BladesTargetLink.Data & Schema;
+
+    export interface Subclass extends BladesTargetLink.Subclass<Schema> {
+      parentKey: BladesClockKey;
+    }
+  }
 }
-
-interface BladesClockData extends NamedValueMax {
-  id: IDString,
-  name: string,
-  index: number, // Starting from '0', the sequence order of this clock in, e.g., a project with multiple clocks
-  value: number,
-  max: number,
-  color: ClockColor,
-
-  isVisible: boolean, // whether clock is visible at all
-  isActive: boolean, //  true: This is the clock targeted by any rolls.
-                     // false: Clock is complete or waiting on a preceding clock to finish.
-  isNameVisible: boolean, // whether clock's name is displayed as a <label>
-  isHighlighted: boolean, // whether background nova animation is displayed
-
-  target: IDString|UUIDString|BladesDoc,
-  targetKey?: TargetKey,
-  targetFlagKey?: TargetFlagKey
-
-  tooltip?: string,
-  gm_notes?: string,
-
-  isShowingControls?: boolean,
-  sceneID?: IDString, // Regardless of where stored, will be displayed within a 1-key in the scene overlay
-}
-
-type BladesClockSystemData = BladesClockData & {target: UUIDString};
-
-type BladesClockKeySystemData = BladesClockKeyData & {target: UUIDString, clocksData: Record<IDString, BladesClockSystemData> }

@@ -18,7 +18,7 @@
 
 // type FactionData = Partial<BladesActorSchema.Faction> & {
 //   name: string,
-//   clocksArray?: Array<Partial<BladesClockData> & {display: string, value: number, max: number}>,
+//   clocksArray?: Array<Partial<BladesClock.Data> & {display: string, value: number, max: number}>,
 //   npcsData?: Array<Record<string,string|string[]>>,
 //   turfStrings?: string[],
 //   assetStrings?: string[],

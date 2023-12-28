@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import C, { BladesItemType, Tag, Factor } from "./core/constants.js";
 import U from "./core/utilities.js";
 import { BladesCrew, BladesPC } from "./documents/BladesActorProxy.js";

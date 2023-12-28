@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../../core/utilities.js";
 import { SVGDATA, BladesItemType } from "../../core/constants.js";
 import { BladesItem } from "../BladesItemProxy.js";
@@ -15,7 +16,7 @@ class BladesClockKeeper extends BladesItem {
         else {
             game.eunoblades.ClockKeeper = clockKeeper;
         }
-        game.eunoblades.ClockKeeper.renderOverlay();
+        U.gsap.delayedCall(2, game.eunoblades.ClockKeeper.renderOverlay);
     }
     static InitSockets() {
         socketlib.system.register("renderOverlay", game.eunoblades.ClockKeeper.renderOverlay);
@@ -114,10 +115,7 @@ class BladesClockKeeper extends BladesItem {
             .filter((clockKey) => clockKey.sceneID === sceneID)
             .map((clockKey) => [clockKey.id, clockKey]));
     }
-    async addClockKey(clockKeyConfig = {}, clocksData = {}) {
-        if (!(game.eunoblades.ClockKeeper instanceof BladesClockKeeper)) {
-            return undefined;
-        }
+    async addClockKey(clockKeyConfig = {}, clockData = {}) {
         if (!this.targetSceneID && !clockKeyConfig.sceneID) {
             return undefined;
         }
@@ -126,7 +124,7 @@ class BladesClockKeeper extends BladesItem {
             target: this,
             targetKey: "system.clocksData.keys",
             ...clockKeyConfig
-        }, clocksData);
+        }, [clockData]);
         U.gsap.effects.keyDrop(key.elem);
         return key;
     }

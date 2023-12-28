@@ -15,6 +15,14 @@ const registerSettings = function() {
     } as { min: number; max: number; step: number },
     default: 3         // The default value for the setting
   });
+  game.settings.register("eunos-blades", "debugHooks", {
+    name: "Debug HOOKS",
+    hint: "Whether all Hooks are logged to the console.",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: false
+  });
   game.settings.register("eunos-blades", "openAPIModelLevel", {
     name: "AI Base Quality",
     hint: "Lower values are cheaper to run, at the cost of quality.",

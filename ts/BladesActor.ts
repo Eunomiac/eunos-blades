@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // #region Imports ~
 import U from "./core/utilities";
 import C, {BladesActorType, Tag, Playbook, BladesItemType, AttributeTrait, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor, Vice} from "./core/constants";

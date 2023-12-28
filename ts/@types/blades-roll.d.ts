@@ -88,6 +88,7 @@ declare global {
 
       rollPrimaryData: PrimaryDocData;
       rollOppData?: OppositionDocData;
+      rollOppClock?: BladesClock.Data;
       rollParticipantData?: RollParticipantData,
 
       participantRollTo?: string,
@@ -296,9 +297,7 @@ declare global {
       |BladesItemType.location
       |BladesItemType.project
       |BladesItemType.design
-      |BladesItemType.ritual
-      |"clock"
-      |"clock_key";
+      |BladesItemType.ritual;
 
     export type OppositionDoc =
        BladesActorOfType<BladesActorType.npc>
@@ -310,9 +309,7 @@ declare global {
       |BladesItemOfType<BladesItemType.location>
       |BladesItemOfType<BladesItemType.project>
       |BladesItemOfType<BladesItemType.design>
-      |BladesItemOfType<BladesItemType.ritual>
-      |BladesClock
-      |BladesClockKey;
+      |BladesItemOfType<BladesItemType.ritual>;
 
     export interface OppositionDocData {
       rollOppID?: string,
@@ -325,7 +322,7 @@ declare global {
       rollOppModsData?: RollModData[],
       rollFactors: Partial<Record<Factor,FactorData>>,
 
-      rollOppClock?: Partial<BladesClockData>
+      rollOppClock?: Partial<BladesClock.Data>
     }
 
     export type ParticipantDocType =

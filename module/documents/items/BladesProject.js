@@ -19,10 +19,10 @@ class BladesProject extends BladesItem {
         const { keys } = this.system.clocksData ?? {};
         if (keys) {
             const keyData = Object.values(keys)[0];
-            this._clockKey = new BladesClockKey(...[{
-                    ...keyData,
-                    target: this
-                }]);
+            this._clockKey = new BladesClockKey({
+                ...keyData,
+                targetID: this.uuid
+            });
             return this._clockKey;
         }
         return undefined;
@@ -33,7 +33,7 @@ class BladesProject extends BladesItem {
     get isComplete() {
         return this.clockKey?.isComplete;
     }
-    get rollOppClock() { return this.currentClock; }
+    get rollOppClock() { return this.currentClock?.data; }
     async advanceClock(segments = 1) {
         if (!this.currentClock) {
             return undefined;

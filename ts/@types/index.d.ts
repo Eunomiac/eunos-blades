@@ -27,6 +27,8 @@ import "./blades-dialog";
 import "./blades-clock";
 import "./blades-tags";
 
+import "./blades-target-link";
+
 declare module 'gsap/all';
 
 
@@ -69,7 +71,8 @@ declare global {
   }
   declare interface CONFIG {
     debug: {
-      logging: boolean
+      logging: boolean,
+      hooks: boolean
     }
   }
   interface LenientGlobalVariableTypes { game: never }

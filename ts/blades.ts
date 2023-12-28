@@ -529,12 +529,12 @@ class GlobalGetter {
   ): Promise<{key: BladesClockKey, clocks: BladesClock[]}|undefined> {
     const {ClockKeeper: CK} = game.eunoblades ?? {};
     if (!CK) { return undefined; }
-    const clocksData: Array<Partial<BladesClockSystemData>> = [];
+    const clocksData: Array<Partial<BladesClock.Data>> = [];
     const [curClock] = U.sample(clockNames);
     const clocks: BladesClock[] = [];
     while (clockNames.length) {
       const name = clockNames.shift();
-      const color = U.sample([ClockColor.white, ClockColor.red, ClockColor.yellow, ClockColor.cyan]);
+      const [color] = U.sample([ClockColor.white, ClockColor.red, ClockColor.yellow, ClockColor.cyan]);
       const [max] = U.sample([2, 3, 4, 5, 6, 8, 10, 12]);
       let value: number;
       if (curClock === name) {
@@ -627,8 +627,8 @@ Hooks.once("init", async () => {
 
   // Register System Settings
   registerSettings();
+  CONFIG.debug.hooks = U.getSetting("debugHooks") as boolean;
   eLog.display("Initializing Blades In the Dark System");
-
 
   // Initialize Fonts & Gsap Animations
   GsapInitialize();

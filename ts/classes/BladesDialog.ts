@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {ApplyTooltipAnimations} from "../core/gsap";
 import U from "../core/utilities";
 import {BladesActor, BladesPC} from "../documents/BladesActorProxy";

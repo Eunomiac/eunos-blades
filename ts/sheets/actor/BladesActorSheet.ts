@@ -547,8 +547,8 @@ class BladesActorSheet extends ActorSheet {
       }
       case DowntimeAction.Recover: {
         config.rollType = RollType.Action;
-        if (BladesPC.IsType(this.actor)) {
-          config.rollOppData = this.actor.healingClock;
+        if (BladesPC.IsType(this.actor) && this.actor.healingClock) {
+          config.rollOppClock = this.actor.healingClock.data;
         }
         // rollOpposition = user character's healing clock
         // rollPrimary = this.actor is NPC?

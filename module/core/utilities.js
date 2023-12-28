@@ -1591,7 +1591,7 @@ const isDocUUID = (ref) => {
     if (!isDocID(docID)) {
         return false;
     }
-    return docName in game.collections;
+    return game.collections.has(docName);
 };
 const isDotKey = (ref) => {
     return typeof ref === "string";

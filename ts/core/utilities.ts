@@ -1672,7 +1672,7 @@ const isDocUUID = (ref: unknown): ref is UUIDString => {
   if (typeof ref !== "string") { return false; }
   const [docName, docID] = ref.split(/\./);
   if (!isDocID(docID)) { return false; }
-  return docName in game.collections;
+  return game.collections.has(docName);
 };
 
 const isDotKey = (ref: unknown): ref is DotKey => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../core/utilities";
 import {SVGDATA, BladesPhase, BladesActorType, BladesItemType} from "../core/constants";
 // import U from "../core/utilities";
@@ -176,7 +177,7 @@ class BladesDirector {
 
   addClockKey(key: BladesClockKey) {
     if (!game.user.isGM) {return;}
-    socketlib.system.executeForEveryone("$addClockKey", key._initData);
+    socketlib.system.executeForEveryone("$addClockKey", key.data);
   }
 
   private initScorePanelSockets() {
@@ -217,7 +218,7 @@ class BladesDirector {
   // ## Clock Keys
 
   async $addClockKey(
-    keyData: BladesClockKeySystemData
+    keyData: BladesClockKey.Data
   ) {
     const key = await BladesClockKey.Create(keyData);
     const keyHTML = await renderTemplate(
@@ -355,7 +356,7 @@ class BladesDirector {
           ease: "power1.inOut"
         },
         onComplete: function() {
-          targets.forEach((target) => $(target).remove());
+          targets.forEach((targ) => $(targ).remove());
         }
       });
   }

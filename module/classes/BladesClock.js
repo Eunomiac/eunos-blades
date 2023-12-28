@@ -1,4 +1,5 @@
-import C, { BladesActorType, BladesItemType, ClockColor, ClockKeyDisplayMode, Factor } from "../core/constants.js";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import C, { BladesActorType, BladesItemType, ClockColor, ClockKeyDisplayMode } from "../core/constants.js";
 import BladesTargetLink from "./BladesTargetLink.js";
 import U from "../core/utilities.js";
 import { BladesActor } from "../documents/BladesActorProxy.js";
@@ -23,104 +24,80 @@ class BladesClockKey extends BladesTargetLink {
                 .forEach((clockData) => new BladesClock(clockData));
         });
     }
-    static get DefaultSchema() {
+    static ApplySchemaDefaults(schemaData) {
+        // Ensure all properties of Schema are provided
         return {
             name: "",
-            isVisible: true,
+            isVisible: false,
             isActive: false,
             isNameVisible: false,
-            isShowingControls: game.user.isGM,
+            isShowingControls: true,
             clocksData: {},
-            oneKeyIndex: U.gsap.utils.random(1, 5, 1)
+            sceneID: false,
+            displayMode: ClockKeyDisplayMode.full,
+            oneKeyIndex: U.gsap.utils.random(1, 5, 1),
+            ...schemaData
         };
     }
-    static applyConfigDefaults(clockKeyConfig) {
-        const keyData = {
-            ...this.DefaultSchema,
-            ...clockKeyConfig
-        };
-        if (keyData.target instanceof Actor || keyData.target instanceof Item) {
-            keyData.target = keyData.target.id;
+    static async Create(config, clockConfigs = []) {
+        // Create and initialize the target link
+        const clockKey = (await super.Create(config));
+        // Confirm at least one, but no more than six, clockConfigs provided:
+        if (clockConfigs.length > 6) {
+            // If too many clock keys, alert user and discard excess.
+            eLog.error("BladesClockKey", "[BladesClockKey.Create] Too many clock configs! (Max 6.) Eliminating extras.", clockConfigs);
+            clockConfigs = clockConfigs.slice(0, 6);
         }
-        return keyData;
-    }
-    static async Create(clockKeyConfig, clockConfig = {}) {
-        if (!this.validateConfig(clockKeyConfig)) {
-            eLog.error("[BladesClockKey.Create()] Invalid Config", clockKeyConfig);
-            throw new Error("See log.");
+        else if (clockConfigs.length === 0) {
+            // If no clocks provided, add one default clock.
+            clockConfigs.push({});
         }
-        eLog.checkLog3("[BladesClockKey.Create()] Config", clockKeyConfig);
-        // Create the clock key instance, supplying the config.
-        // BladesClockKey constructor will apply defaults for missing values.
-        const clockKey = new BladesClockKey(clockKeyConfig);
-        // Wait for clockKey data to be written to target
-        await clockKey.initialize();
-        // If key created without clock data, initialize with a single clock
-        if (clockKey.size === 0) {
-            await clockKey.addClock(clockConfig);
-        }
+        // Convert clock configs to full clock data objects.
+        const clocksData = Object.fromEntries(clockConfigs.map((clockConfig, i) => {
+            clockConfig.index = i;
+            const cData = clockKey.parseClockConfig(clockConfig);
+            return [cData.id, cData];
+        }));
+        // Update the clock key with the new clock data
+        await clockKey.updateTarget("clocksData", clocksData);
         return clockKey;
     }
     // #endregion
     // #region GETTERS & SETTERS ~
-    get clocksData() { return this.getSystemData().clocksData ?? {}; }
+    // #region -- Shortcut Schema Getters ~
+    get data() { return this.linkData; }
+    get name() { return this.data.name; }
+    set name(val) { this.updateTarget("name", val); }
+    get isVisible() { return this.data.isVisible; }
+    set isVisible(val) { this.updateTarget("isVisible", U.pBool(val)); }
+    get isActive() { return this.data.isActive; }
+    set isActive(val) { this.updateTarget("isActive", U.pBool(val)); }
+    get isNameVisible() { return this.data.isNameVisible; }
+    set isNameVisible(val) { this.updateTarget("isNameVisible", U.pBool(val)); }
+    get isShowingControls() { return this.data.isShowingControls; }
+    set isShowingControls(val) { this.updateTarget("isShowingControls", U.pBool(val)); }
+    get clocksData() { return this.data.clocksData; }
+    get displayMode() {
+        if (game.user.isGM && this.isShowingControls) {
+            return ClockKeyDisplayMode.full;
+        }
+        return this.data.displayMode;
+    }
+    get oneKeyIndex() { return this.data.oneKeyIndex; }
+    get sceneID() { return this.data.sceneID; }
+    get overlayPosition() {
+        return undefined;
+    }
+    // #endregion
     get clocks() {
-        return new Collection(Object.entries(this.clocksData ?? {})
+        return new Collection(Object.entries(this.clocksData)
             .sort((a, b) => a[1].index - b[1].index)
             .map(([id, data]) => [
             id,
             game.eunoblades.Clocks.get(id) ?? new BladesClock(data)
         ]));
     }
-    get isGM() { return game.user.isGM; }
-    get isVisible() { return U.pBool(this.getSystemData().isVisible); }
-    get oneKeyIndex() { return U.pInt(this.getSystemData().oneKeyIndex); }
-    get displayMode() {
-        if (this.isGM && this.isShowingControls) {
-            return ClockKeyDisplayMode.full;
-        }
-        return this.getSystemData().displayMode ?? ClockKeyDisplayMode.full;
-    }
-    get setDisplayMode() {
-        return this.getSystemData().displayMode ?? ClockKeyDisplayMode.full;
-    }
-    get sceneID() { return this.getSystemData().sceneID; }
-    get isActive() { return U.pBool(this.getSystemData().isActive); }
-    get isNameVisible() { return U.pBool(this.getSystemData().isNameVisible); }
     get size() { return Object.keys(this.clocksData).length; }
-    get rollOppName() { return this.name; }
-    get rollOppType() { return "clock_key"; }
-    get rollFactors() {
-        const factorData = {};
-        [
-            Factor.tier,
-            Factor.quality
-        ].forEach((factor, i) => {
-            const factorTotal = this.getFactorTotal(factor);
-            factorData[factor] = {
-                name: factor,
-                value: factorTotal,
-                max: factorTotal,
-                baseVal: factorTotal,
-                display: factor === Factor.tier ? U.romanizeNum(factorTotal) : `${factorTotal}`,
-                isActive: i === 0,
-                isPrimary: i === 0,
-                isDominant: false,
-                highFavorsPC: true,
-                cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`
-            };
-        });
-        return factorData;
-    }
-    getFactorTotal(factor) {
-        switch (factor) {
-            case Factor.tier: return this.getSystemData().tier.value;
-            case Factor.quality: return this.getFactorTotal(Factor.tier);
-            // no default
-        }
-        return 0;
-    }
-    get rollOppImg() { return ""; }
     get isComplete() {
         return Array.from(this.clocks).every((clock) => clock.isComplete);
     }
@@ -146,21 +123,30 @@ class BladesClockKey extends BladesTargetLink {
         return options;
     }
     // #endregion
-    // #region ~~~ CONSTRUCTOR & INITIALIZATION ~~~
-    _initData;
+    // #region ~~~ CONSTRUCTOR & CLOCK CONFIG PARSER ~~~
     constructor(data) {
-        if (!BladesClockKey.validateConfig(data)) {
-            eLog.error("[BladesClockKey Constructor] Invalid Config", data);
-            throw new Error("See log.");
-        }
-        eLog.checkLog3("[BladesClockKey Constructor] Valid Config", data);
         super(data);
-        data.id = this.id;
-        this._initData = BladesClockKey.applyConfigDefaults(data);
         game.eunoblades.ClockKeys.set(this.id, this);
     }
-    async initialize() {
-        await this.updateTargetData(this._initData);
+    parseClockConfig(config, indexOverride) {
+        // Remove target so it doesn't conflict with key's targetID
+        delete config.target;
+        // Derive clock's targetID and targetKey/targetFlagKey from key's values
+        config.targetID = this.targetID;
+        if (this.targetKey) {
+            config.targetKey = `${this.targetKey}.${this.id}.clocksData`;
+            delete config.targetFlagKey;
+        }
+        else if (this.targetFlagKey) {
+            config.targetFlagKey = `${this.targetFlagKey}.${this.id}.clocksData`;
+            delete config.targetKey;
+        }
+        // Assign 'parentKeyID' and 'index'
+        config.parentKeyID = this.id;
+        config.index = indexOverride ?? this.clocks.size;
+        // Parse config to full data object
+        const cData = BladesClock.ParseConfig(config);
+        return cData;
     }
     // #endregion
     // #region HTML INTERACTION ~
@@ -169,12 +155,6 @@ class BladesClockKey extends BladesTargetLink {
     }
     get elem() {
         return $(`#${this.id}`)[0];
-    }
-    get isShowingControls() {
-        return U.pBool(this.getSystemData().isShowingControls);
-    }
-    set isShowingControls(val) {
-        this.updateTarget("isShowingControls", U.pBool(val));
     }
     async toggleActive() {
         return await this.updateTarget("isActive", !this.isActive);
@@ -353,31 +333,11 @@ class BladesClockKey extends BladesTargetLink {
             .map(([id, data], index) => [id, { ...data, index }])));
         return this.clocks;
     }
-    async addClock(clockData = {}) {
-        await this.updateClockIndices();
-        eLog.checkLog3("bladesClock", "[BladesClockKey.addClock]", {
-            passedData: clockData,
-            derivedData: {
-                target: this.target,
-                targetKey: this.targetKey ? `${this.targetKey}.${this.id}.clocksData` : undefined,
-                targetFlagKey: this._targetFlagKey ? `${this.targetFlagKey}.${this.id}.clocksData` : undefined,
-                index: this.clocks.size
-            },
-            createData: {
-                target: this.target,
-                targetKey: this.targetKey ? `${this.targetKey}.${this.id}.clocksData` : undefined,
-                targetFlagKey: this._targetFlagKey ? `${this.targetFlagKey}.${this.id}.clocksData` : undefined,
-                index: this.clocks.size,
-                ...clockData
-            }
-        });
-        return await BladesClock.Create({
-            target: this.target,
-            targetKey: this.targetKey ? `${this.targetKey}.${this.id}.clocksData` : undefined,
-            targetFlagKey: this._targetFlagKey ? `${this.targetFlagKey}.${this.id}.clocksData` : undefined,
-            index: this.clocks.size,
-            ...clockData
-        });
+    async addClock(clockConfig = {}) {
+        // Derive clock data from config
+        const clockData = this.parseClockConfig(clockConfig);
+        // Write to state
+        await this.updateTarget(`clocksData.${clockData.id}`, clockData);
     }
     async deleteClock(clockID) {
         if (this.size <= 1) {
@@ -390,42 +350,24 @@ class BladesClockKey extends BladesTargetLink {
 }
 class BladesClock extends BladesTargetLink {
     // #region STATIC METHODS ~
-    static get DefaultSchema() {
+    static ApplySchemaDefaults(schemaData) {
+        const namedValueMax = {
+            name: schemaData.name ?? "",
+            value: schemaData.value ?? 0,
+            max: schemaData.max ?? 8
+        };
         return {
-            name: "",
             index: 0,
-            value: 0,
-            max: 8,
             color: ClockColor.white,
             isVisible: true,
             isNameVisible: true,
             isHighlighted: false,
             isActive: true,
-            isShowingControls: game.user.isGM
+            isShowingControls: game.user.isGM,
+            sceneID: false,
+            ...schemaData,
+            ...namedValueMax
         };
-    }
-    static applyConfigDefaults(clockConfig) {
-        if (clockConfig.target instanceof Actor || clockConfig.target instanceof Item) {
-            clockConfig.target = clockConfig.target.id;
-        }
-        const clockData = {
-            ...this.DefaultSchema,
-            ...clockConfig
-        };
-        return clockData;
-    }
-    static async Create(clockConfig) {
-        if (!this.validateConfig(clockConfig)) {
-            eLog.error("[BladesClock.Create()] Invalid Config", clockConfig);
-            throw new Error("See log.");
-        }
-        eLog.checkLog3("[BladesClock.Create()] Config", clockConfig);
-        // Create the clock instance, supplying the config.
-        // BladesClock constructor will apply defaults for missing values.
-        const clock = new BladesClock(clockConfig);
-        // Wait for clock data to be written to target
-        await clock.initialize();
-        return clock;
     }
     // #endregion
     // #region GETTERS & SETTERS ~
@@ -435,42 +377,36 @@ class BladesClock extends BladesTargetLink {
         console.log("NOTE: All Clocks currently Editable; see line 71 of BladesClock.ts");
         return this.isVisible && this.isActive;
     }
-    get isGM() { return game.user.isGM; }
-    get value() { return U.pInt(this.getSystemData().value); }
+    get data() { return this.linkData; }
+    get name() { return this.data.name; }
+    set name(val) { this.updateTarget("name", val); }
+    get value() { return U.pInt(this.data.value); }
     set value(val) { this.updateTarget("value", U.pInt(val)); }
-    get max() { return U.pInt(this.getSystemData().max); }
+    get max() { return U.pInt(this.data.max); }
     set max(val) { this.updateTarget("max", U.pInt(val)); }
-    get color() { return this.getSystemData().color ?? ClockColor.white; }
+    get color() { return this.data.color ?? ClockColor.white; }
     set color(val) { this.updateTarget("color", val); }
-    get isActive() { return U.pBool(this.getSystemData().isActive); }
+    get isActive() { return U.pBool(this.data.isActive); }
     set isActive(val) { this.updateTarget("isActive", U.pBool(val)); }
-    get parentKey() {
-        const keyID = this.targetKey.match(/\.keys\.([^.]+)/)?.[1];
-        if (!keyID) {
-            return undefined;
-        }
-        return game.eunoblades.ClockKeys.get(keyID);
-    }
+    get parentKey() { return game.eunoblades.ClockKeys.get(this.data.parentKeyID); }
     get isShowingControls() {
         if (this.parentKey && !this.parentKey.isShowingControls) {
             return false;
         }
-        return U.pBool(this.getSystemData().isShowingControls);
+        return U.pBool(this.data.isShowingControls);
     }
     set isShowingControls(val) { this.updateTarget("isShowingControls", U.pBool(val)); }
-    get isNameVisible() { return U.pBool(this.getSystemData().isNameVisible); }
+    get isNameVisible() { return U.pBool(this.data.isNameVisible); }
     set isNameVisible(val) { this.updateTarget("isNameVisible", U.pBool(val)); }
-    get isVisible() { return U.pBool(this.getSystemData().isVisible); }
+    get isVisible() { return U.pBool(this.data.isVisible); }
     set isVisible(val) { this.updateTarget("isVisible", U.pBool(val)); }
-    get isHighlighted() { return U.pBool(this.getSystemData().isHighlighted); }
+    get isHighlighted() { return U.pBool(this.data.isHighlighted); }
     set isHighlighted(val) { this.updateTarget("isHighlighted", U.pBool(val)); }
-    get index() { return U.pInt(this.getSystemData().index); }
+    get index() { return U.pInt(this.data.index); }
     set index(val) { this.updateTarget("index", U.pInt(val)); }
-    get display() { return this.getSystemData().display ?? {}; }
-    set display(val) { this.updateTarget("display", val); }
-    get tooltip() { return this.getSystemData().tooltip; }
+    get tooltip() { return this.data.tooltip; }
     set tooltip(val) { this.updateTarget("tooltip", val); }
-    get sceneID() { return this.getSystemData().sceneID; }
+    get sceneID() { return this.data.sceneID; }
     set sceneID(val) { this.updateTarget("sceneID", val); }
     get isEmpty() { return this.value === 0; }
     get isComplete() { return this.value >= this.max; }
@@ -504,76 +440,10 @@ class BladesClock extends BladesTargetLink {
         }
         return returnVals;
     }
-    get rollFactors() {
-        const factorData = {};
-        [
-            Factor.tier,
-            Factor.quality
-        ].forEach((factor, i) => {
-            const factorTotal = this.getFactorTotal(factor);
-            factorData[factor] = {
-                name: factor,
-                value: factorTotal,
-                max: factorTotal,
-                baseVal: factorTotal,
-                display: factor === Factor.tier ? U.romanizeNum(factorTotal) : `${factorTotal}`,
-                isActive: i === 0,
-                isPrimary: i === 0,
-                isDominant: false,
-                highFavorsPC: true,
-                cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`
-            };
-        });
-        return factorData;
-    }
-    getFactorTotal(factor) {
-        switch (factor) {
-            case Factor.tier: return this.getSystemData().tier.value;
-            case Factor.quality: return this.getFactorTotal(Factor.tier);
-            // no default
-        }
-        return 0;
-    }
-    get rollOppImg() { return ""; }
-    // #endregion
     // #region ~~ CONSTRUCTOR ~~
-    _initData;
     constructor(data) {
-        function isHTML(testData) {
-            return testData instanceof HTMLElement || testData instanceof jQuery;
-        }
-        let configData;
-        let targetLinkData;
-        if (isHTML(data)) {
-            data = $(data);
-            targetLinkData = {
-                id: data.data("id"),
-                target: data.data("targetId"),
-                targetFlagKey: data.data("targetFlagKey") || undefined,
-                targetKey: data.data("targetKey")
-            };
-            configData = targetLinkData;
-        }
-        else {
-            const dataAsConfig = data;
-            targetLinkData = {
-                id: data.id,
-                target: typeof dataAsConfig.target === "string" ? dataAsConfig.target : dataAsConfig.target.id,
-                targetFlagKey: dataAsConfig.targetFlagKey || undefined,
-                targetKey: dataAsConfig.targetKey || undefined
-            };
-            configData = {
-                ...data,
-                ...targetLinkData
-            };
-        }
-        super(targetLinkData);
-        configData.id = this.id;
-        this._initData = BladesClock.applyConfigDefaults(configData);
+        super(data);
         game.eunoblades.Clocks.set(this.id, this);
-    }
-    async initialize() {
-        return this.updateTargetData(this._initData);
     }
     // #endregion
     // #region HTML INTERACTION ~
@@ -621,7 +491,7 @@ class BladesClock extends BladesTargetLink {
     }
     async delete() {
         await super.delete();
-        return this.parentKey?.updateClockIndices();
+        this.parentKey?.updateClockIndices();
     }
 }
 export const ApplyClockListeners = async (html, namespace) => {
@@ -741,7 +611,7 @@ export const ApplyClockListeners = async (html, namespace) => {
         if (game.user.isGM) {
             if (clock.isShowingControls) {
                 $(clockContainerElem).find("[data-action='clock-toggle']")
-                    .each((_, el) => { $(el).data("hoverTimeline", U.gsap.effects.hoverButton(el)); })
+                    .each((__, el) => { $(el).data("hoverTimeline", U.gsap.effects.hoverButton(el)); })
                     .on({
                     [`click.${namespace}`]: (event) => {
                         event.preventDefault();
@@ -765,7 +635,7 @@ export const ApplyClockListeners = async (html, namespace) => {
                     }
                 });
                 $(clockContainerElem).find("[data-action='delete-clock']")
-                    .each((_, el) => { $(el).data("hoverTimeline", U.gsap.effects.hoverButton(el, { color: "#FF0000" })); })
+                    .each((__, el) => { $(el).data("hoverTimeline", U.gsap.effects.hoverButton(el, { color: "#FF0000" })); })
                     .on({
                     [`contextmenu.${namespace}`]: (event) => {
                         event.preventDefault();

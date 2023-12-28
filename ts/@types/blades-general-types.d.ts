@@ -215,7 +215,5 @@ declare global {
       bottom: boolean
     }
   }
-
-  // Some overrides of League types for greater specificity
-  declare function randomID(length?: number): IDString;
+  export declare function randomID(length?: number): IDString;
 }

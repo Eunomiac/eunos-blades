@@ -28,8 +28,8 @@ declare global {
 
     export interface clocks {
       clocksData: {
-        keys?: Record<IDString, BladesClockKeyData>,
-        clocks?: Record<IDString, BladesClockData>
+        keys?: Record<IDString, BladesClockKey.Data>,
+        clocks?: Record<IDString, BladesClock.Data>
       }
     }
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../../core/utilities";
 import {SVGDATA, BladesActorType, BladesItemType} from "../../core/constants";
 // import U from "../../core/utilities";
@@ -21,7 +22,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
     } else {
       game.eunoblades.ClockKeeper = clockKeeper;
     }
-    game.eunoblades.ClockKeeper.renderOverlay();
+    U.gsap.delayedCall(2, game.eunoblades.ClockKeeper.renderOverlay);
   }
 
   static InitSockets() {
@@ -70,9 +71,6 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
   async activateOverlayListeners() {
     if (!game?.user?.isGM) { return; }
 
-
-
-
     eLog.checkLog3("clocksOverlay", "[activateOverlayListeners] Keys", this.keys);
     ApplyClockListeners($("#clocks-overlay"), "ClocksOverlay");
 
@@ -109,7 +107,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
       Object.entries(this.system.clocksData.keys ?? {})
         .map(([id, data]) => [
           id,
-          game.eunoblades.ClockKeys.get(id) ?? new BladesClockKey(data as BladesClockKeySystemData)
+          game.eunoblades.ClockKeys.get(id) ?? new BladesClockKey(data)
         ])
     );
   }
@@ -142,17 +140,16 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
   }
 
   async addClockKey(
-    clockKeyConfig: Partial<BladesClockKeySystemData> = {},
-    clocksData: Partial<BladesClockSystemData> = {}
+    clockKeyConfig: Partial<BladesClockKey.Data> = {},
+    clockData: Partial<BladesClock.Data> = {}
   ): Promise<BladesClockKey|undefined> {
-    if (!(game.eunoblades.ClockKeeper instanceof BladesClockKeeper)) { return undefined; }
     if (!this.targetSceneID && !clockKeyConfig.sceneID) { return undefined; }
     const key = await BladesClockKey.Create({
       sceneID: this.targetSceneID,
       target: this,
       targetKey: "system.clocksData.keys" as TargetKey,
       ...clockKeyConfig
-    }, clocksData);
+    }, [clockData]);
     U.gsap.effects.keyDrop(key.elem);
     return key;
   }
@@ -161,7 +158,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
     await game.eunoblades.ClockKeys.get(keyID)?.delete();
   }
 
-  async addClockToKey(keyID: IDString, clockData?: Partial<BladesClockData>): Promise<void> {
+  async addClockToKey(keyID: IDString, clockData?: Partial<BladesClock.Data>): Promise<void> {
     const key = await game.eunoblades.ClockKeys.get(keyID);
     if (!key) { return; }
     await key.addClock(clockData);

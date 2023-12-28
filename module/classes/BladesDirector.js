@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../core/utilities.js";
 import { SVGDATA, BladesPhase } from "../core/constants.js";
 import { BladesClockKey } from "./BladesClock.js";
@@ -130,7 +131,7 @@ class BladesDirector {
         if (!game.user.isGM) {
             return;
         }
-        socketlib.system.executeForEveryone("$addClockKey", key._initData);
+        socketlib.system.executeForEveryone("$addClockKey", key.data);
     }
     initScorePanelSockets() {
         // tbd...
@@ -273,7 +274,7 @@ class BladesDirector {
                 ease: "power1.inOut"
             },
             onComplete: function () {
-                targets.forEach((target) => $(target).remove());
+                targets.forEach((targ) => $(targ).remove());
             }
         });
     }
