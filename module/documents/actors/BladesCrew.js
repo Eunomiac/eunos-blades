@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { BladesActorType, BladesItemType, Tag } from "../../core/constants.js";
 import { BladesActor, BladesPC } from "../BladesActorProxy.js";
 import { BladesItem } from "../BladesItemProxy.js";

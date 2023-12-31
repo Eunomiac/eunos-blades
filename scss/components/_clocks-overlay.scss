@@ -118,6 +118,7 @@ $label-positions: (
   .clock-key-container {
     height: calc(0.5 * var(--key-height));
     width: calc(0.5 * var(--key-width));
+    visibility: hidden;
 
     &.active-key {
       min-width: 200px;

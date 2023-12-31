@@ -193,6 +193,43 @@
                 &.red-harm-highlight-1 { --row-bg-color: var(--blades-red-dark); }
 
                 .healing-clock {
+
+                  .clock-key-controls, .clock-controls {
+                    display: none !important;
+                  }
+                  .clock-key-container {
+                    height: 100px;
+                    width: 100px;
+
+                    .clock-key {
+                      transform: translate(-50%, -50%) !important;
+                      .key-image-container {
+                        height: 0px !important;
+                        width: 0px !important;
+                        transform: none !important;
+                        top: 0 !important;
+                        left: 0 !important;
+                        .key-image { display: none; }
+                        .clock-container {
+                          height: 100px;
+                          width: 100px;
+                          top: 50px;
+                          left: 50px;
+
+                          .clock, .clock > * {
+                            height: 100px;
+                            width: 100px;
+                          }
+
+                          .clock-bg { display: none }
+
+                        }
+                      }
+                    }
+                  }
+
+
+
                   padding: 0 toRem(10px);
                   width: 120px;
 

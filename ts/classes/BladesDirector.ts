@@ -4,7 +4,7 @@ import {SVGDATA, BladesPhase, BladesActorType, BladesItemType} from "../core/con
 // import U from "../core/utilities";
 import {BladesActor} from "../documents/BladesActorProxy";
 import {BladesItem} from "../documents/BladesItemProxy";
-import BladesClock, {BladesClockKey, ApplyClockListeners} from "./BladesClock";
+import BladesClockKey, {ApplyClockListeners} from "./BladesClocks";
 
 import {gsapEffects, gsapEffect, gsapConfig} from "../core/gsap";
 
@@ -165,7 +165,7 @@ class BladesDirector {
   }
 
   private initClockSockets() {
-    socketlib.system.register("$addClockKey", this.$addClockKey.bind(this));
+    // socketlib.system.register("$addClockKey", this.$addClockKey.bind(this));
     // socketlib.system.register("$deleteClockKey", this.$deleteClockKey.bind(this));
     // socketlib.system.register("$changeClockKeyDisplay", this.$changeClockKeyDisplay.bind(this));
     // socketlib.system.register("$addClock", this.$addClock.bind(this));
@@ -175,10 +175,10 @@ class BladesDirector {
     // socketlib.system.register("$changeClockDisplay", this.$changeClockDisplay.bind(this));
   }
 
-  addClockKey(key: BladesClockKey) {
-    if (!game.user.isGM) {return;}
-    socketlib.system.executeForEveryone("$addClockKey", key.data);
-  }
+  // addClockKey(key: BladesClockKey) {
+  //   if (!game.user.isGM) {return;}
+  //   socketlib.system.executeForEveryone("$addClockKey", key.data);
+  // }
 
   private initScorePanelSockets() {
     // tbd...
@@ -217,25 +217,6 @@ class BladesDirector {
   // #region CLOCKS & CLOCK KEYS
   // ## Clock Keys
 
-  async $addClockKey(
-    keyData: BladesClockKey.Data
-  ) {
-    const key = await BladesClockKey.Create(keyData);
-    const keyHTML = await renderTemplate(
-      "systems/eunos-blades/templates/overlay/clock-key.hbs",
-      key
-    );
-    const keyElem = $(keyHTML).appendTo(this.clockKeySectionElem)[0];
-    U.gsap.from(keyElem, {
-      scale: 0.5,
-      x: -1500,
-      skewX: 50,
-      filter: "blur(100px)",
-      autoAlpha: 0,
-      ease: "elastic.out(0.4, 0.25)",
-      duration: 6
-    }).then(() => U.gsap.effects.keyHang(keyElem).play());
-  }
 
   // - Set hard-coded locations for up to six keys along the sides
   // - Drag from here to rolls to display relevant clocks

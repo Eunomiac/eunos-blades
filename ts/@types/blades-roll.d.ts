@@ -2,82 +2,11 @@ import {BladesActorType, BladesItemType, BladesPhase, RollType, RollSubType, Rol
 import BladesActor from "../BladesActor";
 import BladesItem from "../BladesItem";
 import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../classes/BladesRoll";
-import BladesClock, {BladesClockKey} from "../classes/BladesClock";
+import BladesClockKey from "../classes/BladesClocks";
 
 declare global {
 
   namespace BladesRoll {
-
-    export type ConstructorConfig = Partial<Config> & Required<Pick<Config, "rollType">>;
-
-    export interface ConfigFlags extends Config {
-      rollPrimaryData: Omit<PrimaryDocData, "rollPrimaryDoc">,
-      rollOppData?: Omit<OppositionDocData, "rollOppDoc">,
-      rollParticipantData?: RollParticipantFlagData
-    }
-
-    export type ConsequenceResistOption = {
-      name: string,
-      id: string,
-      chatID?: string,
-      type?: ConsequenceType,
-      typeDisplay?: string,
-      icon?: string,
-      footerMsg?: string,
-      isAccepted?: boolean,
-      isSelected: boolean, // Whether GM has selected this as the resisted consequence
-      isVisible?: boolean // Set to false when a different option is chosen, to hide
-    }
-
-    export type AcceptedConsequenceData = {
-      id: string,
-      name: string,
-      type: ConsequenceType,
-      typeDisplay: string,
-      icon: string,
-      isAccepted: true,
-      stressCost?: number, // if Resisted
-      armorCost?: boolean, // if Armor used
-      specArmorCost?: boolean // if Special Armor used
-    }
-
-    export interface ConsequenceData {
-      name: string,
-      id: string,
-      type: ConsequenceType|"",
-      typeDisplay?: string,
-      icon?: string,
-      attribute: AttributeTrait|"",
-      attributeVal?: number,
-      isAccepted?: boolean,
-      resistOptions?: Record<
-        string,  // stringified index
-        ConsequenceResistOption // ai
-      >,
-      resistNegates?: boolean,
-      resistTo?: ConsequenceResistOption|false,
-      isDisplayingArmorToggle?: boolean,
-      canArmor?: boolean,
-      armorNegates?: boolean,
-      armorTo?: ConsequenceResistOption|false,
-      isDisplayingSpecialArmorToggle?: boolean,
-      canSpecialArmor?: boolean,
-      specialArmorNegates?: boolean,
-      specialArmorTo?: ConsequenceResistOption|false
-    }
-
-    export interface ResistanceRollConsequenceData extends FreezeProps<Omit<ConsequenceData, "resistOptions">> {
-      attribute: AttributeTrait,
-      attributeVal: number,
-      resistTo: FreezeProps<Omit<ConsequenceResistOption, "isSelected">>
-    }
-
-    export type CostData = {
-      id: string,
-      label: string,
-      costType: string,
-      costAmount: number
-    }
 
     export interface Config {
       rollType: RollType,
@@ -85,10 +14,10 @@ declare global {
       rollUserID: string,
       rollTrait?: RollTrait,
       rollDowntimeAction?: DowntimeAction,
+      rollClockKey?: IDString|BladesClockKey,
 
       rollPrimaryData: PrimaryDocData;
       rollOppData?: OppositionDocData;
-      rollOppClock?: BladesClock.Data;
       rollParticipantData?: RollParticipantData,
 
       participantRollTo?: string,
@@ -112,15 +41,18 @@ declare global {
       }
     }
 
+    export interface ConfigFlags extends Omit<Config, "rollClockKey"> {
+      rollPrimaryData: Omit<PrimaryDocData, "rollPrimaryDoc">,
+      rollOppData?: Omit<OppositionDocData, "rollOppDoc">,
+      rollParticipantData?: RollParticipantFlagData,
+      rollClockKeyID?: IDString
+    }
+
     export interface FlagData extends ConfigFlags {
       rollID: string;
       rollPrompt?: string;
 
       rollModsData: Record<string,RollModStatus>;
-
-      rollPrimaryData: Omit<PrimaryDocData, "rollPrimaryDoc">;
-      rollOppData?: Omit<OppositionDocData, "rollOppDoc">;
-      rollParticipantData?: RollParticipantFlagData;
 
       rollPositionInitial: Position;
       rollEffectInitial: Effect;
@@ -153,6 +85,8 @@ declare global {
 
       rollOpposition?: OppositionDocData,
       rollParticipants?: RollParticipantDocs,
+
+      rollClockKey?: BladesClockKey,
 
       rollPositions: Position[],
       rollEffects: Effect[],
@@ -194,6 +128,74 @@ declare global {
     }
 
     export type PartialSheetData = Partial<SheetData> & FlagData;
+
+    export type ConstructorConfig = Partial<Config> & Required<Pick<Config, "rollType">>;
+
+    export type ConsequenceResistOption = {
+      name: string,
+      id: string,
+      chatID?: string,
+      type?: ConsequenceType,
+      typeDisplay?: string,
+      icon?: string,
+      footerMsg?: string,
+      isAccepted?: boolean,
+      isSelected: boolean, // Whether GM has selected this as the resisted consequence
+      isVisible?: boolean // Set to false when a different option is chosen, to hide
+    }
+
+    export type AcceptedConsequenceData = {
+      id: string,
+      name: string,
+      type: ConsequenceType,
+      typeDisplay: string,
+      icon: string,
+      isAccepted: true,
+      stressCost?: number, // if Resisted
+      armorCost?: boolean, // if Armor used
+      specArmorCost?: boolean // if Special Armor used
+    }
+
+    export interface ConsequenceData {
+      id: string,
+      name: string,
+      type: ConsequenceType|"",
+      typeDisplay?: string,
+      icon?: string,
+      attribute: AttributeTrait|"",
+      attributeVal?: number,
+      isAccepted?: boolean,
+      resistOptions?: Record<
+        string,  // stringified index
+        ConsequenceResistOption // ai
+      >,
+      resistNegates?: boolean,
+      resistTo?: ConsequenceResistOption|false,
+      isDisplayingArmorToggle?: boolean,
+      canArmor?: boolean,
+      armorNegates?: boolean,
+      armorTo?: ConsequenceResistOption|false,
+      isDisplayingSpecialArmorToggle?: boolean,
+      canSpecialArmor?: boolean,
+      specialArmorNegates?: boolean,
+      specialArmorTo?: ConsequenceResistOption|false,
+      stressCost?: number, // if Resisted
+      armorCost?: boolean, // if Armor used
+      specArmorCost?: boolean // if Special Armor used
+    }
+
+    export interface ResistanceRollConsequenceData extends FreezeProps<Omit<ConsequenceData, "resistOptions"|"stressCost"|"armorCost"|"specArmorCost">> {
+      attribute: AttributeTrait,
+      attributeVal: number,
+      resistTo: FreezeProps<Omit<ConsequenceResistOption, "isSelected">>
+    }
+
+    export type CostData = {
+      id: string,
+      label: string,
+      costType: string,
+      costAmount: number
+    }
 
     export type AnyRollType = RollType|RollSubType|DowntimeAction;
     export type RollTrait = ActionTrait|AttributeTrait|Factor|number|""|"heat"|"coin"|"lifestyle";
@@ -322,7 +324,8 @@ declare global {
       rollOppModsData?: RollModData[],
       rollFactors: Partial<Record<Factor,FactorData>>,
 
-      rollOppClock?: Partial<BladesClock.Data>
+      rollOppClockKeyID?: IDString,
+      rollOppClockKey?: BladesClockKey
     }
 
     export type ParticipantDocType =

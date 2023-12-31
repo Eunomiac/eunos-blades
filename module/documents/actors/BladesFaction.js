@@ -1,5 +1,5 @@
 import { BladesActor } from "../BladesActorProxy.js";
-import { BladesClockKey } from "../../classes/BladesClock.js";
+import BladesClockKey from "../../classes/BladesClocks.js";
 class BladesFaction extends BladesActor {
     // #region BladesRoll Implementation
     // #region BladesRoll.OppositionDoc Implementation
@@ -17,7 +17,7 @@ class BladesFaction extends BladesActor {
     //   return new Collection()
     // }
     get clocks() {
-        return new Collection(Object.entries(this.system.clocksData.keys ?? {})
+        return new Collection(Object.entries(this.system.clocksData ?? {})
             .map(([id, data]) => [
             id,
             game.eunoblades.ClockKeys.get(id) ?? new BladesClockKey(data)
@@ -26,7 +26,7 @@ class BladesFaction extends BladesActor {
     async addClock() {
         return await BladesClockKey.Create({
             target: this,
-            targetKey: "system.clocksData.keys"
+            targetKey: "system.clocksData"
         });
     }
     async deleteClock(clockKeyID) {

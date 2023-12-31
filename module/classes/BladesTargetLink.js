@@ -68,7 +68,7 @@ class BladesTargetLink {
     }
     static async InitTargetLink(data) {
         // Validate target.
-        const target = await fromUuid(data.targetID);
+        const target = fromUuidSync(data.targetID);
         if (!target) {
             throw new Error(`[BladesTargetLink.InitTargetLink] No target found with UUID '${data.targetID}'`);
         }
@@ -87,6 +87,7 @@ class BladesTargetLink {
         return new this(data);
     }
     // #endregion
+    get isGM() { return game.user.isGM; }
     _id;
     _targetID;
     _targetKey;
@@ -97,20 +98,27 @@ class BladesTargetLink {
     get targetFlagKey() { return this._targetFlagKey; }
     _target;
     get target() {
-        if (!this._target) {
-            throw new Error(`[BladesTargetLink.target] Attempt to retrieve target ${this.targetID} without intialization.`);
-        }
         return this._target;
     }
     constructor(data) {
-        this._id = data.id;
-        this._targetID = data.targetID;
-        if (U.isTargetKey(data.targetKey)) {
-            this._targetKey = data.targetKey;
+        const { id, targetID, targetKey, targetFlagKey } = data;
+        if (!id || !targetID || !(targetKey || targetFlagKey)) {
+            eLog.error("BladesTargetLink", "Bad Constructor Data", { data });
+            throw new Error("[new BladesTargetLink()] Bad Constructor Data (see log)");
         }
-        else if (U.isTargetFlagKey(data.targetFlagKey)) {
-            this._targetFlagKey = data.targetFlagKey;
+        this._id = id;
+        this._targetID = targetID;
+        if (U.isTargetKey(targetKey)) {
+            this._targetKey = targetKey;
         }
+        else if (U.isTargetFlagKey(targetFlagKey)) {
+            this._targetFlagKey = targetFlagKey;
+        }
+        const target = fromUuidSync(this.targetID);
+        if (!target) {
+            throw new Error(`[new BladesTargetLink()] Unable to resolve target from uuid '${this._targetID}'`);
+        }
+        this._target = target;
     }
     get linkData() {
         let linkData;

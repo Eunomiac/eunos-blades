@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // #region IMPORTS~
 
 import U from "../../core/utilities";
@@ -6,7 +7,7 @@ import C, {BladesActorType, BladesPhase, BladesItemType, DowntimeAction, Attribu
 import Tags from "../../core/tags";
 import {BladesActor, BladesPC, BladesCrew} from "../../documents/BladesActorProxy";
 import {BladesItem, BladesProject} from "../../documents/BladesItemProxy";
-import BladesClock, {ApplyClockListeners} from "../../classes/BladesClock";
+import BladesClockKey, {ApplyClockListeners} from "../../classes/BladesClocks";
 import BladesDialog, {SelectionCategory} from "../../classes/BladesDialog";
 import BladesActiveEffect from "../../documents/BladesActiveEffect";
 import BladesRoll, {BladesRollPrimary, BladesRollOpposition} from "../../classes/BladesRoll";
@@ -548,7 +549,7 @@ class BladesActorSheet extends ActorSheet {
       case DowntimeAction.Recover: {
         config.rollType = RollType.Action;
         if (BladesPC.IsType(this.actor) && this.actor.healingClock) {
-          config.rollOppClock = this.actor.healingClock.data;
+          config.rollClockKey = this.actor.healingClock;
         }
         // rollOpposition = user character's healing clock
         // rollPrimary = this.actor is NPC?

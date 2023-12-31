@@ -1,7 +1,7 @@
 import { BladesItemType, Factor } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import { BladesItem } from "../BladesItemProxy.js";
-import { BladesClockKey } from "../../classes/BladesClock.js";
+import BladesClockKey from "../../classes/BladesClocks.js";
 class BladesProject extends BladesItem {
     static Initialize() {
         return loadTemplates([
@@ -16,16 +16,8 @@ class BladesProject extends BladesItem {
         if (this._clockKey) {
             return this._clockKey;
         }
-        const { keys } = this.system.clocksData ?? {};
-        if (keys) {
-            const keyData = Object.values(keys)[0];
-            this._clockKey = new BladesClockKey({
-                ...keyData,
-                targetID: this.uuid
-            });
-            return this._clockKey;
-        }
-        return undefined;
+        this._clockKey = game.eunoblades.ClockKeys.get(Object.keys(this.system.clocksData)[0]);
+        return this._clockKey;
     }
     get currentClock() {
         return this.clockKey?.currentClock;
@@ -75,7 +67,7 @@ class BladesProject extends BladesItem {
         await super._onCreate(...args);
         await BladesClockKey.Create({
             target: this,
-            targetKey: "system.clocksData.keys",
+            targetKey: "system.clocksData",
             isActive: true,
             isVisible: true
         });

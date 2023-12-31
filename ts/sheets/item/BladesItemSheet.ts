@@ -5,7 +5,7 @@ import BladesActor from "../../BladesActor";
 import BladesItem from "../../BladesItem";
 import {BladesProject} from "../../documents/BladesItemProxy";
 import BladesActiveEffect from "../../documents/BladesActiveEffect";
-import {ApplyClockListeners} from "../../classes/BladesClock";
+import {ApplyClockListeners} from "../../classes/BladesClocks";
 
 import Tags from "../../core/tags";
 

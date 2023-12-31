@@ -418,11 +418,12 @@
     }
   }
 
-  .clock-key[data-is-showing-controls="false"] {
-    .clock-controls { display: none !important; }
+  /* CONTROLS */
+  .clock-key-container.controls-hidden {
+    .clock-key-controls { display: none !important; }
+    .clock-controls { display: none !important }
   }
 
-  /* CONTROLS */
   .clock-key-controls,
   .clock-controls {
     --row-height: 25px;

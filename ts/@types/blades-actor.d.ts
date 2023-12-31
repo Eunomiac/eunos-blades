@@ -61,10 +61,7 @@ declare global {
     }
 
     export interface clocks {
-      clocksData: {
-        keys?: Record<IDString, BladesClockKey.Data>,
-        clocks?: Record<IDString, BladesClock.Data>
-      }
+      clocksData: Record<IDString, BladesClockKey.Data>
     }
   }
 

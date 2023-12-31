@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // #region IMPORTS ~
 import U from "../core/utilities";
 import C, {BladesActorType, BladesItemType, BladesPhase, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag} from "../core/constants";
@@ -5,7 +6,7 @@ import {BladesActor, BladesPC, BladesCrew} from "../documents/BladesActorProxy";
 import {BladesItem, BladesGMTracker} from "../documents/BladesItemProxy";
 import {ApplyTooltipAnimations, ApplyConsequenceAnimations} from "../core/gsap";
 import BladesConsequence from "./BladesConsequence";
-import BladesClock, {BladesClockKey} from "./BladesClock";
+import BladesClockKey from "./BladesClocks";
 import BladesDialog from "./BladesDialog";
 import BladesChat from "./BladesChat";
 
@@ -1030,6 +1031,8 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
 
   rollOppType: BladesRoll.OppositionDocType;
 
+  rollOppClockKey?: BladesClockKey;
+
   rollOppImg: string;
 
   rollOppModsData: BladesRoll.RollModData[] | undefined;
@@ -1045,6 +1048,8 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
       rollOppSubName,
       rollOppType,
       rollOppImg,
+      rollOppClockKey,
+      rollOppClockKeyID,
       rollOppModsData,
       rollFactors
     }: Partial<BladesRoll.OppositionDocData> = {}) {
@@ -1054,13 +1059,19 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
     // Attempt to fetch an associated BladesActor or BladesItem document
     const doc = BladesRollOpposition.GetDoc(rollOppDoc ?? rollOppID ?? rollOppName);
 
-    if (doc && !(doc instanceof BladesClock) && !(doc instanceof BladesClockKey)) {
+    if (doc) {
       // Derive settings from valid Actor/Item document, unless explicitly set in constructor.
       rollOppID = doc.rollOppID;
       rollOppDoc = doc;
       rollOppName ??= doc.rollOppName;
       rollOppSubName ??= doc.rollOppSubName;
       rollOppType ??= doc.rollOppType;
+      if ("rollOppClockKey" in doc) {
+        rollOppClockKey ??= doc.rollOppClockKey as BladesClockKey;
+      }
+      if ("rollOppClockKeyID" in doc) {
+        rollOppClockKeyID ??= doc.rollOppClockKeyID as IDString;
+      }
       rollOppImg ??= doc.rollOppImg;
       rollOppModsData = [
         ...rollOppModsData ?? [],
@@ -1082,6 +1093,11 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
     this.rollOppName = rollOppName;
     this.rollOppSubName = rollOppSubName;
     this.rollOppType = rollOppType;
+    if (rollOppClockKey) {
+      this.rollOppClockKey = rollOppClockKey;
+    } else if (rollOppClockKeyID) {
+      this.rollOppClockKey = game.eunoblades.ClockKeys.get(rollOppClockKeyID);
+    }
     this.rollOppImg = rollOppImg ?? "";
     this.rollOppModsData = rollOppModsData ?? [];
     this.rollFactors = rollFactors;
@@ -1101,7 +1117,9 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
       rollOppImg: this.rollOppImg,
 
       rollOppModsData: this.rollOppModsData,
-      rollFactors: this.rollFactors
+      rollFactors: this.rollFactors,
+
+      rollOppClockKeyID: this.rollOppClockKey?.id
     };
   }
 
@@ -1123,6 +1141,10 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
 
       this.rollOppModsData = rollOppFlags.rollOppModsData;
       this.rollFactors = rollOppFlags.rollFactors;
+
+      if (rollOppFlags.rollOppClockKeyID) {
+        this.rollOppClockKey = game.eunoblades.ClockKeys.get(rollOppFlags.rollOppClockKeyID);
+      }
     }
     return this;
   }
@@ -2169,6 +2191,16 @@ class BladesRoll extends DocumentSheet {
     }
   }
 
+  get rollOppClockKey(): BladesClockKey | undefined {
+    return this.rollOpposition?.rollOppClockKey;
+  }
+
+  get rollClockKey(): BladesClockKey | undefined {
+    return this.flagData.rollClockKeyID
+      ? game.eunoblades.ClockKeys.get(this.flagData.rollClockKeyID)
+      : undefined;
+  }
+
   /**
    * This method prepares the roll participant data.
    * It iterates over the roll sections (roll, position, effect) and for each section,
@@ -2924,6 +2956,12 @@ class BladesRoll extends DocumentSheet {
     return this._csqData.find((cData) => cData.id === csqID) ?? false;
   }
 
+  get csqData(): Record<string, BladesRoll.ConsequenceData> {
+    return Object.fromEntries(
+      this._csqData.map((cData) => [cData.id, cData])
+    );
+  }
+
   get acceptedConsequences(): BladesRoll.AcceptedConsequenceData[] {
     if ([RollPhase.AwaitingConsequences, RollPhase.Complete].includes(this.rollPhase)) {
       return this._csqData.filter((cData) => cData.isAccepted === true) as BladesRoll.AcceptedConsequenceData[];
@@ -3230,6 +3268,8 @@ class BladesRoll extends DocumentSheet {
       rollPrimary,
       rollTraitData,
       rollTraitOptions,
+      rollOppClockKey,
+      rollClockKey,
       finalDicePool,
       finalPosition,
       finalEffect,
@@ -3296,8 +3336,10 @@ class BladesRoll extends DocumentSheet {
       ...rollResultData,
       ...GMBoostsData,
       ...positionEffectTradeData,
+      ...(rollOppClockKey ? {rollClockKey: rollOppClockKey} : {}),
+      ...(rollClockKey ? {rollClockKey} : {}),
       userPermission,
-      gamePhase: game.eunoblades.Tracker?.phase || BladesPhase.Freeplay
+      gamePhase: game.eunoblades.Tracker.phase
     };
   }
   // type BladesSelectOption<displayType, valueType = string> = {

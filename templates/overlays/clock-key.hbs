@@ -1,12 +1,11 @@
 {{eLog "Clock Key Context" this}}
 
-<div class="clock-key-container {{~#if isActive}} active-key{{/if}}{{~#if (test isGM "&&" isShowingControls)}} active-key{{/if}}" data-size="{{size}}">
+<div class="clock-key-container controls-hidden {{~#if isActive}} active-key{{/if}}" data-size="{{size}}">
 
 {{#if (test isVisible "||" isGM)}}
   <div id="{{id}}" class="clock-key"
     data-id="{{id}}"
     data-size="{{size}}"
-    data-is-showing-controls="{{isShowingControls}}"
     data-active-clock-slot="{{currentClockIndex}}"
   >
     {{#if isNameVisible}}
@@ -37,20 +36,18 @@
   --}}
   {{#if isGM}}
   {{#if targetFlagKey}}(FLAG KEY NOT CONFIGURED){{else}}
-    <div class="clock-key-controls {{~#unless isShowingControls}} controls-hidden{{/unless}}" data-clock-key="{{id}}">
+    <div class="clock-key-controls" data-clock-key="{{id}}">
 
       {{!-- Control Row: Open Controls Panel --}}
       <div class="clock-key-controls-row toggle-controls-row">
 
-        {{!-- Toggle: isShowingControls --}}
-        <div class="clock-button clock-key-button" data-action="key-toggle" data-prop="isShowingControls" >
-            <i class="fa-{{#if isShowingControls}}duotone{{else}}solid{{/if}} fa-gear"></i>
+        {{!-- Client-Side GM Trigger: isShowingControls --}}
+        <div class="clock-button clock-key-button" data-action="show-gm-controls">
+            <i class="fa-solid fa-gear"></i>
         </div>
 
       </div>
 
-    {{!-- CONTROLS PANEL --}}
-    {{#if isShowingControls}}
       {{!-- Control Row: Name --}}
       <div class="clock-key-controls-row name-row">
 
@@ -108,5 +105,4 @@
     </div>
   {{/if}}
   {{/if}}
-{{/if}}
 </div>

@@ -2,7 +2,7 @@
 import U from "../../core/utilities.js";
 import { SVGDATA, BladesItemType } from "../../core/constants.js";
 import { BladesItem } from "../BladesItemProxy.js";
-import BladesClock, { BladesClockKey, ApplyClockListeners } from "../../classes/BladesClock.js";
+import BladesClockKey, { ApplyClockListeners } from "../../classes/BladesClocks.js";
 class BladesClockKeeper extends BladesItem {
     static async Initialize() {
         const clockKeeper = game.items.find((item) => item.type === "clock_keeper");
@@ -16,7 +16,7 @@ class BladesClockKeeper extends BladesItem {
         else {
             game.eunoblades.ClockKeeper = clockKeeper;
         }
-        U.gsap.delayedCall(2, game.eunoblades.ClockKeeper.renderOverlay);
+        game.eunoblades.ClockKeeper.renderOverlay();
     }
     static InitSockets() {
         socketlib.system.register("renderOverlay", game.eunoblades.ClockKeeper.renderOverlay);
@@ -89,25 +89,11 @@ class BladesClockKeeper extends BladesItem {
     }
     get targetSceneID() { return this.system.targetScene ?? this.currentSceneID; }
     get keys() {
-        return new Collection(Object.entries(this.system.clocksData.keys ?? {})
+        return new Collection(Object.entries(this.system.clocksData ?? {})
             .map(([id, data]) => [
             id,
             game.eunoblades.ClockKeys.get(id) ?? new BladesClockKey(data)
         ]));
-    }
-    get clocks() {
-        return new Collection(Object.entries(this.system.clocksData.clocks ?? {})
-            .sort((a, b) => a[1].index - b[1].index)
-            .map(([id, data]) => [
-            id,
-            game.eunoblades.Clocks.get(id) ?? new BladesClock(data)
-        ]));
-    }
-    getSceneClocks(sceneID) {
-        sceneID ??= this.targetSceneID;
-        return new Collection(this.clocks
-            .filter((clock) => clock.sceneID === sceneID)
-            .map((clock) => [clock.id, clock]));
     }
     getSceneKeys(sceneID) {
         sceneID ??= this.targetSceneID;
@@ -115,16 +101,16 @@ class BladesClockKeeper extends BladesItem {
             .filter((clockKey) => clockKey.sceneID === sceneID)
             .map((clockKey) => [clockKey.id, clockKey]));
     }
-    async addClockKey(clockKeyConfig = {}, clockData = {}) {
+    async addClockKey(clockKeyConfig = {}) {
         if (!this.targetSceneID && !clockKeyConfig.sceneID) {
             return undefined;
         }
         const key = await BladesClockKey.Create({
             sceneID: this.targetSceneID,
             target: this,
-            targetKey: "system.clocksData.keys",
+            targetKey: "system.clocksData",
             ...clockKeyConfig
-        }, [clockData]);
+        });
         U.gsap.effects.keyDrop(key.elem);
         return key;
     }

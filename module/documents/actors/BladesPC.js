@@ -2,7 +2,7 @@ import C, { ClockColor, AttributeTrait, Harm, BladesActorType, BladesItemType, T
 import U from "../../core/utilities.js";
 import { BladesActor } from "../BladesActorProxy.js";
 import { BladesItem } from "../BladesItemProxy.js";
-import BladesClock from "../../classes/BladesClock.js";
+import BladesClockKey from "../../classes/BladesClocks.js";
 import BladesDirector from "../../classes/BladesDirector.js";
 import { SelectionCategory } from "../../classes/BladesDialog.js";
 class BladesPC extends BladesActor {
@@ -47,17 +47,23 @@ class BladesPC extends BladesActor {
             ...data.system.experience ?? {}
         };
         const pc = (await super.create(data, options));
-        await BladesClock.Create({
+        await BladesClockKey.Create({
             name: "",
             target: pc,
-            targetKey: "system.healing",
-            color: ClockColor.white,
-            value: 0,
-            max: 4,
+            targetKey: "system.clocksData",
             isVisible: true,
             isNameVisible: false,
             isShowingControls: false
-        });
+        }, [
+            {
+                color: ClockColor.white,
+                value: 0,
+                max: 4,
+                isVisible: true,
+                isNameVisible: false,
+                isShowingControls: false
+            }
+        ]);
         return pc;
     }
     // #endregion
@@ -203,9 +209,17 @@ class BladesPC extends BladesActor {
     get stressMax() {
         return this.system.stress.max;
     }
+    get isHealingClockReady() {
+        const [clockKeyID] = Object.keys(this.system.clocksData);
+        return game.eunoblades.ClockKeys.has(clockKeyID ?? "");
+    }
     get healingClock() {
-        const [clockID] = Object.keys(this.system.clocksData.clocks ?? {});
-        return game.eunoblades.Clocks.get(clockID ?? "");
+        if (!this.isHealingClockReady) {
+            return undefined;
+        }
+        const [clockKeyID] = Object.keys(this.system.clocksData);
+        const clockKey = game.eunoblades.ClockKeys.get(clockKeyID ?? "");
+        return clockKey;
     }
     get harmLevel() {
         if (this.system.harm.severe.one.length > 1) {
@@ -510,6 +524,14 @@ class BladesPC extends BladesActor {
         });
         tooltipStrings.push("</tbody></table>");
         return tooltipStrings.join("");
+    }
+    // #endregion
+    render(force) {
+        if (!this.isHealingClockReady) {
+            setTimeout(() => this.render(force), 1000);
+            return;
+        }
+        super.render(force);
     }
 }
 export default BladesPC;

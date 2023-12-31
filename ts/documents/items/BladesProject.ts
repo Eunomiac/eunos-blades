@@ -1,7 +1,7 @@
 import {BladesItemType, Factor} from "../../core/constants";
 import U from "../../core/utilities";
 import {BladesItem} from "../BladesItemProxy";
-import BladesClock, {BladesClockKey} from "../../classes/BladesClock";
+import BladesClockKey from "../../classes/BladesClocks";
 import BladesRoll from "../../classes/BladesRoll";
 
 class BladesProject extends BladesItem implements BladesItemSubClass.Project,
@@ -20,19 +20,11 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
   _clockKey?: BladesClockKey;
   get clockKey(): BladesClockKey|undefined {
     if (this._clockKey) { return this._clockKey; }
-    const {keys} = this.system.clocksData ?? {};
-    if (keys) {
-      const keyData = Object.values(keys)[0];
-      this._clockKey = new BladesClockKey({
-        ...keyData,
-        targetID: this.uuid
-      });
-      return this._clockKey;
-    }
-    return undefined;
+    this._clockKey = game.eunoblades.ClockKeys.get(Object.keys(this.system.clocksData)[0]);
+    return this._clockKey;
   }
 
-  get currentClock(): BladesClock|undefined {
+  get currentClock() {
     return this.clockKey?.currentClock;
   }
 
@@ -86,7 +78,7 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
     await super._onCreate(...args);
     await BladesClockKey.Create({
       target: this,
-      targetKey: "system.clocksData.keys" as TargetKey,
+      targetKey: "system.clocksData" as TargetKey,
       isActive: true,
       isVisible: true
     });

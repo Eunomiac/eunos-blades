@@ -11,10 +11,17 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
 
   // #region STATIC METHODS ~
   static Initialize() {
-    game.items?.contents
+
+    function registerClockKeys(doc: BladesDoc) {
+      if ("clocksData" in doc.system) {
+        (Object.values(doc.system.clocksData ?? {}) as BladesClockKey.Data[])
+          .forEach((keyData) => {new BladesClockKey(keyData);});
+      }
+    }
+
+    game.items.contents
       .filter((item) =>
-        BladesItem.IsType(
-          item,
+        BladesItem.IsType(item,
           BladesItemType.clock_keeper,
           BladesItemType.project,
           BladesItemType.cohort_gang,
@@ -25,28 +32,21 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
           BladesItemType.score
         )
       )
-      .forEach((item) => {
-        Object.values(item.system.clocksData?.keys ?? {})
-          .forEach((keyData) => new BladesClockKey(keyData));
-        Object.values(item.system.clocksData?.clocks ?? {})
-          .forEach((clockData) => new BladesClock(clockData));
-      });
+      .forEach(registerClockKeys);
 
-    game.actors?.contents
+    game.actors.contents
       .filter((actor) =>
-        BladesActor.IsType(
-          actor,
+        BladesActor.IsType(actor,
           BladesActorType.pc,
           BladesActorType.faction
         )
       )
-      .forEach((actor) => {
-        Object.values(actor.system.clocksData?.keys ?? {})
-          .forEach((keyData) => new BladesClockKey(keyData));
-        Object.values(actor.system.clocksData?.clocks ?? {})
-          .forEach((clockData) => new BladesClock(clockData));
-      });
+      .forEach(registerClockKeys);
+
+    socketlib.system.register("pull_SocketCall", BladesClockKey.pull_SocketResponse.bind(this));
+    socketlib.system.register("drop_SocketCall", BladesClockKey.drop_SocketResponse.bind(this));
   }
+
 
   static override ApplySchemaDefaults<Schema = BladesClockKey.Schema>(
     schemaData: Partial<BladesClockKey.Schema>
@@ -70,8 +70,6 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     config: BladesClockKey.Config & Partial<Schema>,
     clockConfigs: Array<Partial<BladesClock.Config>> = []
   ) {
-    // Create and initialize the target link
-    const clockKey = (await super.Create<BladesClockKey.Schema>(config)) as BladesClockKey;
 
     // Confirm at least one, but no more than six, clockConfigs provided:
     if (clockConfigs.length > 6) {
@@ -83,10 +81,13 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
       clockConfigs.push({});
     }
 
+    // Create and initialize the target link
+    const clockKey = (await super.Create<BladesClockKey.Schema>(config)) as BladesClockKey;
+
     // Convert clock configs to full clock data objects.
     const clocksData: Record<IDString, BladesClock.Data> = Object.fromEntries(
       clockConfigs.map((clockConfig, i) => {
-        clockConfig.index = i as 0|1|2|3|4|5;
+        clockConfig.index = i as 0 | 1 | 2 | 3 | 4 | 5;
         const cData = clockKey.parseClockConfig(clockConfig);
         return [cData.id, cData];
       })
@@ -102,20 +103,34 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   // #region GETTERS & SETTERS ~
 
   // #region -- Shortcut Schema Getters ~
-  override get data() { return this.linkData as BladesTargetLink.Data & BladesClockKey.Schema; }
+  override get data() {return this.linkData as BladesTargetLink.Data & BladesClockKey.Schema;}
 
-  get name(): string {return this.data.name; }
-  set name(val: string) { this.updateTarget("name", val); }
+  get name(): string {return this.data.name;}
+  set name(val: string) {this.updateTarget("name", val);}
 
   get isVisible(): boolean {return this.data.isVisible;}
-  set isVisible(val: boolean) { this.updateTarget("isVisible", U.pBool(val)); }
+  set isVisible(val: boolean) {this.updateTarget("isVisible", U.pBool(val));}
   get isActive(): boolean {return this.data.isActive;}
-  set isActive(val: boolean) { this.updateTarget("isActive", U.pBool(val)); }
+  set isActive(val: boolean) {this.updateTarget("isActive", U.pBool(val));}
   get isNameVisible(): boolean {return this.data.isNameVisible;}
-  set isNameVisible(val: boolean) { this.updateTarget("isNameVisible", U.pBool(val)); }
+  set isNameVisible(val: boolean) {this.updateTarget("isNameVisible", U.pBool(val));}
 
-  get isShowingControls(): boolean {return this.data.isShowingControls; }
-  set isShowingControls(val: boolean) { this.updateTarget("isShowingControls", U.pBool(val)); }
+  _keySwingTimeline?: gsap.core.Timeline;
+  get keySwingTimeline() {
+    if (!this.elem) {return undefined;}
+    if (!this._keySwingTimeline) {
+      this._keySwingTimeline = U.gsap.effects.keySwing(this.elem).pause();
+    }
+    return this._keySwingTimeline;
+  }
+  _keyControlZoomTimeline?: gsap.core.Timeline;
+  get keyControlZoomTimeline() {
+    if (!this.elem) {return undefined;}
+    if (!this._keyControlZoomTimeline) {
+      this._keyControlZoomTimeline = U.gsap.effects.keyControlZoom(this.elem).pause();
+    }
+    return this._keyControlZoomTimeline;
+  }
 
   get clocksData(): Record<IDString, BladesClock.Data> {return this.data.clocksData;}
 
@@ -133,18 +148,27 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   }
   // #endregion
 
+  _clocks: Collection<BladesClock> = new Collection();
+
   get clocks(): Collection<BladesClock> {
     return new Collection(
       Object.entries(this.clocksData)
         .sort((a, b) => a[1].index - b[1].index)
-        .map(([id, data]) => [
-          id,
-          game.eunoblades.Clocks.get(id) ?? new BladesClock(data)
-        ])
+        .map(([id, data]) => {
+          if (!this._clocks.has(id)) {
+            const clock = new BladesClock(data);
+            this._clocks.set(id, clock);
+          }
+          return [id, this._clocks.get(id) as BladesClock];
+        })
     );
   }
 
-  get size(): 0 | 1 | 2 | 3 | 4 | 5 | 6 {return Object.keys(this.clocksData).length as 0 | 1 | 2 | 3 | 4 | 5 | 6;}
+  getClockByID(clockID: IDString): BladesClock | undefined {
+    return this.clocks.get(clockID);
+  }
+
+  get size(): 0 | 1 | 2 | 3 | 4 | 5 | 6 {return this.clocks.size as 0 | 1 | 2 | 3 | 4 | 5 | 6;}
 
   get isComplete(): boolean {
     return Array.from(this.clocks).every((clock) => clock.isComplete);
@@ -182,9 +206,10 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   constructor(data: BladesClockKey.Data) {
     super(data);
     game.eunoblades.ClockKeys.set(this.id, this);
+    Object.values(data.clocksData).forEach((clockData) => new BladesClock(clockData));
   }
 
-  parseClockConfig(config: Partial<BladesClock.Config>, indexOverride?: 0|1|2|3|4|5): BladesClock.Data {
+  parseClockConfig(config: Partial<BladesClock.Config>, indexOverride?: 0 | 1 | 2 | 3 | 4 | 5): BladesClock.Data {
     // Remove target so it doesn't conflict with key's targetID
     delete config.target;
 
@@ -200,7 +225,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
 
     // Assign 'parentKeyID' and 'index'
     config.parentKeyID = this.id;
-    config.index = indexOverride ?? this.clocks.size as 0|1|2|3|4|5;
+    config.index = indexOverride ?? this.clocks.size as 0 | 1 | 2 | 3 | 4 | 5;
 
     // Parse config to full data object
     const cData = BladesClock.ParseConfig<BladesClock.Schema>(config as BladesClock.Config);
@@ -222,6 +247,11 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     return $(`#${this.id}`)[0];
   }
 
+  get isShowingControls(): boolean {
+    if (!this.elem) { return false; }
+    if (!game.user.isGM) { return false; }
+    return !$(this.elem).hasClass("controls-hidden");
+  }
 
   async toggleActive(): Promise<void> {
     return await this.updateTarget("isActive", !this.isActive);
@@ -425,12 +455,63 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   }
   // #endregion
 
+  // #region ANIMATIONS (Client-Side Only AND Socket-Triggered)
+  showControls() {
+    if (!game.user.isGM) {return;}
+    if (!this.elem) {return;}
+    this.keySwingTimeline?.tweenTo(1, {duration: 0.25, ease: "none"});
+    this.keyControlZoomTimeline?.play();
+  }
+
+  hideControls() {
+    if (!game.user.isGM) {return;}
+    if (!this.elem) {return;}
+    this.keySwingTimeline?.resume();
+    this.keyControlZoomTimeline?.reverse();
+  }
+
+  drop_Animation() {
+    if (!this.elem) {return;}
+    U.gsap.effects.keyDrop(this.elem);
+    this.keySwingTimeline?.seek(0).play();
+  }
+  drop_SocketCall() {
+    if (!game.user.isGM) {return;}
+    if (!this.elem) {return;}
+    socketlib.system.executeForEveryone("drop_SocketCall", this.id);
+  }
+
+  static drop_SocketResponse(keyID: IDString) {
+    const key = game.eunoblades.ClockKeys.get(keyID);
+    if (!key) {return;}
+    key.drop_Animation();
+  }
+
+  pull_Animation() {
+    if (!this.elem) { return; }
+    U.gsap.effects.keyPull(this.elem);
+  }
+
+  pull_SocketCall() {
+    if (!game.user.isGM) {return;}
+    if (!this.elem) { return; }
+    socketlib.system.executeForEveryone("pull_SocketCall", this.id);
+  }
+
+  static pull_SocketResponse(keyID: IDString) {
+    const key = game.eunoblades.ClockKeys.get(keyID);
+    if (!key) {return;}
+    key.pull_Animation();
+  }
+  // #endregion
+
   // #region Adding & Removing Clocks ~
   async updateClockIndices() {
     await this.updateTarget("clocksData", Object.fromEntries(
       Object.entries(this.clocksData)
         .map(([id, data], index) => [id, {...data, index}])
     ));
+    this._clocks.clear();
     return this.clocks;
   }
 
@@ -446,7 +527,8 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   async deleteClock(clockID?: IDString) {
     if (this.size <= 1) {throw new Error("[BladesClockKey.deleteClock()] Cannot reduce number of clocks below 1!");}
     clockID ??= Array.from(this.clocks).pop()?.id;
-    await game.eunoblades.Clocks.get(clockID ?? "")?.delete();
+    if (!clockID) {return;}
+    await this.getClockByID(clockID)?.delete();
     await this.updateClockIndices();
   }
   // #endregion
@@ -491,10 +573,10 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     return this.isVisible && this.isActive;
   }
 
-  override get data() { return this.linkData as BladesTargetLink.Data & BladesClock.Schema; }
+  override get data() {return this.linkData as BladesTargetLink.Data & BladesClock.Schema;}
 
-  get name(): string { return this.data.name; }
-  set name(val: string) { this.updateTarget("name", val); }
+  get name(): string {return this.data.name;}
+  set name(val: string) {this.updateTarget("name", val);}
 
   get value(): number {return U.pInt(this.data.value);}
   set value(val: number) {this.updateTarget("value", U.pInt(val));}
@@ -508,7 +590,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   get isActive(): boolean {return U.pBool(this.data.isActive);}
   set isActive(val: boolean) {this.updateTarget("isActive", U.pBool(val));}
 
-  get parentKey() { return game.eunoblades.ClockKeys.get(this.data.parentKeyID); }
+  get parentKey() {return game.eunoblades.ClockKeys.get(this.data.parentKeyID);}
   get isShowingControls(): boolean {
     if (this.parentKey && !this.parentKey.isShowingControls) {return false;}
     return U.pBool(this.data.isShowingControls);
@@ -572,13 +654,6 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     }
     return returnVals;
   }
-
-  // #region ~~ CONSTRUCTOR ~~
-  constructor(data: BladesClock.Data) {
-    super(data);
-    game.eunoblades.Clocks.set(this.id, this);
-  }
-  // #endregion
 
   // #region HTML INTERACTION ~
   get elem(): HTMLElement | undefined {
@@ -678,7 +753,7 @@ export const ApplyClockListeners = async (html: JQuery<HTMLElement>, namespace: 
   async function setTarget(
     val: unknown,
     el: Element,
-    source: BladesTargetLink<BladesClock.Schema|BladesClockKey.Schema>
+    source: BladesTargetLink<BladesClock.Schema | BladesClockKey.Schema>
   ) {
     if (!source) {return;}
     const prop = $(el).data("prop");
@@ -746,8 +821,12 @@ export const ApplyClockListeners = async (html: JQuery<HTMLElement>, namespace: 
 
   // Add listeners to clocks
   html.find(".clock-container").each((_, clockContainerElem) => {
-    const clockID = $(clockContainerElem).find(".clock")[0].id;
-    const clock = game.eunoblades.Clocks.get(clockID);
+    const clockID = $(clockContainerElem).find(".clock")[0].id as IDString | undefined;
+    const keyID = $(clockContainerElem).closest(".clock-key")[0].id as IDString | undefined;
+    if (!clockID || !keyID) {throw new Error("Bad element config: No keyID and/or no clockID found.");}
+    const clockKey = game.eunoblades.ClockKeys.get(keyID);
+    if (!clockKey) {throw new Error("No such key found!");}
+    const clock = clockKey.getClockByID(clockID);
     if (!clock) {throw new Error("Too early for clock: no CLOCK!");}
     const {elem} = clock ?? {};
     if (!elem) {throw new Error("Too early for clock: no ELEMENT!");}
@@ -823,6 +902,4 @@ export const ApplyClockListeners = async (html: JQuery<HTMLElement>, namespace: 
   });
 };
 
-export default BladesClock;
-
-export {BladesClockKey};
+export default BladesClockKey;

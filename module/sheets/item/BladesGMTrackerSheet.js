@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { BladesActorType, BladesPhase } from "../../core/constants.js";
 import BladesItemSheet from "./BladesItemSheet.js";
 import BladesActor from "../../BladesActor.js";

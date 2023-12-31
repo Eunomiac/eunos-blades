@@ -86,8 +86,8 @@
           <span class="tab-title">Clocks</span>
         </label>
 
-        {{#each clocks}}
-        {{> "systems/eunos-blades/templates/components/clock.hbs" this isShowingControls=../isGM isGM=../isGM }}
+        {{#each clocksData}}
+        {{> "systems/eunos-blades/templates/overlay/clock-key.hbs" }}
         {{/each}}
       </div>
 

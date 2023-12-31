@@ -27,10 +27,7 @@ declare global {
     export interface district { district?: District }
 
     export interface clocks {
-      clocksData: {
-        keys?: Record<IDString, BladesClockKey.Data>,
-        clocks?: Record<IDString, BladesClock.Data>
-      }
+      clocksData: Record<IDString, BladesClockKey.Data>
     }
 
     export interface buyable { price: number }

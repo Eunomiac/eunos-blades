@@ -4,7 +4,7 @@ import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
 import BladesItem from "../../BladesItem.js";
 import { BladesProject } from "../../documents/BladesItemProxy.js";
 import BladesActiveEffect from "../../documents/BladesActiveEffect.js";
-import { ApplyClockListeners } from "../../classes/BladesClock.js";
+import { ApplyClockListeners } from "../../classes/BladesClocks.js";
 import Tags from "../../core/tags.js";
 class BladesItemSheet extends ItemSheet {
     static get defaultOptions() {

@@ -9582,7 +9582,10 @@ template {
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="12"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="12"][data-max="12"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 50% 0, 50% 50%);
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key[data-is-showing-controls=false] .clock-controls {
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container.controls-hidden .clock-key-controls {
+  display: none !important;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container.controls-hidden .clock-controls {
   display: none !important;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-controls,
@@ -9707,6 +9710,7 @@ template {
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container {
   height: calc(0.5 * var(--key-height));
   width: calc(0.5 * var(--key-width));
+  visibility: hidden;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container.active-key {
   min-width: 200px;
@@ -23373,7 +23377,10 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="12"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="12"][data-max="12"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 50% 0, 50% 50%);
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key[data-is-showing-controls=false] .clock-controls {
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container.controls-hidden .clock-key-controls {
+  display: none !important;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container.controls-hidden .clock-controls {
   display: none !important;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-controls,
@@ -25322,7 +25329,10 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="12"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="12"][data-max="12"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 0 100%, 0 0, 50% 0, 50% 50%);
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key[data-is-showing-controls=false] .clock-controls {
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container.controls-hidden .clock-key-controls {
+  display: none !important;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container.controls-hidden .clock-controls {
   display: none !important;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-controls,
@@ -25629,6 +25639,39 @@ template {
   padding: 0 0.625rem;
   width: 120px;
   --clock-size: 80px;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock .clock-key-controls, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock .clock-controls {
+  display: none !important;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock .clock-key-container {
+  height: 100px;
+  width: 100px;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock .clock-key-container .clock-key {
+  transform: translate(-50%, -50%) !important;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock .clock-key-container .clock-key .key-image-container {
+  height: 0px !important;
+  width: 0px !important;
+  transform: none !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock .clock-key-container .clock-key .key-image-container .key-image {
+  display: none;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock .clock-key-container .clock-key .key-image-container .clock-container {
+  height: 100px;
+  width: 100px;
+  top: 50px;
+  left: 50px;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock .clock-key-container .clock-key .key-image-container .clock-container .clock, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock .clock-key-container .clock-key .key-image-container .clock-container .clock > * {
+  height: 100px;
+  width: 100px;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .healing-clock .clock-key-container .clock-key .key-image-container .clock-container .clock-bg {
+  display: none;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.actor.pc .window-content form .sheet-root section.harm-armor > table > tbody > tr .armor-uses {
   padding: 0 0.625rem;

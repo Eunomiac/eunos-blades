@@ -4,6 +4,7 @@ import C from "../core/constants";
 import {BladesActor} from "../documents/BladesActorProxy";
 import {BladesItem} from "../documents/BladesItemProxy";
 
+
 class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
 
   // #region STATIC METHODS ~
@@ -88,7 +89,7 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
     data: BladesTargetLink.Data & Schema
   ): Promise<BladesDoc> {
     // Validate target.
-    const target = await fromUuid(data.targetID) as BladesDoc | undefined;
+    const target = fromUuidSync(data.targetID);
     if (!target) {throw new Error(`[BladesTargetLink.InitTargetLink] No target found with UUID '${data.targetID}'`);}
 
     // Initialize server-side data on target.
@@ -110,6 +111,8 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
   }
   // #endregion
 
+  get isGM() { return game.user.isGM; }
+
   private _id: IDString;
   private _targetID: UUIDString;
   private _targetKey?: TargetKey;
@@ -120,24 +123,31 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
   get targetKey(): TargetKey | undefined {return this._targetKey;}
   get targetFlagKey(): TargetFlagKey | undefined {return this._targetFlagKey;}
 
-  private _target: BladesDoc | undefined;
+  private _target: BladesDoc;
   get target(): BladesDoc {
-    if (!this._target) {
-      throw new Error(`[BladesTargetLink.target] Attempt to retrieve target ${this.targetID} without intialization.`);
-    }
     return this._target;
   }
 
   constructor(
     data: BladesTargetLink.Data & BladesTargetLink.UnknownSchema
   ) {
-    this._id = data.id;
-    this._targetID = data.targetID;
-    if (U.isTargetKey(data.targetKey)) {
-      this._targetKey = data.targetKey;
-    } else if (U.isTargetFlagKey(data.targetFlagKey)) {
-      this._targetFlagKey = data.targetFlagKey;
+    const {id, targetID, targetKey, targetFlagKey} = data;
+    if (!id || !targetID || !(targetKey || targetFlagKey)) {
+      eLog.error("BladesTargetLink", "Bad Constructor Data", {data});
+      throw new Error("[new BladesTargetLink()] Bad Constructor Data (see log)");
     }
+    this._id = id;
+    this._targetID = targetID;
+    if (U.isTargetKey(targetKey)) {
+      this._targetKey = targetKey;
+    } else if (U.isTargetFlagKey(targetFlagKey)) {
+      this._targetFlagKey = targetFlagKey;
+    }
+    const target = fromUuidSync(this.targetID);
+    if (!target) {
+      throw new Error(`[new BladesTargetLink()] Unable to resolve target from uuid '${this._targetID}'`);
+    }
+    this._target = target;
   }
 
   protected get linkData() {

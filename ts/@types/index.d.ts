@@ -5,7 +5,7 @@ import BladesActor from "../BladesActor";
 import {BladesItem, BladesClockKeeper, BladesGMTracker} from "../documents/BladesItemProxy";
 import BladesConsequence from "../classes/BladesConsequence";
 // import BladesGMTracker from "../documents/items/BladesGMTracker";
-import BladesClock, {BladesClockKey} from "../classes/BladesClock";
+import BladesClockKey from "../classes/BladesClocks";
 import BladesPushAlert from "../classes/BladesPushAlert";
 import BladesChat from "../classes/BladesChat";
 import C from "../core/constants";
@@ -26,16 +26,31 @@ import "./blades-roll";
 import "./blades-dialog";
 import "./blades-clock";
 import "./blades-tags";
+import "./blades-chat";
 
 import "./blades-target-link";
 
 declare module 'gsap/all';
 
-
-
-
-
 declare global {
+
+  namespace foundry {
+    namespace data {
+      namespace fields {
+        class ObjectField extends foundry.data.fields.OBJECT_FIELD {
+        }
+      }
+    }
+  }
+
+  declare class ObjectField extends foundry.data.fields.OBJECT_FIELD { }
+
+
+  declare function fromUuidSync(uuid: string, options?: {
+    relative?: Document,
+    invalid?: boolean,
+    strict?: boolean
+  }): BladesDoc | null;
 
   declare namespace EunoBlades {
 
@@ -43,20 +58,23 @@ declare global {
       ClockKeeper: BladesClockKeeper,
       Director: BladesDirector,
       Tracker: BladesGMTracker,
-      Clocks: Collection<BladesClock>,
       ClockKeys: Collection<BladesClockKey>,
       Consequences: Collection<BladesConsequence>
     }
   }
 
   // Foundry Game Document & Lenient Config for 'game' object
-  declare interface Game {
+  type BladesScenes = Scenes & { current: BladesScene }
+
+  declare interface Game extends {
+    scenes: { current: BladesScene }
+  } {
     items: Collection<BladesItem>,
     actors: Collection<BladesActor>,
     user: User,
     users: Collection<User>,
     messages: Collection<BladesChat>,
-    scenes: Scenes,
+    scenes: BladesScenes,
     model: {
       Actor: Record<BladesActorType, BladesActorSystem>,
       Item: Record<BladesItemType, BladesItemSystem>

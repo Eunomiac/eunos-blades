@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // #region IMPORTS ~
 import U from "../core/utilities.js";
-import C, { BladesActorType, BladesItemType, BladesPhase, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag } from "../core/constants.js";
+import C, { BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag } from "../core/constants.js";
 import { BladesActor, BladesPC, BladesCrew } from "../documents/BladesActorProxy.js";
 import { BladesItem, BladesGMTracker } from "../documents/BladesItemProxy.js";
 import { ApplyTooltipAnimations, ApplyConsequenceAnimations } from "../core/gsap.js";
 import BladesConsequence from "./BladesConsequence.js";
-import BladesClock, { BladesClockKey } from "./BladesClock.js";
 import BladesDialog from "./BladesDialog.js";
 import BladesChat from "./BladesChat.js";
 // #endregion
@@ -984,21 +984,28 @@ class BladesRollOpposition {
     rollOppName;
     rollOppSubName;
     rollOppType;
+    rollOppClockKey;
     rollOppImg;
     rollOppModsData;
     rollFactors;
     // #region Constructor ~
-    constructor(rollInstance, { rollOppID, rollOppDoc, rollOppName, rollOppSubName, rollOppType, rollOppImg, rollOppModsData, rollFactors } = {}) {
+    constructor(rollInstance, { rollOppID, rollOppDoc, rollOppName, rollOppSubName, rollOppType, rollOppImg, rollOppClockKey, rollOppClockKeyID, rollOppModsData, rollFactors } = {}) {
         this.rollInstance = rollInstance;
         // Attempt to fetch an associated BladesActor or BladesItem document
         const doc = BladesRollOpposition.GetDoc(rollOppDoc ?? rollOppID ?? rollOppName);
-        if (doc && !(doc instanceof BladesClock) && !(doc instanceof BladesClockKey)) {
+        if (doc) {
             // Derive settings from valid Actor/Item document, unless explicitly set in constructor.
             rollOppID = doc.rollOppID;
             rollOppDoc = doc;
             rollOppName ??= doc.rollOppName;
             rollOppSubName ??= doc.rollOppSubName;
             rollOppType ??= doc.rollOppType;
+            if ("rollOppClockKey" in doc) {
+                rollOppClockKey ??= doc.rollOppClockKey;
+            }
+            if ("rollOppClockKeyID" in doc) {
+                rollOppClockKeyID ??= doc.rollOppClockKeyID;
+            }
             rollOppImg ??= doc.rollOppImg;
             rollOppModsData = [
                 ...rollOppModsData ?? [],
@@ -1024,6 +1031,12 @@ class BladesRollOpposition {
         this.rollOppName = rollOppName;
         this.rollOppSubName = rollOppSubName;
         this.rollOppType = rollOppType;
+        if (rollOppClockKey) {
+            this.rollOppClockKey = rollOppClockKey;
+        }
+        else if (rollOppClockKeyID) {
+            this.rollOppClockKey = game.eunoblades.ClockKeys.get(rollOppClockKeyID);
+        }
         this.rollOppImg = rollOppImg ?? "";
         this.rollOppModsData = rollOppModsData ?? [];
         this.rollFactors = rollFactors;
@@ -1040,7 +1053,8 @@ class BladesRollOpposition {
             rollOppType: this.rollOppType,
             rollOppImg: this.rollOppImg,
             rollOppModsData: this.rollOppModsData,
-            rollFactors: this.rollFactors
+            rollFactors: this.rollFactors,
+            rollOppClockKeyID: this.rollOppClockKey?.id
         };
     }
     async updateRollFlags() {
@@ -1063,6 +1077,9 @@ class BladesRollOpposition {
             this.rollOppImg = rollOppFlags.rollOppImg;
             this.rollOppModsData = rollOppFlags.rollOppModsData;
             this.rollFactors = rollOppFlags.rollFactors;
+            if (rollOppFlags.rollOppClockKeyID) {
+                this.rollOppClockKey = game.eunoblades.ClockKeys.get(rollOppFlags.rollOppClockKeyID);
+            }
         }
         return this;
     }
@@ -1947,6 +1964,14 @@ class BladesRoll extends DocumentSheet {
             val.updateRollFlags();
         }
     }
+    get rollOppClockKey() {
+        return this.rollOpposition?.rollOppClockKey;
+    }
+    get rollClockKey() {
+        return this.flagData.rollClockKeyID
+            ? game.eunoblades.ClockKeys.get(this.flagData.rollClockKeyID)
+            : undefined;
+    }
     /**
      * This method prepares the roll participant data.
      * It iterates over the roll sections (roll, position, effect) and for each section,
@@ -2598,6 +2623,9 @@ class BladesRoll extends DocumentSheet {
     getConsequenceByID(csqID) {
         return this._csqData.find((cData) => cData.id === csqID) ?? false;
     }
+    get csqData() {
+        return Object.fromEntries(this._csqData.map((cData) => [cData.id, cData]));
+    }
     get acceptedConsequences() {
         if ([RollPhase.AwaitingConsequences, RollPhase.Complete].includes(this.rollPhase)) {
             return this._csqData.filter((cData) => cData.isAccepted === true);
@@ -2868,7 +2896,7 @@ class BladesRoll extends DocumentSheet {
      * @returns {BladesRoll.SheetData} The constructed sheet data.
      */
     getSheetData(isGM, rollCosts) {
-        const { flagData: rData, rollPrimary, rollTraitData, rollTraitOptions, finalDicePool, finalPosition, finalEffect, finalResult, rollMods, rollFactors } = this;
+        const { flagData: rData, rollPrimary, rollTraitData, rollTraitOptions, rollOppClockKey, rollClockKey, finalDicePool, finalPosition, finalEffect, finalResult, rollMods, rollFactors } = this;
         if (!rollPrimary) {
             throw new Error("A primary roll source is required for BladesRoll.");
         }
@@ -2913,8 +2941,10 @@ class BladesRoll extends DocumentSheet {
             ...rollResultData,
             ...GMBoostsData,
             ...positionEffectTradeData,
+            ...(rollOppClockKey ? { rollClockKey: rollOppClockKey } : {}),
+            ...(rollClockKey ? { rollClockKey } : {}),
             userPermission,
-            gamePhase: game.eunoblades.Tracker?.phase || BladesPhase.Freeplay
+            gamePhase: game.eunoblades.Tracker.phase
         };
     }
     // type BladesSelectOption<displayType, valueType = string> = {

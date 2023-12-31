@@ -1,14 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import C, {ActionTrait, ClockColor, AttributeTrait, RollType, ConsequenceType, Position, RollResult} from "./core/constants";
+import C, {ActionTrait, ClockColor, ClockKeyDisplayMode, AttributeTrait, RollType, ConsequenceType, Position, RollResult} from "./core/constants";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initDOMStyles} from "./core/settings";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers";
 import BladesChat from "./classes/BladesChat";
 import U from "./core/utilities";
 import logger from "./core/logger";
 import G, {Initialize as GsapInitialize} from "./core/gsap";
-import BladesClock, {BladesClockKey} from "./classes/BladesClock";
+import BladesClockKey from "./classes/BladesClocks";
 import BladesDirector from "./classes/BladesDirector";
 import BladesConsequence from "./classes/BladesConsequence";
+import BladesScene from "./classes/BladesScene";
 
 
 import BladesActorProxy, {
@@ -523,44 +525,6 @@ class GlobalGetter {
     BladesRoll.NewRoll(conf);
   }
 
-  async addClockKey(
-    keyName: string,
-    clockNames: string[]
-  ): Promise<{key: BladesClockKey, clocks: BladesClock[]}|undefined> {
-    const {ClockKeeper: CK} = game.eunoblades ?? {};
-    if (!CK) { return undefined; }
-    const clocksData: Array<Partial<BladesClock.Data>> = [];
-    const [curClock] = U.sample(clockNames);
-    const clocks: BladesClock[] = [];
-    while (clockNames.length) {
-      const name = clockNames.shift();
-      const [color] = U.sample([ClockColor.white, ClockColor.red, ClockColor.yellow, ClockColor.cyan]);
-      const [max] = U.sample([2, 3, 4, 5, 6, 8, 10, 12]);
-      let value: number;
-      if (curClock === name) {
-        value = U.randInt(1, max-1);
-      } else if (clockNames.includes(curClock)) {
-        value = max;
-      } else {
-        value = 0;
-      }
-
-      clocksData.push({name, color, value, max});
-    }
-    const clockKey = await CK.addClockKey({
-      sceneID: game.scenes.current?.id as IDString,
-      name: keyName
-    }, clocksData.shift());
-    if (!clockKey) { return undefined; }
-    while (clocksData.length) {
-      await clockKey.addClock(clocksData.shift());
-    }
-    return {
-      key: clockKey,
-      clocks
-    };
-  }
-
   get clockKeys() { return game.eunoblades.ClockKeeper?.clockKeys; }
 }
 
@@ -576,6 +540,7 @@ class GlobalGetter {
     // updateFactions,
     // updateDescriptions,
     // updateRollMods,
+    BladesScene,
     BladesDirector,
     BladesActor,
     BladesPC,
@@ -585,7 +550,6 @@ class GlobalGetter {
     BladesPCSheet,
     BladesCrewSheet,
     BladesFactionSheet,
-    BladesClock,
     BladesClockKey,
     BladesNPCSheet,
     BladesActiveEffect,
@@ -615,11 +579,9 @@ class GlobalGetter {
 
 // #region ████████ SYSTEM INITIALIZATION: Initializing Blades In The Dark System on 'Init' Hook ████████
 
-
 Hooks.once("init", async () => {
   // Initialize Game object
   game.eunoblades = {
-    Clocks: new Collection(),
     ClockKeys: new Collection(),
     Consequences: new Collection(),
     Director: BladesDirector.getInstance()
@@ -635,6 +597,7 @@ Hooks.once("init", async () => {
 
   CONFIG.Item.documentClass = BladesItemProxy as unknown as typeof Item;
   CONFIG.Actor.documentClass = BladesActorProxy as unknown as typeof Actor;
+  CONFIG.Scene.documentClass = BladesScene;
   CONFIG.ChatMessage.documentClass = BladesChat;
 
   // Register sheet application classes

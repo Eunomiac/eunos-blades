@@ -75,20 +75,7 @@
 
   {{#if isGM}}
   {{#if targetFlagKey}}(FLAG KEY NOT CONFIGURED){{else}}
-    <div class="clock-controls {{~#unless isShowingControls}} controls-hidden{{/unless}}" data-clock="{{id}}">
-
-      {{!-- Control Row: Open Controls Panel --}}
-      <div class="clock-controls-row toggle-controls-row">
-
-        {{!-- Toggle: isShowingControls --}}
-        <div class="clock-button" data-action="clock-toggle" data-prop="isShowingControls" >
-            <i class="fa-{{#if isShowingControls}}duotone{{else}}solid{{/if}} fa-gear"></i>
-        </div>
-
-      </div>
-
-    {{!-- CONTROLS PANEL --}}
-    {{#if isShowingControls}}
+    <div class="clock-controls" data-clock="{{id}}">
 
       {{!-- Control Row: Name --}}
       <div class="clock-controls-row name-row">
@@ -162,7 +149,6 @@
         </div>
 
       </div>
-    {{/if}}
 
     </div>
   {{/if}}

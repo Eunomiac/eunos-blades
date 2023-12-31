@@ -4,7 +4,7 @@ import {SVGDATA, BladesActorType, BladesItemType} from "../../core/constants";
 // import U from "../../core/utilities";
 import BladesActor from "../../BladesActor";
 import {BladesItem} from "../BladesItemProxy";
-import BladesClock, {BladesClockKey, ApplyClockListeners} from "../../classes/BladesClock";
+import BladesClockKey, {ApplyClockListeners} from "../../classes/BladesClocks";
 import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
 import type {ItemDataBaseProperties} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
@@ -22,7 +22,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
     } else {
       game.eunoblades.ClockKeeper = clockKeeper;
     }
-    U.gsap.delayedCall(2, game.eunoblades.ClockKeeper.renderOverlay);
+    game.eunoblades.ClockKeeper.renderOverlay();
   }
 
   static InitSockets() {
@@ -104,31 +104,12 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
 
   get keys(): Collection<BladesClockKey> {
     return new Collection(
-      Object.entries(this.system.clocksData.keys ?? {})
+      Object.entries(this.system.clocksData ?? {})
         .map(([id, data]) => [
           id,
           game.eunoblades.ClockKeys.get(id) ?? new BladesClockKey(data)
         ])
     );
-  }
-
-  get clocks(): Collection<BladesClock> {
-    return new Collection(
-      Object.entries(this.system.clocksData.clocks ?? {})
-        .sort((a, b) => a[1].index - b[1].index)
-        .map(([id, data]) => [
-          id,
-          game.eunoblades.Clocks.get(id) ?? new BladesClock(data)
-        ])
-    );
-  }
-
-  getSceneClocks(sceneID?: IDString): Collection<BladesClock> {
-    sceneID ??= this.targetSceneID;
-
-    return new Collection(this.clocks
-      .filter((clock) => clock.sceneID === sceneID)
-      .map((clock) => [clock.id, clock]));
   }
 
   getSceneKeys(sceneID?: IDString): Collection<BladesClockKey> {
@@ -140,16 +121,15 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
   }
 
   async addClockKey(
-    clockKeyConfig: Partial<BladesClockKey.Data> = {},
-    clockData: Partial<BladesClock.Data> = {}
+    clockKeyConfig: Partial<BladesClockKey.Data> = {}
   ): Promise<BladesClockKey|undefined> {
     if (!this.targetSceneID && !clockKeyConfig.sceneID) { return undefined; }
     const key = await BladesClockKey.Create({
       sceneID: this.targetSceneID,
       target: this,
-      targetKey: "system.clocksData.keys" as TargetKey,
+      targetKey: "system.clocksData" as TargetKey,
       ...clockKeyConfig
-    }, [clockData]);
+    });
     U.gsap.effects.keyDrop(key.elem);
     return key;
   }

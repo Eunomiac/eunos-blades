@@ -3,7 +3,7 @@ import U from "../../core/utilities";
 import {BladesActor, BladesCrew} from "../BladesActorProxy";
 import {BladesItem} from "../BladesItemProxy";
 import BladesRoll from "../../classes/BladesRoll";
-import BladesClock from "../../classes/BladesClock";
+import BladesClockKey from "../../classes/BladesClocks";
 import BladesDirector from "../../classes/BladesDirector";
 import {SelectionCategory} from "../../classes/BladesDialog";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
@@ -66,17 +66,23 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     };
 
     const pc = (await super.create(data, options)) as BladesPC;
-    await BladesClock.Create({
+    await BladesClockKey.Create({
       name: "",
       target: pc,
-      targetKey: "system.healing" as TargetKey,
-      color: ClockColor.white,
-      value: 0,
-      max: 4,
+      targetKey: "system.clocksData" as TargetKey,
       isVisible: true,
       isNameVisible: false,
       isShowingControls: false
-    });
+    }, [
+      {
+        color: ClockColor.white,
+        value: 0,
+        max: 4,
+        isVisible: true,
+        isNameVisible: false,
+        isShowingControls: false
+      }
+    ]);
     return pc as unknown as Promise<StoredDocument<Actor> | undefined>;
   }
   // #endregion
@@ -229,9 +235,16 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     return this.system.stress.max;
   }
 
-  get healingClock(): BladesClock|undefined {
-    const [clockID] = Object.keys(this.system.clocksData.clocks ?? {});
-    return game.eunoblades.Clocks.get(clockID ?? "");
+  private get isHealingClockReady(): boolean {
+    const [clockKeyID] = Object.keys(this.system.clocksData);
+    return game.eunoblades.ClockKeys.has(clockKeyID ?? "");
+  }
+
+  get healingClock(): BladesClockKey|undefined {
+    if (!this.isHealingClockReady) { return undefined; }
+    const [clockKeyID] = Object.keys(this.system.clocksData);
+    const clockKey = game.eunoblades.ClockKeys.get(clockKeyID ?? "");
+    return clockKey;
   }
 
   get harmLevel(): number {
@@ -561,6 +574,14 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     return tooltipStrings.join("");
   }
   // #endregion
+
+  override render(force?: boolean) {
+    if (!this.isHealingClockReady) {
+      setTimeout(() => this.render(force), 1000);
+      return;
+    }
+    super.render(force);
+  }
 }
 
 declare interface BladesPC {

@@ -41,54 +41,45 @@ export const gsapEffects = {
         }
     },
     keyDrop: {
-        effect: (target, config) => {
-            // Initial CSS should have visibility: hidden - can position key initially before it appears
-            config.left ??= U.gsap.utils.random(100, 1000);
-            config.top ??= U.gsap.utils.random(100, 500);
-            U.gsap.set(target, { left: config.left, top: config.top });
-            return U.gsap.from(target, {
-                autoAlpha: 0,
-                y: `-=${Math.abs(config.yShift)}`,
-                duration: config.duration,
-                ease: config.ease,
-                onComplete() {
-                    U.gsap.effects.keyHang(target).play();
-                }
+        effect: (clockKey, config) => {
+            const [keyContainer] = $(clockKey).closest(".clock-key-container");
+            return U.gsap.timeline()
+                .fromTo(keyContainer, {
+                y: config.yShift
+            }, {
+                y: 0,
+                autoAlpha: 1,
+                ease: "bounce",
+                duration: config.duration
             });
         },
         defaults: {
-            duration: 0.75,
-            ease: "bounce",
-            yShift: -500,
-            top: undefined,
-            left: undefined
+            duration: 1,
+            yShift: -800
         }
     },
-    keyHang: {
-        effect: (target, config) => {
-            return U.gsap.timeline({ paused: true }).fromTo(target, {
-                rotateZ: -0.5 * config.swingAngle,
-                transformOrigin: "50% 0px"
+    keySwing: {
+        effect: (clockKey, config) => {
+            const [keyContainer] = $(clockKey).closest(".clock-key-container");
+            return U.gsap.timeline({ id: "keySwing", repeat: -1, yoyo: true })
+                .fromTo(keyContainer, {
+                transformOrigin: "50% 10%",
+                rotateZ: -config.swingAngle
             }, {
-                id: "keyHang_swing",
-                rotateZ: 0.5 * config.swingAngle,
-                duration: 0.25 * config.duration,
-                ease: config.ease,
-                repeat: -1,
+                rotateZ: config.swingAngle,
+                ease: "sine.inOut",
+                duration: config.duration / 4,
+                repeat: 2,
                 yoyo: true
-            }, 0).fromTo(target, {
-                y: -0.5 * config.yRange,
-                scale: 1 - (0.5 * config.scaleRange),
-                filter: `blur(${config.blur}px) brightness(${1 - (0.5 * config.brightnessRange)})`
+            })
+                .fromTo(keyContainer, {
+                top: `+=${0.5 * config.yRange}`,
+                scale: `+=${0.5 * config.scaleRange}`
             }, {
-                id: "keyHang_idle",
-                y: 0.5 * config.yRange,
-                scale: 1 + (0.5 * config.scaleRange),
-                filter: `blur(0px) brightness(${1 + (0.5 * config.brightnessRange)})`,
-                duration: 0.5 * config.duration,
-                ease: config.ease,
-                repeat: -1,
-                yoyo: true
+                top: `-=${0.5 * config.yRange}`,
+                scale: `-=${0.5 * config.scaleRange}`,
+                ease: "sine.inOut",
+                duration: config.duration
             }, 0);
         },
         defaults: {
@@ -96,55 +87,45 @@ export const gsapEffects = {
             ease: "sine.inOut",
             yRange: 30,
             scaleRange: 0.2,
-            blur: 3,
-            brightnessRange: 0.4,
             duration: 12
         }
     },
-    keyUp: {
-        effect: (target, config) => {
-            const finalPos = {
-                top: 0,
-                left: 0,
-                rotateZ: 90,
-                transformOrigin: "50% 50%",
-                scale: 0.5,
-                opacity: 0
-            };
-            /* Also need to reposition label, and probably controls */
-            const tl = gsap.timeline();
-            tl.to(target, {
-                duration: config.duration,
+    keyPull: {
+        effect: (clockKey, config) => {
+            const [keyContainer] = $(clockKey).closest(".clock-key-container");
+            return U.gsap.timeline()
+                .to(keyContainer, {
+                y: config.yDelta,
                 ease: config.ease,
-                y: -500
-            }, 0)
-                .to(target, {
-                duration: config.duration,
-                ease: "power2.in",
-                opacity: 0
-            }, config.duration / 2)
-                .set(target, finalPos)
-                .fromTo(target, {
-                y: 50
-            }, {
-                y: 0,
-                duration: config.duration / 2,
-                ease: "elastic.out(1.2, 0.5)"
-            })
-                .fromTo(target, {
-                opacity: 0,
-                filter: "brightness(2)"
-            }, {
-                opacity: 1,
-                filter: "brightness(1)",
-                duration: config.duration / 2,
-                ease: "power2.in"
-            }, "<");
-            return tl;
+                duration: config.duration
+            });
         },
         defaults: {
-            duration: 0.5,
-            ease: "elastic.in(1.2, 0.5)"
+            yDelta: -800,
+            duration: 0.25,
+            ease: "back.in(1)"
+        }
+    },
+    keyControlZoom: {
+        effect: (clockKey, config) => {
+            const [keyContainer] = $(clockKey).closest(".clock-key-container");
+            return U.gsap.to(keyContainer, {
+                id: "keyZoom",
+                scale: config.scale,
+                ease: config.ease,
+                duration: config.duration,
+                onStart() {
+                    $(keyContainer).removeClass("controls-hidden");
+                },
+                onReverseComplete() {
+                    $(keyContainer).addClass("controls-hidden");
+                }
+            });
+        },
+        defaults: {
+            scale: 1.5,
+            ease: "sine",
+            duration: 1
         }
     },
     csqEnter: {

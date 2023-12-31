@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import C, { BladesActorType, BladesItemType, AttributeTrait, Tag, DowntimeAction, BladesPhase } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import BladesActorSheet from "./BladesActorSheet.js";
@@ -15,7 +16,7 @@ class BladesPCSheet extends BladesActorSheet {
     static Initialize() {
         Actors.registerSheet("blades", BladesPCSheet, { types: ["pc"], makeDefault: true });
         Hooks.on("dropActorSheetData", async (parentActor, _, { uuid }) => {
-            const doc = await fromUuid(uuid);
+            const doc = fromUuidSync(uuid);
             if (doc instanceof BladesActor) {
                 if (parentActor.type === BladesActorType.crew && doc.type === BladesActorType.pc) {
                     // Dropping a PC onto a Crew Sheet: Add Crew to PC

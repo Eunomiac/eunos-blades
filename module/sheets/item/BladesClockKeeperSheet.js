@@ -20,7 +20,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         const context = super.getData();
         const sheetData = {
             sceneOptions: Array.from(game.scenes),
-            sceneKeys: this.item.getSceneKeys()
+            sceneKeys: this.item.getSceneKeys(this.item.system.targetScene ?? game.scenes.current.id)
         };
         return { ...context, ...sheetData };
     }

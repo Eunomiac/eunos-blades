@@ -52,7 +52,7 @@ declare global {
       },
 
       hasVicePurveyor: boolean,
-      healing_clock: BladesClock,
+      healing_clock: BladesClockKey,
 
       stashData: BladesCompData,
       stressData: BladesCompData,
@@ -121,7 +121,7 @@ declare global {
 
     export interface Faction {
       tierData: BladesCompData,
-      clocks: Collection<BladesClock>
+      clockKeys: Collection<BladesClockKey>
     }
   }
 
