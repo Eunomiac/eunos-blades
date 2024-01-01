@@ -1,0 +1,95 @@
+<tr class="clock-row">
+  <td>
+    {{#if keyID}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      buttonClass="fa-solid fa-trash"
+      tooltip="<b>Delete Clock</b>"
+      action="delete-clock"
+      targetId=(concat keyID "-" id)
+    }}
+    {{else}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      buttonClass="fa-solid fa-trash"
+      tooltip="<b>Delete Clock</b>"
+      action="delete-clock"
+      targetId=id
+    }}
+    {{/if}}
+    {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
+      cssClass="clock-toggle"
+      isToggled=clockData.isVisible
+      activeClass="fa-solid fa-eye"
+      activeTooltip="<b>Clock is Visible.</b><br>Click to hide."
+      inactiveClass="fa-thin fa-eye"
+      inactiveTooltip="<b>Clock is Hidden.</b><br>Click to display."
+      targetKey=(concat targetKeyPrefix ".isVisible") }}
+
+    {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
+      cssClass="clock-toggle"
+      isToggled=clockData.isActive
+      activeClass="fa-solid fa-bell"
+      activeTooltip="<b>Clock is Active.</b><br>Click to deactivate."
+      inactiveClass="fa-regular fa-bell-slash"
+      inactiveTooltip="<b>Clock is Inactive.</b><br>Click to activate."
+      targetKey=(concat targetKeyPrefix ".isActive") }}
+
+    {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
+      cssClass="clock-toggle"
+      isToggled=clockData.isHighlighted
+      activeClass="fa-solid fa-lightbulb-on"
+      activeTooltip="<b>Clock is Highlighted.</b><br>Click to fade."
+      inactiveClass="fa-light fa-lightbulb-slash"
+      inactiveTooltip="<b>Clock is Not Highlighted.</b><br>Click to highlight."
+      targetKey=(concat targetKeyPrefix ".isHighlighted") }}
+
+    {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
+      cssClass="clock-toggle"
+      isToggled=clockData.isNameVisible
+      activeClass="fa-solid fa-tag"
+      activeTooltip="<b>Name is Visible.</b><br>Click to hide."
+      inactiveClass="fa-thin fa-tag"
+      inactiveTooltip="<b>Name is Hidden.</b><br>Click to display."
+      targetKey=(concat targetKeyPrefix ".isNameVisible") }}
+  </td>
+  <td>
+    <input type="text" class="clock-input clock-input-display" {{~#if clockData.color}} style="color: {{clockData.color}}"{{/if}} name="{{targetKeyPrefix}}.name" value="{{#if clockData}}{{clockData.name}}{{/if}}">
+  </td>
+  {{#if clockData}}
+  <td>
+    <select data-dtype="number" name="{{targetKeyPrefix}}.max">
+      {{#select clockData.max}}
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="8">8</option>
+      <option value="10">10</option>
+      <option value="12">12</option>
+      {{/select}}
+    </select>
+    <select data-dtype="string" name="{{targetKeyPrefix}}.color" data-color="{{clockData.color}}">
+      {{#select clockData.color}}
+      <option data-color="yellow" value="yellow" style="background: yellow !important">📀</option>
+      <option data-color="red" value="red" style="background: red !important">🔴</option>
+      <option data-color="cyan" value="cyan" style="background: cyan !important">🔵</option>
+      <option data-color="white" value="white" style="background: white !important">🔘</option>
+      {{/select}}
+    </select>
+  </td>
+  <td>
+    <select data-dtype="number" name="{{targetKeyPrefix}}.value">
+      {{#select clockData.value}}
+      {{#for 0 clockData.max}}
+        <option value="{{this}}">{{this}}</option>
+      {{/for}}
+      {{/select}}
+    </select>
+  </td>
+  {{/if}}
+</tr>
+<tr class="clock-row gm-notes-row">
+  <td colspan="4">
+    <textarea name="{{targetKeyPrefix}}.gm_notes" class="full-width clock-gm-notes">{{gm_notes}}</textarea>
+  </td>
+</tr>

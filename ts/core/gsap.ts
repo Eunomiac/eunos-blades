@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "./utilities";
 import C from "./constants";
+import BladesClockKey, {BladesClock} from "../classes/BladesClocks";
 // eslint-disable-next-line import/no-unresolved
 import {TextPlugin, Flip, Draggable as Dragger, MotionPathPlugin, SplitText, Observer, CustomEase, CustomWiggle, CustomBounce, EasePack} from "gsap/all";
 
@@ -142,6 +143,55 @@ export const gsapEffects: Record<string, gsapEffect> = {
       scale: 1.5,
       ease: "sine",
       duration: 1
+    }
+  },
+  hoverOverClockKey: {
+    effect: (clockKey, config) => {
+      if (!(clockKey instanceof BladesClockKey)) { throw new Error("clockKey is not an instance of BladesClockKey"); }
+      if (!clockKey.elem) { throw new Error("clockKey.elem is null or undefined"); }
+
+      return U.gsap.timeline({paused: true})
+        .to(clockKey.elem, {
+          scale: 1.25,
+          ease: "sine",
+          duration: 0.25,
+          onStart() {
+            clockKey.keySwingTimeline?.tweenTo(1, {duration: 0.25, ease: "none"});
+          },
+          onReverse() {
+            clockKey.keySwingTimeline?.resume();
+          }
+        }, 0);
+    },
+    defaults: {
+
+    }
+  },
+  hoverOverClock: {
+    effect: (clock, config) => {
+      if (!(clock instanceof BladesClock)) { throw new Error("clock is not an instance of BladesClock"); }
+      if (!clock.elem) { throw new Error("clock.elem is null or undefined"); }
+
+      const [clockLabel] = $(clock.elem).find(".clock-label");
+      const [clockGlow] = $(clock.elem).find(".clock-glow");
+
+      return U.gsap.timeline({paused: true})
+        .fromTo(clock.elem, {filter: "brightness(1)"}, {
+          filter: "brightness(1.5)",
+          scale: 1.25,
+          duration: 0.25
+        })
+        .to(clockLabel, {
+          autoAlpha: 1,
+          duration: 0.25
+        }, 0)
+        .to(clockGlow, {
+          autoAlpha: 1,
+          duration: 0.25
+        }, 0);
+    },
+    defaults: {
+      duration: 0.5
     }
   },
   csqEnter: {

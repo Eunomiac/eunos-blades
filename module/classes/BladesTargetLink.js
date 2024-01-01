@@ -87,6 +87,7 @@ class BladesTargetLink {
         return new this(data);
     }
     // #endregion
+    // #region GETTERS ~
     get isGM() { return game.user.isGM; }
     _id;
     _targetID;
@@ -100,6 +101,22 @@ class BladesTargetLink {
     get target() {
         return this._target;
     }
+    get linkData() {
+        let linkData;
+        if (this.targetFlagKey) {
+            linkData = this.target.getFlag("eunos-blades", `${this.targetFlagKey}.${this.id}`) ?? undefined;
+        }
+        else if (this.targetKey) {
+            linkData = getProperty(this.target, `${this.targetKey}.${this.id}`);
+        }
+        if (!linkData) {
+            throw new Error("[BladesTargetLink.linkData] Error retrieving linkData.");
+        }
+        return linkData;
+    }
+    get data() { return this.linkData; }
+    // #endregion
+    // #region CONSTRUCTOR ~
     constructor(data) {
         const { id, targetID, targetKey, targetFlagKey } = data;
         if (!id || !targetID || !(targetKey || targetFlagKey)) {
@@ -120,23 +137,8 @@ class BladesTargetLink {
         }
         this._target = target;
     }
-    get linkData() {
-        let linkData;
-        if (this.targetFlagKey) {
-            linkData = this.target.getFlag("eunos-blades", `${this.targetFlagKey}.${this.id}`) ?? undefined;
-        }
-        else if (this.targetKey) {
-            linkData = getProperty(this.target, `${this.targetKey}.${this.id}`);
-        }
-        if (!linkData) {
-            throw new Error("[BladesTargetLink.linkData] Error retrieving linkData.");
-        }
-        return linkData;
-    }
-    get data() { return this.linkData; }
-    getTargetProp(prop) {
-        return this.linkData[prop];
-    }
+    // #endregion
+    // #region ASYNC UPDATE & DELETE METHODS ~
     async updateTarget(prop, val) {
         if (this.targetFlagKey) {
             this.target.setFlag("eunos-blades", `${this.targetFlagKey}.${this.id}.${prop}`, val);

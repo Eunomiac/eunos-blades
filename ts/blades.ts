@@ -643,11 +643,10 @@ Hooks.once("ready", async () => {
   initCanvasStyles();
   initTinyMCEStyles();
 
-  await BladesDirector.getInstance().renderOverlay();
+  await BladesDirector.getInstance().renderOverlay_SocketResponse();
 
   BladesDirector.InitSockets();
   BladesRoll.InitSockets();
-  BladesClockKeeper.InitSockets();
 });
 // #endregion ▄▄▄▄▄ SYSTEM INITIALIZATION ▄▄▄▄▄
 

@@ -12,40 +12,75 @@
     </section>
 
     {{!-- Tabs, Tab Navigation --}}
-    <section class="tab-content flex-vertical">
-      <div class="scene-selection">
-        <label>Scene:</label>
-        <select name="system.targetScene">
-          {{#select system.targetScene}}
-          {{#each sceneOptions }}
-          <option value="{{id}}">{{name}}</option>
-          {{/each}}
-          {{/select}}
-        </select>
-      </div>
-      <div class="keys-container full-width">
-        <table>
-          <thead>
-            <th class="black-white">State</th>
-            <th class="black-white">Name</th>
-            <th class="black-white">Size</th>
-            <th class="black-white">
-              {{> "systems/eunos-blades/templates/components/button-icon.hbs"
-                buttonClass="fa-sharp fa-solid fa-square-plus"
-                tooltip="<b>Add Key</b>"
-                action="add-key"
-              }}
-            </th>
-          </thead>
-          <tbody>
-            {{#each sceneKeys as |key keyID|}}
+    <section class="tab-content nav-group flex-vertical">
+        {{!-- Nav menu --}}
+        <nav class="nav-tabs flex-horizontal">
+          <a class="tab-selector" data-tab="scene-keys">By Scene</a>
+          {{#if hasScoreKeys}}
+            <a class="tab-selector" data-tab="score-keys">Score</a>
+          {{/if}}
+          <a class="tab-selector" data-tab="project-keys">Project</a>
+          <a class="tab-selector" data-tab="faction-keys">Faction</a>
+        </nav>
 
-            {{> "systems/eunos-blades/parts/clock-sheet-key.hbs" }}
-
-
+        {{!-- Scene Keys --}}
+        <div class="tab scene-keys flex-vertical" data-tab="scene-keys">
+          <div class="scene-selection">
+            <label>Scene:</label>
+            <select name="system.targetScene">
+              {{#select system.targetScene}}
+              {{#each sceneOptions }}
+              <option value="{{id}}">{{name}}</option>
+              {{/each}}
+              {{/select}}
+            </select>
+          </div>
+          {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+            buttonClass="fa-sharp fa-solid fa-square-plus"
+            tooltip="<b>Add Key</b>"
+            action="add-key"
+          }}
+          <div class="keys-container full-width">
+            {{#each sceneKeys }}
+              {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls-full.hbs" }}
             {{/each}}
-          </tbody>
-        </table>
+          </div>
+        </div>
+
+        {{#if hasScoreKeys}}
+        {{!-- Score Keys --}}
+        <div class="tab score-keys flex-vertical" data-tab="score-keys">
+          <div class="keys-container full-width">
+            {{#each scoreKeys }}
+              {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls-minimal.hbs" }}
+            {{/each}}
+          </div>
+        </div>
+        {{/if}}
+
+        {{!-- Project Keys --}}
+        <div class="tab project-keys flex-vertical" data-tab="project-keys">
+          <div class="keys-container full-width">
+            {{#each pcsWithProjects as |pc|}}
+              <h2>{{pc.name}}</h2>
+              {{#each pc.projects as |project|}}
+                {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls-minimal.hbs" project.clockKey }}
+              {{/each}}
+            {{/each}}
+          </div>
+        </div>
+
+        {{!-- Faction Keys --}}
+        <div class="tab faction-keys flex-vertical" data-tab="faction-keys">
+          <div class="keys-container full-width">
+            {{#each factions as |faction|}}
+              <h2>{{faction.name}}</h2>
+              {{#each faction.clocks}}
+                {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls-minimal.hbs" }}
+              {{/each}}
+            {{/each}}
+          </div>
+        </div>
       </div>
     </section>
   </div>

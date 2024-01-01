@@ -1,7 +1,7 @@
 import C, {Playbook, ClockColor, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModType, RollModSection, RollModStatus} from "../../core/constants";
 import U from "../../core/utilities";
 import {BladesActor, BladesCrew} from "../BladesActorProxy";
-import {BladesItem} from "../BladesItemProxy";
+import {BladesItem, BladesProject} from "../BladesItemProxy";
 import BladesRoll from "../../classes/BladesRoll";
 import BladesClockKey from "../../classes/BladesClocks";
 import BladesDirector from "../../classes/BladesDirector";
@@ -14,7 +14,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
                                               BladesRoll.PrimaryDocData,
                                               BladesRoll.ParticipantDocData {
 
-  // #region Static Overrides: Create ~
+  // #region Static Overrides: Create, get All ~
   static override IsType<T extends BladesActorType = BladesActorType.pc>(doc: unknown): doc is BladesActorOfType<T> {
     return super.IsType(doc, BladesActorType.pc);
   }
@@ -84,6 +84,13 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       }
     ]);
     return pc as unknown as Promise<StoredDocument<Actor> | undefined>;
+  }
+
+  static override get All(): Collection<BladesPC> {
+    return new Collection<BladesPC>(
+      (super.GetTypeWithTags(BladesActorType.pc) as BladesPC[])
+        .map((pc) => [pc.id, pc])
+    );
   }
   // #endregion
 
@@ -301,6 +308,10 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   async addStash(amount: number): Promise<void> {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return; }
     await this.update({"system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max)});
+  }
+
+  get projects(): BladesProject[] {
+    return this.getSubItemsOfType(BladesItemType.project) as BladesProject[];
   }
 
   get remainingDowntimeActions(): number {

@@ -1,4 +1,5 @@
 import {BladesActorType, BladesItemType, AttributeTrait, ActionTrait, BladesPhase} from "../core/constants";
+import {BladesPC, BladesFaction} from "../documents/BladesActorProxy";
 
 declare global {
 
@@ -20,7 +21,9 @@ declare global {
     export interface Background {}
     export interface Clock_Keeper {
       sceneOptions: Scene[],
-      sceneKeys: Collection<BladesClockKey>
+      sceneKeys: Collection<BladesClockKey>,
+      pcsWithProjects: BladesPC[],
+      factions: BladesFaction[]
     }
     export interface Cohort_Gang {
       subtitle: string,

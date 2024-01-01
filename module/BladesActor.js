@@ -300,6 +300,9 @@ class BladesActor extends Actor {
     // #endregion
     // #region SubItemControl Implementation ~
     get subItems() { return Array.from(this.items); }
+    getSubItemsOfType(itemType) {
+        return this.items.filter((item) => item.type === itemType);
+    }
     get activeSubItems() { return this.items.filter((item) => !item.hasTag(Tag.System.Archived)); }
     get archivedSubItems() { return this.items.filter((item) => item.hasTag(Tag.System.Archived)); }
     _checkItemPrereqs(item) {
@@ -741,7 +744,7 @@ class BladesActor extends Actor {
     parentActor;
     get isSubActor() { return this.parentActor !== undefined; }
     // #endregion
-    // #region BladesRoll Implementation
+    // #region BladesRoll Implementation ~
     get rollModsData() {
         return BladesRollMod.ParseDocRollMods(this);
     }
@@ -783,9 +786,11 @@ class BladesActor extends Actor {
         return this.type;
     }
     get rollPrimaryImg() { return this.img; }
+    // #endregion
+    // #endregion
     // #region BladesCrew Implementation ~
     // #endregion
-    // #region PREPARING DERIVED DATA
+    // #region PREPARING DERIVED DATA ~
     prepareDerivedData() {
         if (BladesActor.IsType(this, BladesActorType.pc)) {
             this._preparePCData(this.system);

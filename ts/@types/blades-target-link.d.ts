@@ -42,8 +42,6 @@ declare global {
 
       async delete()
 
-      getTargetProp(prop: string): unknown
-
       async updateTarget(prop: string, val: unknown)
 
       async updateTargetData(val: Schema|null)

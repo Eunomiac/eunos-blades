@@ -29,16 +29,9 @@ class BladesDirector {
   }
 
   public static async Initialize() {
-    // Trigger the instantiation of the Singleton by calling the getter
-    const director = BladesDirector.getInstance();
-
-    // Initialize the overlay element once canvas loaded
-    Hooks.on("canvasReady", async () => {director.renderOverlay();});
-
     // Return asynchronous template loading.
     return loadTemplates([
       "systems/eunos-blades/templates/overlay/blades-overlay.hbs",
-      "systems/eunos-blades/templates/overlay/clock-key.hbs",
       "systems/eunos-blades/templates/overlay/location.hbs",
       "systems/eunos-blades/templates/overlay/score-panel.hbs",
       "systems/eunos-blades/templates/overlay/npc-portrait.hbs",
@@ -100,7 +93,15 @@ class BladesDirector {
 
   private get svgData() {return SVGDATA;}
 
-  public async renderOverlay() {
+  get sceneKeys() { return game.eunoblades.ClockKeeper.getSceneKeys(); }
+
+  renderOverlay_SocketCall() {
+    if (!game.user.isGM) { return; }
+    if (!this.overlayElement) { return; }
+    socketlib.system.executeForEveryone("renderOverlay_SocketCall");
+  }
+  async renderOverlay_SocketResponse() {
+
     // Render the overlay element
     this.overlayElement.innerHTML = await renderTemplate(
       "systems/eunos-blades/templates/overlay/blades-overlay.hbs",
@@ -108,7 +109,7 @@ class BladesDirector {
     );
 
     // Clear previously-applied listeners
-    $(this.overlayElement).find("*").addBack().off(".blades-director");
+    $(this.overlayElement).find("*").addBack().off();
 
     // Reactivate event listeners
     this.activateClockListeners();
@@ -120,8 +121,79 @@ class BladesDirector {
     this.activateCrewListeners();
   }
 
-  private activateClockListeners() {
-    // tbd...
+  private async activateClockListeners() {
+
+    const clockKeySection$ = $(this.clockKeySectionElem);
+
+    clockKeySection$.find(".clock-key-container").each((_, keyContainer) => {
+      const keyContainer$ = $(keyContainer);
+      const clockKey = game.eunoblades.ClockKeys.get(keyContainer$.find(".clock-key").attr("id") ?? "");
+      if (!clockKey) { return; }
+
+      // Enable pointer events on the container, so that the hover-over timeline can be played
+      keyContainer$.css("pointer-events", "auto");
+      // Do the same for clocks contained by the key
+      clockKey.clocks.forEach((clock) => {
+        if (!clock.elem) { return; }
+        $(clock.elem).css("pointer-events", "auto");
+      });
+
+      if (game.user.isGM) {
+        // === GM-ONLY LISTENERS ===
+
+        // Double-Click a Clock Key = SocketPull it, Open ClockKeeper sheet
+        keyContainer$.on("dblclick", async () => {
+          clockKey.pull_SocketCall();
+          game.eunoblades.ClockKeeper.render(true);
+        });
+
+        // Mouse-Wheel a Clock = Add/Remove Segments one-by-one.
+        //   -- can UPDATE the server data immediately
+        //   -- at end of each animated segment, check server data to see if another one should be animated in
+        //   -- need animations for COMPLETING a clock, and for EMPTYING a clock.
+
+        clockKey.clocks.forEach((clock) => {
+          if (!clock.elem) { return; }
+          const clockElem$ = $(clock.elem);
+          clockElem$.on("wheel", async (event) => {
+            if (!(event.originalEvent instanceof WheelEvent)) {return;}
+            event.preventDefault();
+            const delta = event.originalEvent.deltaY ?? 0;
+            if (delta > 0) {
+              await clock.fillSegments(1);
+            } else if (delta < 0) {
+              await clock.clearSegments(1);
+            }
+            // === TEMPORARY: RERENDER DIRECTOR OVERLAY TO SEE CLOCK CHANGES ===
+            // (replace with socketlib call to animation effect within fillSegments/clearSegments methods)
+            this.renderOverlay_SocketCall();
+          });
+        });
+
+      } else {
+        // === PLAYER-ONLY LISTENERS ===
+
+        // Add listeners to container for mouseenter and mouseleave, that play and reverse timeline attached to element
+        keyContainer$.on("mouseenter", () => {
+          clockKey.hoverOverTimeline?.play();
+        }).on("mouseleave", () => {
+          clockKey.hoverOverTimeline?.reverse();
+        });
+
+        // Now repeat this for each clock in the clock key
+        clockKey.clocks.forEach((clock) => {
+          if (!clock.elem) { return; }
+          const clockElem$ = $(clock.elem);
+
+          // Add listeners to clock for mouseenter and mouseleave, that play and reverse timeline attached to element
+          clockElem$.on("mouseenter", () => {
+            clock.hoverOverTimeline?.play();
+          }).on("mouseleave", () => {
+            clock.hoverOverTimeline?.reverse();
+          });
+        });
+      }
+    });
   }
 
   private activateScorePanelListeners() {
@@ -152,6 +224,8 @@ class BladesDirector {
   // #region SOCKETS
   public static InitSockets() {
     const director = BladesDirector.getInstance();
+
+    socketlib.system.register("renderOverlay_SocketCall", director.renderOverlay_SocketResponse.bind(director));
 
     director.initClockSockets();
     director.initScorePanelSockets();

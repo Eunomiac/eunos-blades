@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../../core/utilities.js";
-import { SVGDATA, BladesItemType } from "../../core/constants.js";
 import { BladesItem } from "../BladesItemProxy.js";
-import BladesClockKey, { ApplyClockListeners } from "../../classes/BladesClocks.js";
+import BladesClockKey from "../../classes/BladesClocks.js";
 class BladesClockKeeper extends BladesItem {
     static async Initialize() {
         const clockKeeper = game.items.find((item) => item.type === "clock_keeper");
@@ -16,71 +15,26 @@ class BladesClockKeeper extends BladesItem {
         else {
             game.eunoblades.ClockKeeper = clockKeeper;
         }
-        game.eunoblades.ClockKeeper.renderOverlay();
+        return loadTemplates([
+            "systems/eunos-blades/templates/parts/clock-sheet-key-controls-full.hbs",
+            "systems/eunos-blades/templates/parts/clock-sheet-key-controls-minimal.hbs",
+            "systems/eunos-blades/templates/parts/clock-sheet-clock-controls-full.hbs",
+            "systems/eunos-blades/templates/parts/clock-sheet-clock-controls-minimal.hbs"
+        ]);
     }
-    static InitSockets() {
-        socketlib.system.register("renderOverlay", game.eunoblades.ClockKeeper.renderOverlay);
+    showClockKeyControls(keyID) {
+        if (this.sheet?.element) {
+            // Find the key controls row, flip it over to controls row.
+        }
+    }
+    hideClockKeyControls(keyID) {
+        if (this.sheet?.element) {
+            // Find the key controls row, flip it back to minimal summary
+        }
     }
     // #region CLOCKS OVERLAY
-    _overlayElement;
-    get overlayElement() {
-        this._overlayElement ??= $("#clocks-overlay")[0];
-        if (!this._overlayElement) {
-            $("body.vtt.game.system-eunos-blades").append("<section id=\"clocks-overlay\"></section>");
-            [this._overlayElement] = $("#clocks-overlay");
-        }
-        return this._overlayElement;
-    }
-    async renderOverlay() {
-        if (!game.scenes?.current) {
-            return;
-        }
-        const { ClockKeeper: keeper } = game.eunoblades;
-        if (!keeper) {
-            return;
-        }
-        const { overlayElement } = keeper;
-        eLog.checkLog3("clocksOverlay", "[ClocksOverlay] RenderOverlay", overlayElement);
-        if (!overlayElement) {
-            eLog.error("clocksOverlay", "[ClocksOverlay] Cannot locate overlay element.");
-            return;
-        }
-        // Re-render the overlay element
-        overlayElement.innerHTML = await renderTemplate("systems/eunos-blades/templates/overlays/clock-overlay.hbs", keeper);
-        // Reactivate event listeners
-        keeper.activateOverlayListeners();
-    }
     get clockKeys() { return this.getSceneKeys(); }
     get currentScene() { return game.scenes?.current?.id; }
-    get svgData() { return SVGDATA; }
-    async activateOverlayListeners() {
-        if (!game?.user?.isGM) {
-            return;
-        }
-        eLog.checkLog3("clocksOverlay", "[activateOverlayListeners] Keys", this.keys);
-        ApplyClockListeners($("#clocks-overlay"), "ClocksOverlay");
-        $("#clocks-overlay").find(".key-label").on({
-            click: async (event) => {
-                if (!event.currentTarget) {
-                    return;
-                }
-                if (!BladesItem.IsType(game.eunoblades.ClockKeeper, BladesItemType.clock_keeper)) {
-                    return;
-                }
-                event.preventDefault();
-                const clockKey = game.eunoblades.ClockKeys.get($(event.currentTarget).data("keyId"));
-                if (clockKey && clockKey.elem) {
-                    await clockKey.toggleActive();
-                }
-            },
-            contextmenu: () => {
-                if (!game.user.isGM) {
-                    return;
-                }
-                game.eunoblades.ClockKeeper?.sheet?.render(true);
-            }
-        });
-    }
     get currentSceneID() {
         if (!game.scenes?.current) {
             throw new Error("[BladesClockKeeper.currentScene] Error retrieving 'game.scenes.current'.");

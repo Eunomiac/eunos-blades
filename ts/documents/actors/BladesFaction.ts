@@ -6,6 +6,13 @@ class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
                                                    BladesRoll.OppositionDocData {
 
 
+  static override get All(): Collection<BladesFaction> {
+    return new Collection<BladesFaction>(
+      (super.GetTypeWithTags(BladesActorType.faction) as BladesFaction[])
+        .map((faction) => [faction.id, faction])
+    );
+  }
+
   // #region BladesRoll Implementation
 
   // #region BladesRoll.OppositionDoc Implementation

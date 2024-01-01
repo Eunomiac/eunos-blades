@@ -579,10 +579,9 @@ Hooks.once("ready", async () => {
     initDOMStyles();
     initCanvasStyles();
     initTinyMCEStyles();
-    await BladesDirector.getInstance().renderOverlay();
+    await BladesDirector.getInstance().renderOverlay_SocketResponse();
     BladesDirector.InitSockets();
     BladesRoll.InitSockets();
-    BladesClockKeeper.InitSockets();
 });
 // #endregion ▄▄▄▄▄ SYSTEM INITIALIZATION ▄▄▄▄▄
 // #region ░░░░░░░[SocketLib]░░░░ SocketLib Initialization ░░░░░░░ ~

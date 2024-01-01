@@ -3,6 +3,7 @@ import BladesItemSheet from "./BladesItemSheet";
 import BladesClockKeeper from "../../documents/items/BladesClockKeeper";
 // import U from "../../core/utilities";
 import {BladesItemType} from "../../core/constants";
+import {BladesPC, BladesFaction} from "../../documents/BladesActorProxy";
 
 class BladesClockKeeperSheet extends BladesItemSheet {
 
@@ -13,15 +14,15 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       classes: ["eunos-blades", "sheet", "item", "clock-keeper"],
       template: "systems/eunos-blades/templates/items/clock_keeper-sheet.hbs",
       width: 700,
-      height: 970
+      height: 970,
+      tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "scene-keys"}]
     });
   }
 
   static async Initialize() {
     Items.registerSheet("blades", BladesClockKeeperSheet, {types: ["clock_keeper"], makeDefault: true});
     return loadTemplates([
-      "systems/eunos-blades/templates/items/clock_keeper-sheet.hbs",
-      "systems/eunos-blades/templates/parts/clock-sheet-row.hbs"
+      "systems/eunos-blades/templates/items/clock_keeper-sheet.hbs"
     ]);
   }
 
@@ -30,7 +31,9 @@ class BladesClockKeeperSheet extends BladesItemSheet {
 
     const sheetData: BladesItemDataOfType<BladesItemType.clock_keeper> = {
       sceneOptions: Array.from(game.scenes),
-      sceneKeys: this.item.getSceneKeys(this.item.system.targetScene ?? game.scenes.current.id as IDString)
+      sceneKeys: this.item.getSceneKeys(this.item.system.targetScene ?? game.scenes.current.id as IDString),
+      pcsWithProjects: BladesPC.All.filter((pc) => pc.projects.length > 0),
+      factions: Array.from(BladesFaction.All)
     };
 
     return {...context, ...sheetData} as BladesItemSheetData;

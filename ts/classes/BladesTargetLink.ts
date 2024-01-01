@@ -47,7 +47,7 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
       throw new Error(`[BladesTargetLink.ResolveConfigToData()] Data Lacks ANY 'target' / 'targetID': '${JSON.stringify(config)}'`);
     }
     // - ... Convert to UUID
-    let targetUUID: UUIDString|undefined;
+    let targetUUID: UUIDString | undefined;
     if (U.isDocUUID(targetRef)) {
       targetUUID = targetRef;
     } else if (U.isDocID(targetRef)) {
@@ -111,7 +111,8 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
   }
   // #endregion
 
-  get isGM() { return game.user.isGM; }
+  // #region GETTERS ~
+  get isGM() {return game.user.isGM;}
 
   private _id: IDString;
   private _targetID: UUIDString;
@@ -128,6 +129,25 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
     return this._target;
   }
 
+  protected get linkData() {
+    let linkData: (BladesTargetLink.Data & BladesTargetLink.UnknownSchema) | undefined;
+    if (this.targetFlagKey) {
+      linkData = this.target.getFlag("eunos-blades", `${this.targetFlagKey}.${this.id}`) as (BladesTargetLink.Data & BladesTargetLink.UnknownSchema) ?? undefined;
+    } else if (this.targetKey) {
+      linkData = getProperty(this.target, `${this.targetKey}.${this.id}`);
+    }
+
+    if (!linkData) {
+      throw new Error("[BladesTargetLink.linkData] Error retrieving linkData.");
+    }
+
+    return linkData;
+  }
+
+  get data() {return this.linkData;}
+  // #endregion
+
+  // #region CONSTRUCTOR ~
   constructor(
     data: BladesTargetLink.Data & BladesTargetLink.UnknownSchema
   ) {
@@ -149,28 +169,10 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
     }
     this._target = target;
   }
+  // #endregion
 
-  protected get linkData() {
-    let linkData: (BladesTargetLink.Data & BladesTargetLink.UnknownSchema) | undefined;
-    if (this.targetFlagKey) {
-      linkData = this.target.getFlag("eunos-blades", `${this.targetFlagKey}.${this.id}`) as (BladesTargetLink.Data & BladesTargetLink.UnknownSchema) ?? undefined;
-    } else if (this.targetKey) {
-      linkData = getProperty(this.target, `${this.targetKey}.${this.id}`);
-    }
 
-    if (!linkData) {
-      throw new Error("[BladesTargetLink.linkData] Error retrieving linkData.");
-    }
-
-    return linkData;
-  }
-
-  get data() { return this.linkData; }
-
-  getTargetProp(prop: string): unknown {
-    return this.linkData[prop];
-  }
-
+  // #region ASYNC UPDATE & DELETE METHODS ~
   async updateTarget(prop: string, val: unknown) {
     if (this.targetFlagKey) {
       (this.target as BladesItem).setFlag("eunos-blades", `${this.targetFlagKey}.${this.id}.${prop}`, val);
@@ -179,7 +181,7 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
     }
   }
 
-  async updateTargetData<T extends BladesTargetLink.UnknownSchema>(val: T|null) {
+  async updateTargetData<T extends BladesTargetLink.UnknownSchema>(val: T | null) {
     if (val === null) {
       if (this.targetFlagKey) {
         await (this.target as BladesItem).unsetFlag("eunos-blades", `${this.targetFlagKey}.${this.id}`);
@@ -207,6 +209,7 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
   async delete() {
     await this.updateTargetData(null);
   }
+  // #endregion
 }
 
 

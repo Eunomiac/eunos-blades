@@ -1,6 +1,11 @@
+import { BladesActorType } from "../../core/constants.js";
 import { BladesActor } from "../BladesActorProxy.js";
 import BladesClockKey from "../../classes/BladesClocks.js";
 class BladesFaction extends BladesActor {
+    static get All() {
+        return new Collection(super.GetTypeWithTags(BladesActorType.faction)
+            .map((faction) => [faction.id, faction]));
+    }
     // #region BladesRoll Implementation
     // #region BladesRoll.OppositionDoc Implementation
     get rollOppID() { return this.id; }

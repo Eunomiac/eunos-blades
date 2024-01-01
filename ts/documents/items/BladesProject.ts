@@ -24,6 +24,13 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
     return this._clockKey;
   }
 
+  get ownerName(): string|undefined {
+    if (this.parent) {
+      return this.parent.name;
+    }
+    return undefined;
+  }
+
   get currentClock() {
     return this.clockKey?.currentClock;
   }

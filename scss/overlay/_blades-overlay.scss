@@ -1,22 +1,39 @@
-&, .overlay-section {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  pointer-events: none;
-  z-index: 50;
-  perspective: 500px;
-  transform-style: preserve-3d;
+$key-sizes: (
+  1: (height: 455px, width: 202px, labelTop: 150px, inactiveKeyTop: -350px, inactiveLabelLeft: -40px, inactiveLabelBottom: 50px),
+  2: (height: 624.438px, width: 202px, labelTop: 400px, inactiveKeyTop: -520px, inactiveLabelLeft: -40px, inactiveLabelBottom: 50px),
+  3: (height: 915px, width: 280px, labelTop: 600px, inactiveKeyTop: -815px, inactiveLabelLeft: -10px, inactiveLabelBottom: 50px),
+  4: (height: 1140px, width: 376px, labelTop: 700px, inactiveKeyTop: -925px, inactiveLabelLeft: 40px, inactiveLabelBottom: 150px),
+  5: (height: 1140px, width: 376px, labelTop: 800px, inactiveKeyTop: -1025px, inactiveLabelLeft: 40px, inactiveLabelBottom: 50px),
+  6: (height: 1150px, width: 376px, labelTop: 900px, inactiveKeyTop: -1025px, inactiveLabelLeft: 40px, inactiveLabelBottom: 50px)
+);
 
-  #testSquare {
+& {
+  &, & > * {
+    display: block;
     position: absolute;
-    top: 200px;
-    left: 300px;
-    background: blue;
-    height: 200px;
-    width: 200px;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+    z-index: 50;
+    perspective: 500px;
+    transform-style: preserve-3d;
   }
+
+
+  @import "../components/clocks";
+
+}
+
+&,
+.overlay-section,
+.svg-defs {
+
+
+
+
+
 
   .clock-key-container { visibility: hidden; }
 }

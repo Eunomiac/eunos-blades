@@ -19,6 +19,12 @@ class BladesProject extends BladesItem {
         this._clockKey = game.eunoblades.ClockKeys.get(Object.keys(this.system.clocksData)[0]);
         return this._clockKey;
     }
+    get ownerName() {
+        if (this.parent) {
+            return this.parent.name;
+        }
+        return undefined;
+    }
     get currentClock() {
         return this.clockKey?.currentClock;
     }

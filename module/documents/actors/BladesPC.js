@@ -6,7 +6,7 @@ import BladesClockKey from "../../classes/BladesClocks.js";
 import BladesDirector from "../../classes/BladesDirector.js";
 import { SelectionCategory } from "../../classes/BladesDialog.js";
 class BladesPC extends BladesActor {
-    // #region Static Overrides: Create ~
+    // #region Static Overrides: Create, get All ~
     static IsType(doc) {
         return super.IsType(doc, BladesActorType.pc);
     }
@@ -65,6 +65,10 @@ class BladesPC extends BladesActor {
             }
         ]);
         return pc;
+    }
+    static get All() {
+        return new Collection(super.GetTypeWithTags(BladesActorType.pc)
+            .map((pc) => [pc.id, pc]));
     }
     // #endregion
     constructor(data) {
@@ -281,6 +285,9 @@ class BladesPC extends BladesActor {
             return;
         }
         await this.update({ "system.stash.value": Math.min(this.system.stash.value + amount, this.system.stash.max) });
+    }
+    get projects() {
+        return this.getSubItemsOfType(BladesItemType.project);
     }
     get remainingDowntimeActions() {
         if (!BladesActor.IsType(this, BladesActorType.pc)) {

@@ -43,16 +43,13 @@
     {{/unless}}
 
     <!-- Glow -->
-    {{#if isHighlighted}}
     {{#unless (test "#" "in" color)}} {{!-- Don't render the glow if 'color' is a hex value --}}
-    <div class="clock-glow clock-glow-{{color}}"></div>
+    <div class="clock-glow clock-glow-{{color}}" {{~#unless isHighlighted}} style="visibility: hidden;"{{/unless}}></div>
     {{/unless}}
-    {{/if}}
+
 
     <!-- Label -->
-    {{#if isNameVisible}}
-    <label class="clock-label">{{name}}</label>
-    {{/if}}
+    <label class="clock-label" {{~#unless isNameVisible}} style="visibility: hidden;"{{/unless}}>{{name}}</label>
 
     {{/if}}
 

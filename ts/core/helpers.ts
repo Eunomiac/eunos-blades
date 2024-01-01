@@ -32,10 +32,7 @@ export async function preloadHandlebarsTemplates() {
     "systems/eunos-blades/templates/parts/roll-opposition-creator.hbs",
     "systems/eunos-blades/templates/parts/active-effects.hbs",
     "systems/eunos-blades/templates/parts/gm-pc-summary.hbs",
-
-    // Overlays
-    "systems/eunos-blades/templates/overlays/clock-overlay.hbs",
-    "systems/eunos-blades/templates/overlays/clock-key.hbs"
+    "systems/eunos-blades/templates/components/clock-key.hbs"
   ];
 
   // Load the template parts

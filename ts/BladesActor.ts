@@ -326,6 +326,10 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
   get subItems() { return Array.from(this.items); }
 
+  getSubItemsOfType<T extends BladesItemType>(itemType: T): Array<BladesItemOfType<T>> {
+    return this.items.filter((item) => item.type === itemType) as Array<BladesItemOfType<T>>;
+  }
+
   get activeSubItems() { return this.items.filter((item) => !item.hasTag(Tag.System.Archived)); }
 
   get archivedSubItems() { return this.items.filter((item) => item.hasTag(Tag.System.Archived)); }
@@ -802,7 +806,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
   // #endregion
 
-  // #region BladesRoll Implementation
+  // #region BladesRoll Implementation ~
   get rollModsData(): BladesRoll.RollModData[] {
     return BladesRollMod.ParseDocRollMods(this);
   }
@@ -852,11 +856,15 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
   get rollPrimaryImg() { return this.img; }
 
+  // #endregion
+
+  // #endregion
+
   // #region BladesCrew Implementation ~
 
   // #endregion
 
-  // #region PREPARING DERIVED DATA
+  // #region PREPARING DERIVED DATA ~
   override prepareDerivedData() {
     if (BladesActor.IsType(this, BladesActorType.pc)) { this._preparePCData(this.system); }
     if (BladesActor.IsType(this, BladesActorType.crew)) { this._prepareCrewData(this.system); }

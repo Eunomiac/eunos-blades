@@ -1,5 +1,6 @@
 
 <tr>
+  ADD TO SCENE / REMOVE FROM SCENE BUTTON
   <th class="black-white">
     {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
       isToggled=key.isVisible
@@ -45,6 +46,6 @@
 </t>
 
 {{#each key.clocksData}}
-{{> "systems/eunos-blades/templates/parts/clock-sheet-row.hbs" }}
+{{> "systems/eunos-blades/templates/parts/clock-sheet-clock-controls-minimal.hbs" }}
 {{/each}}
 </tr>
