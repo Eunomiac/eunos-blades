@@ -1,17 +1,16 @@
-<a class="button-icon {{~#if blockClass}} {{blockClass}}{{/if}}" {{~#if targetId}} data-id="{{targetId}}" {{/if~}} data-action="{{action}}">
+{{!-- {{eLog "BUTTON CONTEXT" this}} --}}
+
+<a class="button-icon {{blockClass}} {{~#if tooltip}} tooltip-trigger{{/if}}"
+  data-action="{{action}}"
+  data-key-id="{{targetId}}"
+>
   {{#if buttonClass}}
     <i class="{{buttonClass}}"></i>
   {{/if}}
   {{#if buttonImg}}
     <img class="button-img" src="{{buttonImg}}" />
   {{/if}}
-  {{#if buttonSvg}}
-    {{{buttonSvg}}}
-  {{/if}}
-  {{#if buttonLabel}}
-    <label class="button-label">{{buttonLabel}}</label>
-  {{/if}}
   {{#if tooltip}}
-  <span class="tooltip button-icon-tooltip">{{{tooltip}}}</span>
+    <span class="tooltip button-icon-tooltip">{{{tooltip}}}</span>
   {{/if}}
 </a>

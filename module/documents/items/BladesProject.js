@@ -26,7 +26,7 @@ class BladesProject extends BladesItem {
         return undefined;
     }
     get currentClock() {
-        return this.clockKey?.currentClock;
+        return this.clockKey?.activeClocks[0];
     }
     get isComplete() {
         return this.clockKey?.isComplete;

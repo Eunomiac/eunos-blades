@@ -8,8 +8,6 @@ import BladesDirector from "../../classes/BladesDirector";
 import {SelectionCategory} from "../../classes/BladesDialog";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
-type harmLevel = 1|2|3|4;
-
 class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
                                               BladesRoll.PrimaryDocData,
                                               BladesRoll.ParticipantDocData {
@@ -72,15 +70,17 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       targetKey: "system.clocksData" as TargetKey,
       isVisible: true,
       isNameVisible: false,
-      isShowingControls: false
+      isSpotlit: false
     }, [
       {
         color: ClockColor.white,
         value: 0,
         max: 4,
+        index: 0,
         isVisible: true,
+        isActive: true,
         isNameVisible: false,
-        isShowingControls: false
+        isHighlighted: false
       }
     ]);
     return pc as unknown as Promise<StoredDocument<Actor> | undefined>;

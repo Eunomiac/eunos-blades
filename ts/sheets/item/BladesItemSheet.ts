@@ -5,7 +5,7 @@ import BladesActor from "../../BladesActor";
 import BladesItem from "../../BladesItem";
 import {BladesProject} from "../../documents/BladesItemProxy";
 import BladesActiveEffect from "../../documents/BladesActiveEffect";
-import {ApplyClockListeners} from "../../classes/BladesClocks";
+// import {ApplyClockListeners} from "../../classes/BladesClocks";
 
 import Tags from "../../core/tags";
 
@@ -334,7 +334,6 @@ class BladesItemSheet extends ItemSheet {
 
     Tags.InitListeners(html, this.item);
     ApplyTooltipAnimations(html);
-    ApplyClockListeners(html, `Item-${this.item.id}`);
 
 
     // Everything below here is only needed if the sheet is editable

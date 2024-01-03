@@ -404,9 +404,7 @@ export var ClockKeyDisplayMode;
 (function (ClockKeyDisplayMode) {
     ClockKeyDisplayMode["full"] = "full";
     ClockKeyDisplayMode["clocks"] = "clocks";
-    ClockKeyDisplayMode["currentClock"] = "currentClock";
-    ClockKeyDisplayMode["presentCurrentClock"] = "presentCurrentClock";
-    ClockKeyDisplayMode["present0"] = "present0";
+    ClockKeyDisplayMode["activeClocks"] = "activeClocks";
     ClockKeyDisplayMode["present1"] = "present1";
     ClockKeyDisplayMode["present2"] = "present2";
     ClockKeyDisplayMode["present3"] = "present3";
@@ -4487,7 +4485,6 @@ export const Randomizers = {
     }
 };
 export const SVGDATA = {
-    overlayScale: 0.25,
     oneKeys: {
         height: 835,
         width: 230,
@@ -4500,9 +4497,6 @@ export const SVGDATA = {
         }
     },
     keys: {
-        marginHoriz: 20,
-        marginVert: 0,
-        alternatingVertShift: 120,
         list: {
             1: {
                 height: 455,

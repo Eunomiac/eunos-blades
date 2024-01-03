@@ -383,7 +383,7 @@ class BladesConsequence {
     // If HARM -> Apply harm to actor.
     if (/Harm/.exec(this._type)) {
       await this._primaryDoc.applyHarm(
-        U.pInt(this._type.substring(this._type.length - 1)) as 1|2|3|4,
+        U.pInt(this._type.substring(this._type.length - 1)) as harmLevel,
         this._name
       );
     // If WORSE POSITION -> Add flag to user to be checked on next Action roll, then cleared

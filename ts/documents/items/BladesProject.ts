@@ -32,7 +32,7 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
   }
 
   get currentClock() {
-    return this.clockKey?.currentClock;
+    return this.clockKey?.activeClocks[0];
   }
 
   get isComplete() {

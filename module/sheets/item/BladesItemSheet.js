@@ -4,7 +4,7 @@ import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
 import BladesItem from "../../BladesItem.js";
 import { BladesProject } from "../../documents/BladesItemProxy.js";
 import BladesActiveEffect from "../../documents/BladesActiveEffect.js";
-import { ApplyClockListeners } from "../../classes/BladesClocks.js";
+// import {ApplyClockListeners} from "../../classes/BladesClocks.js";
 import Tags from "../../core/tags.js";
 class BladesItemSheet extends ItemSheet {
     static get defaultOptions() {
@@ -355,7 +355,6 @@ class BladesItemSheet extends ItemSheet {
         const self = this;
         Tags.InitListeners(html, this.item);
         ApplyTooltipAnimations(html);
-        ApplyClockListeners(html, `Item-${this.item.id}`);
         // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) {
             return;

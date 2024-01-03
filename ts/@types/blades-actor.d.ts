@@ -16,6 +16,7 @@ declare global {
   type SubActorData = Partial<BladesActor["system"]>
   type AdvancementTrait = ActionTrait|"Ability"|"Upgrade"|"Cohort"|"CohortType"
   type Loadout = "heavy"|"normal"|"light"|"encumbered"
+  type harmLevel = 1|2|3|4;
 
   // #region SCHEMA DATA: TEMPLATE.JSON & SYSTEM
 

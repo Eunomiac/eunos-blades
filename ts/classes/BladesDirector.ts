@@ -4,7 +4,7 @@ import {SVGDATA, BladesPhase, BladesActorType, BladesItemType} from "../core/con
 // import U from "../core/utilities";
 import {BladesActor} from "../documents/BladesActorProxy";
 import {BladesItem} from "../documents/BladesItemProxy";
-import BladesClockKey, {ApplyClockListeners} from "./BladesClocks";
+import BladesClockKey from "./BladesClocks";
 
 import {gsapEffects, gsapEffect, gsapConfig} from "../core/gsap";
 
@@ -15,13 +15,18 @@ namespace BladesDirector {
   }
 }
 
+const ObserverIgnoreStrings: string[] = [];
+
+
 class BladesDirector {
 
   // #region SINGLE INSTANCE FACTORY METHODS
   private static instance: BladesDirector;
 
-  private constructor() { // eslint-disable-line no-useless-constructor
-    // intentionally left blank
+  _id: IDString;
+
+  private constructor() {
+    this._id = randomID() as IDString;
   }
 
   public static getInstance(): BladesDirector {
@@ -46,95 +51,175 @@ class BladesDirector {
   // #endregion
 
   // #region OVERLAY
-  private _overlayElement?: HTMLElement;
-
-  private get overlayElement(): HTMLElement {
-    if (!this._overlayElement) {
-      [this._overlayElement] = $("#blades-overlay");
+  private _overlayContainer?: HTMLElement;
+  private _overlayContainer$?: JQuery<HTMLElement>;
+  private get overlayContainer(): HTMLElement {
+    if (!this._overlayContainer) {
+      [this._overlayContainer] = $("#blades-overlay");
     }
-    if (!this._overlayElement) {
+    if (!this._overlayContainer) {
       $("body.vtt").append("<section id=\"blades-overlay\"></section>");
-      [this._overlayElement] = $("#blades-overlay");
+      [this._overlayContainer] = $("#blades-overlay");
+      this.resetObservers();
     }
-    return this._overlayElement;
+    return this._overlayContainer;
+  }
+  private get overlayContainer$(): JQuery<HTMLElement> {
+    if (!this._overlayContainer$) {
+      this._overlayContainer$ = $(this.overlayContainer);
+    }
+    return this._overlayContainer$;
   }
 
-  private get clockKeySectionElem(): HTMLElement {
-    return $(this.overlayElement).find(".overlay-section-clock-keys")[0];
+
+  private get clockKeySection$(): JQuery<HTMLElement> {
+    return this.overlayContainer$.find(".overlay-section-clock-keys");
+  }
+  public async appendToClockKeySection(elem: HTMLCode|HTMLElement|JQuery<HTMLElement>): Promise<JQuery<HTMLElement>> {
+    if (typeof elem === "string") {
+      elem = $(elem);
+    }
+    elem = $(elem).appendTo(this.clockKeySection$);
+    const keyID = elem.find(".clock-key").data("id") as IDString;
+    const key = game.eunoblades.ClockKeys.get(keyID) as BladesClockKey;
+    await key.initClockKeyElem();
+    return key.elem$ as JQuery<HTMLElement>;
+  }
+  public removeFromClockKeySection(elem: IDString|HTMLElement|JQuery<HTMLElement>): void {
+    if (typeof elem === "string") {
+      elem = $(`#${elem}`);
+    }
+    $(elem).parents(".clock-key-container").remove();
   }
 
-  private get locationSectionElem(): HTMLElement {
-    return $(this.overlayElement).find(".overlay-section-location")[0];
+  private get locationSection$(): JQuery<HTMLElement> {
+    return this.overlayContainer$.find(".overlay-section-location");
   }
 
-  private get scorePanelSectionElem(): HTMLElement {
-    return $(this.overlayElement).find(".overlay-section-score-panel")[0];
+  private get scorePanelSection$(): JQuery<HTMLElement> {
+    return this.overlayContainer$.find(".overlay-section-score-panel");
   }
 
-  private get npcSectionElem(): HTMLElement {
-    return $(this.overlayElement).find(".overlay-section-npcs")[0];
+  private get npcSection$(): JQuery<HTMLElement> {
+    return this.overlayContainer$.find(".overlay-section-npcs");
   }
 
-  private get playerSectionElem(): HTMLElement {
-    return $(this.overlayElement).find(".overlay-section-players")[0];
+  private get playerSection$(): JQuery<HTMLElement> {
+    return this.overlayContainer$.find(".overlay-section-players");
   }
 
-  private get crewSectionElem(): HTMLElement {
-    return $(this.overlayElement).find(".overlay-section-crew")[0];
+  private get crewSection$(): JQuery<HTMLElement> {
+    return this.overlayContainer$.find(".overlay-section-crew");
   }
 
-  private get notificationSectionElem(): HTMLElement {
-    return $(this.overlayElement).find(".overlay-section-notifications")[0];
+  private get notificationSection$(): JQuery<HTMLElement> {
+    return this.overlayContainer$.find(".overlay-section-notifications");
   }
 
-  private get transitionSectionElem(): HTMLElement {
-    return $(this.overlayElement).find(".overlay-section-transitions")[0];
+  private get transitionSection$(): JQuery<HTMLElement> {
+    return this.overlayContainer$.find(".overlay-section-transitions");
   }
 
   private get svgData() {return SVGDATA;}
+  // #endregion
 
-  get sceneKeys() { return game.eunoblades.ClockKeeper.getSceneKeys(); }
+
+  // #region OBSERVERS ~
+
+  get ObserverData(): Observer.ObserverVars[] {
+    return [
+      // Overlay Clock Key Observer
+      {
+        id: "overlay-clock-key",
+        type: "pointer",
+        target: game.eunoblades.Director.clockKeySection$[0],
+        ignore: [
+          ...ObserverIgnoreStrings
+        ],
+        onPress(obs) {
+          if (!(obs.event.currentTarget instanceof HTMLElement)) { return; }
+          const target$ = $(obs.event.currentTarget);
+          if (target$.hasClass("clock-key")) {
+            const clockKey = game.eunoblades.ClockKeys.get(target$.attr("id") ?? "");
+            if (!clockKey) { throw new Error(`ClockKey not found for ID: '${target$.attr("id") ?? ""}'`); }
+            switch (obs.event.type) {
+              case "dblclick": {
+                console.log(`Double-Click on ClockKey: ${clockKey.name || clockKey.id}`);
+                break;
+              }
+              case "contextmenu": {
+                console.log(`Right-Click on ClockKey: ${clockKey.name || clockKey.id}`);
+                break;
+              }
+              default: {
+                break;
+              }
+            }
+          }
+        }
+      }
+    ];
+  }
+
+  _Observers?: Collection<Observer>;
+
+  get Observers(): Collection<Observer> {
+    return this._Observers ??= new Collection<Observer>(
+      this.ObserverData
+        .map((oVars) => {
+          if (!oVars.id) {
+            eLog.error("BladesDirector", "Observer must have an ID", oVars);
+            throw new Error("Observer must have an ID");
+          }
+          return [oVars.id, Observer.create(oVars)];
+        })
+    );
+  }
+
+  resetObservers() {
+    this._Observers?.forEach((obs) => {obs.kill();});
+    this._Observers?.clear();
+    delete this._Observers;
+    void this.Observers; // Trigger Observer regeneration within getter.
+  }
+
+  // #endregion
+
+  get sceneKeys() {return game.eunoblades.ClockKeeper.getSceneKeys();}
 
   renderOverlay_SocketCall() {
-    if (!game.user.isGM) { return; }
-    if (!this.overlayElement) { return; }
+    if (!game.user.isGM) {return;}
+    if (!this.overlayContainer) {return;}
     socketlib.system.executeForEveryone("renderOverlay_SocketCall");
   }
   async renderOverlay_SocketResponse() {
 
     // Render the overlay element
-    this.overlayElement.innerHTML = await renderTemplate(
+    const overlayContent = await renderTemplate(
       "systems/eunos-blades/templates/overlay/blades-overlay.hbs",
       this
     );
+    this.overlayContainer$.empty().append(overlayContent);
 
-    // Clear previously-applied listeners
-    $(this.overlayElement).find("*").addBack().off();
-
-    // Reactivate event listeners
-    this.activateClockListeners();
-    this.activateScorePanelListeners();
-    this.activateLocationListeners();
-    this.activateNPCListeners();
-    this.activatePCListeners();
-    this.activateCohortListeners();
-    this.activateCrewListeners();
+    // Display keys that are visible
+    this.sceneKeys
+      .filter((key) => key.isVisible)
+      .forEach((key) => key.drop_Animation());
   }
+
 
   private async activateClockListeners() {
 
-    const clockKeySection$ = $(this.clockKeySectionElem);
-
-    clockKeySection$.find(".clock-key-container").each((_, keyContainer) => {
+    this.clockKeySection$.find(".clock-key-container").each((_, keyContainer) => {
       const keyContainer$ = $(keyContainer);
       const clockKey = game.eunoblades.ClockKeys.get(keyContainer$.find(".clock-key").attr("id") ?? "");
-      if (!clockKey) { return; }
+      if (!clockKey) {return;}
 
       // Enable pointer events on the container, so that the hover-over timeline can be played
       keyContainer$.css("pointer-events", "auto");
       // Do the same for clocks contained by the key
       clockKey.clocks.forEach((clock) => {
-        if (!clock.elem) { return; }
+        if (!clock.elem) {return;}
         $(clock.elem).css("pointer-events", "auto");
       });
 
@@ -153,7 +238,7 @@ class BladesDirector {
         //   -- need animations for COMPLETING a clock, and for EMPTYING a clock.
 
         clockKey.clocks.forEach((clock) => {
-          if (!clock.elem) { return; }
+          if (!clock.elem) {return;}
           const clockElem$ = $(clock.elem);
           clockElem$.on("wheel", async (event) => {
             if (!(event.originalEvent instanceof WheelEvent)) {return;}
@@ -182,7 +267,7 @@ class BladesDirector {
 
         // Now repeat this for each clock in the clock key
         clockKey.clocks.forEach((clock) => {
-          if (!clock.elem) { return; }
+          if (!clock.elem) {return;}
           const clockElem$ = $(clock.elem);
 
           // Add listeners to clock for mouseenter and mouseleave, that play and reverse timeline attached to element
@@ -332,7 +417,7 @@ class BladesDirector {
 
   // #region NOTIFICATIONS
 
-  public push(targets: string[]|string, config: BladesDirector.PushNoticeConfig) {
+  public push(targets: string[] | string, config: BladesDirector.PushNoticeConfig) {
     const pushID = randomID();
     if (typeof targets === "string") {
       if (targets === "ALL") {
@@ -360,9 +445,9 @@ class BladesDirector {
       id: pushID,
       ...config
     }))
-      .appendTo($(this.notificationSectionElem))
-      .on("click", (event: ClickEvent) => { this.$removePush(event.currentTarget); })
-      .on("contextmenu", (event: ContextMenuEvent) => { this.$removeAndClear(event.currentTarget); });
+      .appendTo(this.notificationSection$)
+      .on("click", (event: ClickEvent) => {this.$removePush(event.currentTarget);})
+      .on("contextmenu", (event: ContextMenuEvent) => {this.$removeAndClear(event.currentTarget);});
 
     U.gsap.fromTo(
       pushElem$,

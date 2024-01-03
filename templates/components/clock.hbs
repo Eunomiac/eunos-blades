@@ -1,153 +1,45 @@
-{{eLog "Clock Context" this}}
+{{eLog (concat "Clock Context of " id) this}}
 
-<div class="clock-container">
+<div class="clock-container {{~#unless isVisible}} clock-hidden{{/unless}}">
 
-  <div id="{{id}}" class="clock"
-    data-id="{{id}}"
-    data-name="{{name}}"
-    data-index="{{index}}"
-    data-color="{{color}}"
-    data-max="{{max}}"
-    data-value="{{value}}"
-    data-is-active="{{isActive}}"
-    data-is-visible="{{isVisible}}"
-    {{~#if targetID}} data-target-id="{{targetID}}"{{/if}}
-    {{~#if targetKey}} data-target-key="{{targetKey}}"{{/if}}
-    data-is-highlighted="{{isHighlighted}}"
-    data-is-name-visible="{{isNameVisible}}"
-    data-is-showing-controls="{{isShowingControls}}">
+  <div id="{{id}}" class="clock" data-id="{{id}}" data-name="{{name}}" data-index="{{index}}" data-color="{{color}}" data-max="{{max}}" data-value="{{value}}" data-is-active="{{isActive}}" data-is-visible="{{isVisible}}" {{~#if targetID}} data-target-id="{{targetID}}"{{/if}} {{~#if targetKey}} data-target-key="{{targetKey}}"{{/if}} data-is-highlighted="{{isHighlighted}}" data-is-name-visible="{{isNameVisible}}">
 
     <!-- Background -->
     <image class="clock-bg" src="systems/eunos-blades/assets/clocks/clock-bg.webp" />
 
-    {{!-- {{#if (test isVisible "||" isGM)}} --}}
+    {{#if isVisible}}
 
-    {{#if (test isVisible "||" isGM)}}
-    <!-- Frame -->
-    {{#unless (test value "==" max)}}
-    <image class="clock-frame" src="systems/eunos-blades/assets/clocks/clock-{{max}}-frame.webp" />
-    {{/unless}}
+      <!-- Frame -->
+      <image class="clock-frame" src="systems/eunos-blades/assets/clocks/clock-{{max}}-frame.webp" />
 
-    <!-- Fill -->
-    {{#unless (test value "==" 0)}}
-    <div class="clock-fill">
+      <!-- Fill -->
+      {{#unless (test value "==" 0)}}
+      <div class="clock-fill">
 
-      {{#if (test "#" "in" color)}} {{!-- If color is a hex value: Render SVG circle filled with that color. --}}
-        <svg viewBox="0 0 400 400">
-          <circle cx="200" cy="200" r="200" fill="{{color}}" />
-        </svg>
-      {{else}} {{!-- Otherwise, assume color is a valid path to an image and render that instead  --}}
-        <img class="clock-fill-img" src="systems/eunos-blades/assets/clocks/clock-fill-{{color}}.webp" />
-      {{/if}}
-    </div>
-    {{/unless}}
+        {{#if (test "#" "in" color)}} {{!-- If color is a hex value: Render SVG circle filled with that color. --}}
+          <svg viewBox="0 0 400 400">
+            <circle cx="200" cy="200" r="200" fill="{{color}}" />
+          </svg>
+        {{else}} {{!-- Otherwise, assume color is a valid path to an image and render that instead  --}}
+          <img class="clock-fill-img" src="systems/eunos-blades/assets/clocks/clock-fill-{{color}}.webp" />
+        {{/if}}
+      </div>
+      {{/unless}}
 
-    <!-- Glow -->
-    {{#unless (test "#" "in" color)}} {{!-- Don't render the glow if 'color' is a hex value --}}
-    <div class="clock-glow clock-glow-{{color}}" {{~#unless isHighlighted}} style="visibility: hidden;"{{/unless}}></div>
-    {{/unless}}
+      <!-- Glow -->
+      {{#unless (test "#" "in" color)}} {{!-- Don't render the glow if 'color' is a hex value --}}
+      <div class="clock-glow clock-glow-{{color}} {{~#unless isHighlighted}} clock-glow-hidden{{/unless}}"></div>
+      {{/unless}}
 
+      <!-- Label -->
+      <label class="clock-label {{~#unless isNameVisible}} label-hidden{{/unless}}">{{name}}</label>
 
-    <!-- Label -->
-    <label class="clock-label" {{~#unless isNameVisible}} style="visibility: hidden;"{{/unless}}>{{name}}</label>
+    {{else}}
+
+      <!-- Blocker for Hidden Clocks -->
+      <image class="clock-blocker" src="systems/eunos-blades/assets/clocks/clock-blocker.webp" />
 
     {{/if}}
-
-
-
-    {{!-- {{/if}} --}}
-
   </div>
 
-    {{!-- Controls:
-
-      Name: Input<text>
-      Color: Select
-      Max: Select
-      IsVisible: Toggle
-      IsHighlighted: Toggle
-      IsNameVisible: Toggle
-
-    --}}
-
-  {{#if isGM}}
-  {{#if targetFlagKey}}(FLAG KEY NOT CONFIGURED){{else}}
-    <div class="clock-controls" data-clock="{{id}}">
-
-      {{!-- Control Row: Name --}}
-      <div class="clock-controls-row name-row">
-
-        {{!-- Text Input: Clock Name --}}
-        <input type="text" class="clock-controls-name" data-prop="name" value="{{name}}" />
-
-      </div>
-
-      {{!-- Control Row: Select --}}
-      <div class="clock-controls-row select-row">
-
-        {{!-- Select: Color --}}
-        <select class="blades-select clock-select clock-color-select" data-prop="color">
-          {{#select color}}
-          <option value="" hidden disabled selected></option>
-          {{#each colorSelectOptions}}
-          <option value="{{value}}">{{display}}</option>
-          {{/each}}
-          {{/select}}
-        </select>
-
-        {{!-- Select: Value --}}
-        <select class="blades-select clock-select clock-value-select" data-prop="value">
-          {{#select value}}
-          <option value="" hidden disabled selected></option>
-          {{#each valueSelectOptions}}
-          <option value="{{value}}">{{display}}</option>
-          {{/each}}
-          {{/select}}
-        </select>
-
-        {{!-- Select: Max --}}
-        <select class="blades-select clock-select clock-max-select" data-prop="max">
-          {{#select max}}
-          <option value="" hidden disabled selected></option>
-          {{#each maxSelectOptions}}
-          <option value="{{value}}">{{display}}</option>
-          {{/each}}
-          {{/select}}
-        </select>
-
-      </div>
-
-      {{!-- Control Row: Clock Toggles --}}
-      <div class="clock-controls-row button-row">
-
-        {{!-- Toggle: isVisible --}}
-        <div class="clock-button" data-action="clock-toggle" data-prop="isVisible" >
-            <i class="fa-{{#if isVisible}}solid{{else}}thin{{/if}} fa-eye"></i>
-        </div>
-
-        {{!-- Toggle: isHighlighted --}}
-        <div class="clock-button" data-action="clock-toggle" data-prop="isHighlighted" >
-            <i class="fa-{{#if isHighlighted}}solid fa-lightbulb-on{{else}}thin fa-lightbulb{{/if}}"></i>
-        </div>
-
-        {{!-- Toggle: isNameVisible --}}
-        <div class="clock-button" data-action="clock-toggle" data-prop="isNameVisible" >
-            <i class="fa-{{#if isNameVisible}}solid{{else}}thin{{/if}} fa-tag"></i>
-        </div>
-
-      </div>
-
-      {{!-- Control Row: Delete Key --}}
-      <div class="clock-controls-row button-row">
-
-        {{!-- Button: Delete Key --}}
-        <div class="clock-button" data-action="delete-clock" >
-          <i class="fa-regular fa-octagon-xmark"></i>
-        </div>
-
-      </div>
-
-    </div>
-  {{/if}}
-  {{/if}}
 </div>

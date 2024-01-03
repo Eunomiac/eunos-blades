@@ -16,10 +16,8 @@ class BladesClockKeeper extends BladesItem {
             game.eunoblades.ClockKeeper = clockKeeper;
         }
         return loadTemplates([
-            "systems/eunos-blades/templates/parts/clock-sheet-key-controls-full.hbs",
-            "systems/eunos-blades/templates/parts/clock-sheet-key-controls-minimal.hbs",
-            "systems/eunos-blades/templates/parts/clock-sheet-clock-controls-full.hbs",
-            "systems/eunos-blades/templates/parts/clock-sheet-clock-controls-minimal.hbs"
+            "systems/eunos-blades/templates/parts/clock-sheet-key-controls.hbs",
+            "systems/eunos-blades/templates/parts/clock-sheet-clock-controls.hbs"
         ]);
     }
     showClockKeyControls(keyID) {
@@ -52,20 +50,33 @@ class BladesClockKeeper extends BladesItem {
     getSceneKeys(sceneID) {
         sceneID ??= this.targetSceneID;
         return new Collection(this.keys
-            .filter((clockKey) => clockKey.sceneID === sceneID)
+            .filter((clockKey) => clockKey.sceneIDs.includes(sceneID))
             .map((clockKey) => [clockKey.id, clockKey]));
     }
+    flipControlPanel(clockKey) {
+        const clockKeyFlipper$ = this.sheet?.element?.find(`[data-clock-key-id="${clockKey.id}"]`);
+        if (!clockKeyFlipper$) {
+            return;
+        }
+        if (clockKey.isVisible && clockKey.isInCurrentScene) {
+            U.gsap.effects.keyControlPanelFlip(clockKeyFlipper$, { angle: 0 })
+                .then(() => clockKey.updateTarget("isVisible", false));
+        }
+        else {
+            U.gsap.effects.keyControlPanelFlip(clockKeyFlipper$, { angle: 180 })
+                .then(() => clockKey.updateTarget("isVisible", true));
+        }
+    }
     async addClockKey(clockKeyConfig = {}) {
-        if (!this.targetSceneID && !clockKeyConfig.sceneID) {
-            return undefined;
+        if (!clockKeyConfig.sceneIDs?.length) {
+            clockKeyConfig.sceneIDs = [this.targetSceneID];
         }
         const key = await BladesClockKey.Create({
-            sceneID: this.targetSceneID,
             target: this,
             targetKey: "system.clocksData",
             ...clockKeyConfig
         });
-        U.gsap.effects.keyDrop(key.elem);
+        super.update({});
         return key;
     }
     async deleteClockKey(keyID) {

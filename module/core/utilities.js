@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // /// <reference types="gsap" />
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import C, { SVGDATA } from "./constants.js";
@@ -292,7 +293,13 @@ const pFloat = (ref, sigDigits, isStrict = false) => {
     }
     return isStrict ? NaN : 0;
 };
-const pInt = (ref, isStrict = false) => (isNaN(pFloat(ref, 0, isStrict)) ? NaN : Math.round(pFloat(ref, 0, isStrict)));
+const pInt = (ref, isStrictOrIndex, _arr) => {
+    let isStrict = false;
+    if (typeof isStrictOrIndex === "boolean") {
+        isStrict = isStrictOrIndex;
+    }
+    return (isNaN(pFloat(ref, 0, isStrict)) ? NaN : Math.round(pFloat(ref, 0, isStrict)));
+};
 const pBool = (ref) => {
     if (typeof ref === "boolean") {
         return ref;
@@ -691,6 +698,65 @@ const getAngle = ({ x: x1, y: y1 }, { x: x2, y: y2 }, { x: xO, y: yO } = { x: 0,
     return cycleAngle(radToDeg(Math.atan2(y2 - y1, x2 - x1)), range);
 };
 const getAngleDelta = (angleStart, angleEnd, range = [0, 360]) => cycleAngle(angleEnd - angleStart, range);
+/**
+ * Function to calculate the smallest rectangle that can contain all the given shapes.
+ * @param arrayOfShapes - Array of objects, each describing a shape's position and size.
+ * @returns An object describing the position (center) and size of the smallest rectangle that can contain all the shapes.
+ */
+const getBoundingRectangle = (arrayOfShapes) => {
+    // Initialize the minimum and maximum x and y coordinates.
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+    // Iterate over the array of shapes.
+    for (const shape of arrayOfShapes) {
+        // Calculate the minimum and maximum x and y coordinates for the current shape.
+        let shapeMinX;
+        let shapeMinY;
+        let shapeMaxX;
+        let shapeMaxY;
+        if (shape.radius !== undefined) {
+            // The shape is a circle.
+            shapeMinX = shape.x - shape.radius;
+            shapeMinY = shape.y - shape.radius;
+            shapeMaxX = shape.x + shape.radius;
+            shapeMaxY = shape.y + shape.radius;
+        }
+        else if (shape.size !== undefined) {
+            // The shape is a square.
+            shapeMinX = (shape.x - shape.size) / 2;
+            shapeMinY = (shape.y - shape.size) / 2;
+            shapeMaxX = (shape.x + shape.size) / 2;
+            shapeMaxY = (shape.y + shape.size) / 2;
+        }
+        else if (shape.width !== undefined || shape.height !== undefined) {
+            // The shape is a rectangle (or possibly a square).
+            shape.width ??= shape.height;
+            shape.height ??= shape.width;
+            shapeMinX = (shape.x - shape.width) / 2;
+            shapeMinY = (shape.y - shape.height) / 2;
+            shapeMaxX = (shape.x + shape.width) / 2;
+            shapeMaxY = (shape.y + shape.height) / 2;
+        }
+        else {
+            throw new Error(`[getBoundingRectangle] Error: shape must be a circle, square, or rectangle, not ${JSON.stringify(shape)}`);
+        }
+        // Update the overall minimum and maximum x and y coordinates.
+        minX = Math.min(minX, shapeMinX);
+        minY = Math.min(minY, shapeMinY);
+        maxX = Math.max(maxX, shapeMaxX);
+        maxY = Math.max(maxY, shapeMaxY);
+    }
+    // Calculate the width and height of the smallest rectangle.
+    const width = maxX - minX;
+    const height = maxY - minY;
+    // Calculate the center of the rectangle.
+    const x = (minX + width) / 2;
+    const y = (minY + height) / 2;
+    // Return the position (center) and size of the smallest rectangle.
+    return { x, y, width, height };
+};
 // #endregion ░░░░[Positioning]░░░░
 // #endregion ▄▄▄▄▄ NUMBERS ▄▄▄▄▄
 // #region ████████ ARRAYS: Array Manipulation ████████ ~
@@ -1697,6 +1763,7 @@ export default {
     // ░░░░░░░ Positioning ░░░░░░░
     getDistance,
     getAngle, getAngleDelta,
+    getBoundingRectangle,
     // ████████ ARRAYS: Array Manipulation ████████
     randElem, randIndex,
     makeIntRange,

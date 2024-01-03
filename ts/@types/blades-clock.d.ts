@@ -3,31 +3,34 @@ import { BladesClockKey } from "../classes/BladesClockKey";
 
 declare global {
 
+  type ClockKeySize = 0|1|2|3|4|5|6;
+  type ClockIndex = 0|1|2|3|4|5;
+  type OneKeyImgIndex = 1|2|3|4|5;
+
   namespace BladesClockKey {
 
     export type Schema = {
       name: string,
 
       isVisible: boolean,
-      isActive: boolean,
       isNameVisible: boolean,
-      isShowingControls: boolean,
+      isSpotlit: boolean,
 
       clocksData: Record<IDString, BladesClock.Data>,
 
       displayMode: ClockKeyDisplayMode|number,
-      oneKeyIndex: 1|2|3|4|5
+      oneKeyIndex: OneKeyImgIndex
 
-      sceneID: IDString|false, // Regardless of where stored, will be displayed within a 1-key in the scene overlay
-      overlayPosition?: gsap.Point2D // Where in overlay key-container is positioned, if in overlay
-      tier?: ValueMax
+      sceneIDs: IDString[],
+      overlayPosition?: Record<IDString, gsap.Point2D>
     }
 
     export type Config = BladesTargetLink.Config & Partial<Schema>;
 
     export type Data = BladesTargetLink.Data & Schema;
 
-    export interface Subclass extends BladesTargetLink.Subclass<Schema> {
+    export interface Subclass extends BladesTargetLink.Subclass<Schema>,
+      Pick<Schema, "name" | "isVisible" | "isNameVisible" | "isSpotlit" | "displayMode" | "oneKeyIndex" | "sceneIDs" | "overlayPosition"> {
       clocks: Collection<BladesClock>
     }
   }
@@ -38,20 +41,13 @@ declare global {
       color: ClockColor,
 
       isVisible: boolean, // whether clock is visible at all
-      isActive: boolean, //  true: This is the clock targeted by any rolls.
-                         // false: Clock is complete or waiting on a preceding clock to finish.
+      isActive: boolean, //  true: This clock is 'live' and its value can be changed.
+                         // false: Clock is dormant, either completed or yet to start.
       isNameVisible: boolean, // whether clock's name is displayed as a <label>
       isHighlighted: boolean, // whether background nova animation is displayed
-      isShowingControls: boolean,
-
-      sceneID: IDString|false, // Regardless of where stored, will be displayed within a 1-key in the scene overlay
 
       parentKeyID: IDString, // Must be associated with a clock key (size 1, by default); key can display clock on its own
-      index: 0|1|2|3|4|5, // Location within clock key, starting at 0
-
-      tooltip?: string,
-      gm_notes?: string,
-      tier?: ValueMax
+      index: ClockIndex, // Location within clock key, starting at 0
     }
 
     export type Config = BladesTargetLink.Config & Partial<Schema>

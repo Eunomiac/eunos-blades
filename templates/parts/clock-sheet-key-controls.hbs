@@ -1,0 +1,65 @@
+{{#if (test clockKey.id "==" "vCSo57YJZ5NxRRMh")}}
+  {{eLog (concat "Clock Sheet Flipper Context of " clockKey.id) this}}
+{{/if}}
+
+<div class="clock-key-control-flipper {{~#unless (test clockKey.isVisible "&&" clockKey.isInCurrentScene)}} controls-flipped{{/unless}}" data-clock-key-id="{{clockKey.id}}">
+
+  <div class="clock-key-control-panel controls-front">
+    {{!-- Pull Key Animation --}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      blockClass="clock-control-button clock-control-pull-key"
+      buttonClass="fa-duotone fa-circle-up-left"
+      buttonStyle="--fa-primary-color: var(--blades-red); --fa-secondary-color: var(--blades-red-dark); --fa-secondary-opacity: 1;"
+      action="pull-clock-key"
+      targetId=clockKey.id
+    }}
+
+    {{!-- Toggle Name Visibility --}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      blockClass="clock-control-button clock-toggle-name-visible"
+      buttonClass=(test (test clockKey.isNameVisible "&&" "fas fa-barcode-alt") "||" "fal fa-barcode-alt")
+      action="toggle-name-visibility"
+      targetId=clockKey.id
+    }}
+
+    {{!-- Toggle Spotlight --}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      blockClass="clock-control-button clock-toggle-spotlit"
+      buttonClass=(test (test clockKey.isSpotlit "&&" "fa-sharp fa-solid fa-alarm-exclamation") "||" "fa-sharp fa-regular fa-alarm-exclamation")
+      action="toggle-spotlight"
+      targetId=clockKey.id
+    }}
+
+    {{!-- Name --}}
+    <input type="text" class="clock-key-input clock-key-input-name" {{~#if clockKey.isNameVisible}} readonly{{/if}}
+      data-target-id="{{clockKey.targetID}}"
+      data-target-key="{{clockKey.targetKeyPrefix}}.name"
+      value="{{clockKey.name}}"
+    />
+  </div>
+
+  <div class="clock-key-control-panel controls-back">
+    {{!-- Drop Key --}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      blockClass="clock-control-button clock-control-drop-key"
+      buttonClass="fa-duotone fa-circle-down"
+      buttonStyle="--fa-primary-color: #00ff1e; --fa-secondary-color: #5c5c5c; --fa-secondary-opacity: 1;"
+      action="drop-clock-key"
+      targetId=clockKey.id
+    }}
+
+    {{!-- Add to Scene --}}
+    {{!-- Remove from Scene --}}
+    {{!-- Delete Key --}}
+
+    {{!-- Name --}}
+
+    {{!-- Toggle Name Visibility --}}
+
+    {{!-- Select Overlay Position --}}
+
+    {{!-- Add Clock --}}
+
+  </div>
+
+</div>

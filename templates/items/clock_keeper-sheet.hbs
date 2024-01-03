@@ -7,8 +7,18 @@
   <div class="sheet-root">
 
     {{!-- Header --}}
-    <section class="sheet-top">
+    <section class="sheet-top flex-horizontal">
       <input class="sheet-title shadowed" type="text" readonly value="Clock Keeper">
+      <div class="scene-selection">
+        <label>Scene:</label>
+        <select name="system.targetScene">
+          {{#select system.targetScene}}
+          {{#each sceneOptions }}
+          <option value="{{id}}">{{name}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+      </div>
     </section>
 
     {{!-- Tabs, Tab Navigation --}}
@@ -25,26 +35,23 @@
 
         {{!-- Scene Keys --}}
         <div class="tab scene-keys flex-vertical" data-tab="scene-keys">
-          <div class="scene-selection">
-            <label>Scene:</label>
-            <select name="system.targetScene">
-              {{#select system.targetScene}}
-              {{#each sceneOptions }}
-              <option value="{{id}}">{{name}}</option>
-              {{/each}}
-              {{/select}}
-            </select>
-          </div>
-          {{> "systems/eunos-blades/templates/components/button-icon.hbs"
-            buttonClass="fa-sharp fa-solid fa-square-plus"
-            tooltip="<b>Add Key</b>"
-            action="add-key"
-          }}
-          <div class="keys-container full-width">
-            {{#each sceneKeys }}
-              {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls-full.hbs" }}
-            {{/each}}
-          </div>
+
+          <label class="comp tab-label">
+            {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+              blockClass="create-clock-key-button"
+              buttonClass="fa-sharp fa-solid fa-location-plus"
+              action="create-clock-key"
+            }}
+            <span class="tab-title">Clock Keys in Scene</span>
+          </label>
+
+          {{#each sceneKeys as |clockKey| }}
+            {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls.hbs"
+              clockKey = clockKey
+              isSceneTab = true
+              isClockKeeperKey = (test clockKey.target.type "===" "clock_keeper")
+            }}
+          {{/each}}
         </div>
 
         {{#if hasScoreKeys}}
@@ -52,7 +59,7 @@
         <div class="tab score-keys flex-vertical" data-tab="score-keys">
           <div class="keys-container full-width">
             {{#each scoreKeys }}
-              {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls-minimal.hbs" }}
+              {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls.hbs" }}
             {{/each}}
           </div>
         </div>
@@ -64,7 +71,7 @@
             {{#each pcsWithProjects as |pc|}}
               <h2>{{pc.name}}</h2>
               {{#each pc.projects as |project|}}
-                {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls-minimal.hbs" project.clockKey }}
+                {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls.hbs" project.clockKey }}
               {{/each}}
             {{/each}}
           </div>
@@ -76,7 +83,7 @@
             {{#each factions as |faction|}}
               <h2>{{faction.name}}</h2>
               {{#each faction.clocks}}
-                {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls-minimal.hbs" }}
+                {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls.hbs" }}
               {{/each}}
             {{/each}}
           </div>

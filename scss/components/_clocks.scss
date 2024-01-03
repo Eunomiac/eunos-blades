@@ -214,6 +214,8 @@
 
   /* KEYS */
   .clock-key-container {
+
+    .toggle-icon { display: none !important; }
     position: absolute;
     perspective: 500px;
     transform-style: preserve-3d;
@@ -247,16 +249,15 @@
     }
 
     &[data-size="1"] .clock-key .key-image-container.one-key-image-container {
-      --clock-size: 168px;
+      --clock-size: 86px;
 
       .clock-container {
-        top: 108px;
-        left: 110px;
+        top: 181px;
+        left: 56px;
       }
     }
 
     .clock-key {
-      visibility: hidden;
 
       position: absolute;
       display: block;
@@ -406,6 +407,8 @@
         &.clock-glow-blue {
           background-image: url("../assets/animations/clock-flare-blue.webp");
         }
+
+        &.clock-glow-hidden { visibility: hidden; }
       }
 
       // Generate clip-paths for all possible combinations of val and max
@@ -419,121 +422,121 @@
   }
 
   /* CONTROLS */
-  .clock-key-container.controls-hidden {
-    .clock-key-controls { display: none !important; }
-    .clock-controls { display: none !important }
-  }
+  // .clock-key-container.controls-hidden {
+  //   .clock-key-controls { display: none !important; }
+  //   .clock-controls { display: none !important }
+  // }
 
-  .clock-key-controls,
-  .clock-controls {
-    --row-height: 25px;
-    --row-gap: 2px;
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    gap: var(--row-gap);
-    z-index: 50;
-    border-radius: 5px;
-    height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
-    width: 100%;
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
+  // .clock-key-controls,
+  // .clock-controls {
+  //   --row-height: 25px;
+  //   --row-gap: 2px;
+  //   position: absolute;
+  //   display: flex;
+  //   flex-direction: column;
+  //   justify-content: flex-start;
+  //   align-items: center;
+  //   gap: var(--row-gap);
+  //   z-index: 50;
+  //   border-radius: 5px;
+  //   height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
+  //   width: 100%;
+  //   transform: translate(-50%, -50%);
+  //   top: 50%;
+  //   left: 50%;
 
-    &.clock-key-controls {
-      position: absolute;
-      top: unset;
-      bottom: 20%;
-      left: 50%;
-      width: 80%;
-      transform: translate(-50%, 0%);
-      height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
-    }
+  //   &.clock-key-controls {
+  //     position: absolute;
+  //     top: unset;
+  //     bottom: 20%;
+  //     left: 50%;
+  //     width: 80%;
+  //     transform: translate(-50%, 0%);
+  //     height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
+  //   }
 
-    .clock-button { pointer-events: all;}
+  //   .clock-button { pointer-events: all;}
 
-    i {
-      opacity: 1;
-      // color: var(--blades-gold-bright);
-      text-shadow: var(--text-shadow-dark-strong);
-      pointer-events: none;
-    }
+  //   i {
+  //     opacity: 1;
+  //     // color: var(--blades-gold-bright);
+  //     text-shadow: var(--text-shadow-dark-strong);
+  //     pointer-events: none;
+  //   }
 
-    select, input {
-      pointer-events: all;
-    }
+  //   select, input {
+  //     pointer-events: all;
+  //   }
 
-    select {
-      width: auto;
-      flex-basis: auto;
-      max-width: 75%;
-      flex-grow: 1;
-      flex-shrink: 1;
-      line-height: var(--row-height);
-      appearance: none; /* Remove default select dropdown arrow */
-      -webkit-appearance: none; /* Remove default select dropdown arrow for Chrome and Safari */
-      -moz-appearance: none; /* Remove default select dropdown arrow for Firefox */
-      background: transparent; /* Make the select element transparent to hide the arrow */
-    }
+  //   select {
+  //     width: auto;
+  //     flex-basis: auto;
+  //     max-width: 75%;
+  //     flex-grow: 1;
+  //     flex-shrink: 1;
+  //     line-height: var(--row-height);
+  //     appearance: none; /* Remove default select dropdown arrow */
+  //     -webkit-appearance: none; /* Remove default select dropdown arrow for Chrome and Safari */
+  //     -moz-appearance: none; /* Remove default select dropdown arrow for Firefox */
+  //     background: transparent; /* Make the select element transparent to hide the arrow */
+  //   }
 
-    &:not(.controls-hidden) {
-      background: var(--blades-black-fade);
-    }
+  //   &:not(.controls-hidden) {
+  //     background: var(--blades-black-fade);
+  //   }
 
-    .clock-controls-row, .clock-key-controls-row {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-evenly;
-      align-items: center;
-      height: var(--row-height);
-      max-height: var(--row-height);
-      width: 100%;
+  //   .clock-controls-row, .clock-key-controls-row {
+  //     display: flex;
+  //     flex-direction: row;
+  //     justify-content: space-evenly;
+  //     align-items: center;
+  //     height: var(--row-height);
+  //     max-height: var(--row-height);
+  //     width: 100%;
 
-      * {
-        // pointer-events: all !important;
-        height: var(--row-height);
-        max-height: var(--row-height);
-        width: unset;
-        position: static;
-      }
+  //     * {
+  //       // pointer-events: all !important;
+  //       height: var(--row-height);
+  //       max-height: var(--row-height);
+  //       width: unset;
+  //       position: static;
+  //     }
 
-      &.toggle-controls-row {
-        position: absolute;
-        top: calc(-1 * var(--row-height));
+  //     &.toggle-controls-row {
+  //       position: absolute;
+  //       top: calc(-1 * var(--row-height));
 
-        &.clock-key-controls-row {
-          bottom: calc(-2 * var(--row-height));
-          top: unset;
-        }
-      }
+  //       &.clock-key-controls-row {
+  //         bottom: calc(-2 * var(--row-height));
+  //         top: unset;
+  //       }
+  //     }
 
-      &.name-row {
-        width: 100%;
+  //     &.name-row {
+  //       width: 100%;
 
-        > .clock-controls-name {
-          height: var(--row-height);
-          max-height: var(--row-height);
-          width: 100%;
-          pointer-events: all !important;
-        }
-      }
+  //       > .clock-controls-name {
+  //         height: var(--row-height);
+  //         max-height: var(--row-height);
+  //         width: 100%;
+  //         pointer-events: all !important;
+  //       }
+  //     }
 
-      &.select-row {
-        justify-content: stretch;
-      }
+  //     &.select-row {
+  //       justify-content: stretch;
+  //     }
 
-      &.button-row {
-        .toggle-icon {
-          // width: auto;
+  //     &.button-row {
+  //       .toggle-icon {
+  //         // width: auto;
 
-          i { width: var(--row-height); }
+  //         i { width: var(--row-height); }
 
-          .tooltip { position: absolute; }
-        }
-      }
-    }
-  }
+  //         .tooltip { position: absolute; }
+  //       }
+  //     }
+  //   }
+  // }
 
 }

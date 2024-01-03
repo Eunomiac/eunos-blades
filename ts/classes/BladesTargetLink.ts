@@ -106,7 +106,9 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
     config: BladesTargetLink.Config & Partial<Schema>
   ): Promise<BladesTargetLink<Schema> & BladesTargetLink.Subclass<Schema>> {
     const data = this.ParseConfig(config);
+    eLog.checkLog2("BladesTargetLink.Create", "Config Parsed to Data", {config: U.objClone(config), data: U.objClone(data)});
     await this.InitTargetLink(data);
+    eLog.checkLog3("BladesTargetLink.Create", "After Init Target Link", {data: U.objClone(data)});
     return new this(data) as BladesTargetLink<Schema> & BladesTargetLink.Subclass<Schema>;
   }
   // #endregion
@@ -122,6 +124,11 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
   get id() {return this._id;}
   get targetID() {return this._targetID;}
   get targetKey(): TargetKey | undefined {return this._targetKey;}
+  get targetKeyPrefix(): TargetKey | undefined {
+    return this._targetKey
+      ? `${this._targetKey}.${this.id}` as TargetKey
+      : undefined;
+  }
   get targetFlagKey(): TargetFlagKey | undefined {return this._targetFlagKey;}
 
   private _target: BladesDoc;

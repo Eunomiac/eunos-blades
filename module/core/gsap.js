@@ -44,7 +44,13 @@ export const gsapEffects = {
     keyDrop: {
         effect: (clockKey, config) => {
             const [keyContainer] = $(clockKey).closest(".clock-key-container");
-            return U.gsap.timeline()
+            return U.gsap.timeline({
+                onComplete() {
+                    if (config.callback) {
+                        config.callback();
+                    }
+                }
+            })
                 .fromTo(keyContainer, {
                 y: config.yShift
             }, {
@@ -57,12 +63,14 @@ export const gsapEffects = {
         defaults: {
             duration: 1,
             yShift: -800
-        }
+        },
+        extendTimeline: true
     },
     keySwing: {
         effect: (clockKey, config) => {
             const [keyContainer] = $(clockKey).closest(".clock-key-container");
-            return U.gsap.timeline({ id: "keySwing", repeat: -1, yoyo: true })
+            // Get initial scale,
+            const tl = U.gsap.timeline({ id: "keySwing", repeat: -1, yoyo: true, data: { labelTimes: {} } })
                 .fromTo(keyContainer, {
                 transformOrigin: "50% 10%",
                 rotateZ: -config.swingAngle
@@ -82,6 +90,13 @@ export const gsapEffects = {
                 ease: "sine.inOut",
                 duration: config.duration
             }, 0);
+            // Add labels at the points where rotateZ is 0, and log these times to a snappable object literal in the data property
+            const timesWhenRotateZIsZero = Array(4).fill(config.duration / 8).map((val, index) => val * (2 * (index + 1)));
+            timesWhenRotateZIsZero.forEach((timestamp, i) => {
+                tl.addLabel(`rotateZZero${i}`, timestamp);
+                tl.data.labelTimes[timestamp] = `rotateZZero${i}`;
+            });
+            return tl;
         },
         defaults: {
             swingAngle: 1,
@@ -89,39 +104,96 @@ export const gsapEffects = {
             yRange: 30,
             scaleRange: 0.2,
             duration: 12
-        }
+        },
+        extendTimeline: true
     },
     keyPull: {
         effect: (clockKey, config) => {
             const [keyContainer] = $(clockKey).closest(".clock-key-container");
-            return U.gsap.timeline()
+            return U.gsap.timeline({
+                onComplete() {
+                    if (config.callback) {
+                        config.callback();
+                    }
+                }
+            })
                 .to(keyContainer, {
                 y: config.yDelta,
                 ease: config.ease,
-                duration: config.duration
-            });
+                duration: 0.75 * config.duration
+            })
+                .to(keyContainer, {
+                opacity: 0,
+                ease: "power2.out",
+                duration: 0.25 * config.duration
+            }, 0.75 * config.duration);
         },
         defaults: {
             yDelta: -800,
-            duration: 0.25,
+            duration: 1,
             ease: "back.in(1)"
-        }
+        },
+        extendTimeline: true
+    },
+    keyControlPanelFlip: {
+        effect: (target, config) => {
+            return U.gsap.timeline()
+                .to(target, {
+                rotateX: config.angle,
+                duration: 0.5,
+                ease: "back.inOut(2)"
+            });
+        },
+        defaults: {
+            angle: 180
+        },
+        extendTimeline: true
     },
     keyControlZoom: {
-        effect: (clockKey, config) => {
-            const [keyContainer] = $(clockKey).closest(".clock-key-container");
-            return U.gsap.to(keyContainer, {
+        effect: (clockKeyElem, config) => {
+            if (!clockKeyElem) {
+                throw new Error("clockKeyElem is null or undefined");
+            }
+            const clockKey = game.eunoblades.ClockKeys.get($(clockKeyElem).attr("id") ?? "");
+            if (!clockKey) {
+                throw new Error("clockKey is null or undefined");
+            }
+            if (!clockKey.containerElem) {
+                throw new Error("clockKey.containerElem is null or undefined");
+            }
+            const tl = U.gsap.timeline({
                 id: "keyZoom",
+                paused: true,
+                onStart() {
+                    // Get the keySwing timeline, if there is one
+                    const keySwingTimeline = clockKey.keySwingTimeline;
+                    if (keySwingTimeline) {
+                        // Get the current time and duration of the timeline
+                        const currentTime = keySwingTimeline.time();
+                        const duration = keySwingTimeline.duration();
+                        // Snap to the nearest label time
+                        const nearestLabelTime = U.gsap.utils.snap(Object.keys(keySwingTimeline.data.labelTimes).map(U.pInt), currentTime);
+                        // Get associated label
+                        const nearestLabel = keySwingTimeline.data.labelTimes[nearestLabelTime];
+                        // Animate to the nearest label, then seek to the midpoint of the animation, where scale and vertical offsets are also zero.
+                        keySwingTimeline.tweenTo(nearestLabel, { duration: 0.25, ease: "none" }).then(() => keySwingTimeline.seek(duration / 2).pause());
+                    }
+                },
+                onReverseComplete() {
+                    clockKey.keySwingTimeline?.resume();
+                }
+            }).to(clockKey.containerElem, {
                 scale: config.scale,
                 ease: config.ease,
                 duration: config.duration,
                 onStart() {
-                    $(keyContainer).removeClass("controls-hidden");
+                    clockKey.containerElem$?.removeClass("controls-hidden");
                 },
                 onReverseComplete() {
-                    $(keyContainer).addClass("controls-hidden");
+                    clockKey.containerElem$?.addClass("controls-hidden");
                 }
             });
+            return tl;
         },
         defaults: {
             scale: 1.5,

@@ -388,9 +388,7 @@ export namespace Tag {
 export enum ClockKeyDisplayMode {
   full = "full",
   clocks = "clocks",
-  currentClock = "currentClock",
-  presentCurrentClock = "presentCurrentClock",
-  present0 = "present0",
+  activeClocks = "activeClocks",
   present1 = "present1",
   present2 = "present2",
   present3 = "present3",
@@ -4483,7 +4481,6 @@ export type HbsSvgData = {
 };
 
 export const SVGDATA = {
-  overlayScale: 0.25,
   oneKeys: {
     height: 835,
     width: 230,
@@ -4496,9 +4493,6 @@ export const SVGDATA = {
     }
   },
   keys: {
-    marginHoriz: 20,
-    marginVert: 0,
-    alternatingVertShift: 120,
     list: {
       1: {
         height: 455,

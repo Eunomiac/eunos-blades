@@ -9,7 +9,7 @@ import BladesClockKey from "../classes/BladesClocks";
 import BladesPushAlert from "../classes/BladesPushAlert";
 import BladesChat from "../classes/BladesChat";
 import C from "../core/constants";
-import type gsap from "/scripts/greensock/esm/all";
+import type gsap from "gsap/all";
 
 
 import "./blades-general-types";

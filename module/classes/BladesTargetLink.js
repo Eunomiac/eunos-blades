@@ -83,7 +83,9 @@ class BladesTargetLink {
     }
     static async Create(config) {
         const data = this.ParseConfig(config);
+        eLog.checkLog2("BladesTargetLink.Create", "Config Parsed to Data", { config: U.objClone(config), data: U.objClone(data) });
         await this.InitTargetLink(data);
+        eLog.checkLog3("BladesTargetLink.Create", "After Init Target Link", { data: U.objClone(data) });
         return new this(data);
     }
     // #endregion
@@ -96,6 +98,11 @@ class BladesTargetLink {
     get id() { return this._id; }
     get targetID() { return this._targetID; }
     get targetKey() { return this._targetKey; }
+    get targetKeyPrefix() {
+        return this._targetKey
+            ? `${this._targetKey}.${this.id}`
+            : undefined;
+    }
     get targetFlagKey() { return this._targetFlagKey; }
     _target;
     get target() {

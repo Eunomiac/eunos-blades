@@ -1,3 +1,4 @@
+import U from "../../core/utilities.js";
 import BladesItemSheet from "./BladesItemSheet.js";
 import { BladesPC, BladesFaction } from "../../documents/BladesActorProxy.js";
 class BladesClockKeeperSheet extends BladesItemSheet {
@@ -40,30 +41,47 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     }
     async activateListeners(html) {
         super.activateListeners(html);
-        const self = this;
-        html.find("[data-action=\"add-key\"]").on({
-            click(event) {
+        function getClockKeyFromEvent(event) {
+            const id = $(event.currentTarget).data("keyId");
+            if (!id) {
+                throw new Error("No id found on element");
+            }
+            const clockKey = game.eunoblades.ClockKeys.get(id);
+            if (!clockKey) {
+                throw new Error(`Clock key with id ${id} not found`);
+            }
+            return clockKey;
+        }
+        html.find("[data-action=\"create-clock-key\"").on({
+            click: async (event) => {
                 event.preventDefault();
-                self.item.addClockKey();
+                await this.item.addClockKey();
+                // this.render();
             }
         });
-        html.find("[data-action=\"delete-key\"]").on({
-            click(event) {
+        const flipControls$ = html.find(".clock-key-control-flipper");
+        U.gsap.set(flipControls$.find(".clock-key-control-panel.controls-back"), {
+            translateZ: -2,
+            rotateX: 180,
+            autoAlpha: 1
+        });
+        U.gsap.set(flipControls$.find(".clock-key-control-panel.controls-front"), {
+            translateZ: 2,
+            autoAlpha: 1
+        });
+        U.gsap.set(html.find(".clock-key-control-flipper.controls-flipped"), {
+            rotateX: 180
+        });
+        html.find("[data-action=\"drop-clock-key\"]").on({
+            click: async (event) => {
                 event.preventDefault();
-                self.item.deleteClockKey($(event.currentTarget).data("id"));
+                await getClockKeyFromEvent(event).drop_SocketCall();
             }
         });
-        html.find("[data-action=\"add-clock\"]").on({
-            click(event) {
+        html.find("[data-action=\"pull-clock-key\"]").on({
+            click: async (event) => {
                 event.preventDefault();
-                self.item.addClockToKey($(event.currentTarget).data("id"));
-            }
-        });
-        html.find("[data-action=\"delete-clock\"]").on({
-            click(event) {
-                event.preventDefault();
-                const [keyID, id] = $(event.currentTarget).data("id").split(/-/);
-                self.item.deleteClockFromKey(keyID, id);
+                await getClockKeyFromEvent(event).pull_SocketCall();
             }
         });
     }

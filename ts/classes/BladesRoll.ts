@@ -846,7 +846,7 @@ class BladesRollPrimary implements BladesRoll.PrimaryDocData {
     return false;
   }
 
-  async applyHarm(amount: 1|2|3|4, name: string) {
+  async applyHarm(amount: harmLevel, name: string) {
     if (this.rollPrimaryDoc) {
       return this.rollPrimaryDoc.applyHarm(amount, name);
     }

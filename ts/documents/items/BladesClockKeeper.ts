@@ -4,7 +4,7 @@ import {SVGDATA, BladesActorType, BladesItemType} from "../../core/constants";
 // import U from "../../core/utilities";
 import BladesActor from "../../BladesActor";
 import {BladesItem} from "../BladesItemProxy";
-import BladesClockKey, {ApplyClockListeners} from "../../classes/BladesClocks";
+import BladesClockKey from "../../classes/BladesClocks";
 import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
 import type {ItemDataBaseProperties} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
@@ -24,10 +24,8 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
     }
 
     return loadTemplates([
-      "systems/eunos-blades/templates/parts/clock-sheet-key-controls-full.hbs",
-      "systems/eunos-blades/templates/parts/clock-sheet-key-controls-minimal.hbs",
-      "systems/eunos-blades/templates/parts/clock-sheet-clock-controls-full.hbs",
-      "systems/eunos-blades/templates/parts/clock-sheet-clock-controls-minimal.hbs"
+      "systems/eunos-blades/templates/parts/clock-sheet-key-controls.hbs",
+      "systems/eunos-blades/templates/parts/clock-sheet-clock-controls.hbs"
     ]);
   }
 
@@ -71,21 +69,34 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
     sceneID ??= this.targetSceneID;
 
     return new Collection(this.keys
-      .filter((clockKey) => clockKey.sceneID === sceneID)
+      .filter((clockKey) => clockKey.sceneIDs.includes(sceneID as IDString))
       .map((clockKey) => [clockKey.id, clockKey]));
+  }
+
+  flipControlPanel(clockKey: BladesClockKey) {
+    const clockKeyFlipper$ = this.sheet?.element?.find(`[data-clock-key-id="${clockKey.id}"]`);
+    if (!clockKeyFlipper$) { return; }
+    if (clockKey.isVisible && clockKey.isInCurrentScene) {
+      U.gsap.effects.keyControlPanelFlip(clockKeyFlipper$, {angle: 0})
+        .then(() => clockKey.updateTarget("isVisible", false));
+    } else {
+      U.gsap.effects.keyControlPanelFlip(clockKeyFlipper$, {angle: 180})
+        .then(() => clockKey.updateTarget("isVisible", true));
+    }
   }
 
   async addClockKey(
     clockKeyConfig: Partial<BladesClockKey.Data> = {}
   ): Promise<BladesClockKey|undefined> {
-    if (!this.targetSceneID && !clockKeyConfig.sceneID) { return undefined; }
+    if (!clockKeyConfig.sceneIDs?.length) {
+      clockKeyConfig.sceneIDs = [this.targetSceneID];
+    }
     const key = await BladesClockKey.Create({
-      sceneID: this.targetSceneID,
       target: this,
       targetKey: "system.clocksData" as TargetKey,
       ...clockKeyConfig
     });
-    U.gsap.effects.keyDrop(key.elem);
+    super.update({});
     return key;
   }
 

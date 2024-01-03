@@ -53,15 +53,17 @@ class BladesPC extends BladesActor {
             targetKey: "system.clocksData",
             isVisible: true,
             isNameVisible: false,
-            isShowingControls: false
+            isSpotlit: false
         }, [
             {
                 color: ClockColor.white,
                 value: 0,
                 max: 4,
+                index: 0,
                 isVisible: true,
+                isActive: true,
                 isNameVisible: false,
-                isShowingControls: false
+                isHighlighted: false
             }
         ]);
         return pc;

@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../core/utilities.js";
 import { SVGDATA, BladesPhase } from "../core/constants.js";
+const ObserverIgnoreStrings = [];
 class BladesDirector {
     // #region SINGLE INSTANCE FACTORY METHODS
     static instance;
+    _id;
     constructor() {
-        // intentionally left blank
+        this._id = randomID();
     }
     static getInstance() {
         return (BladesDirector.instance ??= new BladesDirector());
@@ -26,69 +28,145 @@ class BladesDirector {
     }
     // #endregion
     // #region OVERLAY
-    _overlayElement;
-    get overlayElement() {
-        if (!this._overlayElement) {
-            [this._overlayElement] = $("#blades-overlay");
+    _overlayContainer;
+    _overlayContainer$;
+    get overlayContainer() {
+        if (!this._overlayContainer) {
+            [this._overlayContainer] = $("#blades-overlay");
         }
-        if (!this._overlayElement) {
+        if (!this._overlayContainer) {
             $("body.vtt").append("<section id=\"blades-overlay\"></section>");
-            [this._overlayElement] = $("#blades-overlay");
+            [this._overlayContainer] = $("#blades-overlay");
+            this.resetObservers();
         }
-        return this._overlayElement;
+        return this._overlayContainer;
     }
-    get clockKeySectionElem() {
-        return $(this.overlayElement).find(".overlay-section-clock-keys")[0];
+    get overlayContainer$() {
+        if (!this._overlayContainer$) {
+            this._overlayContainer$ = $(this.overlayContainer);
+        }
+        return this._overlayContainer$;
     }
-    get locationSectionElem() {
-        return $(this.overlayElement).find(".overlay-section-location")[0];
+    get clockKeySection$() {
+        return this.overlayContainer$.find(".overlay-section-clock-keys");
     }
-    get scorePanelSectionElem() {
-        return $(this.overlayElement).find(".overlay-section-score-panel")[0];
+    async appendToClockKeySection(elem) {
+        if (typeof elem === "string") {
+            elem = $(elem);
+        }
+        elem = $(elem).appendTo(this.clockKeySection$);
+        const keyID = elem.find(".clock-key").data("id");
+        const key = game.eunoblades.ClockKeys.get(keyID);
+        await key.initClockKeyElem();
+        return key.elem$;
     }
-    get npcSectionElem() {
-        return $(this.overlayElement).find(".overlay-section-npcs")[0];
+    removeFromClockKeySection(elem) {
+        if (typeof elem === "string") {
+            elem = $(`#${elem}`);
+        }
+        $(elem).parents(".clock-key-container").remove();
     }
-    get playerSectionElem() {
-        return $(this.overlayElement).find(".overlay-section-players")[0];
+    get locationSection$() {
+        return this.overlayContainer$.find(".overlay-section-location");
     }
-    get crewSectionElem() {
-        return $(this.overlayElement).find(".overlay-section-crew")[0];
+    get scorePanelSection$() {
+        return this.overlayContainer$.find(".overlay-section-score-panel");
     }
-    get notificationSectionElem() {
-        return $(this.overlayElement).find(".overlay-section-notifications")[0];
+    get npcSection$() {
+        return this.overlayContainer$.find(".overlay-section-npcs");
     }
-    get transitionSectionElem() {
-        return $(this.overlayElement).find(".overlay-section-transitions")[0];
+    get playerSection$() {
+        return this.overlayContainer$.find(".overlay-section-players");
+    }
+    get crewSection$() {
+        return this.overlayContainer$.find(".overlay-section-crew");
+    }
+    get notificationSection$() {
+        return this.overlayContainer$.find(".overlay-section-notifications");
+    }
+    get transitionSection$() {
+        return this.overlayContainer$.find(".overlay-section-transitions");
     }
     get svgData() { return SVGDATA; }
+    // #endregion
+    // #region OBSERVERS ~
+    get ObserverData() {
+        return [
+            // Overlay Clock Key Observer
+            {
+                id: "overlay-clock-key",
+                type: "pointer",
+                target: game.eunoblades.Director.clockKeySection$[0],
+                ignore: [
+                    ...ObserverIgnoreStrings
+                ],
+                onPress(obs) {
+                    if (!(obs.event.currentTarget instanceof HTMLElement)) {
+                        return;
+                    }
+                    const target$ = $(obs.event.currentTarget);
+                    if (target$.hasClass("clock-key")) {
+                        const clockKey = game.eunoblades.ClockKeys.get(target$.attr("id") ?? "");
+                        if (!clockKey) {
+                            throw new Error(`ClockKey not found for ID: '${target$.attr("id") ?? ""}'`);
+                        }
+                        switch (obs.event.type) {
+                            case "dblclick": {
+                                console.log(`Double-Click on ClockKey: ${clockKey.name || clockKey.id}`);
+                                break;
+                            }
+                            case "contextmenu": {
+                                console.log(`Right-Click on ClockKey: ${clockKey.name || clockKey.id}`);
+                                break;
+                            }
+                            default: {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        ];
+    }
+    _Observers;
+    get Observers() {
+        return this._Observers ??= new Collection(this.ObserverData
+            .map((oVars) => {
+            if (!oVars.id) {
+                eLog.error("BladesDirector", "Observer must have an ID", oVars);
+                throw new Error("Observer must have an ID");
+            }
+            return [oVars.id, Observer.create(oVars)];
+        }));
+    }
+    resetObservers() {
+        this._Observers?.forEach((obs) => { obs.kill(); });
+        this._Observers?.clear();
+        delete this._Observers;
+        void this.Observers; // Trigger Observer regeneration within getter.
+    }
+    // #endregion
     get sceneKeys() { return game.eunoblades.ClockKeeper.getSceneKeys(); }
     renderOverlay_SocketCall() {
         if (!game.user.isGM) {
             return;
         }
-        if (!this.overlayElement) {
+        if (!this.overlayContainer) {
             return;
         }
         socketlib.system.executeForEveryone("renderOverlay_SocketCall");
     }
     async renderOverlay_SocketResponse() {
         // Render the overlay element
-        this.overlayElement.innerHTML = await renderTemplate("systems/eunos-blades/templates/overlay/blades-overlay.hbs", this);
-        // Clear previously-applied listeners
-        $(this.overlayElement).find("*").addBack().off();
-        // Reactivate event listeners
-        this.activateClockListeners();
-        this.activateScorePanelListeners();
-        this.activateLocationListeners();
-        this.activateNPCListeners();
-        this.activatePCListeners();
-        this.activateCohortListeners();
-        this.activateCrewListeners();
+        const overlayContent = await renderTemplate("systems/eunos-blades/templates/overlay/blades-overlay.hbs", this);
+        this.overlayContainer$.empty().append(overlayContent);
+        // Display keys that are visible
+        this.sceneKeys
+            .filter((key) => key.isVisible)
+            .forEach((key) => key.drop_Animation());
     }
     async activateClockListeners() {
-        const clockKeySection$ = $(this.clockKeySectionElem);
-        clockKeySection$.find(".clock-key-container").each((_, keyContainer) => {
+        this.clockKeySection$.find(".clock-key-container").each((_, keyContainer) => {
             const keyContainer$ = $(keyContainer);
             const clockKey = game.eunoblades.ClockKeys.get(keyContainer$.find(".clock-key").attr("id") ?? "");
             if (!clockKey) {
@@ -293,7 +371,7 @@ class BladesDirector {
             id: pushID,
             ...config
         }))
-            .appendTo($(this.notificationSectionElem))
+            .appendTo(this.notificationSection$)
             .on("click", (event) => { this.$removePush(event.currentTarget); })
             .on("contextmenu", (event) => { this.$removeAndClear(event.currentTarget); });
         U.gsap.fromTo(pushElem$, {
