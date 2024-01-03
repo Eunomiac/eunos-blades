@@ -39,6 +39,8 @@
   </div>
 
   <div class="clock-key-control-panel controls-back">
+
+    {{#if isSceneTab}}
     {{!-- Drop Key --}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"
       blockClass="clock-control-button clock-control-drop-key"
@@ -47,18 +49,68 @@
       action="drop-clock-key"
       targetId=clockKey.id
     }}
-
-    {{!-- Add to Scene --}}
-    {{!-- Remove from Scene --}}
-    {{!-- Delete Key --}}
-
-    {{!-- Name --}}
-
-    {{!-- Toggle Name Visibility --}}
-
     {{!-- Select Overlay Position --}}
+    {{!-- Spawns a draggable targeting reticule on GM's overlay, deleted once its position is retrieved and the key is dropped --}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      blockClass="clock-control-button clock-spawn-position-dragger"
+      buttonClass="fa-solid fa-location-crosshairs"
+      action="spawn-position-dragger"
+      targetId=clockKey.id
+    }}
+    {{else}}
+    {{!-- Add to Scene --}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      blockClass="clock-control-button clock-control-add-key-to-scene"
+      buttonClass="fa-sharp fa-solid fa-clapperboard-play"
+      action="add-key-to-scene"
+      targetId=clockKey.id
+    }}
+    {{!-- Toggle Name Visibility --}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      blockClass="clock-control-button clock-toggle-name-visible"
+      buttonClass=(test (test clockKey.isNameVisible "&&" "fas fa-barcode-alt") "||" "fal fa-barcode-alt")
+      action="toggle-name-visibility"
+      targetId=clockKey.id
+    }}
+    {{/if}}
+
+
 
     {{!-- Add Clock --}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      blockClass="clock-control-button clock-control-add-clock-to-key"
+      buttonClass="fa-sharp fa-solid fa-octagon-plus"
+      action="add-clock-to-key"
+      targetId=clockKey.id
+    }}
+
+    {{!-- Name --}}
+    <input type="text" class="clock-key-input clock-key-input-name"
+      data-target-id="{{clockKey.targetID}}"
+      data-target-key="{{clockKey.targetKeyPrefix}}.name"
+      value="{{clockKey.name}}"
+    />
+
+    {{#if isSceneTab}}
+    {{#if isClockKeeperKey}}
+    {{!-- Delete Key --}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      blockClass="clock-control-button clock-control-delete-key"
+      buttonClass="fa-sharp fa-solid fa-trash-xmark"
+      action="delete-clock-key"
+      targetId=clockKey.id
+    }}
+    {{else}}
+    {{!-- Remove from Scene --}}
+    {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+      blockClass="clock-control-button clock-control-remove-key-from-scene"
+      buttonClass="fa-sharp fa-solid fa-camera-slash"
+      action="remove-key-from-scene"
+      targetId=clockKey.id
+    }}
+    {{/if}}
+    {{/if}}
+
 
   </div>
 

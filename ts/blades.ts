@@ -43,9 +43,10 @@ import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet";
 
 CONFIG.debug.logging = false;
-/* DEVCODE*/CONFIG.debug.logging = true;
+/* DEVCODE*/
 Object.assign(globalThis, {eLog: logger});
-Handlebars.registerHelper("eLog", logger.hbsLog); /* !DEVCODE*/
+Handlebars.registerHelper("eLog", logger.hbsLog);
+/* !DEVCODE*/
 
 let socket: Socket; // ~ SocketLib interface
 

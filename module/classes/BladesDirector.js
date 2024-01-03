@@ -64,7 +64,7 @@ class BladesDirector {
         if (typeof elem === "string") {
             elem = $(`#${elem}`);
         }
-        $(elem).parents(".clock-key-container").remove();
+        $(elem).closest(".clock-key-container").remove();
     }
     get locationSection$() {
         return this.overlayContainer$.find(".overlay-section-location");

@@ -168,6 +168,8 @@ class BladesClockKey extends BladesTargetLink {
         return game.eunoblades.Director.appendToClockKeySection(await this.getHTML());
     }
     async removeFromOverlay() {
+        delete this._hoverOverTimeline;
+        delete this._keySwingTimeline;
         return game.eunoblades.Director.removeFromClockKeySection(this.id);
     }
     get elem() {
@@ -381,16 +383,6 @@ class BladesClockKey extends BladesTargetLink {
         }
         return this._keySwingTimeline;
     }
-    _keyControlZoomTimeline;
-    get keyControlZoomTimeline() {
-        if (!this.elem) {
-            return undefined;
-        }
-        if (!this._keyControlZoomTimeline) {
-            this._keyControlZoomTimeline = U.gsap.effects.keyControlZoom(this.elem).pause();
-        }
-        return this._keyControlZoomTimeline;
-    }
     _hoverOverTimeline;
     get hoverOverTimeline() {
         if (!this.elem) {
@@ -400,30 +392,6 @@ class BladesClockKey extends BladesTargetLink {
             this._hoverOverTimeline = U.gsap.effects.hoverOverClockKey(this);
         }
         return this._hoverOverTimeline;
-    }
-    //    #endregion
-    //    #region   > GM-ONLY CLIENT-SIDE ANIMATIONS ~
-    showControls() {
-        if (!game.user.isGM) {
-            return;
-        }
-        if (!this.elem) {
-            return;
-        }
-        this.keySwingTimeline?.tweenTo(1, { duration: 0.25, ease: "none" });
-        this.keyControlZoomTimeline?.play();
-        game.eunoblades.ClockKeeper.showClockKeyControls(this.id);
-    }
-    hideControls() {
-        if (!game.user.isGM) {
-            return;
-        }
-        if (!this.elem) {
-            return;
-        }
-        this.keySwingTimeline?.resume();
-        this.keyControlZoomTimeline?.reverse();
-        game.eunoblades.ClockKeeper.hideClockKeyControls(this.id);
     }
     //    #endregion
     //    #region   > SOCKET CALLS: _SocketCall / static _SocketResponse / _Animation
@@ -488,6 +456,8 @@ class BladesClockKey extends BladesTargetLink {
         const clockData = this.parseClockConfig(clockConfig);
         // Write to state
         await this.updateTarget(`clocksData.${clockData.id}`, clockData);
+        // Regnerate clocks collection
+        void this.clocks;
     }
     async deleteClock(clockID) {
         if (this.size <= 1) {
@@ -499,6 +469,8 @@ class BladesClockKey extends BladesTargetLink {
         }
         await this.getClockByID(clockID)?.delete();
         await this.updateClockIndices();
+        // Regnerate clocks collection
+        void this.clocks;
     }
 }
 class BladesClock extends BladesTargetLink {

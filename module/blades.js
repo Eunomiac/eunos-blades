@@ -25,9 +25,10 @@ import BladesActiveEffect from "./documents/BladesActiveEffect.js";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet.js";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet.js";
 CONFIG.debug.logging = false;
-/* DEVCODE*/ CONFIG.debug.logging = true;
+/* DEVCODE*/
 Object.assign(globalThis, { eLog: logger });
-Handlebars.registerHelper("eLog", logger.hbsLog); /* !DEVCODE*/
+Handlebars.registerHelper("eLog", logger.hbsLog);
+/* !DEVCODE*/
 let socket; // ~ SocketLib interface
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 class GlobalGetter {

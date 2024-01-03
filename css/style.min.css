@@ -26736,7 +26736,6 @@ template {
   height: auto;
   line-height: unset;
   font-size: 20px;
-  text-shadow: var(--text-shadow-dark);
   opacity: 1;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .button-icon i.fa-duotone, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .toggle-icon i.fa-duotone {
