@@ -60,7 +60,6 @@ class BladesDirector {
     if (!this._overlayContainer) {
       $("body.vtt").append("<section id=\"blades-overlay\"></section>");
       [this._overlayContainer] = $("#blades-overlay");
-      this.resetObservers();
     }
     return this._overlayContainer;
   }
@@ -75,21 +74,19 @@ class BladesDirector {
   private get clockKeySection$(): JQuery<HTMLElement> {
     return this.overlayContainer$.find(".overlay-section-clock-keys");
   }
-  public async appendToClockKeySection(elem: HTMLCode|HTMLElement|JQuery<HTMLElement>): Promise<JQuery<HTMLElement>> {
-    if (typeof elem === "string") {
-      elem = $(elem);
-    }
-    elem = $(elem).appendTo(this.clockKeySection$);
-    const keyID = elem.find(".clock-key").data("id") as IDString;
-    const key = game.eunoblades.ClockKeys.get(keyID) as BladesClockKey;
-    await key.initClockKeyElem();
-    return key.elem$ as JQuery<HTMLElement>;
+
+  public async appendClockKeyToOverlay(clockKey: BladesClockKey): Promise<JQuery<HTMLElement>> {
+    const clockKeyHTML = await clockKey.getHTML();
+    $(clockKeyHTML).appendTo(this.clockKeySection$);
+    if (!clockKey.containerElem$) { throw new Error("ClockKey container element not found."); }
+    this.activateClockListeners(clockKey.containerElem$);
+    return clockKey.containerElem$;
   }
-  public removeFromClockKeySection(elem: IDString|HTMLElement|JQuery<HTMLElement>): void {
-    if (typeof elem === "string") {
-      elem = $(`#${elem}`);
-    }
-    $(elem).closest(".clock-key-container").remove();
+
+  public removeClockKeyFromOverlay(clockKey: BladesClockKey): void {
+    delete clockKey._hoverOverTimeline;
+    delete clockKey._keySwingTimeline;
+    clockKey.containerElem$?.remove();
   }
 
   private get locationSection$(): JQuery<HTMLElement> {
@@ -123,68 +120,6 @@ class BladesDirector {
   private get svgData() {return SVGDATA;}
   // #endregion
 
-
-  // #region OBSERVERS ~
-
-  get ObserverData(): Observer.ObserverVars[] {
-    return [
-      // Overlay Clock Key Observer
-      {
-        id: "overlay-clock-key",
-        type: "pointer",
-        target: game.eunoblades.Director.clockKeySection$[0],
-        ignore: [
-          ...ObserverIgnoreStrings
-        ],
-        onPress(obs) {
-          if (!(obs.event.currentTarget instanceof HTMLElement)) { return; }
-          const target$ = $(obs.event.currentTarget);
-          if (target$.hasClass("clock-key")) {
-            const clockKey = game.eunoblades.ClockKeys.get(target$.attr("id") ?? "");
-            if (!clockKey) { throw new Error(`ClockKey not found for ID: '${target$.attr("id") ?? ""}'`); }
-            switch (obs.event.type) {
-              case "dblclick": {
-                console.log(`Double-Click on ClockKey: ${clockKey.name || clockKey.id}`);
-                break;
-              }
-              case "contextmenu": {
-                console.log(`Right-Click on ClockKey: ${clockKey.name || clockKey.id}`);
-                break;
-              }
-              default: {
-                break;
-              }
-            }
-          }
-        }
-      }
-    ];
-  }
-
-  _Observers?: Collection<Observer>;
-
-  get Observers(): Collection<Observer> {
-    return this._Observers ??= new Collection<Observer>(
-      this.ObserverData
-        .map((oVars) => {
-          if (!oVars.id) {
-            eLog.error("BladesDirector", "Observer must have an ID", oVars);
-            throw new Error("Observer must have an ID");
-          }
-          return [oVars.id, Observer.create(oVars)];
-        })
-    );
-  }
-
-  resetObservers() {
-    this._Observers?.forEach((obs) => {obs.kill();});
-    this._Observers?.clear();
-    delete this._Observers;
-    void this.Observers; // Trigger Observer regeneration within getter.
-  }
-
-  // #endregion
-
   get sceneKeys() {return game.eunoblades.ClockKeeper.getSceneKeys();}
 
   renderOverlay_SocketCall() {
@@ -204,32 +139,54 @@ class BladesDirector {
     // Display keys that are visible
     this.sceneKeys
       .filter((key) => key.isVisible)
-      .forEach((key) => key.drop_Animation());
+      .forEach((key) => key.drop_Animation((async () => {
+        await game.eunoblades.Director.activateClockListeners(key.containerElem$);
+        if (key.isNameVisible) {
+          key.nameFadeInTimeline.progress(0.99).play();
+        }
+      })));
   }
 
 
-  private async activateClockListeners() {
+  private async activateClockListeners(keyContainers$: JQuery<HTMLElement> = this.clockKeySection$.find(".clock-key-container")) {
 
-    this.clockKeySection$.find(".clock-key-container").each((_, keyContainer) => {
+    keyContainers$.each((_, keyContainer) => {
       const keyContainer$ = $(keyContainer);
       const clockKey = game.eunoblades.ClockKeys.get(keyContainer$.find(".clock-key").attr("id") ?? "");
       if (!clockKey) {return;}
 
-      // Enable pointer events on the container, so that the hover-over timeline can be played
-      keyContainer$.css("pointer-events", "auto");
+      // The ".key-bg" child is actually the correct shape, so that will be our listener object.
+      const keyListener$ = clockKey.elem$?.find(".key-bg");
+      if (!keyListener$?.[0]) { return; }
+
+      // Enable pointer events on the key-bg, so that the hover-over timeline can be played,
+      //   and remove any existing listeners to avoid duplication
+      keyListener$.css("pointer-events", "auto");
+      keyListener$.off();
+
       // Do the same for clocks contained by the key
       clockKey.clocks.forEach((clock) => {
-        if (!clock.elem) {return;}
-        $(clock.elem).css("pointer-events", "auto");
+        if (!clock.elem$) {return;}
+        clock.elem$.css("pointer-events", "auto");
+        clock.elem$.off();
       });
 
       if (game.user.isGM) {
         // === GM-ONLY LISTENERS ===
 
         // Double-Click a Clock Key = SocketPull it, Open ClockKeeper sheet
-        keyContainer$.on("dblclick", async () => {
+        keyListener$.on("dblclick", async () => {
           clockKey.pull_SocketCall();
-          game.eunoblades.ClockKeeper.render(true);
+          if (!game.eunoblades.ClockKeeper.sheet?.rendered) {
+            game.eunoblades.ClockKeeper.render(true);
+          }
+        });
+
+        // Right-Click a Clock Key = Open ClockKeeper sheet.
+        keyListener$.on("dblclick", async () => {
+          if (!game.eunoblades.ClockKeeper.sheet?.rendered) {
+            game.eunoblades.ClockKeeper.render(true);
+          }
         });
 
         // Mouse-Wheel a Clock = Add/Remove Segments one-by-one.
@@ -259,10 +216,10 @@ class BladesDirector {
         // === PLAYER-ONLY LISTENERS ===
 
         // Add listeners to container for mouseenter and mouseleave, that play and reverse timeline attached to element
-        keyContainer$.on("mouseenter", () => {
-          clockKey.hoverOverTimeline?.play();
+        keyListener$.on("mouseenter", () => {
+          clockKey.hoverOverTimeline.play();
         }).on("mouseleave", () => {
-          clockKey.hoverOverTimeline?.reverse();
+          U.reverseRepeatingTimeline(clockKey.hoverOverTimeline);
         });
 
         // Now repeat this for each clock in the clock key
@@ -274,7 +231,9 @@ class BladesDirector {
           clockElem$.on("mouseenter", () => {
             clock.hoverOverTimeline?.play();
           }).on("mouseleave", () => {
-            clock.hoverOverTimeline?.reverse();
+            if (clock.hoverOverTimeline) {
+              U.reverseRepeatingTimeline(clock.hoverOverTimeline);
+            }
           });
         });
       }

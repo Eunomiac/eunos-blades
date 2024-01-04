@@ -57,8 +57,9 @@ class BladesClockKeeperSheet extends BladesItemSheet {
   override async activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
 
-    function getClockKeyFromEvent(event: ClickEvent): BladesClockKey {
-      const id = $(event.currentTarget).data("keyId");
+    function getClockKeyFromEvent(event: ClickEvent|ChangeEvent): BladesClockKey {
+      const id = $(event.currentTarget).data("keyId")
+        || $(event.currentTarget).closest(".clock-key-control-flipper").data("clockKeyId");
       if (!id) { throw new Error("No id found on element"); }
       const clockKey = game.eunoblades.ClockKeys.get(id as IDString);
       if (!clockKey) { throw new Error(`Clock key with id ${id} not found`); }
@@ -101,6 +102,29 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         await getClockKeyFromEvent(event).pull_SocketCall();
       }
     });
+
+    html.find("[data-action=\"toggle-name-visibility\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        const clockKey = getClockKeyFromEvent(event);
+        clockKey.updateTarget("isNameVisible", !clockKey.isNameVisible);
+
+        // If clockKey is in this scene and isVisible, must send out socket calls for animating name fading in/out
+        if (clockKey.isInCurrentScene && clockKey.isVisible) {
+          if (clockKey.isNameVisible) {
+            clockKey.fadeOutName_SocketCall();
+          } else {
+            clockKey.fadeInName_SocketCall();
+          }
+        }
+      }
+    });
+
+    html.find("input.clock-key-input:not([readonly])").on({change: async (event: ChangeEvent) => {
+      const input$ = $(event.currentTarget);
+      await getClockKeyFromEvent(event).updateTarget(input$.data("targetProp"), input$.val());
+    }});
+
   }
 }
 

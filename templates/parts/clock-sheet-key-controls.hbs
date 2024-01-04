@@ -32,8 +32,7 @@
 
     {{!-- Name --}}
     <input type="text" class="clock-key-input clock-key-input-name" {{~#if clockKey.isNameVisible}} readonly{{/if}}
-      data-target-id="{{clockKey.targetID}}"
-      data-target-key="{{clockKey.targetKeyPrefix}}.name"
+      data-target-prop="name"
       value="{{clockKey.name}}"
     />
   </div>
@@ -65,6 +64,8 @@
       action="add-key-to-scene"
       targetId=clockKey.id
     }}
+    {{/if}}
+
     {{!-- Toggle Name Visibility --}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"
       blockClass="clock-control-button clock-toggle-name-visible"
@@ -72,9 +73,6 @@
       action="toggle-name-visibility"
       targetId=clockKey.id
     }}
-    {{/if}}
-
-
 
     {{!-- Add Clock --}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"
@@ -86,8 +84,7 @@
 
     {{!-- Name --}}
     <input type="text" class="clock-key-input clock-key-input-name"
-      data-target-id="{{clockKey.targetID}}"
-      data-target-key="{{clockKey.targetKeyPrefix}}.name"
+      data-target-prop="name"
       value="{{clockKey.name}}"
     />
 

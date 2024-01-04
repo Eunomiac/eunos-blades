@@ -293,8 +293,8 @@
 
         // background: rgba(255, 255, 0, 0.25);
         // outline: 2px dotted rgb(255, 255, 0);
-        &:hover {
-          color: var(--blades-gold-bright) !important;
+        &.label-hidden {
+          visibility: hidden;
         }
       }
 
@@ -344,7 +344,6 @@
     .clock {
       position: relative;
       overflow: visible;
-      pointer-events: all !important;
 
       &,
       & * {

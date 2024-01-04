@@ -254,9 +254,6 @@ class BladesItemSheet extends ItemSheet {
             if (!(this.item instanceof BladesProject)) {
                 return undefined;
             }
-            // if (this.item.clockKey) {
-            //   this.item.clockKey.isShowingControls = game.user.isGM;
-            // }
             const sheetData = {};
             return {
                 ...context,

@@ -6440,6 +6440,12 @@ template {
   perspective: 500px;
   transform-style: preserve-3d;
 }
+:root body.vtt.game.system-eunos-blades #blades-overlay #test-box {
+  height: 200px;
+  width: 200px;
+  background: blue;
+  top: 200px;
+}
 :root body.vtt.game.system-eunos-blades #blades-overlay {
   /* KEYS */
   /* CLOCKS */
@@ -6614,8 +6620,8 @@ template {
   left: 0;
   position: absolute;
 }
-:root body.vtt.game.system-eunos-blades #blades-overlay .clock-key-container .clock-key .key-label:hover {
-  color: var(--blades-gold-bright) !important;
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-key-container .clock-key .key-label.label-hidden {
+  visibility: hidden;
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-key-container .clock-key .key-image-container {
   height: var(--key-height);
@@ -6652,7 +6658,6 @@ template {
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock {
   position: relative;
   overflow: visible;
-  pointer-events: all !important;
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock * {
   height: var(--clock-size, 110px);
@@ -9761,8 +9766,8 @@ template {
   left: 0;
   position: absolute;
 }
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container .clock-key .key-label:hover {
-  color: var(--blades-gold-bright) !important;
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container .clock-key .key-label.label-hidden {
+  visibility: hidden;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container .clock-key .key-image-container {
   height: var(--key-height);
@@ -9799,7 +9804,6 @@ template {
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock {
   position: relative;
   overflow: visible;
-  pointer-events: all !important;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock * {
   height: var(--clock-size, 110px);
@@ -23436,8 +23440,8 @@ template {
   left: 0;
   position: absolute;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container .clock-key .key-label:hover {
-  color: var(--blades-gold-bright) !important;
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container .clock-key .key-label.label-hidden {
+  visibility: hidden;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container .clock-key .key-image-container {
   height: var(--key-height);
@@ -23474,7 +23478,6 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock {
   position: relative;
   overflow: visible;
-  pointer-events: all !important;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock * {
   height: var(--clock-size, 110px);
@@ -25268,8 +25271,8 @@ template {
   left: 0;
   position: absolute;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container .clock-key .key-label:hover {
-  color: var(--blades-gold-bright) !important;
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container .clock-key .key-label.label-hidden {
+  visibility: hidden;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container .clock-key .key-image-container {
   height: var(--key-height);
@@ -25306,7 +25309,6 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock {
   position: relative;
   overflow: visible;
-  pointer-events: all !important;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock * {
   height: var(--clock-size, 110px);
@@ -26802,17 +26804,15 @@ template {
   display: flex;
   align-items: center;
   justify-content: stretch;
-  background: linear-gradient(45deg, black, rgb(40, 40, 40));
-  color: white;
-  font-family: "Sura";
+  background: linear-gradient(45deg, var(--blades-grey-bright), var(--blades-grey-dark));
   font-size: 24px;
-  box-shadow: inset 0 0 2px 2px black;
+  box-shadow: inset 0 0 2px 2px var(--blades-black-dark);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .sheet-root .tab-content .tab .clock-key-control-flipper > div {
   position: absolute;
   visibility: hidden;
   white-space: nowrap;
-  box-shadow: inset 0 0 2px 2px black;
+  box-shadow: inset 0 0 2px 2px var(--blades-black-dark);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -26824,8 +26824,8 @@ template {
   border-radius: 5px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .sheet-root .tab-content .tab .clock-key-control-flipper > div.controls-back {
-  color: black;
-  background: white;
+  color: var(--blades-black);
+  background: linear-gradient(45deg, var(--blades-white-bright), var(--blades-grey-bright));
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.gm-tracker .window-content form {
   --sheet-mid-height: 100px;

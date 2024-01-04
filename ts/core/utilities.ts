@@ -1081,8 +1081,19 @@ function objMap<T extends Record<PropertyKey, unknown>|unknown[]>(
     return [(keyFuncTyped as mapFunc<keyFunc>)(key, val), valFuncTyped(val, key)];
   }));
 }
-const objSize = (obj: Index<unknown>) => Object.values(obj).filter((val) => val !== undefined && val !== null).length;
-
+/**
+ * This function returns the 'size' of any reference passed into it, following these rules:
+ * - object: the number of enumerable keys
+ * - array: the number of elements
+ * - false/null/undefined: 0
+ * - anything else: 1
+ */
+const objSize = (obj: unknown) => {
+  if (isSimpleObj(obj)) { return Object.keys(obj).length; }
+  if (isArray(obj)) { return obj.length; }
+  if (obj === false || obj === null || obj === undefined) { return 0; }
+  return 1;
+};
 
 /**
  * This function is an object-equivalent of Array.findIndex() function.
@@ -1499,45 +1510,6 @@ const getSvgPaths = (svgDotKey: string, svgPathKeys?: string|string[]): Record<s
 
   return returnData;
 };
-
-// #region ░░░░░░░[GreenSock]░░░░ Wrappers for GreenSock Functions ░░░░░░░ ~
-const set = (targets: gsap.TweenTarget, vars: gsap.TweenVars): gsap.core.Tween => gsap.set(targets, vars);
-function get(target: gsap.TweenTarget, property: keyof gsap.CSSProperties & string, unit: string): number;
-function get(target: gsap.TweenTarget, property: keyof gsap.CSSProperties & string): string | number;
-/**
- *
- * @param target
- * @param property
- * @param unit
- */
-function get(target: gsap.TweenTarget, property: keyof gsap.CSSProperties & string, unit?: string): string | number {
-  if (unit) {
-    const propVal = regExtract(gsap.getProperty(target, property, unit), /[\d.]+/);
-    if (typeof propVal === "string") {
-      return pFloat(propVal);
-    }
-    throw new Error(`Unable to extract property '${property}' in '${unit}' units from ${target}`);
-  }
-  return gsap.getProperty(target, property);
-}
-
-const getGSAngleDelta = (startAngle: number, endAngle: number) => signNum(roundNum(getAngleDelta(startAngle, endAngle), 2)).replace(/^(.)/, "$1=");
-
-// const Animate = {
-//   Timeline: {
-//     to: (tl: gsap.core.Timeline, targets: gsap.TweenTarget[], vars: gsap.TweenVars, position: any) => {
-//       if (targets.length === 0) {
-
-//       }
-//     }
-//   } (tl: gsap.core.Timeline, )
-// }
-
-// const to = (targets: gsap.TweenTarget[], vars: gsap.TweenVars): gsap.core.Tween => {
-//   gsap.
-// }
-// #endregion ░░░░[GreenSock]░░░░
-
 // #region ░░░░░░░[SVG]░░░░ SVG Generation & Manipulation ░░░░░░░ ~
 const getRawCirclePath = (r: number, {x: xO, y: yO}: Point = {x: 0, y: 0}): Array<Array<number | string>> => {
   [r, xO, yO] = [r, xO, yO].map((val) => roundNum(val, 2));
@@ -1659,6 +1631,72 @@ const escapeHTML = <T = unknown>(str: T): T => (typeof str === "string"
     .replace(/"/g, "&quot;")
     .replace(/[`']/g, "&#039;") as T
   : str);
+
+
+// #region ░░░░░░░[GreenSock]░░░░ Wrappers for GreenSock Functions ░░░░░░░ ~
+const set = (targets: gsap.TweenTarget, vars: gsap.TweenVars): gsap.core.Tween => gsap.set(targets, vars);
+function get(target: gsap.TweenTarget, property: keyof gsap.CSSProperties & string, unit: string): number;
+function get(target: gsap.TweenTarget, property: keyof gsap.CSSProperties & string): string | number;
+/**
+ *
+ * @param target
+ * @param property
+ * @param unit
+ */
+function get(target: gsap.TweenTarget, property: keyof gsap.CSSProperties & string, unit?: string): string | number {
+  if (unit) {
+    const propVal = regExtract(gsap.getProperty(target, property, unit), /[\d.]+/);
+    if (typeof propVal === "string") {
+      return pFloat(propVal);
+    }
+    throw new Error(`Unable to extract property '${property}' in '${unit}' units from ${target}`);
+  }
+  return gsap.getProperty(target, property);
+}
+
+const getGSAngleDelta = (startAngle: number, endAngle: number) => signNum(roundNum(getAngleDelta(startAngle, endAngle), 2)).replace(/^(.)/, "$1=");
+
+const getNearestLabel = (tl: gsap.core.Timeline, matchTest?: RegExp|string): string|undefined => {
+  if (!tl) { return undefined; }
+  if (!objSize(tl.labels)) { return undefined; }
+  if (typeof matchTest === "string") {
+    matchTest = new RegExp(matchTest);
+  }
+
+  // Filter the labels against the matchTest, if one provided, and sort by time in ascending order.
+  const labelTimes = Object.entries(tl.labels)
+    .filter(([label]) => {
+      return matchTest instanceof RegExp
+        ? matchTest.test(label)
+        : true;
+    })
+    .sort((a, b) => a[1] - b[1]);
+
+  // Snap the current time of the timeline to the values in labelTimes
+  const nearestTime = gsap.utils.snap(labelTimes.map(([_label, time]) => time), tl.time());
+
+  // Get the associated label for the nearest time
+  const [nearestLabel] = labelTimes.find(([_label, time]) => time === nearestTime) as [string, number];
+
+  return nearestLabel;
+};
+
+const reverseRepeatingTimeline = (tl: gsap.core.Timeline) => {
+  // FIRST: Determine if timeline itself is repeating, or if most-recent child tween of timeline is repeating
+  if (tl.repeat() === -1) {
+    // Timeline itself is repeating. Set totalTime equal to time, reverse.
+    tl.totalTime(tl.time());
+  } else {
+    // Get currently-running child tween, check if that is repeating.
+    const [tw] = tl.getChildren(false, true, true, tl.time());
+    if (tw && tw.repeat() === -1) {
+      // Child tween is repeating. Set totalTime of TWEEN equal to time, reverse TIMELINE.
+      tw.totalTime(tw.time());
+    }
+    tl.reverse();
+  }
+};
+// #endregion ░░░░[GreenSock]░░░░
 
 // #endregion ▄▄▄▄▄ HTML ▄▄▄▄▄
 
@@ -1880,11 +1918,6 @@ export default {
   getSvgCode, getSvgPaths,
   changeContainer,
 
-  // ░░░░░░░ GreenSock ░░░░░░░
-  gsap, get, set, getGSAngleDelta, /* to, from, fromTo, */
-
-  TextPlugin, Flip, MotionPathPlugin,
-
   getRawCirclePath, drawCirclePath,
 
   getColorVals, getRGBString, getHEXString, getContrastingColor, getRandomColor,
@@ -1892,6 +1925,11 @@ export default {
   getSiblings,
 
   escapeHTML,
+
+  // ░░░░░░░ GreenSock ░░░░░░░
+  gsap, get, set, getGSAngleDelta, getNearestLabel, reverseRepeatingTimeline, /* to, from, fromTo, */
+
+  TextPlugin, Flip, MotionPathPlugin,
 
   // ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████
   sleep,

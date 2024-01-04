@@ -20,43 +20,20 @@ const gsapPlugins: gsap.RegisterablePlugins[] = [
 
 export type gsapConfig = gsap.TweenVars & {
   duration: number,
-  targets: Record<string, JQuery<HTMLElement>|Array<JQuery<HTMLElement>>>
+  targets: Record<string, JQuery<HTMLElement> | Array<JQuery<HTMLElement>>>
 }
 
 export type gsapEffect = {
   effect: (
     targets: gsap.TweenTarget,
     config: gsap.TweenVars & {duration: number}
-  ) => gsap.core.Timeline|gsap.core.Tween,
+  ) => gsap.core.Timeline | gsap.core.Tween,
   defaults: gsap.TweenVars,
   extendTimeline?: boolean
 }
 
 export const gsapEffects: Record<string, gsapEffect> = {
-  hoverButton: {
-    effect: (target, config) => {
-      return U.gsap.timeline({paused: true})
-        .to(target, {
-          scale: config.scale,
-          ease: "power2",
-          duration: config.duration
-        })
-        .fromTo(target, {
-          filter: config.brightness ? "brightness(1)" : undefined
-        }, {
-          color: config.color,
-          filter: config.brightness ? `brightness(${config.brightness})` : undefined,
-          duration: config.duration,
-          ease: "sine"
-        }, 0);
-    },
-    defaults: {
-      color: undefined,
-      brightness: 1.5,
-      duration: 0.5,
-      scale: 1.25
-    }
-  },
+  // #region CLOCK KEYS
   keyDrop: {
     effect: (clockKey, config) => {
       const [keyContainer] = $(clockKey as HTMLElement).closest(".clock-key-container");
@@ -87,14 +64,14 @@ export const gsapEffects: Record<string, gsapEffect> = {
       const [keyContainer] = $(clockKey as HTMLElement).closest(".clock-key-container");
 
       // Get initial scale,
-      const tl = U.gsap.timeline({id: "keySwing", repeat: -1, yoyo: true, data: {labelTimes: {}}})
+      const tl = U.gsap.timeline({id: "keySwing", repeat: -1, yoyo: true})
         .fromTo(keyContainer, {
           transformOrigin: "50% 10%",
           rotateZ: -config.swingAngle
         }, {
           rotateZ: config.swingAngle,
           ease: "sine.inOut",
-          duration: config.duration / 4,
+          duration: 0.25 * config.duration,
           repeat: 2,
           yoyo: true
         })
@@ -105,15 +82,26 @@ export const gsapEffects: Record<string, gsapEffect> = {
           top: `-=${0.5 * config.yRange}`,
           scale: `-=${0.5 * config.scaleRange}`,
           ease: "sine.inOut",
-          duration: config.duration
-        }, 0);
+          duration: 0.75 * config.duration
+        }, 0.25 * config.duration);
 
-      // Add labels at the points where rotateZ is 0, and log these times to a snappable object literal in the data property
-      const timesWhenRotateZIsZero = Array(4).fill(config.duration / 8).map((val, index) => val * (2 * (index + 1)));
+      // Get times where rotateZ is 0
+      const timesWhenRotateZIsZero = Array(4).fill(config.duration / 8)
+        .map((val, index) => val * (2 * (index + 1)));
+
+      // Get time when top & scale shifts are 0
+      const timeWhenShiftsAreZero = ((0.75 * config.duration) / 2) + (0.25 * config.duration);
+
+      // Add labels to all rotateZ === 0 times, but if shifts are also zero, name it "NEUTRAL"
       timesWhenRotateZIsZero.forEach((timestamp, i) => {
         tl.addLabel(`rotateZZero${i}`, timestamp);
-        tl.data.labelTimes[timestamp] = `rotateZZero${i}`;
+        if (timestamp === timeWhenShiftsAreZero && tl.labels.NEUTRAL === undefined) {
+          tl.addLabel("NEUTRAL", timestamp);
+        }
       });
+
+      // Immediately move the timeline to the "NEUTRAL" label, so the timeline begins from there
+      tl.seek("NEUTRAL");
 
       return tl;
     },
@@ -168,87 +156,86 @@ export const gsapEffects: Record<string, gsapEffect> = {
     },
     extendTimeline: true
   },
-  keyControlZoom: {
-    effect: (clockKeyElem: gsap.TweenTarget, config: gsap.TweenVars & {duration: number}) => {
-      if (!clockKeyElem) { throw new Error("clockKeyElem is null or undefined"); }
+  keyNameFadeIn: {
+    effect: (target, config) => {
+      return U.gsap.effects.blurReveal(target, config);
+    },
+    defaults: {
+      ignoreMargin: true,
+      skewX: -20,
+      duration: 0.5,
+      x: "+=300",
+      scale: 1.5,
+      filter: "blur(10px)"
+    },
+    extendTimeline: true
+  },
+  hoverOverClockKey: {
+    effect: (clockKeyElem, config) => {
+      if (!clockKeyElem) {throw new Error("clockKeyElem is null or undefined");}
       const clockKey = game.eunoblades.ClockKeys.get($(clockKeyElem as HTMLElement).attr("id") ?? "");
-      if (!clockKey) { throw new Error("clockKey is null or undefined"); }
-      if (!clockKey.containerElem) { throw new Error("clockKey.containerElem is null or undefined"); }
+      if (!clockKey) {throw new Error("clockKey is null or undefined");}
+      if (!clockKey.elem$) {throw new Error("clockKey.elem$ is null or undefined");}
+      if (!clockKey.containerElem$) {throw new Error("clockKey.containerElem$ is null or undefined");}
+      const clockKeyHiddenLabel$ = clockKey.elem$.find(".key-label.hidden-label");
+      const clockKeyLabel$ = clockKey.elem$.find(".key-label");
 
-      const tl = U.gsap.timeline({
-        id: "keyZoom",
-        paused: true,
-        onStart() {
-          // Get the keySwing timeline, if there is one
-          const keySwingTimeline = clockKey.keySwingTimeline as gsap.core.Timeline
-            & {data: {labelTimes: Record<number, string>}};
+      // Construct master timeline,
+      const tl = U.gsap.timeline({paused: true});
 
-          if (keySwingTimeline) {
-            // Get the current time and duration of the timeline
-            const currentTime = keySwingTimeline.time();
-            const duration = keySwingTimeline.duration();
+      // Create initial tween that resets keySwing to neutral
+      tl.add(clockKey.keySwingTimeline
+        .tweenTo("NEUTRAL", {
+          duration: 0.25 * config.duration,
+          ease: "none"
+        })
+      );
 
-            // Snap to the nearest label time
-            const nearestLabelTime = U.gsap.utils.snap(
-              Object.keys(keySwingTimeline.data.labelTimes).map(U.pInt),
-              currentTime
-            );
+      // Add a label for the proper start of the hover-over animation
+      tl.addLabel("hoverStart");
 
-            // Get associated label
-            const nearestLabel = keySwingTimeline.data.labelTimes[nearestLabelTime];
-
-            // Animate to the nearest label, then seek to the midpoint of the animation, where scale and vertical offsets are also zero.
-            keySwingTimeline.tweenTo(nearestLabel, {duration: 0.25, ease: "none"}).then(() => keySwingTimeline.seek(duration / 2).pause());
-          }
-        },
-        onReverseComplete() {
-          clockKey.keySwingTimeline?.resume();
-        }
-      }).to(clockKey.containerElem, {
-        scale: config.scale,
-        ease: config.ease,
-        duration: config.duration,
-        onStart() {
-          clockKey.containerElem$?.removeClass("controls-hidden");
-        },
-        onReverseComplete() {
-          clockKey.containerElem$?.addClass("controls-hidden");
+      // Add an initial callback that resumes keySwing if the timeline hits this point while reversed
+      tl.add(() => {
+        if (tl.reversed()) {
+          // Immediately seek to the beginning, so keySwing is reset on another hover-over
+          tl.seek(0).pause();
+          clockKey.keySwingTimeline.seek("NEUTRAL").play();
         }
       });
+
+      // === HOVER-OVER ANIMATION ===
+      // Brighten & enlarge clockKey
+      tl.fromTo(clockKeyElem, {
+        filter: "brightness(1)"
+      }, {
+        filter: `brightness(${config.brightness})`,
+        scale: function(i, target) {
+          return (U.gsap.getProperty(target, "scale") as number) * config.scaleMult;
+        },
+        duration: 0.75 * config.duration
+      }, "hoverStart");
+
+      // Fade in name
+      tl.blurReveal(clockKeyHiddenLabel$, {
+        ignoreMargin: true,
+        duration: 0.75 * config.duration
+      }, "hoverStart");
+
+      // Move into repeating jitter tween
+      tl.textJitter(clockKeyLabel$);
+
       return tl;
     },
     defaults: {
-      scale: 1.5,
-      ease: "sine",
-      duration: 1
-    }
-  },
-  hoverOverClockKey: {
-    effect: (clockKey, config) => {
-      if (!(clockKey instanceof BladesClockKey)) { throw new Error("clockKey is not an instance of BladesClockKey"); }
-      if (!clockKey.elem) { throw new Error("clockKey.elem is null or undefined"); }
-
-      return U.gsap.timeline({paused: true})
-        .to(clockKey.elem, {
-          scale: 1.25,
-          ease: "sine",
-          duration: 0.25,
-          onStart() {
-            clockKey.keySwingTimeline?.tweenTo(1, {duration: 0.25, ease: "none"});
-          },
-          onReverse() {
-            clockKey.keySwingTimeline?.resume();
-          }
-        }, 0);
-    },
-    defaults: {
-
+      duration: 1.5,
+      brightness: 1.5,
+      scaleMult: 1.25
     }
   },
   hoverOverClock: {
     effect: (clock, config) => {
-      if (!(clock instanceof BladesClock)) { throw new Error("clock is not an instance of BladesClock"); }
-      if (!clock.elem) { throw new Error("clock.elem is null or undefined"); }
+      if (!(clock instanceof BladesClock)) {throw new Error("clock is not an instance of BladesClock");}
+      if (!clock.elem) {throw new Error("clock.elem is null or undefined");}
 
       const [clockLabel] = $(clock.elem).find(".clock-label");
       const [clockGlow] = $(clock.elem).find(".clock-glow");
@@ -272,6 +259,9 @@ export const gsapEffects: Record<string, gsapEffect> = {
       duration: 0.5
     }
   },
+  // #endregion
+
+  // #region CHAT CONSEQUENCE EFFECTS
   csqEnter: {
     effect: (csqContainer, config) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
@@ -284,7 +274,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       const csqAcceptNameElem = csqRoot(".consequence-name.accept-consequence");
       // const csqAcceptElems = csqRoot(".accept-consequence:not(.consequence-icon-circle):not(.consequence-button-container)");
 
-      const tl = U.gsap.timeline({paused: true, defaults: { }});
+      const tl = U.gsap.timeline({paused: true, defaults: {}});
 
       // Initialize name and type opacities.
       if (csqAcceptTypeElem.length > 0) {
@@ -475,7 +465,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       const buttonIcon = buttonRoot(".button-icon i");
       const buttonLabel = buttonRoot(".consequence-button-label");
 
-      const tl = U.gsap.timeline({paused: true, defaults: { }});
+      const tl = U.gsap.timeline({paused: true, defaults: {}});
 
       // Turn type line white
       if (typeLine.length > 0) {
@@ -567,7 +557,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       const acceptIconCircle = csqRoot(".consequence-icon-circle.accept-consequence");
       const acceptButton = csqRoot(".consequence-button-container.consequence-accept-button-container");
 
-      const tl = U.gsap.timeline({paused: true, defaults: { }});
+      const tl = U.gsap.timeline({paused: true, defaults: {}});
 
       // Fade out type line
       if (typeLine.length > 0) {
@@ -626,7 +616,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       const footerBg = csqRoot(`.consequence-footer-container .consequence-footer-bg.${config.type}-consequence`);
       const footerMsg = csqRoot(`.consequence-footer-container .consequence-footer-message.${config.type}-consequence`);
 
-      const tl = U.gsap.timeline({paused: true, defaults: { }});
+      const tl = U.gsap.timeline({paused: true, defaults: {}});
 
       // Fade in icon circle
       if (iconCircle.length > 0) {
@@ -747,6 +737,42 @@ export const gsapEffects: Record<string, gsapEffect> = {
     },
     defaults: {}
   },
+  // #endregion
+
+  // #region CHARACTER SHEET EFFECTS
+  fillCoins: {
+    effect: (targets, config) => {
+      // Targets will be all coins from zero to where fill currently is
+      // Some will already be full, others not.
+      // Stagger in timeline
+      // Pulse in size and color
+      // Shimmer as they shrink back ?
+      return U.gsap.to(targets,
+        {
+          duration: config.duration / 2,
+          scale: config.scale,
+          filter: config.filter,
+          ease: config.ease,
+          stagger: {
+            amount: 0.25,
+            from: "start",
+            repeat: 1,
+            yoyo: true
+          }
+        }
+      );
+    },
+    defaults: {
+      duration: 1,
+      scale: 1,
+      filter: "saturate(1) brightness(2)",
+      ease: "power2.in"
+    },
+    extendTimeline: true
+  },
+  // #endregion
+
+  // #region GENERAL: 'blurRemove', 'hoverTooltip', 'textJitter'
   blurRemove: {
     effect: (targets, config) => U.gsap.timeline()
       .to(
@@ -761,12 +787,16 @@ export const gsapEffects: Record<string, gsapEffect> = {
         targets,
         {
           x: config.x,
-          marginBottom(i, target) {
-            return U.get(target, "height") as number * -1;
-          },
-          marginRight(i, target) {
-            return U.get(target, "width") as number * -1;
-          },
+          marginBottom: config.ignoreMargin
+            ? undefined
+            : function(i, target) {
+              return U.get(target, "height") as number * -1;
+            },
+          marginRight: config.ignoreMargin
+            ? undefined
+            : function(i, target) {
+              return U.get(target, "width") as number * -1;
+            },
           scale: config.scale,
           filter: config.filter,
           duration: (3 / 4) * config.duration
@@ -783,94 +813,28 @@ export const gsapEffects: Record<string, gsapEffect> = {
         config.duration / 2
       ),
     defaults: {
+      ignoreMargin: false,
       skewX: -20,
       duration: 0.5,
       x: "+=300",
       scale: 1.5,
       filter: "blur(10px)"
-    }
-  },
-  slideUp: {
-    effect: (targets) => U.gsap.to(
-      targets,
-      {
-        height: 0,
-        // PaddingTop: 0,
-        // paddingBottom: 0,
-        duration: 0.5,
-        ease: "power3"
-      }
-    ),
-    defaults: {}
-  },
-  pulse: {
-    effect: (targets, config) => U.gsap.to(
-      targets,
-      {
-        repeat: config.repCount,
-        yoyo: true,
-        duration: config.duration / config.repCount,
-        ease: config.ease,
-        opacity: 0.25
-      }
-    ),
-    defaults: {
-      repCount: 3,
-      duration: 5,
-      ease: "sine.inOut"
-    }
-  },
-  throb: {
-    effect: (targets, config) => U.gsap.to(
-      targets,
-      {
-        repeat: config.stagger ? undefined : 1,
-        yoyo: config.stagger ? undefined : true,
-        duration: config.duration / 2,
-        scale: config.scale,
-        filter: config.filter,
-        ease: config.ease,
-        stagger: config.stagger
-          ? {
-            ...config.stagger as gsap.StaggerVars,
-            repeat: 1,
-            yoyo: true
-          }
-          : {}
-      }
-    ),
-    defaults: {
-      duration: 1,
-      scale: 1,
-      filter: "saturate(1) brightness(2)",
-      ease: "power2.in"
     },
     extendTimeline: true
   },
-  pulseClockWedges: {
-    effect: () => U.gsap.timeline({duration: 0}),
-    defaults: {}
-  },
-  reversePulseClockWedges: {
-    effect: () => U.gsap.timeline({duration: 0}),
-    defaults: {}
-  },
-  fillCoins: {
-    effect: (targets, config) => {
-      // Targets will be all coins from zero to where fill currently is
-      // Some will already be full, others not.
-      // Stagger in timeline
-      // Pulse in size and color
-      // Shimmer as they shrink back ?
-
-      return U.gsap.effects.throb(targets, {stagger: {
-        amount: 0.25,
-        from: "start",
-        repeat: 1,
-        yoyo: true
-      }, ...config ?? {}});
+  blurReveal: {
+    effect: (target, config) => {
+      return U.gsap.effects.blurRemove(target, config).reverse(0);
     },
-    defaults: { }
+    defaults: {
+      ignoreMargin: false,
+      skewX: -20,
+      duration: 0.5,
+      x: "+=300",
+      scale: 1.5,
+      filter: "blur(10px)"
+    },
+    extendTimeline: true
   },
   hoverTooltip: {
     effect: (tooltip, _config) => {
@@ -929,7 +893,56 @@ export const gsapEffects: Record<string, gsapEffect> = {
     defaults: {
       tooltipScale: 0.75
     }
+  },
+  textJitter: {
+    effect: (target, config) => {
+      const [targetElem] = $(target as HTMLElement);
+      if (!targetElem) { throw new Error("textJitter effect: target not found"); }
+
+      const split = new SplitText(targetElem, {type: "chars"});
+
+      return U.gsap.timeline()
+        .to(targetElem, {
+          autoAlpha: 1,
+          duration: config.duration,
+          ease: "none"
+        })
+        .fromTo(split.chars, {
+          y: -config.yAmp
+        }, {
+          y: config.yAmp,
+          duration: config.duration,
+          ease: "sine.inOut",
+          stagger: {
+            repeat: -1,
+            yoyo: true,
+            from: "random",
+            each: config.stagger
+          } as gsap.StaggerVars
+        }, 0)
+        .fromTo(split.chars, {
+          rotateZ: -config.rotateAmp
+        }, {
+          rotateZ: config.rotateAmp,
+          duration: config.duration,
+          ease: CustomWiggle.create("myWiggle", {wiggles: 10, type: "random"}),
+          stagger: {
+            repeat: -1,
+            from: "random",
+            yoyo: true,
+            each: config.stagger
+          } as gsap.StaggerVars
+        }, 0);
+    },
+    defaults: {
+      yAmp: 2,
+      rotateAmp: 1,
+      duration: 1,
+      stagger: 0.05
+    },
+    extendTimeline: true
   }
+  // #endregion
 };
 
 /**
@@ -974,7 +987,7 @@ export function ApplyTooltipAnimations(html: JQuery<HTMLElement>) {
 
   html.find(".tooltip-trigger").each((_, el) => {
     const tooltipElem = $(el).find(".tooltip")[0] ?? $(el).next(".tooltip")[0];
-    if (!tooltipElem) { return; }
+    if (!tooltipElem) {return;}
 
     // Find the tooltip's parent container. If its position isn't relative or absolute, set it to relative.
     const tooltipContainer = $(tooltipElem).parent()[0];
