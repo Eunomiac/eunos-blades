@@ -1,16 +1,19 @@
 <svg class="svg-defs" viewBox="0 0 400 400">
   <defs>
-    {{#each svgData.keys.list as |keyData size|}}
-    <path id="{{size}}-key" d="{{keyData.path}}" />
-    <clipPath id="{{size}}-key-clip">
-      <use href="#{{size}}-key" />
-    </clipPath>
-    {{/each}}
-    {{#each svgData.oneKeys.list as |path count|}}
-    <path id="{{count}}-one-key" d="{{path}}" />
-    <clipPath id="{{count}}-one-key-clip">
-      <use href="#{{count}}-one-key" />
-    </clipPath>
+    {{#each svgData as |keyData size|}}
+    {{#if (test size "==" 1)}}
+      {{#each keyData.paths as |path index|}}
+      <path id="{{index}}-one-key" d="{{path}}" />
+      <clipPath id="{{index}}-one-key-clip">
+        <use href="#{{index}}-one-key" />
+      </clipPath>
+      {{/each}}
+    {{else}}
+      <path id="{{size}}-key" d="{{keyData.path}}" />
+      <clipPath id="{{size}}-key-clip">
+        <use href="#{{size}}-key" />
+      </clipPath>
+    {{/if}}
     {{/each}}
 
     <filter id="metallicFilter">

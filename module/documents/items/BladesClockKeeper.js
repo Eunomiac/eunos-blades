@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import U from "../../core/utilities.js";
 import { BladesItem } from "../BladesItemProxy.js";
 import BladesClockKey from "../../classes/BladesClocks.js";
 class BladesClockKeeper extends BladesItem {
@@ -52,20 +50,6 @@ class BladesClockKeeper extends BladesItem {
         return new Collection(this.keys
             .filter((clockKey) => clockKey.sceneIDs.includes(sceneID))
             .map((clockKey) => [clockKey.id, clockKey]));
-    }
-    flipControlPanel(clockKey) {
-        const clockKeyFlipper$ = this.sheet?.element?.find(`[data-clock-key-id="${clockKey.id}"]`);
-        if (!clockKeyFlipper$) {
-            return;
-        }
-        if (clockKey.isVisible && clockKey.isInCurrentScene) {
-            U.gsap.effects.keyControlPanelFlip(clockKeyFlipper$, { angle: 0 })
-                .then(() => clockKey.updateTarget("isVisible", false));
-        }
-        else {
-            U.gsap.effects.keyControlPanelFlip(clockKeyFlipper$, { angle: 180 })
-                .then(() => clockKey.updateTarget("isVisible", true));
-        }
     }
     async addClockKey(clockKeyConfig = {}) {
         if (!clockKeyConfig.sceneIDs?.length) {

@@ -24,7 +24,7 @@ import BladesAI, { AGENTS, AIAssistant } from "./core/ai.js";
 import BladesActiveEffect from "./documents/BladesActiveEffect.js";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet.js";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet.js";
-CONFIG.debug.logging = false;
+CONFIG.debug.logging = true;
 /* DEVCODE*/
 Object.assign(globalThis, { eLog: logger });
 Handlebars.registerHelper("eLog", logger.hbsLog);

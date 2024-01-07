@@ -86,8 +86,8 @@ export const gsapEffects = {
         defaults: {
             swingAngle: 1,
             ease: "sine.inOut",
-            yRange: 30,
-            scaleRange: 0.2,
+            yRange: 10,
+            scaleRange: 0.1,
             duration: 12
         },
         extendTimeline: true
@@ -712,7 +712,7 @@ export const gsapEffects = {
                     return U.get(target, "width") * -1;
                 },
             scale: config.scale,
-            filter: config.filter,
+            filter: `blur(${config.blur}px)`,
             duration: (3 / 4) * config.duration
         }, config.duration / 4)
             .to(targets, {
@@ -726,21 +726,55 @@ export const gsapEffects = {
             duration: 0.5,
             x: "+=300",
             scale: 1.5,
-            filter: "blur(10px)"
+            blur: 10
         },
         extendTimeline: true
     },
     blurReveal: {
-        effect: (target, config) => {
-            return U.gsap.effects.blurRemove(target, config).reverse(0);
-        },
+        effect: (targets, config) => U.gsap.timeline()
+            .fromTo(targets, {
+            skewX: config.skewX
+        }, {
+            skewX: 0,
+            duration: config.duration / 2,
+            ease: "power4.out"
+        })
+            .fromTo(targets, {
+            x: config.x,
+            marginBottom: config.ignoreMargin
+                ? undefined
+                : function (i, target) {
+                    return U.get(target, "height") * -1;
+                },
+            marginRight: config.ignoreMargin
+                ? undefined
+                : function (i, target) {
+                    return U.get(target, "width") * -1;
+                },
+            scale: config.scale,
+            filter: `blur(${config.blur}px)`
+        }, {
+            x: 0,
+            marginBottom: config.ignoreMargin ? undefined : 0,
+            marginRight: config.ignoreMargin ? undefined : 0,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: (3 / 4) * config.duration
+        }, config.duration / 4)
+            .fromTo(targets, {
+            autoAlpha: 0
+        }, {
+            autoAlpha: 1,
+            duration: config.duration / 2,
+            ease: "power3.in"
+        }, config.duration / 2),
         defaults: {
             ignoreMargin: false,
             skewX: -20,
             duration: 0.5,
             x: "+=300",
             scale: 1.5,
-            filter: "blur(10px)"
+            blur: 10
         },
         extendTimeline: true
     },
@@ -837,7 +871,7 @@ export const gsapEffects = {
         },
         defaults: {
             yAmp: 2,
-            rotateAmp: 1,
+            rotateAmp: 2,
             duration: 1,
             stagger: 0.05
         },

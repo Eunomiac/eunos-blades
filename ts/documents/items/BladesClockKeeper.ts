@@ -73,18 +73,6 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
       .map((clockKey) => [clockKey.id, clockKey]));
   }
 
-  flipControlPanel(clockKey: BladesClockKey) {
-    const clockKeyFlipper$ = this.sheet?.element?.find(`[data-clock-key-id="${clockKey.id}"]`);
-    if (!clockKeyFlipper$) { return; }
-    if (clockKey.isVisible && clockKey.isInCurrentScene) {
-      U.gsap.effects.keyControlPanelFlip(clockKeyFlipper$, {angle: 0})
-        .then(() => clockKey.updateTarget("isVisible", false));
-    } else {
-      U.gsap.effects.keyControlPanelFlip(clockKeyFlipper$, {angle: 180})
-        .then(() => clockKey.updateTarget("isVisible", true));
-    }
-  }
-
   async addClockKey(
     clockKeyConfig: Partial<BladesClockKey.Data> = {}
   ): Promise<BladesClockKey|undefined> {
@@ -118,6 +106,8 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
   // #endregion
 
   // #region OVERRIDES: prepareDerivedData, _onUpdate
+
+
   override prepareDerivedData() {
     super.prepareDerivedData();
     this.system.targetScene ??= game.scenes.current?.id as IDString || null;

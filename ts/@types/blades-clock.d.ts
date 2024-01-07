@@ -5,7 +5,7 @@ declare global {
 
   type ClockKeySize = 0|1|2|3|4|5|6;
   type ClockIndex = 0|1|2|3|4|5;
-  type OneKeyImgIndex = 1|2|3|4|5;
+  type OneKeyImgIndex = 0|1|2|3|4;
 
   namespace BladesClockKey {
 

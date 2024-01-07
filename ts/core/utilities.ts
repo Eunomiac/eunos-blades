@@ -1489,27 +1489,6 @@ const getSvgCode = (svgDotKey: string, svgPathKeys?: string|string[]) => {
     "</svg>"
   ].join("\n");
 };
-
-const getSvgPaths = (svgDotKey: string, svgPathKeys?: string|string[]): Record<string, {class: string, d: string}> => {
-  const svgData = getProperty(SVGDATA, svgDotKey) as HbsSvgData|undefined;
-  if (!svgData) { return {}; }
-  const {paths, classes} = svgData;
-  svgPathKeys ??= Object.keys(paths);
-  if (typeof svgPathKeys === "string") {
-    svgPathKeys = svgPathKeys.split("|");
-  }
-
-  const returnData: Record<string, {class: string, d: string}> = {};
-
-  for (const pathKey of svgPathKeys) {
-    returnData[pathKey] = {
-      class: classes?.[pathKey] ?? "",
-      d: paths[pathKey] ?? ""
-    };
-  }
-
-  return returnData;
-};
 // #region ░░░░░░░[SVG]░░░░ SVG Generation & Manipulation ░░░░░░░ ~
 const getRawCirclePath = (r: number, {x: xO, y: yO}: Point = {x: 0, y: 0}): Array<Array<number | string>> => {
   [r, xO, yO] = [r, xO, yO].map((val) => roundNum(val, 2));
@@ -1681,7 +1660,7 @@ const getNearestLabel = (tl: gsap.core.Timeline, matchTest?: RegExp|string): str
   return nearestLabel;
 };
 
-const reverseRepeatingTimeline = (tl: gsap.core.Timeline) => {
+const reverseRepeatingTimeline = (tl: gsap.core.Timeline): gsap.core.Timeline => {
   // FIRST: Determine if timeline itself is repeating, or if most-recent child tween of timeline is repeating
   if (tl.repeat() === -1) {
     // Timeline itself is repeating. Set totalTime equal to time, reverse.
@@ -1695,6 +1674,7 @@ const reverseRepeatingTimeline = (tl: gsap.core.Timeline) => {
     }
     tl.reverse();
   }
+  return tl;
 };
 // #endregion ░░░░[GreenSock]░░░░
 
@@ -1915,7 +1895,7 @@ export default {
   getDynamicFunc, withLog,
 
   // ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
-  getSvgCode, getSvgPaths,
+  getSvgCode,
   changeContainer,
 
   getRawCirclePath, drawCirclePath,

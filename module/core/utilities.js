@@ -1428,25 +1428,6 @@ const getSvgCode = (svgDotKey, svgPathKeys) => {
         "</svg>"
     ].join("\n");
 };
-const getSvgPaths = (svgDotKey, svgPathKeys) => {
-    const svgData = getProperty(SVGDATA, svgDotKey);
-    if (!svgData) {
-        return {};
-    }
-    const { paths, classes } = svgData;
-    svgPathKeys ??= Object.keys(paths);
-    if (typeof svgPathKeys === "string") {
-        svgPathKeys = svgPathKeys.split("|");
-    }
-    const returnData = {};
-    for (const pathKey of svgPathKeys) {
-        returnData[pathKey] = {
-            class: classes?.[pathKey] ?? "",
-            d: paths[pathKey] ?? ""
-        };
-    }
-    return returnData;
-};
 // #region ░░░░░░░[SVG]░░░░ SVG Generation & Manipulation ░░░░░░░ ~
 const getRawCirclePath = (r, { x: xO, y: yO } = { x: 0, y: 0 }) => {
     [r, xO, yO] = [r, xO, yO].map((val) => roundNum(val, 2));
@@ -1617,6 +1598,7 @@ const reverseRepeatingTimeline = (tl) => {
         }
         tl.reverse();
     }
+    return tl;
 };
 // #endregion ░░░░[GreenSock]░░░░
 // #endregion ▄▄▄▄▄ HTML ▄▄▄▄▄
@@ -1827,7 +1809,7 @@ export default {
     // ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████
     getDynamicFunc, withLog,
     // ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
-    getSvgCode, getSvgPaths,
+    getSvgCode,
     changeContainer,
     getRawCirclePath, drawCirclePath,
     getColorVals, getRGBString, getHEXString, getContrastingColor, getRandomColor,

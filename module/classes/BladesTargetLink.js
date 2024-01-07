@@ -146,15 +146,15 @@ class BladesTargetLink {
     }
     // #endregion
     // #region ASYNC UPDATE & DELETE METHODS ~
-    async updateTarget(prop, val) {
+    async updateTarget(prop, val, isSilent = false) {
         if (this.targetFlagKey) {
             this.target.setFlag("eunos-blades", `${this.targetFlagKey}.${this.id}.${prop}`, val);
         }
         else {
-            this.target.update({ [`${this.targetKey}.${this.id}.${prop}`]: val });
+            this.target.update({ [`${this.targetKey}.${this.id}.${prop}`]: val }, { render: !isSilent });
         }
     }
-    async updateTargetData(val) {
+    async updateTargetData(val, isSilent = false) {
         if (val === null) {
             if (this.targetFlagKey) {
                 await this.target.unsetFlag("eunos-blades", `${this.targetFlagKey}.${this.id}`);
@@ -177,7 +177,7 @@ class BladesTargetLink {
                 await this.target.setFlag("eunos-blades", `${this.targetFlagKey}.${this.id}`, linkData);
             }
             else {
-                await this.target.update({ [`${this.targetKey}.${this.id}`]: linkData });
+                await this.target.update({ [`${this.targetKey}.${this.id}`]: linkData }, { render: !isSilent });
             }
         }
     }

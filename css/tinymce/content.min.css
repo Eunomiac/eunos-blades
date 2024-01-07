@@ -1069,12 +1069,6 @@ html .comp.controls-container .controls-panel.active .controls-list li:nth-child
 html .comp.controls-container .controls-panel.active .controls-list li:nth-child(6), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(6) {
   transition-delay: 75ms, 0ms, 0ms;
 }
-html .comp.controls-container .controls-panel.active .controls-list li:hover, :root .comp.controls-container .controls-panel.active .controls-list li:hover {
-  background: var(--control-hover-bg-color);
-}
-html .comp.controls-container .controls-panel.active .controls-list li:hover > a > i, :root .comp.controls-container .controls-panel.active .controls-list li:hover > a > i {
-  color: var(--control-hover-color);
-}
 html .comp.consequence-display-container, :root .comp.consequence-display-container {
   --container-height: 40px;
   --container-left-shift: 0px;
@@ -2207,9 +2201,6 @@ html .window-header .window-title, :root .window-header .window-title {
 html .window-header a, :root .window-header a {
   margin: 0 0.3125rem;
 }
-html .window-header a i, :root .window-header a i {
-  color: var(--blades-white-bright);
-}
 html .window-header .close, :root .window-header .close {
   font-size: 0;
   margin: 0;
@@ -2958,12 +2949,6 @@ html .comp.controls-container .controls-panel.active .controls-list li:nth-child
 }
 html .comp.controls-container .controls-panel.active .controls-list li:nth-child(6), :root .comp.controls-container .controls-panel.active .controls-list li:nth-child(6) {
   transition-delay: 75ms, 0ms, 0ms;
-}
-html .comp.controls-container .controls-panel.active .controls-list li:hover, :root .comp.controls-container .controls-panel.active .controls-list li:hover {
-  background: var(--control-hover-bg-color);
-}
-html .comp.controls-container .controls-panel.active .controls-list li:hover > a > i, :root .comp.controls-container .controls-panel.active .controls-list li:hover > a > i {
-  color: var(--control-hover-color);
 }
 html .comp.consequence-display-container, :root .comp.consequence-display-container {
   --container-height: 40px;
@@ -3989,6 +3974,9 @@ html hr, :root hr {
 }
 html code, :root code {
   padding: 0.1rem 0.2rem;
+}
+html i.fa-duotone[style], :root i.fa-duotone[style] {
+  /* Your code here */
 }
 html .text-secret, :root .text-secret {
   display: var(--secret-text-display, "none");

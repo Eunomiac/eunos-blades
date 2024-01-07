@@ -28,13 +28,13 @@
   $y: 0;
 
   // Depending on side of square, apply $side-percent to $x and $y coords.
-  @if $angle > 45 and $angle <= 135 {
+  @if $angle >= 45 and $angle < 135 {
     $x: $size;
     $y: $size * $side-percent;
-  } @else if $angle > 135 and $angle <= 225 {
+  } @else if $angle >= 135 and $angle < 225 {
     $x: $size * (1 - $side-percent);
     $y: $size;
-  } @else if $angle > 225 and $angle <= 315 {
+  } @else if $angle >= 225 and $angle < 315 {
     $x: 0;
     $y: $size * (1 - $side-percent);
   } @else {
@@ -60,19 +60,19 @@
   $angle: calculate-angle($val, $max);
 
   // Corner Check 1: The polygon includes the top-right corner
-  @if $angle >= 45 {
+  @if $angle > 45 {
     $polygon: append($polygon, ($size 0));
   }
   // Corner Check 2: The polygon includes the bottom-right corner
-  @if $angle >= 135 {
+  @if $angle > 135 {
     $polygon: append($polygon, ($size $size));
   }
   // Corner Check 3: The polygon includes the bottom-left corner
-  @if $angle >= 225 {
+  @if $angle > 225 {
     $polygon: append($polygon, (0 $size));
   }
   // Corner Check 4: The polygon includes the top-left corner
-  @if $angle >= 315 {
+  @if $angle > 315 {
     $polygon: append($polygon, (0 0));
   }
 
@@ -90,89 +90,59 @@
   &[data-value="#{$val}"][data-max="#{$max}"] .clock-glow,
   &[data-value="#{$val}"][data-max="#{$max}"] .clock-fill {
     clip-path: polygon(#{calculate-polygon($val, $max)});
-    // Begin clip path at center, move up to "noon".
-    // $clip-path: "polygon(50% 50%, 50% 0%";
+  }
+}
 
-    // @if $val >= 1 * math.div($max, 8) {
-    //   // If $val as reached the top right corner (1/8th of the clock), add that corner.
-    //   $clip-path: $clip-path + ", 100% 0%";
-    // }
-
-    // @if $val > 3 * math.div($max, 8) {
-    //   // If $val is farther along than the bottom right corner (3/8th of the clock), add that corner.
-    //   $clip-path: $clip-path + ", 100% 100%";
-    // }
-
-    // @if $val > 5 * math.div($max, 8) {
-    //   // If $val is farther along than the bottom left corner (5/8th of the clock), add that corner.
-    //   $clip-path: $clip-path + ", 0% 100%";
-    // }
-
-    // @if $val > 7 * math.div($max, 8) {
-    //   // If $val is farther along than the top left corner (7/8th of the clock), add that corner.
-    //   $clip-path: $clip-path + ", 0% 0%";
-    // }
-
-    // // Determine the position on the square perimeter that corresponds to the desired angle.
-    // @if $val * $angle <= 90deg {
-    //   $clip-path: $clip-path + ", calc(50% + 50% * tan(#{$val * $angle})) 0%";
-    // } @else if $val * $angle <= 180deg {
-    //   $clip-path: $clip-path + ", 100% calc(50% + 50% * tan(#{$val * $angle - 90deg}))";
-    // } @else if $val * $angle <= 270deg {
-    //   $clip-path: $clip-path + ", calc(50% - 50% * tan(#{$val * $angle - 180deg})) 100%";
-    // } @else {
-    //   $clip-path: $clip-path + ", 0% calc(50% - 50% * tan(#{$val * $angle - 270deg}))";
-    // }
-
-    // // Complete the polygon by returning to the center.
-    // $clip-path: $clip-path + ", 50% 50%)";
-    // clip-path: unquote($clip-path);
+@mixin generate-one-segment($max, $size) {
+  &[data-max="#{$max}"] .clock-one-segment {
+    clip-path: polygon(#{calculate-polygon(1, $max)});
+    visibility: hidden;
   }
 }
 
 & {
 
   $key-sizes: (
-    1: (height: 455px, width: 202px, clocksCenterX: 101px, clocksCenterY: 99px, labelTop: 0px, inactiveKeyTop: -350px, inactiveLabelLeft: -40px, inactiveLabelBottom: 50px),
-    2: (height: 624.438px, width: 202px, clocksCenterX: 101px, clocksCenterY: 189px, labelTop: 100px, inactiveKeyTop: -520px, inactiveLabelLeft: -40px, inactiveLabelBottom: 50px),
-    3: (height: 915px, width: 280px, clocksCenterX: 140px, clocksCenterY: 169px, labelTop: 0px, inactiveKeyTop: -815px, inactiveLabelLeft: -10px, inactiveLabelBottom: 50px),
-    4: (height: 1140px, width: 376px, clocksCenterX: 188px, clocksCenterY: 185px, labelTop: -100px, inactiveKeyTop: -925px, inactiveLabelLeft: 40px, inactiveLabelBottom: 150px),
-    5: (height: 1140px, width: 376px, clocksCenterX: 188px, clocksCenterY: 185px, labelTop: 0px, inactiveKeyTop: -1025px, inactiveLabelLeft: 40px, inactiveLabelBottom: 50px),
-    6: (height: 1150px, width: 376px, clocksCenterX: 188px, clocksCenterY: 185px, labelTop: 250px, inactiveKeyTop: -1025px, inactiveLabelLeft: 40px, inactiveLabelBottom: 50px)
+    1: (height: 836px, width: 230px, labelTop: 0px, clockSize: 169px),
+    2: (height: 625.438px, width: 197.009px, labelTop: 100px, clockSize: 108px),
+    3: (height: 915.936px, width: 277.634px, labelTop: 0px, clockSize: 108px),
+    4: (height: 1041px, width: 368.697px, labelTop: -100px, clockSize: 108px),
+    5: (height: 1148.657px, width: 368.698px, labelTop: 0px, clockSize: 108px),
+    6: (height: 1148.98px, width: 370.141px, labelTop: 250px, clockSize: 108px)
   );
   $clock-positions: (
     1: (
-      0: (x: 101px, y: 99px)
+      0: (x: 111.011px, y: 108.5px)
     ),
     2: (
-      0: (x: 101px, y: 99px),
-      1: (x: 101px, y: 279px)
+      0: (x: 98.579px, y: 280px),
+      1: (x: 98.579px, y: 100px)
     ),
     3: (
-      0: (x: 140px, y: 99px),
-      1: (x: 74px, y: 211px),
-      2: (x: 206px, y: 211px)
+      0: (x: 138.892px, y: 100px),
+      1: (x: 72.892px, y: 212px),
+      2: (x: 204.892px, y: 212px)
     ),
     4: (
-      0: (x: 188px, y: 99px),
-      1: (x: 101px, y: 185px),
-      2: (x: 275px, y: 185px),
-      3: (x: 188px, y: 273px)
+      0: (x: 184.245px, y: 100px),
+      1: (x: 97.245px, y: 186px),
+      2: (x: 271.245px, y: 186px),
+      3: (x: 184.245px, y: 274px)
     ),
     5: (
-      0: (x: 188px, y: 99px),
-      1: (x: 101px, y: 185px),
-      2: (x: 275px, y: 185px),
-      3: (x: 188px, y: 273px),
-      4: (x: 188px, y: 452px)
+      0: (x: 184.245px, y: 100px),
+      1: (x: 97.245px, y: 186px),
+      2: (x: 271.245px, y: 186px),
+      3: (x: 184.245px, y: 274px),
+      4: (x: 184.245px, y: 453px)
     ),
     6: (
-      0: (x: 188px, y: 99px),
-      1: (x: 101px, y: 185px),
-      2: (x: 275px, y: 185px),
-      3: (x: 188px, y: 273px),
-      4: (x: 188px, y: 452px),
-      5: (x: 188px, y: 683px)
+      0: (x: 185.128px, y: 100px),
+      1: (x: 98.128px, y: 186px),
+      2: (x: 272.128px, y: 186px),
+      3: (x: 185.128px, y: 274px),
+      4: (x: 185.128px, y: 453px),
+      5: (x: 185.128px, y: 684px)
     )
   );
 
@@ -212,8 +182,19 @@
     )
   );
 
+  /* VISIBILITY HIDDEN FOR ANIMATED COMPONENTS */
+  .clock-key-container,
+  .key-label,
+  .clock-frame,
+  .clock-glow,
+  .clock-label,
+  .clock-glow { visibility: hidden; }
+
   /* KEYS */
   .clock-key-container {
+
+    height: var(--key-height);
+    width: var(--key-width);
 
     .toggle-icon { display: none !important; }
     position: absolute;
@@ -229,13 +210,10 @@
       &[data-size="#{$key}"] {
         --key-height: #{map-get(map-get($key-sizes, $key), "height")};
         --key-width: #{map-get(map-get($key-sizes, $key), "width")};
+        --clock-size: #{map-get(map-get($key-sizes, $key), "clockSize")};
+        --label-top: #{map-get(map-get($key-sizes, $key), "labelTop")};
 
         .clock-key {
-
-          .key-label {
-            top: map-get(map-get($key-sizes, $key), "labelTop");
-          }
-
           .key-image-container {
             @each $clock, $pos in $clocks {
               .clock-container:nth-of-type(#{$clock + 1}) {
@@ -245,15 +223,6 @@
             }
           }
         }
-      }
-    }
-
-    &[data-size="1"] .clock-key .key-image-container.one-key-image-container {
-      --clock-size: 86px;
-
-      .clock-container {
-        top: 181px;
-        left: 56px;
       }
     }
 
@@ -268,17 +237,17 @@
       top: 50%;
       left: 50%;
 
-      // background: rgba(0, 255, 255, 0.25);
-      // outline: 2px dotted rgb(0, 255, 255);
-
       & > * { position: absolute }
 
       .key-label {
-        font-family: var(--font-decorative);
-        font-size: toRem(64px);
-        top: unset;
+        font-family: var(--font-emphasis);
+        font-size: toRem(48px);
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        top: var(--label-top);
         z-index: 20;
-        width: 100%;
+        width: 200%;
         pointer-events: all;
         color: var(--blades-white-bright);
         text-shadow:
@@ -286,16 +255,10 @@
           0 0 15px var(--blades-black-dark),
           0 0 15px var(--blades-black-dark),
           0 0 15px var(--blades-black-dark);
-        // white-space: nowrap;
+        white-space: nowrap;
         // rotate: -30deg;
-        left: 0;
+        left: -50%;
         position: absolute;
-
-        // background: rgba(255, 255, 0, 0.25);
-        // outline: 2px dotted rgb(255, 255, 0);
-        &.label-hidden {
-          visibility: hidden;
-        }
       }
 
       .key-image-container {
@@ -337,8 +300,8 @@
     align-items: center;
     justify-content: center;
     overflow: visible;
-    height: var(--clock-size, 110px);
-    width: var(--clock-size, 110px);
+    height: var(--clock-size);
+    width: var(--clock-size);
     transform: translate(-50%, -50%) !important;
 
     .clock {
@@ -347,14 +310,15 @@
 
       &,
       & * {
-        height: var(--clock-size, 110px);
-        width: var(--clock-size, 110px);
+        height: var(--clock-size);
+        width: var(--clock-size);
         pointer-events: none;
       }
 
       .clock-frame,
       .clock-fill,
-      .clock-glow {
+      .clock-glow,
+      .clock-one-segment {
         position: absolute;
         top: 0px;
         left: 0px;
@@ -375,23 +339,19 @@
         text-shadow: var(--text-shadow-dark-strong);
         text-align: center;
         white-space: nowrap;
-
       }
 
       .clock-frame { z-index: 3; }
       .clock-fill { z-index: 2; }
       .clock-glow { z-index: 4; }
+      .clock-one-segment { z-index: 6; }
 
       .clock-glow {
         transform-origin: 50% 50%;
-        scale: var(--clock-glow-mult, 3);
-        // top: ;
-        // top: var(--clock-glow-shift);
-        // translate: 0 var(--clock-glow-correction);
+        scale: 3;
 
-        // background: url("systems/eunos-blades/assets/animations/clock-flare.webp");
         background-repeat: no-repeat;
-        background-position: center calc(50% - var(--clock-glow-shift, 7%));
+        background-position: center;
         background-size: cover;
 
         &.clock-glow-white {
@@ -406,12 +366,11 @@
         &.clock-glow-blue {
           background-image: url("../assets/animations/clock-flare-blue.webp");
         }
-
-        &.clock-glow-hidden { visibility: hidden; }
       }
 
       // Generate clip-paths for all possible combinations of val and max
       @for $max from 2 through 12 {
+        @include generate-one-segment($max, 400px);
         @for $val from 1 through $max {
           @include generate-clock-clip($val, $max, 400px);
         }
@@ -419,123 +378,4 @@
 
     }
   }
-
-  /* CONTROLS */
-  // .clock-key-container.controls-hidden {
-  //   .clock-key-controls { display: none !important; }
-  //   .clock-controls { display: none !important }
-  // }
-
-  // .clock-key-controls,
-  // .clock-controls {
-  //   --row-height: 25px;
-  //   --row-gap: 2px;
-  //   position: absolute;
-  //   display: flex;
-  //   flex-direction: column;
-  //   justify-content: flex-start;
-  //   align-items: center;
-  //   gap: var(--row-gap);
-  //   z-index: 50;
-  //   border-radius: 5px;
-  //   height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
-  //   width: 100%;
-  //   transform: translate(-50%, -50%);
-  //   top: 50%;
-  //   left: 50%;
-
-  //   &.clock-key-controls {
-  //     position: absolute;
-  //     top: unset;
-  //     bottom: 20%;
-  //     left: 50%;
-  //     width: 80%;
-  //     transform: translate(-50%, 0%);
-  //     height: calc(var(--row-height) * 3 + var(--row-gap) * 2);
-  //   }
-
-  //   .clock-button { pointer-events: all;}
-
-  //   i {
-  //     opacity: 1;
-  //     // color: var(--blades-gold-bright);
-  //     text-shadow: var(--text-shadow-dark-strong);
-  //     pointer-events: none;
-  //   }
-
-  //   select, input {
-  //     pointer-events: all;
-  //   }
-
-  //   select {
-  //     width: auto;
-  //     flex-basis: auto;
-  //     max-width: 75%;
-  //     flex-grow: 1;
-  //     flex-shrink: 1;
-  //     line-height: var(--row-height);
-  //     appearance: none; /* Remove default select dropdown arrow */
-  //     -webkit-appearance: none; /* Remove default select dropdown arrow for Chrome and Safari */
-  //     -moz-appearance: none; /* Remove default select dropdown arrow for Firefox */
-  //     background: transparent; /* Make the select element transparent to hide the arrow */
-  //   }
-
-  //   &:not(.controls-hidden) {
-  //     background: var(--blades-black-fade);
-  //   }
-
-  //   .clock-controls-row, .clock-key-controls-row {
-  //     display: flex;
-  //     flex-direction: row;
-  //     justify-content: space-evenly;
-  //     align-items: center;
-  //     height: var(--row-height);
-  //     max-height: var(--row-height);
-  //     width: 100%;
-
-  //     * {
-  //       // pointer-events: all !important;
-  //       height: var(--row-height);
-  //       max-height: var(--row-height);
-  //       width: unset;
-  //       position: static;
-  //     }
-
-  //     &.toggle-controls-row {
-  //       position: absolute;
-  //       top: calc(-1 * var(--row-height));
-
-  //       &.clock-key-controls-row {
-  //         bottom: calc(-2 * var(--row-height));
-  //         top: unset;
-  //       }
-  //     }
-
-  //     &.name-row {
-  //       width: 100%;
-
-  //       > .clock-controls-name {
-  //         height: var(--row-height);
-  //         max-height: var(--row-height);
-  //         width: 100%;
-  //         pointer-events: all !important;
-  //       }
-  //     }
-
-  //     &.select-row {
-  //       justify-content: stretch;
-  //     }
-
-  //     &.button-row {
-  //       .toggle-icon {
-  //         // width: auto;
-
-  //         i { width: var(--row-height); }
-
-  //         .tooltip { position: absolute; }
-  //       }
-  //     }
-  //   }
-  // }
-
 }

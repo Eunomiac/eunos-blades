@@ -27,30 +27,17 @@
             transition: 0.25s;
             transform-origin: 50% 50%;
             pointer-events: auto;
-            &::before {
-              color: var(--icon-primary-color);
-              opacity: var(--icon-primary-opacity, 1);
-            }
-            &::after {
-              color: var(--icon-secondary-color);
-              opacity: var(--icon-secondary-opacity, 1);
-            }
+            // &::before {
+            //   color: var(--icon-primary-color);
+            //   opacity: var(--icon-primary-opacity, 1);
+            // }
+            // &::after {
+            //   color: var(--icon-secondary-color);
+            //   opacity: var(--icon-secondary-opacity, 1);
+            // }
             &:hover {
               scale: 1.1;
               filter: brightness(1.5) saturate(1.5);
-            }
-          }
-        }
-
-        &.clock-control-drop-key {
-          i.fa-duotone {
-            &::before {
-              color: var(--blades-gold);
-              opacity: 1;
-            }
-            &::after {
-              color: var(--blades-gold-darkest);
-              opacity: 1;
             }
           }
         }
@@ -101,7 +88,8 @@
               }
             }
 
-            .clock-key-control-flipper {
+            .clock-key-control-flipper,
+            .clock-control-flipper {
               position: relative;
               transform-style: preserve-3d;
               height: 30px;
@@ -136,6 +124,34 @@
                   color: var(--blades-black);
                   background: linear-gradient(45deg, var(--blades-white-bright), var(--blades-grey-bright));;
                 }
+
+                .button-icon {
+                  i[class*="slash"] {
+                    opacity: 0.5;
+                  }
+                }
+              }
+
+              &.clock-control-flipper {
+                height: 20px;
+                line-height: 20px;
+                font-size: 16px;
+
+                > div {
+                  height: 20px;
+                  line-height: 20px;
+
+                  .button-icon {
+                    i {
+                      font-size: 12px;
+                    }
+                  }
+                }
+              }
+
+              .clock-key-control-flipper + .clock-control-flipper .clock-control-panel .clock-control-delete-clock {
+                opacity: 0;
+                pointer-events: none;
               }
             }
           }

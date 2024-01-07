@@ -1,18 +1,9 @@
-$key-sizes: (
-  1: (height: 455px, width: 202px, labelTop: 150px, inactiveKeyTop: -350px, inactiveLabelLeft: -40px, inactiveLabelBottom: 50px),
-  2: (height: 624.438px, width: 202px, labelTop: 400px, inactiveKeyTop: -520px, inactiveLabelLeft: -40px, inactiveLabelBottom: 50px),
-  3: (height: 915px, width: 280px, labelTop: 600px, inactiveKeyTop: -815px, inactiveLabelLeft: -10px, inactiveLabelBottom: 50px),
-  4: (height: 1140px, width: 376px, labelTop: 700px, inactiveKeyTop: -925px, inactiveLabelLeft: 40px, inactiveLabelBottom: 150px),
-  5: (height: 1140px, width: 376px, labelTop: 800px, inactiveKeyTop: -1025px, inactiveLabelLeft: 40px, inactiveLabelBottom: 50px),
-  6: (height: 1150px, width: 376px, labelTop: 900px, inactiveKeyTop: -1025px, inactiveLabelLeft: 40px, inactiveLabelBottom: 50px)
-);
-
 & {
   &, & > * {
     display: block;
     position: absolute;
     top: 0;
-    left: 200px;
+    left: 0;
     height: 100%;
     width: 100%;
     pointer-events: none;
@@ -21,78 +12,24 @@ $key-sizes: (
     transform-style: preserve-3d;
   }
 
-  #test-box {
-    height: 200px;
-    width: 200px;
-    background: blue;
-    top: 200px;
-  }
-
-
   @import "../components/clocks";
 
-
+  /* Sizing the Keys for Overlay Display */
 
   .clock-key-container {
     height: calc(0.5 * var(--key-height));
     width: calc(0.5 * var(--key-width));
-    visibility: hidden;
 
-    &.active-key {
-      min-width: 200px;
-      margin-right: calc(-0.25 * 0.7 * var(--key-width));
-      scale: 0.7;
+    &[data-size="1"] {
+      height: calc(0.3 * var(--key-height));
+      width: calc(0.3 * var(--key-width));
     }
 
-    // &:not(.active-key) {
-    //   // position: absolute;
-    //   top: calc(-1 * var(--top-shift));
-    //   top: unset;
-    //   bottom: 10px;
-    //   width: calc(0.35 * var(--key-width));
-    //   margin-right: calc(-0.15 * var(--key-width));
-    //   transform-origin: 50% 0%;
-    //   scale: 0.5;
-
-    //   left: calc(-1 * var(--left-shift));
-    //   & ~ .clock-key-container:not(.active-key) {
-    //     // left: 0;
-    //   }
-
-    //   &:nth-child(2n+1) { margin-top: 20px }
-
-    //   &[data-size="1"] { bottom: 150px; }
-    //   &[data-size="2"] { bottom: 200px; }
-    //   &[data-size="3"] { bottom: 315px; margin-left: -10px; }
-    //   &[data-size="4"] { bottom: 350px; margin-left: -25px; }
-    //   &[data-size="5"] { bottom: 390px; margin-left: -10px; }
-    //   &[data-size="6"] { bottom: 390px; margin-left: -10px; }
-
-    //   // &[data-size="1"] { bottom: -230px; }
-    //   // &[data-size="2"] { bottom: -180px; }
-    //   // &[data-size="3"] { bottom: -65px; margin-left: -10px; }
-    //   // &[data-size="4"] { bottom: -30px; margin-left: -25px; }
-    //   // &[data-size="5"] { bottom: 0; margin-left: -10px; }
-    //   // &[data-size="6"] { bottom: 0; margin-left: -10px; }
-
-    //   .clock-key .key-label {
-    //     font-size: 32px;
-    //     white-space: nowrap;
-    //     z-index: 2000;
-    //     // transform-origin: 50% 50%;
-    //     // rotate: 25deg;
-    //   }
-
-    //   &[data-size="1"] .clock-key .key-label { top: unset; bottom: calc(-0.5 * var(--key-height) + 120px); left: -30px; }
-    //   &[data-size="2"] .clock-key .key-label { top: unset; bottom: calc(-0.5 * var(--key-height) + 120px); left: -30px; }
-    //   &[data-size="3"] .clock-key .key-label { top: unset; bottom: calc(-0.5 * var(--key-height) + 120px); left: -80px; }
-    //   &[data-size="4"] .clock-key .key-label { top: unset; bottom: calc(-0.5 * var(--key-height) + 220px); left: -80px; }
-    //   &[data-size="5"] .clock-key .key-label { top: unset; bottom: calc(-0.5 * var(--key-height) + 120px); left: -60px; }
-    //   &[data-size="6"] .clock-key .key-label { top: unset; bottom: calc(-0.5 * var(--key-height) + 120px); left: -60px; }
-
-    //   .clock-key {
-    //     // rotate: -25deg !important;
-    //   }
-    // }
+    &.clock-key-dragger {
+      background: rgba(0, 255, 255, 0.25);
+      outline: 1px solid rgba(0, 255, 255, 1);
+      visibility: visible;
+      pointer-events: all;
+    }
   }
 }

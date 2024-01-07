@@ -1,6 +1,6 @@
 {{eLog (concat "Clock Key Context of " id) this}}
 
-<div class="clock-key-container controls-hidden {{~#unless isVisible}} key-hidden{{/unless}}" data-size="{{size}}">
+<div class="clock-key-container" data-size="{{size}}">
 
   <div id="{{id}}" class="clock-key"
     data-id="{{id}}"
@@ -11,7 +11,7 @@
   >
     <label class="key-label {{~#unless isNameVisible}} label-hidden{{/unless}}">{{name}}</label>
     <div class="key-image-container {{~#if (test size "==" 1)}} one-key-image-container{{/if}}">
-      <svg class="key-image" viewBox="0 0 400 400">
+      <svg class="key-image" viewBox="0 0 {{keyWidth}} {{keyHeight}}">
         {{#if (test size "==" 1)}}
           <use href="#{{oneKeyIndex}}-one-key" class="key-bg" />
           <rect class="metallic-overlay" x="0" y="0" clip-path="url(#{{oneKeyIndex}}-one-key-clip" />

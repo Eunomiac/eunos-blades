@@ -178,17 +178,16 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
   }
   // #endregion
 
-
   // #region ASYNC UPDATE & DELETE METHODS ~
-  async updateTarget(prop: string, val: unknown) {
+  async updateTarget(prop: string, val: unknown, isSilent = false) {
     if (this.targetFlagKey) {
       (this.target as BladesItem).setFlag("eunos-blades", `${this.targetFlagKey}.${this.id}.${prop}`, val);
     } else {
-      this.target.update({[`${this.targetKey}.${this.id}.${prop}`]: val});
+      this.target.update({[`${this.targetKey}.${this.id}.${prop}`]: val}, {render: !isSilent});
     }
   }
 
-  async updateTargetData<T extends BladesTargetLink.UnknownSchema>(val: T | null) {
+  async updateTargetData<T extends BladesTargetLink.UnknownSchema>(val: T | null, isSilent = false) {
     if (val === null) {
       if (this.targetFlagKey) {
         await (this.target as BladesItem).unsetFlag("eunos-blades", `${this.targetFlagKey}.${this.id}`);
@@ -208,7 +207,7 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
       if (this.targetFlagKey) {
         await (this.target as BladesItem).setFlag("eunos-blades", `${this.targetFlagKey}.${this.id}`, linkData);
       } else {
-        await this.target.update({[`${this.targetKey}.${this.id}`]: linkData});
+        await this.target.update({[`${this.targetKey}.${this.id}`]: linkData}, {render: !isSilent});
       }
     }
   }

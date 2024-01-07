@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import U from "../../core/utilities";
 import BladesItemSheet from "./BladesItemSheet";
@@ -5,7 +6,7 @@ import BladesClockKeeper from "../../documents/items/BladesClockKeeper";
 // import U from "../../core/utilities";
 import {BladesItemType} from "../../core/constants";
 import {BladesPC, BladesFaction} from "../../documents/BladesActorProxy";
-import BladesClockKey from "../../classes/BladesClocks";
+import BladesClockKey, {BladesClock} from "../../classes/BladesClocks";
 
 class BladesClockKeeperSheet extends BladesItemSheet {
 
@@ -57,79 +58,296 @@ class BladesClockKeeperSheet extends BladesItemSheet {
   override async activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
 
-    function getClockKeyFromEvent(event: ClickEvent|ChangeEvent): BladesClockKey {
+    // #region Helper Functions to Retrieve Clock Keys & Clocks ~
+    function getClockKeyFromEvent(event: ClickEvent | ChangeEvent): BladesClockKey {
       const id = $(event.currentTarget).data("keyId")
-        || $(event.currentTarget).closest(".clock-key-control-flipper").data("clockKeyId");
-      if (!id) { throw new Error("No id found on element"); }
+        || $(event.currentTarget).closest(".control-flipper").data("clockKeyId");
+      if (!id) {throw new Error("No id found on element");}
       const clockKey = game.eunoblades.ClockKeys.get(id as IDString);
-      if (!clockKey) { throw new Error(`Clock key with id ${id} not found`); }
+      if (!clockKey) {throw new Error(`Clock key with id ${id} not found`);}
       return clockKey;
     }
 
-    html.find("[data-action=\"create-clock-key\"").on({
-      click: async (event: ClickEvent) => {
-        event.preventDefault();
-        await this.item.addClockKey();
-        // this.render();
-      }
-    });
+    function getClockFromEvent(event: ClickEvent | ChangeEvent): [BladesClockKey, BladesClock] {
+      const clockKey = getClockKeyFromEvent(event);
+      const clockID = $(event.currentTarget).data("clockId")
+        || $(event.currentTarget).closest(".control-flipper").data("clockId");
+      if (!clockID) {throw new Error("No clockID found on element");}
+      const clock = clockKey.getClockByID(clockID);
+      if (!clock) {throw new Error(`Clock with id ${clockID} not found`);}
+      return [clockKey, clock];
+    }
+    // #endregion
 
-    const flipControls$ = html.find(".clock-key-control-flipper");
+    // #region Initializing Flip Control Panels ~
+    const flipControls$ = html.find(".control-flipper");
 
-    U.gsap.set(flipControls$.find(".clock-key-control-panel.controls-back"), {
+    U.gsap.set(flipControls$.find(".controls-back"), {
       translateZ: -2,
       rotateX: 180,
       autoAlpha: 1
     });
-    U.gsap.set(flipControls$.find(".clock-key-control-panel.controls-front"), {
+    U.gsap.set(flipControls$.find(".controls-front"), {
       translateZ: 2,
       autoAlpha: 1
     });
-    U.gsap.set(html.find(".clock-key-control-flipper.controls-flipped"), {
+    U.gsap.set(html.find(".control-flipper.controls-flipped"), {
       rotateX: 180
     });
+    // #endregion
 
-    html.find("[data-action=\"drop-clock-key\"]").on({
+    // #region *** CLOCK KEYS *** ~
+
+    const clockKeyControls$ = html.find(".clock-key-control-flipper");
+
+    clockKeyControls$.find("[data-action=\"create-clock-key\"").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        await this.item.addClockKey();
+        // Notify GM
+      }
+    });
+
+    // #region isOnDisplay === TRUE OR FALSE (Conditional Animation Checks Required) ~
+    clockKeyControls$.find("[data-action=\"toggle-name-visibility\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        const clockKey = getClockKeyFromEvent(event);
+
+        const isNameVisible = !clockKey.isNameVisible;
+        clockKey.updateTarget("isNameVisible", isNameVisible);
+
+        // If clockKey is on display (in scene & visible), sent out animation socket calls
+        if (clockKey.isOnDisplay) {
+          if (isNameVisible) {
+            clockKey.fadeInName_SocketCall();
+          } else {
+            clockKey.fadeOutName_SocketCall();
+          }
+        }
+      }
+    });
+
+    clockKeyControls$.find("[data-action=\"toggle-spotlight\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        const clockKey = getClockKeyFromEvent(event);
+        await clockKey.updateTarget("isSpotlit", !clockKey.isSpotlit);
+
+        // If clockKey is on display (in scene & visible), sent out animation socket calls
+        if (clockKey.isOnDisplay) {
+          if (clockKey.isSpotlit) {
+            // clockKey.unspotlight_SocketCall();
+          } else {
+            // clockKey.spotlight_SocketCall();
+          }
+        }
+      }
+    });
+    // #endregion
+
+    // #region isOnDisplay === TRUE ~
+    clockKeyControls$.find("[data-action=\"pull-clock-key\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        await getClockKeyFromEvent(event).pull_SocketCall();
+      }
+    });
+    // #endregion
+
+    // #region isOnDisplay === FALSE ~
+    clockKeyControls$.find("[data-action=\"drop-clock-key\"]").on({
       click: async (event: ClickEvent) => {
         event.preventDefault();
         await getClockKeyFromEvent(event).drop_SocketCall();
       }
     });
 
-    html.find("[data-action=\"pull-clock-key\"]").on({
-      click: async (event: ClickEvent) => {
-        event.preventDefault();
-        await getClockKeyFromEvent(event).pull_SocketCall();
-      }
-    });
-
-    html.find("[data-action=\"toggle-name-visibility\"]").on({
+    clockKeyControls$.find("[data-action=\"spawn-position-dragger\"]").on({
       click: async (event: ClickEvent) => {
         event.preventDefault();
         const clockKey = getClockKeyFromEvent(event);
-        clockKey.updateTarget("isNameVisible", !clockKey.isNameVisible);
+        clockKey.spawnPositionDragger(game.eunoblades.Director.clockKeySection$);
+      }
+    });
 
-        // If clockKey is in this scene and isVisible, must send out socket calls for animating name fading in/out
-        if (clockKey.isInCurrentScene && clockKey.isVisible) {
-          if (clockKey.isNameVisible) {
-            clockKey.fadeOutName_SocketCall();
+    clockKeyControls$.find("[data-action=\"delete-clock-key\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        await getClockKeyFromEvent(event).delete();
+      }
+    });
+
+    clockKeyControls$.find("[data-action=\"add-key-to-scene\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        await getClockKeyFromEvent(event).addToScene(this.document.targetSceneID);
+      }
+    });
+
+    clockKeyControls$.find("[data-action=\"remove-key-from-scene\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        await getClockKeyFromEvent(event).removeFromScene(this.document.targetSceneID);
+      }
+    });
+
+    clockKeyControls$.find("[data-action=\"add-clock-to-key\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        await getClockKeyFromEvent(event).addClock();
+      }
+    });
+
+    clockKeyControls$.find("input.clock-key-input:not([readonly])").on({
+      change: async (event: ChangeEvent) => {
+        const input$ = $(event.currentTarget);
+        await getClockKeyFromEvent(event).updateTarget(input$.data("targetProp"), input$.val());
+      }
+    });
+    // #endregion
+
+    // #endregion
+
+    // #region *** CLOCKS *** ~
+
+    const clockControls$ = html.find(".clock-control-flipper");
+
+    // #region isOnDisplay === TRUE OR FALSE (Conditional Animation Checks Required) ~
+
+    clockControls$.find("[data-action=\"toggle-visible\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        const [clockKey, clock] = getClockFromEvent(event);
+        const isVisible = !clock.isVisible;
+        clock.updateTarget("isVisible", isVisible);
+
+        // If clock key is on display (in scene & visible), sent out animation socket calls
+        if (clockKey.isOnDisplay) {
+          if (isVisible) {
+            // clock.show_SocketCall();
           } else {
-            clockKey.fadeInName_SocketCall();
+            // clock.hide_SocketCall();
           }
         }
       }
     });
 
-    html.find("input.clock-key-input:not([readonly])").on({change: async (event: ChangeEvent) => {
-      const input$ = $(event.currentTarget);
-      await getClockKeyFromEvent(event).updateTarget(input$.data("targetProp"), input$.val());
-    }});
+    clockControls$.find("[data-action=\"toggle-active\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        const [clockKey, clock] = getClockFromEvent(event);
+        const isActive = !clock.isActive;
+        clock.updateTarget("isActive", isActive);
 
+        // If clock AND clock key is on display (in scene & visible), sent out animation socket calls
+        if (clock.isOnDisplay) {
+          if (isActive) {
+            // clock.activate_SocketCall();
+          } else {
+            // clock.deactivate_SocketCall();
+          }
+        }
+      }
+    });
+
+    clockControls$.find("[data-action=\"toggle-name-visibility\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        const clock = getClockFromEvent(event)[1];
+
+        const isNameVisible = !clock.isNameVisible;
+        clock.updateTarget("isNameVisible", isNameVisible);
+
+        // If clock is on display (in scene & visible), sent out animation socket calls
+        if (clock.isOnDisplay) {
+          if (isNameVisible) {
+            // clock.fadeInClockName_SocketCall();
+          } else {
+            // clock.fadeOutClockName_SocketCall();
+          }
+        }
+      }
+    });
+
+    clockControls$.find("[data-action=\"toggle-highlight\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        const [clockKey, clock] = getClockFromEvent(event);
+        const isHighlighted = !clock.isHighlighted;
+        clock.updateTarget("isHighlighted", isHighlighted);
+
+        // If clock is on display (in scene & visible), sent out animation socket calls
+        if (clock.isOnDisplay) {
+          if (isHighlighted) {
+            // clock.highlight_SocketCall();
+          } else {
+            // clock.unhighlight_SocketCall();
+          }
+        }
+      }
+    });
+    // #endregion
+
+    // #region isOnDisplay === TRUE ~
+    clockControls$.find("[data-action=\"change-segments\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        const [clockKey, clock] = getClockFromEvent(event);
+        const minDelta = -1 * clock.value;
+        const maxDelta = clock.max - clock.value;
+        const value = U.gsap.utils.clamp(
+          U.pInt($(event.currentTarget).data("value")),
+          minDelta,
+          maxDelta
+        );
+
+        if (value > 0) {
+          await clock.fillSegments(value);
+        } else if (value < 0) {
+          await clock.clearSegments(Math.abs(value));
+        }
+
+        // clock.changeSegments_SocketCall(value);
+      }
+    });
+    // #endregion
+
+    // #region isOnDisplay === FALSE ~
+    clockControls$.find("select.clock-control-select").on({
+      change: async (event: SelectChangeEvent) => {
+        event.preventDefault();
+        const select$ = $(event.currentTarget);
+        const value = select$.data("dtype") === "number"
+          ? U.pInt(select$.val())
+          : select$.val();
+
+        getClockFromEvent(event)[1].updateTarget(select$.data("targetProp"), value);
+      }
+    });
+
+    clockControls$.find("input.clock-input:not([readonly])").on({
+      change: async (event: ChangeEvent) => {
+        const input$ = $(event.currentTarget);
+        await getClockFromEvent(event)[1].updateTarget(input$.data("targetProp"), input$.val());
+      }
+    });
+
+    clockControls$.find("[data-action=\"delete-clock\"]").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        await getClockFromEvent(event)[1].delete();
+      }
+    });
+    // #endregion
+
+    // #endregion
   }
 }
 
 declare interface BladesClockKeeperSheet {
-  item: BladesClockKeeper
+  item: BladesClockKeeper,
+  get document(): BladesClockKeeper
 }
 
 export default BladesClockKeeperSheet;

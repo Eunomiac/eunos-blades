@@ -63,6 +63,11 @@
     padding: 0.1rem 0.2rem;
   }
 
+  i.fa-duotone[style] {
+
+    /* Your code here */
+  }
+
   .text-secret {
     display: var(--secret-text-display, "none");
     background-color: var(--blades-white);
