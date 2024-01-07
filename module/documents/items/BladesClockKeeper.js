@@ -47,7 +47,7 @@ class BladesClockKeeper extends BladesItem {
     }
     getSceneKeys(sceneID) {
         sceneID ??= this.targetSceneID;
-        return new Collection(this.keys
+        return new Collection(Array.from(game.eunoblades.ClockKeys)
             .filter((clockKey) => clockKey.sceneIDs.includes(sceneID))
             .map((clockKey) => [clockKey.id, clockKey]));
     }

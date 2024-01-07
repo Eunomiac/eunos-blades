@@ -40,8 +40,9 @@
       value="{{clock.name}}"
     />
 
-    {{!-- Adding / Removing Clock Segments --}}
+    {{!-- Adding Clock Segments --}}
 
+    <div class="clock-control-segment-buttons clock-control-add-segment-buttons">
     {{!-- Add One Segment --}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"
       blockClass="clock-control-button clock-add-segment"
@@ -68,7 +69,11 @@
       action="change-segments"
       value="3"
     }}
+    </div>
 
+    {{!-- Removing Clock Segments --}}
+
+    <div class="clock-control-segment-buttons clock-control-add-segment-buttons">
     {{!-- Remove One Segment --}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"
       blockClass="clock-control-button clock-remove-segment"
@@ -95,6 +100,7 @@
       action="change-segments"
       value="-3"
     }}
+    </div>
   </div>
 
   <div class="clock-control-panel controls-back">

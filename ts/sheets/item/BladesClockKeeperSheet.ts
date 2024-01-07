@@ -58,6 +58,14 @@ class BladesClockKeeperSheet extends BladesItemSheet {
   override async activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
 
+    html.find("[data-action=\"create-clock-key\"").on({
+      click: async (event: ClickEvent) => {
+        event.preventDefault();
+        await this.item.addClockKey();
+        // Notify GM
+      }
+    });
+
     // #region Helper Functions to Retrieve Clock Keys & Clocks ~
     function getClockKeyFromEvent(event: ClickEvent | ChangeEvent): BladesClockKey {
       const id = $(event.currentTarget).data("keyId")
@@ -99,14 +107,6 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     // #region *** CLOCK KEYS *** ~
 
     const clockKeyControls$ = html.find(".clock-key-control-flipper");
-
-    clockKeyControls$.find("[data-action=\"create-clock-key\"").on({
-      click: async (event: ClickEvent) => {
-        event.preventDefault();
-        await this.item.addClockKey();
-        // Notify GM
-      }
-    });
 
     // #region isOnDisplay === TRUE OR FALSE (Conditional Animation Checks Required) ~
     clockKeyControls$.find("[data-action=\"toggle-name-visibility\"]").on({
@@ -297,10 +297,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         const minDelta = -1 * clock.value;
         const maxDelta = clock.max - clock.value;
         const value = U.gsap.utils.clamp(
-          U.pInt($(event.currentTarget).data("value")),
           minDelta,
-          maxDelta
+          maxDelta,
+          U.pInt($(event.currentTarget).data("value"))
         );
+        eLog.checkLog3("BladesClockKeeperSheet", "changeSegments", {event, clock, minDelta, maxDelta, value});
 
         if (value > 0) {
           await clock.fillSegments(value);

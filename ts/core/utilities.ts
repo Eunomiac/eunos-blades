@@ -1472,6 +1472,58 @@ const changeContainer = (elem: HTMLElement, container: HTMLElement) => {
   gsap.set(elem, relPos);
 };
 
+const adjustTextContainerAspectRatio = (
+  textContainer: HTMLElement|JQuery<HTMLElement>,
+  targetRatio: number,
+  maxHeight?: number,
+  maxWidth?: number,
+  minFontSize = 8
+): void => {
+  textContainer = $(textContainer)[0];
+  const style = window.getComputedStyle(textContainer);
+  const lineHeight = parseFloat(style.lineHeight);
+  const initialWidth = parseFloat(style.width);
+  let bestWidth = initialWidth;
+
+  for (let lines = 1; ; lines++) {
+    const expectedHeight = lineHeight * lines;
+    const expectedWidth = initialWidth / lines;
+    const expectedRatio = expectedWidth / expectedHeight;
+
+    if (expectedRatio < targetRatio) {
+      break;
+    }
+
+    if (maxHeight && expectedHeight > maxHeight) {
+      // If a maximum height is provided and we've exceeded that,
+      // reduce the font size and line height by 80% and recursively return this function to try again
+      const newFontSize = parseFloat(style.fontSize) * 0.8;
+      const newLineHeight = parseFloat(style.lineHeight) * 0.8;
+      if (newFontSize <= minFontSize) {
+        break;
+      }
+      textContainer.style.fontSize = `${newFontSize}px`;
+      textContainer.style.lineHeight = `${newLineHeight}px`;
+      return adjustTextContainerAspectRatio(textContainer, targetRatio, maxHeight, maxWidth);
+    }
+
+    bestWidth = expectedWidth;
+  }
+
+  // If a maximum width is provided but we've exceeded that,
+  // reduce the font size and line height by 80% and recursively return this function to try again
+  if (maxWidth && bestWidth > maxWidth) {
+    const newFontSize = parseFloat(style.fontSize) * 0.8;
+    const newLineHeight = parseFloat(style.lineHeight) * 0.8;
+    textContainer.style.fontSize = `${newFontSize}px`;
+    textContainer.style.lineHeight = `${newLineHeight}px`;
+    return adjustTextContainerAspectRatio(textContainer, targetRatio, maxHeight, maxWidth);
+  }
+
+  // Apply the best width
+  textContainer.style.width = `${bestWidth}px`;
+};
+
 
 const getSvgCode = (svgDotKey: string, svgPathKeys?: string|string[]) => {
   const svgData = getProperty(SVGDATA, svgDotKey) as HbsSvgData|undefined;
@@ -1896,7 +1948,7 @@ export default {
 
   // ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
   getSvgCode,
-  changeContainer,
+  changeContainer, adjustTextContainerAspectRatio,
 
   getRawCirclePath, drawCirclePath,
 

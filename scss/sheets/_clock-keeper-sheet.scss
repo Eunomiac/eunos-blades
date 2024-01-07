@@ -7,38 +7,47 @@
 
     form {
 
+      --icon-size: 25px;
+
       .button-icon, .toggle-icon {
         position: relative;
-        width: auto;
-        height: auto;
+        width: var(--icon-size);
+        height: var(--icon-size);
         line-height: unset;
-        margin: 0 5px;
+        margin: 0 calc(var(--icon-size) / 8);
+        text-shadow:
+          0px 0px 3px var(--blades-black-dark),
+          0px 0px 3px var(--blades-black-dark);
+
+        &.clock-control-delete-key {
+          min-width: 20px;
+          color: var(--blades-red);
+          text-align: center;
+          margin-left: 6px;
+        }
+
+        &.clock-control-pull-key {
+          text-shadow: none;
+        }
 
         i {
           margin: 0;
           width: auto;
           height: auto;
           line-height: unset;
-          font-size: 20px;
-          // text-shadow: var(--text-shadow-dark);
+          font-size: calc(var(--icon-size) * 0.8);
+          transition: 0.05s;
+          transform-origin: 50% 50%;
+          pointer-events: auto;
           opacity: 1;
 
-          &.fa-duotone {
-            transition: 0.25s;
-            transform-origin: 50% 50%;
-            pointer-events: auto;
-            // &::before {
-            //   color: var(--icon-primary-color);
-            //   opacity: var(--icon-primary-opacity, 1);
-            // }
-            // &::after {
-            //   color: var(--icon-secondary-color);
-            //   opacity: var(--icon-secondary-opacity, 1);
-            // }
-            &:hover {
-              scale: 1.1;
-              filter: brightness(1.5) saturate(1.5);
-            }
+          &[class*="slash"] {
+            opacity: 0.5;
+          }
+
+          &:hover {
+            scale: 1.1;
+            filter: brightness(1.5) saturate(1.5);
           }
         }
       }
@@ -96,13 +105,14 @@
               line-height: 30px;
               width: 100%;
               padding: 0px;
-              border-radius: 5px;
               display: flex;
               align-items: center;
               justify-content: stretch;
-              background: linear-gradient(45deg, var(--blades-grey-bright), var(--blades-grey-dark));
-              font-size: 24px;
-              box-shadow: inset 0 0 2px 2px var(--blades-black-dark);
+
+              .clock-key-input-name {
+                font-family: var(--font-emphasis-narrow);
+                padding-bottom: 3px;
+              }
 
               > div {
                 position: absolute;
@@ -113,6 +123,10 @@
                 flex-direction: row;
                 justify-content: space-between;
                 align-items: center;
+                background: linear-gradient(45deg, var(--blades-grey-bright), var(--blades-grey-dark));
+                font-size: 24px;
+                box-shadow: inset 0 0 2px 2px var(--blades-black-dark);
+                color: var(--blades-white-bright);
 
                 height: 30px;
                 line-height: 30px;
@@ -122,13 +136,22 @@
 
                 &.controls-back {
                   color: var(--blades-black);
-                  background: linear-gradient(45deg, var(--blades-white-bright), var(--blades-grey-bright));;
+                  background: linear-gradient(45deg, var(--blades-white-bright), var(--blades-grey-bright));
+
+                  .button-icon, .toggle-icon {
+                    text-shadow: none;
+                  }
                 }
+              }
+
+              .clock-control-segment-buttons {
+                height: 100%;
+                display: flex;
+                align-items: center;
+                margin: 0 5px;
 
                 .button-icon {
-                  i[class*="slash"] {
-                    opacity: 0.5;
-                  }
+                  margin: 0;
                 }
               }
 
@@ -136,15 +159,46 @@
                 height: 20px;
                 line-height: 20px;
                 font-size: 16px;
+                background: transparent;
 
                 > div {
                   height: 20px;
                   line-height: 20px;
+                  margin-left: 40px;
+                  width: calc(100% - 40px);
 
-                  .button-icon {
-                    i {
-                      font-size: 12px;
+                  input[type="text"],
+                  select.clock-control-select {
+                    height: 20px;
+                    line-height: 20px;
+                    font-size: 14px;
+                  }
+
+                  select.clock-control-select {
+                    text-indent: 0;
+                    min-width: 40px;
+                    -webkit-appearance: none;
+                    -moz-appearance: none;
+                    appearance: none;
+                    text-align: center;
+                    font-weight: bold;
+                    font-family: var(--font-emphasis);
+                    margin: 0 5px;
+
+                    option {
+                      text-align: center;
                     }
+                  }
+
+
+                  .button-icon, .toggle-icon {
+                    --icon-size: 15px;
+
+                    &.clock-control-delete-clock {
+                      color: var(--blades-red);
+                      min-width: 20px;
+                    }
+
                   }
                 }
               }

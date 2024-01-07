@@ -333,7 +333,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     );
     $(clockKeyHTML).appendTo(containerElem$);
     this.removePositionDragger();
-    this.initClockKeyElem();
+    this.initClockKeyElem(ClockKeyDisplayMode.full);
     this.activateClockListeners();
     this.initOverlayElement(callback);
   }
@@ -399,7 +399,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   }
 
 
-  initClockKeyElem(): void {
+  initClockKeyElem(displayModeOverride?: ClockKeyDisplayMode | number): void {
     if (!this.containerElem$) { throw new Error(`[BladesClockKey.initClockKeyElem] Error containerElem$ not found for key '${this.id}'.`); }
     if (!this.elem$) { throw new Error(`[BladesClockKey.initClockKeyElem] Error elem$ not found for key '${this.id}'.`); }
 
@@ -411,7 +411,12 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
       });
     }
 
-    const {keyTweenVars, keyContTweenVars} = this.getVarsForDisplayMode(this.displayMode);
+    // If the key has a name, apply adjustments to the label container for a pleasing aspect ratio
+    if (this.name && this.labelElem$) {
+      U.adjustTextContainerAspectRatio(this.labelElem$, 2, 100);
+    }
+
+    const {keyTweenVars, keyContTweenVars} = this.getVarsForDisplayMode(displayModeOverride ?? this.displayMode);
     const keyImgContainer = this.elem$.find(".key-image-container")[0];
 
     if (!keyImgContainer) { throw new Error(`[BladesClockKey.initOverlayElement] Error keyImgContainer not found for key '${this.id}'.`); }
@@ -521,10 +526,10 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
         displayMode = this.activeClocks[0].index;
       }
     } else if (/^present/.exec(`${displayMode}`)) {
-      // Are we presenting? If so, get the presentingClock and reduce displayMode to the clock index.
-      displayMode = U.pInt(`${displayMode}`.replace("present", "")) - 1;
+      // Are we presenting? If so, get the presentingClock and the clock index.
+      displayMode = U.pInt(`${displayMode}`.replace("present", ""));
       if (displayMode < 0 || displayMode >= this.size) {
-        throw new Error(`[BladesClockKey.getVarsForDisplayMode] Error display mode 'present${displayMode + 1}' is not a valid clock index for key '${this.id}'.`);
+        throw new Error(`[BladesClockKey.getVarsForDisplayMode] Error display mode 'present${displayMode}' is not a valid clock index for key '${this.id}'.`);
       }
       presentingClock = this.getClockByIndex(displayMode as ClockIndex);
     }
@@ -649,7 +654,8 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
           ignoreMargin: true,
           duration: 0.75
         })
-        .textJitter(this.labelElem$);
+        .to(this.labelElem$, {xPercent: -50, duration: 0.75}, 0);
+      // .textJitter(this.labelElem$);
     }
     return this._nameFadeInTimeline as gsap.core.Timeline;
   }
@@ -984,13 +990,13 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     if (!this._nameFadeInTimeline) {
       this._nameFadeInTimeline = U.gsap.timeline({
         callbackScope: this,
-        data: {},
-        onComplete() {
-          this.nameFadeInTimeline.data.textJitterTimeline = U.gsap.effects.textJitter(this.labelElem$).play();
-        },
-        onReverseComplete() {
-          this.nameFadeInTimeline.data.textJitterTimeline.kill();
-        }
+        data: {}
+        // onComplete() {
+        //  this.nameFadeInTimeline.data.textJitterTimeline = U.gsap.effects.textJitter(this.labelElem$).play();
+        // },
+        // onReverseComplete() {
+        //  this.nameFadeInTimeline.data.textJitterTimeline.kill();
+        // }
       }).blurReveal(this.labelElem$, {
         ignoreMargin: true,
         duration: 0.75
@@ -1080,6 +1086,40 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   // clock.fadeOutClockName_SocketCall();
   // clock.highlight_SocketCall();
   // clock.unhighlight_SocketCall();
+  changeSegments_Animation(delta: number, callback?: () => void): gsap.core.Timeline {
+    const tl = U.gsap.timeline({
+      callbackScope: this,
+      onComplete() {
+        callback?.();
+      }
+    });
+
+    return tl;
+
+    // const clockKey = game.eunoblades.ClockKeys.get("brMaMG9ogeEvvuXD");
+    // const clock = Array.from(clockKey.clocks)[1];
+    // const oneSegments = Array.from(clock.elem$.find(".clock-one-segment"));
+    // function getRotationAngle(clock, segment) {
+    //   const stepSize = 360 / clock.max;
+    //   return stepSize * (segment - 1);
+    // }
+    // function rotateOneSegment(clock, oneSegment, segmentNum) {
+    //   const angle = getRotationAngle(clock, segmentNum);
+    //   U.gsap.set(oneSegment, {rotation: angle});
+    // }
+    // function addSegments(amount) {
+    //   while (clock.value + amount > clock.max) { amount--; }
+    //   const oneSegs = [...oneSegments].slice(0, amount);
+    //   for (let i = 1; i <= amount; i++) {
+    //     const thisSegment = clock.value + i;
+    //     rotateOneSegment(clock, oneSegs[i-1], thisSegment);
+    //   }
+    //   U.gsap.fromTo(oneSegs, {scale: 1.5}, {scale: 1, autoAlpha: 1, duration: 1, stagger: 0.5, onComplete() {
+    //     U.gsap.to(oneSegs, {autoAlpha: 0, duration: 1, delay: 2});
+    //   }
+    //   });
+    // }
+  }
   // clock.changeSegments_SocketCall(value)
 
   // #endregion
@@ -1115,8 +1155,9 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   }
 
   override async delete() {
+    const {parentKey} = this;
     await super.delete();
-    this.parentKey?.updateClockIndices();
+    parentKey.updateClockIndices();
   }
   // #endregion
 

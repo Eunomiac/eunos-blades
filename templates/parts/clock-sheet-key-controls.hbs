@@ -1,11 +1,12 @@
 <div class="control-flipper clock-key-control-flipper {{~#unless (test clockKey.isVisible "&&" clockKey.isInCurrentScene)}} controls-flipped{{/unless}}" data-clock-key-id="{{clockKey.id}}">
 
+  {{#if clockKey.isOnDisplay}}
   <div class="clock-key-control-panel controls-front">
     {{!-- Pull Key Animation --}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"
       blockClass="clock-control-button clock-control-pull-key"
       buttonClass="fa-duotone fa-circle-up-left"
-      buttonStyle="--fa-primary-color: var(--blades-red); --fa-secondary-color: var(--blades-red-dark);"
+      buttonStyle="--fa-primary-color: var(--blades-red-bright); --fa-secondary-color: var(--blades-black); --fa-secondary-opacity: 1;"
       action="pull-clock-key"
     }}
 
@@ -31,7 +32,7 @@
       value="{{clockKey.name}}"
     />
   </div>
-
+  {{else}}
   <div class="clock-key-control-panel controls-back">
     {{#if isSceneTab}}
     {{!-- Drop Key --}}
@@ -99,6 +100,7 @@
     {{/if}}
     {{/if}}
   </div>
+  {{/if}}
 
 </div>
 
