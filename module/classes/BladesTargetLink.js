@@ -148,10 +148,10 @@ class BladesTargetLink {
     // #region ASYNC UPDATE & DELETE METHODS ~
     async updateTarget(prop, val, isSilent = false) {
         if (this.targetFlagKey) {
-            this.target.setFlag("eunos-blades", `${this.targetFlagKey}.${this.id}.${prop}`, val);
+            await this.target.setFlag("eunos-blades", `${this.targetFlagKey}.${this.id}.${prop}`, val);
         }
         else {
-            this.target.update({ [`${this.targetKey}.${this.id}.${prop}`]: val }, { render: !isSilent });
+            await this.target.update({ [`${this.targetKey}.${this.id}.${prop}`]: val }, { render: !isSilent });
         }
     }
     async updateTargetData(val, isSilent = false) {

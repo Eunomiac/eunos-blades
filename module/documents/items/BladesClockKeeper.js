@@ -60,7 +60,7 @@ class BladesClockKeeper extends BladesItem {
             targetKey: "system.clocksData",
             ...clockKeyConfig
         });
-        super.update({});
+        // super.update({});
         return key;
     }
     async deleteClockKey(keyID) {
@@ -85,11 +85,6 @@ class BladesClockKeeper extends BladesItem {
     prepareDerivedData() {
         super.prepareDerivedData();
         this.system.targetScene ??= game.scenes.current?.id || null;
-    }
-    async _onUpdate(changed, options, userId) {
-        super._onUpdate(changed, options, userId);
-        // BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
-        // socketlib.system.executeForEveryone("renderOverlay");
     }
 }
 export default BladesClockKeeper;

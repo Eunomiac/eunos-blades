@@ -71,34 +71,11 @@ export const gsapEffects: Record<string, gsapEffect> = {
         }, {
           rotateZ: config.swingAngle,
           ease: "sine.inOut",
-          duration: 0.25 * config.duration,
-          repeat: 2,
-          yoyo: true
-        })
-        .fromTo(keyContainer, {
-          top: `+=${0.5 * config.yRange}`,
-          scale: `+=${0.5 * config.scaleRange}`
-        }, {
-          top: `-=${0.5 * config.yRange}`,
-          scale: `-=${0.5 * config.scaleRange}`,
-          ease: "sine.inOut",
-          duration: 0.75 * config.duration
-        }, 0.25 * config.duration);
+          duration: config.duration
+        });
 
-      // Get times where rotateZ is 0
-      const timesWhenRotateZIsZero = Array(4).fill(config.duration / 8)
-        .map((val, index) => val * (2 * (index + 1)));
-
-      // Get time when top & scale shifts are 0
-      const timeWhenShiftsAreZero = ((0.75 * config.duration) / 2) + (0.25 * config.duration);
-
-      // Add labels to all rotateZ === 0 times, but if shifts are also zero, name it "NEUTRAL"
-      timesWhenRotateZIsZero.forEach((timestamp, i) => {
-        tl.addLabel(`rotateZZero${i}`, timestamp);
-        if (timestamp === timeWhenShiftsAreZero && tl.labels.NEUTRAL === undefined) {
-          tl.addLabel("NEUTRAL", timestamp);
-        }
-      });
+      // Assign the 'NEUTRAL' label to the midpoint of the timeline, when rotateZ is zero
+      tl.addLabel("NEUTRAL", config.duration / 2);
 
       // Immediately move the timeline to the "NEUTRAL" label, so the timeline begins from there
       tl.seek("NEUTRAL");
@@ -108,9 +85,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
     defaults: {
       swingAngle: 1,
       ease: "sine.inOut",
-      yRange: 10,
-      scaleRange: 0.1,
-      duration: 12
+      duration: 3
     },
     extendTimeline: true
   },
@@ -144,7 +119,19 @@ export const gsapEffects: Record<string, gsapEffect> = {
   },
   keyControlPanelFlip: {
     effect: (target, config) => {
-      return U.gsap.timeline()
+      return U.gsap.timeline({
+        onComplete() {
+          if (target) {
+            const target$ = $(target as HTMLElement);
+            // Get the next sibling of the target element if it has the class "clock-control"
+            const nextSibling$ = target$.next(".clock-control-flipper");
+            // Check if the nextSibling element exists
+            if (nextSibling$.length) {
+              U.gsap.effects.keyControlPanelFlip(nextSibling$[0], config);
+            }
+          }
+        }
+      })
         .to(target, {
           rotateX: config.angle,
           duration: 0.5,

@@ -790,9 +790,10 @@ const makeCycler = (array: unknown[], index = 0): Generator => {
  * @param {Index<Type>} array An array or object literal
  * @returns {Type|undefined} The last element, or undefined if empty.
  */
-function getLast<Type>(array: Index<Type>): Type | undefined {
+function getLast<Type>(array: Index<Type>): Type {
   array = Object.values(array);
-  return array.length === 0 ? undefined : array[array.length - 1];
+  if (array.length === 0) { throw new Error("Cannot get last element of an empty array."); }
+  return array[array.length - 1];
 }
 // Const getLast = <Type>(array: Type[]): typeof array extends [] ? undefined : Type => ;
 const unique = <Type>(array: Type[]): Type[] => {

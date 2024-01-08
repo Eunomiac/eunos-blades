@@ -96,7 +96,6 @@
 @mixin generate-one-segment($max, $size) {
   &[data-max="#{$max}"] .clock-one-segment {
     clip-path: polygon(#{calculate-polygon(1, $max)});
-    visibility: hidden;
   }
 }
 
@@ -181,14 +180,6 @@
       5: (x: 0, y: 730px, align: center, width: 100%),
     )
   );
-
-  /* VISIBILITY HIDDEN FOR ANIMATED COMPONENTS */
-  .clock-key-container,
-  .key-label,
-  .clock-frame,
-  .clock-glow,
-  .clock-label,
-  .clock-glow { visibility: hidden; }
 
   /* KEYS */
   .clock-key-container {
@@ -335,6 +326,7 @@
       .clock-frame,
       .clock-fill,
       .clock-glow,
+      .clock-cover,
       .clock-one-segment {
         position: absolute;
         top: 0px;
@@ -360,10 +352,11 @@
         height: auto;
       }
 
-      .clock-frame { z-index: 3; }
+      .clock-frame { z-index: 5; }
       .clock-fill { z-index: 2; }
       .clock-glow { z-index: 4; }
-      .clock-one-segment { z-index: 6; }
+      .clock-one-segment { z-index: 3; }
+      .clock-cover { z-index: 6; }
 
       .clock-glow {
         transform-origin: 50% 50%;
@@ -390,6 +383,10 @@
       // Generate clip-paths for all possible combinations of val and max
       @for $max from 2 through 12 {
         @include generate-one-segment($max, 400px);
+        &[data-value="0"][data-max="#{$max}"] .clock-glow,
+        &[data-value="0"][data-max="#{$max}"] .clock-fill {
+          clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
+        }
         @for $val from 1 through $max {
           @include generate-clock-clip($val, $max, 400px);
         }

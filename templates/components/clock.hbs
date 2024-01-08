@@ -11,7 +11,6 @@
     <image class="clock-frame" src="systems/eunos-blades/assets/clocks/clock-{{max}}-frame.webp" />
 
     <!-- Fill -->
-    {{#unless (test value "==" 0)}}
     <div class="clock-fill">
 
       {{#if (test "#" "in" color)}} {{!-- If color is a hex value: Render SVG circle filled with that color. --}}
@@ -22,12 +21,18 @@
         <img class="clock-fill-img" src="systems/eunos-blades/assets/clocks/clock-fill-{{color}}.webp" />
       {{/if}}
     </div>
-    {{/unless}}
 
     <!-- Glow -->
     {{#unless (test "#" "in" color)}} {{!-- Don't render the glow if 'color' is a hex value --}}
       <div class="clock-glow clock-glow-{{color}}"></div>
     {{/unless}}
+
+    <!-- Cover -->
+    <div class="clock-cover">
+      <svg viewBox="0 0 400 400">
+        <circle cx="200" cy="200" r="200" fill="var(--blades-grey)" />
+      </svg>
+    </div>
 
     {{!-- Single Segments for Animation --}}
     {{#if (test "#" "in" color)}} {{!-- If color is a hex value: Render SVG circle filled with that color. --}}

@@ -6419,6 +6419,7 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay {
   /* Sizing the Keys for Overlay Display */
+  /* VISIBILITY HIDDEN FOR ANIMATED COMPONENTS */
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay, :root body.vtt.game.system-eunos-blades #blades-overlay > * {
   display: block;
@@ -6433,17 +6434,8 @@ template {
   transform-style: preserve-3d;
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay {
-  /* VISIBILITY HIDDEN FOR ANIMATED COMPONENTS */
   /* KEYS */
   /* CLOCKS */
-}
-:root body.vtt.game.system-eunos-blades #blades-overlay .clock-key-container,
-:root body.vtt.game.system-eunos-blades #blades-overlay .key-label,
-:root body.vtt.game.system-eunos-blades #blades-overlay .clock-frame,
-:root body.vtt.game.system-eunos-blades #blades-overlay .clock-glow,
-:root body.vtt.game.system-eunos-blades #blades-overlay .clock-label,
-:root body.vtt.game.system-eunos-blades #blades-overlay .clock-glow {
-  visibility: hidden;
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-key-container {
   height: var(--key-height);
@@ -6736,6 +6728,7 @@ template {
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock .clock-frame,
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock .clock-fill,
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock .clock-glow,
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock .clock-cover,
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock .clock-one-segment {
   position: absolute;
   top: 0px;
@@ -6757,7 +6750,7 @@ template {
   height: auto;
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock .clock-frame {
-  z-index: 3;
+  z-index: 5;
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock .clock-fill {
   z-index: 2;
@@ -6766,6 +6759,9 @@ template {
   z-index: 4;
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock .clock-one-segment {
+  z-index: 3;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock .clock-cover {
   z-index: 6;
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock .clock-glow {
@@ -6789,7 +6785,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-max="2"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 50% 100%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="2"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="2"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="2"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="2"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 50% 100%, 50% 50%);
@@ -6799,7 +6797,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-max="3"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 78.8664839843%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="3"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="3"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="3"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="3"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 78.8664839843%, 50% 50%);
@@ -6812,7 +6812,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-max="4"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 50%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="4"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="4"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="4"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="4"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 50%, 50% 50%);
@@ -6828,7 +6830,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-max="5"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 33.7545273633%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="5"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="5"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="5"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="5"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 33.7545273633%, 50% 50%);
@@ -6847,7 +6851,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-max="6"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 21.1335160157%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="6"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="6"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="6"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="6"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 21.1335160157%, 50% 50%);
@@ -6869,7 +6875,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-max="7"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 10.1279545793%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="7"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="7"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="7"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="7"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 10.1279545793%, 50% 50%);
@@ -6894,7 +6902,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-max="8"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0.0023162861%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="8"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="8"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="8"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="8"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0.0023162861%, 50% 50%);
@@ -6922,7 +6932,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-max="9"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 91.9532272571% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="9"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="9"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="9"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="9"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 91.9532272571% 0, 50% 50%);
@@ -6953,7 +6965,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-max="10"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 86.3257107984% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="10"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="10"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="10"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="10"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 86.3257107984% 0, 50% 50%);
@@ -6987,7 +7001,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-max="11"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 82.1318586828% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="11"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="11"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="11"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="11"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 82.1318586828% 0, 50% 50%);
@@ -7024,7 +7040,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-max="12"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 78.8664839843% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="0"][data-max="12"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades #blades-overlay .clock-container .clock[data-value="1"][data-max="12"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 78.8664839843% 0, 50% 50%);
@@ -7075,6 +7093,16 @@ template {
   outline: 1px solid rgb(0, 255, 255);
   visibility: visible;
   pointer-events: all;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-key-container,
+:root body.vtt.game.system-eunos-blades #blades-overlay .key-label,
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-frame,
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-glow,
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-label,
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-bg,
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-fill,
+:root body.vtt.game.system-eunos-blades #blades-overlay .clock-one-segment {
+  visibility: hidden;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay {
   margin-top: 0.25rem;
@@ -9704,17 +9732,8 @@ template {
   top: var(--alternating-top-shift);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay {
-  /* VISIBILITY HIDDEN FOR ANIMATED COMPONENTS */
   /* KEYS */
   /* CLOCKS */
-}
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container,
-:root body.vtt.game.system-eunos-blades #clocks-overlay .key-label,
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-frame,
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-glow,
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-label,
-:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-glow {
-  visibility: hidden;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-key-container {
   height: var(--key-height);
@@ -10007,6 +10026,7 @@ template {
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-frame,
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-fill,
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-glow,
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-cover,
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-one-segment {
   position: absolute;
   top: 0px;
@@ -10028,7 +10048,7 @@ template {
   height: auto;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-frame {
-  z-index: 3;
+  z-index: 5;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-fill {
   z-index: 2;
@@ -10037,6 +10057,9 @@ template {
   z-index: 4;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-one-segment {
+  z-index: 3;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-cover {
   z-index: 6;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock .clock-glow {
@@ -10060,7 +10083,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-max="2"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 50% 100%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="2"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="2"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="2"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="2"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 50% 100%, 50% 50%);
@@ -10070,7 +10095,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-max="3"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 78.8664839843%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="3"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="3"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="3"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="3"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 78.8664839843%, 50% 50%);
@@ -10083,7 +10110,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-max="4"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 50%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="4"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="4"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="4"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="4"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 50%, 50% 50%);
@@ -10099,7 +10128,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-max="5"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 33.7545273633%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="5"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="5"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="5"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="5"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 33.7545273633%, 50% 50%);
@@ -10118,7 +10149,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-max="6"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 21.1335160157%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="6"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="6"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="6"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="6"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 21.1335160157%, 50% 50%);
@@ -10140,7 +10173,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-max="7"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 10.1279545793%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="7"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="7"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="7"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="7"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 10.1279545793%, 50% 50%);
@@ -10165,7 +10200,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-max="8"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0.0023162861%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="8"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="8"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="8"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="8"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0.0023162861%, 50% 50%);
@@ -10193,7 +10230,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-max="9"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 91.9532272571% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="9"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="9"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="9"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="9"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 91.9532272571% 0, 50% 50%);
@@ -10224,7 +10263,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-max="10"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 86.3257107984% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="10"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="10"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="10"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="10"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 86.3257107984% 0, 50% 50%);
@@ -10258,7 +10299,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-max="11"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 82.1318586828% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="11"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="11"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="11"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="11"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 82.1318586828% 0, 50% 50%);
@@ -10295,7 +10338,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-max="12"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 78.8664839843% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="0"][data-max="12"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades #clocks-overlay .clock-container .clock[data-value="1"][data-max="12"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 78.8664839843% 0, 50% 50%);
@@ -23464,17 +23509,8 @@ template {
   background-color: var(--tag-hover);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app {
-  /* VISIBILITY HIDDEN FOR ANIMATED COMPONENTS */
   /* KEYS */
   /* CLOCKS */
-}
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container,
-:root body.vtt.game.system-eunos-blades .app.window-app .key-label,
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-frame,
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-glow,
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-label,
-:root body.vtt.game.system-eunos-blades .app.window-app .clock-glow {
-  visibility: hidden;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-key-container {
   height: var(--key-height);
@@ -23767,6 +23803,7 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-frame,
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-fill,
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-glow,
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-cover,
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-one-segment {
   position: absolute;
   top: 0px;
@@ -23788,7 +23825,7 @@ template {
   height: auto;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-frame {
-  z-index: 3;
+  z-index: 5;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-fill {
   z-index: 2;
@@ -23797,6 +23834,9 @@ template {
   z-index: 4;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-one-segment {
+  z-index: 3;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-cover {
   z-index: 6;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock .clock-glow {
@@ -23820,7 +23860,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-max="2"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 50% 100%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="2"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="2"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="2"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="2"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 50% 100%, 50% 50%);
@@ -23830,7 +23872,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-max="3"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 78.8664839843%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="3"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="3"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="3"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="3"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 78.8664839843%, 50% 50%);
@@ -23843,7 +23887,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-max="4"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 50%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="4"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="4"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="4"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="4"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 50%, 50% 50%);
@@ -23859,7 +23905,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-max="5"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 33.7545273633%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="5"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="5"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="5"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="5"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 33.7545273633%, 50% 50%);
@@ -23878,7 +23926,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-max="6"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 21.1335160157%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="6"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="6"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="6"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="6"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 21.1335160157%, 50% 50%);
@@ -23900,7 +23950,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-max="7"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 10.1279545793%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="7"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="7"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="7"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="7"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 10.1279545793%, 50% 50%);
@@ -23925,7 +23977,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-max="8"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0.0023162861%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="8"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="8"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="8"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="8"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0.0023162861%, 50% 50%);
@@ -23953,7 +24007,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-max="9"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 91.9532272571% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="9"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="9"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="9"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="9"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 91.9532272571% 0, 50% 50%);
@@ -23984,7 +24040,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-max="10"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 86.3257107984% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="10"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="10"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="10"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="10"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 86.3257107984% 0, 50% 50%);
@@ -24018,7 +24076,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-max="11"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 82.1318586828% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="11"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="11"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="11"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="11"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 82.1318586828% 0, 50% 50%);
@@ -24055,7 +24115,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-max="12"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 78.8664839843% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="0"][data-max="12"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app .clock-container .clock[data-value="1"][data-max="12"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 78.8664839843% 0, 50% 50%);
@@ -25425,17 +25487,8 @@ template {
   pointer-events: none;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container {
-  /* VISIBILITY HIDDEN FOR ANIMATED COMPONENTS */
   /* KEYS */
   /* CLOCKS */
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container,
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .key-label,
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-frame,
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-glow,
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-label,
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-glow {
-  visibility: hidden;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-key-container {
   height: var(--key-height);
@@ -25728,6 +25781,7 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-frame,
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-fill,
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-glow,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-cover,
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-one-segment {
   position: absolute;
   top: 0px;
@@ -25749,7 +25803,7 @@ template {
   height: auto;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-frame {
-  z-index: 3;
+  z-index: 5;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-fill {
   z-index: 2;
@@ -25758,6 +25812,9 @@ template {
   z-index: 4;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-one-segment {
+  z-index: 3;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-cover {
   z-index: 6;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock .clock-glow {
@@ -25781,7 +25838,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-max="2"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 50% 100%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="2"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="2"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="2"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="2"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 100%, 50% 100%, 50% 50%);
@@ -25791,7 +25850,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-max="3"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 78.8664839843%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="3"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="3"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="3"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="3"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 78.8664839843%, 50% 50%);
@@ -25804,7 +25865,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-max="4"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 50%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="4"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="4"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="4"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="4"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 50%, 50% 50%);
@@ -25820,7 +25883,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-max="5"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 33.7545273633%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="5"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="5"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="5"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="5"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 33.7545273633%, 50% 50%);
@@ -25839,7 +25904,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-max="6"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 21.1335160157%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="6"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="6"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="6"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="6"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 21.1335160157%, 50% 50%);
@@ -25861,7 +25928,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-max="7"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 10.1279545793%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="7"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="7"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="7"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="7"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0, 100% 10.1279545793%, 50% 50%);
@@ -25886,7 +25955,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-max="8"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 100% 0.0023162861%, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="8"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="8"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="8"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="8"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 100% 0.0023162861%, 50% 50%);
@@ -25914,7 +25985,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-max="9"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 91.9532272571% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="9"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="9"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="9"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="9"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 91.9532272571% 0, 50% 50%);
@@ -25945,7 +26018,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-max="10"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 86.3257107984% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="10"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="10"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="10"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="10"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 86.3257107984% 0, 50% 50%);
@@ -25979,7 +26054,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-max="11"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 82.1318586828% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="11"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="11"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="11"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="11"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 82.1318586828% 0, 50% 50%);
@@ -26016,7 +26093,9 @@ template {
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-max="12"] .clock-one-segment {
   clip-path: polygon(50% 50%, 50% 0, 78.8664839843% 0, 50% 50%);
-  visibility: hidden;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="0"][data-max="12"] .clock-fill {
+  clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="12"] .clock-glow, :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content .clock-key-container .clock-container .clock[data-value="1"][data-max="12"] .clock-fill {
   clip-path: polygon(50% 50%, 50% 0, 78.8664839843% 0, 50% 50%);

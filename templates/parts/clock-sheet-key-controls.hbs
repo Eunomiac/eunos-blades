@@ -1,6 +1,6 @@
 <div class="control-flipper clock-key-control-flipper {{~#unless (test clockKey.isVisible "&&" clockKey.isInCurrentScene)}} controls-flipped{{/unless}}" data-clock-key-id="{{clockKey.id}}">
 
-  {{#if clockKey.isOnDisplay}}
+
   <div class="clock-key-control-panel controls-front">
     {{!-- Pull Key Animation --}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"
@@ -27,12 +27,12 @@
     }}
 
     {{!-- Name --}}
-    <input type="text" class="clock-key-input clock-key-input-name" {{~#if clockKey.isNameVisible}} readonly{{/if}}
+    <input type="text" class="clock-key-input clock-key-input-name" {{~#if clockKey.isNameVisible}} readonly{{else}}{{#unless clockKey.isClockKeeperKey}} readonly{{/unless}}{{/if}}
       data-target-prop="name"
       value="{{clockKey.name}}"
     />
   </div>
-  {{else}}
+
   <div class="clock-key-control-panel controls-back">
     {{#if isSceneTab}}
     {{!-- Drop Key --}}
@@ -79,10 +79,13 @@
     <input type="text" class="clock-key-input clock-key-input-name"
       data-target-prop="name"
       value="{{clockKey.name}}"
+      {{#unless clockKey.isClockKeeperKey}}
+      readonly
+      {{/unless}}
     />
 
     {{#if isSceneTab}}
-    {{#if isClockKeeperKey}}
+    {{#if clockKey.isClockKeeperKey}}
     {{!-- Delete Key --}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"
       blockClass="clock-control-button clock-control-delete-key"
@@ -100,7 +103,7 @@
     {{/if}}
     {{/if}}
   </div>
-  {{/if}}
+
 
 </div>
 

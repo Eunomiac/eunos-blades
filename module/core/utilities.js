@@ -789,7 +789,10 @@ const makeCycler = (array, index = 0) => {
  */
 function getLast(array) {
     array = Object.values(array);
-    return array.length === 0 ? undefined : array[array.length - 1];
+    if (array.length === 0) {
+        throw new Error("Cannot get last element of an empty array.");
+    }
+    return array[array.length - 1];
 }
 // Const getLast = <Type>(array: Type[]): typeof array extends [] ? undefined : Type => ;
 const unique = (array) => {

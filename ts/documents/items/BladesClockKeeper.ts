@@ -84,7 +84,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
       targetKey: "system.clocksData" as TargetKey,
       ...clockKeyConfig
     });
-    super.update({});
+    // super.update({});
     return key;
   }
 
@@ -113,15 +113,6 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
     this.system.targetScene ??= game.scenes.current?.id as IDString || null;
   }
 
-  override async _onUpdate(
-    changed: DeepPartial<PropertiesToSource<ItemDataBaseProperties>>,
-    options: DocumentModificationOptions,
-    userId: string
-  ) {
-    super._onUpdate(changed, options, userId);
-    // BladesActor.GetTypeWithTags(BladesActorType.pc).forEach((actor) => actor.render());
-    // socketlib.system.executeForEveryone("renderOverlay");
-  }
   // #endregion
 
 }

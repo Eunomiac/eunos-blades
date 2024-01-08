@@ -181,9 +181,9 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
   // #region ASYNC UPDATE & DELETE METHODS ~
   async updateTarget(prop: string, val: unknown, isSilent = false) {
     if (this.targetFlagKey) {
-      (this.target as BladesItem).setFlag("eunos-blades", `${this.targetFlagKey}.${this.id}.${prop}`, val);
+      await (this.target as BladesItem).setFlag("eunos-blades", `${this.targetFlagKey}.${this.id}.${prop}`, val);
     } else {
-      this.target.update({[`${this.targetKey}.${this.id}.${prop}`]: val}, {render: !isSilent});
+      await this.target.update({[`${this.targetKey}.${this.id}.${prop}`]: val}, {render: !isSilent});
     }
   }
 

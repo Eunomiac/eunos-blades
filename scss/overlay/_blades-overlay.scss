@@ -15,7 +15,6 @@
   @import "../components/clocks";
 
   /* Sizing the Keys for Overlay Display */
-
   .clock-key-container {
     height: calc(0.5 * var(--key-height));
     width: calc(0.5 * var(--key-width));
@@ -32,4 +31,14 @@
       pointer-events: all;
     }
   }
+
+  /* VISIBILITY HIDDEN FOR ANIMATED COMPONENTS */
+  .clock-key-container,
+  .key-label,
+  .clock-frame,
+  .clock-glow,
+  .clock-label,
+  .clock-bg,
+  .clock-fill,
+  .clock-one-segment { visibility: hidden; }
 }
