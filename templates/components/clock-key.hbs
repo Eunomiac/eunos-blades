@@ -23,6 +23,14 @@
       {{#each clocks }}
         {{> "systems/eunos-blades/templates/components/clock.hbs" }}
       {{/each}}
+      {{#if isFactionKey}}
+      <div class="faction-container">
+      <label class="faction-label">{{target.name}}</label>
+      <div class="faction-image">
+        <img src="{{target.img}}" />
+      </div>
+      </div>
+      {{/if}}
     </div>
   </div>
 

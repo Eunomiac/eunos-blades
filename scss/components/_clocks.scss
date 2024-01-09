@@ -102,12 +102,12 @@
 & {
 
   $key-sizes: (
-    1: (height: 836px, width: 230px, labelTop: 0px, clockSize: 169px),
+    1: (height: 836px, width: 230px, labelTop: -150px, clockSize: 169px),
     2: (height: 625.438px, width: 197.009px, labelTop: 150px, clockSize: 108px),
     3: (height: 915.936px, width: 277.634px, labelTop: 0px, clockSize: 108px),
     4: (height: 1041px, width: 368.697px, labelTop: -100px, clockSize: 108px),
-    5: (height: 1148.657px, width: 368.698px, labelTop: 0px, clockSize: 108px),
-    6: (height: 1148.98px, width: 370.141px, labelTop: 250px, clockSize: 108px)
+    5: (height: 1148.657px, width: 368.698px, labelTop: 150px, clockSize: 108px),
+    6: (height: 1148.98px, width: 370.141px, labelTop: 300px, clockSize: 108px)
   );
   $clock-positions: (
     1: (
@@ -147,39 +147,88 @@
 
   $label-positions: (
     1: (
-      0: (x: 0, y: 0px, align: center, width: 100%),
+      0: (x: 50%, y: 50%),
     ),
     2: (
-      0: (x: 0%, y: 90%),
-      1: (x: 100%, y: -15%),
+      0: (x: 50%, y: 50%),
+      1: (x: 50%, y: 50%),
     ),
     3: (
-      0: (x: 0, y: 0px, align: center, width: 100%),
-      1: (x: -20px, y: 110px, align: right, width: 50%),
-      2: (x: 220px, y: 265px, align: left, width: 50%),
+      0: (x: 50%, y: 10%),
+      1: (x: 30%, y: 10%),
+      2: (x: 70%, y: 90%)
     ),
     4: (
-      0: (x: 0, y: 0px, align: center, width: 100%),
-      1: (x: -60px, y: 80px, align: right, width: 50%),
-      2: (x: 340px, y: 230px, align: left, width: 50%),
-      3: (x: 0, y: 320px, align: center, width: 100%)
+      0: (x: 50%, y: 10%),
+      1: (x: 30%, y: 10%),
+      2: (x: 70%, y: 90%),
+      3: (x: 50%, y: 90%)
     ),
     5: (
-      0: (x: 0, y: 0px, align: center, width: 100%),
-      1: (x: -60px, y: 80px, align: right, width: 50%),
-      2: (x: 340px, y: 230px, align: left, width: 50%),
-      3: (x: 0, y: 320px, align: center, width: 100%),
-      4: (x: 0, y: 500px, align: center, width: 100%),
+      0: (x: 50%, y: 10%),
+      1: (x: 30%, y: 10%),
+      2: (x: 70%, y: 90%),
+      3: (x: 50%, y: 90%),
+      4: (x: 50%, y: 90%)
     ),
     6: (
-      0: (x: 0, y: 0px, align: center, width: 100%),
-      1: (x: -60px, y: 80px, align: right, width: 50%),
-      2: (x: 340px, y: 230px, align: left, width: 50%),
-      3: (x: 0, y: 320px, align: center, width: 100%),
-      4: (x: 0, y: 500px, align: center, width: 100%),
-      5: (x: 0, y: 730px, align: center, width: 100%),
+      0: (x: 50%, y: 10%),
+      1: (x: 30%, y: 10%),
+      2: (x: 70%, y: 90%),
+      3: (x: 50%, y: 90%),
+      4: (x: 50%, y: 90%),
+      5: (x: 50%, y: 90%)
     )
   );
+
+  /* COMMON ELEMENTS */
+  .clock-key-container .clock-key .key-label,
+  .clock-key-container .clock-key .faction-label,
+  .clock-container .clock .clock-label {
+    z-index: 20;
+    text-transform: uppercase;
+    height: auto;
+    width: max-content;
+    color: var(--blades-white-bright);
+    text-shadow:
+      0 0 10px var(--blades-black-dark),
+      0 0 10px var(--blades-black-dark);
+    white-space: balance;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, 0%);
+  }
+
+
+  .clock-key-container .clock-key .key-label {
+    // background: rgba(0, 255, 255, 0.25);
+    // outline: 1px dotted rgb(0, 255, 255);
+  }
+
+  .clock-container .clock .clock-label {
+    font-size: 24px;
+    font-family: var(--font-emphasis-narrow);
+    font-weight: bold;
+    text-align: center;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    // background: rgba(255, 255, 0, 0.25);
+    // outline: 1px dotted rgb(255, 255, 0);
+  }
+
+  .clock-key-container .clock-key .faction-label {
+    font-size: 32px;
+    line-height: 32px;
+    font-family: var(--font-emphasis);
+    text-align: center;
+    color: var(--blades-gold-bright);
+    text-shadow:
+      0 0 10px var(--blades-black-dark),
+      0 0 10px var(--blades-black-dark),
+      0 0 10px var(--blades-black-dark);
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
 
   /* KEYS */
   .clock-key-container {
@@ -224,6 +273,10 @@
         --label-top: #{map-get(map-get($key-sizes, $key), "labelTop")};
 
         .clock-key {
+          .faction-container {
+            left: map-get(map-get($clocks, 0), "x");
+            top: map-get(map-get($clocks, 0), "y");
+          }
           .key-image-container {
             @each $clock, $pos in $clocks {
               .clock-container:nth-of-type(#{$clock + 1}) {
@@ -254,19 +307,9 @@
         font-size: 48px;
         line-height: 48px;
         font-weight: bold;
-        text-transform: uppercase;
         text-align: center;
         letter-spacing: 1px;
         top: var(--label-top);
-        z-index: 20;
-        width: max-content;
-        color: var(--blades-white-bright);
-        text-shadow:
-          0 0 10px var(--blades-black-dark),
-          0 0 10px var(--blades-black-dark);
-        white-space: balance;
-        left: 50%;
-        position: absolute;
       }
 
       .key-image-container {
@@ -294,6 +337,29 @@
             filter: url(#metallicFilter) blur(1px);
             fill: var(--blades-grey-dark);
           }
+        }
+
+        .faction-container {
+          position: absolute;
+          transform: translate(-50%, 175%);
+          width: var(--clock-size);
+          height: var(--clock-size);
+
+          .faction-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: blur(2px);
+            opacity: 0.75;
+            text-shadow: var(--text-shadow-dark-strong);
+
+            img {
+              scale: 2;
+              transform-origin: 50% 50%;
+            }
+          }
+
         }
       }
     }
@@ -335,23 +401,6 @@
         width: 100%;
       }
 
-      .clock-label {
-        position: absolute;
-        transform: translate(-50%, 0%);
-        // top: 50%;
-        // left: 50%;
-        z-index: 5;
-        font-size: 24px;
-        font-family: var(--font-emphasis-narrow);
-        font-weight: bold;
-        color: var(--blades-white-bright);
-        text-shadow: var(--text-shadow-dark-strong);
-        // text-align: center;
-        white-space: nowrap;
-        width: max-content;
-        height: auto;
-      }
-
       .clock-frame { z-index: 5; }
       .clock-fill { z-index: 2; }
       .clock-glow { z-index: 4; }
@@ -362,8 +411,8 @@
         transform-origin: 50% 50%;
         scale: 3;
 
+        background-position-y: 42%;
         background-repeat: no-repeat;
-        background-position: center;
         background-size: cover;
 
         &.clock-glow-white {

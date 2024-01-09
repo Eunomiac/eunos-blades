@@ -19,10 +19,10 @@
     height: calc(0.5 * var(--key-height));
     width: calc(0.5 * var(--key-width));
 
-    &[data-size="1"] {
-      height: calc(0.3 * var(--key-height));
-      width: calc(0.3 * var(--key-width));
-    }
+    // &[data-size="1"] {
+    //   height: calc(0.3 * var(--key-height));
+    //   width: calc(0.3 * var(--key-width));
+    // }
 
     &.clock-key-dragger {
       background: rgba(0, 255, 255, 0.25);
@@ -41,4 +41,16 @@
   .clock-bg,
   .clock-fill,
   .clock-one-segment { visibility: hidden; }
+
+  .faction-container {
+
+    // .faction-label {
+    //   position: absolute;
+    //   top: 0%;
+    //   left: 50%;
+    //   transform: translate(-50%, -50%);
+    //   color: var(--blades-gold);
+    //   font-size: 1.5em;
+    // }
+  }
 }

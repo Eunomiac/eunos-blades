@@ -143,20 +143,6 @@ export const gsapEffects: Record<string, gsapEffect> = {
     },
     extendTimeline: true
   },
-  keyNameFadeIn: {
-    effect: (target, config) => {
-      return U.gsap.effects.blurReveal(target, config);
-    },
-    defaults: {
-      ignoreMargin: true,
-      skewX: -20,
-      duration: 0.5,
-      x: "+=300",
-      scale: 1.5,
-      filter: "blur(10px)"
-    },
-    extendTimeline: true
-  },
   hoverOverClockKey: {
     effect: (clockKeyElem, config) => {
       if (!clockKeyElem) {throw new Error("clockKeyElem is null or undefined");}
@@ -164,7 +150,6 @@ export const gsapEffects: Record<string, gsapEffect> = {
       if (!clockKey) {throw new Error("clockKey is null or undefined");}
       if (!clockKey.elem$) {throw new Error("clockKey.elem$ is null or undefined");}
       if (!clockKey.containerElem$) {throw new Error("clockKey.containerElem$ is null or undefined");}
-      const clockKeyHiddenLabel$ = clockKey.elem$.find(".key-label.hidden-label");
       const clockKeyLabel$ = clockKey.elem$.find(".key-label");
 
       // Construct master timeline,
@@ -173,7 +158,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       // Create initial tween that resets keySwing to neutral
       tl.add(clockKey.keySwingTimeline
         .tweenTo("NEUTRAL", {
-          duration: 0.25 * config.duration,
+          duration: 0.5 * config.duration,
           ease: "none"
         })
       );
@@ -202,19 +187,27 @@ export const gsapEffects: Record<string, gsapEffect> = {
         duration: 0.75 * config.duration
       }, "hoverStart");
 
-      // Fade in name
-      tl.blurReveal(clockKeyHiddenLabel$, {
+      // Fade in name, if name isn't visible
+      if (clockKeyLabel$.css("opacity") === "0") {
+        tl.to(clockKeyLabel$, {
+          autoAlpha: 1,
+          duration: 0.5 * config.duration
+        }, "hoverStart");
+      }
+
+      // Fade in name, if name isn't visible
+      tl.blurReveal(clockKeyLabel$, {
         ignoreMargin: true,
         duration: 0.75 * config.duration
       }, "hoverStart");
 
       // Move into repeating jitter tween
-      tl.textJitter(clockKeyLabel$);
+      // tl.textJitter(clockKeyLabel$);
 
       return tl;
     },
     defaults: {
-      duration: 1.5,
+      duration: 0.5,
       brightness: 1.5,
       scaleMult: 1.25
     }
@@ -793,7 +786,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       .to(
         targets,
         {
-          opacity: 0,
+          autoAlpha: 0,
           duration: config.duration / 2,
           ease: "power3.in"
         },
@@ -814,17 +807,6 @@ export const gsapEffects: Record<string, gsapEffect> = {
       .fromTo(
         targets,
         {
-          skewX: config.skewX
-        },
-        {
-          skewX: 0,
-          duration: config.duration / 2,
-          ease: "power4.out"
-        }
-      )
-      .fromTo(
-        targets,
-        {
           x: config.x,
           marginBottom: config.ignoreMargin
             ? undefined
@@ -838,26 +820,36 @@ export const gsapEffects: Record<string, gsapEffect> = {
             },
           scale: config.scale,
           filter: `blur(${config.blur}px)`
-        },
-        {
+        }, {
           x: 0,
-          marginBottom: config.ignoreMargin ? undefined : 0,
-          marginRight: config.ignoreMargin ? undefined : 0,
+          marginBottom: 0,
+          marginRight: 0,
           scale: 1,
           filter: "blur(0px)",
           duration: (3 / 4) * config.duration
         },
-        config.duration / 4
+        0
       )
       .fromTo(
         targets,
         {
           autoAlpha: 0
-        },
-        {
+        }, {
           autoAlpha: 1,
           duration: config.duration / 2,
           ease: "power3.in"
+        },
+        0
+      )
+      .fromTo(
+        targets,
+        {
+          skewX: config.skewX
+        },
+        {
+          skewX: 0,
+          duration: config.duration / 2,
+          ease: "power4.out"
         },
         config.duration / 2
       ),
@@ -868,6 +860,47 @@ export const gsapEffects: Record<string, gsapEffect> = {
       x: "+=300",
       scale: 1.5,
       blur: 10
+    },
+    extendTimeline: true
+  },
+  scaleUpReveal: {
+    effect: (target, config) => {
+      const tl = U.gsap.timeline()
+        .fromTo(target, {
+          autoAlpha: 0,
+          scale: 0.5 * (config.scale as number)
+        }, {
+          autoAlpha: 1,
+          scale: config.scale,
+          duration: config.duration,
+          ease: config.ease
+        });
+
+      return tl;
+    },
+    defaults: {
+      scale: 1,
+      duration: 0.5,
+      ease: "power2"
+    },
+    extendTimeline: true
+  },
+  scaleDownRemove: {
+    effect: (target, config) => {
+      const tl = U.gsap.timeline()
+        .to(target, {
+          autoAlpha: 0,
+          scale: 0.5 * (config.scale as number),
+          duration: config.duration,
+          ease: config.ease
+        });
+
+      return tl;
+    },
+    defaults: {
+      scale: 1,
+      duration: 0.5,
+      ease: "power2"
     },
     extendTimeline: true
   },

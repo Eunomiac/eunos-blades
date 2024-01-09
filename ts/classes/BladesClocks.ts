@@ -126,7 +126,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   // #region -- Shortcut Schema Getters ~
   override get data() {return this.linkData as BladesTargetLink.Data & BladesClockKey.Schema;}
 
-  get name(): string {return this.isFactionKey ? this.target.name : this.data.name;}
+  get name(): string {return this.data.name;}
   set name(val: string) {this.updateTarget("name", val);}
 
   get isVisible(): boolean {return this.data.isVisible;}
@@ -195,11 +195,11 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   get isScoreKey(): boolean {
     return this.target.type === BladesItemType.score;
   }
-  get activeClocks(): BladesClock[] {
-    return this.clocks.filter((clock) => clock.isActive);
-  }
   get visibleClocks(): BladesClock[] {
     return this.clocks.filter((clock) => clock.isVisible);
+  }
+  get activeClocks(): BladesClock[] {
+    return this.visibleClocks.filter((clock) => clock.isActive);
   }
 
   get displaySelectOptions(): Array<BladesSelectOption<string, ClockKeyDisplayMode | number>> {
@@ -283,19 +283,14 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   }
 
   private async activateClockListeners() {
+    if (!this.containerElem$) {return;}
 
-    if (!this.elem$) {return;}
+    // Enable pointer events on the container element
+    this.containerElem$.css("pointer-events", "auto");
+    this.containerElem$.off();
 
-    // The ".key-bg" child is actually the correct shape, so that will be our listener object.
-    const keyListener$ = this.elem$.find(".key-bg");
-    if (!keyListener$[0]) {return;}
-
-    // Enable pointer events on the key-bg
-    keyListener$.css("pointer-events", "auto");
-    keyListener$.off();
-
-    // Enable pointer events on each of the clocks
-    this.clocks.forEach((clock) => {
+    // Enable pointer events on each of the active clocks
+    this.activeClocks.forEach((clock) => {
       if (!clock.elem$) {return;}
       clock.elem$.css("pointer-events", "auto");
     });
@@ -304,27 +299,28 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
       // === GM-ONLY LISTENERS ===
 
       // Double-Click a Clock Key = Open ClockKeeper sheet
-      keyListener$.on("dblclick", async () => {
+      this.containerElem$.on("dblclick", async () => {
         game.eunoblades.ClockKeeper.sheet?.render(true);
       });
 
       // Right-Click a Clock Key = Pull it
-      keyListener$.on("contextmenu", async () => {
+      this.containerElem$.on("contextmenu", async () => {
         this.pull_SocketCall();
+        this.updateTarget("isVisible", false, true);
       });
 
     } else {
       // === PLAYER-ONLY LISTENERS ===
 
       // Add listeners to container for mouseenter and mouseleave, that play and reverse timeline attached to element
-      keyListener$.on("mouseenter", () => {
+      this.containerElem$.on("mouseenter", () => {
         this.hoverOverTimeline.play();
       }).on("mouseleave", () => {
-        U.reverseRepeatingTimeline(this.hoverOverTimeline);
+        this.hoverOverTimeline?.reverse();
       });
 
       // Now repeat this for each clock in the clock key
-      this.clocks.forEach((clock) => {
+      this.activeClocks.forEach((clock) => {
         if (!clock.elem) {return;}
         const clockElem$ = $(clock.elem);
 
@@ -332,9 +328,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
         clockElem$.on("mouseenter", () => {
           clock.hoverOverTimeline?.play();
         }).on("mouseleave", () => {
-          if (clock.hoverOverTimeline) {
-            U.reverseRepeatingTimeline(clock.hoverOverTimeline);
-          }
+          clock.hoverOverTimeline?.reverse();
         });
       });
     }
@@ -344,13 +338,14 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     containerElem$: HTMLElement | JQuery<HTMLElement>,
     callback?: () => void
   ) {
+    containerElem$ = $(containerElem$);
     const clockKeyHTML = await renderTemplate(
       "systems/eunos-blades/templates/components/clock-key.hbs",
       this
     );
     $(clockKeyHTML).appendTo(containerElem$);
     this.removePositionDragger();
-    this.initClockKeyElem(ClockKeyDisplayMode.full);
+    this.initClockKeyElem(containerElem$.hasClass("overlay-section") ? ClockKeyDisplayMode.full : undefined);
     this.activateClockListeners();
     this.initOverlayElement(callback);
   }
@@ -377,11 +372,17 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   get containerElem$(): JQuery<HTMLElement> | undefined {
     return this.containerElem ? $(this.containerElem) : undefined;
   }
-  get labelElem(): HTMLInputElement | undefined {
-    return this.elem$ ? this.elem$.find(".key-label")[0] as HTMLInputElement : undefined;
+  get labelElem(): HTMLLabelElement | undefined {
+    return this.elem$ ? this.elem$.find(".key-label")[0] as HTMLLabelElement : undefined;
   }
   get labelElem$(): JQuery<HTMLInputElement> | undefined {
     return this.elem$ ? this.elem$.find(".key-label") as JQuery<HTMLInputElement> : undefined;
+  }
+  get factionLabelElem(): HTMLLabelElement | undefined {
+    return this.elem$ ? this.elem$.find(".faction-label")[0] as HTMLLabelElement : undefined;
+  }
+  get factionLabelElem$(): JQuery<HTMLInputElement> | undefined {
+    return this.elem$ ? this.elem$.find(".faction-label") as JQuery<HTMLInputElement> : undefined;
   }
 
   get svgData(): ClockKeySVGData {
@@ -415,7 +416,6 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     return this.svgData.clocks[clockIndex];
   }
 
-
   initClockKeyElem(displayModeOverride?: ClockKeyDisplayMode | number): void {
     if (!this.containerElem$) {throw new Error(`[BladesClockKey.initClockKeyElem] Error containerElem$ not found for key '${this.id}'.`);}
     if (!this.elem$) {throw new Error(`[BladesClockKey.initClockKeyElem] Error elem$ not found for key '${this.id}'.`);}
@@ -430,7 +430,12 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
 
     // If the key has a name, apply adjustments to the label container for a pleasing aspect ratio
     if (this.name && this.labelElem$) {
-      U.adjustTextContainerAspectRatio(this.labelElem$, 2, 100);
+      U.adjustTextContainerAspectRatio(this.labelElem$, 2, 4);
+    }
+
+    // If this is a faction key, apply adjustments to faction label container for a pleasing aspect ratio
+    if (this.isFactionKey && this.factionLabelElem$) {
+      U.adjustTextContainerAspectRatio(this.factionLabelElem$, 2, 2);
     }
 
     const {keyTweenVars, keyContTweenVars} = this.getVarsForDisplayMode(displayModeOverride ?? this.displayMode);
@@ -441,6 +446,13 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     // Initialize key with display mode vars
     U.gsap.set(keyImgContainer, keyContTweenVars);
     U.gsap.set(this.elem$, keyTweenVars);
+
+    // For each clock, if clock has a name, apply adjustments to the label container for a pleasing aspect ratio
+    this.visibleClocks.forEach((clock) => {
+      if (clock.name && clock.labelElem$) {
+        U.adjustTextContainerAspectRatio(clock.labelElem$, 2.5, 3);
+      }
+    });
   }
 
   _positionDragger?: Dragger;
@@ -647,7 +659,6 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   private deleteTimelines() {
     delete this._keySwingTimeline;
     delete this._hoverOverTimeline;
-    delete this._nameFadeInTimeline;
   }
 
   _keySwingTimeline?: gsap.core.Timeline;
@@ -658,22 +669,6 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
       this._keySwingTimeline = U.gsap.effects.keySwing(this.elem).pause();
     }
     return this._keySwingTimeline as gsap.core.Timeline;
-  }
-
-  _nameFadeInTimeline?: gsap.core.Timeline;
-  get nameFadeInTimeline(): gsap.core.Timeline {
-    if (!this.elem) {throw new Error("elem is not defined for nameFadeInTimeline");}
-    if (!$(this.elem).parents("#blades-overlay").length) {throw new Error("elem is not a child of #blades-overlay");}
-    if (!this._nameFadeInTimeline) {
-      this._nameFadeInTimeline = U.gsap.timeline()
-        .blurReveal(this.labelElem$, {
-          ignoreMargin: true,
-          duration: 0.75
-        })
-        .to(this.labelElem$, {xPercent: -50, duration: 0.75}, 0);
-      // .textJitter(this.labelElem$);
-    }
-    return this._nameFadeInTimeline as gsap.core.Timeline;
   }
 
   _hoverOverTimeline?: gsap.core.Timeline;
@@ -706,9 +701,11 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
       tl.add(() => { clock.reveal_Animation(); }, i === 0 ? ">" : "<+0.15");
     });
 
-    // Fade in name, if name is visible.
     if (this.name && this.isNameVisible) {
-      tl.add(this.nameFadeInTimeline);
+      tl.blurReveal(this.labelElem$, {
+        ignoreMargin: true,
+        duration: 0.75
+      }, "<+0.05");
     }
 
     return tl;
@@ -751,7 +748,10 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   fadeInName_Animation(): gsap.core.Timeline | undefined {
     if (!this.labelElem$) {return undefined;}
     if (!this.name) {return undefined;}
-    return this.nameFadeInTimeline.play();
+    return U.gsap.effects.blurReveal(this.labelElem$, {
+      ignoreMargin: true,
+      duration: 0.75
+    });
   }
   async fadeInName_SocketCall() {
     if (!game.user.isGM) {return;}
@@ -769,7 +769,10 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   fadeOutName_Animation(): gsap.core.Timeline | undefined {
     if (!this.labelElem$) {return undefined;}
     if (!this.name) {return undefined;}
-    return U.reverseRepeatingTimeline(this.nameFadeInTimeline);
+    return U.gsap.effects.blurRemove(this.labelElem$, {
+      ignoreMargin: true,
+      duration: 0.75
+    });
   }
   async fadeOutName_SocketCall() {
     if (!game.user.isGM) {return;}
@@ -852,10 +855,10 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
       index: 0,
       color: ClockColor.white,
 
-      isVisible: true,
-      isNameVisible: true,
+      isVisible: !U.isInt(schemaData.index) || schemaData.index === 0,
+      isNameVisible: false,
       isHighlighted: false,
-      isActive: true,
+      isActive: !U.isInt(schemaData.index) || schemaData.index === 0,
 
       ...schemaData,
       ...namedValueMax
@@ -1029,41 +1032,6 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
 
   //    #region   > TIMELINES ~
 
-  _nameFadeInTimeline?: gsap.core.Timeline;
-  get nameFadeInTimeline(): gsap.core.Timeline {
-    if (!this.elem) {throw new Error("elem is not defined for nameFadeInTimeline");}
-    if (!$(this.elem).parents("#blades-overlay").length) {throw new Error("elem is not a child of #blades-overlay");}
-    if (!this._nameFadeInTimeline) {
-      this._nameFadeInTimeline = U.gsap.timeline()
-        .blurReveal(this.labelElem$, {
-          ignoreMargin: true,
-          duration: 0.75
-        }, 0);
-    }
-    return this._nameFadeInTimeline as gsap.core.Timeline;
-  }
-
-  _highlightTimeline?: gsap.core.Timeline;
-  get highlightTimeline(): gsap.core.Timeline {
-    if (!this.glowElem$) {throw new Error("glowElem$ is not defined for highlightTimeline");}
-    if (!this.elem) {throw new Error("elem is not defined for nameFadeInTimeline");}
-    if (!$(this.elem).parents("#blades-overlay").length) {throw new Error("elem is not a child of #blades-overlay");}
-    if (!this._highlightTimeline) {
-      this._highlightTimeline = U.gsap.timeline()
-        .fromTo(this.glowElem$, {
-          autoAlpha: 0,
-          scale: 1.5
-        }, {
-          autoAlpha: 1,
-          scale: 3,
-          duration: 1,
-          ease: "sine"
-        });
-    }
-
-    return this._highlightTimeline;
-  }
-
   _hoverOverTimeline?: gsap.core.Timeline;
   get hoverOverTimeline() {
     if (!this.elem) {return undefined;}
@@ -1108,15 +1076,23 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
 
     // Fade in name, if name is visible.
     if (this.name && this.isNameVisible) {
-      tl.add(this.nameFadeInTimeline);
+      tl.blurReveal(this.labelElem$, {
+        ignoreMargin: true,
+        duration: 0.75
+      }, "<+0.05");
     }
     // Fade in glow, if highlighted
     if (this.glowElem$ && this.isHighlighted) {
-      tl.add(this.highlightTimeline, "<+0.05");
+      tl.scaleUpReveal(this.glowElem$, {
+        scale: 3,
+        duration: 0.5
+      }, "<+0.05");
     }
-    // Fade out background, if active; fade it in, if not.
-    if (this.bgElem$) {
-      tl.to(this.bgElem$, {autoAlpha: this.isActive ? 0 : 1, duration: 0.5, ease: "power2"}, "<+0.05");
+
+    if (this.isActive) {
+      tl.add(() => this.activate_Animation(), "<+0.05");
+    } else {
+      tl.add(() => this.deactivate_Animation(), "<+0.05");
     }
 
     return tl;
@@ -1158,12 +1134,18 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
 
     // Fade out name, if name visible
     if (this.name && this.isNameVisible) {
-      tl.add(this.nameFadeInTimeline.progress(1).reversed(true), "<+0.05");
+      tl.blurRemove(this.labelElem$, {
+        ignoreMargin: true,
+        duration: 0.75
+      }, "<+0.05");
     }
 
     // Fade out glow, if highlighted
     if (this.glowElem$ && this.isHighlighted) {
-      tl.add(this.highlightTimeline.progress(1).reversed(true), "<+0.05");
+      tl.scaleDownRemove(this.glowElem$, {
+        scale: 3,
+        duration: 0.5
+      }, "<+0.05");
     }
 
     // Fade in cover element
@@ -1188,6 +1170,13 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     if (this.bgElem$) {
       U.gsap.to(this.bgElem$, {autoAlpha: 0, duration: 0.5, ease: "power2"});
     }
+    if (this.frameElem$) {
+      U.gsap.to(this.frameElem$, {
+        filter: "brightness(1)",
+        duration: 0.5,
+        ease: "power2"
+      });
+    }
   }
   async activate_SocketCall() {
     if (!game.user.isGM) {return;}
@@ -1203,6 +1192,13 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   deactivate_Animation(callback?: () => void) {
     if (this.bgElem$) {
       U.gsap.to(this.bgElem$, {autoAlpha: 1, duration: 0.5, ease: "power2"});
+    }
+    if (this.frameElem$) {
+      U.gsap.to(this.frameElem$, {
+        filter: "brightness(0.25)",
+        duration: 0.5,
+        ease: "power2"
+      });
     }
   }
   async deactivate_SocketCall() {
@@ -1220,7 +1216,10 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     if (!this.elem) {return;}
     if (!this.labelElem$) {return;}
     if (!this.elem$?.parents("#blades-overlay").length) {return;}
-    this.nameFadeInTimeline.play();
+    U.gsap.effects.blurReveal(this.labelElem$, {
+      ignoreMargin: true,
+      duration: 0.75
+    });
   }
   async fadeInClockName_SocketCall() {
     if (!game.user.isGM) {return;}
@@ -1237,7 +1236,10 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     if (!this.elem) {return;}
     if (!this.labelElem$) {return;}
     if (!this.elem$?.parents("#blades-overlay").length) {return;}
-    this.nameFadeInTimeline.reverse();
+    U.gsap.effects.blurRemove(this.labelElem$, {
+      ignoreMargin: true,
+      duration: 0.75
+    });
   }
   async fadeOutClockName_SocketCall() {
     if (!game.user.isGM) {return;}
@@ -1254,7 +1256,10 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     if (!this.glowElem$) {return;}
     if (!this.elem) {return;}
     if (!$(this.elem).parents("#blades-overlay").length) {return;}
-    this.highlightTimeline.play();
+    U.gsap.effects.scaleUpReveal(this.glowElem$, {
+      duration: 0.5,
+      scale: 3
+    });
   }
   async highlight_SocketCall() {
     if (!game.user.isGM) {return;}
@@ -1271,7 +1276,10 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     if (!this.glowElem$) {return;}
     if (!this.elem) {return;}
     if (!$(this.elem).parents("#blades-overlay").length) {return;}
-    this.highlightTimeline.reverse();
+    U.gsap.effects.scaleDownRemove(this.glowElem$, {
+      duration: 0.5,
+      scale: 3
+    });
   }
   async unhighlight_SocketCall() {
     if (!game.user.isGM) {return;}
@@ -1445,14 +1453,14 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   // #region OVERRIDES: Async Update Methods
   override async updateTarget(prop: string, val: unknown, isSilent = false) {
     await super.updateTarget(prop, val, isSilent);
-    if (!this.parentKey.isClockKeeperKey) {
+    if (!isSilent && !this.parentKey.isClockKeeperKey) {
       game.eunoblades.ClockKeeper.sheet?.render();
     }
   }
 
   override async updateTargetData<T extends BladesTargetLink.UnknownSchema>(val: T | null, isSilent = false) {
     await super.updateTargetData(val, isSilent);
-    if (!this.parentKey.isClockKeeperKey) {
+    if (!isSilent && !this.parentKey.isClockKeeperKey) {
       game.eunoblades.ClockKeeper.sheet?.render();
     }
   }

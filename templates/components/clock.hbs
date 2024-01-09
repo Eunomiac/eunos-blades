@@ -65,7 +65,9 @@
 
 
     <!-- Label -->
-    <label class="clock-label">{{name}}</label>
+
+    <label class="clock-label">{{#unless (test parentKey.size "==" 1)}}{{name}}{{/unless}}</label>
+
 
   </div>
 

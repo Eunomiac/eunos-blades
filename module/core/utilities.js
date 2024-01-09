@@ -1415,10 +1415,29 @@ const changeContainer = (elem, container) => {
 };
 const adjustTextContainerAspectRatio = (textContainer, targetRatio, maxHeight, maxWidth, minFontSize = 8) => {
     textContainer = $(textContainer)[0];
+    function recurAdjustment() {
+        textContainer = $(textContainer)[0];
+        const newFontSize = parseFloat(style.fontSize) * 0.8;
+        const newLineHeight = parseFloat(style.lineHeight) * 0.8;
+        if (newFontSize < minFontSize) {
+            return false;
+        }
+        textContainer.style.fontSize = `${newFontSize}px`;
+        textContainer.style.lineHeight = `${newLineHeight}px`;
+        return adjustTextContainerAspectRatio(textContainer, targetRatio, lineCount ?? maxHeight, maxWidth);
+    }
     const style = window.getComputedStyle(textContainer);
     const lineHeight = parseFloat(style.lineHeight);
+    // If maxHeight is provided AND it is an integer that is less than lineHeight,
+    //   assume maxHeight is referring to the number of lines, and calculate pixel
+    //   height accordingly:
+    let lineCount = undefined;
+    if (isInt(maxHeight) && maxHeight < lineHeight) {
+        lineCount = maxHeight;
+    }
     const initialWidth = parseFloat(style.width);
     let bestWidth = initialWidth;
+    let isAtMaxLineCount = false;
     for (let lines = 1;; lines++) {
         const expectedHeight = lineHeight * lines;
         const expectedWidth = initialWidth / lines;
@@ -1426,28 +1445,32 @@ const adjustTextContainerAspectRatio = (textContainer, targetRatio, maxHeight, m
         if (expectedRatio < targetRatio) {
             break;
         }
-        if (maxHeight && expectedHeight > maxHeight) {
-            // If a maximum height is provided and we've exceeded that,
-            // reduce the font size and line height by 80% and recursively return this function to try again
-            const newFontSize = parseFloat(style.fontSize) * 0.8;
-            const newLineHeight = parseFloat(style.lineHeight) * 0.8;
-            if (newFontSize <= minFontSize) {
+        if (isInt(lineCount)) {
+            if (lines > lineCount) {
+                if (recurAdjustment()) {
+                    return;
+                }
                 break;
             }
-            textContainer.style.fontSize = `${newFontSize}px`;
-            textContainer.style.lineHeight = `${newLineHeight}px`;
-            return adjustTextContainerAspectRatio(textContainer, targetRatio, maxHeight, maxWidth);
+        }
+        else if (maxHeight && expectedHeight > maxHeight) {
+            if (recurAdjustment()) {
+                return;
+            }
+            break;
         }
         bestWidth = expectedWidth;
+        if (isInt(lineCount) && lines === lineCount) {
+            isAtMaxLineCount = true;
+            break;
+        }
     }
     // If a maximum width is provided but we've exceeded that,
     // reduce the font size and line height by 80% and recursively return this function to try again
-    if (maxWidth && bestWidth > maxWidth) {
-        const newFontSize = parseFloat(style.fontSize) * 0.8;
-        const newLineHeight = parseFloat(style.lineHeight) * 0.8;
-        textContainer.style.fontSize = `${newFontSize}px`;
-        textContainer.style.lineHeight = `${newLineHeight}px`;
-        return adjustTextContainerAspectRatio(textContainer, targetRatio, maxHeight, maxWidth);
+    if (!isAtMaxLineCount && maxWidth && bestWidth > maxWidth) {
+        if (recurAdjustment()) {
+            return;
+        }
     }
     // Apply the best width
     textContainer.style.width = `${bestWidth}px`;

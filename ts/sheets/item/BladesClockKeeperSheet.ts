@@ -171,7 +171,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
             }
 
             // Toggle class names on icon
-            control$.find("[data-action=\"toggle-name-visibility\"] i").toggleClass("fa-signature").toggleClass("fa-signature-slash");
+            control$.find("[data-action=\"toggle-name-visibility\"] i")
+              .toggleClass("fa-signature")
+              .toggleClass("fa-signature-slash")
+              .toggleClass("fa-solid")
+              .toggleClass("fa-regular");
           }
         });
       });
@@ -197,7 +201,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
             }
 
             // Toggle class names on icon
-            control$.find("[data-action=\"toggle-spotlight\"] i").toggleClass("fa-message").toggleClass("fa-message-slash");
+            control$.find("[data-action=\"toggle-spotlight\"] i")
+              .toggleClass("fa-message")
+              .toggleClass("fa-message-slash")
+              .toggleClass("fa-solid")
+              .toggleClass("fa-regular");
           }
         });
       });
@@ -309,7 +317,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
             }
 
             // Toggle class names on icon
-            control$.find("[data-action=\"toggle-visible\"] i").toggleClass("fa-eye").toggleClass("fa-eye-slash");
+            control$.find("[data-action=\"toggle-visible\"] i")
+              .toggleClass("fa-eye")
+              .toggleClass("fa-eye-slash")
+              .toggleClass("fa-solid")
+              .toggleClass("fa-regular");
           }
         });
       });
@@ -335,7 +347,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
             }
 
             // Toggle class names on icon
-            control$.find("[data-action=\"toggle-active\"] i").toggleClass("fa-bolt").toggleClass("fa-bolt-slash");
+            control$.find("[data-action=\"toggle-active\"] i")
+              .toggleClass("fa-bolt")
+              .toggleClass("fa-bolt-slash")
+              .toggleClass("fa-solid")
+              .toggleClass("fa-regular");
           }
         });
       });
@@ -361,7 +377,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
               }
             }
             // Toggle class names on icon
-            control$.find("[data-action=\"toggle-name-visibility\"] i").toggleClass("fa-signature").toggleClass("fa-signature-slash");
+            control$.find("[data-action=\"toggle-name-visibility\"] i")
+              .toggleClass("fa-signature")
+              .toggleClass("fa-signature-slash")
+              .toggleClass("fa-solid")
+              .toggleClass("fa-regular");
           }
         });
       });
@@ -386,7 +406,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
               }
             }
             // Toggle class names on icon
-            control$.find("[data-action=\"toggle-highlight\"] i").toggleClass("fa-lightbulb").toggleClass("fa-lightbulb-slash");
+            control$.find("[data-action=\"toggle-highlight\"] i")
+              .toggleClass("fa-lightbulb")
+              .toggleClass("fa-lightbulb-slash")
+              .toggleClass("fa-solid")
+              .toggleClass("fa-regular");
           }
         });
       });

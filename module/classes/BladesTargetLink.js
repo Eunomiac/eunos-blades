@@ -104,17 +104,22 @@ class BladesTargetLink {
             : undefined;
     }
     get targetFlagKey() { return this._targetFlagKey; }
+    get targetFlagKeyPrefix() {
+        return this.targetFlagKey
+            ? `${this.targetFlagKey}.${this.id}`
+            : undefined;
+    }
     _target;
     get target() {
         return this._target;
     }
     get linkData() {
         let linkData;
-        if (this.targetFlagKey) {
-            linkData = this.target.getFlag("eunos-blades", `${this.targetFlagKey}.${this.id}`) ?? undefined;
+        if (this.targetFlagKeyPrefix) {
+            linkData = this.target.getFlag("eunos-blades", this.targetFlagKeyPrefix) ?? undefined;
         }
-        else if (this.targetKey) {
-            linkData = getProperty(this.target, `${this.targetKey}.${this.id}`);
+        else if (this.targetKeyPrefix) {
+            linkData = getProperty(this.target, this.targetKeyPrefix);
         }
         if (!linkData) {
             throw new Error("[BladesTargetLink.linkData] Error retrieving linkData.");
@@ -147,17 +152,17 @@ class BladesTargetLink {
     // #endregion
     // #region ASYNC UPDATE & DELETE METHODS ~
     async updateTarget(prop, val, isSilent = false) {
-        if (this.targetFlagKey) {
-            await this.target.setFlag("eunos-blades", `${this.targetFlagKey}.${this.id}.${prop}`, val);
+        if (this.targetFlagKeyPrefix) {
+            await this.target.setFlag("eunos-blades", `${this.targetFlagKeyPrefix}.${prop}`, val);
         }
-        else {
-            await this.target.update({ [`${this.targetKey}.${this.id}.${prop}`]: val }, { render: !isSilent });
+        else if (this.targetKeyPrefix) {
+            await this.target.update({ [`${this.targetKeyPrefix}.${prop}`]: val }, { render: !isSilent });
         }
     }
     async updateTargetData(val, isSilent = false) {
         if (val === null) {
-            if (this.targetFlagKey) {
-                await this.target.unsetFlag("eunos-blades", `${this.targetFlagKey}.${this.id}`);
+            if (this.targetFlagKeyPrefix) {
+                await this.target.unsetFlag("eunos-blades", `${this.targetFlagKeyPrefix}`);
             }
             else {
                 await this.target.update({ [`${this.targetKey}.-=${this.id}`]: null });
@@ -173,11 +178,11 @@ class BladesTargetLink {
                 targetFlagKey: this.targetFlagKey
             };
             // Update target
-            if (this.targetFlagKey) {
-                await this.target.setFlag("eunos-blades", `${this.targetFlagKey}.${this.id}`, linkData);
+            if (this.targetFlagKeyPrefix) {
+                await this.target.setFlag("eunos-blades", this.targetFlagKeyPrefix, linkData);
             }
-            else {
-                await this.target.update({ [`${this.targetKey}.${this.id}`]: linkData }, { render: !isSilent });
+            else if (this.targetKeyPrefix) {
+                await this.target.update({ [this.targetKeyPrefix]: linkData }, { render: !isSilent });
             }
         }
     }
