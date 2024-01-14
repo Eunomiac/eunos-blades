@@ -651,39 +651,39 @@ const C = {
       keyDimensions: {width: 376, height: 1140},
       keyCenter: {x: 188, y: 570},
       clocksCenter: {x: 188, y: 185},
-      clocksCenterDimensions: {width: 284, height: 284},
+      clocksCenterDimensions: {width: 284, height: 282},
       clocks: {
-        0: {x: 188, y: 99, size: 108},
+        0: {x: 188, y: 99, size: 108}, // yTop = 45
         1: {x: 101, y: 185, size: 108},
         2: {x: 275, y: 185, size: 108},
-        3: {x: 188, y: 273, size: 108}
+        3: {x: 188, y: 273, size: 108} // yBottom = 327
       }
     },
     5: {
       keyDimensions: {width: 376, height: 1140},
       keyCenter: {x: 188, y: 570},
       clocksCenter: {x: 188, y: 185},
-      clocksCenterDimensions: {width: 284, height: 284},
+      clocksCenterDimensions: {width: 284, height: 384},
       clocks: {
-        0: {x: 188, y: 99, size: 108},
+        0: {x: 188, y: 99, size: 108}, // yTop = 45
         1: {x: 101, y: 185, size: 108},
         2: {x: 275, y: 185, size: 108},
         3: {x: 188, y: 273, size: 108},
-        4: {x: 188, y: 452, size: 108}
+        4: {x: 188, y: 452, size: 108} // yBottom = 506
       }
     },
     6: {
       keyDimensions: {width: 376, height: 1140},
       keyCenter: {x: 188, y: 570},
-      clocksCenter: {x: 188, y: 185},
-      clocksCenterDimensions: {width: 284, height: 284},
+      clocksCenter: {x: 188, y: 391},
+      clocksCenterDimensions: {width: 284, height: 692},
       clocks: {
-        0: {x: 188, y: 99, size: 108},
+        0: {x: 188, y: 99, size: 108}, // yTop = 45
         1: {x: 101, y: 185, size: 108},
         2: {x: 275, y: 185, size: 108},
         3: {x: 188, y: 273, size: 108},
         4: {x: 188, y: 452, size: 108},
-        5: {x: 188, y: 683, size: 108}
+        5: {x: 188, y: 683, size: 108} // yBottom = 737
       }
     }
   },

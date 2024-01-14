@@ -1,26 +1,84 @@
-import {BladesItemType, ClockKeyDisplayMode, ClockColor, Factor} from "../../core/constants";
+import {BladesItemType, Factor, ClockColor} from "../../core/constants";
 import U from "../../core/utilities";
 import {BladesItem} from "../BladesItemProxy";
+import BladesProjectSheet from "../../sheets/item/BladesProjectSheet";
 import BladesClockKey from "../../classes/BladesClocks";
 import BladesRoll from "../../classes/BladesRoll";
+import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 class BladesProject extends BladesItem implements BladesItemSubClass.Project,
   BladesRoll.OppositionDocData {
 
-  static Initialize() {
-    return loadTemplates([
-      "systems/eunos-blades/templates/items/project-sheet.hbs"
-    ]);
+  // #region INITIALIZATION ~
+  static async Initialize() {
+    Object.assign(globalThis, {BladesProject, BladesProjectSheet});
+    Items.registerSheet("blades", BladesProjectSheet, {types: ["project"], makeDefault: true});
+    return loadTemplates(["systems/eunos-blades/templates/items/project-sheet.hbs"]);
   }
+  // #endregion
 
   static override IsType<T extends BladesItemType = BladesItemType.project>(doc: unknown): doc is BladesItemOfType<T> {
     return super.IsType(doc, BladesItemType.project);
   }
 
+  static override async create(
+    data: ItemDataConstructorData & { system?: { world_name?: string, description?: string } },
+    options = {}
+  ) {
+    const project = (await super.create(data, {...options, renderSheet: false})) as BladesProject;
+
+    if (!project._clockKey) {
+      project._clockKey = await BladesClockKey.Create({
+        name: project.name,
+        target: project,
+        targetKey: "system.clocksData" as TargetKey,
+        isNameVisible: false,
+        isSpotlit: false,
+        isVisible: true
+        // oneKeyIndex: U.gsap.utils.random(0, 4, 1) as OneKeyImgIndex
+      }, [{
+        name: "",
+        index: 0,
+        color: ClockColor.yellow,
+        value: 0,
+        max: 8,
+        isVisible: true,
+        isActive: true,
+        isNameVisible: false,
+        isHighlighted: false
+      }]);
+    }
+
+    return project as unknown as Promise<StoredDocument<Item> | undefined>;
+  }
+
   _clockKey?: BladesClockKey;
-  get clockKey(): BladesClockKey|undefined {
+  get clockKey(): BladesClockKey {
     if (this._clockKey) { return this._clockKey; }
-    this._clockKey = game.eunoblades.ClockKeys.get(Object.keys(this.system.clocksData)[0]);
+    const keysData = Object.values(this.system.clocksData);
+    if (keysData.length === 0) {
+      throw new Error(`ClockKey not initialized for Project ${this.name}`);
+    }
+    let keyID: IDString|undefined;
+    if (keysData.length === 1) {
+      keyID = keysData[0].id;
+    } else if (this.isEmbedded) {
+      // Find the key data with a targetID that includes the parent document's id
+      keyID = keysData.find((keyData) => keyData.targetID.includes(this.parent?.id as string))?.id;
+      if (!keyID) {
+        throw new Error(`ClockKey not initialized for Project ${this.name} embedded in document '${this.parent?.name}'.`);
+      }
+    } else {
+      // Find the key of form 'Item.<IDString>' in the ClockKeys collection
+      keyID = keysData.find((keyData) => /^Item\.[^.]{16}$/.exec(keyData.targetID))?.id;
+      if (!keyID) {
+        throw new Error(`ClockKey not initialized for Project ${this.name}.`);
+      }
+    }
+    this._clockKey = game.eunoblades.ClockKeys.get(keyID) ?? new BladesClockKey(this.system.clocksData[keyID]);
+    if (!this._clockKey) {
+      throw new Error(`ClockKey not initialized for Project ${this.name}`);
+    }
     return this._clockKey;
   }
 
@@ -81,33 +139,6 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
 
   override get rollOppImg() { return ""; }
 
-  override async _onCreate(...args: Parameters<BladesItem["_onCreate"]>) {
-    await super._onCreate(...args);
-    Hooks.once("preUpdateItem", async (item: BladesItem): Promise<void> => {
-      if (item.id !== this.id) { return; }
-      await BladesClockKey.Create({
-        name: this.name,
-        target: this,
-        targetKey: "system.clocksData" as TargetKey,
-        isNameVisible: false,
-        isSpotlit: false,
-        isVisible: false,
-        displayMode: ClockKeyDisplayMode.presentCurrentClock
-      }, [{
-        name: "",
-        index: 0,
-        color: ClockColor.yellow,
-        value: 0,
-        max: 8,
-        isVisible: true,
-        isActive: true,
-        isNameVisible: false,
-        isHighlighted: false
-      }]);
-    });
-
-  }
-
   get keyElem(): HTMLElement|undefined {
     if (!this.clockKey) { return undefined; }
     return $(`#${this.clockKey.id}`)[0];
@@ -118,96 +149,6 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
     if (!this.currentClock) { return undefined; }
     return $(this.keyElem).find(`.clock[data-id="${this.currentClock.id}"]`)[0];
   }
-
-  animateProjectKey(): gsap.core.Timeline|undefined {
-    const keyID = this.clockKey?.id;
-    if (!keyID) { return undefined; }
-    const keyElem = $(`#${keyID}`)[0];
-
-    const keyContainerElem = $(keyElem).closest(".clock-key-container")[0];
-
-    const curClockID = this.currentClock?.id;
-    if (!curClockID) { return undefined; }
-    const clockElem = $(`.clock[data-id="${curClockID}"]`)[0];
-
-    const clockContainerElem = $(clockElem).closest(".clock-container")[0];
-
-    const sheetRootElem = $(keyElem).closest(".sheet-root")[0];
-
-    // Find current position of active clock element in .sheet-root space:
-    const cPosInRoot = U.MotionPathPlugin.convertCoordinates(
-      keyElem,
-      sheetRootElem,
-      {
-        x: U.gsap.getProperty(clockElem, "top") as number,
-        y: U.gsap.getProperty(clockElem, "left") as number
-      });
-
-    // Find current position of active clock container element in .sheet-root space:
-    const cContPosInRoot = U.MotionPathPlugin.convertCoordinates(
-      keyElem,
-      sheetRootElem,
-      {
-        x: U.gsap.getProperty(clockContainerElem, "top") as number,
-        y: U.gsap.getProperty(clockContainerElem, "left") as number
-      });
-
-    // Target position for active clock in .sheet-root space:
-    //    top: 33%
-    //    left: 100% - 0.5 * key container width
-    const targetCContPosInRoot: gsap.Point2D = {
-      x: (U.gsap.getProperty(sheetRootElem, "width") as number)
-        - (0.75 * (U.gsap.getProperty(keyContainerElem, "width") as number)),
-      y: 0.5 * (U.gsap.getProperty(sheetRootElem, "height") as number)
-    };
-
-    // Find delta from current position to target position, for entire key to traverse:
-    const keyDeltaX = targetCContPosInRoot.x - cContPosInRoot.x;
-    const keyDeltaY = targetCContPosInRoot.y - cContPosInRoot.y;
-
-    eLog.checkLog3("animateProjectKey", "[AnimateProjectKey] Positions & Elements", {
-      elements: {
-        sheetRootElem,
-        keyElem,
-        clockElem,
-        keyContainerElem,
-        clockContainerElem
-      },
-      positions: {
-        "1) clockContainer in Root": cContPosInRoot,
-        "1.5) clock in Root": cPosInRoot,
-        "2) target Pos in Root": targetCContPosInRoot,
-        "3) deltas": {x: keyDeltaX, y: keyDeltaY}
-      }
-    });
-
-    // Construct timeline:
-    const tl = U.gsap.timeline({
-      repeat: -1,
-      yoyo: true,
-      delay: 10
-    })
-      // Add scaling timeline:
-      .fromTo(keyElem, {xPercent: -50, yPercent: -50, scale: 0.95}, {scale: 2, duration: 20, ease: "sine.inOut"}, 0)
-      // Initialize gentle rotation:
-      .fromTo(keyElem, {xPercent: -50, yPercent: -50, rotateX: 0, rotateY: 0, rotateZ: 0}, {rotateX: 5, rotateY: 5, rotateZ: 5, duration: 5, ease: "sine.inOut"}, 0)
-      // Continue rotation:
-      .to(keyElem, {rotateX: -5, rotateY: -5, rotateZ: -5, duration: 5, repeat: 8, yoyo: true, ease: "sine.inOut"}, 5)
-      // Add positioning timeline:
-      .to(keyElem, {x: `+=${keyDeltaX}`, y: `+=${keyDeltaY}`, duration: 20, ease: "sine.inOut"}, 0);
-
-    // Seek timeline to midway point
-    tl.seek(20);
-    // Play timeline
-    tl.play();
-
-    // Return timeline;
-    return tl;
-  }
-
-
-  // async addClock()
-
 }
 
 declare interface BladesProject {

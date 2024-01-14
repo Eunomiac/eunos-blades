@@ -11,7 +11,7 @@
   >
     <label class="key-label {{~#unless isNameVisible}} label-hidden{{/unless}}">{{name}}</label>
     <div class="key-image-container {{~#if (test size "==" 1)}} one-key-image-container{{/if}}">
-      <svg class="key-image" viewBox="0 0 {{keyWidth}} {{keyHeight}}">
+      <svg class="key-image" viewBox="0 0 {{fullDisplayPosData.width}} {{fullDisplayPosData.height}}">
         {{#if (test size "==" 1)}}
           <use href="#{{oneKeyIndex}}-one-key" class="key-bg" />
           <rect class="metallic-overlay" x="0" y="0" clip-path="url(#{{oneKeyIndex}}-one-key-clip" />

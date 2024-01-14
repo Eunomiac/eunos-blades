@@ -377,18 +377,6 @@ class BladesDirector {
     await key.renderTo(this.clockKeySection$);
 
     const keyElems$ = key.getElements$(this.clockKeySection$);
-    const {
-      container$,
-      imgContainer$,
-      elem$,
-      label$,
-      factionLabel$,
-      projectLabel$,
-      scoreLabel$,
-      clocks
-    } = keyElems$;
-
-    type KeyPosData = gsap.Point2D & {width: number, height: number};
 
     // If a position-dragger is present, remove it.
     if (key.positionDragger) {
@@ -397,55 +385,17 @@ class BladesDirector {
 
     // If an overlayPosition has been set, apply to the container element:
     if (key.overlayPosition) {
-      U.gsap.set(container$, {
+      U.gsap.set(keyElems$.container$, {
         left: key.overlayPosition.x,
         top: key.overlayPosition.y
       });
     }
 
-    // Get position data for the container$ element (x, y, width, height)
-    const keyPosition: KeyPosData = {
-      x: U.gsap.getProperty(container$[0], "x") as number,
-      y: U.gsap.getProperty(container$[0], "y") as number,
-      width: U.gsap.getProperty(container$[0], "width") as number,
-      height: U.gsap.getProperty(container$[0], "height") as number
-    };
+    // Scale clock key to fit its container
+    key.fitKeyToContainer(keyElems$);
 
-    // Get default position data for this clock key
-    const keyDefaultPosition: KeyPosData = {
-      ...C.ClockKeyPositions[key.size].keyCenter,
-      ...C.ClockKeyPositions[key.size].keyDimensions
-    };
-
-    eLog.checkLog3("BladesDirector", "Key Positions", {keyPosition, keyDefaultPosition, widthScale: keyPosition.width / keyDefaultPosition.width, heightScale: keyPosition.height / keyDefaultPosition.height});
-
-    // Apply scale factor to elem$ to fit default key position inside container$
-    U.gsap.set(elem$, {
-      scale: Math.min(
-        keyPosition.width / keyDefaultPosition.width,
-        keyPosition.height / keyDefaultPosition.height
-      )
-    });
-
-    // Apply top, left and transformOrigin value to keyImgContainer, accounting for x/yPercent -50
-    U.gsap.set(imgContainer$, {
-      top: (0.5 * C.ClockKeyPositions.elemSquareSize) - keyDefaultPosition.y,
-      left: (0.5 * C.ClockKeyPositions.elemSquareSize) - keyDefaultPosition.x,
-      transformOrigin: `${keyDefaultPosition.x}px ${keyDefaultPosition.y}px`
-    });
-
-    // Collect relevant label elements, desired aspect ratio, and maximum line count, then apply adjustments to the label container for a pleasing aspect ratio
-    (
-      [
-        [label$, 2, 4],
-        key.isFactionKey ? [factionLabel$, 2, 2] : undefined,
-        key.isProjectKey ? [projectLabel$, 2, 2] : undefined,
-        key.isScoreKey ? [scoreLabel$, 2, 2] : undefined,
-        ...key.clocks.map((clock) => [clocks[clock.id].clockLabel$, 2.5, 3])
-      ].filter(Boolean) as Array<[JQuery<HTMLElement>, number, number]>
-    ).forEach(([labelElem$, aspectRatio, maxLines]) => {
-      U.adjustTextContainerAspectRatio(labelElem$, aspectRatio, maxLines);
-    });
+    // Initialize label elements
+    key.formatLabels(keyElems$);
 
     // Prepare animation timelines & attach them to rendered elements
     this.prepareClockKeyTimelines(key, keyElems$);
@@ -707,22 +657,13 @@ class BladesDirector {
     });
   }
   private initTooltipSection() {
-    const self = this;
+    const {clearTooltips} = this;
 
     // Reset tooltip observer
     this._tooltipObserver?.kill();
     this._tooltipObserver = Observer.create({
-      type: "touch,pointer", // comma-delimited list of what to listen for
-      onClick: () => {
-        self.clearTooltips();
-      },
-      onMove: (obs: Observer) => {
-        if (obs.deltaX >= (obs.vars.tolerance as number)
-          || obs.deltaY >= (obs.vars.tolerance as number)) {
-          self.clearTooltips();
-        }
-      },
-      tolerance: 100
+      type: "touch,pointer",
+      onClick: clearTooltips
     });
   }
   // #endregion

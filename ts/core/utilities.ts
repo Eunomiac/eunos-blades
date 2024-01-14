@@ -1467,7 +1467,7 @@ const changeContainer = (elem: HTMLElement, container: HTMLElement) => {
     container,
     curPosition
   );
-  eLog.checkLog3("changeContainer", "Target Element", {elem, container, curContainer, curPosition, relPos});
+  // eLog.checkLog3("changeContainer", "Target Element", {elem, container, curContainer, curPosition, relPos});
   // Append the element to the new container, and set its new position
   $(elem).appendTo($(container));
   gsap.set(elem, relPos);

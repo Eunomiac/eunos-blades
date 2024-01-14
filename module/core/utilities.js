@@ -1408,7 +1408,7 @@ const changeContainer = (elem, container) => {
     };
     // Convert the element's position in its current space, to the equivalent position in the target space.
     const relPos = MotionPathPlugin.convertCoordinates(curContainer, container, curPosition);
-    eLog.checkLog3("changeContainer", "Target Element", { elem, container, curContainer, curPosition, relPos });
+    // eLog.checkLog3("changeContainer", "Target Element", {elem, container, curContainer, curPosition, relPos});
     // Append the element to the new container, and set its new position
     $(elem).appendTo($(container));
     gsap.set(elem, relPos);

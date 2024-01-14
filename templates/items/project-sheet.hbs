@@ -52,6 +52,8 @@
       </section>
 
       {{!-- Right Panel: Clock Key Wrapper  --}}
-      <section class="clock-key-panel flex-horizontal project-panel-right"></section>
+      <section class="clock-key-panel flex-horizontal project-panel-right">
+        {{> "systems/eunos-blades/templates/components/clock-key.hbs" item.clockKey}}
+      </section>
     </div>
 </form>

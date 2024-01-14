@@ -1,15 +1,27 @@
 & {
-  &, & > * {
+  display: block;
+  height: 0px;
+  width: 0px;
+  position: static;
+  pointer-events: none;
+
+  > .overlay-section {
     display: block;
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
     width: 100%;
-    pointer-events: none;
-    z-index: 150;
     perspective: 500px;
     transform-style: preserve-3d;
+    z-index: 80;
+    pointer-events: none;
+
+    &.overlay-section-notifications,
+    &.overlay-section-transitions,
+    &.overlay-section-tooltips {
+      z-index: 150;
+    }
   }
 
   @import "../components/clocks";

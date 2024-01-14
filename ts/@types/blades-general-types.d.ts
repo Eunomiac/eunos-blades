@@ -114,6 +114,9 @@ declare global {
   // Represents a jQuery text term
   type jQueryTextTerm = string | number | boolean | ((this: Element, index: number, text: string) => string | number | boolean);
 
+  // Represents an object describing dimensions of an HTML element, of form {x: number, y: number, width: number, height: number}
+  type ElemPosData = {x: number, y: number, width: number, height: number};
+
   // Represents an object with frozen properties
   type FreezeProps<T> = {
     [Prop in keyof T as string extends Prop ? never : number extends Prop ? never : Prop]: T[Prop]

@@ -98,7 +98,7 @@ class BladesClockKey extends BladesTargetLink {
         let { oneKeyIndex } = this.data;
         if (!oneKeyIndex) {
             oneKeyIndex = U.gsap.utils.random(0, 4, 1);
-            this.updateTarget("oneKeyIndex", oneKeyIndex);
+            this.updateTarget("oneKeyIndex", oneKeyIndex, true);
         }
         return oneKeyIndex;
     }
@@ -156,6 +156,32 @@ class BladesClockKey extends BladesTargetLink {
     }
     get completedClocks() {
         return this.clocks.filter((clock) => clock.isComplete);
+    }
+    get fullDisplayPosData() {
+        const x = this.svgData.width / 2;
+        const y = this.svgData.height / 2;
+        return {
+            x, y, width: this.svgData.width, height: this.svgData.height
+        };
+    }
+    get clocksDisplayPosData() {
+        const { size, ...clocksPosData } = this.svgData.clocks;
+        // Sort the values of clocksPosData by their positions
+        const clockWidthPosData = Object.values(clocksPosData).sort((a, b) => a.x - b.x);
+        const clockHeightPosData = Object.values(clocksPosData).sort((a, b) => a.y - b.y);
+        // Get the highest and lowest values for each set of positions
+        const xLowest = clockWidthPosData[0].x;
+        const xHighest = clockWidthPosData[clockWidthPosData.length - 1].x;
+        const yLowest = clockHeightPosData[0].y;
+        const yHighest = clockHeightPosData[clockHeightPosData.length - 1].y;
+        return {
+            // Determine the center point in both x and y axes
+            x: (xLowest + xHighest) / 2,
+            y: (yLowest + yHighest) / 2,
+            // Determine height and width of bounding box, accounting for clock size
+            width: xHighest - xLowest + size,
+            height: yHighest - yLowest + size
+        };
     }
     /** This function accepts any number of arrays of BladesClock, then returns an array
      * containing those BladesClock instances that appear in ALL provided arrays.
@@ -337,132 +363,49 @@ class BladesClockKey extends BladesTargetLink {
         const clockKeyHTML = await renderTemplate("systems/eunos-blades/templates/components/clock-key.hbs", this);
         $(clockKeyHTML).appendTo(parent$);
     }
-    // #endregion
-    // #region Display Context-Sensitive Rendering ~
-    // private prepareOverlayTimelines(keyElems$: ClockKeyElems$) {
-    //   const {container$, imgContainer$, elem$, clocks} = keyElems$;
-    //   container$.data("hoverOverTimeline", U.gsap.effects.hoverOverClockKey(container$));
-    //   imgContainer$.data("keySwingTimeline", U.gsap.effects.keySwing(elem$));
-    //   this.clocks.forEach((clock) => {
-    //     const {clockContainer$} = clocks[clock.id];
-    //     if (!clockContainer$?.length) {throw new Error(`[BladesClockKey.prepareOverlayTimelines] Error clockContainer$ not found for clock '${clock.id}' of key '${this.id}'.`);}
-    //     clockContainer$.data("hoverOverTimeline", U.gsap.effects.hoverOverClock(clockContainer$));
-    //   });
-    // }
-    // private async activateOverlayListeners(keyElems$: ClockKeyElems$) {
-    //   const {container$, clocks} = keyElems$;
-    //   // Assign pointer-events
-    //   container$.css("pointer-events", "auto");
-    //   container$.find(".clock-container").css("pointer-events", "auto");
-    //   if (game.user.isGM) {
-    //     // === GM-ONLY LISTENERS ===
-    //     // Double-Click a Clock Key = Open ClockKeeper sheet
-    //     container$.on("dblclick", async () => {
-    //       game.eunoblades.ClockKeeper.sheet?.render(true);
-    //     });
-    //     // Right-Click a Clock Key = Pull it
-    //     container$.on("contextmenu", async () => {
-    //       this.pull_SocketCall(ClockDisplayContext.overlay);
-    //       this.updateTarget("isVisible", false, true);
-    //     });
-    //   } else {
-    //     // === PLAYER-ONLY LISTENERS ===
-    //     // Add listeners to container for mouseenter and mouseleave, that play and reverse timeline attached to element
-    //     container$.on("mouseenter", () => {
-    //       container$.data("hoverOverTimeline").play();
-    //     }).on("mouseleave", () => {
-    //       container$.data("hoverOverTimeline").reverse();
-    //     });
-    //     // Now repeat this for each clock in the clock key
-    //     this.clocks.forEach((clock) => {
-    //       const {clockContainer$} = clocks[clock.id];
-    //       // Add listeners to clock for mouseenter and mouseleave, that play and reverse timeline attached to element
-    //       clockContainer$.on("mouseenter", () => {
-    //         if (clock.isVisible) {
-    //           clockContainer$.data("hoverOverTimeline").play();
-    //         }
-    //       }).on("mouseleave", () => {
-    //         if (clock.isVisible) {
-    //           clockContainer$.data("hoverOverTimeline").reverse();
-    //         }
-    //       });
-    //     });
-    //   }
-    // }
-    // public async initOverlayElement(keyElems$: ClockKeyElems$) {
-    //   this.initClockKeyElem(keyElems$, ClockKeyDisplayMode.full);
-    //   if (this.positionDragger) {
-    //     this.removePositionDragger();
-    //   }
-    //   // If an overlayPosition has been set, apply to the container element:
-    //   if (this.overlayPosition) {
-    //     keyElems$.container$.css({
-    //       left: this.overlayPosition.x,
-    //       top: this.overlayPosition.y
-    //     });
-    //   }
-    //   this.prepareOverlayTimelines(keyElems$);
-    //   this.activateOverlayListeners(keyElems$);
-    //   this.drop_Animation(keyElems$);
-    // }
-    prepareProjectSheetTimelines(keyElems$) {
-        // Add click and hover timelines for player interaction
-    }
-    activateProjectSheetListeners(keyElems$) {
-        const { container$, clocks } = keyElems$;
-        const clickTimeline = this.switchToMode(keyElems$, ClockKeyDisplayMode.full);
-        // If there are multiple clocks, reveal labels of visible clocks
-        if (this.size > 1) {
-            this.visibleClocks.forEach((clock) => {
-                const { clockLabel$ } = clocks[clock.id];
-                clickTimeline.blurReveal(clockLabel$);
-            });
-        }
-        // Attach click timeline to clock key container, activate pointer events
-        container$.data("clickTimeline", clickTimeline);
-        container$.css("pointer-events", "auto");
-        // Add click and hover listeners for player interaction.
-        container$.on("click", () => {
-            // If timeline is anywhere except at the start, play it, otherwise reverse it.
-            const timeline = container$.data("clickTimeline");
-            if (timeline.progress() === 0) {
-                timeline.play();
-            }
-            else {
-                timeline.reverse();
-            }
+    fitKeyToContainer(keyElems$, posOverrides) {
+        const { container$, elem$, imgContainer$ } = keyElems$;
+        // Get position data for the container$ element (x, y, width, height)
+        const keyPosition = {
+            x: U.gsap.getProperty(container$[0], "x"),
+            y: U.gsap.getProperty(container$[0], "y"),
+            width: U.gsap.getProperty(container$[0], "width"),
+            height: U.gsap.getProperty(container$[0], "height")
+        };
+        const { xShift, yShift, scaleMult, ...focusPosOverrides } = posOverrides ?? {};
+        const focusPosition = {
+            ...this.fullDisplayPosData,
+            ...focusPosOverrides
+        };
+        eLog.checkLog3("BladesClockKey", "[BladesClockKey] Key Positions", {
+            keyPosition,
+            focusPosition,
+            widthScale: keyPosition.width / focusPosition.width,
+            heightScale: keyPosition.height / focusPosition.height
+        });
+        // Apply scale factor to elem$ to fit default key position inside container$
+        U.gsap.set(elem$, {
+            scale: Math.min(keyPosition.width / focusPosition.width, keyPosition.height / focusPosition.height) * (scaleMult ?? 1)
+        });
+        // Apply top, left and transformOrigin value to keyImgContainer, accounting for x/yPercent -50
+        U.gsap.set(imgContainer$, {
+            top: (0.5 * C.ClockKeyPositions.elemSquareSize) - focusPosition.y + (yShift ?? 0),
+            left: (0.5 * C.ClockKeyPositions.elemSquareSize) - focusPosition.x + (xShift ?? 0),
+            transformOrigin: `${focusPosition.x + (xShift ?? 0)}px ${focusPosition.y + (yShift ?? 0)}px`
         });
     }
-    async initProjectSheetElement(keyElems$) {
-        // this.initClockKeyElem(keyElems$);
-        this.prepareProjectSheetTimelines(keyElems$);
-        this.activateProjectSheetListeners(keyElems$);
-        await Promise.all([
-            ...this.visibleClocks.map((clock) => new Promise((resolve) => {
-                const clockElems$ = keyElems$.clocks[clock.id];
-                clock.reveal_Animation(clockElems$, () => { resolve(); });
-            })),
-            ...this.activeClocks.map((clock) => new Promise((resolve) => {
-                const clockElems$ = keyElems$.clocks[clock.id];
-                clock.activate_Animation(clockElems$, () => { resolve(); });
-            }))
-        ]);
-        this.switchToMode(keyElems$, this.displayMode).play();
-    }
-    initPlayerSheetElement(keyElems$, callback) {
-        callback?.();
-    }
-    initFactionSheetElement(keyElems$, callback) {
-        callback?.();
-    }
-    initScoreSheetElement(keyElems$, callback) {
-        callback?.();
-    }
-    initRollElement(keyElems$, callback) {
-        callback?.();
-    }
-    initChatElement(keyElems$, callback) {
-        callback?.();
+    formatLabels(keyElems$) {
+        const { label$, clocks, factionLabel$, projectLabel$, scoreLabel$ } = keyElems$;
+        // Collect relevant label elements, desired aspect ratio, and maximum line count, then apply adjustments to the label container for a pleasing aspect ratio
+        [
+            [label$, 2, 4],
+            factionLabel$ ? [factionLabel$, 2, 2] : undefined,
+            projectLabel$ ? [projectLabel$, 2, 2] : undefined,
+            scoreLabel$ ? [scoreLabel$, 2, 2] : undefined,
+            ...this.clocks.map((clock) => [clocks[clock.id].clockLabel$, 2.5, 3])
+        ].filter(Boolean).forEach(([labelElem$, aspectRatio, maxLines]) => {
+            U.adjustTextContainerAspectRatio(labelElem$, aspectRatio, maxLines);
+        });
     }
     // #endregion
     async addToScene(sceneID = game.scenes.current.id) {

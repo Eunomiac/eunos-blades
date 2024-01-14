@@ -5661,20 +5661,28 @@ template {
   z-index: 20;
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay {
+  display: block;
+  height: 0px;
+  width: 0px;
+  position: static;
+  pointer-events: none;
   /* Sizing the Keys for Overlay Display */
   /* VISIBILITY HIDDEN FOR ANIMATED COMPONENTS */
 }
-:root body.vtt.game.system-eunos-blades #blades-overlay, :root body.vtt.game.system-eunos-blades #blades-overlay > * {
+:root body.vtt.game.system-eunos-blades #blades-overlay > .overlay-section {
   display: block;
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
-  pointer-events: none;
-  z-index: 150;
   perspective: 500px;
   transform-style: preserve-3d;
+  z-index: 80;
+  pointer-events: none;
+}
+:root body.vtt.game.system-eunos-blades #blades-overlay > .overlay-section.overlay-section-notifications, :root body.vtt.game.system-eunos-blades #blades-overlay > .overlay-section.overlay-section-transitions, :root body.vtt.game.system-eunos-blades #blades-overlay > .overlay-section.overlay-section-tooltips {
+  z-index: 150;
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay {
   --key-elem-square-size: 100px;
