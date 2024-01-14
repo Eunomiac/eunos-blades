@@ -32,6 +32,7 @@ Handlebars.registerHelper("eLog", logger.hbsLog);
 let socket; // ~ SocketLib interface
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 class GlobalGetter {
+    get clockKeys() { return game.eunoblades.ClockKeys.filter((clockKey) => clockKey.isInScene() && clockKey.isVisible); }
     get roll() { return BladesRoll.Active; }
     get user() { return game.users.getName("Alistair"); }
     get actor() { return game.actors.getName("Alistair"); }
@@ -481,7 +482,6 @@ class GlobalGetter {
         };
         BladesRoll.NewRoll(conf);
     }
-    get clockKeys() { return game.eunoblades.ClockKeeper?.clockKeys; }
 }
 // #region Globals: Exposing Functionality to Global Scope ~
 /* DEVCODE*/ Object.assign(globalThis, {
@@ -519,6 +519,8 @@ class GlobalGetter {
     BladesClockKeeper,
     BladesGMTracker,
     BladesLocation,
+    BladesProject,
+    BladesScore,
     BladesItemSheet,
     BladesClockKeeperSheet,
     BladesGMTrackerSheet,
@@ -533,7 +535,8 @@ Hooks.once("init", async () => {
     game.eunoblades = {
         ClockKeys: new Collection(),
         Consequences: new Collection(),
-        Director: BladesDirector.getInstance()
+        Director: BladesDirector.getInstance(),
+        Tooltips: new WeakMap()
     };
     // Register System Settings
     registerSettings();
@@ -547,16 +550,16 @@ Hooks.once("init", async () => {
     CONFIG.ChatMessage.documentClass = BladesChat;
     // Register sheet application classes
     Actors.unregisterSheet("core", ActorSheet);
-    Actors.registerSheet("blades", BladesCrewSheet, { types: ["crew"], makeDefault: true });
-    Actors.registerSheet("blades", BladesFactionSheet, { types: ["faction"], makeDefault: true });
-    Actors.registerSheet("blades", BladesNPCSheet, { types: ["npc"], makeDefault: true });
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("blades", BladesItemSheet, { types: C.ItemTypes, makeDefault: true });
     registerHandlebarHelpers();
     preloadHandlebarsTemplates();
     // Initialize preliminary classes with templates to load
     await Promise.all([
-        BladesPCSheet.Initialize(),
+        BladesPC.Initialize(),
+        BladesCrew.Initialize(),
+        BladesNPC.Initialize(),
+        BladesFaction.Initialize(),
         BladesActiveEffect.Initialize(),
         BladesGMTrackerSheet.Initialize(),
         BladesClockKeeperSheet.Initialize(),

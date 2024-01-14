@@ -1,9 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { BladesActorType, BladesItemType, Tag } from "../../core/constants.js";
 import { BladesActor, BladesPC } from "../BladesActorProxy.js";
+import BladesCrewSheet from "../../sheets/actor/BladesCrewSheet.js";
 import { BladesItem } from "../BladesItemProxy.js";
 import { SelectionCategory } from "../../classes/BladesDialog.js";
 class BladesCrew extends BladesActor {
+    // #region INITIALIZATION ~
+    static async Initialize() {
+        Object.assign(globalThis, { BladesCrew, BladesCrewSheet });
+        Actors.registerSheet("blades", BladesCrewSheet, { types: ["crew"], makeDefault: true });
+        return loadTemplates(["systems/eunos-blades/templates/crew-sheet.hbs"]);
+    }
+    // #endregion
     // #region Static Overrides: Create ~
     static IsType(doc) {
         return super.IsType(doc, BladesActorType.crew);

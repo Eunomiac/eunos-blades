@@ -58,6 +58,33 @@ export var ClockColor;
     ClockColor["white"] = "white";
     ClockColor["cyan"] = "cyan";
 })(ClockColor || (ClockColor = {}));
+export var ClockDisplayContext;
+(function (ClockDisplayContext) {
+    ClockDisplayContext["overlay"] = "overlay";
+    ClockDisplayContext["pcSheet"] = "pcSheet";
+    ClockDisplayContext["factionSheet"] = "factionSheet";
+    ClockDisplayContext["projectSheet"] = "projectSheet";
+    ClockDisplayContext["scoreSheet"] = "scoreSheet";
+    ClockDisplayContext["rollCollab"] = "rollCollab";
+    ClockDisplayContext["chatMessage"] = "chatMessage";
+})(ClockDisplayContext || (ClockDisplayContext = {}));
+export var ClockKeyDisplayMode;
+(function (ClockKeyDisplayMode) {
+    ClockKeyDisplayMode["full"] = "full";
+    ClockKeyDisplayMode["clocks"] = "clocks";
+    ClockKeyDisplayMode["activeClocks"] = "activeClocks";
+    ClockKeyDisplayMode["presentCurrentClock"] = "presentCurrentClock";
+    ClockKeyDisplayMode["present0"] = "present0";
+    ClockKeyDisplayMode["present1"] = "present1";
+    ClockKeyDisplayMode["present2"] = "present2";
+    ClockKeyDisplayMode["present3"] = "present3";
+    ClockKeyDisplayMode["present4"] = "present4";
+    ClockKeyDisplayMode["present5"] = "present5";
+})(ClockKeyDisplayMode || (ClockKeyDisplayMode = {}));
+export var BladesNoticeType;
+(function (BladesNoticeType) {
+    BladesNoticeType["push"] = "push";
+})(BladesNoticeType || (BladesNoticeType = {}));
 export var District;
 (function (District) {
     District["Barrowcleft"] = "Barrowcleft";
@@ -401,18 +428,6 @@ export var Tag;
         GangType["Vehicle"] = "Vehicle";
     })(GangType = Tag.GangType || (Tag.GangType = {}));
 })(Tag || (Tag = {}));
-export var ClockKeyDisplayMode;
-(function (ClockKeyDisplayMode) {
-    ClockKeyDisplayMode["full"] = "full";
-    ClockKeyDisplayMode["clocks"] = "clocks";
-    ClockKeyDisplayMode["activeClocks"] = "activeClocks";
-    ClockKeyDisplayMode["present0"] = "present0";
-    ClockKeyDisplayMode["present1"] = "present1";
-    ClockKeyDisplayMode["present2"] = "present2";
-    ClockKeyDisplayMode["present3"] = "present3";
-    ClockKeyDisplayMode["present4"] = "present4";
-    ClockKeyDisplayMode["present5"] = "present5";
-})(ClockKeyDisplayMode || (ClockKeyDisplayMode = {}));
 // #endregion
 // #region 'C' CONSTANTS DEFINITIONS ~
 const C = {
@@ -606,6 +621,7 @@ const C = {
         ddBLUE: "rgba(0, 77, 77, 1)"
     },
     ClockKeyPositions: {
+        elemSquareSize: 100,
         0: {
             keyDimensions: { width: 0, height: 0 },
             keyCenter: { x: 0, y: 0 },
@@ -614,12 +630,12 @@ const C = {
             clocks: {}
         },
         1: {
-            keyDimensions: { width: 202, height: 835 },
-            keyCenter: { x: 101, y: 417 },
-            clocksCenter: { x: 99, y: 59 },
-            clocksCenterDimensions: { width: 93, height: 93 },
+            keyDimensions: { width: 230, height: 836 },
+            keyCenter: { x: 115, y: 418 },
+            clocksCenter: { x: 111.011, y: 108.5 },
+            clocksCenterDimensions: { width: 169, height: 169 },
             clocks: {
-                0: { x: 99, y: 59 }
+                0: { x: 111.011, y: 108.5, size: 169 }
             }
         },
         2: {
@@ -628,8 +644,8 @@ const C = {
             clocksCenter: { x: 101, y: 189 },
             clocksCenterDimensions: { width: 110, height: 290 },
             clocks: {
-                0: { x: 101, y: 99 },
-                1: { x: 101, y: 279 }
+                0: { x: 101, y: 99, size: 108 },
+                1: { x: 101, y: 279, size: 108 }
             }
         },
         3: {
@@ -638,9 +654,9 @@ const C = {
             clocksCenter: { x: 140, y: 169 },
             clocksCenterDimensions: { width: 242, height: 222 },
             clocks: {
-                0: { x: 140, y: 99 },
-                1: { x: 74, y: 211 },
-                2: { x: 206, y: 211 }
+                0: { x: 140, y: 99, size: 108 },
+                1: { x: 74, y: 211, size: 108 },
+                2: { x: 206, y: 211, size: 108 }
             }
         },
         4: {
@@ -649,10 +665,10 @@ const C = {
             clocksCenter: { x: 188, y: 185 },
             clocksCenterDimensions: { width: 284, height: 284 },
             clocks: {
-                0: { x: 188, y: 99 },
-                1: { x: 101, y: 185 },
-                2: { x: 275, y: 185 },
-                3: { x: 188, y: 273 }
+                0: { x: 188, y: 99, size: 108 },
+                1: { x: 101, y: 185, size: 108 },
+                2: { x: 275, y: 185, size: 108 },
+                3: { x: 188, y: 273, size: 108 }
             }
         },
         5: {
@@ -661,11 +677,11 @@ const C = {
             clocksCenter: { x: 188, y: 185 },
             clocksCenterDimensions: { width: 284, height: 284 },
             clocks: {
-                0: { x: 188, y: 99 },
-                1: { x: 101, y: 185 },
-                2: { x: 275, y: 185 },
-                3: { x: 188, y: 273 },
-                4: { x: 188, y: 452 }
+                0: { x: 188, y: 99, size: 108 },
+                1: { x: 101, y: 185, size: 108 },
+                2: { x: 275, y: 185, size: 108 },
+                3: { x: 188, y: 273, size: 108 },
+                4: { x: 188, y: 452, size: 108 }
             }
         },
         6: {
@@ -674,12 +690,12 @@ const C = {
             clocksCenter: { x: 188, y: 185 },
             clocksCenterDimensions: { width: 284, height: 284 },
             clocks: {
-                0: { x: 188, y: 99 },
-                1: { x: 101, y: 185 },
-                2: { x: 275, y: 185 },
-                3: { x: 188, y: 273 },
-                4: { x: 188, y: 452 },
-                5: { x: 188, y: 683 }
+                0: { x: 188, y: 99, size: 108 },
+                1: { x: 101, y: 185, size: 108 },
+                2: { x: 275, y: 185, size: 108 },
+                3: { x: 188, y: 273, size: 108 },
+                4: { x: 188, y: 452, size: 108 },
+                5: { x: 188, y: 683, size: 108 }
             }
         }
     },

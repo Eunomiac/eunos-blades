@@ -137,7 +137,8 @@ class BladesActorSheet extends ActorSheet {
               );
               return item;
             })
-        }
+        },
+        projects: []
       };
     }
 

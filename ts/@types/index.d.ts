@@ -59,7 +59,8 @@ declare global {
       Director: BladesDirector,
       Tracker: BladesGMTracker,
       ClockKeys: Collection<BladesClockKey>,
-      Consequences: Collection<BladesConsequence>
+      Consequences: Collection<BladesConsequence>,
+      Tooltips: WeakMap<HTMLElement, gsap.core.Timeline>
     }
   }
 

@@ -295,97 +295,6 @@
     h2 {
       color: var(--blades-white-bright);
     }
-
-  //   &.tooltip-wide {
-  //     max-width: unset;
-  //     width: 600px;
-  //   }
-
-  //   &.tooltip-left {
-  //     // left: 200px;
-  //     // translate: 0px 50% !important;
-  //   }
-
-  //   &.tooltip-portrait {
-  //     // bottom: -45px;
-  //     // left: -200px;
-  //   }
-
-  //   &.tooltip-playbook {
-  //     // bottom: unset;
-  //     // top: 0px;
-  //     // left: -220px;
-  //   }
-
-  //   &.tooltip-trauma {
-  //     // left: -300px;
-  //   }
-
-  //   &.tooltip-dialog-selection {
-  //     // left: -300px;
-  //     // bottom: 75px;
-  //   }
-
-  //   &.tooltip-attribute {
-  //     // left: -110px;
-  //     // bottom: 10px;
-  //     // translate: 0% 50% !important;
-  //     > p { font-size: 16px; }
-
-  //   }
-
-  //   &.tooltip-action {
-  //     // left: unset;
-  //     // right: -100px;
-  //     // bottom: 0px;
-  //     max-width: 525px;
-  //     // translate: 0% 50% !important;
-
-  //     > p { font-size: 16px; }
-  //   }
-
-  //   &.tooltip-roll-mod {
-  //     // left: calc(50% + 350px);
-  //     // bottom: 20px;
-  //     max-width: 350px;
-  //     width: 350px;
-  //     min-width: 350px;
-  //     // translate: -50% 0% !important;
-  //     text-align: center;
-  //     hyphens: none;
-
-  //     > p:not(:last-of-type) { margin-bottom: 10px; }
-  //   }
-
-  //   &.tooltip-pos-effect-trade {
-  //     width: 330px;
-  //     max-width: 330px;
-  //     min-width: 330px;
-  //     // bottom: 5px;
-  //     // left: 0px;
-  //     font-family: var(--font-default);
-  //     font-size: toRem(14px);
-  //     text-transform: none;
-  //     text-align: center;
-  //   }
-
-  //   &.tooltip-roll-trait-pc {
-  //     // bottom: 100px;
-  //     table tbody tr {
-  //       &:nth-child(4n) {
-  //         border-bottom: 2px solid var(--blades-white);
-  //       }
-  //       td:nth-child(1) {
-  //         text-align: right;
-  //       }
-  //       td:nth-child(2) {
-  //         text-align: left;
-  //       }
-  //       td:nth-child(3) {
-  //         text-align: left;
-  //       }
-  //     }
-  //   }
   }
 
   .tooltip-scaling-elem {
@@ -603,11 +512,6 @@
               &:hover {overflow: visible}
             }
           }
-
-          // .tooltip.pc-summary-asset-tooltip {
-          //   font-size: 10px;
-          //   line-height: 10px;
-          // }
         }
       }
 

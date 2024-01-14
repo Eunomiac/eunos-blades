@@ -13,22 +13,6 @@ class BladesPCSheet extends BladesActorSheet {
             tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "abilities" }]
         });
     }
-    static Initialize() {
-        Actors.registerSheet("blades", BladesPCSheet, { types: ["pc"], makeDefault: true });
-        Hooks.on("dropActorSheetData", async (parentActor, _, { uuid }) => {
-            const doc = fromUuidSync(uuid);
-            if (doc instanceof BladesActor) {
-                if (parentActor.type === BladesActorType.crew && doc.type === BladesActorType.pc) {
-                    // Dropping a PC onto a Crew Sheet: Add Crew to PC
-                    doc.addSubActor(parentActor);
-                }
-                else if (parentActor.type === BladesActorType.pc && doc.type === BladesActorType.crew) {
-                    // Dropping a Crew onto a PC Sheet: Add
-                    parentActor.addSubActor(doc);
-                }
-            }
-        });
-    }
     getData() {
         const context = super.getData();
         const { activeSubItems, activeSubActors } = this.actor;
@@ -82,7 +66,9 @@ class BladesPCSheet extends BladesActorSheet {
                 }
                 return item;
             }),
-            playbook: this.actor.playbook
+            playbook: this.actor.playbook,
+            projects: activeSubItems.filter((item) => item.type === BladesItemType.project),
+            cohorts: context.preparedItems?.cohorts
         });
         sheetData.preparedActors = {
             crew: activeSubActors

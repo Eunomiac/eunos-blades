@@ -253,12 +253,10 @@
     </section>
   </div>
   <div class="roll-sheet-float-block roll-opp-bg-img">
-    {{#if rollOpposition}}
-      {{#if rollOpposition.rollOppClock}}
-      {{> "systems/eunos-blades/templates/components/clock.hbs" rollOpposition.rollOppClock isShowingControls=false }}
-      {{else}}
+    {{#if rollClockKey}}
+      {{> "systems/eunos-blades/templates/components/clock-key.hbs" rollClockKey}}
+    {{#elseif rollOpposition}}
       <img src="{{rollOpposition.rollOppImg}}" />
-      {{/if}}
     {{/if}}
   </div>
   <div class="roll-sheet-float-block roll-opp-bg-overlay">  </div>

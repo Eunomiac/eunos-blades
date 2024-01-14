@@ -13,6 +13,7 @@
         position: relative;
         width: var(--icon-size);
         height: var(--icon-size);
+        min-width: var(--icon-size);
         line-height: unset;
         margin: 0 calc(var(--icon-size) / 8);
         text-shadow:

@@ -3,6 +3,7 @@
 
 import {BladesActorType, Playbook, BladesItemType, Tag} from "../../core/constants";
 import {BladesActor, BladesPC, BladesNPC, BladesFaction} from "../BladesActorProxy";
+import BladesCrewSheet from "../../sheets/actor/BladesCrewSheet";
 import {BladesItem} from "../BladesItemProxy";
 import BladesRoll from "../../classes/BladesRoll";
 import {SelectionCategory} from "../../classes/BladesDialog";
@@ -11,6 +12,14 @@ import type {ActorDataConstructorData} from "@league-of-foundry-developers/found
 class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
   BladesRoll.PrimaryDocData,
   BladesRoll.ParticipantDocData {
+
+  // #region INITIALIZATION ~
+  static async Initialize() {
+    Object.assign(globalThis, {BladesCrew, BladesCrewSheet});
+    Actors.registerSheet("blades", BladesCrewSheet, {types: ["crew"], makeDefault: true});
+    return loadTemplates(["systems/eunos-blades/templates/crew-sheet.hbs"]);
+  }
+  // #endregion
 
   // #region Static Overrides: Create ~
   static override IsType<T extends BladesActorType = BladesActorType.crew>(doc: unknown): doc is BladesActorOfType<T> {

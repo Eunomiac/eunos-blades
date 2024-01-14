@@ -106,7 +106,8 @@ class BladesActorSheet extends ActorSheet {
                         });
                         return item;
                     })
-                }
+                },
+                projects: []
             };
         }
         // Prepare additional data for PC and Crew actors.

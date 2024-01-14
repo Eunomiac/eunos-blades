@@ -42,7 +42,8 @@ declare global {
           gang: BladesItemOfType<BladesItemType.cohort_gang>[],
           expert: BladesItemOfType<BladesItemType.cohort_expert>[]
         },
-        playbook?: BladesItemOfType<BladesItemType.playbook>
+        playbook?: BladesItemOfType<BladesItemType.playbook>,
+        projects: BladesItemOfType<BladesItemType.project>[]
       },
 
       preparedActors: {

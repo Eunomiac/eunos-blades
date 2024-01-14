@@ -157,24 +157,13 @@
             width: 15px;
             line-height: 23px;
             font-size: 18px;
-            // flex-grow: 0;
-            // font-size: 40px;
-            // line-height: 40px;
-            // padding: 0 5px;
-            // color: var(--blades-red);
             color: var(--blades-black-dark);
             font-family: var(--font-emphasis);
             text-shadow: none;
             text-align: center;
-            // text-indent: 10px;
             transition: 0.25s;
           }
           .harm-effect { display: none }
-          // .cohort-harm-tooltip {
-          //   padding: 0;
-          //   bottom: 22px;
-          //   > h2, p {padding: 0 10px; margin: 0}
-          // }
 
 
           &.harm-level-0 { display: none }
@@ -216,12 +205,6 @@
         svg.roll-button-icon {
           stroke-width: 20px;
         }
-        // .tooltip-cohort-roll {
-        //   padding: 0;
-        //   bottom: 23px;
-        //   > h2 { padding: 0 10px; margin: 0}
-        // }
-
         &[data-roll-label="Untrained"] {
           .roll-button-icon {
             fill: transparent;
@@ -250,58 +233,6 @@
     .cohort-flaws-edges {
       justify-content: flex-end;
       padding: 0 0 5px 0;
-
-      // .tooltip-trigger {
-      //   // z-index: 5 !important;
-      //   margin: -7px 3px -20px 0;
-
-      //   .tooltip-scaling-elem {
-      //     margin: 0 2px;
-      //     padding: 0 8px;
-      //     border-radius: 5px;
-      //     font-family: var(--font-emphasis);
-      //     color: var(--blades-white);
-      //     background: var(--blades-black-dark);
-      //     font-size: 10px;
-      //     text-transform: uppercase;
-      //     line-height: 12px;
-      //     // box-shadow: 3px 3px 5px var(--blades-black);
-
-      //     &.edge-name {
-      //       // background: var(--blades-green-dark);
-      //       outline: 1px inset #00FF00;
-      //     }
-      //     &.flaw-name {
-      //       // background: var(--blades-red-dark);
-      //       outline: 1px inset #FF0000;
-      //     }
-      //   }
-      // }
-      // .tooltip {
-      //   left: unset;
-      //   right: 200px;
-      //   bottom: 10px;
-
-      //   // &.tooltip-edge {
-      //   //   // background: var(--blades-green-dark-fade);
-      //   //   border-color: var(--blades-green-bright);
-      //   //   box-shadow:
-      //   //   inset 0 0 3px var(--blades-green-dark),
-      //   //   inset 0 0 5px var(--blades-green-dark),
-      //   //   inset 0 0 15px var(--blades-green-dark),
-      //   //   inset 0 0 15px var(--blades-green-dark);
-      //   // }
-
-      //   // &.tooltip-flaw {
-      //   //   // background: var(--blades-red-dark-fade);
-      //   //   border-color: var(--blades-red-bright);
-      //   //   box-shadow:
-      //   //     inset 0 0 3px var(--blades-red-dark),
-      //   //     inset 0 0 5px var(--blades-red-dark),
-      //   //     inset 0 0 15px var(--blades-red-dark),
-      //   //     inset 0 0 15px var(--blades-red-dark);
-      //   // }
-      // }
     }
 
     .filled-label {

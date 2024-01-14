@@ -1,4 +1,4 @@
-import { BladesItemType, Factor } from "../../core/constants.js";
+import { BladesItemType, ClockKeyDisplayMode, ClockColor, Factor } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import { BladesItem } from "../BladesItemProxy.js";
 import BladesClockKey from "../../classes/BladesClocks.js";
@@ -71,11 +71,29 @@ class BladesProject extends BladesItem {
     get rollOppImg() { return ""; }
     async _onCreate(...args) {
         await super._onCreate(...args);
-        await BladesClockKey.Create({
-            target: this,
-            targetKey: "system.clocksData",
-            isActive: true,
-            isVisible: true
+        Hooks.once("preUpdateItem", async (item) => {
+            if (item.id !== this.id) {
+                return;
+            }
+            await BladesClockKey.Create({
+                name: this.name,
+                target: this,
+                targetKey: "system.clocksData",
+                isNameVisible: false,
+                isSpotlit: false,
+                isVisible: false,
+                displayMode: ClockKeyDisplayMode.presentCurrentClock
+            }, [{
+                    name: "",
+                    index: 0,
+                    color: ClockColor.yellow,
+                    value: 0,
+                    max: 8,
+                    isVisible: true,
+                    isActive: true,
+                    isNameVisible: false,
+                    isHighlighted: false
+                }]);
         });
     }
     get keyElem() {

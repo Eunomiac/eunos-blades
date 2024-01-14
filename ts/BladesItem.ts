@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import C, {BladesItemType, Tag, Factor} from "./core/constants";
+import C, {BladesItemType, BladesNoticeType, Tag, Factor} from "./core/constants";
 import U from "./core/utilities";
 import {BladesActor, BladesCrew, BladesPC} from "./documents/BladesActorProxy";
 import BladesDirector from "./classes/BladesDirector";
@@ -243,12 +243,12 @@ class BladesItem extends Item implements BladesDocument<Item>,
         "They cannot do anything until they recover.",
         "You may replace them during Downtime."
       ];
-      BladesDirector.getInstance().push(
+      BladesDirector.getInstance().pushNotice_SocketCall(
         "ALL",
         {
           title: `${this.name} ${harmVerb[newHarm - 1]}`,
-          message: harmEffect[newHarm - 1],
-          type: "push",
+          body: harmEffect[newHarm - 1],
+          type: BladesNoticeType.push,
           cssClasses: "harm-alert"
         }
       );

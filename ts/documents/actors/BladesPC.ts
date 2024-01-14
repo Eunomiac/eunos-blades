@@ -1,6 +1,7 @@
-import C, {Playbook, ClockColor, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModType, RollModSection, RollModStatus} from "../../core/constants";
+import C, {Playbook, BladesNoticeType, ClockColor, AttributeTrait, ActionTrait, Harm, BladesActorType, BladesItemType, Tag, RollModType, RollModSection, RollModStatus} from "../../core/constants";
 import U from "../../core/utilities";
 import {BladesActor, BladesCrew} from "../BladesActorProxy";
+import BladesPCSheet from "../../sheets/actor/BladesPCSheet";
 import {BladesItem, BladesProject} from "../BladesItemProxy";
 import BladesRoll from "../../classes/BladesRoll";
 import BladesClockKey from "../../classes/BladesClocks";
@@ -11,6 +12,27 @@ import type {ActorDataConstructorData} from "@league-of-foundry-developers/found
 class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
                                               BladesRoll.PrimaryDocData,
                                               BladesRoll.ParticipantDocData {
+
+
+  // #region INITIALIZATION ~
+  static async Initialize() {
+    Object.assign(globalThis, {BladesPC, BladesPCSheet});
+    Actors.registerSheet("blades", BladesPCSheet, {types: ["pc"], makeDefault: true});
+    Hooks.on("dropActorSheetData", async (parentActor: BladesActor, _, {uuid}: {uuid: string}) => {
+      const doc = fromUuidSync(uuid);
+      if (doc instanceof BladesActor) {
+        if (parentActor.type === BladesActorType.crew && doc.type === BladesActorType.pc) {
+          // Dropping a PC onto a Crew Sheet: Add Crew to PC
+          doc.addSubActor(parentActor);
+        } else if (parentActor.type === BladesActorType.pc && doc.type === BladesActorType.crew) {
+          // Dropping a Crew onto a PC Sheet: Add
+          parentActor.addSubActor(doc);
+        }
+      }
+    });
+    return loadTemplates(["systems/eunos-blades/templates/actor-sheet.hbs"]);
+  }
+  // #endregion
 
   // #region Static Overrides: Create, get All ~
   static override IsType<T extends BladesActorType = BladesActorType.pc>(doc: unknown): doc is BladesActorOfType<T> {
@@ -465,12 +487,12 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   async applyHarm(num: harmLevel, name: string) {
     if (num === 4) {
-      BladesDirector.getInstance().push(
+      BladesDirector.getInstance().pushNotice_SocketCall(
         "ALL",
         {
           title: `${this.name} Suffers <u><strong>FATAL</strong></u> Harm: ${name}`,
-          message: `${this.name}, will you continue as a Ghost, or create a new character?`,
-          type: "push",
+          body: `${this.name}, will you continue as a Ghost, or create a new character?`,
+          type: BladesNoticeType.push,
           cssClasses: "harm-alert fatal-harm-alert"
         }
       );
@@ -490,11 +512,11 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       const [thisHarmLevel, thisHarmKey] = theseHarmKeys;
       const thisHarmVal = this.system.harm[thisHarmLevel][thisHarmKey];
       if (!thisHarmVal) {
-        BladesDirector.getInstance().push(
+        BladesDirector.getInstance().pushNotice_SocketCall(
           "ALL",
           {
             title: `${this.name} Suffers ${U.tCase(thisHarmLevel)} Harm: ${name}`,
-            type: "push",
+            type: BladesNoticeType.push,
             cssClasses: "harm-alert"
           });
         await this.update({[`system.harm.${thisHarmLevel}.${thisHarmKey}`]: name});
@@ -502,11 +524,12 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       }
     }
 
-    BladesDirector.getInstance().push(
+    BladesDirector.getInstance().pushNotice_SocketCall(
       "ALL",
       {
         title: `${this.name} Suffers a Catastrophic, Permanent Injury!`,
-        message: `${this.name}, you're out of the action - either left for dead, or otherwise dropped from the action. You can choose to return at the beginning of the next Phase with a permanent injury, or die.`,
+        body: `${this.name}, you're out of the action - either left for dead, or otherwise dropped from the action. You can choose to return at the beginning of the next Phase with a permanent injury, or die.`,
+        type: BladesNoticeType.push,
         cssClasses: "harm-alert fatal-harm-alert"
       }
     );

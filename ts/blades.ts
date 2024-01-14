@@ -53,6 +53,9 @@ let socket: Socket; // ~ SocketLib interface
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 
 class GlobalGetter {
+
+  get clockKeys() { return game.eunoblades.ClockKeys.filter((clockKey) => clockKey.isInScene() && clockKey.isVisible); }
+
   get roll() { return BladesRoll.Active; }
 
   get user() { return game.users.getName("Alistair"); }
@@ -525,8 +528,6 @@ class GlobalGetter {
     };
     BladesRoll.NewRoll(conf);
   }
-
-  get clockKeys() { return game.eunoblades.ClockKeeper?.clockKeys; }
 }
 
 
@@ -568,6 +569,8 @@ class GlobalGetter {
     BladesClockKeeper,
     BladesGMTracker,
     BladesLocation,
+    BladesProject,
+    BladesScore,
     BladesItemSheet,
     BladesClockKeeperSheet,
     BladesGMTrackerSheet,
@@ -583,9 +586,10 @@ class GlobalGetter {
 Hooks.once("init", async () => {
   // Initialize Game object
   game.eunoblades = {
-    ClockKeys: new Collection(),
-    Consequences: new Collection(),
-    Director: BladesDirector.getInstance()
+    ClockKeys: new Collection<BladesClockKey>(),
+    Consequences: new Collection<BladesConsequence>(),
+    Director: BladesDirector.getInstance(),
+    Tooltips: new WeakMap<HTMLElement, gsap.core.Timeline>()
   } as EunoBlades.Game;
 
   // Register System Settings
@@ -603,9 +607,6 @@ Hooks.once("init", async () => {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("blades", BladesCrewSheet, {types: ["crew"], makeDefault: true});
-  Actors.registerSheet("blades", BladesFactionSheet, {types: ["faction"], makeDefault: true});
-  Actors.registerSheet("blades", BladesNPCSheet, {types: ["npc"], makeDefault: true});
 
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("blades", BladesItemSheet, {types: C.ItemTypes, makeDefault: true});
@@ -615,7 +616,11 @@ Hooks.once("init", async () => {
 
   // Initialize preliminary classes with templates to load
   await Promise.all([
-    BladesPCSheet.Initialize(),
+    BladesPC.Initialize(),
+    BladesCrew.Initialize(),
+    BladesNPC.Initialize(),
+    BladesFaction.Initialize(),
+
     BladesActiveEffect.Initialize(),
     BladesGMTrackerSheet.Initialize(),
     BladesClockKeeperSheet.Initialize(),

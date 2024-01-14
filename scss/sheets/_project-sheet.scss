@@ -2,15 +2,26 @@
 
 .sheet-root {
   overflow: hidden;
-  .sheet-top {
-    .sheet-title {
+  min-height: 250px;
 
+  .sheet-top {
+    grid-template-areas: "title title .";
+    .sheet-title {
+      text-align: left;
     }
   }
 
   .split-panel {
     justify-content: stretch;
     align-items: stretch;
+
+    .gradient-background {
+      position: absolute;
+      height: 100%;
+      margin-top: calc(-1 * var(--sheet-top-height));
+      z-index: 1;
+      background: linear-gradient(to right, var(--blades-black), var(--blades-black) 60%, transparent 75%);
+    }
 
     .project-panel-left {
       max-width: 75%;
@@ -28,7 +39,9 @@
       flex-shrink: 0;
       overflow: visible;
       position: absolute;
-      z-index: 1;
+      perspective: 150px;
+      transform-style: preserve-3d;
+      z-index: 0;
       top: 0px;
       right: 0px;
       height: 100%;
@@ -37,6 +50,11 @@
         position: relative;
         height: 100%;
         width: 100%;
+
+        .clock-glow,
+        .key-label {
+          visibility: hidden;
+        }
       }
     }
 

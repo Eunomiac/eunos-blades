@@ -221,7 +221,7 @@ class BladesScoreSheet extends BladesItemSheet {
         await actor.update({ "system.gm_notes": updateText });
         eLog.checkLog3("scoreSheet", "Updated!", { gm_notes: actor.system.gm_notes });
     }
-    activateListeners(html) {
+    async activateListeners(html) {
         super.activateListeners(html);
         html.find("[data-action='select-image']").on({
             click: this._selectImage.bind(this),

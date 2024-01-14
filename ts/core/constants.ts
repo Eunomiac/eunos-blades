@@ -59,6 +59,33 @@ export enum ClockColor {
   cyan = "cyan"
 }
 
+export enum ClockDisplayContext {
+  overlay = "overlay",
+  pcSheet = "pcSheet",
+  factionSheet = "factionSheet",
+  projectSheet = "projectSheet",
+  scoreSheet = "scoreSheet",
+  rollCollab = "rollCollab",
+  chatMessage = "chatMessage"
+}
+
+export enum ClockKeyDisplayMode {
+  full = "full",
+  clocks = "clocks",
+  activeClocks = "activeClocks",
+  presentCurrentClock = "presentCurrentClock",
+  present0 = "present0",
+  present1 = "present1",
+  present2 = "present2",
+  present3 = "present3",
+  present4 = "present4",
+  present5 = "present5"
+}
+
+export enum BladesNoticeType {
+  push = "push"
+}
+
 export enum District {
   Barrowcleft = "Barrowcleft",
   Brightstone = "Brightstone",
@@ -385,18 +412,6 @@ export namespace Tag {
     Vehicle = "Vehicle"
   }
 }
-
-export enum ClockKeyDisplayMode {
-  full = "full",
-  clocks = "clocks",
-  activeClocks = "activeClocks",
-  present0 = "present0",
-  present1 = "present1",
-  present2 = "present2",
-  present3 = "present3",
-  present4 = "present4",
-  present5 = "present5"
-}
 // #endregion
 
 // #region 'C' CONSTANTS DEFINITIONS ~
@@ -594,6 +609,7 @@ const C = {
     ddBLUE: "rgba(0, 77, 77, 1)"
   },
   ClockKeyPositions: {
+    elemSquareSize: 100,
     0: {
       keyDimensions: {width: 0, height: 0},
       keyCenter: {x: 0, y: 0},
@@ -602,12 +618,12 @@ const C = {
       clocks: {}
     },
     1: {
-      keyDimensions: {width: 202, height: 835},
-      keyCenter: {x: 101, y: 417},
-      clocksCenter: {x: 99, y: 59},
-      clocksCenterDimensions: {width: 93, height: 93},
+      keyDimensions: {width: 230, height: 836},
+      keyCenter: {x: 115, y: 418},
+      clocksCenter: {x: 111.011, y: 108.5},
+      clocksCenterDimensions: {width: 169, height: 169},
       clocks: {
-        0: {x: 99, y: 59}
+        0: {x: 111.011, y: 108.5, size: 169}
       }
     },
     2: {
@@ -616,8 +632,8 @@ const C = {
       clocksCenter: {x: 101, y: 189},
       clocksCenterDimensions: {width: 110, height: 290},
       clocks: {
-        0: {x: 101, y: 99},
-        1: {x: 101, y: 279}
+        0: {x: 101, y: 99, size: 108},
+        1: {x: 101, y: 279, size: 108}
       }
     },
     3: {
@@ -626,9 +642,9 @@ const C = {
       clocksCenter: {x: 140, y: 169},
       clocksCenterDimensions: {width: 242, height: 222},
       clocks: {
-        0: {x: 140, y: 99},
-        1: {x: 74, y: 211},
-        2: {x: 206, y: 211}
+        0: {x: 140, y: 99, size: 108},
+        1: {x: 74, y: 211, size: 108},
+        2: {x: 206, y: 211, size: 108}
       }
     },
     4: {
@@ -637,10 +653,10 @@ const C = {
       clocksCenter: {x: 188, y: 185},
       clocksCenterDimensions: {width: 284, height: 284},
       clocks: {
-        0: {x: 188, y: 99},
-        1: {x: 101, y: 185},
-        2: {x: 275, y: 185},
-        3: {x: 188, y: 273}
+        0: {x: 188, y: 99, size: 108},
+        1: {x: 101, y: 185, size: 108},
+        2: {x: 275, y: 185, size: 108},
+        3: {x: 188, y: 273, size: 108}
       }
     },
     5: {
@@ -649,11 +665,11 @@ const C = {
       clocksCenter: {x: 188, y: 185},
       clocksCenterDimensions: {width: 284, height: 284},
       clocks: {
-        0: {x: 188, y: 99},
-        1: {x: 101, y: 185},
-        2: {x: 275, y: 185},
-        3: {x: 188, y: 273},
-        4: {x: 188, y: 452}
+        0: {x: 188, y: 99, size: 108},
+        1: {x: 101, y: 185, size: 108},
+        2: {x: 275, y: 185, size: 108},
+        3: {x: 188, y: 273, size: 108},
+        4: {x: 188, y: 452, size: 108}
       }
     },
     6: {
@@ -662,12 +678,12 @@ const C = {
       clocksCenter: {x: 188, y: 185},
       clocksCenterDimensions: {width: 284, height: 284},
       clocks: {
-        0: {x: 188, y: 99},
-        1: {x: 101, y: 185},
-        2: {x: 275, y: 185},
-        3: {x: 188, y: 273},
-        4: {x: 188, y: 452},
-        5: {x: 188, y: 683}
+        0: {x: 188, y: 99, size: 108},
+        1: {x: 101, y: 185, size: 108},
+        2: {x: 275, y: 185, size: 108},
+        3: {x: 188, y: 273, size: 108},
+        4: {x: 188, y: 452, size: 108},
+        5: {x: 188, y: 683, size: 108}
       }
     }
   },

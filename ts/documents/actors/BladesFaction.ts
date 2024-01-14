@@ -1,10 +1,19 @@
 import {BladesActorType} from "../../core/constants";
 import {BladesActor} from "../BladesActorProxy";
+import BladesFactionSheet from "../../sheets/actor/BladesFactionSheet";
 import BladesClockKey from "../../classes/BladesClocks";
 
 class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
                                                    BladesRoll.OppositionDocData {
 
+
+  // #region INITIALIZATION ~
+  static async Initialize() {
+    Object.assign(globalThis, {BladesFaction, BladesFactionSheet});
+    Actors.registerSheet("blades", BladesFactionSheet, {types: ["faction"], makeDefault: true});
+    return loadTemplates(["systems/eunos-blades/templates/faction-sheet.hbs"]);
+  }
+  // #endregion
 
   static override get All(): Collection<BladesFaction> {
     return new Collection<BladesFaction>(

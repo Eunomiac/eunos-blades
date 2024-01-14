@@ -1,7 +1,15 @@
 import { BladesActorType } from "../../core/constants.js";
 import { BladesActor } from "../BladesActorProxy.js";
+import BladesFactionSheet from "../../sheets/actor/BladesFactionSheet.js";
 import BladesClockKey from "../../classes/BladesClocks.js";
 class BladesFaction extends BladesActor {
+    // #region INITIALIZATION ~
+    static async Initialize() {
+        Object.assign(globalThis, { BladesFaction, BladesFactionSheet });
+        Actors.registerSheet("blades", BladesFactionSheet, { types: ["faction"], makeDefault: true });
+        return loadTemplates(["systems/eunos-blades/templates/faction-sheet.hbs"]);
+    }
+    // #endregion
     static get All() {
         return new Collection(super.GetTypeWithTags(BladesActorType.faction)
             .map((faction) => [faction.id, faction]));

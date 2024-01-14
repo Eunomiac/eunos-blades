@@ -44,18 +44,6 @@
       display: none !important;
     }
 
-    #eunos-blades-tooltips {
-      @import "./core/globals";
-      display: block;
-      pointer-events: none;
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      top: 0px;
-      left: 0px;
-      z-index: 150;
-    }
-
     #pause {
       img.fa-spin {
         top: unset;
@@ -274,6 +262,20 @@
 
           &.score-sheet {
             @import './sheets/score-sheet';
+            .clock-key {
+              background: rgba(0, 255, 255, 0.25);
+              outline: 2px dotted rgb(0, 255, 255);
+            }
+
+            .key-image-container {
+              background: rgba(255, 255, 0, 0.25);
+              outline: 2px dotted rgb(255, 255, 0);
+            }
+
+            .clock-key-container {
+              background: rgba(255, 0, 255, 0.25);
+              outline: 2px dotted rgb(255, 0, 255);
+            }
           }
 
           .window-content form {
@@ -303,6 +305,20 @@
         }
 
         &.roll-collab {
+        .clock-key {
+          background: rgba(0, 255, 255, 0.25);
+          outline: 2px dotted rgb(0, 255, 255);
+        }
+
+        .key-image-container {
+          background: rgba(255, 255, 0, 0.25);
+          outline: 2px dotted rgb(255, 255, 0);
+        }
+
+        .clock-key-container {
+          background: rgba(255, 0, 255, 0.25);
+          outline: 2px dotted rgb(255, 0, 255);
+        }
           @import './sheets/roll-collab-sheet'
         }
       }

@@ -4,7 +4,7 @@ import U from "../../core/utilities";
 import BladesItemSheet from "./BladesItemSheet";
 import BladesClockKeeper from "../../documents/items/BladesClockKeeper";
 // import U from "../../core/utilities";
-import {BladesItemType, ClockColor} from "../../core/constants";
+import {BladesItemType, ClockColor, ClockDisplayContext} from "../../core/constants";
 import {BladesPC, BladesFaction} from "../../documents/BladesActorProxy";
 import BladesClockKey, {BladesClock} from "../../classes/BladesClocks";
 
@@ -162,11 +162,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
             clockKey.updateTarget("isNameVisible", isNameVisible, true);
 
             // If clockKey is on display (in scene & visible), sent out animation socket calls
-            if (clockKey.isOnDisplay) {
+            if (clockKey.isInScene() && clockKey.isVisible) {
               if (isNameVisible) {
-                clockKey.fadeInName_SocketCall();
+                clockKey.fadeInName_SocketCall(ClockDisplayContext.overlay);
               } else {
-                clockKey.fadeOutName_SocketCall();
+                clockKey.fadeOutName_SocketCall(ClockDisplayContext.overlay);
               }
             }
 
@@ -192,11 +192,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
             clockKey.updateTarget("isSpotlit", isSpotlit, true);
 
             // If clockKey is on display (in scene & visible), sent out animation socket calls
-            if (clockKey.isOnDisplay) {
+            if (clockKey.isInScene() && clockKey.isVisible) {
               if (isSpotlit) {
-                // clockKey.unspotlight_SocketCall();
+                // clockKey.unspotlight_SocketCall(ClockDisplayContext.overlay);
               } else {
-                // clockKey.spotlight_SocketCall();
+                // clockKey.spotlight_SocketCall(ClockDisplayContext.overlay);
               }
             }
 
@@ -222,7 +222,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
             U.gsap.effects.keyControlPanelFlip(control$, {angle: 180});
             const clockKey = getClockKeyFromEvent(event);
             clockKey.updateTarget("isVisible", false, true);
-            clockKey.pull_SocketCall();
+            game.eunoblades.Director.pullKey_SocketCall(clockKey.id);
           }
         });
       });
@@ -239,7 +239,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
             U.gsap.effects.keyControlPanelFlip(control$, {angle: 0});
             const clockKey = getClockKeyFromEvent(event);
             clockKey.updateTarget("isVisible", true, true);
-            clockKey.drop_SocketCall();
+            game.eunoblades.Director.renderClockKey_SocketCall(clockKey.id);
           }
         });
       });
@@ -283,7 +283,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     clockKeyControls$.find("input.clock-key-input:not([readonly])").on({
       change: async (event: ChangeEvent) => {
         const input$ = $(event.currentTarget);
-        await getClockKeyFromEvent(event).updateTarget(input$.data("targetProp"), input$.val(), true);
+        const inputVal = input$.val();
+        if (typeof inputVal === "string") {
+          getClockKeyFromEvent(event).updateTarget(input$.data("targetProp"), inputVal, true);
+          clockKeyControls$.find("input.clock-key-input").val(inputVal);
+        }
       }
     });
     // #endregion
@@ -308,11 +312,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
             clock.updateTarget("isVisible", isVisible, true);
 
             // If clock key is on display (in scene & visible), sent out animation socket calls
-            if (clockKey.isOnDisplay) {
+            if (clockKey.isInScene() && clockKey.isVisible) {
               if (isVisible) {
-                clock.reveal_SocketCall();
+                clock.reveal_SocketCall(ClockDisplayContext.overlay);
               } else {
-                clock.hide_SocketCall();
+                clock.hide_SocketCall(ClockDisplayContext.overlay);
               }
             }
 
@@ -338,11 +342,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
             clock.updateTarget("isActive", isActive, true);
 
             // If clock AND clock key is on display (in scene & visible), sent out animation socket calls
-            if (clock.isOnDisplay) {
+            if (clock.parentKey.isInScene() && clock.parentKey.isVisible && clock.isVisible) {
               if (isActive) {
-                clock.activate_SocketCall();
+                clock.activate_SocketCall(ClockDisplayContext.overlay);
               } else {
-                clock.deactivate_SocketCall();
+                clock.deactivate_SocketCall(ClockDisplayContext.overlay);
               }
             }
 
@@ -369,11 +373,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
             clock.updateTarget("isNameVisible", isNameVisible, true);
 
             // If clock is on display (in scene & visible), sent out animation socket calls
-            if (clock.isOnDisplay) {
+            if (clock.parentKey.isInScene() && clock.parentKey.isVisible && clock.isVisible) {
               if (isNameVisible) {
-                clock.fadeInClockName_SocketCall();
+                clock.fadeInClockName_SocketCall(ClockDisplayContext.overlay);
               } else {
-                clock.fadeOutClockName_SocketCall();
+                clock.fadeOutClockName_SocketCall(ClockDisplayContext.overlay);
               }
             }
             // Toggle class names on icon
@@ -398,11 +402,11 @@ class BladesClockKeeperSheet extends BladesItemSheet {
             clock.updateTarget("isHighlighted", isHighlighted, true);
 
             // If clock is on display (in scene & visible), sent out animation socket calls
-            if (clock.isOnDisplay) {
+            if (clock.parentKey.isInScene() && clock.parentKey.isVisible && clock.isVisible) {
               if (isHighlighted) {
-                clock.highlight_SocketCall();
+                clock.highlight_SocketCall(ClockDisplayContext.overlay);
               } else {
-                clock.unhighlight_SocketCall();
+                clock.unhighlight_SocketCall(ClockDisplayContext.overlay);
               }
             }
             // Toggle class names on icon
@@ -417,21 +421,30 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     // #endregion
 
     // #region isOnDisplay === TRUE ~
-    clockControls$.find("[data-action=\"change-segments\"]").on({
-      click: async (event: ClickEvent) => {
-        event.preventDefault();
-        const [clockKey, clock] = getClockFromEvent(event);
-        const delta = U.pInt($(event.currentTarget).data("value"));
+    clockControls$.find("[data-action=\"change-segments\"]")
+      .each((i, elem) => {
+        const elem$ = $(elem as HTMLInputElement);
+        const control$ = elem$.closest(".clock-control-flipper");
+        elem$.on({
+          click: async (event: ClickEvent) => {
+            event.preventDefault();
+            const [clockKey, clock] = getClockFromEvent(event);
+            const delta = U.pInt($(event.currentTarget).data("value"));
+            const finalVal = U.gsap.utils.clamp(0, clock.max, clock.value + delta);
 
-        if (delta > 0) {
-          clock.fillSegments(delta, true);
-        } else {
-          clock.clearSegments(Math.abs(delta), true);
-        }
+            if (delta > 0) {
+              clock.fillSegments(delta, true);
+            } else {
+              clock.clearSegments(Math.abs(delta), true);
+            }
 
-        clock.changeSegments_SocketCall(clock.value, clock.value + delta);
-      }
-    });
+            control$.find("select.clock-select-value").val(finalVal);
+
+            clock.changeSegments_SocketCall(ClockDisplayContext.overlay, clock.value, finalVal);
+          }
+        });
+      });
+
     // #endregion
 
     // #region isOnDisplay === FALSE ~
@@ -458,12 +471,21 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         }
       });
 
-    clockControls$.find("input.clock-input:not([readonly])").on({
-      change: (event: ChangeEvent) => {
-        const input$ = $(event.currentTarget);
-        getClockFromEvent(event)[1].updateTarget(input$.data("targetProp"), input$.val(), true);
-      }
-    });
+    clockControls$.find("input.clock-input:not([readonly])")
+      .each((i, elem) => {
+        const elem$ = $(elem as HTMLInputElement);
+        const control$ = elem$.closest(".clock-control-flipper");
+        elem$.on({
+          change: (event: ChangeEvent) => {
+            const input$ = $(event.currentTarget);
+            const inputVal = input$.val();
+            if (typeof inputVal === "string") {
+              getClockFromEvent(event)[1].updateTarget(input$.data("targetProp"), inputVal, true);
+              control$.find("input.clock-input").val(inputVal);
+            }
+          }
+        });
+      });
 
     clockControls$.find("[data-action=\"delete-clock\"]").on({
       click: async (event: ClickEvent) => {

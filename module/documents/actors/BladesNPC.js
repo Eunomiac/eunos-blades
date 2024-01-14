@@ -1,6 +1,14 @@
 import { Factor } from "../../core/constants.js";
 import BladesActor from "../../BladesActor.js";
+import BladesNPCSheet from "../../sheets/actor/BladesNPCSheet.js";
 class BladesNPC extends BladesActor {
+    // #region INITIALIZATION ~
+    static async Initialize() {
+        Object.assign(globalThis, { BladesNPC, BladesNPCSheet });
+        Actors.registerSheet("blades", BladesNPCSheet, { types: ["npc"], makeDefault: true });
+        return loadTemplates(["systems/eunos-blades/templates/npc-sheet.hbs"]);
+    }
+    // #endregion
     // #region BladesRoll Implementation
     get rollFactors() {
         const factorData = super.rollFactors;

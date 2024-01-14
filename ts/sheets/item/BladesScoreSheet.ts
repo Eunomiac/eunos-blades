@@ -262,7 +262,7 @@ class BladesScoreSheet extends BladesItemSheet {
     eLog.checkLog3("scoreSheet", "Updated!", {gm_notes: actor.system.gm_notes});
   }
 
-  override activateListeners(html: JQuery<HTMLElement>) {
+  override async activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
 
     html.find("[data-action='select-image']").on({

@@ -1,11 +1,32 @@
-import C, { ClockColor, AttributeTrait, Harm, BladesActorType, BladesItemType, Tag, RollModType, RollModSection, RollModStatus } from "../../core/constants.js";
+import C, { BladesNoticeType, ClockColor, AttributeTrait, Harm, BladesActorType, BladesItemType, Tag, RollModType, RollModSection, RollModStatus } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import { BladesActor } from "../BladesActorProxy.js";
+import BladesPCSheet from "../../sheets/actor/BladesPCSheet.js";
 import { BladesItem } from "../BladesItemProxy.js";
 import BladesClockKey from "../../classes/BladesClocks.js";
 import BladesDirector from "../../classes/BladesDirector.js";
 import { SelectionCategory } from "../../classes/BladesDialog.js";
 class BladesPC extends BladesActor {
+    // #region INITIALIZATION ~
+    static async Initialize() {
+        Object.assign(globalThis, { BladesPC, BladesPCSheet });
+        Actors.registerSheet("blades", BladesPCSheet, { types: ["pc"], makeDefault: true });
+        Hooks.on("dropActorSheetData", async (parentActor, _, { uuid }) => {
+            const doc = fromUuidSync(uuid);
+            if (doc instanceof BladesActor) {
+                if (parentActor.type === BladesActorType.crew && doc.type === BladesActorType.pc) {
+                    // Dropping a PC onto a Crew Sheet: Add Crew to PC
+                    doc.addSubActor(parentActor);
+                }
+                else if (parentActor.type === BladesActorType.pc && doc.type === BladesActorType.crew) {
+                    // Dropping a Crew onto a PC Sheet: Add
+                    parentActor.addSubActor(doc);
+                }
+            }
+        });
+        return loadTemplates(["systems/eunos-blades/templates/actor-sheet.hbs"]);
+    }
+    // #endregion
     // #region Static Overrides: Create, get All ~
     static IsType(doc) {
         return super.IsType(doc, BladesActorType.pc);
@@ -440,10 +461,10 @@ class BladesPC extends BladesActor {
     }
     async applyHarm(num, name) {
         if (num === 4) {
-            BladesDirector.getInstance().push("ALL", {
+            BladesDirector.getInstance().pushNotice_SocketCall("ALL", {
                 title: `${this.name} Suffers <u><strong>FATAL</strong></u> Harm: ${name}`,
-                message: `${this.name}, will you continue as a Ghost, or create a new character?`,
-                type: "push",
+                body: `${this.name}, will you continue as a Ghost, or create a new character?`,
+                type: BladesNoticeType.push,
                 cssClasses: "harm-alert fatal-harm-alert"
             });
             return;
@@ -462,18 +483,19 @@ class BladesPC extends BladesActor {
             const [thisHarmLevel, thisHarmKey] = theseHarmKeys;
             const thisHarmVal = this.system.harm[thisHarmLevel][thisHarmKey];
             if (!thisHarmVal) {
-                BladesDirector.getInstance().push("ALL", {
+                BladesDirector.getInstance().pushNotice_SocketCall("ALL", {
                     title: `${this.name} Suffers ${U.tCase(thisHarmLevel)} Harm: ${name}`,
-                    type: "push",
+                    type: BladesNoticeType.push,
                     cssClasses: "harm-alert"
                 });
                 await this.update({ [`system.harm.${thisHarmLevel}.${thisHarmKey}`]: name });
                 return;
             }
         }
-        BladesDirector.getInstance().push("ALL", {
+        BladesDirector.getInstance().pushNotice_SocketCall("ALL", {
             title: `${this.name} Suffers a Catastrophic, Permanent Injury!`,
-            message: `${this.name}, you're out of the action - either left for dead, or otherwise dropped from the action. You can choose to return at the beginning of the next Phase with a permanent injury, or die.`,
+            body: `${this.name}, you're out of the action - either left for dead, or otherwise dropped from the action. You can choose to return at the beginning of the next Phase with a permanent injury, or die.`,
+            type: BladesNoticeType.push,
             cssClasses: "harm-alert fatal-harm-alert"
         });
     }

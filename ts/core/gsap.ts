@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "./utilities";
-import C from "./constants";
+import C, {ClockDisplayContext} from "./constants";
 import BladesClockKey, {BladesClock} from "../classes/BladesClocks";
 // eslint-disable-next-line import/no-unresolved
 import {TextPlugin, Flip, Draggable as Dragger, MotionPathPlugin, SplitText, Observer, CustomEase, CustomWiggle, CustomBounce, EasePack} from "gsap/all";
@@ -59,36 +59,6 @@ export const gsapEffects: Record<string, gsapEffect> = {
     },
     extendTimeline: true
   },
-  keySwing: {
-    effect: (clockKey, config) => {
-      const [keyContainer] = $(clockKey as HTMLElement).closest(".clock-key-container");
-
-      // Get initial scale,
-      const tl = U.gsap.timeline({id: "keySwing", repeat: -1, yoyo: true})
-        .fromTo(keyContainer, {
-          transformOrigin: "50% 10%",
-          rotateZ: -config.swingAngle
-        }, {
-          rotateZ: config.swingAngle,
-          ease: "sine.inOut",
-          duration: config.duration
-        });
-
-      // Assign the 'NEUTRAL' label to the midpoint of the timeline, when rotateZ is zero
-      tl.addLabel("NEUTRAL", config.duration / 2);
-
-      // Immediately move the timeline to the "NEUTRAL" label, so the timeline begins from there
-      tl.seek("NEUTRAL");
-
-      return tl;
-    },
-    defaults: {
-      swingAngle: 1,
-      ease: "sine.inOut",
-      duration: 3
-    },
-    extendTimeline: true
-  },
   keyPull: {
     effect: (clockKey, config) => {
       const [keyContainer] = $(clockKey as HTMLElement).closest(".clock-key-container");
@@ -120,14 +90,18 @@ export const gsapEffects: Record<string, gsapEffect> = {
   keyControlPanelFlip: {
     effect: (target, config) => {
       return U.gsap.timeline({
-        onComplete() {
+        delay: config.delay as number,
+        onStart() {
           if (target) {
             const target$ = $(target as HTMLElement);
             // Get the next sibling of the target element if it has the class "clock-control"
             const nextSibling$ = target$.next(".clock-control-flipper");
             // Check if the nextSibling element exists
             if (nextSibling$.length) {
-              U.gsap.effects.keyControlPanelFlip(nextSibling$[0], config);
+              U.gsap.effects.keyControlPanelFlip(nextSibling$[0], {
+                ...config,
+                delay: 0.15
+              });
             }
           }
         }
@@ -139,105 +113,10 @@ export const gsapEffects: Record<string, gsapEffect> = {
         });
     },
     defaults: {
-      angle: 180
+      angle: 180,
+      delay: 0
     },
     extendTimeline: true
-  },
-  hoverOverClockKey: {
-    effect: (clockKeyElem, config) => {
-      if (!clockKeyElem) {throw new Error("clockKeyElem is null or undefined");}
-      const clockKey = game.eunoblades.ClockKeys.get($(clockKeyElem as HTMLElement).attr("id") ?? "");
-      if (!clockKey) {throw new Error("clockKey is null or undefined");}
-      if (!clockKey.elem$) {throw new Error("clockKey.elem$ is null or undefined");}
-      if (!clockKey.containerElem$) {throw new Error("clockKey.containerElem$ is null or undefined");}
-      const clockKeyLabel$ = clockKey.elem$.find(".key-label");
-
-      // Construct master timeline,
-      const tl = U.gsap.timeline({paused: true});
-
-      // Create initial tween that resets keySwing to neutral
-      tl.add(clockKey.keySwingTimeline
-        .tweenTo("NEUTRAL", {
-          duration: 0.5 * config.duration,
-          ease: "none"
-        })
-      );
-
-      // Add a label for the proper start of the hover-over animation
-      tl.addLabel("hoverStart");
-
-      // Add an initial callback that resumes keySwing if the timeline hits this point while reversed
-      tl.add(() => {
-        if (tl.reversed()) {
-          // Immediately seek to the beginning, so keySwing is reset on another hover-over
-          tl.seek(0).pause();
-          clockKey.keySwingTimeline.seek("NEUTRAL").play();
-        }
-      });
-
-      // === HOVER-OVER ANIMATION ===
-      // Brighten & enlarge clockKey
-      tl.fromTo(clockKeyElem, {
-        filter: "brightness(1)"
-      }, {
-        filter: `brightness(${config.brightness})`,
-        scale: function(i, target) {
-          return (U.gsap.getProperty(target, "scale") as number) * config.scaleMult;
-        },
-        duration: 0.75 * config.duration
-      }, "hoverStart");
-
-      // Fade in name, if name isn't visible
-      if (clockKeyLabel$.css("opacity") === "0") {
-        tl.to(clockKeyLabel$, {
-          autoAlpha: 1,
-          duration: 0.5 * config.duration
-        }, "hoverStart");
-      }
-
-      // Fade in name, if name isn't visible
-      tl.blurReveal(clockKeyLabel$, {
-        ignoreMargin: true,
-        duration: 0.75 * config.duration
-      }, "hoverStart");
-
-      // Move into repeating jitter tween
-      // tl.textJitter(clockKeyLabel$);
-
-      return tl;
-    },
-    defaults: {
-      duration: 0.5,
-      brightness: 1.5,
-      scaleMult: 1.25
-    }
-  },
-  hoverOverClock: {
-    effect: (clock, config) => {
-      if (!(clock instanceof BladesClock)) {throw new Error("clock is not an instance of BladesClock");}
-      if (!clock.elem) {throw new Error("clock.elem is null or undefined");}
-
-      const [clockLabel] = $(clock.elem).find(".clock-label");
-      const [clockGlow] = $(clock.elem).find(".clock-glow");
-
-      return U.gsap.timeline({paused: true})
-        .fromTo(clock.elem, {filter: "brightness(1)"}, {
-          filter: "brightness(1.5)",
-          scale: 1.25,
-          duration: 0.25
-        })
-        .to(clockLabel, {
-          autoAlpha: 1,
-          duration: 0.25
-        }, 0)
-        .to(clockGlow, {
-          autoAlpha: 1,
-          duration: 0.25
-        }, 0);
-    },
-    defaults: {
-      duration: 0.5
-    }
   },
   // #endregion
 
@@ -907,9 +786,11 @@ export const gsapEffects: Record<string, gsapEffect> = {
   hoverTooltip: {
     effect: (tooltip, _config) => {
       const tooltipElem = $(tooltip as HTMLElement)[0];
-      const tooltipContainer = $(tooltipElem).parent()[0];
-      const overlayContainer = $("#eunos-blades-tooltips")[0];
-      const tl = U.gsap.timeline({
+      const tooltipContainer$ = $(tooltipElem).parent();
+      const tooltipContainer = tooltipContainer$[0];
+      const overlayContainer = game.eunoblades.Director.tooltipSection$[0];
+
+      return U.gsap.timeline({
         paused: true,
         onStart() {
           U.changeContainer(tooltipElem, overlayContainer);
@@ -917,46 +798,26 @@ export const gsapEffects: Record<string, gsapEffect> = {
         onReverseComplete() {
           U.changeContainer(tooltipElem, tooltipContainer);
         }
-      });
-
-      if (tooltip) {
-        tl.fromTo(
-          tooltipElem,
-          {
-            filter: "blur(15px)",
-            autoAlpha: 0,
-            xPercent: 50,
-            yPercent: -100,
-            scale: 1.5
-          },
-          {
-            filter: "blur(0px)",
-            autoAlpha: 1,
-            scale: 1,
-            xPercent: -50,
-            yPercent: -100,
-            duration: 0.25,
-            ease: "back.out"
-          },
-          0
-        );
-      }
-      // if (config.scalingElems.length > 0) {
-      //   tl.to(
-      //     config.scalingElems,
-      //     {
-      //       scale: "+=0.2",
-      //       filter: "none",
-      //       color: C.Colors.WHITE,
-      //       opacity: 1,
-      //       duration: 0.125,
-      //       ease: "back"
-      //     },
-      //     0
-      //   );
-      // }
-
-      return tl;
+      }).fromTo(
+        tooltipElem,
+        {
+          filter: "blur(15px)",
+          autoAlpha: 0,
+          xPercent: 50,
+          yPercent: -100,
+          scale: 1.5
+        },
+        {
+          filter: "blur(0px)",
+          autoAlpha: 1,
+          scale: 1,
+          xPercent: -50,
+          yPercent: -100,
+          duration: 0.25,
+          ease: "back.out"
+        },
+        0
+      );
     },
     defaults: {
       tooltipScale: 0.75
@@ -1048,10 +909,6 @@ export function Initialize() {
  * @param {JQuery<HTMLElement>} html The document to be searched.
  */
 export function ApplyTooltipAnimations(html: JQuery<HTMLElement>) {
-  // Check for existence of #eunos-blades-tooltips overlay: If not present, create it.
-  if (!$("#eunos-blades-tooltips")[0]) {
-    $("<div id='eunos-blades-tooltips'></div>").appendTo("body");
-  }
 
   html.find(".tooltip-trigger").each((_, el) => {
     const tooltipElem = $(el).find(".tooltip")[0] ?? $(el).next(".tooltip")[0];
@@ -1063,7 +920,8 @@ export function ApplyTooltipAnimations(html: JQuery<HTMLElement>) {
       $(tooltipContainer).css("position", "relative");
     }
 
-    $(el).data("hoverTimeline", U.gsap.effects.hoverTooltip(
+    // Register the tooltip timeline in the global map, so it can be reversed even if containing document is closed or re-rendered.
+    game.eunoblades.Tooltips.set(tooltipElem, U.gsap.effects.hoverTooltip(
       tooltipElem,
       {
         scalingElems: [...$(el).find(".tooltip-scaling-elem")].filter((elem) => Boolean(elem)),
@@ -1071,12 +929,14 @@ export function ApplyTooltipAnimations(html: JQuery<HTMLElement>) {
         tooltipScale: $(tooltipElem).hasClass("tooltip-small") ? 1 : 1.2
       }
     ));
+
+    $(el).data("hoverTimeline", () => game.eunoblades.Tooltips.get(tooltipElem) as gsap.core.Timeline);
     $(el).on({
       mouseenter: function() {
-        $(el).data("hoverTimeline").play();
+        $(el).data("hoverTimeline")().play();
       },
       mouseleave: function() {
-        $(el).data("hoverTimeline").reverse();
+        $(el).data("hoverTimeline")().reverse();
       }
     });
   });

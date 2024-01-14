@@ -1,4 +1,4 @@
-import {BladesItemType, Factor} from "../../core/constants";
+import {BladesItemType, ClockKeyDisplayMode, ClockColor, Factor} from "../../core/constants";
 import U from "../../core/utilities";
 import {BladesItem} from "../BladesItemProxy";
 import BladesClockKey from "../../classes/BladesClocks";
@@ -83,12 +83,29 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
 
   override async _onCreate(...args: Parameters<BladesItem["_onCreate"]>) {
     await super._onCreate(...args);
-    await BladesClockKey.Create({
-      target: this,
-      targetKey: "system.clocksData" as TargetKey,
-      isActive: true,
-      isVisible: true
+    Hooks.once("preUpdateItem", async (item: BladesItem): Promise<void> => {
+      if (item.id !== this.id) { return; }
+      await BladesClockKey.Create({
+        name: this.name,
+        target: this,
+        targetKey: "system.clocksData" as TargetKey,
+        isNameVisible: false,
+        isSpotlit: false,
+        isVisible: false,
+        displayMode: ClockKeyDisplayMode.presentCurrentClock
+      }, [{
+        name: "",
+        index: 0,
+        color: ClockColor.yellow,
+        value: 0,
+        max: 8,
+        isVisible: true,
+        isActive: true,
+        isNameVisible: false,
+        isHighlighted: false
+      }]);
     });
+
   }
 
   get keyElem(): HTMLElement|undefined {

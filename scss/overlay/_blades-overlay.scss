@@ -7,7 +7,7 @@
     height: 100%;
     width: 100%;
     pointer-events: none;
-    z-index: 50;
+    z-index: 150;
     perspective: 500px;
     transform-style: preserve-3d;
   }
@@ -33,7 +33,6 @@
   }
 
   /* VISIBILITY HIDDEN FOR ANIMATED COMPONENTS */
-  .clock-key-container,
   .key-label,
   .clock-frame,
   .clock-glow,

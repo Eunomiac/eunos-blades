@@ -1,11 +1,20 @@
 import {BladesActorType, Factor} from "../../core/constants";
 import BladesActor from "../../BladesActor";
+import BladesNPCSheet from "../../sheets/actor/BladesNPCSheet";
 import BladesRoll from "../../classes/BladesRoll";
 
 class BladesNPC extends BladesActor implements BladesActorSubClass.NPC,
                                                BladesRoll.OppositionDocData,
                                                BladesRoll.ParticipantDocData {
 
+
+  // #region INITIALIZATION ~
+  static async Initialize() {
+    Object.assign(globalThis, {BladesNPC, BladesNPCSheet});
+    Actors.registerSheet("blades", BladesNPCSheet, {types: ["npc"], makeDefault: true});
+    return loadTemplates(["systems/eunos-blades/templates/npc-sheet.hbs"]);
+  }
+  // #endregion
 
   // #region BladesRoll Implementation
 

@@ -238,7 +238,7 @@
             </td>
             <td class="harm-effect">{{{system.harm.moderate.effect}}}</td>
           </tr>
-          <tr>
+          <tr {{~#if (test actor.harmLevel ">=" 1)}} class="red-harm-highlight-1"{{/if}}>
             <td class="harm-level">1</td>
             <td class="harm-input">
               <input type="text" name="system.harm.lesser.one" value="{{system.harm.lesser.one}}">
@@ -265,6 +265,7 @@
           {{#if (test (test (count preparedItems.cohorts.gang) ">" 0) "||" (test (count preparedItems.cohorts.expert) ">" 0))}}
           <a class="tab-selector" data-tab="cohorts">Cohorts</a>
           {{/if}}
+          <a class="tab-selector" data-tab="projects">Projects</a>
           <a class="tab-selector" data-tab="player-notes">{{localize "BITD.Notes"}}</a>
           {{#if isGM}}
           <a class="tab-selector" data-tab="gm-notes">GM Notes</a>
@@ -379,6 +380,24 @@
           {{/each}}
           {{#each preparedItems.cohorts.expert}}
           {{> "systems/eunos-blades/templates/parts/cohort-block.hbs" }}
+          {{/each}}
+        </div>
+
+        {{!-- Projects Tab --}}
+        <div class="tab projects flex-vertical" data-tab="projects">
+          <label class="comp tab-label" data-comp-cat="Project" data-comp-type="Item">
+            <a class="comp-control comp-button comp-add">
+              <i class="fa-sharp fa-solid fa-square-plus"></i>
+            </a>
+            <span class="tab-title">Projects</span>
+          </label>
+          {{#each preparedItems.projects as |item|}}
+          {{> "systems/eunos-blades/templates/components/comp.hbs" item
+          id=item.id
+          class="comp-desc-trait comp-horizontal full-width"
+          docType="Item"
+          remButton=true
+          }}
           {{/each}}
         </div>
 

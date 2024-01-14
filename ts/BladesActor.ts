@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // #region Imports ~
 import U from "./core/utilities";
-import C, {BladesActorType, Tag, Playbook, BladesItemType, AttributeTrait, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor, Vice} from "./core/constants";
+import C, {BladesActorType, Tag, Playbook, BladesNoticeType, BladesItemType, AttributeTrait, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor, Vice} from "./core/constants";
 
 import {BladesPC, BladesCrew, BladesFaction, BladesNPC} from "./documents/BladesActorProxy";
 import {BladesItem} from "./documents/BladesItemProxy";
@@ -733,38 +733,38 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     if (!BladesActor.IsType(this, BladesActorType.pc, BladesActorType.crew) || !this.playbook) { return; }
     await this.update({"system.experience.playbook.value": 0});
     if (this instanceof BladesPC) {
-      BladesDirector.getInstance().push(
+      BladesDirector.getInstance().pushNotice_SocketCall(
         "ALL",
         {
           title: `${this.name} Advances their Playbook!`,
-          message: `${this.name}, select a new Ability on your Character Sheet.`,
-          type: "push",
-          classNames: "advancement-alert"
+          body: `${this.name}, select a new Ability on your Character Sheet.`,
+          type: BladesNoticeType.push,
+          cssClasses: "advancement-alert"
         }
       );
       this.grantAdvancementPoints(AdvancementPoint.Ability);
       return;
     }
     if (this instanceof BladesCrew) {
-      BladesDirector.getInstance().push(
+      BladesDirector.getInstance().pushNotice_SocketCall(
         "ALL",
         {
           title: "You Advance your Crew Playbook!",
-          message: "Select new Upgrades and/or Abilities on your Crew Sheet.",
-          type: "push",
-          classNames: "advancement-alert crew-advancement-alert"
+          body: "Select new Upgrades and/or Abilities on your Crew Sheet.",
+          type: BladesNoticeType.push,
+          cssClasses: "advancement-alert crew-advancement-alert"
         }
       );
       const coinGained = this.system.tier.value + 2;
       this.members.forEach((member) => {
         if (member.primaryUser?.id) {
-          BladesDirector.getInstance().push(
+          BladesDirector.getInstance().pushNotice_SocketCall(
             member.primaryUser?.id,
             {
               title: "Your Stash Increases! <em>(Crew Advancement)</em>",
-              message: `You gain ${coinGained} Stash from Crew Advancement.`,
-              type: "push",
-              classNames: "stash-alert"
+              type: BladesNoticeType.push,
+              body: `You gain ${coinGained} Stash from Crew Advancement.`,
+              cssClasses: "stash-alert"
             }
           );
           member.addStash(coinGained);
@@ -779,13 +779,13 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     if (!this.primaryUser?.id) { return; }
     await this.update({[`system.experience.${attribute}.value`]: 0});
     const actions = C.Action[attribute].map((action) => `<strong>${U.tCase(action)}</strong>`);
-    BladesDirector.getInstance().push(
+    BladesDirector.getInstance().pushNotice_SocketCall(
       this.primaryUser.id,
       {
         title: `${this.name} Advances their ${U.uCase(attribute)}!`,
-        message: `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`,
-        type: "push",
-        classNames: "advancement-alert"
+        body: `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`,
+        type: BladesNoticeType.push,
+        cssClasses: "advancement-alert"
       }
     );
   }

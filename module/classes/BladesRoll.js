@@ -3,7 +3,7 @@
 import U from "../core/utilities.js";
 import C, { BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag } from "../core/constants.js";
 import { BladesActor, BladesPC, BladesCrew } from "../documents/BladesActorProxy.js";
-import { BladesItem, BladesGMTracker } from "../documents/BladesItemProxy.js";
+import { BladesItem, BladesGMTracker, BladesProject } from "../documents/BladesItemProxy.js";
 import { ApplyTooltipAnimations, ApplyConsequenceAnimations } from "../core/gsap.js";
 import BladesConsequence from "./BladesConsequence.js";
 import BladesDialog from "./BladesDialog.js";
@@ -957,15 +957,7 @@ class BladesRollOpposition {
         return false;
     }
     static IsDoc(doc) {
-        return BladesActor.IsType(doc, BladesActorType.npc, BladesActorType.faction)
-            || BladesItem.IsType(doc, ...[
-                BladesItemType.cohort_expert,
-                BladesItemType.cohort_gang,
-                BladesItemType.gm_tracker,
-                BladesItemType.project,
-                BladesItemType.design,
-                BladesItemType.ritual
-            ]);
+        return BladesActor.IsType(doc, BladesActorType.npc, BladesActorType.faction) || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang);
     }
     // #endregion
     rollInstance;
@@ -1971,6 +1963,14 @@ class BladesRoll extends DocumentSheet {
         return this.flagData.rollClockKeyID
             ? game.eunoblades.ClockKeys.get(this.flagData.rollClockKeyID)
             : undefined;
+    }
+    set rollClockKey(val) {
+        if (val) {
+            this.setFlagVal("rollClockKeyID", val.id);
+        }
+        else {
+            this.clearFlagVal("rollClockKeyID");
+        }
     }
     /**
      * This method prepares the roll participant data.
@@ -3813,11 +3813,14 @@ class BladesRoll extends DocumentSheet {
         return game.user.isGM;
     }
     _onDrop(event) {
-        const { type, uuid } = TextEditor.getDragEventData(event);
-        const [id] = (new RegExp(`${type}\\.(.+)`).exec(uuid) ?? []).slice(1);
-        const oppDoc = game[`${U.lCase(type)}s`].get(id);
-        if (BladesRollOpposition.IsDoc(oppDoc)) {
-            this.rollOpposition = new BladesRollOpposition(this, { rollOppDoc: oppDoc });
+        const { uuid } = TextEditor.getDragEventData(event);
+        const dropDoc = fromUuidSync(uuid);
+        if (BladesRollOpposition.IsDoc(dropDoc)) {
+            this.rollOpposition = new BladesRollOpposition(this, { rollOppDoc: dropDoc });
+        }
+        else if (dropDoc instanceof BladesProject && dropDoc.clockKey) {
+            // Project dropped on roll: Assign project's clock key to roll.
+            this.rollClockKey = dropDoc.clockKey;
         }
     }
     async _onSubmit(event, { updateData } = {}) {

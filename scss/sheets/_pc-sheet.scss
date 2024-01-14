@@ -190,11 +190,11 @@
 
                 &.red-harm-highlight-3 { --row-bg-color: var(--blades-red-bright); }
                 &.red-harm-highlight-2 { --row-bg-color: var(--blades-red); }
-                &.red-harm-highlight-1 { --row-bg-color: var(--blades-red-dark); }
+                &.red-harm-highlight-1 { --row-bg-color: var(--blades-red-darkest); }
 
                 .healing-clock {
 
-                  .clock-key-controls, .clock-controls {
+                  .clock-key-controls, .clock-controls, .clock-cover {
                     display: none !important;
                   }
                   .clock-key-container {
@@ -523,7 +523,6 @@
               height: 20px;
               width: 20px;
               position: absolute;
-              // right: 0;
               bottom: 0;
               .comp-body {
                 height: 100%;
@@ -533,9 +532,6 @@
                   height: 100%;
                 }
               }
-              // .tooltip {
-              //   left: -550px;
-              // }
             }
           }
         }

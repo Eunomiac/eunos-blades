@@ -347,11 +347,20 @@ class BladesItemSheet extends ItemSheet {
             });
         });
     }
-    activateListeners(html) {
-        super.activateListeners(html);
+    async activateListeners(html) {
+        await super.activateListeners(html);
         const self = this;
         Tags.InitListeners(html, this.item);
         ApplyTooltipAnimations(html);
+        // If this sheet is for a document with a clock key, render it.
+        if (BladesProject.IsType(this.document)) {
+            const { clockKey } = this.document;
+            const clockKeyWrapper$ = html.find(".clock-key-panel");
+            if (clockKey) {
+                await clockKey.renderTo(clockKeyWrapper$);
+                clockKey.initProjectSheetElement(clockKey.getElements$(clockKeyWrapper$));
+            }
+        }
         // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) {
             return;
