@@ -116,10 +116,15 @@ class BladesProjectSheet extends BladesItemSheet {
                 eLog.checkLog3("BladesProject", "Clock Name Change", { action, value: $(event.currentTarget).val() });
                 if (action === "presented-clock-name" && this.presentedClock) {
                     this.presentedClock.updateTarget("name", $(event.currentTarget).val());
+                    keyElems$.clocks[this.presentedClock.id].clockLabel$
+                        .text($(event.currentTarget).val());
                 }
                 else if (action === "current-clock-name") {
                     this.document.clockKey.currentClock.updateTarget("name", $(event.currentTarget).val());
+                    keyElems$.clocks[this.document.clockKey.currentClock.id].clockLabel$
+                        .text($(event.currentTarget).val());
                 }
+                clockKey.formatLabels(keyElems$);
             }
         });
         // Initialize clock key elements
