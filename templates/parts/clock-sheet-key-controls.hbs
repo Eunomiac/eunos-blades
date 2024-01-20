@@ -1,7 +1,10 @@
-<div class="control-flipper clock-key-control-flipper {{~#unless (test clockKey.isVisible "&&" clockKey.isInCurrentScene)}} controls-flipped{{/unless}}" data-clock-key-id="{{clockKey.id}}">
+{{#if (test clockKey.isVisible "&&" clockKey.isInCurrentScene)}}
+<div class="control-flipper clock-key-control-flipper" data-clock-key-id="{{clockKey.id}}" style="translate: none; rotate: none; scale: none; transform: translate(0px 0px);">
+{{else}}
+<div class="control-flipper clock-key-control-flipper controls-flipped" data-clock-key-id="{{clockKey.id}}" style="translate: none; rotate: none; scale: none; transform: rotateX(180deg);">
+{{/if}}
 
-
-  <div class="clock-key-control-panel controls-front">
+  <div class="clock-key-control-panel controls-front" style="translate: none; rotate: none; scale: none; opacity: 1; visibility: inherit; transform: translate3d(0px, 0px, 2px);">
     {{!-- Pull Key Animation --}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"
       blockClass="clock-control-button clock-control-pull-key"
@@ -33,7 +36,7 @@
     />
   </div>
 
-  <div class="clock-key-control-panel controls-back">
+  <div class="clock-key-control-panel controls-back" style="translate: none; rotate: none; scale: none; opacity: 1; visibility: inherit; transform: translate3d(0px, 0px, -2px) rotateX(180deg);">
     {{#if isSceneTab}}
     {{!-- Drop Key --}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"

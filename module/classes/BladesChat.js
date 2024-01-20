@@ -24,10 +24,19 @@ class BladesChat extends ChatMessage {
             // }
         });
         return loadTemplates([
-            "systems/eunos-blades/templates/chat/roll-result-action-roll.hbs",
-            "systems/eunos-blades/templates/chat/roll-result-resistance-roll.hbs",
-            "systems/eunos-blades/templates/chat/roll-result-fortune-roll.hbs",
-            "systems/eunos-blades/templates/chat/roll-result-indulgevice-roll.hbs"
+            "systems/eunos-blades/templates/chat/roll-result/action.hbs",
+            "systems/eunos-blades/templates/chat/roll-result/action-clock.hbs",
+            "systems/eunos-blades/templates/chat/roll-result/action-acquireasset.hbs",
+            "systems/eunos-blades/templates/chat/roll-result/action-reduceheat.hbs",
+            "systems/eunos-blades/templates/chat/roll-result/action-clock-recover.hbs",
+            "systems/eunos-blades/templates/chat/roll-result/action-gatherinfo.hbs",
+            "systems/eunos-blades/templates/chat/roll-result/fortune.hbs",
+            "systems/eunos-blades/templates/chat/roll-result/fortune-clock.hbs",
+            "systems/eunos-blades/templates/chat/roll-result/fortune-gatherinfo.hbs",
+            "systems/eunos-blades/templates/chat/roll-result/fortune-incarceration.hbs",
+            "systems/eunos-blades/templates/chat/roll-result/fortune-engagement.hbs",
+            "systems/eunos-blades/templates/chat/roll-result/indulgevice.hbs",
+            "systems/eunos-blades/templates/chat/roll-result/resistance.hbs"
         ]);
     }
     static async ConstructRollOutput(rollInst) {
@@ -47,9 +56,6 @@ class BladesChat extends ChatMessage {
     set rollInst(rollInst) { this._rollInst = rollInst; }
     get elem() { return $("#chat-log").find(`.chat-message[data-message-id="${this.id}"]`)[0]; }
     get isRollResult() { return this.type === CONST.CHAT_MESSAGE_TYPES.ROLL; }
-    constructor(data) {
-        super(data);
-    }
     async reRender(html) {
         this.update({ content: html });
     }

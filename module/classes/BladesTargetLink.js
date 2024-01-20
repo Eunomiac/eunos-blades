@@ -116,7 +116,8 @@ class BladesTargetLink {
     get linkData() {
         let linkData;
         if (this.targetFlagKeyPrefix) {
-            linkData = this.target.getFlag("eunos-blades", this.targetFlagKeyPrefix) ?? undefined;
+            linkData = this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix)
+                ?? undefined;
         }
         else if (this.targetKeyPrefix) {
             linkData = getProperty(this.target, this.targetKeyPrefix);
@@ -152,17 +153,17 @@ class BladesTargetLink {
     // #endregion
     // #region ASYNC UPDATE & DELETE METHODS ~
     async updateTarget(prop, val, isSilent = false) {
-        if (this.targetFlagKeyPrefix) {
-            await this.target.setFlag("eunos-blades", `${this.targetFlagKeyPrefix}.${prop}`, val);
+        if (this.targetFlagKeyPrefix && this.target.getFlag(C.SYSTEM_ID, `${this.targetFlagKeyPrefix}.${prop}`) !== val) {
+            await this.target.setFlag(C.SYSTEM_ID, `${this.targetFlagKeyPrefix}.${prop}`, val);
         }
-        else if (this.targetKeyPrefix) {
-            await this.target.update({ [`${this.targetKeyPrefix}.${prop}`]: val }, { render: !isSilent });
+        else if (this.targetKeyPrefix && this.target[`${this.targetKeyPrefix}.${prop}`] !== val) {
+            await this.target.update({ [`${this.targetKeyPrefix}.${prop}`]: val }, { render: false });
         }
     }
     async updateTargetData(val, isSilent = false) {
         if (val === null) {
             if (this.targetFlagKeyPrefix) {
-                await this.target.unsetFlag("eunos-blades", `${this.targetFlagKeyPrefix}`);
+                await this.target.unsetFlag(C.SYSTEM_ID, `${this.targetFlagKeyPrefix}`);
             }
             else {
                 await this.target.update({ [`${this.targetKey}.-=${this.id}`]: null });
@@ -179,7 +180,7 @@ class BladesTargetLink {
             };
             // Update target
             if (this.targetFlagKeyPrefix) {
-                await this.target.setFlag("eunos-blades", this.targetFlagKeyPrefix, linkData);
+                await this.target.setFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix, linkData);
             }
             else if (this.targetKeyPrefix) {
                 await this.target.update({ [this.targetKeyPrefix]: linkData }, { render: !isSilent });

@@ -2,7 +2,6 @@ import C, { BladesItemType, BladesPhase, Factor } from "../../core/constants.js"
 import U from "../../core/utilities.js";
 import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
 import BladesItem from "../../BladesItem.js";
-import { BladesProject } from "../../documents/BladesItemProxy.js";
 import BladesActiveEffect from "../../documents/BladesActiveEffect.js";
 // import {ApplyClockListeners} from "../../classes/BladesClocks.js";
 import Tags from "../../core/tags.js";
@@ -33,7 +32,14 @@ class BladesItemSheet extends ItemSheet {
             tierTotal: this.item.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(this.item.getFactorTotal(Factor.tier)) : "0",
             activeEffects: Array.from(this.item.effects)
         };
-        return this._getTypedItemData[this.item.type]({ ...context, ...sheetData });
+        const typedItemData = this._getTypedItemData[this.item.type];
+        if (typedItemData) {
+            return typedItemData({ ...context, ...sheetData });
+        }
+        return {
+            ...context,
+            ...sheetData
+        };
     }
     _getTypedItemData = {
         [BladesItemType.ability]: (context) => {
@@ -99,7 +105,13 @@ class BladesItemSheet extends ItemSheet {
                 ...sheetData
             };
         },
-        [BladesItemType.cohort_expert]: (context) => this._getTypedItemData[BladesItemType.cohort_gang](context),
+        [BladesItemType.cohort_expert]: (context) => {
+            const typedItemData = this._getTypedItemData[BladesItemType.cohort_gang];
+            if (!typedItemData) {
+                throw new Error(`No data for type ${this.item.type}`);
+            }
+            return typedItemData(context);
+        },
         [BladesItemType.crew_ability]: (context) => {
             if (!BladesItem.IsType(this.item, BladesItemType.crew_ability)) {
                 return undefined;
@@ -242,16 +254,6 @@ class BladesItemSheet extends ItemSheet {
         },
         [BladesItemType.vice]: (context) => {
             if (!BladesItem.IsType(this.item, BladesItemType.vice)) {
-                return undefined;
-            }
-            const sheetData = {};
-            return {
-                ...context,
-                ...sheetData
-            };
-        },
-        [BladesItemType.project]: (context) => {
-            if (!(this.item instanceof BladesProject)) {
                 return undefined;
             }
             const sheetData = {};

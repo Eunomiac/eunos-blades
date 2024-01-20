@@ -1,4 +1,4 @@
-import { BladesItemType, Factor, ClockColor } from "../../core/constants.js";
+import { BladesItemType, Factor, ClockColor, ClockKeyDisplayMode } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import { BladesItem } from "../BladesItemProxy.js";
 import BladesProjectSheet from "../../sheets/item/BladesProjectSheet.js";
@@ -23,7 +23,8 @@ class BladesProject extends BladesItem {
                 targetKey: "system.clocksData",
                 isNameVisible: false,
                 isSpotlit: false,
-                isVisible: true
+                isVisible: true,
+                displayMode: ClockKeyDisplayMode.clocks
                 // oneKeyIndex: U.gsap.utils.random(0, 4, 1) as OneKeyImgIndex
             }, [{
                     name: "",
@@ -79,10 +80,10 @@ class BladesProject extends BladesItem {
         return undefined;
     }
     get currentClock() {
-        return this.clockKey?.activeClocks[0];
+        return this.clockKey.currentClock;
     }
     get isComplete() {
-        return this.clockKey?.isComplete;
+        return this.clockKey.isComplete;
     }
     get rollOppClock() { return this.currentClock?.data; }
     async advanceClock(segments = 1) {

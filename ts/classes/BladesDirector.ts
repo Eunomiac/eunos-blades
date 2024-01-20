@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../core/utilities";
-import C, {ClockKey_SVGDATA, BladesPhase, BladesNoticeType, BladesActorType, BladesItemType, ClockKeyDisplayMode, ClockDisplayContext} from "../core/constants";
+import C, {ClockKey_SVGDATA, BladesPhase, BladesNoticeType, BladesActorType, BladesItemType, ClockKeyUpdateAction, ClockKeyDisplayMode, ClockDisplayContext} from "../core/constants";
 // import U from "../core/utilities";
 import {BladesActor} from "../documents/BladesActorProxy";
 import {BladesItem} from "../documents/BladesItemProxy";
@@ -36,6 +36,12 @@ class BladesDirector {
   // #endregion
 
   public static async Initialize() {
+    // Define hook that re-renders overlay on scene change.
+    Hooks.on("renderApplication", async () => {
+      game.eunoblades.Director.initClockKeySection(true);
+      await game.eunoblades.ClockKeeper.update({"system.targetScene": game.scenes.current.id});
+      game.eunoblades.ClockKeeper.render();
+    });
 
     // Return asynchronous template loading.
     return loadTemplates([
@@ -140,24 +146,6 @@ class BladesDirector {
     socketlib.system.executeForEveryone("renderOverlay_SocketCall");
   }
 
-  private initClockKeySection() {
-    // Render keys that are visible
-    const visibleSceneKeys = U.shuffle(this.sceneKeys.filter((key) => key.isVisible)) as BladesClockKey[];
-    let staggerDelay = 0;
-    while (visibleSceneKeys.length) {
-      const key = visibleSceneKeys.shift();
-      if (key) {
-        setTimeout(() => this.renderClockKey(key), staggerDelay * 1000);
-        staggerDelay += 0.5;
-      }
-    }
-
-    // Apply item dragger
-    setTimeout(() => {
-      // Create dragger instance for dragging clocks & clock keys onto, e.g, rolls
-    }, staggerDelay * 1000);
-  }
-
   async renderOverlay_SocketResponse() {
 
     // Render the overlay element
@@ -181,6 +169,28 @@ class BladesDirector {
   // #region CLOCKS & CLOCK KEYS
 
   // #region   >> INITIALIZATION ~
+  private initClockKeySection(isResetting = false) {
+    if (isResetting) {
+      this.clockKeySection$.empty();
+    }
+
+    // Render keys that are visible
+    const visibleSceneKeys = U.shuffle(this.sceneKeys.filter((key) => key.isVisible)) as BladesClockKey[];
+    let staggerDelay = 0;
+    while (visibleSceneKeys.length) {
+      const key = visibleSceneKeys.shift();
+      if (key) {
+        setTimeout(() => this.renderClockKey(key), staggerDelay * 1000);
+        staggerDelay += 0.5;
+      }
+    }
+
+    // Apply item dragger
+    setTimeout(() => {
+      // Create dragger instance for dragging clocks & clock keys onto, e.g, rolls
+    }, staggerDelay * 1000);
+  }
+
   private initClockSockets() {
     socketlib.system.register("renderClockKey_SocketCall", BladesDirector.renderClockKey_SocketResponse.bind(BladesDirector));
     socketlib.system.register("pullKey_SocketCall", BladesDirector.pullKey_SocketResponse.bind(BladesDirector));
@@ -199,7 +209,7 @@ class BladesDirector {
   }
   // #endregion
 
-  get sceneKeys() {return game.eunoblades.ClockKeeper.getSceneKeys();}
+  get sceneKeys() {return game.eunoblades.ClockKeeper.getSceneKeys(game.scenes.current.id);}
 
   // #region   >> Rendering (Dropping) Clock Keys ~
   dropKey_Animation(key: BladesClockKey, keyElems$?: ClockKeyElems$) {
@@ -342,7 +352,7 @@ class BladesDirector {
       // Right-Click a Clock Key = Pull it
       container$.on("contextmenu", async () => {
         this.pullKey_SocketCall(key.id);
-        key.updateTarget("isVisible", false, true);
+        key.updateTarget("isVisible", false, ClockKeyUpdateAction.RenderNone);
       });
 
     } else {
@@ -376,12 +386,13 @@ class BladesDirector {
   private async renderClockKey(key: BladesClockKey) {
     await key.renderTo(this.clockKeySection$);
 
-    const keyElems$ = key.getElements$(this.clockKeySection$);
-
     // If a position-dragger is present, remove it.
     if (key.positionDragger) {
       key.removePositionDragger();
     }
+
+    // Initialize clock key elements to overlay context
+    const keyElems$ = key.initElementsInContext(this.clockKeySection$, ClockKeyDisplayMode.full);
 
     // If an overlayPosition has been set, apply to the container element:
     if (key.overlayPosition) {
@@ -390,12 +401,6 @@ class BladesDirector {
         top: key.overlayPosition.y
       });
     }
-
-    // Scale clock key to fit its container
-    key.fitKeyToContainer(keyElems$);
-
-    // Initialize label elements
-    key.formatLabels(keyElems$);
 
     // Prepare animation timelines & attach them to rendered elements
     this.prepareClockKeyTimelines(key, keyElems$);

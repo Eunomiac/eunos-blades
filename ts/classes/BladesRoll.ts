@@ -212,7 +212,7 @@ class BladesRollMod {
           let valProcessed;
           if (["value"].includes(key)) {
             valProcessed = U.pInt(val);
-          } else if (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
+          } else if (["effectKeys", "conditionalRollTypes", "autoRollTypes", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
             valProcessed = [val].flat();
           } else {
             valProcessed = (val as string).replace(/%COLON%/g, ":");
@@ -3876,14 +3876,34 @@ class BladesRoll extends DocumentSheet {
     );
 
     const templateParts: string[] = [
-      "systems/eunos-blades/templates/chat/roll-result-",
-      U.lCase(this.rollType),
-      "-"
+      "systems/eunos-blades/templates/chat/roll-result/",
+      U.lCase(this.rollType)  // action
+      //                         fortune
+      //                         indulgevice
+      //                         resistance
     ];
-    if (this.rollDowntimeAction) {
-      templateParts.push(U.lCase(this.rollDowntimeAction), "-");
+
+    if (this.rollClockKey) {
+      templateParts.push("-clock"); // action-clock
+      //                               fortune-clock
     }
-    templateParts.push("roll.hbs");
+
+    if (this.rollDowntimeAction && [
+      DowntimeAction.AcquireAsset, // action-acquireasset
+      DowntimeAction.ReduceHeat, //   action-reduceheat
+      DowntimeAction.Recover //       action-clock-recover
+    ].includes(this.rollDowntimeAction)) {
+      templateParts.push(`-${U.lCase(this.rollDowntimeAction)}`);
+    } else if (this.rollSubType && [
+      RollSubType.GatherInfo, //      action-gatherinfo
+      //                              fortune-gatherinfo
+      RollSubType.Incarceration, //   fortune-incarceration
+      RollSubType.Engagement //       fortune-engagement
+    ].includes(this.rollSubType)) {
+      templateParts.push(`-${U.lCase(this.rollSubType)}`);
+    }
+
+    templateParts.push(".hbs");
 
     return await renderTemplate(
       templateParts.join(""),
@@ -4184,6 +4204,11 @@ class BladesRoll extends DocumentSheet {
     super.activateListeners(html);
     ApplyTooltipAnimations(html);
     ApplyConsequenceAnimations(html);
+
+    // If a rollClockKey exists, initialize its elements
+    if (this.rollClockKey) {
+      html.find(".roll-clock").removeClass("hidden");
+    }
 
     // User-Toggleable Roll Mods
     html.find(".roll-mod[data-action='toggle']").on({

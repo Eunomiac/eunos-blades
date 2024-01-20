@@ -43,10 +43,18 @@ class BladesItemSheet extends ItemSheet {
       activeEffects: Array.from(this.item.effects) as BladesActiveEffect[]
     };
 
-    return this._getTypedItemData[this.item.type]({...context, ...sheetData} as BladesItemSheetData);
+    const typedItemData = this._getTypedItemData[this.item.type];
+    if (typedItemData) {
+      return typedItemData({...context, ...sheetData} as BladesItemSheetData);
+    }
+
+    return {
+      ...context,
+      ...sheetData
+    } as BladesItemSheetData;
   }
 
-  _getTypedItemData: Record<BladesItemType, (context: BladesItemSheetData) => BladesItemSheetData> = {
+  _getTypedItemData: Partial<Record<BladesItemType, (context: BladesItemSheetData) => BladesItemSheetData>> = {
     [BladesItemType.ability]: (context) => {
       if (!BladesItem.IsType(this.item, BladesItemType.ability)) {return undefined as never;}
       const sheetData: BladesItemDataOfType<BladesItemType.ability> = {};
@@ -106,7 +114,13 @@ class BladesItemSheet extends ItemSheet {
         ...sheetData
       };
     },
-    [BladesItemType.cohort_expert]: (context) => this._getTypedItemData[BladesItemType.cohort_gang](context),
+    [BladesItemType.cohort_expert]: (context) => {
+      const typedItemData = this._getTypedItemData[BladesItemType.cohort_gang];
+      if (!typedItemData) {
+        throw new Error(`No data for type ${this.item.type}`);
+      }
+      return typedItemData(context);
+    },
     [BladesItemType.crew_ability]: (context) => {
       if (!BladesItem.IsType(this.item, BladesItemType.crew_ability)) {return undefined as never;}
       const sheetData: BladesItemDataOfType<BladesItemType.crew_ability> = {};
@@ -229,14 +243,6 @@ class BladesItemSheet extends ItemSheet {
     [BladesItemType.vice]: (context) => {
       if (!BladesItem.IsType(this.item, BladesItemType.vice)) {return undefined as never;}
       const sheetData: BladesItemDataOfType<BladesItemType.vice> = {};
-      return {
-        ...context,
-        ...sheetData
-      };
-    },
-    [BladesItemType.project]: (context) => {
-      if (!(this.item instanceof BladesProject)) {return undefined as never;}
-      const sheetData: BladesItemDataOfType<BladesItemType.project> = {};
       return {
         ...context,
         ...sheetData

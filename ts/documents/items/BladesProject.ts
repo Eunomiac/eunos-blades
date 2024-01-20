@@ -1,4 +1,4 @@
-import {BladesItemType, Factor, ClockColor} from "../../core/constants";
+import {BladesItemType, Factor, ClockColor, ClockKeyDisplayMode} from "../../core/constants";
 import U from "../../core/utilities";
 import {BladesItem} from "../BladesItemProxy";
 import BladesProjectSheet from "../../sheets/item/BladesProjectSheet";
@@ -34,7 +34,8 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
         targetKey: "system.clocksData" as TargetKey,
         isNameVisible: false,
         isSpotlit: false,
-        isVisible: true
+        isVisible: true,
+        displayMode: ClockKeyDisplayMode.clocks
         // oneKeyIndex: U.gsap.utils.random(0, 4, 1) as OneKeyImgIndex
       }, [{
         name: "",
@@ -90,11 +91,11 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
   }
 
   get currentClock() {
-    return this.clockKey?.activeClocks[0];
+    return this.clockKey.currentClock;
   }
 
   get isComplete() {
-    return this.clockKey?.isComplete;
+    return this.clockKey.isComplete;
   }
 
   get rollOppClock() { return this.currentClock?.data; }

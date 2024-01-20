@@ -1,13 +1,31 @@
 
+& {
+  pointer-events: none;
 
 .sheet-root {
   overflow: hidden;
   min-height: 250px;
 
   .sheet-top {
-    grid-template-areas: "title title .";
+    grid-template-areas:
+      "title title ."
+      "subtitle subtitle .";
+    grid-template-rows: 40px 20px;
     .sheet-title {
       text-align: left;
+      font-size: toRem(40px);
+      line-height: toRem(40px);
+    }
+    .sheet-subtitle {
+      text-align: left;
+      font-size: toRem(16px);
+      line-height: toRem(20px);
+      position: relative;
+      z-index: 2;
+      background: transparent;
+      border: none;
+      text-indent: 15px;
+      padding: 0;
     }
   }
 
@@ -59,4 +77,5 @@
     }
 
   }
+}
 }

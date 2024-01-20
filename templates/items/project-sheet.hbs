@@ -12,6 +12,11 @@
     {{!-- Header --}}
     <section class="sheet-top">
       <input class="sheet-title shadowed" type="text" name="name" value="{{item.name}}">
+      {{#if presentedClock}}
+      <input class="sheet-subtitle shadowed" type="text" name="pclockname" data-action="presented-clock-name" value="{{presentedClock.name}}" />
+      {{else}}
+      <input class="sheet-subtitle shadowed" type="text" name="pclockname" data-action="current-clock-name" value="{{item.currentClock.name}}" />
+      {{/if}}
     </section>
 
 

@@ -1689,6 +1689,49 @@ const escapeHTML = <T = unknown>(str: T): T => (typeof str === "string"
     .replace(/[`']/g, "&#039;") as T
   : str);
 
+// #region ████████ PERFORMANCE: Performance Testing & Metrics ████████
+/**
+ * Test the performance of a function (synchronous or asynchronous).
+ * The function will be called repeatedly for 10 seconds, and the total and average execution times will be logged.
+ * @param func - The function to test. Can be synchronous or asynchronous.
+ * @param params - The parameters to pass to the function.
+ */
+const testFuncPerformance = (
+  func: (...args: unknown[]) => unknown | Promise<unknown>,
+  ...params: unknown[]
+): void => {
+  const start = performance.now(); // Start the timer
+  let tally = 0; // Keep track of how many times the function is called
+
+  // This function will be called each time 'func' finishes executing
+  const handleResult = () => {
+    // Check if 10 seconds have passed
+    if (performance.now() - start < 10000) {
+      runFunc(); // If not, call 'func' again
+      tally++; // And increment the tally
+    } else {
+      // If 10 seconds have passed, calculate the total and average time and log them
+      const elapsedTime = performance.now() - start;
+      const timePerCall = roundNum(elapsedTime / tally / 4000, 4);
+      eLog.checkLog3("performance", `[TestPerformance] Function Ran ${tally} Times in ${roundNum(elapsedTime / 1000, 4)}s, Averaging ${timePerCall}s per Call`);
+    }
+  };
+
+  // This function calls 'func' and handles its result, whether it's a Promise or not
+  const runFunc = () => {
+    const result = func(...params); // Call 'func' with the provided parameters
+    if (result instanceof Promise) {
+      // If 'func' is asynchronous, wait for the Promise to resolve before handling the result
+      result.then(handleResult);
+    } else {
+      // If 'func' is synchronous, handle the result immediately
+      handleResult();
+    }
+  };
+
+  runFunc(); // Start the first call to 'func'
+};
+// #endregion
 
 // #region ░░░░░░░[GreenSock]░░░░ Wrappers for GreenSock Functions ░░░░░░░ ~
 const set = (targets: gsap.TweenTarget, vars: gsap.TweenVars): gsap.core.Tween => gsap.set(targets, vars);
@@ -1983,6 +2026,9 @@ export default {
   getSiblings,
 
   escapeHTML,
+
+  // ████████ PERFORMANCE: Performance Testing & Metrics ████████
+  testFuncPerformance,
 
   // ░░░░░░░ GreenSock ░░░░░░░
   gsap, get, set, getGSAngleDelta, getNearestLabel, reverseRepeatingTimeline, /* to, from, fromTo, */

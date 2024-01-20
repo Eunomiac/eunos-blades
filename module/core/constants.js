@@ -68,6 +68,12 @@ export var ClockDisplayContext;
     ClockDisplayContext["rollCollab"] = "rollCollab";
     ClockDisplayContext["chatMessage"] = "chatMessage";
 })(ClockDisplayContext || (ClockDisplayContext = {}));
+export var ClockKeyUpdateAction;
+(function (ClockKeyUpdateAction) {
+    ClockKeyUpdateAction["RenderAll"] = "RenderAll";
+    ClockKeyUpdateAction["RenderNonClockKeeper"] = "RenderNonClockKeeper";
+    ClockKeyUpdateAction["RenderNone"] = "RenderNone";
+})(ClockKeyUpdateAction || (ClockKeyUpdateAction = {}));
 export var ClockKeyDisplayMode;
 (function (ClockKeyDisplayMode) {
     ClockKeyDisplayMode["full"] = "full";
@@ -450,6 +456,7 @@ const C = {
     AI_FILE_IDS: {
         BladesPDF: "file-n72HTTNwt051piPbswQ8isUa"
     },
+    ClockKeySquareSize: 100,
     DowntimeActionDisplay: {
         [DowntimeAction.AcquireAsset]: "Acquire an Asset",
         [DowntimeAction.IndulgeVice]: "Indulge Your Vice",
@@ -620,85 +627,85 @@ const C = {
         dBLUE: "rgba(0,118,118, 1)",
         ddBLUE: "rgba(0, 77, 77, 1)"
     },
-    ClockKeyPositions: {
-        elemSquareSize: 100,
-        0: {
-            keyDimensions: { width: 0, height: 0 },
-            keyCenter: { x: 0, y: 0 },
-            clocksCenter: { x: 0, y: 0 },
-            clocksCenterDimensions: { width: 0, height: 0 },
-            clocks: {}
-        },
-        1: {
-            keyDimensions: { width: 230, height: 836 },
-            keyCenter: { x: 115, y: 418 },
-            clocksCenter: { x: 111.011, y: 108.5 },
-            clocksCenterDimensions: { width: 169, height: 169 },
-            clocks: {
-                0: { x: 111.011, y: 108.5, size: 169 }
-            }
-        },
-        2: {
-            keyDimensions: { width: 202, height: 625 },
-            keyCenter: { x: 101, y: 312 },
-            clocksCenter: { x: 101, y: 189 },
-            clocksCenterDimensions: { width: 110, height: 290 },
-            clocks: {
-                0: { x: 101, y: 99, size: 108 },
-                1: { x: 101, y: 279, size: 108 }
-            }
-        },
-        3: {
-            keyDimensions: { width: 280, height: 915 },
-            keyCenter: { x: 140, y: 457 },
-            clocksCenter: { x: 140, y: 169 },
-            clocksCenterDimensions: { width: 242, height: 222 },
-            clocks: {
-                0: { x: 140, y: 99, size: 108 },
-                1: { x: 74, y: 211, size: 108 },
-                2: { x: 206, y: 211, size: 108 }
-            }
-        },
-        4: {
-            keyDimensions: { width: 376, height: 1140 },
-            keyCenter: { x: 188, y: 570 },
-            clocksCenter: { x: 188, y: 185 },
-            clocksCenterDimensions: { width: 284, height: 282 },
-            clocks: {
-                0: { x: 188, y: 99, size: 108 },
-                1: { x: 101, y: 185, size: 108 },
-                2: { x: 275, y: 185, size: 108 },
-                3: { x: 188, y: 273, size: 108 } // yBottom = 327
-            }
-        },
-        5: {
-            keyDimensions: { width: 376, height: 1140 },
-            keyCenter: { x: 188, y: 570 },
-            clocksCenter: { x: 188, y: 185 },
-            clocksCenterDimensions: { width: 284, height: 384 },
-            clocks: {
-                0: { x: 188, y: 99, size: 108 },
-                1: { x: 101, y: 185, size: 108 },
-                2: { x: 275, y: 185, size: 108 },
-                3: { x: 188, y: 273, size: 108 },
-                4: { x: 188, y: 452, size: 108 } // yBottom = 506
-            }
-        },
-        6: {
-            keyDimensions: { width: 376, height: 1140 },
-            keyCenter: { x: 188, y: 570 },
-            clocksCenter: { x: 188, y: 391 },
-            clocksCenterDimensions: { width: 284, height: 692 },
-            clocks: {
-                0: { x: 188, y: 99, size: 108 },
-                1: { x: 101, y: 185, size: 108 },
-                2: { x: 275, y: 185, size: 108 },
-                3: { x: 188, y: 273, size: 108 },
-                4: { x: 188, y: 452, size: 108 },
-                5: { x: 188, y: 683, size: 108 } // yBottom = 737
-            }
-        }
-    },
+    // ClockKeyPositions: {
+    //   elemSquareSize: 100,
+    //   0: {
+    //     keyDimensions: {width: 0, height: 0},
+    //     keyCenter: {x: 0, y: 0},
+    //     clocksCenter: {x: 0, y: 0},
+    //     clocksCenterDimensions: {width: 0, height: 0},
+    //     clocks: {}
+    //   },
+    //   1: {
+    //     keyDimensions: {width: 230, height: 836},
+    //     keyCenter: {x: 115, y: 418},
+    //     clocksCenter: {x: 111.011, y: 108.5},
+    //     clocksCenterDimensions: {width: 169, height: 169},
+    //     clocks: {
+    //       0: {x: 111.011, y: 108.5, size: 169}
+    //     }
+    //   },
+    //   2: {
+    //     keyDimensions: {width: 202, height: 625},
+    //     keyCenter: {x: 101, y: 312},
+    //     clocksCenter: {x: 101, y: 189},
+    //     clocksCenterDimensions: {width: 110, height: 290},
+    //     clocks: {
+    //       0: {x: 101, y: 99, size: 108},
+    //       1: {x: 101, y: 279, size: 108}
+    //     }
+    //   },
+    //   3: {
+    //     keyDimensions: {width: 280, height: 915},
+    //     keyCenter: {x: 140, y: 457},
+    //     clocksCenter: {x: 140, y: 169},
+    //     clocksCenterDimensions: {width: 242, height: 222},
+    //     clocks: {
+    //       0: {x: 140, y: 99, size: 108},
+    //       1: {x: 74, y: 211, size: 108},
+    //       2: {x: 206, y: 211, size: 108}
+    //     }
+    //   },
+    //   4: {
+    //     keyDimensions: {width: 376, height: 1140},
+    //     keyCenter: {x: 188, y: 570},
+    //     clocksCenter: {x: 188, y: 185},
+    //     clocksCenterDimensions: {width: 284, height: 282},
+    //     clocks: {
+    //       0: {x: 188, y: 99, size: 108}, // yTop = 45
+    //       1: {x: 101, y: 185, size: 108},
+    //       2: {x: 275, y: 185, size: 108},
+    //       3: {x: 188, y: 273, size: 108} // yBottom = 327
+    //     }
+    //   },
+    //   5: {
+    //     keyDimensions: {width: 376, height: 1140},
+    //     keyCenter: {x: 188, y: 570},
+    //     clocksCenter: {x: 188, y: 185},
+    //     clocksCenterDimensions: {width: 284, height: 384},
+    //     clocks: {
+    //       0: {x: 188, y: 99, size: 108}, // yTop = 45
+    //       1: {x: 101, y: 185, size: 108},
+    //       2: {x: 275, y: 185, size: 108},
+    //       3: {x: 188, y: 273, size: 108},
+    //       4: {x: 188, y: 452, size: 108} // yBottom = 506
+    //     }
+    //   },
+    //   6: {
+    //     keyDimensions: {width: 376, height: 1140},
+    //     keyCenter: {x: 188, y: 570},
+    //     clocksCenter: {x: 188, y: 391},
+    //     clocksCenterDimensions: {width: 284, height: 692},
+    //     clocks: {
+    //       0: {x: 188, y: 99, size: 108}, // yTop = 45
+    //       1: {x: 101, y: 185, size: 108},
+    //       2: {x: 275, y: 185, size: 108},
+    //       3: {x: 188, y: 273, size: 108},
+    //       4: {x: 188, y: 452, size: 108},
+    //       5: {x: 188, y: 683, size: 108} // yBottom = 737
+    //     }
+    //   }
+    // },
     Loadout: {
         selections: [
             { value: "Light", display: "Light" },

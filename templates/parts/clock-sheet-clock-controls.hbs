@@ -1,6 +1,11 @@
-<div class="control-flipper clock-control-flipper {{~#unless (test clockKey.isVisible "&&" clockKey.isInCurrentScene)}} controls-flipped{{/unless}}" data-clock-key-id="{{clockKey.id}}" data-clock-id="{{clock.id}}">
+{{#if (test clockKey.isVisible "&&" clockKey.isInCurrentScene)}}
+<div class="control-flipper clock-control-flipper"  data-clock-key-id="{{clockKey.id}}" data-clock-id="{{clock.id}}" style="translate: none; rotate: none; scale: none; transform: translate(0px 0px);">
+{{else}}
+<div class="control-flipper clock-control-flipper controls-flipped" data-clock-key-id="{{clockKey.id}}" data-clock-id="{{clock.id}}" style="translate: none; rotate: none; scale: none; transform: rotateX(180deg);">
+{{/if}}
 
-  <div class="clock-control-panel controls-front">
+
+  <div class="clock-control-panel controls-front" style="translate: none; rotate: none; scale: none; opacity: 1; visibility: inherit; transform: translate3d(0px, 0px, 2px);">
 
     {{!-- Toggle Visible --}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"
@@ -103,7 +108,7 @@
     </div>
   </div>
 
-  <div class="clock-control-panel controls-back">
+  <div class="clock-control-panel controls-back" style="translate: none; rotate: none; scale: none; opacity: 1; visibility: inherit; transform: translate3d(0px, 0px, -2px) rotateX(180deg);">
 
     {{!-- Toggle Visible --}}
     {{> "systems/eunos-blades/templates/components/button-icon.hbs"

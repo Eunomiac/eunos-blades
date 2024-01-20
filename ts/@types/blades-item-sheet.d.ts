@@ -20,6 +20,8 @@ declare global {
     export interface Ability {}
     export interface Background {}
     export interface Clock_Keeper {
+      currentScene: IDString,
+      targetScene: IDString,
       sceneOptions: Scene[],
       sceneKeys: Collection<BladesClockKey>,
       pcsWithProjects: BladesPC[],
@@ -53,7 +55,9 @@ declare global {
     export interface Preferred_Op {}
     export interface Stricture {}
     export interface Vice {}
-    export interface Project {}
+    export interface Project {
+      presentingClock: BladesClock|false
+    }
     export interface Ritual {}
     export interface Design {}
     export interface Location {}

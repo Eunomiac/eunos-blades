@@ -241,7 +241,7 @@ class BladesRollMod {
                 if (["value"].includes(key)) {
                     valProcessed = U.pInt(val);
                 }
-                else if (["effectKeys", "conditionalRollTypes", "autoRollTypes,", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
+                else if (["effectKeys", "conditionalRollTypes", "autoRollTypes", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
                     valProcessed = [val].flat();
                 }
                 else {
@@ -3409,14 +3409,32 @@ class BladesRoll extends DocumentSheet {
     async getResultHTML(chatMsgID, context = {}) {
         context = Object.assign(this, context, { chatMsgID });
         const templateParts = [
-            "systems/eunos-blades/templates/chat/roll-result-",
-            U.lCase(this.rollType),
-            "-"
+            "systems/eunos-blades/templates/chat/roll-result/",
+            U.lCase(this.rollType) // action
+            //                         fortune
+            //                         indulgevice
+            //                         resistance
         ];
-        if (this.rollDowntimeAction) {
-            templateParts.push(U.lCase(this.rollDowntimeAction), "-");
+        if (this.rollClockKey) {
+            templateParts.push("-clock"); // action-clock
+            //                               fortune-clock
         }
-        templateParts.push("roll.hbs");
+        if (this.rollDowntimeAction && [
+            DowntimeAction.AcquireAsset,
+            DowntimeAction.ReduceHeat,
+            DowntimeAction.Recover //       action-clock-recover
+        ].includes(this.rollDowntimeAction)) {
+            templateParts.push(`-${U.lCase(this.rollDowntimeAction)}`);
+        }
+        else if (this.rollSubType && [
+            RollSubType.GatherInfo,
+            //                              fortune-gatherinfo
+            RollSubType.Incarceration,
+            RollSubType.Engagement //       fortune-engagement
+        ].includes(this.rollSubType)) {
+            templateParts.push(`-${U.lCase(this.rollSubType)}`);
+        }
+        templateParts.push(".hbs");
         return await renderTemplate(templateParts.join(""), context);
     }
     _chatMessageID;
@@ -3710,6 +3728,10 @@ class BladesRoll extends DocumentSheet {
         super.activateListeners(html);
         ApplyTooltipAnimations(html);
         ApplyConsequenceAnimations(html);
+        // If a rollClockKey exists, initialize its elements
+        if (this.rollClockKey) {
+            html.find(".roll-clock").removeClass("hidden");
+        }
         // User-Toggleable Roll Mods
         html.find(".roll-mod[data-action='toggle']").on({
             click: this._toggleRollModClick.bind(this)

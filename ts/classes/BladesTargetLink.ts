@@ -144,7 +144,11 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
   protected get linkData() {
     let linkData: (BladesTargetLink.Data & BladesTargetLink.UnknownSchema) | undefined;
     if (this.targetFlagKeyPrefix) {
-      linkData = this.target.getFlag("eunos-blades", this.targetFlagKeyPrefix) as (BladesTargetLink.Data & BladesTargetLink.UnknownSchema) ?? undefined;
+      linkData = this.target.getFlag(
+        C.SYSTEM_ID,
+        this.targetFlagKeyPrefix
+      ) as (BladesTargetLink.Data & BladesTargetLink.UnknownSchema)
+        ?? undefined;
     } else if (this.targetKeyPrefix) {
       linkData = getProperty(this.target, this.targetKeyPrefix);
     }
@@ -185,17 +189,17 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
 
   // #region ASYNC UPDATE & DELETE METHODS ~
   async updateTarget(prop: string, val: unknown, isSilent = false) {
-    if (this.targetFlagKeyPrefix) {
-      await (this.target as BladesItem).setFlag("eunos-blades", `${this.targetFlagKeyPrefix}.${prop}`, val);
-    } else if (this.targetKeyPrefix) {
-      await this.target.update({[`${this.targetKeyPrefix}.${prop}`]: val}, {render: !isSilent});
+    if (this.targetFlagKeyPrefix && (this.target as BladesItem).getFlag(C.SYSTEM_ID, `${this.targetFlagKeyPrefix}.${prop}`) !== val) {
+      await (this.target as BladesItem).setFlag(C.SYSTEM_ID, `${this.targetFlagKeyPrefix}.${prop}`, val);
+    } else if (this.targetKeyPrefix && (this.target as BladesItem)[`${this.targetKeyPrefix}.${prop}` as KeyOf<BladesItem>] !== val) {
+      await this.target.update({[`${this.targetKeyPrefix}.${prop}`]: val}, {render: false});
     }
   }
 
   async updateTargetData<T extends BladesTargetLink.UnknownSchema>(val: T | null, isSilent = false) {
     if (val === null) {
       if (this.targetFlagKeyPrefix) {
-        await (this.target as BladesItem).unsetFlag("eunos-blades", `${this.targetFlagKeyPrefix}`);
+        await (this.target as BladesItem).unsetFlag(C.SYSTEM_ID, `${this.targetFlagKeyPrefix}`);
       } else {
         await this.target.update({[`${this.targetKey}.-=${this.id}`]: null});
       }
@@ -210,7 +214,7 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
       };
       // Update target
       if (this.targetFlagKeyPrefix) {
-        await (this.target as BladesItem).setFlag("eunos-blades", this.targetFlagKeyPrefix, linkData);
+        await (this.target as BladesItem).setFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix, linkData);
       } else if (this.targetKeyPrefix) {
         await this.target.update({[this.targetKeyPrefix]: linkData}, {render: !isSilent});
       }

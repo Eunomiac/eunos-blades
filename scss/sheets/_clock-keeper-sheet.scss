@@ -211,6 +211,30 @@
                 pointer-events: none;
               }
             }
+
+            &.other-scene-keys {
+              filter: grayscale(0.5) brightness(0.5);
+
+              &, & * {
+                pointer-events: none !important;
+
+                a:not(.clock-control-drop-key),
+                select,
+                input {
+                  pointer-events: auto !important;
+                }
+              }
+
+              .clock-control-drop-key {
+                pointer-events: none !important;
+                filter: grayscale(1);
+
+                .button-icon i {
+                  pointer-events: none !important;
+                }
+              }
+
+            }
           }
         }
       }

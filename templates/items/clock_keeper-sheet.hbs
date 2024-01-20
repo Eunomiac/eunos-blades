@@ -34,7 +34,7 @@
         </nav>
 
         {{!-- Scene Keys --}}
-        <div class="tab scene-keys flex-vertical" data-tab="scene-keys">
+        <div class="tab scene-keys flex-vertical {{~#unless (test targetScene "==" currentScene)}} other-scene-keys{{/unless}}" data-tab="scene-keys">
 
           <label class="comp tab-label">
             {{> "systems/eunos-blades/templates/components/button-icon.hbs"

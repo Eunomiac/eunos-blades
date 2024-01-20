@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import C, {ClockKey_SVGDATA, ClockKeySVGData, ClockDisplayContext, BladesActorType, BladesItemType, ClockColor, ClockKeyDisplayMode, Factor} from "../core/constants";
+import C, {ClockKey_SVGDATA, ClockKeySVGData, ClockDisplayContext, BladesActorType, BladesItemType, ClockColor, ClockKeyDisplayMode, ClockKeyUpdateAction, Factor} from "../core/constants";
 import {Dragger} from "../core/gsap";
 import BladesTargetLink from "./BladesTargetLink";
 import U from "../core/utilities";
@@ -30,6 +30,11 @@ export type ClockKeyElems$ = {
   projectLabel$?: JQuery<HTMLElement>,
   scoreLabel$?: JQuery<HTMLElement>,
 };
+
+function isElemPosData(obj: unknown): obj is ElemPosData {
+  if (!U.isList(obj)) { return false; }
+  return typeof obj.x === "number" && typeof obj.y === "number" && typeof obj.width === "number" && typeof obj.height === "number";
+}
 
 class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements BladesClockKey.Subclass {
 
@@ -125,7 +130,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     );
 
     // Update the clock key with the new clock data
-    await clockKey.updateTarget("clocksData", clocksData);
+    await clockKey.updateTarget("clocksData", clocksData, ClockKeyUpdateAction.RenderAll);
 
     return clockKey as BladesClockKey & BladesTargetLink.Subclass<Schema>;
   }
@@ -145,24 +150,24 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   override get data() {return this.linkData as BladesTargetLink.Data & BladesClockKey.Schema;}
 
   get name(): string {return this.data.name;}
-  set name(val: string) {this.updateTarget("name", val);}
+  set name(val: string) {this.updateTarget("name", val, ClockKeyUpdateAction.RenderAll);}
 
   get isVisible(): boolean {return this.data.isVisible;}
-  set isVisible(val: boolean) {this.updateTarget("isVisible", U.pBool(val));}
+  set isVisible(val: boolean) {this.updateTarget("isVisible", U.pBool(val), ClockKeyUpdateAction.RenderAll);}
   get isNameVisible(): boolean {return this.data.isNameVisible;}
-  set isNameVisible(val: boolean) {this.updateTarget("isNameVisible", U.pBool(val));}
+  set isNameVisible(val: boolean) {this.updateTarget("isNameVisible", U.pBool(val), ClockKeyUpdateAction.RenderAll);}
   get isSpotlit(): boolean {return this.data.isSpotlit;}
-  set isSpotlit(val: boolean) {this.updateTarget("isSpotlit", val);}
+  set isSpotlit(val: boolean) {this.updateTarget("isSpotlit", val, ClockKeyUpdateAction.RenderAll);}
 
   get clocksData(): Record<IDString, BladesClock.Data> {return this.data.clocksData;}
 
-  get displayMode(): ClockKeyDisplayMode | number {return this.data.displayMode;}
+  get displayMode(): ClockKeyDisplayMode | ClockIndex {return this.data.displayMode;}
 
   get oneKeyIndex(): OneKeyImgIndex {
     let {oneKeyIndex} = this.data;
     if (!oneKeyIndex) {
       oneKeyIndex = U.gsap.utils.random(0, 4, 1) as OneKeyImgIndex;
-      this.updateTarget("oneKeyIndex", oneKeyIndex, true);
+      this.updateTarget("oneKeyIndex", oneKeyIndex, ClockKeyUpdateAction.RenderAll);
     }
     return oneKeyIndex;
   }
@@ -171,9 +176,9 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   get overlayPosition(): gsap.Point2D | undefined {return this.data.overlayPosition?.[game.scenes.current.id];}
   set overlayPosition(val: gsap.Point2D | undefined) {
     if (val) {
-      this.updateTarget(`overlayPosition.${game.scenes.current.id}`, val, true);
+      this.updateTarget(`overlayPosition.${game.scenes.current.id}`, val, ClockKeyUpdateAction.RenderNone);
     } else {
-      this.updateTarget(`overlayPosition.-=${game.scenes.current.id}`, null, true);
+      this.updateTarget(`overlayPosition.-=${game.scenes.current.id}`, null, ClockKeyUpdateAction.RenderNone);
     }
   }
   // #endregion
@@ -220,14 +225,33 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     return this.visibleClocks.filter((clock) => clock.isActive);
   }
   get inProgressClocks(): BladesClock[] {
-    return this.clocks.filter((clock) => !clock.isComplete && clock.value > 0);
+    return this.visibleClocks.filter((clock) => !clock.isComplete && clock.value > 0);
   }
   get unstartedClocks(): BladesClock[] {
-    return this.clocks.filter((clock) => clock.value === 0);
+    return this.visibleClocks.filter((clock) => clock.value === 0);
   }
   get completedClocks(): BladesClock[] {
-    return this.clocks.filter((clock) => clock.isComplete);
+    return this.visibleClocks.filter((clock) => clock.isComplete);
   }
+
+  get currentClock(): BladesClock {
+    // If there are visible, active clocks that are not complete, return the earliest (by index property)
+    //    active clock that is not complete.
+    if (this.activeClocks.length > 0) {
+      return this.getEarliestClock(this.activeClocks) as BladesClock;
+    }
+    // Otherwise, if there are any visible, completed clocks, return the latest visible, completed clock
+    if (this.completedClocks.length > 0) {
+      return this.getLatestClock(this.completedClocks) as BladesClock;
+    }
+    // Otherwise, if there are any visible clocks, return the earliest visible clock.
+    if (this.visibleClocks.length > 0) {
+      return this.getEarliestClock(this.visibleClocks) as BladesClock;
+    }
+    // Finally, if all clocks are hidden, return the clock at index 0
+    return this.getEarliestClock(Array.from(this.clocks)) as BladesClock;
+  }
+
   get fullDisplayPosData(): ElemPosData {
     const x = this.svgData.width / 2;
     const y = this.svgData.height / 2;
@@ -236,7 +260,24 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     };
   }
   get clocksDisplayPosData(): ElemPosData {
-    const {size, ...clocksPosData} = this.svgData.clocks;
+    return this.getClocksBoundingBox(Array.from(this.clocks));
+  }
+  get visibleClocksDisplayPosData(): ElemPosData {
+    return this.getClocksBoundingBox(this.visibleClocks);
+  }
+  get activeClocksDisplayPosData(): ElemPosData {
+    return this.getClocksBoundingBox(this.activeClocks);
+  }
+
+  getClocksBoundingBox(clocks: BladesClock[]): ElemPosData {
+    const {size, ...allClocksPosData}: {size: number} & Partial<Record<ClockIndex, gsap.Point2D>> = this.svgData.clocks;
+
+    // Filter 'allClocksPosData' to include only those entries with index properties of elements in 'clocks'
+    const clocksPosData = Object.fromEntries(
+      Object.entries(allClocksPosData)
+        .filter(([index]) => clocks.map((clock) => clock.index).includes(U.pInt(index) as ClockIndex))
+        .map(([index, posData]) => [U.pInt(index) as ClockIndex, posData])
+    );
 
     // Sort the values of clocksPosData by their positions
     const clockWidthPosData = Object.values(clocksPosData).sort((a, b) => a.x - b.x);
@@ -273,13 +314,19 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
    * instance with the lowest index property.
    */
   getEarliestClock(clockArray: BladesClock[]): BladesClock | undefined {
-    return clockArray.sort((a, b) => a.index - b.index)[0];
+    if (clockArray.length) {
+      return clockArray.sort((a, b) => a.index - b.index)[0] as BladesClock;
+    }
+    return undefined;
   }
   /** This function accepts an array of BladesClock, and returns the BladesClock
    * instance with the highest index property.
    */
   getLatestClock(clockArray: BladesClock[]): BladesClock | undefined {
-    return clockArray.sort((a, b) => b.index - a.index)[0];
+    if (clockArray.length) {
+      return clockArray.sort((a, b) => b.index - a.index)[0] as BladesClock;
+    }
+    return undefined;
   }
 
   isInScene(sceneID: IDString = game.scenes.current.id) {
@@ -459,53 +506,199 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     $(clockKeyHTML).appendTo(parent$);
   }
 
-  public fitKeyToContainer(
+  /**
+   * This function generates a partial GSAP.TweenVars object that will display the key in a given mode within the bounds of a provided container.
+   *
+   * @param {ClockKeyDisplayMode | number} [displayMode="full"] - The display mode. Options include:
+   * - "full" - displays the entire clock key
+   * - "clocks" - zooms in to display only the clocks
+   * - "activeClocks" - zooms in to the active clocks
+   * - "presentN" (where N is a clock index number) - zooms in to the clock at index N, and presents whichever side has the next available segment towards the camera.
+   * - A clock index number - zooms in to the clock at index N
+   *
+   * @param {HTMLElement | JQuery<HTMLElement> | {x: number, y: number, width: number, height: number}} [container$] - The container within which the key will be displayed.
+   * This can be:
+   * - An HTMLElement
+   * - A JQuery<HTMLElement>
+   * - A {x, y, width, height} position definition
+   * If not provided, it defaults to the clock key's container element (only if the key is already rendered in the DOM).
+   *
+   * @returns {gsap.TweenVars} - A partial GSAP.TweenVars object that describes how to display the key in the given mode within the bounds of the provided container. The returned object may include the following properties:
+   * - 'scale' (number): A multiple to be applied to scale at "full" display mode.
+   * - 'top' (number): A delta vertical shift from "full" display mode position.
+   * - 'left' (number): A delta horizontal shift from "full" display mode position.
+   * - 'transformOrigin': An absolute value.
+   * - 'rotationZ': An absolute value for the keySwing axis.
+   * - 'rotationY': An absolute value for rotation in/out of the screen.
+   * Any variables left undefined default to "full" display mode.
+   */
+  getVarsForDisplayMode(
     keyElems$: ClockKeyElems$,
-    posOverrides?: Partial<ElemPosData & {
-      xShift: number,
-      yShift: number,
-      scaleMult: number
-    }>
-  ) {
-    const {container$, elem$, imgContainer$} = keyElems$;
+    displayMode: ClockKeyDisplayMode|ClockIndex = ClockKeyDisplayMode.full,
+    container$?: HTMLElement | JQuery<HTMLElement> | ElemPosData
+  ): {keyTweenVars: gsap.TweenVars, keyImgContTweenVars: gsap.TweenVars} {
 
-    // Get position data for the container$ element (x, y, width, height)
-    const keyPosition: ElemPosData = {
-      x: U.gsap.getProperty(container$[0], "x") as number,
-      y: U.gsap.getProperty(container$[0], "y") as number,
-      width: U.gsap.getProperty(container$[0], "width") as number,
-      height: U.gsap.getProperty(container$[0], "height") as number
-    };
+    const keyTweenVars: gsap.TweenVars = {};
+    const keyImgContTweenVars: gsap.TweenVars = {};
 
-    const {xShift, yShift, scaleMult, ...focusPosOverrides} = posOverrides ?? {};
+    container$ ??= keyElems$.container$;
 
-    const focusPosition: ElemPosData = {
-      ...this.fullDisplayPosData,
-      ...focusPosOverrides
-    };
+    // === TARGET CONTAINER ELEMENT ===
+    // container$ refers to the element that the desired clocks will be made to fit within, and can be either an
+    //   HTMLElement (or JQuery reference to such), or an Element Position object ({x, y, height, width}).
+    // We first convert any HTMLElements or JQuery<HTMLElement>s to an Element Position object:
 
-    eLog.checkLog3("BladesClockKey", "[BladesClockKey] Key Positions", {
-      keyPosition,
-      focusPosition,
-      widthScale: keyPosition.width / focusPosition.width,
-      heightScale: keyPosition.height / focusPosition.height
-    });
+    let targetPosData: ElemPosData;
+    if (container$ instanceof HTMLElement || container$ instanceof jQuery) {
+      const containerPosData = U.gsap.getProperty($(container$)[0]) as (property: string) => number;
+      targetPosData = {
+        x: containerPosData("x"),
+        y: containerPosData("y"),
+        width: containerPosData("width"),
+        height: containerPosData("height")
+      };
+    } else if (isElemPosData(container$)) {
+      targetPosData = container$;
+    } else {
+      throw new Error(`[BladesClockKey.getVarsForDisplayMode] Error container$ '${container$}' is not a valid type.`);
+    }
 
-    // Apply scale factor to elem$ to fit default key position inside container$
-    U.gsap.set(elem$, {
-      scale: Math.min(
-        keyPosition.width / focusPosition.width,
-        keyPosition.height / focusPosition.height
-      ) * (scaleMult ?? 1)
-    });
+    // === TARGET FOCUS AREA ===
+    // The focus area is the area of the key that we want to display in the container.
+    // This area is determined by the display mode, and may be the full key, the clocks, the active clocks, or a single clock.
+    // We will use this area to determine the scale and position of the key within the container.
 
-    // Apply top, left and transformOrigin value to keyImgContainer, accounting for x/yPercent -50
-    U.gsap.set(imgContainer$, {
-      top: (0.5 * C.ClockKeyPositions.elemSquareSize) - focusPosition.y + (yShift ?? 0),
-      left: (0.5 * C.ClockKeyPositions.elemSquareSize) - focusPosition.x + (xShift ?? 0),
-      transformOrigin: `${focusPosition.x + (xShift ?? 0)}px ${focusPosition.y + (yShift ?? 0)}px`
-    });
+    let presentingClock: BladesClock | undefined;
+    let focusPosData: ElemPosData;
+    switch (displayMode) {
+      case ClockKeyDisplayMode.full: {
+        focusPosData = {
+          x: this.svgData.width / 2,
+          y: this.svgData.height / 2,
+          width: this.svgData.width,
+          height: this.svgData.height
+        };
+        break;
+      }
+      case ClockKeyDisplayMode.clocks: {
+        focusPosData = this.getClocksBoundingBox(Array.from(this.clocks));
+        break;
+      }
+      case ClockKeyDisplayMode.activeClocks: {
+        focusPosData = this.getClocksBoundingBox(this.getClocksIn(this.activeClocks, this.visibleClocks));
+        break;
+      }
+      case ClockKeyDisplayMode.presentCurrentClock: {
+        presentingClock = this.currentClock;
+        displayMode = presentingClock.index;
+      }
+      // falls through
+      default: {
+        if (typeof displayMode === "string" && displayMode.startsWith("present")) {
+          displayMode = U.pInt(displayMode.toString().slice(7)) as ClockIndex;
+          presentingClock = this.getClockByIndex(displayMode);
+        }
+        // Confirm that displayMode is an integer between 0 and this.size
+        if (!U.isInt(displayMode) || displayMode < 0 || displayMode >= this.size) {
+          throw new Error(`[BladesClockKey.getVarsForDisplayMode] Error display mode '${displayMode}' is not a valid clock index for key '${this.id}'.`);
+        }
+
+        // Set focusPosData to the center of the clock, with width and height equal to size
+        const focusClockData = this.svgData.clocks[displayMode as ClockIndex] as gsap.Point2D;
+
+        focusPosData = {
+          x: focusClockData.x,
+          y: focusClockData.y,
+          width: this.svgData.clocks.size,
+          height: this.svgData.clocks.size
+        };
+        break;
+      }
+    }
+
+    // === FIT FOCUS AREA INSIDE TARGET CONTAINER ===
+
+    // Determine scale factor necessary to fit focusArea inside keyContainer
+    keyTweenVars.scale = Math.min(
+      targetPosData.height / focusPosData.height,
+      targetPosData.width / focusPosData.width
+    );
+
+    // Determine top and left values for key-image-container, accounting for x/yPercent -50
+    keyImgContTweenVars.top = (0.5 * C.ClockKeySquareSize) - focusPosData.y;
+    keyImgContTweenVars.left = (0.5 * C.ClockKeySquareSize) - focusPosData.x;
+
+    // Set transfer origin of key-image-container to same position, for further animation
+    keyImgContTweenVars.transformOrigin = `${focusPosData.x}px ${focusPosData.y}px`;
+
+    // Initialize rotation of key to 0
+    keyImgContTweenVars.rotateY = 0;
+
+    // If 'isPresenting',
+    // ... rotate clock slightly towards camera
+    // ... increase scale of key
+    // ... shift key image container horizontally
+    if (presentingClock) {
+      keyTweenVars.scale *= 2;
+      if (presentingClock.getActiveSide() === "left") {
+        keyImgContTweenVars.rotateY = 30;
+        keyImgContTweenVars.left += this.size === 1 ? 45 : 25;
+      } else if (presentingClock.getActiveSide() === "right") {
+        keyImgContTweenVars.rotateY = -30;
+        keyImgContTweenVars.left -= this.size === 1 ? 45 : 25;
+      }
+    }
+
+    return {keyTweenVars, keyImgContTweenVars};
   }
+
+  // public fitKeyToContainer(
+  //   keyElems$: ClockKeyElems$,
+  //   posOverrides?: Partial<ElemPosData & {
+  //     xShift: number,
+  //     yShift: number,
+  //     scaleMult: number
+  //   }>
+  // ) {
+  //   const {container$, elem$, imgContainer$} = keyElems$;
+
+  //   // Get position data for the container$ element (x, y, width, height)
+  //   const keyPosition: ElemPosData = {
+  //     x: U.gsap.getProperty(container$[0], "x") as number,
+  //     y: U.gsap.getProperty(container$[0], "y") as number,
+  //     width: U.gsap.getProperty(container$[0], "width") as number,
+  //     height: U.gsap.getProperty(container$[0], "height") as number
+  //   };
+
+  //   const {xShift, yShift, scaleMult, ...focusPosOverrides} = posOverrides ?? {};
+
+  //   const focusPosition: ElemPosData = {
+  //     ...this.fullDisplayPosData,
+  //     ...focusPosOverrides
+  //   };
+
+  //   eLog.checkLog3("BladesClockKey", "[BladesClockKey] Key Positions", {
+  //     keyPosition,
+  //     focusPosition,
+  //     widthScale: keyPosition.width / focusPosition.width,
+  //     heightScale: keyPosition.height / focusPosition.height
+  //   });
+
+  //   // Apply scale factor to elem$ to fit default key position inside container$
+  //   U.gsap.set(elem$, {
+  //     scale: Math.min(
+  //       keyPosition.width / focusPosition.width,
+  //       keyPosition.height / focusPosition.height
+  //     ) * (scaleMult ?? 1)
+  //   });
+
+  //   // Apply top, left and transformOrigin value to keyImgContainer, accounting for x/yPercent -50
+  //   U.gsap.set(imgContainer$, {
+  //     top: (0.5 * C.ClockKeySquareSize) - focusPosition.y + (yShift ?? 0),
+  //     left: (0.5 * C.ClockKeySquareSize) - focusPosition.x + (xShift ?? 0),
+  //     transformOrigin: `${focusPosition.x + (xShift ?? 0)}px ${focusPosition.y + (yShift ?? 0)}px`
+  //   });
+  // }
 
   public formatLabels(keyElems$: ClockKeyElems$) {
 
@@ -524,21 +717,55 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
       U.adjustTextContainerAspectRatio(labelElem$, aspectRatio, maxLines);
     });
   }
+
+  public setToDisplayMode(
+    keyElems$: ClockKeyElems$,
+    displayMode: ClockKeyDisplayMode|ClockIndex,
+    isUpdatingTarget = true
+  ) {
+    const {keyTweenVars, keyImgContTweenVars} = this.getVarsForDisplayMode(keyElems$, displayMode);
+    U.gsap.set(keyElems$.elem$, keyTweenVars);
+    U.gsap.set(keyElems$.imgContainer$, keyImgContTweenVars);
+    if (isUpdatingTarget && displayMode !== this.displayMode) {
+      this.updateTarget("displayMode", displayMode, ClockKeyUpdateAction.RenderNone);
+    }
+  }
+
+  public initElementsInContext(
+    html: JQuery<HTMLElement>,
+    displayMode?: ClockKeyDisplayMode|ClockIndex,
+    isUpdatingTarget = true
+  ) {
+    const keyElems$ = this.getElements$(html);
+
+    displayMode ??= this.displayMode;
+
+    this.setToDisplayMode(keyElems$, displayMode, isUpdatingTarget);
+
+    this.formatLabels(keyElems$);
+
+    // If displayMode starts with 'present' or is an integer, fade out all label elements
+    if (displayMode.toString().startsWith("present") || Number.isInteger(displayMode)) {
+      U.gsap.to(keyElems$.container$.find(".clock-label, .clock-key-label"), {autoAlpha: 0, duration: 0});
+    }
+
+    return keyElems$;
+  }
   // #endregion
 
   async addToScene(sceneID: IDString = game.scenes.current.id) {
     if (this.isInScene(sceneID)) {return;}
     const {sceneIDs} = this;
     sceneIDs.push(sceneID);
-    await this.updateTarget("isVisible", false, true);
-    await this.updateTarget("sceneIDs", sceneIDs);
+    await this.updateTarget("isVisible", false, ClockKeyUpdateAction.RenderNone);
+    await this.updateTarget("sceneIDs", sceneIDs, ClockKeyUpdateAction.RenderAll);
   }
 
   async removeFromScene(sceneID: IDString = game.scenes.current.id) {
     if (!this.isInScene(sceneID)) {return;}
     const {sceneIDs} = this;
     U.remove(sceneIDs, sceneID);
-    await this.updateTarget("sceneIDs", sceneIDs);
+    await this.updateTarget("sceneIDs", sceneIDs, ClockKeyUpdateAction.RenderAll);
   }
 
   public closeClockKey({container$}: ClockKeyElems$): void {
@@ -577,7 +804,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   getClockPosition(clockIndex: ClockIndex = 0) {
     if (clockIndex > this.size) {throw new Error(`[BladesClockKey.getClockPosition] Error clockIndex '${clockIndex}' is greater than key size '${this.size}'.`);}
     if (clockIndex < 0) {throw new Error(`[BladesClockKey.getClockPosition] Error clockIndex '${clockIndex}' is less than 0.`);}
-    return this.svgData.clocks[clockIndex];
+    return this.svgData.clocks[clockIndex] as gsap.Point2D;
   }
 
   positionDragger?: Dragger;
@@ -615,204 +842,42 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     });
   }
 
-  /**
-   * This function generates a partial GSAP.TweenVars object that will display the key in a given mode within the bounds of a provided container.
-   *
-   * @param {ClockKeyDisplayMode | number} [displayMode="full"] - The display mode. Options include:
-   * - "full" - displays the entire clock key
-   * - "clocks" - zooms in to display only the clocks
-   * - "activeClocks" - zooms in to the active clocks
-   * - "presentN" (where N is a clock index number) - zooms in to the clock at index N, and presents whichever side has the next available segment towards the camera.
-   * - A clock index number - zooms in to the clock at index N
-   *
-   * @param {HTMLElement | JQuery<HTMLElement> | {x: number, y: number, width: number, height: number}} [container$] - The container within which the key will be displayed.
-   * This can be:
-   * - An HTMLElement
-   * - A JQuery<HTMLElement>
-   * - A {x, y, width, height} position definition
-   * If not provided, it defaults to the clock key's container element (only if the key is already rendered in the DOM).
-   *
-   * @returns {gsap.TweenVars} - A partial GSAP.TweenVars object that describes how to display the key in the given mode within the bounds of the provided container. The returned object may include the following properties:
-   * - 'scale' (number): A multiple to be applied to scale at "full" display mode.
-   * - 'top' (number): A delta vertical shift from "full" display mode position.
-   * - 'left' (number): A delta horizontal shift from "full" display mode position.
-   * - 'transformOrigin': An absolute value.
-   * - 'rotationZ': An absolute value for the keySwing axis.
-   * - 'rotationY': An absolute value for rotation in/out of the screen.
-   * Any variables left undefined default to "full" display mode.
-   */
-  getVarsForDisplayMode(
-    keyElems$: ClockKeyElems$,
-    displayMode: ClockKeyDisplayMode | number = ClockKeyDisplayMode.full,
-    container$?: HTMLElement | JQuery<HTMLElement> | {x: number, y: number, width: number, height: number}
-  ): gsap.TweenVars {
-
-    const keyTweenVars: gsap.TweenVars = {};
-    const keyImgContTweenVars: gsap.TweenVars = {};
-
-    const {elem$, imgContainer$, clocks} = keyElems$;
-    container$ ??= keyElems$.container$;
-
-    // Convert image container element (HTMLElement / JQuery<HTMLElement> / {x: number, y: number, width: number, height: number})
-    // into a {x: number, y: number, width: number, height: number} object, using U.gsap.getProperty
-    const containerPosData = U.gsap.getProperty($(container$)[0]) as (property: string) => number;
-    container$ = {
-      x: containerPosData("x"),
-      y: containerPosData("y"),
-      width: containerPosData("width"),
-      height: containerPosData("height")
-    };
-
-    // Get key data
-    const keyPosData = U.objClone(C.ClockKeyPositions[this.size]);
-
-    // Adjust displayMode according to current status of key and its clocks
-    let presentingClock: BladesClock | undefined;
-    if (displayMode === ClockKeyDisplayMode.activeClocks) {
-      // Are we zooming into active clocks?
-      if (this.activeClocks.length === 0) {
-        //    If so, and there are no active clocks, default to "clocks"
-        displayMode = ClockKeyDisplayMode.clocks;
-      } else if (this.activeClocks.length === 1) {
-        //    If so, and there is only one active clock, default to that clock's index.
-        displayMode = this.activeClocks[0].index;
-      }
-    } else if (/^present/.exec(`${displayMode}`)) { // Are we presenting?
-      // If so, are we presenting the 'current clock'?
-      if (displayMode === ClockKeyDisplayMode.presentCurrentClock) {
-        // Then make best determination of what the "current clock" is:
-
-        // First look for in-progress clocks
-        let inProgressClocks = this.inProgressClocks;
-        if (inProgressClocks.length > 1) {
-          // If more than one, filter out non-visible clocks:
-          inProgressClocks = this.getClocksIn(inProgressClocks, this.visibleClocks);
-          if (inProgressClocks.length > 1) {
-            // If still more than one, filter out inactive clocks:
-            inProgressClocks = this.getClocksIn(inProgressClocks, this.activeClocks);
-          }
-        }
-        // If in-progress clocks exist, set presentingClock to that clock.
-        if (inProgressClocks.length > 0) {
-          presentingClock = this.getEarliestClock(inProgressClocks) as BladesClock;
-        } else {
-          // Otherwise, repeat the above with unstarted clocks:
-          let unstartedClocks = this.unstartedClocks;
-          if (unstartedClocks.length > 1) {
-            // If more than one, filter out non-visible clocks:
-            unstartedClocks = this.getClocksIn(unstartedClocks, this.visibleClocks);
-          }
-          // If unstarted clocks exist, set presentingClock to that clock.
-          if (unstartedClocks.length > 0) {
-            presentingClock = this.getEarliestClock(unstartedClocks) as BladesClock;
-          } else {
-            // Otherwise, set presentingClock to completed clock with highest index number:
-            presentingClock = this.getLatestClock(this.completedClocks) as BladesClock;
-          }
-        }
-        // Update displayMode to index value of presenting clock:
-        displayMode = presentingClock.index;
-      } else {
-        displayMode = U.pInt(`${displayMode}`.replace("present", ""));
-        if (displayMode < 0 || displayMode >= this.size) {
-          throw new Error(`[BladesClockKey.getVarsForDisplayMode] Error display mode 'present${displayMode}' is not a valid clock index for key '${this.id}'.`);
-        }
-        presentingClock = this.getClockByIndex(displayMode as ClockIndex);
-      }
-    }
-
-    // Get position and area dimensions of clock key area focused on by displayMode
-    let focusArea: {x: number, y: number, z?: number, width: number, height: number};
-    switch (displayMode) {
-      case ClockKeyDisplayMode.full: {
-        focusArea = {...keyPosData.keyCenter, ...keyPosData.keyDimensions};
-        break;
-      }
-      case ClockKeyDisplayMode.clocks: {
-        focusArea = {...keyPosData.clocksCenter, ...keyPosData.clocksCenterDimensions};
-        break;
-      }
-      case ClockKeyDisplayMode.activeClocks: {
-        // Create array of position data for each active clock.
-        const activeClockPositions = this.activeClocks.map((clock) => {
-          const {index} = clock;
-          if (!(index in keyPosData.clocks)) {
-            throw new Error(`[BladesClockKey.getVarsForDisplayMode] Error display mode 'activeClocks' - clock '${clock.id}' index '${clock.index}' not found in position data for key '${this.id}' of size ${this.size}.`);
-          }
-          const {x, y, size} = keyPosData.clocks[index as KeyOf<typeof keyPosData["clocks"]>];
-          return {x, y, width: size, height: size};
-        });
-        focusArea = U.getBoundingRectangle(activeClockPositions);
-        break;
-      }
-      default: {
-        if (typeof displayMode === "number") {
-          const {x, y, size} = keyPosData.clocks[displayMode as KeyOf<typeof keyPosData["clocks"]>];
-          focusArea = {x, y, width: size, height: size};
-          break;
-        }
-        throw new Error(`[BladesClockKey.getVarsForDisplayMode] Error display key '${this.id}' in mode '${displayMode}'.`);
-      }
-    }
-
-    // Determine scale factor necessary to fit focusArea inside keyContainer
-    keyTweenVars.scale = Math.min(
-      container$.height / focusArea.height,
-      container$.width / focusArea.width
-    );
-
-    // Determine top and left values for key-image-container, accounting for x/yPercent -50
-    keyImgContTweenVars.top = (0.5 * 100) - focusArea.y;
-    keyImgContTweenVars.left = (0.5 * 100) - focusArea.x;
-
-    // Set transfer origin of key-image-container to same position, for further animation
-    keyImgContTweenVars.transformOrigin = `${focusArea.x}px ${focusArea.y}px`;
-
-    // Initialize rotation of key to 0
-    keyImgContTweenVars.rotateY = 0;
-
-    // If 'isPresenting',
-    // ... rotate clock slightly towards camera
-    // ... increase scale of key
-    // ... shift key image container horizontally
-    if (presentingClock) {
-      keyTweenVars.scale *= 2;
-      if (presentingClock.getActiveSide() === "left") {
-        keyImgContTweenVars.rotateY = 30;
-        keyImgContTweenVars.left += this.size === 1 ? 45 : 25;
-      } else if (presentingClock.getActiveSide() === "right") {
-        keyImgContTweenVars.rotateY = -30;
-        keyImgContTweenVars.left -= this.size === 1 ? 45 : 25;
-      }
-    }
-
-    return {keyTweenVars, keyImgContTweenVars};
-  }
-
   switchToMode(
     keyElems$: ClockKeyElems$,
-    displayMode: ClockKeyDisplayMode | number,
+    displayMode: ClockKeyDisplayMode | ClockIndex,
     extendKeyVars: Partial<gsap.TweenVars> = {},
     extendKeyContainerVars: Partial<gsap.TweenVars> = {},
-    isLocalOnly = false
+    isUpdatingTarget = true,
+    callback?: () => void
   ): gsap.core.Timeline {
+
     const {elem$, imgContainer$} = keyElems$;
 
     const {keyTweenVars, keyImgContTweenVars} = this.getVarsForDisplayMode(keyElems$, displayMode);
 
     const currentDisplayMode = this.displayMode;
 
+    const randomID = U.gsap.utils.random(1, 1000, 1);
+
     return U.gsap.timeline({
       callbackScope: this,
       paused: true,
+      onStart() {
+        eLog.checkLog2("BladesClockKey", `switchToMode #${randomID} - START`, {key: this, keyElems$, displayMode});
+      },
       onComplete() {
-        if (!isLocalOnly) {
-          this.updateTarget("displayMode", displayMode, true);
+        eLog.checkLog3("BladesClockKey", `switchToMode #${randomID} - COMPLETE`, {key: this, keyElems$, displayMode});
+        if (isUpdatingTarget && displayMode !== this.currentDisplayMode) {
+          this.updateTarget("displayMode", displayMode, ClockKeyUpdateAction.RenderNone)
+            .then(() => callback?.());
+        } else {
+          callback?.();
         }
       },
       onReverseComplete() {
-        if (!isLocalOnly) {
-          this.updateTarget("displayMode", currentDisplayMode, true);
+        eLog.checkLog3("BladesClockKey", `switchToMode #${randomID} - REVERSE COMPLETE`, {key: this, keyElems$, displayMode});
+        if (isUpdatingTarget) {
+          this.updateTarget("displayMode", currentDisplayMode, ClockKeyUpdateAction.RenderNone);
         }
       }
     })
@@ -867,7 +932,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     await this.updateTarget("clocksData", Object.fromEntries(
       Object.entries(this.clocksData)
         .map(([id, data], index) => [id, {...data, index}])
-    ), true);
+    ), ClockKeyUpdateAction.RenderNone);
     return this.clocks;
   }
 
@@ -876,7 +941,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     const clockData = this.parseClockConfig(clockConfig);
 
     // Write to state
-    await this.updateTarget(`clocksData.${clockData.id}`, clockData);
+    await this.updateTarget(`clocksData.${clockData.id}`, clockData, ClockKeyUpdateAction.RenderAll);
 
     // Regnerate clocks collection
     void this.clocks;
@@ -888,7 +953,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     if (!clockID) {return;}
     await this.getClockByID(clockID)?.delete();
     await this.updateClockIndices();
-    // Regnerate clocks collection
+    // Regenerate clocks collection
     void this.clocks;
   }
   // #endregion
@@ -898,28 +963,26 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     game.eunoblades.ClockKeys.delete(this.id);
     return super.delete();
   }
-  override async updateTarget(prop: string, val: unknown, isSilent = false) {
-    const isRendering = !this.isClockKeeperKey;
-    const {target} = this;
-    await super.updateTarget(prop, val, true);
-    if (!isSilent) {
+
+  private postUpdateRender(postUpdateAction: ClockKeyUpdateAction|boolean) {
+    if (postUpdateAction === ClockKeyUpdateAction.RenderNone || postUpdateAction === false) { return; }
+    this.target.sheet?.render();
+    if (postUpdateAction === ClockKeyUpdateAction.RenderAll) {
       game.eunoblades.ClockKeeper.sheet?.render();
-    }
-    if (isRendering) {
-      target.sheet?.render();
     }
   }
 
-  override async updateTargetData<T extends BladesTargetLink.UnknownSchema>(val: T | null, isSilent = false) {
-    const isRendering = !this.isClockKeeperKey;
-    const {target} = this;
+  override async updateTarget(prop: string, val: unknown, postUpdateAction: ClockKeyUpdateAction|boolean = false) {
+    await super.updateTarget(prop, val, true);
+    this.postUpdateRender(postUpdateAction);
+  }
+
+  override async updateTargetData<T extends BladesTargetLink.UnknownSchema>(
+    val: T | null,
+    postUpdateAction: ClockKeyUpdateAction|boolean = false
+  ) {
     await super.updateTargetData(val, true);
-    if (!isSilent) {
-      game.eunoblades.ClockKeeper.sheet?.render();
-    }
-    if (isRendering) {
-      target.sheet?.render();
-    }
+    this.postUpdateRender(postUpdateAction);
   }
   // #endregion
 }
@@ -963,19 +1026,19 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   override get data() {return this.linkData as BladesTargetLink.Data & BladesClock.Schema;}
 
   get name(): string {return this.data.name;}
-  set name(val: string) {this.updateTarget("name", val);}
+  set name(val: string) {this.updateTarget("name", val, ClockKeyUpdateAction.RenderAll);}
 
   get value(): number {return U.pInt(this.data.value);}
-  set value(val: number) {this.updateTarget("value", U.pInt(val));}
+  set value(val: number) {this.updateTarget("value", U.pInt(val), ClockKeyUpdateAction.RenderAll);}
 
   get max(): number {return U.pInt(this.data.max);}
-  set max(val: number) {this.updateTarget("max", U.pInt(val));}
+  set max(val: number) {this.updateTarget("max", U.pInt(val), ClockKeyUpdateAction.RenderAll);}
 
   get color(): ClockColor {return this.data.color as ClockColor ?? ClockColor.white;}
-  set color(val: ClockColor) {this.updateTarget("color", val);}
+  set color(val: ClockColor) {this.updateTarget("color", val, ClockKeyUpdateAction.RenderAll);}
 
   get isActive(): boolean {return U.pBool(this.data.isActive);}
-  set isActive(val: boolean) {this.updateTarget("isActive", U.pBool(val));}
+  set isActive(val: boolean) {this.updateTarget("isActive", U.pBool(val), ClockKeyUpdateAction.RenderAll);}
 
   get parentKey() {
     const pKey = game.eunoblades.ClockKeys.get(this.data.parentKeyID);
@@ -984,16 +1047,16 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   }
 
   get isNameVisible(): boolean {return U.pBool(this.data.isNameVisible);}
-  set isNameVisible(val: boolean) {this.updateTarget("isNameVisible", U.pBool(val));}
+  set isNameVisible(val: boolean) {this.updateTarget("isNameVisible", U.pBool(val), ClockKeyUpdateAction.RenderAll);}
 
   get isVisible(): boolean {return U.pBool(this.data.isVisible);}
-  set isVisible(val: boolean) {this.updateTarget("isVisible", U.pBool(val));}
+  set isVisible(val: boolean) {this.updateTarget("isVisible", U.pBool(val), ClockKeyUpdateAction.RenderAll);}
 
   get isHighlighted(): boolean {return U.pBool(this.data.isHighlighted);}
-  set isHighlighted(val: boolean) {this.updateTarget("isHighlighted", U.pBool(val));}
+  set isHighlighted(val: boolean) {this.updateTarget("isHighlighted", U.pBool(val), ClockKeyUpdateAction.RenderAll);}
 
-  get index(): number {return U.pInt(this.data.index);}
-  set index(val: number) {this.updateTarget("index", U.pInt(val));}
+  get index(): ClockIndex {return U.pInt(this.data.index) as ClockIndex;}
+  set index(val: ClockIndex) {this.updateTarget("index", U.pInt(val), ClockKeyUpdateAction.RenderAll);}
 
   get isEmpty() {return this.value === 0;}
 
@@ -1288,7 +1351,8 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     U.gsap.to(clockElems$.frame$, {
       filter: "brightness(0.5)",
       duration: 0.5,
-      ease: "power2"
+      ease: "power2",
+      onComplete: callback
     });
   }
   async activate_SocketCall(displayContext: ClockDisplayContext) {
@@ -1308,7 +1372,8 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     U.gsap.to(clockElems$.frame$, {
       filter: "brightness(1) blur(5px)",
       duration: 0.5,
-      ease: "power2"
+      ease: "power2",
+      onComplete: callback
     });
   }
   async deactivate_SocketCall(displayContext: ClockDisplayContext) {
@@ -1543,7 +1608,9 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
 
     if (count === 0) {return clockOverflow;}
 
-    await this.updateTarget("value", this.value + count, isSilent);
+    await this.updateTarget("value", this.value + count, isSilent === true
+      ? ClockKeyUpdateAction.RenderNone
+      : ClockKeyUpdateAction.RenderAll);
 
     return clockOverflow;
   }
@@ -1558,7 +1625,10 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
 
     if (count === 0) {return clockOverflow;}
 
-    await this.updateTarget("value", this.value - count, isSilent);
+    await this.updateTarget("value", this.value - count, isSilent === true
+      ? ClockKeyUpdateAction.RenderNone
+      : ClockKeyUpdateAction.RenderAll
+    );
 
     return clockOverflow;
   }
@@ -1571,28 +1641,25 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   // #endregion
 
   // #region OVERRIDES: Async Update Methods
-  override async updateTarget(prop: string, val: unknown, isSilent = false) {
-    const {parentKey, target} = this;
-    const isRendering = !parentKey.isClockKeeperKey;
-    await super.updateTarget(prop, val, true);
-    if (!isSilent) {
+  private postUpdateRender(postUpdateAction: ClockKeyUpdateAction|boolean) {
+    if (postUpdateAction === ClockKeyUpdateAction.RenderNone || postUpdateAction === false) { return; }
+    this.target.sheet?.render();
+    if (postUpdateAction === ClockKeyUpdateAction.RenderAll) {
       game.eunoblades.ClockKeeper.sheet?.render();
-    }
-    if (isRendering) {
-      target.sheet?.render();
     }
   }
 
-  override async updateTargetData<T extends BladesTargetLink.UnknownSchema>(val: T | null, isSilent = false) {
-    const {parentKey, target} = this;
-    const isRendering = !parentKey.isClockKeeperKey;
+  override async updateTarget(prop: string, val: unknown, postUpdateAction: ClockKeyUpdateAction|boolean = false) {
+    await super.updateTarget(prop, val, true);
+    this.postUpdateRender(postUpdateAction);
+  }
+
+  override async updateTargetData<T extends BladesTargetLink.UnknownSchema>(
+    val: T | null,
+    postUpdateAction: ClockKeyUpdateAction|boolean = false
+  ) {
     await super.updateTargetData(val, true);
-    if (!isSilent) {
-      game.eunoblades.ClockKeeper.sheet?.render();
-    }
-    if (isRendering) {
-      target.sheet?.render();
-    }
+    this.postUpdateRender(postUpdateAction);
   }
   // #endregion
 }

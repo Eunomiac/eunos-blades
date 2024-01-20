@@ -26915,6 +26915,26 @@ template {
   opacity: 0;
   pointer-events: none;
 }
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .sheet-root .tab-content .tab.other-scene-keys {
+  filter: grayscale(0.5) brightness(0.5);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .sheet-root .tab-content .tab.other-scene-keys, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .sheet-root .tab-content .tab.other-scene-keys * {
+  pointer-events: none !important;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .sheet-root .tab-content .tab.other-scene-keys a:not(.clock-control-drop-key),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .sheet-root .tab-content .tab.other-scene-keys select,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .sheet-root .tab-content .tab.other-scene-keys input, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .sheet-root .tab-content .tab.other-scene-keys * a:not(.clock-control-drop-key),
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .sheet-root .tab-content .tab.other-scene-keys * select,
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .sheet-root .tab-content .tab.other-scene-keys * input {
+  pointer-events: auto !important;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .sheet-root .tab-content .tab.other-scene-keys .clock-control-drop-key {
+  pointer-events: none !important;
+  filter: grayscale(1);
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.clock-keeper .window-content form .sheet-root .tab-content .tab.other-scene-keys .clock-control-drop-key .button-icon i {
+  pointer-events: none !important;
+}
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item.gm-tracker .window-content form {
   --sheet-mid-height: 100px;
 }
@@ -27479,15 +27499,32 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_gang.cohort_gang .sheet-root section.sheet-top, :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.cohort_expert.cohort_gang .sheet-root section.sheet-top {
   grid-template-areas: "title title tier" "subtitle subtitle tier";
 }
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.project {
+  pointer-events: none;
+}
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.project .sheet-root {
   overflow: hidden;
   min-height: 250px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.project .sheet-root .sheet-top {
-  grid-template-areas: "title title .";
+  grid-template-areas: "title title ." "subtitle subtitle .";
+  grid-template-rows: 40px 20px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.project .sheet-root .sheet-top .sheet-title {
   text-align: left;
+  font-size: 2.5rem;
+  line-height: 2.5rem;
+}
+:root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.project .sheet-root .sheet-top .sheet-subtitle {
+  text-align: left;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  border: none;
+  text-indent: 15px;
+  padding: 0;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.item .window-content form.project .sheet-root .split-panel {
   justify-content: stretch;
