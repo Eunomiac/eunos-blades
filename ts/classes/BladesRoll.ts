@@ -792,7 +792,7 @@ class BladesRollPrimary implements BladesRoll.PrimaryDocData {
   }
   // #endregion
 
-  rollPrimaryID: string | undefined;
+  rollPrimaryID: IDString | undefined;
 
   _rollPrimaryDoc: BladesRoll.PrimaryDoc | undefined;
 
@@ -1007,11 +1007,11 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
 
   rollInstance?: BladesRoll|undefined;
 
-  _rollOppID: string | undefined;
+  _rollOppID: IDString | undefined;
 
   get rollOppID() {return this._rollOppID;}
 
-  set rollOppID(val: string | undefined) {
+  set rollOppID(val: IDString | undefined) {
     if (val) {
       const doc = BladesRollOpposition.GetDoc(val);
       if (doc) {
@@ -1186,11 +1186,11 @@ class BladesRollParticipant implements BladesRoll.ParticipantDocData {
 
   rollInstance: BladesRoll;
 
-  _rollParticipantID: string | undefined;
+  _rollParticipantID: IDString | undefined;
 
   get rollParticipantID() {return this._rollParticipantID;}
 
-  set rollParticipantID(val: string | undefined) {
+  set rollParticipantID(val: IDString | undefined) {
     if (val) {
       const doc = BladesRollParticipant.GetDoc(val);
       if (doc) {
@@ -1549,6 +1549,65 @@ class BladesRoll extends DocumentSheet {
       }
     };
   }
+
+  static GetDieClass(rollType: RollType, rollResult: number|false|RollResult, dieVal: number, dieIndex: number) {
+    switch (rollType) {
+      case RollType.Resistance: {
+        if (dieVal === 6 && dieIndex <= 1 && rollResult === -1) {
+          return "blades-die-critical";
+        }
+        if (dieIndex === 0) {
+          return "blades-die-resistance";
+        }
+        return "blades-die-fail";
+      }
+      case RollType.IndulgeVice: {
+        if (dieIndex === 0) {
+          return "blades-die-indulge-vice";
+        }
+        return "blades-die-fail";
+      }
+      default: break;
+    }
+
+    if (dieVal === 6 && dieIndex <= 1 && rollResult === RollResult.critical) {
+      dieVal++;
+    }
+    return [
+      "",
+      "blades-die-fail",
+      "blades-die-fail",
+      "blades-die-fail",
+      "blades-die-partial",
+      "blades-die-partial",
+      "blades-die-success",
+      "blades-die-critical"
+    ][dieVal];
+  }
+
+  static GetDieImage(
+    rollType: RollType,
+    rollResult: number|false|RollResult,
+    dieVal: number,
+    dieIndex: number,
+    isGhost = false,
+    isCritical = false
+  ) {
+    let imgPath = "systems/eunos-blades/assets/dice/image/";
+    if (isGhost) {
+      imgPath += "ghost-";
+    } else if ([RollType.Resistance, RollType.IndulgeVice].includes(rollType)) {
+      imgPath += "grad-";
+    }
+    imgPath += dieVal;
+    if (!isGhost && dieVal === 6 && dieIndex <= 1 && isCritical) {
+      imgPath += "-crit";
+    }
+    imgPath += ".webp";
+
+    return imgPath;
+  }
+
   // #endregion
 
   // #region STATIC METHODS: New Roll Creation ~
@@ -1588,12 +1647,12 @@ class BladesRoll extends DocumentSheet {
     // delete BladesRoll.Current[rollID];
   }
 
-  static GetUserPermissions(config: BladesRoll.Config): Record<RollPermissions, string[]> {
+  static GetUserPermissions(config: BladesRoll.Config): Record<RollPermissions, IDString[]> {
 
     // === ONE === GET USER IDS
 
     // Get user ID of GM
-    const GMUserID = game.users.find((user) => user.isGM)?.id;
+    const GMUserID = game.users.find((user) => user.isGM)?.id as IDString;
     if (!GMUserID) {
       throw new Error("[BladesRoll.GetUserPermissions()] No GM found!");
     }
@@ -1601,10 +1660,10 @@ class BladesRoll extends DocumentSheet {
     // Get user IDs of players
     const playerUserIDs = game.users
       .filter((user) => BladesPC.IsType(user.character) && !user.isGM && typeof user.id === "string")
-      .map((user) => user.id as string);
+      .map((user) => user.id as IDString);
 
     // Prepare user ID permissions object
-    const userIDs: Record<RollPermissions, string[]> = {
+    const userIDs: Record<RollPermissions, IDString[]> = {
       [RollPermissions.GM]: [GMUserID],
       [RollPermissions.Primary]: [],
       [RollPermissions.Participant]: [],
@@ -1619,7 +1678,7 @@ class BladesRoll extends DocumentSheet {
       BladesPC.IsType(rollPrimaryDoc)
       && U.pullElement(playerUserIDs, rollPrimaryDoc.primaryUser?.id)
     ) {
-      userIDs[RollPermissions.Primary].push(rollPrimaryDoc.primaryUser?.id as string);
+      userIDs[RollPermissions.Primary].push(rollPrimaryDoc.primaryUser?.id as IDString);
 
     } else if (
       BladesCrew.IsType(rollPrimaryDoc)
@@ -1680,18 +1739,18 @@ class BladesRoll extends DocumentSheet {
     /**
      * Returns the user ids of potential BladesRollParticipants defined in the provided data schema.
      * @param {BladesRoll.RollParticipantData} participantData
-     * @param {string[]} unassignedIDs
+     * @param {IDString[]} unassignedIDs
      */
     function getParticipantDocUserIDs(
       participantData: BladesRoll.RollParticipantData,
-      unassignedIDs: string[]
-    ): string[] {
+      unassignedIDs: IDString[]
+    ): IDString[] {
       return getParticipantDocs(participantData)
         .map((pDoc) => {
           if (
             BladesPC.IsType(pDoc) && typeof pDoc.primaryUser?.id === "string"
           ) {
-            return pDoc.primaryUser.id;
+            return pDoc.primaryUser.id as IDString;
           } else if (
             BladesCrew.IsType(pDoc)
             || BladesItem.IsType(pDoc, BladesItemType.cohort_gang, BladesItemType.cohort_expert)
@@ -1716,8 +1775,8 @@ class BladesRoll extends DocumentSheet {
     const userIDs = BladesRoll.GetUserPermissions(config);
 
     // Prepare roll user flag data
-    const userFlagData: Record<string, RollPermissions> = {};
-    (Object.entries(userIDs) as Array<[RollPermissions, string[]]>)
+    const userFlagData: Record<IDString, RollPermissions> = {};
+    (Object.entries(userIDs) as Array<[RollPermissions, IDString[]]>)
       .forEach(([rollPermission, idsArray]) => {
         for (const id of idsArray) {
           userFlagData[id] = rollPermission;
@@ -1914,16 +1973,16 @@ class BladesRoll extends DocumentSheet {
     const {rollPrimaryDoc} = rollPrimary;
 
     // Create a random ID for storing the roll instance
-    const rID = randomID();
+    const rID = randomID() as IDString;
 
     // Derive user flag data depending on given roll type and subtype
-    let userIDs: Record<RollPermissions, string[]>;
+    let userIDs: Record<RollPermissions, IDString[]>;
     let flagUpdateData: BladesRoll.FlagData;
 
     // Construct Config object
     const configData: BladesRoll.Config = {
       ...config,
-      rollUserID: rollUser.id,
+      rollUserID: rollUser.id as IDString,
       rollPrimaryData
     };
 
@@ -3673,70 +3732,56 @@ class BladesRoll extends DocumentSheet {
     return this.isRollingZero ? this.dieVals.slice(1) : this.dieVals;
   }
 
-  private getDieClass(val: number, i: number) {
-    switch (this.rollType) {
-      case RollType.Resistance: {
-        if (val === 6 && i <= 1 && this.rollResult === -1) {
-          return "blades-die-critical";
-        }
-        if (i === 0) {
-          return "blades-die-resistance";
-        }
-        return "blades-die-fail";
-      }
-      case RollType.IndulgeVice: {
-        if (i === 0) {
-          return "blades-die-indulge-vice";
-        }
-        return "blades-die-fail";
-      }
-      default: break;
-    }
-
-    if (val === 6 && i <= 1 && this.rollResult === RollResult.critical) {
-      val++;
-    }
-    return [
-      "",
-      "blades-die-fail",
-      "blades-die-fail",
-      "blades-die-fail",
-      "blades-die-partial",
-      "blades-die-partial",
-      "blades-die-success",
-      "blades-die-critical"
-    ][val];
-  }
-
-  private getDieImage(val: number, i: number, isGhost = false) {
-    let imgPath = "systems/eunos-blades/assets/dice/image/";
-    if (isGhost) {
-      imgPath += "ghost-";
-    } else if ([RollType.Resistance, RollType.IndulgeVice].includes(this.rollType)
-      || this.rollDowntimeAction) {
-      imgPath += "grad-";
-    }
-    imgPath += val;
-    if (!isGhost && val === 6 && i <= 1 && this.isCritical) {
-      imgPath += "-crit";
-    }
-    imgPath += ".webp";
-
-    return imgPath;
-  }
-
-  get dieValsHTML(): string {
-    eLog.checkLog3("rollCollab", "[get dieValsHTML()]", {roll: this, dieVals: this.dieVals});
+  get finalDiceData(): BladesRoll.DieData[] {
+    eLog.checkLog3("rollCollab", "[get finalDiceData()]", {roll: this, dieVals: this.dieVals});
     const dieVals = [...this.dieVals];
     const ghostNum = this.isRollingZero ? dieVals.shift() : null;
+    const isCritical = dieVals.filter((val) => val === 6).length >= 2;
 
-    return [
-      ...dieVals.map((val, i) => `<span class='blades-die ${this.getDieClass(val, i)} blades-die-${val}'><img src='${this.getDieImage(val, i)}' /></span>`),
-      ghostNum ? `<span class='blades-die blades-die-ghost blades-die-${ghostNum}'><img src='${this.getDieImage(ghostNum, 0, true)}' /></span>` : null
-    ]
-      .filter((val): val is string => typeof val === "string")
-      .join("");
+    const diceData: BladesRoll.DieData[] = dieVals.map((val, i) => ({
+      value: val,
+      dieClass: BladesRoll.GetDieClass(this.rollType, this.rollResult, val, i),
+      dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, val, i, false, isCritical)
+    }));
+
+    if (ghostNum) {
+      diceData.push({
+        value: ghostNum,
+        dieClass: "blades-die-ghost",
+        dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, ghostNum, diceData.length, true, false)
+      });
+    }
+
+    return diceData;
   }
+
+  // get dieValsHTML(): string {
+  //   eLog.checkLog3("rollCollab", "[get dieValsHTML()]", {roll: this, dieVals: this.dieVals});
+  //   const dieVals = [...this.dieVals];
+  //   const ghostNum = this.isRollingZero ? dieVals.shift() : null;
+  //   const isCritical = dieVals.filter((val) => val === 6).length >= 2;
+
+  //   const diceData = dieVals.map((val, i) => ({
+  //     value: val,
+  //     dieClass: BladesRoll.GetDieClass(this.rollType, this.rollResult, val, i),
+  //     dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, val, i, false, isCritical)
+  //   }));
+
+  //   if (ghostNum) {
+  //     diceData.push({
+  //       value: ghostNum,
+  //       dieClass: "blades-die-ghost",
+  //       dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, ghostNum, diceData.length, true, false)
+  //     });
+  //   }
+
+  //   return [
+  //     ...dieVals.map((val, i) => `<span class='blades-die ${dieClass} blades-die-${value}'><img src='${dieImage}' /></span>`),
+  //     ghostNum ? `<span class='blades-die blades-die-ghost blades-die-${ghostNum}'><img src='${this.getDieImage(ghostNum, 0, true)}' /></span>` : null
+  //   ]
+  //     .filter((val): val is string => typeof val === "string")
+  //     .join("");
+  // }
   // #endregion
 
   // #region RESULT GETTERS ~
@@ -3823,10 +3868,12 @@ class BladesRoll extends DocumentSheet {
         await this.setRollPhase(RollPhase.Complete);
         const {id: csqID} = this.rollConsequence ?? {};
         const {chatID} = this.rollConsequence?.resistTo ?? {};
-        if (csqID && chatID) {
-          const resistedCsq = await BladesConsequence.GetFromID(chatID, csqID);
+        const chatMessage = game.messages.get(chatID ?? "");
+        if (chatMessage && csqID) {
+          const resistedCsq = BladesConsequence.GetFromChatMessage(chatMessage, csqID);
           if (resistedCsq && this.rollConsequence?.resistTo) {
-            await resistedCsq.applyResistedConsequence("resist", await this.getResultHTML(chatID, {icon: this.rollConsequence.resistTo.icon ?? ""}));
+            const rollHTML = await renderTemplate(this.resultChatTemplate, Object.assign(this, {icon: this.rollConsequence.resistTo.icon ?? ""}));
+            await resistedCsq.applyResistedConsequence("resist", rollHTML);
           }
         }
         if (BladesPC.IsType(this.rollPrimaryDoc)) {
@@ -3867,14 +3914,7 @@ class BladesRoll extends DocumentSheet {
     return chatSpeaker;
   }
 
-  async getResultHTML(chatMsgID: string, context: Record<string, string> = {}) {
-
-    context = Object.assign(
-      this,
-      context,
-      {chatMsgID}
-    );
-
+  get resultChatTemplate(): string {
     const templateParts: string[] = [
       "systems/eunos-blades/templates/chat/roll-result/",
       U.lCase(this.rollType)  // action
@@ -3905,10 +3945,7 @@ class BladesRoll extends DocumentSheet {
 
     templateParts.push(".hbs");
 
-    return await renderTemplate(
-      templateParts.join(""),
-      context
-    );
+    return templateParts.join("");
   }
 
   _chatMessageID?: string;
@@ -3941,14 +3978,15 @@ class BladesRoll extends DocumentSheet {
     const csqParent$ = clickTarget$.closest(".comp.consequence-display-container");
     const csqID = csqParent$.data("csq-id");
     const chatElem$ = csqParent$.closest(".blades-roll");
-    const chatID = chatElem$.data("chat-id");
+    const chatMessage$ = chatElem$.closest(".chat-message");
+    const chatID = chatMessage$.data("messageId") as IDString;
     const chatMessage = game.messages.get(chatID);
     if (!chatMessage) { return; }
     const csqs = await BladesConsequence.GetFromChatMessage(chatMessage);
     const thisCsq = csqs.find((csq) => csq.id === csqID);
     if (!thisCsq) { return; }
     switch (clickTarget$.data("action")) {
-      case "accept-consequence": return thisCsq.acceptConsequence();
+      case "accept-consequence": return thisCsq.accept();
       case "resist-consequence": return thisCsq.resistConsequence();
       case "armor-consequence": return thisCsq.resistArmorConsequence();
       case "special-consequence": return thisCsq.resistSpecialArmorConsequence();

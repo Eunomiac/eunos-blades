@@ -86,7 +86,7 @@ class GlobalGetter {
     const conf = {
       rollType: RollType.Action,
       rollTrait: ActionTrait.finesse,
-      rollUserID: game.users.find((user) => user.character?.name === "Alistair")?.id as string,
+      rollUserID: game.users.find((user) => user.character?.name === "Alistair")?.id as IDString,
       rollPrimaryData: {
         rollPrimaryID: pc.id,
         rollPrimaryDoc: pc,
@@ -478,7 +478,7 @@ class GlobalGetter {
             Record<
               RollResult.partial | RollResult.fail,
               Record<
-                string,
+                IDString,
                 BladesRoll.ConsequenceData
               >
             >
@@ -494,7 +494,7 @@ class GlobalGetter {
     if (!pc) { return; }
     const conf = {
       rollType: RollType.Resistance,
-      rollUserID: game.users.find((user) => user.character?.name === "Alistair")?.id as string,
+      rollUserID: game.users.find((user) => user.character?.name === "Alistair")?.id as IDString,
       rollPrimaryData: {
         rollPrimaryID: pc.id,
         rollPrimaryDoc: pc,
@@ -508,7 +508,7 @@ class GlobalGetter {
       },
       resistanceData: {
         consequence: {
-          id: randomID(),
+          id: randomID() as IDString,
           name: "Shattered Knee",
           icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm3],
           type: ConsequenceType.ProwessHarm3,
@@ -516,7 +516,7 @@ class GlobalGetter {
           attribute: AttributeTrait.prowess,
           attributeVal: 3,
           resistTo: {
-            id: randomID(),
+            id: randomID() as IDString,
             name: "Twisted Knee",
             icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm2],
             type: ConsequenceType.ProwessHarm2,
@@ -582,7 +582,6 @@ class GlobalGetter {
 // #endregion Globals
 
 // #region ████████ SYSTEM INITIALIZATION: Initializing Blades In The Dark System on 'Init' Hook ████████
-
 Hooks.once("init", async () => {
   // Initialize Game object
   game.eunoblades = {
@@ -591,11 +590,11 @@ Hooks.once("init", async () => {
     Director: BladesDirector.getInstance(),
     Tooltips: new WeakMap<HTMLElement, gsap.core.Timeline>()
   } as EunoBlades.Game;
+  eLog.display("Initializing Blades In the Dark System");
 
   // Register System Settings
   registerSettings();
   CONFIG.debug.hooks = U.getSetting("debugHooks") as boolean;
-  eLog.display("Initializing Blades In the Dark System");
 
   // Initialize Fonts & Gsap Animations
   GsapInitialize();

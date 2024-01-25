@@ -18,9 +18,12 @@ class BladesDirector {
         // Define hook that re-renders overlay on scene change.
         Hooks.on("renderApplication", async () => {
             game.eunoblades.Director.initClockKeySection(true);
-            await game.eunoblades.ClockKeeper.update({ "system.targetScene": game.scenes.current.id });
-            game.eunoblades.ClockKeeper.render();
+            if (game.user.isGM) {
+                await game.eunoblades.ClockKeeper.update({ "system.targetScene": game.scenes.current.id });
+                game.eunoblades.ClockKeeper.render();
+            }
         });
+        // game.eunoblades.Director.renderOverlay_SocketResponse();
         // Return asynchronous template loading.
         return loadTemplates([
             "systems/eunos-blades/templates/overlay/blades-overlay.hbs",
@@ -534,7 +537,7 @@ class BladesDirector {
     clearTooltips() {
         // Look for tooltip elements in the overlay container, and reverse their timelines.
         game.eunoblades.Director.tooltipSection$.find(".tooltip").each((i, el) => {
-            game.eunoblades.Tooltips.get(el)?.reverse();
+            U.gsap.effects.blurRemoveTooltip(el);
         });
     }
     initTooltipSection() {

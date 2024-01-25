@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // #region IMPORTS ~
 import {ApplyTooltipAnimations, ApplyConsequenceAnimations} from "../core/gsap";
+import {Position, Effect, RollResult} from "../core/constants";
 
 import BladesRoll from "./BladesRoll";
 import BladesConsequence from "./BladesConsequence";
@@ -9,9 +10,17 @@ import {ChatMessageDataConstructorData} from "@league-of-foundry-developers/foun
 // #endregion
 
 namespace BladesChat {
-  export interface Data extends ChatMessageDataConstructorData {
-    csqData?: Record<string, BladesRoll.ConsequenceData>
-   }
+  export interface Data extends ChatMessageDataConstructorData { }
+
+  export interface RollResultFlags extends BladesRoll.FlagData {
+    template: string,
+    finalPosition: Position,
+    finalEffect: Effect,
+    rollResult: number|false|RollResult,
+    rollTraitVerb: string,
+    rollTraitPastVerb: string,
+    finalDiceData: BladesRoll.DieData[]
+  }
 }
 
 class BladesChat extends ChatMessage {
@@ -24,10 +33,12 @@ class BladesChat extends ChatMessage {
 
   static Initialize() {
     // let lastMessageID: string|false = Array.from(game.messages).pop()?.id ?? "";
-    Hooks.on("renderChatMessage", (_msg: ChatMessage, html: JQuery<HTMLElement>) => {
+    Hooks.on("renderChatMessage", (msg: BladesChat, html: JQuery<HTMLElement>) => {
       ApplyTooltipAnimations(html);
-      ApplyConsequenceAnimations(html);
-      BladesConsequence.ApplyChatListeners(html);
+      if (msg.isRollResult) {
+        ApplyConsequenceAnimations(html);
+        BladesConsequence.ApplyChatListeners(html);
+      }
       html.addClass("display-ok");
       // if (lastMessageID && _msg.id === lastMessageID) {
       //   setTimeout(() => {
@@ -51,38 +62,104 @@ class BladesChat extends ChatMessage {
       "systems/eunos-blades/templates/chat/roll-result/fortune-incarceration.hbs",
       "systems/eunos-blades/templates/chat/roll-result/fortune-engagement.hbs",
       "systems/eunos-blades/templates/chat/roll-result/indulgevice.hbs",
-      "systems/eunos-blades/templates/chat/roll-result/resistance.hbs"
+      "systems/eunos-blades/templates/chat/roll-result/resistance.hbs",
+
+      "systems/eunos-blades/templates/chat/components/die.hbs"
     ]);
   }
 
   static async ConstructRollOutput(rollInst: BladesRoll): Promise<BladesChat> {
+    // Expand rollInst flag data to include results & consequences
+    const {
+      flagData,
+      finalPosition,
+      finalEffect,
+      rollResult,
+      rollTraitVerb,
+      rollTraitPastVerb,
+      finalDiceData,
+      resultChatTemplate
+    } = rollInst;
 
-    const messageData: BladesChat.Data = {
-      speaker: rollInst.getSpeaker(BladesChat.getSpeaker()),
-      content: await rollInst.getResultHTML(""),
-      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      csqData: rollInst.csqData
+    const rollFlags: BladesChat.RollResultFlags & Record<string, unknown> = {
+      template: resultChatTemplate,
+      ...flagData,
+      finalPosition,
+      finalEffect,
+      rollResult,
+      rollTraitVerb: rollTraitVerb ?? "",
+      rollTraitPastVerb: rollTraitPastVerb ?? rollTraitVerb ?? "",
+      finalDiceData
     };
 
-    const chatMessage = await BladesChat.create(messageData, {}) as BladesChat;
-    await chatMessage.update({content: await rollInst.getResultHTML(chatMessage.id as string)});
-    chatMessage.rollInst = rollInst;
-    return chatMessage;
+    return await BladesChat.create({
+      speaker: rollInst.getSpeaker(BladesChat.getSpeaker()),
+      content: await renderTemplate(resultChatTemplate, rollFlags),
+      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+      flags: rollFlags
+    }) as BladesChat;
   }
 
+  get allRollConsequencesData():
+    Record<Position,
+      Record<RollResult,
+        Record<IDString, BladesRoll.ConsequenceData>
+    >> {
+    const returnData:
+      Record<Position,
+        Record<RollResult,
+          Record<IDString, BladesRoll.ConsequenceData>
+        >
+      > = {
+        [Position.controlled]: {
+          [RollResult.critical]: {},
+          [RollResult.success]: {},
+          [RollResult.partial]: {},
+          [RollResult.fail]: {}
+        },
+        [Position.risky]: {
+          [RollResult.critical]: {},
+          [RollResult.success]: {},
+          [RollResult.partial]: {},
+          [RollResult.fail]: {}
+        },
+        [Position.desperate]: {
+          [RollResult.critical]: {},
+          [RollResult.success]: {},
+          [RollResult.partial]: {},
+          [RollResult.fail]: {}
+        }
+      };
+    const {consequenceData} = this.flags;
+    if (!consequenceData) { return returnData; }
 
-  _rollInst?: BladesRoll;
+    Object.entries(consequenceData)
+      .forEach(([position, positionData]) => {
+        Object.entries(positionData)
+          .forEach(([rollResult, csqData]) => {
+            returnData[position as Position][rollResult as RollResult] = csqData;
+          });
+      });
 
-  get rollInst(): BladesRoll|undefined { return this._rollInst; }
+    return returnData;
+  }
 
-  set rollInst(rollInst: BladesRoll|undefined) { this._rollInst = rollInst; }
+  get rollConsequencesData(): BladesRoll.ConsequenceData[] {
+    if (!this.isRollResult) { return []; }
+    const {finalPosition, rollResult, consequenceData} = this.flags as BladesChat.RollResultFlags;
+    if (typeof rollResult !== "string" || !([RollResult.partial, RollResult.fail] as RollResult[]).includes(rollResult)) { return []; }
+    const activeConsequences = consequenceData
+      ?.[finalPosition]
+      ?.[rollResult as RollResult.partial | RollResult.fail] ?? {};
+    return Object.values(activeConsequences);
+  }
 
   get elem(): HTMLElement|undefined { return $("#chat-log").find(`.chat-message[data-message-id="${this.id}"]`)[0]; }
 
   get isRollResult() { return this.type === CONST.CHAT_MESSAGE_TYPES.ROLL; }
 
-  async reRender(html: string) {
-    this.update({content: html});
+  async regenerateFromFlags() {
+    await this.update({content: await renderTemplate(this.flags.template, this.flags)});
   }
 
   override async render(force: boolean) {
@@ -98,8 +175,9 @@ class BladesChat extends ChatMessage {
 
 
 interface BladesChat {
+  get id(): IDString;
   content?: string;
-
+  flags: BladesChat.RollResultFlags;
 }
 
 export default BladesChat;

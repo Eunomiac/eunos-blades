@@ -27,6 +27,7 @@ import "./blades-dialog";
 import "./blades-clock";
 import "./blades-tags";
 import "./blades-chat";
+import "./blades-consequence";
 
 import "./blades-target-link";
 

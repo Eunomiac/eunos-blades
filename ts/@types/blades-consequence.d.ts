@@ -15,17 +15,17 @@ declare global {
     export namespace Data {
 
       export interface Base {
-        id: string,
+        id: IDString,
         name: string,
         type: ConsequenceType,
         isAccepted?: boolean
       }
 
       export interface Main extends Base {
-        chatID: string,
-        userID: string,
-        rollID: string,
-        primaryID: string,
+        chatID: IDString,
+        userID: IDString,
+        rollID: IDString,
+        primaryID: IDString,
         primaryType: BladesRoll.PrimaryDocType,
         position: Position,
         effect: Effect,
@@ -33,7 +33,7 @@ declare global {
       }
 
       interface Resistable extends Main {
-        attribute?: AttributeTrait,
+        attribute?: AttributeTrait|"",
         attributeVal?: number,
         resistTo?: Base,
         armorTo?: Base,

@@ -257,7 +257,7 @@ class BladesDialog extends Dialog {
         rollCsqData[rollPos][rollResult] ??= {};
         while (Object.values(rollCsqData[rollPos][rollResult as RollResult.partial|RollResult.fail]).length < 3) {
           const blankCsqData: BladesRoll.ConsequenceData = {
-            id: randomID(),
+            id: randomID() as IDString,
             name: "",
             type: "",
             attribute: ""
@@ -581,7 +581,7 @@ class BladesDialog extends Dialog {
   async spawnBlankResistOption(event: ClickEvent) {
     if (!this.csqData) { return; }
     const [rollPosition, rollResult, csqID] = this.getCsqDataFromElem(event.currentTarget);
-    const rCsqID = randomID();
+    const rCsqID = randomID() as IDString;
     this.csqData[rollPosition as Position][rollResult as RollResult.partial|RollResult.fail][csqID]
       .resistOptions = {
         [rCsqID]: {
@@ -608,7 +608,7 @@ class BladesDialog extends Dialog {
     const rType = C.ResistedConsequenceTypes[cType] ?? undefined;
     const resistOptions: Record<string, BladesRoll.ConsequenceResistOption> = {};
     for (let i = 0; i < rOptions.length; i++) {
-      const rID = randomID();
+      const rID = randomID() as IDString;
       resistOptions[rID] = {
         id: rID,
         name: rOptions[i],

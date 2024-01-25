@@ -1911,7 +1911,12 @@ const loc = (locRef: string, formatDict: Record<string, string> = {}) => {
   return locRef;
 };
 
-const getSetting = (setting: string) => game.settings.get(C.SYSTEM_ID, setting);
+const getSetting = (setting: string) => {
+  if (game.settings.settings.has(`${C.SYSTEM_ID}.${setting}`)) {
+    return game.settings.get(C.SYSTEM_ID, setting);
+  }
+  return undefined;
+};
 
 function getTemplatePath(subFolder: string, fileName: string): string
 function getTemplatePath(subFolder: string, fileName: string[]): string[]

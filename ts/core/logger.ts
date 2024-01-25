@@ -46,7 +46,7 @@ const STYLES = {
   },
   display: {
     color: C.Colors.bGOLD,
-    "font-family": "Kirsty Rg",
+    "font-family": "Kirsty",
     "font-size": "16px",
     "margin-left": "-100px",
     padding: "0 100px"
@@ -71,8 +71,18 @@ const STYLES = {
   }
 };
 
+const {base: baseStyles, ...typeStyles} = STYLES;
+const STYLELINES = Object.fromEntries(
+  Object.entries(typeStyles)
+    .map(([styleName, styles]) => [
+      styleName,
+      Object.entries({...baseStyles, ...styles})
+        .map(([prop, val]) => `${prop}: ${val};`).join(" ")
+    ])
+);
+
 const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...content: [string, ...unknown[]]) => {
-  if (!(type === "error" || CONFIG.debug.logging)) { return; }
+  if (!(["error", "display"].includes(type) || CONFIG.debug.logging)) { return; }
   const lastElem = U.getLast(content);
 
   let dbLevel: 0|1|2|3|4|5 = typeof lastElem === "number" && [0, 1, 2, 3, 4, 5].includes(lastElem)
@@ -98,17 +108,13 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
       dbLevel = Math.min(3, Math.max(1, dbLevel - 2)) as 1|2|3;
     }
   }
-  if (U.getSetting("debug") as 0|1|2|3|4|5 < dbLevel) { return; }
+  if ((U.getSetting("debug") ?? 5) as 0|1|2|3|4|5 < dbLevel) { return; }
   if (type === "log") {
     type = `${type}${dbLevel}`;
   }
   const stackTrace = type === "display"
     ? null
     : getStackTrace(LOGGERCONFIG.stackTraceExclusions[type as KeyOf<typeof LOGGERCONFIG["stackTraceExclusions"]>] ?? []);
-  const styleLine = Object.entries({
-    ...STYLES.base,
-    ...STYLES[type] ?? {}
-  }).map(([prop, val]) => `${prop}: ${val};`).join(" ");
 
   let logFunc;
   if (stackTrace) {
@@ -121,12 +127,12 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
 
   if (data.length === 0) {
     if (typeof message === "string") {
-      logFunc(`%c${message}`, styleLine);
+      logFunc(`%c${message}`, STYLELINES[type]);
     } else {
       logFunc("%o", message);
     }
   } else {
-    logFunc(`%c${message}${typeof data[0] === "string" ? "" : " %o"}`, styleLine, data.shift());
+    logFunc(`%c${message}${typeof data[0] === "string" ? "" : " %o"}`, STYLELINES[type], data.shift());
     data.forEach((line) => {
       if (typeof line === "string") {
         console.log(line);

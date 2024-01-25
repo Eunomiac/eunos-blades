@@ -1,22 +1,19 @@
 {{eLog "CHAT ACTION ROLL RESULT CONTEXT" this}}
 
-
-
 <div class="blades-roll roll-type-{{case "lower" rollType}} roll-position-{{finalPosition}} roll-effect-{{finalEffect}} roll-result-{{rollResult}}"
-  data-chat-id="{{chatMsgID}}"
   data-roll-id="{{rollID}}"
-  data-user-id="{{flagData.rollUserID}}"
-  data-primary-id="{{flagData.rollPrimaryData.rollPrimaryID}}"
-  data-primary-type="{{flagData.rollPrimaryData.rollPrimaryType}}"
+  data-user-id="{{rollUserID}}"
+  data-primary-id="{{rollPrimaryData.rollPrimaryID}}"
+  data-primary-type="{{rollPrimaryData.rollPrimaryType}}"
   data-position="{{finalPosition}}"
   data-effect="{{finalEffect}}"
   data-result="{{rollResult}}"
-  data-roll-phase="{{flagData.rollPhase}}">
+  data-roll-phase="{{rollPhase}}">
 
   {{!-- Roll Primary Portrait --}}
   <div class="chat-message-speaker-portrait-wrapper">
   <div class="chat-message-speaker-portrait">
-    <img class="portrait-image" src="{{rollPrimary.rollPrimaryImg}}" />
+    <img class="portrait-image" src="{{rollPrimaryData.rollPrimaryImg}}" />
     <div class="chat-message-speaker-portrait-overlay"></div>
   </div>
   </div>
@@ -32,15 +29,19 @@
   </h1>
 
   {{!-- Opposition --}}
-  {{#if rollOpposition}}
+  {{#if rollOppData}}
   <h3 class="chat-header roll-opposition">
     <span class="vs">vs.</span>
-    <span class="opp-name">{{case "title" rollOpposition.rollOppName}}</span>
+    <span class="opp-name">{{case "title" rollOppData.rollOppName}}</span>
   </h3>
   {{/if}}
 
   {{!-- Dice Rolls --}}
-  <div class="dice-roll-strip">{{{dieValsHTML}}}</div>
+  <div class="dice-roll-strip">
+    {{#each finalDiceData}}
+    {{> "systems/eunos-blades/templates/chat/components/die.hbs" }}
+    {{/each}}
+  </div>
 
   {{!-- Position / Result / Effect --}}
   <div class="roll-outcome-container roll-result-{{rollResult}} roll-position-{{finalPosition}} roll-effect-{{finalEffect}} flex-horizontal full-width">
@@ -87,13 +88,12 @@
   {{#if (test (test rollResult "==" "fail") "||" (test rollResult "==" "partial"))}}
   {{!-- Consequences --}}
   <div class="consequence-container flex-vertical full-width">
-  {{#with (lookup (lookup flagData.consequenceData finalPosition) rollResult) as |csqData|}}
+  {{#with (lookup (lookup consequenceData finalPosition) rollResult) as |csqData|}}
   {{#each csqData as |cData cIndex|}}
     {{eLog "ConsequenceContainer" cIndex csqData cData}}
     {{#if cData.resistTo}}
     {{> "systems/eunos-blades/templates/components/consequence.hbs" cData
-      flagData=../../flagData
-      chatID=../../chatMsgID }}
+      flagData=../../flagData }}
     {{/if}}
   {{/each}}
   {{/with}}

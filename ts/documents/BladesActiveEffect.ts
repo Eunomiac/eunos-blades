@@ -283,7 +283,7 @@ class BladesActiveEffect extends ActiveEffect {
   static ThrottleCustomFunc(actor: BladesActor, data: BladesCustomFuncData) {
     const {funcName, funcData, isReversing, effect} = data;
     if (!actor.id) { return; }
-    eLog.display(`Throttling Func: ${funcName}(${funcData}, ${isReversing})`);
+    eLog.checkLog3("activeEffect", `Throttling Func: ${funcName}(${funcData}, ${isReversing})`);
     // Is there a currently-running function for this actor?
     if (actor.id && actor.id in FUNCQUEUE) {
       // Is this a duplicate of a function already queued?
@@ -298,7 +298,7 @@ class BladesActiveEffect extends ActiveEffect {
       return;
     }
     // If not, create FUNCQUEUE entry and run first function.
-    eLog.display("... Creating New FUNCQUEUE, RUNNING:");
+    eLog.checkLog3("activeEffect", "... Creating New FUNCQUEUE, RUNNING:");
     FUNCQUEUE[actor.id] = {
       curFunc: BladesActiveEffect.RunCustomFunc(actor, CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing)),
       queue: []
@@ -314,13 +314,13 @@ class BladesActiveEffect extends ActiveEffect {
       const {funcName, funcData, isReversing, effect} = FUNCQUEUE[actor.id].queue.shift() ?? {};
       if (!funcName || !(funcName in CUSTOMFUNCS)) { return; }
       if (!funcData) { return; }
-      eLog.display(`Progressing Queue: ${funcName}(${funcData}, ${isReversing}) -- ${FUNCQUEUE[actor.id].queue.length} remaining funcs.`);
+      eLog.checkLog3("activeEffect", `Progressing Queue: ${funcName}(${funcData}, ${isReversing}) -- ${FUNCQUEUE[actor.id].queue.length} remaining funcs.`);
       FUNCQUEUE[actor.id].curFunc = BladesActiveEffect.RunCustomFunc(
         actor,
         CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing)
       );
     } else {
-      eLog.display("Function Queue Complete! Deleting.");
+      eLog.checkLog3("activeEffect", "Function Queue Complete! Deleting.");
       delete FUNCQUEUE[actor.id];
     }
   }

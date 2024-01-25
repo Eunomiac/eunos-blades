@@ -1434,6 +1434,54 @@ class BladesRoll extends DocumentSheet {
             }
         };
     }
+    static GetDieClass(rollType, rollResult, dieVal, dieIndex) {
+        switch (rollType) {
+            case RollType.Resistance: {
+                if (dieVal === 6 && dieIndex <= 1 && rollResult === -1) {
+                    return "blades-die-critical";
+                }
+                if (dieIndex === 0) {
+                    return "blades-die-resistance";
+                }
+                return "blades-die-fail";
+            }
+            case RollType.IndulgeVice: {
+                if (dieIndex === 0) {
+                    return "blades-die-indulge-vice";
+                }
+                return "blades-die-fail";
+            }
+            default: break;
+        }
+        if (dieVal === 6 && dieIndex <= 1 && rollResult === RollResult.critical) {
+            dieVal++;
+        }
+        return [
+            "",
+            "blades-die-fail",
+            "blades-die-fail",
+            "blades-die-fail",
+            "blades-die-partial",
+            "blades-die-partial",
+            "blades-die-success",
+            "blades-die-critical"
+        ][dieVal];
+    }
+    static GetDieImage(rollType, rollResult, dieVal, dieIndex, isGhost = false, isCritical = false) {
+        let imgPath = "systems/eunos-blades/assets/dice/image/";
+        if (isGhost) {
+            imgPath += "ghost-";
+        }
+        else if ([RollType.Resistance, RollType.IndulgeVice].includes(rollType)) {
+            imgPath += "grad-";
+        }
+        imgPath += dieVal;
+        if (!isGhost && dieVal === 6 && dieIndex <= 1 && isCritical) {
+            imgPath += "-crit";
+        }
+        imgPath += ".webp";
+        return imgPath;
+    }
     // #endregion
     // #region STATIC METHODS: New Roll Creation ~
     static Current = {};
@@ -1540,7 +1588,7 @@ class BladesRoll extends DocumentSheet {
         /**
          * Returns the user ids of potential BladesRollParticipants defined in the provided data schema.
          * @param {BladesRoll.RollParticipantData} participantData
-         * @param {string[]} unassignedIDs
+         * @param {IDString[]} unassignedIDs
          */
         function getParticipantDocUserIDs(participantData, unassignedIDs) {
             return getParticipantDocs(participantData)
@@ -3223,66 +3271,49 @@ class BladesRoll extends DocumentSheet {
     get finalDieVals() {
         return this.isRollingZero ? this.dieVals.slice(1) : this.dieVals;
     }
-    getDieClass(val, i) {
-        switch (this.rollType) {
-            case RollType.Resistance: {
-                if (val === 6 && i <= 1 && this.rollResult === -1) {
-                    return "blades-die-critical";
-                }
-                if (i === 0) {
-                    return "blades-die-resistance";
-                }
-                return "blades-die-fail";
-            }
-            case RollType.IndulgeVice: {
-                if (i === 0) {
-                    return "blades-die-indulge-vice";
-                }
-                return "blades-die-fail";
-            }
-            default: break;
-        }
-        if (val === 6 && i <= 1 && this.rollResult === RollResult.critical) {
-            val++;
-        }
-        return [
-            "",
-            "blades-die-fail",
-            "blades-die-fail",
-            "blades-die-fail",
-            "blades-die-partial",
-            "blades-die-partial",
-            "blades-die-success",
-            "blades-die-critical"
-        ][val];
-    }
-    getDieImage(val, i, isGhost = false) {
-        let imgPath = "systems/eunos-blades/assets/dice/image/";
-        if (isGhost) {
-            imgPath += "ghost-";
-        }
-        else if ([RollType.Resistance, RollType.IndulgeVice].includes(this.rollType)
-            || this.rollDowntimeAction) {
-            imgPath += "grad-";
-        }
-        imgPath += val;
-        if (!isGhost && val === 6 && i <= 1 && this.isCritical) {
-            imgPath += "-crit";
-        }
-        imgPath += ".webp";
-        return imgPath;
-    }
-    get dieValsHTML() {
-        eLog.checkLog3("rollCollab", "[get dieValsHTML()]", { roll: this, dieVals: this.dieVals });
+    get finalDiceData() {
+        eLog.checkLog3("rollCollab", "[get finalDiceData()]", { roll: this, dieVals: this.dieVals });
         const dieVals = [...this.dieVals];
         const ghostNum = this.isRollingZero ? dieVals.shift() : null;
-        return [
-            ...dieVals.map((val, i) => `<span class='blades-die ${this.getDieClass(val, i)} blades-die-${val}'><img src='${this.getDieImage(val, i)}' /></span>`),
-            ghostNum ? `<span class='blades-die blades-die-ghost blades-die-${ghostNum}'><img src='${this.getDieImage(ghostNum, 0, true)}' /></span>` : null
-        ]
-            .filter((val) => typeof val === "string")
-            .join("");
+        const isCritical = dieVals.filter((val) => val === 6).length >= 2;
+        const diceData = dieVals.map((val, i) => ({
+            value: val,
+            dieClass: BladesRoll.GetDieClass(this.rollType, this.rollResult, val, i),
+            dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, val, i, false, isCritical)
+        }));
+        if (ghostNum) {
+            diceData.push({
+                value: ghostNum,
+                dieClass: "blades-die-ghost",
+                dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, ghostNum, diceData.length, true, false)
+            });
+        }
+        return diceData;
     }
+    // get dieValsHTML(): string {
+    //   eLog.checkLog3("rollCollab", "[get dieValsHTML()]", {roll: this, dieVals: this.dieVals});
+    //   const dieVals = [...this.dieVals];
+    //   const ghostNum = this.isRollingZero ? dieVals.shift() : null;
+    //   const isCritical = dieVals.filter((val) => val === 6).length >= 2;
+    //   const diceData = dieVals.map((val, i) => ({
+    //     value: val,
+    //     dieClass: BladesRoll.GetDieClass(this.rollType, this.rollResult, val, i),
+    //     dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, val, i, false, isCritical)
+    //   }));
+    //   if (ghostNum) {
+    //     diceData.push({
+    //       value: ghostNum,
+    //       dieClass: "blades-die-ghost",
+    //       dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, ghostNum, diceData.length, true, false)
+    //     });
+    //   }
+    //   return [
+    //     ...dieVals.map((val, i) => `<span class='blades-die ${dieClass} blades-die-${value}'><img src='${dieImage}' /></span>`),
+    //     ghostNum ? `<span class='blades-die blades-die-ghost blades-die-${ghostNum}'><img src='${this.getDieImage(ghostNum, 0, true)}' /></span>` : null
+    //   ]
+    //     .filter((val): val is string => typeof val === "string")
+    //     .join("");
+    // }
     // #endregion
     // #region RESULT GETTERS ~
     get isCritical() {
@@ -3366,10 +3397,12 @@ class BladesRoll extends DocumentSheet {
                 await this.setRollPhase(RollPhase.Complete);
                 const { id: csqID } = this.rollConsequence ?? {};
                 const { chatID } = this.rollConsequence?.resistTo ?? {};
-                if (csqID && chatID) {
-                    const resistedCsq = await BladesConsequence.GetFromID(chatID, csqID);
+                const chatMessage = game.messages.get(chatID ?? "");
+                if (chatMessage && csqID) {
+                    const resistedCsq = BladesConsequence.GetFromChatMessage(chatMessage, csqID);
                     if (resistedCsq && this.rollConsequence?.resistTo) {
-                        await resistedCsq.applyResistedConsequence("resist", await this.getResultHTML(chatID, { icon: this.rollConsequence.resistTo.icon ?? "" }));
+                        const rollHTML = await renderTemplate(this.resultChatTemplate, Object.assign(this, { icon: this.rollConsequence.resistTo.icon ?? "" }));
+                        await resistedCsq.applyResistedConsequence("resist", rollHTML);
                     }
                 }
                 if (BladesPC.IsType(this.rollPrimaryDoc)) {
@@ -3406,8 +3439,7 @@ class BladesRoll extends DocumentSheet {
         // chatSpeaker.alias = `${chatSpeaker.alias} Rolls ...`;
         return chatSpeaker;
     }
-    async getResultHTML(chatMsgID, context = {}) {
-        context = Object.assign(this, context, { chatMsgID });
+    get resultChatTemplate() {
         const templateParts = [
             "systems/eunos-blades/templates/chat/roll-result/",
             U.lCase(this.rollType) // action
@@ -3435,7 +3467,7 @@ class BladesRoll extends DocumentSheet {
             templateParts.push(`-${U.lCase(this.rollSubType)}`);
         }
         templateParts.push(".hbs");
-        return await renderTemplate(templateParts.join(""), context);
+        return templateParts.join("");
     }
     _chatMessageID;
     _chatMessageTemp;
@@ -3462,7 +3494,8 @@ class BladesRoll extends DocumentSheet {
         const csqParent$ = clickTarget$.closest(".comp.consequence-display-container");
         const csqID = csqParent$.data("csq-id");
         const chatElem$ = csqParent$.closest(".blades-roll");
-        const chatID = chatElem$.data("chat-id");
+        const chatMessage$ = chatElem$.closest(".chat-message");
+        const chatID = chatMessage$.data("messageId");
         const chatMessage = game.messages.get(chatID);
         if (!chatMessage) {
             return;
@@ -3473,7 +3506,7 @@ class BladesRoll extends DocumentSheet {
             return;
         }
         switch (clickTarget$.data("action")) {
-            case "accept-consequence": return thisCsq.acceptConsequence();
+            case "accept-consequence": return thisCsq.accept();
             case "resist-consequence": return thisCsq.resistConsequence();
             case "armor-consequence": return thisCsq.resistArmorConsequence();
             case "special-consequence": return thisCsq.resistSpecialArmorConsequence();

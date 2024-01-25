@@ -783,6 +783,57 @@ export const gsapEffects: Record<string, gsapEffect> = {
     },
     extendTimeline: true
   },
+  blurRemoveTooltip: {
+    effect: (tooltip, config) => {
+      const tooltip$ = $(tooltip as HTMLElement);
+      const container$ = $(config.container) ?? tooltip$.data("tooltipContainer");
+
+      const tl = U.gsap.timeline({
+        onComplete() {
+          if (container$.length) {
+            U.changeContainer(tooltip$[0], container$[0]);
+          } else {
+            tooltip$.remove();
+          }
+        }
+      })
+        .blurRemove(tooltip$[0], {ignoreMargin: true, blur: 15});
+
+      return tl;
+    },
+    defaults: {
+
+    },
+    extendTimeline: true
+  },
+  blurRevealTooltip: {
+    effect: (tooltip, config) => {
+      const tooltip$ = $(tooltip as HTMLElement);
+      return U.gsap.timeline({
+        onStart() {
+          // First check if there is already a valid, existant container element attached to the tooltip
+          if (!tooltip$.data("tooltipContainer")) {
+            tooltip$.data("tooltipContainer", tooltip$.parent()[0]);
+          }
+          U.changeContainer(tooltip$[0], game.eunoblades.Director.tooltipSection$[0]);
+        }
+      }).from(
+        tooltip$[0],
+        {
+          filter: "blur(15px)",
+          autoAlpha: 0,
+          xPercent: 50,
+          yPercent: -100,
+          scale: 1.5,
+          ease: "back.out"
+        }
+      );
+    },
+    defaults: {
+      tooltipScale: 0.75
+    },
+    extendTimeline: true
+  },
   hoverTooltip: {
     effect: (tooltip, _config) => {
       const tooltipElem = $(tooltip as HTMLElement)[0];
@@ -794,6 +845,9 @@ export const gsapEffects: Record<string, gsapEffect> = {
         paused: true,
         onStart() {
           U.changeContainer(tooltipElem, overlayContainer);
+        },
+        onComplete() {
+          U.gsap.set(tooltipElem, {filter: "none"});
         },
         onReverseComplete() {
           U.changeContainer(tooltipElem, tooltipContainer);
@@ -920,23 +974,25 @@ export function ApplyTooltipAnimations(html: JQuery<HTMLElement>) {
       $(tooltipContainer).css("position", "relative");
     }
 
-    // Register the tooltip timeline in the global map, so it can be reversed even if containing document is closed or re-rendered.
-    game.eunoblades.Tooltips.set(tooltipElem, U.gsap.effects.hoverTooltip(
-      tooltipElem,
-      {
-        scalingElems: [...$(el).find(".tooltip-scaling-elem")].filter((elem) => Boolean(elem)),
-        xMotion: $(tooltipElem).hasClass("tooltip-left") ? "-=250" : "+=200",
-        tooltipScale: $(tooltipElem).hasClass("tooltip-small") ? 1 : 1.2
-      }
-    ));
+    // // Register the tooltip timeline in the global map, so it can be reversed even if containing document is closed or re-rendered.
+    // game.eunoblades.Tooltips.set(tooltipElem, U.gsap.effects.hoverTooltip(
+    //   tooltipElem,
+    //   {
+    //     scalingElems: [...$(el).find(".tooltip-scaling-elem")].filter((elem) => Boolean(elem)),
+    //     xMotion: $(tooltipElem).hasClass("tooltip-left") ? "-=250" : "+=200",
+    //     tooltipScale: $(tooltipElem).hasClass("tooltip-small") ? 1 : 1.2
+    //   }
+    // ));
 
-    $(el).data("hoverTimeline", () => game.eunoblades.Tooltips.get(tooltipElem) as gsap.core.Timeline);
+    // $(el).data("hoverTimeline", () => game.eunoblades.Tooltips.get(tooltipElem) as gsap.core.Timeline);
     $(el).on({
       mouseenter: function() {
-        $(el).data("hoverTimeline")().play();
+        U.gsap.effects.blurRevealTooltip(tooltipElem);
+        // $(el).data("hoverTimeline")().play();
       },
       mouseleave: function() {
-        $(el).data("hoverTimeline")().reverse();
+        U.gsap.effects.blurRemoveTooltip(tooltipElem);
+        // $(el).data("hoverTimeline")().reverse();
       }
     });
   });

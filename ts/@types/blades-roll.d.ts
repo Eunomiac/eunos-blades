@@ -11,7 +11,7 @@ declare global {
     export interface Config {
       rollType: RollType,
       rollSubType?: RollSubType,
-      rollUserID: string,
+      rollUserID: IDString,
       rollTrait?: RollTrait,
       rollDowntimeAction?: DowntimeAction,
       rollClockKey?: IDString|BladesClockKey,
@@ -31,7 +31,7 @@ declare global {
         Partial<Record<
           RollResult.partial|RollResult.fail,
           Record<
-            string,
+            IDString,
             ConsequenceData
           >
         >>
@@ -133,7 +133,7 @@ declare global {
 
     export type ConsequenceResistOption = {
       name: string,
-      id: string,
+      id: IDString,
       chatID?: string,
       type?: ConsequenceType,
       typeDisplay?: string,
@@ -145,7 +145,7 @@ declare global {
     }
 
     export type AcceptedConsequenceData = {
-      id: string,
+      id: IDString,
       name: string,
       type: ConsequenceType,
       typeDisplay: string,
@@ -157,7 +157,7 @@ declare global {
     }
 
     export interface ConsequenceData {
-      id: string,
+      id: IDString,
       name: string,
       type: ConsequenceType|"",
       typeDisplay?: string,
@@ -246,6 +246,12 @@ declare global {
       participantRollTraits?: RollTrait[]
     }
 
+    export type DieData = {
+      value: number,
+      dieClass: string,
+      dieImage: string
+    }
+
     export type PrimaryDocType =
      BladesActorType.pc
     |BladesActorType.crew
@@ -264,7 +270,7 @@ declare global {
       |BladesItemOfType<BladesItemType.score>;
 
     export interface PrimaryDocData {
-      rollPrimaryID?: string,
+      rollPrimaryID?: IDString,
       rollPrimaryDoc?: PrimaryDoc,
       rollPrimaryName: string,
       rollPrimaryType: PrimaryDocType,
@@ -314,7 +320,7 @@ declare global {
       |BladesItemOfType<BladesItemType.ritual>;
 
     export interface OppositionDocData {
-      rollOppID?: string,
+      rollOppID?: IDString,
       rollOppDoc?: OppositionDoc,
       rollOppName: string,
       rollOppType: OppositionDocType,
@@ -345,7 +351,7 @@ declare global {
       |BladesItemOfType<BladesItemType.gm_tracker>;
 
     export interface ParticipantDocData {
-      rollParticipantID?: string,
+      rollParticipantID?: IDString,
       rollParticipantDoc?: ParticipantDoc,
       rollParticipantName: string,
       rollParticipantType: ParticipantDocType,

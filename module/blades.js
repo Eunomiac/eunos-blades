@@ -538,10 +538,10 @@ Hooks.once("init", async () => {
         Director: BladesDirector.getInstance(),
         Tooltips: new WeakMap()
     };
+    eLog.display("Initializing Blades In the Dark System");
     // Register System Settings
     registerSettings();
     CONFIG.debug.hooks = U.getSetting("debugHooks");
-    eLog.display("Initializing Blades In the Dark System");
     // Initialize Fonts & Gsap Animations
     GsapInitialize();
     CONFIG.Item.documentClass = BladesItemProxy;

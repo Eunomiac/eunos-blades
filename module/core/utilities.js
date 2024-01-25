@@ -1828,7 +1828,12 @@ const loc = (locRef, formatDict = {}) => {
     }
     return locRef;
 };
-const getSetting = (setting) => game.settings.get(C.SYSTEM_ID, setting);
+const getSetting = (setting) => {
+    if (game.settings.settings.has(`${C.SYSTEM_ID}.${setting}`)) {
+        return game.settings.get(C.SYSTEM_ID, setting);
+    }
+    return undefined;
+};
 /**
  *
  * @param subFolder

@@ -2,6 +2,7 @@
 import C, { BladesActorType, AttributeTrait, ConsequenceType, RollResult, RollType, Position, Effect, RollPhase } from "../core/constants.js";
 import U from "../core/utilities.js";
 import BladesRoll, { BladesRollPrimary } from "./BladesRoll.js";
+import BladesChat from "./BladesChat.js";
 class BladesConsequence {
     static async Initialize() {
         if (!game.messages) {
@@ -28,34 +29,39 @@ class BladesConsequence {
         if (!roll$[0]) {
             return;
         }
+        const chat$ = roll$.closest(".chat-message");
+        const message = game.messages.get(chat$.data("message-id"));
+        if (!message) {
+            return;
+        }
         // Add classes to the top chat message defining the roll type
         if (roll$.hasClass("roll-type-action")) {
-            roll$.closest(".chat-message").addClass("action-roll");
+            chat$.addClass("action-roll");
         }
         else if (roll$.hasClass("roll-type-resistance")) {
-            roll$.closest(".chat-message").addClass("resistance-roll");
+            chat$.addClass("resistance-roll");
         }
         else if (roll$.hasClass("roll-type-fortune")) {
-            roll$.closest(".chat-message").addClass("fortune-roll");
+            chat$.addClass("fortune-roll");
         }
         else if (roll$.hasClass("roll-type-indulgevice")) {
-            roll$.closest(".chat-message").addClass("indulgevice-roll");
+            chat$.addClass("indulgevice-roll");
         }
         // If this message is an action roll result AND there are unresolved consequences, add 'unresolved-action-roll' class.
         if (roll$.hasClass("roll-type-action")
             && Array.from(roll$.find(".comp.consequence-display-container:not(.consequence-accepted)")).length >= 1) {
-            roll$.closest(".chat-message").addClass("unresolved-action-roll");
+            chat$.addClass("unresolved-action-roll");
         }
         else {
-            roll$.closest(".chat-message").removeClass("unresolved-action-roll");
+            chat$.removeClass("unresolved-action-roll");
         }
         // If this message is the last one, add 'active-chat-roll' class and remove it from all others
         if (BladesConsequence.GetActiveRollChatID() === roll$.data("chatId")) {
             $(document).find(".chat-message").removeClass("active-chat-roll");
-            roll$.closest(".chat-message").addClass("active-chat-roll");
+            chat$.addClass("active-chat-roll");
         }
         else {
-            roll$.closest(".chat-message").removeClass("active-chat-roll");
+            chat$.removeClass("active-chat-roll");
         }
         const rollPhase = roll$.data("rollPhase");
         if (rollPhase !== RollPhase.AwaitingConsequences) {
@@ -65,10 +71,14 @@ class BladesConsequence {
             click: async (event) => {
                 const csqElem$ = $(event.currentTarget);
                 const action = csqElem$.data("action");
-                const csq = BladesConsequence.GetFromCsqElem(csqElem$);
+                const csqID = csqElem$.closest(".comp.consequence-display-container").data("csq-id");
+                const csq = BladesConsequence.GetFromChatMessage(message, csqID);
+                if (!csq) {
+                    throw new Error(`Could not find consequence with ID ${csqID} in message ${message.id}`);
+                }
                 switch (action) {
                     case "accept-consequence": {
-                        await csq.acceptConsequence();
+                        await csq.accept();
                         break;
                     }
                     case "resist-consequence": {
@@ -88,149 +98,89 @@ class BladesConsequence {
             }
         });
     }
-    static async GetFromID(msgID, csqID) {
-        const chatMessage = game.messages.get(msgID);
-        if (chatMessage) {
-            if (csqID) {
-                return BladesConsequence.GetFromChatMessage(chatMessage, csqID);
-            }
-            return BladesConsequence.GetFromChatMessage(chatMessage);
+    static GetFromChatMessage(msg, csqID) {
+        if (!csqID) {
+            const csqIDs = Object.values(msg.rollConsequencesData).map((cData) => cData.id);
+            return csqIDs
+                .map((id) => BladesConsequence.GetFromChatMessage(msg, id))
+                .filter(Boolean);
         }
-        return undefined;
-    }
-    static GetFromCsqElem(csqElem) {
-        csqElem = $(csqElem);
-        const csq$ = csqElem.closest(".comp.consequence-display-container");
-        const chatRoll$ = csq$.closest(".blades-roll");
-        const chatID = chatRoll$.data("chat-id");
-        const rollID = chatRoll$.data("roll-id");
-        const userID = chatRoll$.data("user-id");
-        const primaryID = chatRoll$.data("primary-id");
-        const primaryType = chatRoll$.data("primary-type");
-        const position = chatRoll$.data("position");
-        const effect = chatRoll$.data("effect");
-        const result = chatRoll$.data("result");
-        function getBaseData(c$) {
-            const id = c$.data("csq-id");
-            const name = c$.find(".consequence-name.base-consequence").text();
-            const type = c$.data("csq-type") ?? ConsequenceType.None;
-            return { id, name, type };
+        const csqData = msg.rollConsequencesData.find((cData) => cData.id === csqID);
+        if (!csqData) {
+            throw new Error(`Could not find consequence data for ID ${csqID} in message ${msg.id}`);
         }
-        function getResistableData(c$, csqClass) {
-            // There will only ever be three possible resistable consequences, all marked out similarly
-            // For chained resistances, a dialog popup should appear to the GM when the roll is sent to chat.
-            // First, check for consequence's existence by looking for its button
-            const rCsqButton$ = c$.find(`.consequence-button-container.${csqClass}`);
-            if (!rCsqButton$[0]) {
-                return {};
-            }
-            const [rCsqRef] = csqClass.split(/-/);
-            const baseData = getBaseData(c$);
-            const resistData = {
-                id: rCsqButton$.data("csq-id"),
-                chatID, userID, rollID, primaryID, primaryType,
-                position, effect, result,
-                name: c$.find(`.consequence-name.${csqClass}`).text(),
-                type: c$.data(`${rCsqRef}-type`) ?? ConsequenceType.None
-            };
-            // If we're looking for a 'resist-consequence', we need an attribute trait and value
-            if (csqClass.startsWith("resist")) {
-                const attrMsg$ = c$.find(".consequence-resist-attribute.resist-consequence");
-                return {
-                    ...baseData,
-                    chatID, userID, rollID, primaryID, primaryType,
-                    position, effect, result,
-                    resistTo: resistData,
-                    attribute: attrMsg$.text().trim().toLowerCase(),
-                    attributeVal: Array.from(attrMsg$.find(".full-dot")).length
-                };
-            }
-            else if (csqClass.startsWith("special")) {
-                return {
-                    ...baseData,
-                    chatID, userID, rollID, primaryID, primaryType,
-                    position, effect, result,
-                    specialTo: resistData,
-                    footerMsg: c$.find(`.consequence-footer-container .${csqClass}`)?.text()
-                };
-            }
-            else if (csqClass.startsWith("armor")) {
-                return {
-                    ...baseData,
-                    chatID, userID, rollID, primaryID, primaryType,
-                    position, effect, result,
-                    armorTo: resistData
-                };
-            }
-            return {};
+        const { type, resistTo, armorTo, specialArmorTo: specialTo } = csqData;
+        if (!(type in ConsequenceType)) {
+            throw new Error(`Consequence type ${type} is not a valid consequence type`);
         }
         return new BladesConsequence({
-            ...getBaseData(csq$),
-            ...getResistableData(csq$, "resist-consequence"),
-            ...getResistableData(csq$, "armor-consequence"),
-            ...getResistableData(csq$, "special-consequence"),
-            isAccepted: csq$.hasClass("consequence-accepted")
+            ...csqData,
+            type: type,
+            chatID: msg.id,
+            rollID: msg.flags.rollID,
+            userID: msg.flags.rollUserID,
+            primaryID: msg.flags.rollPrimaryData.rollPrimaryID,
+            primaryType: msg.flags.rollPrimaryData.rollPrimaryType,
+            position: msg.flags.finalPosition,
+            effect: msg.flags.finalEffect,
+            result: msg.flags.rollResult,
+            resistTo: resistTo || undefined,
+            armorTo: armorTo || undefined,
+            specialTo: specialTo || undefined
         });
-    }
-    static async GetFromChatMessage(message, csqID) {
-        const html$ = $(await message.getHTML());
-        const bCsqs = [];
-        html$.find(".blades-roll .consequence-container .comp.consequence-display-container:not(.consequence-accepted)").each((_, elem) => {
-            bCsqs.push(BladesConsequence.GetFromCsqElem(elem));
-        });
-        if (csqID) {
-            return bCsqs.find((csq) => csq.id === csqID);
-        }
-        return bCsqs;
     }
     _id;
     get id() { return this._id; }
-    _rollID;
-    _primaryID;
-    _primaryType;
-    _primaryDoc;
-    _chatMessage;
-    _user;
-    _name;
-    get name() { return this._name; }
-    _type;
-    get type() { return this._type; }
+    chatID;
+    rollID;
+    userID;
+    primaryID;
+    primaryType;
+    primaryDoc;
+    chatMessage;
+    get targetChatKey() {
+        const { finalPosition, rollResult } = this.chatMessage.flags;
+        return `flags.consequenceData.${finalPosition}.${rollResult}.${this._id}`;
+    }
+    user;
+    name;
+    type;
     get typeDisplay() { return C.ConsequenceDisplay[this.type]; }
     get icon() { return C.ConsequenceIcons[this.type]; }
-    _position;
-    _effect;
-    _result;
-    _resistTo;
+    position;
+    effect;
+    result;
+    resistTo;
     get resistToData() {
-        if (!this._resistTo) {
+        if (!this.resistTo) {
             return undefined;
         }
         return {
-            id: this._resistTo.id,
-            chatID: this._chatMessage.id,
-            userID: this._user.id,
-            rollID: this._rollID,
-            primaryID: this._primaryID,
-            primaryType: this._primaryType,
-            position: this._position,
-            effect: this._effect,
-            result: this._result,
-            name: this._resistTo.name,
-            type: this._resistTo.type,
-            typeDisplay: this._resistTo.typeDisplay,
-            icon: this._resistTo.icon
+            id: this.resistTo.id,
+            chatID: this.chatMessage.id,
+            userID: this.user.id,
+            rollID: this.rollID,
+            primaryID: this.primaryID,
+            primaryType: this.primaryType,
+            position: this.position,
+            effect: this.effect,
+            result: this.result,
+            name: this.resistTo.name,
+            type: this.resistTo.type,
+            typeDisplay: this.resistTo.typeDisplay,
+            icon: this.resistTo.icon
         };
     }
-    _attribute;
-    get attribute() { return this._attribute; }
-    _attributeVal;
-    get attributeVal() { return this._attributeVal; }
-    _armorTo;
-    _specialTo;
-    _isAccepted;
-    constructor(data) {
-        const { id, chatID, userID, rollID, primaryID, primaryType, name, type, position, effect, result, attribute, attributeVal, resistTo, armorTo, specialTo, isAccepted } = data;
+    attribute;
+    attributeVal;
+    armorTo;
+    specialTo;
+    isAccepted;
+    constructor(data, parentCsq) {
+        const { id, chatID, userID, rollID, primaryID, primaryType, position, effect, result } = { ...parentCsq ?? {}, ...data };
+        const { name, type, attribute, attributeVal, resistTo, armorTo, specialTo, isAccepted } = data;
         eLog.checkLog3("bladesConsequence", "[new BladesConsequence]", {
+            parentCsq,
             id, chatID, userID, rollID, primaryID, primaryType,
             name,
             type,
@@ -250,7 +200,7 @@ class BladesConsequence {
             throw new Error("[new BladesConsequence] Missing 'chatID' in constructor data object.");
         }
         const chatMessage = game.messages.get(chatID);
-        if (!(chatMessage instanceof ChatMessage)) {
+        if (!(chatMessage instanceof BladesChat)) {
             throw new Error(`[new BladesConsequence] No chat message with id '${chatID}' found.`);
         }
         if (typeof userID !== "string") {
@@ -287,27 +237,29 @@ class BladesConsequence {
             throw new Error("[new BladesConsequence] Missing 'result' in constructor data object.");
         }
         this._id = id;
-        this._rollID = rollID;
-        this._chatMessage = chatMessage;
-        this._user = user;
-        this._name = name;
-        this._primaryID = primaryID;
-        this._primaryType = primaryType;
-        this._primaryDoc = new BladesRollPrimary(undefined, primaryDoc);
-        this._type = type;
-        this._position = position;
-        this._effect = effect;
-        this._result = result;
-        this._isAccepted = Boolean(isAccepted);
+        this.rollID = rollID;
+        this.chatMessage = chatMessage;
+        this.chatID = chatMessage.id;
+        this.user = user;
+        this.userID = user.id;
+        this.name = name;
+        this.primaryID = primaryID;
+        this.primaryType = primaryType;
+        this.primaryDoc = new BladesRollPrimary(undefined, primaryDoc);
+        this.type = type;
+        this.position = position;
+        this.effect = effect;
+        this.result = result;
+        this.isAccepted = Boolean(isAccepted);
         if (resistTo) {
             if (!(typeof attribute === "string" && attribute in AttributeTrait)) {
                 throw new Error("[new BladesConsequence] Missing 'attribute' in constructor data object.");
             }
-            this._attribute = attribute;
+            this.attribute = attribute;
             if (typeof attributeVal !== "number") {
                 throw new Error("[new BladesConsequence] Missing 'attributeVal' in constructor data object.");
             }
-            this._attributeVal = attributeVal;
+            this.attributeVal = attributeVal;
             if (!resistTo.id) {
                 throw new Error("[new BladesConsequence] Missing 'resistTo.id' in constructor data object.");
             }
@@ -317,7 +269,7 @@ class BladesConsequence {
             if (!resistTo.name && resistTo.type !== ConsequenceType.None) {
                 throw new Error("[new BladesConsequence] Missing 'resistTo.name' in constructor data object.");
             }
-            this._resistTo = new BladesConsequence(resistTo);
+            this.resistTo = new BladesConsequence(resistTo, this);
         }
         if (armorTo) {
             if (!armorTo.id) {
@@ -329,7 +281,7 @@ class BladesConsequence {
             if (!armorTo.name && armorTo.type !== ConsequenceType.None) {
                 throw new Error("[new BladesConsequence] Missing 'armorTo.name' in constructor data object.");
             }
-            this._armorTo = new BladesConsequence(armorTo);
+            this.armorTo = new BladesConsequence(armorTo, this);
         }
         if (specialTo) {
             if (!specialTo.id) {
@@ -341,22 +293,46 @@ class BladesConsequence {
             if (!specialTo.name && specialTo.type !== ConsequenceType.None) {
                 throw new Error("[new BladesConsequence] Missing 'specialTo.name' in constructor data object.");
             }
-            this._specialTo = new BladesConsequence(specialTo);
+            this.specialTo = new BladesConsequence(specialTo, this);
         }
         game.eunoblades.Consequences.set(this.id, this);
     }
-    async applyConsequenceToPrimary() {
+    async accept() {
+        const messageUpdateData = {
+            [`${this.targetChatKey}.isAccepted`]: true
+        };
         // If HARM -> Apply harm to actor.
-        if (/Harm/.exec(this._type)) {
-            await this._primaryDoc.applyHarm(U.pInt(this._type.substring(this._type.length - 1)), this._name);
+        if (/Harm/.exec(this.type)) {
+            await this.primaryDoc.applyHarm(U.pInt(this.type.substring(this.type.length - 1)), this.name);
             // If WORSE POSITION -> Add flag to user to be checked on next Action roll, then cleared
         }
-        else if (this._type === ConsequenceType.WorsePosition) {
-            await this._primaryDoc.applyWorsePosition();
+        else if (this.type === ConsequenceType.WorsePosition) {
+            await this.primaryDoc.applyWorsePosition();
+            // If REDUCED EFFECT -> Update chat message flag to reduced effect level.
         }
-        // If REDUCED EFFECT -> No change to rollPrimary.
-        // If COMPLICATION -> No change to rollPrimary.
-        // If LOST OPPORTUNITY -> No change to rollPrimary.
+        else if (this.type === ConsequenceType.ReducedEffect) {
+            const curIndex = Object.values(Effect).findIndex((val) => val === this.chatMessage.flags.finalEffect);
+            if (curIndex >= 1) {
+                const newEffect = Object.values(Effect)[curIndex - 1];
+                messageUpdateData["flags.finalEffect"] = newEffect;
+            }
+        }
+        // If COMPLICATION -> No change.
+        // If LOST OPPORTUNITY -> No change.
+        await this.chatMessage.update(messageUpdateData);
+        await this.chatMessage.regenerateFromFlags();
+    }
+    async resist(typeRef) {
+        const rCsq = {
+            resist: this.resistTo,
+            armor: this.armorTo,
+            special: this.specialTo
+        }[typeRef];
+        // If consequence is fully negated, transform to "None" consequence and accept it.
+        // Otherwise, get OTHER possible resistance options.  If there are any, convert them into full-negation resist options for this new resisted consequence
+        //  (we're assuming that if a player resists a consequence twice, they should be able to fully negate it)
+        // Need to check if 'armor' can be used twice -- i.e. via heavy armor
+        // If there are NO other possible resistance options, transform to resisted consequence and accept it.
     }
     async transformToConsequence(typeRef, rollHTML) {
         const transformRecord = {};
@@ -365,9 +341,9 @@ class BladesConsequence {
         transformRecord["1) csqAcceptedHTML"] = csqAcceptedHTML;
         // Get the resisted consequence data according to typeRef
         const rCsq = {
-            resist: this._resistTo,
-            armor: this._armorTo,
-            special: this._specialTo
+            resist: this.resistTo,
+            armor: this.armorTo,
+            special: this.specialTo
         }[typeRef];
         if (!rCsq) {
             return;
@@ -426,72 +402,34 @@ class BladesConsequence {
         csqAcceptedHTML = $(csqAcceptedHTML).prepend($(csqResistedHTML))[0].outerHTML;
         transformRecord["3) csqAcceptedHTML + csqResistedHTML"] = csqAcceptedHTML;
         // Get message HTML
-        const message$ = $(await this._chatMessage.getHTML());
+        const message$ = $(await this.chatMessage.getHTML());
         transformRecord["4) message$ before Replace"] = message$[0].outerHTML;
         // Replace consequence with new data
         message$.find(`.comp.consequence-display-container[data-csq-id='${this._id}']`)
             .replaceWith(csqAcceptedHTML);
         transformRecord["4.5) message$ after Replace"] = message$[0].outerHTML;
         transformRecord["5) message$.find(.blades-roll) = CONTENT"] = message$.find(".blades-roll")[0].outerHTML;
-        await this._chatMessage.update({ content: message$.find(".blades-roll")[0].outerHTML });
+        await this.chatMessage.update({ content: message$.find(".blades-roll")[0].outerHTML });
         eLog.checkLog2("transformConsequence", "Transform Record", transformRecord);
     }
-    async acceptConsequence() {
-        await this.applyConsequenceToPrimary();
-        const message$ = $(await this._chatMessage.getHTML()).find(".blades-roll");
-        eLog.checkLog2("csqAccept", "Initial Message Code", { message$, message: message$[0], outerHTML: message$[0].outerHTML });
-        // If this is a Reduced Effect consequence, edit the chat message roll effect accordingly.
-        if (this._type === ConsequenceType.ReducedEffect) {
-            const curIndex = Object.values(Effect).findIndex((val) => val === this._effect);
-            if (curIndex >= 1) {
-                const newEffect = Object.values(Effect)[curIndex - 1];
-                message$.find(".roll-outcome-container .roll-state-container .roll-state-effect")
-                    .removeClass(`roll-state-effect-${this._effect}`)
-                    .addClass(`roll-state-effect-${newEffect}`)
-                    .text(U.tCase(newEffect));
-            }
-        }
-        // Locate consequence HTML
-        message$.find(`.comp.consequence-display-container[data-csq-id='${this._id}']`)
-            // Add class to consequence container
-            .addClass("consequence-accepted");
-        eLog.checkLog2("csqAccept", "Class Added Message Code", { message$, message: message$[0], outerHTML: message$[0].outerHTML });
-        // Strip all unnecessary elements for an accepted consequence
-        message$.find(`.comp.consequence-display-container[data-csq-id='${this._id}']`).remove(`
-        .consequence-bg-image,
-        .consequence-interaction-pad,
-        .accept-consequence,
-        .resist-consequence,
-        .armor-consequence,
-        .special-consequence,
-        .consequence-footer-container
-      `);
-        eLog.checkLog2("csqAccept", "Code Stripped Message Code", { message$, message: message$[0], outerHTML: message$[0].outerHTML });
-        this._isAccepted = true;
-        await this._chatMessage.update({ content: message$[0].outerHTML });
-    }
-    get rollFlagData() {
-        // Get rollPrimaryData from archived roll flags on user document.
-        let rollFlagData = this._user.getFlag(C.SYSTEM_ID, "rollCollab");
-        if (rollFlagData.rollID !== this._rollID) {
-            rollFlagData = this._user.getFlag(C.SYSTEM_ID, `rollCollabArchive.${this._rollID}`);
-        }
-        if (!rollFlagData) {
-            throw new Error(`Unable to locate flag data for roll id '${this._rollID}'`);
-        }
-        return rollFlagData;
-    }
+    // get rollFlagData(): BladesRoll.FlagData {
+    //   // Get rollPrimaryData from archived roll flags on user document.
+    //   let rollFlagData = this._user.getFlag(C.SYSTEM_ID, "rollCollab") as BladesRoll.FlagData;
+    //   if (rollFlagData.rollID !== this._rollID) {
+    //     rollFlagData = this._user.getFlag(C.SYSTEM_ID, `rollCollabArchive.${this._rollID}`) as BladesRoll.FlagData;
+    //   }
+    //   if (!rollFlagData) { throw new Error(`Unable to locate flag data for roll id '${this._rollID}'`); }
+    //   return rollFlagData;
+    // }
     async resistConsequence() {
         eLog.checkLog3("rollCollab", `Resisting Consequence id ${this._id}`);
-        if (!this._resistTo || !this.resistToData) {
-            throw new Error(`Cannot find resistTo for resistance roll for csq id '${this._id}' in message '${this._chatMessage.id}'`);
+        if (!this.resistTo || !this.resistToData) {
+            throw new Error(`Cannot find resistTo for resistance roll for csq id '${this._id}' in message '${this.chatMessage.id}'`);
         }
-        // Get rollPrimaryData from archived roll flags on user document.
-        const rollFlagData = this.rollFlagData;
         const resistConfig = {
             rollType: RollType.Resistance,
-            rollUserID: this._user.id,
-            rollPrimaryData: rollFlagData.rollPrimaryData,
+            rollUserID: this.user.id,
+            rollPrimaryData: this.chatMessage.flags.rollPrimaryData,
             resistanceData: {
                 consequence: {
                     id: this.id,
@@ -509,25 +447,25 @@ class BladesConsequence {
     }
     async applyResistedConsequence(resistType, rollHTML) {
         const rCsq = {
-            resist: this._resistTo,
-            armor: this._armorTo,
-            special: this._specialTo
+            resist: this.resistTo,
+            armor: this.armorTo,
+            special: this.specialTo
         }[resistType];
         if (rCsq) {
-            await rCsq.applyConsequenceToPrimary();
+            await rCsq.accept();
         }
         await this.transformToConsequence(resistType, rollHTML);
     }
     async resistArmorConsequence() {
-        if (this._armorTo) {
-            this._primaryDoc.spendArmor();
-            this.applyResistedConsequence("armor", await renderTemplate("systems/eunos-blades/templates/components/consequence-accepted.hbs", Object.assign(this._armorTo, { isArmorResist: true })));
+        if (this.armorTo) {
+            this.primaryDoc.spendArmor();
+            this.applyResistedConsequence("armor", await renderTemplate("systems/eunos-blades/templates/components/consequence-accepted.hbs", Object.assign(this.armorTo, { isArmorResist: true })));
         }
     }
     async resistSpecialArmorConsequence() {
-        if (this._specialTo) {
-            this._primaryDoc.spendSpecialArmor();
-            this.applyResistedConsequence("special", await renderTemplate("systems/eunos-blades/templates/components/consequence-accepted.hbs", Object.assign(this._specialTo, { isSpecialArmorResist: true })));
+        if (this.specialTo) {
+            this.primaryDoc.spendSpecialArmor();
+            this.applyResistedConsequence("special", await renderTemplate("systems/eunos-blades/templates/components/consequence-accepted.hbs", Object.assign(this.specialTo, { isSpecialArmorResist: true })));
         }
     }
 }
