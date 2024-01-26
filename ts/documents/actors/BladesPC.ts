@@ -429,7 +429,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   // #endregion
 
   // #region BladesRoll.PrimaryDoc Implementation
-  override get rollModsData(): BladesRoll.RollModData[] {
+  override get rollModsData(): BladesRollMod.Schema[] {
 
     const rollModsData = super.rollModsData;
 
@@ -443,7 +443,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
       if (harmString.length > 0) {
         rollModsData.push({
-          id: `Harm-negative-${effectCat}`,
+          key: `Harm-negative-${effectCat}`,
           name: harmString,
           section: effectCat,
           posNeg: "negative",
@@ -464,7 +464,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       .find((harmData) => /Need Help/.test(harmData.effect)) ?? {};
     if (harmCondition && harmCondition.trim() !== "") {
       rollModsData.push({
-        id: "Push-negative-roll",
+        key: "Push-negative-roll",
         name: "PUSH",
         sideString: harmCondition.trim(),
         section: RollModSection.roll,
@@ -553,7 +553,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   get rollParticipantType() { return this.type; }
 
-  get rollParticipantModsData(): BladesRoll.RollModData[] { return []; }
+  get rollParticipantModsData(): BladesRollMod.Schema[] { return []; }
 
   // #endregion
 

@@ -62,7 +62,7 @@ class BladesNPC extends BladesActor implements BladesActorSubClass.NPC,
 
   get rollOppType() { return this.type; }
 
-  get rollOppModsData(): BladesRoll.RollModData[] { return []; }
+  get rollOppModsData(): BladesRollMod.Schema[] { return []; }
   // #endregion
 
   // #region BladesRoll.ParticipantDoc Implementation
@@ -76,7 +76,7 @@ class BladesNPC extends BladesActor implements BladesActorSubClass.NPC,
 
   get rollParticipantType() { return this.type; }
 
-  get rollParticipantModsData(): BladesRoll.RollModData[] { return []; }
+  get rollParticipantModsData(): BladesRollMod.Schema[] { return []; }
   // #endregion
 
   // #endregion

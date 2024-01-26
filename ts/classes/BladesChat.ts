@@ -12,14 +12,9 @@ import {ChatMessageDataConstructorData} from "@league-of-foundry-developers/foun
 namespace BladesChat {
   export interface Data extends ChatMessageDataConstructorData { }
 
-  export interface RollResultFlags extends BladesRoll.FlagData {
+  export interface Flags {
     template: string,
-    finalPosition: Position,
-    finalEffect: Effect,
-    rollResult: number|false|RollResult,
-    rollTraitVerb: string,
-    rollTraitPastVerb: string,
-    finalDiceData: BladesRoll.DieData[]
+    rollData?: BladesRoll.FlagData
   }
 }
 
@@ -35,7 +30,7 @@ class BladesChat extends ChatMessage {
     // let lastMessageID: string|false = Array.from(game.messages).pop()?.id ?? "";
     Hooks.on("renderChatMessage", (msg: BladesChat, html: JQuery<HTMLElement>) => {
       ApplyTooltipAnimations(html);
-      if (msg.isRollResult) {
+      if (msg.flags.rollData) {
         ApplyConsequenceAnimations(html);
         BladesConsequence.ApplyChatListeners(html);
       }
@@ -69,46 +64,34 @@ class BladesChat extends ChatMessage {
   }
 
   static async ConstructRollOutput(rollInst: BladesRoll): Promise<BladesChat> {
-    // Expand rollInst flag data to include results & consequences
-    const {
-      flagData,
-      finalPosition,
-      finalEffect,
-      rollResult,
-      rollTraitVerb,
-      rollTraitPastVerb,
-      finalDiceData,
-      resultChatTemplate
-    } = rollInst;
+    const template = rollInst.resultChatTemplate;
 
-    const rollFlags: BladesChat.RollResultFlags & Record<string, unknown> = {
-      template: resultChatTemplate,
-      ...flagData,
-      finalPosition,
-      finalEffect,
-      rollResult,
-      rollTraitVerb: rollTraitVerb ?? "",
-      rollTraitPastVerb: rollTraitPastVerb ?? rollTraitVerb ?? "",
-      finalDiceData
+    const rollFlags = {
+      ...rollInst.flagData,
+      rollTraitVerb: rollInst.rollTraitVerb ?? "",
+      rollTraitPastVerb: rollInst.rollTraitPastVerb ?? rollInst.rollTraitVerb ?? ""
     };
 
     return await BladesChat.create({
       speaker: rollInst.getSpeaker(BladesChat.getSpeaker()),
-      content: await renderTemplate(resultChatTemplate, rollFlags),
+      content: await renderTemplate(template, rollFlags),
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flags: rollFlags
+      flags: {
+        template,
+        rollData: rollFlags
+      }
     }) as BladesChat;
   }
 
-  get allRollConsequencesData():
+  get allRollConsequences():
     Record<Position,
       Record<RollResult,
-        Record<IDString, BladesRoll.ConsequenceData>
+        Record<IDString, BladesConsequence>
     >> {
     const returnData:
       Record<Position,
         Record<RollResult,
-          Record<IDString, BladesRoll.ConsequenceData>
+          Record<IDString, BladesConsequence>
         >
       > = {
         [Position.controlled]: {
@@ -130,33 +113,38 @@ class BladesChat extends ChatMessage {
           [RollResult.fail]: {}
         }
       };
-    const {consequenceData} = this.flags;
+    const {consequenceData} = this.flags.rollData ?? {};
     if (!consequenceData) { return returnData; }
 
     Object.entries(consequenceData)
       .forEach(([position, positionData]) => {
         Object.entries(positionData)
           .forEach(([rollResult, csqData]) => {
-            returnData[position as Position][rollResult as RollResult] = csqData;
+            returnData[position as Position][rollResult as RollResult] = Object.fromEntries(
+              Object.entries(csqData)
+                .filter(([id, cData]) => cData.id)
+                .map(([id, cData]) => [id, game.eunoblades.Consequences.get(cData.id)] as [IDString, BladesConsequence])
+            );
           });
       });
 
     return returnData;
   }
 
-  get rollConsequencesData(): BladesRoll.ConsequenceData[] {
-    if (!this.isRollResult) { return []; }
-    const {finalPosition, rollResult, consequenceData} = this.flags as BladesChat.RollResultFlags;
+  get rollConsequences(): BladesConsequence[] {
+    if (!this.flags.rollData) { return []; }
+    const {finalPosition, rollResult, consequenceData} = this.flags.rollData;
+    if (!finalPosition || !rollResult || !consequenceData) { return []; }
     if (typeof rollResult !== "string" || !([RollResult.partial, RollResult.fail] as RollResult[]).includes(rollResult)) { return []; }
     const activeConsequences = consequenceData
       ?.[finalPosition]
       ?.[rollResult as RollResult.partial | RollResult.fail] ?? {};
-    return Object.values(activeConsequences);
+    return Object.values(activeConsequences)
+      .map((cData) => game.eunoblades.Consequences.get(cData.id))
+      .filter(Boolean) as BladesConsequence[];
   }
 
   get elem(): HTMLElement|undefined { return $("#chat-log").find(`.chat-message[data-message-id="${this.id}"]`)[0]; }
-
-  get isRollResult() { return this.type === CONST.CHAT_MESSAGE_TYPES.ROLL; }
 
   async regenerateFromFlags() {
     await this.update({content: await renderTemplate(this.flags.template, this.flags)});
@@ -177,7 +165,7 @@ class BladesChat extends ChatMessage {
 interface BladesChat {
   get id(): IDString;
   content?: string;
-  flags: BladesChat.RollResultFlags;
+  flags: BladesChat.Flags;
 }
 
 export default BladesChat;

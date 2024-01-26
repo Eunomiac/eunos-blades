@@ -3,7 +3,8 @@ import C, { BladesActorType, AttributeTrait, ConsequenceType, RollResult, RollTy
 import U from "../core/utilities.js";
 import BladesRoll, { BladesRollPrimary } from "./BladesRoll.js";
 import BladesChat from "./BladesChat.js";
-class BladesConsequence {
+import BladesTargetLink from "./BladesTargetLink.js";
+class BladesConsequence extends BladesTargetLink {
     static async Initialize() {
         if (!game.messages) {
             throw new Error("[BladesConsequence] Messages Not Ready!");
@@ -109,7 +110,7 @@ class BladesConsequence {
         if (!csqData) {
             throw new Error(`Could not find consequence data for ID ${csqID} in message ${msg.id}`);
         }
-        const { type, resistTo, armorTo, specialArmorTo: specialTo } = csqData;
+        const { type, resistTo, armorTo, specialTo: specialTo } = csqData;
         if (!(type in ConsequenceType)) {
             throw new Error(`Consequence type ${type} is not a valid consequence type`);
         }

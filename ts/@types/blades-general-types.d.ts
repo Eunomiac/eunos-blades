@@ -1,6 +1,7 @@
 import {AttributeTrait, ActionTrait, District} from "../core/constants";
 import BladesItem from "../BladesItem";
 import BladesActor from "../BladesActor";
+import BladesChat from "../classes/BladesChat";
 import {gsap} from "gsap/all";
 
 
@@ -131,7 +132,7 @@ declare global {
   type gsapAnim = gsap.core.Tween | gsap.core.Timeline;
 
   // Represents a generic Blades document
-  type BladesDoc = BladesActor | BladesItem;
+  type BladesDoc = BladesActor | BladesItem | BladesChat;
 
   // Represents any Blades document sheet
   type BladesSheet = BladesActorSheet | BladesItemSheet | BladesRoll;

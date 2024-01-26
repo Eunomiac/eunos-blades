@@ -220,7 +220,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   get rollPrimaryImg() { return this.img; }
 
-  get rollModsData(): BladesRoll.RollModData[] {
+  get rollModsData(): BladesRollMod.Schema[] {
     // Const rollModData = BladesRollMod.ParseDocRollMods(this);
     // Add roll mods from COHORT harm
 
@@ -290,7 +290,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
     }
     return this.type as BladesRoll.OppositionDocType; }
 
-  get rollOppModsData(): BladesRoll.RollModData[] { return []; }
+  get rollOppModsData(): BladesRollMod.Schema[] { return []; }
   // #endregion
 
   // #region BladesRoll.ParticipantDoc Implementation
@@ -312,7 +312,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
     }
     return this.type as BladesRoll.ParticipantDocType; }
 
-  get rollParticipantModsData(): BladesRoll.RollModData[] { return []; }
+  get rollParticipantModsData(): BladesRollMod.Schema[] { return []; }
   // #endregion
 
   // #endregion

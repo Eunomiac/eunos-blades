@@ -4,8 +4,9 @@ import C, {BladesActorType, AttributeTrait, ConsequenceType, RollResult, RollTyp
 import U from "../core/utilities";
 import BladesRoll, {BladesRollPrimary} from "./BladesRoll";
 import BladesChat from "./BladesChat";
+import BladesTargetLink from "./BladesTargetLink";
 
-class BladesConsequence {
+class BladesConsequence extends BladesTargetLink<BladesConsequence.Data> {
 
   static async Initialize() {
     if (!game.messages) { throw new Error("[BladesConsequence] Messages Not Ready!"); }
@@ -14,14 +15,39 @@ class BladesConsequence {
     );
   }
 
-  static get None() {
+  /**
+ * Checks if the given value is valid consequence data for a Resistance Roll.
+ * @param val The value to check.
+ * @param isCheckingResistedTo If the check is being recursively applied to the 'resistTo' value.
+ * @returns True if the val is valid BladesConsequence.Data, false otherwise.
+ */
+  static IsValidConsequenceData(
+    val: unknown,
+    isCheckingResistedTo = false
+  ): val is BladesConsequence.Data {
+    if (!U.isList(val)) {return false;}
+    if (typeof val.type !== "string" || !(val.type in ConsequenceType)) {return false;}
+    if (typeof val.name !== "string") {return false;}
+
+    if (isCheckingResistedTo) {return true;}
+
+    if (val.attribute && (typeof val.attribute !== "string" || !(val.attribute in AttributeTrait))) {return false;}
+    if (!this.IsValidConsequenceData(val.resistTo, true)) {return false;}
+
+    return true;
+  }
+
+  static override ApplySchemaDefaults<Schema = BladesConsequence.Schema>(
+    schemaData: Partial<BladesConsequence.Schema>
+  ) {
+    // Ensure all properties of Schema are provided
+    if (!schemaData.pcId) { throw new Error("pcId is required for BladesConsequence.Schema"); }
     return {
-      id: randomID() as IDString,
       name: "",
       type: ConsequenceType.None,
-      isSelected: true,
-      isVisible: true
-    };
+      isAccepted: false,
+      ...schemaData
+    } as Schema;
   }
 
   static GetActiveRollChatID(): string | undefined {
@@ -100,10 +126,7 @@ class BladesConsequence {
 
   static GetFromChatMessage(msg: BladesChat, csqId: IDString): BladesConsequence|undefined
   static GetFromChatMessage(msg: BladesChat): BladesConsequence[]
-  static GetFromChatMessage(msg: BladesChat, csqID?: IDString):
-    BladesConsequence[]
-    |BladesConsequence
-    |undefined {
+  static GetFromChatMessage(msg: BladesChat, csqID?: IDString): BladesConsequence[] |BladesConsequence |undefined {
 
     if (!csqID) {
       const csqIDs = Object.values(msg.rollConsequencesData).map((cData) => cData.id);
@@ -116,15 +139,16 @@ class BladesConsequence {
     if (!csqData) {
       throw new Error(`Could not find consequence data for ID ${csqID} in message ${msg.id}`);
     }
-    const {type, resistTo, armorTo, specialArmorTo: specialTo} = csqData;
+    const {type, resistTo, armorTo, specialTo} = csqData;
     if (!(type in ConsequenceType)) {
       throw new Error(`Consequence type ${type} is not a valid consequence type`);
     }
 
+
+
     return new BladesConsequence({
       ...csqData,
       type: type as ConsequenceType,
-      chatID: msg.id as IDString,
       rollID: msg.flags.rollID as IDString,
       userID: msg.flags.rollUserID,
       primaryID: msg.flags.rollPrimaryData.rollPrimaryID as IDString,
@@ -137,10 +161,6 @@ class BladesConsequence {
       specialTo: specialTo as BladesConsequence.Data.Base || undefined
     });
   }
-
-  _id: IDString;
-
-  get id(): IDString { return this._id; }
 
   chatID: IDString;
 
@@ -207,20 +227,18 @@ class BladesConsequence {
   isAccepted: boolean;
 
   constructor(
-    data: BladesConsequence.Data.Base
-      | BladesConsequence.Data.Main
-      | BladesConsequence.Data.Resistable
-      | BladesConsequence.Data.Accepted,
+    data: BladesTargetLink.Data & Partial<BladesConsequence.Data>
+  )
+  constructor(
+    data: Partial<BladesConsequence.Data>,
     parentCsq?: BladesConsequence
   ) {
+    const {id, targetID, targetKey, targetFlagKey} = {...parentCsq ?? {}, ...data} as BladesTargetLink.Data;
+    super({id, targetID, targetKey, targetFlagKey});
     const {
-      id, chatID, userID, rollID, primaryID, primaryType,
+      chatID, userID, rollID, primaryID, primaryType,
       position, effect, result
-    } = {...parentCsq ?? {}, ...data} as
-      BladesConsequence.Data.Base
-      & BladesConsequence.Data.Main
-      & BladesConsequence.Data.Resistable
-      & BladesConsequence.Data.Accepted;
+    } = {...parentCsq ?? {}, ...data} as BladesConsequence.Data;
 
     const {
       name, type,
@@ -229,11 +247,7 @@ class BladesConsequence {
       armorTo,
       specialTo,
       isAccepted
-    } = data as
-      BladesConsequence.Data.Base
-      & BladesConsequence.Data.Main
-      & BladesConsequence.Data.Resistable
-      & BladesConsequence.Data.Accepted;
+    } = data;
 
     eLog.checkLog3("bladesConsequence", "[new BladesConsequence]", {
       parentCsq,

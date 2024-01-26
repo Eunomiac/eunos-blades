@@ -3,18 +3,54 @@ import BladesActor from "../BladesActor";
 import BladesItem from "../BladesItem";
 import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../classes/BladesRoll";
 import BladesClockKey from "../classes/BladesClocks";
+import BladesTargetLink from "../classes/BladesTargetLink";
 
 declare global {
 
+  namespace BladesRollMod {
+
+    export type Schema = {
+      key: string,
+      name: string,
+      modType: RollModType,
+      source_name?: string,
+      section: RollModSection,
+      posNeg: "positive"|"negative",
+
+      base_status: RollModStatus,
+      user_status?: RollModStatus,
+      held_status?: RollModStatus,
+
+      value: number,
+      effectKeys?: string[],
+
+      sideString?: string,
+      tooltip: string,
+
+      conditionalRollTypes?: BladesRoll.AnyRollType[],
+      autoRollTypes?: BladesRoll.AnyRollType[],
+      participantRollTypes?: BladesRoll.AnyRollType[],
+
+      conditionalRollTraits?: BladesRoll.RollTrait[],
+      autoRollTraits?: BladesRoll.RollTrait[],
+      participantRollTraits?: BladesRoll.RollTrait[]
+    }
+
+    export type Config = BladesTargetLink.Config & Partial<Schema>;
+
+    export type Data = BladesTargetLink.Data & Schema;
+  }
+
   namespace BladesRoll {
 
-    export interface Config {
+    export interface Config extends BladesTargetLink.Config {
       rollType: RollType,
       rollSubType?: RollSubType,
       rollUserID: IDString,
       rollTrait?: RollTrait,
       rollDowntimeAction?: DowntimeAction,
       rollClockKey?: IDString|BladesClockKey,
+      rollClockKeyID?: IDString,
 
       rollPrimaryData: PrimaryDocData;
       rollOppData?: OppositionDocData;
@@ -32,27 +68,23 @@ declare global {
           RollResult.partial|RollResult.fail,
           Record<
             IDString,
-            ConsequenceData
+            BladesConsequence.Data
           >
         >>
       >>,
       resistanceData?: {
-        consequence: ResistanceRollConsequenceData
+        consequence: BladesConsequence.Data
       }
     }
 
-    export interface ConfigFlags extends Omit<Config, "rollClockKey"> {
+    export interface Schema extends Omit<Config, "rollClockKey"|"rollPrimaryData"|"rollOppData"|"rollParticipantData"> {
+      rollPrompt?: string;
+
       rollPrimaryData: Omit<PrimaryDocData, "rollPrimaryDoc">,
       rollOppData?: Omit<OppositionDocData, "rollOppDoc">,
       rollParticipantData?: RollParticipantFlagData,
-      rollClockKeyID?: IDString
-    }
 
-    export interface FlagData extends ConfigFlags {
-      rollID: string;
-      rollPrompt?: string;
-
-      rollModsData: Record<string,RollModStatus>;
+      rollModsData: Record<IDString,BladesRollMod.Data>;
 
       rollPositionInitial: Position;
       rollEffectInitial: Effect;
@@ -67,10 +99,20 @@ declare global {
         Partial<Record<Factor, FactorFlagData>>
       >,
 
-      userPermissions: Record<string, RollPermissions>
+      userPermissions: Record<string, RollPermissions>,
+
+      template?: string,
+      finalPosition?: Position,
+      finalEffect?: Effect,
+      rollResult?: number|false|RollResult,
+      rollTraitVerb?: string,
+      rollTraitPastVerb?: string,
+      finalDiceData?: DieData[]
     }
 
-    export interface SheetData extends FlagData {
+    export interface Data extends BladesTargetLink.Data, Schema {}
+
+    export interface Context extends Data {
       cssClass: string,
       editable: boolean,
       isGM: boolean,
@@ -127,69 +169,6 @@ declare global {
       projectSelectOptions?: Array<BladesSelectOption<string, string>>
     }
 
-    export type PartialSheetData = Partial<SheetData> & FlagData;
-
-    export type ConstructorConfig = Partial<Config> & Required<Pick<Config, "rollType">>;
-
-    export type ConsequenceResistOption = {
-      name: string,
-      id: IDString,
-      chatID?: string,
-      type?: ConsequenceType,
-      typeDisplay?: string,
-      icon?: string,
-      footerMsg?: string,
-      isAccepted?: boolean,
-      isSelected: boolean, // Whether GM has selected this as the resisted consequence
-      isVisible?: boolean // Set to false when a different option is chosen, to hide
-    }
-
-    export type AcceptedConsequenceData = {
-      id: IDString,
-      name: string,
-      type: ConsequenceType,
-      typeDisplay: string,
-      icon: string,
-      isAccepted: true,
-      stressCost?: number, // if Resisted
-      armorCost?: boolean, // if Armor used
-      specArmorCost?: boolean // if Special Armor used
-    }
-
-    export interface ConsequenceData {
-      id: IDString,
-      name: string,
-      type: ConsequenceType|"",
-      typeDisplay?: string,
-      icon?: string,
-      attribute: AttributeTrait|"",
-      attributeVal?: number,
-      isAccepted?: boolean,
-      resistOptions?: Record<
-        string,  // stringified index
-        ConsequenceResistOption // ai
-      >,
-      resistNegates?: boolean,
-      resistTo?: ConsequenceResistOption|false,
-      isDisplayingArmorToggle?: boolean,
-      canArmor?: boolean,
-      armorNegates?: boolean,
-      armorTo?: ConsequenceResistOption|false,
-      isDisplayingSpecialArmorToggle?: boolean,
-      canSpecialArmor?: boolean,
-      specialArmorNegates?: boolean,
-      specialArmorTo?: ConsequenceResistOption|false,
-      stressCost?: number, // if Resisted
-      armorCost?: boolean, // if Armor used
-      specArmorCost?: boolean // if Special Armor used
-    }
-
-    export interface ResistanceRollConsequenceData extends FreezeProps<Omit<ConsequenceData, "resistOptions"|"stressCost"|"armorCost"|"specArmorCost">> {
-      attribute: AttributeTrait,
-      attributeVal: number,
-      resistTo: FreezeProps<Omit<ConsequenceResistOption, "isSelected">>
-    }
-
     export type CostData = {
       id: string,
       label: string,
@@ -215,35 +194,6 @@ declare global {
       extends Required<FactorFlagData> {
         baseVal: number,
         cssClasses?: string
-    }
-
-    type RollModData = {
-      id: string,
-      name: string,
-      modType: RollModType,
-      source_name?: string,
-      section: RollModSection,
-      posNeg: "positive"|"negative",
-
-      status?: RollModStatus,
-      base_status: RollModStatus,
-      user_status?: RollModStatus,
-      held_status?: RollModStatus,
-
-      value: number,
-      effectKeys?: string[],
-
-      selected?: string,
-      sideString?: string,
-      tooltip: string,
-
-      conditionalRollTypes?: AnyRollType[],
-      autoRollTypes?: AnyRollType[],
-      participantRollTypes?: AnyRollType[],
-
-      conditionalRollTraits?: RollTrait[],
-      autoRollTraits?: RollTrait[],
-      participantRollTraits?: RollTrait[]
     }
 
     export type DieData = {

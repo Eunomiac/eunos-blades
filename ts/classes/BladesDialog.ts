@@ -393,8 +393,10 @@ class BladesDialog extends Dialog {
     }
   }
 
-  getSelectedResistOption(cData: BladesRoll.ConsequenceData): BladesRoll.ConsequenceResistOption|false {
-    return Object.values(cData?.resistOptions ?? {}).find((rCsq) => rCsq.isSelected) ?? false;
+  getSelectedResistOption(cData: BladesRoll.ConsequenceData): BladesConsequence|false {
+    return cData.resistTo
+      ? new BladesConsequence(cData.resistTo)
+      : false;
   }
 
   updateConsequenceResist(csqElem$: JQuery<HTMLElement>, cData: BladesRoll.ConsequenceData) {
@@ -458,17 +460,17 @@ class BladesDialog extends Dialog {
   }
 
   updateConsequenceSpecialArmorResist(_csqElem$: JQuery<HTMLElement>, cData: BladesRoll.ConsequenceData) {
-    // If consequence is already minimal, toggle specialArmorNegates to true and set 'specialArmorTo' to None-type
+    // If consequence is already minimal, toggle specialArmorNegates to true and set 'specialTo' to None-type
     const minimalCsqTypes = Object.entries(C.ResistedConsequenceTypes)
       .filter(([_, rCsqType]) => rCsqType === ConsequenceType.None)
       .map(([csqType]) => csqType as ConsequenceType);
     if (minimalCsqTypes.includes(cData.type as ConsequenceType)) {
       cData.specialArmorNegates = true;
-      cData.specialArmorTo = BladesConsequence.None;
+      cData.specialTo = BladesConsequence.None;
     } else {
       delete cData.specialArmorNegates;
       cData.specialArmorNegates ??= false;
-      cData.specialArmorTo = this.getSelectedResistOption(cData);
+      cData.specialTo = this.getSelectedResistOption(cData);
     }
   }
 

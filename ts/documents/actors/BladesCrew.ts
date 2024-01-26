@@ -162,7 +162,7 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
 
   get rollParticipantType() {return this.type;}
 
-  get rollParticipantModsData(): BladesRoll.RollModData[] {return [];}
+  get rollParticipantModsData(): BladesRollMod.Schema[] {return [];}
 
   async applyHarm(_amount: number, _name: string) {
     console.error("Attempt to apply harm directly to a Crew document.");

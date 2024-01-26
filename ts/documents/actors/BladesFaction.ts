@@ -37,7 +37,7 @@ class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
 
   get rollOppType() { return this.type; }
 
-  get rollOppModsData(): BladesRoll.RollModData[] { return []; }
+  get rollOppModsData(): BladesRollMod.Schema[] { return []; }
   // #endregion
 
   // #endregion

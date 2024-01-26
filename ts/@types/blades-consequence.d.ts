@@ -1,5 +1,6 @@
 import {AttributeTrait, ConsequenceType, Position, Effect, RollResult} from "../core/constants";
-
+import {BladesPC} from "../documents/BladesActorProxy";
+import BladesTargetLink from "../classes/BladesTargetLink";
 /**
  * @file This file contains the type definitions for the BladesConsequence class and related entities.
  *
@@ -12,46 +13,40 @@ declare global {
 
     export type ResistanceType = "resist"|"armor"|"special";
 
-    export namespace Data {
+    export type DisplayType = "base"|"accept"|ResistanceType;
 
-      export interface Base {
-        id: IDString,
-        name: string,
-        type: ConsequenceType,
-        isAccepted?: boolean
-      }
+    export type Schema = {
+      name: string,
+      type: ConsequenceType,
+      rollData?: BladesRoll.FlagData,
 
-      export interface Main extends Base {
-        chatID: IDString,
-        userID: IDString,
-        rollID: IDString,
-        primaryID: IDString,
-        primaryType: BladesRoll.PrimaryDocType,
-        position: Position,
-        effect: Effect,
-        result: RollResult.partial|RollResult.fail
-      }
+      isAccepted: boolean,
+        acceptanceMode?: DisplayType,
 
-      interface Resistable extends Main {
-        attribute?: AttributeTrait|"",
-        attributeVal?: number,
-        resistTo?: Base,
-        armorTo?: Base,
-        specialTo?: Base,
-        footerMsg?: string
-      }
+      pcId: IDString, // ID of character who can resist this consequence
 
-      export interface Accepted extends Main {
-        isAccepted: true
-      }
+      attribute?: AttributeTrait,
+      attributeVal?: number,
+
+      resistTo?: Data,
+      armorTo?: Data,
+      specialTo?: Data,
+      footerMsg?: string
     }
 
-    export namespace ParsedData {
+    export type Config = BladesTargetLink.Config & Partial<Schema>;
 
-      export interface Main extends Data.Main {
-        typeDisplay: string,
-        icon: string
-      }
+    export interface Data extends BladesTargetLink.Data, Schema {};
+
+    export interface Context extends Data {
+      typeDisplay: string,
+      icon: string,
+
+      pc: BladesPC,
+
+      resistTo?: BladesConsequence,
+      armorTo?: BladesConsequence,
+      specialTo?: BladesConsequence
     }
   }
 }

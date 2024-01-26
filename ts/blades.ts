@@ -479,7 +479,7 @@ class GlobalGetter {
               RollResult.partial | RollResult.fail,
               Record<
                 IDString,
-                BladesRoll.ConsequenceData
+                BladesConsequence.Data
               >
             >
           >

@@ -53,9 +53,9 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
     } else if (U.isDocID(targetRef)) {
       // If it's a an ID (not a UUID), attempt to get UUID synchronously by checking most common collections:
       targetUUID = (game.actors.get(targetRef) ?? game.items.get(targetRef))?.uuid;
-    } else {
+    } else if (typeof targetRef.uuid === "string") {
       // If it's a Document, extract UUID directly.
-      targetUUID = targetRef.uuid;
+      targetUUID = targetRef.uuid as UUIDString;
     }
     // - ... Confirm targetUUID
     if (!U.isDocUUID(targetUUID)) {
@@ -120,6 +120,7 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
   private _targetID: UUIDString;
   private _targetKey?: TargetKey;
   private _targetFlagKey?: TargetFlagKey;
+  private _initialData: BladesTargetLink.Data & Schema;
 
   get id() {return this._id;}
   get targetID() {return this._targetID;}
@@ -135,19 +136,33 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
       ? `${this.targetFlagKey}.${this.id}` as TargetFlagKey
       : undefined;
   }
+  get initialData(): BladesTargetLink.Data & Schema { return this._initialData; }
 
   private _target: BladesDoc;
   get target(): BladesDoc {
     return this._target;
   }
 
+  protected get localData(): BladesTargetLink.Data & Schema {
+    if (this._target) {
+      return this.linkData;
+    }
+    return {
+      ...this.initialData,
+      id: this.id,
+      targetID: this.targetID,
+      targetKey: this.targetKey,
+      targetFlagKey: this.targetFlagKey
+    };
+  }
+
   protected get linkData() {
-    let linkData: (BladesTargetLink.Data & BladesTargetLink.UnknownSchema) | undefined;
+    let linkData: (BladesTargetLink.Data & Schema) | undefined;
     if (this.targetFlagKeyPrefix) {
       linkData = this.target.getFlag(
         C.SYSTEM_ID,
         this.targetFlagKeyPrefix
-      ) as (BladesTargetLink.Data & BladesTargetLink.UnknownSchema)
+      ) as (BladesTargetLink.Data & Schema)
         ?? undefined;
     } else if (this.targetKeyPrefix) {
       linkData = getProperty(this.target, this.targetKeyPrefix);
@@ -184,6 +199,7 @@ class BladesTargetLink<Schema extends BladesTargetLink.UnknownSchema> {
       throw new Error(`[new BladesTargetLink()] Unable to resolve target from uuid '${this._targetID}'`);
     }
     this._target = target;
+    this._initialData = JSON.parse(JSON.stringify(data));
   }
   // #endregion
 

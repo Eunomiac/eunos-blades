@@ -9,6 +9,7 @@ import BladesConsequence from "./BladesConsequence";
 import BladesClockKey from "./BladesClocks";
 import BladesDialog from "./BladesDialog";
 import BladesChat from "./BladesChat";
+import BladesTargetLink from "./BladesTargetLink";
 
 import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
 import type {ChatSpeakerDataProperties} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
@@ -60,32 +61,7 @@ function isModStatus(str: unknown): str is RollModStatus {
   return typeof str === "string" && str in RollModStatus;
 }
 
-/**
- * Checks if the given value is valid consequence data for a Resistance Roll.
- * @param {unknown} val The value to check.
- * @param {boolean} [isCheckingResistedTo=false] If the check is being recursively
- *                         applied to the 'resistTo' value.
- * @returns {boolean} True if the val is valid BladesRoll.ResistanceRollConsequenceData, false otherwise.
- */
-function isValidConsequenceData(
-  val: unknown,
-  isCheckingResistedTo = false
-): val is BladesRoll.ResistanceRollConsequenceData {
-  if (!U.isList(val)) {return false;}
-  if (typeof val.type !== "string" || !(val.type in ConsequenceType)) {return false;}
-  if (val.type === ConsequenceType.None) { return true; }
 
-  if (typeof val.name !== "string") {return false;}
-  if (typeof val.icon !== "string") {return false;}
-  if (typeof val.typeDisplay !== "string") {return false;}
-
-  if (isCheckingResistedTo) {return true;}
-
-  if (typeof val.attribute !== "string" || !(val.attribute in AttributeTrait)) {return false;}
-  if (!isValidConsequenceData(val.resistTo, true)) {return false;}
-
-  return true;
-}
 
 /**
  * Checks if the given section can contain BladesRollParticipant documents.
@@ -110,132 +86,155 @@ function isParticipantSubSection(subSection: string): subSection is BladesRoll.R
 }
 // #endregion
 // #region Utility Functions ~
-/**
- * Prunes the configuration file of flag-incompatible direct document references.
- * @param {BladesRoll.Config} cfg The configuration object to be pruned.
- * @returns {BladesRoll.ConfigFlags} - The pruned configuration object.
- */
-function pruneConfig(cfg: BladesRoll.Config & Record<string, unknown>): BladesRoll.ConfigFlags {
-  if (cfg.rollPrimaryData instanceof BladesRollPrimary) {
-    cfg.rollPrimaryData = cfg.rollPrimaryData.flagData;
-  }
-  if (cfg.rollOppData instanceof BladesRollOpposition) {
-    cfg.rollOppData = cfg.rollOppData.flagData;
-  }
-  if (cfg.rollParticipantData) {
-    if (cfg.rollParticipantData[RollModSection.roll]) {
-      Object.keys(cfg.rollParticipantData[RollModSection.roll]).forEach((key) => {
-        const thisParticipant = cfg.rollParticipantData?.[RollModSection.roll]?.[key as Exclude<BladesRoll.RollParticipantSubSection, "Setup">];
-        if (thisParticipant instanceof BladesRollParticipant) {
-          ((cfg.rollParticipantData as NonNullable<BladesRoll.Config["rollParticipantData"]>)[RollModSection.roll] as Record<string, BladesRoll.ParticipantDocData & BladesRoll.ParticipantSectionData>)[key as Exclude<BladesRoll.RollParticipantSubSection, "Setup">] = thisParticipant.flagData;
-        }
-      });
-    }
-    if (cfg.rollParticipantData[RollModSection.position]) {
-      Object.keys(cfg.rollParticipantData[RollModSection.position]).forEach((key) => {
-        const thisParticipant = cfg.rollParticipantData?.[RollModSection.position]?.[key as "Setup"];
-        if (thisParticipant instanceof BladesRollParticipant) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          cfg.rollParticipantData![RollModSection.position]![key as "Setup"] = thisParticipant.flagData;
-        }
-      });
-    }
-    if (cfg.rollParticipantData[RollModSection.effect]) {
-      Object.keys(cfg.rollParticipantData[RollModSection.effect]).forEach((key) => {
-        const thisParticipant = cfg.rollParticipantData?.[RollModSection.effect]?.[key as "Setup"];
-        if (thisParticipant instanceof BladesRollParticipant) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          cfg.rollParticipantData![RollModSection.effect]![key as "Setup"] = thisParticipant.flagData;
-        }
-      });
-    }
-  }
-  return JSON.parse(JSON.stringify(cfg)) as BladesRoll.ConfigFlags;
-}
+
 // #endregion
 
-class BladesRollMod {
+class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
 
-  static ParseDocRollMods(doc: BladesDoc): BladesRoll.RollModData[] {
+  static override ApplySchemaDefaults<Schema = BladesRollMod.Schema>(
+    schemaData: Partial<BladesRollMod.Schema>
+  ) {
+    // Ensure all properties of Schema are provided
+    if (!schemaData.name) { throw new Error("name is required for BladesRollMod.Schema"); }
+    return {
+      key: `${schemaData.name}-positive-roll`,
+      modType: RollModType.general,
+      section: RollModSection.roll,
+      posNeg: "positive",
+      base_status: RollModStatus.Hidden,
+      value: 1,
+      tooltip: "",
+      ...schemaData
+    } as Schema;
+  }
+
+  static get GMOnlyModStatuses() {
+    return [RollModStatus.ForcedOn, RollModStatus.ForcedOff, RollModStatus.Hidden];
+  }
+
+  private static getModData(mStrings: string[]): BladesRollMod.Schema {
+
+    const nameString = U.pullElement(mStrings, (v) => typeof v === "string" && /^na/i.test(v));
+    const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, ""));
+    if (!nameVal) {
+      throw new Error(`RollMod Missing Name: '${mStrings.join("@")}'`);
+    }
+
+    const catString = U.pullElement(mStrings, (v) => typeof v === "string" && /^cat/i.test(v));
+    const catVal = (typeof catString === "string" && catString.replace(/^.*:/, "")) as RollModSection | false;
+    if (!catVal || !(catVal in RollModSection)) {
+      throw new Error(`RollMod Missing Category: '${mStrings.join("@")}'`);
+    }
+
+    const posNegString = (U.pullElement(mStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
+    const posNegVal = posNegString.replace(/^.*:/, "") as "positive" | "negative";
+
+    const partialData: Partial<BladesRollMod.Schema> = {
+      key: `${nameVal}-${posNegVal}-${catVal}`,
+      name: nameVal,
+      section: catVal,
+      posNeg: posNegVal
+    };
+
+    return this.ApplySchemaDefaults(partialData);
+  }
+
+  private static getModParameterKeyVal(mString: string): Partial<
+    Record<KeyOf<BladesRollMod.Schema>, string|number|string[]>
+  > {
+
+    const [keyString, valString] = mString.split(/:/) as [string, string];
+    let val: string | string[] = /\|/.test(valString) ? valString.split(/\|/) : valString;
+    let key: KeyOf<BladesRollMod.Schema>;
+
+    if (/^stat/i.test(keyString)) {
+      key = "base_status";
+    } else if (/^val/i.test(keyString)) {
+      key = "value";
+    } else if (/^eff|^ekey/i.test(keyString)) {
+      key = "effectKeys";
+    } else if (/^side|^ss/i.test(keyString)) {
+      key = "sideString";
+    } else if (/^s.*ame/i.test(keyString)) {
+      key = "source_name";
+    } else if (/^tool|^tip/i.test(keyString)) {
+      key = "tooltip";
+    } else if (/^ty/i.test(keyString)) {
+      key = "modType";
+    } else if (/^c.{0,10}r?.{0,3}ty/i.test(keyString)) {
+      key = "conditionalRollTypes";
+    } else if (/^a.{0,3}r?.{0,3}y/i.test(keyString)) {
+      key = "autoRollTypes";
+    } else if (/^p.{0,10}r?.{0,3}y/i.test(keyString)) {
+      key = "participantRollTypes";
+    } else if (/^c.{0,10}r?.{0,3}tr/i.test(keyString)) {
+      key = "conditionalRollTraits";
+    } else if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {
+      key = "autoRollTraits";
+    } else if (/^p.{0,10}r?.{0,3}tr/i.test(keyString)) {
+      key = "participantRollTypes";
+    } else {
+      throw new Error(`Bad Roll Mod Key: ${keyString}`);
+    }
+
+    if (key === "base_status" && val === "Conditional") {
+      val = RollModStatus.Hidden;
+    }
+
+    let valProcessed;
+    if (["value"].includes(key)) {
+      valProcessed = U.pInt(val);
+    } else if (["effectKeys", "conditionalRollTypes", "autoRollTypes", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
+      valProcessed = [val].flat();
+    } else {
+      valProcessed = (val as string).replace(/%COLON%/g, ":");
+    }
+
+    return {[key]: valProcessed};
+  }
+
+  static ParseDocRollMods(doc: BladesDoc): BladesRollMod.Schema[] {
+
+    if (doc instanceof BladesChat) {
+      throw new Error("BladesRollMod.ParseDocRollMods cannot be called on a BladesChat document.");
+    }
 
     const {roll_mods} = doc.system;
     if (!roll_mods || roll_mods.length === 0) {return [];}
 
-    return (roll_mods
-      .filter((elem) => typeof elem === "string") as string[])
+    return roll_mods
+      .filter((elem) => elem && typeof elem === "string")
       .map((modString) => {
-        const pStrings = modString.split(/@/);
-        const nameString = U.pullElement(pStrings, (v) => typeof v === "string" && /^na/i.test(v));
-        const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, ""));
-        if (!nameVal) {throw new Error(`RollMod Missing Name: '${modString}'`);}
-        const catString = U.pullElement(pStrings, (v) => typeof v === "string" && /^cat/i.test(v));
-        const catVal = (typeof catString === "string" && catString.replace(/^.*:/, "")) as RollModSection | false;
-        if (!catVal || !(catVal in RollModSection)) {throw new Error(`RollMod Missing Category: '${modString}'`);}
-        const posNegString = (U.pullElement(pStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
-        const posNegVal = posNegString.replace(/^.*:/, "") as "positive" | "negative";
+        if (!modString) { return undefined; }
 
-        const rollModData: BladesRoll.RollModData = {
-          id: `${nameVal}-${posNegVal}-${catVal}`,
-          name: nameVal,
-          section: catVal,
-          base_status: RollModStatus.ToggledOff,
-          modType: RollModType.general,
-          value: 1,
-          posNeg: posNegVal,
-          tooltip: ""
-        };
+        const mStrings = modString.split(/@/);
 
-        pStrings.forEach((pString) => {
-          const [keyString, valString] = pString.split(/:/) as [string, string];
-          let val: string | string[] = /\|/.test(valString) ? valString.split(/\|/) : valString;
-          let key: KeyOf<BladesRoll.RollModData>;
-          if (/^stat/i.test(keyString)) {key = "base_status";} else
-            if (/^val/i.test(keyString)) {key = "value";} else
-              if (/^eff|^ekey/i.test(keyString)) {key = "effectKeys";} else
-                if (/^side|^ss/i.test(keyString)) {key = "sideString";} else
-                  if (/^s.*ame/i.test(keyString)) {key = "source_name";} else
-                    if (/^tool|^tip/i.test(keyString)) {key = "tooltip";} else
-                      if (/^ty/i.test(keyString)) {key = "modType";} else
-                        if (/^c.{0,10}r?.{0,3}ty/i.test(keyString)) {key = "conditionalRollTypes";} else
-                          if (/^a.{0,3}r?.{0,3}y/i.test(keyString)) {key = "autoRollTypes";} else
-                            if (/^p.{0,10}r?.{0,3}y/i.test(keyString)) {key = "participantRollTypes";} else
-                              if (/^c.{0,10}r?.{0,3}tr/i.test(keyString)) {key = "conditionalRollTraits";} else
-                                if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {key = "autoRollTraits";} else
-                                  if (/^p.{0,10}r?.{0,3}tr/i.test(keyString)) {key = "participantRollTypes";} else {
-                                    throw new Error(`Bad Roll Mod Key: ${keyString}`);
-                                  }
+        const rollModData = this.getModData(mStrings);
 
-          if (key === "base_status" && val === "Conditional") {
-            val = RollModStatus.Hidden;
-          }
-
-          let valProcessed;
-          if (["value"].includes(key)) {
-            valProcessed = U.pInt(val);
-          } else if (["effectKeys", "conditionalRollTypes", "autoRollTypes", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
-            valProcessed = [val].flat();
-          } else {
-            valProcessed = (val as string).replace(/%COLON%/g, ":");
-          }
-
+        mStrings.forEach((mString) => {
           Object.assign(
-            rollModData,
-            {[key]: valProcessed}
+            this.ApplySchemaDefaults(rollModData),
+            this.getModParameterKeyVal(mString)
           );
         });
 
         return rollModData;
-      });
+      })
+      .filter((elem): elem is BladesRollMod.Schema => Boolean(elem));
   }
 
   get status() {
-    if (this.userStatus
-      && [RollModStatus.ForcedOn, RollModStatus.ForcedOff, RollModStatus.Hidden].includes(this.userStatus)) {
+    // USER STATUS of "ForcedOn", "ForcedOff", or "Hidden" trumps all other status values.
+    if (this.userStatus && BladesRollMod.GMOnlyModStatuses.includes(this.userStatus)) {
       return this.userStatus;
     }
+
+    // HELD STATUS of "ToggledOff" or "ToggledOn" can be overridden by User Status
     if (this.heldStatus && [RollModStatus.ToggledOff, RollModStatus.ToggledOn].includes(this.heldStatus)) {
       return this.userStatus ?? this.heldStatus;
     }
+
+    // Otherwise, return the first status that is set out of held, user, and base.
     return this.heldStatus ?? this.userStatus ?? this.baseStatus;
   }
 
@@ -243,52 +242,11 @@ class BladesRollMod {
 
   get isVisible() {return this.status !== RollModStatus.Hidden;}
 
-  _heldStatus?: RollModStatus;
+  // get flagParams() {
+  //   return [C.SYSTEM_ID, `rollCollab.rollModsData.${this.id}`] as const;}
 
-  get heldStatus(): RollModStatus | undefined {return this._heldStatus;}
-
-  set heldStatus(val: RollModStatus | undefined) {
-    this._heldStatus = val;
-  }
-
-  get flagParams() {return [C.SYSTEM_ID, `rollCollab.rollModsData.${this.id}`] as const;}
-
-  getUserStatusFlag() {
-    return this.rollInstance.document.getFlag(...this.flagParams) as
-      RollModStatus | undefined;
-  }
-
-  async setUserStatusFlag(val: RollModStatus | undefined) {
-    if (val === this.userStatus) {return;}
-    if (!val || val === this.baseStatus) {
-      await this.rollInstance.document.unsetFlag(...this.flagParams);
-    } else {
-      const lockedToGM = [
-        RollModStatus.ForcedOn,
-        RollModStatus.ForcedOff,
-        RollModStatus.Hidden
-      ];
-      if (
-        !game.user.isGM
-        && (
-          lockedToGM.includes(val)
-          || (this.userStatus && lockedToGM.includes(this.userStatus))
-        )
-      ) {return;}
-      await this.rollInstance.document.setFlag(...this.flagParams, val);
-    }
-    await socketlib.system.executeForEveryone("renderRollCollab", this.rollInstance.rollID);
-  }
-
-  get userStatus(): RollModStatus | undefined {
-    return this.getUserStatusFlag();
-  }
-
-  set userStatus(val: RollModStatus | undefined) {
-    this.setUserStatusFlag(val);
-  }
-
-  get sourceName(): string {return this._sourceName;}
+  // async setUserStatusFlag(val: RollModStatus | undefined) {
+  // }
 
   get isConditional(): boolean {
     return [
@@ -304,7 +262,7 @@ class BladesRollMod {
   get isInInactiveBlock(): boolean {
     if (game.user.isGM) {
       return [RollModStatus.Hidden, RollModStatus.ForcedOff, RollModStatus.ToggledOff].includes(this.status)
-      && (this.isConditional || this.modType === RollModType.ability);
+        && (this.isConditional || this.modType === RollModType.ability);
     }
     return [RollModStatus.ForcedOff, RollModStatus.ToggledOff].includes(this.status)
       && (this.isConditional || this.modType === RollModType.ability);
@@ -350,6 +308,26 @@ class BladesRollMod {
   }
 
   /**
+   * Checks if any types or traits apply to the roll instance.
+   * @param {AnyRollType[]} types The types to check.
+   * @param {RollTrait[]} traits The traits to check.
+   * @returns {boolean} - Returns true if any types or traits apply, false otherwise.
+   */
+  private checkTypesOrTraits(types: BladesRoll.AnyRollType[], traits: BladesRoll.RollTrait[]): boolean {
+
+    const rollTypes = [this.rollInstance.rollType, this.rollInstance.rollSubType, this.rollInstance.rollDowntimeAction]
+      .filter((rType): rType is BladesRoll.AnyRollType => Boolean(rType));
+
+    const typesApply = (!this.rollInstance.isParticipantRoll && types.length === 0)
+        || rollTypes.some((rType) => types.includes(rType));
+
+    const traitsApply = (!this.rollInstance.isParticipantRoll && traits.length === 0)
+        || (this.rollInstance.rollTrait && traits.includes(this.rollInstance.rollTrait));
+
+    return Boolean(typesApply && traitsApply);
+  }
+
+  /**
    * Sets the conditional status of the roll mod instance.
    * @returns {boolean} - Returns false if the status is ForcedOn or ToggledOff, true if the status is Hidden.
    */
@@ -357,33 +335,35 @@ class BladesRollMod {
     // If the roll mod instance is not conditional, return false
     if (!this.isConditional) {return false;}
 
-    // If any auto-Traits/Types apply, set status to ForcedOn and return false
-    const autoTypesOrTraitsApply = this.autoRollTypes.includes(this.rollInstance.rollType)
+    // If any auto-Types apply, set status to ForcedOn and return false
+    if (
+      this.autoRollTypes.includes(this.rollInstance.rollType)
       || (this.rollInstance.rollSubType && this.autoRollTypes.includes(this.rollInstance.rollSubType))
       || (this.rollInstance.rollDowntimeAction && this.autoRollTypes.includes(this.rollInstance.rollDowntimeAction))
-      || (!this.rollInstance.rollTrait || this.autoRollTraits.includes(this.rollInstance.rollTrait));
-    if (autoTypesOrTraitsApply) {
+    ) {
       this.heldStatus = RollModStatus.ForcedOn;
       return false;
     }
 
-    // If any conditionalTypes apply and any conditionalTraits apply, set status to ToggledOff and return false
-    const conditionalTypesOrTraitsApply = this.checkTypesOrTraits(
-      this.conditionalRollTypes,
-      this.conditionalRollTraits
-    );
-    if (conditionalTypesOrTraitsApply) {
+    // If any auto-Traits apply, set status to ForcedOn and return false
+    if (this.rollInstance.rollTrait && this.autoRollTraits.includes(this.rollInstance.rollTrait)) {
+      this.heldStatus = RollModStatus.ForcedOn;
+      return false;
+    }
+
+    // If any conditionalTypes or conditionalTraits apply, set status to ToggledOff and return false
+    if (this.checkTypesOrTraits(this.conditionalRollTypes, this.conditionalRollTraits)) {
       this.heldStatus = RollModStatus.ToggledOff;
       return false;
     }
 
     // If this is a participant roll
-    //   AND any participantTypes apply
-    //   AND any participantTraits apply,
+    //   AND any participantTypes or participantTraits apply,
     // ... set status to ToggledOff and return false
-    const participantTypesOrTraitsApply = this.rollInstance.isParticipantRoll
-      && this.checkTypesOrTraits(this.participantRollTypes, this.participantRollTraits);
-    if (participantTypesOrTraitsApply) {
+    if (
+      this.rollInstance.isParticipantRoll
+      && this.checkTypesOrTraits(this.participantRollTypes, this.participantRollTraits)
+    ) {
       this.heldStatus = RollModStatus.ToggledOff;
       return false;
     }
@@ -392,59 +372,36 @@ class BladesRollMod {
     this.heldStatus = RollModStatus.Hidden;
     return true;
   }
-
   /**
-   * Checks if any types or traits apply to the roll instance.
-   * @param {AnyRollType[]} types The types to check.
-   * @param {RollTrait[]} traits The traits to check.
-   * @returns {boolean} - Returns true if any types or traits apply, false otherwise.
+   * Sets the auto-reveal/enable status of the roll mod instance.
+   * @returns {boolean} - Returns false if the status is ForcedOn or ToggledOff, true if the status is Hidden.
    */
-  private checkTypesOrTraits(types: BladesRoll.AnyRollType[], traits: BladesRoll.RollTrait[]): boolean {
-    if ([...types, ...traits].length === 0) { return false; }
-    const typesApply = Boolean((!this.rollInstance.isParticipantRoll && types.length === 0)
-      || types.includes(this.rollInstance.rollType)
-      || (this.rollInstance.rollSubType && types.includes(this.rollInstance.rollSubType))
-      || (this.rollInstance.rollDowntimeAction && types.includes(this.rollInstance.rollDowntimeAction)));
-    const traitsApply = Boolean((!this.rollInstance.isParticipantRoll && traits.length === 0)
-      || (this.rollInstance.rollTrait && traits.includes(this.rollInstance.rollTrait)));
-    return typesApply && traitsApply;
-  }
-
-  /**
-   * Helper function to process each key
-   * @param {string} key The key to process
-   * @returns {boolean} - Whether the processing was successful
-   */
-  private processKey(key: string): boolean {
-    const [thisKey, thisParam] = key.split(/-/) ?? [];
-    const positions = [Position.controlled, Position.risky, Position.desperate];
-    if (positions.includes(U.lCase(thisParam) as Position) && this.rollInstance.finalPosition === U.lCase(thisParam)) {
-      if (thisKey === "AutoRevealOn") {
-        this.heldStatus = RollModStatus.ToggledOff;
-        return true;
-      } else if (thisKey === "AutoEnableOn") {
-        this.heldStatus = RollModStatus.ForcedOn;
-        return true;
-      }
-    }
-    return false;
-  }
-
   setAutoStatus(): boolean {
     // Check for AutoRevealOn and AutoEnableOn
     const holdKeys = this.effectKeys.filter((key) => key.startsWith("Auto"));
     if (holdKeys.length === 0) {return false;}
 
     for (const key of holdKeys) {
-      if (this.processKey(key)) {
-        return false;
+      const [thisKey, thisParam] = key.split(/-/) ?? [];
+
+      if (U.lCase(thisParam) in Position && this.rollInstance.finalPosition === U.lCase(thisParam)) {
+        if (thisKey === "AutoRevealOn") {
+          this.heldStatus = RollModStatus.ToggledOff;
+          return false;
+        } else if (thisKey === "AutoEnableOn") {
+          this.heldStatus = RollModStatus.ForcedOn;
+          return false;
+        }
       }
     }
 
     this.heldStatus = RollModStatus.Hidden;
     return true;
   }
-
+  /**
+   * Sets the relevancy status of the roll mod instance (i.e. hides irrelevant rollMods).
+   * @returns {boolean} - Returns true if mod is irrelevant and status is Hidden, false otherwise.
+   */
   setRelevancyStatus(): boolean {
     const holdKeys = this.effectKeys.filter((key) => /^Negate|^Increase/.test(key));
     if (holdKeys.length === 0) {return false;}
@@ -452,35 +409,19 @@ class BladesRollMod {
     const relevantKeys = holdKeys
       .filter((key) => {
         const [thisKey, thisParam] = key.split(/-/) ?? [];
-
-        const negateOperations: Record<key, () => boolean> = {
-          PushCost: () => this.rollInstance.isPushed(),
-          PushCost0: () => this.rollInstance.isPushed(),
-          Consequence: () => this.rollInstance.rollType === RollType.Resistance
-            && Boolean(this.rollInstance.rollConsequence),
-          HarmLevel: () => {
-            if (this.rollInstance.rollType !== RollType.Resistance) {return false;}
-            if (!this.rollInstance.rollConsequence?.type) {return false;}
-            const {type: csqType} = this.rollInstance.rollConsequence;
-            return [
-              ConsequenceType.InsightHarm1, ConsequenceType.ProwessHarm1, ConsequenceType.ResolveHarm1,
-              ConsequenceType.InsightHarm2, ConsequenceType.ProwessHarm2, ConsequenceType.ResolveHarm2,
-              ConsequenceType.InsightHarm3, ConsequenceType.ProwessHarm3, ConsequenceType.ResolveHarm3,
-              ConsequenceType.InsightHarm4, ConsequenceType.ProwessHarm4, ConsequenceType.ResolveHarm4
-            ].includes(csqType);
-          },
-          QualityPenalty: () => this.rollInstance.isTraitRelevant(Factor.quality)
-            && (this.rollInstance.rollFactors.source[Factor.quality]?.value ?? 0)
-            < (this.rollInstance.rollFactors.opposition[Factor.quality]?.value ?? 0),
-          ScalePenalty: () => this.rollInstance.isTraitRelevant(Factor.scale)
-            && (this.rollInstance.rollFactors.source[Factor.scale]?.value ?? 0)
-            < (this.rollInstance.rollFactors.opposition[Factor.scale]?.value ?? 0),
-          TierPenalty: () => this.rollInstance.isTraitRelevant(Factor.tier)
-            && (this.rollInstance.rollFactors.source[Factor.tier]?.value ?? 0)
-            < (this.rollInstance.rollFactors.opposition[Factor.tier]?.value ?? 0)
-        };
-
         if (thisKey === "Negate") {
+          const negateOperations: Record<key, () => boolean> = {
+            PushCost: () => this.rollInstance.isPushed(),
+            QualityPenalty: () => this.rollInstance.isTraitRelevant(Factor.quality)
+              && (this.rollInstance.rollFactors.source[Factor.quality]?.value ?? 0)
+              < (this.rollInstance.rollFactors.opposition[Factor.quality]?.value ?? 0),
+            ScalePenalty: () => this.rollInstance.isTraitRelevant(Factor.scale)
+              && (this.rollInstance.rollFactors.source[Factor.scale]?.value ?? 0)
+              < (this.rollInstance.rollFactors.opposition[Factor.scale]?.value ?? 0),
+            TierPenalty: () => this.rollInstance.isTraitRelevant(Factor.tier)
+              && (this.rollInstance.rollFactors.source[Factor.tier]?.value ?? 0)
+              < (this.rollInstance.rollFactors.opposition[Factor.tier]?.value ?? 0)
+          };
           if (Object.hasOwn(negateOperations, thisParam)) {
             return negateOperations[thisParam as KeyOf<typeof negateOperations>]();
           } else {
@@ -499,7 +440,10 @@ class BladesRollMod {
     }
     return false;
   }
-
+  /**
+   * Sets the payable status of the roll mod instance (i.e. forces off rollMods the primary can't pay for).
+   * @returns {boolean} - Returns true if mod is unpayable and status is ForcedOff, false otherwise.
+   */
   setPayableStatus(): boolean {
     const holdKeys = this.effectKeys.filter((key) => key.startsWith("Cost"));
     if (holdKeys.length === 0) {return false;}
@@ -541,75 +485,38 @@ class BladesRollMod {
   applyRollModEffectKeys() {
     if (!this.isActive) {return;}
 
-    const holdKeys = this.effectKeys.filter((key) => /^Negate|^Increase/.test(key));
-    if (holdKeys.length === 0) {return;}
+    const holdKeyParams = this.effectKeys
+      .filter((key) => /^Negate|^Increase/.test(key))
+      .map((key) => key.split(/-/));
+    if (holdKeyParams.length === 0) {return;}
 
-    holdKeys.forEach((key) => {
-      // Console.log({key, split: key.split(/-/)})
-      const [thisKey, thisParam] = key.split(/-/) ?? [];
+    holdKeyParams.forEach(([key, param]) => {
 
-
-      const negateOperations = {
-        PushCost: () => {
-          const costlyPushMod = this.rollInstance.getActiveRollMods()
-            .find((mod) => mod.isPush && mod.stressCost > 0);
-          if (costlyPushMod) {
-            U.pullElement(costlyPushMod.effectKeys, (k) => k.startsWith("Cost-Stress"));
+      if (key === "Negate") {
+        const negateOperations = {
+          PushCost: () => {
+            this.rollInstance.negatePushCost();
+          },
+          QualityPenalty: () => {
+            this.rollInstance.negateFactorPenalty(Factor.quality);
+          },
+          ScalePenalty: () => {
+            this.rollInstance.negateFactorPenalty(Factor.scale);
+          },
+          TierPenalty: () => {
+            this.rollInstance.negateFactorPenalty(Factor.tier);
           }
-        },
-        // PushCost0: negateOperations.PushCost,
-        Consequence: () => {
-
-          /* Should cancel roll entirely? */
-        },
-        // HarmLevel: () => {
-        //   const harmLevels = [
-        //     [ConsequenceType.InsightHarm1, ConsequenceType.ProwessHarm1, ConsequenceType.ResolveHarm1],
-        //     [ConsequenceType.InsightHarm2, ConsequenceType.ProwessHarm2, ConsequenceType.ResolveHarm2],
-        //     [ConsequenceType.InsightHarm3, ConsequenceType.ProwessHarm3, ConsequenceType.ResolveHarm3],
-        //     [ConsequenceType.InsightHarm4, ConsequenceType.ProwessHarm4, ConsequenceType.ResolveHarm4]
-        //   ];
-        //   let harmConsequence: BladesRoll.ResistanceRollConsequenceData|undefined = undefined;
-        //   while (!harmConsequence && harmLevels.length > 0) {
-        //     harmConsequence = Object.values(this.rollInstance.rollConsequences)
-        //       .find(({type}) => (harmLevels.pop() ?? []).includes(type as ConsequenceType));
-        //   }
-        //   if (harmConsequence) {
-        //     harmConsequence.resistTo = {
-        //       name: [
-        //         ConsequenceType.InsightHarm1,
-        //         ConsequenceType.ProwessHarm1,
-        //         ConsequenceType.ResolveHarm1
-        //       ].includes(harmConsequence.type as ConsequenceType)
-        //         ? "Fully Negated"
-        //         : (Object.values(harmConsequence.resistOptions ?? [])[0]?.name ?? harmConsequence.name),
-        //       type: C.ResistedConsequenceTypes[harmConsequence.type as KeyOf<typeof C["ResistedConsequenceTypes"]>],
-        //       isSelected: true
-        //     };
-        //   }
-        // },
-        QualityPenalty: () => {
-          this.rollInstance.negateFactorPenalty(Factor.quality);
-        },
-        ScalePenalty: () => {
-          this.rollInstance.negateFactorPenalty(Factor.scale);
-        },
-        TierPenalty: () => {
-          this.rollInstance.negateFactorPenalty(Factor.tier);
-        }
-      };
-
-      if (thisKey === "Negate") {
-        if (Object.hasOwn(negateOperations, thisParam)) {
-          return negateOperations[thisParam as KeyOf<typeof negateOperations>]();
+        };
+        if (Object.hasOwn(negateOperations, param)) {
+          return negateOperations[param as KeyOf<typeof negateOperations>]();
         } else {
-          throw new Error(`Unrecognized Negate parameter: ${thisParam}`);
+          throw new Error(`Unrecognized Negate parameter: ${param}`);
         }
-      } else if (thisKey === "Increase") {
-        const [_, traitStr] = /(\w+)\d+/.exec(thisParam) ?? [];
+      } else if (key === "Increase") {
+        const [_, traitStr] = /(\w+)\d+/.exec(param) ?? [];
         return this.rollInstance.isTraitRelevant(traitStr as BladesRoll.RollTrait);
       } else {
-        throw new Error(`Unrecognized Function Key: ${thisKey} (key: ${key})`);
+        throw new Error(`Unrecognized Function Key: ${key} (key: ${key})`);
       }
     });
   }
@@ -629,57 +536,8 @@ class BladesRollMod {
     return this.rollInstance.getRollParticipant(this.section, this.name);
   }
 
-  get tooltip() {
-    let parsedTooltip = this._tooltip.replace(/%COLON%/g, ":");
-    if (parsedTooltip.includes("%DOC_NAME%")) {
-      parsedTooltip = parsedTooltip.replace(
-        /%DOC_NAME%/g,
-        this.selectedParticipant
-          ? this.selectedParticipant.rollParticipantName
-          : "an Ally"
-      );
-    }
-    if (parsedTooltip.includes("@OPPOSITION_NAME@")) {
-      parsedTooltip = parsedTooltip.replace(
-        /@OPPOSITION_NAME@/g,
-        this.rollInstance.rollOpposition
-          ? this.rollInstance.rollOpposition.rollOppName
-          : "Your Opposition"
-      );
-    }
-    return parsedTooltip;
-  }
-
-  get sideString(): string | undefined {
-    if (this._sideString) {return this._sideString;}
-    if (this.selectedParticipant) {
-      return this.selectedParticipant.rollParticipantName;
-    }
-    return undefined;
-  }
-
-  get allFlagData(): BladesRoll.FlagData {
-    return this.rollInstance.document.getFlag("eunos-blades", "rollCollab") as BladesRoll.FlagData;
-  }
-
-  get data(): BladesRoll.RollModData {
-    return {
-      id: this.id,
-      name: this.name,
-      base_status: this.baseStatus,
-      user_status: this.userStatus,
-      value: this.value,
-      effectKeys: this.effectKeys,
-      sideString: this._sideString,
-      tooltip: this._tooltip,
-      posNeg: this.posNeg,
-      modType: this.modType,
-      conditionalRollTypes: this.conditionalRollTypes,
-      autoRollTypes: this.autoRollTypes,
-      conditionalRollTraits: this.conditionalRollTraits,
-      autoRollTraits: this.autoRollTraits,
-      section: this.section
-    };
+  get allFlagData(): BladesRoll.Data {
+    return this.rollInstance.data;
   }
 
   get costs(): BladesRoll.CostData[] | undefined {
@@ -710,64 +568,96 @@ class BladesRollMod {
     });
   }
 
-  id: string;
+  _rollInstance: BladesRoll;
 
-  name: string;
+  constructor(modData: BladesRollMod.Data, rollInstance: BladesRoll) {
+    super(modData);
+    this._rollInstance = rollInstance;
+  }
 
-  _sourceName: string;
+  get rollInstance(): BladesRoll { return this._rollInstance; }
+  get name(): string { return this.data.name; }
+  get modType(): RollModType { return this.data.modType; }
+  get sourceName(): string { return this.data.source_name ?? this.data.name; }
+  get section(): RollModSection { return this.data.section; }
+  get posNeg(): "positive"|"negative" { return this.data.posNeg; }
 
-  baseStatus: RollModStatus;
+  get userStatus(): RollModStatus|undefined { return this.data.user_status; }
+  set userStatus(val: RollModStatus | undefined) {
+    if (val === this.userStatus) {return;}
+    if (!val || val === this.baseStatus) {
+      this.updateTarget("user_status", null).then(this.rollInstance.renderForAll.bind(this));
+    } else {
+      if (!game.user.isGM
+        && (BladesRollMod.GMOnlyModStatuses.includes(val)
+            || (this.userStatus && BladesRollMod.GMOnlyModStatuses.includes(this.userStatus)))
+      ) {
+        return;
+      }
+      this.updateTarget("user_status", val).then(this.rollInstance.renderForAll.bind(this));
+    }
+  }
 
-  value: number;
+  get baseStatus(): RollModStatus { return this.data.base_status; }
+  get heldStatus(): RollModStatus|undefined { return this.data.held_status; }
+  set heldStatus(val: RollModStatus | undefined) {
+    if (val === this.heldStatus) {return;}
+    if (!val) {
+      this.updateTarget("held_status", null).then(this.rollInstance.renderForAll.bind(this));
+    } else {
+      this.updateTarget("held_status", val).then(this.rollInstance.renderForAll.bind(this));
+    }
+  }
 
-  effectKeys: string[];
+  get value(): number { return this.data.value; }
+  get effectKeys(): string[] { return this.data.effectKeys ?? []; }
 
-  _sideString?: string;
+  get sideString(): string | undefined {
+    if (this.data.sideString) {return this.data.sideString;}
+    if (this.selectedParticipant) {
+      return this.selectedParticipant.rollParticipantName;
+    }
+    return undefined;
+  }
+  get tooltip() {
+    let parsedTooltip = this.data.tooltip.replace(/%COLON%/g, ":");
+    if (parsedTooltip.includes("%DOC_NAME%")) {
+      parsedTooltip = parsedTooltip.replace(
+        /%DOC_NAME%/g,
+        this.selectedParticipant
+          ? this.selectedParticipant.rollParticipantName
+          : "an Ally"
+      );
+    }
+    if (parsedTooltip.includes("@OPPOSITION_NAME@")) {
+      parsedTooltip = parsedTooltip.replace(
+        /@OPPOSITION_NAME@/g,
+        this.rollInstance.rollOpposition
+          ? this.rollInstance.rollOpposition.rollOppName
+          : "Your Opposition"
+      );
+    }
+    return parsedTooltip;
+  }
 
-  _tooltip: string;
+  get conditionalRollTypes(): BladesRoll.AnyRollType[] {
+    return this.data.conditionalRollTypes ?? [];
+  }
+  get autoRollTypes(): BladesRoll.AnyRollType[] {
+    return this.data.autoRollTypes ?? [];
+  }
+  get participantRollTypes(): BladesRoll.AnyRollType[] {
+    return this.data.participantRollTypes ?? [];
+  }
 
-  posNeg: "positive" | "negative";
-
-  modType: RollModType;
-
-  conditionalRollTypes: BladesRoll.AnyRollType[];
-
-  autoRollTypes: BladesRoll.AnyRollType[];
-
-  participantRollTypes: BladesRoll.AnyRollType[];
-
-  conditionalRollTraits: BladesRoll.RollTrait[];
-
-  autoRollTraits: BladesRoll.RollTrait[];
-
-  participantRollTraits: BladesRoll.RollTrait[];
-
-  section: RollModSection;
-
-  rollInstance: BladesRoll;
-
-  constructor(modData: BladesRoll.RollModData, rollInstance: BladesRoll) {
-    this.rollInstance = rollInstance;
-    this.id = modData.id;
-    this.name = modData.name;
-    this._sourceName = modData.source_name ?? modData.name;
-    this.baseStatus = modData.base_status;
-    this.value = modData.value;
-    this.effectKeys = modData.effectKeys ?? [];
-    this._sideString = modData.sideString;
-    this._tooltip = modData.tooltip;
-    this.posNeg = modData.posNeg;
-    this.modType = modData.modType;
-    this.conditionalRollTypes = modData.conditionalRollTypes ?? [];
-    this.autoRollTypes = modData.autoRollTypes ?? [];
-    this.participantRollTypes = modData.participantRollTypes ?? [];
-    this.conditionalRollTraits = (modData.conditionalRollTraits ?? [])
-      .map((trait) => U.lCase(trait) as BladesRoll.RollTrait);
-    this.autoRollTraits = (modData.autoRollTraits ?? [])
-      .map((trait) => U.lCase(trait) as BladesRoll.RollTrait);
-    this.participantRollTraits = (modData.participantRollTraits ?? [])
-      .map((trait) => U.lCase(trait) as BladesRoll.RollTrait);
-    this.section = modData.section;
+  get conditionalRollTraits(): BladesRoll.RollTrait[] {
+    return this.data.conditionalRollTraits ?? [];
+  }
+  get autoRollTraits(): BladesRoll.RollTrait[] {
+    return this.data.autoRollTraits ?? [];
+  }
+  get participantRollTraits(): BladesRoll.RollTrait[] {
+    return this.data.participantRollTraits ?? [];
   }
 }
 
@@ -831,9 +721,9 @@ class BladesRollPrimary implements BladesRoll.PrimaryDocData {
 
   rollPrimaryImg: string;
 
-  _rollModsData: BladesRoll.RollModData[];
+  _rollModsData: BladesRollMod.Schema[];
 
-  get rollModsData(): BladesRoll.RollModData[] {
+  get rollModsData(): BladesRollMod.Schema[] {
     return this.rollPrimaryDoc?.rollModsData ?? this._rollModsData ?? [];
   }
 
@@ -1033,7 +923,7 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
 
   rollOppImg: string;
 
-  rollOppModsData: BladesRoll.RollModData[] | undefined;
+  rollOppModsData: BladesRollMod.Schema[] | undefined;
 
   rollFactors: Partial<Record<Factor, BladesRoll.FactorData>>;
 
@@ -1212,7 +1102,7 @@ class BladesRollParticipant implements BladesRoll.ParticipantDocData {
 
   rollParticipantSubSection: BladesRoll.RollParticipantSubSection;
 
-  rollParticipantModsData: BladesRoll.RollModData[] | undefined; // As applied to MAIN roll when this participant involved
+  rollParticipantModsData: BladesRollMod.Schema[] | undefined; // As applied to MAIN roll when this participant involved
 
   rollFactors: Partial<Record<Factor, BladesRoll.FactorData>>;
 
@@ -1321,7 +1211,7 @@ class BladesRollParticipant implements BladesRoll.ParticipantDocData {
   }
 }
 
-class BladesRoll extends DocumentSheet {
+class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   static _Debug: {
     modWatch: RegExp|false
@@ -1340,19 +1230,6 @@ class BladesRoll extends DocumentSheet {
   };
 
   // #region STATIC METHODS: INITIALIZATION & DEFAULTS ~
-  static override get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["eunos-blades", "sheet", "roll-collab", game.user.isGM ? "gm-roll-collab" : ""],
-      template: `systems/eunos-blades/templates/roll/roll-collab${game.user.isGM ? "-gm" : ""}.hbs`,
-      submitOnChange: true,
-      width: 500,
-      dragDrop: [
-        {dragSelector: null, dropSelector: "[data-action='gm-drop-opposition'"}
-      ]
-      // Height: 500
-    });
-  }
-
   static Initialize() {
     return loadTemplates([
       "systems/eunos-blades/templates/roll/roll-collab.hbs",
@@ -1377,95 +1254,54 @@ class BladesRoll extends DocumentSheet {
     socketlib.system.register("closeRollCollab", BladesRoll.CloseRollCollab);
   }
 
-  static get DefaultRollMods(): BladesRoll.RollModData[] {
-    return [
-      {
-        id: "Push-positive-roll",
-        name: "PUSH",
-        section: RollModSection.roll,
-        base_status: RollModStatus.ToggledOff,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: ["ForceOff-Bargain", "Cost-Stress2"],
-        tooltip: "<h1>Push for +1d</h1><p>For <strong class='red-bright'>2 Stress</strong>, add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also accept a <strong class='red-bright'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
-      },
-      {
-        id: "Bargain-positive-roll",
-        name: "Bargain",
-        section: RollModSection.roll,
-        base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1 class='red-bright'>Devil's Bargain</h1><p>The GM has offered you a <strong class='red-bright'>Devil's Bargain</strong>.</p><p><strong class='red-bright'>Accept the terms</strong> to add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also <strong>Push for +1d</strong> to increase your dice pool: It's one or the other.)</em></p>"
-      },
-      {
-        id: "Assist-positive-roll",
-        name: "Assist",
-        section: RollModSection.roll,
-        base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.teamwork,
-        value: 1,
-        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Assists</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> is <strong>Assisting</strong> your efforts, adding <strong class='gold-bright'>1 die</strong> to your pool.</p>"
-      },
-      {
-        id: "Setup-positive-position",
-        name: "Setup",
-        section: RollModSection.position,
-        base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.teamwork,
-        value: 1,
-        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Position</strong> by one level.</p>"
-      },
-      {
-        id: "Push-positive-effect",
-        name: "PUSH",
-        section: RollModSection.effect,
-        base_status: RollModStatus.ToggledOff,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: ["Cost-Stress2"],
-        tooltip: "<h1>Push for Effect</h1><p>For <strong class='red-bright'>2 Stress</strong>, increase your <strong class='gold-bright'>Effect</strong> by one level.</p>"
-      },
-      {
-        id: "Setup-positive-effect",
-        name: "Setup",
-        section: RollModSection.effect,
-        base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.teamwork,
-        value: 1,
-        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
-      },
-      {
-        id: "Potency-positive-effect",
-        name: "Potency",
-        section: RollModSection.effect,
-        base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        tooltip: "<h1>Potency</h1><p>By circumstance or advantage, you have <strong>Potency</strong> in this action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
-      },
-      {
-        id: "Potency-negative-effect",
-        name: "Potency",
-        section: RollModSection.effect,
-        base_status: RollModStatus.Hidden,
-        posNeg: "negative",
-        modType: RollModType.general,
-        value: 1,
-        tooltip: "<h1 class='red-bright'>Potency</h1><p>By circumstance or advantage, <strong class='red-bright'>@OPPOSITION_NAME@</strong> has <strong>Potency</strong> against you, reducing your <strong class='red-bright'>Effect</strong> by one level."
-      }
-    ];
-  }
+  static override ApplySchemaDefaults<Schema = BladesRoll.Schema>(
+    schemaData: Partial<BladesRoll.Schema> & Partial<BladesRoll.Config>
+  ) {
+    // Ensure all properties of Schema are provided
+    const {rollPrimaryData, rollType, rollUserID} = schemaData;
+    if (!rollPrimaryData) {
+      throw new Error("Must include a rollPrimaryData when constructing a BladesRoll object.");
+    }
+    if (!rollType) {
+      throw new Error("Must include a rollType when constructing a BladesRoll object.");
+    }
+    if (!rollUserID) {
+      throw new Error("Must include a rollUserID when constructing a BladesRoll object.");
+    }
 
-  static get DefaultFlagData(): Omit<BladesRoll.FlagData, "rollUserID" | "rollPrimaryData" | "rollID" | "rollType" | "userPermissions"> {
+    if (schemaData.rollParticipantData) {
+      if (schemaData.rollParticipantData[RollModSection.roll]) {
+        Object.keys(schemaData.rollParticipantData[RollModSection.roll]).forEach((key) => {
+          const thisParticipant = schemaData.rollParticipantData?.[RollModSection.roll]?.[key as Exclude<BladesRoll.RollParticipantSubSection, "Setup">];
+          if (thisParticipant instanceof BladesRollParticipant) {
+            ((schemaData.rollParticipantData as NonNullable<BladesRoll.Config["rollParticipantData"]>)[RollModSection.roll] as Record<string, BladesRoll.ParticipantDocData & BladesRoll.ParticipantSectionData>)[key as Exclude<BladesRoll.RollParticipantSubSection, "Setup">] = thisParticipant.flagData;
+          }
+        });
+      }
+      if (schemaData.rollParticipantData && schemaData.rollParticipantData[RollModSection.position]) {
+        const participantPositionData = schemaData.rollParticipantData[RollModSection.position];
+        Object.keys(participantPositionData)
+          .forEach(() => {
+            if (schemaData.rollParticipantData && participantPositionData) {
+              if (participantPositionData.Setup instanceof BladesRollParticipant) {
+                participantPositionData.Setup = participantPositionData.Setup.flagData;
+              }
+            }
+          });
+      }
+      if (schemaData.rollParticipantData && schemaData.rollParticipantData[RollModSection.effect]) {
+        const participantEffectData = schemaData.rollParticipantData[RollModSection.effect];
+        Object.keys(participantEffectData)
+          .forEach(() => {
+            if (schemaData.rollParticipantData && participantEffectData) {
+              if (participantEffectData.Setup instanceof BladesRollParticipant) {
+                participantEffectData.Setup = participantEffectData.Setup.flagData;
+              }
+            }
+          });
+      }
+    }
+
     return {
       rollModsData: {},
       rollPositionInitial: Position.risky,
@@ -1546,8 +1382,129 @@ class BladesRoll extends DocumentSheet {
             highFavorsPC: true
           }
         }
+      },
+      userPermissions: {},
+      ...schemaData,
+      rollType,
+      rollUserID,
+      rollPrimaryData: rollPrimaryData instanceof BladesRollPrimary
+        ? rollPrimaryData.flagData
+        : rollPrimaryData,
+      rollOppData: schemaData.rollOppData instanceof BladesRollOpposition
+        ? schemaData.rollOppData.flagData
+        : schemaData.rollOppData
+    } as Schema;
+  }
+
+  // static override get defaultOptions() {
+  //   return foundry.utils.mergeObject(super.defaultOptions, {
+  //     classes: ["eunos-blades", "sheet", "roll-collab", game.user.isGM ? "gm-roll-collab" : ""],
+  //     template: `systems/eunos-blades/templates/roll/roll-collab${game.user.isGM ? "-gm" : ""}.hbs`,
+  //     submitOnChange: true,
+  //     width: 500,
+  //     dragDrop: [
+  //       {dragSelector: null, dropSelector: "[data-action='gm-drop-opposition'"}
+  //     ]
+  //     // Height: 500
+  //   });
+  // }
+
+  private static get DefaultRollModSchemas(): BladesRollMod.Schema[] {
+    return [
+      {
+        key: "Push-positive-roll",
+        name: "PUSH",
+        section: RollModSection.roll,
+        base_status: RollModStatus.ToggledOff,
+        posNeg: "positive",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: ["ForceOff-Bargain", "Cost-Stress2"],
+        tooltip: "<h1>Push for +1d</h1><p>For <strong class='red-bright'>2 Stress</strong>, add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also accept a <strong class='red-bright'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
+      },
+      {
+        key: "Bargain-positive-roll",
+        name: "Bargain",
+        section: RollModSection.roll,
+        base_status: RollModStatus.Hidden,
+        posNeg: "positive",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: [],
+        tooltip: "<h1 class='red-bright'>Devil's Bargain</h1><p>The GM has offered you a <strong class='red-bright'>Devil's Bargain</strong>.</p><p><strong class='red-bright'>Accept the terms</strong> to add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also <strong>Push for +1d</strong> to increase your dice pool: It's one or the other.)</em></p>"
+      },
+      {
+        key: "Assist-positive-roll",
+        name: "Assist",
+        section: RollModSection.roll,
+        base_status: RollModStatus.Hidden,
+        posNeg: "positive",
+        modType: RollModType.teamwork,
+        value: 1,
+        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Assists</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> is <strong>Assisting</strong> your efforts, adding <strong class='gold-bright'>1 die</strong> to your pool.</p>"
+      },
+      {
+        key: "Setup-positive-position",
+        name: "Setup",
+        section: RollModSection.position,
+        base_status: RollModStatus.Hidden,
+        posNeg: "positive",
+        modType: RollModType.teamwork,
+        value: 1,
+        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Position</strong> by one level.</p>"
+      },
+      {
+        key: "Push-positive-effect",
+        name: "PUSH",
+        section: RollModSection.effect,
+        base_status: RollModStatus.ToggledOff,
+        posNeg: "positive",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: ["Cost-Stress2"],
+        tooltip: "<h1>Push for Effect</h1><p>For <strong class='red-bright'>2 Stress</strong>, increase your <strong class='gold-bright'>Effect</strong> by one level.</p>"
+      },
+      {
+        key: "Setup-positive-effect",
+        name: "Setup",
+        section: RollModSection.effect,
+        base_status: RollModStatus.Hidden,
+        posNeg: "positive",
+        modType: RollModType.teamwork,
+        value: 1,
+        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
+      },
+      {
+        key: "Potency-positive-effect",
+        name: "Potency",
+        section: RollModSection.effect,
+        base_status: RollModStatus.Hidden,
+        posNeg: "positive",
+        modType: RollModType.general,
+        value: 1,
+        tooltip: "<h1>Potency</h1><p>By circumstance or advantage, you have <strong>Potency</strong> in this action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
+      },
+      {
+        key: "Potency-negative-effect",
+        name: "Potency",
+        section: RollModSection.effect,
+        base_status: RollModStatus.Hidden,
+        posNeg: "negative",
+        modType: RollModType.general,
+        value: 1,
+        tooltip: "<h1 class='red-bright'>Potency</h1><p>By circumstance or advantage, <strong class='red-bright'>@OPPOSITION_NAME@</strong> has <strong>Potency</strong> against you, reducing your <strong class='red-bright'>Effect</strong> by one level."
       }
-    };
+    ];
+  }
+
+  get defaultRollModsDataSet(): BladesRollMod.Data[] {
+    return BladesRoll.DefaultRollModSchemas.map((modSchema) => ({
+      id: randomID() as IDString,
+      targetID: this.targetID,
+      targetKey: this.targetKey ? `${this.targetKey}.${this.id}.rollModsData` as TargetKey : undefined,
+      targetFlagKey: this.targetFlagKey ? `${this.targetFlagKey}.${this.id}.rollModsData` as TargetFlagKey: undefined,
+      ...modSchema
+    }));
   }
 
   static GetDieClass(rollType: RollType, rollResult: number|false|RollResult, dieVal: number, dieIndex: number) {
@@ -1633,7 +1590,11 @@ class BladesRoll extends DocumentSheet {
     const rollInst = new BladesRoll(userID, rollID, rollPermission);
     eLog.checkLog3("rollCollab", "ConstructRollCollab()", {params: {userID, rollID, rollPermission}, rollInst});
     BladesRoll._Active = rollInst;
-    await rollInst._render(true);
+    await rollInst.renderForAll();
+  }
+
+  async renderForAll() {
+    await socketlib.system.executeForEveryone("renderRollCollab", this.id);
   }
 
   static RenderRollCollab(rollID: string) {
@@ -1784,7 +1745,7 @@ class BladesRoll extends DocumentSheet {
       });
 
     // Prepare the flag data.
-    const flagUpdateData: BladesRoll.FlagData = {
+    const flagUpdateData: BladesRoll.Data = {
       ...BladesRoll.DefaultFlagData,
       ...pruneConfig(config as BladesRoll.Config & Record<string, unknown>),
       userPermissions: userFlagData,
@@ -1802,7 +1763,7 @@ class BladesRoll extends DocumentSheet {
   static async PrepareResistanceRoll(rollID: string, config: BladesRoll.Config) {
 
     // Validate consequenceData
-    if (!config.resistanceData || !isValidConsequenceData(config.resistanceData?.consequence)) {
+    if (!config.resistanceData || !BladesConsequence.IsValidConsequenceData(config.resistanceData?.consequence)) {
       eLog.error("rollCollab", "[PrepareResistanceRoll] Bad Roll Consequence Data.", config);
       throw new Error("[PrepareResistanceRoll()] Bad Consequence Data for Resistance Roll");
     }
@@ -2452,26 +2413,26 @@ class BladesRoll extends DocumentSheet {
     return this.flagData?.rollPosEffectTrade ?? false;
   }
 
-  getFlagVal<T>(flagKey?: string): T | undefined {
-    if (flagKey) {
-      return this.document.getFlag(C.SYSTEM_ID, `rollCollab.${flagKey}`.replace(/(rollCollab\.)+/g, "rollCollab.")) as T | undefined;
-    }
-    return this.document.getFlag(C.SYSTEM_ID, "rollCollab") as T | undefined;
-  }
+  // getFlagVal<T>(flagKey?: string): T | undefined {
+  //   if (flagKey) {
+  //     return this.document.getFlag(C.SYSTEM_ID, `rollCollab.${flagKey}`.replace(/(rollCollab\.)+/g, "rollCollab.")) as T | undefined;
+  //   }
+  //   return this.document.getFlag(C.SYSTEM_ID, "rollCollab") as T | undefined;
+  // }
 
-  async setFlagVal(flagKey: string, flagVal: unknown, isRerendering = true) {
-    await this.document.setFlag(C.SYSTEM_ID, `rollCollab.${flagKey}`.replace(/(rollCollab\.)+/g, "rollCollab."), flagVal);
-    if (isRerendering) {
-      socketlib.system.executeForEveryone("renderRollCollab", this.rollID);
-    }
-  }
+  // async setFlagVal(flagKey: string, flagVal: unknown, isRerendering = true) {
+  //   await this.document.setFlag(C.SYSTEM_ID, `rollCollab.${flagKey}`.replace(/(rollCollab\.)+/g, "rollCollab."), flagVal);
+  //   if (isRerendering) {
+  //     socketlib.system.executeForEveryone("renderRollCollab", this.rollID);
+  //   }
+  // }
 
-  async clearFlagVal(flagKey: string, isRerendering = true) {
-    await this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.${flagKey}`.replace(/(rollCollab\.)+/g, "rollCollab."));
-    if (isRerendering) {
-      socketlib.system.executeForEveryone("renderRollCollab", this.rollID);
-    }
-  }
+  // async clearFlagVal(flagKey: string, isRerendering = true) {
+  //   await this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.${flagKey}`.replace(/(rollCollab\.)+/g, "rollCollab."));
+  //   if (isRerendering) {
+  //     socketlib.system.executeForEveryone("renderRollCollab", this.rollID);
+  //   }
+  // }
 
 
   get initialPosition(): Position {
@@ -2664,7 +2625,7 @@ class BladesRoll extends DocumentSheet {
 
   // #region ROLL MODS: Getters & Update Method ~
 
-  initRollMods(modsData: BladesRoll.RollModData[]) {
+  initRollMods(modsData: BladesRollMod.Schema[]) {
     // Reset override values previously enabled by rollmods
     this.rollTraitValOverride = undefined;
     this.rollFactorPenaltiesNegated = {};
@@ -2829,6 +2790,14 @@ class BladesRoll extends DocumentSheet {
   get isParticipantRoll() {
     return (this.rollType === RollType.Fortune && !game.user.isGM)
       || (this.rollSubType === RollSubType.GroupParticipant);
+  }
+
+  negatePushCost() {
+    const costlyPushMod = this.getActiveRollMods()
+      .find((mod) => mod.isPush && mod.stressCost > 0);
+    if (costlyPushMod) {
+      U.pullElement(costlyPushMod.effectKeys, (k) => k.startsWith("Cost-Stress"));
+    }
   }
 
   rollFactorPenaltiesNegated: Partial<Record<Factor, boolean>> = {};
@@ -3065,8 +3034,8 @@ class BladesRoll extends DocumentSheet {
     return {...context, ...sheetData};
   }
 
-  getFortuneRollModsData(): BladesRoll.RollModData[] {
-    const modsData: BladesRoll.RollModData[] = [];
+  getFortuneRollModsData(): BladesRollMod.Schema[] {
+    const modsData: BladesRollMod.Schema[] = [];
 
     if (this.rollSubType === RollSubType.Engagement) {
       modsData.push({
@@ -3140,8 +3109,8 @@ class BladesRoll extends DocumentSheet {
     return modsData;
   }
 
-  getDowntimeActionRollModsData(): BladesRoll.RollModData[] {
-    const modsData: BladesRoll.RollModData[] = [];
+  getDowntimeActionRollModsData(): BladesRollMod.Schema[] {
+    const modsData: BladesRollMod.Schema[] = [];
     modsData.push({
       id: "HelpFromFriend-positive-roll",
       name: "Help From a Friend",
@@ -3213,11 +3182,11 @@ class BladesRoll extends DocumentSheet {
 
   /**
    * Gets the roll modifications data.
-   * @returns {BladesRoll.RollModData[]} The roll modifications data.
+   * @returns {BladesRollMod.Schema[]} The roll modifications data.
    */
-  private getRollModsData(): BladesRoll.RollModData[] {
+  private getRollModsData(): BladesRollMod.Schema[] {
     const defaultMods = [
-      ...BladesRoll.DefaultRollMods,
+      ...BladesRoll.DefaultRollModSchemas,
       ...this.rollPrimary.rollModsData
     ];
     if (this.rollDowntimeAction) {
@@ -3322,12 +3291,12 @@ class BladesRoll extends DocumentSheet {
    * Constructs the sheet data.
    * @param {boolean} isGM If the user is a GM.
    * @param {BladesRoll.CostData[]} rollCosts The roll costs.
-   * @returns {BladesRoll.SheetData} The constructed sheet data.
+   * @returns {BladesRoll.Context} The constructed sheet data.
    */
   private getSheetData(
     isGM: boolean,
     rollCosts: BladesRoll.CostData[]
-  ): BladesRoll.SheetData {
+  ): BladesRoll.Context {
     const {
       flagData: rData,
       rollPrimary,
@@ -3835,6 +3804,12 @@ class BladesRoll extends DocumentSheet {
   async resolveRoll() {
     this.close();
     await this.roll.evaluate({async: true});
+    this.setFlagVal("finalPosition", this.finalPosition);
+    this.setFlagVal("finalEffect", this.finalEffect);
+    this.setFlagVal("rollResult", this.rollResult);
+    this.setFlagVal("rollTraitVerb", this.rollTraitVerb);
+    this.setFlagVal("rollTraitPastVerb", this.rollTraitPastVerb);
+    this.setFlagVal("finalDiceData", this.finalDiceData);
     await this.setRollPhase(RollPhase.AwaitingConsequences);
     switch (this.rollType) {
       case RollType.Action: {
