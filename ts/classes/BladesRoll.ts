@@ -1259,7 +1259,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   static override ParseConfig<Schema = BladesRoll.Schema>(
-    data: BladesTargetLink.Data & Partial<BladesRoll.Config>
+    data: BladesTargetLink.Config & Partial<BladesRoll.Schema>
   ): BladesTargetLink.Data & Partial<Schema> {
     if (data.rollPrimaryData instanceof BladesRollPrimary) {
       data.rollPrimaryData = data.rollPrimaryData.data;
@@ -1295,7 +1295,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         });
       }
     }
-    return JSON.parse(JSON.stringify(data)) as BladesTargetLink.Data & Partial<Schema>;
+    return JSON.parse(JSON.stringify(BladesTargetLink.ParseConfig(data))) as BladesTargetLink.Data & Partial<Schema>;
   }
 
   static override ApplySchemaDefaults<Schema = BladesRoll.Schema>(
@@ -2195,7 +2195,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   get rollParticipantSelectOptions(): Record<
     "Assist" | "Setup" | "Group",
     Array<BladesSelectOption<string>>
-  > {
+    > {
     const nonPrimaryPCs = BladesPC.All
       .filter((actor) => actor.hasTag(Tag.PC.ActivePC) && actor.id !== this.rollPrimary.rollPrimaryID)
       .map((actor) => ({value: actor.id, display: actor.name}));
@@ -2364,7 +2364,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   // Get rollConsequence() --> For resistance rolls.
   get rollConsequence(): BladesRoll.ResistanceRollConsequenceData | undefined {
-    return this.getFlagVal<BladesRoll.ResistanceRollConsequenceData>("resistanceData.consequence");
+    return this.data.resistanceData?.consequence;
   }
 
   // #endregion
@@ -2565,8 +2565,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
             inInactiveBlock: rollMod.isInInactiveBlock,
             isPush: rollMod.isPush,
             isBasicPush: rollMod.isBasicPush
-          },
-          flags: {...rollMod.flagParams}
+          }
         };
       } else {
         initReport[reportLabel] = "MOD NOT FOUND";
@@ -2882,8 +2881,8 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   private get _csqData(): BladesRoll.ConsequenceData[] {
     const csqData = this.data.consequenceData?.
-    [this.finalPosition]?.
-    [this.rollResult as RollResult.partial | RollResult.fail];
+      [this.finalPosition]?.
+      [this.rollResult as RollResult.partial | RollResult.fail];
     if (csqData) {
       return Object.values(csqData);
     }
@@ -2943,7 +2942,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     if (this.rollSubType === RollSubType.Engagement) {
       modsData.push({
-        id: "BoldPlan-positive-roll",
+        key: "BoldPlan-positive-roll",
         name: "Bold Plan",
         section: RollModSection.roll,
         base_status: RollModStatus.ToggledOff,
@@ -2954,7 +2953,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         tooltip: "<h1></h1><p></p>"
       });
       modsData.push({
-        id: "ComplexPlan-negative-roll",
+        key: "ComplexPlan-negative-roll",
         name: "Complex Plan",
         section: RollModSection.roll,
         base_status: RollModStatus.ToggledOff,
@@ -2965,7 +2964,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         tooltip: "<h1></h1><p></p>"
       });
       modsData.push({
-        id: "ExploitWeakness-positive-roll",
+        key: "ExploitWeakness-positive-roll",
         name: "Exploiting a Weakness",
         section: RollModSection.roll,
         base_status: RollModStatus.ToggledOff,
@@ -2976,7 +2975,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         tooltip: "<h1></h1><p></p>"
       });
       modsData.push({
-        id: "WellDefended-negative-roll",
+        key: "WellDefended-negative-roll",
         name: "Well-Defended",
         section: RollModSection.roll,
         base_status: RollModStatus.ToggledOff,
@@ -2987,7 +2986,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         tooltip: "<h1></h1><p></p>"
       });
       modsData.push({
-        id: "HelpFromFriend-positive-roll",
+        key: "HelpFromFriend-positive-roll",
         name: "Help From a Friend",
         section: RollModSection.position,
         base_status: RollModStatus.ToggledOff,
@@ -2998,7 +2997,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         tooltip: "<h1>Help From a Friend</h1><p>Add <strong>+1d</strong> if you enlist the help of a friend or contact.</p>"
       });
       modsData.push({
-        id: "EnemyInterference-negative-roll",
+        key: "EnemyInterference-negative-roll",
         name: "Enemy Interference",
         section: RollModSection.roll,
         base_status: RollModStatus.ToggledOff,
@@ -3016,7 +3015,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   getDowntimeActionRollModsData(): BladesRollMod.Schema[] {
     const modsData: BladesRollMod.Schema[] = [];
     modsData.push({
-      id: "HelpFromFriend-positive-roll",
+      key: "HelpFromFriend-positive-roll",
       name: "Help From a Friend",
       section: RollModSection.position,
       base_status: RollModStatus.ToggledOff,
@@ -3028,7 +3027,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     });
     if (this.rollDowntimeAction !== DowntimeAction.IndulgeVice) {
       modsData.push({
-        id: "CanBuyResultLevel-positive-after",
+        key: "CanBuyResultLevel-positive-after",
         name: "Buying Result Level",
         section: RollModSection.after,
         base_status: RollModStatus.ForcedOn,
@@ -3042,7 +3041,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     switch (this.rollDowntimeAction) {
       case DowntimeAction.AcquireAsset: {
         modsData.push({
-          id: "RepeatPurchase-positive-roll",
+          key: "RepeatPurchase-positive-roll",
           name: "Repeat Purchase",
           section: RollModSection.roll,
           base_status: RollModStatus.ToggledOff,
@@ -3053,7 +3052,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
           tooltip: "<h1>Repeat Purchase Bonus</h1><p>Add <strong>+1d</strong> if you have previously acquired this asset or service with a <strong>Acquire Asset</strong> Downtime activity.</p>"
         });
         modsData.push({
-          id: "RestrictedItem-negative-after",
+          key: "RestrictedItem-negative-after",
           name: "Restricted",
           section: RollModSection.after,
           base_status: RollModStatus.Hidden,
@@ -3099,7 +3098,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     if (this.rollType === RollType.Action) {
       if (this.rollPrimary.isWorsePosition) {
         defaultMods.push({
-          id: "WorsePosition-negative-position",
+          key: "WorsePosition-negative-position",
           name: "Worse Position",
           section: RollModSection.position,
           base_status: RollModStatus.ForcedOn,
@@ -3124,7 +3123,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       && this.acceptedConsequences.some((csq) => csq.type === ConsequenceType.ReducedEffect)
     ) {
       defaultMods.push({
-        id: "ReducedEffect-negative-effect",
+        key: "ReducedEffect-negative-effect",
         name: "Reduced Effect",
         section: RollModSection.effect,
         base_status: RollModStatus.ForcedOn,
@@ -3708,12 +3707,15 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   async resolveRoll() {
     this.close();
     await this.roll.evaluate({async: true});
-    this.setFlagVal("finalPosition", this.finalPosition);
-    this.setFlagVal("finalEffect", this.finalEffect);
-    this.setFlagVal("rollResult", this.rollResult);
-    this.setFlagVal("rollTraitVerb", this.rollTraitVerb);
-    this.setFlagVal("rollTraitPastVerb", this.rollTraitPastVerb);
-    this.setFlagVal("finalDiceData", this.finalDiceData);
+    this.updateTargetData({
+      ...this.data,
+      finalPosition: this.finalPosition,
+      finalEffect: this.finalEffect,
+      rollResult: this.rollResult,
+      rollTraitVerb: this.rollTraitVerb,
+      rollTraitPastVerb: this.rollTraitPastVerb,
+      finalDiceData: this.finalDiceData
+    });
     await this.setRollPhase(RollPhase.AwaitingConsequences);
     switch (this.rollType) {
       case RollType.Action: {
@@ -3945,7 +3947,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     }
     const newVal = cycleVals[newValIndex];
     eLog.checkLog3("gmControlCycleTarget", "gmControlCycleTarget", {flagTarget, curVal, cycleVals, curValIndex, newValIndex, newVal});
-    await this.setFlagVal(flagTarget, newVal);
+    await this.updateTarget(flagTarget, newVal);
   }
 
   /**

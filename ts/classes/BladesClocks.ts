@@ -385,8 +385,9 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     config.index = indexOverride ?? this.size;
 
     // Parse config to full data object
-    const parsedConfig = BladesClock.ParseConfig(config as BladesClock.Config);
-    return BladesClock.ApplySchemaDefaults(parsedConfig);
+    return BladesClock.ApplySchemaDefaults(
+      BladesClock.ParseConfig(config as BladesClock.Config)
+    );
   }
 
   // #endregion
