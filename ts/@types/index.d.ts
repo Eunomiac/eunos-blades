@@ -59,6 +59,7 @@ declare global {
       ClockKeeper: BladesClockKeeper,
       Director: BladesDirector,
       Tracker: BladesGMTracker,
+      Rolls: Collection<BladesRoll>,
       ClockKeys: Collection<BladesClockKey>,
       Consequences: Collection<BladesConsequence>,
       Tooltips: WeakMap<HTMLElement, gsap.core.Timeline>
@@ -96,14 +97,6 @@ declare global {
     }
   }
   interface LenientGlobalVariableTypes { game: never }
-
-  interface FlagConfig {
-    User: {
-      [C.SYSTEM_ID]?: {
-        rollCollab?: BladesRoll.FlagData
-      }
-    };
-  }
 
   // GreenSock Accessor Object
   declare const gsap: gsap;

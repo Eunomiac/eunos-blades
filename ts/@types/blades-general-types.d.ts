@@ -2,6 +2,9 @@ import {AttributeTrait, ActionTrait, District} from "../core/constants";
 import BladesItem from "../BladesItem";
 import BladesActor from "../BladesActor";
 import BladesChat from "../classes/BladesChat";
+import BladesClockKey, {BladesClock} from "../classes/BladesClocks";
+import BladesConsequence from "../classes/BladesConsequence";
+import BladesRoll, {BladesRollMod} from "../classes/BladesRoll";
 import {gsap} from "gsap/all";
 
 
@@ -132,10 +135,13 @@ declare global {
   type gsapAnim = gsap.core.Tween | gsap.core.Timeline;
 
   // Represents a generic Blades document
-  type BladesDoc = BladesActor | BladesItem | BladesChat;
+  type BladesDoc = BladesActor | BladesItem;
 
   // Represents any Blades document sheet
-  type BladesSheet = BladesActorSheet | BladesItemSheet | BladesRoll;
+  type BladesSheet = BladesActorSheet | BladesItemSheet;
+
+  // Represents any document that can be the target of a BladesTargetLink subclass.
+  type BladesLinkDoc = BladesDoc | BladesChat | User;
 
   // Represents a reference to a Blades document
   type DocRef = string | BladesDoc;

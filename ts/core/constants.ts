@@ -1348,7 +1348,7 @@ const C = {
     Vice.Life_Essence,
     Vice.Electroplasmic_Power
   ]
-};
+} as const;
 // #endregion
 
 // #region RANDOMIZER DATA

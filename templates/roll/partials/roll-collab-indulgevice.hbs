@@ -1,4 +1,4 @@
-<section class="sheet-topper roll-type roll-type-{{case "lower" rollType}}" data-roll-id="{{rollID}}">
+<section class="sheet-topper roll-type roll-type-{{case "lower" rollType}}" data-roll-id="{{id}}">
   <div class="roll-type-header">{{rollType}} Roll</div>
 </section>
 
@@ -323,7 +323,7 @@
           <div class="roll-odds-label-text">Waiting For GM ...</div>
         </div>
       {{else if (test rollPhase "==" "AwaitingRoll")}}
-        <button class="roll-button" data-action="roll" data-roll-id="{{rollID}}">ROLL</button>
+        <button class="roll-button" data-action="roll" data-roll-id="{{id}}">ROLL</button>
       {{/if}}
     </div>
     {{#if costData}}

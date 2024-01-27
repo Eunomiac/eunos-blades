@@ -5,6 +5,7 @@ import BladesNPC from "../documents/actors/BladesNPC";
 import BladesFaction from "../documents/actors/BladesFaction";
 import BladesCrew from "../documents/actors/BladesCrew";
 import BladesTargetLink from "../classes/BladesTargetLink";
+import BladesChat from "../classes/BladesChat";
 
 
 declare global {
@@ -13,13 +14,11 @@ declare global {
 
   namespace BladesTargetLink {
 
-    export type UnknownSchema = Record<any, any>;
-
-    export type StaticThisContext<Schema extends UnknownSchema> = typeof BladesTargetLink
+    export type StaticThisContext<Schema> = typeof BladesTargetLink
       & (new (data: Data & Schema) => BladesTargetLink & Subclass<Schema>);
 
     export type Config = {
-      target?: IDString|UUIDString|BladesDoc,
+      target?: IDString|UUIDString|BladesDoc|BladesChat|User,
       targetID?: IDString|UUIDString,
       targetKey?: TargetKey,
       targetFlagKey?: TargetFlagKey
@@ -33,10 +32,10 @@ declare global {
     }
 
     export type Instance = Data & {
-      target: BladesDoc
+      target: BladesDoc|BladesChat|User
     }
 
-    export interface Subclass<Schema extends UnknownSchema> extends Instance {
+    export interface Subclass<Schema> extends Instance {
 
       data: Data & Schema,
 

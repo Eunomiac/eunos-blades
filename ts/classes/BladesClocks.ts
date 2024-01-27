@@ -3,8 +3,8 @@ import C, {ClockKey_SVGDATA, ClockKeySVGData, ClockDisplayContext, BladesActorTy
 import {Dragger} from "../core/gsap";
 import BladesTargetLink from "./BladesTargetLink";
 import U from "../core/utilities";
-import {BladesActor} from "../documents/BladesActorProxy";
-import {BladesItem, BladesClockKeeper} from "../documents/BladesItemProxy";
+import {BladesActor, BladesPC, BladesFaction} from "../documents/BladesActorProxy";
+import {BladesItem, BladesClockKeeper, BladesProject, BladesScore} from "../documents/BladesItemProxy";
 import BladesRoll from "./BladesRoll";
 
 export type ClockElems$ = {
@@ -102,7 +102,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     } as Schema;
   }
 
-  static override async Create<Schema extends BladesTargetLink.UnknownSchema = BladesClockKey.Schema>(
+  static override async Create<Schema = BladesClockKey.Schema>(
     config: BladesClockKey.Config & Partial<Schema>,
     clockConfigs: Array<Partial<BladesClock.Config>> = []
   ) {
@@ -132,7 +132,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     // Update the clock key with the new clock data
     await clockKey.updateTarget("clocksData", clocksData, ClockKeyUpdateAction.RenderAll);
 
-    return clockKey as BladesClockKey & BladesTargetLink.Subclass<Schema>;
+    return clockKey as BladesClockKey & BladesTargetLink<Schema>;
   }
 
   static GetFromElement(elem: HTMLElement | JQuery<HTMLElement>): BladesClockKey | undefined {
@@ -207,16 +207,16 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   }
 
   get isClockKeeperKey(): boolean {
-    return this.target.type === BladesItemType.clock_keeper;
+    return this.target instanceof BladesClockKeeper;
   }
   get isFactionKey(): boolean {
-    return this.target.type === BladesActorType.faction;
+    return this.target instanceof BladesFaction;
   }
   get isProjectKey(): boolean {
-    return this.target.type === BladesItemType.project;
+    return this.target instanceof BladesProject;
   }
   get isScoreKey(): boolean {
-    return this.target.type === BladesItemType.score;
+    return this.target instanceof BladesScore;
   }
   get visibleClocks(): BladesClock[] {
     return this.clocks.filter((clock) => clock.isVisible);
@@ -385,7 +385,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     config.index = indexOverride ?? this.size;
 
     // Parse config to full data object
-    const cData = BladesClock.ParseConfig<BladesClock.Schema>(config as BladesClock.Config);
+    const cData = BladesClock.ParseConfig<BladesClock.Config>(config as BladesClock.Config);
 
     return cData;
   }
@@ -977,8 +977,8 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     this.postUpdateRender(postUpdateAction);
   }
 
-  override async updateTargetData<T extends BladesTargetLink.UnknownSchema>(
-    val: T | null,
+  override async updateTargetData(
+    val: unknown,
     postUpdateAction: ClockKeyUpdateAction|boolean = false
   ) {
     await super.updateTargetData(val, true);
@@ -1654,8 +1654,8 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     this.postUpdateRender(postUpdateAction);
   }
 
-  override async updateTargetData<T extends BladesTargetLink.UnknownSchema>(
-    val: T | null,
+  override async updateTargetData(
+    val: Partial<BladesClock.Schema> | null,
     postUpdateAction: ClockKeyUpdateAction|boolean = false
   ) {
     await super.updateTargetData(val, true);

@@ -9,6 +9,8 @@ declare global {
 
   namespace BladesRollMod {
 
+    // export type Value = string|number|string[];
+
     export type Schema = {
       key: string,
       name: string,
@@ -43,22 +45,22 @@ declare global {
 
   namespace BladesRoll {
 
-    export interface Config extends BladesTargetLink.Config {
-      rollType: RollType,
+    export interface Config extends Partial<BladesTargetLink.Config> {
+      rollType?: RollType,
       rollSubType?: RollSubType,
-      rollUserID: IDString,
+      rollUserID?: IDString,
       rollTrait?: RollTrait,
       rollDowntimeAction?: DowntimeAction,
       rollClockKey?: IDString|BladesClockKey,
       rollClockKeyID?: IDString,
 
-      rollPrimaryData: PrimaryDocData;
+      rollPrimaryData?: PrimaryDocData;
       rollOppData?: OppositionDocData;
-      rollParticipantData?: RollParticipantData,
+      rollParticipantData?: RollParticipantDataSet,
 
       participantRollTo?: string,
       resistanceRollTo?: {
-        rollID: string,
+        id: string,
         userID: string,
         consequenceID: string
       },
@@ -74,7 +76,9 @@ declare global {
       >>,
       resistanceData?: {
         consequence: BladesConsequence.Data
-      }
+      },
+
+      userPermissions?: Record<IDString, RollPermissions>
     }
 
     export interface Schema extends Omit<Config, "rollClockKey"|"rollPrimaryData"|"rollOppData"|"rollParticipantData"> {
@@ -99,7 +103,7 @@ declare global {
         Partial<Record<Factor, FactorFlagData>>
       >,
 
-      userPermissions: Record<string, RollPermissions>,
+      userPermissions: Record<IDString, RollPermissions>,
 
       template?: string,
       finalPosition?: Position,
@@ -319,7 +323,7 @@ declare global {
     export type ParticipantConstructorData = ParticipantSectionData & Partial<ParticipantDocData>;
 
 
-    export interface RollParticipantData {
+    export interface RollParticipantDataSet {
       [RollModSection.roll]?: {
         Assist?: ParticipantDocData & ParticipantSectionData,
         Group_1?: ParticipantDocData & ParticipantSectionData,

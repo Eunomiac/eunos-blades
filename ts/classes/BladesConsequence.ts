@@ -149,7 +149,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Data> {
     return new BladesConsequence({
       ...csqData,
       type: type as ConsequenceType,
-      rollID: msg.flags.rollID as IDString,
+      id: msg.flags.id as IDString,
       userID: msg.flags.rollUserID,
       primaryID: msg.flags.rollPrimaryData.rollPrimaryID as IDString,
       primaryType: msg.flags.rollPrimaryData.rollPrimaryType,
@@ -164,7 +164,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Data> {
 
   chatID: IDString;
 
-  rollID: IDString;
+  id: IDString;
 
   userID: IDString;
 
@@ -203,7 +203,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Data> {
       id: this.resistTo.id,
       chatID: this.chatMessage.id as IDString,
       userID: this.user.id as IDString,
-      rollID: this.rollID,
+      id: this.id,
       primaryID: this.primaryID,
       primaryType: this.primaryType,
       position: this.position,
@@ -236,7 +236,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Data> {
     const {id, targetID, targetKey, targetFlagKey} = {...parentCsq ?? {}, ...data} as BladesTargetLink.Data;
     super({id, targetID, targetKey, targetFlagKey});
     const {
-      chatID, userID, rollID, primaryID, primaryType,
+      chatID, userID, id, primaryID, primaryType,
       position, effect, result
     } = {...parentCsq ?? {}, ...data} as BladesConsequence.Data;
 
@@ -251,7 +251,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Data> {
 
     eLog.checkLog3("bladesConsequence", "[new BladesConsequence]", {
       parentCsq,
-      id, chatID, userID, rollID, primaryID, primaryType,
+      id, chatID, userID, id, primaryID, primaryType,
       name,
       type,
       position, effect, result,
@@ -262,7 +262,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Data> {
     });
 
     if (typeof id !== "string") { throw new Error("[new BladesConsequence] Missing 'id' in constructor data object."); }
-    if (typeof rollID !== "string") { throw new Error("[new BladesConsequence] Missing 'rollID' in constructor data object."); }
+    if (typeof id !== "string") { throw new Error("[new BladesConsequence] Missing 'id' in constructor data object."); }
     if (typeof chatID !== "string") { throw new Error("[new BladesConsequence] Missing 'chatID' in constructor data object."); }
     const chatMessage = game.messages.get(chatID);
     if (!(chatMessage instanceof BladesChat)) { throw new Error(`[new BladesConsequence] No chat message with id '${chatID}' found.`); }
@@ -281,7 +281,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Data> {
     if (!(typeof result === "string" && [RollResult.partial, RollResult.fail].includes(result))) { throw new Error("[new BladesConsequence] Missing 'result' in constructor data object."); }
 
     this._id = id;
-    this.rollID = rollID;
+    this.id = id;
     this.chatMessage = chatMessage;
     this.chatID = chatMessage.id;
     this.user = user;
@@ -478,7 +478,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Data> {
   // get rollFlagData(): BladesRoll.FlagData {
   //   // Get rollPrimaryData from archived roll flags on user document.
   //   let rollFlagData = this._user.getFlag(C.SYSTEM_ID, "rollCollab") as BladesRoll.FlagData;
-  //   if (rollFlagData.rollID !== this._rollID) {
+  //   if (rollFlagData.id !== this._rollID) {
   //     rollFlagData = this._user.getFlag(C.SYSTEM_ID, `rollCollabArchive.${this._rollID}`) as BladesRoll.FlagData;
   //   }
   //   if (!rollFlagData) { throw new Error(`Unable to locate flag data for roll id '${this._rollID}'`); }

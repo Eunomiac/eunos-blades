@@ -585,6 +585,7 @@ class GlobalGetter {
 Hooks.once("init", async () => {
   // Initialize Game object
   game.eunoblades = {
+    Rolls: new Collection<BladesRoll>(),
     ClockKeys: new Collection<BladesClockKey>(),
     Consequences: new Collection<BladesConsequence>(),
     Director: BladesDirector.getInstance(),

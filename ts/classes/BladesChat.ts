@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // #region IMPORTS ~
 import {ApplyTooltipAnimations, ApplyConsequenceAnimations} from "../core/gsap";
-import {Position, Effect, RollResult} from "../core/constants";
+import C, {Position, Effect, RollResult} from "../core/constants";
 
 import BladesRoll from "./BladesRoll";
 import BladesConsequence from "./BladesConsequence";
@@ -14,36 +14,24 @@ namespace BladesChat {
 
   export interface Flags {
     template: string,
-    rollData?: BladesRoll.FlagData
+    rollData?: BladesRoll.Schema
   }
 }
 
 class BladesChat extends ChatMessage {
 
-  // static override defineSchema() {
-  //   return Object.assign(super.defineSchema(), {
-  //     csqData: new foundry.data.fields.ObjectField()
-  //   });
-  // }
-
   static Initialize() {
-    // let lastMessageID: string|false = Array.from(game.messages).pop()?.id ?? "";
+
     Hooks.on("renderChatMessage", (msg: BladesChat, html: JQuery<HTMLElement>) => {
       ApplyTooltipAnimations(html);
-      if (msg.flags.rollData) {
+      const {rollData} = msg.flagData;
+      if (rollData) {
         ApplyConsequenceAnimations(html);
         BladesConsequence.ApplyChatListeners(html);
       }
       html.addClass("display-ok");
-      // if (lastMessageID && _msg.id === lastMessageID) {
-      //   setTimeout(() => {
-      //     $(document).find("#chat .chat-message:not([class*='-roll'])")
-      //       .remove();
-      //   }, 500);
-      //   lastMessageID = false;
-      // }
-
     });
+
     return loadTemplates([
       "systems/eunos-blades/templates/chat/roll-result/action.hbs",
       "systems/eunos-blades/templates/chat/roll-result/action-clock.hbs",
@@ -66,21 +54,27 @@ class BladesChat extends ChatMessage {
   static async ConstructRollOutput(rollInst: BladesRoll): Promise<BladesChat> {
     const template = rollInst.resultChatTemplate;
 
-    const rollFlags = {
-      ...rollInst.flagData,
+    const rollData = {
+      ...rollInst.data,
       rollTraitVerb: rollInst.rollTraitVerb ?? "",
       rollTraitPastVerb: rollInst.rollTraitPastVerb ?? rollInst.rollTraitVerb ?? ""
     };
 
     return await BladesChat.create({
       speaker: rollInst.getSpeaker(BladesChat.getSpeaker()),
-      content: await renderTemplate(template, rollFlags),
+      content: await renderTemplate(template, rollData),
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
       flags: {
-        template,
-        rollData: rollFlags
+        "eunos-blades": {
+          template,
+          rollData
+        }
       }
     }) as BladesChat;
+  }
+
+  get flagData() {
+    return this.flags["eunos-blades"];
   }
 
   get allRollConsequences():
@@ -113,7 +107,7 @@ class BladesChat extends ChatMessage {
           [RollResult.fail]: {}
         }
       };
-    const {consequenceData} = this.flags.rollData ?? {};
+    const {consequenceData} = this.flagData.rollData ?? {};
     if (!consequenceData) { return returnData; }
 
     Object.entries(consequenceData)
@@ -132,8 +126,8 @@ class BladesChat extends ChatMessage {
   }
 
   get rollConsequences(): BladesConsequence[] {
-    if (!this.flags.rollData) { return []; }
-    const {finalPosition, rollResult, consequenceData} = this.flags.rollData;
+    if (!this.flagData.rollData) { return []; }
+    const {finalPosition, rollResult, consequenceData} = this.flagData.rollData;
     if (!finalPosition || !rollResult || !consequenceData) { return []; }
     if (typeof rollResult !== "string" || !([RollResult.partial, RollResult.fail] as RollResult[]).includes(rollResult)) { return []; }
     const activeConsequences = consequenceData
@@ -146,8 +140,12 @@ class BladesChat extends ChatMessage {
 
   get elem(): HTMLElement|undefined { return $("#chat-log").find(`.chat-message[data-message-id="${this.id}"]`)[0]; }
 
+  get isRollResult(): boolean { return "rollData" in this.flagData; }
+
   async regenerateFromFlags() {
-    await this.update({content: await renderTemplate(this.flags.template, this.flags)});
+    if (this.isRollResult) {
+      await this.update({content: await renderTemplate(this.flagData.template, this.flags)});
+    }
   }
 
   override async render(force: boolean) {
@@ -165,7 +163,9 @@ class BladesChat extends ChatMessage {
 interface BladesChat {
   get id(): IDString;
   content?: string;
-  flags: BladesChat.Flags;
+  flags: {
+    "eunos-blades": BladesChat.Flags
+  };
 }
 
 export default BladesChat;
