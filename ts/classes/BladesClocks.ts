@@ -385,9 +385,8 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     config.index = indexOverride ?? this.size;
 
     // Parse config to full data object
-    const cData = BladesClock.ParseConfig<BladesClock.Config>(config as BladesClock.Config);
-
-    return cData;
+    const parsedConfig = BladesClock.ParseConfig(config as BladesClock.Config);
+    return BladesClock.ApplySchemaDefaults(parsedConfig);
   }
 
   // #endregion
@@ -978,7 +977,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   }
 
   override async updateTargetData(
-    val: unknown,
+    val: Partial<BladesClockKey.Schema> | null,
     postUpdateAction: ClockKeyUpdateAction|boolean = false
   ) {
     await super.updateTargetData(val, true);

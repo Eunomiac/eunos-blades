@@ -95,22 +95,25 @@ class BladesTargetLink<Schema> {
     // Pass it through public ParseConfigData static method,
     // So subclasses can override it to incorporate their own logic.
 
-    return this.ParseConfig({
+    return this.ParseConfig<Schema>({
       ...partialSchema,
       id: randomID() as IDString,
       targetID: targetUUID,
       targetKey,
       targetFlagKey
-    }) as BladesTargetLink.Data & Partial<Schema>;
+    });
   }
 
   /** Subclasses can override this method to include their own parse logic */
   static ParseConfig<Schema>(
-    data: BladesTargetLink.Data & Partial<Schema>
+    data: (BladesTargetLink.Config | BladesTargetLink.Data) & Partial<Schema>
   ): BladesTargetLink.Data & Partial<Schema> {
     /* Subclasses can override with custom logic here;
         if they don't, the default parsed config is returned */
-    return data;
+    if (BladesTargetLink.IsValidData(data)) {
+      return data;
+    }
+    return this.#ParseConfig(data);
   }
 
   static PartitionSchemaData<Schema>(
